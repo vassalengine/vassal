@@ -81,7 +81,7 @@ But if there's some particular graphic Layer or Text Label that you want to be d
 [width="100%",cols="50%,50%",]
 |===
 a|
-When a Key Command (or Named Key Command) is received by a Game Piece, the <<#Traits,Traits>> are visited in a particular order to see if they listen for that Key Command, and if they do have an entry for that Key Command the appropriate part of the Trait activates.
+When a Keystroke Command or a Named Command (Collectively known as _Key Commands_) is received by a Game Piece, the <<#Traits,Traits>> are visited in a particular order to see if they listen for that Key Command, and if they do have an entry for that Key Command the appropriate part of the Trait activates.
 When a Key Command arrives at a Game Piece, its behaviour is identical regardless of the "origin" of that Key Command.
 The Key Command could have come from the player pressing a real keyboard shortcut, from the player selecting the corresponding right-click context menu command, from a Global Key Command arriving from a completely different Game Piece or from the Toolbar, from an Action Button, or from a Trigger Action trait within the piece.
 
@@ -96,7 +96,7 @@ This happens starting at the bottom of the list and proceeding up toward the <<B
 
 === Advanced Trait Ordering
 
-[cols=",",]
+[cols="a,a",]
 |===
 |**Traits**
 
@@ -130,7 +130,7 @@ Replace With Other
 |These delete the piece & stop any further processing.
 Keep them *_above_* anything that needs doing first.
 
-*NOTE:* Be aware that any Trigger Action on the same Key Command as a deleting trait will never get to execute -- you will need to use a forking/chaining Trigger Action sequence to be sure any Trigger Action traits you need to have run before a deleting trait are executed.
+NOTE: Be aware that any Trigger Action on the same Key Command as a deleting trait will never get to execute -- you will need to use a forking/chaining Trigger Action sequence to be sure any Trigger Action traits you need to have run before a deleting trait are executed.
 
 |Send to Location +
 Move Fixed Distance +
@@ -201,7 +201,7 @@ Note, however, that Sub-Menu traits must always go *_below_* the traits that it 
 |<<ActionButton.adoc#top,Action Button>> |<<AreaOfEffect.adoc#top,Area Of Effect>> |<<BasicPiece.adoc#top,Basic Piece>> |<<CalculatedProperty.adoc#top,Calculated Property>> |<<Pivot.adoc#top,Can Pivot>>
 |<<Rotate.adoc#top,Can Rotate>> |<<#Clone,Clone>> |<<#Delete,Delete>> |<<NonStacking.adoc#top,Does not stack>> |<<DynamicProperty.adoc#top,Dynamic Property>>
 |<<GlobalHotkey.adoc#top,Global Hotkey>> |<<GlobalKeyCommand.adoc#top,Global Key Command>> |<<SetGlobalProperty.adoc#top,Global Property, Set>> |<<Hideable.adoc#top,Invisible>> |<<Layer.adoc#top,Layer>>
-|<<MarkMoved.adoc#top,Mark When Moved>> |<<PropertyMarker.adoc#top,Marker>> |<<Mask.adoc#top,Mask>> |<<Mat.adoc#top,Mat>> |<<MatCargo.doc,Mat Cargo>>
+|<<MarkMoved.adoc#top,Mark When Moved>> |<<PropertyMarker.adoc#top,Marker>> |<<Mask.adoc#top,Mask>> |<<Mat.adoc#top,Mat>> |<<MatCargo.adoc#top,Mat Cargo>>
 |<<MenuSeparator.adoc#top,Menu Separator>> |<<Translate.adoc#top,Move fixed distance>>|<<MovementTrail.adoc#top,Movement Trail>> |<<NonRectangular.adoc#top,Non-Rectangular>> |<<Marker.adoc#top,Place Marker>>
 |<<PlaySound.adoc#top,Play Sound>> |<<PropertySheet.adoc#top,Property Sheet>> |<<UsePrototype.adoc#top,Prototype>> |<<Replace.adoc#top,Replace with Other>> |<<ReportChanges.adoc#top,Report Action>>
 |<<RestrictCommands.adoc#top,Restrict Commands>> |<<RestrictedAccess.adoc#top,Restricted Access>> |<<SendToLocation.adoc#top,Send to Location>> |<<Spreadsheet.adoc#top,Spreadsheet>> |<<SubMenu.adoc#top,Sub-Menu>>
@@ -235,12 +235,14 @@ See the full <<BasicPiece.adoc#top,Basic Piece>> article for details.
 The ability to be deleted by players during a game.
 When this trait's Key Command or menu item is activated, the piece is deleted from the game.
 
+*Description:* An optional description for you own use.
+
 *Command:*  Text for the right-click context menu item that will delete the piece.
 If left blank, no context menu item will appear, but the piece can still be deleted with the Key Command.
 
-*Keyboard Command:*  The <<NamedKeyCommand.adoc#top,Key Command or Named Key Command>> that will cause the piece to be deleted.
+*Key command:*  The <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> that will cause the piece to be deleted.
 
-*NOTE:*  When this trait is activated the piece is deleted and therefore does not do any further processing on the Key Command.
+NOTE:  When this trait is activated the piece is deleted and therefore does not do any further processing on the Key Command.
 This can prevent Report Action traits from reporting the deletion, because of the <<#TraitOrder,order>> traits are processed.
 Such a situation can be worked around by using a Trigger Action trait to first send a Key Command to cause a Report Action and then send a second Key Command to process the delete.
 
@@ -258,7 +260,7 @@ When this trait's Key Command or menu item is activated, an exact copy of the pi
 *Command:*  Text for the right-click context menu item that will clone the piece.
 If left blank, no context menu item will appear, but the piece can still be cloned with the Key Command.
 
-*Keyboard Command:*  The <<NamedKeyCommand.adoc#top,Key Command or Named Key Command>> that will cause the piece to be duplicated.
+*Key command:*  The <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> that will cause the piece to be duplicated.
 
 |image:images/Clone.png[]
 |===
@@ -317,7 +319,7 @@ Allows the piece to automatically report messages, state changes, and other game
 |image:images/TriggerAction.png[] a|
 ==== <<TriggerAction.adoc#top,Trigger Action>>
 
-Allows pieces to trigger Key Commands and Named Key Commands.
+Allows pieces to trigger Keystroke Commands and Named Commands.
 Triggers can be used to combine multiple commands into a single menu entry, place conditions on a command's execution, create repeating loops, and more.
 
 <<TriggerAction.adoc#top,See full article for details.>>
@@ -417,7 +419,7 @@ Adds a command that moves a piece directly to another location.
 |image:images/CounterGlobalKeyCommand.png[] a|
 ==== <<GlobalKeyCommand.adoc#top,Global Key Command>>
 
-Adds an action that applies a Key Command or <<NamedKeyCommand.adoc#top,Named Key Command>> to other pieces, similar to the <<Map.adoc#GlobalKeyCommand,Global Key Command>> component of a Map Window.
+Adds an action that applies a Keystroke Command or <<NamedKeyCommand.adoc#top,Named Command>> to other pieces, similar to the <<Map.adoc#GlobalKeyCommand,Global Key Command>> component of a Map Window.
 Global Key Commands are the main avenue by which pieces can prompt action by other pieces.
 
 <<GlobalKeyCommand.adoc#top,See full article for details.>>
@@ -519,7 +521,7 @@ a|
 
 Adds a command that replaces this piece with a different piece.
 
-*NOTE:*  When this trait is activated the piece is deleted and therefore does not do any further processing on the Key Command.
+NOTE:  When this trait is activated the piece is deleted and therefore does not do any further processing on the Key Command.
 This can prevent Report Action traits from reporting the deletion, because of the <<#TraitOrder,order>> traits are processed.
 Such a situation can be worked around by using a Trigger Action trait to first send a Key Command to cause a Report Action and then send a second Key Command to process the delete.
 

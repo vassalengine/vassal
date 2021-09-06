@@ -48,7 +48,7 @@ selects the Reversible menu item (if enabled above): DeckName is the name of thi
 . *Hotkey To Send When Deck Empties*: Select the Hotkey combination to send whenever enough Cards are removed from the Deck to empty it.
 * *Include Command To Send Entire Deck To Another Deck:* If selected, the Command Menu for this Deck will include a command that sends every piece in this Deck to a designated Deck. For example, this can be used to reshuffle a discard pile into its original Deck. The following three attributes all refer to this option.
 [loweralpha, start=19]
-. *Menu Text:* The text that appears in the Command Menu.
+. *Menu Command:* The text that appears in the Command Menu.
 
 [loweralpha, start=15]
 . *Report Format:* A Message Format that is echoed to the chat text window whenever a player selects *Send*

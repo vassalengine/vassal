@@ -94,7 +94,7 @@ Plan your Tutorial to show the most important aspects of gameplay, before adding
 
 The *Tutorial* menu item includes these attributes:
 
-* *Menu Text:* The menu item under the Help Menu.
+* *Menu Command:* The menu item under the Help Menu.
 * *Logfile:* The logfile that players will step through when they select the corresponding menu item.
 * *Launch Automatically On First Startup:* If selected, then players will automatically be prompted to run the tutorial the first time they load the module.
 * *Auto-Launch Confirm Message:* Provides the text in the yes/no dialog that is displayed to the player when they load the module for the first time. Answering Yes will load the tutorial logfile.

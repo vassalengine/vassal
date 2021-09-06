@@ -7,21 +7,25 @@
 
 === Can Pivot
 
-[cols=",",]
-|===
-|This trait allows a piece to pivot around a fixed point relative to its current position.
+This trait allows a piece to pivot around a fixed point relative to its current position.
 This trait only functions if the piece also has a <<Rotate.adoc#top,Can Rotate>> trait _and_ the _Can Rotate_ trait appears _before_ the Can Pivot trait in the <<GamePiece.adoc#TraitOrder,trait list>>.
 
-*Command:* The right-click context menu entry to pivot the piece.
+[width="100%",cols="50%a,^50%a",]
+|===
+|
+*Description:*:: A brief description for your own reference.
+
+*Menu command:*:: The right-click context menu entry to pivot the piece.
 If left blank, no context menu entry will appear but the piece can still be pivoted with the Key Command, below.
 
-*Keyboard command:*  The keyboard shortcut or <<NamedKeyCommand.adoc#top,Named Key Command>> that will pivot the piece.
+*Key command:*::  The <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> that will pivot the piece.
 
-*Pivot Point:* The location, relative to the center of the piece and its current facing, around which the piece will rotate.
+*Pivot point:*:: The location, relative to the center of the piece and its current facing, around which the piece will rotate.
 Positive numbers are down and to the right.
++
 _Example:_ For a piece of size 40x40, a pivot point of 20,-20 will rotate the piece around its upper right corner.
 
-*Pivot through fixed angle:*  If selected, then invoking the command will pivot the piece through the angle specified in the _Angle_ field, in degrees clockwise.
+*Pivot through fixed angle:*::  If selected, then invoking the command will pivot the piece through the angle specified in the _Angle_ field, in degrees clockwise.
 If left unselected, then invoking the command will allow the player to pivot the piece interactively to any angle by dragging the mouse.
 
 | image:images/Pivot.png[]

@@ -7,25 +7,29 @@
 
 === Global Hotkey
 
-[width="100%",cols="50%,50%",]
-|===
-|This trait adds an action that invokes a Hotkey, usually a keyboard shortcut or <<NamedKeyCommand.adoc#top,Named Key Command>> for a Toolbar button in the Module window or a Map Window, but it also works for other Hotkeys. For example, you can use it to shuffle a deck via a deck's "shuffle" Hotkey.
+This trait adds an action that invokes a Hotkey, usually a <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> for a Toolbar button in the Module window or a Map Window, but it also works for other Hotkeys. For example, you can use it to shuffle a deck via a deck's "shuffle" Hotkey.
 
-*Menu Text:*  Right-click context menu text.
-If left blank, no context menu item will appear.
-
-*Key Command:*  A Key Command or <<NamedKeyCommand.adoc#top,Named Key Command>> to initiate the action.
-
-*Global Hotkey:*  The Hotkey that will be applied. If it is on the Toolbar, then it is the Hotkey assigned to the Toolbar button you wish to activate.
-
-Note: Sometimes you may have a deck of cards or pieces that you want shuffled at the start of the game but not auto-shuffled afterwards. You can use this this trait to shuffle the deck during a setup sequence to get your one-time start-up shuffle.
+NOTE: Sometimes you may have a deck of cards or pieces that you want shuffled at the start of the game but not auto-shuffled afterwards. You can use this this trait to shuffle the deck during a setup sequence to get your one-time start-up shuffle.
 
 *EXAMPLE:*  A Dice Button component has been added to the Toolbar and assigned the Hotkey F2.
 A Game Piece is given a Global Hotkey trait with Menu text _Roll Dice,_ Keyboard Command _CTRL+R_ and Global Hotkey _F2_.
 Now, selecting the piece and typing _CTRL+R_ or selecting _Roll Dice_ from the right-click context menu will roll the dice button just as if the player had clicked the button in the Toolbar or typed _F2_ from the keyboard.
-a|
+
+[width="100%",cols="50%a,^50%a",]
+|===
+|
+*Description:*:: A short description of this trait for your own reference.
+
+*Menu command:*::  Right-click context menu text.
+If left blank, no context menu item will appear.
+
+*Key Command:*::  A <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to initiate the action.
+
+*Global Hotkey:*::  The Hotkey that will be applied. If it is on the Toolbar, then it is the Hotkey assigned to the Toolbar button you wish to activate.
+
+|
 image:images/GlobalHotkey.png[]
-When _Ctrl+H_ pressed, send _F2_ to the Toolbar
+_When *Ctrl+H* pressed, send *F2* to the Toolbar_
 
 |===
 

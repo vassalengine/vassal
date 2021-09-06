@@ -14,8 +14,7 @@ The Configuration Window is used to edit either a <<GameModule.adoc#top,Module>>
 
 * *File*: Save the module or save it to a different file.
 * *Help*: This reference manual.
-* *Updaters*: Create a <<SavedGameUpdater.adoc#top,update saved games>>
-* *Translate:* Help <<Translations.adoc#top,translate>> VASSAL into another language<<SavedGameUpdater.adoc#top>>
+* *Translate:* Help <<Translations.adoc#top,translate>> VASSAL into another language
 
 '''''
 

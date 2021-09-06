@@ -7,23 +7,10 @@
 
 === Mark When Moved
 
-[width="100%",cols="50%,50%",]
-|===
-a|
 Pieces which have the _Mark When Moved_ trait will automatically display a specifiable image after they have been moved.
 Specify the image and the position relative to the center of the piece at which to draw the image.
 A _Moved_ property will also be exposed on the piece, and will be set to _true_ whenever the piece is moved.
 This _Moved_ property can be toggled back to _false_ with the configured key command and/or menu item.
-
-*Command:* Right-click context menu item that will clear the piece's move history (setting _Moved_ property back to _false_ and clearing any <<MovementTrail.adoc#top,Move Trails>>). If this item is left blank, no context menu entry will appear but the move history can still be cleared with the Key Command, below.
-
-*Keyboard command:* Key Command, or <<NamedKeyCommand.adoc#top,Named Key Command>> to clear the piece's move history (setting _Moved_ property back to _false_ and clearing any <<MovementTrail.adoc#top,Move Trails>>).
-
-*Marker Image:* Use the _Select_ button to load a new image or the _Default_ button to return to the default image.
-
-*Horizontal Offset:* Specify how many pixels to the right of the centre of the piece to display the moved marker.
-
-*Vertical Offset:* Specify how many pixels down from the centre of the piece to display the moved marker.
 
 *NOTES:*
 
@@ -32,7 +19,24 @@ This _Moved_ property can be toggled back to _false_ with the configured key com
 * For pieces containing this trait, the <<Properties.adoc#top,Property>>  _Moved=true_ is set when the piece has been moved.
 * When the trait is activated with the menu item or Key Command, then _Moved=false_ is set.
 * Clearing the piece's move history with this trait (e.g.
-using the menu item or Key Command) will also clear the <<MovementTrail.adoc#top,Move Trails>> for the piece, if any.
+using the menu item or Key Command) will also clear the <<MovementTrail.adoc#top,Movement Trails>> for the piece, if any.
+
+SEE ALSO: <<MovementTrail.adoc#top,Movement Trails>>)
+
+[width="100%",cols="50%a,50%a",]
+|===
+|
+*Description:*:: A short description of this trait for your own reference.
+
+*Menu command:*:: Right-click context menu item that will clear the piece's move history (setting _Moved_ property back to _false_ and clearing any <<MovementTrail.adoc#top,Movement Trails>>). If this item is left blank, no context menu entry will appear but the move history can still be cleared with the Key Command, below.
+
+*Key command:*:: <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to clear the piece's move history (setting _Moved_ property back to _false_ and clearing any <<MovementTrail.adoc#top,Movement Trails>>).
+
+*Marker Image:*:: Use the _Select_ button to load a new image or the _Default_ button to return to the default image.
+
+*Horizontal Offset:*:: Specify how many pixels to the right of the center of the piece to display the moved marker.
+
+*Vertical Offset:*:: Specify how many pixels down from the center of the piece to display the moved marker.
 
 |image:images/MarkMoved.png[] +
 |===

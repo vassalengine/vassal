@@ -7,10 +7,8 @@
 
 === Game Piece Palette
 
-[cols=",",]
-|===
-|The Game Piece Palette is the root of a hierarchy of Game Piece Containers and Game Pieces.
-Game Pieces are always at the end (leaves) of the hierarchy. Game Piece Container can be nodes or leaves of the hierarchy.
+The Game Piece Palette is the root of a hierarchy of Game Piece Containers and Game Pieces.
+Individual Game Pieces are always at the end (leaves) of the hierarchy. Game Piece Containers can be nodes or leaves of the hierarchy.
 Note that since Vassal version 3.5.0 the topmost node of the Game Piece Palette must be a Game Piece Container.
 
 During a game players may drag to the playing area the Game Pieces contained inside Game Piece Palettes.
@@ -20,27 +18,35 @@ If you need to limit the number of pieces available during play, use a <<Deck.ad
 If the player has the _Use combined application window_ preference checked, then the first Game Piece Palette in the module will dock into the main module window to the left of the chat log.
 All others will appear in their own window.
 
-*Name:*  If the palette appears in its own window, this will be used for the title.
-
-*Hidden:*  If checked, then this Game Piece Palette will not appear at all during play.
-This is useful if you need to define pieces for a <<GameModule.adoc#PredefinedSetup,Default Setup>> but don't want to allow players to create new pieces during play.
-You must restart VASSAL for this change to take effect.
-
-*Button Text:*  The text on the Toolbar button that shows and hides the Game Piece Palette.
-
-*Button Icon:*  The icon image on the Toolbar button.
-
-*Hotkey:*  A keyboard shortcut or <<NamedKeyCommand.adoc#top,Named Key Command>> for the Toolbar button.
-
-*Image scale for all child members:*  A scale factor to be used to draw the images for pieces displayed by this panel or its members.
-If an inner widget (e.g.
-a panel, a list, etc) contains its own scaling factor, that one overrides any factor provided in an outer member.
-
 The Game Piece Palette is highly configurable, and can contain any combination of tabs, lists, and pull-down menus containing individual Game Pieces.
 For example, the window may contain a tabbed pane with two entries, called "Info" and "Armies", each of which contain a list of pieces.
 Every component in the Palette should end with one or more Game Pieces.
 Since a typical game has many pieces that differ in only minor ways, you may find it convenient to clone Single Pieces.
 Also, the order of the pieces can be changed by dragging them within the configuration tree.
+
+[width="100%",cols="50%a,^50%a",]
+|===
+|
+
+*Name:*::  If the palette appears in its own window, this will be used for the title.
+
+*Hidden (requires restart):*::  If checked, then this Game Piece Palette will not appear at all during play.
+This is useful if you need to define pieces for a <<GameModule.adoc#PredefinedSetup,Default Setup>> but don't want to allow players to create new pieces during play.
+
+NOTE: You must restart VASSAL for this change to take effect.
+
+*Button text:*::  The text on the Toolbar button that shows and hides the Game Piece Palette.
+
+*Tooltip text:*::  The Tooltip text on the Toolbar button.
+
+*Button icon:*::  The icon image on the Toolbar button.
+
+*Hotkey to show/hide:*::  A <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> for the Toolbar button.
+
+*Image scale for all child members:*::  A scale factor to be used to draw the images for pieces displayed by this panel or its members.
+If an inner widget (e.g.
+a panel, a list, etc) contains its own scaling factor, that one overrides any factor provided in an outer member.
+
 |
 
 image:images/PieceWindow.png[]
@@ -56,14 +62,19 @@ The top level of a Game Piece Palette must contain a Game Piece Container, all l
 Each Game Piece Container of a Game Piece Palette can contain any combination of Game Piece Containers and Game Pieces.
 
 ==== Game Piece Containers
-[cols=",",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |Pull-down menu
 
 A pull-down menu in which each menu item corresponds to a subcomponent.
 The name of the menu item will be the name of the subcomponent.
-|
+
+Pull-down menus work well as items in a Scrollable list.
+|image:images/BoxWidget.png[]
+
+image:images/BoxWidgetExample.png[]
 |Scrollable List
+
 
 A scroll list in which each entry corresponds to a subcomponent.
 The name of the entry will be the name of the subcomponent.
@@ -79,7 +90,9 @@ image:images/ListExample.png[]
 A panel with tabs, each of which corresponds to a Sub Component (or Game Piece).
 
 The label of the tab will be the name of the subcomponent.
-|
+|image:images/TabWidget.png[]
+
+image:images/PaletteExample.png[]
 | Panel
 
 A panel that can contain Game Pieces, Tabbed Panes, or other panels.

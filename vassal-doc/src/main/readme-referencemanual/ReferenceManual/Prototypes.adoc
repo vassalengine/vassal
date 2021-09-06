@@ -54,6 +54,4 @@ Prototypes may contain other prototypes.
 
 image:images/PrototypeDefinition.png[]
 
-image:images/PrototypeDefinition2.png[]
-
 *SEE ALSO:*  <<UsePrototype.adoc#top,Prototype (Trait)>>

@@ -6,45 +6,44 @@
 '''''
 
 === Global Options
-
-[cols=",",]
-|===
-|The Global Options component allows you to define your own custom preferences for a module.
+The Global Options component allows you to define your own custom preferences for a module.
 It also contains other settings that apply to the module as a whole, as well as providing a location to configure button images and hotkeys for some of the basic Toolbar buttons.
 If an option has a _Use Preferences Setting_ choice, selecting it will add an entry to the Preferences window to allow players to choose their own setting at game time.
 
-*Allow non-owners to unmask pieces:*  By default, only the player who originally masked a piece (see the Mask trait for Game Pieces) is allowed to unmask it.
+[width="100%",cols="50%a,^50%a",]
+|===
+|*Allow non-owners to unmask pieces:*::  By default, only the player who originally masked a piece (see the Mask trait for Game Pieces) is allowed to unmask it.
 This option allows other players to unmask a masked piece.
 
-*Center on opponent's moves:*  This option will center a map window on an opponent's move when reading a logfile or receiving a move on the server.
+*Center on opponent's moves:*::  This option will center a map window on an opponent's move when reading a logfile or receiving a move on the server.
 _It is recommended that in most cases this be set to "Use Preferences" so that players can turn this behavior on and off themselves._
 
-*Auto-report moves:*  This option will automatically report a text description (e.g.
+*Auto-report moves:*::  This option will automatically report a text description (e.g.
 "3rd Cav moves A10 ->B11") to the chat log of the control window whenever a player moves a piece in a Map Window.
 
-*Player Id format:* A <<MessageFormat.adoc#top,Message Format>> that is used to identify players when typing chat text.
+*Player Id format:*:: A <<MessageFormat.adoc#top,Message Format>> that is used to identify players when typing chat text.
 It is available for use as a short-cut in other message formats such as move auto-reporting as well.
 
-*Enable HTML Support in Chat Log:*  This option, if enabled, will allow messages sent to the <<ChatLog.adoc#top,Chat Log>> to include HTML tags.
+*Enable HTML Support in Chat Log:*::  This option, if enabled, will allow messages sent to the <<ChatLog.adoc#top,Chat Log>> to include HTML tags.
 It is recommended that for new modules you set this option to _Always_, as the other settings exist only to maintain compatibility with VASSAL modules created before HTML support existed that might have included symbols in their text messages, e.g.
 < > which could otherwise be misinterpreted as HTML tags.
 
-*Toolbars On Closed Map Windows Accept Hotkeys:* This option, if enabled, will allow toolbar buttons and items (such as Global Key Commands, Dice rollers, and Global Property setters) to receive Global Hotkeys sent by Game Pieces even when their Map Window is currently closed. This option is "off" by default, meaning that the toolbar items on windows are disabled while the windows are closed.
+*Toolbars On Closed Map Windows Accept Hotkeys:*:: This option, if enabled, will allow toolbar buttons and items (such as Global Key Commands, Dice rollers, and Global Property setters) to receive Global Hotkeys sent by Game Pieces even when their Map Window is currently closed. This option is "off" by default, meaning that the toolbar items on windows are disabled while the windows are closed.
 
-*Icons and hotkeys:* You can specify your own button icons and keyboard shortcuts for the logfile step/undo buttons and the button that shows/hides the server controls.
+*Icons and hotkeys:*:: You can specify your own button icons and keyboard shortcuts for the logfile step/undo buttons and the button that shows/hides the server controls.
 
 |image:images/GlobalOptions.png[]
 |===
 
 '''''
 
-[width="100%",cols="50%,50%",]
+[width="100%",cols="50%a,^50%a",]
 |===
 a|
 === Sub-Components
 
 You may add your own arbitrary preference settings to the global options.
-To add your own preferences, right click on the _[Global Options]_ component in the Editor and select one of the _Add_ options.
+To add your own preferences, right-click on the _[Global Options]_ component in the Editor and select one of the _Add_ options.
 The different sub-components support different constraints on the values of the preference setting.
 The values of these preference setting are exposed as <<Properties.adoc#top,Properties>>.
 

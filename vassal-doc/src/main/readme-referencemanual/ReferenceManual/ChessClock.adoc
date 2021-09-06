@@ -7,12 +7,10 @@
 
 === Chess Clock Control
 
-[cols=",",]
-|===
-|Adds a Chess Clock controller to your game, for use in timing multiplayer matches. Chess clocks in VASSAL count "up" rather than down, so you can agree to any desired time control with your opponent, without the need to re-configure clock values.
+Adds a Chess Clock controller to your game, for use in timing multiplayer matches. Chess clocks in VASSAL count "up" rather than down, so you can agree to any desired time control with your opponent, without the need to re-configure clock values.
 
 During play, clicking the main Chess Clock Control button will hide/reveal the individual clock buttons, if no clocks are running. Or, if any clocks are currently running, clicking
-the main Chess Clock Control button will switch to the next clock in the player sequence. To stop all clocks, one can right click on the Chess Clock Control button and select from the
+the main Chess Clock Control button will switch to the next clock in the player sequence. To stop all clocks, one can right-click on the Chess Clock Control button and select from the
 menu. Keyboard shortcuts can also be specified for starting and stopping clocks.
 
 The time display format of the clocks can also be configured here. Display of fields such as "milliseconds" and "days" can be left on the _Auto_ setting, or
@@ -28,6 +26,32 @@ Right-click it and select _Add Chess Clock Control_.
 After adding initial settings for your Chess Clock controller, you will find a _[Chess Clock Control]_ component at the very bottom of your module's list of components in the Editor window.
 You can then right-click the _[Chess Clock Control]_ component to _Add_ individual _[Chess Clock]_ components, although if you have already created your <<GameModule.adoc#Definition_of_Player_Sides,Definition of Player Sides>> before adding the
 Chess Clock Control, individual clocks will be added by default, corresponding to each of your player sides.
+
+[width="100%",cols="50%a,^50%a",]
+|===
+|*Name:*:: The name of the Chess Clock Controller.
+
+*Button icon:*:: An image to use for the Chess Clock Controller toolbar button.
+
+*Button text:*:: Text to appear on the Chess Clock Controller toolbar button.
+
+*Tooltip text:*:: Tooltip text to display when the cursor is hovered over the Chess Clock Controller toolbar button.
+
+*Show clocks hotkey:*:: <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> that will show the component clocks.
+
+*Start next clock Hotkey:*:: <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> that will start the next clock running.
+
+*Pause all clocks Hotkey:*:: <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> that will pause all clocks.
+
+*Show tenths of seconds:*:: Select if tenths of seconds are displayed in component clocks.
+
+*Show seconds:*:: Select if seconds are displayed in component clocks.
+
+*Show hours:*:: Select if hours are displayed in component clocks.
+
+*Show days:*:: Select if days are displayed in component clocks.
+
+*Allows manual reset of Chess Clock timers:*:: If checked, then players can manually reset individual clocks by right-clicking on them and selecting the _Reset This Clock_ option.
 |image:images/ChessClockControl.png[]  +
 |===
 
@@ -35,27 +59,27 @@ Chess Clock Control, individual clocks will be added by default, corresponding t
 
 === Sub-Components
 
-[#ChessClock]##
+[#ChessClock]
 
 ==== Chess Clock
 
-[cols=",",]
+Each individual chess clock that you add can be configured in its own component here.
+
+[width="100%",cols="50%a,^50%a",]
 |===
-|Each individual chess clock that you add can be configured in its own component here.
+|*Player side for timer:*:: Select which of the player sides from your <<GameModule.adoc#Definition_of_Player_Sides,Definition of Player Sides>> will correspond to this clock.
 
-*Player side for timer:* Select which of your the player sides from your <<GameModule.adoc#Definition_of_Player_Sides,Definition of Player Sides>> will correspond to this clock.
+*Timer button text:*:: Text to be displayed on this chess clock's toolbar button.
 
-*Timer button text:* Text to be displayed on this chess clock's toolbar button.
+*Timer icon:*:: Icon for this chess clock's tookbar button.
 
-*Timer icon:* Icon for this chess clock's tookbar button.
+*Ticking background color:*:: When this chess clock is _running_, this background color will be displayed behind the timer text.
 
-*Ticking background color:* When this chess clock is _running_, this background color will be displayed behind the timer text.
+*Ticking foreground color:*:: When this chess clock is _running_, the button text (including the timer numbers) will "pulse" between the "ticking" and "tocking" foreground colors.
 
-*Ticking foreground color:* When this chess clock is _running_, the button text (including the timer numbers) will "pulse" between the "ticking" and "tocking" foreground colors.
+*Tocking foreground color:*:: When this chess clock is _running_, the button text (including the timer numbers) will "pulse" between the "ticking" and "tocking" foreground colors.
 
-*Tocking foreground color:* When this chess clock is _running_, the button text (including the timer numbers) will "pulse" between the "ticking" and "tocking" foreground colors.
-
-*Chess clock tooltip:* Tooltip for this chess clock's button.
+*Chess clock tooltip:*:: Tooltip for this chess clock's button.
 
 |image:images/ChessClock.png[] +
 |===

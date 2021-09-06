@@ -6,30 +6,40 @@
 '''''
 
 === Rectangular Grid
-
-[cols=",",]
+A standard rectangular grid for regulating movement on a Board.
+[width="100%",cols="50%a,^50%a",]
 |===
-|A standard rectangular grid for regulating movement on a Board.
+|
 
-*X,Y offset:* The horizontal and vertical position of the center of the first cell of the grid
+*X,Y offset:*:: The horizontal and vertical position of the center of the first cell of the grid
 
-*Cell Height/Width:* Pixel dimensions of a single cell.
+*Cell width/height:*:: Pixel dimensions of each cell.
 
-*Range calculation metric:* Determines the algorithm to be used in range calculations.
-_Metric_ range uses the larger of the X distance and the Y distance in cells.
-_Manhattan_ range uses the sum of the X distance and the Y distance, in cells.
+*Range calculation metric:*:: Determines the algorithm to be used in range calculations.
++
+*_Metric_* range uses the larger of the X distance and the Y distance in cells.
++
+*_Manhattan_* range uses the sum of the X distance and the Y distance, in cells.
 
-*Snap to defined point:* If checked, pieces placed anywhere within the grid will automatically snap to the nearest legal location.
+*Snap to defined point:*:: If checked, pieces placed anywhere within the grid will automatically snap to the nearest legal location.
++
+By default, the only legal location is the center of each grid cell.
++
 If unchecked, pieces may be placed anywhere.
++
 If it is useful for most pieces to snap to legal locations, but for certain types of markers to be allowed anywhere, this can be accomplished by checking this box but adding a <<NonStacking.adoc#top,Does Not Stack>> trait to the pieces which should ignore the grid and selecting the trait's "Ignore map grid when moving" option.
 
-*Legal Locations:* Determines whether pieces can be placed on cell edges and/or corners, instead of only at cell centers.
+*Edges are legal locations:*:: If snapping is enabled, then an additional snap point is created at the center of each grid cell side.
 
-*Show Grid:* If checked, then the grid will be drawn over the Board image using the specified color.
+*Corners are legal locations:*:: If snapping is enabled, then an additional snap point is created at the corner of each grid cell.
 
-*Draw Center Dots:* If checked, dots are drawn at the center of each cell using the specified color.
+*Show grid:*:: If checked, then the grid will be drawn over the Board image using the specified color.
 
-*Edit Grid:* Clicking the Edit Grid button brings up a graphical interface for positioning and sizing the grid over top of the Map.
+*Draw center dots:*:: If checked, dots are drawn at the center of each cell using the specified color.
+
+*Color:*:: Color used to draw the grid and center dots.
+
+*Edit Grid:*:: Clicking the Edit Grid button brings up a graphical interface for positioning and sizing the grid over top of the Map.
 
 |image:images/RectangularGrid.png[]
 

@@ -1,19 +1,20 @@
 == VASSAL Reference Manual
 [#top]
 
-[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<PieceWindow.adoc#top,Game Piece Palette>># [.small]#> ** <<GamePiece.adoc#top,Game Piece>># [.small]#> *Global Key Command*#
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<PieceWindow.adoc#top,Game Piece Palette>># [.small]#>  <<GamePiece.adoc#top,Game Piece>># [.small]#> *Global Key Command*#
 
 '''''
 
 === Global Key Command
 
-[cols="a,a",]
-|===
-|This <<GamePiece.adoc#Traits,Trait>> adds an action that applies a key command to other pieces, similar to the <<Map.adoc#GlobalKeyCommand,Global Key Command>> component of a Map Window.
+This <<GamePiece.adoc#Traits,Trait>> adds an action that applies a key command to other pieces, similar to the <<Map.adoc#GlobalKeyCommand,Global Key Command>> component of a Map Window.
 Global Key Commands are the main avenue by which Pieces can prompt action by other Pieces.
 As such, they are very powerful, but they do come at the price of some performance lag, as each time one is issued Vassal must generally check it against every piece on the board.
 
-*Description:*:: A description of this trait, which appears in the Piece Definer list in the Editor.
+
+[width="100%",cols="50%a,^50%a",]
+|===
+|*Description:*:: A short description of this trait for your own reference.
 
 *Menu command:*:: Name of the right-click context menu item.
 If left blank, no context menu item will appear.
@@ -26,37 +27,11 @@ This is _not_, however, the command that will be issued to the other pieces (see
 Other pieces which have that same shortcut or Named Key Command filled in as the Key Command for one or more of their <<GamePiece.adoc#Traits,Traits>> will have those traits activated.
 
 *Pre-select (Fast Match):*::  New from VASSAL 3.5, the *Fast Match* selections can be used to improve the performance of "slow" Global Key Commands by pre-matching the location and/or a single property value of the target piece. Essentially these run limited but much faster comparisons, to screen out some of the potentially hundreds of pieces needing to be checked for each Global Key Command. Fast Match expressions are _optional_ in that the same comparisons can always be run in the standard "Additional matching expression" field. Judicious use of them, however, can improve the performance of a Global Key Command by 25-33%.
-
-  *by location?*;; If this box is checked, potential target pieces will be pre-filtered based on their locations.
-
-    *Select By:*::: Selects the type of Location-based filtering that will be done on target pieces.
 +
-*_Current Stack or Deck_* - Only pieces in the same Stack or Deck as the issuing piece will be checked. This type of filtering, when applicable, is _very fast_.
-+
-*_Current Map_* - Only pieces on the same Map as the piece issuing the Global Key Command will be checked.
-+
-*_Current Zone_* - Only pieces in the same Zone (and therefore Map) as the piece issuing the Global Key Command will be checked.
-+
-*_Current Location_* - Only pieces in the same Location (i.e. LocationName property the same) as the piece issuing the Global Key Command will be checked.
-+
-*_Specific Map_* - Only sends to pieces that are on the Map matching the supplied expression. The _expression_ is evaluated against the properties of the _source_ piece, i.e. the piece issuing the Global Key Command, but then the result of the expression is compared to the Map of potential _target_ pieces to determine if they are valid targets.
-+
-*_Specific Zone_* - Only sends to pieces that are in the Zone matching the supplied expression (an optional Map expression can be supplied as well). The _expressions_ are evaluated against the properties of the _source_ piece, i.e. the piece issuing the Global Key Command, but then the results of the expressions are compared to the CurrentZone (and optionally CurrentMap) of potential _target_ pieces to determine if they are valid targets.
-+
-*_Specific Location_* - Only sends to pieces that are in the Location matching the supplied expression (an optional Map expression can be supplied as well). The _expressions_ are evaluated against the properties of the _source_ piece, i.e. the piece issuing the Global Key Command, but then the results of the expressions are compared to the LocationName (and optionally CurrentMap) of potential _target_ pieces to determine if they are valid targets.
-+
-*_Specific X,Y Position_* - Only sends to pieces that are at the X,Y location matching the supplied expressions (optional Map and Board expressions can be supplied as well). The _expressions_ are evaluated against the properties of the _source_ piece, i.e. the piece issuing the Global Key Command, but then the results of the expressions are compared to the CurrentX and CurrentY (and optionally CurrentMap and CurrentBoard) of potential _target_ pieces to determine if they are valid targets.
-
-*by property?*;; If this box is checked, a _single_ property of the target will be checked to determine if it is a valid target. This search will be performed more quickly than a similar search in the _Additional Matching Expression_ field.
-
-  *Property Name*::: Can be a simple string containing the name of a property in potential target pieces to be checked, _or_ an expression to be evaluated against the _source_ piece (the piece issuing the Global Key Command). The result of evaluating the expression is then used to find a property name in the potential _target_ piece.
-
-  *Comparison*::: The type of comparison to be done with the value of the property specified above. Can be equals, not-equals, greater, greater-or-equal, less than, less-than-or-equal, or can be matches or non-matches a regular expression.
-
-  *Property Value*::: Can be a simple string or number containing a specific value which will be compared to the value of the property specified above, _or_ an expression to be evaluated against the _source_ piece (the piece issuing the Global Key Command). The result of evaluating the expression is then used as the value to be compared against the property specified above using the comparison specified above.
+See the <<FastMatch.adoc#top>> page for full details on Fast Matches.
 
 *Additional matching expression:*::  If further refinement of which target pieces should receive the Global Key Command is needed, or if you do not wish to use Fast Match pre-selections, an Additional Matching Expression can be used. The Global Key Command will only be applied to Game Pieces which match the specified <<PropertyMatchExpression.adoc#top,Property Match Expression>>. Note that the properties named in _this_ expression are evaluated against the properties _of the target pieces_, not the properties of the piece issuing the Global Key Command.
-For example if you provided the expression _{ CurrentZone == "Europe" }_, that would use the CurrentZone property of each potential target piece (checking if _it_ is "Europe") to determine whether or not to apply the Global Key Command.
+For example if you provided the expression _{ CurrentZone == "Europe" }_, that would use the CurrentZone property of each potential target piece (checking if _it_ is "Europe") to determine whether to apply the Global Key Command.
 If you want to compare a property in the target pieces against the value of _a property in *this* piece_, then use $property$. All $...$ property references will be evaluated against this piece before testing against other pieces.
 Note that this will often mean the expression needs to be put inside of quotation marks if the property in question is a string value.
 For example if the expression provided is { CurrentZone == "$CurrentZone$" } then the CurrentZone of each potential target piece will be checked against $CurrentZone$ which will read the CurrentZone of the _issuing_ piece (see also example below).

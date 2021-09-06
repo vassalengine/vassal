@@ -7,9 +7,7 @@
 
 === Mat
 
-[cols=",",]
-|===
-|Mats are generally larger pieces that are designed to have smaller pieces (<<MatCargo.adoc#top,Mat Cargo>>) placed on top of them, and for the
+Mats are generally larger pieces that are designed to have smaller pieces (<<MatCargo.adoc#top,Mat Cargo>>) placed on top of them, and for the
 cargo pieces to move along with the Mat and maintain their relative position.
 
 When a <<GamePiece.adoc#top,Game Piece>> with this trait is selected by left-clicking on it, any game pieces with the <<MatCargo.adoc#top,Mat Cargo>>
@@ -23,16 +21,20 @@ of it will follow.
 If a Mat piece is <<Rotate.adoc#top,rotated>> or <<Pivot.adoc#top,pivoted>>, any cargo pieces on top can also match their facing to the Mat, if that option is
 selected in the Mat Cargo trait.
 
-*Mat Name:* An identifier for the Mat. This is exposed to the module via the _MatName_ property, and is also used when
+[width="100%",cols="50%a,50%a",]
+|===
+|
+*Mat name:*:: An identifier for the Mat. This is exposed to the module via the _MatName_ property, and is also used when
 filling the _CurrentMat_ property of <<MatCargo.adoc#top,Mat Cargo>> pieces.
 
-*Description:* Description of the trait - displayed only in the Editor, in the piece definer dialog.
+*Description:*:: Description of the trait - displayed only in the Editor, in the piece definer dialog.
 
 |image:images/Mat.png[]
 
 
 image:images/Mat2.png[]
-*Above:* a Mat and its <<MatCargo.adoc#top,Mat Cargo>> pieces rotated 45 degrees in _Almoravid_
+
+_A Mat and its <<MatCargo.adoc#top,Mat Cargo>> pieces rotated 45 degrees in_ *_Almoravid_*
 
 |===
 

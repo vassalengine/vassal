@@ -11,14 +11,22 @@ This trait allows you to introduce a menu separator (horizontal bar) into a game
 A keystroke need not be provided if the separator does not need the ability to be hidden.
 You can add as many menu separators to a piece as you need: place them between the traits whose right-click context menu items you want to be separated.
 
-*Separator description:* Optional description of separator to appear in the Piece Definer window - no other effect.
-
-*Keystroke:* If the specified keystroke is hidden (by a <<RestrictCommands.adoc#top,Restrict Commands>> trait), then this separator will be hidden also.
-This allows you to hide menu separators as desired when there are fewer options currently available in your context menu.
-The keystroke can be shared with another trait, or you can provide a unique one.
-<<NamedKeyCommands.adoc#top,Named Key Commands>> can also be used so as not to waste traditional keystrokes.
-
-image:images/MenuSeparator.png[]
-image:images/MenuSeparator2.png[]
-
 *SEE ALSO:*  <<SubMenu.adoc#top,Sub-Menu>>, <<RestrictCommands.adoc#top,Restrict Commands>>
+[width="100%",cols="50%a,50%a",]
+|===
+|
+*Description:*:: A short description of this trait for your own reference.
+
+
+*If this Key Command is hidden, hide separator:*:: If the specified Key Command is hidden (by a <<RestrictCommands.adoc#top,Restrict Commands>> trait), then this separator will be hidden also.
++
+This allows you to hide menu separators as desired when there are fewer options currently available in your context menu.
++
+The keystroke can be shared with another trait, or you can provide a unique one.
+<<NamedKeyCommands.adoc#top,Named Commands>> can also be used so as not to waste traditional keystrokes.
+
+|image:images/MenuSeparator.png[]
+
+image:images/MenuSeparator2.png[]
+|===
+

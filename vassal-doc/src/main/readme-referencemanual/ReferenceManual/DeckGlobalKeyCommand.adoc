@@ -7,29 +7,28 @@
 
 === Deck Global Key Command
 
-[width="100%",cols="50%,50%",]
-|===
-|This <<Deck.adoc#top,Deck>> Sub-Component adds an action that applies a key command to to pieces contained within the Deck, similar to the <<Map.adoc#GlobalKeyCommand,Global Key Command>> component of a Map Window or of a Game Piece.
+This <<Deck.adoc#top,Deck>> Sub-Component adds an action that applies a key command to pieces contained within the Deck, similar to the <<Map.adoc#GlobalKeyCommand,Global Key Command>> component of a Map Window or of a Game Piece.
 
 To add a Deck Global Key Command to one of your Decks, use the Editor's configuration window to navigate to the _[Deck]_ entry for the Deck you want to add it to.
 Right-click on the _[Deck]_ entry and select _Add Deck Global Key Command_.
 
-*Menu Command:* Text for an entry in the Deck's right-click context menu that will activate the Deck Global Key Command.
+[width="100%",cols="50%a,^50%a",]
+|===
+|*Menu command:*:: Text for an entry in the Deck's right-click context menu that will activate the Deck Global Key Command.
 
-*Global Key Command:*  The <<NamedKeyCommand.adoc#top,Key Command or Named Key Command>> that will be applied to the pieces in the Deck.
+*Global key command:*::  The <<NamedKeyCommand.adoc#top,Key Command or Named Command>> that will be applied to the pieces in the Deck.
 
-*Matching expression:*  The key command will only be applied to pieces (in the Deck) which match the specified <<PropertyMatchExpression.adoc#top,Property Match Expression>>. If you do not enter a property expression, then all pieces in the Deck can receive the key command, subject to the _Affects_ field, below.
+*Matching expression:*::  The key command will only be applied to pieces (in the Deck) which match the specified <<PropertyMatchExpression.adoc#top,Property Match Expression>>. If you do not enter a property expression, then all pieces in the Deck can receive the key command, subject to the _Affects_ field, below.
 
-*Affects:*  The Deck Global Key Command can apply to all pieces which match the expression, or to a set number only (always counting from the top of the Deck). Use a setting of 1 to select the top piece.
+*Affects:*::  The Deck Global Key Command can apply to all pieces which match the expression, or to a set number only (always counting from the top of the Deck). Use a setting of 1 to select the top piece.
 
-*Report Format:*  A <<MessageFormat.adoc#top,Message Format>> that is echoed to the chat log whenever the Deck Global Key Command is activated.
+*Report format:*::  A <<MessageFormat.adoc#top,Message Format>> that is echoed to the chat log whenever the Deck Global Key Command is activated.
 
-*Suppress individual reports:* If selected, then any reports (whether auto-reporting or <<ReportChanges.adoc#top,Report Action>> traits) by the affected Pieces will be disabled throughout the processing of this Global Key Command.
+*Suppress individual reports:*:: If selected, then any reports (whether auto-reporting or <<ReportChanges.adoc#top,Report Action>> traits) by the affected Pieces will be disabled throughout the processing of this Global Key Command.
 
- + a|
+a|
 image:images/DeckGlobalKeyCommand.png[]
-
-Sends _Ctrl+M_ to the first card in the deck that _isn't_ Blockade.
+_Sends *Ctrl+M* to the first card in the deck that *isn't* Blockade._
 
 |===
 

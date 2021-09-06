@@ -7,43 +7,45 @@
 
 === Place Marker
 
-[cols=",",]
-|===
-|
 A Game Piece with this trait will have a menu command that places a different piece (the "marker") on at the same location as this one.
 You can select any existing piece for the marker or define a new one from scratch.
 A new piece will be placed each time this trait is activated.
 
-*NOTE:*  This trait should not be confused with the <<PropertyMarker.adoc#top,Marker>> trait which allows a piece to be assigned a <<Properties.adoc#top,Property>> with a static constant value.
-
-*Description:*  A brief description of this trait that will appear in the <<GamePiece.adoc#top,Piece Definer>> window.
-
-*Command:*  The right-click context menu entry for this trait, if desired.
-If left blank, this trait will not produce a context menu item but may still be activated by the Key Command, below.
-
-*Keyboard Command:*  A keyboard shortcut or <<NamedKeyCommand.adoc#top,Named Key Command>> to initiate placing a new piece.
-
-*Define Marker:*  Use the _Define Marker_ button to open a <<GamePiece.adoc#top,Piece Definer>> to create a new definition of the marker from scratch.
-
-*Select:*  Use the _Select_ button to use the definition from an existing piece in the module.
-This acts as a pointer to an existing definition: if the original piece is changed, the piece created by the _Place Marker_ trait will also change.
-
-*Horizontal offset:*  The new piece will be placed this many pixels to the right of the original piece.
-Any value other than zero will prevent the new piece from stacking with the original piece.
-
-*Vertical offset:*  The new piece will be placed this many pixels above the original piece.
-Any value other than zero will prevent the new piece from stacking with the original piece.
-
-*Match Rotation:*  If selected, and both the original piece and the new piece have the <<Rotate.adoc#top,Can Rotate>> trait, then the rotation angle of the new piece will be adjusted to match that of the original piece.
-
-*Place marker:*  Choose whether the new piece should be placed on the top of this piece's stack, on the bottom, or directly above/below the triggering piece.
-
-*Keystroke to apply after placement:*  Optional key command or <<NamedKeyCommand.adoc#top,Named Key Command>> to be applied automatically to the new piece immediately after being placed.
-This Key Command can be used to activate a trait in the new piece, for example to move it to a different location.
+NOTE:  This trait should not be confused with the <<PropertyMarker.adoc#top,Marker>> trait which allows a piece to be assigned a <<Properties.adoc#top,Property>> with a static constant value.
 
 *EXAMPLE:*  If a game uses a fortification counter to indicate fortified status of an army counter, this trait could be given to the army counter to place a fortification marker on the army with the right-click context menu or a keyboard shortcut, as an alternative to dragging the a fortification counter from the Game Piece Palette.
 
 *SEE ALSO:*  <<Replace.adoc#top,Replace with Other>> trait.
+
+[width="100%",cols="50%a,50%a",]
+|===
+|
+
+
+*Description:*:: A short description of this trait for your own reference.
+
+*Menu command:*::  The right-click context menu entry for this trait, if desired.
+If left blank, this trait will not produce a context menu item but may still be activated by the Key Command, below.
+
+*Key Command:*::  A <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to initiate placing the new piece.
+
+*Define Marker:*:: Use the _Define Marker_ button to open a <<GamePiece.adoc#top,Piece Definer>> to create a new definition of the marker from scratch.
+
+*Select:*::  Use the _Select_ button to use the definition from an existing piece in the module.
+This acts as a pointer to an existing definition: if the original piece is changed, the piece created by the _Place Marker_ trait will also change.
+
+*Horizontal offset:*::  The new piece will be placed this many pixels to the right of the original piece.
+Any value other than zero will prevent the new piece from stacking with the original piece.
+
+*Vertical offset:*::  The new piece will be placed this many pixels above the original piece.
+Any value other than zero will prevent the new piece from stacking with the original piece.
+
+*Match Rotation:*::  If selected, and both the original piece and the new piece have the <<Rotate.adoc#top,Can Rotate>> trait, then the rotation angle of the new piece will be adjusted to match that of the original piece.
+
+*Place marker:*::  Choose whether the new piece should be placed on the top of this piece's stack, on the bottom, or directly above/below the triggering piece.
+
+*Keystroke to apply after placement:*::  Optional <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to be applied automatically to the new piece immediately after being placed.
+This Key Command can be used to activate a trait in the new piece, for example to move it to a different location.
 
 |image:images/Marker.png[]
 

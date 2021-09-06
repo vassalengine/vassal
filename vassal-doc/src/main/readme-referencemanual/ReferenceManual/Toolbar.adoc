@@ -157,8 +157,7 @@ A <<SpecialDiceButton.adoc#top,Symbolic Dice Button>> places a button on the Too
 a|
 Symbolic Die Faces
 
-image:images/SpecialDiceExample1.png[]
-image:images/SpecialDiceExample2.png[]
+image:images/SpecialDiceExample1.png[]image:images/SpecialDiceExample2.png[]
 
 Configuring a Special Dice Button
 

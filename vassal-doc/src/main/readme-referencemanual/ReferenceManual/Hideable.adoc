@@ -6,37 +6,44 @@
 '''''
 
 === Invisible
-
-[cols=",",]
-|===
-|This trait gives a Game Piece the capability to be made invisible to opponents and other non-owning players.
-Specify the key which the user will press to make the piece invisible (or a <<NamedKeyCommand.adoc#top,Named Key Command>>) and the name for the command that will appear in the right-click context menu.
+This trait gives a Game Piece the capability to be made invisible to opponents and other non-owning players.
+Specify the key which the user will press to make the piece invisible (or a <<NamedKeyCommand.adoc#top,Named Command>>) and the name for the command that will appear in the right-click context menu.
 The same command turns the invisible piece visible again.
 To the player who turned it invisible, the piece will appear transparent against a background of the specified color.
 To other players it will not appear at all.
 
-*NOTE:*  _This trait actually only hides those traits which appear *before* it in the list of traits, so it should generally be the <<GamePiece.adoc#TraitOrder,last trait>> of a Game Piece._
+This piece sets the <<Properties.adoc#top,Property>> _InvisibleToOthers=true_ when invisible.
 
-*Key Command:* The keystroke to turn the piece invisible, or a <<NamedKeyCommand.adoc#top,Named Key Command>>.
+NOTE:  _This trait actually only hides those traits which appear *before* it in the list of traits, so it should generally be the <<GamePiece.adoc#TraitOrder,last trait>> of a Game Piece._
 
-*Menu Text:* Text of the associated item on the piece's right-click context menu, or leave blank if no menu item is desired.
 
-*Background color:* The background color that the owner sees the piece drawn against when invisible.
+[width="100%",cols="50%a,^50%a",]
+|===
+|
+*Description:*:: A short description of this trait for your own reference.
 
-*Opacity(%):* The level of opacity that the owner sees when the piece is invisible to others (0% = completely transparent, 100% = full normal opacity)
 
-*Disable auto report of moves:* Setting this to true will disable any automatic move reporting defined at Map properties level. A use case for this could be a  Marker a side would use to take private, on map notes. Auto reporting of moves for hidden units appears in the format defined at Map level, but with the name of the unit and the from / to positions replaced by "?" symbols.
+*Menu command:*:: Text of the associated item on the piece's right-click context menu, or leave blank if no menu item is desired.
 
-*Can be hidden by:* Specifies who may hide this piece (and see it once hidden). _Any Player_ means that any player may hide this piece, including observers.
-_Any Side_ means that any player who has been assigned a <<GameModule.adoc#Definition_of_Player_Sides,side>> in a game (not an observer) can hide this piece.
+*Key Command:*:: The <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to turn the piece invisible.
+
+*Background color:*:: The background color that the owner sees the piece drawn against when invisible.
+
+*Opacity(%):*:: The level of opacity that the owner sees when the piece is invisible to others (0% = completely transparent, 100% = full normal opacity)
+
+*Disable auto report of moves:*:: Setting this to true will disable any automatic move reporting defined at Map properties level. A use case for this could be a  Marker a side would use to take private, on map notes. Auto reporting of moves for hidden units appears in the format defined at Map level, but with the name of the unit and the from / to positions replaced by "?" symbols.
+
+*Can be hidden by:*:: Specifies who may hide this piece (and see it once hidden).
++
+_Any Player_::: means that any player may hide this piece, including observers.
++
+_Any Side_::: means that any player who has been assigned a <<GameModule.adoc#Definition_of_Player_Sides,side>> in a game (not an observer) can hide this piece.
 If the player resigns and another player takes the side, then the new player for that side will be the owner.
-_Any of the Specified Sides_ allows you to enter a list of sides.
++
+_Any of the Specified Sides_::: allows you to enter a list of sides.
 Only players assigned to one of the named sides can hide the piece, but the players of all the listed sides will be able to see and modify the piece.
 This is useful for referee players or games with multiplayer teams.
 
 |image:images/Hideable.png[]
-|This piece sets the <<Properties.adoc#top,Property>> _InvisibleToOthers=true_ when invisible.
-|
-|===
 
 '''''

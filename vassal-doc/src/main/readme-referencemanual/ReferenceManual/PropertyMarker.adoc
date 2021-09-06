@@ -4,23 +4,25 @@
 [.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<PieceWindow.adoc#top,Game Piece Palette>> > <<GamePiece.adoc#top,Game Piece>> > *Marker*#
 
 === Marker
-
-[cols=",",]
-|===
-|A Marker trait is used to mark a game piece permanently as always having a particular <<Properties.adoc#top,Property.>> Unlike many other types of Properties that can be configured on and by pieces (e.g.
+A Marker trait is used to mark a game piece permanently as always having a particular <<Properties.adoc#top,Property.>> Unlike many other types of Properties that can be configured on and by pieces (e.g.
 <<DynamicProperty.adoc#top,Dynamic Properties>>), a Marker's value cannot change during play.
 In other words, it is like a _constant_ rather than a _variable_ in programming.
 
 Setting a property does not in itself give a game piece any particular behavior.
 The property must be recognized by some other trait or class in the module.
-Markers are can be referenced in <<Map.adoc#GlobalKeyCommand,Global Key Command's>> and <<Map.adoc#GamePieceLayers,Game Piece Layer>> traits and in many other traits within <<Expression.adoc#top,Expressions>> and <<MessageFormat.adoc#top,Message Formats>>.
+Markers can be referenced in <<Map.adoc#GlobalKeyCommand,Global Key Command>> traits and <<Map.adoc#GamePieceLayers,Game Piece Layer>> traits and in many other traits within <<Expression.adoc#top,Expressions>> and <<MessageFormat.adoc#top,Message Formats>>.
 
-*Property Name:*  The name of the property.
+[width="100%",cols="50%a,^50%a",]
+|===
+|
+
+*Property name:*::  The name of the property.
 This is how the property can be referenced in <<Expression.adoc#top,Expressions>> and <<MessageFormat.adoc#top,Message Formats>>.
 
-*Property Value:*  The value of the property.
+*Property value:*::  The value of the property.
 This value will remain constant for this piece throughout play, but other pieces could have a Marker of the same name but with a different value.
-(Example: some pieces could have a Marker named _Type_ whose value is _Infantry_ while other pieces have a Marker also named _Type_ but whose value is _Cavalry_.
++
+Example: some pieces could have a Marker named _Type_ whose value is _Infantry_ while other pieces have a Marker also named _Type_ but whose value is _Cavalry_.
 Pieces could also have an ArmorClass Marker with a numeric value.
 By using these Marker in expressions, e.g.
 __{ (Type == "Infantry") && (ArmorClass < 5) }>__various decisions about pieces could be made by traits.

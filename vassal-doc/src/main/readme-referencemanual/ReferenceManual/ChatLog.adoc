@@ -15,6 +15,7 @@ VASSAL's chat log offers many opportunities for you to create a useful log strea
 A well-designed chat log can make "important events" stand out from routine events -- notice in the example at right how changes in Victory Points are being announced in *Bold Bright Text* while game events are shown in _Italicized green text with *1* or *2* highlights._ This makes them stand out from the standard black text of more routine events.
 This article will help you design your own chat log reporting so that you can get the most out of this feature.
 
+[#quick]
 ==== Quick Colors
 
 VASSAL provides several "quick color" shortcuts to allow colored text to be put into the chat log by <<ReportChanges.adoc#top,Report Action>> traits and other <<MessageFormat.adoc#top,Message Formats>>. This is done by placing a special character as the first character of a message.
@@ -46,6 +47,7 @@ _EXAMPLE:_ If a <<ReportChanges.adoc#top,Report Action>> trait's message said _H
 image:images/ChatLog.png[]
 Chat Log with HTML Enabled
 
+[#html]
 ==== HTML in Chat Log
 
 VASSAL's chat log now supports HTML as well as regular text, as long you turn on the proper <<GlobalOptions.adoc#top,Global Options>> setting (this is to maintain compatibility with modules created with earlier versions of VASSAL that did not account for such support). To turn on HTML support for your module, in the Editor window navigate to the _[Global Options]_ component and open its _properties_ dialog.
@@ -71,7 +73,7 @@ experience odd behaviors such as chat log messages failing to appear (or seeming
 |<span style="color:#ff6666;">hex color text</span>
 |hex color text
 |<img src="d6-6-grey.png" width=14 height=14> dice image
-|image:images\d6-6-grey.png[image,width=14,height=14] dice image
+|image:images/d6-6-grey.png[image,width=14,height=14] dice image
 |===
 
 ==== Dice Images in the Chat Log
@@ -89,9 +91,9 @@ As a little added touch, you could add _<span style="color:#ffffff;">$result1$_ 
 This causes the die roll result to also be printed out in text, but in "white-on-white" so that it will normally be invisible -- _except_ if one of your players wants to cut-and-paste text out of the chat window.
 Since the dice images do not normally transfer to the clipboard, this ensures than even a cut-and-paste of the chat log will retain an accurate record of dice rolls.
 
-image:images/ChatLogDieConfig.png
+image:images/ChatLogDieConfig.png[]
 
-image:images/GlobalOptionsHTML.png
+image:images/GlobalOptionsHTML.png[]
 
 Enabling Chat Log HTML Support in <<GlobalOptions.adoc#top,Global Options>>
 

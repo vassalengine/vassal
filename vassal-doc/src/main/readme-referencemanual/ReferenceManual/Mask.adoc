@@ -18,46 +18,60 @@ Like the <<Hideable.adoc#top,Invisible>> trait, this trait only hides traits tha
 A piece with the Mask trait is "owned" by the player who masks it.
 If it is unmasked but then is masked again by a different player, the second player becomes the owner.
 Menu commands of traits hidden by a masked piece are not available to non-owning players.
-A setting in the <<GlobalOptions.adoc#top,Global Options>> determines whether or not non-owning players can unmask pieces.
-
-*Mask Command:*  The name of the right-click context menu entry that mask/unmasks this piece.
-If left blank, no context menu item will appear, but the piece can still be masked e.g.
-by the Key Command below.
-
-*Keyboard Command:*  The Key Command or <<NamedKeyCommand.adoc#top,Named Key Command>> to mask/unmask this piece.
-
-*Can be masked by:*  Defines who may "own" this piece (i.e.
-mask it from other players). _Any Player_ means that any player may mask this piece, including observers.
-_Any Side_ means that any player who has been assigned a <<GameModule.adoc#Definition_of_Player_Sides,side>> in a game (not an observer) can mask this piece.
-If the player resigns and another player takes the side, then the new player for that side will be the owner.
-_Any of the Specified Sides_ allows you to enter a list of sides.
-Only players assigned to one of the named sides can mask the piece, but the players of all the listed sides will be able to see and modify the piece.
-This is useful for referee players or games with multi-player teams.
-
-*View when masked:*  To non-owning players, the piece will be drawn using this image when it is masked.
-
-*Name when masked:*  To non-owning players, the piece will be reported with this name when it is masked.
-
-*Display style:* Determines how a masked piece is seen by the owning player.
-The following options are available:
-
-* _Inset_ draws the regular piece image at reduced size over top of the mask image, inset into the upper left corner.
-* _Background_ draws the mask image at full size and the regular piece at reduced size centered within it.
-* _Plain_ draws only the mask image, so the piece looks the same to all players.
-A "Peek" command key may be specified.
-When the owning player selects the "Peek" command, he will see the unmasked piece so long as it remains selected (i.e.
-until he clicks elsewhere on the map). If the "Peek" command key is left blank, then the owning player will see all selected pieces in their unmasked state.
-* _Use Image_ draws the unmasked piece and then a specifiable image on top of the piece.
-The image can make use of transparency to let some of the information through.
+A setting in the <<GlobalOptions.adoc#top,Global Options>> determines whether non-owning players can unmask pieces.
 
 *EXAMPLE:* An ordinary playing card can be implemented by setting the basic image to represent the front of the card.
 In the "Mask" controls, specify an image for the back of the playing card.
 When a player types Ctrl+F, that card will be known only to him (as though held in his hand). Typing Ctrl+F again will reveal the card to the other players (as when playing it on the table).
 
-'''''
 
-This trait sets the <<Properties.adoc#top,Property>> _ObscuredToOthers=true_ when the piece is masked.
+[width="100%",cols="50%a,50%a",]
+|===
+|
+*Description:*:: A short description of this trait for your own reference.
 
+*Menu command:*::  The name of the right-click context menu entry that mask/unmasks this piece.
+If left blank, no context menu item will appear, but the piece can still be masked e.g.
+by the Key Command below.
+
+*Key command:*::  The <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to mask/unmask this piece.
+
+*Can be masked by:*::  Defines who may "own" this piece (i.e.
+mask it from other players). _Any Player_ means that any player may mask this piece, including observers.
++
+_Any Side_ means that any player who has been assigned a <<GameModule.adoc#Definition_of_Player_Sides,side>> in a game (not an observer) can mask this piece.
+If the player resigns and another player takes the side, then the new player for that side will be the owner.
++
+_Any of the Specified Sides_ allows you to enter a list of sides.
+Only players assigned to one of the named sides can mask the piece, but the players of all the listed sides will be able to see and modify the piece.
+This is useful for referee players or games with multi-player teams.
+
+*View when masked:*::  To non-owning players, the piece will be drawn using this image when it is masked.
+
+*Name when masked:*::  To non-owning players, the piece will be reported with this name when it is masked.
+
+*Display style:*:: Determines how a masked piece is seen by the owning player.
+The following options are available:
++
+_Inset_ draws the regular piece image at reduced size over top of the mask image, inset into the upper left corner.
++
+_Background_ draws the mask image at full size and the regular piece at reduced size centered within it.
++
+_Plain_ draws only the mask image, so the piece looks the same to all players.
+A "Peek" command key may be specified.
+When the owning player selects the "Peek" command, he will see the unmasked piece so long as it remains selected (i.e.
+until he clicks elsewhere on the map). If the "Peek" command key is left blank, then the owning player will see all selected pieces in their unmasked state.
++
+_Use Image_ draws the unmasked piece and then a specifiable image on top of the piece.
+The image can make use of transparency to let some of the information through.
+
+|
 image:images/Mask.png[]
 
 image:images/Mask2.png[]
+
+|===
+
+'''''
+
+This trait sets the <<Properties.adoc#top,Property>> _ObscuredToOthers=true_ when the piece is masked.

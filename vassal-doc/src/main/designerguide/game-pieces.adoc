@@ -387,7 +387,7 @@ Previous map Y coordinate (after the piece has been moved by drag-and-drop movem
 Can Pivot enables a Game Piece to pivot around a fixed point relative to its current position. A piece with Can Pivot must also include Can Rotate, which must appear before (below) the Can Pivot Trait. The Trait has these attributes:
 
 * *Command:* The Command Menu item to pivot the piece.
-* *Keyboard Command:* The keyboard shortcut of the command.
+* *Key Command:* The keyboard shortcut of the command.
 * *Pivot Point:* The location, relative to the center of the piece and its current facing, around which the piece will rotate. Positive numbers are down and to the right. _Example: For a Game Piece of size 40x40,_ _a pivot point of 20,-20 will rotate the piece around its upper right corner._
 * *Pivot Through Fixed Angle:* If selected, then invoking the command will pivot the piece through the angle specified in the Angle field, in degrees clockwise. If left unselected, then invoking the command will allow the player to pivot the piece interactively by any angle by dragging the mouse.
 
@@ -448,7 +448,7 @@ image:_images/image102.png[image,width=176,height=85]
 Clone will duplicate the Game Piece during a game. The Trait has these attributes:
 
 * *Command Name:* The Command Menu item to clone the piece.
-* *Keyboard Command:* The keyboard shortcut of the command.
+* *Key Command:* The keyboard shortcut of the command.
 
 image:_images/image103.png[image,width=177,height=87]
 
@@ -457,7 +457,7 @@ image:_images/image103.png[image,width=177,height=87]
 Delete will delete the Game Piece from the game. The Trait has these attributes:
 
 * *Command Name:* The Command Menu item to delete the piece.
-* *Keyboard Command:* The keyboard shortcut of the command.
+* *Key Command:* The keyboard shortcut of the command.
 
 == Does Not Stack
 
@@ -520,9 +520,9 @@ Define the hotkey for the button you wish to invoke before creating the Global H
 
 The Trait has these attributes:
 
-* *Menu Text:* Command menu text.
-* *Keyboard Command:* Keyboard shortcut of the menu item that initiates the command.
-* *Global Hotkey:* The Hotkey that will be applied to the Main Controls window.
+* *Menu Command:* Command menu text.
+* *Key Command:* <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> of the menu item that initiates the command.
+* *Global Hotkey:* The <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> that will be applied to the Main Controls window.
 
 _EXAMPLE: A Dice Button component has been added to the Toolbar, and given the Hotkey F2. A Game Piece is given a Global Hotkey Trait with Menu Text_ **Roll Dice**__, Keyboard Command__ Ctrl-R, _and Global Hotkey_ F2__. Now, selecting the piece and typing Ctrl-R or selecting__ *Roll Dice* _from the Command Menu will roll the dice button just as if the player had clicked the button in the Toolbar or typed F2 from the keyboard._
 
@@ -533,9 +533,9 @@ The Global Key Command (GKC) Trait adds an action that applies a keyboard comman
 The Trait has these attributes:
 
 * *Description:* Description of the GKC Trait.
-* *Command Name:* Menu text of the command to activate the GKC.
-* *Keyboard Command:* Keyboard shortcut of the menu item that initiates the GKC.
-* *Global Key Command:* The key command that will be applied to other pieces.
+* *Menu Command:* Menu text of the command to activate the GKC.
+* *Key Command:* <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> of the menu item that initiates the GKC.
+* *Global Key Command:* The <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> that will be applied to other pieces.
 * *Matching Properties:* The key command will only be applied to pieces with the specified Properties.
 * *Restrict Range:* If selected, the command will only apply to pieces located within a specified distance of this piece.
 * *Within a Deck, Apply To:* Select how this command applies to pieces that are contained within a Deck.
@@ -568,8 +568,8 @@ The Trait has these attributes:
 
 image:_images/image111.png[image,width=201,height=119]
 
-* *Keyboard Command:* Keyboard command to toggle visibility.
-* *Menu Text:* Menu text of the command to toggle visibility.
+* *Key Command:* <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to toggle visibility.
+* *Menu Command:* Menu text of the command to toggle visibility.
 * *Background Color:* To the player who turned it invisible, the piece will appear transparent against a background of the specified color. To other players, it will not appear at all.
 * *Can Be Hidden By:* Defines who may hide this piece (and see it once hidden).
 
@@ -723,7 +723,7 @@ image:_images/image120.png[image,width=228,height=173]
 The Trait has these attributes:
 
 * *Command:* Menu text of the command used to manually mark piece movement. (Even if left blank, the keyboard command will still appear on the Command Menu.)
-* *Keyboard Command:* Keyboard shortcut of the command to manually mark piece movement.
+* *Key Command:* Keyboard shortcut of the command to manually mark piece movement.
 * *Marker Image:* Image displayed to mark piece movement. Click *Select* to choose a custom image.
 * *Horizontal Offset:* Horizontal offset, in pixels, of the displayed image.
 * *Vertical Offset:* Vertical offset, in pixels, of the displayed image.
@@ -809,7 +809,7 @@ _A Mask Trait is best used only once for a given piece. For pieces with that may
 The Trait has these attributes:
 
 * *Mask Command:* The name of the Command Menu entry that mask or unmasks this piece.
-* *Keyboard Command:* The keyboard command to mask or unmask this piece.
+* *Key Command:* The keyboard command to mask or unmask this piece.
 * *Can be Masked By:* Defines who may mask the piece from other players)
 
 [loweralpha, start=15]
@@ -950,9 +950,9 @@ The Play Sound Trait enables you to specify a command that plays an audible soun
 
 image:_images/image138.png[image,width=216,height=115]
 
-* *Menu Text:* The name of the menu item in the Command Menu.
-* *Keyboard Command:* The keyboard shortcut for the command.
-* *Sound Clip:* Select a file in .au, .aiff, .mp3, or .wav format to add it to the module. The sound file specified in this field will be played when the action is invoked.
+* *Menu Command:* The name of the menu item in the Command Menu.
+* *Key Command:* The <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> for the command.
+* *Sound Clip:* Select a file in .au, .aiff, or .wav format to add it to the module. The sound file specified in this field will be played when the action is invoked. (MP3s are currently not supported.)
 * *Send Sound to Other Player:* If selected, then the sound will be echoed to other players when playing live or reading from a logfile. Otherwise, the sound is only audible to the player who invoked the command.
 
 === Playing a Sound with a Piece Action
@@ -976,8 +976,8 @@ Using the Play Sound Trait, you can cause a Game Piece to make a sound each time
 
 The Property Sheet Trait attaches an arbitrary set of editable Properties to a Game Piece. This can be used for character sheets, piece attributes, and many other functions. The Trait has these attributes:
 
-* *Menu Text:* Name of the menu item to show the Property Sheet window.
-* *Keystroke:* Keyboard command to show the Property Sheet window.
+* *Menu Command:* Name of the menu item to show the Property Sheet window.
+* *Key Command:* <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to show the Property Sheet window.
 * *Commit Changes On:* When a player edits the Properties window during play, there are three methods for committing changes:
 ** _Commit on Every Keystroke:_ Every keystroke and tick-mark click you make are immediately committed as you make them. Other players see your changes immediately.
 ** _Commit on Apply Button or Enter Key:_ Changes are not communicated to other players until you click the *Apply* button at the bottom of the Property Sheet, press the Enter key on your keyboard, or close the Property Sheet window.
@@ -1036,7 +1036,7 @@ For example, a unit that can be destroyed but still leaves a wreck behind, could
 
 * *Description:* Description of the Trait. (Will not appear on the piece.)
 * *Command:* Text of the menu item used to replace the piece.
-* *Keyboard Command:* Keyboard command of the menu item used to replace the piece.
+* *Key Command:* Keyboard command of the menu item used to replace the piece.
 * *Define Replacement/Select:* Click *Define Replacement* to define a new replacement for the piece, or click *Select* to select an existing piece.
 * *Horizontal Offset:* The replacement will be placed this many pixels to the right of the original piece.
 * *Vertical Offset:* The replacement will be placed this many pixels above the original piece.
@@ -1067,14 +1067,14 @@ Using Replace With Other, you can create pieces that can be moved normally on th
 . Go back to the mobile piece you created in Step 1, and add the Replace with Other Trait. Define the Properties of the Trait in the *Replace with Other* dialog as follows:
 * *Description:* Enter _Lock Command._
 * *Command:* Enter _Lock_.
-* *Keyboard Command:* Enter Ctrl+L (or other appropriate shortcut).
+* *Key Command:* Enter Ctrl+L (or other appropriate shortcut).
 * Click *Select*. Browse to, and select, the piece you created in Step 2 (the immobile piece).
 * Check *Match Current State*.
 * Leave the other values on the dialog empty and click *Ok*.
 . So the piece can be unlocked, for the immobile piece you created in Step 2, add the Replace with Other Trait, and then define the Properties of the Trait in the *Replace with Other* dialog. Then enter the following:
 * *Description:* Enter _Unlock Command._
 * *Command:* Enter _Unlock_.
-* *Keyboard Command:* Enter Ctrl+U (or other appropriate shortcut).
+* *Key Command:* Enter Ctrl+U (or other appropriate shortcut).
 * Click *Select*. Browse to, and select, the piece you created in Step 1 (the mobile piece).
 * Check *Match Current State*.
 * Leave the other values on the dialog empty and click *Ok*.
@@ -1170,8 +1170,8 @@ If you assign the Restricted Access Trait to a Game Piece, you will need to add 
 
 The Return to Deck Trait will send a Card to a Deck. This Trait will have no effect on ordinary Game Pieces, only Cards. The Trait has these attributes:
 
-* *Menu Text:* Menu text of the command used to send the piece to a Deck.
-* *Keyboard Command:* Keyboard command used to send the piece to a Deck.
+* *Menu Command:* Menu text of the command used to send the piece to a Deck.
+* *Key Command:* <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> used to send the piece to a Deck.
 * *Select Deck*: Click *Select Deck* to choose a Deck to be sent to. Alternatively, select *Choose Destination Deck at Game Time*, and players will be prompted to select a Deck to send the Card to after invoking the command.
 
     For example, in a game in which Cards are drawn from a Deck, used, and placed into a discard pile, both the Deck and the discard pile will be represented by a Deck component. By adding a Return to Deck Trait to each Card, with the text *Discard* and the command 'Ctrl-D', and the Discard Pile selected as the destination, then clicking Ctrl-D on any Card would automatically send it to the Discard Pile.
@@ -1187,7 +1187,7 @@ The Send to Location Trait adds a command that moves a Game Piece directly to an
 image:_images/image155.png[image,width=297,height=245]
 
 * *Command Name:* Text of the menu item used to send the piece.
-* *Keyboard command:* Keyboard shortcut of the menu item used to send the piece.
+* *Key Command:* Keyboard shortcut of the menu item used to send the piece.
 * *Send Back Command Name:* Menu text for an undo command, which will return the piece to its original location.
 * *Send Back Keyboard Command:* Keyboard shortcut for the undo command
 * *Destination:* Choose a destination type for the piece.
@@ -1244,7 +1244,7 @@ image:_images/image158.png[image,width=187,height=111]
 The Spreadsheet Trait attaches an editable table of data to a Game Piece. A Spreadsheet is simply for the tabular display of data (or text). It is not capable of performing any mathematical operations on cells, rows, or columns in the table.
 
 * *Menu Command:* Text of the menu item used to display the Spreadsheet.
-* *Keyboard Command:* Keyboard shortcut of the menu item used to display the Spreadsheet.
+* *Key Command:* Keyboard shortcut of the menu item used to display the Spreadsheet.
 * *Number of Rows:* Number of rows in the spreadsheet.
 * *Number of Columns:* Number of columns in the spreadsheet.
 
@@ -1352,9 +1352,9 @@ The Trait has these attributes:
     A keyboard command must be actively invoked to launch a Trigger Action. Trigger Actions cannot passively ʻlistenʼ for matching Properties and then fire automatically.
 
 * *Menu Command:* Adds an item to the piece's Command Menu that will launch the trigger commands manually commands, as long as the Property expression is matched.
-* *Keystroke:* Keyboard shortcut for the manual menu command.
-* *Watch for These Keystrokes:* After the user types any of these key commands, the commands listed under *Perform These Keystrokes* will be launched, if the Property expression is matched.
-* *Perform These Keystrokes:* The key commands to be invoked after one of the above key commands is observed and the Property expression is matched. The commands are invoked in sequence from top to bottom.
+* *Key Command:* <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> for the manual menu command.
+* *Watch for These Key Commands:* After the user types any of these <<NamedKeyCommand.adoc#top,Keystrokes or Named Commands>>, the commands listed under *Perform These Keystrokes* will be launched, if the Property expression is matched.
+* *Perform These Key Commands:* The key commands to be invoked after one of the above key commands is observed and the Property expression is matched. The commands are invoked in sequence from top to bottom.
 
 _Example 1: A piece has a Layer to track action points and a Move Fixed Distance Trait to move it forward. The Move Fixed Distance Trait can be assigned the key command Ctrl- SHIFT-M with no command name (so that it does not appear in the Command Menu). Then a Trigger Action Trait with the command Move and the keystroke Ctrl-M can trigger both the Move command and decrease the action points layer by one._
 

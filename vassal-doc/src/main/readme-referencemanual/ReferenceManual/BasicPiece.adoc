@@ -7,23 +7,33 @@
 
 === Basic Piece
 
-[width="100%",cols="50%,50%",]
-|===
-|The simplest game piece consists of an image and a name.
+The simplest game piece consists of an image and a name.
 
-Type a *Name* into the field at right - this name will be used whenever the piece is mentioned in a message.
+The image is optional, or different pieces can share the same image, but you should always give each Basic Piece a unique name.
 
-Add a new *Image* for the piece by double-clicking on the box to the left, or select an image that has already been added from the drop-down menu.
-
-For a quick method of generating simple piece images from scratch, see <<GamePieceImageDefinitions.adoc#top,Game Piece Image Definitions>>.
+Simple piece images can be created from scratch within Vassal using <<GamePieceImageDefinitions.adoc#top,Game Piece Image Definitions>>, but you will usually get a better result by loading images sourced from existing artwork or created with specialist graphics software.
 
 To give a piece more complex behaviors, you can add more Traits to it in the <<GamePiece.adoc#top,Piece Definer>> dialog.
 For example you could omit or remove the image from the Basic Piece and instead add a <<Layer.adoc#top,Layer>> trait to allow the piece to use multiple images.
 
- + a|
-image:images/BasicPiece.png[]
+[width="100%",cols="50%a,^50%a",]
+|===
+|
+*Name:*:: Choose a unique name for this Game Piece.
 
-The image is optional, but you should always give each Basic Piece a name.
+*Image:*:: Click on the _Add_ button to select an image for this Game Piece and to load it into the module.
++
+Click on the _Clear_ button to remove the selected image from this Game Piece.
++
+Click on the drop-down menu to select an image that has already been loaded into the module in a previous editing session. *Note* that newly selected images do not appear in the drop-down list until the module has been saved and re-loaded.
+
+
+|
+image:images/BasicPiece.png[]
+_A Basic Piece containing an image and a name._
+
+image:images/BasicPiece2.png[]
+_Choosing an image that has already been loaded into the module._
 
 |===
 

@@ -12,18 +12,25 @@ The side(s) must be chosen from among those listed in the module's <<GameModule.
 Other players will not see menu items corresponding to traits appearing _before_ this trait in the list of traits for the Game Piece, and the corresponding key commands will do nothing.
 Thus, this trait is similar to <<Hideable.adoc#top,Invisible>> traits and <<Mask.adoc#top,Mask>> traits in that it should be placed below the traits it is intended to "protect".
 
-*Belongs to side:*  Enter the list of sides to whom this piece belongs.
-To add a new side, type it into the blank and then click the _Add_ button.
-To remove a side, select it in the list at right and click the _Remove_ button.
+Pieces in a Game Piece Palette can be manipulated by anybody so long as no game is in progress.
 
-*Also belongs to initially-placing player:*  When this option is checked, then the player who initially clicks on the piece or first places it on any map will become the owner, in addition to listed sides.
+[width="100%",cols="50%a,^50%a",]
+|===
+|
+*Description:*:: A brief description of the purpose of this trait for your own reference.
+
+*Belongs to side:*::  Enter the list of sides to whom this piece belongs.
+
+*Also belongs to initially-placing player:*:: When this option is checked, then the player who initially clicks on the piece or first places it on any map will become the owner, in addition to listed sides.
++
 It is a good idea to specify at least one side when using this option.
 Otherwise, any pieces created by an observer will not be able to be removed.
 If, during a game, a player clicks the _Retire_ button to become an observer, then all pieces owned by that player become owned by nobody, even if the player was already an observer.
-If you are creating a <<GameModule.adoc#PredefinedSetup,Pre-defined Setup>>, always _Retire_ before saving so that players loading the game, rather than you, will own the pieces in the setup.
 
-*Prevent non-owning players from moving piece?*  Use this option to prevent non-owning players from moving the piece, as well as disabling access to the piece commands.
+NOTE: If you are creating a <<GameModule.adoc#PredefinedSetup,Pre-defined Setup>>, always _Retire_ before saving so that players loading the game, rather than you, will own the pieces in the setup.
 
-Pieces in a Game Piece Palette can be manipulated by anybody so long as no game is in progress.
+*Prevent non-owning players from moving piece:*::  Use this option to prevent non-owning players from moving the piece, as well as disabling access to the piece commands.
 
-image:images/RestrictedAccess.png[]
+
+|image:images/RestrictedAccess.png[]
+|===

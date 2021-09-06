@@ -5,9 +5,6 @@
 
 '''''
 
-[width="100%",cols="50%,50%",]
-|===
-a|
 === Global Property
 
 <<Properties.adoc#top,Properties>> are like variables in programming - they have a _Value_ which can be used by referencing the Property's _Name_.
@@ -22,24 +19,22 @@ Right-click on the _[Global Properties]_ component and select _Add Global Proper
 Your new Global Property will be added to the bottom of the list.
 You can follow a similar procedure to add a Global Property to one of your maps or zones -- simply find the appropriate _[Map]_ or _[Zone]_ component and add to that.
 
-|image:images/GlobalProperties.png[]
+
+[width="100%",cols="50%a,^50%a",]
 |===
+|*Name:*:: The name of the property.
 
-[cols=",",]
-|===
-|*Name:*  The name of the property.
+*Initial value:*:: The value of the property at the start of a new game.
 
-*Initial Value:*  The value of the property at the start of a new game.
+*Description:*:: Short description of the property for your own reference.
 
-*Description:*  Plain English description of the property.
+*Is numeric:*::  If true, then changes to the value of the property will be restricted to integer values.
 
-*Is Numeric:*  If true, then changes to the value of the property will be restricted to integer values.
+*Minimum value:*::  Numeric values will be restricted to no less than this number.
 
-*Minimum Value:*  Numeric values will be restricted to no less than this number.
+*Maximum value:*::  Numeric values will be restricted to no more than this number.
 
-*Maximum Value:*  Numeric values will be restricted to no more than this number.
-
-*Wrap Around:*  If true, then when incrementing this numeric property, values will wrap around from the maximum to the minimum.
+*Wrap around:*::  If true, then when incrementing this numeric property, values will wrap around from the maximum to the minimum.
 |image:images/GlobalProperty.png[] +
 |===
 
@@ -53,22 +48,29 @@ You can follow a similar procedure to add a Global Property to one of your maps 
 Adds a button to the Toolbar of the Map Window or Module that changes the value of the Global Property.
 You can combine multiple buttons into a single drop-down menu using a <<ToolbarMenu.adoc#top,Toolbar Menu>>.
 
-To add a Change-Property Toolbar Button, locate the _[Global Property]_ component which you wish to be able to change -- in the Editor it will be inside the list of _[Global Properties_.
-Right click on the _[Global Property]_ component and select _Add Change-Property Toolbar Button_.
+To add a Change-Property Toolbar Button, locate the _[Global Property]_ component which you wish to be able to change -- in the Editor it will be inside the list of _[Global Properties]_.
+Right-click on the _[Global Property]_ component and select _Add Change-Property Toolbar Button_.
 
-[cols=",",]
+[width="100%",cols="50%a,^50%a",]
 |===
-|*Button text:*  The text of the Toolbar button.
+|*Button text:*::  The text of the Toolbar button.
 
-*Button icon:*  The icon of the Toolbar button.
+*Tooltip text:*:: Text that appears when you hover the cursor over the Toolbar button.
 
-*Hotkey:*  Keyboard shortcut or <<NamedKeyCommand.adoc#top,Named Key Command>> for the Toolbar button.
+*Button icon:*::  The icon of the Toolbar button.
 
-*Report Format:*  <<MessageFormat.adoc#top,Message Format>> of a text message to echo to the controls window when the button is pressed:  _oldValue_ is the value of the Global Property prior to the button press, _newValue_ is the value after the button press, and _description_ is the plain English description of the property as defined above.
+*Hotkey:*::  <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> for the Toolbar button.
 
-*Type:*  Defines how the property value should change:  _Set value directly_ sets the property to a fixed value, after substituting values of <<Properties.adoc#top,Properties>>.  _Increment numeric value_ adds a fixed value to the property, after substituting values of Properties.
-_Prompt user_ pops up a dialog for the user to type in a new value.
-_Prompt user to select from list_ pops up a dialog with a drop-down menu for the user to select from.
+*Report Format:*:: <<MessageFormat.adoc#top,Message Format>> of a text message to echo to the controls window when the button is pressed:  _oldValue_ is the value of the Global Property prior to the button press, _newValue_ is the value after the button press, and _description_ is the plain English description of the property as defined above.
+
+*Type:*:: Defines how the property value should change:
+
+_Set value directly_::: sets the property to a fixed value, after substituting values of <<Properties.adoc#top,Properties>>.
+_Increment numeric value_::: adds a fixed value to the property, after substituting values of Properties.
+
+_Prompt user_::: pops up a dialog for the user to type in a new value.
+
+_Prompt user to select from list_::: pops up a dialog with a drop-down menu for the user to select from.
 |image:images/ChangePropertyButton.png[]
 |===
 

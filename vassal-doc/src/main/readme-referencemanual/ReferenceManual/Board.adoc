@@ -7,12 +7,11 @@
 
 === Board
 
-[cols=",",]
-|===
-|A Board represents the physical board on which pieces are moved by the players.
+A Board represents the physical board on which pieces are moved by the players.
 A Map Window can consist of multiple Boards laid out next to one another.
 
-If a board image is specified (a GIF, JPEG, or PNG image file that must be created beforehand with some external tool), then the size of the image determines the size of the board.
+If a board image is specified (a PNG, JPEG, SVG or GIF image file that must be created beforehand with some external tool), then the size of the image determines the size of the board.
+
 If the board image is set to null (by clicking the "Select" button and then canceling the file dialog), then no image is used for the board, and the size and color may be specified directly.
 
 To add a board to your map, use the Editor's configuration window to navigate to the _[Map Window]_ entry for your map.
@@ -24,6 +23,20 @@ image:images/BoardConfig.png[]
 
 You can optionally add a _Grid_ subcomponent to your board to regulate movement by right-clicking the _[Board]_ component and selecting one of the appropriate _Add_ options.
 See _Sub-Components_, below, for more details on grids.
+
+[width="100%",cols="50%a,^50%a",]
+|===
+|
+*Name:*:: The name of the Board.
+
+*Board image:*:: The image to use for the board display.
+
+*Board width:*:: The width of the Board in pixels if no image is used.
+
+*Board height:*:: The height of the board in pixels if no image is used.
+
+*Color:*:: The color of the board if no image is used.
+
 |image:images/Board.png[]
 
 image:images/Board2.png[]
