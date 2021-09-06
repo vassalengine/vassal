@@ -31,6 +31,8 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.script.expression.AuditTrail;
+import VASSAL.script.expression.AuditableException;
 import VASSAL.script.expression.Expression;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
@@ -634,14 +636,15 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
 
       if (resetKey != null && resetKey.equals(stroke)) {
         final GamePiece outer = Decorator.getOutermost(this);
-        final String levelText = resetLevel.getText(outer, this, "Editor.Embellishment.reset_to_level");
+        final AuditTrail audit = AuditTrail.create(this, resetLevel, Resources.getString("Editor.Embellishment.reset_to_level"));
+        final String levelText = resetLevel.getText(outer, this, audit);
         try {
           final int level = Integer.parseInt(levelText);
           setValue(Math.abs(level) - 1);
           setActive(level > 0);
         }
         catch (NumberFormatException e) {
-          reportDataError(this, Resources.getString("Error.non_number_error"), resetLevel.debugInfo(levelText, "resetLevel"), e); // NON-NLS
+          reportDataError(this, Resources.getString("Error.non_number_error"), resetLevel.debugInfo(levelText, "resetLevel"), new AuditableException(this, audit)); // NON-NLS
         }
       }
       // random layers

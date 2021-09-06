@@ -17,7 +17,6 @@
  */
 package VASSAL.counters;
 
-import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
@@ -30,7 +29,8 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
-import VASSAL.tools.ErrorDialog;
+import VASSAL.script.expression.AuditTrail;
+import VASSAL.script.expression.AuditableException;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ScrollPane;
@@ -176,10 +176,11 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
         pile = promptForDrawPile();
       }
       else {
-        final String evalName = deckExpression.getText(Decorator.getOutermost(this), this, "Editor.ReturnToDeck.deck_name");
+        final AuditTrail audit = AuditTrail.create(this, deckExpression, Resources.getString("Editor.ReturnToDeck.deck_name"));
+        final String evalName = deckExpression.getText(Decorator.getOutermost(this), this, audit);
         pile = DrawPile.findDrawPile(evalName);
         if (pile == null) {
-          ErrorDialog.dataWarning(new BadDataReport("Deck Not Found for Return-to-Deck trait: " + evalName, deckExpression.getFormat())); //NON-NLS
+          reportDataError(this, "Deck Not Found for Return-to-Deck trait: " + evalName, deckExpression.getFormat(), new AuditableException(this, audit));
         }
       }
 
