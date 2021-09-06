@@ -5,6 +5,8 @@
     owning Map widget
 * 10387: 'Centre on Opponents Moves' functionality should ignore movement by
     Invisible units
+* 10386: Audit Trail reporting is not reporting trait or piece information for
+    Return to Deck trait when invalid Deck specified
 * 10383: Update all site URLs for new site and HTTPS
 * 10381: Replaying a log step can cause Deck to become corrupted
 * 10375: NPE in EnumeratedPropertyPrompt.getNewValue()
