@@ -28,6 +28,8 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.script.expression.AuditTrail;
+import VASSAL.script.expression.AuditableException;
 import VASSAL.tools.AudioClip;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
@@ -107,7 +109,8 @@ public class PlaySound extends Decorator implements TranslatablePiece {
     myGetKeyCommands();
     Command c = null;
     if (command.matches(stroke)) {
-      final String clipName = format.getText(Decorator.getOutermost(this), this, "Editor.PlaySound.sound_clip");
+      final AuditTrail audit = AuditTrail.create(this, format, Resources.getString("Editor.PlaySound.sound_clip"));
+      final String clipName = format.getText(Decorator.getOutermost(this), this, audit);
       c = new PlayAudioClipCommand(clipName);
       try {
         if (!GlobalOptions.getInstance().isSoundGlobalMute()) {
@@ -120,7 +123,8 @@ public class PlaySound extends Decorator implements TranslatablePiece {
         }
       }
       catch (IOException e) {
-        reportDataError(this, Resources.getString("Error.not_found", "Audio Clip"), "Clip=" + clipName, e); //NON-NLS
+        reportDataError(this, Resources.getString("Error.not_found", "Audio Clip"), "Clip=" + clipName,
+          new AuditableException(this, audit)); //NON-NLS
       }
     }
     return c;

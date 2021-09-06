@@ -19,7 +19,6 @@
 package VASSAL.counters;
 
 import VASSAL.build.GameModule;
-import VASSAL.build.module.Chatter;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
@@ -44,6 +43,7 @@ import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.script.expression.AuditTrail;
+import VASSAL.script.expression.AuditableException;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
@@ -64,6 +64,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -215,24 +216,6 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     return command;
   }
 
-  private void LogBadGridLocation(Point p) {
-    String s = "* " + Decorator.getOutermost(this).getName();
-    if (getMap() == null) {
-      s += "getMap is null"; // NON-NLS
-    }
-    else if (p == null) {
-      s += "p is null"; // NON-NLS
-    }
-    else {
-      s += "getMap: " + getMap().getMapName() + // NON-NLS
-           "; p: (" + p.x + "," + p.y + // NON-NLS
-           "; Position: (" + getPosition().x + "," + getPosition().y + // NON-NLS
-           "); map: " + map.getMapName() + ";"; // NON-NLS
-    }
-    new Chatter.DisplayText(
-        GameModule.getGameModule().getChatter(), s).execute();
-  }
-
   @Override
   public String myGetState() {
     final SequenceEncoder se = new SequenceEncoder(';');
@@ -299,20 +282,20 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         case 'G':
           b = map.getBoardByName(boardName.getText(outer, this, "Editor.SendToLocation.board"));
           if (b != null) {
+            final AuditTrail gridAudit = AuditTrail.create(this, gridLocation, Resources.getString("Editor.SendToLocation.grid_location"));
             try {
               final MapGrid g = b.getGrid();
               if (g != null) { // Board may not have a grid assigned.
-                dest = g.getLocation(gridLocation.getText(outer, this, "Editor.SendToLocation.grid_location"));
+                dest = g.getLocation(gridLocation.getText(outer, this, gridAudit));
                 if (dest != null)  dest.translate(b.bounds().x, b.bounds().y);
               }
               else {
-                reportDataError(this, Resources.getString("Error.no_grid_assigned"), map.getMapName());
+                reportDataError(this, Resources.getString("Error.no_grid_assigned"), map.getMapName(), new AuditableException(this, gridAudit));
               }
             }
             catch (BadCoords e) {
-              LogBadGridLocation(dest);
               reportDataError(this, Resources.getString(
-                "Error.not_found", Resources.getString("Editor.SendToLocation.grid_location")), map.getMapName());
+                "Error.not_found", Resources.getString("Editor.SendToLocation.grid_location")), map.getMapName(), new AuditableException(this, gridAudit));
               // ignore SendTo request.
             }
           }
@@ -330,10 +313,11 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
           break;
 
         case 'Z':
-          final String zoneName = zone.getText(outer, this, "Editor.SendToLocation.zone_name");
+          final AuditTrail zoneAudit = AuditTrail.create(this, zone, Resources.getString("Editor.SendToLocation.zone_name"));
+          final String zoneName = zone.getText(outer, this, zoneAudit);
           final Zone z = map.findZone(zoneName);
           if (z == null) {
-            reportDataError(this, Resources.getString("Error.not_found", "Zone"), zone.debugInfo(zoneName, "Zone")); // NON-NLS
+            reportDataError(this, Resources.getString("Error.not_found", "Zone"), zone.debugInfo(zoneName, "Zone"), new AuditableException(this, zoneAudit)); // NON-NLS
           }
           else {
             final Rectangle r = z.getBounds();
@@ -343,10 +327,11 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
           break;
 
         case 'R':
-          final String regionName = region.getText(outer, this, "Editor.SendToLocation.region_name");
+          final AuditTrail regionAudit = AuditTrail.create(this, region, Resources.getString("Editor.SendToLocation.region_name"));
+          final String regionName = region.getText(outer, this, regionAudit);
           final Region r = map.findRegion(regionName);
           if (r == null) {
-            reportDataError(this, Resources.getString("Error.not_found", "Region"), region.debugInfo(regionName, "Region")); // NON-NLS
+            reportDataError(this, Resources.getString("Error.not_found", "Region"), region.debugInfo(regionName, "Region"), new AuditableException(this, regionAudit)); // NON-NLS
           }
           else {
             final Rectangle r2 = r.getBoard().bounds();

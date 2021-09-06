@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2009-2021 The VASSAL Development Team
+ * Copyright (c) 2021 The VASSAL Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -17,32 +17,26 @@
  */
 package VASSAL.script.expression;
 
-public class ExpressionException extends AuditableException {
+public class AuditableException extends Exception {
   private static final long serialVersionUID = 1L;
 
-  protected String expression;
-  protected String error;
+  protected Auditable owner;
+  protected AuditTrail auditTrail;
 
-  public ExpressionException(String s) {
-    this(s, "");
+  public AuditableException(Auditable owner, AuditTrail auditTrail) {
+    this.owner = owner;
+    this.auditTrail = auditTrail;
   }
 
-  public ExpressionException(String s, String e) {
-    this(s, e, null, null);
+  public Auditable getOwner() {
+    return owner;
   }
 
-  public ExpressionException(String s, String e, Auditable owner, AuditTrail auditTrail) {
-    super(owner, auditTrail);
-    expression = s;
-    error = e;
+  public AuditTrail getAuditTrail() {
+    return auditTrail;
   }
 
-  public String getExpression() {
-    return expression;
+  public String getAuditReport() {
+    return auditTrail == null ? "" : auditTrail.toString();
   }
-
-  public String getError() {
-    return error;
-  }
-
 }

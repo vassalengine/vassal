@@ -24,6 +24,7 @@ import VASSAL.counters.EditablePiece;
 import VASSAL.i18n.Resources;
 import VASSAL.script.expression.AuditTrail;
 import VASSAL.script.expression.Auditable;
+import VASSAL.script.expression.AuditableException;
 import VASSAL.script.expression.ExpressionException;
 
 /**
@@ -123,9 +124,12 @@ public class BadDataReport {
   }
 
   public BadDataReport(String pieceName, String traitDesc, String message, String data, Throwable cause) {
-    String m = ((pieceName != null && pieceName.length() > 0) ? pieceName + " " : "");
-    m += ((traitDesc != null && traitDesc.length() > 0) ? "[" + traitDesc + "] " : "");
-    m += m.length() > 0 ? ". " : "";
+    String m = "";
+    if (! (cause instanceof AuditableException)) {
+      m = ((pieceName != null && pieceName.length() > 0) ? pieceName + " " : "");
+      m += ((traitDesc != null && traitDesc.length() > 0) ? "[" + traitDesc + "] " : "");
+      m += m.length() > 0 ? ". " : "";
+    }
     m += message + ". " + getAuditMessage();
 
     this.message = m;
@@ -206,7 +210,7 @@ public class BadDataReport {
   public String getMessage() {
     final StringBuilder sb = new StringBuilder();
     if (owner != null) {
-      sb.append(getDescription(owner)).append(":");
+      sb.append(getDescription(owner));
     }
     if (data != null) {
       sb.append(" ").append(Resources.getString("Audit.source", data));
@@ -225,9 +229,9 @@ public class BadDataReport {
 
   private void setCause(Throwable cause) {
     this.cause = cause;
-    if (cause instanceof ExpressionException) {
-      auditTrail = ((ExpressionException) cause).getAuditTrail();
-      owner =  ((ExpressionException) cause).getOwner();
+    if (cause instanceof AuditableException) {
+      auditTrail = ((AuditableException) cause).getAuditTrail();
+      owner =  ((AuditableException) cause).getOwner();
     }
   }
 

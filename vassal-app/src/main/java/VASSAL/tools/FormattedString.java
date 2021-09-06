@@ -25,6 +25,7 @@ import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
 import VASSAL.script.expression.AuditTrail;
 import VASSAL.script.expression.Auditable;
+import VASSAL.script.expression.AuditableException;
 import VASSAL.script.expression.Expression;
 import VASSAL.tools.RecursionLimiter.Loopable;
 import VASSAL.tools.concurrent.ConcurrentSoftHashMap;
@@ -347,7 +348,8 @@ public class FormattedString implements Loopable {
    */
   public int getTextAsInt(PropertySource ps, String description, EditablePiece source) {
     int result = 0;
-    final String value = getText(ps, "0", source, AuditTrail.create(source, fsdata.formatString, description));
+    final AuditTrail audit = AuditTrail.create((Auditable) ps, this, description);
+    final String value = getText(ps, "0", source, audit);
     try {
       result = Integer.parseInt(value);
     }
@@ -355,7 +357,7 @@ public class FormattedString implements Loopable {
       ErrorDialog.dataWarning(new BadDataReport(
         source,
         Resources.getString("Error.non_number_error"),
-        debugInfo(this, value, description), e
+        debugInfo(this, value, description), new AuditableException((Auditable) ps, audit)
       ));
     }
     return result;
@@ -363,7 +365,8 @@ public class FormattedString implements Loopable {
 
   public int getTextAsInt(PropertySource ps, String description, AbstractConfigurable source) {
     int result = 0;
-    final String value = getText(ps, "0", source, AuditTrail.create(source, fsdata.formatString, description));
+    final AuditTrail audit = AuditTrail.create((Auditable) ps, this, description);
+    final String value = getText(ps, "0", source, audit);
     try {
       result = Integer.parseInt(value);
     }
@@ -371,7 +374,7 @@ public class FormattedString implements Loopable {
       ErrorDialog.dataWarning(new BadDataReport(
         source,
         Resources.getString("Error.non_number_error"),
-        debugInfo(this, value, description), e
+        debugInfo(this, value, description), new AuditableException((Auditable) ps, audit)
       ));
     }
     return result;
