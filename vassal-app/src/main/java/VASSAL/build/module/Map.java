@@ -3457,7 +3457,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     final List<Map> l = g.getComponentsOf(Map.class);
     for (final ChartWindow cw : g.getComponentsOf(ChartWindow.class)) {
       for (final MapWidget mw : cw.getAllDescendantComponentsOf(MapWidget.class)) {
-        l.add(mw.getMap());
+        if (mw.getMap() != null) { // In case the child Map has been deleted
+          l.add(mw.getMap());
+        }
       }
     }
     return l;
