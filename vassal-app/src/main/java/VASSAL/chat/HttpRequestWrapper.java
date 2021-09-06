@@ -17,20 +17,28 @@
  */
 package VASSAL.chat;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+
+import org.apache.commons.io.IOUtils;
+
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.message.BasicNameValuePair;
+import org.apache.hc.core5.net.URIBuilder;
 
 /**
  * Performs Get and Post operations to a given URL
@@ -46,15 +54,35 @@ public class HttpRequestWrapper {
     return doGet("", p); //$NON-NLS-1$
   }
 
-  private List<String> readLines(InputStream is) throws IOException {
-    try (InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
-         BufferedReader in = new BufferedReader(isr)) {
-      final ArrayList<String> l = new ArrayList<>();
-      String line;
-      while ((line = in.readLine()) != null) l.add(line);
+  private URI buildGet(String path, Properties props) throws IOException {
+    try {
+      final URIBuilder b = new URIBuilder(baseURL + path);
+      for (final Enumeration<?> e = props.keys(); e.hasMoreElements();) {
+        final String key = (String) e.nextElement();
+        final String value = props.getProperty(key);
+        b.addParameter(key, value);
+      }
 
-      return l;
+      return b.build();
     }
+    catch (URISyntaxException e) {
+      // this should not happen
+      throw new IOException(e);
+    }
+  }
+
+  private String errorMessage(CloseableHttpResponse response) throws IOException {
+    final String msg = response.getCode() + " " + response.getReasonPhrase();
+
+    String responseText = null;
+    try {
+      responseText = EntityUtils.toString(response.getEntity());
+    }
+    catch (ParseException e) {
+      throw new IOException(msg, e);
+    }
+
+    return msg + ": " + responseText;
   }
 
   /**
@@ -64,25 +92,13 @@ public class HttpRequestWrapper {
    * @return a List of Strings, one for each line in the response
    * @throws IOException
    */
-  public List<String> doGet(String url,
+  public List<String> doGet(String path,
                             Properties props) throws IOException {
-    url = baseURL + url;
-    if (props != null) {
-      url += "?"; //$NON-NLS-1$
-      for (final Enumeration<?> e = props.keys(); e.hasMoreElements();) {
-        final String key = (String) e.nextElement();
-        final String value = props.getProperty(key);
-        url += key + "=" + URLEncoder.encode(value, "UTF-8"); //$NON-NLS-1$ //$NON-NLS-2$
-        if (e.hasMoreElements()) {
-          url += "&"; //$NON-NLS-1$
-        }
+    final HttpGet httpGet = new HttpGet(buildGet(path, props));
+    try (CloseableHttpClient client = HttpClients.createDefault()) {
+      try (CloseableHttpResponse response = client.execute(httpGet)) {
+        return getLinesOk(response, 200);
       }
-    }
-
-    final URLConnection conn = new URL(url).openConnection();
-    conn.setUseCaches(false);
-    try (InputStream in = conn.getInputStream()) {
-      return readLines(in);
     }
   }
 
@@ -90,34 +106,42 @@ public class HttpRequestWrapper {
     return doPost("", p); //$NON-NLS-1$
   }
 
-  public List<String> doPost(String url,
+  private HttpPost buildPost(String path, Properties props) throws IOException {
+    final HttpPost httpPost = new HttpPost(baseURL + path);
+    final List<NameValuePair> params = new ArrayList<>();
+    for (final Enumeration<?> e = props.keys(); e.hasMoreElements();) {
+      final String key = (String) e.nextElement();
+      final String value = props.getProperty(key);
+      params.add(new BasicNameValuePair(key, value));
+    }
+    httpPost.setEntity(new UrlEncodedFormEntity(params));
+    return httpPost;
+  }
+
+  public List<String> doPost(String path,
                              Properties props) throws IOException {
-    url = baseURL + url;
-    String content = ""; //$NON-NLS-1$
-    if (props != null) {
-      for (final Enumeration<?> e = props.keys(); e.hasMoreElements();) {
-        final String key = (String) e.nextElement();
-        final String value = props.getProperty(key);
-        content += key + "=" + URLEncoder.encode(value, "UTF-8"); //$NON-NLS-1$ //$NON-NLS-2$
-        if (e.hasMoreElements()) {
-          content += "&"; //$NON-NLS-1$
-        }
+    final HttpPost httpPost = buildPost(path, props);
+    try (CloseableHttpClient client = HttpClients.createDefault()) {
+      try (CloseableHttpResponse response = client.execute(httpPost)) {
+        return getLinesOk(response, 201);
       }
     }
+  }
 
-    final URLConnection conn = new URL(url).openConnection();
-    conn.setDoInput(true);
-    conn.setDoOutput(true);
-    conn.setUseCaches(false);
-    //      conn.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
-
-    try (OutputStream co = conn.getOutputStream();
-         DataOutputStream out = new DataOutputStream(co)) {
-      out.writeBytes(content);
+  private List<String> getLinesOk(CloseableHttpResponse response, int ok_code) throws IOException {
+    if (response.getCode() == ok_code) {
+      try {
+        return IOUtils.readLines(
+          response.getEntity().getContent(),
+          StandardCharsets.UTF_8
+        );
+      }
+      catch (UnsupportedOperationException e) {
+        throw new IOException(e);
+      }
     }
-
-    try (InputStream in = conn.getInputStream()) {
-      return readLines(in);
+    else {
+      throw new IOException(errorMessage(response));
     }
   }
 }
