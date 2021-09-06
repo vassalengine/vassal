@@ -3,6 +3,8 @@
 * 10392: HTTP requests for server status should follow redirects
 * 10390: NPE in GameModule.getProperty() after deleting the Map from the
     owning Map widget
+* 10387: 'Centre on Opponents Moves' functionality should ignore movement by
+    Invisible units
 * 10383: Update all site URLs for new site and HTTPS
 * 10381: Replaying a log step can cause Deck to become corrupted
 * 10375: NPE in EnumeratedPropertyPrompt.getNewValue()
