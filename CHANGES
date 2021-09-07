@@ -1,4 +1,4 @@
-3.6.0-beta2 - ???
+3.6.0-beta2 - 7 September 2021
 
 * 10392: HTTP requests for server status should follow redirects
 * 10390: NPE in GameModule.getProperty() after deleting the Map from the

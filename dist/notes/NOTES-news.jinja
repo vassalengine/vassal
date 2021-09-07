@@ -1,65 +1,58 @@
-<p>{{headline}}</p>
+[size=200][b]VASSAL {{version}} Released[/b][/size]
 
-<h2>IMPORTANT</h2>
-<ul>
-{% for item in important %}
-  <li>{{item}}</li>
+{{headline}}
+
+[size=150][b]IMPORTANT[/b][/size]
+
+{% for item in important -%}
+* {{item}}
 {% endfor %}
-</ul>
 
-<h2>Download</h2>
-<ul>
+[size=150][b]Download[/b][/size]
+
 {% for item in downloads -%}
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-{{item.suffix}}' target='_new'>{{item.display_name}}</a></li>
+[url=https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-{{item.suffix}}]{{item.display_name}}[/url]
 {% endfor %}
-</ul>
 
-<h2>Changes since 3.5.8</h2>
+[size=150][b]Changes since 3.5.8[/b][/size]
 
-{% if new_features %}
-<h3>New features</h3>
-<ul>
-{% for item in new_features %}
-  <li>{{ item.num }}: {{ item.desc }}</li>
+{% if new_features -%}
+New features
+
+{% for item in new_features -%}
+* {{ item.num }}: {{ item.desc }}
 {% endfor %}
-</ul>
-{% endif %}
+{% endif -%}
 
-{% if bug_fixes %}
-<h3>Bug fixes</h3>
-<ul>
-{% for item in bug_fixes %}
-  <li>{{ item.num }}: {{ item.desc }}</li>
+{% if bug_fixes -%}
+Bug fixes
+
+{% for item in bug_fixes -%}
+* {{ item.num }}: {{ item.desc }}
 {% endfor %}
-</ul>
-{% endif %}
+{% endif -%}
 
-{% if other_improvements %}
-<h3>Other improvements</h3>
-<ul>
-{% for item in other_improvements %}
-  <li>{{ item.num }}: {{ item.desc }}</li>
+{% if other_improvements -%}
+Other improvements
+
+{% for item in other_improvements -%}
+* {{ item.num }}: {{ item.desc }}
 {% endfor %}
-</ul>
-{% endif %}
+{% endif -%}
 
-<p>
-See the <a href="https://vassalengine.org/wiki/VASSAL_{{version_feature}}_Release_Notes">Release Notes</a> for descriptions of the changes in {{version_feature}}.
-</p>
+See the [url=https://vassalengine.org/wiki/VASSAL_{{version_feature}}_Release_Notes]Release Notes[/url] for descriptions of the changes in {{version_feature}}.
 
-<h2>Minimum Requirements</h2>
-<p>
+[size=150][b]Minimum Requirements[/b][/size]
+
 VASSAL {{version_feature}} requires Java 11 or later.
-</p>
-<p>
-The Windows and MacOS packages have an appropriate version of Java bundled with them, so there is no need to install Java separately on those operating systems. On Linux, use your package manager to install Java 11 or later.
-</p>
 
-<h2>Help us test</h2>
-<p>
-Please report bugs in the Technical Support &amp; Bugs category at the <a href="https://forum.vassalengine.org/c/technical-support-bugs/6">VASSAL forums</a>.
-</p>
-<p>
-Cheers,<br />
+The Windows and MacOS packages have an appropriate version of Java bundled with them, so there is no need to install Java separately on those operating systems. On Linux, use your package manager to install Java 11 or later.
+
+[size=159][b]Help us test[/b][/size]
+
+Please report bugs in the Technical Support & Bugs category at the [url=https://forum.vassalengine.org/c/technical-support-bugs/6]VASSAL forums[/url].
+
+
+Cheers,
+
 The VASSAL Team
-</p>
