@@ -347,8 +347,12 @@ public class FormattedString implements Loopable {
    *
    */
   public int getTextAsInt(PropertySource ps, String description, EditablePiece source) {
-    int result = 0;
     final AuditTrail audit = AuditTrail.create((Auditable) ps, this, description);
+    return getTextAsInt(ps, description, source, (Auditable) ps, audit);
+  }
+
+  public int getTextAsInt(PropertySource ps, String description, EditablePiece source, Auditable owner, AuditTrail audit) {
+    int result = 0;
     final String value = getText(ps, "0", source, audit);
     try {
       result = Integer.parseInt(value);
