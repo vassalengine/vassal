@@ -1,24 +1,24 @@
-[size=200][b]VASSAL {{version}} Released[/b][/size]
+# VASSAL {{version}} Released
 
 {{headline}}
 
-[size=150][b]IMPORTANT[/b][/size]
+## IMPORTANT
 
 {% for item in important -%}
 * {{item}}
 {% endfor %}
 
-[size=150][b]Download[/b][/size]
+## Download
 
 {% for item in downloads -%}
 [url=https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-{{item.suffix}}]{{item.display_name}}[/url]
 {% endfor %}
 
 {% for v in changes -%}
-[size=150][b]Changes since {{ v['since'] }}[/b][/size]
+## Changes since {{ v['since'] }}
 
 {% if v['new_features'] -%}
-New features
+### New features
 
 {% for item in v['new_features'] -%}
 * {{ item.num }}: {{ item.desc }}
@@ -26,7 +26,7 @@ New features
 {% endif -%}
 
 {% if v['bug_fixes'] -%}
-Bug fixes
+### Bug fixes
 
 {% for item in v['bug_fixes'] -%}
 * {{ item.num }}: {{ item.desc }}
@@ -34,7 +34,7 @@ Bug fixes
 {% endif -%}
 
 {% if v['other_improvements'] -%}
-Other improvements
+### Other improvements
 
 {% for item in v['other_improvements'] -%}
 * {{ item.num }}: {{ item.desc }}
@@ -42,17 +42,17 @@ Other improvements
 {% endif -%}
 {% endfor -%}
 
-See the [url=https://vassalengine.org/wiki/VASSAL_{{version_feature}}_Release_Notes]Release Notes[/url] for descriptions of the changes in {{version_feature}}.
+See the [Release Notes](https://vassalengine.org/wiki/VASSAL_{{version_feature}}_Release_Notes) for descriptions of the changes in {{version_feature}}.
 
-[size=150][b]Minimum Requirements[/b][/size]
+## Minimum Requirements
 
 VASSAL {{version_feature}} requires Java 11 or later.
 
 The Windows and MacOS packages have an appropriate version of Java bundled with them, so there is no need to install Java separately on those operating systems. On Linux, use your package manager to install Java 11 or later.
 
-[size=159][b]Help us test[/b][/size]
+## Help us test
 
-Please report bugs in the Technical Support & Bugs category at the [url=https://forum.vassalengine.org/c/technical-support-bugs/6]VASSAL forums[/url].
+Please report bugs in the Technical Support & Bugs category at the [VASSAL forum](https://forum.vassalengine.org/c/technical-support-bugs/6).
 
 
 Cheers,
