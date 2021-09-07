@@ -55,6 +55,7 @@ public class Server extends Thread {
         consecutiveFailures++;
       }
     }
+    System.err.println("Exiting due to consecutiveFailures");
     System.exit(1);
   }
 
