@@ -80,7 +80,7 @@ public class ThrowableUtils {
   public static <T extends Throwable> void throwAncestor(
       Class<T> cl, Throwable t) throws T {
     final T ancestor = getAncestor(cl, t);
-    if (ancestor != null) throwMe(cl, t);
+    if (ancestor != null) throwMe(cl, ancestor);
   }
 
   /**
@@ -102,7 +102,7 @@ public class ThrowableUtils {
                                                                      throws T {
     T toThrow = null;
     try {
-      toThrow = cl.cast(cl.getConstructor().newInstance(t));
+      toThrow = cl.cast(cl.getConstructor().newInstance().initCause(t));
     }
     catch (Throwable ignore) {
       // If anything happens here, we're screwed anyway, as we're already
