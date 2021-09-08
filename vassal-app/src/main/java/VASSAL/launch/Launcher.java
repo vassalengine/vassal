@@ -85,19 +85,15 @@ public abstract class Launcher {
         try {
           launch();
         }
-        catch (ExtensionsLoader.LoadExtensionException | IOException e2) {
-          warn(e2);
+        catch (ExtensionsLoader.LoadExtensionException | IOException e) {
+          ErrorDialog.showDetails(
+            e,
+            ThrowableUtils.getStackTrace(e),
+            "Error.module_load_failed", //NON-NLS
+            e.getMessage()
+          );
+          System.exit(1);
         }
-      }
-
-      private void warn(Exception e1) {
-        ErrorDialog.showDetails(
-          e1,
-          ThrowableUtils.getStackTrace(e1),
-          "Error.module_load_failed", //NON-NLS
-          e1.getMessage()
-        );
-        System.exit(1);
       }
     });
   }
