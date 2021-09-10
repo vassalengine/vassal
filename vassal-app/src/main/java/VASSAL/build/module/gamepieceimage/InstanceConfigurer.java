@@ -184,7 +184,7 @@ public class InstanceConfigurer extends Configurer {
       model = new SymbolTableModel();
       table = new JTable(model);
       table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-      if (getValueList() != null && getValueList().size() > 0) {
+      if (getValueList() != null && !getValueList().isEmpty()) {
         table.getSelectionModel().setSelectionInterval(0, 0);
       }
       final ListSelectionModel rowSM = table.getSelectionModel();

@@ -267,7 +267,7 @@ public class ADC2Module extends Importer {
   public class ForcePool extends Pool {
     @Override
     boolean isUseable() {
-      if (getPieces().size() > 0)
+      if (!getPieces().isEmpty())
         return true;
       if (name == null)
         return false;

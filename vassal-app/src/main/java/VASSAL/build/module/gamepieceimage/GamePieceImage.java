@@ -206,7 +206,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
     if (NAME.equals(key)) {
       final String newName = (String) value;
       final String oldName = getConfigureName();
-      if (newName != oldName && oldName.length() > 0) {
+      if (!oldName.equals(newName) && oldName.length() > 0) {
         final ArchiveWriter w = GameModule.getGameModule().getArchiveWriter();
         w.removeImage(oldName);
         w.addImage(newName, getEncodedImage((BufferedImage) visImage));
