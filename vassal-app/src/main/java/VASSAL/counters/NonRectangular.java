@@ -339,9 +339,9 @@ public class NonRectangular extends Decorator implements EditablePiece {
         final PathIterator it = shape.getPathIterator(new AffineTransform());
         final float[] pts = new float[6];
 
-        buffer.append("n"); // NON-NLS Store the imageName in a form that will be ignored by older clients.
+        buffer.append('n'); // NON-NLS Store the imageName in a form that will be ignored by older clients.
         buffer.append(picker.getImageName());
-        buffer.append(",");
+        buffer.append(',');
 
         while (!it.isDone()) {
           switch (it.currentSegment(pts)) {

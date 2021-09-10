@@ -213,9 +213,9 @@ public class BadDataReport {
       sb.append(getDescription(owner));
     }
     if (data != null) {
-      sb.append(" ").append(Resources.getString("Audit.source", data));
+      sb.append(' ').append(Resources.getString("Audit.source", data));
     }
-    sb.append(" ").append(Resources.getString("Audit.error", message));
+    sb.append(' ').append(Resources.getString("Audit.error", message));
     return sb.toString();
   }
 
