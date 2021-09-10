@@ -104,7 +104,6 @@ public abstract class BasicPreference extends AbstractConfigurable {
     if (NAME.equals(key)) {
       variableName = (String) value;
       property.setPropertyName(variableName);
-      getPreferenceConfigurer().setName(variableName);
     }
     else if (TAB.equals(key)) {
       tabName = (String) value;
