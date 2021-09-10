@@ -209,16 +209,6 @@ public class Tailer {
 // FIXME: there should be an error listener; we can't handle exceptions here
         logger.error("", e);
       }
-      finally {
-        if (raf != null) {
-          try {
-            raf.close();
-          }
-          catch (IOException e) {
-            logger.error("Error while closing the logfile", e); //NON-NLS
-          }
-        }
-      }
     }
   }
 

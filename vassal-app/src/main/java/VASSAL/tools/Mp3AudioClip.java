@@ -68,6 +68,7 @@ public class Mp3AudioClip implements AudioClip {
     return null;
   }
 
+  @SuppressWarnings("PMD.UseTryWithResources")
   protected Player getPlayer(InputStream stream) {
     Player player = null;
     try {

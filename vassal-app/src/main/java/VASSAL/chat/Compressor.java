@@ -31,38 +31,17 @@ public class Compressor {
 
   public static byte[] compress(byte[] in) throws IOException {
     final ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-    final ZipOutputStream zipOut = new ZipOutputStream(byteOut);
-    try {
+    try (ZipOutputStream zipOut = new ZipOutputStream(byteOut)) {
       zipOut.putNextEntry(new ZipEntry("Dummy")); //$NON-NLS-1$
       zipOut.write(in);
-    }
-    finally {
-      try {
-        zipOut.close();
-      }
-      // FIXME: review error message
-      catch (final IOException e) {
-        e.printStackTrace();
-      }
     }
     return byteOut.toByteArray();
   }
 
   public static byte[] decompress(byte[] in) throws IOException {
-    final ZipInputStream zipIn =
-      new ZipInputStream(new ByteArrayInputStream(in));
-    try {
+    try (ZipInputStream zipIn = new ZipInputStream(new ByteArrayInputStream(in))) {
       zipIn.getNextEntry();
       return zipIn.readAllBytes();
-    }
-    finally {
-      try {
-        zipIn.close();
-      }
-      // FIXME: review error message
-      catch (final IOException e) {
-        e.printStackTrace();
-      }
     }
   }
 }

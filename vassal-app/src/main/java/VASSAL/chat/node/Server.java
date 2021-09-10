@@ -59,6 +59,7 @@ public class Server extends Thread {
     System.exit(1);
   }
 
+  @SuppressWarnings("PMD.UseTryWithResources")
   public static void main(String[] args) throws Exception {
     final Properties p = new ArgsParser(args).getProperties();
 

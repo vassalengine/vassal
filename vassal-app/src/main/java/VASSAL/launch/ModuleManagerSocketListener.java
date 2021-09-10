@@ -44,6 +44,7 @@ public final class ModuleManagerSocketListener implements Runnable {
     this.execute = execute;
   }
 
+  @SuppressWarnings("PMD.UseTryWithResources")
   @Override
   public void run() {
     try {
