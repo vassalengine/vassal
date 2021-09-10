@@ -1,5 +1,7 @@
 3.6.0-beta3 - ???
 
+* 10405: Log replay of delete command behaves differently after load of
+    sebsequent log file
 * 10400: Custom preferences in Global Options incorrectly use property name,
     not description
 * 10404: Catch FileNotFoundException when reading prefs files
