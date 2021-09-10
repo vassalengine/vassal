@@ -30,6 +30,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.Closeable;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -182,7 +183,7 @@ public class Prefs implements Closeable {
         storedValues.load(in);
       }
     }
-    catch (NoSuchFileException e) {
+    catch (FileNotFoundException | NoSuchFileException e) {
       // First time for this module, not an error.
     }
     catch (IOException e) {
