@@ -91,6 +91,7 @@ public class SequenceEncoder {
     }
   }
 
+  @SuppressWarnings("PMD.ConsecutiveLiteralAppends")
   public SequenceEncoder append(String s) {
     startBufferOrAddDelimiter();
 
@@ -118,6 +119,7 @@ public class SequenceEncoder {
     buffer.append(c);
   }
 
+  @SuppressWarnings("PMD.ConsecutiveLiteralAppends")
   public SequenceEncoder append(char c) {
     startBufferOrAddDelimiter();
 
