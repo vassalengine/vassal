@@ -21,6 +21,8 @@ package VASSAL.launch;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.SwingUtilities;
 
@@ -28,9 +30,15 @@ import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import VASSAL.configure.IntConfigurer;
+import VASSAL.preferences.Prefs;
+import VASSAL.build.GameModule;
+import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.ExtensionsLoader;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ThrowableUtils;
+import VASSAL.tools.concurrent.FutureUtils;
+import VASSAL.tools.concurrent.SimpleRunnableFuture;
 import VASSAL.tools.logging.LoggedOutputStream;
 import VASSAL.tools.menu.MenuManager;
 
@@ -79,23 +87,79 @@ public abstract class Launcher {
 
     createMenuManager();
 
-    SwingUtilities.invokeLater(new Runnable() {
+
+    final SimpleRunnableFuture<Void> fut = new SimpleRunnableFuture() {
       @Override
       public void run() {
         try {
           launch();
+          set(null);
         }
-        catch (ExtensionsLoader.LoadExtensionException | IOException e) {
+        catch (Throwable t) {
+          setException(t);
+        }
+      }
+    };
+
+    SwingUtilities.invokeLater(fut);
+
+    try {
+      fut.get();
+    }
+    catch (CancellationException | InterruptedException e) {
+      // this should be impossible
+      FutureUtils.wait(
+        ErrorDialog.showDetails(
+          e,
+          ThrowableUtils.getStackTrace(e),
+          "Error.module_load_failed", //NON-NLS
+          e.getMessage()
+        )
+      );
+      System.exit(1);
+    }
+    catch (ExecutionException e) {
+      final Throwable t = e.getCause();
+
+      if (t instanceof OutOfMemoryError) {
+        // The module ran out of memory while loading. The user has no way
+        // of setting the max heap if the module won't load. Double the max
+        // heap and ask the user to try again.
+        logger.error("Exiting: ", t);
+        FutureUtils.wait(ErrorDialog.show("Error.out_of_memory_reload"));
+
+        final String gname = GameModule.getGameModule().getGameName();
+        try (Prefs p = new Prefs(Prefs.getGlobalPrefs().getEditor(), gname)) {
+          final IntConfigurer maxHeapConf = new IntConfigurer(
+            GlobalOptions.MAXIMUM_HEAP, "", 512
+          );
+          p.addOption(maxHeapConf);
+
+          Integer h = (Integer) p.getValue(GlobalOptions.MAXIMUM_HEAP);
+          if (h == null) {
+            h = 512;
+          }
+          p.setValue(GlobalOptions.MAXIMUM_HEAP, 2*h);
+        }
+        catch (IOException ioe) {
+          logger.error("", ioe);
+        }
+
+        System.exit(2);
+      }
+      else if (t instanceof ExtensionsLoader.LoadExtensionException ||
+               t instanceof IOException) {
+        FutureUtils.wait(
           ErrorDialog.showDetails(
             e,
             ThrowableUtils.getStackTrace(e),
             "Error.module_load_failed", //NON-NLS
             e.getMessage()
-          );
-          System.exit(1);
-        }
+          )
+        );
+        System.exit(1);
       }
-    });
+    }
   }
 
   protected abstract void launch() throws IOException;
