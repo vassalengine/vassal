@@ -58,6 +58,7 @@ public class BooleanPreference extends BasicPreference {
       config = new BooleanConfigurer(getVariableName(), getDescription());
       config.addPropertyChangeListener(e -> updateGlobalProperty(config.getValueString()));
       config.setValue(defaultValue);
+      updateGlobalProperty(config.getValueString());
     }
     return config;
   }
