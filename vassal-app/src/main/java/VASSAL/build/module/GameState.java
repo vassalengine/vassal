@@ -545,6 +545,7 @@ public class GameState implements CommandEncoder {
           
           GameModule.getGameModule().setLoadOverSemaphore(true); // Stop updating Map UI etc for a bit
           try {
+            pieces.clear();
             loadGameInForeground(f); // Foreground loading minimizes the bad behavior of windows during vlog load "mid game"
           }
           finally {
