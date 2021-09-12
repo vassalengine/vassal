@@ -83,7 +83,7 @@ public class TailerTest {
 
     tailer.stop();
 
-    final String actual = sb_tailer.toString();
+    final String actual = sb_tailer.toString().replace("\r\n", "\n");
     final String expected = Files.readString(file.toPath())
                                  .replace("\r\n", "\n")
                                  .substring(0, actual.length());
