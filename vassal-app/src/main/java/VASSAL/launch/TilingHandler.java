@@ -171,6 +171,7 @@ public class TilingHandler {
     return new Pair<>(tcount, maxpix);
   }
 
+  @SuppressWarnings("PMD.UseTryWithResources")
   protected void runSlicer(List<String> multi, final int tcount, int maxheap)
                                    throws CancellationException, IOException {
 

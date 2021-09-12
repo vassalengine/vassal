@@ -153,7 +153,8 @@ public class SavedGameUpdaterDialog extends JDialog {
   private void updateGames() {
     updateButton.setEnabled(false);
     final Runnable runnable = () -> {
-      for (int i = 0, n = savedGamesModel.size(); i < n; ++i) {
+      final int n =  savedGamesModel.size();
+      for (int i = 0; i < n; ++i) {
         try {
           final File savedGame = savedGamesModel.getElementAt(i);
           updater.updateSavedGame(oldPieceInfo, savedGame);
