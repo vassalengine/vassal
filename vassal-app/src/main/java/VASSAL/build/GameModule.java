@@ -1543,6 +1543,7 @@ public class GameModule extends AbstractConfigurable
    * Prompt user to save open game and modules/extensions being edited
    * @return true if shutDown should proceed, i.e. user did not cancel
    */
+  @SuppressWarnings("PMD.UseTryWithResources")
   public boolean shutDown() {
     boolean cancelled;
     getGameState().setup(false);
