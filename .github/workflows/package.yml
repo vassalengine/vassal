@@ -27,6 +27,9 @@ jobs:
         id: version
         run: echo "::set-output name=VERSION::$(make version-print)"
 
+      - name: Update container
+        run: sudo apt update
+
       - name: Install dependencies
         run: sudo apt-get install genisoimage ghostscript nsis
 
