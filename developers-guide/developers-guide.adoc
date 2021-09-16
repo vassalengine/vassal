@@ -249,6 +249,7 @@ include::{rootdir}Makefile[lines=258]
 * [ ] Pull `site` repo (in `/var/www/html/site` on vassalengine.org).
 * [ ] Upload maven artifacts to our repo: `rsync -avP releases/ vassal.org:/var/www/html/site/maven`
 * [ ] From `/var/www/html/site/javadoc/` on vassalengine.org: `mkdir x.y.z && cd x.y.z && unzip ../../maven/org/vassalengine/vassal-app/x.y.z/vassal-app-x.y.z-javadoc.jar`
+* [ ] Upload Reference Manual to site and set `latest` symlink.
 * [ ] Update the release branch in `.github/workflows/package.yml`.
 * [ ] Update the release notes in our wiki: https://vassalengine.org/wiki/VASSAL_3.5_Release_Notes
 * [ ] Post release announcements (see `tmp/notes-*`):
