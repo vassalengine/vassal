@@ -16,30 +16,37 @@ JDKDIR=dist/jdks
 mkdir -p "$JDKDIR"
 pushd "$JDKDIR"
 
+ZULU_URL='https://cdn.azul.com/zulu/bin'
+
 # Windows x86_32
-curl -O 'https://cdn.azul.com/zulu/bin/zulu16.32.15-ca-jdk16.0.2-win_i686.zip'
-unzip zulu16.32.15-ca-jdk16.0.2-win_i686.zip
-mv zulu16.32.15-ca-jdk16.0.2-win_i686 windows-x86_32
+filename=zulu17.28.13-ca-jdk17.0.0-win_i686.zip
+curl -O "$ZULU_URL/$filename"
+unzip $filename
+mv $(basename $filename .zip) windows-x86_32
 
 # Windows x86_64
-curl -O 'https://cdn.azul.com/zulu/bin/zulu16.32.15-ca-jdk16.0.2-win_x64.zip'
-unzip zulu16.32.15-ca-jdk16.0.2-win_x64.zip
-mv zulu16.32.15-ca-jdk16.0.2-win_x64 windows-x86_64
+filename=zulu17.28.13-ca-jdk17.0.0-win_x64.zip
+curl -O "$ZULU_URL/$filename"
+unzip $filename
+mv $(basename $filename .zip) windows-x86_64
 
 # Windows aarch64
-curl -O 'https://cdn.azul.com/zulu/bin/zulu16.32.15-ca-jdk16.0.2-win_aarch64.zip'
-unzip zulu16.32.15-ca-jdk16.0.2-win_aarch64.zip
-mv zulu16.32.15-ca-jdk16.0.2-win_aarch64 windows-aarch64
+filename=zulu17.28.13-ca-jdk17.0.0-win_aarch64.zip
+curl -O "$ZULU_URL/$filename"
+unzip $filename
+mv $(basename $filename .zip) windows-aarch64
 
 # MacOS x86_64
-curl -O 'https://cdn.azul.com/zulu/bin/zulu16.32.15-ca-jdk16.0.2-macosx_x64.tar.gz'
+filename=zulu17.28.13-ca-jdk17.0.0-macosx_x64.tar.gz
+curl -O "$ZULU_URL/$filename"
 mkdir macos-x86_64
-tar -C macos-x86_64 --strip-components=1 -xvf zulu16.32.15-ca-jdk16.0.2-macosx_x64.tar.gz
+tar -C macos-x86_64 --strip-components=1 -xvf $filename
 
 # MacOS aarch64
-curl -O 'https://cdn.azul.com/zulu/bin/zulu16.32.15-ca-jdk16.0.2-macosx_aarch64.tar.gz'
+filename=zulu17.28.13-ca-jdk17.0.0-macosx_aarch64.tar.gz
+curl -O "$ZULU_URL/$filename"
 mkdir macos-aarch64
-tar -C macos-aarch64 --strip-components=1 -xvf zulu16.32.15-ca-jdk16.0.2-macosx_aarch64.tar.gz
+tar -C macos-aarch64 --strip-components=1 -xvf $filename
 
 popd
 
