@@ -40,6 +40,11 @@ public class DummyConfig implements Config {
   }
 
   @Override
+  public Path getCacheDir() {
+    return getTempDir();
+  }
+
+  @Override
   public Path getConfDir() {
     return getTempDir();
   }

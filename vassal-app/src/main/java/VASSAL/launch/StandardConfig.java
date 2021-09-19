@@ -27,6 +27,7 @@ import VASSAL.tools.version.GitProperties;
 public class StandardConfig implements Config {
   private final Path baseDir;
   private final Path docDir;
+  private final Path cacheDir;
   private final Path confDir;
   private final Path tmpDir;
   private final Path prefsDir;
@@ -66,6 +67,17 @@ public class StandardConfig implements Config {
       confDir = Path.of(System.getProperty("user.home"), ".VASSAL"); //NON-NLS
     }
 
+    final String cacheProp = System.getProperty("VASSAL.cache");
+    if (cacheProp != null) {
+      cacheDir = Path.of(cacheProp);
+    }
+    else if (SystemUtils.IS_OS_WINDOWS) {
+      cacheDir = Path.of(System.getenv("LOCALAPPDATA"), "VASSAL"); //NON-NLS
+    }
+    else {
+      cacheDir = confDir;
+    }
+
     Files.createDirectories(confDir);
 
     prefsDir = confDir.resolve("prefs");
@@ -101,6 +113,11 @@ public class StandardConfig implements Config {
   @Override
   public Path getConfDir() {
     return confDir;
+  }
+
+  @Override
+  public Path getCacheDir() {
+    return cacheDir;
   }
 
   @Override

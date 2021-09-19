@@ -297,7 +297,7 @@ public class ModuleManagerWindow extends JFrame {
 
         if (dialogResult == JOptionPane.OK_OPTION) {
 
-          final File tdir = new File(Info.getConfDir(), "tiles");
+          final File tdir = new File(Info.getCacheDir(), "tiles");
           if (tdir.exists()) {
             try {
               FileUtils.forceDelete(tdir);
@@ -1587,7 +1587,7 @@ public class ModuleManagerWindow extends JFrame {
         metadata.getName() + "_" + metadata.getVersion()
       );
 
-      final File tdir = new File(Info.getConfDir(), "tiles/" + hstr);
+      final File tdir = new File(Info.getCacheDir(), "tiles/" + hstr);
       if (tdir.exists()) {
         try {
           FileUtils.forceDelete(tdir);

@@ -100,6 +100,10 @@ public final class Info {
     return CONFIG.getConfDir().toFile();
   }
 
+  public static File getCacheDir() {
+    return CONFIG.getCacheDir().toFile();
+  }
+
   public static File getTempDir() {
     return CONFIG.getTempDir().toFile();
   }
