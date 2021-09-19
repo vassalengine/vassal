@@ -1880,7 +1880,7 @@ public class GameModule extends AbstractConfigurable
       final String hstr =
         DigestUtils.sha1Hex(getGameName() + "_" + getGameVersion()); //NON-NLS
 
-      final File tc = new File(Info.getConfDir(), "tiles/" + hstr); //NON-NLS
+      final File tc = new File(Info.getCacheDir(), "tiles/" + hstr); //NON-NLS
       tcache = new ImageTileDiskCache(tc.getAbsolutePath());
     }
 
