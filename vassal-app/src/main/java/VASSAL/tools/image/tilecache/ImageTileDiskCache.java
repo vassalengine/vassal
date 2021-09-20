@@ -51,6 +51,10 @@ public class ImageTileDiskCache implements ImageTileSource, FileStore {
     this.cpath = cpath;
   }
 
+  private String tileNameFor(String name, int tileX, int tileY, double scale) {
+    return cpath + '/' + TileUtils.tileName(name, tileX, tileY, (int)(1.0 / scale));
+  }
+
   /** {@inheritDoc} */
   @Override
   public BufferedImage getTile(
@@ -59,8 +63,12 @@ public class ImageTileDiskCache implements ImageTileSource, FileStore {
     int tileY,
     double scale) throws ImageIOException {
 
-    return TileUtils.read(cpath + '/' +
-      TileUtils.tileName(name, tileX, tileY, (int)(1.0 / scale)));
+    try {
+      return TileUtils.read(tileNameFor(name, tileX, tileY, scale));
+    }
+    catch (TileNotFoundException e) {
+      throw new TileNotFoundException(name, tileX, tileY, scale, e);
+    }
   }
 
   /** {@inheritDoc} */
@@ -71,8 +79,12 @@ public class ImageTileDiskCache implements ImageTileSource, FileStore {
     int tileY,
     double scale) throws ImageIOException {
 
-    return TileUtils.size(cpath + '/' +
-      TileUtils.tileName(name, tileX, tileY, (int)(1.0 / scale)));
+    try {
+      return TileUtils.size(tileNameFor(name, tileX, tileY, scale));
+    }
+    catch (TileNotFoundException e) {
+      throw new TileNotFoundException(name, tileX, tileY, scale, e);
+    }
   }
 
   /** {@inheritDoc} */
@@ -83,8 +95,7 @@ public class ImageTileDiskCache implements ImageTileSource, FileStore {
     int tileY,
     double scale) throws ImageIOException {
 
-    final File f = new File(cpath + '/' +
-      TileUtils.tileName(name, tileX, tileY, (int)(1.0 / scale)));
+    final File f = new File(tileNameFor(name, tileX, tileY, scale));
     return f.exists() && f.isFile();
   }
 

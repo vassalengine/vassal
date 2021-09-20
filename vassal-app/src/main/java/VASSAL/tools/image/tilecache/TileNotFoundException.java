@@ -29,6 +29,10 @@ import VASSAL.tools.image.ImageNotFoundException;
 public class TileNotFoundException extends ImageNotFoundException {
   private static final long serialVersionUID = 1L;
 
+  public TileNotFoundException(String srcname, int tileX, int tileY, double scale, Throwable cause) {
+    super(srcname + ':' + tileX + ',' + tileY + '@' + scale, cause);
+  }
+
   public TileNotFoundException(String filename) {
     super(filename);
   }
