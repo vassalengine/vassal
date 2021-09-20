@@ -220,7 +220,7 @@ public class FreeRotator extends Decorator
   }
 
   public void setAngle(double angle) {
-    if (validAngles.length == 1) {
+    if (isFreeRotation()) {
       validAngles[angleIndex] = angle;
     }
     else {
@@ -259,7 +259,7 @@ public class FreeRotator extends Decorator
     for (int i = 0; i < validAngles.length; ++i) {
       validAngles[i] = -i * (360.0 / validAngles.length);
     }
-    if (validAngles.length == 1) {
+    if (isFreeRotation()) {
       setAngleKey = st.nextNamedKeyStroke(null);
       if (st.hasMoreTokens()) {
         setAngleText = st.nextToken();
@@ -370,7 +370,7 @@ public class FreeRotator extends Decorator
   public String myGetType() {
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(validAngles.length);
-    if (validAngles.length == 1) {
+    if (isFreeRotation()) {
       se.append(setAngleKey)
         .append(setAngleText);
     }
@@ -396,7 +396,7 @@ public class FreeRotator extends Decorator
 
   @Override
   public String myGetState() {
-    if (validAngles.length == 1) {
+    if (isFreeRotation()) {
       return String.valueOf(validAngles[0]);
     }
     else {
@@ -406,7 +406,7 @@ public class FreeRotator extends Decorator
 
   @Override
   public void mySetState(String state) {
-    if (validAngles.length == 1) {
+    if (isFreeRotation()) {
       try {
         validAngles[0] = Double.parseDouble(state);
       }
@@ -440,7 +440,7 @@ public class FreeRotator extends Decorator
       // Direct Rotation
       rotateDirectCommand = new KeyCommand(rotateDirectText, rotateDirectKey, outer, this);
 
-      if (validAngles.length == 1) {
+      if (isFreeRotation()) {
         if (setAngleText.length() > 0) {
           l.add(setAngleCommand);
         }
@@ -477,8 +477,8 @@ public class FreeRotator extends Decorator
       commands = l.toArray(new KeyCommand[0]);
     }
     setAngleCommand.setEnabled(getMap() != null &&
-                               validAngles.length == 1 &&
-                               setAngleText.length() > 0);
+      isFreeRotation() &&
+      setAngleText.length() > 0);
     return commands;
   }
 
@@ -588,7 +588,7 @@ public class FreeRotator extends Decorator
       final ChangeTracker tracker = new ChangeTracker(this);
       // get random #
       final Random rand = GameModule.getGameModule().getRNG();
-      if (validAngles.length == 1) {
+      if (isFreeRotation()) {
         // we are a free rotate, set angle to 0-360 use setAngle(double)
         setAngle(rand.nextDouble() * 360);
       }
@@ -630,7 +630,7 @@ public class FreeRotator extends Decorator
       }
 
       // Now have a valid numeric target angle
-      if (validAngles.length == 1 || !directTypeFacing) {
+      if (isFreeRotation() || !directTypeFacing) {
         // Set the angle in degrees, even if the rotator has facings, setAngle will deal with any angle you throw at it
         // setAngle will deal with any numeric angle
         setAngle(-targetAngle);
@@ -871,7 +871,7 @@ public class FreeRotator extends Decorator
     final FreeRotator c = (FreeRotator) o;
     if (! Objects.equals(validAngles.length, c.validAngles.length)) return false;
 
-    if (validAngles.length == 1) {
+    if (isFreeRotation()) {
       if (! Objects.equals(setAngleKey, c.setAngleKey)) return false;
       if (! Objects.equals(setAngleText, c.setAngleText)) return false;
       if (! Objects.equals(directTypeFacing, c.directTypeFacing)) return false;
@@ -891,12 +891,8 @@ public class FreeRotator extends Decorator
 
     if (! Objects.equals(name, c.name)) return false;
 
-    if (validAngles.length == 1) {
-      return Objects.equals(validAngles[0], c.validAngles[0]);
-    }
-    else {
-      return Objects.equals(angleIndex, c.angleIndex);
-    }
+    return isFreeRotation() ? Objects.equals(validAngles[0], c.validAngles[0]) : Objects.equals(angleIndex, c.angleIndex);
+
   }
 
   private static class Ed implements PieceEditor, PropertyChangeListener {
@@ -944,11 +940,11 @@ public class FreeRotator extends Decorator
       nameConfig.setHintKey("Editor.trait_name_hint");
       panel.add("Editor.FreeRotator.name", nameConfig, "span 2,wrap"); // NON-NLS
 
-      anyConfig = new BooleanConfigurer(p.validAngles.length == 1);
+      anyConfig = new BooleanConfigurer(p.isFreeRotation());
       panel.add("Editor.FreeRotator.allow_arbitrary_rotations", anyConfig, "wrap"); // NON-NLS
 
       facingsLabel = new JLabel(Resources.getString("Editor.FreeRotator.number_of_allowed_facings"));
-      facingsConfig = new IntConfigurer(p.validAngles.length == 1 ? 6 : p.validAngles.length);
+      facingsConfig = new IntConfigurer(p.isFreeRotation() ? 6 : p.validAngles.length);
       panel.add(facingsLabel, facingsConfig, "wrap"); // NON-NLS
 
       final JLabel menuLabel = new JLabel(Resources.getString("Editor.menu_command"));
@@ -1089,7 +1085,7 @@ public class FreeRotator extends Decorator
     public String getState() {
       //BR// If our "arbitrary rotations" checkbox and number of valid angles are the same as what we started with,
       //BR// return the original state. Otherwise clear the state.
-      if ((Boolean.TRUE.equals(anyConfig.getValue()) == (rotator.validAngles.length == 1)) && facingsConfig.getIntValue(0) == rotator.validAngles.length) {
+      if ((Boolean.TRUE.equals(anyConfig.getValue()) == (rotator.isFreeRotation())) && facingsConfig.getIntValue(0) == rotator.validAngles.length) {
         return rotator.myGetState();
       }
       else {
