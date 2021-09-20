@@ -1,5 +1,6 @@
 3.6.0-beta3 - ???
 
+* 10430: Upgrade to Java 17 for Windows, Mac packages
 * 10412: Double the max heap for modules which run out of memory during loading
 * 10405: Log replay of delete command behaves differently after load of
     sebsequent log file
