@@ -57,10 +57,12 @@ public class HttpRequestWrapper {
   private URI buildGet(String path, Properties props) throws IOException {
     try {
       final URIBuilder b = new URIBuilder(baseURL + path);
-      for (final Enumeration<?> e = props.keys(); e.hasMoreElements();) {
-        final String key = (String) e.nextElement();
-        final String value = props.getProperty(key);
-        b.addParameter(key, value);
+      if (props != null) {
+        for (final Enumeration<?> e = props.keys(); e.hasMoreElements();) {
+          final String key = (String) e.nextElement();
+          final String value = props.getProperty(key);
+          b.addParameter(key, value);
+        }
       }
 
       return b.build();
