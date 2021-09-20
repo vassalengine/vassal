@@ -4,6 +4,7 @@
 * 10412: Double the max heap for modules which run out of memory during loading
 * 10405: Log replay of delete command behaves differently after load of
     sebsequent log file
+* 10402: NPE when trying to create new P2P Network
 * 10400: Custom preferences in Global Options incorrectly use property name,
     not description
 * 10404: Catch FileNotFoundException when reading prefs files
