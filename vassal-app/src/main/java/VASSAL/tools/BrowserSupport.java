@@ -21,6 +21,7 @@ import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
@@ -33,46 +34,91 @@ import org.apache.commons.lang3.SystemUtils;
  * @author rkinney
  */
 public class BrowserSupport {
-  public static void openURL(String url) {
+  public static void openURI(URI uri) {
     //
-    // This method is irritatingly complex because
-    // java.awt.Desktop seems not to work sometimes on Windows.
+    // This method is irritatingly complex because java.awt.Desktop seems
+    // not to work sometimes on Windows, and sometimes blocks until the
+    // program is closed (!) on Linux.
     //
-    if (Desktop.isDesktopSupported()) {
-      final Desktop desktop = Desktop.getDesktop();
-      if (desktop.isSupported(Desktop.Action.BROWSE)) {
-        try {
-          desktop.browse(new URI(url));
-          return;
-        }
-        catch (IOException e) {
-          // We ignore this on Windows, because Desktop seems flaky
-          if (!SystemUtils.IS_OS_WINDOWS) {
-            ReadErrorDialog.error(e, url);
-            return;
+
+    if (!SystemUtils.IS_OS_LINUX) {
+      if (Desktop.isDesktopSupported()) {
+        final Desktop desktop = Desktop.getDesktop();
+        if (desktop.isSupported(Desktop.Action.BROWSE)) {
+          try {
+            desktop.browse(uri);
           }
-        }
-        catch (IllegalArgumentException | URISyntaxException e) {
-          ErrorDialog.bug(e);
+          catch (IOException e) {
+            ReadErrorDialog.error(e, uri.toString());
+          }
           return;
         }
       }
     }
 
-    // Try xdg-open in case nothing else works
-    final ProcessBuilder pb = new ProcessBuilder("xdg-open", url); //NON-NLS
+    // Try start, open, or xdg-open in case nothing else works
+    final String uristr = uri.toString();
+
+    String launcher;
+    if (SystemUtils.IS_OS_WINDOWS) {
+      launcher = "start";  //NON-NLS
+    }
+    else if (SystemUtils.IS_OS_MAC) {
+      launcher = "open";  //NON-NLS
+    }
+    else {
+      launcher = "xdg-open";  //NON-NLS
+    }
+
+    final ProcessBuilder pb = new ProcessBuilder(launcher, uristr);
     pb.redirectError(ProcessBuilder.Redirect.INHERIT);
     try {
       pb.start();
     }
     catch (IOException e) {
-      ReadErrorDialog.error(e, url);
+      ReadErrorDialog.error(e, uristr);
     }
+  }
+
+  public static void openURL(URL url) {
+    URI uri;
+    try {
+      try {
+        uri = url.toURI();
+      }
+      catch (URISyntaxException e) {
+        throw new IOException(e);
+      }
+    }
+    catch (IOException e) {
+      ReadErrorDialog.error(e, url.toString());
+      return;
+    }
+
+    openURI(uri);
+  }
+
+  public static void openURL(String url) {
+    URI uri;
+    try {
+      try {
+        uri = new URI(url);
+      }
+      catch (URISyntaxException e) {
+        throw new IOException(e);
+      }
+    }
+    catch (IOException e) {
+      ReadErrorDialog.error(e, url);
+      return;
+    }
+
+    openURI(uri);
   }
 
   private static final HyperlinkListener listener = e -> {
     if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-      openURL(e.getURL().toString());
+      openURL(e.getURL());
     }
   };
 
