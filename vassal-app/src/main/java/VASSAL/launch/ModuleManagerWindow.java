@@ -293,18 +293,21 @@ public class ModuleManagerWindow extends JFrame {
           Resources.getString("ModuleManager.clear_tilecache_heading"),
           Resources.getString("ModuleManager.clear_tilecache_message"),
           JOptionPane.WARNING_MESSAGE,
-          JOptionPane.OK_CANCEL_OPTION);
+          JOptionPane.OK_CANCEL_OPTION
+        );
 
         if (dialogResult == JOptionPane.OK_OPTION) {
-
-          final File tdir = new File(Info.getCacheDir(), "tiles");
-          if (tdir.exists()) {
-            try {
-              FileUtils.forceDelete(tdir);
-              FileUtils.forceMkdir(tdir);
-            }
-            catch (IOException e) {
-              WriteErrorDialog.error(e, tdir);
+          // clear tiles in both old (conf) and new (cache) locations
+          for (final File d : List.of(Info.getCacheDir(), Info.getConfDir())) {
+            final File tdir = new File(d, "tiles");
+            if (tdir.exists()) {
+              try {
+                FileUtils.forceDelete(tdir);
+                FileUtils.forceMkdir(tdir);
+              }
+              catch (IOException e) {
+                WriteErrorDialog.error(e, tdir);
+              }
             }
           }
         }
