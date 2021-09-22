@@ -56,6 +56,8 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import static VASSAL.counters.BasicPiece.BASIC_NAME;
 import static VASSAL.counters.BasicPiece.PIECE_NAME;
+import static VASSAL.counters.Mat.MAT_ID;
+import static VASSAL.counters.Mat.MAT_NAME;
 
 /**
  * The abstract class describing a generic 'Trait' of a full GamePiece. Follows the <a href="https://en.wikipedia.org/wiki/Decorator_pattern"></a>Decorator design pattern</a>
@@ -754,8 +756,8 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
           if (cargo != null) {
             final GamePiece mat = cargo.getMat();
             if (mat != null) {
-              matName = mat.getName();
-              matID   = mat.getName() + "_" + Decorator.getInnermost(mat).getId();
+              matName = (String)mat.getProperty(MAT_NAME);
+              matID   = (String)mat.getProperty(MAT_ID);
 
               final GamePiece outer = getOutermost(mat);
               matPieceName = (String)outer.getProperty(PIECE_NAME);
