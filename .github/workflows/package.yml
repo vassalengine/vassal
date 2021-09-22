@@ -66,7 +66,7 @@ jobs:
       - name: Archive Linux
         uses: actions/upload-artifact@v2
         with:
-          name: VASSAL-${{ steps.version.outputs.VERSION }}-linux.bz2
+          name: VASSAL-${{ steps.version.outputs.VERSION }}-linux.tar.bz2
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-linux.tar.bz2
 
       - name: Archive MacOS x86_64
