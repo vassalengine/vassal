@@ -21,7 +21,6 @@ import VASSAL.build.GameModule;
 import VASSAL.build.GpIdSupport;
 import VASSAL.build.module.KeyNamer;
 import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.i18n.Resources;
@@ -297,10 +296,6 @@ public class PieceDefiner extends JPanel {
     inUseList.setSelectedIndex(0);
 
     refresh();
-  }
-
-  @Deprecated(since = "2020-09-12", forRemoval = true)
-  public void setBaseWindow(HelpWindow w) {
   }
 
   /**
