@@ -79,6 +79,7 @@ VASSAL.counters.Deck.getEmptyKey()	3.6.0
 VASSAL.counters.Deck.setContents(java.util.Iterator)	3.6.0
 VASSAL.counters.Deck.setEmptyKey(javax.swing.KeyStroke)	3.6.0
 VASSAL.counters.Decorator.setOldProperties()	3.6.0
+VASSAL.counters.Decorator.setOldProperties(VASSAL.counters.GamePiece)	3.6.0
 VASSAL.counters.DragBuffer.init(VASSAL.counters.DragBuffer)	3.6.0
 VASSAL.counters.DragBuffer.sort(VASSAL.tools.Sort$Comparator)	3.6.0
 VASSAL.counters.Embellishment0$Ed.oldgetType()	3.6.0
@@ -101,6 +102,7 @@ VASSAL.counters.Labeler.TOP	3.6.0
 VASSAL.counters.Labeler.VERTICAL_ALIGNMENT	3.6.0
 VASSAL.counters.Obscurable.isMaskableBy(java.lang.String)	3.6.0
 VASSAL.counters.Obscurable.setAllHidden(boolean)	3.6.0
+VASSAL.counters.PieceDefiner.setBaseWindow(VASSAL.build.module.documentation.HelpWindow)	3.6.0
 VASSAL.counters.PieceIterator.PieceIterator(java.util.Enumeration)	3.6.0
 VASSAL.counters.Stack.getPiecesInReverseOrder()	3.6.0
 VASSAL.counters.Stack.getPiecesInVisibleOrder()	3.6.0

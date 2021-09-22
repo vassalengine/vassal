@@ -221,11 +221,22 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
     final Map<String, Map<String, String>> deprecated = rd.getRight();
     if (!deprecated.isEmpty()) {
+      // always show deprecation dialog in edit mode
+      boolean showDialog = lr.mode == LaunchRequest.Mode.EDIT ||
+                           lr.mode == LaunchRequest.Mode.EDIT_EXT;
+      final LocalDate sixMonthsFromNow = LocalDate.now().plusMonths(6);
+
       // convert deprecation date to date elgible for removal (+1 year)
       final DateTimeFormatter fmt = DateTimeFormatter.ISO_LOCAL_DATE;
       for (final Map.Entry<String, Map<String, String>> e1: deprecated.entrySet()) {
         for (final Map.Entry<String, String> e2: e1.getValue().entrySet()) {
-          e2.setValue(LocalDate.parse(e2.getValue(), fmt).plusYears(1).toString());
+          final LocalDate removalDate = LocalDate.parse(e2.getValue(), fmt).plusYears(1);
+          // show deprecation dialog if anything is within 6 months of removal
+          if (removalDate.isBefore(sixMonthsFromNow)) {
+            showDialog = true;
+          }
+
+          e2.setValue(removalDate.toString());
         }
       }
 
@@ -236,11 +247,13 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
       logger.warn(msg);
 
-      FutureUtils.wait(ProblemDialog.showDetails(
-        JOptionPane.WARNING_MESSAGE,
-        msg,
-        "Dialogs.deprecated_code"
-      ));
+      if (showDialog) {
+        FutureUtils.wait(ProblemDialog.showDetails(
+          JOptionPane.WARNING_MESSAGE,
+          msg,
+          "Dialogs.deprecated_code"
+        ));
+      }
     }
 
     return true;

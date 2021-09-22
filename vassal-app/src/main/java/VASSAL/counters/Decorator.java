@@ -701,18 +701,6 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
   }
 
   /**
-   * Set the Oldxxxx properties related to movement
-   * This call has been replaced by {@link #putOldProperties(GamePiece)}
-   * Any changes to Oldxxxx properties MUST be recorded in Commands.
-   *
-   * @param p Piece to set properties on
-   */
-  @Deprecated(since = "2020-09-06", forRemoval = true)
-  public static void setOldProperties(GamePiece p) {
-    putOldProperties(p);
-  }
-
-  /**
    * * Set the Oldxxxx properties related to movement (e.g. OldLocationName, OldZone, OldBoard, OldMap, OldX, OldY)
    *
    * @param p Piece to set properties on

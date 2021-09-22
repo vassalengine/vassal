@@ -1130,4 +1130,18 @@
         <justification>Duplicate field</justification>
     </difference>
 
+    <difference>
+        <className>VASSAL/counters/Decorator</className>
+        <differenceType>7002</differenceType>
+        <method>void setOldProperties(VASSAL.counters.GamePiece)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/PieceDefiner</className>
+        <differenceType>7002</differenceType>
+        <method>void setBaseWindow(VASSAL.build.module.documentation.HelpWindow)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+
+
 </differences>
