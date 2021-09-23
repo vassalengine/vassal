@@ -47,6 +47,7 @@ NOTE: You must restart VASSAL for this change to take effect.
 If an inner widget (e.g.
 a panel, a list, etc) contains its own scaling factor, that one overrides any factor provided in an outer member.
 
+*Default docked width (0 for automatic):*::  If this is the first palette and therefore docked with the main VASSAL controls, you can set a specific preferred pixel width that the piece window will appear. Leave as 0 for automatic sizing. The player can always further resize the window by dragging the divider bar.
 |
 
 image:images/PieceWindow.png[]

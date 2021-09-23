@@ -74,10 +74,12 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
   public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
   public static final String HIDDEN = "hidden"; //$NON-NLS-1$
   public static final String SCALE = "scale"; //$NON-NLS-1$
+  public static final String DEFAULT_DOCKED_WIDTH = "defaultWidth"; //NON-NLS
   protected static final UniqueIdManager idMgr = new UniqueIdManager(PieceWindow.class.getSimpleName());
   protected JComponent root;
   protected String tooltip = ""; //$NON-NLS-1$
   protected double scale;
+  protected int defaultDockedWidth;
 
   @SuppressWarnings({"deprecation", "removal"})
   @Deprecated(since = "2020-11-15", forRemoval = true)
@@ -104,6 +106,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
     );
 
     scale = 1.0;
+    defaultDockedWidth = 0;
   }
 
   @Override
@@ -254,6 +257,9 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
     final int i = SwingUtils.getIndexInParent(controlPanel, cppar);
 
     splitPane = new SplitPane(SplitPane.HORIZONTAL_SPLIT, root, controlPanel);
+    if (defaultDockedWidth > 0) {
+      splitPane.setDividerLocation(defaultDockedWidth);
+    }
     splitPane.hideLeft();
     cppar.add(splitPane, i);
   }
@@ -302,7 +308,8 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
       Resources.getString(Resources.TOOLTIP_TEXT),
       Resources.getString(Resources.BUTTON_ICON),
       Resources.getString("Editor.PieceWindow.show_hide"), //$NON-NLS-1$
-      Resources.getString("Editor.PieceWindow.scale")
+      Resources.getString("Editor.PieceWindow.scale"),
+      Resources.getString("Editor.PieceWindow.default_docked_width")
     };
   }
 
@@ -315,7 +322,8 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
       String.class,
       IconConfig.class,
       NamedKeyStroke.class,
-      Double.class
+      Double.class,
+      Integer.class
     };
   }
 
@@ -328,7 +336,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
 
   @Override
   public String[] getAttributeNames() {
-    return new String[]{NAME, HIDDEN, BUTTON_TEXT, TOOLTIP, ICON, HOTKEY, SCALE };
+    return new String[]{NAME, HIDDEN, BUTTON_TEXT, TOOLTIP, ICON, HOTKEY, SCALE, DEFAULT_DOCKED_WIDTH };
   }
 
   @Override
@@ -366,6 +374,13 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
       tooltip = (String) value;
       launch.setAttribute(name, value);
     }
+    else if (DEFAULT_DOCKED_WIDTH.equals(name)) {
+      if (value instanceof String) {
+        value = Integer.valueOf((String)value);
+      }
+      defaultDockedWidth = (Integer)value;
+    }
+
     else {
       launch.setAttribute(name, value);
     }
@@ -385,6 +400,9 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
     }
     else if (TOOLTIP.equals(name)) {
       return tooltip.isEmpty() ? launch.getAttributeValueString(name) : tooltip;
+    }
+    else if (DEFAULT_DOCKED_WIDTH.equals(name)) {
+      return String.valueOf(defaultDockedWidth);
     }
     else {
       return launch.getAttributeValueString(name);
