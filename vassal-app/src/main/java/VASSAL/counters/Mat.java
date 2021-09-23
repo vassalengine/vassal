@@ -119,7 +119,10 @@ public class Mat extends Decorator implements TranslatablePiece {
     final int num = st.nextInt(0);
     final GameState gs = GameModule.getGameModule().getGameState();
     for (int i = 0; i < num; i++) {
-      contents.add(gs.getPieceForId(st.nextToken()));
+      GamePiece piece = gs.getPieceForId(st.nextToken());
+      if (piece != null) { //BR// getPieceForId can return null.
+        contents.add(piece);
+      }
     }
 
     GameModule.getGameModule().setMatSupport(true);
