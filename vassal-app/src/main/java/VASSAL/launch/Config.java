@@ -29,6 +29,8 @@ public interface Config {
 
   Path getConfDir();
 
+  Path getCacheDir();
+
   Path getTempDir();
 
   Path getPrefsDir();
