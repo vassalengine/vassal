@@ -2,6 +2,7 @@
 
 * 10446: Removed more items deprecated for over a year
 * 10445: Improved browser launch support
+* 10432: Store the tile cache in %LOCALAPPDATA% instead of %APPDATA% on Windows
 * 10430: Upgrade to Java 17 for Windows, Mac packages
 * 10412: Double the max heap for modules which run out of memory during loading
 * 10405: Log replay of delete command behaves differently after load of
