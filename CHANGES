@@ -13,6 +13,8 @@
 * 10404: Catch FileNotFoundException when reading prefs files
 * 10399: ThrowableUtils.throwAncestor() throws wrong object; throwMe() uses
     wrong constructor
+* 10394: Add a Key Command to Can Rotate trait to rotate directly to a facing
+    specified by an expression
 
 3.6.0-beta2 - 7 September 2021
 
