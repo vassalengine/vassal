@@ -1,5 +1,7 @@
 3.6.0-beta3 - ???
 
+* 10454: Game Piece Palette allows setting of default width for "docked" Gamei
+    Piece Palette
 * 10446: Removed more items deprecated for over a year
 * 10445: Improved browser launch support
 * 10432: Store the tile cache in %LOCALAPPDATA% instead of %APPDATA% on Windows
