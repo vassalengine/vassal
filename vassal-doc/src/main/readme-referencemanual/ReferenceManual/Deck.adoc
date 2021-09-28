@@ -119,7 +119,7 @@ May not be necessary or desirable if the Map Window contains a board on which th
 
 *Hotkey to send when Deck empties:*::  Select the <<NamedKeyStroke.adoc#top,Keystroke Command or Named Command>> to send whenever enough cards are removed from the Deck to empty it.
 
-*Include command to send entire deck to another deck:*  If checked, the right-click context menu for this Deck will include a command that sends every Game Piece in this Deck to a different designated Deck.
+*Include command to send entire deck to another deck:*::  If checked, the right-click context menu for this Deck will include a command that sends every Game Piece in this Deck to a different designated Deck.
 For example, this can be used to reshuffle a discard pile into its original deck.
 The following four attributes are used to configure this option.
 
@@ -157,9 +157,16 @@ For each expression, a map-level property called __<deckName>_<expression name>_
 The exposed value is number of pieces for which that expression evaluates to _true_.
 An example of how to do this is provided below.
 
-NOTE: Currently the only "dynamic" property which can be used in counting expressions is _playerSide_.
+NOTE: Currently, the only "dynamic" property which can be used in counting expressions is _playerSide_.
 Other dynamic properties will most likely not update if they change after pieces move into a deck.
 
+*Restrict adding counters by Drag 'n Drop:*::
+When selected, you can add an expressions that Cards must satisfy to be allowed to be added to a Deck manually by Drag 'n Drop movement. If a Player drops a card onto the Deck that does not satisfy the expression, then the card will 'snap' back to where it was dragged from.
+
+NOTE: This option does NOT affect cards being added to the Deck by any other mechanism, other than manual Drag 'n Drop.
+
+*Dropped counters must match expression:*::
+Enter a <<PropertyMatchExpression.adoc#top,Property Match Expression>> that when evaluated against each Card must evaluate to true to allow the Card to be added to the Deck.
 
 |image:images/Deck.png[]
 
