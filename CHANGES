@@ -1,5 +1,7 @@
 3.6.0-beta3 - ???
 
+* 10466: Reference manual missing description of restrict counters to Deck
+    option
 * 10454: Game Piece Palette allows setting of default width for "docked" Gamei
     Piece Palette
 * 10446: Removed more items deprecated for over a year
