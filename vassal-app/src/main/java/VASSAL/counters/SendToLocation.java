@@ -403,10 +403,23 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
           dest = map.snapTo(dest);
         }
         c = c.append(map.placeOrMerge(outer, dest));
+
+        // Mat support
+        if ((c != null) && GameModule.getGameModule().isMatSupport()) {
+          // If a cargo piece has been "sent", find it a new Mat if needed.
+          if (Boolean.TRUE.equals(outer.getProperty(MatCargo.IS_CARGO))) { //NON-NLS
+            final MatCargo cargo = (MatCargo) Decorator.getDecorator(outer, MatCargo.class);
+            if (cargo != null) {
+              c = c.append(cargo.findNewMat());
+            }
+          }
+        }
+
         // Apply Auto-move key
         if (map.getMoveKey() != null) {
           c = c.append(outer.keyEvent(map.getMoveKey()));
         }
+
         if (parent != null) {
           c = c.append(parent.pieceRemoved(outer));
         }
@@ -432,6 +445,17 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         c = c.append(backMap.placeOrMerge(outer, backPoint));
         dest = backPoint;
 
+        // Mat support
+        if ((c != null) && GameModule.getGameModule().isMatSupport()) {
+          // If a cargo piece has been "sent", find it a new Mat if needed.
+          if (Boolean.TRUE.equals(outer.getProperty(MatCargo.IS_CARGO))) { //NON-NLS
+            final MatCargo cargo = (MatCargo) Decorator.getDecorator(outer, MatCargo.class);
+            if (cargo != null) {
+              c = c.append(cargo.findNewMat());
+            }
+          }
+        }
+
         // Apply Auto-move key
         if (backMap.getMoveKey() != null) {
           c = c.append(outer.keyEvent(backMap.getMoveKey()));
@@ -441,15 +465,6 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
 
     // Mat support
     if ((c != null) && GameModule.getGameModule().isMatSupport()) {
-
-      // If a cargo piece has been "sent", find it a new Mat if needed.
-      if (Boolean.TRUE.equals(outer.getProperty(MatCargo.IS_CARGO))) { //NON-NLS
-        final MatCargo cargo = (MatCargo) Decorator.getDecorator(outer, MatCargo.class);
-        if (cargo != null) {
-          c = c.append(cargo.findNewMat());
-        }
-      }
-
       // If a Mat has been sent, send all its contents, at an appropriate offset.
       if ((offsets != null) && dest != null) {
         for (int i = 0; i < contents.size(); i++) {
