@@ -242,6 +242,26 @@ public class MatCargo extends Decorator implements TranslatablePiece {
     return findNewMat(getMap(), getPosition());
   }
 
+
+  /**
+   * Checks if GamePiece gp is a MatCargo, and if so finds it a new mat if needed (or clears it if it has moved off its former mat)
+   * @param c Command to which to append
+   * @param gp GamePiece
+   * @return Command c with any needed additional commands appended
+   */
+  public static Command findNewMat(Command c, GamePiece gp) {
+    if (GameModule.getGameModule().isMatSupport()) {
+      // If a cargo piece has been "sent", find it a new Mat if needed.
+      if (Boolean.TRUE.equals(gp.getProperty(MatCargo.IS_CARGO))) { //NON-NLS
+        final MatCargo cargo = (MatCargo) Decorator.getDecorator(gp, MatCargo.class);
+        if (cargo != null) {
+          c = c.append(cargo.findNewMat());
+        }
+      }
+    }
+    return c;
+  }
+
   /**
    * @return current Mat we are on top of (or null for none)
    */
