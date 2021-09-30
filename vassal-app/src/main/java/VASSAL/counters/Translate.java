@@ -283,6 +283,9 @@ public class Translate extends Decorator implements TranslatablePiece {
     // Move the piece
     c = c.append(map.placeOrMerge(outer, dest));
 
+    // If a cargo piece has been "sent", find it a new Mat if needed.
+    c = MatCargo.findNewMat(c, outer);
+    
     // Apply after Move Key
     if (map.getMoveKey() != null) {
       c = c.append(outer.keyEvent(map.getMoveKey()));
@@ -292,16 +295,6 @@ public class Translate extends Decorator implements TranslatablePiece {
     final Stack parent = outer.getParent();
     if (parent != null) {
       c = c.append(parent.pieceRemoved(outer));
-    }
-
-    if (GameModule.getGameModule().isMatSupport()) {
-      // If a cargo piece has been "sent", find it a new Mat if needed.
-      if (Boolean.TRUE.equals(outer.getProperty(MatCargo.IS_CARGO))) { //NON-NLS
-        final MatCargo cargo = (MatCargo) Decorator.getDecorator(outer, MatCargo.class);
-        if (cargo != null) {
-          c = c.append(cargo.findNewMat());
-        }
-      }
     }
 
     return c;
