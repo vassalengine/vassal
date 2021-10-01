@@ -395,18 +395,21 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
     public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
       super.remove(fb, offset, length);
       updateValueFromKeyName();
+      keyName.setCaretPosition(offset);
     }
 
     @Override
     public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
       super.insertString(fb, offset, string, attr);
       updateValueFromKeyName();
+      keyName.setCaretPosition(offset + string.length());
     }
 
     @Override
     public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
       super.replace(fb, offset, length, text, attrs);
       updateValueFromKeyName();
+      keyName.setCaretPosition(offset + text.length());
     }
   }
 
