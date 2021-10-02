@@ -25,6 +25,7 @@ import java.awt.Shape;
 import java.awt.Point;
 
 import java.util.Objects;
+import javax.swing.JLabel;
 import javax.swing.KeyStroke;
 
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
@@ -56,12 +58,29 @@ public class Deselect extends Decorator implements TranslatablePiece {
   protected KeyCommand deselectCommand;
   protected String description;
   protected Boolean unstack;
+  protected String deselectType;
+
+  // Translated Destination descriptions
+  protected static final String DESELECT_THIS = "D"; // NON-NLS
+  protected static final String DESELECT_ALL = "A"; // NON-NLS
+  protected static final String DESELECT_SELECT_ONLY = "S"; // NON-NLS
+  protected static final String[] DESELECT_OPTIONS = {
+    DESELECT_THIS, DESELECT_ALL, DESELECT_SELECT_ONLY
+  };
+  // Actual valued recorded for Destination option
+  protected static final String[] DESELECT_KEYS = {
+    Resources.getString("Editor.Deselect.deselect_this_piece"),
+    Resources.getString("Editor.Deselect.deselect_all_pieces"),
+    Resources.getString("Editor.Deselect.select_only_this_piece")
+  };
+
 
   public Deselect() {
     commandName = Resources.getString("Editor.Deselect.deselect");
     key = NamedKeyStroke.of(KeyStroke.getKeyStroke("K"));
     description = "";
     unstack = false;
+    deselectType = DESELECT_THIS;
   }
 
   public Deselect(String type, GamePiece inner) {
@@ -77,13 +96,15 @@ public class Deselect extends Decorator implements TranslatablePiece {
     key = st.nextNamedKeyStroke('K');
     description = st.nextToken("");
     unstack = st.nextBoolean(false);
+    deselectType = st.nextToken(DESELECT_THIS);
+
     command = null;
   }
 
   @Override
   public String myGetType() {
     final SequenceEncoder se = new SequenceEncoder(DELIMITER);
-    se.append(commandName).append(key).append(description).append(unstack);
+    se.append(commandName).append(key).append(description).append(unstack).append(deselectType);
     return ID + se.getValue();
   }
 
@@ -116,21 +137,31 @@ public class Deselect extends Decorator implements TranslatablePiece {
     myGetKeyCommands();
     if (deselectCommand.matches(stroke)) {
       final GamePiece outer = Decorator.getOutermost(this);
-
       final Map m = getMap();
 
-      if (unstack) {
-        final Stack stack = outer.getParent();      //BR// If we're now being dragged around as part of a stack
-        if (stack != null) {
-          final Point pos = outer.getPosition();    //BR// Figure out where stack was/is
-          stack.setExpanded(true);            //BR// Expand the stack
-          stack.remove(outer);                //BR// Remove our piece from the stack
-          c = m.placeAt(outer, pos);          //BR// Put it back on the map so it won't be missing
-        }
+      if (DESELECT_ALL.equals(deselectType)) {
+        DragBuffer.getBuffer().clear();
+        KeyBuffer.getBuffer().clear();
       }
-      outer.setProperty(Properties.SELECTED, false); //BR// Mark as not selected
-      DragBuffer.getBuffer().remove(outer); //BR// Remove from the drag buffer
-      KeyBuffer.getBuffer().remove(outer);  //BR// Remove from the key buffer
+      else if (DESELECT_SELECT_ONLY.equals(deselectType)) {
+        DragBuffer.getBuffer().clear();
+        KeyBuffer.getBuffer().clear();
+        DragBuffer.getBuffer().add(outer);
+        KeyBuffer.getBuffer().add(outer);
+      }
+      else {
+        if (unstack) {
+          final Stack stack = outer.getParent();       //BR// If we're now being dragged around as part of a stack
+          if (stack != null) {
+            final Point pos = outer.getPosition();     //BR// Figure out where stack was/is
+            stack.setExpanded(true);                   //BR// Expand the stack
+            stack.remove(outer);                       //BR// Remove our piece from the stack
+            c = m.placeAt(outer, pos);                 //BR// Put it back on the map so it won't be missing
+          }
+        }
+        DragBuffer.getBuffer().remove(outer);          //BR// Remove from the drag buffer
+        KeyBuffer.getBuffer().remove(outer);           //BR// Remove from the key buffer
+      }
     }
     return c;
   }
@@ -186,6 +217,7 @@ public class Deselect extends Decorator implements TranslatablePiece {
     if (! Objects.equals(commandName, c.commandName)) return false;
     if (! Objects.equals(description, c.description)) return false;
     if (! Objects.equals(unstack, c.unstack)) return false;
+    if (! Objects.equals(deselectType, c.deselectType)) return false;
     return Objects.equals(key, c.key);
   }
 
@@ -195,6 +227,8 @@ public class Deselect extends Decorator implements TranslatablePiece {
     private final NamedHotKeyConfigurer keyInput;
     private final BooleanConfigurer unstackInput;
     private final TraitConfigPanel controls;
+    private final TranslatingStringEnumConfigurer deselectTypeInput;
+    private final JLabel unstackLabel;
 
     public Ed(Deselect p) {
       controls = new TraitConfigPanel();
@@ -210,8 +244,26 @@ public class Deselect extends Decorator implements TranslatablePiece {
       keyInput = new NamedHotKeyConfigurer(p.key);
       controls.add("Editor.keyboard_command", keyInput);
 
+      unstackLabel = new JLabel(Resources.getString("Editor.Deselect.remove_piece_from_stack"));
       unstackInput = new BooleanConfigurer(p.unstack);
-      controls.add("Editor.Deselect.remove_piece_from_stack", unstackInput);
+      controls.add(unstackLabel, unstackInput);
+
+      deselectTypeInput = new TranslatingStringEnumConfigurer(DESELECT_OPTIONS, DESELECT_KEYS);
+      deselectTypeInput.setValue(DESELECT_THIS);
+      for (final String deselectOption : DESELECT_OPTIONS) {
+        if (deselectOption.substring(0, 1).equals(p.deselectType)) {
+          deselectTypeInput.setValue(deselectOption);
+        }
+      }
+      deselectTypeInput.addPropertyChangeListener(arg0 -> updateVisibility());
+      controls.add("Editor.Deselect.deselection_type", deselectTypeInput);
+
+      updateVisibility();
+    }
+
+    private void updateVisibility() {
+      unstackLabel.setVisible(DESELECT_THIS.equals(deselectTypeInput.getValueString()));
+      unstackInput.getControls().setVisible(DESELECT_THIS.equals(deselectTypeInput.getValueString()));
     }
 
     @Override
@@ -222,7 +274,7 @@ public class Deselect extends Decorator implements TranslatablePiece {
     @Override
     public String getType() {
       final SequenceEncoder se = new SequenceEncoder(DELIMITER);
-      se.append(nameInput.getValueString()).append(keyInput.getValueString()).append(descInput.getValueString()).append(unstackInput.getValueString());
+      se.append(nameInput.getValueString()).append(keyInput.getValueString()).append(descInput.getValueString()).append(unstackInput.getValueString()).append(deselectTypeInput.getValueString());
       return ID + se.getValue();
     }
 

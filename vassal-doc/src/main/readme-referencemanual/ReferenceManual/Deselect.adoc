@@ -20,6 +20,8 @@ A <<GamePiece.adoc#top,Game Piece>> with this trait will have a command that cau
 
 *Remove piece from stack:*:: If checked, then when this trait is activated the piece will _also_ be removed from any Stack it is a part of. This can be useful in games that involve "dropping off and picking up" units from armies, because a <<Marker.adoc#top,Place Marker>> trait will normally add the new marker to the current stack.
 
+*Deselection type:*:: Choose whether you wish to deselect this piece, deselect all pieces, or select only this piece.
+
 |image:images/Deselect.png[]
 _Deselect this piece without removing it from it's Stack when the *Deselect* menu command is selected, on receipt of the *Ctrl+K* Keystroke Command._
 |===

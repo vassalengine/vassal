@@ -53,6 +53,8 @@ import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
 import VASSAL.tools.swing.SwingUtils;
 
+import static VASSAL.counters.Mat.MAT_NAME;
+
 /**
  * Selects and unselects pieces on the map, using the mouse.
  * <br><br>
@@ -258,7 +260,6 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
 
           // If we've added a mat, add all its pieces to the selection.
           if (GameModule.getGameModule().isMatSupport() && !SwingUtils.isSelectionToggle(e)) {
-
             final Object o = p.getProperty(Mat.MAT_CONTENTS);
             if (o instanceof List) {
               final List<GamePiece> matPieces = (List<GamePiece>)o;
@@ -266,18 +267,6 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
                 kbuf.add(mp);
               }
             }
-
-            /*
-            if (p instanceof Decorator) {
-              final Mat mat = (Mat)Decorator.getDecorator(Decorator.getOutermost(p), Mat.class);
-              if (mat != null) {
-                final List<GamePiece> matPieces = new ArrayList<GamePiece>(mat.getContents());
-                for (final GamePiece mp : matPieces) {
-                  kbuf.add(mp);
-                }
-              }
-            }
-            */
           }
         }
         else {
@@ -298,12 +287,30 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
         }
         // End RFE 1659481
 
-        // If we're a cargo piece, and on a mat, then a simple left click grabs us uniquely out of the selection if we're in it
         if (GameModule.getGameModule().isMatSupport() && !SwingUtils.isSelectionToggle(e) && !SwingUtils.isContextMouseButtonDown(e) && !e.isShiftDown()) {
-          final String matName = (String)p.getProperty(MatCargo.CURRENT_MAT);
+          // If we're a cargo piece, and on a mat, then a simple left click grabs us uniquely out of the selection if we're in it
+          String matName = (String)p.getProperty(MatCargo.CURRENT_MAT);
           if ((matName != null) && !matName.isEmpty()) {
             maybeClickPiece = p;
             bandSelect = BandSelectType.NONE;
+          }
+
+          // If we ARE a mat, then double-clicking selects ONLY this piece, but single clicking guarantees picking up all the cargo
+          matName = (String)p.getProperty(MAT_NAME);
+          if ((matName != null) && !matName.isEmpty()) {
+            if (e.getClickCount() > 1) {
+              kbuf.clear();
+              kbuf.add(p);
+            }
+            else {
+              final Object o = p.getProperty(Mat.MAT_CONTENTS);
+              if (o instanceof List) {
+                final List<GamePiece> matPieces = (List<GamePiece>)o;
+                for (final GamePiece mp : matPieces) {
+                  kbuf.add(mp);
+                }
+              }
+            }
           }
         }
       }
