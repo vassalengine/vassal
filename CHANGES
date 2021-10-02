@@ -1,5 +1,6 @@
 3.6.0-beta3 - ???
 
+* 10476: Editor: Inserting text into middle of Key Command doesn't work
 * 10474: Movement traits need to update cargo's mat after movement before
     applying apply-on-move keystroke
 * 10466: Reference manual missing description of restrict counters to Deck
