@@ -825,7 +825,7 @@ public class PieceMover extends AbstractBuildable
               comm = comm.append(cargo.findNewMat(map, p));
             }
           }
-          else if (!"".equals(piece.getProperty(Mat.MAT_NAME))) {
+          else if (piece.getProperty(Mat.MAT_NAME) != null) {
             // If the piece being moved is a Mat, check if any of our cargo is being "left behind"
             final Mat thisMat = (Mat)Decorator.getDecorator(piece, Mat.class);
             if (thisMat != null) {
