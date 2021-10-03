@@ -741,7 +741,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       for (final GamePiece c : cargo) {
         final GamePiece newCargo = processGamePiece(c, command);
         command.append(((Mat) Decorator.getDecorator(newMatPiece, Mat.class)).makeAddCargoCommand(newCargo));
-       }
+      }
     }
 
     /**
