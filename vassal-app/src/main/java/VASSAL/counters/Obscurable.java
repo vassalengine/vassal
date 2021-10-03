@@ -63,6 +63,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   protected static final char BACKGROUND = 'B';
   protected static final char PEEK = 'P';
   protected static final char IMAGE = 'G';
+  protected static final char INSET2 = '2';
   protected static final String DEFAULT_PEEK_COMMAND = Resources.getString("Editor.Obscurable.default_peek_command");
 
   protected char obscureKey;
@@ -207,6 +208,8 @@ public class Obscurable extends Decorator implements TranslatablePiece {
         return obscuredToMeView.getShape();
       case INSET:
         return piece.getShape();
+      case INSET2:
+        return obscuredToMeView.getShape();
       case PEEK:
         if (peeking && Boolean.TRUE.equals(getProperty(Properties.SELECTED))) {
           return piece.getShape();
@@ -367,6 +370,14 @@ public class Obscurable extends Decorator implements TranslatablePiece {
         y - (int) (zoom * bounds.height / 2
           - .5 * zoom * obsBounds.height / 2),
         obs, zoom * 0.5);
+      break;
+    case INSET2:
+      obscuredToMeView.draw(g, x, y, obs, zoom);
+      final Rectangle bounds2 = piece.getShape().getBounds();
+      final Rectangle obsBounds2 = obscuredToMeView.getShape().getBounds();
+      piece.draw(g, x - (int) (zoom * .8 * obsBounds2.width / 2  - .8 * zoom * bounds2.width/2),
+                    y - (int) (zoom * .8 * obsBounds2.height / 2 - .8 * zoom * bounds2.height/2),
+        obs, zoom * 0.8);
       break;
     case PEEK:
       if (peeking && Boolean.TRUE.equals(getProperty(Properties.SELECTED))) {
@@ -629,14 +640,15 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     private final NamedHotKeyConfigurer peekKeyInput;
     private final StringConfigurer peekCommandInput;
     private final TraitConfigPanel controls = new TraitConfigPanel();
-    private final String[] optionNames = {"B", "P", "I", "U"}; // NON-NLS
+    private final String[] optionNames = {"B", "P", "I", "2", "U"}; // NON-NLS
     private final String[] optionKeys = {
       "Editor.Obscurable.background",
       "Editor.Obscurable.plain",
       "Editor.Obscurable.inset",
+      "Editor.Obscurable.inset2",
       "Editor.Obscurable.use_image"
     };
-    private final char[] optionChars = {BACKGROUND, PEEK, INSET, IMAGE};
+    private final char[] optionChars = {BACKGROUND, PEEK, INSET, INSET2, IMAGE};
     private final ImageSelector imagePicker;
     private final PieceAccessConfigurer accessConfig;
     private final JPanel showDisplayOption;
@@ -697,7 +709,15 @@ public class Obscurable extends Decorator implements TranslatablePiece {
         @Override
         public void paint(Graphics g) {
           g.clearRect(0, 0, getWidth(), getHeight());
-          switch (displayOption.getValueString().charAt(0)) {
+          char style = INSET;
+          for (int i = 0; i < optionNames.length; ++i) {
+            if (optionNames[i].equals(displayOption.getValueString())) {
+              style = optionChars[i];
+              break;
+            }
+          }
+
+          switch (style) {
             case BACKGROUND:
               g.setColor(Color.black);
               g.fillRect(0, 0, 60, 60);
@@ -709,6 +729,12 @@ public class Obscurable extends Decorator implements TranslatablePiece {
               g.fillRect(0, 0, 60, 60);
               g.setColor(Color.black);
               g.fillRect(0, 0, 30, 30);
+              break;
+            case INSET2:
+              g.setColor(Color.black);
+              g.fillRect(0, 0, 60, 60);
+              g.setColor(Color.white);
+              g.fillRect(10, 10, 40, 40);
               break;
             case PEEK:
               g.setColor(Color.black);
@@ -745,8 +771,8 @@ public class Obscurable extends Decorator implements TranslatablePiece {
         peekKeyInput.getControls().setVisible(optionNames[1].equals(evt.getNewValue()));
         peekCommandLabel.setVisible(optionNames[1].equals(evt.getNewValue()));
         peekCommandInput.getControls().setVisible(optionNames[1].equals(evt.getNewValue()));
-        imagePicker.getControls().setVisible(optionNames[3].equals(evt.getNewValue()));
-        showDisplayOption.setVisible(!optionNames[3].equals(evt.getNewValue()));
+        imagePicker.getControls().setVisible(optionNames[4].equals(evt.getNewValue()));
+        showDisplayOption.setVisible(!optionNames[4].equals(evt.getNewValue()));
         repack(controls);
       });
     }
