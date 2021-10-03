@@ -716,7 +716,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
   private class MatRefresher {
     private final GamePiece matPiece;
     private final Mat mat;
-    private ArrayList<GamePiece> cargo = new ArrayList<>();
+    private final List<GamePiece> cargo = new ArrayList<>();
 
     public MatRefresher(GamePiece piece) {
       this.matPiece = piece;
