@@ -53,7 +53,9 @@ This is useful for referee players or games with multi-player teams.
 *Display style:*:: Determines how a masked piece is seen by the owning player.
 The following options are available:
 +
-_Inset_ draws the regular piece image at reduced size over top of the mask image, inset into the upper left corner.
+_Inset_ draws the mask image at reduced size over top of the regular image, inset into the upper left corner.
++
+_Inset Image_ draws the regular image at reduced size over top of the mask image, inset into the center.
 +
 _Background_ draws the mask image at full size and the regular piece at reduced size centered within it.
 +
