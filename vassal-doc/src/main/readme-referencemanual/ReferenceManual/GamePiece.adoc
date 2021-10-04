@@ -200,7 +200,7 @@ Note, however, that Sub-Menu traits must always go *_below_* the traits that it 
 |===
 |<<ActionButton.adoc#top,Action Button>> |<<AreaOfEffect.adoc#top,Area Of Effect>> |<<BasicPiece.adoc#top,Basic Piece>> |<<CalculatedProperty.adoc#top,Calculated Property>> |<<Pivot.adoc#top,Can Pivot>>
 |<<Rotate.adoc#top,Can Rotate>> |<<#Clone,Clone>> |<<#Delete,Delete>> |<<NonStacking.adoc#top,Does not stack>> |<<DynamicProperty.adoc#top,Dynamic Property>>
-|<<GlobalHotkey.adoc#top,Global Hotkey>> |<<GlobalKeyCommand.adoc#top,Global Key Command>> |<<SetGlobalProperty.adoc#top,Global Property, Set>> |<<Hideable.adoc#top,Invisible>> |<<Layer.adoc#top,Layer>>
+|<<GlobalHotKey.adoc#top,Global Hotkey>> |<<GlobalKeyCommand.adoc#top,Global Key Command>> |<<SetGlobalProperty.adoc#top,Global Property, Set>> |<<Hideable.adoc#top,Invisible>> |<<Layer.adoc#top,Layer>>
 |<<MarkMoved.adoc#top,Mark When Moved>> |<<PropertyMarker.adoc#top,Marker>> |<<Mask.adoc#top,Mask>> |<<Mat.adoc#top,Mat>> |<<MatCargo.adoc#top,Mat Cargo>>
 |<<MenuSeparator.adoc#top,Menu Separator>> |<<Translate.adoc#top,Move fixed distance>>|<<MovementTrail.adoc#top,Movement Trail>> |<<NonRectangular.adoc#top,Non-Rectangular>> |<<Marker.adoc#top,Place Marker>>
 |<<PlaySound.adoc#top,Play Sound>> |<<PropertySheet.adoc#top,Property Sheet>> |<<UsePrototype.adoc#top,Prototype>> |<<Replace.adoc#top,Replace with Other>> |<<ReportChanges.adoc#top,Report Action>>
