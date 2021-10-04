@@ -375,8 +375,8 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       obscuredToMeView.draw(g, x, y, obs, zoom);
       final Rectangle bounds2 = piece.getShape().getBounds();
       final Rectangle obsBounds2 = obscuredToMeView.getShape().getBounds();
-      piece.draw(g, x - (int) (zoom * .8 * obsBounds2.width / 2  - .8 * zoom * bounds2.width/2),
-                    y - (int) (zoom * .8 * obsBounds2.height / 2 - .8 * zoom * bounds2.height/2),
+      piece.draw(g, x - (int) (0.4 * zoom * (obsBounds2.width - bounds2.width)),
+                    y - (int) (0.4 * zoom * (obsBounds2.height - bounds2.height)), 
         obs, zoom * 0.8);
       break;
     case PEEK:
