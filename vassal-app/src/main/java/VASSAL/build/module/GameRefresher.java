@@ -17,6 +17,32 @@
 
 package VASSAL.build.module;
 
+import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.GameModule;
+import VASSAL.build.GpIdChecker;
+import VASSAL.build.GpIdSupport;
+import VASSAL.build.IllegalBuildException;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.widget.PieceSlot;
+import VASSAL.command.ChangePiece;
+import VASSAL.command.Command;
+import VASSAL.command.CommandEncoder;
+import VASSAL.command.NullCommand;
+import VASSAL.command.RemovePiece;
+import VASSAL.configure.ConfigurerLayout;
+import VASSAL.counters.Deck;
+import VASSAL.counters.Decorator;
+import VASSAL.counters.GamePiece;
+import VASSAL.counters.Mat;
+import VASSAL.counters.MatCargo;
+import VASSAL.counters.Properties;
+import VASSAL.counters.Stack;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.BrowserSupport;
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.swing.SwingUtils;
+
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
@@ -41,32 +67,9 @@ import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 
 import net.miginfocom.swing.MigLayout;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import VASSAL.build.AbstractConfigurable;
-import VASSAL.build.GameModule;
-import VASSAL.build.GpIdChecker;
-import VASSAL.build.GpIdSupport;
-import VASSAL.build.IllegalBuildException;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.widget.PieceSlot;
-import VASSAL.command.ChangePiece;
-import VASSAL.command.Command;
-import VASSAL.command.CommandEncoder;
-import VASSAL.command.NullCommand;
-import VASSAL.command.RemovePiece;
-import VASSAL.configure.ConfigurerLayout;
-import VASSAL.counters.Deck;
-import VASSAL.counters.Decorator;
-import VASSAL.counters.GamePiece;
-import VASSAL.counters.Properties;
-import VASSAL.counters.Stack;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.BrowserSupport;
-import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.swing.SwingUtils;
 
 /**
  * GameRefresher Replace all counters in the same game with the current version
@@ -315,10 +318,57 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     final List<GamePiece> pieces = getCurrentGameRefresherPieces();
 
     /*
-     * 3. Generate the commands to update the pieces
+     * 2.1 Pull out any Mats and their Cargo for special treatment
      */
-    for (final GamePiece piece : pieces) {
-      processGamePiece(piece, command);
+    if (GameModule.getGameModule().isMatSupport()) {
+      final Set<GamePiece> otherPieces = new HashSet<>();
+      final List<GamePiece> cargo = new ArrayList<>();
+      final List<MatRefresher> mats = new ArrayList<>();
+
+      // Split the pieces out based on their type
+      for (final GamePiece piece : pieces) {
+        if (Boolean.TRUE.equals(piece.getProperty(MatCargo.IS_CARGO))) {
+          // Cargo
+          cargo.add(piece);
+        }
+        else if (piece.getProperty(Mat.MAT_ID) != null) {
+          // Mat
+          mats.add(new MatRefresher(piece));
+        }
+        else {
+          // Other Pieces
+          otherPieces.add(piece);
+        }
+      }
+
+      // Remove any cargo currently on a mat from the general cargo list and add to its MatRefresher
+      for (final MatRefresher mh : mats) {
+        mh.grabCargo(cargo);
+      }
+
+      // Refresh non-mat pieces
+      for (final GamePiece piece : otherPieces) {
+        processGamePiece(piece, command);
+      }
+
+      // Refresh Cargo not on Mats
+      for (final GamePiece piece : cargo) {
+        processGamePiece(piece, command);
+      }
+
+      // Refresh the Mats and their contained Cargo
+      for (final MatRefresher mh : mats) {
+        mh.refresh(command);
+      }
+
+    }
+    else {
+      /*
+       * 3. Generate the commands to update the pieces
+       */
+      for (final GamePiece piece : pieces) {
+        processGamePiece(piece, command);
+      }
     }
 
     log(Resources.getString("GameRefresher.run_refresh_counters_v3", theModule.getGameVersion()));
@@ -331,7 +381,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
   }
 
-  private void processGamePiece(GamePiece piece, Command command) {
+  private GamePiece processGamePiece(GamePiece piece, Command command) {
 
     // Piece needs to be on a map. Else how do we put it back.
     final Map map = piece.getMap();
@@ -345,7 +395,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
         remove.execute();
         command.append(remove);
       }
-      return;
+      return piece;
     }
 
     // Piece should have a parent stack (Decks are extensions of Stacks)
@@ -364,7 +414,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     if (newPiece == null) {
       notFoundCount++;
       log(Resources.getString("GameRefresher.refresh_error_nomatch_pieceslot", piece.getName(), piece.getId()));
-      return;
+      return piece;
     }
 
     updatedCount++;
@@ -437,6 +487,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
         }
       }
     }
+    return newPiece;
   }
 
   private Point getDeckFreePosition(Deck deck) {
@@ -659,7 +710,53 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     }
   }
 
+  /**
+   * Class to hold and refresh a Mat and it's cargo
+   */
+  private class MatRefresher {
+    private final GamePiece matPiece;
+    private final Mat mat;
+    private final List<GamePiece> cargo = new ArrayList<>();
 
+    public MatRefresher(GamePiece piece) {
+      this.matPiece = piece;
+      mat = (Mat) Decorator.getDecorator(piece, Mat.class);
+    }
+
+    /**
+     * Refresh this Mat and it's cargo
+     * 1. Remove all cargo from the Mat
+     * 2. Refresh the Mat
+     * 3. Refresh each Cargo and place back on the Mat
+     * @param command
+     */
+    public void refresh(Command command) {
+      // Remove any existing cargo
+      command.append(mat.makeRemoveAllCargoCommand());
+
+      // Refresh the Mat piece
+      final GamePiece newMatPiece = processGamePiece(matPiece, command);
+
+      // Now refresh each cargo piece and add it back to the mat
+      for (final GamePiece c : cargo) {
+        final GamePiece newCargo = processGamePiece(c, command);
+        command.append(((Mat) Decorator.getDecorator(newMatPiece, Mat.class)).makeAddCargoCommand(newCargo));
+      }
+    }
+
+    /**
+     * Remove any cargo on this mat from the supplied allCargo list
+     * @param allCargo
+     */
+    public void grabCargo(List<GamePiece> allCargo) {
+      for (final GamePiece cargoPiece : mat.getContents()) {
+        cargo.add(cargoPiece);
+        allCargo.remove(cargoPiece);
+      }
+
+    }
+
+  }
 }
 
 

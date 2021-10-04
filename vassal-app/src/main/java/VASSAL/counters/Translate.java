@@ -196,7 +196,7 @@ public class Translate extends Decorator implements TranslatablePiece {
     final GamePiece outer = getOutermost(target);
     if (GameModule.getGameModule().isMatSupport() && !(target instanceof Stack)) {
       final String matName = (String)outer.getProperty(Mat.MAT_NAME);
-      if (!"".equals(matName)) {
+      if (matName != null && !"".equals(matName)) {
         mat = (Mat) Decorator.getDecorator(outer, Mat.class);
         if (mat != null) {
           contents = mat.getContents();

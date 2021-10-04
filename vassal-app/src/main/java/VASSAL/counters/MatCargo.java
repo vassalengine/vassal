@@ -416,6 +416,9 @@ public class MatCargo extends Decorator implements TranslatablePiece {
       if (CURRENT_MAT.equals(key)) {
         return mat.getProperty(Mat.MAT_NAME);
       }
+      else if (Properties.IGNORE_GRID.equals(key) && mat != null) {
+        return true;
+      }
       else if (CURRENT_MAT_ID.equals(key)) {
         return mat.getProperty(Mat.MAT_ID);
       }
@@ -466,6 +469,9 @@ public class MatCargo extends Decorator implements TranslatablePiece {
     if (mat != null) {
       if (CURRENT_MAT.equals(key)) {
         return mat.getLocalizedProperty(Mat.MAT_NAME);
+      }
+      else if (Properties.IGNORE_GRID.equals(key) && mat != null) {
+        return true;
       }
       else if (CURRENT_MAT_BASIC_NAME.equals(key)) {
         return Decorator.getOutermost(mat).getLocalizedProperty(BASIC_NAME);
