@@ -43,8 +43,10 @@ public class RemovalAndDeprecationChecker {
   private Map<String, String> readRemoved() throws IOException {
     final Map<String, String> r = new HashMap<>();
     try (InputStream in = getClass().getResourceAsStream("/removed")) {
-      // cols are item name, version when removed
-      Processor.readCompSet(in, cols -> r.put(cols[0], cols[1]));
+      if (in != null) {
+        // cols are item name, version when removed
+        Processor.readCompSet(in, cols -> r.put(cols[0], cols[1]));
+      }
     }
     return r;
   }
@@ -53,12 +55,14 @@ public class RemovalAndDeprecationChecker {
     // deprecated is tab-separated: name  since  forRemoval
     final Map<String, String> d = new HashMap<>();
     try (InputStream in = getClass().getResourceAsStream("/deprecated")) {
-      Processor.readCompSet(in, cols -> {
-        if ("true".equals(cols[2])) { // forRemoval
-          // item name, deprecation date
-          d.put(cols[0], cols[1]);
-        }
-      });
+      if (in != null) {
+        Processor.readCompSet(in, cols -> {
+          if ("true".equals(cols[2])) { // forRemoval
+            // item name, deprecation date
+            d.put(cols[0], cols[1]);
+          }
+        });
+      }
     }
     return d;
   }
