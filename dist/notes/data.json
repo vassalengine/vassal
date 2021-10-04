@@ -17,6 +17,33 @@
   ],
   "changes": [
     {
+      "in": "3.6.0-beta3",
+      "since": "3.6.0-beta2",
+      "new_features": [
+        { "num": 10484, "desc": "Mats have more deselection options; double-clicking delesects cargo" },
+        { "num": 10468, "desc": "Refresh Counters support for Mats and Cargo" },
+        { "num": 10454, "desc": "Game Piece Palette allows setting of default width for \"docked\" Game Piece Palette" },
+        { "num": 10412, "desc": "Double the max heap for modules which run out of memory during loading" },
+        { "num": 10394, "desc": "Add a Key Command to Can Rotate trait to rotate directly to a facing specified by an expression" }
+      ],
+      "bug_fixes": [
+        { "num": 10476, "desc": "Editor: Inserting text into middle of Key Command doesn't work" },
+        { "num": 10474, "desc": "Movement traits need to update cargo's mat after movement before applying apply-on-move keystroke" },
+        { "num": 10405, "desc": "Log replay of delete command behaves differently after load of sebsequent log file" },
+        { "num": 10402, "desc": "NPE when trying to create new P2P Network" },
+        { "num": 10400, "desc": "Custom preferences in Global Options incorrectly use property name, not description" },
+        { "num": 10404, "desc": "Catch FileNotFoundException when reading prefs files" },
+        { "num": 10399, "desc": "ThrowableUtils.throwAncestor() throws wrong object; throwMe() uses wrong constructor" }
+      ],
+      "other_improvements": [
+         { "num": 10466, "desc": "Reference manual missing description of restrict counters to Deck option" },
+         { "num": 10446, "desc": "Removed more items deprecated for over a year"},
+         { "num": 10445, "desc": "Improved browser launch support" },
+         { "num": 10432, "desc": "Store the tile cache in %LOCALAPPDATA% instead of %APPDATA% on Windows" },
+         { "num": 10430, "desc": "Upgrade to Java 17 for Windows, Mac packages" }
+      ]
+    },
+    {
       "in": "3.6.0-beta2",
       "since": "3.6.0-beta1",
       "new_features": [
