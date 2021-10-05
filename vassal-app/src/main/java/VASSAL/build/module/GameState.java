@@ -1053,11 +1053,10 @@ public class GameState implements CommandEncoder {
       // Cache indices because indexOf() is linear;
       // otherwise sorting would be quadratic.
       private int indexOf(GamePiece p, VASSAL.build.module.Map m) {
-        Integer pi = indices.get(p);
-        if (pi == null) {
-          indices.put(p, pi = m.getPieceCollection().indexOf(p));
-        }
-        return pi;
+        return indices.computeIfAbsent(
+          p,
+          k -> m.getPieceCollection().indexOf(k)
+        );
       }
 
       @Override
@@ -1068,11 +1067,11 @@ public class GameState implements CommandEncoder {
           return bmap == null ?
             // order by id if neither piece is on a map
             a.getId().compareTo(b.getId()) :
-            // nonnull map sorts before null map
+            // null map < nonnull map
             -1;
         }
         else if (bmap == null) {
-          // null map sorts after nonnull map
+          // nonnull map > null map
           return 1;
         }
         else if (amap == bmap) {
