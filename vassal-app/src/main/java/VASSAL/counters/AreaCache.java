@@ -16,16 +16,16 @@
  */
 package VASSAL.counters;
 
-import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.geom.Area;
 import java.util.Map;
 
 import VASSAL.tools.concurrent.ConcurrentSoftHashMap;
 
 public class AreaCache {
-  private static final Map<Rectangle, Area> CACHE = new ConcurrentSoftHashMap<>();
+  private static final Map<Shape, Area> CACHE = new ConcurrentSoftHashMap<>();
 
-  public static Area get(Rectangle r) {
-    return CACHE.computeIfAbsent(r, k -> new Area(k));
+  public static Area get(Shape s) {
+    return CACHE.computeIfAbsent(s, k -> new Area(k));
   }
 }

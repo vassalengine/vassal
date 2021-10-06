@@ -636,10 +636,25 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   @Override
   public Rectangle boundingBox() {
     final Rectangle r = piece.boundingBox();
-    r.add(new Rectangle(
+
+    final Rectangle labelRect = new Rectangle(
       getLabelPosition(),
       baseOp != null ? baseOp.getSize() : new Dimension()
-    ));
+    );
+
+    Rectangle labelBounds;
+    if (rotateDegrees != 0) {
+      final AffineTransform tx = AffineTransform.getRotateInstance(
+        Math.toRadians(rotateDegrees)
+      );
+
+      labelBounds = tx.createTransformedShape(labelRect).getBounds();
+    }
+    else {
+      labelBounds = labelRect;
+    }
+
+    r.add(labelBounds);
     return r;
   }
 
@@ -662,19 +677,34 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       return innerShape;
     }
 
-    final Rectangle r = new Rectangle(
+    final Rectangle labelRect = new Rectangle(
       getLabelPosition(),
       baseOp != null ? baseOp.getSize() : new Dimension()
     );
 
+    Shape labelShape;
+    Rectangle labelBounds;
+
+    if (rotateDegrees != 0) {
+      final AffineTransform tx = AffineTransform.getRotateInstance(
+        Math.toRadians(rotateDegrees)
+      );
+
+      labelShape = tx.createTransformedShape(labelRect);
+      labelBounds = labelShape.getBounds();
+    }
+    else {
+      labelShape = labelBounds = labelRect;
+    }
+
     // If the label is completely enclosed in the current counter shape,
     // then we can just return the current shape
-    if (innerShape.contains(r.x, r.y, r.width, r.height)) {
+    if (innerShape.contains(labelBounds)) {
       return innerShape;
     }
 
     final Area a = new Area(innerShape);
-    a.add(AreaCache.get(r));
+    a.add(AreaCache.get(labelShape));
     return a;
   }
 

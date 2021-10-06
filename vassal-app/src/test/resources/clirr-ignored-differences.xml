@@ -60,6 +60,13 @@
         <method>java.util.concurrent.Future showDeprecated(java.lang.String)</method>
         <justification>Nothing external should use this</justification>
     </difference>
+    <difference>
+        <className>VASSAL/counters/AreaCache</className>
+        <differenceType>7005</differenceType>
+        <method>java.awt.geom.Area get(java.awt.Rectangle)</method>
+        <to>java.awt.geom.Area get(java.awt.Shape)</to>
+        <justification>Shape is more general</justification>
+    </difference>
 
     <!-- The Great Deprececation Removal of 2021 -->
 
@@ -1142,6 +1149,5 @@
         <method>void setBaseWindow(VASSAL.build.module.documentation.HelpWindow)</method>
         <justification>Deprecated for a year</justification>
     </difference>
-
 
 </differences>
