@@ -13,7 +13,7 @@ if [ ! -x "$JAVA" ]; then
 fi
 
 # Check the Java vesion; we require Java 11+.
-VERSION=$("$JAVA" -version 2>&1 | head -1 | sed -e 's/.* version "//; s/".*//')
+VERSION=$("$JAVA" -version 2>&1 | grep version | sed -e 's/.* version "//; s/".*//')
 
 # Java 8 and earlier formats version x.y as 1.x.y
 # Java 9 and later formats version x.y as x.y
