@@ -343,7 +343,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     }
 
     // Offset destination by Advanced Options offsets
-    if ((dest != null) && (destination.charAt(0) != 'G')) {
+    if (dest != null) {
       dest = offsetDestination(dest.x, dest.y, outer);
     }
 
