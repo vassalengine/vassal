@@ -1074,7 +1074,7 @@ public class GameState implements CommandEncoder {
           // nonnull map > null map
           return 1;
         }
-        else if (amap == bmap) {
+        else if (amap.getId().equals(bmap.getId())) {
           // same map, sort according to piece list
           return indexOf(a, amap) - indexOf(b, bmap);
         }
