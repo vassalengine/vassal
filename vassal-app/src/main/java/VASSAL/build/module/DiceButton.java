@@ -62,6 +62,8 @@ public class DiceButton extends AbstractToolbarItem {
   protected boolean promptAlways = false;
   protected boolean sortDice = false;
   protected final FormattedString reportFormat = new FormattedString("** $" + REPORT_NAME + "$ = $" + RESULT + "$ *** &lt;$" + GlobalOptions.PLAYER_NAME + "$&gt;"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+  protected int[] saveDice;
+  protected int numericTotal;
 
   /** @deprecated use launch from the superclass */
   @Deprecated(since = "2021-04-03", forRemoval = true)
@@ -86,6 +88,9 @@ public class DiceButton extends AbstractToolbarItem {
   public static final String PROMPT_ALWAYS = "prompt"; //$NON-NLS-1$
   public static final String REPORT_FORMAT = "reportFormat"; //$NON-NLS-1$
   public static final String SORT_DICE_RESULTS = "sortDice"; //NON-NLS
+
+  public static final String RESULT_N = "result#"; //$NON-NLS-1$
+  public static final String NUMERIC_TOTAL = "numericalTotal"; //$NON-NLS-1$
 
   /** Variable name for reporting format */
   public static final String RESULT = "result"; //$NON-NLS-1$
@@ -156,11 +161,18 @@ public class DiceButton extends AbstractToolbarItem {
   /**
    * Forwards the result of the roll to the {@link Chatter#send}
    * method of the {@link Chatter} of the {@link GameModule}.  Format is
-   * prefix+[comma-separated roll list]+suffix */
+   * prefix+[comma-separated roll list]+suffix
+   *
+   * New-style reporting is numericTotal and individual results
+   * */
   protected void DR() {
     final StringBuilder val = new StringBuilder();
     int total = addToTotal;
     int[] dice = null; // stays null if no sorting
+
+    // New-Style reporting. Old-stle code is too convoluted to unpick, just handle this separately.
+    saveDice = new int[nDice];
+    numericTotal = addToTotal;
 
     if (!reportTotal && nDice > 1 && sortDice) {
       dice = new int[nDice];
@@ -168,6 +180,10 @@ public class DiceButton extends AbstractToolbarItem {
 
     for (int i = 0; i < nDice; ++i) {
       final int roll = ran.nextInt(nSides) + 1 + plus;
+
+      saveDice[i] = roll;
+      numericTotal += roll;
+
       if (dice != null) {
         dice[i] = roll;
       }
@@ -186,6 +202,7 @@ public class DiceButton extends AbstractToolbarItem {
     }
     else if (dice != null) {
       Arrays.sort(dice);
+      Arrays.sort(saveDice);
       for (int i = 0; i < nDice; ++i) {
         val.append(dice[i]);
         if (i < nDice - 1) {
@@ -213,6 +230,12 @@ public class DiceButton extends AbstractToolbarItem {
     reportFormat.setProperty(N_SIDES, Integer.toString(nSides));
     reportFormat.setProperty(PLUS, Integer.toString(plus));
     reportFormat.setProperty(ADD_TO_TOTAL, Integer.toString(addToTotal));
+
+    reportFormat.setProperty(NUMERIC_TOTAL, Integer.toString(numericTotal));
+    for (int i = 0;i < nDice; i++) {
+      reportFormat.setProperty("result" + (i + 1), Integer.toString(saveDice[i]));
+    }
+
     final String text = reportFormat.getLocalizedText(this, "Editor.report_format");
     String report = text;
     if (text.length() > 0) {
@@ -270,7 +293,7 @@ public class DiceButton extends AbstractToolbarItem {
   public static class ReportFormatConfig implements TranslatableConfigurerFactory {
     @Override
     public Configurer getConfigurer(final AutoConfigurable c, final String key, final String name) {
-      return new PlayerIdFormattedStringConfigurer(key, name, new String[]{REPORT_NAME, RESULT, N_DICE, N_SIDES, PLUS, ADD_TO_TOTAL});
+      return new PlayerIdFormattedStringConfigurer(key, name, new String[]{REPORT_NAME, RESULT, NUMERIC_TOTAL, RESULT_N, N_DICE, N_SIDES, PLUS, ADD_TO_TOTAL});
     }
   }
 
