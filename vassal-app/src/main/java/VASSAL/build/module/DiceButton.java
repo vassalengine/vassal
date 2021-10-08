@@ -232,7 +232,7 @@ public class DiceButton extends AbstractToolbarItem {
     reportFormat.setProperty(ADD_TO_TOTAL, Integer.toString(addToTotal));
 
     reportFormat.setProperty(NUMERIC_TOTAL, Integer.toString(numericTotal));
-    for (int i = 0;i < nDice; i++) {
+    for (int i = 0; i < nDice; i++) {
       reportFormat.setProperty("result" + (i + 1), Integer.toString(saveDice[i]));
     }
 
