@@ -233,7 +233,7 @@ public class DiceButton extends AbstractToolbarItem {
       keepDice = new int[keepCount];
 
       if (KEEP_SMALLEST.equals(keepOption)) {
-        System.arraycopy(tempDice, 0, sortDice, 0, keepCount);
+        System.arraycopy(tempDice, 0, keepDice, 0, keepCount);
       }
       else {
         for (int i = 0; i < keepCount; i++) {
@@ -288,7 +288,7 @@ public class DiceButton extends AbstractToolbarItem {
     reportFormat.setProperty(PLUS, Integer.toString(plus));
     reportFormat.setProperty(ADD_TO_TOTAL, Integer.toString(addToTotal));
 
-    for (int i = 0; i < keepValue; i++) {
+    for (int i = 0; i < keepCount; i++) {
       reportFormat.setProperty("result" + (i + 1), Integer.toString(keepDice[i]));
     }
     reportFormat.setProperty(NUMERIC_TOTAL, Integer.toString(numericTotal));
