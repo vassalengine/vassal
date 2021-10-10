@@ -6,31 +6,81 @@
 '''''
 
 === Dice Button
+A Dice Button adds a toolbar button that implements the rolling and reporting of a set of Dice.
+
+The number of dice to roll can either be fixed for every roll, or can be entered by the user for each roll.
+
+==== Properties
+A Dice Button exports its results to 3 Global Properties that are accessible from other Vassal components. These properties will keep there values until the next roll, including in save games a logs.
+
+Each property name is of the form <DiceButtonName>_<property>. The three properties exported are:
+
+* result - the value of the $result$ report format variable.
+* total - the value of the $numericTotal$ report format variable.
+* keep - the value of the $keepCount$ report format variable.
+
+(_Example:_ A dice button is named "2d6" After a roll of 11, the Global Property named *2d6_result* will resolve to "11" until the next roll, assuming the _Report Total_ option has been checked, or "5,6" if not. The property *2d6_total* will contain "11" and the property *2d6_keep* will contain "2".
 
 [width="100%",cols="50%a,^50%a",]
 |===
 |
-*Name:* is the text accompanying the resulting roll in the Chat Log.
-You may specify *Button Text* and *Tooltip Text* for the button and supply an image file to use as a *Button Icon*. You may also define a *Hotkey* that acts as a keyboard shortcut for pressing the button.
-Check the _Report Total_ box to report the sum of all dice (e.g.
-3-18 for 3x6-sided dice). If the box is unchecked, the dice will be reported individually (e.g.
-as "2,6,3"). If the _Prompt for values_ box is checked, then players will be asked to select the number of sides/dice every time they press the dice button during a game.
+*Name:*:: Sets the name of Dice Button. This used for reporting and to set global <<Properties.adoc#top,Properties>> holding the results of the roll.
 
-*Report Format*:: specifies the <<MessageFormat.adoc#top,Message Format>> for reporting the results:
+*Button text:*:: Text of the toolbar button.
+
+*Tooltip text:*:: Tooltip text for the toolbar button.
+
+*Button icon:*:: Image to use for the toolbar button.
+
+*Hotkey:*:: A Global Hotkey that will activate the Dice Button.
+
+*Report format:*:: specifies the <<MessageFormat.adoc#top,Message Format>> for reporting the results:
 +
-_$name$_: Name of the button as specified above. +
-_$result$_: The result of the roll, either a list of the rolls, or the total of all rolls if the _Report Total_ option is checked. +
-_$result#$_: The result of each individial roll. e.g. $result1$, $result2$. +
-_$numericTotal$_: The total of all dice rolls, regardless of the setting of the _Report Total_ option. +
-_$nDice$_: The number of dice. +
-_$nSides$_: The number of sides. +
-_$plus$_: The modifier to each die. +
-_$addToTotal$_: The value added to the total.
+_$name$_::: Name of the button. +
+_$result$_::: The result of the roll, either a list of the rolls, or the total of all rolls if the _Report Total_ option is checked. +
+_$result#$_::: The result of each individial roll. e.g. $result1$, $result2$. +
+_$numericTotal$_::: The total of all dice rolls, regardless of the setting of the _Report Total_ option. +
+_$nDice$_::: The number of dice rolled. +
+_$nSides$_::: The number of sides on each die. +
+_$plus$_::: The modifier added to each die. +
+_$addToTotal$_::: The modifer added to the total. +
+_$keepDice$_::: The number of dice that where requested to be kept. This will be the _Value of N_ if one of the _keep_ options where selected, otherwise it will be the same as $nDice$. +
+_$keepCount$_::: The actual number of dice that where kept.
 
-The _$result$_ of the dice roll is stored as a global <<Properties.adoc#top,Property>> under the name <name>_result, where <name> is the name given to the component.
-(_Example:_ A dice button is named "2d6" After a roll of 11, the property name $2d6_result$ will resolve to "11" until the next roll.
+*Prompt for values when button pushed:*:: When unselected, that values for the following 4 fields are fixed for all dice rolls. When selected, the user is prompted for these values in a popup window when the Dice Button is activated.
+
+*Number of dice:*:: How many dice to roll.
+
+*Number if sides per dies:*:: What size should each die be?
+
+*Add to each die:*:: A number to add to each roll.
+
+*Add to overall total:*:: A number to add once to the overall total result.
+
+*Report Total:*:: Controls what is stored in the _$result$_ reporting variable and the globale result property. When unchecked, _$result$_ will contain a comma separated list of the individual roll results. If checked, _$result$_ will contain the roll total (same as _$numericResult$_).
+
+*Sort dice results:*:: When checked, the rolls that are kept will be sorted in order from smallest to largest when being reported.
+
+*Only keep certain rolls:*:: By default, every roll requested is reported and added to the total. Checking this option allows some rolls to be discarded and not included in reporting or totalling.
+
+*Keep criteria:*:: The criteria for keeping rolls can be selected from the following options: +
+_Keep rolls >= N_::: Only keep rolls greater than or equal to a sepcific value. +
+_Keep rolls == N_::: Only keep rolls equal to a specific number. +
+_Keep rolls <= N_::: Only keep rolls less than or equal to a sepcific value. +
+_Keep largest N rolls_::: Only keep the largest rolls.
+_Keep smallest N rolls_::: Only keep the smallest rolls.
+
+*Value of N:*:: Value to compare to when keeping specific rolls.
 
 |
-image:images/DiceButton.png[]
+image:images/DiceButton.png[] +
+_A basic Dice Button to roll 2 die 6_
+
+image:images/DiceButton2.png[] +
+_Prompt for values window_
+
+image:images/DiceButton3.png[] +
+_A more complex example, rolling 20 die 6 and reporting the number of 5's and 6's rolled._
 
 |===
+

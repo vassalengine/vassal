@@ -85,6 +85,7 @@ public class DiceButton extends AbstractToolbarItem {
   /** Keep Options */
   protected static final String KEEP_SMALLEST = "s";
   protected static final String KEEP_LARGEST = "l";
+  protected static final String KEEP_EQUAL = "=";
   protected static final String KEEP_GREATER = ">";
   protected static final String KEEP_LESS = "<";
 
@@ -94,6 +95,8 @@ public class DiceButton extends AbstractToolbarItem {
 
   protected String tooltip = ""; //$NON-NLS-1$
   protected final MutableProperty.Impl property = new Impl("", this);
+  protected final MutableProperty.Impl totalProp = new Impl("", this);
+  protected final MutableProperty.Impl keepProp = new Impl("", this);
 
   // These five identical to AbstractToolbarItem, and are only here for "clirr purposes"
   @Deprecated(since = "2020-10-21", forRemoval = true) public static final String BUTTON_TEXT = "text"; //$NON-NLS-1$
@@ -145,6 +148,7 @@ public class DiceButton extends AbstractToolbarItem {
 
         final AutoConfigurer ac = new AutoConfigurer(delegate);
         final ConfigurerWindow w = new ConfigurerWindow(ac, true);
+        w.setTitle(getConfigureName());
         for (final String key : getAttributeNames()) {
           if (!keepAttributes.contains(key)) {
             final Component controls = ac.getConfigurer(key).getControls();
@@ -210,6 +214,9 @@ public class DiceButton extends AbstractToolbarItem {
       else if (KEEP_LESS.equals(keepOption) && roll > keepValue) {
         continue;
       }
+      else if (KEEP_EQUAL.equals(keepOption) && roll != keepValue) {
+        continue;
+      }
 
       keepCount += 1;
       keepDice[keepCount - 1] = roll;
@@ -260,9 +267,11 @@ public class DiceButton extends AbstractToolbarItem {
     }
 
     final String report = formatResult(val.toString());
-    final Command c = report.length() == 0 ? new NullCommand() : new Chatter.DisplayText(GameModule.getGameModule().getChatter(), report);
+    Command c = report.length() == 0 ? new NullCommand() : new Chatter.DisplayText(GameModule.getGameModule().getChatter(), report);
     c.execute();
-    c.append(property.setPropertyValue(val.toString()));
+    c = c.append(property.setPropertyValue(val.toString()))
+      .append(totalProp.setPropertyValue(Integer.toString(numericTotal)))
+      .append(keepProp.setPropertyValue(Integer.toString(keepCount)));
     GameModule.getGameModule().sendAndLog(c);
   }
 
@@ -301,14 +310,14 @@ public class DiceButton extends AbstractToolbarItem {
       BUTTON_TEXT,
       TOOLTIP,
       ICON,
+      HOTKEY,
+      REPORT_FORMAT,
+      PROMPT_ALWAYS,
       N_DICE,
       N_SIDES,
       PLUS,
       ADD_TO_TOTAL,
       REPORT_TOTAL,
-      HOTKEY,
-      PROMPT_ALWAYS,
-      REPORT_FORMAT,
       SORT_DICE_RESULTS,
       KEEP_DICE,
       KEEP_OPTION,
@@ -323,14 +332,14 @@ public class DiceButton extends AbstractToolbarItem {
       Resources.getString(Resources.BUTTON_TEXT),
       Resources.getString(Resources.TOOLTIP_TEXT),
       Resources.getString(Resources.BUTTON_ICON),
+      Resources.getString(Resources.HOTKEY_LABEL),
+      Resources.getString("Editor.report_format"), //$NON-NLS-1$
+      Resources.getString("Editor.DiceButton.prompt_value"), //$NON-NLS-1$
       Resources.getString("Dice.number_of_dice"), //$NON-NLS-1$
       Resources.getString("Dice.number_of_sides"), //$NON-NLS-1$
       Resources.getString("Dice.add_to_each_side"), //$NON-NLS-1$
       Resources.getString("Dice.add_to_total"), //$NON-NLS-1$
       Resources.getString("Editor.DiceButton.report_total"), //$NON-NLS-1$
-      Resources.getString(Resources.HOTKEY_LABEL),
-      Resources.getString("Editor.DiceButton.prompt_value"), //$NON-NLS-1$
-      Resources.getString("Editor.report_format"), //$NON-NLS-1$
       Resources.getString("Editor.DiceButton.sort_results"), //$NON-NLS-1$
       Resources.getString("Editor.DiceButton.keep_dice"),
       Resources.getString("Editor.DiceButton.keep_option"),
@@ -357,8 +366,8 @@ public class DiceButton extends AbstractToolbarItem {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new TranslatingStringEnumConfigurer(key, name,
-        new String[] {KEEP_GREATER, KEEP_LESS, KEEP_LARGEST, KEEP_SMALLEST},
-        new String[] {"Editor.DiceButton.keep_greater_than", "Editor.DiceButton.keep_less_than", "Editor.DiceButton.keep_largest", "Editor.DiceButton.keep_smallest"});
+        new String[] {KEEP_GREATER, KEEP_EQUAL, KEEP_LESS, KEEP_LARGEST, KEEP_SMALLEST},
+        new String[] {"Editor.DiceButton.keep_greater_than", "Editor.DiceButton.keep_equal", "Editor.DiceButton.keep_less_than", "Editor.DiceButton.keep_largest", "Editor.DiceButton.keep_smallest"});
     }
   }
 
@@ -369,14 +378,14 @@ public class DiceButton extends AbstractToolbarItem {
       String.class,
       String.class,
       IconConfig.class,
-      Integer.class,
-      Integer.class,
-      Integer.class,
-      Integer.class,
-      Boolean.class,
       NamedKeyStroke.class,
-      Boolean.class,
       ReportFormatConfig.class,
+      Boolean.class,
+      Integer.class,
+      Integer.class,
+      Integer.class,
+      Integer.class,
+      Boolean.class,
       Boolean.class,
       Boolean.class,
       KeepConfig.class,
@@ -386,7 +395,7 @@ public class DiceButton extends AbstractToolbarItem {
 
   private final VisibilityCondition cond = () -> !promptAlways;
 
-  private final VisibilityCondition canSort = () -> !reportTotal;
+//  private final VisibilityCondition canSort = () -> !reportTotal;
 
   private final VisibilityCondition keep = () -> keepingDice;
 
@@ -395,9 +404,9 @@ public class DiceButton extends AbstractToolbarItem {
     if (List.of(N_DICE, N_SIDES, PLUS, ADD_TO_TOTAL).contains(name)) {
       return cond;
     }
-    else if (SORT_DICE_RESULTS.equals(name)) {
-      return canSort;
-    }
+//    else if (SORT_DICE_RESULTS.equals(name)) {
+//      return canSort;
+//    }
     else if (List.of(KEEP_OPTION, KEEP_COUNT).contains(name)) {
       return keep;
     }
@@ -421,6 +430,12 @@ public class DiceButton extends AbstractToolbarItem {
     ran = GameModule.getGameModule().getRNG();
     property.setPropertyValue("1"); // Initialize with a numeric value //$NON-NLS-1$
     property.addTo((MutablePropertiesContainer)parent);
+
+    totalProp.setPropertyValue("0");
+    totalProp.addTo((MutablePropertiesContainer)parent);
+
+    keepProp.setPropertyValue("0");
+    keepProp.addTo((MutablePropertiesContainer)parent);
   }
 
 
@@ -433,6 +448,8 @@ public class DiceButton extends AbstractToolbarItem {
     else if (NAME.equals(key)) {
       setConfigureName((String) o);
       property.setPropertyName(getConfigureName() + "_result"); //$NON-NLS-1$
+      totalProp.setPropertyName(getConfigureName() + "_total"); //$NON-NLS-1$
+      keepProp.setPropertyName(getConfigureName() + "_keep"); //$NON-NLS-1$
       getLaunchButton().setToolTipText((String) o);
     }
     else if (N_DICE.equals(key)) {
@@ -575,7 +592,7 @@ public class DiceButton extends AbstractToolbarItem {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GameModule.html", "DiceButton"); //$NON-NLS-1$ //$NON-NLS-2$
+    return HelpFile.getReferenceManualPage("DiceButton.html"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   /**
