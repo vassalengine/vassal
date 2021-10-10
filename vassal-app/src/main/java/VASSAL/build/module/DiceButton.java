@@ -34,6 +34,7 @@ import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.ConfigurerWindow;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
+import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
@@ -62,8 +63,30 @@ public class DiceButton extends AbstractToolbarItem {
   protected boolean promptAlways = false;
   protected boolean sortDice = false;
   protected final FormattedString reportFormat = new FormattedString("** $" + REPORT_NAME + "$ = $" + RESULT + "$ *** &lt;$" + GlobalOptions.PLAYER_NAME + "$&gt;"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-  protected int[] saveDice;
+
+  /** A list of individual rolls kept */
+  protected int[] keepDice;
+
+  /** Total of all dice kept, including per-die and per-roll adjustments */
   protected int numericTotal;
+
+  /** Are we keeping only specific rolls? */
+  protected boolean keepingDice = false;
+
+  /** What rule are we using to keep rolls? */
+  protected String keepOption = KEEP_GREATER;
+
+  /** How many rolls, or what size rolls are we keeping? */
+  protected int keepValue = 1;
+
+  /** Number of dice kept from those rolled */
+  protected int keepCount;
+
+  /** Keep Options */
+  protected static final String KEEP_SMALLEST = "s";
+  protected static final String KEEP_LARGEST = "l";
+  protected static final String KEEP_GREATER = ">";
+  protected static final String KEEP_LESS = "<";
 
   /** @deprecated use launch from the superclass */
   @Deprecated(since = "2021-04-03", forRemoval = true)
@@ -89,12 +112,15 @@ public class DiceButton extends AbstractToolbarItem {
   public static final String REPORT_FORMAT = "reportFormat"; //$NON-NLS-1$
   public static final String SORT_DICE_RESULTS = "sortDice"; //NON-NLS
 
-  public static final String RESULT_N = "result#"; //$NON-NLS-1$
-  public static final String NUMERIC_TOTAL = "numericalTotal"; //$NON-NLS-1$
+  public static final String KEEP_DICE = "keepDice";
+  public static final String KEEP_OPTION = "keepOption";
+  public static final String KEEP_COUNT = "keepCount";
 
   /** Variable name for reporting format */
   public static final String RESULT = "result"; //$NON-NLS-1$
   public static final String REPORT_NAME = "name"; //$NON-NLS-1$
+  public static final String RESULT_N = "result#"; //$NON-NLS-1$
+  public static final String NUMERIC_TOTAL = "numericalTotal"; //$NON-NLS-1$
 
   public DiceButton() {
     initLaunchButton();
@@ -166,46 +192,68 @@ public class DiceButton extends AbstractToolbarItem {
    * New-style reporting is numericTotal and individual results
    * */
   protected void DR() {
-    final StringBuilder val = new StringBuilder();
-    int total = addToTotal;
-    int[] dice = null; // stays null if no sorting
 
-    // New-Style reporting. Old-stle code is too convoluted to unpick, just handle this separately.
-    saveDice = new int[nDice];
+    keepDice = new int[nDice];
     numericTotal = addToTotal;
+    keepCount = 0;
 
-    if (!reportTotal && nDice > 1 && sortDice) {
-      dice = new int[nDice];
-    }
-
+    // Make nDice rolls.
     for (int i = 0; i < nDice; ++i) {
+
+      // Roll next die
       final int roll = ran.nextInt(nSides) + 1 + plus;
 
-      saveDice[i] = roll;
+      // Handle Keep >= or <= here. Just totally ignore them if they are out of range.
+      if (KEEP_GREATER.equals(keepOption) && roll < keepValue) {
+        continue;
+      }
+      else if (KEEP_LESS.equals(keepOption) && roll > keepValue) {
+        continue;
+      }
+
+      keepCount += 1;
+      keepDice[keepCount - 1] = roll;
       numericTotal += roll;
 
-      if (dice != null) {
-        dice[i] = roll;
+    }
+
+    // if Keep smallest or keep largest requested, resbuild saveDice, keepTotal and numericTotal
+    // with just the requested dice
+    if (List.of(KEEP_SMALLEST, KEEP_LARGEST).contains(keepOption)) {
+      final int[] tempDice = Arrays.copyOf(keepDice, keepDice.length);
+      Arrays.sort(tempDice);
+      keepCount = Math.max(0, Math.min(keepValue, tempDice.length));
+      keepDice = new int[keepCount];
+
+      if (KEEP_SMALLEST.equals(keepOption)) {
+        System.arraycopy(tempDice, 0, sortDice, 0, keepCount);
       }
-      else if (reportTotal) {
-        total += roll;
+      else {
+        for (int i = 0; i < keepCount; i++) {
+          keepDice[i] = tempDice[tempDice.length - keepCount + i];
+        }
       }
-      else { // do not sort
-        val.append(roll);
-        if (i < nDice - 1)
-          val.append(',');
+
+      numericTotal = addToTotal;
+      for (int i = 0; i < keepCount; i++) {
+        numericTotal += keepDice[i];
       }
     }
 
-    if (reportTotal) {
-      val.append(total);
+    // Sort what we are keeping if requested
+    if (sortDice) {
+      Arrays.sort(keepDice);
     }
-    else if (dice != null) {
-      Arrays.sort(dice);
-      Arrays.sort(saveDice);
-      for (int i = 0; i < nDice; ++i) {
-        val.append(dice[i]);
-        if (i < nDice - 1) {
+
+    // Build the legacy $result$ string
+    final StringBuilder val = new StringBuilder();
+    if (reportTotal) {
+      val.append(numericTotal);
+    }
+    else {
+      for (int i = 0; i < keepCount; ++i) {
+        val.append(keepDice[i]);
+        if (i < keepCount - 1) {
           val.append(',');
         }
       }
@@ -231,10 +279,12 @@ public class DiceButton extends AbstractToolbarItem {
     reportFormat.setProperty(PLUS, Integer.toString(plus));
     reportFormat.setProperty(ADD_TO_TOTAL, Integer.toString(addToTotal));
 
-    reportFormat.setProperty(NUMERIC_TOTAL, Integer.toString(numericTotal));
-    for (int i = 0; i < nDice; i++) {
-      reportFormat.setProperty("result" + (i + 1), Integer.toString(saveDice[i]));
+    for (int i = 0; i < keepValue; i++) {
+      reportFormat.setProperty("result" + (i + 1), Integer.toString(keepDice[i]));
     }
+    reportFormat.setProperty(NUMERIC_TOTAL, Integer.toString(numericTotal));
+    reportFormat.setProperty(KEEP_DICE, Integer.toString(keepValue));
+    reportFormat.setProperty(KEEP_COUNT, Integer.toString(keepCount));
 
     final String text = reportFormat.getLocalizedText(this, "Editor.report_format");
     String report = text;
@@ -260,6 +310,9 @@ public class DiceButton extends AbstractToolbarItem {
       PROMPT_ALWAYS,
       REPORT_FORMAT,
       SORT_DICE_RESULTS,
+      KEEP_DICE,
+      KEEP_OPTION,
+      KEEP_COUNT
     };
   }
 
@@ -278,7 +331,10 @@ public class DiceButton extends AbstractToolbarItem {
       Resources.getString(Resources.HOTKEY_LABEL),
       Resources.getString("Editor.DiceButton.prompt_value"), //$NON-NLS-1$
       Resources.getString("Editor.report_format"), //$NON-NLS-1$
-      Resources.getString("Editor.DiceButton.sort_results") //$NON-NLS-1$
+      Resources.getString("Editor.DiceButton.sort_results"), //$NON-NLS-1$
+      Resources.getString("Editor.DiceButton.keep_dice"),
+      Resources.getString("Editor.DiceButton.keep_option"),
+      Resources.getString("Editor.DiceButton.keep_count"),
     };
   }
 
@@ -293,7 +349,16 @@ public class DiceButton extends AbstractToolbarItem {
   public static class ReportFormatConfig implements TranslatableConfigurerFactory {
     @Override
     public Configurer getConfigurer(final AutoConfigurable c, final String key, final String name) {
-      return new PlayerIdFormattedStringConfigurer(key, name, new String[]{REPORT_NAME, RESULT, NUMERIC_TOTAL, RESULT_N, N_DICE, N_SIDES, PLUS, ADD_TO_TOTAL});
+      return new PlayerIdFormattedStringConfigurer(key, name, new String[]{REPORT_NAME, RESULT, NUMERIC_TOTAL, RESULT_N, N_DICE, N_SIDES, PLUS, ADD_TO_TOTAL, KEEP_DICE, KEEP_COUNT});
+    }
+  }
+
+  public static class KeepConfig implements ConfigurerFactory {
+    @Override
+    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+      return new TranslatingStringEnumConfigurer(key, name,
+        new String[] {KEEP_GREATER, KEEP_LESS, KEEP_LARGEST, KEEP_SMALLEST},
+        new String[] {"Editor.DiceButton.keep_greater_than", "Editor.DiceButton.keep_less_than", "Editor.DiceButton.keep_largest", "Editor.DiceButton.keep_smallest"});
     }
   }
 
@@ -313,12 +378,17 @@ public class DiceButton extends AbstractToolbarItem {
       Boolean.class,
       ReportFormatConfig.class,
       Boolean.class,
+      Boolean.class,
+      KeepConfig.class,
+      Integer.class
     };
   }
 
   private final VisibilityCondition cond = () -> !promptAlways;
 
   private final VisibilityCondition canSort = () -> !reportTotal;
+
+  private final VisibilityCondition keep = () -> keepingDice;
 
   @Override
   public VisibilityCondition getAttributeVisibility(final String name) {
@@ -327,6 +397,9 @@ public class DiceButton extends AbstractToolbarItem {
     }
     else if (SORT_DICE_RESULTS.equals(name)) {
       return canSort;
+    }
+    else if (List.of(KEEP_OPTION, KEEP_COUNT).contains(name)) {
+      return keep;
     }
     else {
       return null;
@@ -425,6 +498,25 @@ public class DiceButton extends AbstractToolbarItem {
         sortDice = "true".equals(o); //$NON-NLS-1$
       }
     }
+    else if (KEEP_DICE.equals(key)) {
+      if (o instanceof Boolean) {
+        keepingDice = (Boolean) o;
+      }
+      else if (o instanceof String) {
+        keepingDice = "true".equals(o); //$NON-NLS-1$
+      }
+    }
+    else if (KEEP_OPTION.equals(key)) {
+      keepOption = (String) o;
+    }
+    else if (KEEP_COUNT.equals(key)) {
+      if (o instanceof Integer) {
+        keepValue = (Integer) o;
+      }
+      else if (o instanceof String) {
+        keepValue = Integer.parseInt((String) o);
+      }
+    }
     else {
       super.setAttribute(key, o);
     }
@@ -462,6 +554,15 @@ public class DiceButton extends AbstractToolbarItem {
     else if (SORT_DICE_RESULTS.equals(key)) {
       return String.valueOf(sortDice);
     }
+    else if (KEEP_DICE.equals(key)) {
+      return String.valueOf(keepingDice);
+    }
+    else if (KEEP_OPTION.equals(key)) {
+      return keepOption;
+    }
+    else if (KEEP_COUNT.equals(key)) {
+      return String.valueOf(keepValue);
+    }
     else {
       return super.getAttributeValueString(key);
     }
@@ -498,3 +599,4 @@ public class DiceButton extends AbstractToolbarItem {
     super.addLocalImageNames(s);
   }
 }
+
