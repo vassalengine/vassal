@@ -18,9 +18,44 @@
  */
 package VASSAL.build.module.map;
 
+import VASSAL.build.AbstractBuildable;
+import VASSAL.build.Buildable;
+import VASSAL.build.GameModule;
+import VASSAL.build.module.GameComponent;
+import VASSAL.build.module.GlobalOptions;
+import VASSAL.build.module.Map;
+import VASSAL.build.module.map.boardPicker.Board;
+import VASSAL.command.ChangeTracker;
+import VASSAL.command.Command;
+import VASSAL.command.NullCommand;
+import VASSAL.configure.BooleanConfigurer;
+import VASSAL.counters.BasicPiece;
+import VASSAL.counters.BoundsTracker;
+import VASSAL.counters.Deck;
+import VASSAL.counters.DeckVisitor;
+import VASSAL.counters.DeckVisitorDispatcher;
+import VASSAL.counters.Decorator;
+import VASSAL.counters.DragBuffer;
+import VASSAL.counters.EventFilter;
+import VASSAL.counters.GamePiece;
+import VASSAL.counters.Highlighter;
+import VASSAL.counters.KeyBuffer;
 import VASSAL.counters.Mat;
 import VASSAL.counters.MatCargo;
+import VASSAL.counters.MatHolder;
+import VASSAL.counters.PieceFinder;
+import VASSAL.counters.PieceIterator;
+import VASSAL.counters.PieceSorter;
+import VASSAL.counters.PieceVisitorDispatcher;
+import VASSAL.counters.Properties;
+import VASSAL.counters.PropertyExporter;
+import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.LaunchButton;
+import VASSAL.tools.image.ImageUtils;
+import VASSAL.tools.imageop.Op;
+import VASSAL.tools.swing.SwingUtils;
+
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Component;
@@ -63,40 +98,6 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang3.SystemUtils;
-
-import VASSAL.build.AbstractBuildable;
-import VASSAL.build.Buildable;
-import VASSAL.build.GameModule;
-import VASSAL.build.module.GameComponent;
-import VASSAL.build.module.GlobalOptions;
-import VASSAL.build.module.Map;
-import VASSAL.build.module.map.boardPicker.Board;
-import VASSAL.command.ChangeTracker;
-import VASSAL.command.Command;
-import VASSAL.command.NullCommand;
-import VASSAL.configure.BooleanConfigurer;
-import VASSAL.counters.BasicPiece;
-import VASSAL.counters.BoundsTracker;
-import VASSAL.counters.Deck;
-import VASSAL.counters.DeckVisitor;
-import VASSAL.counters.DeckVisitorDispatcher;
-import VASSAL.counters.Decorator;
-import VASSAL.counters.DragBuffer;
-import VASSAL.counters.EventFilter;
-import VASSAL.counters.GamePiece;
-import VASSAL.counters.Highlighter;
-import VASSAL.counters.KeyBuffer;
-import VASSAL.counters.PieceFinder;
-import VASSAL.counters.PieceIterator;
-import VASSAL.counters.PieceSorter;
-import VASSAL.counters.PieceVisitorDispatcher;
-import VASSAL.counters.Properties;
-import VASSAL.counters.PropertyExporter;
-import VASSAL.counters.Stack;
-import VASSAL.tools.LaunchButton;
-import VASSAL.tools.image.ImageUtils;
-import VASSAL.tools.imageop.Op;
-import VASSAL.tools.swing.SwingUtils;
 
 /**
  * PieceMover handles the "Drag and Drop" of pieces and stacks, onto or within a Map window. It implements
@@ -670,9 +671,49 @@ public class PieceMover extends AbstractBuildable
     // LayeredPieceCollection for further details on visual layers.
     final HashMap<Point, List<GamePiece>> mergeTargets = new HashMap<>();
 
+    // Split the pieces in the DragBuffer into types
+    final List<GamePiece> otherPieces = new ArrayList<>();
+    final List<GamePiece> cargoPieces = new ArrayList<>();
+    final List<MatMover> matPieces = new ArrayList<>();
+
     while (it.hasMoreElements()) {
+      final GamePiece piece = it.nextPiece();
+      if (Boolean.TRUE.equals(piece.getProperty(MatCargo.IS_CARGO))) {
+        // Cargo
+        cargoPieces.add(piece);
+      }
+      else if (piece.getProperty(Mat.MAT_ID) != null) {
+        // Mat
+        matPieces.add(new MatMover(piece));
+      }
+      else {
+        // Other Pieces
+        otherPieces.add(piece);
+      }
+    }
+
+    // Remove any cargo currently on a mat from the general cargo list and add to its MatRefresher
+    for (final MatMover mm : matPieces) {
+      mm.grabCargo(cargoPieces);
+    }
+
+    // Build a new drag list that moves anything not loaded on a mat first, then each mat.
+    // The cargo for each mat will be moved after the mat is moved
+    final List<GamePiece> newDragBuffer = new ArrayList<>();
+    newDragBuffer.addAll(otherPieces);
+    newDragBuffer.addAll(cargoPieces);
+    for (final MatMover mm : matPieces) {
+      newDragBuffer.add(mm.getMatPiece());
+      newDragBuffer.addAll(mm.getCargo());
+    }
+
+    //while (it.hasMoreElements()) {
       // Get the next piece or stack to deal with.
-      dragging = it.nextPiece();
+      //dragging = it.nextPiece();
+
+    for (final GamePiece gp : newDragBuffer) {
+
+      dragging = gp;
       tracker.addPiece(dragging);
 
       /*
@@ -1750,5 +1791,14 @@ public class PieceMover extends AbstractBuildable
       removeDragCursor();
       super.drop(e);
     }
+  }
+
+  private class MatMover extends MatHolder {
+
+    public MatMover(GamePiece piece) {
+      super(piece);
+    }
+
+
   }
 }
