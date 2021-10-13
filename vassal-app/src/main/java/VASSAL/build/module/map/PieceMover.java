@@ -678,6 +678,10 @@ public class PieceMover extends AbstractBuildable
 
     while (it.hasMoreElements()) {
       final GamePiece piece = it.nextPiece();
+      // Record the offset from p of the first piece in the DragBuffer
+      if (offset == null) {
+        offset = new Point(p.x - piece.getPosition().x, p.y - piece.getPosition().y);
+      }
       if (Boolean.TRUE.equals(piece.getProperty(MatCargo.IS_CARGO))) {
         // Cargo
         cargoPieces.add(piece);
@@ -706,10 +710,6 @@ public class PieceMover extends AbstractBuildable
       newDragBuffer.add(mm.getMatPiece());
       newDragBuffer.addAll(mm.getCargo());
     }
-
-    //while (it.hasMoreElements()) {
-      // Get the next piece or stack to deal with.
-      //dragging = it.nextPiece();
 
     for (final GamePiece gp : newDragBuffer) {
 
