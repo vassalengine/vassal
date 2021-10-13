@@ -251,6 +251,16 @@ public class Mat extends Decorator implements TranslatablePiece {
     return piece.boundingBox();
   }
 
+  /**
+   * Draw the cargo
+   */
+  public void drawCargo(Graphics g, int x, int y, Component obs, double zoom) {
+    for (int i = 0; i < getContents().size(); i++) {
+      final Point cargoPos = getContents().get(i).getPosition();
+      getContents().get(i).draw(g, x - (getPosition().x - cargoPos.x), y - (getPosition().y - cargoPos.y), obs, zoom);
+    }
+  }
+
   @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);

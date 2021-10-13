@@ -27,7 +27,7 @@ import java.util.List;
 public class MatHolder {
   private final GamePiece matPiece;
   private final Mat mat;
-  private final List<GamePiece> cargo = new ArrayList<>();
+  private List<GamePiece> cargo = new ArrayList<>();
 
   public MatHolder(GamePiece piece) {
     this.matPiece = piece;
@@ -58,5 +58,9 @@ public class MatHolder {
 
   public List<GamePiece> getCargo() {
     return cargo;
+  }
+
+  public void setCargo(List<GamePiece> cargo) {
+    this.cargo = cargo;
   }
 }
