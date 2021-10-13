@@ -692,7 +692,7 @@ public class PieceMover extends AbstractBuildable
       }
     }
 
-    // Remove any cargo currently on a mat from the general cargo list and add to its MatRefresher
+    // Remove any cargo currently on a mat from the general cargo list and add to its MatMover
     for (final MatMover mm : matPieces) {
       mm.grabCargo(cargoPieces);
     }
@@ -1404,6 +1404,11 @@ public class PieceMover extends AbstractBuildable
           final Highlighter highlighter = map == null ?
             BasicPiece.getHighlighter() : map.getHighlighter();
           highlighter.draw(piece, g, x, y, null, zoom);
+
+          final Mat mat = (Mat) Decorator.getDecorator(piece, Mat.class);
+          if (mat != null) {
+            mat.drawCargo(g, x, y, null, zoom);
+          }
         }
 
         lastPos = pos;
@@ -1799,6 +1804,29 @@ public class PieceMover extends AbstractBuildable
       super(piece);
     }
 
-
+    @Override public void grabCargo(List<GamePiece> allCargo) {
+      super.grabCargo(allCargo);
+      // Re-order the cargo by stack by position in stack so that we can move
+      // it in the correct order to maintain stacking order.
+      final List<GamePiece> tempCargo = new ArrayList<>();
+      for (final GamePiece c : getCargo()) {
+        final GamePiece parent = c.getParent();
+        // If this piece belongs to a Stack and does not already exist in tempCargo, then
+        // copy the entire contents of the Stack to tempCargo bottom up
+        if (parent instanceof Stack) {
+          if (!tempCargo.contains(c)) {
+            final Stack s = (Stack) parent;
+            for (int i = 0; i < s.getPieceCount(); i++) {
+              tempCargo.add(s.getPieceAt(i));
+            }
+          }
+        }
+        // Not in a Stack, just copy it.
+        else {
+          tempCargo.add(c);
+        }
+      }
+      setCargo(tempCargo);
+    }
   }
 }
