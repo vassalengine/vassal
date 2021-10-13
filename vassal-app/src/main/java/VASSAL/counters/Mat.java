@@ -252,12 +252,19 @@ public class Mat extends Decorator implements TranslatablePiece {
   }
 
   /**
-   * Draw the cargo
+   * Draw the cargo. Used to generate a DragShadow for a Mat correctly showing the loaded cargo
    */
   public void drawCargo(Graphics g, int x, int y, Component obs, double zoom) {
-    for (int i = 0; i < getContents().size(); i++) {
-      final Point cargoPos = getContents().get(i).getPosition();
-      getContents().get(i).draw(g, x - (getPosition().x - cargoPos.x), y - (getPosition().y - cargoPos.y), obs, zoom);
+    final Point matPosition = getPosition();
+    for (final GamePiece piece : getContents()) {
+      final Point cargoPos = piece.getPosition();
+      final GamePiece parent = piece.getParent();
+      if (parent instanceof Stack) {
+        ((Stack) parent).draw(g, x - (matPosition.x - cargoPos.x), y - (matPosition.y - cargoPos.y), obs, zoom);
+      }
+      else {
+        piece.draw(g, x - (getPosition().x - cargoPos.x), y - (getPosition().y - cargoPos.y), obs, zoom);
+      }
     }
   }
 
