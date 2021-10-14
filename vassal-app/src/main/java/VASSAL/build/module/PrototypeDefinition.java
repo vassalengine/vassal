@@ -250,6 +250,7 @@ public class PrototypeDefinition extends AbstractConfigurable
     @Override
     public void setValue(String s) {
     }
+
     public static class Definer extends PieceDefiner {
       private static final long serialVersionUID = 1L;
 
