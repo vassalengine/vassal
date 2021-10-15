@@ -237,6 +237,9 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
     }
 
     if (!e.isPopupTrigger()) {
+      if (e.isAltDown() || e.isShiftDown()) {
+        return;
+      }
       final String launchPopup = (String)p.getProperty(ActionButton.LAUNCH_POPUP_MENU);
       if (!"true".equals(launchPopup)) { //NON-NLS
         return;
