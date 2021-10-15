@@ -56,7 +56,7 @@ The sum of the numeric values of this property for all included pieces will be s
 
 *Include individual pieces:*::  Specifies how pieces are to be selected for inclusion in the viewer.
 You may restrict the pieces according to the <<GamePieceLayers.adoc#top,Game Piece Layer>> to which they belong.
-Alternatively, you may specify a <<PropertyMatchExpression.adoc#top,Property Match Expression>> to match desired values of one or more <<Properties.adoc#top,Properties>> in order for a piece to be included.
+Alternatively, you may specify a <<PropertyMatchExpression.adoc#top,Property Match Expression>> to match desired values of one or more <<Properties.adoc#top,Properties>> in order for a piece to be included. You can also combine use of a property match expression with the option to display pieces from only the topmost layer (the other layer options can all be duplicated within a property match expression).
 
 *Include non-stacking pieces:*::  If selected, then pieces with a <<NonStacking.adoc#top,Does not stack>> trait specifying the piece does not Stack are eligible for inclusion in the viewer.
 Otherwise, they are excluded regardless of any other filters.

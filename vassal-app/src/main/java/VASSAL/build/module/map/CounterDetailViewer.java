@@ -144,6 +144,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public static final String INC_LAYERS = "from listed layers only";             //NON-NLS (yes, really)
   public static final String EXC_LAYERS = "from layers other than those listed"; //NON-NLS (yes, really)
   public static final String FILTER = "by using a property filter";              //NON-NLS (yes, really)
+  public static final String FILTER_TOP = "filterTop"; //NON-NLS
 
   public static final String SUM = "sum(propertyName)"; //NON-NLS
 
@@ -678,6 +679,14 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
           return layer == topLayer;
         }
 
+        // Option to filter by property expression but ONLY from top-most layer (the single one of the layer options that can't be duplicated in a property match)
+        if (displayWhat.equals(FILTER_TOP)) {
+          if (layer != topLayer) {
+            return false;
+          }
+          return propertyFilter.accept(piece);
+        }
+
         // Include pieces on named layers only
         else if (displayWhat.equals(INC_LAYERS)) {
           for (final String displayLayer : displayLayers) {
@@ -1067,7 +1076,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public static class DisplayConfig extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
-      return new String[] {TOP_LAYER, ALL_LAYERS, INC_LAYERS, EXC_LAYERS, FILTER};
+      return new String[] {TOP_LAYER, ALL_LAYERS, INC_LAYERS, EXC_LAYERS, FILTER, FILTER_TOP};
     }
 
     @Override
@@ -1076,7 +1085,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
                             "Editor.CounterDetailViewer.all_layers",
                             "Editor.CounterDetailViewer.inc_layers",
                             "Editor.CounterDetailViewer.exc_layers",
-                            "Editor.CounterDetailViewer.filter"
+                            "Editor.CounterDetailViewer.filter",
+                            "Editor.CounterDetailViewer.filter_top"
       };
     }
   }
@@ -1518,7 +1528,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       return () -> (displayWhat.equals(INC_LAYERS) || displayWhat.equals(EXC_LAYERS));
     }
     else if (PROPERTY_FILTER.equals(name)) {
-      return () -> displayWhat.equals(FILTER);
+      return () -> (displayWhat.equals(FILTER) || displayWhat.equals(FILTER_TOP));
     }
     else if (EMPTY_HEX_REPORT_FORMAT.equals(name)) {
       return () -> showText && minimumDisplayablePieces == 0;
