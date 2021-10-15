@@ -33,6 +33,7 @@ import javax.swing.KeyStroke;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
+import VASSAL.counters.ActionButton;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -230,13 +231,16 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
   }
 
   protected void maybePopup(MouseEvent e) {
-    if (!e.isPopupTrigger()) {
-      return;
-    }
-
     final GamePiece p = map.findPiece(e.getPoint(), targetSelector);
     if (p == null) {
       return;
+    }
+
+    if (!e.isPopupTrigger()) {
+      final String launchPopup = (String)p.getProperty(ActionButton.LAUNCH_POPUP_MENU);
+      if (!"true".equals(launchPopup)) { //NON-NLS
+        return;
+      }
     }
 
     final EventFilter filter = (EventFilter) p.getProperty(Properties.SELECT_EVENT_FILTER);
