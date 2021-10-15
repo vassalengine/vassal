@@ -1215,44 +1215,44 @@
     <difference>
         <className>VASSAL/counters/GlobalCommandTarget</className>
         <differenceType>7006</differenceType>
-        <method>Expression getTargetBoard()</method>
-        <to>FormattedStringExpression</to>
+        <method>VASSAL.script.expression.Expression getTargetBoard()</method>
+        <to>VASSAL.script.expression.FormattedStringExpression</to>
     </difference>
     <difference>
         <className>VASSAL/counters/GlobalCommandTarget</className>
         <differenceType>7006</differenceType>
-        <method>Expression getTargetDeck()</method>
-        <to>FormattedStringExpression</to>
+        <method>VASSAL.script.expression.Expression getTargetDeck()</method>
+        <to>VASSAL.script.expression.FormattedStringExpression</to>
     </difference>
     <difference>
         <className>VASSAL/counters/GlobalCommandTarget</className>
         <differenceType>7006</differenceType>
-        <method>Expression getTargetLocation()</method>
-        <to>FormattedStringExpression</to>
+        <method>VASSAL.script.expression.Expression getTargetLocation()</method>
+        <to>VASSAL.script.expression.FormattedStringExpression</to>
     </difference>
     <difference>
         <className>VASSAL/counters/GlobalCommandTarget</className>
         <differenceType>7006</differenceType>
-        <method>Expression getTargetMap()</method>
-        <to>FormattedStringExpression</to>
+        <method>VASSAL.script.expression.Expression getTargetMap()</method>
+        <to>VASSAL.script.expression.FormattedStringExpression</to>
     </difference>
     <difference>
         <className>VASSAL/counters/GlobalCommandTarget</className>
         <differenceType>7006</differenceType>
-        <method>Expression getTargetProperty()</method>
-        <to>FormattedStringExpression</to>
+        <method>VASSAL.script.expression.Expression getTargetProperty()</method>
+        <to>VASSAL.script.expression.FormattedStringExpression</to>
     </difference>
     <difference>
         <className>VASSAL/counters/GlobalCommandTarget</className>
         <differenceType>7006</differenceType>
-        <method>Expression getTargetValue()</method>
-        <to>FormattedStringExpression</to>
+        <method>VASSAL.script.expression.Expression getTargetValue()</method>
+        <to>VASSAL.script.expression.FormattedStringExpression</to>
     </difference>
     <difference>
         <className>VASSAL/counters/GlobalCommandTarget</className>
         <differenceType>7006</differenceType>
-        <method>Expression getTargetZone()</method>
-        <to>FormattedStringExpression</to>
+        <method>VASSAL.script.expression.Expression getTargetZone()</method>
+        <to>VASSAL.script.expression.FormattedStringExpression</to>
     </difference>
     <difference>
         <className>VASSAL/counters/GlobalCommandTarget</className>
