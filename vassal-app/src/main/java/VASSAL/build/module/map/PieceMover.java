@@ -130,6 +130,7 @@ public class PieceMover extends AbstractBuildable
 
   protected PieceFinder dragTargetSelector;            // Selects drag target from mouse click on the Map
   protected PieceFinder dropTargetSelector;            // Selects piece to merge with at the drop destination
+  protected CargoDropTargetSelector cargoDropTargetSelector;       // Specialised for cargo on a mat, ignore pieces not also on the current mat
   protected PieceVisitorDispatcher selectionProcessor; // Processes drag target after having been selected
   protected Comparator<GamePiece> pieceSorter = new PieceSorter();
 
@@ -200,81 +201,161 @@ public class PieceMover extends AbstractBuildable
    *     combine the being-dragged pieces with.
    */
   protected PieceFinder createDropTargetSelector() {
-    return new PieceFinder.Movable() {
-      /**
-       * When a deck exists on the map, and we need to find out if our piece was dragged to the deck
-       * @param d Potential target {@link Deck}
-       * @return the Deck if our target location is inside the footprint of the Deck, or null if not
-       */
-      @Override
-      public Object visitDeck(Deck d) {
-        final Point pos = d.getPosition();
-        final Point p = new Point(pt.x - pos.x, pt.y - pos.y);
-        return d.getShape().contains(p) ? d : null;
-      }
+    return new StandardDropTargetSelector();
+  }
 
-      /**
-       * When an unstacked piece exists on the map, we see if this is a piece we could
-       * form a stack with -- if it is at our precise location (or the location we would
-       * be getting snapped to). We must also check if stacking is enabled and if both
-       * the target "piece" and the "dragging" piece fit all the usual "can merge" requirements
-       * (both are "stacking" pieces, and in the same visual layer)
-       * @param piece Potential target piece on the map.
-       * @return The piece to stack with, if we should, otherwise null.
-       */
-      @Override
-      public Object visitDefault(GamePiece piece) {
-        GamePiece selected = null;
-        if (this.map.getStackMetrics().isStackingEnabled() &&
-            this.map.getPieceCollection().canMerge(dragging, piece)) {
-          if (this.map.isLocationRestricted(pt)) {
-            final Point snap = this.map.snapTo(pt);
-            if (piece.getPosition().equals(snap)) {
-              selected = piece;
-            }
-          }
-          else {
-            // The "super" visitDefault checks if our point is inside the visual boundaries of the piece.
-            selected = (GamePiece) super.visitDefault(piece);
+  /**
+   * Return a specialised PieceFinder for loaded cargo that ignores any
+   * pieces not also already on the same mat.
+   * @param mat Mat piece is on.
+   * @return
+   */
+  protected PieceFinder createCargoDropTargetSelector(Mat mat) {
+    if (cargoDropTargetSelector == null) {
+      cargoDropTargetSelector = new CargoDropTargetSelector();
+    }
+    cargoDropTargetSelector.setMat(mat);
+    return cargoDropTargetSelector;
+  }
+
+  class StandardDropTargetSelector extends PieceFinder.Movable {
+    public StandardDropTargetSelector() {
+      super();
+    }
+
+    /**
+     * When a deck exists on the map, and we need to find out if our piece was dragged to the deck
+     * @param d Potential target {@link Deck}
+     * @return the Deck if our target location is inside the footprint of the Deck, or null if not
+     */
+    @Override
+    public Object visitDeck(Deck d) {
+      final Point pos = d.getPosition();
+      final Point p = new Point(pt.x - pos.x, pt.y - pos.y);
+      return d.getShape().contains(p) ? d : null;
+    }
+
+    /**
+     * When an unstacked piece exists on the map, we see if this is a piece we could
+     * form a stack with -- if it is at our precise location (or the location we would
+     * be getting snapped to). We must also check if stacking is enabled and if both
+     * the target "piece" and the "dragging" piece fit all the usual "can merge" requirements
+     * (both are "stacking" pieces, and in the same visual layer)
+     * @param piece Potential target piece on the map.
+     * @return The piece to stack with, if we should, otherwise null.
+     */
+    @Override
+    public Object visitDefault(GamePiece piece) {
+      GamePiece selected = null;
+      if (this.map.getStackMetrics().isStackingEnabled() &&
+        this.map.getPieceCollection().canMerge(dragging, piece)) {
+        if (this.map.isLocationRestricted(pt)) {
+          final Point snap = this.map.snapTo(pt);
+          if (piece.getPosition().equals(snap)) {
+            selected = piece;
           }
         }
-
-        // We don't drag a piece "to itself".
-        if (selected != null &&
-            DragBuffer.getBuffer().contains(selected) &&
-            selected.getParent() != null &&
-            selected.getParent().topPiece() == selected) {  //NOTE: topPiece() returns the top VISIBLE piece (not hidden by Invisible trait)
-          selected = null;
+        else {
+          // The "super" visitDefault checks if our point is inside the visual boundaries of the piece.
+          selected = (GamePiece) super.visitDefault(piece);
         }
-        return selected;
       }
 
-      /**
-       * When a stack already exists on the map, we see if this piece could be added to it.
-       * @param s Stack to check if we're appropriately configured to merge with
-       * @return The piece to stack with, if we should, otherwise null.
-       */
-      @Override
-      public Object visitStack(Stack s) {
-        GamePiece selected = null;
-        if (this.map.getStackMetrics().isStackingEnabled() &&
-            this.map.getPieceCollection().canMerge(dragging, s) &&
-            !DragBuffer.getBuffer().contains(s) &&
-            !DragBuffer.getBuffer().containsAllMembers(s) &&  //BR// Don't merge back into a stack we are in the act of emptying
-            s.topPiece() != null) {  //NOTE: topPiece() returns the top VISIBLE piece (not hidden by Invisible trait)
-          if (this.map.isLocationRestricted(pt) && !s.isExpanded()) {
-            if (s.getPosition().equals(this.map.snapTo(pt))) {
-              selected = s;
-            }
-          }
-          else {
-            // The super's visitStack handles checking to see if our point is inside the visual "shape" of the stack
-            selected = (GamePiece) super.visitStack(s);
+      // We don't drag a piece "to itself".
+      if (selected != null &&
+        DragBuffer.getBuffer().contains(selected) &&
+        selected.getParent() != null &&
+        selected.getParent().topPiece() == selected) {  //NOTE: topPiece() returns the top VISIBLE piece (not hidden by Invisible trait)
+        selected = null;
+      }
+      return selected;
+    }
+
+    /**
+     * When a stack already exists on the map, we see if this piece could be added to it.
+     * @param s Stack to check if we're appropriately configured to merge with
+     * @return The piece to stack with, if we should, otherwise null.
+     */
+    @Override
+    public Object visitStack(Stack s) {
+      GamePiece selected = null;
+      if (this.map.getStackMetrics().isStackingEnabled() &&
+        this.map.getPieceCollection().canMerge(dragging, s) &&
+        !DragBuffer.getBuffer().contains(s) &&
+        !DragBuffer.getBuffer().containsAllMembers(s) &&  //BR// Don't merge back into a stack we are in the act of emptying
+        s.topPiece() != null) {  //NOTE: topPiece() returns the top VISIBLE piece (not hidden by Invisible trait)
+        if (this.map.isLocationRestricted(pt) && !s.isExpanded()) {
+          if (s.getPosition().equals(this.map.snapTo(pt))) {
+            selected = s;
           }
         }
-        return selected;
+        else {
+          // The super's visitStack handles checking to see if our point is inside the visual "shape" of the stack
+          selected = (GamePiece) super.visitStack(s);
+        }
       }
-    };
+      return selected;
+    }
+  }
+
+  /**
+   * A DropTargetSeletor for Cargo that is loaded onto a Mat.
+   * We are only interested in stacking with other Counters also
+   * loaded on the same mat.
+   */
+  class CargoDropTargetSelector extends StandardDropTargetSelector {
+    private Mat mat;
+
+    CargoDropTargetSelector () {
+      super();
+      setMat(null);
+    }
+
+    public void setMat(Mat mat) {
+      this.mat = mat;
+    }
+
+    /**
+     * Is a Piece on the mat of interested to this selector?
+     */
+    private boolean isPieceOnMat(GamePiece piece) {
+      final MatCargo cargo = (MatCargo) Decorator.getDecorator(piece, MatCargo.class);
+      if (cargo != null) {
+        return mat.equals(cargo.getMat());
+      }
+      return false;
+    }
+    /**
+     * Not interested in Decks.
+     * @param d Potential target {@link Deck}
+     */
+    @Override
+    public Object visitDeck(Deck d) {
+      return null;
+    }
+
+    /**
+     * Only interested in stacking with Cargo loaded on the same Mat
+     * @param piece Potential target piece on the map.
+     */
+    @Override
+    public Object visitDefault(GamePiece piece) {
+      return isPieceOnMat(piece) ? piece : null;
+    }
+
+    /**
+     * Only interested in stacking with another Stack if it has at least one piece
+     * and the pieces are on this mat
+     * @param piece Potential target piece on the map.
+     */
+    @Override
+    public Object visitStack(Stack s) {
+      final Stack stack = (Stack) super.visitStack(s);
+      if (stack != null && stack.getPieceCount() > 0) {
+         return isPieceOnMat(stack.getPieceAt(0)) ? stack : null;
+      }
+      return null;
+    }
   }
 
   /**
@@ -711,10 +792,22 @@ public class PieceMover extends AbstractBuildable
       newDragBuffer.addAll(mm.getCargo());
     }
 
+    /** Non-null when a Mat being processed, or when cargo loaded on the Mat is being processed */
+    Mat currentMat = null;
+    /** Non-null when a MatCargo is being processed */
+    MatCargo currentCargo = null;
+
     for (final GamePiece gp : newDragBuffer) {
 
       dragging = gp;
       tracker.addPiece(dragging);
+
+      // Keep track of the last mat moved, it will be the mat for the current Cargo.
+      final Mat tempMat = (Mat) Decorator.getDecorator(gp, Mat.class);
+      if (tempMat != null) {
+        currentMat = tempMat;
+      }
+      currentCargo = (MatCargo) Decorator.getDecorator(gp, MatCargo.class);
 
       /*
        * Since the next "piece" might be a stack, make a list of
@@ -767,7 +860,7 @@ public class PieceMover extends AbstractBuildable
         // dropTargetSelector (see our createDropTargetSelector method above). The dropTargetSelector will return
         // non-null if it finds a piece (including stack or deck) at this piece's drop location that is suitable to
         // merge with/into.
-        mergeWith = map.findAnyPiece(p, dropTargetSelector);
+        mergeWith = map.findAnyPiece(p, (currentMat == null  || currentCargo == null) ? dropTargetSelector : createCargoDropTargetSelector(currentMat));
 
         // If we get here with no merge target, we know we'll either be starting a new stack or putting the
         // piece by itself, so check if we need to do a "snap-to" of the grid.
