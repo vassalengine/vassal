@@ -1257,56 +1257,8 @@
     <difference>
         <className>VASSAL/counters/GlobalCommandTarget</className>
         <differenceType>7005</differenceType>
-        <method>void setTargetBoard(VASSAL.script.expression.Expression)</method>
-        <to>void setTargetBoard(VASSAL.script.expression.FormattedStringExpression)</to>
-    </difference>
-    <difference>
-        <className>VASSAL/counters/GlobalCommandTarget</className>
-        <differenceType>7005</differenceType>
-        <method>void setTargetDeck(VASSAL.script.expression.Expression)</method>
-        <to>void setTargetDeck(VASSAL.script.expression.FormattedStringExpression)</to>
-    </difference>
-    <difference>
-        <className>VASSAL/counters/GlobalCommandTarget</className>
-        <differenceType>7005</differenceType>
-        <method>void setTargetLocation(VASSAL.script.expression.Expression)</method>
-        <to>void setTargetLocation(VASSAL.script.expression.FormattedStringExpression)</to>
-    </difference>
-    <difference>
-        <className>VASSAL/counters/GlobalCommandTarget</className>
-        <differenceType>7005</differenceType>
-        <method>void setTargetMap(VASSAL.script.expression.Expression)</method>
-        <to>void setTargetMap(VASSAL.script.expression.FormattedStringExpression)</to>
-    </difference>
-    <difference>
-        <className>VASSAL/counters/GlobalCommandTarget</className>
-        <differenceType>7005</differenceType>
-        <method>void setTargetProperty(VASSAL.script.expression.Expression)</method>
-        <to>void setTargetProperty(VASSAL.script.expression.FormattedStringExpression)</to>
-    </difference>
-    <difference>
-        <className>VASSAL/counters/GlobalCommandTarget</className>
-        <differenceType>7005</differenceType>
-        <method>void setTargetValue(VASSAL.script.expression.Expression)</method>
-        <to>void setTargetValue(VASSAL.script.expression.FormattedStringExpression)</to>
-    </difference>
-    <difference>
-        <className>VASSAL/counters/GlobalCommandTarget</className>
-        <differenceType>7005</differenceType>
-        <method>void setTargetX(VASSAL.script.expression.Expression)</method>
-        <to>void setTargetX(VASSAL.script.expression.FormattedStringExpression)</to>
-    </difference>
-    <difference>
-        <className>VASSAL/counters/GlobalCommandTarget</className>
-        <differenceType>7005</differenceType>
-        <method>void setTargetY(VASSAL.script.expression.Expression)</method>
-        <to>void setTargetY(VASSAL.script.expression.FormattedStringExpression)</to>
-    </difference>
-    <difference>
-        <className>VASSAL/counters/GlobalCommandTarget</className>
-        <differenceType>7005</differenceType>
-        <method>void setTargetZone(VASSAL.script.expression.Expression)</method>
-        <to>void setTargetZone(VASSAL.script.expression.FormattedStringExpression)</to>
+        <method>**</method>
+        <to>**</to>
     </difference>
 
 </differences>
