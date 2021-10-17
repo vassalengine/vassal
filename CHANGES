@@ -1,5 +1,6 @@
 3.6.0-beta4 - ???
 
+* 10551: Action Button option to open right-click context menu
 * 10547: Bring fastmatch $$ variable handling into line with standard Global
     Key Command match expression handling
 * 10543: Initialise OldMat related properties in a Placed marker
