@@ -125,13 +125,14 @@ public class GlobalCommandTarget implements ConfigurerFactory, SearchTarget {
     ZONE,      // Specified zone
     LOCATION,  // Specified location name
     XY,        // Specified X/Y position
-    DECK;      // Specified Deck
+    DECK,      // Specified Deck
+    CURMAT;    // Current mat (either this piece is the mat, or this piece is on the mat: matches mat & all cargo)
 
     /**
      * @return true if our match is relative to an issuing piece or deck
      */
     public boolean isCurrent() {
-      return (this == CURSTACK) || (this == CURMAP) || (this == CURZONE) || (this == CURLOC);
+      return (this == CURSTACK) || (this == CURMAP) || (this == CURZONE) || (this == CURLOC) || (this == CURMAT);
     }
 
     /**
