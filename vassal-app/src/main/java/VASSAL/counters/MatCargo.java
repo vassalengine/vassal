@@ -294,6 +294,8 @@ public class MatCargo extends Decorator implements TranslatablePiece {
     final String token = st.nextToken();
 
     mat = NO_MAT.equals(token) ? null : gm.getGameState().getPieceForId(token);
+    setMat(mat); //BR// This makes sure the Mat also knows about us. (if it loaded from saved game before us and couldn't find us yet)
+
     gm.setMatSupport(true);
   }
 
