@@ -21,6 +21,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
+import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
@@ -55,11 +56,13 @@ import javax.swing.KeyStroke;
  */
 public class ActionButton extends Decorator implements EditablePiece, Loopable {
   public static final String ID = "button;"; // NON-NLS
+  public static final String LAUNCH_POPUP_MENU = "LaunchPopupMenu"; //NON-NLS
   protected NamedKeyStroke stroke;
   protected Rectangle bounds = new Rectangle();
   protected ButtonPusher pusher;
   protected String description = "";
   protected static final ButtonPusher globalPusher = new ButtonPusher();
+  protected boolean launchPopupMenu = false; //BR// If clicking this button should launch the piece's context menu
 
   public ActionButton() {
     this(ID, null);
@@ -88,8 +91,25 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
       .append(bounds.y)
       .append(bounds.width)
       .append(bounds.height)
-      .append(description);
+      .append(description)
+      .append(launchPopupMenu);
     return ID + se.getValue();
+  }
+
+  @Override
+  public Object getProperty(Object key) {
+    if (LAUNCH_POPUP_MENU.equals(key)) {
+      return String.valueOf(launchPopupMenu);
+    }
+    return super.getProperty(key);
+  }
+
+  @Override
+  public Object getLocalizedProperty(Object key) {
+    if (LAUNCH_POPUP_MENU.equals(key)) {
+      return String.valueOf(launchPopupMenu);
+    }
+    return super.getLocalizedProperty(key);
   }
 
   @Override
@@ -154,6 +174,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
     bounds.width = st.nextInt(40);
     bounds.height = st.nextInt(40);
     description = st.nextToken("");
+    launchPopupMenu = st.nextBoolean(false);
   }
 
   @Override
@@ -166,6 +187,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
     if (! (o instanceof ActionButton)) return false;
     final ActionButton c = (ActionButton) o;
     if (! Objects.equals(bounds, c.bounds)) return false;
+    if (! Objects.equals(launchPopupMenu, c.launchPopupMenu)) return false;
     return Objects.equals(description, c.description);
   }
 
@@ -181,6 +203,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
     private final IntConfigurer widthConfig;
     private final IntConfigurer heightConfig;
     private final NamedHotKeyConfigurer strokeConfig;
+    private final BooleanConfigurer launchConfig;
     protected StringConfigurer descConfig;
 
     public Ed(ActionButton p) {
@@ -192,6 +215,9 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
 
       strokeConfig = new NamedHotKeyConfigurer(p.stroke);
       box.add("Editor.ActionButton.invoke_key_command", strokeConfig);
+
+      launchConfig = new BooleanConfigurer(p.launchPopupMenu);
+      box.add("Editor.ActionButton.launch_popup_menu", launchConfig);
 
       xConfig = new IntConfigurer(p.bounds.x);
       box.add("Editor.ActionButton.button_x_offset", xConfig);
@@ -219,7 +245,8 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
         .append(yConfig.getValueString())
         .append(widthConfig.getValueString())
         .append(heightConfig.getValueString())
-        .append(descConfig.getValueString());
+        .append(descConfig.getValueString())
+        .append(launchConfig.getValueString());
       return ID + se.getValue();
     }
 
