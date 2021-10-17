@@ -157,10 +157,12 @@ public class GlobalCommandTargetConfigurer extends Configurer {
         options.add(GlobalCommandTarget.Target.CURMAP.toString());
         options.add(GlobalCommandTarget.Target.CURZONE.toString());
         options.add(GlobalCommandTarget.Target.CURLOC.toString());
+        options.add(GlobalCommandTarget.Target.CURMAT.toString());
         i18nKeys.add(GlobalCommandTarget.Target.CURSTACK.toTranslatedString());
         i18nKeys.add(GlobalCommandTarget.Target.CURMAP.toTranslatedString());
         i18nKeys.add(GlobalCommandTarget.Target.CURZONE.toTranslatedString());
         i18nKeys.add(GlobalCommandTarget.Target.CURLOC.toTranslatedString());
+        i18nKeys.add(GlobalCommandTarget.Target.CURMAT.toTranslatedString());
       }
       options.add(GlobalCommandTarget.Target.MAP.toString());
       options.add(GlobalCommandTarget.Target.ZONE.toString());

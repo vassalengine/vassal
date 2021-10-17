@@ -39,6 +39,7 @@ import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
 
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -383,6 +384,36 @@ public class GlobalCommand implements Auditable {
 
             if ((useFromDeck > 0) && visitor.getSelectedCount() >= useFromDeck) {
               break;
+            }
+          }
+        }
+      }
+      // If we're using "current mat", then we find either this piece (if it is a Mat), or a mat this pieces is on (if it is a MatCargo).
+      // We then iterate through the Mat itself (first) followed by each MatCargo piece.
+      else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.CURMAT) {
+        if (curPiece instanceof Decorator) {
+          // First check if we are a mat
+          GamePiece matPiece = Decorator.getDecorator(curPiece, Mat.class);
+          if (matPiece == null) {
+            // Otherwise check if we're a cargo that's currently ON a mat.
+            final MatCargo cargo = (MatCargo)Decorator.getDecorator(curPiece, MatCargo.class);
+            if (cargo != null) {
+              matPiece = cargo.getMat();
+            }
+          }
+          if (matPiece != null) {
+            final Mat mat = (Mat)Decorator.getDecorator(matPiece, Mat.class);
+            final List<GamePiece> pieces = new ArrayList<>(mat.getContents());
+            pieces.add(0, mat);
+
+            for (final GamePiece gamePiece : pieces) {
+              // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
+              if (!passesPropertyFastMatch(gamePiece)) {
+                continue;
+              }
+
+              // Anything else we send to dispatcher to apply BeanShell filter and issue the command if the piece matches
+              dispatcher.accept(gamePiece);
             }
           }
         }

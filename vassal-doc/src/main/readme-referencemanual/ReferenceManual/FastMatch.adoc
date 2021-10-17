@@ -31,6 +31,8 @@ You should aim to choose Fast-match conditions that exclude as many pieces as po
 +
 *_Current Location_* - Only pieces in the same Location (i.e. LocationName property the same) as the piece issuing the Global Key Command will be checked.
 +
+*_Current Mat_* - If this piece is a Mat, or if it is a Mat Cargo piece that is currently _on_ a Mat, then the Mat itself and all of its current Cargo will be checked.
++
 *_Specific Map_* - Only sends to pieces that are on the Map matching the supplied expression. The _expression_ is evaluated against the properties of the _source_ piece, i.e. the piece issuing the Global Key Command, but then the result of the expression is compared to the Map of potential _target_ pieces to determine if they are valid targets.
 +
 *_Specific Zone_* - Only sends to pieces that are in the Zone matching the supplied expression (an optional Map expression can be supplied as well). The _expressions_ are evaluated against the properties of the _source_ piece, i.e. the piece issuing the Global Key Command, but then the results of the expressions are compared to the CurrentZone (and optionally CurrentMap) of potential _target_ pieces to determine if they are valid targets.
