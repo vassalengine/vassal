@@ -39,6 +39,7 @@ import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.property.PersistentPropertyContainer;
 import VASSAL.search.ImageSearchTarget;
 import VASSAL.tools.ComponentPathBuilder;
 import VASSAL.tools.NamedKeyStroke;
@@ -68,6 +69,11 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import net.miginfocom.swing.MigLayout;
+
+import static VASSAL.counters.BasicPiece.BASIC_NAME;
+import static VASSAL.counters.BasicPiece.PIECE_NAME;
+import static VASSAL.counters.Mat.MAT_ID;
+import static VASSAL.counters.Mat.MAT_NAME;
 
 /**
  * This Decorator defines a key command to places another counter on top of this one.
@@ -244,8 +250,18 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
         if (cargo != null) {
           c = c.append(cargo.findNewMat());
           final GamePiece mat = cargo.getMat();
-          if ((mat != null) && (mat.getProperty(Properties.SELECTED) == Boolean.TRUE)) {
-            KeyBuffer.getBuffer().add(marker);
+          if (mat != null) {
+            // Since a piece is being created for the first time & placed on a mat, set its "Old Mat" properties in advance of any future move.
+            // (Really we should probably set the *other* "OLD" properties too for any new PlaceMarker'ed piece, since as things stand they're going to have
+            // e.g. OldLocationName=="" the first time they get moved after a PlaceMarker, but this at least fixes the mats to work right from the get-to)
+            c = c.append(((PersistentPropertyContainer) marker).setPersistentProperty(BasicPiece.OLD_MAT, mat.getProperty(MAT_NAME)));
+            c = c.append(((PersistentPropertyContainer) marker).setPersistentProperty(BasicPiece.OLD_MAT_ID, mat.getProperty(MAT_ID)));
+            c = c.append(((PersistentPropertyContainer) marker).setPersistentProperty(BasicPiece.OLD_MAT_PIECE_NAME, getOutermost(mat).getProperty(PIECE_NAME)));
+            c = c.append(((PersistentPropertyContainer) marker).setPersistentProperty(BasicPiece.OLD_MAT_BASIC_NAME, getOutermost(mat).getProperty(BASIC_NAME)));
+
+            if (mat.getProperty(Properties.SELECTED) == Boolean.TRUE) {
+              KeyBuffer.getBuffer().add(marker);
+            }
           }
         }
       }
