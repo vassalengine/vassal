@@ -19,7 +19,11 @@ package VASSAL.configure;
 
 import VASSAL.tools.swing.SwingUtils;
 import java.awt.Frame;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.HashMap;
@@ -78,7 +82,55 @@ public class EditPropertiesAction extends AbstractAction {
       });
       openWindows.put(target, w);
       w.setVisible(true);
+
+      //BR// If a modifier key was held with double-clicking, displace the window to a corner.
+      final boolean alt = (evt.getModifiers() & MouseEvent.ALT_DOWN_MASK) != 0;
+      final boolean shift = (evt.getModifiers() & MouseEvent.SHIFT_DOWN_MASK) != 0;
+      final boolean ctrl = (evt.getModifiers() & MouseEvent.CTRL_DOWN_MASK) != 0;
+      if (alt || shift || ctrl) {
+        final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        final GraphicsDevice defaultScreen = ge.getDefaultScreenDevice();
+        final Rectangle rect = defaultScreen.getDefaultConfiguration().getBounds();
+
+        final int x, y;
+
+        if (alt) {
+          if (ctrl && shift) { // ctrl+alt+shift == lower left
+            x = 30;
+            y = (int) rect.getMaxY() - w.getHeight() - 30;
+          }
+          else if (ctrl) {     // alt+ctrl = lower right
+            x = (int) rect.getMaxX() - w.getWidth() - 30;
+            y = (int) rect.getMaxY() - w.getHeight() - 30;
+          }
+          else if (shift) { // alt+shift = upper right;
+            x = ((int) rect.getMaxX() - w.getWidth() - 30);
+            y = 30;
+          }
+          else { // alt = center right
+            x = ((int) rect.getMaxX() - w.getWidth() - 30);
+            y = (int) (rect.getMaxY() - w.getHeight()) / 2;
+          }
+        }
+        else if (shift) {
+          if (ctrl) { // ctrl+shift = upper left
+            x = 30;
+            y = 30;
+          }
+          else {  // shift = center
+            x = ((int)rect.getMaxX() - w.getWidth()) / 2;
+            y = ((int)rect.getMaxY() - w.getHeight()) / 2;
+          }
+        }
+        else {  // Ctrl = center left
+          x = 30;
+          y = ((int)rect.getMaxY() - w.getHeight()) / 2;
+        }
+        w.setLocation(x, y);
+      }
+
       SwingUtils.ensureOnScreen(w);
+
       if (tree != null) {
         tree.notifyStateChanged(true);
         tree.nodeEdited(target);

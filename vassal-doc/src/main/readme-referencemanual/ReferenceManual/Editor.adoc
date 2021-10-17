@@ -26,6 +26,8 @@ a|
 All modifications to a module are done through the Configuration Window, which is a familiar file/folder type browser in which each file/folder represents a module <<GameModule.adoc#top,Component>>. Right-click on any Component to get a context menu with options for that Component.
 Use the _Cut_, _Copy_, _Paste_, and _Move_ commands to move Components around within the module, and use the _Search_ command from the _Edit_ menu if you need to find one.
 
+Double-clicking a component opens it for editing. *Tip:* You can affect _where_ the configuration window opens by holding down the _shift_ key, _alt_ key, _ctrl_ key, or some combination thereof while double-clicking.
+
 ===== Properties
 
 Brings up a dialog in which you specify the options for that components.
