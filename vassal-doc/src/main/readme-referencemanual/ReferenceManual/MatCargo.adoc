@@ -38,6 +38,10 @@ relative facing, although it is permitted to have its own Can Rotate trait as we
 
 *Y Extra detection distance from center:*:: If non-zero, then VASSAL will look this distance above and below the piece's center when trying to attach it to a mat. Useful e.g. for cards that are tucked halfway under a mat surface, as it does not require the precise center of the card to be on the mat.
 
+*Key Command to force attach to any mat found at current location:*:: If the piece receives this key command, it will immediately search for (and attempt to attach itself to) any available mat at its current location. Note that attachment is normally handled automatically whenever a cargo piece is moved, but this allows a check to be forced explicitly in special situations.
+
+*Key Command to force detach from any current mat:*:: If the piece receives this key command, it will immediately detach itself from any mat it is currently sitting on. This does not in-and-of-itself _move_ the piece from being in its current map position, but _does_ mean that if the mat is subsequently moved, clicked, or dragged it will not take this piece with it.
+
 |image:images/MatCargo.png[]
 
 image:images/Mat2.png[]

@@ -22,8 +22,10 @@ import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.IntConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.imageop.GamePieceOp;
 import VASSAL.tools.imageop.Op;
@@ -67,11 +69,18 @@ public class MatCargo extends Decorator implements TranslatablePiece {
   public static final String CURRENT_MAT_PROP9 = "CurrentMatProp9"; //NON-NLS
   public static final String IS_CARGO       = "IsCargo"; //NON-NLS        // Exposed property returns "true"
 
+  // Type variables (configured in Ed)
   protected String desc;
-
   protected boolean maintainRelativeFacing;
   protected int detectionDistanceX;
   protected int detectionDistanceY;
+  protected NamedKeyStroke matFindKey;
+  protected NamedKeyStroke matDetachKey;
+
+  protected boolean keyCommandsSet;
+  protected KeyCommand matFindKeyCommand;
+  protected KeyCommand matDetachKeyCommand;
+
   protected GamePieceOp gpOp;
   protected java.util.Map<Double, Rectangle> bounds = new HashMap<>();
   protected java.util.Map<Double, RotateScaleOp> rotOp = new HashMap<>();
@@ -97,6 +106,12 @@ public class MatCargo extends Decorator implements TranslatablePiece {
     maintainRelativeFacing = st.nextBoolean(true);
     detectionDistanceX = st.nextInt(0);
     detectionDistanceY = st.nextInt(0);
+    matFindKey = st.nextNamedKeyStroke(null);
+    matDetachKey = st.nextNamedKeyStroke(null);
+
+    keyCommandsSet = false;
+    matFindKeyCommand = null;
+    matDetachKeyCommand = null;
   }
 
   @Override
@@ -105,8 +120,18 @@ public class MatCargo extends Decorator implements TranslatablePiece {
     se.append(desc)
       .append(maintainRelativeFacing)
       .append(detectionDistanceX)
-      .append(detectionDistanceY);
+      .append(detectionDistanceY)
+      .append(matFindKey)
+      .append(matDetachKey);
     return ID + se.getValue();
+  }
+
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(matFindKey, matDetachKey);
   }
 
   /**
@@ -270,9 +295,10 @@ public class MatCargo extends Decorator implements TranslatablePiece {
   }
 
   @Override
-  protected KeyCommand[] myGetKeyCommands() {
+  public KeyCommand[] myGetKeyCommands() {
     return KeyCommand.NONE;
   }
+
 
   @Override
   public String myGetState() {
@@ -283,6 +309,26 @@ public class MatCargo extends Decorator implements TranslatablePiece {
 
   @Override
   public Command myKeyEvent(KeyStroke stroke) {
+    if (!keyCommandsSet) {
+      if (matFindKey != null && !matFindKey.isNull()) {
+        matFindKeyCommand = new KeyCommand("", matFindKey, Decorator.getOutermost(this), this);
+      }
+      if (matDetachKey != null && !matDetachKey.isNull()) {
+        matDetachKeyCommand = new KeyCommand("", matDetachKey, Decorator.getOutermost(this), this);
+      }
+      keyCommandsSet = true;
+    }
+
+    // Our Find command
+    if ((matFindKeyCommand != null) && matFindKeyCommand.matches(stroke)) {
+      return findNewMat();
+    }
+
+    // Our Detach command detaches us from our mat.
+    if ((matDetachKeyCommand != null) && matDetachKeyCommand.matches(stroke)) {
+      return makeClearMatCommand();
+    }
+
     return null;
   }
 
@@ -521,6 +567,10 @@ public class MatCargo extends Decorator implements TranslatablePiece {
   public boolean testEquals(Object o) {
     if (! (o instanceof MatCargo)) return false;
     final MatCargo c = (MatCargo) o;
+    if (detectionDistanceX != c.detectionDistanceX) return false;
+    if (detectionDistanceY != c.detectionDistanceY) return false;
+    if (!Objects.equals(matFindKey, c.matFindKey)) return false;
+    if (!Objects.equals(matDetachKey, c.matDetachKey)) return false;
     return Objects.equals(desc, c.desc) &&
            maintainRelativeFacing == c.maintainRelativeFacing;
   }
@@ -544,6 +594,8 @@ public class MatCargo extends Decorator implements TranslatablePiece {
     private final TraitConfigPanel controls;
     private final IntConfigurer xInput;
     private final IntConfigurer yInput;
+    private final NamedHotKeyConfigurer findInput;
+    private final NamedHotKeyConfigurer detachInput;
 
     public Ed(MatCargo p) {
       controls = new TraitConfigPanel();
@@ -560,6 +612,12 @@ public class MatCargo extends Decorator implements TranslatablePiece {
 
       yInput = new IntConfigurer(p.detectionDistanceY);
       controls.add("Editor.MatCargo.detection_distance_y", yInput);
+
+      findInput = new NamedHotKeyConfigurer(p.matFindKey);
+      controls.add("Editor.MatCargo.mat_find_key", findInput);
+
+      detachInput = new NamedHotKeyConfigurer(p.matDetachKey);
+      controls.add("Editor.MatCargo.mat_detach_key", detachInput);
     }
 
     @Override
@@ -573,7 +631,9 @@ public class MatCargo extends Decorator implements TranslatablePiece {
       se.append(descInput.getValueString())
         .append(rotInput.getValueBoolean())
         .append(xInput.getIntValue(0))
-        .append(yInput.getIntValue(0));
+        .append(yInput.getIntValue(0))
+        .append(findInput.getValueString())
+        .append(detachInput.getValueString());
 
       return ID + se.getValue();
     }
