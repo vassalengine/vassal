@@ -1,5 +1,7 @@
 3.6.0-beta4 - ???
 
+* 10558: Added Current Mat GKC FastMatch option
+* 10557: Added MatCargo to manually attach/detach from mats
 * 10551: Action Button option to open right-click context menu
 * 10547: Bring fastmatch $$ variable handling into line with standard Global
     Key Command match expression handling
