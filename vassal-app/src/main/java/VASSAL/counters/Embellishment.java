@@ -723,6 +723,8 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
   public Shape getShape() {
     final Shape innerShape = piece.getShape();
 
+    checkPropertyLevel(); //BR// Layer might have changed
+
     if (value > 0 && !drawUnderneathWhenSelected) {
       final Rectangle r = getCurrentImageBounds();
 
