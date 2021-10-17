@@ -120,8 +120,9 @@ public class Mat extends Decorator implements TranslatablePiece {
     final GameState gs = GameModule.getGameModule().getGameState();
     for (int i = 0; i < num; i++) {
       final GamePiece piece = gs.getPieceForId(st.nextToken());
-      if (piece != null) { //BR// getPieceForId can return null.
-        contents.add(piece);
+      //BR// getPieceForId can return null, and WILL during load-game if Cargo piece hasn't loaded yet.
+      if (piece != null) {
+        addCargo(piece); // We use addCargo to ensure Cargo piece is also connected to us
       }
     }
 
@@ -147,9 +148,12 @@ public class Mat extends Decorator implements TranslatablePiece {
 
     contents.add(p);
 
-    final GamePiece cargo = Decorator.getDecorator(Decorator.getOutermost(p), MatCargo.class);
+    final MatCargo cargo = (MatCargo)Decorator.getDecorator(Decorator.getOutermost(p), MatCargo.class);
     if (cargo != null) {
-      ((MatCargo)cargo).setMat(Decorator.getOutermost(this));
+      final GamePiece outer = Decorator.getOutermost(this);
+      if (cargo.getMat() != this) {
+        cargo.setMat(outer);
+      }
     }
   }
 
