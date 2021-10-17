@@ -532,7 +532,6 @@ public class PieceDefiner extends JPanel {
       copyButton.setEnabled(copyAndRemove);
       removeButton.setEnabled(copyAndRemove);
 
-      pasteButton.setEnabled(clipBoard != null);
       moveUpButton.setEnabled(index > 1);
       moveTopButton.setEnabled(index > 1);
       moveDownButton.setEnabled(index > 0 && index < inUseModel.size() - 1);
@@ -564,7 +563,6 @@ public class PieceDefiner extends JPanel {
     inUseButtonPanel.add(copyButton, "sg 1"); // NON-NLS
 
     pasteButton = new JButton(Resources.getString("Editor.paste") + " (" + getCtrlKeyName('V') + ")");
-    pasteButton.setEnabled(clipBoard != null);
     pasteButton.addActionListener(evt -> doPaste());
     inUseButtonPanel.add(pasteButton, "sg 1"); // NON-NLS
 
