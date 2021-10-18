@@ -24,6 +24,7 @@ import java.util.Objects;
 
 import javax.swing.KeyStroke;
 
+import VASSAL.build.module.KeyNamer;
 import org.apache.commons.lang3.tuple.Pair;
 
 import VASSAL.tools.concurrent.ConcurrentSoftHashMap;
@@ -97,6 +98,21 @@ public class NamedKeyStroke {
    */
   public KeyStroke getStroke() {
     return stroke;
+  }
+
+  /**
+   * @return If a Named keystroke, returns the name string; otherwise if a "real" keystroke returns a string naming the keystroke (e.g. "Ctrl+C")
+   */
+  public String getDesc() {
+    if (isNamed()) {
+      return name;
+    }
+    else if (stroke != null) {
+      return KeyNamer.getKeyString(stroke);
+    }
+    else {
+      return "";
+    }
   }
 
   @Override

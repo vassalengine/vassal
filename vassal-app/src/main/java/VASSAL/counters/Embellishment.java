@@ -752,8 +752,11 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
         displayName = imageName[0];
       }
     }
-    return Resources.getString("Editor.Embellishment.trait_description") +
-      ((displayName == null || displayName.isEmpty()) ? "" : (" - " + displayName));
+    String s = buildDescription("Editor.Embellishment.trait_description", description);
+    if ((displayName != null) && !displayName.isEmpty()) {
+      s += " - " + displayName;
+    }
+    return s;
   }
 
   @Override

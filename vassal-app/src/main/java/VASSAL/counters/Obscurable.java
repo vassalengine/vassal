@@ -565,7 +565,9 @@ public class Obscurable extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return buildDescription("Editor.Obscurable.trait_description", description);
+    String s = buildDescription("Editor.Obscurable.trait_description", description);
+    s += getCommandDesc(hideCommand, keyCommand);
+    return s;
   }
 
   @Override

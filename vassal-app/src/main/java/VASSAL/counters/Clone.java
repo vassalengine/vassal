@@ -151,7 +151,9 @@ public class Clone extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return buildDescription("Editor.Clone.trait_description", description);
+    String s = buildDescription("Editor.Clone.trait_description", description);
+    s += getCommandDesc(commandName, key);
+    return s;
   }
 
   /**

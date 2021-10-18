@@ -753,7 +753,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
 
   @Override
   public String getDescription() {
-    return buildDescription("Editor.TextLabel.component_type", description);
+    return buildDescription("Editor.TextLabel.component_type", description, label);
   }
 
   @Override
