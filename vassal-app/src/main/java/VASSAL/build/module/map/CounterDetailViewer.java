@@ -97,7 +97,7 @@ import javax.swing.Timer;
  */
 public class CounterDetailViewer extends AbstractConfigurable implements Drawable, DragSourceMotionListener, MouseMotionListener, MouseListener, KeyListener {
 
-  public static final String LATEST_VERSION = "2";                //NON-NLS
+  public static final String LATEST_VERSION = "3";                //NON-NLS
   public static final String USE_KEYBOARD = "ShowCounterDetails"; //NON-NLS
   public static final String PREFERRED_DELAY = "PreferredDelay";  //NON-NLS
 
@@ -220,6 +220,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
   @Override
   public void addTo(Buildable b) {
+    checkUpgrade();
+
     if (b instanceof AbstractFolder) {
       b = ((AbstractFolder)b).getNonFolderAncestor();
     }
@@ -659,14 +661,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         return false;
       }
 
-      // Select by property filter
-      if (displayWhat.equals(FILTER)) {
-        return propertyFilter.accept(piece);
-      }
-
       // Looking at All Layers accepts anything.
       else if (displayWhat.equals(ALL_LAYERS)) {
-        return true;
+        return propertyFilter.accept(piece);
       }
       else {
 
@@ -676,22 +673,14 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
         // Pieces are passed to us top down, so only display the top-most layer
         if (displayWhat.equals(TOP_LAYER)) {
-          return layer == topLayer;
-        }
-
-        // Option to filter by property expression but ONLY from top-most layer (the single one of the layer options that can't be duplicated in a property match)
-        if (displayWhat.equals(FILTER_TOP)) {
-          if (layer != topLayer) {
-            return false;
-          }
-          return propertyFilter.accept(piece);
+          return (layer == topLayer) && propertyFilter.accept(piece);
         }
 
         // Include pieces on named layers only
         else if (displayWhat.equals(INC_LAYERS)) {
           for (final String displayLayer : displayLayers) {
             if (layerName.equals(displayLayer)) {
-              return true;
+              return propertyFilter.accept(piece);
             }
           }
         }
@@ -703,14 +692,13 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
               return false;
             }
           }
-          return true;
+          return propertyFilter.accept(piece);
         }
       }
 
       // Ignore anything else
       return false;
     }
-
   }
 
   /*
@@ -909,39 +897,58 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     map.repaint();
   }
 
-  /*
+  /**
    * Compatibility. If this component has not yet been saved by this version of
    * vassal, convert the old-style options to new and update the version.
    */
+  protected void checkUpgrade() {
+    // Previous version needing upgrading?
+    if (!version.equals(LATEST_VERSION)) {
+      upgrade();
+    }
+  }
+
   @Override
   public Configurer getConfigurer() {
-
-    // New version 2 viewer being created
+    // New viewer being created
     if (map == null) {
       version = LATEST_VERSION;
     }
-    // Previous version needing upgrading?
-    else if (!version.equals(LATEST_VERSION)) {
-      upgrade();
+    else {
+      checkUpgrade();
     }
     return super.getConfigurer();
   }
 
   protected void upgrade() {
+    if ("1".equals(version)) {
+      if (!drawPieces && !showText) {
+        minimumDisplayablePieces = Integer.MAX_VALUE;
+      }
+      else if (drawSingleDeprecated) {
+        minimumDisplayablePieces = 1;
+      }
+      else {
+        minimumDisplayablePieces = 2;
+      }
 
-    if (!drawPieces && !showText) {
-      minimumDisplayablePieces = Integer.MAX_VALUE;
-    }
-    else if (drawSingleDeprecated) {
-      minimumDisplayablePieces = 1;
-    }
-    else {
-      minimumDisplayablePieces = 2;
+      fgColor = map.getHighlighter() instanceof ColoredBorder ? ((ColoredBorder) map.getHighlighter()).getColor() : Color.black;
+
+      bgColor = new Color(255 - fgColor.getRed(), 255 - fgColor.getGreen(), 255 - fgColor.getBlue());
+      version = "2";
     }
 
-    fgColor = map.getHighlighter() instanceof ColoredBorder ? ((ColoredBorder) map.getHighlighter()).getColor() : Color.black;
-
-    bgColor = new Color(255 - fgColor.getRed(), 255 - fgColor.getGreen(), 255 - fgColor.getBlue());
+    if ("2".equals(version)) {
+      if (FILTER.equals(displayWhat)) {
+        displayWhat = ALL_LAYERS;
+      }
+      else if (FILTER_TOP.equals(displayWhat)) {
+        displayWhat = TOP_LAYER;
+      }
+      else {
+        propertyFilter.setExpression("");
+      }
+    }
 
     version = LATEST_VERSION;
   }
@@ -1076,7 +1083,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public static class DisplayConfig extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
-      return new String[] {TOP_LAYER, ALL_LAYERS, INC_LAYERS, EXC_LAYERS, FILTER, FILTER_TOP};
+      return new String[] {TOP_LAYER, ALL_LAYERS, INC_LAYERS, EXC_LAYERS};
     }
 
     @Override
@@ -1084,9 +1091,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       return new String[] { "Editor.CounterDetailViewer.top_layer",
                             "Editor.CounterDetailViewer.all_layers",
                             "Editor.CounterDetailViewer.inc_layers",
-                            "Editor.CounterDetailViewer.exc_layers",
-                            "Editor.CounterDetailViewer.filter",
-                            "Editor.CounterDetailViewer.filter_top"
+                            "Editor.CounterDetailViewer.exc_layers"
       };
     }
   }
@@ -1528,7 +1533,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       return () -> (displayWhat.equals(INC_LAYERS) || displayWhat.equals(EXC_LAYERS));
     }
     else if (PROPERTY_FILTER.equals(name)) {
-      return () -> (displayWhat.equals(FILTER) || displayWhat.equals(FILTER_TOP));
+      return () -> true;
     }
     else if (EMPTY_HEX_REPORT_FORMAT.equals(name)) {
       return () -> showText && minimumDisplayablePieces == 0;
