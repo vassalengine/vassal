@@ -866,7 +866,7 @@ public class PieceMover extends AbstractBuildable
           else {
             // Snapping behaviour of cargo depends on whether or not there is a valid mat at the destination
             // and whether or not we are moving with a Mat
-            if (currentMat == null && currentCargo.locateNewMap(map, p) == null) {
+            if (currentMat == null && currentCargo.locateNewMat(map, p) == null) {
               // Not moving with a Mat and there is no valid mat at the destination. If this cargo is coming from a mat,
               // then its real IGNORE_GRID is being masked by the MatCargo trait.
               final Boolean b = (Boolean) dragging.getProperty(Immobilized.BASE_IGNORE_GRID);

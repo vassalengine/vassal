@@ -233,7 +233,7 @@ public class MatCargo extends Decorator implements TranslatablePiece {
   public Command findNewMat(Map map, Point pt) {
     Command comm = new NullCommand();
     if (map != null) {
-      final GamePiece newMat = locateNewMap(map, pt);
+      final GamePiece newMat = locateNewMat(map, pt);
 
       if (newMat != null) {
         final Mat mat = (Mat) Decorator.getDecorator(newMat, Mat.class);
@@ -256,7 +256,7 @@ public class MatCargo extends Decorator implements TranslatablePiece {
    * @param pt point to check
    * @return the Mat GamePiece at map.point or null if none
    */
-  public GamePiece locateNewMap(Map map, Point pt) {
+  public GamePiece locateNewMat(Map map, Point pt) {
     if (map == null) {
       return null;
     }
