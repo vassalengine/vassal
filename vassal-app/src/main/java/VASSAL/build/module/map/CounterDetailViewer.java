@@ -144,7 +144,6 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public static final String INC_LAYERS = "from listed layers only";             //NON-NLS (yes, really)
   public static final String EXC_LAYERS = "from layers other than those listed"; //NON-NLS (yes, really)
   public static final String FILTER = "by using a property filter";              //NON-NLS (yes, really)
-  public static final String FILTER_TOP = "filterTop"; //NON-NLS
 
   public static final String SUM = "sum(propertyName)"; //NON-NLS
 
@@ -941,9 +940,6 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     if ("2".equals(version)) {
       if (FILTER.equals(displayWhat)) {
         displayWhat = ALL_LAYERS;
-      }
-      else if (FILTER_TOP.equals(displayWhat)) {
-        displayWhat = TOP_LAYER;
       }
       else {
         propertyFilter.setExpression("");
