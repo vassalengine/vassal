@@ -28,6 +28,13 @@ Use the _Cut_, _Copy_, _Paste_, and _Move_ commands to move Components around wi
 
 Double-clicking a component opens it for editing. *Tip:* You can affect _where_ the configuration window opens by holding down the _shift_ key, _alt_ key, _ctrl_ key, or some combination thereof while double-clicking.
 
+  // Ctrl+Alt                         Ctrl+Shift
+  //
+  // Alt                Ctrl            Shift
+  //
+  // Ctrl+Alt+Shift                   Alt+Shift
+
+
 ===== Properties
 
 Brings up a dialog in which you specify the options for that components.
