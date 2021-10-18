@@ -317,16 +317,6 @@ public class PieceMover extends AbstractBuildable
     }
 
     /**
-     * Is a Piece on the mat of interested to this selector?
-     */
-    private boolean isPieceOnMat(GamePiece piece) {
-      final MatCargo cargo = (MatCargo) Decorator.getDecorator(piece, MatCargo.class);
-      if (cargo != null) {
-        return mat.equals(cargo.getMat());
-      }
-      return false;
-    }
-    /**
      * Not interested in Decks.
      * @param d Potential target {@link Deck}
      */
@@ -341,7 +331,7 @@ public class PieceMover extends AbstractBuildable
      */
     @Override
     public Object visitDefault(GamePiece piece) {
-      return isPieceOnMat(piece) ? piece : null;
+      return mat.hasCargo(piece) ? piece : null;
     }
 
     /**
@@ -353,7 +343,7 @@ public class PieceMover extends AbstractBuildable
     public Object visitStack(Stack s) {
       final Stack stack = (Stack) super.visitStack(s);
       if (stack != null && stack.getPieceCount() > 0) {
-        return isPieceOnMat(stack.getPieceAt(0)) ? stack : null;
+        return mat.hasCargo(stack.getPieceAt(0)) ? stack : null;
       }
       return null;
     }
@@ -875,17 +865,19 @@ public class PieceMover extends AbstractBuildable
           }
           else {
             // Snapping behaviour of cargo depends on whether or not there is a valid mat at the destination
-            if (currentCargo.locateNewMap(map, p) == null) {
-              // There is no valid mat at the destination. If this cargo is coming from a mat,
+            // and whether or not we are moving with a Mat
+            if (currentMat == null && currentCargo.locateNewMap(map, p) == null) {
+              // Not moving with a Mat and there is no valid mat at the destination. If this cargo is coming from a mat,
               // then its real IGNORE_GRID is being masked by the MatCargo trait.
               final Boolean b = (Boolean) dragging.getProperty(Immobilized.BASE_IGNORE_GRID);
               ignoreGrid = b != null && b.booleanValue();
             }
             else {
-              // Always ignore grid when moving to mat
+              // Always ignore grid when moving to a Mat, or moving along with a mat
               ignoreGrid = true;
             }
           }
+
           // Snap if required
           if (!ignoreGrid) {
             p = map.snapTo(p);
