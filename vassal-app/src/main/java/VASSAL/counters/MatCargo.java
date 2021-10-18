@@ -233,33 +233,7 @@ public class MatCargo extends Decorator implements TranslatablePiece {
   public Command findNewMat(Map map, Point pt) {
     Command comm = new NullCommand();
     if (map != null) {
-      GamePiece newMat = map.findAnyPiece(pt, PieceFinder.MAT_ONLY);
-
-      if ((newMat == null) && (detectionDistanceX != 0) || (detectionDistanceY != 0)) {
-        final Point pt2 = new Point();
-
-        pt2.x = pt.x + detectionDistanceX;
-        pt2.y = pt.y + detectionDistanceY;
-        newMat = map.findAnyPiece(pt2, PieceFinder.MAT_ONLY);
-
-        if (newMat == null) {
-          pt2.x = pt.x - detectionDistanceX;
-          pt2.y = pt.y + detectionDistanceY;
-          newMat = map.findAnyPiece(pt2, PieceFinder.MAT_ONLY);
-
-          if (newMat == null) {
-            pt2.x = pt.x + detectionDistanceX;
-            pt2.y = pt.y - detectionDistanceY;
-            newMat = map.findAnyPiece(pt2, PieceFinder.MAT_ONLY);
-
-            if (newMat == null) {
-              pt2.x = pt.x - detectionDistanceX;
-              pt2.y = pt.y - detectionDistanceY;
-              newMat = map.findAnyPiece(pt2, PieceFinder.MAT_ONLY);
-            }
-          }
-        }
-      }
+      final GamePiece newMat = locateNewMap(map, pt);
 
       if (newMat != null) {
         final Mat mat = (Mat) Decorator.getDecorator(newMat, Mat.class);
@@ -273,6 +247,49 @@ public class MatCargo extends Decorator implements TranslatablePiece {
       }
     }
     return comm;
+  }
+
+  /**
+   * Non Command generating part of findNewMat(). Used to check for a potential
+   * valid mat at a target location without generating the Mat/Cargo commands
+   * @param map map to check
+   * @param pt point to check
+   * @return the Mat GamePiece at map.point or null if none
+   */
+  public GamePiece locateNewMap(Map map, Point pt) {
+    if (map == null) {
+      return null;
+    }
+
+    GamePiece newMat = map.findAnyPiece(pt, PieceFinder.MAT_ONLY);
+
+    if ((newMat == null) && (detectionDistanceX != 0) || (detectionDistanceY != 0)) {
+      final Point pt2 = new Point();
+
+      pt2.x = pt.x + detectionDistanceX;
+      pt2.y = pt.y + detectionDistanceY;
+      newMat = map.findAnyPiece(pt2, PieceFinder.MAT_ONLY);
+
+      if (newMat == null) {
+        pt2.x = pt.x - detectionDistanceX;
+        pt2.y = pt.y + detectionDistanceY;
+        newMat = map.findAnyPiece(pt2, PieceFinder.MAT_ONLY);
+
+        if (newMat == null) {
+          pt2.x = pt.x + detectionDistanceX;
+          pt2.y = pt.y - detectionDistanceY;
+          newMat = map.findAnyPiece(pt2, PieceFinder.MAT_ONLY);
+
+          if (newMat == null) {
+            pt2.x = pt.x - detectionDistanceX;
+            pt2.y = pt.y - detectionDistanceY;
+            newMat = map.findAnyPiece(pt2, PieceFinder.MAT_ONLY);
+          }
+        }
+      }
+    }
+
+    return newMat;
   }
 
   /**

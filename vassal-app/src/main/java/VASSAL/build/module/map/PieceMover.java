@@ -39,6 +39,7 @@ import VASSAL.counters.DragBuffer;
 import VASSAL.counters.EventFilter;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Highlighter;
+import VASSAL.counters.Immobilized;
 import VASSAL.counters.KeyBuffer;
 import VASSAL.counters.Mat;
 import VASSAL.counters.MatCargo;
@@ -306,7 +307,7 @@ public class PieceMover extends AbstractBuildable
   class CargoDropTargetSelector extends StandardDropTargetSelector {
     private Mat mat;
 
-    CargoDropTargetSelector () {
+    CargoDropTargetSelector() {
       super();
       setMat(null);
     }
@@ -352,7 +353,7 @@ public class PieceMover extends AbstractBuildable
     public Object visitStack(Stack s) {
       final Stack stack = (Stack) super.visitStack(s);
       if (stack != null && stack.getPieceCount() > 0) {
-         return isPieceOnMat(stack.getPieceAt(0)) ? stack : null;
+        return isPieceOnMat(stack.getPieceAt(0)) ? stack : null;
       }
       return null;
     }
@@ -792,9 +793,10 @@ public class PieceMover extends AbstractBuildable
       newDragBuffer.addAll(mm.getCargo());
     }
 
-    /** Non-null when a Mat being processed, or when cargo loaded on the Mat is being processed */
+    // Non-null when a Mat being processed, or when cargo loaded on the Mat is being processed
     Mat currentMat = null;
-    /** Non-null when a MatCargo is being processed */
+
+    // Non-null when a MatCargo is being processed
     MatCargo currentCargo = null;
 
     for (final GamePiece gp : newDragBuffer) {
@@ -864,9 +866,30 @@ public class PieceMover extends AbstractBuildable
 
         // If we get here with no merge target, we know we'll either be starting a new stack or putting the
         // piece by itself, so check if we need to do a "snap-to" of the grid.
-        if (mergeWith == null && !Boolean.TRUE.equals(
-            dragging.getProperty(Properties.IGNORE_GRID))) {
-          p = map.snapTo(p);
+        if (mergeWith == null) {
+          boolean ignoreGrid = false;
+          if (currentCargo == null) {
+            // Non-cargo will just use the standard snapping rules
+            final Boolean b = (Boolean) dragging.getProperty(Properties.IGNORE_GRID);
+            ignoreGrid = b == null ? false : b.booleanValue();
+          }
+          else {
+            // Snapping behaviour of cargo depends on whether or not there is a valid mat at the destination
+            if (currentCargo.locateNewMap(map, p) == null) {
+              // There is no valid mat at the destination. If this cargo is coming from a mat,
+              // then its real IGNORE_GRID is being masked by the MatCargo trait.
+              final Boolean b = (Boolean) dragging.getProperty(Immobilized.BASE_IGNORE_GRID);
+              ignoreGrid = b == null ? false : b.booleanValue();
+            }
+            else {
+              // Always ignore grid when moving to mat
+              ignoreGrid = true;
+            }
+          }
+          // Snap if required
+          if (!ignoreGrid) {
+            p = map.snapTo(p);
+          }
         }
 
         offset = new Point(p.x - dragging.getPosition().x,
