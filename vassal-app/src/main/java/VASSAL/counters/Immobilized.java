@@ -74,6 +74,9 @@ public class Immobilized extends Decorator implements EditablePiece {
   protected static final char STACK_NORMAL = 'L';
   protected static final char NEVER_STACK = 'R';
 
+  // Use by PieceMover to find a pieces unaltered base ignore grid setting
+  public static final String BASE_IGNORE_GRID = "baseIgnoreGrid";
+
   public class UseShift implements EventFilter {
     @Override
     public boolean rejectEvent(InputEvent evt) {
@@ -242,6 +245,10 @@ public class Immobilized extends Decorator implements EditablePiece {
     else if (Properties.IGNORE_GRID.equals(key)) {
       return ignoreGrid;
     }
+    // Use by PieceMover to find a pieces unaltered base ignore grid setting
+    else if (BASE_IGNORE_GRID.equals(key)) {
+      return ignoreGrid;
+    }
     else if (Properties.SELECT_EVENT_FILTER.equals(key)) {
       return selectFilter;
     }
@@ -268,6 +275,10 @@ public class Immobilized extends Decorator implements EditablePiece {
       return moveIfSelected || neverMove;
     }
     else if (Properties.IGNORE_GRID.equals(key)) {
+      return ignoreGrid;
+    }
+    // Use by PieceMover to find a pieces unaltered base ignore grid setting
+    else if (BASE_IGNORE_GRID.equals(key)) {
       return ignoreGrid;
     }
     else if (Properties.SELECT_EVENT_FILTER.equals(key)) {
