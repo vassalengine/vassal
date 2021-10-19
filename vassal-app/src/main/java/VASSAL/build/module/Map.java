@@ -246,7 +246,6 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   protected String markUnmovedTooltip = Resources.getString("Map.mark_unmoved"); //$NON-NLS-1$
   protected MouseListener multicaster = null;
   protected ArrayList<MouseListener> mouseListenerStack = new ArrayList<>(); //NOPMD
-  protected MouseMotionListener mouseMotionListenerLocal = null;
   protected List<Board> boards = new CopyOnWriteArrayList<>();
   protected int[][] boardWidths; // Cache of board widths by row/column
   protected int[][] boardHeights; // Cache of board heights by row/column
@@ -1986,13 +1985,6 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   @Override
   public void mouseDragged(MouseEvent e) {
-    if (pieceMover != null) {
-      pieceMover.mouseMoved(e);
-    }
-    if (keyBufferer != null) {
-      keyBufferer.mouseDragged(e);
-    }
-
     if (!SwingUtils.isContextMouseButtonDown(e)) {
       scrollAtEdge(e.getPoint(), SCROLL_ZONE);
     }

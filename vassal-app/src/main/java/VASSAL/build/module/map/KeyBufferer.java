@@ -131,6 +131,9 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
   public void build(Element e) {
   }
 
+  /**
+   * @return true if we've got a valid "selection lasso" drag operation going on (must have breached dragThreshold)
+   */
   public boolean isLasso() {
     return isLasso;
   }

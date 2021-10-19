@@ -168,7 +168,7 @@ public class PieceMover extends AbstractBuildable
     GameModule.getGameModule().getGameState().addGameComponent(this);
 
     final AbstractDragHandler dragHandler = DragHandler.getTheDragHandler();
-    dragHandler.setPieceMover(this);
+    dragHandler.addPieceMover(this);
     map.getView().addMouseMotionListener(this);
     map.setDragGestureListener(dragHandler);
     map.setPieceMover(this);
@@ -914,7 +914,8 @@ public class PieceMover extends AbstractBuildable
   /**
    * When mouse first pressed, set up for doing a possible drag-and-drop with them.
    *
-   * On most systems, most of the drag-and-drop will be performed by the Drag Gesture Recognizer.
+   * On most systems, most of the drag-and-drop will be performed by the Drag Gesture Recognizer,
+   * but this part runs for everyone, including setting an "anchor point" for the drag.
    *
    * @param e Event
    */
@@ -1153,7 +1154,7 @@ public class PieceMover extends AbstractBuildable
      * Registers a PieceMover
      * @param pm PieceMover for this dragHandler
      */
-    void setPieceMover(PieceMover pm) {
+    void addPieceMover(PieceMover pm) {
       if (!pieceMovers.contains(pm)) {
         pieceMovers.add(pm);
       }
