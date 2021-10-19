@@ -246,6 +246,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   protected String markUnmovedTooltip = Resources.getString("Map.mark_unmoved"); //$NON-NLS-1$
   protected MouseListener multicaster = null;
   protected ArrayList<MouseListener> mouseListenerStack = new ArrayList<>(); //NOPMD
+  protected MouseMotionListener mouseMotionListenerLocal = null;
   protected List<Board> boards = new CopyOnWriteArrayList<>();
   protected int[][] boardWidths; // Cache of board widths by row/column
   protected int[][] boardHeights; // Cache of board heights by row/column
@@ -279,6 +280,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public Map() {
     getView();
     theMap.addMouseListener(this);
+    theMap.addMouseMotionListener(this);
     if (shouldDockIntoMainWindow()) {
       final String constraints =
         (SystemUtils.IS_OS_MAC ? "ins 1 0 1 0" : "ins 0") +   //NON-NLS
@@ -793,6 +795,12 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     pieceMover = mover;
   }
 
+  /**
+   * @return Our pieceMover
+   */
+  public PieceMover getPieceMover() {
+    return pieceMover;
+  }
 
   /**
    * Every map window has a toolbar, and this method returns swing toolbar component for this map.
@@ -1965,13 +1973,16 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 
   /**
    * Mouse motion events are not forwarded to LocalMouseListeners or to
-   * listeners on the stack.
+   * listeners on the stack. (But mouseDragged is forwarded to PieceMover)
    *
    * The map scrolls when dragging the mouse near the edge.
    * @param e MouseEvent from system
    */
   @Override
   public void mouseDragged(MouseEvent e) {
+    if (pieceMover != null) {
+      pieceMover.mouseMoved(e);
+    }
     if (!SwingUtils.isContextMouseButtonDown(e)) {
       scrollAtEdge(e.getPoint(), SCROLL_ZONE);
     }

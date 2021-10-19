@@ -48,6 +48,7 @@ import java.awt.dnd.InvalidDnDOperationException;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -108,6 +109,7 @@ import VASSAL.tools.swing.SwingUtils;
  */
 public class PieceMover extends AbstractBuildable
                         implements MouseListener,
+                                   MouseMotionListener,
                                    GameComponent,
                                    Comparator<GamePiece> {
   /** The Preferences key for auto-reporting moves. */
@@ -118,6 +120,7 @@ public class PieceMover extends AbstractBuildable
 
   protected Map map;                           // Map we're the PieceMover for.
   protected Point dragBegin;                   // Anchor point for drag and drop
+  protected boolean breachedThreshold;         // True if we've breached the dragThreshold during this drag
   protected GamePiece dragging;                // Anchor piece that we're dragging (along with everything else in DragBuffer)
 
   // PieceMover provides the "clear move history" button for Map - the configurer dialog is found there.
@@ -132,12 +135,20 @@ public class PieceMover extends AbstractBuildable
   protected PieceVisitorDispatcher selectionProcessor; // Processes drag target after having been selected
   protected Comparator<GamePiece> pieceSorter = new PieceSorter();
 
-  public static int curPieceOffsetX;
-  public static int curPieceOffsetY;
+  protected int curPieceOffsetX;
+  protected int curPieceOffsetY;
 
-  public static void setCurPieceOffset(int x, int y) {
+  public void setCurPieceOffset(int x, int y) {
     curPieceOffsetX = x;
     curPieceOffsetY = y;
+  }
+
+  public void setBreachedThreshold(boolean breachedThreshold) {
+    this.breachedThreshold = breachedThreshold;
+  }
+
+  public boolean getBreachedThreshold() {
+    return breachedThreshold;
   }
 
   /**
@@ -155,7 +166,10 @@ public class PieceMover extends AbstractBuildable
     map = (Map) b;
     map.addLocalMouseListener(this);
     GameModule.getGameModule().getGameState().addGameComponent(this);
-    map.setDragGestureListener(DragHandler.getTheDragHandler());
+
+    final AbstractDragHandler dragHandler = DragHandler.getTheDragHandler();
+    dragHandler.setPieceMover(this);
+    map.setDragGestureListener(dragHandler);
     map.setPieceMover(this);
 
     // Because of the strange legacy scheme of halfway-running a Toolbar button "on behalf of Map", we have to set some its attributes
@@ -897,9 +911,9 @@ public class PieceMover extends AbstractBuildable
   }
 
   /**
-   * This "deep legacy" listener is used for faking drag-and-drop on Java 1.1 systems.
-   * On most systems, the mouse event will be "consumed" by the Drag Gesture Recognizer,
-   * causing canHandleEvent() to return false.
+   * When mouse first pressed, set up for doing a possible drag-and-drop with them.
+   *
+   * On most systems, most of the drag-and-drop will be performed by the Drag Gesture Recognizer.
    *
    * @param e Event
    */
@@ -911,12 +925,13 @@ public class PieceMover extends AbstractBuildable
   }
 
   /**
-   * When doing a "deep legacy" fake drag-and-drop,
-   * place the clicked-on piece into the {@link DragBuffer}
+   * When starting a drag-and-drop, place the clicked-on piece into the {@link DragBuffer}
    */
   protected void selectMovablePieces(MouseEvent e) {
     final GamePiece p = map.findPiece(e.getPoint(), dragTargetSelector);
     dragBegin = e.getPoint();
+    breachedThreshold = false;
+    setCurPieceOffset(0, 0);
     if (p != null) {
       final EventFilter filter =
         (EventFilter) p.getProperty(Properties.MOVE_EVENT_FILTER);
@@ -977,7 +992,8 @@ public class PieceMover extends AbstractBuildable
         }
       }
 
-      if (map.mapToComponent(Math.abs(pt.x - dragBegin.x - curPieceOffsetX)) <= GlobalOptions.getInstance().getDragThreshold() &&
+      if (!breachedThreshold &&
+        map.mapToComponent(Math.abs(pt.x - dragBegin.x - curPieceOffsetX)) <= GlobalOptions.getInstance().getDragThreshold() &&
         map.mapToComponent(Math.abs(pt.y - dragBegin.y - curPieceOffsetY)) <= GlobalOptions.getInstance().getDragThreshold()) {
         isClick = true;
       }
@@ -988,7 +1004,7 @@ public class PieceMover extends AbstractBuildable
   /**
    * Mouse button has been released -- if we can still handle the event (i.e. we haven't picked up some exotic
    * modifier key during the drag, etc), then we perform the drop.
-   * @param e Mouse Event
+   * @param e Mouse Event -> NOTE that the supplied point is not the actual mouse position but rather it has been offset by how far off-center the drag point on the piece was/is.
    */
   @Override
   public void mouseReleased(MouseEvent e) {
@@ -998,8 +1014,29 @@ public class PieceMover extends AbstractBuildable
       }
     }
     dragBegin = null;
+    breachedThreshold = false;
     map.getView().setCursor(null);
   }
+
+  @Override
+  public void mouseMoved(MouseEvent e) {
+  }
+
+  /**
+   * Check if we have breached our drag threshold during a drag. Only meaningful in legacy DnD situations.
+   * @param e mouse event.
+   */
+  @Override
+  public void mouseDragged(MouseEvent e) {
+    if (!breachedThreshold && (dragBegin != null)) {
+      final Point pt = map.componentToMap(e.getPoint());
+      if (map.mapToComponent(Math.abs(pt.x - dragBegin.x)) > GlobalOptions.getInstance().getDragThreshold() ||
+        map.mapToComponent(Math.abs(pt.y - dragBegin.y)) > GlobalOptions.getInstance().getDragThreshold()) {
+        breachedThreshold = true;
+      }
+    }
+  }
+
 
   /**
    * Moves the group of dragged (in the DragBuffer) pieces to the target point (p).
@@ -1094,6 +1131,8 @@ public class PieceMover extends AbstractBuildable
 
     JLayeredPane drawWin; // the component that owns our pseudo-cursor
 
+    protected List<PieceMover> pieceMovers = new ArrayList<>(); // our piece movers
+
     // Seems there can be only one DropTargetListener per drop target. After we
     // process a drop target event, we manually pass the event on to this listener.
     java.util.Map<Component, DropTargetListener> dropTargetListeners = new HashMap<>();
@@ -1108,6 +1147,16 @@ public class PieceMover extends AbstractBuildable
      * @return platform-dependent device scale
      */
     protected abstract double getDeviceScale(DragGestureEvent dge);
+
+    /**
+     * Registers a PieceMover
+     * @param pm PieceMover for this dragHandler
+     */
+    void setPieceMover(PieceMover pm) {
+      if (!pieceMovers.contains(pm)) {
+        pieceMovers.add(pm);
+      }
+    }
 
     /**
      * Creates a new DropTarget and hooks us into the beginning of a
@@ -1527,7 +1576,11 @@ public class PieceMover extends AbstractBuildable
         getOffsetMult() * (boundingBox.y + currentPieceOffsetY - EXTRA_BORDER)
       );
 
-      PieceMover.setCurPieceOffset(currentPieceOffsetX, currentPieceOffsetY);
+      //BR// Inform PieceMovers of relevant metrics
+      for (final PieceMover pieceMover : pieceMovers) {
+        pieceMover.setCurPieceOffset(currentPieceOffsetX, currentPieceOffsetY);
+        pieceMover.setBreachedThreshold(true);
+      }
 
       dge.startDrag(
         Cursor.getPredefinedCursor(Cursor.HAND_CURSOR),
@@ -1552,7 +1605,7 @@ public class PieceMover extends AbstractBuildable
 
     /**************************************************************************
      * DRAG SOURCE LISTENER INTERFACE
-     * @param e
+     * @param e DragSourceDropEvent
      **************************************************************************/
     @Override
     public void dragDropEnd(DragSourceDropEvent e) {

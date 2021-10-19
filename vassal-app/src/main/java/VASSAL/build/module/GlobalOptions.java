@@ -219,8 +219,8 @@ public class GlobalOptions extends AbstractConfigurable {
       dragThreshold = dragThresholdConf.getIntValue(10);
       System.setProperty("awt.dnd.drag.threshold", Integer.toString(dragThreshold));
     });
+    System.setProperty("awt.dnd.drag.threshold", Integer.toString(dragThreshold)); //BR// Also, actually set it to start with
     prefs.addOption(dragThresholdConf);
-
 
     // Preference to center on opponent's moves (used to be module-designer-set attribute, now always a player preference)
     final BooleanConfigurer config = new BooleanConfigurer(CENTER_ON_MOVE, Resources.getString("GlobalOptions.center_on_move"), Boolean.TRUE); //$NON-NLS-1$

@@ -86,6 +86,8 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
   protected GamePiece bandSelectPiece = null;   // If a band-select started within the boundaries of a piece, this is the piece
   private GamePiece maybeClickPiece = null;     // Piece left-clicked on and no band-select started
 
+  protected boolean isLasso = false;            // True if our most recent map mouse event was a lasso
+
   /**
    * Band select modes
    */
@@ -125,6 +127,10 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
 
   @Override
   public void build(Element e) {
+  }
+
+  public boolean isLasso() {
+    return isLasso;
   }
 
 
@@ -376,6 +382,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
       if (maybeClickPiece != null) {
         selectOnlyPieceOrStack(maybeClickPiece);
       }
+      isLasso = false;
       return;
     }
 
@@ -388,6 +395,12 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
       !SwingUtils.isSelectionToggle(e), e.isAltDown(), map.componentToMap(selection)
     );
 
+    final Point finish = map.mapToComponent(e.getPoint());
+    // Open to suggestions about a better way to distinguish "click" from
+    // "lasso" (not that Vassal doesn't already suck immensely at
+    // click-vs-drag threshold). FWIW, this "works".
+    isLasso = finish.distance(anchor) >= 10;
+
     // If it was a legit band-select drag (not just a click), our special case
     // only applies if piece is allowed to be band-selected
     if (bandSelectPiece != null) {
@@ -395,11 +408,6 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
       final boolean pieceAllowedToBeBandSelected = bandFilter != null && !e.isAltDown() && bandFilter instanceof Immobilized.UseAlt;
 
       if (pieceAllowedToBeBandSelected) {
-        final Point finish = map.mapToComponent(e.getPoint());
-        // Open to suggestions about a better way to distinguish "click" from
-        // "lasso" (not that Vassal doesn't already suck immensely at
-        // click-vs-drag threshold). FWIW, this "works".
-        final boolean isLasso = finish.distance(anchor) >= 10;
         if (isLasso) {
           bandSelectPiece = null;
         }
