@@ -31,6 +31,7 @@ import java.util.List;
 
 import javax.swing.JComponent;
 
+import VASSAL.build.module.GlobalOptions;
 import VASSAL.counters.DragBuffer;
 import VASSAL.counters.Mat;
 import VASSAL.counters.MatCargo;
@@ -107,6 +108,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     map.addLocalMouseListenerFirst(this);
     map.getView().addMouseMotionListener(this);
     map.addDrawComponent(this);
+    map.setKeyBufferer(this);
   }
 
   /**
@@ -204,6 +206,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     GamePiece p = map.findPiece(e.getPoint(), PieceFinder.DECK_OR_PIECE_IN_STACK);
 
     maybeClickPiece = null;
+    isLasso = false;
 
     EventFilter filter = null;
     BandSelectType bandSelect = BandSelectType.NONE; // Start by assuming we're clicking not band-selecting
@@ -395,11 +398,8 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
       !SwingUtils.isSelectionToggle(e), e.isAltDown(), map.componentToMap(selection)
     );
 
-    final Point finish = map.mapToComponent(e.getPoint());
-    // Open to suggestions about a better way to distinguish "click" from
-    // "lasso" (not that Vassal doesn't already suck immensely at
-    // click-vs-drag threshold). FWIW, this "works".
-    isLasso = finish.distance(anchor) >= 10;
+    final int dragThreshold = GlobalOptions.getInstance().getDragThreshold();
+    isLasso = (selection.width >= dragThreshold) || (selection.height >= dragThreshold);
 
     // If it was a legit band-select drag (not just a click), our special case
     // only applies if piece is allowed to be band-selected
@@ -627,6 +627,14 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     selection.width = Math.abs(ex - anchor.x);
     selection.height = Math.abs(ey - anchor.y);
 
+    // Mark as a lasso operation if we've ever breached the drag threshold
+    if (!isLasso) {
+      final int dragThreshold = GlobalOptions.getInstance().getDragThreshold();
+      if ((selection.width >= dragThreshold) || (selection.height >= dragThreshold)) {
+        isLasso = true;
+      }
+    }
+
     // Now initiate a repaint on the new selection box size, which will cause it to be displayed.
     repaintSelectionRect();
   }
@@ -642,7 +650,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
    */
   @Override
   public void draw(Graphics g, Map map) {
-    if (selection == null) {
+    if ((selection == null) || !isLasso()) {
       return;
     }
 

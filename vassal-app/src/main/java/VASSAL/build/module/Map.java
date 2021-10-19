@@ -270,6 +270,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   protected MutablePropertiesContainer propsContainer = new MutablePropertiesContainer.Impl();
   protected PropertyChangeListener repaintOnPropertyChange = evt -> repaint();
   protected PieceMover pieceMover;
+  protected KeyBufferer keyBufferer;
   protected KeyListener[] saveKeyListeners = null;
 
   protected NamedKeyStrokeListener showKeyListener;
@@ -832,13 +833,18 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @return KeyBufferer (if any) for this map.
    */
   public KeyBufferer getKeyBufferer() {
-    for (final Object o : drawComponents) {
-      if (o instanceof KeyBufferer) {
-        return (KeyBufferer)o;
-      }
-    }
-    return null;
+    return keyBufferer;
   }
+
+  /**
+   * Registers the keyBufferer for this map (old way of scanning through components to find
+   * one is silly)
+   * @param kb KeyBufferer
+   */
+  public void setKeyBufferer(KeyBufferer kb) {
+    keyBufferer = kb;
+  }
+
 
   /**
    * Registers this Map as a child of another buildable component, usually the {@link GameModule}. Determines a unique id for
@@ -1973,7 +1979,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 
   /**
    * Mouse motion events are not forwarded to LocalMouseListeners or to
-   * listeners on the stack. (But mouseDragged is forwarded to PieceMover)
+   * listeners on the stack.
    *
    * The map scrolls when dragging the mouse near the edge.
    * @param e MouseEvent from system
@@ -1983,6 +1989,10 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     if (pieceMover != null) {
       pieceMover.mouseMoved(e);
     }
+    if (keyBufferer != null) {
+      keyBufferer.mouseDragged(e);
+    }
+
     if (!SwingUtils.isContextMouseButtonDown(e)) {
       scrollAtEdge(e.getPoint(), SCROLL_ZONE);
     }

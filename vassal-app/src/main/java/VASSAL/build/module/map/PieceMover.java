@@ -169,6 +169,7 @@ public class PieceMover extends AbstractBuildable
 
     final AbstractDragHandler dragHandler = DragHandler.getTheDragHandler();
     dragHandler.setPieceMover(this);
+    map.getView().addMouseMotionListener(this);
     map.setDragGestureListener(dragHandler);
     map.setPieceMover(this);
 

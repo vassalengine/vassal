@@ -33,7 +33,6 @@ import javax.swing.KeyStroke;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
-import VASSAL.build.GameModule;
 import VASSAL.counters.ActionButton;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
