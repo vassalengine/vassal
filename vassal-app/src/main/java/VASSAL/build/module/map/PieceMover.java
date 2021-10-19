@@ -132,6 +132,14 @@ public class PieceMover extends AbstractBuildable
   protected PieceVisitorDispatcher selectionProcessor; // Processes drag target after having been selected
   protected Comparator<GamePiece> pieceSorter = new PieceSorter();
 
+  public static int curPieceOffsetX;
+  public static int curPieceOffsetY;
+
+  public static void setCurPieceOffset(int x, int y) {
+    curPieceOffsetX = x;
+    curPieceOffsetY = y;
+  }
+
   /**
    * Adds this component to its parent map. Add ourselves as a mouse listener, drag gesture listener, etc.
    * @param b Map to add to
@@ -969,8 +977,8 @@ public class PieceMover extends AbstractBuildable
         }
       }
 
-      if (map.mapToComponent(Math.abs(pt.x - dragBegin.x)) <= GlobalOptions.getInstance().getDragThreshold() &&
-        map.mapToComponent(Math.abs(pt.y - dragBegin.y)) <= GlobalOptions.getInstance().getDragThreshold()) {
+      if (map.mapToComponent(Math.abs(pt.x - dragBegin.x - curPieceOffsetX)) <= GlobalOptions.getInstance().getDragThreshold() &&
+        map.mapToComponent(Math.abs(pt.y - dragBegin.y - curPieceOffsetY)) <= GlobalOptions.getInstance().getDragThreshold()) {
         isClick = true;
       }
     }
@@ -1518,6 +1526,8 @@ public class PieceMover extends AbstractBuildable
         getOffsetMult() * (boundingBox.x + currentPieceOffsetX - EXTRA_BORDER),
         getOffsetMult() * (boundingBox.y + currentPieceOffsetY - EXTRA_BORDER)
       );
+
+      PieceMover.setCurPieceOffset(currentPieceOffsetX, currentPieceOffsetY);
 
       dge.startDrag(
         Cursor.getPredefinedCursor(Cursor.HAND_CURSOR),
