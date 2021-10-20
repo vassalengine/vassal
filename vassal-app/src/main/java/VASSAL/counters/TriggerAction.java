@@ -371,6 +371,9 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     if (name.length() > 0) {
       s += " - " + name; //$NON-NLS-1$
     }
+
+    s += getCommandDesc(command, key);
+
     return s;
   }
 

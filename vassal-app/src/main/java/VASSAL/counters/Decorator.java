@@ -910,5 +910,20 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
     return Resources.getString("Audit.piece", piece.getName());
   }
 
+  /**
+   * @param command Menu text
+   * @param key Keystroke
+   * @return Display-ready description of a command, that may include a menu string and/or a NamedKeystroke
+   */
+  public String getCommandDesc(String command, NamedKeyStroke key) {
+    String s = "";
+    if (command != null && (command.length() > 0)) {
+      s += " - " + command;
+    }
+    if (key != null) {
+      s += " - " + key.getDesc();
+    }
+    return s;
+  }
 }
 

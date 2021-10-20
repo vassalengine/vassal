@@ -175,7 +175,9 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return buildDescription("Editor.MovementMarkable.trait_description", description);
+    String s = buildDescription("Editor.MovementMarkable.trait_description", description);
+    s += getCommandDesc(command, key);
+    return s;
   }
 
   public void setDescription(String description) {

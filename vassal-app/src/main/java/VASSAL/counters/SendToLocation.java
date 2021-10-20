@@ -569,6 +569,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     if (description.length() > 0) {
       d += " - " + description;
     }
+    d += getCommandDesc(commandName, key);
     return d;
   }
 

@@ -395,7 +395,9 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
 
   @Override
   public String getDescription() {
-    return buildDescription("Editor.PlaceMarker.trait_description", description);
+    String s = buildDescription("Editor.PlaceMarker.trait_description", description);
+    s += getCommandDesc(command.getName(), key);
+    return s;
   }
 
   @Override

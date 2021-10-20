@@ -89,7 +89,9 @@ public class Translate extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return buildDescription("Editor.MoveFixedDistance.trait_description", description);
+    String s = buildDescription("Editor.MoveFixedDistance.trait_description", description);
+    s += getCommandDesc(commandName, keyCommand);
+    return s;
   }
 
   @Override

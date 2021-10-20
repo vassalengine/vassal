@@ -151,7 +151,9 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
 
   @Override
   public String getDescription() {
-    return buildDescription("Editor.ActionButton.trait_description", description);
+    String s = buildDescription("Editor.ActionButton.trait_description", description);
+    s += getCommandDesc("", stroke);
+    return s;
   }
 
 

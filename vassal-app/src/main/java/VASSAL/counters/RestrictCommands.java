@@ -173,7 +173,11 @@ public class RestrictCommands extends Decorator implements EditablePiece {
 
   @Override
   public String getDescription() {
-    return buildDescription("Editor.RestrictCommands.trait_description", name);
+    String s = buildDescription("Editor.RestrictCommands.trait_description", name);
+    for (final NamedKeyStroke key : watchKeys) {
+      s += getCommandDesc("", key);
+    }
+    return s;
   }
 
   @Override
