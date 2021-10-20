@@ -722,6 +722,8 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
     String matID = "";
     String matPieceName = "";
     String matBasicName = "";
+    String matOldOffsetX = "";
+    String matOldOffsetY = "";
     final Map m = p.getMap();
     final Point pos = p.getPosition();
     Command comm = new NullCommand();
@@ -750,6 +752,8 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
               final GamePiece outer = getOutermost(mat);
               matPieceName = (String)outer.getProperty(PIECE_NAME);
               matBasicName = (String)outer.getProperty(BASIC_NAME);
+              matOldOffsetX = String.valueOf(cargo.getProperty(MatCargo.CURRENT_MAT_OFFSET_X));
+              matOldOffsetY = String.valueOf(cargo.getProperty(MatCargo.CURRENT_MAT_OFFSET_Y));
             }
           }
         }
@@ -767,6 +771,8 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
       comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_MAT_ID, matID));
       comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_MAT_PIECE_NAME, matPieceName));
       comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_MAT_BASIC_NAME, matBasicName));
+      comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_MAT_OFFSET_X, matOldOffsetX));
+      comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_MAT_OFFSET_Y, matOldOffsetY));
     }
 
     return comm;
