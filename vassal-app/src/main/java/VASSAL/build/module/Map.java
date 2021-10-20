@@ -20,6 +20,8 @@ package VASSAL.build.module;
 import static java.lang.Math.round;
 
 import VASSAL.configure.SingleChildInstance;
+import VASSAL.counters.Decorator;
+import VASSAL.counters.Mat;
 import java.awt.AWTEventMulticaster;
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -3618,13 +3620,15 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     /**
      * Returns a command that merges our piece into the specified deck, provided that
      * the Deck shares the location of our merger point provided in the constructor.
+     * A Mat with cargo loaded is not allowed into a Deck
      * @param d Deck to consider merging into
      * @return A command to merge our piece into the specified deck, or null if deck isn't in correct position
      */
     @Override
     public Object visitDeck(Deck d) {
       if (d.getPosition().equals(pt)) {
-        return map.getStackMetrics().merge(d, p);
+        final Mat mat = (Mat) Decorator.getDecorator(p, Mat.class);
+        return (mat != null && mat.getCargoCount() > 0) ? null : map.getStackMetrics().merge(d, p);
       }
       else {
         return null;

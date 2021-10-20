@@ -154,6 +154,10 @@ public class Mat extends Decorator implements TranslatablePiece {
     return contents.contains(p);
   }
 
+  public int getCargoCount() {
+    return contents.size();
+  }
+
   /**
    * Adds a piece of cargo to this mat
    * @param p game piece to add
