@@ -150,7 +150,6 @@ public class PieceDefiner extends JPanel {
     initDefinitions();
     inUseModel = new DefaultListModel<>();
     r = new Renderer();
-    availableRenderer = new AvailableRenderer();
     slot = new ScaleablePieceSlot();
     initComponents();
     availableList.setSelectedIndex(0);
@@ -523,7 +522,7 @@ public class PieceDefiner extends JPanel {
     inUseList.setVisibleRowCount(99);
     inUseList.setModel(inUseModel);
     inUseList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    inUseList.setCellRenderer(r);
+    inUseList.setCellRenderer(inUseRenderer);
     inUseList.addListSelectionListener(evt -> {
       final Object o = inUseList.getSelectedValue();
       propsButton.setEnabled(o instanceof EditablePiece);
@@ -1058,6 +1057,33 @@ public class PieceDefiner extends JPanel {
       super.getListCellRendererComponent(list, "", index, selected, hasFocus);
       if (value instanceof EditablePiece) {
         setText(((EditablePiece) value).getDescription());
+      }
+      else {
+        final String s = value.getClass().getName();
+        setText(s.substring(s.lastIndexOf('.') + 1));
+      }
+      return this;
+    }
+  }
+
+  private static class AvailableRenderer extends DefaultListCellRenderer {
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public Component getListCellRendererComponent(
+      JList list, Object value, int index, boolean selected, boolean hasFocus) {
+
+      // DO NOT pass value to super.getListCellRendererComponent()
+      // It is incredibly inefficient for GamePieces and is not needed
+      // since we overwrite the label text anyway.
+      super.getListCellRendererComponent(list, "", index, selected, hasFocus);
+      if (value instanceof EditablePiece) {
+        String desc = ((EditablePiece) value).getDescription();
+        if (desc.contains(" - ")) {
+          desc = desc.substring(0, desc.indexOf(" - "));
+        }
+
+        setText(desc);
       }
       else {
         final String s = value.getClass().getName();
