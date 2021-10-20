@@ -131,7 +131,8 @@ public class PieceMover extends AbstractBuildable
 
   protected PieceFinder dragTargetSelector;            // Selects drag target from mouse click on the Map
   protected PieceFinder dropTargetSelector;            // Selects piece to merge with at the drop destination
-  protected CargoDropTargetSelector cargoDropTargetSelector;       // Specialised for cargo on a mat, ignore pieces not also on the current mat
+  protected LoadedCargoDropTargetSelector loadedCargoDropTargetSelector;       // Specialised for cargo loaded on a mat
+  protected MatDropTargetSelector matDropTargetSelector;                       // Specialised for mats
   protected PieceVisitorDispatcher selectionProcessor; // Processes drag target after having been selected
   protected Comparator<GamePiece> pieceSorter = new PieceSorter();
 
@@ -143,7 +144,6 @@ public class PieceMover extends AbstractBuildable
   public void addTo(Buildable b) {
     // Create our target selection filters
     dragTargetSelector = createDragTargetSelector();
-    dropTargetSelector = createDropTargetSelector();
     selectionProcessor = createSelectionProcessor();
 
     // Register with our parent map
@@ -181,6 +181,8 @@ public class PieceMover extends AbstractBuildable
   }
 
   /**
+   * Return a DropTargetSelector suitable for the type of piece being moved
+   *
    * When the user *completes* a drag-and-drop operation, the pieces being dragged will either be:
    * <br>(1) combined in a stack with an existing piece (or stack, or deck) on the map
    * <br>(2) placed alone in a brand new stack
@@ -198,30 +200,72 @@ public class PieceMover extends AbstractBuildable
    * iterating through the list of possible pieces in proper visual order so that we check the pieces "visually
    * on top" first.
    * <br><br>
+   *
+   * @param piece The Piece being mover
+   * @param cargo The MatCargo trait of the piece being moved
+   * @param mat The Mat the piece is loaded on, if it is cargo
    * @return a {@link PieceFinder} instance that determines which {@link GamePiece} (if any) to
-   *     combine the being-dragged pieces with.
+   *   combine the being-dragged pieces with.
    */
+  protected PieceFinder getDropTargetSelector(GamePiece piece, MatCargo cargo, Mat mat) {
+    if (cargo != null && mat != null) {
+      if (loadedCargoDropTargetSelector == null) {
+        loadedCargoDropTargetSelector = new LoadedCargoDropTargetSelector();
+      }
+      loadedCargoDropTargetSelector.setPiece(piece, cargo, mat);
+      return loadedCargoDropTargetSelector;
+    }
+    else if (mat != null) {
+      if (matDropTargetSelector == null) {
+        matDropTargetSelector = new MatDropTargetSelector();
+      }
+      matDropTargetSelector.setPiece(piece, cargo, mat);
+      return matDropTargetSelector;
+    }
+
+    if (dropTargetSelector == null) {
+      dropTargetSelector = new StandardDropTargetSelector();
+    }
+    ((StandardDropTargetSelector) dropTargetSelector).setPiece(piece, cargo, mat);
+    return dropTargetSelector;
+  }
+
+  // Retain for compatibility
   protected PieceFinder createDropTargetSelector() {
-    return new StandardDropTargetSelector();
+    return dropTargetSelector;
   }
 
   /**
-   * Return a specialised PieceFinder for loaded cargo that ignores any
-   * pieces not also already on the same mat.
-   * @param mat Mat piece is on.
-   * @return
+   * Default DropTargetSelector for standard pieces
    */
-  protected PieceFinder createCargoDropTargetSelector(Mat mat) {
-    if (cargoDropTargetSelector == null) {
-      cargoDropTargetSelector = new CargoDropTargetSelector();
-    }
-    cargoDropTargetSelector.setMat(mat);
-    return cargoDropTargetSelector;
-  }
-
   class StandardDropTargetSelector extends PieceFinder.Movable {
+    // The piece being moved
+    private GamePiece piece;
+    // The MatCargo trait of the piece being moved
+    private MatCargo cargo;
+    // The Mat trait the moving piece is currently loaded on (if cargo)
+    private Mat mat;
+
     public StandardDropTargetSelector() {
       super();
+    }
+
+    public void setPiece(GamePiece piece, MatCargo cargo, Mat mat) {
+      this.piece = piece;
+      this.cargo = cargo;
+      this.mat = mat;
+    }
+
+    public GamePiece getPiece() {
+      return piece;
+    }
+
+    public MatCargo getCargo() {
+      return cargo;
+    }
+
+    public Mat getMat() {
+      return mat;
     }
 
     /**
@@ -269,6 +313,15 @@ public class PieceMover extends AbstractBuildable
         selected.getParent().topPiece() == selected) {  //NOTE: topPiece() returns the top VISIBLE piece (not hidden by Invisible trait)
         selected = null;
       }
+
+      // Don't combine a non-cargo piece with cargo loaded on a mat
+      if (selected != null && getCargo() == null) {
+        final MatCargo targetCargo = (MatCargo) Decorator.getDecorator(selected, MatCargo.class);
+        if (targetCargo != null && targetCargo.getMat() != null) {
+          selected = null;
+        }
+      }
+
       return selected;
     }
 
@@ -285,7 +338,14 @@ public class PieceMover extends AbstractBuildable
         !DragBuffer.getBuffer().contains(s) &&
         !DragBuffer.getBuffer().containsAllMembers(s) &&  //BR// Don't merge back into a stack we are in the act of emptying
         s.topPiece() != null) {  //NOTE: topPiece() returns the top VISIBLE piece (not hidden by Invisible trait)
-        if (this.map.isLocationRestricted(pt) && !s.isExpanded()) {
+
+        // If the target point is on a snappable grid and the target stack is not expanded, then snap the point
+        // and see if it aligns with the Stack location
+        // Exceptions: 1. Cargo loaded on a Mat can stack off-grid
+        //             2. 'Ignore Grid' pieces can now stack normally, so can create valid off-grid stacks
+        final boolean stackIgnoresGrid = isStackLoadedCargo(s) || Boolean.TRUE.equals(s.getPieceAt(0).getProperty(Properties.IGNORE_GRID));
+
+        if (this.map.isLocationRestricted(pt) && !s.isExpanded() && !stackIgnoresGrid) {
           if (s.getPosition().equals(this.map.snapTo(pt))) {
             selected = s;
           }
@@ -295,7 +355,21 @@ public class PieceMover extends AbstractBuildable
           selected = (GamePiece) super.visitStack(s);
         }
       }
+
+      // Don't combine a non-cargo piece with a stack of cargo loaded on a mat
+      if (getCargo() == null && isStackLoadedCargo((Stack) selected)) {
+        selected = null;
+      }
+
       return selected;
+    }
+
+    protected boolean isStackLoadedCargo(Stack s) {
+      if (s != null && s.getPieceCount() > 0) {
+        final MatCargo targetCargo = (MatCargo) Decorator.getDecorator(s.getPieceAt(0), MatCargo.class);
+        return targetCargo != null && targetCargo.getMat() != null;
+      }
+      return false;
     }
   }
 
@@ -304,20 +378,9 @@ public class PieceMover extends AbstractBuildable
    * We are only interested in stacking with other Counters also
    * loaded on the same mat.
    */
-  class CargoDropTargetSelector extends StandardDropTargetSelector {
-    private Mat mat;
-
-    CargoDropTargetSelector() {
-      super();
-      setMat(null);
-    }
-
-    public void setMat(Mat mat) {
-      this.mat = mat;
-    }
-
+  class LoadedCargoDropTargetSelector extends StandardDropTargetSelector {
     /**
-     * Not interested in Decks.
+     * Loaded Cargo will never enter a Deck
      * @param d Potential target {@link Deck}
      */
     @Override
@@ -331,7 +394,7 @@ public class PieceMover extends AbstractBuildable
      */
     @Override
     public Object visitDefault(GamePiece piece) {
-      return mat.hasCargo(piece) ? piece : null;
+      return getMat().hasCargo(piece) ? super.visitDefault(piece) : null;
     }
 
     /**
@@ -341,11 +404,25 @@ public class PieceMover extends AbstractBuildable
      */
     @Override
     public Object visitStack(Stack s) {
-      final Stack stack = (Stack) super.visitStack(s);
-      if (stack != null && stack.getPieceCount() > 0) {
-        return mat.hasCargo(stack.getPieceAt(0)) ? stack : null;
+      if (s != null && s.getPieceCount() > 0) {
+        return getMat().hasCargo(s.getPieceAt(0)) ? super.visitStack(s) : null;
       }
       return null;
+    }
+  }
+
+  /**
+   * DropTargetSelector for moving mats. Mats holding cargo must never
+   * enter a Deck
+   */
+  class MatDropTargetSelector extends StandardDropTargetSelector {
+    /**
+     * Mats with loaded Cargo must never enter a Deck
+     * @param d Potential target {@link Deck}
+     */
+    @Override
+    public Object visitDeck(Deck d) {
+      return getMat().getCargoCount() > 0 ? null : super.visitDeck(d);
     }
   }
 
@@ -774,7 +851,7 @@ public class PieceMover extends AbstractBuildable
     }
 
     // Build a new drag list that moves anything not loaded on a mat first, then each mat.
-    // The cargo for each mat will be moved after the mat is moved
+    // The cargo for each mat will be moved after the mat is moved, before the next mat
     final List<GamePiece> newDragBuffer = new ArrayList<>();
     newDragBuffer.addAll(otherPieces);
     newDragBuffer.addAll(cargoPieces);
@@ -852,7 +929,7 @@ public class PieceMover extends AbstractBuildable
         // dropTargetSelector (see our createDropTargetSelector method above). The dropTargetSelector will return
         // non-null if it finds a piece (including stack or deck) at this piece's drop location that is suitable to
         // merge with/into.
-        mergeWith = map.findAnyPiece(p, (currentMat == null  || currentCargo == null) ? dropTargetSelector : createCargoDropTargetSelector(currentMat));
+        mergeWith = map.findAnyPiece(p, getDropTargetSelector(dragging, currentCargo, currentMat));
 
         // If we get here with no merge target, we know we'll either be starting a new stack or putting the
         // piece by itself, so check if we need to do a "snap-to" of the grid.
