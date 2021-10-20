@@ -261,7 +261,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         }
       }
 
-      if (targets.size() > 0) {
+      if (!targets.isEmpty()) {
         // Now figure out which one we're currently nearest to -- we'll start search on *next* index.
         double dist = Double.MAX_VALUE;
         int startIndex = 0;
