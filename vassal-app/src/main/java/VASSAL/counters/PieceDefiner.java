@@ -107,7 +107,7 @@ public class PieceDefiner extends JPanel {
   private static final SortedMap<String, GamePiece> alphaMap = new TreeMap<>();
   private static Boolean sorted = false;
   protected DefaultListModel<GamePiece> inUseModel;
-  protected ListCellRenderer<? super GamePiece> inUseRenderer;
+  protected ListCellRenderer<? super GamePiece> r;
   protected ListCellRenderer<? super GamePiece> availableRenderer;
   protected ScaleablePieceSlot slot;
   private GamePiece piece;
@@ -149,7 +149,7 @@ public class PieceDefiner extends JPanel {
 
     initDefinitions();
     inUseModel = new DefaultListModel<>();
-    inUseRenderer = new Renderer();
+    r = new Renderer();
     availableRenderer = new AvailableRenderer();
     slot = new ScaleablePieceSlot();
     initComponents();
@@ -523,7 +523,7 @@ public class PieceDefiner extends JPanel {
     inUseList.setVisibleRowCount(99);
     inUseList.setModel(inUseModel);
     inUseList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    inUseList.setCellRenderer(inUseRenderer);
+    inUseList.setCellRenderer(r);
     inUseList.addListSelectionListener(evt -> {
       final Object o = inUseList.getSelectedValue();
       propsButton.setEnabled(o instanceof EditablePiece);
