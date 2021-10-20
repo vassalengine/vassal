@@ -153,7 +153,7 @@ public class PlaySound extends Decorator implements TranslatablePiece {
   @Override
   public String getDescription() {
     String s = buildDescription("Editor.PlaySound.trait_description", format.getFormat(), description);
-    s = getCommandDesc(menuText, stroke);
+    s += getCommandDesc(menuText, stroke);
     return s;
   }
 
