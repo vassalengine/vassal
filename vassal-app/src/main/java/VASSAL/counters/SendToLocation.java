@@ -242,31 +242,60 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     Point dest = null;
     // Home in on a counter
     if (destination.equals(DEST_COUNTER.substring(0, 1))) {
-      GamePiece target = null;
-      // Find first counter matching the properties
+      final List<GamePiece> targets = new ArrayList<>();
+      // Find first counters matching the properties
       for (final GamePiece piece :
            GameModule.getGameModule().getGameState().getAllPieces()) {
         if (piece instanceof Stack) {
           final Stack s = (Stack) piece;
           for (final GamePiece gamePiece : s.asList()) {
-            if (propertyFilter.accept(outer, gamePiece)) {
-              target = gamePiece;
-              if (target != null) break;
+            if (propertyFilter.accept(outer, gamePiece) && !targets.contains(gamePiece)) {
+              targets.add(gamePiece);
             }
           }
         }
         else {
-          if (propertyFilter.accept(outer, piece)) {
-            target = piece;
+          if (propertyFilter.accept(outer, piece) && !targets.contains(piece)) {
+            targets.add(piece);
           }
         }
-        if (target != null) break;
       }
-      // Determine target's position
-      if (target != null) {
-        map = target.getMap();
-        if (map != null) {
-          dest = target.getPosition();
+
+      if (targets.size() > 0) {
+        // Now figure out which one we're currently nearest to -- we'll start search on *next* index.
+        double dist = Double.MAX_VALUE;
+        int startIndex = 0;
+        for (int index = 0; index < targets.size(); index++) {
+          if (targets.get(index).getMap() != getMap()) {
+            continue;
+          }
+          final double myDist = targets.get(index).getPosition().distance(getPosition());
+          if (myDist >= dist) {
+            continue;
+          }
+          dist = myDist;
+          startIndex = index;
+        }
+
+        // Search through our list of targets starting with the *next* one after the one we're nearest to,
+        // but looping through them all. Pick the first target in the list. This means that if there are
+        // multiple targets, successively executing this command will cycle us to each of the valid targets.
+        GamePiece target = null;
+        for (int counter = 0; counter < targets.size(); counter++) {
+          final int index = (startIndex + counter + 1) % targets.size();
+          if ((targets.get(index).getMap() != getMap()) ||
+              (!getPosition().equals(targets.get(index).getPosition()))) {
+            target = targets.get(index);
+            break;
+          }
+        }
+
+        // Determine target's position
+        if (target != null) {
+          map = target.getMap();
+          if (map != null) {
+            dest = target.getPosition();
+          }
         }
       }
     }

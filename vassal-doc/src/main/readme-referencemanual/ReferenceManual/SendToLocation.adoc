@@ -59,7 +59,8 @@ In the case of <<ZonedGrid.adoc#top,Multi-Zone Grids>>, this format makes use of
 * for Zones whose Location Format is configured to _$gridLocation$_, then the grid location inside the zone will be used.
 
 _Another counter selected by properties_:::
-The location of the first piece selected by the <<PropertyMatchExpression.adoc#top,Property Match Expression>> specified.
+The location of the next piece selected by the <<PropertyMatchExpression.adoc#top,Property Match Expression>> specified. If there are
+multiple matching counters then sending this command multiple times will cycle through the counters.
 
 _Grid Location on Selected Map_:::
 
