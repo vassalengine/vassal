@@ -1,5 +1,7 @@
 3.6.0-beta4 - ???
 
+* 10569: Better trait one-line summaries in editor; Folder summary includes
+    description
 * 10563: Trait editor Paste button is now always enabled
 * 10558: Added Current Mat GKC FastMatch option
 * 10557: Added MatCargo to manually attach/detach from mats
