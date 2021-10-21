@@ -9,7 +9,7 @@
 
 The simplest game piece consists of an image and a name.
 
-The image is optional, or different pieces can share the same image, but you should always give each Basic Piece a unique name.
+The image is optional, or different pieces can share the same image, but you should always either give each Basic Piece a unique name or add a <<BasicName.adoc#top,Basic Name>> trait to provide one.
 
 Simple piece images can be created from scratch within Vassal using <<GamePieceImageDefinitions.adoc#top,Game Piece Image Definitions>>, but you will usually get a better result by loading images sourced from existing artwork or created with specialist graphics software.
 
@@ -41,7 +41,7 @@ _Choosing an image that has already been loaded into the module._
 
 The following <<Properties.adoc#top,Properties>> are defined in a Basic Piece, meaning that any trait in the piece can refer to them:
 
-* _BasicName_ contains the name of Basic Piece trait, as specified in the properties
+* _BasicName_ contains the name of Basic Piece trait. Can be overridden by adding a <<BasicName.adoc#top, Basic Name>> trait to the piece.
 * _PieceName_ contains the full name of the piece, including any additional strings added by e.g.
 <<Layer.adoc#top,Layer>> or <<Label.adoc#top,Text Label>> traits
 * _PlayerSide_ contains the side of the current player, as specified in the <<GameModule.adoc#Definition_of_Player_Sides,Definition of Player Sides>>
