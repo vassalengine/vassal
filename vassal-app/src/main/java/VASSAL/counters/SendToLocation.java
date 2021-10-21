@@ -260,6 +260,9 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
               }
             }
           }
+          if (destination.equals(DEST_COUNTER.substring(0, 1)) && !targets.isEmpty()) {
+            break; // "Any match" version just takes first hit
+          }
         }
         else {
           if (propertyFilter.accept(outer, piece) && !targets.contains(piece)) {
