@@ -11,6 +11,8 @@
     Key Command match expression handling
 * 10543: Initialise OldMat related properties in a Placed marker
 * 10510: More robust Java version check for Linux
+* 10509: Add $numericTotal$ and $result#$ options to standard Dice Button
+    report format.
 * 10505: Enable Offset options to work with the Grid option in SendToLocation
 * 10504: Text label shape, bounding box doesn't resepect rotated labels
 *  8949: IllegalArgumentException in GameState.getRestorePiecesCommand() due
