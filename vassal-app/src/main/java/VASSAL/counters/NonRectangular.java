@@ -157,6 +157,11 @@ public class NonRectangular extends Decorator implements EditablePiece {
   }
 
   @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.NonRectangular.trait_description");
+  }
+
+  @Override
   public void mySetType(String type) {
     if (type.startsWith(OLD_ID)) {
       setScale(1.0);

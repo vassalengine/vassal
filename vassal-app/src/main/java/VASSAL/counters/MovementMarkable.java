@@ -50,6 +50,9 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 
 /**
+ *
+ * d/b/a "Mark When Moved"
+ *
  * A GamePiece with this trait will automatically be marked whenever it is moved.  A marked piece is
  * indicated by drawing a specified image at a specified location
  */
@@ -178,6 +181,11 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
     String s = buildDescription("Editor.MovementMarkable.trait_description", description);
     s += getCommandDesc(command, key);
     return s;
+  }
+
+  @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.MovementMarkable.trait_description");
   }
 
   public void setDescription(String description) {

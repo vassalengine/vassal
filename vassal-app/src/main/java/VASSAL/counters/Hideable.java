@@ -271,6 +271,11 @@ public class Hideable extends Decorator implements TranslatablePiece {
   }
 
   @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.Hideable.trait_description");
+  }
+
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Hideable.html"); // NON-NLS
   }

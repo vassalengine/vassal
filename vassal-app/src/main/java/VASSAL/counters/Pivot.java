@@ -51,6 +51,8 @@ import javax.swing.KeyStroke;
 import net.miginfocom.swing.MigLayout;
 
 /**
+ * d/b/a "Can Pivot"
+ *
  * Provides commands to pivot a Game Piece around a given point
  */
 public class Pivot extends Decorator implements TranslatablePiece {
@@ -81,6 +83,11 @@ public class Pivot extends Decorator implements TranslatablePiece {
   @Override
   public String getDescription() {
     return buildDescription("Editor.Pivot.trait_description", description);
+  }
+
+  @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.Pivot.trait_description");
   }
 
   @Override

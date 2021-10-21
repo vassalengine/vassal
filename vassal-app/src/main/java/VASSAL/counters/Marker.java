@@ -179,6 +179,11 @@ public class Marker extends Decorator implements EditablePiece {
   }
 
   @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.Marker.trait_description");
+  }
+
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("PropertyMarker.html"); // NON-NLS
   }

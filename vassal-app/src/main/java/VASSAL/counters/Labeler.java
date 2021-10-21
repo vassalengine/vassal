@@ -79,6 +79,8 @@ import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
+ * d/b/a "Text Label"
+ *
  * Displays a text label, with content specified by the user at runtime.
  */
 public class Labeler extends Decorator implements TranslatablePiece, Loopable {
@@ -753,7 +755,12 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
 
   @Override
   public String getDescription() {
-    return buildDescription("Editor.TextLabel.component_type", description, label);
+    return buildDescription("Editor.TextLabel.trait_description", description, label);
+  }
+
+  @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.TextLabel.trait_description");
   }
 
   @Override

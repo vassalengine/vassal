@@ -22,6 +22,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.configure.BeanShellExpressionConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.script.expression.BeanShellExpression;
 import VASSAL.script.expression.Expression;
 import VASSAL.tools.RecursionLimitException;
@@ -113,6 +114,11 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
   @Override
   public String getDescription() {
     return buildDescription("Editor.CalculatedProperty.trait_description", name, description);
+  }
+
+  @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.CalculatedProperty.trait_description");
   }
 
   @Override

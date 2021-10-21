@@ -208,6 +208,11 @@ public class Delete extends Decorator implements TranslatablePiece {
   }
 
   @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.Delete.trait_description");
+  }
+
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GamePiece.html", "Delete"); // NON-NLS
   }

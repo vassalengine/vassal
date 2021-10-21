@@ -24,6 +24,7 @@ import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
@@ -561,6 +562,11 @@ public class MatCargo extends Decorator implements TranslatablePiece {
   @Override
   public String getDescription() {
     return buildDescription("Editor.MatCargo.trait_description", desc);
+  }
+
+  @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.MatCargo.trait_description");
   }
 
   @Override

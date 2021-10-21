@@ -158,6 +158,11 @@ public class PlaySound extends Decorator implements TranslatablePiece {
   }
 
   @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.PlaySound.trait_description");
+  }
+
+  @Override
   public void mySetType(String type) {
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();

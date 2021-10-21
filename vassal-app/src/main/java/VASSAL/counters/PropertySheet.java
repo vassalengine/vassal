@@ -622,6 +622,11 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
   }
 
   @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.PropertySheet.trait_description");
+  }
+
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("PropertySheet.html"); //NON-NLS
   }

@@ -48,6 +48,7 @@ import javax.swing.JTable;
 import javax.swing.KeyStroke;
 
 /**
+ * d/b/a "Spreadsheet"
  * A Decorator class that endows a GamePiece with an editable
  * spreadsheet (i.e. JTable) */
 public class TableInfo extends Decorator implements TranslatablePiece {
@@ -219,6 +220,11 @@ public class TableInfo extends Decorator implements TranslatablePiece {
   @Override
   public String getDescription() {
     return buildDescription("Editor.TableInfo.trait_description", description);
+  }
+
+  @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.TableInfo.trait_description");
   }
 
   @Override

@@ -69,6 +69,8 @@ import javax.swing.KeyStroke;
 import net.miginfocom.swing.MigLayout;
 
 /**
+ * d/b/a "Layer"
+ *
  * The "Layer" trait. Contains a list of images that the user may cycle through.
  * The current image is superimposed over the inner piece. The entire layer may
  * be activated or deactivated.
@@ -757,6 +759,11 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
       s += " - " + displayName;
     }
     return s;
+  }
+
+  @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.Embellishment.trait_description");
   }
 
   @Override
