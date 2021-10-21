@@ -1067,6 +1067,9 @@ public class PieceDefiner extends JPanel {
     }
   }
 
+  /**
+   * Renderer for available traits (trait name only)
+   */
   private static class AvailableRenderer extends DefaultListCellRenderer {
     private static final long serialVersionUID = 1L;
 
@@ -1079,12 +1082,7 @@ public class PieceDefiner extends JPanel {
       // since we overwrite the label text anyway.
       super.getListCellRendererComponent(list, "", index, selected, hasFocus);
       if (value instanceof EditablePiece) {
-        String desc = ((EditablePiece) value).getDescription();
-        if (desc.contains(" - ")) {
-          desc = desc.substring(0, desc.indexOf(" - "));
-        }
-
-        setText(desc);
+        setText(((EditablePiece) value).getBaseDescription());
       }
       else {
         final String s = value.getClass().getName();
