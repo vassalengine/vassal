@@ -36,6 +36,8 @@ import java.util.Objects;
 import javax.swing.KeyStroke;
 
 /**
+ * d/b/a "Does Not Stack"
+ *
  * Decorator that filters events to prevent a GamePiece from
  * being selected and/or moved.
  *
@@ -358,6 +360,11 @@ public class Immobilized extends Decorator implements EditablePiece {
 
   @Override
   public String getDescription() {
+    return Resources.getString("Editor.Immobilized.trait_description");
+  }
+
+  @Override
+  public String getBaseDescription() {
     return Resources.getString("Editor.Immobilized.trait_description");
   }
 

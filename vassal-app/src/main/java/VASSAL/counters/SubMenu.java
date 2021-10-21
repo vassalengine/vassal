@@ -60,6 +60,11 @@ public class SubMenu extends Decorator implements TranslatablePiece {
     return buildDescription("Editor.SubMenu.trait_description", DEFAULT_MENU_NAME.equals(subMenu) ? "" : subMenu, description);
   }
 
+  @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.SubMenu.trait_description");
+  }
+
   public void setDescription(String description) {
     this.description = description;
   }

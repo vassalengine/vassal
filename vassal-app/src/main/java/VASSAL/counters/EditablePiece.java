@@ -27,7 +27,7 @@ import VASSAL.build.module.documentation.HelpFile;
  * Available Traits list even if they don't implement EditablePiece. */
 public interface EditablePiece extends GamePiece {
 
-  /** A plain-English description of this type of piece */
+  /** A plain-English description of this type of trait/piece - includes data from fields where appropriate */
   String getDescription();
 
   /** Sets the information for this piece.  See {@link Decorator#myGetType}
@@ -44,4 +44,17 @@ public interface EditablePiece extends GamePiece {
 
   /** @return the help file for this trait  */
   HelpFile getHelpFile();
+
+  /**
+   * Support for a basic-name-only description introduced later, so this default retrofits it from the full description
+   * if an explicit one is not defined.
+   * @return name of trait/piece type, w/o additional data
+   */
+  default String getBaseDescription() {
+    final String desc = getDescription();
+    if (desc.contains(" - ")) {
+      return desc.substring(0, desc.indexOf(" - "));
+    }
+    return desc;
+  }
 }

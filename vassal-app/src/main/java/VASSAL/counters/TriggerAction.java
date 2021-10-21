@@ -367,7 +367,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
 
   @Override
   public String getDescription() {
-    String s = Resources.getString("Editor.TriggerAction.component_type"); //$NON-NLS-1$
+    String s = Resources.getString("Editor.TriggerAction.trait_description"); //$NON-NLS-1$
     if (name.length() > 0) {
       s += " - " + name; //$NON-NLS-1$
     }
@@ -375,6 +375,11 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     s += getCommandDesc(command, key);
 
     return s;
+  }
+
+  @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.TriggerAction.trait_description");
   }
 
   @Override

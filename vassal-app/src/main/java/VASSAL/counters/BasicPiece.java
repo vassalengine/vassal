@@ -971,6 +971,14 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
    */
   @Override
   public String getDescription() {
+    return getBaseDescription();
+  }
+
+  /**
+   * @return Description of what this kind of piece is. Appears in PieceDefiner list of traits.
+   */
+  @Override
+  public String getBaseDescription() {
     return Resources.getString("Editor.BasicPiece.trait_description");
   }
 

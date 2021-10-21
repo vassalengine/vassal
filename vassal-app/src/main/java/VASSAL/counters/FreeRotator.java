@@ -73,6 +73,8 @@ import VASSAL.tools.swing.SwingUtils;
 import net.miginfocom.swing.MigLayout;
 
 /**
+ * d/b/a "Can Rotate"
+ *
  * A Decorator that rotates a GamePiece to an arbitrary angle
  */
 public class FreeRotator extends Decorator
@@ -815,6 +817,11 @@ public class FreeRotator extends Decorator
   @Override
   public String getDescription() {
     return buildDescription("Editor.FreeRotator.trait_description", name, description);
+  }
+
+  @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.FreeRotator.trait_description");
   }
 
   @Override

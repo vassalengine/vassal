@@ -23,6 +23,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.Command;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
@@ -38,6 +39,8 @@ import java.util.Objects;
 import javax.swing.KeyStroke;
 
 /**
+ * d/b/a "Prototype"
+ *
  * This trait is a placeholder for a pre-defined series of traits specified in a
  * {@link VASSAL.build.module.PrototypeDefinition} object. When a piece that uses a prototype is defined in a module, it
  * is simply assigned the name of a particular prototype definition. When that piece is during a game, the UsePrototype
@@ -67,6 +70,11 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
   @Override
   public String getDescription() {
     return buildDescription("Editor.UsePrototype.trait_description", prototypeName);
+  }
+
+  @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.UsePrototype.trait_description");
   }
 
   @Override

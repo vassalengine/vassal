@@ -141,6 +141,11 @@ public class TranslatableMessage extends Decorator implements TranslatablePiece 
   }
 
   @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.TranslatableMessage.trait_description");
+  }
+
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("TranslatableMessage.html"); // NON-NLS
   }

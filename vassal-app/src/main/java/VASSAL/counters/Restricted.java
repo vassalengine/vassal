@@ -27,6 +27,7 @@ import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
 
 import java.awt.Component;
@@ -39,6 +40,8 @@ import java.util.Objects;
 import javax.swing.KeyStroke;
 
 /**
+ * d/b/a "Restricted Access"
+ *
  * A GamePiece with the Restricted trait can only be manipulated by the player playing a specific side
  */
 public class Restricted extends Decorator implements EditablePiece {
@@ -66,6 +69,11 @@ public class Restricted extends Decorator implements EditablePiece {
   @Override
   public String getDescription() {
     return buildDescription("Editor.Restricted.trait_description", description);
+  }
+
+  @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.Restricted.trait_description");
   }
 
   public void setDescription(String description) {

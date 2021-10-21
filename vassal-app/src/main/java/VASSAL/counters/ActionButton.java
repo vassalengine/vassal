@@ -25,6 +25,7 @@ import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
@@ -156,6 +157,10 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
     return s;
   }
 
+  @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.ActionButton.trait_description");
+  }
 
   /**
    * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)

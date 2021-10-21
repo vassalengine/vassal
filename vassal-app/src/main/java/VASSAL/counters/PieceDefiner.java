@@ -108,6 +108,7 @@ public class PieceDefiner extends JPanel {
   private static Boolean sorted = false;
   protected DefaultListModel<GamePiece> inUseModel;
   protected ListCellRenderer<? super GamePiece> r;
+  protected ListCellRenderer<? super GamePiece> availableRenderer;
   protected ScaleablePieceSlot slot;
   private GamePiece piece;
   protected static TraitClipboard clipBoard;
@@ -149,6 +150,7 @@ public class PieceDefiner extends JPanel {
     initDefinitions();
     inUseModel = new DefaultListModel<>();
     r = new Renderer();
+    availableRenderer = new AvailableRenderer();
     slot = new ScaleablePieceSlot();
     initComponents();
     availableList.setSelectedIndex(0);
@@ -446,7 +448,7 @@ public class PieceDefiner extends JPanel {
     availableList.setTransferHandler(transferHandler);
     availableList.setModel(availableModel);
     availableList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    availableList.setCellRenderer(r);
+    availableList.setCellRenderer(availableRenderer);
     availableList.addKeyListener(new AvailableListKeyAdapter(this));
     availableList.setVisibleRowCount(99);
     availableList.addListSelectionListener(evt -> {
@@ -1040,6 +1042,9 @@ public class PieceDefiner extends JPanel {
     refresh();
   }
 
+  /**
+   * Renderer for currently-in-use traits (includes full description)
+   */
   private static class Renderer extends DefaultListCellRenderer {
     private static final long serialVersionUID = 1L;
 
@@ -1053,6 +1058,31 @@ public class PieceDefiner extends JPanel {
       super.getListCellRendererComponent(list, "", index, selected, hasFocus);
       if (value instanceof EditablePiece) {
         setText(((EditablePiece) value).getDescription());
+      }
+      else {
+        final String s = value.getClass().getName();
+        setText(s.substring(s.lastIndexOf('.') + 1));
+      }
+      return this;
+    }
+  }
+
+  /**
+   * Renderer for available traits (trait name only)
+   */
+  private static class AvailableRenderer extends DefaultListCellRenderer {
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public Component getListCellRendererComponent(
+      JList list, Object value, int index, boolean selected, boolean hasFocus) {
+
+      // DO NOT pass value to super.getListCellRendererComponent()
+      // It is incredibly inefficient for GamePieces and is not needed
+      // since we overwrite the label text anyway.
+      super.getListCellRendererComponent(list, "", index, selected, hasFocus);
+      if (value instanceof EditablePiece) {
+        setText(((EditablePiece) value).getBaseDescription());
       }
       else {
         final String s = value.getClass().getName();

@@ -203,6 +203,11 @@ public class Deselect extends Decorator implements TranslatablePiece {
   }
 
   @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.Deselect.deselect");
+  }
+
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Deselect.html", ""); // NON-NLS
   }
