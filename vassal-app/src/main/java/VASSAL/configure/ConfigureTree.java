@@ -1194,7 +1194,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       if (target.getConfigurer() != null) {
         final Action a = buildEditAction(target);
         if (a != null) {
-          a.actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Edit")); //NON-NLS
+          a.actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Edit", e.getModifiersEx())); //NON-NLS
         }
       }
     }
