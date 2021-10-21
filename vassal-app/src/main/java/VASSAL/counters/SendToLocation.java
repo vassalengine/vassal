@@ -91,8 +91,10 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
   protected static final String DEST_ZONE = "Z"; // NON-NLS
   protected static final String DEST_REGION = "R"; // NON-NLS
   protected static final String DEST_COUNTER = "A"; // NON-NLS
+  protected static final String DEST_COUNTER_CYCLE = "C"; //NON-NLS
+  protected static final String DEST_COUNTER_NEAREST = "N"; //NON-NLS
   protected static final String[] DEST_OPTIONS = {
-    DEST_GRIDLOCATION, DEST_LOCATION, DEST_ZONE, DEST_REGION, DEST_COUNTER
+    DEST_GRIDLOCATION, DEST_LOCATION, DEST_ZONE, DEST_REGION, DEST_COUNTER, DEST_COUNTER_CYCLE, DEST_COUNTER_NEAREST
   };
   // Actual valued recorded for Destination option
   protected static final String[] DEST_KEYS = {
@@ -100,7 +102,9 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     Resources.getString("Editor.SendToLocation.location_on_selected_map"),
     Resources.getString("Editor.SendToLocation.zone_on_selected_map"),
     Resources.getString("Editor.SendToLocation.region_on_selected_map"),
-    Resources.getString("Editor.SendToLocation.another_counter_selected_by_properties")
+    Resources.getString("Editor.SendToLocation.another_counter_selected_by_properties_any"),
+    Resources.getString("Editor.SendToLocation.another_counter_selected_by_properties_cycle"),
+    Resources.getString("Editor.SendToLocation.another_counter_selected_by_properties_nearest")
   };
 
   protected KeyCommand[] command;
@@ -198,7 +202,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       if (backCommandName.length() > 0 && backKey != null && !backKey.isNull()) {
         l.add(backCommand);
       }
-      command = l.toArray(new KeyCommand[0]);
+      command = l.toArray(KeyCommand.NONE);
     }
 
     for (final KeyCommand c : command) {
@@ -241,32 +245,84 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     map = null;
     Point dest = null;
     // Home in on a counter
-    if (destination.equals(DEST_COUNTER.substring(0, 1))) {
-      GamePiece target = null;
-      // Find first counter matching the properties
+    if (destination.equals(DEST_COUNTER.substring(0, 1)) || destination.equals(DEST_COUNTER_CYCLE.substring(0, 1)) || destination.equals(DEST_COUNTER_NEAREST.substring(0, 1))) {
+      final List<GamePiece> targets = new ArrayList<>();
+      // Find first counters matching the properties
       for (final GamePiece piece :
            GameModule.getGameModule().getGameState().getAllPieces()) {
         if (piece instanceof Stack) {
           final Stack s = (Stack) piece;
           for (final GamePiece gamePiece : s.asList()) {
-            if (propertyFilter.accept(outer, gamePiece)) {
-              target = gamePiece;
-              if (target != null) break;
+            if (propertyFilter.accept(outer, gamePiece) && !targets.contains(gamePiece)) {
+              targets.add(gamePiece);
+              if (destination.equals(DEST_COUNTER.substring(0, 1))) {
+                break; // "Any match" version just takes first hit
+              }
             }
+          }
+          if (destination.equals(DEST_COUNTER.substring(0, 1)) && !targets.isEmpty()) {
+            break; // "Any match" version just takes first hit
           }
         }
         else {
-          if (propertyFilter.accept(outer, piece)) {
-            target = piece;
+          if (propertyFilter.accept(outer, piece) && !targets.contains(piece)) {
+            targets.add(piece);
+            if (destination.equals(DEST_COUNTER.substring(0, 1))) {
+              break; // "Any match" version just takes first hit
+            }
           }
         }
-        if (target != null) break;
       }
-      // Determine target's position
-      if (target != null) {
-        map = target.getMap();
-        if (map != null) {
-          dest = target.getPosition();
+
+      if (!targets.isEmpty()) {
+        GamePiece target = null;
+
+        if (destination.equals(DEST_COUNTER.substring(0, 1))) {
+          // "Any Match" version just takes the first hit
+          target = targets.get(0);
+        }
+        else {
+          // Now figure out which one we're currently nearest to
+          double dist = Double.MAX_VALUE;
+          int startIndex = 0;
+          for (int index = 0; index < targets.size(); index++) {
+            if (targets.get(index).getMap() != getMap()) {
+              continue;
+            }
+            final double myDist = targets.get(index).getPosition().distance(getPosition());
+            if (myDist >= dist) {
+              continue;
+            }
+            dist = myDist;
+            startIndex = index;
+          }
+
+          if (destination.equals(DEST_COUNTER_CYCLE.substring(0, 1))) {
+            // Cycling Match version - search through our list of targets starting with the *next* one after the
+            // one we're nearest to, but looping through them all. Pick the first target in the list. This means
+            // that if there are multiple targets, successively executing this command will cycle us to each of
+            // the valid targets.
+            for (int counter = 0; counter < targets.size(); counter++) {
+              final int index = (startIndex + counter + 1) % targets.size();
+              if ((targets.get(index).getMap() != getMap()) ||
+                (!getPosition().equals(targets.get(index).getPosition()))) {
+                target = targets.get(index);
+                break;
+              }
+            }
+          }
+          else {
+            // Nearest Match version - we just take the one that was nearest
+            target = targets.get(startIndex);
+          }
+        }
+
+        // Determine target's position
+        if (target != null) {
+          map = target.getMap();
+          if (map != null) {
+            dest = target.getPosition();
+          }
         }
       }
     }
@@ -785,8 +841,9 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       yInput.getControls().setVisible(destOption.equals(DEST_LOCATION));
       yInputLabel.setVisible(destOption.equals(DEST_LOCATION));
 
-      mapControls.setVisible(!destOption.equals(DEST_COUNTER));
-      mapLabel.setVisible(!destOption.equals(DEST_COUNTER));
+      final boolean destCounter = (destOption.equals(DEST_COUNTER) || destOption.equals(DEST_COUNTER_CYCLE) || destOption.equals(DEST_COUNTER_NEAREST));
+      mapControls.setVisible(!destCounter);
+      mapLabel.setVisible(!destCounter);
 
       boardControls.setVisible(destOption.equals(DEST_LOCATION) || destOption.equals(DEST_GRIDLOCATION));
       boardLabel.setVisible(destOption.equals(DEST_LOCATION) || destOption.equals(DEST_GRIDLOCATION));
@@ -797,8 +854,8 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       regionInput.getControls().setVisible(destOption.equals(DEST_REGION));
       regionLabel.setVisible(destOption.equals(DEST_REGION));
 
-      propertyInput.getControls().setVisible(destOption.equals(DEST_COUNTER));
-      propertyLabel.setVisible(destOption.equals(DEST_COUNTER));
+      propertyInput.getControls().setVisible(destCounter);
+      propertyLabel.setVisible(destCounter);
 
       gridLocationInput.getControls().setVisible(destOption.equals(DEST_GRIDLOCATION));
       gridLabel.setVisible(destOption.equals(DEST_GRIDLOCATION));
@@ -876,7 +933,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
   public List<String> getExpressionList() {
     final ArrayList<String> l = new ArrayList<>();
 
-    if (destination.equals(DEST_COUNTER.substring(0, 1))) {
+    if (destination.equals(DEST_COUNTER.substring(0, 1)) || destination.equals(DEST_COUNTER_CYCLE.substring(0, 1)) || destination.equals(DEST_COUNTER_NEAREST.substring(0, 1))) {
       l.add(propertyFilter.getExpression());
     }
     else {
