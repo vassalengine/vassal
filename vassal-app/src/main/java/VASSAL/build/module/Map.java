@@ -269,6 +269,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   protected MutablePropertiesContainer propsContainer = new MutablePropertiesContainer.Impl();
   protected PropertyChangeListener repaintOnPropertyChange = evt -> repaint();
   protected PieceMover pieceMover;
+  protected KeyBufferer keyBufferer;
   protected KeyListener[] saveKeyListeners = null;
 
   protected NamedKeyStrokeListener showKeyListener;
@@ -279,6 +280,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public Map() {
     getView();
     theMap.addMouseListener(this);
+    theMap.addMouseMotionListener(this);
     if (shouldDockIntoMainWindow()) {
       final String constraints =
         (SystemUtils.IS_OS_MAC ? "ins 1 0 1 0" : "ins 0") +   //NON-NLS
@@ -793,6 +795,12 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     pieceMover = mover;
   }
 
+  /**
+   * @return Our pieceMover
+   */
+  public PieceMover getPieceMover() {
+    return pieceMover;
+  }
 
   /**
    * Every map window has a toolbar, and this method returns swing toolbar component for this map.
@@ -824,13 +832,18 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @return KeyBufferer (if any) for this map.
    */
   public KeyBufferer getKeyBufferer() {
-    for (final Object o : drawComponents) {
-      if (o instanceof KeyBufferer) {
-        return (KeyBufferer)o;
-      }
-    }
-    return null;
+    return keyBufferer;
   }
+
+  /**
+   * Registers the keyBufferer for this map (old way of scanning through components to find
+   * one is silly)
+   * @param kb KeyBufferer
+   */
+  public void setKeyBufferer(KeyBufferer kb) {
+    keyBufferer = kb;
+  }
+
 
   /**
    * Registers this Map as a child of another buildable component, usually the {@link GameModule}. Determines a unique id for
