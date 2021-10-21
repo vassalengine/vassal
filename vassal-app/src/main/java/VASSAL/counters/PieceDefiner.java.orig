@@ -150,7 +150,10 @@ public class PieceDefiner extends JPanel {
     initDefinitions();
     inUseModel = new DefaultListModel<>();
     r = new Renderer();
+<<<<<<< HEAD
+=======
     availableRenderer = new AvailableRenderer();
+>>>>>>> dfd7ed2b4... maintain signature
     slot = new ScaleablePieceSlot();
     initComponents();
     availableList.setSelectedIndex(0);
@@ -187,7 +190,6 @@ public class PieceDefiner extends JPanel {
     if (availableModel == null) {
       availableModel = new DefaultListModel<>();
       //addElement(new BasicPiece()); // Not needed since you can never add it
-      addElement(new BasicName());
       addElement(new Delete());
       addElement(new Clone());
       addElement(new Embellishment());
@@ -1068,6 +1070,33 @@ public class PieceDefiner extends JPanel {
     }
   }
 
+  private static class AvailableRenderer extends DefaultListCellRenderer {
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public Component getListCellRendererComponent(
+      JList list, Object value, int index, boolean selected, boolean hasFocus) {
+
+      // DO NOT pass value to super.getListCellRendererComponent()
+      // It is incredibly inefficient for GamePieces and is not needed
+      // since we overwrite the label text anyway.
+      super.getListCellRendererComponent(list, "", index, selected, hasFocus);
+      if (value instanceof EditablePiece) {
+        String desc = ((EditablePiece) value).getDescription();
+        if (desc.contains(" - ")) {
+          desc = desc.substring(0, desc.indexOf(" - "));
+        }
+
+        setText(desc);
+      }
+      else {
+        final String s = value.getClass().getName();
+        setText(s.substring(s.lastIndexOf('.') + 1));
+      }
+      return this;
+    }
+  }
+
   /**
    * Renderer for available traits (trait name only)
    */
@@ -1092,7 +1121,7 @@ public class PieceDefiner extends JPanel {
       return this;
     }
   }
-  
+
   /**
    * Contents of the Copy/Paste buffer for traits in the editor
    * @author rkinney
