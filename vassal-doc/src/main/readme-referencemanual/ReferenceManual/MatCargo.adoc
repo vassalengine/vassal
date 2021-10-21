@@ -94,6 +94,11 @@ piece which does not have this trait).
 
 * _OldMatBasicName_ contains the previous Mat's basic name, if any
 
+* _OldMatOffsetX_ contains the cargo's previous _CurrentMatOffsetX_ value (offset from X position to X of Mat), if any
+
+* _OldMatOffsetY_ contains the cargo's previous _CurrentMatOffsetY_ value (offset from Y position to Y of Mat), if any
+
+
 
 
 
