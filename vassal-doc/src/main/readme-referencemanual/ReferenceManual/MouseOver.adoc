@@ -54,9 +54,10 @@ The sum of the numeric values of this property for all included pieces will be s
 
 *Text for empty location:*::  A <<MessageFormat.adoc#top,Message Format>> specifying the text to display when no pieces have been selected.
 
-*Include individual pieces:*::  Specifies how pieces are to be selected for inclusion in the viewer.
+*Include individual pieces:*::  Specifies whether/how pieces are to be selected for inclusion in the viewer based on their layer.
 You may restrict the pieces according to the <<GamePieceLayers.adoc#top,Game Piece Layer>> to which they belong.
-Alternatively, you may specify a <<PropertyMatchExpression.adoc#top,Property Match Expression>> to match desired values of one or more <<Properties.adoc#top,Properties>> in order for a piece to be included.
+
+*Property Match Expression:*::  You may specify a <<PropertyMatchExpression.adoc#top,Property Match Expression>> to match desired values of one or more <<Properties.adoc#top,Properties>> in order for a piece to be included.
 
 *Include non-stacking pieces:*::  If selected, then pieces with a <<NonStacking.adoc#top,Does not stack>> trait specifying the piece does not Stack are eligible for inclusion in the viewer.
 Otherwise, they are excluded regardless of any other filters.
