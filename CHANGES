@@ -6,6 +6,8 @@
 * 10558: Added Current Mat GKC FastMatch option
 * 10557: Added MatCargo to manually attach/detach from mats
 * 10555: Fix mat save/load to reconnect mats and cargo
+* 10552: CounterDetailViewer - can combine layer filters with property match
+    expression
 * 10551: Action Button option to open right-click context menu
 * 10547: Bring fastmatch $$ variable handling into line with standard Global
     Key Command match expression handling
