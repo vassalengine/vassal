@@ -2,6 +2,8 @@
 
 * 10569: Better trait one-line summaries in editor; Folder summary includes
     description
+* 10565: While double-clicking to open component in Editor, holding Alt,
+    Shift, and/or Ctrl affects the location the new window opens.
 * 10563: Trait editor Paste button is now always enabled
 * 10558: Added Current Mat GKC FastMatch option
 * 10557: Added MatCargo to manually attach/detach from mats
