@@ -295,6 +295,7 @@ public class Footprint extends MovementMarkable {
   }
 
   protected void clearTrail() {
+    myBoundingBox = null;
     pointList.clear();
     addPoint(getPosition());
     if (!initialized) {       //BR// Bug 12980 - prevent multiple re-initializations
@@ -319,6 +320,7 @@ public class Footprint extends MovementMarkable {
   }
 
   public void redraw() {
+    myBoundingBox = null;
     final Map m = getMap();
     if (m != null) {
       m.repaint(getMyBoundingBox());
