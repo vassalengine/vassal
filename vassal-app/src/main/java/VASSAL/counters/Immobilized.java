@@ -350,7 +350,9 @@ public class Immobilized extends Decorator implements EditablePiece {
       buffer.append(NEVER_STACK);
     }
     buffer.append(';');
-    buffer.append(description);
+    if (!description.isEmpty()) { // I don't understand the silly PMD error well enough to think of another way to fix
+      buffer.append(description);
+    }
     return buffer.toString();
   }
 
