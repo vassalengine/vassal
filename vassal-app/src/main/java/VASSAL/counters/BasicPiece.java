@@ -235,7 +235,7 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
   @Override
   public Object getProperty(Object key) {
     if (BASIC_NAME.equals(key)) {
-      return getName();
+      return getRealName();
     }
     else if (LOCALIZED_BASIC_NAME.equals(key)) {
       return getRealLocalizedName();
@@ -670,12 +670,20 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
   }
 
   /**
-   * @return the name of this GamePiece. This is the name typed by the module designer in the configuration box
+   * @return the name of this BasicPiece. This is the name typed by the module designer in the configuration box
    * for the BasicPiece.
+   */
+  public String getRealName() {
+    return commonName;
+  }
+
+  /**
+   * @return the name of this GamePiece. It queries the BasicName property from the outermost piece inward,
+   * allowing a "Basic Name" trait to possibly override ours when the Piece Name is being queried.
    */
   @Override
   public String getName() {
-    return commonName;
+    return (String)Decorator.getOutermost(this).getProperty(BASIC_NAME);
   }
 
   /**
