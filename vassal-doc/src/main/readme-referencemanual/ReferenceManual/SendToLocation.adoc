@@ -58,8 +58,18 @@ In the case of <<ZonedGrid.adoc#top,Multi-Zone Grids>>, this format makes use of
 +
 * for Zones whose Location Format is configured to _$gridLocation$_, then the grid location inside the zone will be used.
 
-_Another counter selected by properties_:::
-The location of the first piece selected by the <<PropertyMatchExpression.adoc#top,Property Match Expression>> specified.
+_Any counter, selected by properties_:::
+The location of the _first_ piece selected by the <<PropertyMatchExpression.adoc#top,Property Match Expression>> specified.
+Compared to the two subsequent property match options (Cycle and Nearest), this option usually executes the most quickly and
+efficiently. If you expect there to be only one piece matching the expression, or if you don't care which matching piece is
+picked as long as it matches the expression, then this is the option you want.
+
+_Cycle through counters, selected by properties_:::
+The location of the _next_ piece selected by the <<PropertyMatchExpression.adoc#top,Property Match Expression>> specified.
+If there are multiple matching counters then sending this command multiple times will cycle through the counters.
+
+_Nearest counter, selected by properties_:::
+The location of the _nearest_ piece selected by the <<PropertyMatchExpression.adoc#top,Property Match Expression>> specified.
 
 _Grid Location on Selected Map_:::
 

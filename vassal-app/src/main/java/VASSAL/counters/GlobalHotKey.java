@@ -117,6 +117,11 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
   }
 
   @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.GlobalHotKey.trait_description");
+  }
+
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GlobalHotKey.html"); // NON-NLS
   }

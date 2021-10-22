@@ -245,7 +245,21 @@ public class CounterGlobalKeyCommand extends Decorator
     if (description.length() > 0) {
       d += " - " + description;
     }
+
+    if (key != null) {
+      d += getCommandDesc(commandName, key);
+    }
+
+    if (globalKey != null) {
+      d += getCommandDesc("", globalKey);
+    }
+
     return d;
+  }
+
+  @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.GlobalkeyCommand.global_key_command");
   }
 
   @Override

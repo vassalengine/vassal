@@ -197,7 +197,14 @@ public class Deselect extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return buildDescription("Editor.Deselect.deselect", description);
+    String s = buildDescription("Editor.Deselect.deselect", description);
+    s += getCommandDesc(commandName, key);
+    return s;
+  }
+
+  @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.Deselect.deselect");
   }
 
   @Override

@@ -19,6 +19,7 @@ package VASSAL.configure;
 
 import VASSAL.build.AbstractBuildable;
 import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.AbstractFolder;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
@@ -1193,7 +1194,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       if (target.getConfigurer() != null) {
         final Action a = buildEditAction(target);
         if (a != null) {
-          a.actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Edit")); //NON-NLS
+          a.actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Edit", e.getModifiersEx())); //NON-NLS
         }
       }
     }
@@ -2295,6 +2296,13 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           }
         }
         description += " [" + getConfigureName(c.getClass()) + "]";
+
+        if (c instanceof AbstractFolder) {
+          final String desc = ((AbstractFolder)c).getAttributeValueString(AbstractFolder.DESCRIPTION);
+          if (!desc.isEmpty()) {
+            description += " - " + desc;
+          }
+        }
       }
       return description;
     }

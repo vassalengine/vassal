@@ -30,6 +30,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
@@ -124,6 +125,11 @@ public class MenuSeparator extends Decorator implements TranslatablePiece {
   @Override
   public String getDescription() {
     return buildDescription("Editor.MenuSeparator.trait_description", desc);
+  }
+
+  @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.MenuSeparator.trait_description");
   }
 
   @Override

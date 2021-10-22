@@ -222,25 +222,35 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
 
   @Override
   public void mousePressed(MouseEvent e) {
-    maybePopup(e);
+    maybePopup(e, false);
   }
 
   @Override
   public void mouseReleased(MouseEvent e) {
-    maybePopup(e);
+    maybePopup(e, true);
   }
 
   protected void maybePopup(MouseEvent e) {
+    maybePopup(e, false);
+  }
+
+  protected void maybePopup(MouseEvent e, boolean specialLaunchAllowed) {
     final GamePiece p = map.findPiece(e.getPoint(), targetSelector);
     if (p == null) {
       return;
     }
 
     if (!e.isPopupTrigger()) {
-      if (e.isAltDown() || e.isShiftDown()) {
+      if (e.isAltDown() || e.isShiftDown() || !specialLaunchAllowed) {
         return;
       }
-      final String launchPopup = (String)p.getProperty(ActionButton.LAUNCH_POPUP_MENU);
+      if (map.getPieceMover().getBreachedThreshold()) { // If we're finishing a legit drag
+        return;
+      }
+      if (map.getKeyBufferer().isLasso()) { // If we dragged a selection box
+        return;
+      }
+      final String launchPopup = (String) p.getProperty(ActionButton.LAUNCH_POPUP_MENU);
       if (!"true".equals(launchPopup)) { //NON-NLS
         return;
       }

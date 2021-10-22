@@ -190,10 +190,8 @@ public class Footprint extends MovementMarkable {
     showTrailCommandOff = null;
     showTrailCommandClear = null;
 
-    if (initiallyVisible) {
-      localVisibility = true;
-      globalVisibility = true;
-    }
+    globalVisibility = false;
+    localVisibility  = false;
   }
 
   @Override
@@ -295,6 +293,7 @@ public class Footprint extends MovementMarkable {
   }
 
   protected void clearTrail() {
+    myBoundingBox = null;
     pointList.clear();
     addPoint(getPosition());
     if (!initialized) {       //BR// Bug 12980 - prevent multiple re-initializations
@@ -319,6 +318,7 @@ public class Footprint extends MovementMarkable {
   }
 
   public void redraw() {
+    myBoundingBox = null;
     final Map m = getMap();
     if (m != null) {
       m.repaint(getMyBoundingBox());
@@ -668,6 +668,7 @@ public class Footprint extends MovementMarkable {
       initialized = true;
       if (globallyVisible) {
         globalVisibility = !globalVisibility;
+        localVisibility  = globalVisibility;
       }
       else {
         localVisibility = !localVisibility;
@@ -695,6 +696,7 @@ public class Footprint extends MovementMarkable {
       initialized = true;
       if (globallyVisible) {
         globalVisibility = false;
+        localVisibility  = false;
       }
       else {
         localVisibility = false;
@@ -831,7 +833,7 @@ public class Footprint extends MovementMarkable {
 
     @Override
     public String getState() {
-      return gv.booleanValue() + ";;0";
+      return iv.booleanValue() + ";;0"; //BR// iv == Initial Visibility! NOT gv!!!
     }
 
     @Override

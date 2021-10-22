@@ -23,6 +23,7 @@ import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.SequenceEncoder;
 
@@ -295,6 +296,11 @@ public class Mat extends Decorator implements TranslatablePiece {
   @Override
   public String getDescription() {
     return buildDescription("Editor.Mat.trait_description", matName, desc);
+  }
+
+  @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.Mat.trait_description");
   }
 
   @Override

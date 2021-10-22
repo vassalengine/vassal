@@ -25,6 +25,7 @@ import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.PropertyExpressionConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.TranslatingStringEnumConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 
@@ -173,7 +174,16 @@ public class RestrictCommands extends Decorator implements EditablePiece {
 
   @Override
   public String getDescription() {
-    return buildDescription("Editor.RestrictCommands.trait_description", name);
+    String s = buildDescription("Editor.RestrictCommands.trait_description", name);
+    for (final NamedKeyStroke key : watchKeys) {
+      s += getCommandDesc("", key);
+    }
+    return s;
+  }
+
+  @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.RestrictCommands.trait_description");
   }
 
   @Override

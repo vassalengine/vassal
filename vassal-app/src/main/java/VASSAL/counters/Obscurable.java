@@ -57,6 +57,11 @@ import net.miginfocom.swing.MigLayout;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+/**
+ * d/b/a "Mask"
+ *
+ * Trait that lets some traits of a piece be hidden "from some players, some of the time".
+ */
 public class Obscurable extends Decorator implements TranslatablePiece {
   public static final String ID = "obs;"; //$NON-NLS-1$//
   protected static final char INSET = 'I';
@@ -565,7 +570,14 @@ public class Obscurable extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return buildDescription("Editor.Obscurable.trait_description", description);
+    String s = buildDescription("Editor.Obscurable.trait_description", description);
+    s += getCommandDesc(hideCommand, keyCommand);
+    return s;
+  }
+
+  @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.Obscurable.trait_description");
   }
 
   @Override

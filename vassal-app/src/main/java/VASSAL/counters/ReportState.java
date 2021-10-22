@@ -57,6 +57,8 @@ import javax.swing.KeyStroke;
 import org.apache.commons.lang3.ArrayUtils;
 
 /**
+ * d/b/a "Report Action"
+ *
  * A GamePiece with this trait will echo the piece's current name when any of a given key commands are pressed
  * (and after they take effect)
  */
@@ -269,7 +271,18 @@ public class ReportState extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return buildDescription("Editor.ReportState.trait_description", description);
+    String s = buildDescription("Editor.ReportState.trait_description", description);
+
+    for (final NamedKeyStroke n : keys) {
+      s += getCommandDesc("", n);
+    }
+
+    return s;
+  }
+
+  @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.ReportState.trait_description");
   }
 
   @Override

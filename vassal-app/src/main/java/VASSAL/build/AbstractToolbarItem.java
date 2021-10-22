@@ -56,15 +56,19 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
   protected void setNameKey(String nameKey) {
     this.nameKey = nameKey;
   }
+
   protected void setTooltipKey(String tooltipKey) {
     this.tooltipKey = tooltipKey;
   }
+
   protected void setButtonTextKey(String buttonTextKey) {
     this.buttonTextKey = buttonTextKey;
   }
+
   protected void setHotKeyKey(String hotKeyKey) {
     this.hotKeyKey = hotKeyKey;
   }
+
   protected void setIconKey(String iconKey) {
     this.iconKey = iconKey;
   }

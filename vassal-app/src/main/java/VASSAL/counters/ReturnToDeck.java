@@ -279,7 +279,14 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return buildDescription("Editor.ReturnToDeck.trait_description", deckSelect ? "" : deckExpression.getFormat(), description);
+    String s = buildDescription("Editor.ReturnToDeck.trait_description", deckSelect ? "" : deckExpression.getFormat(), description);
+    s += getCommandDesc(returnCommand, returnKey);
+    return s;
+  }
+
+  @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.ReturnToDeck.trait_description");
   }
 
   @Override

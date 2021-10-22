@@ -202,7 +202,14 @@ public class Delete extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return buildDescription("Editor.Delete.trait_description", description);
+    String s = buildDescription("Editor.Delete.trait_description", description);
+    s += getCommandDesc(commandName, key);
+    return s;
+  }
+
+  @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.Delete.trait_description");
   }
 
   @Override

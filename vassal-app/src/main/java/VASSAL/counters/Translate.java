@@ -58,6 +58,8 @@ import javax.swing.SwingUtilities;
 import net.miginfocom.swing.MigLayout;
 
 /**
+ * d/b/a "Move Fixed Distance"
+ *
  * Give a piece a command that moves it a fixed amount in a particular
  * direction, optionally tracking the current rotation of the piece.
  */
@@ -89,7 +91,14 @@ public class Translate extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return buildDescription("Editor.MoveFixedDistance.trait_description", description);
+    String s = buildDescription("Editor.MoveFixedDistance.trait_description", description);
+    s += getCommandDesc(commandName, keyCommand);
+    return s;
+  }
+
+  @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.MoveFixedDistance.trait_description");
   }
 
   @Override

@@ -628,6 +628,11 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
   }
 
   @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.Embellishment.trait_description");
+  }
+
+  @Override
   public Object getProperty(Object key) {
     if (key.equals(name + IMAGE)) {
       checkPropertyLevel();

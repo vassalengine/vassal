@@ -65,6 +65,7 @@ public class ImmobilizedTest extends DecoratorTest {
     trait.moveIfSelected = true;
     trait.neverBandSelect = false;
     trait.altToBandSelect = true;
+    trait.description = "Whee Happy Whee!"; //NON-NLS
     serializeTest("Test 3", trait); // NON-NLS
   }
 }

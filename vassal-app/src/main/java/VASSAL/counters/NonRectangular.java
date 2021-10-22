@@ -153,6 +153,11 @@ public class NonRectangular extends Decorator implements EditablePiece {
 
   @Override
   public String getDescription() {
+    return buildDescription("Editor.NonRectangular.trait_description", imageName);
+  }
+
+  @Override
+  public String getBaseDescription() {
     return Resources.getString("Editor.NonRectangular.trait_description");
   }
 

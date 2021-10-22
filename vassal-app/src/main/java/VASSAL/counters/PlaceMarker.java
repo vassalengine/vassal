@@ -74,6 +74,8 @@ import static VASSAL.counters.BasicPiece.BASIC_NAME;
 import static VASSAL.counters.BasicPiece.PIECE_NAME;
 import static VASSAL.counters.Mat.MAT_ID;
 import static VASSAL.counters.Mat.MAT_NAME;
+import static VASSAL.counters.MatCargo.CURRENT_MAT_OFFSET_X;
+import static VASSAL.counters.MatCargo.CURRENT_MAT_OFFSET_Y;
 
 /**
  * This Decorator defines a key command to places another counter on top of this one.
@@ -258,6 +260,8 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
             c = c.append(((PersistentPropertyContainer) marker).setPersistentProperty(BasicPiece.OLD_MAT_ID, mat.getProperty(MAT_ID)));
             c = c.append(((PersistentPropertyContainer) marker).setPersistentProperty(BasicPiece.OLD_MAT_PIECE_NAME, getOutermost(mat).getProperty(PIECE_NAME)));
             c = c.append(((PersistentPropertyContainer) marker).setPersistentProperty(BasicPiece.OLD_MAT_BASIC_NAME, getOutermost(mat).getProperty(BASIC_NAME)));
+            c = c.append(((PersistentPropertyContainer) marker).setPersistentProperty(BasicPiece.OLD_MAT_OFFSET_X, String.valueOf(cargo.getProperty(CURRENT_MAT_OFFSET_X))));
+            c = c.append(((PersistentPropertyContainer) marker).setPersistentProperty(BasicPiece.OLD_MAT_OFFSET_Y, String.valueOf(cargo.getProperty(CURRENT_MAT_OFFSET_Y))));
 
             if (mat.getProperty(Properties.SELECTED) == Boolean.TRUE) {
               KeyBuffer.getBuffer().add(marker);
@@ -395,7 +399,14 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
 
   @Override
   public String getDescription() {
-    return buildDescription("Editor.PlaceMarker.trait_description", description);
+    String s = buildDescription("Editor.PlaceMarker.trait_description", description);
+    s += getCommandDesc(command.getName(), key);
+    return s;
+  }
+
+  @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.PlaceMarker.trait_description");
   }
 
   @Override

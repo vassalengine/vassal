@@ -1,13 +1,30 @@
 3.6.0-beta4 - ???
 
+* 10587: Description field & better auto-summary for Does Not Stack
+* 10586: Better defaults for Send To Location offsets
+* 10585: Movement Trail "initial visibility" and bounding box caching bugs
+* 10584: Map "Mark Unmoved" button now accepts a hotkey and a report format
+* 10578: MatCargo now provides OldMatOffsetX and OldMatOffsetY properties
+* 10576: Send-to-Location new options for pieces-selected-by-properties:-
+    cycle and nearest
+* 10572: Fix Drag Threshold preference to work correctly
+* 10569: Better trait one-line summaries in editor; Folder summary includes
+    description
+* 10565: While double-clicking to open component in Editor, holding Alt,
+    Shift, and/or Ctrl affects the location the new window opens.
 * 10563: Trait editor Paste button is now always enabled
 * 10558: Added Current Mat GKC FastMatch option
 * 10557: Added MatCargo to manually attach/detach from mats
+* 10555: Fix mat save/load to reconnect mats and cargo
+* 10552: CounterDetailViewer - can combine layer filters with property match
+    expression
 * 10551: Action Button option to open right-click context menu
 * 10547: Bring fastmatch $$ variable handling into line with standard Global
     Key Command match expression handling
 * 10543: Initialise OldMat related properties in a Placed marker
 * 10510: More robust Java version check for Linux
+* 10509: Add $numericTotal$ and $result#$ options to standard Dice Button
+    report format.
 * 10505: Enable Offset options to work with the Grid option in SendToLocation
 * 10504: Text label shape, bounding box doesn't resepect rotated labels
 *  8949: IllegalArgumentException in GameState.getRestorePiecesCommand() due

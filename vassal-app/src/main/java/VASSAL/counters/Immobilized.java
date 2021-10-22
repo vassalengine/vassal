@@ -20,6 +20,7 @@ package VASSAL.counters;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
@@ -36,6 +37,8 @@ import java.util.Objects;
 import javax.swing.KeyStroke;
 
 /**
+ * d/b/a "Does Not Stack"
+ *
  * Decorator that filters events to prevent a GamePiece from
  * being selected and/or moved.
  *
@@ -57,6 +60,7 @@ public class Immobilized extends Decorator implements EditablePiece {
   protected boolean altToBandSelect = false;
   protected boolean altShiftToBandSelect = false;
   protected boolean canStack = false;
+  protected String description;
   protected EventFilter selectFilter;
   protected EventFilter moveFilter;
   protected EventFilter bandselectFilter;
@@ -139,6 +143,7 @@ public class Immobilized extends Decorator implements EditablePiece {
     final String selectionOptions = st.nextToken("");
     final String movementOptions = st.nextToken("");
     final String stackingOptions = st.nextToken(String.valueOf(NEVER_STACK));  // Compatibility - default to no Stacking
+    description = st.nextToken("");
     if (selectionOptions.indexOf(SHIFT_SELECT) >= 0) {
       shiftToSelect = true;
       moveIfSelected = true;
@@ -355,6 +360,7 @@ public class Immobilized extends Decorator implements EditablePiece {
     else {
       buffer.append(NEVER_STACK);
     }
+    buffer.append(';').append(description);
     return buffer.toString();
   }
 
@@ -369,6 +375,75 @@ public class Immobilized extends Decorator implements EditablePiece {
 
   @Override
   public String getDescription() {
+    String s = buildDescription("Editor.Immobilized.trait_description", description);
+
+    String options = "";
+    if (canStack) {
+      options += Resources.getString("Editor.Immobilized.summary_does_stack");
+    }
+
+    if (neverSelect) {
+      if (!options.isEmpty()) {
+        options += ", ";
+      }
+      options += Resources.getString("Editor.Immobilized.summary_never_select");
+    }
+    else if (altToSelect) {
+      if (!options.isEmpty()) {
+        options += ", ";
+      }
+      options += Resources.getString("Editor.Immobilized.summary_alt_select");
+    }
+    else if (shiftToSelect) {
+      if (!options.isEmpty()) {
+        options += ", ";
+      }
+      options += Resources.getString("Editor.Immobilized.summary_shift_select");
+    }
+
+    if (!neverSelect) {
+      if (neverBandSelect) {
+        if (!options.isEmpty()) {
+          options += ", ";
+        }
+        options += Resources.getString("Editor.Immobilized.summary_never_band_select");
+      }
+      else if (altToBandSelect) {
+        if (!options.isEmpty()) {
+          options += ", ";
+        }
+        options += Resources.getString("Editor.Immobilized.summary_alt_band_select");
+      }
+      else if (altShiftToBandSelect) {
+        if (!options.isEmpty()) {
+          options += ", ";
+        }
+        options += Resources.getString("Editor.Immobilized.summary_alt_shift_band_select");
+      }
+    }
+
+    if (neverMove) {
+      if (!options.isEmpty()) {
+        options += ", ";
+      }
+      options += Resources.getString("Editor.Immobilized.summary_never_move");
+    }
+    else if (moveIfSelected) {
+      if (!options.isEmpty()) {
+        options += ", ";
+      }
+      options += Resources.getString("Editor.Immobilized.summary_move_if_selected");
+    }
+
+    if (!options.isEmpty()) {
+      s += " - ";
+      s += options;
+    }
+    return s;
+  }
+
+  @Override
+  public String getBaseDescription() {
     return Resources.getString("Editor.Immobilized.trait_description");
   }
 
@@ -408,6 +483,7 @@ public class Immobilized extends Decorator implements EditablePiece {
     if (! Objects.equals(neverBandSelect, c.neverBandSelect)) return false;
     if (! Objects.equals(altShiftToBandSelect, c.altShiftToBandSelect)) return false;
     if (! Objects.equals(canStack, c.canStack)) return false;
+    if (! Objects.equals(description, c.description)) return false;
 
     return Objects.equals(altToBandSelect, c.altToBandSelect);
   }
@@ -419,6 +495,7 @@ public class Immobilized extends Decorator implements EditablePiece {
     private final TranslatingStringEnumConfigurer stackOption;
     private final BooleanConfigurer ignoreGridBox;
     private final TraitConfigPanel controls;
+    private final StringConfigurer descOption;
 
     private static final String NORMAL = "normally"; // NON-NLS
     private static final String SHIFT = "when shift-key down"; // NON-NLS
@@ -462,6 +539,10 @@ public class Immobilized extends Decorator implements EditablePiece {
 
     public Ed(Immobilized p) {
       controls = new TraitConfigPanel();
+
+      descOption = new StringConfigurer(p.description);
+      descOption.setHintKey("Editor.description_hint");
+      controls.add("Editor.description_label", descOption);
 
       selectionOption = new TranslatingStringEnumConfigurer(SELECT_OPTIONS, SELECT_KEYS);
       if (p.neverSelect) {
@@ -572,6 +653,9 @@ public class Immobilized extends Decorator implements EditablePiece {
         s += NEVER_STACK;
         break;
       }
+
+      s += ';';
+      s += descOption.getValueString();
 
       return s;
     }
