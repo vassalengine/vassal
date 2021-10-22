@@ -238,7 +238,7 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
       return getName();
     }
     else if (LOCALIZED_BASIC_NAME.equals(key)) {
-      return getLocalizedName();
+      return getRealLocalizedName();
     }
     else
         return getPublicProperty(key);
@@ -344,7 +344,7 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
   @Override
   public Object getLocalizedProperty(Object key) {
     if (BASIC_NAME.equals(key)) {
-      return getLocalizedName();
+      return getRealLocalizedName();
     }
     else {
       return getLocalizedPublicProperty(key);
@@ -376,7 +376,7 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
       return Decorator.getOutermost(this).getName();
     }
     else if (BASIC_NAME.equals(key)) {
-      return getLocalizedName();
+      return getRealLocalizedName();
     }
     else if (CURRENT_MAP.equals(key)) {
       return getMap() == null ? "" : getMap().getLocalizedConfigureName();
@@ -679,14 +679,24 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
   }
 
   /**
-   * @return the localized name of this GamePiece. This is the translated version of the name typed by the module designer
-   * in the configuration box for the BasicPiece. It is used to fill the "BasicName" property.
+   * @return the localized name of this BasicPiece. This is the translated version of the name typed by the module designer
+   * in the configuration box for the BasicPiece. It is used to fill the "BasicName" property if the search for it makes
+   * it all the way to this innermost piece.
    */
-  @Override
-  public String getLocalizedName() {
+  public String getRealLocalizedName() {
     final String key = TranslatablePiece.PREFIX + getName();
     return Localization.getInstance().translate(key, getName());
   }
+
+  /**
+   * @return the localized name of this GamePiece. It queries the BasicName property from the outermost piece inward,
+   * allowing a "Basic Name" trait to possibly override ours when the Piece Name is being queried.
+   */
+  @Override
+  public String getLocalizedName() {
+    return (String)Decorator.getOutermost(this).getLocalizedProperty(BASIC_NAME);
+  }
+
 
   /**
    * The primary way for the piece or trait to receive events. {@link KeyStroke} events are forward
