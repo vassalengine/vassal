@@ -18,6 +18,7 @@
  */
 package VASSAL.build.module.map;
 
+import VASSAL.build.module.Chatter;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.counters.Mat;
 import VASSAL.counters.MatCargo;
@@ -64,6 +65,7 @@ import javax.swing.JRootPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -101,6 +103,9 @@ import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.swing.SwingUtils;
 
+import static VASSAL.build.module.Map.MAP_NAME;
+import static VASSAL.build.module.Map.MARK_UNMOVED_REPORT;
+
 /**
  * PieceMover handles the "Drag and Drop" of pieces and stacks, onto or within a Map window. It implements
  * MouseListener and handles dragging and dropping of both individual pieces, stacks, and groups of
@@ -130,6 +135,7 @@ public class PieceMover extends AbstractBuildable
   protected String markUnmovedText;
   protected String markUnmovedIcon;
   protected NamedKeyStroke markUnmovedHotkey;
+  protected String markUnmovedReport;
   public static final String ICON_NAME = "icon"; //$NON-NLS-1$
   protected String iconName;
 
@@ -183,6 +189,8 @@ public class PieceMover extends AbstractBuildable
                  map.getAttributeValueString(Map.MARK_UNMOVED_ICON));
     setAttribute(Map.MARK_UNMOVED_HOTKEY,
                  map.getAttributeValueString(Map.MARK_UNMOVED_HOTKEY));
+    setAttribute(Map.MARK_UNMOVED_REPORT,
+                 map.getAttributeValueString(Map.MARK_UNMOVED_REPORT));
   }
 
   /**
@@ -486,6 +494,19 @@ public class PieceMover extends AbstractBuildable
           for (final GamePiece gamePiece : p) {
             c.append(markMoved(gamePiece, false));
           }
+
+          if ((markUnmovedReport != null) && !markUnmovedReport.isEmpty()) {
+            final FormattedString format = new FormattedString(markUnmovedReport);
+            format.setProperty(MAP_NAME, map.getConfigureName());
+            final String reportText = format.getLocalizedText(map, this, "Editor.Map.mark_unmoved_button_report");
+
+            if (!reportText.isEmpty()) {
+              final Command display = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* " + reportText);
+              display.execute();
+              c.append(display);
+            }
+          }
+
           GameModule.getGameModule().sendAndLog(c);
           map.repaint();
         };
@@ -570,6 +591,9 @@ public class PieceMover extends AbstractBuildable
         value = NamedHotKeyConfigurer.decode((String) value);
       }
       markUnmovedHotkey = (NamedKeyStroke) value;
+    }
+    else if (Map.MARK_UNMOVED_REPORT.equals(key)) {
+      markUnmovedReport = (String) value;
     }
   }
 

@@ -245,6 +245,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   protected String markUnmovedText = ""; //$NON-NLS-1$
   protected String markUnmovedTooltip = Resources.getString("Map.mark_unmoved"); //$NON-NLS-1$
   protected NamedKeyStroke markUnmovedHotkey;
+  protected String markUnmovedReport = "";
   protected MouseListener multicaster = null;
   protected ArrayList<MouseListener> mouseListenerStack = new ArrayList<>(); //NOPMD
   protected List<Board> boards = new CopyOnWriteArrayList<>();
@@ -357,6 +358,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public static final String MARK_UNMOVED_TEXT = "markUnmovedText"; //$NON-NLS-1$
   public static final String MARK_UNMOVED_TOOLTIP = "markUnmovedTooltip"; //$NON-NLS-1$
   public static final String MARK_UNMOVED_HOTKEY  = "markUnmovedHotkey"; //NON-NLS
+  public static final String MARK_UNMOVED_REPORT  = "markUnmovedReport"; //NON-NLS
   public static final String EDGE_WIDTH = "edgeWidth"; //$NON-NLS-1$
   public static final String EDGE_HEIGHT = "edgeHeight"; //$NON-NLS-1$
   public static final String BACKGROUND_COLOR = "backgroundcolor"; //NON-NLS
@@ -412,7 +414,16 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       if (value instanceof String) {
         value = NamedHotKeyConfigurer.decode((String) value);
       }
+      if (pieceMover != null) {
+        pieceMover.setAttribute(key, value);
+      }
       markUnmovedHotkey = (NamedKeyStroke) value;
+    }
+    else if (MARK_UNMOVED_REPORT.equals(key)) {
+      markUnmovedReport = (String) value;
+      if (pieceMover != null) {
+        pieceMover.setAttribute(key, value);
+      }
     }
     else if ("edge".equals(key)) { // Backward-compatible //$NON-NLS-1$
       final String s = (String) value;
@@ -565,6 +576,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     }
     else if (MARK_UNMOVED_HOTKEY.equals(key)) {
       return NamedHotKeyConfigurer.encode(markUnmovedHotkey);
+    }
+    else if (MARK_UNMOVED_REPORT.equals(key)) {
+      return markUnmovedReport;
     }
     else if (EDGE_WIDTH.equals(key)) {
       return String.valueOf(edgeBuffer.width); //$NON-NLS-1$
@@ -3162,6 +3176,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       Resources.getString("Editor.Map.mark_unmoved_tooltip_text"), //$NON-NLS-1$
       Resources.getString("Editor.Map.mark_unmoved_button_icon"), //$NON-NLS-1$
       Resources.getString("Editor.Map.mark_unmoved_button_hotkey"),
+      Resources.getString("Editor.Map.mark_unmoved_button_report"),
       Resources.getString("Editor.Map.horizontal"), //$NON-NLS-1$
       Resources.getString("Editor.Map.vertical"), //$NON-NLS-1$
       Resources.getString("Editor.Map.bkgdcolor"), //$NON-NLS-1$
@@ -3199,6 +3214,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       MARK_UNMOVED_TOOLTIP,
       MARK_UNMOVED_ICON,
       MARK_UNMOVED_HOTKEY,
+      MARK_UNMOVED_REPORT,
       EDGE_WIDTH,
       EDGE_HEIGHT,
       BACKGROUND_COLOR,
@@ -3237,6 +3253,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       String.class,
       UnmovedIconConfig.class,
       NamedKeyStroke.class,
+      UnmovedReportConfig.class,
       Integer.class,
       Integer.class,
       Color.class,
@@ -3303,6 +3320,16 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new PlayerIdFormattedStringConfigurer(key, name, new String[] { PIECE_NAME, LOCATION, OLD_MAP, MAP_NAME, OLD_LOCATION });
+    }
+  }
+
+  /**
+   * Report format configurer for clear movement history
+   */
+  public static class UnmovedReportConfig implements TranslatableConfigurerFactory {
+    @Override
+    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+      return new PlayerIdFormattedStringConfigurer(key, name, new String[] { MAP_NAME });
     }
   }
 
@@ -3433,7 +3460,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     if (List.of(BUTTON_NAME, TOOLTIP, ICON).contains(name)) {
       return visibilityCondition;
     }
-    else if (List.of(MARK_UNMOVED_TEXT, MARK_UNMOVED_ICON, MARK_UNMOVED_TOOLTIP, MARK_UNMOVED_HOTKEY).contains(name)) {
+    else if (List.of(MARK_UNMOVED_TEXT, MARK_UNMOVED_ICON, MARK_UNMOVED_TOOLTIP, MARK_UNMOVED_HOTKEY, MARK_UNMOVED_REPORT).contains(name)) {
       return () -> !GlobalOptions.NEVER.equals(markMovedOption);
     }
     else {
@@ -3777,7 +3804,15 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   @Override
   public List<String> getFormattedStringList() {
-    return List.of(moveWithinFormat, moveToFormat, createFormat, changeFormat);
+    final List<String> l = new ArrayList<>();
+    l.add(moveWithinFormat);
+    l.add(moveToFormat);
+    l.add(createFormat);
+    l.add(changeFormat);
+    if (!GlobalOptions.NEVER.equals(markMovedOption)) {
+      l.add(markUnmovedReport);
+    }
+    return l;
   }
 
   /**
@@ -3804,7 +3839,12 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)), moveKey);
+    if (!GlobalOptions.NEVER.equals(markMovedOption)) {
+      return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)), moveKey, NamedHotKeyConfigurer.decode(getAttributeValueString(MARK_UNMOVED_HOTKEY)));
+    }
+    else {
+      return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)), moveKey);
+    }
   }
 
   /**
