@@ -349,6 +349,8 @@ public class Immobilized extends Decorator implements EditablePiece {
     else {
       buffer.append(NEVER_STACK);
     }
+    buffer.append(';');
+    buffer.append(description);
     return buffer.toString();
   }
 
@@ -471,6 +473,7 @@ public class Immobilized extends Decorator implements EditablePiece {
     if (! Objects.equals(neverBandSelect, c.neverBandSelect)) return false;
     if (! Objects.equals(altShiftToBandSelect, c.altShiftToBandSelect)) return false;
     if (! Objects.equals(canStack, c.canStack)) return false;
+    if (! Objects.equals(description, c.description)) return false;
 
     return Objects.equals(altToBandSelect, c.altToBandSelect);
   }
