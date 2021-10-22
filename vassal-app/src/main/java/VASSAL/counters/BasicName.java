@@ -73,6 +73,9 @@ public class BasicName extends Decorator implements TranslatablePiece {
     if (BasicPiece.BASIC_NAME.equals(key)) {
       return name;
     }
+    else if (BasicPiece.LOCALIZED_BASIC_NAME.equals(key)) {
+      return getLocalizedProperty(BasicPiece.BASIC_NAME);
+    }
     return super.getProperty(key);
   }
 
@@ -80,10 +83,11 @@ public class BasicName extends Decorator implements TranslatablePiece {
   public Object getLocalizedProperty(Object key) {
     if (BasicPiece.BASIC_NAME.equals(key)) {
       if (localizedName != null) {
-
-        localizedName = getI18nData().translate(name);
         return localizedName;
       }
+
+      localizedName = getI18nData().translate(name);
+      return localizedName;
     }
     return super.getLocalizedProperty(key);
   }
