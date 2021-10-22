@@ -104,7 +104,6 @@ import VASSAL.tools.imageop.Op;
 import VASSAL.tools.swing.SwingUtils;
 
 import static VASSAL.build.module.Map.MAP_NAME;
-import static VASSAL.build.module.Map.MARK_UNMOVED_REPORT;
 
 /**
  * PieceMover handles the "Drag and Drop" of pieces and stacks, onto or within a Map window. It implements
