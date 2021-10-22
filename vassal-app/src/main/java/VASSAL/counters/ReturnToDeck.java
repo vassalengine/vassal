@@ -97,6 +97,11 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
         commands = KeyCommand.NONE;
       }
     }
+
+    // Disable Return To Deck on Mats carrying cargo
+    final Mat mat = (Mat) Decorator.getDecorator(Decorator.getOutermost(this), Mat.class);
+    myCommand.setEnabled(mat == null || mat.getCargoCount() == 0);
+
     return commands;
   }
 
@@ -163,6 +168,13 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
       final Point prePos = getPosition();
       comm = putOldProperties(this);
       comm = comm.append(pile.addToContents(Decorator.getOutermost(this)));
+
+      // If this piece is also loaded cargo, remove it from it's mat
+      final MatCargo cargo = (MatCargo) Decorator.getDecorator(Decorator.getOutermost(this), MatCargo.class);
+      if (cargo != null && cargo.getMat() != null) {
+        comm = comm.append(cargo.makeClearMatCommand());
+      }
+
       // Apply Auto-move key if the piece has moved
       final Map m = pile.getMap();
       if (m != null && m.getMoveKey() != null && (m != preMap || !getPosition().equals(prePos))) {

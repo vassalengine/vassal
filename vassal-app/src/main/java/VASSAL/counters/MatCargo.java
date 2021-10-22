@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2021 by The VASSAL Development team
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
+ */
 package VASSAL.counters;
 
 import java.awt.Component;
@@ -218,33 +234,7 @@ public class MatCargo extends Decorator implements TranslatablePiece {
   public Command findNewMat(Map map, Point pt) {
     Command comm = new NullCommand();
     if (map != null) {
-      GamePiece newMat = map.findAnyPiece(pt, PieceFinder.MAT_ONLY);
-
-      if ((newMat == null) && (detectionDistanceX != 0) || (detectionDistanceY != 0)) {
-        final Point pt2 = new Point();
-
-        pt2.x = pt.x + detectionDistanceX;
-        pt2.y = pt.y + detectionDistanceY;
-        newMat = map.findAnyPiece(pt2, PieceFinder.MAT_ONLY);
-
-        if (newMat == null) {
-          pt2.x = pt.x - detectionDistanceX;
-          pt2.y = pt.y + detectionDistanceY;
-          newMat = map.findAnyPiece(pt2, PieceFinder.MAT_ONLY);
-
-          if (newMat == null) {
-            pt2.x = pt.x + detectionDistanceX;
-            pt2.y = pt.y - detectionDistanceY;
-            newMat = map.findAnyPiece(pt2, PieceFinder.MAT_ONLY);
-
-            if (newMat == null) {
-              pt2.x = pt.x - detectionDistanceX;
-              pt2.y = pt.y - detectionDistanceY;
-              newMat = map.findAnyPiece(pt2, PieceFinder.MAT_ONLY);
-            }
-          }
-        }
-      }
+      final GamePiece newMat = locateNewMat(map, pt);
 
       if (newMat != null) {
         final Mat mat = (Mat) Decorator.getDecorator(newMat, Mat.class);
@@ -258,6 +248,49 @@ public class MatCargo extends Decorator implements TranslatablePiece {
       }
     }
     return comm;
+  }
+
+  /**
+   * Non Command generating part of findNewMat(). Used to check for a potential
+   * valid mat at a target location without generating the Mat/Cargo commands
+   * @param map map to check
+   * @param pt point to check
+   * @return the Mat GamePiece at map.point or null if none
+   */
+  public GamePiece locateNewMat(Map map, Point pt) {
+    if (map == null) {
+      return null;
+    }
+
+    GamePiece newMat = map.findAnyPiece(pt, PieceFinder.MAT_ONLY);
+
+    if ((newMat == null) && (detectionDistanceX != 0) || (detectionDistanceY != 0)) {
+      final Point pt2 = new Point();
+
+      pt2.x = pt.x + detectionDistanceX;
+      pt2.y = pt.y + detectionDistanceY;
+      newMat = map.findAnyPiece(pt2, PieceFinder.MAT_ONLY);
+
+      if (newMat == null) {
+        pt2.x = pt.x - detectionDistanceX;
+        pt2.y = pt.y + detectionDistanceY;
+        newMat = map.findAnyPiece(pt2, PieceFinder.MAT_ONLY);
+
+        if (newMat == null) {
+          pt2.x = pt.x + detectionDistanceX;
+          pt2.y = pt.y - detectionDistanceY;
+          newMat = map.findAnyPiece(pt2, PieceFinder.MAT_ONLY);
+
+          if (newMat == null) {
+            pt2.x = pt.x - detectionDistanceX;
+            pt2.y = pt.y - detectionDistanceY;
+            newMat = map.findAnyPiece(pt2, PieceFinder.MAT_ONLY);
+          }
+        }
+      }
+    }
+
+    return newMat;
   }
 
   /**

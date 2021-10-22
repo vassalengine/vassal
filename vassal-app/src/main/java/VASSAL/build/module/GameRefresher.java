@@ -35,6 +35,7 @@ import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Mat;
 import VASSAL.counters.MatCargo;
+import VASSAL.counters.MatHolder;
 import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
@@ -321,7 +322,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
      * 2.1 Pull out any Mats and their Cargo for special treatment
      */
     if (GameModule.getGameModule().isMatSupport()) {
-      final Set<GamePiece> otherPieces = new HashSet<>();
+      final List<GamePiece> otherPieces = new ArrayList<>();
       final List<GamePiece> cargo = new ArrayList<>();
       final List<MatRefresher> mats = new ArrayList<>();
 
@@ -360,7 +361,6 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       for (final MatRefresher mh : mats) {
         mh.refresh(command);
       }
-
     }
     else {
       /*
@@ -713,14 +713,10 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
   /**
    * Class to hold and refresh a Mat and it's cargo
    */
-  private class MatRefresher {
-    private final GamePiece matPiece;
-    private final Mat mat;
-    private final List<GamePiece> cargo = new ArrayList<>();
+  private class MatRefresher extends MatHolder {
 
     public MatRefresher(GamePiece piece) {
-      this.matPiece = piece;
-      mat = (Mat) Decorator.getDecorator(piece, Mat.class);
+      super(piece);
     }
 
     /**
@@ -732,30 +728,17 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
      */
     public void refresh(Command command) {
       // Remove any existing cargo
-      command.append(mat.makeRemoveAllCargoCommand());
+      command.append(getMat().makeRemoveAllCargoCommand());
 
       // Refresh the Mat piece
-      final GamePiece newMatPiece = processGamePiece(matPiece, command);
+      final GamePiece newMatPiece = processGamePiece(getMatPiece(), command);
 
       // Now refresh each cargo piece and add it back to the mat
-      for (final GamePiece c : cargo) {
+      for (final GamePiece c : getCargo()) {
         final GamePiece newCargo = processGamePiece(c, command);
         command.append(((Mat) Decorator.getDecorator(newMatPiece, Mat.class)).makeAddCargoCommand(newCargo));
       }
     }
-
-    /**
-     * Remove any cargo on this mat from the supplied allCargo list
-     * @param allCargo
-     */
-    public void grabCargo(List<GamePiece> allCargo) {
-      for (final GamePiece cargoPiece : mat.getContents()) {
-        cargo.add(cargoPiece);
-        allCargo.remove(cargoPiece);
-      }
-
-    }
-
   }
 }
 

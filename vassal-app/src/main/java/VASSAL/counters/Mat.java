@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2021 by The VASSAL Development team
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
+ */
 package VASSAL.counters;
 
 import VASSAL.build.GameModule;
@@ -12,6 +28,7 @@ import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.SequenceEncoder;
 
 import javax.swing.KeyStroke;
+
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -138,6 +155,10 @@ public class Mat extends Decorator implements TranslatablePiece {
     return contents.contains(p);
   }
 
+  public int getCargoCount() {
+    return contents.size();
+  }
+
   /**
    * Adds a piece of cargo to this mat
    * @param p game piece to add
@@ -233,6 +254,23 @@ public class Mat extends Decorator implements TranslatablePiece {
   @Override
   public Rectangle boundingBox() {
     return piece.boundingBox();
+  }
+
+  /**
+   * Draw the cargo. Used to generate a DragShadow for a Mat correctly showing the loaded cargo
+   */
+  public void drawCargo(Graphics g, int x, int y, Component obs, double zoom) {
+    final Point matPosition = getPosition();
+    for (final GamePiece piece : getContents()) {
+      final Point cargoPos = piece.getPosition();
+      final GamePiece parent = piece.getParent();
+      if (parent instanceof Stack) {
+        ((Stack) parent).draw(g, x - (matPosition.x - cargoPos.x), y - (matPosition.y - cargoPos.y), obs, zoom);
+      }
+      else {
+        piece.draw(g, x - (getPosition().x - cargoPos.x), y - (getPosition().y - cargoPos.y), obs, zoom);
+      }
+    }
   }
 
   @Override
