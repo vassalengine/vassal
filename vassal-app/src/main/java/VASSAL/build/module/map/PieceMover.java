@@ -18,6 +18,7 @@
  */
 package VASSAL.build.module.map;
 
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.counters.Mat;
 import VASSAL.counters.MatCargo;
 import VASSAL.i18n.Resources;
@@ -63,6 +64,7 @@ import javax.swing.JRootPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import VASSAL.tools.NamedKeyStroke;
 import org.apache.commons.lang3.SystemUtils;
 
 import VASSAL.build.AbstractBuildable;
@@ -127,6 +129,7 @@ public class PieceMover extends AbstractBuildable
   protected LaunchButton markUnmovedButton;
   protected String markUnmovedText;
   protected String markUnmovedIcon;
+  protected NamedKeyStroke markUnmovedHotkey;
   public static final String ICON_NAME = "icon"; //$NON-NLS-1$
   protected String iconName;
 
@@ -178,6 +181,8 @@ public class PieceMover extends AbstractBuildable
                  map.getAttributeValueString(Map.MARK_UNMOVED_TEXT));
     setAttribute(Map.MARK_UNMOVED_ICON,
                  map.getAttributeValueString(Map.MARK_UNMOVED_ICON));
+    setAttribute(Map.MARK_UNMOVED_HOTKEY,
+                 map.getAttributeValueString(Map.MARK_UNMOVED_HOTKEY));
   }
 
   /**
@@ -486,7 +491,7 @@ public class PieceMover extends AbstractBuildable
         };
 
         markUnmovedButton =
-          new LaunchButton("", NAME, HOTKEY, Map.MARK_UNMOVED_ICON, al);
+          new LaunchButton("", NAME, Map.MARK_UNMOVED_HOTKEY, Map.MARK_UNMOVED_ICON, al);
 
         Image img = null;
         if (iconName != null && iconName.length() > 0) {
@@ -502,6 +507,8 @@ public class PieceMover extends AbstractBuildable
             markUnmovedButton.setAttribute(Map.MARK_UNMOVED_ICON, markUnmovedIcon);
           }
         }
+
+        markUnmovedButton.setAttribute(Map.MARK_UNMOVED_HOTKEY, map.getAttributeValueString(Map.MARK_UNMOVED_HOTKEY));
 
         markUnmovedButton.setAlignmentY(0.0F);
         markUnmovedButton.setText(markUnmovedText);
@@ -554,6 +561,15 @@ public class PieceMover extends AbstractBuildable
         markUnmovedButton.setAttribute(Map.MARK_UNMOVED_ICON, value);
       }
       markUnmovedIcon = (String) value;
+    }
+    else if (Map.MARK_UNMOVED_HOTKEY.equals(key)) {
+      if (markUnmovedButton != null) {
+        markUnmovedButton.setAttribute(Map.MARK_UNMOVED_HOTKEY, value);
+      }
+      if (value instanceof String) {
+        value = NamedHotKeyConfigurer.decode((String) value);
+      }
+      markUnmovedHotkey = (NamedKeyStroke) value;
     }
   }
 
