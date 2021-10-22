@@ -18,9 +18,12 @@
  */
 package VASSAL.build.module.map;
 
+import static VASSAL.build.module.Map.MAP_NAME;
+
 import VASSAL.build.AbstractBuildable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
+import VASSAL.build.module.Chatter;
 import VASSAL.build.module.GameComponent;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.Map;
@@ -29,6 +32,7 @@ import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.BoundsTracker;
 import VASSAL.counters.Deck;
