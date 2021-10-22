@@ -153,8 +153,8 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     backKey = st.nextNamedKeyStroke(null);
     xIndex.setFormat(st.nextToken("0"));
     yIndex.setFormat(st.nextToken("0"));
-    xOffset.setFormat(st.nextToken("0"));
-    yOffset.setFormat(st.nextToken("0"));
+    xOffset.setFormat(st.nextToken("1")); //BR// Better defaults
+    yOffset.setFormat(st.nextToken("1"));
     description = st.nextToken("");
     destination = st.nextToken(DEST_LOCATION.substring(0, 1));
     if (destination.length() == 0) {
