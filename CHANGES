@@ -1,6 +1,7 @@
 3.6.0-beta4 - ???
 
-* 10587 - Description field & better auto-summary for Does Not Stack
+* 10587: Description field & better auto-summary for Does Not Stack
+* 10584: Map "Mark Unmoved" button now accepts a hotkey and a report format
 * 10578: MatCargo now provides OldMatOffsetX and OldMatOffsetY properties
 * 10576: Send-to-Location new options for pieces-selected-by-properties:-
     cycle and nearest
