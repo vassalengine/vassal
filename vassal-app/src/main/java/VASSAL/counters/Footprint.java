@@ -831,7 +831,7 @@ public class Footprint extends MovementMarkable {
 
     @Override
     public String getState() {
-      return iv.booleanValue() + ";;0";
+      return iv.booleanValue() + ";;0"; //BR// iv == Initial Visibility! NOT gv!!!
     }
 
     @Override
