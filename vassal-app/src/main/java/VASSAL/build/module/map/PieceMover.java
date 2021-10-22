@@ -238,7 +238,7 @@ public class PieceMover extends AbstractBuildable
   /**
    * Default DropTargetSelector for standard pieces
    */
-  class StandardDropTargetSelector extends PieceFinder.Movable {
+  private class StandardDropTargetSelector extends PieceFinder.Movable {
     // The piece being moved
     private GamePiece piece;
     // The MatCargo trait of the piece being moved
@@ -378,7 +378,7 @@ public class PieceMover extends AbstractBuildable
    * We are only interested in stacking with other Counters also
    * loaded on the same mat.
    */
-  class LoadedCargoDropTargetSelector extends StandardDropTargetSelector {
+  private class LoadedCargoDropTargetSelector extends StandardDropTargetSelector {
     /**
      * Loaded Cargo will never enter a Deck
      * @param d Potential target {@link Deck}
@@ -415,7 +415,7 @@ public class PieceMover extends AbstractBuildable
    * DropTargetSelector for moving mats. Mats holding cargo must never
    * enter a Deck
    */
-  class MatDropTargetSelector extends StandardDropTargetSelector {
+  private class MatDropTargetSelector extends StandardDropTargetSelector {
     /**
      * Mats with loaded Cargo must never enter a Deck
      * @param d Potential target {@link Deck}
