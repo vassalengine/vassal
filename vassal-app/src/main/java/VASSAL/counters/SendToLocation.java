@@ -526,7 +526,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
               piece.setProperty(Properties.MOVED, Boolean.TRUE);
             }
 
-            c = tracker.getChangeCommand();
+            c = c.append(tracker.getChangeCommand());
             c = c.append(putOldProperties(piece));
 
             //BR// I sort of think cargo shouldn't snap when moving in lockstep with its mat.
