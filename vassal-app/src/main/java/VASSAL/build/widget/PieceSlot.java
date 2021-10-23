@@ -522,14 +522,14 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
   @Override
   public String getConfigureName() {
-    if (name != null) {
+    if ((name != null) && !name.isEmpty()) {
       return name;
     }
     else if (getPiece() != null) {
-      return Decorator.getInnermost(getPiece()).getName();
+      return Decorator.getOutermost(getExpandedPiece()).getName();
     }
     else {
-      return null;
+      return name; // Name could possibly be empty string, or otherwise null.
     }
   }
 
