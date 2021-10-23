@@ -187,6 +187,7 @@ public class PieceDefiner extends JPanel {
     if (availableModel == null) {
       availableModel = new DefaultListModel<>();
       //addElement(new BasicPiece()); // Not needed since you can never add it
+      addElement(new BasicName());
       addElement(new Delete());
       addElement(new Clone());
       addElement(new Embellishment());
@@ -1091,7 +1092,7 @@ public class PieceDefiner extends JPanel {
       return this;
     }
   }
-
+  
   /**
    * Contents of the Copy/Paste buffer for traits in the editor
    * @author rkinney

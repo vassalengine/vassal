@@ -16,41 +16,35 @@
 
 package VASSAL.counters;
 
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.command.Command;
+import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.Resources;
+import VASSAL.i18n.TranslatablePiece;
+import VASSAL.tools.SequenceEncoder;
+
+import javax.swing.KeyStroke;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
-import java.util.Arrays;
-import java.util.List;
-
 import java.util.Objects;
-import javax.swing.KeyStroke;
-
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.command.Command;
-import VASSAL.configure.NamedHotKeyConfigurer;
-import VASSAL.configure.StringConfigurer;
-import VASSAL.i18n.Resources;
-import VASSAL.i18n.TranslatablePiece;
-import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.SequenceEncoder;
 
 /**
- * This trait puts a menu separator bar in the context menu for the piece
+ * This trait overrides the $BasicName$ property provided by the "Basic Piece", allowing a module designer
+ * deeking to define pieces entirely by prototype to safely ignore & leave empty the Basic Piece.
  */
-public class MenuSeparator extends Decorator implements TranslatablePiece {
-  public static final String ID = "menuSeparator;"; // NON-NLS
-  public static final String SEPARATOR_NAME = "<separator>"; // NON-NLS
-  protected KeyCommand[] command;
-  protected String desc;
-  protected NamedKeyStroke key;
-  protected KeyCommand separatorCommand;
+public class BasicName extends Decorator implements TranslatablePiece {
+  public static final String ID = "basicName;"; // NON-NLS
+  protected String name;
+  protected String localizedName = null;
 
-  public MenuSeparator() {
+  public BasicName() {
     this(ID + ";", null);
   }
 
-  public MenuSeparator(String type, GamePiece inner) {
+  public BasicName(String type, GamePiece inner) {
     mySetType(type);
     setInner(inner);
   }
@@ -59,28 +53,14 @@ public class MenuSeparator extends Decorator implements TranslatablePiece {
   public void mySetType(String type) {
     type = type.substring(ID.length());
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
-    desc        = st.nextToken();
-    key         = st.nextNamedKeyStroke(null);
-    command     = null;
+    name = st.nextToken();
   }
 
   @Override
   public String myGetType() {
     final SequenceEncoder se = new SequenceEncoder(';');
-    se.append(desc).append(key);
+    se.append(name);
     return ID + se.getValue();
-  }
-
-  @Override
-  protected KeyCommand[] myGetKeyCommands() {
-    if (command == null) {
-      separatorCommand = new KeyCommand(SEPARATOR_NAME, key, Decorator.getOutermost(this), this);
-      command = new KeyCommand[]{separatorCommand};
-    }
-    if (command.length > 0) {
-      command[0].setEnabled(getMap() != null);
-    }
-    return command;
   }
 
   @Override
@@ -89,8 +69,46 @@ public class MenuSeparator extends Decorator implements TranslatablePiece {
   }
 
   @Override
+  public Object getProperty(Object key) {
+    if (BasicPiece.BASIC_NAME.equals(key)) {
+      return name;
+    }
+    else if (BasicPiece.LOCALIZED_BASIC_NAME.equals(key)) {
+      return getLocalizedProperty(BasicPiece.BASIC_NAME);
+    }
+    return super.getProperty(key);
+  }
+
+  @Override
+  public Object getLocalizedProperty(Object key) {
+    if (BasicPiece.BASIC_NAME.equals(key)) {
+      if (localizedName != null) {
+        return localizedName;
+      }
+
+      localizedName = getI18nData().translate(name);
+      return localizedName;
+    }
+    return super.getLocalizedProperty(key);
+  }
+
+  @Override
+  public PieceI18nData getI18nData() {
+    return getI18nData(
+      new String[] { name },
+      new String[] {
+        Resources.getString("Editor.BasicName.trait_description"),
+      });
+  }
+
+  @Override
   public Command myKeyEvent(KeyStroke stroke) {
-    return null; // We don't ever actually "do" anything to the game state, we're just here to mark a menu separator
+    return null;
+  }
+
+  @Override
+  protected KeyCommand[] myGetKeyCommands() {
+    return KeyCommand.NONE;
   }
 
   @Override
@@ -124,44 +142,37 @@ public class MenuSeparator extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return buildDescription("Editor.MenuSeparator.trait_description", desc);
+    return buildDescription("Editor.BasicName.trait_description", name);
   }
 
   @Override
   public String getBaseDescription() {
-    return Resources.getString("Editor.MenuSeparator.trait_description");
+    return Resources.getString("Editor.BasicName.trait_description");
   }
 
   @Override
   public boolean testEquals(Object o) {
-    if (! (o instanceof MenuSeparator)) return false;
-    final MenuSeparator c = (MenuSeparator) o;
-    if (!Objects.equals(desc, c.desc)) return false;
-    return Objects.equals(key, c.key);
+    if (! (o instanceof BasicName)) return false;
+    final BasicName c = (BasicName) o;
+    return Objects.equals(name, c.name);
   }
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("MenuSeparator.html"); // NON-NLS
+    return HelpFile.getReferenceManualPage("BasicName.html"); // NON-NLS
   }
-
 
   public static class Ed implements PieceEditor {
     private final StringConfigurer descInput;
-    private final NamedHotKeyConfigurer keyInput;
     private final TraitConfigPanel controls;
 
-    public Ed(MenuSeparator p) {
+    public Ed(BasicName p) {
       controls = new TraitConfigPanel();
 
-      descInput = new StringConfigurer(p.desc);
-      descInput.setHintKey("Editor.description_hint");
-      controls.add("Editor.description_label", descInput);
-
-      keyInput = new NamedHotKeyConfigurer(p.key);
-      controls.add("Editor.MenuSeparator.if_hidden", keyInput);
+      descInput = new StringConfigurer(p.name);
+      descInput.setHintKey("Editor.BasicName.hint");
+      controls.add("Editor.name_label", descInput);
     }
-
 
     @Override
     public Component getControls() {
@@ -171,7 +182,7 @@ public class MenuSeparator extends Decorator implements TranslatablePiece {
     @Override
     public String getType() {
       final SequenceEncoder se = new SequenceEncoder(';');
-      se.append(descInput.getValueString()).append(keyInput.getValueString());
+      se.append(descInput.getValueString());
       return ID + se.getValue();
     }
 
@@ -179,13 +190,5 @@ public class MenuSeparator extends Decorator implements TranslatablePiece {
     public String getState() {
       return "";
     }
-  }
-
-  /**
-   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
-   */
-  @Override
-  public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    return Arrays.asList(key);
   }
 }

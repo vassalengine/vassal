@@ -34,6 +34,7 @@ import VASSAL.command.PlayAudioClipCommand;
 import VASSAL.command.RemovePiece;
 import VASSAL.counters.ActionButton;
 import VASSAL.counters.AreaOfEffect;
+import VASSAL.counters.BasicName;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.CalculatedProperty;
 import VASSAL.counters.Clone;
@@ -196,7 +197,8 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     Map.entry(GlobalHotKey.ID, GlobalHotKey::new),
     Map.entry(Deselect.ID, Deselect::new),
     Map.entry(Mat.ID, Mat::new),
-    Map.entry(MatCargo.ID, MatCargo::new)
+    Map.entry(MatCargo.ID, MatCargo::new),
+    Map.entry(BasicName.ID, BasicName::new)
   );
 
   /**
