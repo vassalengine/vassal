@@ -526,7 +526,10 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
       return name;
     }
     else if (getPiece() != null) {
-      return (String)Decorator.getOutermost(getExpandedPiece()).getName();
+      return Decorator.getOutermost(getExpandedPiece()).getName();
+    }
+    else if (name != null) { // Doubt this can happen, but just in case it matters
+      return name;
     }
     else {
       return null;
