@@ -7,7 +7,7 @@
 * 10582: Basic Name trait - facilitates creating pieces entirely in prototype
     (alternative way to fill BasicName property)
 * 10578: MatCargo now provides OldMatOffsetX and OldMatOffsetY properties
-* 10576: Send-to-Location new options for pieces-selected-by-properties:-
+* 10576: Send-to-Location new options for pieces-selected-by-properties:
     cycle and nearest
 * 10572: Fix Drag Threshold preference to work correctly
 * 10569: Better trait one-line summaries in editor; Folder summary includes

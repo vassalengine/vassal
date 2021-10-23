@@ -16,6 +16,40 @@
     { "display_name": "Other", "suffix": "other.zip" }
   ],
   "changes": [
+       {
+      "in": "3.6.0-beta4",
+      "since": "3.6.0-beta3",
+      "new_features": [
+        { "num": 10584, "desc": "Map \"Mark Unmoved\" button now accepts a hotkey and a report format" },
+        { "num": 10582, "desc": "Basic Name trait - facilitates creating pieces entirely in prototype (alternative way to fill BasicName property)" },
+        { "num": 10576, "desc": "Send-to-Location new options for pieces-selected-by-properties: cycle and nearest" },
+        { "num": 10558, "desc": "Added Current Mat GKC FastMatch option" },
+        { "num": 10552, "desc": "CounterDetailViewer - can combine layer filters with property match expression" },
+        { "num": 10551, "desc": "Action Button option to open right-click context menu" },
+        { "num": 10509, "desc": "Add $numericTotal$ and $result#$ options to standard Dice Button report format" },
+        { "num": 10505, "desc": "Enable Offset options to work with the Grid option in SendToLocation" }
+      ],
+      "bug_fixes": [
+        { "num": 10585, "desc": "Movement Trail \"initial visibility\" and bounding box caching bugs" },
+        { "num": 10572, "desc": " Fix Drag Threshold preference to work correctly" },
+        { "num": 10563, "desc": "Trait editor Paste button is now always enabled" },
+        { "num": 10555, "desc": "Fix mat save/load to reconnect mats and cargo" },
+        { "num": 10504, "desc": "Text label shape, bounding box doesn't resepect rotated labels" },
+        { "num": 8949, "desc": "IllegalArgumentException in GameState.getRestorePiecesCommand() due to bad compartor" }
+      ],
+      "other_improvements": [
+        { "num": 10587, "desc": "Description field & better auto-summary for Does Not Stack" },
+        { "num": 10586, "desc": "Better defaults for Send To Location offsets" },
+        { "num": 10578, "desc": "MatCargo now provides OldMatOffsetX and OldMatOffsetY properties" },
+        { "num": 10569, "desc": "Better trait one-line summaries in editor; Folder summary includes description" },
+        { "num": 10565, "desc": "While double-clicking to open component in Editor, holding Alt, Shift, and/or Ctrl affects the location the new window opens" },
+        { "num": 10557, "desc": " Added MatCargo to manually attach/detach from mats" },
+        { "num": 10547, "desc": "Bring fastmatch $$ variable handling into line with standard Global Key Command match expression handling" },
+        { "num": 10543, "desc": "Initialise OldMat related properties in a Placed marker" },
+        { "num": 10519, "desc": "Improve Mat Movement" },
+        { "num": 10510, "desc": "More robust Java version check for Linux" }
+      ]
+    },
     {
       "in": "3.6.0-beta3",
       "since": "3.6.0-beta2",
