@@ -21,6 +21,23 @@ of it will follow.
 If a Mat piece is <<Rotate.adoc#top,rotated>> or <<Pivot.adoc#top,pivoted>>, any cargo pieces on top can also match their facing to the Mat, if that option is
 selected in the Mat Cargo trait.
 
+==== Mats & Cargo - Layers and Draw Order
+A Mat and its Mat Cargo, if set to the same <<GamePieceLayers.adoc#top,Game Piece Layer>>, when moved will automatically
+be processed in an order such that the Mat Cargo pieces will remain "on top" of the Mat, visually. Mat Cargo pieces in higher
+Game Piece Layers will likewise of course always be drawn in front.
+
+A Mat Cargo placed in a _lower_ layer will appear to be _beneath_ the Mat when it is drawn. This can be useful for e.g.
+"tucking cards underneath a Mat" -- the Mat Cargo will still stay attached to the Mat and will still move with it when the Mat
+is dragged or moved. **Warning:** This scheme _can_ produce a situation wherein a Mat Cargo piece is inadvertently placed _entirely_
+behind the Mat, and in this case simply "moving the Mat out of the way" isn't easy because the Mat Cargo will automatically
+maintain its same relative position! The only way to recover from such a situation is to select the Mat (which automatically selects
+all of its Mat Cargo), then _Ctrl+Click_ (_Command+Click_ on Mac) to unselect the Mat while leaving at least one visible Mat Cargo
+selected. Then, dragging the still-selected Mat Cargo away will also produce the hidden piece, as it is still part of the selection.
+A module which wants to detect this situation and remedy it by automatically moving the Mat Cargo elsewhere can attempt to detect it
+through the use of the _CurrentMatOffsetX_ and _CurrentMatOffsetY_ properties of a Mat Cargo piece, combined with the
+apply-on-move key command of a Map.
+
+
 [width="100%",cols="50%a,50%a",]
 |===
 |
