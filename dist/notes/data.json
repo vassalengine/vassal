@@ -39,6 +39,7 @@
         { "num": 8949, "desc": "IllegalArgumentException in GameState.getRestorePiecesCommand() due to bad compartor" }
       ],
       "other_improvements": [
+        { "num": 10590, "desc": "Better ConfigureTree summary on PieceSlot containing a BasicName-using piece" },
         { "num": 10587, "desc": "Description field & better auto-summary for Does Not Stack" },
         { "num": 10586, "desc": "Better defaults for Send To Location offsets" },
         { "num": 10578, "desc": "MatCargo now provides OldMatOffsetX and OldMatOffsetY properties" },
