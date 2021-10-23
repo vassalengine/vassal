@@ -30,6 +30,7 @@
         { "num": 10505, "desc": "Enable Offset options to work with the Grid option in SendToLocation" }
       ],
       "bug_fixes": [
+        { "num": 10589, "desc": "Fix Mat send-to-location bug (which created problems in Undo & multiplayer)" },
         { "num": 10585, "desc": "Movement Trail \"initial visibility\" and bounding box caching bugs" },
         { "num": 10572, "desc": " Fix Drag Threshold preference to work correctly" },
         { "num": 10563, "desc": "Trait editor Paste button is now always enabled" },
