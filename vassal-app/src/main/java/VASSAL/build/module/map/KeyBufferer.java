@@ -294,7 +294,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
 
         // RFE 1659481 Ctrl/Command-click ("toggle") deselects clicked units
         // (if they are already selected)
-        if (SwingUtils.isSelectionToggle(e)) {
+        if (SwingUtils.isSelectionToggle(e) && !SwingUtils.isContextMouseButtonDown(e)) {
           removePieceOrStack(p);
         }
         // End RFE 1659481
