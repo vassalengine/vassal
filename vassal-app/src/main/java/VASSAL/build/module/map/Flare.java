@@ -713,14 +713,14 @@ public class Flare extends AbstractConfigurable
 
     @Override
     public String[] getI18nKeys(AutoConfigurable target) {
-      final boolean macLegacy = GlobalOptions.getInstance().getPrefMacLegacy();
+      //final boolean macLegacy = GlobalOptions.getInstance().getPrefMacLegacy();
       return new String[] {
         FLARE_ALT_LOCAL,
-        SystemUtils.IS_OS_MAC && !macLegacy ? FLARE_COMMAND_LOCAL : FLARE_CTRL_LOCAL,
+        SystemUtils.IS_OS_MAC ? FLARE_COMMAND_LOCAL : FLARE_CTRL_LOCAL,
         FLARE_ALT_SHIFT_LOCAL,
-        SystemUtils.IS_OS_MAC && !macLegacy ? FLARE_SHIFT_COMMAND_LOCAL : FLARE_CTRL_SHIFT_LOCAL,
-        SystemUtils.IS_OS_MAC && !macLegacy ? FLARE_ALT_COMMAND_LOCAL : FLARE_CTRL_ALT_LOCAL,
-        SystemUtils.IS_OS_MAC && !macLegacy ? FLARE_ALT_SHIFT_COMMAND_LOCAL : FLARE_CTRL_ALT_SHIFT_LOCAL,
+        SystemUtils.IS_OS_MAC ? FLARE_SHIFT_COMMAND_LOCAL : FLARE_CTRL_SHIFT_LOCAL,
+        SystemUtils.IS_OS_MAC ? FLARE_ALT_COMMAND_LOCAL : FLARE_CTRL_ALT_LOCAL,
+        SystemUtils.IS_OS_MAC ? FLARE_ALT_SHIFT_COMMAND_LOCAL : FLARE_CTRL_ALT_SHIFT_LOCAL,
       };
     }
 
