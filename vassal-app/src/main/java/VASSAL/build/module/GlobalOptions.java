@@ -795,6 +795,16 @@ public class GlobalOptions extends AbstractConfigurable {
 
   /**
    * {@link VASSAL.search.SearchTarget}
+   * @return a list of any properties referenced in the configurer (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    return getPropertyNames();
+  }
+
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
    * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
    */
   @Override

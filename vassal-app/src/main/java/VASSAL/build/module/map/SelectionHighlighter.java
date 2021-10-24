@@ -273,4 +273,9 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
   public void addLocalImageNames(Collection<String> s) {
     if (imageName != null) s.add(imageName);
   }
+
+  @Override
+  public List<String> getExpressionList() {
+    return List.of(matchProperties.getExpression());
+  }
 }
