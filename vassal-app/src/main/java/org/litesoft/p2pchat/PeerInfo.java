@@ -84,9 +84,10 @@ public class PeerInfo {
   public static PeerInfo deFormat(String pFormatted) {
     IllegalArgument.ifNull("Formatted", pFormatted);
     int colonAt = pFormatted.indexOf(':');
-    int spaceAt = pFormatted.indexOf(' ');
     if (colonAt == -1)
       return null;
+
+    int spaceAt = pFormatted.indexOf(' ', colonAt);
     String chatName = null;
     if (spaceAt == -1) {
       spaceAt = pFormatted.length();
