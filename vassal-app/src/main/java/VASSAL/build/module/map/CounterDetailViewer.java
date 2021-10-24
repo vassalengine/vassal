@@ -1266,6 +1266,11 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         value = Double.valueOf((String) value);
       }
       zoomLevel = (Double) value;
+
+      // Java will throw up at a true 0 scale
+      if (zoomLevel < 0.001) {
+        zoomLevel = 0.001;
+      }
     }
     else if (DRAW_PIECES_AT_ZOOM.equals(name)) {
       if (value instanceof String) {
