@@ -345,9 +345,9 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
   public void setBoards(Collection<Board> c) {
     reset();
     for (final Board b : c) {
-      if (b.relativePosition().x > nx - 1)
+      while (b.relativePosition().x > nx - 1)
         addColumn();
-      if (b.relativePosition().y > ny - 1)
+      while (b.relativePosition().y > ny - 1)
         addRow();
     }
     for (final Board b : c) {
