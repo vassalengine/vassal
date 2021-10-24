@@ -175,7 +175,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     final int[] selected = addressList.getSelectedIndices();
     for (final int value : selected) {
       final Entry entry = addressBook.getElementAt(value);
-      final PeerInfo info = PeerInfo.deFormat(entry.getAddress() + ":" + entry.getPort() + " " + entry.getDescription()); //$NON-NLS-1$ //$NON-NLS-2$
+      final PeerInfo info = PeerInfo.deFormat(entry.getAddress().replace(" ", "") + ":" + entry.getPort() + " " + entry.getDescription()); //$NON-NLS-1$ //$NON-NLS-2$
       if (info != null) {
         ppm.addNewPeer(info);
         GameModule.getGameModule().warn(Resources.getString("Chat.invite_sent", entry.toString())); //$NON-NLS-1$
@@ -276,12 +276,9 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
    *
    */
   private static class Entry implements Comparable<Entry> {
-    String description;
-    String address;
-    String port;
-    JTextField descriptionField;
-    JTextField addressField;
-    JTextField portField;
+    private String description;
+    private String address;
+    private String port;
 
     public Entry() {
       this("", "", "5050");
@@ -315,7 +312,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
 
     @Override
     public String toString() {
-      return description + " [" + address + ":" + port; // + (getPasswd().length() == 0 ? "" : "/") +  getPasswd() + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+      return description + " [" + address + ":" + port + ']'; // + (getPasswd().length() == 0 ? "" : "/") +  getPasswd() + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     private void decode(String s) {
@@ -339,9 +336,9 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     }
 
     public boolean edit() {
-      descriptionField = new JTextField(description);
-      addressField = new JTextField(address);
-      portField = new JTextField(port);
+      final JTextField descriptionField = new JTextField(description);
+      final JTextField addressField = new JTextField(address);
+      final JTextField portField = new JTextField(port);
 
       final JPanel editPanel = new JPanel(new MigLayout("", "[align right]rel[]", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
       editPanel.add(new JLabel(Resources.getString("Editor.description_label"))); //$NON-NLS-1$
@@ -351,9 +348,15 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
       editPanel.add(new JLabel(Resources.getString("ServerAddressBook.port"))); //$NON-NLS-1$
       editPanel.add(portField, "wrap, grow, push"); //$NON-NLS-1$
 
-      final Integer result = (Integer) Dialogs.showDialog(null, Resources.getString("Peer2Peer.add_peer_connection"), //$NON-NLS-1$
-          editPanel, JOptionPane.PLAIN_MESSAGE, null, JOptionPane.OK_CANCEL_OPTION,
-          null, null, null, null);
+      final Integer result = (Integer) Dialogs.showDialog(
+        null,
+        Resources.getString("Peer2Peer.add_peer_connection"), //$NON-NLS-1$
+        editPanel,
+        JOptionPane.PLAIN_MESSAGE,
+        null,
+        JOptionPane.OK_CANCEL_OPTION,
+        null, null, null, null
+      );
 
       if (result != null && result == 0) {
         description = descriptionField.getText();
