@@ -175,7 +175,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     final int[] selected = addressList.getSelectedIndices();
     for (final int value : selected) {
       final Entry entry = addressBook.getElementAt(value);
-      final PeerInfo info = PeerInfo.deFormat(entry.getAddress() + ":" + entry.getPort() + " " + entry.getDescription()); //$NON-NLS-1$ //$NON-NLS-2$
+      final PeerInfo info = PeerInfo.deFormat(entry.getAddress().replace(" ", "") + ":" + entry.getPort() + " " + entry.getDescription()); //$NON-NLS-1$ //$NON-NLS-2$
       if (info != null) {
         ppm.addNewPeer(info);
         GameModule.getGameModule().warn(Resources.getString("Chat.invite_sent", entry.toString())); //$NON-NLS-1$
