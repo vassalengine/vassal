@@ -371,13 +371,15 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         piece.setProperty(Properties.OBSCURED_BY, faceDown ? Deck.NO_USER : null);
       }
 
-      piece.draw(
-        g,
-        dbounds.x - (int) (pieceBounds.x * graphicsZoom * os_scale) + (int)(borderOffset * os_scale),
-        dbounds.y - (int) (pieceBounds.y * graphicsZoom * os_scale) + (int)(borderWidth * os_scale),
-        comp,
-        graphicsZoom * os_scale
-      );
+      if (graphicsZoom > 0) {
+        piece.draw(
+          g,
+          dbounds.x - (int) (pieceBounds.x * graphicsZoom * os_scale) + (int) (borderOffset * os_scale),
+          dbounds.y - (int) (pieceBounds.y * graphicsZoom * os_scale) + (int) (borderWidth * os_scale),
+          comp,
+          graphicsZoom * os_scale
+        );
+      }
       if (parent instanceof Deck) piece.setProperty(Properties.OBSCURED_BY, owner);
       if (unrotatePieces) piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.FALSE);
       g.setClip(oldClip);
