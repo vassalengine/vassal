@@ -212,7 +212,7 @@
         <!-- for org.netbeans:wizard -->
         <repository>
             <id>vassal-maven</id>
-            <url>http://vassalengine.org/maven</url>
+            <url>https://vassalengine.org/maven</url>
         </repository>
     </repositories>
 
