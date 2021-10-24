@@ -3,6 +3,8 @@
 * 10602: Don't unselect piece about to get context menu with Ctrl+RightClick
 * 10601: Flares weren't responding to Cmd key on MacOS
 * 10599: map can be null during GameRefresher
+* 10595: Fix crash ending logfiles- beginningState shouldn't be allowed to be
+    non-null when outputfile is null
 * 10594: Fix crash when copying Toolbar Menu to a newly created map
 * 10593: Add description to Prototype Definition
 * 10592: Corner case boardpicker exception with multiple boards being moved

@@ -33,6 +33,7 @@
         { "num": 10602, "desc": "Don't unselect piece about to get context menu with Ctrl+RightClick" },
         { "num": 10601, "desc": "Flares weren't responding to Cmd key on MacOS" },
         { "num": 10599, "desc": "map can be null during GameRefresher" },
+        { "num": 10595, "desc": "Fix crash ending logfiles- beginningState shouldn't be allowed to be non-null when outputfile is null" },
         { "num": 10594, "desc": "Fix crash when copying Toolbar Menu to a newly created map" },
         { "num": 10592, "desc": "Corner case boardpicker exception with multiple boards being moved around" },
         { "num": 10591, "desc": "Protect from GKCs that get sent when no game ever started" },
