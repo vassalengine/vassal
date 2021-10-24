@@ -46,6 +46,7 @@
         { "num": 8949, "desc": "IllegalArgumentException in GameState.getRestorePiecesCommand() due to bad compartor" }
       ],
       "other_improvements": [
+        { "num": 10597, "desc": "Selection Highlighter expressions now found by search" },
         { "num": 10593, "desc": "Add description to Prototype Definition" },
         { "num": 10590, "desc": "Better ConfigureTree summary on PieceSlot containing a BasicName-using piece" },
         { "num": 10587, "desc": "Description field & better auto-summary for Does Not Stack" },
