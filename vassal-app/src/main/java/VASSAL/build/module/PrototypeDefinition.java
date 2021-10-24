@@ -63,7 +63,7 @@ public class PrototypeDefinition extends AbstractConfigurable
                                             ValidityChecker {
   private String name = "Prototype"; //$NON-NLS-1$
   private String description = "";
-  private final String DESCRIPTION_PROPERTY = "description";
+  private static final String DESCRIPTION_PROPERTY = "description";
   private final java.util.Map<String, GamePiece> pieces = new HashMap<>();
   private String pieceDefinition;
   private static final UniqueIdManager idMgr = new UniqueIdManager("prototype-"); //$NON-NLS-1$
