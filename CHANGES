@@ -1,5 +1,7 @@
 3.6.0-beta4 - 24 October 2021
 
+* 10603: Action Buttons should not respond to Shift+Click, Ctrl+Click,
+    Alt+Click, Cmd+Click
 * 10602: Don't unselect piece about to get context menu with Ctrl+RightClick
 * 10601: Flares weren't responding to Cmd key on MacOS
 * 10599: map can be null during GameRefresher
