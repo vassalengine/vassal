@@ -35,6 +35,7 @@
         { "num": 10599, "desc": "map can be null during GameRefresher" },
         { "num": 10594, "desc": "Fix crash when copying Toolbar Menu to a newly created map" },
         { "num": 10592, "desc": "Corner case boardpicker exception with multiple boards being moved around" },
+        { "num": 10591, "desc": "Protect from GKCs that get sent when no game ever started" },
         { "num": 10589, "desc": "Fix Mat send-to-location bug (which created problems in Undo & multiplayer)" },
         { "num": 10585, "desc": "Movement Trail \"initial visibility\" and bounding box caching bugs" },
         { "num": 10572, "desc": " Fix Drag Threshold preference to work correctly" },

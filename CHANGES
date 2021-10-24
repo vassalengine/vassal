@@ -7,6 +7,7 @@
 * 10593: Add description to Prototype Definition
 * 10592: Corner case boardpicker exception with multiple boards being moved
     around
+* 10591: Protect from GKCs that get sent when no game ever started
 * 10590: Better ConfigureTree summary on PieceSlot containing a BasicName-using     piece
 * 10589: Fix Mat send-to-location bug (which created problems in Undo &
     multiplayer)
