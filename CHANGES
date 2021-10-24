@@ -1,5 +1,6 @@
 3.6.0-beta4 - 24 October 2021
 
+* 10594: Fix crash when copying Toolbar Menu to a newly created map
 * 10592: Corner case boardpicker exception with multiple boards being moved
     around
 * 10590: Better ConfigureTree summary on PieceSlot containing a BasicName-using     piece
