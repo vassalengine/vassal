@@ -370,20 +370,23 @@ public class GlobalCommand implements Auditable {
         final DrawPile d = DrawPile.findDrawPile(fastDeck);
         final int useFromDeck = getSelectFromDeck();
         if ((d != null) && (useFromDeck != 0)) {
-          final List<GamePiece> pieces = d.getDeck().getOrderedPieces();
+          final Deck dk = d.getDeck();
+          if (dk != null) { // Needed! GKC toolbar buttons will attempt to send GKCs even if no game has ever been started. Whee!
+            final List<GamePiece> pieces = dk.getOrderedPieces();
 
-          visitor.setSelectedCount(0);
-          for (final GamePiece gamePiece : pieces) {
-            // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
-            if (!passesPropertyFastMatch(gamePiece)) {
-              continue;
-            }
+            visitor.setSelectedCount(0);
+            for (final GamePiece gamePiece : pieces) {
+              // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
+              if (!passesPropertyFastMatch(gamePiece)) {
+                continue;
+              }
 
-            // Anything else we send to dispatcher to apply BeanShell filter and issue the command if the piece matches
-            dispatcher.accept(gamePiece);
+              // Anything else we send to dispatcher to apply BeanShell filter and issue the command if the piece matches
+              dispatcher.accept(gamePiece);
 
-            if ((useFromDeck > 0) && visitor.getSelectedCount() >= useFromDeck) {
-              break;
+              if ((useFromDeck > 0) && visitor.getSelectedCount() >= useFromDeck) {
+                break;
+              }
             }
           }
         }
