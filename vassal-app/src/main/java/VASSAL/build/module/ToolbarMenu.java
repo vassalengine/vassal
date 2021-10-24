@@ -161,9 +161,11 @@ public class ToolbarMenu extends AbstractToolbarItem
     if (parent instanceof ToolBarComponent) {
       toolbar = ((ToolBarComponent) parent).getToolBar();
     }
-    toolbar.add(getLaunchButton());
-    toolbar.addContainerListener(this);
-    scheduleBuildMenu();
+    if (toolbar != null) { // Newly created Map windows in editor may not have toolbar object yet.
+      toolbar.add(getLaunchButton());
+      toolbar.addContainerListener(this);
+      scheduleBuildMenu();
+    }
   }
 
   @Override
