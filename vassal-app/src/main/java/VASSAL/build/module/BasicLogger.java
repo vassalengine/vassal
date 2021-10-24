@@ -578,6 +578,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
         }
         newLogAction.setEnabled(true);
         outputFile = null;
+        beginningState = null;
       }
       catch (IOException ex) {
         WriteErrorDialog.error(ex, outputFile);
