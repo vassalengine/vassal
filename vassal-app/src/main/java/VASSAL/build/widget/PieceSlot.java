@@ -329,7 +329,11 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
     final Dimension size = panel.getSize();
     p.setPosition(new Point(size.width / 2, size.height / 2));
-    p.setProperty(PIECE_PALETTE_SCALE, getScale()); //Store a temporary scaling factor down in the Basic Piece's hall of wonders
+
+    final GamePiece inner = Decorator.getInnermost(p);
+    if (inner instanceof BasicPiece) {
+      ((BasicPiece)inner).setPersistentProperty(PIECE_PALETTE_SCALE, getScale()); //Store a temporary scaling factor down in the Basic Piece's hall of wonders
+    }
 
     // Erase selection border to avoid leaving selected after mouse dragged out
     p.setProperty(Properties.SELECTED, null);

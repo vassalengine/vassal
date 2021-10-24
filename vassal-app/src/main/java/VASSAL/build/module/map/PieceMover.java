@@ -1822,7 +1822,12 @@ public class PieceMover extends AbstractBuildable
       else {
         Object tempZoom = piece.getProperty(PieceSlot.PIECE_PALETTE_SCALE);
         if (tempZoom != null) {
-          dragPieceOffCenterZoom = (double)tempZoom;
+          if (tempZoom instanceof Double) {
+            dragPieceOffCenterZoom = (Double)tempZoom;
+          }
+          else {
+            dragPieceOffCenterZoom = Double.parseDouble((String)tempZoom);
+          }
         }
         else {
           dragPieceOffCenterZoom = 1.0;
