@@ -371,13 +371,15 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         piece.setProperty(Properties.OBSCURED_BY, faceDown ? Deck.NO_USER : null);
       }
 
-      piece.draw(
-        g,
-        dbounds.x - (int) (pieceBounds.x * graphicsZoom * os_scale) + (int)(borderOffset * os_scale),
-        dbounds.y - (int) (pieceBounds.y * graphicsZoom * os_scale) + (int)(borderWidth * os_scale),
-        comp,
-        graphicsZoom * os_scale
-      );
+      if (graphicsZoom > 0) {
+        piece.draw(
+          g,
+          dbounds.x - (int) (pieceBounds.x * graphicsZoom * os_scale) + (int) (borderOffset * os_scale),
+          dbounds.y - (int) (pieceBounds.y * graphicsZoom * os_scale) + (int) (borderWidth * os_scale),
+          comp,
+          graphicsZoom * os_scale
+        );
+      }
       if (parent instanceof Deck) piece.setProperty(Properties.OBSCURED_BY, owner);
       if (unrotatePieces) piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.FALSE);
       g.setClip(oldClip);
@@ -1266,11 +1268,6 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         value = Double.valueOf((String) value);
       }
       zoomLevel = (Double) value;
-
-      // Java will throw up at a true 0 scale
-      if (zoomLevel < 0.001) {
-        zoomLevel = 0.001;
-      }
     }
     else if (DRAW_PIECES_AT_ZOOM.equals(name)) {
       if (value instanceof String) {
