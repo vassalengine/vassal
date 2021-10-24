@@ -30,6 +30,8 @@
         { "num": 10505, "desc": "Enable Offset options to work with the Grid option in SendToLocation" }
       ],
       "bug_fixes": [
+        { "num": 10607, "desc": "P2P address book entries with spaces in address cause StringIndexOutOfBoundsException" },
+        { "num": 10604, "desc": "Match blank passwords less eagerly" },
         { "num": 10603, "desc": "Action Buttons should not respond to Shift+Click, Ctrl+Click, Alt+Click, Cmd+Click" },
         { "num": 10602, "desc": "Don't unselect piece about to get context menu with Ctrl+RightClick" },
         { "num": 10601, "desc": "Flares weren't responding to Cmd key on MacOS" },

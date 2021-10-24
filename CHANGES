@@ -1,5 +1,8 @@
 3.6.0-beta4 - 24 October 2021
 
+* 10607: P2P address book entries with spaces in address cause
+    StringIndexOutOfBoundsException
+* 10604: Match blank passwords less eagerly
 * 10603: Action Buttons should not respond to Shift+Click, Ctrl+Click,
     Alt+Click, Cmd+Click
 * 10602: Don't unselect piece about to get context menu with Ctrl+RightClick
