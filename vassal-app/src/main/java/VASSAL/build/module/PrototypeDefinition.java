@@ -62,6 +62,8 @@ public class PrototypeDefinition extends AbstractConfigurable
                                  implements UniqueIdManager.Identifyable,
                                             ValidityChecker {
   private String name = "Prototype"; //$NON-NLS-1$
+  private String description = "";
+  private static final String DESCRIPTION_PROPERTY = "description";
   private final java.util.Map<String, GamePiece> pieces = new HashMap<>();
   private String pieceDefinition;
   private static final UniqueIdManager idMgr = new UniqueIdManager("prototype-"); //$NON-NLS-1$
@@ -186,10 +188,19 @@ public class PrototypeDefinition extends AbstractConfigurable
     pieces.clear();
   }
 
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
   @Override
   public void build(Element e) {
     if (e != null) {
       setConfigureName(e.getAttribute(NAME_PROPERTY));
+      setDescription(e.getAttribute(DESCRIPTION_PROPERTY));
       pieceDefinition = Builder.getText(e);
     }
   }
@@ -198,6 +209,7 @@ public class PrototypeDefinition extends AbstractConfigurable
   public Element getBuildElement(Document doc) {
     final Element el = doc.createElement(getClass().getName());
     el.setAttribute(NAME_PROPERTY, name);
+    el.setAttribute(DESCRIPTION_PROPERTY, description);
     el.appendChild(doc.createTextNode(pieceDefinition));
     return el;
   }
@@ -210,6 +222,7 @@ public class PrototypeDefinition extends AbstractConfigurable
     private final JPanel box;
     private final PieceDefiner pieceDefiner;
     private final StringConfigurer name;
+    private final StringConfigurer description;
     private final PrototypeDefinition def;
 
     public Config(PrototypeDefinition def) {
@@ -219,7 +232,12 @@ public class PrototypeDefinition extends AbstractConfigurable
       final JPanel namePanel = new JPanel(new MigLayout("ins 0", "[]rel[grow,fill]")); // NON-NLS
       namePanel.add(new JLabel(Resources.getString(Resources.NAME_LABEL)));
       name = new StringConfigurer(def.name);
-      namePanel.add(name.getControls(), "grow"); // NON-NLS
+      namePanel.add(name.getControls(), "grow, wrap"); // NON-NLS
+
+      namePanel.add(new JLabel(Resources.getString(Resources.DESCRIPTION)));
+      description = new StringConfigurer(def.description);
+      namePanel.add(description.getControls());
+
       box.add(namePanel, "grow,wrap"); // NON-NLS
 
       pieceDefiner = new Definer(GameModule.getGameModule().getGpIdSupport());
@@ -233,6 +251,7 @@ public class PrototypeDefinition extends AbstractConfigurable
       if (def != null) {
         def.setPiece(pieceDefiner.getPiece());
         def.setConfigureName(name.getValueString());
+        def.setDescription(description.getValueString());
       }
       return def;
     }
