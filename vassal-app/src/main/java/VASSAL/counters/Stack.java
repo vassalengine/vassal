@@ -388,12 +388,14 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
   public Rectangle boundingBox() {
     final Rectangle r = new Rectangle();
     final Rectangle[] childBounds = new Rectangle[getPieceCount()];
-    getMap().getStackMetrics().getContents(this, null, null, childBounds, 0, 0);
+    final Map map = getMap();
+    if (map != null) {
+      map.getStackMetrics().getContents(this, null, null, childBounds, 0, 0);
 
-    asList().stream()
-            .filter(PieceIterator.VISIBLE)
-            .forEach(p -> r.add(childBounds[indexOf(p)]));
-
+      asList().stream()
+              .filter(PieceIterator.VISIBLE)
+              .forEach(p -> r.add(childBounds[indexOf(p)]));
+    }
     return r;
   }
 
