@@ -371,7 +371,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         piece.setProperty(Properties.OBSCURED_BY, faceDown ? Deck.NO_USER : null);
       }
 
-      if (graphicsZoom > 0) {
+      if (graphicsZoom > 0.0) {
         piece.draw(
           g,
           dbounds.x - (int) (pieceBounds.x * graphicsZoom * os_scale) + (int) (borderOffset * os_scale),
