@@ -84,6 +84,7 @@ import org.w3c.dom.Element;
  */
 public class PieceSlot extends Widget implements MouseListener, KeyListener {
   public static final String GP_ID = "gpid"; //NON-NLS
+  public static final String PIECE_PALETTE_SCALE = "ppScale"; //NON-NLS
   private static final int DEFAULT_SIZE = 64;
   private static final BufferedImage noImage = LabelUtils.noImageBoxImage(DEFAULT_SIZE, DEFAULT_SIZE, 1.0);
 
@@ -328,6 +329,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
     final Dimension size = panel.getSize();
     p.setPosition(new Point(size.width / 2, size.height / 2));
+    p.setProperty(PIECE_PALETTE_SCALE, getScale()); //Store a temporary scaling factor down in the Basic Piece's hall of wonders
 
     // Erase selection border to avoid leaving selected after mouse dragged out
     p.setProperty(Properties.SELECTED, null);
