@@ -307,8 +307,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   protected static List<String> getCurrentPasswords() {
     return List.of(
       GameModule.getUserId(),
-      Resources.getString("Prefs.password_prompt", System.getProperty("user.name")),
-      ""
+      Resources.getString("Prefs.password_prompt", System.getProperty("user.name"))
     );
   }
 
@@ -548,12 +547,25 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
     if (r != null) {
       int index = 0;
+
+      // First check for passwords that either (a) precisely match our actual *current* password, or (b) match our non-blank default password
       for (final PlayerInfo pi : r.getPlayers()) {
         if (pwdsToMatch.contains(pi.playerId)) {
           allowedSides.add(pi);
           indices.add(index);
         }
         index++;
+      }
+
+      // Only if we don't match *any* of those do we try auto-matching a blank password, and then only for non-observer slots
+      if (index == 0) {
+        for (final PlayerInfo pi : r.getPlayers()) {
+          if ("".equals(pi.playerId) && !OBSERVER.equals(pi.getSide())) {
+            allowedSides.add(pi);
+            indices.add(index);
+          }
+          index++;
+        }
       }
     }
 
