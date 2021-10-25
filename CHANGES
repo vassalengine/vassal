@@ -1,3 +1,9 @@
+3.6.0-beta5 - 25 October 2021
+
+* 10620: Fix NPE EditPropertiesAction.windowClosed()
+* 10616: Mouseover Stack Viewer was failing to launch in certain situations
+* 10615: Stack NPE in Mat Movement code
+
 3.6.0-beta4 - 24 October 2021
 
 * 10607: P2P address book entries with spaces in address cause

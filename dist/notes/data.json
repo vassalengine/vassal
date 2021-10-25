@@ -16,7 +16,20 @@
     { "display_name": "Other", "suffix": "other.zip" }
   ],
   "changes": [
-       {
+    {
+      "in": "3.6.0-beta5",
+      "since": "3.6.0-beta4",
+      "new_features": [
+      ],
+      "bug_fixes": [
+        { "num": 10620, "desc": "Fix NPE EditPropertiesAction.windowClosed()" },
+        { "num": 10616, "desc": "Mouseover Stack Viewer was failing to launch in certain situations" },
+        { "num": 10615, "desc": "Stack NPE in Mat Movement code" }
+      ],
+      "other_improvements": [
+      ]
+    },
+    {
       "in": "3.6.0-beta4",
       "since": "3.6.0-beta3",
       "new_features": [
