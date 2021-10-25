@@ -1,10 +1,16 @@
-3.6.0-beta5 - *
 
-* 10616: Fix Counter Detail Viewer failing to launch
-* 10615: Fix NPE when moving to an unexpanded stack
+
+* 10609: Trigger Action - improved trait summary
 *  9596: Pieces dragged off the palette using the palette scale factor instead
     of always full size
 *  9391: Beanshell can now access $$ variables in Report Formats
+
+3.6.0-beta5 - 26 October 2021
+
+10620: Fix NPE EditPropertiesAction.windowClosed()
+* 10616: Fix Counter Detail Viewer failing to launch
+* 10615: Fix NPE when moving to an unexpanded stack
+
 3.6.0-beta4 - 24 October 2021
 
 * 10607: P2P address book entries with spaces in address cause
