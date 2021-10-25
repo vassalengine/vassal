@@ -180,6 +180,9 @@ public class NodeClient implements LockableChatServerConnection,
   }
 
   protected void registerNewConnection() {
+    if (sender == null) { // If already hung up
+      return;
+    }
     final String path = new SequenceEncoder(moduleName, '/').append(defaultRoomName)
         .getValue();
     send(Protocol.encodeRegisterCommand(me.getId(), path,
