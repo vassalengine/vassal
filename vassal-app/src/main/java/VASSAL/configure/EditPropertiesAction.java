@@ -83,58 +83,60 @@ public class EditPropertiesAction extends AbstractAction {
       openWindows.put(target, w);
       w.setVisible(true);
 
-      //BR// If a modifier key was held with double-clicking, displace the window to a corner.
-      final boolean alt = (evt.getModifiers() & MouseEvent.ALT_DOWN_MASK) != 0;
-      final boolean shift = (evt.getModifiers() & MouseEvent.SHIFT_DOWN_MASK) != 0;
-      final boolean ctrl = (evt.getModifiers() & (MouseEvent.CTRL_DOWN_MASK + MouseEvent.META_DOWN_MASK)) != 0; // PC or Mac, everybody's favorite key works
-      if (alt || shift || ctrl) {
-        final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        final GraphicsDevice defaultScreen = ge.getDefaultScreenDevice();
-        final Rectangle rect = defaultScreen.getDefaultConfiguration().getBounds();
+      if (evt != null) { // Apparently we manually call this method with a null event sometimes.
+        //BR// If a modifier key was held with double-clicking, displace the window to a corner.
+        final boolean alt = (evt.getModifiers() & MouseEvent.ALT_DOWN_MASK) != 0;
+        final boolean shift = (evt.getModifiers() & MouseEvent.SHIFT_DOWN_MASK) != 0;
+        final boolean ctrl = (evt.getModifiers() & (MouseEvent.CTRL_DOWN_MASK + MouseEvent.META_DOWN_MASK)) != 0; // PC or Mac, everybody's favorite key works
+        if (alt || shift || ctrl) {
+          final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+          final GraphicsDevice defaultScreen = ge.getDefaultScreenDevice();
+          final Rectangle rect = defaultScreen.getDefaultConfiguration().getBounds();
 
-        final int x, y;
+          final int x, y;
 
-        //
-        // C+A             C+S
-        //
-        // A        C        S
-        //
-        // C+A+S           A+S
-        //
-        if (alt) {
-          if (ctrl && shift) { // ctrl+alt+shift == lower left
-            x = 30;
-            y = (int) rect.getMaxY() - w.getHeight() - 30;
+          //
+          // C+A             C+S
+          //
+          // A        C        S
+          //
+          // C+A+S           A+S
+          //
+          if (alt) {
+            if (ctrl && shift) { // ctrl+alt+shift == lower left
+              x = 30;
+              y = (int) rect.getMaxY() - w.getHeight() - 30;
+            }
+            else if (ctrl) {     // alt+ctrl = upper left
+              x = 30;
+              y = 30;
+            }
+            else if (shift) { // alt+shift = lower right;
+              x = (int) rect.getMaxX() - w.getWidth() - 30;
+              y = (int) rect.getMaxY() - w.getHeight() - 30;
+            }
+            else { // alt = center left
+              x = 30;
+              y = ((int) rect.getMaxY() - w.getHeight()) / 2;
+            }
           }
-          else if (ctrl) {     // alt+ctrl = upper left
-            x = 30;
-            y = 30;
-          }
-          else if (shift) { // alt+shift = lower right;
-            x = (int) rect.getMaxX() - w.getWidth() - 30;
-            y = (int) rect.getMaxY() - w.getHeight() - 30;
-          }
-          else { // alt = center left
-            x = 30;
-            y = ((int)rect.getMaxY() - w.getHeight()) / 2;
-          }
-        }
-        else if (shift) {
-          if (ctrl) { // ctrl+shift = upper right
-            x = ((int) rect.getMaxX() - w.getWidth() - 30);
-            y = 30;
+          else if (shift) {
+            if (ctrl) { // ctrl+shift = upper right
+              x = ((int) rect.getMaxX() - w.getWidth() - 30);
+              y = 30;
 
+            }
+            else {  // shift = center right
+              x = ((int) rect.getMaxX() - w.getWidth() - 30);
+              y = (int) (rect.getMaxY() - w.getHeight()) / 2;
+            }
           }
-          else {  // shift = center right
-            x = ((int) rect.getMaxX() - w.getWidth() - 30);
-            y = (int) (rect.getMaxY() - w.getHeight()) / 2;
+          else {  // Ctrl = center
+            x = ((int) rect.getMaxX() - w.getWidth()) / 2; //center
+            y = ((int) rect.getMaxY() - w.getHeight()) / 2;
           }
+          w.setLocation(x, y);
         }
-        else {  // Ctrl = center
-          x = ((int)rect.getMaxX() - w.getWidth()) / 2; //center
-          y = ((int)rect.getMaxY() - w.getHeight()) / 2;
-        }
-        w.setLocation(x, y);
       }
 
       SwingUtils.ensureOnScreen(w);
