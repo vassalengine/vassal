@@ -28,6 +28,7 @@ import VASSAL.build.module.GameComponent;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.map.boardPicker.Board;
+import VASSAL.build.widget.PieceSlot;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
@@ -1820,9 +1821,31 @@ public class PieceMover extends AbstractBuildable
         piecePosition = mousePosition;
       }
 
+      // If coming from a map, we use the map's zoom. Otherwise if our PieceWindow has stashed a starting scale for us then use that, else 1.0
+      if (map != null) {
+        dragPieceOffCenterZoom = map.getZoom();
+      }
+      else {
+        final Object tempZoom = piece.getProperty(PieceSlot.PIECE_PALETTE_SCALE);
+        if (tempZoom != null) {
+          final BasicPiece bp = (BasicPiece)Decorator.getInnermost(piece);
+          bp.setPersistentProperty(PieceSlot.PIECE_PALETTE_SCALE, null);
+
+          if (tempZoom instanceof Double) {
+            dragPieceOffCenterZoom = (Double)tempZoom;
+          }
+          else {
+            dragPieceOffCenterZoom = Double.parseDouble((String)tempZoom);
+          }
+        }
+        else {
+          dragPieceOffCenterZoom = 1.0;
+        }
+      }
+      dragPieceOffCenterZoom *= getDeviceScale(dge);
+
       // Account for offset of piece within stack. We do this even for un-expanded stacks, since the offset can
       // still be significant if the stack is large
-      dragPieceOffCenterZoom = (map == null ? 1.0 : map.getZoom()) * getDeviceScale(dge);
       if (piece.getParent() != null && map != null) {
         final Point offset = piece.getParent()
                                   .getStackMetrics()
