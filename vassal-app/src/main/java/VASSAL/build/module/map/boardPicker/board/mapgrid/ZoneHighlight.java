@@ -129,10 +129,12 @@ public class ZoneHighlight extends AbstractConfigurable  {
   protected Paint getPaint() {
     if (paint == null) {
       if (style.equals(STYLE_IMAGE)) {
-        final Image im = srcOp.getImage();
-        if (im != null) {
-          paint = new TexturePaint(ImageUtils.toBufferedImage(im),
-                                   new Rectangle(srcOp.getSize()));
+        if (srcOp != null) {
+          final Image im = srcOp.getImage();
+          if (im != null) {
+            paint = new TexturePaint(ImageUtils.toBufferedImage(im),
+              new Rectangle(srcOp.getSize()));
+          }
         }
       }
       else {
