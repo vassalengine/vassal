@@ -17,6 +17,20 @@
   ],
   "changes": [
     {
+      "in": "3.6.0-beta6",
+      "since": "3.6.0-beta5",
+      "new_features": [
+        { "num": 9391, "desc": "Beanshell can now access $$ variables in Report Formats" }
+      ],
+      "bug_fixes": [
+        { "num": 10618, "desc": "ToolbarMenus that are submenus of other ToolbarMenus display their icons properly" }
+      ],
+      "other_improvements": [
+        { "num": 10609, "desc": "Trigger Action - improved trait summary" },
+        { "num": 9596, "desc": "Pieces dragged off the palette using the palette scale factor instead of always full size" }
+      ]
+    },
+    {
       "in": "3.6.0-beta5",
       "since": "3.6.0-beta4",
       "new_features": [

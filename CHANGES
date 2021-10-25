@@ -1,5 +1,7 @@
 3.6.0-beta6 - ??? 
 
+* 10618: ToolbarMenus that are submenus of other ToolbarMenus display their
+    icons properly
 * 10609: Trigger Action - improved trait summary
 *  9596: Pieces dragged off the palette using the palette scale factor instead
     of always full size
