@@ -374,6 +374,20 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
 
     s += getCommandDesc(command, key);
 
+    for (final NamedKeyStroke n : watchKeys) {
+      s += getCommandDesc("", n);
+    }
+
+    boolean any = false;
+    for (final NamedKeyStroke n : actionKeys) {
+      String as = getCommandDesc("", n);
+      if (!any) {
+        any = true;
+        as = as.replace(" - ", " => ");
+      }
+      s += as;
+    }
+
     return s;
   }
 
