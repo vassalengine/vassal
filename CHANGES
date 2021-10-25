@@ -1,6 +1,7 @@
 3.6.0-beta6 - ??? 
 
 * 10623: Fix NPE joining chat room when socket drops early
+* 10622: Fix NPE when MapShader temporarily points to blank or missing filename
 * 10619: Eliminate Command+A key conflict in Editor on MacOS
 * 10618: ToolbarMenus that are submenus of other ToolbarMenus display their
     icons properly
