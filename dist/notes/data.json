@@ -24,6 +24,8 @@
       ],
       "bug_fixes": [
         { "num": 10623, "desc": "Fix NPE joining chat room when socket drops early" },
+
+        { "num": 10619, "desc": "Eliminate Command+A key conflict in Editor on MacOS" },
         { "num": 10618, "desc": "ToolbarMenus that are submenus of other ToolbarMenus display their icons properly" }
       ],
       "other_improvements": [
