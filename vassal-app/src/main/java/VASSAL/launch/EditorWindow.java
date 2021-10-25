@@ -221,7 +221,11 @@ public abstract class EditorWindow extends JFrame {
     };
 
     saveAsAction.setEnabled(false);
-    saveAsAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_A, mask));
+
+    if (!SystemUtils.IS_OS_MAC) {
+      saveAsAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_A, mask));
+    }
+
     mm.addAction("Editor.save_as", saveAsAction);
     toolBar.add(saveAsAction);
 
