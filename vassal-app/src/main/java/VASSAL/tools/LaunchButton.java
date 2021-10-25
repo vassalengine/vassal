@@ -19,6 +19,7 @@ package VASSAL.tools;
 
 import java.awt.event.ActionListener;
 
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.KeyStroke;
 
@@ -80,6 +81,13 @@ public class LaunchButton extends JButton {
     }
     setFocusable(false);
     checkVisibility();
+  }
+
+  /**
+   * @return Our current icon (used when we're a ToolbarMenu that's a submenu of another ToolbarMenu so that we keep our icon)
+   */
+  public Icon getLaunchIcon() {
+    return iconConfig.getIconValue();
   }
 
   public boolean isAlwaysAcceptKeystroke() {
