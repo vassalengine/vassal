@@ -63,6 +63,8 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
   protected MenuItemProxy menuItem;
   protected MenuProxy menu;
 
+  protected int numChildren;
+
   protected VisibilityCondition showFile;
   protected VisibilityCondition showUseFile;
   protected AbstractAction launchAction;
@@ -182,6 +184,9 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     else if (USE_FILE.equals(name)) {
       return showUseFile;
     }
+    else if (IS_MENU.equals(name)) {
+      return () -> !(numChildren > 0);
+    }
     else {
       return super.getAttributeVisibility(name);
     }
@@ -238,6 +243,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     else if (parent instanceof PredefinedSetup) {
       final PredefinedSetup setup = (PredefinedSetup) parent;
       setup.menu.add(getMenuInUse());
+      setup.numChildren++;
     }
     MenuManager.getInstance().removeAction("GameState.new_game"); //$NON-NLS-1$
     GameModule.getGameModule().getGameState().addGameComponent(this);
@@ -253,6 +259,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     else if (parent instanceof PredefinedSetup) {
       final PredefinedSetup setup = (PredefinedSetup) parent;
       setup.menu.remove(getMenuInUse());
+      setup.numChildren--;
     }
     GameModule.getGameModule().getGameState().removeGameComponent(this);
     GameModule.getGameModule().getWizardSupport().removePredefinedSetup(this);
