@@ -392,19 +392,25 @@ public class PieceMover extends AbstractBuildable
       }
 
       // Don't combine a non-cargo piece with a stack of cargo loaded on a mat
-      if (getCargo() == null && (selected instanceof Stack) && isStackLoadedCargo((Stack) selected)) {
+      if (getCargo() == null && isStackLoadedCargo(selected)) {
         selected = null;
       }
 
       return selected;
     }
 
-    protected boolean isStackLoadedCargo(Stack s) {
-      if (s != null && s.getPieceCount() > 0) {
-        final MatCargo targetCargo = (MatCargo) Decorator.getDecorator(s.getPieceAt(0), MatCargo.class);
-        return targetCargo != null && targetCargo.getMat() != null;
+    protected boolean isStackLoadedCargo(GamePiece p) {
+      MatCargo targetCargo = null;
+      if (p instanceof Stack) {
+        final Stack s = (Stack)p;
+        if (s.getPieceCount() > 0) {
+          targetCargo = (MatCargo) Decorator.getDecorator(s.getPieceAt(0), MatCargo.class);
+        }
       }
-      return false;
+      else if (p instanceof Decorator) {
+        targetCargo = (MatCargo) Decorator.getDecorator(p, MatCargo.class);
+      }
+      return targetCargo != null && targetCargo.getMat() != null;
     }
   }
 
