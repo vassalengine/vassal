@@ -392,7 +392,7 @@ public class PieceMover extends AbstractBuildable
       }
 
       // Don't combine a non-cargo piece with a stack of cargo loaded on a mat
-      if (getCargo() == null && isStackLoadedCargo((Stack) selected)) {
+      if (getCargo() == null && (selected instanceof Stack) && isStackLoadedCargo((Stack) selected)) {
         selected = null;
       }
 
