@@ -1,3 +1,10 @@
+3.6.0-beta5 - *
+
+* 10616: Fix Counter Detail Viewer failing to launch
+* 10615: Fix NPE when moving to an unexpanded stack
+*  9596: Pieces dragged off the palette using the palette scale factor instead
+    of always full size
+
 3.6.0-beta4 - 24 October 2021
 
 * 10607: P2P address book entries with spaces in address cause
