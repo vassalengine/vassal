@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.AbstractButton;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -70,6 +71,7 @@ public class ToolbarMenu extends AbstractToolbarItem
   public static final String MENU_ITEMS = "menuItems"; //$NON-NLS-1$
   /** Buttons where this property contains a JPopupMenu will turn into sub-menus */
   public static final String MENU_PROPERTY = "ToolbarMenu.popup"; //$NON-NLS-1$
+  public static final String MENU_ICON_PROPERTY = "ToolbarMenu.popupIcon"; //$NON-NLS
   public static final String HIDDEN_BY_TOOLBAR = "hidden"; //$NON-NLS-1$
   protected List<String> menuItems = new ArrayList<>();
   protected Map<AbstractButton, JMenuItem> buttonsToMenuMap =
@@ -96,6 +98,7 @@ public class ToolbarMenu extends AbstractToolbarItem
 
     menu = new JPopupMenu();
     getLaunchButton().putClientProperty(MENU_PROPERTY, menu);
+    getLaunchButton().putClientProperty(MENU_ICON_PROPERTY, launch.getLaunchIcon()); // In case we're a *submenu* of another ToolbarMenu, tell it about our beautiful icon
     GameModule.getGameModule().getGameState().addGameComponent(this);
   }
 
@@ -150,6 +153,10 @@ public class ToolbarMenu extends AbstractToolbarItem
     }
     else {
       super.setAttribute(key, value);
+      // If our launch button icon has been changed, push it to where a parent ToolbarMenu can find it
+      if (getLaunchButton().getIconAttribute().equals(key)) {
+        getLaunchButton().putClientProperty(MENU_ICON_PROPERTY, getLaunchButton().getLaunchIcon());
+      }
     }
   }
 
@@ -236,6 +243,12 @@ public class ToolbarMenu extends AbstractToolbarItem
             buttonsToMenuMap.put(otherItem, myItem);
           }
           buttonsToMenuMap.put(b, subMenu);
+
+          final Object icon = b.getClientProperty(MENU_ICON_PROPERTY);
+          if (icon instanceof Icon) {
+            subMenu.setIcon((Icon)icon);
+          }
+
           menu.add(subMenu);
         }
         else {
