@@ -628,6 +628,14 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       topLayer = -1;
     }
 
+    public boolean checkFilter(GamePiece piece) {
+      final String s = propertyFilter.getExpression().trim();
+      if (s.isEmpty()) {
+        return true;
+      }
+      return propertyFilter.accept(piece);
+    }
+
     @Override
     public boolean accept(GamePiece piece) {
       return accept(piece, 0, "");
@@ -664,7 +672,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
       // Looking at All Layers accepts anything.
       else if (displayWhat.equals(ALL_LAYERS)) {
-        return propertyFilter.accept(piece);
+        return checkFilter(piece);
       }
       else {
 
@@ -674,14 +682,14 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
         // Pieces are passed to us top down, so only display the top-most layer
         if (displayWhat.equals(TOP_LAYER)) {
-          return (layer == topLayer) && propertyFilter.accept(piece);
+          return (layer == topLayer) && checkFilter(piece);
         }
 
         // Include pieces on named layers only
         else if (displayWhat.equals(INC_LAYERS)) {
           for (final String displayLayer : displayLayers) {
             if (layerName.equals(displayLayer)) {
-              return propertyFilter.accept(piece);
+              return checkFilter(piece);
             }
           }
         }
@@ -693,7 +701,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
               return false;
             }
           }
-          return propertyFilter.accept(piece);
+          return checkFilter(piece);
         }
       }
 
