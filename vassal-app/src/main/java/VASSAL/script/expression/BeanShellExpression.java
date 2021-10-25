@@ -60,7 +60,7 @@ public class BeanShellExpression extends Expression {
     if (interpreter == null) {
       interpreter = new ExpressionInterpreter(strip(getExpression()));
     }
-    return interpreter.evaluate(ps, localized, owner, audit);
+    return interpreter.evaluate(ps, properties, localized, owner, audit);
   }
 
   /** @deprecated Use {@link #evaluate(PropertySource, Map, boolean, Auditable, AuditTrail)} */

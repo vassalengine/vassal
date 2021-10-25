@@ -237,6 +237,11 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   public String evaluate(PropertySource ps, boolean localized, Auditable owner, AuditTrail audit) throws ExpressionException {
+    return evaluate(ps, null, localized, owner, audit);
+  }
+
+  public String evaluate(PropertySource ps, java.util.Map<String, String> properties, boolean localized, Auditable owner, AuditTrail audit) throws ExpressionException {
+
     if (getExpression().length() == 0) {
       return "";
     }
@@ -259,7 +264,11 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         if (name.length() > 2 && name.startsWith("$") && name.endsWith("$")) {
           name = name.substring(1, name.length() - 1);
         }
-        final Object prop = localized ? source.getLocalizedProperty(name) : source.getProperty(name);
+        // Check for a propoerty in the passed property Map, then check the source if not found
+        Object prop = properties == null ? null : properties.get(name);
+        if (prop == null) {
+          prop = localized ? source.getLocalizedProperty(name) : source.getProperty(name);
+        }
         final String value = prop == null ? "" : prop.toString();
         if (audit != null) {
           audit.addMessage(origName + "=" + (value == null ? "" : value));
