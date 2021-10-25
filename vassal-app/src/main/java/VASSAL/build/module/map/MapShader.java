@@ -280,6 +280,9 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
     }
 
     final BufferedImage src = (zoom == 1.0 ? srcOp : Op.scale(srcOp, zoom)).getImage();
+    if (src == null) {
+      return null; // The only method that calls us apparently expects the possibility of receiving null, and the getImage() can return null when filename is still blank (or file is missing) 
+    }
     // Linux xrender apparently requires translucency and its own copy
     return ImageUtils.toType(src, ImageUtils.getCompatibleTranslucentImageType());
   }
