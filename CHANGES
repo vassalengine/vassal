@@ -1,5 +1,6 @@
 3.6.0-beta6 - ??? 
 
+* 10623: Fix NPE joining chat room when socket drops early
 * 10618: ToolbarMenus that are submenus of other ToolbarMenus display their
     icons properly
 * 10609: Trigger Action - improved trait summary
