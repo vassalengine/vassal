@@ -51,8 +51,8 @@ VNUM:=3.6.0
 # major-minor part of the version
 V_MAJ_MIN:=$(shell echo "$(VNUM)" | cut -f1,2 -d'.')
 
-MAVEN_VERSION:=$(VNUM)-SNAPSHOT
-#MAVEN_VERSION:=$(VNUM)-beta4
+#MAVEN_VERSION:=$(VNUM)-SNAPSHOT
+MAVEN_VERSION:=$(VNUM)-beta5
 #MAVEN_VERSION:=$(VNUM)
 
 JARNAME:=vassal-app-$(MAVEN_VERSION)
