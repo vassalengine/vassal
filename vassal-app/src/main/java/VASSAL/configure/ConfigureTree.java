@@ -26,11 +26,15 @@ import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.IllegalBuildException;
 import VASSAL.build.module.Chatter;
+import VASSAL.build.module.GlobalKeyCommand;
 import VASSAL.build.module.KeyNamer;
 import VASSAL.build.module.Plugin;
 import VASSAL.build.module.PrototypeDefinition;
+import VASSAL.build.module.StartupGlobalKeyCommand;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
+import VASSAL.build.module.map.DeckGlobalKeyCommand;
+import VASSAL.build.module.map.MassKeyCommand;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.build.module.properties.GlobalProperties;
 import VASSAL.build.module.properties.GlobalProperty;
@@ -649,15 +653,32 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
    * @return new Child
    */
   protected Configurable convertChild(Configurable parent, Configurable child) {
+    // Convert between CardSlots and PieceSlots
     if (child.getClass() == PieceSlot.class && isAllowedChildClass(parent, CardSlot.class)) {
       return new CardSlot((PieceSlot) child);
     }
     else if (child.getClass() == CardSlot.class && isAllowedChildClass(parent, PieceSlot.class)) {
       return new PieceSlot((CardSlot) child);
     }
-    else {
-      return child;
+    // Handle conversion between different types of GKCs. Note startup GKC's cannot be created this way.
+    // Any non-Startup GKC pasted at the module level will be transformed to a GlobalKeyCommand
+    // Startup GKCs will always be pasted as themselves at the module level
+    // The order of this if is important as all GKCs subclass MassKeyCommand
+    else if (MassKeyCommand.class.isAssignableFrom(child.getClass())) {
+      if (isAllowedChildClass(parent, DeckGlobalKeyCommand.class)) {
+        return child.getClass().equals(DeckGlobalKeyCommand.class) ? child : new DeckGlobalKeyCommand((MassKeyCommand) child);
+      }
+      else if (isAllowedChildClass(parent, GlobalKeyCommand.class)) {
+        // Do not convert a StartupGlobalKeyCommand to a GlobalKeyCommand, otherwise we would not be
+        // able to duplicate Startup GKCs
+        return child.getClass().equals(StartupGlobalKeyCommand.class) ||
+          child.getClass().equals(GlobalKeyCommand.class) ? child : new GlobalKeyCommand((MassKeyCommand) child);
+      }
+      if (isAllowedChildClass(parent, MassKeyCommand.class)) {
+        return child.getClass().equals(MassKeyCommand.class) ? child : new MassKeyCommand((MassKeyCommand) child);
+      }
     }
+    return child;
   }
 
   protected boolean isAllowedChildClass(Configurable parent, Class<?> childClass) {
@@ -1217,14 +1238,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   public void mouseDragged(MouseEvent evt) {
   }
 
-
   protected boolean isValidParent(Configurable parent, Configurable child) {
     if (parent != null && child != null) {
       final Class<?>[] c = parent.getAllowableConfigureComponents();
       for (final Class<?> aClass : c) {
         if (aClass.isAssignableFrom(child.getClass()) ||
           ((aClass == CardSlot.class) && (child.getClass() == PieceSlot.class)) || // Allow PieceSlots to be pasted to Decks
-          ((aClass == ZoneProperty.class) && (child.getClass() == GlobalProperty.class)) // Allow Global Properties to be saved as Zone Properties
+          ((aClass == ZoneProperty.class) && (child.getClass() == GlobalProperty.class)) || // Allow Global Properties to be saved as Zone Properties
+          ((MassKeyCommand.class.isAssignableFrom(aClass)) && (MassKeyCommand.class.isAssignableFrom(child.getClass())))// All types of GKC's are inter-assignable
         ) {
           return true;
         }
