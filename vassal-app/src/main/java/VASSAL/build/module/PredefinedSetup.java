@@ -183,7 +183,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
       return showUseFile;
     }
     else if (IS_MENU.equals(name)) {
-      return () -> (getBuildables().size() <= 0);
+      return () -> getBuildables().isEmpty();
     }
     else {
       return super.getAttributeVisibility(name);
