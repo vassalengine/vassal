@@ -30,6 +30,7 @@
         { "num": 10618, "desc": "ToolbarMenus that are submenus of other ToolbarMenus display their icons properly" }
       ],
       "other_improvements": [
+        { "num": 10610, "desc": "More robust configurer for PredefinedSetup" },
         { "num": 10609, "desc": "Trigger Action - improved trait summary" },
         { "num": 9596, "desc": "Pieces dragged off the palette using the palette scale factor instead of always full size" }
       ]
