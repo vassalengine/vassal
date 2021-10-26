@@ -153,7 +153,7 @@ public class MassKeyCommand extends AbstractToolbarItem
   }
 
   /**
-   * Copy an existing NassKeyCommand or subclass
+   * Copy an existing MassKeyCommand or subclass
    * getAttributeNames will resolve to the subclass, so only attributes
    * unique to the subclass will be copied
    * CONDITION is a legacy field that must be null, not "" when not used
