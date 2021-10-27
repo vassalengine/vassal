@@ -1,5 +1,6 @@
 3.6.0-beta6 - ??? 
 
+* 10631: Clip pieces to their bounds and set rendering hints for drag image
 * 10630: Correctly check if there are sides with blank passwords for password
     matching
 * 10629: String Array Configurer bounds protection
