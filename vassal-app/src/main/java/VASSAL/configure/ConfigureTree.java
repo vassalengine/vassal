@@ -666,15 +666,16 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     // The order of this if is important as all GKCs subclass MassKeyCommand
     else if (MassKeyCommand.class.isAssignableFrom(child.getClass())) {
       if (isAllowedChildClass(parent, DeckGlobalKeyCommand.class)) {
-        return child.getClass().equals(DeckGlobalKeyCommand.class) ? child : new DeckGlobalKeyCommand((MassKeyCommand) child);
+        // Convert other types to Deck GKC. Do not convert an existing Deck GKC
+        return child instanceof DeckGlobalKeyCommand ? child : new DeckGlobalKeyCommand((MassKeyCommand) child);
       }
       else if (isAllowedChildClass(parent, GlobalKeyCommand.class)) {
-        // Do not convert a StartupGlobalKeyCommand to a GlobalKeyCommand, otherwise we would not be
-        // able to duplicate Startup GKCs
-        return child.getClass().equals(StartupGlobalKeyCommand.class) ||
-          child.getClass().equals(GlobalKeyCommand.class) ? child : new GlobalKeyCommand((MassKeyCommand) child);
+        // Convert Mass GKC and Deck GKC to Global. Do not convert an existing Global GKC, or it subclass Startup GKC
+        return child instanceof GlobalKeyCommand ? child : new GlobalKeyCommand((MassKeyCommand) child);
       }
-      if (isAllowedChildClass(parent, MassKeyCommand.class)) {
+      else if (isAllowedChildClass(parent, MassKeyCommand.class)) {
+        // Convert other types to Mass GKX
+        // Need to check MassKeyCommand class specifically as all other GKCs subclass it
         return child.getClass().equals(MassKeyCommand.class) ? child : new MassKeyCommand((MassKeyCommand) child);
       }
     }
