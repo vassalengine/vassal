@@ -1649,6 +1649,9 @@ public class PieceMover extends AbstractBuildable
     private void drawDragImage(BufferedImage image, Component target,
                                List<Point> relativePositions, double zoom) {
       final Graphics2D g = image.createGraphics();
+      g.addRenderingHints(SwingUtils.FONT_HINTS);
+      g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                         RenderingHints.VALUE_ANTIALIAS_ON);
 
       int index = 0;
       Point lastPos = null;
