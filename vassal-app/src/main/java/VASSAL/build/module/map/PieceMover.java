@@ -92,6 +92,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -1546,7 +1547,7 @@ public class PieceMover extends AbstractBuildable
     BufferedImage makeDragImageCursorCommon(double zoom, boolean doOffset,
       Component target, boolean setSize) {
 
-      // FIXME: Should be an ImageOp.
+      // FIXME: Should be an ImageOp for caching?
       dragCursorZoom = zoom;
 
       final List<Point> relativePositions = buildBoundingBox(zoom, doOffset);
@@ -1554,12 +1555,10 @@ public class PieceMover extends AbstractBuildable
       final int w = boundingBox.width + EXTRA_BORDER * 2;
       final int h = boundingBox.height + EXTRA_BORDER * 2;
 
-      BufferedImage image = ImageUtils.createCompatibleTranslucentImage(w, h);
-
+      final BufferedImage image = ImageUtils.createCompatibleTranslucentImage(w, h);
       drawDragImage(image, target, relativePositions, zoom);
 
       if (setSize) dragCursor.setSize(w, h);
-      image = featherDragImage(image, w, h, EXTRA_BORDER);
 
       return image;
     }
@@ -1649,6 +1648,9 @@ public class PieceMover extends AbstractBuildable
     private void drawDragImage(BufferedImage image, Component target,
                                List<Point> relativePositions, double zoom) {
       final Graphics2D g = image.createGraphics();
+      g.addRenderingHints(SwingUtils.FONT_HINTS);
+      g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                         RenderingHints.VALUE_ANTIALIAS_ON);
 
       int index = 0;
       Point lastPos = null;
@@ -1686,10 +1688,17 @@ public class PieceMover extends AbstractBuildable
             owner = (String)piece.getProperty(Properties.OBSCURED_BY);
             piece.setProperty(Properties.OBSCURED_BY, ((Deck) piece.getParent()).isFaceDown() ? Deck.NO_USER : null);
           }
+
+          final AffineTransform t = AffineTransform.getScaleInstance(zoom, zoom);
+          t.translate(x / zoom, y / zoom);
+          g.setClip(t.createTransformedShape(piece.getShape()));
+
           piece.draw(g, x, y, map == null ? target : map.getView(), zoom);
           if (piece.getParent() instanceof Deck) {
             piece.setProperty(Properties.OBSCURED_BY, owner);
           }
+
+          g.setClip(null);
 
           final Highlighter highlighter = map == null ?
             BasicPiece.getHighlighter() : map.getHighlighter();
@@ -1704,6 +1713,11 @@ public class PieceMover extends AbstractBuildable
         lastPos = pos;
       }
 
+      // make the drag image transparent
+      g.setComposite(AlphaComposite.getInstance(AlphaComposite.DST_IN));
+      g.setColor(new Color(0xFF, 0xFF, 0xFF, CURSOR_ALPHA));
+      g.fillRect(0, 0, image.getWidth(), image.getHeight());
+
       g.dispose();
     }
 
@@ -1717,39 +1731,6 @@ public class PieceMover extends AbstractBuildable
         sm = new StackMetrics();
       }
       return sm;
-    }
-
-    private BufferedImage featherDragImage(BufferedImage src,
-                                           int w, int h, int b) {
-      // FIXME: This should be redone so that we draw the feathering onto the
-      // destination first, and then pass the Graphics2D on to draw the pieces
-      // directly over it. Presently this doesn't work because some of the
-      // pieces screw up the Graphics2D when passed it... The advantage to doing
-      // it this way is that we create only one BufferedImage instead of two.
-      final BufferedImage dst =
-        ImageUtils.createCompatibleTranslucentImage(w, h);
-
-      final Graphics2D g = dst.createGraphics();
-      g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                         RenderingHints.VALUE_ANTIALIAS_ON);
-
-      // paint the rectangle occupied by the piece at specified alpha
-      g.setColor(new Color(0xff, 0xff, 0xff, CURSOR_ALPHA));
-      g.fillRect(0, 0, w, h);
-
-      // feather outwards
-      for (int f = 0; f < b; ++f) {
-        final int alpha = CURSOR_ALPHA * (f + 1) / b;
-        g.setColor(new Color(0xff, 0xff, 0xff, alpha));
-        g.drawRect(f, f, w - 2 * f, h - 2 * f);
-      }
-
-      // paint in the source image
-      g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_IN));
-      g.drawImage(src, 0, 0, null);
-      g.dispose();
-
-      return dst;
     }
 
     /******************************************************************************
