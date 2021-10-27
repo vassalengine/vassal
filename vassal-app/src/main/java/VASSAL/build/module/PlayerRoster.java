@@ -558,7 +558,8 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       }
 
       // Only if we don't match *any* of those do we try auto-matching a blank password, and then only for non-observer slots
-      if (index == 0) {
+      if (allowedSides.isEmpty()) {
+        index = 0;
         for (final PlayerInfo pi : r.getPlayers()) {
           if ("".equals(pi.playerId) && !OBSERVER.equals(pi.getSide())) {
             allowedSides.add(pi);
