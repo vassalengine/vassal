@@ -24,6 +24,7 @@
       ],
       "bug_fixes": [
         { "num": 10630, "desc": "Correctly check if there are sides with blank passwords for password matching" },
+        { "num": 10629, "desc": "String Array Configurer bounds protection" },
         { "num": 10623, "desc": "Fix NPE joining chat room when socket drops early" },
         { "num": 10622, "desc": "Fix NPE when MapShader temporarily points to blank or missing filename"},
         { "num": 10621, "desc": "Protect against changing to Image style while Image name is still blank" },
