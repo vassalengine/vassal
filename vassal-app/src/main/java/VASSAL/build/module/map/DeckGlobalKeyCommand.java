@@ -88,6 +88,10 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
     globalCommand.setPropertySource(source);
   }
 
+  public DeckGlobalKeyCommand(MassKeyCommand gkc) {
+    super(gkc);
+  }
+
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.DeckGlobalKeyCommand.component_type"); //$NON-NLS-1$
   }

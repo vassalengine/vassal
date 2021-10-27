@@ -152,6 +152,23 @@ public class MassKeyCommand extends AbstractToolbarItem
     launch = getLaunchButton(); // for compatibility
   }
 
+  /**
+   * Copy an existing MassKeyCommand or subclass
+   * getAttributeNames will resolve to the subclass, so only attributes
+   * unique to the subclass will be copied
+   * CONDITION is a legacy field that must be null, not "" when not used
+   * */
+  public MassKeyCommand(MassKeyCommand gkc) {
+    this();
+    for (final String key : getAttributeNames()) {
+      String value = gkc.getAttributeValueString(key);
+      if (value == null && !CONDITION.equals(key)) {
+        value = "";
+      }
+      setAttribute(key, value);
+    }
+  }
+
   @Override
   public void addTo(Buildable parent) {
     if (parent instanceof AbstractFolder) {

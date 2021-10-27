@@ -46,6 +46,14 @@ import java.util.List;
  */
 public class GlobalKeyCommand extends MassKeyCommand {
 
+  public GlobalKeyCommand() {
+    super();
+  }
+
+  public GlobalKeyCommand(MassKeyCommand gkc) {
+    super(gkc);
+  }
+
   /**
    * @return Our type of Global Key Command (overrides the one from Mass Key Command). Affects what configurer options are shown.
    */
