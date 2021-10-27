@@ -20,8 +20,10 @@ package VASSAL.counters;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.ObscurableOptions;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.map.CounterDetailViewer;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
+import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.ImageSelector;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PieceAccessConfigurer;
@@ -84,6 +86,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   protected GamePiece obscuredToOthersView;
   protected boolean peeking;
   protected char displayStyle = INSET; // I = inset, B = background
+  protected boolean autoPeekRollover;
   protected String maskName = "?";
   protected PieceAccess access = PlayerAccess.getInstance();
 
@@ -113,6 +116,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
 
   @Override
   public void mySetType(String in) {
+    boolean existingPiece = false;
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(in, ';');
     st.nextToken();
     keyCommand = st.nextNamedKeyStroke(null);
@@ -120,6 +124,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     obscuredToMeView = GameModule.getGameModule().createPiece(BasicPiece.ID + ";;" + imageName + ";;");
     hideCommand = st.nextToken(hideCommand);
     if (st.hasMoreTokens()) {
+      existingPiece = true;
       final String s = st.nextToken(String.valueOf(INSET));
       displayStyle = s.charAt(0);
       switch (displayStyle) {
@@ -150,6 +155,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     access = PieceAccessConfigurer.decode(st.nextToken(null));
     peekCommand = st.nextToken(DEFAULT_PEEK_COMMAND);
     description = st.nextToken("");
+    autoPeekRollover = st.nextBoolean(!existingPiece); // Default true from now on for newly created pieces, but false for up-converted legacy pieces
     commandsWithPeek = null;
     hide = null;
     peek = null;
@@ -178,6 +184,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     se.append(PieceAccessConfigurer.encode(access));
     se.append(peekCommand);
     se.append(description);
+    se.append(autoPeekRollover);
     return ID + se.getValue();
   }
 
@@ -202,10 +209,19 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     }
   }
 
+  public boolean isAutoPeeking() {
+    if (!autoPeekRollover) return false;
+    if (!CounterDetailViewer.isDrawingMouseOver()) return false;
+    return obscuredToOthers() && !obscuredToMe();
+  }
+
   @Override
   public Shape getShape() {
     if (obscuredToMe()) {
       return obscuredToMeView.getShape();
+    }
+    else if (isAutoPeeking()) {
+      return piece.getShape();
     }
     else if (obscuredToOthers()) {
       switch (displayStyle) {
@@ -347,6 +363,9 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     if (obscuredToMe()) {
       drawObscuredToMe(g, x, y, obs, zoom);
+    }
+    else if (isAutoPeeking()) {
+      piece.draw(g, x, y, obs, zoom);
     }
     else if (obscuredToOthers()) {
       drawObscuredToOthers(g, x, y, obs, zoom);
@@ -635,6 +654,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     if (! Objects.equals(peekCommand, c.peekCommand)) return false;
 
     if (! Objects.equals(obscuredBy, c.obscuredBy)) return false;
+    if (! Objects.equals(autoPeekRollover, c.autoPeekRollover)) return false;
     final boolean noOptions = obscuredBy == null || obscuredOptions == null;
     final boolean noOptions2 = c.obscuredBy == null || c.obscuredOptions == null;
     if (! Objects.equals(noOptions, noOptions2)) return false;
@@ -651,6 +671,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     private final TranslatingStringEnumConfigurer displayOption;
     private final NamedHotKeyConfigurer peekKeyInput;
     private final StringConfigurer peekCommandInput;
+    private final BooleanConfigurer autoPeekInput;
     private final TraitConfigPanel controls = new TraitConfigPanel();
     private final String[] optionNames = {"B", "P", "I", "2", "U"}; // NON-NLS
     private final String[] optionKeys = {
@@ -703,6 +724,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
         }
       }
       controls.add(displayLabel);
+
       displayPanel.add(displayOption.getControls());
 
       showDisplayOption = new JPanel() {
@@ -777,6 +799,9 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       peekCommandInput.getControls().setVisible(p.displayStyle == PEEK);
       controls.add(peekCommandLabel, peekCommandInput);
 
+      autoPeekInput = new BooleanConfigurer(p.autoPeekRollover);
+      controls.add("Editor.Obscurable.autopeek", autoPeekInput);
+
       displayOption.addPropertyChangeListener(evt -> {
         showDisplayOption.repaint();
         peekKeyLabel.setVisible(optionNames[1].equals(evt.getNewValue()));
@@ -827,6 +852,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       se.append(accessConfig.getValueString());
       se.append(peekCommandInput.getValueString());
       se.append(descInput.getValueString());
+      se.append(autoPeekInput.getValueString());
       return ID + se.getValue();
     }
 

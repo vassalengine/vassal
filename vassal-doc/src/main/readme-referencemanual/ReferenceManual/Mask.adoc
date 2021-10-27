@@ -67,6 +67,9 @@ until he clicks elsewhere on the map). If the "Peek" command key is left blank, 
 _Use Image_ draws the unmasked piece and then a specifiable image on top of the piece.
 The image can make use of transparency to let some of the information through.
 
+*Autopeek on Rollover:*::  If checked, then when displayed in any <<MouseOver.adoc#top, Mouse-over Viewer>> to a player eligible to see the piece, the
+piece will appear unmasked.
+
 |
 image:images/Mask.png[]
 
