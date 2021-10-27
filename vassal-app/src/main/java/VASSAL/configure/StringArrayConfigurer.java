@@ -220,6 +220,8 @@ public class StringArrayConfigurer extends Configurer implements ConfigurableLis
       entries.add(entry); // NON-NLS
     }
 
+    setSelectedEntryIndex(getSelectedEntryIndex()); // Reselecting our current entry ensures our selection is in range
+
     updateControls();
     repack();
   }
@@ -315,7 +317,7 @@ public class StringArrayConfigurer extends Configurer implements ConfigurableLis
     final int pos = getSelectedEntryIndex();
 
     // Insert the new entry into the list at the appropriate place
-    if (entries.isEmpty() || getSelectedEntryIndex() < 0) {
+    if (entries.isEmpty() || pos < 0 || pos > getStringArray().length - 1) {
       setValue(ArrayUtils.add(getStringArray(), ""));
       newEntry = getStringArray().length - 1;
       setSelectedEntryIndex(newEntry);
