@@ -30,7 +30,6 @@ import VASSAL.build.module.GlobalKeyCommand;
 import VASSAL.build.module.KeyNamer;
 import VASSAL.build.module.Plugin;
 import VASSAL.build.module.PrototypeDefinition;
-import VASSAL.build.module.StartupGlobalKeyCommand;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.build.module.map.DeckGlobalKeyCommand;
