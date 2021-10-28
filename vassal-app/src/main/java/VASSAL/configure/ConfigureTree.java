@@ -866,7 +866,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
                 @Override
                 public void cancel() {
-                  ConfigureTree.this.remove(target, child);
+                  // Child could have been already deleted or dragged elsewhere
+                  final DefaultMutableTreeNode currentParent = (DefaultMutableTreeNode)getTreeNode(child).getParent();
+                  if (currentParent != null) {
+                    ConfigureTree.this.remove((Configurable)currentParent.getUserObject(), child);
+                  }
                   dispose();
                 }
 
