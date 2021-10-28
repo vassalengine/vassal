@@ -1866,7 +1866,7 @@ public class PieceMover extends AbstractBuildable
 
       dge.startDrag(
         Cursor.getPredefinedCursor(Cursor.HAND_CURSOR),
-        bImage,
+        GlobalOptions.getInstance().isForceNonNativeDrag() ? null : bImage,
         dragPointOffset,
         new StringSelection(""),
         this
