@@ -590,7 +590,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           }
           final Configurable cutObj = (Configurable) cutData.getUserObject();
           final Configurable convertedCutObj = convertChild(target, cutObj);
-          if (remove(getParent(cutData), cutObj)) {
+          if ((getParent(cutData) == null) || remove(getParent(cutData), cutObj)) {
             insert(target, convertedCutObj, targetNode.getChildCount());
           }
           copyData = getTreeNode(convertedCutObj);
