@@ -176,17 +176,21 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
   }
 
   /**
-   * Set the current level - First level = 0 Does not change the active status
+   * Set the current level; Does not change the active status
    *
-   * @param val Value to set
+   * @param level 0-based level to set
    */
-  public void setValue(int val) {
-    int theVal = val;
-    if (val >= nValues) {
-      reportDataError(this, Resources.getString("Error.bad_layer"), "Layer=" + val); // NON-NLS
-      theVal = nValues;
+  public void setValue(int level) {
+    if (level < 0) {
+      reportDataError(this, Resources.getString("Error.bad_layer"), "Layer=" + level); // NON-NLS
+      level = 0;
     }
-    value = value > 0 ? theVal + 1 : -theVal - 1;
+    else if (level >= nValues) {
+      reportDataError(this, Resources.getString("Error.bad_layer"), "Layer=" + level); // NON-NLS
+      level = nValues - 1;
+    }
+
+    value = value >= 0 ? level + 1 : -level - 1;
   }
 
   @Override
@@ -435,6 +439,8 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
   public void mySetState(String s) {
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
     value = st.nextInt(-1);
+    // prevent value from falling outside the array bounds
+    value = Math.max(Math.min(-imageName.length, value), imageName.length);
   }
 
   @Override
