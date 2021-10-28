@@ -210,9 +210,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   }
 
   public boolean isAutoPeeking() {
-    if (!autoPeekRollover) return false;
-    if (!CounterDetailViewer.isDrawingMouseOver()) return false;
-    return obscuredToOthers() && !obscuredToMe();
+    return autoPeekRollover && CounterDetailViewer.isDrawingMouseOver() && obscuredToOthers() && !obscuredToMe();
   }
 
   @Override
