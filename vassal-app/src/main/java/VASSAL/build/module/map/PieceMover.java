@@ -1359,6 +1359,7 @@ public class PieceMover extends AbstractBuildable
     }
   }
 
+
   /**
    * Common functionality for DragHandler for cases with and without drag image support.
    * <p>
@@ -1369,10 +1370,7 @@ public class PieceMover extends AbstractBuildable
   public abstract static class AbstractDragHandler
     implements DragGestureListener,       DragSourceListener,
                DragSourceMotionListener,  DropTargetListener   {
-    private static AbstractDragHandler theDragHandler =
-        DragSource.isDragImageSupported() ? (SystemUtils.IS_OS_MAC ?
-        new DragHandlerMacOSX() : new DragHandler()) :
-        new DragHandlerNoImage();
+    private static AbstractDragHandler theDragHandler = AbstractDragHandlerFactory.getCorrectDragHandler();
 
     /** returns the singleton DragHandler instance */
     public static AbstractDragHandler getTheDragHandler() {
@@ -1421,6 +1419,31 @@ public class PieceMover extends AbstractBuildable
      * @return platform-dependent device scale
      */
     protected abstract double getDeviceScale(DragGestureEvent dge);
+
+    /**
+     * Picks the correct drag handler based on our OS, DragSource, and preferences.
+     */
+    public static class AbstractDragHandlerFactory {
+      public static AbstractDragHandler getCorrectDragHandler() {
+        if (!DragSource.isDragImageSupported() || GlobalOptions.getInstance().isForceNonNativeDrag()) {
+          return new DragHandlerNoImage();
+        }
+        else {
+          return SystemUtils.IS_OS_MAC ? new DragHandlerMacOSX() : new DragHandler();
+        }
+      }
+    }
+
+    /**
+     * Reset our drag handler, e.g. if our preferences change.
+     */
+    public static void resetDragHandler() {
+      final AbstractDragHandler newHandler = AbstractDragHandlerFactory.getCorrectDragHandler();
+      setTheDragHandler(newHandler);
+      for (final VASSAL.build.module.Map map : VASSAL.build.module.Map.getMapList()) {
+        map.setDragGestureListener(newHandler);
+      }
+    }
 
     /**
      * Registers a PieceMover

@@ -253,27 +253,11 @@ public class GlobalOptions extends AbstractConfigurable {
 
       forceNonNativeDrag = Boolean.TRUE.equals(bug10295Conf.getValue());
 
-      final boolean dragHandlerNoImageNecessary =
-        forceNonNativeDrag &&
-          !(PieceMover.AbstractDragHandler.getTheDragHandler()
-            instanceof PieceMover.DragHandlerNoImage);
-
-      if (dragHandlerNoImageNecessary) {
-        PieceMover.AbstractDragHandler.setTheDragHandler(new PieceMover.DragHandlerNoImage());
-      }
+      PieceMover.AbstractDragHandler.resetDragHandler();
 
       bug10295Conf.addPropertyChangeListener(e -> {
         forceNonNativeDrag = Boolean.TRUE.equals(e.getNewValue());
-        final PieceMover.AbstractDragHandler newDragHandler = (forceNonNativeDrag ||
-          !DragSource.isDragImageSupported()) ?
-          new PieceMover.DragHandlerNoImage() :
-          new PieceMover.DragHandler();
-
-        PieceMover.AbstractDragHandler.setTheDragHandler(newDragHandler);
-
-        for (final VASSAL.build.module.Map map : VASSAL.build.module.Map.getMapList()) {
-          map.setDragGestureListener(newDragHandler);
-        }
+        PieceMover.AbstractDragHandler.resetDragHandler();
       });
 
       prefs.addOption(Resources.getString("Prefs.compatibility_tab"), bug10295Conf);
