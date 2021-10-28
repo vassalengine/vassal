@@ -180,10 +180,9 @@ public class PieceMover extends AbstractBuildable
     map.addLocalMouseListener(this);
     GameModule.getGameModule().getGameState().addGameComponent(this);
 
-    final AbstractDragHandler dragHandler = DragHandler.getTheDragHandler();
-    dragHandler.addPieceMover(this);
+    DragHandler.addPieceMover(this);
     map.getView().addMouseMotionListener(this);
-    map.setDragGestureListener(dragHandler);
+    map.setDragGestureListener(DragHandler.getTheDragHandler());
     map.setPieceMover(this);
 
     // Because of the strange legacy scheme of halfway-running a Toolbar button "on behalf of Map", we have to set some its attributes
@@ -1406,7 +1405,7 @@ public class PieceMover extends AbstractBuildable
 
     JLayeredPane drawWin; // the component that owns our pseudo-cursor
 
-    protected List<PieceMover> pieceMovers = new ArrayList<>(); // our piece movers
+    protected static List<PieceMover> pieceMovers = new ArrayList<>(); // our piece movers
 
     // Seems there can be only one DropTargetListener per drop target. After we
     // process a drop target event, we manually pass the event on to this listener.
@@ -1427,7 +1426,7 @@ public class PieceMover extends AbstractBuildable
      * Registers a PieceMover
      * @param pm PieceMover for this dragHandler
      */
-    void addPieceMover(PieceMover pm) {
+    static void addPieceMover(PieceMover pm) {
       if (!pieceMovers.contains(pm)) {
         pieceMovers.add(pm);
       }
