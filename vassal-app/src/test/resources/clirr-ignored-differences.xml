@@ -1263,6 +1263,6 @@
     <difference>
         <classname>VASSAL/build/module/map/PieceMover$AbstractDragHandler</classname>
         <differenceType>6008</differenceType>
-        <field>pieceMovers</field>
+        <field>**</field>
     </difference>
 </differences>
