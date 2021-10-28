@@ -47,6 +47,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 10640, "desc": "Tidier right arrow symbol in default move reports" },
         { "num": 10620, "desc": "Fix NPE EditPropertiesAction.windowClosed()" },
         { "num": 10616, "desc": "Mouseover Stack Viewer was failing to launch in certain situations" },
         { "num": 10615, "desc": "Stack NPE in Mat Movement code" }
