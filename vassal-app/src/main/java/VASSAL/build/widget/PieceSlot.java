@@ -211,6 +211,11 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     expanded = null;
   }
 
+  public void clearCache() {
+    c = null;
+    expanded = null;
+  }
+
   /**
    * Return defined GamePiece with prototypes unexpanded.
    *

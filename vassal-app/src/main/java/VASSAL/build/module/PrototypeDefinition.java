@@ -183,9 +183,21 @@ public class PrototypeDefinition extends AbstractConfigurable
     return piece;
   }
 
+
+  public void clearCache() {
+    pieces.clear();
+  }
+
+
   public void setPiece(GamePiece p) {
     pieceDefinition = p == null ? null : GameModule.getGameModule().encode(new AddPiece(p));
     pieces.clear();
+
+    //BR// Clear the cached pieces array for ALL existing prototypes when any of them changes. Thus chained/nested prototypes will be properly rebuilt.
+    final PrototypesContainer container = PrototypesContainer.findInstance();
+    if (container != null) {
+      container.resetCache();
+    }
   }
 
   public String getDescription() {
