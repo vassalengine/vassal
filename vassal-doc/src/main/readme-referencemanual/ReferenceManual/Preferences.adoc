@@ -100,7 +100,7 @@ NOTE: This preference will only appear on Mac systems.
 
 *Disable DirectX D3D pipeline? (Can resolve some graphics glitching issues)*: This option is worth a try if you are experiencing "tearing" in your maps while running on Windows. If this option doesn't help, or if you are not running on Windows, please refer to https://vassalengine.org/wiki/Troubleshooting_Common_Problems[additional steps to try] on the VASSAL wiki.
 
-*Drag ghost bug correction? (Use if shadow image missing when dragging counters):*:: When dragging pieces on a map, the intended behavior involves semi-transparent images of the pieces being dragged. On some Windows machines these images don't appear -- in that case, select this option for an alternate drag image.
+*Override native drag-and-drop image (if image missing or too dim when dragging counters):*:: When dragging pieces on a map, the intended behavior involves semi-transparent images of the pieces being dragged. On some Windows machines these images don't appear, or large images may be "too faded out" -- in that case, select this option for an alternate drag image. Changes to this preference require a restart of VASSAL to take effect.
 
 *Use Classic Move Fixed Distance trait move batching:*:: The <<Translate#top,Move Fixed Distance>> trait changed in VASSAL 3.3 to correct several old bugs. Part of the fix involved changing some behaviors of the trait when firing off multiple versions of the trait with a <<TriggerAction#top,Trigger Action>> trait. Check this box to use the old trait behavior with modules that depend on the old unintended behavior (in other words, if the bug was actually a "feature" for your module).
 
