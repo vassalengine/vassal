@@ -23,6 +23,7 @@
         { "num": 9391, "desc": "Beanshell can now access $$ variables in Report Formats" }
       ],
       "bug_fixes": [
+        { "num": 10639, "desc": "Fix exception when canceling edit of a component that has been elsewhere moved or deleted" },
         { "num": 10635, "desc": "Trigger Action traits with \"loop until\" and \"loop while\" conditions can properly access piece properties in expression builder" },
         { "num": 10632, "desc": "Fix ArrayIndexOutOfBoundsException in Embellishment when layer value is out of range" },
         { "num": 10631, "desc": "Clip pieces to their bounds and set rendering hints for drag image" },

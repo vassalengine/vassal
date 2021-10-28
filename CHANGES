@@ -1,6 +1,8 @@
 3.6.0-beta6 - ??? 
 
 * 10640: Tidier right arrow symbol in default move reports
+* 10639: Fix exception when canceling edit of a component that has been
+    elsewhere moved or deleted
 * 10635: Trigger Action traits with "loop until" and "loop while" conditions
     can properly access piece properties in expression builder
 * 10632: Fix ArrayIndexOutOfBoundsException in Embellishment when layer value
