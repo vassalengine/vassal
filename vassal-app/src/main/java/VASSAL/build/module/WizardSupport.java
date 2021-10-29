@@ -612,7 +612,6 @@ public class WizardSupport {
           final SaveMetaData saveData = (SaveMetaData) metaData;
           String saveModuleVersion = "?";
           if (saveData.getModuleData() != null) {
-            final String loadComments = saveData.getLocalizedDescription();
             final String saveModuleName = saveData.getModuleName();
             saveModuleVersion = saveData.getModuleVersion();
             final String moduleName = GameModule.getGameModule().getGameName();
