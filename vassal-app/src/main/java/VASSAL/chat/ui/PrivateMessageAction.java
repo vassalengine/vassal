@@ -55,6 +55,7 @@ public class PrivateMessageAction extends AbstractAction {
     // Chat is null of other player is ignoring us.
     if (chat != null) {
       final Window f = (Window)chat.getTopLevelAncestor();
+      f.setAutoRequestFocus(false); //BR// Don't force focus whenever we receive a message.
       f.setVisible(true);
       f.toFront();
     }
