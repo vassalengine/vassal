@@ -49,6 +49,7 @@ import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.swing.SwingUtils;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -70,6 +71,7 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -78,6 +80,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
+import org.apache.commons.lang3.SystemUtils;
 
 public class Zone extends AbstractConfigurable implements GridContainer, MutablePropertiesContainer, PropertySource, GameComponent {
   public static final String NAME = "name"; //NON-NLS
@@ -607,6 +610,10 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   public Command getRestoreCommand() {
     return null;
   }
+
+  /**
+   * Our configurer for the Zone, including ability to edit the polygon
+   */
   public static class Editor extends Configurer {
     private final JPanel buttonPanel;
     private final JButton button;
@@ -615,6 +622,9 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     private final JDialog frame;
     protected AdjustableSpeedScrollPane scroll;
     protected Polygon savePoly;
+    protected JLabel coordsLabel;
+    protected JLabel coordLabel;
+    protected Zone zone;
     protected final JLabel warning = new JLabel(Resources.getString("Editor.Zone.zone_has_not_been_defined"));
 
     public Editor(final Zone zone) {
@@ -623,6 +633,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       button = new JButton(Resources.getString("Editor.Zone.define_shape"));
       buttonPanel.add(button);
       button.addActionListener(e -> init(zone));
+      this.zone = zone;
       editor = new PolygonEditor(new Polygon(zone.myPolygon.xpoints, zone.myPolygon.ypoints, zone.myPolygon.npoints)) {
         private static final long serialVersionUID = 1L;
 
@@ -651,6 +662,9 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
           warning.setVisible(editor != null && (editor.getPolygon() == null || editor.getPolygon().npoints == 0));
         }
       };
+
+      editor.setMyConfigurer(this);
+
       frame = new JDialog(GameModule.getGameModule().getPlayerWindow(), zone.getConfigureName(), true);
       frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
       final JPanel labels = new JPanel();
@@ -689,6 +703,15 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       scroll = new AdjustableSpeedScrollPane(editor);
       editor.setScroll(scroll);
       frame.add(scroll);
+
+      final Box coordPanel = Box.createVerticalBox();
+      coordsLabel = new JLabel();
+      coordLabel = new JLabel("");
+      coordPanel.add(coordLabel, BorderLayout.CENTER);
+      coordPanel.add(coordsLabel, BorderLayout.CENTER);
+      updateCoords();
+      frame.add(coordPanel);
+
       final JPanel buttonPanel = new JPanel();
 
       final JButton closeButton = new JButton(Resources.getString("General.ok"));
@@ -707,6 +730,31 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       buttonPanel.add(closeButton);
       buttonPanel.add(canButton);
       frame.add(buttonPanel);
+    }
+
+    public void updateCoords(Polygon polygon) {
+      final StringBuilder s = new StringBuilder("");
+      if (polygon != null) {
+        for (int p = 0; p < polygon.npoints; p++) {
+          s.append(polygon.xpoints[p]);
+          s.append(",");
+          s.append(polygon.ypoints[p]);
+          s.append(" ");
+        }
+      }
+      coordsLabel.setText(s.toString());
+    }
+
+    public void updateCoords() {
+      updateCoords(zone.myPolygon);
+    }
+
+    public void updateCoord(String s) {
+      coordLabel.setText(s);
+    }
+
+    public void updateCoord(int x, int y) {
+      updateCoord(x + "," + y);
     }
 
     private void init(Zone zone) {

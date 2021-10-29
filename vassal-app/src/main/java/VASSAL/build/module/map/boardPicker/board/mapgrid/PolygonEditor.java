@@ -63,8 +63,14 @@ public class PolygonEditor extends JPanel {
   private static final int POINT_RADIUS = 10;
   private static final int CLICK_THRESHOLD = 10;
 
+  private Zone.Editor myConfigurer;
+
   public PolygonEditor(Polygon p) {
     polygon = p;
+  }
+
+  public void setMyConfigurer(Zone.Editor myConfigurer) {
+    this.myConfigurer = myConfigurer;
   }
 
   protected void reset() {
@@ -187,6 +193,11 @@ public class PolygonEditor extends JPanel {
   }
 
   public static String polygonToString(Polygon p) {
+    // Sometimes people delete all the points from the polygon. Because of course they do.
+    if ((p == null) || p.npoints == 0) {
+      return "";
+    }
+
     final StringBuilder sb = new StringBuilder();
     for (int i = 0; i < p.npoints; ++i) {
       sb.append(Math.round(p.xpoints[i]))
@@ -352,9 +363,16 @@ public class PolygonEditor extends JPanel {
       if (SwingUtils.isMainMouseButtonDown(e)) {
         if (selected >= 0 && selected < polygon.xpoints.length) {
           moveVertex(polygon, selected, e.getX(), e.getY());
+          if (myConfigurer != null) {
+            myConfigurer.updateCoord(e.getX(), e.getY());
+          }
         }
         scrollAtEdge(e.getPoint(), 15);
         repaint();
+
+        if (myConfigurer != null) {
+          myConfigurer.updateCoords(polygon);
+        }
       }
     }
 
@@ -365,6 +383,16 @@ public class PolygonEditor extends JPanel {
         final Pair<Integer, Double> n = nearestVertex(polygon, e.getX(), e.getY());
         final double d = n.getRight();
         selected = d <= CLICK_THRESHOLD ? n.getLeft() : -1;
+
+        if (myConfigurer != null) {
+          if (selected >= 0) {
+            myConfigurer.updateCoord(polygon.xpoints[selected], polygon.ypoints[selected]);
+          }
+          else {
+            myConfigurer.updateCoord("");
+          }
+        }
+
         repaint();
       }
       else if (SwingUtils.isContextMouseButtonDown(e)) {
@@ -373,6 +401,16 @@ public class PolygonEditor extends JPanel {
         insertVertex(polygon, ins, e.getX(), e.getY());
         selected = ins;
         repaint();
+
+        if (myConfigurer != null) {
+          myConfigurer.updateCoords(polygon);
+          if (selected >= 0) {
+            myConfigurer.updateCoord(polygon.xpoints[selected], polygon.ypoints[selected]);
+          }
+          else {
+            myConfigurer.updateCoord("");
+          }
+        }
       }
     }
 
@@ -389,6 +427,11 @@ public class PolygonEditor extends JPanel {
         }
 
         repaint();
+
+        if (myConfigurer != null) {
+          myConfigurer.updateCoord("");
+          myConfigurer.updateCoords(polygon);
+        }
       }
     }
   }
@@ -418,12 +461,20 @@ public class PolygonEditor extends JPanel {
           resetPolygon(e.getX(), e.getY(), 4);
           addMouseMotionListener(this);
           repaint();
+          if (myConfigurer != null) {
+            myConfigurer.updateCoords(polygon);
+            myConfigurer.updateCoord(e.getX(), e.getY());
+          }
         }
         else if (SwingUtils.isContextMouseButtonDown(e)) {
           remove();
           resetPolygon(e.getX(), e.getY(), 1);
           selected = 0;
           setupForEdit();
+          if (myConfigurer != null) {
+            myConfigurer.updateCoords(polygon);
+            myConfigurer.updateCoord(polygon.xpoints[selected], polygon.ypoints[selected]);
+          }
         }
       }
     }
@@ -434,6 +485,18 @@ public class PolygonEditor extends JPanel {
         polygon.xpoints[1] = polygon.xpoints[2] = e.getX();
         polygon.ypoints[2] = polygon.ypoints[3] = e.getY();
         repaint();
+        if (myConfigurer != null) {
+          myConfigurer.updateCoords(polygon);
+
+          final String s = polygon.xpoints[0] +
+            "," +
+            polygon.ypoints[0] +
+            " => " +
+            polygon.xpoints[2] +
+            "," +
+            polygon.ypoints[2];
+          myConfigurer.updateCoord(s);
+        }
       }
     }
 
@@ -450,6 +513,10 @@ public class PolygonEditor extends JPanel {
         remove();
         selected = nearestVertex(polygon, e.getX(), e.getY()).getLeft();
         setupForEdit();
+        if (myConfigurer != null) {
+          myConfigurer.updateCoords(polygon);
+          myConfigurer.updateCoord("");
+        }
       }
     }
   }
