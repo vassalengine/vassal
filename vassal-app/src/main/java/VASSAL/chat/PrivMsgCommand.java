@@ -48,6 +48,7 @@ public class PrivMsgCommand extends Command {
     }
 
     final Window f = SwingUtilities.getWindowAncestor(chat);
+    f.setAutoRequestFocus(true);
     if (!f.isVisible()) {
       f.setVisible(true);
       final Component c = KeyboardFocusManager.getCurrentKeyboardFocusManager()
