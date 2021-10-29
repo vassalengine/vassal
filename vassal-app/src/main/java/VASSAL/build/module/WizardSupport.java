@@ -56,17 +56,12 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 
-import VASSAL.build.module.metadata.AbstractMetaData;
-import VASSAL.build.module.metadata.MetaDataFactory;
-import VASSAL.build.module.metadata.SaveMetaData;
-import VASSAL.tools.WarningDialog;
 import net.miginfocom.swing.MigLayout;
 import org.netbeans.api.wizard.WizardDisplayer;
 import org.netbeans.spi.wizard.Wizard;
@@ -597,52 +592,10 @@ public class WizardSupport {
       try {
         controller.setProblem(Resources.getString("WizardSupport.LoadingGame")); //$NON-NLS-1$
 
-        //BR// Ugh. Hack this stuff from GameState.java in here because apparently this ancient wizard bypasses all the file validation
-        if (file != null) {
-          // Check the Save game for validity
-          final AbstractMetaData metaData = MetaDataFactory.buildMetaData(file);
-          if (!(metaData instanceof SaveMetaData)) {
-            WarningDialog.show("GameState.invalid_save_file", file.getPath()); //NON-NLS
-            controller.setProblem(Resources.getString("WizardSupport.UnableToLoad"));
-            return;
-          }
-
-          // Check it belongs to this module and matches the version if is a
-          // post 3.0 save file
-          final SaveMetaData saveData = (SaveMetaData) metaData;
-          String saveModuleVersion = "?";
-          if (saveData.getModuleData() != null) {
-            final String saveModuleName = saveData.getModuleName();
-            saveModuleVersion = saveData.getModuleVersion();
-            final String moduleName = GameModule.getGameModule().getGameName();
-            final String moduleVersion = GameModule.getGameModule().getGameVersion();
-            String message = null;
-
-            if (!saveModuleName.equals(moduleName)) {
-              message = Resources.getString(
-                "GameState.load_module_mismatch",
-                file.getName(), saveModuleName, moduleName
-              );
-            }
-            else if (!saveModuleVersion.equals(moduleVersion)) {
-              message = Resources.getString(
-                "GameState.load_version_mismatch",
-                file.getName(), saveModuleVersion, moduleVersion
-              );
-            }
-
-            if (message != null) {
-              if (JOptionPane.showConfirmDialog(
-                null,
-                message,
-                Resources.getString("GameState.load_mismatch"),
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE) != JOptionPane.YES_OPTION) {
-                controller.setProblem(Resources.getString("GameState.cancel_load", file.getName()));
-                return;
-              }
-            }
-          }
+        // Check the Save game for validity - our normal validity checks were being bypassed prior to ... 3.6!!! Eek!
+        if ((file != null) && !GameModule.getGameModule().getGameState().isSaveMetaDataValid(file)) {
+          controller.setProblem(Resources.getString("WizardSupport.UnableToLoad"));
+          return;
         }
 
         final Command setupCommand = loadSavedGame();
