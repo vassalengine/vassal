@@ -109,6 +109,21 @@ public class GameState implements CommandEncoder {
   protected File lastSaveFile = null;
   protected DirectoryConfigurer savedGameDirectoryPreference;
   protected String loadComments;
+  protected boolean loadingInBackground = false;
+
+  /**
+   * @return true if currently loading in background
+   */
+  public boolean isLoadingInBackground() {
+    return loadingInBackground;
+  }
+
+  /**
+   * @param b semaphore for loading in background
+   */
+  void setLoadingInBackground(boolean b) {
+    loadingInBackground = b;
+  }
 
   //public GameState() {}
 
@@ -970,6 +985,8 @@ public class GameState implements CommandEncoder {
     final JFrame frame = GameModule.getGameModule().getPlayerWindow();
     frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
+    setLoadingInBackground(true);
+
     new SwingWorker<Command, Void>() {
       @Override
       public Command doInBackground() throws Exception {
@@ -1034,6 +1051,7 @@ public class GameState implements CommandEncoder {
         }
         finally {
           frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+          setLoadingInBackground(false);
         }
       }
     }.execute();

@@ -254,6 +254,11 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
     final GameModule gm = GameModule.getGameModule();
 
+    // Avoid bug that allowed gaining access to a hidden/locked side
+    if (GameModule.getGameModule().getGameState().isLoadingInBackground()) {
+      return;
+    }
+
     final PlayerInfo me = new PlayerInfo(
       GameModule.getActiveUserId(),
       GlobalOptions.getInstance().getPlayerId(),
