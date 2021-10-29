@@ -27,6 +27,7 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -83,6 +84,11 @@ public class PolygonEditor extends JPanel {
     final MouseMotionListener[] mml = getMouseMotionListeners();
     for (final MouseMotionListener i: mml) {
       removeMouseMotionListener(i);
+    }
+
+    final KeyListener[] kl = getKeyListeners();
+    for (final KeyListener i : kl) {
+      removeKeyListener(i);
     }
 
     final InputMap im = getInputMap(WHEN_IN_FOCUSED_WINDOW);
@@ -336,10 +342,11 @@ public class PolygonEditor extends JPanel {
     p.invalidate();
   }
 
-  private class ModifyPolygon extends MouseInputAdapter {
+  private class ModifyPolygon extends MouseInputAdapter implements KeyListener {
     public ModifyPolygon() {
       addMouseListener(this);
       addMouseMotionListener(this);
+      addKeyListener(this);
 
       getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), DELETE);
       getActionMap().put(DELETE, new AbstractAction() {
@@ -353,6 +360,7 @@ public class PolygonEditor extends JPanel {
     }
 
     private void remove() {
+      removeKeyListener(this);
       removeMouseListener(this);
       removeMouseMotionListener(this);
       getInputMap(WHEN_IN_FOCUSED_WINDOW).remove(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
@@ -411,6 +419,52 @@ public class PolygonEditor extends JPanel {
             myConfigurer.updateCoord("");
           }
         }
+      }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+      if (selected < 0) {
+        return;
+      }
+
+      int dx = 0, dy = 0, delta = 1;
+
+      if (e.isShiftDown()) {
+        delta = 5;
+      }
+
+      switch (e.getKeyCode()) {
+      case KeyEvent.VK_UP:
+        dy = -delta;
+        break;
+      case KeyEvent.VK_DOWN:
+        dy = delta;
+        break;
+      case KeyEvent.VK_LEFT:
+        dx = -delta;
+        break;
+      case KeyEvent.VK_RIGHT:
+        dx = delta;
+        break;
+      default:
+        return;
+      }
+
+      moveVertex(polygon, selected, polygon.xpoints[selected] + dx, polygon.ypoints[selected] + dy);
+      if (myConfigurer != null) {
+        if (selected >= 0) {
+          myConfigurer.updateCoord(polygon.xpoints[selected], polygon.ypoints[selected]);
+        }
+        myConfigurer.updateCoords();
       }
     }
 
