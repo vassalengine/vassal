@@ -171,7 +171,7 @@ public class PrototypesContainer extends AbstractConfigurable {
 
   public static PrototypeDefinition getPrototype(String name) {
     findInstance();
-    return instance.definitions.get(name);
+    return (instance == null) ? null : instance.definitions.get(name);
   }
 
   @Override
