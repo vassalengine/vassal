@@ -1,5 +1,7 @@
 3.6.0-beta6 - ??? 
 
+* 10643: Show saved game mismatch warnings (e.g., loading wrong version) when
+    loading from Wizard
 * 10640: Tidier right arrow symbol in default move reports
 * 10639: Fix exception when canceling edit of a component that has been
     elsewhere moved or deleted
