@@ -56,12 +56,17 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 
+import VASSAL.build.module.metadata.AbstractMetaData;
+import VASSAL.build.module.metadata.MetaDataFactory;
+import VASSAL.build.module.metadata.SaveMetaData;
+import VASSAL.tools.WarningDialog;
 import net.miginfocom.swing.MigLayout;
 import org.netbeans.api.wizard.WizardDisplayer;
 import org.netbeans.spi.wizard.Wizard;
@@ -571,19 +576,76 @@ public class WizardSupport {
     // FIXME: this is a bad design---when can we safely close this stream?!
     private final InputStream in;
     private final String wizardKey;
+    private final File file;
 
     public SavedGameLoader(WizardController controller, Map<String, Object> settings, InputStream in, String wizardKey) {
+      this(controller, settings, in, wizardKey, null);
+    }
+
+    public SavedGameLoader(WizardController controller, Map<String, Object> settings, InputStream in, String wizardKey, File file) {
       super();
       this.controller = controller;
       this.settings = settings;
       this.in = in;
       this.wizardKey = wizardKey;
+      this.file = file;
     }
+
 
     @Override
     public void run() {
       try {
         controller.setProblem(Resources.getString("WizardSupport.LoadingGame")); //$NON-NLS-1$
+
+        //BR// Ugh. Hack this stuff from GameState.java in here because apparently this ancient wizard bypasses all the file validation
+        if (file != null) {
+          // Check the Save game for validity
+          final AbstractMetaData metaData = MetaDataFactory.buildMetaData(file);
+          if (!(metaData instanceof SaveMetaData)) {
+            WarningDialog.show("GameState.invalid_save_file", file.getPath()); //NON-NLS
+            controller.setProblem(Resources.getString("WizardSupport.UnableToLoad"));
+            return;
+          }
+
+          // Check it belongs to this module and matches the version if is a
+          // post 3.0 save file
+          final SaveMetaData saveData = (SaveMetaData) metaData;
+          String saveModuleVersion = "?";
+          if (saveData.getModuleData() != null) {
+            final String loadComments = saveData.getLocalizedDescription();
+            final String saveModuleName = saveData.getModuleName();
+            saveModuleVersion = saveData.getModuleVersion();
+            final String moduleName = GameModule.getGameModule().getGameName();
+            final String moduleVersion = GameModule.getGameModule().getGameVersion();
+            String message = null;
+
+            if (!saveModuleName.equals(moduleName)) {
+              message = Resources.getString(
+                "GameState.load_module_mismatch",
+                file.getName(), saveModuleName, moduleName
+              );
+            }
+            else if (!saveModuleVersion.equals(moduleVersion)) {
+              message = Resources.getString(
+                "GameState.load_version_mismatch",
+                file.getName(), saveModuleVersion, moduleVersion
+              );
+            }
+
+            if (message != null) {
+              if (JOptionPane.showConfirmDialog(
+                null,
+                message,
+                Resources.getString("GameState.load_mismatch"),
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE) != JOptionPane.YES_OPTION) {
+                controller.setProblem(Resources.getString("GameState.cancel_load", file.getName()));
+                return;
+              }
+            }
+          }
+        }
+
         final Command setupCommand = loadSavedGame();
         setupCommand.execute();
         controller.setProblem(null);
@@ -666,7 +728,7 @@ public class WizardSupport {
               // file
               processing.add(f);
               try {
-                new SavedGameLoader(controller, settings, new BufferedInputStream(Files.newInputStream(f.toPath())), POST_LOAD_GAME_WIZARD) {
+                new SavedGameLoader(controller, settings, new BufferedInputStream(Files.newInputStream(f.toPath())), POST_LOAD_GAME_WIZARD, f) {
                   @Override
                   public void run() {
                     GameModule.getGameModule().getFileChooser().setSelectedFile(f); //BR// When loading a saved game from Wizard, put it appropriately into the "default" for the next save/load/etc.
