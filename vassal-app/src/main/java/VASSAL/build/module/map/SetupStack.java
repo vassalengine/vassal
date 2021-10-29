@@ -676,7 +676,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       add(scroll, BorderLayout.CENTER);
 
       final Box textPanel = Box.createVerticalBox();
-      coords = new JLabel("" + myStack.pos.x + ", " + myStack.pos.y);
+      coords = new JLabel(myStack.pos.x + ", " + myStack.pos.y);
       textPanel.add(coords);
       textPanel.add(new JLabel(Resources.getString("Editor.SetupStack.arrow_keys_move_stack")));
       textPanel.add(new JLabel(Resources.getString(SystemUtils.IS_OS_MAC ? "Editor.SetupStack.shift_command_keys_move_stack_faster_mac" : "Editor.SetupStack.ctrl_shift_keys_move_stack_faster")));
@@ -734,7 +734,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     }
 
     public void updateCoords() {
-      coords.setText("" + myStack.pos.x + ", " + myStack.pos.y);
+      coords.setText(myStack.pos.x + ", " + myStack.pos.y);
     }
 
     protected void cancel() {
@@ -1047,7 +1047,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 
       final Point pos = e.getLocation();
       pos.translate(currentPieceOffsetX, currentPieceOffsetY);
-      myStack.stackConfigurer.updateCoords("" + pos.x + ", " + pos.y);
+      myStack.stackConfigurer.updateCoords(pos.x + ", " + pos.y);
     }
 
     public void scrollAtEdge(Point evtPt, int dist) {
