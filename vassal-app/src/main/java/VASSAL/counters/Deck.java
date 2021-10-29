@@ -94,6 +94,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   public static final String ALWAYS = "Always"; // NON-NLS
   public static final String NEVER = "Never"; // NON-NLS
   public static final String USE_MENU = "Via right-click Menu"; // NON-NLS
+  public static final String USE_MENU_UP = "MenuDefaultUp"; //NON-NLS
   public static final String NO_USER = "nobody"; // Dummy user ID for turning // NON-NLS
   protected static final StackMetrics deckStackMetrics = new StackMetrics(false, 2, 2, 2, 2);
   // cards face down
@@ -582,7 +583,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   public void setFaceDownOption(String faceDownOption) {
     this.faceDownOption = faceDownOption;
-    faceDown = !faceDownOption.equals(NEVER);
+    faceDown = !faceDownOption.equals(NEVER) && !faceDownOption.equals(USE_MENU_UP);
   }
 
   public Dimension getSize() {
@@ -1103,6 +1104,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     final ChangeTracker t = new ChangeTracker(this);
     Command c = new NullCommand();
     faceDown = value;
+    commands = null; // Force rebuild of popup menu
     if (Map.isChangeReportingEnabled()) {
       c = c.append(reportCommand(faceDownMsgFormat, value ? Resources.getString("Deck.face_down") : Resources.getString("Deck.face_up")));
     }
@@ -1156,6 +1158,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   public void setFaceDown(boolean faceDown) {
     this.faceDown = faceDown;
+    commands = null; // Force rebuild of popup menu
   }
 
   @Override
@@ -1277,7 +1280,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         };
         l.add(c);
       }
-      if (USE_MENU.equals(faceDownOption)) {
+      if (USE_MENU.equals(faceDownOption) || USE_MENU_UP.equals(faceDownOption)) {
         final KeyCommand faceDownAction = new KeyCommand(faceDown ? faceUpMessage : faceDownMessage, NamedKeyStroke.NULL_KEYSTROKE, this) { //$NON-NLS-1$ //$NON-NLS-2$
           private static final long serialVersionUID = 1L;
 
