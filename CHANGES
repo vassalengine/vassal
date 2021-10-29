@@ -1,5 +1,6 @@
 3.6.0-beta6 - ??? 
 
+* 10648: Private chat windows will no longer steal focus
 * 10643: Show saved game mismatch warnings (e.g., loading wrong version) when
     loading from Wizard
 * 10640: Tidier right arrow symbol in default move reports
@@ -7,6 +8,8 @@
     elsewhere moved or deleted
 * 10638: Fixed NPE if pasting a cut component that was then deleted before
     pasting
+* 10636: Warn when Global Property has a blank name (which causes NPE on game
+    load)
 * 10635: Trigger Action traits with "loop until" and "loop while" conditions
     can properly access piece properties in expression builder
 * 10632: Fix ArrayIndexOutOfBoundsException in Embellishment when layer value

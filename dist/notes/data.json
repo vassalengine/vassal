@@ -37,7 +37,9 @@
         { "num": 10618, "desc": "ToolbarMenus that are submenus of other ToolbarMenus display their icons properly" }
       ],
       "other_improvements": [
+        { "num": 10648, "desc": "Private chat windows will no longer steal focus" },
         { "num": 10643, "desc": "Show saved game mismatch warnings (e.g., loading wrong version) when loading from Wizard" },
+        { "num": 10636, "desc": "Warn when Global Property has a blank name (which causes NPE on game load)" },
         { "num": 10626, "desc": "Different types of Global Key Commands can be cut and pasted" },
         { "num": 10610, "desc": "More robust configurer for PredefinedSetup" },
         { "num": 10609, "desc": "Trigger Action - improved trait summary" },
