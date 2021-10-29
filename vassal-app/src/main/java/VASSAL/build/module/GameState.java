@@ -422,6 +422,67 @@ public class GameState implements CommandEncoder {
     return gameStarted;
   }
 
+
+  /**
+   * @param file to validate as a legitimate save file
+   * @return true if metadata is valid (or explicitly cleared-for-crash by user) and clear to proceed
+   */
+  public boolean isSaveMetaDataValid(File file) {
+    // Check the Save game for validity
+    final AbstractMetaData metaData = MetaDataFactory.buildMetaData(file);
+    if (!(metaData instanceof SaveMetaData)) {
+      WarningDialog.show("GameState.invalid_save_file", file.getPath()); //NON-NLS
+      return false;
+    }
+
+    // Check it belongs to this module and matches the version if is a
+    // post 3.0 save file
+    final SaveMetaData saveData = (SaveMetaData) metaData;
+    final String moduleName = GameModule.getGameModule().getGameName();
+    final String moduleVersion = GameModule.getGameModule().getGameVersion();
+    final String saveModuleName = saveData.getModuleName();
+    String saveModuleVersion = "?";
+    if (saveData.getModuleData() != null) {
+      saveModuleVersion = saveData.getModuleVersion();
+      String message = null;
+
+      if (!saveModuleName.equals(moduleName)) {
+        message = Resources.getString(
+          "GameState.load_module_mismatch",
+          file.getName(), saveModuleName, moduleName
+        );
+      }
+      else if (!saveModuleVersion.equals(moduleVersion)) {
+        message = Resources.getString(
+          "GameState.load_version_mismatch",
+          file.getName(), saveModuleVersion, moduleVersion
+        );
+      }
+
+      if (message != null) {
+        return JOptionPane.showConfirmDialog(
+          null,
+          message,
+          Resources.getString("GameState.load_mismatch"),
+          JOptionPane.YES_NO_OPTION,
+          JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION;
+      }
+    }
+
+    log.info(
+      "Loading save game " + file.getPath() + //NON-NLS
+        ", created with module version " + saveModuleVersion //NON-NLS
+    );
+    if (!saveModuleName.equals(moduleName)) {
+      log.info("*** User explicitly cleared mismatch of module name - " + saveModuleName + " file loaded into => " + moduleName); //NON-NLS
+    }
+    else if (!saveModuleVersion.equals(moduleVersion)) {
+      log.info("*** User explicitly cleared mismatch of module version - " + saveModuleVersion + " file loaded into => " + moduleVersion); //NON-NLS
+    }
+
+    return true;
+  }
+
   /**
    * Read the game from a savefile.  The contents of the file is
    * sent to {@link GameModule#decode} and translated into a
@@ -484,54 +545,9 @@ public class GameState implements CommandEncoder {
         "Unable to locate " + f.getPath()); //NON-NLS
 
       // Check the Save game for validity
-      final AbstractMetaData metaData = MetaDataFactory.buildMetaData(f);
-      if (!(metaData instanceof SaveMetaData)) {
-        WarningDialog.show("GameState.invalid_save_file", f.getPath()); //NON-NLS
+      if (!isSaveMetaDataValid(f)) {
         return;
       }
-
-      // Check it belongs to this module and matches the version if is a
-      // post 3.0 save file
-      final SaveMetaData saveData = (SaveMetaData) metaData;
-      String saveModuleVersion = "?";
-      if (saveData.getModuleData() != null) {
-        loadComments = saveData.getLocalizedDescription();
-        final String saveModuleName = saveData.getModuleName();
-        saveModuleVersion = saveData.getModuleVersion();
-        final String moduleName = g.getGameName();
-        final String moduleVersion = g.getGameVersion();
-        String message = null;
-
-        if (!saveModuleName.equals(moduleName)) {
-          message = Resources.getString(
-            "GameState.load_module_mismatch",
-            f.getName(), saveModuleName, moduleName
-          );
-        }
-        else if (!saveModuleVersion.equals(moduleVersion)) {
-          message = Resources.getString(
-            "GameState.load_version_mismatch",
-            f.getName(), saveModuleVersion, moduleVersion
-          );
-        }
-
-        if (message != null) {
-          if (JOptionPane.showConfirmDialog(
-              null,
-              message,
-              Resources.getString("GameState.load_mismatch"),
-              JOptionPane.YES_NO_OPTION,
-              JOptionPane.QUESTION_MESSAGE) != JOptionPane.YES_OPTION) {
-            g.warn(Resources.getString("GameState.cancel_load", f.getName()));
-            return;
-          }
-        }
-      }
-
-      log.info(
-        "Loading save game " + f.getPath() + //NON-NLS
-        ", created with module version " + saveModuleVersion //NON-NLS
-      );
 
       if (gameStarted && continuation) {
         loadContinuation(f);

@@ -571,19 +571,33 @@ public class WizardSupport {
     // FIXME: this is a bad design---when can we safely close this stream?!
     private final InputStream in;
     private final String wizardKey;
+    private final File file;
 
     public SavedGameLoader(WizardController controller, Map<String, Object> settings, InputStream in, String wizardKey) {
+      this(controller, settings, in, wizardKey, null);
+    }
+
+    public SavedGameLoader(WizardController controller, Map<String, Object> settings, InputStream in, String wizardKey, File file) {
       super();
       this.controller = controller;
       this.settings = settings;
       this.in = in;
       this.wizardKey = wizardKey;
+      this.file = file;
     }
+
 
     @Override
     public void run() {
       try {
         controller.setProblem(Resources.getString("WizardSupport.LoadingGame")); //$NON-NLS-1$
+
+        // Check the Save game for validity - our normal validity checks were being bypassed prior to ... 3.6!!! Eek!
+        if ((file != null) && !GameModule.getGameModule().getGameState().isSaveMetaDataValid(file)) {
+          controller.setProblem(Resources.getString("WizardSupport.UnableToLoad"));
+          return;
+        }
+
         final Command setupCommand = loadSavedGame();
         setupCommand.execute();
         controller.setProblem(null);
@@ -666,7 +680,7 @@ public class WizardSupport {
               // file
               processing.add(f);
               try {
-                new SavedGameLoader(controller, settings, new BufferedInputStream(Files.newInputStream(f.toPath())), POST_LOAD_GAME_WIZARD) {
+                new SavedGameLoader(controller, settings, new BufferedInputStream(Files.newInputStream(f.toPath())), POST_LOAD_GAME_WIZARD, f) {
                   @Override
                   public void run() {
                     GameModule.getGameModule().getFileChooser().setSelectedFile(f); //BR// When loading a saved game from Wizard, put it appropriately into the "default" for the next save/load/etc.
