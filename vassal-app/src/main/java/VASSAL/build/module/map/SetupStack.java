@@ -624,6 +624,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     protected Point savePosition;
     protected Dimension dummySize;
     protected BufferedImage dummyImage;
+    protected JLabel coords;
 
     public StackConfigurer(SetupStack stack) {
       super(Resources.getString("Editor.SetupStack.adjust_at_start_stack"));
@@ -664,7 +665,6 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       view.addMouseListener(this);
       view.setFocusable(true);
 
-
       scroll =
           new AdjustableSpeedScrollPane(
               view,
@@ -676,6 +676,8 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       add(scroll, BorderLayout.CENTER);
 
       final Box textPanel = Box.createVerticalBox();
+      coords = new JLabel("" + myStack.pos.x + ", " + myStack.pos.y);
+      textPanel.add(coords);
       textPanel.add(new JLabel(Resources.getString("Editor.SetupStack.arrow_keys_move_stack")));
       textPanel.add(new JLabel(Resources.getString(SystemUtils.IS_OS_MAC ? "Editor.SetupStack.shift_command_keys_move_stack_faster_mac" : "Editor.SetupStack.ctrl_shift_keys_move_stack_faster")));
 
@@ -727,6 +729,14 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       repaint();
     }
 
+    public void updateCoords(String text) {
+      coords.setText(text);
+    }
+
+    public void updateCoords() {
+      coords.setText("" + myStack.pos.x + ", " + myStack.pos.y);
+    }
+
     protected void cancel() {
       myStack.pos.x = savePosition.x;
       myStack.pos.y = savePosition.y;
@@ -744,6 +754,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         final Point snapTo = grid.snapTo(pos);
         pos.x = snapTo.x;
         pos.y = snapTo.y;
+        updateCoords();
         updateDisplay();
         repaint();
       }
@@ -856,6 +867,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       if (newX < 0) newX = 0;
       if (newX >= board.getSize().getWidth()) newX = (int) board.getSize().getWidth() - 1;
       myStack.pos.x = newX;
+      updateCoords();
     }
 
     protected void adjustY(int direction, KeyEvent e) {
@@ -870,6 +882,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       if (newY < 0) newY = 0;
       if (newY >= board.getSize().getHeight()) newY = (int) board.getSize().getHeight() - 1;
       myStack.pos.y = newY;
+      updateCoords();
     }
 
     @Override
@@ -1031,6 +1044,10 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     @Override
     public void dragOver(DropTargetDragEvent e) {
       scrollAtEdge(e.getLocation(), 15);
+
+      final Point pos = e.getLocation();
+      pos.translate(currentPieceOffsetX, currentPieceOffsetY);
+      myStack.stackConfigurer.updateCoords("" + pos.x + ", " + pos.y);
     }
 
     public void scrollAtEdge(Point evtPt, int dist) {
@@ -1069,6 +1086,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       pos.translate(currentPieceOffsetX, currentPieceOffsetY);
       myStack.pos.x = pos.x;
       myStack.pos.y = pos.y;
+      myStack.stackConfigurer.updateCoords();
       myStack.stackConfigurer.updateDisplay();
       repaint();
     }
