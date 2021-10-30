@@ -20,6 +20,7 @@
 * 10630: Correctly check if there are sides with blank passwords for password
     matching
 * 10629: String Array Configurer bounds protection
+* 10628: Autopeek Rollover
 * 10623: Fix NPE joining chat room when socket drops early
 * 10622: Fix NPE when MapShader temporarily points to blank or missing filename
 * 10621: Protect against changing to Image style while Image name is still blank
