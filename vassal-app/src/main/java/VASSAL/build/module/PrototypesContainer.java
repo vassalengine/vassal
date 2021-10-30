@@ -17,12 +17,15 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.build.AbstractBuildable;
 import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.AbstractFolder;
 import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.folder.PrototypeFolder;
+import VASSAL.build.widget.PieceSlot;
 import VASSAL.configure.Configurer;
 import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Resources;
@@ -121,12 +124,12 @@ public class PrototypesContainer extends AbstractConfigurable {
   public void removeFrom(Buildable parent) {
   }
 
-  public static PrototypeDefinition getPrototype(String name) {
+  public static PrototypesContainer findInstance() {
     if (instance == null) {
       final Iterator<PrototypesContainer> i =
         GameModule.getGameModule()
-                  .getComponentsOf(PrototypesContainer.class)
-                  .iterator();
+          .getComponentsOf(PrototypesContainer.class)
+          .iterator();
       if (i.hasNext()) {
         instance = i.next();
       }
@@ -134,7 +137,41 @@ public class PrototypesContainer extends AbstractConfigurable {
         return null;
       }
     }
-    return instance.definitions.get(name);
+    return instance;
+  }
+
+  private void resetCache(AbstractBuildable target) {
+    for (final Buildable b : target.getBuildables()) {
+      if (b instanceof PrototypeDefinition) {
+        ((PrototypeDefinition)b).clearCache();
+      }
+      else if (b instanceof AbstractFolder) {
+        resetCache((AbstractBuildable)b);
+      }
+    }
+  }
+
+
+  private void resetPieceCache(AbstractBuildable target) {
+    for (final Buildable b : target.getBuildables()) {
+      if (b instanceof PieceSlot) {
+        ((PieceSlot)b).clearCache();
+      }
+      else if (b instanceof AbstractBuildable) {
+        resetPieceCache((AbstractBuildable)b);
+      }
+    }
+  }
+
+  public void resetCache() {
+    resetCache(this);
+
+    resetPieceCache(GameModule.getGameModule());
+  }
+
+  public static PrototypeDefinition getPrototype(String name) {
+    findInstance();
+    return (instance == null) ? null : instance.definitions.get(name);
   }
 
   @Override

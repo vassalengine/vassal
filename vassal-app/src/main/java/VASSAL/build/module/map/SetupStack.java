@@ -419,6 +419,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       if (configurable instanceof PieceSlot) {
         num++;
         final PieceSlot slot = (PieceSlot) configurable;
+        slot.clearCache(); //BR// Always rebuild piece at beginning - we might be starting a new game in Editor after changing prototypes
         GamePiece p = slot.getPiece();
         if (p != null) { // In case slot fails to "build the piece", which is a possibility.
           p = PieceCloner.getInstance().clonePiece(p);
