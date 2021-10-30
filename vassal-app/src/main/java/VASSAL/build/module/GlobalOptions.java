@@ -46,7 +46,6 @@ import VASSAL.tools.FormattedString;
 import VASSAL.tools.swing.SwingUtils;
 
 import java.awt.Container;
-import java.awt.dnd.DragSource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -155,6 +154,8 @@ public class GlobalOptions extends AbstractConfigurable {
   private boolean useClassicMoveFixedDistance = false; // Compatibility preference for move-fixed distance
   private boolean warnOldContinuation = true; // Warn when using old-style Load Continuation (compatibility)
 
+  private boolean forceNonNativeDrag = false; // True if forcing use of non-native Drag and Drop cursors (ghost drag bug 10295 correction)
+
   /************************************************************
    * Custom preferences
    ************************************************************/
@@ -249,21 +250,14 @@ public class GlobalOptions extends AbstractConfigurable {
         Boolean.FALSE
       );
 
-      final boolean dragHandlerNoImageNecessary =
-        Boolean.TRUE.equals(bug10295Conf.getValue()) &&
-          !(PieceMover.AbstractDragHandler.getTheDragHandler()
-            instanceof PieceMover.DragHandlerNoImage);
+      forceNonNativeDrag = Boolean.TRUE.equals(bug10295Conf.getValue());
 
-      if (dragHandlerNoImageNecessary) {
-        PieceMover.AbstractDragHandler.setTheDragHandler(new PieceMover.DragHandlerNoImage());
-      }
+      PieceMover.AbstractDragHandler.resetDragHandler();
 
-      bug10295Conf.addPropertyChangeListener(e -> PieceMover.AbstractDragHandler.setTheDragHandler(
-        (Boolean.TRUE.equals(e.getNewValue()) ||
-          !DragSource.isDragImageSupported()) ?
-          new PieceMover.DragHandlerNoImage() :
-          new PieceMover.DragHandler()
-      ));
+      bug10295Conf.addPropertyChangeListener(e -> {
+        forceNonNativeDrag = Boolean.TRUE.equals(e.getNewValue());
+        PieceMover.AbstractDragHandler.resetDragHandler();
+      });
 
       prefs.addOption(Resources.getString("Prefs.compatibility_tab"), bug10295Conf);
     }
@@ -323,6 +317,13 @@ public class GlobalOptions extends AbstractConfigurable {
       Boolean.FALSE);
     soundGlobalMuteConf.addPropertyChangeListener(evt -> setSoundGlobalMute(soundGlobalMuteConf.getValueBoolean()));
     prefs.addOption(Resources.getString("Prefs.sounds_tab"), soundGlobalMuteConf);
+  }
+
+  /**
+   * @return true if we're forcing use of non-native drag and drop cursor
+   */
+  public boolean isForceNonNativeDrag() {
+    return forceNonNativeDrag;
   }
 
   /** @return true if preference to dock first map window to main module window with Chatter is selected */

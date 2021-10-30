@@ -74,6 +74,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.datatransfer.StringSelection;
+import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DragSource;
@@ -180,10 +181,9 @@ public class PieceMover extends AbstractBuildable
     map.addLocalMouseListener(this);
     GameModule.getGameModule().getGameState().addGameComponent(this);
 
-    final AbstractDragHandler dragHandler = DragHandler.getTheDragHandler();
-    dragHandler.addPieceMover(this);
+    DragHandler.addPieceMover(this);
     map.getView().addMouseMotionListener(this);
-    map.setDragGestureListener(dragHandler);
+    map.setDragGestureListener(DragHandler.getTheDragHandler());
     map.setPieceMover(this);
 
     // Because of the strange legacy scheme of halfway-running a Toolbar button "on behalf of Map", we have to set some its attributes
@@ -1360,6 +1360,7 @@ public class PieceMover extends AbstractBuildable
     }
   }
 
+
   /**
    * Common functionality for DragHandler for cases with and without drag image support.
    * <p>
@@ -1370,10 +1371,7 @@ public class PieceMover extends AbstractBuildable
   public abstract static class AbstractDragHandler
     implements DragGestureListener,       DragSourceListener,
                DragSourceMotionListener,  DropTargetListener   {
-    private static AbstractDragHandler theDragHandler =
-        DragSource.isDragImageSupported() ? (SystemUtils.IS_OS_MAC ?
-        new DragHandlerMacOSX() : new DragHandler()) :
-        new DragHandlerNoImage();
+    private static AbstractDragHandler theDragHandler = AbstractDragHandlerFactory.getCorrectDragHandler();
 
     /** returns the singleton DragHandler instance */
     public static AbstractDragHandler getTheDragHandler() {
@@ -1406,7 +1404,7 @@ public class PieceMover extends AbstractBuildable
 
     JLayeredPane drawWin; // the component that owns our pseudo-cursor
 
-    protected List<PieceMover> pieceMovers = new ArrayList<>(); // our piece movers
+    protected static List<PieceMover> pieceMovers = new ArrayList<>(); // our piece movers
 
     // Seems there can be only one DropTargetListener per drop target. After we
     // process a drop target event, we manually pass the event on to this listener.
@@ -1424,10 +1422,56 @@ public class PieceMover extends AbstractBuildable
     protected abstract double getDeviceScale(DragGestureEvent dge);
 
     /**
+     * Picks the correct drag handler based on our OS, DragSource, and preferences.
+     */
+    public static class AbstractDragHandlerFactory {
+      public static AbstractDragHandler getCorrectDragHandler() {
+        if (!DragSource.isDragImageSupported() || GlobalOptions.getInstance().isForceNonNativeDrag()) {
+          return new DragHandlerNoImage();
+        }
+        else {
+          return SystemUtils.IS_OS_MAC ? new DragHandlerMacOSX() : new DragHandler();
+        }
+      }
+    }
+
+
+    /**
+     * Finds all the piece slots in a module and resets their drop targets to use a new DragHandler
+     * @param target recursive search through components
+     */
+    public static void resetRecursivePieceSlots(AbstractBuildable target) {
+      for (final Buildable b : target.getBuildables()) {
+        if (b instanceof PieceSlot) {
+          final Component panel = ((PieceSlot)b).getComponent();
+          panel.setDropTarget(makeDropTarget(panel, DnDConstants.ACTION_MOVE, null));
+        }
+        else if (b instanceof AbstractBuildable) {
+          resetRecursivePieceSlots((AbstractBuildable)b);
+        }
+      }
+    }
+
+    /**
+     * Reset our drag handler, e.g. if our preferences change.
+     */
+    public static void resetDragHandler() {
+      final AbstractDragHandler newHandler = AbstractDragHandlerFactory.getCorrectDragHandler();
+      setTheDragHandler(newHandler);
+      for (final Map map : Map.getMapList()) {
+        map.setDragGestureListener(newHandler);
+        map.getComponent().setDropTarget(makeDropTarget(map.getComponent(), DnDConstants.ACTION_MOVE, map));
+      }
+
+      resetRecursivePieceSlots(GameModule.getGameModule());
+    }
+
+
+    /**
      * Registers a PieceMover
      * @param pm PieceMover for this dragHandler
      */
-    void addPieceMover(PieceMover pm) {
+    static void addPieceMover(PieceMover pm) {
       if (!pieceMovers.contains(pm)) {
         pieceMovers.add(pm);
       }
@@ -1866,7 +1910,7 @@ public class PieceMover extends AbstractBuildable
 
       dge.startDrag(
         Cursor.getPredefinedCursor(Cursor.HAND_CURSOR),
-        bImage,
+        GlobalOptions.getInstance().isForceNonNativeDrag() ? null : bImage,
         dragPointOffset,
         new StringSelection(""),
         this
