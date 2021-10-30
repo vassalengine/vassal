@@ -205,6 +205,9 @@ public class PrivateMap extends Map {
     if (isAccessibleTo(newSide)) {
       ((View)getView()).enableListeners();
     }
+    else if (isVisibleTo(newSide)) {
+      ((View)getView()).enableMotionListeners();
+    }
     getLaunchButton().setEnabled(isVisibleTo(PlayerRoster.getMySide()));
   }
 
@@ -237,6 +240,9 @@ public class PrivateMap extends Map {
     }
     else if (isAccessibleTo(PlayerRoster.getMySide())) {
       ((View) theMap).enableListeners();
+    }
+    else if (isVisibleTo(PlayerRoster.getMySide())) {
+      ((View) theMap).enableMotionListeners();
     }
     getLaunchButton().setEnabled(isVisibleTo(PlayerRoster.getMySide()));
   }
@@ -279,6 +285,7 @@ public class PrivateMap extends Map {
     private static final long serialVersionUID = 1L;
 
     private boolean listenersActive;
+    private boolean motionListenersActive;
     private final List<KeyListener> keyListeners = new ArrayList<>();
     private final List<MouseListener> mouseListeners = new ArrayList<>();
     private final List<MouseMotionListener> mouseMotionListeners = new ArrayList<>();
@@ -317,7 +324,7 @@ public class PrivateMap extends Map {
 
     @Override
     public synchronized void addMouseMotionListener(MouseMotionListener l) {
-      if (listenersActive) {
+      if (listenersActive || motionListenersActive) {
         super.addMouseMotionListener(l);
       }
       else {
@@ -340,6 +347,7 @@ public class PrivateMap extends Map {
       }
       super.setDropTarget(null);
       listenersActive = false;
+      motionListenersActive = false;
     }
 
     /**
@@ -357,6 +365,16 @@ public class PrivateMap extends Map {
       }
       super.setDropTarget(dropTarget);
       listenersActive = true;
+    }
+
+    /**
+     * Enable all mouse listeners ONLY on this component
+     */
+    protected void enableMotionListeners() {
+      for (final MouseMotionListener l : mouseMotionListeners) {
+        super.addMouseMotionListener(l);
+      }
+      motionListenersActive = true;
     }
   }
 
