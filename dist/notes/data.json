@@ -24,6 +24,8 @@
         { "num": 9391, "desc": "Beanshell can now access $$ variables in Report Formats" }
       ],
       "bug_fixes": [
+        { "num": 10659, "desc": "Sanitize temporary file names a bit earlier" },
+        { "num": 10658, "desc": "Fix NPE if try to open translations but the buildable doesn't exist" },
         { "num": 10654, "desc": "Fixed corner-case NPE when closing a game" },
         { "num": 10647, "desc": "Private Maps visible to non-owning players will correctly display Mouseover text" },
         { "num": 10639, "desc": "Fix exception when canceling edit of a component that has been elsewhere moved or deleted" },
