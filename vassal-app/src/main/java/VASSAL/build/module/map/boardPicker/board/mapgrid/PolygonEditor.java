@@ -415,16 +415,10 @@ public class PolygonEditor extends JPanel {
       if (SwingUtils.isMainMouseButtonDown(e)) {
         if (selected >= 0 && selected < polygon.xpoints.length) {
           moveVertex(polygon, selected, e.getX(), e.getY());
-          if (myConfigurer != null) {
-            myConfigurer.updateCoord(e.getX(), e.getY());
-          }
         }
         scrollAtEdge(e.getPoint(), 15);
+        updateAllCoords();
         repaint();
-
-        if (myConfigurer != null) {
-          myConfigurer.updateCoords(polygon);
-        }
       }
     }
 
@@ -453,16 +447,7 @@ public class PolygonEditor extends JPanel {
         insertVertex(polygon, ins, e.getX(), e.getY());
         selected = ins;
         repaint();
-
-        if (myConfigurer != null) {
-          myConfigurer.updateCoords(polygon);
-          if (selected >= 0) {
-            myConfigurer.updateCoord(polygon.xpoints[selected], polygon.ypoints[selected]);
-          }
-          else {
-            myConfigurer.updateCoord("");
-          }
-        }
+        updateAllCoords();
       }
     }
 
@@ -504,14 +489,8 @@ public class PolygonEditor extends JPanel {
       }
 
       moveVertex(polygon, selected, polygon.xpoints[selected] + dx, polygon.ypoints[selected] + dy);
+      updateAllCoords();
       repaint();
-
-      if (myConfigurer != null) {
-        if (selected >= 0) {
-          myConfigurer.updateCoord(polygon.xpoints[selected], polygon.ypoints[selected]);
-        }
-        myConfigurer.updateCoords();
-      }
     }
 
     public void deleteKeyPressed() {
@@ -526,12 +505,8 @@ public class PolygonEditor extends JPanel {
           setupForCreate();
         }
 
+        updateAllCoords();
         repaint();
-
-        if (myConfigurer != null) {
-          myConfigurer.updateCoord("");
-          myConfigurer.updateCoords(polygon);
-        }
       }
     }
   }
@@ -571,10 +546,7 @@ public class PolygonEditor extends JPanel {
           resetPolygon(e.getX(), e.getY(), 1);
           selected = 0;
           setupForEdit();
-          if (myConfigurer != null) {
-            myConfigurer.updateCoords(polygon);
-            myConfigurer.updateCoord(polygon.xpoints[selected], polygon.ypoints[selected]);
-          }
+          updateAllCoords();
         }
       }
     }
@@ -613,10 +585,7 @@ public class PolygonEditor extends JPanel {
         remove();
         selected = nearestVertex(polygon, e.getX(), e.getY()).getLeft();
         setupForEdit();
-        if (myConfigurer != null) {
-          myConfigurer.updateCoords(polygon);
-          myConfigurer.updateCoord("");
-        }
+        updateAllCoords();
       }
     }
   }
