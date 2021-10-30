@@ -76,9 +76,11 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -664,8 +666,12 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       };
 
       editor.setMyConfigurer(this);
+      editor.setFocusTraversalKeysEnabled(false);
 
       frame = new JDialog(GameModule.getGameModule().getPlayerWindow(), zone.getConfigureName(), true);
+      //frame = new JFrame(zone.getConfigureName());
+      editor.setMyFrame(frame);
+
       frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
       final JPanel labels = new JPanel();
       labels.setLayout(new GridLayout(3, 2));
@@ -700,7 +706,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       direct.setAlignmentX(0.0f);
       frame.add(direct);
 
-      scroll = new AdjustableSpeedScrollPane(editor);
+      scroll = new AdjustableSpeedScrollPane(editor, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
       editor.setScroll(scroll);
       frame.add(scroll);
 
