@@ -3,8 +3,12 @@
 * 10654: Fixed corner-case NPE when closing a game
 * 10650: Show X,Y in Configurer when repositioning At Start Stack
 * 10648: Private chat windows will no longer steal focus
+* 10647: Private Maps visible to non-owning players will correctly display
+    Mouseover text
 * 10643: Show saved game mismatch warnings (e.g., loading wrong version) when
     loading from Wizard
+* 10641: When Editor changes a prototype, clear the prototype cache and all
+    PieceSlot caches
 * 10640: Tidier right arrow symbol in default move reports
 * 10639: Fix exception when canceling edit of a component that has been
     elsewhere moved or deleted
@@ -14,6 +18,7 @@
     load)
 * 10635: Trigger Action traits with "loop until" and "loop while" conditions
     can properly access piece properties in expression builder
+* 10633: Remove doubled images from Ghost Bug Pref
 * 10632: Fix ArrayIndexOutOfBoundsException in Embellishment when layer value
     is out of range
 * 10631: Clip pieces to their bounds and set rendering hints for drag image
