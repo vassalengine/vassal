@@ -38,6 +38,7 @@ import java.util.Arrays;
 
 import javax.swing.AbstractAction;
 import javax.swing.InputMap;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -65,13 +66,22 @@ public class PolygonEditor extends JPanel {
   private static final int CLICK_THRESHOLD = 10;
 
   private Zone.Editor myConfigurer;
+  private JDialog myFrame;
 
   public PolygonEditor(Polygon p) {
     polygon = p;
+    setFocusable(true);
+    setFocusTraversalKeysEnabled(false);
   }
 
   public void setMyConfigurer(Zone.Editor myConfigurer) {
     this.myConfigurer = myConfigurer;
+  }
+
+  public void setMyFrame(JDialog frame) {
+    this.myFrame = frame;
+    myFrame.setFocusable(true);
+    myFrame.setFocusTraversalKeysEnabled(false);
   }
 
   protected void reset() {
@@ -86,14 +96,15 @@ public class PolygonEditor extends JPanel {
       removeMouseMotionListener(i);
     }
 
-    final KeyListener[] kl = getKeyListeners();
-    for (final KeyListener i : kl) {
-      removeKeyListener(i);
+    if (myFrame != null) {
+      final KeyListener[] kl = myFrame.getKeyListeners();
+      for (final KeyListener i : kl) {
+        removeKeyListener(i);
+      }
     }
 
     final InputMap im = getInputMap(WHEN_IN_FOCUSED_WINDOW);
     im.remove(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
-    im.remove(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
 
     if (polygon == null || polygon.npoints == 0) {
       setupForCreate();
@@ -346,7 +357,9 @@ public class PolygonEditor extends JPanel {
     public ModifyPolygon() {
       addMouseListener(this);
       addMouseMotionListener(this);
-      addKeyListener(this);
+      if (myFrame != null) {
+        myFrame.addKeyListener(this);
+      }
 
       getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), DELETE);
       getActionMap().put(DELETE, new AbstractAction() {
@@ -360,7 +373,9 @@ public class PolygonEditor extends JPanel {
     }
 
     private void remove() {
-      removeKeyListener(this);
+      if (myFrame != null) {
+        removeKeyListener(this);
+      }
       removeMouseListener(this);
       removeMouseMotionListener(this);
       getInputMap(WHEN_IN_FOCUSED_WINDOW).remove(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
