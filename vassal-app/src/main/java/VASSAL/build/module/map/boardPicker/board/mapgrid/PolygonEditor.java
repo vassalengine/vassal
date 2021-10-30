@@ -156,7 +156,7 @@ public class PolygonEditor extends JPanel {
     }
 
     if (p.x >= myScroll.getViewport().getSize().width - dist &&
-        p.x < myScroll.getViewport().getSize().width) {
+      p.x < myScroll.getViewport().getSize().width) {
       dx = 1;
     }
 
@@ -165,7 +165,7 @@ public class PolygonEditor extends JPanel {
     }
 
     if (p.y >= myScroll.getViewport().getSize().height - dist &&
-        p.y < myScroll.getViewport().getSize().height) {
+      p.y < myScroll.getViewport().getSize().height) {
       dy = 1;
     }
 
@@ -227,7 +227,7 @@ public class PolygonEditor extends JPanel {
     final Graphics2D g2d = (Graphics2D) g;
     g2d.addRenderingHints(SwingUtils.FONT_HINTS);
     g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                         RenderingHints.VALUE_ANTIALIAS_ON);
+      RenderingHints.VALUE_ANTIALIAS_ON);
 
     g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5F));
 
@@ -460,11 +460,14 @@ public class PolygonEditor extends JPanel {
       }
 
       moveVertex(polygon, selected, polygon.xpoints[selected] + dx, polygon.ypoints[selected] + dy);
+      repaint();
+
       if (myConfigurer != null) {
-        myConfigurer.updateCoord(polygon.xpoints[selected], polygon.ypoints[selected]);
+        if (selected >= 0) {
+          myConfigurer.updateCoord(polygon.xpoints[selected], polygon.ypoints[selected]);
+        }
         myConfigurer.updateCoords();
       }
-      repaint();
     }
 
     public void deleteKeyPressed() {
@@ -556,9 +559,9 @@ public class PolygonEditor extends JPanel {
     @Override
     public void mouseReleased(MouseEvent e) {
       if (polygon != null && polygon.npoints == 4 &&
-          SwingUtils.isMainMouseButtonDown(e)) {
+        SwingUtils.isMainMouseButtonDown(e)) {
         if ((Math.abs(polygon.xpoints[0] - polygon.xpoints[2]) +
-             Math.abs(polygon.ypoints[0] - polygon.ypoints[2])) < 20) {
+          Math.abs(polygon.ypoints[0] - polygon.ypoints[2])) < 20) {
           polygon.xpoints[1] = polygon.xpoints[2] = polygon.xpoints[0] + 25;
           polygon.ypoints[2] = polygon.ypoints[3] = polygon.ypoints[0] + 25;
         }
