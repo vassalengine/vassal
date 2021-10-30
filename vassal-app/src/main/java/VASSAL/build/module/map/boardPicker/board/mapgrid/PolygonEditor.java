@@ -38,6 +38,7 @@ import java.util.Arrays;
 
 import javax.swing.AbstractAction;
 import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -359,6 +360,12 @@ public class PolygonEditor extends JPanel {
       addMouseMotionListener(this);
       if (myFrame != null) {
         myFrame.addKeyListener(this);
+
+        InputMap inputMap = myScroll.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        inputMap.put(KeyStroke.getKeyStroke("RIGHT"), "do-nothing");
+        inputMap.put(KeyStroke.getKeyStroke("LEFT"), "do-nothing");
+        inputMap.put(KeyStroke.getKeyStroke("UP"), "do-nothing");
+        inputMap.put(KeyStroke.getKeyStroke("DOWN"), "do-nothing");
       }
 
       getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), DELETE);
