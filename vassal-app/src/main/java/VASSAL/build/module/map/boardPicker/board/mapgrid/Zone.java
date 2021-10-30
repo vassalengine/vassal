@@ -616,8 +616,8 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
    * Our configurer for the Zone, including ability to edit the polygon
    */
   public static class Editor extends Configurer {
-    private JPanel buttonPanel;
-    private JButton button;
+    private final JPanel buttonPanel;
+    private final JButton button;
     private PolygonEditor editor;
     private Board board;
     private JDialog frame;
@@ -647,8 +647,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
           s.append(polygon.xpoints[p]);
           s.append(',');
           s.append(polygon.ypoints[p]);
-          s.append(')');
-          s.append(' ');
+          s.append(") ");
         }
       }
       coordsLabel.setText(s.toString());
@@ -773,7 +772,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       board = zone.getBoard();
       editor.setPreferredSize(board != null ? board.getSize() : DEFAULT_SIZE);
       editor.reset();
-      savePoly = new Polygon(zone.myPolygon.xpoints, zone.myPolygon.ypoints, zone.myPolygon.npoints); 
+      savePoly = new Polygon(zone.myPolygon.xpoints, zone.myPolygon.ypoints, zone.myPolygon.npoints);
       editor.setPolygon((zone.myPolygon.npoints == 0) ? null : new Polygon(zone.myPolygon.xpoints, zone.myPolygon.ypoints, zone.myPolygon.npoints));
       if (editor.getPolygon() != null) {
         final Rectangle polyBounds = editor.getPolygon().getBounds();
