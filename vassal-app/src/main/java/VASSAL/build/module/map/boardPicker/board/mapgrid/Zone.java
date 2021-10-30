@@ -47,6 +47,7 @@ import VASSAL.script.expression.Auditable;
 import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.swing.FlowLabel;
 import VASSAL.tools.swing.SwingUtils;
 
 import java.awt.BorderLayout;
@@ -621,7 +622,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     private final JDialog frame;
     protected AdjustableSpeedScrollPane scroll;
     protected Polygon savePoly;
-    protected JLabel coordsLabel;
+    protected FlowLabel coordsLabel;
     protected JLabel coordLabel;
     protected Zone zone;
     protected final JLabel warning = new JLabel(Resources.getString("Editor.Zone.zone_has_not_been_defined"));
@@ -704,7 +705,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       frame.add(scroll);
 
       final Box coordPanel = Box.createVerticalBox();
-      coordsLabel = new JLabel();
+      coordsLabel = new FlowLabel("");
       coordLabel = new JLabel("");
       coordPanel.add(coordLabel, BorderLayout.CENTER);
       coordPanel.add(coordsLabel, BorderLayout.CENTER);
@@ -735,9 +736,11 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       final StringBuilder s = new StringBuilder("");
       if (polygon != null) {
         for (int p = 0; p < polygon.npoints; p++) {
+          s.append('(');
           s.append(polygon.xpoints[p]);
           s.append(',');
           s.append(polygon.ypoints[p]);
+          s.append(')');
           s.append(' ');
         }
       }

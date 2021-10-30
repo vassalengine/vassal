@@ -461,11 +461,10 @@ public class PolygonEditor extends JPanel {
 
       moveVertex(polygon, selected, polygon.xpoints[selected] + dx, polygon.ypoints[selected] + dy);
       if (myConfigurer != null) {
-        if (selected >= 0) {
-          myConfigurer.updateCoord(polygon.xpoints[selected], polygon.ypoints[selected]);
-        }
+        myConfigurer.updateCoord(polygon.xpoints[selected], polygon.ypoints[selected]);
         myConfigurer.updateCoords();
       }
+      repaint();
     }
 
     public void deleteKeyPressed() {
