@@ -1458,7 +1458,7 @@ public class PieceMover extends AbstractBuildable
     public static void resetDragHandler() {
       final AbstractDragHandler newHandler = AbstractDragHandlerFactory.getCorrectDragHandler();
       setTheDragHandler(newHandler);
-      for (final VASSAL.build.module.Map map : VASSAL.build.module.Map.getMapList()) {
+      for (final Map map : Map.getMapList()) {
         map.setDragGestureListener(newHandler);
         map.getComponent().setDropTarget(makeDropTarget(map.getComponent(), DnDConstants.ACTION_MOVE, map));
       }
