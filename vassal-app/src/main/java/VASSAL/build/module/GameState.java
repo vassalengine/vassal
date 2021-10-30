@@ -354,7 +354,7 @@ public class GameState implements CommandEncoder {
       return; // Blocks setup method during Game Refresh
     }
 
-    if (!gameStarting && gameStarted && isModified()) {
+    if (!gameStarting && gameStarted && isModified() && saveGame.isEnabled()) {
       switch (JOptionPane.showConfirmDialog(
         g.getPlayerWindow(),
         Resources.getString("GameState.save_game_query"), //$NON-NLS-1$
@@ -901,6 +901,11 @@ public class GameState implements CommandEncoder {
     metaData = new SaveMetaData(); // this also potentially prompts for save file comments, so do *before* possibly long save file write
 
     final String save = saveString();
+
+    // Can be null if we get in here during odd asynchronous crud (save game is disabled, so getRestoreCommand will return null)
+    if (save == null) {
+      GameModule.getGameModule().warn("~" + Resources.getString("GameState.save_disabled"));
+    }
 
     try (ZipWriter zw = new ZipWriter(f)) {
       try (OutputStream out = new ObfuscatingOutputStream(new BufferedOutputStream(zw.write(SAVEFILE_ZIP_ENTRY)))) {
