@@ -442,7 +442,7 @@ public class ZipArchive implements FileArchive {
   }
 
   private static File makeTempFileFor(String path, Path tmpDir) throws IOException {
-    final String base = sanitize(FilenameUtils.getBaseName(path)) + "_";
+    final String base = FilenameUtils.getBaseName(sanitize(path)) + "_";
     final String ext = extensionOf(path);
     Files.createDirectories(tmpDir);
     return Files.createTempFile(tmpDir, base, ext).toFile();
