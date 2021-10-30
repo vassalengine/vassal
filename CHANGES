@@ -1,5 +1,6 @@
 3.6.0-beta6 - ??? 
 
+* 10654: Fixed corner-case NPE when closing a game
 * 10650: Show X,Y in Configurer when repositioning At Start Stack
 * 10648: Private chat windows will no longer steal focus
 * 10643: Show saved game mismatch warnings (e.g., loading wrong version) when
