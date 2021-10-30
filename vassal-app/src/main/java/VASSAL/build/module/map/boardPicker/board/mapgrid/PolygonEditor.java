@@ -383,7 +383,7 @@ public class PolygonEditor extends JPanel {
       if (myFrame != null) {
         myFrame.addKeyListener(this);
 
-        InputMap inputMap = myScroll.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        final InputMap inputMap = myScroll.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         inputMap.put(KeyStroke.getKeyStroke("RIGHT"), "do-nothing");
         inputMap.put(KeyStroke.getKeyStroke("LEFT"), "do-nothing");
         inputMap.put(KeyStroke.getKeyStroke("UP"), "do-nothing");
