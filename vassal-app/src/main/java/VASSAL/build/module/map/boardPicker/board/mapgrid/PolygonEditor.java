@@ -131,14 +131,30 @@ public class PolygonEditor extends JPanel {
     myScroll = scroll;
   }
 
+  private void updateAllCoords() {
+    if (myConfigurer != null) {
+      myConfigurer.updateCoords(polygon);
+      if (selected >= 0) {
+        myConfigurer.updateCoord(polygon.xpoints[selected], polygon.ypoints[selected]);
+      }
+      else {
+        myConfigurer.updateCoord("");
+      }
+    }
+  }
+
   private void setupForCreate() {
     new DefineRectangle();
+    selected = -1;
+    updateAllCoords();
     requestFocus();
     repaint();
   }
 
   private void setupForEdit() {
     new ModifyPolygon();
+    if (selected >= polygon.npoints) selected = -1;
+    updateAllCoords();
     requestFocus();
     repaint();
   }
@@ -190,6 +206,9 @@ public class PolygonEditor extends JPanel {
   }
 
   public static void reset(Polygon p, String pathStr) {
+    if (p == null) {
+      p = new Polygon();
+    }
     p.reset();
     final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(pathStr, ';');
     while (sd.hasMoreTokens()) {
@@ -207,6 +226,9 @@ public class PolygonEditor extends JPanel {
         catch (final NumberFormatException e) {
         }
       }
+    }
+    if (p.npoints == 0) {
+      p = null;
     }
   }
 
