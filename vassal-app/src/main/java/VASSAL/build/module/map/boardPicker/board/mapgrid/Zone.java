@@ -76,7 +76,6 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -669,7 +668,6 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       editor.setFocusTraversalKeysEnabled(false);
 
       frame = new JDialog(GameModule.getGameModule().getPlayerWindow(), zone.getConfigureName(), true);
-      //frame = new JFrame(zone.getConfigureName());
       editor.setMyFrame(frame);
 
       frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
@@ -736,6 +734,8 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       buttonPanel.add(closeButton);
       buttonPanel.add(canButton);
       frame.add(buttonPanel);
+
+      editor.reset();
     }
 
     public void updateCoords(Polygon polygon) {
@@ -751,6 +751,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
         }
       }
       coordsLabel.setText(s.toString());
+      coordsLabel.repaint();
     }
 
     public void updateCoords() {
@@ -759,6 +760,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
 
     public void updateCoord(String s) {
       coordLabel.setText(s);
+      coordLabel.repaint();
     }
 
     public void updateCoord(int x, int y) {
