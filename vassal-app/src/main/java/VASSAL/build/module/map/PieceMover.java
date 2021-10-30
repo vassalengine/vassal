@@ -74,6 +74,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.datatransfer.StringSelection;
+import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DragSource;
@@ -1434,6 +1435,23 @@ public class PieceMover extends AbstractBuildable
       }
     }
 
+
+    /**
+     * Finds all the piece slots in a module and resets their drop targets to use a new DragHandler
+     * @param target recursive search through components
+     */
+    public static void resetRecursivePieceSlots(AbstractBuildable target) {
+      for (final Buildable b : target.getBuildables()) {
+        if (b instanceof PieceSlot) {
+          final Component panel = ((PieceSlot)b).getComponent();
+          panel.setDropTarget(makeDropTarget(panel, DnDConstants.ACTION_MOVE, null));
+        }
+        else if (b instanceof AbstractBuildable) {
+          resetRecursivePieceSlots((AbstractBuildable)b);
+        }
+      }
+    }
+
     /**
      * Reset our drag handler, e.g. if our preferences change.
      */
@@ -1442,8 +1460,12 @@ public class PieceMover extends AbstractBuildable
       setTheDragHandler(newHandler);
       for (final VASSAL.build.module.Map map : VASSAL.build.module.Map.getMapList()) {
         map.setDragGestureListener(newHandler);
+        map.getComponent().setDropTarget(makeDropTarget(map.getComponent(), DnDConstants.ACTION_MOVE, map));
       }
+
+      resetRecursivePieceSlots(GameModule.getGameModule());
     }
+
 
     /**
      * Registers a PieceMover
