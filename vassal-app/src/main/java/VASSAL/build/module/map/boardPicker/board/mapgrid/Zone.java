@@ -698,10 +698,8 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       };
 
       editor.setMyConfigurer(this);
-      editor.setFocusTraversalKeysEnabled(false);
 
       frame = new JDialog(GameModule.getGameModule().getPlayerWindow(), zone.getConfigureName(), true);
-      editor.setMyFrame(frame);
 
       frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
       final JPanel labels = new JPanel();
