@@ -38,8 +38,6 @@ import java.util.Arrays;
 
 import javax.swing.AbstractAction;
 import javax.swing.InputMap;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -67,7 +65,6 @@ public class PolygonEditor extends JPanel {
   private static final int CLICK_THRESHOLD = 10;
 
   private Zone.Editor myConfigurer;
-  private JDialog myFrame;
 
   public PolygonEditor(Polygon p) {
     polygon = p;
@@ -77,12 +74,6 @@ public class PolygonEditor extends JPanel {
 
   public void setMyConfigurer(Zone.Editor myConfigurer) {
     this.myConfigurer = myConfigurer;
-  }
-
-  public void setMyFrame(JDialog frame) {
-    this.myFrame = frame;
-    myFrame.setFocusable(true);
-    myFrame.setFocusTraversalKeysEnabled(false);
   }
 
   protected void reset() {
@@ -97,11 +88,9 @@ public class PolygonEditor extends JPanel {
       removeMouseMotionListener(i);
     }
 
-    if (myFrame != null) {
-      final KeyListener[] kl = myFrame.getKeyListeners();
-      for (final KeyListener i : kl) {
-        removeKeyListener(i);
-      }
+    final KeyListener[] kl = getKeyListeners();
+    for (final KeyListener i : kl) {
+      removeKeyListener(i);
     }
 
     final InputMap im = getInputMap(WHEN_IN_FOCUSED_WINDOW);
@@ -380,15 +369,7 @@ public class PolygonEditor extends JPanel {
     public ModifyPolygon() {
       addMouseListener(this);
       addMouseMotionListener(this);
-      if (myFrame != null) {
-        myFrame.addKeyListener(this);
-
-        final InputMap inputMap = myScroll.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-        inputMap.put(KeyStroke.getKeyStroke("RIGHT"), "do-nothing");
-        inputMap.put(KeyStroke.getKeyStroke("LEFT"), "do-nothing");
-        inputMap.put(KeyStroke.getKeyStroke("UP"), "do-nothing");
-        inputMap.put(KeyStroke.getKeyStroke("DOWN"), "do-nothing");
-      }
+      addKeyListener(this);
 
       getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), DELETE);
       getActionMap().put(DELETE, new AbstractAction() {
@@ -402,9 +383,7 @@ public class PolygonEditor extends JPanel {
     }
 
     private void remove() {
-      if (myFrame != null) {
-        removeKeyListener(this);
-      }
+      removeKeyListener(this);
       removeMouseListener(this);
       removeMouseMotionListener(this);
       getInputMap(WHEN_IN_FOCUSED_WINDOW).remove(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
@@ -491,6 +470,7 @@ public class PolygonEditor extends JPanel {
       moveVertex(polygon, selected, polygon.xpoints[selected] + dx, polygon.ypoints[selected] + dy);
       updateAllCoords();
       repaint();
+      e.consume();
     }
 
     public void deleteKeyPressed() {
