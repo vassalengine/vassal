@@ -46,7 +46,6 @@ import VASSAL.tools.FormattedString;
 import VASSAL.tools.swing.SwingUtils;
 
 import java.awt.Container;
-import java.awt.dnd.DragSource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
