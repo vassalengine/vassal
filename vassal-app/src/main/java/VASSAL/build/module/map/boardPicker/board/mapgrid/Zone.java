@@ -771,12 +771,16 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       board = zone.getBoard();
       editor.setPreferredSize(board != null ? board.getSize() : DEFAULT_SIZE);
       editor.reset();
-      savePoly = editor.clonePolygon();
-      final Rectangle polyBounds = editor.getPolygon().getBounds();
-      final Point polyCenter = new Point(polyBounds.x + polyBounds.width / 2,
+      updateCoords();
+      updateCoord("");
+      savePoly = new Polygon(zone.myPolygon.xpoints, zone.myPolygon.ypoints, zone.myPolygon.npoints); // Editor's polygon is sometimes null, so can't safely clone that.
+      if (editor.getPolygon() != null) {
+        final Rectangle polyBounds = editor.getPolygon().getBounds();
+        final Point polyCenter = new Point(polyBounds.x + polyBounds.width / 2,
           polyBounds.y + polyBounds.height / 2);
-      if (!editor.getVisibleRect().contains(polyCenter)) {
-        editor.center(polyCenter);
+        if (!editor.getVisibleRect().contains(polyCenter)) {
+          editor.center(polyCenter);
+        }
       }
       frame.pack();
       final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
