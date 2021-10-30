@@ -1199,35 +1199,6 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       }
     }
 
-    private BufferedImage featherDragImage(BufferedImage src,
-                                         int w, int h, int b) {
-// FIXME: duplicated from PieceMover!
-      final BufferedImage dst =
-        ImageUtils.createCompatibleTranslucentImage(w, h);
-
-      final Graphics2D g = dst.createGraphics();
-      g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                         RenderingHints.VALUE_ANTIALIAS_ON);
-
-      // paint the rectangle occupied by the piece at specified alpha
-      g.setColor(new Color(0xff, 0xff, 0xff, CURSOR_ALPHA));
-      g.fillRect(0, 0, w, h);
-
-      // feather outwards
-      for (int f = 0; f < b; ++f) {
-        final int alpha = CURSOR_ALPHA * (f + 1) / b;
-        g.setColor(new Color(0xff, 0xff, 0xff, alpha));
-        g.drawRect(f, f, w - 2 * f, h - 2 * f);
-      }
-
-      // paint in the source image
-      g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_IN));
-      g.drawImage(src, 0, 0, null);
-      g.dispose();
-
-      return dst;
-    }
-
     private void makeDragCursor() {
       //double zoom = 1.0;
       // create the cursor if necessary
@@ -1247,9 +1218,13 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       final int w = boundingBox.width + EXTRA_BORDER * 2;
       final int h = boundingBox.height + EXTRA_BORDER * 2;
 
-      BufferedImage cursorImage =
+      final BufferedImage image =
         ImageUtils.createCompatibleTranslucentImage(w, h);
-      final Graphics2D g = cursorImage.createGraphics();
+
+      final Graphics2D g = image.createGraphics();
+      g.addRenderingHints(SwingUtils.FONT_HINTS);
+      g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                         RenderingHints.VALUE_ANTIALIAS_ON);
 
       myStack.stackConfigurer.drawImage(
         g,
@@ -1257,14 +1232,17 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         EXTRA_BORDER - boundingBox.y, dragCursor, 1.0
       );
 
+      // make the drag image transparent
+      g.setComposite(AlphaComposite.getInstance(AlphaComposite.DST_IN));
+      g.setColor(new Color(0xFF, 0xFF, 0xFF, CURSOR_ALPHA));
+      g.fillRect(0, 0, image.getWidth(), image.getHeight());
+
       g.dispose();
 
       dragCursor.setSize(w, h);
 
-      cursorImage = featherDragImage(cursorImage, w, h, EXTRA_BORDER);
-
       // store the bitmap in the cursor
-      dragCursor.setIcon(new ImageIcon(cursorImage));
+      dragCursor.setIcon(new ImageIcon(image));
     }
 
     @Override
