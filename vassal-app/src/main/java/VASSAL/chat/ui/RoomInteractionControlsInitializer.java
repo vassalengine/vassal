@@ -30,11 +30,13 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
+import VASSAL.build.GameModule;
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.Player;
 import VASSAL.chat.Room;
 import VASSAL.chat.SimplePlayer;
 import VASSAL.chat.SimpleRoom;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.swing.SwingUtils;
 
 /**
@@ -150,10 +152,23 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
     };
     controls.getRoomTree().addMouseListener(roomPopupBuilder);
     roomCreator = e -> {
+      if (!client.isConnected()) {
+        GameModule.getGameModule().warn(Resources.getString("Chat.connect_first"));
+        return;
+      }
+      if ("".equals(controls.getNewRoom().getText())) {
+        GameModule.getGameModule().warn(Resources.getString("Chat.name_first"));
+        return;
+      }
       createRoom(controls.getNewRoom().getText());
-      controls.getNewRoom().setText(""); //$NON-NLS-1$
+
+      GameModule.getGameModule().warn(Resources.getString("Chat.creating_room", controls.getNewRoom().getText()));
+      GameModule.getGameModule().warn(Resources.getString("Chat.explain_created_room"));
+
+      controls.getNewRoom().setText(""); 
     };
     controls.getNewRoom().addActionListener(roomCreator);
+    controls.getNewRoomButton().addActionListener(roomCreator);
   }
 
   protected void createRoom(String name) {
@@ -198,5 +213,6 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
     controls.getRoomTree().removeMouseListener(roomPopupBuilder);
     controls.getCurrentRoom().removeMouseListener(currentRoomPopupBuilder);
     controls.getNewRoom().removeActionListener(roomCreator);
+    controls.getNewRoomButton().removeActionListener(roomCreator);
   }
 }

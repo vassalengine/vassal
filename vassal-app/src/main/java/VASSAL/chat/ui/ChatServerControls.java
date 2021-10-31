@@ -102,9 +102,9 @@ public class ChatServerControls extends AbstractBuildable {
     roomPanel.add(newRoomLabel, "");
     roomPanel.add(newRoom, "growx, pushx"); //NON-NLS
 
-    newRoomButton = new JButton("..."); //$NON-NLS-1$
+    newRoomButton = new JButton(Resources.getString("Chat.create"));
     newRoomButton.setPreferredSize(new Dimension(20, 20));
-    newRoomButton.setVisible(false);
+    //newRoomButton.setVisible(false);
     roomPanel.add(newRoomButton, "hidemode 3"); //NON-NLS
 
     roomTree = new RoomTree();
@@ -126,8 +126,8 @@ public class ChatServerControls extends AbstractBuildable {
     final JScrollPane scroll = new JScrollPane(currentRoom);
     scroll.setBorder(BorderFactory.createTitledBorder(BorderFactory.createRaisedBevelBorder(), Resources.getString("Chat.current_game")));  //$NON-NLS-1$
     split.setRightComponent(scroll);
-    split.setDividerLocation(160);
-    split.setPreferredSize(new Dimension(320, 120));
+    split.setDividerLocation(250);
+    split.setPreferredSize(new Dimension(500, 120));
     controlPanel = new JPanel();
     controlPanel.setLayout(new BorderLayout());
     controlPanel.add("Center", split);  //$NON-NLS-1$
@@ -317,6 +317,10 @@ public class ChatServerControls extends AbstractBuildable {
     return newRoom;
   }
 
+  public JButton getNewRoomButton() {
+    return newRoomButton;
+  }
+
   public void addExtendedNewRoomHandler(ActionListener l) {
     newRoomButton.addActionListener(l);
     newRoomButton.setVisible(true);
@@ -330,6 +334,7 @@ public class ChatServerControls extends AbstractBuildable {
   public void setRoomControlsVisible(boolean visible) {
     newRoom.setVisible(visible);
     newRoomLabel.setVisible(visible);
+    newRoomButton.setVisible(visible);
   }
 
   public RoomTree getRoomTree() {

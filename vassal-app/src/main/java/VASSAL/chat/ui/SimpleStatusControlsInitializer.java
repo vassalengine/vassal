@@ -22,6 +22,7 @@ import java.net.URL;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
+import VASSAL.build.GameModule;
 
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.Player;
@@ -55,11 +56,21 @@ public class SimpleStatusControlsInitializer implements ChatControlsInitializer 
     if (includeLooking) {
       lookingBox = new JButton(Resources.getString("Chat.looking_for_a_game")); //$NON-NLS-1$
       lookingBox.addActionListener(evt -> {
-        if (client != null) {
+        if ((client != null) && client.isConnected()) {
           final Player p = client.getUserInfo();
           SimpleStatus s = (SimpleStatus) p.getStatus();
           s = new SimpleStatus(!s.isLooking(), s.isAway(), s.getProfile(), s.getClient(), s.getIp(), s.getModuleVersion(), s.getCrc());
           client.setUserInfo(new SimplePlayer(p.getId(), p.getName(), s));
+
+          if (s.isLooking()) {
+            GameModule.getGameModule().warn(Resources.getString("Chat.now_looking"));
+          }
+          else {
+            GameModule.getGameModule().warn(Resources.getString("Chat.not_looking"));
+          }
+        }
+        else {
+          GameModule.getGameModule().warn(Resources.getString("Chat.connect_first_looking"));
         }
       });
       lookingBox.setSize(lookingBox.getMinimumSize());

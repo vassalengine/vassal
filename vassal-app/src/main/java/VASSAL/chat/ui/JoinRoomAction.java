@@ -21,6 +21,7 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 
+import VASSAL.build.GameModule;
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.Room;
 import VASSAL.i18n.Resources;
@@ -39,6 +40,21 @@ public class JoinRoomAction extends AbstractAction {
     this.r = r;
     this.client = client;
     setEnabled(r != null && !r.equals(client.getRoom()));
+
+    if (r != null) {
+      GameModule.getGameModule().warn(Resources.getString("Chat.joining_room", r.getName()));
+
+      if (Resources.getString("Chat.main_room").equals(r.getName())) {
+        explainMainRoom();
+      }
+      else {
+        GameModule.getGameModule().warn(Resources.getString("Chat.explain_joined_room"));
+      }
+    }
+  }
+
+  public static void explainMainRoom() {
+    GameModule.getGameModule().warn(Resources.getString("Chat.explain_main_room"));
   }
 
   @Override
