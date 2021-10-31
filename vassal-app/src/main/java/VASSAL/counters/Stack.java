@@ -394,7 +394,12 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
 
       asList().stream()
               .filter(PieceIterator.VISIBLE)
-              .forEach(p -> r.add(childBounds[indexOf(p)]));
+              .forEach(p -> {
+                final int idx = indexOf(p);
+                if (idx >= 0) {
+                  r.add(childBounds[idx]);
+                }
+              });
     }
     return r;
   }
@@ -410,7 +415,12 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
     metrics.getContents(this, null, childBounds, null, 0, 0);
     asList().stream()
             .filter(PieceIterator.VISIBLE)
-            .forEach(p -> a.add(new Area(childBounds[indexOf(p)])));
+            .forEach(p -> {
+              final int idx = indexOf(p);
+              if (idx >= 0) {
+                a.add(new Area(childBounds[idx]));
+              }
+            });
 
     return a;
   }

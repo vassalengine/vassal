@@ -92,7 +92,8 @@ public class Player extends Launcher {
       if (lr.game != null) {
         m.getPlayerWindow().setVisible(true);
         m.setGameFile(lr.game.getName(), GameModule.GameFileMode.LOADED_GAME);
-        m.getGameState().loadGameInBackground(lr.game);
+        //m.getGameState().loadGameInBackground(lr.game);
+        m.getGameState().loadGameInForeground(lr.game);
       }
       else {
         showWizardOrPlayerWindow(m);

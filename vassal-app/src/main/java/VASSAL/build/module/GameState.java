@@ -584,7 +584,8 @@ public class GameState implements CommandEncoder {
           }
         }
         else {
-          loadGameInBackground(f);
+          //loadGameInBackground(f);
+          loadGameInForeground(f);
         }
       }
 

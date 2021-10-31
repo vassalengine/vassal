@@ -679,8 +679,9 @@ public class WizardSupport {
             else if (!processing.contains(f)) { // Sometimes the FileConfigurer fires more than one event for the same
               // file
               processing.add(f);
+
               try {
-                new SavedGameLoader(controller, settings, new BufferedInputStream(Files.newInputStream(f.toPath())), POST_LOAD_GAME_WIZARD, f) {
+                final SavedGameLoader loader = new SavedGameLoader(controller, settings, new BufferedInputStream(Files.newInputStream(f.toPath())), POST_LOAD_GAME_WIZARD, f) {
                   @Override
                   public void run() {
                     GameModule.getGameModule().getFileChooser().setSelectedFile(f); //BR// When loading a saved game from Wizard, put it appropriately into the "default" for the next save/load/etc.
@@ -688,7 +689,17 @@ public class WizardSupport {
                     super.run();
                     processing.remove(f);
                   }
-                }.start();
+                };
+                loader.start();
+
+                //BR// Wait on the thread to finish
+                try {
+                  loader.join();
+                }
+                catch (InterruptedException e) {
+                  //
+                }
+
               }
               // FIXME: review error message
               catch (IOException e) {

@@ -59,8 +59,10 @@ public class SavedGameUpdater {
     final GameState gs = GameModule.getGameModule().getGameState();
 
     gs.setup(false, true);
-    gs.loadGameInBackground(savedGame);
+    //gs.loadGameInBackground(savedGame);
+    gs.loadGameInForeground(savedGame);
 
+    /*
     // FIXME: spin locks are bad, wait on a Future instead
     while (!gs.isGameStarted()) {
       try {
@@ -69,6 +71,7 @@ public class SavedGameUpdater {
       catch (InterruptedException e) {
       }
     }
+    */
 
     final GamePiece[] gp_array = gs.getAllPieces().toArray(new GamePiece[0]);
     for (final GamePiece p : gp_array) {

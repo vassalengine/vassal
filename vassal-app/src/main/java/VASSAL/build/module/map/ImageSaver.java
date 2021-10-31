@@ -213,6 +213,16 @@ public class ImageSaver extends AbstractToolbarItem {
     dialog.addActionListener(e -> task.cancel(true));
 
     task.execute();
+
+    // Block this thread so we don't get threading errors with stacks etc. Vassal == DUMB.
+    while (!task.isDone()) {
+      try {
+        Thread.sleep(100);
+      }
+      catch (InterruptedException e) {
+        //
+      }
+    }
   }
 
   private class SnapshotTask extends SwingWorker<Void, Void> {
