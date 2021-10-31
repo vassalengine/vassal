@@ -20,6 +20,8 @@ package VASSAL.chat;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.ServerConnection;
 
+import javax.swing.JButton;
+
 /**
  * A window for private messages between the user and another player;
  */

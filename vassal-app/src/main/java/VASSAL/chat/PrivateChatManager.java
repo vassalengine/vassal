@@ -25,8 +25,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.swing.Box;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 import VASSAL.i18n.Resources;
 import VASSAL.tools.menu.MenuManager;
@@ -63,13 +66,32 @@ public class PrivateChatManager {
       f.addWindowListener(new WindowAdapter() {
         @Override
         public void windowClosing(WindowEvent e) {
-          promptToBan(sender);
         }
       });
 
+      final JButton closeButton  = new JButton(Resources.getString(Resources.CLOSE));
+      closeButton.addActionListener(e -> {
+        f.setVisible(false);
+      });
+
+      final JButton ignoreButton = new JButton(Resources.getString("Chat.ignore"));
+      ignoreButton.addActionListener(e -> {
+        promptToBan(sender);
+        f.setVisible(false);
+      });
+
+      final Box box = Box.createHorizontalBox();
+      box.add(ignoreButton, Box.LEFT_ALIGNMENT + Box.BOTTOM_ALIGNMENT);
+      box.add(Box.createHorizontalGlue());
+      box.add(closeButton, Box.RIGHT_ALIGNMENT + Box.BOTTOM_ALIGNMENT);
+
       f.setTitle(Resources.getString("Chat.private_channel", sender.getName())); //$NON-NLS-1$
       f.setJMenuBar(MenuManager.getInstance().getMenuBarFor(f));
-      f.getContentPane().add(chat);
+
+      chat.add(box);
+
+      f.add(chat);
+      
       f.setSize(640, 320);
       f.setLocation(Toolkit.getDefaultToolkit().getScreenSize().width / 2 -
                     f.getSize().width / 2, 0);
