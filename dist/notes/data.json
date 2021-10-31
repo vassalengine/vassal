@@ -20,6 +20,7 @@
       "in": "3.6.0-beta6",
       "since": "3.6.0-beta5",
       "new_features": [
+        { "num": 10649, "Deck can start face-up or face-down when using right-click menu setting" },
         { "num": 10628, "desc": "Autopeek Rollover" },
         { "num": 9391, "desc": "Beanshell can now access $$ variables in Report Formats" }
       ],
