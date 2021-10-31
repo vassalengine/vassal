@@ -29,7 +29,6 @@ import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 
 import VASSAL.i18n.Resources;
 import VASSAL.tools.menu.MenuManager;
@@ -91,7 +90,7 @@ public class PrivateChatManager {
       chat.add(box);
 
       f.add(chat);
-      
+
       f.setSize(640, 320);
       f.setLocation(Toolkit.getDefaultToolkit().getScreenSize().width / 2 -
                     f.getSize().width / 2, 0);
