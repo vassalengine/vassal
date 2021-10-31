@@ -695,7 +695,7 @@ public class HexGrid extends AbstractConfigurable
     rotateIfSideways(p);
     int x = p.x - getOrigin().x;
 
-    x = (int) Math.floor(x / getHexWidth() + 0.5);
+    x = (int) floor(x / getHexWidth() + 0.5);
     return x;
   }
 
@@ -707,13 +707,13 @@ public class HexGrid extends AbstractConfigurable
     final Point origin = getOrigin();
     final double dx = getHexWidth();
     final double dy = getHexSize();
-    final int nx = (int) Math.round((p.x - origin.x) / dx);
+    final int nx = (int) round((p.x - origin.x) / dx);
     final int ny;
     if (nx % 2 == 0) {
-      ny = (int) Math.round((p.y - origin.y) / dy);
+      ny = (int) round((p.y - origin.y) / dy);
     }
     else {
-      ny = (int) Math.round((p.y - origin.y - dy / 2) / dy);
+      ny = (int) round((p.y - origin.y - dy / 2) / dy);
     }
     return ny;
   }
