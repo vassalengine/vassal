@@ -36,9 +36,19 @@ public class Hex {
   public Hex rotateRight() {
     return new Hex(-r, -s, -q);
   }
-  static public ArrayList<Hex> directions = new ArrayList<Hex>(){{add(new Hex(1, 0, -1)); add(new Hex(1, -1, 0)); add(new Hex(0, -1, 1)); add(new Hex(-1, 0, 1)); add(new Hex(-1, 1, 0)); add(new Hex(0, 1, -1));}};
 
-  static public Hex direction(int direction) {
+  public static final ArrayList<Hex> directions = new ArrayList<Hex>() {
+    {
+      add(new Hex(1, 0, -1));
+      add(new Hex(1, -1, 0));
+      add(new Hex(0, -1, 1));
+      add(new Hex(-1, 0, 1));
+      add(new Hex(-1, 1, 0));
+      add(new Hex(0, 1, -1));
+    }
+  };
+
+  public static Hex direction(int direction) {
     return Hex.directions.get(direction);
   }
 
@@ -46,7 +56,16 @@ public class Hex {
     return add(Hex.direction(direction));
   }
 
-  static public ArrayList<Hex> diagonals = new ArrayList<Hex>(){{add(new Hex(2, -1, -1)); add(new Hex(1, -2, 1)); add(new Hex(-1, -1, 2)); add(new Hex(-2, 1, 1)); add(new Hex(-1, 2, -1)); add(new Hex(1, 1, -2));}};
+  public static final ArrayList<Hex> diagonals = new ArrayList<Hex>() {
+    {
+      add(new Hex(2, -1, -1));
+      add(new Hex(1, -2, 1));
+      add(new Hex(-1, -1, 2));
+      add(new Hex(-2, 1, 1));
+      add(new Hex(-1, 2, -1));
+      add(new Hex(1, 1, -2));
+    }
+  };
 
   public Hex diagonalNeighbor(int direction) {
     return add(Hex.diagonals.get(direction));
