@@ -73,7 +73,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
 
   private final VisibilityCondition reshuffleVisibleCondition = () -> reshufflable;
 
-  private final VisibilityCondition faceDownFormatVisibleCondition = () -> dummy.getFaceDownOption().equals(USE_MENU);
+  private final VisibilityCondition faceDownFormatVisibleCondition = () -> (dummy.getFaceDownOption().equals(USE_MENU) || dummy.getFaceDownOption().equals(USE_MENU_UP));
 
   private final VisibilityCondition reverseFormatVisibleCondition = () -> dummy.isReversible();
 
@@ -91,7 +91,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
 
   private final VisibilityCondition drawSpecificMessageVisibleCondition = () -> dummy.isAllowSelectDraw();
 
-  private final VisibilityCondition faceUpDownMessageVisibleCondition = () -> Deck.USE_MENU.equals(dummy.getFaceDownOption());
+  private final VisibilityCondition faceUpDownMessageVisibleCondition = () -> Deck.USE_MENU.equals(dummy.getFaceDownOption()) || USE_MENU_UP.equals(dummy.getFaceDownOption());
 
   protected static final UniqueIdManager idMgr = new UniqueIdManager("Deck"); //NON-NLS
 
@@ -176,6 +176,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   public static final String ALWAYS = "Always"; //NON-NLS
   public static final String NEVER = "Never"; //NON-NLS
   public static final String USE_MENU = "Via right-click Menu"; //NON-NLS
+  public static final String USE_MENU_UP = "MenuDefaultUp"; //NON-NLS
 
   public static final String COMMAND_NAME = "commandName"; //NON-NLS
   public static final String DECK_NAME = "deckName"; //NON-NLS
@@ -199,6 +200,23 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       };
     }
   }
+
+  public static class Prompt2 extends TranslatableStringEnum {
+    @Override
+    public String[] getValidValues(AutoConfigurable target) {
+      return new String[]{ ALWAYS, NEVER, USE_MENU, USE_MENU_UP };
+    }
+
+    @Override
+    public String[] getI18nKeys(AutoConfigurable target) {
+      return new String[] { "Editor.always",
+        "Editor.never",
+        "Editor.DrawPile.use_menu_down",
+        "Editor.DrawPile.use_menu_up",
+      };
+    }
+  }
+
 
   /**
    * generates a prompt with the names of all decks already defined
@@ -362,7 +380,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       String.class, // DRAW SPECIFIC MESSAGE
       PiecePropertyConfig.class, // SELECT_DISPLAY_PROPERTY
       String.class, // SELECT_SORT_PROPERTY
-      Prompt.class, // FACE_DOWN
+      Prompt2.class, // FACE_DOWN
       String.class, // FACE UP MESSAGE
       String.class, // FACE DOWN MESSAGE
       Boolean.class, // DRAW_FACE_UP
@@ -819,7 +837,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     myDeck = new Deck(GameModule.getGameModule(), getDeckType());
     myDeck.setPropertySource(source);
     s.asList().forEach(gamePiece -> myDeck.add(gamePiece));
-    myDeck.setFaceDown(!Deck.NEVER.equals(dummy.getFaceDownOption()));
+    myDeck.setFaceDown(!Deck.NEVER.equals(dummy.getFaceDownOption()) && !Deck.USE_MENU_UP.equals(dummy.getFaceDownOption()));
     return myDeck;
   }
 
