@@ -146,7 +146,7 @@ public class SpecialDie extends AbstractConfigurable {
     }
     else {
       final SpecialDieFace aFace = dieFaceList.get(face);
-      format.setProperty(RESULT, aFace.getTextValue());
+      format.setProperty(RESULT, aFace.getLocalizedConfigureName());
       format.setProperty(NUMERICAL_VALUE, Integer.toString(aFace.getIntValue()));
     }
     return format.getLocalizedText(this, "Editor.SpecialDie.result_format");
