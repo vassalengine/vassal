@@ -1,5 +1,6 @@
 3.6.0-beta6 - ??? 
 
+* 10660: Report translated name for Symbolic Die Faces
 * 10659: Sanitize temporary file names a bit earlier
 * 10658: Fix NPE if try to open translations but the buildable doesn't exist
 * 10654: Fixed corner-case NPE when closing a game
