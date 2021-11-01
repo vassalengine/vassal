@@ -44,6 +44,7 @@
         { "num": 10618, "desc": "ToolbarMenus that are submenus of other ToolbarMenus display their icons properly" }
       ],
       "other_improvements": [
+        { "num": 10667, "desc": "Private Message windows no longer prompt to ignore every time you close them; incoming private messages do not grab focus" },
         { "num": 10641, "desc": "When Editor changes a prototype, clear the prototype cache and all PieceSlot caches" },
         { "num": 10633, "desc": "Remove doubled images from Ghost Bug Pref" },
         { "num": 10650, "desc": "Show X,Y in Configurer when repositioning At Start Stack" },
