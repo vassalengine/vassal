@@ -2,9 +2,12 @@ package VASSAL.configure;
 
 import VASSAL.build.AbstractBuildable;
 import VASSAL.build.GameModule;
+import VASSAL.build.module.Documentation;
+import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.ExtensionEditorWindow;
 import VASSAL.tools.DataArchive;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.icon.IconFamily;
 import VASSAL.tools.image.ImageUtils;
@@ -16,6 +19,7 @@ import java.awt.Frame;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Collections;
@@ -130,6 +134,7 @@ public class RemoveUnusedImagesDialog extends JDialog {
 
     ok = new JButton(Resources.getString("Editor.UnusedImages.remove_files"));
     final JButton cancel = new JButton(Resources.getString("General.cancel"));
+    final JButton help = new JButton(Resources.getString("General.help"));
 
     ok.addActionListener(e -> removeImages());
 
@@ -147,6 +152,7 @@ public class RemoveUnusedImagesDialog extends JDialog {
     ok.setEnabled(!dumpModel.isEmpty());
 
     cancel.addActionListener(e -> dispose());
+    help.addActionListener(e -> help());
 
     final JPanel panel = new JPanel(new MigLayout("ins 4, fill", "[]rel[]rel[]", "[]unrel[]unrel[]"));  //NON-NLS
     panel.setBorder(BorderFactory.createEtchedBorder());
@@ -164,9 +170,10 @@ public class RemoveUnusedImagesDialog extends JDialog {
     panel.add(dropTotalLabel, "skip 1,center,wrap"); // NON-NLS
 
 
-    final JPanel buttonPanel = new JPanel(new MigLayout("fill", "push[]rel[]push")); // NON-NLS
+    final JPanel buttonPanel = new JPanel(new MigLayout("fill", "push[]rel[]rel[]push")); // NON-NLS
     buttonPanel.add(ok, "tag ok,sg 1"); //$NON-NLS-1$//
     buttonPanel.add(cancel, "tag cancel,sg 1"); //$NON-NLS-1$//
+    buttonPanel.add(help, "tag help,sg 1");
     panel.add(buttonPanel, "span 3,grow"); // NON-NLS
 
     setLayout(new MigLayout("fill")); // NON-NLS
@@ -175,6 +182,21 @@ public class RemoveUnusedImagesDialog extends JDialog {
     updateButtons();
 
     SwingUtils.repack(this);
+  }
+
+  private void help() {
+    HelpFile hf = null;
+    try {
+      hf = new HelpFile(null, new File(
+        new File(Documentation.getDocumentationBaseDir(), "ReferenceManual"),
+        "RemoveUnusedImages.html"));
+    }
+    catch (MalformedURLException ex) {
+      ErrorDialog.bug(ex);
+    }
+
+    (new ShowHelpAction(hf.getContents(), null)).actionPerformed(null);
+
   }
 
   private void updateSelection(JList<String> srclist, DefaultListModel<String> srcmodel, SortedSet<String> src, SortedSet<String> dst) {
