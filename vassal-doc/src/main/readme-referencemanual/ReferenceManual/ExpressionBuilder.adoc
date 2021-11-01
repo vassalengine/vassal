@@ -1,7 +1,7 @@
 == VASSAL Reference Manual
 [#top]
 
-[.small]#<<index.adoc#toc,Home>> > *Expression Builder*#
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<Expressions.adoc#top,Expressions>> > *Expression Builder*#
 
 '''''
 

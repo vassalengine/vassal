@@ -1,7 +1,7 @@
 == VASSAL Reference Manual
 [#top]
 
-[.small]#<<index.adoc#toc,Home>> > <<Editor.adoc#top,Editor>> > *Refresh Predefined Setups*#
+[.small]#<<index.adoc#toc,Home>> > <<Tools.adoc#top,Tools>> > *Refresh Predefined Setups*#
 
 '''''
 

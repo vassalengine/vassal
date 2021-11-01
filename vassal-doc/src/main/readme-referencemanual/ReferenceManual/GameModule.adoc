@@ -15,7 +15,8 @@ The version number is used to warn users who attempt to load save files created 
 
 All additions and modifications to a module are done through the <<editor.adoc#top,Configuration Window>>, also frequently referred to as the <<editor.adoc#top,Editor>> window, which is a familiar file/folder type browser in which each file/folder represents a module Component.
 The second illustration on the right shows the Editor's configuration window for a "Brand New Module", with all of the Components that are added by default.
-Right-click on the _[Module]_ to get a context menu with options for the many types of <<#SubComponents,Components>> you can add to a Vassal module, including <<Map.adoc#top,maps>>, <<ChartWindow.adoc#top,charts>>, and <<PieceWindow.adoc#top,palettes>> full of <<GamePiece.adoc#top,game pieces>>. See <<#SubComponents,below>> for more details.
+Right-click on the _[Module]_ to get a context menu with options for the many types of <<#SubComponents,Components>> you can add to a Vassal module, including <<Map.adoc#top,maps>>, <<ChartWindow.adoc#top,charts>>, and <<PieceWindow.adoc#top,palettes>> full of <<GamePiece.adoc#top,game pieces>>. The
+components and pieces will in turn reference <<Properties.adoc#top, Properties>> and <<Expressions.adoc#top, Expressions>> that determine how they operate. See <<#SubComponents,below>> for more details on individual types of component.
 
 Actually _playing_ the game takes place in the Module window (see example below). This window includes a <<Toolbar.adoc#top,Toolbar>> that can be configured by the module designer, as well as a <<ChatLog.adoc#top,Chat Log>> to record player messages and game moves.
 The game's main <<Map.adoc#top,Map>> will be displayed just below the Chat Log.

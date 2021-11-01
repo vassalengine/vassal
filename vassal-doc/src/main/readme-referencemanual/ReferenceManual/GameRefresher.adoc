@@ -1,7 +1,7 @@
 == VASSAL Reference Manual
 [#top]
 
-[.small]#<<index.adoc#toc,Home>> > <<Editor.adoc#top,Editor>> > *Refresh Counters*#
+[.small]#<<index.adoc#toc,Home>> > <<Tools.adoc#top,Tools>> > *Refresh Counters*#
 
 '''''
 
@@ -12,7 +12,7 @@ But particularly since the <<GameModule.adoc#PredefinedSetup, Predefined Setups>
 
 [width="100%",cols="50%,^50%",]
 |===
-|To use the refresher on the currently loaded game, go to the _Tools_ menu and select _Refresh Counters_. You will be shown a dialog with several choices affecting the manner in which the operation is to be carried out.
+|To use the refresher on the currently loaded game, go to the _Tools_ menu in your main VASSAL window and select _Refresh Counters_. You will be shown a dialog with several choices affecting the manner in which the operation is to be carried out.
 
 Click the _Run_ button when you are ready to perform the refresh. The chat log will show output and statistics from the operation. Once the operation is finished, pieces in the game (as well as new pieces created from <<PieceWindow.adoc#top, Game Piece Palettes>>) will make use of the most recent prototypes.
 |image:images/GameRefresher.png[]+
