@@ -17,33 +17,34 @@ mkdir -p "$JDKDIR"
 pushd "$JDKDIR"
 
 ZULU_URL='https://cdn.azul.com/zulu/bin'
+ZULU_BASENAME=zulu17.30.15-ca-jdk17.0.1
 
 # Windows x86_32
-filename=zulu17.28.13-ca-jdk17.0.0-win_i686.zip
+filename=$ZULU_BASENAME-win_i686.zip
 curl -O "$ZULU_URL/$filename"
 unzip $filename
 mv $(basename $filename .zip) windows-x86_32
 
 # Windows x86_64
-filename=zulu17.28.13-ca-jdk17.0.0-win_x64.zip
+filename=$ZULU_BASENAME-win_x64.zip
 curl -O "$ZULU_URL/$filename"
 unzip $filename
 mv $(basename $filename .zip) windows-x86_64
 
 # Windows aarch64
-filename=zulu17.28.13-ca-jdk17.0.0-win_aarch64.zip
+filename=$ZULU_BASENAME-win_aarch64.zip
 curl -O "$ZULU_URL/$filename"
 unzip $filename
 mv $(basename $filename .zip) windows-aarch64
 
 # MacOS x86_64
-filename=zulu17.28.13-ca-jdk17.0.0-macosx_x64.tar.gz
+filename=$ZULU_BASENAME-macosx_x64.tar.gz
 curl -O "$ZULU_URL/$filename"
 mkdir macos-x86_64
 tar -C macos-x86_64 --strip-components=1 -xvf $filename
 
 # MacOS aarch64
-filename=zulu17.28.13-ca-jdk17.0.0-macosx_aarch64.tar.gz
+filename=$ZULU_BASENAME-macosx_aarch64.tar.gz
 curl -O "$ZULU_URL/$filename"
 mkdir macos-aarch64
 tar -C macos-aarch64 --strip-components=1 -xvf $filename
