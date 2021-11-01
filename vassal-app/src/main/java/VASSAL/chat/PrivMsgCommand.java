@@ -21,7 +21,6 @@ import java.awt.Component;
 import java.awt.KeyboardFocusManager;
 import java.awt.Window;
 
-import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import VASSAL.command.Command;
@@ -48,13 +47,16 @@ public class PrivMsgCommand extends Command {
     }
 
     final Window f = SwingUtilities.getWindowAncestor(chat);
-    f.setAutoRequestFocus(true);
+    f.setAutoRequestFocus(false); //BR// Don't grab focus whenever we receive a message from somebody else (ugh)
     if (!f.isVisible()) {
       f.setVisible(true);
       final Component c = KeyboardFocusManager.getCurrentKeyboardFocusManager()
                                         .getFocusOwner();
       if (c == null || !SwingUtilities.isDescendingFrom(c, f)) {
         java.awt.Toolkit.getDefaultToolkit().beep();
+
+        //BR// Don't grab focus whenever we receive a message from somebody else (ugh)
+        /*
         final int j = chat.getComponentCount();
         for (int i = 0; i < j; ++i) {
           if (chat.getComponent(i) instanceof JTextField) {
@@ -62,6 +64,7 @@ public class PrivMsgCommand extends Command {
             break;
           }
         }
+        */
       }
     }
     else {

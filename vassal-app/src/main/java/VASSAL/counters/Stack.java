@@ -393,8 +393,13 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
       map.getStackMetrics().getContents(this, null, null, childBounds, 0, 0);
 
       asList().stream()
-              .filter(PieceIterator.VISIBLE)
-              .forEach(p -> r.add(childBounds[indexOf(p)]));
+        .filter(PieceIterator.VISIBLE)
+        .forEach(p -> {
+          final int idx = indexOf(p);
+          if (idx >= 0) { //BR// Bounds-check the array as a bandaid against things being drawn during a simultaneous reload or screenshot
+            r.add(childBounds[idx]);
+          }
+        });
     }
     return r;
   }
@@ -408,9 +413,15 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
     final Shape[] childBounds = new Shape[getPieceCount()];
     final StackMetrics metrics = getMap() == null ? getDefaultMetrics() : getMap().getStackMetrics();
     metrics.getContents(this, null, childBounds, null, 0, 0);
+
     asList().stream()
-            .filter(PieceIterator.VISIBLE)
-            .forEach(p -> a.add(new Area(childBounds[indexOf(p)])));
+      .filter(PieceIterator.VISIBLE)
+      .forEach(p -> {
+        final int idx = indexOf(p);
+        if (idx >= 0) { //BR// Bounds-check the array as a bandaid against things being drawn during a simultaneous reload or screenshot
+          a.add(new Area(childBounds[idx]));
+        }
+      });
 
     return a;
   }

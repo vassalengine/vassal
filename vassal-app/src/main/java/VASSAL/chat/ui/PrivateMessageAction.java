@@ -58,6 +58,7 @@ public class PrivateMessageAction extends AbstractAction {
       f.setAutoRequestFocus(false); //BR// Don't force focus whenever we receive a message.
       f.setVisible(true);
       f.toFront();
+      chat.getInputField().requestFocus(); //BR// But *do* request focus right now, when we are open the thing ourselves.
     }
   }
 

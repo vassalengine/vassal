@@ -32,6 +32,7 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.EventObject;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -164,8 +165,9 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
    * @param target new Translation
    */
   protected void refreshTranslationList(Configurable target) {
-    final Language language = GameModule.getGameModule().getComponentsOf(Language.class).iterator().next();
-    if (language != null) {
+    final List<Language> list = GameModule.getGameModule().getComponentsOf(Language.class);
+    if (list != null) {
+      final Language language = list.iterator().next();
       myConfigureTree.externalInsert(language, target);
     }
     langBox.removeAllItems();

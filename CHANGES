@@ -1,7 +1,17 @@
 3.6.0-beta6 - ??? 
 
+* 10676: Upgrade to Java 17.0.1+12 for Windows, Mac packages
+* 10667: Private Message windows no longer prompt to ignore every time you
+    close them; incoming private messages do not grab focus
+* 10663: Fix occasional draw-side exceptions during loading game and saving
+    screenshots
+* 10660: Report translated name for Symbolic Die Faces
+* 10659: Sanitize temporary file names a bit earlier
+* 10658: Fix NPE if try to open translations but the buildable doesn't exist
 * 10654: Fixed corner-case NPE when closing a game
 * 10650: Show X,Y in Configurer when repositioning At Start Stack
+* 10649: Deck can start face-up or face-down when using right-click menu
+    setting
 * 10648: Private chat windows will no longer steal focus
 * 10647: Private Maps visible to non-owning players will correctly display
     Mouseover text

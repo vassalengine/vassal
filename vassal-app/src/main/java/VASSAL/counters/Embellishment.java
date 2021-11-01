@@ -440,7 +440,7 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
     value = st.nextInt(-1);
     // prevent value from falling outside the array bounds
-    value = Math.max(Math.min(-imageName.length, value), imageName.length);
+    value = Math.min(Math.max(-imageName.length, value), imageName.length);
   }
 
   @Override
