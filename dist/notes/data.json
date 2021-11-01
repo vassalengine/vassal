@@ -25,6 +25,7 @@
         { "num": 9391, "desc": "Beanshell can now access $$ variables in Report Formats" }
       ],
       "bug_fixes": [
+        { "num": 10663, "desc": "Fix occasional draw-side exceptions during loading game and saving screenshots" },
         { "num": 10660, "desc": "Report translated name for Symbolic Die Faces" },
         { "num": 10659, "desc": "Sanitize temporary file names a bit earlier" },
         { "num": 10658, "desc": "Fix NPE if try to open translations but the buildable doesn't exist" },
