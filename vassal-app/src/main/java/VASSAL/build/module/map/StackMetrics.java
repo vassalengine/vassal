@@ -268,13 +268,15 @@ public class StackMetrics extends AbstractConfigurable {
 
       final GamePiece next = e.nextPiece();
       final int index = stack.indexOf(next);
-      final int nextX = x + (int) (zoom * (positions[index].x - x));
-      final int nextY = y + (int) (zoom * (positions[index].y - y));
-      if (stack.isExpanded() || !e.hasMoreElements()) {
-        next.draw(g, nextX, nextY, obs, zoom);
-      }
-      else {
-        drawUnexpanded(next, g, nextX, nextY, obs, zoom);
+      if (index >= 0) { //BR// Bounds-check index as a bandaid against getting drawn during e.g. a screenshot or loadgame
+        final int nextX = x + (int) (zoom * (positions[index].x - x));
+        final int nextY = y + (int) (zoom * (positions[index].y - y));
+        if (stack.isExpanded() || !e.hasMoreElements()) {
+          next.draw(g, nextX, nextY, obs, zoom);
+        }
+        else {
+          drawUnexpanded(next, g, nextX, nextY, obs, zoom);
+        }
       }
     }
 
@@ -282,10 +284,12 @@ public class StackMetrics extends AbstractConfigurable {
          .filter(gamePiece -> selectedVisible.accept(gamePiece))
          .forEach(gamePiece -> {
            final int index = stack.indexOf(gamePiece);
-           final int nextX = x + (int) (zoom * (positions[index].x - x));
-           final int nextY = y + (int) (zoom * (positions[index].y - y));
-           gamePiece.draw(g, nextX, nextY, obs, zoom);
-           highlighter.draw(gamePiece, g, nextX, nextY, obs, zoom);
+           if (index >= 0) { //BR// Bounds-check index as a bandaid against getting drawn during e.g. a screenshot or loadgame
+             final int nextX = x + (int) (zoom * (positions[index].x - x));
+             final int nextY = y + (int) (zoom * (positions[index].y - y));
+             gamePiece.draw(g, nextX, nextY, obs, zoom);
+             highlighter.draw(gamePiece, g, nextX, nextY, obs, zoom);
+           }
          });
   }
 
@@ -316,13 +320,15 @@ public class StackMetrics extends AbstractConfigurable {
 
       final GamePiece next = e.nextPiece();
       final int index = stack.indexOf(next);
-      final Point pt = map.mapToDrawing(positions[index], os_scale);
-      if (bounds == null || isVisible(region, bounds[index])) {
-        if (stack.isExpanded() || !e.hasMoreElements()) {
-          next.draw(g, pt.x, pt.y, view, zoom);
-        }
-        else {
-          drawUnexpanded(next, g, pt.x, pt.y, view, zoom);
+      if (index >= 0) { //BR// Bounds-check index as a bandaid against getting drawn during e.g. a screenshot or loadgame
+        final Point pt = map.mapToDrawing(positions[index], os_scale);
+        if (bounds == null || isVisible(region, bounds[index])) {
+          if (stack.isExpanded() || !e.hasMoreElements()) {
+            next.draw(g, pt.x, pt.y, view, zoom);
+          }
+          else {
+            drawUnexpanded(next, g, pt.x, pt.y, view, zoom);
+          }
         }
       }
     }
@@ -331,7 +337,7 @@ public class StackMetrics extends AbstractConfigurable {
          .filter(gamePiece -> selectedVisible.accept(gamePiece))
          .forEach(gamePiece -> {
            final int index = stack.indexOf(gamePiece);
-           if (bounds == null || isVisible(region, bounds[index])) {
+           if ((index >= 0) && (bounds == null || isVisible(region, bounds[index]))) {  //BR// Bounds-check index as a bandaid against getting drawn during e.g. a screenshot or loadgame
              final Point pt = map.mapToDrawing(positions[index], os_scale);
              gamePiece.draw(g, pt.x, pt.y, view, zoom);
              highlighter.draw(gamePiece, g, pt.x, pt.y, view, zoom);
