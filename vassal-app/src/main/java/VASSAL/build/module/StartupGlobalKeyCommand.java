@@ -105,6 +105,7 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
     }
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return ArrayUtils.addAll(
       super.getAttributeDescriptions(),
