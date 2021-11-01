@@ -129,7 +129,16 @@ public class MovePiece extends Command {
         }
         else {
           if (newMap.apply(mergeFinder) == null) {
-            newMap.placeAt(piece, newPosition);
+            if (newMap.getStackMetrics().isStackingEnabled()
+                && !Boolean.TRUE.equals(piece.getProperty(Properties.NO_STACK))) {
+              final Stack s = new Stack();
+              s.add(piece);
+              GameModule.getGameModule().getGameState().addPiece(s);
+              newMap.placeAt(s, newPosition);
+            }
+            else {
+              newMap.placeAt(piece, newPosition);
+            }
           }
           if (piece.getParent() != null) {
             piece.getParent().insert(piece, 0);
