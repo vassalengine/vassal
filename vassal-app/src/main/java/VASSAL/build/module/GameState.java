@@ -16,6 +16,9 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.build.AbstractBuildable;
+import VASSAL.build.Buildable;
+import VASSAL.build.widget.PieceSlot;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Cursor;
@@ -358,6 +361,22 @@ public class GameState implements CommandEncoder {
   //
 
   /**
+   * Applies all of the Startup Global Key Commands in order, searching recursively through the game module,
+   * assuming they haven't been applied already.
+   * @param target the Game Module to be thoroughly reamed for SGKCs
+   */
+  private void applyStartupGlobalKeyCommands(AbstractBuildable target) {
+    for (final Buildable b : target.getBuildables()) {
+      if (b instanceof StartupGlobalKeyCommand) {
+        ((StartupGlobalKeyCommand)b).applyIfNotApplied();
+      }
+      else if (b instanceof AbstractBuildable) {
+        applyStartupGlobalKeyCommands((AbstractBuildable)b);
+      }
+    }
+  }
+
+  /**
    * Start/end a game.  Prompt to save if the game state has been
    * modified since last save.  Invoke {@link GameComponent#setup}
    * on all registered {@link GameComponent} objects.
@@ -417,10 +436,14 @@ public class GameState implements CommandEncoder {
 
     if (gameStarted) {
       if (gameStarting) {
-        // If we're starting a new session, prompt to create a new logfile.
-        // But NOT if we're starting a session by *replaying* a logfile -- in that case we'd get the reminder at the
-        // end of the logfile.
+        // Things that we invokeLater
         SwingUtilities.invokeLater(() -> {
+          // Apply all of the startup global key commands, in order
+          applyStartupGlobalKeyCommands(GameModule.getGameModule());
+
+          // If we're starting a new session, prompt to create a new logfile.
+          // But NOT if we're starting a session by *replaying* a logfile -- in that case we'd get the reminder at the
+          // end of the logfile.
           final Logger logger = GameModule.getGameModule().getLogger();
           if (logger instanceof BasicLogger) {
             if (!((BasicLogger)logger).isReplaying()) {

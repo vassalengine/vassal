@@ -17,14 +17,15 @@
  */
 package VASSAL.build.module;
 
-import javax.swing.SwingUtilities;
-
+import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
+import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.List;
 
@@ -32,15 +33,39 @@ import java.util.List;
  * A Global Key Command that is automatically invoked on game start-up,
  * once the various Key Listeners have been started.
  * <p>
- * If multiple start-up commands need to be run, they should be combined
- * in a MultiAction Button and then launched from a single instance of
- * StartupGlobalKeyCommand, as the sequence in which multiple instances of
- * StartupGlobalKeyCommand are fired is undetermined.
+ * As of 3.6, multiple Startup Global Key Commands can be depended on to
+ * process in the correct order.
  *
  * @author Pieter Geerkens
  *
  */
 public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameComponent {
+  public static final String WHEN_TO_APPLY                 = "whenToApply";          //NON-NLS
+  public static final String APPLY_FIRST_LAUNCH_OF_SESSION = "firstLaunchOfSession"; //NON-NLS
+  public static final String APPLY_EVERY_LAUNCH_OF_SESSION = "everyLaunchOfSession"; //NON-NLS
+  public static final String APPLY_START_OF_GAME_ONLY      = "startOfGameOnly";      //NON-NLS
+
+  public String whenToApply = APPLY_FIRST_LAUNCH_OF_SESSION;
+
+  private boolean hasEverApplied     = false;  // Has ever been applied during this session   (NOT saved with game state)
+  private boolean hasAppliedThisGame = false;  // Has ever been applied during this *game*    (Saved with game state)
+
+  public static class Prompt extends TranslatableStringEnum {
+    @Override
+    public String[] getValidValues(AutoConfigurable target) {
+      return new String[]{ APPLY_FIRST_LAUNCH_OF_SESSION, APPLY_EVERY_LAUNCH_OF_SESSION, APPLY_START_OF_GAME_ONLY };
+    }
+
+    @Override
+    public String[] getI18nKeys(AutoConfigurable target) {
+      return new String[] {
+        "Editor.StartupGlobalKeyCommand.first_launch_of_session",
+        "Editor.StartupGlobalKeyCommand.every_launch_of_session",
+        "Editor.StartupGlobalKeyCommand.start_of_game_only"
+      };
+    }
+  }
+
   @SuppressWarnings("removal")
   public StartupGlobalKeyCommand() {
     super();
@@ -80,19 +105,97 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
     }
   }
 
-  //---------------------- GameComponent implementation ---------------------
-  private boolean hasStarted = false;
+  public String[] getAttributeDescriptions() {
+    return ArrayUtils.addAll(
+      super.getAttributeDescriptions(),
+      Resources.getString("Editor.StartupGlobalKeyCommand.when_to_apply")
+    );
+  }
+
+  @Override
+  public String[] getAttributeNames() {
+    return ArrayUtils.addAll(
+      super.getAttributeNames(),
+      WHEN_TO_APPLY
+    );
+  }
+
+  @Override
+  public Class<?>[] getAttributeTypes() {
+    return ArrayUtils.addAll(
+      super.getAttributeTypes(),
+      Prompt.class
+    );
+  }
+
+  @Override
+  public void setAttribute(String key, Object value) {
+    if (WHEN_TO_APPLY.equals(key)) {
+      if (value instanceof String) {
+        whenToApply = (String)value;
+      }
+    }
+    else {
+      super.setAttribute(key, value);
+    }
+  }
+
+  @Override
+  public String getAttributeValueString(String key) {
+    if (WHEN_TO_APPLY.equals(key)) {
+      return whenToApply;
+    }
+    else {
+      return super.getAttributeValueString(key);
+    }
+  }
+
+
+  public void applyIfNotApplied() {
+    if (APPLY_FIRST_LAUNCH_OF_SESSION.equals(whenToApply)) {
+      if (hasEverApplied) {
+        return;
+      }
+    }
+    else if (APPLY_START_OF_GAME_ONLY.equals(whenToApply)) {
+      if (hasAppliedThisGame) {
+        return;
+      }
+    }
+
+    hasEverApplied = true;     // This one will be false again next time anything calls GameState.setup(true)
+    hasAppliedThisGame = true; // This one will be remembered as part of the game state (i.e. even after loading a game)
+    apply();
+  }
 
   @Override
   public void setup(boolean gameStarting) {
-    if (gameStarting && !hasStarted) {
-      SwingUtilities.invokeLater(this::apply);
-    }
-    hasStarted = gameStarting;
+    hasAppliedThisGame = false;
   }
 
   @Override
   public Command getRestoreCommand() {
-    return null; // No persistent state
+    return new UpdateStartupGlobalKeyCommand(hasAppliedThisGame);
+  }
+
+  /**
+   * Our "command" format for remembering whether the key command has been applied during this game
+   */
+  private class UpdateStartupGlobalKeyCommand extends Command {
+    private final boolean appliedThisGame;
+
+    public UpdateStartupGlobalKeyCommand(boolean appliedThisGame) {
+      this.appliedThisGame = appliedThisGame;
+    }
+
+    @Override
+    protected void executeCommand() {
+      hasAppliedThisGame = appliedThisGame;
+    }
+
+    @Override
+    protected Command myUndoCommand() {
+      return null;
+    }
   }
 }
