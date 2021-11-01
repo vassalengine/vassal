@@ -152,21 +152,22 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
   }
 
 
-  public void applyIfNotApplied() {
+  public boolean applyIfNotApplied() {
     if (APPLY_FIRST_LAUNCH_OF_SESSION.equals(whenToApply)) {
       if (hasEverApplied) {
-        return;
+        return false;
       }
     }
     else if (APPLY_START_OF_GAME_ONLY.equals(whenToApply)) {
       if (hasAppliedThisGame) {
-        return;
+        return false;
       }
     }
 
     hasEverApplied = true;     // This one will be false again next time anything calls GameState.setup(true)
     hasAppliedThisGame = true; // This one will be remembered as part of the game state (i.e. even after loading a game)
     apply();
+    return true;
   }
 
   @Override

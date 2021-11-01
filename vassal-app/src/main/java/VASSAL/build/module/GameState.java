@@ -360,20 +360,50 @@ public class GameState implements CommandEncoder {
   //
 
   /**
-   * Applies all of the Startup Global Key Commands in order, searching recursively through the game module,
+   * Searches recursively through the game module for Startup Global Key Commands, applying them
    * assuming they haven't been applied already.
    * @param target the Game Module to be thoroughly reamed for SGKCs
    */
-  private void applyStartupGlobalKeyCommands(AbstractBuildable target) {
+  private boolean applyStartupGlobalKeyCommands(AbstractBuildable target) {
+    boolean any = false;
     for (final Buildable b : target.getBuildables()) {
       if (b instanceof StartupGlobalKeyCommand) {
-        ((StartupGlobalKeyCommand)b).applyIfNotApplied();
+        any |= ((StartupGlobalKeyCommand)b).applyIfNotApplied();
       }
       else if (b instanceof AbstractBuildable) {
-        applyStartupGlobalKeyCommands((AbstractBuildable)b);
+        any |= applyStartupGlobalKeyCommands((AbstractBuildable)b);
       }
     }
+    return any;
   }
+
+  /**
+   * Applies all of the Startup Global Key Commands in order, and then blocks undo past this point if any were applied.
+   */
+  private void doStartupGlobalKeyCommands() {
+    if (applyStartupGlobalKeyCommands(GameModule.getGameModule())) {
+      // This "finished" command blocks undoing past Startup Global Key Commands
+      final FinishedStartupGlobalKeyCommands finished = new FinishedStartupGlobalKeyCommands();
+      finished.execute();
+      GameModule.getGameModule().sendAndLog(finished);
+    }
+  }
+
+  private static class FinishedStartupGlobalKeyCommands extends Command {
+    @Override
+    protected void executeCommand() {
+      final Logger l = GameModule.getGameModule().getLogger();
+      if (l instanceof BasicLogger) {
+        ((BasicLogger )l).blockUndo();
+      }
+    }
+
+    @Override
+    protected Command myUndoCommand() {
+      return null;
+    }
+  }
+
 
   /**
    * Start/end a game.  Prompt to save if the game state has been
@@ -438,7 +468,7 @@ public class GameState implements CommandEncoder {
         // Things that we invokeLater
         SwingUtilities.invokeLater(() -> {
           // Apply all of the startup global key commands, in order
-          applyStartupGlobalKeyCommands(GameModule.getGameModule());
+          doStartupGlobalKeyCommands();
 
           // If we're starting a new session, prompt to create a new logfile.
           // But NOT if we're starting a session by *replaying* a logfile -- in that case we'd get the reminder at the
@@ -719,7 +749,7 @@ public class GameState implements CommandEncoder {
     File file = fc.getSelectedFile();
 
     // append .vsav if it's not there already
-    if (!file.getName().endsWith(".vsav")) {
+    if (!file.getName().endsWith(".vsav")) { //NON-NLS
       file = new File(file.getParent(), file.getName() + ".vsav"); //NON-NLS
     }
 
@@ -988,7 +1018,7 @@ public class GameState implements CommandEncoder {
         loadCommand.execute();
       }
       finally {
-        String msg;
+        final String msg;
 
         if (g.getGameState().isGameStarted()) {
           if (loadComments != null && loadComments.length() > 0) {
@@ -1063,6 +1093,7 @@ public class GameState implements CommandEncoder {
               log.error("", e);
             }
             msg = Resources.getString("GameState.error_loading", shortName);
+            GameModule.getGameModule().warn(msg);
           }
 
           if (loadCommand != null) {
