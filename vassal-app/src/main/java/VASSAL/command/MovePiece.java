@@ -105,6 +105,22 @@ public class MovePiece extends Command {
     return playerId;
   }
 
+  private void stackOrPlacePiece(GamePiece piece, Map newMap, Point newPosition, boolean toTop) {
+    if (newMap.getStackMetrics().isStackingEnabled()
+      && !Boolean.TRUE.equals(piece.getProperty(Properties.NO_STACK))) {
+      final Stack s = new Stack();
+      s.add(piece);
+      GameModule.getGameModule().getGameState().addPiece(s);
+      newMap.placeAt(s, newPosition);
+    }
+    else {
+      newMap.placeAt(piece, newPosition);
+      if (toTop && (piece.getParent() != null)) {
+        piece.getParent().insert(piece, 0);
+      }
+    }
+  }
+
   @Override
   protected void executeCommand() {
     final GamePiece piece = GameModule.getGameModule().getGameState().getPieceForId(id);
@@ -123,25 +139,13 @@ public class MovePiece extends Command {
           }
           else {
             if (newMap.apply(mergeFinder) == null) {
-              newMap.placeAt(piece, newPosition);
+              stackOrPlacePiece(piece, newMap, newPosition, false);
             }
           }
         }
         else {
           if (newMap.apply(mergeFinder) == null) {
-            if (newMap.getStackMetrics().isStackingEnabled()
-                && !Boolean.TRUE.equals(piece.getProperty(Properties.NO_STACK))) {
-              final Stack s = new Stack();
-              s.add(piece);
-              GameModule.getGameModule().getGameState().addPiece(s);
-              newMap.placeAt(s, newPosition);
-            }
-            else {
-              newMap.placeAt(piece, newPosition);
-            }
-          }
-          if (piece.getParent() != null) {
-            piece.getParent().insert(piece, 0);
+            stackOrPlacePiece(piece, newMap, newPosition, true);
           }
         }
       }
