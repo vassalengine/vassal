@@ -422,6 +422,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     List<Point> offsets = null;
     Command c = null;
     Point dest = null;
+    final Map oldMap = outer.getMap();
 
     // If we're about to move a Mat, establish the initial relative positions of all its "contents"
     if (GameModule.getGameModule().isMatSupport()) {
@@ -548,6 +549,11 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         }
       }
     }
+
+    if (oldMap != map) {
+      oldMap.repaint();
+    }
+    map.repaint();
 
     return c;
   }
