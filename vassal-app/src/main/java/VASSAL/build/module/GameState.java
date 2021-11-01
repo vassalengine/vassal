@@ -18,7 +18,6 @@ package VASSAL.build.module;
 
 import VASSAL.build.AbstractBuildable;
 import VASSAL.build.Buildable;
-import VASSAL.build.widget.PieceSlot;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Cursor;
