@@ -1,6 +1,13 @@
 3.6.0-beta6 - ??? 
 
+* 10681: Better documented pieceName vs PieceName
+* 10679: Place Marker, Send-to-Location, and Translate traits didn't always
+    repaint maps
+* 10678: Undo of movement will no longer deny lone stackable pieces their own
+    stack
 * 10676: Upgrade to Java 17.0.1+12 for Windows, Mac packages
+* 10673: Added Game Refresher documentation
+* 10671: Calculate Hex Range correctly, regardless of hex shape
 * 10667: Private Message windows no longer prompt to ignore every time you
     close them; incoming private messages do not grab focus
 * 10663: Fix occasional draw-side exceptions during loading game and saving
@@ -9,6 +16,7 @@
 * 10659: Sanitize temporary file names a bit earlier
 * 10658: Fix NPE if try to open translations but the buildable doesn't exist
 * 10654: Fixed corner-case NPE when closing a game
+* 10652: Zone Editor shows coordinates of vertices while editing
 * 10650: Show X,Y in Configurer when repositioning At Start Stack
 * 10649: Deck can start face-up or face-down when using right-click menu
     setting
