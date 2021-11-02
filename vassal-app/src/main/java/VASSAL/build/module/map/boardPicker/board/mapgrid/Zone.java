@@ -700,6 +700,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       editor.setMyConfigurer(this);
 
       frame = new JDialog(GameModule.getGameModule().getPlayerWindow(), zone.getConfigureName(), true);
+      frame.setFocusTraversalKeysEnabled(false);
 
       frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
       final JPanel labels = new JPanel();
@@ -715,6 +716,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       frame.add(labels);
 
       final JButton direct = new JButton(Resources.getString("Editor.Zone.set_coordinates_directly"));
+      direct.setFocusable(false);
       direct.addActionListener(e -> {
         String newShape = JOptionPane.showInputDialog(frame, Resources.getString("Editor.Zone.enter_points_instructions"), PolygonEditor
           .polygonToString(editor.getPolygon()).replace(';', ' '));
@@ -751,12 +753,14 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       final JPanel buttonPanel = new JPanel();
 
       final JButton closeButton = new JButton(Resources.getString("General.ok"));
+      closeButton.setFocusable(false);
       closeButton.addActionListener(e -> {
         setValue((Object) getValueString());
         frame.setVisible(false);
       });
 
       final JButton canButton = new JButton(Resources.getString("General.cancel"));
+      canButton.setFocusable(false);
       canButton.addActionListener(e -> {
         editor.setPolygon(savePoly);
         setValue((Object) getValueString());
