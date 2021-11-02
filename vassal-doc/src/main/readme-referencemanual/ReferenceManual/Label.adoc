@@ -10,12 +10,15 @@
 This trait displays a text label on or near the piece.
 The text of the label can be fixed or specifiable by a player at game time.
 
+[width="100%",cols="50%a,^50%a",]
+|===
+|
 *Description:*  A description of the purpose of this label that is displayed in the Piece Definer.
 
-*Text:*  The starting value for the label text. The string entered in the *Text* field is evaluated as follows:
+*Label Text:*  The starting value for the label text. The string entered in the _Label Text_ field is evaluated as follows:
 
 . Check if the entered label is a Beanshell expression, then evaluate it as such.
-. Check if the entered label can be interpreted as is an integer. This is the case if the label only contains digits.	
+. Check if the entered label can be interpreted as is an integer. This is the case if the label only contains digits.
 . Check if the entered label is a $$ Variable Substitution (defined by a string enclosed between $ characters). This allows <<Properties.adoc#top,Properties>> of the piece to be substituted with $..$ notation, as in a <<MessageFormat.adoc#top,Message Format>>
 . If no check is true the entered string is displayed.
 
@@ -25,7 +28,7 @@ Note that the Beanshell expressions should be preferred to $$ Variable Substitut
 
 By enclosing the text within tags, you can use simple HTML format to specify various colors, fonts and sizes.
 
-Example: 
+Example:
 ****
 _<html><b>Bold text</b><p>with a line break<p>and <font color=red>different</font> <font color=blue>colors</font></html>_ will display as:
 
@@ -34,12 +37,7 @@ with a line break +
 and [red]#different# [blue]#colors#
 ****
 
-[width="100%",cols="50%a,^50%a",]
-|===
-|
-*Description:*:: A short description of this trait for your own reference.
-
-*Label text:*::  A <<MessageFormat.adoc#top,Message Format>> that specifies how the name of this piece will be reported: _pieceName_ is the name of the piece excluding the label, _label_ is the value of the label text (including, unfortunately, HTML tags). If the label is empty, then the default name of the piece is always used.
+*Name format:*::  A <<MessageFormat.adoc#top,Message Format>> that specifies how the name of this piece will be reported: _pieceName_ is the name of the piece excluding the label, _label_ is the value of the label text (including, unfortunately, HTML tags). If the label is empty, then the default name of the piece is always used. *Note:* the _$pieceName$_ reference here works differently from the PieceName property (see <<BasicPiece.adoc#top, Basic Piece>>). PieceName (with the capital P) is used to retrieve the full name of the piece as evaluated via this _Name Format_ field, and thus cannot be referenced in this field as it would produce an infinite loop. For this reason, in this field only, all attempts to reference _PieceName_ are automatically assumed to be references to _pieceName_.
 
 *Menu command:*::  If not blank, gives the text of the corresponding menu item in the piece's right-click context menu, selection of which will result in the text of the label being updated.
 
