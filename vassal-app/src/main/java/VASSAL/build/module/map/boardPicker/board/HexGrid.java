@@ -17,16 +17,27 @@
  */
 package VASSAL.build.module.map.boardPicker.board;
 
-import static java.lang.Math.PI;
 import static java.lang.Math.abs;
-import static java.lang.Math.atan2;
 import static java.lang.Math.ceil;
-import static java.lang.Math.cos;
 import static java.lang.Math.floor;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static java.lang.Math.round;
 import static java.lang.Math.sqrt;
+
+import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.Buildable;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.GridContainer;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.GridNumbering;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.HexGridNumbering;
+import VASSAL.configure.AutoConfigurer;
+import VASSAL.configure.ColorConfigurer;
+import VASSAL.configure.Configurer;
+import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.hex.Hex;
+import VASSAL.tools.hex.OffsetCoord;
 
 import java.awt.Color;
 import java.awt.Container;
@@ -42,18 +53,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.JButton;
-
-import VASSAL.build.AbstractConfigurable;
-import VASSAL.build.Buildable;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.map.boardPicker.board.mapgrid.GridContainer;
-import VASSAL.build.module.map.boardPicker.board.mapgrid.GridNumbering;
-import VASSAL.build.module.map.boardPicker.board.mapgrid.HexGridNumbering;
-import VASSAL.configure.AutoConfigurer;
-import VASSAL.configure.ColorConfigurer;
-import VASSAL.configure.Configurer;
-import VASSAL.configure.VisibilityCondition;
-import VASSAL.i18n.Resources;
 
 /**
  * A Hexgrid is a map grid composed of hexes.
@@ -689,21 +688,44 @@ public class HexGrid extends AbstractConfigurable
     return new Area(poly);
   }
 
+  // Calculate the Raw Column number (independent of any grid numbering).
+  public int getRawColumn(Point p) {
+    p = new Point(p);
+    rotateIfSideways(p);
+    int x = p.x - getOrigin().x;
+
+    x = (int) floor(x / getHexWidth() + 0.5);
+    return x;
+  }
+
+  // Calculate the Raw Column number (independent of any grid numbering).
+  public int getRawRow(Point p) {
+    p = new Point(p);
+    rotateIfSideways(p);
+    final Point origin = getOrigin();
+    final double dx = getHexWidth();
+    final double dy = getHexSize();
+    final int nx = (int) round((p.x - origin.x) / dx);
+    final int ny;
+    if (nx % 2 == 0) {
+      ny = (int) round((p.y - origin.y) / dy);
+    }
+    else {
+      ny = (int) round((p.y - origin.y - dy / 2) / dy);
+    }
+    return ny;
+  }
+
+  /**
+   * Calculate the correct Manhattan range in hexes between 2 points.
+   */
   @Override
   public int range(Point p1, Point p2) {
-    p1 = new Point(p1);
-    rotateIfSideways(p1);
-    p2 = new Point(p2);
-    rotateIfSideways(p2);
-    final int x = p2.x - p1.x;
-    final int y = p2.y - p1.y;
-    double theta = atan2((-x), (-y)) + PI;
-    while (theta > PI / 3.)
-      theta -= PI / 3.;
-    theta = PI / 6. - theta;
-    double r = sqrt((x * x + y * y));
-    r *= cos(theta);
-    return (int) (r / (dy * sqrt3_2) + 0.5);
+
+    final Hex h1 = OffsetCoord.qoffsetToCube(OffsetCoord.ODD, new OffsetCoord(getRawColumn(p1), getRawRow(p1)));
+    final Hex h2 = OffsetCoord.qoffsetToCube(OffsetCoord.ODD, new OffsetCoord(getRawColumn(p2), getRawRow(p2)));
+
+    return h1.distance(h2);
   }
 
   protected int hexX(int x, int y) {

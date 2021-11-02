@@ -284,12 +284,7 @@ public class HexGridNumbering extends RegularGridNumbering {
   }
 
   public int getRawColumn(Point p) {
-    p = new Point(p);
-    grid.rotateIfSideways(p);
-    int x = p.x - grid.getOrigin().x;
-
-    x = (int) Math.floor(x / grid.getHexWidth() + 0.5);
-    return x;
+    return grid.getRawColumn(p);
   }
 
   @Override
@@ -371,20 +366,7 @@ public class HexGridNumbering extends RegularGridNumbering {
   }
 
   public int getRawRow(Point p) {
-    p = new Point(p);
-    grid.rotateIfSideways(p);
-    final Point origin = grid.getOrigin();
-    final double dx = grid.getHexWidth();
-    final double dy = grid.getHexSize();
-    final int nx = (int) Math.round((p.x - origin.x) / dx);
-    final int ny;
-    if (nx % 2 == 0) {
-      ny = (int) Math.round((p.y - origin.y) / dy);
-    }
-    else {
-      ny = (int) Math.round((p.y - origin.y - dy / 2) / dy);
-    }
-    return ny;
+    return grid.getRawRow(p);
   }
 
   @Override
