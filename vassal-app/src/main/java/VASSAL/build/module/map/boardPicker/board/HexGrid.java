@@ -688,8 +688,7 @@ public class HexGrid extends AbstractConfigurable
     return new Area(poly);
   }
 
-  // Calcuate the Raw Column number.
-  // Code copied from HexGridNumbering (Why is it there?)
+  // Calculate the Raw Column number (independent of any grid numbering).
   public int getRawColumn(Point p) {
     p = new Point(p);
     rotateIfSideways(p);
@@ -699,8 +698,7 @@ public class HexGrid extends AbstractConfigurable
     return x;
   }
 
-  // Calcuate the Raw Row number.
-  // Code copied from HexGridNumbering (Why is it there?)
+  // Calculate the Raw Column number (independent of any grid numbering).
   public int getRawRow(Point p) {
     p = new Point(p);
     rotateIfSideways(p);
