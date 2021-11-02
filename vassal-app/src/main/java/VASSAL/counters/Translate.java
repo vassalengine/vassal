@@ -266,6 +266,11 @@ public class Translate extends Decorator implements TranslatablePiece {
       }
     }
 
+    final Map map = target.getMap();
+    if (map != null) {
+      map.repaint();
+    }
+
     return c;
   }
 

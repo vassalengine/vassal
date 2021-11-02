@@ -239,6 +239,8 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
         parent.insert(marker, index);
         c = c.append(ct.getChangeCommand());
       }
+
+      m.repaint();
     }
     else {
       c = m.placeAt(marker, p);
