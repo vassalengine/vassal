@@ -1,0 +1,18 @@
+== VASSAL Reference Manual
+[#top]
+
+[.small]#<<index.adoc#toc,Home>> > <<Tools.adoc#top,Tools>> > *Remove Unused Images*#
+
+'''''
+
+= Tools
+Various tools and preferences are available to users and module designers.
+
+[cols=",",]
+|===
+
+|*<<Preferences.adoc#top,Preferences>>* |User preferences for personalization, customization, and compatibility.
+|*<<GameRefresher.doc#top,Refresh Counters>>* |Tool menu option to update counters in a game or save file to use prototypes from a new version of a module.
+|*<<SavedGameUpdater.adoc#top,Saved Game Updater>>* |Editor tool menu option to update all predefined setups in a module to use the latest prototypes.
+|*<<RemoveUnusedImages.adoc#top,Remove Unused Images>>* |Editor tool menu option to remove unused image files from a module.
+|===

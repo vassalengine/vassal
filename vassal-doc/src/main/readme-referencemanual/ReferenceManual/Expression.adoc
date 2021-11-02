@@ -1,7 +1,7 @@
 == VASSAL Reference Manual
 [#top]
 
-[.small]#<<index.adoc#toc,Home>> > *Expressions*#
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > *Expressions*#
 
 '''''
 
@@ -13,8 +13,9 @@ Any field within the Vassal Editor that is followed by a Calculator icon image:i
 Expressions are essentially an in-line <<CalculatedProperty.adoc#top,Calculated Property>> that are re-evaluated whenever their value is required.
 There are two main flavors of Expression: <<#beanshell,BeanShell Expressions>> which are identified by being surrounded by curly braces {}, and <<#simple,Simple Expressions>> which are not.
 
-When an expression (of either type) is used in e.g.
-a <<GlobalKeyCommand.adoc#top,Global Key Command>> to select which pieces to operate on by checking properties, it is called a <<PropertyMatchExpression.adoc#top,Property Match Expression>>.
+<<PropertyMatchExpression.adoc#top,Property Match Expressions>> are specialized expressions (of either type) used to select which pieces to operate on by checking properties, e.g. in a <<GlobalKeyCommand.adoc#top,Global Key Command>>.
+
+The <<ExpressionBuilder.adoc#top,Expression Builder>> is a convenient tool for building expressions from available properties, operations, and methods.
 
 NOTE: Expressions should not be confused with <<MessageFormat.adoc#top,Message Formats>>, which are used by various <<GamePiece.adoc#Traits,traits>> and <<GameModule.adoc#SubComponents,components>> to generate messages.
 Message Formats are far more limited than Expressions.

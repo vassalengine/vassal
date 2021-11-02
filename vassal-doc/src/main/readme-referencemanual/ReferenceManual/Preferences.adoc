@@ -1,7 +1,7 @@
 == VASSAL Reference Manual
 [#top]
 
-[.small]#<<index.adoc#toc,Home>> > *Preferences*#
+[.small]#<<index.adoc#toc,Home>> > <<Tools.adoc#top,Tools>> > *Preferences*#
 
 '''''
 

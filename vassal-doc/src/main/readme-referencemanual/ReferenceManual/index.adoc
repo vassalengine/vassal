@@ -12,4 +12,5 @@ image:images/Vassal.png[]
 |*<<GamePiece.adoc#top,Game Pieces>>* |Rooks! Pawns! Panzer Divisions! Pieces and their traits are the building blocks of Vassal.
 |*<<Map.adoc#top,Maps>>* |Maps! Game boards! The surface where playing pieces move around.
 |*<<Toolbar.adoc#top,Toolbar>>* |The Toolbar ribbon that helps players control their games.
+|*<<Tools.adoc#top,Tools, Preferences, and Utilities>>* |Other tools and utilities for maintaining modules.
 |===

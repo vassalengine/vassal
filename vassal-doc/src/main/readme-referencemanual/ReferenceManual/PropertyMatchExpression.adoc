@@ -1,7 +1,7 @@
 == VASSAL Reference Manual
 [#top]
 
-[.small]#<<index.adoc#toc,Home>> > *Property Match Expressions*#
+[.small]#<<index.adoc#toc,Home>> > <<Expressions.adoc#top,Expressions>> > *Property Match Expressions*#
 
 '''''
 
@@ -9,7 +9,7 @@
 
 image:images/PropertyMatchExpression.png[]
 
-A Property Match Expression is a special type of <<Expression.adoc#top,Expression>> that is used to select a set of counters to be operated on (<<Map.adoc#GlobalKeyCommand,Module>>, <<Map.adoc#GlobalKeyCommand,Map>>, <<DeckGlobalKeyCommand.adoc#top,Deck>> or <<GlobalKeyCommand.adoc#top,Counter>> Global Key Commands) or to test if some condition is true before taking action (<<TriggerAction.adoc#top,Trigger Action>>, <<RestrictCommands.adoc#top,Restrict Commands>>).
+A Property Match Expression is a special type of <<Expression.adoc#top,Expression>> that is used to select a set of counters to be operated on (<<Map.adoc#GlobalKeyCommand,Module>>, <<Map.adoc#GlobalKeyCommand,Map>>, <<DeckGlobalKeyCommand.adoc#top,Deck>> or <<GlobalKeyCommand.adoc#top,Counter>> Global Key Commands) or to test if some condition is true before taking action (<<TriggerAction.adoc#top,Trigger Action>>, <<RestrictCommands.adoc#top,Restrict Commands>>). Such expressions are so-named because their conditions usually check the values of <<Properties.adoc#top,Properties>>.
 
 Just as there are two type of <<Expression.adoc#top,Expressions>>, there are two types of Property Match Expressions.
 <<#beanshell,BeanShell Expressions>> are identified by being surrounded by curly braces {}. They are very powerful and can be arbitrarily complex.

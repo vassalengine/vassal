@@ -648,10 +648,10 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     protected void help() {
       File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
       dir = new File(dir, "ReferenceManual"); //$NON-NLS-1$
-      final File theFile = new File(dir, "HelpMenu.html"); //$NON-NLS-1$
+      final File theFile = new File(dir, "GameRefresher.html"); //$NON-NLS-1$
       HelpFile h = null;
       try {
-        h = new HelpFile(null, theFile, "#HelpFile"); //$NON-NLS-1$
+        h = new HelpFile(null, theFile, "#top"); //$NON-NLS-1$
       }
       catch (MalformedURLException e) {
         ErrorDialog.bug(e);
