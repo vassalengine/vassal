@@ -27,6 +27,7 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -63,8 +64,16 @@ public class PolygonEditor extends JPanel {
   private static final int POINT_RADIUS = 10;
   private static final int CLICK_THRESHOLD = 10;
 
+  private Zone.Editor myConfigurer;
+
   public PolygonEditor(Polygon p) {
     polygon = p;
+    setFocusable(true);
+    setFocusTraversalKeysEnabled(false);
+  }
+
+  public void setMyConfigurer(Zone.Editor myConfigurer) {
+    this.myConfigurer = myConfigurer;
   }
 
   protected void reset() {
@@ -79,9 +88,13 @@ public class PolygonEditor extends JPanel {
       removeMouseMotionListener(i);
     }
 
+    final KeyListener[] kl = getKeyListeners();
+    for (final KeyListener i : kl) {
+      removeKeyListener(i);
+    }
+
     final InputMap im = getInputMap(WHEN_IN_FOCUSED_WINDOW);
     im.remove(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
-    im.remove(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
 
     if (polygon == null || polygon.npoints == 0) {
       setupForCreate();
@@ -107,14 +120,30 @@ public class PolygonEditor extends JPanel {
     myScroll = scroll;
   }
 
+  private void updateAllCoords() {
+    if (myConfigurer != null) {
+      myConfigurer.updateCoords(polygon);
+      if (selected >= 0) {
+        myConfigurer.updateCoord(polygon.xpoints[selected], polygon.ypoints[selected]);
+      }
+      else {
+        myConfigurer.updateCoord("");
+      }
+    }
+  }
+
   private void setupForCreate() {
     new DefineRectangle();
+    selected = -1;
+    updateAllCoords();
     requestFocus();
     repaint();
   }
 
   private void setupForEdit() {
     new ModifyPolygon();
+    if (selected >= polygon.npoints) selected = -1;
+    updateAllCoords();
     requestFocus();
     repaint();
   }
@@ -144,7 +173,7 @@ public class PolygonEditor extends JPanel {
     }
 
     if (p.x >= myScroll.getViewport().getSize().width - dist &&
-        p.x < myScroll.getViewport().getSize().width) {
+      p.x < myScroll.getViewport().getSize().width) {
       dx = 1;
     }
 
@@ -153,7 +182,7 @@ public class PolygonEditor extends JPanel {
     }
 
     if (p.y >= myScroll.getViewport().getSize().height - dist &&
-        p.y < myScroll.getViewport().getSize().height) {
+      p.y < myScroll.getViewport().getSize().height) {
       dy = 1;
     }
 
@@ -166,6 +195,9 @@ public class PolygonEditor extends JPanel {
   }
 
   public static void reset(Polygon p, String pathStr) {
+    if (p == null) {
+      p = new Polygon();
+    }
     p.reset();
     final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(pathStr, ';');
     while (sd.hasMoreTokens()) {
@@ -184,9 +216,17 @@ public class PolygonEditor extends JPanel {
         }
       }
     }
+    if (p.npoints == 0) {
+      p = null;
+    }
   }
 
   public static String polygonToString(Polygon p) {
+    // Sometimes people delete all the points from the polygon. Because of course they do.
+    if ((p == null) || p.npoints == 0) {
+      return "";
+    }
+
     final StringBuilder sb = new StringBuilder();
     for (int i = 0; i < p.npoints; ++i) {
       sb.append(Math.round(p.xpoints[i]))
@@ -210,7 +250,7 @@ public class PolygonEditor extends JPanel {
     final Graphics2D g2d = (Graphics2D) g;
     g2d.addRenderingHints(SwingUtils.FONT_HINTS);
     g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                         RenderingHints.VALUE_ANTIALIAS_ON);
+      RenderingHints.VALUE_ANTIALIAS_ON);
 
     g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5F));
 
@@ -325,10 +365,11 @@ public class PolygonEditor extends JPanel {
     p.invalidate();
   }
 
-  private class ModifyPolygon extends MouseInputAdapter {
+  private class ModifyPolygon extends MouseInputAdapter implements KeyListener {
     public ModifyPolygon() {
       addMouseListener(this);
       addMouseMotionListener(this);
+      addKeyListener(this);
 
       getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), DELETE);
       getActionMap().put(DELETE, new AbstractAction() {
@@ -342,9 +383,11 @@ public class PolygonEditor extends JPanel {
     }
 
     private void remove() {
+      removeKeyListener(this);
       removeMouseListener(this);
       removeMouseMotionListener(this);
       getInputMap(WHEN_IN_FOCUSED_WINDOW).remove(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
+      getActionMap().remove(DELETE);
     }
 
     @Override
@@ -354,6 +397,7 @@ public class PolygonEditor extends JPanel {
           moveVertex(polygon, selected, e.getX(), e.getY());
         }
         scrollAtEdge(e.getPoint(), 15);
+        updateAllCoords();
         repaint();
       }
     }
@@ -365,6 +409,16 @@ public class PolygonEditor extends JPanel {
         final Pair<Integer, Double> n = nearestVertex(polygon, e.getX(), e.getY());
         final double d = n.getRight();
         selected = d <= CLICK_THRESHOLD ? n.getLeft() : -1;
+
+        if (myConfigurer != null) {
+          if (selected >= 0) {
+            myConfigurer.updateCoord(polygon.xpoints[selected], polygon.ypoints[selected]);
+          }
+          else {
+            myConfigurer.updateCoord("");
+          }
+        }
+
         repaint();
       }
       else if (SwingUtils.isContextMouseButtonDown(e)) {
@@ -373,21 +427,69 @@ public class PolygonEditor extends JPanel {
         insertVertex(polygon, ins, e.getX(), e.getY());
         selected = ins;
         repaint();
+        updateAllCoords();
       }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+      if (selected < 0) {
+        return;
+      }
+
+      int dx = 0, dy = 0, delta = 1;
+
+      if (e.isShiftDown()) {
+        delta = 5;
+      }
+
+      switch (e.getKeyCode()) {
+      case KeyEvent.VK_UP:
+        dy = -delta;
+        break;
+      case KeyEvent.VK_DOWN:
+        dy = delta;
+        break;
+      case KeyEvent.VK_LEFT:
+        dx = -delta;
+        break;
+      case KeyEvent.VK_RIGHT:
+        dx = delta;
+        break;
+      default:
+        return;
+      }
+
+      moveVertex(polygon, selected, polygon.xpoints[selected] + dx, polygon.ypoints[selected] + dy);
+      updateAllCoords();
+      repaint();
+      e.consume();
     }
 
     public void deleteKeyPressed() {
       if (selected >= 0) {
         deleteVertex(polygon, selected);
-        selected = -1;
 
         if (polygon.npoints == 0) {
           // Back to create mode if all points are gone.
           polygon = null;
+          selected = -1;
           remove();
           setupForCreate();
         }
+        else {
+          selected %= polygon.npoints;
+        }
 
+        updateAllCoords();
         repaint();
       }
     }
@@ -418,12 +520,17 @@ public class PolygonEditor extends JPanel {
           resetPolygon(e.getX(), e.getY(), 4);
           addMouseMotionListener(this);
           repaint();
+          if (myConfigurer != null) {
+            myConfigurer.updateCoords(polygon);
+            myConfigurer.updateCoord(e.getX(), e.getY());
+          }
         }
         else if (SwingUtils.isContextMouseButtonDown(e)) {
           remove();
           resetPolygon(e.getX(), e.getY(), 1);
           selected = 0;
           setupForEdit();
+          updateAllCoords();
         }
       }
     }
@@ -434,15 +541,27 @@ public class PolygonEditor extends JPanel {
         polygon.xpoints[1] = polygon.xpoints[2] = e.getX();
         polygon.ypoints[2] = polygon.ypoints[3] = e.getY();
         repaint();
+        if (myConfigurer != null) {
+          myConfigurer.updateCoords(polygon);
+
+          final String s = polygon.xpoints[0] +
+            "," +
+            polygon.ypoints[0] +
+            " => " +
+            polygon.xpoints[2] +
+            "," +
+            polygon.ypoints[2];
+          myConfigurer.updateCoord(s);
+        }
       }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
       if (polygon != null && polygon.npoints == 4 &&
-          SwingUtils.isMainMouseButtonDown(e)) {
+        SwingUtils.isMainMouseButtonDown(e)) {
         if ((Math.abs(polygon.xpoints[0] - polygon.xpoints[2]) +
-             Math.abs(polygon.ypoints[0] - polygon.ypoints[2])) < 20) {
+          Math.abs(polygon.ypoints[0] - polygon.ypoints[2])) < 20) {
           polygon.xpoints[1] = polygon.xpoints[2] = polygon.xpoints[0] + 25;
           polygon.ypoints[2] = polygon.ypoints[3] = polygon.ypoints[0] + 25;
         }
@@ -450,6 +569,7 @@ public class PolygonEditor extends JPanel {
         remove();
         selected = nearestVertex(polygon, e.getX(), e.getY()).getLeft();
         setupForEdit();
+        updateAllCoords();
       }
     }
   }

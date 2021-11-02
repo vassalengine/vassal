@@ -47,8 +47,10 @@ import VASSAL.script.expression.Auditable;
 import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.swing.FlowLabel;
 import VASSAL.tools.swing.SwingUtils;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -70,12 +72,14 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -607,22 +611,63 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   public Command getRestoreCommand() {
     return null;
   }
+
+  /**
+   * Our configurer for the Zone, including ability to edit the polygon
+   */
   public static class Editor extends Configurer {
     private final JPanel buttonPanel;
     private final JButton button;
-    private final PolygonEditor editor;
+    private PolygonEditor editor;
     private Board board;
-    private final JDialog frame;
+    private JDialog frame;
     protected AdjustableSpeedScrollPane scroll;
     protected Polygon savePoly;
+    protected FlowLabel coordsLabel;
+    protected JLabel coordLabel;
+    protected Zone zone;
     protected final JLabel warning = new JLabel(Resources.getString("Editor.Zone.zone_has_not_been_defined"));
 
     public Editor(final Zone zone) {
       super(PATH, null);
+
       buttonPanel = new JPanel(new MigLayout("ins 0")); // NON-NLS
       button = new JButton(Resources.getString("Editor.Zone.define_shape"));
       buttonPanel.add(button);
       button.addActionListener(e -> init(zone));
+
+      this.zone = zone;
+    }
+
+    public void updateCoords(Polygon polygon) {
+      final StringBuilder s = new StringBuilder("");
+      if (polygon != null) {
+        for (int p = 0; p < polygon.npoints; p++) {
+          s.append('(');
+          s.append(polygon.xpoints[p]);
+          s.append(',');
+          s.append(polygon.ypoints[p]);
+          s.append(") ");
+        }
+      }
+      coordsLabel.setText(s.toString());
+      coordsLabel.repaint();
+    }
+
+    public void updateCoords() {
+      updateCoords(zone.myPolygon);
+    }
+
+    public void updateCoord(String s) {
+      coordLabel.setText(s);
+      coordLabel.repaint();
+    }
+
+    public void updateCoord(int x, int y) {
+      updateCoord(x + "," + y);
+    }
+
+    private void init(Zone zone) {
       editor = new PolygonEditor(new Polygon(zone.myPolygon.xpoints, zone.myPolygon.ypoints, zone.myPolygon.npoints)) {
         private static final long serialVersionUID = 1L;
 
@@ -651,7 +696,12 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
           warning.setVisible(editor != null && (editor.getPolygon() == null || editor.getPolygon().npoints == 0));
         }
       };
+
+      editor.setMyConfigurer(this);
+
       frame = new JDialog(GameModule.getGameModule().getPlayerWindow(), zone.getConfigureName(), true);
+      frame.setFocusTraversalKeysEnabled(false);
+
       frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
       final JPanel labels = new JPanel();
       labels.setLayout(new GridLayout(3, 2));
@@ -666,9 +716,10 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       frame.add(labels);
 
       final JButton direct = new JButton(Resources.getString("Editor.Zone.set_coordinates_directly"));
+      direct.setFocusable(false);
       direct.addActionListener(e -> {
         String newShape = JOptionPane.showInputDialog(frame, Resources.getString("Editor.Zone.enter_points_instructions"), PolygonEditor
-            .polygonToString(editor.getPolygon()).replace(';', ' '));
+          .polygonToString(editor.getPolygon()).replace(';', ' '));
         if (newShape != null) {
           final StringBuilder buffer = new StringBuilder();
           final StringTokenizer st = new StringTokenizer(newShape);
@@ -686,18 +737,30 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       direct.setAlignmentX(0.0f);
       frame.add(direct);
 
-      scroll = new AdjustableSpeedScrollPane(editor);
+      scroll = new AdjustableSpeedScrollPane(editor, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
       editor.setScroll(scroll);
       frame.add(scroll);
+
+      final Box coordPanel = Box.createVerticalBox();
+      coordsLabel = new FlowLabel("");
+      coordLabel = new JLabel("");
+      coordPanel.add(coordLabel, BorderLayout.CENTER);
+      coordPanel.add(coordsLabel, BorderLayout.CENTER);
+      updateCoords();
+      updateCoord("");
+      frame.add(coordPanel);
+
       final JPanel buttonPanel = new JPanel();
 
       final JButton closeButton = new JButton(Resources.getString("General.ok"));
+      closeButton.setFocusable(false);
       closeButton.addActionListener(e -> {
         setValue((Object) getValueString());
         frame.setVisible(false);
       });
 
       final JButton canButton = new JButton(Resources.getString("General.cancel"));
+      canButton.setFocusable(false);
       canButton.addActionListener(e -> {
         editor.setPolygon(savePoly);
         setValue((Object) getValueString());
@@ -707,18 +770,19 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       buttonPanel.add(closeButton);
       buttonPanel.add(canButton);
       frame.add(buttonPanel);
-    }
 
-    private void init(Zone zone) {
       board = zone.getBoard();
       editor.setPreferredSize(board != null ? board.getSize() : DEFAULT_SIZE);
       editor.reset();
-      savePoly = editor.clonePolygon();
-      final Rectangle polyBounds = editor.getPolygon().getBounds();
-      final Point polyCenter = new Point(polyBounds.x + polyBounds.width / 2,
+      savePoly = new Polygon(zone.myPolygon.xpoints, zone.myPolygon.ypoints, zone.myPolygon.npoints);
+      editor.setPolygon((zone.myPolygon.npoints == 0) ? null : new Polygon(zone.myPolygon.xpoints, zone.myPolygon.ypoints, zone.myPolygon.npoints));
+      if (editor.getPolygon() != null) {
+        final Rectangle polyBounds = editor.getPolygon().getBounds();
+        final Point polyCenter = new Point(polyBounds.x + polyBounds.width / 2,
           polyBounds.y + polyBounds.height / 2);
-      if (!editor.getVisibleRect().contains(polyCenter)) {
-        editor.center(polyCenter);
+        if (!editor.getVisibleRect().contains(polyCenter)) {
+          editor.center(polyCenter);
+        }
       }
       frame.pack();
       final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
@@ -734,12 +798,17 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
 
     @Override
     public String getValueString() {
-      return PolygonEditor.polygonToString(editor.getPolygon());
+      if (editor != null) {
+        return PolygonEditor.polygonToString(editor.getPolygon());
+      }
+      return "";
     }
 
     @Override
     public void setValue(String s) {
-      PolygonEditor.reset(editor.getPolygon(), s);
+      if (editor != null) {
+        PolygonEditor.reset(editor.getPolygon(), s);
+      }
     }
   }
 
