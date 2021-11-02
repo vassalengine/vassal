@@ -208,14 +208,16 @@ public class DiceButton extends AbstractToolbarItem {
       final int roll = ran.nextInt(nSides) + 1 + plus;
 
       // Handle Keep >= or <= here. Just totally ignore them if they are out of range.
-      if (KEEP_GREATER.equals(keepOption) && roll < keepValue) {
-        continue;
-      }
-      else if (KEEP_LESS.equals(keepOption) && roll > keepValue) {
-        continue;
-      }
-      else if (KEEP_EQUAL.equals(keepOption) && roll != keepValue) {
-        continue;
+      if (keepingDice) {
+        if (KEEP_GREATER.equals(keepOption) && roll < keepValue) {
+          continue;
+        }
+        else if (KEEP_LESS.equals(keepOption) && roll > keepValue) {
+          continue;
+        }
+        else if (KEEP_EQUAL.equals(keepOption) && roll != keepValue) {
+          continue;
+        }
       }
 
       keepCount += 1;
