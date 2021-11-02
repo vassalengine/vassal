@@ -93,6 +93,8 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
 
   private final VisibilityCondition faceUpDownMessageVisibleCondition = () -> Deck.USE_MENU.equals(dummy.getFaceDownOption()) || USE_MENU_UP.equals(dummy.getFaceDownOption());
 
+  private final VisibilityCondition saveVisibleCondition = () -> dummy.isPersistable();
+
   protected static final UniqueIdManager idMgr = new UniqueIdManager("Deck"); //NON-NLS
 
   @Override
@@ -147,7 +149,6 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   public static final String FACE_DOWN = "faceDown"; //NON-NLS
   public static final String DRAW_FACE_UP = "drawFaceUp"; //NON-NLS
   public static final String FACE_DOWN_REPORT_FORMAT = "faceDownFormat"; //NON-NLS
-  public static final String FACE_DOWN_HOTKEY = "faceDownHotkey"; //NON-NLS
   public static final String SHUFFLE = "shuffle";                       // "Re-shuffle deck" - see below //NON-NLS
   public static final String SHUFFLE_REPORT_FORMAT = "shuffleFormat"; //NON-NLS
   public static final String SHUFFLE_HOTKEY = "shuffleHotkey"; //NON-NLS
@@ -185,6 +186,18 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   public static final String DRAW_SPECIFIC_MESSAGE = "drawSpecificMessage"; //NON-NLS
   public static final String FACE_UP_MESSAGE = "faceUpMessage"; //NON-NLS
   public static final String FACE_DOWN_MESSAGE = "faceDownMessage"; //NON-NLS
+
+  public static final String FACE_UP_HOTKEY = "faceUpHotkey"; //NON-NLS
+  public static final String FACE_DOWN_HOTKEY = "faceDownHotkey"; //NON-NLS
+  public static final String FACE_FLIP_HOTKEY = "faceFlipHotkey"; //NON-NLS
+  public static final String FACE_UP_REPORT_FORMAT = "faceUpReportFormat"; //NON-NLS
+
+  public static final String SAVE_MESSAGE = "saveMessage"; //NON-NLS
+  public static final String LOAD_MESSAGE = "loadMessage"; //NON-NLS
+  public static final String SAVE_HOTKEY  = "saveHotkey"; //NON-NLS
+  public static final String LOAD_HOTKEY  = "loadHotkey"; //NON-NLS
+  public static final String SAVE_REPORT_FORMAT = "saveReportFormat"; //NON-NLS
+  public static final String LOAD_REPORT_FORMAT = "loadReportFormat"; //NON-NLS
 
   public static class Prompt extends TranslatableStringEnum {
     @Override
@@ -289,10 +302,14 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       SELECT_DISPLAY_PROPERTY,
       SELECT_SORT_PROPERTY,
       FACE_DOWN,
+      FACE_FLIP_HOTKEY,
       FACE_UP_MESSAGE,
+      FACE_UP_HOTKEY,
+      FACE_UP_REPORT_FORMAT,
       FACE_DOWN_MESSAGE,
-      DRAW_FACE_UP,
+      FACE_DOWN_HOTKEY,
       FACE_DOWN_REPORT_FORMAT,
+      DRAW_FACE_UP,
       SHUFFLE,                        // These commands match "Reshuffle" in the visible menus
       SHUFFLE_COMMAND,
       SHUFFLE_REPORT_FORMAT,
@@ -311,6 +328,12 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       RESHUFFLE_HOTKEY,
       RESHUFFLE_TARGET,
       CAN_SAVE,
+      SAVE_MESSAGE,
+      SAVE_HOTKEY,
+      SAVE_REPORT_FORMAT,
+      LOAD_MESSAGE,
+      LOAD_HOTKEY,
+      LOAD_REPORT_FORMAT,
       MAXSTACK,
       EXPRESSIONCOUNTING,
       COUNTEXPRESSIONS,
@@ -335,10 +358,14 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
         Resources.getString("Editor.DrawPile.list_cards"), //$NON-NLS-1$
         Resources.getString("Editor.DrawPile.sort_cards"), //$NON-NLS-1$
         Resources.getString("Editor.DrawPile.facedown"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.face_up_message"), //NON-NLS
-        Resources.getString("Editor.DrawPile.face_down_message"), //NON-NLS
-        Resources.getString("Editor.DrawPile.faceup"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.facedown_report"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.face_flip_hotkey"),
+        Resources.getString("Editor.DrawPile.face_up_message"),
+        Resources.getString("Editor.DrawPile.face_up_hotkey"),
+        Resources.getString("Editor.DrawPile.face_up_report"),
+        Resources.getString("Editor.DrawPile.face_down_message"),
+        Resources.getString("Editor.DrawPile.face_down_hotkey"),
+        Resources.getString("Editor.DrawPile.facedown_report"),
+        Resources.getString("Editor.DrawPile.faceup"),
         Resources.getString("Editor.DrawPile.reshuffle"), //$NON-NLS-1$        // Internally these match "SHUFFLE"
         Resources.getString("Editor.DrawPile.reshuffle_text"), //$NON-NLS-1$
         Resources.getString("Editor.DrawPile.reshuffle_report"), //$NON-NLS-1$
@@ -357,6 +384,12 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
         Resources.getString("Editor.DrawPile.send_key"), //$NON-NLS-1$
         Resources.getString("Editor.DrawPile.send_deck_name"), //$NON-NLS-1$
         Resources.getString("Editor.DrawPile.saved"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.save_message"),
+        Resources.getString("Editor.DrawPile.save_key"),
+        Resources.getString("Editor.DrawPile.save_report"),
+        Resources.getString("Editor.DrawPile.load_message"),
+        Resources.getString("Editor.DrawPile.load_key"),
+        Resources.getString("Editor.DrawPile.load_report"),
         Resources.getString("Editor.DrawPile.maxdisplay"), //$NON-NLS-1$
         Resources.getString("Editor.DrawPile.perform_express"), //$NON-NLS-1$
         Resources.getString("Editor.DrawPile.count_express"), //$NON-NLS-1$
@@ -381,10 +414,14 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       PiecePropertyConfig.class, // SELECT_DISPLAY_PROPERTY
       String.class, // SELECT_SORT_PROPERTY
       Prompt2.class, // FACE_DOWN
+      NamedKeyStroke.class, // FACE FLIP HOTKEY
       String.class, // FACE UP MESSAGE
+      NamedKeyStroke.class, // FACE UP HOTKEY
+      FormattedStringConfig.class, // FACE UP REPORT FORMAT
       String.class, // FACE DOWN MESSAGE
-      Boolean.class, // DRAW_FACE_UP
+      NamedKeyStroke.class, // FACE DOWN HOTKEY
       FormattedStringConfig.class, // FACE_DOWN_REPORT_FORMAT
+      Boolean.class, // DRAW_FACE_UP
       Prompt.class, // SHUFFLE                                    // These map to "re-shuffle"
       String.class, // SHUFFLE_COMMAND
       FormattedStringConfig.class, // SHUFFLE_REPORT_FORMAT
@@ -403,6 +440,12 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       NamedKeyStroke.class, // RESHUFFLE_HOTKEY
       AssignedDeckPrompt.class, // RESHUFFLE_TARGET
       Boolean.class, // CAN_SAVE
+      String.class, // SAVE MESSAGE
+      NamedKeyStroke.class, // SAVE KEY
+      FormattedStringConfig.class, // SAVE REPORT
+      String.class, // LOAD MESSAGE
+      NamedKeyStroke.class, // LOAD KEY
+      FormattedStringConfig.class, // LOAD REPORT
       Integer.class, // MAXSTACK
       Boolean.class, // EXPRESSIONCOUNTING
       String[].class, // COUNTEXPRESSIONS
@@ -547,6 +590,36 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     }
     else if (FACE_DOWN_MESSAGE.equals(key)) {
       return dummy.getFaceDownMessage();
+    }
+    else if (FACE_UP_HOTKEY.equals(key)) {
+      return NamedHotKeyConfigurer.encode(dummy.getFaceUpKey());
+    }
+    else if (FACE_FLIP_HOTKEY.equals(key)) {
+      return NamedHotKeyConfigurer.encode(dummy.getFaceFlipKey());
+    }
+    else if (FACE_DOWN_HOTKEY.equals(key)) {
+      return NamedHotKeyConfigurer.encode(dummy.getFaceDownKey());
+    }
+    else if (FACE_UP_REPORT_FORMAT.equals(key)) {
+      return dummy.getFaceUpMsgFormat();
+    }
+    else if (SAVE_MESSAGE.equals(key)) {
+      return dummy.getSaveMessage();
+    }
+    else if (SAVE_HOTKEY.equals(key)) {
+      return NamedHotKeyConfigurer.encode(dummy.getSaveKey());
+    }
+    else if (SAVE_REPORT_FORMAT.equals(key)) {
+      return dummy.getSaveReport();
+    }
+    else if (LOAD_MESSAGE.equals(key)) {
+      return dummy.getLoadMessage();
+    }
+    else if (LOAD_HOTKEY.equals(key)) {
+      return NamedHotKeyConfigurer.encode(dummy.getLoadKey());
+    }
+    else if (LOAD_REPORT_FORMAT.equals(key)) {
+      return dummy.getLoadReport();
     }
     else {
       return super.getAttributeValueString(key);
@@ -751,6 +824,51 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     else if (FACE_DOWN_MESSAGE.equals(key)) {
       dummy.setFaceDownMessage((String)value);
     }
+    else if (FACE_UP_HOTKEY.equals(key)) {
+      if (value instanceof String) {
+        value = NamedHotKeyConfigurer.decode((String) value);
+      }
+      dummy.setFaceUpKey((NamedKeyStroke) value);
+    }
+    else if (FACE_FLIP_HOTKEY.equals(key)) {
+      if (value instanceof String) {
+        value = NamedHotKeyConfigurer.decode((String) value);
+      }
+      dummy.setFaceFlipKey((NamedKeyStroke) value);
+    }
+    else if (FACE_DOWN_HOTKEY.equals(key)) {
+      if (value instanceof String) {
+        value = NamedHotKeyConfigurer.decode((String) value);
+      }
+      dummy.setFaceDownKey((NamedKeyStroke) value);
+    }
+    else if (FACE_UP_REPORT_FORMAT.equals(key)) {
+      dummy.setFaceUpMsgFormat((String)value);
+    }
+    else if (SAVE_MESSAGE.equals(key)) {
+      dummy.setSaveMessage((String)value);
+    }
+    else if (SAVE_HOTKEY.equals(key)) {
+      if (value instanceof String) {
+        value = NamedHotKeyConfigurer.decode((String) value);
+      }
+      dummy.setSaveKey((NamedKeyStroke) value);
+    }
+    else if (SAVE_REPORT_FORMAT.equals(key)) {
+      dummy.setSaveReport((String)value);
+    }
+    else if (LOAD_MESSAGE.equals(key)) {
+      dummy.setLoadMessage((String)value);
+    }
+    else if (LOAD_HOTKEY.equals(key)) {
+      if (value instanceof String) {
+        value = NamedHotKeyConfigurer.decode((String) value);
+      }
+      dummy.setLoadKey((NamedKeyStroke) value);
+    }
+    else if (LOAD_REPORT_FORMAT.equals(key)) {
+      dummy.setLoadReport((String)value);
+    }
     else {
       super.setAttribute(key, value);
     }
@@ -791,8 +909,11 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     else if (DRAW_SPECIFIC_MESSAGE.equals(name)) {
       return drawSpecificMessageVisibleCondition;
     }
-    else if (FACE_DOWN_MESSAGE.equals(name) || FACE_UP_MESSAGE.equals(name)) {
+    else if (List.of(FACE_DOWN_MESSAGE, FACE_UP_MESSAGE, FACE_DOWN_HOTKEY, FACE_UP_HOTKEY, FACE_FLIP_HOTKEY, FACE_DOWN_REPORT_FORMAT, FACE_UP_REPORT_FORMAT).contains(name)) {
       return faceUpDownMessageVisibleCondition;
+    }
+    else if (List.of(SAVE_MESSAGE, SAVE_HOTKEY, SAVE_REPORT_FORMAT, LOAD_MESSAGE, LOAD_HOTKEY, LOAD_REPORT_FORMAT).contains(name)) {
+      return saveVisibleCondition;
     }
     else {
       return null;
