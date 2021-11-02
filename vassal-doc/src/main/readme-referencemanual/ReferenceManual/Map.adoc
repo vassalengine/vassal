@@ -364,6 +364,41 @@ See <<SetupStack.adoc#top,full article>> for more details.
 
 |===
 
+[#MoveCameraButton]
+==== Move Camera Button
+Adds a button to the map window's Toolbar.
+Clicking the button will center the camera (i.e. the map's view) on a designated location. The location can be computed through a variety of means, including expressions.
+
+[width="100%",cols="50%a,^50%a",]
+|===
+|
+*Button text:*:: Specifies the button text for the Toolbar button
+
+*Tooltip text:*:: Specifies optional tooltip text for the Toolbar button
+
+*button icon:*:: Icon for the Toolbar button.
+
+*Hotkey:*:: Specifies a <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> for the Toolbar button
+
+*Destination:*:: Determines how the destination will be determined.
+
+*Board:*:: The Board for the destination. Can be left blank on maps with only one board at a time.
+
+*Zone:*:: The Zone for the destination.
+
+*Region:*:: The Region for the destination.
+
+*X Position:*:: The X position for the destination.
+*Y Position:*:: The Y position for the destination.
+
+*Additional X Offset:*:: Additional X offset for the destination, once the destination has been otherwise computed from the previous fields.
+*Additional Y Offset:*:: Additional Y offset for the destination, once the destination has been otherwise computed from the previous fields.
+
+*Property Match:*:: Property match expression for finding a counter.
+
+|image:images/MoveCameraButton.png[]
+|===
+
 
 [#PieceRecenterer]
 ==== Recenter Pieces Button

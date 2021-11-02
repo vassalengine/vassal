@@ -80,7 +80,15 @@ public class PropertyExpression implements PieceFilter {
     return accept(source, piece, null, null);
   }
 
+  public boolean accept(PropertySource source, GamePiece piece) {
+    return accept(source, piece, null, null);
+  }
+
   public boolean accept(GamePiece source, GamePiece piece, Auditable owner, AuditTrail trail) {
+    return getFilter(source).accept(piece, owner, trail);
+  }
+
+  public boolean accept(PropertySource source, GamePiece piece, Auditable owner, AuditTrail trail) {
     return getFilter(source).accept(piece, owner, trail);
   }
 
