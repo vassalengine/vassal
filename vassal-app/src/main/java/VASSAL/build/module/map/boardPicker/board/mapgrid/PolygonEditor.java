@@ -387,6 +387,7 @@ public class PolygonEditor extends JPanel {
       removeMouseListener(this);
       removeMouseMotionListener(this);
       getInputMap(WHEN_IN_FOCUSED_WINDOW).remove(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
+      getActionMap().remove(DELETE);
     }
 
     @Override
@@ -476,13 +477,16 @@ public class PolygonEditor extends JPanel {
     public void deleteKeyPressed() {
       if (selected >= 0) {
         deleteVertex(polygon, selected);
-        selected = -1;
 
         if (polygon.npoints == 0) {
           // Back to create mode if all points are gone.
           polygon = null;
+          selected = -1;
           remove();
           setupForCreate();
+        }
+        else {
+          selected %= polygon.npoints;
         }
 
         updateAllCoords();
