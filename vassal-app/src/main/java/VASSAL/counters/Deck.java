@@ -565,6 +565,17 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     faceUpMessage       = st.nextToken(Resources.getString("Deck.face_up"));
     faceDownMessage     = st.nextToken(Resources.getString("Deck.face_down"));
 
+    faceUpKey = st.nextNamedKeyStroke(null);
+    faceUpMsgFormat = st.nextToken("");
+    faceFlipKey     = st.nextNamedKeyStroke(null);
+    faceDownKey     = st.nextNamedKeyStroke(null);
+    saveMessage     = st.nextToken(Resources.getString("Editor.Deck.save_deck"));
+    saveKey         = st.nextNamedKeyStroke(null);
+    saveReport      = st.nextToken(Resources.getString("Deck.deck_saved"));
+    loadMessage     = st.nextToken(Resources.getString("Editor.Deck.load_deck"));
+    loadKey         = st.nextNamedKeyStroke(null);
+    loadReport      = st.nextToken(Resources.getString("Deck.deck_loaded"));
+
     // Find the DrawPile that defines this Deck to access the new Deck Key Commands.
     // If the designed has removed the DrawPile, or changed the name of it, then myPile will
     // be null. This will not stop the Deck continuing to work in 'Legacy', but it will not
@@ -1013,7 +1024,18 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       .append(drawMultipleMessage)
       .append(drawSpecificMessage)
       .append(faceUpMessage)
-      .append(faceDownMessage);
+      .append(faceDownMessage)
+      .append(faceUpKey)
+      .append(faceUpMsgFormat)
+      .append(faceFlipKey)
+      .append(faceDownKey)
+      .append(saveMessage)
+      .append(saveKey)
+      .append(saveReport)
+      .append(loadMessage)
+      .append(loadKey)
+      .append(loadReport);
+
     return ID + se.getValue();
   }
 
@@ -1815,7 +1837,6 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     try {
       if (saveFile != null) {
         saveDeck(saveFile);
-        gameModule.warn(Resources.getString("Deck.deck_saved")); //$NON-NLS-1$
         result = true;
       }
       else {
@@ -1858,7 +1879,6 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     try {
       if (loadFile != null) {
         c = loadDeck(loadFile);
-        gameModule.warn(Resources.getString("Deck.deck_loaded")); //$NON-NLS-1$
       }
       else {
         gameModule.warn(Resources.getString("Deck.load_canceled")); //$NON-NLS-1$
