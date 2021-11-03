@@ -28,6 +28,7 @@ import javax.swing.JButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
+import VASSAL.build.GameModule;
 import VASSAL.build.module.ServerConnection;
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.i18n.Resources;
@@ -56,6 +57,7 @@ public class BasicChatControlsInitializer implements ChatControlsInitializer {
 
       @Override
       public void actionPerformed(ActionEvent evt) {
+        GameModule.getGameModule().warn(Resources.getString("Chat.connecting"));
         client.setConnected(true);
       }
     };
@@ -96,6 +98,11 @@ public class BasicChatControlsInitializer implements ChatControlsInitializer {
       if (!connected) {
         controls.getRoomTree().setRooms(new VASSAL.chat.Room[0]);
         controls.getCurrentRoom().setRooms(new VASSAL.chat.Room[0]);
+        GameModule.getGameModule().warn(Resources.getString("Chat.disconnected")); 
+      }
+      else {
+        GameModule.getGameModule().warn(Resources.getString("Chat.joining_main_room"));
+        JoinRoomAction.explainMainRoom();
       }
     });
 
