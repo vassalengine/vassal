@@ -1271,9 +1271,9 @@
         <field>showDeckDepth</field>
     </difference>
     <difference>
-        <className>VASSAL/build/module/map/CounterDetailViewer$Vistor</className>
+        <className>VASSAL/build/module/map/CounterDetailViewer$Visitor</className>
         <differenceType>7004</differenceType>
-        <method>**</method>
+        <method>CounterDetailViewer$Visitor(VASSAL.build.module.map.CounterDetailViewer$Filter, VASSAL.build.module.Map, java.awt.Point, boolean)</method>
         <justification>Nothing external should use this</justification>
     </difference>
 </differences>
