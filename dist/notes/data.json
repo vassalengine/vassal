@@ -25,6 +25,7 @@
         { "num": 9391, "desc": "Beanshell can now access $$ variables in Report Formats" }
       ],
       "bug_fixes": [
+        { "num": 10683, "desc": "Fix bug in DiceButton 'Keep Dice' option" },
         { "num": 10679, "desc": "Place Marker, Send-to-Location, and Translate traits didn't always repaint maps" },
         { "num": 10678, "desc": "Undo of movement will no longer deny lone stackable pieces their own stack" },
         { "num": 10671, "desc": "Calculate Hex Range correctly, regardless of hex shape" },
@@ -51,6 +52,7 @@
         { "num": 10681, "Better documented pieceName vs PieceName" },
         { "num": 10676, "Upgrade to Java 17.0.1+12 for Windows, Mac packages" },
         { "num": 10673, "desc": "Added Game Refresher documentation" },
+        { "num": 10672, "desc": "Multiplayer Server controls have improved feedback / UX" },
         { "num": 10667, "desc": "Private Message windows no longer prompt to ignore every time you close them; incoming private messages do not grab focus" },
         { "num": 10652, "desc": "Zone Editor shows coordinates of vertices while editing" },
         { "num": 10641, "desc": "When Editor changes a prototype, clear the prototype cache and all PieceSlot caches" },
