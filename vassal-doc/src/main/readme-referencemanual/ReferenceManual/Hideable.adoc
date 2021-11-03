@@ -1,3 +1,4 @@
+// Invisible is internally known as Hideable
 == VASSAL Reference Manual
 [#top]
 

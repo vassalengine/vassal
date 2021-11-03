@@ -1,3 +1,4 @@
+// Mark When Moved is internally known as MovementMarkable
 == VASSAL Reference Manual
 [#top]
 

@@ -1,3 +1,4 @@
+// Does Not Stack is internally known as Immobilized
 == VASSAL Reference Manual
 [#top]
 

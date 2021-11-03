@@ -92,6 +92,8 @@ import javax.swing.Timer;
  * This is a {@link Drawable} class that draws the counters horizontally when
  * the mouse is held over a stack with the control key down.
  *
+ * d/b/a Mouseover Stack Viewer
+ *
  * @author David Sullivan
  * @version 1.0
  */
@@ -125,6 +127,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public static final String SHOW_NON_MOVABLE = "showNonMovable"; //NON-NLS
   public static final String SHOW_DECK = "showDeck"; //NON-NLS
   public static final String SHOW_DECK_DEPTH = "showDeckDepth"; //NON-NLS
+  public static final String SHOW_DECK_MASKED = "showDeckMasked"; //NON-NLS
   public static final String SHOW_OVERLAP = "showOverlap"; //NON-NLS
   public static final String UNROTATE_PIECES = "unrotatePieces"; //NON-NLS
   public static final String DISPLAY = "display"; //NON-NLS
@@ -172,7 +175,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected boolean stretchWidthSummary = false;
   protected boolean unrotatePieces = false;
   protected boolean showDeck = false;
-  protected static int showDeckDepth = 1;
+  protected int showDeckDepth = 1;
+  protected boolean showDeckMasked = false;
   protected boolean showOverlap = false;
   protected double zoomLevel = 1.0;
   protected double graphicsZoomLevel = 1.0;
@@ -596,7 +600,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     final GamePiece[] allPieces = map.getPieces(); // All pieces from bottom up
 
     final Visitor visitor = new Visitor(new Filter(), map,
-      map.componentToMap(currentMousePosition.getPoint()), showOverlap);
+      map.componentToMap(currentMousePosition.getPoint()), showOverlap, this);
     final DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
 
     /*
@@ -722,8 +726,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     protected int insertPos = 0;
     protected Point foundPieceAt;
     protected boolean showingOverlap;
+    protected CounterDetailViewer cdv;
 
-    public Visitor(Filter filter, Map map, Point pt, boolean showOverlap) {
+    public Visitor(Filter filter, Map map, Point pt, boolean showOverlap, CounterDetailViewer counterDetailViewer) {
       super(map, pt);
       if (map.getPieceCollection() instanceof CompoundPieceCollection) {
         collection = (CompoundPieceCollection) map.getPieceCollection();
@@ -731,6 +736,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       pieces = new ArrayList<>();
       this.filter = filter;
       showingOverlap = showOverlap;
+      cdv = counterDetailViewer;
     }
 
     @Override
@@ -742,8 +748,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         GamePiece p = d.topPiece();
 
         int shownPieces = 0;
-        while (p != null && shownPieces < showDeckDepth) {
-          if (!Boolean.TRUE.equals(p.getProperty(Properties.OBSCURED_TO_ME)) && !d.isFaceDown()) {
+        while (p != null && shownPieces < cdv.showDeckDepth) {
+          if (cdv.showDeckMasked || (!Boolean.TRUE.equals(p.getProperty(Properties.OBSCURED_TO_ME)) && !d.isFaceDown())) {
             final Rectangle r = (Rectangle) d.getShape();
             r.x += d.getPosition().x;
             r.y += d.getPosition().y;
@@ -996,6 +1002,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       SHOW_NON_MOVABLE,
       UNROTATE_PIECES,
       SHOW_DECK,
+      SHOW_DECK_MASKED,
       SHOW_DECK_DEPTH,
       SHOW_OVERLAP,
     };
@@ -1038,6 +1045,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       Resources.getString("Editor.MouseOverStackViewer.non_moveable"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.unrotated_state"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.show_deck"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.show_deck_masked"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.show_deck_depth"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.show_overlap"), //$NON-NLS-1$
     };
@@ -1076,6 +1084,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       DisplayConfig.class,
       String[].class,
       PropertyExpression.class,
+      Boolean.class,
       Boolean.class,
       Boolean.class,
       Boolean.class,
@@ -1321,6 +1330,14 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         showDeck = "true".equals(value); //NON-NLS
       }
     }
+    else if (SHOW_DECK_MASKED.equals(name)) {
+      if (value instanceof Boolean) {
+        showDeckMasked = (Boolean) value;
+      }
+      else if (value instanceof String) {
+        showDeckMasked = "true".equals(value); //NON-NLS
+      }
+    }
     else if (SHOW_DECK_DEPTH.equals(name)) {
       if (value instanceof String) {
         value = Integer.valueOf((String) value);
@@ -1466,6 +1483,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     else if (SHOW_DECK.equals(name)) {
       return String.valueOf(showDeck);
     }
+    else if (SHOW_DECK_MASKED.equals(name)) {
+      return String.valueOf(showDeckMasked);
+    }
     else if (SHOW_DECK_DEPTH.equals(name)) {
       return String.valueOf(showDeckDepth);
     }
@@ -1523,7 +1543,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
-    if (BORDER_WIDTH.equals(name) || DRAW_PIECES_AT_ZOOM.equals(name) || VERTICAL_OFFSET.equals(name) || SHOW_DECK_DEPTH.equals(name)) {
+    if (BORDER_WIDTH.equals(name) || DRAW_PIECES_AT_ZOOM.equals(name) || VERTICAL_OFFSET.equals(name)) {
       return () -> drawPieces;
     }
     else if (List.of(FONT_SIZE, SUMMARY_REPORT_FORMAT, COUNTER_REPORT_FORMAT, ENABLE_HTML, CENTER_TEXT, EXTRA_TEXT_PADDING, VERTICAL_TOP_TEXT, STRETCH_WIDTH_SUMMARY).contains(name)) {
@@ -1534,6 +1554,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     else if (List.of(DRAW_PIECES, SHOW_TEXT, SHOW_NOSTACK, SHOW_DECK, DISPLAY, DESCRIPTION, CENTER_ALL).contains(name)) {
       return () -> true;
+    }
+    else if (List.of(SHOW_DECK_DEPTH, SHOW_DECK_MASKED).contains(name)) {
+      return () -> showText || drawPieces;
     }
     else if (LAYER_LIST.equals(name)) {
       return () -> (displayWhat.equals(INC_LAYERS) || displayWhat.equals(EXC_LAYERS));
