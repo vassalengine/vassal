@@ -157,11 +157,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected NamedKeyStroke faceDownKey;
   protected NamedKeyStroke faceFlipKey;
 
-  protected String saveMessage;
+  protected String saveMessage = Resources.getString(Resources.SAVE);
   protected NamedKeyStroke saveKey;
   protected String saveReport;
 
-  protected String loadMessage;
+  protected String loadMessage = Resources.getString(Resources.LOAD);
   protected NamedKeyStroke loadKey;
   protected String loadReport;
 
@@ -1456,8 +1456,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
           @Override
           public void actionPerformed(ActionEvent e) {
-            Command c = saveDeck();
-            if (!c.isNull() && Map.isChangeReportingEnabled()) {
+            Command c = new NullCommand();
+            if (saveDeck() && Map.isChangeReportingEnabled()) {
               c = c.append(reportCommand(saveReport, Resources.getString(Resources.SAVE)));
             }
             gameModule.sendAndLog(c);
@@ -1807,8 +1807,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     return System.getProperty("os.name").trim().equalsIgnoreCase("linux"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
-  private Command saveDeck() {
-    final Command c = new NullCommand();
+  private boolean saveDeck() {
+    boolean result = false;
     gameModule.warn(Resources.getString("Deck.saving_deck")); //$NON-NLS-1$
 
     final File saveFile = getSaveFileName();
@@ -1816,6 +1816,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       if (saveFile != null) {
         saveDeck(saveFile);
         gameModule.warn(Resources.getString("Deck.deck_saved")); //$NON-NLS-1$
+        result = true;
       }
       else {
         gameModule.warn(Resources.getString("Deck.save_canceled")); //$NON-NLS-1$
@@ -1824,7 +1825,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     catch (IOException e) {
       WriteErrorDialog.error(e, saveFile);
     }
-    return c;
+    return result;
   }
 
   public void saveDeck(File f) throws IOException {
