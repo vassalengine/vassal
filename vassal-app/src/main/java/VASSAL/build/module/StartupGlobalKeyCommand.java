@@ -21,12 +21,15 @@ import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.map.MassKeyCommand;
 import VASSAL.command.Command;
 import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
-import org.apache.commons.lang3.ArrayUtils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -69,6 +72,7 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
   @SuppressWarnings("removal")
   public StartupGlobalKeyCommand() {
     super();
+    condition = null;
     /* These four fields pertaining to the physical representation of the
      * GKC on the toolbar are not applicable in this implementation.
      */
@@ -77,6 +81,20 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
     launch.setAttribute(ICON, "");  //NON-NLS
     launch.setAttribute(HOTKEY, "");  //NON-NLS
   }
+
+  @SuppressWarnings("removal")
+  public StartupGlobalKeyCommand(MassKeyCommand gkc) {
+    super(gkc);
+    condition = null;
+    /* These four fields pertaining to the physical representation of the
+     * GKC on the toolbar are not applicable in this implementation.
+     */
+    launch.setAttribute(BUTTON_TEXT, "");  //NON-NLS
+    launch.setAttribute(TOOLTIP, "");  //NON-NLS
+    launch.setAttribute(ICON, "");  //NON-NLS
+    launch.setAttribute(HOTKEY, "");  //NON-NLS
+  }
+
 
   //---------------------- GlobalKeyCommand extension ---------------------
   @Override
@@ -107,26 +125,35 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
 
   @Override
   public String[] getAttributeDescriptions() {
-    return ArrayUtils.addAll(
-      super.getAttributeDescriptions(),
-      Resources.getString("Editor.StartupGlobalKeyCommand.when_to_apply")
-    );
+    final List<String> descs = new ArrayList<>();
+    descs.add(Resources.getString("Editor.StartupGlobalKeyCommand.when_to_apply"));
+    Collections.addAll(descs, super.getAttributeDescriptions());
+    return descs.toArray(new String[0]);
   }
 
   @Override
   public String[] getAttributeNames() {
-    return ArrayUtils.addAll(
-      super.getAttributeNames(),
-      WHEN_TO_APPLY
-    );
+    final List<String> names = new ArrayList<>();
+
+    names.add(WHEN_TO_APPLY);
+
+    // Filter some of the crazy out of the original MassKeyCommand list, so we can add more things "safely"
+    for (final String n : super.getAttributeNames()) {
+      if (List.of(CHECK_VALUE, CHECK_PROPERTY, AFFECTED_PIECE_NAMES).contains(n)) {
+        continue;
+      }
+      names.add(n);
+    }
+
+    return names.toArray(new String[0]);
   }
 
   @Override
   public Class<?>[] getAttributeTypes() {
-    return ArrayUtils.addAll(
-      super.getAttributeTypes(),
-      Prompt.class
-    );
+    final List<Class<?>> types = new ArrayList<>();
+    types.add(Prompt.class);
+    Collections.addAll(types, super.getAttributeTypes());
+    return types.toArray(new Class<?>[0]);
   }
 
   @Override
