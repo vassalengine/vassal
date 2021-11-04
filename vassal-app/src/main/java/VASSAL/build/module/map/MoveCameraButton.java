@@ -81,9 +81,7 @@ public class MoveCameraButton extends AbstractToolbarItem {
       Resources.getString("Editor.MoveCameraButton.move_camera_tooltip"),
       Resources.getString("Editor.MoveCameraButton.move_camera"),
       "/images/recenter.gif", //NON-NLS
-      e -> {
-        moveCamera();
-      }
+      e -> moveCamera()
     ));
   }
 
@@ -105,7 +103,7 @@ public class MoveCameraButton extends AbstractToolbarItem {
       dy = Integer.parseInt(dyString);
     }
     catch (NumberFormatException e) {
-      ErrorDialog.dataWarning(new BadDataReport(this, Resources.getString("Error.non_number_error"), xOffset.debugInfo(dyString, "Y Offset"))); //NON-NLS
+      ErrorDialog.dataWarning(new BadDataReport(this, Resources.getString("Error.non_number_error"), yOffset.debugInfo(dyString, "Y Offset"))); //NON-NLS
       return;
     }
 
