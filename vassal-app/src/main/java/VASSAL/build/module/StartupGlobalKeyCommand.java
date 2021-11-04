@@ -28,7 +28,6 @@ import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
