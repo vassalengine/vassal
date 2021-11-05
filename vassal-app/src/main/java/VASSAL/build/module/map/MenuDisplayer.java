@@ -19,6 +19,7 @@ package VASSAL.build.module.map;
 
 import java.awt.Font;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -138,6 +139,13 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
       // Maps name to a list of commands with that name
       final HashMap<String, ArrayList<JMenuItem>> commandNames = new HashMap<>();
 
+      if (target instanceof Deck) {
+        if (c.length == 1) {
+          c[0].actionPerformed(new ActionEvent(popup, 0, ""));
+          return null;
+        }
+      }
+
       for (final KeyCommand keyCommand : c) {
         keyCommand.setGlobal(global);
         final KeyStroke stroke = keyCommand.getKeyStroke();
@@ -217,6 +225,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
         }
       }
     }
+
     return popup;
   }
 
@@ -262,34 +271,36 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
     }
 
     final JPopupMenu popup = createPopup(p, true);
-    popup.addPopupMenuListener(new PopupMenuListener() {
-      @Override
-      public void popupMenuCanceled(PopupMenuEvent evt) {
-        map.repaint();
+    if (popup != null) {
+      popup.addPopupMenuListener(new PopupMenuListener() {
+        @Override
+        public void popupMenuCanceled(PopupMenuEvent evt) {
+          map.repaint();
+        }
+
+        @Override
+        public void popupMenuWillBecomeInvisible(PopupMenuEvent evt) {
+          map.repaint();
+        }
+
+        @Override
+        public void popupMenuWillBecomeVisible(PopupMenuEvent evt) {
+        }
+      });
+
+      // NB: The conversion back to component coordinates is correct. The
+      // master mouse event listener on the map translates all coordinates to
+      // map coordinates before passing them on.
+      final Point pt = map.mapToComponent(e.getPoint());
+
+      // It is possible for the map to close before the menu is displayed
+      if (map.getView().isShowing()) {
+
+        // Inform the piece where player clicked, if it wants to know.
+        KeyBuffer.getBuffer().setClickPoint(e.getPoint());
+
+        popup.show(map.getView(), pt.x, pt.y);
       }
-
-      @Override
-      public void popupMenuWillBecomeInvisible(PopupMenuEvent evt) {
-        map.repaint();
-      }
-
-      @Override
-      public void popupMenuWillBecomeVisible(PopupMenuEvent evt) {
-      }
-    });
-
-    // NB: The conversion back to component coordinates is correct. The
-    // master mouse event listener on the map translates all coordinates to
-    // map coordinates before passing them on.
-    final Point pt = map.mapToComponent(e.getPoint());
-
-    // It is possible for the map to close before the menu is displayed
-    if (map.getView().isShowing()) {
-
-      // Inform the piece where player clicked, if it wants to know.
-      KeyBuffer.getBuffer().setClickPoint(e.getPoint());
-
-      popup.show(map.getView(), pt.x, pt.y);
     }
 
     e.consume();

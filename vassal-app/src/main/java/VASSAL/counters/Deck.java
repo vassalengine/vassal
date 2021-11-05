@@ -165,6 +165,12 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected NamedKeyStroke loadKey;
   protected String loadReport;
 
+  protected NamedKeyStrokeListener faceUpListener;
+  protected NamedKeyStrokeListener faceDownListener;
+  protected NamedKeyStrokeListener faceFlipListener;
+  protected NamedKeyStrokeListener saveListener;
+  protected NamedKeyStrokeListener loadListener;
+
   /** The matching DrawPile that generated this Deck */
   protected DrawPile myPile;
 
@@ -479,6 +485,46 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       reverseListener.setKeyStroke(getReverseKey());
     }
 
+    if (faceUpListener == null) {
+      faceUpListener = new NamedKeyStrokeListener(e -> {
+        doFaceUp();
+      });
+      gameModule.addKeyStrokeListener(faceUpListener);
+      faceUpListener.setKeyStroke(getFaceUpKey());
+    }
+
+    if (faceDownListener == null) {
+      faceDownListener = new NamedKeyStrokeListener(e -> {
+        doFaceDown();
+      });
+      gameModule.addKeyStrokeListener(faceDownListener);
+      faceDownListener.setKeyStroke(getFaceDownKey());
+    }
+
+    if (faceFlipListener == null) {
+      faceFlipListener = new NamedKeyStrokeListener(e -> {
+        doFaceFlip();
+      });
+      gameModule.addKeyStrokeListener(faceFlipListener);
+      faceFlipListener.setKeyStroke(getFaceFlipKey());
+    }
+
+    if (saveListener == null) {
+      saveListener = new NamedKeyStrokeListener(e -> {
+        doSaveDeck();
+      });
+      gameModule.addKeyStrokeListener(saveListener);
+      saveListener.setKeyStroke(getSaveKey());
+    }
+
+    if (loadListener == null) {
+      loadListener = new NamedKeyStrokeListener(e -> {
+        doLoadDeck();
+      });
+      gameModule.addKeyStrokeListener(loadListener);
+      saveListener.setKeyStroke(getLoadKey());
+    }
+
     // Add Listeners for DeckKeyCommands
     if (myPile != null) {
       for (final DeckKeyCommand dkc : myPile.getDeckKeyCommands()) {
@@ -505,7 +551,32 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       reverseListener = null;
     }
 
-    // Remove listerners from DeckKeyCommands
+    if (faceUpListener != null) {
+      gameModule.removeKeyStrokeListener(faceUpListener);
+      faceUpListener = null;
+    }
+
+    if (faceDownListener != null) {
+      gameModule.removeKeyStrokeListener(faceDownListener);
+      faceDownListener = null;
+    }
+
+    if (faceFlipListener != null) {
+      gameModule.removeKeyStrokeListener(faceFlipListener);
+      faceFlipListener = null;
+    }
+
+    if (saveListener != null) {
+      gameModule.removeKeyStrokeListener(saveListener);
+      saveListener = null;
+    }
+
+    if (loadListener != null) {
+      gameModule.removeKeyStrokeListener(loadListener);
+      loadListener = null;
+    }
+
+    // Remove listeners from DeckKeyCommands
     if (myPile != null) {
       for (final DeckKeyCommand dkc : myPile.getDeckKeyCommands()) {
         dkc.deregisterListeners();
@@ -1371,6 +1442,42 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     return value;
   }
 
+  protected void doFaceDown() {
+    final Command c = setContentsFaceDown(true);
+    gameModule.sendAndLog(c);
+    repaintMap();
+  }
+
+  protected void doFaceUp() {
+    final Command c = setContentsFaceDown(false);
+    gameModule.sendAndLog(c);
+    repaintMap();
+  }
+
+  protected void doFaceFlip() {
+    final Command c = setContentsFaceDown(!faceDown);
+    gameModule.sendAndLog(c);
+    repaintMap();
+  }
+
+  protected void doSaveDeck() {
+    Command c = new NullCommand();
+    if (saveDeck() && Map.isChangeReportingEnabled()) {
+      c = c.append(reportCommand(saveReport, Resources.getString(Resources.SAVE)));
+    }
+    gameModule.sendAndLog(c);
+    repaintMap();
+  }
+
+  protected void doLoadDeck() {
+    Command c = loadDeck();
+    if (!c.isNull() && Map.isChangeReportingEnabled()) {
+      c = c.append(reportCommand(loadReport, Resources.getString(Resources.LOAD)));
+    }
+    gameModule.sendAndLog(c);
+    repaintMap();
+  }
+
   protected KeyCommand[] getKeyCommands() {
     if (commands == null) {
       final ArrayList<KeyCommand> l = new ArrayList<>();
@@ -1405,9 +1512,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
           @Override
           public void actionPerformed(ActionEvent e) {
-            final Command c = setContentsFaceDown(!faceDown);
-            gameModule.sendAndLog(c);
-            repaintMap();
+            doFaceFlip();
           }
         };
         l.add(faceFlipAction);
@@ -1417,9 +1522,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
           @Override
           public void actionPerformed(ActionEvent e) {
-            final Command c = setContentsFaceDown(true);
-            gameModule.sendAndLog(c);
-            repaintMap();
+            doFaceDown();
           }
         };
         l.add(faceDownAction);
@@ -1429,9 +1532,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
           @Override
           public void actionPerformed(ActionEvent e) {
-            final Command c = setContentsFaceDown(false);
-            gameModule.sendAndLog(c);
-            repaintMap();
+            doFaceUp();
           }
         };
         l.add(faceUpAction);
@@ -1478,12 +1579,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
           @Override
           public void actionPerformed(ActionEvent e) {
-            Command c = new NullCommand();
-            if (saveDeck() && Map.isChangeReportingEnabled()) {
-              c = c.append(reportCommand(saveReport, Resources.getString(Resources.SAVE)));
-            }
-            gameModule.sendAndLog(c);
-            repaintMap();
+            doSaveDeck();
           }
         };
         l.add(c);
@@ -1492,12 +1588,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
           @Override
           public void actionPerformed(ActionEvent e) {
-            Command c = loadDeck();
-            if (!c.isNull() && Map.isChangeReportingEnabled()) {
-              c = c.append(reportCommand(loadReport, Resources.getString(Resources.LOAD)));
-            }
-            gameModule.sendAndLog(c);
-            repaintMap();
+            doLoadDeck();
           }
         };
         l.add(c);
@@ -2039,7 +2130,6 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
   }
 
-
   /**
    * Sort the Deck. Called from DeckSortKeyCommand
    * @param sortParameters A list of parameters describing the sort
@@ -2070,5 +2160,4 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
     return c;
   }
-
 }

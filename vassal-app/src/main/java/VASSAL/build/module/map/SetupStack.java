@@ -915,21 +915,25 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       r.translate(pos.x, pos.y);
       if (r.contains(e.getPoint())) {
         final JPopupMenu popup = MenuDisplayer.createPopup(myPiece);
-        popup.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
-          @Override
-          public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
-            view.repaint();
+        if (popup != null) {
+          popup.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            @Override
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+              view.repaint();
+            }
+
+            @Override
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+              view.repaint();
+            }
+
+            @Override
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+          });
+          if (view.isShowing()) {
+            popup.show(view, e.getX(), e.getY());
           }
-          @Override
-          public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
-            view.repaint();
-          }
-          @Override
-          public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
-          }
-        });
-        if (view.isShowing()) {
-          popup.show(view, e.getX(), e.getY());
         }
       }
     }

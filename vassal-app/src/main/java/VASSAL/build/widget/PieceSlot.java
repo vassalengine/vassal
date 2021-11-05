@@ -353,23 +353,25 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
   protected void doPopup(MouseEvent e) {
     final JPopupMenu popup = MenuDisplayer.createPopup(getPiece());
-    popup.addPopupMenuListener(new PopupMenuListener() {
-      @Override
-      public void popupMenuCanceled(PopupMenuEvent evt) {
-        panel.repaint();
-      }
+    if (popup != null) {
+      popup.addPopupMenuListener(new PopupMenuListener() {
+        @Override
+        public void popupMenuCanceled(PopupMenuEvent evt) {
+          panel.repaint();
+        }
 
-      @Override
-      public void popupMenuWillBecomeInvisible(PopupMenuEvent evt) {
-        clearExpandedPiece();
-        panel.repaint();
-      }
+        @Override
+        public void popupMenuWillBecomeInvisible(PopupMenuEvent evt) {
+          clearExpandedPiece();
+          panel.repaint();
+        }
 
-      @Override
-      public void popupMenuWillBecomeVisible(PopupMenuEvent evt) {
-      }
-    });
-    popup.show(panel, e.getX(), e.getY());
+        @Override
+        public void popupMenuWillBecomeVisible(PopupMenuEvent evt) {
+        }
+      });
+      popup.show(panel, e.getX(), e.getY());
+    }
   }
 
   @Override
