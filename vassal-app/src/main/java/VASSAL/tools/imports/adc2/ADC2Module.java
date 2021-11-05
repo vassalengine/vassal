@@ -2314,7 +2314,7 @@ public class ADC2Module extends Importer {
     command.setAttribute(MassKeyCommand.NAME, "Attacked");
     command.setAttribute(MassKeyCommand.KEY_COMMAND, NamedKeyStroke.of(KeyStroke.getKeyStroke('A', InputEvent.CTRL_DOWN_MASK)));
     command.setAttribute(MassKeyCommand.PROPERTIES_FILTER, "Mark Attacked_Active = true");
-    command.setAttribute(MassKeyCommand.DECK_COUNT, -1);
+    command.setAttribute(MassKeyCommand.DECK_COUNT, "-1");
     command.setAttribute(MassKeyCommand.REPORT_SINGLE, Boolean.TRUE);
     command.setAttribute(MassKeyCommand.REPORT_FORMAT, "");
 
@@ -2328,7 +2328,7 @@ public class ADC2Module extends Importer {
     command.setAttribute(MassKeyCommand.NAME, "Defended");
     command.setAttribute(MassKeyCommand.KEY_COMMAND, NamedKeyStroke.of(KeyStroke.getKeyStroke('D', InputEvent.CTRL_DOWN_MASK)));
     command.setAttribute(MassKeyCommand.PROPERTIES_FILTER, "Mark Defended_Active = true");
-    command.setAttribute(MassKeyCommand.DECK_COUNT, -1);
+    command.setAttribute(MassKeyCommand.DECK_COUNT, "-1");
     command.setAttribute(MassKeyCommand.REPORT_SINGLE, Boolean.TRUE);
     command.setAttribute(MassKeyCommand.REPORT_FORMAT, "");
 

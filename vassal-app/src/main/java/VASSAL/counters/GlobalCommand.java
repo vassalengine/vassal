@@ -31,6 +31,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.script.expression.AuditTrail;
 import VASSAL.script.expression.Auditable;
 import VASSAL.script.expression.Expression;
+import VASSAL.script.expression.FormattedStringExpression;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
@@ -66,6 +67,7 @@ public class GlobalCommand implements Auditable {
   protected KeyStroke keyStroke;        // Key Command we will issue
   protected boolean reportSingle;       // If true, we temporarily disable Report traits in any receiving pieces
   protected int selectFromDeck = -1;    // selectFromDeck = -1 means process all cards in Deck; > 0 means select that many cards from the Deck
+  protected String selectFromDeckExpression = "-1"; // selectFromDeck = -1 means process all cards in Deck; Otherwise an expression evaluating to # of cards to pick from deck
   protected FormattedString reportFormat = new FormattedString(); // Report to display before sending the command
   protected Loopable owner;             // For preventing infinite loops
   protected PropertySource source;      // Context for resolving properties (i.e. for our report message)
@@ -301,6 +303,31 @@ public class GlobalCommand implements Auditable {
           fastMap = target.targetMap.tryEvaluate(source, owner, "Editor.GlobalKeyCommand.map_name");
           fastMap = Expression.createExpression(fastMap).tryEvaluate(source, owner, "Editor.GlobalKeyCommand.map_name");
         }
+      }
+
+      // Determine how many pieces we select from decks
+      final String howManyFromDeck = getSelectFromDeckExpression();
+      // Shortcut -1 for "all"
+      if ("-1".equals(howManyFromDeck)) {
+        setSelectFromDeck(-1);
+      }
+      // Shortcut 0 for "none"
+      else if ("0".equals(howManyFromDeck)) {
+        setSelectFromDeck(0);
+      }
+      else {
+        // Everything else evaluates as an expression
+        final FormattedStringExpression deckExpression = new FormattedStringExpression(howManyFromDeck);
+        String deckVal = deckExpression.tryEvaluate(source, owner, "Editor.GlobalKeyCommand.fixed_number_of_pieces");
+        deckVal = Expression.createExpression(deckVal).tryEvaluate(source, owner, "Editor.GlobalKeyCommand.fixed_number_of_pieces");
+        int deckNum;
+        try {
+          deckNum = Integer.parseInt(deckVal);
+        }
+        catch (NumberFormatException e) {
+          deckNum = 0;
+        }
+        setSelectFromDeck(Math.max(0, deckNum)); // Make sure we don't evaluate to the magical -1
       }
 
       // Evaluate any property-based expressions we will be using - these are evaluated w/r/t the SOURCE of the command, not target pieces.
@@ -733,6 +760,18 @@ public class GlobalCommand implements Auditable {
 
   public int getSelectFromDeck() {
     return selectFromDeck;
+  }
+
+  public String getSelectFromDeckExpression() {
+    return selectFromDeckExpression;
+  }
+
+  /**
+   * Set the number of pieces to select from a deck that the command will apply to.  A value <0 means to apply to all pieces in the deck
+   * @param selectFromDeck Number of pieces to select
+   */
+  public void setSelectFromDeckExpression(String selectFromDeck) {
+    selectFromDeckExpression = selectFromDeck;
   }
 
   /**
