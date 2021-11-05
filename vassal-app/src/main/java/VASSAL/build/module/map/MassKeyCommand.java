@@ -30,6 +30,7 @@ import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.FormattedExpressionConfigurer;
 import VASSAL.configure.GlobalCommandTargetConfigurer;
 import VASSAL.configure.IconConfigurer;
+import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.PropertyExpression;
@@ -47,6 +48,8 @@ import VASSAL.counters.PieceFilter;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.script.expression.AuditTrail;
+import VASSAL.script.expression.Auditable;
+import VASSAL.script.expression.FormattedStringExpression;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
@@ -329,12 +332,13 @@ public class MassKeyCommand extends AbstractToolbarItem
     }
   }
 
-  public static class DeckPolicyConfig extends Configurer implements ConfigurerFactory {
+  public static class DeckPolicyConfig extends Configurer implements ConfigurerFactory, Auditable {
     protected static final String FIXED = "Fixed number of pieces"; //NON-NLS (really)
     protected static final String NONE = "No pieces"; //NON-NLS (really)
     protected static final String ALL = "All pieces"; //NON-NLS (really)
     protected FormattedExpressionConfigurer piecesConfig;
     protected TranslatingStringEnumConfigurer typeConfig;
+    protected IntConfigurer intConfig; // binary compatibility
     protected JLabel prompt;
     protected Box controls;
     protected JPanel controls2;
@@ -400,6 +404,22 @@ public class MassKeyCommand extends AbstractToolbarItem
       }
       else {
         return piecesConfig.getValueString();
+      }
+    }
+
+    /**
+     * Legacy version for binary compability. Will attempt to return something resembling the old integer value.
+     * @return Will attempt to return something resembling the old integer value.
+     */
+    @Deprecated
+    public int getIntValue() {
+      final String s = getSingleValue();
+      try {
+        return Integer.parseInt(s);
+      }
+      catch (NumberFormatException e) {
+        final FormattedStringExpression exp = new FormattedStringExpression(s);
+        return Integer.parseInt(exp.tryEvaluate(GameModule.getGameModule(), this, "Editor.GlobalKeyCommand.zone_name"));
       }
     }
 
