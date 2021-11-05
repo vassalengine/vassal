@@ -372,7 +372,9 @@ public class MassKeyCommand extends AbstractToolbarItem
         piecesConfig.getControls().setVisible(FIXED.equals(typeConfig.getValueString()));
         SwingUtils.repack(piecesConfig.getControls());
       };
-      final PropertyChangeListener l2 = evt -> setValue(getSingleValue());
+      final PropertyChangeListener l2 = evt -> {
+        setValue(getSingleValue());
+      };
       typeConfig.addPropertyChangeListener(l);
       typeConfig.addPropertyChangeListener(l2);
       piecesConfig.addPropertyChangeListener(l2);
@@ -420,7 +422,7 @@ public class MassKeyCommand extends AbstractToolbarItem
             piecesConfig.setValue("1");
           }
           else {
-            piecesConfig.setValue(o);
+            piecesConfig.setValue((String)o);
           }
         }
         piecesConfig.getControls().setVisible(FIXED.equals(typeConfig.getValueString()));
