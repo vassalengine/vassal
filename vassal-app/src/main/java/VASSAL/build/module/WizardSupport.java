@@ -371,6 +371,7 @@ public class WizardSupport {
       final JRadioButton b = new JRadioButton(Resources.getString("WizardSupport.PlayOffline")); //$NON-NLS-1$
       b.addActionListener(e -> {
         GameModule.getGameModule().getGameState().setup(false);
+        GameModule.getGameModule().getGameState().freshenStartupGlobalKeyCommands(GameModule.getGameModule());
         GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode. NEW_GAME);
         settings.put(WizardSupport.ACTION_KEY, PLAY_OFFLINE_ACTION);
         final WizardPanelProvider panels = createPlayOfflinePanels();
@@ -519,7 +520,7 @@ public class WizardSupport {
 
     protected void loadSetup(PredefinedSetup setup, final WizardController controller, final Map settings) {
       try {
-        new SavedGameLoader(controller, settings, new BufferedInputStream(setup.getSavedGameContents()), POST_PLAY_OFFLINE_WIZARD).start();
+        new SavedGameLoader(controller, settings, new BufferedInputStream(setup.getSavedGameContents()), POST_PLAY_OFFLINE_WIZARD, true).start();
       }
       // FIXME: review error message
       catch (IOException e1) {
@@ -572,18 +573,28 @@ public class WizardSupport {
     private final InputStream in;
     private final String wizardKey;
     private final File file;
+    private final boolean freshGame; // If we're starting a brand new game (e.g. from Predefined Setup)
 
     public SavedGameLoader(WizardController controller, Map<String, Object> settings, InputStream in, String wizardKey) {
       this(controller, settings, in, wizardKey, null);
     }
 
+    public SavedGameLoader(WizardController controller, Map<String, Object> settings, InputStream in, String wizardKey, boolean freshGame) {
+      this(controller, settings, in, wizardKey, null, freshGame);
+    }
+
     public SavedGameLoader(WizardController controller, Map<String, Object> settings, InputStream in, String wizardKey, File file) {
+      this (controller, settings, in, wizardKey, file, false);
+    }
+
+    public SavedGameLoader(WizardController controller, Map<String, Object> settings, InputStream in, String wizardKey, File file, boolean freshGame) {
       super();
       this.controller = controller;
       this.settings = settings;
       this.in = in;
       this.wizardKey = wizardKey;
       this.file = file;
+      this.freshGame = freshGame;
     }
 
 
@@ -600,6 +611,11 @@ public class WizardSupport {
 
         final Command setupCommand = loadSavedGame();
         setupCommand.execute();
+
+        if (freshGame) {
+          GameModule.getGameModule().getGameState().freshenStartupGlobalKeyCommands(GameModule.getGameModule());
+        }
+
         controller.setProblem(null);
         final GameSetupPanels panels = GameSetupPanels.newInstance();
         settings.put(wizardKey, panels);
@@ -633,7 +649,7 @@ public class WizardSupport {
     private final Tutorial tutorial;
 
     public TutorialLoader(WizardController controller, Map<String, Object> settings, InputStream in, String wizardKey, Tutorial tutorial) {
-      super(controller, settings, in, wizardKey);
+      super(controller, settings, in, wizardKey, true);
       this.tutorial = tutorial;
     }
 
@@ -788,6 +804,7 @@ public class WizardSupport {
     public boolean cancel(Map settings) {
       GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
       GameModule.getGameModule().getGameState().setup(false);
+      GameModule.getGameModule().getGameState().freshenStartupGlobalKeyCommands(GameModule.getGameModule());
       return true;
     }
 

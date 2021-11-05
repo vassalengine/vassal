@@ -213,6 +213,7 @@ public class GameState implements CommandEncoder {
         }
 
         setup(true);
+        GameModule.getGameModule().getGameState().freshenStartupGlobalKeyCommands(GameModule.getGameModule());
       }
     };
     // FIXME: setting mnemonic from first letter could cause collisions in
@@ -358,6 +359,22 @@ public class GameState implements CommandEncoder {
   //
   // END FIXME
   //
+
+
+  /**
+   * When we're known to be starting a fresh game from a Predefined Setup, freshen the starting-a-new-game flag for all SGKCs
+   * @param target the Game Module
+   */
+  public void freshenStartupGlobalKeyCommands(AbstractBuildable target) {
+    for (final Buildable b : target.getBuildables()) {
+      if (b instanceof StartupGlobalKeyCommand) {
+        ((StartupGlobalKeyCommand) b).freshGame();
+      }
+      else if (b instanceof AbstractBuildable) {
+        freshenStartupGlobalKeyCommands((AbstractBuildable) b);
+      }
+    }
+  }
 
   /**
    * Searches recursively through the game module for Startup Global Key Commands, applying them
@@ -1050,8 +1067,14 @@ public class GameState implements CommandEncoder {
     }
   }
 
+
+  public void loadGameInBackground(final String shortName, final InputStream in) {
+    loadGameInBackground(shortName, in, false);
+  }
+
   public void loadGameInBackground(final String shortName,
-                                   final InputStream in)  {
+                                   final InputStream in,
+                                   final boolean fromPredefinedSetup)  {
     GameModule.getGameModule().warn(
       Resources.getString("GameState.loading", shortName));  //$NON-NLS-1$
 
@@ -1101,6 +1124,11 @@ public class GameState implements CommandEncoder {
           }
 
           final GameModule g = GameModule.getGameModule();
+
+          if (fromPredefinedSetup) {
+            g.getGameState().freshenStartupGlobalKeyCommands(g);
+          }
+
           if (g.getGameState().isGameStarted()) {
             if (loadCommand != null) {
               if (loadComments != null && loadComments.length() > 0) {

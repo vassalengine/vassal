@@ -194,7 +194,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     final GameModule g = GameModule.getGameModule();
     if (useFile && fileName != null) {
       try {
-        g.getGameState().loadGameInBackground(fileName, getSavedGameContents());
+        g.getGameState().loadGameInBackground(fileName, getSavedGameContents(), true);
         g.setGameFile(fileName, GameModule.GameFileMode.LOADED_GAME);
       }
       catch (IOException e) {
@@ -205,6 +205,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
       g.setGameFile(fileName, GameModule.GameFileMode.NEW_GAME);
       GameModule.getGameModule().getGameState().setup(false);
       GameModule.getGameModule().getGameState().setup(true);
+      GameModule.getGameModule().getGameState().freshenStartupGlobalKeyCommands(GameModule.getGameModule());
     }
   }
 

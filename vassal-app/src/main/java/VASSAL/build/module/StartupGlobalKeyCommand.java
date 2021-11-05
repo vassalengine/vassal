@@ -23,9 +23,12 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.MassKeyCommand;
 import VASSAL.command.Command;
+import VASSAL.command.CommandEncoder;
 import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.UniqueIdManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,11 +44,17 @@ import java.util.List;
  * @author Pieter Geerkens
  *
  */
-public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameComponent {
+public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameComponent, CommandEncoder, UniqueIdManager.Identifyable {
   public static final String WHEN_TO_APPLY                 = "whenToApply";          //NON-NLS
   public static final String APPLY_FIRST_LAUNCH_OF_SESSION = "firstLaunchOfSession"; //NON-NLS
   public static final String APPLY_EVERY_LAUNCH_OF_SESSION = "everyLaunchOfSession"; //NON-NLS
   public static final String APPLY_START_OF_GAME_ONLY      = "startOfGameOnly";      //NON-NLS
+
+  private static final char DELIMITER = '\t'; //$NON-NLS-1$
+  public static final String COMMAND_PREFIX = "SGKC" + DELIMITER; //NON-NLS-1$
+
+  protected static final UniqueIdManager idMgr = new UniqueIdManager("SGKC"); //$NON-NLS-1$
+  protected String id = "";     // Our unique ID
 
   public String whenToApply = APPLY_FIRST_LAUNCH_OF_SESSION;
 
@@ -98,8 +107,17 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
   //---------------------- GlobalKeyCommand extension ---------------------
   @Override
   public void addTo(Buildable parent) {
+    idMgr.add(this);
     super.addTo(parent);
     GameModule.getGameModule().getGameState().addGameComponent(this);
+    GameModule.getGameModule().addCommandEncoder(this);
+  }
+
+  @Override
+  public void removeFrom(Buildable parent) {
+    GameModule.getGameModule().getGameState().removeGameComponent(this);
+    GameModule.getGameModule().removeCommandEncoder(this);
+    idMgr.remove(this);
   }
 
   public static String getConfigureTypeName() {
@@ -178,6 +196,10 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
   }
 
 
+  /**
+   * Apply the command, but only if it hasn't been marked as already-applied (by whatever its when-to-apply parameters are)
+   * @return true if command was applied
+   */
   public boolean applyIfNotApplied() {
     if (APPLY_FIRST_LAUNCH_OF_SESSION.equals(whenToApply)) {
       if (hasEverApplied) {
@@ -196,34 +218,108 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
     return true;
   }
 
+
   @Override
   public void setup(boolean gameStarting) {
+
+  }
+
+  /**
+   * When initializing a new game from a Predefined Setup that loads a saved game, mark that this is actually a fresh game rather than a load of an old one
+   */
+  public void freshGame() {
     hasAppliedThisGame = false;
   }
 
   @Override
   public Command getRestoreCommand() {
-    return new UpdateStartupGlobalKeyCommand(hasAppliedThisGame);
+    return new UpdateStartupGlobalKeyCommand(this, hasAppliedThisGame);
   }
+
+
+  /**
+   * Sets our unique ID (among Startup Global Key Commands), so that multiple SGKCs can sort their save/restore commands from each other
+   * @param id Sets our unique ID
+   */
+  @Override
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  /**
+   * @return unique ID of this SGKC
+   */
+  @Override
+  public String getId() {
+    return id;
+  }
+
+  /**
+   * Deserializes our command from a string version, if the command belongs to us.
+   * @param command Serialized string command
+   * @return An {@link ChessClockControl.UpdateStartupGlobalKeyCommand}
+   */
+  @Override
+  public Command decode(final String command) {
+    if (!command.startsWith(COMMAND_PREFIX + getId() + DELIMITER)) {
+      return null;
+    }
+
+    final SequenceEncoder.Decoder decoder = new SequenceEncoder.Decoder(command, DELIMITER);
+    decoder.nextToken(); // Skip over the Command Prefix
+    decoder.nextToken(); // Skip over the Id
+    final boolean applied = decoder.nextBoolean(true);
+
+    return new UpdateStartupGlobalKeyCommand(this, applied);
+  }
+
+  /**
+   * Serializes our command into a string, if it belongs to us
+   * @param c Command to serialize. Only serialized if it's an UpdateClockControlCommand.
+   * @return Serialized command, or null if command passed wasn't an UpdateClockControlCommand.
+   */
+  @Override
+  public String encode(final Command c) {
+    if (!(c instanceof UpdateStartupGlobalKeyCommand)) {
+      return null;
+    }
+    final UpdateStartupGlobalKeyCommand comm = (UpdateStartupGlobalKeyCommand) c;
+    final SequenceEncoder encoder = new SequenceEncoder(DELIMITER);
+    encoder.append(comm.getId());
+    encoder.append(comm.appliedThisGame);
+
+    if (!id.equals(comm.getId())) {
+      return null;
+    }
+
+    return COMMAND_PREFIX + encoder.getValue();
+  }
+
 
   /**
    * Our "command" format for remembering whether the key command has been applied during this game
    */
-  private class UpdateStartupGlobalKeyCommand extends Command {
+  private static class UpdateStartupGlobalKeyCommand extends Command {
     private final boolean appliedThisGame;
+    StartupGlobalKeyCommand sgkc;
 
-    public UpdateStartupGlobalKeyCommand(boolean appliedThisGame) {
+    public UpdateStartupGlobalKeyCommand(StartupGlobalKeyCommand sgkc, boolean appliedThisGame) {
+      this.sgkc = sgkc;
       this.appliedThisGame = appliedThisGame;
     }
 
     @Override
     protected void executeCommand() {
-      hasAppliedThisGame = appliedThisGame;
+      sgkc.hasAppliedThisGame = appliedThisGame;
     }
 
     @Override
     protected Command myUndoCommand() {
       return null;
+    }
+
+    public String getId() {
+      return sgkc.getId();
     }
   }
 }
