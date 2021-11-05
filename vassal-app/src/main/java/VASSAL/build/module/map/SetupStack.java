@@ -65,6 +65,7 @@ import java.util.List;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
@@ -74,6 +75,7 @@ import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
+import VASSAL.build.AbstractBuildable;
 import VASSAL.build.AbstractFolder;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -137,6 +139,16 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   protected boolean useGridLocation;
   public static final String LOCATION = "location"; //NON-NLS
   public static final String USE_GRID_LOCATION = "useGridLocation"; //NON-NLS
+
+  public static boolean showOthers = false; // Whether we also show other decks/stacks when changing the position of one
+
+  public static boolean isShowOthers() {
+    return showOthers;
+  }
+
+  public static void setShowOthers(boolean b) {
+    showOthers = b;
+  }
 
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
@@ -549,6 +561,13 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     configureButton.setEnabled(getConfigureBoard() != null && buildComponents.size() > 0);
   }
 
+  public void prepareConfigurer(Board board) {
+    if ((stackConfigurer == null) || (stackConfigurer.board != board)) {
+      stackConfigurer = new StackConfigurer(this);
+      stackConfigurer.board = getConfigureBoard(true);
+    }
+  }
+
   protected void configureStack() {
     stackConfigurer = new StackConfigurer(this);
     stackConfigurer.init();
@@ -626,6 +645,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     protected Dimension dummySize;
     protected BufferedImage dummyImage;
     protected JLabel coords;
+    protected JCheckBox shouldShowOthers;
 
     public StackConfigurer(SetupStack stack) {
       super(Resources.getString("Editor.SetupStack.adjust_at_start_stack"));
@@ -658,7 +678,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     // Main Entry Point
     protected void init() {
 
-      board = getConfigureBoard();
+      board = getConfigureBoard(true);
 
       view = new View(board, myStack);
 
@@ -683,6 +703,14 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       textPanel.add(new JLabel(Resources.getString(SystemUtils.IS_OS_MAC ? "Editor.SetupStack.shift_command_keys_move_stack_faster_mac" : "Editor.SetupStack.ctrl_shift_keys_move_stack_faster")));
 
       final Box displayPanel = Box.createHorizontalBox();
+      displayPanel.add(Box.createRigidArea(new Dimension(10, 10)));
+      shouldShowOthers = new JCheckBox(Resources.getString("Editor.SetupStack.show_others"), SetupStack.isShowOthers());
+      displayPanel.add(shouldShowOthers);
+      shouldShowOthers.addItemListener(e -> {
+        SetupStack.setShowOthers(shouldShowOthers.isSelected());
+        repaint();
+      });
+      displayPanel.add(Box.createRigidArea(new Dimension(10, 10)));
 
       final Box buttonPanel = Box.createHorizontalBox();
       final JButton snapButton = new JButton(Resources.getString("Editor.SetupStack.snap_to_grid"));
@@ -728,6 +756,10 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       updateDisplay();
       pack();
       repaint();
+    }
+
+    public void setShowOthers(boolean show) {
+      SetupStack.showOthers = show;
     }
 
     public void updateCoords(String text) {
@@ -990,6 +1022,52 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       setFocusTraversalKeysEnabled(false);
     }
 
+
+    private void drawOtherStack(SetupStack s, Graphics g) {
+      // Don't draw ourselves
+      if (s == myStack) {
+        return;
+      }
+
+      // Don't draw stacks from other maps
+      if (s.getMap() != myStack.getMap()) {
+        return;
+      }
+
+      // Don't draw stacks from wrong board
+      if (s.owningBoardName != null) {
+        if (myStack.owningBoardName == null) {
+          return;
+        }
+        if (!s.owningBoardName.equals(myStack.owningBoardName)) {
+          return;
+        }
+      }
+
+      final Graphics2D g2d = (Graphics2D) g;
+      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5F));
+      final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
+
+      final int x = (int)(s.pos.x * os_scale);
+      final int y = (int)(s.pos.y * os_scale);
+
+      s.prepareConfigurer(myBoard);
+
+      s.stackConfigurer.drawImage(g, x, y, null, os_scale);
+    }
+
+    private void drawOtherStacks(AbstractBuildable target, Graphics g) {
+      for (final Buildable b : target.getBuildables()) {
+        if (b instanceof SetupStack) {
+          drawOtherStack((SetupStack)b, g);
+        }
+        else if (b instanceof AbstractBuildable) {
+          drawOtherStacks((AbstractBuildable) b, g);
+        }
+      }
+    }
+
+
     @Override
     public void paint(Graphics g) {
       final Graphics2D g2d = (Graphics2D) g;
@@ -1005,6 +1083,13 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         bounds.height *= os_scale;
         myGrid.draw(g, bounds, bounds, os_scale, false);
       }
+
+      if (isShowOthers()) {
+        drawOtherStacks(GameModule.getGameModule(), g);
+      }
+
+      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP));
+
       final int x = (int)(myStack.pos.x * os_scale);
       final int y = (int)(myStack.pos.y * os_scale);
       myStack.stackConfigurer.drawImage(g, x, y, this, os_scale);
