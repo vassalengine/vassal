@@ -404,7 +404,7 @@ Startup Global Key Commands can be configured to any of three modes:
 
 **(2) On Every Game Launch/Load Of Session**: These fire every time a game is launched or loaded during the session.
 
-**(3) At Start Of Every Fresh Game Only**: These fire only when a _new game_ is starting. If the game is saved and later restored, or is being exchanged back and forth in log form, the key command will not fire on subsequent loads.
+**(3) At Start Of Every Fresh Game Only**: These fire only when a _new game_ is starting. If the game is saved and later restored, or is being exchanged back and forth in log form, the key command will not fire on subsequent loads. For clarity, a new game started from a <<GameModule.adoc#PredefinedSetup, Pre-defined Setup>> _does_ count as a fresh new game.
 
 
 '''
