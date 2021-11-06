@@ -150,6 +150,16 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     showOthers = b;
   }
 
+  protected static String usedBoardWildcard = ""; // Forces "any board" stacks to prefer to match a specific name. Used during configurer draw cycle only.
+
+  public static String getUsedBoardWildcard() {
+    return usedBoardWildcard;
+  }
+
+  public static void setUsedBoardWildcard(String s) {
+    usedBoardWildcard = s;
+  }
+
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (USE_GRID_LOCATION.equals(name)) {
@@ -565,6 +575,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     if ((stackConfigurer == null) || (stackConfigurer.board != board)) {
       stackConfigurer = new StackConfigurer(this);
       stackConfigurer.board = getConfigureBoard(true);
+      updatePosition();
     }
   }
 
@@ -595,16 +606,37 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     }
 
     if (board == null && map != null) {
-      //BR// If we're doing the start-of-game setup (as opposed to just configuring it), prefer a "selected" board to the first one in the list.
       if (checkSelectedBoards) {
-        final List<String> selectedBoards = map.getBoardPicker().getSelectedBoardNames();
-        for (final String s : selectedBoards) {
-          board = map.getBoardByName(s);
-          if (board != null) {
-            break;
+        // During configuration with no live player window, if we're drawing multiple stacks, force ghost stacks to prefer to match the active stack's board pick
+        final String wildcard = SetupStack.getUsedBoardWildcard();
+        if (!wildcard.isEmpty()) {
+          // We can't use map.getBoardByName() because Player window might not be live (in which case it will just return null)
+          if (map.getBoardPicker() != null) {
+            for (final Board b : map.getBoardPicker().possibleBoards) {
+              if (b.getName().equals(wildcard)) {
+                board = b;
+                break;
+              }
+            }
+          }
+        }
+
+        //BR// If we're doing the start-of-game setup (as opposed to just configuring it), prefer a "selected" board to the first one in the list.
+        if (board == null) {
+          final BoardPicker boardPicker = map.getBoardPicker();
+          if (boardPicker != null) {
+            final List<String> selectedBoards = boardPicker.getSelectedBoardNames();
+            for (final String s : selectedBoards) {
+              board = map.getBoardByName(s);
+              if (board != null) {
+                break;
+              }
+            }
           }
         }
       }
+
+      // Final fallback (and default) is to just take the first board from the picker
       if (board == null) {
         final String[] allBoards = map.getBoardPicker().getAllowableBoardNames();
         if (allBoards.length > 0) {
@@ -1024,7 +1056,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 
 
     private void drawOtherStack(SetupStack s, Graphics g) {
-      // Don't draw ourselves
+      // Don't draw ourselves as an "other"
       if (s == myStack) {
         return;
       }
@@ -1037,7 +1069,9 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       // Don't draw stacks from wrong board
       if (s.owningBoardName != null) {
         if (myStack.owningBoardName == null) {
-          return;
+          if (!s.owningBoardName.equals(myBoard.getName())) {
+            return;
+          }
         }
         if (!s.owningBoardName.equals(myStack.owningBoardName)) {
           return;
@@ -1048,10 +1082,10 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5F));
       final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
 
+      s.prepareConfigurer(myBoard);
+
       final int x = (int)(s.pos.x * os_scale);
       final int y = (int)(s.pos.y * os_scale);
-
-      s.prepareConfigurer(myBoard);
 
       s.stackConfigurer.drawImage(g, x, y, null, os_scale);
     }
@@ -1085,7 +1119,9 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       }
 
       if (isShowOthers()) {
+        SetupStack.setUsedBoardWildcard(myBoard.getName()); //This will make "any board" stacks match our selected board
         drawOtherStacks(GameModule.getGameModule(), g);
+        SetupStack.setUsedBoardWildcard("");
       }
 
       g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP));
