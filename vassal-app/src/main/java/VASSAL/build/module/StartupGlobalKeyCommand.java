@@ -56,7 +56,7 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
   protected static final UniqueIdManager idMgr = new UniqueIdManager("SGKC"); //$NON-NLS-1$
   protected String id = "";     // Our unique ID
 
-  public String whenToApply = APPLY_FIRST_LAUNCH_OF_SESSION;
+  public String whenToApply = APPLY_EVERY_LAUNCH_OF_SESSION;
 
   private boolean hasEverApplied     = false;  // Has ever been applied during this session   (NOT saved with game state)
   private boolean hasAppliedThisGame = false;  // Has ever been applied during this *game*    (Saved with game state)
