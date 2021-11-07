@@ -484,10 +484,14 @@ public class FreeRotator extends Decorator
     return commands;
   }
 
-  /*
+  protected Command movePiece(GamePiece gp, Point dest) {
+    return movePiece(gp, dest, false);
+  }
+
+    /*
    * Move a single piece to a destination
    */
-  protected Command movePiece(GamePiece gp, Point dest) {
+  protected Command movePiece(GamePiece gp, Point dest, boolean cargoFollowup) {
     // Is the piece on a map?
     final Map map = gp.getMap();
     if (map == null) {
@@ -506,8 +510,10 @@ public class FreeRotator extends Decorator
     // Move the piece
     c = c.append(map.placeOrMerge(outer, dest));
 
-    // If a cargo piece has been "sent", find it a new Mat if needed.
-    c = MatCargo.findNewMat(c, outer);
+    // If a cargo piece has been "sent" (but not moving in tandem with its mat), find it a new Mat if needed.
+    if (!cargoFollowup) {
+      c = MatCargo.findNewMat(c, outer);
+    }
 
     // Apply after Move Key
     if (map.getMoveKey() != null) {
@@ -549,7 +555,7 @@ public class FreeRotator extends Decorator
         // Rotate Cargo's current position to its destination
         final Point dst = new Point();
         t.transform(piece.getPosition(), dst);
-        command = command.append(movePiece(piece, dst));
+        command = command.append(movePiece(piece, dst, true));
       }
     }
 
