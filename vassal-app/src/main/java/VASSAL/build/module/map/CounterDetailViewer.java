@@ -175,7 +175,11 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected boolean stretchWidthSummary = false;
   protected boolean unrotatePieces = false;
   protected boolean showDeck = false;
-  protected int showDeckDepth = 1;
+
+  @Deprecated
+  protected static int showDeckDepth = 1; //BR// deprecated (and was-always-broken) field, use showNumberFromDeck instead.
+
+  protected int showNumberFromDeck = 1;
   protected boolean showDeckMasked = false;
   protected boolean showOverlap = false;
   protected double zoomLevel = 1.0;
@@ -748,7 +752,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         GamePiece p = d.topPiece();
 
         int shownPieces = 0;
-        while (p != null && shownPieces < cdv.showDeckDepth) {
+        while (p != null && shownPieces < cdv.showNumberFromDeck) {
           if (cdv.showDeckMasked || (!Boolean.TRUE.equals(p.getProperty(Properties.OBSCURED_TO_ME)) && !d.isFaceDown())) {
             final Rectangle r = (Rectangle) d.getShape();
             r.x += d.getPosition().x;
@@ -1342,7 +1346,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       if (value instanceof String) {
         value = Integer.valueOf((String) value);
       }
-      showDeckDepth = (Integer) value;
+      showDeckDepth = (Integer) value; // for possible legacy support
+      showNumberFromDeck = (Integer) value;
     }
     else if (SHOW_OVERLAP.equals(name)) {
       if (value instanceof Boolean) {
@@ -1487,7 +1492,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       return String.valueOf(showDeckMasked);
     }
     else if (SHOW_DECK_DEPTH.equals(name)) {
-      return String.valueOf(showDeckDepth);
+      return String.valueOf(showNumberFromDeck);
     }
     else if (SHOW_OVERLAP.equals(name)) {
       return String.valueOf(showOverlap);

@@ -1266,11 +1266,6 @@
         <field>pieceMovers</field>
     </difference>
     <difference>
-        <className>VASSAL/build/module/map/CounterDetailViewer</className>
-        <differenceType>6007</differenceType>
-        <field>showDeckDepth</field>
-    </difference>
-    <difference>
         <className>VASSAL/build/module/map/CounterDetailViewer$Visitor</className>
         <differenceType>7004</differenceType>
         <method>**</method>
