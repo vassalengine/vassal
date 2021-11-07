@@ -36,11 +36,8 @@ import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.Configurer;
-import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.GamePieceFormattedStringConfigurer;
-import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
-import VASSAL.configure.PieceAccessConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.StringArrayConfigurer;
@@ -48,7 +45,6 @@ import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.Deck;
 import VASSAL.counters.GamePiece;
-import VASSAL.counters.PieceAccess;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Resources;
@@ -99,14 +95,9 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
 
   private final VisibilityCondition saveVisibleCondition = () -> dummy.isPersistable();
 
-  protected static final UniqueIdManager idMgr = new UniqueIdManager("Deck"); //NON-NLS
+  private final VisibilityCondition ownersVisibleCondition = () -> dummy.isRestrictAccess();
 
-  public static class AccessConfig implements ConfigurerFactory {
-    @Override
-    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new PieceAccessConfigurer(key, name, ////// ????? ); //NON-NLS
-    }
-  }
+  protected static final UniqueIdManager idMgr = new UniqueIdManager("Deck"); //NON-NLS
 
   @Override
   public void addTo(Buildable parent) {
@@ -210,7 +201,8 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   public static final String SAVE_REPORT_FORMAT = "saveReportFormat"; //NON-NLS
   public static final String LOAD_REPORT_FORMAT = "loadReportFormat"; //NON-NLS
 
-  public static final String DECK_ACCESS = "deckAccess"; //NON-NLS
+  public static final String DECK_RESTRICT_ACCESS = "deckRestrictAccess"; //NON-NLS
+  public static final String DECK_OWNERS = "deckOwners"; //NON-NLS
 
   public static class Prompt extends TranslatableStringEnum {
     @Override
@@ -352,7 +344,8 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       COUNTEXPRESSIONS,
       RESTRICT_OPTION,
       RESTRICT_EXPRESSION,
-      DECK_ACCESS
+      DECK_RESTRICT_ACCESS,
+      DECK_OWNERS
     };
   }
 
@@ -409,7 +402,8 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
         Resources.getString("Editor.DrawPile.count_express"), //$NON-NLS-1$
         Resources.getString("Editor.DrawPile.restrict_drag"), //$NON-NLS-1$
         Resources.getString("Editor.DrawPile.match_express"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.deck_access"), //NON-NLS
+        Resources.getString("Editor.DrawPile.deck_restrict_access"), //NON-NLS
+        Resources.getString("Editor.DrawPile.deck_owners"), //NON-NLS
     };
   }
 
@@ -466,7 +460,8 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       String[].class, // COUNTEXPRESSIONS
       Boolean.class, // RESTRICT_OPTION
       PropertyExpression.class, //RESTRICT_EXPRESSION
-      PieceAccess.class, // DECK_ACCESS
+      Boolean.class, // DECK_RESTRICT_ACCESS
+      String[].class, // DECK_OWNERS
     };
   }
 
@@ -637,8 +632,11 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     else if (LOAD_REPORT_FORMAT.equals(key)) {
       return dummy.getLoadReport();
     }
-    else if (DECK_ACCESS.equals(key)) {
-      return PieceAccessConfigurer.encode(dummy.getAccess());
+    else if (DECK_RESTRICT_ACCESS.equals(key)) {
+      return String.valueOf(dummy.isRestrictAccess());
+    }
+    else if (DECK_OWNERS.equals(key)) {
+      return StringArrayConfigurer.arrayToString(dummy.getOwners());
     }
     else {
       return super.getAttributeValueString(key);
@@ -888,11 +886,21 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     else if (LOAD_REPORT_FORMAT.equals(key)) {
       dummy.setLoadReport((String) value);
     }
-    else if (DECK_ACCESS.equals(key)) {
-      if (value instanceof String) {
-        value = PieceAccessConfigurer.decode((String) value);
+    else if (DECK_RESTRICT_ACCESS.equals(key)) {
+      if (value instanceof Boolean) {
+        dummy.setRestrictAccess(Boolean.TRUE.equals(value));
       }
-      dummy.setAccess((PieceAccess)value);
+      else {
+        dummy.setRestrictAccess("true".equals(value)); //NON-NLS
+      }
+    }
+    else if (DECK_OWNERS.equals(key)) {
+      if (value instanceof String) {
+        dummy.setOwners(StringArrayConfigurer.stringToArray((String) value));
+      }
+      else if (value instanceof String[]) {
+        dummy.setOwners((String [])value);
+      }
     }
     else {
       super.setAttribute(key, value);
@@ -940,6 +948,9 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     else if (List.of(SAVE_MESSAGE, SAVE_HOTKEY, SAVE_REPORT_FORMAT, LOAD_MESSAGE, LOAD_HOTKEY, LOAD_REPORT_FORMAT).contains(name)) {
       return saveVisibleCondition;
     }
+    else if (DECK_OWNERS.equals(name)) {
+      return ownersVisibleCondition;
+    }
     else {
       return null;
     }
@@ -971,6 +982,10 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   public Command addToContents(GamePiece p) {
     // If the piece is already in the Deck, do nothing
     if (myDeck != null && myDeck.indexOf(p) >= 0) {
+      return new NullCommand();
+    }
+    // Don't add to decks we don't have access to
+    if ((myDeck != null) && !myDeck.isAccessible()) {
       return new NullCommand();
     }
     // Merge it in

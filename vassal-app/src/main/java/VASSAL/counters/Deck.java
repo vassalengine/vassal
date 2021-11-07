@@ -171,7 +171,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected NamedKeyStrokeListener saveListener;
   protected NamedKeyStrokeListener loadListener;
 
-  protected PieceAccess access = PlayerAccess.getInstance();
+  protected boolean restrictAccess;
+  protected String[] owners;
 
   /** The matching DrawPile that generated this Deck */
   protected DrawPile myPile;
@@ -272,12 +273,20 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   }
 
 
-  public PieceAccess getAccess() {
-    return access;
+  public String[] getOwners() {
+    return owners;
   }
 
-  public void setAccess(PieceAccess p) {
-    access = p;
+  public void setOwners(String[] o) {
+    owners = o;
+  }
+
+  public boolean isRestrictAccess() {
+    return restrictAccess;
+  }
+
+  public void setRestrictAccess(boolean b) {
+    restrictAccess = b;
   }
 
   /**
@@ -1620,7 +1629,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       }
     }
 
-    return commands;
+    return isAccessible() ? commands : null;
   }
 
 
@@ -1877,6 +1886,27 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   @Override
   public boolean isExpanded() {
     return false;
+  }
+
+
+  /** Return true if the player playing the given side can access this deck
+   * @see PlayerRoster
+   */
+  public boolean isAccessibleTo(String playerSide) {
+    if (!isRestrictAccess()) {
+      return true;
+    }
+    for (final String owner : owners) {
+      if (owner.equals(playerSide)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /** Return if our current player side can access the deck */
+  public boolean isAccessible() {
+    return isAccessibleTo(PlayerRoster.getMySide());
   }
 
   /** Return true if this deck can be saved to and loaded from a file on disk */

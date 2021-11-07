@@ -367,13 +367,18 @@ public class GlobalCommand implements Auditable {
       if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.CURSTACK) {
         if (curPiece != null) {
           final Stack stack = curPiece.getParent();
-          final int useFromDeck = (stack instanceof Deck) ? getSelectFromDeck() : -1;
+          int useFromDeck = (stack instanceof Deck) ? getSelectFromDeck() : -1;
           if (stack instanceof Deck) {
             visitor.setSelectedCount(0);
           }
           List<GamePiece> pieces = stack.asList();
           if (stack instanceof Deck) {
             pieces = ((Deck) stack).getOrderedPieces();
+
+            // Not if deck isn't accessible to us
+            if (!((Deck)stack).isAccessible()) {
+              useFromDeck = 0;
+            }
           }
           if (useFromDeck != 0) {
             for (final GamePiece gamePiece : pieces) {
@@ -399,20 +404,22 @@ public class GlobalCommand implements Auditable {
         if ((d != null) && (useFromDeck != 0)) {
           final Deck dk = d.getDeck();
           if (dk != null) { // Needed! GKC toolbar buttons will attempt to send GKCs even if no game has ever been started. Whee!
-            final List<GamePiece> pieces = dk.getOrderedPieces();
+            if (dk.isAccessible()) {
+              final List<GamePiece> pieces = dk.getOrderedPieces();
 
-            visitor.setSelectedCount(0);
-            for (final GamePiece gamePiece : pieces) {
-              // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
-              if (!passesPropertyFastMatch(gamePiece)) {
-                continue;
-              }
+              visitor.setSelectedCount(0);
+              for (final GamePiece gamePiece : pieces) {
+                // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
+                if (!passesPropertyFastMatch(gamePiece)) {
+                  continue;
+                }
 
-              // Anything else we send to dispatcher to apply BeanShell filter and issue the command if the piece matches
-              dispatcher.accept(gamePiece);
+                // Anything else we send to dispatcher to apply BeanShell filter and issue the command if the piece matches
+                dispatcher.accept(gamePiece);
 
-              if ((useFromDeck > 0) && visitor.getSelectedCount() >= useFromDeck) {
-                break;
+                if ((useFromDeck > 0) && visitor.getSelectedCount() >= useFromDeck) {
+                  break;
+                }
               }
             }
           }
@@ -485,10 +492,11 @@ public class GlobalCommand implements Auditable {
 
                 // We may have an individual piece, or we may have a Stack (or Deck), in which case we need to traverse it.
                 if (pieceOrStack instanceof Deck) {
-                  final int useFromDeck = getSelectFromDeck();
+                  final Deck deck = (Deck)pieceOrStack;
+                  final int useFromDeck = deck.isAccessible() ? getSelectFromDeck() : 0;
                   if (useFromDeck != 0) {
                     visitor.setSelectedCount(0);
-                    pieceList = ((Deck) pieceOrStack).getOrderedPieces();
+                    pieceList = deck.getOrderedPieces();
 
                     // This will iterate through actual game pieces
                     for (final GamePiece gamePiece : pieceList) {
@@ -533,8 +541,13 @@ public class GlobalCommand implements Auditable {
               // We may have an individual piece, or we may have a Stack (or Deck), in which case we need to traverse it.
               if (pieceOrStack instanceof Stack) {
                 if (pieceOrStack instanceof Deck) {
-                  useFromDeck = getSelectFromDeck();
-                  visitor.setSelectedCount(0);
+                  if (((Deck)pieceOrStack).isAccessible()) {
+                    useFromDeck = getSelectFromDeck();
+                    visitor.setSelectedCount(0);
+                  }
+                  else {
+                    useFromDeck = 0;
+                  }
                 }
                 else {
                   useFromDeck = -1; // Not a deck, so accept all pieces
@@ -687,6 +700,9 @@ public class GlobalCommand implements Auditable {
 
     @Override
     public Object visitDeck(Deck d) {
+      if (!d.isAccessible()) {
+        return null;
+      }
       if (getSelectFromDeck() != 0) {
 
         // selectFromDeck = -1 means process all cards in Deck
