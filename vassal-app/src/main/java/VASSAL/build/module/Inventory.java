@@ -287,13 +287,15 @@ public class Inventory extends AbstractToolbarItem
               final GamePiece piece = node.getCounter().getPiece();
               if (piece != null) {
                 final JPopupMenu menu = MenuDisplayer.createPopup(piece);
-                //$NON-NLS-1$
-                menu.addPropertyChangeListener("visible", evt -> { //NON-NLS
-                  if (Boolean.FALSE.equals(evt.getNewValue())) {
-                    SwingUtilities.invokeLater(() -> refresh());
-                  }
-                });
-                menu.show(tree, e.getX(), e.getY());
+                if (menu != null) {
+                  //$NON-NLS-1$
+                  menu.addPropertyChangeListener("visible", evt -> { //NON-NLS
+                    if (Boolean.FALSE.equals(evt.getNewValue())) {
+                      SwingUtilities.invokeLater(() -> refresh());
+                    }
+                  });
+                  menu.show(tree, e.getX(), e.getY());
+                }
               }
             }
           }

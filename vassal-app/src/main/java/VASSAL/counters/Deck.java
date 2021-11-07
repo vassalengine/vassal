@@ -152,6 +152,25 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected String faceUpMessage;
   protected String faceDownMessage;
 
+  protected String faceUpMsgFormat;
+  protected NamedKeyStroke faceUpKey;
+  protected NamedKeyStroke faceDownKey;
+  protected NamedKeyStroke faceFlipKey;
+
+  protected String saveMessage = Resources.getString(Resources.SAVE);
+  protected NamedKeyStroke saveKey;
+  protected String saveReport;
+
+  protected String loadMessage = Resources.getString(Resources.LOAD);
+  protected NamedKeyStroke loadKey;
+  protected String loadReport;
+
+  protected NamedKeyStrokeListener faceUpListener;
+  protected NamedKeyStrokeListener faceDownListener;
+  protected NamedKeyStrokeListener faceFlipListener;
+  protected NamedKeyStrokeListener saveListener;
+  protected NamedKeyStrokeListener loadListener;
+
   /** The matching DrawPile that generated this Deck */
   protected DrawPile myPile;
 
@@ -466,6 +485,46 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       reverseListener.setKeyStroke(getReverseKey());
     }
 
+    if (faceUpListener == null) {
+      faceUpListener = new NamedKeyStrokeListener(e -> {
+        doFaceUp();
+      });
+      gameModule.addKeyStrokeListener(faceUpListener);
+      faceUpListener.setKeyStroke(getFaceUpKey());
+    }
+
+    if (faceDownListener == null) {
+      faceDownListener = new NamedKeyStrokeListener(e -> {
+        doFaceDown();
+      });
+      gameModule.addKeyStrokeListener(faceDownListener);
+      faceDownListener.setKeyStroke(getFaceDownKey());
+    }
+
+    if (faceFlipListener == null) {
+      faceFlipListener = new NamedKeyStrokeListener(e -> {
+        doFaceFlip();
+      });
+      gameModule.addKeyStrokeListener(faceFlipListener);
+      faceFlipListener.setKeyStroke(getFaceFlipKey());
+    }
+
+    if (saveListener == null) {
+      saveListener = new NamedKeyStrokeListener(e -> {
+        doSaveDeck();
+      });
+      gameModule.addKeyStrokeListener(saveListener);
+      saveListener.setKeyStroke(getSaveKey());
+    }
+
+    if (loadListener == null) {
+      loadListener = new NamedKeyStrokeListener(e -> {
+        doLoadDeck();
+      });
+      gameModule.addKeyStrokeListener(loadListener);
+      saveListener.setKeyStroke(getLoadKey());
+    }
+
     // Add Listeners for DeckKeyCommands
     if (myPile != null) {
       for (final DeckKeyCommand dkc : myPile.getDeckKeyCommands()) {
@@ -492,7 +551,32 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       reverseListener = null;
     }
 
-    // Remove listerners from DeckKeyCommands
+    if (faceUpListener != null) {
+      gameModule.removeKeyStrokeListener(faceUpListener);
+      faceUpListener = null;
+    }
+
+    if (faceDownListener != null) {
+      gameModule.removeKeyStrokeListener(faceDownListener);
+      faceDownListener = null;
+    }
+
+    if (faceFlipListener != null) {
+      gameModule.removeKeyStrokeListener(faceFlipListener);
+      faceFlipListener = null;
+    }
+
+    if (saveListener != null) {
+      gameModule.removeKeyStrokeListener(saveListener);
+      saveListener = null;
+    }
+
+    if (loadListener != null) {
+      gameModule.removeKeyStrokeListener(loadListener);
+      loadListener = null;
+    }
+
+    // Remove listeners from DeckKeyCommands
     if (myPile != null) {
       for (final DeckKeyCommand dkc : myPile.getDeckKeyCommands()) {
         dkc.deregisterListeners();
@@ -551,6 +635,17 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     drawSpecificMessage = st.nextToken(Resources.getString("Deck.draw_specific"));
     faceUpMessage       = st.nextToken(Resources.getString("Deck.face_up"));
     faceDownMessage     = st.nextToken(Resources.getString("Deck.face_down"));
+
+    faceUpKey = st.nextNamedKeyStroke(null);
+    faceUpMsgFormat = st.nextToken("");
+    faceFlipKey     = st.nextNamedKeyStroke(null);
+    faceDownKey     = st.nextNamedKeyStroke(null);
+    saveMessage     = st.nextToken(Resources.getString("Editor.Deck.save_deck"));
+    saveKey         = st.nextNamedKeyStroke(null);
+    saveReport      = st.nextToken(Resources.getString("Deck.deck_saved"));
+    loadMessage     = st.nextToken(Resources.getString("Editor.Deck.load_deck"));
+    loadKey         = st.nextNamedKeyStroke(null);
+    loadReport      = st.nextToken(Resources.getString("Deck.deck_loaded"));
 
     // Find the DrawPile that defines this Deck to access the new Deck Key Commands.
     // If the designed has removed the DrawPile, or changed the name of it, then myPile will
@@ -836,6 +931,86 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     faceDownMessage = m;
   }
 
+  public String getFaceUpMsgFormat() {
+    return faceUpMsgFormat;
+  }
+
+  public void setFaceUpMsgFormat(String m) {
+    faceUpMsgFormat = m;
+  }
+
+  public NamedKeyStroke getFaceUpKey() {
+    return faceUpKey;
+  }
+
+  public void setFaceUpKey(NamedKeyStroke k) {
+    faceUpKey = k;
+  }
+
+  public NamedKeyStroke getFaceDownKey() {
+    return faceDownKey;
+  }
+
+  public void setFaceDownKey(NamedKeyStroke k) {
+    faceDownKey = k;
+  }
+
+  public NamedKeyStroke getFaceFlipKey() {
+    return faceFlipKey;
+  }
+
+  public void setFaceFlipKey(NamedKeyStroke k) {
+    faceFlipKey = k;
+  }
+
+  public String getSaveMessage() {
+    return saveMessage;
+  }
+
+  public void setSaveMessage(String s) {
+    saveMessage = s;
+  }
+
+  public String getLoadMessage() {
+    return loadMessage;
+  }
+
+  public void setLoadMessage(String s) {
+    loadMessage = s;
+  }
+
+  public NamedKeyStroke getSaveKey() {
+    return saveKey;
+  }
+
+  public void setSaveKey(NamedKeyStroke k) {
+    saveKey = k;
+  }
+
+  public NamedKeyStroke getLoadKey() {
+    return loadKey;
+  }
+
+  public void setLoadKey(NamedKeyStroke k) {
+    loadKey = k;
+  }
+
+  public String getSaveReport() {
+    return saveReport;
+  }
+
+  public void setSaveReport(String s) {
+    saveReport = s;
+  }
+
+  public String getLoadReport() {
+    return loadReport;
+  }
+
+  public void setLoadReport(String s) {
+    loadReport = s;
+  }
+
   public boolean isHotkeyOnEmpty() {
     return hotkeyOnEmpty;
   }
@@ -920,7 +1095,18 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       .append(drawMultipleMessage)
       .append(drawSpecificMessage)
       .append(faceUpMessage)
-      .append(faceDownMessage);
+      .append(faceDownMessage)
+      .append(faceUpKey)
+      .append(faceUpMsgFormat)
+      .append(faceFlipKey)
+      .append(faceDownKey)
+      .append(saveMessage)
+      .append(saveKey)
+      .append(saveReport)
+      .append(loadMessage)
+      .append(loadKey)
+      .append(loadReport);
+
     return ID + se.getValue();
   }
 
@@ -1101,12 +1287,16 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   }
 
   public Command setContentsFaceDown(boolean value) {
-    final ChangeTracker t = new ChangeTracker(this);
     Command c = new NullCommand();
+    if (faceDown == value) {
+      return c;
+    }
+
+    final ChangeTracker t = new ChangeTracker(this);
     faceDown = value;
     commands = null; // Force rebuild of popup menu
     if (Map.isChangeReportingEnabled()) {
-      c = c.append(reportCommand(faceDownMsgFormat, value ? Resources.getString("Deck.face_down") : Resources.getString("Deck.face_up")));
+      c = c.append(reportCommand(faceDown ? faceDownMsgFormat : faceUpMsgFormat, value ? Resources.getString("Deck.face_down") : Resources.getString("Deck.face_up")));
     }
     return t.getChangeCommand().append(c);
   }
@@ -1252,6 +1442,42 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     return value;
   }
 
+  protected void doFaceDown() {
+    final Command c = setContentsFaceDown(true);
+    gameModule.sendAndLog(c);
+    repaintMap();
+  }
+
+  protected void doFaceUp() {
+    final Command c = setContentsFaceDown(false);
+    gameModule.sendAndLog(c);
+    repaintMap();
+  }
+
+  protected void doFaceFlip() {
+    final Command c = setContentsFaceDown(!faceDown);
+    gameModule.sendAndLog(c);
+    repaintMap();
+  }
+
+  protected void doSaveDeck() {
+    Command c = new NullCommand();
+    if (saveDeck() && Map.isChangeReportingEnabled()) {
+      c = c.append(reportCommand(saveReport, Resources.getString(Resources.SAVE)));
+    }
+    gameModule.sendAndLog(c);
+    repaintMap();
+  }
+
+  protected void doLoadDeck() {
+    Command c = loadDeck();
+    if (!c.isNull() && Map.isChangeReportingEnabled()) {
+      c = c.append(reportCommand(loadReport, Resources.getString(Resources.LOAD)));
+    }
+    gameModule.sendAndLog(c);
+    repaintMap();
+  }
+
   protected KeyCommand[] getKeyCommands() {
     if (commands == null) {
       final ArrayList<KeyCommand> l = new ArrayList<>();
@@ -1281,17 +1507,35 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         l.add(c);
       }
       if (USE_MENU.equals(faceDownOption) || USE_MENU_UP.equals(faceDownOption)) {
-        final KeyCommand faceDownAction = new KeyCommand(faceDown ? faceUpMessage : faceDownMessage, NamedKeyStroke.NULL_KEYSTROKE, this) { //$NON-NLS-1$ //$NON-NLS-2$
+        final KeyCommand faceFlipAction = new KeyCommand(faceDown ? faceUpMessage : faceDownMessage, getFaceFlipKey(), this) {
           private static final long serialVersionUID = 1L;
 
           @Override
           public void actionPerformed(ActionEvent e) {
-            final Command c = setContentsFaceDown(!faceDown);
-            gameModule.sendAndLog(c);
-            repaintMap();
+            doFaceFlip();
+          }
+        };
+        l.add(faceFlipAction);
+
+        final KeyCommand faceDownAction = new KeyCommand("", getFaceDownKey(), this) {
+          private static final long serialVersionUID = 1L;
+
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            doFaceDown();
           }
         };
         l.add(faceDownAction);
+
+        final KeyCommand faceUpAction = new KeyCommand("", getFaceUpKey(), this) {
+          private static final long serialVersionUID = 1L;
+
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            doFaceUp();
+          }
+        };
+        l.add(faceUpAction);
       }
       if (reversible) {
         c = new KeyCommand(reverseCommand, NamedKeyStroke.NULL_KEYSTROKE, this) { //$NON-NLS-1$
@@ -1330,23 +1574,21 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         l.add(c);
       }
       if (persistable) {
-        c = new KeyCommand(Resources.getString(Resources.SAVE), NamedKeyStroke.NULL_KEYSTROKE, this) {
+        c = new KeyCommand(saveMessage, saveKey, this) {
           private static final long serialVersionUID = 1L;
 
           @Override
           public void actionPerformed(ActionEvent e) {
-            gameModule.sendAndLog(saveDeck());
-            repaintMap();
+            doSaveDeck();
           }
         };
         l.add(c);
-        c = new KeyCommand(Resources.getString(Resources.LOAD), NamedKeyStroke.NULL_KEYSTROKE, this) {
+        c = new KeyCommand(loadMessage, loadKey, this) {
           private static final long serialVersionUID = 1L;
 
           @Override
           public void actionPerformed(ActionEvent e) {
-            gameModule.sendAndLog(loadDeck());
-            repaintMap();
+            doLoadDeck();
           }
         };
         l.add(c);
@@ -1547,11 +1789,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     Command c = new NullCommand();
 
     // Find the target Deck
-    String targetDeckName;
-    String data;
+    final String targetDeckName;
+    final String data;
     if (dkc.isVariableDeck()) {
       targetDeckName = dkc.getDeckExpression().getText(this, dkc, "Editor.DeckSendKeyCommand.deck_expression");
-      data = targetDeckName + " from expression " + dkc.getDeckExpression();
+      data = targetDeckName + " from expression " + dkc.getDeckExpression(); //NON-NLS
     }
     else {
       targetDeckName = dkc.getTargetDeck();
@@ -1589,7 +1831,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       // Is this a card we are not interested in?
       if (dkc.isSendMatching()) {
         final String result = dkc.getMatchExpression().getText(nextCard, dkc, "Editor.DeckSendKeyCommand.send_expression");
-        if (!"true".equals(result)) {
+        if (!"true".equals(result)) { //NON-NLS
           continue;
         }
       }
@@ -1597,7 +1839,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       // Is this a stop card?
       if (dkc.isStop()) {
         final String result = dkc.getStopExpresson().getText(nextCard, dkc, "Editor.DeckSendKeyCommand.stop_expression");
-        if ("true".equals(result)) {
+        if ("true".equals(result)) { //NON-NLS
           if (dkc.isStopInclude()) {
             sending.add(nextCard);
           }
@@ -1678,15 +1920,15 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     return System.getProperty("os.name").trim().equalsIgnoreCase("linux"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
-  private Command saveDeck() {
-    final Command c = new NullCommand();
+  private boolean saveDeck() {
+    boolean result = false;
     gameModule.warn(Resources.getString("Deck.saving_deck")); //$NON-NLS-1$
 
     final File saveFile = getSaveFileName();
     try {
       if (saveFile != null) {
         saveDeck(saveFile);
-        gameModule.warn(Resources.getString("Deck.deck_saved")); //$NON-NLS-1$
+        result = true;
       }
       else {
         gameModule.warn(Resources.getString("Deck.save_canceled")); //$NON-NLS-1$
@@ -1695,7 +1937,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     catch (IOException e) {
       WriteErrorDialog.error(e, saveFile);
     }
-    return c;
+    return result;
   }
 
   public void saveDeck(File f) throws IOException {
@@ -1728,7 +1970,6 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     try {
       if (loadFile != null) {
         c = loadDeck(loadFile);
-        gameModule.warn(Resources.getString("Deck.deck_loaded")); //$NON-NLS-1$
       }
       else {
         gameModule.warn(Resources.getString("Deck.load_canceled")); //$NON-NLS-1$
@@ -1889,7 +2130,6 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
   }
 
-
   /**
    * Sort the Deck. Called from DeckSortKeyCommand
    * @param sortParameters A list of parameters describing the sort
@@ -1920,5 +2160,4 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
     return c;
   }
-
 }
