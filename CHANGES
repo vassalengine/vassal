@@ -7,6 +7,7 @@
     strings, don't balk
 * 10701: Zone defining - when dragging a square to define initial zone,
     dragging at edge of screen scrolls
+* 10700: Improved bug dialog text
 * 10696: Global Key Commands "Within a Deck, select Fixed number of pieces"
     field now supports expressions
 * 10683: Fix bug in DiceButton 'Keep Dice' option
