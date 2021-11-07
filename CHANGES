@@ -1,5 +1,7 @@
 3.6.0-beta6 - ??? 
 
+* 10713: Escape errorLog path when making link URL for connection failed page
+    in BugDialog
 * 10711: When rotating a mat, jointly rotating cargo should prefer to stay
     with current mat
 * 10703: Correct inconsistency in use of GetConfigureBoard
