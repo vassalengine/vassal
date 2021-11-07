@@ -540,6 +540,7 @@ public class PolygonEditor extends JPanel {
       if (SwingUtils.isMainMouseButtonDown(e)) {
         polygon.xpoints[1] = polygon.xpoints[2] = e.getX();
         polygon.ypoints[2] = polygon.ypoints[3] = e.getY();
+        scrollAtEdge(e.getPoint(), 15);
         repaint();
         if (myConfigurer != null) {
           myConfigurer.updateCoords(polygon);
