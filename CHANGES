@@ -1,12 +1,24 @@
 3.6.0-beta6 - ??? 
 
+* 10711: When rotating a mat, jointly rotating cargo should prefer to stay
+    with current mat
+* 10703: Correct inconsistency in use of GetConfigureBoard
+* 10702: When inventory grouping specifies properties that aren't internally
+    strings, don't balk
+* 10701: Zone defining - when dragging a square to define initial zone,
+    dragging at edge of screen scrolls
+* 10696: Global Key Commands "Within a Deck, select Fixed number of pieces"
+    field now supports expressions
 * 10683: Fix bug in DiceButton 'Keep Dice' option
+* 10682: Move Camera Button
 * 10681: Better documented pieceName vs PieceName
 * 10679: Place Marker, Send-to-Location, and Translate traits didn't always
     repaint maps
 * 10678: Undo of movement will no longer deny lone stackable pieces their own
     stack
 * 10676: Upgrade to Java 17.0.1+12 for Windows, Mac packages
+* 10674: Startup Global Key Commands always fire in order, can't be undone,
+    and can be configured to, e.g., "once per game"
 * 10673: Added Game Refresher documentation
 * 10672: Multiplayer Server controls have improved feedback / UX
 * 10671: Calculate Hex Range correctly, regardless of hex shape

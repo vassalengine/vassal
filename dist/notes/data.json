@@ -20,11 +20,16 @@
       "in": "3.6.0-beta6",
       "since": "3.6.0-beta5",
       "new_features": [
+        { "num": 10682, "Move Camera Button" },
+        { "num": 10674, "Startup Global Key Commands always fire in order, can't be undone, and can be configured to, e.g., \"once per game\" },
         { "num": 10649, "Deck can start face-up or face-down when using right-click menu setting" },
         { "num": 10628, "desc": "Autopeek Rollover" },
         { "num": 9391, "desc": "Beanshell can now access $$ variables in Report Formats" }
       ],
       "bug_fixes": [
+        { "num": 10711, "desc": "When rotating a mat, jointly rotating cargo should prefer to stay with current mat" },
+        { "num": 10703, "desc": "Correct inconsistency in use of GetConfigureBoard" },
+        { "num": 10702, "desc": "When inventory grouping specifies properties that aren't internally strings, don't balk" },
         { "num": 10683, "desc": "Fix bug in DiceButton 'Keep Dice' option" },
         { "num": 10679, "desc": "Place Marker, Send-to-Location, and Translate traits didn't always repaint maps" },
         { "num": 10678, "desc": "Undo of movement will no longer deny lone stackable pieces their own stack" },
@@ -49,6 +54,8 @@
         { "num": 10618, "desc": "ToolbarMenus that are submenus of other ToolbarMenus display their icons properly" }
       ],
       "other_improvements": [
+        { "num": 10701, "desc": "Zone defining - when dragging a square to define initial zone, dragging at edge of screen scrolls" },
+        { "num": 10696, "desc": "Global Key Commands \"Within a Deck, select Fixed number of pieces\" field now supports expressions" },
         { "num": 10681, "Better documented pieceName vs PieceName" },
         { "num": 10676, "Upgrade to Java 17.0.1+12 for Windows, Mac packages" },
         { "num": 10673, "desc": "Added Game Refresher documentation" },
