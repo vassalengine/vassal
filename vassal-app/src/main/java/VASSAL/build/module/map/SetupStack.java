@@ -61,6 +61,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.Box;
 import javax.swing.ImageIcon;
@@ -75,11 +76,10 @@ import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
-import VASSAL.build.AbstractBuildable;
-import VASSAL.build.AbstractFolder;
 import org.apache.commons.lang3.SystemUtils;
 
 import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.AbstractFolder;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.BadDataReport;
 import VASSAL.build.Buildable;
@@ -1040,6 +1040,8 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     protected int originalPieceOffsetY;
     protected Point lastDragLocation = new Point();
 
+    protected List<SetupStack> otherStacks;
+
     public View(Board b, SetupStack s) {
       myBoard = b;
       myGrid = b.getGrid();
@@ -1052,59 +1054,69 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       ds.createDefaultDragGestureRecognizer(this,
         DnDConstants.ACTION_MOVE, this);
       setFocusTraversalKeysEnabled(false);
+
+      findOtherStacks();
     }
 
+    private void findOtherStacks() {
+      SetupStack.setUsedBoardWildcard(myBoard.getName()); //This will make "any board" stacks match our selected board
 
-    private void drawOtherStack(SetupStack s, Graphics g) {
-      // Don't draw ourselves as an "other"
-      if (s == myStack) {
-        return;
-      }
+      otherStacks = GameModule
+        .getGameModule()
+        .getAllDescendantComponentsOf(SetupStack.class)
+        .stream()
+        // don't draw this stack or stacks from other maps
+        .filter(s -> s != myStack && s.getMap() == myStack.getMap())
+        // don't draw stacks from wrong board
+        .filter(s -> {
+          if (s.owningBoardName != null) {
+            if (myStack.owningBoardName == null) {
+              if (!s.owningBoardName.equals(myBoard.getName())) {
+                return false;
+              }
+            }
 
-      // Don't draw stacks from other maps
-      if (s.getMap() != myStack.getMap()) {
-        return;
-      }
-
-      // Don't draw stacks from wrong board
-      if (s.owningBoardName != null) {
-        if (myStack.owningBoardName == null) {
-          if (!s.owningBoardName.equals(myBoard.getName())) {
-            return;
+            if (!s.owningBoardName.equals(myStack.owningBoardName)) {
+              return false; 
+            }
           }
-        }
-        if (!s.owningBoardName.equals(myStack.owningBoardName)) {
-          return;
-        }
+
+          return true;
+        })
+        .collect(Collectors.toList());
+
+      SetupStack.setUsedBoardWildcard("");
+
+      for (final SetupStack s : otherStacks) {
+        s.prepareConfigurer(myBoard);
       }
+    }
 
-      final Graphics2D g2d = (Graphics2D) g;
-      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5F));
-      final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
-
-      s.prepareConfigurer(myBoard);
-
+    private void drawOtherStack(SetupStack s, Graphics2D g, Rectangle vrect, double os_scale) {
       final int x = (int)(s.pos.x * os_scale);
       final int y = (int)(s.pos.y * os_scale);
 
-      s.stackConfigurer.drawImage(g, x, y, null, os_scale);
-    }
+      final Rectangle bb = s.stackConfigurer.getPieceBoundingBox();
+      bb.x = x;
+      bb.y = y;
 
-    private void drawOtherStacks(AbstractBuildable target, Graphics g) {
-      for (final Buildable b : target.getBuildables()) {
-        if (b instanceof SetupStack) {
-          drawOtherStack((SetupStack)b, g);
-        }
-        else if (b instanceof AbstractBuildable) {
-          drawOtherStacks((AbstractBuildable) b, g);
-        }
+      System.out.println(vrect);
+      System.out.println(bb);
+      System.out.println(vrect.intersects(bb));
+
+      if (vrect.intersects(bb)) {
+        s.stackConfigurer.drawImage(g, x, y, null, os_scale);
       }
     }
-
 
     @Override
     public void paint(Graphics g) {
       final Graphics2D g2d = (Graphics2D) g;
+
+      g2d.addRenderingHints(SwingUtils.FONT_HINTS);
+      g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                           RenderingHints.VALUE_ANTIALIAS_ON);
+
       final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
 
       final AffineTransform orig_t = g2d.getTransform();
@@ -1119,9 +1131,17 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       }
 
       if (isShowOthers()) {
-        SetupStack.setUsedBoardWildcard(myBoard.getName()); //This will make "any board" stacks match our selected board
-        drawOtherStacks(GameModule.getGameModule(), g);
-        SetupStack.setUsedBoardWildcard("");
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5F));
+
+        final Rectangle r = getVisibleRect();
+        r.x *= os_scale;
+        r.y *= os_scale;
+        r.width *= os_scale;
+        r.height *= os_scale;
+
+        for (final SetupStack s : otherStacks) { 
+          drawOtherStack(s, g2d, r, os_scale);
+        }
       }
 
       g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP));
