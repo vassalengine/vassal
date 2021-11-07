@@ -431,10 +431,15 @@ image:images/StartupGlobalKeyCommand.png[]
 An extension of <<#GlobalKeyCommand,Global Key Command>> that fires automatically upon completion of module load, once all the key listeners are started up.
 All fields behave identically to the corresponding ones in <<#GlobalKeyCommand,Global Key Command>>, except that those pertaining to the physical representation of a Toolbar button are suppressed as being inapplicable.
 
-If multiple start-up commands need to be run in a particular order, they should be combined in a <<MultiActionButton.adoc#top,MultiAction Button>> and then launched from a single instance of Startup Global Key Command, as the sequence in which multiple instances of StartupGlobalKeyCommand are fired is undetermined.
+As of VASSAL 3.6, multiple start-up global key commands _can_ be depended on to run in the order they are listed in the module.
 
-NOTE:  Startup Global Key Commands fire _every_ time the module starts up, whether it is to begin a new game or to load and continue an existing one.
-Thus if you need the Startup GKC to initiate an activity that should only be done once at the very _beginning_ of a game, then it would need to send a key command to a pre-designated piece, which could then check a Global Property (called, perhaps, "StartupDone") to determine whether the game had already been started -- if it hadn't, the piece could then perform those tasks and set "StartupDone" to true, which would prevent the actions from being taken on a subsequent load of a saved game.
+Startup Global Key Commands can be configured to any of three modes:
+
+**(1) On First Game Launch/Load Of Session**: These fire every time the _module_ starts up, regardless of whether it is to begin a new game or to load and continue an existing one.
+
+**(2) On Every Game Launch/Load Of Session**: These fire every time a game is launched or loaded during the session.
+
+**(3) At Start Of Every Fresh Game Only**: These fire only when a _new game_ is starting. If the game is saved and later restored, or is being exchanged back and forth in log form, the key command will not fire on subsequent loads. For clarity, a new game started from a <<GameModule.adoc#PredefinedSetup, Pre-defined Setup>> _does_ count as a fresh new game.
 
 
 '''

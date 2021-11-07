@@ -16,6 +16,8 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.build.AbstractBuildable;
+import VASSAL.build.Buildable;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Cursor;
@@ -211,6 +213,7 @@ public class GameState implements CommandEncoder {
         }
 
         setup(true);
+        GameModule.getGameModule().getGameState().freshenStartupGlobalKeyCommands(GameModule.getGameModule());
       }
     };
     // FIXME: setting mnemonic from first letter could cause collisions in
@@ -357,6 +360,68 @@ public class GameState implements CommandEncoder {
   // END FIXME
   //
 
+
+  /**
+   * When we're known to be starting a fresh game from a Predefined Setup, freshen the starting-a-new-game flag for all SGKCs
+   * @param target the Game Module
+   */
+  public void freshenStartupGlobalKeyCommands(AbstractBuildable target) {
+    for (final Buildable b : target.getBuildables()) {
+      if (b instanceof StartupGlobalKeyCommand) {
+        ((StartupGlobalKeyCommand) b).freshGame();
+      }
+      else if (b instanceof AbstractBuildable) {
+        freshenStartupGlobalKeyCommands((AbstractBuildable) b);
+      }
+    }
+  }
+
+  /**
+   * Searches recursively through the game module for Startup Global Key Commands, applying them
+   * assuming they haven't been applied already.
+   * @param target the Game Module to be thoroughly reamed for SGKCs
+   */
+  private boolean applyStartupGlobalKeyCommands(AbstractBuildable target) {
+    boolean any = false;
+    for (final Buildable b : target.getBuildables()) {
+      if (b instanceof StartupGlobalKeyCommand) {
+        any |= ((StartupGlobalKeyCommand)b).applyIfNotApplied();
+      }
+      else if (b instanceof AbstractBuildable) {
+        any |= applyStartupGlobalKeyCommands((AbstractBuildable)b);
+      }
+    }
+    return any;
+  }
+
+  /**
+   * Applies all of the Startup Global Key Commands in order, and then blocks undo past this point if any were applied.
+   */
+  private void doStartupGlobalKeyCommands() {
+    if (applyStartupGlobalKeyCommands(GameModule.getGameModule())) {
+      // This "finished" command blocks undoing past Startup Global Key Commands
+      final FinishedStartupGlobalKeyCommands finished = new FinishedStartupGlobalKeyCommands();
+      finished.execute();
+      GameModule.getGameModule().sendAndLog(finished);
+    }
+  }
+
+  private static class FinishedStartupGlobalKeyCommands extends Command {
+    @Override
+    protected void executeCommand() {
+      final Logger l = GameModule.getGameModule().getLogger();
+      if (l instanceof BasicLogger) {
+        ((BasicLogger )l).blockUndo();
+      }
+    }
+
+    @Override
+    protected Command myUndoCommand() {
+      return null;
+    }
+  }
+
+
   /**
    * Start/end a game.  Prompt to save if the game state has been
    * modified since last save.  Invoke {@link GameComponent#setup}
@@ -417,10 +482,14 @@ public class GameState implements CommandEncoder {
 
     if (gameStarted) {
       if (gameStarting) {
-        // If we're starting a new session, prompt to create a new logfile.
-        // But NOT if we're starting a session by *replaying* a logfile -- in that case we'd get the reminder at the
-        // end of the logfile.
+        // Things that we invokeLater
         SwingUtilities.invokeLater(() -> {
+          // Apply all of the startup global key commands, in order
+          doStartupGlobalKeyCommands();
+
+          // If we're starting a new session, prompt to create a new logfile.
+          // But NOT if we're starting a session by *replaying* a logfile -- in that case we'd get the reminder at the
+          // end of the logfile.
           final Logger logger = GameModule.getGameModule().getLogger();
           if (logger instanceof BasicLogger) {
             if (!((BasicLogger)logger).isReplaying()) {
@@ -697,7 +766,7 @@ public class GameState implements CommandEncoder {
     File file = fc.getSelectedFile();
 
     // append .vsav if it's not there already
-    if (!file.getName().endsWith(".vsav")) {
+    if (!file.getName().endsWith(".vsav")) { //NON-NLS
       file = new File(file.getParent(), file.getName() + ".vsav"); //NON-NLS
     }
 
@@ -966,7 +1035,7 @@ public class GameState implements CommandEncoder {
         loadCommand.execute();
       }
       finally {
-        String msg;
+        final String msg;
 
         if (g.getGameState().isGameStarted()) {
           if (loadComments != null && loadComments.length() > 0) {
@@ -998,8 +1067,14 @@ public class GameState implements CommandEncoder {
     }
   }
 
+
+  public void loadGameInBackground(final String shortName, final InputStream in) {
+    loadGameInBackground(shortName, in, false);
+  }
+
   public void loadGameInBackground(final String shortName,
-                                   final InputStream in)  {
+                                   final InputStream in,
+                                   final boolean fromPredefinedSetup)  {
     GameModule.getGameModule().warn(
       Resources.getString("GameState.loading", shortName));  //$NON-NLS-1$
 
@@ -1041,6 +1116,7 @@ public class GameState implements CommandEncoder {
               log.error("", e);
             }
             msg = Resources.getString("GameState.error_loading", shortName);
+            GameModule.getGameModule().warn(msg);
           }
 
           if (loadCommand != null) {
@@ -1048,6 +1124,11 @@ public class GameState implements CommandEncoder {
           }
 
           final GameModule g = GameModule.getGameModule();
+
+          if (fromPredefinedSetup) {
+            g.getGameState().freshenStartupGlobalKeyCommands(g);
+          }
+
           if (g.getGameState().isGameStarted()) {
             if (loadCommand != null) {
               if (loadComments != null && loadComments.length() > 0) {

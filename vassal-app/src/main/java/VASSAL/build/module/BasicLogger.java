@@ -94,6 +94,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   protected List<Command> logOutput;
   protected int nextInput = 0;
   protected int nextUndo = -1;
+  protected int dontUndoPast = 0;
   protected Command beginningState;
   protected File outputFile;
   protected Action stepAction = new StepAction();
@@ -236,6 +237,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       logOutput.clear();
       nextInput = 0;
       nextUndo = -1;
+      dontUndoPast = 0;
       beginningState = null; // Will create one when we actually start a log
     }
     else {
@@ -429,7 +431,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     File file = fc.getSelectedFile();
 
     // append .vlog if it's not there already
-    if (!file.getName().endsWith(".vlog")) {
+    if (!file.getName().endsWith(".vlog")) { //NON-NLS
       file = new File(file.getParent(), file.getName() + ".vlog"); //NON-NLS
     }
 
@@ -485,10 +487,18 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   }
 
   /**
+   * Mark the current command as a no-undo-past-this-point.
+   */
+  public void blockUndo() {
+    dontUndoPast = nextUndo + 1; // Need +1 because this is done by a command that is about to be added to the list
+    undoAction.setEnabled(false);
+  }
+
+  /**
    * This handles the UNDO button, executing the actual "Undo".
    */
   protected void undo() {
-    if (nextUndo < 0) {
+    if (nextUndo <= dontUndoPast) {
       return; //BR// Throw away extra keys-held-down when nothing left to do
     }
 
@@ -496,19 +506,19 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     final Command lastInput = (nextInput > logInput.size() || nextInput < 1) ?
       null : logInput.get(nextInput - 1);
     if (lastInput == lastOutput) {
-      while (nextInput-- > 0) {
+      while (nextInput-- > dontUndoPast) {
         stepAction.setEnabled(true);
         if (logInput.get(nextInput).getUndoCommand() != null) {
           break;
         }
       }
     }
-    while (nextUndo-- > 0) {
+    while (nextUndo-- > dontUndoPast) {
       if (logOutput.get(nextUndo).getUndoCommand() != null) {
         break;
       }
     }
-    undoAction.setEnabled(nextUndo >= 0);
+    undoAction.setEnabled(nextUndo > dontUndoPast);
     final Command undo = lastOutput.getUndoCommand();
     undo.execute();
     GameModule.getGameModule().getServer().sendToOthers(undo);
@@ -527,7 +537,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
         nextUndo = logOutput.size() - 1;
       }
     }
-    undoAction.setEnabled(nextUndo >= 0);
+    undoAction.setEnabled(nextUndo > dontUndoPast);
   }
 
   /**
