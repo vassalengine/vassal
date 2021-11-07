@@ -19,6 +19,7 @@ package VASSAL.build.module;
 
 import static java.lang.Math.round;
 
+import VASSAL.build.module.map.MoveCameraButton;
 import VASSAL.configure.SingleChildInstance;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.Mat;
@@ -3064,6 +3065,21 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   }
 
   /**
+   * @return the current visible rect of our map
+   */
+  public Rectangle getVisibleRect() {
+    return theMap.getVisibleRect();
+  }
+
+  /**
+   * @return the point our map's view is currently centered on
+   */
+  public Point getCenter() {
+    final Rectangle r = getVisibleRect();
+    return new Point(r.x + r.width/2, r.y + r.height/2);
+  }
+
+  /**
    * Ensure that the given region (in map coordinates) is visible. Uses player preference
    * to determine how sensitive to be about when to re-center.
    * @param r Rectangle demarking region to ensure is visible
@@ -3447,7 +3463,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[]{ MapSubFolder.class, GlobalMap.class, LOS_Thread.class, ToolbarMenu.class, MultiActionButton.class, HidePiecesButton.class, Zoomer.class,
       CounterDetailViewer.class, HighlightLastMoved.class, LayeredPieceCollection.class, ImageSaver.class, TextSaver.class, DrawPile.class, SetupStack.class,
-      MassKeyCommand.class, MapShader.class, PieceRecenterer.class, Flare.class };
+      MassKeyCommand.class, MapShader.class, PieceRecenterer.class, Flare.class, MoveCameraButton.class };
   }
 
   /**

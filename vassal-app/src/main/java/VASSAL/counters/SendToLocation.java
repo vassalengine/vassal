@@ -18,6 +18,8 @@
  */
 package VASSAL.counters;
 
+import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.Map;
@@ -27,6 +29,7 @@ import VASSAL.build.module.map.boardPicker.board.MapGrid;
 import VASSAL.build.module.map.boardPicker.board.MapGrid.BadCoords;
 import VASSAL.build.module.map.boardPicker.board.Region;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
+import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
@@ -43,7 +46,9 @@ import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.script.expression.AuditTrail;
+import VASSAL.script.expression.Auditable;
 import VASSAL.script.expression.AuditableException;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
@@ -86,18 +91,18 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
   public static final String BACK_POINT = "backPoint"; // NON-NLS
 
   // Translated Destination descriptions
-  protected static final String DEST_GRIDLOCATION = "G"; // NON-NLS
-  protected static final String DEST_LOCATION = "L"; // NON-NLS
-  protected static final String DEST_ZONE = "Z"; // NON-NLS
-  protected static final String DEST_REGION = "R"; // NON-NLS
-  protected static final String DEST_COUNTER = "A"; // NON-NLS
-  protected static final String DEST_COUNTER_CYCLE = "C"; //NON-NLS
-  protected static final String DEST_COUNTER_NEAREST = "N"; //NON-NLS
-  protected static final String[] DEST_OPTIONS = {
+  public static final String DEST_GRIDLOCATION = "G"; // NON-NLS
+  public static final String DEST_LOCATION = "L"; // NON-NLS
+  public static final String DEST_ZONE = "Z"; // NON-NLS
+  public static final String DEST_REGION = "R"; // NON-NLS
+  public static final String DEST_COUNTER = "A"; // NON-NLS
+  public static final String DEST_COUNTER_CYCLE = "C"; //NON-NLS
+  public static final String DEST_COUNTER_NEAREST = "N"; //NON-NLS
+  public static final String[] DEST_OPTIONS = {
     DEST_GRIDLOCATION, DEST_LOCATION, DEST_ZONE, DEST_REGION, DEST_COUNTER, DEST_COUNTER_CYCLE, DEST_COUNTER_NEAREST
   };
   // Actual valued recorded for Destination option
-  protected static final String[] DEST_KEYS = {
+  public static final String[] DEST_KEYS = {
     Resources.getString("Editor.SendToLocation.grid_location_on_selected_map"),
     Resources.getString("Editor.SendToLocation.location_on_selected_map"),
     Resources.getString("Editor.SendToLocation.zone_on_selected_map"),
@@ -240,9 +245,35 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     return se.getValue();
   }
 
-  private Point getSendLocation() {
-    final GamePiece outer = Decorator.getOutermost(this);
-    map = null;
+  public static class Destination {
+    public Map map;
+    public Point point;
+
+    Destination(Map map, Point point) {
+      this.map = map;
+      this.point = point;
+    }
+  }
+
+  /**
+   * Compute a destination from the parameters
+   * @param source The property source for any expressions or property filters (e.g. the outer piece in the case of a Send To Location, the map in the case of a MoveCameraButton)
+   * @param auditSource Our audit type in case something goes wrong (e.g. this specific STL trait, or the specific MCB component)
+   * @param destination Destination type (send-to-XYlocation? send-to-zone? send-to-grid-location? send-to property matched counter? etc)
+   * @param mapId Map Id, or null to use sourceMap
+   * @param boardName BoardName expression
+   * @param zone Zone expression
+   * @param region Region expression
+   * @param gridLocation gridLocation expression
+   * @param x X Position expression
+   * @param y Y Position expression
+   * @param propertyFilter Property filter to be used if we're selecting a destination counter based on one
+   * @param sourceMap The source map if we're matching a counter by property filter expression (and used as the map for all purposes if mapId is null)
+   * @param startPosition Starting position to base any "nearest piece" calculation from
+   * @return Destination object (includes map & point)
+   */
+  public static Destination getSendLocation(PropertySource source, Auditable auditSource, String destination, FormattedString mapId, FormattedString boardName, FormattedString zone, FormattedString region, FormattedString gridLocation, FormattedString x, FormattedString y, PropertyExpression propertyFilter, Map sourceMap, Point startPosition) {
+    Map map = null;
     Point dest = null;
     // Home in on a counter
     if (destination.equals(DEST_COUNTER.substring(0, 1)) || destination.equals(DEST_COUNTER_CYCLE.substring(0, 1)) || destination.equals(DEST_COUNTER_NEAREST.substring(0, 1))) {
@@ -253,7 +284,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         if (piece instanceof Stack) {
           final Stack s = (Stack) piece;
           for (final GamePiece gamePiece : s.asList()) {
-            if (propertyFilter.accept(outer, gamePiece) && !targets.contains(gamePiece)) {
+            if (propertyFilter.accept(source, gamePiece) && !targets.contains(gamePiece)) {
               targets.add(gamePiece);
               if (destination.equals(DEST_COUNTER.substring(0, 1))) {
                 break; // "Any match" version just takes first hit
@@ -265,7 +296,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
           }
         }
         else {
-          if (propertyFilter.accept(outer, piece) && !targets.contains(piece)) {
+          if (propertyFilter.accept(source, piece) && !targets.contains(piece)) {
             targets.add(piece);
             if (destination.equals(DEST_COUNTER.substring(0, 1))) {
               break; // "Any match" version just takes first hit
@@ -286,10 +317,10 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
           double dist = Double.MAX_VALUE;
           int startIndex = 0;
           for (int index = 0; index < targets.size(); index++) {
-            if (targets.get(index).getMap() != getMap()) {
+            if (targets.get(index).getMap() != sourceMap) {
               continue;
             }
-            final double myDist = targets.get(index).getPosition().distance(getPosition());
+            final double myDist = targets.get(index).getPosition().distance(startPosition);
             if (myDist >= dist) {
               continue;
             }
@@ -304,8 +335,8 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
             // the valid targets.
             for (int counter = 0; counter < targets.size(); counter++) {
               final int index = (startIndex + counter + 1) % targets.size();
-              if ((targets.get(index).getMap() != getMap()) ||
-                (!getPosition().equals(targets.get(index).getPosition()))) {
+              if ((targets.get(index).getMap() != sourceMap) ||
+                (!startPosition.equals(targets.get(index).getPosition()))) {
                 target = targets.get(index);
                 break;
               }
@@ -328,52 +359,82 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     }
     // Location/Zone/Region processing all use specified map
     else {
-      map = Map.getMapById(mapId.getText(outer, this, "Editor.SendToLocation.map"));
+      if (mapId != null) {
+        map = Map.getMapById(mapId.getText(source, auditSource, "Editor.SendToLocation.map"));
+      }
       if (map == null) {
-        map = getMap();
+        map = sourceMap;
       }
       if (map != null) {
         final Board b;
         switch (destination.charAt(0)) {
         case 'G':
-          b = map.getBoardByName(boardName.getText(outer, this, "Editor.SendToLocation.board"));
+          b = map.getBoardByName(boardName.getText(source, auditSource, "Editor.SendToLocation.board"));
           if (b != null) {
-            final AuditTrail gridAudit = AuditTrail.create(this, gridLocation, Resources.getString("Editor.SendToLocation.grid_location"));
+            final AuditTrail gridAudit = AuditTrail.create(auditSource, gridLocation, Resources.getString("Editor.SendToLocation.grid_location"));
             try {
               final MapGrid g = b.getGrid();
               if (g != null) { // Board may not have a grid assigned.
-                dest = g.getLocation(gridLocation.getText(outer, this, gridAudit));
+                dest = g.getLocation(gridLocation.getText(source, auditSource, gridAudit));
                 if (dest != null)  dest.translate(b.bounds().x, b.bounds().y);
               }
               else {
-                reportDataError(this, Resources.getString("Error.no_grid_assigned"), map.getMapName(), new AuditableException(this, gridAudit));
+                if (auditSource instanceof EditablePiece) {
+                  reportDataError((EditablePiece)auditSource, Resources.getString("Error.no_grid_assigned"), map.getMapName(), new AuditableException(auditSource, gridAudit));
+                }
+                else if (auditSource instanceof AbstractConfigurable) {
+                  ErrorDialog.dataWarning(new BadDataReport((AbstractConfigurable)auditSource, Resources.getString("Error.no_grid_assigned"), map.getMapName(), new AuditableException(auditSource, gridAudit)));
+                }
               }
             }
             catch (BadCoords e) {
-              reportDataError(this, Resources.getString(
-                "Error.not_found", Resources.getString("Editor.SendToLocation.grid_location")), map.getMapName(), new AuditableException(this, gridAudit));
+              if (auditSource instanceof EditablePiece) {
+                reportDataError((EditablePiece)auditSource, Resources.getString(
+                  "Error.not_found", Resources.getString("Editor.SendToLocation.grid_location")), map.getMapName(), new AuditableException(auditSource, gridAudit));
+              }
+              else if (auditSource instanceof AbstractConfigurable) {
+                ErrorDialog.dataWarning(new BadDataReport(Resources.getString(
+                  "Error.not_found", Resources.getString("Editor.SendToLocation.grid_location")), map.getMapName(), new AuditableException(auditSource, gridAudit)));
+              }
               // ignore SendTo request.
             }
           }
           break;
         case 'L':
-          final int xValue = x.getTextAsInt(outer, Resources.getString("Editor.x_position"), this);
-          final int yValue = y.getTextAsInt(outer, Resources.getString("Editor.y_position"), this);
+          final int xValue;
+          final int yValue;
+          if (auditSource instanceof EditablePiece) {
+            xValue = x.getTextAsInt(source, Resources.getString("Editor.x_position"), (EditablePiece)auditSource);
+            yValue = y.getTextAsInt(source, Resources.getString("Editor.y_position"), (EditablePiece)auditSource);
+          }
+          else if (auditSource instanceof AbstractConfigurable) {
+            xValue = x.getTextAsInt(source, Resources.getString("Editor.x_position"), (AbstractConfigurable) auditSource);
+            yValue = y.getTextAsInt(source, Resources.getString("Editor.y_position"), (AbstractConfigurable) auditSource);
+          }
+          else {
+            xValue = 0;
+            yValue = 0;
+          }
 
           dest = new Point(xValue, yValue);
 
-          b = map.getBoardByName(boardName.getText(outer, this, "Editor.SendToLocation.board"));
+          b = map.getBoardByName(boardName.getText(source, auditSource, "Editor.SendToLocation.board"));
           if (b != null) {
             dest.translate(b.bounds().x, b.bounds().y);
           }
           break;
 
         case 'Z':
-          final AuditTrail zoneAudit = AuditTrail.create(this, zone, Resources.getString("Editor.SendToLocation.zone_name"));
-          final String zoneName = zone.getText(outer, this, zoneAudit);
+          final AuditTrail zoneAudit = AuditTrail.create(auditSource, zone, Resources.getString("Editor.SendToLocation.zone_name"));
+          final String zoneName = zone.getText(source, auditSource, zoneAudit);
           final Zone z = map.findZone(zoneName);
           if (z == null) {
-            reportDataError(this, Resources.getString("Error.not_found", "Zone"), zone.debugInfo(zoneName, "Zone"), new AuditableException(this, zoneAudit)); // NON-NLS
+            if (auditSource instanceof EditablePiece) {
+              reportDataError((EditablePiece)auditSource, Resources.getString("Error.not_found", "Zone"), zone.debugInfo(zoneName, "Zone"), new AuditableException(auditSource, zoneAudit)); // NON-NLS
+            }
+            else if (auditSource instanceof AbstractConfigurable) {
+              ErrorDialog.dataWarning(new BadDataReport((AbstractConfigurable)auditSource, Resources.getString("Error.not_found", "Zone"), zone.debugInfo(zoneName, "Zone"), new AuditableException(auditSource, zoneAudit))); // NON-NLS
+            }
           }
           else {
             final Rectangle r = z.getBounds();
@@ -383,11 +444,16 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
           break;
 
         case 'R':
-          final AuditTrail regionAudit = AuditTrail.create(this, region, Resources.getString("Editor.SendToLocation.region_name"));
-          final String regionName = region.getText(outer, this, regionAudit);
+          final AuditTrail regionAudit = AuditTrail.create(auditSource, region, Resources.getString("Editor.SendToLocation.region_name"));
+          final String regionName = region.getText(source, auditSource, regionAudit);
           final Region r = map.findRegion(regionName);
           if (r == null) {
-            reportDataError(this, Resources.getString("Error.not_found", "Region"), region.debugInfo(regionName, "Region"), new AuditableException(this, regionAudit)); // NON-NLS
+            if (auditSource instanceof EditablePiece) {
+              reportDataError((EditablePiece) auditSource, Resources.getString("Error.not_found", "Region"), region.debugInfo(regionName, "Region"), new AuditableException(auditSource, regionAudit)); // NON-NLS
+            }
+            else if (auditSource instanceof AbstractConfigurable) {
+              ErrorDialog.dataWarning(new BadDataReport((AbstractConfigurable)auditSource, Resources.getString("Error.not_found", "Zone"), region.debugInfo(regionName, "Zone"), new AuditableException(auditSource, regionAudit))); // NON-NLS
+            }
           }
           else {
             final Rectangle r2 = r.getBoard().bounds();
@@ -398,12 +464,22 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       }
     }
 
+    return new Destination(map, dest);
+  }
+
+
+  private Point getSendLocation() {
+    final GamePiece outer = Decorator.getOutermost(this);
+
+    final Destination dest = getSendLocation(outer, this, destination, mapId, boardName, zone, region, gridLocation, x, y, propertyFilter, getMap(), getPosition());
+    map = dest.map;
+
     // Offset destination by Advanced Options offsets
-    if (dest != null) {
-      dest = offsetDestination(dest.x, dest.y, outer);
+    if (dest.point != null) {
+      dest.point = offsetDestination(dest.point.x, dest.point.y, outer);
     }
 
-    return dest;
+    return dest.point;
   }
 
   @Override
