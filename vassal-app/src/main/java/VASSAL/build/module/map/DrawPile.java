@@ -36,8 +36,11 @@ import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.Configurer;
+import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.GamePieceFormattedStringConfigurer;
+import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.configure.PieceAccessConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.StringArrayConfigurer;
@@ -45,6 +48,7 @@ import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.Deck;
 import VASSAL.counters.GamePiece;
+import VASSAL.counters.PieceAccess;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Resources;
@@ -96,6 +100,13 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   private final VisibilityCondition saveVisibleCondition = () -> dummy.isPersistable();
 
   protected static final UniqueIdManager idMgr = new UniqueIdManager("Deck"); //NON-NLS
+
+  public static class AccessConfig implements ConfigurerFactory {
+    @Override
+    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+      return new PieceAccessConfigurer(key, name, ////// ????? ); //NON-NLS
+    }
+  }
 
   @Override
   public void addTo(Buildable parent) {
@@ -198,6 +209,8 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   public static final String LOAD_HOTKEY  = "loadHotkey"; //NON-NLS
   public static final String SAVE_REPORT_FORMAT = "saveReportFormat"; //NON-NLS
   public static final String LOAD_REPORT_FORMAT = "loadReportFormat"; //NON-NLS
+
+  public static final String DECK_ACCESS = "deckAccess"; //NON-NLS
 
   public static class Prompt extends TranslatableStringEnum {
     @Override
@@ -338,7 +351,8 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       EXPRESSIONCOUNTING,
       COUNTEXPRESSIONS,
       RESTRICT_OPTION,
-      RESTRICT_EXPRESSION
+      RESTRICT_EXPRESSION,
+      DECK_ACCESS
     };
   }
 
@@ -395,6 +409,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
         Resources.getString("Editor.DrawPile.count_express"), //$NON-NLS-1$
         Resources.getString("Editor.DrawPile.restrict_drag"), //$NON-NLS-1$
         Resources.getString("Editor.DrawPile.match_express"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.deck_access"), //NON-NLS
     };
   }
 
@@ -451,6 +466,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       String[].class, // COUNTEXPRESSIONS
       Boolean.class, // RESTRICT_OPTION
       PropertyExpression.class, //RESTRICT_EXPRESSION
+      PieceAccess.class, // DECK_ACCESS
     };
   }
 
@@ -621,6 +637,9 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     else if (LOAD_REPORT_FORMAT.equals(key)) {
       return dummy.getLoadReport();
     }
+    else if (DECK_ACCESS.equals(key)) {
+      return PieceAccessConfigurer.encode(dummy.getAccess());
+    }
     else {
       return super.getAttributeValueString(key);
     }
@@ -690,10 +709,10 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       }
     }
     else if (SELECT_DISPLAY_PROPERTY.equals(key)) {
-      dummy.setSelectDisplayProperty((String)value);
+      dummy.setSelectDisplayProperty((String) value);
     }
     else if (SELECT_SORT_PROPERTY.equals(key)) {
-      dummy.setSelectSortProperty((String)value);
+      dummy.setSelectSortProperty((String) value);
     }
     else if (DRAW.equals(key)) {
       if (value instanceof Boolean) {
@@ -813,16 +832,16 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       dummy.setRestrictExpression((PropertyExpression) value);
     }
     else if (DRAW_MULTIPLE_MESSAGE.equals(key)) {
-      dummy.setDrawMultipleMessage((String)value);
+      dummy.setDrawMultipleMessage((String) value);
     }
     else if (DRAW_SPECIFIC_MESSAGE.equals(key)) {
-      dummy.setDrawSpecificMessage((String)value);
+      dummy.setDrawSpecificMessage((String) value);
     }
     else if (FACE_UP_MESSAGE.equals(key)) {
-      dummy.setFaceUpMessage((String)value);
+      dummy.setFaceUpMessage((String) value);
     }
     else if (FACE_DOWN_MESSAGE.equals(key)) {
-      dummy.setFaceDownMessage((String)value);
+      dummy.setFaceDownMessage((String) value);
     }
     else if (FACE_UP_HOTKEY.equals(key)) {
       if (value instanceof String) {
@@ -843,10 +862,10 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       dummy.setFaceDownKey((NamedKeyStroke) value);
     }
     else if (FACE_UP_REPORT_FORMAT.equals(key)) {
-      dummy.setFaceUpMsgFormat((String)value);
+      dummy.setFaceUpMsgFormat((String) value);
     }
     else if (SAVE_MESSAGE.equals(key)) {
-      dummy.setSaveMessage((String)value);
+      dummy.setSaveMessage((String) value);
     }
     else if (SAVE_HOTKEY.equals(key)) {
       if (value instanceof String) {
@@ -855,10 +874,10 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       dummy.setSaveKey((NamedKeyStroke) value);
     }
     else if (SAVE_REPORT_FORMAT.equals(key)) {
-      dummy.setSaveReport((String)value);
+      dummy.setSaveReport((String) value);
     }
     else if (LOAD_MESSAGE.equals(key)) {
-      dummy.setLoadMessage((String)value);
+      dummy.setLoadMessage((String) value);
     }
     else if (LOAD_HOTKEY.equals(key)) {
       if (value instanceof String) {
@@ -867,7 +886,13 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       dummy.setLoadKey((NamedKeyStroke) value);
     }
     else if (LOAD_REPORT_FORMAT.equals(key)) {
-      dummy.setLoadReport((String)value);
+      dummy.setLoadReport((String) value);
+    }
+    else if (DECK_ACCESS.equals(key)) {
+      if (value instanceof String) {
+        value = PieceAccessConfigurer.decode((String) value);
+      }
+      dummy.setAccess((PieceAccess)value);
     }
     else {
       super.setAttribute(key, value);

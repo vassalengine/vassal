@@ -171,6 +171,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected NamedKeyStrokeListener saveListener;
   protected NamedKeyStrokeListener loadListener;
 
+  protected PieceAccess access = PlayerAccess.getInstance();
+
   /** The matching DrawPile that generated this Deck */
   protected DrawPile myPile;
 
@@ -267,6 +269,15 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         globalCommand.setPropertySource(propertySource);
       }
     }
+  }
+
+
+  public PieceAccess getAccess() {
+    return access;
+  }
+
+  public void setAccess(PieceAccess p) {
+    access = p;
   }
 
   /**
@@ -486,41 +497,31 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
 
     if (faceUpListener == null) {
-      faceUpListener = new NamedKeyStrokeListener(e -> {
-        doFaceUp();
-      });
+      faceUpListener = new NamedKeyStrokeListener(e -> doFaceUp());
       gameModule.addKeyStrokeListener(faceUpListener);
       faceUpListener.setKeyStroke(getFaceUpKey());
     }
 
     if (faceDownListener == null) {
-      faceDownListener = new NamedKeyStrokeListener(e -> {
-        doFaceDown();
-      });
+      faceDownListener = new NamedKeyStrokeListener(e -> doFaceDown());
       gameModule.addKeyStrokeListener(faceDownListener);
       faceDownListener.setKeyStroke(getFaceDownKey());
     }
 
     if (faceFlipListener == null) {
-      faceFlipListener = new NamedKeyStrokeListener(e -> {
-        doFaceFlip();
-      });
+      faceFlipListener = new NamedKeyStrokeListener(e -> doFaceFlip());
       gameModule.addKeyStrokeListener(faceFlipListener);
       faceFlipListener.setKeyStroke(getFaceFlipKey());
     }
 
     if (saveListener == null) {
-      saveListener = new NamedKeyStrokeListener(e -> {
-        doSaveDeck();
-      });
+      saveListener = new NamedKeyStrokeListener(e -> doSaveDeck());
       gameModule.addKeyStrokeListener(saveListener);
       saveListener.setKeyStroke(getSaveKey());
     }
 
     if (loadListener == null) {
-      loadListener = new NamedKeyStrokeListener(e -> {
-        doLoadDeck();
-      });
+      loadListener = new NamedKeyStrokeListener(e -> doLoadDeck());
       gameModule.addKeyStrokeListener(loadListener);
       saveListener.setKeyStroke(getLoadKey());
     }
