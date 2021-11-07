@@ -27,6 +27,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
+import VASSAL.configure.FormattedExpressionConfigurer;
 import VASSAL.configure.GlobalCommandTargetConfigurer;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.IntConfigurer;
@@ -47,6 +48,8 @@ import VASSAL.counters.PieceFilter;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.script.expression.AuditTrail;
+import VASSAL.script.expression.Auditable;
+import VASSAL.script.expression.FormattedStringExpression;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
@@ -329,12 +332,13 @@ public class MassKeyCommand extends AbstractToolbarItem
     }
   }
 
-  public static class DeckPolicyConfig extends Configurer implements ConfigurerFactory {
+  public static class DeckPolicyConfig extends Configurer implements ConfigurerFactory, Auditable {
     protected static final String FIXED = "Fixed number of pieces"; //NON-NLS (really)
     protected static final String NONE = "No pieces"; //NON-NLS (really)
     protected static final String ALL = "All pieces"; //NON-NLS (really)
-    protected IntConfigurer intConfig;
+    protected FormattedExpressionConfigurer piecesConfig;
     protected TranslatingStringEnumConfigurer typeConfig;
+    protected IntConfigurer intConfig; // binary compatibility
     protected JLabel prompt;
     protected Box controls;
     protected JPanel controls2;
@@ -355,7 +359,8 @@ public class MassKeyCommand extends AbstractToolbarItem
           "Editor.GlobalKeyCommand.fixed_number_of_pieces"
         }
       );
-      intConfig = new IntConfigurer(null, "");
+      piecesConfig = new FormattedExpressionConfigurer("");
+
       if (showPrompt) {
         controls2 = new JPanel(new MigLayout("ins 0", "[]rel[]rel[]")); // NON-NLS
         prompt = new JLabel(Resources.getString("Editor.GlobalKeyCommand.deck_policy"));
@@ -365,16 +370,18 @@ public class MassKeyCommand extends AbstractToolbarItem
         controls2 = new JPanel(new MigLayout("ins 0", "[]rel[]")); // NON-NLS
       }
       controls2.add(typeConfig.getControls());
-      controls2.add(intConfig.getControls());
+      controls2.add(piecesConfig.getControls());
 
       final PropertyChangeListener l = evt -> {
-        intConfig.getControls().setVisible(FIXED.equals(typeConfig.getValueString()));
-        SwingUtils.repack(intConfig.getControls());
+        piecesConfig.getControls().setVisible(FIXED.equals(typeConfig.getValueString()));
+        SwingUtils.repack(piecesConfig.getControls());
       };
-      final PropertyChangeListener l2 = evt -> setValue(getIntValue());
+      final PropertyChangeListener l2 = evt -> {
+        setValue(getSingleValue());
+      };
       typeConfig.addPropertyChangeListener(l);
       typeConfig.addPropertyChangeListener(l2);
-      intConfig.addPropertyChangeListener(l2);
+      piecesConfig.addPropertyChangeListener(l2);
     }
 
     @Override
@@ -384,19 +391,35 @@ public class MassKeyCommand extends AbstractToolbarItem
 
     @Override
     public String getValueString() {
-      return String.valueOf(getIntValue());
+      return getSingleValue();
     }
 
-    public int getIntValue() {
+    public String getSingleValue() {
       final String type = typeConfig.getValueString();
       if (ALL.equals(type)) {
-        return -1;
+        return "-1";
       }
       else if (NONE.equals(type)) {
-        return 0;
+        return "0";
       }
       else {
-        return intConfig.getIntValue(1);
+        return piecesConfig.getValueString();
+      }
+    }
+
+    /**
+     * Legacy version for binary compability. Will attempt to return something resembling the old integer value.
+     * @return Will attempt to return something resembling the old integer value.
+     */
+    @Deprecated
+    public int getIntValue() {
+      final String s = getSingleValue();
+      try {
+        return Integer.parseInt(s);
+      }
+      catch (NumberFormatException e) {
+        final FormattedStringExpression exp = new FormattedStringExpression(s);
+        return Integer.parseInt(exp.tryEvaluate(GameModule.getGameModule(), this, "Editor.GlobalKeyCommand.zone_name"));
       }
     }
 
@@ -404,36 +427,37 @@ public class MassKeyCommand extends AbstractToolbarItem
     public void setValue(Object o) {
       if (typeConfig != null) {
         typeConfig.setFrozen(true);
-        intConfig.setFrozen(true);
-        if (o instanceof Integer) {
-          final Integer i = (Integer) o;
-          switch (i) {
-          case 0:
-            typeConfig.setValue(NONE);
-            intConfig.setValue(1);
-            break;
-          case -1:
-            typeConfig.setValue(ALL);
-            intConfig.setValue(1);
-            break;
-          default:
-            typeConfig.setValue(FIXED);
-            intConfig.setValue(i);
-          }
-          intConfig.getControls().setVisible(FIXED.equals(typeConfig.getValueString()));
+        piecesConfig.setFrozen(true);
+        if ("-1".equals(o)) {
+          typeConfig.setValue(ALL);
+          piecesConfig.setValue("1");
         }
+        else if ("0".equals(o)) {
+          typeConfig.setValue(NONE);
+          piecesConfig.setValue("1");
+        }
+        else {
+          typeConfig.setValue(FIXED);
+          if ("".equals(o)) {
+            piecesConfig.setValue("1");
+          }
+          else {
+            piecesConfig.setValue((String)o);
+          }
+        }
+        piecesConfig.getControls().setVisible(FIXED.equals(typeConfig.getValueString()));
       }
       super.setValue(o);
       if (typeConfig != null) {
         typeConfig.setFrozen(false);
-        intConfig.setFrozen(false);
+        piecesConfig.setFrozen(false);
       }
     }
 
     @Override
     public void setValue(String s) {
       if (s != null) {
-        setValue(Integer.valueOf(s));
+        setValue((Object)s);
       }
     }
 
@@ -469,7 +493,7 @@ public class MassKeyCommand extends AbstractToolbarItem
       return String.valueOf(globalCommand.isReportSingle());
     }
     else if (DECK_COUNT.equals(key)) {
-      return String.valueOf(globalCommand.getSelectFromDeck());
+      return globalCommand.getSelectFromDeckExpression();
     }
     else if (REPORT_FORMAT.equals(key)) {
       return reportFormat.getFormat();
@@ -606,10 +630,10 @@ public class MassKeyCommand extends AbstractToolbarItem
       globalCommand.setReportSingle((Boolean) value);
     }
     else if (DECK_COUNT.equals(key)) {
-      if (value instanceof String) {
-        value = Integer.valueOf((String) value);
+      if (value instanceof Integer) {
+        value = String.valueOf(value);
       }
-      globalCommand.setSelectFromDeck((Integer) value);
+      globalCommand.setSelectFromDeckExpression((String)value);
     }
     else if (REPORT_FORMAT.equals(key)) {
       reportFormat.setFormat((String) value);

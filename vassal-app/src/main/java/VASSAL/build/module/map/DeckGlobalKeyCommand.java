@@ -178,7 +178,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
     setConfigureName(sd.nextToken(""));
     setAttribute(KEY_COMMAND, sd.nextNamedKeyStroke('A'));
     setAttribute(PROPERTIES_FILTER, sd.nextToken(null));
-    setAttribute(DECK_COUNT, sd.nextInt(0));
+    setAttribute(DECK_COUNT, sd.nextToken("0"));
     setAttribute(REPORT_FORMAT, sd.nextToken(""));
     localizedName = sd.nextToken(getConfigureName());
     setAttribute(TARGET, sd.nextToken(""));

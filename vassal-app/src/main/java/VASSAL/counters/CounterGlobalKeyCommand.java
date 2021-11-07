@@ -110,7 +110,7 @@ public class CounterGlobalKeyCommand extends Decorator
     fixedRange = st.nextBoolean(true);
     rangeProperty = st.nextToken("");
     description = st.nextToken("");
-    globalCommand.setSelectFromDeck(st.nextInt(-1));
+    globalCommand.setSelectFromDeckExpression(st.nextToken("-1"));
     target.decode(st.nextToken(""));
     target.setGKCtype(GlobalCommandTarget.GKCtype.COUNTER);
     target.setCurPiece(this);
@@ -131,7 +131,7 @@ public class CounterGlobalKeyCommand extends Decorator
       .append(fixedRange)
       .append(rangeProperty)
       .append(description)
-      .append(globalCommand.getSelectFromDeck())
+      .append(globalCommand.getSelectFromDeckExpression())
       .append(target.encode());
     return ID + se.getValue();
   }
@@ -325,7 +325,7 @@ public class CounterGlobalKeyCommand extends Decorator
       return false;
     if (!Objects.equals(target, trait.target))
       return false;
-    return Objects.equals(globalCommand.getSelectFromDeck(), trait.globalCommand.getSelectFromDeck());
+    return Objects.equals(globalCommand.getSelectFromDeckExpression(), trait.globalCommand.getSelectFromDeckExpression());
   }
 
   public static class Ed implements PieceEditor {
@@ -389,7 +389,7 @@ public class CounterGlobalKeyCommand extends Decorator
       traitPanel.add("Editor.GlobalKeyCommand.matching_properties", propertyMatch);
 
       deckPolicy = new MassKeyCommand.DeckPolicyConfig(false);
-      deckPolicy.setValue(p.globalCommand.getSelectFromDeck());
+      deckPolicy.setValue(p.globalCommand.getSelectFromDeckExpression());
       traitPanel.add("Editor.GlobalKeyCommand.deck_policy", deckPolicy);
 
       restrictRange = new BooleanConfigurer(p.restrictRange);
@@ -434,7 +434,7 @@ public class CounterGlobalKeyCommand extends Decorator
         .append(fixedRange.booleanValue())
         .append(rangeProperty.getValueString())
         .append(descInput.getValueString())
-        .append(deckPolicy.getIntValue())
+        .append(deckPolicy.getSingleValue())
         .append(targetConfig.getValueString());
       return ID + se.getValue();
     }

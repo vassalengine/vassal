@@ -38,7 +38,7 @@ For example if the expression provided is { CurrentZone == "$CurrentZone$" } the
 
 *Within a Deck, apply to:*::  Select how the Global Key Command will be applied to pieces in a <<Deck.adoc#top,Deck>>. Options are _All pieces_, _No pieces_, or _Fixed number of pieces_.
 If _Fixed number of pieces_ is selected, a field appears to allow entry of the number of Pieces in the Deck to affect, starting at the top of the Deck.
-Thus, selecting 1 for the fixed number would cause only the top card or piece in a Deck to be affected.
+Thus, selecting 1 for the fixed number would cause only the top card or piece in a Deck to be affected. As of VASSAL 3.6, an <<Expression.adoc#top,Expression>> can be used. Note that such an expression will be evaluated _once_ at the beginning of the global key command (not each time a candidate piece is being checked).
 
 *Restrict Range:*::  If selected, the command will only apply to pieces located within a specified distance of this piece.<<Properties.adoc#top>>
 
