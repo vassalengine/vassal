@@ -31,6 +31,23 @@ import org.jdesktop.swingx.JXHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -44,20 +61,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.Timer;
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 /**
  * @since 3.1.0
@@ -310,11 +313,25 @@ public class BugDialog extends JDialog {
     return panel;
   }
 
-  private Component buildConnectionFailedPanel() {
-    final String errorLogPath = Info.getErrorLogPath().getAbsolutePath();
+  private String makeErrorLogURLString(File f) {
+    try {
+      return f.getAbsoluteFile().toURI().toURL().toString();
+    }
+    catch (MalformedURLException e) {
+      return "";
+    }
+  }
 
-    final FlowLabel label = new FlowLabel(Resources.getString(
-      "BugDialog.connection_failed_instructions", errorLogPath));
+  private Component buildConnectionFailedPanel() {
+    final File errorLog = Info.getErrorLogPath();
+
+    final FlowLabel label = new FlowLabel(
+      Resources.getString(
+        "BugDialog.connection_failed_instructions",
+        makeErrorLogURLString(errorLog),
+        errorLog.getAbsolutePath()
+      )
+    );
     label.addHyperlinkListener(BrowserSupport.getListener());
 
     final JScrollPane detailsScroll = buildDetailsScroll();
