@@ -12,6 +12,8 @@
 * 10700: Improved bug dialog text
 * 10696: Global Key Commands "Within a Deck, select Fixed number of pieces"
     field now supports expressions
+* 10686: Decks - fill out the rest of the commands with hotkeys and report
+    formats
 * 10683: Fix bug in DiceButton 'Keep Dice' option
 * 10682: Move Camera Button
 * 10681: Better documented pieceName vs PieceName

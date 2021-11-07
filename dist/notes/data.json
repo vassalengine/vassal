@@ -58,6 +58,7 @@
         { "num": 10701, "desc": "Zone defining - when dragging a square to define initial zone, dragging at edge of screen scrolls" },
         { "num": 10700, "desc": "Improved bug dialog text" },
         { "num": 10696, "desc": "Global Key Commands \"Within a Deck, select Fixed number of pieces\" field now supports expressions" },
+        { "num": 10686, "Decks - fill out the rest of the commands with hotkeys and report formats" },
         { "num": 10681, "Better documented pieceName vs PieceName" },
         { "num": 10676, "Upgrade to Java 17.0.1+12 for Windows, Mac packages" },
         { "num": 10673, "desc": "Added Game Refresher documentation" },
