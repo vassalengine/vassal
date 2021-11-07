@@ -139,10 +139,14 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
       // Maps name to a list of commands with that name
       final HashMap<String, ArrayList<JMenuItem>> commandNames = new HashMap<>();
 
+      // If a deck has only one menu item, and it's one of the ones that just fires off a choose-from-here dialog, then skip directly to the dialog
       if (target instanceof Deck) {
         if (c.length == 1) {
-          c[0].actionPerformed(new ActionEvent(popup, 0, ""));
-          return null;
+          final String menu_item = c[0].getName();
+          if (menu_item.equals(((Deck)target).getDrawMultipleMessage()) || menu_item.equals(((Deck)target).getDrawSpecificMessage())) {
+            c[0].actionPerformed(new ActionEvent(popup, 0, ""));
+            return null;
+          }
         }
       }
 
