@@ -142,7 +142,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   public VisibilityCondition getAttributeVisibility(String name) {
     if (USE_GRID_LOCATION.equals(name)) {
       return () -> {
-        final Board b = getConfigureBoard();
+        final Board b = getConfigureBoard(true);
         return b != null && b.getGrid() != null;
       };
     }
@@ -161,7 +161,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     if (!useGridLocation) {
       return false;
     }
-    final Board b = getConfigureBoard();
+    final Board b = getConfigureBoard(true);
     return b != null && b.getGrid() != null;
   }
 
@@ -185,7 +185,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       }
       else {
         try {
-          getConfigureBoard().getGrid().getLocation(location);
+          getConfigureBoard(true).getGrid().getLocation(location);
         }
         catch (final BadCoords e) {
           String msg = "Bad location name " + location + " in " + getConfigureName();  //NON-NLS
@@ -201,7 +201,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   }
 
   protected void updateLocation() {
-    final Board b = getConfigureBoard();
+    final Board b = getConfigureBoard(true);
     if (b != null) {
       final MapGrid g = b.getGrid();
       if (g != null)
@@ -546,7 +546,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       configureButton = new JButton(Resources.getString("Editor.SetupStack.reposition_stack"));
       configureButton.addActionListener(e -> configureStack());
     }
-    configureButton.setEnabled(getConfigureBoard() != null && buildComponents.size() > 0);
+    configureButton.setEnabled(getConfigureBoard(true) != null && buildComponents.size() > 0);
   }
 
   protected void configureStack() {
@@ -658,7 +658,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     // Main Entry Point
     protected void init() {
 
-      board = getConfigureBoard();
+      board = getConfigureBoard(true);
 
       view = new View(board, myStack);
 
