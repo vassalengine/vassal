@@ -25,6 +25,7 @@ import VASSAL.build.IllegalBuildException;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.DrawPile;
 import VASSAL.build.module.map.SetupStack;
+import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.command.ChangePiece;
 import VASSAL.command.Command;
@@ -54,6 +55,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -422,31 +424,35 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
               // Match with a DrawPile if possible
               boolean deckFound = false;
               for (final DrawPile drawPile : drawPiles) {
-                if (deck.getDeckName().equals(drawPile.getAttributeValueString(SetupStack.NAME))) {
-                  deckFound = true;
-                  foundDrawPiles.add(drawPile);
+                final String deckName = deck.getDeckName();
+                if (deckName.equals(drawPile.getAttributeValueString(SetupStack.NAME))) {
+                  final Board pileBoard = drawPile.getConfigureBoard(true);
+                  final Board deckBoard = map.findBoard(deck.getPosition());
+                  if (deckBoard == pileBoard) {
+                    deckFound = true;
+                    foundDrawPiles.add(drawPile);
 
-                  final String deckName = deck.getDeckName();
-                  final String drawPileName = drawPile.getAttributeValueString(SetupStack.NAME);
-                  log(Resources.getString("GameRefresher.refreshing_deck", deckName, drawPileName));
+                    final String drawPileName = drawPile.getAttributeValueString(SetupStack.NAME);
+                    log(Resources.getString("GameRefresher.refreshing_deck", deckName, drawPileName));
 
-                  // This refreshes the existing deck with all the up-to-date drawPile fields from the module
-                  deck.myRefreshType(drawPile.getDeckType());
+                    // This refreshes the existing deck with all the up-to-date drawPile fields from the module
+                    deck.myRefreshType(drawPile.getDeckType());
 
-                  // Make sure the deck is in the right place
-                  final Point pt = drawPile.getPosition();
-                  deck.setPosition(pt);
-                  for (final GamePiece piece : deck.asList()) {
-                    piece.setPosition(pt);
+                    // Make sure the deck is in the right place
+                    final Point pt = drawPile.getPosition();
+                    deck.setPosition(pt);
+                    for (final GamePiece piece : deck.asList()) {
+                      piece.setPosition(pt);
+                    }
+
+                    refreshable++;
+                    break;
                   }
-
-                  refreshable++;
-                  break;
                 }
               }
               if (!deckFound) {
                 deletable++;
-                decksToDelete.add((Deck) pieceOrStack.getParent());
+                decksToDelete.add(deck);
               }
             }
           }
@@ -493,15 +499,22 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
         // Figure out if any decks need to be added
         for (final DrawPile drawPile : drawPiles) {
           boolean matchFound = false;
-          for (final DrawPile drawPile2 : foundDrawPiles) {
-            if (drawPile.getAttributeValueString(SetupStack.NAME).equals(drawPile2.getAttributeValueString(SetupStack.NAME))) {
-              matchFound = true;
-              break;
+
+          final Map map = drawPile.getMap();
+          final Collection<Board> boards = map.getBoards();
+          final String boardName = drawPile.getOwningBoardName();
+          final Board board = drawPile.getConfigureBoard(true);
+          if ((boardName == null) || boards.contains(board)) {
+            for (final DrawPile drawPile2 : foundDrawPiles) {
+              if (drawPile.getAttributeValueString(SetupStack.NAME).equals(drawPile2.getAttributeValueString(SetupStack.NAME))) {
+                matchFound = true;
+                break;
+              }
             }
-          }
-          if (!matchFound) {
-            decksToAdd.add(drawPile);
-            addable++;
+            if (!matchFound) {
+              decksToAdd.add(drawPile);
+              addable++;
+            }
           }
         }
 
@@ -744,7 +757,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       panel.add(deletePieceNoMap);
 
       refreshDecks = new JCheckBox(Resources.getString("GameRefresher.refresh_decks"));
-      refreshDecks.setSelected(true);
+      refreshDecks.setSelected(false);
       refreshDecks.addChangeListener(new ChangeListener() {
         @Override
         public void stateChanged(ChangeEvent e) {
@@ -755,11 +768,11 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       panel.add(refreshDecks);
 
       deleteOldDecks = new JCheckBox(Resources.getString("GameRefresher.delete_old_decks"));
-      deleteOldDecks.setSelected(true);
+      deleteOldDecks.setSelected(false);
       panel.add(deleteOldDecks);
 
       addNewDecks = new JCheckBox(Resources.getString("GameRefresher.add_new_decks"));
-      addNewDecks.setSelected(true);
+      addNewDecks.setSelected(false);
       panel.add(addNewDecks);
 
       panel.add(buttonPanel, "grow"); // NON-NLS
@@ -767,6 +780,9 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       add(panel, "grow"); // NON-NLS
 
       SwingUtils.repack(this);
+
+      deleteOldDecks.setVisible(refreshDecks.isSelected());
+      addNewDecks.setVisible(refreshDecks.isSelected());
     }
 
     protected void  setOptions() {

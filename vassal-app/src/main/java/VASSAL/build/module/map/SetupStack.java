@@ -273,6 +273,10 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     return true;
   }
 
+  public String getOwningBoardName() {
+    return owningBoardName;
+  }
+
   @Override
   public Command getRestoreCommand() {
     return null;
@@ -604,7 +608,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
    * Return a board to configure the stack on.
    * @param checkSelectedBoards If true, prefer a board the player has actually selected from the menu over simply the top one in the list.
    */
-  protected Board getConfigureBoard(boolean checkSelectedBoards) {
+  public Board getConfigureBoard(boolean checkSelectedBoards) {
     Board board = null;
 
     final Map map = getMap();

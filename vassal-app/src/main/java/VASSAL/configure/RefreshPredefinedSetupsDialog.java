@@ -112,11 +112,11 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"));
     panel.add(testModeOn);
     deletePieceNoMap = new JCheckBox(Resources.getString("GameRefresher.delete_piece_no_map"));
-    deletePieceNoMap.setSelected(true);
+    deletePieceNoMap.setSelected(false);
     panel.add(deletePieceNoMap);
 
     refreshDecks = new JCheckBox(Resources.getString("GameRefresher.refresh_decks"));
-    refreshDecks.setSelected(true);
+    refreshDecks.setSelected(false);
     refreshDecks.addChangeListener(new ChangeListener() {
       @Override
       public void stateChanged(ChangeEvent e) {
@@ -127,11 +127,11 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     panel.add(refreshDecks);
 
     deleteOldDecks = new JCheckBox(Resources.getString("GameRefresher.delete_old_decks"));
-    deleteOldDecks.setSelected(true);
+    deleteOldDecks.setSelected(false);
     panel.add(deleteOldDecks);
 
     addNewDecks = new JCheckBox(Resources.getString("GameRefresher.add_new_decks"));
-    addNewDecks.setSelected(true);
+    addNewDecks.setSelected(false);
     panel.add(addNewDecks);
 
     panel.add(buttonsBox, "grow"); // NON-NLS
@@ -139,6 +139,9 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
     setLocationRelativeTo(getOwner());
     SwingUtils.repack(this);
+
+    deleteOldDecks.setVisible(refreshDecks.isSelected());
+    addNewDecks.setVisible(refreshDecks.isSelected());
   }
 
   protected void  setOptions() {
