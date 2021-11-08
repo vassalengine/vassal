@@ -964,7 +964,10 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   public Point getPosition() {
     final Point p = new Point(pos);
     final Board b = getMap().getBoardByName(owningBoardName);
-    if (b != null) {
+    if (b == null) {
+      p.translate(getMap().getEdgeBuffer().width, getMap().getEdgeBuffer().height);
+    }
+    else {
       p.translate(b.bounds().x, b.bounds().y);
     }
     return p;
