@@ -657,6 +657,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     loadKey         = st.nextNamedKeyStroke(null);
     loadReport      = st.nextToken(Resources.getString("Deck.deck_loaded"));
 
+    restrictAccess  = st.nextBoolean(false);
+    owners          = st.nextStringArray(0);
+
     // Find the DrawPile that defines this Deck to access the new Deck Key Commands.
     // If the designed has removed the DrawPile, or changed the name of it, then myPile will
     // be null. This will not stop the Deck continuing to work in 'Legacy', but it will not
@@ -1115,7 +1118,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       .append(saveReport)
       .append(loadMessage)
       .append(loadKey)
-      .append(loadReport);
+      .append(loadReport)
+      .append(restrictAccess)
+      .append(owners);
 
     return ID + se.getValue();
   }
