@@ -1067,6 +1067,9 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     for (final String ce : dummy.getCountExpressions()) {
       l.add(getConfigureName() + "_" + (new Deck.CountExpression(ce)).getName());
     }
+    if (dummy.isRestrictAccess()) {
+      l.addAll(Arrays.asList(dummy.getOwners()));
+    }
     return l;
   }
 
@@ -1098,7 +1101,31 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   @Override
   public List<String> getFormattedStringList() {
     if (dummy != null) {
-      return List.of(dummy.getFaceDownMsgFormat(), dummy.getReshuffleMsgFormat(), dummy.getReverseMsgFormat(), dummy.getShuffleMsgFormat());
+      final List<String> l = new ArrayList<>();
+
+      if (USE_MENU.equals(dummy.getShuffleOption())) { // Confusingly, the term "shuffle" internally matches to "Re-shuffle" in external menus...
+        l.add(dummy.getShuffleMsgFormat());
+      }
+
+      if (isReshufflable()) {                          // ... whereas this one matches to "send to deck".
+        l.add(dummy.getReshuffleMsgFormat());
+      }
+
+      if (dummy.isReversible()) {
+        l.add(dummy.getReverseMsgFormat());
+      }
+
+      if (dummy.isPersistable()) {
+        l.add(dummy.getSaveReport());
+        l.add(dummy.getLoadReport());
+      }
+
+      if (Deck.USE_MENU.equals(dummy.getFaceDownOption()) || Deck.USE_MENU_UP.equals(dummy.getFaceDownOption())) {
+        l.add(dummy.getFaceDownMsgFormat());
+        l.add(dummy.getFaceUpMsgFormat());
+      }
+
+      return l;
     }
     else {
       return Collections.emptyList();
@@ -1137,6 +1164,16 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       if (dummy.isReversible()) {
         l.add(dummy.getReverseCommand());
       }
+
+      if (dummy.isPersistable()) {
+        l.add(dummy.getSaveMessage());
+        l.add(dummy.getLoadMessage());
+      }
+
+      if (Deck.USE_MENU.equals(dummy.getFaceDownOption()) || Deck.USE_MENU_UP.equals(dummy.getFaceDownOption())) {
+        l.add(dummy.getFaceDownMessage());
+        l.add(dummy.getFaceUpMessage());
+      }
     }
 
     return l;
@@ -1162,7 +1199,34 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
     if (dummy != null) {
-      return Arrays.asList(dummy.getNamedEmptyKey(), dummy.getReshuffleKey(), dummy.getReverseKey(), dummy.getShuffleKey());
+      final List<NamedKeyStroke> l = new ArrayList<>();
+
+      l.add(dummy.getNamedEmptyKey());
+
+      if (USE_MENU.equals(dummy.getShuffleOption())) { // Confusingly, the term "shuffle" internally matches to "Re-shuffle" in external menus...
+        l.add(dummy.getShuffleKey());
+      }
+
+      if (isReshufflable()) {                          // ... whereas this one matches to "send to deck".
+        l.add(dummy.getReshuffleKey());
+      }
+
+      if (dummy.isReversible()) {
+        l.add(dummy.getReverseKey());
+      }
+
+      if (dummy.isPersistable()) {
+        l.add(dummy.getSaveKey());
+        l.add(dummy.getLoadKey());
+      }
+
+      if (Deck.USE_MENU.equals(dummy.getFaceDownOption()) || Deck.USE_MENU_UP.equals(dummy.getFaceDownOption())) {
+        l.add(dummy.getFaceDownKey());
+        l.add(dummy.getFaceUpKey());
+        l.add(dummy.getFaceFlipKey());
+      }
+
+      return l;
     }
     else {
       return Collections.emptyList();
