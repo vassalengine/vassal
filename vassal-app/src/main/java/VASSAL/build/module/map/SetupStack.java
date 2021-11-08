@@ -1127,7 +1127,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     public void paint(Graphics g) {
       // Since this configurer is non-modal, there is always the possibility that user is switching back and forth.
       // In which case they get to eat the not-inconsequential perf hit of re-whatevering all the configurers.
-      if (!myBoard.getName().equals(getCachedBoard())) {
+      if (isShowOthers() && !myBoard.getName().equals(getCachedBoard())) {
         SetupStack.setCachedBoard(myBoard.getName());
         SetupStack.setUsedBoardWildcard(myBoard.getName());
         for (final SetupStack s : otherStacks) {
