@@ -1075,10 +1075,16 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       findOtherStacks();
     }
 
-    private void findOtherStacks() {
+    private void prepareOtherConfigurers() {
       SetupStack.setUsedBoardWildcard(myBoard.getName()); //This will make "any board" stacks match our selected board
       SetupStack.setCachedBoard(myBoard.getName());
+      for (final SetupStack s : otherStacks) {
+        s.prepareConfigurer(myBoard);
+      }
+      SetupStack.setUsedBoardWildcard("");
+    }
 
+    private void findOtherStacks() {
       otherStacks = GameModule
         .getGameModule()
         .getAllDescendantComponentsOf(SetupStack.class)
@@ -1103,11 +1109,9 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         })
         .collect(Collectors.toList());
 
-      for (final SetupStack s : otherStacks) {
-        s.prepareConfigurer(myBoard);
+      if (isShowOthers()) {
+        prepareOtherConfigurers();
       }
-
-      SetupStack.setUsedBoardWildcard("");
     }
 
     private void drawOtherStack(SetupStack s, Graphics2D g, Rectangle vrect, double os_scale) {
@@ -1128,12 +1132,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       // Since this configurer is non-modal, there is always the possibility that user is switching back and forth.
       // In which case they get to eat the not-inconsequential perf hit of re-whatevering all the configurers.
       if (isShowOthers() && !myBoard.getName().equals(getCachedBoard())) {
-        SetupStack.setCachedBoard(myBoard.getName());
-        SetupStack.setUsedBoardWildcard(myBoard.getName());
-        for (final SetupStack s : otherStacks) {
-          s.prepareConfigurer(myBoard);
-        }
-        SetupStack.setUsedBoardWildcard("");
+        prepareOtherConfigurers();
       }
 
       final Graphics2D g2d = (Graphics2D) g;
