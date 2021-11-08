@@ -1119,9 +1119,9 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       final int x = (int)(s.pos.x * os_scale);
       final int y = (int)(s.pos.y * os_scale);
 
-      final Rectangle bb = s.stackConfigurer.getCachedBoundingBox();
-      bb.x = x;
-      bb.y = y;
+      final Rectangle bb = new Rectangle(s.stackConfigurer.getCachedBoundingBox());
+      bb.x += x;
+      bb.y += y;
 
       if (vrect.intersects(bb)) {
         s.stackConfigurer.drawImage(g, x, y, null, os_scale);
