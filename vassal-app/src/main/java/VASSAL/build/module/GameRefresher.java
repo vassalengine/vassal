@@ -432,6 +432,14 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
                   // This refreshes the existing deck with all the up-to-date drawPile fields from the module
                   deck.myRefreshType(drawPile.getDeckType());
+
+                  // Make sure the deck is in the right place
+                  final Point pt = drawPile.getPosition();
+                  deck.setPosition(pt);
+                  for (final GamePiece piece : deck.asList()) {
+                    piece.setPosition(pt);
+                  }
+
                   refreshable++;
                   break;
                 }
