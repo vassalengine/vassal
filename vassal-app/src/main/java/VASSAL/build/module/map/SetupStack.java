@@ -118,7 +118,7 @@ import VASSAL.tools.swing.SwingUtils;
  * of counters than a {@link DrawPile}
  */
 public class SetupStack extends AbstractConfigurable implements GameComponent, UniqueIdManager.Identifyable {
-  private static UniqueIdManager idMgr = new UniqueIdManager("SetupStack"); //NON-NLS
+  private static final UniqueIdManager idMgr = new UniqueIdManager("SetupStack"); //NON-NLS
   public static final String COMMAND_PREFIX = "SETUP_STACK\t"; //NON-NLS
   protected Point pos = new Point();
   public static final String OWNING_BOARD = "owningBoard"; //NON-NLS
@@ -151,13 +151,20 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   }
 
   protected static String usedBoardWildcard = ""; // Forces "any board" stacks to prefer to match a specific name. Used during configurer draw cycle only.
+  protected static String cachedBoard = ""; // Most recently cached board for stack configurer
 
   public static String getUsedBoardWildcard() {
     return usedBoardWildcard;
   }
+  public static String getCachedBoard() {
+    return cachedBoard;
+  }
 
   public static void setUsedBoardWildcard(String s) {
     usedBoardWildcard = s;
+  }
+  public static void setCachedBoard(String s) {
+    cachedBoard = s;
   }
 
   @Override
@@ -1060,6 +1067,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 
     private void findOtherStacks() {
       SetupStack.setUsedBoardWildcard(myBoard.getName()); //This will make "any board" stacks match our selected board
+      SetupStack.setCachedBoard(myBoard.getName());
 
       otherStacks = GameModule
         .getGameModule()
@@ -1085,11 +1093,11 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         })
         .collect(Collectors.toList());
 
-      SetupStack.setUsedBoardWildcard("");
-
       for (final SetupStack s : otherStacks) {
         s.prepareConfigurer(myBoard);
       }
+
+      SetupStack.setUsedBoardWildcard("");
     }
 
     private void drawOtherStack(SetupStack s, Graphics2D g, Rectangle vrect, double os_scale) {
@@ -1100,10 +1108,6 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       bb.x = x;
       bb.y = y;
 
-      System.out.println(vrect);
-      System.out.println(bb);
-      System.out.println(vrect.intersects(bb));
-
       if (vrect.intersects(bb)) {
         s.stackConfigurer.drawImage(g, x, y, null, os_scale);
       }
@@ -1111,6 +1115,17 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 
     @Override
     public void paint(Graphics g) {
+      // Since this configurer is non-modal, there is always the possibility that user is switching back and forth.
+      // In which case they get to eat the not-inconsequential perf hit of re-whatevering all the configurers.
+      if (!myBoard.getName().equals(getCachedBoard())) {
+        SetupStack.setCachedBoard(myBoard.getName());
+        SetupStack.setUsedBoardWildcard(myBoard.getName());
+        for (final SetupStack s : otherStacks) {
+          s.prepareConfigurer(myBoard);
+        }
+        SetupStack.setUsedBoardWildcard("");
+      }
+
       final Graphics2D g2d = (Graphics2D) g;
 
       g2d.addRenderingHints(SwingUtils.FONT_HINTS);
