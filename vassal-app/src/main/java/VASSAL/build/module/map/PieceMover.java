@@ -175,6 +175,7 @@ public class PieceMover extends AbstractBuildable
     // Create our target selection filters
     dragTargetSelector = createDragTargetSelector();
     selectionProcessor = createSelectionProcessor();
+    dropTargetSelector = createDropTargetSelector(); // Obsolete from 3.6, but maintains backwards-compatibility with e.g. VASL
 
     // Register with our parent map
     map = (Map) b;
@@ -269,7 +270,7 @@ public class PieceMover extends AbstractBuildable
 
   // Retain for compatibility
   protected PieceFinder createDropTargetSelector() {
-    return dropTargetSelector;
+    return new StandardDropTargetSelector();
   }
 
   /**
