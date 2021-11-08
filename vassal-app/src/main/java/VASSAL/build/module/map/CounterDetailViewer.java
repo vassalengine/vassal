@@ -176,7 +176,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected boolean unrotatePieces = false;
   protected boolean showDeck = false;
 
-  @Deprecated
+  @Deprecated(since = "2021-11-08", forRemoval = true)
   protected static int showDeckDepth = 1; //BR// deprecated (and was-always-broken) field, use showNumberFromDeck instead.
 
   protected int showNumberFromDeck = 1;
@@ -604,7 +604,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     final GamePiece[] allPieces = map.getPieces(); // All pieces from bottom up
 
     final Visitor visitor = new Visitor(new Filter(), map,
-      map.componentToMap(currentMousePosition.getPoint()), showOverlap, this.showNumberFromDeck, this.showDeckMasked);
+      map.componentToMap(currentMousePosition.getPoint()),
+      showOverlap, showNumberFromDeck, showDeckMasked
+    );
     final DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
 
     /*
@@ -733,7 +735,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     protected final int showNumberFromDeck;
     protected final boolean showDeckMasked;
 
-    @Deprecated
+    @Deprecated(since = "2021-11-08", forRemoval = true)
     public Visitor(Filter filter, Map map, Point pt, boolean showOverlap) {
       this(filter, map, pt, showOverlap, 1, false);
     }
