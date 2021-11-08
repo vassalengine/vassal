@@ -171,6 +171,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected NamedKeyStrokeListener saveListener;
   protected NamedKeyStrokeListener loadListener;
 
+  protected boolean restrictAccess;
+  protected String[] owners;
+
   /** The matching DrawPile that generated this Deck */
   protected DrawPile myPile;
 
@@ -267,6 +270,23 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         globalCommand.setPropertySource(propertySource);
       }
     }
+  }
+
+
+  public String[] getOwners() {
+    return owners;
+  }
+
+  public void setOwners(String[] o) {
+    owners = o;
+  }
+
+  public boolean isRestrictAccess() {
+    return restrictAccess;
+  }
+
+  public void setRestrictAccess(boolean b) {
+    restrictAccess = b;
   }
 
   /**
@@ -486,41 +506,31 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
 
     if (faceUpListener == null) {
-      faceUpListener = new NamedKeyStrokeListener(e -> {
-        doFaceUp();
-      });
+      faceUpListener = new NamedKeyStrokeListener(e -> doFaceUp());
       gameModule.addKeyStrokeListener(faceUpListener);
       faceUpListener.setKeyStroke(getFaceUpKey());
     }
 
     if (faceDownListener == null) {
-      faceDownListener = new NamedKeyStrokeListener(e -> {
-        doFaceDown();
-      });
+      faceDownListener = new NamedKeyStrokeListener(e -> doFaceDown());
       gameModule.addKeyStrokeListener(faceDownListener);
       faceDownListener.setKeyStroke(getFaceDownKey());
     }
 
     if (faceFlipListener == null) {
-      faceFlipListener = new NamedKeyStrokeListener(e -> {
-        doFaceFlip();
-      });
+      faceFlipListener = new NamedKeyStrokeListener(e -> doFaceFlip());
       gameModule.addKeyStrokeListener(faceFlipListener);
       faceFlipListener.setKeyStroke(getFaceFlipKey());
     }
 
     if (saveListener == null) {
-      saveListener = new NamedKeyStrokeListener(e -> {
-        doSaveDeck();
-      });
+      saveListener = new NamedKeyStrokeListener(e -> doSaveDeck());
       gameModule.addKeyStrokeListener(saveListener);
       saveListener.setKeyStroke(getSaveKey());
     }
 
     if (loadListener == null) {
-      loadListener = new NamedKeyStrokeListener(e -> {
-        doLoadDeck();
-      });
+      loadListener = new NamedKeyStrokeListener(e -> doLoadDeck());
       gameModule.addKeyStrokeListener(loadListener);
       saveListener.setKeyStroke(getLoadKey());
     }
@@ -646,6 +656,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     loadMessage     = st.nextToken(Resources.getString("Editor.Deck.load_deck"));
     loadKey         = st.nextNamedKeyStroke(null);
     loadReport      = st.nextToken(Resources.getString("Deck.deck_loaded"));
+
+    restrictAccess  = st.nextBoolean(false);
+    owners          = st.nextStringArray(0);
 
     // Find the DrawPile that defines this Deck to access the new Deck Key Commands.
     // If the designed has removed the DrawPile, or changed the name of it, then myPile will
@@ -1105,7 +1118,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       .append(saveReport)
       .append(loadMessage)
       .append(loadKey)
-      .append(loadReport);
+      .append(loadReport)
+      .append(restrictAccess)
+      .append(owners);
 
     return ID + se.getValue();
   }
@@ -1619,7 +1634,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       }
     }
 
-    return commands;
+    return isAccessible() ? commands : null;
   }
 
 
@@ -1876,6 +1891,27 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   @Override
   public boolean isExpanded() {
     return false;
+  }
+
+
+  /** Return true if the player playing the given side can access this deck
+   * @see PlayerRoster
+   */
+  public boolean isAccessibleTo(String playerSide) {
+    if (!isRestrictAccess()) {
+      return true;
+    }
+    for (final String owner : owners) {
+      if (owner.equals(playerSide)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /** Return if our current player side can access the deck */
+  public boolean isAccessible() {
+    return isAccessibleTo(PlayerRoster.getMySide());
   }
 
   /** Return true if this deck can be saved to and loaded from a file on disk */

@@ -95,6 +95,8 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
 
   private final VisibilityCondition saveVisibleCondition = () -> dummy.isPersistable();
 
+  private final VisibilityCondition ownersVisibleCondition = () -> dummy.isRestrictAccess();
+
   protected static final UniqueIdManager idMgr = new UniqueIdManager("Deck"); //NON-NLS
 
   @Override
@@ -198,6 +200,9 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   public static final String LOAD_HOTKEY  = "loadHotkey"; //NON-NLS
   public static final String SAVE_REPORT_FORMAT = "saveReportFormat"; //NON-NLS
   public static final String LOAD_REPORT_FORMAT = "loadReportFormat"; //NON-NLS
+
+  public static final String DECK_RESTRICT_ACCESS = "deckRestrictAccess"; //NON-NLS
+  public static final String DECK_OWNERS = "deckOwners"; //NON-NLS
 
   public static class Prompt extends TranslatableStringEnum {
     @Override
@@ -338,7 +343,9 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       EXPRESSIONCOUNTING,
       COUNTEXPRESSIONS,
       RESTRICT_OPTION,
-      RESTRICT_EXPRESSION
+      RESTRICT_EXPRESSION,
+      DECK_RESTRICT_ACCESS,
+      DECK_OWNERS
     };
   }
 
@@ -395,6 +402,8 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
         Resources.getString("Editor.DrawPile.count_express"), //$NON-NLS-1$
         Resources.getString("Editor.DrawPile.restrict_drag"), //$NON-NLS-1$
         Resources.getString("Editor.DrawPile.match_express"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.deck_restrict_access"), //NON-NLS
+        Resources.getString("Editor.DrawPile.deck_owners"), //NON-NLS
     };
   }
 
@@ -451,6 +460,8 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       String[].class, // COUNTEXPRESSIONS
       Boolean.class, // RESTRICT_OPTION
       PropertyExpression.class, //RESTRICT_EXPRESSION
+      Boolean.class, // DECK_RESTRICT_ACCESS
+      String[].class, // DECK_OWNERS
     };
   }
 
@@ -621,6 +632,12 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     else if (LOAD_REPORT_FORMAT.equals(key)) {
       return dummy.getLoadReport();
     }
+    else if (DECK_RESTRICT_ACCESS.equals(key)) {
+      return String.valueOf(dummy.isRestrictAccess());
+    }
+    else if (DECK_OWNERS.equals(key)) {
+      return StringArrayConfigurer.arrayToString(dummy.getOwners());
+    }
     else {
       return super.getAttributeValueString(key);
     }
@@ -690,10 +707,10 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       }
     }
     else if (SELECT_DISPLAY_PROPERTY.equals(key)) {
-      dummy.setSelectDisplayProperty((String)value);
+      dummy.setSelectDisplayProperty((String) value);
     }
     else if (SELECT_SORT_PROPERTY.equals(key)) {
-      dummy.setSelectSortProperty((String)value);
+      dummy.setSelectSortProperty((String) value);
     }
     else if (DRAW.equals(key)) {
       if (value instanceof Boolean) {
@@ -813,16 +830,16 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       dummy.setRestrictExpression((PropertyExpression) value);
     }
     else if (DRAW_MULTIPLE_MESSAGE.equals(key)) {
-      dummy.setDrawMultipleMessage((String)value);
+      dummy.setDrawMultipleMessage((String) value);
     }
     else if (DRAW_SPECIFIC_MESSAGE.equals(key)) {
-      dummy.setDrawSpecificMessage((String)value);
+      dummy.setDrawSpecificMessage((String) value);
     }
     else if (FACE_UP_MESSAGE.equals(key)) {
-      dummy.setFaceUpMessage((String)value);
+      dummy.setFaceUpMessage((String) value);
     }
     else if (FACE_DOWN_MESSAGE.equals(key)) {
-      dummy.setFaceDownMessage((String)value);
+      dummy.setFaceDownMessage((String) value);
     }
     else if (FACE_UP_HOTKEY.equals(key)) {
       if (value instanceof String) {
@@ -843,10 +860,10 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       dummy.setFaceDownKey((NamedKeyStroke) value);
     }
     else if (FACE_UP_REPORT_FORMAT.equals(key)) {
-      dummy.setFaceUpMsgFormat((String)value);
+      dummy.setFaceUpMsgFormat((String) value);
     }
     else if (SAVE_MESSAGE.equals(key)) {
-      dummy.setSaveMessage((String)value);
+      dummy.setSaveMessage((String) value);
     }
     else if (SAVE_HOTKEY.equals(key)) {
       if (value instanceof String) {
@@ -855,10 +872,10 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       dummy.setSaveKey((NamedKeyStroke) value);
     }
     else if (SAVE_REPORT_FORMAT.equals(key)) {
-      dummy.setSaveReport((String)value);
+      dummy.setSaveReport((String) value);
     }
     else if (LOAD_MESSAGE.equals(key)) {
-      dummy.setLoadMessage((String)value);
+      dummy.setLoadMessage((String) value);
     }
     else if (LOAD_HOTKEY.equals(key)) {
       if (value instanceof String) {
@@ -867,7 +884,23 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       dummy.setLoadKey((NamedKeyStroke) value);
     }
     else if (LOAD_REPORT_FORMAT.equals(key)) {
-      dummy.setLoadReport((String)value);
+      dummy.setLoadReport((String) value);
+    }
+    else if (DECK_RESTRICT_ACCESS.equals(key)) {
+      if (value instanceof Boolean) {
+        dummy.setRestrictAccess(Boolean.TRUE.equals(value));
+      }
+      else {
+        dummy.setRestrictAccess("true".equals(value)); //NON-NLS
+      }
+    }
+    else if (DECK_OWNERS.equals(key)) {
+      if (value instanceof String) {
+        dummy.setOwners(StringArrayConfigurer.stringToArray((String) value));
+      }
+      else if (value instanceof String[]) {
+        dummy.setOwners((String [])value);
+      }
     }
     else {
       super.setAttribute(key, value);
@@ -915,6 +948,9 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     else if (List.of(SAVE_MESSAGE, SAVE_HOTKEY, SAVE_REPORT_FORMAT, LOAD_MESSAGE, LOAD_HOTKEY, LOAD_REPORT_FORMAT).contains(name)) {
       return saveVisibleCondition;
     }
+    else if (DECK_OWNERS.equals(name)) {
+      return ownersVisibleCondition;
+    }
     else {
       return null;
     }
@@ -946,6 +982,10 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   public Command addToContents(GamePiece p) {
     // If the piece is already in the Deck, do nothing
     if (myDeck != null && myDeck.indexOf(p) >= 0) {
+      return new NullCommand();
+    }
+    // Don't add to decks we don't have access to
+    if ((myDeck != null) && !myDeck.isAccessible()) {
       return new NullCommand();
     }
     // Merge it in
@@ -1027,6 +1067,9 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     for (final String ce : dummy.getCountExpressions()) {
       l.add(getConfigureName() + "_" + (new Deck.CountExpression(ce)).getName());
     }
+    if (dummy.isRestrictAccess()) {
+      l.addAll(Arrays.asList(dummy.getOwners()));
+    }
     return l;
   }
 
@@ -1058,7 +1101,31 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   @Override
   public List<String> getFormattedStringList() {
     if (dummy != null) {
-      return List.of(dummy.getFaceDownMsgFormat(), dummy.getReshuffleMsgFormat(), dummy.getReverseMsgFormat(), dummy.getShuffleMsgFormat());
+      final List<String> l = new ArrayList<>();
+
+      if (USE_MENU.equals(dummy.getShuffleOption())) { // Confusingly, the term "shuffle" internally matches to "Re-shuffle" in external menus...
+        l.add(dummy.getShuffleMsgFormat());
+      }
+
+      if (isReshufflable()) {                          // ... whereas this one matches to "send to deck".
+        l.add(dummy.getReshuffleMsgFormat());
+      }
+
+      if (dummy.isReversible()) {
+        l.add(dummy.getReverseMsgFormat());
+      }
+
+      if (dummy.isPersistable()) {
+        l.add(dummy.getSaveReport());
+        l.add(dummy.getLoadReport());
+      }
+
+      if (Deck.USE_MENU.equals(dummy.getFaceDownOption()) || Deck.USE_MENU_UP.equals(dummy.getFaceDownOption())) {
+        l.add(dummy.getFaceDownMsgFormat());
+        l.add(dummy.getFaceUpMsgFormat());
+      }
+
+      return l;
     }
     else {
       return Collections.emptyList();
@@ -1097,6 +1164,16 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       if (dummy.isReversible()) {
         l.add(dummy.getReverseCommand());
       }
+
+      if (dummy.isPersistable()) {
+        l.add(dummy.getSaveMessage());
+        l.add(dummy.getLoadMessage());
+      }
+
+      if (Deck.USE_MENU.equals(dummy.getFaceDownOption()) || Deck.USE_MENU_UP.equals(dummy.getFaceDownOption())) {
+        l.add(dummy.getFaceDownMessage());
+        l.add(dummy.getFaceUpMessage());
+      }
     }
 
     return l;
@@ -1122,7 +1199,34 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
     if (dummy != null) {
-      return Arrays.asList(dummy.getNamedEmptyKey(), dummy.getReshuffleKey(), dummy.getReverseKey(), dummy.getShuffleKey());
+      final List<NamedKeyStroke> l = new ArrayList<>();
+
+      l.add(dummy.getNamedEmptyKey());
+
+      if (USE_MENU.equals(dummy.getShuffleOption())) { // Confusingly, the term "shuffle" internally matches to "Re-shuffle" in external menus...
+        l.add(dummy.getShuffleKey());
+      }
+
+      if (isReshufflable()) {                          // ... whereas this one matches to "send to deck".
+        l.add(dummy.getReshuffleKey());
+      }
+
+      if (dummy.isReversible()) {
+        l.add(dummy.getReverseKey());
+      }
+
+      if (dummy.isPersistable()) {
+        l.add(dummy.getSaveKey());
+        l.add(dummy.getLoadKey());
+      }
+
+      if (Deck.USE_MENU.equals(dummy.getFaceDownOption()) || Deck.USE_MENU_UP.equals(dummy.getFaceDownOption())) {
+        l.add(dummy.getFaceDownKey());
+        l.add(dummy.getFaceUpKey());
+        l.add(dummy.getFaceFlipKey());
+      }
+
+      return l;
     }
     else {
       return Collections.emptyList();

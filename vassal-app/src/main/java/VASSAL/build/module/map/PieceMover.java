@@ -492,6 +492,11 @@ public class PieceMover extends AbstractBuildable
        */
       @Override
       public Object visitDeck(Deck d) {
+        // Don't allow drag from deck if we don't have access to it
+        if (!d.isAccessible()) {
+          return null;
+        }
+
         final DragBuffer dbuf = DragBuffer.getBuffer();
         dbuf.clear();
         for (final PieceIterator it = d.drawCards(); it.hasMoreElements();) {
@@ -596,6 +601,9 @@ public class PieceMover extends AbstractBuildable
     return new PieceFinder.Movable() {
       @Override
       public Object visitDeck(Deck d) {
+        if (!d.isAccessible()) {
+          return null;
+        }
         final Point pos = d.getPosition();
         final Point p = new Point(pt.x - pos.x, pt.y - pos.y);
         return d.boundingBox().contains(p) && d.getPieceCount() > 0 ? d : null;
@@ -1075,7 +1083,7 @@ public class PieceMover extends AbstractBuildable
         if (mergeWith instanceof Deck) {
           final ArrayList<GamePiece> newList = new ArrayList<>(0);
           for (final GamePiece piece : draggedPieces) {
-            if (((Deck) mergeWith).mayContain(piece)) {
+            if (((Deck) mergeWith).mayContain(piece) && ((Deck) mergeWith).isAccessible()) {
               final boolean isObscuredToMe = Boolean.TRUE.equals(piece.getProperty(Properties.OBSCURED_TO_ME));
               if (!isObscuredToMe || Deck.NO_USER.equals(piece.getProperty(Properties.OBSCURED_BY))) {
                 newList.add(piece);
