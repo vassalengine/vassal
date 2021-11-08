@@ -61,10 +61,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
@@ -74,10 +76,10 @@ import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
-import VASSAL.build.AbstractFolder;
 import org.apache.commons.lang3.SystemUtils;
 
 import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.AbstractFolder;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.BadDataReport;
 import VASSAL.build.Buildable;
@@ -116,7 +118,7 @@ import VASSAL.tools.swing.SwingUtils;
  * of counters than a {@link DrawPile}
  */
 public class SetupStack extends AbstractConfigurable implements GameComponent, UniqueIdManager.Identifyable {
-  private static UniqueIdManager idMgr = new UniqueIdManager("SetupStack"); //NON-NLS
+  private static final UniqueIdManager idMgr = new UniqueIdManager("SetupStack"); //NON-NLS
   public static final String COMMAND_PREFIX = "SETUP_STACK\t"; //NON-NLS
   protected Point pos = new Point();
   public static final String OWNING_BOARD = "owningBoard"; //NON-NLS
@@ -137,6 +139,33 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   protected boolean useGridLocation;
   public static final String LOCATION = "location"; //NON-NLS
   public static final String USE_GRID_LOCATION = "useGridLocation"; //NON-NLS
+
+  public static boolean showOthers = false; // Whether we also show other decks/stacks when changing the position of one
+
+  public static boolean isShowOthers() {
+    return showOthers;
+  }
+
+  public static void setShowOthers(boolean b) {
+    showOthers = b;
+  }
+
+  protected static String usedBoardWildcard = ""; // Forces "any board" stacks to prefer to match a specific name. Used during configurer draw cycle only.
+  protected static String cachedBoard = ""; // Most recently cached board for stack configurer
+
+  public static String getUsedBoardWildcard() {
+    return usedBoardWildcard;
+  }
+  public static String getCachedBoard() {
+    return cachedBoard;
+  }
+
+  public static void setUsedBoardWildcard(String s) {
+    usedBoardWildcard = s;
+  }
+  public static void setCachedBoard(String s) {
+    cachedBoard = s;
+  }
 
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
@@ -549,6 +578,15 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     configureButton.setEnabled(getConfigureBoard(true) != null && buildComponents.size() > 0);
   }
 
+  public void prepareConfigurer(Board board) {
+    if ((stackConfigurer == null) || (stackConfigurer.board != board)) {
+      stackConfigurer = new StackConfigurer(this);
+      stackConfigurer.board = getConfigureBoard(true);
+      stackConfigurer.cacheBoundingBox();
+      updatePosition();
+    }
+  }
+
   protected void configureStack() {
     stackConfigurer = new StackConfigurer(this);
     stackConfigurer.init();
@@ -576,16 +614,37 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     }
 
     if (board == null && map != null) {
-      //BR// If we're doing the start-of-game setup (as opposed to just configuring it), prefer a "selected" board to the first one in the list.
       if (checkSelectedBoards) {
-        final List<String> selectedBoards = map.getBoardPicker().getSelectedBoardNames();
-        for (final String s : selectedBoards) {
-          board = map.getBoardByName(s);
-          if (board != null) {
-            break;
+        // During configuration with no live player window, if we're drawing multiple stacks, force ghost stacks to prefer to match the active stack's board pick
+        final String wildcard = SetupStack.getUsedBoardWildcard();
+        if (!wildcard.isEmpty()) {
+          // We can't use map.getBoardByName() because Player window might not be live (in which case it will just return null)
+          if (map.getBoardPicker() != null) {
+            for (final Board b : map.getBoardPicker().possibleBoards) {
+              if (b.getName().equals(wildcard)) {
+                board = b;
+                break;
+              }
+            }
+          }
+        }
+
+        //BR// If we're doing the start-of-game setup (as opposed to just configuring it), prefer a "selected" board to the first one in the list.
+        if (board == null) {
+          final BoardPicker boardPicker = map.getBoardPicker();
+          if (boardPicker != null) {
+            final List<String> selectedBoards = boardPicker.getSelectedBoardNames();
+            for (final String s : selectedBoards) {
+              board = map.getBoardByName(s);
+              if (board != null) {
+                break;
+              }
+            }
           }
         }
       }
+
+      // Final fallback (and default) is to just take the first board from the picker
       if (board == null) {
         final String[] allBoards = map.getBoardPicker().getAllowableBoardNames();
         if (allBoards.length > 0) {
@@ -626,6 +685,8 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     protected Dimension dummySize;
     protected BufferedImage dummyImage;
     protected JLabel coords;
+    protected JCheckBox shouldShowOthers;
+    protected Rectangle cachedBoundingBox;
 
     public StackConfigurer(SetupStack stack) {
       super(Resources.getString("Editor.SetupStack.adjust_at_start_stack"));
@@ -683,6 +744,14 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       textPanel.add(new JLabel(Resources.getString(SystemUtils.IS_OS_MAC ? "Editor.SetupStack.shift_command_keys_move_stack_faster_mac" : "Editor.SetupStack.ctrl_shift_keys_move_stack_faster")));
 
       final Box displayPanel = Box.createHorizontalBox();
+      displayPanel.add(Box.createRigidArea(new Dimension(10, 10)));
+      shouldShowOthers = new JCheckBox(Resources.getString("Editor.SetupStack.show_others"), SetupStack.isShowOthers());
+      displayPanel.add(shouldShowOthers);
+      shouldShowOthers.addItemListener(e -> {
+        SetupStack.setShowOthers(shouldShowOthers.isSelected());
+        repaint();
+      });
+      displayPanel.add(Box.createRigidArea(new Dimension(10, 10)));
 
       final Box buttonPanel = Box.createHorizontalBox();
       final JButton snapButton = new JButton(Resources.getString("Editor.SetupStack.snap_to_grid"));
@@ -728,6 +797,10 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       updateDisplay();
       pack();
       repaint();
+    }
+
+    public void setShowOthers(boolean show) {
+      SetupStack.showOthers = show;
     }
 
     public void updateCoords(String text) {
@@ -814,14 +887,23 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     }
 
     public Rectangle getPieceBoundingBox() {
-      final Rectangle r = myPiece == null ? new Rectangle() : myPiece.getShape().getBounds();
+      final Rectangle r = myPiece == null ? new Rectangle() : myPiece.boundingBox();
       if (r.width == 0 || r.height == 0) {
-        r.x = 0 - dummySize.width / 2;
-        r.y = 0 - dummySize.height / 2;
         r.width = dummySize.width;
         r.height = dummySize.height;
+        r.x = -r.width / 2;
+        r.y = -r.height / 2;
       }
+
       return r;
+    }
+
+    public void cacheBoundingBox() {
+      cachedBoundingBox = getPieceBoundingBox();
+    }
+
+    public Rectangle getCachedBoundingBox() {
+      return cachedBoundingBox;
     }
 
     @Override
@@ -980,6 +1062,8 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     protected int originalPieceOffsetY;
     protected Point lastDragLocation = new Point();
 
+    protected List<SetupStack> otherStacks;
+
     public View(Board b, SetupStack s) {
       myBoard = b;
       myGrid = b.getGrid();
@@ -992,11 +1076,76 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       ds.createDefaultDragGestureRecognizer(this,
         DnDConstants.ACTION_MOVE, this);
       setFocusTraversalKeysEnabled(false);
+
+      findOtherStacks();
+    }
+
+    private void prepareOtherConfigurers() {
+      SetupStack.setUsedBoardWildcard(myBoard.getName()); //This will make "any board" stacks match our selected board
+      SetupStack.setCachedBoard(myBoard.getName());
+      for (final SetupStack s : otherStacks) {
+        s.prepareConfigurer(myBoard);
+      }
+      SetupStack.setUsedBoardWildcard("");
+    }
+
+    private void findOtherStacks() {
+      otherStacks = GameModule
+        .getGameModule()
+        .getAllDescendantComponentsOf(SetupStack.class)
+        .stream()
+        // don't draw this stack or stacks from other maps
+        .filter(s -> s != myStack && s.getMap() == myStack.getMap())
+        // don't draw stacks from wrong board
+        .filter(s -> {
+          if (s.owningBoardName != null) {
+            if (myStack.owningBoardName == null) {
+              if (!s.owningBoardName.equals(myBoard.getName())) {
+                return false;
+              }
+            }
+
+            if (!s.owningBoardName.equals(myStack.owningBoardName)) {
+              return false; 
+            }
+          }
+
+          return true;
+        })
+        .collect(Collectors.toList());
+
+      if (isShowOthers()) {
+        prepareOtherConfigurers();
+      }
+    }
+
+    private void drawOtherStack(SetupStack s, Graphics2D g, Rectangle vrect, double os_scale) {
+      final int x = (int)(s.pos.x * os_scale);
+      final int y = (int)(s.pos.y * os_scale);
+
+      final Rectangle bb = new Rectangle(s.stackConfigurer.getCachedBoundingBox());
+      bb.x += x;
+      bb.y += y;
+
+      if (vrect.intersects(bb)) {
+        s.stackConfigurer.drawImage(g, x, y, null, os_scale);
+      }
     }
 
     @Override
     public void paint(Graphics g) {
+      // Since this configurer is non-modal, there is always the possibility that user is switching back and forth.
+      // In which case they get to eat the not-inconsequential perf hit of re-whatevering all the configurers.
+      if (isShowOthers() && !myBoard.getName().equals(getCachedBoard())) {
+        prepareOtherConfigurers();
+      }
+
       final Graphics2D g2d = (Graphics2D) g;
+
+      g2d.addRenderingHints(SwingUtils.FONT_HINTS);
+      g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                           RenderingHints.VALUE_ANTIALIAS_ON);
+
       final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
 
       final AffineTransform orig_t = g2d.getTransform();
@@ -1009,6 +1158,23 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         bounds.height *= os_scale;
         myGrid.draw(g, bounds, bounds, os_scale, false);
       }
+
+      if (isShowOthers()) {
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5F));
+
+        final Rectangle r = getVisibleRect();
+        r.x *= os_scale;
+        r.y *= os_scale;
+        r.width *= os_scale;
+        r.height *= os_scale;
+
+        for (final SetupStack s : otherStacks) { 
+          drawOtherStack(s, g2d, r, os_scale);
+        }
+      }
+
+      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP));
+
       final int x = (int)(myStack.pos.x * os_scale);
       final int y = (int)(myStack.pos.y * os_scale);
       myStack.stackConfigurer.drawImage(g, x, y, this, os_scale);
