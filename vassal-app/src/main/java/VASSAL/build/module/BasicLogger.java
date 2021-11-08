@@ -303,7 +303,6 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     }
   }
 
-
   public void enableDrawing(boolean show) {
   }
 
@@ -498,7 +497,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
    * This handles the UNDO button, executing the actual "Undo".
    */
   protected void undo() {
-    if (nextUndo <= dontUndoPast) {
+    if (nextUndo < dontUndoPast) {
       return; //BR// Throw away extra keys-held-down when nothing left to do
     }
 
@@ -513,12 +512,14 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
         }
       }
     }
+
     while (nextUndo-- > dontUndoPast) {
       if (logOutput.get(nextUndo).getUndoCommand() != null) {
         break;
       }
     }
-    undoAction.setEnabled(nextUndo > dontUndoPast);
+
+    undoAction.setEnabled(nextUndo >= dontUndoPast);
     final Command undo = lastOutput.getUndoCommand();
     undo.execute();
     GameModule.getGameModule().getServer().sendToOthers(undo);
@@ -537,7 +538,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
         nextUndo = logOutput.size() - 1;
       }
     }
-    undoAction.setEnabled(nextUndo > dontUndoPast);
+    undoAction.setEnabled(nextUndo >= dontUndoPast);
   }
 
   /**
