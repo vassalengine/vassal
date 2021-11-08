@@ -582,6 +582,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     if ((stackConfigurer == null) || (stackConfigurer.board != board)) {
       stackConfigurer = new StackConfigurer(this);
       stackConfigurer.board = getConfigureBoard(true);
+      stackConfigurer.cacheBoundingBox();
       updatePosition();
     }
   }
@@ -685,6 +686,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     protected BufferedImage dummyImage;
     protected JLabel coords;
     protected JCheckBox shouldShowOthers;
+    protected Rectangle cachedBoundingBox;
 
     public StackConfigurer(SetupStack stack) {
       super(Resources.getString("Editor.SetupStack.adjust_at_start_stack"));
@@ -893,6 +895,14 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         r.height = dummySize.height;
       }
       return r;
+    }
+
+    public void cacheBoundingBox() {
+      cachedBoundingBox = getPieceBoundingBox();
+    }
+
+    public Rectangle getCachedBoundingBox() {
+      return cachedBoundingBox;
     }
 
     @Override
@@ -1104,7 +1114,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       final int x = (int)(s.pos.x * os_scale);
       final int y = (int)(s.pos.y * os_scale);
 
-      final Rectangle bb = s.stackConfigurer.getPieceBoundingBox();
+      final Rectangle bb = s.stackConfigurer.getCachedBoundingBox();
       bb.x = x;
       bb.y = y;
 
