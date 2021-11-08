@@ -1,3 +1,4 @@
+// Mouseover Stack Viewer: internally known as CounterDetailViewer
 == VASSAL Reference Manual
 [#top]
 
@@ -71,6 +72,10 @@ Otherwise, they are excluded regardless of any other filters.
 *Show pieces in unrotated state:*::  If selected, then pieces that can rotate are drawn in the viewer as they look when not rotated.
 
 *Include top piece in Deck:*:: If selected, then the top piece of a <<Deck.adoc#top,Deck>> is eligible for inclusion.
+
+*Include face down pieces in a Deck:*:: If selected, then face-down members of a deck are eligible for inclusion
+
+*Number of pieces in Deck to show:*:: This many cards/pieces from the top of a deck are eligible for inclusion.
 
 *Show all pieces overlapping the first piece found:*:: If selected, then all Game Pieces that overlap the mouse cursor location are eligible to be displayed; otherwise only pieces at the _exact_ X,Y position of the _top_ piece found are displayed.
 |image:images/CounterDetailViewer.png[]

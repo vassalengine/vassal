@@ -1,3 +1,4 @@
+// Game Piece Palette - internally known as PieceWindow
 == VASSAL Reference Manual
 [#top]
 

@@ -1,3 +1,4 @@
+// Layer is internally known as Embellishment
 == VASSAL Reference Manual
 [#top]
 

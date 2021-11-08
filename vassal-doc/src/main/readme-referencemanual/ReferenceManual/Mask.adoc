@@ -1,3 +1,4 @@
+// Mask is internally known as Obscurable
 == VASSAL Reference Manual
 [#top]
 

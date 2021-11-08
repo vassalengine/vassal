@@ -1,3 +1,4 @@
+// Movement Trail is internally known as Footprint
 == VASSAL Reference Manual
 [#top]
 
