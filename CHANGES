@@ -1,6 +1,7 @@
 3.6.0-beta6 - ??? 
 
 * 10718: NPE due to dropTargetSelector being unset
+* 10717: Deck access - allow access to decks to be restricted by player
 * 10713: Escape errorLog path when making link URL for connection failed page
     in BugDialog
 * 10711: When rotating a mat, jointly rotating cargo should prefer to stay

@@ -20,9 +20,10 @@
       "in": "3.6.0-beta6",
       "since": "3.6.0-beta5",
       "new_features": [
-        { "num": 10682, "Move Camera Button" },
-        { "num": 10674, "Startup Global Key Commands always fire in order, can't be undone, and can be configured to, e.g., \"once per game\" },
-        { "num": 10649, "Deck can start face-up or face-down when using right-click menu setting" },
+        { "num": 10717, "desc": "Deck access - allow access to decks to be restricted by player" },
+        { "num": 10682, "desc": "Move Camera Button" },
+        { "num": 10674, "desc": "Startup Global Key Commands always fire in order, can't be undone, and can be configured to, e.g., \"once per game\"" },
+        { "num": 10649, "desc": "Deck can start face-up or face-down when using right-click menu setting" },
         { "num": 10628, "desc": "Autopeek Rollover" },
         { "num": 9391, "desc": "Beanshell can now access $$ variables in Report Formats" }
       ],
