@@ -59,6 +59,7 @@
       "other_improvements": [
         { "num": 10701, "desc": "Zone defining - when dragging a square to define initial zone, dragging at edge of screen scrolls" },
         { "num": 10700, "desc": "Improved bug dialog text" },
+        { "num": 10699, "desc": "Repositioning Stacks/Decks optionally draws ghosted images of other stacks/decks" },
         { "num": 10696, "desc": "Global Key Commands \"Within a Deck, select Fixed number of pieces\" field now supports expressions" },
         { "num": 10691i, "desc": "Mouseover Stack Viewer - Unstatic a naughty field and add ability to count face down cards in a deck" },
         { "num": 10686, "Decks - fill out the rest of the commands with hotkeys and report formats" },

@@ -12,6 +12,8 @@
 * 10701: Zone defining - when dragging a square to define initial zone,
     dragging at edge of screen scrolls
 * 10700: Improved bug dialog text
+* 10699: Repositioning Stacks/Decks optionally draws ghosted images of other
+    stacks/decks
 * 10696: Global Key Commands "Within a Deck, select Fixed number of pieces"
     field now supports expressions
 * 10691: Mouseover Stack Viewer - Unstatic a naughty field and add ability to
