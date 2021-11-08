@@ -25,6 +25,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.swing.FlowLabel;
 import VASSAL.tools.swing.SwingUtils;
 import java.awt.Frame;
 import java.awt.HeadlessException;
@@ -40,6 +41,9 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 import net.miginfocom.swing.MigLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +57,9 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   private JCheckBox layerNameCheck;
   private JCheckBox testModeOn;
   private JCheckBox deletePieceNoMap;
+  private JCheckBox refreshDecks;
+  private JCheckBox deleteOldDecks;
+  private JCheckBox addNewDecks;
   private final Set<String> options = new HashSet<>();
 
   public RefreshPredefinedSetupsDialog(Frame owner) throws HeadlessException {
@@ -66,6 +73,9 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
     final JPanel panel = new JPanel(new MigLayout("hidemode 3,wrap 1" + "," + ConfigurerLayout.STANDARD_GAPY, "[fill]")); // NON-NLS
     panel.setBorder(BorderFactory.createEtchedBorder());
+
+    final FlowLabel header = new FlowLabel(Resources.getString("GameRefresher.predefined_header"));
+    panel.add(header);
 
     final JPanel buttonsBox = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
     refreshButton = new JButton(Resources.getString("General.run"));
@@ -105,6 +115,25 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     deletePieceNoMap.setSelected(true);
     panel.add(deletePieceNoMap);
 
+    refreshDecks = new JCheckBox(Resources.getString("GameRefresher.refresh_decks"));
+    refreshDecks.setSelected(true);
+    refreshDecks.addChangeListener(new ChangeListener() {
+      @Override
+      public void stateChanged(ChangeEvent e) {
+        deleteOldDecks.setVisible(refreshDecks.isSelected());
+        addNewDecks.setVisible(refreshDecks.isSelected());
+      }
+    });
+    panel.add(refreshDecks);
+
+    deleteOldDecks = new JCheckBox(Resources.getString("GameRefresher.delete_old_decks"));
+    deleteOldDecks.setSelected(true);
+    panel.add(deleteOldDecks);
+
+    addNewDecks = new JCheckBox(Resources.getString("GameRefresher.add_new_decks"));
+    addNewDecks.setSelected(true);
+    panel.add(addNewDecks);
+
     panel.add(buttonsBox, "grow"); // NON-NLS
     add(panel, "grow"); // NON-NLS
 
@@ -128,6 +157,15 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     }
     if (deletePieceNoMap.isSelected()) {
       options.add("DeleteNoMap"); //$NON-NLS-1$
+    }
+    if (refreshDecks.isSelected()) {
+      options.add("RefreshDecks"); //NON-NLS
+      if (deleteOldDecks.isSelected()) {
+        options.add("DeleteOldDecks"); //NON-NLS
+      }
+      if (addNewDecks.isSelected()) {
+        options.add("AddNewDecks"); //NON-NLS
+      }
     }
   }
 
@@ -196,11 +234,9 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
       finally {
         GameModule.getGameModule().setRefreshingSemaphore(false); //BR// Make sure we definitely lower the semaphore
       }
-
     }
     GameModule.getGameModule().getGameState().setup(false); //BR// Clear out whatever data (pieces, listeners, etc) left over from final game loaded.
 
     refreshButton.setEnabled(true);
   }
-
 }

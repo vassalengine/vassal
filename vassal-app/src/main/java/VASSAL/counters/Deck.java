@@ -597,7 +597,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   }
 
 
-  /** Sets the information for this Deck.  See {@link Decorator#myGetType}
+  /** Sets or refreshes the information for this Deck.  See {@link Decorator#myGetType}
    *  @param type a serialized configuration string to
    *              set the "type information" of this Deck, which is
    *              information that doesn't change during the course of
@@ -605,7 +605,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
    *              etc, rules about when deck is shuffled, whether it is
    *              face-up or face down, etc).
    */
-  protected void mySetType(String type) {
+  public void myRefreshType(String type) {
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
     drawOutline = st.nextBoolean(true);
@@ -657,11 +657,18 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     loadKey         = st.nextNamedKeyStroke(null);
     loadReport      = st.nextToken(Resources.getString("Deck.deck_loaded"));
 
+    commands = null;
+  }
+
+  protected void mySetType(String type) {
+    // Set the type information
+    myRefreshType(type);
+
     restrictAccess  = st.nextBoolean(false);
     owners          = st.nextStringArray(0);
 
     // Find the DrawPile that defines this Deck to access the new Deck Key Commands.
-    // If the designed has removed the DrawPile, or changed the name of it, then myPile will
+    // If the designer has removed the DrawPile, or changed the name of it, then myPile will
     // be null. This will not stop the Deck continuing to work in 'Legacy', but it will not
     // have access to the new-style Deck Key Commands.
     myPile = DrawPile.findDrawPile(getDeckName());
