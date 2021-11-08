@@ -887,7 +887,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     }
 
     public Rectangle getPieceBoundingBox() {
-      final Rectangle r = myPiece == null ? new Rectangle() : myPiece.getShape().getBounds();
+      final Rectangle r = myPiece == null ? new Rectangle() : myPiece.boundingBox();
       if (r.width == 0 || r.height == 0) {
         r.x = 0 - dummySize.width / 2;
         r.y = 0 - dummySize.height / 2;
