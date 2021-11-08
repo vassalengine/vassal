@@ -657,15 +657,15 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     loadKey         = st.nextNamedKeyStroke(null);
     loadReport      = st.nextToken(Resources.getString("Deck.deck_loaded"));
 
+    restrictAccess  = st.nextBoolean(false);
+    owners          = st.nextStringArray(0);
+
     commands = null;
   }
 
   protected void mySetType(String type) {
     // Set the type information
     myRefreshType(type);
-
-    restrictAccess  = st.nextBoolean(false);
-    owners          = st.nextStringArray(0);
 
     // Find the DrawPile that defines this Deck to access the new Deck Key Commands.
     // If the designer has removed the DrawPile, or changed the name of it, then myPile will
