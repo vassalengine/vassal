@@ -178,8 +178,15 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     return options.contains("TestMode"); //$NON-NLS-1$
   }
 
-  private void refreshPredefinedSetups() {
 
+  private boolean hasAlreadyRun = false;
+
+  private void refreshPredefinedSetups() {
+    if (hasAlreadyRun) {
+      return;
+    }
+
+    hasAlreadyRun = true;
     refreshButton.setEnabled(false);
 
     setOptions();

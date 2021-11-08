@@ -688,6 +688,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     private JCheckBox deleteOldDecks;
     private JCheckBox addNewDecks;
     private final Set<String> options = new HashSet<>();
+    JButton runButton;
 
     RefreshDialog(GameRefresher refresher) {
       super(GameModule.getGameModule().getPlayerWindow());
@@ -717,7 +718,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       final JPanel buttonPanel = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
 
 
-      final JButton runButton = new JButton(Resources.getString("General.run"));
+      runButton = new JButton(Resources.getString("General.run"));
       runButton.addActionListener(e -> run());
 
       final JButton exitButton = new JButton(Resources.getString("General.cancel"));
@@ -809,7 +810,13 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     }
 */
 
+    private boolean hasAlreadyRun = false;
+
     protected void run() {
+      if (hasAlreadyRun) {
+        return;
+      }
+      hasAlreadyRun = true;
       final GameModule g = GameModule.getGameModule();
       final Command command = new NullCommand();
       final String player = GlobalOptions.getInstance().getPlayerId();
@@ -829,6 +836,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
       // Send the update to other clients (only done in Player mode)
       g.sendAndLog(command);
+
       exit();
     }
 
