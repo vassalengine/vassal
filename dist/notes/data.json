@@ -27,6 +27,7 @@
         { "num": 9391, "desc": "Beanshell can now access $$ variables in Report Formats" }
       ],
       "bug_fixes": [
+        { "num": 10718, "desc": "NPE due to dropTargetSelector being unset" },
         { "num": 10713, "desc": "Escape errorLog path when making link URL for connection failed page in BugDialog" },
         { "num": 10711, "desc": "When rotating a mat, jointly rotating cargo should prefer to stay with current mat" },
         { "num": 10703, "desc": "Correct inconsistency in use of GetConfigureBoard" },
