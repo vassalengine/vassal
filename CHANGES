@@ -12,6 +12,8 @@
 * 10700: Improved bug dialog text
 * 10696: Global Key Commands "Within a Deck, select Fixed number of pieces"
     field now supports expressions
+* 10691: Mouseover Stack Viewer - Unstatic a naughty field and add ability to
+    count face down cards in a deck
 * 10686: Decks - fill out the rest of the commands with hotkeys and report
     formats
 * 10683: Fix bug in DiceButton 'Keep Dice' option
