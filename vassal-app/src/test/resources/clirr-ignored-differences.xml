@@ -1265,10 +1265,4 @@
         <differenceType>6008</differenceType>
         <field>pieceMovers</field>
     </difference>
-    <difference>
-        <className>VASSAL/build/module/map/CounterDetailViewer$Visitor</className>
-        <differenceType>7004</differenceType>
-        <method>**</method>
-        <justification>Nothing external should use this</justification>
-    </difference>
 </differences>

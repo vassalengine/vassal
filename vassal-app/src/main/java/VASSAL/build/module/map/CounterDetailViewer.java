@@ -604,7 +604,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     final GamePiece[] allPieces = map.getPieces(); // All pieces from bottom up
 
     final Visitor visitor = new Visitor(new Filter(), map,
-      map.componentToMap(currentMousePosition.getPoint()), showOverlap, this);
+      map.componentToMap(currentMousePosition.getPoint()), showOverlap, this.showNumberFromDeck, this.showDeckMasked);
     final DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
 
     /*
@@ -730,9 +730,15 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     protected int insertPos = 0;
     protected Point foundPieceAt;
     protected boolean showingOverlap;
-    protected CounterDetailViewer cdv;
+    protected final int showNumberFromDeck;
+    protected final boolean showDeckMasked;
 
-    public Visitor(Filter filter, Map map, Point pt, boolean showOverlap, CounterDetailViewer counterDetailViewer) {
+    @Deprecated
+    public Visitor(Filter filter, Map map, Point pt, boolean showOverlap) {
+      this(filter, map, pt, showOverlap, 1, false);
+    }
+
+    public Visitor(Filter filter, Map map, Point pt, boolean showOverlap, int showNumberFromDeck, boolean showDeckMasked) {
       super(map, pt);
       if (map.getPieceCollection() instanceof CompoundPieceCollection) {
         collection = (CompoundPieceCollection) map.getPieceCollection();
@@ -740,8 +746,10 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       pieces = new ArrayList<>();
       this.filter = filter;
       showingOverlap = showOverlap;
-      cdv = counterDetailViewer;
+      this.showNumberFromDeck = showNumberFromDeck;
+      this.showDeckMasked = showDeckMasked;
     }
+
 
     @Override
     public Object visitDeck(Deck d) {
@@ -752,8 +760,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         GamePiece p = d.topPiece();
 
         int shownPieces = 0;
-        while (p != null && shownPieces < cdv.showNumberFromDeck) {
-          if (cdv.showDeckMasked || (!Boolean.TRUE.equals(p.getProperty(Properties.OBSCURED_TO_ME)) && !d.isFaceDown())) {
+        while (p != null && shownPieces < showNumberFromDeck) {
+          if (showDeckMasked || (!Boolean.TRUE.equals(p.getProperty(Properties.OBSCURED_TO_ME)) && !d.isFaceDown())) {
             final Rectangle r = (Rectangle) d.getShape();
             r.x += d.getPosition().x;
             r.y += d.getPosition().y;
