@@ -80,6 +80,7 @@ import VASSAL.build.module.folder.MapSubFolder;
 import VASSAL.launch.PlayerWindow;
 import VASSAL.preferences.GlobalPrefs;
 
+import VASSAL.tools.DebugControls;
 import VASSAL.tools.NamedKeyStrokeListener;
 import net.miginfocom.swing.MigLayout;
 
@@ -2002,6 +2003,8 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   @Override
   public void mouseMoved(MouseEvent e) {
+    final DebugControls dc = GameModule.getGameModule().getDebugControls();
+    dc.setCursorLocation(e.getPoint());
   }
 
   /**
