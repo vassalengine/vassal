@@ -447,8 +447,14 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
                   // Make sure the deck is in the right place
                   final Point pt = drawPile.getPosition();
+                  final Map newMap = drawPile.getMap();
+                  if (newMap != map) {
+                    map.removePiece(deck);
+                    newMap.addPiece(deck);
+                  }
                   deck.setPosition(pt);
                   for (final GamePiece piece : deck.asList()) {
+                    piece.setMap(newMap);
                     piece.setPosition(pt);
                   }
 
