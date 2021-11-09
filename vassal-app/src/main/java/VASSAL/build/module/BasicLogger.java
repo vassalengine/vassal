@@ -489,7 +489,9 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
    * Mark the current command as a no-undo-past-this-point.
    */
   public void blockUndo() {
-    dontUndoPast = nextUndo + 1; // Need +1 because this is done by a command that is about to be added to the list
+    // +2 because this is done by a command that is about to be added to the
+    // list, and there's _also_ a sentinal command added after that
+    dontUndoPast = nextUndo + 2;
     undoAction.setEnabled(false);
   }
 
