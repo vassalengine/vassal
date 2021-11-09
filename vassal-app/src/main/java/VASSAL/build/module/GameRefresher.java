@@ -426,28 +426,24 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
               for (final DrawPile drawPile : drawPiles) {
                 final String deckName = deck.getDeckName();
                 if (deckName.equals(drawPile.getAttributeValueString(SetupStack.NAME))) {
-                  final Board pileBoard = drawPile.getConfigureBoard(true);
-                  final Board deckBoard = map.findBoard(deck.getPosition());
-                  if (deckBoard == pileBoard) {
-                    deckFound = true;
-                    foundDrawPiles.add(drawPile);
+                  deckFound = true;
+                  foundDrawPiles.add(drawPile);
 
-                    final String drawPileName = drawPile.getAttributeValueString(SetupStack.NAME);
-                    log(Resources.getString("GameRefresher.refreshing_deck", deckName, drawPileName));
+                  final String drawPileName = drawPile.getAttributeValueString(SetupStack.NAME);
+                  log(Resources.getString("GameRefresher.refreshing_deck", deckName, drawPileName));
 
-                    // This refreshes the existing deck with all the up-to-date drawPile fields from the module
-                    deck.myRefreshType(drawPile.getDeckType());
+                  // This refreshes the existing deck with all the up-to-date drawPile fields from the module
+                  deck.myRefreshType(drawPile.getDeckType());
 
-                    // Make sure the deck is in the right place
-                    final Point pt = drawPile.getPosition();
-                    deck.setPosition(pt);
-                    for (final GamePiece piece : deck.asList()) {
-                      piece.setPosition(pt);
-                    }
-
-                    refreshable++;
-                    break;
+                  // Make sure the deck is in the right place
+                  final Point pt = drawPile.getPosition();
+                  deck.setPosition(pt);
+                  for (final GamePiece piece : deck.asList()) {
+                    piece.setPosition(pt);
                   }
+
+                  refreshable++;
+                  break;
                 }
               }
               if (!deckFound) {
@@ -464,20 +460,18 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
             log(Resources.getString("GameRefresher.deleting_old_deck", deck.getDeckName()));
 
             final Stack newStack = new Stack();
+            newStack.setMap(deck.getMap());
 
             // First let's remove all the pieces from the deck and put them in a new stack.
-            boolean any = false;
             for (final GamePiece piece : deck.asList()) {
               newStack.add(piece);
-              if (!any) {
-                any = true;
-                newStack.setPosition(piece.getPosition());
-              }
             }
+            newStack.setPosition(deck.getPosition());
 
             // Now, the deck goes bye-bye
             deck.removeAll();
             if (deck.getMap() != null) {
+              deck.removeListeners();
               deck.getMap().removePiece(deck);
               deck.setMap(null);
             }
@@ -485,7 +479,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
             // If there were any pieces left in the deck, add the new stack to the map
             if ((newStack.getPieceCount() > 0) && (newStack.getMap() != null)) {
               GameModule.getGameModule().getGameState().addPiece(newStack);
-              newStack.getMap().placeAt(newStack, newPosition);
+              newStack.getMap().placeAt(newStack, newStack.getPosition());
             }
           }
         }
@@ -526,8 +520,12 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
               final Deck newDeck = drawPile.makeDeck();
               final Map newMap = drawPile.getMap();
               if (newMap != null) {
+                drawPile.setDeck(newDeck);
                 GameModule.getGameModule().getGameState().addPiece(newDeck);
-                newMap.placeAt(newDeck, newDeck.getPosition());
+                newMap.placeAt(newDeck, drawPile.getPosition());
+                if (GameModule.getGameModule().getGameState().isGameStarted()) {
+                  newDeck.addListeners();
+                }
               }
             }
           }
