@@ -20,3 +20,16 @@ Click the _Run_ button when you are ready to perform the refresh. The chat log w
 
 You can then save the game, or simply continue playing it from that point.
 
+==== Deck Refresher
+
+As of VASSAL 3.6 you can also refresh the <<Deck.adoc#top, Decks>> in a module. Like Game Pieces, Decks are not normally updated from the module definitions _during_ a game, and so if you have an updated version of the module and load a saved game the deck will still behave according to the original settings. This maintains backward-compatibility with saves and logs made with earlier versions of a module, but it can become awkward when managing modules that use <<GameModule.adoc#PredefinedSetup,Pre-defined Setups>> as starting positions. The Deck Refresher lets you update, add, and delete decks in a game, for this reason.
+
+If you select the _Refresh decks_ option when running the Game Refresher, existing decks will be refreshed from the latest settings and positions in the module definition. This will update almost all of the properties of the deck, including key commands, menu text, and the various check-box options that configure a deck. A deck can even be moved from one position to another this way. However decks are matched by name, so changing the _name_ of a deck will make the deck refresher think that a deck of the old name has been deleted and a new deck has been created.
+
+===== Adding and Deleting Decks
+When _Refresh decks_ is selected, two additional options also become available, to add and delete decks.
+
+If you select the _Delete decks_ option, then any deck found in the current game that does not match (by name and board) a deck in the module definition will be deleted. Any current contents (e.g. cards) in that deck will be left in a stack at the deck's former location.
+
+If you select the _Add decks_ option, then any _new_ deck found in the module definition that does not exist in the game being refreshed will be _added_. Note this will not add any _contents_ (e.g. cards) to the deck, it will only add the deck. If you need to add contents you will need to arrange to add them separately, e.g. from a piece palette, or dragged in from some other location.
+

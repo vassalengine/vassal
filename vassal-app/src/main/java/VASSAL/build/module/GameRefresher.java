@@ -426,6 +426,14 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
               for (final DrawPile drawPile : drawPiles) {
                 final String deckName = deck.getDeckName();
                 if (deckName.equals(drawPile.getAttributeValueString(SetupStack.NAME))) {
+
+                  // If drawPile is owned by a specific board, then we can only match it if that board is active in this game
+                  if (drawPile.getOwningBoardName() != null) {
+                    if (map.getBoardByName(drawPile.getOwningBoardName()) == null) {
+                      continue;
+                    }
+                  }
+
                   deckFound = true;
                   foundDrawPiles.add(drawPile);
 
