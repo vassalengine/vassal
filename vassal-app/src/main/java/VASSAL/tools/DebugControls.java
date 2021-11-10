@@ -29,6 +29,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.VisibilityOption;
 import VASSAL.tools.menu.MenuManager;
+import VASSAL.tools.swing.FlowLabel;
 import VASSAL.tools.swing.SplitPane;
 import VASSAL.tools.swing.SwingUtils;
 import net.miginfocom.swing.MigLayout;
@@ -67,7 +68,7 @@ public class DebugControls extends AbstractBuildable implements ActionListener {
 
   protected JLabel cursorCoordsLabel;
 
-  protected JLabel selectedNameLabel;
+  protected FlowLabel selectedNameLabel;
   protected JLabel selectedCoordsLabel;
 
   protected JLabel heapSizeLabel;
@@ -103,12 +104,13 @@ public class DebugControls extends AbstractBuildable implements ActionListener {
     cursorBox.add(cursorCoordsLabel);
 
     final Box selectedBox = Box.createVerticalBox();
-    selectedNameLabel = new JLabel("");
+    selectedNameLabel = new FlowLabel("");
     selectedCoordsLabel = new JLabel("");
     selectedBox.add(selectedNameLabel);
     selectedBox.add(selectedCoordsLabel);
 
     leftBox.add(cursorBox);
+    leftBox.add(Box.createVerticalStrut(10));
     leftBox.add(selectedBox);
     leftPanel.add(leftBox);
 

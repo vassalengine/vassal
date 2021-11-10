@@ -1404,8 +1404,8 @@ public class PieceMover extends AbstractBuildable
 
     protected double dragPieceOffCenterZoom = 1.0; // zoom at start of drag
 
-    private int currentPieceOffsetX; // How far cursor is CURRENTLY off-center, a function of dragPieceOffCenter{X,Y,Zoom}
-    private int currentPieceOffsetY; // I.e. on current map (which may have different zoom)
+    protected int currentPieceOffsetX; // How far cursor is CURRENTLY off-center, a function of dragPieceOffCenter{X,Y,Zoom}
+    protected int currentPieceOffsetY; // I.e. on current map (which may have different zoom)
 
     protected double dragCursorZoom = 1.0; // Current cursor scale (zoom)
 
@@ -1970,7 +1970,19 @@ public class PieceMover extends AbstractBuildable
      * Warning: dragMouseMoved fires 8 times for each point on development system (Win2k)
      **************************************************************************************/
     @Override
-    public abstract void dragMouseMoved(DragSourceDragEvent e);
+    public void dragMouseMoved(DragSourceDragEvent dsde) {
+      if (dsde.getDragSourceContext().getComponent() instanceof Map.View) {
+        final Map map = ((Map.View) dsde.getDragSourceContext().getComponent()).getMap();
+
+        Point pt = dsde.getLocation();
+        SwingUtilities.convertPointFromScreen(pt, map.getComponent());
+        pt.translate(currentPieceOffsetX, currentPieceOffsetY);
+        pt = map.componentToMap(pt);
+
+        final DebugControls dc = GameModule.getGameModule().getDebugControls();
+        dc.setCursorLocation(pt);
+      }
+    }
 
     protected Point lastDragLocation = new Point();
 
@@ -2062,12 +2074,7 @@ public class PieceMover extends AbstractBuildable
 
     @Override
     public void dragMouseMoved(DragSourceDragEvent dsde) {
-      if (dsde.getDragSourceContext().getComponent() instanceof Map.View) {
-        final Map map = ((Map.View) dsde.getDragSourceContext().getComponent()).getMap();
-
-        final DebugControls dc = GameModule.getGameModule().getDebugControls();
-        dc.setCursorLocation(map.componentToMap(dsde.getLocation()));
-      }
+      super.dragMouseMoved(dsde);
     }
   }
 
@@ -2127,6 +2134,7 @@ public class PieceMover extends AbstractBuildable
 
     @Override
     public void dragMouseMoved(DragSourceDragEvent e) {
+      super.dragMouseMoved(e);
       if (!e.getLocation().equals(lastDragLocation)) {
         lastDragLocation = e.getLocation();
 
