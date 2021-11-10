@@ -39,6 +39,8 @@ import VASSAL.counters.KeyCommand;
 import VASSAL.counters.PieceFilter;
 import VASSAL.i18n.Resources;
 import VASSAL.script.expression.Auditable;
+import VASSAL.script.expression.Expression;
+import VASSAL.script.expression.FormattedStringExpression;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimiter.Loopable;
 import VASSAL.tools.SequenceEncoder;
@@ -261,6 +263,31 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
     }
 
     public Command apply(Deck d, PieceFilter filter) {
+      // Determine how many pieces we select from decks
+      final String howManyFromDeck = getSelectFromDeckExpression();
+      // Shortcut -1 for "all"
+      if ("-1".equals(howManyFromDeck)) {
+        setSelectFromDeck(-1);
+      }
+      // Shortcut 0 for "none"
+      else if ("0".equals(howManyFromDeck)) {
+        setSelectFromDeck(0);
+      }
+      else {
+        // Everything else evaluates as an expression
+        final FormattedStringExpression deckExpression = new FormattedStringExpression(howManyFromDeck);
+        String deckVal = deckExpression.tryEvaluate(source, owner, "Editor.GlobalKeyCommand.fixed_number_of_pieces");
+        deckVal = Expression.createExpression(deckVal).tryEvaluate(source, owner, "Editor.GlobalKeyCommand.fixed_number_of_pieces");
+        int deckNum;
+        try {
+          deckNum = Integer.parseInt(deckVal);
+        }
+        catch (NumberFormatException e) {
+          deckNum = 0;
+        }
+        setSelectFromDeck(Math.max(0, deckNum)); // Make sure we don't evaluate to the magical -1
+      }
+
       final String reportText = reportFormat.getText(source, (Auditable) this, "Editor.report_format");
       Command c;
       if (reportText.length() > 0) {
