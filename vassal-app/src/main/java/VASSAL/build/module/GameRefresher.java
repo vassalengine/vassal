@@ -568,11 +568,6 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
         log(Resources.getString("GameRefresher.refreshable_decks", refreshable));
         log(Resources.getString(options.contains("DeleteOldDecks") ? "GameRefresher.deletable_decks" : "GameRefresher.deletable_decks_2", deletable)); //NON-NLS
         log(Resources.getString(options.contains("AddNewDecks") ? "GameRefresher.addable_decks" : "GameRefresher.addable_decks_2", addable)); //NON-NLS
-
-        final VASSAL.command.Logger log = GameModule.getGameModule().getLogger();
-        if (log instanceof BasicLogger) {
-          ((BasicLogger)log).blockUndo(0);
-        }
       }
     }
   }
@@ -892,6 +887,13 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
       // Send the update to other clients (only done in Player mode)
       g.sendAndLog(command);
+
+      if (options.contains("RefreshDecks") && !refresher.isGameActive()) {
+        VASSAL.command.Logger log = GameModule.getGameModule().getLogger();
+        if (log instanceof BasicLogger) {
+          ((BasicLogger)log).blockUndo(1);
+        }
+      }
 
       exit();
     }
