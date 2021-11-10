@@ -280,6 +280,13 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
   }
 
 
+  private boolean isGameActive() {
+    final GameModule gm = GameModule.getGameModule();
+    final VASSAL.command.Logger logger = gm.getLogger();
+    return gm.isMultiplayerConnected() || ((logger instanceof BasicLogger) && ((BasicLogger)logger).isLogging());
+  }
+
+
   /**
    * This method is used by PredefinedSetup.refresh() to update a PredefinedSetup in a GameModule
    * The default execute() method calls: GameModule.getGameModule().getGameState().getAllPieces()
@@ -395,9 +402,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
      * 4/ Refresh properties of decks in the game
      */
     if (options.contains("RefreshDecks")) { //NON-NLS
-      final GameModule gm = GameModule.getGameModule();
-      final VASSAL.command.Logger logger = gm.getLogger();
-      if (gm.isMultiplayerConnected() || ((logger instanceof BasicLogger) && ((BasicLogger)logger).isLogging())) {
+      if (isGameActive()) {
         // If somebody feels like packaging all these things into Commands, help yourself...
         log(Resources.getString("GameRefresher.deck_refresh_during_multiplayer"));
       }
@@ -430,6 +435,12 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
                   // If drawPile is owned by a specific board, then we can only match it if that board is active in this game
                   if (drawPile.getOwningBoardName() != null) {
                     if (map.getBoardByName(drawPile.getOwningBoardName()) == null) {
+                      continue;
+                    }
+
+                    // If the drawPile is on a map that doesn't have its current owning board active, then we
+                    // cannot match that drawPile.
+                    if (drawPile.getMap().getBoardByName(drawPile.getOwningBoardName()) == null) {
                       continue;
                     }
                   }
@@ -788,6 +799,16 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       addNewDecks = new JCheckBox(Resources.getString("GameRefresher.add_new_decks"));
       addNewDecks.setSelected(false);
       panel.add(addNewDecks);
+
+      if (refresher.isGameActive()) {
+        refreshDecks.setSelected(false);
+        refreshDecks.setEnabled(false);
+        deleteOldDecks.setEnabled(false);
+        addNewDecks.setEnabled(false);
+
+        final FlowLabel nope = new FlowLabel(Resources.getString("GameRefresher.but_game_is_active"));
+        panel.add(nope);
+      }
 
       panel.add(buttonPanel, "grow"); // NON-NLS
 

@@ -34,6 +34,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.build.module.map.DeckGlobalKeyCommand;
 import VASSAL.build.module.map.MassKeyCommand;
+import VASSAL.build.module.map.SetupStack;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.build.module.properties.GlobalProperties;
 import VASSAL.build.module.properties.GlobalProperty;
@@ -576,6 +577,27 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     return a;
   }
 
+
+  /**
+   * If there are items that need to be adjusted after being pasted (to make sure they don't contain illegal values that will be hard to debug later),
+   * we can make them here.
+   * @param target Item we just pasted
+   */
+  private void postPasteFixups(final Configurable target) {
+    // SetupStacks (and thus DrawPiles) pasted to a new map, but whose owning board setting doesnt exist for this map, are forced to "any"
+    if (target instanceof SetupStack) {
+      final SetupStack ss = (SetupStack)target;
+      final String owning = ss.getOwningBoardName();
+      if (owning != null) {
+        final List<String> validBoards = ss.getValidOwningBoards();
+        if (!ss.getValidOwningBoards().contains(owning)) {
+          ss.setOwningBoardName(null);
+        }
+      }
+    }
+  }
+
+
   protected Action buildPasteAction(final Configurable target) {
     final Action a = new AbstractAction(pasteCmd) {
       private static final long serialVersionUID = 1L;
@@ -592,6 +614,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           final Configurable convertedCutObj = convertChild(target, cutObj);
           if ((getParent(cutData) == null) || remove(getParent(cutData), cutObj)) {
             insert(target, convertedCutObj, targetNode.getChildCount());
+            postPasteFixups(convertedCutObj);
           }
           copyData = getTreeNode(convertedCutObj);
         }
@@ -609,6 +632,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             clone.build(copyBase.getBuildElement(Builder.createNewDocument()));
             insert(target, clone, getTreeNode(target).getChildCount());
             updateGpIds(clone);
+            postPasteFixups(clone);
           }
         }
         cutData = null;
