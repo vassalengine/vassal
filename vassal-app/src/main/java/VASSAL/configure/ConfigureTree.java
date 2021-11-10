@@ -33,6 +33,7 @@ import VASSAL.build.module.PrototypeDefinition;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.build.module.map.DeckGlobalKeyCommand;
+import VASSAL.build.module.map.DrawPile;
 import VASSAL.build.module.map.MassKeyCommand;
 import VASSAL.build.module.map.SetupStack;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
@@ -589,8 +590,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       final SetupStack ss = (SetupStack)target;
       final String owning = ss.getOwningBoardName();
       if (owning != null) {
-        final List<String> validBoards = ss.getValidOwningBoards();
         if (!ss.getValidOwningBoards().contains(owning)) {
+          ConfigureTree.chat(Resources.getString("Editor.convert_setupstack_or_deck", (target instanceof DrawPile) ? DrawPile.getConfigureTypeName() : SetupStack.getConfigureTypeName(), ss.getConfigureName(), owning));
           ss.setOwningBoardName(null);
         }
       }
