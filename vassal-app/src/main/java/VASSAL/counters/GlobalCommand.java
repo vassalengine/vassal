@@ -236,6 +236,8 @@ public class GlobalCommand implements Auditable {
     Command command = new NullCommand(); // We will chronicle our exploits in this command, so that others may repeat them later.
     setTarget((fastMatch != null) ? fastMatch : new GlobalCommandTarget()); // Set our Fast Match parameters
 
+    // WARNING! DeckGlobalKeyCommand does *not* use this version of apply.
+
     try {
       if (reportSingle) {
         Map.setChangeReportingEnabled(false); // Disable individual reports, if specified
@@ -806,7 +808,7 @@ public class GlobalCommand implements Auditable {
     result = prime * result
       + ((reportFormat == null) ? 0 : reportFormat.hashCode());
     result = prime * result + (reportSingle ? 1231 : 1237);
-    result = prime * result + selectFromDeck;
+    result = prime * result + selectFromDeckExpression.hashCode();
     return result;
   }
 
@@ -833,8 +835,9 @@ public class GlobalCommand implements Auditable {
       return false;
     if (reportSingle != other.reportSingle)
       return false;
-    if (selectFromDeck != other.selectFromDeck)
+    if (!selectFromDeckExpression.equals(other.selectFromDeckExpression)) {
       return false;
+    }
 
     // Match any specific targeting information, depending on the targeting type. targetType must always match.
     if (target.fastMatchLocation != other.target.fastMatchLocation) {
@@ -869,6 +872,6 @@ public class GlobalCommand implements Auditable {
       }
     }
 
-    return selectFromDeck == other.selectFromDeck;
+    return true;
   }
 }
