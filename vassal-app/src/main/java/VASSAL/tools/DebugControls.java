@@ -23,6 +23,8 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.counters.GamePiece;
+import VASSAL.counters.KeyBuffer;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.VisibilityOption;
@@ -32,24 +34,30 @@ import VASSAL.tools.swing.SwingUtils;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
+import javax.swing.Timer;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.net.URL;
+import java.util.List;
 
-public class DebugControls extends AbstractBuildable {
+public class DebugControls extends AbstractBuildable implements ActionListener {
+  protected static long MEGABYTE = 1024 * 1024;
+
   protected JButton launch;
   protected JPanel controlPanel;
 
@@ -59,6 +67,15 @@ public class DebugControls extends AbstractBuildable {
 
   protected JLabel cursorCoordsLabel;
 
+  protected JLabel selectedNameLabel;
+  protected JLabel selectedCoordsLabel;
+
+  protected JLabel heapSizeLabel;
+  protected JLabel heapMaxLabel;
+  protected JLabel heapFreeLabel;
+
+  protected Timer timer = new Timer(100, this);
+
   public Point getCursorLocation() {
     return cursorLocation;
   }
@@ -66,6 +83,7 @@ public class DebugControls extends AbstractBuildable {
   public void setCursorLocation(Point pt) {
     cursorLocation = pt;
     updateCoords();
+    updateSelected();
   }
 
   public DebugControls() {
@@ -78,20 +96,45 @@ public class DebugControls extends AbstractBuildable {
       Resources.getString("Module Debug Window"))
     );
 
-    cursorCoordsLabel = new JLabel("0,0");
-    leftPanel.add(cursorCoordsLabel);
+    final Box leftBox = Box.createVerticalBox();
+
+    final Box cursorBox = Box.createVerticalBox();
+    cursorCoordsLabel = new JLabel("");
+    cursorBox.add(cursorCoordsLabel);
+
+    final Box selectedBox = Box.createVerticalBox();
+    selectedNameLabel = new JLabel("");
+    selectedCoordsLabel = new JLabel("");
+    selectedBox.add(selectedNameLabel);
+    selectedBox.add(selectedCoordsLabel);
+
+    leftBox.add(cursorBox);
+    leftBox.add(selectedBox);
+    leftPanel.add(leftBox);
 
     split.setLeftComponent(leftPanel);
 
     final JPanel rightPanel = new JPanel(new MigLayout("fill, nogrid, hidemode 3")); //NON-NLS
 
+    final Box heapBox = Box.createVerticalBox();
+    heapSizeLabel = new JLabel("");
+    heapMaxLabel = new JLabel("");
+    heapFreeLabel = new JLabel("");
+    heapBox.add(heapSizeLabel);
+    heapBox.add(heapMaxLabel);
+    heapBox.add(heapFreeLabel);
+    rightPanel.add(heapBox);
+
     split.setRightComponent(rightPanel);
     split.setDividerLocation(250);
     split.setPreferredSize(new Dimension(500, 120));
+    split.setResizeWeight(0.5);
 
     controlPanel = new JPanel();
     controlPanel.setLayout(new BorderLayout());
     controlPanel.add("Center", split);  //$NON-NLS-1$
+
+    timer.addActionListener(this);
 
     /*
     toolbar = new JToolBar();
@@ -104,18 +147,36 @@ public class DebugControls extends AbstractBuildable {
 
   private void updateCoords() {
     cursorCoordsLabel.setText("Cursor: " + cursorLocation.x + ',' + cursorLocation.y);
-    cursorCoordsLabel.repaint();
   }
+
+
+  private void updateSelected() {
+    final List<GamePiece> selected = KeyBuffer.getBuffer().asList();
+    if (selected.isEmpty()) {
+      selectedNameLabel.setText("");
+      selectedCoordsLabel.setText("");
+      return;
+    }
+
+    final GamePiece piece = selected.get(0);
+
+    selectedNameLabel.setText(piece.getName());
+    selectedCoordsLabel.setText(piece.getPosition().x + "," + piece.getPosition().y);
+  }
+
 
   private void updateHeap() {
     // Get current size of heap in bytes
-    long heapSize = Runtime.getRuntime().totalMemory();
+    long heapSize = Runtime.getRuntime().totalMemory() * 100 / MEGABYTE;
+    heapSizeLabel.setText("Heap Size: " + heapSize/100 + "." + heapSize % 100 + " mb");
 
     // Get maximum size of heap in bytes. The heap cannot grow beyond this size.// Any attempt will result in an OutOfMemoryException.
-    long heapMaxSize = Runtime.getRuntime().maxMemory();
+    long heapMaxSize = Runtime.getRuntime().maxMemory() * 100 / MEGABYTE;
+    heapMaxLabel.setText("Heap Max: " + heapMaxSize/100 + "." + heapMaxSize % 100 + " mb");
 
     // Get amount of free memory within the heap in bytes. This size will increase // after garbage collection and decrease as new objects are created.
-    long heapFreeSize = Runtime.getRuntime().freeMemory();
+    long heapFreeSize = Runtime.getRuntime().freeMemory() * 100 / MEGABYTE;
+    heapFreeLabel.setText("Heap Free: " + heapFreeSize/100 + "." + heapFreeSize % 100 + " mb");
   }
 
   @Override
@@ -159,8 +220,21 @@ public class DebugControls extends AbstractBuildable {
     launch.setVisible(launch.getIcon() != null);
   }
 
+  public void actionPerformed(ActionEvent evt) {
+    if (evt.getSource() == timer) {
+      updateHeap();
+      updateSelected();
+    }
+  }
+
   private void updateVisible() {
-    boolean visible = (splitPane != null) ? splitPane.isRightVisible() : controlPanel.getTopLevelAncestor().isVisible();
+    final boolean visible = (splitPane != null) ? splitPane.isRightVisible() : controlPanel.getTopLevelAncestor().isVisible();
+    if (visible) {
+      timer.start();
+    }
+    else {
+      timer.stop();
+    }
   }
 
   public void toggleVisible() {

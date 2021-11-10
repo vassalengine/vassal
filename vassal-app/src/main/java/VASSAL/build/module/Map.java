@@ -2004,7 +2004,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   @Override
   public void mouseMoved(MouseEvent e) {
     final DebugControls dc = GameModule.getGameModule().getDebugControls();
-    dc.setCursorLocation(e.getPoint());
+    dc.setCursorLocation(componentToMap(e.getPoint()));
   }
 
   /**
@@ -2016,6 +2016,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   @Override
   public void mouseDragged(MouseEvent e) {
+    final DebugControls dc = GameModule.getGameModule().getDebugControls();
+    dc.setCursorLocation(componentToMap(e.getPoint()));
+
     if (!SwingUtils.isContextMouseButtonDown(e)) {
       scrollAtEdge(e.getPoint(), SCROLL_ZONE);
     }

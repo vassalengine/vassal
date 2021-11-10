@@ -57,6 +57,7 @@ import VASSAL.counters.Properties;
 import VASSAL.counters.PropertyExporter;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.DebugControls;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
@@ -2060,7 +2061,14 @@ public class PieceMover extends AbstractBuildable
     }
 
     @Override
-    public void dragMouseMoved(DragSourceDragEvent e) {}
+    public void dragMouseMoved(DragSourceDragEvent dsde) {
+      if (dsde.getDragSourceContext().getComponent() instanceof Map.View) {
+        final Map map = ((Map.View) dsde.getDragSourceContext().getComponent()).getMap();
+
+        final DebugControls dc = GameModule.getGameModule().getDebugControls();
+        dc.setCursorLocation(map.componentToMap(dsde.getLocation()));
+      }
+    }
   }
 
   /**
@@ -2121,6 +2129,7 @@ public class PieceMover extends AbstractBuildable
     public void dragMouseMoved(DragSourceDragEvent e) {
       if (!e.getLocation().equals(lastDragLocation)) {
         lastDragLocation = e.getLocation();
+
         moveDragCursor(e.getX(), e.getY());
         if (dragCursor != null && !dragCursor.isVisible()) {
           dragCursor.setVisible(true);
