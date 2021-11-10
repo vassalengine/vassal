@@ -169,15 +169,15 @@ public class DebugControls extends AbstractBuildable implements ActionListener {
 
   private void updateHeap() {
     // Get current size of heap in bytes
-    long heapSize = Runtime.getRuntime().totalMemory() * 100 / MEGABYTE;
+    final long heapSize = Runtime.getRuntime().totalMemory() * 100 / MEGABYTE;
     heapSizeLabel.setText("Heap Size: " + heapSize/100 + "." + heapSize % 100 + " mb");
 
     // Get maximum size of heap in bytes. The heap cannot grow beyond this size.// Any attempt will result in an OutOfMemoryException.
-    long heapMaxSize = Runtime.getRuntime().maxMemory() * 100 / MEGABYTE;
+    final long heapMaxSize = Runtime.getRuntime().maxMemory() * 100 / MEGABYTE;
     heapMaxLabel.setText("Heap Max: " + heapMaxSize/100 + "." + heapMaxSize % 100 + " mb");
 
     // Get amount of free memory within the heap in bytes. This size will increase // after garbage collection and decrease as new objects are created.
-    long heapFreeSize = Runtime.getRuntime().freeMemory() * 100 / MEGABYTE;
+    final long heapFreeSize = Runtime.getRuntime().freeMemory() * 100 / MEGABYTE;
     heapFreeLabel.setText("Heap Free: " + heapFreeSize/100 + "." + heapFreeSize % 100 + " mb");
   }
 
@@ -222,6 +222,7 @@ public class DebugControls extends AbstractBuildable implements ActionListener {
     launch.setVisible(launch.getIcon() != null);
   }
 
+  @Override
   public void actionPerformed(ActionEvent evt) {
     if (evt.getSource() == timer) {
       updateHeap();
