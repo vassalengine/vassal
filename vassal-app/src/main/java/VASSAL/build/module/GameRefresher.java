@@ -889,7 +889,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       g.sendAndLog(command);
 
       if (options.contains("RefreshDecks") && !refresher.isGameActive()) {
-        VASSAL.command.Logger log = GameModule.getGameModule().getLogger();
+        final VASSAL.command.Logger log = GameModule.getGameModule().getLogger();
         if (log instanceof BasicLogger) {
           ((BasicLogger)log).blockUndo(1);
         }
