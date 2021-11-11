@@ -1723,11 +1723,20 @@ public class GameModule extends AbstractConfigurable
    * @return true if the game is online or has ever had more than one player.
    */
   public boolean isMultiPlayer() {
-    final ServerConnection sv = getServer();
-    if ((sv != null) && sv.isConnected()) return true;
+    if (isMultiplayerConnected()) {
+      return true;
+    }
 
     final PlayerRoster pr = getPlayerRoster();
     return ((pr != null) && pr.isMultiPlayer());
+  }
+
+  /**
+   * @return true if the game is currently online
+   */
+  public boolean isMultiplayerConnected() {
+    final ServerConnection sv = getServer();
+    return (sv != null) && sv.isConnected();
   }
 
   /**

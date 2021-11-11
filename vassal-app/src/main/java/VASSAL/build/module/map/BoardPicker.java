@@ -739,9 +739,12 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
     @Override
     protected void executeCommand() {
       target.currentBoards = boards;
-      if (GameModule.getGameModule().getGameState().isGameStarted()) {
+      final GameModule gm = GameModule.getGameModule();
+      if (gm.getGameState().isGameStarted() || gm.isRefreshingSemaphore()) {
         target.map.setBoards(target.getSelectedBoards());
-        target.map.getView().revalidate();
+        if (gm.getGameState().isGameStarted()) {
+          target.map.getView().revalidate();
+        }
       }
     }
 

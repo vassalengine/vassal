@@ -273,6 +273,14 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     return true;
   }
 
+  public String getOwningBoardName() {
+    return owningBoardName;
+  }
+
+  public void setOwningBoardName(String n) {
+    owningBoardName = n;
+  }
+
   @Override
   public Command getRestoreCommand() {
     return null;
@@ -490,6 +498,21 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     return id;
   }
 
+  public List<String> getValidOwningBoards() {
+    final ArrayList<String> l = new ArrayList<>();
+    final Map m = getMap();
+    if (m != null) {
+      l.addAll(Arrays.asList(m.getBoardPicker().getAllowableBoardNames()));
+    }
+    else {
+      for (final Map m2 : Map.getMapList()) {
+        l.addAll(
+          Arrays.asList(m2.getBoardPicker().getAllowableBoardNames()));
+      }
+    }
+    return l;
+  }
+
   public static class OwningBoardPrompt extends TranslatableStringEnum {
     public static final String ANY = "<any>"; //NON-NLS
     public static final String ANY_NAME = Resources.getString("Editor.SetupStack.any_name");
@@ -509,16 +532,16 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       if (target instanceof SetupStack) {
         final ArrayList<String> l = new ArrayList<>();
         l.add(ANY);
-        final Map m = ((SetupStack) target).getMap();
-        if (m != null) {
-          l.addAll(Arrays.asList(m.getBoardPicker().getAllowableBoardNames()));
+        l.addAll(((SetupStack) target).getValidOwningBoards());
+
+        // If we've been left with an illegal board (e.g. the board got deleted or we got cut-and-paste to a map without it), at least
+        // show that we have the wrong value when someone brings up the configurer. (This also lets it be changed to "any" rather than
+        // spuriously showing it is already set to "any").
+        final String owning = ((SetupStack) target).getOwningBoardName();
+        if ((owning != null) && !l.contains(owning)) {
+          l.add(owning);
         }
-        else {
-          for (final Map m2 : Map.getMapList()) {
-            l.addAll(
-              Arrays.asList(m2.getBoardPicker().getAllowableBoardNames()));
-          }
-        }
+
         values = l.toArray(new String[0]);
       }
       else {
@@ -532,17 +555,31 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       final String[] values;
       if (target instanceof SetupStack) {
         final ArrayList<String> l = new ArrayList<>();
+        final ArrayList<String> lkey = new ArrayList<>();
         l.add(ANY_NAME);
+        lkey.add(ANY);
         final Map m = ((SetupStack) target).getMap();
         if (m != null) {
           l.addAll(Arrays.asList(m.getBoardPicker().getAllowableLocalizedBoardNames()));
+          lkey.addAll(Arrays.asList(m.getBoardPicker().getAllowableBoardNames()));
         }
         else {
           for (final Map m2 : Map.getMapList()) {
             l.addAll(
               Arrays.asList(m2.getBoardPicker().getAllowableLocalizedBoardNames()));
+            lkey.addAll(
+              Arrays.asList(m2.getBoardPicker().getAllowableBoardNames()));
           }
         }
+
+        // If we've been left with an illegal board (e.g. the board got deleted or we got cut-and-paste to a map without it), at least
+        // show that we have the wrong value when someone brings up the configurer (this also lets it be changed to "any" rather than
+        // spuriously showing it is already set to "any")
+        final String owning = ((SetupStack) target).getOwningBoardName();
+        if ((owning != null) && !lkey.contains(owning)) {
+          l.add(Resources.getString("Editor.SetupStack.no_such_board", owning));
+        }
+
         values = l.toArray(new String[0]);
       }
       else {
@@ -604,7 +641,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
    * Return a board to configure the stack on.
    * @param checkSelectedBoards If true, prefer a board the player has actually selected from the menu over simply the top one in the list.
    */
-  protected Board getConfigureBoard(boolean checkSelectedBoards) {
+  public Board getConfigureBoard(boolean checkSelectedBoards) {
     Board board = null;
 
     final Map map = getMap();

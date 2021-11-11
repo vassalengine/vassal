@@ -411,7 +411,9 @@ public class GameState implements CommandEncoder {
     protected void executeCommand() {
       final Logger l = GameModule.getGameModule().getLogger();
       if (l instanceof BasicLogger) {
-        ((BasicLogger )l).blockUndo();
+        // +2 because this is done by a command that is about to be added to the
+        // list, and there's _also_ a sentinel command added after that
+        ((BasicLogger )l).blockUndo(2);
       }
     }
 

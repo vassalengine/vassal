@@ -964,7 +964,10 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   public Point getPosition() {
     final Point p = new Point(pos);
     final Board b = getMap().getBoardByName(owningBoardName);
-    if (b != null) {
+    if (b == null) {
+      p.translate(getMap().getEdgeBuffer().width, getMap().getEdgeBuffer().height);
+    }
+    else {
       p.translate(b.bounds().x, b.bounds().y);
     }
     return p;
@@ -992,6 +995,13 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     return getMap().placeOrMerge(p, myDeck == null ? getPosition() : myDeck.getPosition());
   }
 
+  public Deck makeDeck() {
+    myDeck = new Deck(GameModule.getGameModule(), getDeckType());
+    myDeck.setPropertySource(source);
+    myDeck.setFaceDown(!Deck.NEVER.equals(dummy.getFaceDownOption()) && !Deck.USE_MENU_UP.equals(dummy.getFaceDownOption()));
+    return myDeck;
+  }
+
   @Override
   protected Stack initializeContents() {
     final Stack s = super.initializeContents();
@@ -1015,7 +1025,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     return false;
   }
 
-  protected String getDeckType() {
+  public String getDeckType() {
     return dummy.getType();
   }
 

@@ -23,6 +23,9 @@ import VASSAL.build.GpIdChecker;
 import VASSAL.build.GpIdSupport;
 import VASSAL.build.IllegalBuildException;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.map.DrawPile;
+import VASSAL.build.module.map.SetupStack;
+import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.command.ChangePiece;
 import VASSAL.command.Command;
@@ -42,6 +45,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.swing.FlowLabel;
 import VASSAL.tools.swing.SwingUtils;
 
 import java.awt.Point;
@@ -51,6 +55,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -66,6 +71,8 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -104,6 +111,10 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
   //private String player;
   //private final Chatter chatter;
   private final Set<String> options = new HashSet<>();
+
+  public List<DrawPile>  getModuleDrawPiles() {
+    return  theModule.getAllDescendantComponentsOf(DrawPile.class);
+  }
 
   public GameRefresher(GpIdSupport gpIdSupport) {
     this.gpIdSupport = gpIdSupport;
@@ -269,6 +280,13 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
   }
 
 
+  private boolean isGameActive() {
+    final GameModule gm = GameModule.getGameModule();
+    final VASSAL.command.Logger logger = gm.getLogger();
+    return gm.isMultiplayerConnected() || ((logger instanceof BasicLogger) && ((BasicLogger)logger).isLogging());
+  }
+
+
   /**
    * This method is used by PredefinedSetup.refresh() to update a PredefinedSetup in a GameModule
    * The default execute() method calls: GameModule.getGameModule().getGameState().getAllPieces()
@@ -379,10 +397,182 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     log(Resources.getString("GameRefresher.counters_no_stack", noStackCount));
     log("----------"); //$NON-NLS-1$
 
+
+    /*
+     * 4/ Refresh properties of decks in the game
+     */
+    if (options.contains("RefreshDecks")) { //NON-NLS
+      if (isGameActive()) {
+        // If somebody feels like packaging all these things into Commands, help yourself...
+        log(Resources.getString("GameRefresher.deck_refresh_during_multiplayer"));
+      }
+      else {
+
+        //Drawpiles have the module definition of the Deck in the dummy child object
+        //  and a link to the actual Deck in the game.
+        final List<Deck> decksToDelete = new ArrayList<>();
+        final List<DrawPile> drawPiles = getModuleDrawPiles();
+        final List<DrawPile> foundDrawPiles = new ArrayList<>();
+        final List<DrawPile> decksToAdd = new ArrayList<>();
+
+        int refreshable = 0;
+        int deletable = 0;
+        int addable = 0;
+
+        log("----------");
+        log(Resources.getString("GameRefresher.refreshing_decks"));
+        log("----------");
+        for (final Map map : Map.getMapList()) {
+          for (final GamePiece pieceOrStack : map.getPieces()) {
+            if (pieceOrStack instanceof Deck) {
+              final Deck deck = (Deck) pieceOrStack;
+              // Match with a DrawPile if possible
+              boolean deckFound = false;
+              for (final DrawPile drawPile : drawPiles) {
+                final String deckName = deck.getDeckName();
+                if (deckName.equals(drawPile.getAttributeValueString(SetupStack.NAME))) {
+
+                  // If drawPile is owned by a specific board, then we can only match it if that board is active in this game
+                  if (drawPile.getOwningBoardName() != null) {
+                    if (map.getBoardByName(drawPile.getOwningBoardName()) == null) {
+                      continue;
+                    }
+
+                    // If the drawPile is on a map that doesn't have its current owning board active, then we
+                    // cannot match that drawPile.
+                    if (drawPile.getMap().getBoardByName(drawPile.getOwningBoardName()) == null) {
+                      continue;
+                    }
+                  }
+
+                  deckFound = true;
+                  foundDrawPiles.add(drawPile);
+
+                  final String drawPileName = drawPile.getAttributeValueString(SetupStack.NAME);
+                  log(Resources.getString("GameRefresher.refreshing_deck", deckName, drawPileName));
+
+                  // This refreshes the existing deck with all the up-to-date drawPile fields from the module
+                  deck.removeListeners();
+                  deck.myRefreshType(drawPile.getDeckType());
+                  deck.addListeners();
+
+                  // Make sure the deck is in the right place
+                  final Point pt = drawPile.getPosition();
+                  final Map newMap = drawPile.getMap();
+                  if (newMap != map) {
+                    map.removePiece(deck);
+                    newMap.addPiece(deck);
+                  }
+                  deck.setPosition(pt);
+                  for (final GamePiece piece : deck.asList()) {
+                    piece.setMap(newMap);
+                    piece.setPosition(pt);
+                  }
+
+                  refreshable++;
+                  break;
+                }
+              }
+              if (!deckFound) {
+                deletable++;
+                decksToDelete.add(deck);
+              }
+            }
+          }
+        }
+
+        if (options.contains("DeleteOldDecks")) { //NON-NLS
+          //log("List of Decks to remove");
+          for (final Deck deck : decksToDelete) {
+            log(Resources.getString("GameRefresher.deleting_old_deck", deck.getDeckName()));
+
+            final Stack newStack = new Stack();
+            newStack.setMap(deck.getMap());
+
+            // First let's remove all the pieces from the deck and put them in a new stack.
+            for (final GamePiece piece : deck.asList()) {
+              newStack.add(piece);
+            }
+            newStack.setPosition(deck.getPosition());
+
+            // Now, the deck goes bye-bye
+            deck.removeAll();
+            if (deck.getMap() != null) {
+              deck.removeListeners();
+              deck.getMap().removePiece(deck);
+              deck.setMap(null);
+            }
+
+            // If there were any pieces left in the deck, add the new stack to the map
+            if ((newStack.getPieceCount() > 0) && (newStack.getMap() != null)) {
+              GameModule.getGameModule().getGameState().addPiece(newStack);
+              newStack.getMap().placeAt(newStack, newStack.getPosition());
+            }
+          }
+        }
+        else if (!decksToDelete.isEmpty()) {
+          log(Resources.getString("GameRefresher.deletable_with_option"));
+          for (final Deck deck : decksToDelete) {
+            log(deck.getDeckName());
+          }
+        }
+
+        // Figure out if any decks need to be added
+        for (final DrawPile drawPile : drawPiles) {
+          boolean matchFound = false;
+
+          final Map map = drawPile.getMap();
+          final Collection<Board> boards = map.getBoards();
+          final String boardName = drawPile.getOwningBoardName();
+          final Board board = drawPile.getConfigureBoard(true);
+          if ((boardName == null) || boards.contains(board)) {
+            for (final DrawPile drawPile2 : foundDrawPiles) {
+              if (drawPile.getAttributeValueString(SetupStack.NAME).equals(drawPile2.getAttributeValueString(SetupStack.NAME))) {
+                matchFound = true;
+                break;
+              }
+            }
+            if (!matchFound) {
+              decksToAdd.add(drawPile);
+              addable++;
+            }
+          }
+        }
+
+        if (!decksToAdd.isEmpty()) {
+          if (options.contains("AddNewDecks")) { //NON-NLS
+            for (final DrawPile drawPile : decksToAdd) {
+              log(Resources.getString("GameRefresher.adding_new_deck", drawPile.getAttributeValueString(SetupStack.NAME)));
+
+              final Deck newDeck = drawPile.makeDeck();
+              final Map newMap = drawPile.getMap();
+              if (newMap != null) {
+                drawPile.setDeck(newDeck);
+                GameModule.getGameModule().getGameState().addPiece(newDeck);
+                newMap.placeAt(newDeck, drawPile.getPosition());
+                if (GameModule.getGameModule().getGameState().isGameStarted()) {
+                  newDeck.addListeners();
+                }
+              }
+            }
+          }
+          else {
+            log(Resources.getString("GameRefresher.addable_with_option"));
+            for (final DrawPile drawPile : decksToAdd) {
+              log(drawPile.getAttributeValueString(SetupStack.NAME));
+            }
+          }
+        }
+
+        log("----------"); //$NON-NLS-1$
+        log(Resources.getString("GameRefresher.refreshable_decks", refreshable));
+        log(Resources.getString(options.contains("DeleteOldDecks") ? "GameRefresher.deletable_decks" : "GameRefresher.deletable_decks_2", deletable)); //NON-NLS
+        log(Resources.getString(options.contains("AddNewDecks") ? "GameRefresher.addable_decks" : "GameRefresher.addable_decks_2", addable)); //NON-NLS
+      }
+    }
   }
 
   private GamePiece processGamePiece(GamePiece piece, Command command) {
-
     // Piece needs to be on a map. Else how do we put it back.
     final Map map = piece.getMap();
     if (map == null) {
@@ -532,7 +722,11 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     private JCheckBox labelerNameCheck;
     private JCheckBox layerNameCheck;
     private JCheckBox deletePieceNoMap;
+    private JCheckBox refreshDecks;
+    private JCheckBox deleteOldDecks;
+    private JCheckBox addNewDecks;
     private final Set<String> options = new HashSet<>();
+    JButton runButton;
 
     RefreshDialog(GameRefresher refresher) {
       super(GameModule.getGameModule().getPlayerWindow());
@@ -552,13 +746,17 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       });
       setLayout(new MigLayout("wrap 1", "[fill]")); //NON-NLS
 
+
       final JPanel panel = new JPanel(new MigLayout("hidemode 3,wrap 1" + "," + ConfigurerLayout.STANDARD_GAPY, "[fill]")); // NON-NLS
       panel.setBorder(BorderFactory.createEtchedBorder());
+
+      final FlowLabel header = new FlowLabel(Resources.getString("GameRefresher.header"));
+      panel.add(header);
 
       final JPanel buttonPanel = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
 
 
-      final JButton runButton = new JButton(Resources.getString("General.run"));
+      runButton = new JButton(Resources.getString("General.run"));
       runButton.addActionListener(e -> run());
 
       final JButton exitButton = new JButton(Resources.getString("General.cancel"));
@@ -583,11 +781,43 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       deletePieceNoMap.setSelected(true);
       panel.add(deletePieceNoMap);
 
+      refreshDecks = new JCheckBox(Resources.getString("GameRefresher.refresh_decks"));
+      refreshDecks.setSelected(false);
+      refreshDecks.addChangeListener(new ChangeListener() {
+        @Override
+        public void stateChanged(ChangeEvent e) {
+          deleteOldDecks.setVisible(refreshDecks.isSelected());
+          addNewDecks.setVisible(refreshDecks.isSelected());
+        }
+      });
+      panel.add(refreshDecks);
+
+      deleteOldDecks = new JCheckBox(Resources.getString("GameRefresher.delete_old_decks"));
+      deleteOldDecks.setSelected(false);
+      panel.add(deleteOldDecks);
+
+      addNewDecks = new JCheckBox(Resources.getString("GameRefresher.add_new_decks"));
+      addNewDecks.setSelected(false);
+      panel.add(addNewDecks);
+
+      if (refresher.isGameActive()) {
+        refreshDecks.setSelected(false);
+        refreshDecks.setEnabled(false);
+        deleteOldDecks.setEnabled(false);
+        addNewDecks.setEnabled(false);
+
+        final FlowLabel nope = new FlowLabel(Resources.getString("GameRefresher.but_game_is_active"));
+        panel.add(nope);
+      }
+
       panel.add(buttonPanel, "grow"); // NON-NLS
 
       add(panel, "grow"); // NON-NLS
 
       SwingUtils.repack(this);
+
+      deleteOldDecks.setVisible(refreshDecks.isSelected());
+      addNewDecks.setVisible(refreshDecks.isSelected());
     }
 
     protected void  setOptions() {
@@ -607,6 +837,15 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       if (deletePieceNoMap.isSelected()) {
         options.add("DeleteNoMap"); //$NON-NLS-1$
       }
+      if (refreshDecks.isSelected()) {
+        options.add("RefreshDecks"); //NON-NLS
+        if (deleteOldDecks.isSelected()) {
+          options.add("DeleteOldDecks"); //NON-NLS
+        }
+        if (addNewDecks.isSelected()) {
+          options.add("AddNewDecks"); //NON-NLS
+        }
+      }
     }
 
     protected void exit() {
@@ -622,7 +861,13 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     }
 */
 
+    private boolean hasAlreadyRun = false;
+
     protected void run() {
+      if (hasAlreadyRun) {
+        return;
+      }
+      hasAlreadyRun = true;
       final GameModule g = GameModule.getGameModule();
       final Command command = new NullCommand();
       final String player = GlobalOptions.getInstance().getPlayerId();
@@ -642,6 +887,14 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
       // Send the update to other clients (only done in Player mode)
       g.sendAndLog(command);
+
+      if (options.contains("RefreshDecks") && !refresher.isGameActive()) {
+        final VASSAL.command.Logger log = GameModule.getGameModule().getLogger();
+        if (log instanceof BasicLogger) {
+          ((BasicLogger)log).blockUndo(1);
+        }
+      }
+
       exit();
     }
 
