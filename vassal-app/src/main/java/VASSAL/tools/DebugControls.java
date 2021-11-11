@@ -28,6 +28,7 @@ import VASSAL.counters.KeyBuffer;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.VisibilityOption;
+import VASSAL.tools.menu.CheckBoxMenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.FlowLabel;
 import VASSAL.tools.swing.SplitPane;
@@ -73,6 +74,12 @@ public class DebugControls extends AbstractBuildable implements ActionListener {
   //protected JLabel heapFreeLabel;
 
   protected Timer timer = new Timer(100, this);
+
+  private static CheckBoxMenuItemProxy checkbox;
+
+  public static void setCheckBox(CheckBoxMenuItemProxy c) {
+    checkbox = c;
+  }
 
   public Point getCursorLocation() {
     return cursorLocation;
@@ -226,8 +233,15 @@ public class DebugControls extends AbstractBuildable implements ActionListener {
     }
   }
 
+  public boolean isVisible() {
+    return (splitPane != null) ? splitPane.isRightVisible() : ((controlPanel != null) && (controlPanel.getTopLevelAncestor() != null) && controlPanel.getTopLevelAncestor().isVisible());
+  }
+
   private void updateVisible() {
     final boolean visible = (splitPane != null) ? splitPane.isRightVisible() : controlPanel.getTopLevelAncestor().isVisible();
+    if (checkbox != null) {
+      checkbox.setSelected(visible);
+    }
     if (visible) {
       timer.start();
     }
