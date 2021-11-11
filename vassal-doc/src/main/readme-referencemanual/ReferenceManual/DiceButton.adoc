@@ -47,15 +47,23 @@ _$addToTotal$_::: The modifer added to the total. +
 _$keepDice$_::: The number of dice that were requested to be kept. This will be the _Value of N_ if one of the _keep_ options was selected, otherwise it will be the same as $nDice$. +
 _$keepCount$_::: The actual number of dice that were kept.
 
-*Prompt for values when button pushed:*:: When unselected, that values for the following 4 fields are fixed for all dice rolls. When selected, the user is prompted for these values in a popup window when the Dice Button is activated.
+*Prompt for values when button pushed:*:: When unselected, that values for the following 4 fields are fixed for all dice rolls. When selected, the user is prompted for these values in a popup window when the Dice Button is activated. Each of the four values can be locked to a specified value rather than appearing in the prompt dialog. If all 4 fields are locked, a normal dice roll with no prompting is performed
 
 *Number of dice:*:: How many dice to roll.
 
-*Number of sides per dies:*:: What size should each die be?
+*Lock number of dice:*:: Don't prompt for number of Dice, use the specified value.
+
+*Number of sides per die:*:: What size should each die be?
+
+*Lock umber of sides per die:*:: Don't prompt for number of sides, use the specified value.
 
 *Add to each die:*:: A number to add to each roll.
 
+*Lock add to each die:*:: Don't prompt for number to add to each die, use the specified value.
+
 *Add to overall total:*:: A number to add once to the overall total result.
+
+*Lock add to overall total:*:: Don't prompt for number to add to overall total, use the specified value.
 
 *Report Total:*:: Controls what is stored in the _$result$_ reporting variable and the global result property. When unchecked, _$result$_ will contain a comma separated list of the individual roll results. If checked, _$result$_ will contain the roll total (same as _$numericResult$_).
 
@@ -81,6 +89,12 @@ _Prompt for values window_
 
 image:images/DiceButton3.png[] +
 _A more complex example, rolling 20 die 6 and reporting the number of 5's and 6's rolled._
+
+image:images/DiceButton4.png[] +
+_A basic dice roll that prompts for the number of standard d6 die to roll each time the button is pressed_
+
+image:images/DiceButton5.png[] +
+_Prompt for values window for the previous example_
 
 |===
 
