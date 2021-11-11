@@ -27,6 +27,7 @@ import VASSAL.build.module.map.DrawPile;
 import VASSAL.build.module.map.SetupStack;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.widget.PieceSlot;
+import VASSAL.command.AlertCommand;
 import VASSAL.command.ChangePiece;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
@@ -169,7 +170,15 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
       @Override
       public void actionPerformed(ActionEvent e) {
-        new GameRefresher(gpIdSupport).start();
+
+        final BasicLogger bl = GameModule.getGameModule().getBasicLogger();
+        if ((bl != null) && bl.isReplaying()) {
+          final Command ac = new AlertCommand(Resources.getString("GameRefresher.game_is_replaying"));
+          ac.execute();
+        }
+        else {
+          new GameRefresher(gpIdSupport).start();
+        }
       }
     };
     GameModule.getGameModule().getGameState().addGameComponent(this);
@@ -282,8 +291,8 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
   private boolean isGameActive() {
     final GameModule gm = GameModule.getGameModule();
-    final VASSAL.command.Logger logger = gm.getLogger();
-    return gm.isMultiplayerConnected() || ((logger instanceof BasicLogger) && ((BasicLogger)logger).isLogging());
+    final BasicLogger logger = gm.getBasicLogger();
+    return gm.isMultiplayerConnected() || ((logger != null) && logger.isLogging());
   }
 
 
@@ -889,9 +898,9 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       g.sendAndLog(command);
 
       if (options.contains("RefreshDecks") && !refresher.isGameActive()) {
-        final VASSAL.command.Logger log = GameModule.getGameModule().getLogger();
-        if (log instanceof BasicLogger) {
-          ((BasicLogger)log).blockUndo(1);
+        final BasicLogger log = GameModule.getGameModule().getBasicLogger();
+        if (log != null) {
+          log.blockUndo(1);
         }
       }
 

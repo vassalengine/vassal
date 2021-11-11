@@ -1265,6 +1265,13 @@ public class GameModule extends AbstractConfigurable
   }
 
   /**
+   * @return BasicLogger, if we have one
+   */
+  public BasicLogger getBasicLogger() {
+    return (logger instanceof BasicLogger) ? (BasicLogger)logger : null;
+  }
+
+  /**
    * Allows the Chat Log window to register itself to the Module. When a Chat Log is first
    * registered, display any warning messages deferred during earlier initialisation
    *
