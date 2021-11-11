@@ -15,6 +15,7 @@ Note that since Vassal version 3.5.0 the topmost node of the Game Piece Palette 
 During a game players may drag to the playing area the Game Pieces contained inside Game Piece Palettes.
 An unlimited supply of each Game Piece is available through the palette.
 If you need to limit the number of pieces available during play, use a <<Deck.adoc#top,Deck>>, an <<SetupStack.adoc#top,At-Start Stack>>, or <<GameModule.adoc#PredefinedSetup,Default Setups>>.
+Game Pieces can also be added programmatically during play through the use of <<Marker.adoc#top, Place Marker>> and/or <<Replace.adoc#top,Replace With Other>> traits in existing Game Pieces.
 
 If the player has the _Use combined application window_ preference checked, then the first Game Piece Palette in the module will dock into the main module window to the left of the chat log.
 All others will appear in their own window.
