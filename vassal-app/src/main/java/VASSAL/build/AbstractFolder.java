@@ -19,6 +19,7 @@
 package VASSAL.build;
 
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.configure.ComponentDescription;
 import VASSAL.i18n.Resources;
 
 /**
@@ -30,7 +31,7 @@ import VASSAL.i18n.Resources;
  * Components that can be *contained* in folders will need to be call AbstractBuildable#getNonFolderAncestor() to
  * find their "functional parent".
  */
-public abstract class AbstractFolder extends AbstractConfigurable {
+public abstract class AbstractFolder extends AbstractConfigurable implements ComponentDescription {
   public static final String NAME        = "name"; //NON-NLS
   public static final String DESCRIPTION = "desc"; //NON-NLS
 
@@ -96,6 +97,11 @@ public abstract class AbstractFolder extends AbstractConfigurable {
   @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Folder.html"); //NON-NLS
+  }
+
+  @Override
+  public String getDescription() {
+    return description;
   }
 
   public static String getConfigureTypeName() {

@@ -148,6 +148,7 @@ public class PanelWidget extends Widget {
   public String[] getAttributeNames() {
     return new String[]{
       NAME,
+      DESCRIPTION,
       FIXED,
       COLS,
       VERTICAL,
@@ -159,6 +160,7 @@ public class PanelWidget extends Widget {
   public String[] getAttributeDescriptions() {
     return new String[]{
       Resources.getString("Editor.name_label"),
+      Resources.getString(Resources.DESCRIPTION),
       Resources.getString("Editor.PanelWidget.fixed_cell_size"),
       Resources.getString("Editor.PanelWidget.number_of_columns"),
       Resources.getString("Editor.PanelWidget.vertical_layout"),
@@ -169,6 +171,7 @@ public class PanelWidget extends Widget {
   @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
+      String.class,
       String.class,
       Boolean.class,
       Integer.class,
@@ -234,6 +237,9 @@ public class PanelWidget extends Widget {
         scale = 4.0;
       }
     }
+    else if (DESCRIPTION.equals(name)) {
+      description = (String)value;
+    }
 
     if (panel != null) {
       panel.setLayout(getLayout(panel));
@@ -257,6 +263,9 @@ public class PanelWidget extends Widget {
     }
     else if (SCALE.equals(name)) {
       return String.valueOf(scale);
+    }
+    else if (DESCRIPTION.equals(name)) {
+      return description;
     }
     return null;
   }

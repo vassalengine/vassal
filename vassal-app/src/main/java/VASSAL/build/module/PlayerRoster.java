@@ -26,6 +26,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.command.Logger;
+import VASSAL.configure.ComponentDescription;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.i18n.Localization;
@@ -54,7 +55,9 @@ import org.w3c.dom.NodeList;
 /**
  * Maintains a list of players involved in the current game
  */
-public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder, GameComponent, GameSetupStep {
+public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder, GameComponent, GameSetupStep, ComponentDescription {
+  public static final String DESCRIPTION = "description"; //NON-NLS
+
   public static final String BUTTON_ICON = "buttonIcon"; //$NON-NLS-1$
   public static final String BUTTON_TEXT = "buttonText"; //$NON-NLS-1$
   public static final String TOOL_TIP = "buttonToolTip"; //$NON-NLS-1$
@@ -82,6 +85,8 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   protected String translatedObserver;
 
   private boolean pickedSide = false;
+
+  protected String description;
 
   public PlayerRoster() {
     setButtonTextKey(BUTTON_TEXT);
@@ -740,6 +745,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   @Override
   public String[] getAttributeNames() {
     return new String[] {
+      DESCRIPTION,
       SIDES,
       BUTTON_TEXT,
       TOOL_TIP,
@@ -751,6 +757,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[] {
+      String.class,
       String[].class,
       String.class,
       String.class,
@@ -763,6 +770,9 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   public String getAttributeValueString(String key) {
     if (SIDES.equals(key)) {
       return getSidesAsString();
+    }
+    else if (DESCRIPTION.equals(key)) {
+      return description;
     }
     return super.getAttributeValueString(key);
   }
@@ -777,6 +787,9 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       final String[] s = (String[]) value;
       sides = new ArrayList<>(s.length);
       Collections.addAll(sides, s);
+    }
+    else if (DESCRIPTION.equals(key)) {
+      description = (String)value;
     }
     else {
       super.setAttribute(key, value);
@@ -819,12 +832,18 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
+      Resources.getString("Editor.description_label"),
       Resources.getString("Editor.PlayerRoster.sides_label"),
       Resources.getString("Editor.PlayerRoster.retire_button_text"),
       Resources.getString("Editor.PlayerRoster.retire_button_tooltip"),
       Resources.getString("Editor.PlayerRoster.retire_button_icon"),
       Resources.getString("Editor.PlayerRoster.retire_button_keystroke")
     };
+  }
+
+  @Override
+  public String getDescription() {
+    return description;
   }
 
   /**

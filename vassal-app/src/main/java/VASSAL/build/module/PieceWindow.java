@@ -303,6 +303,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
   public String[] getAttributeDescriptions() {
     return new String[]{
       Resources.getString(Resources.NAME_LABEL),
+      Resources.getString(Resources.DESCRIPTION),
       Resources.getString("Editor.PieceWindow.hidden"), //$NON-NLS-1$
       Resources.getString(Resources.BUTTON_TEXT),
       Resources.getString(Resources.TOOLTIP_TEXT),
@@ -316,6 +317,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
   @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
+      String.class,
       String.class,
       Boolean.class,
       String.class,
@@ -336,7 +338,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
 
   @Override
   public String[] getAttributeNames() {
-    return new String[]{NAME, HIDDEN, BUTTON_TEXT, TOOLTIP, ICON, HOTKEY, SCALE, DEFAULT_DOCKED_WIDTH };
+    return new String[]{NAME, DESCRIPTION, HIDDEN, BUTTON_TEXT, TOOLTIP, ICON, HOTKEY, SCALE, DEFAULT_DOCKED_WIDTH };
   }
 
   @Override
@@ -380,7 +382,9 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
       }
       defaultDockedWidth = (Integer)value;
     }
-
+    else if (DESCRIPTION.equals(name)) {
+      description = (String)value;
+    }
     else {
       launch.setAttribute(name, value);
     }
@@ -403,6 +407,9 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
     }
     else if (DEFAULT_DOCKED_WIDTH.equals(name)) {
       return String.valueOf(defaultDockedWidth);
+    }
+    else if (DESCRIPTION.equals(name)) {
+      return description;
     }
     else {
       return launch.getAttributeValueString(name);

@@ -54,6 +54,7 @@ import VASSAL.tools.NamedKeyStroke;
  * A top-level Widget for displaying Charts
  */
 public class ChartWindow extends Widget {
+  public static final String DESCRIPTION = "description"; //NON-NLS
   public static final String DEPRECATED_NAME = "label"; //$NON-NLS-1$
   public static final String NAME = "name"; //$NON-NLS-1$
   public static final String BUTTON_TEXT = "text"; //$NON-NLS-1$
@@ -65,6 +66,7 @@ public class ChartWindow extends Widget {
   protected Container root;
   protected String tooltip = ""; //$NON-NLS-1$
   protected String id;
+  protected String description;
 
   public ChartWindow() {
     root = new JPanel();
@@ -131,6 +133,9 @@ public class ChartWindow extends Widget {
       tooltip = (String) val;
       launch.setAttribute(key, val);
     }
+    else if (DESCRIPTION.equals(key)) {
+      description = (String)val;
+    }
     else {
       launch.setAttribute(key, val);
     }
@@ -142,7 +147,7 @@ public class ChartWindow extends Widget {
    */
   @Override
   public String[] getAttributeNames() {
-    return new String[] {NAME, BUTTON_TEXT, TOOLTIP, ICON, HOTKEY};
+    return new String[] {NAME, DESCRIPTION, BUTTON_TEXT, TOOLTIP, ICON, HOTKEY};
   }
 
   @Override
@@ -152,6 +157,9 @@ public class ChartWindow extends Widget {
     }
     else if (TOOLTIP.equals(name)) {
       return tooltip.length() == 0 ? launch.getAttributeValueString(name) : tooltip;
+    }
+    else if (DESCRIPTION.equals(name)) {
+      return description;
     }
     else {
       return launch.getAttributeValueString(name);
@@ -174,6 +182,11 @@ public class ChartWindow extends Widget {
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return getChildAllowableConfigureComponents();
+  }
+
+  @Override
+  public String getDescription() {
+    return description;
   }
 
   @Override
@@ -205,6 +218,7 @@ public class ChartWindow extends Widget {
   public String[] getAttributeDescriptions() {
     return new String[]{
         Resources.getString(Resources.NAME_LABEL),
+        Resources.getString(Resources.DESCRIPTION),
           Resources.getString(Resources.BUTTON_TEXT),
           Resources.getString(Resources.TOOLTIP_TEXT),
           Resources.getString(Resources.BUTTON_ICON),
@@ -215,6 +229,7 @@ public class ChartWindow extends Widget {
   @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
+      String.class,
       String.class,
       String.class,
       String.class,

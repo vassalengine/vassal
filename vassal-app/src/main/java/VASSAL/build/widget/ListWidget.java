@@ -170,17 +170,17 @@ public class ListWidget extends Widget
 
   @Override
   public String[] getAttributeNames() {
-    return new String[] {NAME, SCALE, WIDTH, HEIGHT, DIVIDER};
+    return new String[] {NAME, DESCRIPTION, SCALE, WIDTH, HEIGHT, DIVIDER};
   }
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[]{Resources.getString("Editor.name_label"), Resources.getString("Editor.ListWidget.image_scale")};
+    return new String[]{Resources.getString("Editor.name_label"), Resources.getString(Resources.DESCRIPTION), Resources.getString("Editor.ListWidget.image_scale")};
   }
 
   @Override
   public Class<?>[] getAttributeTypes() {
-    return new Class<?>[]{String.class, Double.class};
+    return new Class<?>[]{String.class, String.class, Double.class};
   }
 
   @Override
@@ -209,6 +209,9 @@ public class ListWidget extends Widget
         scale = 4.0;
       }
     }
+    else if (DESCRIPTION.equals(name)) {
+      description = (String)value;
+    }
   }
 
   @Override
@@ -227,6 +230,9 @@ public class ListWidget extends Widget
     }
     else if (SCALE.equals(name)) {
       return String.valueOf(scale);
+    }
+    else if (DESCRIPTION.equals(name)) {
+      return description;
     }
     return null;
   }
