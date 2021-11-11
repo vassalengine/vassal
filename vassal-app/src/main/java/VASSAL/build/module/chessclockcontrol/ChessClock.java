@@ -54,6 +54,7 @@ import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.ColorConfigurer;
+import VASSAL.configure.ComponentDescription;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
@@ -77,7 +78,7 @@ import org.apache.commons.lang3.StringUtils;
  * machines. Made more generically configurable, ChessClockControl added, and integrated into standard VASSAL, by Brian Reynolds.
  *
  */
-public class ChessClock extends AbstractConfigurable implements CommandEncoder, GameComponent, ActionListener {
+public class ChessClock extends AbstractConfigurable implements CommandEncoder, GameComponent, ActionListener, ComponentDescription {
   private static final int MILLISECONDS_PER_MINUTE = 1000 * 60;
   private static final int MILLISECONDS_PER_HOUR = MILLISECONDS_PER_MINUTE * 60;
   private static final int MILLISECONDS_PER_DAY = MILLISECONDS_PER_HOUR * 24;
@@ -88,6 +89,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
   public static final String SIDE = "side"; //$NON-NLS-1$
   public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
   public static final String BUTTON_TEXT = "buttonText"; //$NON-NLS-1$
+  public static final String DESCRIPTION = "description"; //NON-NLS
 
   public static final String TICKING_BACKGROUND_COLOR = "tickingBackgroundColor"; //NON-NLS
   public static final String TICKING_FONT_COLOR       = "tickingFontColor"; //NON-NLS
@@ -120,6 +122,8 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
   protected boolean tocking; // Tracks the half-second "pulse" for the font color
 
   protected boolean instanceIsActive;  // True if this ChessClock has been fully initialized & registered (and not yet shut down)
+
+  protected String description;
 
 
   public ChessClock(String side) {
@@ -237,6 +241,10 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
    */
   protected static boolean isReferee(String name) {
     return PlayerRoster.isSoloSide(name);
+  }
+
+  public String getDescription() {
+    return description;
   }
 
   /**
@@ -648,7 +656,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
    */
   @Override
   public String[] getAttributeNames() {
-    return new String[] { SIDE, BUTTON_TEXT, ICON, TICKING_BACKGROUND_COLOR, TICKING_FONT_COLOR, TOCKING_FONT_COLOR, TOOLTIP };
+    return new String[] { DESCRIPTION, SIDE, BUTTON_TEXT, ICON, TICKING_BACKGROUND_COLOR, TICKING_FONT_COLOR, TOCKING_FONT_COLOR, TOOLTIP };
   }
 
   /**
@@ -657,6 +665,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
   @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
+      Resources.getString(Resources.DESCRIPTION),
       Resources.getString("Editor.ChessClock.player_side_for_timer"),
       Resources.getString("Editor.ChessClock.timer_button_text"),
       Resources.getString("Editor.ChessClock.timer_icon"),
@@ -672,7 +681,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
    */
   @Override
   public Class<?>[] getAttributeTypes() {
-    return new Class[] { PlayerSidesConfig.class, String.class, IconConfig.class, ColorConfig.class, ColorConfig2.class, ColorConfig3.class, String.class };
+    return new Class[] { String.class, PlayerSidesConfig.class, String.class, IconConfig.class, ColorConfig.class, ColorConfig2.class, ColorConfig3.class, String.class };
   }
 
   /**
@@ -711,6 +720,9 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
       tockingFontColor = (Color) value;
       updateTimerColor();
     }
+    else if (DESCRIPTION.equals(key)) {
+      description = (String)value;
+    }
     else {
       timerButton.setAttribute(key, value);
     }
@@ -737,6 +749,9 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     }
     else if (TOCKING_FONT_COLOR.equals(key)) {
       return ColorConfigurer.colorToString(tockingFontColor);
+    }
+    else if (DESCRIPTION.equals(key)) {
+      return description;
     }
     else {
       return timerButton.getAttributeValueString(key);

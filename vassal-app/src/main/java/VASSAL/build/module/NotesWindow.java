@@ -40,6 +40,7 @@ import VASSAL.build.module.noteswindow.SecretNotesController;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.command.NullCommand;
+import VASSAL.configure.ComponentDescription;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
@@ -47,6 +48,7 @@ import VASSAL.configure.TextConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.LaunchButton;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * This is a {@link GameComponent} that allows players to type and
@@ -55,9 +57,10 @@ import VASSAL.tools.LaunchButton;
  * him
  */
 public class NotesWindow extends AbstractToolbarItem
-    implements GameComponent, CommandEncoder {
+    implements GameComponent, CommandEncoder, ComponentDescription {
 
   public static final String BUTTON_TEXT = "buttonText"; //NON-NLS // non-standard legacy difference from AbstractToolbarItem
+  public static final String DESCRIPTION = "description"; //NON-NLS
 
   // These three identical to AbstractToolbarItem, and are only here for "clirr purposes"
   @Deprecated(since = "2020-10-21", forRemoval = true) public static final String HOT_KEY = "hotkey"; //$NON-NLS-1$
@@ -79,6 +82,7 @@ public class NotesWindow extends AbstractToolbarItem
 
   protected String lastSavedScenarioNotes;
   protected String lastSavedPublicNotes;
+  protected String description;
 
   public NotesWindow() {
     privateNotes = new PrivateNotesController();
@@ -109,6 +113,10 @@ public class NotesWindow extends AbstractToolbarItem
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new IconConfigurer(key, name, ((NotesWindow) c).launch.getAttributeValueString(ICON));
     }
+  }
+
+  public String getDescription() {
+    return description;
   }
 
   /**
@@ -210,13 +218,48 @@ public class NotesWindow extends AbstractToolbarItem
 
   @Override
   public void setAttribute(String name, Object value) {
-    getLaunchButton().setAttribute(name, value);
+    if (DESCRIPTION.equals(name)) {
+      description = (String)value;
+    }
+    else {
+      getLaunchButton().setAttribute(name, value);
+    }
   }
 
   @Override
   public String getAttributeValueString(String name) {
-    return getLaunchButton().getAttributeValueString(name);
+    if (DESCRIPTION.equals(name)) {
+      return description;
+    }
+    else {
+      return getLaunchButton().getAttributeValueString(name);
+    }
   }
+
+  @Override
+  public String[] getAttributeNames() {
+    return ArrayUtils.addAll(
+      super.getAttributeNames(),
+      DESCRIPTION
+    );
+  }
+
+  @Override
+  public String[] getAttributeDescriptions() {
+    return ArrayUtils.addAll(
+      super.getAttributeDescriptions(),
+      Resources.getString(Resources.DESCRIPTION)
+    );
+  }
+
+  @Override
+  public Class<?>[] getAttributeTypes() {
+    return ArrayUtils.addAll(
+      super.getAttributeTypes(),
+      String.class
+    );
+  }
+
 
   @Override
   public String encode(Command c) {

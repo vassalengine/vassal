@@ -7,6 +7,7 @@ import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.configure.ComponentDescription;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.configure.VisibilityCondition;
@@ -20,7 +21,7 @@ import org.apache.commons.lang3.ArrayUtils;
  * @author Brent Easton
  *
  */
-public class LayerControl extends AbstractToolbarItem {
+public class LayerControl extends AbstractToolbarItem implements ComponentDescription {
 
   public static final String COMMAND = "command"; //NON-NLS
   public static final String SKIP = "skip"; //NON-NLS
@@ -32,6 +33,8 @@ public class LayerControl extends AbstractToolbarItem {
   public static final String CMD_DISABLE = "Make Layer Inactive"; //NON-NLS - yes, really
   public static final String CMD_TOGGLE = "Switch Layer between Active and Inactive"; //NON-NLS - yes, really
   public static final String CMD_RESET = "Reset All Layers"; //NON-NLS - yes, really
+
+  public static final String DESCRIPTION = "description"; //NON-NLS
 
   // These 5 identical to AbstractToolbarItem and here for clirr purposes only
   @Deprecated(since = "2020-10-21", forRemoval = true) public static final String NAME = "name"; //NON-NLS
@@ -58,6 +61,7 @@ public class LayerControl extends AbstractToolbarItem {
   protected String[] layers = new String[0];
   protected LayeredPieceCollection pieceLayers;
   protected CompoundPieceCollection pieceCollection;
+  protected String description;
 
   public LayerControl() {
     setNameKey("");
@@ -123,9 +127,15 @@ public class LayerControl extends AbstractToolbarItem {
   }
 
   @Override
+  public String getDescription() {
+    return description;
+  }
+
+  @Override
   public String[] getAttributeDescriptions() {
     return ArrayUtils.addAll(
       super.getAttributeDescriptions(),
+      Resources.getString(Resources.DESCRIPTION),
       Resources.getString("Editor.LayerControl.action"), //$NON-NLS-1$
       Resources.getString("Editor.LayerControl.skip_layer"), //$NON-NLS-1$
       Resources.getString("Editor.LayerControl.affect_layer") //$NON-NLS-1$
@@ -136,6 +146,7 @@ public class LayerControl extends AbstractToolbarItem {
   public Class<?>[] getAttributeTypes() {
     return ArrayUtils.addAll(
       super.getAttributeTypes(),
+      String.class,
       CommandConfig.class,
       Boolean.class,
       String[].class
@@ -158,6 +169,7 @@ public class LayerControl extends AbstractToolbarItem {
   public String[] getAttributeNames() {
     return ArrayUtils.addAll(
       super.getAttributeNames(),
+      DESCRIPTION,
       COMMAND,
       SKIP,
       LAYERS
@@ -174,6 +186,9 @@ public class LayerControl extends AbstractToolbarItem {
     }
     else if (LAYERS.equals(key)) {
       return StringArrayConfigurer.arrayToString(layers);
+    }
+    else if (DESCRIPTION.equals(key)) {
+      return description;
     }
     else  {
       return super.getAttributeValueString(key);
@@ -202,6 +217,9 @@ public class LayerControl extends AbstractToolbarItem {
         value = StringArrayConfigurer.stringToArray((String) value);
       }
       layers = (String[]) value;
+    }
+    else if (DESCRIPTION.equals(key)) {
+      description = (String)value;
     }
     else {
       super.setAttribute(key, value);

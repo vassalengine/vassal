@@ -40,6 +40,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.command.NullCommand;
+import VASSAL.configure.ComponentDescription;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
@@ -61,7 +62,7 @@ import org.w3c.dom.Element;
  * is running. The Chess Clock Control component also contains the configurable elements that specify how the clocks are to be displayed.
  */
 public class ChessClockControl extends AbstractConfigurable
-        implements CommandEncoder, GameComponent, UniqueIdManager.Identifyable {
+        implements CommandEncoder, GameComponent, UniqueIdManager.Identifyable, ComponentDescription {
   protected static final UniqueIdManager ID_MGR = new UniqueIdManager("ChessClockControl"); //$NON-NLS-1$
 
   protected List<ChessClock> chessclocks = new ArrayList<>();  // List of individual chess clocks attached to our control
@@ -84,6 +85,7 @@ public class ChessClockControl extends AbstractConfigurable
   protected boolean instanceIsActive;       // True when this instance has been fully initialized & registered (and not yet shut down)
 
   protected String id;
+  protected String description;
 
   public static final char DELIMITER = '\t';
 
@@ -91,6 +93,8 @@ public class ChessClockControl extends AbstractConfigurable
   public static final String ICON = "icon"; //$NON-NLS-1$
   public static final String BUTTON_TEXT = "buttonText"; //$NON-NLS-1$
   public static final String BUTTON_TOOLTIP = "buttonTooltip"; //$NON-NLS-1$
+
+  public static final String DESCRIPTION = "description"; //NON-NLS
 
   public static final String PAUSE_HOTKEY = "pauseHotkey"; //NON-NLS
   public static final String NEXT_HOTKEY = "nextHotkey"; //NON-NLS
@@ -157,6 +161,10 @@ public class ChessClockControl extends AbstractConfigurable
    */
   public List<ChessClock> getChessClocks() {
     return chessclocks;
+  }
+
+  public String getDescription() {
+    return description;
   }
 
   /**
@@ -291,7 +299,7 @@ public class ChessClockControl extends AbstractConfigurable
    */
   @Override
   public String[] getAttributeNames() {
-    return new String[] { NAME, ICON, BUTTON_TEXT, BUTTON_TOOLTIP, SHOW_HOTKEY, NEXT_HOTKEY,
+    return new String[] { NAME, DESCRIPTION, ICON, BUTTON_TEXT, BUTTON_TOOLTIP, SHOW_HOTKEY, NEXT_HOTKEY,
       PAUSE_HOTKEY, SHOW_TENTHSECONDS, SHOW_SECONDS, SHOW_HOURS, SHOW_DAYS, ALLOW_RESET };
   }
 
@@ -302,6 +310,7 @@ public class ChessClockControl extends AbstractConfigurable
   public String[] getAttributeDescriptions() {
     return new String[] {
       Resources.getString("Editor.name_label"),
+      Resources.getString(Resources.DESCRIPTION),
       Resources.getString("Editor.button_icon_label"),
       Resources.getString("Editor.button_text_label"),
       Resources.getString("Editor.tooltip_text_label"),
@@ -321,7 +330,7 @@ public class ChessClockControl extends AbstractConfigurable
    */
   @Override
   public Class<?>[] getAttributeTypes() {
-    return new Class[] { String.class, IconConfig.class, String.class, String.class,
+    return new Class[] { String.class, String.class, IconConfig.class, String.class, String.class,
       NamedKeyStroke.class, NamedKeyStroke.class, NamedKeyStroke.class, TimeStyleConfig.class, TimeStyleConfig.class,
       TimeStyleConfig.class, TimeStyleConfig.class, Boolean.class };
   }
@@ -379,6 +388,9 @@ public class ChessClockControl extends AbstractConfigurable
       }
       allowReset = (Boolean) value;
     }
+    else if (DESCRIPTION.equals(key)) {
+      description = (String)value;
+    }
     else {
       chessClockButton.setAttribute(key, value);
     }
@@ -420,6 +432,9 @@ public class ChessClockControl extends AbstractConfigurable
     }
     else if (ALLOW_RESET.equals(key)) {
       return String.valueOf(allowReset);
+    }
+    else if (DESCRIPTION.equals(key)) {
+      return description;
     }
     else {
       return chessClockButton.getAttributeValueString(key);

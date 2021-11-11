@@ -30,6 +30,7 @@ import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.ColorConfigurer;
+import VASSAL.configure.ComponentDescription;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
@@ -73,7 +74,7 @@ import org.slf4j.LoggerFactory;
  * ...
  */
 // TODO Expose result as property
-public class SpecialDiceButton extends AbstractToolbarItem implements CommandEncoder, UniqueIdManager.Identifyable {
+public class SpecialDiceButton extends AbstractToolbarItem implements CommandEncoder, UniqueIdManager.Identifyable, ComponentDescription {
   private static final Logger logger =
     LoggerFactory.getLogger(SpecialDiceButton.class);
 
@@ -95,6 +96,7 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
   protected String windowTitleResultFormat = "$" + NAME + "$"; //$NON-NLS-1$ //$NON-NLS-2$
   protected String tooltip = ""; //$NON-NLS-1$
   protected final MutableProperty.Impl property = new Impl("", this); //$NON-NLS-1$
+  protected String description;
 
   public static final String RESULT_CHATTER = "resultChatter"; //$NON-NLS-1$
   public static final String CHAT_RESULT_FORMAT = "format"; //$NON-NLS-1$
@@ -108,6 +110,7 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
   public static final String BACKGROUND_COLOR = "backgroundColor"; //$NON-NLS-1$
   public static final String DICE_SET = "diceSet"; //$NON-NLS-1$
   public static final String NONE = "&lt;none&gt;"; //$NON-NLS-1$
+  public static final String DESCRIPTION = "description"; //NON-NLS
   private static final int[] EMPTY = new int[0];
 
   // These five identical to AbstractToolbarItem, and are only here for "clirr purposes"
@@ -128,10 +131,16 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
     final String desc = Resources.getString("Editor.SpecialDiceButton.symbols"); //$NON-NLS-1$
     setLaunchButton(makeLaunchButton(desc, desc, "/images/die.gif", rollAction)); //NON-NLS
     setAttribute(NAME, desc);
+    setNamePrompt(Resources.getString(Resources.NAME_LABEL));
   }
 
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.SpecialDiceButton.component_type"); //$NON-NLS-1$
+  }
+
+  @Override
+  public String getDescription() {
+    return description;
   }
 
   /**
@@ -229,6 +238,7 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
   public String[] getAttributeNames() {
     return ArrayUtils.addAll(
       super.getAttributeNames(),
+      DESCRIPTION,
       RESULT_CHATTER,
       CHAT_RESULT_FORMAT,
       RESULT_WINDOW,
@@ -244,6 +254,7 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
   public String[] getAttributeDescriptions() {
     return ArrayUtils.addAll(
       super.getAttributeDescriptions(),
+      Resources.getString(Resources.DESCRIPTION),
       Resources.getString("Editor.SpecialDiceButton.report_results_text"), //$NON-NLS-1$
       Resources.getString("Editor.report_format"), //$NON-NLS-1$
       Resources.getString("Editor.SpecialDiceButton.result_window"), //$NON-NLS-1$
@@ -259,6 +270,7 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
   public Class<?>[] getAttributeTypes() {
     return ArrayUtils.addAll(
       super.getAttributeTypes(),
+      String.class,
       Boolean.class,
       ReportFormatConfig.class,
       Boolean.class,
@@ -433,6 +445,9 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
       tooltip = (String) o;
       launch.setAttribute(key, o);
     }
+    else if (DESCRIPTION.equals(key)) {
+      description = (String)o;
+    }
     else {
       super.setAttribute(key, o);
     }
@@ -466,6 +481,9 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
     }
     else if (TOOLTIP.equals(key)) {
       return tooltip.length() == 0 ? launch.getAttributeValueString(name) : tooltip;
+    }
+    else if (DESCRIPTION.equals(key)) {
+      return description;
     }
     else {
       return super.getAttributeValueString(key);

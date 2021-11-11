@@ -141,17 +141,17 @@ public class BoxWidget extends Widget
 
   @Override
   public String[] getAttributeNames() {
-    return new String[]{NAME, DESCRIPTION, WIDTH, HEIGHT};
+    return new String[]{NAME, WIDTH, HEIGHT};
   }
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[]{Resources.getString("Editor.name_label", Resources.getString(Resources.DESCRIPTION))};
+    return new String[]{Resources.getString("Editor.name_label")};
   }
 
   @Override
   public Class<?>[] getAttributeTypes() {
-    return new Class<?>[]{String.class, String.class};
+    return new Class<?>[]{String.class};
   }
 
   @Override
@@ -164,9 +164,6 @@ public class BoxWidget extends Widget
     }
     else if (HEIGHT.equals(name)) {
       size.height = Integer.parseInt(value.toString());
-    }
-    else if (DESCRIPTION.equals(name)) {
-      description = (String)value;
     }
   }
 
@@ -186,9 +183,6 @@ public class BoxWidget extends Widget
         multiPanel.getLayout().preferredLayoutSize(multiPanel).height :
         size.height;
       return String.valueOf(h);
-    }
-    else if (DESCRIPTION.equals(name)) {
-      return description;
     }
     return null;
   }
