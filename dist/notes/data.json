@@ -20,6 +20,7 @@
       "in": "3.6.0-beta6",
       "since": "3.6.0-beta5",
       "new_features": [
+        { "num": 10728, "desc": "Allow 'Prompt' Dice Button values to be locked by designer" },
         { "num": 10717, "desc": "Deck access - allow access to decks to be restricted by player" },
         { "num": 10682, "desc": "Move Camera Button" },
         { "num": 10674, "desc": "Startup Global Key Commands always fire in order, can't be undone, and can be configured to, e.g., \"once per game\"" },
