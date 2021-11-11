@@ -139,7 +139,8 @@ public class PlayerWindow extends JFrame {
     toolsMenu.add(mm.addKey("GameRefresher.refresh_counters"));
     toolsMenu.add(mm.addKey("GameState.load_continuation"));
 
-    final DebugControls dc = GameModule.getGameModule().getDebugControls();
+    toolsMenu.addSeparator();
+
 
     final CheckBoxMenuItemProxy debugCheckbox = new CheckBoxMenuItemProxy(new AbstractAction(
       Resources.getString("Debug.show_debug_window")) {
@@ -152,7 +153,7 @@ public class PlayerWindow extends JFrame {
           dc.toggleVisible();
         }
       }
-    }, dc != null && dc.isVisible());
+    }, false);
 
     toolsMenu.add(debugCheckbox);
     DebugControls.setCheckBox(debugCheckbox);

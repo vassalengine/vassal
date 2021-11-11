@@ -223,6 +223,10 @@ public class DebugControls extends AbstractBuildable implements ActionListener {
     gm.getToolBar().add(launch);
     launch.setText((launch.getIcon() == null) ? " " : null);
     launch.setVisible(launch.getIcon() != null);
+
+    if (checkbox != null) {
+      checkbox.setSelected(isVisible());
+    }
   }
 
   @Override
