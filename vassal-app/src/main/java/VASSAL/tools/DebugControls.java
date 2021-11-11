@@ -54,7 +54,7 @@ import java.net.URL;
 import java.util.List;
 
 public class DebugControls extends AbstractBuildable implements ActionListener {
-  protected static long MEGABYTE = 1024 * 1024;
+  protected static final long MEGABYTE = 1024 * 1024;
 
   protected JButton launch;
   protected JPanel controlPanel;
