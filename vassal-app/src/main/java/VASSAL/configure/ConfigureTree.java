@@ -2328,9 +2328,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             description += " - " + desc;
           }
         }
-        else if (c instanceof PrototypeDefinition) {
-          final String desc = ((PrototypeDefinition) c).getDescription();
-          if (!desc.isEmpty()) {
+        else if (c instanceof ComponentDescription) {
+          final String desc = ((ComponentDescription) c).getDescription();
+          if ((desc != null) && !desc.isEmpty()) {
             description += " - " + desc;
           }
         }
