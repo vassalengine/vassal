@@ -47,12 +47,9 @@ import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.net.URL;
 import java.util.List;
 
@@ -94,8 +91,7 @@ public class DebugControls extends AbstractBuildable implements ActionListener {
     final JPanel leftPanel = new JPanel(new MigLayout("fill, nogrid, hidemode 3")); //NON-NLS
     leftPanel.setBorder(BorderFactory.createTitledBorder(
       BorderFactory.createRaisedBevelBorder(),
-      Resources.getString("Debug.component_type"))
-);
+      Resources.getString("Debug.component_type")));
 
     final Box leftBox = Box.createVerticalBox();
 
