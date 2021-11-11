@@ -19,7 +19,6 @@ package VASSAL.configure;
 
 import VASSAL.build.AbstractBuildable;
 import VASSAL.build.AbstractConfigurable;
-import VASSAL.build.AbstractFolder;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
@@ -2057,6 +2056,15 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         }
       }
 
+      if ((searchParameters.isMatchNames() && searchParameters.isMatchTypes()) || !searchParameters.isMatchAdvanced()) {
+        if (c instanceof ComponentDescription) {
+          final String desc = ((ComponentDescription) c).getDescription();
+          if ((desc != null) && checkString(desc, searchString)) {
+            return true;
+          }
+        }
+      }
+
       if (!searchParameters.isMatchAdvanced()) {
         return false;
       }
@@ -2201,15 +2209,19 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
       final TargetProgress progress = new TargetProgress();
 
-      stringListHits(searchParameters.isMatchNames(), Arrays.asList(c.getConfigureName()), searchString, matchString, item, "", "Name", progress); //NON-NLS
-      stringListHits(searchParameters.isMatchTypes(), Arrays.asList(item),                 searchString, matchString, item, "", "Type", progress); //NON-NLS
+      stringListHits(searchParameters.isMatchNames() || !searchParameters.isMatchAdvanced(), Arrays.asList(c.getConfigureName()), searchString, matchString, item, "", "Name", progress); //NON-NLS
+      stringListHits(searchParameters.isMatchTypes() || !searchParameters.isMatchAdvanced(), Arrays.asList(item),                 searchString, matchString, item, "", "Type", progress); //NON-NLS
+
+      if (c instanceof ComponentDescription) {
+        stringListHits((searchParameters.isMatchNames() && searchParameters.isMatchTypes()) || !searchParameters.isMatchAdvanced(), Arrays.asList(((ComponentDescription) c).getDescription()), searchString, matchString, item, "", "Description", progress); //NON-NLS
+      }
 
       stringListHits(searchParameters.isMatchExpressions(), st.getExpressionList(),      searchString, matchString, item, "", "Expression",    progress); //NON-NLS
       stringListHits(searchParameters.isMatchProperties(),  st.getPropertyList(),        searchString, matchString, item, "", "Property",      progress); //NON-NLS
       stringListHits(searchParameters.isMatchMenus(),       st.getMenuTextList(),        searchString, matchString, item, "", "UI Text",       progress); //NON-NLS
       stringListHits(searchParameters.isMatchMessages(),    st.getFormattedStringList(), searchString, matchString, item, "", "Message/Field", progress); //NON-NLS
 
-      //NON-NLSkeyListHits(searchParameters.isMatchKeys(),           st.getNamedKeyStrokeList(),  searchString, matchString, item, "", "KeyCommand",    progress);
+      keyListHits(searchParameters.isMatchKeys(),           st.getNamedKeyStrokeList(),  searchString, matchString, item, "", "KeyCommand",    progress); //NON-NLS
     }
 
     /**
@@ -2347,15 +2359,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         }
         description += " [" + getConfigureName(c.getClass()) + "]";
 
-        if (c instanceof AbstractFolder) {
-          final String desc = ((AbstractFolder)c).getAttributeValueString(AbstractFolder.DESCRIPTION);
-          if (!desc.isEmpty()) {
-            description += " - " + desc;
-          }
-        }
-        else if (c instanceof PrototypeDefinition) {
-          final String desc = ((PrototypeDefinition) c).getDescription();
-          if (!desc.isEmpty()) {
+        if (c instanceof ComponentDescription) {
+          final String desc = ((ComponentDescription) c).getDescription();
+          if ((desc != null) && !desc.isEmpty()) {
             description += " - " + desc;
           }
         }

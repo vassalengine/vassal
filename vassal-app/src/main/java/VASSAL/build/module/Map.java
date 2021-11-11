@@ -20,6 +20,7 @@ package VASSAL.build.module;
 import static java.lang.Math.round;
 
 import VASSAL.build.module.map.MoveCameraButton;
+import VASSAL.configure.ComponentDescription;
 import VASSAL.configure.SingleChildInstance;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.Mat;
@@ -214,7 +215,7 @@ import static VASSAL.preferences.Prefs.MAIN_WINDOW_REMEMBER;
  * "context menu" services, and {@link StackMetrics} which handles the "stacking" of game pieces.
  */
 public class Map extends AbstractToolbarItem implements GameComponent, MouseListener, MouseMotionListener, DropTargetListener, Configurable,
-    UniqueIdManager.Identifyable, ToolBarComponent, MutablePropertiesContainer, PropertySource, PlayerRoster.SideChangeListener {
+    UniqueIdManager.Identifyable, ToolBarComponent, MutablePropertiesContainer, PropertySource, PlayerRoster.SideChangeListener, ComponentDescription {
   protected static boolean changeReportingEnabled = true;
   protected String mapID = ""; //$NON-NLS-1$
   protected String mapName = ""; //$NON-NLS-1$
@@ -279,6 +280,8 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 
   protected NamedKeyStrokeListener showKeyListener;
   protected NamedKeyStrokeListener hideKeyListener;
+
+  protected String description;
 
   private IntConfigurer preferredScrollConfig;
 
@@ -356,6 +359,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   }
 
   public static final String NAME = "mapName"; //$NON-NLS-1$
+  public static final String DESCRIPTION = "description"; //NON-NLS;
   public static final String MARK_MOVED = "markMoved"; //$NON-NLS-1$
   public static final String MARK_UNMOVED_ICON = "markUnmovedIcon"; //$NON-NLS-1$
   public static final String MARK_UNMOVED_TEXT = "markUnmovedText"; //$NON-NLS-1$
@@ -544,6 +548,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       }
       hideKeyListener.setKeyStroke((NamedKeyStroke) value);
     }
+    else if (DESCRIPTION.equals(key)) {
+      description = (String) value;
+    }
     else {
       super.setAttribute(key, value);
 
@@ -640,6 +647,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     }
     else if (HIDE_KEY.equals(key)) {
       return NamedHotKeyConfigurer.encode(hideKeyListener.getNamedKeyStroke());
+    }
+    else if (DESCRIPTION.equals(key)) {
+      return description;
     }
     else {
       return super.getAttributeValueString(key);
@@ -872,6 +882,13 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     keyBufferer = kb;
   }
 
+  /**
+   * @return Map's description field
+   */
+  @Override
+  public String getDescription() {
+    return description;
+  }
 
   /**
    * Registers this Map as a child of another buildable component, usually the {@link GameModule}. Determines a unique id for
@@ -3189,6 +3206,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public String[] getAttributeDescriptions() {
     return new String[] {
       Resources.getString("Editor.Map.map_name"), //$NON-NLS-1$
+      Resources.getString("Editor.description_label"),
       Resources.getString("Editor.Map.mark_pieces_moved"), //$NON-NLS-1$
       Resources.getString("Editor.Map.mark_unmoved_button_text"), //$NON-NLS-1$
       Resources.getString("Editor.Map.mark_unmoved_tooltip_text"), //$NON-NLS-1$
@@ -3227,6 +3245,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public String[] getAttributeNames() {
     return new String[] {
       NAME,
+      DESCRIPTION,
       MARK_MOVED,
       MARK_UNMOVED_TEXT,
       MARK_UNMOVED_TOOLTIP,
@@ -3265,6 +3284,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[] {
+      String.class,
       String.class,
       GlobalOptions.Prompt.class,
       String.class,

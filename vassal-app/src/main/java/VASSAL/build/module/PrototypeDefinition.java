@@ -27,6 +27,7 @@ import VASSAL.build.GpIdSupport;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.AddPiece;
+import VASSAL.configure.ComponentDescription;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.ValidationReport;
@@ -60,7 +61,8 @@ import org.w3c.dom.Element;
 
 public class PrototypeDefinition extends AbstractConfigurable
                                  implements UniqueIdManager.Identifyable,
-                                            ValidityChecker {
+                                            ValidityChecker,
+                                            ComponentDescription {
   private String name = "Prototype"; //$NON-NLS-1$
   private String description = "";
   private static final String DESCRIPTION_PROPERTY = "description";
@@ -200,6 +202,7 @@ public class PrototypeDefinition extends AbstractConfigurable
     }
   }
 
+  @Override
   public String getDescription() {
     return description;
   }

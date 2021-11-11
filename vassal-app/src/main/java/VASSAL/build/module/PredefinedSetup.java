@@ -24,6 +24,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.IllegalBuildException;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
+import VASSAL.configure.ComponentDescription;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
@@ -50,11 +51,12 @@ import java.util.Set;
  * Defines a saved game that is accessible from the File menu.
  * The game will be loaded in place of a normal New Game
  */
-public class PredefinedSetup extends AbstractConfigurable implements GameComponent {
+public class PredefinedSetup extends AbstractConfigurable implements GameComponent, ComponentDescription {
   public static final String NAME = "name"; //$NON-NLS-1$
   public static final String FILE = "file"; //$NON-NLS-1$
   public static final String USE_FILE = "useFile"; //$NON-NLS-1$
   public static final String IS_MENU = "isMenu"; //$NON-NLS-1$
+  public static final String DESCRIPTION = "description"; //NON-NLS
 
   protected boolean isMenu;
   protected boolean useFile = true;
@@ -67,6 +69,8 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
   protected VisibilityCondition showUseFile;
   protected AbstractAction launchAction;
   private final Set<String> refresherOptions = new HashSet<>();
+
+  protected String description;
 
   public PredefinedSetup() {
     launchAction = new AbstractAction() {
@@ -102,6 +106,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
   public String[] getAttributeDescriptions() {
     return new String[]{
       Resources.getString(Resources.NAME_LABEL),
+      Resources.getString(Resources.DESCRIPTION),
       Resources.getString("Editor.PredefinedSetup.parent_menu"), //$NON-NLS-1$
       Resources.getString("Editor.PredefinedSetup.predefined_file"), //$NON-NLS-1$
       Resources.getString("Editor.PredefinedSetup.saved_game") //$NON-NLS-1$
@@ -111,6 +116,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
   @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
+      String.class,
       String.class,
       Boolean.class,
       Boolean.class,
@@ -122,6 +128,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
   public String[] getAttributeNames() {
     return new String[]{
       NAME,
+      DESCRIPTION,
       IS_MENU,
       USE_FILE,
       FILE
@@ -141,6 +148,9 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     }
     else if (IS_MENU.equals(key)) {
       return String.valueOf(isMenu);
+    }
+    else if (DESCRIPTION.equals(key)) {
+      return description;
     }
     else {
       return null;
@@ -172,6 +182,9 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
       }
       setMenu((Boolean) value);
     }
+    else if (DESCRIPTION.equals(key)) {
+      description = (String)value;
+    }
   }
 
   @Override
@@ -188,6 +201,11 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     else {
       return super.getAttributeVisibility(name);
     }
+  }
+
+  @Override
+  public String getDescription() {
+    return description;
   }
 
   public void launch() {

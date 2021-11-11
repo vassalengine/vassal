@@ -53,6 +53,12 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
   private String hotKeyKey     = HOTKEY;      // Some legacy objects will want to use a non-standard key
   private String iconKey       = ICON;        // Some legacy objects will want to use a non-standard key
 
+  private String namePrompt = ""; // Overrides the default value returned for the name key by getAttributeDescriptions.
+
+  protected void setNamePrompt(String namePrompt) {
+    this.namePrompt = namePrompt;
+  }
+
   protected void setNameKey(String nameKey) {
     this.nameKey = nameKey;
   }
@@ -150,7 +156,7 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
   public String[] getAttributeDescriptions() {
     if (!nameKey.isEmpty()) {
       return new String[]{
-        Resources.getString(Resources.DESCRIPTION),
+        namePrompt.isEmpty() ? Resources.getString(Resources.DESCRIPTION) : namePrompt,
         Resources.getString(Resources.BUTTON_TEXT),
         Resources.getString(Resources.TOOLTIP_TEXT),
         Resources.getString(Resources.BUTTON_ICON),

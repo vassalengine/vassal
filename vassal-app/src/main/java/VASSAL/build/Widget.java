@@ -23,6 +23,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.configure.ComponentDescription;
 import VASSAL.i18n.Localization;
 
 /**
@@ -32,13 +33,16 @@ import VASSAL.i18n.Localization;
  * a {@link Buildable#build} operation will add the corresponding
  * AWT component of the child to the component of the parent
  */
-public abstract class Widget extends AbstractConfigurable {
+public abstract class Widget extends AbstractConfigurable implements ComponentDescription {
+  public static final String DESCRIPTION = "description"; //NON-NLS
   public static final String NAME = "entryName"; //NON-NLS
   public static final String WIDTH = "width";    //NON-NLS
   public static final String HEIGHT = "height";  //NON-NLS
   protected Element buildElement;
 
   protected Widget parent;
+
+  protected String description;
 
   protected Widget() {
   }
@@ -53,6 +57,10 @@ public abstract class Widget extends AbstractConfigurable {
     return 1.0;
   }
 
+  @Override
+  public String getDescription() {
+    return description;
+  }
 
   /**
    * For memory efficiency reasons, a Widget is initialized lazily.

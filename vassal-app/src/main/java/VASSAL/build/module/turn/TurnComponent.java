@@ -26,13 +26,22 @@ import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.BadDataReport;
 import VASSAL.build.Buildable;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.configure.ComponentDescription;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 
 /**
  * Generic Turn Component
  */
-public class TurnComponent extends AbstractConfigurable {
+public class TurnComponent extends AbstractConfigurable implements ComponentDescription {
+  public static final String DESCRIPTION = "description"; //NON-NLS
+
+  protected String description;
+
+  @Override
+  public String getDescription() {
+    return description;
+  }
 
   protected List<TurnLevel> levels = new ArrayList<>();
 

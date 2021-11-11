@@ -29,6 +29,7 @@ import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.ComponentDescription;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.FormattedStringConfigurer;
@@ -84,7 +85,7 @@ import javax.swing.SwingConstants;
 /**
  * Generic Turn Counter
  */
-public class TurnTracker extends TurnComponent implements CommandEncoder, GameComponent, ActionListener, UniqueIdManager.Identifyable, RecursionLimiter.Loopable {
+public class TurnTracker extends TurnComponent implements CommandEncoder, GameComponent, ActionListener, UniqueIdManager.Identifyable, RecursionLimiter.Loopable, ComponentDescription {
 
   protected static final UniqueIdManager idMgr = new UniqueIdManager("TurnTracker"); //$NON-NLS-1$
 
@@ -230,7 +231,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
    */
   @Override
   public String[] getAttributeNames() {
-    return new String[] { NAME, BUTTON_TEXT, ICON, HOT_KEY, NEXT_HOT_KEY, PREV_HOT_KEY, TURN_FORMAT, REPORT_FORMAT, TOOLTIP, LENGTH_STYLE, LENGTH };
+    return new String[] { NAME, DESCRIPTION, BUTTON_TEXT, ICON, HOT_KEY, NEXT_HOT_KEY, PREV_HOT_KEY, TURN_FORMAT, REPORT_FORMAT, TOOLTIP, LENGTH_STYLE, LENGTH };
   }
 
   @Override
@@ -240,6 +241,9 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       setConfigureName((String) value);
       lastCommand.setPropertyName(getConfigureName() + PROP_COMMAND);
       lastTurn.setPropertyName(getConfigureName() + PROP_VALUE);
+    }
+    else if (DESCRIPTION.equals(key)) {
+      description = (String)value;
     }
     else if (REPORT_FORMAT.equals(key)) {
       reportFormat.setFormat((String) value);
@@ -367,6 +371,9 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     if (NAME.equals(key)) {
       return getConfigureName();
     }
+    else if (DESCRIPTION.equals(key)) {
+      return description;
+    }
     else if (REPORT_FORMAT.equals(key)) {
       return reportFormat.getFormat();
     }
@@ -397,6 +404,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   public String[] getAttributeDescriptions() {
     return new String[] {
       Resources.getString("Editor.name_label"),
+      Resources.getString(Resources.DESCRIPTION),
       Resources.getString("Editor.button_text_label"),
       Resources.getString("Editor.button_icon_label"),
       Resources.getString("Editor.TurnTracker.show_hotkey"),
@@ -413,6 +421,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[] {
+      String.class,
       String.class,
       String.class,
       IconConfig.class,

@@ -172,6 +172,9 @@ public class HtmlChart extends Widget implements MouseListener {
         setFile(fileName);
       }
     }
+    else if (DESCRIPTION.equals(key)) {
+      description = (String)val;
+    }
   }
 
   @Override
@@ -189,17 +192,17 @@ public class HtmlChart extends Widget implements MouseListener {
    */
   @Override
   public String[] getAttributeNames() {
-    return new String[]{NAME, FILE};
+    return new String[]{NAME, DESCRIPTION, FILE};
   }
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[]{Resources.getString("Editor.name_label"), Resources.getString("Editor.HTMLChart.html_file")};
+    return new String[]{Resources.getString("Editor.name_label"), Resources.getString(Resources.DESCRIPTION), Resources.getString("Editor.HTMLChart.html_file")};
   }
 
   @Override
   public Class<?>[] getAttributeTypes() {
-    return new Class<?>[]{String.class, File.class};
+    return new Class<?>[]{String.class, String.class, File.class};
   }
 
   @Override
@@ -209,6 +212,9 @@ public class HtmlChart extends Widget implements MouseListener {
     }
     else if (FILE.equals(name)) {
       return fileName;
+    }
+    else if (DESCRIPTION.equals(name)) {
+      return description;
     }
     return null;
   }

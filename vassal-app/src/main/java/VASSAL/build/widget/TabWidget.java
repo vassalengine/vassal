@@ -137,17 +137,17 @@ public class TabWidget extends Widget
 
   @Override
   public String[] getAttributeNames() {
-    return new String[]{NAME};
+    return new String[]{NAME, DESCRIPTION};
   }
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[]{Resources.getString("Editor.name_label")};
+    return new String[]{Resources.getString("Editor.name_label"), Resources.getString(Resources.DESCRIPTION)};
   }
 
   @Override
   public Class<?>[] getAttributeTypes() {
-    return new Class<?>[]{String.class};
+    return new Class<?>[]{String.class, String.class};
   }
 
   @Override
@@ -155,12 +155,18 @@ public class TabWidget extends Widget
     if (NAME.equals(name)) {
       setConfigureName((String) value);
     }
+    else if (DESCRIPTION.equals(name)) {
+      description = (String)value;
+    }
   }
 
   @Override
   public String getAttributeValueString(String name) {
     if (NAME.equals(name)) {
       return getConfigureName();
+    }
+    else if (DESCRIPTION.equals(name)) {
+      return description;
     }
     return null;
   }

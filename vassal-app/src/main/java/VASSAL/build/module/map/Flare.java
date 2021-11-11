@@ -36,6 +36,7 @@ import VASSAL.command.FlareCommand;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.ColorConfigurer;
+import VASSAL.configure.ComponentDescription;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.FlareFormattedStringConfigurer;
 import VASSAL.configure.TranslatableStringEnum;
@@ -71,11 +72,9 @@ import org.jdesktop.animation.timing.TimingTargetAdapter;
  * Flare will work with both online play and PBEM play.
  */
 public class Flare extends AbstractConfigurable
-        implements CommandEncoder, GameComponent, Drawable, MouseListener, UniqueIdManager.Identifyable {
+        implements CommandEncoder, GameComponent, Drawable, MouseListener, UniqueIdManager.Identifyable, ComponentDescription {
   private static final char DELIMITER = '\t'; //$NON-NLS-1$
   public  static final String COMMAND_PREFIX = "FLARE" + DELIMITER; //$NON-NLS-1$
-
-  public static final String NO_ANIMATION = "noFlareAnimation"; //$NON-NLS-1$
 
   protected static final UniqueIdManager idMgr = new UniqueIdManager("Flare"); //$NON-NLS-1$
   protected String id = "";     // Our unique ID
@@ -88,6 +87,7 @@ public class Flare extends AbstractConfigurable
   private String flareKey;      // Configures which set of modifier keys and click will produce the flare
   private Color color;          // Color for the flare circle
   private FormattedString reportFormat = new FormattedString(); // Report format for reporting the flare to the chat log
+  private String description;   // Description
 
   // Internal properties
   private Map map;                  // The map for this Flare
@@ -104,6 +104,8 @@ public class Flare extends AbstractConfigurable
   public static final String PULSES_PER_SEC = "flarePulsesPerSec";  //$NON-NLS-1$
   public static final String REPORT_FORMAT  = "reportFormat";       //$NON-NLS-1$
   public static final String NAME           = "flareName";          //$NON-NLS-1$
+  public static final String NO_ANIMATION = "noFlareAnimation";     //$NON-NLS-1$
+  public static final String DESCRIPTION    = "description";        //NON-NLS
 
   // Friendly (localizable) names for modifier key combinations
   public static final String FLARE_ALT_LOCAL       = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.alt"));                       //$NON-NLS-1$ //$NON-NLS-2$
@@ -147,8 +149,9 @@ public class Flare extends AbstractConfigurable
   /**
    * @return String description of this component, displayed in Editor.
    */
+  @Override
   public String getDescription() {
-    return Resources.getString("Editor.Flare.desc"); //$NON-NLS-1$
+    return description; //$NON-NLS-1$
   }
 
   /**
@@ -173,6 +176,7 @@ public class Flare extends AbstractConfigurable
   public Class<?>[] getAttributeTypes() {
     return new Class[] {
       String.class,
+      String.class,
       FlareKeyConfig.class,
       Integer.class,
       Color.class,
@@ -191,6 +195,7 @@ public class Flare extends AbstractConfigurable
   public String[] getAttributeNames() {
     return new String[] {
       NAME,
+      DESCRIPTION,
       FLARE_KEY,
       CIRCLE_SIZE,
       CIRCLE_COLOR,
@@ -209,6 +214,7 @@ public class Flare extends AbstractConfigurable
   public String[] getAttributeDescriptions() {
     return new String[] {
       Resources.getString("Editor.name_label"), //$NON-NLS-1$
+      Resources.getString(Resources.DESCRIPTION),
       Resources.getString("Editor.Flare.flare_key"), //$NON-NLS-1$
       Resources.getString("Editor.Flare.circle_size"), //$NON-NLS-1$
       Resources.getString("Editor.Flare.circle_color"), //$NON-NLS-1$
@@ -251,6 +257,9 @@ public class Flare extends AbstractConfigurable
     }
     else if (REPORT_FORMAT.equals(key)) {
       return reportFormat.getFormat();
+    }
+    else if (DESCRIPTION.equals(key)) {
+      return description;
     }
     return null;
   }
@@ -333,6 +342,9 @@ public class Flare extends AbstractConfigurable
       else {
         reportFormat = (FormattedString)value;
       }
+    }
+    else if (DESCRIPTION.equals(key)) {
+      description = (String)value;
     }
   }
 

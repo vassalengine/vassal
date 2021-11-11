@@ -110,17 +110,17 @@ public class MapWidget extends Widget {
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[]{Resources.getString("Editor.name_label")};
+    return new String[]{Resources.getString("Editor.name_label"), Resources.getString(Resources.DESCRIPTION)};
   }
 
   @Override
   public Class<?>[] getAttributeTypes() {
-    return new Class<?>[]{String.class};
+    return new Class<?>[]{String.class, String.class};
   }
 
   @Override
   public String[] getAttributeNames() {
-    return new String[]{NAME};
+    return new String[]{NAME, DESCRIPTION};
   }
 
   @Override
@@ -128,12 +128,18 @@ public class MapWidget extends Widget {
     if (NAME.equals(key)) {
       setConfigureName((String) value);
     }
+    else if (DESCRIPTION.equals(key)) {
+      description = (String)value;
+    }
   }
 
   @Override
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
       return getConfigureName();
+    }
+    else if (DESCRIPTION.equals(key)) {
+      return description;
     }
     return null;
   }

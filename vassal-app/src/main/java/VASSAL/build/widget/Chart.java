@@ -107,6 +107,9 @@ public class Chart extends Widget {
         }
       }
     }
+    else if (DESCRIPTION.equals(key)) {
+      description = (String)val;
+    }
   }
 
   @Override
@@ -130,17 +133,17 @@ public class Chart extends Widget {
    */
   @Override
   public String[] getAttributeNames() {
-    return new String[]{NAME, FILE};
+    return new String[]{NAME, DESCRIPTION, FILE};
   }
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[]{Resources.getString("Editor.name_label"), Resources.getString("Editor.image_label")};
+    return new String[]{Resources.getString("Editor.name_label"), Resources.getString(Resources.DESCRIPTION), Resources.getString("Editor.image_label")};
   }
 
   @Override
   public Class<?>[] getAttributeTypes() {
-    return new Class<?>[]{String.class, Image.class};
+    return new Class<?>[]{String.class, String.class, Image.class};
   }
 
   @Override
@@ -150,6 +153,9 @@ public class Chart extends Widget {
     }
     else if (FILE.equals(name)) {
       return fileName;
+    }
+    else if (DESCRIPTION.equals(name)) {
+      return description;
     }
     return null;
   }

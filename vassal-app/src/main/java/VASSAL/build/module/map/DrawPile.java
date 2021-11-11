@@ -35,6 +35,7 @@ import VASSAL.build.widget.CardSlot;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.ColorConfigurer;
+import VASSAL.configure.ComponentDescription;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.GamePieceFormattedStringConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
@@ -63,11 +64,15 @@ import java.util.List;
 
 import javax.swing.JPopupMenu;
 
-public class DrawPile extends SetupStack implements PropertySource, PropertyNameSource {
+public class DrawPile extends SetupStack implements PropertySource, PropertyNameSource, ComponentDescription {
+  public static final String DESCRIPTION = "description"; //NON-NLS
+
   protected Deck dummy = new Deck(GameModule.getGameModule()); // Used for storing type information
   protected boolean reshufflable;
   protected Deck myDeck;
   protected PropertySource source;
+
+  protected String description;
 
   private final VisibilityCondition colorVisibleCondition = () -> dummy.isDrawOutline();
 
@@ -112,6 +117,11 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     if (parent instanceof PropertySource) {
       source = (PropertySource) parent;
     }
+  }
+
+  @Override
+  public String getDescription() {
+    return description;
   }
 
   protected JPopupMenu buildPopup() {
@@ -295,6 +305,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   public String[] getAttributeNames() {
     return new String[]{
       NAME,
+      DESCRIPTION,
       OWNING_BOARD,
       X_POSITION,
       Y_POSITION,
@@ -353,6 +364,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   public String[] getAttributeDescriptions() {
     return new String[]{
         Resources.getString(Resources.NAME_LABEL),
+        Resources.getString(Resources.DESCRIPTION),
         Resources.getString("Editor.DrawPile.owning_board"), //$NON-NLS-1$
         Resources.getString("Editor.x_position"), //$NON-NLS-1$
         Resources.getString("Editor.y_position"), //$NON-NLS-1$
@@ -411,6 +423,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       String.class, // NAME
+      String.class, // DESCRIPTION
       OwningBoardPrompt.class, // OWNING_BOARD
       Integer.class, // X_POSITION
       Integer.class, // Y_POSITION
@@ -637,6 +650,9 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     }
     else if (DECK_OWNERS.equals(key)) {
       return StringArrayConfigurer.arrayToString(dummy.getOwners());
+    }
+    else if (DESCRIPTION.equals(key)) {
+      return description;
     }
     else {
       return super.getAttributeValueString(key);
@@ -901,6 +917,9 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       else if (value instanceof String[]) {
         dummy.setOwners((String [])value);
       }
+    }
+    else if (DESCRIPTION.equals(key)) {
+      description = (String)value;
     }
     else {
       super.setAttribute(key, value);

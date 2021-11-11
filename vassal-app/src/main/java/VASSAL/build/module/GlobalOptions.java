@@ -26,6 +26,7 @@ import VASSAL.build.IllegalBuildException;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.PieceMover;
 import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.ComponentDescription;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.FormattedStringConfigurer;
@@ -79,7 +80,9 @@ import org.w3c.dom.Node;
  * <br>{@link BasicLogger} - configurers for Undo & Step Forward. Adds logging-related preferences to pane
  * <br>{@link VASSAL.tools.AdjustableSpeedScrollPane} - scroll increment
  */
-public class GlobalOptions extends AbstractConfigurable {
+public class GlobalOptions extends AbstractConfigurable implements ComponentDescription {
+  public static final String DESCRIPTION = "description"; //NON-NLS
+
   // Hybrid preferences (designer-set attribute OR possibly a player preference)
   public static final String NON_OWNER_UNMASKABLE = "nonOwnerUnmaskable"; //$NON-NLS-1$
   public static final String PROMPT_STRING = "promptString"; //$NON-NLS-1$
@@ -126,6 +129,8 @@ public class GlobalOptions extends AbstractConfigurable {
 
   @Deprecated(since = "2020-10-21", forRemoval = true)
   public static final String INITIAL_HEAP = "initialHeap"; //$NON-NLS-1$
+
+  protected String description; // Description/comments for Global Options
 
   /************************************************************
    * Attributes configured by module designer
@@ -174,6 +179,11 @@ public class GlobalOptions extends AbstractConfigurable {
   /** @return our singleton instance */
   public static GlobalOptions getInstance() {
     return instance;
+  }
+
+  @Override
+  public String getDescription() {
+    return description;
   }
 
   /**
@@ -447,6 +457,7 @@ public class GlobalOptions extends AbstractConfigurable {
   @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
+      Resources.getString("Editor.description_label"), //NON-NLS
       Resources.getString("Editor.GlobalOption.nonowner_unmask"), //$NON-NLS-1$
       null,
       Resources.getString("Editor.GlobalOption.autoreport_moves"), //$NON-NLS-1$
@@ -463,6 +474,7 @@ public class GlobalOptions extends AbstractConfigurable {
   public String[] getAttributeNames() {
     final ArrayList<String> attributes = new ArrayList<>(
       Arrays.asList(
+        DESCRIPTION,
         NON_OWNER_UNMASKABLE,
         PROMPT_STRING,
         AUTO_REPORT,
@@ -483,6 +495,7 @@ public class GlobalOptions extends AbstractConfigurable {
   @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
+      String.class,
       Prompt.class,
       null,
       Prompt.class,
@@ -625,6 +638,9 @@ public class GlobalOptions extends AbstractConfigurable {
     else if (DRAG_THRESHOLD.equals(key)) {
       return Integer.toString(dragThreshold);
     }
+    else if (DESCRIPTION.equals(key)) {
+      return description;
+    }
     else if (!OPTION_CONFIGURERS.containsKey(key)) {
       final Object val = properties.get(key);
       return val != null ? val.toString() : null;
@@ -698,6 +714,9 @@ public class GlobalOptions extends AbstractConfigurable {
     }
     else if (PLAYER_ID_FORMAT.equals(key)) {
       playerIdFormat.setFormat((String) value);
+    }
+    else if (DESCRIPTION.equals(key)) {
+      description = (String)value;
     }
     else if (OPTION_CONFIGURERS.containsKey(key)) {
       OPTION_CONFIGURERS.get(key).setValue(value);

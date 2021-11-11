@@ -23,6 +23,7 @@ import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.configure.ComponentDescription;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.counters.Deck;
 import VASSAL.counters.DeckVisitor;
@@ -54,20 +55,28 @@ import javax.swing.JToolBar;
  * their proper layer, and since "in theory" Stacks are only formed from stackable units in the same visual layer,
  * they take their layer cues from the first piece added to them.
  */
-public class LayeredPieceCollection extends AbstractConfigurable {
+public class LayeredPieceCollection extends AbstractConfigurable implements ComponentDescription {
   public static final String PROPERTY_NAME = "property"; //NON-NLS
   public static final String LAYER_ORDER = "layerOrder"; //NON-NLS
+  public static final String DESCRIPTION = "description"; //NON-NLS
   protected Collection collection = new Collection(Resources.getString("Editor.LayeredPieceCollection.layer"), new String[0]); //NON-NLS // "layer"
   protected Map map;
   protected TemporaryToolBar tempToolBar;
+  protected String description;
 
   public LayeredPieceCollection() {
     this.setAttributeTranslatable(PROPERTY_NAME, false);
   }
 
   @Override
+  public String getDescription() {
+    return description;
+  }
+
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
+        Resources.getString(Resources.DESCRIPTION),
         Resources.getString("Editor.GamePieceLayers.property_layer"), //$NON-NLS-1$ // "property name for layer"
         Resources.getString("Editor.GamePieceLayers.order_layer"),    //$NON-NLS-1$ // "layer order"
     };
@@ -76,6 +85,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
   @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
+      String.class,
       String.class,   // This attribute contains a property name. Pieces are then queried for their value of that property, and the value is used to determine what visual layer they go in
       String[].class  // This attribute contains an array of possible values for the previously named property, sorted in the relative visual order in which they should be drawn.
     };
@@ -84,6 +94,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
   @Override
   public String[] getAttributeNames() {
     return new String[]{
+      DESCRIPTION,
       PROPERTY_NAME,
       LAYER_ORDER
     };
@@ -96,6 +107,9 @@ public class LayeredPieceCollection extends AbstractConfigurable {
     }
     else if (LAYER_ORDER.equals(key)) {
       return StringArrayConfigurer.arrayToString(collection.layerOrder);
+    }
+    else if (DESCRIPTION.equals(key)) {
+      return description;
     }
     else {
       return null;
@@ -113,6 +127,9 @@ public class LayeredPieceCollection extends AbstractConfigurable {
       }
       collection.layerOrder = (String[]) value;
       collection.initLayers(collection.layerOrder.length + 1);
+    }
+    else if (DESCRIPTION.equals(key)) {
+      description = (String)value;
     }
   }
 
