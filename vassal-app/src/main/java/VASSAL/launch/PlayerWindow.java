@@ -140,8 +140,7 @@ public class PlayerWindow extends JFrame {
     toolsMenu.add(mm.addKey("GameState.load_continuation"));
 
     toolsMenu.addSeparator();
-
-
+    
     final CheckBoxMenuItemProxy debugCheckbox = new CheckBoxMenuItemProxy(new AbstractAction(
       Resources.getString("Debug.show_debug_window")) {
       private static final long serialVersionUID = 1L;
