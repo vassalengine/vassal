@@ -243,6 +243,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     return PlayerRoster.isSoloSide(name);
   }
 
+  @Override
   public String getDescription() {
     return description;
   }

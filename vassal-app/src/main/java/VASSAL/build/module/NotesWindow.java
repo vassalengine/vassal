@@ -115,6 +115,7 @@ public class NotesWindow extends AbstractToolbarItem
     }
   }
 
+  @Override
   public String getDescription() {
     return description;
   }

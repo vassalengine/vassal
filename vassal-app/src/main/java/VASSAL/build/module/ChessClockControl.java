@@ -163,6 +163,7 @@ public class ChessClockControl extends AbstractConfigurable
     return chessclocks;
   }
 
+  @Override
   public String getDescription() {
     return description;
   }

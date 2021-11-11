@@ -181,6 +181,7 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
     return instance;
   }
 
+  @Override
   public String getDescription() {
     return description;
   }
