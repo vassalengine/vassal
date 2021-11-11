@@ -64,6 +64,12 @@ public class DiceButton extends AbstractToolbarItem {
   protected boolean sortDice = false;
   protected final FormattedString reportFormat = new FormattedString("** $" + REPORT_NAME + "$ = $" + RESULT + "$ *** &lt;$" + GlobalOptions.PLAYER_NAME + "$&gt;"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
+  /** Locking of options for roll pronpts */
+  protected boolean lockSides = false;
+  protected boolean lockDice = false;
+  protected boolean lockPlus = false;
+  protected boolean lockAdd = false;
+
   /** A list of individual rolls kept */
   protected int[] keepDice;
 
@@ -119,6 +125,11 @@ public class DiceButton extends AbstractToolbarItem {
   public static final String KEEP_OPTION = "keepOption";
   public static final String KEEP_COUNT = "keepCount";
 
+  public static final String LOCK_DICE = "lockDice";
+  public static final String LOCK_SIDES = "lockSides";
+  public static final String LOCK_PLUS = "lockPlus";
+  public static final String LOCK_ADD = "lockAdd";
+
   /** Variable name for reporting format */
   public static final String RESULT = "result"; //$NON-NLS-1$
   public static final String REPORT_NAME = "name"; //$NON-NLS-1$
@@ -131,16 +142,32 @@ public class DiceButton extends AbstractToolbarItem {
 
   protected void initLaunchButton() {
     final ActionListener rollAction = e -> {
+
+      // Determine which elements are not locked
+      final List<String> keepAttributes = new ArrayList<>();
       if (promptAlways) {
+        if (!lockDice) {
+          keepAttributes.add(N_DICE);
+        }
+        if (!lockSides) {
+          keepAttributes.add(N_SIDES);
+        }
+        if (!lockPlus) {
+          keepAttributes.add(PLUS);
+        }
+        if (!lockAdd) {
+          keepAttributes.add(ADD_TO_TOTAL);
+        }
+      }
+
+      // Only show a prompt if at least one of the 4 attributes is not locked, otherwise it is a standard roll
+      if (promptAlways && !keepAttributes.isEmpty()) {
         final DiceButton delegate = new DiceButton() {
           @Override
           protected void initLaunchButton() {
             setLaunchButton(makeLaunchButton("", AbstractToolbarItem.BUTTON_TEXT, "", null));
           }
         };
-
-        final List<String> keepAttributes =
-          Arrays.asList(N_DICE, N_SIDES, PLUS, ADD_TO_TOTAL);
 
         for (final String key : keepAttributes) {
           delegate.setAttribute(key, getAttributeValueString(key));
@@ -316,9 +343,13 @@ public class DiceButton extends AbstractToolbarItem {
       REPORT_FORMAT,
       PROMPT_ALWAYS,
       N_DICE,
+      LOCK_DICE,
       N_SIDES,
+      LOCK_SIDES,
       PLUS,
+      LOCK_PLUS,
       ADD_TO_TOTAL,
+      LOCK_ADD,
       REPORT_TOTAL,
       SORT_DICE_RESULTS,
       KEEP_DICE,
@@ -338,9 +369,13 @@ public class DiceButton extends AbstractToolbarItem {
       Resources.getString("Editor.report_format"), //$NON-NLS-1$
       Resources.getString("Editor.DiceButton.prompt_value"), //$NON-NLS-1$
       Resources.getString("Dice.number_of_dice"), //$NON-NLS-1$
+      Resources.getString("Editor.DiceButton.lock_number_of_dice"), //$NON-NLS-1$
       Resources.getString("Dice.number_of_sides"), //$NON-NLS-1$
+      Resources.getString("Editor.DiceButton.lock_number_of_sides"), //$NON-NLS-1$
       Resources.getString("Dice.add_to_each_side"), //$NON-NLS-1$
+      Resources.getString("Editor.DiceButton.lock_add_to_each_side"), //$NON-NLS-1$
       Resources.getString("Dice.add_to_total"), //$NON-NLS-1$
+      Resources.getString("Editor.DiceButton.lock_add_to_total"), //$NON-NLS-1$
       Resources.getString("Editor.DiceButton.report_total"), //$NON-NLS-1$
       Resources.getString("Editor.DiceButton.sort_results"), //$NON-NLS-1$
       Resources.getString("Editor.DiceButton.keep_dice"),
@@ -384,9 +419,13 @@ public class DiceButton extends AbstractToolbarItem {
       ReportFormatConfig.class,
       Boolean.class,
       Integer.class,
+      Boolean.class,
       Integer.class,
+      Boolean.class,
       Integer.class,
+      Boolean.class,
       Integer.class,
+      Boolean.class,
       Boolean.class,
       Boolean.class,
       Boolean.class,
@@ -395,20 +434,17 @@ public class DiceButton extends AbstractToolbarItem {
     };
   }
 
-  private final VisibilityCondition cond = () -> !promptAlways;
+  private final VisibilityCondition cond = () -> promptAlways;
 
-//  private final VisibilityCondition canSort = () -> !reportTotal;
+  //  private final VisibilityCondition canSort = () -> !reportTotal;
 
   private final VisibilityCondition keep = () -> keepingDice;
 
   @Override
   public VisibilityCondition getAttributeVisibility(final String name) {
-    if (List.of(N_DICE, N_SIDES, PLUS, ADD_TO_TOTAL).contains(name)) {
+    if (List.of(LOCK_DICE, LOCK_SIDES, LOCK_PLUS, LOCK_ADD).contains(name)) {
       return cond;
     }
-//    else if (SORT_DICE_RESULTS.equals(name)) {
-//      return canSort;
-//    }
     else if (List.of(KEEP_OPTION, KEEP_COUNT).contains(name)) {
       return keep;
     }
@@ -462,12 +498,28 @@ public class DiceButton extends AbstractToolbarItem {
         nDice = Integer.parseInt((String) o);
       }
     }
+    else if (LOCK_DICE.equals(key)) {
+      if (o instanceof Boolean) {
+        lockDice = (Boolean) o;
+      }
+      else if (o instanceof String) {
+        lockDice = "true".equals(o); //$NON-NLS-1$
+      }
+    }
     else if (N_SIDES.equals(key)) {
       if (o instanceof Integer) {
         nSides = (Integer) o;
       }
       else if (o instanceof String) {
         nSides = Integer.parseInt((String) o);
+      }
+    }
+    else if (LOCK_SIDES.equals(key)) {
+      if (o instanceof Boolean) {
+        lockSides = (Boolean) o;
+      }
+      else if (o instanceof String) {
+        lockSides = "true".equals(o); //$NON-NLS-1$
       }
     }
     else if (PLUS.equals(key)) {
@@ -478,12 +530,28 @@ public class DiceButton extends AbstractToolbarItem {
         plus = Integer.parseInt((String) o);
       }
     }
+    else if (LOCK_PLUS.equals(key)) {
+      if (o instanceof Boolean) {
+        lockPlus = (Boolean) o;
+      }
+      else if (o instanceof String) {
+        lockPlus = "true".equals(o); //$NON-NLS-1$
+      }
+    }
     else if (ADD_TO_TOTAL.equals(key)) {
       if (o instanceof Integer) {
         addToTotal = (Integer) o;
       }
       else if (o instanceof String) {
         addToTotal = Integer.parseInt((String) o);
+      }
+    }
+    else if (LOCK_ADD.equals(key)) {
+      if (o instanceof Boolean) {
+        lockAdd = (Boolean) o;
+      }
+      else if (o instanceof String) {
+        lockAdd = "true".equals(o); //$NON-NLS-1$
       }
     }
     else if (REPORT_TOTAL.equals(key)) {
@@ -549,14 +617,26 @@ public class DiceButton extends AbstractToolbarItem {
     else if (N_DICE.equals(key)) {
       return String.valueOf(nDice);
     }
+    else if (LOCK_DICE.equals(key)) {
+      return String.valueOf(lockDice);
+    }
     else if (N_SIDES.equals(key)) {
       return String.valueOf(nSides);
+    }
+    else if (LOCK_SIDES.equals(key)) {
+      return String.valueOf(lockSides);
     }
     else if (PLUS.equals(key)) {
       return String.valueOf(plus);
     }
+    else if (LOCK_PLUS.equals(key)) {
+      return String.valueOf(lockPlus);
+    }
     else if (ADD_TO_TOTAL.equals(key)) {
       return String.valueOf(addToTotal);
+    }
+    else if (LOCK_ADD.equals(key)) {
+      return String.valueOf(lockAdd);
     }
     else if (REPORT_TOTAL.equals(key)) {
       return String.valueOf(reportTotal);
