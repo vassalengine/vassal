@@ -71,9 +71,9 @@ public class DebugControls extends AbstractBuildable implements ActionListener {
   protected FlowLabel selectedNameLabel;
   protected JLabel selectedCoordsLabel;
 
-  protected JLabel heapSizeLabel;
-  protected JLabel heapMaxLabel;
-  protected JLabel heapFreeLabel;
+  //protected JLabel heapSizeLabel;
+  //protected JLabel heapMaxLabel;
+  //protected JLabel heapFreeLabel;
 
   protected Timer timer = new Timer(100, this);
 
@@ -89,13 +89,13 @@ public class DebugControls extends AbstractBuildable implements ActionListener {
 
   public DebugControls() {
     final JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-    split.setResizeWeight(0.5);
+    split.setResizeWeight(0.1);
 
     final JPanel leftPanel = new JPanel(new MigLayout("fill, nogrid, hidemode 3")); //NON-NLS
     leftPanel.setBorder(BorderFactory.createTitledBorder(
       BorderFactory.createRaisedBevelBorder(),
-      Resources.getString("Module Debug Window"))
-    );
+      Resources.getString("Debug.component_type"))
+);
 
     final Box leftBox = Box.createVerticalBox();
 
@@ -114,27 +114,27 @@ public class DebugControls extends AbstractBuildable implements ActionListener {
     leftBox.add(selectedBox);
     leftPanel.add(leftBox);
 
-    split.setLeftComponent(leftPanel);
+    //split.setLeftComponent(leftPanel);
 
-    final JPanel rightPanel = new JPanel(new MigLayout("fill, nogrid, hidemode 3")); //NON-NLS
+    //final JPanel rightPanel = new JPanel(new MigLayout("fill, nogrid, hidemode 3")); //NON-NLS
 
-    final Box heapBox = Box.createVerticalBox();
-    heapSizeLabel = new JLabel("");
-    heapMaxLabel = new JLabel("");
-    heapFreeLabel = new JLabel("");
-    heapBox.add(heapSizeLabel);
-    heapBox.add(heapMaxLabel);
-    heapBox.add(heapFreeLabel);
-    rightPanel.add(heapBox);
+    //final Box heapBox = Box.createVerticalBox();
+    //heapSizeLabel = new JLabel("");
+    //heapMaxLabel = new JLabel("");
+    //heapFreeLabel = new JLabel("");
+    //heapBox.add(heapSizeLabel);
+    //heapBox.add(heapMaxLabel);
+    //heapBox.add(heapFreeLabel);
+    //rightPanel.add(heapBox);
 
-    split.setRightComponent(rightPanel);
-    split.setDividerLocation(250);
-    split.setPreferredSize(new Dimension(500, 120));
-    split.setResizeWeight(0.5);
+    //split.setRightComponent(rightPanel);
+    //split.setDividerLocation(250);
+    //split.setPreferredSize(new Dimension(500, 120));
+    //split.setResizeWeight(0.5);
 
     controlPanel = new JPanel();
     controlPanel.setLayout(new BorderLayout());
-    controlPanel.add("Center", split);  //$NON-NLS-1$
+    controlPanel.add("Center", leftPanel);  //$NON-NLS-1$
 
     timer.addActionListener(this);
 
@@ -148,7 +148,7 @@ public class DebugControls extends AbstractBuildable implements ActionListener {
   }
 
   private void updateCoords() {
-    cursorCoordsLabel.setText("Cursor: " + cursorLocation.x + ',' + cursorLocation.y);
+    cursorCoordsLabel.setText(Resources.getString("Debug.cursor", cursorLocation.x, cursorLocation.y));
   }
 
 
@@ -169,29 +169,29 @@ public class DebugControls extends AbstractBuildable implements ActionListener {
 
   private void updateHeap() {
     // Get current size of heap in bytes
-    final long heapSize = Runtime.getRuntime().totalMemory() * 100 / MEGABYTE;
-    heapSizeLabel.setText("Heap Size: " + heapSize/100 + "." + heapSize % 100 + " mb");
+    //final long heapSize = Runtime.getRuntime().totalMemory() * 100 / MEGABYTE;
+    //heapSizeLabel.setText("Heap Size: " + heapSize/100 + "." + heapSize % 100 + " mb");
 
     // Get maximum size of heap in bytes. The heap cannot grow beyond this size.// Any attempt will result in an OutOfMemoryException.
-    final long heapMaxSize = Runtime.getRuntime().maxMemory() * 100 / MEGABYTE;
-    heapMaxLabel.setText("Heap Max: " + heapMaxSize/100 + "." + heapMaxSize % 100 + " mb");
+    //final long heapMaxSize = Runtime.getRuntime().maxMemory() * 100 / MEGABYTE;
+    //heapMaxLabel.setText("Heap Max: " + heapMaxSize/100 + "." + heapMaxSize % 100 + " mb");
 
     // Get amount of free memory within the heap in bytes. This size will increase // after garbage collection and decrease as new objects are created.
-    final long heapFreeSize = Runtime.getRuntime().freeMemory() * 100 / MEGABYTE;
-    heapFreeLabel.setText("Heap Free: " + heapFreeSize/100 + "." + heapFreeSize % 100 + " mb");
+    //final long heapFreeSize = Runtime.getRuntime().freeMemory() * 100 / MEGABYTE;
+    //heapFreeLabel.setText("Heap Free: " + heapFreeSize/100 + "." + heapFreeSize % 100 + " mb");
   }
 
   @Override
   public void addTo(Buildable b) {
     final GameModule gm = GameModule.getGameModule();
 
-    launch = new JButton(Resources.getString("Debug"));  //$NON-NLS-1$
+    launch = new JButton(Resources.getString("Debug.debug_controls"));  //$NON-NLS-1$
     launch.setFocusable(false);
     launch.setAlignmentY(0.0F);
     final ActionListener al = evt -> toggleVisible();
     launch.addActionListener(al);
     final NamedKeyStrokeListener l = new NamedKeyStrokeListener(al);
-    l.setKeyStroke(NamedKeyStroke.of(KeyEvent.VK_D, InputEvent.ALT_DOWN_MASK + InputEvent.SHIFT_DOWN_MASK));
+    //l.setKeyStroke(NamedKeyStroke.of(KeyEvent.VK_D, InputEvent.ALT_DOWN_MASK + InputEvent.SHIFT_DOWN_MASK));
     final URL iconURL = getClass().getResource("/images/connect.gif");  //$NON-NLS-1$
     if (iconURL != null) {
       launch.setIcon(new ImageIcon(iconURL));
@@ -252,7 +252,7 @@ public class DebugControls extends AbstractBuildable implements ActionListener {
         gmcppar.add(splitPane, i);
       }
       else {
-        final JFrame frame = new JFrame(Resources.getString("Debug Controls"));  //$NON-NLS-1$
+        final JFrame frame = new JFrame(Resources.getString("Debug.debug_controls"));  //$NON-NLS-1$
         frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         frame.add(controlPanel);
         frame.setJMenuBar(MenuManager.getInstance().getMenuBarFor(frame));
