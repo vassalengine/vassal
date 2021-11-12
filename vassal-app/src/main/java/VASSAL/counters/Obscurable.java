@@ -586,26 +586,27 @@ public class Obscurable extends Decorator implements TranslatablePiece {
         final String whom = expression.tryEvaluate(this, this, "Editor.Obscurable.deal_expression");
         String by = null;
 
-        // See if anyone is currently playing the target side, and if so give the piece to them
         final PlayerRoster roster = GameModule.getGameModule().getPlayerRoster();
-        for (final PlayerRoster.PlayerInfo player : roster.getPlayers()) {
-          if (player.getSide().equals(whom)) {
-            by = player.playerId;
-            break;
-          }
-        }
 
-        // If we didn't find an active player on the side ... is there a way to flip the card over without assigning ownership to a player?
-        /*
-        if (by == null) {
-          final List<String> emptySides = roster.getAvailableSides();
-          for (final String side : emptySides) {
-            if (side.equals(whom)) {
-              //....
+        // If we mask things by player: see if anyone is currently playing the target side, and if so give the piece to them
+        if (access instanceof PlayerAccess) {
+          for (final PlayerRoster.PlayerInfo player : roster.getPlayers()) {
+            if (player.getSide().equals(whom)) {
+              by = player.playerId;
+              break;
             }
           }
         }
-        */
+        // If we mask things by side, just make sure that what we've been passed is actually "a side".
+        else if ((access instanceof SideAccess) || (access instanceof SpecifiedSideAccess)) {
+          final List<String> sides = roster.getSides();
+          for (final String side : sides) {
+            if (side.equals(whom)) {
+              by = side;
+              break;
+            }
+          }
+        }
 
         obscuredBy = by;
         obscuredOptions = (by == null) ? null : new ObscurableOptions(ObscurableOptions.getInstance().encodeOptions());
