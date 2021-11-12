@@ -19,11 +19,13 @@ package VASSAL.counters;
 
 import VASSAL.build.GameModule;
 import VASSAL.build.module.ObscurableOptions;
+import VASSAL.build.module.PlayerRoster;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.CounterDetailViewer;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.FormattedExpressionConfigurer;
 import VASSAL.configure.ImageSelector;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PieceAccessConfigurer;
@@ -32,6 +34,7 @@ import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.script.expression.FormattedStringExpression;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 
@@ -59,6 +62,8 @@ import net.miginfocom.swing.MigLayout;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import static VASSAL.counters.Deck.NO_USER;
+
 /**
  * d/b/a "Mask"
  *
@@ -76,6 +81,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   protected char obscureKey;
   protected NamedKeyStroke keyCommand;
   protected NamedKeyStroke peekKey;
+  protected NamedKeyStroke dealKey;
   protected String imageName;
   protected String obscuredToOthersImage;
   protected String obscuredBy;
@@ -89,11 +95,13 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   protected boolean autoPeekRollover;
   protected String maskName = "?";
   protected PieceAccess access = PlayerAccess.getInstance();
+  protected String dealExpression;
 
   protected KeyCommand[] commandsWithPeek;
   protected KeyCommand[] commandsWithoutPeek;
   protected KeyCommand hide;
   protected KeyCommand peek;
+  protected KeyCommand deal;
   protected String description = "";
 
   public Obscurable() {
@@ -156,6 +164,9 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     peekCommand = st.nextToken(DEFAULT_PEEK_COMMAND);
     description = st.nextToken("");
     autoPeekRollover = st.nextBoolean(!existingPiece); // Default true from now on for newly created pieces, but false for up-converted legacy pieces
+    dealKey = st.nextNamedKeyStroke(null);
+    dealExpression = st.nextToken("");
+
     commandsWithPeek = null;
     hide = null;
     peek = null;
@@ -185,6 +196,8 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     se.append(peekCommand);
     se.append(description);
     se.append(autoPeekRollover);
+    se.append(NamedHotKeyConfigurer.encode(dealKey));
+    se.append(dealExpression);
     return ID + se.getValue();
   }
 
@@ -491,12 +504,13 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     }
 
     hide = new KeyCommand(hideCommand, keyCommand, outer, this);
+    deal = new KeyCommand("", dealKey, outer, this);
     if (hideCommand.length() > 0 && isMaskable()) {
       l.add(hide);
-      commandsWithoutPeek = new KeyCommand[] {hide};
+      commandsWithoutPeek = new KeyCommand[] {hide, deal};
     }
     else {
-      commandsWithoutPeek = KeyCommand.NONE;
+      commandsWithoutPeek = new KeyCommand[] {deal}; //KeyCommand.NONE;
     }
 
     // Peek Command
@@ -563,6 +577,40 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       }
 
       retVal = c.getChangeCommand();
+    }
+    else if (deal.matches(stroke)) {
+      // Can't use "deal" key if piece is currently owned by someone else
+      if (!obscuredToMe() || NO_USER.equals(obscuredBy)) {
+        // Evaluate what side we're requested to give the piece to (e.g. "British")
+        final FormattedStringExpression expression = new FormattedStringExpression(dealExpression);
+        final String whom = expression.tryEvaluate(this, this, "Editor.Obscurable.deal_expression");
+        String by = null;
+
+        final PlayerRoster roster = GameModule.getGameModule().getPlayerRoster();
+
+        // If we mask things by player: see if anyone is currently playing the target side, and if so give the piece to them
+        if (access instanceof PlayerAccess) {
+          for (final PlayerRoster.PlayerInfo player : roster.getPlayers()) {
+            if (player.getSide().equals(whom)) {
+              by = player.playerId;
+              break;
+            }
+          }
+        }
+        // If we mask things by side, just make sure that what we've been passed is actually "a side".
+        else if ((access instanceof SideAccess) || (access instanceof SpecifiedSideAccess)) {
+          final List<String> sides = roster.getSides();
+          for (final String side : sides) {
+            if (side.equals(whom)) {
+              by = side;
+              break;
+            }
+          }
+        }
+
+        obscuredBy = by;
+        obscuredOptions = (by == null) ? null : new ObscurableOptions(ObscurableOptions.getInstance().encodeOptions());
+      }
     }
     else if (peek.matches(stroke)) {
       if (obscuredToOthers() &&
@@ -656,6 +704,8 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     final boolean noOptions = obscuredBy == null || obscuredOptions == null;
     final boolean noOptions2 = c.obscuredBy == null || c.obscuredOptions == null;
     if (! Objects.equals(noOptions, noOptions2)) return false;
+    if (! Objects.equals(dealKey, c.dealKey)) return false;
+    if (! Objects.equals(dealExpression, c.dealExpression)) return false;
     if (!noOptions && !noOptions2) {
       return Objects.equals(obscuredOptions.encodeOptions(), c.obscuredOptions.encodeOptions());
     }
@@ -668,6 +718,8 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     private final StringConfigurer obscureCommandInput, maskNameInput;
     private final TranslatingStringEnumConfigurer displayOption;
     private final NamedHotKeyConfigurer peekKeyInput;
+    private final NamedHotKeyConfigurer dealKeyInput;
+    private final FormattedExpressionConfigurer dealExpressionInput;
     private final StringConfigurer peekCommandInput;
     private final BooleanConfigurer autoPeekInput;
     private final TraitConfigPanel controls = new TraitConfigPanel();
@@ -702,6 +754,12 @@ public class Obscurable extends Decorator implements TranslatablePiece {
 
       accessConfig = new PieceAccessConfigurer(p.access);
       controls.add("Editor.Obscurable.can_be_masked_by", accessConfig);
+
+      dealKeyInput = new NamedHotKeyConfigurer(p.dealKey);
+      controls.add("Editor.Obscurable.deal_key", dealKeyInput);
+
+      dealExpressionInput = new FormattedExpressionConfigurer(p.dealExpression);
+      controls.add("Editor.Obscurable.deal_expression", dealExpressionInput);
 
       picker = new ImageSelector(p.imageName, 512, 512);
       controls.add("Editor.Obscurable.view_when_masked", picker);
@@ -851,6 +909,8 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       se.append(peekCommandInput.getValueString());
       se.append(descInput.getValueString());
       se.append(autoPeekInput.getValueString());
+      se.append(dealKeyInput.getValueString());
+      se.append(dealExpressionInput.getValueString());
       return ID + se.getValue();
     }
 

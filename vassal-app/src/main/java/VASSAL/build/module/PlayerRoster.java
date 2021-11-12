@@ -623,6 +623,18 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     }
   }
 
+  public List<String> getAvailableSides() {
+    final ArrayList<String> availableSides = new ArrayList<>(sides);
+    final ArrayList<String> alreadyTaken = new ArrayList<>();
+
+    for (final PlayerInfo p : players) {
+      alreadyTaken.add(p.side);
+    }
+
+    availableSides.removeAll(alreadyTaken);
+    return availableSides;
+  }
+
   protected String promptForSide() {
     final ArrayList<String> availableSides = new ArrayList<>(sides);
     final ArrayList<String> alreadyTaken = new ArrayList<>();
