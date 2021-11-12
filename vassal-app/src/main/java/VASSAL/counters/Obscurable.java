@@ -596,6 +596,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
         }
 
         // If we didn't find an active player on the side ... is there a way to flip the card over without assigning ownership to a player?
+        /*
         if (by == null) {
           final List<String> emptySides = roster.getAvailableSides();
           for (final String side : emptySides) {
@@ -604,6 +605,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
             }
           }
         }
+        */
 
         obscuredBy = by;
         obscuredOptions = (by == null) ? null : new ObscurableOptions(ObscurableOptions.getInstance().encodeOptions());
