@@ -1,5 +1,6 @@
-3.6.0-beta6 - ??? 
+3.6.0-beta6 - 12 November 2021
 
+* 10736: 'Deal cards out' to other players
 * 10734: No refresh allowed during replay
 * 10731: Add description fields to most important editor components
 * 10730: Improve Game Piece Palette doc per forum suggestion (AsciiDoc file
