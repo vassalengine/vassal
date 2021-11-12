@@ -19,14 +19,19 @@ package VASSAL.launch;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 
+import VASSAL.build.GameModule;
+import VASSAL.tools.DebugControls;
+import VASSAL.tools.menu.CheckBoxMenuItemProxy;
 import org.apache.commons.lang3.SystemUtils;
 
 import VASSAL.build.module.Chatter;
@@ -133,6 +138,24 @@ public class PlayerWindow extends JFrame {
 
     toolsMenu.add(mm.addKey("GameRefresher.refresh_counters"));
     toolsMenu.add(mm.addKey("GameState.load_continuation"));
+
+    toolsMenu.addSeparator();
+    
+    final CheckBoxMenuItemProxy debugCheckbox = new CheckBoxMenuItemProxy(new AbstractAction(
+      Resources.getString("Debug.show_debug_window")) {
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        final DebugControls dc = GameModule.getGameModule().getDebugControls();
+        if (dc != null) {
+          dc.toggleVisible();
+        }
+      }
+    }, false);
+
+    toolsMenu.add(debugCheckbox);
+    DebugControls.setCheckBox(debugCheckbox);
 
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(),

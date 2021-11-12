@@ -111,6 +111,7 @@ import VASSAL.script.expression.Expression;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.CRCUtils;
 import VASSAL.tools.DataArchive;
+import VASSAL.tools.DebugControls;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.NamedKeyStroke;
@@ -343,6 +344,11 @@ public class GameModule extends AbstractConfigurable
   private ChatServerControls serverControls;
 
   /**
+   * Debug window controls
+   */
+  private DebugControls debugControls;
+
+  /**
    * Manages the tiling of large map images
    */
   private ImageTileSource tcache;
@@ -489,6 +495,13 @@ public class GameModule extends AbstractConfigurable
    */
   public ChatServerControls getServerControls() {
     return serverControls;
+  }
+
+  /**
+   * @return our DebugControls
+   */
+  public DebugControls getDebugControls() {
+    return debugControls;
   }
 
   /**
@@ -665,6 +678,7 @@ public class GameModule extends AbstractConfigurable
     initGameState();
     initLogger();
     initServer();
+    initDebug();
     new PluginsLoader().addTo(this);
     if (e != null) {
       super.build(e);
@@ -724,6 +738,14 @@ public class GameModule extends AbstractConfigurable
     Prefs.getGlobalPrefs().addOption(Resources.getString("Chat.server"), config); //$NON-NLS-1$
     serverControls = new ChatServerControls();
     serverControls.addTo(this);
+  }
+
+  /**
+   * Initialize and register our debug controls
+   */
+  private void initDebug() {
+    debugControls = new DebugControls();
+    debugControls.addTo(this);
   }
 
   /**
