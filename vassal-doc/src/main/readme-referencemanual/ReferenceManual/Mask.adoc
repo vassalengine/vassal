@@ -47,6 +47,10 @@ _Any of the Specified Sides_ allows you to enter a list of sides.
 Only players assigned to one of the named sides can mask the piece, but the players of all the listed sides will be able to see and modify the piece.
 This is useful for referee players or games with multi-player teams.
 
+*Deal-facedown-to-side command:* When this key command is received, the piece will attempt to assign the side specified in the _Deal to this side_ expression as the owner. Ownership will _not_ change if the piece is already masked by a different player/side from the one executing the command, but if the piece is unmasked or masked to the current player it can be assigned ("dealt to") a player from the specified side. If the _Can be masked by_ field is set to either _Any Side_ or _Any of the Specified Sides_ then the piece will be assigned to that side. If the masking is by _Any Player_, however, the piece will be masked to the player playing that side--but if no player is currently playing that side the piece will become unmasked.
+
+*Deal to this side:* An expression which determines which side to assign ownership of the piece when the _Deal-facedown-to-side command_ is received. Note that if the expression does not match any valid side from the _Definition of Player Sides_ then ownership will not be assigned.
+
 *View when masked:*::  To non-owning players, the piece will be drawn using this image when it is masked.
 
 *Name when masked:*::  To non-owning players, the piece will be reported with this name when it is masked.
