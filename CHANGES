@@ -1,9 +1,11 @@
 3.6.0-beta6 - ??? 
 
+* 10734: No refresh allowed during replay
 * 10731: Add description fields to most important editor components
 * 10730: Improve Game Piece Palette doc per forum suggestion (AsciiDoc file
     only)
 * 10728: Allow 'Prompt' Dice Button values to be locked by designer
+* 10727: Module Debug Window
 * 10719: Deck Refresher
 * 10718: NPE due to dropTargetSelector being unset
 * 10717: Deck access - allow access to decks to be restricted by player

@@ -21,6 +21,7 @@
       "since": "3.6.0-beta5",
       "new_features": [
         { "num": 10728, "desc": "Allow 'Prompt' Dice Button values to be locked by designer" },
+        { "num": 10727, "desc": "Module Debug Window" },
         { "num": 10719, "desc": "Deck Refresher" },
         { "num": 10717, "desc": "Deck access - allow access to decks to be restricted by player" },
         { "num": 10682, "desc": "Move Camera Button" },
@@ -30,6 +31,7 @@
         { "num": 9391, "desc": "Beanshell can now access $$ variables in Report Formats" }
       ],
       "bug_fixes": [
+        { "num": 10734, "desc": "No refresh allowed during replay" },
         { "num": 10718, "desc": "NPE due to dropTargetSelector being unset" },
         { "num": 10713, "desc": "Escape errorLog path when making link URL for connection failed page in BugDialog" },
         { "num": 10711, "desc": "When rotating a mat, jointly rotating cargo should prefer to stay with current mat" },
