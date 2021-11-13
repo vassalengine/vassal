@@ -391,10 +391,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     //test all the expressions for this deck
     for (int index = 0; index < countExpressions.length; index++) {
       final MutableProperty.Impl prop = expressionProperties.get(index);
-      final FormattedString formatted =
-        new FormattedString(countExpressions[index].getExpression());
-      final PieceFilter f = PropertiesPieceFilter.parse(formatted.getText((Auditable) this, "Editor.DrawPile.count_express"));
-      if (f.accept(p)) {
+      final FormattedString formatted = new FormattedString(countExpressions[index].getExpression());
+      final String evaluated = formatted.getText(p, (Auditable) this, "Editor.DrawPile.count_express");
+      // If result is "true" then there was a beanshell expression and it evaluated to true. Otherwise try old-style.
+      // We also have to check explicitly against "false" because the PropertiesPieceFilter apparently accepts that as a match - old-style expressions are so cute
+      if ("true".equals(evaluated) || (!"false".equals(evaluated) && PropertiesPieceFilter.parse(evaluated).accept(p))) { //NON-NLS
         final String mapProperty = prop.getPropertyValue();
         if (mapProperty != null) {
           int newValue = Integer.decode(mapProperty);
