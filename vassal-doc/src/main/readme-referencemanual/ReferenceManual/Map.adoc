@@ -396,6 +396,8 @@ Clicking the button will center the camera (i.e. the map's view) on a designated
 
 *Property Match:*:: Property match expression for finding a counter.
 
+*Zoom Level:*:: Sets the zoom level to view the map, expressed as a decimal value (1.0 = 100% size). If 0 or left blank, then no zoom adjustment is made.
+
 |image:images/MoveCameraButton.png[]
 |===
 
