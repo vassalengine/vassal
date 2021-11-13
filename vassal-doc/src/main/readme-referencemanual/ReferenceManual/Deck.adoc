@@ -153,9 +153,17 @@ These can be whatever you like and must be in the format of:
 <expression name> : <expression>
 ....
 +
+
+Examples (using old-style and new-style expressions, respectively):
++
+....
+battleships:BB=1
+cruisers:{CA==1}
+....
++
+
 For each expression, a map-level property called __<deckName>_<expression name>__ is exposed.
-The exposed value is number of pieces for which that expression evaluates to _true_.
-An example of how to do this is provided below.
+The exposed value is number of pieces for which that expression evaluates to _true_. In the above example, if the deck's _Name_ field contained _Ships_, then the properties _Ships_battleships_ and _Ships_cruisers_ would be exposed.
 
 NOTE: Currently, the only "dynamic" property which can be used in counting expressions is _playerSide_.
 Other dynamic properties will most likely not update if they change after pieces move into a deck.
