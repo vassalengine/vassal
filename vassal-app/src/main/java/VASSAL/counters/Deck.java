@@ -1231,7 +1231,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   }
 
   /** Set the contents of this Deck to a Collection of GamePieces */
-  protected Command setContents(Collection<GamePiece> c) {
+  public Command setContents(Collection<GamePiece> c) {
     final ChangeTracker track = new ChangeTracker(this);
     removeAll();
     for (final GamePiece child : c) {
