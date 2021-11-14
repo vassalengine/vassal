@@ -93,8 +93,6 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
   private static final char DELIMITER = '\t'; //$NON-NLS-1$
   public  static final String COMMAND_PREFIX = "DECKREPOS" + DELIMITER; //$NON-NLS-1$
-  private String id;
-  private Point newPosition;
 
   private Action refreshAction;
   private final GpIdSupport gpIdSupport;
@@ -586,7 +584,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       // Refreshing is done. This section is for non test mode, to replace all the old pieces with the new pieces
       final Point piecePosition = piece.getPosition();
       final Point hiddenPosition = new Point(-100, -100);
-      Point tempPosition = piecePosition;
+      final Point tempPosition = piecePosition;
       final int oldStackIndex = oldStack == null ? 0 : oldStack.indexOf(piece);
 
       // Delete old piece 1st. Doing that after placing the new piece causes errors if the old piece has no stack
@@ -595,8 +593,6 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       // Place new piece on the map at position -100 -100 (this is to fix bug 14440). For some reason
       // the new piece misbehaves in a stack (not visible when stack expanded) when 1st placed on the map (or game)
       // By placing in -100 -100 1st the error seems to disappear
-      final Stack stack = piece.getParent();
-      String id = "";
 
       // Delete the old piece
       final Command remove = new RemovePiece(Decorator.getOutermost(piece));
@@ -666,26 +662,6 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     }
 
   }
-
-  private Point getDeckFreePosition(Deck deck) {
-    Point tempPosition = new Point(-1, -1);
-    Boolean correctTempPositionNotFound;
-    final GamePiece[] pieces;
-    pieces = deck.getMap().getAllPieces();
-    do {
-      correctTempPositionNotFound = false; //Assuming scan of pieces finds no match on tempPosition
-      for (final GamePiece piece : pieces) {
-        final Point piecePosition = piece.getPosition();
-        if (piecePosition.equals(tempPosition)) {
-          tempPosition.x -= 1;
-          correctTempPositionNotFound = true;
-          break;
-        }
-      }
-    } while (correctTempPositionNotFound);
-    return tempPosition;
-  }
-
 
   @Override
   public Command getRestoreCommand() {
@@ -933,19 +909,6 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
         command.append(((Mat) Decorator.getDecorator(newMatPiece, Mat.class)).makeAddCargoCommand(newCargo));
       }
     }
-  }
-
-  private class StackHolder {
-    private Stack stack;
-
-    public StackHolder(Stack stack) {
-      this.stack = stack;
-    }
-
-    public void refresh(Command command) {
-      return;
-    }
-
   }
 }
 
