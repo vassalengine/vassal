@@ -346,6 +346,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     for (final Deck deck : decks) {
       processDeck(deck, command);
     }
+    decks = null;
 
     log(Resources.getString("GameRefresher.run_refresh_counters_v3", theModule.getGameVersion()));
     log(Resources.getString("GameRefresher.counters_refreshed", updatedCount));
