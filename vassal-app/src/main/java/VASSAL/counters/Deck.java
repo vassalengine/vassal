@@ -1232,7 +1232,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   }
 
   /** Set the contents of this Deck to a Collection of GamePieces */
-  protected Command setContents(Collection<GamePiece> c) {
+  public Command setContents(Collection<GamePiece> c) {
     final ChangeTracker track = new ChangeTracker(this);
     removeAll();
     for (final GamePiece child : c) {
@@ -1292,21 +1292,6 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
     setContents(l);
     commands = null; // Force rebuild of popup menu
-  }
-
-  /**
-   * Called when executing a ChangePiece Command during execution of a VLOG step and the
-   * ChangePiece command thinks the Deck state is different to what it actually is.
-   * Can only (?) happen when Load Continuation is used.
-   * The only real option is to set the state to the new state.
-   * @param newState New State
-   * @param oldState Old State
-   */
-  @Override
-  public void mergeState(String newState, String oldState) {
-    if (!oldState.equals(getState())) {
-      setState(newState);
-    }
   }
 
   public Command setContentsFaceDown(boolean value) {
