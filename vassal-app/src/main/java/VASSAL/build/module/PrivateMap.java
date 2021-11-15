@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module;
 
+import java.awt.Container;
 import java.awt.Window;
 import java.awt.dnd.DropTarget;
 import java.awt.event.KeyEvent;
@@ -209,6 +210,12 @@ public class PrivateMap extends Map {
       ((View)getView()).enableMotionListeners();
     }
     getLaunchButton().setEnabled(isVisibleTo(PlayerRoster.getMySide()));
+
+    // Close this private window if we've switched to a side not allowed to see it
+    final Container tla = theMap.getTopLevelAncestor();
+    if ((tla != null) && tla.isVisible() && !isVisibleTo(newSide)) {
+      tla.setVisible(false);
+    }
   }
 
   @Override
