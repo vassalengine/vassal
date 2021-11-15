@@ -213,10 +213,8 @@ public class PrivateMap extends Map {
 
     // Close this private window if we've switched to a side not allowed to see it
     final Container tla = theMap.getTopLevelAncestor();
-    if (tla != null) {
-      if (tla.isVisible() && !isVisibleTo(newSide)) {
-        tla.setVisible(false);
-      }
+    if ((tla != null) && tla.isVisible() && !isVisibleTo(newSide)) {
+      tla.setVisible(false);
     }
   }
 
