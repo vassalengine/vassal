@@ -128,17 +128,19 @@ public class MoveCameraButton extends AbstractToolbarItem {
     if (dest != null) {
       final String zoomString = zoom.getText(map, this, "Editor.MoveCameraButton.zoom");
       if (!zoomString.strip().isEmpty()) {
+        double toZoom;
         try {
-          final double toZoom = Double.parseDouble(zoomString);
-          if (toZoom > 0) {
-            final Zoomer zoomer = map.getZoomer();
-            if (zoomer != null) {
-              zoomer.setZoomFactor(toZoom);
-            }
-          }
+          toZoom = Double.parseDouble(zoomString);
         }
         catch (NumberFormatException e) {
           ErrorDialog.dataWarning(new BadDataReport(this, Resources.getString("Error.non_number_error"), Resources.getString("Editor.MoveCameraButton.zoom") + ": " + zoomString, e));
+          toZoom = 0;
+        }
+        if (toZoom > 0) {
+          final Zoomer zoomer = map.getZoomer();
+          if (zoomer != null) {
+            zoomer.setZoomFactor(toZoom);
+          }
         }
       }
 
