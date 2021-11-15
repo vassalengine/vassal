@@ -131,6 +131,7 @@ public class Footprint extends MovementMarkable {
     final SequenceEncoder.Decoder ss =
       new SequenceEncoder.Decoder(newState, ';');
     globalVisibility = ss.nextBoolean(initiallyVisible);
+    localVisibility = globalVisibility;
     startMapId = ss.nextToken("");
     final int items = ss.nextInt(0);
     for (int i = 0; i < items; i++) {
@@ -183,7 +184,6 @@ public class Footprint extends MovementMarkable {
     trailKeyOff = st.nextNamedKeyStroke(null);
     trailKeyClear = st.nextNamedKeyStroke(null);
     description = st.nextToken("");
-
     commands = null;
     showTrailCommand = null;
     showTrailCommandOn = null;
@@ -191,7 +191,7 @@ public class Footprint extends MovementMarkable {
     showTrailCommandClear = null;
 
     globalVisibility = false;
-    localVisibility  = false;
+    localVisibility  = initiallyVisible;
   }
 
   @Override
@@ -766,17 +766,17 @@ public class Footprint extends MovementMarkable {
     private final NamedHotKeyConfigurer trailKeyOff;
     private final NamedHotKeyConfigurer trailKeyClear;
     private final TraitConfigPanel controls;
-    private final StringConfigurer mc;
-    private final BooleanConfigurer iv;
-    private final BooleanConfigurer gv;
-    private final IntConfigurer cr;
-    private final ColorConfigurer fc;
-    private final ColorConfigurer lc;
-    private final IntConfigurer st;
-    private final IntConfigurer ut;
-    private final IntConfigurer pb;
-    private final IntConfigurer db;
-    private final DoubleConfigurer lw;
+    private final StringConfigurer menuCommandConfig;
+    private final BooleanConfigurer initiallyVisibleConfig;
+    private final BooleanConfigurer globallyVisibleConfig;
+    private final IntConfigurer circleRadiusConfig;
+    private final ColorConfigurer fillColorConfig;
+    private final ColorConfigurer lineColorConfig;
+    private final IntConfigurer selectedTransparencyConfig;
+    private final IntConfigurer unselectedTransparencyConfig;
+    private final IntConfigurer edgePointBufferConfig;
+    private final IntConfigurer edgeDisplayBufferConfig;
+    private final DoubleConfigurer lineWidthConfig;
 
     public Ed(Footprint p) {
       controls = new TraitConfigPanel();
@@ -785,9 +785,9 @@ public class Footprint extends MovementMarkable {
       desc.setHintKey("Editor.description_hint");
       controls.add("Editor.description_label", desc);
 
-      mc = new StringConfigurer(p.menuCommand);
-      mc.setHintKey("Editor.menu_command_hint");
-      controls.add("Editor.menu_command", mc);
+      menuCommandConfig = new StringConfigurer(p.menuCommand);
+      menuCommandConfig.setHintKey("Editor.menu_command_hint");
+      controls.add("Editor.menu_command", menuCommandConfig);
 
       trailKeyInput = new NamedHotKeyConfigurer(p.trailKey);
       controls.add("Editor.keyboard_command", trailKeyInput);
@@ -800,57 +800,57 @@ public class Footprint extends MovementMarkable {
       trailKeyClear = new NamedHotKeyConfigurer(p.trailKeyClear);
       controls.add("Editor.Footprint.clear_trail_key_command", trailKeyClear);
 
-      iv = new BooleanConfigurer(p.initiallyVisible);
-      controls.add("Editor.Footprint.trails_start_visible", iv);
+      initiallyVisibleConfig = new BooleanConfigurer(p.initiallyVisible);
+      controls.add("Editor.Footprint.trails_start_visible", initiallyVisibleConfig);
 
-      gv = new BooleanConfigurer(p.globallyVisible);
-      controls.add("Editor.Footprint.trails_are_visible_to_all_players", gv);
+      globallyVisibleConfig = new BooleanConfigurer(p.globallyVisible);
+      controls.add("Editor.Footprint.trails_are_visible_to_all_players", globallyVisibleConfig);
 
-      cr = new IntConfigurer(p.circleRadius);
-      controls.add("Editor.Footprint.circle_radius", cr);
+      circleRadiusConfig = new IntConfigurer(p.circleRadius);
+      controls.add("Editor.Footprint.circle_radius", circleRadiusConfig);
 
-      fc = new ColorConfigurer(p.fillColor);
-      controls.add("Editor.Footprint.circle_fill_color", fc);
+      fillColorConfig = new ColorConfigurer(p.fillColor);
+      controls.add("Editor.Footprint.circle_fill_color", fillColorConfig);
 
-      lc = new ColorConfigurer(p.lineColor);
-      controls.add("Editor.Footprint.line_color", lc);
+      lineColorConfig = new ColorConfigurer(p.lineColor);
+      controls.add("Editor.Footprint.line_color", lineColorConfig);
 
-      lw = new DoubleConfigurer(p.lineWidth);
-      controls.add("Editor.Footprint.line_thickness", lw);
+      lineWidthConfig = new DoubleConfigurer(p.lineWidth);
+      controls.add("Editor.Footprint.line_thickness", lineWidthConfig);
 
-      st = new IntConfigurer(p.selectedTransparency);
-      controls.add("Editor.Footprint.selected_transparency", st);
+      selectedTransparencyConfig = new IntConfigurer(p.selectedTransparency);
+      controls.add("Editor.Footprint.selected_transparency", selectedTransparencyConfig);
 
-      ut = new IntConfigurer(p.unSelectedTransparency);
-      controls.add("Editor.Footprint.unselected_transparency", ut);
+      unselectedTransparencyConfig = new IntConfigurer(p.unSelectedTransparency);
+      controls.add("Editor.Footprint.unselected_transparency", unselectedTransparencyConfig);
 
-      pb = new IntConfigurer(p.edgePointBuffer);
-      controls.add("Editor.Footprint.display_trail_points_off_map", pb);
+      edgePointBufferConfig = new IntConfigurer(p.edgePointBuffer);
+      controls.add("Editor.Footprint.display_trail_points_off_map", edgePointBufferConfig);
 
-      db = new IntConfigurer(p.edgeDisplayBuffer);
-      controls.add("Editor.Footprint.display_trails_off_map", db);
+      edgeDisplayBufferConfig = new IntConfigurer(p.edgeDisplayBuffer);
+      controls.add("Editor.Footprint.display_trails_off_map", edgeDisplayBufferConfig);
     }
 
     @Override
     public String getState() {
-      return iv.booleanValue() + ";;0"; //BR// iv == Initial Visibility! NOT gv!!!
+      return initiallyVisibleConfig.booleanValue() + ";;0"; //BR// iv == Initial Visibility! NOT gv!!!
     }
 
     @Override
     public String getType() {
       final SequenceEncoder se = new SequenceEncoder(';');
       se.append(trailKeyInput.getValueString())
-        .append(mc.getValueString())
-        .append(iv.getValueString())
-        .append(gv.getValueString())
-        .append(cr.getValueString())
-        .append(fc.getValueString())
-        .append(lc.getValueString())
-        .append(st.getValueString())
-        .append(ut.getValueString())
-        .append(pb.getValueString())
-        .append(db.getValueString())
-        .append(lw.getValueString())
+        .append(menuCommandConfig.getValueString())
+        .append(initiallyVisibleConfig.getValueString())
+        .append(globallyVisibleConfig.getValueString())
+        .append(circleRadiusConfig.getValueString())
+        .append(fillColorConfig.getValueString())
+        .append(lineColorConfig.getValueString())
+        .append(selectedTransparencyConfig.getValueString())
+        .append(unselectedTransparencyConfig.getValueString())
+        .append(edgePointBufferConfig.getValueString())
+        .append(edgeDisplayBufferConfig.getValueString())
+        .append(lineWidthConfig.getValueString())
         .append(trailKeyOn.getValueString())
         .append(trailKeyOff.getValueString())
         .append(trailKeyClear.getValueString())
