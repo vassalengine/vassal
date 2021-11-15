@@ -629,36 +629,39 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     // Take a copy of the pieces in the Deck
     final List<GamePiece> pieces = deck.asList();
 
-    // Remove all the pieces from the Deck by moving them to 0,0 then deleting them. This ensures the Undo
-    // ends with a valid MovePiece command to move the piece back into the Deck
+    // Remove all the pieces from the Deck  and create a set of fresh, updated pieces
+    final List<GamePiece> newPieces = new ArrayList<>();
     for (final GamePiece piece : pieces) {
-      final Command move = deck.getMap().placeAt(piece, new Point(0, 0));
-      command.append(move);
+
+      // Remove the existing piece from the Deck, the Map and the GameState
       final Command remove = new RemovePiece(piece);
       remove.execute();
       command.append(remove);
-    }
 
-    // Create a set of fresh pieces
-    final List<GamePiece> newPieces = new ArrayList<>();
-    for (final GamePiece piece : pieces) {
-      final GamePiece newPiece = gpIdChecker.createUpdatedPiece(piece);
+      // Create a new, updated piece
+      GamePiece newPiece = gpIdChecker.createUpdatedPiece(piece);
       if (newPiece == null) {
         notFoundCount++;
         log(Resources.getString("GameRefresher.refresh_error_nomatch_pieceslot", piece.getName(), piece.getId()));
-        newPieces.add(piece);
-        continue;
+        // Could not create a new piece for some reason, use the old piece
+        newPiece = piece;
       }
-      updatedCount++;
-      newPieces.add(newPiece);
-    }
+      else {
+        updatedCount++;
+      }
 
-    // Add the New Pieces to the Gamestate and the Deck
-    final DrawPile target = DrawPile.findDrawPile(deck.getDeckName());
-    for (final GamePiece piece : pieces) {
+      // Keep a list of the new pieces to add back into the Deck
+      newPieces.add(newPiece);
+
+      // Add the new pieces back into the GameState
       final Command add = new AddPiece(piece);
       add.execute();
       command.append(add);
+    }
+
+    // Load the new pieces back into the Deck in the same order
+    final DrawPile target = DrawPile.findDrawPile(deck.getDeckName());
+    for (final GamePiece piece : pieces) {
       command.append(target.addToContents(piece));
     }
 
