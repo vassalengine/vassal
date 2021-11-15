@@ -242,6 +242,17 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
 
       m.repaint();
     }
+    else if (m.getStackMetrics().isStackingEnabled() && !Boolean.TRUE.equals(marker.getProperty(Properties.NO_STACK))) {
+      c = m.placeOrMerge(marker, p);
+      final Stack parent = marker.getParent();
+      if ((parent != null) && (parent.pieceCount > 1)) {
+        if ((placement == STACK_BOTTOM) || (placement == BELOW)) {
+          final ChangeTracker ct = new ChangeTracker(parent);
+          parent.insert(marker, 0);
+          c = c.append(ct.getChangeCommand());
+        }
+      }
+    }
     else {
       c = m.placeAt(marker, p);
     }
