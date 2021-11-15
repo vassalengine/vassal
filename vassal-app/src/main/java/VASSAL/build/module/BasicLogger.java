@@ -129,13 +129,9 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     mod.getGameState().addGameComponent(this);
 
     final MenuManager mm = MenuManager.getInstance();
-    // FIXME: setting mnemonic from first letter could cause collisions in
-    // some languages
-    newLogAction.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("BasicLogger.begin_logfile.shortcut").charAt(0));
+    newLogAction.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("BasicLogger.begin_logfile.shortcut").charAt(0)); // Separate shortcut key thus possible for each language
     mm.addAction("BasicLogger.begin_logfile", newLogAction); //NON-NLS
-    // FIXME: setting mnemonic from first letter could cause collisions in
-    // some languages
-    endLogAction.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("BasicLogger.end_logfile.shortcut").charAt(0));
+    endLogAction.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("BasicLogger.end_logfile.shortcut").charAt(0)); // Separate shortcut key thus possible for each language
     mm.addAction("BasicLogger.end_logfile", endLogAction); //NON-NLS
 
     JButton button = mod.getToolBar().add(undoAction);
