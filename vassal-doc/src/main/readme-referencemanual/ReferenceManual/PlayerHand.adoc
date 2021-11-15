@@ -10,7 +10,7 @@ A Player Hand is a specialized <<PrivateWindow.adoc#top,Private Window>> for con
 It is designated as belonging to a particular side or sides.
 The owning sides must correspond to one or more of the sides defined in the <<GameModule.adoc#Definition_of_Player_Sides,definition of player sides>>.
 
-The main difference between a Player Hand and a normal <<PrivateWindow.adoc#top,Private Window>> is that in a Player Hand, the contents are automatically laid out in a row instead of stacking like counters.
+The main difference between a Player Hand and a normal <<PrivateWindow.adoc#top,Private Window>> is that in a Player Hand, a stack of pieces appears as a row.
 
 Like a Private Window, a Player Hand can only be manipulated by the owning player, and can optionally be completely hidden from other players.
 Cards can be manipulated in the hand (turned face up, etc.) and can be rearranged in order.
