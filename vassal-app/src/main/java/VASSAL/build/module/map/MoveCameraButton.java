@@ -44,6 +44,7 @@ import java.util.List;
  */
 public class MoveCameraButton extends AbstractToolbarItem {
   public static String MOVE_CAMERA_MODE = "moveCameraMode"; //NON-NLS
+  public static String ZOOM = "zoom"; // NON-NLS
   public static String BOARD_NAME = "boardName"; //NON-NLS
   public static String X_POS = "xPos"; //NON-NLS;
   public static String Y_POS = "yPos"; //NON-NLS;
@@ -55,6 +56,7 @@ public class MoveCameraButton extends AbstractToolbarItem {
   public static String Y_OFFSET = "yOffset"; //NON-NLS
 
   protected String moveCameraMode = SendToLocation.DEST_LOCATION;
+  protected FormattedString zoom = new FormattedString("");
   protected FormattedString board = new FormattedString("");
   protected FormattedString x = new FormattedString("");
   protected FormattedString y = new FormattedString("");
@@ -124,6 +126,24 @@ public class MoveCameraButton extends AbstractToolbarItem {
   private void moveCamera() {
     final Point dest = getDestination();
     if (dest != null) {
+      final String zoomString = zoom.getText(map, this, "Editor.MoveCameraButton.zoom");
+      if (!zoomString.strip().isEmpty()) {
+        double toZoom;
+        try {
+          toZoom = Double.parseDouble(zoomString);
+        }
+        catch (NumberFormatException e) {
+          ErrorDialog.dataWarning(new BadDataReport(this, Resources.getString("Error.non_number_error"), Resources.getString("Editor.MoveCameraButton.zoom") + ": " + zoomString, e));
+          toZoom = 0;
+        }
+        if (toZoom > 0) {
+          final Zoomer zoomer = map.getZoomer();
+          if (zoomer != null) {
+            zoomer.setZoomFactor(toZoom);
+          }
+        }
+      }
+
       map.centerAt(dest);
     }
   }
@@ -152,7 +172,7 @@ public class MoveCameraButton extends AbstractToolbarItem {
 
   @Override
   public VisibilityCondition getAttributeVisibility(String key) {
-    if (List.of(MOVE_CAMERA_MODE, X_OFFSET, Y_OFFSET).contains(key)) {
+    if (List.of(MOVE_CAMERA_MODE, X_OFFSET, Y_OFFSET, ZOOM).contains(key)) {
       return () -> true;
     }
     else if (BOARD_NAME.equals(key)) {
@@ -191,7 +211,8 @@ public class MoveCameraButton extends AbstractToolbarItem {
       Resources.getString("Editor.MoveCameraButton.y"),
       Resources.getString("Editor.MoveCameraButton.x_offset"),
       Resources.getString("Editor.MoveCameraButton.y_offset"),
-      Resources.getString("Editor.MoveCameraButton.property_filter")
+      Resources.getString("Editor.MoveCameraButton.property_filter"),
+      Resources.getString("Editor.MoveCameraButton.zoom")
       );
   }
 
@@ -208,8 +229,9 @@ public class MoveCameraButton extends AbstractToolbarItem {
       Y_POS,
       X_OFFSET,
       Y_OFFSET,
-      PROPERTY_FILTER
-    );
+      PROPERTY_FILTER,
+      ZOOM
+      );
   }
 
   @Override
@@ -225,7 +247,8 @@ public class MoveCameraButton extends AbstractToolbarItem {
       EmptyFormatConfig.class,
       EmptyFormatConfig.class,
       EmptyFormatConfig.class,
-      PropertyExpression.class
+      PropertyExpression.class,
+      EmptyFormatConfig.class
     );
   }
 
@@ -263,6 +286,9 @@ public class MoveCameraButton extends AbstractToolbarItem {
     else if (PROPERTY_FILTER.equals(key)) {
       propertyFilter.setExpression((String)value);
     }
+    else if (ZOOM.equals(key)) {
+      zoom.setFormat((String)value);
+    }
     else {
       super.setAttribute(key, value);
     }
@@ -299,6 +325,9 @@ public class MoveCameraButton extends AbstractToolbarItem {
     }
     else if (PROPERTY_FILTER.equals(key)) {
       return propertyFilter.getExpression();
+    }
+    else if (ZOOM.equals(key)) {
+      return zoom.getFormat();
     }
     else {
       return super.getAttributeValueString(key);
