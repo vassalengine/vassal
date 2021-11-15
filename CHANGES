@@ -1,3 +1,18 @@
+3.6.0 - ???
+
+* 10760: Correctly initialize local-only properties in Movement Trails
+* 10757: Prevent undo of Refresh Counters from causing contents of Decks to
+    disappear, and deleting units from inside a Deck could not be undone
+* 10755: When switching sides, close private hands/windows that we no longer
+    have access to
+* 10753: Clarify documentation of sum(PropertyName) in Mouseover
+* 10752: Fixed bug where Deck 'count expressions' wouldn't count beanshell,
+    only old-style (now will count either)
+* 10751: Better description of Player Hand
+* 10750: Place Marker should put stacking markers in a stack (even if parent
+    marker is non-stacking)
+* 10749: Move Camera Button can also change Zoom
+
 3.6.0-beta6 - 12 November 2021
 
 * 10736: 'Deal cards out' to other players

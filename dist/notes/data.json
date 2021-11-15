@@ -17,6 +17,24 @@
   ],
   "changes": [
     {
+      "in": "3.6.0",
+      "since": "3.6.0-beta6",
+      "new_features": [
+      ],
+      "bug_fixes": [
+        { "num": 10760, "desc": "Correctly initialize local-only properties in Movement Trails" },
+        { "num": 10757, "desc": "Prevent undo of Refresh Counters from causing contents of Decks to disappear, and deleting units from inside a Deck could not be undone" },
+        { "num": 10752, "desc": "Fixed bug where Deck 'count expressions' wouldn't count beanshell, only old-style (now will count either)" }
+      ],
+      "other_improvements": [
+        { "num": 10755, "desc": " When switching sides, close private hands/windows that we no longer have access to" },
+        { "num": 10753, "desc": "Clarify documentation of sum(PropertyName) in Mouseover" },
+        { "num": 10751, "desc": "Better description of Player Hand" },
+        { "num": 10750, "desc": "Place Marker should put stacking markers in a stack (even if parent marker is non-stacking)" },
+        { "num": 10749, "desc": "Move Camera Button can also change Zoom" }
+      ]
+    },
+    {
       "in": "3.6.0-beta6",
       "since": "3.6.0-beta5",
       "new_features": [
