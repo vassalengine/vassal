@@ -449,7 +449,7 @@ public class DiceButton extends AbstractToolbarItem {
       return keep;
     }
     else {
-      return null;
+      return super.getAttributeVisibility(name);
     }
   }
 

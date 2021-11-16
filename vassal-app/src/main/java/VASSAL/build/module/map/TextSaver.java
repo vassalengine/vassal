@@ -59,6 +59,7 @@ public class TextSaver extends AbstractToolbarItem {
   public TextSaver() {
     setNameKey("");
     setButtonTextKey(BUTTON_TEXT);
+    setShowDisabledOptions(false); //AbstractToolbarItem
 
     setLaunchButton(makeLaunchButton(
       Resources.getString("Editor.TextSaver.save_tooltip"),

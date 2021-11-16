@@ -170,6 +170,8 @@ public class LOS_Thread extends AbstractToolbarItem implements
     persisting = false;
     mirroring = false;
 
+    setShowDisabledOptions(false); //AbstractToolbarItem
+
     setNameKey(NAME);
     setButtonTextKey(LABEL);
     setTooltipKey(TOOLTIP);

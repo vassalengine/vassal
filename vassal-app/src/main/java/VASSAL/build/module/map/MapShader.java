@@ -156,6 +156,8 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
   public MapShader() {
     setButtonTextKey(BUTTON_TEXT);
 
+    setShowDisabledOptions(false); //AbstractToolbarItem
+
     setLaunchButton(makeLaunchButton(
       "",
       Resources.getString("Editor.MapShader.shade"),
