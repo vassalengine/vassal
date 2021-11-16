@@ -380,7 +380,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
       doPopup(e);
     }
     else if (SwingUtils.isMainMouseButtonDown(e)) {
-      KeyBuffer.getBuffer().clear();
+      //KeyBuffer.getBuffer().clear();
       Map.clearActiveMap();
       if (getPiece() != null) {
         KeyBuffer.getBuffer().add(getPiece());
@@ -420,7 +420,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
   @Override
   public void mouseExited(MouseEvent e) {
-    KeyBuffer.getBuffer().remove(getPiece());
+    //KeyBuffer.getBuffer().remove(getPiece());
     clearExpandedPiece();
     panel.repaint();
   }
