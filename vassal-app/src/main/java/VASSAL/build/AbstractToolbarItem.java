@@ -17,6 +17,9 @@
  */
 package VASSAL.build;
 
+import VASSAL.build.module.GameComponent;
+import VASSAL.build.module.properties.MutableProperty;
+import VASSAL.command.Command;
 import VASSAL.configure.AutoConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
@@ -28,24 +31,30 @@ import VASSAL.tools.NamedKeyStroke;
 
 import java.awt.Component;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Creates an item that is both configurable w/ an edit box {@link AbstractConfigurable} and buildable from the
  * XML buildFile {@link AbstractBuildable}, but which also has a Toolbar launch button.
  */
-public abstract class AbstractToolbarItem extends AbstractConfigurable {
+public abstract class AbstractToolbarItem extends AbstractConfigurable implements GameComponent, PropertyChangeListener {
 
   // These are the "standard keys" - recommended for all new classes extending AbstractToolbarItem
-  public static final String NAME        = "name";    //$NON-NLS-1$
-  public static final String TOOLTIP     = "tooltip"; //$NON-NLS-1$
-  public static final String BUTTON_TEXT = "text";    //$NON-NLS-1$
-  public static final String HOTKEY      = "hotkey";  //$NON-NLS-1$
-  public static final String ICON        = "icon";    //$NON-NLS-1$
+  public static final String NAME          = "name";    //$NON-NLS-1$
+  public static final String TOOLTIP       = "tooltip"; //$NON-NLS-1$
+  public static final String BUTTON_TEXT   = "text";    //$NON-NLS-1$
+  public static final String HOTKEY        = "hotkey";  //$NON-NLS-1$
+  public static final String ICON          = "icon";    //$NON-NLS-1$
+  public static final String PROPERTY_GATE = "propertyGate"; //NON-NLS
 
   protected LaunchButton launch;              // Our toolbar "launch button"
+  protected String propertyGate = "";         // Name of our gating property
+  protected MutableProperty.Impl property;
 
   private String nameKey       = NAME;        // Some legacy objects will want to use a non-standard key (or none)
   private String tooltipKey    = TOOLTIP;     // Some legacy objects will want to use a non-standard key
@@ -102,6 +111,9 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
     if (!iconFile.isEmpty()) {
       setAttribute(iconKey, iconFile);
     }
+
+    checkDisabled();
+
     return launch;
   }
 
@@ -121,6 +133,73 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
   }
 
   /**
+   * If we have a disable-this-button property, set a listener on it
+   */
+  protected void addPropertyGateListener() {
+    if (property != null) {
+      removePropertyGateListener();
+    }
+
+    if (!propertyGate.isEmpty()) {
+      property = (MutableProperty.Impl) GameModule.getGameModule().getMutableProperty(propertyGate);
+      if (property != null) {
+        property.addMutablePropertyChangeListener(this);
+      }
+    }
+  }
+
+  /**
+   * Remove any existing disable-this-button property
+   */
+  protected void removePropertyGateListener() {
+    if (property != null) {
+      property.removeMutablePropertyChangeListener(this);
+      property = null;
+    }
+  }
+
+  /**
+   * Listens to our disable-this-button property; enables/disables our button as appropriate when it changes
+   * @param evt property change event
+   */
+  public void propertyChange(PropertyChangeEvent evt) {
+    final String name = evt.getPropertyName();
+    if (name.equals(propertyGate)) {
+      final String value = String.valueOf(evt.getNewValue());
+      disableIfTrue("true".equals(value)); //NON-NLS
+    }
+  }
+
+  /**
+   * Check our disable-this-button property and enable/disable our button as appropriate based on its value
+   */
+  public void checkDisabled() {
+    if ((property == null) && !propertyGate.isEmpty()) {
+      addPropertyGateListener();
+    }
+    if (property != null) {
+      disableIfTrue("true".equals(property.getPropertyValue())); //NON-NLS
+    }
+  }
+
+  /**
+   * @param disable true to disable our launch button, false to enable it
+   */
+  public void disableIfTrue(boolean disable) {
+    launch.setEnabled(!disable);
+  }
+
+  @Override
+  public void setup(boolean gameStarting) {
+    addPropertyGateListener(); // Always ensure our property gate listener is in place
+  }
+
+  @Override
+  public Command getRestoreCommand() {
+    return null;
+  }
+
+  /**
    * This getAttributeNames() will return the items specific to the Toolbar Button - classes extending this should
    * add their own items as well. If the "nameKey" is blank, then no "name" configure entry will be generated.
    * Extending classes can use ArrayUtils.addAll(super.getAttributeNames(), key1, ..., keyN), or supply their own
@@ -135,10 +214,10 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
   @Override
   public String[] getAttributeNames() {
     if (!nameKey.isEmpty()) {
-      return new String[]{nameKey, buttonTextKey, tooltipKey, iconKey, hotKeyKey};
+      return new String[]{nameKey, buttonTextKey, tooltipKey, iconKey, hotKeyKey, PROPERTY_GATE};
     }
     else {
-      return new String[]{buttonTextKey, tooltipKey, iconKey, hotKeyKey};
+      return new String[]{buttonTextKey, tooltipKey, iconKey, hotKeyKey, PROPERTY_GATE};
     }
   }
 
@@ -160,7 +239,8 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
         Resources.getString(Resources.BUTTON_TEXT),
         Resources.getString(Resources.TOOLTIP_TEXT),
         Resources.getString(Resources.BUTTON_ICON),
-        Resources.getString(Resources.HOTKEY_LABEL)
+        Resources.getString(Resources.HOTKEY_LABEL),
+        Resources.getString(Resources.getString("Editor.AbstractToolbarItem.property_gate"))
       };
     }
     else {
@@ -168,7 +248,8 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
         Resources.getString(Resources.BUTTON_TEXT),
         Resources.getString(Resources.TOOLTIP_TEXT),
         Resources.getString(Resources.BUTTON_ICON),
-        Resources.getString(Resources.HOTKEY_LABEL)
+        Resources.getString(Resources.HOTKEY_LABEL),
+        Resources.getString(Resources.getString("Editor.AbstractToolbarItem.property_gate"))
       };
     }
   }
@@ -194,6 +275,7 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
         String.class,
         IconConfig.class,
         NamedKeyStroke.class,
+        String.class,
       };
     }
     else {
@@ -202,6 +284,7 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
         String.class,
         IconConfig.class,
         NamedKeyStroke.class,
+        String.class,
       };
     }
   }
@@ -242,6 +325,10 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
     if (!nameKey.isEmpty() && nameKey.equals(key)) {
       setConfigureName((String) value);
     }
+    else if (PROPERTY_GATE.equals(key)) {
+      propertyGate = (String)value;
+      addPropertyGateListener();
+    }
     else {
       launch.setAttribute(key, value);
     }
@@ -261,6 +348,9 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
   public String getAttributeValueString(String key) {
     if (!nameKey.isEmpty() && nameKey.equals(key)) {
       return getConfigureName();
+    }
+    else if (PROPERTY_GATE.equals(key)) {
+      return propertyGate;
     }
     else {
       return launch.getAttributeValueString(key);
@@ -292,6 +382,17 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
   public void removeFrom(Buildable b) {
     GameModule.getGameModule().getToolBar().remove(getComponent());
     GameModule.getGameModule().getToolBar().revalidate();
+  }
+
+  @Override
+  public List<String> getPropertyList() {
+    final String prop = getAttributeValueString(PROPERTY_GATE);
+    if ((prop != null) && !prop.isEmpty()) {
+      return List.of(prop);
+    }
+    else {
+      return Collections.emptyList();
+    }
   }
 
   /**
