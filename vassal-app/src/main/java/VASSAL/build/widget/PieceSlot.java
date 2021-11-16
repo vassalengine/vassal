@@ -54,7 +54,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.IllegalComponentStateException;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.dnd.DnDConstants;
@@ -350,7 +349,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
       if (!slot.getComponent().isShowing()) {
         continue;
       }
-      
+
       final Dimension size = slot.getComponent().getSize();
       final GamePiece piece = slot.getPiece();
 
