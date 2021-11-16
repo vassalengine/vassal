@@ -327,6 +327,9 @@ public class Inventory extends AbstractToolbarItem
             r.y = (int) Math.round(r.y * pieceZoom);
             r.width = (int) Math.round(r.width * pieceZoom);
             r.height = (int) Math.round(r.height * pieceZoom);
+
+            setSize(getWidth(), Math.max(r.height + 2, getHeight()));
+
             setIcon(drawPieces ? new Icon() {
 
               @Override
