@@ -182,6 +182,7 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
    * Listens to our disable-this-button property; enables/disables our button as appropriate when it changes
    * @param evt property change event
    */
+  @Override
   public void propertyChange(PropertyChangeEvent evt) {
     final String name = evt.getPropertyName();
     if (name.equals(propertyGate)) {

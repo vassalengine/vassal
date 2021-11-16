@@ -404,6 +404,7 @@ public class LOS_Thread extends AbstractToolbarItem implements
     }
   }
 
+  @Override
   public void setup(boolean show) {
     visible = false;
     initializing = false;
