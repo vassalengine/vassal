@@ -29,7 +29,8 @@
         { "num": 10752, "desc": "Fixed bug where Deck 'count expressions' wouldn't count beanshell, only old-style (now will count either)" }
       ],
       "other_improvements": [
-        { "num": 10755, "desc": " When switching sides, close private hands/windows that we no longer have access to" },
+        { "num": 10764, "desc": "Server text improvements" },
+        { "num": 10755, "desc": "When switching sides, close private hands/windows that we no longer have access to" },
         { "num": 10753, "desc": "Clarify documentation of sum(PropertyName) in Mouseover" },
         { "num": 10751, "desc": "Better description of Player Hand" },
         { "num": 10750, "desc": "Place Marker should put stacking markers in a stack (even if parent marker is non-stacking)" },
