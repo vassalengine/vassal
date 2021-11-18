@@ -436,7 +436,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
    */
   @Override
   protected void insertPieceAt(GamePiece p, int index, boolean suppressDeckCounts) {
-    super.insertPieceAt(p, index);
+    super.insertPieceAt(p, index, suppressDeckCounts);
     if (!suppressDeckCounts) {
       updateCounts(p, true);
       fireNumCardsProperty();
@@ -464,7 +464,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     if (!suppressDeckCounts) {
       updateCounts(index);
     }
-    super.removePieceAt(index);
+    super.removePieceAt(index, suppressDeckCounts);
     if (!suppressDeckCounts) {
       fireNumCardsProperty();
       if (hotkeyOnEmpty && emptyKey != null && startCount > 0 && pieceCount == 0) {
