@@ -34,7 +34,7 @@ import VASSAL.configure.ComponentDescription;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
-import VASSAL.configure.PlayerIdFormattedStringConfigurer;
+import VASSAL.configure.PlayerIdFormattedExpressionConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
@@ -293,7 +293,7 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
   public static class ReportFormatConfig implements TranslatableConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new PlayerIdFormattedStringConfigurer(key, name, new String[]{NAME, RESULT_N, RESULT_TOTAL});
+      return new PlayerIdFormattedExpressionConfigurer(key, name, new String[]{NAME, RESULT_N, RESULT_TOTAL});
     }
   }
 

@@ -24,7 +24,7 @@ import VASSAL.build.Buildable;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
-import VASSAL.configure.PlayerIdFormattedStringConfigurer;
+import VASSAL.configure.PlayerIdFormattedExpressionConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.FormattedString;
@@ -177,7 +177,7 @@ public abstract class AbstractDeckKeyCommand extends AbstractConfigurable implem
 
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new PlayerIdFormattedStringConfigurer(key, name, ((DeckKeyCommand) c).getAdditionalReportProperties());
+      return new PlayerIdFormattedExpressionConfigurer(key, name, ((DeckKeyCommand) c).getAdditionalReportProperties());
     }
   }
 

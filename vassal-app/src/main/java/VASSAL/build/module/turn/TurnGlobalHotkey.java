@@ -9,7 +9,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
-import VASSAL.configure.PlayerIdFormattedStringConfigurer;
+import VASSAL.configure.PlayerIdFormattedExpressionConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.counters.BasicPiece;
 import VASSAL.i18n.Resources;
@@ -55,7 +55,7 @@ public class TurnGlobalHotkey extends AbstractConfigurable {
   public static class ReportFormatConfig implements TranslatableConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new PlayerIdFormattedStringConfigurer(key, name, new String[]{});
+      return new PlayerIdFormattedExpressionConfigurer(key, name, new String[]{});
     }
   }
 

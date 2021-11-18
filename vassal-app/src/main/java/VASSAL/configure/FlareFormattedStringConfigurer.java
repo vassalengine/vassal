@@ -24,7 +24,7 @@ import org.apache.commons.lang3.ArrayUtils;
 /** Utility subclass of {@link FormattedStringConfigurer} which includes variable
  * keys for player name, side, and id
  */
-public class FlareFormattedStringConfigurer extends FormattedStringConfigurer {
+public class FlareFormattedStringConfigurer extends FormattedExpressionConfigurer {
   public FlareFormattedStringConfigurer(String key, String name, String[] options) {
     super(key, name);
 

@@ -32,7 +32,7 @@ import VASSAL.configure.GlobalCommandTargetConfigurer;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
-import VASSAL.configure.PlayerIdFormattedStringConfigurer;
+import VASSAL.configure.PlayerIdFormattedExpressionConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.TranslatableStringEnum;
@@ -328,7 +328,7 @@ public class MassKeyCommand extends AbstractToolbarItem
   public static class ReportFormatConfig implements TranslatableConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new PlayerIdFormattedStringConfigurer(key, name, new String[0]);
+      return new PlayerIdFormattedExpressionConfigurer(key, name, new String[0]);
     }
   }
 

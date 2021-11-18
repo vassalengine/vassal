@@ -36,7 +36,7 @@ import VASSAL.configure.FormattedStringConfigurer;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
-import VASSAL.configure.PlayerIdFormattedStringConfigurer;
+import VASSAL.configure.PlayerIdFormattedExpressionConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.configure.VisibilityCondition;
@@ -458,7 +458,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   public static class ReportFormatConfig implements TranslatableConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new PlayerIdFormattedStringConfigurer(key, name, new String[] {OLD_TURN, NEW_TURN });
+      return new PlayerIdFormattedExpressionConfigurer(key, name, new String[] {OLD_TURN, NEW_TURN });
     }
   }
 

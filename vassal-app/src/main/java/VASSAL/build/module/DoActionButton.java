@@ -33,7 +33,7 @@ import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.ListConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.NamedKeyStrokeArrayConfigurer;
-import VASSAL.configure.PlayerIdFormattedStringConfigurer;
+import VASSAL.configure.PlayerIdFormattedExpressionConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.configure.VisibilityCondition;
@@ -227,7 +227,7 @@ public class DoActionButton extends AbstractToolbarItem
   public static class ReportFormatConfig implements TranslatableConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new PlayerIdFormattedStringConfigurer(key, name, new String[]{});
+      return new PlayerIdFormattedExpressionConfigurer(key, name, new String[]{});
     }
   }
 

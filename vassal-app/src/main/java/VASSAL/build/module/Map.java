@@ -21,6 +21,7 @@ import static java.lang.Math.round;
 
 import VASSAL.build.module.map.MoveCameraButton;
 import VASSAL.configure.ComponentDescription;
+import VASSAL.configure.PlayerIdFormattedExpressionConfigurer;
 import VASSAL.configure.SingleChildInstance;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.Mat;
@@ -159,7 +160,6 @@ import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.MandatoryComponent;
 import VASSAL.configure.NamedHotKeyConfigurer;
-import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.ColoredBorder;
 import VASSAL.counters.Deck;
@@ -3352,7 +3352,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public static class MoveWithinFormatConfig implements TranslatableConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new PlayerIdFormattedStringConfigurer(key, name, new String[] { PIECE_NAME, LOCATION, MAP_NAME, OLD_LOCATION });
+      return new PlayerIdFormattedExpressionConfigurer(key, name, new String[] { PIECE_NAME, LOCATION, MAP_NAME, OLD_LOCATION });
     }
   }
 
@@ -3363,7 +3363,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public static class MoveToFormatConfig implements TranslatableConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new PlayerIdFormattedStringConfigurer(key, name, new String[] { PIECE_NAME, LOCATION, OLD_MAP, MAP_NAME, OLD_LOCATION });
+      return new PlayerIdFormattedExpressionConfigurer(key, name, new String[] { PIECE_NAME, LOCATION, OLD_MAP, MAP_NAME, OLD_LOCATION });
     }
   }
 
@@ -3373,7 +3373,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public static class UnmovedReportConfig implements TranslatableConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new PlayerIdFormattedStringConfigurer(key, name, new String[] { MAP_NAME });
+      return new PlayerIdFormattedExpressionConfigurer(key, name, new String[] { MAP_NAME });
     }
   }
 
@@ -3383,7 +3383,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public static class CreateFormatConfig implements TranslatableConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new PlayerIdFormattedStringConfigurer(key, name, new String[] { PIECE_NAME, MAP_NAME, LOCATION });
+      return new PlayerIdFormattedExpressionConfigurer(key, name, new String[] { PIECE_NAME, MAP_NAME, LOCATION });
     }
   }
 
@@ -3393,7 +3393,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public static class ChangeFormatConfig implements TranslatableConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new PlayerIdFormattedStringConfigurer(key, name, new String[] {
+      return new PlayerIdFormattedExpressionConfigurer(key, name, new String[] {
         MESSAGE,
         ReportState.COMMAND_NAME,
         ReportState.OLD_UNIT_NAME,
