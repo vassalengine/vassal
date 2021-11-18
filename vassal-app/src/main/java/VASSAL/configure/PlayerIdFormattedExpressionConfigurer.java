@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2004 by Rodney Kinney
+ * Copyright (c) 2021 by Vassalengine.org. Added by Brian Reynolds.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
