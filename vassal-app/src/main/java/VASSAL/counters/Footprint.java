@@ -330,6 +330,11 @@ public class Footprint extends MovementMarkable {
     return buildDescription("Editor.Footprint.trait_description", description);
   }
 
+  @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.Footprint.trait_description");
+  }
+
 // FIXME: This method is inefficient.
   @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
