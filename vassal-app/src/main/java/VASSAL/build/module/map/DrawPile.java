@@ -482,7 +482,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new PlayerIdFormattedExpressionConfigurer(key, name, new String[]{DECK_NAME,
-                                                                           COMMAND_NAME});
+                                                                               COMMAND_NAME});
     }
   }
 
