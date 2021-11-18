@@ -18,6 +18,7 @@
 package VASSAL.build;
 
 import VASSAL.build.module.GameComponent;
+import VASSAL.build.module.Map;
 import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.command.Command;
 import VASSAL.configure.AutoConfigurer;
@@ -160,7 +161,11 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
 
     if (isShowDisabledOptions() && canDisable) {
       if (!propertyGate.isEmpty()) {
-        property = (MutableProperty.Impl) GameModule.getGameModule().getMutableProperty(propertyGate);
+        final Buildable ancestor = getNonFolderAncestor();
+        property = (ancestor instanceof Map) ? (MutableProperty.Impl) ((Map)ancestor).getMutableProperty(propertyGate) : null;
+        if (property == null) {
+          property = (MutableProperty.Impl) GameModule.getGameModule().getMutableProperty(propertyGate);
+        }
         if (property != null) {
           property.addMutablePropertyChangeListener(this);
         }
