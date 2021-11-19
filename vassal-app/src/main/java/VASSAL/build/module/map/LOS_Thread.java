@@ -49,6 +49,7 @@ import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.swing.SwingUtils;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -56,6 +57,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Stroke;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -97,6 +99,7 @@ public class LOS_Thread extends AbstractToolbarItem implements
   public static final String PERSISTENCE = "persistence"; //NON-NLS
   public static final String PERSISTENT_ICON_NAME = "persistentIconName"; //NON-NLS
   public static final String GLOBAL = "global"; //NON-NLS
+  public static final String LOS_THICKNESS = "losThickness"; //NON-NLS
   public static final String LOS_COLOR = "threadColor"; //NON-NLS
   public static final String DRAW_RANGE = "drawRange"; //NON-NLS
   public static final String HIDE_COUNTERS = "hideCounters"; //NON-NLS
@@ -140,6 +143,7 @@ public class LOS_Thread extends AbstractToolbarItem implements
   protected int rangeScale;
   protected double rangeRounding = 0.5;
   protected boolean hideCounters;
+  protected int losThickness = 1;
   protected int hideOpacity = 0;
   protected String fixedColor;
   protected Color threadColor = Color.black, rangeFg = Color.white, rangeBg = Color.black;
@@ -302,6 +306,12 @@ public class LOS_Thread extends AbstractToolbarItem implements
       fixedColor = (String) value;
       threadColor = ColorConfigurer.stringToColor(fixedColor);
     }
+    else if (LOS_THICKNESS.equals(key)) {
+      if (value instanceof String) {
+        value = Integer.valueOf((String) value);
+      }
+      losThickness = (Integer) value;
+    }
     else if (SNAP_START.equals(key)) {
       if (value instanceof String) {
         value = Boolean.valueOf((String) value);
@@ -375,6 +385,9 @@ public class LOS_Thread extends AbstractToolbarItem implements
     }
     else if (LOS_COLOR.equals(key)) {
       return fixedColor;
+    }
+    else if (LOS_THICKNESS.equals(key)) {
+      return String.valueOf(losThickness);
     }
     else if (SNAP_START.equals(key)) {
       return String.valueOf(snapStart);
@@ -458,7 +471,12 @@ public class LOS_Thread extends AbstractToolbarItem implements
     g.setColor(threadColor);
     final Point mapAnchor = map.mapToDrawing(anchor, os_scale);
     final Point mapArrow = map.mapToDrawing(arrow, os_scale);
+    final Stroke oldStroke = g2d.getStroke();
+    if (losThickness > 1) {
+      g2d.setStroke(new BasicStroke(losThickness));
+    }
     g.drawLine(mapAnchor.x, mapAnchor.y, mapArrow.x, mapArrow.y);
+    g2d.setStroke(oldStroke);
 
     if (drawRange) {
       if (rangeScale > 0) {
@@ -805,6 +823,7 @@ public class LOS_Thread extends AbstractToolbarItem implements
       RANGE_ROUNDING,
       HIDE_COUNTERS,
       HIDE_OPACITY,
+      LOS_THICKNESS,
       LOS_COLOR,
       RANGE_FOREGROUND,
       RANGE_BACKGROUND
@@ -827,6 +846,7 @@ public class LOS_Thread extends AbstractToolbarItem implements
       Resources.getString("Editor.LosThread.round_fractions"), //$NON-NLS-1$
       Resources.getString("Editor.LosThread.hidden"), //$NON-NLS-1$
       Resources.getString("Editor.LosThread.opacity"), //$NON-NLS-1$
+      Resources.getString("Editor.LosThread.thickness"),
       Resources.getString(Resources.COLOR_LABEL)
     );
   }
@@ -845,6 +865,7 @@ public class LOS_Thread extends AbstractToolbarItem implements
       Integer.class,
       RoundingOptions.class,
       Boolean.class,
+      Integer.class,
       Integer.class,
       Color.class
     );
