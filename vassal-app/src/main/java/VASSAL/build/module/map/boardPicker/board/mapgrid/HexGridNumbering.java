@@ -289,7 +289,7 @@ public class HexGridNumbering extends RegularGridNumbering {
 
   @Override
   protected JComponent getGridVisualizer() {
-    if (visualizer == null) {
+    if ((visualizer == null) && (grid != null)) {
       visualizer = new JPanel() {
         private static final long serialVersionUID = 1L;
 

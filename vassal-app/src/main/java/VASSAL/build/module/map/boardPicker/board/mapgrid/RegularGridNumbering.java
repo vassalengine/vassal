@@ -401,7 +401,10 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
     for (final String value : s) {
       c.getConfigurer(value).addPropertyChangeListener(evt -> visualizer.repaint());
     }
-    ((Container) c.getControls()).add(getGridVisualizer(), "span 2, align left");
+    final JComponent gridVisualizer = getGridVisualizer();
+    if (gridVisualizer != null) {
+      ((Container) c.getControls()).add(gridVisualizer, "span 2, align left"); //NON-NLS
+    }
     return c;
   }
 
