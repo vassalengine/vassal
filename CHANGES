@@ -1,5 +1,6 @@
 3.6.0 - ???
 
+* 10784: LOS thread thickness is adjustable
 * 10777: Fix duplicate DragShadow for Cargo at zoom < 100%
 * 10773: Fixed bad description for Movement Trail trait
 * 10764: Server text improvements

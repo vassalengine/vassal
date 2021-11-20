@@ -29,6 +29,7 @@
         { "num": 10752, "desc": "Fixed bug where Deck 'count expressions' wouldn't count beanshell, only old-style (now will count either)" }
       ],
       "other_improvements": [
+        { "num": 10784, "desc": "LOS thread thickness is adjustable" },
         { "num": 10764, "desc": "Server text improvements" },
         { "num": 10755, "desc": "When switching sides, close private hands/windows that we no longer have access to" },
         { "num": 10753, "desc": "Clarify documentation of sum(PropertyName) in Mouseover" },
