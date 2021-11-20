@@ -17,6 +17,7 @@
  */
 package VASSAL.counters;
 
+import VASSAL.build.BadDataReport;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangeTracker;
@@ -29,6 +30,7 @@ import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
@@ -144,6 +146,7 @@ public class Footprint extends MovementMarkable {
         pointList.add(new Point(x, y));
       }
     }
+    requireNoOuterRotate();
   }
 
   @Override
@@ -270,6 +273,7 @@ public class Footprint extends MovementMarkable {
    */
   @Override
   public void setMoved(boolean justMoved) {
+    requireNoOuterRotate();
     if (justMoved) {
       recordCurrentPosition();
       final Map map = getMap();
@@ -718,6 +722,23 @@ public class Footprint extends MovementMarkable {
     }
 
     return null;
+  }
+
+  /**
+   * Displays a Bad Module Data warning if a movement trails trait is found inside of a rotation trait
+   */
+  public void requireNoOuterRotate() {
+    Decorator piece = getOuter();
+    while (piece != null) {
+      if ((piece instanceof FreeRotator) || (piece instanceof Pivot) || ((piece instanceof MatCargo) && (((MatCargo)piece).maintainRelativeFacing))) {
+        String name = getName();
+        if ((name == null) || name.isEmpty()) {
+          name = Resources.getString("Decorator.prototype");
+        }
+        ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Decorator.trails_inside_rotate", getBaseDescription(), piece.getBaseDescription()), name));
+      }
+      piece = piece.getOuter();
+    }
   }
 
   @Override
