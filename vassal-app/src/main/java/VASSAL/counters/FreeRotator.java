@@ -203,6 +203,8 @@ public class FreeRotator extends Decorator
     return useUnrotatedShape ? 0.0 : validAngles[angleIndex];
   }
 
+  // These are deprecated and also don't work because MatCargo also rotates things
+  @Deprecated
   public double getCumulativeAngle() {
     double angle = getAngle();
     // Add cumulative angle of any other FreeRotator trait in this piece
@@ -213,6 +215,8 @@ public class FreeRotator extends Decorator
     return angle;
   }
 
+  // These are deprecated and also don't work because MatCargo also rotates things
+  @Deprecated
   public double getCumulativeAngleInRadians() {
     return -PI_180 * getCumulativeAngle();
   }

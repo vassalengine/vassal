@@ -419,6 +419,10 @@ public class MatCargo extends Decorator implements TranslatablePiece {
     return mrot == null ? 0.0 : mrot.getAngle();
   }
 
+  public double getMatAngleInRadians() {
+    return -PI_180 * getMatAngle();
+  }
+
   /**
    * If we're maintaining facing to our Mat, rotate our graphics as appropriate to account for that when drawing
    */

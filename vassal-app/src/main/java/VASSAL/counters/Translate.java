@@ -218,12 +218,25 @@ public class Translate extends Decorator implements TranslatablePiece {
     translate(p);
 
     // Handle rotation of the piece, movement is relative to the current facing of the unit.
-    // Use the first Rotator trait below us, as no rotators above us can affect us
-    final FreeRotator myRotation = (FreeRotator) Decorator.getDecorator(this, FreeRotator.class);
-    if (myRotation != null) {
+    // Traverse any traits outward from this trait (ones that could rotate this trait),
+    // and find out what the cumulative rotation is
+    Decorator rotateTrait = getOuter();
+    double cumulative = 0.0;
+    while (rotateTrait != null) {
+      if (rotateTrait instanceof FreeRotator) {
+        cumulative += ((FreeRotator)rotateTrait).getAngleInRadians();
+      }
+      else if (rotateTrait instanceof MatCargo) {
+        cumulative += ((MatCargo)rotateTrait).getMatAngleInRadians();
+      }
+      rotateTrait = rotateTrait.getOuter();
+    }
+
+    // If rotated, apply the rotation
+    if (cumulative != 0.0) {
       final Point2D myPosition = getPosition().getLocation();
       Point2D p2d = p.getLocation();
-      p2d = AffineTransform.getRotateInstance(myRotation.getCumulativeAngleInRadians(), myPosition.getX(), myPosition.getY()).transform(p2d, null);
+      p2d = AffineTransform.getRotateInstance(cumulative, myPosition.getX(), myPosition.getY()).transform(p2d, null);
       p = new Point((int) Math.round(p2d.getX()), (int) Math.round(p2d.getY())); // Use Round not Truncate to prevent drift
     }
 
