@@ -64,19 +64,25 @@ public class PolygonEditor extends JPanel {
   private static final int POINT_RADIUS = 10;
   private static final int CLICK_THRESHOLD = 10;
 
-  private Zone.Editor myConfigurer;
+  private PolygonConfigurer myConfigurer;
+  private final Point offsetView;
 
-  public PolygonEditor(Polygon p) {
+  public PolygonEditor(Polygon p, Point offsetView) {
     polygon = p;
+    this.offsetView = offsetView;
     setFocusable(true);
     setFocusTraversalKeysEnabled(false);
   }
 
-  public void setMyConfigurer(Zone.Editor myConfigurer) {
+  public Point getOffsetView() {
+    return offsetView;
+  }
+
+  public void setMyConfigurer(PolygonConfigurer myConfigurer) {
     this.myConfigurer = myConfigurer;
   }
 
-  protected void reset() {
+  public void reset() {
     // clear all the listeners
     final MouseListener[] ml = getMouseListeners();
     for (final MouseListener i: ml) {
@@ -156,8 +162,8 @@ public class PolygonEditor extends JPanel {
     }
     int x = p.x - r.width / 2;
     int y = p.y - r.height / 2;
-    if (x < 0) x = 0;
-    if (y < 0) y = 0;
+    if (x < offsetView.x) x = offsetView.x;
+    if (y < offsetView.y) y = offsetView.y;
     scrollRectToVisible(new Rectangle(x, y, r.width, r.height));
   }
 
@@ -577,7 +583,7 @@ public class PolygonEditor extends JPanel {
 
   public static void main(String[] args) {
     final JFrame f = new JFrame();
-    f.add(new PolygonEditor(null));
+    f.add(new PolygonEditor(null, new Point(0, 0)));
     f.setSize(500, 500);
     f.addWindowListener(new WindowAdapter() {
       @Override

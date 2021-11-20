@@ -20,24 +20,33 @@ package VASSAL.counters;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.PolygonConfigurer;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.PolygonEditor;
 import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.swing.FlowLabel;
 import VASSAL.tools.swing.SwingUtils;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.GridLayout;
 import java.awt.Point;
+import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
@@ -47,7 +56,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.StringTokenizer;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 
 /**
@@ -204,12 +222,163 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
     return new Ed(this);
   }
 
+  public static class VisualEditor implements PolygonConfigurer {
+
+    private PolygonEditor editor;
+
+    Polygon polygon;
+
+    private ActionButton action;
+    private Decorator outer;
+    private JDialog frame;
+    protected AdjustableSpeedScrollPane scroll;
+    protected FlowLabel coordsLabel;
+    protected JLabel coordLabel;
+
+    VisualEditor() {
+      polygon = new Polygon();
+    }
+
+
+    public void show(ActionButton piece) {
+
+      this.action = piece;
+      outer = (Decorator)Decorator.getOutermost(action);
+
+      final Rectangle bounds = outer.boundingBox();
+
+      final int width  = (int)Math.max(bounds.getHeight() * 2, 500);
+      final int height = (int)Math.max(bounds.getWidth() * 2, 500);
+      final Dimension viewSize = new Dimension(width, height);
+
+      editor = new PolygonEditor(new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints), new Point(width/2, height/2)) {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        protected void paintBackground(Graphics g) {
+          super.paintBackground(g);
+
+          outer.draw(g, width/2, height/2, null, 1.0);
+        }
+      };
+
+      editor.setMyConfigurer(this);
+
+      frame = new JDialog(GameModule.getGameModule().getPlayerWindow(), "Splortle Blortle", true);
+      frame.setFocusTraversalKeysEnabled(false);
+
+      frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
+      final JPanel labels = new JPanel();
+      labels.setLayout(new GridLayout(3, 2));
+      labels.add(new JLabel(Resources.getString("Editor.Zone.drag_to_create_initial_shape")));
+      labels.add(new JLabel(Resources.getString("Editor.Zone.right_click_to_add_point")));
+      labels.add(new JLabel(Resources.getString("Editor.Zone.left_drag_to_move_points")));
+      labels.add(new JLabel(Resources.getString("Editor.Zone.del_to_remove_points")));
+      labels.setAlignmentX(0.0f);
+      frame.add(labels);
+
+      final JButton direct = new JButton(Resources.getString("Set Coordinates Directly"));
+      direct.setFocusable(false);
+      direct.addActionListener(e -> {
+        String newShape = JOptionPane.showInputDialog(frame, Resources.getString("Enter Points Instructions"), PolygonEditor
+          .polygonToString(editor.getPolygon()).replace(';', ' '));
+        if (newShape != null) {
+          final StringBuilder buffer = new StringBuilder();
+          final StringTokenizer st = new StringTokenizer(newShape);
+          while (st.hasMoreTokens()) {
+            buffer.append(st.nextToken());
+            if (st.hasMoreTokens()) {
+              buffer.append(';');
+            }
+          }
+          newShape = buffer.toString();
+          PolygonEditor.reset(editor.getPolygon(), newShape);
+          editor.repaint();
+        }
+      });
+      direct.setAlignmentX(0.0f);
+      frame.add(direct);
+
+      scroll = new AdjustableSpeedScrollPane(editor, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+      editor.setScroll(scroll);
+      frame.add(scroll);
+
+      final Box coordPanel = Box.createVerticalBox();
+      coordsLabel = new FlowLabel("");
+      coordLabel = new JLabel("");
+      coordPanel.add(coordLabel, BorderLayout.CENTER);
+      coordPanel.add(coordsLabel, BorderLayout.CENTER);
+      updateCoords();
+      updateCoord("");
+      frame.add(coordPanel);
+
+      final JPanel buttonPanel = new JPanel();
+
+      final JButton closeButton = new JButton(Resources.getString("General.ok"));
+      closeButton.setFocusable(false);
+      closeButton.addActionListener(e -> {
+        //setValue((Object) getValueString());
+        frame.setVisible(false);
+      });
+
+      final JButton canButton = new JButton(Resources.getString("General.cancel"));
+      canButton.setFocusable(false);
+      canButton.addActionListener(e -> {
+        //editor.setPolygon(savePoly);
+        //setValue((Object) getValueString());
+        frame.setVisible(false);
+      });
+
+      buttonPanel.add(closeButton);
+      buttonPanel.add(canButton);
+      frame.add(buttonPanel);
+
+      editor.setPreferredSize(viewSize);
+      editor.reset();
+      //savePoly = new Polygon(zone.myPolygon.xpoints, zone.myPolygon.ypoints, zone.myPolygon.npoints);
+      editor.setPolygon((polygon.npoints == 0) ? null : new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints));
+      if (editor.getPolygon() != null) {
+        final Rectangle polyBounds = editor.getPolygon().getBounds();
+        final Point polyCenter = new Point(polyBounds.x + polyBounds.width / 2,
+          polyBounds.y + polyBounds.height / 2);
+        if (!editor.getVisibleRect().contains(polyCenter)) {
+          editor.center(polyCenter);
+        }
+      }
+      frame.pack();
+      final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+      frame.setSize(Math.min(frame.getWidth(), d.width * 2 / 3), Math.min(frame.getHeight(), d.height * 2 / 3));
+      frame.setTitle("Sputtle Bluttle");
+
+      frame.setVisible(true);
+    }
+
+
+    @Override
+    public void updateCoord(String coordString) {
+
+    }
+
+    public void updateCoord(int x, int y) {
+
+    }
+
+    public void updateCoords(Polygon polygon) {
+
+    }
+
+    public void updateCoords() {
+
+    }
+  }
+
   public static class Ed implements PieceEditor {
     private final TraitConfigPanel box;
     private final IntConfigurer xConfig;
     private final IntConfigurer yConfig;
     private final IntConfigurer widthConfig;
     private final IntConfigurer heightConfig;
+    private final JButton defineButton;
     private final NamedHotKeyConfigurer strokeConfig;
     private final BooleanConfigurer launchConfig;
     protected StringConfigurer descConfig;
@@ -238,6 +407,13 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
 
       heightConfig = new IntConfigurer(p.bounds.height);
       box.add("Editor.ActionButton.button_height", heightConfig);
+
+      defineButton = new JButton("Define");
+      defineButton.addActionListener(e -> {
+        final VisualEditor ve = new VisualEditor();
+        ve.show(p);
+      });
+      box.add(defineButton);
     }
 
     @Override

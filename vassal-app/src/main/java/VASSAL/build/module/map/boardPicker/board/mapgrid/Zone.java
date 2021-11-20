@@ -615,7 +615,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   /**
    * Our configurer for the Zone, including ability to edit the polygon
    */
-  public static class Editor extends Configurer {
+  public static class Editor extends Configurer implements PolygonConfigurer {
     private final JPanel buttonPanel;
     private final JButton button;
     private PolygonEditor editor;
@@ -639,6 +639,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       this.zone = zone;
     }
 
+    @Override
     public void updateCoords(Polygon polygon) {
       final StringBuilder s = new StringBuilder("");
       if (polygon != null) {
@@ -654,21 +655,24 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       coordsLabel.repaint();
     }
 
+    @Override
     public void updateCoords() {
       updateCoords(zone.myPolygon);
     }
 
+    @Override
     public void updateCoord(String s) {
       coordLabel.setText(s);
       coordLabel.repaint();
     }
 
+    @Override
     public void updateCoord(int x, int y) {
       updateCoord(x + "," + y);
     }
 
     private void init(Zone zone) {
-      editor = new PolygonEditor(new Polygon(zone.myPolygon.xpoints, zone.myPolygon.ypoints, zone.myPolygon.npoints)) {
+      editor = new PolygonEditor(new Polygon(zone.myPolygon.xpoints, zone.myPolygon.ypoints, zone.myPolygon.npoints), new Point(0, 0)) {
         private static final long serialVersionUID = 1L;
 
         @Override
