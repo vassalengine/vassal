@@ -117,6 +117,8 @@ public class Footprint extends MovementMarkable {
   private KeyCommand showTrailCommandOff;
   private KeyCommand showTrailCommandClear;
 
+  private boolean rotateCheckedOnMove;
+
 
   public Footprint() {
     super(Footprint.ID, null);
@@ -273,7 +275,10 @@ public class Footprint extends MovementMarkable {
    */
   @Override
   public void setMoved(boolean justMoved) {
-    requireNoOuterRotate();
+    if (!rotateCheckedOnMove) {
+      requireNoOuterRotate();
+      rotateCheckedOnMove = true;
+    }
     if (justMoved) {
       recordCurrentPosition();
       final Map map = getMap();
