@@ -37,7 +37,6 @@ import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.swing.FlowLabel;
 import VASSAL.tools.swing.SwingUtils;
 
-import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -48,7 +47,6 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.Shape;
-import java.awt.Stroke;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
