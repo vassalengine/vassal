@@ -1270,7 +1270,7 @@
         <className>VASSAL/build/module/map/boardPicker/board/mapgrid/PolygonEditor</className>
         <differenceType>7005</differenceType>
         <method>void setMyConfigurer(VASSAL.build.module.map.boardPicker.board.mapgrid.Zone$Editor)</method>
-        <to>VASSAL.build.module.map.boardPicker.board.mapgrid.PolygonConfigurer</to>
+        <to>**</to>
         <justification>Only ever existed in 3.6 betas</justification>
     </difference>
 
