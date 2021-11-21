@@ -86,6 +86,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
   protected Polygon polygon = new Polygon();
   protected ButtonPusher pusher;
   protected String description = "";
+  protected int version;
   protected static final ButtonPusher globalPusher = new ButtonPusher();
   protected boolean launchPopupMenu = false; //BR// If clicking this button should launch the piece's context menu
   protected boolean useWholeShape   = false; //BR// If we should just use the whole piece shape as the hotspot for the button
@@ -219,7 +220,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
     launchPopupMenu = st.nextBoolean(false);
     useWholeShape = st.nextBoolean(false);
 
-    final int version = st.nextInt(0);
+    version = st.nextInt(0);
 
     polygon.reset();
     if (version < 1) {
@@ -256,7 +257,9 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
     if (! Objects.equals(bounds, c.bounds)) return false;
     if (! Objects.equals(launchPopupMenu, c.launchPopupMenu)) return false;
     if (! Objects.equals(useWholeShape, c.useWholeShape)) return false;
-    if (! Objects.equals(polygon, c.polygon)) return false;
+    if (version == c.version) {
+      if (!Objects.equals(polygon, c.polygon)) return false;
+    }
     return Objects.equals(description, c.description);
   }
 
