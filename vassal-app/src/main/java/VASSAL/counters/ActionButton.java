@@ -80,11 +80,10 @@ import javax.swing.KeyStroke;
 public class ActionButton extends Decorator implements EditablePiece, Loopable {
   public static final String ID = "button;"; // NON-NLS
   public static final String LAUNCH_POPUP_MENU = "LaunchPopupMenu"; //NON-NLS
-  public static final int CURRENT_VERSION = 1;
+  public static final int ACTION_BUTTON_VERSION = 1;
   protected NamedKeyStroke stroke;
   protected Rectangle bounds = new Rectangle();
   protected Polygon polygon = new Polygon();
-  protected int version;
   protected ButtonPusher pusher;
   protected String description = "";
   protected static final ButtonPusher globalPusher = new ButtonPusher();
@@ -122,7 +121,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
       .append(description)
       .append(launchPopupMenu)
       .append(useWholeShape)
-      .append(version)
+      .append(ACTION_BUTTON_VERSION)
       .append(polygon.npoints);
 
     for (int point = 0; point < polygon.npoints; point++) {
@@ -220,7 +219,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
     launchPopupMenu = st.nextBoolean(false);
     useWholeShape = st.nextBoolean(false);
 
-    version = st.nextInt(0);
+    final int version = st.nextInt(0);
 
     polygon.reset();
     if (version < 1) {
@@ -234,7 +233,6 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
       else {
         useWholeShape = true;
       }
-      version = 1;
     }
     else {
       final int nPoints = st.nextInt(0);
@@ -259,7 +257,6 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
     if (! Objects.equals(launchPopupMenu, c.launchPopupMenu)) return false;
     if (! Objects.equals(useWholeShape, c.useWholeShape)) return false;
     if (! Objects.equals(polygon, c.polygon)) return false;
-    if (! Objects.equals(version, c.version)) return false;
     return Objects.equals(description, c.description);
   }
 
@@ -545,7 +542,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
         .append(descConfig.getValueString())
         .append(launchConfig.getValueString())
         .append(useShapeConfig.getValueString())
-        .append(CURRENT_VERSION)
+        .append(ACTION_BUTTON_VERSION)
         .append(polygon.npoints);
 
       for (int point = 0; point < polygon.npoints; point++) {
