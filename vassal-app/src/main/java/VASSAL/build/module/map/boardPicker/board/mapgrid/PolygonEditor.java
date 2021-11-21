@@ -65,7 +65,7 @@ public class PolygonEditor extends JPanel {
   private static final int CLICK_THRESHOLD = 10;
 
   private PolygonConfigurer myConfigurer;
-  private final Point offsetView;
+  private final Point offsetView; // In some use-cases (e.g. Action Buttons) we need to offset 0,0 to be in the center of our coordinate space rather than the upper left corner
 
   public PolygonEditor(Polygon p, Point offsetView) {
     polygon = p;
@@ -111,15 +111,28 @@ public class PolygonEditor extends JPanel {
   }
 
   public Polygon getPolygon() {
-    return polygon;
+    if ((offsetView.x == 0) && (offsetView.y == 0)) {
+      return polygon;
+    }
+    final Polygon poly = clonePolygon();
+    poly.translate(-offsetView.x, -offsetView.y);
+    return poly;
+  }
+
+  public Polygon getRawPolygon() {
+    return (polygon == null) ? new Polygon() : polygon;
   }
 
   public Polygon clonePolygon() {
-    return new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
+    return (polygon == null) ? new Polygon() : new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
   }
 
   public void setPolygon(Polygon polygon) {
     this.polygon = polygon;
+    if ((offsetView.x != 0) || (offsetView.y != 0)) {
+      this.polygon = clonePolygon();
+      this.polygon.translate(offsetView.x, offsetView.y);
+    }
   }
 
   public void setScroll(JScrollPane scroll) {
@@ -162,8 +175,8 @@ public class PolygonEditor extends JPanel {
     }
     int x = p.x - r.width / 2;
     int y = p.y - r.height / 2;
-    if (x < offsetView.x) x = offsetView.x;
-    if (y < offsetView.y) y = offsetView.y;
+    if (x < 0) x = 0;
+    if (y < 0) y = 0;
     scrollRectToVisible(new Rectangle(x, y, r.width, r.height));
   }
 

@@ -50,6 +50,8 @@ import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -77,15 +79,20 @@ import javax.swing.KeyStroke;
 public class ActionButton extends Decorator implements EditablePiece, Loopable {
   public static final String ID = "button;"; // NON-NLS
   public static final String LAUNCH_POPUP_MENU = "LaunchPopupMenu"; //NON-NLS
+  public static final int CURRENT_VERSION = 1;
   protected NamedKeyStroke stroke;
   protected Rectangle bounds = new Rectangle();
+  protected Polygon polygon = new Polygon();
+  protected int version;
   protected ButtonPusher pusher;
   protected String description = "";
   protected static final ButtonPusher globalPusher = new ButtonPusher();
   protected boolean launchPopupMenu = false; //BR// If clicking this button should launch the piece's context menu
+  protected boolean useWholeShape   = false; //BR// If we should just use the whole piece shape as the hotspot for the button
 
   public ActionButton() {
     this(ID, null);
+    //this(ID + "65,0;-20;-20;40;40;;false,true;1;0", null); //NON-NLS // Starts new ones as "version 1"
   }
 
   public ActionButton(String type, GamePiece inner) {
@@ -112,7 +119,16 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
       .append(bounds.width)
       .append(bounds.height)
       .append(description)
-      .append(launchPopupMenu);
+      .append(launchPopupMenu)
+      .append(useWholeShape)
+      .append(version)
+      .append(polygon.npoints);
+
+    for (int point = 0; point < polygon.npoints; point++) {
+      // Point-by-point instead of e.g. all-x-first makes it easier to build the polygon at the other end
+      se.append(polygon.xpoints[point]).append(polygon.ypoints[point]);
+    }
+
     return ID + se.getValue();
   }
 
@@ -195,12 +211,38 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
     stroke = st.nextNamedKeyStroke('A');
-    bounds.x = st.nextInt(-20);
-    bounds.y = st.nextInt(-20);
-    bounds.width = st.nextInt(40);
-    bounds.height = st.nextInt(40);
+    bounds.x = st.nextInt(0);
+    bounds.y = st.nextInt(0);
+    bounds.width = st.nextInt(0);
+    bounds.height = st.nextInt(0);
     description = st.nextToken("");
     launchPopupMenu = st.nextBoolean(false);
+    useWholeShape = st.nextBoolean(false);
+
+    version = st.nextInt(0);
+
+    polygon.reset();
+    if (version < 1) {
+      // If it's a genuine old-format then convert the old bounds over; otherwise start with empty polygon and use "whole piece" by default
+      if ((bounds.width > 0) && (bounds.height > 0)) {
+        polygon.addPoint(bounds.x, bounds.y);
+        polygon.addPoint(bounds.x + bounds.width, bounds.y);
+        polygon.addPoint(bounds.x + bounds.width, bounds.y + bounds.height);
+        polygon.addPoint(bounds.x, bounds.y + bounds.height);
+      }
+      else {
+        useWholeShape = true;
+      }
+      version = 1;
+    }
+    else {
+      final int nPoints = st.nextInt(0);
+      for (int point = 0; point < nPoints; point++) {
+        final int x = st.nextInt(0);
+        final int y = st.nextInt(0);
+        polygon.addPoint(x, y);
+      }
+    }
   }
 
   @Override
@@ -214,6 +256,9 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
     final ActionButton c = (ActionButton) o;
     if (! Objects.equals(bounds, c.bounds)) return false;
     if (! Objects.equals(launchPopupMenu, c.launchPopupMenu)) return false;
+    if (! Objects.equals(useWholeShape, c.useWholeShape)) return false;
+    if (! Objects.equals(polygon, c.polygon)) return false;
+    if (! Objects.equals(version, c.version)) return false;
     return Objects.equals(description, c.description);
   }
 
@@ -228,30 +273,50 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
 
     Polygon polygon;
 
-    private ActionButton action;
     private Decorator outer;
     private JDialog frame;
+    private Point offsetView; // We need to offset the coordinate space in the PolygonEditor so that 0,0 will be at the center of our coordinate space rather than the upper left corner.
     protected AdjustableSpeedScrollPane scroll;
     protected FlowLabel coordsLabel;
     protected JLabel coordLabel;
 
-    VisualEditor() {
-      polygon = new Polygon();
-    }
-
-
-    public void show(ActionButton piece) {
-
-      this.action = piece;
-      outer = (Decorator)Decorator.getOutermost(action);
+    public void show(ActionButton piece, Polygon poly, Ed pieceEditor) {
+      this.polygon = poly;
+      outer = (Decorator)Decorator.getOutermost(piece);
 
       final Rectangle bounds = outer.boundingBox();
 
-      final int width  = (int)Math.max(bounds.getHeight() * 2, 500);
-      final int height = (int)Math.max(bounds.getWidth() * 2, 500);
+      // If we don't have a legitimate polygon right now, see if we can create a default starting one from the bounds of our piece
+      if (polygon.npoints < 3) {
+        polygon.reset();
+        if ((bounds.width > 0) && (bounds.height > 0)) {
+          polygon.addPoint(bounds.x, bounds.y);
+          polygon.addPoint(bounds.x + bounds.width, bounds.y);
+          polygon.addPoint(bounds.x + bounds.width, bounds.y + bounds.height);
+          polygon.addPoint(bounds.x, bounds.y + bounds.height);
+        }
+      }
+      final Rectangle polyBounds = polygon.getBounds();
+
+      int spaceWidth  = (int)Math.max(bounds.getHeight() * 2, 500);
+      int spaceHeight = (int)Math.max(bounds.getWidth() * 2, 500);
+
+      // Space out coordinate space boundaries at least 10% from any existing polygon
+      for (int point = 0; point < polygon.npoints; point++) {
+        spaceWidth  = (int)Math.max(spaceWidth, Math.abs(polygon.xpoints[point] * 2 * 11 / 10));
+        spaceHeight = (int)Math.max(spaceHeight, Math.abs(polygon.ypoints[point] * 2 * 11 / 10));
+      }
+
+      // Define a reasonable sized coordinate space, but big enough for our (a) piece bounding box if any, (b) current size of hotspot polygon if any, and (c) 500x500 minimum
+      // Must be final since used in inner class
+      final int width  = spaceWidth;
+      final int height = spaceHeight;
+
       final Dimension viewSize = new Dimension(width, height);
 
-      editor = new PolygonEditor(new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints), new Point(width/2, height/2)) {
+      offsetView = new Point(width/2, height/2);
+
+      editor = new PolygonEditor(new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints), offsetView) {
         private static final long serialVersionUID = 1L;
 
         @Override
@@ -292,7 +357,9 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
             }
           }
           newShape = buffer.toString();
-          PolygonEditor.reset(editor.getPolygon(), newShape);
+          final Polygon newPoly = new Polygon();
+          PolygonEditor.reset(newPoly, newShape);
+          editor.setPolygon(newPoly); // Need to send it back in this way to get our offsetView respected
           editor.repaint();
         }
       });
@@ -308,43 +375,41 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
       coordLabel = new JLabel("");
       coordPanel.add(coordLabel, BorderLayout.CENTER);
       coordPanel.add(coordsLabel, BorderLayout.CENTER);
+      frame.add(coordPanel);
+
+      editor.setPreferredSize(viewSize);
+      editor.reset();
+      editor.setPolygon((polygon.npoints == 0) ? null : new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints));
+      if (editor.getPolygon() != null) {
+        final Rectangle currentBounds = editor.getPolygon().getBounds();
+        final Point polyCenter = new Point(currentBounds.x + currentBounds.width / 2,
+          currentBounds.y + currentBounds.height / 2);
+        if (!editor.getVisibleRect().contains(polyCenter)) {
+          editor.center(polyCenter);
+        }
+      }
+
       updateCoords();
       updateCoord("");
-      frame.add(coordPanel);
 
       final JPanel buttonPanel = new JPanel();
 
       final JButton closeButton = new JButton(Resources.getString("General.ok"));
       closeButton.setFocusable(false);
       closeButton.addActionListener(e -> {
-        //setValue((Object) getValueString());
+        polygon = editor.getPolygon();
+        pieceEditor.setPolygon(polygon == null ? new Polygon() : polygon);
         frame.setVisible(false);
       });
 
       final JButton canButton = new JButton(Resources.getString("General.cancel"));
       canButton.setFocusable(false);
-      canButton.addActionListener(e -> {
-        //editor.setPolygon(savePoly);
-        //setValue((Object) getValueString());
-        frame.setVisible(false);
-      });
+      canButton.addActionListener(e -> frame.setVisible(false));
 
       buttonPanel.add(closeButton);
       buttonPanel.add(canButton);
       frame.add(buttonPanel);
 
-      editor.setPreferredSize(viewSize);
-      editor.reset();
-      //savePoly = new Polygon(zone.myPolygon.xpoints, zone.myPolygon.ypoints, zone.myPolygon.npoints);
-      editor.setPolygon((polygon.npoints == 0) ? null : new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints));
-      if (editor.getPolygon() != null) {
-        final Rectangle polyBounds = editor.getPolygon().getBounds();
-        final Point polyCenter = new Point(polyBounds.x + polyBounds.width / 2,
-          polyBounds.y + polyBounds.height / 2);
-        if (!editor.getVisibleRect().contains(polyCenter)) {
-          editor.center(polyCenter);
-        }
-      }
       frame.pack();
       final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
       frame.setSize(Math.min(frame.getWidth(), d.width * 2 / 3), Math.min(frame.getHeight(), d.height * 2 / 3));
@@ -353,38 +418,59 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
       frame.setVisible(true);
     }
 
+    @Override
+    public void updateCoords(Polygon polygon) {
+      final StringBuilder s = new StringBuilder("");
+      if (polygon != null) {
+        for (int p = 0; p < polygon.npoints; p++) {
+          s.append('(');
+          s.append(polygon.xpoints[p] - offsetView.x);
+          s.append(',');
+          s.append(polygon.ypoints[p] - offsetView.y);
+          s.append(") ");
+        }
+        coordsLabel.setText(s.toString());
+      }
+      else {
+        coordsLabel.setText("");
+      }
+      coordsLabel.repaint();
+    }
 
     @Override
-    public void updateCoord(String coordString) {
-
-    }
-
-    public void updateCoord(int x, int y) {
-
-    }
-
-    public void updateCoords(Polygon polygon) {
-
-    }
-
     public void updateCoords() {
+      updateCoords(editor.getRawPolygon());
+    }
 
+    @Override
+    public void updateCoord(String s) {
+      coordLabel.setText(s);
+      coordLabel.repaint();
+    }
+
+    @Override
+    public void updateCoord(int x, int y) {
+      updateCoord((x - offsetView.x) + "," + (y - offsetView.y));
     }
   }
 
   public static class Ed implements PieceEditor {
     private final TraitConfigPanel box;
+    private final JButton defineButton;
+    private final NamedHotKeyConfigurer strokeConfig;
+    private final BooleanConfigurer launchConfig;
+    private final BooleanConfigurer useShapeConfig;
     private final IntConfigurer xConfig;
     private final IntConfigurer yConfig;
     private final IntConfigurer widthConfig;
     private final IntConfigurer heightConfig;
-    private final JButton defineButton;
-    private final NamedHotKeyConfigurer strokeConfig;
-    private final BooleanConfigurer launchConfig;
     protected StringConfigurer descConfig;
+    private Polygon polygon;
 
     public Ed(ActionButton p) {
       box = new TraitConfigPanel();
+
+      polygon = p.polygon;
 
       descConfig = new StringConfigurer(p.description);
       descConfig.setHintKey("Editor.description_hint");
@@ -396,24 +482,41 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
       launchConfig = new BooleanConfigurer(p.launchPopupMenu);
       box.add("Editor.ActionButton.launch_popup_menu", launchConfig);
 
+      useShapeConfig = new BooleanConfigurer(p.useWholeShape);
+      useShapeConfig.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+          defineButton.setVisible(!((Boolean)evt.getNewValue()));
+          repack(box);
+          box.repaint();
+        }
+      });
+      box.add("Editor.ActionButton.use_whole_shape", useShapeConfig);
+
       xConfig = new IntConfigurer(p.bounds.x);
-      box.add("Editor.ActionButton.button_x_offset", xConfig);
+      //box.add("Editor.ActionButton.button_x_offset", xConfig);
 
       yConfig = new IntConfigurer(p.bounds.y);
-      box.add("Editor.ActionButton.button_y_offset", yConfig);
+      //box.add("Editor.ActionButton.button_y_offset", yConfig);
 
       widthConfig = new IntConfigurer(p.bounds.width);
-      box.add("Editor.ActionButton.button_width", widthConfig);
+      //box.add("Editor.ActionButton.button_width", widthConfig);
 
       heightConfig = new IntConfigurer(p.bounds.height);
-      box.add("Editor.ActionButton.button_height", heightConfig);
+      //box.add("Editor.ActionButton.button_height", heightConfig);
 
       defineButton = new JButton("Define");
       defineButton.addActionListener(e -> {
         final VisualEditor ve = new VisualEditor();
-        ve.show(p);
+        ve.show(p, polygon, this);
       });
       box.add(defineButton);
+
+      defineButton.setVisible(!useShapeConfig.getValueBoolean());
+    }
+
+    public void setPolygon(Polygon polygon) {
+      this.polygon = polygon;
     }
 
     @Override
@@ -430,7 +533,15 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
         .append(widthConfig.getValueString())
         .append(heightConfig.getValueString())
         .append(descConfig.getValueString())
-        .append(launchConfig.getValueString());
+        .append(launchConfig.getValueString())
+        .append(useShapeConfig.getValueString())
+        .append(CURRENT_VERSION)
+        .append(polygon.npoints);
+
+      for (int point = 0; point < polygon.npoints; point++) {
+        se.append(polygon.xpoints[point]).append(polygon.ypoints[point]);
+      }
+
       return ID + se.getValue();
     }
 
