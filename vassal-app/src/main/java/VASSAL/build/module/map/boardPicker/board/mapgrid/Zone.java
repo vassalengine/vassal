@@ -697,7 +697,6 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
           else {
             super.paintBackground(g);
           }
-          warning.setVisible(editor != null && (editor.getPolygon() == null || editor.getPolygon().npoints == 0));
         }
       };
 

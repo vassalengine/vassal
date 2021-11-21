@@ -37,7 +37,9 @@ import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.swing.FlowLabel;
 import VASSAL.tools.swing.SwingUtils;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -46,6 +48,7 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -279,6 +282,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
     protected AdjustableSpeedScrollPane scroll;
     protected FlowLabel coordsLabel;
     protected JLabel coordLabel;
+    protected final JLabel warning = new JLabel(Resources.getString("Editor.ActionButton.empty_polygon"));
 
     public void show(ActionButton piece, Polygon poly, Ed pieceEditor) {
       this.polygon = poly;
@@ -296,15 +300,14 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
           polygon.addPoint(bounds.x, bounds.y + bounds.height);
         }
       }
-      final Rectangle polyBounds = polygon.getBounds();
 
-      int spaceWidth  = (int)Math.max(bounds.getHeight() * 2, 500);
-      int spaceHeight = (int)Math.max(bounds.getWidth() * 2, 500);
+      int spaceWidth  = (int)Math.max(bounds.getWidth() * 2, 500);
+      int spaceHeight = (int)Math.max(bounds.getHeight() * 2, 500);
 
       // Space out coordinate space boundaries at least 10% from any existing polygon
       for (int point = 0; point < polygon.npoints; point++) {
-        spaceWidth  = (int)Math.max(spaceWidth, Math.abs(polygon.xpoints[point] * 2 * 11 / 10));
-        spaceHeight = (int)Math.max(spaceHeight, Math.abs(polygon.ypoints[point] * 2 * 11 / 10));
+        spaceWidth  = Math.max(spaceWidth, Math.abs(polygon.xpoints[point] * 2 * 11 / 10));
+        spaceHeight = Math.max(spaceHeight, Math.abs(polygon.ypoints[point] * 2 * 11 / 10));
       }
 
       // Define a reasonable sized coordinate space, but big enough for our (a) piece bounding box if any, (b) current size of hotspot polygon if any, and (c) 500x500 minimum
@@ -323,13 +326,21 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
         protected void paintBackground(Graphics g) {
           super.paintBackground(g);
 
+          // Draw crosshairs at origin
+          g.setColor(Color.BLACK);
+          g.drawLine(-5 + offsetView.x, offsetView.y, 5 + offsetView.x, offsetView.y);
+          g.drawLine(offsetView.x, -5 + offsetView.y, offsetView.x, 5 + offsetView.y);
+
+          // Draw graphics for piece (if any)
           outer.draw(g, width/2, height/2, null, 1.0);
+
+          warning.setVisible(editor != null && (editor.getPolygon() == null || editor.getPolygon().npoints == 0));
         }
       };
 
       editor.setMyConfigurer(this);
 
-      frame = new JDialog(GameModule.getGameModule().getPlayerWindow(), "Splortle Blortle", true);
+      frame = new JDialog(GameModule.getGameModule().getPlayerWindow(), Resources.getString("Editor.ActionButton.define_hotspot"), true);
       frame.setFocusTraversalKeysEnabled(false);
 
       frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
@@ -342,10 +353,14 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
       labels.setAlignmentX(0.0f);
       frame.add(labels);
 
-      final JButton direct = new JButton(Resources.getString("Set Coordinates Directly"));
+      warning.setForeground(Color.red);
+      warning.setVisible(false);
+      frame.add(warning);
+
+      final JButton direct = new JButton(Resources.getString("Editor.ActionButton.set_coordinates_directly"));
       direct.setFocusable(false);
       direct.addActionListener(e -> {
-        String newShape = JOptionPane.showInputDialog(frame, Resources.getString("Enter Points Instructions"), PolygonEditor
+        String newShape = JOptionPane.showInputDialog(frame, Resources.getString("Editor.ActionButton.enter_points_instructions"), PolygonEditor
           .polygonToString(editor.getPolygon()).replace(';', ' '));
         if (newShape != null) {
           final StringBuilder buffer = new StringBuilder();
@@ -377,21 +392,6 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
       coordPanel.add(coordsLabel, BorderLayout.CENTER);
       frame.add(coordPanel);
 
-      editor.setPreferredSize(viewSize);
-      editor.reset();
-      editor.setPolygon((polygon.npoints == 0) ? null : new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints));
-      if (editor.getPolygon() != null) {
-        final Rectangle currentBounds = editor.getPolygon().getBounds();
-        final Point polyCenter = new Point(currentBounds.x + currentBounds.width / 2,
-          currentBounds.y + currentBounds.height / 2);
-        if (!editor.getVisibleRect().contains(polyCenter)) {
-          editor.center(polyCenter);
-        }
-      }
-
-      updateCoords();
-      updateCoord("");
-
       final JPanel buttonPanel = new JPanel();
 
       final JButton closeButton = new JButton(Resources.getString("General.ok"));
@@ -410,11 +410,23 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
       buttonPanel.add(canButton);
       frame.add(buttonPanel);
 
+      editor.setPreferredSize(viewSize);
+      editor.reset();
+      editor.setPolygon((polygon.npoints == 0) ? null : new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints));
+      if (editor.getPolygon() != null) {
+        final Rectangle currentBounds = editor.getPolygon().getBounds();
+        final Point polyCenter = new Point(currentBounds.x + currentBounds.width / 2 - offsetView.x,
+          currentBounds.y + currentBounds.height / 2 - offsetView.y);
+        editor.center(polyCenter);
+      }
+
+      updateCoords();
+      updateCoord("");
+
       frame.pack();
       final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
       frame.setSize(Math.min(frame.getWidth(), d.width * 2 / 3), Math.min(frame.getHeight(), d.height * 2 / 3));
-      frame.setTitle("Sputtle Bluttle");
-
+      frame.setTitle(Resources.getString("Editor.ActionButton.define_hotspot"));
       frame.setVisible(true);
     }
 
@@ -505,7 +517,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
       heightConfig = new IntConfigurer(p.bounds.height);
       //box.add("Editor.ActionButton.button_height", heightConfig);
 
-      defineButton = new JButton("Define");
+      defineButton = new JButton(Resources.getString("Editor.ActionButton.define_shape"));
       defineButton.addActionListener(e -> {
         final VisualEditor ve = new VisualEditor();
         ve.show(p, polygon, this);
@@ -612,47 +624,55 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
         else if (piece instanceof ActionButton) {
           final ActionButton action = (ActionButton) piece;
 
-          // Handle rotation of the piece, movement is relative to the current facing of the unit.
-          // Traverse any traits outward from this trait (ones that could rotate this trait),
-          // and find out what the cumulative rotation is
-          Decorator rotateTrait = action.getOuter();
-          double cumulative = 0.0;
-          while (rotateTrait != null) {
-            if (rotateTrait instanceof FreeRotator) {
-              cumulative += ((FreeRotator)rotateTrait).getAngleInRadians();
-            }
-            else if (rotateTrait instanceof MatCargo) {
-              cumulative += ((MatCargo)rotateTrait).getMatAngleInRadians();
-            }
-            rotateTrait = rotateTrait.getOuter();
+          if (action.stroke == null || action.stroke.getKeyStroke() == null) {
+            return;
           }
 
-          final Shape shape;
-          // If rotated, apply the rotation
-          if (cumulative != 0.0) {
-            shape = AffineTransform.getRotateInstance(cumulative,
-              0,
-              0)
-              .createTransformedShape(action.bounds);
-          }
-          else {
-            shape = action.bounds;
+          // If we're not a use-whole-shape piece, then check this click against the special designated polygon
+          if (!action.useWholeShape) {
+            // Handle rotation of the piece, movement is relative to the current facing of the unit.
+            // Traverse any traits outward from this trait (ones that could rotate this trait),
+            // and find out what the cumulative rotation is
+            Decorator rotateTrait = action.getOuter();
+            double cumulative = 0.0;
+            while (rotateTrait != null) {
+              if (rotateTrait instanceof FreeRotator) {
+                cumulative += ((FreeRotator) rotateTrait).getAngleInRadians();
+              }
+              else if (rotateTrait instanceof MatCargo) {
+                cumulative += ((MatCargo) rotateTrait).getMatAngleInRadians();
+              }
+              rotateTrait = rotateTrait.getOuter();
+            }
+
+            final Shape shape;
+            // If rotated, apply the rotation
+            if (cumulative != 0.0) {
+              shape = AffineTransform.getRotateInstance(cumulative,
+                0,
+                0)
+                .createTransformedShape(action.polygon);
+            }
+            else {
+              shape = action.polygon;
+            }
+            if (!shape.contains(point)) {
+              return;
+            }
           }
 
-          if (action.stroke != null && action.stroke.getKeyStroke() != null && shape.contains(point)) {
-            // Save state prior to command
-            p.setProperty(Properties.SNAPSHOT, ((PropertyExporter) p).getProperties());
-            try {
-              RecursionLimiter.startExecution(action);
-              final Command command = p.keyEvent(action.stroke.getKeyStroke());
-              GameModule.getGameModule().sendAndLog(command);
-            }
-            catch (RecursionLimitException e) {
-              RecursionLimiter.infiniteLoop(e);
-            }
-            finally {
-              RecursionLimiter.endExecution();
-            }
+          // Save state prior to command
+          p.setProperty(Properties.SNAPSHOT, ((PropertyExporter) p).getProperties());
+          try {
+            RecursionLimiter.startExecution(action);
+            final Command command = p.keyEvent(action.stroke.getKeyStroke());
+            GameModule.getGameModule().sendAndLog(command);
+          }
+          catch (RecursionLimitException e) {
+            RecursionLimiter.infiniteLoop(e);
+          }
+          finally {
+            RecursionLimiter.endExecution();
           }
         }
       }
