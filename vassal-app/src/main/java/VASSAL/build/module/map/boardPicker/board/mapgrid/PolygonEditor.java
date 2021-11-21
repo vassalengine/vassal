@@ -67,6 +67,10 @@ public class PolygonEditor extends JPanel {
   private PolygonConfigurer myConfigurer;
   private final Point offsetView; // In some use-cases (e.g. Action Buttons) we need to offset 0,0 to be in the center of our coordinate space rather than the upper left corner
 
+  public PolygonEditor(Polygon p) {
+    this (p, new Point(0, 0));
+  }
+
   public PolygonEditor(Polygon p, Point offsetView) {
     polygon = p;
     this.offsetView = offsetView;

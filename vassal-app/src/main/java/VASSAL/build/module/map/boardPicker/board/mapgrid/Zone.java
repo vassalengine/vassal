@@ -672,7 +672,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     }
 
     private void init(Zone zone) {
-      editor = new PolygonEditor(new Polygon(zone.myPolygon.xpoints, zone.myPolygon.ypoints, zone.myPolygon.npoints), new Point(0, 0)) {
+      editor = new PolygonEditor(new Polygon(zone.myPolygon.xpoints, zone.myPolygon.ypoints, zone.myPolygon.npoints)) {
         private static final long serialVersionUID = 1L;
 
         @Override
