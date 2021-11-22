@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 10793, "desc": "Fix NPE: Always cache SetupStack configurer bounding box" },
         { "num": 10777, "desc": "Fix duplicate DragShadow for Cargo at zoom < 100%" },
         { "num": 10773, "desc": "Fixed bad description for Movement Trail trait" },
         { "num": 10760, "desc": "Correctly initialize local-only properties in Movement Trails" },
