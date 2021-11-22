@@ -33,6 +33,7 @@ Options are:
 * _normally:_  The piece can be selected normally.
 * _when shift-key down:_  A player must hold the Shift key down to select the piece.
 * _when alt-key down:_  A player must hold the Alt key down to select the piece.
+* _when ctrl-key down (cmd-key on Mac):_ A player must hold the Ctrl key (Cmd key on a Mac) down to select the piece.
 * _never:_  The piece can never be selected by a player.
 
 *Band-Select piece:*::  This option controls what happens when a player draws a band-select box or "lasso" around a group of pieces and this piece lies within the boundaries of the band-select.

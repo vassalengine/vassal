@@ -24,6 +24,7 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
+import org.apache.commons.lang3.SystemUtils;
 
 import java.awt.Component;
 import java.awt.Graphics;
@@ -51,6 +52,7 @@ public class Immobilized extends Decorator implements EditablePiece {
 
   public static final String ID = "immob;"; // NON-NLS
   protected boolean shiftToSelect = false;
+  protected boolean ctrlToSelect = false;
   protected boolean altToSelect = false;
   protected boolean ignoreGrid = false;
   protected boolean neverSelect = false;
@@ -70,6 +72,7 @@ public class Immobilized extends Decorator implements EditablePiece {
   protected static final char NEVER_MOVE = 'V';
   protected static final char IGNORE_GRID = 'g';
   protected static final char SHIFT_SELECT = 'i';
+  protected static final char CTRL_SELECT = 't';
   protected static final char ALT_SELECT = 'c'; //NB. Using 'c' to maintain compatibility with old ctl-shift version
   protected static final char NEVER_SELECT = 'n';
   protected static final char NEVER_BAND_SELECT = 'Z';
@@ -79,12 +82,19 @@ public class Immobilized extends Decorator implements EditablePiece {
   protected static final char NEVER_STACK = 'R';
 
   // Use by PieceMover to find a pieces unaltered base ignore grid setting
-  public static final String BASE_IGNORE_GRID = "baseIgnoreGrid";
+  public static final String BASE_IGNORE_GRID = "baseIgnoreGrid"; //NON-NLS
 
   public class UseShift implements EventFilter {
     @Override
     public boolean rejectEvent(InputEvent evt) {
       return !evt.isShiftDown() && !Boolean.TRUE.equals(getProperty(Properties.SELECTED));
+    }
+  }
+
+  public class UseCtrl implements EventFilter {
+    @Override
+    public boolean rejectEvent(InputEvent evt) {
+      return !(SystemUtils.IS_OS_MAC ? evt.isMetaDown() : evt.isControlDown());
     }
   }
 
@@ -129,6 +139,7 @@ public class Immobilized extends Decorator implements EditablePiece {
   @Override
   public void mySetType(String type) {
     shiftToSelect = false;
+    ctrlToSelect = false;
     altToSelect = false;
     neverSelect = false;
     ignoreGrid = false;
@@ -146,6 +157,10 @@ public class Immobilized extends Decorator implements EditablePiece {
     description = st.nextToken("");
     if (selectionOptions.indexOf(SHIFT_SELECT) >= 0) {
       shiftToSelect = true;
+      moveIfSelected = true;
+    }
+    if (selectionOptions.indexOf(CTRL_SELECT) >= 0) {
+      ctrlToSelect = true;
       moveIfSelected = true;
     }
     if (selectionOptions.indexOf(ALT_SELECT) >= 0) {
@@ -188,6 +203,9 @@ public class Immobilized extends Decorator implements EditablePiece {
     }
     else if (shiftToSelect) {
       selectFilter = new UseShift();
+    }
+    else if (ctrlToSelect) {
+      selectFilter = new UseCtrl();
     }
     else if (altToSelect) {
       selectFilter = new UseAlt();
@@ -327,6 +345,9 @@ public class Immobilized extends Decorator implements EditablePiece {
     else if (shiftToSelect) {
       buffer.append(SHIFT_SELECT);
     }
+    else if (ctrlToSelect) {
+      buffer.append(CTRL_SELECT);
+    }
     else if (altToSelect) {
       buffer.append(ALT_SELECT);
     }
@@ -399,6 +420,12 @@ public class Immobilized extends Decorator implements EditablePiece {
         options += ", ";
       }
       options += Resources.getString("Editor.Immobilized.summary_shift_select");
+    }
+    else if (ctrlToSelect) {
+      if (!options.isEmpty()) {
+        options += ", ";
+      }
+      options += Resources.getString("Editor.Immobilized.summary_ctrl_select");
     }
 
     if (!neverSelect) {
@@ -475,6 +502,7 @@ public class Immobilized extends Decorator implements EditablePiece {
     final Immobilized c = (Immobilized) o;
 
     if (! Objects.equals(shiftToSelect, c.shiftToSelect)) return false;
+    if (! Objects.equals(ctrlToSelect, c.ctrlToSelect)) return false;
     if (! Objects.equals(altToSelect, c.altToSelect)) return false;
     if (! Objects.equals(neverSelect, c.neverSelect)) return false;
     if (! Objects.equals(ignoreGrid, c.ignoreGrid)) return false;
@@ -499,16 +527,18 @@ public class Immobilized extends Decorator implements EditablePiece {
 
     private static final String NORMAL = "normally"; // NON-NLS
     private static final String SHIFT = "when shift-key down"; // NON-NLS
+    private static final String CTRL = "when ctrl/cmd key down"; // NON-NLS
     private static final String ALT = "when alt-key down"; // NON-NLS
     private static final String ALT_SHIFT = "when alt+shift keys down"; // NON-NLS
     private static final String NEVER = "never"; // NON-NLS
     private static final String SELECTED = "only if selected"; // NON-NLS
 
-    private static final String[] SELECT_OPTIONS = { NORMAL, SHIFT, ALT, NEVER}; // NON-NLS
+    private static final String[] SELECT_OPTIONS = { NORMAL, SHIFT, CTRL, ALT, NEVER}; // NON-NLS
 
     private static final String[] SELECT_KEYS = {
       "Editor.Immobilized.normally",
       "Editor.Immobilized.when_shift_key_down",
+      "Editor.Immobilized.when_ctrl_key_down",
       "Editor.Immobilized.when_alt_key_down",
       "Editor.Immobilized.never"
     };
@@ -553,6 +583,9 @@ public class Immobilized extends Decorator implements EditablePiece {
       }
       else if (p.shiftToSelect) {
         selectionOption.setValue(SHIFT);
+      }
+      else if (p.ctrlToSelect) {
+        selectionOption.setValue(CTRL);
       }
       else {
         selectionOption.setValue(NORMAL);
@@ -613,6 +646,9 @@ public class Immobilized extends Decorator implements EditablePiece {
         break;
       case ALT:
         s += ALT_SELECT;
+        break;
+      case CTRL:
+        s += CTRL_SELECT;
         break;
       case NEVER:
         s += NEVER_SELECT;
