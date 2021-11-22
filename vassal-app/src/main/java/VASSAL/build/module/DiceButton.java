@@ -41,7 +41,6 @@ import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
-import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.swing.SwingUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
