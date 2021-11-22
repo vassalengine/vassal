@@ -392,6 +392,12 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     return value == null ? "" : wrap(value.toString());
   }
 
+  /** getProperty minus the wrap */
+  public Object getString(String name) {
+    final Object value = source.getProperty(name);
+    return value == null ? "" : value.toString();
+  }
+
   public Object getZoneProperty(String propertyName, String zoneName) {
     if (source instanceof GamePiece) {
       final Map map = ((GamePiece) source).getMap();
