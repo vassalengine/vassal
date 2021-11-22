@@ -38,6 +38,7 @@ import java.nio.file.StandardOpenOption;
 
 import javax.swing.SwingUtilities;
 
+import VASSAL.configure.BooleanConfigurer;
 import org.apache.commons.lang3.SystemUtils;
 
 import org.slf4j.Logger;
@@ -65,6 +66,7 @@ public class ModuleManager {
     LoggerFactory.getLogger(ModuleManager.class);
 
   private static final String NEXT_VERSION_CHECK = "nextVersionCheck"; //NON-NLS
+  private static final String AUTO_VERSION_CHECK = "autoVersionCheck"; //NON-NLS
 
   public static final String MAXIMUM_HEAP = "maximumHeap"; //$NON-NLS-1$
 
@@ -305,6 +307,17 @@ public class ModuleManager {
     final LongConfigurer nextVersionCheckConfig =
       new LongConfigurer(NEXT_VERSION_CHECK, null, -1L);
     globalPrefs.addOption(null, nextVersionCheckConfig);
+
+    final BooleanConfigurer autoVersionCheck = new BooleanConfigurer(
+      AUTO_VERSION_CHECK,
+      Resources.getString("GlobalOptions.auto_version_check"),  //$NON-NLS-1$
+      true
+    );
+    globalPrefs.addOption(Resources.getString("Prefs.general_tab"), autoVersionCheck); //NON-NLS
+
+    if (!autoVersionCheck.getValueBoolean()) {
+      return;
+    }
 
     long nextVersionCheck = nextVersionCheckConfig.getLongValue(-1L);
     if (nextVersionCheck < System.currentTimeMillis()) {
