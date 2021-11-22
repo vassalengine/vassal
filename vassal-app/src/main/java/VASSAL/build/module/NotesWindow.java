@@ -92,6 +92,8 @@ public class NotesWindow extends AbstractToolbarItem
     setNameKey("");                // No description or name configured
     setButtonTextKey(BUTTON_TEXT); // Legacy different button text key
 
+    setShowDisabledOptions(false); //AbstractToolbarItem
+
     setLaunchButton(makeLaunchButton(
       Resources.getString("Notes.notes"),
       Resources.getString("Notes.notes"),

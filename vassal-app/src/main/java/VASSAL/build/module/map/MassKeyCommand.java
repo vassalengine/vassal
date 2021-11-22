@@ -568,7 +568,7 @@ public class MassKeyCommand extends AbstractToolbarItem
 
   @Override
   public VisibilityCondition getAttributeVisibility(String key) {
-    return () -> true;
+    return super.getAttributeVisibility(key); // AbstractToolbarItem
   }
 
   @Override

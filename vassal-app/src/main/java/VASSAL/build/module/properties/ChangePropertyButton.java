@@ -27,6 +27,7 @@ import VASSAL.command.Command;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
+import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.script.expression.Expression;
@@ -133,6 +134,11 @@ public class ChangePropertyButton extends AbstractToolbarItem implements Propert
       REPORT_FORMAT,
       PROPERTY_CHANGER
     );
+  }
+
+  @Override
+  public VisibilityCondition getAttributeVisibility(String key) {
+    return super.getAttributeVisibility(key);
   }
 
   public static class ReportFormatConfig implements TranslatableConfigurerFactory {

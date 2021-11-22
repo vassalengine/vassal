@@ -77,6 +77,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
     globalCommand = new DeckGlobalCommand(this);
     globalCommand.setReportSingle(true);
     setConfigureName("");
+    setShowDisabledOptions(false);
   }
 
   public DeckGlobalKeyCommand(String code) {

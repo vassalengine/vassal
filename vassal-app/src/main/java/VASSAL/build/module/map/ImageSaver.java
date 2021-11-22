@@ -84,6 +84,8 @@ public class ImageSaver extends AbstractToolbarItem {
     setNameKey("");
     setButtonTextKey(BUTTON_TEXT); //NON-NLS
 
+    setShowDisabledOptions(false); //AbstractToolbarItem
+
     setLaunchButton(makeLaunchButton(
       Resources.getString("Editor.ImageSaver.save_map_as_png_image"),
       "",

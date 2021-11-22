@@ -310,7 +310,7 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
       return () -> reportResultInWindow;
     }
     else
-      return null;
+      return super.getAttributeVisibility(name); // AbstractToolbarItem
   }
 
   public void addSpecialDie(SpecialDie d) {

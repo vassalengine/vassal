@@ -88,6 +88,7 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
     launch.setAttribute(TOOLTIP, "");  //NON-NLS
     launch.setAttribute(ICON, "");  //NON-NLS
     launch.setAttribute(HOTKEY, "");  //NON-NLS
+    setShowDisabledOptions(false);
   }
 
   @SuppressWarnings("removal")
@@ -101,6 +102,7 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
     launch.setAttribute(TOOLTIP, "");  //NON-NLS
     launch.setAttribute(ICON, "");  //NON-NLS
     launch.setAttribute(HOTKEY, "");  //NON-NLS
+    setShowDisabledOptions(false);
   }
 
 

@@ -103,6 +103,8 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     getLaunchButton().setVisible(false);
     retireButton = getLaunchButton(); // for compatibility
 
+    setShowDisabledOptions(false); //AbstractToolbarItem
+
     translatedObserver = Resources.getString("PlayerRoster.observer"); //$NON-NLS-1$
   }
 

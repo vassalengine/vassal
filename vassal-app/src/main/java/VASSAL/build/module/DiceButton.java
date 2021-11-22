@@ -41,8 +41,8 @@ import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
-import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.swing.SwingUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.awt.Component;
 import java.awt.Container;
@@ -334,12 +334,8 @@ public class DiceButton extends AbstractToolbarItem {
 
   @Override
   public String[] getAttributeNames() {
-    return new String[] {
-      NAME,
-      BUTTON_TEXT,
-      TOOLTIP,
-      ICON,
-      HOTKEY,
+    return ArrayUtils.addAll(
+      super.getAttributeNames(),
       REPORT_FORMAT,
       PROMPT_ALWAYS,
       N_DICE,
@@ -355,17 +351,13 @@ public class DiceButton extends AbstractToolbarItem {
       KEEP_DICE,
       KEEP_OPTION,
       KEEP_COUNT
-    };
+    );
   }
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[]{
-      Resources.getString(Resources.NAME_LABEL),
-      Resources.getString(Resources.BUTTON_TEXT),
-      Resources.getString(Resources.TOOLTIP_TEXT),
-      Resources.getString(Resources.BUTTON_ICON),
-      Resources.getString(Resources.HOTKEY_LABEL),
+    return ArrayUtils.addAll(
+      super.getAttributeDescriptions(),
       Resources.getString("Editor.report_format"), //$NON-NLS-1$
       Resources.getString("Editor.DiceButton.prompt_value"), //$NON-NLS-1$
       Resources.getString("Dice.number_of_dice"), //$NON-NLS-1$
@@ -380,8 +372,8 @@ public class DiceButton extends AbstractToolbarItem {
       Resources.getString("Editor.DiceButton.sort_results"), //$NON-NLS-1$
       Resources.getString("Editor.DiceButton.keep_dice"),
       Resources.getString("Editor.DiceButton.keep_option"),
-      Resources.getString("Editor.DiceButton.keep_count"),
-    };
+      Resources.getString("Editor.DiceButton.keep_count")
+    );
   }
 
   @Deprecated(since = "2020-10-01", forRemoval = true)
@@ -410,12 +402,8 @@ public class DiceButton extends AbstractToolbarItem {
 
   @Override
   public Class<?>[] getAttributeTypes() {
-    return new Class<?>[]{
-      String.class,
-      String.class,
-      String.class,
-      IconConfig.class,
-      NamedKeyStroke.class,
+    return ArrayUtils.addAll(
+      super.getAttributeTypes(),
       ReportFormatConfig.class,
       Boolean.class,
       Integer.class,
@@ -431,7 +419,7 @@ public class DiceButton extends AbstractToolbarItem {
       Boolean.class,
       KeepConfig.class,
       Integer.class
-    };
+    );
   }
 
   private final VisibilityCondition cond = () -> promptAlways;
@@ -449,7 +437,7 @@ public class DiceButton extends AbstractToolbarItem {
       return keep;
     }
     else {
-      return null;
+      return super.getAttributeVisibility(name);
     }
   }
 
