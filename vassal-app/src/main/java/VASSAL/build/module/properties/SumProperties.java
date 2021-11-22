@@ -39,8 +39,8 @@ public class SumProperties implements PropertySource {
   public Object getProperty(Object key) {
     Object value = null;
     final String keyString = key.toString();
-    if (keyString.startsWith("sum(") && keyString.endsWith(")")) { //NON-NLS
-      final String propertyName = keyString.substring(4, keyString.length() - 1);
+    if ((keyString.startsWith("sum(") || keyString.startsWith("sumProperties(")) && keyString.endsWith(")")) { //NON-NLS
+      final String propertyName = keyString.substring(keyString.startsWith("sum(") ? 4 : 14, keyString.length() - 1); // NON-NLS
       int sum = 0;
       boolean indeterminate = false;
       for (final GamePiece p : pieces) {
