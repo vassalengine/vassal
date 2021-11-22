@@ -24,7 +24,8 @@
 * 10749: Move Camera Button can also change Zoom
 *  6195: Don't change Deck properties or fire Empty Deck Hotkey when just
     rearranging order
-
+*  4479: Shift-click and Ctrl-click can be used in the Piece Palette to
+    select and drag multiple pieces on to the map
 3.6.0-beta6 - 12 November 2021
 
 * 10736: 'Deal cards out' to other players
