@@ -628,6 +628,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     stackConfigurer = new StackConfigurer(this);
     stackConfigurer.init();
     stackConfigurer.setVisible(true);
+    stackConfigurer.cacheBoundingBox();
   }
 
   protected PieceSlot getTopPiece() {
