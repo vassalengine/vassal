@@ -38,13 +38,13 @@ import java.nio.file.StandardOpenOption;
 
 import javax.swing.SwingUtilities;
 
-import VASSAL.configure.BooleanConfigurer;
 import org.apache.commons.lang3.SystemUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import VASSAL.Info;
+import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.LongConfigurer;
 import VASSAL.i18n.Resources;
