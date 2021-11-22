@@ -36,6 +36,7 @@
         { "num": 10772, "desc": "Allow module images to have English localizations" },
         { "num": 10764, "desc": "Server text improvements" },
         { "num": 10762, "desc": "Add sumProperties() function for use in Beanshell expressions in the Mouse-over Stack Viewer" },
+        { "num": 10761, "desc": "Toolbar buttons can be disabled when a specified Global Property is true" },
         { "num": 10755, "desc": "When switching sides, close private hands/windows that we no longer have access to" },
         { "num": 10753, "desc": "Clarify documentation of sum(PropertyName) in Mouseover" },
         { "num": 10751, "desc": "Better description of Player Hand" },
@@ -43,10 +44,12 @@
         { "num": 10749, "desc": "Move Camera Button can also change Zoom" },
         { "num": 10007, "desc": "Ctrl/Cmd to select for Does Not Stack" },
         { "num": 9366, "desc": "Inventory window allows 3-level zoom" },
+        { "num": 9219, "desc": "Expression Builder button added for Message Format fields & Report Trait. Sum() and Count() now available in the Report trait's field" },
         { "num": 9209, "desc": "Added GetString() and .toString() to Beanshell to force the return of property values as Strings" },
         { "num": 9124, "desc": "Property incrementers no longer apply turned-off min/max constraints" },
         { "num": 6195, "desc": "Don't change Deck properties or fire Empty Deck Hotkey when just rearranging order" },
         { "num": 6075, "desc": "Action Buttons now respect rotation" },
+        { "num": 4496, "desc": "Allow Action Buttons to be any shape and defined using a Polygon editor" },
         { "num": 4479, "desc": "Shift-click and Ctrl-click can be used in the Piece Palette to select and drag multiple pieces on to the map" }
       ]
     },
