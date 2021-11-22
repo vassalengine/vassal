@@ -3,6 +3,8 @@
 * 10793: Fix NPE: Always cache SetupStack configurer bounding box
 * 10784: LOS thread thickness is adjustable
 * 10777: Fix duplicate DragShadow for Cargo at zoom < 100%
+* 10774: Validation messages when Movement Trail traits placed inside of
+    Rotate, Pivot, or Mat Cargo traits
 * 10773: Fixed bad description for Movement Trail trait
 * 10764: Server text improvements
 * 10760: Correctly initialize local-only properties in Movement Trails
