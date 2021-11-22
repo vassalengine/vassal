@@ -22,6 +22,7 @@
 * 10750: Place Marker should put stacking markers in a stack (even if parent
     marker is non-stacking)
 * 10749: Move Camera Button can also change Zoom
+* 10007: Ctrl/Cmd to select for Does Not Stack
 *  9366: Inventory window allows 3-level zoom
 *  9209: Added GetString() and .toString() to Beanshell to force the return
     of property values as Strings
