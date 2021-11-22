@@ -27,6 +27,8 @@
 * 10749: Move Camera Button can also change Zoom
 * 10007: Ctrl/Cmd to select for Does Not Stack
 *  9366: Inventory window allows 3-level zoom
+*  9219: Expression Builder button added for Message Format fields & Report
+    Trait. Sum() and Count() now available in the Report trait's field
 *  9209: Added GetString() and .toString() to Beanshell to force the return
     of property values as Strings
 *  9124: Property incrementers no longer apply turned-off min/max constraints
