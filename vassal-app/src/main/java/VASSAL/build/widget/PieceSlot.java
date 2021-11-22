@@ -331,24 +331,40 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     if (p == null) { // Found new ways to NPE after you've successfully soft-warninged your failed piece build :)
       return;
     }
-
-    final Dimension size = panel.getSize();
-    p.setPosition(new Point(size.width / 2, size.height / 2));
-
-    final GamePiece inner = Decorator.getInnermost(p);
-    if (inner instanceof BasicPiece) {
-      ((BasicPiece)inner).setPersistentProperty(PIECE_PALETTE_SCALE, getScale()); //Store a temporary scaling factor down in the Basic Piece's hall of wonders
-    }
-
-    // Erase selection border to avoid leaving selected after mouse dragged out
-    p.setProperty(Properties.SELECTED, null);
-    panel.repaint();
-
-    KeyBuffer.getBuffer().clear();
+    // Make sure we're in the key buffer if we aren't already. This will also clear out any pieces that aren't
+    // palette pieces.
+    KeyBuffer.getBuffer().addFromPalette(p, this);
     DragBuffer.getBuffer().clear();
-    final GamePiece newPiece = PieceCloner.getInstance().clonePiece(getPiece());
-    newPiece.setProperty(Properties.PIECE_ID, getGpId());
-    DragBuffer.getBuffer().add(newPiece);
+
+    if (!panel.isShowing()) {
+      return;
+    }
+    final Point base = panel.getLocationOnScreen();
+
+    for (final GamePiece dragPiece : KeyBuffer.getBuffer().asList()) {
+      final PieceSlot slot = KeyBuffer.getBuffer().getSlotForPiece(dragPiece);
+      if (slot == null) {
+        continue;
+      }
+      if (!slot.getComponent().isShowing()) {
+        continue;
+      }
+
+      final Dimension size = slot.getComponent().getSize();
+      final GamePiece piece = slot.getPiece();
+
+      final Point loc = slot.getComponent().getLocationOnScreen();
+
+      piece.setPosition(new Point((int)((loc.getX() - base.getX()) / getScale()) + size.width / 2, (int)((loc.getY() - base.getY()) / getScale()) + size.height / 2));
+      final GamePiece inner = Decorator.getInnermost(piece);
+      if (inner instanceof BasicPiece) {
+        ((BasicPiece) inner).setPersistentProperty(PIECE_PALETTE_SCALE, getScale()); //Store a temporary scaling factor down in the Basic Piece's hall of wonders
+      }
+
+      final GamePiece newPiece = PieceCloner.getInstance().clonePiece(piece);
+      newPiece.setProperty(Properties.PIECE_ID, getGpId());
+      DragBuffer.getBuffer().add(newPiece);
+    }
   }
 
   protected void doPopup(MouseEvent e) {
@@ -380,10 +396,36 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
       doPopup(e);
     }
     else if (SwingUtils.isMainMouseButtonDown(e)) {
-      KeyBuffer.getBuffer().clear();
+      //KeyBuffer.getBuffer().clear();
       Map.clearActiveMap();
+
+      // Select the piece we clicked on (supports Shift+Click to add and Ctrl/Cmd+Click to toggle)
       if (getPiece() != null) {
-        KeyBuffer.getBuffer().add(getPiece());
+        // Plain click or drag
+        if (!SwingUtils.isSelectionToggle(e) && !e.isShiftDown()) {
+          if (!KeyBuffer.getBuffer().contains(getPiece())) {
+            KeyBuffer.getBuffer().clear();
+          }
+          KeyBuffer.getBuffer().addFromPalette(getPiece(), this);
+        }
+        // Shift click or drag
+        else if (e.isShiftDown()) {
+          KeyBuffer.getBuffer().addFromPalette(getPiece(), this);
+        }
+        // Ctrl click or drag
+        else if (SwingUtils.isSelectionToggle(e)) {
+          if (KeyBuffer.getBuffer().contains(getPiece())) {
+            KeyBuffer.getBuffer().removeFromPalette(getPiece(), this);
+          }
+          else {
+            KeyBuffer.getBuffer().addFromPalette(getPiece(), this);
+          }
+        }
+      }
+      else {
+        if (!e.isShiftDown() && !SwingUtils.isSelectionToggle(e)) {
+          KeyBuffer.getBuffer().clear();
+        }
       }
 
       clearExpandedPiece();
@@ -420,7 +462,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
   @Override
   public void mouseExited(MouseEvent e) {
-    KeyBuffer.getBuffer().remove(getPiece());
+    //KeyBuffer.getBuffer().remove(getPiece());
     clearExpandedPiece();
     panel.repaint();
   }
