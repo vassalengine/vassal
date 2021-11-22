@@ -11,6 +11,8 @@
 * 10764: Server text improvements
 * 10762: Add sumProperties() function for use in Beanshell expressions in
     the Mouse-over Stack Viewer
+* 10761: Toolbar buttons can be disabled when a specified Global Property
+    is true
 * 10760: Correctly initialize local-only properties in Movement Trails
 * 10757: Prevent undo of Refresh Counters from causing contents of Decks to
     disappear, and deleting units from inside a Deck could not be undone
