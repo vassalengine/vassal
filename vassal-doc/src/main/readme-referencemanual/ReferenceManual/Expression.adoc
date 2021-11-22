@@ -193,7 +193,7 @@ with a <<ReportChanges.adoc#top,Report Action>> trait or other <<MessageFormat.a
 
 Simple expressions are not surrounded by braces and exist to provide compatibility with earlier versions of Vassal that only implemented a much simpler version of Expressions.
 Simple Expressions are far more limited than BeanShell Expressions, only allowing the substitution of property values into a pre-determined string.
-If you are learning VASSAL for the first time, it is recommended that you mostly learn the more powerful BeanShell Expressions. 
+If you are learning VASSAL for the first time, it is recommended that you mostly learn the more powerful BeanShell Expressions.
 
 [cols=",,",]
 |===
