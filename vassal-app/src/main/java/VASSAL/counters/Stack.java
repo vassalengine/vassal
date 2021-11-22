@@ -154,10 +154,21 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
     }
   }
 
+
+
+
   /**
    * @param index Index of piece to remove from the stack
    */
   protected void removePieceAt(int index) {
+    removePieceAt(index, false);
+  }
+
+  /**
+   * @param index Index of piece to remove from the stack
+   * @param suppressDeckCounts true if this is should not update deck counts nor fire last-card-in-deck (ignored in a mere Stack)
+   */
+  protected void removePieceAt(int index, boolean suppressDeckCounts) {
     if (index >= 0 && index < pieceCount) {
       pieceCount--;
       for (int i = index; i < pieceCount; ++i) {
@@ -166,6 +177,7 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
       expanded = expanded && pieceCount > 1;
     }
   }
+
 
   /**
    * Perform some action on a GamePiece that has just been removed this Stack
@@ -182,6 +194,17 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
    * @param index place to insert it
    */
   protected void insertPieceAt(GamePiece p, int index) {
+    insertPieceAt(p, index, false);
+  }
+
+
+  /**
+   * Insert a piece at a particular point in the stack
+   * @param p piece to insert
+   * @param index place to insert it
+   * @param suppressDeckCounts true if ONLY the Stack part of the operation should be performed (we're just rearranging deck order and so don't want extra property updates). Ignored at Stack level.
+   */
+  protected void insertPieceAt(GamePiece p, int index, boolean suppressDeckCounts) {
     if (index < 0) {
       index = 0;
     }
@@ -202,6 +225,7 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
     contents[index] = p;
     pieceCount++;
   }
+
 
   /**
    * Marks the stack as empty
@@ -306,12 +330,12 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
     if (index >= 0) {
       final boolean origExpanded = isExpanded(); // Bug #2766794
       if (pos > index) {
-        insertPieceAt(p, pos + 1);
-        removePieceAt(index);
+        insertPieceAt(p, pos + 1, true);
+        removePieceAt(index, true);
       }
       else {
-        removePieceAt(index);
-        insertPieceAt(p, pos);
+        removePieceAt(index, true);
+        insertPieceAt(p, pos, true);
       }
       setExpanded(origExpanded);
     }
