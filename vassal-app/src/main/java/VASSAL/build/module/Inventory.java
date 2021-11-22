@@ -966,6 +966,12 @@ public class Inventory extends AbstractToolbarItem
         tree.expandRow(i);
       }
     }
+
+    // Tidy up Zoom button state
+    if (zoomPlusButton != null) {
+      zoomPlusButton.setEnabled(zoomLevel < 2);
+      zoomMinusButton.setEnabled(zoomLevel > 0);
+    }
   }
 
   public class HotKeySender implements KeyListener {
