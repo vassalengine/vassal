@@ -25,6 +25,7 @@
 *  9366: Inventory window allows 3-level zoom
 *  9209: Added GetString() and .toString() to Beanshell to force the return
     of property values as Strings
+*  9124: Property incrementers no longer apply turned-off min/max constraints
 *  6195: Don't change Deck properties or fire Empty Deck Hotkey when just
     rearranging order
 *  4479: Shift-click and Ctrl-click can be used in the Piece Palette to
