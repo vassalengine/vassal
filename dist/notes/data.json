@@ -30,6 +30,7 @@
         { "num": 10752, "desc": "Fixed bug where Deck 'count expressions' wouldn't count beanshell, only old-style (now will count either)" }
       ],
       "other_improvements": [
+        { "num": 10800, "desc": "Preference to turn off automatic update notification" },
         { "num": 10784, "desc": "LOS thread thickness is adjustable" },
         { "num": 10774, "desc": "Validation messages when Movement Trail traits placed inside of Rotate, Pivot, or Mat Cargo traits" },
         { "num": 10772, "desc": "Allow module images to have English localizations" },
