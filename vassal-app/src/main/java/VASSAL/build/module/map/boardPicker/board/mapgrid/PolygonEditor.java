@@ -64,19 +64,29 @@ public class PolygonEditor extends JPanel {
   private static final int POINT_RADIUS = 10;
   private static final int CLICK_THRESHOLD = 10;
 
-  private Zone.Editor myConfigurer;
+  private PolygonConfigurer myConfigurer;
+  private final Point offsetView; // In some use-cases (e.g. Action Buttons) we need to offset 0,0 to be in the center of our coordinate space rather than the upper left corner
 
   public PolygonEditor(Polygon p) {
+    this (p, new Point(0, 0));
+  }
+
+  public PolygonEditor(Polygon p, Point offsetView) {
     polygon = p;
+    this.offsetView = offsetView;
     setFocusable(true);
     setFocusTraversalKeysEnabled(false);
   }
 
-  public void setMyConfigurer(Zone.Editor myConfigurer) {
+  public Point getOffsetView() {
+    return offsetView;
+  }
+
+  public void setMyConfigurer(PolygonConfigurer myConfigurer) {
     this.myConfigurer = myConfigurer;
   }
 
-  protected void reset() {
+  public void reset() {
     // clear all the listeners
     final MouseListener[] ml = getMouseListeners();
     for (final MouseListener i: ml) {
@@ -105,15 +115,28 @@ public class PolygonEditor extends JPanel {
   }
 
   public Polygon getPolygon() {
-    return polygon;
+    if ((offsetView.x == 0) && (offsetView.y == 0)) {
+      return polygon;
+    }
+    final Polygon poly = clonePolygon();
+    poly.translate(-offsetView.x, -offsetView.y);
+    return poly;
+  }
+
+  public Polygon getRawPolygon() {
+    return (polygon == null) ? new Polygon() : polygon;
   }
 
   public Polygon clonePolygon() {
-    return new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
+    return (polygon == null) ? new Polygon() : new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
   }
 
   public void setPolygon(Polygon polygon) {
     this.polygon = polygon;
+    if ((offsetView.x != 0) || (offsetView.y != 0)) {
+      this.polygon = clonePolygon();
+      this.polygon.translate(offsetView.x, offsetView.y);
+    }
   }
 
   public void setScroll(JScrollPane scroll) {
@@ -577,7 +600,7 @@ public class PolygonEditor extends JPanel {
 
   public static void main(String[] args) {
     final JFrame f = new JFrame();
-    f.add(new PolygonEditor(null));
+    f.add(new PolygonEditor(null, new Point(0, 0)));
     f.setSize(500, 500);
     f.addWindowListener(new WindowAdapter() {
       @Override

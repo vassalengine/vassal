@@ -468,7 +468,7 @@ public class DoActionButton extends AbstractToolbarItem
       return () -> doLoop && hasIndex;
     }
     else {
-      return null;
+      return super.getAttributeVisibility(name);
     }
   }
 

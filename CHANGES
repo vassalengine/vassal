@@ -1,5 +1,18 @@
 3.6.0 - ???
 
+* 10800: Preference to turn off automatic update notification
+* 10793: Fix NPE: Always cache SetupStack configurer bounding box
+* 10784: LOS thread thickness is adjustable
+* 10777: Fix duplicate DragShadow for Cargo at zoom < 100%
+* 10774: Validation messages when Movement Trail traits placed inside of
+    Rotate, Pivot, or Mat Cargo traits
+* 10773: Fixed bad description for Movement Trail trait
+* 10772: Allow module images to have English localizations
+* 10764: Server text improvements
+* 10762: Add sumProperties() function for use in Beanshell expressions in
+    the Mouse-over Stack Viewer
+* 10761: Toolbar buttons can be disabled when a specified Global Property
+    is true
 * 10760: Correctly initialize local-only properties in Movement Trails
 * 10757: Prevent undo of Refresh Counters from causing contents of Decks to
     disappear, and deleting units from inside a Deck could not be undone
@@ -12,6 +25,18 @@
 * 10750: Place Marker should put stacking markers in a stack (even if parent
     marker is non-stacking)
 * 10749: Move Camera Button can also change Zoom
+* 10007: Ctrl/Cmd to select for Does Not Stack
+*  9366: Inventory window allows 3-level zoom
+*  9209: Added GetString() and .toString() to Beanshell to force the return
+    of property values as Strings
+*  9124: Property incrementers no longer apply turned-off min/max constraints
+*  6195: Don't change Deck properties or fire Empty Deck Hotkey when just
+    rearranging order
+*  6075: Action Buttons now respect rotation
+*  4496: Allow Action Buttons to be any shape and defined using a Polygon
+    editor
+*  4479: Shift-click and Ctrl-click can be used in the Piece Palette to
+    select and drag multiple pieces on to the map
 
 3.6.0-beta6 - 12 November 2021
 

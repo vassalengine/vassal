@@ -64,7 +64,10 @@ public class IncrementProperty implements PropertyChanger {
     try {
       final String s = format.getText(constraints.getPropertySource(), constraints, audit);
       final int incr = Integer.parseInt(s);
-      if (constraints.isWrap()) {
+      if (!constraints.isNumeric()) { // Don't apply hidden constraints that have been "turned off" by module designer unchecking the numeric box
+        value += incr;
+      }
+      else if (constraints.isWrap()) {
         if (value + incr > constraints.getMaximumValue()) {
           value = constraints.getMinimumValue() + (value + incr - constraints.getMaximumValue() - 1);
         }
@@ -96,6 +99,7 @@ public class IncrementProperty implements PropertyChanger {
   public interface Constraints extends PropertySource {
     int getMinimumValue();
     int getMaximumValue();
+    boolean isNumeric();
     boolean isWrap();
     PropertySource getPropertySource();
   }

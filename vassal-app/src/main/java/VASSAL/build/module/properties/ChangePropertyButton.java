@@ -135,6 +135,11 @@ public class ChangePropertyButton extends AbstractToolbarItem implements Propert
     );
   }
 
+  @Override
+  public VisibilityCondition getAttributeVisibility(String key) {
+    return super.getAttributeVisibility(key);
+  }
+
   public static class ReportFormatConfig implements TranslatableConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {

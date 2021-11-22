@@ -64,7 +64,8 @@ public class LayerControl extends AbstractToolbarItem implements ComponentDescri
   protected String description;
 
   public LayerControl() {
-    setNameKey("");
+    setShowDisabledOptions(false); //AbstractToolbarItem
+    setNameKey(""); //AbstractToolbarItem
     setLaunchButton(makeLaunchButton(
       Resources.getString("Editor.LayerControl.reset_layers"),
       Resources.getString("Editor.LayerControl.reset_layers"),

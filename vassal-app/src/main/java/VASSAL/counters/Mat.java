@@ -265,10 +265,10 @@ public class Mat extends Decorator implements TranslatablePiece {
       final Point cargoPos = piece.getPosition();
       final GamePiece parent = piece.getParent();
       if (parent instanceof Stack) {
-        ((Stack) parent).draw(g, x - (matPosition.x - cargoPos.x), y - (matPosition.y - cargoPos.y), obs, zoom);
+        ((Stack) parent).draw(g, x - (int) ((matPosition.x - cargoPos.x) * zoom), y - (int) ((matPosition.y - cargoPos.y) * zoom), obs, zoom);
       }
       else {
-        piece.draw(g, x - (getPosition().x - cargoPos.x), y - (getPosition().y - cargoPos.y), obs, zoom);
+        piece.draw(g, x - (int) ((getPosition().x - cargoPos.x) * zoom), y - (int) ((getPosition().y - cargoPos.y) * zoom), obs, zoom);
       }
     }
   }

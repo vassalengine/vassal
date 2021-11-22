@@ -307,6 +307,8 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 
     hideKeyListener = new NamedKeyStrokeListener(e -> hideMap());
     GameModule.getGameModule().addKeyStrokeListener(hideKeyListener);
+
+    setShowDisabledOptions(false); // AbstractToolbarItem
   }
 
   public void showMap() {

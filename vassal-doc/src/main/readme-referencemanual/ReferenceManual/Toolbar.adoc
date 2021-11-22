@@ -16,6 +16,37 @@ Buttons for basic functions are created by configuring the existing basic compon
 Buttons for Maps, Charts, Dice, and other additional buttons are created by adding new <<GameModule.adoc#SubComponents,Sub-Components>> to the Module.
 In some cases, Toolbar buttons can also be created by adding sub-components to a Map window.
 
+=== Toolbar Configuration
+[#toolbarconfig]
+
+[width="100%",cols="50%,^50%",]
+|===
+a|
+Although there are many types of toolbar buttons (see below), most of them share certain basic configuration fields.
+
+**Name:**:: The name of the component in case it needs to be referred to somewhere else.
+
+**Button Text:**:: Text that will be displayed as part of the toolbar button. Buttons can include an image, a text message, or both. Neither are required (but a button with neither an image nor any text will be invisible and can only be activated by its hotkey).
+
+**Tooltip Text:**:: Explanatory tooltip text explaining what the button is for and/or how to use it.
+
+**Button Icon:**:: Icon that will be displayed as part of the toolbar button. Buttons can include an image, a text message, or both. Neither are required (but a button with neither an image nor any text will be invisible and can only be activated by its hotkey).
+
+**Hotkey:**:: A keystroke that will serve as a hotkey for activating this button. Alternatively a <<NamedKeyCommand.adoc#top,Named Key Command>>  can be used.
+
+**Toolbar button can be disabled by a property:**:: If this box is checked, you will be able to enable/disable the Toolbar Button by changing the value of a Global Property.
+
+**Global Property to disable this button when "true"**:: The name of a <<GlobalProperties.adoc#top,Global Property>> that will control when this Toolbar Button is enabled or disabled. If the property contains the string _true_,  the button will be disabled; if it contains any other value the button will be enabled.
+
+**Button Icon when disabled:**:: If you select an alternative icon here, then that icon will be used when the button is currently disabled. If you leave the icon empty, then the normal icon, if any, will stay in place. Any button text for the toolbar button will be greyed out when the button is disabled, regardless of your choice in this field.
+
+a|
+image:images/ToolbarConfig.png[]
+_Standard toolbar configuration fields_
+|===
+
+=== List of Toolbar Components
+
 [cols=",,,",]
 |===
 |<<DoActionButton.adoc#top,Action Button>> |<<PieceWindow.adoc#top,Add Game Pieces>> |<<GlobalProperties.adoc#ChangePropertyToolbarButton,Change-Property Toolbar Button>> |<<ChartWindow.adoc#top,Charts>>

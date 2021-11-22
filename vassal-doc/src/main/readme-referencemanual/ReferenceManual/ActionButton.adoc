@@ -31,20 +31,14 @@ See <<NamedKeyCommand.adoc#top,KeyStroke and Named Commands>>.
 
 *Invoke context menu:*:: Checking this box causes the piece's context menu (aka right-click menu) to open when the action button is clicked.
 
-*Button X-offset:*::  The horizontal position of the upper-left corner of the rectangle, in pixels from the center of the piece.
-Negative numbers are toward the left.
-(*Example:* for a piece 40 pixels wide, you'd want an offset of -20 to have the clickable area overlay the piece properly).
+*Clicking anywhere on piece activates action button:*:: Checking this box means that a click anywhere on the piece will cause the action button to fire off its keystroke. Effectively it turns the whole piece into a button. If you use this option you do not need to manually define the hotspot boundaries for the button.
 
-*Button Y-offset:*::  The vertical position of the upper-left corner of the rectangle, in pixels from the center of the piece.
-Negative numbers are toward the top.
-
-*Button width:*::  The width in pixels of the button.
-
-*Button height:*::  The height in pixels of the button.
-
-
+*Define Shape of Click Zone:*:: Clicking this button brings up a window in which you can manually define the boundaries of the click zone (hot spot) for the action button. Any available art for your piece will be displayed, or a crosshairs over the origin 0,0 will be shown otherwise. Polygons of any appropriate shape can be defined. You can add vertices by right+clicking, and you can select vertices and moves them around. You can delete a vertex by selecting it and pressing the delete key.
 
 |image:images/ActionButton.png[]
-_40x40 pixel button centered on the piece that triggers a Ctrl+A._
+_Configuring an Action Button_
+
+image:images/ActionButtonDefiner.png[]
+_Defining the position of the Action Button hotspot manually_
 
 |===

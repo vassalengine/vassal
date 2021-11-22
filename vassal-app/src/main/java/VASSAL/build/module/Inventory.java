@@ -170,6 +170,12 @@ public class Inventory extends AbstractToolbarItem
   public static final String PIECE_ZOOM = "pieceZoom"; //$NON-NLS-1$
   protected double pieceZoom = .25;
 
+  public static final String ZOOM_2 = "pieceZoom2"; //$NON-NLS-1$
+  protected double pieceZoom2 = .33;
+
+  public static final String ZOOM_3 = "pieceZoom3"; //$NON-NLS-1$
+  protected double pieceZoom3 = .40;
+
   public static final String DRAW_PIECES = "drawPieces"; //$NON-NLS-1$
   protected boolean drawPieces = true;
 
@@ -202,6 +208,11 @@ public class Inventory extends AbstractToolbarItem
   public static final String BUTTON_FUNCTION = "buttonFunction"; //NON-NLS
 
   protected JDialog frame;
+
+  protected int zoomLevel = 0;
+
+  private JButton zoomPlusButton;
+  private JButton zoomMinusButton;
 
   // These five identical to AbstractToolbarItem, and are only here for "clirr purposes"
   @Deprecated(since = "2020-10-21", forRemoval = true) public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
@@ -311,6 +322,16 @@ public class Inventory extends AbstractToolbarItem
     return scrollPane;
   }
 
+  private double getCurrentZoom() {
+    if (zoomLevel == 1) {
+      return pieceZoom2;
+    }
+    else if (zoomLevel >= 2) {
+      return pieceZoom3;
+    }
+    return pieceZoom;
+  }
+
   protected TreeCellRenderer initTreeCellRenderer() {
     return new DefaultTreeCellRenderer() {
 
@@ -323,10 +344,12 @@ public class Inventory extends AbstractToolbarItem
           final GamePiece piece = ((CounterNode) value).getCounter().getPiece();
           if (piece != null) {
             final Rectangle r = piece.getShape().getBounds();
-            r.x = (int) Math.round(r.x * pieceZoom);
-            r.y = (int) Math.round(r.y * pieceZoom);
-            r.width = (int) Math.round(r.width * pieceZoom);
-            r.height = (int) Math.round(r.height * pieceZoom);
+            final Double zoom = getCurrentZoom();
+            r.x = (int) Math.round(r.x * zoom);
+            r.y = (int) Math.round(r.y * zoom);
+            r.width = (int) Math.round(r.width * zoom);
+            r.height = (int) Math.round(r.height * zoom);
+
             setIcon(drawPieces ? new Icon() {
 
               @Override
@@ -351,7 +374,7 @@ public class Inventory extends AbstractToolbarItem
                   (int)(-r.x * os_scale),
                   (int)(-r.y * os_scale),
                   c,
-                  pieceZoom * os_scale
+                  getCurrentZoom() * os_scale
                 );
 
                 g2d.setTransform(orig_t);
@@ -365,9 +388,34 @@ public class Inventory extends AbstractToolbarItem
     };
   }
 
+  private void zoomPlus() {
+    if (zoomLevel < 2) {
+      zoomLevel++;
+    }
+    tree.setCellRenderer(initTreeCellRenderer());
+    refresh();
+  }
+
+  private void zoomMinus() {
+    if (zoomLevel > 0) {
+      zoomLevel--;
+    }
+    tree.setCellRenderer(initTreeCellRenderer());
+    refresh();
+  }
+
   protected Component initButtons() {
     final Box buttonBox = Box.createHorizontalBox();
     // Written by Scot McConnachie.
+
+    zoomMinusButton = new JButton(Resources.getString("-"));
+    zoomMinusButton.addActionListener(e -> zoomMinus());
+    buttonBox.add(zoomMinusButton);
+
+    zoomPlusButton = new JButton(Resources.getString("+"));
+    zoomPlusButton.addActionListener(e -> zoomPlus());
+    buttonBox.add(zoomPlusButton);
+
     final JButton writeButton = new JButton(Resources.getString(Resources.SAVE));
     writeButton.addActionListener(e -> inventoryToText());
     buttonBox.add(writeButton);
@@ -451,6 +499,10 @@ public class Inventory extends AbstractToolbarItem
     }
     else {
       refresh();
+
+      zoomPlusButton.setVisible(drawPieces);
+      zoomMinusButton.setVisible(drawPieces);
+
       frame.setVisible(true);
     }
   }
@@ -536,6 +588,8 @@ public class Inventory extends AbstractToolbarItem
       Resources.getString("Editor.Inventory.rightclick_piece"), //$NON-NLS-1$
       Resources.getString("Editor.Inventory.draw_piece"), //$NON-NLS-1$
       Resources.getString("Editor.Inventory.zoom"), //$NON-NLS-1$
+      Resources.getString("Editor.Inventory.zoom_2"),
+      Resources.getString("Editor.Inventory.zoom_3"),
       Resources.getString("Editor.Inventory.available"), //$NON-NLS-1$
       Resources.getString("Editor.Inventory.function"), //$NON-NLS-1$
       Resources.getString("Editor.Inventory.refresh_hotkey")
@@ -558,6 +612,8 @@ public class Inventory extends AbstractToolbarItem
       Boolean.class,
       Boolean.class,
       Boolean.class,
+      Double.class,
+      Double.class,
       Double.class,
       String[].class,
       FunctionConfig.class,
@@ -582,6 +638,8 @@ public class Inventory extends AbstractToolbarItem
       SHOW_MENU,
       DRAW_PIECES,
       PIECE_ZOOM,
+      ZOOM_2,
+      ZOOM_3,
       SIDES,
       LAUNCH_FUNCTION,
       REFRESH_HOTKEY
@@ -653,6 +711,18 @@ public class Inventory extends AbstractToolbarItem
       }
       pieceZoom = (Double) o;
     }
+    else if (ZOOM_2.equals(key)) {
+      if (o instanceof String) {
+        o = Double.valueOf((String) o);
+      }
+      pieceZoom2 = (Double) o;
+    }
+    else if (ZOOM_3.equals(key)) {
+      if (o instanceof String) {
+        o = Double.valueOf((String) o);
+      }
+      pieceZoom3 = (Double) o;
+    }
     else if (FORWARD_KEYSTROKE.equals(key)) {
       forwardKeystroke = getBooleanValue(o);
     }
@@ -709,7 +779,7 @@ public class Inventory extends AbstractToolbarItem
 
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
-    if (PIECE_ZOOM.equals(name)) {
+    if (List.of(PIECE_ZOOM, ZOOM_2, ZOOM_3).contains(name)) {
       return () -> drawPieces && !foldersOnly;
     }
     else if (List.of(LEAF_FORMAT, CENTERONPIECE, FORWARD_KEYSTROKE, SHOW_MENU, DRAW_PIECES).contains(name)) {
@@ -761,6 +831,12 @@ public class Inventory extends AbstractToolbarItem
     }
     else if (PIECE_ZOOM.equals(key)) {
       return String.valueOf(pieceZoom);
+    }
+    else if (ZOOM_2.equals(key)) {
+      return String.valueOf(pieceZoom2);
+    }
+    else if (ZOOM_3.equals(key)) {
+      return String.valueOf(pieceZoom3);
     }
     else if (SIDES.equals(key)) {
       return StringArrayConfigurer.arrayToString(sides);
@@ -889,6 +965,12 @@ public class Inventory extends AbstractToolbarItem
             tree.getPathForRow(i).getLastPathComponent().toString())) {
         tree.expandRow(i);
       }
+    }
+
+    // Tidy up Zoom button state
+    if (zoomPlusButton != null) {
+      zoomPlusButton.setEnabled(zoomLevel < 2);
+      zoomMinusButton.setEnabled(zoomLevel > 0);
     }
   }
 

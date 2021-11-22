@@ -92,13 +92,17 @@ Math.max(value1, value2) + |{Math.abs(Number - 5)} +
 *Math.max()* Returns the larger of two numeric values.
 
 |*Property* |GetProperty(property) +
+GetString(property) +
 GetMapProperty(property,map) +
 GetZoneProperty(property,zone) +
 GetZoneProperty(property,zone,map) + |{GetProperty("Nation"+myNation)} +
+{GetString("HowManyDogs")} +
 {GetMapProperty("Owner",CurrentMap)} +
 {GetZoneProperty("Militia","Georgia")} +
 {GetZoneProperty("Modifier",OldZone,OldMap)} + |All *GetProperty()* family functions return the value of a named property.
 The name of the property can be constructed from an expression.
+
+*GetString()* returns a string value even if the property contains a number or a boolean. You can also append *.toString()* to any other function or property to achieve the same effect.
 
 *GetMapProperty()* looks only on the specific map for the property.
 
@@ -126,7 +130,8 @@ IsRandom(percent) + |{Random(6)} +
 .lastIndexOf(string2) +
 .substring(start) +
 .substring(start, end) +
-.replace(old, new) |{ LocationName.length() } +
+.replace(old, new) +
+.toString() |{ LocationName.length() } +
 { States.contains("Arkansas") } +
 { OwnerString.startsWith("Axis") } +
 { MaybeQuestion.endsWith("?") } +
@@ -135,7 +140,8 @@ IsRandom(percent) + |{Random(6)} +
 { MaybeLotsOfDivs.lastIndexOf("div") } +
 { CurrentZone.substring(5) } +
 { PlayerName.substring(1,5) } +
-{ GetProperty("XX").replace("A","YY") } |*length()* the length in characters of the string.
+{ GetProperty("XX").replace("A","YY") } +
+{ AttackValue.toString() } |*length()* the length in characters of the string.
 
 *contains(string2)* true if _string2_ is a substring of the original string.
 
@@ -154,6 +160,8 @@ IsRandom(percent) + |{Random(6)} +
 *substring(start,end)* returns the substring from _start_ to _end_, exclusive.
 
 *replace(old,new)* the original string with all instances of the string _old_ replaced by the string _new_
+
+*toString()* converts the property or result into a string even if it was a number or a boolean
 |*Sum and Count* |SumStack(propertyName) +
 CountStack() +
 CountStack(propertyName) +

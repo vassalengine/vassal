@@ -46,7 +46,7 @@ public class I18nResourcePathFinder implements ResourcePathFinder {
     if (images == null) {
       images = archive.getImageNameSet(true, true);
     }
-    if (images != null && !language.equals("en")) {
+    if (images != null) {
       path = DataArchive.IMAGE_DIR;
       path = path.substring(0, path.length() - 1);
       path = path + "_" + language + "/" + name;

@@ -425,10 +425,24 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
    */
   @Override
   protected void insertPieceAt(GamePiece p, int index) {
-    super.insertPieceAt(p, index);
-    updateCounts(p, true);
-    fireNumCardsProperty();
+    insertPieceAt(p, index, false);
   }
+
+  /**
+   * Inserts a piece into a specific position into the Deck (counting down from the top)
+   * @param p Piece to insert
+   * @param index "How many cards down into the Deck" to put it.
+   * @param suppressDeckCounts true if ONLY the Stack part of the operation should be performed (we're just rearranging deck order and so don't want extra property updates). Ignored at Stack level.
+   */
+  @Override
+  protected void insertPieceAt(GamePiece p, int index, boolean suppressDeckCounts) {
+    super.insertPieceAt(p, index, suppressDeckCounts);
+    if (!suppressDeckCounts) {
+      updateCounts(p, true);
+      fireNumCardsProperty();
+    }
+  }
+
 
   /**
    * Removes a piece from a specific location in the deck
@@ -436,14 +450,29 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
    */
   @Override
   protected void removePieceAt(int index) {
+    removePieceAt(index, false);
+  }
+
+  /**
+   * Removes a piece from a specific location in the deck
+   * @param index Piece to remove, counting down from the top
+   * @param suppressDeckCounts true if deck counts & firing last card keystroke should be suppressed (because we're actually just rearranging deck order)
+   */
+  @Override
+  protected void removePieceAt(int index, boolean suppressDeckCounts) {
     final int startCount = pieceCount;
-    updateCounts(index);
-    super.removePieceAt(index);
-    fireNumCardsProperty();
-    if (hotkeyOnEmpty && emptyKey != null && startCount > 0 && pieceCount == 0) {
-      gameModule.fireKeyStroke(emptyKey);
+    if (!suppressDeckCounts) {
+      updateCounts(index);
+    }
+    super.removePieceAt(index, suppressDeckCounts);
+    if (!suppressDeckCounts) {
+      fireNumCardsProperty();
+      if (hotkeyOnEmpty && emptyKey != null && startCount > 0 && pieceCount == 0) {
+        gameModule.fireKeyStroke(emptyKey);
+      }
     }
   }
+
 
   /**
    * Removes all pieces from the Deck.

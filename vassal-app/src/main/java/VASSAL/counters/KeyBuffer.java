@@ -26,6 +26,7 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 
+import VASSAL.build.widget.PieceSlot;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.property.PersistentPropertyContainer;
@@ -43,10 +44,16 @@ public class KeyBuffer {
   private final Point clickPoint;        // Most recent click point on the map (used to make this information
                                          // available to traits of pieces)
 
+  private final List<PieceSlot> slots;   // Piece Slots in palettes that we have selected
+
+  private boolean fromPalette = false; // True if we're selecting things from a Piece Palette
+
   private KeyBuffer() {
     pieces = new ArrayList<>();
     bounds = new BoundsTracker();
     clickPoint = new Point();
+
+    slots  = new ArrayList<>();
   }
 
   public static void init(KeyBuffer kb) {
@@ -60,6 +67,16 @@ public class KeyBuffer {
     }
     return theBuffer;
   }
+
+
+  public PieceSlot getSlotForPiece(GamePiece piece) {
+    if (!fromPalette) {
+      return null;
+    }
+    final int index = pieces.indexOf(piece);
+    return (index >= 0) ? slots.get(index) : null;
+  }
+
 
   public void setClickPoint(Point p) {
     clickPoint.setLocation(p);
@@ -76,10 +93,44 @@ public class KeyBuffer {
   public void add(GamePiece p) {
 // FIXME: should we use a HashSet or LinkedHashSet instead to make contains()
 // checks faster? Is insertion order important?
+    if (fromPalette) {
+      clear();
+    }
     if (p != null && !pieces.contains(p)) {
       pieces.add(p);
       p.setProperty(Properties.SELECTED, Boolean.TRUE);
     }
+  }
+
+  /**
+   *
+   * @param p piece to select
+   * @param slot PieceSlot it comes from (so we can repaint it when selection later cleared)
+   */
+  public void addFromPalette(GamePiece p, PieceSlot slot) {
+    if (!fromPalette) {
+      clear();
+    }
+    if (p != null && !pieces.contains(p)) {
+      pieces.add(p);
+      p.setProperty(Properties.SELECTED, Boolean.TRUE);
+
+      fromPalette = true;
+      if ((slot != null) && !slots.contains(slot)) {
+        slots.add(slot);
+      }
+    }
+  }
+
+  /**
+   * If we had items selected from a palette, repaint them now that they aren't selected, and switch out of palette mode
+   */
+  public void cleansePalette() {
+    fromPalette = false;
+    for (final PieceSlot slot : slots) {
+      slot.getComponent().repaint();
+    }
+    slots.clear();
   }
 
   /**
@@ -90,6 +141,7 @@ public class KeyBuffer {
       p.setProperty(Properties.SELECTED, null);
     }
     pieces.clear();
+    cleansePalette();
   }
 
   /**
@@ -100,6 +152,22 @@ public class KeyBuffer {
     if (p != null) {
       p.setProperty(Properties.SELECTED, null);
       pieces.remove(p);
+    }
+  }
+
+  /**
+   * Deselects a palette piece, repainting its palette slot
+   * @param p piece
+   * @param slot pieceSlot
+   */
+  public void removeFromPalette(GamePiece p, PieceSlot slot) {
+    remove(p);
+    if ((slot != null) && slots.contains(slot)) {
+      slot.getComponent().repaint();
+      slots.remove(slot);
+      if (slots.isEmpty()) {
+        fromPalette = false;
+      }
     }
   }
 

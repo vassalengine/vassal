@@ -22,16 +22,32 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 10793, "desc": "Fix NPE: Always cache SetupStack configurer bounding box" },
+        { "num": 10777, "desc": "Fix duplicate DragShadow for Cargo at zoom < 100%" },
+        { "num": 10773, "desc": "Fixed bad description for Movement Trail trait" },
         { "num": 10760, "desc": "Correctly initialize local-only properties in Movement Trails" },
         { "num": 10757, "desc": "Prevent undo of Refresh Counters from causing contents of Decks to disappear, and deleting units from inside a Deck could not be undone" },
         { "num": 10752, "desc": "Fixed bug where Deck 'count expressions' wouldn't count beanshell, only old-style (now will count either)" }
       ],
       "other_improvements": [
-        { "num": 10755, "desc": " When switching sides, close private hands/windows that we no longer have access to" },
+        { "num": 10800, "desc": "Preference to turn off automatic update notification" },
+        { "num": 10784, "desc": "LOS thread thickness is adjustable" },
+        { "num": 10774, "desc": "Validation messages when Movement Trail traits placed inside of Rotate, Pivot, or Mat Cargo traits" },
+        { "num": 10772, "desc": "Allow module images to have English localizations" },
+        { "num": 10764, "desc": "Server text improvements" },
+        { "num": 10762, "desc": "Add sumProperties() function for use in Beanshell expressions in the Mouse-over Stack Viewer" },
+        { "num": 10755, "desc": "When switching sides, close private hands/windows that we no longer have access to" },
         { "num": 10753, "desc": "Clarify documentation of sum(PropertyName) in Mouseover" },
         { "num": 10751, "desc": "Better description of Player Hand" },
         { "num": 10750, "desc": "Place Marker should put stacking markers in a stack (even if parent marker is non-stacking)" },
-        { "num": 10749, "desc": "Move Camera Button can also change Zoom" }
+        { "num": 10749, "desc": "Move Camera Button can also change Zoom" },
+        { "num": 10007, "desc": "Ctrl/Cmd to select for Does Not Stack" },
+        { "num": 9366, "desc": "Inventory window allows 3-level zoom" },
+        { "num": 9209, "desc": "Added GetString() and .toString() to Beanshell to force the return of property values as Strings" },
+        { "num": 9124, "desc": "Property incrementers no longer apply turned-off min/max constraints" },
+        { "num": 6195, "desc": "Don't change Deck properties or fire Empty Deck Hotkey when just rearranging order" },
+        { "num": 6075, "desc": "Action Buttons now respect rotation" },
+        { "num": 4479, "desc": "Shift-click and Ctrl-click can be used in the Piece Palette to select and drag multiple pieces on to the map" }
       ]
     },
     {
