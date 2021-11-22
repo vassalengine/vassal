@@ -19,6 +19,8 @@
 * 10750: Place Marker should put stacking markers in a stack (even if parent
     marker is non-stacking)
 * 10749: Move Camera Button can also change Zoom
+*  6195: Don't change Deck properties or fire Empty Deck Hotkey when just
+    rearranging order
 
 3.6.0-beta6 - 12 November 2021
 
