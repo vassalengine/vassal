@@ -101,6 +101,10 @@ public class FormattedExpressionConfigurer extends FormattedStringConfigurer {
     super(key, name, options);
   }
 
+  public FormattedExpressionConfigurer(String[] options) {
+    super(options);
+  }
+
   @Override
   public Component getControls() {
     final JPanel p = (JPanel) super.getControls();

@@ -26,7 +26,7 @@ import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.NamedKeyStrokeArrayConfigurer;
-import VASSAL.configure.PlayerIdFormattedStringConfigurer;
+import VASSAL.configure.PlayerIdFormattedExpressionConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
@@ -391,7 +391,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
       box.add("Editor.ReportState.cycle_through_different_messages", cycle);
 
       formatLabel = new JLabel(Resources.getString("Editor.ReportState.report_format_3"));
-      format = new PlayerIdFormattedStringConfigurer(
+      format = new PlayerIdFormattedExpressionConfigurer(
         new String[]{
           COMMAND_NAME,
           OLD_UNIT_NAME,
@@ -457,7 +457,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
    * @author rkinney
    *
    */
-  private static class OldAndNewPieceProperties implements PropertySource {
+  public static class OldAndNewPieceProperties implements PropertySource {
     private final java.util.Map<String, Object> oldPiece;
     private final GamePiece newPiece;
     public OldAndNewPieceProperties(java.util.Map<String, Object> oldPiece, GamePiece newPiece) {
@@ -465,6 +465,11 @@ public class ReportState extends Decorator implements TranslatablePiece {
       this.oldPiece = oldPiece;
       this.newPiece = newPiece;
     }
+
+    public GamePiece getNewPiece() {
+      return newPiece;
+    }
+
     @Override
     public Object getProperty(Object key) {
       Object value = null;

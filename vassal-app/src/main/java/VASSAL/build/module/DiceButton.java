@@ -33,7 +33,7 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.ConfigurerWindow;
 import VASSAL.configure.IconConfigurer;
-import VASSAL.configure.PlayerIdFormattedStringConfigurer;
+import VASSAL.configure.PlayerIdFormattedExpressionConfigurer;
 import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
@@ -387,7 +387,7 @@ public class DiceButton extends AbstractToolbarItem {
   public static class ReportFormatConfig implements TranslatableConfigurerFactory {
     @Override
     public Configurer getConfigurer(final AutoConfigurable c, final String key, final String name) {
-      return new PlayerIdFormattedStringConfigurer(key, name, new String[]{REPORT_NAME, RESULT, NUMERIC_TOTAL, RESULT_N, N_DICE, N_SIDES, PLUS, ADD_TO_TOTAL, KEEP_DICE, KEEP_COUNT});
+      return new PlayerIdFormattedExpressionConfigurer(key, name, new String[]{REPORT_NAME, RESULT, NUMERIC_TOTAL, RESULT_N, N_DICE, N_SIDES, PLUS, ADD_TO_TOTAL, KEEP_DICE, KEEP_COUNT});
     }
   }
 

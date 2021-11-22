@@ -24,6 +24,7 @@ import VASSAL.counters.BasicPiece;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.PieceFilter;
+import VASSAL.counters.ReportState;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.script.expression.AuditTrail;
@@ -438,6 +439,12 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    */
   public Object sumStack(String property, PropertySource ps) {
     int result = 0;
+
+    // This allows ReportState to sum properties properly
+    if (ps instanceof ReportState.OldAndNewPieceProperties) {
+      ps = ((ReportState.OldAndNewPieceProperties)ps).getNewPiece();
+    }
+
     if (ps instanceof GamePiece) {
       final Stack s = ((GamePiece) ps).getParent();
       if (s == null) {
@@ -474,6 +481,12 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    */
   public Object countStack(String property, PropertySource ps) {
     int result = 0;
+
+    // This allows ReportState to count properties properly
+    if (ps instanceof ReportState.OldAndNewPieceProperties) {
+      ps = ((ReportState.OldAndNewPieceProperties)ps).getNewPiece();
+    }
+
     if (ps instanceof GamePiece) {
       final Stack s = ((GamePiece) ps).getParent();
       if (s == null) {        
@@ -528,6 +541,12 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    */
   public Object sumLocation(String property, PropertySource ps) {
     int result = 0;
+
+    // This allows ReportState to sum properties properly
+    if (ps instanceof ReportState.OldAndNewPieceProperties) {
+      ps = ((ReportState.OldAndNewPieceProperties)ps).getNewPiece();
+    }
+
     if (ps instanceof GamePiece) {
       final GamePiece p = (GamePiece) ps;
       final Map m = p.getMap();

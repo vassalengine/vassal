@@ -39,7 +39,7 @@ import VASSAL.configure.ComponentDescription;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.GamePieceFormattedStringConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
-import VASSAL.configure.PlayerIdFormattedStringConfigurer;
+import VASSAL.configure.PlayerIdFormattedExpressionConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.TranslatableStringEnum;
@@ -481,8 +481,8 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   public static class FormattedStringConfig implements TranslatableConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new PlayerIdFormattedStringConfigurer(key, name, new String[]{DECK_NAME,
-                                                                           COMMAND_NAME});
+      return new PlayerIdFormattedExpressionConfigurer(key, name, new String[]{DECK_NAME,
+                                                                               COMMAND_NAME});
     }
   }
 

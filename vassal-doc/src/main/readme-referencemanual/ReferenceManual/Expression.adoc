@@ -17,9 +17,7 @@ There are two main flavors of Expression: <<#beanshell,BeanShell Expressions>> w
 
 The <<ExpressionBuilder.adoc#top,Expression Builder>> is a convenient tool for building expressions from available properties, operations, and methods.
 
-NOTE: Expressions should not be confused with <<MessageFormat.adoc#top,Message Formats>>, which are used by various <<GamePiece.adoc#Traits,traits>> and <<GameModule.adoc#SubComponents,components>> to generate messages.
-Message Formats are far more limited than Expressions.
-They only allow the inclusion of Property values, they do not allow any sort of calculations beyond potentially receiving the value of a Calculated Property.
+NOTE: Beanshell expressions should not be confused with "old style" <<#simple,Simple Expressions>>, which have a different syntax and are far more limited.
 
 
 [#beanshell]
@@ -203,7 +201,7 @@ with a <<ReportChanges.adoc#top,Report Action>> trait or other <<MessageFormat.a
 
 Simple expressions are not surrounded by braces and exist to provide compatibility with earlier versions of Vassal that only implemented a much simpler version of Expressions.
 Simple Expressions are far more limited than BeanShell Expressions, only allowing the substitution of property values into a pre-determined string.
-If you are learning VASSAL for the first time, it is recommended that you mostly use the more powerful BeanShell Expressions.
+If you are learning VASSAL for the first time, it is recommended that you mostly learn the more powerful BeanShell Expressions.
 
 [cols=",,",]
 |===

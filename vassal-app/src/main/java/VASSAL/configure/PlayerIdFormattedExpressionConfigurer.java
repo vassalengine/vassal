@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2004 by Rodney Kinney
+ * Copyright (c) 2021 by Vassalengine.org. Added by Brian Reynolds.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -18,25 +18,26 @@
 package VASSAL.configure;
 
 import VASSAL.build.module.GlobalOptions;
-import VASSAL.build.module.map.Flare;
 import org.apache.commons.lang3.ArrayUtils;
 
 /** Utility subclass of {@link FormattedStringConfigurer} which includes variable
  * keys for player name, side, and id
  */
-public class FlareFormattedStringConfigurer extends FormattedExpressionConfigurer {
-  public FlareFormattedStringConfigurer(String key, String name, String[] options) {
+public class PlayerIdFormattedExpressionConfigurer extends FormattedExpressionConfigurer {
+
+  public PlayerIdFormattedExpressionConfigurer(String[] options, String initialValue) {
+    super(options);
+    setValue(initialValue);
+  }
+
+  public PlayerIdFormattedExpressionConfigurer(String key, String name, String[] options) {
     super(key, name);
 
     final String[] allOptions = ArrayUtils.addAll(
       new String[]{
         GlobalOptions.PLAYER_NAME,
         GlobalOptions.PLAYER_SIDE,
-        GlobalOptions.PLAYER_ID,
-        Flare.FLARE_NAME,
-        Flare.FLARE_LOCATION,
-        Flare.FLARE_ZONE,
-        Flare.FLARE_MAP
+        GlobalOptions.PLAYER_ID
       },
       options
     );

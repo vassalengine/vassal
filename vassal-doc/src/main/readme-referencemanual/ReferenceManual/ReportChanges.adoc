@@ -38,7 +38,7 @@ Use the List controls to add more than one key command.
 If checked, the message to be reported will cycle through the list specified below.
 Each time one of the key commands is received, the next message in the list will be reported, returning to the beginning after the end is reached.
 
-*Report format:*:: The <<MessageFormat.adoc#top,Message Format>> for the message that will appear in the <<ChatLog.adoc#top,Chat Log>>.
+*Report format:*:: The <<MessageFormat.adoc#top,Message Format>> for the message that will appear in the <<ChatLog.adoc#top,Chat Log>>. Note that a simple string message with properties substituted by $..$ can be used, _or_ a fully functional Beanshell <<Expression.doc#top,Expression>> can be created. See <<MessageFormat.adoc#top,Message Format>> for more details.
 +
 *Additional Properties*:  _$menuCommand$_ inserts the name of the piece's right-click context menu command that corresponds to the key command received, _$oldPieceName$_ is the name of the piece before the action is applied, _$newPieceName$_ is the name of the piece after the action is applied, __$mapName$__is the name of the map where the piece is located, _$oldMapName$_ is the name of the map before the action, _$location$_ is the map location where the piece is located, _$oldLocation$_ is the location before the action is applied.
 *Override suppression by Global Key Commands:*:: If this box is checked, the message will be displayed when triggered even if it is triggered by a Global Key Command with the "Suppress Individual Reports" option checked. This can be used to ensure that certain key messages are displayed no matter what.
@@ -65,6 +65,9 @@ _Adding Multiple Cycling Messages_
 
 image:images/ReportChanges3.png[]
 _*Bold*, Italicized, and Colored text are <<ChatLog.adoc#top,supported>>._
+
+image:images/ReportChanges4.png[]
+_Using a Beanshell expression to generate a report_
 
 |===
 
