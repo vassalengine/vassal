@@ -40,6 +40,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -323,7 +324,35 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
         }
         else if (piece instanceof ActionButton) {
           final ActionButton action = (ActionButton) piece;
-          if (action.stroke != null && action.stroke.getKeyStroke() != null && action.bounds.contains(point)) {
+
+          // Handle rotation of the piece, movement is relative to the current facing of the unit.
+          // Traverse any traits outward from this trait (ones that could rotate this trait),
+          // and find out what the cumulative rotation is
+          Decorator rotateTrait = action.getOuter();
+          double cumulative = 0.0;
+          while (rotateTrait != null) {
+            if (rotateTrait instanceof FreeRotator) {
+              cumulative += ((FreeRotator)rotateTrait).getAngleInRadians();
+            }
+            else if (rotateTrait instanceof MatCargo) {
+              cumulative += ((MatCargo)rotateTrait).getMatAngleInRadians();
+            }
+            rotateTrait = rotateTrait.getOuter();
+          }
+
+          final Shape shape;
+          // If rotated, apply the rotation
+          if (cumulative != 0.0) {
+            shape = AffineTransform.getRotateInstance(cumulative,
+              0,
+              0)
+              .createTransformedShape(action.bounds);
+          }
+          else {
+            shape = action.bounds;
+          }
+
+          if (action.stroke != null && action.stroke.getKeyStroke() != null && shape.contains(point)) {
             // Save state prior to command
             p.setProperty(Properties.SNAPSHOT, ((PropertyExporter) p).getProperties());
             try {

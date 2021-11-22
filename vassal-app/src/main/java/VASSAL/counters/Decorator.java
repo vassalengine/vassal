@@ -296,7 +296,8 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
   /** @return next piece "outward" (away from BasicPiece) in the trait list. This method is required
    * by {@link Obscurable} to handle masking of getProperty calls. */
   public Decorator getOuter() {
-    return dec;
+    // We have to call getProperty rather than reference "dec", because SetGlobalProperty has a useless-but-overriding member.
+    return (Decorator)getProperty(Properties.OUTER);
   }
 
   /**
