@@ -1,4 +1,7 @@
-3.6.0 - ???
+3.6.0-beta7 - 23 November 2021
+
+* 10808: Misc property lookup optimizations
+* 10806: Improved performance of Map "_isVisible" properties
 * 10803: Speeds Game Refresh and general performance in modules with many
     maps defined
 * 10800: Preference to turn off automatic update notification

@@ -30,6 +30,8 @@
         { "num": 10752, "desc": "Fixed bug where Deck 'count expressions' wouldn't count beanshell, only old-style (now will count either)" }
       ],
       "other_improvements": [
+        { "num": 10808, "desc": "Misc property lookup optimizations" },
+        { "num": 10806, "desc": "Improved performance of Map \"_isVisible\" properties" },
         { "num": 10803, "desc": "Speeds Game Refresh and general performance in modules with many maps defined" },
         { "num": 10800, "desc": "Preference to turn off automatic update notification" },
         { "num": 10784, "desc": "LOS thread thickness is adjustable" },
