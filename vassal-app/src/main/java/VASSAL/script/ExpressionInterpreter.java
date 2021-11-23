@@ -488,22 +488,17 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     if (ps instanceof GamePiece) {
       final Stack s = ((GamePiece) ps).getParent();
       if (s == null) {        
-        try {
-          if ("".equals(property)) {
-            result++;
-          }
-          else {
-            final Object prop = ps.getProperty(property);
-            if (prop != null) {
-              final String val = prop.toString();
-              if (!"".equals(val)) {
-                result++;
-              }
+        if ("".equals(property)) {
+          result++;
+        }
+        else {
+          final Object prop = ps.getProperty(property);
+          if (prop != null) {
+            final String val = prop.toString();
+            if (!"".equals(val)) {
+              result++;
             }
           }
-        }
-        catch (Exception ignored) {
-          // Anything at all goes wrong trying to read the property, just ignore it and treat as 0
         }
       }
       else {
@@ -512,17 +507,12 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         }
         else {
           for (final GamePiece gamePiece: s.asList()) {
-            try {
-              final Object prop = gamePiece.getProperty(property);
-              if (prop != null) {
-                final String val = prop.toString();
-                if (!"".equals(val)) {
-                  result++;
-                }
+            final Object prop = gamePiece.getProperty(property);
+            if (prop != null) {
+              final String val = prop.toString();
+              if (!"".equals(val)) {
+                result++;
               }
-            }
-            catch (NumberFormatException ignored) {
-              // Anything at all goes wrong trying to read the property, just ignore it and treat as 0
             }
           }
         }
