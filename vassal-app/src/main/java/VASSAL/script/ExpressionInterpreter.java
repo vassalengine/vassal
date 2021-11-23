@@ -452,14 +452,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         final Object prop = ps.getProperty(property);
         if (prop != null) {
           final String s1 = prop.toString();
-          if (NumberUtils.isParsable(s1)) {
-            try {
-              result += Integer.parseInt(s1);
-            }
-            catch (NumberFormatException ignored) {
-              // Anything at all goes wrong trying to add the property, just ignore it and treat as 0
-            }
-          }
+          result += NumberUtils.toInt(s1, 0);
         }
       }
       else {
@@ -467,15 +460,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
           final Object prop = gamePiece.getProperty(property);
           if (prop != null) {
             final String s1 = prop.toString();
-            if (NumberUtils.isParsable(s1)) {
-              try {
-                result +=
-                  Integer.parseInt(s1);
-              }
-              catch (NumberFormatException ignored) {
-                // Anything at all goes wrong trying to add the property, just ignore it and treat as 0
-              }
-            }
+            result += NumberUtils.toInt(s1, 0);
           }
         }
       }
@@ -580,14 +565,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
                 final Object prop = gamePiece.getProperty(property);
                 if (prop != null) {
                   final String s1 = prop.toString();
-                  if (NumberUtils.isParsable(s1)) {
-                    try {
-                      result += Integer.parseInt(s1);
-                    }
-                    catch (NumberFormatException e) {
-                      //
-                    }
-                  }
+                  result += NumberUtils.toInt(s1, 0);
                 }
               }
             }
@@ -595,14 +573,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
               final Object prop = piece.getProperty(property);
               if (prop != null) {
                 final String s1 = prop.toString();
-                if (NumberUtils.isParsable(s1)) {
-                  try {
-                    result += Integer.parseInt(s1);
-                  }
-                  catch (NumberFormatException e) {
-                    //
-                  }
-                }
+                result += NumberUtils.toInt(s1, 0);
               }
             }
           }
