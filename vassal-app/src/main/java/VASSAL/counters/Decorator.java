@@ -156,14 +156,14 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
    */
   @Override
   public Object getProperty(Object key) {
-    if (Properties.KEY_COMMANDS.equals(key)) {
-      return getKeyCommands();
-    }
-    else if (Properties.INNER.equals(key)) {
+    if (Properties.INNER.equals(key)) {
       return piece;
     }
     else if (Properties.OUTER.equals(key)) {
       return dec;
+    }
+    else if (Properties.KEY_COMMANDS.equals(key)) {
+      return getKeyCommands();
     }
     else if (Properties.VISIBLE_STATE.equals(key)) {
       return myGetState() + piece.getProperty(key);
@@ -519,9 +519,14 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
    * @return the outermost Decorator/Trait of this piece, i.e. the entire logical Game Piece with all traits
    */
   public static GamePiece getOutermost(GamePiece p) {
-    while (p.getProperty(Properties.OUTER) != null) {
-      p = (GamePiece) p.getProperty(Properties.OUTER);
-    }
+    Object next;
+    //BR// This figures prominently enough in our profiler reports that the slightly awkward look is worth not calling getProperty twice per object.
+    do {
+      next = p.getProperty(Properties.OUTER);
+      if (next != null) {
+        p = (GamePiece)next;
+      }
+    } while (next != null);
     return p;
   }
 
