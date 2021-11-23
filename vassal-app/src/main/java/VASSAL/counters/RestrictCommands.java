@@ -110,21 +110,21 @@ public class RestrictCommands extends Decorator implements EditablePiece {
     return null;
   }
 
+
   /*
    * Cancel execution of watched KeyStrokes
    */
   @Override
   public Command keyEvent(KeyStroke stroke) {
-    if (!matchesFilter()) {
-      return super.keyEvent(stroke);
-    }
-    else {
-      for (final NamedKeyStroke watchKey : watchKeys) {
-        if (watchKey.equals(stroke)) {
+    for (final NamedKeyStroke watchKey : watchKeys) {
+      if (watchKey.equals(stroke)) {
+        if (matchesFilter()) {
           return null;
         }
+        break;
       }
     }
+
     return super.keyEvent(stroke);
   }
 
