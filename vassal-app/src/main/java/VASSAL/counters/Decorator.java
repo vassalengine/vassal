@@ -162,14 +162,14 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
     else if (Properties.KEY_COMMANDS.equals(key)) {
       return getKeyCommands();
     }
-    else if (Properties.INNER.equals(key)) {
-      return piece;
-    }
     else if (Properties.VISIBLE_STATE.equals(key)) {
       return myGetState() + piece.getProperty(key);
     }
     else if (Properties.SELECTED.equals(key)) {
       return selected;
+    }
+    else if (Properties.INNER.equals(key)) {
+      return piece;
     }
     else {
       return piece.getProperty(key);
