@@ -27,6 +27,8 @@ import VASSAL.tools.FormattedString;
 
 import java.util.Map;
 
+import javax.lang.model.SourceVersion;
+
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
@@ -232,6 +234,11 @@ public class BeanShellExpression extends Expression {
         && expr.indexOf('"', 1) == expr.length() - 1) {
         return StringExpression.instance(expr.substring(1, expr.length() - 1));
       }
+    }
+
+    // Return a single property reference as an optimised type
+    if (SourceVersion.isIdentifier(s.trim())) {
+      return SinglePropertyExpression.instance(s.trim());
     }
 
     // Return a generalised Beanshell expression

@@ -365,7 +365,7 @@ public class Expression {
 
     // BeanShell expression?
     if (t.startsWith("{") && t.endsWith("}")) {
-      return BeanShellExpression.instance(t.substring(1, t.length() - 1));
+      return BeanShellExpression.createExpression(t.substring(1, t.length() - 1).trim(), false);
     }
 
     return SinglePropertyExpression.instance(t);

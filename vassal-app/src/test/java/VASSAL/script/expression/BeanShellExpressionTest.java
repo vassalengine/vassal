@@ -87,8 +87,8 @@ public class BeanShellExpressionTest implements Auditable {
     assertThat(e.getExpression(), is(equalTo("{4.2}")));
 
     e = BeanShellExpression.createExpression("abc");
-    assertThat(e, is(instanceOf(BeanShellExpression.class)));
-    assertThat(e.getExpression(), is(equalTo("{abc}")));
+    assertThat(e, is(instanceOf(SinglePropertyExpression.class)));
+    assertThat(e.getExpression(), is(equalTo("abc")));
 
     // Check that 1D does not get converted to 1.0
     e = BeanShellExpression.createExpression("1D");
