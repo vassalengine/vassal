@@ -17,6 +17,16 @@
   ],
   "changes": [
     {
+      "in": "3.6.0",
+      "since": "3.6.0-beta7",
+      "new_features": [
+      ],
+      "bug_fixes": [
+      ],
+      "other_improvements": [
+      ]
+    },
+    {
       "in": "3.6.0-beta7",
       "since": "3.6.0-beta6",
       "new_features": [
