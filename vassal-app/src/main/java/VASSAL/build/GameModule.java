@@ -218,6 +218,9 @@ public class GameModule extends AbstractConfigurable
   public static final String MODULE_CURRENT_LOCALE_NAME = "CurrentLanguageName"; //NON-NLS
 
   public static final String DRAWING_MOUSEOVER_PROPERTY = "DrawingMouseover"; //NON-NLS
+  public static final String DRAWING_MOUSEOVER_INDEX_PROPERTY = "DrawingMouseoverIndex"; //NON-NLS
+
+  public static final String IS_VISIBLE = "_isVisible"; //NON-NLS
 
   private static final char COMMAND_SEPARATOR = KeyEvent.VK_ESCAPE;
 
@@ -2068,11 +2071,14 @@ public class GameModule extends AbstractConfigurable
     else if (DRAWING_MOUSEOVER_PROPERTY.equals(key)) {
       return CounterDetailViewer.isDrawingMouseOver();
     }
+    else if (DRAWING_MOUSEOVER_INDEX_PROPERTY.equals(key)) {
+      return CounterDetailViewer.isDrawingMouseOver() ? 2 : 1;
+    }
 
     //BR// MapName_isVisible property for each map window
-    if (((String)key).contains("_isVisible")) { //NON-NLS
+    if (((String)key).endsWith(IS_VISIBLE)) {
       for (final Map map : Map.getMapList()) {
-        if ((map.getConfigureName() + "_isVisible").equals(key) || (map.getConfigureName().replaceAll(" ", "_") + "_isVisible").equals(key)) { //NON-NLS
+        if ((map.getConfigureName() + IS_VISIBLE).equals(key) || (map.getConfigureName().replace(' ', '_') + IS_VISIBLE).equals(key)) {
           final Container tla = (map.getComponent() != null) ? ((JPanel) map.getComponent()).getTopLevelAncestor() : null;
           return String.valueOf(tla != null && tla.isShowing());
         }
