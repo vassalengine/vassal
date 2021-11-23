@@ -456,7 +456,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
             try {
               result += Integer.parseInt(s1);
             }
-            catch (Exception ignored) {
+            catch (NumberFormatException ignored) {
               // Anything at all goes wrong trying to add the property, just ignore it and treat as 0
             }
           }
@@ -472,7 +472,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
                 result +=
                   Integer.parseInt(s1);
               }
-              catch (Exception ignored) {
+              catch (NumberFormatException ignored) {
                 // Anything at all goes wrong trying to add the property, just ignore it and treat as 0
               }
             }
@@ -536,7 +536,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
                 }
               }
             }
-            catch (Exception ignored) {
+            catch (NumberFormatException ignored) {
               // Anything at all goes wrong trying to read the property, just ignore it and treat as 0
             }
           }
