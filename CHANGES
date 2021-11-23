@@ -1,5 +1,6 @@
 3.6.0 - ???
-
+* 10803: Speeds Game Refresh and general performance in modules with many
+    maps defined
 * 10800: Preference to turn off automatic update notification
 * 10793: Fix NPE: Always cache SetupStack configurer bounding box
 * 10784: LOS thread thickness is adjustable
