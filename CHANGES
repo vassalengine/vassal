@@ -1,5 +1,9 @@
 3.6.0-beta7 - 23 November 2021
 
+* 10812: Optimize Single Property Beanshell expressions
+* 10811: Optimization: Check for possible keystrokes in Restrict Commands
+    before evaluating match epression
+* 10810: Protect against no available trait being selected in PieceDefiner
 * 10808: Misc property lookup optimizations
 * 10806: Improved performance of Map "_isVisible" properties
 * 10803: Speeds Game Refresh and general performance in modules with many
