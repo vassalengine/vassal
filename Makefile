@@ -266,9 +266,19 @@ $(TMPDIR)/VASSAL-$(VERSION)-windows-noinst.zip: $(TMPDIR)/windows-noinst-$(VERSI
 
 release-linux: $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2
 
-release-macos: $(TMPDIR)/VASSAL-$(VERSION)-macos-x86_64.dmg $(TMPDIR)/VASSAL-$(VERSION)-macos-aarch64.dmg
+release-macos: release-macos-x86_64 release-macos-aarch64
 
-release-windows: $(TMPDIR)/VASSAL-$(VERSION)-windows-x86_32.exe $(TMPDIR)/VASSAL-$(VERSION)-windows-x86_64.exe $(TMPDIR)/VASSAL-$(VERSION)-windows-aarch64.exe
+release-macos-x86_64: $(TMPDIR)/VASSAL-$(VERSION)-macos-x86_64.dmg
+
+release-macos-aarch64: $(TMPDIR)/VASSAL-$(VERSION)-macos-aarch64.dmg
+
+release-windows: release-windows-x86_32 release-windows-x86_64 release-windows-aarch64
+
+release-windows-x86_32: $(TMPDIR)/VASSAL-$(VERSION)-windows-x86_32.exe
+
+release-windows-x86_64: $(TMPDIR)/VASSAL-$(VERSION)-windows-x86_64.exe
+
+release-windows-aarch64: $(TMPDIR)/VASSAL-$(VERSION)-windows-aarch64.exe
 
 release-windows-noinst: $(TMPDIR)/VASSAL-$(VERSION)-windows-noinst.zip
 
@@ -311,4 +321,4 @@ clean: clean-release
 # prevents make from trying to delete intermediate files
 .SECONDARY:
 
-.PHONY: compile test clean release release-linux release-macos release-windows release-other release-sha256 release-announcements clean-release post-release javadoc jar clean-javadoc version-set version-print
+.PHONY: compile test clean release release-linux release-macos release-macos-x86_64 release-macos-aarch64 release-windows release-windows-x86_32 release-windows-x86_64 release-windows-aarch64 release-other release-sha256 release-announcements clean-release post-release javadoc jar clean-javadoc version-set version-print
