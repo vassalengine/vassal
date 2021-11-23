@@ -623,7 +623,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
           final ActionButton action = (ActionButton) piece;
 
           if (action.stroke == null || action.stroke.getKeyStroke() == null) {
-            return;
+            continue;
           }
 
           // If we're not a use-whole-shape piece, then check this click against the special designated polygon
@@ -655,7 +655,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
               shape = action.polygon;
             }
             if (!shape.contains(point)) {
-              return;
+              continue;
             }
           }
 
