@@ -234,7 +234,7 @@ public class DiceButton extends AbstractToolbarItem {
       // Roll next die
       final int roll = ran.nextInt(nSides) + 1 + plus;
 
-      // Handle Keep >= or <= here. Just totally ignore them if they are out of range.
+      // Handle Keep ==, >= or <= here. Just totally ignore them if they are out of range.
       if (keepingDice) {
         if (KEEP_GREATER.equals(keepOption) && roll < keepValue) {
           continue;
@@ -250,17 +250,24 @@ public class DiceButton extends AbstractToolbarItem {
       keepCount += 1;
       keepDice[keepCount - 1] = roll;
       numericTotal += roll;
-
     }
 
-    // if Keep smallest or keep largest requested, resbuild saveDice, keepTotal and numericTotal
+    // Reduce the size of the kept Dice array if necessary to allow for correct sorting
+    if (keepCount < keepDice.length) {
+      keepDice = Arrays.copyOf(keepDice, keepCount);
+    }
+
+    // if Keep smallest or Keep largest requested, rebuild keepDice and numericTotal
     // with just the requested dice
     if (List.of(KEEP_SMALLEST, KEEP_LARGEST).contains(keepOption)) {
       final int[] tempDice = Arrays.copyOf(keepDice, keepDice.length);
       Arrays.sort(tempDice);
+
+      // New Keep count is the number asked for, or the number of dice rolled, whichever is smaller.
       keepCount = Math.max(0, Math.min(keepValue, tempDice.length));
       keepDice = new int[keepCount];
 
+      // tempDice has been sorted, so can just pull the required number from the the front or back of the array
       if (KEEP_SMALLEST.equals(keepOption)) {
         System.arraycopy(tempDice, 0, keepDice, 0, keepCount);
       }
@@ -270,6 +277,7 @@ public class DiceButton extends AbstractToolbarItem {
         }
       }
 
+      // Re-calculate the total
       numericTotal = addToTotal;
       for (int i = 0; i < keepCount; i++) {
         numericTotal += keepDice[i];
@@ -310,6 +318,8 @@ public class DiceButton extends AbstractToolbarItem {
    * @return Formatted result
    */
   protected String formatResult(final String result) {
+    reportFormat.clearProperties();
+
     reportFormat.setProperty(REPORT_NAME, getLocalizedConfigureName());
     reportFormat.setProperty(RESULT, result);
     reportFormat.setProperty(N_DICE, Integer.toString(nDice));
@@ -317,6 +327,7 @@ public class DiceButton extends AbstractToolbarItem {
     reportFormat.setProperty(PLUS, Integer.toString(plus));
     reportFormat.setProperty(ADD_TO_TOTAL, Integer.toString(addToTotal));
 
+    // Set the $resultn$ values for kept dice only
     for (int i = 0; i < keepCount; i++) {
       reportFormat.setProperty("result" + (i + 1), Integer.toString(keepDice[i]));
     }
