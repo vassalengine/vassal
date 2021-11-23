@@ -2070,10 +2070,12 @@ public class GameModule extends AbstractConfigurable
     }
 
     //BR// MapName_isVisible property for each map window
-    for (final Map map : Map.getMapList()) {
-      if ((map.getConfigureName() + "_isVisible").equals(key) || (map.getConfigureName().replaceAll(" ", "_") + "_isVisible").equals(key)) { //NON-NLS
-        final Container tla = (map.getComponent() != null) ? ((JPanel)map.getComponent()).getTopLevelAncestor() : null;
-        return String.valueOf(tla != null && tla.isShowing());
+    if (((String)key).contains("_isVisible")) { //NON-NLS
+      for (final Map map : Map.getMapList()) {
+        if ((map.getConfigureName() + "_isVisible").equals(key) || (map.getConfigureName().replaceAll(" ", "_") + "_isVisible").equals(key)) { //NON-NLS
+          final Container tla = (map.getComponent() != null) ? ((JPanel) map.getComponent()).getTopLevelAncestor() : null;
+          return String.valueOf(tla != null && tla.isShowing());
+        }
       }
     }
 
