@@ -26,6 +26,8 @@ import VASSAL.tools.concurrent.ConcurrentSoftHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.lang.model.SourceVersion;
+
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
@@ -365,7 +367,7 @@ public class Expression {
 
     // BeanShell expression?
     if (t.startsWith("{") && t.endsWith("}")) {
-      return BeanShellExpression.instance(t.substring(1, t.length() - 1));
+      return BeanShellExpression.createExpression(t.substring(1, t.length() - 1).trim());
     }
 
     return SinglePropertyExpression.instance(t);
