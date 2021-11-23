@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -448,21 +449,33 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     if (ps instanceof GamePiece) {
       final Stack s = ((GamePiece) ps).getParent();
       if (s == null) {
-        try {
-          result += Integer.parseInt(ps.getProperty(property).toString());
-        }
-        catch (Exception ignored) {
-          // Anything at all goes wrong trying to add the property, just ignore it and treat as 0
+        final Object prop = ps.getProperty(property);
+        if (prop != null) {
+          final String s1 = prop.toString();
+          if (NumberUtils.isParsable(s1)) {
+            try {
+              result += Integer.parseInt(s1);
+            }
+            catch (Exception ignored) {
+              // Anything at all goes wrong trying to add the property, just ignore it and treat as 0
+            }
+          }
         }
       }
       else {
         for (final GamePiece gamePiece : s.asList()) {
-          try {
-            result +=
-              Integer.parseInt(gamePiece.getProperty(property).toString());
-          }
-          catch (Exception ignored) {
-            // Anything at all goes wrong trying to add the property, just ignore it and treat as 0
+          final Object prop = gamePiece.getProperty(property);
+          if (prop != null) {
+            final String s1 = prop.toString();
+            if (NumberUtils.isParsable(s1)) {
+              try {
+                result +=
+                  Integer.parseInt(s1);
+              }
+              catch (Exception ignored) {
+                // Anything at all goes wrong trying to add the property, just ignore it and treat as 0
+              }
+            }
           }
         }
       }
@@ -495,9 +508,12 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
             result++;
           }
           else {
-            final String val = ps.getProperty(property).toString();
-            if (!"".equals(val)) {
-              result++;
+            final Object prop = ps.getProperty(property);
+            if (prop != null) {
+              final String val = prop.toString();
+              if (!"".equals(val)) {
+                result++;
+              }
             }
           }
         }
@@ -512,9 +528,12 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         else {
           for (final GamePiece gamePiece: s.asList()) {
             try {
-              final String val = gamePiece.getProperty(property).toString();
-              if (!"".equals(val)) {
-                result++;
+              final Object prop = gamePiece.getProperty(property);
+              if (prop != null) {
+                final String val = prop.toString();
+                if (!"".equals(val)) {
+                  result++;
+                }
               }
             }
             catch (Exception ignored) {
@@ -558,20 +577,32 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
             if (piece instanceof Stack) {
               final Stack s = (Stack) piece;
               for (final GamePiece gamePiece : s.asList()) {
-                try {
-                  result += Integer.parseInt(gamePiece.getProperty(property).toString());
-                }
-                catch (NumberFormatException e) {
-                  //
+                final Object prop = gamePiece.getProperty(property);
+                if (prop != null) {
+                  final String s1 = prop.toString();
+                  if (NumberUtils.isParsable(s1)) {
+                    try {
+                      result += Integer.parseInt(s1);
+                    }
+                    catch (NumberFormatException e) {
+                      //
+                    }
+                  }
                 }
               }
             }
             else {
-              try {
-                result += Integer.parseInt(piece.getProperty(property).toString());
-              }
-              catch (NumberFormatException e) {
-                //
+              final Object prop = piece.getProperty(property);
+              if (prop != null) {
+                final String s1 = prop.toString();
+                if (NumberUtils.isParsable(s1)) {
+                  try {
+                    result += Integer.parseInt(s1);
+                  }
+                  catch (NumberFormatException e) {
+                    //
+                  }
+                }
               }
             }
           }
