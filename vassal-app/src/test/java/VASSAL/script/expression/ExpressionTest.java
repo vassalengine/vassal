@@ -75,7 +75,7 @@ public class ExpressionTest {
 
     // BeanShell Expression
     e = Expression.createSimplePropertyExpression("{abc}");
-    assertThat(e, is(instanceOf(BeanShellExpression.class)));
+    assertThat(e, is(instanceOf(SinglePropertyExpression.class)));
 
     // Anything else should generate a PropertyMatchExpression
     e = Expression.createSimplePropertyExpression("abc");
