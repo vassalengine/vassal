@@ -724,7 +724,10 @@ public class PieceDefiner extends JPanel {
   }
 
   private void doAdd() {
-    doAdd(availableList.getSelectedIndex(), inUseList.getSelectedIndex() < 0 ? inUseList.getModel().getSize() : inUseList.getSelectedIndex());
+    final int index = availableList.getSelectedIndex();
+    if (index > 0) { // This is possible, alas. Swing sometimes sends us the "double" part of a double click before the "single" part
+      doAdd(index, inUseList.getSelectedIndex() < 0 ? inUseList.getModel().getSize() : inUseList.getSelectedIndex());
+    }
   }
 
   private void doAdd(int sourceIndex, int insertIndex) {
