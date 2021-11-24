@@ -1,5 +1,7 @@
 3.6.0 - ???
 
+* 10818: DrawingMouseoverIndex correctly returned as string. Console now
+    displays null valued properties instead of NPE
 * 10815: Fix Dice Button reporting when Keeping and Sorting results
 
 3.6.0-beta7 - 23 November 2021
