@@ -1,5 +1,7 @@
 3.6.0 - ???
 
+* 10815: Fix Dice Button reporting when Keeping and Sorting results
+
 3.6.0-beta7 - 23 November 2021
 
 * 10812: Optimize Single Property Beanshell expressions
