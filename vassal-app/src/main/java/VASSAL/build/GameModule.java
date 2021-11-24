@@ -2072,7 +2072,7 @@ public class GameModule extends AbstractConfigurable
       return CounterDetailViewer.isDrawingMouseOver();
     }
     else if (DRAWING_MOUSEOVER_INDEX_PROPERTY.equals(key)) {
-      return CounterDetailViewer.isDrawingMouseOver() ? 2 : 1;
+      return String.valueOf(CounterDetailViewer.isDrawingMouseOver() ? 2 : 1);
     }
 
     //BR// MapName_isVisible property for each map window
