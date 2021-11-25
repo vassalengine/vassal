@@ -47,7 +47,7 @@ This erases any existing trails, but leaves the trail's _showing_ or _hidden_ st
 
 *Trails start visible:*::  If checked, the piece will begin the game displaying movement trails.
 
-*Trails visible to all players:*::  If selected, then toggling the visibility of the trail will affect all players' views and will be saved along with the game.
+*Trails visibility synchronized for all players:*::  If selected, then toggling the visibility of the trail will affect all players' views and will be saved along with the game.
 Otherwise, each player controls the visibility of trails on that player's view.
 
 *Circle radius:*:: The radius in pixels of the circle representing each location in the trail.

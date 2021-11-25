@@ -281,7 +281,9 @@ public class Footprint extends MovementMarkable {
     }
     if (justMoved) {
       if (!initialized) {
-        clearTrail();
+        localVisibility  = initiallyVisible;
+        globalVisibility = initiallyVisible;
+        initialized = true;
       }
       recordCurrentPosition();
       final Map map = getMap();
