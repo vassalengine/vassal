@@ -662,7 +662,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     // Load the new pieces back into the Deck in the same order
     final DrawPile target = DrawPile.findDrawPile(deck.getDeckName());
     for (final GamePiece piece : pieces) {
-      command.append(target.addToContents(piece));
+      command.append(target.addToContents(piece, false));
     }
 
   }

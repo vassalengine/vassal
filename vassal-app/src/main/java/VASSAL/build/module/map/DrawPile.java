@@ -1002,12 +1002,16 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   }
 
   public Command addToContents(GamePiece p) {
+    return addToContents(p, true);
+  }
+
+  public Command addToContents(GamePiece p, boolean checkAccessibility) {
     // If the piece is already in the Deck, do nothing
     if (myDeck != null && myDeck.indexOf(p) >= 0) {
       return new NullCommand();
     }
     // Don't add to decks we don't have access to
-    if ((myDeck != null) && !myDeck.isAccessible()) {
+    if ((myDeck != null) && checkAccessibility && !myDeck.isAccessible()) {
       return new NullCommand();
     }
     // Merge it in
