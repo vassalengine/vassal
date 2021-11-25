@@ -109,7 +109,8 @@ public class Footprint extends MovementMarkable {
   protected Font font;
   protected double lastZoom;
   protected boolean localVisibility;
-  protected boolean initialized = false; // Protect against multiple re-initializations
+  protected boolean initialized = false; // Protect against multiple re-initializations (this one resets to false in a new session)
+  protected boolean everInitialized = false; // Across save/load
 
   protected double lineWidth;
   private KeyCommand showTrailCommand;
@@ -148,6 +149,7 @@ public class Footprint extends MovementMarkable {
         pointList.add(new Point(x, y));
       }
     }
+    everInitialized = ss.nextBoolean(false);
     requireNoOuterRotate();
   }
 
@@ -161,6 +163,8 @@ public class Footprint extends MovementMarkable {
     for (final Point p : pointList) {
       se.append(p.x + "," + p.y);
     }
+
+    se.append(everInitialized);
 
     return se.getValue();
   }
@@ -282,8 +286,11 @@ public class Footprint extends MovementMarkable {
     if (justMoved) {
       if (!initialized) {
         localVisibility  = initiallyVisible;
-        globalVisibility = initiallyVisible;
         initialized = true;
+        if (!everInitialized) {
+          globalVisibility = initiallyVisible;
+          everInitialized = true;
+        }
       }
       recordCurrentPosition();
       final Map map = getMap();
@@ -312,8 +319,11 @@ public class Footprint extends MovementMarkable {
     addPoint(getPosition());
     if (!initialized) {       //BR// Bug 12980 - prevent multiple re-initializations
       localVisibility = initiallyVisible;
-      globalVisibility = initiallyVisible;
       initialized = true;
+      if (!everInitialized) {
+        globalVisibility = initiallyVisible;
+        everInitialized = true;
+      }
     }
   }
 
@@ -685,6 +695,7 @@ public class Footprint extends MovementMarkable {
         && showTrailCommand.matches(stroke)) {
       final ChangeTracker tracker = new ChangeTracker(this);
       initialized = true;
+      everInitialized = true;
       if (globallyVisible) {
         globalVisibility = !globalVisibility;
         localVisibility  = globalVisibility;
@@ -700,6 +711,7 @@ public class Footprint extends MovementMarkable {
     if (showTrailCommandOn != null && showTrailCommandOn.matches(stroke)) {
       final ChangeTracker tracker = new ChangeTracker(this);
       initialized = true;
+      everInitialized = true;
       if (globallyVisible) {
         globalVisibility = true;
       }
@@ -713,6 +725,7 @@ public class Footprint extends MovementMarkable {
     if (showTrailCommandOff != null && showTrailCommandOff.matches(stroke)) {
       final ChangeTracker tracker = new ChangeTracker(this);
       initialized = true;
+      everInitialized = true;
       if (globallyVisible) {
         globalVisibility = false;
         localVisibility  = false;
