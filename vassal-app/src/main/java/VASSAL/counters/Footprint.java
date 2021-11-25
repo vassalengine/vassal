@@ -280,6 +280,9 @@ public class Footprint extends MovementMarkable {
       rotateCheckedOnMove = true;
     }
     if (justMoved) {
+      if (!initialized) {
+        clearTrail();
+      }
       recordCurrentPosition();
       final Map map = getMap();
       startMapId = map != null ? map.getId() : null;
