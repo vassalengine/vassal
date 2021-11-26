@@ -1,5 +1,6 @@
 3.6.0 - ???
 
+* 10826: Protect against multiple initializations of Movement Trails
 * 10818: DrawingMouseoverIndex correctly returned as string. Console now
     displays null valued properties instead of NPE
 * 10815: Fix Dice Button reporting when Keeping and Sorting results
