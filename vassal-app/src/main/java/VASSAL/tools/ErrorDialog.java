@@ -344,7 +344,7 @@ public class ErrorDialog {
   private static final Set<String> reportedDataWarnings =
     Collections.synchronizedSet(new HashSet<>());
 
-
+  /** @deprecated Use {@link #dataWarning(BadDataReport)} instead. */
   @Deprecated(since = "2021-08-06", forRemoval = true)
   public static void dataError(BadDataReport e) {
     dataWarning(e);
