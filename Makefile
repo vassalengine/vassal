@@ -190,7 +190,7 @@ $(TMPDIR)/linux-$(VERSION)-build/VASSAL-$(VERSION): $(LIBDIR)/Vengine.jar
 	cp -a $(DOCDIR) $@/doc
 	cp -a CHANGES LICENSE README.md $@
 	cp -a $(LIBDIR) $@/lib
-	cp $(DISTDIR)/linux/VASSAL.sh $@
+	cp $(DISTDIR)/VASSAL.sh $@
 	find $@ -type f -exec chmod 644 \{\} \+
 	find $@ -type d -exec chmod 755 \{\} \+
 	chmod 755 $@/VASSAL.sh
