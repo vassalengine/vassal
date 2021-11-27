@@ -79,10 +79,10 @@ import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
  */
 public class MassPieceLoader {
 
-  protected static final int DESC_COL = 0;
-  protected static final int IMAGE_COL = 1;
-  protected static final int NAME_COL = 2;
-  protected static final int SKIP_COL = 3;
+  protected static final int SKIP_COL = 0;
+  protected static final int DESC_COL = 1;
+  protected static final int IMAGE_COL = 2;
+  protected static final int NAME_COL = 3;
   protected static final int COPIES_COL = 4;
   protected static final int COLUMN_COUNT = 5;
   protected static final Color EDITABLE_COLOR = Color.blue;
@@ -785,6 +785,11 @@ public class MassPieceLoader {
       else {
         super.setValueAt(value, node, column);
       }
+    }
+
+    @Override
+    public int getHierarchicalColumn() {
+      return DESC_COL;
     }
   }
 
