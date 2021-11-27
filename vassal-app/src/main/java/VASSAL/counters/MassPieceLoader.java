@@ -352,6 +352,8 @@ public class MassPieceLoader {
       tree.setTreeTableModel(model);
 
       final TableColumnModel tcm = tree.getColumnModel();
+      tcm.getColumn(SKIP_COL).setPreferredWidth(50);
+      tcm.getColumn(SKIP_COL).setMaxWidth(50);
       tcm.getColumn(DESC_COL).setPreferredWidth(100);
       tcm.getColumn(DESC_COL).setCellRenderer(new ImageNameRenderer());
       tcm.getColumn(NAME_COL).setPreferredWidth(200);
@@ -359,8 +361,6 @@ public class MassPieceLoader {
       tcm.getColumn(NAME_COL).setCellEditor(new NameEditor(new JTextField()));
       tcm.getColumn(IMAGE_COL).setPreferredWidth(200);
       tcm.getColumn(IMAGE_COL).setCellRenderer(new ImageNameRenderer());
-      tcm.getColumn(SKIP_COL).setPreferredWidth(50);
-      tcm.getColumn(SKIP_COL).setMaxWidth(50);
       tcm.getColumn(COPIES_COL).setPreferredWidth(50);
       tcm.getColumn(COPIES_COL).setMaxWidth(50);
       tcm.getColumn(COPIES_COL).setCellRenderer(new CopiesRenderer());
@@ -755,8 +755,9 @@ public class MassPieceLoader {
         if (column == NAME_COL || column == COPIES_COL) {
           return !((PieceNode) node).isSkip();
         }
-        else
+        else {
           return column == SKIP_COL;
+        }
       }
       return false;
     }
