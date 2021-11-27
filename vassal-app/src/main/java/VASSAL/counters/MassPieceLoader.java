@@ -220,7 +220,7 @@ public class MassPieceLoader {
     }
 
     public void skipAll() {
-      for (int i = 0; i < root.getChildCount(); i++) {
+      for (int i = 0; i < root.getChildCount(); ++i) {
         final PieceNode pieceNode = (PieceNode) root.getChildAt(i);
         pieceNode.setSkip(true);
       }
@@ -228,7 +228,7 @@ public class MassPieceLoader {
     }
 
     public void skipNone() {
-      for (int i = 0; i < root.getChildCount(); i++) {
+      for (int i = 0; i < root.getChildCount(); ++i) {
         final PieceNode pieceNode = (PieceNode) root.getChildAt(i);
         pieceNode.setSkip(false);
       }
@@ -243,7 +243,7 @@ public class MassPieceLoader {
     public void save() {
       // Count the pieces to be loaded
       int pieceCount = 0;
-      for (int i = 0; i < root.getChildCount(); i++) {
+      for (int i = 0; i < root.getChildCount(); ++i) {
         final PieceNode node = (PieceNode) root.getChildAt(i);
         if (! node.isSkip()) {
           pieceCount += node.getCopies();
@@ -504,7 +504,7 @@ public class MassPieceLoader {
         template = ((Decorator) template).getInner();
       }
 
-      for (int count = 0; count < pieceNode.getCopies(); count++) {
+      for (int count = 0; count < pieceNode.getCopies(); ++count) {
         GamePiece piece = basic;
         // Build the new piece. Note special Handling for Embellishment templates
         // that will
