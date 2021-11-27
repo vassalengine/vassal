@@ -774,7 +774,7 @@ public class MassPieceLoader {
           ((PieceNode) node).setName((String) value);
         }
         else if (column == SKIP_COL) {
-          ((PieceNode) node).setSkip((Boolean) value);
+          ((PieceNode) node).setSkip(!((Boolean) value));
         }
         else if (column == COPIES_COL) {
           int val = value == null ? 1 : (Integer) value;
@@ -895,13 +895,12 @@ public class MassPieceLoader {
       case IMAGE_COL:
         return getImageName();
       case SKIP_COL:
-        return isSkip();
+        return !isSkip();
       case COPIES_COL:
         return getCopies();
       }
       return "";
     }
-
   }
 
   /**
