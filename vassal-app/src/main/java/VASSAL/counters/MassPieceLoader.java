@@ -131,7 +131,7 @@ public class MassPieceLoader {
       super(configureTree.getFrame());
       setModal(true);
       setTitle(Resources.getString("Editor.MassPieceLoader.load_multiple"));
-      setLayout(new MigLayout("ins panel,wrap 2," + TraitLayout.STANDARD_GAPY, "[right]rel[grow,fill]", "[][][][grow,fill][]")); // NON-NLS
+      setLayout(new MigLayout("ins panel,wrap 2," + TraitLayout.STANDARD_GAPY, "[right]rel[grow,fill]", "[][][][]unrel[grow,fill]rel[]")); // NON-NLS
       setPreferredSize(new Dimension(800, 600));
 
       dirConfig.addPropertyChangeListener(e -> {
@@ -171,14 +171,14 @@ public class MassPieceLoader {
           buildTree(dirConfig.getFileValue());
         }
       });
-      add(defineButton, "skip 1,growx 0"); // NON-NLS
+      add(defineButton, "skip 1, growx 0"); // NON-NLS
 
       tree = new MyTreeTable();
       buildTree(dirConfig.getFileValue());
       //final JPanel treePanel = new JPanel(new MigLayout("ins 0", "[grow,fill]", "[grow,fill]")); // NON-NLS
       //treePanel.add(tree, "grow"); // NON-NLS
       final JScrollPane scrollPane = new JScrollPane(tree);
-      add(scrollPane, "span 2,grow"); // NON-NLS
+      add(scrollPane, "span 2,grow,push"); // NON-NLS
 
       final JPanel buttonBox = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
       final JButton okButton = new JButton(Resources.getString(Resources.OK));
