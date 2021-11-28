@@ -33,11 +33,14 @@ import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.swing.Dialogs;
-
 import VASSAL.tools.swing.SwingUtils;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -55,6 +58,8 @@ import javax.swing.BoxLayout;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -63,26 +68,31 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
+import javax.swing.tree.TreePath;
 
 import net.miginfocom.swing.MigLayout;
 
 import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
+import org.jdesktop.swingx.treetable.TreeTableNode;
 
 /**
  * Class to load a directory full of images and create counters
  *
  */
 public class MassPieceLoader {
-
-  protected static final int DESC_COL = 0;
-  protected static final int NAME_COL = 2;
-  protected static final int IMAGE_COL = 1;
-  protected static final int SKIP_COL = 3;
+  protected static final int SKIP_COL = 0;
+  protected static final int DESC_COL = 1;
+  protected static final int IMAGE_COL = 2;
+  protected static final int NAME_COL = 3;
   protected static final int COPIES_COL = 4;
   protected static final int COLUMN_COUNT = 5;
   protected static final Color EDITABLE_COLOR = Color.blue;
@@ -131,7 +141,7 @@ public class MassPieceLoader {
       super(configureTree.getFrame());
       setModal(true);
       setTitle(Resources.getString("Editor.MassPieceLoader.load_multiple"));
-      setLayout(new MigLayout("ins panel,wrap 2," + TraitLayout.STANDARD_GAPY, "[right]rel[grow,fill]", "[][][][grow,fill][]")); // NON-NLS
+      setLayout(new MigLayout("ins panel,wrap 2," + TraitLayout.STANDARD_GAPY, "[right]rel[grow,fill]", "[][][][]unrel[grow,fill]rel[]")); // NON-NLS
       setPreferredSize(new Dimension(800, 600));
 
       dirConfig.addPropertyChangeListener(e -> {
@@ -171,14 +181,14 @@ public class MassPieceLoader {
           buildTree(dirConfig.getFileValue());
         }
       });
-      add(defineButton, "skip 1,growx 0"); // NON-NLS
+      add(defineButton, "skip 1, growx 0"); // NON-NLS
 
       tree = new MyTreeTable();
       buildTree(dirConfig.getFileValue());
       //final JPanel treePanel = new JPanel(new MigLayout("ins 0", "[grow,fill]", "[grow,fill]")); // NON-NLS
       //treePanel.add(tree, "grow"); // NON-NLS
       final JScrollPane scrollPane = new JScrollPane(tree);
-      add(scrollPane, "span 2,grow"); // NON-NLS
+      add(scrollPane, "span 2,grow,push"); // NON-NLS
 
       final JPanel buttonBox = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
       final JButton okButton = new JButton(Resources.getString(Resources.OK));
@@ -189,14 +199,6 @@ public class MassPieceLoader {
           .getString(Resources.CANCEL));
       cancelButton.addActionListener(e -> cancel());
       buttonBox.add(cancelButton);
-
-      final JButton skipAllButton = new JButton(Resources.getString("Editor.MassPieceLoader.skip_all"));
-      skipAllButton.addActionListener(e -> skipAll());
-      buttonBox.add(skipAllButton);
-
-      final JButton skipNoneButton = new JButton(Resources.getString("Editor.MassPieceLoader.skip_none"));
-      skipNoneButton.addActionListener(e -> skipNone());
-      buttonBox.add(skipNoneButton);
 
       final JButton helpButton = new JButton(Resources
           .getString(Resources.HELP));
@@ -219,22 +221,6 @@ public class MassPieceLoader {
       });
     }
 
-    public void skipAll() {
-      for (int i = 0; i < root.getChildCount(); i++) {
-        final PieceNode pieceNode = (PieceNode) root.getChildAt(i);
-        pieceNode.setSkip(true);
-      }
-      repaint();
-    }
-
-    public void skipNone() {
-      for (int i = 0; i < root.getChildCount(); i++) {
-        final PieceNode pieceNode = (PieceNode) root.getChildAt(i);
-        pieceNode.setSkip(false);
-      }
-      repaint();
-    }
-
     public void cancel() {
       cancelled = true;
       dispose();
@@ -243,7 +229,7 @@ public class MassPieceLoader {
     public void save() {
       // Count the pieces to be loaded
       int pieceCount = 0;
-      for (int i = 0; i < root.getChildCount(); i++) {
+      for (int i = 0; i < root.getChildCount(); ++i) {
         final PieceNode node = (PieceNode) root.getChildAt(i);
         if (! node.isSkip()) {
           pieceCount += node.getCopies();
@@ -275,6 +261,22 @@ public class MassPieceLoader {
 
     public File getDirectory() {
       return dirConfig.getFileValue();
+    }
+
+    private void setAllSkip(boolean skip) {
+      final int count = root.getChildCount();
+      for (int i = 0; i < count; ++i) {
+        ((PieceNode) root.getChildAt(i)).setSkip(skip);
+      }
+      repaint();
+    }
+
+    public void skipAll() {
+      setAllSkip(true);
+    }
+
+    public void skipNone() {
+      setAllSkip(false);
     }
 
     /**
@@ -352,6 +354,8 @@ public class MassPieceLoader {
       tree.setTreeTableModel(model);
 
       final TableColumnModel tcm = tree.getColumnModel();
+      tcm.getColumn(SKIP_COL).setPreferredWidth(50);
+      tcm.getColumn(SKIP_COL).setMaxWidth(50);
       tcm.getColumn(DESC_COL).setPreferredWidth(100);
       tcm.getColumn(DESC_COL).setCellRenderer(new ImageNameRenderer());
       tcm.getColumn(NAME_COL).setPreferredWidth(200);
@@ -359,11 +363,126 @@ public class MassPieceLoader {
       tcm.getColumn(NAME_COL).setCellEditor(new NameEditor(new JTextField()));
       tcm.getColumn(IMAGE_COL).setPreferredWidth(200);
       tcm.getColumn(IMAGE_COL).setCellRenderer(new ImageNameRenderer());
-      tcm.getColumn(SKIP_COL).setPreferredWidth(50);
-      tcm.getColumn(SKIP_COL).setMaxWidth(50);
       tcm.getColumn(COPIES_COL).setPreferredWidth(50);
       tcm.getColumn(COPIES_COL).setMaxWidth(50);
       tcm.getColumn(COPIES_COL).setCellRenderer(new CopiesRenderer());
+
+      final ThreeStateCheckBox skipCheckBox = new ThreeStateCheckBox(1);
+      skipCheckBox.setHorizontalAlignment(SwingConstants.CENTER);
+      tcm.getColumn(SKIP_COL).setHeaderRenderer(new ComponentHeaderRenderer(skipCheckBox));
+
+      final JTableHeader header = tree.getTableHeader();
+      header.add(skipCheckBox);
+
+      header.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+          if (header.getResizingColumn() != null) {
+            return;
+          }
+
+          final JTable table = header.getTable();
+
+          final Point p = e.getPoint();
+          final int col = table.columnAtPoint(p);
+          if (col == -1) {
+            return;
+          }
+
+          final int mcol = table.convertColumnIndexToModel(col);
+          if (mcol != SKIP_COL) {
+            return;
+          }
+
+          // -1 -> 0, 0 -> 1, 1 -> 0
+          skipCheckBox.setSelectionState(
+            (Math.abs(skipCheckBox.getSelectionState()) + 1) % 2
+          );
+
+          header.repaint();
+        }
+      });
+
+      skipCheckBox.addChangeListener(e -> {
+        switch (skipCheckBox.getSelectionState()) {
+        case -1:
+          break;
+        case 0:
+          skipAll();
+          break;
+        case 1:
+          skipNone();
+          break;
+        }
+      });
+
+      model.addTreeModelListener(new TreeModelListener() {
+        @Override
+        public void treeNodesChanged(TreeModelEvent e) {
+          if (!Arrays.stream(e.getChildren()).anyMatch(c -> c instanceof PieceNode)) {
+            return;
+          }
+
+          // Update header checkbox to reflect new selection.
+          // Irritatingly, there is no way to detect from the event
+          // if this was a check box change.
+          boolean hadSelected = false;
+          boolean hadUnselected = false;
+
+          final int count = root.getChildCount();
+          for (int i = 0; i < count; ++i) {
+            if (((PieceNode) root.getChildAt(i)).isSkip()) {
+              hadUnselected = true;
+            }
+            else {
+              hadSelected = true;
+            }
+
+            if (hadSelected && hadUnselected) {
+              // mixed selection, no need to go further
+              break;
+            }
+          }
+
+          skipCheckBox.setSelectionState(
+            hadSelected ? (hadUnselected ? -1 : 1) : 0
+          );
+          header.repaint();
+        }
+
+        @Override
+        public void treeNodesInserted(TreeModelEvent e) {
+        }
+
+        @Override
+        public void treeNodesRemoved(TreeModelEvent e) {
+        }
+
+        @Override
+        public void treeStructureChanged(TreeModelEvent e) {
+        }
+      });
+    }
+
+    class ComponentHeaderRenderer extends DefaultTableCellRenderer {
+      private static final long serialVersionUID = 1L;
+
+      private final JComponent comp;
+
+      ComponentHeaderRenderer(JComponent comp) {
+        this.comp = comp;
+        comp.setBorder(UIManager.getBorder("TableHeader.cellBorder"));
+      }
+
+      @Override
+      public Component getTableCellRendererComponent(JTable table,
+          Object value, boolean isSelected, boolean hasFocus, int row, int col) {
+        final JTableHeader header = table.getTableHeader();
+        comp.setForeground(header.getForeground());
+        comp.setBackground(header.getBackground());
+        comp.setFont(header.getFont());
+        return comp;
+      }
     }
 
     class NameRenderer extends DefaultTableCellRenderer {
@@ -504,7 +623,7 @@ public class MassPieceLoader {
         template = ((Decorator) template).getInner();
       }
 
-      for (int count = 0; count < pieceNode.getCopies(); count++) {
+      for (int count = 0; count < pieceNode.getCopies(); ++count) {
         GamePiece piece = basic;
         // Build the new piece. Note special Handling for Embellishment templates
         // that will
@@ -553,6 +672,66 @@ public class MassPieceLoader {
         // Add the new piece to the tree
         configureTree.externalInsert(target, slot);
       }
+    }
+  }
+
+  private static class ThreeStateCheckBox extends JCheckBox {
+    private static final long serialVersionUID = 1L;
+
+    private int state;
+
+    public ThreeStateCheckBox() {
+      this(null);
+    }
+
+    public ThreeStateCheckBox(int s) {
+      this(null, s);
+    }
+
+    public ThreeStateCheckBox(String text) {
+      this(text, 0);
+    }
+
+    public ThreeStateCheckBox(String text, int s) {
+      /*
+       * tri-state checkbox has 3 selection states:
+       * -1 partially selected
+       *  0 unselected
+       *  1 selected
+       */
+      super(text, s == 1);
+
+      setSelectionState(s);
+    }
+
+    @Override
+    public boolean isSelected() {
+      return state == 1;
+    }
+
+    public void setSelectionState(int s) {
+      state = s;
+
+      switch (state) {
+      case -1:
+        setSelected(true);
+        setEnabled(false);
+        break;
+      case 0:
+        setSelected(false);
+        setEnabled(true);
+        break;
+      case 1:
+        setSelected(true);
+        setEnabled(true);
+        break;
+      default:
+        throw new IllegalArgumentException();
+      }
+    }
+
+    public int getSelectionState() {
+      return state;
     }
   }
 
@@ -755,8 +934,9 @@ public class MassPieceLoader {
         if (column == NAME_COL || column == COPIES_COL) {
           return !((PieceNode) node).isSkip();
         }
-        else
+        else {
           return column == SKIP_COL;
+        }
       }
       return false;
     }
@@ -769,21 +949,34 @@ public class MassPieceLoader {
     @Override
     public void setValueAt(Object value, Object node, int column) {
       if (node instanceof PieceNode) {
+        boolean changed = false;
+
         if (column == NAME_COL) {
           ((PieceNode) node).setName((String) value);
+          changed = true;
         }
         else if (column == SKIP_COL) {
-          ((PieceNode) node).setSkip((Boolean) value);
+          ((PieceNode) node).setSkip(!((Boolean) value));
+          changed = true;
         }
         else if (column == COPIES_COL) {
-          int val = value == null ? 1 : (Integer) value;
-          if (val < 1) val = 1;
+          final int val = value == null ? 1 : Math.max((Integer) value, 1);
           ((PieceNode) node).setCopies(val);
+          changed = true;
+        }
+
+        if (changed) {
+          modelSupport.firePathChanged(new TreePath(getPathToRoot((TreeTableNode) node)));
         }
       }
       else {
         super.setValueAt(value, node, column);
       }
+    }
+
+    @Override
+    public int getHierarchicalColumn() {
+      return DESC_COL;
     }
   }
 
@@ -894,13 +1087,12 @@ public class MassPieceLoader {
       case IMAGE_COL:
         return getImageName();
       case SKIP_COL:
-        return isSkip();
+        return !isSkip();
       case COPIES_COL:
         return getCopies();
       }
       return "";
     }
-
   }
 
   /**
