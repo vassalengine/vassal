@@ -1,7 +1,7 @@
 3.6.0 - ???
 
 * 10831: Allow JVM to be specified from command line for VASSAL.sh
-* 10828: Skip All / Skip None buttons for Mass Piece Loader
+* 10828: Skip All / Skip None for Mass Piece Loader
 * 10826: Protect against multiple initializations of Movement Trails
 * 10818: DrawingMouseoverIndex correctly returned as string. Console now
     displays null valued properties instead of NPE

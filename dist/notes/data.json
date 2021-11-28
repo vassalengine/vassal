@@ -28,7 +28,7 @@
       ],
       "other_improvements": [
         { "num": 10831, "desc": "Allow JVM to be specified from command line for VASSAL.sh" },
-        { "num": 10828, "desc": "Skip All / Skip None buttons for Mass Piece Loader" }
+        { "num": 10828, "desc": "Skip All / Skip None for Mass Piece Loader" }
       ]
     },
     {
