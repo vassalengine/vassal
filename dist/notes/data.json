@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 10827, "desc": "Fix Deck refreshing when running Game Refresher" },
         { "num": 10826, "desc": "Protect against multiple initializations of Movement Trails" },
         { "num": 10818, "desc": "DrawingMouseoverIndex correctly returned as string. Console now displays null valued properties instead of NPE" },
         { "num": 10815, "desc": "Fix Dice Button reporting when Keeping and Sorting results" }
