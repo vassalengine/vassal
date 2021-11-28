@@ -276,6 +276,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     c.execute();
 
     remove(GameModule.getActiveUserId());
+    GameModule.setTempUserId(null); // If we were using a temp user id, stop using it now
 
     final Add a = new Add(this, me.playerId, me.playerName, me.side);
     a.execute();
