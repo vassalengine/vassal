@@ -190,6 +190,14 @@ public class MassPieceLoader {
       cancelButton.addActionListener(e -> cancel());
       buttonBox.add(cancelButton);
 
+      final JButton skipAllButton = new JButton(Resources.getString("Editor.MassPieceLoader.skip_all"));
+      skipAllButton.addActionListener(e -> skipAll());
+      buttonBox.add(skipAllButton);
+
+      final JButton skipNoneButton = new JButton(Resources.getString("Editor.MassPieceLoader.skip_none"));
+      skipNoneButton.addActionListener(e -> skipNone());
+      buttonBox.add(skipNoneButton);
+
       final JButton helpButton = new JButton(Resources
           .getString(Resources.HELP));
       helpButton.addActionListener(e -> {
@@ -209,6 +217,22 @@ public class MassPieceLoader {
           cancel();
         }
       });
+    }
+
+    public void skipAll() {
+      for (int i = 0; i < root.getChildCount(); i++) {
+        final PieceNode pieceNode = (PieceNode) root.getChildAt(i);
+        pieceNode.setSkip(true);
+      }
+      repaint();
+    }
+
+    public void skipNone() {
+      for (int i = 0; i < root.getChildCount(); i++) {
+        final PieceNode pieceNode = (PieceNode) root.getChildAt(i);
+        pieceNode.setSkip(false);
+      }
+      repaint();
     }
 
     public void cancel() {
