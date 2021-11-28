@@ -65,6 +65,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
   public static final String SIDES = "sides"; //$NON-NLS-1$
   public static final String COMMAND_PREFIX = "PLAYER\t"; //$NON-NLS-1$
+  public static final String REMOVE_PREFIX = "PYREMOVE\t"; //NON-NLS
   public static final String OBSERVER = "<observer>"; //$NON-NLS-1$
 
   public static final String SOLITAIRE = "Solitaire"; // Various common names for sides that have access to all pieces (and chess clocks) // NON-NLS
@@ -275,8 +276,12 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     Command c = new Chatter.DisplayText(gm.getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.changed_sides_2" : "PlayerRoster.changed_sides", me.playerName, mySide, newSide));
     c.execute();
 
-    remove(GameModule.getActiveUserId());
+    final Remove r = new Remove(this, GameModule.getActiveUserId());
+    r.execute();
+    c = c.append(r);
+
     GameModule.setTempUserId(null); // If we were using a temp user id, stop using it now
+    me.playerId = GameModule.getActiveUserId();
 
     final Add a = new Add(this, me.playerId, me.playerName, me.side);
     a.execute();
@@ -378,27 +383,37 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
   @Override
   public Command decode(String command) {
-    if (!command.startsWith(COMMAND_PREFIX)) {
-      return null;
+    if (command.startsWith(COMMAND_PREFIX)) {
+      final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command, '\t');
+      st.nextToken();
+      return new Add(this, st.nextToken(), st.nextToken(), st.nextToken());
     }
 
-    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command, '\t');
-    st.nextToken();
-    return new Add(this, st.nextToken(), st.nextToken(), st.nextToken());
+    if (command.startsWith(REMOVE_PREFIX)) {
+      final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command, '\t');
+      st.nextToken();
+      return new Remove(this, st.nextToken(""));
+    }
+    return null;
   }
 
   @Override
   public String encode(Command c) {
-    if (!(c instanceof Add)) {
-      return null;
+    if (c instanceof Add) {
+      final Add a = (Add) c;
+      final SequenceEncoder se = new SequenceEncoder('\t');
+      se.append(a.id)
+        .append(a.name)
+        .append(a.side);
+      return COMMAND_PREFIX + se.getValue();
     }
-
-    final Add a = (Add) c;
-    final SequenceEncoder se = new SequenceEncoder('\t');
-    se.append(a.id)
-      .append(a.name)
-      .append(a.side);
-    return COMMAND_PREFIX + se.getValue();
+    else if (c instanceof Remove) {
+      final Remove a = (Remove) c;
+      final SequenceEncoder se = new SequenceEncoder('\t');
+      se.append(a.id);
+      return REMOVE_PREFIX + se.getValue();
+    }
+    return null;
   }
 
   @Override
@@ -557,6 +572,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     final PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
     final List<String> pwdsToMatch = getCurrentPasswords();
     final List<PlayerInfo> allowedSides = new ArrayList<>();
+    boolean blankMatch = false;
 
     if (r != null) {
       int index = 0;
@@ -579,6 +595,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
             indices.add(index);
           }
           index++;
+          blankMatch = true;
         }
       }
     }
@@ -588,7 +605,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     if (allowedSides.isEmpty()) {
       return;
     }
-    else if (allowedSides.size() == 1) {
+    else if ((allowedSides.size() == 1) && (!blankMatch || allSidesAllocated())) {
       claimSlot(indices.get(0));
       return;
     }
@@ -607,6 +624,10 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       }
 
       availableNames.add(Resources.getString("PlayerRoster.occupied_side", p.getLocalizedSide(), s));
+    }
+
+    if (blankMatch) {
+      availableNames.add(Resources.getString("PlayerRoster.none_of_the_above")); //NON-NLS
     }
 
     final GameModule g = GameModule.getGameModule();
@@ -748,6 +769,27 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       return null;
     }
   }
+
+  public static class Remove extends Command {
+    private final PlayerRoster roster;
+    private final String id;
+
+    public Remove(PlayerRoster r, String playerId) {
+      roster = r;
+      id = playerId;
+    }
+
+    @Override
+    protected void executeCommand() {
+      roster.remove(id);
+    }
+
+    @Override
+    protected Command myUndoCommand() {
+      return null;
+    }
+  }
+
 
   /** Call-back interface for when a player changes sides during a game */
   @FunctionalInterface
