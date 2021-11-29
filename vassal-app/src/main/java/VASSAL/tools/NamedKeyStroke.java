@@ -140,21 +140,21 @@ public class NamedKeyStroke {
     return stroke;
   }
 
-  @Deprecated(since = "2021-08-06", forRemoval = true)
+  @Deprecated(since = "2021-12-01", forRemoval = true)
   public static NamedKeyStroke getNamedKeyStroke(char c) {
     return of(c);
   }
-  @Deprecated(since = "2021-08-06", forRemoval = true)
+  @Deprecated(since = "2021-12-01", forRemoval = true)
   public static NamedKeyStroke getNamedKeyStroke(char c, int mod) {
     return of(c, mod);
   }
 
-  @Deprecated(since = "2021-08-06", forRemoval = true)
+  @Deprecated(since = "2021-12-01", forRemoval = true)
   public static NamedKeyStroke getNamedKeyStroke(int c, int mod) {
     return of(c, mod);
   }
 
-  @Deprecated(since = "2021-08-06", forRemoval = true)
+  @Deprecated(since = "2021-12-01", forRemoval = true)
   public static NamedKeyStroke getKeyStrokeForEvent(KeyEvent e) {
     return of(e);
   }

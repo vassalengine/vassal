@@ -25,7 +25,7 @@ import java.util.Arrays;
  * @since 3.1.0
  * @deprecated Use {@link org.apache.commons.lang3.ArrayUtils}.
  */
-@Deprecated(since = "2021-08-06", forRemoval = true)
+@Deprecated(since = "2021-12-01", forRemoval = true)
 public class ArrayUtils {
   private ArrayUtils() {}
 

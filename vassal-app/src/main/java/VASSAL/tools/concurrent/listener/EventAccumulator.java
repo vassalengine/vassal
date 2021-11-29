@@ -30,7 +30,7 @@ import VASSAL.tools.lang.Pair;
  * @since 3.2.0
  * @author Joel Uckelman
  */
-@Deprecated(since = "2021-08-08", forRemoval = true)
+@Deprecated(since = "2021-12-01", forRemoval = true)
 public class EventAccumulator<T> implements EventListener<T> {
 
   protected final Collection<Pair<Object, T>> col;

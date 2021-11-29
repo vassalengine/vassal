@@ -42,7 +42,7 @@ public class HelpWindow extends JFrame implements HyperlinkListener {
     helper.setup(this, contents);
   }
 
-  @Deprecated(since = "2021-08-06", forRemoval = true)
+  @Deprecated(since = "2021-12-01", forRemoval = true)
   @Override
   public void hyperlinkUpdate(HyperlinkEvent e) {
     helper.hyperlinkUpdate(e);

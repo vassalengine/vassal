@@ -32,7 +32,7 @@ import java.util.Iterator;
  * see IterableEnumeration
  * @deprecated use {@link Iterator}, {@link Iterable}, {@link java.util.Collection} or Stream API instead.
  */
-@Deprecated(since = "2021-08-06", forRemoval = true)
+@Deprecated(since = "2021-12-01", forRemoval = true)
 public class EnumeratedIterator<T> implements Enumeration<T> {
   private final Iterator<T> i;
 

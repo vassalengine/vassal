@@ -133,13 +133,13 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
   private java.util.Map<Object, Object> persistentProps;
 
   /** @deprecated Moved into own traits, retained for backward compatibility */
-  @Deprecated(since = "2021-08-06", forRemoval = true)
+  @Deprecated(since = "2021-12-01", forRemoval = true)
   private char cloneKey;
   /** @deprecated Moved into own traits, retained for backward compatibility */
-  @Deprecated(since = "2021-08-06", forRemoval = true)
+  @Deprecated(since = "2021-12-01", forRemoval = true)
   private char deleteKey;
   /** @deprecated Replaced by #srcOp. */
-  @Deprecated(since = "2021-08-06", forRemoval = true)
+  @Deprecated(since = "2021-12-01", forRemoval = true)
   protected Image image;           // BasicPiece's own image
   protected String imageName;      // BasicPiece image name
   private String commonName;       // BasicPiece's name for the piece (aka "BasicName" property in Vassal Module)

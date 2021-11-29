@@ -27,7 +27,7 @@ import javax.swing.SwingUtilities;
  *
  * @deprecated Use {link SwingWorker} now that we ship the JAR for it.
  */
-@Deprecated(since = "2021-08-06", forRemoval = true)
+@Deprecated(since = "2021-12-01", forRemoval = true)
 public abstract class BackgroundTask {
   public abstract void doFirst();
 
