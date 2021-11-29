@@ -35,6 +35,7 @@ import VASSAL.tools.DataArchive;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.swing.FlowLabel;
 
 import java.awt.Component;
 import java.beans.PropertyChangeListener;
@@ -47,6 +48,8 @@ import java.util.Objects;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
+import net.miginfocom.swing.MigLayout;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -485,14 +488,19 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     }
 
     // Or, if they haven't set a password yet, we plead with them to set one.
-    final JPanel panel = new JPanel();
-    panel.add(sideConfig.getControls());
-    final JLabel message = new JLabel("You have not yet set your password. Proper function of VASSAL requires a non-blank password.");
-    panel.add(message);
+    final JPanel panel = new JPanel(new MigLayout("ins 0", "[]", "[]para[]rel[]"));
+    panel.add(sideConfig.getControls(), "wrap");
 
-    final JLabel label = new JLabel("Please set your password: ");
-    panel.add(label);
-    panel.add(GameModule.getGameModule().getPasswordConfigurer().getControls());
+    final FlowLabel message = new FlowLabel("<html><b>You have not yet set your password. Proper function of VASSAL requires a non-blank password.</b></html>");
+    panel.add(message, "wrap");
+
+    final JLabel label = new JLabel("Please set your password:");
+    panel.add(label, "split 2");
+
+    final Component pwc = GameModule.getGameModule().getPasswordConfigurer().getControls();
+    label.setLabelFor(pwc);
+    panel.add(pwc);
+
     return panel;
   }
 
