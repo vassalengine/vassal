@@ -478,6 +478,13 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       availableSides.toArray(new String[0]));
     sideConfig.setValue(translatedObserver);
 
+    // If they have a non-blank password already, then we just return the side-picking controls
+    final String pwd = (String)GameModule.getGameModule().getPrefs().getValue(GameModule.SECRET_NAME);
+    if ((pwd != null) && !pwd.isBlank()) {
+      return sideConfig.getControls();
+    }
+
+    // Or, if they haven't set a password yet, we plead with them to set one.
     final JPanel panel = new JPanel();
     panel.add(sideConfig.getControls());
     final JLabel message = new JLabel("You have not yet set your password. Proper function of VASSAL requires a non-blank password.");
