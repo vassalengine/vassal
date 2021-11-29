@@ -131,7 +131,7 @@ public class FormattedString implements Loopable {
    * @deprecated Use {@link #getText(Auditable, String)}
    * @return evaluated formatted String
    */
-  @Deprecated(since = "2021-06-11")
+  @Deprecated(since = "2021-12-01")
   public String getText() {
     return getText(fsdata.defaultProperties, false, null, null);
   }
@@ -156,7 +156,7 @@ public class FormattedString implements Loopable {
    * @deprecated Use {@link #getLocalizedText(Auditable, String)}
    * @return localized text
    */
-  @Deprecated(since = "2021-06-11")
+  @Deprecated(since = "2021-12-01")
   public String getLocalizedText() {
     return getText(fsdata.defaultProperties, true, null, null);
   }
@@ -183,7 +183,7 @@ public class FormattedString implements Loopable {
    * @return Return the resulting string after substituting properties
    * @deprecated Use {@link #getText(PropertySource, Auditable, String)}
    */
-  @Deprecated(since = "2021-06-11")
+  @Deprecated(since = "2021-12-01")
   public String getText(PropertySource ps) {
     return getText(ps, false, null, null);
   }
@@ -218,7 +218,7 @@ public class FormattedString implements Loopable {
    * Evaulate a formatted String and return unlocalized text
    * @deprecated Use {@link #getText(PropertySource, String, Auditable, String)}
    */
-  @Deprecated(since = "2021-06-11")
+  @Deprecated(since = "2021-12-01")
   public String getText(PropertySource ps, boolean localized) {
     return getText(ps, localized, null, null);
   }
@@ -234,7 +234,7 @@ public class FormattedString implements Loopable {
    * @return Return the resulting string after substituting properties
    * @deprecated Use {@link #getText(PropertySource, String, Auditable, String)} 
    */
-  @Deprecated(since = "2021-06-11")
+  @Deprecated(since = "2021-12-01")
   public String getText(PropertySource ps, String def) {
     return getText(ps, def, null, (AuditTrail) null);
   }
@@ -304,7 +304,7 @@ public class FormattedString implements Loopable {
    * Evaulate a formatted String and return localized text
    * @deprecated Use {@link #getLocalizedText(PropertySource, Auditable, String)}
    */
-  @Deprecated(since = "2021-06-11")
+  @Deprecated(since = "2021-12-01")
   public String getLocalizedText(PropertySource ps) {
     return getLocalizedText(ps, null, (AuditTrail) null);
   }
