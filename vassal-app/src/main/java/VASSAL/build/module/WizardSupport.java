@@ -219,6 +219,7 @@ public class WizardSupport {
   public void showGameSetupWizard() {
     final GameSetupPanels panels = GameSetupPanels.newInstance();
     if (panels != null) {
+      GameModule.getGameModule().getPlayerRoster().validatePassword();
       WizardDisplayer.showWizard(panels.newWizard(logoSize), new Rectangle(0, 0, logoSize.width + 400, logoSize.height));
     }
   }
@@ -810,6 +811,7 @@ public class WizardSupport {
     protected JComponent createPanel(WizardController controller, String id, Map settings) {
       final int index = indexOfStep(id);
       controller.setForwardNavigationMode(index == pages.length - 1 ? WizardController.MODE_CAN_FINISH : WizardController.MODE_CAN_CONTINUE);
+      setupSteps.get(index).setController(controller); //BR// Our only chance to introduce the GameSetupStep to its wizard controller so that it can use setProblem()
       return pages[index];
     }
 

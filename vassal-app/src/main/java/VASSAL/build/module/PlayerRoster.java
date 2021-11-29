@@ -49,9 +49,11 @@ import java.util.Objects;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import net.miginfocom.swing.MigLayout;
 
+import org.netbeans.spi.wizard.WizardController;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -507,8 +509,17 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     final JLabel label = new JLabel(Resources.getString("PlayerRoster.please_set_your_password"));
     panel.add(label, "split 2"); //NON-NLS
 
-    final ToggleablePasswordConfigurer tpc = new ToggleablePasswordConfigurer(GameModule.SECRET_NAME, Resources.getString("Prefs.password_label"), "");
+    tpc = new ToggleablePasswordConfigurer(GameModule.SECRET_NAME, Resources.getString("Prefs.password_label"), "");
     tpc.addPropertyChangeListener(evt -> GameModule.setUserId((String) evt.getNewValue()));
+
+    if (wc != null) {
+      if ((pwd != null) && !pwd.isBlank()) {
+        wc.setProblem(null);
+      }
+      else {
+        wc.setProblem("Please set non-blank password");
+      }
+    }
 
     label.setLabelFor(tpc.getControls());
     panel.add(tpc.getControls());
@@ -522,6 +533,43 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   @Override
   public String getStepTitle() {
     return Resources.getString("PlayerRoster.choose_side"); //$NON-NLS-1$
+  }
+
+  private ToggleablePasswordConfigurer tpc;
+  private WizardController wc;
+
+  public void validatePassword() {
+    if (pickedSide || (wc == null)) {
+      return;
+    }
+
+    final String pwd = (String)GameModule.getGameModule().getPrefs().getValue(GameModule.SECRET_NAME);
+    if ((pwd != null) && !pwd.isBlank()) {
+      wc.setProblem(null);
+    }
+    else {
+      wc.setProblem("Please set non-blank password");
+    }
+  }
+
+  @Override
+  public void setController(WizardController wc) {
+    this.wc = wc;
+
+    if (wc != null) {
+      if (tpc != null) {
+        tpc.addPropertyChangeListener(evt -> {
+          final String newPwd = (String) evt.getNewValue();
+          if (newPwd.isBlank()) {
+            wc.setProblem("Please set non-blank password");
+          }
+          else {
+            wc.setProblem(null);
+          }
+        });
+      }
+      SwingUtilities.invokeLater(this::validatePassword);
+    }
   }
 
   /**
