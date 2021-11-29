@@ -29,6 +29,7 @@ import VASSAL.command.Logger;
 import VASSAL.configure.ComponentDescription;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
+import VASSAL.configure.password.ToggleablePasswordConfigurer;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
@@ -455,6 +456,15 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
    */
   @Override
   public void finish() {
+    // In case we set a new password at this step, update the prefs configurer, and write module preferences.
+    GameModule.getGameModule().getPasswordConfigurer().setValue(GameModule.getUserId());
+    try {
+      GameModule.getGameModule().getPrefs().save();
+    }
+    catch (IOException e) {
+      GameModule.getGameModule().warn(Resources.getString("PlayerRoster.failed_pref_write", e.getLocalizedMessage()));
+    }
+
     final String newSide = untranslateSide(sideConfig.getValueString());
     if (newSide != null) {
       final Add a = new Add(this, GameModule.getActiveUserId(), GlobalOptions.getInstance().getPlayerId(), newSide);
@@ -488,18 +498,20 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     }
 
     // Or, if they haven't set a password yet, we plead with them to set one.
-    final JPanel panel = new JPanel(new MigLayout("ins 0", "[]", "[]para[]rel[]"));
-    panel.add(sideConfig.getControls(), "wrap");
+    final JPanel panel = new JPanel(new MigLayout("ins 0", "[]", "[]para[]rel[]")); //NON-NLS
+    panel.add(sideConfig.getControls(), "wrap"); //NON-NLS
 
-    final FlowLabel message = new FlowLabel("<html><b>You have not yet set your password. Proper function of VASSAL requires a non-blank password.</b></html>");
-    panel.add(message, "wrap");
+    final FlowLabel message = new FlowLabel(Resources.getString("PlayerRoster.need_non_blank_password"));
+    panel.add(message, "wrap"); //NON-NLS
 
-    final JLabel label = new JLabel("Please set your password:");
-    panel.add(label, "split 2");
+    final JLabel label = new JLabel(Resources.getString("PlayerRoster.please_set_your_password"));
+    panel.add(label, "split 2"); //NON-NLS
 
-    final Component pwc = GameModule.getGameModule().getPasswordConfigurer().getControls();
-    label.setLabelFor(pwc);
-    panel.add(pwc);
+    final ToggleablePasswordConfigurer tpc = new ToggleablePasswordConfigurer(GameModule.SECRET_NAME, Resources.getString("Prefs.password_label"), "");
+    tpc.addPropertyChangeListener(evt -> GameModule.setUserId((String) evt.getNewValue()));
+
+    label.setLabelFor(tpc.getControls());
+    panel.add(tpc.getControls());
 
     return panel;
   }
