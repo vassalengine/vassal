@@ -95,8 +95,8 @@ public class LoadModuleAction extends GameModuleAction {
       module.getPlayerWindow().setVisible(true);
 
       // prompt for username and password if wizard is off
-      // but no username is set
-      if (!isRealName()) {
+      // but no username is set, or password is blank
+      if (!isRealName() || !isNonBlankPassword()) {
         new UsernameAndPasswordDialog(module.getPlayerWindow()).setVisible(true);
       }
     }
@@ -114,4 +114,15 @@ public class LoadModuleAction extends GameModuleAction {
     return name != null && !name.isBlank() && !name.equals(Resources.getString("Prefs.newbie"));
   }
 
+  /**
+   * Returns true if user has supplied a real password for current GameModule.
+   *
+   * Test's whether GameModule.SECRET_NAME is non-empty
+   *
+   * @return <code>true</code> if user supplied a real password
+   */
+  private boolean isNonBlankPassword() {
+    final String pwd = (String)GameModule.getGameModule().getPrefs().getValue(GameModule.SECRET_NAME);
+    return (pwd != null) && !pwd.isBlank();
+  }
 }

@@ -225,7 +225,7 @@ public class WizardSupport {
 
 
   public InitialWelcomeSteps createInitialWelcomeSteps() {
-    if (!isRealName()) {
+    if (!isRealName() || !isNonBlankPassword()) {
       return new InitialWelcomeSteps(new String[]{ACTION_KEY, InitialWelcomeSteps.NAME_STEP},
         new String[]{Resources.getString("WizardSupport.WizardSupport.EnterName"), Resources.getString("WizardSupport.WizardSupport.SelectPlayMode")}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
@@ -245,6 +245,19 @@ public class WizardSupport {
   private boolean isRealName() {
     final String name = (String)GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME);
     return name != null && !name.isBlank() && !name.equals(Resources.getString("Prefs.newbie"));
+  }
+
+
+  /**
+   * Returns true if user has supplied a real password for current GameModule.
+   *
+   * Test's whether GameModule.SECRET_NAME is non-empty
+   *
+   * @return <code>true</code> if user supplied a real password
+   */
+  private boolean isNonBlankPassword() {
+    final String pwd = (String)GameModule.getGameModule().getPrefs().getValue(GameModule.SECRET_NAME);
+    return (pwd != null) && !pwd.isBlank();
   }
 
 
