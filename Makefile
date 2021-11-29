@@ -63,14 +63,11 @@ GITCOMMIT:=$(shell git rev-parse --short HEAD)
 ifeq ($(shell git describe --tags), $(MAVEN_VERSION))
   # we are at a release tag
   VERSION:=$(MAVEN_VERSION)
-else ifeq ($(GITBRANCH), master)
-  # we are somewhere else on master
-  VERSION:=$(MAVEN_VERSION)-$(GITCOMMIT)
 else ifeq ($(patsubst release-%,release,$(GITBRANCH)), release)
   # we are on a release branch
   VERSION:=$(MAVEN_VERSION)-$(GITCOMMIT)
 else
-  # we are on some other branch
+  # we are on a branch
   VERSION:=$(MAVEN_VERSION)-$(GITCOMMIT)-$(GITBRANCH)
 endif
 
