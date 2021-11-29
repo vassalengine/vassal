@@ -509,7 +509,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     final JLabel label = new JLabel(Resources.getString("PlayerRoster.please_set_your_password"));
     panel.add(label, "split 2"); //NON-NLS
 
-    tpc = new ToggleablePasswordConfigurer(GameModule.SECRET_NAME, Resources.getString("Prefs.password_label"), "");
+    tpc = new ToggleablePasswordConfigurer(GameModule.SECRET_NAME, "", "");
     tpc.addPropertyChangeListener(evt -> GameModule.setUserId((String) evt.getNewValue()));
 
     label.setLabelFor(tpc.getControls());
