@@ -2021,6 +2021,31 @@ public class GameModule extends AbstractConfigurable
   }
 
   /**
+   * Returns true if user has supplied a real name
+   *
+   * Test's whether GameModule.REAL_NAME is non-empty and not "newbie"
+   *
+   * @return <code>true</code> if user supplied a real name
+   */
+  public boolean isRealName() {
+    final String name = (String)getPrefs().getValue(GameModule.REAL_NAME);
+    return name != null && !name.isEmpty() && !name.equals(Resources.getString("Prefs.newbie"));
+  }
+
+  /**
+   * Returns true if user has supplied a real password for current GameModule.
+   *
+   * Test's whether GameModule.SECRET_NAME is non-empty
+   *
+   * @return <code>true</code> if user supplied a real password
+   */
+  public boolean isNonBlankPassword() {
+    final String pwd = (String)getPrefs().getValue(GameModule.SECRET_NAME);
+    return (pwd != null) && !pwd.isEmpty();
+  }
+
+
+  /**
    * @return an XML element that can be used to {@link Buildable#build} the module object.
    */
   private String buildString() {
