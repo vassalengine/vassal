@@ -215,7 +215,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
    *
    * @deprecated use {@link #Deck(GameModule)}
    */
-  @Deprecated(since = "2021-08-06", forRemoval = true)
+  @Deprecated(since = "2021-12-01", forRemoval = true)
   public Deck() {
     this(GameModule.getGameModule());
   }

@@ -287,7 +287,7 @@ public class SwingUtils {
    *
    * @deprecated in favor of {@link #isMainMouseButtonDown(MouseEvent)}
    */
-  @Deprecated(since = "2021-08-06", forRemoval = true)
+  @Deprecated(since = "2021-12-01", forRemoval = true)
   public static boolean isLeftMouseButton(MouseEvent e) {
     return INPUT_CLASSIFIER.isMainMouseButtonDown(e);
   }
@@ -297,7 +297,7 @@ public class SwingUtils {
    *
    * @deprecated in favor of {@link #isContextMouseButtonDown(MouseEvent)}
    */
-  @Deprecated(since = "2021-08-06", forRemoval = true)
+  @Deprecated(since = "2021-12-01", forRemoval = true)
   public static boolean isRightMouseButton(MouseEvent e) {
     return INPUT_CLASSIFIER.isContextMouseButtonDown(e);
   }
@@ -307,7 +307,7 @@ public class SwingUtils {
    *
    * @deprecated The situation where this was needed with mouse events is now handled by {@link #isSelectionToggle(MouseEvent)}.
    */
-  @Deprecated(since = "2021-08-06", forRemoval = true)
+  @Deprecated(since = "2021-12-01", forRemoval = true)
   public static boolean isControlDown(MouseEvent e) {
     return INPUT_CLASSIFIER.isSelectionToggle(e);
   }

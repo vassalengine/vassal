@@ -176,7 +176,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected boolean unrotatePieces = false;
   protected boolean showDeck = false;
 
-  @Deprecated(since = "2021-11-08", forRemoval = true)
+  @Deprecated(since = "2021-12-01", forRemoval = true)
   protected static int showDeckDepth = 1; //BR// deprecated (and was-always-broken) field, use showNumberFromDeck instead.
 
   protected int showNumberFromDeck = 1;
@@ -735,7 +735,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     protected final int showNumberFromDeck;
     protected final boolean showDeckMasked;
 
-    @Deprecated(since = "2021-11-08", forRemoval = true)
+    @Deprecated(since = "2021-12-01", forRemoval = true)
     public Visitor(Filter filter, Map map, Point pt, boolean showOverlap) {
       this(filter, map, pt, showOverlap, 1, false);
     }

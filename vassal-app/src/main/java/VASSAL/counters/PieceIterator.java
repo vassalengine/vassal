@@ -75,7 +75,7 @@ public class PieceIterator {
     };
   }
 
-  @Deprecated(since = "2021-08-06", forRemoval = true)
+  @Deprecated(since = "2021-12-01", forRemoval = true)
   public <T extends GamePiece> PieceIterator(Enumeration<T> e, PieceFilter f) {
     this(e.asIterator(), f);
   }
@@ -95,7 +95,7 @@ public class PieceIterator {
     return new PieceIterator(i, VISIBLE::test);
   }
 
-  @Deprecated(since = "2021-08-06", forRemoval = true)
+  @Deprecated(since = "2021-12-01", forRemoval = true)
   public static <T extends GamePiece> PieceIterator visible(Enumeration<T> e) {
     return PieceIterator.visible(e.asIterator());
   }

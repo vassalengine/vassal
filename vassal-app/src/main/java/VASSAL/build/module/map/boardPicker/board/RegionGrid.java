@@ -645,7 +645,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       /**
        * @deprecated field is not used anywhere and will be removed, modules should introduce their own field
        */
-      @Deprecated(since = "2021-08-06", forRemoval = true)
+      @Deprecated(since = "2021-12-01", forRemoval = true)
       protected boolean isDragging = false;
 
       protected JLabel dragCursor;
