@@ -111,7 +111,7 @@ public class LoadModuleAction extends GameModuleAction {
    */
   private boolean isRealName() {
     final String name = (String)GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME);
-    return name != null && !name.isBlank() && !name.equals(Resources.getString("Prefs.newbie"));
+    return name != null && !name.isEmpty() && !name.equals(Resources.getString("Prefs.newbie"));
   }
 
   /**
@@ -123,6 +123,6 @@ public class LoadModuleAction extends GameModuleAction {
    */
   private boolean isNonBlankPassword() {
     final String pwd = (String)GameModule.getGameModule().getPrefs().getValue(GameModule.SECRET_NAME);
-    return (pwd != null) && !pwd.isBlank();
+    return (pwd != null) && !pwd.isEmpty();
   }
 }

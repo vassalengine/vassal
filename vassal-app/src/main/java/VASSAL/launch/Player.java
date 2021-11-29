@@ -130,7 +130,7 @@ public class Player extends Launcher {
    */
   private boolean isRealName() {
     final String name = (String)GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME);
-    return name != null && !name.isBlank() && !name.equals(Resources.getString("Prefs.newbie"));
+    return name != null && !name.isEmpty() && !name.equals(Resources.getString("Prefs.newbie"));
   }
 
   private void showWizardOrPlayerWindow(GameModule module) {

@@ -495,7 +495,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
     // If they have a non-blank password already, then we just return the side-picking controls
     final String pwd = (String)GameModule.getGameModule().getPrefs().getValue(GameModule.SECRET_NAME);
-    if ((pwd != null) && !pwd.isBlank()) {
+    if ((pwd != null) && !pwd.isEmpty()) {
       return sideConfig.getControls();
     }
 
@@ -535,7 +535,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     }
 
     final String pwd = (String)GameModule.getGameModule().getPrefs().getValue(GameModule.SECRET_NAME);
-    if ((pwd != null) && !pwd.isBlank()) {
+    if ((pwd != null) && !pwd.isEmpty()) {
       wc.setProblem(null);
     }
     else {
@@ -551,7 +551,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       if (tpc != null) {
         tpc.addPropertyChangeListener(evt -> {
           final String newPwd = (String) evt.getNewValue();
-          if (newPwd.isBlank()) {
+          if (newPwd.isEmpty()) {
             wc.setProblem(Resources.getString("PlayerRoster.please_set_non_blank_password"));
           }
           else {
