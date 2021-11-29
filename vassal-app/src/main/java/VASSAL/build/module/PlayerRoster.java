@@ -641,9 +641,9 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       availableNames.get(0)
     );
 
-    final int index = availableNames.indexOf(choice);
-    if (index > 0) {
-      claimSlot(indices.get(index));
+    final int pick = availableNames.indexOf(choice);
+    if ((pick >= 0) && (pick < indices.size())) {
+      claimSlot(indices.get(pick));
     }
   }
 
