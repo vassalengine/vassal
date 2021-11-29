@@ -217,11 +217,7 @@ public class PolygonEditor extends JPanel {
     }
   }
 
-  public static void reset(Polygon p, String pathStr) {
-    if (p == null) {
-      p = new Polygon();
-    }
-    p.reset();
+  private static void parseString(Polygon p, String pathStr) {
     final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(pathStr, ';');
     while (sd.hasMoreTokens()) {
       final String s = sd.nextToken();
@@ -239,6 +235,24 @@ public class PolygonEditor extends JPanel {
         }
       }
     }
+  }
+
+  public static Polygon stringToPolygon(String pathStr) {
+    final Polygon p = new Polygon();
+    parseString(p, pathStr);
+    return p.npoints == 0 ? null : p;
+  }
+
+  /** @deprecated Use {@link {#stringToPolygon(String)} for parsing and
+   *  {@link #setPolygon(Polygon)} for setting the editor instead.
+   */
+  @Deprecated(since = "2021-11-29", forRemoval = true)
+  public static void reset(Polygon p, String pathStr) {
+    if (p == null) {
+      p = new Polygon();
+    }
+    p.reset();
+    parseString(p, pathStr);
     if (p.npoints == 0) {
       p = null;
     }
@@ -246,7 +260,7 @@ public class PolygonEditor extends JPanel {
 
   public static String polygonToString(Polygon p) {
     // Sometimes people delete all the points from the polygon. Because of course they do.
-    if ((p == null) || p.npoints == 0) {
+    if (p == null || p.npoints == 0) {
       return "";
     }
 
