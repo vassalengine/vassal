@@ -512,15 +512,6 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     tpc = new ToggleablePasswordConfigurer(GameModule.SECRET_NAME, Resources.getString("Prefs.password_label"), "");
     tpc.addPropertyChangeListener(evt -> GameModule.setUserId((String) evt.getNewValue()));
 
-    if (wc != null) {
-      if ((pwd != null) && !pwd.isBlank()) {
-        wc.setProblem(null);
-      }
-      else {
-        wc.setProblem("Please set non-blank password");
-      }
-    }
-
     label.setLabelFor(tpc.getControls());
     panel.add(tpc.getControls());
 
@@ -548,7 +539,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       wc.setProblem(null);
     }
     else {
-      wc.setProblem("Please set non-blank password");
+      wc.setProblem(Resources.getString("PlayerRoster.please_set_non_blank_password"));
     }
   }
 
@@ -561,7 +552,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         tpc.addPropertyChangeListener(evt -> {
           final String newPwd = (String) evt.getNewValue();
           if (newPwd.isBlank()) {
-            wc.setProblem("Please set non-blank password");
+            wc.setProblem(Resources.getString("PlayerRoster.please_set_non_blank_password"));
           }
           else {
             wc.setProblem(null);
