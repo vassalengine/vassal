@@ -44,7 +44,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -475,7 +477,16 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       Resources.getString("PlayerRoster.join_game_as"), //$NON-NLS-1$
       availableSides.toArray(new String[0]));
     sideConfig.setValue(translatedObserver);
-    return sideConfig.getControls();
+
+    final JPanel panel = new JPanel();
+    panel.add(sideConfig.getControls());
+    final JLabel message = new JLabel("You have not yet set your password. Proper function of VASSAL requires a non-blank password.");
+    panel.add(message);
+
+    final JLabel label = new JLabel("Please set your password: ");
+    panel.add(label);
+    panel.add(GameModule.getGameModule().getPasswordConfigurer().getControls());
+    return panel;
   }
 
   /**

@@ -268,6 +268,12 @@ public class GameModule extends AbstractConfigurable
 
   private boolean matSupport = false; // If no Mats exist in the module, we don't need to spend any time doing mat-related calculations during moves/selects
 
+  private ToggleablePasswordConfigurer passwordConfigurer;
+
+  public ToggleablePasswordConfigurer getPasswordConfigurer() {
+    return passwordConfigurer;
+  }
+
   /**
    * @return True if there are any Mat or MatCargo objects in the module
    */
@@ -713,12 +719,12 @@ public class GameModule extends AbstractConfigurable
     fullName.addPropertyChangeListener(evt -> idChangeSupport.firePropertyChange(evt));
     final TextConfigurer profile = new TextConfigurer(GameModule.PERSONAL_INFO, Resources.getString("Prefs.personal_info"), "");   //$NON-NLS-1$ //$NON-NLS-2$
     profile.addPropertyChangeListener(evt -> idChangeSupport.firePropertyChange(evt));
-    final ToggleablePasswordConfigurer user = new ToggleablePasswordConfigurer(GameModule.SECRET_NAME, Resources.getString("Prefs.password_label"), ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-    user.addPropertyChangeListener(evt -> GameModule.setUserId((String) evt.getNewValue()));
+    passwordConfigurer = new ToggleablePasswordConfigurer(GameModule.SECRET_NAME, Resources.getString("Prefs.password_label"), ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    passwordConfigurer.addPropertyChangeListener(evt -> GameModule.setUserId((String) evt.getNewValue()));
     getPrefs().addOption(Resources.getString("Prefs.personal_tab"), fullName);   //$NON-NLS-1$ //$NON-NLS-2$
-    getPrefs().addOption(Resources.getString("Prefs.personal_tab"), user);   //$NON-NLS-1$ //$NON-NLS-2$
+    getPrefs().addOption(Resources.getString("Prefs.personal_tab"), passwordConfigurer);   //$NON-NLS-1$ //$NON-NLS-2$
     getPrefs().addOption(Resources.getString("Prefs.personal_tab"), profile);  //$NON-NLS-1$
-    GameModule.setUserId(user.getValueString());
+    GameModule.setUserId(passwordConfigurer.getValueString());
   }
 
   /**
