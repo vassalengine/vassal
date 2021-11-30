@@ -103,6 +103,8 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
   public static final String LENGTH = "length"; //$NON-NLS-1$
   public static final String LENGTH_STYLE = "lengthStyle"; //$NON-NLS-1$
+  public static final String PLUS_BUTTON_WIDTH  = "plusButtonSize"; //NON-NLS
+  public static final String TURN_BUTTON_HEIGHT = "turnButtonHeight"; //NON-NLS
 
   protected static final String FONT_SIZE = "turnFontSize"; //$NON-NLS-1$
   protected static final String FONT_BOLD = "turnFontBold"; //$NON-NLS-1$
@@ -150,6 +152,9 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   protected String id;
   protected int width = -1;
   protected String lengthStyle = LENGTH_MAXIMUM;
+
+  protected int plusButtonWidth  = 22;
+  protected int turnButtonHeight = 22;
 
   protected MutableProperty.Impl lastCommand = new MutableProperty.Impl(SET, this);
   protected MutableProperty.Impl lastTurn = new MutableProperty.Impl("", this);
@@ -231,7 +236,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
    */
   @Override
   public String[] getAttributeNames() {
-    return new String[] { NAME, DESCRIPTION, BUTTON_TEXT, ICON, HOT_KEY, NEXT_HOT_KEY, PREV_HOT_KEY, TURN_FORMAT, REPORT_FORMAT, TOOLTIP, LENGTH_STYLE, LENGTH };
+    return new String[] { NAME, DESCRIPTION, BUTTON_TEXT, ICON, HOT_KEY, NEXT_HOT_KEY, PREV_HOT_KEY, TURN_FORMAT, REPORT_FORMAT, TOOLTIP, LENGTH_STYLE, LENGTH, PLUS_BUTTON_WIDTH, TURN_BUTTON_HEIGHT };
   }
 
   @Override
@@ -282,6 +287,18 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       }
       prevListener.setKeyStroke((NamedKeyStroke) value);
       turnWidget.setPrevStroke((NamedKeyStroke) value);
+    }
+    else if (PLUS_BUTTON_WIDTH.equals(key)) {
+      if (value instanceof String) {
+        value = Integer.valueOf((String)value);
+      }
+      plusButtonWidth = (Integer)value;
+    }
+    else if (TURN_BUTTON_HEIGHT.equals(key)) {
+      if (value instanceof String) {
+        value = Integer.valueOf((String)value);
+      }
+      turnButtonHeight = (Integer)value;
     }
     else {
       launch.setAttribute(key, value);
@@ -395,6 +412,12 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     else if (PREV_HOT_KEY.equals(key)) {
       return NamedHotKeyConfigurer.encode(prevListener.getNamedKeyStroke());
     }
+    else if (PLUS_BUTTON_WIDTH.equals(key)) {
+      return String.valueOf(plusButtonWidth);
+    }
+    else if (TURN_BUTTON_HEIGHT.equals(key)) {
+      return String.valueOf(turnButtonHeight);
+    }
     else {
       return launch.getAttributeValueString(key);
     }
@@ -414,7 +437,9 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       Resources.getString("Editor.report_format"),
       Resources.getString("Editor.TurnTracker.turn_tooltip"),
       Resources.getString("Editor.TurnTracker.turn_length"),
-      Resources.getString("Editor.TurnTracker.turn_display")
+      Resources.getString("Editor.TurnTracker.turn_display"),
+      Resources.getString("Editor.TurnTracker.plus_button_width"),
+      Resources.getString("Editor.TurnTracker.turn_button_height")
     };
   }
 
@@ -432,6 +457,8 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       ReportFormatConfig.class,
       String.class,
       LengthStyleConfig.class,
+      Integer.class,
+      Integer.class,
       Integer.class
     };
   }
@@ -732,6 +759,11 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     turnWindow.requestFocus();
   }
 
+  public void updateWidget() {
+    turnWidget.setControls();
+    turnWidget.repaint();
+  }
+
   protected void clearGlobalProperties() {
     lastCommand.setPropertyValue(null);
     lastTurn.setPropertyValue(null);
@@ -847,8 +879,9 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     private static final long serialVersionUID = 1L;
     private IconButton nextButton;
     private IconButton prevButton;
+    private boolean initialized = false;
 
-    protected final int BUTTON_SIZE = 22; //NOPMD
+    protected final int BUTTON_SIZE = 22; @Deprecated //NOPMD
 
     protected JLabel turnLabel = new JLabel();
 
@@ -863,12 +896,43 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
 
     public void setWidth(int length) {
       if (length > 0) {
-        turnLabel.setMinimumSize(new Dimension(length, BUTTON_SIZE));
-        turnLabel.setPreferredSize(new Dimension(length, BUTTON_SIZE));
+        turnLabel.setMinimumSize(new Dimension(length, turnButtonHeight));
+        turnLabel.setPreferredSize(new Dimension(length, turnButtonHeight));
       }
       else {
         turnLabel.setMinimumSize(null);
         turnLabel.setPreferredSize(null);
+      }
+
+      if (!initialized) {
+        setLayout(new BorderLayout(5, 5));
+
+        nextButton = new IconButton(IconButton.PLUS_ICON, plusButtonWidth);
+        setNextStroke(nextListener.getNamedKeyStroke());
+        nextButton.setAlignmentY(Component.TOP_ALIGNMENT);
+        nextButton.addActionListener(e -> doNext());
+
+        prevButton = new IconButton(IconButton.MINUS_ICON, plusButtonWidth);
+        setPrevStroke(prevListener.getNamedKeyStroke());
+        prevButton.setAlignmentY(Component.TOP_ALIGNMENT);
+        prevButton.addActionListener(e -> doPrev());
+
+        // Next, the Label containing the Turn Text
+        turnLabel.setFont(getDisplayFont());
+        turnLabel.setFocusable(false);
+        turnLabel.setHorizontalTextPosition(JLabel.CENTER);
+        turnLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        turnLabel.addMouseListener(this);
+        turnLabel.setBackground(Color.WHITE);
+        turnLabel.setToolTipText(Resources.getString("TurnTracker.click_to_configure")); //$NON-NLS-1$
+
+        add(prevButton, BorderLayout.LINE_START);
+        add(turnLabel, BorderLayout.CENTER);
+        add(nextButton, BorderLayout.LINE_END);
+
+        addMouseListener(this);
+
+        initialized = true;
       }
     }
 
@@ -901,45 +965,21 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     }
 
     protected void initComponents() {
-
-      setLayout(new BorderLayout(5, 5));
-
-      nextButton = new IconButton(IconButton.PLUS_ICON, BUTTON_SIZE);
-      setNextStroke(nextListener.getNamedKeyStroke());
-      nextButton.setAlignmentY(Component.TOP_ALIGNMENT);
-      nextButton.addActionListener(e -> doNext());
-
-      prevButton = new IconButton(IconButton.MINUS_ICON, BUTTON_SIZE);
-      setPrevStroke(prevListener.getNamedKeyStroke());
-      prevButton.setAlignmentY(Component.TOP_ALIGNMENT);
-      prevButton.addActionListener(e -> doPrev());
-
-      // Next, the Label containing the Turn Text
-      turnLabel.setFont(getDisplayFont());
-      turnLabel.setFocusable(false);
-      turnLabel.setHorizontalTextPosition(JLabel.CENTER);
-      turnLabel.setHorizontalAlignment(SwingConstants.CENTER);
-      turnLabel.addMouseListener(this);
-      turnLabel.setBackground(Color.WHITE);
-      turnLabel.setToolTipText(Resources.getString("TurnTracker.click_to_configure")); //$NON-NLS-1$
-
-
-      add(prevButton, BorderLayout.LINE_START);
-      add(turnLabel, BorderLayout.CENTER);
-      add(nextButton, BorderLayout.LINE_END);
-
-      addMouseListener(this);
     }
 
     public void setNextStroke(NamedKeyStroke key) {
       final String tooltip = Resources.getString("TurnTracker.next_turn") + (key == null ? "" : " " + NamedHotKeyConfigurer.getFancyString(key)); //NON-NLS
-      nextButton.setToolTipText(tooltip);
+      if (nextButton != null) {
+        nextButton.setToolTipText(tooltip);
+      }
     }
 
     public void setPrevStroke(NamedKeyStroke key) {
       final String tooltip = Resources.getString("TurnTracker.prev_turn") +  //$NON-NLS-1$
         (key == null ? "" : " " + NamedHotKeyConfigurer.getFancyString(key)); //$NON-NLS-1$ //$NON-NLS-2$
-      prevButton.setToolTipText(tooltip);
+      if (prevButton != null) {
+        prevButton.setToolTipText(tooltip);
+      }
     }
 
 
