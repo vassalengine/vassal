@@ -20,7 +20,7 @@ Similary, modifying or deleting a trait from a Prototype will change or remove t
 
 **Prototype Name:**:: Type the name of your prototype here - the name you gave it to its <<Prototypes.adoc#top,prototype definition>>. Alternatively you can click the _Select_ button to pick the prototype from the list of all the ones you have created.
 
-**Select:**:: The _Select_ button allows you to select one of the prototypes you have defined in the module. If your prototypes have been organized into folders, the folders will appear a submenus.
+**Select:**:: The _Select_ button allows you to select one of the prototypes you have defined in the module. If your prototypes have been organized into folders, the folders will appear as submenus.
 
 image:images/UsePrototype2.png[]
 
