@@ -30,6 +30,7 @@ import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.menu.MenuScroller;
 
 import java.awt.Component;
 import java.awt.Graphics;
@@ -255,11 +256,11 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
       controls = new TraitConfigPanel();
 
       nameConfig = new StringConfigurer(up.type.substring(ID.length()));
-      controls.add("Editor.UsePrototype.prototype_name", nameConfig);
+      controls.add("Editor.UsePrototype.prototype_name", nameConfig, "split 2");
 
       final JButton selectButton = new JButton(Resources.getString(Resources.SELECT));
       selectButton.addActionListener(e -> select());
-      controls.add(selectButton);
+      controls.add(selectButton, "growx 0");
     }
 
     private JMenu subMenu(AbstractFolder target) {
@@ -303,6 +304,8 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
           protoMenu.add(item);
         }
       }
+
+      MenuScroller.setScrollerFor(protoMenu, 20, 100);
       protoMenu.show(this.getControls(), 0, 0);
     }
 
