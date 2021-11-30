@@ -17,6 +17,8 @@
  */
 package VASSAL.counters;
 
+import VASSAL.build.AbstractFolder;
+import VASSAL.build.Buildable;
 import VASSAL.build.module.PrototypeDefinition;
 import VASSAL.build.module.PrototypesContainer;
 import VASSAL.build.module.documentation.HelpFile;
@@ -28,6 +30,7 @@ import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.menu.MenuScroller;
 
 import java.awt.Component;
 import java.awt.Graphics;
@@ -36,6 +39,10 @@ import java.awt.Shape;
 import java.util.List;
 import java.util.Objects;
 
+import javax.swing.JButton;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
 
 /**
@@ -249,8 +256,57 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
       controls = new TraitConfigPanel();
 
       nameConfig = new StringConfigurer(up.type.substring(ID.length()));
-      controls.add("Editor.UsePrototype.prototype_name", nameConfig);
+      controls.add("Editor.UsePrototype.prototype_name", nameConfig, "split 2");
 
+      final JButton selectButton = new JButton(Resources.getString(Resources.SELECT));
+      selectButton.addActionListener(e -> select());
+      controls.add(selectButton, "growx 0");
+    }
+
+    private JMenu subMenu(AbstractFolder target) {
+      final JMenu menu = new JMenu(target.getConfigureName());
+
+      for (final Buildable b : target.getBuildables()) {
+        if (b instanceof AbstractFolder) {
+          final JMenu sub = subMenu((AbstractFolder)b);
+          if (sub.getItemCount() > 0) {
+            menu.add(sub);
+          }
+        }
+        else if (b instanceof PrototypeDefinition) {
+          final JMenuItem item = new JMenuItem(((PrototypeDefinition) b).getConfigureName());
+          item.addActionListener(ev -> nameConfig.setValue(((PrototypeDefinition) b).getConfigureName()));
+          menu.add(item);
+        }
+      }
+
+      return menu;
+    }
+
+    private void select() {
+      final PrototypesContainer protos = PrototypesContainer.findInstance();
+      if (protos == null) {
+        return;
+      }
+
+      final JPopupMenu protoMenu = new JPopupMenu();
+
+      for (final Buildable b: protos.getBuildables()) {
+        if (b instanceof AbstractFolder) {
+          final JMenu menu = subMenu((AbstractFolder)b);
+          if (menu.getItemCount() > 0) {
+            protoMenu.add(menu);
+          }
+        }
+        else if (b instanceof PrototypeDefinition) {
+          final JMenuItem item = new JMenuItem(((PrototypeDefinition) b).getConfigureName());
+          item.addActionListener(ev -> nameConfig.setValue(((PrototypeDefinition) b).getConfigureName()));
+          protoMenu.add(item);
+        }
+      }
+
+      MenuScroller.setScrollerFor(protoMenu, 20, 100);
+      protoMenu.show(this.getControls(), 0, 0);
     }
 
     @Override
