@@ -36,6 +36,8 @@ Whether the controls are docked is remembered in the player's preferences.
 
 *Name:*::  A name for display in the <<Editor.adoc#top,Editor>> window
 
+*Description:*:: Optional description of the turn tracker. Never displayed to the player, this is more of a comment/documentation field for the module designer.
+
 *Button text:*::  The text of the <<Toolbar.adoc#top,Toolbar>> button to show/hide the controls when un-docked
 
 *Button icon:*::  Icon for the <<Toolbar.adoc#top,Toolbar>> button.
@@ -54,6 +56,7 @@ In particular, the properties exposed by any sub-components (Counters or Lists) 
 In addition, the special properties _level1, level2_, etc.
 can be used to represent the values of the active Counter or List within the Turn Counter.
 _Example:_ If the Turn Counter contains a Month level that contains a Day level, then__level1__ gives the value of the Month and__level2__gives the Day.
+  **NOTE:** As of VASSAL 3.6 updates to module properties caused by any global hotkeys issued by this turn tracker when changing turns will be properly registered in this display.
 
 *Report format:*::  <<MessageFormat.adoc#top,Message Format>> to display a message in the <<ChatLog.adoc#top,Chat Log>> whenever the turn changes.
 
@@ -69,7 +72,16 @@ _Example:_ If the Turn Counter contains a Month level that contains a Day level,
 
 *Turn label display length:*::  Set the number of pixels wide the turn display label should be for the _Fixed_ turn label length type.
 
+*Width of + and - buttons:*:: Width in pixels of the + and - buttons provided on the turn display.
+
+*Height of Turn Tracker widget:*:: Height in pixels of the turn tracker display. This can be used to help match your turn tracker to the heights of icons you are using on your toolbar.
+
 image:images/TurnTracker.png[]
+
+==== Module level defaults and preferences
+
+The font size and style of the turn tracker, and whether the turn tracker docks to the module toolbar, are remembered in the user preferences. The initial default font size is normally 14 (non-bold), and the turn tracker does not dock into the toolbar by default. As a module designer you can override these default preferences for new users loading your module for the first time, by defining the following Global Properties:
+_TurnTracker.defaultFontSize_, _TurnTracker.defaultFontBold_, and/or _TurnTracker.defaultDocked_. For example, setting them to _18_, _true_, _true_ would mean new players loading your module for the very first time would see an 18 font size, bolded, and a docked turn tracker. Once these module defaults are initially loaded, they will thereafter follow the user's preference settings.
 
 '''''
 

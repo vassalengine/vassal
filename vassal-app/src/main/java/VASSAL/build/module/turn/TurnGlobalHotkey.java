@@ -137,7 +137,7 @@ public class TurnGlobalHotkey extends AbstractConfigurable {
     if (match.isNull() || match.accept(checkPiece)) {
       GameModule.getGameModule().fireKeyStroke(hotkey);
       if (parent != null) {
-        parent.updateWidget();
+        parent.updateWidget(); // Our global hotkey may have updated properties that figure in our button label
       }
       final String reportText = format.getLocalizedText(this, "Editor.report_format");
       if (reportText.length() > 0) {

@@ -51,6 +51,8 @@ import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.UniqueIdManager;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -90,6 +92,10 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   protected static final UniqueIdManager idMgr = new UniqueIdManager("TurnTracker"); //$NON-NLS-1$
 
   protected static final String COMMAND_PREFIX = "TURN"; //$NON-NLS-1$
+
+  protected static final String DEFAULT_FONT_SIZE_PROPERTY = "TurnTracker.defaultFontSize"; //NON-NLS
+  protected static final String DEFAULT_FONT_BOLD_PROPERTY = "TurnTracker.defaultFontBold"; //NON-NLS
+  protected static final String DEFAULT_DOCKED_PROPERTY    = "TurnTracker.defaultDocked";   //NON-NLS
 
   public static final String NAME = "name"; // NON-NLS
   public static final String HOT_KEY = "hotkey"; //$NON-NLS-1$
@@ -176,10 +182,22 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     DOCK_COMMAND = Resources.getString("General.dock"); //$NON-NLS-1$
     UNDOCK_COMMAND = Resources.getString("General.undock"); //$NON-NLS-1$
 
+    final GameModule gm = GameModule.getGameModule();
+
+    // To establish initial defaults, check to see if module designer has overridden the "default defaults" with Global Properties
+    final Object sizeProp = gm.getProperty(DEFAULT_FONT_SIZE_PROPERTY);
+    final int sizeDefault = (sizeProp instanceof String) ? NumberUtils.toInt((String)sizeProp) : 14;
+
+    final Object boldProp = gm.getProperty(DEFAULT_FONT_BOLD_PROPERTY);
+    final boolean boldDefault = (boldProp instanceof String) ? BooleanUtils.toBoolean((String)boldProp) : Boolean.FALSE;
+
+    final Object dockedProp = gm.getProperty(DEFAULT_DOCKED_PROPERTY);
+    final boolean dockedDefault = (dockedProp instanceof String) ? BooleanUtils.toBoolean((String)dockedProp) : Boolean.FALSE;
+
     // Create preferences
-    final IntConfigurer size = new IntConfigurer(FONT_SIZE, Resources.getString("TurnTracker.size_pref"), 14); //$NON-NLS-1$
-    final BooleanConfigurer bold = new BooleanConfigurer(FONT_BOLD,  Resources.getString("TurnTracker.bold_pref"), Boolean.FALSE); //$NON-NLS-1$
-    final BooleanConfigurer docked = new BooleanConfigurer(DOCKED,  Resources.getString("TurnTracker.docked_pref"), Boolean.FALSE); //$NON-NLS-1$
+    final IntConfigurer size = new IntConfigurer(FONT_SIZE, Resources.getString("TurnTracker.size_pref"), sizeDefault); //$NON-NLS-1$
+    final BooleanConfigurer bold = new BooleanConfigurer(FONT_BOLD,  Resources.getString("TurnTracker.bold_pref"), boldDefault); //$NON-NLS-1$
+    final BooleanConfigurer docked = new BooleanConfigurer(DOCKED,  Resources.getString("TurnTracker.docked_pref"), dockedDefault); //$NON-NLS-1$
 
     final String prefTab = Resources.getString("TurnTracker.turn_counter"); //$NON-NLS-1$
     GameModule.getGameModule().getPrefs().addOption(prefTab, size);
@@ -904,6 +922,8 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
         turnLabel.setPreferredSize(null);
       }
 
+      // We carry out initialization here so that the configurable property values will be loaded.
+      // We're guaranteed setWidth will be called before display by the tracker's GameComponent.setup() 
       if (!initialized) {
         setLayout(new BorderLayout(5, 5));
 
