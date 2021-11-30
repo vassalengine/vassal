@@ -1,5 +1,6 @@
 3.6.0 - ???
 
+* 10853: Prototypes can be selected from popup menu
 * 10840: Directly setting coordinates in Zone definer fails to create a Zone
 * 10831: Allow JVM to be specified from command line for VASSAL.sh
 * 10828: Skip All / Skip None for Mass Piece Loader
