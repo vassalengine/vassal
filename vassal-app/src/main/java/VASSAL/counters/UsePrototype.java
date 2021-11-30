@@ -19,12 +19,9 @@ package VASSAL.counters;
 
 import VASSAL.build.AbstractFolder;
 import VASSAL.build.Buildable;
-import VASSAL.build.GameModule;
-import VASSAL.build.module.Map;
 import VASSAL.build.module.PrototypeDefinition;
 import VASSAL.build.module.PrototypesContainer;
 import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.map.DrawPile;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.Command;
 import VASSAL.configure.StringConfigurer;
