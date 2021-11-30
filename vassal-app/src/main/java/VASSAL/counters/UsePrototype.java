@@ -262,7 +262,7 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
       controls.add(selectButton);
     }
 
-    JMenu subMenu(AbstractFolder target) {
+    private JMenu subMenu(AbstractFolder target) {
       final JMenu menu = new JMenu(target.getConfigureName());
 
       for (final Buildable b : target.getBuildables()) {
@@ -282,7 +282,7 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
       return menu;
     }
 
-    void select() {
+    private void select() {
       final PrototypesContainer protos = PrototypesContainer.findInstance();
       if (protos == null) {
         return;
