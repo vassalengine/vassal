@@ -22,6 +22,6 @@ Similary, modifying or deleting a trait from a Prototype will change or remove t
 
 **Select:**:: The _Select_ button allows you to select one of the prototypes you have defined in the module. If your prototypes have been organized into folders, the folders will appear a submenus.
 
-image:images/UsePrototype2.png[]]
+image:images/UsePrototype2.png[]
 
 *SEE ALSO:* <<Prototypes.adoc#top,Prototypes (Definition)>>
