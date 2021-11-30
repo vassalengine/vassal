@@ -268,6 +268,12 @@ public class GameModule extends AbstractConfigurable
 
   private boolean matSupport = false; // If no Mats exist in the module, we don't need to spend any time doing mat-related calculations during moves/selects
 
+  private ToggleablePasswordConfigurer passwordConfigurer;
+
+  public ToggleablePasswordConfigurer getPasswordConfigurer() {
+    return passwordConfigurer;
+  }
+
   /**
    * @return True if there are any Mat or MatCargo objects in the module
    */
@@ -713,12 +719,12 @@ public class GameModule extends AbstractConfigurable
     fullName.addPropertyChangeListener(evt -> idChangeSupport.firePropertyChange(evt));
     final TextConfigurer profile = new TextConfigurer(GameModule.PERSONAL_INFO, Resources.getString("Prefs.personal_info"), "");   //$NON-NLS-1$ //$NON-NLS-2$
     profile.addPropertyChangeListener(evt -> idChangeSupport.firePropertyChange(evt));
-    final ToggleablePasswordConfigurer user = new ToggleablePasswordConfigurer(GameModule.SECRET_NAME, Resources.getString("Prefs.password_label"), ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-    user.addPropertyChangeListener(evt -> GameModule.setUserId((String) evt.getNewValue()));
+    passwordConfigurer = new ToggleablePasswordConfigurer(GameModule.SECRET_NAME, Resources.getString("Prefs.password_label"), ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    passwordConfigurer.addPropertyChangeListener(evt -> GameModule.setUserId((String) evt.getNewValue()));
     getPrefs().addOption(Resources.getString("Prefs.personal_tab"), fullName);   //$NON-NLS-1$ //$NON-NLS-2$
-    getPrefs().addOption(Resources.getString("Prefs.personal_tab"), user);   //$NON-NLS-1$ //$NON-NLS-2$
+    getPrefs().addOption(Resources.getString("Prefs.personal_tab"), passwordConfigurer);   //$NON-NLS-1$ //$NON-NLS-2$
     getPrefs().addOption(Resources.getString("Prefs.personal_tab"), profile);  //$NON-NLS-1$
-    GameModule.setUserId(user.getValueString());
+    GameModule.setUserId(passwordConfigurer.getValueString());
   }
 
   /**
@@ -2013,6 +2019,31 @@ public class GameModule extends AbstractConfigurable
       );
     }
   }
+
+  /**
+   * Returns true if user has supplied a real name
+   *
+   * Test's whether GameModule.REAL_NAME is non-empty and not "newbie"
+   *
+   * @return <code>true</code> if user supplied a real name
+   */
+  public boolean isRealName() {
+    final String name = (String)getPrefs().getValue(GameModule.REAL_NAME);
+    return name != null && !name.isEmpty() && !name.equals(Resources.getString("Prefs.newbie"));
+  }
+
+  /**
+   * Returns true if user has supplied a real password for current GameModule.
+   *
+   * Test's whether GameModule.SECRET_NAME is non-empty
+   *
+   * @return <code>true</code> if user supplied a real password
+   */
+  public boolean isNonBlankPassword() {
+    final String pwd = (String)getPrefs().getValue(GameModule.SECRET_NAME);
+    return (pwd != null) && !pwd.isEmpty();
+  }
+
 
   /**
    * @return an XML element that can be used to {@link Buildable#build} the module object.

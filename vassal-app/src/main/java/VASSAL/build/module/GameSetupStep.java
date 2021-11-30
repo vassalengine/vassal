@@ -17,6 +17,8 @@
  */
 package VASSAL.build.module;
 
+import org.netbeans.spi.wizard.WizardController;
+
 import java.awt.Component;
 
 /**
@@ -37,4 +39,8 @@ public interface GameSetupStep {
 
   /** Apply the information gathered via the component to the game in progress */
   void finish();
+
+  /** Tells the step who its wizard controller is */
+  default void setController(WizardController wc) {
+  }
 }

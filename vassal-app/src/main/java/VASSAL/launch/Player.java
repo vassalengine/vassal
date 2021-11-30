@@ -121,18 +121,6 @@ public class Player extends Launcher {
     return new GameModule(archive);
   }
 
-  /**
-   * Returns true if user has supplied a real name for current GameModule.
-   *
-   * Test's whether GameModule.REAL_NAME is non-empty and not "newbie"
-   *
-   * @return <code>true</code> if user supplied a real name
-   */
-  private boolean isRealName() {
-    final String name = (String)GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME);
-    return name != null && !name.isBlank() && !name.equals(Resources.getString("Prefs.newbie"));
-  }
-
   private void showWizardOrPlayerWindow(GameModule module) {
     final Boolean showWizard = (Boolean) Prefs.getGlobalPrefs().getValue(WizardSupport.WELCOME_WIZARD_KEY);
     if (Boolean.TRUE.equals(showWizard)) {
@@ -143,7 +131,7 @@ public class Player extends Launcher {
 
       // prompt for username and password if wizard is off
       // but no username is set
-      if (!isRealName()) {
+      if (!module.isRealName()) {
         new UsernameAndPasswordDialog(module.getPlayerWindow()).setVisible(true);
       }
     }

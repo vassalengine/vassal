@@ -29,12 +29,14 @@ import VASSAL.command.Logger;
 import VASSAL.configure.ComponentDescription;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
+import VASSAL.configure.password.ToggleablePasswordConfigurer;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.swing.FlowLabel;
 
 import java.awt.Component;
 import java.beans.PropertyChangeListener;
@@ -44,8 +46,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
+import net.miginfocom.swing.MigLayout;
+
+import org.netbeans.spi.wizard.WizardController;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -65,6 +73,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
   public static final String SIDES = "sides"; //$NON-NLS-1$
   public static final String COMMAND_PREFIX = "PLAYER\t"; //$NON-NLS-1$
+  public static final String REMOVE_PREFIX = "PYREMOVE\t"; //NON-NLS
   public static final String OBSERVER = "<observer>"; //$NON-NLS-1$
 
   public static final String SOLITAIRE = "Solitaire"; // Various common names for sides that have access to all pieces (and chess clocks) // NON-NLS
@@ -275,7 +284,12 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     Command c = new Chatter.DisplayText(gm.getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.changed_sides_2" : "PlayerRoster.changed_sides", me.playerName, mySide, newSide));
     c.execute();
 
-    remove(GameModule.getActiveUserId());
+    final Remove r = new Remove(this, GameModule.getActiveUserId());
+    r.execute();
+    c = c.append(r);
+
+    GameModule.setTempUserId(null); // If we were using a temp user id, stop using it now
+    me.playerId = GameModule.getActiveUserId();
 
     final Add a = new Add(this, me.playerId, me.playerName, me.side);
     a.execute();
@@ -377,27 +391,37 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
   @Override
   public Command decode(String command) {
-    if (!command.startsWith(COMMAND_PREFIX)) {
-      return null;
+    if (command.startsWith(COMMAND_PREFIX)) {
+      final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command, '\t');
+      st.nextToken();
+      return new Add(this, st.nextToken(), st.nextToken(), st.nextToken());
     }
 
-    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command, '\t');
-    st.nextToken();
-    return new Add(this, st.nextToken(), st.nextToken(), st.nextToken());
+    if (command.startsWith(REMOVE_PREFIX)) {
+      final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command, '\t');
+      st.nextToken();
+      return new Remove(this, st.nextToken(""));
+    }
+    return null;
   }
 
   @Override
   public String encode(Command c) {
-    if (!(c instanceof Add)) {
-      return null;
+    if (c instanceof Add) {
+      final Add a = (Add) c;
+      final SequenceEncoder se = new SequenceEncoder('\t');
+      se.append(a.id)
+        .append(a.name)
+        .append(a.side);
+      return COMMAND_PREFIX + se.getValue();
     }
-
-    final Add a = (Add) c;
-    final SequenceEncoder se = new SequenceEncoder('\t');
-    se.append(a.id)
-      .append(a.name)
-      .append(a.side);
-    return COMMAND_PREFIX + se.getValue();
+    else if (c instanceof Remove) {
+      final Remove a = (Remove) c;
+      final SequenceEncoder se = new SequenceEncoder('\t');
+      se.append(a.id);
+      return REMOVE_PREFIX + se.getValue();
+    }
+    return null;
   }
 
   @Override
@@ -434,6 +458,15 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
    */
   @Override
   public void finish() {
+    // In case we set a new password at this step, update the prefs configurer, and write module preferences.
+    GameModule.getGameModule().getPasswordConfigurer().setValue(GameModule.getUserId());
+    try {
+      GameModule.getGameModule().getPrefs().save();
+    }
+    catch (IOException e) {
+      GameModule.getGameModule().warn(Resources.getString("PlayerRoster.failed_pref_write", e.getLocalizedMessage()));
+    }
+
     final String newSide = untranslateSide(sideConfig.getValueString());
     if (newSide != null) {
       final Add a = new Add(this, GameModule.getActiveUserId(), GlobalOptions.getInstance().getPlayerId(), newSide);
@@ -459,7 +492,30 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       Resources.getString("PlayerRoster.join_game_as"), //$NON-NLS-1$
       availableSides.toArray(new String[0]));
     sideConfig.setValue(translatedObserver);
-    return sideConfig.getControls();
+
+    // If they have a non-blank password already, then we just return the side-picking controls
+    final String pwd = (String)GameModule.getGameModule().getPrefs().getValue(GameModule.SECRET_NAME);
+    if ((pwd != null) && !pwd.isEmpty()) {
+      return sideConfig.getControls();
+    }
+
+    // Or, if they haven't set a password yet, we plead with them to set one.
+    final JPanel panel = new JPanel(new MigLayout("ins 0", "[]", "[]para[]rel[]")); //NON-NLS
+    panel.add(sideConfig.getControls(), "wrap"); //NON-NLS
+
+    final FlowLabel message = new FlowLabel(Resources.getString("PlayerRoster.need_non_blank_password"));
+    panel.add(message, "wrap"); //NON-NLS
+
+    final JLabel label = new JLabel(Resources.getString("PlayerRoster.please_set_your_password"));
+    panel.add(label, "split 2"); //NON-NLS
+
+    tpc = new ToggleablePasswordConfigurer(GameModule.SECRET_NAME, "", "");
+    tpc.addPropertyChangeListener(evt -> GameModule.setUserId((String) evt.getNewValue()));
+
+    label.setLabelFor(tpc.getControls());
+    panel.add(tpc.getControls());
+
+    return panel;
   }
 
   /**
@@ -468,6 +524,43 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   @Override
   public String getStepTitle() {
     return Resources.getString("PlayerRoster.choose_side"); //$NON-NLS-1$
+  }
+
+  private ToggleablePasswordConfigurer tpc;
+  private WizardController wc;
+
+  public void validatePassword() {
+    if (pickedSide || (wc == null)) {
+      return;
+    }
+
+    final String pwd = (String)GameModule.getGameModule().getPrefs().getValue(GameModule.SECRET_NAME);
+    if ((pwd != null) && !pwd.isEmpty()) {
+      wc.setProblem(null);
+    }
+    else {
+      wc.setProblem(Resources.getString("PlayerRoster.please_set_non_blank_password"));
+    }
+  }
+
+  @Override
+  public void setController(WizardController wc) {
+    this.wc = wc;
+
+    if (wc != null) {
+      if (tpc != null) {
+        tpc.addPropertyChangeListener(evt -> {
+          final String newPwd = (String) evt.getNewValue();
+          if (newPwd.isEmpty()) {
+            wc.setProblem(Resources.getString("PlayerRoster.please_set_non_blank_password"));
+          }
+          else {
+            wc.setProblem(null);
+          }
+        });
+      }
+      SwingUtilities.invokeLater(this::validatePassword);
+    }
   }
 
   /**
@@ -556,6 +649,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     final PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
     final List<String> pwdsToMatch = getCurrentPasswords();
     final List<PlayerInfo> allowedSides = new ArrayList<>();
+    boolean blankMatch = false;
 
     if (r != null) {
       int index = 0;
@@ -578,6 +672,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
             indices.add(index);
           }
           index++;
+          blankMatch = true;
         }
       }
     }
@@ -587,7 +682,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     if (allowedSides.isEmpty()) {
       return;
     }
-    else if (allowedSides.size() == 1) {
+    else if ((allowedSides.size() == 1) && (!blankMatch || allSidesAllocated())) {
       claimSlot(indices.get(0));
       return;
     }
@@ -608,6 +703,10 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       availableNames.add(Resources.getString("PlayerRoster.occupied_side", p.getLocalizedSide(), s));
     }
 
+    if (blankMatch) {
+      availableNames.add(Resources.getString("PlayerRoster.none_of_the_above")); //NON-NLS
+    }
+
     final GameModule g = GameModule.getGameModule();
     final String choice = (String) JOptionPane.showInputDialog(
       g.getPlayerWindow(),
@@ -619,9 +718,9 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       availableNames.get(0)
     );
 
-    final int index = availableNames.indexOf(choice);
-    if (index > 0) {
-      claimSlot(indices.get(index));
+    final int pick = availableNames.indexOf(choice);
+    if ((pick >= 0) && (pick < indices.size())) {
+      claimSlot(indices.get(pick));
     }
   }
 
@@ -747,6 +846,27 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       return null;
     }
   }
+
+  public static class Remove extends Command {
+    private final PlayerRoster roster;
+    private final String id;
+
+    public Remove(PlayerRoster r, String playerId) {
+      roster = r;
+      id = playerId;
+    }
+
+    @Override
+    protected void executeCommand() {
+      roster.remove(id);
+    }
+
+    @Override
+    protected Command myUndoCommand() {
+      return null;
+    }
+  }
+
 
   /** Call-back interface for when a player changes sides during a game */
   @FunctionalInterface
