@@ -257,7 +257,7 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
       nameConfig = new StringConfigurer(up.type.substring(ID.length()));
       controls.add("Editor.UsePrototype.prototype_name", nameConfig);
 
-      final JButton selectButton = new JButton(Resources.SELECT);
+      final JButton selectButton = new JButton(Resources.getString(Resources.SELECT));
       selectButton.addActionListener(e -> select());
       controls.add(selectButton);
     }
