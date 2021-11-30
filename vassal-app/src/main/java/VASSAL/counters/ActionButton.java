@@ -370,8 +370,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
             }
           }
           newShape = buffer.toString();
-          final Polygon newPoly = new Polygon();
-          PolygonEditor.reset(newPoly, newShape);
+          final Polygon newPoly = PolygonEditor.stringToPolygon(newShape);
           editor.setPolygon(newPoly); // Need to send it back in this way to get our offsetView respected
           editor.repaint();
         }

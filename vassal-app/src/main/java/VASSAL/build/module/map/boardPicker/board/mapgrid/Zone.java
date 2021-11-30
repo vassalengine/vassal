@@ -243,7 +243,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       setConfigureName((String) val);
     }
     else if (PATH.equals(key)) {
-      PolygonEditor.reset(myPolygon, (String) val);
+      myPolygon = PolygonEditor.stringToPolygon((String) val);
     }
     else if (LOCATION_FORMAT.equals(key)) {
       locationFormat = (String) val;
@@ -733,7 +733,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
             }
           }
           newShape = buffer.toString();
-          PolygonEditor.reset(editor.getPolygon(), newShape);
+          editor.setPolygon(PolygonEditor.stringToPolygon(newShape));
           editor.repaint();
         }
       });
@@ -810,7 +810,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     @Override
     public void setValue(String s) {
       if (editor != null) {
-        PolygonEditor.reset(editor.getPolygon(), s);
+        editor.setPolygon(PolygonEditor.stringToPolygon(s));
       }
     }
   }
