@@ -52,6 +52,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.preferences.PositionOption;
 import VASSAL.tools.FormattedString;
+import VASSAL.tools.IconButton;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.NamedKeyStrokeListener;
@@ -408,11 +409,11 @@ public class Inventory extends AbstractToolbarItem
     final Box buttonBox = Box.createHorizontalBox();
     // Written by Scot McConnachie.
 
-    zoomMinusButton = new JButton("-");
+    zoomMinusButton = new IconButton(IconButton.MINUS_ICON);
     zoomMinusButton.addActionListener(e -> zoomMinus());
     buttonBox.add(zoomMinusButton);
 
-    zoomPlusButton = new JButton("+");
+    zoomPlusButton = new IconButton(IconButton.PLUS_ICON);
     zoomPlusButton.addActionListener(e -> zoomPlus());
     buttonBox.add(zoomPlusButton);
 
