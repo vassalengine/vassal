@@ -1,6 +1,7 @@
 package VASSAL.build.module.turn;
 
 import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.AbstractFolder;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -31,6 +32,7 @@ public class TurnGlobalHotkey extends AbstractConfigurable {
   protected NamedKeyStroke hotkey;
   protected FormattedString format = new FormattedString();
   protected BasicPiece checkPiece = new BasicPiece();
+  protected TurnTracker parent;
 
   @Override
   public String[] getAttributeDescriptions() {
@@ -109,10 +111,17 @@ public class TurnGlobalHotkey extends AbstractConfigurable {
 
   @Override
   public void removeFrom(Buildable parent) {
+    this.parent = null;
   }
 
   @Override
   public void addTo(Buildable parent) {
+    if (parent instanceof AbstractFolder) {
+      parent = ((AbstractFolder)parent).getNonFolderAncestor();
+    }
+    if (parent instanceof TurnTracker) {
+      this.parent = (TurnTracker)parent;
+    }
   }
 
   public static String getConfigureTypeName() {
@@ -127,6 +136,9 @@ public class TurnGlobalHotkey extends AbstractConfigurable {
   public void apply() {
     if (match.isNull() || match.accept(checkPiece)) {
       GameModule.getGameModule().fireKeyStroke(hotkey);
+      if (parent != null) {
+        parent.updateWidget(); // Our global hotkey may have updated properties that figure in our button label
+      }
       final String reportText = format.getLocalizedText(this, "Editor.report_format");
       if (reportText.length() > 0) {
         final Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* " + reportText);
