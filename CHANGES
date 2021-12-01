@@ -1,6 +1,7 @@
-3.6.0 - ???
+3.6.0 - 1 December 2021
 
 * 10853: Prototypes can be selected from popup menu
+* 10852: Turn Tracker button sizes configurability
 * 10840: Directly setting coordinates in Zone definer fails to create a Zone
 * 10839: Improved flow for users with blank passwords
 * 10831: Allow JVM to be specified from command line for VASSAL.sh
