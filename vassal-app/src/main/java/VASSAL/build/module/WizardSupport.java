@@ -217,8 +217,9 @@ public class WizardSupport {
    * Show a wizard that prompts the user to specify information for unfinished {@link GameSetupStep}s
    */
   public void showGameSetupWizard() {
-    final GameSetupPanels panels = GameSetupPanels.newInstance();
+    final GameSetupPanels panels = GameSetupPanels.newInstance(true);
     if (panels != null) {
+      GameModule.getGameModule().getPlayerRoster().setForcePwd(true);
       GameModule.getGameModule().getPlayerRoster().validatePassword();
       WizardDisplayer.showWizard(panels.newWizard(logoSize), new Rectangle(0, 0, logoSize.width + 400, logoSize.height));
     }
@@ -751,17 +752,31 @@ public class WizardSupport {
   public static class GameSetupPanels extends WizardPanelProvider implements WizardResultProducer {
     private final WizardPage[] pages;
     private final List<GameSetupStep> setupSteps;
+    private boolean forcePwd;
 
     private GameSetupPanels(String[] steps, String[] descriptions, WizardPage[] pages, List<GameSetupStep> setupSteps) {
       super(steps, descriptions);
       this.pages = pages;
       this.setupSteps = setupSteps;
+      this.forcePwd = false;
+    }
+
+    public void setForcePwd(boolean forcePwd) {
+      this.forcePwd = forcePwd;
     }
 
     public static GameSetupPanels newInstance() {
+      return newInstance(false);
+    }
+
+    public static GameSetupPanels newInstance(boolean forcePwd) {
       GameSetupPanels panels = null;
       final ArrayList<SetupStepPage> pages = new ArrayList<>();
       final ArrayList<GameSetupStep> setupSteps = new ArrayList<>();
+      final PlayerRoster pr = GameModule.getGameModule().getPlayerRoster();
+      if (pr != null) {
+        pr.setForcePwd(forcePwd);
+      }
       for (final Iterator<GameSetupStep> i = GameModule.getGameModule().getGameState().getUnfinishedSetupSteps(); i.hasNext();) {
         final GameSetupStep step = i.next();
         setupSteps.add(step);
@@ -778,6 +793,7 @@ public class WizardSupport {
           desc[i] = setupSteps.get(i).getStepTitle();
         }
         panels = new GameSetupPanels(steps, desc, wizardPages, setupSteps);
+        panels.setForcePwd(forcePwd);
       }
       return panels;
     }
