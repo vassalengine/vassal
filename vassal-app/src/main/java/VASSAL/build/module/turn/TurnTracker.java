@@ -59,6 +59,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -66,6 +67,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.font.FontRenderContext;
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -970,7 +973,16 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     }
 
     public int getWidth(String text) {
-      return turnLabel.getGraphics().getFontMetrics().stringWidth(text);
+      final Graphics g = turnLabel.getGraphics();
+      if (g != null) {
+        return g.getFontMetrics().stringWidth(text);
+      }
+      else {
+        final Font f = getDisplayFont();
+        final AffineTransform affinetransform = new AffineTransform();
+        final FontRenderContext frc = new FontRenderContext(affinetransform, true, true);
+        return (int)(f.getStringBounds(text, frc).getWidth());
+      }
     }
 
     protected void doNext() {
