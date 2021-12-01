@@ -408,11 +408,11 @@ public class Inventory extends AbstractToolbarItem
     final Box buttonBox = Box.createHorizontalBox();
     // Written by Scot McConnachie.
 
-    zoomMinusButton = new JButton(Resources.getString("-"));
+    zoomMinusButton = new JButton("-");
     zoomMinusButton.addActionListener(e -> zoomMinus());
     buttonBox.add(zoomMinusButton);
 
-    zoomPlusButton = new JButton(Resources.getString("+"));
+    zoomPlusButton = new JButton("+");
     zoomPlusButton.addActionListener(e -> zoomPlus());
     buttonBox.add(zoomPlusButton);
 
