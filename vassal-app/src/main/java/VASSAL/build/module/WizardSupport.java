@@ -219,8 +219,11 @@ public class WizardSupport {
   public void showGameSetupWizard() {
     final GameSetupPanels panels = GameSetupPanels.newInstance(true);
     if (panels != null) {
-      GameModule.getGameModule().getPlayerRoster().setForcePwd(true);
-      GameModule.getGameModule().getPlayerRoster().validatePassword();
+      final PlayerRoster pr = GameModule.getGameModule().getPlayerRoster();
+      if (pr != null) {
+        pr.setForcePwd(true);
+        pr.validatePassword();
+      }
       WizardDisplayer.showWizard(panels.newWizard(logoSize), new Rectangle(0, 0, logoSize.width + 400, logoSize.height));
     }
   }
