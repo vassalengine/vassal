@@ -272,9 +272,9 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
         Resources.getString(Resources.TOOLTIP_TEXT),
         Resources.getString(Resources.BUTTON_ICON),
         Resources.getString(Resources.HOTKEY_LABEL),
-        Resources.getString(Resources.getString("Editor.AbstractToolbarItem.can_disable")),
-        Resources.getString(Resources.getString("Editor.AbstractToolbarItem.property_gate")),
-        Resources.getString(Resources.getString("Editor.AbstractToolbarItem.disabled_icon")),
+        Resources.getString("Editor.AbstractToolbarItem.can_disable"),
+        Resources.getString("Editor.AbstractToolbarItem.property_gate"),
+        Resources.getString("Editor.AbstractToolbarItem.disabled_icon"),
       };
     }
     else {
@@ -283,9 +283,9 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
         Resources.getString(Resources.TOOLTIP_TEXT),
         Resources.getString(Resources.BUTTON_ICON),
         Resources.getString(Resources.HOTKEY_LABEL),
-        Resources.getString(Resources.getString("Editor.AbstractToolbarItem.can_disable")),
-        Resources.getString(Resources.getString("Editor.AbstractToolbarItem.property_gate")),
-        Resources.getString(Resources.getString("Editor.AbstractToolbarItem.disabled_icon")),
+        Resources.getString("Editor.AbstractToolbarItem.can_disable"),
+        Resources.getString("Editor.AbstractToolbarItem.property_gate"),
+        Resources.getString("Editor.AbstractToolbarItem.disabled_icon"),
       };
     }
   }
