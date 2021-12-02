@@ -98,6 +98,11 @@ public class Replace extends PlaceMarker {
   }
 
   @Override
+  public String getBaseDescription() {
+    return Resources.getString("Editor.Replace.trait_description");
+  }
+
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Replace.html"); // NON-NLS
   }
