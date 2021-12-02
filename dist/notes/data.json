@@ -17,6 +17,17 @@
   ],
   "changes": [
     {
+      "in": "3.6.1",
+      "since": "3.6.0",
+      "new_features": [
+      ],
+      "bug_fixes": [
+        { "num": 10681, "desc": "Polygon read from coordinates list should never be null" }
+      ],
+      "other_improvements": [
+      ]
+    },
+    {
       "in": "3.6.0",
       "since": "3.5.8",
       "new_features": [
