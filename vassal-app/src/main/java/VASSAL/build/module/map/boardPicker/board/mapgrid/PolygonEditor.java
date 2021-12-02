@@ -240,7 +240,7 @@ public class PolygonEditor extends JPanel {
   public static Polygon stringToPolygon(String pathStr) {
     final Polygon p = new Polygon();
     parseString(p, pathStr);
-    return p.npoints == 0 ? null : p;
+    return p; //p.npoints == 0 ? null : p;
   }
 
   /** @deprecated Use {@link {#stringToPolygon(String)} for parsing and
