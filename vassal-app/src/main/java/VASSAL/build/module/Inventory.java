@@ -298,6 +298,15 @@ public class Inventory extends AbstractToolbarItem
               final CounterNode node = (CounterNode) path.getLastPathComponent();
               final GamePiece piece = node.getCounter().getPiece();
               if (piece != null) {
+
+                // No commands to pieces if we don't have access to their windows
+                final VASSAL.build.module.Map map = piece.getMap();
+                if (map instanceof PrivateMap) {
+                  if (!((PrivateMap) map).isVisibleTo(PlayerRoster.getMySide())) {
+                    return;
+                  }
+                }
+
                 final JPopupMenu menu = MenuDisplayer.createPopup(piece);
                 if (menu != null) {
                   //$NON-NLS-1$
@@ -347,7 +356,7 @@ public class Inventory extends AbstractToolbarItem
             final VASSAL.build.module.Map map = piece.getMap();
             if (map instanceof PrivateMap) {
               if (!((PrivateMap)map).isVisibleTo(PlayerRoster.getMySide())) {
-                super.getTreeCellRendererComponent(tree, Resources.getString("Inventory.unknown_piece"), sel, expanded, leaf && !foldersOnly, row, hasFocus);
+                super.getTreeCellRendererComponent(tree, Resources.getString("Inventory.unknown_piece"), sel, expanded, false, row, hasFocus);
                 setIcon(null);
                 return this;
               }
@@ -1012,6 +1021,15 @@ public class Inventory extends AbstractToolbarItem
       final GamePiece p = node.getCounter() == null ? null : node.getCounter().getPiece();
       Command comm;
       if (p != null) {
+
+        // No commands to pieces if we don't have access to their windows
+        final VASSAL.build.module.Map map = p.getMap();
+        if (map instanceof PrivateMap) {
+          if (!((PrivateMap) map).isVisibleTo(PlayerRoster.getMySide())) {
+            return new NullCommand();
+          }
+        }
+
         // Save state first
         p.setProperty(Properties.SNAPSHOT, ((PropertyExporter) p).getProperties());
         if (tracker == null) {
@@ -1267,6 +1285,10 @@ public class Inventory extends AbstractToolbarItem
       if (counter != null)
         return counter.toString();
       return getEntry();
+    }
+
+    public List<CounterNode> getChildren() {
+      return children;
     }
 
     /**
@@ -1656,6 +1678,7 @@ public class Inventory extends AbstractToolbarItem
         root.cutLevel(cutBelowRoot);
       for (int i = cutAboveLeaves; i > 0; i--)
         root.cutLeaves();
+
       changed = false;
     }
 
