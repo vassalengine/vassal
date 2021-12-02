@@ -347,7 +347,7 @@ public class Inventory extends AbstractToolbarItem
             final VASSAL.build.module.Map map = piece.getMap();
             if (map instanceof PrivateMap) {
               if (!((PrivateMap)map).isVisibleTo(PlayerRoster.getMySide())) {
-                super.getTreeCellRendererComponent(tree, "?", sel, expanded, leaf && !foldersOnly, row, hasFocus);
+                super.getTreeCellRendererComponent(tree, Resources.getString("Inventory.unknown_piece"), sel, expanded, leaf && !foldersOnly, row, hasFocus);
                 setIcon(null);
                 return this;
               }
