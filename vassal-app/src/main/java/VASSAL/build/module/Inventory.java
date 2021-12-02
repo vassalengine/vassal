@@ -340,6 +340,21 @@ public class Inventory extends AbstractToolbarItem
 
       @Override
       public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+
+        if (value instanceof CounterNode) {
+          final GamePiece piece = ((CounterNode) value).getCounter().getPiece();
+          if (piece != null) {
+            final VASSAL.build.module.Map map = piece.getMap();
+            if (map instanceof PrivateMap) {
+              if (!((PrivateMap)map).isVisibleTo(PlayerRoster.getMySide())) {
+                super.getTreeCellRendererComponent(tree, "?", sel, expanded, leaf && !foldersOnly, row, hasFocus);
+                setIcon(null);
+                return this;
+              }
+            }
+          }
+        }
+
         super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf && !foldersOnly, row, hasFocus);
         if (value instanceof CounterNode) {
           final GamePiece piece = ((CounterNode) value).getCounter().getPiece();
