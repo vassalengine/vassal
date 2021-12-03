@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 10876, "desc": "Remove unwanted nulls from Inventory" },
         { "num": 10871, "desc": "Display proper name for Set Global Property and Place Marker in Editor" },
         { "num": 10861, "desc": "Polygon read from coordinates list should never be null" }
       ],

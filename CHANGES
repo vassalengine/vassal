@@ -1,5 +1,6 @@
 3.6.1 - ???
 
+* 10876: Remove unwanted nulls from Inventory
 * 10871: Display proper name for Set Global Property and Place Marker in Editor
 * 10861: Polygon read from coordinates list should never be null
 
