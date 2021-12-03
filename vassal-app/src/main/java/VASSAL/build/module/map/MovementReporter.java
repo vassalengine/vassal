@@ -207,7 +207,7 @@ public class MovementReporter {
 
       final List<GamePiece> pieces = ms.getPieces();
 
-      final String moveText = format.getLocalizedText(((pieces != null) && !pieces.isEmpty()) ? pieces.get(0) : toMap, sourceFieldKey);
+      final String moveText = format.getLocalizedText(((pieces != null) && !pieces.isEmpty()) ? pieces.get(0) : toMap, toMap, sourceFieldKey);
 
       if (moveText.length() > 0) {
         c = c.append(new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* " + moveText));
