@@ -205,9 +205,9 @@ public class MovementReporter {
       }
       format.setProperty(Map.MAP_NAME, toMap.getLocalizedConfigureName());
 
-      final List<GamePiece> pieces = ms.getPieces();
+      final GamePiece piece = ms.getFirstPiece();
 
-      final String moveText = format.getLocalizedText(((pieces != null) && !pieces.isEmpty()) ? pieces.get(0) : toMap, toMap, sourceFieldKey);
+      final String moveText = format.getLocalizedText((piece != null) ? piece : toMap, toMap, sourceFieldKey);
 
       if (moveText.length() > 0) {
         c = c.append(new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* " + moveText));
@@ -315,8 +315,11 @@ public class MovementReporter {
       return oldPosition;
     }
 
-    public List<GamePiece> getPieces() {
-      return new ArrayList<>(pieces);
+    public GamePiece getFirstPiece() {
+      if (pieces.isEmpty()) {
+        return null;
+      }
+      return pieces.get(0);
     }
 
     @Override
