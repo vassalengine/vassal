@@ -64,11 +64,25 @@ import net.miginfocom.swing.MigLayout;
 public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
   private static final String STROKE_HINT = Resources.getString("Editor.NamedHotKeyConfigurer.keystroke");
   private static final String NAME_HINT = Resources.getString("Editor.NamedHotKeyConfigurer.command");
-  private final HintTextField keyStroke = new HintTextField(StringConfigurer.DEFAULT_LENGHTH, STROKE_HINT);
-  private final HintTextField keyName = new HintTextField(StringConfigurer.DEFAULT_LENGHTH, NAME_HINT);
+  private HintTextField keyStroke;
+  private HintTextField keyName;
   private JPanel controls;
   private String lastValue;
   private JButton undoButton;
+
+  private HintTextField getKeyStroke() {
+    if (keyStroke == null) {
+      keyStroke = new HintTextField(StringConfigurer.DEFAULT_LENGHTH, STROKE_HINT);
+    }
+    return keyStroke;
+  }
+
+  private HintTextField getKeyName() {
+    if (keyName == null) {
+      keyName = new HintTextField(StringConfigurer.DEFAULT_LENGHTH, NAME_HINT);
+    }
+    return keyName;
+  }
 
   public static String getFancyString(NamedKeyStroke k) {
     String s = getString(k);
@@ -152,8 +166,8 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
   }
 
   protected void updateVisibility() {
-    keyName.setFocusOnly(isNonNullValue());
-    keyStroke.setFocusOnly(isNonNullValue());
+    getKeyName().setFocusOnly(isNonNullValue());
+    getKeyStroke().setFocusOnly(isNonNullValue());
   }
 
   private boolean isNonNullValue() {
@@ -181,13 +195,14 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
   public Component getControls() {
     if (controls == null) {
       controls = new ConfigurerPanel(getName(), "[fill,grow]", "[][fill,grow]"); // NON-NLS
-
+      keyStroke = getKeyStroke();
       keyStroke.setMaximumSize(new Dimension(keyStroke.getMaximumSize().width, keyStroke.getPreferredSize().height));
       keyStroke.setText(keyToString());
       keyStroke.addKeyListener(new KeyStrokeAdapter());
       ((AbstractDocument) keyStroke.getDocument()).setDocumentFilter(new KeyStrokeFilter());
       keyStroke.addFocusListener(this);
 
+      keyName = getKeyName();
       keyName.setMaximumSize(new Dimension(keyName.getMaximumSize().width, keyName.getPreferredSize().height));
       keyName.setText(getValueNamedKeyStroke() == null ? null : getValueNamedKeyStroke().getName());
       ((AbstractDocument) keyName.getDocument()).setDocumentFilter(new KeyNameFilter());
@@ -300,25 +315,24 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
   @Override
   public void setHighlighted(boolean highlighted) {
     super.setHighlighted(highlighted);
-    keyStroke.setBackground(highlighted ? LIST_ENTRY_HIGHLIGHT_COLOR : Color.white);
-    keyName.setBackground(highlighted ? LIST_ENTRY_HIGHLIGHT_COLOR : Color.white);
-    keyStroke.repaint();
-    keyName.repaint();
+    getKeyStroke().setBackground(highlighted ? LIST_ENTRY_HIGHLIGHT_COLOR : Color.white);
+    getKeyName().setBackground(highlighted ? LIST_ENTRY_HIGHLIGHT_COLOR : Color.white);
+    getKeyStroke().repaint();
+    getKeyName().repaint();
   }
 
   @Override
   public void addFocusListener(FocusListener listener) {
     super.addFocusListener(listener);
-    keyStroke.addFocusListener(listener);
-    keyName.addFocusListener(listener);
+    getKeyStroke().addFocusListener(listener);
+    getKeyName().addFocusListener(listener);
   }
 
   @Override
   public void removeFocusListener(FocusListener listener) {
     super.removeFocusListener(listener);
-    keyStroke.removeFocusListener(listener);
-    keyName.removeFocusListener(listener);
-
+    getKeyStroke().removeFocusListener(listener);
+    getKeyName().removeFocusListener(listener);
   }
 
   // Use JLayer to outline the fields in Red as the Unix LaF ignores TextField background colours
@@ -388,8 +402,6 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
     }
   }
 
-
-
   private class KeyNameFilter extends DocumentFilter {
     @Override
     public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
@@ -418,8 +430,5 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
     public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
       super.replace(fb, 0, keyStroke.getText().length(), text, attrs);
     }
-
   }
-
-
 }
