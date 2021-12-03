@@ -298,6 +298,12 @@ public class Inventory extends AbstractToolbarItem
               final CounterNode node = (CounterNode) path.getLastPathComponent();
               final GamePiece piece = node.getCounter().getPiece();
               if (piece != null) {
+
+                // No commands to pieces if we don't have access to their windows
+                if (!isVisibleToMe(piece)) {
+                  return;
+                }
+
                 final JPopupMenu menu = MenuDisplayer.createPopup(piece);
                 if (menu != null) {
                   //$NON-NLS-1$
@@ -333,6 +339,11 @@ public class Inventory extends AbstractToolbarItem
     return pieceZoom;
   }
 
+  private boolean isVisibleToMe(GamePiece p) {
+    final VASSAL.build.module.Map map = p.getMap();
+    return !(map instanceof PrivateMap) || ((PrivateMap) map).isVisibleTo(PlayerRoster.getMySide());
+  }
+
   protected TreeCellRenderer initTreeCellRenderer() {
     return new DefaultTreeCellRenderer() {
 
@@ -340,6 +351,18 @@ public class Inventory extends AbstractToolbarItem
 
       @Override
       public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+
+        if (value instanceof CounterNode) {
+          final GamePiece piece = ((CounterNode) value).getCounter().getPiece();
+          if (piece != null) {
+            if (!isVisibleToMe(piece)) {
+              super.getTreeCellRendererComponent(tree, Resources.getString("Inventory.unknown_piece"), sel, expanded, false, row, hasFocus);
+              setIcon(null);
+              return this;
+            }
+          }
+        }
+
         super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf && !foldersOnly, row, hasFocus);
         if (value instanceof CounterNode) {
           final GamePiece piece = ((CounterNode) value).getCounter().getPiece();
@@ -998,6 +1021,12 @@ public class Inventory extends AbstractToolbarItem
       final GamePiece p = node.getCounter() == null ? null : node.getCounter().getPiece();
       Command comm;
       if (p != null) {
+
+        // No commands to pieces if we don't have access to their windows
+        if (!isVisibleToMe(p)) {
+          return new NullCommand();
+        }
+
         // Save state first
         p.setProperty(Properties.SNAPSHOT, ((PropertyExporter) p).getProperties());
         if (tracker == null) {
