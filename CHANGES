@@ -1,6 +1,7 @@
 3.6.1 - ???
 
-* 10681: Polygon read from coordinates list should never be null
+* 10871: Display proper name for Set Global Property and Place Marker in Editor
+* 10861: Polygon read from coordinates list should never be null
 
 3.6.0 - 1 December 2021
 
