@@ -152,11 +152,11 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
   }
 
   protected void updateVisibility() {
-    keyName.setFocusOnly(iSnonNullValue());
-    keyStroke.setFocusOnly(iSnonNullValue());
+    keyName.setFocusOnly(isNonNullValue());
+    keyStroke.setFocusOnly(isNonNullValue());
   }
 
-  private boolean iSnonNullValue() {
+  private boolean isNonNullValue() {
     return value != null && !((NamedKeyStroke) value).isNull();
   }
 
