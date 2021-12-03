@@ -1412,7 +1412,6 @@ public class Inventory extends AbstractToolbarItem
         else
           child.cutLeaves();
       }
-      
       children.removeAll(toBeRemoved);
     }
 
@@ -1671,7 +1670,6 @@ public class Inventory extends AbstractToolbarItem
         root.cutLevel(cutBelowRoot);
       for (int i = cutAboveLeaves; i > 0; i--)
         root.cutLeaves();
-
       changed = false;
     }
 
