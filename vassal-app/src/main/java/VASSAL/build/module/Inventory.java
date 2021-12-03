@@ -300,11 +300,8 @@ public class Inventory extends AbstractToolbarItem
               if (piece != null) {
 
                 // No commands to pieces if we don't have access to their windows
-                final VASSAL.build.module.Map map = piece.getMap();
-                if (map instanceof PrivateMap) {
-                  if (!((PrivateMap) map).isVisibleTo(PlayerRoster.getMySide())) {
-                    return;
-                  }
+                if (!isVisibleToMe(piece)) {
+                  return;
                 }
 
                 final JPopupMenu menu = MenuDisplayer.createPopup(piece);
@@ -342,6 +339,11 @@ public class Inventory extends AbstractToolbarItem
     return pieceZoom;
   }
 
+  private boolean isVisibleToMe(GamePiece p) {
+    final VASSAL.build.module.Map map = p.getMap();
+    return !(map instanceof PrivateMap) || ((PrivateMap) map).isVisibleTo(PlayerRoster.getMySide());
+  }
+
   protected TreeCellRenderer initTreeCellRenderer() {
     return new DefaultTreeCellRenderer() {
 
@@ -353,13 +355,10 @@ public class Inventory extends AbstractToolbarItem
         if (value instanceof CounterNode) {
           final GamePiece piece = ((CounterNode) value).getCounter().getPiece();
           if (piece != null) {
-            final VASSAL.build.module.Map map = piece.getMap();
-            if (map instanceof PrivateMap) {
-              if (!((PrivateMap)map).isVisibleTo(PlayerRoster.getMySide())) {
-                super.getTreeCellRendererComponent(tree, Resources.getString("Inventory.unknown_piece"), sel, expanded, false, row, hasFocus);
-                setIcon(null);
-                return this;
-              }
+            if (!isVisibleToMe(piece)) {
+              super.getTreeCellRendererComponent(tree, Resources.getString("Inventory.unknown_piece"), sel, expanded, false, row, hasFocus);
+              setIcon(null);
+              return this;
             }
           }
         }
@@ -1023,11 +1022,8 @@ public class Inventory extends AbstractToolbarItem
       if (p != null) {
 
         // No commands to pieces if we don't have access to their windows
-        final VASSAL.build.module.Map map = p.getMap();
-        if (map instanceof PrivateMap) {
-          if (!((PrivateMap) map).isVisibleTo(PlayerRoster.getMySide())) {
-            return new NullCommand();
-          }
+        if (!isVisibleToMe(p)) {
+          return new NullCommand();
         }
 
         // Save state first
