@@ -1,7 +1,11 @@
 3.6.1 - ???
 
+* 10880: Create HintTextFields lazily
+* 10879: Dice Button raw result and counts reporting
 * 10876: Remove unwanted nulls from Inventory
 * 10871: Display proper name for Set Global Property and Place Marker in Editor
+* 10869: Inventory shouldn't show pictures/text for pieces in private windows
+    not currently accessible
 * 10861: Polygon read from coordinates list should never be null
 
 3.6.0 - 1 December 2021

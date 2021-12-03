@@ -20,13 +20,16 @@
       "in": "3.6.1",
       "since": "3.6.0",
       "new_features": [
+        { "num": 10879, "desc": "Dice Button raw result and counts reporting" }
       ],
       "bug_fixes": [
         { "num": 10876, "desc": "Remove unwanted nulls from Inventory" },
         { "num": 10871, "desc": "Display proper name for Set Global Property and Place Marker in Editor" },
+        { "num": 10869, "desc": "Inventory shouldn't show pictures/text for pieces in private windows not currently accessible" },
         { "num": 10861, "desc": "Polygon read from coordinates list should never be null" }
       ],
       "other_improvements": [
+        { "num": 10880, "desc": "Create HintTextFields lazily" }
       ]
     },
     {
