@@ -88,6 +88,15 @@ public class DiceButton extends AbstractToolbarItem {
   /** Number of dice kept from those rolled */
   protected int keepCount;
 
+  /** The Raw rolls before keeping */
+  protected int[] rawRolls;
+
+  /** Counts of each face prior to keeping */
+  protected int[] rawCounts;
+
+  /** Counts of each modified face of kept dice */
+  protected int[] counts;
+
   /** Keep Options */
   protected static final String KEEP_SMALLEST = "s";
   protected static final String KEEP_LARGEST = "l";
@@ -228,11 +237,19 @@ public class DiceButton extends AbstractToolbarItem {
     numericTotal = addToTotal;
     keepCount = 0;
 
+    rawRolls = new int[nDice];
+    rawCounts = new int[nSides];
+    counts = new int[nSides];
+
     // Make nDice rolls.
     for (int i = 0; i < nDice; ++i) {
 
       // Roll next die
-      final int roll = ran.nextInt(nSides) + 1 + plus;
+      final int rawRoll = ran.nextInt(nSides) + 1;
+      final int roll = rawRoll + plus;
+
+      rawRolls[i] = rawRoll;
+      rawCounts[rawRoll - 1] += 1;
 
       // Handle Keep ==, >= or <= here. Just totally ignore them if they are out of range.
       if (keepingDice) {
@@ -250,6 +267,7 @@ public class DiceButton extends AbstractToolbarItem {
       keepCount += 1;
       keepDice[keepCount - 1] = roll;
       numericTotal += roll;
+      counts[rawRoll - 1] += 1;
     }
 
     // Reduce the size of the kept Dice array if necessary to allow for correct sorting
@@ -334,6 +352,22 @@ public class DiceButton extends AbstractToolbarItem {
     reportFormat.setProperty(NUMERIC_TOTAL, Integer.toString(numericTotal));
     reportFormat.setProperty(KEEP_DICE, Integer.toString(keepValue));
     reportFormat.setProperty(KEEP_COUNT, Integer.toString(keepCount));
+
+    // Raw Rolls
+    final StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < nDice; ++i) {
+      if (i > 0) {
+        sb.append(", ");
+      }
+      sb.append(Integer.toString(rawRolls[i]));
+    }
+    reportFormat.setProperty("rawRolls", sb.toString());
+
+    // Counts
+    for (int i = 0; i < nSides; ++i) {
+      reportFormat.setProperty("rawCount" + (i + 1), Integer.toString(rawCounts[i]));
+      reportFormat.setProperty("count" + (i + 1), Integer.toString(counts[i]));
+    }
 
     final String text = reportFormat.getLocalizedText(this, "Editor.report_format");
     String report = text;
