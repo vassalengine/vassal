@@ -531,9 +531,10 @@ public class Inventory extends AbstractToolbarItem
       if (p instanceof Decorator || p instanceof BasicPiece) {
         for (final String s : groupBy) {
           if (s.length() > 0) {
-            final String prop = String.valueOf(p.getLocalizedProperty(s)); // Doesn't necessarily start as string
-            if (prop != null)
-              groups.add(prop);
+            final Object prop = p.getLocalizedProperty(s);
+            if (prop != null) {
+              groups.add(String.valueOf(prop));
+            }
           }
         }
 
