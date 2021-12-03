@@ -1283,10 +1283,6 @@ public class Inventory extends AbstractToolbarItem
       return getEntry();
     }
 
-    public List<CounterNode> getChildren() {
-      return children;
-    }
-
     /**
      * Places a separator between elements.
      * The separator consists of an indent and a linebreak.
@@ -1416,6 +1412,7 @@ public class Inventory extends AbstractToolbarItem
         else
           child.cutLeaves();
       }
+      
       children.removeAll(toBeRemoved);
     }
 
