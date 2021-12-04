@@ -38,6 +38,10 @@ public class StringConfigurer extends Configurer {
   protected JPanel p;
   protected JTextField nameField;
   protected int length;
+  protected static final int DEFAULT_LENGTH = 16;
+
+  /** Use {@link #DEFAULT_LENGTH} instead. */
+  @Deprecated(since = "2021-12-04", forRemoval = true)
   protected static final int DEFAULT_LENGHTH = 16;
 
   /**
@@ -51,12 +55,12 @@ public class StringConfigurer extends Configurer {
    */
   public StringConfigurer(String key, String name, int length, String hint, String val) {
     super(key, name, val);
-    this.length = length > 0 ? length : DEFAULT_LENGHTH;
+    this.length = length > 0 ? length : DEFAULT_LENGTH;
     this.hint = hint;
   }
 
   public StringConfigurer(String key, String name, String val) {
-    this(key, name, DEFAULT_LENGHTH, "", val);
+    this(key, name, DEFAULT_LENGTH, "", val);
   }
 
   public StringConfigurer(String key, String name, int length) {
