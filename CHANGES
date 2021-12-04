@@ -1,3 +1,7 @@
+3.6.2 - ???
+
+* 10887: Wasn't possible to click add to add an Action Button trait to a piece
+
 3.6.1 - 4 December 2021
 
 * 10880: Create HintTextFields lazily
