@@ -671,6 +671,7 @@ public class Inventory extends AbstractToolbarItem
     );
   }
 
+  /** @deprecated Use {@link VASSAL.build.AbstractToolbarItem.IconConfig} instead. */
   @Deprecated(since = "2020-10-01", forRemoval = true)
   public static class IconConfig implements ConfigurerFactory {
     @Override
