@@ -40,6 +40,7 @@ public class StringConfigurer extends Configurer {
   protected int length;
   protected static final int DEFAULT_LENGTH = 16;
 
+  /** Use {@link #DEFAULT_LENGTH} instead. */
   @Deprecated(since = "2021-12-04", forRemoval = true)
   protected static final int DEFAULT_LENGHTH = 16;
 
