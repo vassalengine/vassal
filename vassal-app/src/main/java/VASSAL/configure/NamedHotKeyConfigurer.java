@@ -72,14 +72,14 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
 
   private HintTextField getKeyStroke() {
     if (keyStroke == null) {
-      keyStroke = new HintTextField(StringConfigurer.DEFAULT_LENGHTH, STROKE_HINT);
+      keyStroke = new HintTextField(StringConfigurer.DEFAULT_LENGTH, STROKE_HINT);
     }
     return keyStroke;
   }
 
   private HintTextField getKeyName() {
     if (keyName == null) {
-      keyName = new HintTextField(StringConfigurer.DEFAULT_LENGHTH, NAME_HINT);
+      keyName = new HintTextField(StringConfigurer.DEFAULT_LENGTH, NAME_HINT);
     }
     return keyName;
   }
