@@ -100,10 +100,19 @@ public class RandomTextButton extends DiceButton {
    * prefix+[comma-separated roll list]+suffix */
   @Override
   protected void DR() {
+
+    rawRolls = new int[nDice];
+    rawCounts = new int[nSides];
+    counts = new int[nSides];
+
     final StringBuilder result = new StringBuilder();
     int total = addToTotal;
     for (int i = 0; i < nDice; ++i) {
       int roll = ran.nextInt(nSides) + 1;
+
+      rawRolls[i] = roll;
+      rawCounts[roll - 1] += 1;
+      counts[roll - 1] += 1;
 
       // take the face value from user defined faces
       if (isNumeric) {
