@@ -295,7 +295,12 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
       child.getMap().removePiece(child);
     }
     child.setParent(this);
-    insertPieceAt(child, index);
+    if (child instanceof Stack) {
+      throw new IllegalStateException("Cannot insert a stack into another stack");
+    }
+    else {
+      insertPieceAt(child, index);
+    }
   }
 
   /**
