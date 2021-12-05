@@ -1,5 +1,6 @@
 3.6.2 - ???
 
+* 10899: Show the player window before the welcome wizard
 * 10894: Warn about movement trails inside of rotates only when editing module
 * 10893: Fix NPE: RandomTextButton raw rolls/counts support
 * 10891: Pieces in decks were not being updated during Refresh Counters
