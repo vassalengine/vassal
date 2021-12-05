@@ -660,7 +660,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     }
 
     // Load the new pieces back into the Deck in the same order
-    for (final GamePiece piece : pieces) {
+    for (final GamePiece piece : newPieces) {
       command.append(deck.getMap().placeOrMerge(piece, deck.getPosition()));
     }
 
