@@ -266,6 +266,11 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         }
       }
       map.placeAt(s, p);
+
+      // Tell any *stacked* pieces what map they are on. 
+      for (final GamePiece piece : s.asList()) {
+        piece.setMap(map);
+      }
     }
   }
 
