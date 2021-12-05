@@ -22,7 +22,8 @@
       "new_features": [
       ],
       "bug_fixes": [
-        { "num": 10893, "Fix NPE: RandomTextButton raw rolls/counts support" },
+        { "num": 10889, "desc": "Added diagnostic to determine what is trying to add stacks to stacks" },
+        { "num": 10893, "desc": "Fix NPE: RandomTextButton raw rolls/counts support" },
         { "num": 10891, "desc": "Pieces in decks were not being updated during Refresh Counters" },
         { "num": 10887, "desc": "Wasn't possible to click add to add an Action Button trait to a piece" }
       ],
