@@ -752,18 +752,18 @@ public class Footprint extends MovementMarkable {
    * Displays a Bad Module Data warning if a movement trails trait is found inside of a rotation trait
    */
   public void requireNoOuterRotate() {
-    Decorator piece = getOuter();
-    while (piece != null) {
-      if ((piece instanceof FreeRotator) || (piece instanceof Pivot) || ((piece instanceof MatCargo) && (((MatCargo)piece).maintainRelativeFacing))) {
-        if (GameModule.getGameModule().isEditorOpen()) {
+    if (GameModule.getGameModule().isEditorOpen()) {
+      Decorator piece = getOuter();
+      while (piece != null) {
+        if ((piece instanceof FreeRotator) || (piece instanceof Pivot) || ((piece instanceof MatCargo) && (((MatCargo) piece).maintainRelativeFacing))) {
           String name = getName();
           if ((name == null) || name.isEmpty()) {
             name = Resources.getString("Decorator.prototype");
           }
           ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Decorator.trails_inside_rotate", getBaseDescription(), piece.getBaseDescription()), name));
         }
+        piece = piece.getOuter();
       }
-      piece = piece.getOuter();
     }
   }
 
