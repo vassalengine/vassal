@@ -122,13 +122,13 @@ public class Player extends Launcher {
   }
 
   private void showWizardOrPlayerWindow(GameModule module) {
+    module.getPlayerWindow().setVisible(true);
+
     final Boolean showWizard = (Boolean) Prefs.getGlobalPrefs().getValue(WizardSupport.WELCOME_WIZARD_KEY);
     if (Boolean.TRUE.equals(showWizard)) {
       module.getWizardSupport().showWelcomeWizard();
     }
     else {
-      module.getPlayerWindow().setVisible(true);
-
       // prompt for username and password if wizard is off
       // but no username is set
       if (!module.isRealName()) {
