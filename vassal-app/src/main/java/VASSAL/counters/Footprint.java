@@ -18,6 +18,7 @@
 package VASSAL.counters;
 
 import VASSAL.build.BadDataReport;
+import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangeTracker;
@@ -754,11 +755,13 @@ public class Footprint extends MovementMarkable {
     Decorator piece = getOuter();
     while (piece != null) {
       if ((piece instanceof FreeRotator) || (piece instanceof Pivot) || ((piece instanceof MatCargo) && (((MatCargo)piece).maintainRelativeFacing))) {
-        String name = getName();
-        if ((name == null) || name.isEmpty()) {
-          name = Resources.getString("Decorator.prototype");
+        if (GameModule.getGameModule().isEditorOpen()) {
+          String name = getName();
+          if ((name == null) || name.isEmpty()) {
+            name = Resources.getString("Decorator.prototype");
+          }
+          ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Decorator.trails_inside_rotate", getBaseDescription(), piece.getBaseDescription()), name));
         }
-        ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Decorator.trails_inside_rotate", getBaseDescription(), piece.getBaseDescription()), name));
       }
       piece = piece.getOuter();
     }
