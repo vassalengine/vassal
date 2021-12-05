@@ -1,8 +1,9 @@
 3.6.2 - ???
 
-* 10889: Added diagnostic to determine what is trying to add stacks to stacks
+* 10894: Warn about movement trails inside of rotates only when editing module
 * 10893: Fix NPE: RandomTextButton raw rolls/counts support
 * 10891: Pieces in decks were not being updated during Refresh Counters
+* 10889: Added diagnostic to determine what is trying to add stacks to stacks
 * 10887: Wasn't possible to click add to add an Action Button trait to a piece
 
 3.6.1 - 4 December 2021
