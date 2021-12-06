@@ -1,6 +1,12 @@
 3.6.2 - ???
 
+* 10908: Fix NPE send-to-locationing backwards
+* 10907: Disabled Toolbar Buttons on Map Windows didn't initialize starting
+    state properly
 * 10906: Show an error dialog if reading a corrupted prefs file
+* 10903: Stacking units placed by At-Start stacks didn't allow Action Buttons
+    on said pieces to function until the piece was moved
+* 10901: Unchecking Cycle Message box in a Report trait clears the fields
 * 10899: Show the player window before the welcome wizard
 * 10894: Warn about movement trails inside of rotates only when editing module
 * 10893: Fix NPE: RandomTextButton raw rolls/counts support
