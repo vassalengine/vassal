@@ -412,18 +412,15 @@
               <version>3.0.0</version>
               <executions>
                 <execution>
-                  <phase>test</phase>
+                  <phase>prepare-package</phase>
                   <goals>
-                    <goal>exec</goal>
+                    <goal>java</goal>
                   </goals>
                 </execution>
               </executions>
               <configuration>
-                <executable>java</executable>
+                <mainClass>VASSAL.tools.deprecation.DeprecationWriter</mainClass>
                 <arguments>
-                  <argument>-classpath</argument>
-                  <classpath/>
-                  <argument>VASSAL.tools.deprecation.DeprecationWriter</argument>
                   <argument>-o</argument>
                   <argument>${project.build.outputDirectory}/deprecated</argument>
                   <argument>${project.build.outputDirectory}/VASSAL</argument>
