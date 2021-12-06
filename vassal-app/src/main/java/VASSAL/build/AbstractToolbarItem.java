@@ -171,6 +171,8 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
         }
       }
     }
+
+    checkDisabled();
   }
 
   /**
