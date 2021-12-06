@@ -180,7 +180,15 @@ public class Prefs implements Closeable {
       try (FileLock lock = ch.lock()) {
         final InputStream in = new BufferedInputStream(Channels.newInputStream(ch));
         storedValues.clear();
-        storedValues.load(in);
+        try {
+          storedValues.load(in);
+        }
+        catch (IllegalArgumentException e) {
+          // This happens if we have a corrupted prefs file, which is not
+          // a very friendly exception for Properties.load() to throw when
+          // doing I/O.
+          throw new IOException("Corrupted prefs file", e);
+        }
       }
     }
     catch (FileNotFoundException | NoSuchFileException e) {
