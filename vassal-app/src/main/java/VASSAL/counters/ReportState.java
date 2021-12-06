@@ -443,7 +443,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
       se.append(keys.getValueString())
         .append(format.getValueString())
         .append(cycleDownKeys.getValueString())
-        .append(cycleFormat.getValueString())
+        .append(cycle.getValueBoolean() ? cycleFormat.getValueString() : "")
         .append(descInput.getValueString())
         .append(noSuppressConfig.getValueString());
       return ID + se.getValue();
