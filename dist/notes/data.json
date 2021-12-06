@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 10906, "desc": "Show an error dialog if reading a corrupted prefs file" },
         { "num": 10899, "desc": "Show the player window before the welcome wizard" },
         { "num": 10894, "desc": "Warn about movement trails inside of rotates only when editing module" },
         { "num": 10893, "desc": "Fix NPE: RandomTextButton raw rolls/counts support" },
