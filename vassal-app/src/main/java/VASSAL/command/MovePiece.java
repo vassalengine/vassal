@@ -143,7 +143,6 @@ public class MovePiece extends Command {
         }
         else {
           if (newMap.apply(mergeFinder) == null) {
-            //newMap.placeAt(piece, newPosition);
             stackOrPlacePiece(piece, newMap, newPosition, false);
           }
           if (piece.getParent() != null) {
