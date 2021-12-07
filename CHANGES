@@ -1,6 +1,8 @@
 3.6.2 - ???
 
-* 10908: Fix NPE send-to-locationing backwards
+* 10915: Undo of Send To Location sent to bottom card of deck returns the card
+    to the top of the Deck
+* 10908: Fix NPE when using Send Back in SendToLocation
 * 10907: Disabled Toolbar Buttons on Map Windows didn't initialize starting
     state properly
 * 10906: Show an error dialog if reading a corrupted prefs file
