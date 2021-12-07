@@ -107,6 +107,7 @@ public class MovePiece extends Command {
 
   private void stackOrPlacePiece(GamePiece piece, Map newMap, Point newPosition) {
     if (newMap.getStackMetrics().isStackingEnabled()
+      && !(piece instanceof Stack) 
       && (piece.getParent() == null)
       && !Boolean.TRUE.equals(piece.getProperty(Properties.NO_STACK))) {
       final Stack s = new Stack();
