@@ -105,7 +105,7 @@ public class MovePiece extends Command {
     return playerId;
   }
 
-  private void stackOrPlacePiece(GamePiece piece, Map newMap, Point newPosition, boolean toTop) {
+  private void stackOrPlacePiece(GamePiece piece, Map newMap, Point newPosition) {
     if (newMap.getStackMetrics().isStackingEnabled()
       && (piece.getParent() == null)
       && !Boolean.TRUE.equals(piece.getProperty(Properties.NO_STACK))) {
@@ -137,13 +137,13 @@ public class MovePiece extends Command {
           }
           else {
             if (newMap.apply(mergeFinder) == null) {
-              stackOrPlacePiece(piece, newMap, newPosition, false);
+              stackOrPlacePiece(piece, newMap, newPosition);
             }
           }
         }
         else {
           if (newMap.apply(mergeFinder) == null) {
-            stackOrPlacePiece(piece, newMap, newPosition, false);
+            stackOrPlacePiece(piece, newMap, newPosition);
           }
           if (piece.getParent() != null) {
             piece.getParent().insert(piece, 0);
