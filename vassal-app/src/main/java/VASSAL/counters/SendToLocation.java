@@ -633,7 +633,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       }
       map.repaint();
     }
-    else {
+    else if (backMap != null) {
       if (oldMap != backMap) {
         oldMap.repaint();
       }
