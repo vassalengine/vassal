@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 10925, "desc": "Turn Tracker Button can never be size 0" },
         { "num": 10915, "desc": "Undo of Send To Location sent to bottom card of deck returns the card to the top of the Deck" },
         { "num": 10908, "Fix NPE when using Send Back in SendToLocation" },
         { "num": 10907, "desc": "Disabled Toolbar Buttons on Map Windows didn't initialize starting state properly" },

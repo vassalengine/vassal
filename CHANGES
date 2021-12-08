@@ -1,5 +1,6 @@
 3.6.2 - ???
 
+* 10925: Turn Tracker Button can never be size 0
 * 10915: Undo of Send To Location sent to bottom card of deck returns the card
     to the top of the Deck
 * 10908: Fix NPE when using Send Back in SendToLocation
