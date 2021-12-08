@@ -115,6 +115,8 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   public static final String PLUS_BUTTON_WIDTH  = "plusButtonSize"; //NON-NLS
   public static final String TURN_BUTTON_HEIGHT = "turnButtonHeight"; //NON-NLS
 
+  private static final int DEFAULT_SIZE = 22;
+
   protected static final String FONT_SIZE = "turnFontSize"; //$NON-NLS-1$
   protected static final String FONT_BOLD = "turnFontBold"; //$NON-NLS-1$
   protected static final String DOCKED = "turnDocked"; //$NON-NLS-1$
@@ -162,8 +164,8 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   protected int width = -1;
   protected String lengthStyle = LENGTH_MAXIMUM;
 
-  protected int plusButtonWidth  = 22;
-  protected int turnButtonHeight = 22;
+  protected int plusButtonWidth  = DEFAULT_SIZE;
+  protected int turnButtonHeight = DEFAULT_SIZE;
 
   protected MutableProperty.Impl lastCommand = new MutableProperty.Impl(SET, this);
   protected MutableProperty.Impl lastTurn = new MutableProperty.Impl("", this);
@@ -931,12 +933,12 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       if (!initialized) {
         setLayout(new BorderLayout(5, 5));
 
-        nextButton = new IconButton(IconButton.PLUS_ICON, plusButtonWidth);
+        nextButton = new IconButton(IconButton.PLUS_ICON, (plusButtonWidth > 0) ? plusButtonWidth : DEFAULT_SIZE);
         setNextStroke(nextListener.getNamedKeyStroke());
         nextButton.setAlignmentY(Component.TOP_ALIGNMENT);
         nextButton.addActionListener(e -> doNext());
 
-        prevButton = new IconButton(IconButton.MINUS_ICON, plusButtonWidth);
+        prevButton = new IconButton(IconButton.MINUS_ICON, (plusButtonWidth > 0) ? plusButtonWidth : DEFAULT_SIZE);
         setPrevStroke(prevListener.getNamedKeyStroke());
         prevButton.setAlignmentY(Component.TOP_ALIGNMENT);
         prevButton.addActionListener(e -> doPrev());
