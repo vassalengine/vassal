@@ -1,8 +1,10 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
 
 #
 # Execute this file to launch VASSAL on Unix
 #
+
+set -e
 
 # Get java from PATH if not set in environment
 JAVA="${JAVA:-$(which java)}"
