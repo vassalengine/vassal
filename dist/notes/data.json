@@ -37,6 +37,7 @@
         { "num": 10887, "desc": "Wasn't possible to click add to add an Action Button trait to a piece" }
       ],
       "other_improvements": [
+        { "num": 10929, "desc": "Use '/usr/bin/env bash' in VASSAL.sh for greater portability on Unix" }
       ]
     },
     {
