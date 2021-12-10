@@ -2,7 +2,7 @@
   "headline": "The VASSAL Team is happy to announce VASSAL {{version}}.",
   "important": [
     "NEW! 64-bit ARM packages: There are now MacOS and Windows packages for 64-bit ARM processors. If you have a Mac with an Apple Silicon CPU (which is a 64-bit ARM processor), we recommend using the 64-bit ARM build.",
-    "Code deprecated more than a year ago has been removed. Modules using that code MUST be updated if they are to work with {{version_feature}}.",
+    "Code deprecated more than a year ago has been removed. Modules containing custom code using that code MUST be updated if they are to work with {{version_feature}}.",
     "Things may be broken which worked previously. If you find a new bug, please report it.",
     "Modules saved in {{version_feature}} are not openable by earlier versions of VASSAL. We recommend keeping a backup copy of any pre-{{version_feature}} modules you plan to modify in {{version_feature}} until you've verified that everything works to your satisfaction."
   ],
