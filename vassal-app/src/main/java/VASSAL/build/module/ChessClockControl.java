@@ -777,7 +777,7 @@ public class ChessClockControl extends AbstractConfigurable
 
     @Override
     protected Command myUndoCommand() {
-      return null;
+      return new UpdateClockControlCommand(!showing, online);
     }
 
     @Override
