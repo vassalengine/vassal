@@ -1189,6 +1189,9 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                            RenderingHints.VALUE_ANTIALIAS_ON);
 
+      // ensure that the background is repainted
+      super.paint(g);
+
       final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
 
       final AffineTransform orig_t = g2d.getTransform();
