@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 10934, "desc": "Repaint the background in the SetupStack editor" }
       ],
       "other_improvements": [
       ]
