@@ -1,6 +1,7 @@
 3.6.3 - ???
 
 * 10934: Repaint the background in the SetupStack editor
+* 10931: Fix NPE in menu text
 
 3.6.2 - 9 December 2021
 
