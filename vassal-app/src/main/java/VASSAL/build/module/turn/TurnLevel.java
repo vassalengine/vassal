@@ -34,6 +34,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -406,6 +407,9 @@ public abstract class TurnLevel extends TurnComponent {
    */
   @Override
   public List<String> getPropertyList() {
-    return List.of(propertyName);
+    if (propertyName != null) {
+      return List.of(propertyName);
+    }
+    return Collections.emptyList();
   }
 }
