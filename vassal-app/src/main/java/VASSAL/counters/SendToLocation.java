@@ -550,6 +550,10 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
           c = c.append(parent.pieceRemoved(outer));
         }
 
+        if (oldMap != null && oldMap != map) {
+          oldMap.repaint();
+        }
+        map.repaint();
       }
     }
     else {
@@ -578,6 +582,11 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         if (backMap.getMoveKey() != null) {
           c = c.append(outer.keyEvent(backMap.getMoveKey()));
         }
+
+        if (oldMap != null && oldMap != backMap) {
+          oldMap.repaint();
+        }
+        backMap.repaint();
       }
     }
 
@@ -625,19 +634,6 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
           }
         }
       }
-    }
-
-    if (send && (map != null)) {
-      if (oldMap != map) {
-        oldMap.repaint();
-      }
-      map.repaint();
-    }
-    else if (backMap != null) {
-      if (oldMap != backMap) {
-        oldMap.repaint();
-      }
-      backMap.repaint();
     }
 
     return c;
