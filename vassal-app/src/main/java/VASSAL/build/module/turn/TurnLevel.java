@@ -406,6 +406,6 @@ public abstract class TurnLevel extends TurnComponent {
    */
   @Override
   public List<String> getPropertyList() {
-    return List.of(propertyName);
+    return propertyName != null ? List.of(propertyName) : List.of();
   }
 }
