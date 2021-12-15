@@ -1,6 +1,7 @@
 3.6.3 - ???
 
 * 10942: Fix NPE in SendToLocation
+* 10940: Fix NPE in TurnLevel
 * 10934: Repaint the background in the SetupStack editor
 * 10931: Fix NPE in menu text
 
