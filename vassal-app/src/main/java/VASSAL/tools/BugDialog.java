@@ -41,6 +41,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CountDownLatch;
@@ -48,6 +49,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import javax.net.ssl.SSLHandshakeException;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -473,6 +475,23 @@ public class BugDialog extends JDialog {
   private class CheckRequest extends SwingWorker<Integer, Void> {
     private Timer timer = null;
 
+    private int compareReportable(String ourVersion) throws IOException {
+      // capture diagnostic information in case something goes wrong with SSL
+      try {
+        return VersionUtils.compareReportable(ourVersion);
+      }
+      catch (SSLHandshakeException e) {
+        final String prevProp = System.getProperty("javax.net.debug");
+        try {
+          System.setProperty("javax.net.debug", "ssl:handshake");
+          return VersionUtils.compareReportable(ourVersion);
+        }
+        finally {
+          System.setProperty("javax.net.debug", prevProp);
+        }
+      }
+    }
+
     @Override
     protected Integer doInBackground() throws Exception {
       final CountDownLatch latch = new CountDownLatch(1);
@@ -484,7 +503,7 @@ public class BugDialog extends JDialog {
       timer.start();
 
       // Make the request to the server and wait for the latch.
-      final int cur = VersionUtils.compareReportable(Info.getVersion());
+      final int cur = compareReportable(Info.getVersion());
       latch.await();
       return cur;
     }
