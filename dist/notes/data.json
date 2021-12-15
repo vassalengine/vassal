@@ -22,8 +22,9 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 10939, "desc": "Fix NPE in SendToLocation" },
         { "num": 10934, "desc": "Repaint the background in the SetupStack editor" },
-        { "num": 10931: "desc": "Fix NPE in menu text" }
+        { "num": 10931,: "desc": "Fix NPE in menu text" }
       ],
       "other_improvements": [
       ]
