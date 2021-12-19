@@ -151,10 +151,14 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
     this.launch = launch;
   }
 
+  protected void addPropertyGateListener() {
+    addPropertyGateListener(false);
+  }
+
   /**
    * If we have a disable-this-button property, set a listener on it
    */
-  protected void addPropertyGateListener() {
+  protected void addPropertyGateListener(boolean dontCheck) {
     if (property != null) {
       removePropertyGateListener();
     }
@@ -172,7 +176,9 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
       }
     }
 
-    checkDisabled();
+    if (!dontCheck) {
+      checkDisabled();
+    }
   }
 
   /**
@@ -207,7 +213,7 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
       return;
     }
     if ((property == null) && !propertyGate.isEmpty()) {
-      addPropertyGateListener();
+      addPropertyGateListener(true);
     }
     if (property != null) {
       disableIfTrue("true".equals(property.getPropertyValue())); //NON-NLS
