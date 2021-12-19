@@ -130,9 +130,6 @@ public class ZipFileImageTiler {
           loader, slicer);
       }
     }
-    catch (OutOfMemoryError e) {
-      System.exit(2);
-    }
     finally {
       logger.info("Exiting"); //NON-NLS
     }
@@ -208,5 +205,4 @@ public class ZipFileImageTiler {
       logger.error("Error while writing to outputstream {}", os, e); //NON-NLS
     }
   }
-
 }

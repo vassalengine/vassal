@@ -284,6 +284,9 @@ public abstract class AbstractLaunchAction extends AbstractAction {
           }
         }
 
+        // limit the tiler max heap to 3/4 of physical RAM
+        final int max_tiler_heap = 3*PHYS_MEMORY/4;
+
         // slice tiles for module
         final String aname = lr.module.getAbsolutePath();
         final ModuleMetaData meta = new ModuleMetaData(new ZipFile(aname));
@@ -296,7 +299,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
           aname,
           cdir,
           new Dimension(256, 256),
-          PHYS_MEMORY
+          max_tiler_heap
         );
 
         try {
@@ -313,7 +316,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
             ext.getAbsolutePath(),
             cdir,
             new Dimension(256, 256),
-            PHYS_MEMORY
+            max_tiler_heap
           );
 
           try {
