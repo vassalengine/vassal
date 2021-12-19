@@ -1,5 +1,6 @@
 3.6.3 - ???
 
+* 10954: Fix stack overflow infinite loop if invalid property name put in blank
 * 10942: Fix NPE in SendToLocation
 * 10940: Fix NPE in TurnLevel
 * 10934: Repaint the background in the SetupStack editor
