@@ -1,5 +1,7 @@
 3.6.3 - ???
 
+* 10961: Use heuristic value for initial tiler heap; use 3/4 physical RAM as
+    max heap
 * 10954: Fix stack overflow infinite loop if invalid property name put in blank
 * 10947: Collect diagnostic information for an SSLHandshakeException
 * 10942: Fix NPE in SendToLocation

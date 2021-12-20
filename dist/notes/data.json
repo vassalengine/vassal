@@ -27,9 +27,10 @@
         { "num": 10940, "desc": "Fix NPE in TurnLevel" },
         { "num": 10942, "desc": "Fix NPE in SendToLocation" },
         { "num": 10934, "desc": "Repaint the background in the SetupStack editor" },
-        { "num": 10931,: "desc": "Fix NPE in menu text" }
+        { "num": 10931, "desc": "Fix NPE in menu text" }
       ],
       "other_improvements": [
+        { "num": 10961, "desc": "Use heuristic value for initial tiler heap; use 3/4 physical RAM as max heap" }
       ]
     },
     {
