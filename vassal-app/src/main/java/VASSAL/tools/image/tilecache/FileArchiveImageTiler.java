@@ -64,7 +64,7 @@ public class FileArchiveImageTiler {
   ) throws IOException {
 
     for (final String ipath : ipaths) {
-      logger.info("Tiling {}", ipath); //NON-NLS
+      logger.info("Tiling {}, heap size is {}", ipath, Runtime.getRuntime().totalMemory() >> 20); //NON-NLS
       imageListener.receive(ipath);
 
       final BufferedImage src;
@@ -80,6 +80,7 @@ public class FileArchiveImageTiler {
       }
 
       slicer.slice(src, ipath, tpath, tw, th, exec, tileListener);
+      logger.info("Tiled {}, heap size is {}", ipath, Runtime.getRuntime().totalMemory() >> 20); //NON-NLS
     }
 
     exec.shutdown();
