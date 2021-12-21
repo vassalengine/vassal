@@ -654,7 +654,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       newPieces.add(newPiece);
 
       // Add the new pieces back into the GameState
-      final Command add = new AddPiece(piece);
+      final Command add = new AddPiece(newPiece);
       add.execute();
       command.append(add);
     }
