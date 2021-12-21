@@ -582,6 +582,8 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     else if (deal.matches(stroke)) {
       // Can't use "deal" key if piece is currently owned by someone else
       if (!obscuredToMe() || NO_USER.equals(obscuredBy)) {
+        final ChangeTracker c = new ChangeTracker(this);
+
         // Evaluate what side we're requested to give the piece to (e.g. "British")
         final FormattedStringExpression expression = new FormattedStringExpression(dealExpression);
         final String firstPass = expression.tryEvaluate(this, this, "Editor.Obscurable.deal_expression");
@@ -612,6 +614,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
 
         obscuredBy = by;
         obscuredOptions = (by == null) ? null : new ObscurableOptions(ObscurableOptions.getInstance().encodeOptions());
+        retVal = c.getChangeCommand();
       }
     }
     else if (peek.matches(stroke)) {
