@@ -7,7 +7,7 @@
 * 10942: Fix NPE in SendToLocation
 * 10940: Fix NPE in TurnLevel
 * 10934: Repaint the background in the SetupStack editor
-* 10931: Fix NPE in menu text
+* 10931: Fix NPE in KeyCommand.makeMenuText()
 
 3.6.2 - 9 December 2021
 
