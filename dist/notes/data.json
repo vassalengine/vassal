@@ -22,6 +22,8 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 10969, "desc": "Fix Refresh of Pieces in Decks, remove old pieces completely" },
+        { "num": 10964, "desc": "Fix Deal-to-Side Mask bug - Finish evaluating expression properly" },
         { "num": 10954, "desc": "Fix stack overflow infinite loop if invalid property name put in blank" },
         { "num": 10947, "desc": "Collect diagnostic information for an SSLHandshakeException" },
         { "num": 10940, "desc": "Fix NPE in TurnLevel" },

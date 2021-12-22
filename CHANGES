@@ -1,5 +1,7 @@
 3.6.3 - ???
 
+* 10969: Fix Refresh of Pieces in Decks, remove old pieces completely
+* 10964: Fix Deal-to-Side Mask bug - Finish evaluating expression properly
 * 10961: Use heuristic value for initial tiler heap; use 3/4 physical RAM as
     max heap
 * 10954: Fix stack overflow infinite loop if invalid property name put in blank
