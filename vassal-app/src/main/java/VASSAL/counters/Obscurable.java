@@ -34,6 +34,7 @@ import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.script.expression.Expression;
 import VASSAL.script.expression.FormattedStringExpression;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
@@ -581,9 +582,12 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     else if (deal.matches(stroke)) {
       // Can't use "deal" key if piece is currently owned by someone else
       if (!obscuredToMe() || NO_USER.equals(obscuredBy)) {
+        final ChangeTracker c = new ChangeTracker(this);
+
         // Evaluate what side we're requested to give the piece to (e.g. "British")
         final FormattedStringExpression expression = new FormattedStringExpression(dealExpression);
-        final String whom = expression.tryEvaluate(this, this, "Editor.Obscurable.deal_expression");
+        final String firstPass = expression.tryEvaluate(this, this, "Editor.Obscurable.deal_expression");
+        final String whom = Expression.createExpression(firstPass).tryEvaluate(this, this, "Editor.Obscurable.deal_expression");
         String by = null;
 
         final PlayerRoster roster = GameModule.getGameModule().getPlayerRoster();
@@ -610,6 +614,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
 
         obscuredBy = by;
         obscuredOptions = (by == null) ? null : new ObscurableOptions(ObscurableOptions.getInstance().encodeOptions());
+        retVal = c.getChangeCommand();
       }
     }
     else if (peek.matches(stroke)) {
