@@ -218,18 +218,19 @@ public class Translate extends Decorator implements TranslatablePiece {
     translate(p);
 
     // Handle rotation of the piece, movement is relative to the current facing of the unit.
-    // Traverse any traits outward from this trait (ones that could rotate this trait),
+    // Traverse any traits inward from this trait (because apparently Translate looks at inward traits only),
     // and find out what the cumulative rotation is
-    Decorator rotateTrait = getOuter();
+    GamePiece rotateTrait = getInner();
     double cumulative = 0.0;
-    while (rotateTrait != null) {
+    while ((rotateTrait != null) && (rotateTrait instanceof Decorator)) {
       if (rotateTrait instanceof FreeRotator) {
         cumulative += ((FreeRotator)rotateTrait).getAngleInRadians();
       }
       else if (rotateTrait instanceof MatCargo) {
         cumulative += ((MatCargo)rotateTrait).getMatAngleInRadians();
       }
-      rotateTrait = rotateTrait.getOuter();
+
+      rotateTrait = ((Decorator)rotateTrait).getInner();
     }
 
     // If rotated, apply the rotation
