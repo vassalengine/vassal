@@ -1,5 +1,4 @@
 VASSAL.build.AbstractBuildable.getAllDescendantComponents(java.lang.Class)	3.6.0
-VASSAL.build.AbstractBuildable.getComponents(java.lang.Class)	3.6.0
 VASSAL.build.GameModule.compareVersions(java.lang.String, java.lang.String)	3.6.0
 VASSAL.build.GameModule.fireKeyStroke(javax.swing.KeyStroke)	3.6.0
 VASSAL.build.GameModule.getFileDialog()	3.6.0
