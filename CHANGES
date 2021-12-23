@@ -1,5 +1,6 @@
 3.6.3 - ???
 
+* 10981: Reinstate AbstractBuildable.getComponents()
 * 10970: Fix problem where rotated pieces did not move-fixed-distance in
     correct direction
 * 10969: Fix Refresh of Pieces in Decks, remove old pieces completely
