@@ -136,6 +136,15 @@ public abstract class AbstractBuildable extends AbstractImageFinder implements B
 
   /**
    * @return all build components that are an instance of the given class
+   * @deprecated Use {@link #getComponentsOf(Class)} instead.
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public <T> Enumeration<T> getComponents(Class<T> target) {
+    return Collections.enumeration(getComponentsOf(target));
+  }
+
+  /**
+   * @return all build components that are an instance of the given class
    */
   public <T> List<T> getComponentsOf(Class<T> target) {
     final ArrayList<T> l = new ArrayList<>();
