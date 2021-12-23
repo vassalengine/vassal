@@ -127,6 +127,10 @@ public class GameState implements CommandEncoder {
     loadingInBackground = b;
   }
 
+  void setLastSaveFile(File f) {
+    lastSaveFile = f;
+  }
+
   //public GameState() {}
 
   /**
@@ -1046,7 +1050,12 @@ public class GameState implements CommandEncoder {
           else {
             msg = Resources.getString("GameState.loaded", shortName); //$NON-NLS-1$
           }
+
           g.setGameFile(shortName, GameModule.GameFileMode.LOADED_GAME);
+
+          if (((BasicLogger) g.getLogger()).isReplaying()) {
+            lastSaveFile = null;
+          }
         }
         else {
           msg = Resources.getString("GameState.cancel_load", shortName);
@@ -1140,6 +1149,10 @@ public class GameState implements CommandEncoder {
                 msg = Resources.getString("GameState.loaded", shortName); //$NON-NLS-1$
               }
               g.setGameFile(shortName, GameModule.GameFileMode.LOADED_GAME);
+
+              if (((BasicLogger) g.getLogger()).isReplaying()) {
+                lastSaveFile = null;
+              }
             }
             else {
               msg = Resources.getString("GameState.invalid_savefile", shortName);  //$NON-NLS-1$
