@@ -662,8 +662,6 @@ public class GameState implements CommandEncoder {
           loadGameInBackground(f);
         }
       }
-
-      lastSaveFile = f;
     }
     catch (IOException e) {
       ReadErrorDialog.error(e, f);
