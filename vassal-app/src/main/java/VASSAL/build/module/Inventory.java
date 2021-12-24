@@ -368,7 +368,7 @@ public class Inventory extends AbstractToolbarItem
           final GamePiece piece = ((CounterNode) value).getCounter().getPiece();
           if (piece != null) {
             final Rectangle r = piece.getShape().getBounds();
-            final Double zoom = getCurrentZoom();
+            final double zoom = getCurrentZoom();
             r.x = (int) Math.round(r.x * zoom);
             r.y = (int) Math.round(r.y * zoom);
             r.width = (int) Math.round(r.width * zoom);
@@ -948,6 +948,10 @@ public class Inventory extends AbstractToolbarItem
   protected Command sendHotKeyToPieces(final KeyStroke keyStroke) {
     final Command c = new NullCommand();
     final TreePath[] tp = tree.getSelectionPaths();
+    if (tp == null) {
+      return c;
+    }
+
     // set to not get duplicates
     final HashSet<GamePiece> pieces = new HashSet<>();
     for (final TreePath treePath : tp) {
@@ -1155,10 +1159,11 @@ public class Inventory extends AbstractToolbarItem
 
     @Override
     public boolean equals(Object o) {
-      if (!(o instanceof Counter))
+      if (!(o instanceof Counter)) {
         return false;
+      }
       final Counter c = (Counter) o;
-      return getPath().equals(c.getPath());
+      return groups.equals(c.groups);
     }
 
     @Override
