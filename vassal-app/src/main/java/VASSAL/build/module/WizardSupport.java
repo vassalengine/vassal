@@ -692,9 +692,15 @@ public class WizardSupport {
                 new SavedGameLoader(controller, settings, new BufferedInputStream(Files.newInputStream(f.toPath())), POST_LOAD_GAME_WIZARD, f) {
                   @Override
                   public void run() {
-                    GameModule.getGameModule().getFileChooser().setSelectedFile(f); //BR// When loading a saved game from Wizard, put it appropriately into the "default" for the next save/load/etc.
-                    GameModule.getGameModule().setGameFile(f.getName(), GameModule.GameFileMode.LOADED_GAME); //BR// ... aaaand put it in the app window description.
+                    final GameModule g = GameModule.getGameModule();
+                    g.getFileChooser().setSelectedFile(f); //BR// When loading a saved game from Wizard, put it appropriately into the "default" for the next save/load/etc.
+                    g.setGameFile(f.getName(), GameModule.GameFileMode.LOADED_GAME); //BR// ... aaaand put it in the app window description.
                     super.run();
+
+                    g.getGameState().setLastSaveFile(
+                      ((BasicLogger) g.getLogger()).isReplaying() ? null : f
+                    );
+
                     processing.remove(f);
                   }
                 }.start();
