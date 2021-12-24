@@ -764,6 +764,7 @@ public class GameState implements CommandEncoder {
     final FileChooser fc = GameModule.getGameModule().getFileChooser();
     fc.selectDotSavFile();
     fc.addChoosableFileFilter(new LogAndSaveFileFilter());
+    fc.setSelectedFile(lastSaveFile);
 
     if (fc.showSaveDialog() != FileChooser.APPROVE_OPTION) return null;
 
@@ -1148,7 +1149,7 @@ public class GameState implements CommandEncoder {
               }
               g.setGameFile(shortName, GameModule.GameFileMode.LOADED_GAME);
 
-              if (((BasicLogger) g.getLogger()).isReplaying()) {
+              if (((BasicLogger) g.getLogger()).isReplaying() || fromPredefinedSetup) {
                 lastSaveFile = null;
               }
             }
