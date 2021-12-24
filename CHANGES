@@ -1,6 +1,8 @@
 3.6.3 - ???
 
+* 10983: Fix bad Inventory.Counter.equals()
 * 10981: Reinstate AbstractBuildable.getComponents()
+* 10979: Prevent Save Game from clobbering log being replayed
 * 10970: Fix problem where rotated pieces did not move-fixed-distance in
     correct direction
 * 10969: Fix Refresh of Pieces in Decks, remove old pieces completely

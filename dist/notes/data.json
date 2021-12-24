@@ -22,7 +22,9 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 10983, "desc": "Fix bad Inventory.Counter.equals()" },
         { "num": 10981, "desc": "Reinstate AbstractBuildable.getComponents()" },
+        { "num": 10979, "desc": "Prevent Save Game from clobbering log being replayed" },
         { "num": 10970, "desc": "Fix problem where rotated pieces did not move-fixed-distance in correct direction" },
         { "num": 10969, "desc": "Fix Refresh of Pieces in Decks, remove old pieces completely" },
         { "num": 10964, "desc": "Fix Deal-to-Side Mask bug - Finish evaluating expression properly" },
