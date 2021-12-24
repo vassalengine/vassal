@@ -1155,10 +1155,11 @@ public class Inventory extends AbstractToolbarItem
 
     @Override
     public boolean equals(Object o) {
-      if (!(o instanceof Counter))
+      if (!(o instanceof Counter)) {
         return false;
+      }
       final Counter c = (Counter) o;
-      return getPath().equals(c.getPath());
+      return groups.equals(c.groups);
     }
 
     @Override
