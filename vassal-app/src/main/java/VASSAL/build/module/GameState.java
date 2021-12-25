@@ -764,7 +764,18 @@ public class GameState implements CommandEncoder {
     final FileChooser fc = GameModule.getGameModule().getFileChooser();
     fc.selectDotSavFile();
     fc.addChoosableFileFilter(new LogAndSaveFileFilter());
-    fc.setSelectedFile(lastSaveFile);
+
+    if (lastSaveFile != null) {
+      // if there is a lastSaveFile, use it as the default
+      fc.setSelectedFile(lastSaveFile);
+    }
+    else {
+      // otherwise, set the directory by the previous file
+      final File f = fc.getSelectedFile();
+      if (f != null && !f.isDirectory()) {
+        fc.setCurrentDirectory(f.getParentFile());
+      }
+    }
 
     if (fc.showSaveDialog() != FileChooser.APPROVE_OPTION) return null;
 
