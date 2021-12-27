@@ -215,7 +215,7 @@ public class ZipArchive implements FileArchive {
   /**
    * {@inheritDoc}
    *
-   * <b>Note:</b> It is impeative the that calling code ensures that this
+   * <b>Note:</b> It is imperative the that calling code ensures that this
    * stream is eventually closed, since the returned stream holds a read
    * lock on the archive.
    */
