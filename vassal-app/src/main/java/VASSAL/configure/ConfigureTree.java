@@ -1059,7 +1059,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     final ArrayList<Configurable> moveToBack = new ArrayList<>();
     for (int i = index; i < oldContents.length; ++i) {
       try {
-        oldContents[i].removeFrom(parent);
+        //oldContents[i].removeFrom(parent);
         parent.remove(oldContents[i]);
       }
       // FIXME: review error message
@@ -1068,7 +1068,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           "Illegal configuration", JOptionPane.ERROR_MESSAGE); //NON-NLS
         for (int j = index; j < i; ++j) {
           parent.add(oldContents[j]);
-          oldContents[j].addTo(parent);
+          //oldContents[j].addTo(parent);
         }
         return false;
       }
@@ -1093,7 +1093,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
     for (final Configurable c : moveToBack) {
       parent.add(c);
-      c.addTo(parent);
+      //c.addTo(parent);
     }
 
     notifyStateChanged(true);
