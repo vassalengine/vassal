@@ -1,5 +1,7 @@
 3.6.3 - ???
 
+* 10992: Fix NPE in SpecialDiceButton.getAttributeValueString() after deleting
+    tooltip
 * 10985: Reset save dialog filename after close of game
 * 10983: Fix bad Inventory.Counter.equals()
 * 10981: Reinstate AbstractBuildable.getComponents()
