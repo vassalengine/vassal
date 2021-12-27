@@ -481,7 +481,7 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
       return ColorConfigurer.colorToString(bgColor);
     }
     else if (TOOLTIP.equals(key)) {
-      return tooltip.length() == 0 ? launch.getAttributeValueString(name) : tooltip;
+      return tooltip.length() == 0 ? launch.getAttributeValueString(BUTTON_TEXT) : tooltip;
     }
     else if (DESCRIPTION.equals(key)) {
       return description;
