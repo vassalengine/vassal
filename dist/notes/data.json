@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 11003: "Fixed bad tile message; added plea for help with TileNotFoundExceptions" },
         { "num": 10992, "desc": "Fix NPE in SpecialDiceButton.getAttributeValueString() after deleting tooltip" },
         { "num": 10985, "desc": "Reset save dialog filename after close of game" },
         { "num": 10983, "desc": "Fix bad Inventory.Counter.equals()" },

@@ -1,5 +1,7 @@
 3.6.3 - ???
 
+* 11003: Fixed bad tile message; added plea for help with
+    TileNotFoundExceptions
 * 10992: Fix NPE in SpecialDiceButton.getAttributeValueString() after deleting
     tooltip
 * 10985: Reset save dialog filename after close of game
