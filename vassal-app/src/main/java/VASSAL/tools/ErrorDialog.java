@@ -18,13 +18,18 @@
 
 package VASSAL.tools;
 
+import VASSAL.Info;
 import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.bug.BugHandler;
+import VASSAL.tools.concurrent.FutureUtils;
+import VASSAL.tools.image.tilecache.TileNotFoundException;
+import VASSAL.tools.version.VersionUtils;
 
 import java.awt.Component;
 import java.awt.Frame;
+import java.io.IOException;
 import java.nio.file.FileSystemException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,8 +90,29 @@ public class ErrorDialog {
       final Frame frame = GameModule.getGameModule() == null
         ? null : GameModule.getGameModule().getPlayerWindow();
 
-      SwingUtilities.invokeLater(() -> new BugDialog(frame, thrown).setVisible(true));
+      // remove this when the tile cache bug is fixed
+      if (showSpecialTileBugAdmonition(thrown)) {
+        new Thread(() -> {
+          FutureUtils.wait(ErrorDialog.show("Bug10900.help"));
+          SwingUtilities.invokeLater(() -> new BugDialog(frame, thrown).setVisible(true));
+        }).start();
+      }
+      else {
+        SwingUtilities.invokeLater(() -> new BugDialog(frame, thrown).setVisible(true));
+      }
     }
+  }
+
+  private static boolean showSpecialTileBugAdmonition(Throwable t) {
+    if (ThrowableUtils.getRecent(TileNotFoundException.class, t) != null) {
+      try {
+        return VersionUtils.isCurrent(Info.getVersion());
+      }
+      catch (IOException e) {
+        logger.error("", e);
+      }
+    }
+    return false;
   }
 
   public static Future<?> show(
