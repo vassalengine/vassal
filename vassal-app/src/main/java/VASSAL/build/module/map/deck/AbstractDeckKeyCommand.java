@@ -140,8 +140,8 @@ public abstract class AbstractDeckKeyCommand extends AbstractConfigurable implem
   }
 
   @Override
-  public Class[] getAllowableConfigureComponents() {
-    return new Class[0];
+  public Class<?>[] getAllowableConfigureComponents() {
+    return new Class<?>[0];
   }
 
   /**
