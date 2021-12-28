@@ -242,10 +242,8 @@
                     <target>${version.java.target}</target>
                     <compilerArgs>
                         <!-- next two lines enable warnings -->
-                        <!--
                         <arg>-Xlint:all</arg>
                         <arg>-Xmaxwarns</arg> <arg>10000</arg>
-                        -->
                     </compilerArgs>
                     <showDeprecation>true</showDeprecation>
                     <showWarnings>false</showWarnings>
