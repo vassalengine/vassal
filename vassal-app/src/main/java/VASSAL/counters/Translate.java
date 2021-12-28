@@ -177,6 +177,35 @@ public class Translate extends Decorator implements TranslatablePiece {
     return null;
   }
 
+  private double getCumulativeRotationNoMat() {
+    GamePiece trait = getInner();
+    double cumulative = 0.0;
+    while (trait instanceof Decorator) {
+      if (trait instanceof FreeRotator) {
+        cumulative += ((FreeRotator) trait).getAngleInRadians();
+      }
+
+      trait = ((Decorator) trait).getInner();
+    }
+    return cumulative;
+  }
+
+  private double getCumulativeRotation() {
+    GamePiece trait = getInner();
+    double cumulative = 0.0;
+    while (trait instanceof Decorator) {
+      if (trait instanceof FreeRotator) {
+        cumulative += ((FreeRotator) trait).getAngleInRadians();
+      }
+      else if (trait instanceof MatCargo) {
+        cumulative += ((MatCargo) trait).getMatAngleInRadians();
+      }
+
+      trait = ((Decorator) trait).getInner();
+    }
+    return cumulative;
+  }
+
   /*
    * New Translate code.
    * Simplified. Get rid of Move Batcher. Use same technique as Send To Location to
@@ -220,18 +249,7 @@ public class Translate extends Decorator implements TranslatablePiece {
     // Handle rotation of the piece, movement is relative to the current facing of the unit.
     // Traverse any traits inward from this trait (because apparently Translate looks at inward traits only),
     // and find out what the cumulative rotation is
-    GamePiece rotateTrait = getInner();
-    double cumulative = 0.0;
-    while ((rotateTrait != null) && (rotateTrait instanceof Decorator)) {
-      if (rotateTrait instanceof FreeRotator) {
-        cumulative += ((FreeRotator)rotateTrait).getAngleInRadians();
-      }
-      else if (rotateTrait instanceof MatCargo) {
-        cumulative += ((MatCargo)rotateTrait).getMatAngleInRadians();
-      }
-
-      rotateTrait = ((Decorator)rotateTrait).getInner();
-    }
+    final double cumulative = getCumulativeRotation();
 
     // If rotated, apply the rotation
     if (cumulative != 0.0) {
@@ -375,11 +393,11 @@ public class Translate extends Decorator implements TranslatablePiece {
     translate(p);
 
     // Handle rotation of the piece
-    final FreeRotator myRotation = (FreeRotator) Decorator.getDecorator(this, FreeRotator.class);
-    if (myRotation != null) {
+    final double cumulative = getCumulativeRotationNoMat();
+    if (cumulative != 0.0) {
       final Point2D myPosition = getPosition().getLocation();
       Point2D p2d = p.getLocation();
-      p2d = AffineTransform.getRotateInstance(myRotation.getCumulativeAngleInRadians(), myPosition.getX(), myPosition.getY()).transform(p2d, null);
+      p2d = AffineTransform.getRotateInstance(cumulative, myPosition.getX(), myPosition.getY()).transform(p2d, null);
       p = new Point((int) p2d.getX(), (int) p2d.getY());
     }
 
