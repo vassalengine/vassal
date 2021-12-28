@@ -155,7 +155,7 @@ public class AuditTrail {
    * @return An AuditTrail object if auditing is enabled, otherwise null
    */
   public AuditTrail(Auditable source, String originalExpression, String sourceField) {
-    setSource((Auditable) source);
+    setSource(source);
     if (sourceField != null && ! sourceField.isEmpty()) {
       addMessage(Resources.getString("Audit.source_field", sourceField));
     }
