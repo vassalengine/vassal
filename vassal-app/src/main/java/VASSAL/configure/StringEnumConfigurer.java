@@ -108,7 +108,12 @@ public class StringEnumConfigurer extends Configurer {
 
   @Override
   public String getValueString() {
-    return box != null ? (String) box.getSelectedItem() : validValues[0];
+    if (box != null) {
+      return (String) box.getSelectedItem();
+    }
+    else {
+      return validValues.length > 0 ? validValues[0] : "";
+    }
   }
 
   @Override
