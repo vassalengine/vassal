@@ -1,5 +1,6 @@
 3.6.3 - ???
 
+* 11007: Fix ArrayIndexOutOfBoundsException in StringEnumConfigurer
 * 11003: Fixed bad tile message; added plea for help with
     TileNotFoundExceptions
 * 10992: Fix NPE in SpecialDiceButton.getAttributeValueString() after deleting
