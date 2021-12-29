@@ -5,11 +5,11 @@
     <parent>
         <groupId>org.vassalengine</groupId>
         <artifactId>vassal-parent</artifactId>
-        <version>3.6.3-SNAPSHOT</version>
+        <version>3.6.3</version>
     </parent>
 
     <artifactId>vassal-doc</artifactId>
-    <version>3.6.3-SNAPSHOT</version>
+    <version>3.6.3</version>
 
     <properties>
         <main.basedir>${project.basedir}${file.separator}..</main.basedir>
