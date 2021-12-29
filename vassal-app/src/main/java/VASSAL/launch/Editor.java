@@ -21,6 +21,7 @@ package VASSAL.launch;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
+import java.net.URLConnection;
 
 import javax.swing.Action;
 import javax.swing.JFrame;
@@ -68,6 +69,14 @@ public class Editor extends Launcher {
 
   @Override
   protected void launch() throws IOException {
+    // Don't cache jar URLConnections on Windows. Batik (and possibly other
+    // things) sometimes read from modules using jar URIs, and the cache
+    // URLConnection uses holds the module file open---which prevents us from
+    // saving it.
+    if (SystemUtils.IS_OS_WINDOWS) {
+      URLConnection.setDefaultUseCaches("jar", false);
+    }
+
     switch (lr.mode) {
     case EDIT:
       new EditModuleAction(lr.module).loadModule(lr.module);
