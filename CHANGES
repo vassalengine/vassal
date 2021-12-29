@@ -1,8 +1,12 @@
 3.6.3 - ???
 
+* 11008: Prevent URLConnection cache from holding edited modules open on
+    Windows
 * 11007: Fix ArrayIndexOutOfBoundsException in StringEnumConfigurer
 * 11003: Fixed bad tile message; added plea for help with
     TileNotFoundExceptions
+* 10997: Editor: Don't close window when moving Map or other components
+    relative to Map
 * 10992: Fix NPE in SpecialDiceButton.getAttributeValueString() after deleting
     tooltip
 * 10985: Reset save dialog filename after close of game
