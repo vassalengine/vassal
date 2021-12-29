@@ -1027,11 +1027,6 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     final GameModule g = GameModule.getGameModule();
     g.getGameState().removeGameComponent(this);
 
-    final Window w = SwingUtilities.getWindowAncestor(theMap);
-    if (w != null) {
-      w.dispose();
-    }
-
     g.getToolBar().remove(getLaunchButton());
     idMgr.remove(this);
     if (picker != null) {
