@@ -1,4 +1,4 @@
-3.6.3 - ???
+3.6.3 - 29 December 2021
 
 * 11008: Prevent URLConnection cache from holding edited modules open on
     Windows
