@@ -22,11 +22,4 @@
         <method>*</method>
     </difference>
 
-    <difference>
-        <className>VASSAL/launch/TilingHandler</className>
-        <differenceType>6001</differenceType>
-        <field>retried</field>
-        <justification>Nothing external should use this</justification>
-    </difference>
-
 </differences>
