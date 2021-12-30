@@ -52,7 +52,7 @@ _$plus$_::: The modifier added to each die. +
 _$addToTotal$_::: The modifer added to the total. +
 _$keepDice$_::: The number of dice that were requested to be kept. This will be the _Value of N_ if one of the _keep_ options was selected, otherwise it will be the same as $nDice$. +
 _$keepCount$_::: The actual number of dice that were kept.
-_$rawRolls_::: A list of the raw rolls in order before 'keeping' or sorting.
+_$rawRolls$_::: A list of the raw rolls in order before 'keeping' or sorting.
 _$rawCount#$_::: The count of the number of rolls for each die side before 'keeping' or sorting. e.g. $rawCount1$ will be the raw number of '1's rolled.
 _$count#$_::: The count of the number of rolls for each die side after 'keeping' or sorting. e.g. $rawCount1$ will be the raw number of '1's rolled.
 
