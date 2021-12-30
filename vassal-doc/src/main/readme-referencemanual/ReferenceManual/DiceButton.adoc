@@ -83,7 +83,7 @@ _$count#$_::: The count of the number of rolls for each die side after 'keeping'
 *Keep criteria:*:: The criteria for keeping rolls can be selected from the following options: +
 _Keep rolls >= N_::: Only keep rolls greater than or equal to a specific value. +
 _Keep rolls == N_::: Only keep rolls equal to a specific number. +
-_Keep rolls <= N_::: Only keep rolls less than or equal to a specific value. +
+_Keep rolls \<= N_::: Only keep rolls less than or equal to a specific value. +
 _Keep largest N rolls_::: Only keep the largest rolls.
 _Keep smallest N rolls_::: Only keep the smallest rolls.
 
