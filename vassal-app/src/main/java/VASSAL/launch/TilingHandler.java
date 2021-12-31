@@ -27,9 +27,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -170,12 +167,7 @@ public class TilingHandler {
     return new Pair<>(tcount, maxpix);
   }
 
-  @SuppressWarnings("PMD.UseTryWithResources")
   protected void runSlicer(List<String> multi, final int tcount, int initheap) throws CancellationException, IOException {
-
-    final InetAddress lo = InetAddress.getByName(null);
-    final ServerSocket ssock = new ServerSocket(0, 0, lo);
-    final int port = ssock.getLocalPort();
 
     final List<String> args = new ArrayList<>(List.of(
       Info.getJavaBinPath().getAbsolutePath(),
@@ -184,7 +176,6 @@ public class TilingHandler {
       "-Xms" + initheap + "M", //NON-NLS
       "-Xmx" + maxheap_limit + "M", //NON-NLS
       "-Duser.home=" + System.getProperty("user.home"), //NON-NLS
-      "-DVASSAL.port=" + port, //NON-NLS
       "VASSAL.tools.image.tilecache.ZipFileImageTiler"
     ));
 
@@ -211,12 +202,11 @@ public class TilingHandler {
     );
 
     // set up the process
-    final InputStreamPump outP = new InputOutputStreamPump(null, System.out);
     final InputStreamPump errP = new InputOutputStreamPump(null, System.err);
 
     final ProcessWrapper proc = new ProcessLauncher().launch(
       null,
-      outP,
+      null,
       errP,
       args.toArray(new String[0])
     );
@@ -226,65 +216,55 @@ public class TilingHandler {
       multi.forEach(stdin::println);
     }
 
-    try (Socket csock = ssock.accept()) {
-      csock.shutdownOutput();
-      try (DataInputStream in = new DataInputStream(csock.getInputStream())) {
-        final Progressor progressor = new Progressor(0, tcount) {
-          @Override
-          protected void run(Pair<Integer, Integer> prog) {
-            pd.setProgress((100 * prog.second) / max);
+    // read state changes from child's stdout
+    try (DataInputStream in = new DataInputStream(proc.stdout)) {
+      final Progressor progressor = new Progressor(0, tcount) {
+        @Override
+        protected void run(Pair<Integer, Integer> prog) {
+          pd.setProgress((100 * prog.second) / max);
+        }
+      };
+
+      // setup the cancel button in the progress dialog
+      EDT.execute(() -> pd.addActionListener(e -> {
+        pd.setVisible(false);
+        proc.future.cancel(true);
+      }));
+
+      boolean done = false;
+      byte type;
+      while (!done) {
+        type = in.readByte();
+
+        switch (type) {
+        case STARTING_IMAGE:
+          final String ipath = in.readUTF();
+
+          EDT.execute(() -> {
+            pd.setLabel(Resources.getString("TilingHandler.tiling", ipath));
+            if (!pd.isVisible()) pd.setVisible(true);
+          });
+          break;
+
+        case TILE_WRITTEN:
+          progressor.increment();
+
+          if (progressor.get() >= tcount) {
+            pd.setVisible(false);
           }
-        };
+          break;
 
-        // setup the cancel button in the progress dialog
-        EDT.execute(() -> pd.addActionListener(e -> {
-          pd.setVisible(false);
-          proc.future.cancel(true);
-        }));
+        case TILING_FINISHED:
+          done = true;
+          break;
 
-        boolean done = false;
-        byte type;
-        while (!done) {
-          type = in.readByte();
-
-          switch (type) {
-          case STARTING_IMAGE:
-            final String ipath = in.readUTF();
-
-            EDT.execute(() -> {
-              pd.setLabel(Resources.getString("TilingHandler.tiling", ipath));
-              if (!pd.isVisible()) pd.setVisible(true);
-            });
-            break;
-
-          case TILE_WRITTEN:
-            progressor.increment();
-
-            if (progressor.get() >= tcount) {
-              pd.setVisible(false);
-            }
-            break;
-
-          case TILING_FINISHED:
-            done = true;
-            break;
-
-          default:
-            throw new IllegalStateException("bad type: " + type);
-          }
+        default:
+          throw new IllegalStateException("bad type: " + type);
         }
       }
     }
     catch (IOException e) {
       logger.error("Error during tiling", e); //NON-NLS
-    }
-    finally {
-      try {
-        ssock.close();
-      }
-      catch (IOException e) {
-        logger.error("Error while closing the server socket", e); //NON-NLS
-      }
     }
 
     // wait for the tiling process to end

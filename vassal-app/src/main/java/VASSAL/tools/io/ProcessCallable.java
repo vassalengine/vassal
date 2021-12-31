@@ -63,14 +63,6 @@ class ProcessCallable implements Callable<Integer> {
 
     if (proc == null) throw new IllegalArgumentException("proc == null");
 
-    if (stdoutPump == null) {
-      throw new IllegalArgumentException("stdoutPump == null");
-    }
-
-    if (stderrPump == null) {
-      throw new IllegalArgumentException("stderrPump == null");
-    }
-
     if (exec == null) throw new IllegalArgumentException("exec == null");
 
     this.proc = proc;
@@ -87,11 +79,16 @@ class ProcessCallable implements Callable<Integer> {
   @Override
   public Integer call() {
 
-    stdoutPump.setInputStream(proc.getInputStream());
-    stderrPump.setInputStream(proc.getErrorStream());
+    if (stdoutPump != null) {
+      stdoutPump.setInputStream(proc.getInputStream());
+    }
 
-    final Future<?> out_f = exec.submit(stdoutPump);
-    final Future<?> err_f = exec.submit(stderrPump);
+    if (stderrPump != null) {
+      stderrPump.setInputStream(proc.getErrorStream());
+    }
+
+    final Future<?> out_f = stdoutPump != null ? exec.submit(stdoutPump) : null;
+    final Future<?> err_f = stderrPump != null ? exec.submit(stderrPump) : null;
 
     try {
       final int result = proc.waitFor();
@@ -125,6 +122,10 @@ class ProcessCallable implements Callable<Integer> {
   }
 
   protected void stopPump(Future<?> f) {
+    if (f == null) {
+      return;
+    }
+
     try {
       f.get(1000L, TimeUnit.MILLISECONDS);
     }

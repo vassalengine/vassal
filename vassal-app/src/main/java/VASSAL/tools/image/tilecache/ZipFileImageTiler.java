@@ -27,9 +27,6 @@ import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -119,54 +116,10 @@ public class ZipFileImageTiler {
       final TileSlicer slicer = new TileSlicerImpl();
       final FileArchiveImageTiler tiler = new FileArchiveImageTiler();
 
-      final String portProp = System.getProperty("VASSAL.port");
-
-      if (portProp != null) {
-        writeToSocket(portProp, zpath, tiler, tpath, tw, th, ipaths, exec,
-          loader, slicer);
-      }
-      else {
-        writeToSystemErr(zpath, tiler, tpath, tw, th, ipaths, exec,
-          loader, slicer);
-      }
+      writeToOutputStream(System.out, zpath, tiler, tpath, tw, th, ipaths, exec, loader, slicer);
     }
     finally {
       logger.info("Exiting"); //NON-NLS
-    }
-  }
-
-  private static void writeToSystemErr(String zpath, FileArchiveImageTiler tiler, String tpath, int tw, int th,
-                                       String[] ipaths, ExecutorService exec, ImageLoader loader,
-                                       TileSlicer slicer) {
-
-    writeToOutputStream(System.err, zpath, tiler, tpath, tw, th, ipaths, exec,
-      loader, slicer);
-
-  }
-
-  private static void writeToSocket(String portProp, String zpath,
-                                    FileArchiveImageTiler tiler, String tpath, int tw, int th,
-                                    String[] ipaths, ExecutorService exec, ImageLoader loader,
-                                    TileSlicer slicer) {
-
-    final InetAddress lo;
-    try {
-      lo = InetAddress.getByName(null);
-    }
-    catch (UnknownHostException e) {
-      logger.error("Could not determine local IP address", e); //NON-NLS
-      return;
-    }
-
-    final int port = Integer.parseInt(portProp);
-    try (Socket sock = new Socket(lo, port)) {
-      sock.shutdownInput();
-
-      writeToOutputStream(sock.getOutputStream(), zpath, tiler, tpath, tw, th, ipaths, exec,
-        loader, slicer);
-    }
-    catch (IOException e) {
-      logger.error("Error while setting up socket", e); //NON-NLS
     }
   }
 
