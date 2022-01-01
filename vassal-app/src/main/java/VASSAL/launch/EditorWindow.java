@@ -42,6 +42,7 @@ import VASSAL.build.module.GameState;
 import VASSAL.command.AlertCommand;
 import VASSAL.command.Command;
 import VASSAL.configure.ConfigureTree;
+import VASSAL.configure.ListKeyCommandsDialog;
 import VASSAL.configure.RefreshPredefinedSetupsDialog;
 import VASSAL.configure.RemoveUnusedImagesDialog;
 import VASSAL.configure.SaveAction;
@@ -155,6 +156,7 @@ public abstract class EditorWindow extends JFrame {
 
     toolsMenu.add(mm.addKey("Editor.ModuleEditor.refresh_predefined"));
     toolsMenu.add(mm.addKey("Editor.UnusedImages.remove_unused_images"));
+    toolsMenu.add(mm.addKey("Editor.ListKeyCommands.list_key_commands"));
 
     if (SystemUtils.IS_OS_MAC) {
       mm.addToSection("Editor.MenuBar", editMenu);  //NON-NLS
@@ -241,6 +243,16 @@ public abstract class EditorWindow extends JFrame {
         new RemoveUnusedImagesDialog(EditorWindow.this).setVisible(true);
       }
     });
+
+    mm.addAction("Editor.ListKeyCommands.list_key_commands", new AbstractAction("List Key Commands") {  //NON-NLS
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        new ListKeyCommandsDialog(EditorWindow.this).setVisible(true);
+      }
+    });
+
 
     mm.addAction("Editor.ModuleEditor.refresh_predefined", new AbstractAction(Resources.getString(
       "Editor.ModuleEditor.refresh_predefined")) { //$NON-NLS-1$
