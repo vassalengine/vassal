@@ -41,7 +41,7 @@ public class ListKeyCommandsDialog extends JDialog {
 
     final JTable table = new JTable(
       rows.toArray(new Object[0][]),
-      new Object[] { "Key Command", "Source Name", "Source Description" }
+      new Object[] { "Key", "Name", "Source Name", "Source Description" }
     );
     table.setAutoCreateRowSorter(true);
 
@@ -54,6 +54,7 @@ public class ListKeyCommandsDialog extends JDialog {
     ok.addActionListener(e -> dispose());
 
     final JButton help = new JButton(Resources.getString("General.help"));
+    help.addActionListener(e -> help());
 
     final JPanel buttonPanel = new JPanel(new MigLayout("ins 0", "push[]rel[]push", "")); // NON-NLS
     buttonPanel.add(ok, "tag ok, sg 1"); //$NON-NLS-1$//
@@ -71,8 +72,17 @@ public class ListKeyCommandsDialog extends JDialog {
     if (keys != null) {
       for (final NamedKeyStroke k : keys) {
         if (k != null) {
-          final String s = k.isNamed() ? k.getName() : KeyNamer.getKeyString(k.getStroke());
-          if (!StringUtils.isEmpty(s)) { // Could check a filter here?
+          String cmd_key = null;
+          String cmd_name = null;
+
+          if (k.isNamed()) {
+            cmd_name = k.getName();
+          }
+          else {
+            cmd_key = KeyNamer.getKeyString(k.getStroke());
+          }
+
+          if (!StringUtils.isEmpty(cmd_key) || !StringUtils.isEmpty(cmd_name)) { // Could check a filter here?
             String name = null;
             String desc = null;
 
@@ -86,7 +96,7 @@ public class ListKeyCommandsDialog extends JDialog {
               }
             }
 
-            list.add(new Object[] { s, name, desc });
+            list.add(new Object[] { cmd_key, cmd_name, name, desc });
           }
         }
       }
