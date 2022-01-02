@@ -83,20 +83,20 @@ public class ListKeyCommandsDialog extends JDialog {
           }
 
           if (!StringUtils.isEmpty(cmd_key) || !StringUtils.isEmpty(cmd_name)) { // Could check a filter here?
-            String name = null;
-            String desc = null;
+            String src_name = null;
+            String src_desc = null;
 
             if (target instanceof AbstractConfigurable) {
-              name = ((AbstractConfigurable)target).getConfigureName();
+              src_name = ((AbstractConfigurable)target).getConfigureName();
             }
             else if (target instanceof GamePiece) {
-              name = ((GamePiece)target).getName();
+              src_name = ((GamePiece)target).getName();
               if (target instanceof Decorator) {
-                desc = ((Decorator) target).getDescription();
+                src_desc = ((Decorator) target).getDescription();
               }
             }
 
-            list.add(new Object[] { cmd_key, cmd_name, name, desc });
+            list.add(new Object[] { cmd_key, cmd_name, src_name, src_desc });
           }
         }
       }
