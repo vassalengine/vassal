@@ -107,7 +107,10 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
 
   @Override
   public void sendToOthers(Command c) {
-    sendToOthers(encoder.encode(c));
+    final String s = encoder.encode(c);
+    if (s != null) {
+      sendToOthers(s);
+    }
   }
 
   public void sendToAll(String msg) {
