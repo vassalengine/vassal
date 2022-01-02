@@ -21,18 +21,20 @@ import net.miginfocom.swing.MigLayout;
 
 import org.apache.commons.lang3.StringUtils;
 
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.table.AbstractTableModel;
 import java.awt.Frame;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.AbstractTableModel;
 
 public class ListKeyCommandsDialog extends JDialog {
   private static final long serialVersionUID = 1L;
@@ -68,19 +70,23 @@ public class ListKeyCommandsDialog extends JDialog {
   private static class MyTableModel extends AbstractTableModel {
     private static final long serialVersionUID = 1L;
 
+    private final String[] filters;
+    private final List<String[]> data;
     private final List<String[]> rows;
 
     private final String[] columnNames = {
       "Key", "Name", "Source Name", "Source Description"
     };
 
-    public MyTableModel(List<String[]> rows) {
-      this.rows = rows;
+    public MyTableModel(List<String[]> data) {
+      filters = new String[columnNames.length];
+      this.data = data;
+      rows = new ArrayList<>(data);
     }
 
     @Override
     public int getRowCount() {
-      return rows.size();
+      return rows.size() + 1;
     }
 
     @Override
@@ -94,8 +100,43 @@ public class ListKeyCommandsDialog extends JDialog {
     }
 
     @Override
+    public boolean isCellEditable(int row, int col) {
+      return row == 0;
+    }
+
+    @Override
     public Object getValueAt(int row, int column) {
-      return rows.get(row)[column];
+      return row == 0 ? filters[column] : row < rows.size() ? rows.get(row)[column] : null;
+    }
+
+    private boolean keepRow(String[] r) {
+      for (int i = 0; i < filters.length; ++i) {
+        if (filters[i] != null && (r[i] == null || !r[i].contains(filters[i]))) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    @Override
+    public void setValueAt(Object value, int row, int col) {
+      if (row == 0) {
+        if (Objects.equals(filters[col], value)) {
+          return;
+        }
+
+        filters[col] = value.toString();
+
+        rows.clear();
+
+        for (final String[] r : data) {
+          if (keepRow(r)) {
+            rows.add(r);
+          }
+        }
+
+        fireTableDataChanged();
+      }
     }
   }
 
