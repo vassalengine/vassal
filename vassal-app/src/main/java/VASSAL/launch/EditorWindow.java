@@ -255,9 +255,9 @@ public abstract class EditorWindow extends JFrame {
       public void actionPerformed(ActionEvent e) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
-        new SwingWorker<List<Object[]>, Void>() {
+        new SwingWorker<List<String[]>, Void>() {
           @Override
-          public List<Object[]> doInBackground() {
+          public List<String[]> doInBackground() {
             return ListKeyCommandsDialog.findAllKeyCommands();
           }
 

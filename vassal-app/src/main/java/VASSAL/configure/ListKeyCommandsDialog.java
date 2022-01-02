@@ -26,6 +26,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.AbstractTableModel;
 import java.awt.Frame;
 import java.io.File;
 import java.net.MalformedURLException;
@@ -36,13 +37,10 @@ import java.util.List;
 public class ListKeyCommandsDialog extends JDialog {
   private static final long serialVersionUID = 1L;
 
-  public ListKeyCommandsDialog(Frame owner, List<Object[]> rows) {
+  public ListKeyCommandsDialog(Frame owner, List<String[]> rows) {
     super(owner, Resources.getString("Editor.ListKeyCommands.remove_unused_images"), true);
 
-    final JTable table = new JTable(
-      rows.toArray(new Object[0][]),
-      new Object[] { "Key", "Name", "Source Name", "Source Description" }
-    );
+    final JTable table = new JTable(new MyTableModel(rows));
     table.setAutoCreateRowSorter(true);
 
     final JPanel panel = new JPanel(new MigLayout("fill", "[]", "[]unrel[]"));  //NON-NLS
@@ -67,7 +65,41 @@ public class ListKeyCommandsDialog extends JDialog {
     SwingUtils.repack(this);
   }
 
-  private static void checkSearchTarget(SearchTarget target, List<Object[]> list) {
+  private static class MyTableModel extends AbstractTableModel {
+    private static final long serialVersionUID = 1L;
+
+    private final List<String[]> rows;
+
+    private final String[] columnNames = {
+      "Key", "Name", "Source Name", "Source Description"
+    };
+
+    public MyTableModel(List<String[]> rows) {
+      this.rows = rows;
+    }
+
+    @Override
+    public int getRowCount() {
+      return rows.size();
+    }
+
+    @Override
+    public int getColumnCount() {
+      return columnNames.length;
+    }
+
+    @Override
+    public String getColumnName(int col) {
+      return columnNames[col];
+    }
+
+    @Override
+    public Object getValueAt(int row, int column) {
+      return rows.get(row)[column];
+    }
+  }
+
+  private static void checkSearchTarget(SearchTarget target, List<String[]> list) {
     final List<NamedKeyStroke> keys = target.getNamedKeyStrokeList();
     if (keys != null) {
       for (final NamedKeyStroke k : keys) {
@@ -96,14 +128,14 @@ public class ListKeyCommandsDialog extends JDialog {
               }
             }
 
-            list.add(new Object[] { cmd_key, cmd_name, src_name, src_desc });
+            list.add(new String[] { cmd_key, cmd_name, src_name, src_desc });
           }
         }
       }
     }
   }
 
-  private static void checkForKeyCommands(AbstractConfigurable target, List<Object[]> list) {
+  private static void checkForKeyCommands(AbstractConfigurable target, List<String[]> list) {
     GamePiece p;
     boolean protoskip;
     if (target instanceof GamePiece) {
@@ -145,7 +177,7 @@ public class ListKeyCommandsDialog extends JDialog {
     }
   }
 
-  private static void recursivelyFindKeyCommands(AbstractBuildable target, List<Object[]> list) {
+  private static void recursivelyFindKeyCommands(AbstractBuildable target, List<String[]> list) {
     for (final Buildable b : target.getBuildables()) {
       if (b instanceof AbstractConfigurable) {
         checkForKeyCommands((AbstractConfigurable)b, list);
@@ -157,8 +189,8 @@ public class ListKeyCommandsDialog extends JDialog {
     }
   }
 
-  public static List<Object[]> findAllKeyCommands() {
-    final List<Object[]> keyCommandList = new ArrayList<>();
+  public static List<String[]> findAllKeyCommands() {
+    final List<String[]> keyCommandList = new ArrayList<>();
     recursivelyFindKeyCommands(GameModule.getGameModule(), keyCommandList);
     return keyCommandList;
   }
