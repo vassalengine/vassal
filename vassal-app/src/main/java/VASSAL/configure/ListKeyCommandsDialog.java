@@ -15,6 +15,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.search.SearchTarget;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.icon.IconFamily;
 import VASSAL.tools.swing.SwingUtils;
 
 import net.miginfocom.swing.MigLayout;
@@ -27,14 +28,20 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
+//import java.util.Objects;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.RowFilter;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 public class ListKeyCommandsDialog extends JDialog {
   private static final long serialVersionUID = 1L;
@@ -42,10 +49,64 @@ public class ListKeyCommandsDialog extends JDialog {
   public ListKeyCommandsDialog(Frame owner, List<String[]> rows) {
     super(owner, Resources.getString("Editor.ListKeyCommands.remove_unused_images"), true);
 
-    final JTable table = new JTable(new MyTableModel(rows));
-    table.setAutoCreateRowSorter(true);
+    final JTextField filter = new JTextField(25);
 
-    final JPanel panel = new JPanel(new MigLayout("fill", "[]", "[]unrel[]"));  //NON-NLS
+    final MyTableModel tmod = new MyTableModel(rows);
+    final JTable table = new JTable(tmod);
+
+    final TableRowSorter trs = new TableRowSorter(tmod);
+    table.setRowSorter(trs);
+    trs.setSortsOnUpdates(true);
+
+    trs.setRowFilter(new RowFilter<TableModel, Integer>() {
+      @Override
+      public boolean include(Entry<? extends TableModel, ? extends Integer> entry) {
+        // show row on an empty filter
+        final String f = filter.getText();
+        if (f == null) {
+          return true;
+        }
+
+        // show row containing the filter as a substring
+        for (int i = entry.getValueCount() - 1; i >= 0; i--) {
+          final String v = entry.getStringValue(i);
+          if (v != null && v.contains(f)) {
+            return true;
+          }
+        }
+        return false;
+      }
+    });
+
+    final JPanel panel = new JPanel(new MigLayout("fill", "[]", "[]rel[]unrel[]"));  //NON-NLS
+
+    panel.add(filter, "split");
+
+    filter.getDocument().addDocumentListener(new DocumentListener() {
+      @Override
+      public void insertUpdate(DocumentEvent e) {
+        update();
+      }
+
+      @Override
+      public void removeUpdate(DocumentEvent e) {
+        update();
+      }
+
+      @Override
+      public void changedUpdate(DocumentEvent e) {
+        update();
+      }
+
+      private void update() {
+        trs.allRowsChanged();
+      }
+    });
+
+    final NoInsetButton clear = new NoInsetButton("no", IconFamily.XSMALL, "Editor.clear");
+    clear.addActionListener(e -> filter.setText(null));
+    panel.add(clear, "wrap");
+
 
     final JScrollPane scroll = new JScrollPane(table);
     panel.add(scroll, "grow, push, wrap");
@@ -70,23 +131,19 @@ public class ListKeyCommandsDialog extends JDialog {
   private static class MyTableModel extends AbstractTableModel {
     private static final long serialVersionUID = 1L;
 
-    private final String[] filters;
-    private final List<String[]> data;
     private final List<String[]> rows;
 
     private final String[] columnNames = {
       "Key", "Name", "Source Name", "Source Description"
     };
 
-    public MyTableModel(List<String[]> data) {
-      filters = new String[columnNames.length];
-      this.data = data;
-      rows = new ArrayList<>(data);
+    public MyTableModel(List<String[]> rows) {
+      this.rows = rows;
     }
 
     @Override
     public int getRowCount() {
-      return rows.size() + 1;
+      return rows.size();
     }
 
     @Override
@@ -100,43 +157,8 @@ public class ListKeyCommandsDialog extends JDialog {
     }
 
     @Override
-    public boolean isCellEditable(int row, int col) {
-      return row == 0;
-    }
-
-    @Override
     public Object getValueAt(int row, int column) {
-      return row == 0 ? filters[column] : row < rows.size() ? rows.get(row)[column] : null;
-    }
-
-    private boolean keepRow(String[] r) {
-      for (int i = 0; i < filters.length; ++i) {
-        if (filters[i] != null && (r[i] == null || !r[i].contains(filters[i]))) {
-          return false;
-        }
-      }
-      return true;
-    }
-
-    @Override
-    public void setValueAt(Object value, int row, int col) {
-      if (row == 0) {
-        if (Objects.equals(filters[col], value)) {
-          return;
-        }
-
-        filters[col] = value.toString();
-
-        rows.clear();
-
-        for (final String[] r : data) {
-          if (keepRow(r)) {
-            rows.add(r);
-          }
-        }
-
-        fireTableDataChanged();
-      }
+      return row < rows.size() ? rows.get(row)[column] : null;
     }
   }
 
