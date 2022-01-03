@@ -1,3 +1,7 @@
+3.6.4 - ???
+
+* 11020: Don't display lock option for P2P rooms, which aren't lockable
+
 3.6.3 - 29 December 2021
 
 * 11008: Prevent URLConnection cache from holding edited modules open on
