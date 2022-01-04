@@ -263,6 +263,11 @@ public class CounterGlobalKeyCommand extends Decorator
   }
 
   @Override
+  public String getDescriptionField() {
+    return description;
+  }
+
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GlobalKeyCommand.html"); // NON-NLS
   }

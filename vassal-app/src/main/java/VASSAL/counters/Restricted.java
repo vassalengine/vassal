@@ -76,6 +76,11 @@ public class Restricted extends Decorator implements EditablePiece {
     return Resources.getString("Editor.Restricted.trait_description");
   }
 
+  @Override
+  public String getDescriptionField() {
+    return description;
+  }
+
   public void setDescription(String description) {
     this.description = description;
   }

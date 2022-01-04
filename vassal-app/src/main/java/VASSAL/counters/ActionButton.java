@@ -180,6 +180,11 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
   }
 
   @Override
+  public String getDescriptionField() {
+    return description;
+  }
+
+  @Override
   public void setMap(Map m) {
     // Register the map for button pushes
     pusher.register(m);

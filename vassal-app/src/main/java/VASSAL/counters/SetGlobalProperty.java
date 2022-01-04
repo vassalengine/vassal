@@ -86,6 +86,11 @@ public class SetGlobalProperty extends DynamicProperty {
   }
 
   @Override
+  public String getDescriptionField() {
+    return description;
+  }
+
+  @Override
   public void mySetType(String s) {
     final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');
     sd.nextToken(); // Skip over command prefix

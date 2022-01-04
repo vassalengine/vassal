@@ -102,6 +102,11 @@ public class Translate extends Decorator implements TranslatablePiece {
   }
 
   @Override
+  public String getDescriptionField() {
+    return description;
+  }
+
+  @Override
   public void mySetType(String type) {
     type = type.substring(ID.length());
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');

@@ -722,6 +722,11 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
   }
 
   @Override
+  public String getDescriptionField() {
+    return description;
+  }
+
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("SendToLocation.html"); // NON-NLS
   }

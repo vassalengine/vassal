@@ -937,5 +937,13 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
     }
     return s;
   }
+
+  /**
+   * If Decorator contains a description *field*, returns the current contents of it.
+   * @return contents of "description" field, if it exists.
+   */
+  public String getDescriptionField() {
+    return "";
+  }
 }
 

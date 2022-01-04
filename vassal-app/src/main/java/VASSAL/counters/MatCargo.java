@@ -607,6 +607,11 @@ public class MatCargo extends Decorator implements TranslatablePiece {
   }
 
   @Override
+  public String getDescriptionField() {
+    return desc;
+  }
+
+  @Override
   public boolean testEquals(Object o) {
     if (! (o instanceof MatCargo)) return false;
     final MatCargo c = (MatCargo) o;

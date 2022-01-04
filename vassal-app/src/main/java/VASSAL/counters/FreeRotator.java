@@ -835,6 +835,11 @@ public class FreeRotator extends Decorator
   }
 
   @Override
+  public String getDescriptionField() {
+    return description;
+  }
+
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Rotate.html"); //$NON-NLS-1$//
   }

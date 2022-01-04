@@ -1,3 +1,21 @@
+/*
+ *
+ * Copyright (c) 2022 by the Vassal Team, Joel Uckelman, Brian Reynolds
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
+ */
+
 package VASSAL.configure;
 
 import VASSAL.build.AbstractBuildable;
@@ -22,6 +40,7 @@ import net.miginfocom.swing.MigLayout;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.io.File;
 import java.net.MalformedURLException;
@@ -47,12 +66,18 @@ public class ListKeyCommandsDialog extends JDialog {
   private static final long serialVersionUID = 1L;
 
   public ListKeyCommandsDialog(Frame owner, List<String[]> rows) {
-    super(owner, Resources.getString("Editor.ListKeyCommands.remove_unused_images"), true);
+    super(owner, Resources.getString("Editor.ListKeyCommands.list_key_commands"), true);
 
     final JTextField filter = new JTextField(25);
 
     final MyTableModel tmod = new MyTableModel(rows);
     final JTable table = new JTable(tmod);
+
+    table.getColumnModel().getColumn(0).setPreferredWidth(114);
+    table.getColumnModel().getColumn(1).setPreferredWidth(140);
+    table.getColumnModel().getColumn(2).setPreferredWidth(200);
+    table.getColumnModel().getColumn(3).setPreferredWidth(200);
+    table.getColumnModel().getColumn(4).setPreferredWidth(800);
 
     final TableRowSorter trs = new TableRowSorter(tmod);
     table.setRowSorter(trs);
@@ -80,7 +105,9 @@ public class ListKeyCommandsDialog extends JDialog {
 
     final JPanel panel = new JPanel(new MigLayout("fill", "[]", "[]rel[]unrel[]"));  //NON-NLS
 
-    panel.add(filter, "split");
+    panel.setPreferredSize(new Dimension(1400, 700));
+
+    panel.add(filter, "split"); //NON-NLS
 
     filter.getDocument().addDocumentListener(new DocumentListener() {
       @Override
@@ -103,13 +130,13 @@ public class ListKeyCommandsDialog extends JDialog {
       }
     });
 
-    final NoInsetButton clear = new NoInsetButton("no", IconFamily.XSMALL, "Editor.clear");
+    final NoInsetButton clear = new NoInsetButton("no", IconFamily.XSMALL, "Editor.clear"); //NON-NLS
     clear.addActionListener(e -> filter.setText(null));
-    panel.add(clear, "wrap");
+    panel.add(clear, "wrap"); //NON-NLS
 
 
     final JScrollPane scroll = new JScrollPane(table);
-    panel.add(scroll, "grow, push, wrap");
+    panel.add(scroll, "grow, push, wrap"); //NON-NLS
 
     final JButton ok = new JButton(Resources.getString("General.ok"));
     ok.addActionListener(e -> dispose());
@@ -119,7 +146,7 @@ public class ListKeyCommandsDialog extends JDialog {
 
     final JPanel buttonPanel = new JPanel(new MigLayout("ins 0", "push[]rel[]push", "")); // NON-NLS
     buttonPanel.add(ok, "tag ok, sg 1"); //$NON-NLS-1$//
-    buttonPanel.add(help, "tag help, sg 1");
+    buttonPanel.add(help, "tag help, sg 1"); //NON-NLS
     panel.add(buttonPanel, "growx"); // NON-NLS
 
     setLayout(new MigLayout("insets dialog, fill")); // NON-NLS
@@ -134,7 +161,7 @@ public class ListKeyCommandsDialog extends JDialog {
     private final List<String[]> rows;
 
     private final String[] columnNames = {
-      "Key", "Name", "Source Name", "Source Description"
+      "Key Command", "Named Command", "Source Type", "Source Name", "Source Description"
     };
 
     public MyTableModel(List<String[]> rows) {
@@ -162,7 +189,7 @@ public class ListKeyCommandsDialog extends JDialog {
     }
   }
 
-  private static void checkSearchTarget(SearchTarget target, List<String[]> list) {
+  private static void checkSearchTarget(SearchTarget target, List<String[]> list, AbstractConfigurable configurable) {
     final List<NamedKeyStroke> keys = target.getNamedKeyStrokeList();
     if (keys != null) {
       for (final NamedKeyStroke k : keys) {
@@ -180,18 +207,32 @@ public class ListKeyCommandsDialog extends JDialog {
           if (!StringUtils.isEmpty(cmd_key) || !StringUtils.isEmpty(cmd_name)) { // Could check a filter here?
             String src_name = null;
             String src_desc = null;
+            String src_type = null;
 
             if (target instanceof AbstractConfigurable) {
               src_name = ((AbstractConfigurable)target).getConfigureName();
+
+              if (target instanceof ComponentDescription) {
+                src_desc = ((ComponentDescription)target).getDescription();
+              }
+
+              src_type = ((AbstractConfigurable)target).getTypeName();
             }
             else if (target instanceof GamePiece) {
-              src_name = ((GamePiece)target).getName();
+              if (configurable instanceof PrototypeDefinition)  {
+                src_name = "Prototype: " + configurable.getConfigureName();
+              }
+              else {
+                src_name = ((GamePiece) target).getName();
+              }
+
               if (target instanceof Decorator) {
-                src_desc = ((Decorator) target).getDescription();
+                src_desc = ((Decorator) target).getDescriptionField();
+                src_type = ((Decorator) target).getBaseDescription();
               }
             }
 
-            list.add(new String[] { cmd_key, cmd_name, src_name, src_desc });
+            list.add(new String[] { cmd_key, cmd_name, src_type, src_name, src_desc });
           }
         }
       }
@@ -214,7 +255,7 @@ public class ListKeyCommandsDialog extends JDialog {
       protoskip = true;
     }
     else  {
-      checkSearchTarget(target, list);
+      checkSearchTarget(target, list, target);
       return;
     }
 
@@ -233,7 +274,7 @@ public class ListKeyCommandsDialog extends JDialog {
     for (final GamePiece piece : pieces) {
       if (!protoskip) { // Skip the fake "Basic Piece" on a Prototype definition
         if (piece instanceof SearchTarget) {
-          checkSearchTarget((SearchTarget)piece, list);
+          checkSearchTarget((SearchTarget)piece, list, target);
         }
       }
       protoskip = false;

@@ -475,6 +475,11 @@ public class Immobilized extends Decorator implements EditablePiece {
   }
 
   @Override
+  public String getDescriptionField() {
+    return description;
+  }
+
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("NonStacking.html"); // NON-NLS
   }
