@@ -18,21 +18,6 @@
 
 package VASSAL.build.module.turn;
 
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Arrays;
-
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-
-import org.apache.commons.lang3.ArrayUtils;
-
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.BooleanConfigurer;
@@ -43,6 +28,22 @@ import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
+
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Arrays;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+
+import net.miginfocom.swing.MigLayout;
+
+import org.apache.commons.lang3.ArrayUtils;
 
 public class ListTurnLevel extends TurnLevel implements ActionListener {
 
@@ -387,7 +388,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
 
     public ConfigDialog() {
       super(GameModule.getGameModule().getPlayerWindow(), Resources.getString("TurnTracker.configure2", getConfigureName())); //$NON-NLS-1$
-      setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+      setLayout(new MigLayout("wrap 2", "[center]rel[left]"));
 
       if (configFirst) {
         if (prompt == null) {
@@ -403,12 +404,12 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
             }
           }
         });
-        add(firstItem.getControls());
+        add(firstItem.getControls(), "span 2");
       }
 
       if (configList) {
 
-        add(new JLabel(Resources.getString("TurnTracker.turn_off"))); //$NON-NLS-1$
+        add(new JLabel(Resources.getString("TurnTracker.turn_off")), "span 2"); //$NON-NLS-1$
         for (int i = 0; i < list.length; i++) {
           final BooleanConfigurer b = new BooleanConfigurer(null, list[i], active[i]);
           b.addPropertyChangeListener(e -> {
@@ -421,10 +422,11 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
             }
           });
           add(b.getControls());
+          add(new JLabel(list[i]));
         }
       }
 
-      final JPanel p = new JPanel();
+      final JPanel p = new JPanel(new MigLayout("ins 0", "push[]rel[]push"));
 
       final JButton saveButton = new JButton(Resources.getString(Resources.SAVE));
       saveButton.setToolTipText(Resources.getString("TurnTracker.save_changes")); //$NON-NLS-1$
@@ -436,7 +438,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
       cancelButton.addActionListener(e -> setVisible(false));
       p.add(cancelButton);
 
-      add(p);
+      add(p, "span 2, growx");
       pack();
     }
   }
