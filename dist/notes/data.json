@@ -22,7 +22,9 @@
       "new_features": [
       ],
       "bug_fixes": [
-        { "num": 11020, "desc": "Don't display lock option for P2P rooms, which aren't lockable" }
+        { "num": 11024, "desc": "Communicating with tiler over socket fails for some users; use stdout instead" },
+        { "num": 11020, "desc": "Don't display lock option for P2P rooms, which aren't lockable" },
+        { "num": 11011, "desc": "Fixed typo in DiceButton docs" }
       ],
       "other_improvements": [
       ]
