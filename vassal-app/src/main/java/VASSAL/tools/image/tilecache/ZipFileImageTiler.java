@@ -79,7 +79,8 @@ public class ZipFileImageTiler {
 
       // Ensure that exceptions are logged.
       Thread.setDefaultUncaughtExceptionHandler(
-        (thread, thrown) -> logger.error(thread.getName(), thrown));
+        (thread, thrown) -> logger.error(thread.getName(), thrown)
+      );
 
       args = decodeArgs(args);
 
@@ -119,15 +120,20 @@ public class ZipFileImageTiler {
       final TileSlicer slicer = new TileSlicerImpl();
       final FileArchiveImageTiler tiler = new FileArchiveImageTiler();
 
+      // TODO: Remove after next VASL & VSQL releases?
       final String portProp = System.getProperty("VASSAL.port");
 
       if (portProp != null) {
-        writeToSocket(portProp, zpath, tiler, tpath, tw, th, ipaths, exec,
-          loader, slicer);
+        writeToSocket(
+          portProp, zpath, tiler, tpath, tw, th,
+          ipaths, exec, loader, slicer
+        );
       }
       else {
-        writeToSystemErr(zpath, tiler, tpath, tw, th, ipaths, exec,
-          loader, slicer);
+        writeToStream(
+          System.out, zpath, tiler, tpath, tw, th,
+          ipaths, exec, loader, slicer
+        );
       }
     }
     finally {
@@ -135,15 +141,7 @@ public class ZipFileImageTiler {
     }
   }
 
-  private static void writeToSystemErr(String zpath, FileArchiveImageTiler tiler, String tpath, int tw, int th,
-                                       String[] ipaths, ExecutorService exec, ImageLoader loader,
-                                       TileSlicer slicer) {
-
-    writeToOutputStream(System.err, zpath, tiler, tpath, tw, th, ipaths, exec,
-      loader, slicer);
-
-  }
-
+  // TODO: Remove after next VASL & VSQL releases?
   private static void writeToSocket(String portProp, String zpath,
                                     FileArchiveImageTiler tiler, String tpath, int tw, int th,
                                     String[] ipaths, ExecutorService exec, ImageLoader loader,
@@ -162,17 +160,18 @@ public class ZipFileImageTiler {
     try (Socket sock = new Socket(lo, port)) {
       sock.shutdownInput();
 
-      writeToOutputStream(sock.getOutputStream(), zpath, tiler, tpath, tw, th, ipaths, exec,
-        loader, slicer);
+      writeToStream(
+        sock.getOutputStream(), zpath, tiler, tpath, tw, th,
+        ipaths, exec, loader, slicer
+      );
     }
     catch (IOException e) {
       logger.error("Error while setting up socket", e); //NON-NLS
     }
   }
 
-  private static void writeToOutputStream(OutputStream os, String zpath, FileArchiveImageTiler tiler, String tpath, int tw, int th, String[] ipaths, ExecutorService exec,
+  private static void writeToStream(OutputStream os, String zpath, FileArchiveImageTiler tiler, String tpath, int tw, int th, String[] ipaths, ExecutorService exec,
                                           ImageLoader loader, TileSlicer slicer) {
-
     try (DataOutputStream out = new DataOutputStream(os)) {
       final Callback<String> imageL = ipath -> {
         out.writeByte(STARTING_IMAGE);
