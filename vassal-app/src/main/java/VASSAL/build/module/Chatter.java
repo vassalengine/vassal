@@ -21,14 +21,20 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -36,6 +42,7 @@ import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultEditorKit;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
@@ -142,8 +149,64 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     add(scroll);
     add(input);
 
+    final Action copyAction = new DefaultEditorKit.CopyAction();
+    copyAction.putValue(Action.NAME, "Copy Text");
+
+    //final Action copyAllAction = new CopyAction(conversationPane);
+
+    final JPopupMenu pm = new JPopupMenu();
+    pm.add(copyAction);
+    //pm.add(copyAllAction);
+
+    conversationPane.addMouseListener(new MouseAdapter() {
+
+      @Override
+      public void mouseClicked(MouseEvent e) {
+        if (e.isPopupTrigger()) {
+          doPopup(e);
+        }
+      }
+
+      @Override
+      public void mouseReleased(MouseEvent e) {
+        if (e.isPopupTrigger()) {
+          doPopup(e);
+        }
+      }
+
+      protected void doPopup(MouseEvent e) {
+        pm.show(e.getComponent(), e.getX(), e.getY());
+      }
+
+    });
+
+
     setPreferredSize(new Dimension(input.getMaximumSize().width, input.getPreferredSize().height + conversationPane.getPreferredSize().height));
   }
+
+
+  public class CopyAction extends AbstractAction {
+    private JTextPane pane;
+
+    public CopyAction(JTextPane pane) {
+      this.pane = pane;
+      putValue(NAME, "Copy");
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      //JComponent target = getTextComponent
+      //JTextComponent target = getTextComponent(e);
+      //if (target != null) {
+      //  target.copy();
+      //}
+
+      //ActionEvent.
+
+      //pane.getActionMap().get("copy").actionPerformed(new ActionEvent(pane, e.getID(), ""));
+    }
+  }
+
 
 
   /**

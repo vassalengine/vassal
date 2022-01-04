@@ -42,16 +42,25 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.Point;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-//import java.util.Objects;
 
+import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -78,6 +87,32 @@ public class ListKeyCommandsDialog extends JDialog {
     table.getColumnModel().getColumn(2).setPreferredWidth(200);
     table.getColumnModel().getColumn(3).setPreferredWidth(200);
     table.getColumnModel().getColumn(4).setPreferredWidth(800);
+
+
+    final JPopupMenu pm = new JPopupMenu();
+    pm.add(new CopyAction(table));
+
+    table.addMouseListener(new MouseAdapter() {
+
+      @Override
+      public void mouseClicked(MouseEvent e) {
+        if (e.isPopupTrigger()) {
+          doPopup(e);
+        }
+      }
+
+      @Override
+      public void mouseReleased(MouseEvent e) {
+        if (e.isPopupTrigger()) {
+          doPopup(e);
+        }
+      }
+
+      protected void doPopup(MouseEvent e) {
+        pm.show(e.getComponent(), e.getX(), e.getY());
+      }
+
+    });
 
     final TableRowSorter trs = new TableRowSorter(tmod);
     table.setRowSorter(trs);
@@ -154,6 +189,21 @@ public class ListKeyCommandsDialog extends JDialog {
 
     SwingUtils.repack(this);
   }
+
+  public class CopyAction extends AbstractAction {
+    private JTable table;
+
+    public CopyAction(JTable table) {
+      this.table = table;
+      putValue(NAME, "Copy");
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      table.getActionMap().get("copy").actionPerformed(new ActionEvent(table, e.getID(), ""));
+    }
+  }
+
 
   private static class MyTableModel extends AbstractTableModel {
     private static final long serialVersionUID = 1L;
