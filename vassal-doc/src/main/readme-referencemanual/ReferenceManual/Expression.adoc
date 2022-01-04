@@ -58,11 +58,11 @@ Parentheses can be used to organize operations and/or override the ordinary orde
 |*Comparison* |> Greater than +
 < Less than +
 >= Not less than +
-<= Not greater than +
+\<= Not greater than +
 == Equals +
 != Not Equals +
 =~ Match regular Expression |{height > 10 && width >= Level} +
-{length < maxlength \|\| breadth <= maxbreadth} +
+{length < maxlength \|\| breadth \<= maxbreadth} +
 {Nation=="Germany"} +
 {Army!="Allied"} +
 {Type=="^A$"} |Comparison operators are used primarily in <<PropertyMatchExpression.adoc#top,Property Match Expressions>> and also with the ? (ternary) operator.

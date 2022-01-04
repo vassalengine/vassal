@@ -18,7 +18,7 @@ If a referenced Property name is not defined in a Game Piece, the VASSAL looks f
 
 Properties can be matched using <<Expression.adoc#top,Expressions>> like _name == value_ for an exact match, _name != value_ for a non-match, or _name =~ value_ for a https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html[regular expression] match.
 For properties that return a numeric value (e.g.
-the level in a <<Layer.adoc#Properties,Layer)>> you can use _<_, _<=_, _>_, and _>=._  You can combine expressions using && for logical AND and || for a logical OR.
+the level in a <<Layer.adoc#Properties,Layer)>> you can use _<_, _\<=_, _>_, and _>=._  You can combine expressions using && for logical AND and || for a logical OR.
 
 *Components that use properties*
 
