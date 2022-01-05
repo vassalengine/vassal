@@ -188,6 +188,7 @@ public class ListKeyCommandsDialog extends JDialog {
 
   // Copy action for right click context menu
   public static class CopyAction extends AbstractAction {
+    private static final long serialVersionUID = 1L;
     private final JTable table;
 
     public CopyAction(JTable table) {
