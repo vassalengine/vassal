@@ -21,39 +21,15 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.LinkedHashSet;
-import java.util.List;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BoxLayout;
-import javax.swing.JComponent;
-import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -63,21 +39,11 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.TransferHandler;
-import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultEditorKit;
-import javax.swing.text.Document;
-import javax.swing.text.Element;
-import javax.swing.text.JTextComponent;
-import javax.swing.text.MutableAttributeSet;
-import javax.swing.text.Style;
-import javax.swing.text.StyledDocument;
-import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
-import javax.swing.text.html.parser.ParserDelegator;
 
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -182,7 +148,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     add(input);
 
     final Action copyAction = new DefaultEditorKit.CopyAction();
-    copyAction.putValue(Action.NAME, "Copy");
+    copyAction.putValue(Action.NAME, Resources.getString("General.copy"));
 
     final JPopupMenu pm = new JPopupMenu();
     pm.add(copyAction);
@@ -213,20 +179,6 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     setPreferredSize(new Dimension(input.getMaximumSize().width, input.getPreferredSize().height + conversationPane.getPreferredSize().height));
   }
 
-
-  public class CopyAction extends AbstractAction {
-    private JTextPane pane;
-
-    public CopyAction(JTextPane pane) {
-      this.pane = pane;
-      putValue(NAME, "Copy");
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      pane.getActionMap().get("copy").actionPerformed(new ActionEvent(pane, e.getID(), ""));
-    }
-  }
 
   /**
    * Because our Chatters make themselves visible in their constructor, providing a way for an overriding class to
@@ -271,7 +223,6 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
    * @param html_allowed - flag if html_processing is enabled for this message (allows console to apply security considerations)
    * @return true        - if was accepted as a console command
    */
-  @SuppressWarnings("unused")
   public boolean consoleHook(String s, String style, boolean html_allowed) {
     return GameModule.getGameModule().getConsole().exec(s, style, html_allowed);
   }

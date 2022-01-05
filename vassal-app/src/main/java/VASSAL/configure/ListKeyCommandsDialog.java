@@ -42,15 +42,10 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.Point;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -71,6 +66,9 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
+/**
+ * Editor tool for finding all the key commands (and named key commands) in a module, and applying sorts/filters to them.
+ */
 public class ListKeyCommandsDialog extends JDialog {
   private static final long serialVersionUID = 1L;
 
@@ -82,18 +80,18 @@ public class ListKeyCommandsDialog extends JDialog {
     final MyTableModel tmod = new MyTableModel(rows);
     final JTable table = new JTable(tmod);
 
+    // Is there a better way to get decent starting column sizes?
     table.getColumnModel().getColumn(0).setPreferredWidth(114);
     table.getColumnModel().getColumn(1).setPreferredWidth(140);
     table.getColumnModel().getColumn(2).setPreferredWidth(200);
     table.getColumnModel().getColumn(3).setPreferredWidth(200);
     table.getColumnModel().getColumn(4).setPreferredWidth(800);
 
-
+    // Popup menu provides right-click context menu to copy
     final JPopupMenu pm = new JPopupMenu();
     pm.add(new CopyAction(table));
 
     table.addMouseListener(new MouseAdapter() {
-
       @Override
       public void mouseClicked(MouseEvent e) {
         if (e.isPopupTrigger()) {
@@ -111,7 +109,6 @@ public class ListKeyCommandsDialog extends JDialog {
       protected void doPopup(MouseEvent e) {
         pm.show(e.getComponent(), e.getX(), e.getY());
       }
-
     });
 
     final TableRowSorter trs = new TableRowSorter(tmod);
@@ -169,7 +166,6 @@ public class ListKeyCommandsDialog extends JDialog {
     clear.addActionListener(e -> filter.setText(null));
     panel.add(clear, "wrap"); //NON-NLS
 
-
     final JScrollPane scroll = new JScrollPane(table);
     panel.add(scroll, "grow, push, wrap"); //NON-NLS
 
@@ -190,12 +186,13 @@ public class ListKeyCommandsDialog extends JDialog {
     SwingUtils.repack(this);
   }
 
-  public class CopyAction extends AbstractAction {
-    private JTable table;
+  // Copy action for right click context menu
+  public static class CopyAction extends AbstractAction {
+    private final JTable table;
 
     public CopyAction(JTable table) {
       this.table = table;
-      putValue(NAME, "Copy");
+      putValue(NAME, Resources.getString("General.copy"));
     }
 
     @Override
@@ -204,15 +201,11 @@ public class ListKeyCommandsDialog extends JDialog {
     }
   }
 
-
   private static class MyTableModel extends AbstractTableModel {
     private static final long serialVersionUID = 1L;
+    private static final int COLUMN_COUNT = 5;
 
     private final List<String[]> rows;
-
-    private final String[] columnNames = {
-      "Key Command", "Named Command", "Source Type", "Source Name", "Source Description"
-    };
 
     public MyTableModel(List<String[]> rows) {
       this.rows = rows;
@@ -225,12 +218,25 @@ public class ListKeyCommandsDialog extends JDialog {
 
     @Override
     public int getColumnCount() {
-      return columnNames.length;
+      return COLUMN_COUNT;
     }
 
     @Override
     public String getColumnName(int col) {
-      return columnNames[col];
+      switch (col) {
+      case 0:
+        return Resources.getString("Editor.ListKeyCommands.key_command");
+      case 1:
+        return Resources.getString("Editor.ListKeyCommands.named_command");
+      case 2:
+        return Resources.getString("Editor.ListKeyCommands.source_type");
+      case 3:
+        return Resources.getString("Editor.ListKeyCommands.source_name");
+      case 4:
+        return Resources.getString("Editor.ListKeyCommands.source_description");
+      default:
+        return "";
+      }
     }
 
     @Override
@@ -239,6 +245,13 @@ public class ListKeyCommandsDialog extends JDialog {
     }
   }
 
+  /**
+   * For a given search target (either an AbstractConfigurable or a trait(Decorator) of a game piece),
+   * pull out its list of key commands and add them to our table's list.
+   * @param target search target to check
+   * @param list our table's list of column strings to be appended to
+   * @param configurable If search target is a trait, this is the original AbstractConfigurable (e.g. a PrototypeDefinition, a Piece Slot, etc) that it came from.
+   */
   private static void checkSearchTarget(SearchTarget target, List<String[]> list, AbstractConfigurable configurable) {
     final List<NamedKeyStroke> keys = target.getNamedKeyStrokeList();
     if (keys != null) {
@@ -254,11 +267,12 @@ public class ListKeyCommandsDialog extends JDialog {
             cmd_key = KeyNamer.getKeyString(k.getStroke());
           }
 
-          if (!StringUtils.isEmpty(cmd_key) || !StringUtils.isEmpty(cmd_name)) { // Could check a filter here?
+          if (!StringUtils.isEmpty(cmd_key) || !StringUtils.isEmpty(cmd_name)) {
             String src_name = null;
             String src_desc = null;
             String src_type = null;
 
+            // Depending on whether this is an AbstractConfigurable (i.e. Editor component) or part of a GamePiece, pull out appropriate descriptor fields.
             if (target instanceof AbstractConfigurable) {
               src_name = ((AbstractConfigurable)target).getConfigureName();
 
@@ -270,7 +284,7 @@ public class ListKeyCommandsDialog extends JDialog {
             }
             else if (target instanceof GamePiece) {
               if (configurable instanceof PrototypeDefinition)  {
-                src_name = "Prototype: " + configurable.getConfigureName();
+                src_name = Resources.getString("Editor.ListKeyCommands.prototype") + ": " + configurable.getConfigureName();
               }
               else {
                 src_name = ((GamePiece) target).getName();
@@ -289,6 +303,13 @@ public class ListKeyCommandsDialog extends JDialog {
     }
   }
 
+  /**
+   * For a given AbstractConfigurable, determine if it is one of the "Game Piece" types.
+   * If it IS, parse each individual Decorator to check as a search target. Otherwise, for
+   * non-game-piece configurables, just check the configurable itself.
+   * @param target AbstractConfigurable to check
+   * @param list Our table list to which to add any key commands found
+   */
   private static void checkForKeyCommands(AbstractConfigurable target, List<String[]> list) {
     GamePiece p;
     boolean protoskip;
@@ -331,6 +352,11 @@ public class ListKeyCommandsDialog extends JDialog {
     }
   }
 
+  /**
+   * Recursively scans the module for key commands and adds appropriate entries to our table's list of key commands
+   * @param target current target component
+   * @param list our table's list of column strings, to which entries will be appended
+   */
   private static void recursivelyFindKeyCommands(AbstractBuildable target, List<String[]> list) {
     for (final Buildable b : target.getBuildables()) {
       if (b instanceof AbstractConfigurable) {
@@ -343,12 +369,19 @@ public class ListKeyCommandsDialog extends JDialog {
     }
   }
 
+  /**
+   * Begins a recursive search of the entire module for key commands
+   * @return list of column entries for our table
+   */
   public static List<String[]> findAllKeyCommands() {
     final List<String[]> keyCommandList = new ArrayList<>();
     recursivelyFindKeyCommands(GameModule.getGameModule(), keyCommandList);
     return keyCommandList;
   }
 
+  /**
+   * Show help html
+   */
   private void help() {
     HelpFile hf = null;
     try {
@@ -360,6 +393,8 @@ public class ListKeyCommandsDialog extends JDialog {
       ErrorDialog.bug(ex);
     }
 
-    (new ShowHelpAction(hf.getContents(), null)).actionPerformed(null);
+    if (hf != null) {
+      (new ShowHelpAction(hf.getContents(), null)).actionPerformed(null);
+    }
   }
 }
