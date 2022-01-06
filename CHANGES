@@ -1,5 +1,6 @@
 3.6.4 - ???
 
+* 11031: Turn Tracker List configure box missing labels
 * 11024: Communicating with tiler over socket fails for some users; use stdout
     instead
 * 11020: Don't display lock option for P2P rooms, which aren't lockable
