@@ -282,6 +282,6 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
       ErrorDialog.bug(e);
     }
 
-    return this.getClass().getName().substring(this.getClass().getName().lastIndexOf(".") + 1);
+    return this.getClass().getSimpleName();
   }
 }
