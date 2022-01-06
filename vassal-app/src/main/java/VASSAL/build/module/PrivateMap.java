@@ -116,10 +116,15 @@ public class PrivateMap extends Map {
       owners = (String[]) value;
     }
     else if (USE_BOARDS.equals(key)) {
-      for (final Map m : Map.getMapList()) {
-        if (m.getMapName().equals(value)) {
-          surrogate = m;
-          break;
+      if (value == null || ((String) value).isEmpty()) {
+        surrogate = null;
+      }
+      else {
+        for (final Map m : Map.getMapList()) {
+          if (m.getMapName().equals(value)) {
+            surrogate = m;
+            break;
+          }
         }
       }
     }
