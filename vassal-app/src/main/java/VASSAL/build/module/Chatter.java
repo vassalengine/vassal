@@ -177,7 +177,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     cutAction.putValue(Action.NAME, Resources.getString("General.cut"));
 
     final Action pasteAction = new DefaultEditorKit.PasteAction();
-    cutAction.putValue(Action.NAME, Resources.getString("General.paste"));
+    pasteAction.putValue(Action.NAME, Resources.getString("General.paste"));
 
     final JPopupMenu pm2 = new JPopupMenu();
     pm2.add(cutAction);
