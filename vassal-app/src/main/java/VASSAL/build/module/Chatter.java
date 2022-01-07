@@ -156,7 +156,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     conversationPane.addMouseListener(new MouseAdapter() {
 
       @Override
-      public void mouseClicked(MouseEvent e) {
+      public void mousePressed(MouseEvent e) {
         if (e.isPopupTrigger()) {
           doPopup(e);
         }
