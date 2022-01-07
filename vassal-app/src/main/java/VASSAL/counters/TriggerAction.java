@@ -397,6 +397,11 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
   }
 
   @Override
+  public String getDescriptionField() {
+    return name;
+  }
+
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("TriggerAction.html"); //$NON-NLS-1$
   }

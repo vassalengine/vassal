@@ -24,11 +24,15 @@ import java.awt.FontMetrics;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 
+import javax.swing.Action;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -36,6 +40,7 @@ import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultEditorKit;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
@@ -70,14 +75,14 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   protected JTextField input;
   protected JScrollPane scroll = new ScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
   protected JScrollPane scroll2 = new ScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-  protected static final String MY_CHAT_COLOR    = "HTMLChatColor";          //$NON-NLS-1$ // Different tags to "restart" w/ new default scheme
+  protected static final String MY_CHAT_COLOR = "HTMLChatColor";          //$NON-NLS-1$ // Different tags to "restart" w/ new default scheme
   protected static final String OTHER_CHAT_COLOR = "HTMLotherChatColor";     //$NON-NLS-1$
-  protected static final String GAME_MSG1_COLOR  = "HTMLgameMessage1Color";  //$NON-NLS-1$
-  protected static final String GAME_MSG2_COLOR  = "HTMLgameMessage2Color";  //$NON-NLS-1$
-  protected static final String GAME_MSG3_COLOR  = "HTMLgameMessage3Color";  //$NON-NLS-1$
-  protected static final String GAME_MSG4_COLOR  = "HTMLgameMessage4Color";  //$NON-NLS-1$
-  protected static final String GAME_MSG5_COLOR  = "HTMLgameMessage5Color";  //$NON-NLS-1$
-  protected static final String SYS_MSG_COLOR    = "HTMLsystemMessageColor"; //$NON-NLS-1$
+  protected static final String GAME_MSG1_COLOR = "HTMLgameMessage1Color";  //$NON-NLS-1$
+  protected static final String GAME_MSG2_COLOR = "HTMLgameMessage2Color";  //$NON-NLS-1$
+  protected static final String GAME_MSG3_COLOR = "HTMLgameMessage3Color";  //$NON-NLS-1$
+  protected static final String GAME_MSG4_COLOR = "HTMLgameMessage4Color";  //$NON-NLS-1$
+  protected static final String GAME_MSG5_COLOR = "HTMLgameMessage5Color";  //$NON-NLS-1$
+  protected static final String SYS_MSG_COLOR = "HTMLsystemMessageColor"; //$NON-NLS-1$
 
   protected Font myFont;
 
@@ -142,6 +147,63 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     add(scroll);
     add(input);
 
+    final Action copyAction = new DefaultEditorKit.CopyAction();
+    copyAction.putValue(Action.NAME, Resources.getString("General.copy"));
+
+    final JPopupMenu pm = new JPopupMenu();
+    pm.add(copyAction);
+
+    conversationPane.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mousePressed(MouseEvent e) {
+        if (e.isPopupTrigger()) {
+          doPopup(e);
+        }
+      }
+
+      @Override
+      public void mouseReleased(MouseEvent e) {
+        if (e.isPopupTrigger()) {
+          doPopup(e);
+        }
+      }
+
+      protected void doPopup(MouseEvent e) {
+        pm.show(e.getComponent(), e.getX(), e.getY());
+      }
+    });
+
+    final Action cutAction = new DefaultEditorKit.CutAction();
+    cutAction.putValue(Action.NAME, Resources.getString("General.cut"));
+
+    final Action pasteAction = new DefaultEditorKit.PasteAction();
+    pasteAction.putValue(Action.NAME, Resources.getString("General.paste"));
+
+    final JPopupMenu pm2 = new JPopupMenu();
+    pm2.add(cutAction);
+    pm2.add(copyAction);
+    pm2.add(pasteAction);
+
+    input.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mousePressed(MouseEvent e) {
+        if (e.isPopupTrigger()) {
+          doPopup(e);
+        }
+      }
+
+      @Override
+      public void mouseReleased(MouseEvent e) {
+        if (e.isPopupTrigger()) {
+          doPopup(e);
+        }
+      }
+
+      protected void doPopup(MouseEvent e) {
+        pm2.show(e.getComponent(), e.getX(), e.getY());
+      }
+    });
+
     setPreferredSize(new Dimension(input.getMaximumSize().width, input.getPreferredSize().height + conversationPane.getPreferredSize().height));
   }
 
@@ -170,9 +232,10 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
   /**
    * Styles a chat message based on the player who sent it. Presently just distinguishes a chat message "from me" from a chat message "from anyone else".
-   *
+   * <p>
    * To make the player colors easy to override in a custom class
    * (my modules have logic to assign individual player colors -- beyond the scope of the present effort but a perhaps a fun future addition)
+   *
    * @param s - chat message from a player
    * @return - an entry in our CSS style sheet to use for this chat message
    */
@@ -182,12 +245,12 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
   /**
    * A hook for inserting a console class that accepts commands
+   *
    * @param s            - chat message
    * @param style        - current style name (contains information that might be useful)
    * @param html_allowed - flag if html_processing is enabled for this message (allows console to apply security considerations)
    * @return true        - if was accepted as a console command
    */
-  @SuppressWarnings("unused")
   public boolean consoleHook(String s, String style, boolean html_allowed) {
     return GameModule.getGameModule().getConsole().exec(s, style, html_allowed);
   }
@@ -241,7 +304,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     // (2) Legacy module "report" text when not explicitly opted in w/ first character or preference setting
     if (!html_allowed) {
       s = s.replaceAll("<", "&lt;")  //NON-NLS // This prevents any unwanted tag from functioning
-           .replaceAll(">", "&gt;"); //NON-NLS // This makes sure > doesn't break any of our legit <div> tags
+        .replaceAll(">", "&gt;"); //NON-NLS // This makes sure > doesn't break any of our legit <div> tags
     }
 
     // Now we have to fix up any legacy angle brackets around the word <observer>
@@ -268,30 +331,32 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
   /**
    * Adds or updates a CSS stylesheet entry. Styles in the color, font type, and font size.
-   * @param s Style name
-   * @param f Font to use
-   * @param c Color for text
+   *
+   * @param s           Style name
+   * @param f           Font to use
+   * @param c           Color for text
    * @param font_weight Bold? Italic?
-   * @param size Font size
+   * @param size        Font size
    */
   protected void addStyle(String s, Font f, Color c, String font_weight, int size) {
     if ((style == null) || (c == null)) return;
     style.addRule(s +
-                  " {color:" +                                                               //NON-NLS
-                  String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue()) +    //NON-NLS
-                  "; font-family:" +                                                         //NON-NLS
-                  f.getFamily() +
-                  "; font-size:" +                                                           //NON-NLS
-                  (size > 0 ? size : f.getSize()) +
-                  "; " +                                                                     //NON-NLS
-                  ((!font_weight.isBlank()) ? "font-weight:" + font_weight + "; " : "") +    //NON-NLS
-                  "}");                                                                      //NON-NLS
+      " {color:" +                                                               //NON-NLS
+      String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue()) +    //NON-NLS
+      "; font-family:" +                                                         //NON-NLS
+      f.getFamily() +
+      "; font-size:" +                                                           //NON-NLS
+      (size > 0 ? size : f.getSize()) +
+      "; " +                                                                     //NON-NLS
+      ((!font_weight.isBlank()) ? "font-weight:" + font_weight + "; " : "") +    //NON-NLS
+      "}");                                                                      //NON-NLS
 
     style.addRule(s + "color {color:" + String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue()) + "; }"); //NON-NLS
   }
 
   /**
    * Build ourselves a CSS stylesheet from our preference font/color settings.
+   *
    * @param f - Font to use for this stylesheet
    */
   protected void makeStyleSheet(Font f) {
@@ -308,14 +373,14 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
         f = myFont;
       }
     }
-    addStyle(".msg",    f, gameMsg,   "",     0); //NON-NLS
-    addStyle(".msg2",   f, gameMsg2,  "",     0); //NON-NLS
-    addStyle(".msg3",   f, gameMsg3,  "",     0); //NON-NLS
-    addStyle(".msg4",   f, gameMsg4,  "",     0); //NON-NLS
-    addStyle(".msg5",   f, gameMsg5,  "",     0); //NON-NLS
-    addStyle(".mychat", f, myChat,    "bold", 0); //NON-NLS
+    addStyle(".msg", f, gameMsg, "", 0); //NON-NLS
+    addStyle(".msg2", f, gameMsg2, "", 0); //NON-NLS
+    addStyle(".msg3", f, gameMsg3, "", 0); //NON-NLS
+    addStyle(".msg4", f, gameMsg4, "", 0); //NON-NLS
+    addStyle(".msg5", f, gameMsg5, "", 0); //NON-NLS
+    addStyle(".mychat", f, myChat, "bold", 0); //NON-NLS
     addStyle(".other ", f, otherChat, "bold", 0); //NON-NLS
-    addStyle(".sys",    f, systemMsg, "",     0); //NON-NLS
+    addStyle(".sys", f, systemMsg, "", 0); //NON-NLS
 
     // A fun extension would be letting the module designer provide extra class styles.
   }
@@ -363,7 +428,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     mod.addKeyStrokeSource(new KeyStrokeSource(this, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT));
 
     final FontConfigurer chatFont = new FontConfigurer("ChatFont", //NON-NLS
-                                                       Resources.getString("Chatter.chat_font_preference"));
+      Resources.getString("Chatter.chat_font_preference"));
 
     chatFont.addPropertyChangeListener(evt -> setFont((Font) evt.getNewValue()));
 
@@ -380,7 +445,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     // game message color
     //
     final ColorConfigurer gameMsgColor = new ColorConfigurer(GAME_MSG1_COLOR,
-                                                             Resources.getString("Chatter.game_messages_preference"), Color.black);
+      Resources.getString("Chatter.game_messages_preference"), Color.black);
 
     gameMsgColor.addPropertyChangeListener(e -> {
       gameMsg = (Color) e.getNewValue();
@@ -393,7 +458,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
     // game message color #2 (messages starting with "!")
     final ColorConfigurer gameMsg2Color = new ColorConfigurer(GAME_MSG2_COLOR,
-                                                              Resources.getString("Chatter.game_messages_preference_2"), new Color(0, 153, 51));
+      Resources.getString("Chatter.game_messages_preference_2"), new Color(0, 153, 51));
 
     gameMsg2Color.addPropertyChangeListener(e -> {
       gameMsg2 = (Color) e.getNewValue();
@@ -406,7 +471,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
     // game message color #3 (messages starting with "?")
     final ColorConfigurer gameMsg3Color = new ColorConfigurer(GAME_MSG3_COLOR,
-                                                              Resources.getString("Chatter.game_messages_preference_3"), new Color(255, 102, 102));
+      Resources.getString("Chatter.game_messages_preference_3"), new Color(255, 102, 102));
 
     gameMsg3Color.addPropertyChangeListener(e -> {
       gameMsg3 = (Color) e.getNewValue();
@@ -420,7 +485,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
     // game message color #4 (messages starting with "~")
     final ColorConfigurer gameMsg4Color = new ColorConfigurer(GAME_MSG4_COLOR,
-                                                              Resources.getString("Chatter.game_messages_preference_4"), new Color(255, 0, 0));
+      Resources.getString("Chatter.game_messages_preference_4"), new Color(255, 0, 0));
 
     gameMsg4Color.addPropertyChangeListener(e -> {
       gameMsg4 = (Color) e.getNewValue();
@@ -434,7 +499,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
     // game message color #5 (messages starting with "`")
     final ColorConfigurer gameMsg5Color = new ColorConfigurer(GAME_MSG5_COLOR,
-                                                              Resources.getString("Chatter.game_messages_preference_5"), new Color(153, 0, 153));
+      Resources.getString("Chatter.game_messages_preference_5"), new Color(153, 0, 153));
 
     gameMsg5Color.addPropertyChangeListener(e -> {
       gameMsg5 = (Color) e.getNewValue();
@@ -447,7 +512,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
 
     final ColorConfigurer systemMsgColor = new ColorConfigurer(SYS_MSG_COLOR,
-                                                               Resources.getString("Chatter.system_message_preference"), new Color(160, 160, 160));
+      Resources.getString("Chatter.system_message_preference"), new Color(160, 160, 160));
 
     systemMsgColor.addPropertyChangeListener(e -> {
       systemMsg = (Color) e.getNewValue();
@@ -524,7 +589,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
   /**
    * Checks first for an intercepted console command; otherwise displays the message
-   * @param msg message to display if not a console command
+   *
+   * @param msg     message to display if not a console command
    * @param console potential console command (without any chat livery added to it)
    */
   public void send(String msg, String console) {
@@ -532,7 +598,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       send(msg);
     }
   }
-  
+
   /**
    * Warning message method -- same as send, but accepts messages from static methods. For reporting soft-fail problems in modules.
    */
@@ -575,7 +641,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
   /**
    * This is a {@link Command} object that, when executed, displays
-   * a text message in the Chatter's text area     */
+   * a text message in the Chatter's text area
+   */
   public static class DisplayText extends Command {
 
     public static final String PREFIX = "CHAT";  //$NON-NLS-1$
@@ -623,9 +690,13 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     f.setVisible(true);
   }
 
-  /** @deprecated use {@link GlobalOptions#getPlayerId()} */
+  /**
+   * @deprecated use {@link GlobalOptions#getPlayerId()}
+   */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public String getHandle() {
     return GlobalOptions.getInstance().getPlayerId();
   }
 }
+
+

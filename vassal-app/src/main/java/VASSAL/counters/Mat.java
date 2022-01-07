@@ -304,6 +304,11 @@ public class Mat extends Decorator implements TranslatablePiece {
   }
 
   @Override
+  public String getDescriptionField() {
+    return desc;
+  }
+
+  @Override
   public Object getProperty(Object key) {
     if (MAT_NAME.equals(key)) {
       return matName;

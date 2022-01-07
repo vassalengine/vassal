@@ -24,10 +24,12 @@ import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Translatable;
 import VASSAL.search.SearchTarget;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.NamedKeyStroke;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -258,5 +260,28 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
   @Override
   public List<String> getPropertyList() {
     return Collections.emptyList();
+  }
+
+  /**
+   * Returns the name of the configurable type for display purposes. Reflection is
+   * used to call <code>getConfigureTypeName()</code>, which should be
+   * a static method if it exists in the given class. (This is necessary
+   * because static methods are not permitted in interfaces.)
+   *
+   * @return the configure name of the class
+   */
+  public String getTypeName() {
+    try {
+      return (String) this.getClass().getMethod("getConfigureTypeName").invoke(null);
+    }
+    catch (NoSuchMethodException e) {
+      // Ignore. This is normal, since some classes won't have this method.
+    }
+    catch (IllegalAccessException | ExceptionInInitializerError
+      | NullPointerException | InvocationTargetException | IllegalArgumentException e) {
+      ErrorDialog.bug(e);
+    }
+
+    return this.getClass().getSimpleName();
   }
 }

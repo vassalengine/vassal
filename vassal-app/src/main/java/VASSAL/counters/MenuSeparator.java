@@ -133,6 +133,11 @@ public class MenuSeparator extends Decorator implements TranslatablePiece {
   }
 
   @Override
+  public String getDescriptionField() {
+    return desc;
+  }
+
+  @Override
   public boolean testEquals(Object o) {
     if (! (o instanceof MenuSeparator)) return false;
     final MenuSeparator c = (MenuSeparator) o;

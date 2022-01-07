@@ -284,6 +284,11 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     return Resources.getString("Editor.DynamicProperty.trait_description");
   }
 
+  @Override
+  public String getDescriptionField() {
+    return description;
+  }
+
   /**
    * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
    */

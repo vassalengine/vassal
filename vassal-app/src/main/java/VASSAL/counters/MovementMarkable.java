@@ -188,6 +188,11 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
     return Resources.getString("Editor.MovementMarkable.trait_description");
   }
 
+  @Override
+  public String getDescriptionField() {
+    return description;
+  }
+
   public void setDescription(String description) {
     this.description = description;
   }

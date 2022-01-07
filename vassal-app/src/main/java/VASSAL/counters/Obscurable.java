@@ -651,6 +651,11 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   }
 
   @Override
+  public String getDescriptionField() {
+    return description;
+  }
+
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Mask.html"); //$NON-NLS-1$//
   }

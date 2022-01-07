@@ -290,6 +290,11 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
   }
 
   @Override
+  public String getDescriptionField() {
+    return description;
+  }
+
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("ReturnToDeck.html"); // NON-NLS
   }

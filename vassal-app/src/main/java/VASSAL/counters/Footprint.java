@@ -360,7 +360,12 @@ public class Footprint extends MovementMarkable {
     return Resources.getString("Editor.Footprint.trait_description");
   }
 
-// FIXME: This method is inefficient.
+  @Override
+  public String getDescriptionField() {
+    return description;
+  }
+
+  // FIXME: This method is inefficient.
   @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);

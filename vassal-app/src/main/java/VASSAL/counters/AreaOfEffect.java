@@ -109,6 +109,11 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
   }
 
   @Override
+  public String getDescriptionField() {
+    return description;
+  }
+
+  @Override
   public String myGetType() {
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(transparencyColor);

@@ -423,6 +423,11 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
   }
 
   @Override
+  public String getDescriptionField() {
+    return description;
+  }
+
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Marker.html"); // NON-NLS
   }

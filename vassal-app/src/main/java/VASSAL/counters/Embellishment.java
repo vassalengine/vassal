@@ -775,6 +775,11 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
   }
 
   @Override
+  public String getDescriptionField() {
+    return description;
+  }
+
+  @Override
   public Object getProperty(Object key) {
     if (key.equals(name + IMAGE)) {
       checkPropertyLevel();

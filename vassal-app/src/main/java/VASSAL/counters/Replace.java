@@ -103,6 +103,11 @@ public class Replace extends PlaceMarker {
   }
 
   @Override
+  public String getDescriptionField() {
+    return description;
+  }
+
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Replace.html"); // NON-NLS
   }

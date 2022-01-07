@@ -122,6 +122,11 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
   }
 
   @Override
+  public String getDescriptionField() {
+    return description;
+  }
+
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("CalculatedProperty.html"); // NON-NLS
   }
