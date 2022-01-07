@@ -20,6 +20,7 @@
       "in": "3.6.4",
       "since": "3.6.3",
       "new_features": [
+        { "num": 11032, "desc": "List Key Commands tool for Editor" }
       ],
       "bug_fixes": [
         { "num": 11039, "desc": "Display Loaded message instead of Cancelled when refreshing Predefined Setups" },
