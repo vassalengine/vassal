@@ -116,7 +116,7 @@ public class PrivateMap extends Map {
       owners = (String[]) value;
     }
     else if (USE_BOARDS.equals(key)) {
-      if (value == null || ((String) value).isEmpty()) {
+      if (value == null || (value instanceof String && ((String) value).isEmpty())) {
         surrogate = null;
       }
       else {
