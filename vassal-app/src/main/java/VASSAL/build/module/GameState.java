@@ -326,9 +326,11 @@ public class GameState implements CommandEncoder {
   // FIXME: This will become unnecessary when we do model-view separation.
   //
   private volatile boolean gameUpdating = false;
+  private boolean refreshInProgress = false;
 
   public void setupRefresh() {
     this.gameStarting = false;
+    this.refreshInProgress = true;
     newGame.setEnabled(false);
     saveGame.setEnabled(true);
     saveGameAs.setEnabled(true);
@@ -355,6 +357,7 @@ public class GameState implements CommandEncoder {
    */
   public void updateDone() {
     this.gameUpdating = false;
+    this.refreshInProgress = false;
   }
 
   public boolean isUpdating() {
@@ -1053,7 +1056,7 @@ public class GameState implements CommandEncoder {
       finally {
         final String msg;
 
-        if (g.getGameState().isGameStarted()) {
+        if (g.getGameState().isGameStarted() || refreshInProgress) {
           if (loadComments != null && loadComments.length() > 0) {
             msg = "!" + Resources.getString("GameState.loaded", shortName) + ": <b>" + loadComments + "</b>"; //$NON-NLS-1$
           }
