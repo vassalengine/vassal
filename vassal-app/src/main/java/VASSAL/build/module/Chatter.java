@@ -154,7 +154,6 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     pm.add(copyAction);
 
     conversationPane.addMouseListener(new MouseAdapter() {
-
       @Override
       public void mousePressed(MouseEvent e) {
         if (e.isPopupTrigger()) {
@@ -172,9 +171,38 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       protected void doPopup(MouseEvent e) {
         pm.show(e.getComponent(), e.getX(), e.getY());
       }
-
     });
 
+    final Action cutAction = new DefaultEditorKit.CutAction();
+    cutAction.putValue(Action.NAME, Resources.getString("General.cut"));
+
+    final Action pasteAction = new DefaultEditorKit.PasteAction();
+    cutAction.putValue(Action.NAME, Resources.getString("General.paste"));
+
+    final JPopupMenu pm2 = new JPopupMenu();
+    pm2.add(cutAction);
+    pm2.add(copyAction);
+    pm2.add(pasteAction);
+
+    input.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mousePressed(MouseEvent e) {
+        if (e.isPopupTrigger()) {
+          doPopup(e);
+        }
+      }
+
+      @Override
+      public void mouseReleased(MouseEvent e) {
+        if (e.isPopupTrigger()) {
+          doPopup(e);
+        }
+      }
+
+      protected void doPopup(MouseEvent e) {
+        pm2.show(e.getComponent(), e.getX(), e.getY());
+      }
+    });
 
     setPreferredSize(new Dimension(input.getMaximumSize().width, input.getPreferredSize().height + conversationPane.getPreferredSize().height));
   }
