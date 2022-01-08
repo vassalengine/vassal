@@ -127,7 +127,7 @@ public class ListKeyCommandsDialog extends JDialog {
         // show row containing the filter as a substring
         for (int i = entry.getValueCount() - 1; i >= 0; i--) {
           final String v = entry.getStringValue(i);
-          if (v != null && v.contains(f)) {
+          if (v != null && v.toLowerCase().contains(f.toLowerCase())) {
             return true;
           }
         }
@@ -182,6 +182,8 @@ public class ListKeyCommandsDialog extends JDialog {
 
     setLayout(new MigLayout("insets dialog, fill")); // NON-NLS
     add(panel, "grow"); // NON-NLS
+
+    setModal(false);
 
     SwingUtils.repack(this);
   }
