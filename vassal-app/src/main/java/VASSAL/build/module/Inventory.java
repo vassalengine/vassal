@@ -948,7 +948,7 @@ public class Inventory extends AbstractToolbarItem
     checkDisabled();
     // Only change button visibility if it has not already been hidden by a ToolBarMenu
     if (myButton.getClientProperty(ToolbarMenu.HIDDEN_BY_TOOLBAR) == null) {
-      myButton.setVisible(myButton.isEnabled());
+      myButton.setVisible(enabledForPlayersSide());
     }
   }
 
