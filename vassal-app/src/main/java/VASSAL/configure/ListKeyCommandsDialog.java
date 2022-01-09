@@ -257,11 +257,8 @@ public class ListKeyCommandsDialog extends JDialog {
       rowIndex = table.convertRowIndexToModel(rowIndex);
 
       final AbstractConfigurable jumpTo = ((MyTableModel)(table.getModel())).getSourceFor(rowIndex);
-
-      if (jumpTo instanceof AbstractConfigurable) {
-        owner.getTree().jumpToTarget(jumpTo);
-        owner.toFront();
-      }
+      owner.getTree().jumpToTarget(jumpTo);
+      owner.toFront();
     }
   }
 
@@ -285,7 +282,7 @@ public class ListKeyCommandsDialog extends JDialog {
       return COLUMN_COUNT;
     }
 
-    AbstractConfigurable getSourceFor(int row) {
+    public AbstractConfigurable getSourceFor(int row) {
       return rows.get(row).second;
     }
 
