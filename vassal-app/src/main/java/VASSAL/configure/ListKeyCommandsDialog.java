@@ -35,6 +35,7 @@ import VASSAL.search.SearchTarget;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.icon.IconFamily;
+import VASSAL.tools.lang.Pair;
 import VASSAL.tools.swing.SwingUtils;
 
 import net.miginfocom.swing.MigLayout;
@@ -73,9 +74,9 @@ import javax.swing.table.TableRowSorter;
 public class ListKeyCommandsDialog extends JDialog {
   private static final long serialVersionUID = 1L;
   private static final int CONFIG_COLUMN = 5;
-  private final Frame owner;
+  private final EditorWindow owner;
 
-  public ListKeyCommandsDialog(Frame owner, List<Object[]> rows) {
+  public ListKeyCommandsDialog(EditorWindow owner, List<Pair<String[], AbstractConfigurable>> rows) {
     super((Frame)null, Resources.getString("Editor.ListKeyCommands.list_key_commands"), true);
 
     this.owner = owner;
@@ -84,8 +85,6 @@ public class ListKeyCommandsDialog extends JDialog {
 
     final MyTableModel tmod = new MyTableModel(rows);
     final JTable table = new JTable(tmod);
-
-    table.removeColumn(table.getColumnModel().getColumn(CONFIG_COLUMN));
 
     // Is there a better way to get decent starting column sizes?
     table.getColumnModel().getColumn(0).setPreferredWidth(114);
@@ -195,7 +194,10 @@ public class ListKeyCommandsDialog extends JDialog {
     panel.add(scroll, "grow, push, wrap"); //NON-NLS
 
     final JButton ok = new JButton(Resources.getString("General.ok"));
-    ok.addActionListener(e -> dispose());
+    ok.addActionListener(e -> {
+      dispose();
+      owner.clearListKeyCommands();
+    });
 
     final JButton help = new JButton(Resources.getString("General.help"));
     help.addActionListener(e -> help());
@@ -233,9 +235,9 @@ public class ListKeyCommandsDialog extends JDialog {
     private static final long serialVersionUID = 1L;
     private static final int CONFIG_COLUMN = 5;
     private final JTable table;
-    private final List<Object[]> rows;
+    private final List<Pair<String[], AbstractConfigurable>> rows;
 
-    public JumpAction(JTable table, List<Object[]> rows) {
+    public JumpAction(JTable table, List<Pair<String[], AbstractConfigurable>> rows) {
       this.table = table;
       this.rows = rows;
       putValue(NAME, Resources.getString("Editor.ListKeyCommands.jump_to_definition"));
@@ -248,25 +250,22 @@ public class ListKeyCommandsDialog extends JDialog {
 
       rowIndex = table.convertRowIndexToModel(rowIndex);
 
-      final Object jumpTo = table.getModel().getValueAt(rowIndex, CONFIG_COLUMN);
+      final AbstractConfigurable jumpTo = rows.get(rowIndex).second;
 
       if (jumpTo instanceof AbstractConfigurable) {
-        if (owner instanceof EditorWindow) {
-          final EditorWindow editor = (EditorWindow)owner;
-          editor.getTree().jumpToTarget((AbstractConfigurable)jumpTo);
-          editor.toFront();
-        }
+        owner.getTree().jumpToTarget(jumpTo);
+        owner.toFront();
       }
     }
   }
 
   private static class MyTableModel extends AbstractTableModel {
     private static final long serialVersionUID = 1L;
-    private static final int COLUMN_COUNT = 6;
+    private static final int COLUMN_COUNT = 5;
 
-    private final List<Object[]> rows;
+    private final List<Pair<String[], AbstractConfigurable>> rows;
 
-    public MyTableModel(List<Object[]> rows) {
+    public MyTableModel(List<Pair<String[], AbstractConfigurable>> rows) {
       this.rows = rows;
     }
 
@@ -300,7 +299,7 @@ public class ListKeyCommandsDialog extends JDialog {
 
     @Override
     public Object getValueAt(int row, int column) {
-      return row < rows.size() ? rows.get(row)[column] : null;
+      return row < rows.size() ? rows.get(row).first[column] : null;
     }
   }
 
@@ -311,7 +310,7 @@ public class ListKeyCommandsDialog extends JDialog {
    * @param list our table's list of column strings to be appended to
    * @param configurable If search target is a trait, this is the original AbstractConfigurable (e.g. a PrototypeDefinition, a Piece Slot, etc) that it came from.
    */
-  private static void checkSearchTarget(SearchTarget target, List<Object[]> list, AbstractConfigurable configurable) {
+  private static void checkSearchTarget(SearchTarget target, List<Pair<String[], AbstractConfigurable>> list, AbstractConfigurable configurable) {
     final List<NamedKeyStroke> keys = target.getNamedKeyStrokeList();
     if (keys != null) {
       for (final NamedKeyStroke k : keys) {
@@ -355,7 +354,7 @@ public class ListKeyCommandsDialog extends JDialog {
               }
             }
 
-            list.add(new Object[] { cmd_key, cmd_name, src_type, src_name, src_desc, configurable });
+            list.add(new Pair(new String[] { cmd_key, cmd_name, src_type, src_name, src_desc }, configurable));
           }
         }
       }
@@ -369,7 +368,7 @@ public class ListKeyCommandsDialog extends JDialog {
    * @param target AbstractConfigurable to check
    * @param list Our table list to which to add any key commands found
    */
-  private static void checkForKeyCommands(AbstractConfigurable target, List<Object[]> list) {
+  private static void checkForKeyCommands(AbstractConfigurable target, List<Pair<String[], AbstractConfigurable>> list) {
     GamePiece p;
     boolean protoskip;
     if (target instanceof GamePiece) {
@@ -416,7 +415,7 @@ public class ListKeyCommandsDialog extends JDialog {
    * @param target current target component
    * @param list our table's list of column strings, to which entries will be appended
    */
-  private static void recursivelyFindKeyCommands(AbstractBuildable target, List<Object[]> list) {
+  private static void recursivelyFindKeyCommands(AbstractBuildable target, List<Pair<String[], AbstractConfigurable>> list) {
     for (final Buildable b : target.getBuildables()) {
       if (b instanceof AbstractConfigurable) {
         checkForKeyCommands((AbstractConfigurable)b, list);
@@ -432,12 +431,12 @@ public class ListKeyCommandsDialog extends JDialog {
    * Begins a recursive search of the entire module for key commands
    * @return list of column entries for our table
    */
-  public static List<Object[]> findAllKeyCommands() {
-    final List<Object[]> keyCommandList = new ArrayList<>();
+  public static List<Pair<String[], AbstractConfigurable>> findAllKeyCommands() {
+    final List<Pair<String[], AbstractConfigurable>> keyCommandList = new ArrayList<>();
     recursivelyFindKeyCommands(GameModule.getGameModule(), keyCommandList);
     return keyCommandList;
   }
-
+  
   /**
    * Show help html
    */

@@ -42,6 +42,8 @@ import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingWorker;
 
+import VASSAL.build.AbstractConfigurable;
+import VASSAL.tools.lang.Pair;
 import org.apache.commons.lang3.SystemUtils;
 
 import VASSAL.build.GameModule;
@@ -93,6 +95,8 @@ public abstract class EditorWindow extends JFrame {
   protected final JToolBar toolBar = new JToolBar();
 
   protected final JScrollPane scrollPane;
+
+  private ListKeyCommandsDialog listKeyCommands = null;
 
   protected EditorWindow() {
     updateWindowTitle();
@@ -255,9 +259,9 @@ public abstract class EditorWindow extends JFrame {
       public void actionPerformed(ActionEvent e) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
-        new SwingWorker<List<Object[]>, Void>() {
+        new SwingWorker<List<Pair<String[], AbstractConfigurable>>, Void>() {
           @Override
-          public List<Object[]> doInBackground() {
+          public List<Pair<String[], AbstractConfigurable>> doInBackground() {
             return ListKeyCommandsDialog.findAllKeyCommands();
           }
 
@@ -265,7 +269,13 @@ public abstract class EditorWindow extends JFrame {
           protected void done() {
             try {
               setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-              new ListKeyCommandsDialog(EditorWindow.this, get()).setVisible(true);
+              if (listKeyCommands == null) {
+                listKeyCommands = new ListKeyCommandsDialog(EditorWindow.this, get());
+                listKeyCommands.setVisible(true);
+              }
+              else {
+                listKeyCommands.toFront();
+              }
             }
             catch (InterruptedException | ExecutionException e) {
               ErrorDialog.bug(e);
@@ -396,6 +406,15 @@ public abstract class EditorWindow extends JFrame {
   public ConfigureTree getTree() {
     return tree;
   }
+
+  public ListKeyCommandsDialog getListKeyCommands() {
+    return listKeyCommands;
+  }
+
+  public void clearListKeyCommands() {
+    listKeyCommands = null;
+  }
+
 
   /**
    * @param name Filename to check
