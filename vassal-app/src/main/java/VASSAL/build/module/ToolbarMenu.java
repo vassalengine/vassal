@@ -284,17 +284,19 @@ public class ToolbarMenu extends AbstractToolbarItem
 
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
-    final JButton b = (JButton) evt.getSource();
-    final JMenuItem mi = buttonsToMenuMap.get(b);
-    if (mi != null) {
-      if (AbstractButton.TEXT_CHANGED_PROPERTY.equals(evt.getPropertyName())) {
-        scheduleBuildMenu();
-      }
-      else if ("enabled".equals(evt.getPropertyName())) { //$NON-NLS-1$
-        mi.setEnabled(b.isEnabled());
-      }
-      else if (AbstractButton.ICON_CHANGED_PROPERTY.equals(evt.getPropertyName())) {
-        mi.setIcon(b.getIcon());
+    if (evt.getSource() instanceof JButton) {
+      final JButton b = (JButton) evt.getSource();
+      final JMenuItem mi = buttonsToMenuMap.get(b);
+      if (mi != null) {
+        if (AbstractButton.TEXT_CHANGED_PROPERTY.equals(evt.getPropertyName())) {
+          scheduleBuildMenu();
+        }
+        else if ("enabled".equals(evt.getPropertyName())) { //$NON-NLS-1$
+          mi.setEnabled(b.isEnabled());
+        }
+        else if (AbstractButton.ICON_CHANGED_PROPERTY.equals(evt.getPropertyName())) {
+          mi.setIcon(b.getIcon());
+        }
       }
     }
   }
