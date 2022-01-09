@@ -224,6 +224,15 @@ public class Editor extends Launcher {
               return;
             }
           }
+          if ("Paths of Glory".equals(md.getName())) { //NON-NLS
+            if (VersionUtils.compareVersions(md.getVersion(), "9.9") < 0) {
+              ErrorDialog.show(
+                "Error.POG_too_old", //NON-NLS
+                Info.getVersion()
+              );
+              return;
+            }
+          }
         }
 
         // warn user if editing this module would update it to our version

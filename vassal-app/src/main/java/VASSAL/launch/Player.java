@@ -179,6 +179,15 @@ public class Player extends Launcher {
             return;
           }
         }
+        if ("Paths of Glory".equals(md.getName())) { //NON-NLS
+          if (VersionUtils.compareVersions(md.getVersion(), "9.9") < 0) {
+            ErrorDialog.show(
+              "Error.POG_too_old", //NON-NLS
+              Info.getVersion()
+            );
+            return;
+          }
+        }
       }
       else {
         // A module in the MM should be a valid Module, but people can and do delete
