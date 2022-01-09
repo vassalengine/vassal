@@ -73,7 +73,6 @@ import javax.swing.table.TableRowSorter;
  */
 public class ListKeyCommandsDialog extends JDialog {
   private static final long serialVersionUID = 1L;
-  private static final int CONFIG_COLUMN = 5;
   private final EditorWindow owner;
   private final MyTableModel tmod;
 
@@ -97,7 +96,7 @@ public class ListKeyCommandsDialog extends JDialog {
     // Popup menu provides right-click context menu to copy
     final JPopupMenu pm = new JPopupMenu();
     pm.add(new CopyAction(table));
-    pm.add(new JumpAction(table, rows));
+    pm.add(new JumpAction(table));
 
     table.addMouseListener(new MouseAdapter() {
 
@@ -243,13 +242,10 @@ public class ListKeyCommandsDialog extends JDialog {
 
   public class JumpAction extends AbstractAction {
     private static final long serialVersionUID = 1L;
-    private static final int CONFIG_COLUMN = 5;
     private final JTable table;
-    private final List<Pair<String[], AbstractConfigurable>> rows;
 
-    public JumpAction(JTable table, List<Pair<String[], AbstractConfigurable>> rows) {
+    public JumpAction(JTable table) {
       this.table = table;
-      this.rows = rows;
       putValue(NAME, Resources.getString("Editor.ListKeyCommands.jump_to_definition"));
     }
 
@@ -260,7 +256,7 @@ public class ListKeyCommandsDialog extends JDialog {
 
       rowIndex = table.convertRowIndexToModel(rowIndex);
 
-      final AbstractConfigurable jumpTo = rows.get(rowIndex).second;
+      final AbstractConfigurable jumpTo = ((MyTableModel)(table.getModel())).getSourceFor(rowIndex);
 
       if (jumpTo instanceof AbstractConfigurable) {
         owner.getTree().jumpToTarget(jumpTo);
