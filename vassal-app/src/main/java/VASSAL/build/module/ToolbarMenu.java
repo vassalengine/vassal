@@ -284,6 +284,7 @@ public class ToolbarMenu extends AbstractToolbarItem
 
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
+    super.propertyChange(evt);
     if (evt.getSource() instanceof JButton) {
       final JButton b = (JButton) evt.getSource();
       final JMenuItem mi = buttonsToMenuMap.get(b);
