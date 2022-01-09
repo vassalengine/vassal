@@ -1307,6 +1307,13 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     ((DefaultTreeModel) getModel()).nodeChanged(node);
   }
 
+  public void jumpToTarget(Configurable target) {
+    final DefaultMutableTreeNode node = getTreeNode(target);
+    final TreePath path = new TreePath(node.getPath());
+    setSelectionPath(path);
+    scrollPathToVisible(path);
+  }
+
   /**
    * Configurers that add or remove their own children directly should implement the Mutable interface so that
    * ConfigureTree can refresh the changed node.

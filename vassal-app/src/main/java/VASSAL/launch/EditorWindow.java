@@ -255,9 +255,9 @@ public abstract class EditorWindow extends JFrame {
       public void actionPerformed(ActionEvent e) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
-        new SwingWorker<List<String[]>, Void>() {
+        new SwingWorker<List<Object[]>, Void>() {
           @Override
-          public List<String[]> doInBackground() {
+          public List<Object[]> doInBackground() {
             return ListKeyCommandsDialog.findAllKeyCommands();
           }
 
@@ -391,6 +391,10 @@ public abstract class EditorWindow extends JFrame {
 
     add(scrollPane, BorderLayout.CENTER);
     pack();
+  }
+
+  public ConfigureTree getTree() {
+    return tree;
   }
 
   /**
