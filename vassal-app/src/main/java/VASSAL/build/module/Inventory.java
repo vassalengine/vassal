@@ -902,8 +902,37 @@ public class Inventory extends AbstractToolbarItem
   }
 
   @Override
+  public void checkDisabled() {
+    if (enabledForPlayersSide()) {
+      super.checkDisabled();
+    }
+    else {
+      getLaunchButton().setEnabled(false);
+    }
+  }
+
+  /**
+   * @param disable true to disable our launch button, false to enable it
+   */
+  @Override
+  public void disableIfTrue(boolean disable) {
+    if (enabledForPlayersSide()) {
+      super.disableIfTrue(disable);
+    }
+    else {
+      getLaunchButton().setEnabled(false);
+    }
+  }
+
+  @Override
   public void setup(boolean gameStarting) {
-    getLaunchButton().setEnabled(gameStarting && enabledForPlayersSide());
+    if (!gameStarting) {
+      getLaunchButton().setEnabled(false);
+    }
+    else {
+      checkDisabled();
+    }
+
     if (gameStarting) {
       setupLaunch();
     }
@@ -916,7 +945,7 @@ public class Inventory extends AbstractToolbarItem
 
   protected void setupLaunch() {
     final LaunchButton myButton = getLaunchButton();
-    myButton.setEnabled(enabledForPlayersSide());
+    checkDisabled();
     // Only change button visibility if it has not already been hidden by a ToolBarMenu
     if (myButton.getClientProperty(ToolbarMenu.HIDDEN_BY_TOOLBAR) == null) {
       myButton.setVisible(myButton.isEnabled());
