@@ -75,6 +75,7 @@ public class ListKeyCommandsDialog extends JDialog {
   private static final long serialVersionUID = 1L;
   private static final int CONFIG_COLUMN = 5;
   private final EditorWindow owner;
+  private final MyTableModel tmod;
 
   public ListKeyCommandsDialog(EditorWindow owner, List<Pair<String[], AbstractConfigurable>> rows) {
     super((Frame)null, Resources.getString("Editor.ListKeyCommands.list_key_commands"), true);
@@ -83,7 +84,7 @@ public class ListKeyCommandsDialog extends JDialog {
 
     final JTextField filter = new JTextField(25);
 
-    final MyTableModel tmod = new MyTableModel(rows);
+    tmod = new MyTableModel(rows);
     final JTable table = new JTable(tmod);
 
     // Is there a better way to get decent starting column sizes?
@@ -215,6 +216,15 @@ public class ListKeyCommandsDialog extends JDialog {
     SwingUtils.repack(this);
   }
 
+  public void updateConfigurable(AbstractConfigurable target) {
+    tmod.updateConfigurable(target);
+  }
+
+  public void deleteConfigurable(AbstractConfigurable target) {
+    tmod.deleteConfigurable(target);
+  }
+
+
   // Copy action for right click context menu
   public static class CopyAction extends AbstractAction {
     private static final long serialVersionUID = 1L;
@@ -277,6 +287,35 @@ public class ListKeyCommandsDialog extends JDialog {
     @Override
     public int getColumnCount() {
       return COLUMN_COUNT;
+    }
+
+    AbstractConfigurable getSourceFor(int row) {
+      return rows.get(row).second;
+    }
+
+    public void deleteConfigurable(AbstractConfigurable target) {
+      int lowest = -1;
+      int highest = -1;
+      for (int i = rows.size() - 1; i >= 0; i--) {
+        if (!rows.get(i).second.equals(target)) continue;
+        rows.remove(i);
+        lowest = i;
+        if (highest < 0) {
+          highest = i;
+        }
+      }
+      if (highest >= 0) {
+        fireTableRowsDeleted(lowest, highest);
+      }
+    }
+
+    public void updateConfigurable(AbstractConfigurable target) {
+      deleteConfigurable(target);
+      final int size = rows.size();
+      checkForKeyCommands(target, rows);
+      if (rows.size() > size) {
+        fireTableRowsInserted(size, rows.size() - 1);
+      }
     }
 
     @Override
@@ -354,7 +393,7 @@ public class ListKeyCommandsDialog extends JDialog {
               }
             }
 
-            list.add(new Pair(new String[] { cmd_key, cmd_name, src_type, src_name, src_desc }, configurable));
+            list.add(Pair.of(new String[] { cmd_key, cmd_name, src_type, src_name, src_desc }, configurable));
           }
         }
       }
@@ -436,7 +475,7 @@ public class ListKeyCommandsDialog extends JDialog {
     recursivelyFindKeyCommands(GameModule.getGameModule(), keyCommandList);
     return keyCommandList;
   }
-  
+
   /**
    * Show help html
    */
