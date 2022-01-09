@@ -53,7 +53,6 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -73,10 +72,11 @@ import javax.swing.table.TableRowSorter;
  */
 public class ListKeyCommandsDialog extends JDialog {
   private static final long serialVersionUID = 1L;
-  private Frame owner;
+  private static final int CONFIG_COLUMN = 5;
+  private final Frame owner;
 
   public ListKeyCommandsDialog(Frame owner, List<Object[]> rows) {
-    super(owner, Resources.getString("Editor.ListKeyCommands.list_key_commands"), true);
+    super((Frame)null, Resources.getString("Editor.ListKeyCommands.list_key_commands"), true);
 
     this.owner = owner;
 
@@ -84,6 +84,8 @@ public class ListKeyCommandsDialog extends JDialog {
 
     final MyTableModel tmod = new MyTableModel(rows);
     final JTable table = new JTable(tmod);
+
+    table.removeColumn(table.getColumnModel().getColumn(CONFIG_COLUMN));
 
     // Is there a better way to get decent starting column sizes?
     table.getColumnModel().getColumn(0).setPreferredWidth(114);
@@ -241,15 +243,18 @@ public class ListKeyCommandsDialog extends JDialog {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      final int rowIndex = table.getSelectedRow();
+      int rowIndex = table.getSelectedRow();
       if (rowIndex < 0) return;
 
-      final Object jumpTo = rows.get(rowIndex)[CONFIG_COLUMN];
-      //final Object jumpTo = table.getValueAt(rowIndex, CONFIG_COLUMN);
+      rowIndex = table.convertRowIndexToModel(rowIndex);
+
+      final Object jumpTo = table.getModel().getValueAt(rowIndex, CONFIG_COLUMN);
+
       if (jumpTo instanceof AbstractConfigurable) {
         if (owner instanceof EditorWindow) {
           final EditorWindow editor = (EditorWindow)owner;
           editor.getTree().jumpToTarget((AbstractConfigurable)jumpTo);
+          editor.toFront();
         }
       }
     }
@@ -257,7 +262,7 @@ public class ListKeyCommandsDialog extends JDialog {
 
   private static class MyTableModel extends AbstractTableModel {
     private static final long serialVersionUID = 1L;
-    private static final int COLUMN_COUNT = 5;
+    private static final int COLUMN_COUNT = 6;
 
     private final List<Object[]> rows;
 
