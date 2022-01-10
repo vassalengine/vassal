@@ -90,6 +90,7 @@ public class NodeClient implements LockableChatServerConnection,
   protected NodeRoom pendingSynchToRoom;
 
   private SocketHandler sender;
+  private final Object senderLock = 0;
 
   protected final String host;
   protected final int port;
@@ -180,7 +181,7 @@ public class NodeClient implements LockableChatServerConnection,
   }
 
   protected void registerNewConnection() {
-    synchronized (sender) {
+    synchronized (senderLock) {
       if (sender == null) { // If already hung up
         return;
       }
@@ -200,7 +201,7 @@ public class NodeClient implements LockableChatServerConnection,
 
   protected void initializeConnection() throws UnknownHostException, IOException {
     final Socket s = new Socket(host, port);
-    synchronized (sender) {
+    synchronized (senderLock) {
       sender = new SocketHandler(s, this);
       sender.start();
     }
@@ -208,7 +209,7 @@ public class NodeClient implements LockableChatServerConnection,
 
   protected void closeConnection() {
     final SocketHandler s;
-    synchronized (sender) {
+    synchronized (senderLock) {
       s = sender;
       sender = null;
     }
@@ -217,14 +218,14 @@ public class NodeClient implements LockableChatServerConnection,
 
   @Override
   public boolean isConnected() {
-    synchronized (sender) {
+    synchronized (senderLock) {
       return sender != null;
     }
   }
 
   @Override
   public void socketClosed(SocketHandler handler) {
-    synchronized (sender) {
+    synchronized (senderLock) {
       if (sender != null) {
         propSupport.firePropertyChange(STATUS, null, Resources.getString("Server.lost_connection")); //$NON-NLS-1$
         propSupport.firePropertyChange(CONNECTED, null, Boolean.FALSE);
@@ -234,7 +235,7 @@ public class NodeClient implements LockableChatServerConnection,
   }
 
   public void send(String command) {
-    synchronized (sender) {
+    synchronized (senderLock) {
       sender.writeLine(command);
     }
   }
