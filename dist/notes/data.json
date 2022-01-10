@@ -23,9 +23,11 @@
         { "num": 11032, "desc": "List Key Commands tool for Editor" }
       ],
       "bug_fixes": [
+        { "num": 11053, "desc": "Suppress Empty Deck Hotkeys when refreshing game" },
         { "num": 11039, "desc": "Display Loaded message instead of Cancelled when refreshing Predefined Setups" },
         { "num": 11038, "desc": "Allow 'Use Same Boards' option on Private Map to be removed" },
         { "num": 11031, "desc": "Turn Tracker List configure box missing labels" },
+        { "num": 11025, "desc": "Guard against ClassCastException when MultiActionButtons change property values" },
         { "num": 11024, "desc": "Communicating with tiler over socket fails for some users; use stdout instead" },
         { "num": 11020, "desc": "Don't display lock option for P2P rooms, which aren't lockable" },
         { "num": 11011, "desc": "Fixed typo in DiceButton docs" }

@@ -1,10 +1,13 @@
 3.6.4 - ???
 
+* 11053: Suppress Empty Deck Hotkeys when refreshing game
 * 11039: Display Loaded message instead of Cancelled when refreshing
     Predefined Setups
 * 11038: Allow 'Use Same Boards' option on Private Map to be removed
 * 11032: List Key Commands tool for Editor
 * 11031: Turn Tracker List configure box missing labels
+* 11025: Guard against ClassCastException when MultiActionButtons change
+    property values
 * 11024: Communicating with tiler over socket fails for some users; use stdout
     instead
 * 11020: Don't display lock option for P2P rooms, which aren't lockable
