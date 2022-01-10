@@ -626,6 +626,11 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
    */
   private void processDeck(Deck deck, Command command) {
 
+    // Prevent any listeners or hot Keys firing while we fiddle the Deck
+    deck.removeListeners();
+    final boolean saveHotKeyOnEmpty = deck.isHotkeyOnEmpty();
+    deck.setHotkeyOnEmpty(false);
+
     // Take a copy of the pieces in the Deck
     final List<GamePiece> pieces = deck.asList();
 
@@ -663,6 +668,9 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     for (final GamePiece piece : newPieces) {
       command.append(deck.getMap().placeOrMerge(piece, deck.getPosition()));
     }
+
+    deck.addListeners();
+    deck.setHotkeyOnEmpty(saveHotKeyOnEmpty);
 
   }
 
