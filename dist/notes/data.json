@@ -24,6 +24,7 @@
       ],
       "bug_fixes": [
         { "num": 11053, "desc": "Suppress Empty Deck Hotkeys when refreshing game" },
+        { "num": 11041, "desc": "Inventory windows respond to hide-if-property-true" },
         { "num": 11039, "desc": "Display Loaded message instead of Cancelled when refreshing Predefined Setups" },
         { "num": 11038, "desc": "Allow 'Use Same Boards' option on Private Map to be removed" },
         { "num": 11031, "desc": "Turn Tracker List configure box missing labels" },

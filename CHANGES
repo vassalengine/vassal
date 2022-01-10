@@ -1,6 +1,7 @@
 3.6.4 - ???
 
 * 11053: Suppress Empty Deck Hotkeys when refreshing game
+* 11041: Inventory windows respond to hide-if-property-true
 * 11039: Display Loaded message instead of Cancelled when refreshing
     Predefined Setups
 * 11038: Allow 'Use Same Boards' option on Private Map to be removed
