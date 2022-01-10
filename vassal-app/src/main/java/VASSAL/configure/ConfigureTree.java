@@ -486,6 +486,22 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
 
+  private void notifyUpdate(final Configurable target) {
+    if (target instanceof AbstractConfigurable) {
+      if (editorWindow.getListKeyCommands() != null) {
+        editorWindow.getListKeyCommands().updateConfigurable((AbstractConfigurable)target);
+      }
+    }
+  }
+
+  private void notifyDelete(final Configurable target) {
+    if (target instanceof AbstractConfigurable) {
+      if (editorWindow.getListKeyCommands() != null) {
+        editorWindow.getListKeyCommands().deleteConfigurable((AbstractConfigurable)target);
+      }
+    }
+  }
+
   /**
    * @return Search action - runs search dialog box, then searches
    */
@@ -900,6 +916,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
                 @Override
                 public void save() {
+                  notifyUpdate(child);
                   //BR// If we've just created a new duplicate and saved it, then select the duplicate rather than leaving the original selected
                   if (duplicate != null) {
                     final DefaultMutableTreeNode node = getTreeNode(child);
@@ -1033,6 +1050,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       child.removeFrom(parent);
       parent.remove(child);
       ((DefaultTreeModel) getModel()).removeNodeFromParent(getTreeNode(child));
+      notifyDelete(child);
       notifyStateChanged(true);
       return true;
     }
@@ -1094,6 +1112,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
 
     notifyStateChanged(true);
+    notifyUpdate(child);
     return succeeded;
   }
 
@@ -1305,6 +1324,13 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       insert(parent, target, 0);
     }
     ((DefaultTreeModel) getModel()).nodeChanged(node);
+  }
+
+  public void jumpToTarget(Configurable target) {
+    final DefaultMutableTreeNode node = getTreeNode(target);
+    final TreePath path = new TreePath(node.getPath());
+    setSelectionPath(path);
+    scrollPathToVisible(path);
   }
 
   /**
@@ -2317,6 +2343,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   public void nodeEdited(Configurable target) {
     final ConfigureTreeNode node = (ConfigureTreeNode) getTreeNode(target);
     node.setEdited(true);
+    notifyUpdate(target);
     ((DefaultTreeModel) getModel()).nodeChanged(node);
   }
 

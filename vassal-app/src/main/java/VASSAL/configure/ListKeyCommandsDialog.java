@@ -30,10 +30,12 @@ import VASSAL.build.widget.PieceSlot;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
+import VASSAL.launch.EditorWindow;
 import VASSAL.search.SearchTarget;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.icon.IconFamily;
+import VASSAL.tools.lang.Pair;
 import VASSAL.tools.swing.SwingUtils;
 
 import net.miginfocom.swing.MigLayout;
@@ -71,13 +73,17 @@ import javax.swing.table.TableRowSorter;
  */
 public class ListKeyCommandsDialog extends JDialog {
   private static final long serialVersionUID = 1L;
+  private final EditorWindow owner;
+  private final MyTableModel tmod;
 
-  public ListKeyCommandsDialog(Frame owner, List<String[]> rows) {
-    super(owner, Resources.getString("Editor.ListKeyCommands.list_key_commands"), true);
+  public ListKeyCommandsDialog(EditorWindow owner, List<Pair<String[], AbstractConfigurable>> rows) {
+    super((Frame)null, Resources.getString("Editor.ListKeyCommands.list_key_commands"), true);
+
+    this.owner = owner;
 
     final JTextField filter = new JTextField(25);
 
-    final MyTableModel tmod = new MyTableModel(rows);
+    tmod = new MyTableModel(rows);
     final JTable table = new JTable(tmod);
 
     // Is there a better way to get decent starting column sizes?
@@ -90,20 +96,38 @@ public class ListKeyCommandsDialog extends JDialog {
     // Popup menu provides right-click context menu to copy
     final JPopupMenu pm = new JPopupMenu();
     pm.add(new CopyAction(table));
+    pm.add(new JumpAction(table));
 
     table.addMouseListener(new MouseAdapter() {
-      @Override
-      public void mousePressed(MouseEvent e) {
+
+      private void doMouseStuff(MouseEvent e) {
+        final int r = table.rowAtPoint(e.getPoint());
+        if (r >= 0 && r < table.getRowCount()) {
+          if (!table.getSelectionModel().isSelectedIndex(r)) {
+            table.setRowSelectionInterval(r, r);
+          }
+        }
+        else {
+          table.clearSelection();
+        }
+
+        final int rowindex = table.getSelectedRow();
+        if (rowindex < 0)
+          return;
+
         if (e.isPopupTrigger()) {
           doPopup(e);
         }
       }
 
       @Override
+      public void mousePressed(MouseEvent e) {
+        doMouseStuff(e);
+      }
+
+      @Override
       public void mouseReleased(MouseEvent e) {
-        if (e.isPopupTrigger()) {
-          doPopup(e);
-        }
+        doMouseStuff(e);
       }
 
       protected void doPopup(MouseEvent e) {
@@ -127,7 +151,7 @@ public class ListKeyCommandsDialog extends JDialog {
         // show row containing the filter as a substring
         for (int i = entry.getValueCount() - 1; i >= 0; i--) {
           final String v = entry.getStringValue(i);
-          if (v != null && v.contains(f)) {
+          if (v != null && v.toLowerCase().contains(f.toLowerCase())) {
             return true;
           }
         }
@@ -170,7 +194,10 @@ public class ListKeyCommandsDialog extends JDialog {
     panel.add(scroll, "grow, push, wrap"); //NON-NLS
 
     final JButton ok = new JButton(Resources.getString("General.ok"));
-    ok.addActionListener(e -> dispose());
+    ok.addActionListener(e -> {
+      dispose();
+      owner.clearListKeyCommands();
+    });
 
     final JButton help = new JButton(Resources.getString("General.help"));
     help.addActionListener(e -> help());
@@ -183,8 +210,19 @@ public class ListKeyCommandsDialog extends JDialog {
     setLayout(new MigLayout("insets dialog, fill")); // NON-NLS
     add(panel, "grow"); // NON-NLS
 
+    setModal(false);
+
     SwingUtils.repack(this);
   }
+
+  public void updateConfigurable(AbstractConfigurable target) {
+    tmod.updateConfigurable(target);
+  }
+
+  public void deleteConfigurable(AbstractConfigurable target) {
+    tmod.deleteConfigurable(target);
+  }
+
 
   // Copy action for right click context menu
   public static class CopyAction extends AbstractAction {
@@ -202,13 +240,35 @@ public class ListKeyCommandsDialog extends JDialog {
     }
   }
 
+  public class JumpAction extends AbstractAction {
+    private static final long serialVersionUID = 1L;
+    private final JTable table;
+
+    public JumpAction(JTable table) {
+      this.table = table;
+      putValue(NAME, Resources.getString("Editor.ListKeyCommands.jump_to_definition"));
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      int rowIndex = table.getSelectedRow();
+      if (rowIndex < 0) return;
+
+      rowIndex = table.convertRowIndexToModel(rowIndex);
+
+      final AbstractConfigurable jumpTo = ((MyTableModel)(table.getModel())).getSourceFor(rowIndex);
+      owner.getTree().jumpToTarget(jumpTo);
+      owner.toFront();
+    }
+  }
+
   private static class MyTableModel extends AbstractTableModel {
     private static final long serialVersionUID = 1L;
     private static final int COLUMN_COUNT = 5;
 
-    private final List<String[]> rows;
+    private final List<Pair<String[], AbstractConfigurable>> rows;
 
-    public MyTableModel(List<String[]> rows) {
+    public MyTableModel(List<Pair<String[], AbstractConfigurable>> rows) {
       this.rows = rows;
     }
 
@@ -220,6 +280,35 @@ public class ListKeyCommandsDialog extends JDialog {
     @Override
     public int getColumnCount() {
       return COLUMN_COUNT;
+    }
+
+    public AbstractConfigurable getSourceFor(int row) {
+      return rows.get(row).second;
+    }
+
+    public void deleteConfigurable(AbstractConfigurable target) {
+      int lowest = -1;
+      int highest = -1;
+      for (int i = rows.size() - 1; i >= 0; i--) {
+        if (!rows.get(i).second.equals(target)) continue;
+        rows.remove(i);
+        lowest = i;
+        if (highest < 0) {
+          highest = i;
+        }
+      }
+      if (highest >= 0) {
+        fireTableRowsDeleted(lowest, highest);
+      }
+    }
+
+    public void updateConfigurable(AbstractConfigurable target) {
+      deleteConfigurable(target);
+      final int size = rows.size();
+      checkForKeyCommands(target, rows);
+      if (rows.size() > size) {
+        fireTableRowsInserted(size, rows.size() - 1);
+      }
     }
 
     @Override
@@ -242,7 +331,7 @@ public class ListKeyCommandsDialog extends JDialog {
 
     @Override
     public Object getValueAt(int row, int column) {
-      return row < rows.size() ? rows.get(row)[column] : null;
+      return row < rows.size() ? rows.get(row).first[column] : null;
     }
   }
 
@@ -253,7 +342,7 @@ public class ListKeyCommandsDialog extends JDialog {
    * @param list our table's list of column strings to be appended to
    * @param configurable If search target is a trait, this is the original AbstractConfigurable (e.g. a PrototypeDefinition, a Piece Slot, etc) that it came from.
    */
-  private static void checkSearchTarget(SearchTarget target, List<String[]> list, AbstractConfigurable configurable) {
+  private static void checkSearchTarget(SearchTarget target, List<Pair<String[], AbstractConfigurable>> list, AbstractConfigurable configurable) {
     final List<NamedKeyStroke> keys = target.getNamedKeyStrokeList();
     if (keys != null) {
       for (final NamedKeyStroke k : keys) {
@@ -297,7 +386,7 @@ public class ListKeyCommandsDialog extends JDialog {
               }
             }
 
-            list.add(new String[] { cmd_key, cmd_name, src_type, src_name, src_desc });
+            list.add(Pair.of(new String[] { cmd_key, cmd_name, src_type, src_name, src_desc }, configurable));
           }
         }
       }
@@ -311,7 +400,7 @@ public class ListKeyCommandsDialog extends JDialog {
    * @param target AbstractConfigurable to check
    * @param list Our table list to which to add any key commands found
    */
-  private static void checkForKeyCommands(AbstractConfigurable target, List<String[]> list) {
+  private static void checkForKeyCommands(AbstractConfigurable target, List<Pair<String[], AbstractConfigurable>> list) {
     GamePiece p;
     boolean protoskip;
     if (target instanceof GamePiece) {
@@ -358,7 +447,7 @@ public class ListKeyCommandsDialog extends JDialog {
    * @param target current target component
    * @param list our table's list of column strings, to which entries will be appended
    */
-  private static void recursivelyFindKeyCommands(AbstractBuildable target, List<String[]> list) {
+  private static void recursivelyFindKeyCommands(AbstractBuildable target, List<Pair<String[], AbstractConfigurable>> list) {
     for (final Buildable b : target.getBuildables()) {
       if (b instanceof AbstractConfigurable) {
         checkForKeyCommands((AbstractConfigurable)b, list);
@@ -374,8 +463,8 @@ public class ListKeyCommandsDialog extends JDialog {
    * Begins a recursive search of the entire module for key commands
    * @return list of column entries for our table
    */
-  public static List<String[]> findAllKeyCommands() {
-    final List<String[]> keyCommandList = new ArrayList<>();
+  public static List<Pair<String[], AbstractConfigurable>> findAllKeyCommands() {
+    final List<Pair<String[], AbstractConfigurable>> keyCommandList = new ArrayList<>();
     recursivelyFindKeyCommands(GameModule.getGameModule(), keyCommandList);
     return keyCommandList;
   }
