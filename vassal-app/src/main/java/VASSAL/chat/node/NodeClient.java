@@ -217,9 +217,7 @@ public class NodeClient implements LockableChatServerConnection,
 
   @Override
   public boolean isConnected() {
-    synchronized (this) {
-      return sender != null;
-    }
+    return sender != null;
   }
 
   @Override
