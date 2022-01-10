@@ -90,7 +90,6 @@ public class NodeClient implements LockableChatServerConnection,
   protected NodeRoom pendingSynchToRoom;
 
   private SocketHandler sender;
-  private final Object senderLock = new Object(); // We want a dedicated object for synchronizing, rather than synchronizing on sender itself, since sender's object reference can/will change.
 
   protected final String host;
   protected final int port;
@@ -181,7 +180,7 @@ public class NodeClient implements LockableChatServerConnection,
   }
 
   protected void registerNewConnection() {
-    synchronized (senderLock) {
+    synchronized (this) {
       if (sender == null) { // If already hung up
         return;
       }
@@ -201,7 +200,7 @@ public class NodeClient implements LockableChatServerConnection,
 
   protected void initializeConnection() throws UnknownHostException, IOException {
     final Socket s = new Socket(host, port);
-    synchronized (senderLock) {
+    synchronized (this) {
       sender = new SocketHandler(s, this);
       sender.start();
     }
@@ -209,7 +208,7 @@ public class NodeClient implements LockableChatServerConnection,
 
   protected void closeConnection() {
     final SocketHandler s;
-    synchronized (senderLock) {
+    synchronized (this) {
       s = sender;
       sender = null;
     }
@@ -218,14 +217,14 @@ public class NodeClient implements LockableChatServerConnection,
 
   @Override
   public boolean isConnected() {
-    synchronized (senderLock) {
+    synchronized (this) {
       return sender != null;
     }
   }
 
   @Override
   public void socketClosed(SocketHandler handler) {
-    synchronized (senderLock) {
+    synchronized (this) {
       if (sender != null) {
         propSupport.firePropertyChange(STATUS, null, Resources.getString("Server.lost_connection")); //$NON-NLS-1$
         propSupport.firePropertyChange(CONNECTED, null, Boolean.FALSE);
@@ -235,7 +234,7 @@ public class NodeClient implements LockableChatServerConnection,
   }
 
   public void send(String command) {
-    synchronized (senderLock) {
+    synchronized (this) {
       sender.writeLine(command);
     }
   }
