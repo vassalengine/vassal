@@ -90,7 +90,7 @@ public class NodeClient implements LockableChatServerConnection,
   protected NodeRoom pendingSynchToRoom;
 
   private SocketHandler sender;
-  private final Object senderLock = 0; // We want a dedicated object for synchronizing, rather than synchronizing on sender itself, since sender's object reference can/will change.
+  private final Object senderLock = new Object(); // We want a dedicated object for synchronizing, rather than synchronizing on sender itself, since sender's object reference can/will change.
 
   protected final String host;
   protected final int port;
