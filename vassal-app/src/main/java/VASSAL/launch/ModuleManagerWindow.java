@@ -74,6 +74,7 @@ import javax.swing.event.TreeWillExpandListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import javax.swing.text.DefaultEditorKit;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
@@ -2131,6 +2132,44 @@ public class ModuleManagerWindow extends JFrame {
 
       d.setLocationRelativeTo(frame);
       d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+      final Action copyAction = new DefaultEditorKit.CopyAction();
+      copyAction.putValue(Action.NAME, Resources.getString("Errorlog.copy_selection"));
+
+      final Action copyAllAction = new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          lp.selectAll();
+          copyAction.actionPerformed(e);
+        }
+      };
+      copyAllAction.putValue(Action.NAME, Resources.getString("Errorlog.copy_all"));
+
+      final JPopupMenu pm = new JPopupMenu();
+      pm.add(copyAllAction);
+      pm.add(copyAction);
+
+      final MouseAdapter adapter = new MouseAdapter() {
+        @Override
+        public void mousePressed(MouseEvent e) {
+          if (e.isPopupTrigger()) {
+            doPopup(e);
+          }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+          if (e.isPopupTrigger()) {
+            doPopup(e);
+          }
+        }
+
+        protected void doPopup(MouseEvent e) {
+          pm.show(e.getComponent(), e.getX(), e.getY());
+        }
+      };
+
+      lp.addMouseListener(adapter);
 
       SwingUtils.repack(d);
       d.setVisible(true);
