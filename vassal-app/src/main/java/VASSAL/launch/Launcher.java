@@ -21,7 +21,6 @@ package VASSAL.launch;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -174,7 +173,7 @@ public abstract class Launcher {
     public String minModuleVersion;
     public String newVersionLink;
 
-    LoadConstraint(String moduleName, String minVassalVersion, String minModuleVersion, String newVersionLink) {
+    public LoadConstraint(String moduleName, String minVassalVersion, String minModuleVersion, String newVersionLink) {
       this.moduleName = moduleName;
       this.minVassalVersion =  minVassalVersion;
       this.minModuleVersion =  minModuleVersion;
@@ -182,7 +181,7 @@ public abstract class Launcher {
     }
   }
 
-  private static final List<LoadConstraint> constraints = Arrays.asList(
+  private static final List<LoadConstraint> constraints = List.of(
     new LoadConstraint("VASL", "3.4", "", "<a href=\"https://vasl.info\">vasl.info</a>"),                                                    // NON-NLS
     new LoadConstraint("VSQL", "3.4", "", "<a href=\"https://vassalengine.org/wiki/Module:Squad_Leader\">vassalengine.org</a>"),             // NON-NLS
     new LoadConstraint("Paths of Glory", "", "9.9", "<a href=\"https://vassalengine.org/wiki/Module:Paths_of_Glory\">vassalengine.org</a>")  // NON-NLS
