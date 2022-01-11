@@ -1,5 +1,7 @@
 3.6.4 - ???
 
+* 11059: Right Click menu added to Show Error Log window in Module Manager
+* 11056: Don't attempt to send to already-hung-up connection
 * 11053: Suppress Empty Deck Hotkeys when refreshing game
 * 11041: Inventory windows respond to hide-if-property-true
 * 11039: Display Loaded message instead of Cancelled when refreshing

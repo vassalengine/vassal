@@ -23,6 +23,7 @@
         { "num": 11032, "desc": "List Key Commands tool for Editor" }
       ],
       "bug_fixes": [
+        { "num": 11056, "desc": "Don't attempt to send to already-hung-up connection" },
         { "num": 11053, "desc": "Suppress Empty Deck Hotkeys when refreshing game" },
         { "num": 11041, "desc": "Inventory windows respond to hide-if-property-true" },
         { "num": 11039, "desc": "Display Loaded message instead of Cancelled when refreshing Predefined Setups" },
@@ -34,6 +35,7 @@
         { "num": 11011, "desc": "Fixed typo in DiceButton docs" }
       ],
       "other_improvements": [
+        { "num": 11059, "desc": "Right Click menu added to Show Error Log window in Module Manager" }
       ]
     },
     {
