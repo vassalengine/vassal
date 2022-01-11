@@ -78,9 +78,9 @@ public class ProblemDialog {
 
     return show(
       messageType, parent, thrown,
-      Resources.getString(messageKey + "_title"), // NON-NLS
-      Resources.getString(messageKey + "_heading"), // NON-NLS
-      Resources.getString(messageKey + "_message", args) // NON-NLS
+      Resources.getString(messageKey + "_title", args),   // NON-NLS
+      Resources.getString(messageKey + "_heading", args), // NON-NLS
+      Resources.getString(messageKey + "_message", args)  // NON-NLS
     );
   }
 
@@ -146,8 +146,8 @@ public class ProblemDialog {
 
     return showDisableable(
       messageType, parent, thrown, key,
-      Resources.getString(messageKey + "_title"), // NON-NLS
-      Resources.getString(messageKey + "_heading"), // NON-NLS
+      Resources.getString(messageKey + "_title", args), // NON-NLS
+      Resources.getString(messageKey + "_heading", args), // NON-NLS
       Resources.getString(messageKey + "_message", args) // NON-NLS
     );
   }
@@ -250,8 +250,8 @@ public class ProblemDialog {
 
     return showDetails(
       messageType, parent, thrown, details,
-      Resources.getString(messageKey + "_title"), // NON-NLS
-      Resources.getString(messageKey + "_heading"), // NON-NLS
+      Resources.getString(messageKey + "_title", args), // NON-NLS
+      Resources.getString(messageKey + "_heading", args), // NON-NLS
       Resources.getString(messageKey + "_message", args) // NON-NLS
     );
   }
@@ -266,8 +266,8 @@ public class ProblemDialog {
 
     return showDetails(
       messageType, parent, thrown, details,
-      Resources.getString(messageKey + "_title", thrown.getFile(), thrown.getOtherFile()), // NON-NLS
-      Resources.getString(messageKey + "_heading", thrown.getFile(), thrown.getOtherFile()), // NON-NLS
+      Resources.getString(messageKey + "_title", thrown.getFile(), thrown.getOtherFile(), args), // NON-NLS
+      Resources.getString(messageKey + "_heading", thrown.getFile(), thrown.getOtherFile(), args), // NON-NLS
       Resources.getString(messageKey + "_message", thrown.getFile(), thrown.getOtherFile(), args) // NON-NLS
     );
   }
@@ -346,8 +346,8 @@ public class ProblemDialog {
 
     return showDetailsDisableable(
       messageType, parent, thrown, details, key,
-      Resources.getString(messageKey + "_title"), // NON-NLS
-      Resources.getString(messageKey + "_heading"), // NON-NLS
+      Resources.getString(messageKey + "_title", args), // NON-NLS
+      Resources.getString(messageKey + "_heading", args), // NON-NLS
       Resources.getString(messageKey + "_message", args) // NON-NLS
     );
   }
