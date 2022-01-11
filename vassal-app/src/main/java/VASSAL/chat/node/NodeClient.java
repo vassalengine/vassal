@@ -180,31 +180,38 @@ public class NodeClient implements LockableChatServerConnection,
   }
 
   protected void registerNewConnection() {
-    if (sender == null) { // If already hung up
-      return;
-    }
-    final String path = new SequenceEncoder(moduleName, '/').append(defaultRoomName)
+    synchronized (this) {
+      if (sender == null) { // If already hung up
+        return;
+      }
+      final String path = new SequenceEncoder(moduleName, '/').append(defaultRoomName)
         .getValue();
-    send(Protocol.encodeRegisterCommand(me.getId(), path,
+      send(Protocol.encodeRegisterCommand(me.getId(), path,
         new PropertiesEncoder(me.toProperties()).getStringValue()));
-    if (GameModule.getGameModule() != null) {
-      final String username = (String) GameModule.getGameModule().getPrefs()
+      if (GameModule.getGameModule() != null) {
+        final String username = (String) GameModule.getGameModule().getPrefs()
           .getValue("Login"); //$NON-NLS-1$
-      if (username != null) {
-        send(Protocol.encodeLoginCommand(username));
+        if (username != null) {
+          send(Protocol.encodeLoginCommand(username));
+        }
       }
     }
   }
 
   protected void initializeConnection() throws UnknownHostException, IOException {
     final Socket s = new Socket(host, port);
-    sender = new SocketHandler(s, this);
-    sender.start();
+    synchronized (this) {
+      sender = new SocketHandler(s, this);
+      sender.start();
+    }
   }
 
   protected void closeConnection() {
-    final SocketHandler s = sender;
-    sender = null;
+    final SocketHandler s;
+    synchronized (this) {
+      s = sender;
+      sender = null;
+    }
     s.close();
   }
 
@@ -215,15 +222,19 @@ public class NodeClient implements LockableChatServerConnection,
 
   @Override
   public void socketClosed(SocketHandler handler) {
-    if (sender != null) {
-      propSupport.firePropertyChange(STATUS, null, Resources.getString("Server.lost_connection")); //$NON-NLS-1$
-      propSupport.firePropertyChange(CONNECTED, null, Boolean.FALSE);
-      sender = null;
+    synchronized (this) {
+      if (sender != null) {
+        propSupport.firePropertyChange(STATUS, null, Resources.getString("Server.lost_connection")); //$NON-NLS-1$
+        propSupport.firePropertyChange(CONNECTED, null, Boolean.FALSE);
+        sender = null;
+      }
     }
   }
 
   public void send(String command) {
-    sender.writeLine(command);
+    synchronized (this) {
+      sender.writeLine(command);
+    }
   }
 
   public void setDefaultRoomName(String defaultRoomName) {
