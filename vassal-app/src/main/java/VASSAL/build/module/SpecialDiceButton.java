@@ -343,6 +343,7 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
       }
     });
     final GameModule mod = GameModule.getGameModule();
+    mod.getGameState().addGameComponent(this);
     ran = mod.getRNG();
     mod.getToolBar().add(launch);
     idMgr.add(this);
@@ -356,6 +357,7 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
     mod.removeCommandEncoder(this);
     mod.getToolBar().remove(launch);
     mod.getToolBar().revalidate();
+    mod.getGameState().removeGameComponent(this);
   }
 
   @Override

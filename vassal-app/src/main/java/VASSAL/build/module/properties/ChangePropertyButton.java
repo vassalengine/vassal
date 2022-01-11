@@ -192,6 +192,7 @@ public class ChangePropertyButton extends AbstractToolbarItem implements Propert
   @Override
   public void removeFrom(Buildable parent) {
     property.getToolBar().remove(getLaunchButton());
+    GameModule.getGameModule().getGameState().removeGameComponent(this);
   }
 
   @Override
@@ -209,6 +210,7 @@ public class ChangePropertyButton extends AbstractToolbarItem implements Propert
     property = (GlobalProperty) parent;
     property.getToolBar().add(getLaunchButton());
     propChangeConfig.setName(property.getConfigureName());
+    GameModule.getGameModule().getGameState().addGameComponent(this);
   }
 
   public static String getConfigureTypeName() {

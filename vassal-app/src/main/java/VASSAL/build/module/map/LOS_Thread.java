@@ -238,10 +238,13 @@ public class LOS_Thread extends AbstractToolbarItem implements
       config.addPropertyChangeListener(evt -> threadColor = (Color) evt.getNewValue());
       config.fireUpdate();
     }
+
+    GameModule.getGameModule().getGameState().addGameComponent(this);
   }
 
   @Override
   public void removeFrom(Buildable b) {
+    GameModule.getGameModule().getGameState().removeGameComponent(this);
     if (b instanceof AbstractFolder) {
       b = ((AbstractFolder)b).getNonFolderAncestor();
     }

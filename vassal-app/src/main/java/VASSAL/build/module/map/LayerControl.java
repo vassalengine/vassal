@@ -5,6 +5,7 @@ import java.util.stream.Stream;
 import VASSAL.build.AbstractToolbarItem;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
+import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.ComponentDescription;
@@ -245,6 +246,7 @@ public class LayerControl extends AbstractToolbarItem implements ComponentDescri
     pieceLayers = (LayeredPieceCollection) parent;
     pieceLayers.getToolBar().add(getLaunchButton());
     pieceCollection = pieceLayers.getPieceCollection();
+    GameModule.getGameModule().getGameState().addGameComponent(this);
   }
 
   @Override
@@ -252,6 +254,7 @@ public class LayerControl extends AbstractToolbarItem implements ComponentDescri
     if (getMap() != null) {
       getMap().getToolBar().remove(getLaunchButton());
     }
+    GameModule.getGameModule().getGameState().removeGameComponent(this);
   }
 
   public Map getMap() {

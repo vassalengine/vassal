@@ -186,6 +186,7 @@ public class MassKeyCommand extends AbstractToolbarItem
     if (parent instanceof PropertySource) {
       propertySource = (PropertySource) parent;
     }
+    GameModule.getGameModule().getGameState().addGameComponent(this);
     setAttributeTranslatable(NAME, false);
     globalCommand.setPropertySource(propertySource);
   }
@@ -529,6 +530,7 @@ public class MassKeyCommand extends AbstractToolbarItem
     if (parent instanceof ToolBarComponent) {
       ((ToolBarComponent)parent).getToolBar().remove(getLaunchButton());
     }
+    GameModule.getGameModule().getGameState().removeGameComponent(this);
   }
 
   public PieceFilter getFilter() {
