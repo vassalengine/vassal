@@ -346,6 +346,7 @@ public class NotesWindow extends AbstractToolbarItem
 
   @Override
   public void setup(boolean show) {
+    super.setup(show);
     getLaunchButton().setEnabled(show);
     if (!show) {
       scenarioNotes.setValue(""); //$NON-NLS-1$

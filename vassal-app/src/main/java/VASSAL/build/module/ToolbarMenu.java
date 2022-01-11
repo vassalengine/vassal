@@ -306,6 +306,7 @@ public class ToolbarMenu extends AbstractToolbarItem
 
   @Override
   public void setup(boolean gameStarting) {
+    super.setup(gameStarting);
     // Prevent our Toolbar buttons from becoming visible on Game close/reopen
     scheduleBuildMenu();
   }

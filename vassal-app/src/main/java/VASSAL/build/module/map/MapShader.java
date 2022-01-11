@@ -634,6 +634,7 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
    */
   @Override
   public void setup(boolean gameStarting) {
+    super.setup(gameStarting);
     getLaunchButton().setEnabled(gameStarting);
     if (!gameStarting) {
       boardClip = null;

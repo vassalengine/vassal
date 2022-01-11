@@ -926,6 +926,8 @@ public class Inventory extends AbstractToolbarItem
 
   @Override
   public void setup(boolean gameStarting) {
+    super.setup(gameStarting);
+
     if (!gameStarting) {
       getLaunchButton().setEnabled(false);
     }

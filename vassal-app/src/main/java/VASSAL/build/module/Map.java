@@ -2719,6 +2719,8 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   @Override
   public void setup(boolean show) {
+    super.setup(show);
+
     final GameModule g = GameModule.getGameModule();
 
     if (show) {
