@@ -436,6 +436,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
   @Override
   public void setup(boolean gameStarting) {
+    super.setup(gameStarting);
     if (gameStarting) {
       claimOccupiedSide();
       if (GameModule.getGameModule().isMultiPlayer()) {

@@ -173,6 +173,7 @@ public class ToolbarMenu extends AbstractToolbarItem
       toolbar.addContainerListener(this);
       scheduleBuildMenu();
     }
+    GameModule.getGameModule().getGameState().addGameComponent(this);
   }
 
   @Override
@@ -193,6 +194,7 @@ public class ToolbarMenu extends AbstractToolbarItem
   public void removeFrom(Buildable parent) {
     toolbar.remove(getLaunchButton());
     toolbar.removeContainerListener(this);
+    GameModule.getGameModule().getGameState().removeGameComponent(this);
   }
 
   protected void buildMenu() {
@@ -304,6 +306,7 @@ public class ToolbarMenu extends AbstractToolbarItem
 
   @Override
   public void setup(boolean gameStarting) {
+    super.setup(gameStarting);
     // Prevent our Toolbar buttons from becoming visible on Game close/reopen
     scheduleBuildMenu();
   }

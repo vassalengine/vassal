@@ -108,6 +108,7 @@ public class ImageSaver extends AbstractToolbarItem {
   public void addTo(Buildable b) {
     map = (Map) b;
     map.getToolBar().add(getLaunchButton());
+    GameModule.getGameModule().getGameState().addGameComponent(this);
   }
 
   @Override
@@ -115,6 +116,7 @@ public class ImageSaver extends AbstractToolbarItem {
     map = (Map) b;
     map.getToolBar().remove(getLaunchButton());
     map.getToolBar().revalidate();
+    GameModule.getGameModule().getGameState().removeGameComponent(this);
   }
 
   /** @deprecated Use {@link VASSAL.build.AbstractToolbarItem.IconConfig} instead. */

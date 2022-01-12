@@ -87,6 +87,7 @@ public class TextSaver extends AbstractToolbarItem {
   public void addTo(Buildable b) {
     map = (Map) b;
     map.getToolBar().add(getLaunchButton());
+    GameModule.getGameModule().getGameState().addGameComponent(this);
   }
 
   @Override
@@ -94,6 +95,7 @@ public class TextSaver extends AbstractToolbarItem {
     map = (Map) b;
     map.getToolBar().remove(getLaunchButton());
     map.getToolBar().revalidate();
+    GameModule.getGameModule().getGameState().removeGameComponent(this);
   }
 
   public void apply() {

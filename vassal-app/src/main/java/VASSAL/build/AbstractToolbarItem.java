@@ -454,7 +454,9 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
    */
   @Override
   public void addTo(Buildable parent) {
-    GameModule.getGameModule().getToolBar().add(getComponent());
+    final GameModule gm = GameModule.getGameModule();
+    gm.getGameState().addGameComponent(this);
+    gm.getToolBar().add(getComponent());
   }
 
   /**
@@ -463,8 +465,10 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
    */
   @Override
   public void removeFrom(Buildable b) {
-    GameModule.getGameModule().getToolBar().remove(getComponent());
-    GameModule.getGameModule().getToolBar().revalidate();
+    final GameModule gm = GameModule.getGameModule();
+    gm.getToolBar().remove(getComponent());
+    gm.getToolBar().revalidate();
+    gm.getGameState().removeGameComponent(this);
   }
 
   @Override

@@ -132,6 +132,7 @@ public class PieceRecenterer extends AbstractToolbarItem implements DeckVisitor 
   public void addTo(Buildable parent) {
     map = (Map)parent;
     map.getToolBar().add(getLaunchButton());
+    GameModule.getGameModule().getGameState().addGameComponent(this);
   }
 
   @Override
@@ -156,5 +157,6 @@ public class PieceRecenterer extends AbstractToolbarItem implements DeckVisitor 
   @Override
   public void removeFrom(Buildable parent) {
     map.getToolBar().remove(getLaunchButton());
+    GameModule.getGameModule().getGameState().removeGameComponent(this);
   }
 }
