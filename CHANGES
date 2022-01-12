@@ -1,7 +1,12 @@
 3.6.4 - ???
 
+* 11062: Fix problem on Windows where a click at edge made it slowly scroll
+    all the way in that direction
+* 11060: Fixes to various Toolbar Buttons that weren't respecting the
+    "disable-on-global-property" settings
 * 11059: Right Click menu added to Show Error Log window in Module Manager
 * 11056: Don't attempt to send to already-hung-up connection
+* 11054: Don't let old versions of PoG load and crash
 * 11053: Suppress Empty Deck Hotkeys when refreshing game
 * 11041: Inventory windows respond to hide-if-property-true
 * 11039: Display Loaded message instead of Cancelled when refreshing
