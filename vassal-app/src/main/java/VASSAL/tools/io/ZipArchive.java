@@ -445,7 +445,12 @@ public class ZipArchive implements FileArchive {
     final String base = FilenameUtils.getBaseName(sanitize(path)) + "_";
     final String ext = extensionOf(path);
     Files.createDirectories(tmpDir);
-    return Files.createTempFile(tmpDir, base, ext).toFile();
+    try {
+      return Files.createTempFile(tmpDir, base, ext).toFile();
+    }
+    catch (final IllegalArgumentException e) {
+      throw new IOException("failed to create temp file at " + tmpDir.toString() + ", with base " + base + ", ext " + ext, e);
+    }
   }
 
   private static OutputStream openNew(Path p) throws IOException {
