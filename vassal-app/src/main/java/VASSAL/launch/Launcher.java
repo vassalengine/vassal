@@ -21,11 +21,15 @@ package VASSAL.launch;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 
 import javax.swing.SwingUtilities;
 
+import VASSAL.Info;
+import VASSAL.build.module.metadata.ModuleMetaData;
+import VASSAL.tools.version.VersionUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -160,6 +164,45 @@ public abstract class Launcher {
         System.exit(1);
       }
     }
+  }
+
+
+  private static class LoadConstraint {
+    public String moduleName;
+    public String minVassalVersion;
+    public String minModuleVersion;
+    public String newVersionLink;
+
+    public LoadConstraint(String moduleName, String minVassalVersion, String minModuleVersion, String newVersionLink) {
+      this.moduleName = moduleName;
+      this.minVassalVersion =  minVassalVersion;
+      this.minModuleVersion =  minModuleVersion;
+      this.newVersionLink   =  newVersionLink;
+    }
+  }
+
+  private static final List<LoadConstraint> constraints = List.of(
+    new LoadConstraint("VASL", "3.4", "", "<a href=\"https://vasl.info\">vasl.info</a>"),                                                    // NON-NLS
+    new LoadConstraint("VSQL", "3.4", "", "<a href=\"https://vassalengine.org/wiki/Module:Squad_Leader\">vassalengine.org</a>"),             // NON-NLS
+    new LoadConstraint("Paths of Glory", "", "9.9", "<a href=\"https://vassalengine.org/wiki/Module:Paths_of_Glory\">vassalengine.org</a>")  // NON-NLS
+  );
+
+  public static boolean checkModuleLoadable(ModuleMetaData md) {
+    final String name = md.getName();
+    for (final LoadConstraint rule : constraints) {
+      if (rule.moduleName.equals(name)) {
+        if (!rule.minVassalVersion.isEmpty() && (VersionUtils.compareVersions(md.getVassalVersion(), rule.minVassalVersion) < 0)) {
+          ErrorDialog.show("Error.module_too_old_vassal_version", name, Info.getVersion(), rule.newVersionLink); //NON-NLS
+          return false;
+        }
+        if (!rule.minModuleVersion.isEmpty() && (VersionUtils.compareVersions(md.getVersion(), rule.minModuleVersion) < 0)) {
+          ErrorDialog.show("Error.module_too_old_module_version", name, Info.getVersion(), rule.newVersionLink);  //NON-NLS
+          return false;
+        }
+      }
+    }
+
+    return true;
   }
 
   protected abstract void launch() throws IOException;

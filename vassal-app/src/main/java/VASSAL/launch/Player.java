@@ -46,7 +46,6 @@ import VASSAL.tools.UsernameAndPasswordDialog;
 import VASSAL.tools.menu.MacOSXMenuManager;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
-import VASSAL.tools.version.VersionUtils;
 
 /**
  * @author Joel Uckelman
@@ -162,22 +161,8 @@ public class Player extends Launcher {
       // don't permit loading of VASL saved before 3.4
       final AbstractMetaData data = MetaDataFactory.buildMetaData(lr.module);
       if (data instanceof ModuleMetaData) {
-        final ModuleMetaData md = (ModuleMetaData) data;
-        if (VersionUtils.compareVersions(md.getVassalVersion(), "3.4") < 0) {
-          if ("VASL".equals(md.getName())) { //NON-NLS
-            ErrorDialog.show(
-              "Error.VASL_too_old", //NON-NLS
-              Info.getVersion()
-            );
-            return;
-          }
-          else if ("VSQL".equals(md.getName())) { //NON-NLS
-            ErrorDialog.show(
-              "Error.VSQL_too_old", //NON-NLS
-              Info.getVersion()
-            );
-            return;
-          }
+        if (!Launcher.checkModuleLoadable((ModuleMetaData)data)) {
+          return;
         }
       }
       else {
