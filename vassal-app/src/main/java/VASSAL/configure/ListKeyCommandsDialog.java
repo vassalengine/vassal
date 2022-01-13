@@ -93,6 +93,7 @@ public class ListKeyCommandsDialog extends JDialog {
     tmod = new MyTableModel(rows);
     final JTable table = new JTable(tmod) {
       // Tooltips for table cells
+      @Override
       public String getToolTipText(MouseEvent e) {
         final java.awt.Point p = e.getPoint();
         final int rowIndex = rowAtPoint(p);
