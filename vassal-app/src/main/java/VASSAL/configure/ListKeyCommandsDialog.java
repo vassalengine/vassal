@@ -73,6 +73,13 @@ import javax.swing.table.TableRowSorter;
  */
 public class ListKeyCommandsDialog extends JDialog {
   private static final long serialVersionUID = 1L;
+  private static final int KEY_COMMAND_COLUMN = 0;
+  private static final int COLUMN_COUNT = 6;
+  private static final int NAMED_COMMAND_COLUMN = 1;
+  private static final int TYPE_COLUMN = 2;
+  private static final int NAME_COLUMN = 3;
+  private static final int PATH_COLUMN = 4;
+  private static final int DESC_COLUMN = 5;
   private final EditorWindow owner;
   private final MyTableModel tmod;
 
@@ -95,12 +102,15 @@ public class ListKeyCommandsDialog extends JDialog {
       }
     };
 
+    setPreferredSize(new Dimension(1900, 800));
+
     // Is there a better way to get decent starting column sizes?
-    table.getColumnModel().getColumn(0).setPreferredWidth(114);
-    table.getColumnModel().getColumn(1).setPreferredWidth(140);
-    table.getColumnModel().getColumn(2).setPreferredWidth(200);
-    table.getColumnModel().getColumn(3).setPreferredWidth(200);
-    table.getColumnModel().getColumn(4).setPreferredWidth(800);
+    table.getColumnModel().getColumn(KEY_COMMAND_COLUMN).setPreferredWidth(114);
+    table.getColumnModel().getColumn(NAMED_COMMAND_COLUMN).setPreferredWidth(140);
+    table.getColumnModel().getColumn(TYPE_COLUMN).setPreferredWidth(200);
+    table.getColumnModel().getColumn(NAME_COLUMN).setPreferredWidth(200);
+    table.getColumnModel().getColumn(PATH_COLUMN).setPreferredWidth(400);
+    table.getColumnModel().getColumn(DESC_COLUMN).setPreferredWidth(800);
 
     // Popup menu provides right-click context menu to copy
     final JPopupMenu pm = new JPopupMenu();
@@ -159,6 +169,7 @@ public class ListKeyCommandsDialog extends JDialog {
 
         // show row containing the filter as a substring
         for (int i = entry.getValueCount() - 1; i >= 0; i--) {
+          if (i == PATH_COLUMN) continue; // Don't include path column in filter
           final String v = entry.getStringValue(i);
           if (v != null && v.toLowerCase().contains(f.toLowerCase())) {
             return true;
@@ -273,7 +284,6 @@ public class ListKeyCommandsDialog extends JDialog {
 
   private static class MyTableModel extends AbstractTableModel {
     private static final long serialVersionUID = 1L;
-    private static final int COLUMN_COUNT = 5;
 
     private final List<Pair<String[], AbstractConfigurable>> rows;
 
@@ -323,15 +333,17 @@ public class ListKeyCommandsDialog extends JDialog {
     @Override
     public String getColumnName(int col) {
       switch (col) {
-      case 0:
+      case KEY_COMMAND_COLUMN:
         return Resources.getString("Editor.ListKeyCommands.key_command");
-      case 1:
+      case NAMED_COMMAND_COLUMN:
         return Resources.getString("Editor.ListKeyCommands.named_command");
-      case 2:
+      case TYPE_COLUMN:
         return Resources.getString("Editor.ListKeyCommands.source_type");
-      case 3:
+      case NAME_COLUMN:
         return Resources.getString("Editor.ListKeyCommands.source_name");
-      case 4:
+      case PATH_COLUMN:
+        return Resources.getString("Editor.ListKeyCommands.source_path");
+      case DESC_COLUMN:
         return Resources.getString("Editor.ListKeyCommands.source_description");
       default:
         return "";
@@ -403,18 +415,15 @@ public class ListKeyCommandsDialog extends JDialog {
                 if ((node == null) || node.isBlank()) {
                   node = "[" + ((AbstractConfigurable) path).getTypeName() + "]";
                 }
-                if ((node != null) && !node.isBlank()) {
-                  src_path += " => " + node;
+                if (!src_path.isEmpty()) {
+                  src_path += " -> ";
                 }
+                src_path += node;
               }
               path = ((AbstractBuildable)path).getAncestor();
             }
 
-            if (src_name != null) {
-              src_name += src_path;
-            }
-
-            list.add(Pair.of(new String[] { cmd_key, cmd_name, src_type, src_name, src_desc }, configurable));
+            list.add(Pair.of(new String[] { cmd_key, cmd_name, src_type, src_name, src_path, src_desc }, configurable));
           }
         }
       }
