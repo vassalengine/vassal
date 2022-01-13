@@ -697,7 +697,9 @@ public class ZipArchive implements FileArchive {
 
     if (Files.exists(archive) && Files.size(archive) > 0) {
       zipFile = new ZipFile(archive.toFile());
-      zipFile.stream().forEach(e -> entries.put(e.getName(), new Entry(e, null)));
+      zipFile.stream()
+             .filter(e -> !e.isDirectory())
+             .forEach(e -> entries.put(e.getName(), new Entry(e, null)));
     }
   }
 
