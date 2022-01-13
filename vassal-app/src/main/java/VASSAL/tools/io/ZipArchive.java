@@ -449,7 +449,7 @@ public class ZipArchive implements FileArchive {
       return Files.createTempFile(tmpDir, base, ext).toFile();
     }
     catch (final IllegalArgumentException e) {
-      throw new IOException("failed to create temp file at " + tmpDir.toString() + ", with base " + base + ", ext " + ext, e);
+      throw new IOException("failed to create temp file for " + path + " at " + tmpDir.toString() + ", with base " + base + ", ext " + ext, e);
     }
   }
 
