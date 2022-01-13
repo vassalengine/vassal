@@ -84,7 +84,16 @@ public class ListKeyCommandsDialog extends JDialog {
     final JTextField filter = new JTextField(25);
 
     tmod = new MyTableModel(rows);
-    final JTable table = new JTable(tmod);
+    final JTable table = new JTable(tmod) {
+      // Tooltips for table cells
+      public String getToolTipText(MouseEvent e) {
+        final java.awt.Point p = e.getPoint();
+        final int rowIndex = rowAtPoint(p);
+        final int colIndex = columnAtPoint(p);
+        final Object obj = getValueAt(rowIndex, colIndex);
+        return (obj != null) ? obj.toString() : null;
+      }
+    };
 
     // Is there a better way to get decent starting column sizes?
     table.getColumnModel().getColumn(0).setPreferredWidth(114);
@@ -384,6 +393,25 @@ public class ListKeyCommandsDialog extends JDialog {
                 src_desc = ((Decorator) target).getDescriptionField();
                 src_type = ((Decorator) target).getBaseDescription();
               }
+            }
+
+            String src_path = "";
+            Buildable path = configurable.getAncestor();
+            while ((path instanceof AbstractBuildable) && !(path instanceof GameModule)) {
+              if (path instanceof AbstractConfigurable) {
+                String node = ((AbstractConfigurable) path).getConfigureName();
+                if ((node == null) || node.isBlank()) {
+                  node = "[" + ((AbstractConfigurable) path).getTypeName() + "]";
+                }
+                if ((node != null) && !node.isBlank()) {
+                  src_path += " => " + node;
+                }
+              }
+              path = ((AbstractBuildable)path).getAncestor();
+            }
+
+            if (src_name != null) {
+              src_name += src_path;
             }
 
             list.add(Pair.of(new String[] { cmd_key, cmd_name, src_type, src_name, src_desc }, configurable));
