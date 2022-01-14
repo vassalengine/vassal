@@ -37,6 +37,7 @@
         { "num": 11011, "desc": "Fixed typo in DiceButton docs" }
       ],
       "other_improvements": [
+        { "num": 11070, "desc": "Documentation updates for DrawingMouseover / DrawingMouseover Index" },
         { "num": 11059, "desc": "Right Click menu added to Show Error Log window in Module Manager" },
         { "num": 11054, "desc": "Don't let old versions of PoG load and crash" }
       ]
