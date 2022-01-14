@@ -1,6 +1,13 @@
 3.6.4 - ???
 
+* 11076: Editor's search function (and List Key Commands) will now "find" the
+    keys for Undo & Step Forward
+* 11073: Fix situation where Send-to-Location throws exceptions when it can't
+    find target counters
 * 11070: Documentation updates for DrawingMouseover / DrawingMouseover Index
+* 11069: Fix crash in Load Deck when an invalid deck file selected in file
+    picker
+* 11067: Fix NPE in SetupStack.isOwningBoardActive()
 * 11065: Improved error handling when a temp file can't be created
 * 11062: Fix problem on Windows where a click at edge made it slowly scroll
     all the way in that direction
