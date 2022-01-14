@@ -538,6 +538,12 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         }
         c = c.append(map.placeOrMerge(outer, dest));
 
+        // The map field might change or even become null through the apply-key processes below, so we schedule our repaints now based on our current information.
+        if (oldMap != null && oldMap != map) {
+          oldMap.repaint();
+        }
+        map.repaint();
+
         // If a cargo piece has been "sent", find it a new Mat if needed.
         c = MatCargo.findNewMat(c, outer);
 
@@ -549,11 +555,6 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         if (parent != null) {
           c = c.append(parent.pieceRemoved(outer));
         }
-
-        if (oldMap != null && oldMap != map) {
-          oldMap.repaint();
-        }
-        map.repaint();
       }
     }
     else {
