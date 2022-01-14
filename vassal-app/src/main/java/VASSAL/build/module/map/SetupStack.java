@@ -442,8 +442,11 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     if (owningBoardName == null) {
       active = true;
     }
-    else if (getMap().getBoardByName(owningBoardName) != null) {
-      active = true;
+    else {
+      final Map map = getMap();
+      if ((map != null) && (map.getBoardByName(owningBoardName) != null)) {
+        active = true;
+      }
     }
     return active;
   }
