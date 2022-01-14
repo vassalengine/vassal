@@ -7,7 +7,9 @@
 '''''
 
 === Mouse-over Stack Viewer
+A Mouseover Stack Viewer displays a "rollover" or "tooltip" for a stack when the mouse cursor is moved over it, after a specified delay. The tooltip can be configured to include images and/or display descriptive text about the pieces in the stack. Note that a "stack" for this purpose can consist of a single piece or multiple pieces, or even a deck.
 
+Occasionally pieces will want to "draw themselves differently" inside of a Mouseover Stack Viewer. For this purpose they can check the property `DrawingMouseover` in e.g. a Calculated Property or a Label's "Follows Expression Value" field. Alternatively the property `DrawingMouseoverIndex` will contain 2 while drawing the mouseover, 1 otherwise; this can be useful as an index for a Follows Expression layer because it avoids the substantial performance cost of a full Beanshell expression e.g. `{ DrawingMouseover ? 2 : 1 }`.
 
 [width="100%",cols="50%a,^50%a",]
 |===
