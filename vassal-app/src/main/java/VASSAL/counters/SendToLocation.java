@@ -48,6 +48,7 @@ import VASSAL.i18n.TranslatablePiece;
 import VASSAL.script.expression.AuditTrail;
 import VASSAL.script.expression.Auditable;
 import VASSAL.script.expression.AuditableException;
+import VASSAL.script.expression.FormattedStringExpression;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
@@ -471,7 +472,11 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
   private Point getSendLocation() {
     final GamePiece outer = Decorator.getOutermost(this);
 
-    final Destination dest = getSendLocation(outer, this, destination, mapId, boardName, zone, region, gridLocation, x, y, propertyFilter, getMap(), getPosition());
+    // Do pre-evaluation of $...$ expressions for source/target matching
+    final FormattedStringExpression props = new FormattedStringExpression(propertyFilter.getExpression());
+    final PropertyExpression pf = new PropertyExpression(props.tryEvaluate(outer, this, "Editor.SendToLocation.getSendLocation")); //NON-NLS
+
+    final Destination dest = getSendLocation(outer, this, destination, mapId, boardName, zone, region, gridLocation, x, y, pf, getMap(), getPosition());
     map = dest.map;
 
     // Offset destination by Advanced Options offsets
