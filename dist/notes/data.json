@@ -23,6 +23,7 @@
         { "num": 11032, "desc": "List Key Commands tool for Editor" }
       ],
       "bug_fixes": [
+        { "num": 11065, "desc": "Improved error handling when a temp file can't be created" },
         { "num": 11062, "desc": "Fix problem on Windows where a click at edge made it slowly scroll all the way in that direction" },
         { "num": 11060, "desc": "Fixes to various Toolbar Buttons that weren't respecting the \"disable-on-global-property\" settings" },
         { "num": 11056, "desc": "Don't attempt to send to already-hung-up connection" },

@@ -1,6 +1,7 @@
 3.6.4 - ???
 
 * 11070: Documentation updates for DrawingMouseover / DrawingMouseover Index
+* 11065: Improved error handling when a temp file can't be created
 * 11062: Fix problem on Windows where a click at edge made it slowly scroll
     all the way in that direction
 * 11060: Fixes to various Toolbar Buttons that weren't respecting the
