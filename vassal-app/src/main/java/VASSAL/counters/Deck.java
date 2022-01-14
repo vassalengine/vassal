@@ -1508,11 +1508,13 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   protected void doLoadDeck() {
     Command c = loadDeck();
-    if (!c.isNull() && Map.isChangeReportingEnabled()) {
-      c = c.append(reportCommand(loadReport, Resources.getString(Resources.LOAD)));
+    if (c != null) {
+      if (!c.isNull() && Map.isChangeReportingEnabled()) {
+        c = c.append(reportCommand(loadReport, Resources.getString(Resources.LOAD)));
+      }
+      gameModule.sendAndLog(c);
+      repaintMap();
     }
-    gameModule.sendAndLog(c);
-    repaintMap();
   }
 
   protected KeyCommand[] getKeyCommands() {
