@@ -28,6 +28,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -101,6 +102,9 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   protected SaveMetaData metadata;
   private boolean multiPlayer = false;
 
+  private NamedHotKeyConfigurer stepKeyConfig;
+  private NamedHotKeyConfigurer undoKeyConfig;
+
   public BasicLogger() {
     super();
     stepAction.setEnabled(false);
@@ -114,6 +118,21 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   /** Presently no XML attributes or subcomponents to be built */
   @Override
   public void build(Element e) { }
+
+  /**
+   * Since the configurers for our keystrokes are farmed out to GlobalOptions, this provides a way for GlobalOptions to find out about them (when being searched, etc)
+   * @return List of keystrokes used by the Basic Logger
+   */
+  public List<NamedKeyStroke> getNamedKeyStrokes() {
+    final List<NamedKeyStroke> list = new ArrayList<>();
+    if (stepKeyConfig != null) {
+      list.add(stepKeyConfig.getValueNamedKeyStroke());
+    }
+    if (undoKeyConfig != null) {
+      list.add(undoKeyConfig.getValueNamedKeyStroke());
+    }
+    return list;
+  }
 
   /**
    * Expects to be added to a {@link GameModule}. Adds <code>Undo</code>,
@@ -158,7 +177,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     stepIconConfig.addPropertyChangeListener(evt -> stepAction.putValue(Action.SMALL_ICON, stepIconConfig.getIconValue()));
     stepIconConfig.fireUpdate();
 
-    final NamedHotKeyConfigurer stepKeyConfig = new NamedHotKeyConfigurer("stepHotKey", Resources.getString("BasicLogger.step_forward_hotkey"), stepKeyListener.getNamedKeyStroke());  //$NON-NLS-1$ //$NON-NLS-2$
+    stepKeyConfig = new NamedHotKeyConfigurer("stepHotKey", Resources.getString("BasicLogger.step_forward_hotkey"), stepKeyListener.getNamedKeyStroke());  //$NON-NLS-1$ //$NON-NLS-2$
     GlobalOptions.getInstance().addOption(stepKeyConfig);
     stepKeyConfig.addPropertyChangeListener(evt -> {
       stepKeyListener.setKeyStroke(stepKeyConfig.getValueNamedKeyStroke());
@@ -177,7 +196,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     undoIconConfig.addPropertyChangeListener(evt -> undoAction.putValue(Action.SMALL_ICON, undoIconConfig.getIconValue()));
     undoIconConfig.fireUpdate();
 
-    final NamedHotKeyConfigurer undoKeyConfig = new NamedHotKeyConfigurer("undoHotKey", Resources.getString("BasicLogger.undo_hotkey"), undoKeyListener.getNamedKeyStroke()); //$NON-NLS-1$ //$NON-NLS-2$
+    undoKeyConfig = new NamedHotKeyConfigurer("undoHotKey", Resources.getString("BasicLogger.undo_hotkey"), undoKeyListener.getNamedKeyStroke()); //$NON-NLS-1$ //$NON-NLS-2$
     GlobalOptions.getInstance().addOption(undoKeyConfig);
     undoKeyConfig.addPropertyChangeListener(evt -> {
       undoKeyListener.setKeyStroke(undoKeyConfig.getValueNamedKeyStroke());
