@@ -17,20 +17,19 @@
  */
 package VASSAL.build.module;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.dnd.DropTarget;
-import java.awt.dnd.DropTargetDragEvent;
-import java.awt.dnd.DropTargetDropEvent;
-import java.awt.dnd.DropTargetEvent;
-import java.awt.dnd.DropTargetListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import VASSAL.build.Buildable;
+import VASSAL.build.GameModule;
+import VASSAL.command.Command;
+import VASSAL.command.CommandEncoder;
+import VASSAL.configure.ColorConfigurer;
+import VASSAL.configure.FontConfigurer;
+import VASSAL.i18n.Resources;
+import VASSAL.preferences.Prefs;
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.KeyStrokeSource;
+import VASSAL.tools.QuickColors;
+import VASSAL.tools.ScrollPane;
+import VASSAL.tools.swing.DataArchiveHTMLEditorKit;
 
 import javax.swing.Action;
 import javax.swing.BoxLayout;
@@ -48,20 +47,21 @@ import javax.swing.text.DefaultEditorKit;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
-
-import VASSAL.build.Buildable;
-import VASSAL.build.GameModule;
-import VASSAL.command.Command;
-import VASSAL.command.CommandEncoder;
-import VASSAL.configure.ColorConfigurer;
-import VASSAL.configure.FontConfigurer;
-import VASSAL.i18n.Resources;
-import VASSAL.preferences.Prefs;
-import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.KeyStrokeSource;
-import VASSAL.tools.QuickColors;
-import VASSAL.tools.ScrollPane;
-import VASSAL.tools.swing.DataArchiveHTMLEditorKit;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
 
 /**
  * The chat window component. Displays text messages and accepts input. Also
