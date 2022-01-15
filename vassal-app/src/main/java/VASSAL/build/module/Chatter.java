@@ -21,10 +21,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
@@ -35,9 +31,6 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
 
 import javax.swing.Action;
 import javax.swing.BoxLayout;
@@ -58,7 +51,6 @@ import javax.swing.text.html.StyleSheet;
 
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
-import VASSAL.build.module.map.PieceMover;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.configure.ColorConfigurer;
