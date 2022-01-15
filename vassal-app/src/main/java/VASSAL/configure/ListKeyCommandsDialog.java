@@ -37,21 +37,8 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.icon.IconFamily;
 import VASSAL.tools.lang.Pair;
 import VASSAL.tools.swing.SwingUtils;
-
 import net.miginfocom.swing.MigLayout;
-
 import org.apache.commons.lang3.StringUtils;
-
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.File;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -67,6 +54,16 @@ import javax.swing.event.DocumentListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Editor tool for finding all the key commands (and named key commands) in a module, and applying sorts/filters to them.
@@ -417,7 +414,7 @@ public class ListKeyCommandsDialog extends JDialog {
                   node = "[" + ((AbstractConfigurable) path).getTypeName() + "]";
                 }
                 if (!src_path.isEmpty()) {
-                  src_path += " -> ";
+                  src_path += " > ";
                 }
                 src_path += node;
               }
