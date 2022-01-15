@@ -39,6 +39,9 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Window;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DragSource;
@@ -57,6 +60,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.AffineTransform;
 import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -2009,7 +2014,8 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
         MouseEvent.NOBUTTON
       );
       theMap.dispatchEvent(evt);
-      dtde.dropComplete(true);
+
+      GameModule.getGameModule().getGameState().dropFile(dtde);
     }
 
     if (scroller.isRunning()) scroller.stop();

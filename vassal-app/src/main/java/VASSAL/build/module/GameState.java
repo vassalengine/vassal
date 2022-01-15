@@ -21,6 +21,11 @@ import VASSAL.build.Buildable;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Cursor;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTargetDropEvent;
 import java.awt.event.ActionEvent;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -633,25 +638,35 @@ public class GameState implements CommandEncoder {
     if (fc.showOpenDialog() != FileChooser.APPROVE_OPTION) return;
 
     final File f = fc.getSelectedFile();
+    loadGame(f, false);
+  }
+
+  /**
+   * Loads a specific file as a saved game
+   * @param f File to load
+   * @param continuation true if this is to be a continuation
+   * @return true if a file load was successfully started
+   */
+  public boolean loadGame(File f, boolean continuation) {
     try {
       if (!f.exists()) throw new FileNotFoundException(
         "Unable to locate " + f.getPath()); //NON-NLS
 
       // Check the Save game for validity
       if (!isSaveMetaDataValid(f)) {
-        return;
+        return false;
       }
 
       if (gameStarted && continuation) {
         loadContinuation(f);
       }
       else {
-        g.setGameFile(f.getName(), GameModule.GameFileMode.LOADED_GAME);
+        GameModule.getGameModule().setGameFile(f.getName(), GameModule.GameFileMode.LOADED_GAME);
 
         //BR// New preferred style load for vlogs is close the old stuff and hard-reset to the new log state.
         if (gameStarted) {
           GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
-          
+
           GameModule.getGameModule().setLoadOverSemaphore(true); // Stop updating Map UI etc for a bit
           try {
             pieces.clear();
@@ -668,7 +683,39 @@ public class GameState implements CommandEncoder {
     }
     catch (IOException e) {
       ReadErrorDialog.error(e, f);
+      return false;
     }
+
+    return true;
+  }
+
+  /**
+   * Accepts a saved file dropped onto the main window or a map, attempts to load it as a saved game.
+   * @param dtde DropTargetDropEvent from the drop() handler
+   */
+  public void dropFile(DropTargetDropEvent dtde) {
+    dtde.acceptDrop(DnDConstants.ACTION_COPY);
+    final Transferable transferable = dtde.getTransferable();
+    final DataFlavor[] flavors = transferable.getTransferDataFlavors();
+    for (final DataFlavor flavor : flavors) {
+      // If the drop items are files
+      if (flavor.isFlavorJavaFileListType()) {
+        try {
+          // Get all of the dropped files
+          final List<File> files = (List<File>) transferable.getTransferData(flavor);
+          for (final File file : files) {
+            if (GameModule.getGameModule().getGameState().loadGame(file, false)) {
+              break; // Only load the first file in the list
+            }
+          }
+        }
+        catch (IOException | UnsupportedFlavorException e) {
+          //
+        }
+      }
+    }
+
+    dtde.dropComplete(true);
   }
 
   protected String saveString() {
@@ -1047,6 +1094,9 @@ public class GameState implements CommandEncoder {
                                    final InputStream in) throws IOException {
     final GameModule g = GameModule.getGameModule();
     g.warn(Resources.getString("GameState.loading", shortName));  //$NON-NLS-1$
+
+    //TODO It would be nice to unblock EDT long enough to have the above loading message get displayed.
+    //TODO I guess it would mean right here we'd need to launch some "do in 10 milliseconds" thing, but then make sure that the below was then executed on EDT?
 
     final Command loadCommand = decodeSavedGame(in);
     if (loadCommand != null) {

@@ -21,12 +21,23 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import javax.swing.Action;
 import javax.swing.BoxLayout;
@@ -47,6 +58,7 @@ import javax.swing.text.html.StyleSheet;
 
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
+import VASSAL.build.module.map.PieceMover;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.configure.ColorConfigurer;
@@ -64,7 +76,7 @@ import VASSAL.tools.swing.DataArchiveHTMLEditorKit;
  * acts as a {@link CommandEncoder}, encoding/decoding commands that display
  * message in the text area
  */
-public class Chatter extends JPanel implements CommandEncoder, Buildable {
+public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTargetListener {
   private static final long serialVersionUID = 1L;
 
   protected JTextPane conversationPane;
@@ -89,6 +101,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   protected Color gameMsg, gameMsg2, gameMsg3, gameMsg4, gameMsg5;
   protected Color systemMsg, myChat, otherChat;
   protected boolean needUpdate;
+
+  protected DropTarget dt;
 
   protected JTextArea conversation;    // Backward compatibility for overridden classes. Needs something to suppress.
 
@@ -205,6 +219,9 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     });
 
     setPreferredSize(new Dimension(input.getMaximumSize().width, input.getPreferredSize().height + conversationPane.getPreferredSize().height));
+
+    // Accept dropped files
+    dt = new DropTarget(conversationPane, this);
   }
 
 
@@ -696,6 +713,33 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public String getHandle() {
     return GlobalOptions.getInstance().getPlayerId();
+  }
+
+
+
+  @Override
+  public void dragEnter(DropTargetDragEvent event) {
+  }
+
+  @Override
+  public void dragExit(DropTargetEvent event) {
+  }
+
+  @Override
+  public void dragOver(DropTargetDragEvent event) {
+  }
+
+  @Override
+  public void dropActionChanged(DropTargetDragEvent event) {
+  }
+
+  /**
+   * We put the "drop" in drag-n-drop!
+   * @param dtde DropTargetDragEvent
+   */
+  @Override
+  public void drop(DropTargetDropEvent dtde) {
+    GameModule.getGameModule().getGameState().dropFile(dtde);
   }
 }
 
