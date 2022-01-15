@@ -16,52 +16,9 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.Info;
 import VASSAL.build.AbstractBuildable;
 import VASSAL.build.Buildable;
-import VASSAL.preferences.Prefs;
-import VASSAL.tools.ProblemDialog;
-import java.awt.Cursor;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DropTargetDropEvent;
-import java.awt.event.ActionEvent;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.SwingWorker;
-import javax.swing.SwingUtilities;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import org.slf4j.LoggerFactory;
-
-import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.metadata.AbstractMetaData;
 import VASSAL.build.module.metadata.MetaDataFactory;
@@ -78,7 +35,9 @@ import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.ModuleManagerUpdateHelper;
+import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ThrowableUtils;
 import VASSAL.tools.WarningDialog;
@@ -87,11 +46,52 @@ import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.LogAndSaveFileFilter;
 import VASSAL.tools.io.DeobfuscatingInputStream;
 import VASSAL.tools.io.ObfuscatingOutputStream;
-import VASSAL.tools.io.ZipWriter;
 import VASSAL.tools.io.ZipArchive;
+import VASSAL.tools.io.ZipWriter;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.Dialogs;
 import VASSAL.tools.version.VersionUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
+import java.awt.Cursor;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.event.ActionEvent;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * The GameState contains methods to track and read/write the complete enumerated game state of the game
@@ -698,19 +698,50 @@ public class GameState implements CommandEncoder {
     final Transferable transferable = dtde.getTransferable();
     final DataFlavor[] flavors = transferable.getTransferDataFlavors();
     for (final DataFlavor flavor : flavors) {
+
+      // If the drop item is a Discord file link (or a text URL), we attempt to open the connection and Load That Shit Right Off The Internet
+      if (flavor.isFlavorTextType()) {
+        try {
+          final String text = transferable.getTransferData(flavor).toString();
+
+          try {
+            final URL url = new URL(text);
+            final URLConnection uc = url.openConnection();
+            final InputStream is = new BufferedInputStream(uc.getInputStream());
+
+            try {
+              loadGameInForeground(text, is);
+            }
+            catch (IOException e) {
+              ReadErrorDialog.error(e, text);
+            }
+            break; // Once we have a successful load, nothing else.
+          }
+          catch (MalformedURLException e) {
+            // Do nothing, this must not have been a URL
+          }
+        }
+        catch (IOException | UnsupportedFlavorException e) {
+          // Do nothing -- we only failed to read anything out of the drag-and-drop
+        }
+      }
+
       // If the drop items are files
       if (flavor.isFlavorJavaFileListType()) {
         try {
           // Get all of the dropped files
           final List<File> files = (List<File>) transferable.getTransferData(flavor);
           for (final File file : files) {
-            if (GameModule.getGameModule().getGameState().loadGame(file, false)) {
+            if (file.getName().toLowerCase().endsWith("url")) { // NON-NLS
+              break; // Don't try to load a Discord url link as a file
+            }
+            else if (GameModule.getGameModule().getGameState().loadGame(file, false)) {
               break; // Only load the first file in the list
             }
           }
         }
         catch (IOException | UnsupportedFlavorException e) {
-          //
+          // Do nothing -- we only failed to read anything out of the drag-and-drop
         }
       }
     }
