@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import org.apache.commons.io.FileUtils;
 
@@ -167,8 +168,88 @@ public class TilingHandler {
     return new Pair<>(tcount, maxpix);
   }
 
-  protected void runSlicer(List<String> multi, final int tcount, int initheap) throws CancellationException, IOException {
+  protected interface StateMachineHandler {
+    void handleStart();
 
+    void handleStartingImageState(String in);
+
+    void handleTileWrittenState();
+
+    void handleTilingFinishedState();
+
+    void handleSuccess();
+
+    void handleFailure();
+  }
+
+  private static class MyStateMachineHandler implements StateMachineHandler {
+    private final Future<Integer> fut;
+    private final int tcount;
+    private final ProgressDialog pd;
+    private final Progressor progressor;
+
+    public MyStateMachineHandler(int tcount, Future<Integer> fut) {
+      this.tcount = tcount;
+      this.fut = fut;
+
+      // get the progress dialog
+      pd = ProgressDialog.createOnEDT(
+        ModuleManagerWindow.getInstance(),
+        Resources.getString("TilingHandler.processing_image_tiles"),
+        " "
+      );
+
+      progressor = new Progressor(0, tcount) {
+        @Override
+        protected void run(Pair<Integer, Integer> prog) {
+          pd.setProgress((100 * prog.second) / max);
+        }
+      };
+    }
+
+    @Override
+    public void handleStart() {
+      // setup the cancel button in the progress dialog
+      EDT.execute(() -> pd.addActionListener(e -> {
+        pd.setVisible(false);
+        fut.cancel(true);
+      }));
+    }
+
+    @Override
+    public void handleStartingImageState(String ipath) {
+      EDT.execute(() -> {
+        pd.setLabel(Resources.getString("TilingHandler.tiling", ipath));
+        if (!pd.isVisible()) {
+          pd.setVisible(true);
+        }
+      });
+    }
+
+    @Override
+    public void handleTileWrittenState() {
+      progressor.increment();
+
+      if (progressor.get() >= tcount) {
+        pd.setVisible(false);
+      }
+    }
+
+    @Override
+    public void handleTilingFinishedState() {
+    }
+
+    @Override
+    public void handleSuccess() {
+    }
+
+    @Override
+    public void handleFailure() {
+      pd.setVisible(false);
+    }
+  }
+
+  protected String[] makeSlicerCommandLine(int initheap) {
     final List<String> args = new ArrayList<>(List.of(
       Info.getJavaBinPath().getAbsolutePath(),
       "-classpath", //NON-NLS
@@ -194,22 +275,25 @@ public class TilingHandler {
     args.add(String.valueOf(tdim.width));
     args.add(String.valueOf(tdim.height));
 
-    // get the progress dialog
-    final ProgressDialog pd = ProgressDialog.createOnEDT(
-      ModuleManagerWindow.getInstance(),
-      Resources.getString("TilingHandler.processing_image_tiles"),
-      " "
-    );
+    return args.toArray(new String[0]);
+  }
+
+  protected StateMachineHandler createStateMachineHandler(int tcount, Future<Integer> fut) {
+    return new MyStateMachineHandler(tcount, fut);
+  }
+
+  protected void runSlicer(List<String> multi, int tcount, int initheap) throws CancellationException, IOException {
+
+    final String[] args = makeSlicerCommandLine(initheap);
 
     // set up the process
     final InputStreamPump errP = new InputOutputStreamPump(null, System.err);
 
     final ProcessWrapper proc = new ProcessLauncher().launch(
-      null,
-      null,
-      errP,
-      args.toArray(new String[0])
+      null, null, errP, args
     );
+
+    final StateMachineHandler h = createStateMachineHandler(tcount, proc.future);
 
     // write the image paths to child's stdin, one per line
     try (PrintWriter stdin = new PrintWriter(proc.stdin, true, StandardCharsets.UTF_8)) {
@@ -218,18 +302,7 @@ public class TilingHandler {
 
     // read state changes from child's stdout
     try (DataInputStream in = new DataInputStream(proc.stdout)) {
-      final Progressor progressor = new Progressor(0, tcount) {
-        @Override
-        protected void run(Pair<Integer, Integer> prog) {
-          pd.setProgress((100 * prog.second) / max);
-        }
-      };
-
-      // setup the cancel button in the progress dialog
-      EDT.execute(() -> pd.addActionListener(e -> {
-        pd.setVisible(false);
-        proc.future.cancel(true);
-      }));
+      h.handleStart();
 
       boolean done = false;
       byte type;
@@ -238,24 +311,16 @@ public class TilingHandler {
 
         switch (type) {
         case STARTING_IMAGE:
-          final String ipath = in.readUTF();
-
-          EDT.execute(() -> {
-            pd.setLabel(Resources.getString("TilingHandler.tiling", ipath));
-            if (!pd.isVisible()) pd.setVisible(true);
-          });
+          h.handleStartingImageState(in.readUTF());
           break;
 
         case TILE_WRITTEN:
-          progressor.increment();
-
-          if (progressor.get() >= tcount) {
-            pd.setVisible(false);
-          }
+          h.handleTileWrittenState();
           break;
 
         case TILING_FINISHED:
           done = true;
+          h.handleTilingFinishedState();
           break;
 
         default:
@@ -271,9 +336,12 @@ public class TilingHandler {
     try {
       final int retval = proc.future.get();
       if (retval != 0) {
-        pd.setVisible(false);
+        h.handleFailure();
         proc.future.cancel(true);
         throw new IOException("return value == " + retval);
+      }
+      else {
+        h.handleSuccess();
       }
     }
     catch (ExecutionException | InterruptedException e) {
