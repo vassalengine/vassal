@@ -703,14 +703,12 @@ public class GameState implements CommandEncoder {
       if (flavor.isFlavorTextType()) {
         try {
           final String text = transferable.getTransferData(flavor).toString();
+          final URL url = new URL(text);
+          final URLConnection uc = url.openConnection();
 
-          try {
-            final URL url = new URL(text);
-            final URLConnection uc = url.openConnection();
-            final InputStream is = new BufferedInputStream(uc.getInputStream());
-
+          try (InputStream is = uc.getInputStream(); BufferedInputStream bis = new BufferedInputStream(is)) {
             try {
-              loadGameInForeground(text, is);
+              loadGameInForeground(text, bis);
             }
             catch (IOException e) {
               ReadErrorDialog.error(e, text);
