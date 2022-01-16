@@ -37,21 +37,8 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.icon.IconFamily;
 import VASSAL.tools.lang.Pair;
 import VASSAL.tools.swing.SwingUtils;
-
 import net.miginfocom.swing.MigLayout;
-
 import org.apache.commons.lang3.StringUtils;
-
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.File;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -67,12 +54,29 @@ import javax.swing.event.DocumentListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Editor tool for finding all the key commands (and named key commands) in a module, and applying sorts/filters to them.
  */
 public class ListKeyCommandsDialog extends JDialog {
   private static final long serialVersionUID = 1L;
+  private static final int KEY_COMMAND_COLUMN = 0;
+  private static final int COLUMN_COUNT = 6;
+  private static final int NAMED_COMMAND_COLUMN = 1;
+  private static final int TYPE_COLUMN = 2;
+  private static final int NAME_COLUMN = 3;
+  private static final int PATH_COLUMN = 4;
+  private static final int DESC_COLUMN = 5;
   private final EditorWindow owner;
   private final MyTableModel tmod;
 
@@ -84,14 +88,27 @@ public class ListKeyCommandsDialog extends JDialog {
     final JTextField filter = new JTextField(25);
 
     tmod = new MyTableModel(rows);
-    final JTable table = new JTable(tmod);
+    final JTable table = new JTable(tmod) {
+      // Tooltips for table cells
+      @Override
+      public String getToolTipText(MouseEvent e) {
+        final java.awt.Point p = e.getPoint();
+        final int rowIndex = rowAtPoint(p);
+        final int colIndex = columnAtPoint(p);
+        final Object obj = getValueAt(rowIndex, colIndex);
+        return (obj != null) ? obj.toString() : null;
+      }
+    };
+
+    setPreferredSize(new Dimension(1900, 800));
 
     // Is there a better way to get decent starting column sizes?
-    table.getColumnModel().getColumn(0).setPreferredWidth(114);
-    table.getColumnModel().getColumn(1).setPreferredWidth(140);
-    table.getColumnModel().getColumn(2).setPreferredWidth(200);
-    table.getColumnModel().getColumn(3).setPreferredWidth(200);
-    table.getColumnModel().getColumn(4).setPreferredWidth(800);
+    table.getColumnModel().getColumn(KEY_COMMAND_COLUMN).setPreferredWidth(114);
+    table.getColumnModel().getColumn(NAMED_COMMAND_COLUMN).setPreferredWidth(140);
+    table.getColumnModel().getColumn(TYPE_COLUMN).setPreferredWidth(200);
+    table.getColumnModel().getColumn(NAME_COLUMN).setPreferredWidth(200);
+    table.getColumnModel().getColumn(PATH_COLUMN).setPreferredWidth(400);
+    table.getColumnModel().getColumn(DESC_COLUMN).setPreferredWidth(800);
 
     // Popup menu provides right-click context menu to copy
     final JPopupMenu pm = new JPopupMenu();
@@ -150,6 +167,7 @@ public class ListKeyCommandsDialog extends JDialog {
 
         // show row containing the filter as a substring
         for (int i = entry.getValueCount() - 1; i >= 0; i--) {
+          if (i == PATH_COLUMN) continue; // Don't include path column in filter
           final String v = entry.getStringValue(i);
           if (v != null && v.toLowerCase().contains(f.toLowerCase())) {
             return true;
@@ -264,7 +282,6 @@ public class ListKeyCommandsDialog extends JDialog {
 
   private static class MyTableModel extends AbstractTableModel {
     private static final long serialVersionUID = 1L;
-    private static final int COLUMN_COUNT = 5;
 
     private final List<Pair<String[], AbstractConfigurable>> rows;
 
@@ -314,15 +331,17 @@ public class ListKeyCommandsDialog extends JDialog {
     @Override
     public String getColumnName(int col) {
       switch (col) {
-      case 0:
+      case KEY_COMMAND_COLUMN:
         return Resources.getString("Editor.ListKeyCommands.key_command");
-      case 1:
+      case NAMED_COMMAND_COLUMN:
         return Resources.getString("Editor.ListKeyCommands.named_command");
-      case 2:
+      case TYPE_COLUMN:
         return Resources.getString("Editor.ListKeyCommands.source_type");
-      case 3:
+      case NAME_COLUMN:
         return Resources.getString("Editor.ListKeyCommands.source_name");
-      case 4:
+      case PATH_COLUMN:
+        return Resources.getString("Editor.ListKeyCommands.source_path");
+      case DESC_COLUMN:
         return Resources.getString("Editor.ListKeyCommands.source_description");
       default:
         return "";
@@ -386,7 +405,23 @@ public class ListKeyCommandsDialog extends JDialog {
               }
             }
 
-            list.add(Pair.of(new String[] { cmd_key, cmd_name, src_type, src_name, src_desc }, configurable));
+            String src_path = "";
+            Buildable path = configurable.getAncestor();
+            while ((path instanceof AbstractBuildable) && !(path instanceof GameModule)) {
+              if (path instanceof AbstractConfigurable) {
+                String node = ((AbstractConfigurable) path).getConfigureName();
+                if ((node == null) || node.isBlank()) {
+                  node = "[" + ((AbstractConfigurable) path).getTypeName() + "]";
+                }
+                if (!src_path.isEmpty()) {
+                  src_path += " > ";
+                }
+                src_path += node;
+              }
+              path = ((AbstractBuildable)path).getAncestor();
+            }
+
+            list.add(Pair.of(new String[] { cmd_key, cmd_name, src_type, src_name, src_path, src_desc }, configurable));
           }
         }
       }
