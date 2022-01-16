@@ -1124,8 +1124,10 @@ public class GameState implements CommandEncoder {
     final GameModule g = GameModule.getGameModule();
     g.warn(Resources.getString("GameState.loading", shortName));  //$NON-NLS-1$
 
-    //TODO It would be nice to unblock EDT long enough to have the above loading message get displayed.
-    //TODO I guess it would mean right here we'd need to launch some "do in 10 milliseconds" thing, but then make sure that the below was then executed on EDT?
+    // Need to force message to display before we intentionally cockblock the EDT to prevent any pre-existing map window
+    // from visibly closing-then-eventually-re-opening in a Series Of Messy Steps
+    final Chatter ch = g.getChatter();
+    ch.paintImmediately(0, 0, ch.getWidth(), ch.getHeight());
 
     final Command loadCommand = decodeSavedGame(in);
     if (loadCommand != null) {
