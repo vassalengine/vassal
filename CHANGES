@@ -2,6 +2,7 @@
 
 * 11076: Editor's search function (and List Key Commands) will now "find" the
     keys for Undo & Step Forward
+* 11074: Support Send-to-Location source/target matching with $...$ expressions
 * 11073: Fix situation where Send-to-Location throws exceptions when it can't
     find target counters
 * 11070: Documentation updates for DrawingMouseover / DrawingMouseover Index

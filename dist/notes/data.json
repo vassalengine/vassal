@@ -42,6 +42,7 @@
       ],
       "other_improvements": [
         { "num": 11076, "desc": "Editor's search function (and List Key Commands) will now \"find\" the keys for Undo & Step Forward" },
+        { "num": 11074, "desc": "Support Send-to-Location source/target matching with $...$ expressions" },
         { "num": 11070, "desc": "Documentation updates for DrawingMouseover / DrawingMouseover Index" },
         { "num": 11059, "desc": "Right Click menu added to Show Error Log window in Module Manager" },
         { "num": 11054, "desc": "Don't let old versions of PoG load and crash" }
