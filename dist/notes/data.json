@@ -24,7 +24,7 @@
         { "num": 11032, "desc": "List Key Commands tool for Editor" }
       ],
       "bug_fixes": [
-        { "num": 11073, "desc": "11073: Fix situation where Send-to-Location throws exceptions when it can't find target counters" },
+        { "num": 11073, "desc": "Fix situation where Send-to-Location throws exceptions when it can't find target counters" },
         { "num": 11069, "desc": "Fix crash in Load Deck when an invalid deck file selected in file picker" },
         { "num": 11067, "desc": "Fix NPE in SetupStack.isOwningBoardActive()" },
         { "num": 11065, "desc": "Improved error handling when a temp file can't be created" },
