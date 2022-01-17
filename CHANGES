@@ -1,5 +1,6 @@
 3.6.4 - ???
 
+* 11079: Main window & map accept Drag-and-Drop for loading saves and logs
 * 11076: Editor's search function (and List Key Commands) will now "find" the
     keys for Undo & Step Forward
 * 11074: Support Send-to-Location source/target matching with $...$ expressions

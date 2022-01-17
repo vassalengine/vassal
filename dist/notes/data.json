@@ -20,6 +20,7 @@
       "in": "3.6.4",
       "since": "3.6.3",
       "new_features": [
+        { "num": 11079, "desc": "Main window & map accept Drag-and-Drop for loading saves and logs" },
         { "num": 11032, "desc": "List Key Commands tool for Editor" }
       ],
       "bug_fixes": [
