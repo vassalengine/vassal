@@ -18,7 +18,7 @@ Credits
 
 _Vassal_ designed by Rodney Kinney
 
-*Development Team:* Rodney Kinney, Joel Uckelman, Brent Easton, Michael Kiefte, Tim McCarron
+*Development Team:* Rodney Kinney, Joel Uckelman, Brent Easton, Michael Kiefte, Tim McCarron, Brian Reynolds
 
 *Testing:* Thomas Russ
 
@@ -57,7 +57,7 @@ The latest version of Vassal is version {project-version}, released on {docdate}
 
 Vassal {project-version} is supported on the following platforms:
 
-* _Windows:_ Windows 7, 8 and 10.
+* _Windows:_ Windows 7, 8, 10, 11.
 * _MacOS:_ Version 10.4 or later (Tiger).
 * _Linux:_ Any distribution.
 * _Other platforms_: Vassal {project-version} is supported on any platform which has a suitable version of Java installed. For example, Vassal could be installed on a memory stick and be used on multiple platforms.
@@ -125,7 +125,7 @@ A Vassal {project-version} module file usually has the suffix .vmod, although so
 
 ==== Installing Modules
 
-Modules do not require any installation and are not specific to any operating system.
+Modules do not require any installation and are not specific to any operating system. Simply download the module file (which will usually have a .VMOD extension, and open it from the Module Manager). Once you've opened a module successfully it will be displayed in the Module Manager's "Module Library", making it easier to find for subsequent games.
 
 Modules made for older versions of Vassal are usually compatible with Vassal {project-version}, although they may be missing some graphics or functionality available in Vassal {project-version}.
 
@@ -551,14 +551,14 @@ This will make sure that everyone’s game position is consistent.
 
 When you synchronize, any side selection, piece movement and map selections you have performed will be reset and replaced with the game information of the player you synchronized to.
 
-=== Playing by Email
+=== Playing by Email (PBEM) or by Discord
 
 Vassal games can be played by email, by exchanging log files of player moves.
 You can review the logs in Vassal to see the moves made by your opponents, and then log your own move and send it to your opponents.
 
 To play by email,
 
-A. Starting an email game:
+A. Starting a PBEM game:
 . In Module Manager, in the *Module Library* window, double-click the module you want to play.
 The Welcome Wizard opens.
 . In the Welcome Wizard, under *Select play mode,* choose *Start a new game offline*, and then follow the other Wizard steps as the module requires.
@@ -570,9 +570,9 @@ Vassal records your moves and chat to an encrypted log.
 . When your turn is complete, click *File > End Logfile.*
 . Name and save the log file.
 . Email the log file to your opponent as an attachment, using your computer’s email client.
-(Vassal log files have the suffix .vlog.)
+(Vassal log files have the suffix .vlog.). Or, if you are playing via Discord, drag the log file into your chat w/ your opponent to upload it.
 B. Reviewing an opponent’s email log:
-. When you receive your opponent’s email, save the attached log file to your system.
+. When you receive your opponent’s email (or a new log via Discord or other means), save the attached log file to your system. *TIP*: If you _already_ have a window open with an earlier turn of the same game, then if you have VASSAL 3.6.4 or higher you can simply drag the file or link directly to your existing window (drag on top of the map or chat) -- this will automatically load the game straight into your existing window and you can skip straight to step 6.
 . Launch Vassal and then the module you are playing.
 . In the Welcome Wizard, under *Select play mode,* choose *Load a Saved Game.*
 . Under *Load Saved Game*, click *Select* and browse to the log file.
@@ -710,7 +710,7 @@ From left to right, these 4 buttons are:
 * *Undo:* This button reverses the last action taken by anyone in the game.
 Click multiple times to undo multiple actions.
 * *Step through Log:* This button allows you to step through an email log to recap an opponent’s moves.
-For more information, see <<Playing by Email>>.
+For more information, see <<Playing by Email (PBEM) or by Discord>>.
 * *Connect:* The *Connect* button launches the Server controls and *Active Games* window, which you use to connect to a Server-based or peer-to-peer game.
 * *Retire:* The *Retire* button lets you to choose a new side to play.
 (Since not all games have defined sides, this button may have no use in some games.)
@@ -1060,6 +1060,7 @@ The module list expands.
 There are many helpful third-party applications that can enhance your Vassal play experience.
 
 * An email client that allows you to send attachments is required for playing games by email.
+* Discord has become very popular for playing Vassal either live or "by email" -- in the latter case the chat room is often a more convenient place to exchange log files than traditional email. Vassal's "official" Discord server can be found at https://discord.gg/GzzHccRQpU, and there are gamer-run discords specializing in PBEM and specific games.
 * Voice chat applications may be helpful when playing Vassal live.
 Skype, Ventrilo or Teamspeak are all effective and free, but other solutions may be appropriate for your players.
 
@@ -1076,6 +1077,7 @@ You can also view games played on the Server in the past 24 hours, the past week
 * Vassalengine.org maintains an Opponents Wanted forum, where you can search for opponents for your game.
 You should specify the game or games you want to play, whether you would like to play real time or by email, and your time zone.
 Visit the https://forum.vassalengine.org[[.underline]#Vassal forums#] for more information.
+* Discord has become very popular for playing Vassal either live or "by email" -- in the latter case the chat room is often a more convenient place to exchange log files than traditional email. Vassal's "official" Discord server can be found at https://discord.gg/GzzHccRQpU, and there are gamer-run discords specializing in PBEM and specific games.
 * In addition, gaming sites like BoardGameGeek.com, Wargamer.com, and ComsimWorld.com maintain Vassal opponent lists.
 
 === The Vassal Community

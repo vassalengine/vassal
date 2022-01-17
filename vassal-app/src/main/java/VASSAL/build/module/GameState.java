@@ -16,47 +16,9 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.Info;
 import VASSAL.build.AbstractBuildable;
 import VASSAL.build.Buildable;
-import VASSAL.preferences.Prefs;
-import VASSAL.tools.ProblemDialog;
-import java.awt.Cursor;
-import java.awt.event.ActionEvent;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.SwingWorker;
-import javax.swing.SwingUtilities;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import org.slf4j.LoggerFactory;
-
-import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.metadata.AbstractMetaData;
 import VASSAL.build.module.metadata.MetaDataFactory;
@@ -73,7 +35,9 @@ import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.ModuleManagerUpdateHelper;
+import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ThrowableUtils;
 import VASSAL.tools.WarningDialog;
@@ -82,11 +46,52 @@ import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.LogAndSaveFileFilter;
 import VASSAL.tools.io.DeobfuscatingInputStream;
 import VASSAL.tools.io.ObfuscatingOutputStream;
-import VASSAL.tools.io.ZipWriter;
 import VASSAL.tools.io.ZipArchive;
+import VASSAL.tools.io.ZipWriter;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.Dialogs;
 import VASSAL.tools.version.VersionUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
+import java.awt.Cursor;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.event.ActionEvent;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * The GameState contains methods to track and read/write the complete enumerated game state of the game
@@ -633,25 +638,35 @@ public class GameState implements CommandEncoder {
     if (fc.showOpenDialog() != FileChooser.APPROVE_OPTION) return;
 
     final File f = fc.getSelectedFile();
+    loadGame(f, false);
+  }
+
+  /**
+   * Loads a specific file as a saved game
+   * @param f File to load
+   * @param continuation true if this is to be a continuation
+   * @return true if a file load was successfully started
+   */
+  public boolean loadGame(File f, boolean continuation) {
     try {
       if (!f.exists()) throw new FileNotFoundException(
         "Unable to locate " + f.getPath()); //NON-NLS
 
       // Check the Save game for validity
       if (!isSaveMetaDataValid(f)) {
-        return;
+        return false;
       }
 
       if (gameStarted && continuation) {
         loadContinuation(f);
       }
       else {
-        g.setGameFile(f.getName(), GameModule.GameFileMode.LOADED_GAME);
+        GameModule.getGameModule().setGameFile(f.getName(), GameModule.GameFileMode.LOADED_GAME);
 
         //BR// New preferred style load for vlogs is close the old stuff and hard-reset to the new log state.
         if (gameStarted) {
           GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
-          
+
           GameModule.getGameModule().setLoadOverSemaphore(true); // Stop updating Map UI etc for a bit
           try {
             pieces.clear();
@@ -668,7 +683,68 @@ public class GameState implements CommandEncoder {
     }
     catch (IOException e) {
       ReadErrorDialog.error(e, f);
+      return false;
     }
+
+    return true;
+  }
+
+  /**
+   * Accepts a saved file dropped onto the main window or a map, attempts to load it as a saved game.
+   * @param dtde DropTargetDropEvent from the drop() handler
+   */
+  public void dropFile(DropTargetDropEvent dtde) {
+    dtde.acceptDrop(DnDConstants.ACTION_COPY);
+    final Transferable transferable = dtde.getTransferable();
+    final DataFlavor[] flavors = transferable.getTransferDataFlavors();
+    for (final DataFlavor flavor : flavors) {
+
+      // If the drop item is a Discord file link (or a text URL), we attempt to open the connection and Load That Shit Right Off The Internet
+      if (flavor.isFlavorTextType()) {
+        try {
+          final String text = transferable.getTransferData(flavor).toString();
+          final URL url = new URL(text);
+          final URLConnection uc = url.openConnection();
+
+          try (InputStream is = uc.getInputStream(); BufferedInputStream bis = new BufferedInputStream(is)) {
+            try {
+              loadGameInForeground(text, bis);
+            }
+            catch (IOException e) {
+              ReadErrorDialog.error(e, text);
+            }
+            break; // Once we have a successful load, nothing else.
+          }
+          catch (MalformedURLException e) {
+            // Do nothing, this must not have been a URL
+          }
+        }
+        catch (IOException | UnsupportedFlavorException e) {
+          // Do nothing -- we only failed to read anything out of the drag-and-drop
+        }
+      }
+
+      // If the drop items are files
+      if (flavor.isFlavorJavaFileListType()) {
+        try {
+          // Get all of the dropped files
+          final List<File> files = (List<File>) transferable.getTransferData(flavor);
+          for (final File file : files) {
+            if (file.getName().toLowerCase().endsWith("url")) { // NON-NLS
+              break; // Don't try to load a Discord url link as a file
+            }
+            else if (GameModule.getGameModule().getGameState().loadGame(file, false)) {
+              break; // Only load the first file in the list
+            }
+          }
+        }
+        catch (IOException | UnsupportedFlavorException e) {
+          // Do nothing -- we only failed to read anything out of the drag-and-drop
+        }
+      }
+    }
+
+    dtde.dropComplete(true);
   }
 
   protected String saveString() {
@@ -1047,6 +1123,11 @@ public class GameState implements CommandEncoder {
                                    final InputStream in) throws IOException {
     final GameModule g = GameModule.getGameModule();
     g.warn(Resources.getString("GameState.loading", shortName));  //$NON-NLS-1$
+
+    // Need to force message to display before we intentionally cockblock the EDT to prevent any pre-existing map window
+    // from visibly closing-then-eventually-re-opening in a Series Of Messy Steps
+    final Chatter ch = g.getChatter();
+    ch.paintImmediately(0, 0, ch.getWidth(), ch.getHeight());
 
     final Command loadCommand = decodeSavedGame(in);
     if (loadCommand != null) {

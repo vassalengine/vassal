@@ -2009,7 +2009,8 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
         MouseEvent.NOBUTTON
       );
       theMap.dispatchEvent(evt);
-      dtde.dropComplete(true);
+
+      GameModule.getGameModule().getGameState().dropFile(dtde);
     }
 
     if (scroller.isRunning()) scroller.stop();
