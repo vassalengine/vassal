@@ -74,7 +74,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -478,8 +478,8 @@ public class Inventory extends AbstractToolbarItem
     // .substring(1).replaceAll(
   //      mapSeparator, System.getProperty("line.separator"));
 
-    // Writing out a text file for the user to do whatever with. Use the native encoding.
-    try (Writer bw = Files.newBufferedWriter(file.toPath(), Charset.defaultCharset());
+    // Writing out a text file for the user to do whatever with.
+    try (Writer bw = Files.newBufferedWriter(file.toPath(), StandardCharsets.UTF_8);
          PrintWriter p = new PrintWriter(bw)) {
       p.print(output);
 
