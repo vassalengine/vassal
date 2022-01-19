@@ -840,7 +840,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
    */
   private class MatRefresher extends MatHolder implements Refresher {
 
-    private List<Refresher> loadedCargo = new ArrayList<>();
+    private final List<Refresher> loadedCargo = new ArrayList<>();
 
     public MatRefresher(GamePiece piece) {
       super(piece);
@@ -886,6 +886,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
      *
      * @param command
      */
+    @Override
     public void refresh(Command command) {
       // Remove any existing cargo
       command = command.append(getMat().makeRemoveAllCargoCommand());
@@ -913,8 +914,8 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
    * Class to refresh a Deck of GamePieces
    */
   private class DeckRefresher implements Refresher {
-    private Deck deck;
-    private List<GamePiece> refreshedPieces = new ArrayList<>();
+    private final Deck deck;
+    private final List<GamePiece> refreshedPieces = new ArrayList<>();
 
     public DeckRefresher(Deck deck) {
       this.deck = deck;
@@ -940,8 +941,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
         final List<GamePiece> pieces = deck.asList();
         for (final GamePiece piece : pieces) {
           // Create a new, updated piece
-          GamePiece newPiece = gpIdChecker.createUpdatedPiece(piece);
-          if (newPiece == null) {
+          if (gpIdChecker.createUpdatedPiece(piece) == null) {
             notFoundCount++;
             log(Resources.getString("GameRefresher.refresh_error_nomatch_pieceslot", piece.getName(), piece.getId()));
           }
@@ -1004,8 +1004,8 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
    * Class to refresh a Stack of GamePieces
    */
   private class StackRefresher implements Refresher {
-    private Stack stack;
-    private List<GamePiece> refreshedPieces = new ArrayList<>();
+    private final Stack stack;
+    private final List<GamePiece> refreshedPieces = new ArrayList<>();
 
     public StackRefresher(Stack stack) {
       this.stack = stack;
@@ -1015,6 +1015,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       return stack;
     }
 
+    @Override
     public List<GamePiece> getPieces() {
       return stack.asList();
     }
@@ -1034,8 +1035,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
           if (!Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))
             && !Boolean.TRUE.equals(piece.getProperty(Properties.OBSCURED_TO_ME))) {
             // Create a new, updated piece
-            GamePiece newPiece = gpIdChecker.createUpdatedPiece(piece);
-            if (newPiece == null) {
+            if (gpIdChecker.createUpdatedPiece(piece) == null) {
               notFoundCount++;
               log(Resources.getString("GameRefresher.refresh_error_nomatch_pieceslot", piece.getName(), piece.getId()));
             }
@@ -1099,10 +1099,10 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
    * Class to refresh an individual non-stacking piece.
    * If the piece is not refreshable, do not attempt to refresh it.
    */
-  private class PieceRefresher implements Refresher, VASSAL.build.module.Refresher {
-    private GamePiece piece;
+  private class PieceRefresher implements Refresher {
+    private final GamePiece piece;
     private GamePiece refreshedPiece;
-    private boolean refreshable; // Is this piece refreshable by this player?
+    private final boolean refreshable; // Is this piece refreshable by this player?
 
     public PieceRefresher(GamePiece piece, boolean refreshable) {
       this.piece = piece;
@@ -1139,8 +1139,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
           if (!Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))
             && !Boolean.TRUE.equals(piece.getProperty(Properties.OBSCURED_TO_ME))) {
             // Create a new, updated piece
-            GamePiece newPiece = gpIdChecker.createUpdatedPiece(piece);
-            if (newPiece == null) {
+            if (gpIdChecker.createUpdatedPiece(piece) == null) {
               notFoundCount++;
               log(Resources.getString("GameRefresher.refresh_error_nomatch_pieceslot", piece.getName(), piece.getId()));
             }
