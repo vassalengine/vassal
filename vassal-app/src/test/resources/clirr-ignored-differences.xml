@@ -22,4 +22,11 @@
         <method>*</method>
     </difference>
 
+    <difference>
+        <!-- It is okay to add abstract methods to an abstract class -->
+        <className>VASSAL/build/module/GameRefresher</className>
+        <differenceType>7002</differenceType>
+        <method>java.util.List getCurrentGameRefresherPieces()</method>
+    </difference>
+
 </differences>

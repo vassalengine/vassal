@@ -29,7 +29,6 @@ import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.command.AddPiece;
 import VASSAL.command.AlertCommand;
-import VASSAL.command.ChangePiece;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.command.NullCommand;
@@ -39,7 +38,6 @@ import VASSAL.counters.Deck;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Mat;
-import VASSAL.counters.MatCargo;
 import VASSAL.counters.MatHolder;
 import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
@@ -83,20 +81,19 @@ import org.slf4j.LoggerFactory;
 /**
  * GameRefresher Replace all counters in the same game with the current version
  * of the counters defined in the module
- *
+ * <p>
  * Note: Counters that are Hidden or Obscured to us cannot be updated.
- *
  */
 public final class GameRefresher implements CommandEncoder, GameComponent {
 
   private static final Logger logger = LoggerFactory.getLogger(GameRefresher.class);
 
   private static final char DELIMITER = '\t'; //$NON-NLS-1$
-  public  static final String COMMAND_PREFIX = "DECKREPOS" + DELIMITER; //$NON-NLS-1$
+  public static final String COMMAND_PREFIX = "DECKREPOS" + DELIMITER; //$NON-NLS-1$
 
   private Action refreshAction;
   private final GpIdSupport gpIdSupport;
-  private GpIdChecker  gpIdChecker;
+  private GpIdChecker gpIdChecker;
   private RefreshDialog dialog;
   private int updatedCount;
   private int notFoundCount;
@@ -106,11 +103,9 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
   private final GameModule theModule;
   private final Set<String> options = new HashSet<>();
 
-  public List<DrawPile>  getModuleDrawPiles() {
-    return  theModule.getAllDescendantComponentsOf(DrawPile.class);
+  public List<DrawPile> getModuleDrawPiles() {
+    return theModule.getAllDescendantComponentsOf(DrawPile.class);
   }
-
-  private List<Deck> decks;
 
   public GameRefresher(GpIdSupport gpIdSupport) {
     this.gpIdSupport = gpIdSupport;
@@ -174,26 +169,75 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     logger.info(message);
   }
 
-  public List<GamePiece>  getCurrentGameRefresherPieces() {
-    decks = new ArrayList<>();
-    final List<GamePiece> pieces = new ArrayList<>();
+  /**
+   * Build a list of all the Refreshables in the module in Visual order (bottom to top) so that we can ensure
+   * the visibility order of the refreshed pieces does not change.
+   * A Refreshable can be one of
+   * - Stack
+   * - Deck
+   * - Mat with contained Cargo
+   * - Single non-Mat unstacked piece
+   *
+   * @return
+   */
+  public List<Refresher> getRefreshables() {
+    final List<Refresher> refreshables = new ArrayList<>();
+    final List<MatRefresher> loadedMats = new ArrayList<>();
     int totalCount = 0;
     int notOwnedCount = 0;
     int notVisibleCount = 0;
 
-    for (final GamePiece piece : theModule.getGameState().getAllPieces()) {
-      if (piece instanceof Deck) {
-        final Deck deck = (Deck) piece;
-        decks.add(deck);
-        totalCount += deck.getPieceCount();
-      }
-      else if (piece instanceof Stack) {
-        for (final Iterator<GamePiece> i = ((Stack) piece).getPiecesInVisibleOrderIterator(); i.hasNext();) {
-          final GamePiece p = i.next();
-          if (!Boolean.TRUE.equals(p.getProperty(Properties.INVISIBLE_TO_ME))
-            && !Boolean.TRUE.equals(p.getProperty(Properties.OBSCURED_TO_ME))) {
+    // Process map by map
+    for (final Map map : Map.getMapList()) {
+
+      // Get the pieces on this map in visual order
+      for (final GamePiece piece : map.getAllPieces()) {
+
+        // A Deck. Pieces in a Deck can always be refreshed
+        if (piece instanceof Deck) {
+          final Deck deck = (Deck) piece;
+          totalCount += deck.getPieceCount();
+          refreshables.add(new DeckRefresher(deck));
+        }
+
+        // A standard Stack
+        else if (piece instanceof Stack) {
+          for (final Iterator<GamePiece> i = ((Stack) piece).getPiecesInVisibleOrderIterator(); i.hasNext(); ) {
+            final GamePiece p = i.next();
+            if (!Boolean.TRUE.equals(p.getProperty(Properties.INVISIBLE_TO_ME))
+              && !Boolean.TRUE.equals(p.getProperty(Properties.OBSCURED_TO_ME))) {
+              totalCount++;
+            }
+            else {
+              if (Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))) {
+                notVisibleCount++;
+              }
+              else {
+                notOwnedCount++;
+              }
+            }
+          }
+          refreshables.add(new StackRefresher((Stack) piece));
+        }
+
+        // An Unstacked piece
+        else {
+          final GamePiece p = (GamePiece) piece;
+
+          // Only visible, unobscured pieces are refreshable
+          if (!Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))
+            && !Boolean.TRUE.equals(piece.getProperty(Properties.OBSCURED_TO_ME))) {
             totalCount++;
-            pieces.add(0, p);
+
+            // Mats with loaded cargo need to be handled separately
+            if (p.getProperty(Mat.MAT_ID) != null && !"0".equals(p.getProperty(Mat.MAT_NUM_CARGO))) {
+              final MatRefresher mr = new MatRefresher(p);
+              refreshables.add(mr);
+              loadedMats.add(mr);
+            }
+            else {
+              refreshables.add(new PieceRefresher(p, true));
+            }
           }
           else {
             if (Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))) {
@@ -202,37 +246,29 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
             else {
               notOwnedCount++;
             }
+            // Add as non-refreshable
+            refreshables.add(new PieceRefresher(p, false));
           }
         }
       }
-      else if (piece.getParent() == null) {
-        if (!Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))
-          && !Boolean.TRUE.equals(piece.getProperty(Properties.OBSCURED_TO_ME))) {
-          totalCount++;
-          pieces.add(0, piece);
-        }
-        else {
-          if (Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))) {
-            notVisibleCount++;
-          }
-          else {
-            notOwnedCount++;
-          }
-        }
+
+      // If there are any loaded Mats, then find the Stacks of their cargo in the general Refeshables list,
+      // remove them and add them to the MatRefresher.
+      for (final MatRefresher mr : loadedMats) {
+        mr.grabMyCargo(refreshables);
       }
-//      else {
-//      All pieces in stacks and decks seem to be returned as pieces with parent so these are duplicates to ignore        //
-//    }
+
     }
+
     log(Resources.getString("GameRefresher.get_all_pieces"));
     log(Resources.getString("GameRefresher.counters_total", totalCount));
     log(Resources.getString("GameRefresher.counters_kept", totalCount - notOwnedCount - notVisibleCount));
     log(Resources.getString("GameRefresher.counters_not_owned", notOwnedCount));
     log(Resources.getString("GameRefresher.counters_not_visible", notVisibleCount));
     log("-"); //$NON-NLS-1$
-    return pieces;
-  }
 
+    return refreshables;
+  }
 
   private boolean isGameActive() {
     final GameModule gm = GameModule.getGameModule();
@@ -245,9 +281,12 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
    * This method is used by PredefinedSetup.refresh() to update a PredefinedSetup in a GameModule
    * The default execute() method calls: GameModule.getGameModule().getGameState().getAllPieces()
    * to set the pieces list, this method provides an alternative way to specify which pieces should be refreshed.
+   *
    * @throws IllegalBuildException - if we get a gpIdChecker error
    */
   public void execute(Set<String> options, Command command) throws IllegalBuildException {
+    final List<Deck> decks = new ArrayList<>();
+
     if (command == null) {
       command = new NullCommand();
     }
@@ -267,7 +306,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       for (final PieceSlot slot : theModule.getAllDescendantComponentsOf(PieceSlot.class)) {
         gpIdChecker.add(slot);
       }
-  
+
       // Add any PieceSlots in Prototype Definitions
       for (final PrototypesContainer pc : theModule.getComponentsOf(PrototypesContainer.class)) {
         pc.getDefinitions().forEach(gpIdChecker::add);
@@ -285,68 +324,19 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     }
 
     /*
-     * 2. Collect the game pieces
+     * 2. Build a list in visual order of all stacks, decks, mats and other pieces that need refreshing
      */
-    final List<GamePiece> pieces = getCurrentGameRefresherPieces();
+    final List<Refresher> refreshables = getRefreshables();
 
     /*
-     * 2.1 Pull out any Mats and their Cargo for special treatment
+     * And refresh them. Keep a list of the Decks in case we need to update their attributes
      */
-    if (GameModule.getGameModule().isMatSupport()) {
-      final List<GamePiece> otherPieces = new ArrayList<>();
-      final List<GamePiece> cargo = new ArrayList<>();
-      final List<MatRefresher> mats = new ArrayList<>();
-
-      // Split the pieces out based on their type
-      for (final GamePiece piece : pieces) {
-        if (Boolean.TRUE.equals(piece.getProperty(MatCargo.IS_CARGO))) {
-          // Cargo
-          cargo.add(piece);
-        }
-        else if (piece.getProperty(Mat.MAT_ID) != null) {
-          // Mat
-          mats.add(new MatRefresher(piece));
-        }
-        else {
-          // Other Pieces
-          otherPieces.add(piece);
-        }
-      }
-
-      // Remove any cargo currently on a mat from the general cargo list and add to its MatRefresher
-      for (final MatRefresher mh : mats) {
-        mh.grabCargo(cargo);
-      }
-
-      // Refresh non-mat pieces
-      for (final GamePiece piece : otherPieces) {
-        processGamePiece(piece, command);
-      }
-
-      // Refresh Cargo not on Mats
-      for (final GamePiece piece : cargo) {
-        processGamePiece(piece, command);
-      }
-
-      // Refresh the Mats and their contained Cargo
-      for (final MatRefresher mh : mats) {
-        mh.refresh(command);
+    for (final Refresher refresher : refreshables) {
+      refresher.refresh(command);
+      if (refresher instanceof DeckRefresher) {
+        decks.add(((DeckRefresher) refresher).getDeck());
       }
     }
-    else {
-      /*
-       * 3. Generate the commands to update the pieces
-       */
-      for (final GamePiece piece : pieces) {
-        processGamePiece(piece, command);
-      }
-    }
-
-    /* 3.5 Process the pieces within Decks */
-    for (final Deck deck : decks) {
-      processDeck(deck, command);
-    }
-    decks = null;
 
     log(Resources.getString("GameRefresher.run_refresh_counters_v3", theModule.getGameVersion()));
     log(Resources.getString("GameRefresher.counters_refreshed", updatedCount));
@@ -394,12 +384,14 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
                   // If drawPile is owned by a specific board, then we can only match it if that board is active in this game
                   if (drawPile.getOwningBoardName() != null) {
                     if (map.getBoardByName(drawPile.getOwningBoardName()) == null) {
+                      System.out.println("A:" + map.getMapName() + " - " + drawPile.getOwningBoardName());
                       continue;
                     }
 
                     // If the drawPile is on a map that doesn't have its current owning board active, then we
                     // cannot match that drawPile.
                     if (drawPile.getMap().getBoardByName(drawPile.getOwningBoardName()) == null) {
+                      System.out.println("B:" + map.getMapName() + " - " + drawPile.getOwningBoardName());
                       continue;
                     }
                   }
@@ -530,149 +522,95 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       }
     }
   }
-
-  /**
-   * Process a piece that is not in a Deck
-   * @param piece Piece to process
-   * @param command Command to append results to
-   * @return The newly generated piece
-   */
-  private GamePiece processGamePiece(GamePiece piece, Command command) {
-    // Piece needs to be on a map. Else how do we put it back.
-    final Map map = piece.getMap();
-    if (map == null) {
-      noMapCount++;
-      log(Resources.getString("GameRefresher.refresh_error_nomap1", piece.getName(), piece.getId()));
-      // If Option "Delete pieces with no map" is set to true. Get rid of this piece
-      if (isDeleteNoMap()) {
-        log(Resources.getString("GameRefresher.refresh_error_nomap2", piece.getName(), piece.getId()));
-        final Command remove = new RemovePiece(Decorator.getOutermost(piece));
-        remove.execute();
-        command.append(remove);
-      }
-      return piece;
-    }
-
-    // Piece should have a parent stack (Decks are extensions of Stacks)
-    // Except pieces that return TRUE for the NO_STACK property.
-    final Stack oldStack = piece.getParent();
-    if (oldStack == null) {
-      if (!Boolean.TRUE.equals(Decorator.getOutermost(piece).getProperty(Properties.NO_STACK))) {
-        noStackCount++;
-        log(Resources.getString("GameRefresher.refresh_error_nostack", piece.getName(), piece.getId()));
-      }
-    }
-
-    //create a new piece. If returns null, it failed
-    final GamePiece newPiece = gpIdChecker.createUpdatedPiece(piece);
-    if (newPiece == null) {
-      notFoundCount++;
-      log(Resources.getString("GameRefresher.refresh_error_nomatch_pieceslot", piece.getName(), piece.getId()));
-      return piece;
-    }
-
-    updatedCount++;
-
-    if (isTestMode()) {
-      // Test mode. Do not replace old pieces with new. Just get rid of the new piece.
-      // Delete the old piece
-      final Command remove = new RemovePiece(Decorator.getOutermost(newPiece));
-      remove.execute();
-      command.append(remove);
-
-    }
-    else {
-      // Refreshing is done. This section is for non test mode, to replace all the old pieces with the new pieces
-      final Point piecePosition = piece.getPosition();
-      final Point hiddenPosition = new Point(-100, -100);
-      final Point tempPosition = piecePosition;
-      final int oldStackIndex = oldStack == null ? 0 : oldStack.indexOf(piece);
-
-      // Delete old piece 1st. Doing that after placing the new piece causes errors if the old piece has no stack
-      // as same pos as new piece, it somehow deleted the new stack too!
-
-      // Place new piece on the map at position -100 -100 (this is to fix bug 14440). For some reason
-      // the new piece misbehaves in a stack (not visible when stack expanded) when 1st placed on the map (or game)
-      // By placing in -100 -100 1st the error seems to disappear
-
-      // Delete the old piece
-      final Command remove = new RemovePiece(Decorator.getOutermost(piece));
-      remove.execute();
-      command.append(remove);
-
-      Command place = map.placeOrMerge(newPiece, hiddenPosition);
-      command.append(place);
-      place = map.placeOrMerge(newPiece, tempPosition);
-      command.append(place);
-
-      // Move to the correct position in the stack
-      final Stack newStack = newPiece.getParent();
-      if ((newStack != null) && (newStack == oldStack)) {
-        final int newPos = newStack.indexOf(newPiece);
-        if (newPos >= 0 && oldStackIndex >= 0 && newPos != oldStackIndex) {
-          final String oldState = newStack.getState();
-          newStack.insert(newPiece, oldStackIndex);
-          command.append(new ChangePiece(newStack.getId(), oldState, newStack.getState()));
-        }
-      }
-    }
-    return newPiece;
-  }
-
-  /**
-   * Process the pieces in a Deck
-   * @param deck Deck to procss
-   * @param command Generated Command
-   */
-  private void processDeck(Deck deck, Command command) {
-
-    // Prevent any listeners or hot Keys firing while we fiddle the Deck
-    deck.removeListeners();
-    final boolean saveHotKeyOnEmpty = deck.isHotkeyOnEmpty();
-    deck.setHotkeyOnEmpty(false);
-
-    // Take a copy of the pieces in the Deck
-    final List<GamePiece> pieces = deck.asList();
-
-    // Remove all the pieces from the Deck  and create a set of fresh, updated pieces
-    final List<GamePiece> newPieces = new ArrayList<>();
-    for (final GamePiece piece : pieces) {
-
-      // Remove the existing piece from the Deck, the Map and the GameState
-      final Command remove = new RemovePiece(piece);
-      remove.execute();
-      command.append(remove);
-
-      // Create a new, updated piece
-      GamePiece newPiece = gpIdChecker.createUpdatedPiece(piece);
-      if (newPiece == null) {
-        notFoundCount++;
-        log(Resources.getString("GameRefresher.refresh_error_nomatch_pieceslot", piece.getName(), piece.getId()));
-        // Could not create a new piece for some reason, use the old piece
-        newPiece = piece;
-      }
-      else {
-        updatedCount++;
-      }
-
-      // Keep a list of the new pieces to add back into the Deck
-      newPieces.add(newPiece);
-
-      // Add the new pieces back into the GameState
-      final Command add = new AddPiece(newPiece);
-      add.execute();
-      command.append(add);
-    }
-
-    // Load the new pieces back into the Deck in the same order
-    for (final GamePiece piece : newPieces) {
-      command.append(deck.getMap().placeOrMerge(piece, deck.getPosition()));
-    }
-
-    deck.addListeners();
-    deck.setHotkeyOnEmpty(saveHotKeyOnEmpty);
-
-  }
+//
+//  /**
+//   * Process a piece that is not in a Deck
+//   *
+//   * @param piece   Piece to process
+//   * @param command Command to append results to
+//   * @return The newly generated piece
+//   */
+//  private GamePiece processGamePiece(GamePiece piece, Command command) {
+//    // Piece needs to be on a map. Else how do we put it back.
+//    final Map map = piece.getMap();
+//    if (map == null) {
+//      noMapCount++;
+//      log(Resources.getString("GameRefresher.refresh_error_nomap1", piece.getName(), piece.getId()));
+//      // If Option "Delete pieces with no map" is set to true. Get rid of this piece
+//      if (isDeleteNoMap()) {
+//        log(Resources.getString("GameRefresher.refresh_error_nomap2", piece.getName(), piece.getId()));
+//        final Command remove = new RemovePiece(Decorator.getOutermost(piece));
+//        remove.execute();
+//        command = command.append(remove);
+//      }
+//      return piece;
+//    }
+//
+//    // Piece should have a parent stack (Decks are extensions of Stacks)
+//    // Except pieces that return TRUE for the NO_STACK property.
+//    final Stack oldStack = piece.getParent();
+//    if (oldStack == null) {
+//      if (!Boolean.TRUE.equals(Decorator.getOutermost(piece).getProperty(Properties.NO_STACK))) {
+//        noStackCount++;
+//        log(Resources.getString("GameRefresher.refresh_error_nostack", piece.getName(), piece.getId()));
+//      }
+//    }
+//
+//    //create a new piece. If returns null, it failed
+//    final GamePiece newPiece = gpIdChecker.createUpdatedPiece(piece);
+//    if (newPiece == null) {
+//      notFoundCount++;
+//      log(Resources.getString("GameRefresher.refresh_error_nomatch_pieceslot", piece.getName(), piece.getId()));
+//      return piece;
+//    }
+//
+//    updatedCount++;
+//
+//    if (isTestMode()) {
+//      // Test mode. Do not replace old pieces with new. Just get rid of the new piece.
+//      // Delete the old piece
+//      final Command remove = new RemovePiece(Decorator.getOutermost(newPiece));
+//      remove.execute();
+//      command = command.append(remove);
+//
+//    }
+//    else {
+//      // Refreshing is done. This section is for non test mode, to replace all the old pieces with the new pieces
+//      final Point piecePosition = piece.getPosition();
+//      final Point hiddenPosition = new Point(-100, -100);
+//      final Point tempPosition = piecePosition;
+//      final int oldStackIndex = oldStack == null ? 0 : oldStack.indexOf(piece);
+//
+//      // Delete old piece 1st. Doing that after placing the new piece causes errors if the old piece has no stack
+//      // as same pos as new piece, it somehow deleted the new stack too!
+//
+//      // Place new piece on the map at position -100 -100 (this is to fix bug 14440). For some reason
+//      // the new piece misbehaves in a stack (not visible when stack expanded) when 1st placed on the map (or game)
+//      // By placing in -100 -100 1st the error seems to disappear
+//
+//      // Delete the old piece
+//      final Command remove = new RemovePiece(Decorator.getOutermost(piece));
+//      remove.execute();
+//      command = command.append(remove);
+//
+//      Command place = map.placeOrMerge(newPiece, hiddenPosition);
+//      command = command.append(place);
+//      place = map.placeOrMerge(newPiece, tempPosition);
+//      command = command.append(place);
+//
+//      // Move to the correct position in the stack
+//      final Stack newStack = newPiece.getParent();
+//      if ((newStack != null) && (newStack == oldStack)) {
+//        final int newPos = newStack.indexOf(newPiece);
+//        if (newPos >= 0 && oldStackIndex >= 0 && newPos != oldStackIndex) {
+//          final String oldState = newStack.getState();
+//          newStack.insert(newPiece, oldStackIndex);
+//          command = command.append(new ChangePiece(newStack.getId(), oldState, newStack.getState()));
+//        }
+//      }
+//    }
+//    return newPiece;
+//  }
 
   @Override
   public Command getRestoreCommand() {
@@ -794,7 +732,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       addNewDecks.setVisible(refreshDecks.isSelected());
     }
 
-    protected void  setOptions() {
+    protected void setOptions() {
       options.clear();
       if (nameCheck.isSelected()) {
         options.add("UseName"); //$NON-NLS-1$
@@ -843,7 +781,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       }
       hasAlreadyRun = true;
       final GameModule g = GameModule.getGameModule();
-      final Command command = new NullCommand();
+      Command command = new NullCommand();
       final String player = GlobalOptions.getInstance().getPlayerId();
       setOptions();
       if (refresher.isTestMode()) {
@@ -853,7 +791,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
         // Test refresh does not need to be in the log.
         final Command msg = new Chatter.DisplayText(g.getChatter(), Resources.getString("GameRefresher.run_refresh_counters_v2", player, g.getGameVersion()));
         msg.execute();
-        command.append(msg);
+        command = command.append(msg);
 //FIXME list options in chatter for opponents to see
 
       }
@@ -891,13 +829,53 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     }
   }
 
+  private interface Refresher {
+    void refresh(Command command);
+    List<GamePiece> getPieces();
+    List<GamePiece> getRefreshedPieces();
+  }
+
   /**
    * Class to hold and refresh a Mat and it's cargo
    */
-  private class MatRefresher extends MatHolder {
+  private class MatRefresher extends MatHolder implements Refresher {
+
+    private List<Refresher> loadedCargo = new ArrayList<>();
 
     public MatRefresher(GamePiece piece) {
       super(piece);
+    }
+
+    /**
+     * Search through the list of Refreshables for any individual pieces, or Stacks that contain pieces,
+     * that are loaded onto this Mat. Remove the Refreshable from the supplied List and record it here
+     * @param refeshables
+     */
+    public void grabMyCargo(List<Refresher> refreshables) {
+      for (final Refresher refresher : refreshables) {
+        if (refresher instanceof PieceRefresher) {
+          if (getMat().hasCargo(((PieceRefresher) refresher).getPiece())) {
+            refreshables.remove(refresher);
+            loadedCargo.add(refresher);
+          }
+        }
+        else if (refresher instanceof StackRefresher) {
+          if (getMat().hasCargo(((StackRefresher) refresher).getStack().getPieceAt(0))) {
+            refreshables.remove(refresher);
+            loadedCargo.add(refresher);
+          }
+        }
+      }
+    }
+
+    @Override
+    public List<GamePiece> getPieces() {
+      return null;
+    }
+
+    @Override
+    public List<GamePiece> getRefreshedPieces() {
+      return null;
     }
 
     /**
@@ -905,20 +883,309 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
      * 1. Remove all cargo from the Mat
      * 2. Refresh the Mat
      * 3. Refresh each Cargo and place back on the Mat
+     *
      * @param command
      */
     public void refresh(Command command) {
       // Remove any existing cargo
-      command.append(getMat().makeRemoveAllCargoCommand());
+      command = command.append(getMat().makeRemoveAllCargoCommand());
 
       // Refresh the Mat piece
-      final GamePiece newMatPiece = processGamePiece(getMatPiece(), command);
+      final PieceRefresher pr = new PieceRefresher(getMatPiece(), true);
+      pr.refresh(command);
+      final GamePiece newMatPiece = pr.getRefreshedPieces().get(0);
 
-      // Now refresh each cargo piece and add it back to the mat
-      for (final GamePiece c : getCargo()) {
-        final GamePiece newCargo = processGamePiece(c, command);
-        command.append(((Mat) Decorator.getDecorator(newMatPiece, Mat.class)).makeAddCargoCommand(newCargo));
+      // Now refresh each cargo stack or piece
+      for (final Refresher r : loadedCargo) {
+        r.refresh(command);
       }
+
+      // And add the cargo back onto the mat
+      for (final Refresher r : loadedCargo) {
+        for (final GamePiece refreshedCargo : r.getRefreshedPieces()) {
+          command = command.append(((Mat) Decorator.getDecorator(newMatPiece, Mat.class)).makeAddCargoCommand(refreshedCargo));
+        }
+      }
+    }
+  }
+
+  /**
+   * Class to refresh a Deck of GamePieces
+   */
+  private class DeckRefresher implements Refresher {
+    private Deck deck;
+    private List<GamePiece> refreshedPieces = new ArrayList<>();
+
+    public DeckRefresher(Deck deck) {
+      this.deck = deck;
+    }
+
+    public Deck getDeck() {
+      return deck;
+    }
+
+    @Override
+    public List<GamePiece> getPieces() {
+      return deck.asList();
+    }
+
+    @Override
+    public List<GamePiece> getRefreshedPieces() {
+      return refreshedPieces;
+    }
+
+    @Override
+    public void refresh(Command command) {
+      if (isTestMode()) {
+        final List<GamePiece> pieces = deck.asList();
+        for (final GamePiece piece : pieces) {
+          // Create a new, updated piece
+          GamePiece newPiece = gpIdChecker.createUpdatedPiece(piece);
+          if (newPiece == null) {
+            notFoundCount++;
+            log(Resources.getString("GameRefresher.refresh_error_nomatch_pieceslot", piece.getName(), piece.getId()));
+          }
+          else {
+            updatedCount++;
+          }
+        }
+        return;
+      }
+
+      // Prevent any listeners or hot Keys firing while we fiddle the Deck
+      deck.removeListeners();
+      final boolean saveHotKeyOnEmpty = deck.isHotkeyOnEmpty();
+      deck.setHotkeyOnEmpty(false);
+
+      // Take a copy of the pieces in the Deck
+      final List<GamePiece> pieces = deck.asList();
+
+      // Remove all the pieces from the Deck  and create a set of fresh, updated pieces
+      for (final GamePiece piece : pieces) {
+
+        // Remove the existing piece from the Deck, the Map and the GameState
+        final Command remove = new RemovePiece(piece);
+        remove.execute();
+        command = command.append(remove);
+
+        // Create a new, updated piece
+        GamePiece newPiece = gpIdChecker.createUpdatedPiece(piece);
+        if (newPiece == null) {
+          notFoundCount++;
+          log(Resources.getString("GameRefresher.refresh_error_nomatch_pieceslot", piece.getName(), piece.getId()));
+          // Could not create a new piece for some reason, use the old piece
+          newPiece = piece;
+        }
+        else {
+          updatedCount++;
+        }
+
+        // Keep a list of the new pieces to add back into the Deck
+        refreshedPieces.add(newPiece);
+
+        // Add the new pieces back into the GameState
+        final Command add = new AddPiece(newPiece);
+        add.execute();
+        command = command.append(add);
+      }
+
+      // Load the new pieces back into the Deck in the same order
+      for (final GamePiece piece : refreshedPieces) {
+        command = command.append(deck.getMap().placeOrMerge(piece, deck.getPosition()));
+      }
+
+      deck.addListeners();
+      deck.setHotkeyOnEmpty(saveHotKeyOnEmpty);
+      deck.getMap().getPieceCollection().moveToFront(deck);
+    }
+  }
+
+  /**
+   * Class to refresh a Stack of GamePieces
+   */
+  private class StackRefresher implements Refresher {
+    private Stack stack;
+    private List<GamePiece> refreshedPieces = new ArrayList<>();
+
+    public StackRefresher(Stack stack) {
+      this.stack = stack;
+    }
+
+    public Stack getStack() {
+      return stack;
+    }
+
+    public List<GamePiece> getPieces() {
+      return stack.asList();
+    }
+
+    @Override
+    public List<GamePiece> getRefreshedPieces() {
+      return refreshedPieces;
+    }
+
+    @Override
+    public void refresh(Command command) {
+
+      // Test mode, just try to create a new piece for each visible to me piece in the Stack
+      if (isTestMode()) {
+        final List<GamePiece> pieces = stack.asList();
+        for (final GamePiece piece : pieces) {
+          if (!Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))
+            && !Boolean.TRUE.equals(piece.getProperty(Properties.OBSCURED_TO_ME))) {
+            // Create a new, updated piece
+            GamePiece newPiece = gpIdChecker.createUpdatedPiece(piece);
+            if (newPiece == null) {
+              notFoundCount++;
+              log(Resources.getString("GameRefresher.refresh_error_nomatch_pieceslot", piece.getName(), piece.getId()));
+            }
+            else {
+              updatedCount++;
+            }
+          }
+        }
+        return;
+      }
+
+      // Take a copy of the pieces in the Deck
+      final List<GamePiece> pieces = stack.asList();
+
+      // Remove all the pieces from the Deck  and create a set of fresh, updated pieces
+      for (final GamePiece piece : pieces) {
+
+        // Remove the existing piece from the Deck, the Map and the GameState
+        final Command remove = new RemovePiece(piece);
+        remove.execute();
+        command = command.append(remove);
+
+        GamePiece newPiece;
+        if (!Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))
+          && !Boolean.TRUE.equals(piece.getProperty(Properties.OBSCURED_TO_ME))) {
+          // Create a new, updated piece
+          newPiece = gpIdChecker.createUpdatedPiece(piece);
+          if (newPiece == null) {
+            notFoundCount++;
+            log(Resources.getString("GameRefresher.refresh_error_nomatch_pieceslot", piece.getName(), piece.getId()));
+            // Could not create a new piece for some reason, use the old piece
+            newPiece = piece;
+          }
+          else {
+            updatedCount++;
+          }
+        }
+        else {
+          newPiece = piece;
+        }
+
+        // Keep a list of the new pieces to add back into the Deck
+        refreshedPieces.add(newPiece);
+
+        // Add the new pieces back into the GameState
+        final Command add = new AddPiece(newPiece);
+        add.execute();
+        command = command.append(add);
+      }
+
+      // Load the new pieces back into the Stack in the same order
+      for (final GamePiece piece : refreshedPieces) {
+        command = command.append(stack.getMap().placeOrMerge(piece, stack.getPosition()));
+      }
+
+      stack.getMap().getPieceCollection().moveToFront(stack);
+    }
+  }
+
+  /**
+   * Class to refresh an individual non-stacking piece.
+   * If the piece is not refreshable, do not attempt to refresh it.
+   */
+  private class PieceRefresher implements Refresher, VASSAL.build.module.Refresher {
+    private GamePiece piece;
+    private GamePiece refreshedPiece;
+    private boolean refreshable; // Is this piece refreshable by this player?
+
+    public PieceRefresher(GamePiece piece, boolean refreshable) {
+      this.piece = piece;
+      this.refreshable = refreshable;
+    }
+
+    public GamePiece getPiece() {
+      return piece;
+    }
+
+    public boolean isRefreshable() {
+      return refreshable;
+    }
+
+    @Override
+    public List<GamePiece> getPieces() {
+      return List.of(piece);
+    }
+
+    @Override
+    public List<GamePiece> getRefreshedPieces() {
+      return List.of(refreshedPiece);
+    }
+
+    @Override
+    public void refresh(Command command) {
+      final Point position = piece.getPosition();
+      final Map map = piece.getMap();
+      refreshedPiece = piece;
+
+      if (refreshable) {
+        // Test mode, just try to create a new piece for each visible to me piece in the Stack
+        if (isTestMode()) {
+          if (!Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))
+            && !Boolean.TRUE.equals(piece.getProperty(Properties.OBSCURED_TO_ME))) {
+            // Create a new, updated piece
+            GamePiece newPiece = gpIdChecker.createUpdatedPiece(piece);
+            if (newPiece == null) {
+              notFoundCount++;
+              log(Resources.getString("GameRefresher.refresh_error_nomatch_pieceslot", piece.getName(), piece.getId()));
+            }
+            else {
+              updatedCount++;
+            }
+          }
+          return;
+        }
+
+        // Remove the existing piece the Map and the GameState
+        final Command remove = new RemovePiece(piece);
+        remove.execute();
+        command = command.append(remove);
+
+        // Refresh it
+        if (!Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))
+          && !Boolean.TRUE.equals(piece.getProperty(Properties.OBSCURED_TO_ME))) {
+          // Create a new, updated piece
+          refreshedPiece = gpIdChecker.createUpdatedPiece(piece);
+          if (refreshedPiece == null) {
+            notFoundCount++;
+            log(Resources.getString("GameRefresher.refresh_error_nomatch_pieceslot", piece.getName(), piece.getId()));
+            // Could not create a new piece for some reason, use the old piece
+            refreshedPiece = piece;
+          }
+          else {
+            updatedCount++;
+          }
+        }
+        else {
+          refreshedPiece = piece;
+        }
+
+        // Add the new pieces back into the GameState
+        final Command add = new AddPiece(refreshedPiece);
+        add.execute();
+        command = command.append(add);
+
+        // Place the piece back in the correct position
+        command = command.append(map.placeOrMerge(refreshedPiece, position));
+      }
+
+      map.getPieceCollection().moveToFront(refreshedPiece);
+
     }
   }
 }
