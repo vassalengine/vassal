@@ -17,6 +17,17 @@
   ],
   "changes": [
     {
+      "in": "3.6.5",
+      "since": "3.6.4",
+      "new_features": [
+      ],
+      "bug_fixes": [
+        { "num": 11094, "desc": "Exclude GamePieceLayout image names from unused image list" }
+      ],
+      "other_improvements": [
+      ]
+    },
+    {
       "in": "3.6.4",
       "since": "3.6.3",
       "new_features": [
