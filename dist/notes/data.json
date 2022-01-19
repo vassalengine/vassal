@@ -77,30 +77,6 @@
       "other_improvements": [
         { "num": 10961, "desc": "Use heuristic value for initial tiler heap; use 3/4 physical RAM as max heap" }
       ]
-    },
-    {
-      "in": "3.6.2",
-      "since": "3.6.1",
-      "new_features": [
-      ],
-      "bug_fixes": [
-        { "num": 10925, "desc": "Turn Tracker Button can never be size 0" },
-        { "num": 10915, "desc": "Undo of Send To Location sent to bottom card of deck returns the card to the top of the Deck" },
-        { "num": 10908, "desc": "Fix NPE when using Send Back in SendToLocation" },
-        { "num": 10907, "desc": "Disabled Toolbar Buttons on Map Windows didn't initialize starting state properly" },
-        { "num": 10906, "desc": "Show an error dialog if reading a corrupted prefs file" },
-        { "num": 10903, "desc": "Stacking units placed by At-Start stacks didn't allow Action Buttons on said pieces to function until the piece was moved" },
-        { "num": 10901, "desc": "Unchecking Cycle Message box in a Report trait clears the fields" },
-        { "num": 10899, "desc": "Show the player window before the welcome wizard" },
-        { "num": 10894, "desc": "Warn about movement trails inside of rotates only when editing module" },
-        { "num": 10893, "desc": "Fix NPE: RandomTextButton raw rolls/counts support" },
-        { "num": 10891, "desc": "Pieces in decks were not being updated during Refresh Counters" },
-        { "num": 10889, "desc": "Added diagnostic to determine what is trying to add stacks to stacks" },
-        { "num": 10887, "desc": "Wasn't possible to click add to add an Action Button trait to a piece" }
-      ],
-      "other_improvements": [
-        { "num": 10929, "desc": "Use '/usr/bin/env bash' in VASSAL.sh for greater portability on Unix" }
-      ]
     }
   ]
 }
