@@ -22,7 +22,9 @@
       "new_features": [
       ],
       "bug_fixes": [
-        { "num": 11094, "desc": "Exclude GamePieceLayout image names from unused image list" }
+        { "num": 11094, "desc": "Exclude GamePieceLayout image names from unused image list" },
+        { "num": 11093, "desc": "Image directories for i18n were not found in 3.6.4" },
+        { "num": 11089, "desc": "Write text files in UTF-8, not the default encoding" }
       ],
       "other_improvements": [
       ]
