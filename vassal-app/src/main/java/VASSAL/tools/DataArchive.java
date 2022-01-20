@@ -30,8 +30,10 @@ import java.security.cert.Certificate;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -311,23 +313,33 @@ public class DataArchive extends SecureClassLoader implements Closeable {
 
   /* Localized directories always take the form images_XX with XX being a i18n code */
   protected void buildLocalizedDirectoryList(List<String> list) {
-    final int rootlen = imageDir.length();
-    final String root = imageDir.substring(0, rootlen - 1);
+    List<String> files;
     try {
-      for (final String fname : archive.getFiles("")) {
-        final int fnamelen = fname.length();
-        if (fname.charAt(fnamelen - 1) == '/') {
-          final String fnamedir = fname.substring(0, fnamelen - 1);
-          if (fnamedir.startsWith(root) && !fnamedir.equals(root) && fnamedir.charAt(rootlen - 1) == '_') {
-            list.add(fname);
-          }
-        }
-      }
+      files = archive.getFiles("");
     }
     catch (IOException e) {
       // FIXME: don't swallow this exception!
       e.printStackTrace();
+      return;
     }
+
+    final Set<String> dirs = new HashSet<>();
+
+    // trim the trailing slash from imageDir and append the lang separator
+    final String base = imageDir.substring(0, imageDir.length() - 1) + "_";
+
+    for (final String fname : files) {
+      if (fname.startsWith(base)) {
+        // trim to the end of the path component beyond imageDir,
+        // keeping the trailing slash; this is the i18n directory
+        final int sep = fname.indexOf('/', base.length());
+        if (sep != -1) {
+          dirs.add(fname.substring(0, sep + 1));
+        }
+      }
+    }
+
+    list.addAll(dirs);
   }
 
   protected void getAllLocalImageNamesForDirectory(SortedSet<String> s, String directory, boolean fullPath) {
