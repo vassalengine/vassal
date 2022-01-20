@@ -28,6 +28,7 @@
         { "num": 11089, "desc": "Write text files in UTF-8, not the default encoding" }
       ],
       "other_improvements": [
+        { "num": 11098, "desc": "Screenshot \"typo\" fix for Turn Tracker's global hotkey" }
       ]
     },
     {

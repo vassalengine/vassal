@@ -1,5 +1,6 @@
 3.6.5 - ???
 
+* 11098: Screenshot "typo" fix for Turn Tracker's global hotkey
 * 11095: Deduce the existence of localized image directories which lack ZIP
     entries
 * 11094: Exclude GamePieceLayout image names from unused image list
