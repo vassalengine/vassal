@@ -324,10 +324,14 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     }
 
     final Set<String> dirs = new HashSet<>();
+
+    // trim the trailing slash from imageDir and append the lang separator
     final String base = imageDir.substring(0, imageDir.length() - 1) + "_";
 
     for (final String fname : files) {
       if (fname.startsWith(base)) {
+        // trim to the end of the path component beyond imageDir,
+        // keeping the trailing slash; this is the i18n directory
         final int sep = fname.indexOf('/', base.length());
         if (sep != -1) {
           dirs.add(fname.substring(0, sep + 1));
