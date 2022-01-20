@@ -17,14 +17,19 @@
  */
 package VASSAL.chat.ui;
 
-import java.awt.event.ActionEvent;
-
-import javax.swing.AbstractAction;
-
 import VASSAL.build.GameModule;
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.Room;
+import VASSAL.chat.node.NodeClient;
+import VASSAL.chat.node.NodeRoom;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.swing.Dialogs;
+
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.AbstractAction;
+import javax.swing.JOptionPane;
 
 /**
  * When invoked, will join a game room on the server
@@ -40,17 +45,6 @@ public class JoinRoomAction extends AbstractAction {
     this.r = r;
     this.client = client;
     setEnabled(r != null && !r.equals(client.getRoom()));
-
-    if (r != null) {
-      GameModule.getGameModule().warn(Resources.getString("Chat.joining_room", r.getName()));
-
-      if (Resources.getString("Chat.main_room").equals(r.getName())) {
-        explainMainRoom();
-      }
-      else {
-        GameModule.getGameModule().warn(Resources.getString("Chat.explain_joined_room"));
-      }
-    }
   }
 
   public static void explainMainRoom() {
@@ -59,7 +53,42 @@ public class JoinRoomAction extends AbstractAction {
 
   @Override
   public void actionPerformed(ActionEvent evt) {
+    if (client instanceof NodeClient) {
+      final boolean compatible = false;
+      final List<String> errors = new ArrayList<>();
+      ((NodeClient) client).checkCompatibility((NodeRoom) r, compatible, errors);
+      if (!compatible) {
+        final StringBuilder sb = new StringBuilder();
+        sb.append(Resources.getString("Chat.join_issue", r.getName())).append("\n\n");
+        for (final String error : errors) {
+          sb.append(" - ").append(error).append('\n');
+        }
+        sb.append('\n').append(Resources.getString("Chat.are_you_sure"));
+        final int result =
+          Dialogs.showConfirmDialog(GameModule.getGameModule().getPlayerWindow(),
+            Resources.getString("Chat.vassal_configuration_error"),
+            Resources.getString("Chat.vassal_configuration_error"),
+            sb.toString(),
+            JOptionPane.WARNING_MESSAGE,
+            JOptionPane.YES_NO_OPTION);
+        if (result != JOptionPane.YES_OPTION) {
+          return;
+        }
+      }
+    }
+
     client.setRoom(r);
+    if (r != null) {
+      final GameModule gm = GameModule.getGameModule();
+      gm.warn(Resources.getString("Chat.joining_room", r.getName()));
+
+      if (Resources.getString("Chat.main_room").equals(r.getName())) {
+        explainMainRoom();
+      }
+      else {
+        gm.warn(Resources.getString("Chat.explain_joined_room"));
+      }
+    }
   }
 
   public static RoomActionFactory factory(final ChatServerConnection chatClient) {

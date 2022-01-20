@@ -2206,7 +2206,11 @@ public class GameModule extends AbstractConfigurable
    * @return a cumulative CRC from all of our files
    */
   public long getCrc() {
-    if (crc == null) {
+    return getCrc(false);
+  }
+
+  public long getCrc(boolean forceRegenerate) {
+    if (crc == null || forceRegenerate) {
       crc = buildCrc();
     }
     return crc;
