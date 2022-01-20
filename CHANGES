@@ -1,5 +1,7 @@
 3.6.5 - ???
 
+* 11095: Deduce the existence of localized image directories which lack ZIP
+    entries
 * 11094: Exclude GamePieceLayout image names from unused image list
 * 11093: Image directories for i18n were not found in 3.6.4
 * 11089: Write text files in UTF-8, not the default encoding
