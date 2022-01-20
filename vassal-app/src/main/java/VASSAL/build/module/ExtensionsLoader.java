@@ -69,6 +69,8 @@ public class ExtensionsLoader implements CommandEncoder {
       });
     }
     addExtensions();
+    // Force the module checksum to be regenerated
+    mod.getCrc(true);
   }
 
   protected void addExtensions() {

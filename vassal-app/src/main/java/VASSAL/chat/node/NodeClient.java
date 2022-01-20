@@ -16,19 +16,9 @@
  */
 package VASSAL.chat.node;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.io.IOException;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
-import java.util.Properties;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.ArrayUtils;
-
 import VASSAL.Info;
 import VASSAL.build.GameModule;
+import VASSAL.build.module.Chatter;
 import VASSAL.chat.Compressor;
 import VASSAL.chat.InviteCommand;
 import VASSAL.chat.InviteEncoder;
@@ -62,6 +52,19 @@ import VASSAL.command.CommandEncoder;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.PropertiesEncoder;
 import VASSAL.tools.SequenceEncoder;
+
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * @author rkinney
@@ -490,11 +493,32 @@ public class NodeClient implements LockableChatServerConnection,
       // a Synchronize
       // for a move to a new room if needed.
       if (pendingSynchToRoom != null) {
+
         new SynchAction(pendingSynchToRoom.getOwningPlayer(), this)
-            .actionPerformed(null);
+          .actionPerformed(null);
+
+        GameModule.getGameModule().warn(Resources.getString("Chat.synchronize_complete"));
+
+        final GameModule gm = GameModule.getGameModule();
+        final Chatter chatter = gm.getChatter();
+        final String playerName = getUserInfo().getName();
+        final List<String> errors = new ArrayList<>();
+        final boolean compatible = false;
+
+        checkCompatibility(pendingSynchToRoom, compatible, errors);
+
+        Command chat = new Chatter.DisplayText(chatter, Resources.getString("Chat.joining_room_chat", playerName, pendingSynchToRoom.getName()));
         pendingSynchToRoom = null;
-        GameModule.getGameModule().warn(
-            Resources.getString("Chat.synchronize_complete"));
+        if (!compatible) {
+          for (final String error : errors) {
+            chat = chat.append(new Chatter.DisplayText(chatter, error));
+          }
+        }
+        chat = chat.append(new Chatter.DisplayText(chatter, Resources.getString(compatible ? "Chat.join_ok" : "Chat.join_not_ok", playerName)));
+
+        chat.execute();
+        gm.sendAndLog(chat);
+
       }
     }
     else if ((p = Protocol.decodeRoomsInfo(msg)) != null) {
@@ -671,5 +695,40 @@ public class NodeClient implements LockableChatServerConnection,
                 .removePropertyChangeListener(nameChangeListener);
     g.getPrefs().getOption(GameModule.PERSONAL_INFO)
                 .removePropertyChangeListener(profileChangeListener);
+  }
+
+  /**
+   * Check on the compatibility of this client connecting to the target room.
+   * Check Vassal version, module version, module CRC
+   * @param targetRoom Room to be entered
+   * @param compatible Return true if entry allowed
+   * @param errors Return a list of error message if entry not allowed.
+   */
+  public void checkCompatibility(NodeRoom targetRoom, boolean compatible, List<String> errors) {
+    errors.clear();
+    compatible = true;
+
+    if (defaultRoomName.equals(targetRoom.getName()) || targetRoom.getOwningPlayer() == null) {
+      return;
+    }
+
+    final SimpleStatus ownerStatus = (SimpleStatus) targetRoom.getOwningPlayer().getStatus();
+    final SimpleStatus myStatus = (SimpleStatus) getUserInfo().getStatus();
+
+    if (!ownerStatus.getClient().equals(myStatus.getClient())) {
+      errors.add(Resources.getString("Chat.bad_vassal", myStatus.getClient(), ownerStatus.getClient()));
+      compatible = false;
+    }
+
+    if (!ownerStatus.getModuleVersion().equals(myStatus.getModuleVersion())) {
+      errors.add(Resources.getString("Chat.bad_module", myStatus.getModuleVersion(), ownerStatus.getModuleVersion()));
+      compatible = false;
+    }
+
+    if (!ownerStatus.getCrc().equals(myStatus.getCrc())) {
+      errors.add(Resources.getString("Chat.bad_crc", myStatus.getCrc(), ownerStatus.getCrc()));
+      compatible = false;
+    }
+
   }
 }
