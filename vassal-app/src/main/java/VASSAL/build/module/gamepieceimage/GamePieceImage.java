@@ -466,15 +466,15 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   protected void rebuildInstances() {
     final ArrayList<ItemInstance> newInstances = new ArrayList<>();
 
-    for (final ItemInstance prop : instances) {
-      final Item item = layout.getItem(prop.getName());
-      if (item != null && item.getType().equals(prop.getType())) {
-        prop.setLocation(item.getLocation());
-        newInstances.add(prop);
-      }
-    }
-
     if (layout != null) {
+      for (final ItemInstance prop : instances) {
+        final Item item = layout.getItem(prop.getName());
+        if (item != null && item.getType().equals(prop.getType())) {
+          prop.setLocation(item.getLocation());
+          newInstances.add(prop);
+        }
+      }
+
       for (final Item item : layout.getItems()) {
         final String name = item.getConfigureName();
         final String type = item.getType();
