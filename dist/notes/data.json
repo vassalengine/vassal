@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 11105, "desc": "Added missing Editor.SendToLocation.getSendLocation translation key" },
         { "num": 11095, "desc": "Deduce the existence of localized image directories which lack ZIP entries" },
         { "num": 11094, "desc": "Exclude GamePieceLayout image names from unused image list" },
         { "num": 11093, "desc": "Image directories for i18n were not found in 3.6.4" },
