@@ -22,6 +22,9 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 11115, "desc": "Fix ClassCastException due to Zone properties not accounting for folders" },
+        { "num": 11109, "desc": "LOS Range incorrect when thread is not snapped to hex centres" },
+        { "num": 11106, "desc": "Fix NPE when duplicating GamePieceImage" },
         { "num": 11105, "desc": "Added missing Editor.SendToLocation.getSendLocation translation key" },
         { "num": 11095, "desc": "Deduce the existence of localized image directories which lack ZIP entries" },
         { "num": 11094, "desc": "Exclude GamePieceLayout image names from unused image list" },
@@ -29,6 +32,7 @@
         { "num": 11089, "desc": "Write text files in UTF-8, not the default encoding" }
       ],
       "other_improvements": [
+        { "num": 11107, "Warn if Decks or Stacks defined before [Map Boards]" },
         { "num": 11098, "desc": "Screenshot \"typo\" fix for Turn Tracker's global hotkey" }
       ]
     },
