@@ -33,7 +33,8 @@
         { "num": 11089, "desc": "Write text files in UTF-8, not the default encoding" }
       ],
       "other_improvements": [
-        { "num": 11107, "Warn if Decks or Stacks defined before [Map Boards]" },
+        { "num": 11120, "desc": "Permit hyphens and periods in GamePieceImage names" },
+        { "num": 11107, "desc": "Warn if Decks or Stacks defined before [Map Boards]" },
         { "num": 11098, "desc": "Screenshot \"typo\" fix for Turn Tracker's global hotkey" }
       ]
     },
