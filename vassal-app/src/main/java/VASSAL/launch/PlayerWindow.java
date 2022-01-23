@@ -17,33 +17,31 @@
  */
 package VASSAL.launch;
 
+import VASSAL.build.GameModule;
+import VASSAL.build.module.Chatter;
+import VASSAL.build.module.Documentation;
+import VASSAL.configure.ShowHelpAction;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.ApplicationIcons;
+import VASSAL.tools.DebugControls;
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.WrapLayout;
+import VASSAL.tools.menu.CheckBoxMenuItemProxy;
+import VASSAL.tools.menu.MenuBarProxy;
+import VASSAL.tools.menu.MenuManager;
+import VASSAL.tools.menu.MenuProxy;
+import org.apache.commons.lang3.SystemUtils;
+
+import javax.swing.AbstractAction;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JToolBar;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import javax.swing.AbstractAction;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JToolBar;
-
-import VASSAL.build.GameModule;
-import VASSAL.tools.DebugControls;
-import VASSAL.tools.menu.CheckBoxMenuItemProxy;
-import org.apache.commons.lang3.SystemUtils;
-
-import VASSAL.build.module.Chatter;
-import VASSAL.build.module.Documentation;
-import VASSAL.configure.ShowHelpAction;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.ApplicationIcons;
-import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.WrapLayout;
-import VASSAL.tools.menu.MenuBarProxy;
-import VASSAL.tools.menu.MenuManager;
-import VASSAL.tools.menu.MenuProxy;
 
 public class PlayerWindow extends JFrame {
 
@@ -138,6 +136,9 @@ public class PlayerWindow extends JFrame {
 
     toolsMenu.add(mm.addKey("GameRefresher.refresh_counters"));
     toolsMenu.add(mm.addKey("GameState.load_continuation"));
+
+    toolsMenu.addSeparator();
+    toolsMenu.add(mm.addKey("GameState.load_and_append"));
 
     toolsMenu.addSeparator();
     
