@@ -43,8 +43,8 @@ import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.Translatable;
 import VASSAL.tools.SequenceEncoder;
-
 import VASSAL.tools.swing.SwingUtils;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -247,7 +247,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
   @Override
   public void validate(Buildable target, ValidationReport report) {
     if (possibleBoards.isEmpty()) {
-      report.addWarning(Resources.getString("BoardPicker.must_define", ConfigureTree.getConfigureName(map))); //$NON-NLS-1$
+      report.addWarning(Resources.getString("BoardPicker.must_define", ConfigureTree.getConfigureName(map), Resources.getString("Editor.Map.component_type"))); //$NON-NLS-1$
     }
     final HashSet<String> names = new HashSet<>();
     for (final Board b : possibleBoards) {
@@ -259,6 +259,34 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
         report.addWarning(Resources.getString("BoardPicker.no_name", ConfigureTree.getConfigureName(map)));
       }
       b.validate(b, report);
+    }
+    // Report an error if this BoardPicker appears after any Decks or Stacks
+    final boolean boardPickerSeen = false;
+    validateComponent(target, report, getAncestor(), boardPickerSeen);
+  }
+
+  private void validateComponent(Buildable target, ValidationReport report, Buildable component, boolean boardPickerSeen) {
+    if (component instanceof AbstractBuildable) {
+      for (final Buildable b : ((AbstractBuildable) component).getBuildables()) {
+        if (b == target) {
+          boardPickerSeen = true;
+          return;
+        }
+        else if (b instanceof SetupStack) {
+          report.addWarning(Resources.getString("Editor.BoardPicker.out_of_sequence",
+            Resources.getString("Editor.BoardPicker.component_type"),
+            ((Map) getAncestor()).getConfigureName(),
+            Resources.getString("Editor.Map.component_type"),
+            ((SetupStack) b).getConfigureName()));
+          return;
+        }
+        else {
+          validateComponent(target, report, b, boardPickerSeen);
+          if (boardPickerSeen) {
+            return;
+          }
+        }
+      }
     }
   }
 
