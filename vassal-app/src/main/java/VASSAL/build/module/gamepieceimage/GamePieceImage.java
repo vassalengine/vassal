@@ -507,7 +507,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   }
 
   private boolean isVersion1ImageName(String name) {
-    return name != null && !name.isEmpty() && name.matches("^\\w+\\.png$");
+    return name != null && !name.isEmpty() && name.matches("^[\\w.-]+\\.png$");
   }
 
   public static class ImageNameConfig implements ConfigurerFactory {
@@ -583,7 +583,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
     }
 
     private String clean(String string) {
-      return string.replaceAll("\\W+", "");
+      return string.replaceAll("[^\\w.-]", "");
     }
 
     /** Don't let any of the '.png' at the end of the string be removed and clean unwanted characters */
