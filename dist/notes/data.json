@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 11119, "desc": "Fixed NPE in NamedHotKeyConfigurer.setValue()" },
         { "num": 11115, "desc": "Fix ClassCastException due to Zone properties not accounting for folders" },
         { "num": 11109, "desc": "LOS Range incorrect when thread is not snapped to hex centres" },
         { "num": 11106, "desc": "Fix NPE when duplicating GamePieceImage" },
