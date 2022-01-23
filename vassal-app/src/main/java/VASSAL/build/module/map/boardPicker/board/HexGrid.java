@@ -724,7 +724,7 @@ public class HexGrid extends AbstractConfigurable
 
     final VASSAL.build.module.Map m = getContainer().getBoard().getMap();
 
-    // Snap the pounts to the HexGrid before calculating range
+    // Snap the points to the HexGrid before calculating range. Note: snap via the Map to get correct handling of board offets.
     final Point pp1 = m.snapTo(p1);
     final Point pp2 = m.snapTo(p2);
 
