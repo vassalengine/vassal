@@ -111,12 +111,13 @@ public class GameState implements CommandEncoder {
   protected Map<String, GamePiece> pieces = new HashMap<>();
   protected List<GameComponent> gameComponents = new ArrayList<>();
   protected List<GameSetupStep> setupSteps = new ArrayList<>();
-  protected Action loadGame, loadGameOld, saveGame, saveGameAs, newGame, closeGame, loadContinuation, loadAndAppend;
+  protected Action loadGame, loadGameOld, saveGame, saveGameAs, newGame, closeGame, loadContinuation, loadAndFastForward, loadAndAppend;
   protected String lastSave;
   protected File lastSaveFile = null;
   protected DirectoryConfigurer savedGameDirectoryPreference;
   protected String loadComments;
   protected boolean loadingInBackground = false;
+  private boolean fastForwarding = false;
 
   /**
    * @return true if currently loading in background
@@ -184,12 +185,21 @@ public class GameState implements CommandEncoder {
     };
     loadContinuation.setEnabled(false);
 
+    loadAndFastForward = new AbstractAction(Resources.getString("GameState.load_and_fast_forward")) {
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        loadFastForward(false);
+      }
+    };
+
     loadAndAppend = new AbstractAction(Resources.getString("GameState.load_and_append")) {
       private static final long serialVersionUID = 1L;
 
       @Override
       public void actionPerformed(ActionEvent e) {
-        loadForAppend();
+        loadFastForward(true);
       }
     };
 
@@ -259,6 +269,7 @@ public class GameState implements CommandEncoder {
     mm.addAction("GameState.save_game", saveGame);
     mm.addAction("GameState.save_game_as", saveGameAs);
     mm.addAction("GameState.close_game", closeGame);
+    mm.addAction("GameState.load_and_fast_forward", loadAndFastForward);
     mm.addAction("GameState.load_and_append", loadAndAppend);
 
     saveGame.setEnabled(gameStarting);
@@ -507,7 +518,10 @@ public class GameState implements CommandEncoder {
     if (gameStarted) {
       if (gameStarting) {
         // Things that we invokeLater
-        SwingUtilities.invokeLater(() -> {
+        SwingUtilities.invokeLater(fastForwarding ? () -> {
+          // Apply all of the startup global key commands, in order
+          doStartupGlobalKeyCommands();
+        } : () -> {
           // Apply all of the startup global key commands, in order
           doStartupGlobalKeyCommands();
 
@@ -730,14 +744,18 @@ public class GameState implements CommandEncoder {
    * same initial state and likewise retaining the existing commands in the log), and thus any new commands added are essentially
    * appended to the existing log rather than starting from some later state.
    */
-  private void loadForAppend() {
+  private void loadFastForward(boolean append) {
+    fastForwarding = true;
+
     loadGame(false, true); // First load the old game or log, forcing it to all happen foreground
+
+    fastForwarding = false;
 
     final GameModule g = GameModule.getGameModule();
     final BasicLogger bl = g.getBasicLogger();
     if (bl.isReplaying()) {
-      if (!bl.isLogging()) {
-        bl.queryNewLogFile(true); // We begin logging a new file immediately w/ the starting state of the old log
+      if (!bl.isLogging() && append) {
+        bl.queryNewLogFile(true, true); // We begin logging a new file immediately w/ the starting state of the old log
       }
 
       // Replay all of the commands in the game -- since we're logging they will be picked up in the new log
@@ -748,11 +766,25 @@ public class GameState implements CommandEncoder {
       }
       bl.stepAction.setEnabled(false);
 
-      if (!bl.isLogging()) {
-        g.warn(Resources.getString("GameState.fast_forward_only"));
+      if (append) {
+        if (!bl.isLogging()) {
+          g.warn(Resources.getString("GameState.fast_forward_only"));
+        }
+        else {
+          g.warn(Resources.getString("GameState.fast_forward_and_append"));
+        }
       }
       else {
-        g.warn(Resources.getString("GameState.fast_forward_and_append"));
+        if (!bl.isLogging()) {
+          bl.queryNewLogFile(false, true);
+        }
+
+        if (!bl.isLogging()) {
+          g.warn(Resources.getString("GameState.fast_forward"));
+        }
+        else {
+          g.warn(Resources.getString("GameState.fast_forward_new_log"));
+        }
       }
     }
     else {

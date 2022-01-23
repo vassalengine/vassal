@@ -138,6 +138,7 @@ public class PlayerWindow extends JFrame {
     toolsMenu.add(mm.addKey("GameState.load_continuation"));
 
     toolsMenu.addSeparator();
+    toolsMenu.add(mm.addKey("GameState.load_and_fast_forward"));
     toolsMenu.add(mm.addKey("GameState.load_and_append"));
 
     toolsMenu.addSeparator();
