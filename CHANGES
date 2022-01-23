@@ -7,6 +7,7 @@
 * 11106: Fix NPE when duplicating GamePieceImage
 * 11105: Added missing Editor.SendToLocation.getSendLocation translation key
 * 11098: Screenshot "typo" fix for Turn Tracker's global hotkey
+* 11096: Remove "duplicate this item" option from Game Piece Image
 * 11095: Deduce the existence of localized image directories which lack ZIP
     entries
 * 11094: Exclude GamePieceLayout image names from unused image list
