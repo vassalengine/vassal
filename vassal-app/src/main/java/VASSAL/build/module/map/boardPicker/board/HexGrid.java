@@ -722,9 +722,17 @@ public class HexGrid extends AbstractConfigurable
   @Override
   public int range(Point p1, Point p2) {
 
-    final Hex h1 = OffsetCoord.qoffsetToCube(OffsetCoord.ODD, new OffsetCoord(getRawColumn(p1), getRawRow(p1)));
-    final Hex h2 = OffsetCoord.qoffsetToCube(OffsetCoord.ODD, new OffsetCoord(getRawColumn(p2), getRawRow(p2)));
+    final VASSAL.build.module.Map m = getContainer().getBoard().getMap();
 
+    // Snap the points to the HexGrid before calculating range. Note: snap via the Map to get correct handling of board offets.
+    final Point pp1 = m.snapTo(p1);
+    final Point pp2 = m.snapTo(p2);
+
+    // Create two Hex Coordinate references
+    final Hex h1 = OffsetCoord.qoffsetToCube(OffsetCoord.ODD, new OffsetCoord(getRawColumn(pp1), getRawRow(pp1)));
+    final Hex h2 = OffsetCoord.qoffsetToCube(OffsetCoord.ODD, new OffsetCoord(getRawColumn(pp2), getRawRow(pp2)));
+
+    // And return the difference
     return h1.distance(h2);
   }
 
