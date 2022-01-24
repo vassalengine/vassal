@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 11121, "desc": "Fix problem where undo wasn't allowed when starting a new game with logging turned on" },
         { "num": 11119, "desc": "Fixed NPE in NamedHotKeyConfigurer.setValue()" },
         { "num": 11115, "desc": "Fix ClassCastException due to Zone properties not accounting for folders" },
         { "num": 11109, "desc": "LOS Range incorrect when thread is not snapped to hex centres" },

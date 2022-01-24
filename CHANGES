@@ -1,5 +1,7 @@
 3.6.5 - ???
 
+* 11121: Fix problem where undo wasn't allowed when starting a new game with
+    logging turned on
 * 11120: Permit hyphens and periods in GamePieceImage names
 * 11119: Fixed NPE in NamedHotKeyConfigurer.setValue()
 * 11115: Fix ClassCastException due to Zone properties not accounting for
