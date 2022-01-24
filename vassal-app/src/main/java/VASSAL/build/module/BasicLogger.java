@@ -18,28 +18,6 @@
 
 package VASSAL.build.module;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.InputEvent;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-import javax.swing.KeyStroke;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import VASSAL.Info;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -65,6 +43,26 @@ import VASSAL.tools.io.ZipWriter;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.Dialogs;
 import VASSAL.tools.version.VersionUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
+import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * BasicLogger deals with VLOG Vassal Log files (i.e. NOT the errorLog--see below):
@@ -490,6 +488,8 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     if (beginningState == null) {
       return;
     }
+
+    dontUndoPast = 0; 
 
     undoAction.setEnabled(false);
     endLogAction.setEnabled(true);
