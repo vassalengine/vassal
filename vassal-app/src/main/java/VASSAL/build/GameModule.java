@@ -1469,7 +1469,7 @@ public class GameModule extends AbstractConfigurable
    */
   private String removePrefix(String fileName) {
     final int index = fileName.indexOf(':');
-    return (index < 0) ? fileName : fileName.substring(index);
+    return (index < 0) ? fileName : fileName.substring(index + 1);
   }
 
   /**
