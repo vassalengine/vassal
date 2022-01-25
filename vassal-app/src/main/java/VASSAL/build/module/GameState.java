@@ -474,11 +474,10 @@ public class GameState implements CommandEncoder {
         g.getPlayerWindow(),
         Resources.getString("GameState.save_game_query"), //$NON-NLS-1$
         Resources.getString("GameState.game_modified"),   //$NON-NLS-1$
-        JOptionPane.YES_NO_CANCEL_OPTION)) {
+        JOptionPane.YES_NO_OPTION)) { // Too late to "cancel" at this point, in all code paths (See also: we should really ask this question much earlier...)
       case JOptionPane.YES_OPTION:
         saveGame();
         break;
-      case JOptionPane.CANCEL_OPTION:
       case JOptionPane.CLOSED_OPTION:
         return;
       }
