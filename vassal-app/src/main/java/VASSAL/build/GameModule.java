@@ -126,7 +126,6 @@ import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.version.VersionUtils;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
@@ -1495,7 +1494,7 @@ public class GameModule extends AbstractConfigurable
       return Resources.getString(key + "_title", nameString, "", Info.getVersion());  //NON-NLS-1$
     }
     else {
-      return Resources.getString(key + "_title_" + gameFileMode, nameString, moduleVersion ? gameFile : FilenameUtils.removeExtension(removePrefix(gameFile)), Info.getVersion()); //NON-NLS-1$
+      return Resources.getString(key + "_title_" + gameFileMode, nameString, gameFile, Info.getVersion()); //NON-NLS-1$
     }
   }
 
