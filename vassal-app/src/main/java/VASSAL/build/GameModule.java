@@ -1460,17 +1460,6 @@ public class GameModule extends AbstractConfigurable
     return frame.getToolBar();
   }
 
-
-  /**
-   * Removes any windows drive letter prefix from a filename, to keep stupid FileUtils from throwing a stupid exception.
-   * @param fileName filename
-   * @return filename w/o any prefix (e.g. "C:")
-   */
-  private String removePrefix(String fileName) {
-    final int index = fileName.indexOf(':');
-    return (index < 0) ? fileName : fileName.substring(index + 1);
-  }
-
   /**
    * Returns an appropriate Title Bar string for a window, based on the module name,
    * the last read/written game file, and the manner of interaction with it.
