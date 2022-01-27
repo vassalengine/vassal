@@ -1,5 +1,7 @@
 3.6.5 - ???
 
+* 11139: Deal-to-Other key in Mask Trait now recognized in Search
+* 11127: Don't throw exception if there's a drive letter in a filename
 * 11121: Fix problem where undo wasn't allowed when starting a new game with
     logging turned on
 * 11120: Permit hyphens and periods in GamePieceImage names
