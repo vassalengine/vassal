@@ -31,16 +31,17 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.LineIterator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import VASSAL.tools.IteratorUtils;
 import VASSAL.tools.concurrent.DaemonThreadFactory;
 import VASSAL.tools.image.ImageIOImageLoader;
 import VASSAL.tools.image.ImageLoader;
@@ -128,20 +129,6 @@ public class ZipFileImageTiler {
 
   private static void writeToStream(OutputStream os, String zpath, String tpath, int tw, int th) {
 
-    // Get the image paths from stdin, one per line
-    final List<String> pl = new ArrayList<>();
-    try (BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8))) {
-      String s;
-      while ((s = stdin.readLine()) != null) {
-        pl.add(s);
-      }
-    }
-    catch (IOException e) {
-      logger.error("Error while reading image paths from stdin", e); //NON-NLS
-    }
-
-    final String[] ipaths = pl.toArray(new String[0]);
-
     // TODO: Determine what the optimal number of threads is.
     final Runtime runtime = Runtime.getRuntime();
     final ExecutorService exec = new ThreadPoolExecutor(
@@ -158,36 +145,41 @@ public class ZipFileImageTiler {
     final TileSlicer slicer = new TileSlicerImpl();
     final FileArchiveImageTiler tiler = new FileArchiveImageTiler();
 
-    try (DataOutputStream out = new DataOutputStream(os)) {
-      final Callback<String> imageL = ipath -> {
-        out.writeByte(STARTING_IMAGE);
-        out.writeUTF(ipath);
-        out.flush();
-      };
+    // Get the image paths from stdin, one per line
+    try (BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8))) {
+      final Iterable<String> ipaths = IteratorUtils.iterate(new LineIterator(stdin));
 
-      final Callback<Void> tileL = obj -> {
-        out.writeByte(TILE_WRITTEN);
-        out.flush();
-      };
+      try (DataOutputStream out = new DataOutputStream(os)) {
+        final Callback<String> imageL = ipath -> {
+          out.writeByte(STARTING_IMAGE);
+          out.writeUTF(ipath);
+          out.flush();
+        };
 
-      final Callback<Void> doneL = obj -> {
-        out.writeByte(TILING_FINISHED);
-        out.flush();
-      };
+        final Callback<Void> tileL = obj -> {
+          out.writeByte(TILE_WRITTEN);
+          out.flush();
+        };
 
-      try (FileArchive fa = new ZipArchive(zpath)) {
-        // Tile the images
-        tiler.run(
-          fa, tpath, tw, th, ipaths, exec,
-          loader, slicer, imageL, tileL, doneL
-        );
-      }
-      catch (IOException e) {
-        logger.error("", e);
+        final Callback<Void> doneL = obj -> {
+          out.writeByte(TILING_FINISHED);
+          out.flush();
+        };
+
+        try (FileArchive fa = new ZipArchive(zpath)) {
+          // Tile the images
+          tiler.run(
+            fa, tpath, tw, th, ipaths, exec,
+            loader, slicer, imageL, tileL, doneL
+          );
+        }
+        catch (IOException e) {
+          logger.error("", e);
+        }
       }
     }
     catch (IOException e) {
-      logger.error("Error while writing to outputstream {}", os, e); //NON-NLS
+      logger.error("Tiling I/O error", e);
     }
   }
 }
