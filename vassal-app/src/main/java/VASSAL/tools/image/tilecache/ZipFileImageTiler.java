@@ -90,50 +90,14 @@ public class ZipFileImageTiler {
       final int tw = Integer.parseInt(args[2]);
       final int th = Integer.parseInt(args[3]);
 
-      // Get the image paths from stdin, one per line
-      final List<String> pl = new ArrayList<>();
-      try (BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8))) {
-        String s;
-        while ((s = stdin.readLine()) != null) {
-          pl.add(s);
-        }
-      }
-      catch (IOException e) {
-        logger.error("Error while reading image paths from stdin", e); //NON-NLS
-      }
-
-      final String[] ipaths = pl.toArray(new String[0]);
-
-      // TODO: Determine what the optimal number of threads is.
-      final Runtime runtime = Runtime.getRuntime();
-      final ExecutorService exec = new ThreadPoolExecutor(
-        runtime.availableProcessors(),
-        runtime.availableProcessors() + 1,
-        60, TimeUnit.SECONDS,
-        new LinkedBlockingQueue<>(),
-        new DaemonThreadFactory(ZipFileImageTiler.class.getSimpleName())
-      );
-
-      final ImageTypeConverter itc = new MemoryImageTypeConverter();
-      final ImageLoader loader = new ImageIOImageLoader(itc);
-
-      final TileSlicer slicer = new TileSlicerImpl();
-      final FileArchiveImageTiler tiler = new FileArchiveImageTiler();
-
       // TODO: Remove after next VASL & VSQL releases?
       final String portProp = System.getProperty("VASSAL.port");
 
       if (portProp != null) {
-        writeToSocket(
-          portProp, zpath, tiler, tpath, tw, th,
-          ipaths, exec, loader, slicer
-        );
+        writeToSocket(portProp, zpath, tpath, tw, th);
       }
       else {
-        writeToStream(
-          System.out, zpath, tiler, tpath, tw, th,
-          ipaths, exec, loader, slicer
-        );
+        writeToStream(System.out, zpath, tpath, tw, th);
       }
     }
     finally {
@@ -142,11 +106,7 @@ public class ZipFileImageTiler {
   }
 
   // TODO: Remove after next VASL & VSQL releases?
-  private static void writeToSocket(String portProp, String zpath,
-                                    FileArchiveImageTiler tiler, String tpath, int tw, int th,
-                                    String[] ipaths, ExecutorService exec, ImageLoader loader,
-                                    TileSlicer slicer) {
-
+  private static void writeToSocket(String portProp, String zpath, String tpath, int tw, int th) {
     final InetAddress lo;
     try {
       lo = InetAddress.getByName(null);
@@ -159,19 +119,45 @@ public class ZipFileImageTiler {
     final int port = Integer.parseInt(portProp);
     try (Socket sock = new Socket(lo, port)) {
       sock.shutdownInput();
-
-      writeToStream(
-        sock.getOutputStream(), zpath, tiler, tpath, tw, th,
-        ipaths, exec, loader, slicer
-      );
+      writeToStream(sock.getOutputStream(), zpath, tpath, tw, th);
     }
     catch (IOException e) {
       logger.error("Error while setting up socket", e); //NON-NLS
     }
   }
 
-  private static void writeToStream(OutputStream os, String zpath, FileArchiveImageTiler tiler, String tpath, int tw, int th, String[] ipaths, ExecutorService exec,
-                                          ImageLoader loader, TileSlicer slicer) {
+  private static void writeToStream(OutputStream os, String zpath, String tpath, int tw, int th) {
+
+    // Get the image paths from stdin, one per line
+    final List<String> pl = new ArrayList<>();
+    try (BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8))) {
+      String s;
+      while ((s = stdin.readLine()) != null) {
+        pl.add(s);
+      }
+    }
+    catch (IOException e) {
+      logger.error("Error while reading image paths from stdin", e); //NON-NLS
+    }
+
+    final String[] ipaths = pl.toArray(new String[0]);
+
+    // TODO: Determine what the optimal number of threads is.
+    final Runtime runtime = Runtime.getRuntime();
+    final ExecutorService exec = new ThreadPoolExecutor(
+      runtime.availableProcessors(),
+      runtime.availableProcessors() + 1,
+      60, TimeUnit.SECONDS,
+      new LinkedBlockingQueue<>(),
+      new DaemonThreadFactory(ZipFileImageTiler.class.getSimpleName())
+    );
+
+    final ImageTypeConverter itc = new MemoryImageTypeConverter();
+    final ImageLoader loader = new ImageIOImageLoader(itc);
+
+    final TileSlicer slicer = new TileSlicerImpl();
+    final FileArchiveImageTiler tiler = new FileArchiveImageTiler();
+
     try (DataOutputStream out = new DataOutputStream(os)) {
       final Callback<String> imageL = ipath -> {
         out.writeByte(STARTING_IMAGE);
