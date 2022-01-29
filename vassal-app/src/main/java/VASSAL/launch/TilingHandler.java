@@ -295,10 +295,13 @@ public class TilingHandler {
 
     final StateMachineHandler h = createStateMachineHandler(tcount, proc.future);
 
-    // write the image paths to child's stdin, one per line
-    try (PrintWriter stdin = new PrintWriter(proc.stdin, true, StandardCharsets.UTF_8)) {
-      multi.forEach(stdin::println);
-    }
+    // write the image paths to child's stdin, one per line; do this in the
+    // background, so that nothing is blocked if the buffer fills up
+    new Thread(() -> {
+      try (PrintWriter stdin = new PrintWriter(proc.stdin, true, StandardCharsets.UTF_8)) {
+        multi.forEach(stdin::println);
+      }
+    }).start();
 
     // read state changes from child's stdout
     try (DataInputStream in = new DataInputStream(proc.stdout)) {
