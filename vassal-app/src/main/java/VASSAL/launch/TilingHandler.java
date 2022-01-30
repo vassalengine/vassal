@@ -19,9 +19,11 @@ package VASSAL.launch;
 
 import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.STARTING_IMAGE;
 import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILE_WRITTEN;
+import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILER_READY;
 import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILING_FINISHED;
 
 import java.awt.Dimension;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -295,16 +297,40 @@ public class TilingHandler {
 
     final StateMachineHandler h = createStateMachineHandler(tcount, proc.future);
 
-    // write the image paths to child's stdin, one per line; do this in the
-    // background, so that nothing is blocked if the buffer fills up
-    new Thread(() -> {
-      try (PrintWriter stdin = new PrintWriter(proc.stdin, true, StandardCharsets.UTF_8)) {
-        multi.forEach(stdin::println);
-      }
-    }).start();
-
     // read state changes from child's stdout
     try (DataInputStream in = new DataInputStream(proc.stdout)) {
+
+      // This code exists because the JVM prints errors to stdout.
+      // Nothing should do this in 2022. What a piece of shit.
+      final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      try {
+        byte b;
+        while (true) {
+          b = in.readByte();
+
+          if (b == TILER_READY) {
+            break;
+          }
+          else {
+            // Collect whatever garbage the JVM prints
+            baos.write(b);
+          }
+        }
+      }
+      finally {
+        if (baos.size() > 0) {
+          logger.error(baos.toString(StandardCharsets.UTF_8));
+        }
+      }
+
+      // write the image paths to child's stdin, one per line; do this in the
+      // background, so that nothing is blocked if the buffer fills up
+      new Thread(() -> {
+        try (PrintWriter stdin = new PrintWriter(proc.stdin, true, StandardCharsets.UTF_8)) {
+          multi.forEach(stdin::println);
+        }
+      }).start();
+
       h.handleStart();
 
       boolean done = false;

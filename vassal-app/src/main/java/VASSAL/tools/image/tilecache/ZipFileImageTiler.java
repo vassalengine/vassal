@@ -20,6 +20,7 @@ package VASSAL.tools.image.tilecache;
 
 import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.STARTING_IMAGE;
 import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILE_WRITTEN;
+import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILER_READY;
 import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILING_FINISHED;
 
 import java.io.BufferedReader;
@@ -150,6 +151,9 @@ public class ZipFileImageTiler {
       final Iterable<String> ipaths = IteratorUtils.iterate(new LineIterator(stdin));
 
       try (DataOutputStream out = new DataOutputStream(os)) {
+        out.writeByte(TILER_READY);
+        out.flush();
+
         final Callback<String> imageL = ipath -> {
           out.writeByte(STARTING_IMAGE);
           out.writeUTF(ipath);
