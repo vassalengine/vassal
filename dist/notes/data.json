@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 11150, "desc": "Use heuristic value for tiler max heap, retry with 50% more on failure" },
         { "num": 11149, "desc": "Capture tiling error messages Java incorrectly writes to stdout" },
         { "num": 11139, "desc": "Deal-to-Other key in Mask Trait now recognized in Search" },
         { "num": 11127, "desc": "Don't throw exception if there's a drive letter in a filename" },
