@@ -1,5 +1,6 @@
 3.6.5 - ???
 
+* 11156: Games incorrectly load normally during 'Load Continuation'
 * 11150: Use heuristic value for tiler max heap, retry with 50% more on failure
 * 11149: Capture tiling error messages Java incorrectly writes to stdout
 * 11139: Deal-to-Other key in Mask Trait now recognized in Search
