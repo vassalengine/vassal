@@ -459,7 +459,7 @@ public class GameState implements CommandEncoder {
   public static final int NO_NEED_TO_SAVE = -2;
 
   /**
-   * Offers player the chance to save the game if an unsaved one is
+   * Offers player the chance to save the game if an unsaved one is active & modified
    * @return Whether Yes, No, or Cancel was selected (if Yes was selected, game is saved before returning result). Or NO_NEED_TO_SAVE if game wasn't in a state needing to be saved.
    */
   public int maybeSaveGame() {
