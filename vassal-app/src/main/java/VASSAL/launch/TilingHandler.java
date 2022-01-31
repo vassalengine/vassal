@@ -75,6 +75,8 @@ public class TilingHandler {
   protected final Dimension tdim;
   protected final int maxheap_limit;
 
+  private int retried = 0;
+
   // Needed for VASL. Remove sometime after VASL 6.6.2
   @Deprecated(since = "2021-12-01", forRemoval = true)
   @SuppressWarnings("PMD.FinalFieldCouldBeStatic")
@@ -251,13 +253,12 @@ public class TilingHandler {
     }
   }
 
-  protected String[] makeSlicerCommandLine(int initheap) {
+  protected String[] makeSlicerCommandLine(int heap) {
     final List<String> args = new ArrayList<>(List.of(
       Info.getJavaBinPath().getAbsolutePath(),
       "-classpath", //NON-NLS
       System.getProperty("java.class.path"),
-      "-Xms" + initheap + "M", //NON-NLS
-      "-Xmx" + maxheap_limit + "M", //NON-NLS
+      "-Xmx" + heap + "M", //NON-NLS
       "-Duser.home=" + System.getProperty("user.home"), //NON-NLS
       "VASSAL.tools.image.tilecache.ZipFileImageTiler"
     ));
@@ -284,9 +285,12 @@ public class TilingHandler {
     return new MyStateMachineHandler(tcount, fut);
   }
 
-  protected void runSlicer(List<String> multi, int tcount, int initheap) throws CancellationException, IOException {
+  protected void runSlicer(List<String> multi, int tcount, int maxheap) throws CancellationException, IOException {
 
-    final String[] args = makeSlicerCommandLine(initheap);
+    // don't exceed the maxheap limit
+    maxheap = Math.min(maxheap, maxheap_limit);
+
+    final String[] args = makeSlicerCommandLine(maxheap);
 
     // set up the process
     final InputStreamPump errP = new InputOutputStreamPump(null, System.err);
@@ -364,13 +368,25 @@ public class TilingHandler {
     // wait for the tiling process to end
     try {
       final int retval = proc.future.get();
-      if (retval != 0) {
-        h.handleFailure();
-        proc.future.cancel(true);
-        throw new IOException("return value == " + retval);
+      if (retval == 0) {
+        h.handleSuccess();
       }
       else {
-        h.handleSuccess();
+        h.handleFailure();
+        proc.future.cancel(true);
+
+        logger.info("Tiling failed with return value == " + retval);
+
+        if (retried < 2) {
+          // The tiler possibly ran out of memory; we can't reliably detect
+          // this, so assume it did. Try again with 50% more max heap.
+          logger.info("Tiling possibly ran out of memory. Retrying tiling with 50% more."); //NON-NLS
+          ++retried;
+          runSlicer(multi, tcount, (int)(maxheap * 1.5));
+        }
+        else {
+          throw new IOException("return value == " + retval);
+        }
       }
     }
     catch (ExecutionException | InterruptedException e) {
@@ -422,13 +438,11 @@ public class TilingHandler {
     // fix the max heap
 
     // This was determined empirically.
-    final int maxheap_estimated = (int) (1.66 * max_data_mbytes + 150);
-
-    final int initheap = Math.min(maxheap_estimated, maxheap_limit);
+    final int maxheap = (int) (1.66 * max_data_mbytes + 150);
 
     // slice, and cleanup on failure
     try {
-      runSlicer(multi, s.first, initheap);
+      runSlicer(multi, s.first, maxheap);
     }
     catch (CancellationException | IOException e) {
       cleanup();
