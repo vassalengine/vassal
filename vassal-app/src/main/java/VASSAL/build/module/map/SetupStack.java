@@ -465,11 +465,6 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         slot.clearCache(); //BR// Always rebuild piece at beginning - we might be starting a new game in Editor after changing prototypes
         GamePiece p = slot.getPiece();
 
-        Map map = p.getMap();
-        if (map != null) {
-          map = null;
-        }
-
         if (p != null) { // In case slot fails to "build the piece", which is a possibility.
           p = PieceCloner.getInstance().clonePiece(p);
           GameModule.getGameModule().getGameState().addPiece(p);
