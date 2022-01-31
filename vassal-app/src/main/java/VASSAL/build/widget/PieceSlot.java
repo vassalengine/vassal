@@ -47,7 +47,13 @@ import VASSAL.search.ImageSearchTarget;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.image.LabelUtils;
 import VASSAL.tools.swing.SwingUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -66,14 +72,6 @@ import java.awt.event.MouseListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
-
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * A Component that displays a GamePiece.
@@ -232,6 +230,13 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
       else {
         c = comm.getTarget();
         c.setState(comm.getState());
+
+        //BR// A slot's piece should NOT come attached to a map.
+        final Map map = c.getMap();
+        if (map != null) {
+          map.removePiece(c);
+          c.setMap(null);
+        }
 
         final Dimension size = panel.getSize();
         c.setPosition(new Point(size.width / 2, size.height / 2));

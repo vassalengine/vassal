@@ -18,6 +18,53 @@
 
 package VASSAL.build.module.map;
 
+import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.AbstractFolder;
+import VASSAL.build.AutoConfigurable;
+import VASSAL.build.BadDataReport;
+import VASSAL.build.Buildable;
+import VASSAL.build.Configurable;
+import VASSAL.build.GameModule;
+import VASSAL.build.module.GameComponent;
+import VASSAL.build.module.Map;
+import VASSAL.build.module.NewGameIndicator;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.map.boardPicker.Board;
+import VASSAL.build.module.map.boardPicker.board.MapGrid;
+import VASSAL.build.module.map.boardPicker.board.MapGrid.BadCoords;
+import VASSAL.build.widget.PieceSlot;
+import VASSAL.command.Command;
+import VASSAL.configure.AutoConfigurer;
+import VASSAL.configure.Configurer;
+import VASSAL.configure.TranslatableStringEnum;
+import VASSAL.configure.ValidationReport;
+import VASSAL.configure.VisibilityCondition;
+import VASSAL.counters.GamePiece;
+import VASSAL.counters.PieceCloner;
+import VASSAL.counters.Properties;
+import VASSAL.counters.Stack;
+import VASSAL.i18n.ComponentI18nData;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.AdjustableSpeedScrollPane;
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.UniqueIdManager;
+import VASSAL.tools.image.ImageUtils;
+import VASSAL.tools.menu.MenuManager;
+import VASSAL.tools.swing.SwingUtils;
+import org.apache.commons.lang3.SystemUtils;
+
+import javax.swing.Box;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JRootPane;
+import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -62,55 +109,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import javax.swing.Box;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JRootPane;
-import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
-
-import org.apache.commons.lang3.SystemUtils;
-
-import VASSAL.build.AbstractConfigurable;
-import VASSAL.build.AbstractFolder;
-import VASSAL.build.AutoConfigurable;
-import VASSAL.build.BadDataReport;
-import VASSAL.build.Buildable;
-import VASSAL.build.Configurable;
-import VASSAL.build.GameModule;
-import VASSAL.build.module.GameComponent;
-import VASSAL.build.module.Map;
-import VASSAL.build.module.NewGameIndicator;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.map.boardPicker.Board;
-import VASSAL.build.module.map.boardPicker.board.MapGrid;
-import VASSAL.build.module.map.boardPicker.board.MapGrid.BadCoords;
-import VASSAL.build.widget.PieceSlot;
-import VASSAL.command.Command;
-import VASSAL.configure.AutoConfigurer;
-import VASSAL.configure.Configurer;
-import VASSAL.configure.TranslatableStringEnum;
-import VASSAL.configure.ValidationReport;
-import VASSAL.configure.VisibilityCondition;
-import VASSAL.counters.GamePiece;
-import VASSAL.counters.PieceCloner;
-import VASSAL.counters.Properties;
-import VASSAL.counters.Stack;
-import VASSAL.i18n.ComponentI18nData;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.AdjustableSpeedScrollPane;
-import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.UniqueIdManager;
-import VASSAL.tools.image.ImageUtils;
-import VASSAL.tools.menu.MenuManager;
-import VASSAL.tools.swing.SwingUtils;
 
 /**
  * This is the "At-Start Stack" component, which initializes a Map or Board with a specified stack.
@@ -466,6 +464,12 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         final PieceSlot slot = (PieceSlot) configurable;
         slot.clearCache(); //BR// Always rebuild piece at beginning - we might be starting a new game in Editor after changing prototypes
         GamePiece p = slot.getPiece();
+
+        Map map = p.getMap();
+        if (map != null) {
+          map = null;
+        }
+
         if (p != null) { // In case slot fails to "build the piece", which is a possibility.
           p = PieceCloner.getInstance().clonePiece(p);
           GameModule.getGameModule().getGameState().addPiece(p);
