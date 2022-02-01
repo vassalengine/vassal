@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 11160, "desc": "Prevent At-Start Stacks from creating additional spurious pieces on main map" },
         { "num": 11156, "desc": "Games incorrectly load normally during 'Load Continuation'" },
         { "num": 11150, "desc": "Use heuristic value for tiler max heap, retry with 50% more on failure" },
         { "num": 11149, "desc": "Capture tiling error messages Java incorrectly writes to stdout" },
