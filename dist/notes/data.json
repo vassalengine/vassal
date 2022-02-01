@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 11162, "desc": "Turn Tracker does not display a spurious blank line if its report format is left empty" },
         { "num": 11160, "desc": "Prevent At-Start Stacks from creating additional spurious pieces on main map" },
         { "num": 11156, "desc": "Games incorrectly load normally during 'Load Continuation'" },
         { "num": 11150, "desc": "Use heuristic value for tiler max heap, retry with 50% more on failure" },

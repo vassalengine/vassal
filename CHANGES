@@ -1,5 +1,7 @@
 3.6.5 - ???
 
+* 11162: Turn Tracker does not display a spurious blank line if its report
+    format is left empty
 * 11160: Prevent At-Start Stacks from creating additional spurious pieces on
     main map
 * 11156: Games incorrectly load normally during 'Load Continuation'
