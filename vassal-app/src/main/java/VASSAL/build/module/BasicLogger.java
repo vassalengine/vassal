@@ -348,6 +348,15 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
    * @param atStart true if prompting because we're just starting a session; false if prompting because we just finished replaying a logfile.
    */
   public void queryNewLogFile(boolean atStart) {
+    queryNewLogFile(atStart, false);
+  }
+
+  /**
+   * Check if user would like to create a new logfile (only prompts if the appropriate preference is on)
+   * @param atStart true if prompting because we're just starting a session; false if prompting because we just finished replaying a logfile.
+   * @param fastForwarded true if we have fast forwarded
+   */
+  public void queryNewLogFile(boolean atStart, boolean fastForwarded) {
     final GameModule g = GameModule.getGameModule();
 
     if (isLogging() || !g.getGameState().isSaveEnabled()) {
@@ -359,14 +368,14 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
 
     if (atStart) {
       prefName = PROMPT_NEW_LOG_START;
-      prompt = Resources.getString("BasicLogger.replay_commencing");  //$NON-NLS-1$
+      prompt = fastForwarded ? Resources.getString("BasicLogger.append_commencing") : Resources.getString("BasicLogger.replay_commencing");
     }
     else {
       prefName = PROMPT_NEW_LOG_END;
-      prompt = Resources.getString("BasicLogger.replay_completed");  //$NON-NLS-1$
+      prompt = fastForwarded ? Resources.getString("BasicLogger.fast_forward_completed") : Resources.getString("BasicLogger.replay_completed");
     }
 
-    if (Boolean.TRUE.equals(g.getPrefs().getValue(prefName))) {
+    if (Boolean.TRUE.equals(g.getPrefs().getValue(prefName)) || (atStart && fastForwarded)) {
       final Object[] options = {
         Resources.getString(Resources.YES),
         Resources.getString(Resources.NO),
