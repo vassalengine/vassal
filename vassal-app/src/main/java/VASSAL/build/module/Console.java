@@ -32,6 +32,7 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -42,6 +43,8 @@ import java.util.regex.Pattern;
 public class Console {
   Iterator<String> tok;
   String commandLine;
+  int commandIndex = 0;
+  List<String> commands = new ArrayList<>();
 
   private static final org.slf4j.Logger log =
     LoggerFactory.getLogger(Console.class);
@@ -263,6 +266,39 @@ public class Console {
   }
 
 
+  public String commandsUp() {
+    if (commands.isEmpty() || (commandIndex <= 0)) {
+      return null;
+    }
+    commandIndex--;
+    return commands.get(commandIndex);
+  }
+
+  public String commandsDown() {
+    if (commands.isEmpty() || (commandIndex >= commands.size() - 1)) {
+      return null;
+    }
+
+    commandIndex++;
+    return commands.get(commandIndex);
+  }
+
+  public String commandsTop() {
+    if (commands.isEmpty()) {
+      return null;
+    }
+    commandIndex = 0;
+    return commands.get(commandIndex);
+  }
+
+  public String commandsBottom() {
+    if (commands.isEmpty()) {
+      return null;
+    }
+    commandIndex = commands.size() - 1;
+    return commands.get(commandIndex);
+  }
+
   public boolean consoleHook(String s, String commandLine, Iterator<String> tok, String command) {
     // Hook for console subclasses, etc.
     return false;
@@ -273,6 +309,10 @@ public class Console {
     if (s.isEmpty() || (s.charAt(0) != '/')) {
       return false;
     }
+    if (commands.isEmpty() || !s.equals(commands.get(Math.max(0, Math.min(commands.size() - 1, commandIndex))))) {
+      commands.add(s);
+    }
+    commandIndex = commands.size(); //NB: supposed to be one beyond the end
     commandLine = s.substring(1);
 
     // If this has EVER been a multiplayer game (has ever been connected to Server, or has ever had two player slots filled simultaneously), then
