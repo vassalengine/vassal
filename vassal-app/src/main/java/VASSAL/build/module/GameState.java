@@ -456,6 +456,30 @@ public class GameState implements CommandEncoder {
     }
   }
 
+  public static final int NO_NEED_TO_SAVE = (~JOptionPane.NO_OPTION & 0x01) | (~JOptionPane.YES_OPTION & 0x02) | (~JOptionPane.CANCEL_OPTION & 0x04) | (~JOptionPane.CLOSED_OPTION & 0x08);
+
+  /**
+   * Offers player the chance to save the game if an unsaved one is active & modified
+   * @return Whether Yes, No, or Cancel was selected (if Yes was selected, game is saved before returning result). Or NO_NEED_TO_SAVE if game wasn't in a state needing to be saved.
+   */
+  public int maybeSaveGame() {
+    if (!gameStarted || !isModified() || !saveGame.isEnabled()) {
+      return NO_NEED_TO_SAVE;
+    }
+
+    final int result = JOptionPane.showConfirmDialog(
+      GameModule.getGameModule().getPlayerWindow(),
+      Resources.getString("GameState.save_game_query"), //$NON-NLS-1$
+      Resources.getString("GameState.game_modified"),   //$NON-NLS-1$
+      JOptionPane.YES_NO_CANCEL_OPTION);
+
+    if (result == JOptionPane.YES_OPTION) {
+      saveGame();
+    }
+
+    return result;
+  }
+
 
   /**
    * Start/end a game.  Prompt to save if the game state has been
@@ -469,15 +493,12 @@ public class GameState implements CommandEncoder {
       return; // Blocks setup method during Game Refresh
     }
 
-    if (!gameStarting && gameStarted && isModified() && saveGame.isEnabled()) {
-      switch (JOptionPane.showConfirmDialog(
-        g.getPlayerWindow(),
-        Resources.getString("GameState.save_game_query"), //$NON-NLS-1$
-        Resources.getString("GameState.game_modified"),   //$NON-NLS-1$
-        JOptionPane.YES_NO_OPTION)) { // Too late to "cancel" at this point, in all code paths (See also: we should really ask this question much earlier...)
+    if (!gameStarting) {
+      switch (maybeSaveGame()) {
       case JOptionPane.YES_OPTION:
         saveGame();
         break;
+      case JOptionPane.CANCEL_OPTION:
       case JOptionPane.CLOSED_OPTION:
         return;
       }
@@ -707,6 +728,14 @@ public class GameState implements CommandEncoder {
         loadContinuation(f);
       }
       else {
+        int optionToSave = NO_NEED_TO_SAVE;
+        if (gameStarted) {
+          optionToSave = maybeSaveGame();
+          if (optionToSave == JOptionPane.CANCEL_OPTION) {
+            return false;
+          }
+        }
+
         GameModule.getGameModule().setGameFile(f.getName(), GameModule.GameFileMode.LOADED_GAME);
 
         //BR// New preferred style load for vlogs is close the old stuff and hard-reset to the new log state.
@@ -715,7 +744,8 @@ public class GameState implements CommandEncoder {
 
           GameModule.getGameModule().setLoadOverSemaphore(true); // Stop updating Map UI etc for a bit
           try {
-            pieces.clear();
+            gameStarted = false; // Prevent setup(false) from re-asking about saving the game
+            setup(false);        // Completely wipe the game state *before* we decode the saved game
             loadGameInForeground(f); // Foreground loading minimizes the bad behavior of windows during vlog load "mid game"
           }
           finally {
@@ -808,17 +838,31 @@ public class GameState implements CommandEncoder {
           final URL url = new URL(text);
           final URLConnection uc = url.openConnection();
 
-          try (InputStream is = uc.getInputStream(); BufferedInputStream bis = new BufferedInputStream(is)) {
+          if (maybeSaveGame() != JOptionPane.CANCEL_OPTION) {
+            GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
+
+            GameModule.getGameModule().setLoadOverSemaphore(true); // Stop updating Map UI etc for a bit
+
+            gameStarted = false; // Prevent setup(false) from re-asking about saving the game
+            setup(false);        // Completely wipe the game state *before* we decode the saved game
+
             try {
-              loadGameInForeground(text, bis);
+              try (InputStream is = uc.getInputStream(); BufferedInputStream bis = new BufferedInputStream(is)) {
+                try {
+                  loadGameInForeground(text, bis);
+                }
+                catch (IOException e) {
+                  ReadErrorDialog.error(e, text);
+                }
+                break; // Once we have a successful load, nothing else.
+              }
+              catch (MalformedURLException e) {
+                // Do nothing, this must not have been a URL
+              }
             }
-            catch (IOException e) {
-              ReadErrorDialog.error(e, text);
+            finally {
+              GameModule.getGameModule().setLoadOverSemaphore(false); // Resume normal UI updates
             }
-            break; // Once we have a successful load, nothing else.
-          }
-          catch (MalformedURLException e) {
-            // Do nothing, this must not have been a URL
           }
         }
         catch (IOException | UnsupportedFlavorException e) {
@@ -1230,7 +1274,7 @@ public class GameState implements CommandEncoder {
     // from visibly closing-then-eventually-re-opening in a Series Of Messy Steps
     final Chatter ch = g.getChatter();
     ch.paintImmediately(0, 0, ch.getWidth(), ch.getHeight());
-
+    
     final Command loadCommand = decodeSavedGame(in);
     if (loadCommand != null) {
       try {
