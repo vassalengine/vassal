@@ -20,6 +20,10 @@
       "in": "3.6.5",
       "since": "3.6.4",
       "new_features": [
+        { "num": 11135, "desc": "Prompt to save/discard/cancel before loading the new game" },
+        { "num": 11124, "desc": "Console supports up-arrow / down-arrow for command history" },
+        { "num": 11122, "desc": "Console can show/set properties of selected piece" },
+        { "num": 11117, "desc": "Log files can be fast-forwarded and appended to" }
       ],
       "bug_fixes": [
         { "num": 11162, "desc": "Turn Tracker does not display a spurious blank line if its report format is left empty" },
@@ -28,6 +32,7 @@
         { "num": 11150, "desc": "Use heuristic value for tiler max heap, retry with 50% more on failure" },
         { "num": 11149, "desc": "Capture tiling error messages Java incorrectly writes to stdout" },
         { "num": 11139, "desc": "Deal-to-Other key in Mask Trait now recognized in Search" },
+        { "num": 11135, "desc": "Fixed Discord console drag-and-drop bug" },
         { "num": 11127, "desc": "Don't throw exception if there's a drive letter in a filename" },
         { "num": 11121, "desc": "Fix problem where undo wasn't allowed when starting a new game with logging turned on" },
         { "num": 11119, "desc": "Fixed NPE in NamedHotKeyConfigurer.setValue()" },
