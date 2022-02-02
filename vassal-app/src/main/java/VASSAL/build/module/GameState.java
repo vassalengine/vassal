@@ -456,7 +456,7 @@ public class GameState implements CommandEncoder {
     }
   }
 
-  public static final int NO_NEED_TO_SAVE = ~(JOptionPane.NO_OPTION & 0x01) | ~(JOptionPane.YES_OPTION & 0x02) | ~(JOptionPane.CANCEL_OPTION & 0x04) | ~(JOptionPane.CLOSED_OPTION & 0x08);
+  public static final int NO_NEED_TO_SAVE = (~JOptionPane.NO_OPTION & 0x01) | (~JOptionPane.YES_OPTION & 0x02) | (~JOptionPane.CANCEL_OPTION & 0x04) | (~JOptionPane.CLOSED_OPTION & 0x08);
 
   /**
    * Offers player the chance to save the game if an unsaved one is active & modified
@@ -847,19 +847,19 @@ public class GameState implements CommandEncoder {
             setup(false);        // Completely wipe the game state *before* we decode the saved game
 
             try {
-          try (InputStream is = uc.getInputStream(); BufferedInputStream bis = new BufferedInputStream(is)) {
-            try {
-              loadGameInForeground(text, bis);
+              try (InputStream is = uc.getInputStream(); BufferedInputStream bis = new BufferedInputStream(is)) {
+                try {
+                  loadGameInForeground(text, bis);
+                }
+                catch (IOException e) {
+                  ReadErrorDialog.error(e, text);
+                }
+                break; // Once we have a successful load, nothing else.
+              }
+              catch (MalformedURLException e) {
+                // Do nothing, this must not have been a URL
+              }
             }
-            catch (IOException e) {
-              ReadErrorDialog.error(e, text);
-            }
-            break; // Once we have a successful load, nothing else.
-          }
-          catch (MalformedURLException e) {
-            // Do nothing, this must not have been a URL
-          }
-        }
             finally {
               GameModule.getGameModule().setLoadOverSemaphore(false); // Resume normal UI updates
             }
