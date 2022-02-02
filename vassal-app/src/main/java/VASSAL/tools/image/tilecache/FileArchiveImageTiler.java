@@ -54,7 +54,7 @@ public class FileArchiveImageTiler {
     final String tpath,
     int tw,
     int th,
-    String[] ipaths,
+    Iterable<String> ipaths,
     ExecutorService exec,
     ImageLoader loader,
     TileSlicer slicer,
@@ -75,7 +75,7 @@ public class FileArchiveImageTiler {
         );
       }
       catch (IOException e) {
-        logger.error("", e);
+        logger.error("Tiling I/O error", e);
         continue;
       }
 

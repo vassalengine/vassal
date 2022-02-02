@@ -674,7 +674,7 @@ public class GameState implements CommandEncoder {
     if (fc.showOpenDialog() != FileChooser.APPROVE_OPTION) return;
 
     final File f = fc.getSelectedFile();
-    loadGame(f, false, forceForeground);
+    loadGame(f, continuation, forceForeground);
   }
 
   /**

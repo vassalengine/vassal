@@ -498,6 +498,8 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       return;
     }
 
+    dontUndoPast = 0; 
+
     undoAction.setEnabled(false);
     endLogAction.setEnabled(true);
     gm.setGameFile(outputFile.getName(), GameModule.GameFileMode.LOGGING_GAME);

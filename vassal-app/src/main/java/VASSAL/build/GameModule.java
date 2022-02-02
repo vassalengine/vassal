@@ -17,10 +17,6 @@
  */
 package VASSAL.build;
 
-import static VASSAL.preferences.Prefs.MAIN_WINDOW_HEIGHT;
-import static VASSAL.preferences.Prefs.MAIN_WINDOW_REMEMBER;
-import static VASSAL.preferences.Prefs.MAIN_WINDOW_WIDTH;
-
 import VASSAL.Info;
 import VASSAL.build.module.BasicCommandEncoder;
 import VASSAL.build.module.BasicLogger;
@@ -129,7 +125,19 @@ import VASSAL.tools.image.tilecache.ImageTileDiskCache;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.version.VersionUtils;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import java.awt.Container;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
@@ -152,20 +160,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
-
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import static VASSAL.preferences.Prefs.MAIN_WINDOW_HEIGHT;
+import static VASSAL.preferences.Prefs.MAIN_WINDOW_REMEMBER;
+import static VASSAL.preferences.Prefs.MAIN_WINDOW_WIDTH;
 
 /**
  * The GameModule class is the base class for a VASSAL module.  It is
@@ -1486,7 +1483,7 @@ public class GameModule extends AbstractConfigurable
       return Resources.getString(key + "_title", nameString, "", Info.getVersion());  //NON-NLS-1$
     }
     else {
-      return Resources.getString(key + "_title_" + gameFileMode, nameString, moduleVersion ? gameFile : FilenameUtils.removeExtension(gameFile), Info.getVersion()); //NON-NLS-1$
+      return Resources.getString(key + "_title_" + gameFileMode, nameString, gameFile, Info.getVersion()); //NON-NLS-1$
     }
   }
 
