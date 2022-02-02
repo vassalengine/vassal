@@ -190,7 +190,7 @@ public class Console {
       if (useSelected) {
         final List<GamePiece> selected = KeyBuffer.getBuffer().asList();
 
-        if ((selected != null) && !selected.isEmpty()) {
+        if (selected != null) {
           for (final GamePiece piece : selected) {
             final Object obj = piece.getProperty(property);
             if (matches("set", option)) { //NON-NLS
