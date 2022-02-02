@@ -180,6 +180,8 @@ public class Console {
       show("Usage:"); //NON-NLS
       show("  /property [selected] show [property]        - show global property value"); //NON-NLS
       show("  /property [selected] set [property] [value] - set global property new value"); //NON-NLS
+      show("  If optional keyword 'selected' included, show or set is for property of selected piece(s). "); //NON-NLS
+      show("  NOTE: many piece trait properties cannot be set (e.g. 'ObscuredToOthers', 'Invisible'), and the attempt to set them will simply fail quietly. "); //NON-NLS
     }
     else if (matches("show", option) || matches("set", option)) { //NON-NLS
 
