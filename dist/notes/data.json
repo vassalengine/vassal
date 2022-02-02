@@ -22,6 +22,14 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 11162, "desc": "Turn Tracker does not display a spurious blank line if its report format is left empty" },
+        { "num": 11160, "desc": "Prevent At-Start Stacks from creating additional spurious pieces on main map" },
+        { "num": 11156, "desc": "Games incorrectly load normally during 'Load Continuation'" },
+        { "num": 11150, "desc": "Use heuristic value for tiler max heap, retry with 50% more on failure" },
+        { "num": 11149, "desc": "Capture tiling error messages Java incorrectly writes to stdout" },
+        { "num": 11139, "desc": "Deal-to-Other key in Mask Trait now recognized in Search" },
+        { "num": 11127, "desc": "Don't throw exception if there's a drive letter in a filename" },
+        { "num": 11121, "desc": "Fix problem where undo wasn't allowed when starting a new game with logging turned on" },
         { "num": 11119, "desc": "Fixed NPE in NamedHotKeyConfigurer.setValue()" },
         { "num": 11115, "desc": "Fix ClassCastException due to Zone properties not accounting for folders" },
         { "num": 11109, "desc": "LOS Range incorrect when thread is not snapped to hex centres" },
@@ -34,6 +42,7 @@
         { "num": 11089, "desc": "Write text files in UTF-8, not the default encoding" }
       ],
       "other_improvements": [
+        { "num": 11164, "desc": "Upgrade bundled Java to 17.0.2+8" },
         { "num": 11120, "desc": "Permit hyphens and periods in GamePieceImage names" },
         { "num": 11107, "desc": "Warn if Decks or Stacks defined before [Map Boards]" },
         { "num": 11098, "desc": "Screenshot \"typo\" fix for Turn Tracker's global hotkey" }

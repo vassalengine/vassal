@@ -1,5 +1,17 @@
 3.6.5 - ???
 
+* 11164: Upgrade bundled Java to 17.0.2+8
+* 11162: Turn Tracker does not display a spurious blank line if its report
+    format is left empty
+* 11160: Prevent At-Start Stacks from creating additional spurious pieces on
+    main map
+* 11156: Games incorrectly load normally during 'Load Continuation'
+* 11150: Use heuristic value for tiler max heap, retry with 50% more on failure
+* 11149: Capture tiling error messages Java incorrectly writes to stdout
+* 11139: Deal-to-Other key in Mask Trait now recognized in Search
+* 11127: Don't throw exception if there's a drive letter in a filename
+* 11121: Fix problem where undo wasn't allowed when starting a new game with
+    logging turned on
 * 11120: Permit hyphens and periods in GamePieceImage names
 * 11119: Fixed NPE in NamedHotKeyConfigurer.setValue()
 * 11115: Fix ClassCastException due to Zone properties not accounting for
