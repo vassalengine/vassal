@@ -20,7 +20,6 @@
       "in": "3.6.5",
       "since": "3.6.4",
       "new_features": [
-        { "num": 11135, "desc": "Prompt to save/discard/cancel before loading the new game" },
         { "num": 11124, "desc": "Console supports up-arrow / down-arrow for command history" },
         { "num": 11122, "desc": "Console can show/set properties of selected piece" },
         { "num": 11117, "desc": "Log files can be fast-forwarded and appended to" }
@@ -48,6 +47,7 @@
       ],
       "other_improvements": [
         { "num": 11164, "desc": "Upgrade bundled Java to 17.0.2+8" },
+        { "num": 11135, "desc": "Prompt to save/discard/cancel before loading the new game" },
         { "num": 11120, "desc": "Permit hyphens and periods in GamePieceImage names" },
         { "num": 11107, "desc": "Warn if Decks or Stacks defined before [Map Boards]" },
         { "num": 11098, "desc": "Screenshot \"typo\" fix for Turn Tracker's global hotkey" }
