@@ -466,15 +466,15 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   protected void rebuildInstances() {
     final ArrayList<ItemInstance> newInstances = new ArrayList<>();
 
-    for (final ItemInstance prop : instances) {
-      final Item item = layout.getItem(prop.getName());
-      if (item != null && item.getType().equals(prop.getType())) {
-        prop.setLocation(item.getLocation());
-        newInstances.add(prop);
-      }
-    }
-
     if (layout != null) {
+      for (final ItemInstance prop : instances) {
+        final Item item = layout.getItem(prop.getName());
+        if (item != null && item.getType().equals(prop.getType())) {
+          prop.setLocation(item.getLocation());
+          newInstances.add(prop);
+        }
+      }
+
       for (final Item item : layout.getItems()) {
         final String name = item.getConfigureName();
         final String type = item.getType();
@@ -507,7 +507,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   }
 
   private boolean isVersion1ImageName(String name) {
-    return name != null && !name.isEmpty() && name.matches("^\\w+\\.png$");
+    return name != null && !name.isEmpty() && name.matches("^[\\w.-]+\\.png$");
   }
 
   public static class ImageNameConfig implements ConfigurerFactory {
@@ -583,7 +583,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
     }
 
     private String clean(String string) {
-      return string.replaceAll("\\W+", "");
+      return string.replaceAll("[^\\w.-]", "");
     }
 
     /** Don't let any of the '.png' at the end of the string be removed and clean unwanted characters */

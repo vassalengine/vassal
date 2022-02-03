@@ -17,6 +17,43 @@
   ],
   "changes": [
     {
+      "in": "3.6.5",
+      "since": "3.6.4",
+      "new_features": [
+        { "num": 11124, "desc": "Console supports up-arrow / down-arrow for command history" },
+        { "num": 11122, "desc": "Console can show/set properties of selected piece" },
+        { "num": 11117, "desc": "Log files can be fast-forwarded and appended to" }
+      ],
+      "bug_fixes": [
+        { "num": 11162, "desc": "Turn Tracker does not display a spurious blank line if its report format is left empty" },
+        { "num": 11160, "desc": "Prevent At-Start Stacks from creating additional spurious pieces on main map" },
+        { "num": 11156, "desc": "Games incorrectly load normally during 'Load Continuation'" },
+        { "num": 11150, "desc": "Use heuristic value for tiler max heap, retry with 50% more on failure" },
+        { "num": 11149, "desc": "Capture tiling error messages Java incorrectly writes to stdout" },
+        { "num": 11139, "desc": "Deal-to-Other key in Mask Trait now recognized in Search" },
+        { "num": 11135, "desc": "Fixed Discord console drag-and-drop bug" },
+        { "num": 11127, "desc": "Don't throw exception if there's a drive letter in a filename" },
+        { "num": 11121, "desc": "Fix problem where undo wasn't allowed when starting a new game with logging turned on" },
+        { "num": 11119, "desc": "Fixed NPE in NamedHotKeyConfigurer.setValue()" },
+        { "num": 11115, "desc": "Fix ClassCastException due to Zone properties not accounting for folders" },
+        { "num": 11109, "desc": "LOS Range incorrect when thread is not snapped to hex centres" },
+        { "num": 11106, "desc": "Fix NPE when duplicating GamePieceImage" },
+        { "num": 11105, "desc": "Added missing Editor.SendToLocation.getSendLocation translation key" },
+        { "num": 11096, "desc": "Remove \"duplicate this item\" option from Game Piece Image" },
+        { "num": 11095, "desc": "Deduce the existence of localized image directories which lack ZIP entries" },
+        { "num": 11094, "desc": "Exclude GamePieceLayout image names from unused image list" },
+        { "num": 11093, "desc": "Image directories for i18n were not found in 3.6.4" },
+        { "num": 11089, "desc": "Write text files in UTF-8, not the default encoding" }
+      ],
+      "other_improvements": [
+        { "num": 11164, "desc": "Upgrade bundled Java to 17.0.2+8" },
+        { "num": 11135, "desc": "Prompt to save/discard/cancel before loading the new game" },
+        { "num": 11120, "desc": "Permit hyphens and periods in GamePieceImage names" },
+        { "num": 11107, "desc": "Warn if Decks or Stacks defined before [Map Boards]" },
+        { "num": 11098, "desc": "Screenshot \"typo\" fix for Turn Tracker's global hotkey" }
+      ]
+    },
+    {
       "in": "3.6.4",
       "since": "3.6.3",
       "new_features": [
@@ -76,30 +113,6 @@
       ],
       "other_improvements": [
         { "num": 10961, "desc": "Use heuristic value for initial tiler heap; use 3/4 physical RAM as max heap" }
-      ]
-    },
-    {
-      "in": "3.6.2",
-      "since": "3.6.1",
-      "new_features": [
-      ],
-      "bug_fixes": [
-        { "num": 10925, "desc": "Turn Tracker Button can never be size 0" },
-        { "num": 10915, "desc": "Undo of Send To Location sent to bottom card of deck returns the card to the top of the Deck" },
-        { "num": 10908, "desc": "Fix NPE when using Send Back in SendToLocation" },
-        { "num": 10907, "desc": "Disabled Toolbar Buttons on Map Windows didn't initialize starting state properly" },
-        { "num": 10906, "desc": "Show an error dialog if reading a corrupted prefs file" },
-        { "num": 10903, "desc": "Stacking units placed by At-Start stacks didn't allow Action Buttons on said pieces to function until the piece was moved" },
-        { "num": 10901, "desc": "Unchecking Cycle Message box in a Report trait clears the fields" },
-        { "num": 10899, "desc": "Show the player window before the welcome wizard" },
-        { "num": 10894, "desc": "Warn about movement trails inside of rotates only when editing module" },
-        { "num": 10893, "desc": "Fix NPE: RandomTextButton raw rolls/counts support" },
-        { "num": 10891, "desc": "Pieces in decks were not being updated during Refresh Counters" },
-        { "num": 10889, "desc": "Added diagnostic to determine what is trying to add stacks to stacks" },
-        { "num": 10887, "desc": "Wasn't possible to click add to add an Action Button trait to a piece" }
-      ],
-      "other_improvements": [
-        { "num": 10929, "desc": "Use '/usr/bin/env bash' in VASSAL.sh for greater portability on Unix" }
       ]
     }
   ]

@@ -54,6 +54,17 @@ import VASSAL.tools.UniqueIdManager;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -74,18 +85,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.SwingConstants;
 
 /**
  * Generic Turn Counter
@@ -617,10 +616,18 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       reportFormat.setProperty(OLD_TURN, savedTurn);
       reportFormat.setProperty(NEW_TURN, getTurnString());
 
-      final String s = updateString(reportFormat.getText(this, "Editor.report_format"), new String[] { "\\n", "\\t" }, new String[] { " - ", " " }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-      final Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* " + s);
-      c.execute();
-      c.append(new SetTurn(this, savedState));
+      final String report = reportFormat.getText(this, "Editor.report_format");
+      final Command c;
+      final Command c2 = new SetTurn(this, savedState);
+      if (!report.isEmpty()) {
+        final String s = updateString(report, new String[]{"\\n", "\\t"}, new String[]{" - ", " "}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* " + s);
+        c.execute();
+        c.append(c2);
+      }
+      else {
+        c = c2;
+      }
 
       GameModule.getGameModule().sendAndLog(c);
 

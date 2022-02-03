@@ -17,7 +17,7 @@ mkdir -p "$JDKDIR"
 pushd "$JDKDIR"
 
 ZULU_URL='https://cdn.azul.com/zulu/bin'
-ZULU_BASENAME=zulu17.30.15-ca-jdk17.0.1
+ZULU_BASENAME=zulu17.32.13-ca-jdk17.0.2
 
 # Windows x86_32
 filename=$ZULU_BASENAME-win_i686.zip

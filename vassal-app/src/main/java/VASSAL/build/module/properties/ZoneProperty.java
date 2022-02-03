@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module.properties;
 
+import VASSAL.build.AbstractFolder;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
@@ -65,6 +66,10 @@ public class ZoneProperty extends GlobalProperty {
 
   @Override
   public void addTo(Buildable parent) {
+    if (parent instanceof AbstractFolder) {
+      parent = ((AbstractFolder) parent).getNonFolderAncestor();
+    }
+
     property.addTo((MutablePropertiesContainer) parent);
     GameModule.getGameModule().addCommandEncoder(this);
     GameModule.getGameModule().getGameState().addGameComponent(this);

@@ -151,7 +151,7 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
     setFrozen(true); // Prevent changes to the input fields triggering further updates
     if (controls != null && !noUpdate) {
       final NamedKeyStroke stroke = (NamedKeyStroke) o;
-      if (stroke.isNamed()) {
+      if (stroke != null && stroke.isNamed()) {
         keyName.setText(stroke.getName());
         keyStroke.setText("");
       }

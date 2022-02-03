@@ -21,16 +21,21 @@ import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.command.Logger;
+import VASSAL.counters.GamePiece;
+import VASSAL.counters.KeyBuffer;
 import VASSAL.tools.BugUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.slf4j.LoggerFactory;
 
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Pattern;
-
-import org.slf4j.LoggerFactory;
 
 /**
  * Expandable "Console" to allow entering commands into the Chatter.
@@ -38,6 +43,8 @@ import org.slf4j.LoggerFactory;
 public class Console {
   Iterator<String> tok;
   String commandLine;
+  int commandIndex = 0;
+  List<String> commands = new ArrayList<>();
 
   private static final org.slf4j.Logger log =
     LoggerFactory.getLogger(Console.class);
@@ -159,31 +166,74 @@ public class Console {
 
 
   private boolean doProperty() {
-    final String option   = nextString("");
+    final String first = nextString("");
+    final String option;
+    final boolean useSelected;
+    if (first.toLowerCase().startsWith("sel")) { //NON-NLS
+      option = nextString("");
+      useSelected = true;
+    }
+    else {
+      option = first;
+      useSelected = false;
+    }
     final String property = nextString("");
 
     if (matches("?", option) || matches("help", option)) { //NON-NLS
       show("Usage:"); //NON-NLS
-      show("  /property show [property]        - show global property value"); //NON-NLS
-      show("  /property set [property] [value] - set global property new value"); //NON-NLS
+      show("  /property [selected] show [property]        - show global property value"); //NON-NLS
+      show("  /property [selected] set [property] [value] - set global property new value"); //NON-NLS
+      show("  If optional keyword 'selected' included, show or set is for property of selected piece(s). "); //NON-NLS
+      show("  NOTE: many piece trait properties cannot be set (e.g. 'ObscuredToOthers', 'Invisible'), and the attempt to set them will simply fail quietly. "); //NON-NLS
     }
-    else if (matches("show", option)) { //NON-NLS
-      final MutableProperty.Impl propValue = (MutableProperty.Impl) GameModule.getGameModule().getMutableProperty(property);
-      if (propValue != null) {
-        show("[" + property + "]: " + propValue.getPropertyValue());
-      }
-      else {
-        final String propVal = String.valueOf(GameModule.getGameModule().getProperty(property));
-        if (propVal != null) {
-          show("[" + property + "]: " + propVal);
+    else if (matches("show", option) || matches("set", option)) { //NON-NLS
+
+      final GameModule gm = GameModule.getGameModule();
+
+      if (useSelected) {
+        final List<GamePiece> selected = KeyBuffer.getBuffer().asList();
+
+        if (selected != null) {
+          for (final GamePiece piece : selected) {
+            final Object obj = piece.getProperty(property);
+            if (matches("set", option)) { //NON-NLS
+              if (obj != null) {
+                final String to = nextString("");
+                if (obj instanceof String) {
+                  piece.setProperty(property, to);
+                }
+                else if (obj instanceof Integer) {
+                  piece.setProperty(property, NumberUtils.toInt(to));
+                }
+                else if (obj instanceof Boolean) {
+                  piece.setProperty(property, BooleanUtils.toBoolean(to));
+                }
+              }
+            }
+            final String val = (obj != null) ? obj.toString() : "(null)"; //NON-NLS
+            show(piece.getName() + " [" + property + "]: " + val);
+          }
         }
       }
-    }
-    else if (matches("set", option)) { //NON-NLS
-      final MutableProperty.Impl propValue = (MutableProperty.Impl) GameModule.getGameModule().getMutableProperty(property);
-      if (propValue != null) {
-        propValue.setPropertyValue(nextString(""));
-        show("[" + property + "]: " + propValue.getPropertyValue());
+      else {
+        final MutableProperty.Impl propValue = (MutableProperty.Impl) gm.getMutableProperty(property);
+        if (matches("show", option)) { //NON-NLS
+          if (propValue != null) {
+            show("[" + property + "]: " + propValue.getPropertyValue());
+          }
+          else {
+            final String propVal = String.valueOf(gm.getProperty(property));
+            if (propVal != null) {
+              show("[" + property + "]: " + propVal);
+            }
+          }
+        }
+        else if (matches("set", option)) { //NON-NLS
+          if (propValue != null) {
+            propValue.setPropertyValue(nextString(""));
+            show("[" + property + "]: " + propValue.getPropertyValue());
+          }
+        }
       }
     }
 
@@ -216,6 +266,39 @@ public class Console {
   }
 
 
+  public String commandsUp() {
+    if (commands.isEmpty() || (commandIndex <= 0)) {
+      return null;
+    }
+    commandIndex--;
+    return commands.get(commandIndex);
+  }
+
+  public String commandsDown() {
+    if (commands.isEmpty() || (commandIndex >= commands.size() - 1)) {
+      return null;
+    }
+
+    commandIndex++;
+    return commands.get(commandIndex);
+  }
+
+  public String commandsTop() {
+    if (commands.isEmpty()) {
+      return null;
+    }
+    commandIndex = 0;
+    return commands.get(commandIndex);
+  }
+
+  public String commandsBottom() {
+    if (commands.isEmpty()) {
+      return null;
+    }
+    commandIndex = commands.size() - 1;
+    return commands.get(commandIndex);
+  }
+
   public boolean consoleHook(String s, String commandLine, Iterator<String> tok, String command) {
     // Hook for console subclasses, etc.
     return false;
@@ -226,6 +309,10 @@ public class Console {
     if (s.isEmpty() || (s.charAt(0) != '/')) {
       return false;
     }
+    if (commands.isEmpty() || !s.equals(commands.get(Math.max(0, Math.min(commands.size() - 1, commandIndex))))) {
+      commands.add(s);
+    }
+    commandIndex = commands.size(); //NB: supposed to be one beyond the end
     commandLine = s.substring(1);
 
     // If this has EVER been a multiplayer game (has ever been connected to Server, or has ever had two player slots filled simultaneously), then
