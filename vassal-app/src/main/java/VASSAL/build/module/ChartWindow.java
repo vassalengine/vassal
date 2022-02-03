@@ -17,17 +17,6 @@
  */
 package VASSAL.build.module;
 
-import java.awt.Container;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -49,6 +38,16 @@ import VASSAL.preferences.PositionOption;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
+
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * A top-level Widget for displaying Charts
@@ -104,7 +103,7 @@ public class ChartWindow extends Widget {
       frame.add(root.getComponent(0));
     }
     root = frame.getContentPane();
-    frame.setTitle(launch.getAttributeValueString(DEPRECATED_NAME));
+    frame.setTitle(getAttributeValueString(NAME));
     final int count = GameModule.getGameModule().getComponentsOf(ChartWindow.class).size();
     id = "ChartWindow" + count; //$NON-NLS-1$
   }
