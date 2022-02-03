@@ -111,12 +111,13 @@ public class GameState implements CommandEncoder {
   protected Map<String, GamePiece> pieces = new HashMap<>();
   protected List<GameComponent> gameComponents = new ArrayList<>();
   protected List<GameSetupStep> setupSteps = new ArrayList<>();
-  protected Action loadGame, loadGameOld, saveGame, saveGameAs, newGame, closeGame, loadContinuation;
+  protected Action loadGame, loadGameOld, saveGame, saveGameAs, newGame, closeGame, loadContinuation, loadAndFastForward, loadAndAppend;
   protected String lastSave;
   protected File lastSaveFile = null;
   protected DirectoryConfigurer savedGameDirectoryPreference;
   protected String loadComments;
   protected boolean loadingInBackground = false;
+  private boolean fastForwarding = false;
 
   /**
    * @return true if currently loading in background
@@ -184,6 +185,24 @@ public class GameState implements CommandEncoder {
     };
     loadContinuation.setEnabled(false);
 
+    loadAndFastForward = new AbstractAction(Resources.getString("GameState.load_and_fast_forward")) {
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        loadFastForward(false);
+      }
+    };
+
+    loadAndAppend = new AbstractAction(Resources.getString("GameState.load_and_append")) {
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        loadFastForward(true);
+      }
+    };
+
     saveGame = new AbstractAction(Resources.getString("GameState.save_game")) {
       private static final long serialVersionUID = 1L;
 
@@ -250,6 +269,8 @@ public class GameState implements CommandEncoder {
     mm.addAction("GameState.save_game", saveGame);
     mm.addAction("GameState.save_game_as", saveGameAs);
     mm.addAction("GameState.close_game", closeGame);
+    mm.addAction("GameState.load_and_fast_forward", loadAndFastForward);
+    mm.addAction("GameState.load_and_append", loadAndAppend);
 
     saveGame.setEnabled(gameStarting);
     saveGameAs.setEnabled(gameStarting);
@@ -435,6 +456,30 @@ public class GameState implements CommandEncoder {
     }
   }
 
+  public static final int NO_NEED_TO_SAVE = (~JOptionPane.NO_OPTION & 0x01) | (~JOptionPane.YES_OPTION & 0x02) | (~JOptionPane.CANCEL_OPTION & 0x04) | (~JOptionPane.CLOSED_OPTION & 0x08);
+
+  /**
+   * Offers player the chance to save the game if an unsaved one is active & modified
+   * @return Whether Yes, No, or Cancel was selected (if Yes was selected, game is saved before returning result). Or NO_NEED_TO_SAVE if game wasn't in a state needing to be saved.
+   */
+  public int maybeSaveGame() {
+    if (!gameStarted || !isModified() || !saveGame.isEnabled()) {
+      return NO_NEED_TO_SAVE;
+    }
+
+    final int result = JOptionPane.showConfirmDialog(
+      GameModule.getGameModule().getPlayerWindow(),
+      Resources.getString("GameState.save_game_query"), //$NON-NLS-1$
+      Resources.getString("GameState.game_modified"),   //$NON-NLS-1$
+      JOptionPane.YES_NO_CANCEL_OPTION);
+
+    if (result == JOptionPane.YES_OPTION) {
+      saveGame();
+    }
+
+    return result;
+  }
+
 
   /**
    * Start/end a game.  Prompt to save if the game state has been
@@ -448,12 +493,8 @@ public class GameState implements CommandEncoder {
       return; // Blocks setup method during Game Refresh
     }
 
-    if (!gameStarting && gameStarted && isModified() && saveGame.isEnabled()) {
-      switch (JOptionPane.showConfirmDialog(
-        g.getPlayerWindow(),
-        Resources.getString("GameState.save_game_query"), //$NON-NLS-1$
-        Resources.getString("GameState.game_modified"),   //$NON-NLS-1$
-        JOptionPane.YES_NO_CANCEL_OPTION)) {
+    if (!gameStarting) {
+      switch (maybeSaveGame()) {
       case JOptionPane.YES_OPTION:
         saveGame();
         break;
@@ -497,7 +538,10 @@ public class GameState implements CommandEncoder {
     if (gameStarted) {
       if (gameStarting) {
         // Things that we invokeLater
-        SwingUtilities.invokeLater(() -> {
+        SwingUtilities.invokeLater(fastForwarding ? () -> {
+          // Apply all of the startup global key commands, in order
+          doStartupGlobalKeyCommands();
+        } : () -> {
           // Apply all of the startup global key commands, in order
           doStartupGlobalKeyCommands();
 
@@ -602,6 +646,19 @@ public class GameState implements CommandEncoder {
    * @param continuation if true then do the "old-style" version of load continuation
    */
   public void loadGame(boolean continuation) {
+    loadGame(continuation, false);
+  }
+
+    /**
+     * Read the game from a savefile.  The contents of the file is
+     * sent to {@link GameModule#decode} and translated into a
+     * {@link Command}, which is then executed.  The command read from the
+     * file should be that returned by {@link #getRestoreCommand}.
+     *
+     * @param continuation if true then do the "old-style" version of load continuation
+     * @param forceForeground if true then force load in foreground
+     */
+  public void loadGame(boolean continuation, boolean forceForeground) {
     final GameModule g = GameModule.getGameModule();
 
     if (gameStarted && continuation) {
@@ -638,7 +695,7 @@ public class GameState implements CommandEncoder {
     if (fc.showOpenDialog() != FileChooser.APPROVE_OPTION) return;
 
     final File f = fc.getSelectedFile();
-    loadGame(f, false);
+    loadGame(f, continuation, forceForeground);
   }
 
   /**
@@ -648,6 +705,16 @@ public class GameState implements CommandEncoder {
    * @return true if a file load was successfully started
    */
   public boolean loadGame(File f, boolean continuation) {
+    return loadGame(f, continuation, false);
+  }
+
+  /**
+   * Loads a specific file as a saved game
+   * @param f File to load
+   * @param continuation true if this is to be a continuation
+   * @return true if a file load was successfully started
+   */
+  public boolean loadGame(File f, boolean continuation, boolean forceForeground) {
     try {
       if (!f.exists()) throw new FileNotFoundException(
         "Unable to locate " + f.getPath()); //NON-NLS
@@ -661,6 +728,14 @@ public class GameState implements CommandEncoder {
         loadContinuation(f);
       }
       else {
+        int optionToSave = NO_NEED_TO_SAVE;
+        if (gameStarted) {
+          optionToSave = maybeSaveGame();
+          if (optionToSave == JOptionPane.CANCEL_OPTION) {
+            return false;
+          }
+        }
+
         GameModule.getGameModule().setGameFile(f.getName(), GameModule.GameFileMode.LOADED_GAME);
 
         //BR// New preferred style load for vlogs is close the old stuff and hard-reset to the new log state.
@@ -669,12 +744,16 @@ public class GameState implements CommandEncoder {
 
           GameModule.getGameModule().setLoadOverSemaphore(true); // Stop updating Map UI etc for a bit
           try {
-            pieces.clear();
+            gameStarted = false; // Prevent setup(false) from re-asking about saving the game
+            setup(false);        // Completely wipe the game state *before* we decode the saved game
             loadGameInForeground(f); // Foreground loading minimizes the bad behavior of windows during vlog load "mid game"
           }
           finally {
             GameModule.getGameModule().setLoadOverSemaphore(false); // Resume normal UI updates
           }
+        }
+        else if (forceForeground) {
+          loadGameInForeground(f);
         }
         else {
           loadGameInBackground(f);
@@ -687,6 +766,59 @@ public class GameState implements CommandEncoder {
     }
 
     return true;
+  }
+
+  /**
+   * Load a VLOG, and starts a new VLOG from the same *initial* state, fast forward to the end of the log (while retaining
+   * same initial state and likewise retaining the existing commands in the log), and thus any new commands added are essentially
+   * appended to the existing log rather than starting from some later state.
+   */
+  private void loadFastForward(boolean append) {
+    fastForwarding = true;
+
+    loadGame(false, true); // First load the old game or log, forcing it to all happen foreground
+
+    fastForwarding = false;
+
+    final GameModule g = GameModule.getGameModule();
+    final BasicLogger bl = g.getBasicLogger();
+    if (bl.isReplaying()) {
+      if (!bl.isLogging() && append) {
+        bl.queryNewLogFile(true, true); // We begin logging a new file immediately w/ the starting state of the old log
+      }
+
+      // Replay all of the commands in the game -- since we're logging they will be picked up in the new log
+      while (bl.isReplaying()) {
+        final Command c = bl.logInput.get(bl.nextInput++);
+        c.execute();
+        g.sendAndLog(c);
+      }
+      bl.stepAction.setEnabled(false);
+
+      if (append) {
+        if (!bl.isLogging()) {
+          g.warn(Resources.getString("GameState.fast_forward_only"));
+        }
+        else {
+          g.warn(Resources.getString("GameState.fast_forward_and_append"));
+        }
+      }
+      else {
+        if (!bl.isLogging()) {
+          bl.queryNewLogFile(false, true);
+        }
+
+        if (!bl.isLogging()) {
+          g.warn(Resources.getString("GameState.fast_forward"));
+        }
+        else {
+          g.warn(Resources.getString("GameState.fast_forward_new_log"));
+        }
+      }
+    }
+    else {
+      g.warn(Resources.getString("GameState.simple_save_append"));
+    }
   }
 
   /**
@@ -706,17 +838,31 @@ public class GameState implements CommandEncoder {
           final URL url = new URL(text);
           final URLConnection uc = url.openConnection();
 
-          try (InputStream is = uc.getInputStream(); BufferedInputStream bis = new BufferedInputStream(is)) {
+          if (maybeSaveGame() != JOptionPane.CANCEL_OPTION) {
+            GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
+
+            GameModule.getGameModule().setLoadOverSemaphore(true); // Stop updating Map UI etc for a bit
+
+            gameStarted = false; // Prevent setup(false) from re-asking about saving the game
+            setup(false);        // Completely wipe the game state *before* we decode the saved game
+
             try {
-              loadGameInForeground(text, bis);
+              try (InputStream is = uc.getInputStream(); BufferedInputStream bis = new BufferedInputStream(is)) {
+                try {
+                  loadGameInForeground(text, bis);
+                }
+                catch (IOException e) {
+                  ReadErrorDialog.error(e, text);
+                }
+                break; // Once we have a successful load, nothing else.
+              }
+              catch (MalformedURLException e) {
+                // Do nothing, this must not have been a URL
+              }
             }
-            catch (IOException e) {
-              ReadErrorDialog.error(e, text);
+            finally {
+              GameModule.getGameModule().setLoadOverSemaphore(false); // Resume normal UI updates
             }
-            break; // Once we have a successful load, nothing else.
-          }
-          catch (MalformedURLException e) {
-            // Do nothing, this must not have been a URL
           }
         }
         catch (IOException | UnsupportedFlavorException e) {
@@ -1128,7 +1274,7 @@ public class GameState implements CommandEncoder {
     // from visibly closing-then-eventually-re-opening in a Series Of Messy Steps
     final Chatter ch = g.getChatter();
     ch.paintImmediately(0, 0, ch.getWidth(), ch.getHeight());
-
+    
     final Command loadCommand = decodeSavedGame(in);
     if (loadCommand != null) {
       try {

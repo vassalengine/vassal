@@ -27,6 +27,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -471,5 +472,14 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
       }
     }
     return null;
+  }
+
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    for (final Item item : items) {
+      if (item instanceof ImageItem) {
+        s.add(((ImageItem) item).getAttributeValueString(ImageItem.IMAGE));
+      }
+    }
   }
 }

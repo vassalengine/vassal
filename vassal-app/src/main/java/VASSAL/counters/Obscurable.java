@@ -38,7 +38,13 @@ import VASSAL.script.expression.Expression;
 import VASSAL.script.expression.FormattedStringExpression;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
+import net.miginfocom.swing.MigLayout;
+import org.apache.commons.lang3.ArrayUtils;
 
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -53,15 +59,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-
-import net.miginfocom.swing.MigLayout;
-
-import org.apache.commons.lang3.ArrayUtils;
 
 import static VASSAL.counters.Deck.NO_USER;
 
@@ -935,7 +932,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    return Arrays.asList(keyCommand, peekKey);
+    return Arrays.asList(keyCommand, peekKey, dealKey);
   }
 
   /**

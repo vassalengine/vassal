@@ -59,6 +59,7 @@ import java.awt.dnd.DropTargetListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -142,6 +143,42 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
       input.setText(""); //$NON-NLS-1$
     });
     input.setMaximumSize(new Dimension(input.getMaximumSize().width, input.getPreferredSize().height));
+
+    input.addKeyListener(new KeyListener() {
+      @Override
+      public void keyTyped(KeyEvent e) {
+      }
+
+      @Override
+      public void keyPressed(KeyEvent e) {
+      }
+
+      @Override
+      public void keyReleased(KeyEvent e) {
+        final int code = e.getKeyCode();
+        final Console console = GameModule.getGameModule().getConsole();
+        String newCommand = null;
+        switch (code) {
+        case KeyEvent.VK_UP:
+          newCommand = console.commandsUp();
+          break;
+        case KeyEvent.VK_DOWN:
+          newCommand = console.commandsDown();
+          break;
+        case KeyEvent.VK_PAGE_UP:
+        case KeyEvent.VK_HOME:
+          newCommand = console.commandsTop();
+          break;
+        case KeyEvent.VK_PAGE_DOWN:
+        case KeyEvent.VK_END:
+          newCommand = console.commandsBottom();
+          break;
+        }
+        if (newCommand != null) {
+          input.setText(newCommand);
+        }
+      }
+    });
 
     final FontMetrics fm = getFontMetrics(myFont);
     final int fontHeight = fm.getHeight();

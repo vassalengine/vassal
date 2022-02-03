@@ -175,9 +175,11 @@ public class ZipArchive implements FileArchive {
 
     // copy each entry to the new archive
     for (final String name : src.getFiles()) {
-      try (InputStream in = src.getInputStream(name);
-           OutputStream out = getOutputStream(name)) {
-        IOUtils.copyLarge(in, out, buf);
+      if (!name.endsWith("/")) {
+        try (InputStream in = src.getInputStream(name);
+             OutputStream out = getOutputStream(name)) {
+          IOUtils.copyLarge(in, out, buf);
+        }
       }
     }
 
@@ -698,7 +700,6 @@ public class ZipArchive implements FileArchive {
     if (Files.exists(archive) && Files.size(archive) > 0) {
       zipFile = new ZipFile(archive.toFile());
       zipFile.stream()
-             .filter(e -> !e.isDirectory())
              .forEach(e -> entries.put(e.getName(), new Entry(e, null)));
     }
   }

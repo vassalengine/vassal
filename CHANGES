@@ -1,3 +1,38 @@
+3.6.5 - ???
+
+* 11164: Upgrade bundled Java to 17.0.2+8
+* 11162: Turn Tracker does not display a spurious blank line if its report
+    format is left empty
+* 11160: Prevent At-Start Stacks from creating additional spurious pieces on
+    main map
+* 11156: Games incorrectly load normally during 'Load Continuation'
+* 11150: Use heuristic value for tiler max heap, retry with 50% more on failure
+* 11149: Capture tiling error messages Java incorrectly writes to stdout
+* 11139: Deal-to-Other key in Mask Trait now recognized in Search
+* 11135: Prompt to save/discard/cancel before loading the new game; fixed
+    Discord console drag-and-drop bug
+* 11127: Don't throw exception if there's a drive letter in a filename
+* 11124: Console supports up-arrow / down-arrow for command history
+* 11122: Console can show/set properties of selected pieces
+* 11121: Fix problem where undo wasn't allowed when starting a new game with
+    logging turned on
+* 11120: Permit hyphens and periods in GamePieceImage names
+* 11119: Fixed NPE in NamedHotKeyConfigurer.setValue()
+* 11117: Log files can be fast-forwarded and appended to
+* 11115: Fix ClassCastException due to Zone properties not accounting for
+    folders
+* 11109: LOS Range incorrect when thread is not snapped to hex centres
+* 11107: Warn if Decks or Stacks defined before [Map Boards]
+* 11106: Fix NPE when duplicating GamePieceImage
+* 11105: Added missing Editor.SendToLocation.getSendLocation translation key
+* 11098: Screenshot "typo" fix for Turn Tracker's global hotkey
+* 11096: Remove "duplicate this item" option from Game Piece Image
+* 11095: Deduce the existence of localized image directories which lack ZIP
+    entries
+* 11094: Exclude GamePieceLayout image names from unused image list
+* 11093: Image directories for i18n were not found in 3.6.4
+* 11089: Write text files in UTF-8, not the default encoding
+
 3.6.4 - 17 January 2022
 
 * 11079: Main window & map accept Drag-and-Drop for loading saves and logs

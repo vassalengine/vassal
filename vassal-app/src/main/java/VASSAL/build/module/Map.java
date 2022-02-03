@@ -926,7 +926,8 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       .append(new SingleChildInstance(this, ForwardToKeyBuffer.class))
       .append(new SingleChildInstance(this, GlobalProperties.class))
       .append(new SingleChildInstance(this, SelectionHighlighters.class))
-      .append(new SingleChildInstance(this, LayeredPieceCollection.class));
+      .append(new SingleChildInstance(this, LayeredPieceCollection.class))
+      .append(new SingleChildInstance(this, BoardPicker.class));
 
     final DragGestureListener dgl = dge -> {
       if (dragGestureListener != null &&
