@@ -17,11 +17,13 @@
  */
 package VASSAL.build.module.properties;
 
-import javax.swing.JOptionPane;
-
 import VASSAL.script.expression.AuditTrail;
 import VASSAL.script.expression.Expression;
 import VASSAL.script.expression.ExpressionException;
+
+import javax.swing.JOptionPane;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Prompts user to select from a list
@@ -66,8 +68,19 @@ public class EnumeratedPropertyPrompt extends PropertyPrompt {
       }
       finalValues[i] = value;
     }
+
+    final List<String> nonBlankValues = new ArrayList<>();
+    for (final String value : finalValues) {
+      if (value.isEmpty()) continue;
+      nonBlankValues.add(value);
+    }
+
+    if (nonBlankValues.isEmpty()) {
+      return oldValue;
+    }
+
     final String newValue = (String) JOptionPane.showInputDialog(
-      dialogParent.getComponent(), promptText, null, JOptionPane.QUESTION_MESSAGE, null, finalValues, oldValue);
+      dialogParent.getComponent(), promptText, null, JOptionPane.QUESTION_MESSAGE, null, nonBlankValues.toArray(new String[0]), oldValue);
     return newValue == null ? oldValue : newValue;
   }
 
