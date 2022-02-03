@@ -22,8 +22,14 @@
         <method>*</method>
     </difference>
 
-
     <difference>
+        <!-- It is okay to add abstract methods to an abstract class -->
+        <className>VASSAL/build/module/GameRefresher</className>
+        <differenceType>7002</differenceType>
+        <method>java.util.List getCurrentGameRefresherPieces()</method>
+  </difference>
+
+  <difference>
         <className>VASSAL/tools/image/tilecache/FileArchiveImageTiler</className>
         <differenceType>7005</differenceType>
         <method>void run(VASSAL.tools.io.FileArchive, java.lang.String, int, int, java.lang.String[], java.util.concurrent.ExecutorService, VASSAL.tools.image.ImageLoader, VASSAL.tools.image.tilecache.TileSlicer, VASSAL.tools.lang.Callback, VASSAL.tools.lang.Callback, VASSAL.tools.lang.Callback)</method>
