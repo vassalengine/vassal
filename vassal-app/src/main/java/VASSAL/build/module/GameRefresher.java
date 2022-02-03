@@ -384,7 +384,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
                   // If drawPile is owned by a specific board, then we can only match it if that board is active in this game
                   if (drawPile.getOwningBoardName() != null) {
                     if (map.getBoardByName(drawPile.getOwningBoardName()) == null) {
-                        continue;
+                      continue;
                     }
 
                     // If the drawPile is on a map that doesn't have its current owning board active, then we
