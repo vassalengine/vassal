@@ -384,14 +384,12 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
                   // If drawPile is owned by a specific board, then we can only match it if that board is active in this game
                   if (drawPile.getOwningBoardName() != null) {
                     if (map.getBoardByName(drawPile.getOwningBoardName()) == null) {
-                      System.out.println("A:" + map.getMapName() + " - " + drawPile.getOwningBoardName());
-                      continue;
+                        continue;
                     }
 
                     // If the drawPile is on a map that doesn't have its current owning board active, then we
                     // cannot match that drawPile.
                     if (drawPile.getMap().getBoardByName(drawPile.getOwningBoardName()) == null) {
-                      System.out.println("B:" + map.getMapName() + " - " + drawPile.getOwningBoardName());
                       continue;
                     }
                   }
@@ -522,95 +520,6 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       }
     }
   }
-//
-//  /**
-//   * Process a piece that is not in a Deck
-//   *
-//   * @param piece   Piece to process
-//   * @param command Command to append results to
-//   * @return The newly generated piece
-//   */
-//  private GamePiece processGamePiece(GamePiece piece, Command command) {
-//    // Piece needs to be on a map. Else how do we put it back.
-//    final Map map = piece.getMap();
-//    if (map == null) {
-//      noMapCount++;
-//      log(Resources.getString("GameRefresher.refresh_error_nomap1", piece.getName(), piece.getId()));
-//      // If Option "Delete pieces with no map" is set to true. Get rid of this piece
-//      if (isDeleteNoMap()) {
-//        log(Resources.getString("GameRefresher.refresh_error_nomap2", piece.getName(), piece.getId()));
-//        final Command remove = new RemovePiece(Decorator.getOutermost(piece));
-//        remove.execute();
-//        command = command.append(remove);
-//      }
-//      return piece;
-//    }
-//
-//    // Piece should have a parent stack (Decks are extensions of Stacks)
-//    // Except pieces that return TRUE for the NO_STACK property.
-//    final Stack oldStack = piece.getParent();
-//    if (oldStack == null) {
-//      if (!Boolean.TRUE.equals(Decorator.getOutermost(piece).getProperty(Properties.NO_STACK))) {
-//        noStackCount++;
-//        log(Resources.getString("GameRefresher.refresh_error_nostack", piece.getName(), piece.getId()));
-//      }
-//    }
-//
-//    //create a new piece. If returns null, it failed
-//    final GamePiece newPiece = gpIdChecker.createUpdatedPiece(piece);
-//    if (newPiece == null) {
-//      notFoundCount++;
-//      log(Resources.getString("GameRefresher.refresh_error_nomatch_pieceslot", piece.getName(), piece.getId()));
-//      return piece;
-//    }
-//
-//    updatedCount++;
-//
-//    if (isTestMode()) {
-//      // Test mode. Do not replace old pieces with new. Just get rid of the new piece.
-//      // Delete the old piece
-//      final Command remove = new RemovePiece(Decorator.getOutermost(newPiece));
-//      remove.execute();
-//      command = command.append(remove);
-//
-//    }
-//    else {
-//      // Refreshing is done. This section is for non test mode, to replace all the old pieces with the new pieces
-//      final Point piecePosition = piece.getPosition();
-//      final Point hiddenPosition = new Point(-100, -100);
-//      final Point tempPosition = piecePosition;
-//      final int oldStackIndex = oldStack == null ? 0 : oldStack.indexOf(piece);
-//
-//      // Delete old piece 1st. Doing that after placing the new piece causes errors if the old piece has no stack
-//      // as same pos as new piece, it somehow deleted the new stack too!
-//
-//      // Place new piece on the map at position -100 -100 (this is to fix bug 14440). For some reason
-//      // the new piece misbehaves in a stack (not visible when stack expanded) when 1st placed on the map (or game)
-//      // By placing in -100 -100 1st the error seems to disappear
-//
-//      // Delete the old piece
-//      final Command remove = new RemovePiece(Decorator.getOutermost(piece));
-//      remove.execute();
-//      command = command.append(remove);
-//
-//      Command place = map.placeOrMerge(newPiece, hiddenPosition);
-//      command = command.append(place);
-//      place = map.placeOrMerge(newPiece, tempPosition);
-//      command = command.append(place);
-//
-//      // Move to the correct position in the stack
-//      final Stack newStack = newPiece.getParent();
-//      if ((newStack != null) && (newStack == oldStack)) {
-//        final int newPos = newStack.indexOf(newPiece);
-//        if (newPos >= 0 && oldStackIndex >= 0 && newPos != oldStackIndex) {
-//          final String oldState = newStack.getState();
-//          newStack.insert(newPiece, oldStackIndex);
-//          command = command.append(new ChangePiece(newStack.getId(), oldState, newStack.getState()));
-//        }
-//      }
-//    }
-//    return newPiece;
-//  }
 
   @Override
   public Command getRestoreCommand() {
