@@ -839,15 +839,19 @@ public class GameState implements CommandEncoder {
           final URLConnection uc = url.openConnection();
 
           if (maybeSaveGame() != JOptionPane.CANCEL_OPTION) {
-            GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
 
-            GameModule.getGameModule().setLoadOverSemaphore(true); // Stop updating Map UI etc for a bit
+            try (InputStream is = uc.getInputStream(); BufferedInputStream bis = new BufferedInputStream(is)) {
+              if (gameStarted) {
+                GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
+                GameModule.getGameModule().setLoadOverSemaphore(true); // Stop updating Map UI etc for a bit
+                gameStarted = false; // Prevent setup(false) from re-asking about saving the game
+                setup(false);        // Completely wipe the game state *before* we decode the saved game
+              }
+              else {
+                GameModule.getGameModule().setGameFile(text, GameModule.GameFileMode.LOADED_GAME);
+              }
 
-            gameStarted = false; // Prevent setup(false) from re-asking about saving the game
-            setup(false);        // Completely wipe the game state *before* we decode the saved game
-
-            try {
-              try (InputStream is = uc.getInputStream(); BufferedInputStream bis = new BufferedInputStream(is)) {
+              try {
                 try {
                   loadGameInForeground(text, bis);
                 }
@@ -856,12 +860,12 @@ public class GameState implements CommandEncoder {
                 }
                 break; // Once we have a successful load, nothing else.
               }
-              catch (MalformedURLException e) {
-                // Do nothing, this must not have been a URL
+              finally {
+                GameModule.getGameModule().setLoadOverSemaphore(false); // Resume normal UI updates
               }
             }
-            finally {
-              GameModule.getGameModule().setLoadOverSemaphore(false); // Resume normal UI updates
+            catch (MalformedURLException e) {
+              // Do nothing, this must not have been a URL
             }
           }
         }
