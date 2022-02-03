@@ -1,5 +1,6 @@
 3.6.5 - ???
 
+* 11179: Chart Windows display their names properly in their window titles
 * 11164: Upgrade bundled Java to 17.0.2+8
 * 11162: Turn Tracker does not display a spurious blank line if its report
     format is left empty
@@ -32,6 +33,7 @@
 * 11094: Exclude GamePieceLayout image names from unused image list
 * 11093: Image directories for i18n were not found in 3.6.4
 * 11089: Write text files in UTF-8, not the default encoding
+* 11081: Prevent GameRefresher from changing visual order of pieces
 
 3.6.4 - 17 January 2022
 
