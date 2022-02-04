@@ -183,7 +183,7 @@ public class Editor extends Launcher {
         Editor.class.getName(),
         new LaunchRequest(LaunchRequest.Mode.EDIT, module)
       );
-      setEnabled(!isInUse(module));
+      setEnabled(module != null && !isInUse(module));
     }
 
     @Override
