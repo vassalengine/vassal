@@ -144,7 +144,7 @@ public class Player extends Launcher {
         Player.class.getName(),
         new LaunchRequest(LaunchRequest.Mode.LOAD, module)
       );
-      setEnabled(!isEditing(module));
+      setEnabled(module != null && !isEditing(module));
     }
 
     public LaunchAction(ModuleManagerWindow mm, File module, File saveGame) {
