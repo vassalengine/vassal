@@ -25,6 +25,7 @@
         { "num": 11117, "desc": "Log files can be fast-forwarded and appended to" }
       ],
       "bug_fixes": [
+        { "num": 11186, "desc": "Disable load and edit actions for null modules"},
         { "num": 11179, "desc": "Chart Windows display their names properly in their window titles" },
         { "num": 11162, "desc": "Turn Tracker does not display a spurious blank line if its report format is left empty" },
         { "num": 11160, "desc": "Prevent At-Start Stacks from creating additional spurious pieces on main map" },
