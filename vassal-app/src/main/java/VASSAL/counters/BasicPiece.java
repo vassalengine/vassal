@@ -44,6 +44,9 @@ import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.ScaledImagePainter;
 
+import javax.swing.JLabel;
+import javax.swing.JPopupMenu;
+import javax.swing.KeyStroke;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -57,10 +60,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-
-import javax.swing.JLabel;
-import javax.swing.JPopupMenu;
-import javax.swing.KeyStroke;
 
 /**
  * Basic class for representing a physical component of the game. Can be e.g. a counter, a card, or an overlay.
@@ -989,7 +988,11 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
    */
   @Override
   public String getDescription() {
-    return getBaseDescription();
+    String s = getBaseDescription();
+    if ((commonName != null) && !commonName.isEmpty()) {
+      s += " - " + commonName;
+    }
+    return s;
   }
 
   /**
