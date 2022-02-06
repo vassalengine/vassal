@@ -217,7 +217,9 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
               }
             }
           }
-          refreshables.add(new StackRefresher((Stack) piece));
+          if (((Stack) piece).getMap() != null) {
+            refreshables.add(new StackRefresher((Stack) piece));
+          }
         }
 
         // An Unstacked piece
