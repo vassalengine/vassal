@@ -144,7 +144,7 @@ public class Player extends Launcher {
         Player.class.getName(),
         new LaunchRequest(LaunchRequest.Mode.LOAD, module)
       );
-      setEnabled(module != null && !isEditing(module));
+      setEnabled(!isEditing(module));
     }
 
     public LaunchAction(ModuleManagerWindow mm, File module, File saveGame) {
@@ -166,10 +166,12 @@ public class Player extends Launcher {
         }
       }
       else {
-        // A module in the MM should be a valid Module, but people can and do delete
-        // or replace module files while the MM is running.
-        ErrorDialog.show("Error.invalid_vassal_module", lr.module.getAbsolutePath()); //NON-NLS
-        lr.module = null;
+        if (lr.module != null) {
+          // A module in the MM should be a valid Module, but people can and do delete
+          // or replace module files while the MM is running.
+          ErrorDialog.show("Error.invalid_vassal_module", lr.module.getAbsolutePath()); //NON-NLS
+          lr.module = null;
+        }
         return;
       }
 
