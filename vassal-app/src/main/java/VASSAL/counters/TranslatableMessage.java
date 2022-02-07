@@ -17,21 +17,20 @@
  */
 package VASSAL.counters;
 
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.command.Command;
+import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
+import VASSAL.i18n.TranslatablePiece;
+import VASSAL.tools.SequenceEncoder;
+
+import javax.swing.KeyStroke;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.util.List;
-
-import javax.swing.KeyStroke;
-
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.command.Command;
-import VASSAL.configure.StringConfigurer;
-import VASSAL.i18n.TranslatablePiece;
-import VASSAL.tools.SequenceEncoder;
 
 /**
  * A trait to expose a translated string as a readable/displayable property.
@@ -137,7 +136,13 @@ public class TranslatableMessage extends Decorator implements TranslatablePiece 
 
   @Override
   public String getDescription() {
-    return buildDescription("Editor.TranslatableMessage.trait_description", key, description);
+    String s = buildDescription("Editor.TranslatableMessage.trait_description", key, description);
+
+    if (message.length() > 0) {
+      s += " - " + message;
+    }
+
+    return s;
   }
 
   @Override
