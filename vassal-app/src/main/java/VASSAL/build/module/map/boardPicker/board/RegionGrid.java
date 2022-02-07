@@ -649,7 +649,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     /* ------------------------------------------------------------------
      * The scrollpane client
      */
-    public class View extends JPanel implements DropTargetListener, DragGestureListener, DragSourceListener, DragSourceMotionListener {
+    public static class View extends JPanel implements DropTargetListener, DragGestureListener, DragSourceListener, DragSourceMotionListener {
       private static final long serialVersionUID = 1L;
 
       protected Board myBoard;
@@ -813,7 +813,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
           final Point pt = lastDragLocation;
           SwingUtilities.convertPointFromScreen(pt, event.getDragSourceContext().getComponent());
-          scrollAtEdge(pt, 15);
+          grid.regionConfigurer.scrollAtEdge(pt, 15);
 
           moveDragCursor(event.getX(), event.getY());
           if (dragCursor != null && !dragCursor.isVisible()) {
