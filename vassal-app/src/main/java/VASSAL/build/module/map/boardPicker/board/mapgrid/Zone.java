@@ -136,6 +136,10 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     return getLocalizedConfigureName();
   }
 
+  public Polygon getPolygon() {
+    return myPolygon;
+  }
+
   @Override
   public String[] getAttributeNames() {
     return new String[]{

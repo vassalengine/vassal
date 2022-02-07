@@ -63,6 +63,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.datatransfer.StringSelection;
@@ -126,6 +127,30 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
   public void removeAllRegions() {
     regionList.clear();
     buildComponents.clear();
+  }
+
+  /**
+   * @return Parent zone (if any) of this grid.
+   */
+  public Zone getZone() {
+    final Buildable ancestor = getNonFolderAncestor();
+    if (ancestor instanceof Zone) {
+      return (Zone)ancestor;
+    }
+    return null;
+  }
+
+  public boolean isOutsideZone(Point pt) {
+    final Zone zone = getZone();
+    if (zone == null) {
+      return false;
+    }
+
+    final Polygon poly = zone.getPolygon();
+    if (poly == null) {
+      return false;
+    }
+    return !poly.contains(pt);
   }
 
   @Override
@@ -519,15 +544,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       }
       else {
         // If no regions yet, scroll to the Zone that we're in, if we're in a Zone
-        final Buildable ancestor = grid.getAncestor();
-        if (ancestor instanceof Zone) {
-          final Zone z = (Zone)ancestor;
-          final Rectangle polyBounds = z.getBounds();
-          final Point polyCenter = new Point(polyBounds.x + polyBounds.width / 2,
-            polyBounds.y + polyBounds.height / 2);
-          final Rectangle rect = new Rectangle(polyCenter);
-          scroll.getViewport().scrollRectToVisible(rect);
-        }
+        scrollToZone();
       }
 
       scroll.revalidate();
@@ -901,9 +918,20 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       }
     }
 
+    protected void scrollToZone() {
+      final Zone z = grid.getZone();
+      final Rectangle polyBounds = z.getBounds();
+      final Point polyCenter = new Point(polyBounds.x + polyBounds.width / 2,
+        polyBounds.y + polyBounds.height / 2);
+      final Rectangle rect = new Rectangle(polyCenter);
+      scroll.getViewport().scrollRectToVisible(rect);
+    }
+
     protected static final String ADD_REGION = Resources.getString("Editor.IrregularGrid.add_region"); //$NON-NLS-1$
     protected static final String DELETE_REGION = Resources.getString("Editor.IrregularGrid.delete_region"); //$NON-NLS-1$
     protected static final String PROPERTIES = Resources.getString("Editor.properties"); //$NON-NLS-1$
+    protected static final String MOVE_INTO_ZONE = Resources.getString("Editor.IrregularGrid.move_into_zone");
+    protected static final String SHOW_ZONE = Resources.getString("Editor.IrregularGrid.show_zone");
 
     protected void doPopupMenu(MouseEvent e) {
       myPopup = new JPopupMenu();
@@ -916,7 +944,16 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       menuItem = new JMenuItem(DELETE_REGION);
       menuItem.addActionListener(this);
       menuItem.setEnabled(lastClickedRegion != null);
+      myPopup.add(menuItem);
 
+      menuItem = new JMenuItem(MOVE_INTO_ZONE);
+      menuItem.addActionListener(this);
+      menuItem.setEnabled(lastClickedRegion != null && grid.isOutsideZone(lastClickedRegion.getOrigin()));
+      myPopup.add(menuItem);
+
+      menuItem = new JMenuItem(SHOW_ZONE);
+      menuItem.addActionListener(this);
+      menuItem.setEnabled(grid.getZone() != null);
       myPopup.add(menuItem);
 
       myPopup.addSeparator();
@@ -977,6 +1014,29 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
           setDirty(true);
         }
         selectedRegions.clear();
+        view.repaint();
+      }
+      else if (command.equals(MOVE_INTO_ZONE)) {
+        final Zone zone = grid.getZone();
+        if (zone != null) {
+          final Polygon polygon = zone.getPolygon();
+          if ((polygon != null) && (polygon.npoints > 0)) {
+            final Rectangle rect = polygon.getBounds();
+            int num = 0;
+            for (final Region r : selectedRegions) {
+              final int offX = (num > 0) ? ((num - 1) % 3) - 1 : 0;
+              final int offY = ((num % 9) < 3) ? 0 : ((num % 9) < 6) ? -1 : 1;
+              r.setOrigin(new Point((int)rect.getCenterX() + offX * 10, (int)rect.getCenterY() + offY * 10));
+              setDirty(true);
+              num++;
+            }
+            scrollToZone();
+            view.repaint();
+          }
+        }
+      }
+      else if (command.equals(SHOW_ZONE)) {
+        scrollToZone();
         view.repaint();
       }
       else if (command.equals(PROPERTIES)) { //$NON-NLS-1$
