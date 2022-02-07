@@ -17,6 +17,42 @@
  */
 package VASSAL.build.module.map.boardPicker.board;
 
+import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.Buildable;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.documentation.HelpWindow;
+import VASSAL.build.module.map.boardPicker.Board;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.GridContainer;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.GridNumbering;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
+import VASSAL.configure.ConfigureTree;
+import VASSAL.configure.Configurer;
+import VASSAL.configure.EditPropertiesAction;
+import VASSAL.configure.PropertiesWindow;
+import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.AdjustableSpeedScrollPane;
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.image.ImageUtils;
+import VASSAL.tools.swing.SwingUtils;
+import org.apache.commons.lang3.SystemUtils;
+
+import javax.swing.Action;
+import javax.swing.Box;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JRootPane;
+import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
@@ -59,43 +95,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.Action;
-import javax.swing.Box;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JRootPane;
-import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
-
-import VASSAL.build.AbstractConfigurable;
-import VASSAL.build.Buildable;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.documentation.HelpWindow;
-import VASSAL.build.module.map.boardPicker.Board;
-import VASSAL.build.module.map.boardPicker.board.mapgrid.GridContainer;
-import VASSAL.build.module.map.boardPicker.board.mapgrid.GridNumbering;
-import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
-import VASSAL.configure.ConfigureTree;
-import VASSAL.configure.Configurer;
-import VASSAL.configure.EditPropertiesAction;
-import VASSAL.configure.PropertiesWindow;
-import VASSAL.configure.VisibilityCondition;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.AdjustableSpeedScrollPane;
-import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.image.ImageUtils;
-import VASSAL.tools.swing.SwingUtils;
-import org.apache.commons.lang3.SystemUtils;
 
 public class RegionGrid extends AbstractConfigurable implements MapGrid, ConfigureTree.Mutable {
   private static final long serialVersionUID = 1L;
@@ -633,7 +632,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     /* ------------------------------------------------------------------
      * The scrollpane client
      */
-    public static class View extends JPanel implements DropTargetListener, DragGestureListener, DragSourceListener, DragSourceMotionListener {
+    public class View extends JPanel implements DropTargetListener, DragGestureListener, DragSourceListener, DragSourceMotionListener {
       private static final long serialVersionUID = 1L;
 
       protected Board myBoard;
@@ -794,6 +793,11 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       public void dragMouseMoved(DragSourceDragEvent event) {
         if (!event.getLocation().equals(lastDragLocation)) {
           lastDragLocation = event.getLocation();
+
+          final Point pt = lastDragLocation;
+          SwingUtilities.convertPointFromScreen(pt, event.getDragSourceContext().getComponent());
+          scrollAtEdge(pt, 15);
+
           moveDragCursor(event.getX(), event.getY());
           if (dragCursor != null && !dragCursor.isVisible()) {
             dragCursor.setVisible(true);
