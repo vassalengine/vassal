@@ -49,6 +49,7 @@
         { "num": 11081, "desc": "Prevent GameRefresher from changing visual order of pieces" }
       ],
       "other_improvements": [
+        { "num": 11194, "desc": "The errorlog console command is available it at all times" },
         { "num": 11164, "desc": "Upgrade bundled Java to 17.0.2+8" },
         { "num": 11135, "desc": "Prompt to save/discard/cancel before loading the new game" },
         { "num": 11120, "desc": "Permit hyphens and periods in GamePieceImage names" },
