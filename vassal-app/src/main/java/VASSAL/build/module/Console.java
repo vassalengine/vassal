@@ -315,16 +315,6 @@ public class Console {
     commandIndex = commands.size(); //NB: supposed to be one beyond the end
     commandLine = s.substring(1);
 
-    // If this has EVER been a multiplayer game (has ever been connected to Server, or has ever had two player slots filled simultaneously), then
-    // it will not accept console commands.
-    final Logger log = GameModule.getGameModule().getLogger();
-    if (log instanceof BasicLogger) {
-      if (((BasicLogger)log).isMultiPlayer() || GameModule.getGameModule().isMultiPlayer()) {
-        show("|<b>Console commands not allowed in multiplayer games.</b>"); //NON-NLS
-        return false;
-      }
-    }
-
     show(s);
 
     // First get rid of any extra spaces between things
@@ -338,6 +328,16 @@ public class Console {
 
     if (matches("errorlog", command)) { //NON-NLS
       return doErrorLog();
+    }
+
+    // If this has EVER been a multiplayer game (has ever been connected to Server, or has ever had two player slots filled simultaneously), then
+    // it will not accept console commands.
+    final Logger log = GameModule.getGameModule().getLogger();
+    if (log instanceof BasicLogger) {
+      if (((BasicLogger)log).isMultiPlayer() || GameModule.getGameModule().isMultiPlayer()) {
+        show("|<b>Console commands that affect game state not allowed in multiplayer games.</b>"); //NON-NLS
+        return false;
+      }
     }
 
     if (matches("property", command)) { //NON-NLS
