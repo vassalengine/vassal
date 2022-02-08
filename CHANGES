@@ -1,5 +1,8 @@
 3.6.5 - ???
 
+* 11205: Improved Polygon Editor (cut/paste vertices, delete polygon) &
+    Improved Region Editor (drag-at-edge works again, move regions inside of
+    zone)
 * 11197: Better auto-description for Translatable Message trait and BasicPiece
 * 11196: Game Refresher should not refresh stacks not on maps
 * 11194: The errorlog console command is available at all times
