@@ -2,7 +2,7 @@
 
 * 11197: Better auto-description for Translatable Message trait and BasicPiece
 * 11196: Game Refresher should not refresh stacks not on maps
-* 11194: The errorlog console command is available it at all times
+* 11194: The errorlog console command is available at all times
 * 11186: Disable load and edit actions for null modules
 * 11179: Chart Windows display their names properly in their window titles
 * 11164: Upgrade bundled Java to 17.0.2+8
