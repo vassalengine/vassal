@@ -17,6 +17,15 @@
  */
 package VASSAL.build.module.map.boardPicker.board;
 
+import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.Buildable;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.map.boardPicker.Board;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.image.LabelUtils;
+
+import javax.swing.JComponent;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -24,15 +33,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Area;
-
-import javax.swing.JComponent;
-
-import VASSAL.build.AbstractConfigurable;
-import VASSAL.build.Buildable;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.map.boardPicker.Board;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.image.LabelUtils;
 
 public class Region extends AbstractConfigurable {
 
@@ -209,7 +209,7 @@ public class Region extends AbstractConfigurable {
     final Point newP = new Point(getOrigin());
     newP.translate(dx, dy);
 
-    if (myGrid.container.contains(newP)) {
+    if (myGrid.container.contains(newP) || (myGrid.container instanceof Zone)) {
       moveOrigin(dx, dy);
     }
   }

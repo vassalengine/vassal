@@ -49,7 +49,16 @@ import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.swing.FlowLabel;
 import VASSAL.tools.swing.SwingUtils;
+import net.miginfocom.swing.MigLayout;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -62,26 +71,21 @@ import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-
-import net.miginfocom.swing.MigLayout;
 
 public class Zone extends AbstractConfigurable implements GridContainer, MutablePropertiesContainer, PropertySource, GameComponent {
   public static final String NAME = "name"; //NON-NLS
@@ -130,6 +134,10 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
 
   public String getLocalizedName() {
     return getLocalizedConfigureName();
+  }
+
+  public Polygon getPolygon() {
+    return myPolygon;
   }
 
   @Override
@@ -618,6 +626,8 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   public static class Editor extends Configurer implements PolygonConfigurer {
     private final JPanel buttonPanel;
     private final JButton button;
+    private final JButton copyButton;
+    private final JButton pasteButton;
     private PolygonEditor editor;
     private Board board;
     private JDialog frame;
@@ -636,7 +646,64 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       buttonPanel.add(button);
       button.addActionListener(e -> init(zone));
 
+      copyButton = new JButton(Resources.getString("Editor.Zone.copy_coords"));
+      buttonPanel.add(copyButton);
+      copyButton.addActionListener(e -> copyCoords());
+
+      pasteButton = new JButton(Resources.getString("Editor.Zone.paste_coords"));
+      buttonPanel.add(pasteButton);
+      pasteButton.addActionListener(e -> pasteCoords());
+
       this.zone = zone;
+    }
+
+    /**
+     * Copies the current zone coordinates to the system clipboard.
+     */
+    private void copyCoords() {
+      if ((frame == null) || !frame.isVisible()) {
+        init(zone, false);
+      }
+
+      final Polygon poly = editor.getPolygon();
+      final String coords = PolygonEditor.polygonToString(poly).replace(';', ' ');
+      final StringSelection stringSelection = new StringSelection(coords);
+      final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+      clipboard.setContents(stringSelection, null);
+      GameModule.getGameModule().warn(Resources.getString("Editor.Zone.copied", poly.npoints, coords));
+    }
+
+    private void pasteCoords() {
+      final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+      final Transferable t = clipboard.getContents(this);
+      if (t != null) {
+        try {
+          final String pasteShape = (String) t.getTransferData(DataFlavor.stringFlavor);
+          final String newShape;
+
+          if ((frame == null) || !frame.isVisible()) {
+            init(zone, false);
+          }
+
+          final StringBuilder buffer = new StringBuilder();
+          final StringTokenizer st = new StringTokenizer(pasteShape);
+          while (st.hasMoreTokens()) {
+            buffer.append(st.nextToken());
+            if (st.hasMoreTokens()) {
+              buffer.append(';');
+            }
+          }
+          newShape = buffer.toString();
+          editor.setPolygon(PolygonEditor.stringToPolygon(newShape));
+          setValue((Object) getValueString());
+          editor.repaint();
+
+          GameModule.getGameModule().warn(Resources.getString("Editor.Zone.pasted", editor.getPolygon().npoints, pasteShape));
+        }
+        catch (UnsupportedFlavorException | IOException e) {
+          // Can't Paste This DUN NUH NUH Nunh...
+        }
+      }
     }
 
     @Override
@@ -672,6 +739,10 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     }
 
     private void init(Zone zone) {
+      init(zone, true);
+    }
+
+    private void init(Zone zone, boolean show) {
       editor = new PolygonEditor(new Polygon(zone.myPolygon.xpoints, zone.myPolygon.ypoints, zone.myPolygon.npoints)) {
         private static final long serialVersionUID = 1L;
 
@@ -718,6 +789,8 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       labels.setAlignmentX(0.0f);
       frame.add(labels);
 
+      final JPanel bPanel = new JPanel(new MigLayout("ins 0")); // NON-NLS
+
       final JButton direct = new JButton(Resources.getString("Editor.Zone.set_coordinates_directly"));
       direct.setFocusable(false);
       direct.addActionListener(e -> {
@@ -734,11 +807,29 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
           }
           newShape = buffer.toString();
           editor.setPolygon(PolygonEditor.stringToPolygon(newShape));
+
+          // We've just manually defined a completely new polygon, so center on it.
+          final Rectangle polyBounds = editor.getPolygon().getBounds();
+          final Point polyCenter = new Point(polyBounds.x + polyBounds.width / 2,
+            polyBounds.y + polyBounds.height / 2);
+          editor.center(polyCenter);
+
           editor.repaint();
         }
       });
       direct.setAlignmentX(0.0f);
-      frame.add(direct);
+      bPanel.add(direct);
+
+      final JButton delete = new JButton(Resources.getString("Editor.Zone.delete_all_points"));
+      delete.setFocusable(false);
+      delete.addActionListener(e -> {
+        editor.setPolygon(PolygonEditor.stringToPolygon(""));
+        editor.repaint();
+      });
+      delete.setAlignmentX(0.0f);
+      bPanel.add(delete);
+
+      frame.add(bPanel);
 
       scroll = new AdjustableSpeedScrollPane(editor, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
       editor.setScroll(scroll);
@@ -791,7 +882,10 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
       frame.setSize(Math.min(frame.getWidth(), d.width * 2 / 3), Math.min(frame.getHeight(), d.height * 2 / 3));
       frame.setTitle(zone.getConfigureName());
-      frame.setVisible(true);
+
+      if (show) {
+        frame.setVisible(true);
+      }
     }
 
     @Override
