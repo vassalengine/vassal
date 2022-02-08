@@ -578,13 +578,13 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       for (final Region r : selectedRegions) {
         final Point pt = r.getOrigin();
         if (any) {
-          sb.append(" ");
+          sb.append(' ');
         }
-        sb.append("(")
+        sb.append('(')
           .append(Math.round(pt.x))
           .append(',')
           .append(Math.round(pt.y))
-          .append(")");
+          .append(')');
         any = true;
       }
       coords.setText(sb.toString());
