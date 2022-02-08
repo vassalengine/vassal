@@ -463,6 +463,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     protected JPanel view;
     protected JScrollPane scroll;
     protected JPopupMenu myPopup;
+    protected JLabel coords;
 
     protected List<Region> selectedRegions = new ArrayList<>();
     protected Region lastClickedRegion = null;
@@ -524,6 +525,12 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       final JLabel mess = new JLabel(SystemUtils.IS_OS_MAC ? Resources.getString("Editor.IrregularGrid.drag_and_drop_mac") : Resources.getString("Editor.IrregularGrid.drag_and_drop")); //$NON-NLS-1$
       mess.setAlignmentY(CENTER_ALIGNMENT);
       bottomPanel.add(mess);
+
+      coords = new JLabel("");
+      coords.setAlignmentY(CENTER_ALIGNMENT);
+      bottomPanel.add(coords);
+      updateCoords();
+
       bottomPanel.add(buttonPanel);
 
       add(bottomPanel, BorderLayout.SOUTH);
@@ -563,6 +570,25 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       scroll.revalidate();
       pack();
       repaint();
+    }
+
+    protected void updateCoords() {
+      final StringBuilder sb = new StringBuilder();
+      boolean any = false;
+      for (final Region r : selectedRegions) {
+        final Point pt = r.getOrigin();
+        if (any) {
+          sb.append(" ");
+        }
+        sb.append("(")
+          .append(Math.round(pt.x))
+          .append(',')
+          .append(Math.round(pt.y))
+          .append(")");
+        any = true;
+      }
+      coords.setText(sb.toString());
+      coords.repaint();
     }
 
     protected void setDirty(boolean b) {
@@ -777,6 +803,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
           r.move(x, y, this);
           config.setDirty(true);
         }
+        config.updateCoords();
         repaint();
       }
 
@@ -946,8 +973,9 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         if (lastClickedRegion != null) {
           if (e.getClickCount() >= 2) { // Double click show properties
             if (lastClickedRegion.getConfigurer() != null) {
-              final Action a = new EditPropertiesAction(lastClickedRegion, null, this);
+              final Action a = new EditRegionAction(lastClickedRegion, null, this);
               a.actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Edit")); //$NON-NLS-1$
+              updateCoords();
             }
           }
         }
@@ -1048,8 +1076,9 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         select(r);
         lastClickedRegion = r;
         setDirty(true);
-        final Action a = new EditPropertiesAction(lastClickedRegion, null, this);
+        final Action a = new EditRegionAction(lastClickedRegion, null, this);
         a.actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Edit")); //$NON-NLS-1$
+        updateCoords();
         view.repaint();
       }
       else if (command.equals(DELETE_REGION)) {
@@ -1060,6 +1089,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
           setDirty(true);
         }
         selectedRegions.clear();
+        updateCoords();
         view.repaint();
       }
       else if (command.equals(MOVE_INTO_ZONE)) {
@@ -1076,6 +1106,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
               setDirty(true);
               num++;
             }
+            updateCoords();
             scrollToZone();
             view.repaint();
           }
@@ -1089,6 +1120,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         if (lastClickedRegion != null) {
           final Action a = new EditRegionAction(lastClickedRegion, null, this);
           a.actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Edit")); //$NON-NLS-1$
+          updateCoords();
         }
       }
     }
@@ -1109,7 +1141,6 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         owner = dialogOwner;
         origRegion = new Region(target);
         region = target;
-
       }
 
       @Override
@@ -1125,6 +1156,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
                   !region.getName().equals(origRegion.getName()) ||
                   !region.getOrigin().equals(origRegion.getOrigin()));
               owner.repaint();
+              owner.updateCoords();
             }
           });
           openWindows.put(target, w);
@@ -1139,6 +1171,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       if (!selectedRegions.contains(r)) {
         selectedRegions.add(r);
       }
+      updateCoords();
       view.repaint(r.getSelectionRect());
     }
 
@@ -1149,6 +1182,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         if (lastClickedRegion == r) {
           lastClickedRegion = null;
         }
+        updateCoords();
         view.repaint(r.getSelectionRect());
       }
     }
@@ -1159,6 +1193,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         view.repaint(r.getSelectionRect());
       }
       selectedRegions.clear();
+      updateCoords();
     }
 
     public Rectangle getSelectionRect() {
@@ -1304,7 +1339,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       for (final Region r : selectedRegions) {
         r.move(dx, dy, view);
       }
-
+      updateCoords();
       view.repaint();
       e.consume();
     }
