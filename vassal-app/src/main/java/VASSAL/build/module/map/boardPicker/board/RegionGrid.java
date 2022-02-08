@@ -540,7 +540,19 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
             rect.add(p);
           }
         }
-        scroll.getViewport().scrollRectToVisible(rect);
+
+        final Rectangle r = new Rectangle(0, 0, 800, 600);
+        if (rect.getWidth() < r.getWidth()/2) {
+          rect.x = (int) (rect.x + rect.getWidth()/2 - r.getWidth()/2);
+          rect.width = (int)r.getWidth()/2;
+        }
+
+        if (rect.getHeight() < r.getHeight()/2) {
+          rect.y = (int) (rect.y + rect.getHeight()/2 - r.getHeight()/2);
+          rect.height = (int)r.getHeight()/2;
+        }
+
+        view.scrollRectToVisible(rect);
       }
       else {
         // If no regions yet, scroll to the Zone that we're in, if we're in a Zone
@@ -920,11 +932,20 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
     protected void scrollToZone() {
       final Zone z = grid.getZone();
-      final Rectangle polyBounds = z.getBounds();
-      final Point polyCenter = new Point(polyBounds.x + polyBounds.width / 2,
-        polyBounds.y + polyBounds.height / 2);
-      final Rectangle rect = new Rectangle(polyCenter);
-      scroll.getViewport().scrollRectToVisible(rect);
+      if (z != null) {
+        final Rectangle zb = z.getBounds();
+
+        final Point zc = new Point(
+          zb.x + zb.width / 2,
+          zb.y + zb.height / 2
+        );
+
+        final Rectangle r = view.getVisibleRect();
+        r.x = zc.x - r.width / 2;
+        r.y = zc.y - r.height / 2;
+
+        view.scrollRectToVisible(r);
+      }
     }
 
     protected static final String ADD_REGION = Resources.getString("Editor.IrregularGrid.add_region"); //$NON-NLS-1$
