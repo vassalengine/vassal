@@ -65,6 +65,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.datatransfer.StringSelection;
 import java.awt.dnd.DnDConstants;
@@ -702,6 +703,30 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         final Rectangle b = getVisibleRect();
         g.clearRect(b.x, b.y, b.width, b.height);
         myBoard.draw(g, 0, 0, 1.0, this);
+
+        final Zone zone = grid.getZone();
+        if (zone != null) {
+          final Polygon polygon = zone.getPolygon();
+          if ((polygon != null) && (polygon.npoints > 0)) {
+            final Graphics2D g2d = (Graphics2D) g;
+            g2d.addRenderingHints(SwingUtils.FONT_HINTS);
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+              RenderingHints.VALUE_ANTIALIAS_ON);
+
+            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.33F));
+
+            // fill the zone
+            g2d.setColor(Color.WHITE);
+            g2d.fill(polygon);
+
+            // draw the zone
+            g2d.setComposite(AlphaComposite.SrcAtop);
+            g2d.setColor(Color.BLACK);
+            g2d.setStroke(new BasicStroke(2.0F));
+            g2d.drawPolygon(polygon);
+          }
+        }
+
         final Rectangle bounds =
           new Rectangle(new Point(), myBoard.bounds().getSize());
         grid.forceDraw(g, bounds, bounds, 1.0, false);
