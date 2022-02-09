@@ -53,7 +53,13 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
+import net.miginfocom.swing.MigLayout;
 
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import java.awt.Component;
 import java.awt.Frame;
 import java.awt.Graphics;
@@ -64,14 +70,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-
-import net.miginfocom.swing.MigLayout;
 
 /**
  * This trait adds a command that sends a piece to another location. Options for the
@@ -531,8 +529,8 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         setProperty(BACK_MAP, getMap());
         setProperty(BACK_POINT, getPosition());
 
-        // Mark moved and generate movement trail if compatibility pref turned on
-        if (Boolean.TRUE.equals(GameModule.getGameModule().getPrefs().getValue(GlobalOptions.SEND_TO_LOCATION_MOVEMENT_TRAILS))) {
+        // Mark moved and generate movement trail if global options setting is on
+        if (GlobalOptions.getInstance().isSendToLocationMoveTrails()) {
           outer.setProperty(Properties.MOVED, Boolean.TRUE);
         }
 
@@ -569,8 +567,8 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       setProperty(BACK_MAP, null);
       setProperty(BACK_POINT, null);
 
-      // Mark moved and generate movement trail if compatibility pref turned on
-      if (Boolean.TRUE.equals(GameModule.getGameModule().getPrefs().getValue(GlobalOptions.SEND_TO_LOCATION_MOVEMENT_TRAILS))) {
+      // Mark moved and generate movement trail if global options setting
+      if (GlobalOptions.getInstance().isSendToLocationMoveTrails()) {
         outer.setProperty(Properties.MOVED, Boolean.TRUE);
       }
 
@@ -614,8 +612,8 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
             // From here down we're just duplicating a send-to-location command for the Cargo piece
 
             final ChangeTracker tracker = new ChangeTracker(piece);
-            // Mark moved and generate movement trail if compatibility pref turned on
-            if (Boolean.TRUE.equals(GameModule.getGameModule().getPrefs().getValue(GlobalOptions.SEND_TO_LOCATION_MOVEMENT_TRAILS))) {
+            // Mark moved and generate movement trail if Global Options setting
+            if (GlobalOptions.getInstance().isSendToLocationMoveTrails()) {
               piece.setProperty(Properties.MOVED, Boolean.TRUE);
             }
 

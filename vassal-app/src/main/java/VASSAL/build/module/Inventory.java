@@ -350,19 +350,19 @@ public class Inventory extends AbstractToolbarItem
       @Override
       public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
 
-        //BR// Commenting this out is a gaping security hole, but there was "too much whining" about it.
-        /*
-        if (value instanceof CounterNode) {
-          final GamePiece piece = ((CounterNode) value).getCounter().getPiece();
-          if (piece != null) {
-            if (!isVisibleToMe(piece)) {
-              super.getTreeCellRendererComponent(tree, Resources.getString("Inventory.unknown_piece"), sel, expanded, false, row, hasFocus);
-              setIcon(null);
-              return this;
+        //BR// Depending on Global Options setting, maybe don't allow seeing stuff in private windows that current player doesn't have access to.
+        if (!GlobalOptions.getInstance().isInventoryVisibleToAll()) {
+          if (value instanceof CounterNode) {
+            final GamePiece piece = ((CounterNode) value).getCounter().getPiece();
+            if (piece != null) {
+              if (!isVisibleToMe(piece)) {
+                super.getTreeCellRendererComponent(tree, Resources.getString("Inventory.unknown_piece"), sel, expanded, false, row, hasFocus);
+                setIcon(null);
+                return this;
+              }
             }
           }
         }
-        */
 
         super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf && !foldersOnly, row, hasFocus);
         if (value instanceof CounterNode) {

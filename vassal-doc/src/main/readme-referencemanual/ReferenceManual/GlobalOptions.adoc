@@ -30,6 +30,10 @@ It is recommended that for new modules you set this option to _Always_, as the o
 
 *Toolbars On Closed Map Windows Accept Hotkeys:*:: This option, if enabled, will allow toolbar buttons and items (such as Global Key Commands, Dice rollers, and Global Property setters) to receive Global Hotkeys sent by Game Pieces even when their Map Window is currently closed. This option is "off" by default, meaning that the toolbar items on windows are disabled while the windows are closed.
 
+*Inventory can see into Private Windows not accessible to current player:*:: This option, if enabled, allows <<Inventory.adoc#top,Inventory>> windows to see into private windows and hands even if the current player doesn't normally have access to those windows.
+
+*Send-to-Location trait generates Movement Trails:*:: If this option is enabled, Send-to-Location traits generate Movement Trails (and mark pieces moved) when they cause a piece to move, assuming the piece in question has a Movement Trail trait of course.
+
 *Icons and hotkeys:*:: You can specify your own button icons and keyboard shortcuts for the logfile step/undo buttons and the button that shows/hides the server controls.
 
 |image:images/GlobalOptions.png[]
