@@ -193,15 +193,17 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
   }
 
   protected void cancelSetMode() {
-    canSetButton.setVisible(false);
-    setButton.setVisible(true);
-    view.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-    setMode = false;
-    grid.setVisible(saveGridVisible);
-    if (grid.getGridNumbering() != null && saveNumberingVisible) {
-      ((RegularGridNumbering) grid.getGridNumbering()).setAttribute(RegularGridNumbering.VISIBLE, saveNumberingVisible);
+    if (setMode) {
+      canSetButton.setVisible(false);
+      setButton.setVisible(true);
+      view.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+      setMode = false;
+      grid.setVisible(saveGridVisible);
+      if (grid.getGridNumbering() != null && saveNumberingVisible) {
+        ((RegularGridNumbering) grid.getGridNumbering()).setAttribute(RegularGridNumbering.VISIBLE, saveNumberingVisible);
+      }
+      repaint();
     }
-    repaint();
   }
 
   protected void startSetMode() {
