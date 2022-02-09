@@ -75,6 +75,8 @@ Selecting a folder will send the command to all pieces within that folder.
 
 *Draw piece images:*::  If selected, the tree will draw reduced-size images of the piece at the specified zoom factor.
 
+*Show zoom in/out buttons:*:: If selected, + and - buttons will be shown, allowing the user to zoom in/out the size of any icons shown in the inventory window.
+
 *Zoom factor:*::  The magnification factor for drawing pieces in the tree.
 
 *Available to these sides:*::  The Toolbar button will only be visible to the <<GameModule.adoc#Definition_of_Player_Sides,player sides>> listed here.
