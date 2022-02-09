@@ -262,6 +262,9 @@ public class Inventory extends AbstractToolbarItem
 
     zoomMinusButton.setVisible(zoomShow);
     zoomPlusButton.setVisible(zoomShow);
+
+    zoomPlusButton.repaint();
+    zoomMinusButton.repaint();
   }
 
   /**
@@ -532,6 +535,8 @@ public class Inventory extends AbstractToolbarItem
 
       zoomPlusButton.setVisible(drawPieces);
       zoomMinusButton.setVisible(drawPieces);
+      zoomPlusButton.repaint();
+      zoomMinusButton.repaint();
 
       frame.setVisible(true);
     }
@@ -1053,6 +1058,9 @@ public class Inventory extends AbstractToolbarItem
 
       zoomPlusButton.setVisible(zoomShow);
       zoomMinusButton.setVisible(zoomShow);
+
+      zoomPlusButton.repaint();
+      zoomMinusButton.repaint();
     }
   }
 
