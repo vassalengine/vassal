@@ -2,6 +2,9 @@
 
 * 11218: Grid Editor incorrectly changes some grid settings on Cancel
 * 11216: Inventory has checkbox to enable zoom (defaults off)
+* 11209: Global Options settings for (a) Inventory Security, and (b)
+    Send-to-Location generating move trails. Inventory now defaults to "old
+    behavior" on seeing private windows, but can be turned to secure.
 * 11205: Improved Polygon Editor (cut/paste vertices, delete polygon) &
     Improved Region Editor (drag-at-edge works again, move regions inside of
     zone)
