@@ -1,5 +1,6 @@
 3.6.5 - ???
 
+* 11218: Grid Editor incorrectly changes some grid settings on Cancel
 * 11205: Improved Polygon Editor (cut/paste vertices, delete polygon) &
     Improved Region Editor (drag-at-edge works again, move regions inside of
     zone)

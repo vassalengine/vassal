@@ -25,6 +25,7 @@
         { "num": 11117, "desc": "Log files can be fast-forwarded and appended to" }
       ],
       "bug_fixes": [
+        { "num": 11218, "desc": "Grid Editor incorrectly changes some grid settings on Cancel" },
         { "num": 11196, "desc": "Game Refresher should not refresh stacks not on maps" },
         { "num": 11186, "desc": "Disable load and edit actions for null modules"},
         { "num": 11179, "desc": "Chart Windows display their names properly in their window titles" },
