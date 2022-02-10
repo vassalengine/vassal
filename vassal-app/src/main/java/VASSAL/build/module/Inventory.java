@@ -260,8 +260,8 @@ public class Inventory extends AbstractToolbarItem
     frame.add(initButtons());
     frame.setSize(250, 350);
 
-    zoomMinusButton.setVisible(zoomShow);
-    zoomPlusButton.setVisible(zoomShow);
+    zoomMinusButton.setVisible(zoomShow && drawPieces);
+    zoomPlusButton.setVisible(zoomShow && drawPieces);
 
     zoomPlusButton.repaint();
     zoomMinusButton.repaint();
@@ -1056,8 +1056,8 @@ public class Inventory extends AbstractToolbarItem
       zoomPlusButton.setEnabled(zoomLevel < 2);
       zoomMinusButton.setEnabled(zoomLevel > 0);
 
-      zoomPlusButton.setVisible(zoomShow);
-      zoomMinusButton.setVisible(zoomShow);
+      zoomPlusButton.setVisible(zoomShow && drawPieces);
+      zoomMinusButton.setVisible(zoomShow && drawPieces);
 
       zoomPlusButton.repaint();
       zoomMinusButton.repaint();
