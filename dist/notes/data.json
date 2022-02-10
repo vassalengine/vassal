@@ -95,35 +95,6 @@
         { "num": 11059, "desc": "Right Click menu added to Show Error Log window in Module Manager" },
         { "num": 11054, "desc": "Don't let old versions of PoG load and crash" }
       ]
-    },
-    {
-      "in": "3.6.3",
-      "since": "3.6.2",
-      "new_features": [
-      ],
-      "bug_fixes": [
-        { "num": 11008, "desc": "Prevent URLConnection cache from holding edited modules open on Windows" },
-        { "num": 11007, "desc": "Fix ArrayIndexOutOfBoundsException in StringEnumConfigurer" },
-        { "num": 11003, "desc": "Fixed bad tile message; added plea for help with TileNotFoundExceptions" },
-        { "num": 10997, "desc": "Editor: Don't close window when moving Map or other components relative to Map" },
-        { "num": 10992, "desc": "Fix NPE in SpecialDiceButton.getAttributeValueString() after deleting tooltip" },
-        { "num": 10985, "desc": "Reset save dialog filename after close of game" },
-        { "num": 10983, "desc": "Fix bad Inventory.Counter.equals()" },
-        { "num": 10981, "desc": "Reinstate AbstractBuildable.getComponents()" },
-        { "num": 10979, "desc": "Prevent Save Game from clobbering log being replayed" },
-        { "num": 10970, "desc": "Fix problem where rotated pieces did not move-fixed-distance in correct direction" },
-        { "num": 10969, "desc": "Fix Refresh of Pieces in Decks, remove old pieces completely" },
-        { "num": 10964, "desc": "Fix Deal-to-Side Mask bug - Finish evaluating expression properly" },
-        { "num": 10954, "desc": "Fix stack overflow infinite loop if invalid property name put in blank" },
-        { "num": 10947, "desc": "Collect diagnostic information for an SSLHandshakeException" },
-        { "num": 10940, "desc": "Fix NPE in TurnLevel" },
-        { "num": 10942, "desc": "Fix NPE in SendToLocation" },
-        { "num": 10934, "desc": "Repaint the background in the SetupStack editor" },
-        { "num": 10931, "desc": "Fix NPE in KeyCommand.makeMenuText()" }
-      ],
-      "other_improvements": [
-        { "num": 10961, "desc": "Use heuristic value for initial tiler heap; use 3/4 physical RAM as max heap" }
-      ]
     }
   ]
 }
