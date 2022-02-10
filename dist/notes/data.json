@@ -72,39 +72,6 @@
         { "num": 11107, "desc": "Warn if Decks or Stacks defined before [Map Boards]" },
         { "num": 11098, "desc": "Screenshot \"typo\" fix for Turn Tracker's global hotkey" }
       ]
-    },
-    {
-      "in": "3.6.4",
-      "since": "3.6.3",
-      "new_features": [
-        { "num": 11079, "desc": "Main window & map accept Drag-and-Drop for loading saves and logs" },
-        { "num": 11032, "desc": "List Key Commands tool for Editor" }
-      ],
-      "bug_fixes": [
-        { "num": 11073, "desc": "Fix situation where Send-to-Location throws exceptions when it can't find target counters" },
-        { "num": 11069, "desc": "Fix crash in Load Deck when an invalid deck file selected in file picker" },
-        { "num": 11067, "desc": "Fix NPE in SetupStack.isOwningBoardActive()" },
-        { "num": 11065, "desc": "Improved error handling when a temp file can't be created" },
-        { "num": 11062, "desc": "Fix problem on Windows where a click at edge made it slowly scroll all the way in that direction" },
-        { "num": 11060, "desc": "Fixes to various Toolbar Buttons that weren't respecting the \"disable-on-global-property\" settings" },
-        { "num": 11056, "desc": "Don't attempt to send to already-hung-up connection" },
-        { "num": 11053, "desc": "Suppress Empty Deck Hotkeys when refreshing game" },
-        { "num": 11041, "desc": "Inventory windows respond to hide-if-property-true" },
-        { "num": 11039, "desc": "Display Loaded message instead of Cancelled when refreshing Predefined Setups" },
-        { "num": 11038, "desc": "Allow 'Use Same Boards' option on Private Map to be removed" },
-        { "num": 11031, "desc": "Turn Tracker List configure box missing labels" },
-        { "num": 11025, "desc": "Guard against ClassCastException when MultiActionButtons change property values" },
-        { "num": 11024, "desc": "Communicating with tiler over socket fails for some users; use stdout instead" },
-        { "num": 11020, "desc": "Don't display lock option for P2P rooms, which aren't lockable" },
-        { "num": 11011, "desc": "Fixed typo in DiceButton docs" }
-      ],
-      "other_improvements": [
-        { "num": 11076, "desc": "Editor's search function (and List Key Commands) will now \"find\" the keys for Undo & Step Forward" },
-        { "num": 11074, "desc": "Support Send-to-Location source/target matching with $...$ expressions" },
-        { "num": 11070, "desc": "Documentation updates for DrawingMouseover / DrawingMouseover Index" },
-        { "num": 11059, "desc": "Right Click menu added to Show Error Log window in Module Manager" },
-        { "num": 11054, "desc": "Don't let old versions of PoG load and crash" }
-      ]
     }
   ]
 }
