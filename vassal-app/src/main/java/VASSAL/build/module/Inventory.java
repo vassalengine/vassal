@@ -533,8 +533,8 @@ public class Inventory extends AbstractToolbarItem
     else {
       refresh();
 
-      zoomPlusButton.setVisible(drawPieces);
-      zoomMinusButton.setVisible(drawPieces);
+      zoomPlusButton.setVisible(zoomShow && drawPieces);
+      zoomMinusButton.setVisible(zoomShow && drawPieces);
       zoomPlusButton.repaint();
       zoomMinusButton.repaint();
 
