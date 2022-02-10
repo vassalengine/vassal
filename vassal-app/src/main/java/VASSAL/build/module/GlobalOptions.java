@@ -47,7 +47,14 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.swing.SwingUtils;
+import org.apache.commons.lang3.SystemUtils;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 
+import javax.swing.JLabel;
 import java.awt.Container;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,15 +65,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
-import javax.swing.JLabel;
-
-import org.apache.commons.lang3.SystemUtils;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
 
 /**
  * GlobalOptions is a junction point for several flavors of "preferences"-related categories. It also configures the
@@ -94,6 +92,8 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
   public static final String CHATTER_HTML_SUPPORT = "chatterHTMLSupport"; //$NON-NLS-1$
   public static final String HOTKEYS_ON_CLOSED_WINDOWS = "hotKeysOnClosedWindows"; //NON-NLS
   public static final String TRANSLATABLE_SUPPORT = "translatableSupport"; //NON-NLS
+  public static final String INVENTORY_VISIBLE_TO_ALL = "inventoryForAll"; //NON-NLS
+  public static final String SEND_TO_LOCATION_MOVE_TRAILS = "sendToLocationMoveTrails"; //NON-NLS
 
   // Hybrid preference settings
   public static final String ALWAYS = "Always"; //$NON-NLS-1$
@@ -113,7 +113,7 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
   public static final String CLASSIC_MFD = "classicMfd"; //$NON-NLS-1$
   public static final String MAC_LEGACY = "macLegacy"; //$NON-NLS-1$
   public static final String OLD_CONTINUATION = "oldContinuation"; //NON-NLS
-  public static final String SEND_TO_LOCATION_MOVEMENT_TRAILS = "stlMovementTrails"; //NON-NLS
+  public static final String SEND_TO_LOCATION_MOVEMENT_TRAILS = "stlMovementTrails"; //NON-NLS  //** NOT USED as of 3.6.5 **
 
   // Sound Tab preferences
   public static final String SOUND_GLOBAL_MUTE = "soundGlobalMute"; //NON-NLS
@@ -143,6 +143,8 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
   private String markMoved = NEVER;          // **NO LONGER USED**
   private String chatterHTMLSupport = NEVER; // "Enable HTML Chat" - > defaults to forced off
   private String hotKeysOnClosedWindows = NEVER; // Hotkeys on Closed Windows -> defaults to off
+  private String inventoryVisibleToAll = ALWAYS; // Inventory can see private windows -> default to on
+  private String sendToLocationMoveTrails = NEVER; // Send-to-Location generates movement trails (default to off)
 
   // Configurable prompt string for unmask-my-pieces
   private String promptString = Resources.getString("GlobalOptions.opponents_can_unmask_my_pieces");
@@ -305,15 +307,6 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
     oldContinuationConf.addPropertyChangeListener(evt -> setWarnOldContinuation(oldContinuationConf.getValueBoolean()));
     prefs.addOption(Resources.getString("Prefs.compatibility_tab"), oldContinuationConf);
 
-    // Send to Location to generate movement trails. Note the default is TRUE which is a change from existing (broken) behaviour
-    // Affected module owners will need to turn this preference off.
-    final BooleanConfigurer sendToLocationMovementTrails = new BooleanConfigurer(
-      SEND_TO_LOCATION_MOVEMENT_TRAILS,
-      Resources.getString("GlobalOptions.send_to_location_movement_trails"),
-      Boolean.TRUE
-    );
-    prefs.addOption(Resources.getString("Prefs.compatibility_tab"), sendToLocationMovementTrails);
-
     ////////////////
     // SOUNDS TAB //
     ////////////////
@@ -466,7 +459,9 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
       Resources.getString("Editor.GlobalOption.autoreport_moves"), //$NON-NLS-1$
       Resources.getString("Editor.GlobalOption.playerid_format"), //$NON-NLS-1$
       Resources.getString("Editor.GlobalOption.chatter_html_support"), //$NON-NLS-1$
-      Resources.getString("Editor.GlobalOption.hot_keys_on_closed_windows") //NON-NLS
+      Resources.getString("Editor.GlobalOption.hot_keys_on_closed_windows"), //NON-NLS
+      Resources.getString("Editor.GlobalOption.inventory_visible_to_all"),
+      Resources.getString("Editor.GlobalOption.send_to_location_movement_trails")
     };
   }
 
@@ -483,7 +478,9 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
         AUTO_REPORT,
         PLAYER_ID_FORMAT,
         CHATTER_HTML_SUPPORT,
-        HOTKEYS_ON_CLOSED_WINDOWS
+        HOTKEYS_ON_CLOSED_WINDOWS,
+        INVENTORY_VISIBLE_TO_ALL,
+        SEND_TO_LOCATION_MOVE_TRAILS
       )
     );
 
@@ -504,7 +501,9 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
       Prompt.class,
       PlayerIdFormatConfig.class,
       PromptOnOff.class,
-      PromptOnOff.class
+      PromptOnOff.class,
+      PromptOnOff.class,
+      PromptOnOff.class,
     };
   }
 
@@ -629,6 +628,12 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
     else if (HOTKEYS_ON_CLOSED_WINDOWS.equals(key)) {
       return hotKeysOnClosedWindows;
     }
+    else if (SEND_TO_LOCATION_MOVE_TRAILS.equals(key)) {
+      return sendToLocationMoveTrails;
+    }
+    else if (INVENTORY_VISIBLE_TO_ALL.equals(key)) {
+      return inventoryVisibleToAll;
+    }
     else if (AUTO_REPORT.equals(key)) {
       return autoReport;
     }
@@ -701,6 +706,12 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
     else if (HOTKEYS_ON_CLOSED_WINDOWS.equals(key)) {
       hotKeysOnClosedWindows = (String) value;
     }
+    else if (SEND_TO_LOCATION_MOVE_TRAILS.equals(key)) {
+      sendToLocationMoveTrails = (String) value;
+    }
+    else if (INVENTORY_VISIBLE_TO_ALL.equals(key)) {
+      inventoryVisibleToAll = (String) value;
+    }
     else if (AUTO_REPORT.equals(key)) {
       autoReport = (String) value;
       if (PROMPT.equals(autoReport)) {
@@ -769,6 +780,16 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
   /** @return designer's setting for allowing hotkeys on closed windows */
   public boolean isHotKeysOnClosedWindows() {
     return isEnabled(hotKeysOnClosedWindows, HOTKEYS_ON_CLOSED_WINDOWS);
+  }
+
+  /** @return designer's setting for whether send-to-location generates movement trails */
+  public boolean isSendToLocationMoveTrails() {
+    return isEnabled(sendToLocationMoveTrails, SEND_TO_LOCATION_MOVE_TRAILS);
+  }
+
+  /** @return designer's setting for whether inventory can see units on private windows that current player doesn't have access to */
+  public boolean isInventoryVisibleToAll() {
+    return isEnabled(inventoryVisibleToAll, INVENTORY_VISIBLE_TO_ALL);
   }
 
   /** @return - NO LONGER USED */
