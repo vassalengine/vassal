@@ -51,6 +51,7 @@
         { "num": 11081, "desc": "Prevent GameRefresher from changing visual order of pieces" }
       ],
       "other_improvements": [
+        { "num": 11216, "desc": "Inventory has checkbox to enable zoom (defaults off)" },
         { "num": 11205, "desc": "Improved Polygon Editor (cut/paste vertices, delete polygon) & Improved Region Editor (drag-at-edge works again, move regions inside of zone)" },
         { "num": 11197, "desc": "Better auto-description for Translatable Message trait and BasicPiece" },
         { "num": 11194, "desc": "The errorlog console command is available at all times" },
