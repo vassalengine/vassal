@@ -697,6 +697,13 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     else if (child.getClass() == CardSlot.class && isAllowedChildClass(parent, PieceSlot.class)) {
       return new PieceSlot((CardSlot) child);
     }
+    // Handle the conversion between zone properties & global/map properties
+    else if (child.getClass() == ZoneProperty.class && isAllowedChildClass(parent, GlobalProperty.class)) {
+      return new GlobalProperty((GlobalProperty) child);
+    }
+    else if (child.getClass() == GlobalProperty.class && isAllowedChildClass(parent, ZoneProperty.class)) {
+      return new ZoneProperty((GlobalProperty) child);
+    }
     // Handle conversion between different types of GKCs. Note startup GKC's cannot be created this way.
     // Any non-Startup GKC pasted at the module level will be transformed to a GlobalKeyCommand
     // Startup GKCs will always be pasted as themselves at the module level
