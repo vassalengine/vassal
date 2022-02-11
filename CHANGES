@@ -1,5 +1,8 @@
 3.6.6 - ???
 
+* 11223: Copy/Paste conversions fixed for Zone Properties to/from Global and
+    Map Properties
+
 3.6.5 - 10 February 2022
 
 * 11218: Grid Editor incorrectly changes some grid settings on Cancel
