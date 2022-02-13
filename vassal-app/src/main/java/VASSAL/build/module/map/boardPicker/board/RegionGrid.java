@@ -1006,6 +1006,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     protected static final String PROPERTIES = Resources.getString("Editor.properties"); //$NON-NLS-1$
     protected static final String MOVE_INTO_ZONE = Resources.getString("Editor.IrregularGrid.move_into_zone");
     protected static final String SHOW_ZONE = Resources.getString("Editor.IrregularGrid.show_zone");
+    protected static final String SELECT_ALL = Resources.getString("Editor.IrregularGrid.select_all");
 
     protected void doPopupMenu(MouseEvent e) {
       myPopup = new JPopupMenu();
@@ -1028,6 +1029,12 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       menuItem = new JMenuItem(SHOW_ZONE);
       menuItem.addActionListener(this);
       menuItem.setEnabled(grid.getZone() != null);
+      myPopup.add(menuItem);
+
+      myPopup.addSeparator();
+
+      menuItem = new JMenuItem(SELECT_ALL);
+      menuItem.addActionListener(this);
       myPopup.add(menuItem);
 
       myPopup.addSeparator();
@@ -1082,6 +1089,9 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         view.repaint();
       }
       else if (command.equals(DELETE_REGION)) {
+        if ((lastClickedRegion != null) && !selectedRegions.contains(lastClickedRegion)) {
+          selectedRegions.add(lastClickedRegion);
+        }
         for (final Region r : selectedRegions) {
           r.removeFrom(grid);
           grid.remove(r);
@@ -1091,6 +1101,11 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         selectedRegions.clear();
         updateCoords();
         view.repaint();
+      }
+      else if (command.equals(SELECT_ALL)) {
+        for (final Region r : grid.regionList.values()) {
+          select(r);
+        }
       }
       else if (command.equals(MOVE_INTO_ZONE)) {
         final Zone zone = grid.getZone();
