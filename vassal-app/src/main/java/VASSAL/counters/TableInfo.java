@@ -201,7 +201,10 @@ public class TableInfo extends Decorator implements TranslatablePiece {
       frame.addWindowListener(new WindowAdapter() {
         @Override
         public void windowClosing(WindowEvent evt) {
-          table.editingStopped(null);
+          if (table.isEditing()) {
+            table.getCellEditor().stopCellEditing();
+          }
+
           final GamePiece outer = Decorator.getOutermost(TableInfo.this);
           if (outer.getId() != null) {
             GameModule.getGameModule().sendAndLog(new ChangePiece(outer.getId(), oldState, outer.getState()));
