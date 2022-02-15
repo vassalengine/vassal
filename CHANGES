@@ -1,5 +1,6 @@
 3.6.6 - ???
 
+* 11232: Stop edit of table when TableInfo is closed
 * 11229: Allow 'Select All Regions' when defining them; right click to delete
     now works for single unselected region
 * 11223: Copy/Paste conversions fixed for Zone Properties to/from Global and
