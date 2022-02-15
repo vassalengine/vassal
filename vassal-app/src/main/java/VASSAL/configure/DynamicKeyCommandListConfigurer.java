@@ -299,7 +299,7 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Confi
    */
   private void updateControls() {
 
-    configControls.setVisible(getListValue().size() > 0);
+    configControls.setVisible(!getListValue().isEmpty());
 
     for (int i = 0; i < entries.size(); i++) {
       entries.get(i).updateVisibility();
