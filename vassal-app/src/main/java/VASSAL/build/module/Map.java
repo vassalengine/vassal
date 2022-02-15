@@ -158,6 +158,7 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Window;
 import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureListener;
@@ -1961,6 +1962,19 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public void dragEnter(DropTargetDragEvent dtde) {
   }
 
+  public boolean isNotPieceDrag(Transferable trans) {
+    final String string;
+    try {
+      string = (String) trans.getTransferData(DataFlavor.stringFlavor);
+    }
+    catch (UnsupportedFlavorException | IOException e) {
+      return true;
+    }
+
+    return !string.isEmpty();
+  }
+
+
   /**
    * Handles scrolling when dragging an gamepiece to the edge of the window
    * @param dtde DropTargetDragEvent
@@ -1973,16 +1987,8 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     if (flavors.contains(DataFlavor.javaFileListFlavor)) return;
 
     if (flavors.contains(DataFlavor.stringFlavor)) {
-      final String string;
-      try {
-        string = (String) dtde.getTransferable().getTransferData(DataFlavor.stringFlavor);
-      }
-      catch (UnsupportedFlavorException | IOException e) {
-        return;
-      }
-
       // Don't scroll for non-blank strings (e.g. html links). A dragged piece has a blank string in current implementation.
-      if (!string.isEmpty()) return;
+      if (isNotPieceDrag(dtde.getTransferable())) return;
 
       scrollAtEdge(dtde.getLocation(), SCROLL_ZONE);
     }
@@ -2015,29 +2021,21 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 
       final List<DataFlavor> flavors = Arrays.asList(dtde.getCurrentDataFlavors());
       if (flavors.contains(DataFlavor.stringFlavor) && !flavors.contains(DataFlavor.javaFileListFlavor)) {
-        final String string;
-        try {
-          string = (String) dtde.getTransferable().getTransferData(DataFlavor.stringFlavor);
-        }
-        catch (UnsupportedFlavorException | IOException e) {
-          return;
-        }
-
         // Don't "complete a piece move" for non-blank strings (e.g. html links). A dragged piece has a blank string in current implementation.
-        if (!string.isEmpty()) return;
-
-        final MouseEvent evt = new MouseEvent(
-          theMap,
-          MouseEvent.MOUSE_RELEASED,
-          System.currentTimeMillis(),
-          0,
-          dtde.getLocation().x,
-          dtde.getLocation().y,
-          1,
-          false,
-          MouseEvent.NOBUTTON
-        );
-        theMap.dispatchEvent(evt);
+        if (!isNotPieceDrag(dtde.getTransferable())) {
+          final MouseEvent evt = new MouseEvent(
+            theMap,
+            MouseEvent.MOUSE_RELEASED,
+            System.currentTimeMillis(),
+            0,
+            dtde.getLocation().x,
+            dtde.getLocation().y,
+            1,
+            false,
+            MouseEvent.NOBUTTON
+          );
+          theMap.dispatchEvent(evt);
+        }
       }
 
       GameModule.getGameModule().getGameState().dropFile(dtde);
