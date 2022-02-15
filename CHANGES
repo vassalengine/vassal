@@ -1,5 +1,7 @@
 3.6.6 - ???
 
+* 11233: UI Cleanup: don't scroll-at-edge the map if a file or link is being
+    dragged instead of a piece
 * 11232: Stop edit of table when TableInfo is closed
 * 11229: Allow 'Select All Regions' when defining them; right click to delete
     now works for single unselected region

@@ -26,6 +26,7 @@
         { "num": 11223, "desc": "Copy/Paste conversions fixed for Zone Properties to/from Global and Map Properties" }
       ],
       "other_improvements": [
+        { "num": 11233, "desc": "UI Cleanup: don't scroll-at-edge the map if a file or link is being dragged instead of a piece" },
         { "num": 11229, "desc": "Allow 'Select All Regions' when defining them; right click to delete now works for single unselected region" }
       ]
     },
