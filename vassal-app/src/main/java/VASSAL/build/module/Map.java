@@ -17,82 +17,6 @@
  */
 package VASSAL.build.module;
 
-import static java.lang.Math.round;
-
-import VASSAL.build.module.map.MoveCameraButton;
-import VASSAL.configure.ComponentDescription;
-import VASSAL.configure.PlayerIdFormattedExpressionConfigurer;
-import VASSAL.configure.SingleChildInstance;
-import VASSAL.counters.Decorator;
-import VASSAL.counters.Mat;
-import java.awt.AWTEventMulticaster;
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Composite;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Insets;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
-import java.awt.Window;
-import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DragGestureListener;
-import java.awt.dnd.DragSource;
-import java.awt.dnd.DropTargetDragEvent;
-import java.awt.dnd.DropTargetDropEvent;
-import java.awt.dnd.DropTargetEvent;
-import java.awt.dnd.DropTargetListener;
-import java.awt.event.HierarchyEvent;
-import java.awt.event.HierarchyListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.geom.AffineTransform;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
-import javax.swing.OverlayLayout;
-import javax.swing.RootPaneContainer;
-import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
-
-import VASSAL.build.module.folder.MapSubFolder;
-import VASSAL.launch.PlayerWindow;
-import VASSAL.preferences.GlobalPrefs;
-
-import VASSAL.tools.DebugControls;
-import VASSAL.tools.NamedKeyStrokeListener;
-import net.miginfocom.swing.MigLayout;
-
-import org.apache.commons.lang3.SystemUtils;
-
-import org.jdesktop.animation.timing.Animator;
-import org.jdesktop.animation.timing.TimingTargetAdapter;
-
-import org.w3c.dom.Element;
-
 import VASSAL.build.AbstractBuildable;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AbstractToolbarItem;
@@ -102,6 +26,7 @@ import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.IllegalBuildException;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.folder.MapSubFolder;
 import VASSAL.build.module.map.BoardPicker;
 import VASSAL.build.module.map.CounterDetailViewer;
 import VASSAL.build.module.map.DefaultPieceCollection;
@@ -121,6 +46,7 @@ import VASSAL.build.module.map.MapCenterer;
 import VASSAL.build.module.map.MapShader;
 import VASSAL.build.module.map.MassKeyCommand;
 import VASSAL.build.module.map.MenuDisplayer;
+import VASSAL.build.module.map.MoveCameraButton;
 import VASSAL.build.module.map.PieceCollection;
 import VASSAL.build.module.map.PieceMover;
 import VASSAL.build.module.map.PieceRecenterer;
@@ -132,12 +58,12 @@ import VASSAL.build.module.map.StackMetrics;
 import VASSAL.build.module.map.TextSaver;
 import VASSAL.build.module.map.Zoomer;
 import VASSAL.build.module.map.boardPicker.Board;
+import VASSAL.build.module.map.boardPicker.board.HexGrid;
 import VASSAL.build.module.map.boardPicker.board.MapGrid;
 import VASSAL.build.module.map.boardPicker.board.Region;
 import VASSAL.build.module.map.boardPicker.board.RegionGrid;
-import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
-import VASSAL.build.module.map.boardPicker.board.HexGrid;
 import VASSAL.build.module.map.boardPicker.board.SquareGrid;
+import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.ZoneHighlight;
 import VASSAL.build.module.properties.ChangePropertyCommandEncoder;
@@ -152,24 +78,29 @@ import VASSAL.command.MoveTracker;
 import VASSAL.configure.AutoConfigurer;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.ColorConfigurer;
+import VASSAL.configure.ComponentDescription;
 import VASSAL.configure.CompoundValidityChecker;
+import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
-import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.MandatoryComponent;
 import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.configure.PlayerIdFormattedExpressionConfigurer;
+import VASSAL.configure.SingleChildInstance;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.ColoredBorder;
 import VASSAL.counters.Deck;
 import VASSAL.counters.DeckVisitor;
 import VASSAL.counters.DeckVisitorDispatcher;
+import VASSAL.counters.Decorator;
 import VASSAL.counters.DragBuffer;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.GlobalCommand;
 import VASSAL.counters.Highlighter;
 import VASSAL.counters.KeyBuffer;
+import VASSAL.counters.Mat;
 import VASSAL.counters.PieceFinder;
 import VASSAL.counters.PieceVisitorDispatcher;
 import VASSAL.counters.Properties;
@@ -177,23 +108,89 @@ import VASSAL.counters.ReportState;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
+import VASSAL.launch.PlayerWindow;
+import VASSAL.preferences.GlobalPrefs;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
 import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.AdjustableSpeedScrollPane;
+import VASSAL.tools.DebugControls;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.NamedKeyStrokeListener;
 import VASSAL.tools.ToolBarComponent;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.WrapLayout;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.SplitPane;
 import VASSAL.tools.swing.SwingUtils;
+import net.miginfocom.swing.MigLayout;
+import org.apache.commons.lang3.SystemUtils;
+import org.jdesktop.animation.timing.Animator;
+import org.jdesktop.animation.timing.TimingTargetAdapter;
+import org.w3c.dom.Element;
+
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
+import javax.swing.OverlayLayout;
+import javax.swing.RootPaneContainer;
+import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
+import java.awt.AWTEventMulticaster;
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Composite;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.Window;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragSource;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.geom.AffineTransform;
+import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static VASSAL.preferences.Prefs.MAIN_WINDOW_HEIGHT;
-import static VASSAL.preferences.Prefs.MAIN_WINDOW_WIDTH;
 import static VASSAL.preferences.Prefs.MAIN_WINDOW_REMEMBER;
+import static VASSAL.preferences.Prefs.MAIN_WINDOW_WIDTH;
+import static java.lang.Math.round;
 
 /**
  * The Map is the main component for displaying and containing {@link GamePiece}s during play. Pieces are displayed on
@@ -1965,13 +1962,36 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public void dragEnter(DropTargetDragEvent dtde) {
   }
 
+  public boolean isNotPieceDrag(Transferable trans) {
+    final String string;
+    try {
+      string = (String) trans.getTransferData(DataFlavor.stringFlavor);
+    }
+    catch (UnsupportedFlavorException | IOException e) {
+      return true;
+    }
+
+    return !string.isEmpty();
+  }
+
+
   /**
    * Handles scrolling when dragging an gamepiece to the edge of the window
    * @param dtde DropTargetDragEvent
    */
   @Override
   public void dragOver(DropTargetDragEvent dtde) {
-    scrollAtEdge(dtde.getLocation(), SCROLL_ZONE);
+    final List<DataFlavor> flavors = Arrays.asList(dtde.getCurrentDataFlavors());
+
+    // Don't scroll at edge if dragging a file
+    if (flavors.contains(DataFlavor.javaFileListFlavor)) return;
+
+    if (flavors.contains(DataFlavor.stringFlavor)) {
+      // Don't scroll for non-blank strings (e.g. html links). A dragged piece has a blank string in current implementation.
+      if (isNotPieceDrag(dtde.getTransferable())) return;
+
+      scrollAtEdge(dtde.getLocation(), SCROLL_ZONE);
+    }
   }
 
   /**
@@ -1998,18 +2018,25 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   @Override
   public void drop(DropTargetDropEvent dtde) {
     if (dtde.getDropTargetContext().getComponent() == theMap) {
-      final MouseEvent evt = new MouseEvent(
-        theMap,
-        MouseEvent.MOUSE_RELEASED,
-        System.currentTimeMillis(),
-        0,
-        dtde.getLocation().x,
-        dtde.getLocation().y,
-        1,
-        false,
-        MouseEvent.NOBUTTON
-      );
-      theMap.dispatchEvent(evt);
+
+      final List<DataFlavor> flavors = Arrays.asList(dtde.getCurrentDataFlavors());
+      if (flavors.contains(DataFlavor.stringFlavor) && !flavors.contains(DataFlavor.javaFileListFlavor)) {
+        // Don't "complete a piece move" for non-blank strings (e.g. html links). A dragged piece has a blank string in current implementation.
+        if (!isNotPieceDrag(dtde.getTransferable())) {
+          final MouseEvent evt = new MouseEvent(
+            theMap,
+            MouseEvent.MOUSE_RELEASED,
+            System.currentTimeMillis(),
+            0,
+            dtde.getLocation().x,
+            dtde.getLocation().y,
+            1,
+            false,
+            MouseEvent.NOBUTTON
+          );
+          theMap.dispatchEvent(evt);
+        }
+      }
 
       GameModule.getGameModule().getGameState().dropFile(dtde);
     }
