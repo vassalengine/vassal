@@ -47,6 +47,7 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.SequenceEncoder;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -55,8 +56,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
-import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * This component places a button into the controls window toolbar.
@@ -744,6 +743,7 @@ public class DoActionButton extends AbstractToolbarItem
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
     final List<NamedKeyStroke> l = new ArrayList<>(super.getNamedKeyStrokeList());
+    l.addAll(hotkeys);
     Collections.addAll(l, preLoopKey, postLoopKey);
     return l;
   }
