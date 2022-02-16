@@ -670,7 +670,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       final StringSelection stringSelection = new StringSelection(coords);
       final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
       clipboard.setContents(stringSelection, null);
-      GameModule.getGameModule().warn(Resources.getString("Editor.Zone.copied", poly.npoints, coords));
+      GameModule.getGameModule().warn(Resources.getString("Editor.Zone.copied", (poly == null) ? 0 : poly.npoints, coords));
     }
 
     private void pasteCoords() {
@@ -698,7 +698,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
           setValue((Object) getValueString());
           editor.repaint();
 
-          GameModule.getGameModule().warn(Resources.getString("Editor.Zone.pasted", editor.getPolygon().npoints, pasteShape));
+          GameModule.getGameModule().warn(Resources.getString("Editor.Zone.pasted", (editor.getPolygon() == null) ? 0 : editor.getPolygon().npoints, pasteShape));
         }
         catch (UnsupportedFlavorException | IOException e) {
           // Can't Paste This DUN NUH NUH Nunh...
