@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 11227, "desc": "Fix NPE when copying vertices from a zone with no vertices" },
         { "num": 11232, "desc": "Stop edit of table when TableInfo is closed" },
         { "num": 11223, "desc": "Copy/Paste conversions fixed for Zone Properties to/from Global and Map Properties" }
       ],
