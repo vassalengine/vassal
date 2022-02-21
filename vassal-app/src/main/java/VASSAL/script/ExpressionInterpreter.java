@@ -646,14 +646,14 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     final String matchString = replaceDollarVariables((String) propertyMatch, (PropertySource) src);
     final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter((PropertySource) src);
 
-    if (!((String) mapName).isEmpty()) {
+    if (src instanceof GamePiece) {
+      mapList = getMapList(mapName, (GamePiece) src);
+    }
+    else if (mapName != null && !((String) mapName).isEmpty()) {
       mapList.add(findVassalMap((String) mapName));
     }
     else if (src instanceof GameModule) {
       mapList = Map.getMapList();
-    }
-    else if (src instanceof GamePiece) {
-      mapList = getMapList(mapName, (GamePiece) src);
     }
     else if (src instanceof Map) {
       mapList.add((Map) src);
@@ -706,14 +706,14 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     final String matchString = replaceDollarVariables((String) propertyMatch, (PropertySource) src);
     final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter((PropertySource) src);
 
-    if (!((String) mapName).isEmpty()) {
+    if (src instanceof GamePiece) {
+      mapList = getMapList(mapName, (GamePiece) src);
+    }
+    else if (mapName != null && !((String) mapName).isEmpty()) {
       mapList.add(findVassalMap((String) mapName));
     }
     else if (src instanceof GameModule) {
       mapList = Map.getMapList();
-    }
-    else if (src instanceof GamePiece) {
-      mapList = getMapList(mapName, (GamePiece) src);
     }
     else if (src instanceof Map) {
       mapList.add((Map) src);
