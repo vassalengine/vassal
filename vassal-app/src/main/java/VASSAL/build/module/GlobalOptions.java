@@ -204,9 +204,9 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
     final GameModule gm = GameModule.getGameModule();
     final Prefs prefs = gm.getPrefs();
 
-    /////////////////////
-    // GENERAL TAB TAB //
-    /////////////////////
+    /////////////////
+    // GENERAL TAB //
+    /////////////////
 
     // should this module use a combined main window? (first map window docks to main module window w/ Chatter)
     final BooleanConfigurer combConf = new BooleanConfigurer(
@@ -310,6 +310,7 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
     ////////////////
     // SOUNDS TAB //
     ////////////////
+
     final BooleanConfigurer soundWakeupMuteConf = new BooleanConfigurer(
       SOUND_WAKEUP_MUTE,
       Resources.getString("GlobalOptions.sound_wakeup_mute"),
