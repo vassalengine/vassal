@@ -658,6 +658,9 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     else if (src instanceof Map) {
       mapList.add((Map) src);
     }
+    else if (src instanceof ReportState.OldAndNewPieceProperties) {
+      mapList.add(((ReportState.OldAndNewPieceProperties) src).getNewPiece().getMap());
+    }
     else {
       return 0;
     }
@@ -717,6 +720,9 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     }
     else if (src instanceof Map) {
       mapList.add((Map) src);
+    }
+    else if (src instanceof ReportState.OldAndNewPieceProperties) {
+      mapList.add(((ReportState.OldAndNewPieceProperties) src).getNewPiece().getMap());
     }
     else {
       return 0;
