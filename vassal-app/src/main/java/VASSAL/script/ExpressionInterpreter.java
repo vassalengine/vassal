@@ -666,14 +666,16 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     }
 
     for (final Map map : mapList) {
-      for (final GamePiece piece : map.getAllPieces()) {
-        if (piece instanceof Stack) {
-          for (final GamePiece p : ((Stack) piece).asList()) {
-            result += getIntPropertyValue(p, filter, (String) propertyName);
+      if (map != null) {
+        for (final GamePiece piece : map.getAllPieces()) {
+          if (piece instanceof Stack) {
+            for (final GamePiece p : ((Stack) piece).asList()) {
+              result += getIntPropertyValue(p, filter, (String) propertyName);
+            }
           }
-        }
-        else {
-          result += getIntPropertyValue(piece, filter, (String) propertyName);
+          else {
+            result += getIntPropertyValue(piece, filter, (String) propertyName);
+          }
         }
       }
     }
@@ -729,17 +731,19 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     }
 
     for (final Map map : mapList) {
-      for (final GamePiece piece : map.getAllPieces()) {
-        if (piece instanceof Stack) {
-          for (final GamePiece p : ((Stack) piece).asList()) {
-            if (filter == null || filter.accept(p)) {
-              result++;
+      if (map != null) {
+        for (final GamePiece piece : map.getAllPieces()) {
+          if (piece instanceof Stack) {
+            for (final GamePiece p : ((Stack) piece).asList()) {
+              if (filter == null || filter.accept(p)) {
+                result++;
+              }
             }
           }
-        }
-        else {
-          if (filter == null || filter.accept(piece)) {
-            result++;
+          else {
+            if (filter == null || filter.accept(piece)) {
+              result++;
+            }
           }
         }
       }
