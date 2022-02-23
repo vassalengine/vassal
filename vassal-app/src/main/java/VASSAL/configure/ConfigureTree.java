@@ -100,6 +100,7 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.InvalidDnDOperationException;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -2567,6 +2568,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
       catch (java.io.IOException ioe) {
         System.out.println("I/O error: " + ioe.getMessage()); //NON-NLS
+      }
+      catch (InvalidDnDOperationException id) {
+        System.out.println("Invalid DND Operation: " + id.getMessage()); //NON-NLS
       }
 
       if (nodes == null) {

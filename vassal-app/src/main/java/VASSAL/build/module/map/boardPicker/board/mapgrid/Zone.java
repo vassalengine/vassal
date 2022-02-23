@@ -76,6 +76,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.InvalidDnDOperationException;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.beans.PropertyChangeListener;
@@ -700,7 +701,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
 
           GameModule.getGameModule().warn(Resources.getString("Editor.Zone.pasted", (editor.getPolygon() == null) ? 0 : editor.getPolygon().npoints, pasteShape));
         }
-        catch (UnsupportedFlavorException | IOException e) {
+        catch (UnsupportedFlavorException | IOException | InvalidDnDOperationException e) {
           // Can't Paste This DUN NUH NUH Nunh...
         }
       }

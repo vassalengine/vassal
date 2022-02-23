@@ -167,6 +167,7 @@ import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
+import java.awt.dnd.InvalidDnDOperationException;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
 import java.awt.event.KeyEvent;
@@ -1967,7 +1968,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     try {
       string = (String) trans.getTransferData(DataFlavor.stringFlavor);
     }
-    catch (UnsupportedFlavorException | IOException e) {
+    catch (UnsupportedFlavorException | IOException | InvalidDnDOperationException e) {
       return true;
     }
 
