@@ -1,5 +1,6 @@
 3.6.6 - ???
 
+* 11254: Tiler dialog doesn't cancel tiling when Cancel button is clicked
 * 11248: Catch InvalidDnDOperation exceptions when inappropriate drag-and-drops
     attempted
 * 11243: Enable Sum and Count in GKC Report Expressions
