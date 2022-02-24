@@ -621,7 +621,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   /*
    * Sum & Count
    *
-   * Note that these methods are called from Beanshell and all arguements are passed
+   * Note that these methods are called from Beanshell and all arguments are passed
    * as Object types.
    *
    * Sum (property, match)      - Sum named property in units on all maps matching match
@@ -636,25 +636,46 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
   public Object sum(Object src, Object propertyName, Object propertyMatch, Object mapName) {
     int result = 0;
+    List<Map> mapList = new ArrayList<>();
 
-    if (! (src instanceof GamePiece)) return 0;
+    if (! (src instanceof PropertySource)) return 0;
     if (! (propertyName instanceof String)) return 0;
     if (! (propertyMatch == null || propertyMatch instanceof String)) return 0;
     if (! (mapName == null || mapName instanceof String)) return 0;
 
-    final GamePiece sourcePiece = (GamePiece) src;
-    final String matchString = replaceDollarVariables((String) propertyMatch, sourcePiece);
-    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(sourcePiece);
+    final String matchString = replaceDollarVariables((String) propertyMatch, (PropertySource) src);
+    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter((PropertySource) src);
 
-    for (final Map map : getMapList(mapName, sourcePiece)) {
-      for (final GamePiece piece : map.getAllPieces()) {
-        if (piece instanceof Stack) {
-          for (final GamePiece p : ((Stack) piece).asList()) {
-            result += getIntPropertyValue(p, filter, (String) propertyName);
+    if (src instanceof GamePiece) {
+      mapList = getMapList(mapName, (GamePiece) src);
+    }
+    else if (mapName != null && !((String) mapName).isEmpty()) {
+      mapList.add(findVassalMap((String) mapName));
+    }
+    else if (src instanceof GameModule) {
+      mapList = Map.getMapList();
+    }
+    else if (src instanceof Map) {
+      mapList.add((Map) src);
+    }
+    else if (src instanceof ReportState.OldAndNewPieceProperties) {
+      mapList.add(((ReportState.OldAndNewPieceProperties) src).getNewPiece().getMap());
+    }
+    else {
+      return 0;
+    }
+
+    for (final Map map : mapList) {
+      if (map != null) {
+        for (final GamePiece piece : map.getAllPieces()) {
+          if (piece instanceof Stack) {
+            for (final GamePiece p : ((Stack) piece).asList()) {
+              result += getIntPropertyValue(p, filter, (String) propertyName);
+            }
           }
-        }
-        else {
-          result += getIntPropertyValue(piece, filter, (String) propertyName);
+          else {
+            result += getIntPropertyValue(piece, filter, (String) propertyName);
+          }
         }
       }
     }
@@ -679,27 +700,50 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   public Object count(Object src, Object propertyMatch, Object mapName) {
-    if (! (src instanceof GamePiece)) return 0;
+
+    int result = 0;
+    List<Map> mapList = new ArrayList<>();
+
+    if (! (src instanceof PropertySource)) return 0;
     if (! (propertyMatch == null || propertyMatch instanceof String)) return 0;
     if (! (mapName == null || mapName instanceof String)) return 0;
 
-    final GamePiece sourcePiece = (GamePiece) src;
-    final String matchString = replaceDollarVariables((String) propertyMatch, sourcePiece);
-    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(sourcePiece);
+    final String matchString = replaceDollarVariables((String) propertyMatch, (PropertySource) src);
+    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter((PropertySource) src);
 
-    int result = 0;
-    for (final Map map : getMapList(mapName, sourcePiece)) {
-      for (final GamePiece piece : map.getAllPieces()) {
-        if (piece instanceof Stack) {
-          for (final GamePiece p : ((Stack) piece).asList()) {
-            if (filter == null || filter.accept(p)) {
-              result++;
+    if (src instanceof GamePiece) {
+      mapList = getMapList(mapName, (GamePiece) src);
+    }
+    else if (mapName != null && !((String) mapName).isEmpty()) {
+      mapList.add(findVassalMap((String) mapName));
+    }
+    else if (src instanceof GameModule) {
+      mapList = Map.getMapList();
+    }
+    else if (src instanceof Map) {
+      mapList.add((Map) src);
+    }
+    else if (src instanceof ReportState.OldAndNewPieceProperties) {
+      mapList.add(((ReportState.OldAndNewPieceProperties) src).getNewPiece().getMap());
+    }
+    else {
+      return 0;
+    }
+
+    for (final Map map : mapList) {
+      if (map != null) {
+        for (final GamePiece piece : map.getAllPieces()) {
+          if (piece instanceof Stack) {
+            for (final GamePiece p : ((Stack) piece).asList()) {
+              if (filter == null || filter.accept(p)) {
+                result++;
+              }
             }
           }
-        }
-        else {
-          if (filter == null || filter.accept(piece)) {
-            result++;
+          else {
+            if (filter == null || filter.accept(piece)) {
+              result++;
+            }
           }
         }
       }
@@ -759,6 +803,10 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * @return Updated expression
    */
   private String replaceDollarVariables(String expression, GamePiece src) {
+    return replaceDollarVariables(expression, (PropertySource) src);
+  }
+
+  private String replaceDollarVariables(String expression, PropertySource src) {
     if (expression == null || !expression.contains("$")) {
       return expression;
     }
