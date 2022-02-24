@@ -67,6 +67,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.InvalidDnDOperationException;
 import java.awt.event.ActionEvent;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -869,7 +870,7 @@ public class GameState implements CommandEncoder {
             }
           }
         }
-        catch (IOException | UnsupportedFlavorException e) {
+        catch (IOException | UnsupportedFlavorException | InvalidDnDOperationException e) {
           // Do nothing -- we only failed to read anything out of the drag-and-drop
         }
       }
@@ -888,7 +889,7 @@ public class GameState implements CommandEncoder {
             }
           }
         }
-        catch (IOException | UnsupportedFlavorException e) {
+        catch (IOException | UnsupportedFlavorException | InvalidDnDOperationException e) {
           // Do nothing -- we only failed to read anything out of the drag-and-drop
         }
       }
