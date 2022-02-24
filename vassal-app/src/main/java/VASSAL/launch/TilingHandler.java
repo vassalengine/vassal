@@ -339,7 +339,7 @@ public class TilingHandler {
 
       boolean done = false;
       byte type;
-      while (!done) {
+      while (!done && !proc.future.isCancelled()) {
         type = in.readByte();
 
         switch (type) {
