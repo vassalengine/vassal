@@ -1,5 +1,8 @@
 3.6.6 - ???
 
+* 11248: Catch InvalidDnDOperation exceptions when inappropriate drag-and-drops
+    attempted
+* 11243: Enable Sum and Count in GKC Report Expressions
 * 11227: Fix NPE when copying vertices from a zone with no vertices
 * 11233: UI Cleanup: don't scroll-at-edge the map if a file or link is being
     dragged instead of a piece
