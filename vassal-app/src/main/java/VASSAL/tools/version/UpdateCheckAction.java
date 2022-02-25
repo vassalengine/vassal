@@ -76,8 +76,7 @@ public class UpdateCheckAction extends AbstractAction {
               Resources.getString("UpdateCheckAction.update_available_title"),
               JOptionPane.YES_NO_OPTION,
               JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
-            BrowserSupport.openURL(
-              "https://github.com/vassalengine/vassal/releases");
+            BrowserSupport.openURL("https://vassalengine.org/download.html");
           }
         }
         return;
