@@ -51,6 +51,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslateVassalWindow;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.lang.MemoryUtils;
 import VASSAL.tools.logging.LoggedOutputStream;
 import VASSAL.tools.menu.MacOSXMenuManager;
 
@@ -68,6 +69,10 @@ public class ModuleManager {
   private static final String NEXT_VERSION_CHECK = "nextVersionCheck"; //NON-NLS
   private static final String AUTO_VERSION_CHECK = "autoVersionCheck"; //NON-NLS
 
+  public static final String CONVERTER_MAXIMUM_HEAP = "converterMaximumHeap"; //$NON-NLS-1$
+  public static final String TILER_MAXIMUM_HEAP = "tilerMaximumHeap"; //$NON-NLS-1$
+
+  @Deprecated(since = "2022-02-25", forRemoval = true)
   public static final String MAXIMUM_HEAP = "maximumHeap"; //$NON-NLS-1$
 
   @Deprecated(since = "2020-10-21", forRemoval = true)
@@ -299,7 +304,8 @@ public class ModuleManager {
 
     final Prefs globalPrefs = Prefs.getGlobalPrefs();
     updateCheck(globalPrefs);
-    importerHeapSetup(globalPrefs);
+    converterHeapSetup(globalPrefs);
+    tilerHeapSetup(globalPrefs);
   }
 
   private void updateCheck(Prefs globalPrefs) {
@@ -339,15 +345,33 @@ public class ModuleManager {
     nextVersionCheckConfig.setValue(nextVersionCheck);
   }
 
-  private void importerHeapSetup(Prefs globalPrefs) {
-    // FIXME: the importer heap size configurers don't belong here
-    // the maximum heap size for the module importer
+  private void tilerHeapSetup(Prefs globalPrefs) {
+    long physMemory = MemoryUtils.getPhysicalMemory();
+    physMemory = physMemory <= 0 ? 4096 : physMemory >> 20;
+
+    // the maximum heap size for the tiler
     final IntConfigurer maxHeapConf = new IntConfigurer(
-      MAXIMUM_HEAP,
+      TILER_MAXIMUM_HEAP,
+      Resources.getString("GlobalOptions.maximum_heap"),  //$NON-NLS-1$
+      (int)(3*physMemory/4)
+    );
+    globalPrefs.addOption(
+      Resources.getString("Prefs.tiler_tab"), //NON-NLS
+      maxHeapConf
+    );
+  }
+
+  private void converterHeapSetup(Prefs globalPrefs) {
+    // the maximum heap size for the module converter
+    final IntConfigurer maxHeapConf = new IntConfigurer(
+      CONVERTER_MAXIMUM_HEAP,
       Resources.getString("GlobalOptions.maximum_heap"),  //$NON-NLS-1$
       512
     );
-    globalPrefs.addOption("Converter", maxHeapConf); //NON-NLS
+    globalPrefs.addOption(
+      Resources.getString("Prefs.converter_tab"),  //NON-NLS
+      maxHeapConf
+    );
   }
 
   public void shutDown() throws IOException {

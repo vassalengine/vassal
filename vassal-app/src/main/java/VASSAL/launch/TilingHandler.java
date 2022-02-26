@@ -75,8 +75,6 @@ public class TilingHandler {
   protected final Dimension tdim;
   protected final int maxheap_limit;
 
-  private int retried = 0;
-
   // Needed for VASL. Remove sometime after VASL 6.6.2
   @Deprecated(since = "2021-12-01", forRemoval = true)
   @SuppressWarnings("PMD.FinalFieldCouldBeStatic")
@@ -377,11 +375,10 @@ public class TilingHandler {
 
         logger.info("Tiling failed with return value == " + retval);
 
-        if (retried < 2) {
+        if (maxheap < maxheap_limit) {
           // The tiler possibly ran out of memory; we can't reliably detect
           // this, so assume it did. Try again with 50% more max heap.
           logger.info("Tiling possibly ran out of memory. Retrying tiling with 50% more."); //NON-NLS
-          ++retried;
           runSlicer(multi, tcount, (int)(maxheap * 1.5));
         }
         else {
