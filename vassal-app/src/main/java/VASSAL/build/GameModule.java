@@ -260,6 +260,8 @@ public class GameModule extends AbstractConfigurable
   private String description = "";
   private String lastSavedConfiguration;
   private FileChooser fileChooser;
+  private FileChooser fileChooserEditorImage;
+  private FileChooser fileChooserEditorSound;
   private final MutablePropertiesContainer propsContainer = new MutablePropertiesContainer.Impl();
   private final TranslatableStringContainer transContainer = new TranslatableStringContainer.Impl();
 
@@ -1450,6 +1452,41 @@ public class GameModule extends AbstractConfigurable
 
     return fileChooser;
   }
+
+  /**
+   * @return a common FileChooser so that recent file locations
+   * can be remembered
+   */
+  public FileChooser getEditorImageChooser() {
+    if (fileChooserEditorImage == null) {
+      fileChooserEditorImage = FileChooser.createFileChooser(getPlayerWindow(),
+        getGameState().getEditorImageDirectoryPreference());
+    }
+    else {
+      fileChooserEditorImage.resetChoosableFileFilters();
+      fileChooserEditorImage.rescanCurrentDirectory();
+    }
+
+    return fileChooserEditorImage;
+  }
+
+  /**
+   * @return a common FileChooser so that recent file locations
+   * can be remembered
+   */
+  public FileChooser getEditorSoundChooser() {
+    if (fileChooserEditorSound == null) {
+      fileChooserEditorSound = FileChooser.createFileChooser(getPlayerWindow(),
+        getGameState().getEditorImageDirectoryPreference());
+    }
+    else {
+      fileChooserEditorSound.resetChoosableFileFilters();
+      fileChooserEditorSound.rescanCurrentDirectory();
+    }
+
+    return fileChooserEditorSound;
+  }
+
 
   /**
    * Provides access to the Game Module's toolbar.

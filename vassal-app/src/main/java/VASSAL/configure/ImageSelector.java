@@ -24,11 +24,8 @@ import VASSAL.tools.image.LabelUtils;
 import VASSAL.tools.image.MultiResolutionRenderedImage;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OpIcon;
-
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import net.miginfocom.swing.MigLayout;
+import org.apache.commons.lang3.ArrayUtils;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
@@ -38,10 +35,10 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
-import net.miginfocom.swing.MigLayout;
-
-import org.apache.commons.lang3.ArrayUtils;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 /**
  * Allows a user to select from the images currently available in a module, or
@@ -191,7 +188,7 @@ public class ImageSelector extends Configurer implements ItemListener {
 
   private void pickImage() {
     final GameModule gm = GameModule.getGameModule();
-    final FileChooser fc = gm.getFileChooser();
+    final FileChooser fc = gm.getEditorImageChooser();
     fc.setFileFilter(new ImageFileFilter());
 
     if (fc.showOpenDialog(gm.getPlayerWindow()) == FileChooser.APPROVE_OPTION && fc.getSelectedFile().exists()) {

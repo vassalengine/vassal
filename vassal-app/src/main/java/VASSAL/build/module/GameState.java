@@ -116,6 +116,8 @@ public class GameState implements CommandEncoder {
   protected String lastSave;
   protected File lastSaveFile = null;
   protected DirectoryConfigurer savedGameDirectoryPreference;
+  protected DirectoryConfigurer editorImageDirectoryPreference;
+  protected DirectoryConfigurer editorSoundDirectoryPreference;
   protected String loadComments;
   protected boolean loadingInBackground = false;
   private boolean fastForwarding = false;
@@ -1510,5 +1512,21 @@ public class GameState implements CommandEncoder {
       GameModule.getGameModule().getPrefs().addOption(null, savedGameDirectoryPreference);
     }
     return savedGameDirectoryPreference;
+  }
+
+  public DirectoryConfigurer getEditorImageDirectoryPreference() {
+    if (editorImageDirectoryPreference == null) {
+      editorImageDirectoryPreference = new DirectoryConfigurer("editorImageDir", null); //NON-NLS
+      GameModule.getGameModule().getPrefs().addOption(null, editorImageDirectoryPreference);
+    }
+    return editorImageDirectoryPreference;
+  }
+
+  public DirectoryConfigurer getEditorSoundDirectoryPreference() {
+    if (editorSoundDirectoryPreference == null) {
+      editorSoundDirectoryPreference = new DirectoryConfigurer("editorSoundDir", null); //NON-NLS
+      GameModule.getGameModule().getPrefs().addOption(null, editorSoundDirectoryPreference);
+    }
+    return editorSoundDirectoryPreference;
   }
 }
