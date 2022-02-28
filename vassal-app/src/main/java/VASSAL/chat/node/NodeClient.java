@@ -511,10 +511,10 @@ public class NodeClient implements LockableChatServerConnection,
         pendingSynchToRoom = null;
         if (!compatible) {
           for (final String error : errors) {
-            chat = chat.append(new Chatter.DisplayText(chatter, error));
+            chat = chat.append(new Chatter.DisplayText(chatter, "?<b> " + error));
           }
         }
-        chat = chat.append(new Chatter.DisplayText(chatter, Resources.getString(compatible ? "Chat.join_ok" : "Chat.join_not_ok", playerName)));
+        chat = chat.append(new Chatter.DisplayText(chatter, compatible ? "-<b> " + Resources.getString("Chat.join_ok", playerName)  : "?<b> " + Resources.getString("Chat.join_not_ok", playerName)));
 
         chat.execute();
         gm.sendAndLog(chat);
@@ -720,8 +720,18 @@ public class NodeClient implements LockableChatServerConnection,
       compatible = false;
     }
 
-    if (!ownerStatus.getModuleVersion().equals(myStatus.getModuleVersion())) {
-      errors.add(Resources.getString("Chat.bad_module", myStatus.getModuleVersion(), ownerStatus.getModuleVersion()));
+    final String editingString = " " + Resources.getString("Editor.NodeClient.editing");
+    String myVersion = myStatus.getModuleVersion();
+    if (myVersion.endsWith(editingString)) {
+      myVersion =  myVersion.substring(0, myVersion.length() - editingString.length());
+    }
+    String ownerVersion = ownerStatus.getModuleVersion();
+    if (ownerVersion.endsWith(editingString)) {
+      ownerVersion =  ownerVersion.substring(0, ownerVersion.length() - editingString.length());
+    }
+
+    if (!ownerVersion.equals(myVersion)) {
+      errors.add(Resources.getString("Chat.bad_module", myVersion, ownerVersion));
       compatible = false;
     }
 
