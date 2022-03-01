@@ -30,6 +30,7 @@
         { "num": 11188, "desc": "DoActionButton hotkeys were not found by search" }
       ],
       "other_improvements": [
+        { "num": 11260, "desc": "Editor now remembers its most recent image-picking (and sound) directories separately from its memory of last save/load of games and logs" },
         { "num": 11255, "desc": "Updated downloads URL to the one for our download page" },
         { "num": 11243, "desc": "Enable Sum and Count in GKC Report Expressions" },
         { "num": 11233, "desc": "UI Cleanup: don't scroll-at-edge the map if a file or link is being dragged instead of a piece" },
