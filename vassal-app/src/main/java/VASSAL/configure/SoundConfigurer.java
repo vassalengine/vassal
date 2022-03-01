@@ -27,15 +27,14 @@ import VASSAL.tools.URLUtils;
 import VASSAL.tools.filechooser.AudioFileFilter;
 import VASSAL.tools.filechooser.FileChooser;
 
+import javax.swing.JButton;
+import javax.swing.JTextField;
 import java.awt.Component;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import javax.swing.JButton;
-import javax.swing.JTextField;
 
 /**
  * Configurer for specifying a Clip. This class is intended to allow
@@ -162,7 +161,7 @@ public class SoundConfigurer extends Configurer {
   }
 
   public void chooseClip() {
-    final FileChooser fc = GameModule.getGameModule().getFileChooser();
+    final FileChooser fc = GameModule.getGameModule().getEditorSoundChooser();
     fc.setFileFilter(new AudioFileFilter());
 
     if (fc.showOpenDialog(getControls()) != FileChooser.APPROVE_OPTION) {

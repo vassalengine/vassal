@@ -641,7 +641,7 @@ public class IconFamily extends AbstractConfigurable {
     }
 
     protected void selectImage() {
-      final FileChooser fc = GameModule.getGameModule().getFileChooser();
+      final FileChooser fc = GameModule.getGameModule().getEditorImageChooser();
       fc.setFileFilter(new FamilyImageFilter(family.getName()));
       fc.setSelectedFile(new File(family.getName() + ".*")); //$NON-NLS-1$
       if (fc.showOpenDialog(getControls()) != FileChooser.APPROVE_OPTION) {

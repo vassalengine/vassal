@@ -17,13 +17,15 @@
  */
 package VASSAL.counters;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import VASSAL.build.GameModule;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.ScrollPane;
+import VASSAL.tools.filechooser.FileChooser;
+import VASSAL.tools.filechooser.ImageFileFilter;
+import VASSAL.tools.imageop.Op;
+import VASSAL.tools.imageop.OpIcon;
+import VASSAL.tools.swing.SwingUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
@@ -32,17 +34,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-
-import org.apache.commons.lang3.ArrayUtils;
-
-import VASSAL.i18n.Resources;
-import VASSAL.build.GameModule;
-import VASSAL.tools.ScrollPane;
-import VASSAL.tools.filechooser.FileChooser;
-import VASSAL.tools.filechooser.ImageFileFilter;
-import VASSAL.tools.imageop.Op;
-import VASSAL.tools.imageop.OpIcon;
-import VASSAL.tools.swing.SwingUtils;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 public class ImagePicker extends JPanel
                          implements MouseListener, ItemListener {
@@ -166,7 +164,7 @@ public class ImagePicker extends JPanel
 
   public void pickImage() {
     final GameModule gm = GameModule.getGameModule();
-    final FileChooser fc = gm.getFileChooser();
+    final FileChooser fc = gm.getEditorImageChooser();
     fc.setFileFilter(new ImageFileFilter());
 
     if (fc.showOpenDialog(this) == FileChooser.APPROVE_OPTION

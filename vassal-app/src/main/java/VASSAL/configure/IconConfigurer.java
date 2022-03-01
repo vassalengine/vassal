@@ -18,16 +18,6 @@
 
 package VASSAL.configure;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.io.File;
-
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.filechooser.FileChooser;
@@ -35,8 +25,16 @@ import VASSAL.tools.filechooser.ImageFileFilter;
 import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OwningOpMultiResolutionImage;
-
 import net.miginfocom.swing.MigLayout;
+
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.io.File;
 
 public class IconConfigurer extends Configurer {
   private JPanel controls;
@@ -132,7 +130,7 @@ public class IconConfigurer extends Configurer {
   }
 
   private void selectImage() {
-    final FileChooser fc = GameModule.getGameModule().getFileChooser();
+    final FileChooser fc = GameModule.getGameModule().getEditorImageChooser();
     fc.setFileFilter(new ImageFileFilter());
 
     if (fc.showOpenDialog(getControls()) != FileChooser.APPROVE_OPTION) {
