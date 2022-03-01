@@ -2,6 +2,9 @@
 
 * 11260: Editor now remembers its most recent image-picking (and sound)
     directories separately from its memory of last save/load of games and logs
+* 11258: New BasicName trait defaults to Prototype's name; Changing Prototype's
+    name changes BasicName trait's, if identical; At-Start Stack with no name
+    displays name of first contained piece or folder in editor
 * 11255: Updated downloads URL to the one for our download page
 * 11254: Tiler dialog doesn't cancel tiling when Cancel button is clicked
 * 11248: Catch InvalidDnDOperation exceptions when inappropriate drag-and-drops
