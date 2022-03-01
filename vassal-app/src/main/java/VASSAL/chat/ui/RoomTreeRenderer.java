@@ -17,6 +17,9 @@
  */
 package VASSAL.chat.ui;
 
+import VASSAL.chat.ChatServerConnection;
+import VASSAL.chat.node.NodeClient;
+import VASSAL.tools.version.VersionUtils;
 import java.awt.Component;
 import java.net.URL;
 import java.util.List;
@@ -28,7 +31,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
 import VASSAL.chat.Player;
-import VASSAL.chat.Room;
 import VASSAL.chat.SimplePlayer;
 import VASSAL.chat.SimpleRoom;
 import VASSAL.chat.SimpleStatus;
@@ -82,8 +84,21 @@ public class RoomTreeRenderer extends DefaultTreeCellRenderer {
 
     }
     else if (item instanceof SimpleRoom) {
-      final List<Player> players = ((Room) item).getPlayerList();
-      setText(getText() + " (" + players.size() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+      String version = null;
+      final SimpleRoom room = (SimpleRoom) item;
+
+      if (!room.getName().equals(ChatServerConnection.DEFAULT_ROOM_NAME)) {
+        if (room.getPlayerList().get(0).getStatus() instanceof SimpleStatus) {
+          final SimpleStatus status = (SimpleStatus) room.getPlayerList().get(0).getStatus();
+          version = VersionUtils.truncateToIncrementalVersion(status.getClient()) + '/' + NodeClient.cleanVersion(status.getModuleVersion());
+        }
+      }
+      final List<Player> players = room.getPlayerList();
+      setText(
+        getText() +
+        (version == null ? "" : " [" + version + "]") +
+        " (" + players.size() + ")"
+      );
     }
     return this;
   }

@@ -53,6 +53,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.PropertiesEncoder;
 import VASSAL.tools.SequenceEncoder;
 
+import VASSAL.tools.version.VersionUtils;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
@@ -503,18 +504,17 @@ public class NodeClient implements LockableChatServerConnection,
         final Chatter chatter = gm.getChatter();
         final String playerName = getUserInfo().getName();
         final List<String> errors = new ArrayList<>();
-        final boolean compatible = false;
 
-        checkCompatibility(pendingSynchToRoom, compatible, errors);
+        final boolean compatible = checkCompatibility(pendingSynchToRoom, errors);
 
         Command chat = new Chatter.DisplayText(chatter, Resources.getString("Chat.joining_room_chat", playerName, pendingSynchToRoom.getName()));
         pendingSynchToRoom = null;
         if (!compatible) {
           for (final String error : errors) {
-            chat = chat.append(new Chatter.DisplayText(chatter, "?<b> " + error));
+            chat = chat.append(new Chatter.DisplayText(chatter, "-?<b> " + error));
           }
         }
-        chat = chat.append(new Chatter.DisplayText(chatter, compatible ? "-<b> " + Resources.getString("Chat.join_ok", playerName)  : "?<b> " + Resources.getString("Chat.join_not_ok", playerName)));
+        chat = chat.append(new Chatter.DisplayText(chatter, compatible ? "-<b> " + Resources.getString("Chat.join_ok", playerName)  : "-?<b> " + Resources.getString("Chat.join_not_ok", playerName)));
 
         chat.execute();
         gm.sendAndLog(chat);
@@ -703,13 +703,19 @@ public class NodeClient implements LockableChatServerConnection,
    * @param targetRoom Room to be entered
    * @param compatible Return true if entry allowed
    * @param errors Return a list of error message if entry not allowed.
+   * @deprecated Use boolean checkCompatibility(NodeRoom targetRoom, List<String> errors)
    */
+  @Deprecated(since = "2020-03-01")
   public void checkCompatibility(NodeRoom targetRoom, boolean compatible, List<String> errors) {
+    compatible = checkCompatibility(targetRoom, errors);
+  }
+
+  public boolean checkCompatibility(NodeRoom targetRoom, List<String> errors) {
     errors.clear();
-    compatible = true;
+    boolean compatible = true;
 
     if (defaultRoomName.equals(targetRoom.getName()) || targetRoom.getOwningPlayer() == null) {
-      return;
+      return compatible;
     }
 
     final SimpleStatus ownerStatus = (SimpleStatus) targetRoom.getOwningPlayer().getStatus();
@@ -720,15 +726,8 @@ public class NodeClient implements LockableChatServerConnection,
       compatible = false;
     }
 
-    final String editingString = " " + Resources.getString("Editor.NodeClient.editing");
-    String myVersion = myStatus.getModuleVersion();
-    if (myVersion.endsWith(editingString)) {
-      myVersion =  myVersion.substring(0, myVersion.length() - editingString.length());
-    }
-    String ownerVersion = ownerStatus.getModuleVersion();
-    if (ownerVersion.endsWith(editingString)) {
-      ownerVersion =  ownerVersion.substring(0, ownerVersion.length() - editingString.length());
-    }
+    final String myVersion = cleanVersion(myStatus.getModuleVersion());
+    final String ownerVersion = cleanVersion(ownerStatus.getModuleVersion());
 
     if (!ownerVersion.equals(myVersion)) {
       errors.add(Resources.getString("Chat.bad_module", myVersion, ownerVersion));
@@ -740,5 +739,16 @@ public class NodeClient implements LockableChatServerConnection,
       compatible = false;
     }
 
+    return compatible;
+  }
+
+  /**
+   * Clean off an ' (Editing)' suffix added to the module version number
+   * @param version
+   * @return
+   */
+  public static String cleanVersion(String version) {
+    final String editingString = " " + Resources.getString("Editor.NodeClient.editing");
+    return version.endsWith(editingString) ?  version.substring(0, version.length() - editingString.length()) : version;
   }
 }

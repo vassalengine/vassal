@@ -54,9 +54,8 @@ public class JoinRoomAction extends AbstractAction {
   @Override
   public void actionPerformed(ActionEvent evt) {
     if (client instanceof NodeClient) {
-      final boolean compatible = false;
       final List<String> errors = new ArrayList<>();
-      ((NodeClient) client).checkCompatibility((NodeRoom) r, compatible, errors);
+      final boolean compatible = ((NodeClient) client).checkCompatibility((NodeRoom) r, errors);
       if (!compatible) {
         final StringBuilder sb = new StringBuilder();
         sb.append(Resources.getString("Chat.join_issue", r.getName())).append("\n\n");
