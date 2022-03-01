@@ -32,7 +32,29 @@ import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.icon.IconFamily;
 import VASSAL.tools.image.LabelUtils;
 import VASSAL.tools.swing.SwingUtils;
+import net.miginfocom.swing.MigLayout;
 
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.DefaultListModel;
+import javax.swing.DropMode;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.KeyStroke;
+import javax.swing.ListCellRenderer;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.TransferHandler;
+import javax.swing.plaf.SplitPaneUI;
+import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -57,30 +79,6 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.SortedMap;
 import java.util.TreeMap;
-
-import javax.swing.BorderFactory;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.DefaultListModel;
-import javax.swing.DropMode;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.KeyStroke;
-import javax.swing.ListCellRenderer;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.TransferHandler;
-import javax.swing.plaf.SplitPaneUI;
-import javax.swing.plaf.basic.BasicSplitPaneUI;
-
-import net.miginfocom.swing.MigLayout;
 
 /**
  * This is the GamePiece designer dialog.  It appears when you edit
@@ -136,6 +134,8 @@ public class PieceDefiner extends JPanel {
   private JLabel scaleLabel;
   private final Prefs prefs;
 
+  private String prototypeName; // If we're editing a prototype definition, this holds the name of it
+
   // A Configurer to hold the users preferred maximum split size
   private static final int MINIMUM_SPLIT_SIZE = LabelUtils.noImageBoxImage().getWidth();
   private static final int DEFAULT_MAX_SPLIT = 256;
@@ -156,6 +156,7 @@ public class PieceDefiner extends JPanel {
     availableList.setSelectedIndex(0);
     setChanged(false);
     gpidSupport = GameModule.getGameModule().getGpIdSupport();
+    prototypeName = "";
   }
 
   public PieceDefiner(String id, GpIdSupport s) {
@@ -168,6 +169,12 @@ public class PieceDefiner extends JPanel {
   public PieceDefiner(GpIdSupport s) {
     this();
     gpidSupport = s;
+  }
+
+  public void setPrototypeName(String prototypeName) {
+    if (!this.prototypeName.equals(prototypeName)) {
+      this.prototypeName = prototypeName;
+    }
   }
 
   protected int getInUseSelectedIndex() {
@@ -1037,6 +1044,14 @@ public class PieceDefiner extends JPanel {
       if (d instanceof PlaceMarker) {
         ((PlaceMarker) d).updateGpId(gpidSupport);
       }
+
+      //BR// When adding a BasicName trait to a prototype, default its name to the name of the prototype
+      if (d instanceof BasicName) {
+        if (!prototypeName.isEmpty()) {
+          ((BasicName) d).setName(prototypeName);
+        }
+      }
+
       d.setInner(inUseModel.lastElement());
       inUseModel.addElement(d);
       moveDecorator(inUseModel.size() - 1, insertIndex == -1 ? inUseModel.size() : insertIndex + 1);

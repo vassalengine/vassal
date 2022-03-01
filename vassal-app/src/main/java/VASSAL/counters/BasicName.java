@@ -79,6 +79,14 @@ public class BasicName extends Decorator implements TranslatablePiece {
     return super.getProperty(key);
   }
 
+  /**
+   * For editor methods to auto-set the name
+   * @param newName new name
+   */
+  public void setName(String newName) {
+    name = newName;
+  }
+
   @Override
   public Object getLocalizedProperty(Object key) {
     if (BasicPiece.BASIC_NAME.equals(key)) {

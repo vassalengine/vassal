@@ -32,6 +32,7 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.ValidationReport;
 import VASSAL.configure.ValidityChecker;
+import VASSAL.counters.BasicName;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
@@ -44,20 +45,17 @@ import VASSAL.search.ImageSearchTarget;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.UniqueIdManager;
+import net.miginfocom.swing.MigLayout;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import java.awt.Component;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Collection;
 import java.util.HashMap;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
-import net.miginfocom.swing.MigLayout;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 public class PrototypeDefinition extends AbstractConfigurable
                                  implements UniqueIdManager.Identifyable,
@@ -244,9 +242,31 @@ public class PrototypeDefinition extends AbstractConfigurable
       super(null, null, def);
       box = new JPanel(new MigLayout("ins 0", "[grow,fill]", "[][grow]"));  // NON-NLS
 
+      pieceDefiner = new Definer(GameModule.getGameModule().getGpIdSupport());
+
       final JPanel namePanel = new JPanel(new MigLayout("ins 0", "[]rel[grow,fill]")); // NON-NLS
       namePanel.add(new JLabel(Resources.getString(Resources.NAME_LABEL)));
       name = new StringConfigurer(def.name);
+      //BR// Autorenames BasicName trait to match prototype, if they matched to begin with
+      name.addPropertyChangeListener(evt -> {
+        final String oldValue = (String)evt.getOldValue();
+        final String newValue = (String)evt.getNewValue();
+        pieceDefiner.setPrototypeName(newValue);
+        if (!oldValue.equals(newValue)) {
+          final GamePiece piece = pieceDefiner.getPiece();
+          if (piece != null) {
+            for (GamePiece p = Decorator.getOutermost(piece); p instanceof Decorator; p = ((Decorator) p).getInner()) {
+              if (p instanceof BasicName) {
+                if (oldValue.equals(p.getProperty(BasicPiece.BASIC_NAME))) {
+                  ((BasicName) p).setName(newValue);
+                  def.setPiece(piece);
+                  pieceDefiner.setPiece(def.getPiece());
+                }
+              }
+            }
+          }
+        }
+      });
       namePanel.add(name.getControls(), "grow, wrap"); // NON-NLS
 
       namePanel.add(new JLabel(Resources.getString(Resources.DESCRIPTION)));
@@ -255,8 +275,8 @@ public class PrototypeDefinition extends AbstractConfigurable
 
       box.add(namePanel, "grow,wrap"); // NON-NLS
 
-      pieceDefiner = new Definer(GameModule.getGameModule().getGpIdSupport());
       pieceDefiner.setPiece(def.getPiece());
+      pieceDefiner.setPrototypeName(def.name);
       box.add(pieceDefiner, "growy");  // NON-NLS
       this.def = def;
     }

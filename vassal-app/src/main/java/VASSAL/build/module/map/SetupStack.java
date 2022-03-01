@@ -328,7 +328,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   @Override
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
-      return getConfigureName();
+      return name;
     }
     else if (OWNING_BOARD.equals(key)) {
       return owningBoardName;
@@ -392,6 +392,25 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       }
       pos.y = (Integer) value;
     }
+  }
+
+  /**
+   * Setup Stacks with no name will display in editor w/ the name of something inside them that does have a name.
+   * @return Configure name of the Setup Stack
+   */
+  @Override
+  public String getConfigureName() {
+    if ((name != null) && !name.isEmpty()) {
+      return name;
+    }
+    final Configurable[] configurables = getConfigureComponents();
+    for (final Configurable c : configurables) {
+      final String cName = c.getConfigureName();
+      if (!cName.isEmpty()) {
+        return cName;
+      }
+    }
+    return name;
   }
 
   @Override
