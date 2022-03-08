@@ -18,6 +18,8 @@ a <<TurnTracker#top,Turn Tracker>> won't display a Turn Tracker tab). You will f
 * <<#Server,*Server*>> - Which server to connect to for online play.
 * <<#ChatWindow,*Chat Window*>> - Fonts and colors for the <<ChatLog#top,Chat Log>>
 * <<#TurnCounter,*Turn Counter*>> - <<TurnTracker#top,Turn Tracker>> display configuration.
+* <<#Converter,*Converter*>> - Module converter settings.
+* <<#Tiler,*Tiler*>> - Image tiler settings.
 
 Modules can also define their own preference that will appear on module specific tabs.
 [#General]
@@ -53,7 +55,7 @@ NOTE: This option is intended for debugging only and can degrade the performance
 *Use combined application window (requires restart):*:: Check this option to have the first Map#top,Map>> in each module open as part of the same window
 that includes the ChatLog#top,Chat Log>> and main module menu. If unchecked, all Maps will have their own windows.
 
-*JVM maximum heap (in MB):*:: This sets the maximum size (in megabytes) of the heap that Java uses to manage memory for the VASSAL applications. The two times you should consider increasing this value are: (1) if you receive an Out of Memory exception, and (2) you notice that map tiles are taking a really long time to paint. If either of these two things happens, try bumping it up by increments of 256 -- it is uncommon enough to need to adjust it at all, and e.g. 768 is often fine. 1024 handles even most very large modules, and we've never encountered a module in 20 years that needed more than 2048. Note that increasing this number in situations where it is not needed will end up disincentivizing Java from managing memory as tightly -- so don't increase this to massive numbers "just because you can".
+*JVM maximum heap (in MB):*:: This sets the maximum size (in megabytes) of the heap that Java uses to manage memory for the VASSAL applications. The two times you should consider increasing this value are: (1) if you receive an Out of Memory exception, and (2) you notice that map tiles are taking a really long time to paint. If either of these two things happens, try bumping it up by increments of 256 -- it is uncommon enough to need to adjust it at all, and e.g. 768 is often fine. 1024 handles even most very large modules, and we've rarely encountered a module in 20 years that needed more than 2048. Note that increasing this number in situations where it is not needed will end up disincentivizing Java from managing memory as tightly -- so don't increase this to massive numbers "just because you can".
 
 NOTE: changing this value will have no effect until the next time you start the module in the VASSAL Player or Editor.
 
@@ -211,4 +213,27 @@ If your module contains a <<TurnTracker#top,Turn Counter>>, this tab will let yo
 |image:images/PreferencesTurn.png[]
 |===
 
+[#Converter]
+==== Converter
+The _Converter_ tab lets you set the preferences for the module converter. This tab is available only in the Module Manager.
+
+[width="100%",cols="50%a,50%",]
+|===
+|
+
+*JVM maximum heap (in MB):*:: Sets the maximum memory available to the module converter. If conversion fails, try setting the max heap higher.
+|image:images/PreferencesConverter.png[]
+|===
+
+[#Tiler]
+==== Tiler
+The _Tiler_ tab lets you set the preferences for the image tiler. This tab is available only in the Module Manager.
+
+[width="100%",cols="50%a,50%",]
+|===
+|
+
+*JVM maximum heap (in MB):*:: Sets the maximum memory available to the image tiler. If tiling fails, try setting the max heap higher.
+|image:images/PreferencesTiler.png[]
+|===
 
