@@ -94,6 +94,13 @@ public class Replace extends PlaceMarker {
   public String getDescription() {
     String s = buildDescription("Editor.Replace.trait_description", description);
     s += getCommandDesc(command.getName(), key);
+
+    updateDescString();
+
+    if ((descString != null) && !descString.isEmpty()) {
+      s += " - " + descString;
+    }
+
     return s;
   }
 

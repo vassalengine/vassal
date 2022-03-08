@@ -46,7 +46,13 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.SequenceEncoder;
+import net.miginfocom.swing.MigLayout;
 
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -61,14 +67,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
-
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-
-import net.miginfocom.swing.MigLayout;
 
 import static VASSAL.counters.BasicPiece.BASIC_NAME;
 import static VASSAL.counters.BasicPiece.PIECE_NAME;
@@ -101,6 +99,8 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
   protected static final int BELOW = 3;
   protected int placement = STACK_TOP;
   protected boolean above;
+
+  protected String descString;
 
   public PlaceMarker() {
     this(ID + Resources.getString("Editor.PlaceMarker.default_command") + ";M;null;null;null", null); // NON-NLS
@@ -410,10 +410,25 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     return piece.getShape();
   }
 
+  public void updateDescString() {
+    if (descString == null) {
+      final GamePiece p = createMarker();
+      final PieceSlot slot = new PieceSlot(p);
+      descString = slot.getConfigureName();
+    }
+  }
+
   @Override
   public String getDescription() {
     String s = buildDescription("Editor.PlaceMarker.trait_description", description);
     s += getCommandDesc(command.getName(), key);
+
+    updateDescString();
+
+    if ((descString != null) && !descString.isEmpty()) {
+      s += " - " + descString;
+    }
+
     return s;
   }
 
@@ -557,6 +572,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       defineButton.addActionListener(e -> {
         markerSlotPath = null;
         new PropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class,  p), true, pieceInput, null).setVisible(true);
+        piece.descString = pieceInput.getConfigureName();
         adjustVisualiserSize();
       });
       b.add(defineButton);
@@ -567,6 +583,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
         d.setVisible(true);
         if (d.getTarget() instanceof PieceSlot) {
           pieceInput.setPiece(((PieceSlot) d.getTarget()).getPiece());
+          piece.descString = pieceInput.getConfigureName();
           adjustVisualiserSize();
         }
         if (d.getPath() != null) {
