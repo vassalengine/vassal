@@ -17,15 +17,6 @@
  */
 package VASSAL.build.module.documentation;
 
-import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.io.File;
-import java.util.List;
-import java.util.Collection;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-
 import VASSAL.Info;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
@@ -37,6 +28,14 @@ import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.AboutWindow;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.io.File;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Places an entry in the <code>Help</code> menu.  Selecting the entry
@@ -78,6 +77,18 @@ public class AboutScreen extends AbstractConfigurable {
     sb.append(
       Resources.getString("AboutScreen.module_version",  //$NON-NLS-1$
         g.getLocalizedGameName(), g.getGameVersion()));
+
+
+    final String o1 = g.getModuleOther1();
+    if ((o1 != null) && !o1.isEmpty()) {
+      sb.append(" - ");
+      sb.append(o1);
+    }
+    final String o2 = g.getModuleOther2();
+    if ((o2 != null) && !o2.isEmpty()) {
+      sb.append(" - ");
+      sb.append(o1);
+    }
 
     for (final ModuleExtension ext : g.getComponentsOf(ModuleExtension.class)) {
       sb.append("<br/>").append(//NON-NLS

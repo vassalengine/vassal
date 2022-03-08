@@ -1173,6 +1173,20 @@ public class GameModule extends AbstractConfigurable
   }
 
   /**
+   * @return extra information 1 for module
+   */
+  public String getModuleOther1() {
+    return moduleOther1;
+  }
+
+  /**
+   * @return extra information 2 for module
+   */
+  public String getModuleOther2() {
+    return moduleOther2;
+  }
+
+  /**
    * Currently used to listen for changes to player names
    * @param l propertyChangeListener to add
    */
