@@ -176,6 +176,35 @@ public class ImageUtils {
     }
   }
 
+  public static BufferedImage transform(BufferedImage src,
+                                        int sw,
+                                        int sh,
+                                        RenderingHints hints) {
+    // bail on null source
+    if (src == null) return null;
+
+    // return null image if scaling makes source vanish
+    if (sw == 0 || sh == 0) {
+      return NULL_IMAGE;
+    }
+
+    // nothing to do, return source
+    if (sw == src.getWidth() && sh == src.getHeight()) {
+      return src;
+    }
+
+    // use the default hints if we weren't given any
+    if (hints == null) hints = getDefaultHints();
+
+    src = coerceToIntType(src);
+
+    final Rectangle sbox = new Rectangle(0, 0, sw, sh);
+
+    final BufferedImage dst = GeneralFilter.zoom(sbox, src, sw > src.getWidth() ? upscale : downscale);
+
+    return toCompatibleImage(dst);
+  }
+
   public static BufferedImage coerceToIntType(BufferedImage img) {
     // ensure that img is a type which GeneralFilter can handle
     switch (img.getType()) {

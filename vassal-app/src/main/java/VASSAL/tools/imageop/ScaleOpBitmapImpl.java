@@ -98,15 +98,22 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
    */
   @Override
   public BufferedImage eval() throws Exception {
-    return ImageUtils.transform(sop.getImage(null), scale, 0.0, hints);
+    if (size == null) {
+      fixSize();
+    }
+    return ImageUtils.transform(sop.getImage(null), size.width, size.height, hints);
   }
 
   /** {@inheritDoc} */
   @Override
   protected void fixSize() {
     if ((size = getSizeFromCache()) == null) {
-      size = ImageUtils.transform(
-        new Rectangle(sop.getSize()), scale, 0.0).getSize();
+      // We scale to a size rather than a scale factor here because this is
+      // used for sizing tiled images, and the tiles are sliced from an image
+      // already scaled to a particular size. Doing this ensures that the
+      // sum of the tiles widths and heights match the image width and height.
+      final Dimension sd = sop.getSize();
+      size = new Dimension((int)(sd.width * scale), (int)(sd.height * scale));
     }
   }
 
