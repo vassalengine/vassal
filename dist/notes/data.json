@@ -30,6 +30,7 @@
         { "num": 11188, "desc": "DoActionButton hotkeys were not found by search" }
       ],
       "other_improvements": [
+        { "num": 11276, "desc": "Place Marker (and Replace With Other) include name of added piece in summary" },
         { "num": 11260, "desc": "Editor now remembers its most recent image-picking (and sound) directories separately from its memory of last save/load of games and logs" },
         { "num": 11258, "desc": "New BasicName trait defaults to Prototype's name; Changing Prototype's name changes BasicName trait's, if identical; At-Start Stack with no name displays name of first contained piece or folder in editor" },
         { "num": 11255, "desc": "Updated downloads URL to the one for our download page" },
