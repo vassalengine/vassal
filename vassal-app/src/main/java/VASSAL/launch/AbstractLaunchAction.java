@@ -284,8 +284,12 @@ public abstract class AbstractLaunchAction extends AbstractAction {
           }
         }
 
-        // limit the tiler max heap to 3/4 of physical RAM
-        final int max_tiler_heap = 3*PHYS_MEMORY/4;
+        // read maximum heap size from global prefs
+        final int max_tiler_heap = getHeapSize(
+          Prefs.getGlobalPrefs(),
+          ModuleManager.TILER_MAXIMUM_HEAP,
+          3*PHYS_MEMORY/4
+        );
 
         // slice tiles for module
         final String aname = lr.module.getAbsolutePath();
@@ -367,17 +371,19 @@ public abstract class AbstractLaunchAction extends AbstractAction {
           // read module prefs
           final ReadOnlyPrefs p = new ReadOnlyPrefs(moduleName);
 
-          // read maximum heap size
+          // read maximum heap size from module prefs
           maximumHeap = getHeapSize(
-            p, GlobalOptions.MAXIMUM_HEAP, DEFAULT_MAXIMUM_HEAP);
+            p, GlobalOptions.MAXIMUM_HEAP, DEFAULT_MAXIMUM_HEAP
+          );
         }
       }
       else if (lr.importFile != null) {
         final Prefs p = Prefs.getGlobalPrefs();
 
-        // read maximum heap size
+        // read maximum heap size from global prefs
         maximumHeap = getHeapSize(
-          p, GlobalOptions.MAXIMUM_HEAP, DEFAULT_MAXIMUM_HEAP);
+          p, ModuleManager.CONVERTER_MAXIMUM_HEAP, DEFAULT_MAXIMUM_HEAP
+        );
       }
 // end FIXME
 
@@ -476,23 +482,10 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       return null;
     }
 
-    protected int getHeapSize(ReadOnlyPrefs p, String key, int defaultHeap) {
-      // read heap size, if it exists
-      final String val = p.getStoredValue(key);
-      if (val == null) return defaultHeap;
-
-      try {
-        return Integer.parseInt(val);
+    private int strToInt(Object val, int defaultVal) {
+      if (val == null) {
+        return defaultVal;
       }
-      catch (NumberFormatException ex) {
-        return -1;
-      }
-    }
-
-    protected int getHeapSize(Prefs p, String key, int defaultHeap) {
-      // read heap size, if it exists
-      final Object val = p.getValue(key);
-      if (val == null) return defaultHeap;
 
       try {
         return Integer.parseInt(val.toString());
@@ -500,6 +493,16 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       catch (NumberFormatException ex) {
         return -1;
       }
+    }
+
+    protected int getHeapSize(ReadOnlyPrefs p, String key, int defaultHeap) {
+      // read heap size, if it exists
+      return strToInt(p.getStoredValue(key), defaultHeap);
+    }
+
+    protected int getHeapSize(Prefs p, String key, int defaultHeap) {
+      // read heap size, if it exists
+      return strToInt(p.getValue(key), defaultHeap);
     }
 
     @Override
