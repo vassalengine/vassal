@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 11278, "desc": "Scale tiled images to target size rather than by scale factor" },
         { "num": 11254, "desc": "Tiler dialog doesn't cancel tiling when Cancel button is clicked" },
         { "num": 11248, "desc": "Catch InvalidDnDOperation exceptions when inappropriate drag-and-drops attempted" },
         { "num": 11227, "desc": "Fix NPE when copying vertices from a zone with no vertices" },
@@ -30,9 +31,11 @@
         { "num": 11188, "desc": "DoActionButton hotkeys were not found by search" }
       ],
       "other_improvements": [
+        { "num": 11279, "desc": "Module \"other\" strings displayed in About screen" },
         { "num": 11276, "desc": "Place Marker (and Replace With Other) include name of added piece in summary" },
         { "num": 11260, "desc": "Editor now remembers its most recent image-picking (and sound) directories separately from its memory of last save/load of games and logs" },
         { "num": 11258, "desc": "New BasicName trait defaults to Prototype's name; Changing Prototype's name changes BasicName trait's, if identical; At-Start Stack with no name displays name of first contained piece or folder in editor" },
+        { "num": 11256, "desc": "Added a preference for the tiler max heap; tiler will retry up to that limit" },
         { "num": 11255, "desc": "Updated downloads URL to the one for our download page" },
         { "num": 11243, "desc": "Enable Sum and Count in GKC Report Expressions" },
         { "num": 11233, "desc": "UI Cleanup: don't scroll-at-edge the map if a file or link is being dragged instead of a piece" },
