@@ -406,7 +406,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     final Configurable[] configurables = getConfigureComponents();
     for (final Configurable c : configurables) {
       final String cName = c.getConfigureName();
-      if (!cName.isEmpty()) {
+      if ((cName != null) && !cName.isEmpty()) {
         return cName;
       }
     }
