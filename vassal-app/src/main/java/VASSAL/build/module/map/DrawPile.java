@@ -53,6 +53,7 @@ import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.UniqueIdManager;
 
+import javax.swing.JPopupMenu;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -61,8 +62,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import javax.swing.JPopupMenu;
 
 public class DrawPile extends SetupStack implements PropertySource, PropertyNameSource, ComponentDescription {
   public static final String DESCRIPTION = "description"; //NON-NLS
@@ -122,6 +121,15 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   @Override
   public String getDescription() {
     return description;
+  }
+
+  /**
+   * Deck doesn't join in any SetupStack reindeer games.
+   * @return configure name for deck
+   */
+  @Override
+  public String getConfigureName() {
+    return name;
   }
 
   protected JPopupMenu buildPopup() {
