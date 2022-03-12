@@ -760,13 +760,13 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
         (refresher instanceof StackRefresher ?
           ((StackRefresher) refresher).getStack().getPieceAt(0) : null);
 
-      return p == null ? false : getMat().hasCargo(p);
+      return p != null && getMat().hasCargo(p);
     }
 
     /**
      * Search through the list of Refreshables for any individual pieces, or Stacks that contain pieces,
      * that are loaded onto this Mat. Remove the Refreshable from the supplied List and record it here
-     * @param refreshables
+     * @param refreshables List of refreshables
      */
     public void grabMyCargo(List<Refresher> refreshables) {
       refreshables.removeIf(refresher -> {
