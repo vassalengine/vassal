@@ -46,7 +46,21 @@ import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.swing.FlowLabel;
 import VASSAL.tools.swing.SwingUtils;
+import net.miginfocom.swing.MigLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.WindowConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
@@ -60,23 +74,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.WindowConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
-import net.miginfocom.swing.MigLayout;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * GameRefresher Replace all counters in the same game with the current version
@@ -757,26 +754,28 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       super(piece);
     }
 
+    private boolean refresher_for_cargo(Refresher refresher) {
+      final GamePiece p = refresher instanceof PieceRefresher ?
+        ((PieceRefresher) refresher).getPiece() :
+        (refresher instanceof StackRefresher ?
+          ((StackRefresher) refresher).getStack().getPieceAt(0) : null);
+
+      return p != null && getMat().hasCargo(p);
+    }
+
     /**
      * Search through the list of Refreshables for any individual pieces, or Stacks that contain pieces,
      * that are loaded onto this Mat. Remove the Refreshable from the supplied List and record it here
-     * @param refeshables
+     * @param refreshables List of refreshables
      */
     public void grabMyCargo(List<Refresher> refreshables) {
-      for (final Refresher refresher : refreshables) {
-        if (refresher instanceof PieceRefresher) {
-          if (getMat().hasCargo(((PieceRefresher) refresher).getPiece())) {
-            refreshables.remove(refresher);
-            loadedCargo.add(refresher);
-          }
+      refreshables.removeIf(refresher -> {
+        if (refresher_for_cargo(refresher)) {
+          loadedCargo.add(refresher);
+          return true;
         }
-        else if (refresher instanceof StackRefresher) {
-          if (getMat().hasCargo(((StackRefresher) refresher).getStack().getPieceAt(0))) {
-            refreshables.remove(refresher);
-            loadedCargo.add(refresher);
-          }
-        }
-      }
+        return false;
+      });
     }
 
     @Override
