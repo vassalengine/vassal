@@ -401,34 +401,31 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   @Override
   public String getConfigureName() {
     final StringBuilder sb = new StringBuilder("");
-    boolean any = false;
 
     if ((name != null) && !name.isEmpty()) {
       sb.append(name);
-      any = true;
     }
     final Configurable[] configurables = getConfigureComponents();
     for (final Configurable c : configurables) {
       final String cName = c.getConfigureName();
       if ((cName != null) && !cName.isEmpty()) {
-        if (any) {
+        if (sb.length() > 0) {
           sb.append(" - ");
         }
         sb.append(cName);
-        any = true;
         break;
       }
     }
     if (useGridLocation) {
       if (location != null) {
-        if (any) {
+        if (sb.length() > 0) {
           sb.append(" - ");
         }
         sb.append(location);
       }
     }
     else {
-      if (any) {
+      if (sb.length() > 0) {
         sb.append(" - ");
       }
       sb.append('(');
