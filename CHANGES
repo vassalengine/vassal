@@ -1,5 +1,6 @@
 3.6.6 - ???
 
+* 11287: Fix ConcurrentExecutionException in Game Refresher with Mats
 * 11279: Module "other" strings displayed in About screen
 * 11278: Scale tiled images to target size rather than by scale factor
 * 11276: Place Marker (and Replace With Other) include name of added piece in
