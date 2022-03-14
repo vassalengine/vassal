@@ -675,7 +675,7 @@ public class GameModule extends AbstractConfigurable
      * know which preferences to read.
      */
     if (e != null) {
-      gameName = e.getAttribute(MODULE_NAME);
+      gameName = e.getAttribute(MODULE_NAME).strip();
       if (e.getAttribute(VASSAL_VERSION_CREATED).length() > 0) {
         vassalVersionCreated = e.getAttribute(VASSAL_VERSION_CREATED);
       }
@@ -883,6 +883,9 @@ public class GameModule extends AbstractConfigurable
       }
       else {
         gameName = (String) value;
+        if (gameName != null) {
+          gameName = gameName.strip();
+        }
       }
       setConfigureName((String) value);
     }
