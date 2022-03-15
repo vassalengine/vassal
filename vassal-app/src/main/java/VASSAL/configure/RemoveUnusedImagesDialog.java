@@ -18,9 +18,7 @@ import VASSAL.tools.swing.SwingUtils;
 import java.awt.Frame;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -240,22 +238,9 @@ public class RemoveUnusedImagesDialog extends JDialog {
   }
 
   private void removeImages() {
-
-    final File dir = new File(new File(archive.getName()).getParent(), "removed");
-    dir.mkdir();
-
     for (final String uName : dump) {
       final String u = displayIndex.get(uName).getFileName();
-
       GameModule.getGameModule().warn("- " + Resources.getString("Editor.UnusedImages.removing", uName));
-
-      try (InputStream in = archive.getWriter().getInputStream(DataArchive.IMAGE_DIR + u)) {
-        Files.copy(in, dir.toPath().resolve(u));
-      }
-      catch (IOException ex) {
-        logger.error("Augh!", ex); //NON-NLS, obviously
-      }
-
       archive.getWriter().removeImage(u);
     }
 
