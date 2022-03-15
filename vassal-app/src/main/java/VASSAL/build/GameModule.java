@@ -891,6 +891,9 @@ public class GameModule extends AbstractConfigurable
     }
     else if (MODULE_VERSION.equals(name)) {
       moduleVersion = (String) value;
+      if (moduleVersion != null) {
+        moduleVersion = moduleVersion.strip();
+      }
     }
     else if (VASSAL_VERSION_CREATED.equals(name)) {
       vassalVersionCreated = (String) value;
