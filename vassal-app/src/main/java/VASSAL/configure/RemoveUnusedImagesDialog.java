@@ -37,13 +37,8 @@ import javax.swing.JScrollPane;
 
 import net.miginfocom.swing.MigLayout;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class RemoveUnusedImagesDialog extends JDialog {
   private static final long serialVersionUID = 1L;
-
-  private static final Logger logger = LoggerFactory.getLogger(RemoveUnusedImagesDialog.class);
 
   private final DefaultListModel<String> keepModel = new DefaultListModel<>();
   private final DefaultListModel<String> dumpModel = new DefaultListModel<>();
