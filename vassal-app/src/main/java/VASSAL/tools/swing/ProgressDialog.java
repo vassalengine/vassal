@@ -59,8 +59,9 @@ public class ProgressDialog extends JDialog {
    * @param parent the parent frame
    * @param title the dialog title
    * @param text the text beneath the progress bar
+   * @param cancellable show a cancel button if true
    */
-  public ProgressDialog(Frame parent, String title, String text) {
+  public ProgressDialog(Frame parent, String title, String text, boolean cancellable) {
     super(parent, title, true);
 
     // set up the components
@@ -70,20 +71,26 @@ public class ProgressDialog extends JDialog {
     progbar.setStringPainted(true);
     progbar.setValue(0);
 
-    cancel = new JButton(Resources.getString(Resources.CANCEL));
+    if (cancellable) {
+      cancel = new JButton(Resources.getString(Resources.CANCEL));
 
-    // forward clicks on the close decoration to cancellation listeners
-    addWindowListener(new WindowAdapter() {
-      @Override
-      public void windowClosing(WindowEvent e) {
-        fireCancelledEvent(new ActionEvent(
-          ProgressDialog.this, ActionEvent.ACTION_PERFORMED, "cancel" //NON-NLS
-        ));
-      }
-    });
+      // forward clicks on the close decoration to cancellation listeners
+      addWindowListener(new WindowAdapter() {
+        @Override
+        public void windowClosing(WindowEvent e) {
+          fireCancelledEvent(new ActionEvent(
+            ProgressDialog.this, ActionEvent.ACTION_PERFORMED, "cancel" //NON-NLS
+          ));
+        }
+      });
 
-    // forward clicks on the close button to the cancellation listeners
-    cancel.addActionListener(this::fireCancelledEvent);
+      // forward clicks on the close button to the cancellation listeners
+      cancel.addActionListener(this::fireCancelledEvent);
+    }
+    else {
+      cancel = null;
+      setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+    }
 
     // create the layout
     final JPanel panel = new JPanel(new MigLayout(
@@ -94,7 +101,10 @@ public class ProgressDialog extends JDialog {
     // the label will overflow the container instead of showing ellipses.
     panel.add(progbar, "growx, wrap"); //NON-NLS
     panel.add(label,   "wmin 0, pad 0 0 2pt 0, wrap unrel:push"); //NON-NLS
-    panel.add(cancel,  "tag cancel"); //NON-NLS
+
+    if (cancellable) {
+      panel.add(cancel,  "tag cancel"); //NON-NLS
+    }
 
     add(panel);
 
@@ -106,6 +116,17 @@ public class ProgressDialog extends JDialog {
 
     // pack again to ensure that we respect the minimum size
     pack();
+  }
+
+  /**
+   * Creates a progress dialog.
+   *
+   * @param parent the parent frame
+   * @param title the dialog title
+   * @param text the text beneath the progress bar
+   */
+  public ProgressDialog(Frame parent, String title, String text) {
+    this(parent, title, text, true);
   }
 
   protected void fireCancelledEvent(ActionEvent e) {
