@@ -66,22 +66,11 @@ public class ProgressDialog extends JDialog {
     // set up the components
     label = new JLabel(text);
 
-//    Font f = label.getFont();
-//    label.setFont(f.deriveFont(f.getSize2D()*4f/3f));
-//    label.setFont(f.deriveFont(14f));
-
     progbar = new JProgressBar(0, 100);
     progbar.setStringPainted(true);
     progbar.setValue(0);
 
-// AUGH! This is retarded that we can't set a default font size...
-//    f = progbar.getFont();
-//    progbar.setFont(f.deriveFont(14f));
-
     cancel = new JButton(Resources.getString(Resources.CANCEL));
-
-//    f = cancel.getFont();
-//    cancel.setFont(f.deriveFont(14f));
 
     // forward clicks on the close decoration to cancellation listeners
     addWindowListener(new WindowAdapter() {
