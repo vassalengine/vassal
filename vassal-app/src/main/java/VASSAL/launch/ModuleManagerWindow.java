@@ -67,6 +67,7 @@ import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.TreeExpansionEvent;
@@ -123,6 +124,7 @@ import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.menu.MenuProxy;
 import VASSAL.tools.swing.Dialogs;
+import VASSAL.tools.swing.ProgressDialog;
 import VASSAL.tools.swing.SplitPane;
 import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.version.UpdateCheckAction;
@@ -281,39 +283,7 @@ public class ModuleManagerWindow extends JFrame {
     }, serverStatusConfig.booleanValue()));
 
     toolsMenu.add(mm.addKey("Main.import_module"));
-
-    toolsMenu.add(new MenuItemProxy(new AbstractAction(
-                    Resources.getString("ModuleManager.clear_tilecache")) {
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      public void actionPerformed(ActionEvent evt) {
-        final int dialogResult = Dialogs.showConfirmDialog(
-          ModuleManagerWindow.this,
-          Resources.getString("ModuleManager.clear_tilecache_title"),
-          Resources.getString("ModuleManager.clear_tilecache_heading"),
-          Resources.getString("ModuleManager.clear_tilecache_message"),
-          JOptionPane.WARNING_MESSAGE,
-          JOptionPane.OK_CANCEL_OPTION
-        );
-
-        if (dialogResult == JOptionPane.OK_OPTION) {
-          // clear tiles in both old (conf) and new (cache) locations
-          for (final File d : List.of(Info.getCacheDir(), Info.getConfDir())) {
-            final File tdir = new File(d, "tiles");
-            if (tdir.exists()) {
-              try {
-                FileUtils.forceDelete(tdir);
-                FileUtils.forceMkdir(tdir);
-              }
-              catch (IOException e) {
-                WriteErrorDialog.error(e, tdir);
-              }
-            }
-          }
-        }
-      }
-    }));
+    toolsMenu.add(new MenuItemProxy(new ClearTileCacheAction()));
 
     // help menu
     final MenuProxy helpMenu =
@@ -478,6 +448,71 @@ public class ModuleManagerWindow extends JFrame {
 
   protected int getPreferredDividerLocation() {
     return dividerLocationConfig.getIntValue(500);
+  }
+
+  private class ClearTileCacheAction extends AbstractAction {
+    private static final long serialVersionUID = 1L;
+
+    public ClearTileCacheAction() {
+      super(Resources.getString("ModuleManager.clear_tilecache"));
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent evt) {
+      final int dialogResult = Dialogs.showConfirmDialog(
+        ModuleManagerWindow.this,
+        Resources.getString("ModuleManager.clear_tilecache_title"),
+        Resources.getString("ModuleManager.clear_tilecache_heading"),
+        Resources.getString("ModuleManager.clear_tilecache_message"),
+        JOptionPane.WARNING_MESSAGE,
+        JOptionPane.OK_CANCEL_OPTION
+      );
+
+      if (dialogResult != JOptionPane.OK_OPTION) {
+        return;
+      }
+
+      final ProgressDialog pd = new ProgressDialog(
+        ModuleManagerWindow.this,
+        Resources.getString("ModuleManager.clear_tilecache_progress_title"),
+        Resources.getString("ModuleManager.clear_tilecache_progress_text"),
+        false
+      );
+
+      pd.setIndeterminate(true);
+      pd.setStringPainted(false);
+      pd.setLocationRelativeTo(ModuleManagerWindow.this);
+
+      final SwingWorker task = new SwingWorker<Void, Void>() {
+        @Override
+        public Void doInBackground() throws InterruptedException, IOException {
+          // clear tiles in both old (conf) and new (cache) locations
+          for (final File d : List.of(Info.getCacheDir(), Info.getConfDir())) {
+            final File tdir = new File(d, "tiles");
+            if (tdir.exists()) {
+              try {
+                FileUtils.forceDelete(tdir);
+                FileUtils.forceMkdir(tdir);
+              }
+              catch (IOException e) {
+                WriteErrorDialog.error(e, tdir);
+              }
+            }
+          }
+
+          return null;
+        }
+
+        @Override
+        protected void done() {
+          pd.setVisible(false);
+          pd.dispose();
+        }
+      };
+
+      task.execute();
+      pd.setVisible(true);
+    }
   }
 
   // Show/Hide the two 'developer' columns depending on the pref value
