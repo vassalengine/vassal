@@ -1,5 +1,7 @@
 3.6.6 - ???
 
+* 11296: Don't block the EDT when clearing the tile cache
+* 11292: Strip leading and trailing whitespace from module names and versions
 * 11287: Fix ConcurrentExecutionException in Game Refresher with Mats
 * 11286: Improved Setup Stack descriptions in editor
 * 11279: Module "other" strings displayed in About screen

@@ -32,6 +32,8 @@
         { "num": 11188, "desc": "DoActionButton hotkeys were not found by search" }
       ],
       "other_improvements": [
+        { "num": 11296, "desc": "Don't block the EDT when clearing the tile cache" },
+        { "num": 11292, "desc": "Strip leading and trailing whitespace from module names and versions" },
         { "num": 11286, "desc": "Improved Setup Stack descriptions in editor" },
         { "num": 11279, "desc": "Module \"other\" strings displayed in About screen" },
         { "num": 11276, "desc": "Place Marker (and Replace With Other) include name of added piece in summary" },
