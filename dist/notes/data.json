@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 11302, "desc": "Fixed link typo in GamePieceImageDefinitions page of Reference Manual" },
         { "num": 11287, "desc": "Fix ConcurrentExecutionException in Game Refresher with Mats" },
         { "num": 11278, "desc": "Scale tiled images to target size rather than by scale factor" },
         { "num": 11254, "desc": "Tiler dialog doesn't cancel tiling when Cancel button is clicked" },
