@@ -20,7 +20,7 @@ Furthermore you can change the size and layout of all the counters in your game 
 
 *Set up a Game Piece Image in three steps:*
 
-. *Make a layout:* Right-click on the [Game Piece Image Definitions] component in the Editor and select "Add Game Piece Layout". In the <<GamePieceLayout.adoc#top,Game Piece Layout>>'s properties, you specify the position, size and style of all items to be drawn on counter.
+. *Make a layout:* Right-click on the [Game Piece Image Definitions] component in the Editor and select "Add Game Piece Layout". In the <<GamePieceLayouts.adoc#top,Game Piece Layout>>'s properties, you specify the position, size and style of all items to be drawn on counter.
 Colors and actual text and symbol selections are made in step 2.
 . *Create a specific image*:  Now right-click on the [Game Piece Layout] component that you've just added and select "Add Game Piece Image". This defines an individual image using the layout you created in step 1.
 In each <<GamePieceImage.adoc#top,Game Piece Image>>'s properties, specify the actual colors, text and symbols to be used for that image, using the layout you created in the previous step.
