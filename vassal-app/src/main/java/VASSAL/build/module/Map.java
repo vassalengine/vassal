@@ -2207,7 +2207,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       public void timingEvent(float fraction) {
         // Constant velocity along each axis, 0.5px/ms default
         final long t1 = System.currentTimeMillis();
-        final int dt = (int)((t1 - t0) * NumberUtils.max(EDGE_SCROLL_RATE, 0.01));
+        final int dt = (int)((t1 - t0) * Math.max(EDGE_SCROLL_RATE, 0.01));
         t0 = t1;
 
         scroll(sx * dt, sy * dt);
