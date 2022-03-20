@@ -981,7 +981,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 
     // To establish initial defaults, check to see if module designer has overridden the "default defaults" with Global Properties
     final Object delayProp = g.getProperty(DEFAULT_EDGE_SCROLL_DELAY_PROPERTY);
-    final int delayDefault = (delayProp instanceof String) ? NumberUtils.toInt((String)delayProp) : PREFERRED_EDGE_SCROLL_DELAY_STANDARD_DEFAULT;
+    final int delayDefault = (delayProp instanceof String) ? NumberUtils.toInt((String)delayProp) : PREFERRED_EDGE_SCROLL_DELAY;
 
     g.getPrefs().addOption(
       Resources.getString("Prefs.general_tab"), //$NON-NLS-1$
@@ -2122,7 +2122,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   protected static final String DEFAULT_EDGE_SCROLL_ZONE_PROPERTY  = "Map.defaultEdgeScrollZone";  //NON-NLS
   protected static final String DEFAULT_EDGE_SCROLL_RATE_PROPERTY  = "Map.defaultEdgeScrollRate";  //NON-NLS
 
-  public static final int PREFERRED_EDGE_SCROLL_DELAY_STANDARD_DEFAULT = 200;
+  public static final int PREFERRED_EDGE_SCROLL_DELAY = 200;
   public static final String PREFERRED_EDGE_DELAY = "PreferredEdgeDelay"; //$NON-NLS-1$
 
   /** The width of the hot zone for triggering autoscrolling. */
