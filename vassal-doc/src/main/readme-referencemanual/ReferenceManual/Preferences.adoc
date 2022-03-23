@@ -81,9 +81,11 @@ NOTE: Previous versions of VASSAL had a feature which let the value of this pref
 
 *Disable animation of map flares:*:: When checked, the Map Flares are displayed with a static image instead of an animated target image.
 
-*Delay scrolling when dragging at map edge (ms):*:: Sets the number of milliseconds of delay before scrolling the map when dragging a piece near to the edge of the view.
+*Delay scrolling when dragging at map edge (ms):*:: Sets the number of milliseconds of delay before scrolling the map when dragging a piece near to the edge of the view. The normal default is 200, but a module designer can change the default for the module by defining a Global Property named _Map.defaultEdgeScrollDelay_.
 
-*Distance from edge of map to begin scrolling (when dragging):*:: Sets how close to the edge of a Map the cursor must be before scrolling is initiated.
+*Distance from edge of map to begin scrolling (when dragging):*:: Sets how close in pixels to the edge of a Map the cursor must be before scrolling is initiated. The normal default is 60, but a module designer can change the default for the module by defining a Global Property named _Map.defaultEdgeScrollZone_.
+
+*Edge scroll rate (pixels per millisecond):*:: Sets the rate (in pixels per millisecond) map will scroll when dragging a piece at its edge. The normal default is 0.5, but a module designer can change the default for the module by defining a Global Property named _Map.defaultEdgeScrollRate_.
 
 |image:images/Preferences.png[]
 

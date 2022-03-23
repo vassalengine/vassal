@@ -83,6 +83,7 @@ import VASSAL.configure.CompoundValidityChecker;
 import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
+import VASSAL.configure.DoubleConfigurer;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.MandatoryComponent;
@@ -127,6 +128,7 @@ import VASSAL.tools.swing.SplitPane;
 import VASSAL.tools.swing.SwingUtils;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 import org.w3c.dom.Element;
@@ -283,6 +285,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   protected String description;
 
   private IntConfigurer preferredScrollConfig;
+  private DoubleConfigurer preferredScrollRateConfig;
 
   public Map() {
     getView();
@@ -976,22 +979,30 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       }
     });
 
+    // To establish initial defaults, check to see if module designer has overridden the "default defaults" with Global Properties
+    final Object delayProp = g.getProperty(DEFAULT_EDGE_SCROLL_DELAY_PROPERTY);
+    final int delayDefault = (delayProp instanceof String) ? NumberUtils.toInt((String)delayProp) : PREFERRED_EDGE_SCROLL_DELAY;
+
     g.getPrefs().addOption(
       Resources.getString("Prefs.general_tab"), //$NON-NLS-1$
       new IntConfigurer(
         PREFERRED_EDGE_DELAY,
         Resources.getString("Map.scroll_delay_preference"), //$NON-NLS-1$
-        PREFERRED_EDGE_SCROLL_DELAY
+        delayDefault
       )
     );
 
     g.addSideChangeListenerToPlayerRoster(this);
 
+    // To establish initial defaults, check to see if module designer has overridden the "default defaults" with Global Properties
+    final Object zoneProp = g.getProperty(DEFAULT_EDGE_SCROLL_ZONE_PROPERTY);
+    final int zoneDefault = (zoneProp instanceof String) ? NumberUtils.toInt((String)zoneProp) : PREFERRED_EDGE_SCROLL_ZONE_STANDARD_DEFAULT;
+
     // Create the Configurer for the Pref
     preferredScrollConfig = new IntConfigurer(
       PREFERRED_SCROLL_ZONE,
       Resources.getString("Map.scroll_zone_preference"), //$NON-NLS-1$
-      SCROLL_ZONE
+      zoneDefault
     );
 
     // Register the Pref, which copies any existing pref value into the configurer
@@ -1001,10 +1012,37 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     );
 
     // Read the current value of the pref
-    SCROLL_ZONE = preferredScrollConfig.getIntValue(60);
+    SCROLL_ZONE = preferredScrollConfig.getIntValue(zoneDefault);
 
     // Listen for any changes to the pref
-    preferredScrollConfig.addPropertyChangeListener(evt -> SCROLL_ZONE = preferredScrollConfig.getIntValue(60));
+    preferredScrollConfig.addPropertyChangeListener(evt -> SCROLL_ZONE = preferredScrollConfig.getIntValue(zoneDefault));
+
+    // To establish initial defaults, check to see if module designer has overridden the "default defaults" with Global Properties
+    final Object rateProp = g.getProperty(DEFAULT_EDGE_SCROLL_RATE_PROPERTY);
+    final double rateDefault = (rateProp instanceof String) ? NumberUtils.toDouble((String)rateProp) : PREFERRED_EDGE_SCROLL_RATE_STANDARD_DEFAULT;
+
+    // Create the Configurer for the Pref
+    preferredScrollRateConfig = new DoubleConfigurer(
+      PREFERRED_EDGE_SCROLL_RATE,
+      Resources.getString("Map.scroll_rate"),
+      rateDefault
+    );
+
+    // Register the Pref, which copies any existing pref value into the configurer
+    g.getPrefs().addOption(
+      Resources.getString("Prefs.general_tab"), //$NON-NLS-1$
+      preferredScrollRateConfig
+    );
+
+    // Read the current value of the pref
+    final String setting = preferredScrollRateConfig.getValueString();
+    EDGE_SCROLL_RATE = NumberUtils.toDouble(setting);
+
+    // Listen for any changes to the pref
+    preferredScrollRateConfig.addPropertyChangeListener(evt -> {
+      final String set = preferredScrollRateConfig.getValueString();
+      EDGE_SCROLL_RATE = NumberUtils.toDouble(set);
+    });
 
     g.getPrefs().addOption(
       Resources.getString("Prefs.compatibility_tab"), //$NON-NLS-1$
@@ -2078,12 +2116,25 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   /*
    * Delay before starting scroll at edge
    */
+
+  // Module designers can define Global Properties w/ these names to set the initial defaults for their modules.
+  protected static final String DEFAULT_EDGE_SCROLL_DELAY_PROPERTY = "Map.defaultEdgeScrollDelay"; //NON-NLS
+  protected static final String DEFAULT_EDGE_SCROLL_ZONE_PROPERTY  = "Map.defaultEdgeScrollZone";  //NON-NLS
+  protected static final String DEFAULT_EDGE_SCROLL_RATE_PROPERTY  = "Map.defaultEdgeScrollRate";  //NON-NLS
+
   public static final int PREFERRED_EDGE_SCROLL_DELAY = 200;
   public static final String PREFERRED_EDGE_DELAY = "PreferredEdgeDelay"; //$NON-NLS-1$
 
   /** The width of the hot zone for triggering autoscrolling. */
-  public static int SCROLL_ZONE = 60;
+  public static final int PREFERRED_EDGE_SCROLL_ZONE_STANDARD_DEFAULT = 60;
+  public static int SCROLL_ZONE = PREFERRED_EDGE_SCROLL_ZONE_STANDARD_DEFAULT;
   public static final String PREFERRED_SCROLL_ZONE = "PreferredScrollZone"; //$NON-NLS-1$
+
+  /** The rate at which things scroll */
+  public static final double PREFERRED_EDGE_SCROLL_RATE_STANDARD_DEFAULT = 0.5;
+  public static double EDGE_SCROLL_RATE = PREFERRED_EDGE_SCROLL_RATE_STANDARD_DEFAULT;
+  public static final String PREFERRED_EDGE_SCROLL_RATE = "PreferredEdgeScrollRate"; //NON-NLS
+
 
   /** The horizontal component of the autoscrolling vector, -1, 0, or 1. */
   protected int sx;
@@ -2154,9 +2205,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
        */
       @Override
       public void timingEvent(float fraction) {
-        // Constant velocity along each axis, 0.5px/ms
+        // Constant velocity along each axis, 0.5px/ms default
         final long t1 = System.currentTimeMillis();
-        final int dt = (int)((t1 - t0) / 2);
+        final int dt = (int)((t1 - t0) * Math.max(EDGE_SCROLL_RATE, 0.01));
         t0 = t1;
 
         scroll(sx * dt, sy * dt);
