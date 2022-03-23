@@ -33,6 +33,7 @@
         { "num": 11188, "desc": "DoActionButton hotkeys were not found by search" }
       ],
       "other_improvements": [
+        { "num": 11303, "desc": "Preference to control drag-at-edge scroll rate; per module defaults for edge scrolling" },
         { "num": 11297, "desc": "Don't copy out unused images on removal" },
         { "num": 11296, "desc": "Don't block the EDT when clearing the tile cache" },
         { "num": 11292, "desc": "Strip leading and trailing whitespace from module names and versions" },

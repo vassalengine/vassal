@@ -1,5 +1,7 @@
 3.6.6 - ???
 
+* 11303: Preference to control drag-at-edge scroll rate; per module defaults
+    for edge scrolling
 * 11302: Fixed link typo in GamePieceImageDefinitions page of Reference Manual
 * 11297: Don't copy out unused images on removal
 * 11296: Don't block the EDT when clearing the tile cache
