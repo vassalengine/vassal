@@ -581,47 +581,71 @@ public class GameState implements CommandEncoder {
     // Check it belongs to this module and matches the version if is a
     // post 3.0 save file
     final SaveMetaData saveData = (SaveMetaData) metaData;
+
     final String moduleName = GameModule.getGameModule().getGameName();
     final String moduleVersion = GameModule.getGameModule().getGameVersion();
+    final String vassalVersion = VersionUtils.truncateToIncrementalVersion(Info.getVersion());
+
     final String saveModuleName = saveData.getModuleName();
     String saveModuleVersion = "?";
+    String saveVassalVersion = "?";
+
+    // Was the Module Data that created the save stored in the save? (Vassal 3.0+)
     if (saveData.getModuleData() != null) {
       saveModuleVersion = saveData.getModuleVersion();
-      String message = null;
+      saveVassalVersion = VersionUtils.truncateToIncrementalVersion(saveData.getVassalVersion());
+      StringBuilder message = new StringBuilder();
 
       if (!saveModuleName.equals(moduleName)) {
-        message = Resources.getString(
+        message.append(Resources.getString(
           "GameState.load_module_mismatch",
           file.getName(), saveModuleName, moduleName
-        );
+        )).append('\n');
       }
-      else if (!saveModuleVersion.equals(moduleVersion)) {
-        message = Resources.getString(
+
+      if (!saveModuleVersion.equals(moduleVersion)) {
+        message.append(Resources.getString(
           "GameState.load_version_mismatch",
           file.getName(), saveModuleVersion, moduleVersion
-        );
+        )).append('\n');
+      }
+
+      if (!saveVassalVersion.equals(vassalVersion)) {
+        message.append(Resources.getString(
+          "GameState.load_vassal_mismatch",
+          file.getName(), saveVassalVersion, vassalVersion
+        )).append('\n');
       }
 
       if (message != null) {
-        return JOptionPane.showConfirmDialog(
+        if (JOptionPane.showConfirmDialog(
           null,
-          message,
+          message.toString(),
           Resources.getString("GameState.load_mismatch"),
           JOptionPane.YES_NO_OPTION,
-          JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION;
+          JOptionPane.QUESTION_MESSAGE) != JOptionPane.YES_OPTION) {
+          return false;
+        }
       }
+
+      if (!saveModuleName.equals(moduleName)) {
+        log.info("*** User explicitly cleared mismatch of module name - " + saveModuleName + " file loaded into => " + moduleName); //NON-NLS
+      }
+
+      if (!saveModuleVersion.equals(moduleVersion)) {
+        log.info("*** User explicitly cleared mismatch of module version - " + saveModuleVersion + " file loaded into => " + moduleVersion); //NON-NLS
+      }
+
+      if (!saveVassalVersion.equals(vassalVersion)) {
+        log.info("*** User explicitly cleared mismatch of Vassal version - " + saveVassalVersion + " file loaded into => " + vassalVersion); //NON-NLS
+      }
+
     }
 
     log.info(
       "Loading save game " + file.getPath() + //NON-NLS
         ", created with module version " + saveModuleVersion //NON-NLS
     );
-    if (!saveModuleName.equals(moduleName)) {
-      log.info("*** User explicitly cleared mismatch of module name - " + saveModuleName + " file loaded into => " + moduleName); //NON-NLS
-    }
-    else if (!saveModuleVersion.equals(moduleVersion)) {
-      log.info("*** User explicitly cleared mismatch of module version - " + saveModuleVersion + " file loaded into => " + moduleVersion); //NON-NLS
-    }
 
     return true;
   }

@@ -86,7 +86,6 @@ public abstract class AbstractMetaData {
   protected static final String MODULE_NAME_ATTR = "moduleName"; //NON-NLS
   protected static final String MODULE_VERSION_ATTR = "moduleVersion"; //NON-NLS
   protected static final String LANG_ATTR = "lang"; //NON-NLS
-  protected static final String CHECKSUM_ATTR = "checksum"; //NON-NLS
 
   protected static final String ROOT_ELEMENT = "data"; //NON-NLS
   protected static final String VERSION_ELEMENT = "version"; //NON-NLS
@@ -106,7 +105,6 @@ public abstract class AbstractMetaData {
   protected String vassalVersion;
   protected Attribute descriptionAttr;
   protected String lastSaved;
-  protected String checksum;
 
   public AbstractMetaData() {
     setVassalVersion(Info.getVersion());
@@ -150,14 +148,6 @@ public abstract class AbstractMetaData {
 
   public void setLastSaved(String lastSaved) {
     this.lastSaved = lastSaved;
-  }
-
-  public String getChecksum() {
-    return checksum;
-  }
-
-  public void setChecksum(String checksum) {
-    this.checksum = checksum;
   }
 
   public String formatLastSaved() {

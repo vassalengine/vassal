@@ -53,7 +53,6 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.PropertiesEncoder;
 import VASSAL.tools.SequenceEncoder;
 
-import VASSAL.tools.version.VersionUtils;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
