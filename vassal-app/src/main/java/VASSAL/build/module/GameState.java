@@ -594,7 +594,7 @@ public class GameState implements CommandEncoder {
     if (saveData.getModuleData() != null) {
       saveModuleVersion = saveData.getModuleVersion();
       saveVassalVersion = VersionUtils.truncateToIncrementalVersion(saveData.getVassalVersion());
-      StringBuilder message = new StringBuilder();
+      final StringBuilder message = new StringBuilder();
 
       if (!saveModuleName.equals(moduleName)) {
         message.append(Resources.getString(
