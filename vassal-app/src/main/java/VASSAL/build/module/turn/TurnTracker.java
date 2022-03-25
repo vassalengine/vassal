@@ -1305,10 +1305,11 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOT_KEY)),
-                         NamedHotKeyConfigurer.decode(getAttributeValueString(NEXT_HOT_KEY)),
-                         NamedHotKeyConfigurer.decode(getAttributeValueString(PREV_HOT_KEY))
-      );
+    return Arrays.asList(
+      NamedHotKeyConfigurer.decode(getAttributeValueString(HOT_KEY)),
+      NamedHotKeyConfigurer.decode(getAttributeValueString(NEXT_HOT_KEY)),
+      NamedHotKeyConfigurer.decode(getAttributeValueString(PREV_HOT_KEY))
+    );
   }
 
   @Override
