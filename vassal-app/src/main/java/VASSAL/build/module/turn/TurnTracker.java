@@ -1025,8 +1025,6 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       }
     }
 
-
-
     public void setControls() {
       final String s = updateString(getTurnString(), new String[] { "\\n", "\\t" }, new String[] { "\n", "    " }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
       turnLabel.setText(s);
@@ -1235,7 +1233,6 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       levelControls.add(childControls);
       pack();
     }
-
   }
 
   protected void cancelSet() {
