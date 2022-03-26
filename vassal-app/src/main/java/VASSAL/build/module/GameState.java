@@ -589,35 +589,30 @@ public class GameState implements CommandEncoder {
     final String saveModuleName = saveData.getModuleName();
     String saveModuleVersion = "?";
     String saveVassalVersion = "?";
+    int problemCount = 0;
 
     // Was the Module Data that created the save stored in the save? (Vassal 3.0+)
     if (saveData.getModuleData() != null) {
       saveModuleVersion = saveData.getModuleVersion();
       saveVassalVersion = VersionUtils.truncateToIncrementalVersion(saveData.getVassalVersion());
       final StringBuilder message = new StringBuilder();
+      message.append(Resources.getString("GameState.load_mismatch_header",  file.getName())).append("\n\n");
 
       if (!saveModuleName.equals(moduleName)) {
-        message.append(Resources.getString(
-          "GameState.load_module_mismatch",
-          file.getName(), saveModuleName, moduleName
-        )).append('\n');
+        message.append(Resources.getString("GameState.load_module_mismatch", ++problemCount, saveModuleName, moduleName)).append('\n');
       }
 
       if (!saveModuleVersion.equals(moduleVersion)) {
-        message.append(Resources.getString(
-          "GameState.load_version_mismatch",
-          file.getName(), saveModuleVersion, moduleVersion
-        )).append('\n');
+        message.append(Resources.getString("GameState.load_version_mismatch", ++problemCount, saveModuleVersion, moduleVersion)).append('\n');
       }
 
       if (!saveVassalVersion.equals(vassalVersion)) {
-        message.append(Resources.getString(
-          "GameState.load_vassal_mismatch",
-          file.getName(), saveVassalVersion, vassalVersion
-        )).append('\n');
+        message.append(Resources.getString("GameState.load_vassal_mismatch", ++problemCount, saveVassalVersion, vassalVersion)).append('\n');
       }
 
-      if (message != null) {
+      message.append('\n').append(Resources.getString("GameState.load_mismatch_trailer")).append('\n');
+
+      if (problemCount > 0) {
         if (JOptionPane.showConfirmDialog(
           null,
           message.toString(),
@@ -626,20 +621,19 @@ public class GameState implements CommandEncoder {
           JOptionPane.QUESTION_MESSAGE) != JOptionPane.YES_OPTION) {
           return false;
         }
-      }
 
-      if (!saveModuleName.equals(moduleName)) {
-        log.info("*** User explicitly cleared mismatch of module name - " + saveModuleName + " file loaded into => " + moduleName); //NON-NLS
-      }
+        if (!saveModuleName.equals(moduleName)) {
+          log.info("*** User explicitly cleared mismatch of module name - " + saveModuleName + " file loaded into => " + moduleName); //NON-NLS
+        }
 
-      if (!saveModuleVersion.equals(moduleVersion)) {
-        log.info("*** User explicitly cleared mismatch of module version - " + saveModuleVersion + " file loaded into => " + moduleVersion); //NON-NLS
-      }
+        if (!saveModuleVersion.equals(moduleVersion)) {
+          log.info("*** User explicitly cleared mismatch of module version - " + saveModuleVersion + " file loaded into => " + moduleVersion); //NON-NLS
+        }
 
-      if (!saveVassalVersion.equals(vassalVersion)) {
-        log.info("*** User explicitly cleared mismatch of Vassal version - " + saveVassalVersion + " file loaded into => " + vassalVersion); //NON-NLS
+        if (!saveVassalVersion.equals(vassalVersion)) {
+          log.info("*** User explicitly cleared mismatch of Vassal version - " + saveVassalVersion + " file loaded into => " + vassalVersion); //NON-NLS
+        }
       }
-
     }
 
     log.info(
