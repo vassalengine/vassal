@@ -599,15 +599,18 @@ public class GameState implements CommandEncoder {
       message.append(Resources.getString("GameState.load_mismatch_header",  file.getName())).append("\n\n");
 
       if (!saveModuleName.equals(moduleName)) {
-        message.append(Resources.getString("GameState.load_module_mismatch", ++problemCount, saveModuleName, moduleName)).append('\n');
+        message.append(Resources.getString("GameState.load_module_mismatch", saveModuleName, moduleName)).append('\n');
+        problemCount++;
       }
 
       if (!saveModuleVersion.equals(moduleVersion)) {
-        message.append(Resources.getString("GameState.load_version_mismatch", ++problemCount, saveModuleVersion, moduleVersion)).append('\n');
+        message.append(Resources.getString("GameState.load_version_mismatch", saveModuleVersion, moduleVersion)).append('\n');
+        problemCount++;
       }
 
       if (!saveVassalVersion.equals(vassalVersion)) {
-        message.append(Resources.getString("GameState.load_vassal_mismatch", ++problemCount, saveVassalVersion, vassalVersion)).append('\n');
+        message.append(Resources.getString("GameState.load_vassal_mismatch", saveVassalVersion, vassalVersion)).append('\n');
+        problemCount++;
       }
 
       message.append('\n').append(Resources.getString("GameState.load_mismatch_trailer")).append('\n');
