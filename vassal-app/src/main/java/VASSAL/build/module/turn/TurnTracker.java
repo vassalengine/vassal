@@ -935,8 +935,9 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
         turnLabel.setPreferredSize(null);
       }
 
-      // We carry out initialization here so that the configurable property values will be loaded.
-      // We're guaranteed setWidth will be called before display by the tracker's GameComponent.setup() 
+      // We carry out initialization here so that the configurable property
+      // values will be loaded. We're guaranteed setWidth will be called
+      // before display by the tracker's GameComponent.setup()
       if (!initialized) {
         setLayout(new BorderLayout(5, 5));
 
