@@ -961,7 +961,6 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
         turnLabel.setHorizontalAlignment(SwingConstants.CENTER);
         turnLabel.addMouseListener(this);
         turnLabel.setBackground(Color.WHITE);
-        turnLabel.setToolTipText(Resources.getString("TurnTracker.click_to_configure")); //$NON-NLS-1$
 
         add(prevButton, BorderLayout.LINE_START);
         add(turnLabel, BorderLayout.CENTER);
