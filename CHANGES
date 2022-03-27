@@ -34,6 +34,7 @@
 * 11223: Copy/Paste conversions fixed for Zone Properties to/from Global and
     Map Properties
 * 11188: DoActionButton hotkeys were not found by search
+* 11071: Improved version number checking
 
 3.6.5 - 10 February 2022
 
