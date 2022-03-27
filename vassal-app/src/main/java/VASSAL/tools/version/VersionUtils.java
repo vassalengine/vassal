@@ -82,4 +82,10 @@ public class VersionUtils {
     return String.valueOf(av.getMajorVersion()) + '.' +
       av.getMinorVersion();
   }
+
+  public static String truncateToIncrementalVersion(String v) {
+    final ArtifactVersion av = new DefaultArtifactVersion(v);
+    return String.valueOf(av.getMajorVersion()) + '.' +
+      av.getMinorVersion() + '.' + av.getIncrementalVersion();
+  }
 }

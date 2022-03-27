@@ -16,19 +16,9 @@
  */
 package VASSAL.chat.node;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.io.IOException;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
-import java.util.Properties;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.ArrayUtils;
-
 import VASSAL.Info;
 import VASSAL.build.GameModule;
+import VASSAL.build.module.Chatter;
 import VASSAL.chat.Compressor;
 import VASSAL.chat.InviteCommand;
 import VASSAL.chat.InviteEncoder;
@@ -62,6 +52,19 @@ import VASSAL.command.CommandEncoder;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.PropertiesEncoder;
 import VASSAL.tools.SequenceEncoder;
+
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * @author rkinney
@@ -490,11 +493,31 @@ public class NodeClient implements LockableChatServerConnection,
       // a Synchronize
       // for a move to a new room if needed.
       if (pendingSynchToRoom != null) {
+
         new SynchAction(pendingSynchToRoom.getOwningPlayer(), this)
-            .actionPerformed(null);
+          .actionPerformed(null);
+
+        GameModule.getGameModule().warn(Resources.getString("Chat.synchronize_complete"));
+
+        final GameModule gm = GameModule.getGameModule();
+        final Chatter chatter = gm.getChatter();
+        final String playerName = getUserInfo().getName();
+        final List<String> errors = new ArrayList<>();
+
+        final boolean compatible = checkCompatibility(pendingSynchToRoom, errors);
+
+        Command chat = new Chatter.DisplayText(chatter, Resources.getString("Chat.joining_room_chat", playerName, pendingSynchToRoom.getName()));
         pendingSynchToRoom = null;
-        GameModule.getGameModule().warn(
-            Resources.getString("Chat.synchronize_complete"));
+        if (!compatible) {
+          for (final String error : errors) {
+            chat = chat.append(new Chatter.DisplayText(chatter, "-?<b> " + error));
+          }
+        }
+        chat = chat.append(new Chatter.DisplayText(chatter, compatible ? "-<b> " + Resources.getString("Chat.join_ok", playerName)  : "-?<b> " + Resources.getString("Chat.join_not_ok", playerName)));
+
+        chat.execute();
+        gm.sendAndLog(chat);
+
       }
     }
     else if ((p = Protocol.decodeRoomsInfo(msg)) != null) {
@@ -671,5 +694,60 @@ public class NodeClient implements LockableChatServerConnection,
                 .removePropertyChangeListener(nameChangeListener);
     g.getPrefs().getOption(GameModule.PERSONAL_INFO)
                 .removePropertyChangeListener(profileChangeListener);
+  }
+
+  /**
+   * Check on the compatibility of this client connecting to the target room.
+   * Check Vassal version, module version, module CRC
+   * @param targetRoom Room to be entered
+   * @param compatible Return true if entry allowed
+   * @param errors Return a list of error message if entry not allowed.
+   * @deprecated Use boolean checkCompatibility(NodeRoom targetRoom, List<String> errors)
+   */
+  @Deprecated(since = "2020-03-01")
+  public void checkCompatibility(NodeRoom targetRoom, boolean compatible, List<String> errors) {
+    compatible = checkCompatibility(targetRoom, errors);
+  }
+
+  public boolean checkCompatibility(NodeRoom targetRoom, List<String> errors) {
+    errors.clear();
+    boolean compatible = true;
+
+    if (defaultRoomName.equals(targetRoom.getName()) || targetRoom.getOwningPlayer() == null) {
+      return compatible;
+    }
+
+    final SimpleStatus ownerStatus = (SimpleStatus) targetRoom.getOwningPlayer().getStatus();
+    final SimpleStatus myStatus = (SimpleStatus) getUserInfo().getStatus();
+
+    if (!ownerStatus.getClient().equals(myStatus.getClient())) {
+      errors.add(Resources.getString("Chat.bad_vassal", myStatus.getClient(), ownerStatus.getClient()));
+      compatible = false;
+    }
+
+    final String myVersion = cleanVersion(myStatus.getModuleVersion());
+    final String ownerVersion = cleanVersion(ownerStatus.getModuleVersion());
+
+    if (!ownerVersion.equals(myVersion)) {
+      errors.add(Resources.getString("Chat.bad_module", myVersion, ownerVersion));
+      compatible = false;
+    }
+
+    if (!ownerStatus.getCrc().equals(myStatus.getCrc())) {
+      errors.add(Resources.getString("Chat.bad_crc", myStatus.getCrc(), ownerStatus.getCrc()));
+      compatible = false;
+    }
+
+    return compatible;
+  }
+
+  /**
+   * Clean off an ' (Editing)' suffix added to the module version number
+   * @param version
+   * @return
+   */
+  public static String cleanVersion(String version) {
+    final String editingString = " " + Resources.getString("Editor.NodeClient.editing");
+    return version.endsWith(editingString) ?  version.substring(0, version.length() - editingString.length()) : version;
   }
 }

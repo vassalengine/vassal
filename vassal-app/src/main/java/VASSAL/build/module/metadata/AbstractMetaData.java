@@ -95,6 +95,7 @@ public abstract class AbstractMetaData {
   protected static final String DESCRIPTION_ELEMENT = "description"; //NON-NLS
   protected static final String NAME_ELEMENT = "name"; //NON-NLS
   protected static final String DATE_SAVED_ELEMENT = "dateSaved"; //NON-NLS
+  protected static final String CHECKSUM_ELEMENT = "checksum"; //NON-NLS
 
   protected static final String BUILDFILE_MODULE_ELEMENT1 = "VASSAL.launch.BasicModule"; //NON-NLS
   protected static final String BUILDFILE_MODULE_ELEMENT2 = "VASSAL.build.GameModule"; //NON-NLS
