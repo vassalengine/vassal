@@ -153,6 +153,8 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   protected NamedKeyStrokeListener nextListener;
   protected NamedKeyStrokeListener prevListener;
 
+  protected String toolTip;
+
   protected String savedState = ""; //$NON-NLS-1$
   protected String savedSetState = ""; //$NON-NLS-1$
   protected String savedTurn = ""; //$NON-NLS-1$
@@ -279,7 +281,8 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       turnFormat.setFormat((String) value);
     }
     else if (TOOLTIP.equals(key)) {
-      turnWidget.setLabelToolTipText((String) value);
+      toolTip = (String) value;
+      turnWidget.setLabelToolTipText(toolTip);
     }
     else if (LENGTH.equals(key)) {
       if (value instanceof String) {
@@ -420,7 +423,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       return turnFormat.getFormat();
     }
     else if (TOOLTIP.equals(key)) {
-      return turnWidget.getLabelToolTipText();
+      return toolTip;
     }
     else if (LENGTH.equals(key)) {
       return String.valueOf(width);
@@ -958,7 +961,6 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
         turnLabel.setHorizontalAlignment(SwingConstants.CENTER);
         turnLabel.addMouseListener(this);
         turnLabel.setBackground(Color.WHITE);
-        turnLabel.setToolTipText(Resources.getString("TurnTracker.click_to_configure")); //$NON-NLS-1$
 
         add(prevButton, BorderLayout.LINE_START);
         add(turnLabel, BorderLayout.CENTER);
