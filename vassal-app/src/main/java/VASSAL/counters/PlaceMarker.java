@@ -410,11 +410,15 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     return piece.getShape();
   }
 
+  static boolean updateSemaphore = false;
+
   public void updateDescString() {
-    if (descString == null) {
+    if ((descString == null) && !updateSemaphore) {
+      updateSemaphore = true;
       final GamePiece p = createMarker();
       final PieceSlot slot = new PieceSlot(p);
       descString = slot.getConfigureName();
+      updateSemaphore = false;
     }
   }
 
