@@ -48,7 +48,7 @@
         { "num": 11243, "desc": "Enable Sum and Count in GKC Report Expressions" },
         { "num": 11233, "desc": "UI Cleanup: don't scroll-at-edge the map if a file or link is being dragged instead of a piece" },
         { "num": 11229, "desc": "Allow 'Select All Regions' when defining them; right click to delete now works for single unselected region" },
-        { "num": 11071, "desc": "Improved version number checking"
+        { "num": 11071, "desc": "Improved version number checking" }
       ]
     },
     {
