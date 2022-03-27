@@ -111,7 +111,7 @@ public class BadDataReport {
    * @param cause Throwable that generated error
    */
   public BadDataReport(EditablePiece piece, String message, String data, Throwable cause) {
-    this(getPieceName(piece), piece.getDescription(), message, data, cause);
+    this(getPieceName(piece), piece.getBaseDescription(), message, data, cause);
     setReportable(piece.getMap() != null);
   }
 
