@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 11325, "desc": "Implement the missing Play Sound trait 'Send sound to other players' functionality" },
         { "num": 11315, "desc": "Show correct Turn Tracker tooltip" },
         { "num": 11302, "desc": "Fixed link typo in GamePieceImageDefinitions page of Reference Manual" },
         { "num": 11287, "desc": "Fix ConcurrentExecutionException in Game Refresher with Mats" },

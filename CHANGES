@@ -1,5 +1,7 @@
-3.6.6 - 27 March 2022
+3.6.6 - 28 March 2022
 
+* 11325: Implement the missing Play Sound trait 'Send sound to other players'
+    functionality
 * 11315: Show correct Turn Tracker tooltip
 * 11303: Preference to control drag-at-edge scroll rate; per module defaults
     for edge scrolling
