@@ -113,6 +113,7 @@ public class PlaySound extends Decorator implements TranslatablePiece {
       final String clipName = format.getText(Decorator.getOutermost(this), this, audit);
       c = new PlayAudioClipCommand(clipName);
       try {
+        // Play the sound on our client if sounds have not been muted globally
         if (!GlobalOptions.getInstance().isSoundGlobalMute()) {
           final AudioClip clip = GameModule.getGameModule()
             .getDataArchive()
@@ -127,6 +128,7 @@ public class PlaySound extends Decorator implements TranslatablePiece {
           new AuditableException(this, audit)); //NON-NLS
       }
     }
+    // Only send the sound to other clients if the trait allows it.
     return sendToOthers ? c : null;
   }
 
