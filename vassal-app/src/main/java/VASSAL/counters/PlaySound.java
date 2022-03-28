@@ -127,7 +127,7 @@ public class PlaySound extends Decorator implements TranslatablePiece {
           new AuditableException(this, audit)); //NON-NLS
       }
     }
-    return c;
+    return sendToOthers ? c : null;
   }
 
   @Override
