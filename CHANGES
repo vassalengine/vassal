@@ -1,5 +1,6 @@
-3.6.6 - 28 March 2022
+3.6.6 - 29 March 2022
 
+* 11327: Fix Action Button not working after refreshing pre-defined setups
 * 11325: Implement the missing Play Sound trait 'Send sound to other players'
     functionality
 * 11315: Show correct Turn Tracker tooltip
