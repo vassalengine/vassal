@@ -17,13 +17,14 @@
  */
 package VASSAL.build.module.map;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import VASSAL.counters.Deck;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Base class for PieceCollection implementation that organizes {@link GamePiece}s -- a category which in this case
@@ -261,8 +262,8 @@ public abstract class CompoundPieceCollection implements PieceCollection {
         && p2 != null) {
       canMerge = !Boolean.TRUE.equals(p1.getProperty(Properties.NO_STACK))
           && !Boolean.TRUE.equals(p2.getProperty(Properties.NO_STACK))
-          && !Boolean.TRUE.equals(p1.getProperty(Properties.INVISIBLE_TO_ME))
-          && !Boolean.TRUE.equals(p2.getProperty(Properties.INVISIBLE_TO_ME));
+          && ((!Boolean.TRUE.equals(p1.getProperty(Properties.INVISIBLE_TO_ME)) && !Boolean.TRUE.equals(p2.getProperty(Properties.INVISIBLE_TO_ME))
+              || Objects.equals(p1.getProperty(Properties.HIDDEN_BY), p2.getProperty(Properties.HIDDEN_BY))));
     }
     return canMerge;
   }
