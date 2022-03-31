@@ -81,6 +81,7 @@ public class BeanShellExpressionValidator {
     ".substring",
     ".toLowerCase",
     ".toUpperCase",
+    ".toString",
     ".trim"
   );
 
