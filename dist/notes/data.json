@@ -22,8 +22,10 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 11329, "desc": "Invisible Pieces belonging to another player can still stack together" }
       ],
       "other_improvements": [
+        { "num": 11330, "desc": "Allow .toString() to be called properly on property names in Beanshell" }
       ]
     },
     {

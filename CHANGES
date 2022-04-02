@@ -1,5 +1,8 @@
 3.6.7 - ???
 
+* 11330: Allow .toString() to be called properly on property names in Beanshell
+* 11329: Invisible Pieces belonging to another player can still stack together
+
 3.6.6 - 29 March 2022
 
 * 11327: Fix Action Button not working after refreshing pre-defined setups
