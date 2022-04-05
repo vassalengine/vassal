@@ -102,6 +102,9 @@ public class HttpRequestWrapper {
         return getLinesOk(response, 200);
       }
     }
+    catch (final IOException e) {
+      throw new IOException("Failed to " + httpGet.toString(), e);
+    }
   }
 
   public List<String> doPost(Properties p) throws IOException {
