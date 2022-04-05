@@ -28,6 +28,9 @@ import java.util.TimeZone;
 
 import org.apache.commons.lang3.StringUtils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.build.GameModule;
 import VASSAL.chat.messageboard.Message;
 import VASSAL.chat.messageboard.MessageBoard;
@@ -37,6 +40,9 @@ import VASSAL.command.NullCommand;
 import VASSAL.tools.SequenceEncoder;
 
 public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
+  private static final Logger logger =
+    LoggerFactory.getLogger(HttpMessageServer.class);
+
   private final HttpRequestWrapper welcomeURL;
   private final HttpRequestWrapper getMessagesURL;
   private final HttpRequestWrapper postMessageURL;
@@ -69,7 +75,7 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
       }
     }
     catch (final IOException e) {
-      System.err.println("IOException retrieving welcome message from " + welcomeURL); //$NON-NLS-1$
+      logger.error("IOException retrieving welcome message", e); //$NON-NLS-1$
     }
     return motd;
   }
@@ -100,18 +106,18 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
             time += t.getOffset(Calendar.ERA, Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_YEAR, Calendar.DAY_OF_WEEK, Calendar.MILLISECOND);
             created = new Date(time);
           }
-          catch (final NumberFormatException e1) {
+          catch (final NumberFormatException e) {
             created = new Date();
           }
           msgList.add(new Message(sender, content, created));
         }
-        catch (final NoSuchElementException ex) {
-          System.err.println("Badly formatted message in HttpMessageServer:  " + msg); //$NON-NLS-1$
+        catch (final NoSuchElementException e) {
+          logger.error("Badly formatted message in HttpMessageServer:  " + msg); //$NON-NLS-1$
         }
       }
     }
-    catch (final IOException ex) {
-      System.err.println("IOException retrieving messages from " + getMessagesURL); //$NON-NLS-1$
+    catch (final IOException e) {
+      logger.error("IOException retrieving messages", e); //$NON-NLS-1$
     }
     return msgList.toArray(new Message[0]);
   }
@@ -170,9 +176,8 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
     try {
       postMessageURL.doPost(p);
     }
-    // FIXME: review error message
-    catch (final IOException ex) {
-      ex.printStackTrace();
+    catch (final IOException e) {
+      logger.error("IOException posting messages", e);
     }
   }
 }
