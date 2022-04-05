@@ -747,7 +747,7 @@ public class FreeRotator extends Decorator
         c = tracker.getChangeCommand().append(c);
 
         // Mat Support
-        c = rotateCargo(c, getPosition(), tempAngle - origAngle);
+        c = rotateCargo(c, pivot, tempAngle - origAngle);
 
         GameModule.getGameModule().sendAndLog(c);
       }
