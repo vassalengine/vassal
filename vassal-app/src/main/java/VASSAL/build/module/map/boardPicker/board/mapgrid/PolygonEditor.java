@@ -16,6 +16,19 @@
  */
 package VASSAL.build.module.map.boardPicker.board.mapgrid;
 
+import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.swing.SwingUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
+
+import javax.swing.AbstractAction;
+import javax.swing.InputMap;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
+import javax.swing.event.MouseInputAdapter;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -35,21 +48,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
-
-import javax.swing.AbstractAction;
-import javax.swing.InputMap;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.KeyStroke;
-import javax.swing.event.MouseInputAdapter;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.lang3.tuple.Triple;
-
-import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.swing.SwingUtils;
 
 public class PolygonEditor extends JPanel {
   private static final long serialVersionUID = 1L;
@@ -403,6 +401,8 @@ public class PolygonEditor extends JPanel {
   }
 
   private class ModifyPolygon extends MouseInputAdapter implements KeyListener {
+    int anchor_x, anchor_y;
+
     public ModifyPolygon() {
       addMouseListener(this);
       addMouseMotionListener(this);
@@ -430,8 +430,19 @@ public class PolygonEditor extends JPanel {
     @Override
     public void mouseDragged(MouseEvent e) {
       if (SwingUtils.isMainMouseButtonDown(e)) {
-        if (selected >= 0 && selected < polygon.xpoints.length) {
-          moveVertex(polygon, selected, e.getX(), e.getY());
+        if (!e.isShiftDown()) {
+          if (selected >= 0 && selected < polygon.xpoints.length) {
+            moveVertex(polygon, selected, e.getX(), e.getY());
+          }
+        }
+        else if ((polygon != null) && (polygon.npoints > 0)) {
+          final int dx = e.getX() - anchor_x;
+          final int dy = e.getY() - anchor_y;
+          for (int i = 0; i < polygon.npoints; i++) {
+            moveVertex(polygon, i, polygon.xpoints[i] + dx, polygon.ypoints[i] + dy);
+          }
+          anchor_x = e.getX();
+          anchor_y = e.getY();
         }
         scrollAtEdge(e.getPoint(), 15);
         updateAllCoords();
@@ -442,18 +453,26 @@ public class PolygonEditor extends JPanel {
     @Override
     public void mousePressed(MouseEvent e) {
       if (SwingUtils.isMainMouseButtonDown(e)) {
-        // On left button press, select nearest vertex within the threshold.
-        final Pair<Integer, Double> n = nearestVertex(polygon, e.getX(), e.getY());
-        final double d = n.getRight();
-        selected = d <= CLICK_THRESHOLD ? n.getLeft() : -1;
+        if (!e.isShiftDown()) {
+          // On left button press, select nearest vertex within the threshold.
+          final Pair<Integer, Double> n = nearestVertex(polygon, e.getX(), e.getY());
+          final double d = n.getRight();
+          selected = d <= CLICK_THRESHOLD ? n.getLeft() : -1;
 
-        if (myConfigurer != null) {
-          if (selected >= 0) {
-            myConfigurer.updateCoord(polygon.xpoints[selected], polygon.ypoints[selected]);
+          if (myConfigurer != null) {
+            if (selected >= 0) {
+              myConfigurer.updateCoord(polygon.xpoints[selected], polygon.ypoints[selected]);
+            }
+            else {
+              myConfigurer.updateCoord("");
+            }
           }
-          else {
-            myConfigurer.updateCoord("");
-          }
+        }
+        else {
+          anchor_x = e.getX();
+          anchor_y = e.getY();
+          selected = -1;
+          if (myConfigurer != null) myConfigurer.updateCoord("");
         }
 
         repaint();
@@ -478,10 +497,6 @@ public class PolygonEditor extends JPanel {
 
     @Override
     public void keyPressed(KeyEvent e) {
-      if (selected < 0) {
-        return;
-      }
-
       int dx = 0, dy = 0, delta = 1;
 
       if (e.isShiftDown()) {
@@ -501,11 +516,31 @@ public class PolygonEditor extends JPanel {
       case KeyEvent.VK_RIGHT:
         dx = delta;
         break;
+      case KeyEvent.VK_TAB:
+        if ((polygon != null) && (polygon.npoints > 0)) {
+          selected = (selected + 1) % polygon.npoints;
+        }
+        updateAllCoords();
+        repaint();
+        return;
+      case KeyEvent.VK_ESCAPE:
+        selected = -1;
+        updateAllCoords();
+        repaint();
+        return;
       default:
         return;
       }
 
-      moveVertex(polygon, selected, polygon.xpoints[selected] + dx, polygon.ypoints[selected] + dy);
+      if (selected >= 0) {
+        moveVertex(polygon, selected, polygon.xpoints[selected] + dx, polygon.ypoints[selected] + dy);
+      }
+      else if (polygon != null) {
+        for (int i = 0; i < polygon.npoints; i++) {
+          moveVertex(polygon, i, polygon.xpoints[i] + dx, polygon.ypoints[i] + dy);
+        }
+      }
+
       updateAllCoords();
       repaint();
       e.consume();
