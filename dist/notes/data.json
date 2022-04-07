@@ -22,10 +22,12 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 11347, "desc": "Inventory should not reveal face down deck images" },
         { "num": 11343, "desc": "Ensure that the pivot point is used for rotating Cargo" },
         { "num": 11329, "desc": "Invisible Pieces belonging to another player can still stack together" }
       ],
       "other_improvements": [
+        { "num": 11346, "desc": "Update bundled Java to 18" },
         { "num": 11330, "desc": "Allow .toString() to be called properly on property names in Beanshell" }
       ]
     },
