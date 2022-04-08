@@ -18,6 +18,8 @@ positions.
 Similarly, when a Mat piece is moved with a <<SendToLocation.adoc#top,Send to Location>> trait or a <<Translate.adoc#top,Move Fixed Distance>> trait, cargo pieces on top
 of it will follow.
 
+**WARNING:** Mats cannot be made to stack (they are always inherently <<NonStacking.adoc#top,Does Not Stack>>), and cannot be placed in <<Deck.adoc#top,Decks>> if they contain any cargo.
+
 If a Mat piece is <<Rotate.adoc#top,rotated>> or <<Pivot.adoc#top,pivoted>>, any cargo pieces on top can also match their facing to the Mat, if that option is
 selected in the Mat Cargo trait.
 
