@@ -875,7 +875,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         // Update the Component configurer to reflect the change
         xConfig.setValue(String.valueOf(myStack.pos.x));
         yConfig.setValue(String.valueOf(myStack.pos.y));
-        if (locationConfig != null) { // DrawPile's do not have a location
+        if ((locationConfig != null) && !useGridLocation) { // DrawPile's do not have a location. And don't need to change location if it's fixed to a grid location.
           updateLocation();
           locationConfig.setValue(location);
         }
