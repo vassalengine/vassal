@@ -17,6 +17,21 @@
  */
 package VASSAL.build.module.map.boardPicker.board;
 
+import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.Buildable;
+import VASSAL.build.module.Map;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.map.boardPicker.Board;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.GridContainer;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.GridNumbering;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.ZoneHighlight;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.ZonedGridHighlighter;
+import VASSAL.configure.Configurer;
+import VASSAL.i18n.Resources;
+import org.apache.commons.lang3.tuple.Pair;
+import org.w3c.dom.Element;
+
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -30,23 +45,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.apache.commons.lang3.tuple.Pair;
-
-import org.w3c.dom.Element;
-
-import VASSAL.build.AbstractConfigurable;
-import VASSAL.build.Buildable;
-import VASSAL.build.module.Map;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.map.boardPicker.Board;
-import VASSAL.build.module.map.boardPicker.board.mapgrid.GridContainer;
-import VASSAL.build.module.map.boardPicker.board.mapgrid.GridNumbering;
-import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
-import VASSAL.build.module.map.boardPicker.board.mapgrid.ZoneHighlight;
-import VASSAL.build.module.map.boardPicker.board.mapgrid.ZonedGridHighlighter;
-import VASSAL.configure.Configurer;
-import VASSAL.i18n.Resources;
 
 /**
  * Map Grid that contains any number of {@link VASSAL.build.module.map.boardPicker.board.mapgrid.Zone}s against a background {@link MapGrid}
@@ -239,6 +237,16 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
       return background.getLocation(location);
     else
       throw new BadCoords();
+  }
+
+  public Point getRegionLocation(String location) {
+    for (final Zone zone : zones) {
+      final Point p = zone.getRegionLocation(location);
+      if (p != null && zone.contains(p)) {
+        return p;
+      }
+    }
+    return null;
   }
 
   @Override
