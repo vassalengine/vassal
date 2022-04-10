@@ -3,6 +3,7 @@
 * 11356: SetupStack can match literal grid names even if Zone only reports
     Zone name (e.g., uses $name$ as Location Format)
 * 11351: Documented that Mats w/ cargo can't go in decks
+* 11348: Polygon Editor improvements (move whole shape, tab between points)
 * 11347: Inventory should not reveal face down deck images
 * 11346: Update bundled Java to 18
 * 11343: Ensure that the pivot point is used for rotating Cargo
