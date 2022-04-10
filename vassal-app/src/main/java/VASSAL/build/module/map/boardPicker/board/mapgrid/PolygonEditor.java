@@ -518,7 +518,12 @@ public class PolygonEditor extends JPanel {
         break;
       case KeyEvent.VK_TAB:
         if ((polygon != null) && (polygon.npoints > 0)) {
-          selected = (selected + 1) % polygon.npoints;
+          if (e.isShiftDown()) {
+            selected = (selected + polygon.npoints - 1) % polygon.npoints;
+          }
+          else {
+            selected = (selected + 1) % polygon.npoints;
+          }
         }
         updateAllCoords();
         repaint();
