@@ -28,6 +28,7 @@ import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.HexGrid;
 import VASSAL.build.module.map.boardPicker.board.MapGrid;
 import VASSAL.build.module.map.boardPicker.board.MapGrid.BadCoords;
+import VASSAL.build.module.map.boardPicker.board.Region;
 import VASSAL.build.module.map.boardPicker.board.RegionGrid;
 import VASSAL.build.module.map.boardPicker.board.SquareGrid;
 import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
@@ -370,6 +371,17 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       }
       return p;
     }
+  }
+
+  public Point getRegionLocation(String location) {
+    final MapGrid g = getGrid();
+    if (g instanceof RegionGrid) {
+      final Region r = ((RegionGrid) g).findRegion(location);
+      if (r != null) {
+        return new Point(r.getOrigin());
+      }
+    }
+    return null;
   }
 
   public String locationName(Point p) {

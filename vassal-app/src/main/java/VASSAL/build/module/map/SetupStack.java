@@ -32,6 +32,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.MapGrid;
 import VASSAL.build.module.map.boardPicker.board.MapGrid.BadCoords;
+import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.command.Command;
 import VASSAL.configure.AutoConfigurer;
@@ -195,10 +196,20 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   // only update the position if we're using the location name
   protected void updatePosition() {
     if (isUseGridLocation() && location != null && !location.equals("")) {
+      final MapGrid grid = getConfigureBoard(true).getGrid();
       try {
-        pos = getConfigureBoard(true).getGrid().getLocation(location);
+        pos = grid.getLocation(location);
       }
       catch (final BadCoords e) {
+        // Allow SetupStacks to match literal grid location names in Irregular/Region grids even if Zone configured to only use/report Zone's name
+        if (grid instanceof ZonedGrid) {
+          final Point p = ((ZonedGrid) grid).getRegionLocation(location);
+          if (p != null) {
+            pos = p;
+            return;
+          }
+        }
+
         ErrorDialog.dataWarning(new BadDataReport(this, "Error.setup_stack_position_error", location, e));
       }
     }
@@ -211,10 +222,19 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         report.addWarning(getConfigureName() + Resources.getString("SetupStack.null_location")); //NON-NLS
       }
       else {
+        final MapGrid grid = getConfigureBoard(true).getGrid();
         try {
-          getConfigureBoard(true).getGrid().getLocation(location);
+          grid.getLocation(location);
         }
         catch (final BadCoords e) {
+          // Allow SetupStacks to match literal grid location names in Irregular/Region grids even if Zone configured to only use/report Zone's name
+          if (grid instanceof ZonedGrid) {
+            final Point p = ((ZonedGrid) grid).getRegionLocation(location);
+            if (p != null) {
+              return;
+            }
+          }
+
           String msg = "Bad location name " + location + " in " + getConfigureName();  //NON-NLS
           if (e.getMessage() != null) {
             msg += ":  " + e.getMessage();
@@ -855,7 +875,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         // Update the Component configurer to reflect the change
         xConfig.setValue(String.valueOf(myStack.pos.x));
         yConfig.setValue(String.valueOf(myStack.pos.y));
-        if (locationConfig != null) { // DrawPile's do not have a location
+        if ((locationConfig != null) && !useGridLocation) { // DrawPile's do not have a location. And don't need to change location if it's fixed to a grid location.
           updateLocation();
           locationConfig.setValue(location);
         }
