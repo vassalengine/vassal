@@ -1,5 +1,7 @@
 3.6.7 - ???
 
+* 11356: SetupStack can match literal grid names even if Zone only reports
+    Zone name (e.g., uses $name$ as Location Format)
 * 11351: Documented that Mats w/ cargo can't go in decks
 * 11347: Inventory should not reveal face down deck images
 * 11346: Update bundled Java to 18
