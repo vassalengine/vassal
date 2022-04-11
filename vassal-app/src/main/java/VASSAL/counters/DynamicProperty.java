@@ -243,8 +243,13 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
   }
 
   private String formatValue(String value) {
-    format.setFormat(value);
-    return format.getText(Decorator.getOutermost(this), this, "Editor.value");
+    if (FormattedString.isDynamic(value)) {
+      format.setFormat(value);
+      return format.getText(Decorator.getOutermost(this), this, "Editor.value");
+    }
+    else {
+      return value;
+    }
   }
 
   @Override
