@@ -1,5 +1,6 @@
 3.6.7 - ???
 
+* 11362: Match expanded Inventory nodes by entry value, not by display text
 * 11356: SetupStack can match literal grid names even if Zone only reports
     Zone name (e.g., uses $name$ as Location Format)
 * 11351: Documented that Mats w/ cargo can't go in decks
