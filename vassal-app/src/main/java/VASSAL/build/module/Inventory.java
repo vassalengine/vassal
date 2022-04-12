@@ -1054,16 +1054,22 @@ public class Inventory extends AbstractToolbarItem
     final int n = tree.getRowCount();
     for (int i = 0; i < n; ++i) {
       if (tree.isExpanded(i)) {
-        expanded.add(tree.getPathForRow(i).getLastPathComponent().toString());
+        final Object o = tree.getPathForRow(i).getLastPathComponent();
+        if (o instanceof CounterNode) {
+          expanded.add(((CounterNode) o).getEntry());
+        }
       }
     }
+
     buildTreeModel();
     tree.setModel(results);
 
     for (int i = 0; i < tree.getRowCount(); ++i) {
-      if (expanded.contains(
-            tree.getPathForRow(i).getLastPathComponent().toString())) {
-        tree.expandRow(i);
+      final Object o = tree.getPathForRow(i).getLastPathComponent();
+      if (o instanceof CounterNode) {
+        if (expanded.contains(((CounterNode) o).getEntry())) {
+          tree.expandRow(i);
+        }
       }
     }
 
