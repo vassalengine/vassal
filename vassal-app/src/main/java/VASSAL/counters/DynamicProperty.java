@@ -243,6 +243,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
   }
 
   private String formatValue(String value) {
+    // Only re-evaluate string if it has $$ variables or Beanshell.
     if (FormattedString.isDynamic(value)) {
       format.setFormat(value);
       return format.getText(Decorator.getOutermost(this), this, "Editor.value");

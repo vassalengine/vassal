@@ -34,8 +34,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.codehaus.plexus.util.StringUtils;
 
 /**
  * FormattedString.java
