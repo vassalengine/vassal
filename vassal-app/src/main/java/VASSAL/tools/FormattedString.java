@@ -75,7 +75,7 @@ public class FormattedString implements Loopable {
    * @return true if the string needs to be evaluated
    */
   public static boolean isDynamic(String text) {
-    return StringUtils.countMatches(text, "$") > 1 || text.trim().startsWith("{");
+    return text != null && (StringUtils.countMatches(text, "$") > 1  || text.trim().startsWith("{"));
   }
 
   private static FSData dataOf(String fs, PropertySource dp) {

@@ -289,8 +289,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         }
         else {
           try {
-            final int i = Integer.parseInt(value);
-            if (StringUtils.containsOnly(value.substring(0, 1), "+-0")) {
+            if (value.length() > 0 && StringUtils.containsOnly(value.substring(0, 1), "+-0")) {
               setVar(var, value);
             }
             else {

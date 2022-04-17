@@ -170,7 +170,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
   @Override
   public void setProperty(Object key, Object value) {
     if (key.equals(getKey())) {
-      setValue(null == value ? null : value.toString());
+      setValue(null == value ? "" : value.toString());
     }
     else {
       super.setProperty(key, value);
