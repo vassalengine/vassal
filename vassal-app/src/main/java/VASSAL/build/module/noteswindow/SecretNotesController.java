@@ -190,7 +190,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       notes.set(index, note);
     }
     else {
-      notes.add(0, note);
+      notes.add(note);
     }
     rebuildControls();
   }
