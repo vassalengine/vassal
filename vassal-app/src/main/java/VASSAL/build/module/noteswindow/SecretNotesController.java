@@ -45,6 +45,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 
 import VASSAL.build.BadDataReport;
@@ -266,6 +267,9 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       table = new JTable(new MyTableModel());
       initColumns(table);
 
+      table.setAutoCreateRowSorter(true);
+      table.setDefaultRenderer(Date.class, new DateRenderer());
+
       table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       final ListSelectionModel rowSM = table.getSelectionModel();
       rowSM.addListSelectionListener(e -> {
@@ -331,6 +335,16 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       }
     }
 
+    public class DateRenderer extends DefaultTableCellRenderer {
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void setValue(Object val) {
+        // timestamps sort by actual value, but display in their local format
+        setText(val == null ? "" : LOCAL_DATE_FORMATTER.format(val));
+      }
+    }
+
     public class MyTableModel extends AbstractTableModel {
       private static final long serialVersionUID = 1L;
 
@@ -356,7 +370,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
         case COL_HANDLE:
           return note.getHandle();
         case COL_DTM:
-          return note.getDate() == null ? "" : LOCAL_DATE_FORMATTER.format(note.getDate()); //$NON-NLS-1$
+          return note.getDate();
         case COL_NAME:
           return note.getName();
         case COL_REVEALED:
