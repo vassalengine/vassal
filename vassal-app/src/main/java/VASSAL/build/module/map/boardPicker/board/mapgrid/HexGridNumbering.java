@@ -167,7 +167,6 @@ public class HexGridNumbering extends RegularGridNumbering {
     final Point p = new Point();
     final Point gridp = new Point();
 
-    Point centerPoint = null;
     double radians = 0;
     if (rotateTextDegrees != 0) {
       radians = Math.toRadians(rotateTextDegrees);
@@ -176,39 +175,13 @@ public class HexGridNumbering extends RegularGridNumbering {
 
     for (double x = xmin; x < xmax; x += 2 * deltaX) {
       for (double y = ymin; y < ymax; y += deltaY) {
+        // draw left column
         p.setLocation((int) Math.round(x), (int) Math.round(y) + offset);
-        gridp.setLocation(p.x, p.y - offset);
-        grid.rotateIfSideways(p);
+        drawLabel(g2d, bounds, scale, p, gridp, offset, alignment, f);
 
-        // Convert from map co-ordinates to board co-ordinates
-        gridp.translate(-bounds.x, -bounds.y);
-        grid.rotateIfSideways(gridp);
-        gridp.x = (int) Math.round(gridp.x / scale);
-        gridp.y = (int) Math.round(gridp.y / scale);
-
-        centerPoint = offsetLabelCenter(p, scale);
-        LabelUtils.drawLabel(
-          g2d, getName(getRow(gridp), getColumn(gridp)),
-          centerPoint.x, centerPoint.y,
-          f, LabelUtils.CENTER, alignment, color, null, null
-        );
-
+        // draw right column
         p.setLocation((int) Math.round(x + deltaX), (int) Math.round(y + deltaY / 2) + offset);
-        gridp.setLocation(p.x, p.y - offset);
-        grid.rotateIfSideways(p);
-
-        // Convert from map co-ordinates to board co-ordinates
-        gridp.translate(-bounds.x, -bounds.y);
-        grid.rotateIfSideways(gridp);
-        gridp.x = (int) Math.round(gridp.x / scale);
-        gridp.y = (int) Math.round(gridp.y / scale);
-
-        centerPoint = offsetLabelCenter(p, scale);
-        LabelUtils.drawLabel(
-          g2d, getName(getRow(gridp), getColumn(gridp)),
-          centerPoint.x, centerPoint.y,
-          f, LabelUtils.CENTER, alignment, color, null, null
-        );
+        drawLabel(g2d, bounds, scale, p, gridp, offset, alignment, f);
       }
     }
 
@@ -217,6 +190,24 @@ public class HexGridNumbering extends RegularGridNumbering {
     }
     g.setClip(oldClip);
     g2d.setTransform(oldT);
+  }
+
+  private void drawLabel(Graphics2D g2d, Rectangle bounds, double scale, Point p, Point gridp, int offset, int alignment, Font f) {
+    gridp.setLocation(p.x, p.y - offset);
+    grid.rotateIfSideways(p);
+
+    // Convert from map co-ordinates to board co-ordinates
+    gridp.translate(-bounds.x, -bounds.y);
+    grid.rotateIfSideways(gridp);
+    gridp.x = (int) Math.round(gridp.x / scale);
+    gridp.y = (int) Math.round(gridp.y / scale);
+
+    final Point centerPoint = offsetLabelCenter(p, scale);
+    LabelUtils.drawLabel(
+      g2d, getName(getRow(gridp), getColumn(gridp)),
+      centerPoint.x, centerPoint.y,
+      f, LabelUtils.CENTER, alignment, color, null, null
+    );
   }
 
   @Override
