@@ -2,6 +2,7 @@
 
 * 11373: Make columns in Delayed Notes table sortable
 * 11372: Delayed Notes from subsequent saves displayed out of order
+* 11369: Leading zeros handling in Set Dynamic Property
 * 11362: Match expanded Inventory nodes by entry value, not by display text
 * 11356: SetupStack can match literal grid names even if Zone only reports
     Zone name (e.g., uses $name$ as Location Format)

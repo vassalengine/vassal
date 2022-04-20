@@ -23,6 +23,7 @@
       ],
       "bug_fixes": [
         { "num": 11372, "desc": "Delayed Notes from subsequent saves displayed out of order" },
+        { "num": 11369, "desc": "Leading zeros handling in Set Dynamic Property" },
         { "num": 11362, "desc": "Match expanded Inventory nodes by entry value, not by display text" },
         { "num": 11347, "desc": "Inventory should not reveal face down deck images" },
         { "num": 11343, "desc": "Ensure that the pivot point is used for rotating Cargo" },
