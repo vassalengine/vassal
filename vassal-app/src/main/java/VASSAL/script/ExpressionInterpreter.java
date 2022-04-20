@@ -289,7 +289,12 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         }
         else {
           try {
-            setVar(var, Integer.parseInt(value));
+            if (value.length() > 0 && StringUtils.containsOnly(value.substring(0, 1), "+-0")) {
+              setVar(var, value);
+            }
+            else {
+              setVar(var, Integer.parseInt(value));
+            }
           }
           catch (NumberFormatException ex1) {
 

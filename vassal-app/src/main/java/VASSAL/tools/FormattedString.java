@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
@@ -66,6 +67,15 @@ public class FormattedString implements Loopable {
       format = Expression.createExpression(fs);
       defaultProperties = dp;
     }
+  }
+
+  /**
+   * Return true if the supplied string contains $$ variables or is a Beanshell expression
+   * @param text String to check
+   * @return true if the string needs to be evaluated
+   */
+  public static boolean isDynamic(String text) {
+    return text != null && (StringUtils.countMatches(text, "$") > 1  || text.trim().startsWith("{"));
   }
 
   private static FSData dataOf(String fs, PropertySource dp) {

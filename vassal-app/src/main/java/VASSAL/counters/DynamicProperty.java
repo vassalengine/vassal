@@ -170,7 +170,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
   @Override
   public void setProperty(Object key, Object value) {
     if (key.equals(getKey())) {
-      setValue(null == value ? null : value.toString());
+      setValue(null == value ? "" : value.toString());
     }
     else {
       super.setProperty(key, value);
@@ -243,8 +243,14 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
   }
 
   private String formatValue(String value) {
-    format.setFormat(value);
-    return format.getText(Decorator.getOutermost(this), this, "Editor.value");
+    // Only re-evaluate string if it has $$ variables or Beanshell.
+    if (FormattedString.isDynamic(value)) {
+      format.setFormat(value);
+      return format.getText(Decorator.getOutermost(this), this, "Editor.value");
+    }
+    else {
+      return value;
+    }
   }
 
   @Override
