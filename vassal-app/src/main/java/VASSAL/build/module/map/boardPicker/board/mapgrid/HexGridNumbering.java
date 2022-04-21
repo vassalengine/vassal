@@ -149,7 +149,7 @@ public class HexGridNumbering extends RegularGridNumbering {
       region = new Rectangle(region.y, region.x, region.height, region.width);
     }
 
-    final int minCol = 2 * (int) Math.floor((region.x - bounds.x - scale * grid.getOrigin().x) / (2 * deltaX));
+    final int minCol = 2 * (int) Math.floor(((region.x - bounds.x - scale * grid.getOrigin().x) / deltaX - 0.5) / 2.0);
     final double xmin = bounds.x + scale * grid.getOrigin().x + deltaX * minCol;
     final double xmax = region.x + region.width + deltaX;
     final int minRow = (int) Math.floor((region.y - bounds.y - scale * grid.getOrigin().y) / deltaY);
