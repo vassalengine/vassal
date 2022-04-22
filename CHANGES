@@ -1,5 +1,7 @@
 3.6.7 - ???
 
+* 11388: Correctly draw hex coordinates for odd-numbered columns spanning tile
+    boundaries
 * 11373: Make columns in Delayed Notes table sortable
 * 11372: Delayed Notes from subsequent saves displayed out of order
 * 11369: Leading zeros handling in Set Dynamic Property

@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 11388, "desc": "Correctly draw hex coordinates for odd-numbered columns spanning tile boundaries" },
         { "num": 11372, "desc": "Delayed Notes from subsequent saves displayed out of order" },
         { "num": 11369, "desc": "Leading zeros handling in Set Dynamic Property" },
         { "num": 11362, "desc": "Match expanded Inventory nodes by entry value, not by display text" },
