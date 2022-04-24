@@ -269,6 +269,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   public String getActualDescription() {
     return description;
   }
+
   private void updateCachedOpForZoomWindows(double zoom) {
     if (zoom == lastZoom && lastCachedOp != null) {
       return;
