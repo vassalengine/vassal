@@ -96,8 +96,6 @@ Otherwise, the subcomponents will appear in a single row, or a single column if 
 *Number of columns:*:: Number of columns to allow for when a Fixed cell size is used.
 
 *Vertical layout:*:: Check to layout items in the Panel vertically, rather than horizontally.
-
-*Image scale for all child members:*:: All items added to this panel will be scaled by this factor when displayed.
 |image:images/PanelWidget.png[]
 
 image:images/PanelWidget2.png[]

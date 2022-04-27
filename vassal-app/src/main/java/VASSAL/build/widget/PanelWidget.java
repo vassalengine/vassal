@@ -22,15 +22,18 @@ import java.awt.Container;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
+import VASSAL.build.AbstractBuildable;
 import VASSAL.build.BadDataReport;
 import VASSAL.build.Buildable;
 import VASSAL.build.Widget;
+import VASSAL.build.module.ChartWindow;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
@@ -156,9 +159,25 @@ public class PanelWidget extends Widget {
     };
   }
 
+  private boolean hasChartWindowAncestor() {
+    AbstractBuildable ab = this;
+    Buildable b;
+
+    while ((b = ab.getAncestor()) != null) {
+      if (b instanceof ChartWindow) {
+        return true;
+      }
+      else if (b instanceof AbstractBuildable) {
+        ab = (AbstractBuildable) b;
+      }
+    }
+
+    return false;
+  }
+
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[]{
+    final String[] d = {
       Resources.getString("Editor.name_label"),
       Resources.getString(Resources.DESCRIPTION),
       Resources.getString("Editor.PanelWidget.fixed_cell_size"),
@@ -166,11 +185,14 @@ public class PanelWidget extends Widget {
       Resources.getString("Editor.PanelWidget.vertical_layout"),
       Resources.getString("Editor.PanelWidget.scale")
     };
+
+    // no scale for panels in chart windows
+    return hasChartWindowAncestor() ? Arrays.copyOf(d, d.length - 1) : d;
   }
 
   @Override
   public Class<?>[] getAttributeTypes() {
-    return new Class<?>[]{
+    final Class<?>[] c = {
       String.class,
       String.class,
       Boolean.class,
@@ -178,6 +200,9 @@ public class PanelWidget extends Widget {
       Boolean.class,
       Double.class
     };
+
+    // no scale for panels in chart windows
+    return hasChartWindowAncestor() ? Arrays.copyOf(c, c.length - 1) : c;
   }
 
   @Override
@@ -270,4 +295,3 @@ public class PanelWidget extends Widget {
     return null;
   }
 }
-
