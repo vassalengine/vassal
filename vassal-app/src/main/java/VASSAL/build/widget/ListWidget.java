@@ -17,11 +17,12 @@
  */
 package VASSAL.build.widget;
 
-import java.awt.CardLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.util.HashMap;
-import java.util.Map;
+import VASSAL.build.Buildable;
+import VASSAL.build.Widget;
+import VASSAL.build.module.PieceWindow;
+import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.ScrollPane;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
@@ -30,12 +31,11 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
-import VASSAL.build.Buildable;
-import VASSAL.build.Widget;
-import VASSAL.build.module.PieceWindow;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.ScrollPane;
+import java.awt.CardLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A Widget that corresponds to a panel with a {@link JList} sitting
@@ -235,5 +235,13 @@ public class ListWidget extends Widget
       return description;
     }
     return null;
+  }
+
+  @Override
+  public VisibilityCondition getAttributeVisibility(String name) {
+    if (SCALE.equals(name)) {
+      return this::hasScalablePieces;
+    }
+    return super.getAttributeVisibility(name);
   }
 }

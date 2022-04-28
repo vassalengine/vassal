@@ -16,6 +16,16 @@
  */
 package VASSAL.build.widget;
 
+import VASSAL.build.BadDataReport;
+import VASSAL.build.Buildable;
+import VASSAL.build.Widget;
+import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.ErrorDialog;
+
+import javax.swing.BoxLayout;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
@@ -23,17 +33,6 @@ import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.BoxLayout;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-
-import VASSAL.build.BadDataReport;
-import VASSAL.build.Buildable;
-import VASSAL.build.Widget;
-import VASSAL.configure.VisibilityCondition;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.ErrorDialog;
 
 /**
  * A Widget that corresponds to a JPanel with a
@@ -182,7 +181,10 @@ public class PanelWidget extends Widget {
 
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
-    if (COLS.equals(name)) {
+    if (SCALE.equals(name)) {
+      return this::hasScalablePieces;
+    }
+    else if (COLS.equals(name)) {
       return () -> fixed;
     }
     else if (VERTICAL.equals(name)) {
