@@ -17,14 +17,14 @@
  */
 package VASSAL.build;
 
+import VASSAL.build.module.ChartWindow;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.configure.ComponentDescription;
+import VASSAL.i18n.Localization;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
-
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.configure.ComponentDescription;
-import VASSAL.i18n.Localization;
 
 /**
  * A general-purpose configurable GUI container
@@ -50,6 +50,19 @@ public abstract class Widget extends AbstractConfigurable implements ComponentDe
 
   public boolean hasScale() {
     return false;
+  }
+
+  /**
+   * @return false if we're a child of a ChartWindow, meaning there won't be pieces to scale
+   */
+  public boolean hasScalablePieces() {
+    Widget w = this;
+    while ((w = w.getParent()) != null) {
+      if (w instanceof ChartWindow) {
+        return false;
+      }
+    }
+    return true;
   }
 
 
