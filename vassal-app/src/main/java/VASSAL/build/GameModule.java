@@ -398,6 +398,7 @@ public class GameModule extends AbstractConfigurable
    */
   private int nextGpId = 0;
   private Long crc = null;
+  private Long combinedCrc = null;
 
   /**
    * Error Logging to {@link Chatter}?
@@ -2268,15 +2269,26 @@ public class GameModule extends AbstractConfigurable
 
   public long getCrc(boolean forceRegenerate) {
     if (crc == null || forceRegenerate) {
-      crc = buildCrc();
+      buildCrc();
     }
     return crc;
+  }
+
+  public long getCombinedCrc() {
+    return getCombinedCrc(false);
+  }
+
+  public long getCombinedCrc(boolean forceRegenerate) {
+    if (combinedCrc == null || forceRegenerate) {
+      buildCrc();
+    }
+    return combinedCrc;
   }
 
   /**
    * @return a cumulative CRC from all of our files
    */
-  private Long buildCrc() {
+  private void buildCrc() {
     final List<File> files = new ArrayList<>();
     if (getDataArchive().getArchive() != null) {
       files.add(new File(getDataArchive().getName()));
@@ -2289,11 +2301,14 @@ public class GameModule extends AbstractConfigurable
     }
 
     try {
-      return CRCUtils.getCRC(files);
+      // Base CRC is of module file only
+      crc = CRCUtils.getCRC(List.of(files.get(0)));
+      // CombinedCrc includeds extensions as well
+      combinedCrc = CRCUtils.getCRC(files);
     }
     catch (IOException e) {
       log.error("Error generating CRC", e); //NON-NLS
-      return 0L;
+      return;
     }
   }
 

@@ -109,6 +109,20 @@ public class PlayerInfoWindow extends JDialog {
       add(csum_f, "pushx, wrap"); //$NON-NLS-1$
     }
 
+    // Combined checksum
+    final String c2sum = ((SimpleStatus)p.getStatus()).getCombinedCrc();
+    if (c2sum != null && ! c2sum.isEmpty()) {
+      final JTextField csum_f = new JTextField();
+      csum_f.setText(c2sum);
+      csum_f.setEditable(false);
+
+      final JLabel csum_l = new JLabel(Resources.getString("Chat.combined_checksum")); //$NON-NLS-1$
+      csum_l.setLabelFor(csum_f);
+
+      add(csum_l);
+      add(csum_f, "pushx, wrap"); //$NON-NLS-1$
+    }
+
     // looking for a game?
     final JCheckBox looking_b =
       new JCheckBox(Resources.getString("Chat.looking_for_a_game")); //$NON-NLS-1$

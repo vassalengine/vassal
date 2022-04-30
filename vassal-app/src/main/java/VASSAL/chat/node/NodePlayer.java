@@ -70,7 +70,8 @@ public class NodePlayer extends SimplePlayer {
                     p.getProperty(SimpleStatus.CLIENT, ""), //$NON-NLS-1$
                     p.getProperty(SimpleStatus.IP, ""), //$NON-NLS-1$
                     p.getProperty(SimpleStatus.MODULE_VERSION, ""), //$NON-NLS-1$
-                    p.getProperty(SimpleStatus.CRC, ""))); //$NON-NLS-1$
+                    p.getProperty(SimpleStatus.CRC, ""),
+                    p.getProperty(SimpleStatus.COMBINED_CRC, ""))); //$NON-NLS-1$
   }
 
   public Properties toProperties() {
@@ -100,6 +101,10 @@ public class NodePlayer extends SimplePlayer {
     final String crc = status.getCrc();
     if (ip != null) {
       p1.put(SimpleStatus.CRC, crc);
+    }
+    final String combinedCrc = status.getCombinedCrc();
+    if (ip != null) {
+      p1.put(SimpleStatus.COMBINED_CRC, combinedCrc);
     }
     p1.put(ID, id == null ? "" : id);
     return p1;

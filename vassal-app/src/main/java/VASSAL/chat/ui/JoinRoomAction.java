@@ -63,16 +63,11 @@ public class JoinRoomAction extends AbstractAction {
           sb.append(" - ").append(error).append('\n');
         }
         sb.append('\n').append(Resources.getString("Chat.are_you_sure"));
-        final int result =
-          Dialogs.showConfirmDialog(GameModule.getGameModule().getPlayerWindow(),
-            Resources.getString("Chat.vassal_configuration_error"),
-            Resources.getString("Chat.vassal_configuration_error"),
-            sb.toString(),
-            JOptionPane.WARNING_MESSAGE,
-            JOptionPane.YES_NO_OPTION);
-        if (result != JOptionPane.YES_OPTION) {
-          return;
-        }
+        Dialogs.showMessageDialog(GameModule.getGameModule().getPlayerWindow(),
+          Resources.getString("Chat.vassal_configuration_error"),
+          Resources.getString("Chat.vassal_configuration_error"),
+          sb.toString(),
+          JOptionPane.INFORMATION_MESSAGE);
       }
     }
 
