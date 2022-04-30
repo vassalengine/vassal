@@ -26,6 +26,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
 import org.apache.commons.lang3.SystemUtils;
 
+import javax.swing.KeyStroke;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -34,8 +35,6 @@ import java.awt.event.InputEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import javax.swing.KeyStroke;
 
 /**
  * d/b/a "Does Not Stack"
@@ -94,7 +93,7 @@ public class Immobilized extends Decorator implements EditablePiece {
   public class UseCtrl implements EventFilter {
     @Override
     public boolean rejectEvent(InputEvent evt) {
-      return !(SystemUtils.IS_OS_MAC ? evt.isMetaDown() : evt.isControlDown());
+      return !(SystemUtils.IS_OS_MAC ? evt.isMetaDown() : evt.isControlDown()) && !Boolean.TRUE.equals(getProperty(Properties.SELECTED));
     }
   }
 
