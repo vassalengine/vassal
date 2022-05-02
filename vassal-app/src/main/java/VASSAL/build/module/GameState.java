@@ -290,7 +290,6 @@ public class GameState implements CommandEncoder {
     return s != null && !s.equals(lastSave);
   }
 
-
   /**
    * @return true if saveGame action is enabled (mainly to detect if logging can start)
    */
