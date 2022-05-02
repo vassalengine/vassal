@@ -482,7 +482,6 @@ public class GameState implements CommandEncoder {
     return result;
   }
 
-
   /**
    * Start/end a game.  Prompt to save if the game state has been
    * modified since last save.  Invoke {@link GameComponent#setup}
