@@ -565,7 +565,6 @@ public class GameState implements CommandEncoder {
     return gameStarted;
   }
 
-
   /**
    * @param file to validate as a legitimate save file
    * @return true if metadata is valid (or explicitly cleared-for-crash by user) and clear to proceed
@@ -671,15 +670,15 @@ public class GameState implements CommandEncoder {
     loadGame(continuation, false);
   }
 
-    /**
-     * Read the game from a savefile.  The contents of the file is
-     * sent to {@link GameModule#decode} and translated into a
-     * {@link Command}, which is then executed.  The command read from the
-     * file should be that returned by {@link #getRestoreCommand}.
-     *
-     * @param continuation if true then do the "old-style" version of load continuation
-     * @param forceForeground if true then force load in foreground
-     */
+  /**
+   * Read the game from a savefile.  The contents of the file is
+   * sent to {@link GameModule#decode} and translated into a
+   * {@link Command}, which is then executed.  The command read from the
+   * file should be that returned by {@link #getRestoreCommand}.
+   *
+   * @param continuation if true then do the "old-style" version of load continuation
+   * @param forceForeground if true then force load in foreground
+   */
   public void loadGame(boolean continuation, boolean forceForeground) {
     final GameModule g = GameModule.getGameModule();
 
@@ -947,7 +946,6 @@ public class GameState implements CommandEncoder {
     return true;
   }
 
-
   /** Closes the game. */
   public void closeGame() {
     GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
@@ -1214,6 +1212,7 @@ public class GameState implements CommandEncoder {
 
     return null;
   }
+
   public static final String BEGIN_SAVE = "begin_save";  //$NON-NLS-1$
   public static final String END_SAVE = "end_save";  //$NON-NLS-1$
 
@@ -1278,7 +1277,6 @@ public class GameState implements CommandEncoder {
     ModuleManagerUpdateHelper.sendGameUpdate(f);
   }
 
-
   public void loadGameInForeground(final File f) {
     try {
       loadGameInForeground(
@@ -1331,7 +1329,6 @@ public class GameState implements CommandEncoder {
     }
   }
 
-
   public void loadGameInBackground(final File f) {
     try {
       loadGameInBackground(
@@ -1343,7 +1340,6 @@ public class GameState implements CommandEncoder {
       ReadErrorDialog.error(e, f);
     }
   }
-
 
   public void loadGameInBackground(final String shortName, final InputStream in) {
     loadGameInBackground(shortName, in, false);
