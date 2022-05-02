@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 11417, "desc": "Fix Ctrl key with Does Not Stack trait" },
         { "num": 11406, "desc": "Don't show image scale option for panels inside Chart Windows" },
         { "num": 11388, "desc": "Correctly draw hex coordinates for odd-numbered columns spanning tile boundaries" },
         { "num": 11372, "desc": "Delayed Notes from subsequent saves displayed out of order" },

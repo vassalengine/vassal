@@ -1,5 +1,6 @@
 3.6.7 - ???
 
+* 11417: Fix Ctrl key with Does Not Stack trait
 * 11406: Don't show image scale option for panels inside Chart Windows
 * 11388: Correctly draw hex coordinates for odd-numbered columns spanning tile
     boundaries
