@@ -3104,14 +3104,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @param p Game Piece to add
    */
   public void addPiece(GamePiece p) {
-    // Temporarily change the piece to be on this map to ensure a CP can calculate a layer.
-    // Then return the original map so the piece can be correctly unlinked
-    final Map currentMap = p.getMap();
-    p.setMap(this);
-    final int index = indexOf(p);
-    p.setMap(currentMap);
-
-    if (index < 0) {
+    if (indexOf(p) < 0) {
       if (p.getParent() != null) {
         p.getParent().remove(p);
         p.setParent(null);
@@ -3119,8 +3112,8 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       if (p.getMap() != null && p.getMap() != this) {
         p.getMap().removePiece(p);
       }
-      p.setMap(this);
       pieces.add(p);
+      p.setMap(this);
       theMap.repaint();
     }
   }
