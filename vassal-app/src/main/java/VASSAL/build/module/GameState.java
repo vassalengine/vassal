@@ -625,13 +625,13 @@ public class GameState implements CommandEncoder {
       // For Module Version and Vassal Version mismatches, just report in chat.
       if (!saveModuleVersion.equals(moduleVersion)) {
         final String message = Resources.getString("GameState.load_version_mismatch", saveModuleVersion, moduleVersion);
-        g.warn("!<b>" + message);
+        g.warn("?<b>" + message);
         log.info(message);
       }
 
       if (!saveVassalVersion.equals(vassalVersion)) {
         final String message = Resources.getString("GameState.load_vassal_mismatch", saveVassalVersion, vassalVersion);
-        g.warn("!<b>" + message);
+        g.warn("?<b>" + message);
         log.info(message);
       }
     }
