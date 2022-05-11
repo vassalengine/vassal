@@ -70,6 +70,7 @@ public class P2PPlayer extends SimplePlayer {
     props.put(SimpleStatus.CLIENT, s.getClient());
     props.put(SimpleStatus.MODULE_VERSION, s.getModuleVersion());
     props.put(SimpleStatus.CRC, s.getCrc());
+    props.put(SimpleStatus.COMBINED_CRC, s.getCombinedCrc());
     info.setChatName(new PropertiesEncoder(props).getStringValue());
   }
 
@@ -87,7 +88,8 @@ public class P2PPlayer extends SimplePlayer {
             props.getProperty(SimpleStatus.CLIENT, ""), //$NON-NLS-1$
             props.getProperty(SimpleStatus.IP, ""), //$NON-NLS-1$
             props.getProperty(SimpleStatus.MODULE_VERSION, ""), //$NON-NLS-1$
-            props.getProperty(SimpleStatus.CRC, "")));  //$NON-NLS-1$
+            props.getProperty(SimpleStatus.CRC, ""),
+            props.getProperty(SimpleStatus.COMBINED_CRC, "")));  //$NON-NLS-1$
   }
 
   public String getRoom() {

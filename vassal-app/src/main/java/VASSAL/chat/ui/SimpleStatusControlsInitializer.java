@@ -59,7 +59,7 @@ public class SimpleStatusControlsInitializer implements ChatControlsInitializer 
         if ((client != null) && client.isConnected()) {
           final Player p = client.getUserInfo();
           SimpleStatus s = (SimpleStatus) p.getStatus();
-          s = new SimpleStatus(!s.isLooking(), s.isAway(), s.getProfile(), s.getClient(), s.getIp(), s.getModuleVersion(), s.getCrc());
+          s = new SimpleStatus(!s.isLooking(), s.isAway(), s.getProfile(), s.getClient(), s.getIp(), s.getModuleVersion(), s.getCrc(), s.getCombinedCrc());
           client.setUserInfo(new SimplePlayer(p.getId(), p.getName(), s));
 
           if (s.isLooking()) {
@@ -87,11 +87,11 @@ public class SimpleStatusControlsInitializer implements ChatControlsInitializer 
       if (client != null) {
         final Player p = client.getUserInfo();
         SimpleStatus s = (SimpleStatus) p.getStatus();
-        s = new SimpleStatus(s.isLooking(), true, s.getProfile(), s.getClient(), s.getIp(), s.getModuleVersion(), s.getCrc());
+        s = new SimpleStatus(s.isLooking(), true, s.getProfile(), s.getClient(), s.getIp(), s.getModuleVersion(), s.getCrc(), s.getCombinedCrc());
         client.setUserInfo(new SimplePlayer(p.getId(), p.getName(), s));
         JOptionPane.showMessageDialog(controls.getRoomTree(), Resources.getString("Chat.im_back"), Resources.getString("Chat.away_from_keyboard"), JOptionPane.PLAIN_MESSAGE); //$NON-NLS-1$ //$NON-NLS-2$
         s = (SimpleStatus) p.getStatus();
-        s = new SimpleStatus(s.isLooking(), false, s.getProfile(), s.getClient(), s.getIp(), s.getModuleVersion(), s.getCrc());
+        s = new SimpleStatus(s.isLooking(), false, s.getProfile(), s.getClient(), s.getIp(), s.getModuleVersion(), s.getCrc(), s.getCombinedCrc());
         client.setUserInfo(new SimplePlayer(p.getId(), p.getName(), s));
       }
     });

@@ -53,6 +53,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.PropertiesEncoder;
 import VASSAL.tools.SequenceEncoder;
 
+import VASSAL.tools.version.VersionUtils;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
@@ -142,7 +143,8 @@ public class NodeClient implements LockableChatServerConnection,
         s.getClient(),
         s.getIp(),
         s.getModuleVersion(),
-        s.getCrc()
+        s.getCrc(),
+        s.getCombinedCrc()
       );
       p.setStatus(s);
       setUserInfo(p);
@@ -506,14 +508,14 @@ public class NodeClient implements LockableChatServerConnection,
 
         final boolean compatible = checkCompatibility(pendingSynchToRoom, errors);
 
-        Command chat = new Chatter.DisplayText(chatter, Resources.getString("Chat.joining_room_chat", playerName, pendingSynchToRoom.getName()));
+        Command chat = new Chatter.DisplayText(chatter, "-!<b> &lt;" + playerName + "&gt; " + Resources.getString("Chat.joining_room_chat", pendingSynchToRoom.getName()));
         pendingSynchToRoom = null;
         if (!compatible) {
           for (final String error : errors) {
-            chat = chat.append(new Chatter.DisplayText(chatter, "-?<b> " + error));
+            chat = chat.append(new Chatter.DisplayText(chatter, "-?<b> &lt;" + playerName + "&gt;  " + error));
           }
         }
-        chat = chat.append(new Chatter.DisplayText(chatter, compatible ? "-<b> " + Resources.getString("Chat.join_ok", playerName)  : "-?<b> " + Resources.getString("Chat.join_not_ok", playerName)));
+        chat = chat.append(new Chatter.DisplayText(chatter, compatible ? "-!<b> " + Resources.getString("Chat.join_ok", playerName)  : "-!<b> " + Resources.getString("Chat.join_not_ok", playerName)));
 
         chat.execute();
         gm.sendAndLog(chat);
@@ -673,8 +675,9 @@ public class NodeClient implements LockableChatServerConnection,
     s = new SimpleStatus(s.isLooking(), s.isAway(), (String) g.getPrefs()
         .getValue(GameModule.PERSONAL_INFO), Info.getVersion(), s.getIp(), g
         .getGameVersion()
-        + ((g.getArchiveWriter() == null) ? "" : " " + Resources.getString("Editor.NodeClient.editing")), Long
-        .toHexString(g.getCrc()));
+        + ((g.getArchiveWriter() == null) ? "" : " " + Resources.getString("Editor.NodeClient.editing")),
+        Long.toHexString(g.getCrc()),
+        Long.toHexString(g.getCombinedCrc()));
     me.setStatus(s);
     g.getPrefs().getOption(GameModule.PERSONAL_INFO).addPropertyChangeListener(
         profileChangeListener);
@@ -720,7 +723,8 @@ public class NodeClient implements LockableChatServerConnection,
     final SimpleStatus ownerStatus = (SimpleStatus) targetRoom.getOwningPlayer().getStatus();
     final SimpleStatus myStatus = (SimpleStatus) getUserInfo().getStatus();
 
-    if (!ownerStatus.getClient().equals(myStatus.getClient())) {
+    // Only warn if out by a whole minor version,e.g. 3.6 to 3.5
+    if (!VersionUtils.truncateToMinorVersion(ownerStatus.getClient()).equals(VersionUtils.truncateToMinorVersion(myStatus.getClient()))) {
       errors.add(Resources.getString("Chat.bad_vassal", myStatus.getClient(), ownerStatus.getClient()));
       compatible = false;
     }
@@ -730,11 +734,6 @@ public class NodeClient implements LockableChatServerConnection,
 
     if (!ownerVersion.equals(myVersion)) {
       errors.add(Resources.getString("Chat.bad_module", myVersion, ownerVersion));
-      compatible = false;
-    }
-
-    if (!ownerStatus.getCrc().equals(myStatus.getCrc())) {
-      errors.add(Resources.getString("Chat.bad_crc", myStatus.getCrc(), ownerStatus.getCrc()));
       compatible = false;
     }
 

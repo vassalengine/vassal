@@ -51,6 +51,7 @@ import VASSAL.tools.io.ZipWriter;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.Dialogs;
 import VASSAL.tools.version.VersionUtils;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
@@ -583,38 +584,31 @@ public class GameState implements CommandEncoder {
 
     final String moduleName = GameModule.getGameModule().getGameName();
     final String moduleVersion = GameModule.getGameModule().getGameVersion();
-    final String vassalVersion = VersionUtils.truncateToIncrementalVersion(Info.getVersion());
+    final String vassalVersion = VersionUtils.truncateToMinorVersion(Info.getVersion());
 
     final String saveModuleName = saveData.getModuleName();
     String saveModuleVersion = "?";
     String saveVassalVersion = "?";
-    int problemCount = 0;
+    final GameModule g = GameModule.getGameModule();
 
     // Was the Module Data that created the save stored in the save? (Vassal 3.0+)
     if (saveData.getModuleData() != null) {
       saveModuleVersion = saveData.getModuleVersion();
-      saveVassalVersion = VersionUtils.truncateToIncrementalVersion(saveData.getVassalVersion());
-      final StringBuilder message = new StringBuilder();
-      message.append(Resources.getString("GameState.load_mismatch_header",  file.getName())).append("\n\n");
+      saveVassalVersion = VersionUtils.truncateToMinorVersion(saveData.getVassalVersion());
 
+      // For a module name discrepancy, still show an Are You Sure dialog.
       if (!saveModuleName.equals(moduleName)) {
-        message.append(Resources.getString("GameState.load_module_mismatch", saveModuleName, moduleName)).append('\n');
-        problemCount++;
-      }
+        final String m = Resources.getString("GameState.load_module_mismatch", saveModuleName, moduleName);
+        g.warn("!<b>" + m);
+        log.info(m);
+        final StringBuilder message = new StringBuilder();
+        message.append(Resources.getString("GameState.load_mismatch_header",  file.getName()))
+          .append("\n\n")
+          .append(m)
+          .append("\n\n")
+          .append(Resources.getString("GameState.load_mismatch_trailer"))
+          .append('\n');
 
-      if (!saveModuleVersion.equals(moduleVersion)) {
-        message.append(Resources.getString("GameState.load_version_mismatch", saveModuleVersion, moduleVersion)).append('\n');
-        problemCount++;
-      }
-
-      if (!saveVassalVersion.equals(vassalVersion)) {
-        message.append(Resources.getString("GameState.load_vassal_mismatch", saveVassalVersion, vassalVersion)).append('\n');
-        problemCount++;
-      }
-
-      message.append('\n').append(Resources.getString("GameState.load_mismatch_trailer")).append('\n');
-
-      if (problemCount > 0) {
         if (JOptionPane.showConfirmDialog(
           null,
           message.toString(),
@@ -623,18 +617,19 @@ public class GameState implements CommandEncoder {
           JOptionPane.QUESTION_MESSAGE) != JOptionPane.YES_OPTION) {
           return false;
         }
+      }
 
-        if (!saveModuleName.equals(moduleName)) {
-          log.info("*** User explicitly cleared mismatch of module name - " + saveModuleName + " file loaded into => " + moduleName); //NON-NLS
-        }
+      // For Module Version and Vassal Version mismatches, just report in chat.
+      if (!saveModuleVersion.equals(moduleVersion)) {
+        final String message = Resources.getString("GameState.load_version_mismatch", saveModuleVersion, moduleVersion);
+        g.warn("?<b>" + message);
+        log.info(message);
+      }
 
-        if (!saveModuleVersion.equals(moduleVersion)) {
-          log.info("*** User explicitly cleared mismatch of module version - " + saveModuleVersion + " file loaded into => " + moduleVersion); //NON-NLS
-        }
-
-        if (!saveVassalVersion.equals(vassalVersion)) {
-          log.info("*** User explicitly cleared mismatch of Vassal version - " + saveVassalVersion + " file loaded into => " + vassalVersion); //NON-NLS
-        }
+      if (!saveVassalVersion.equals(vassalVersion)) {
+        final String message = Resources.getString("GameState.load_vassal_mismatch", saveVassalVersion, vassalVersion);
+        g.warn("?<b>" + message);
+        log.info(message);
       }
     }
 
@@ -737,11 +732,11 @@ public class GameState implements CommandEncoder {
    */
   public boolean loadGame(File f, boolean continuation, boolean forceForeground) {
     try {
-      if (!f.exists()) throw new FileNotFoundException(
-        "Unable to locate " + f.getPath()); //NON-NLS
+      if (!f.exists()) throw new FileNotFoundException("Unable to locate " + f.getPath());
 
       // Check the Save game for validity
       if (!isSaveMetaDataValid(f)) {
+        GameModule.getGameModule().warn(Resources.getString("GameState.cancel_load", f.getName()));
         return false;
       }
 

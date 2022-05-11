@@ -33,6 +33,7 @@ import VASSAL.tools.SequenceEncoder;
 public class SimpleStatus implements PlayerStatus {
 
   public static final String CRC = "crc"; //$NON-NLS-1$
+  public static final String COMBINED_CRC = "CombinedCrc"; //$NON-NLS-1$
   public static final String MODULE_VERSION = "moduleVersion"; //$NON-NLS-1$
   public static final String IP = "ip"; //$NON-NLS-1$
   public static final String CLIENT = "client"; //$NON-NLS-1$
@@ -48,6 +49,7 @@ public class SimpleStatus implements PlayerStatus {
   private String ip;
   private String moduleVersion;
   private String crc;
+  private String combinedCrc;
 
   public SimpleStatus() {
     this(false, false, ""); //$NON-NLS-1$
@@ -62,6 +64,10 @@ public class SimpleStatus implements PlayerStatus {
   }
 
   public SimpleStatus(boolean looking, boolean away, String profile, String client, String ip, String module, String crc) {
+    this(looking, away, profile, client, ip, module, crc, "");
+  }
+
+  public SimpleStatus(boolean looking, boolean away, String profile, String client, String ip, String module, String crc, String combinedCrc) {
     this.looking = looking;
     this.away = away;
     this.profile = profile;
@@ -69,6 +75,7 @@ public class SimpleStatus implements PlayerStatus {
     this.ip = ip;
     this.moduleVersion = module;
     this.crc = crc;
+    this.combinedCrc = combinedCrc;
   }
 
   public boolean isAway() {
@@ -99,6 +106,10 @@ public class SimpleStatus implements PlayerStatus {
     return crc;
   }
 
+  public String getCombinedCrc() {
+    return combinedCrc;
+  }
+
   public static String encode(SimpleStatus s) {
     final SequenceEncoder se = new SequenceEncoder(',');
     se.append(s.looking);
@@ -108,6 +119,7 @@ public class SimpleStatus implements PlayerStatus {
     se.append(s.ip);
     se.append(s.moduleVersion);
     se.append(s.crc);
+    se.append(s.combinedCrc);
     return se.getValue();
   }
 
@@ -132,5 +144,6 @@ public class SimpleStatus implements PlayerStatus {
     }
     moduleVersion = g.getGameVersion() + ((g.getArchiveWriter() == null) ? "" : " (Editing)");  //$NON-NLS-1$ //$NON-NLS-2$
     crc = Long.toHexString(g.getCrc());
+    combinedCrc = Long.toHexString(g.getCombinedCrc());
   }
 }
