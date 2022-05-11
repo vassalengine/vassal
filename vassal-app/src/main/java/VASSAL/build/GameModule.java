@@ -1736,13 +1736,18 @@ public class GameModule extends AbstractConfigurable
    * While Paused, commands are accumulated into pausedCommands so that they
    * can all be logged at the same time, and generate a single UNDO command.
    *
+   * Logging can be paused recursively. Each Pause pushes a new Command onto the stack to accumulate the
+   * Commands during this pause. When a lower level is resumed, the combined command is popped off the stack
+   * and returned. This will normally then be 'sent' and appended to the the next higher level log.
+   *
    * @return Current logging pause status, false if logging currently paused
    */
   public boolean pauseLogging() {
     synchronized (loggingLock) {
       pausedCommands.push(new NullCommand());
+      final boolean loggingAlreadyPaused = loggingPaused;
       loggingPaused = true;
-      return true;
+      return ! loggingAlreadyPaused;
     }
   }
 

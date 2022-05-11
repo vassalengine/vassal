@@ -78,11 +78,9 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
     myGetKeyCommands();
     if (command.matches(stroke)) {
       final GameModule gm = GameModule.getGameModule();
-      final boolean loggingPausedByMe = gm.pauseLogging();
+      gm.pauseLogging();
       GameModule.getGameModule().fireKeyStroke(globalHotKey);
-      if (loggingPausedByMe) {
-        return gm.resumeLogging();
-      }
+      return gm.resumeLogging();
     }
     return null;
   }
