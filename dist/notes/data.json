@@ -33,7 +33,9 @@
         { "num": 11329, "desc": "Invisible Pieces belonging to another player can still stack together" }
       ],
       "other_improvements": [
+        { "num": 11414, "desc": "Improved version mismatch messaging" },
         { "num": 11373, "desc": "Make columns in Delayed Notes table sortable" },
+        { "num": 11361, "desc": "Allow Calculated properties to set Game Piece Layer" },
         { "num": 11356, "desc": "SetupStack can match literal grid names even if Zone only reports Zone name (e.g., uses $name$ as Location Format)" },
         { "num": 11351, "desc": "Documented that Mats w/ cargo can't go in decks" },
         { "num": 11348, "desc": "Polygon Editor improvements (move whole shape, tab between points)" },
