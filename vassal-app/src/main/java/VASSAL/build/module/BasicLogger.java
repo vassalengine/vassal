@@ -594,7 +594,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       return LOG + GameModule.getGameModule().encode(((LogCommand) c).getLoggedCommand());
     }
     else if (c instanceof UndoCommand) {
-      return UNDO + String.valueOf(((UndoCommand) c).isInProgress());
+      return UNDO + ((UndoCommand) c).isInProgress();
     }
 
     return null;
@@ -610,7 +610,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
 
       return new LogCommand(logged, logInput, stepAction);
     }
-    else if(command.startsWith(UNDO)) {
+    else if (command.startsWith(UNDO)) {
       final String inProgress = command.substring(UNDO.length());
       return new UndoCommand("true".equals(inProgress));
     }
@@ -744,7 +744,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
    */
   public static class UndoCommand extends Command {
 
-    private boolean inProgress;
+    private final boolean inProgress;
 
     public UndoCommand(boolean inProgress) {
       this.inProgress = inProgress;
