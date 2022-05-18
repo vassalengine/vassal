@@ -94,10 +94,10 @@ public class RoomTreeRenderer extends DefaultTreeCellRenderer {
         }
       }
       final List<Player> players = room.getPlayerList();
-      setText(
-        getText() +
-        (version == null ? "" : " [" + version + "]") +
-        " (" + players.size() + ")"
+      this.putClientProperty("html.disable", Boolean.FALSE);
+      this.setText(
+        "<html>" + getText() + " (" + players.size() + ")" +
+        (version == null ? "" : "<span style=\"color:#A0A0A0;\"> - [" + version + "]</span>") + "</html>"
       );
     }
     return this;
