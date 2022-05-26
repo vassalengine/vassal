@@ -756,5 +756,10 @@ public class DoActionButton extends AbstractToolbarItem
   public void addLocalImageNames(Collection<String> s) {
     final HTMLImageFinder h = new HTMLImageFinder(reportFormat.getFormat());
     h.addImageNames(s);
+
+    final String imageName = getAttributeValueString(ICON);
+    if (imageName != null) {
+      s.add(imageName);
+    }
   }
 }
