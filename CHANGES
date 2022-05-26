@@ -1,5 +1,6 @@
 3.6.7 - ???
 
+* 11465: DoActionButton claims its icon in remove-unused-images
 * 11446: Tweak version number display in online window (numbers at end, grayed
     out)
 * 11417: Fix Ctrl key with Does Not Stack trait
