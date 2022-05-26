@@ -34,6 +34,7 @@
         { "num": 11329, "desc": "Invisible Pieces belonging to another player can still stack together" }
       ],
       "other_improvements": [
+        { "num": 11460, "desc": "Show a dialog when connection to the game server is lost" },
         { "num": 11446, "desc": "Tweak version number display in online window (numbers at end, grayed out)" },
         { "num": 11414, "desc": "Improved version mismatch messaging" },
         { "num": 11373, "desc": "Make columns in Delayed Notes table sortable" },
