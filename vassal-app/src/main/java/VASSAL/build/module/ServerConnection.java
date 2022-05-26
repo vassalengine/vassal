@@ -26,6 +26,8 @@ public interface ServerConnection {
   /** Name of the property fired when the connection is opened/closed. Value is Boolean.TRUE or Boolean.FALSE */
   String CONNECTED = "Connected"; //$NON-NLS-1$
 
+  String CONNECTION_LOST = "Connection Lost"; //$NON-NLS-1$
+
   /** Send a command to other players on the server */
   void sendToOthers(Command c);
 

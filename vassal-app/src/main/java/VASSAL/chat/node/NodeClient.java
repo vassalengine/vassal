@@ -227,10 +227,12 @@ public class NodeClient implements LockableChatServerConnection,
 
   @Override
   public void socketClosed(SocketHandler handler) {
+    // This is intended to be called only in the case of a lost connection
     synchronized (this) {
       if (sender != null) {
         propSupport.firePropertyChange(STATUS, null, Resources.getString("Server.lost_connection")); //$NON-NLS-1$
         propSupport.firePropertyChange(CONNECTED, null, Boolean.FALSE);
+        propSupport.firePropertyChange(CONNECTION_LOST, null, Boolean.TRUE);
         sender = null;
       }
     }

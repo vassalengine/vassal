@@ -747,6 +747,11 @@ public class GameModule extends AbstractConfigurable
     Prefs.getGlobalPrefs().addOption(Resources.getString("Chat.server"), config); //$NON-NLS-1$
     serverControls = new ChatServerControls();
     serverControls.addTo(this);
+
+    server.addPropertyChangeListener(
+      DynamicClient.CONNECTION_LOST,
+      e -> WarningDialog.show("GameModule.disconnect_warning") //NON-NLS
+    );
   }
 
   /**
