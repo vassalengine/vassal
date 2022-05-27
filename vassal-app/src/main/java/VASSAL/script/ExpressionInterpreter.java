@@ -289,7 +289,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         }
         else {
           try {
-            if (value.length() > 1 && StringUtils.containsOnly(value.substring(0, 1), "+-0")) {
+            // Convert an Integer commencing with 0, or +/- 0 to a String
+            if (value.length() > 1 && (value.startsWith("0") || value.startsWith("-0") || value.startsWith("+0"))) {
               setVar(var, value);
             }
             else {
