@@ -1719,7 +1719,11 @@ public class GameModule extends AbstractConfigurable
     if (c != null && !c.isNull()) {
       synchronized (loggingLock) {
         if (loggingPaused) {
-          pausedCommands.getFirst().append(c);
+          // Pop the current Command list off, append the new Command and push it back on.
+          // Allows the Command pattern to operate correctly and remove NullCommands.
+          //Command comm = pausedCommands.removeFirst();
+          //comm = comm.append(c);
+          pausedCommands.push(pausedCommands.removeFirst().append(c));
         }
         else {
           getServer().sendToOthers(c);

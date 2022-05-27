@@ -22,4 +22,19 @@
         <method>*</method>
     </difference>
 
+    <difference>
+        <className>VASSAL/build/module/DoActionButton</className>
+        <differenceType>7006</differenceType>
+        <method>void doHotKey(VASSAL.command.Command, VASSAL.tools.NamedKeyStroke)</method>
+        <to>VASSAL.command.Command</to>
+        <reason>Extremely unlikely for class to have been subclassed</reason>
+    </difference>
+
+    <difference>
+        <className>VASSAL/build/module/DoActionButton</className>
+        <differenceType>7006</differenceType>
+        <method>void executeActions(VASSAL.command.Command)</method>
+        <to>VASSAL.command.Command</to>
+        <reason>Extremely unlikely for class to have been subclassed</reason>
+    </difference>
 </differences>
