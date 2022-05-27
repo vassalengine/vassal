@@ -1721,8 +1721,6 @@ public class GameModule extends AbstractConfigurable
         if (loggingPaused) {
           // Pop the current Command list off, append the new Command and push it back on.
           // Allows the Command pattern to operate correctly and remove NullCommands.
-          //Command comm = pausedCommands.removeFirst();
-          //comm = comm.append(c);
           pausedCommands.push(pausedCommands.removeFirst().append(c));
         }
         else {

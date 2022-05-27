@@ -77,8 +77,7 @@ public class MultiActionButton extends ToolbarMenu implements Loopable {
     }
     finally {
       RecursionLimiter.endExecution();
-      // If we are in control of logging, retrieve the accumulated Commands,
-      // turn off pause and send the Commands to the log.
+      // Retrieve Commands from the current pause level
       mod.sendAndLog(mod.resumeLogging());
     }
   }
