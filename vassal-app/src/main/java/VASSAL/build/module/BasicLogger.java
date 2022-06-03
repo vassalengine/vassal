@@ -82,6 +82,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   public static final String BEGIN = "begin_log";  //$NON-NLS-1$
   public static final String END = "end_log";  //$NON-NLS-1$
   public static final String LOG = "LOG\t";  //$NON-NLS-1$
+  public static final String UNDO = "UNDO\t";  //$NON-NLS-1$
   public static final String PROMPT_NEW_LOG = "PromptNewLog";  //$NON-NLS-1$
   public static final String PROMPT_NEW_LOG_START = "PromptNewLogAtStart"; //$NON-NLS-1$
   public static final String PROMPT_NEW_LOG_END = "PromptNewLogEnd"; //$NON-NLS-1$
@@ -101,6 +102,8 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
 
   private NamedHotKeyConfigurer stepKeyConfig;
   private NamedHotKeyConfigurer undoKeyConfig;
+
+  private boolean undoInProgress = false;
 
   public BasicLogger() {
     super();
@@ -545,10 +548,18 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     }
 
     undoAction.setEnabled(nextUndo >= dontUndoPast);
-    final Command undo = lastOutput.getUndoCommand();
+    final Command undo = new UndoCommand(true).append(lastOutput.getUndoCommand()).append(new UndoCommand(false));
     undo.execute();
     GameModule.getGameModule().getServer().sendToOthers(undo);
     logOutput.add(undo);
+  }
+
+  public boolean isUndoInProgress() {
+    return undoInProgress;
+  }
+
+  public void setUndoInProgress(boolean undoInProgress) {
+    this.undoInProgress = undoInProgress;
   }
 
   /**
@@ -579,24 +590,32 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
    */
   @Override
   public String encode(Command c) {
-    if (!(c instanceof LogCommand)) {
-      return null;
+    if (c instanceof LogCommand) {
+      return LOG + GameModule.getGameModule().encode(((LogCommand) c).getLoggedCommand());
     }
-    return LOG + GameModule.getGameModule().encode(((LogCommand) c).getLoggedCommand());
+    else if (c instanceof UndoCommand) {
+      return UNDO + ((UndoCommand) c).isInProgress();
+    }
+
+    return null;
   }
 
   @Override
   public Command decode(String command) {
-    if (!command.startsWith(LOG)) {
-      return null;
+    if (command.startsWith(LOG)) {
+      final Command logged = GameModule.getGameModule().decode(command.substring(LOG.length()));
+      if (logged == null) {
+        return null;
+      }
+
+      return new LogCommand(logged, logInput, stepAction);
+    }
+    else if (command.startsWith(UNDO)) {
+      final String inProgress = command.substring(UNDO.length());
+      return new UndoCommand("true".equals(inProgress));
     }
 
-    final Command logged = GameModule.getGameModule().decode(command.substring(LOG.length()));
-    if (logged == null) {
-      return null;
-    }
-
-    return new LogCommand(logged, logInput, stepAction);
+    return null;
   }
 
   protected Action undoAction = new UndoAction();
@@ -716,6 +735,33 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     @Override
     public void actionPerformed(ActionEvent e) {
       undo();
+    }
+  }
+
+  /**
+   * A Command that records whether or not an Undo is in progress.
+   * NOTE: Older clients will just ignore this Command if they see it
+   */
+  public static class UndoCommand extends Command {
+
+    private final boolean inProgress;
+
+    public UndoCommand(boolean inProgress) {
+      this.inProgress = inProgress;
+    }
+
+    public boolean isInProgress() {
+      return inProgress;
+    }
+
+    @Override
+    protected void executeCommand() {
+      GameModule.getGameModule().getBasicLogger().setUndoInProgress(inProgress);
+    }
+
+    @Override
+    protected Command myUndoCommand() {
+      return null;
     }
   }
 }

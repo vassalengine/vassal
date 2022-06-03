@@ -467,7 +467,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     super.removePieceAt(index, suppressDeckCounts);
     if (!suppressDeckCounts) {
       fireNumCardsProperty();
-      if (hotkeyOnEmpty && emptyKey != null && startCount > 0 && pieceCount == 0) {
+      // Do NOT fire a Deck Empty key if it has been caused by an Undo Command
+      if (hotkeyOnEmpty && emptyKey != null && startCount > 0 && pieceCount == 0 && ! GameModule.getGameModule().getBasicLogger().isUndoInProgress()) {
         gameModule.fireKeyStroke(emptyKey);
       }
     }
