@@ -17,6 +17,16 @@
   ],
   "changes": [
     {
+      "in": "3.6.8",
+      "since": "3.6.7",
+      "new_features": [
+      ],
+      "bug_fixes": [
+      ],
+      "other_improvements": [
+      ]
+    },
+    {
       "in": "3.6.7",
       "since": "3.6.6",
       "new_features": [
@@ -46,90 +56,6 @@
         { "num": 11348, "desc": "Polygon Editor improvements (move whole shape, tab between points)" },
         { "num": 11346, "desc": "Update bundled Java to 18" },
         { "num": 11330, "desc": "Allow .toString() to be called properly on property names in Beanshell" }
-      ]
-    },
-    {
-      "in": "3.6.6",
-      "since": "3.6.5",
-      "new_features": [
-      ],
-      "bug_fixes": [
-        { "num": 11327, "desc": "Fix Action Button not working after refreshing pre-defined setups" },
-        { "num": 11325, "desc": "Implement the missing Play Sound trait 'Send sound to other players' functionality" },
-        { "num": 11315, "desc": "Show correct Turn Tracker tooltip" },
-        { "num": 11302, "desc": "Fixed link typo in GamePieceImageDefinitions page of Reference Manual" },
-        { "num": 11287, "desc": "Fix ConcurrentExecutionException in Game Refresher with Mats" },
-        { "num": 11278, "desc": "Scale tiled images to target size rather than by scale factor" },
-        { "num": 11254, "desc": "Tiler dialog doesn't cancel tiling when Cancel button is clicked" },
-        { "num": 11248, "desc": "Catch InvalidDnDOperation exceptions when inappropriate drag-and-drops attempted" },
-        { "num": 11227, "desc": "Fix NPE when copying vertices from a zone with no vertices" },
-        { "num": 11232, "desc": "Stop edit of table when TableInfo is closed" },
-        { "num": 11223, "desc": "Copy/Paste conversions fixed for Zone Properties to/from Global and Map Properties" },
-        { "num": 11188, "desc": "DoActionButton hotkeys were not found by search" }
-      ],
-      "other_improvements": [
-        { "num": 11303, "desc": "Preference to control drag-at-edge scroll rate; per module defaults for edge scrolling" },
-        { "num": 11297, "desc": "Don't copy out unused images on removal" },
-        { "num": 11296, "desc": "Don't block the EDT when clearing the tile cache" },
-        { "num": 11292, "desc": "Strip leading and trailing whitespace from module names and versions" },
-        { "num": 11286, "desc": "Improved Setup Stack descriptions in editor" },
-        { "num": 11279, "desc": "Module \"other\" strings displayed in About screen" },
-        { "num": 11276, "desc": "Place Marker (and Replace With Other) include name of added piece in summary" },
-        { "num": 11260, "desc": "Editor now remembers its most recent image-picking (and sound) directories separately from its memory of last save/load of games and logs" },
-        { "num": 11258, "desc": "New BasicName trait defaults to Prototype's name; Changing Prototype's name changes BasicName trait's, if identical; At-Start Stack with no name displays name of first contained piece or folder in editor" },
-        { "num": 11256, "desc": "Added a preference for the tiler max heap; tiler will retry up to that limit" },
-        { "num": 11255, "desc": "Updated downloads URL to the one for our download page" },
-        { "num": 11243, "desc": "Enable Sum and Count in GKC Report Expressions" },
-        { "num": 11233, "desc": "UI Cleanup: don't scroll-at-edge the map if a file or link is being dragged instead of a piece" },
-        { "num": 11229, "desc": "Allow 'Select All Regions' when defining them; right click to delete now works for single unselected region" },
-        { "num": 11071, "desc": "Improved version number checking" }
-      ]
-    },
-    {
-      "in": "3.6.5",
-      "since": "3.6.4",
-      "new_features": [
-        { "num": 11124, "desc": "Console supports up-arrow / down-arrow for command history" },
-        { "num": 11122, "desc": "Console can show/set properties of selected piece" },
-        { "num": 11117, "desc": "Log files can be fast-forwarded and appended to" }
-      ],
-      "bug_fixes": [
-        { "num": 11218, "desc": "Grid Editor incorrectly changes some grid settings on Cancel" },
-        { "num": 11196, "desc": "Game Refresher should not refresh stacks not on maps" },
-        { "num": 11186, "desc": "Disable load and edit actions for null modules"},
-        { "num": 11179, "desc": "Chart Windows display their names properly in their window titles" },
-        { "num": 11162, "desc": "Turn Tracker does not display a spurious blank line if its report format is left empty" },
-        { "num": 11160, "desc": "Prevent At-Start Stacks from creating additional spurious pieces on main map" },
-        { "num": 11156, "desc": "Games incorrectly load normally during 'Load Continuation'" },
-        { "num": 11150, "desc": "Use heuristic value for tiler max heap, retry with 50% more on failure" },
-        { "num": 11149, "desc": "Capture tiling error messages Java incorrectly writes to stdout" },
-        { "num": 11139, "desc": "Deal-to-Other key in Mask Trait now recognized in Search" },
-        { "num": 11135, "desc": "Fixed Discord console drag-and-drop bug" },
-        { "num": 11127, "desc": "Don't throw exception if there's a drive letter in a filename" },
-        { "num": 11121, "desc": "Fix problem where undo wasn't allowed when starting a new game with logging turned on" },
-        { "num": 11119, "desc": "Fixed NPE in NamedHotKeyConfigurer.setValue()" },
-        { "num": 11115, "desc": "Fix ClassCastException due to Zone properties not accounting for folders" },
-        { "num": 11109, "desc": "LOS Range incorrect when thread is not snapped to hex centres" },
-        { "num": 11106, "desc": "Fix NPE when duplicating GamePieceImage" },
-        { "num": 11105, "desc": "Added missing Editor.SendToLocation.getSendLocation translation key" },
-        { "num": 11096, "desc": "Remove \"duplicate this item\" option from Game Piece Image" },
-        { "num": 11095, "desc": "Deduce the existence of localized image directories which lack ZIP entries" },
-        { "num": 11094, "desc": "Exclude GamePieceLayout image names from unused image list" },
-        { "num": 11093, "desc": "Image directories for i18n were not found in 3.6.4" },
-        { "num": 11089, "desc": "Write text files in UTF-8, not the default encoding" },
-        { "num": 11081, "desc": "Prevent GameRefresher from changing visual order of pieces" }
-      ],
-      "other_improvements": [
-        { "num": 11216, "desc": "Inventory has checkbox to enable zoom (defaults off)" },
-        { "num": 11209, "desc": "Global Options settings for (a) Inventory Security, and (b) Send-to-Location generating move trails. Inventory now defaults to \"old behavior\" on seeing private windows, but can be turned to secure." },
-        { "num": 11205, "desc": "Improved Polygon Editor (cut/paste vertices, delete polygon) & Improved Region Editor (drag-at-edge works again, move regions inside of zone)" },
-        { "num": 11197, "desc": "Better auto-description for Translatable Message trait and BasicPiece" },
-        { "num": 11194, "desc": "The errorlog console command is available at all times" },
-        { "num": 11164, "desc": "Upgrade bundled Java to 17.0.2+8" },
-        { "num": 11135, "desc": "Prompt to save/discard/cancel before loading the new game" },
-        { "num": 11120, "desc": "Permit hyphens and periods in GamePieceImage names" },
-        { "num": 11107, "desc": "Warn if Decks or Stacks defined before [Map Boards]" },
-        { "num": 11098, "desc": "Screenshot \"typo\" fix for Turn Tracker's global hotkey" }
       ]
     }
   ]
