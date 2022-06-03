@@ -1,5 +1,6 @@
-3.6.7 - ???
+3.6.7 - 3 June 2022
 
+* 11487: Removed obsolete option from startup script
 * 11465: DoActionButton claims its icon in remove-unused-images
 * 11460: Show a dialog when connection to the game server is lost
 * 11446: Tweak version number display in online window (numbers at end, grayed
@@ -20,6 +21,7 @@
 * 11348: Polygon Editor improvements (move whole shape, tab between points)
 * 11347: Inventory should not reveal face down deck images
 * 11346: Update bundled Java to 18
+* 11344: Prevent Undo from triggering Deck Empty Hotkey
 * 11343: Ensure that the pivot point is used for rotating Cargo
 * 11330: Allow .toString() to be called properly on property names in Beanshell
 * 11329: Invisible Pieces belonging to another player can still stack together

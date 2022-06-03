@@ -30,10 +30,12 @@
         { "num": 11369, "desc": "Leading zeros handling in Set Dynamic Property" },
         { "num": 11362, "desc": "Match expanded Inventory nodes by entry value, not by display text" },
         { "num": 11347, "desc": "Inventory should not reveal face down deck images" },
+        { "num": 11344, "desc": "Prevent Undo from triggering Deck Empty Hotkey" },
         { "num": 11343, "desc": "Ensure that the pivot point is used for rotating Cargo" },
         { "num": 11329, "desc": "Invisible Pieces belonging to another player can still stack together" }
       ],
       "other_improvements": [
+        { "num": 11487, "desc": "Removed obsolete option from startup script" },
         { "num": 11460, "desc": "Show a dialog when connection to the game server is lost" },
         { "num": 11446, "desc": "Tweak version number display in online window (numbers at end, grayed out)" },
         { "num": 11414, "desc": "Improved version mismatch messaging" },
