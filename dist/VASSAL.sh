@@ -25,4 +25,4 @@ if ! "$JAVA" -classpath "$INSTALL_DIR"/lib/Vengine.jar VASSAL.launch.JavaVersion
 fi
 
 # Launch VASSSAL
-"$JAVA" -Duser.dir="$INSTALL_DIR" -classpath "$INSTALL_DIR"/lib/Vengine.jar --add-exports java.desktop/sun.java2d.cmm=ALL-UNNAMED VASSAL.launch.ModuleManager "$@"
+"$JAVA" -Duser.dir="$INSTALL_DIR" -classpath "$INSTALL_DIR"/lib/Vengine.jar VASSAL.launch.ModuleManager "$@"
