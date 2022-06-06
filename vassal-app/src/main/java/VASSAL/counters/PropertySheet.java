@@ -1047,8 +1047,8 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     private int numTicks;
     private int maxTicks;
     private final int panelType;
-    private JTextField valField;
-    private JTextField maxField;
+    private final JTextField valField;
+    private final JTextField maxField;
     private final TickLabel ticks;
     private final List<ActionListener> actionListeners = new ArrayList<>();
     private final List<DocumentListener> documentListeners = new ArrayList<>();
@@ -1079,6 +1079,10 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
         add(valField, c);
         ++c.gridx;
       }
+      else {
+        valField = null;
+      }
+
       if (panelType == TICKS_MAX || panelType == TICKS_VALMAX) {
         maxField = new JTextField(Integer.toString(maxTicks));
         minSize = maxField.getMinimumSize();
@@ -1093,6 +1097,9 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
         }
         add(maxField, c);
         ++c.gridx;
+      }
+      else {
+        maxField = null;
       }
 
       ticks = new TickLabel(numTicks, maxTicks, panelType);

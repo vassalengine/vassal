@@ -38,14 +38,12 @@ import VASSAL.chat.Room;
  */
 public class LockableRoomTreeRenderer extends RoomTreeRenderer {
   private static final long serialVersionUID = 1L;
-  private Icon lockedIcon;
+  private final Icon lockedIcon;
   private Font nonOwnerFont = null;
   private Font ownerFont = null;
   public LockableRoomTreeRenderer() {
     final URL image = getClass().getResource("/images/lockedRoom.gif"); //$NON-NLS-1$
-    if (image != null) {
-      lockedIcon = new ImageIcon(image);
-    }
+    lockedIcon = image != null ? new ImageIcon(image) : null;
   }
 
   @Override
