@@ -1740,7 +1740,7 @@ public class ADC2Module extends Importer {
              DataInputStream input = new DataInputStream(bin)) {
           try {
             while (true) { // loop until EOF
-              while (input.readUnsignedByte() != 0x3b) {
+              while (input.readUnsignedByte() != 0x3b) { // NOPMD
                 // skip
               }
               final int idx = input.readUnsignedByte();

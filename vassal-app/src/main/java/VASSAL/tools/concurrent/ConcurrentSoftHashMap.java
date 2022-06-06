@@ -156,7 +156,7 @@ public class ConcurrentSoftHashMap<K, V> extends AbstractMap<K, V>
   @Override
   public void clear() {
     map.clear();
-    while (queue.poll() != null);
+    while (queue.poll() != null); // NOPMD
   }
 
   // Views
