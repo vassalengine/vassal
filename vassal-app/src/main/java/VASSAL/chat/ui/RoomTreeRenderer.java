@@ -39,19 +39,15 @@ import VASSAL.chat.SimpleStatus;
 public class RoomTreeRenderer extends DefaultTreeCellRenderer {
   private static final long serialVersionUID = 1L;
 
-  private Icon away;
-  private Icon looking;
+  private final Icon away;
+  private final Icon looking;
 
   public RoomTreeRenderer() {
     URL image = getClass().getResource("/images/playerAway.gif"); //$NON-NLS-1$
-    if (image != null) {
-      away = new ImageIcon(image);
-    }
+    away = image != null ? new ImageIcon(image) : null;
 
     image = getClass().getResource("/images/playerLooking.gif"); //$NON-NLS-1$
-    if (image != null) {
-      looking = new ImageIcon(image);
-    }
+    looking = image != null ? new ImageIcon(image) : null;
   }
 
   @Override

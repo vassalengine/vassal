@@ -541,7 +541,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     protected IntConfigurer yOffsetConfig;
     protected BooleanConfigurer matchRotationConfig;
     protected BooleanConfigurer aboveConfig;
-    private JLabel aboveLabel;
+    private final JLabel aboveLabel;
     protected TranslatingStringEnumConfigurer placementConfig;
     protected NamedHotKeyConfigurer afterBurner;
     protected StringConfigurer descConfig;
@@ -624,6 +624,9 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
           aboveConfig.getControls().setVisible(matchRotationConfig.getValueBoolean());
           aboveLabel.setVisible(matchRotationConfig.getValueBoolean());
         });
+      }
+      else {
+        aboveLabel = null;
       }
 
       placementConfig = new TranslatingStringEnumConfigurer(

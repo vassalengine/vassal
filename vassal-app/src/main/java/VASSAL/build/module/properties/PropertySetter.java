@@ -29,14 +29,12 @@ import VASSAL.tools.FormattedString;
 public class PropertySetter implements PropertyChanger {
   private String newValue;
   private final Constraints propSource;
-  private FormattedString format;
+  private final FormattedString format;
 
   public PropertySetter(String newValue, Constraints propSource) {
     this.newValue = newValue;
     this.propSource = propSource;
-    if (propSource != null) {
-      format = new FormattedString();
-    }
+    format = propSource != null ? new FormattedString() : null;
   }
 
   public String getRawValue() {

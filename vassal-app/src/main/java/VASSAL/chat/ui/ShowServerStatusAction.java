@@ -74,7 +74,7 @@ public class ShowServerStatusAction extends AbstractAction {
     private static final long serialVersionUID = 1L;
 
     private final ServerStatusView view;
-    private MessageBoardControls messageMgr;
+    private final MessageBoardControls messageMgr;
 
     public Window(ServerStatus status, boolean includeMessageControls) {
       super(Resources.getString("Chat.server_status")); //$NON-NLS-1$
@@ -91,6 +91,10 @@ public class ShowServerStatusAction extends AbstractAction {
         toolbar.add(messageMgr.getPostMessageAction());
         add(toolbar, BorderLayout.NORTH);
       }
+      else {
+        messageMgr = null;
+      }
+
       pack();
       setSize(Math.max(getSize().width, 400), Math.max(getSize().height, 300));
       final Dimension d = SwingUtils.getScreenSize();

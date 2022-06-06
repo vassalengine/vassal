@@ -1829,7 +1829,7 @@ public class PieceMover extends AbstractBuildable
       // selected in a selection rectangle, unless they are being
       // dragged from a piece palette (i.e., getMap() == null).
       final List<GamePiece> pieces = new ArrayList<>();
-      for (final PieceIterator i = db.getIterator();
+      for (final PieceIterator i = db.getIterator();  // NOPMD
            i.hasMoreElements(); pieces.add(i.nextPiece()));
       for (final GamePiece piece : pieces) {
         if (piece.getMap() != null &&

@@ -2126,15 +2126,19 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
    * An object that parses expression strings from the config window
    */
   public static class CountExpression {
-    private String fullstring;
-    private String name;
-    private String expression;
+    private final String fullstring;
+    private final String name;
+    private final String expression;
+
     public CountExpression(String expressionString) {
       final String[] split = expressionString.split("\\s*:\\s*", 2); //$NON-NLS-1$
       if (split.length == 2) {
         name       = split[0];
         expression = split[1];
         fullstring = expressionString;
+      }
+      else {
+        name = expression = fullstring = null;
       }
     }
 

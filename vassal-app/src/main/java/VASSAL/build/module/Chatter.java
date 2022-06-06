@@ -693,13 +693,12 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
 
     public static final String PREFIX = "CHAT";  //$NON-NLS-1$
 
-    private String msg;
+    private final String msg;
     private final Chatter c;
 
     public DisplayText(Chatter c, String s) {
       this.c = c;
-      msg = s;
-      if (msg.startsWith("<>")) { //NON-NLS
+      if (s.startsWith("<>")) { //NON-NLS
         msg = "&lt;(" + Chatter.getAnonymousUserName() + ")&gt;" + s.substring(2); // HTML-friendly //NON-NLS
         // angle brackets
       }

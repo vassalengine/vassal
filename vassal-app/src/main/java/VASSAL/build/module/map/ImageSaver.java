@@ -428,7 +428,7 @@ public class ImageSaver extends AbstractToolbarItem {
         Throwable c = e;
 
         // Unwrap until we hit a cause which is not an ExecutionException
-        while ((c = c.getCause()) instanceof ExecutionException);
+        while ((c = c.getCause()) instanceof ExecutionException); // NOPMD
 
         if (c instanceof IOException) {
           WriteErrorDialog.error(e, (IOException) c, files.get(files.size() - 1));

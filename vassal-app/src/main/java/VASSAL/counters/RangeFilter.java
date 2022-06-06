@@ -29,17 +29,15 @@ import VASSAL.build.module.map.boardPicker.board.MapGrid;
 public class RangeFilter implements PieceFilter {
   private final Map map;
   private final Point position;
-  private MapGrid grid;
+  private final MapGrid grid;
   private final int range;
 
   public RangeFilter(Map map, Point location, int range) {
-    this.position = location;
+    position = location;
     this.map = map;
     this.range = range;
     final Board b = map.findBoard(location);
-    if (b != null) {
-      grid = b.getGrid();
-    }
+    grid = b != null ? b.getGrid() : null;
   }
 
   @Override
