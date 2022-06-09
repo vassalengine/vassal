@@ -76,6 +76,7 @@ _Example:_ If the Turn Counter contains a Month level that contains a Day level,
 
 *Height of Turn Tracker widget:*:: Height in pixels of the turn tracker display. This can be used to help match your turn tracker to the heights of icons you are using on your toolbar.
 
+*Allow Only Forward:*:: Setting this toggle prevents players form going backwards with the Turn Counter. This feature prevents the triggering of unintended automation. Players may still go back to correct errors, but they must use the "undo" button instead. The "undo" button will unwrap previously triggered automation instead of triggering it a second time as would occur when the Turn Counter goes backwards.
 image:images/TurnTracker.png[]
 
 ==== Module level defaults and preferences
