@@ -262,7 +262,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   @Override
   public String[] getAttributeNames() {
     return new String[] { NAME, DESCRIPTION, BUTTON_TEXT, ICON, HOT_KEY, NEXT_HOT_KEY, PREV_HOT_KEY, TURN_FORMAT,
-     REPORT_FORMAT, TOOLTIP, LENGTH_STYLE, LENGTH, PLUS_BUTTON_WIDTH, TURN_BUTTON_HEIGHT, FWD_ONLY };
+      REPORT_FORMAT, TOOLTIP, LENGTH_STYLE, LENGTH, PLUS_BUTTON_WIDTH, TURN_BUTTON_HEIGHT, FWD_ONLY };
   }
 
   @Override
