@@ -56,19 +56,16 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.ToolBarComponent;
 import VASSAL.tools.swing.SwingUtils;
-
-import java.awt.Component;
-import java.beans.PropertyChangeListener;
-import java.util.Arrays;
-import java.util.List;
+import net.miginfocom.swing.MigLayout;
+import org.apache.commons.lang3.ArrayUtils;
 
 import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
-import net.miginfocom.swing.MigLayout;
-
-import org.apache.commons.lang3.ArrayUtils;
+import java.awt.Component;
+import java.beans.PropertyChangeListener;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Adds a button to a map window toolbar. Hitting the button applies a particular key command to all pieces on that map
@@ -439,11 +436,9 @@ public class MassKeyCommand extends AbstractToolbarItem
         else {
           typeConfig.setValue(FIXED);
           if ("".equals(o)) {
-            piecesConfig.setValue("1");
+            o = "1";
           }
-          else {
-            piecesConfig.setValue((String)o);
-          }
+          piecesConfig.setValue((String)o);
         }
         piecesConfig.getControls().setVisible(FIXED.equals(typeConfig.getValueString()));
       }
