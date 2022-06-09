@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 11496, "desc": "Safer GKC Configurer for Fixed # From Deck" }
       ],
       "other_improvements": [
         { "num": 11497, "desc": "Don't play sounds while fast-forwarding a log" }
