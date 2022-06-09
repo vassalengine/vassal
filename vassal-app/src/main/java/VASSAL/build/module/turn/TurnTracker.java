@@ -262,7 +262,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   @Override
   public String[] getAttributeNames() {
     return new String[] { NAME, DESCRIPTION, BUTTON_TEXT, ICON, HOT_KEY, NEXT_HOT_KEY, PREV_HOT_KEY, TURN_FORMAT,
-            REPORT_FORMAT, TOOLTIP, LENGTH_STYLE, LENGTH, PLUS_BUTTON_WIDTH, TURN_BUTTON_HEIGHT, FWD_ONLY };
+     REPORT_FORMAT, TOOLTIP, LENGTH_STYLE, LENGTH, PLUS_BUTTON_WIDTH, TURN_BUTTON_HEIGHT, FWD_ONLY };
   }
 
   @Override
@@ -964,7 +964,8 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
 
         if (!fwdOnly) {                                  // FWD_ONLY start
           prevButton = new IconButton(IconButton.MINUS_ICON, (plusButtonWidth > 0) ? plusButtonWidth : DEFAULT_SIZE);
-        } else {
+        }
+        else {
           prevButton = new IconButton(IconButton.GREY_MINUS_ICON, (plusButtonWidth > 0) ? plusButtonWidth : DEFAULT_SIZE);
         }                                               // FWD_ONLY end
         setPrevStroke(prevListener.getNamedKeyStroke());
@@ -1021,11 +1022,11 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     }
 
     protected void doPrev() {
-        if (!fwdOnly) {                // FWD_ONLY start wrap - only the "if"
-            captureState();           // standard code
-            prev();
-            save();
-        }                            // FWD_ONLY end wrap
+      if (!fwdOnly) {                // FWD_ONLY start wrap - only the "if"
+        captureState();           // standard code
+        prev();
+        save();
+      }                            // FWD_ONLY end wrap
     }
 
     protected void initComponents() {
