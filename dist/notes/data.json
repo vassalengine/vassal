@@ -24,6 +24,7 @@
       "bug_fixes": [
       ],
       "other_improvements": [
+        { "num": 11497, "desc": "Don't play sounds while fast-forwarding a log" }
       ]
     },
     {

@@ -1,5 +1,7 @@
 3.6.8 - ???
 
+* 11497: Don't play sounds while fast-forwarding a log
+
 3.6.7 - 3 June 2022
 
 * 11487: Removed obsolete option from startup script
