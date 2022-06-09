@@ -137,6 +137,13 @@ public class GameState implements CommandEncoder {
     loadingInBackground = b;
   }
 
+  /**
+   * @return true if currently fast-forwarding a log
+   */
+  public boolean isFastForwarding() {
+    return fastForwarding;
+  }
+
   void setLastSaveFile(File f) {
     lastSaveFile = f;
   }
@@ -794,8 +801,6 @@ public class GameState implements CommandEncoder {
 
     loadGame(false, true); // First load the old game or log, forcing it to all happen foreground
 
-    fastForwarding = false;
-
     final GameModule g = GameModule.getGameModule();
     final BasicLogger bl = g.getBasicLogger();
     if (bl.isReplaying()) {
@@ -835,6 +840,8 @@ public class GameState implements CommandEncoder {
     else {
       g.warn(Resources.getString("GameState.simple_save_append"));
     }
+
+    fastForwarding = false;
   }
 
   /**
