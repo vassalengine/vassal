@@ -18,7 +18,6 @@ public class IconButton extends JButton {
   public static final int MINUS_ICON = 1;
   public static final int TICK_ICON = 2;
   public static final int CROSS_ICON = 3;
-  public static final int GREY_MINUS_ICON = 4;
 
   public IconButton(int type) {
     this(type, 22);
@@ -34,8 +33,6 @@ public class IconButton extends JButton {
       return Color.green;
     case CROSS_ICON:
       return Color.red;
-    case GREY_MINUS_ICON:
-      return Color.lightGray;
     default:
       return Color.black;
     }
@@ -69,9 +66,6 @@ public class IconButton extends JButton {
     case CROSS_ICON:
       g.drawLine(5, 5, size - 5, size - 5);
       g.drawLine(5, size - 5, size - 5, 5);
-      break;
-    case GREY_MINUS_ICON:
-      g.drawLine(5, size / 2, size - 5, size / 2);
       break;
     }
     setIcon(new ImageIcon(image));

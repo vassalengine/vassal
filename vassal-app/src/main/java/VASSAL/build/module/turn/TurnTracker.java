@@ -167,7 +167,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
 
   protected int plusButtonWidth  = DEFAULT_SIZE;
   protected int turnButtonHeight = DEFAULT_SIZE;
-  protected Boolean fwdOnly = false;
+  protected boolean fwdOnly = false;
 
   protected MutableProperty.Impl lastCommand = new MutableProperty.Impl(SET, this);
   protected MutableProperty.Impl lastTurn = new MutableProperty.Impl("", this);
@@ -962,15 +962,13 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
         nextButton.setAlignmentY(Component.TOP_ALIGNMENT);
         nextButton.addActionListener(e -> doNext());
 
-        if (!fwdOnly) {                                  // FWD_ONLY start
-          prevButton = new IconButton(IconButton.MINUS_ICON, (plusButtonWidth > 0) ? plusButtonWidth : DEFAULT_SIZE);
-        }
-        else {
-          prevButton = new IconButton(IconButton.GREY_MINUS_ICON, (plusButtonWidth > 0) ? plusButtonWidth : DEFAULT_SIZE);
-        }                                               // FWD_ONLY end
+        prevButton = new IconButton(IconButton.MINUS_ICON, (plusButtonWidth > 0) ? plusButtonWidth : DEFAULT_SIZE);
         setPrevStroke(prevListener.getNamedKeyStroke());
         prevButton.setAlignmentY(Component.TOP_ALIGNMENT);
         prevButton.addActionListener(e -> doPrev());
+        if (fwdOnly) {
+          prevButton.setEnabled(false);
+        }
 
         // Next, the Label containing the Turn Text
         turnLabel.setFont(getDisplayFont());
