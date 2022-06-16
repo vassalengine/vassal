@@ -18,6 +18,7 @@
 package VASSAL.script;
 
 import VASSAL.build.BadDataReport;
+import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.counters.BasicPiece;
@@ -287,15 +288,18 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         else if (! StringUtils.containsOnly(value, "+-.0123456789")) { // NON-NLS
           setVar(var, value);
         }
+        // Special case where the 'Store Integers with leading zeros as Strings' option is turned on AND
+        // the string is 2 or more numerical digits commencing with 0, then store it as a String so that
+        // the leading zeros are preserved. It is up to the Designer to convert this to an integer later
+        // using Integer.parseInt(x) if they need to do arithmetic on it.
+        else if (GlobalOptions.getInstance() != null && GlobalOptions.getInstance().isStoreLeadingZeroIntegersAsStrings()
+                  && value.length() > 1 && value.startsWith("0")
+                  && StringUtils.containsOnly(value, "0123456789")) {
+          setVar(var, value);
+        }
         else {
           try {
-            // Convert an Integer commencing with 0, or +/- 0 to a String
-            if ((value.length() > 1 && (value.startsWith("0")) || (value.length() > 2 && value.startsWith("-0")))) {
-              setVar(var, value);
-            }
-            else {
-              setVar(var, Integer.parseInt(value));
-            }
+            setVar(var, Integer.parseInt(value));
           }
           catch (NumberFormatException ex1) {
 
