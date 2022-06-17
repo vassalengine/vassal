@@ -14,7 +14,7 @@ A game may require that damaged units are returned to a Damaged pool for repairs
 Different boxes in the pool represent the amount of time before the unit is fully repaired.
 A game piece may be given a _Send to Location_ trait with menu text "Send to Damaged Pool" and key command Ctrl+P, with the target position corresponding to the first box of the pool, with an additional offset, determined by the level of a <<Layer.adoc#top,Layer>> representing the damage, to place it in the appropriate box in the pool.
 
-NOTE: The *Menu Command* of a *Send to Location* trait will be greyed out and unavailable if the destination cannot be determined for any reason.
+NOTE: The *Menu Command* of a *Send to Location* trait will be greyed out and unavailable if the destination is illegal, or cannot be determined for any reason.
 
 [width="100%",cols="50%a,^50%a",]
 |===
@@ -74,6 +74,8 @@ The location of the _nearest_ piece selected by the <<PropertyMatchExpression.ad
 _Grid Location on Selected Map_:::
 
 A named location on a map using the appropriate grid numbering (or the named location on an <<IrregularGrid.adoc#top,Irregular Grid>>.
+
+NOTE: When using Grids with fully numeric Column and Row numbers with leading zeros (e.g. 0203), then Vassal will internally remove leading zeros of any Grid Reference you enter, making it impossible to Send to numeric locations that commence with a leading '0'. This can be overcome by setting the <<GlobalOptions.adoc#leadingzeros,_Store integers with leading zeros as Strings internally_ Global Option>>
 
 
 
