@@ -1038,6 +1038,9 @@ public class PieceMover extends AbstractBuildable
           // Snap if required
           if (!ignoreGrid) {
             p = map.snapTo(p);
+
+            // Now that we've snapped to the grid, perhaps there is a piece here that we can merge with.
+            mergeWith = map.findAnyPiece(p, getDropTargetSelector(dragging, currentCargo, currentMat));
           }
         }
 
