@@ -1997,8 +1997,8 @@ public class PieceMover extends AbstractBuildable
 
     // FDL: This is of course a temporary method to help me see what is happening.
     private void logConsole(String s) {
-      DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
-      LocalDateTime now = LocalDateTime.now();
+      final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
+      final LocalDateTime now = LocalDateTime.now();
       System.out.println(dtf.format(now) + ": " + s);
     }
 
@@ -2008,7 +2008,7 @@ public class PieceMover extends AbstractBuildable
     private void makeStackGap(Map map, Point location) {
       logConsole("makeStackGap");
 
-      PieceMover pieceMover = map.getPieceMover();
+      final PieceMover pieceMover = map.getPieceMover();
 
       ////////////////////////////////////////////////
       // 1. get piece being dragged
@@ -2030,18 +2030,18 @@ public class PieceMover extends AbstractBuildable
 
       ////////////////////////////////////////////////
       // 2. check if piece intersects another piece
-      MatCargo currentCargo = (MatCargo) Decorator.getDecorator(draggedPiece, MatCargo.class);
-      Mat currentMat = (Mat) Decorator.getDecorator(draggedPiece, Mat.class);;
+      final MatCargo currentCargo = (MatCargo) Decorator.getDecorator(draggedPiece, MatCargo.class);
+      final Mat currentMat = (Mat) Decorator.getDecorator(draggedPiece, Mat.class);
 
-      int exSepX = Integer.parseInt((String)map.getStackMetrics().getAttributeValueString(StackMetrics.EXSEP_X));
-      int exSepY = Integer.parseInt((String)map.getStackMetrics().getAttributeValueString(StackMetrics.EXSEP_Y));
+      final int exSepX = Integer.parseInt((String)map.getStackMetrics().getAttributeValueString(StackMetrics.EXSEP_X));
+      final int exSepY = Integer.parseInt((String)map.getStackMetrics().getAttributeValueString(StackMetrics.EXSEP_Y));
 
       // This is a hack so we can see if we are below the stack (allowing us to insert at bottom of stack).
       // Note: This doesn't work, since both StackMetrics and the display logic not set up to handle the bottom piece
       // of a stack being offset.
       location.translate(-exSepX, -exSepY);
 
-      GamePiece targetPiece = map.findAnyPiece(
+      final GamePiece targetPiece = map.findAnyPiece(
         location, pieceMover.getDropTargetSelector(draggedPiece, currentCargo, currentMat));
 
       final BoundsTracker tracker = new BoundsTracker();
@@ -2054,7 +2054,8 @@ public class PieceMover extends AbstractBuildable
                 ", insert-at-gap: " + targetStack.insertGapAtPosition);
         tracker.addPiece(targetPiece);
         tracker.addPiece(targetStack);
-      } else if(stackWihGap != null) {
+      }
+      else if (stackWihGap != null) {
         logConsole("Clearing gap");
         stackWihGap.insertGapAtPosition = -1;
         tracker.addPiece(stackWihGap);

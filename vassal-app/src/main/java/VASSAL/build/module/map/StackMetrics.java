@@ -45,7 +45,6 @@ import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.BasicPiece;
-import VASSAL.counters.DragBuffer;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Highlighter;
 import VASSAL.counters.PieceFilter;
