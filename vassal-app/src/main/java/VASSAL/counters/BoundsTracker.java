@@ -17,10 +17,12 @@
  */
 package VASSAL.counters;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.awt.Rectangle;
+import java.util.List;
+import java.util.LinkedList;
 
 import VASSAL.build.module.Map;
+import VASSAL.tools.lang.Pair;
 
 /**
  * Records the bounding boxes of GamePieces.  Use addPiece() to
@@ -29,25 +31,27 @@ import VASSAL.build.module.Map;
  * added pieces belonged.
  */
 public class BoundsTracker {
-  private final Set<Map> maps;
+  private final List<Pair<Rectangle, Map>> regions;
 
   public BoundsTracker() {
-    maps = new HashSet<>();
+    regions = new LinkedList<>();
   }
 
   public void clear() {
-    maps.clear();
+    regions.clear();
   }
 
   public void addPiece(GamePiece p) {
     if (p.getMap() != null) {
-      maps.add(p.getMap());
+      final Rectangle region = p.boundingBox();
+      region.translate(p.getPosition().x, p.getPosition().y);
+      regions.add(new Pair<>(region, p.getMap()));
     }
   }
 
   public void repaint() {
-    for (final Map m : maps) {
-      m.repaint();
+    for (final Pair<Rectangle, Map> rmPair : regions) {
+      rmPair.second.repaint(rmPair.first);
     }
   }
 }
