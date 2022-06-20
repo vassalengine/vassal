@@ -1,5 +1,9 @@
 3.6.8 - ???
 
+* 11515: Piece dropped into incorrect position in the stack when dragging
+    within a stack to a lower position
+* 11513: Piece "disappears" when dragged to grid space with an existing stack
+    and "snap to defined point"
 * 11497: Don't play sounds while fast-forwarding a log
 * 11496: Safer GKC Configurer for Fixed # From Deck
 

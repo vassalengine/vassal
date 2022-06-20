@@ -22,6 +22,8 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 11515, "desc": "Piece dropped into incorrect position in the stack when dragging within a stack to a lower position" },
+        { "num": 11513, "desc": "Piece \"disappears\" when dragged to grid space with an existing stack and \"snap to defined point\"" },
         { "num": 11496, "desc": "Safer GKC Configurer for Fixed # From Deck" }
       ],
       "other_improvements": [
