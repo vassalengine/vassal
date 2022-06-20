@@ -664,7 +664,7 @@ public class StackMetrics extends AbstractConfigurable {
           }
         }
         else {
-          if (moving.getParent() == fixedParent && fixedParent != null) {
+          if (moving.getParent() == fixedParent && fixedParent != null && fixedParent.indexOf(moving) < index) {
             index--;
           }
           fixedParent.insert(moving, index);
