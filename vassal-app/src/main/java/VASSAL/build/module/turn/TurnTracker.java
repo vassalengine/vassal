@@ -113,7 +113,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   public static final String LENGTH_STYLE = "lengthStyle"; //$NON-NLS-1$
   public static final String PLUS_BUTTON_WIDTH  = "plusButtonSize"; //NON-NLS
   public static final String TURN_BUTTON_HEIGHT = "turnButtonHeight"; //NON-NLS
-
+  public static final String FWD_ONLY = "fwdOnly"; //NON-NLS
   private static final int DEFAULT_SIZE = 22;
 
   protected static final String FONT_SIZE = "turnFontSize"; //$NON-NLS-1$
@@ -167,6 +167,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
 
   protected int plusButtonWidth  = DEFAULT_SIZE;
   protected int turnButtonHeight = DEFAULT_SIZE;
+  protected boolean fwdOnly = false;
 
   protected MutableProperty.Impl lastCommand = new MutableProperty.Impl(SET, this);
   protected MutableProperty.Impl lastTurn = new MutableProperty.Impl("", this);
@@ -260,7 +261,8 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
    */
   @Override
   public String[] getAttributeNames() {
-    return new String[] { NAME, DESCRIPTION, BUTTON_TEXT, ICON, HOT_KEY, NEXT_HOT_KEY, PREV_HOT_KEY, TURN_FORMAT, REPORT_FORMAT, TOOLTIP, LENGTH_STYLE, LENGTH, PLUS_BUTTON_WIDTH, TURN_BUTTON_HEIGHT };
+    return new String[] { NAME, DESCRIPTION, BUTTON_TEXT, ICON, HOT_KEY, NEXT_HOT_KEY, PREV_HOT_KEY, TURN_FORMAT,
+      REPORT_FORMAT, TOOLTIP, LENGTH_STYLE, LENGTH, PLUS_BUTTON_WIDTH, TURN_BUTTON_HEIGHT, FWD_ONLY };
   }
 
   @Override
@@ -325,6 +327,12 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       }
       turnButtonHeight = (Integer)value;
     }
+    else if (FWD_ONLY.equals(key)) {  // FWD_ONLY start
+      if (value instanceof String) {
+        value = Boolean.valueOf((String) value);
+      }
+      fwdOnly = (Boolean) value;
+    }                                 // FWD_ONLY end
     else {
       launch.setAttribute(key, value);
     }
@@ -443,6 +451,9 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     else if (TURN_BUTTON_HEIGHT.equals(key)) {
       return String.valueOf(turnButtonHeight);
     }
+    else if (FWD_ONLY.equals(key)) {   // FWD_ONLY start
+      return Boolean.toString(fwdOnly);
+    }                                  // FWD_ONLY end
     else {
       return launch.getAttributeValueString(key);
     }
@@ -464,7 +475,8 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       Resources.getString("Editor.TurnTracker.turn_length"),
       Resources.getString("Editor.TurnTracker.turn_display"),
       Resources.getString("Editor.TurnTracker.plus_button_width"),
-      Resources.getString("Editor.TurnTracker.turn_button_height")
+      Resources.getString("Editor.TurnTracker.turn_button_height"),
+      Resources.getString("Editor.TurnTracker.forward_only") // FWD_ONLY
     };
   }
 
@@ -484,7 +496,8 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       LengthStyleConfig.class,
       Integer.class,
       Integer.class,
-      Integer.class
+      Integer.class,
+      Boolean.class // FWD_ONLY
     };
   }
 
@@ -953,6 +966,9 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
         setPrevStroke(prevListener.getNamedKeyStroke());
         prevButton.setAlignmentY(Component.TOP_ALIGNMENT);
         prevButton.addActionListener(e -> doPrev());
+        if (fwdOnly) {
+          prevButton.setEnabled(false);
+        }
 
         // Next, the Label containing the Turn Text
         turnLabel.setFont(getDisplayFont());
@@ -1004,9 +1020,11 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     }
 
     protected void doPrev() {
-      captureState();
-      prev();
-      save();
+      if (!fwdOnly) {                // FWD_ONLY start wrap - only the "if"
+        captureState();           // standard code
+        prev();
+        save();
+      }                            // FWD_ONLY end wrap
     }
 
     protected void initComponents() {
