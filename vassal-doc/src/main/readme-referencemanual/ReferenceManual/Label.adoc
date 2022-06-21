@@ -37,7 +37,9 @@ with a line break +
 and [red]#different# [blue]#colors#
 ****
 
-*Name format:*::  A <<MessageFormat.adoc#top,Message Format>> that specifies how the name of this piece will be reported: _pieceName_ is the name of the piece excluding the label, _label_ is the value of the label text (including, unfortunately, HTML tags). If the label is empty, then the default name of the piece is always used. *Note:* the _$pieceName$_ reference here works differently from the PieceName property (see <<BasicPiece.adoc#top, Basic Piece>>). PieceName (with the capital P) is used to retrieve the full name of the piece as evaluated via this _Name Format_ field, and thus cannot be referenced in this field as it would produce an infinite loop. For this reason, in this field only, all attempts to reference _PieceName_ are automatically assumed to be references to _pieceName_.
+*Name format:*::  A <<MessageFormat.adoc#top,Message Format>> that specifies how the name of this piece will be reported: _pieceName_ is the name of the piece excluding the label, _label_ is the value of the label text (including, unfortunately, HTML tags). If the label is empty, then the default name of the piece is always used unless the _Use name format even when label is empty_ checkbox is selected. *Note:* the _$pieceName$_ reference here works differently from the PieceName property (see <<BasicPiece.adoc#top, Basic Piece>>). PieceName (with the capital P) is used to retrieve the full name of the piece as evaluated via this _Name Format_ field, and thus cannot be referenced in this field as it would produce an infinite loop. For this reason, in this field only, all attempts to reference _PieceName_ are automatically assumed to be references to _pieceName_.
+
+*Use name format even when label is empty:*:: If selected, the _Name format_ will be evaluated even when the label is empty. Otherwise when the label is empty the default name of the piece is used.
 
 *Menu command:*::  If not blank, gives the text of the corresponding menu item in the piece's right-click context menu, selection of which will result in the text of the label being updated.
 
