@@ -1,5 +1,7 @@
 3.6.8 - ???
 
+* 11521: BoundsTracker - Track bounds and repaint just for the regions of
+    added pieces; rather than the whole map
 * 11515: Piece dropped into incorrect position in the stack when dragging
     within a stack to a lower position
 * 11513: Piece "disappears" when dragged to grid space with an existing stack
