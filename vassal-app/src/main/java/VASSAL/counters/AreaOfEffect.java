@@ -30,6 +30,7 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -70,6 +71,7 @@ import net.miginfocom.swing.MigLayout;
  */
 public class AreaOfEffect extends Decorator implements TranslatablePiece, MapShader.ShadedPiece {
   public static final String ID = "AreaOfEffect;"; // NON-NLS
+  public static final String ACTIVE = "_Active"; // NON-NLS
   protected static final Color defaultTransparencyColor = Color.GRAY;
   protected static final float defaultTransparencyLevel = 0.3F;
   protected static final int defaultRadius = 1;
@@ -78,7 +80,10 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
   protected float transparencyLevel;
   protected int radius;
   protected boolean alwaysActive;
+  /** Track the Globally active visibility of the trait. Reported in State to other players. */
   protected boolean active;
+  /** Track the Locally active visibility of the trait. Not reported in state to other players. */
+  protected boolean locallyActive;
   protected String activateCommand = "";
   protected NamedKeyStroke activateKey;
   protected KeyCommand[] commands;
@@ -88,6 +93,15 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
   protected boolean fixedRadius = true;
   protected String radiusMarker = "";
   protected String description = "";
+
+  protected String onMenuText = "";
+  protected NamedKeyStroke onKey;
+  protected KeyCommand onKeyCommand;
+  protected String offMenuText = "";
+  protected NamedKeyStroke offKey;
+  protected KeyCommand offKeyCommand;
+  protected String name = "";
+  protected boolean globallyVisible = true;
 
   public AreaOfEffect() {
     this(ID + ColorConfigurer.colorToString(defaultTransparencyColor), null);
@@ -126,6 +140,12 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     se.append(fixedRadius);
     se.append(radiusMarker);
     se.append(description);
+    se.append(name);
+    se.append(onMenuText);
+    se.append(onKey);
+    se.append(offMenuText);
+    se.append(offKey);
+    se.append(globallyVisible);
 
     return ID + se.getValue();
   }
@@ -138,6 +158,8 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     transparencyLevel = st.nextInt((int) (defaultTransparencyLevel * 100)) / 100.0F;
     radius = st.nextInt(defaultRadius);
     alwaysActive = st.nextBoolean(true);
+    active = alwaysActive;  // Set initial value of Active flag
+    locallyActive = alwaysActive;
     activateCommand = st.nextToken(Resources.getString("Editor.AreaOfEffect.show_area"));
     activateKey = st.nextNamedKeyStroke(null);
     keyCommand = new KeyCommand(activateCommand, activateKey, Decorator.getOutermost(this), this);
@@ -148,17 +170,25 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     fixedRadius = st.nextBoolean(true);
     radiusMarker = st.nextToken("");
     description = st.nextToken("");
+    name = st.nextToken("");
+    onMenuText = st.nextToken("");
+    onKey = st.nextNamedKeyStroke(null);
+    onKeyCommand = new KeyCommand(onMenuText, onKey, Decorator.getOutermost(this), this);
+    offMenuText = st.nextToken("");
+    offKey = st.nextNamedKeyStroke(null);
+    offKeyCommand = new KeyCommand(offMenuText, offKey, Decorator.getOutermost(this), this);
+    globallyVisible = st.nextBoolean(true);
     shader = null;
     commands = null;
   }
 
-  // State does not change during the game
+  // State is locked to the Globally Visible state. Global visibility (and thus state) will never change
+  // if visibility is local.
   @Override
   public String myGetState() {
-    return alwaysActive ? "false" : String.valueOf(active); // NON-NLS
+    return (alwaysActive || !globallyVisible) ? "false" : String.valueOf(active); // NON-NLS
   }
 
-  // State does not change during the game
   @Override
   public void mySetState(String newState) {
     if (!alwaysActive) {
@@ -185,13 +215,24 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     return piece.getName();
   }
 
+  public boolean isLocallyActive() {
+    return locallyActive;
+  }
+
+  public boolean isGloballyActive() {
+    return active;
+  }
+
+  public boolean isActive() {
+    return isLocallyActive() || isGloballyActive();
+  }
 
   /**
    * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    return Arrays.asList(activateKey);
+    return Arrays.asList(activateKey, onKey, offKey);
   }
 
   /**
@@ -199,13 +240,13 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
    */
   @Override
   public List<String> getMenuTextList() {
-    return List.of(activateCommand);
+    return List.of(activateCommand, onMenuText, offMenuText);
   }
 
 
   @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
-    if ((alwaysActive || active) && mapShaderName == null) {
+    if ((alwaysActive || isActive()) && mapShaderName == null) {
       // The transparency is only drawn on a Map.View component. Only the
       // GamePiece is drawn within other windows (Counter Palette, etc.).
       if (obs instanceof Map.View && getMap() != null) {
@@ -295,31 +336,55 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     }
   }
 
-  // No hot-keys
   @Override
   protected KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
-      if (alwaysActive || activateCommand.length() == 0) {
-        commands = KeyCommand.NONE;
-      }
-      else {
-        commands = new KeyCommand[]{keyCommand};
+      if (!alwaysActive) {
+        final List<KeyCommand> l = new ArrayList<>();
+        if (!activateCommand.isBlank()) {
+          l.add(keyCommand);
+        }
+        if (!onMenuText.isBlank()) {
+          l.add(onKeyCommand);
+        }
+        if (!offMenuText.isEmpty()) {
+          l.add(offKeyCommand);
+        }
+        commands = l.toArray(new KeyCommand[0]);
       }
     }
     return commands;
   }
 
-  // No hot-keys
   @Override
   public Command myKeyEvent(KeyStroke stroke) {
     Command c = null;
     myGetKeyCommands();
-    if (!alwaysActive
-        && keyCommand.matches(stroke)) {
-      final ChangeTracker t = new ChangeTracker(this);
-      active = !active;
-      c = t.getChangeCommand();
+    if (!alwaysActive && keyCommand.matches(stroke)) {
+      if (globallyVisible) {
+        final ChangeTracker t = new ChangeTracker(this);
+        active = !active;
+        c = t.getChangeCommand();
+      }
+      locallyActive = !locallyActive;
     }
+    else if (!alwaysActive && !isActive() && onKeyCommand.matches(stroke)) {
+      if (globallyVisible) {
+        final ChangeTracker t = new ChangeTracker(this);
+        active = true;
+        c = t.getChangeCommand();
+      }
+      locallyActive = true;
+    }
+    else if (!alwaysActive && isActive() && offKeyCommand.matches(stroke)) {
+      if (globallyVisible) {
+        final ChangeTracker t = new ChangeTracker(this);
+        active = false;
+        c = t.getChangeCommand();
+      }
+      locallyActive = false;
+    }
+
     return c;
   }
 
@@ -340,7 +405,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     if (shaded != null) {
       a = shaded.getArea(shader);
     }
-    if (alwaysActive || active) {
+    if (alwaysActive || isActive()) {
       if (shader.getConfigureName().equals(mapShaderName)) {
         final Area myArea = getArea();
         if (a == null) {
@@ -352,6 +417,34 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       }
     }
     return a;
+  }
+
+  /**
+   * Return the active state of the trait
+   * @param key Property name
+   * @return state
+   */
+  @Override
+  public Object getProperty(Object key) {
+    if ((name + ACTIVE).equals(key)) {
+      return String.valueOf(isActive());
+    }
+    else if (key.equals(Properties.VISIBLE_STATE)) {
+      return String.valueOf(isActive());
+    }
+    return super.getProperty(key);
+  }
+
+  @Override
+  public Object getLocalizedProperty(Object key) {
+    if (key.equals(name + ACTIVE) || key.equals(Properties.VISIBLE_STATE)) {
+      return getProperty(key);
+    }
+    return super.getLocalizedProperty(key);
+  }
+  @Override
+  public List<String> getPropertyNames() {
+    return List.of(name + ACTIVE);
   }
 
   @Override
@@ -366,11 +459,17 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     if (! Objects.equals(activateKey, c.activateKey)) return false;
     if (! Objects.equals(mapShaderName, c.mapShaderName)) return false;
     if (! Objects.equals(fixedRadius, c.fixedRadius)) return false;
-    if (! Objects.equals(radiusMarker, c.radiusMarker)) return false;
 
     if (alwaysActive) {
-      if (!Objects.equals(active, c.active)) return false;
+      if (! Objects.equals(active, c.active)) return false;
+      if (! Objects.equals(locallyActive, c.locallyActive)) return false;
     }
+
+    if (! Objects.equals(name, c.name)) return false;
+    if (! Objects.equals(onMenuText, c.onMenuText)) return false;
+    if (! Objects.equals(onKey, c.onKey)) return false;
+    if (! Objects.equals(offMenuText, c.offMenuText)) return false;
+    if (! Objects.equals(offKey, c.offKey)) return false;
 
     return Objects.equals(description, c.description);
 
@@ -398,6 +497,18 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     protected JPanel selectShader;
     protected String mapShaderId;
 
+    protected StringConfigurer nameConfig;
+    protected JLabel nameLabel;
+    protected StringConfigurer onMenuTextConfig;
+    protected JLabel onMenuTextLabel;
+    protected NamedHotKeyConfigurer onKeyConfig;
+    protected JLabel onKeyLabel;
+    protected StringConfigurer offMenuTextConfig;
+    protected JLabel offMenuTextLabel;
+    protected NamedHotKeyConfigurer offKeyConfig;
+    protected JLabel offKeyLabel;
+    protected BooleanConfigurer globallyVisibleConfig;
+
     protected TraitEditor(AreaOfEffect trait) {
       panel = new TraitConfigPanel();
 
@@ -405,12 +516,15 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       descConfig.setHintKey("Editor.description_hint");
       panel.add("Editor.description_label", descConfig);
 
+      nameConfig = new StringConfigurer(trait.name);
+      nameConfig.setHintKey("Editor.AreaOfEffect.name_hint");
+      panel.add("Editor.name_label", nameConfig);
+
       useMapShader = new BooleanConfigurer(trait.mapShaderName != null);
       panel.add("Editor.AreaOfEffect.use_map_shading", useMapShader);
 
       mapShaderId = trait.mapShaderName;
       selectShader = new JPanel(new MigLayout("ins 0", "[fill, grow]0[]")); // NON-NLS
-
 
       final JTextField tf = new JTextField();
       tf.setEditable(false);
@@ -454,11 +568,26 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       radiusMarker = new StringConfigurer(trait.radiusMarker);
       panel.add(radiusMarkerLabel, radiusMarker);
 
+      globallyVisibleConfig = new BooleanConfigurer(trait.globallyVisible);
+      panel.add("Editor.AreaOfEffect.visible_to_all_players", globallyVisibleConfig);
+
       alwaysActive = new BooleanConfigurer(trait.alwaysActive ? Boolean.TRUE : Boolean.FALSE);
       activateCommand = new StringConfigurer(trait.activateCommand);
       activateCommandLabel = new JLabel(Resources.getString("Editor.AreaOfEffect.toggle_visible_command"));
       activateKey = new NamedHotKeyConfigurer(trait.activateKey);
       activateKeyLabel = new JLabel(Resources.getString("Editor.AreaOfEffect.toggle_visible_keyboard_shortcut"));
+
+      onMenuTextConfig = new StringConfigurer(trait.onMenuText);
+      onMenuTextLabel = new JLabel(Resources.getString("Editor.AreaOfEffect.on_command"));
+
+      onKeyConfig = new NamedHotKeyConfigurer(trait.onKey);
+      onKeyLabel = new JLabel(Resources.getString("Editor.AreaOfEffect.on_key"));
+
+      offMenuTextConfig = new StringConfigurer(trait.offMenuText);
+      offMenuTextLabel = new JLabel(Resources.getString("Editor.AreaOfEffect.off_command"));
+
+      offKeyConfig = new NamedHotKeyConfigurer(trait.offKey);
+      offKeyLabel = new JLabel(Resources.getString("Editor.AreaOfEffect.off_key"));
 
       updateRangeVisibility();
 
@@ -471,6 +600,12 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       panel.add("Editor.AreaOfEffect.always_visible", alwaysActive);
       panel.add(activateCommandLabel, activateCommand);
       panel.add(activateKeyLabel, activateKey);
+      panel.add(onMenuTextLabel, onMenuTextConfig);
+      panel.add(onKeyLabel, onKeyConfig);
+      panel.add(offMenuTextLabel, offMenuTextConfig);
+      panel.add(offKeyLabel, offKeyConfig);
+
+
     }
 
     protected void updateFillVisibility() {
@@ -499,6 +634,16 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       activateKey.getControls().setVisible(!alwaysActiveSelected);
       activateCommandLabel.setVisible(!alwaysActiveSelected);
       activateKeyLabel.setVisible(!alwaysActiveSelected);
+
+      onMenuTextConfig.getControls().setVisible(!alwaysActiveSelected);
+      onMenuTextLabel.setVisible(!alwaysActiveSelected);
+      onKeyConfig.getControls().setVisible(!alwaysActiveSelected);
+      onKeyLabel.setVisible(!alwaysActiveSelected);
+
+      offMenuTextConfig.getControls().setVisible(!alwaysActiveSelected);
+      offMenuTextLabel.setVisible(!alwaysActiveSelected);
+      offKeyConfig.getControls().setVisible(!alwaysActiveSelected);
+      offKeyLabel.setVisible(!alwaysActiveSelected);
 
       repack();
     }
@@ -537,12 +682,25 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       se.append(radiusMarker.getValueString());
       se.append(descConfig.getValueString());
 
+      se.append(nameConfig.getValueString());
+      se.append(onMenuTextConfig.getValueString());
+      se.append(onKeyConfig.getValueString());
+      se.append(offMenuTextConfig.getValueString());
+      se.append(offKeyConfig.getValueString());
+      se.append(globallyVisibleConfig.getValueString());
+
       return AreaOfEffect.ID + se.getValue();
     }
   }
 
   @Override
   public PieceI18nData getI18nData() {
-    return getI18nData(activateCommand, getCommandDescription(description, Resources.getString("Editor.AreaOfEffect.toggle_visible_command_name")));
+    return getI18nData(new String[] {activateCommand, onMenuText, offMenuText},
+      new String[] {
+        getCommandDescription(description, Resources.getString("Editor.AreaOfEffect.toggle_visible_command_name")),
+        getCommandDescription(description, Resources.getString("Editor.AreaOfEffect.on_command")),
+        getCommandDescription(description, Resources.getString("Editor.AreaOfEffect.off_command"))
+      }
+    );
   }
 }

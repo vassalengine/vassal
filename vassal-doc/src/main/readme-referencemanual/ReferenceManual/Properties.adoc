@@ -32,6 +32,8 @@ the level in a <<Layer.adoc#Properties,Layer)>> you can use _<_, _\<=_, _>_, and
 
 *Properties defined by Game Pieces*
 
+* The <<AreaOfEffect.adoc#top,Area of Effect>> defines a property that returns the current visibity (on or off) of the highlight.
+
 * The <<BasicPiece.adoc#top,Basic Piece>> defines properties related to a piece's name, location, side, and whether it's selected.
 
 * The <<Layer.adoc#Properties,Layer>> trait defines properties related to the state of that Layer.
@@ -89,6 +91,7 @@ the level in a <<Layer.adoc#Properties,Layer)>> you can use _<_, _\<=_, _>_, and
 |*Restricted* |<<RestrictedAccess.adoc#top,Restricted Access>> |"true" if there are restrictions as to who can access this piece.
 |*Selected* |<<BasicPiece#top,Basic Piece>>|"true" if the piece is currently selected.
 |*_<property_name>_* |<<PropertySheet.adoc#top,PropertySheet>> |The value of each property on the Property Sheet can be accessed via the property name.
+|*_<traitname>__Active* |<<AreaOfEffect.adoc#top,Area of Effect>> |"true" if the Area of Effect with the name _<traitname>_ is currently active.
 |*_<layername>__Active* |<<Layer.adoc#top,Layer>> |"true" if the Layer _<layername>_ is currently active.
 |*_<layername>__Image* |<<Layer.adoc#top,Layer>> |The image name of the currently active layer for _Layer_ _<layername>_.
 |*_<layername>__Level* |<<Layer.adoc#top,Layer>> |The level number of the currently active layer for _Layer_ _<layername>_.
