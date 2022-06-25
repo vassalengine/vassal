@@ -109,8 +109,9 @@ public class TabWidget extends Widget
   private void refreshTabs() {
     int index = 0;
     for (final Widget w : widgets) {
+      final String currentTitle = tab.getTitleAt(index); // The current title may be a translation
       tab.setTitleAt(index, "");
-      tab.setTitleAt(index, w.getConfigureName());
+      tab.setTitleAt(index, currentTitle);
       index++;
     }
   }
