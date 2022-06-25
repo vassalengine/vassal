@@ -447,8 +447,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     final JPopupMenu popup = new JPopupMenu();
     final List<Action> l = new ArrayList<>();
     l.add(buildEditAction(target));
-    l.add(buildEditPiecesAction(target));
-    l.add(buildOpenPiecesAction(target));
     addActionGroup(popup, l);
     l.add(buildTranslateAction(target));
     addActionGroup(popup, l);
@@ -473,6 +471,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       addAction(popup, buildMassPieceLoaderAction(target));
     }
     addAction(popup, buildImportAction(target));
+
+    popup.addSeparator();
+    addAction(popup, buildOpenPiecesAction(target));
+    addAction(popup, buildEditPiecesAction(target));
+
     return popup;
   }
 
