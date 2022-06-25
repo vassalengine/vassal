@@ -107,12 +107,10 @@ public class TabWidget extends Widget
    * Shouldn't be necessary, but there's a bug in JTabbedPane with HTML items. Doing this (unsetting and then resetting each title) seems to clear up the problem.
    */
   private void refreshTabs() {
-    int index = 0;
-    for (final Widget w : widgets) {
+    for (int index = 0; index < tab.getTabCount(); index++) {
       final String currentTitle = tab.getTitleAt(index); // The current title may be a translation
       tab.setTitleAt(index, "");
       tab.setTitleAt(index, currentTitle);
-      index++;
     }
   }
 
