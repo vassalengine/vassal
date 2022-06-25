@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2000-2003 by Rodney Kinney
+ * Copyright (c) 2022 by The Vassal Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -17,53 +17,46 @@
  */
 package VASSAL.configure;
 
+import VASSAL.build.Configurable;
+import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.build.widget.PieceSlot;
+import VASSAL.i18n.Resources;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
-
 import java.util.Arrays;
 import javax.swing.AbstractAction;
+import org.apache.commons.lang3.ArrayUtils;
 
-import VASSAL.build.Configurable;
-import VASSAL.counters.MassPieceDefiner;
-import VASSAL.i18n.Resources;
 
 /**
  * Action to edit all {@link VASSAL.counters.GamePiece}'s within a given component
+ * in separate Piece Definer windoes
  */
-public class EditContainedPiecesAction extends AbstractAction {
+public class OpenContainedPiecesAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
 
   private final Configurable target;
+  protected HelpWindow helpWindow;
+  protected Frame dialogOwner;
+  protected ConfigureTree tree;
 
-  public EditContainedPiecesAction(Configurable target) {
-    super(Resources.getString("Editor.EditContainedPiecesAction.what_it_does"));
+  public OpenContainedPiecesAction(Configurable target, HelpWindow helpWindow, Frame dialogOwner, ConfigureTree tree) {
+    super(Resources.getString("Editor.OpenContainedPiecesAction.what_it_does"));
     this.target = target;
+    this.helpWindow = helpWindow;
+    this.dialogOwner = dialogOwner;
+    this.tree = tree;
     setEnabled(Arrays.stream(target.getConfigureComponents()).anyMatch(c -> c instanceof PieceSlot));
   }
 
   @Override
   public void actionPerformed(ActionEvent evt) {
-    final MassPieceDefiner mass = new MassPieceDefiner(target);
-    final Configurer c = new Configurer("", "") {
-      @Override
-      public void setValue(String s) {
+    final Configurable[] items = target.getConfigureComponents();
+    ArrayUtils.reverse(items);
+    for (final Configurable c : items) {
+      if (c instanceof PieceSlot) {
+        (new EditPropertiesAction(c, helpWindow, dialogOwner, tree)).actionPerformed(null);
       }
-
-      @Override
-      public java.awt.Component getControls() {
-        return mass;
-      }
-
-      @Override
-      public String getValueString() {
-        return "";
-      }
-    };
-    final ConfigurerWindow w =  new ConfigurerWindow(c);
-    w.setVisible(true);
-    if (! w.isCancelled() && mass.isChanged()) {
-      mass.save();
     }
   }
-
 }
