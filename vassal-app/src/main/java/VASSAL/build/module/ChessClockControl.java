@@ -564,6 +564,47 @@ public class ChessClockControl extends AbstractConfigurable
   }
 
   /**
+   * @return a command to start the requested clock after stopping the one currently running (if any)
+   */
+  public Command startClock(ChessClock targetClock) {
+    Command command = new NullCommand();
+
+    // If we don't have any clocks or our clock already is started, return noop
+    if (chessclocks.isEmpty() || targetClock.isTicking()) {
+      return command;
+    }
+
+    // Find the currently ticking clock and stop it
+    for (final ChessClock clock : chessclocks) {
+      // Okay, found the clock that is currently ticking.
+      if (clock.isTicking()) {
+        command = command.append(clock.updateState(false));
+        break;
+      }
+    }
+
+    // Now we can start the requested clock
+    command = command.append(targetClock.updateState(true));
+    return command;
+  }
+
+  /**
+   * @return a command to start the requested clock after stopping the one currently running (if any)
+   */
+  public Command stopClock(ChessClock targetClock) {
+    Command command = new NullCommand();
+
+    // If we don't have any clocks or our clock already isn't ticking, return noop
+    if (chessclocks.isEmpty() || !targetClock.isTicking()) {
+      return command;
+    }
+
+    // Set command to stop requested clock
+    command = command.append(targetClock.updateState(false));
+    return command;
+  }
+
+  /**
    * Hide all the clocks on the toolbar
    */
   public void hideClocks() {

@@ -53,16 +53,9 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.command.NullCommand;
-import VASSAL.configure.ColorConfigurer;
-import VASSAL.configure.ComponentDescription;
-import VASSAL.configure.Configurer;
-import VASSAL.configure.ConfigurerFactory;
-import VASSAL.configure.IconConfigurer;
-import VASSAL.configure.TranslatableStringEnum;
+import VASSAL.configure.*;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.LaunchButton;
-import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.*;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -90,6 +83,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
   public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
   public static final String BUTTON_TEXT = "buttonText"; //$NON-NLS-1$
   public static final String DESCRIPTION = "description"; //NON-NLS
+  public static final String START_HOTKEY = "startHotkey"; //NON-NLS
 
   public static final String TICKING_BACKGROUND_COLOR = "tickingBackgroundColor"; //NON-NLS
   public static final String TICKING_FONT_COLOR       = "tickingFontColor"; //NON-NLS
@@ -103,6 +97,8 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
 
   private static Color defaultColor;       // Stores default look-and-feel colors for buttons
   private static Color defaultFontColor;
+
+  protected NamedKeyStrokeListener startListener;
 
   protected Color tickingBackgroundColor = new Color(255, 255, 0);  // Starting (default) colors
   protected Color tickingFontColor       = new Color(51, 51, 51);
@@ -198,6 +194,15 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
       }
       startTimer();
     };
+
+    startListener = new NamedKeyStrokeListener(e -> {
+      final Command c = ChessClockControl.getInstance().startClock(this);
+      if ((c != null) && !c.isNull()) {
+        c.execute();
+        GameModule.getGameModule().sendAndLog(c);
+      }
+    });
+    GameModule.getGameModule().addKeyStrokeListener(startListener);
 
     // Create our actual timer button
     timerButton = new LaunchButton(buttonText + " " + "0:00:00", TOOLTIP, null, null, ICON, al); //$NON-NLS-1$
@@ -657,7 +662,8 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
    */
   @Override
   public String[] getAttributeNames() {
-    return new String[] { DESCRIPTION, SIDE, BUTTON_TEXT, ICON, TICKING_BACKGROUND_COLOR, TICKING_FONT_COLOR, TOCKING_FONT_COLOR, TOOLTIP };
+    return new String[] { DESCRIPTION, SIDE, BUTTON_TEXT, ICON, START_HOTKEY, TICKING_BACKGROUND_COLOR,
+            TICKING_FONT_COLOR, TOCKING_FONT_COLOR, TOOLTIP };
   }
 
   /**
@@ -670,6 +676,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
       Resources.getString("Editor.ChessClock.player_side_for_timer"),
       Resources.getString("Editor.ChessClock.timer_button_text"),
       Resources.getString("Editor.ChessClock.timer_icon"),
+      Resources.getString("Editor.ChessClock.start_clock_hotkey"),
       Resources.getString("Editor.ChessClock.ticking_background_color"),
       Resources.getString("Editor.ChessClock.ticking_foreground_color"),
       Resources.getString("Editor.ChessClock.tocking_foreground_color"),
@@ -682,7 +689,8 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
    */
   @Override
   public Class<?>[] getAttributeTypes() {
-    return new Class[] { String.class, PlayerSidesConfig.class, String.class, IconConfig.class, ColorConfig.class, ColorConfig2.class, ColorConfig3.class, String.class };
+    return new Class[] { String.class, PlayerSidesConfig.class, String.class, IconConfig.class, NamedKeyStroke.class,
+            ColorConfig.class, ColorConfig2.class, ColorConfig3.class, String.class };
   }
 
   /**
@@ -699,6 +707,12 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     else if (BUTTON_TEXT.equals(key)) {
       buttonText = (String)value;
       setTimerButton();
+    }
+    else if (START_HOTKEY.equals(key)) {
+      if (value instanceof String) {
+        value = NamedHotKeyConfigurer.decode((String) value);
+      }
+      startListener.setKeyStroke((NamedKeyStroke) value);
     }
     else if (TICKING_BACKGROUND_COLOR.equals(key)) {
       if (value instanceof String) {
@@ -741,6 +755,9 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     }
     else if (BUTTON_TEXT.equals(key)) {
       return buttonText;
+    }
+    else if (START_HOTKEY.equals(key)) {
+      return NamedHotKeyConfigurer.encode(startListener.getNamedKeyStroke());
     }
     else if (TICKING_BACKGROUND_COLOR.equals(key)) {
       return ColorConfigurer.colorToString(tickingBackgroundColor);
@@ -872,6 +889,32 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
   }
 
   /**
+   * Creates a command to make this clock the currently ticking clock
+   * @return a command to set currently ticking clock to us
+   */
+  public Command startClock() {
+    Command c = new NullCommand();
+    final ChessClockControl ccc = ChessClockControl.getInstance();
+    if (ccc != null){
+      c = c.append(ccc.startClock(this));
+    }
+    return c;
+  }
+
+  /**
+   * Creates a command to make this clock the currently ticking clock
+   * @return a command to set our clock to non-ticking
+   */
+  public Command stopClock() {
+    Command c = new NullCommand();
+    final ChessClockControl ccc = ChessClockControl.getInstance();
+    if (ccc != null){
+      c = c.append(ccc.stopClock(this));
+    }
+    return c;
+  }
+
+  /**
    * Creates a command to update the clock and/or turn it on/off.
    * @param ticking If true, the clock will be set to "running". If false the clock will be set to "stopped".
    * @return a command to communicate the status of this clock to others
@@ -889,10 +932,8 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     }
   }
 
-
   /**
    * Creates a command to reset the clock and turn it off
-   * @param ticking If true, the clock will be set to "running". If false the clock will be set to "stopped".
    * @return a command to communicate the status of this clock to others
    */
   public Command resetState() {
@@ -996,13 +1037,12 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
 
       Command c = new NullCommand();
       final ChessClockControl ccc = ChessClockControl.getInstance();
-      if (command.contains(CHESSMENU_START) || command.contains(CHESSMENU_STOP)) {
-        if ((ccc != null) && ccc.getClocksTicking() > 0) {
-          c = c.append(ChessClockControl.getInstance().startNextClock());
-        }
-        else {
-          c = c.append(updateState(true));
-        }
+      if (ccc == null) return;
+      if (command.contains(CHESSMENU_START) ) {
+          c = c.append(startClock());
+      }
+      else if (command.contains(CHESSMENU_STOP)) {
+          c = c.append(stopClock());
       }
       else if (command.contains(CHESSMENU_RESET)) {
         c = resetState();
@@ -1046,16 +1086,14 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
       });
 
       JMenuItem item;
-      final String s;
-
-      if (clockTicking) {
-        s = CHESSMENU_STOP;
+      if (isTicking()) {
+        item = new JMenuItem(CHESSMENU_STOP);
+        item.addActionListener(this);
       }
       else {
-        s = CHESSMENU_START;
+        item = new JMenuItem(CHESSMENU_START + "  " + NamedHotKeyConfigurer.getString(startListener.getNamedKeyStroke()));
+        item.addActionListener(this);
       }
-      item = new JMenuItem(s);
-      item.addActionListener(this);
       popup.add(item);
 
       final ChessClockControl ccc = ChessClockControl.getInstance();
