@@ -1,5 +1,6 @@
 3.6.8 - ???
 
+* 11545: Description of Prototype will auto-include any BasicName
 * 11521: BoundsTracker - Track bounds and repaint just for the regions of
     added pieces; rather than the whole map
 * 11515: Piece dropped into incorrect position in the stack when dragging
