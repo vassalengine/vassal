@@ -43,6 +43,7 @@ import VASSAL.build.module.properties.GlobalTranslatableMessage;
 import VASSAL.build.module.properties.ZoneProperty;
 import VASSAL.build.widget.CardSlot;
 import VASSAL.build.widget.PieceSlot;
+import VASSAL.counters.BasicPiece;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.EditablePiece;
 import VASSAL.counters.GamePiece;
@@ -2403,6 +2404,13 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           final String desc = ((ComponentDescription) c).getDescription();
           if ((desc != null) && !desc.isEmpty()) {
             description += " - " + desc;
+          }
+        }
+
+        if (c instanceof PrototypeDefinition) {
+          final String basicName = (String)((PrototypeDefinition) c).getPiece().getProperty(BasicPiece.BASIC_NAME);
+          if ((basicName != null) && !basicName.isEmpty()) {
+            description += " - " + basicName;
           }
         }
       }
