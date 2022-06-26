@@ -42,6 +42,7 @@ import VASSAL.counters.PieceDefiner;
 import VASSAL.counters.PlaceMarker;
 import VASSAL.counters.Properties;
 import VASSAL.i18n.ComponentI18nData;
+import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.search.ImageSearchTarget;
 import VASSAL.tools.ErrorDialog;
@@ -192,14 +193,20 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
   /**
    * Return defined GamePiece with prototypes fully expanded.
-   *
+   * Do NOT cache the expanded piece unless Translation is complete, it may change under us.
    * @return expanded piece
    */
   protected GamePiece getExpandedPiece() {
     if (expanded == null) {
       final GamePiece p = getPiece();
       if (p != null) {  // Possible when PlaceMarker is building
-        expanded = PieceCloner.getInstance().clonePiece(p);
+        if (Localization.getInstance().isTranslationComplete()) {
+          expanded = PieceCloner.getInstance().clonePiece(p);
+          return expanded;
+        }
+        else {
+          return PieceCloner.getInstance().clonePiece(p);
+        }
       }
     }
     return expanded;

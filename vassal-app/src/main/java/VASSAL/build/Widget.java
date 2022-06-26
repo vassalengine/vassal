@@ -183,8 +183,10 @@ public abstract class Widget extends AbstractConfigurable implements ComponentDe
         final String localizedName = slot.getLocalizedConfigureName();
         setText((localizedName == null || localizedName.isBlank()) ? slot.getConfigureName() : localizedName);
       }
-      else if (value instanceof Configurable) {
-        setText(((Configurable) value).getConfigureName());
+      else if (value instanceof AbstractConfigurable) {
+        final AbstractConfigurable c = (AbstractConfigurable) value;
+        final String localizedName = c.getLocalizedConfigureName();
+        setText((localizedName == null || localizedName.isBlank()) ? c.getConfigureName() : localizedName);
       }
       return this;
     }
