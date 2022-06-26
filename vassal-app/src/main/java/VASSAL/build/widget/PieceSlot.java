@@ -594,6 +594,12 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   }
 
   @Override
+  public String getLocalizedConfigureName() {
+    final String translatedName = Decorator.getOutermost(getExpandedPiece()).getLocalizedName();
+    return (translatedName == null || translatedName.isBlank()) ? super.getLocalizedConfigureName() : translatedName;
+  }
+
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GamePiece.html"); //NON-NLS
   }
