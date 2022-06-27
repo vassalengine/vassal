@@ -25,8 +25,21 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.SplashScreen;
 import VASSAL.tools.WriteErrorDialog;
-
 import VASSAL.tools.swing.SwingUtils;
+import net.miginfocom.swing.MigLayout;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.KeyStroke;
+import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -34,6 +47,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -41,19 +55,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.WindowConstants;
-
-import net.miginfocom.swing.MigLayout;
 
 public class PrefsEditor {
   private JDialog
@@ -66,6 +67,8 @@ public class PrefsEditor {
   private final JTabbedPane optionsTab = new JTabbedPane();
   private JDialog setupDialog;
   private Action editAction;
+  private JButton ok;
+  private JButton cancel;
 
   public void initDialog(Frame parent) {
     if (dialog == null) {
@@ -90,10 +93,10 @@ public class PrefsEditor {
         BrowserSupport.openURL(helpFile.getContents().toString());
       });
 
-      final JButton ok = new JButton(Resources.getString(Resources.OK));
+      ok = new JButton(Resources.getString(Resources.OK));
       ok.addActionListener(e -> save());
 
-      final JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
+      cancel = new JButton(Resources.getString(Resources.CANCEL));
       cancel.addActionListener(e -> cancel());
 
       dialog.setLayout(new MigLayout("insets dialog", "[push,fill]"));
@@ -112,6 +115,17 @@ public class PrefsEditor {
       buttonPanel.add(cancel, "tag cancel, sg 1"); //NON-NLS
       buttonPanel.add(help, "tag help, split, sg 1"); //NON-NLS
       dialog.add(buttonPanel, "grow");
+
+      // Default actions for Enter/Cancel
+      dialog.getRootPane().setDefaultButton(ok);
+      dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+        KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
+      dialog.getRootPane().getActionMap().put("Cancel", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          cancel.doClick();
+        }
+      });
     }
   }
 
@@ -122,6 +136,8 @@ public class PrefsEditor {
   public void addPrefs(Prefs p) {
     prefs.add(p);
   }
+
+  private JButton okButton;
 
   public void addOption(String category, Configurer c, String prompt) {
     if (prompt != null) {
@@ -141,11 +157,23 @@ public class PrefsEditor {
       p.add(new JLabel(prompt));
       setupDialog.add(p);
       setupDialog.add(c.getControls());
-      final JButton b = new JButton(Resources.getString(Resources.OK));
+      final JButton b = okButton = new JButton(Resources.getString(Resources.OK));
       b.addActionListener(evt -> setupDialog.setVisible(false));
       p = new JPanel();
       p.add(b);
       setupDialog.add(p);
+
+      // Default actions for Enter/Cancel
+      setupDialog.getRootPane().setDefaultButton(okButton);
+      setupDialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+        KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
+      setupDialog.getRootPane().getActionMap().put("Cancel", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          okButton.doClick();
+        }
+      });
+
       setupDialog.pack();
       final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
       setupDialog.setLocation(

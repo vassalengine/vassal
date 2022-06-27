@@ -36,23 +36,26 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
 
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-
+import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * GamePiece trait that returns a piece to a {@link DrawPile}
@@ -210,6 +213,9 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
   private DrawPile promptForDrawPile() {
     final JDialog d = new JDialog(GameModule.getGameModule().getPlayerWindow(), true);
 
+    JButton okButton;
+    JButton cancelButton;
+
     d.setTitle(Decorator.getInnermost(this).getName()); //$NON-NLS-1$
     d.setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
 
@@ -247,7 +253,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     d.add(new ScrollPane(list));
     final Box box = Box.createHorizontalBox();
     box.setAlignmentX(0.5F);
-    JButton b = new JButton(Resources.getString(Resources.OK));
+    JButton b = okButton = new JButton(Resources.getString(Resources.OK));
     b.addActionListener(e -> {
       final AvailableDeck selection = list.getSelectedValue();
       if (selection != null)
@@ -255,10 +261,22 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
       d.dispose();
     });
     box.add(b);
-    b = new JButton(Resources.getString(Resources.CANCEL));
+    b = cancelButton = new JButton(Resources.getString(Resources.CANCEL));
     b.addActionListener(e -> d.dispose());
     box.add(b);
     d.add(box);
+
+    // Default actions for Enter/Cancel
+    d.getRootPane().setDefaultButton(okButton);
+    d.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
+    d.getRootPane().getActionMap().put("Cancel", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        cancelButton.doClick();
+      }
+    });
+
     d.pack();
     d.setLocationRelativeTo(d.getOwner());
     d.setVisible(true);

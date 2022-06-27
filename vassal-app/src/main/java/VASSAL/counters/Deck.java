@@ -51,6 +51,19 @@ import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -59,6 +72,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
@@ -73,17 +87,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Random;
-
-import javax.swing.Action;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
 
 /**
  * A collection of pieces that behaves like a deck, i.e.: Doesn't move.
@@ -1708,6 +1711,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
   }
 
+  private JButton okButton;
+  private JButton cancelButton;
+
   protected void promptForNextDraw() {
     final JDialog d = new JDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, map.getView()), true);
     d.setTitle(Resources.getString("Deck.draw")); //$NON-NLS-1$
@@ -1762,7 +1768,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     d.add(new JLabel(Resources.getString("Deck.select_cards"))); //$NON-NLS-1$
     d.add(new JLabel(Resources.getString("Deck.then_click"))); //$NON-NLS-1$
     final Box box = Box.createHorizontalBox();
-    JButton b = new JButton(Resources.getString(Resources.OK));
+    JButton b = okButton = new JButton(Resources.getString(Resources.OK));
     b.addActionListener(e -> {
       final int[] selection = list.getSelectedIndices();
       if (selection.length > 0) {
@@ -1777,10 +1783,22 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       d.dispose();
     });
     box.add(b);
-    b = new JButton(Resources.getString(Resources.CANCEL));
+    b = cancelButton = new JButton(Resources.getString(Resources.CANCEL));
     b.addActionListener(e -> d.dispose());
     box.add(b);
     d.add(box);
+
+    // Default actions for Enter/Cancel
+    d.getRootPane().setDefaultButton(okButton);
+    d.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
+    d.getRootPane().getActionMap().put("Cancel", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        cancelButton.doClick();
+      }
+    });
+
     d.pack();
     d.setLocationRelativeTo(d.getOwner());
     d.setVisible(true);

@@ -28,22 +28,23 @@ import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
+import net.miginfocom.swing.MigLayout;
+import org.apache.commons.lang3.ArrayUtils;
 
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Arrays;
-
+import javax.swing.AbstractAction;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-
-import net.miginfocom.swing.MigLayout;
-
-import org.apache.commons.lang3.ArrayUtils;
+import javax.swing.KeyStroke;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.util.Arrays;
 
 public class ListTurnLevel extends TurnLevel implements ActionListener {
 
@@ -437,6 +438,17 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
       cancelButton.setToolTipText(Resources.getString("TurnTracker.discard_changes")); //$NON-NLS-1$
       cancelButton.addActionListener(e -> setVisible(false));
       p.add(cancelButton);
+
+      // Default actions for Enter/Cancel
+      getRootPane().setDefaultButton(saveButton);
+      getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+        KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
+      getRootPane().getActionMap().put("Cancel", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          cancelButton.doClick();
+        }
+      });
 
       add(p, "span 2, growx");
       pack();

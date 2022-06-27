@@ -25,18 +25,22 @@
 
 package VASSAL.script.expression;
 
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.ButtonFactory;
+import net.miginfocom.swing.MigLayout;
 
+import javax.swing.AbstractAction;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
-import VASSAL.i18n.Resources;
-import net.miginfocom.swing.MigLayout;
-import VASSAL.configure.StringConfigurer;
-import VASSAL.tools.ButtonFactory;
+import javax.swing.KeyStroke;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class StrBuilder extends JDialog {
   private static final long serialVersionUID = 1L;
@@ -76,6 +80,17 @@ public class StrBuilder extends JDialog {
     p.add(buttonBox, "span 2,align center"); //NON-NLS
     add(p, "growx"); //NON-NLS
 
+    // Default actions for Enter/Cancel
+    getRootPane().setDefaultButton(okButton);
+    getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
+    getRootPane().getActionMap().put("Cancel", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        cancelButton.doClick();
+      }
+    });
+
     pack();
     setLocationRelativeTo(getParent());
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -85,7 +100,6 @@ public class StrBuilder extends JDialog {
         cancel();
       }
     });
-
   }
 
   protected void save() {

@@ -17,23 +17,16 @@
  */
 package VASSAL.i18n;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.EventObject;
-import java.util.List;
+import VASSAL.build.Configurable;
+import VASSAL.build.GameModule;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.documentation.HelpWindow;
+import VASSAL.configure.ConfigureTree;
+import VASSAL.configure.PropertiesWindow;
+import VASSAL.configure.ShowHelpAction;
+import VASSAL.tools.WriteErrorDialog;
 
+import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -45,6 +38,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTree;
+import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.CellEditorListener;
@@ -63,15 +57,23 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellEditor;
 import javax.swing.tree.TreeSelectionModel;
-
-import VASSAL.build.Configurable;
-import VASSAL.build.GameModule;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.documentation.HelpWindow;
-import VASSAL.configure.ConfigureTree;
-import VASSAL.configure.PropertiesWindow;
-import VASSAL.configure.ShowHelpAction;
-import VASSAL.tools.WriteErrorDialog;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.EventObject;
+import java.util.List;
 
 /**
  * Window for editing translations of a {@link Configurable} object
@@ -97,6 +99,9 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
   protected ConfigureTree myConfigureTree;
   protected CopyButton[] copyButtons;
 
+  protected JButton okButton;
+  protected JButton cancelButton;
+
   public TranslateWindow(Frame owner, boolean modal, final Translatable target, ConfigureTree tree) {
     super(owner, modal);
     this.target = target;
@@ -115,6 +120,18 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     mainPanel.add(getButtonPanel(), BorderLayout.PAGE_END);
     add(mainPanel);
     pack();
+
+    // Default actions for Enter/Cancel
+    getRootPane().setDefaultButton(okButton);
+    getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
+    getRootPane().getActionMap().put("Cancel", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        cancelButton.doClick();
+      }
+    });
+
     setLocationRelativeTo(getParent());
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {
@@ -267,7 +284,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     helpButton.addActionListener(new ShowHelpAction(HelpFile.getReferenceManualPage("Translations.html", "module").getContents(), null)); //NON-NLS
     buttonBox.add(helpButton);
 
-    final JButton okButton = new JButton(Resources.getString(Resources.OK));
+    okButton = new JButton(Resources.getString(Resources.OK));
     okButton.addActionListener(e -> {
       try {
         save();
@@ -279,7 +296,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     });
     buttonBox.add(okButton);
 
-    final JButton cancelButton = new JButton(
+    cancelButton = new JButton(
       Resources.getString(Resources.CANCEL));
     cancelButton.addActionListener(e -> cancel());
     buttonBox.add(cancelButton);

@@ -18,6 +18,27 @@
 
 package VASSAL.build.module.map.boardPicker.board;
 
+import VASSAL.build.GameModule;
+import VASSAL.build.module.map.boardPicker.Board;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.GridContainer;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.GridNumbering;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.RegularGridNumbering;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.AdjustableSpeedScrollPane;
+import VASSAL.tools.swing.SwingUtils;
+import org.apache.commons.lang3.SystemUtils;
+
+import javax.swing.AbstractAction;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
+import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -27,6 +48,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -34,26 +56,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.AffineTransform;
-
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.WindowConstants;
-
-import VASSAL.build.GameModule;
-import VASSAL.build.module.map.boardPicker.Board;
-import VASSAL.build.module.map.boardPicker.board.mapgrid.GridContainer;
-import VASSAL.build.module.map.boardPicker.board.mapgrid.GridNumbering;
-import VASSAL.build.module.map.boardPicker.board.mapgrid.RegularGridNumbering;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.AdjustableSpeedScrollPane;
-import VASSAL.tools.swing.SwingUtils;
-
-import org.apache.commons.lang3.SystemUtils;
 
 public abstract class GridEditor extends JDialog implements MouseListener, KeyListener {
   private static final long serialVersionUID = 1L;
@@ -177,6 +179,17 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     controlPanel.add(buttonPanel);
 
     add(controlPanel, BorderLayout.SOUTH);
+
+    // Default actions for Enter/Cancel
+    getRootPane().setDefaultButton(okButton);
+    getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
+    getRootPane().getActionMap().put("Cancel", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        canButton.doClick();
+      }
+    });
 
     scroll.revalidate();
     pack();
