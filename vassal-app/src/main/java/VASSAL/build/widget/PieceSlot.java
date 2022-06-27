@@ -474,6 +474,9 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
   @Override
   public void keyPressed(KeyEvent e) {
+    if ((e.getKeyCode() == KeyEvent.VK_ENTER) || (e.getKeyCode() == KeyEvent.VK_ESCAPE)) {
+      return; // Prevent these unlikely-and-inadvisable-anyway hotkeys from interfering with dialog defaults
+    }
     KeyBuffer.getBuffer().keyCommand(SwingUtils.getKeyStrokeForEvent(e));
     e.consume();
     clearExpandedPiece();

@@ -20,16 +20,19 @@ package VASSAL.configure;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ScrollPane;
+import net.miginfocom.swing.MigLayout;
 
-import java.util.List;
-
+import javax.swing.AbstractAction;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-
-import net.miginfocom.swing.MigLayout;
+import javax.swing.KeyStroke;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.util.List;
 
 /**
  * Dialog for reporting the results of validating a GameModule
@@ -38,6 +41,8 @@ public class ValidationReportDialog extends JDialog {
   private static final long serialVersionUID = 1L;
 
   private final CallBack callback;
+  JButton okButton;
+  JButton cancelButton;
 
   public ValidationReportDialog(ValidationReport report, CallBack cb) {
     super(GameModule.getGameModule().getPlayerWindow(), false);
@@ -51,7 +56,9 @@ public class ValidationReportDialog extends JDialog {
     switch (warnings.size()) {
     case 0:
       add(new JLabel(Resources.getString("Editor.ValidationReportDialog.no_problems")), "wrap");
-      buttonPanel.add(createOkButton());
+      okButton = createOkButton();
+      buttonPanel.add(okButton);
+      cancelButton = okButton;
       break;
     default:
       add(new JLabel(Resources.getString("Editor.ValidationReportDialog.following_problems")), "wrap");
@@ -59,10 +66,24 @@ public class ValidationReportDialog extends JDialog {
       final JList<String> list = new JList<>(warnings.toArray(new String[0]));
       list.setVisibleRowCount(Math.min(list.getVisibleRowCount(), warnings.size()));
       add(new ScrollPane(list), "wrap");
-      buttonPanel.add(createOkButton(), "sg 1, tag ok");
-      buttonPanel.add(createCancelButton(), "sg 1, tag cancel");
+      okButton = createOkButton();
+      cancelButton = createCancelButton();
+      buttonPanel.add(okButton, "sg 1, tag ok");
+      buttonPanel.add(cancelButton, "sg 1, tag cancel");
     }
 
+    // Default actions on Enter/ESC
+    getRootPane().setDefaultButton(okButton);
+
+    getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
+    getRootPane().getActionMap().put("Cancel", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        cancelButton.doClick();
+      }
+    });
+    
     add(buttonPanel);
     pack();
     setLocationRelativeTo(null);

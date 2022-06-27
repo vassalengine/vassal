@@ -17,34 +17,6 @@
  */
 package VASSAL.build.module;
 
-import java.awt.event.ActionEvent;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.NoSuchFileException;
-import java.util.UUID;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
-
-import VASSAL.build.module.metadata.AbstractMetaData;
-import VASSAL.build.module.metadata.MetaDataFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-
 import VASSAL.Info;
 import VASSAL.build.AbstractBuildable;
 import VASSAL.build.Buildable;
@@ -54,7 +26,9 @@ import VASSAL.build.GpIdChecker;
 import VASSAL.build.GpIdSupport;
 import VASSAL.build.IllegalBuildException;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.metadata.AbstractMetaData;
 import VASSAL.build.module.metadata.ExtensionMetaData;
+import VASSAL.build.module.metadata.MetaDataFactory;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
@@ -63,6 +37,33 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.version.VersionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.NoSuchFileException;
+import java.util.UUID;
 
 /**
  * An optional extension to a GameModule
@@ -516,6 +517,18 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       cancel.addActionListener(e -> d.dispose());
       b.add(cancel);
       d.add(b);
+
+      // Default actions on Enter/ESC
+      d.getRootPane().setDefaultButton(ok);
+      d.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+        KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
+      d.getRootPane().getActionMap().put("Cancel", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          cancel.doClick();
+        }
+      });
+
       d.pack();
       d.setLocationRelativeTo(d.getParent());
       editAction = new AbstractAction() {

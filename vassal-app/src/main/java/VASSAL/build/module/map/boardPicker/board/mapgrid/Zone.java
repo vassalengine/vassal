@@ -52,14 +52,17 @@ import VASSAL.tools.swing.FlowLabel;
 import VASSAL.tools.swing.SwingUtils;
 import net.miginfocom.swing.MigLayout;
 
+import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -78,6 +81,8 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.InvalidDnDOperationException;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.beans.PropertyChangeListener;
@@ -879,6 +884,19 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       buttonPanel.add(closeButton);
       buttonPanel.add(canButton);
       frame.add(buttonPanel);
+
+      frame.getRootPane().setDefaultButton(closeButton);
+
+      // on ESC key close / cancel
+      frame.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+        KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
+
+      frame.getRootPane().getActionMap().put("Cancel", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          canButton.doClick();
+        }
+      });
 
       board = zone.getBoard();
       editor.setPreferredSize(board != null ? board.getSize() : DEFAULT_SIZE);

@@ -19,17 +19,20 @@ package VASSAL.configure;
 
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
-
 import VASSAL.tools.swing.SwingUtils;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import net.miginfocom.swing.MigLayout;
 
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-
-import net.miginfocom.swing.MigLayout;
+import javax.swing.KeyStroke;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /**
  * A Window for displaying a {@link Configurer}.  The title of the window
@@ -88,6 +91,19 @@ public class ConfigurerWindow extends JDialog {
     panel.add(buttonPanel, "grow"); // NON-NLS
     add(panel, "grow"); // NON-NLS
     cancelled = false;
+
+    getRootPane().setDefaultButton(okButton);
+
+    // on ESC key close / cancel editor
+    getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
+
+    getRootPane().getActionMap().put("Cancel", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        canButton.doClick();
+      }
+    });
 
     SwingUtils.repack(this);
   }

@@ -37,6 +37,17 @@ import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.swing.FlowLabel;
 import VASSAL.tools.swing.SwingUtils;
 
+import javax.swing.AbstractAction;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -48,6 +59,8 @@ import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
@@ -60,16 +73,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.StringTokenizer;
-
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.KeyStroke;
 
 /**
  * A Trait (aka {@link Decorator} that acts like a button on a GamePiece, such that clicking on a
@@ -424,6 +427,17 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
 
       updateCoords();
       updateCoord("");
+
+      // Default actions on Enter/ESC
+      frame.getRootPane().setDefaultButton(closeButton);
+      frame.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+        KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
+      frame.getRootPane().getActionMap().put("Cancel", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          canButton.doClick();
+        }
+      });
 
       frame.pack();
       final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();

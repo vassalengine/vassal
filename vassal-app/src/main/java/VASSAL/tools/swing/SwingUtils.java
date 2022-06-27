@@ -17,7 +17,10 @@
 package VASSAL.tools.swing;
 
 import VASSAL.build.module.GlobalOptions;
+import org.apache.commons.lang3.SystemUtils;
 
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -33,11 +36,6 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.util.Collections;
 import java.util.Map;
-
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-
-import org.apache.commons.lang3.SystemUtils;
 
 public class SwingUtils {
 
@@ -91,6 +89,11 @@ public class SwingUtils {
     boolean isModifierKeyDown(KeyEvent e);
 
     /**
+     * @return Returns InputEvent.META_DOWN_MASK on Mac or InputEvent.CTRL_DOWN_MASK on others.
+     */
+    int getModifierKeyMask();
+
+    /**
      * @return translation of keystroke from local system to Vassal (to handle Mac platform support)
      */
     KeyStroke systemToGeneric(KeyStroke k);
@@ -125,6 +128,9 @@ public class SwingUtils {
     public boolean isModifierKeyDown(KeyEvent e) {
       return e.isControlDown();
     }
+
+    @Override
+    public int getModifierKeyMask() { return InputEvent.CTRL_DOWN_MASK; }
 
     @Override
     public KeyStroke systemToGeneric(KeyStroke k) {
@@ -216,6 +222,9 @@ public class SwingUtils {
     public boolean isModifierKeyDown(KeyEvent e) {
       return e.isMetaDown();
     }
+
+    @Override
+    public int getModifierKeyMask() { return InputEvent.META_DOWN_MASK; }
 
     /**
      * Translates a keystroke we've received from the system (our local platform) into a generic "platform-independent" one
@@ -339,6 +348,13 @@ public class SwingUtils {
    */
   public static boolean isModifierKeyDown(KeyEvent e) {
     return INPUT_CLASSIFIER.isModifierKeyDown(e);
+  }
+
+  /**
+   * @return returns InputEvent.META_DOWN_MASK on Mac or InputEvent.CTRL_DOWN_MASK on others
+   */
+  public static int getModifierKeyMask() {
+    return INPUT_CLASSIFIER.getModifierKeyMask();
   }
 
   /**

@@ -74,7 +74,6 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DragSource;
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -475,7 +474,7 @@ public class PieceDefiner extends JPanel {
     });
 
     availableList.getInputMap(JComponent.WHEN_FOCUSED).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "AddAvailable"); //$NON-NLS-1$
+      KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "AddAvailable"); //$NON-NLS-1$
 
     availableList.getActionMap().put("AddAvailable", new AbstractAction() {
       @Override
@@ -573,7 +572,7 @@ public class PieceDefiner extends JPanel {
     });
 
     inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "EditInUse"); //$NON-NLS-1$
+      KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "EditInUse"); //$NON-NLS-1$
     inUseList.getActionMap().put("EditInUse", new AbstractAction() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -591,7 +590,7 @@ public class PieceDefiner extends JPanel {
     });
 
     inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK), "CopyInUse"); //$NON-NLS-1$
+      KeyStroke.getKeyStroke(KeyEvent.VK_C, SwingUtils.getModifierKeyMask()), "CopyInUse"); //$NON-NLS-1$
     inUseList.getActionMap().put("CopyInUse", new AbstractAction() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -600,7 +599,7 @@ public class PieceDefiner extends JPanel {
     });
 
     inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK), "PasteInUse"); //$NON-NLS-1$
+      KeyStroke.getKeyStroke(KeyEvent.VK_V, SwingUtils.getModifierKeyMask()), "PasteInUse"); //$NON-NLS-1$
     inUseList.getActionMap().put("PasteInUse", new AbstractAction() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -609,7 +608,7 @@ public class PieceDefiner extends JPanel {
     });
 
     inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_DOWN_MASK), "CutInUse"); //$NON-NLS-1$
+      KeyStroke.getKeyStroke(KeyEvent.VK_X, SwingUtils.getModifierKeyMask()), "CutInUse"); //$NON-NLS-1$
     inUseList.getActionMap().put("CutInUse", new AbstractAction() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -618,6 +617,41 @@ public class PieceDefiner extends JPanel {
       }
     });
 
+    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_UP, SwingUtils.getModifierKeyMask()), "UpInUse"); //$NON-NLS-1$
+    inUseList.getActionMap().put("UpInUse", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        moveUpButton.doClick();
+      }
+    });
+
+    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, SwingUtils.getModifierKeyMask()), "DownInUse"); //$NON-NLS-1$
+    inUseList.getActionMap().put("DownInUse", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        moveDownButton.doClick();
+      }
+    });
+
+    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_HOME, SwingUtils.getModifierKeyMask()), "TopInUse"); //$NON-NLS-1$
+    inUseList.getActionMap().put("TopInUse", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        moveTopButton.doClick();
+      }
+    });
+
+    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_END, SwingUtils.getModifierKeyMask()), "BottomInUse"); //$NON-NLS-1$
+    inUseList.getActionMap().put("BottomInUse", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        moveBottomButton.doClick();
+      }
+    });
 
     final JPanel inUseListPanel = new JPanel(new BorderLayout());
     inUseListPanel.add(inUseList, BorderLayout.CENTER);
@@ -1024,6 +1058,7 @@ public class PieceDefiner extends JPanel {
     private static final long serialVersionUID = 1L;
 
     PieceEditor ed;
+    JButton cancel;
 
     private Ed(Frame owner, final EditablePiece p) {
       super(owner, Resources.getString("Editor.PieceDefiner.properties", p.getDescription()), true);
@@ -1051,13 +1086,13 @@ public class PieceDefiner extends JPanel {
       getRootPane().setDefaultButton(b); // Register as default button (should make Enter activate it by default on Windows / Mac)
       buttonBox.add(b, "sg,tag ok"); //NON-NLS
 
-      b = new JButton(Resources.getString("General.cancel"));
-      b.addActionListener(evt -> {
+      cancel = new JButton(Resources.getString("General.cancel"));
+      cancel.addActionListener(evt -> {
         ed = null;
         dispose();
       });
 
-      buttonBox.add(b, "sg,tag cancel"); //NON-NLS
+      buttonBox.add(cancel, "sg,tag cancel"); //NON-NLS
 
       // on ESC key close / cancel editor
       getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
@@ -1066,8 +1101,7 @@ public class PieceDefiner extends JPanel {
       getRootPane().getActionMap().put("Cancel", new AbstractAction() {
         @Override
         public void actionPerformed(ActionEvent e) {
-          ed = null;
-          dispose();
+          cancel.doClick();
         }
       });
 
@@ -1332,7 +1366,7 @@ public class PieceDefiner extends JPanel {
       return true;
     }
   }
-  
+
   /**
    * A PieceSlot that can be scaled externally, instead of relying
    * on the scale of an enclosing widget
