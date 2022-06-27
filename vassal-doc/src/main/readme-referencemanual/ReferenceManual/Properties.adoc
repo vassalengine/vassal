@@ -93,7 +93,7 @@ the level in a <<Layer.adoc#Properties,Layer)>> you can use _<_, _\<=_, _>_, and
 |*_<layername>__Image* |<<Layer.adoc#top,Layer>> |The image name of the currently active layer for _Layer_ _<layername>_.
 |*_<layername>__Level* |<<Layer.adoc#top,Layer>> |The level number of the currently active layer for _Layer_ _<layername>_.
 |*_<layername>__Name* |<<Layer.adoc#top,Layer>> |The level name of the currently active layer for _Layer_ _<layername>_.
-|*_<rotatename>__Facing* |<<Rotate.adoc#top,Can Rotate>> |The current facing number (1, 2, etc) for the _Can Rotate_ trait _<rotatename>_.
+|*_<rotatename>__Facing* |<<Rotate.adoc#top,Can Rotate>> |The current facing number (1, 2, etc.) for the _Can Rotate_ trait _<rotatename>_.
 |*_<rotatename>__Degrees* |<<Rotate.adoc#top,Can Rotate>> |The current degrees of rotation for the _Can Rotate_ trait _<name>_.
 |_<Property Name>_ |<<Label.adoc#top,Text Label>> |If the "Property Name" field in the trait is filled out, then a property with that name will be filled with the current value of the _Text Label_ trait's Text field.
 |*_<deckname>__numPieces* |<<Deck.adoc#top,Deck>> (Map level property) |Number of pieces/"cards" in the _Deck_ _<deckname>_.

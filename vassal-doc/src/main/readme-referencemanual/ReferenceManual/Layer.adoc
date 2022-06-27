@@ -33,7 +33,7 @@ Otherwise, increasing the level has no effect if the current level is the last l
 
 *Offset:*::  The image for the current level is drawn with this offset from the center of the underlying piece by a number of pixels specified by the "offset" boxes, with positive numbers giving an offset down and to the right.
 +
-For example, if a layer image is 40x40 pixels and you want it to be drawn so that the lower-left corner is at the center of the GamePiece, set the offset to 20,-20.
+For example, if a layer image is 40x40 pixels, and you want it to be drawn so that the lower-left corner is at the center of the GamePiece, set the offset to 20,-20.
 
 *Additional scaling factor for draw:*::  An additional scaling factor which is applied when drawing images for this Layer. Useful when downscaling categories of art supplied in higher resolution than other items.
 

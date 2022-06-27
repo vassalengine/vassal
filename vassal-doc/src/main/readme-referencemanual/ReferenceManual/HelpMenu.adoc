@@ -30,7 +30,7 @@ Selecting the menu item opens an external browser on the user's machine with HTM
 
 *Contents:*::  A folder on your local file system.
 The contents of the folder will be copied into the module and expanded onto the user's machine when the user selects the menu item.
-The folder can contains any number of sub-folders and can include image data, style sheets, etc.
+The folder can contain any number of sub-folders and can include image data, style sheets, etc.
 Be sure that your HTML content makes use of relative URLs.
 
 *Starting Page:*::  The file within the Contents folder that the user's browser will be pointed to.

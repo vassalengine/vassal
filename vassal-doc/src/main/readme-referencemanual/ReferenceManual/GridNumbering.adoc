@@ -19,7 +19,7 @@ _Vertical first_ - The column reference is reported first.
 
 *Separator:*::  Text to place between the row and column, such as a comma or hyphen.
 
-*Horizontal/vertical Numbering:*:: Whether to use an Alphabtic or Numeric numeric naming scheme for the Horizontal and Vertical references. +
+*Horizontal/vertical Numbering:*:: Whether to use an Alphabtic or Numeric naming scheme for the Horizontal and Vertical references. +
 _Alphabetical_ - (A,B,C, ... AA, BB, CC, etc.) +
 _Numeric_ - (1,2,3 ...).
 

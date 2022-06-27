@@ -10,7 +10,7 @@
 A multi-zoned grid allows you to define any number of sub-regions of a board.
 Each sub-region, called a <<#Zone,Zone>>, can have its own grid and naming format, which takes precedence over the default grid.
 For example a board with a <<HexGrid.adoc#top,Hex Grid>> may have Zones along the edge for a turn track or force pools.
-Pieces will snap to positions in the appropriate zone (if that is selected in the options for the Zone's grid) and auto-reporting will use text supplied by the Zone.
+Pieces will snap to position in the appropriate zone (if that is selected in the options for the Zone's grid) and auto-reporting will use text supplied by the Zone.
 
 '''''
 
@@ -42,7 +42,7 @@ Then right-click to add new points and use the mouse to drag points to their fin
 Delete a point by clicking on it and hitting the DEL key.
 
 *Use board's grid:*:: If selected, then this Zone will use the grid from the containing board instead of defining its own grid.
-Otherwise one of the normal types of grid should be added to the Zone, by right-clicking its entry in the Editor and selecting an "Add" option for the desired type of grid (<<HexGrid.adoc#top,Hex>>, <<RectangularGrid.adoc#top,Rectangular>>, or <<IrregularGrid.adoc#top,Irregular>>).
+Otherwise, one of the normal types of grid should be added to the Zone, by right-clicking its entry in the Editor and selecting an "Add" option for the desired type of grid (<<HexGrid.adoc#top,Hex>>, <<RectangularGrid.adoc#top,Rectangular>>, or <<IrregularGrid.adoc#top,Irregular>>).
 
 *Use Highlighting:*:: If selected, you must also specify the name of a <<Properties.adoc#top,Property>> . The value of the property will determine which <<#ZoneHighlighter,Zone Highlighter>> is used to draw the zone.
 
