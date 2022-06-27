@@ -23,15 +23,7 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.icon.IconFamily;
 import VASSAL.tools.swing.SwingUtils;
-
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -45,8 +37,14 @@ import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
-
-import net.miginfocom.swing.MigLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 /**
  * A configurer for Configuring Key Strokes. It allows the entry of either
@@ -373,6 +371,14 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
       case KeyEvent.VK_ALT_GRAPH:
       case KeyEvent.VK_UNDEFINED:
         break;
+
+      //BR// Consume ESC & Enter events so that we don't close a piece editor dialog while editing a keystroke
+      case KeyEvent.VK_ESCAPE:
+      case KeyEvent.VK_ENTER:
+        e.consume();
+        setValue(NamedKeyStroke.of(SwingUtils.convertKeyEvent(e)));
+        break;
+
       default:
         setValue(NamedKeyStroke.of(SwingUtils.convertKeyEvent(e)));
       }

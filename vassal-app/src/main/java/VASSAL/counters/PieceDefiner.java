@@ -34,6 +34,7 @@ import VASSAL.tools.image.LabelUtils;
 import VASSAL.tools.swing.SwingUtils;
 import net.miginfocom.swing.MigLayout;
 
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
@@ -72,6 +73,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DragSource;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -989,7 +991,7 @@ public class PieceDefiner extends JPanel {
 
       JButton b = new JButton(Resources.getString("General.ok"));
       b.addActionListener(evt -> dispose());
-
+      getRootPane().setDefaultButton(b); // Register as default button (should make Enter activate it by default on Windows / Mac)
       buttonBox.add(b, "sg,tag ok"); //NON-NLS
 
       b = new JButton(Resources.getString("General.cancel"));
@@ -999,6 +1001,17 @@ public class PieceDefiner extends JPanel {
       });
 
       buttonBox.add(b, "sg,tag cancel"); //NON-NLS
+
+      // on ESC key close / cancel editor
+      getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+        KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
+
+      getRootPane().getActionMap().put("Cancel", new AbstractAction() {
+        public void actionPerformed(ActionEvent e) {
+          ed = null;
+          dispose();
+        }
+      });
 
       if (p.getHelpFile() != null) {
         b = new JButton(Resources.getString("General.help"));
