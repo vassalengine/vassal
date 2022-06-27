@@ -1185,7 +1185,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       contentPane.add(controlsPane, BorderLayout.CENTER);
       contentPane.add(buttonBox, BorderLayout.PAGE_END);
 
-      // Default actions for Enter/Cancel
+      // Default actions for Enter/ESC
       getRootPane().setDefaultButton(okButton);
       getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
         KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$

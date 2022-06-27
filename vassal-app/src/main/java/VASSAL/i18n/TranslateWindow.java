@@ -121,7 +121,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     add(mainPanel);
     pack();
 
-    // Default actions for Enter/Cancel
+    // Default actions for Enter/ESC
     getRootPane().setDefaultButton(okButton);
     getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
       KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$

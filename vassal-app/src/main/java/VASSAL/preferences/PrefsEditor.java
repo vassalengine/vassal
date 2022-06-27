@@ -116,7 +116,7 @@ public class PrefsEditor {
       buttonPanel.add(help, "tag help, split, sg 1"); //NON-NLS
       dialog.add(buttonPanel, "grow");
 
-      // Default actions for Enter/Cancel
+      // Default actions for Enter/ESC
       dialog.getRootPane().setDefaultButton(ok);
       dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
         KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
@@ -163,7 +163,7 @@ public class PrefsEditor {
       p.add(b);
       setupDialog.add(p);
 
-      // Default actions for Enter/Cancel
+      // Default actions for Enter/ESC
       setupDialog.getRootPane().setDefaultButton(okButton);
       setupDialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
         KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$

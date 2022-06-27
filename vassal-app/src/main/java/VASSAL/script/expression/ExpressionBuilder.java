@@ -86,7 +86,7 @@ public class ExpressionBuilder extends JDialog {
     p.add(buttonBox, "align center"); //NON-NLS
     add(p);
 
-    // Default actions for Enter/Cancel
+    // Default actions for Enter/ESC
     getRootPane().setDefaultButton(okButton);
     getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
       KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$

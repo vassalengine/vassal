@@ -482,7 +482,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       cancelButton.addActionListener(e -> d.dispose());
       d.add(buttonPanel);
 
-      // Default actions for Enter/Cancel
+      // Default actions for Enter/ESC
       d.getRootPane().setDefaultButton(okButton);
       d.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
         KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$

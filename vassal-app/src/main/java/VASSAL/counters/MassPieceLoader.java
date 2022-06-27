@@ -211,7 +211,7 @@ public class MassPieceLoader {
 
       add(buttonBox, "span 2,center,grow 0"); // NON-NLS
 
-      // Default actions for Enter/Cancel
+      // Default actions for Enter/ESC
       getRootPane().setDefaultButton(okButton);
       getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
         KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$

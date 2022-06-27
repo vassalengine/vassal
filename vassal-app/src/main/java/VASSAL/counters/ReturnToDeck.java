@@ -266,7 +266,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     box.add(b);
     d.add(box);
 
-    // Default actions for Enter/Cancel
+    // Default actions for Enter/ESC
     d.getRootPane().setDefaultButton(okButton);
     d.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
       KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$

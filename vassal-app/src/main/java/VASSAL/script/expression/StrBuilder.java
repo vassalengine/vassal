@@ -80,7 +80,7 @@ public class StrBuilder extends JDialog {
     p.add(buttonBox, "span 2,align center"); //NON-NLS
     add(p, "growx"); //NON-NLS
 
-    // Default actions for Enter/Cancel
+    // Default actions for Enter/ESC
     getRootPane().setDefaultButton(okButton);
     getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
       KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$

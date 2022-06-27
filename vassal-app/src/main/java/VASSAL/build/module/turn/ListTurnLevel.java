@@ -439,7 +439,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
       cancelButton.addActionListener(e -> setVisible(false));
       p.add(cancelButton);
 
-      // Default actions for Enter/Cancel
+      // Default actions for Enter/ESC
       getRootPane().setDefaultButton(saveButton);
       getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
         KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$

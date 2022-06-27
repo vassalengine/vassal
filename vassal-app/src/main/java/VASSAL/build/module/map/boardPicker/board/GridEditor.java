@@ -180,7 +180,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
 
     add(controlPanel, BorderLayout.SOUTH);
 
-    // Default actions for Enter/Cancel
+    // Default actions for Enter/ESC
     getRootPane().setDefaultButton(okButton);
     getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
       KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
