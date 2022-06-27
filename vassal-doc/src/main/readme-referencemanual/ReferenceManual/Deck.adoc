@@ -99,7 +99,7 @@ If set to _Via right-click menu_ then a _Shuffle_ entry is added to the Deck's r
 
 *Re-shuffle report format:*::  A <<MessageFormat.adoc#top,Message Format>> that is echoed to the chat log whenever a player selects the _Shuffle_ menu item (if enabled above): _deckName_ is the name of this Deck, _commandName_ is the name of the context menu item.
 
-*Re-shuffle hotkey:*::  A <<NamedKeyStroke.adoc#top,Keystroke or Named Command>> that will cause a reshuffle.
+*Re-shuffle hotkey:*::  A <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> that will cause a reshuffle.
 If left blank, a reshuffle can be caused only with the right-click context menu.
 
 *Reversible:*:: Adds an entry to the right-click context menu that reverses the order of cards in the Deck.
@@ -108,7 +108,7 @@ If left blank, a reshuffle can be caused only with the right-click context menu.
 
 *Reverse report format:*::  A <<MessageFormat.adoc#top,Message Format>> that is echoed to the chat log window whenever a player selects the "Reverse" menu item: _deckName_ is the name of this deck, _commandName_ is the name of the menu item.
 
-*Reverse hotkey:*:: A <<NamedKeyStroke.adoc#top,Keystroke or Named Command>> that will cause a reverse.
+*Reverse hotkey:*:: A <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> that will cause a reverse.
 
 *Draw Outline When Empty?*::  Whether to draw the "tray" for the cards.
 The "tray" is a rectangle of size _width,height_ centered at _x,y_.
@@ -117,7 +117,7 @@ May not be necessary or desirable if the Map Window contains a board on which th
 
 *Color:*::  The color used to draw the rectangle representing the "tray" above.
 
-*Hotkey to send when Deck empties:*::  Select the <<NamedKeyStroke.adoc#top,Keystroke Command or Named Command>> to send whenever enough cards are removed from the Deck to empty it.
+*Hotkey to send when Deck empties:*::  Select the <<NamedKeyCommand.adoc#top,Keystroke Command or Named Command>> to send whenever enough cards are removed from the Deck to empty it.
 
 *Include command to send entire deck to another deck:*::  If checked, the right-click context menu for this Deck will include a command that sends every Game Piece in this Deck to a different designated Deck.
 For example, this can be used to reshuffle a discard pile into its original deck.
@@ -127,7 +127,7 @@ The following four attributes are used to configure this option.
 
 *Send report format:*::  A <<MessageFormat.adoc#top,Send Message Format>> that is echoed to the chat log window whenever a player selects the "send to another deck" menu item: _deckName_ is the name of this deck, _commandName_ is the name of the menu item.
 
-*Send Hotkey:*::  Select a <<NamedKeyStroke.adoc#top,Keystroke Command or Named Command>> that will cause the Deck contents to be moved to the target Deck.
+*Send Hotkey:*::  Select a <<NamedKeyCommand.adoc#top,Keystroke Command or Named Command>> that will cause the Deck contents to be moved to the target Deck.
 
 *Name of deck to send to:*::  The name of the Deck that the contents of this Deck will be sent to.
 

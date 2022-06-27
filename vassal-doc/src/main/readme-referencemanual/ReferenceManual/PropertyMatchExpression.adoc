@@ -1,7 +1,7 @@
 == VASSAL Reference Manual
 [#top]
 
-[.small]#<<index.adoc#toc,Home>> > <<Expressions.adoc#top,Expressions>> > *Property Match Expressions*#
+[.small]#<<index.adoc#toc,Home>> > <<Expression.adoc#top,Expressions>> > *Property Match Expressions*#
 
 '''''
 

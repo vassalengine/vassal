@@ -8,7 +8,7 @@
 === General
 
 VASSAL's Module Editor can be used to create new modules, modify existing ones, and add extensions to them.
-When you open a module for Edit (or select the "New Module" option), you will be presented with a Configuration Window showing the module's <<GameModule.adoc#top,Components>>, which will contain the <<Properties.adoc#top, Properties>>, <<Expressions.adoc#top, Expressions>>, and <<GamePiece.adoc#top, Game Pieces>> that make up a module.
+When you open a module for Edit (or select the "New Module" option), you will be presented with a Configuration Window showing the module's <<GameModule.adoc#top,Components>>, which will contain the <<Properties.adoc#top, Properties>>, <<Expression.adoc#top, Expressions>>, and <<GamePiece.adoc#top, Game Pieces>> that make up a module.
 
 The Configuration Window is used to edit either a <<GameModule.adoc#top,Module>> or a <<Extension.adoc#top,Module Extension>>. The menu bar of the Configuration Window offers the following actions:
 
