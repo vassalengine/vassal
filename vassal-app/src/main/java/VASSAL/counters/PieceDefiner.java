@@ -74,7 +74,7 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DragSource;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -459,7 +459,6 @@ public class PieceDefiner extends JPanel {
     availableList.setModel(availableModel);
     availableList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     availableList.setCellRenderer(availableRenderer);
-    availableList.addKeyListener(new AvailableListKeyAdapter(this));
     availableList.setVisibleRowCount(99);
     availableList.addListSelectionListener(evt -> {
       final Object o = availableList.getSelectedValue();
@@ -474,6 +473,17 @@ public class PieceDefiner extends JPanel {
         }
       }
     });
+
+    availableList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "AddAvailable"); //$NON-NLS-1$
+
+    availableList.getActionMap().put("AddAvailable", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        doAdd();
+      }
+    });
+
 
     final JPanel availableListPanel = new JPanel(new MigLayout("ins 0, fill")); // NON-NLS
     availableListPanel.add(availableList, "grow,push"); // NON-NLS
@@ -526,7 +536,6 @@ public class PieceDefiner extends JPanel {
     final JPanel inUsePanel = new JPanel(new MigLayout("ins 0,wrap 1,fill")); // NON-NLS
     inUseList = new JList<>();
     inUseList.setName(INUSE);
-    inUseList.addKeyListener(new InUseListKeyAdapter(this));
     inUseList.setDragEnabled(true);
     inUseList.setDropMode(DropMode.INSERT);
     inUseList.setTransferHandler(transferHandler);
@@ -562,6 +571,54 @@ public class PieceDefiner extends JPanel {
         }
       }
     });
+
+    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "EditInUse"); //$NON-NLS-1$
+    inUseList.getActionMap().put("EditInUse", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        propsButton.doClick();
+      }
+    });
+
+    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "DeleteInUse"); //$NON-NLS-1$
+    inUseList.getActionMap().put("DeleteInUse", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        removeButton.doClick();
+      }
+    });
+
+    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK), "CopyInUse"); //$NON-NLS-1$
+    inUseList.getActionMap().put("CopyInUse", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        copyButton.doClick();
+      }
+    });
+
+    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK), "PasteInUse"); //$NON-NLS-1$
+    inUseList.getActionMap().put("PasteInUse", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        pasteButton.doClick();
+      }
+    });
+
+    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_DOWN_MASK), "CutInUse"); //$NON-NLS-1$
+    inUseList.getActionMap().put("CutInUse", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        doCopy();
+        removeButton.doClick();
+      }
+    });
+
+
     final JPanel inUseListPanel = new JPanel(new BorderLayout());
     inUseListPanel.add(inUseList, BorderLayout.CENTER);
     final JScrollPane inUseScroll = new JScrollPane(inUseListPanel);
@@ -1275,67 +1332,7 @@ public class PieceDefiner extends JPanel {
       return true;
     }
   }
-
-  /**
-   * KeyAdapter added to the InUseList. Look for cut/copy/paste and
-   * call the matching buttons to do the work.
-   */
-  static class InUseListKeyAdapter extends KeyAdapter {
-
-    private final PieceDefiner definer;
-
-    public InUseListKeyAdapter(PieceDefiner definer) {
-      this.definer = definer;
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-
-      if (SwingUtils.isModifierKeyDown(e)) {
-        switch (e.getKeyCode()) {
-        case KeyEvent.VK_C:
-          definer.copyButton.doClick();
-          break;
-        case KeyEvent.VK_V:
-          definer.pasteButton.doClick();
-          break;
-        case KeyEvent.VK_X:
-          definer.doCopy();
-          definer.removeButton.doClick();
-          break;
-        default:
-          break;
-        }
-      }
-      else if (e.getKeyCode() == KeyEvent.VK_DELETE) {
-        definer.removeButton.doClick();
-      }
-      else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-        definer.propsButton.doClick();
-      }
-    }
-  }
-
-  /**
-   * KeyAdapter added to the AvailableList. Look for Enter and
-   * call the add button
-   */
-  static class AvailableListKeyAdapter extends KeyAdapter {
-
-    private final PieceDefiner definer;
-
-    public AvailableListKeyAdapter(PieceDefiner definer) {
-      this.definer = definer;
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-      if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-        definer.addButton.doClick();
-      }
-    }
-  }
-
+  
   /**
    * A PieceSlot that can be scaled externally, instead of relying
    * on the scale of an enclosing widget
