@@ -29,6 +29,7 @@
       ],
       "other_improvements": [
         { "num": 11545, "desc": "Description of Prototype will auto-include any BasicName" },
+        { "num": 11524, "desc": "Option to 'always use format' on text label (even if label is blank)" },
         { "num": 11521, "desc": "BoundsTracker - Track bounds and repaint just for the regions of added pieces; rather than the whole map" },
         { "num": 11497, "desc": "Don't play sounds while fast-forwarding a log" }
       ]

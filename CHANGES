@@ -2,6 +2,7 @@
 
 * 11545: Description of Prototype will auto-include any BasicName
 * 11544: Broken links to and within Reference Manual
+* 11524: Option to 'always use format' on text label (even if label is blank)
 * 11521: BoundsTracker - Track bounds and repaint just for the regions of
     added pieces; rather than the whole map
 * 11515: Piece dropped into incorrect position in the stack when dragging
