@@ -67,5 +67,5 @@ _The same trait configured to rotate freely_
 
 A Can Rotate trait defines a number of <<Properties.adoc#top,Properties>>.  In the name of the properties, <Rotator_name> is the _Rotator Name_ specified in the trait configuration.
 
-* _<Rotator_name>_Facing_ returns the current facing if the number of facings is fixed. The value is an integer that ranges from 1 (the original, un-rotated state) to the the number of allowed facings. For example, if the number of facings is 4, then this property returns a value from 1 to 4. Facing numbers increase in a clockwise direction.
+* _<Rotator_name>_Facing_ returns the current facing if the number of facings is fixed. The value is an integer that ranges from 1 (the original, un-rotated state) to the number of allowed facings. For example, if the number of facings is 4, then this property returns a value from 1 to 4. Facing numbers increase in a clockwise direction.
 * _<Rotator_name>_Degrees_ returns the current rotation angle if arbitrary rotations are allowed. Rotation degrees increases in a clockwise direction.

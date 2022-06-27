@@ -125,7 +125,7 @@ image:images/ImageTearing.png[]
 [#Personal]
 
 ==== Personal
-The _Personal_ section of the preferences allows you to set your _user name_ and _password_ to be used in logging into multiplayer games, both online _server_ games and e-mail based _PBEM_ games. You can also enter some personal information to be displayed to other players in multiplayer "rooms".
+The _Personal_ section of the preferences allows you to set your _username_ and _password_ to be used in logging into multiplayer games, both online _server_ games and e-mail based _PBEM_ games. You can also enter some personal information to be displayed to other players in multiplayer "rooms".
 
 NOTE: Your password secures your place in a multiplayer game, preventing anyone else from taking your position and/or looking at your private cards or maps. This means that if you lose your password it can be difficult to recover your position in a game, much to your (and everyone else in the game's) chagrin.
 

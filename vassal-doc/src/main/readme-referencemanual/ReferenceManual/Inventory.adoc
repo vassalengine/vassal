@@ -32,7 +32,7 @@ The window will only summarize pieces for which the matching expression evaluate
 <<Properties.adoc#top,Properties>> of the pieces can be used in the expression to create the desired set of summaries.
 +
 (_Examples_: limit the pieces to a single map with the _CurrentMap_ property, e.g.
-_{ CurrentMap == "Main Map" }_, or only select pieces with a a given value of a <<PropertyMarker.adoc#top,Marker>> trait, e.g.
+_{ CurrentMap == "Main Map" }_, or only select pieces with a given value of a <<PropertyMarker.adoc#top,Marker>> trait, e.g.
 _{ Type == "Infantry" }_)
 
 *Sort and group by properties:*:: A list of <<Properties.adoc#top,Property>> names.

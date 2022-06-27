@@ -49,7 +49,7 @@ a|
 You may add your own arbitrary preference settings to the global options.
 To add your own preferences, right-click on the _[Global Options]_ component in the Editor and select one of the _Add_ options.
 The different sub-components support different constraints on the values of the preference setting.
-The values of these preference setting are exposed as <<Properties.adoc#top,Properties>>.
+The values of these preference settings are exposed as <<Properties.adoc#top,Properties>>.
 
 _You must save and re-load the module before these sub-components will show up in the Preferences window_
 
@@ -83,5 +83,6 @@ A floating-point value.
 
 A true/false value.
 
-|image:images/GlobalOptionsComponent.png[]|===
+|image:images/GlobalOptionsComponent.png[]
+|===
 

@@ -90,7 +90,7 @@ _TurnTracker.defaultFontSize_, _TurnTracker.defaultFontBold_, and/or _TurnTracke
 
 To add a new level to your Turn Counter, open the <<Editor.adoc#top,Editor>> and navigate to your _[Turn Counter]_ component.
 Right-click on the _[Turn Counter]_ component and select _Add List_ or _Add Counter_ , depending on whether you want the level to be a list (e.g.
-"Spring", "Summer", etc) or a numeric value (e.g.
+"Spring", "Summer", etc.) or a numeric value (e.g.
 1914, 1915, etc). You can then optionally right-click on the new _[List]_ or _[Counter]_ you've just added, to add another level beneath it, and so forth.
 
 You can also add a Global Hotkey to your Turn Counter (see below).

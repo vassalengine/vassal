@@ -56,7 +56,7 @@ Any message with a "Quick Colors" first character, including "|" will also parse
 
 With HTML support enabled, you can include many types of HTML tags in your <<ReportChanges.adoc#top,Report Action>> traits and other <<MessageFormat.adoc#top,Message Formats>>. This opens up even more possibilities than the Quick Colors shortcuts and allows you to create an unlimited number of new styles.
 
-*IMPORTANT*: When HTML is enabled in the chat log, it is important to remember that the `<` character will be interpreted as the beginning of an HTML tag, rather than simply displaying a "less than" or "left angle bracket" symbol. Thus, modules which use the `<` symbol to indicate "less than" or to "draw an arrow" or enclose a user name, etc, will need to have those instances changed to `\&lt;` (the HTML escape code which causes a literal `<` character to be printed). Otherwise you may
+*IMPORTANT*: When HTML is enabled in the chat log, it is important to remember that the `<` character will be interpreted as the beginning of an HTML tag, rather than simply displaying a "less than" or "left angle bracket" symbol. Thus, modules which use the `<` symbol to indicate "less than" or to "draw an arrow" or enclose a username, etc., will need to have those instances changed to `\&lt;` (the HTML escape code which causes a literal `<` character to be printed). Otherwise, you may
 experience odd behaviors such as chat log messages failing to appear (or seeming to be delayed until the next chat message is printed).
 
 |===

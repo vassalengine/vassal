@@ -23,7 +23,7 @@ However, there is a special format which can be used to match properties in the 
 Any Property name enclosed in $ signs (e.g.
 $nation$) will be evaluated against the piece issuing the Global Key Command and replaced before the property Match is performed against other pieces.
 Because the $..$ notation performs an immediate substitution, this means that string values will often need to be put inside of quotation marks.
-Thus the matching expression { nation == "$nation$" } will compare the value of the _nation_ property of the target piece (left side of equation in this case) to the value of the _nation_ property of the issuing piece (right side of the equation in this case).
+Thus, the matching expression { nation == "$nation$" } will compare the value of the _nation_ property of the target piece (left side of equation in this case) to the value of the _nation_ property of the issuing piece (right side of the equation in this case).
 
 [#beanshell]
 ==== BeanShell Property Match Expressions

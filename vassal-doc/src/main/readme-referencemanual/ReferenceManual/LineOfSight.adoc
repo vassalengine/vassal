@@ -42,7 +42,7 @@ _$Range$_ - The length in grid units of the LOS.
 +
 _$NumberOfLocationsChecked$_ - The number of different grid cells that the end of the LOS was dragged over.
 +
-_$AllLocationsChecked$_ - A list of all of the grid locations of the different grid cells that the end of the LOS was dragged over.
+_$AllLocationsChecked$_ - A list of all the grid locations of the different grid cells that the end of the LOS was dragged over.
 
 *Persistence:*:: Defines whether the LOS remains visible after the mouse is released to finish drawing the LOS. Options are:
 +
