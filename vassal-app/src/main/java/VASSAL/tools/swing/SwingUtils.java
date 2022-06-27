@@ -130,7 +130,9 @@ public class SwingUtils {
     }
 
     @Override
-    public int getModifierKeyMask() { return InputEvent.CTRL_DOWN_MASK; }
+    public int getModifierKeyMask() {
+      return InputEvent.CTRL_DOWN_MASK;
+    }
 
     @Override
     public KeyStroke systemToGeneric(KeyStroke k) {
@@ -224,7 +226,9 @@ public class SwingUtils {
     }
 
     @Override
-    public int getModifierKeyMask() { return InputEvent.META_DOWN_MASK; }
+    public int getModifierKeyMask() {
+      return InputEvent.META_DOWN_MASK;
+    }
 
     /**
      * Translates a keystroke we've received from the system (our local platform) into a generic "platform-independent" one

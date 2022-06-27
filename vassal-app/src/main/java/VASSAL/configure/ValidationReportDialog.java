@@ -83,7 +83,7 @@ public class ValidationReportDialog extends JDialog {
         cancelButton.doClick();
       }
     });
-    
+
     add(buttonPanel);
     pack();
     setLocationRelativeTo(null);
