@@ -1007,6 +1007,7 @@ public class PieceDefiner extends JPanel {
         KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
 
       getRootPane().getActionMap().put("Cancel", new AbstractAction() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           ed = null;
           dispose();
