@@ -406,7 +406,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
     d.add(b);
 
     // Default actions for Enter/ESC
-    d.getRootPane().setDefaultButton(okButton);
+    d.getRootPane().setDefaultButton(ok);
     d.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
       KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
     d.getRootPane().getActionMap().put("Cancel", new AbstractAction() {
