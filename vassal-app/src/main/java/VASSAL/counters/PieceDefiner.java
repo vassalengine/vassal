@@ -475,11 +475,25 @@ public class PieceDefiner extends JPanel {
 
     availableList.getInputMap(JComponent.WHEN_FOCUSED).put(
       KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "AddAvailable"); //$NON-NLS-1$
-
     availableList.getActionMap().put("AddAvailable", new AbstractAction() {
       @Override
       public void actionPerformed(ActionEvent e) {
         doAdd();
+      }
+    });
+
+    availableList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, SwingUtils.getModifierKeyMask()), "ToInUse"); //$NON-NLS-1$
+    availableList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "ToInUse"); //$NON-NLS-1$
+    availableList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, SwingUtils.getModifierKeyMask()), "ToInUse"); //$NON-NLS-1$
+    availableList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "ToInUse"); //$NON-NLS-1$
+    availableList.getActionMap().put("ToInUse", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        inUseList.requestFocus();
       }
     });
 
@@ -652,6 +666,22 @@ public class PieceDefiner extends JPanel {
         moveBottomButton.doClick();
       }
     });
+
+    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, SwingUtils.getModifierKeyMask()), "ToAvail"); //$NON-NLS-1$
+    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "ToAvail"); //$NON-NLS-1$
+    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, SwingUtils.getModifierKeyMask()), "ToAvail"); //$NON-NLS-1$
+    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "ToAvail"); //$NON-NLS-1$
+    inUseList.getActionMap().put("ToAvail", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        availableList.requestFocus();
+      }
+    });
+
 
     final JPanel inUseListPanel = new JPanel(new BorderLayout());
     inUseListPanel.add(inUseList, BorderLayout.CENTER);
