@@ -23,7 +23,7 @@ You can add as many menu separators to a piece as you need: place them between t
 This allows you to hide menu separators as desired when there are fewer options currently available in your context menu.
 +
 The keystroke can be shared with another trait, or you can provide a unique one.
-<<NamedKeyCommands.adoc#top,Named Commands>> can also be used so as not to waste traditional keystrokes.
+<<NamedKeyCommand.adoc#top,Named Commands>> can also be used so as not to waste traditional keystrokes.
 
 |image:images/MenuSeparator.png[]
 

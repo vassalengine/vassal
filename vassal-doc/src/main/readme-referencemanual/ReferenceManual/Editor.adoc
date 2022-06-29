@@ -16,7 +16,7 @@ The Configuration Window is used to edit either a <<GameModule.adoc#top,Module>>
 * *Help*: This reference manual.
 * *Translate:* Help <<Translations.adoc#top,translate>> VASSAL into another language
 
-<<Folders.adoc#top,Folders>> can be created under many components and nested to any depth to help organise the parts that make up your module.
+<<Folder.adoc#top,Folders>> can be created under many components and nested to any depth to help organise the parts that make up your module.
 
 '''''
 
