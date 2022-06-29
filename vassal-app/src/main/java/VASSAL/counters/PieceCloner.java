@@ -85,4 +85,45 @@ public class PieceCloner {
     }
     return clone;
   }
+
+  public GamePiece clonePieceUnexpanded(GamePiece piece) {
+    GamePiece clone = null;
+    if (piece instanceof BasicPiece) {
+      clone = GameModule.getGameModule().createPiece(piece.getType());
+      final Map m = piece.getMap();
+
+      // Temporarily set map to null so that clone won't be added to map
+      piece.setMap(null);
+
+      clone.setState(piece.getState());
+      piece.setMap(m);
+    }
+    else if (piece instanceof EditablePiece && piece instanceof Decorator) {
+      try {
+        clone = piece.getClass().getConstructor().newInstance();
+        final Decorator dclone = (Decorator) clone;
+        final Decorator dpiece = (Decorator) piece;
+
+        dclone.setInner(clonePieceUnexpanded(dpiece.getInner()));
+        ((EditablePiece)clone).mySetType(dpiece.myGetType());
+        dclone.mySetState(dpiece.myGetState());
+      }
+      catch (Throwable t) {
+        ReflectionUtils.handleNewInstanceFailure(t, piece.getClass());
+      }
+    }
+    else {
+      clone = ((AddPiece) GameModule.getGameModule().decode(
+        GameModule.getGameModule().encode(new AddPiece(piece)))).getTarget();
+      final Map m = piece.getMap();
+
+      // Temporarily set map to null so that clone won't be added to map
+      piece.setMap(null);
+
+      clone.setState(piece.getState());
+      piece.setMap(m);
+    }
+    return clone;
+  }
 }
+
