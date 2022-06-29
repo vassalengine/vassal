@@ -75,7 +75,7 @@ _Grid Location on Selected Map_:::
 
 A named location on a map using the appropriate grid numbering (or the named location on an <<IrregularGrid.adoc#top,Irregular Grid>>.
 
-NOTE: When using Grids with fully numeric Column and Row numbers with leading zeros (e.g. 0203), then Vassal will internally remove leading zeros of any Grid Reference you enter, making it impossible to Send to numeric locations that commence with a leading '0'. This can be overcome by setting the <<GlobalOptions.adoc#leadingzeros,_Store integers with leading zeros as Strings internally_ Global Option>>
+NOTE: When using Grids with fully numeric Column and Row numbers with leading zeros (e.g. 0203), then Vassal will internally remove leading zeros of any Grid Reference you enter, making it impossible to Send to numeric locations that commence with a leading '0'. This can be overcome by setting the <<GlobalOptions.adoc#leadingzeros,Preserve leading zeros in Integers >> Global Option.
 
 
 
