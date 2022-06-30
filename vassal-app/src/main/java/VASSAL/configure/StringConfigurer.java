@@ -113,6 +113,7 @@ public class StringConfigurer extends Configurer {
 
       // Edit box selects all text when first focused
       nameField.addFocusListener(new java.awt.event.FocusAdapter() {
+        @Override
         public void focusGained(java.awt.event.FocusEvent evt) {
           SwingUtilities.invokeLater(new Runnable() {
             @Override

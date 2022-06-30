@@ -130,6 +130,7 @@ public class FileConfigurer extends Configurer {
       if (editable) {
         // Edit box selects all text when first focused
         tf.addFocusListener(new java.awt.event.FocusAdapter() {
+          @Override
           public void focusGained(java.awt.event.FocusEvent evt) {
             SwingUtilities.invokeLater(new Runnable() {
               @Override

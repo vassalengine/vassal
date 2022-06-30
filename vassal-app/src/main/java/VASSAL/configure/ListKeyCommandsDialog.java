@@ -90,6 +90,7 @@ public class ListKeyCommandsDialog extends JDialog {
 
     // Edit box selects all text when first focused
     filter.addFocusListener(new java.awt.event.FocusAdapter() {
+      @Override
       public void focusGained(java.awt.event.FocusEvent evt) {
         SwingUtilities.invokeLater(new Runnable() {
           @Override
