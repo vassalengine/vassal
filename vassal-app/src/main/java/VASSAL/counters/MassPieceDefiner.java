@@ -17,6 +17,7 @@
  */
 package VASSAL.counters;
 
+import VASSAL.configure.ConfigureTree;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -31,6 +32,7 @@ public class MassPieceDefiner extends PieceDefiner {
   private static final long serialVersionUID = 1L;
 
   protected List<Entry> definers;
+  protected ConfigureTree tree;
 
   public MassPieceDefiner(Configurable top) {
     super();
@@ -48,6 +50,11 @@ public class MassPieceDefiner extends PieceDefiner {
         }
       }
     }
+  }
+
+  public MassPieceDefiner(Configurable top, ConfigureTree tree) {
+    this(top);
+    this.tree = tree;
   }
 
   private void init(Configurable c) {
@@ -146,6 +153,7 @@ public class MassPieceDefiner extends PieceDefiner {
   public void save() {
     for (final Entry e : definers) {
       e.slot.setPiece(e.definer.getPiece());
+      tree.nodeEdited(e.slot);
     }
   }
 

@@ -40,7 +40,7 @@ public class PieceCloner {
 
   /**
    * Create a new instance that is a clone of the given piece.
-   * Expand any prototypes to create a fully function piece
+   * Expand any prototypes to create a fully functional piece
    *
    * @return the new instance
    */
