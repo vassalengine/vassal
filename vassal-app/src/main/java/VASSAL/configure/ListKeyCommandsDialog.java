@@ -49,6 +49,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.RowFilter;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.AbstractTableModel;
@@ -86,6 +87,18 @@ public class ListKeyCommandsDialog extends JDialog {
     this.owner = owner;
 
     final JTextField filter = new JTextField(25);
+
+    // Edit box selects all text when first focused
+    filter.addFocusListener(new java.awt.event.FocusAdapter() {
+      public void focusGained(java.awt.event.FocusEvent evt) {
+        SwingUtilities.invokeLater(new Runnable() {
+          @Override
+          public void run() {
+            filter.selectAll();
+          }
+        });
+      }
+    });
 
     tmod = new MyTableModel(rows);
     final JTable table = new JTable(tmod) {

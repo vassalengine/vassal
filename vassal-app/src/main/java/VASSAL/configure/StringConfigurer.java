@@ -17,19 +17,19 @@
  */
 package VASSAL.configure;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-
-import java.awt.Graphics;
-import java.awt.event.FocusListener;
 import javax.swing.JComponent;
 import javax.swing.JLayer;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.plaf.LayerUI;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.event.FocusListener;
 
 /**
  * A Configurer for String values
@@ -110,6 +110,18 @@ public class StringConfigurer extends Configurer {
         nameField.getPreferredSize().height
       ));
       nameField.setText(getValueString());
+
+      // Edit box selects all text when first focused
+      nameField.addFocusListener(new java.awt.event.FocusAdapter() {
+        public void focusGained(java.awt.event.FocusEvent evt) {
+          SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+              nameField.selectAll();
+            }
+          });
+        }
+      });
 
       final LayerUI<JTextField> layerUI = new ConfigLayerUI(this);
       final JLayer<JTextField> layer = new JLayer<>(nameField, layerUI);
