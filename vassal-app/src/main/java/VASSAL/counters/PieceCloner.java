@@ -40,10 +40,26 @@ public class PieceCloner {
 
   /**
    * Create a new instance that is a clone of the given piece.
+   * Expand any prototypes to create a fully function piece
    *
    * @return the new instance
    */
   public GamePiece clonePiece(GamePiece piece) {
+    return clonePiece(piece, true);
+  }
+
+  /**
+   * Create a new instance that is a clone of the given piece.
+   * Do not expand any prototypes.
+   *
+   * @return the new instance
+   */
+  public GamePiece clonePieceUnexpanded(GamePiece piece) {
+    return clonePiece(piece, false);
+  }
+
+
+  public GamePiece clonePiece(GamePiece piece, boolean expandPiece) {
     GamePiece clone = null;
     if (piece instanceof BasicPiece) {
       clone = GameModule.getGameModule().createPiece(piece.getType());
@@ -55,7 +71,7 @@ public class PieceCloner {
       clone.setState(piece.getState());
       piece.setMap(m);
     }
-    else if (piece instanceof UsePrototype) {
+    else if (piece instanceof UsePrototype && expandPiece) {
       clone = clonePiece(((UsePrototype)piece).getExpandedInner());
     }
     else if (piece instanceof EditablePiece && piece instanceof Decorator) {
@@ -86,44 +102,5 @@ public class PieceCloner {
     return clone;
   }
 
-  public GamePiece clonePieceUnexpanded(GamePiece piece) {
-    GamePiece clone = null;
-    if (piece instanceof BasicPiece) {
-      clone = GameModule.getGameModule().createPiece(piece.getType());
-      final Map m = piece.getMap();
-
-      // Temporarily set map to null so that clone won't be added to map
-      piece.setMap(null);
-
-      clone.setState(piece.getState());
-      piece.setMap(m);
-    }
-    else if (piece instanceof EditablePiece && piece instanceof Decorator) {
-      try {
-        clone = piece.getClass().getConstructor().newInstance();
-        final Decorator dclone = (Decorator) clone;
-        final Decorator dpiece = (Decorator) piece;
-
-        dclone.setInner(clonePieceUnexpanded(dpiece.getInner()));
-        ((EditablePiece)clone).mySetType(dpiece.myGetType());
-        dclone.mySetState(dpiece.myGetState());
-      }
-      catch (Throwable t) {
-        ReflectionUtils.handleNewInstanceFailure(t, piece.getClass());
-      }
-    }
-    else {
-      clone = ((AddPiece) GameModule.getGameModule().decode(
-        GameModule.getGameModule().encode(new AddPiece(piece)))).getTarget();
-      final Map m = piece.getMap();
-
-      // Temporarily set map to null so that clone won't be added to map
-      piece.setMap(null);
-
-      clone.setState(piece.getState());
-      piece.setMap(m);
-    }
-    return clone;
-  }
 }
 
