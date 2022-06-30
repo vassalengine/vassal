@@ -45,6 +45,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Window for editing properties of a {@link Configurable} object
@@ -55,6 +57,8 @@ public class PropertiesWindow extends JDialog {
   private Configurer configurer;
   private Configurable target;
   private Element originalState;
+
+  private static List<PropertiesWindow> propertiesWindowQueue = new ArrayList<>();
 
   public PropertiesWindow(Frame owner, boolean modal, final Configurable target, HelpWindow helpWindow) {
     super(owner, modal);
@@ -147,6 +151,18 @@ public class PropertiesWindow extends JDialog {
         cancel();
       }
     });
+
+    propertiesWindowQueue.add(this);
+  }
+
+  @Override
+  public void dispose() {
+    super.dispose();
+    propertiesWindowQueue.remove(this);
+
+    if (!propertiesWindowQueue.isEmpty()) {
+      propertiesWindowQueue.get(propertiesWindowQueue.size() - 1).requestFocus();
+    }
   }
 
   public void cancel() {
