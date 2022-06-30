@@ -210,7 +210,7 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
       // Edit box selects all text when first focused
       keyName.addFocusListener(new java.awt.event.FocusAdapter() {
         @Override
-        public void focusGained(java.awt.event.FocusEvent evt) {
+        public void focusGained(FocusEvent evt) {
           SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
