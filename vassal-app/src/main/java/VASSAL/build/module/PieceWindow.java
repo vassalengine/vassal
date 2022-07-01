@@ -286,8 +286,6 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
       }
       GameModule.getGameModule().getToolBar().add(launch);
     }
-
-    setAttributeTranslatable(NAME, false);
   }
 
   @Override
