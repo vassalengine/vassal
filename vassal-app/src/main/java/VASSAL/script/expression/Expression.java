@@ -17,6 +17,7 @@
 package VASSAL.script.expression;
 
 import VASSAL.build.BadDataReport;
+import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.counters.PieceFilter;
 import VASSAL.i18n.Resources;
@@ -26,6 +27,7 @@ import VASSAL.tools.concurrent.ConcurrentSoftHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
@@ -292,6 +294,14 @@ public class Expression {
     // BeanShell expression enclosed by braces?
     if (t.startsWith("{") && t.endsWith("}")) {
       return BeanShellExpression.createExpression(s);
+    }
+
+    // An integer expression with leading zeros when the Store Integers with Leading Zeros as Strings option is on
+    // Note, Expressions may be created in initialisation before GlobalOptions has been built. Any leading 0's there, too bad.
+    if (GlobalOptions.getInstance() != null && GlobalOptions.getInstance().isStoreLeadingZeroIntegersAsStrings()) {
+      if (t.length() > 1 && t.startsWith("0") && StringUtils.containsOnly(t, "0123456789")) {
+        return StringExpression.instance(s);
+      }
     }
 
     // A simple integer expression

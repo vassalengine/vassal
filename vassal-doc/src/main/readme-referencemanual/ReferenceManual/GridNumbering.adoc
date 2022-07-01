@@ -9,6 +9,8 @@
 
 Specifies how identifying names/numbers are assigned to cells in a <<HexGrid.adoc#top,Hex Grid>> or <<RectangularGrid.adoc#top,Rectangular Grid>> on a <<Board.adoc#top,Board>>, the format of those grid references, and whether the names are to be drawn on top of the board image.
 
+NOTE: When using Grids with fully numeric Column and Row numbers with leading zeros (e.g. 0203), then Vassal will internally remove leading zeros of any grid references generated. This makes it difficult to use column or row numbers in Beanshell expressions and keep the leading zeros intact. This can be overcome by setting the <<GlobalOptions.adoc#leadingzeros,Preserve leading zeros in Integers >> Global Option.
+
 [width="100%",cols="50%a,^50%a",]
 |===
 |
