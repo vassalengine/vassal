@@ -3,6 +3,8 @@
 * 11545: Description of Prototype will auto-include any BasicName
 * 11544: Broken links to and within Reference Manual
 * 11543: Closing game should reset multiplayer flag for console
+* 11540: Display translated Basic Piece/Basic Name in Scrollable lists in Game
+    Piece Palette
 * 11524: Option to 'always use format' on text label (even if label is blank)
 * 11521: BoundsTracker - Track bounds and repaint just for the regions of
     added pieces; rather than the whole map
@@ -10,6 +12,7 @@
     within a stack to a lower position
 * 11513: Piece "disappears" when dragged to grid space with an existing stack
     and "snap to defined point"
+* 11510: Updated Opt-in version of the 'Leading Zeros in Integers' handing
 * 11497: Don't play sounds while fast-forwarding a log
 * 11496: Safer GKC Configurer for Fixed # From Deck
 

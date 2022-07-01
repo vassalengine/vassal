@@ -24,8 +24,10 @@
       "bug_fixes": [
         { "num": 11544, "desc": "Broken links to and within Reference Manual" },
         { "num": 11543, "desc": "Closing game should reset multiplayer flag for console" },
+        { "num": 11540, "desc": "Display translated Basic Piece/Basic Name in Scrollable lists in Game Piece Palette" },
         { "num": 11515, "desc": "Piece dropped into incorrect position in the stack when dragging within a stack to a lower position" },
         { "num": 11513, "desc": "Piece \"disappears\" when dragged to grid space with an existing stack and \"snap to defined point\"" },
+        { "num": 11510, "desc": "Updated Opt-in version of the 'Leading Zeros in Integers' handing" },
         { "num": 11496, "desc": "Safer GKC Configurer for Fixed # From Deck" }
       ],
       "other_improvements": [
