@@ -103,6 +103,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
   public static final String GENERIC   = "Player"; //NON-NLS
 
   public static final String CHESSMENU_START  = Resources.getString("ChessClock.start"); //NON-NLS
+  public static final String CHESSMENU_NEXT  = Resources.getString("ChessClock.next"); //NON-NLS
   public static final String CHESSMENU_STOP   = Resources.getString("ChessClock.stop"); //NON-NLS
   public static final String CHESSMENU_RESET  = Resources.getString("ChessClock.reset"); //NON-NLS
 
@@ -149,7 +150,6 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
 
     side       = GENERIC;
     buttonText = side;
-
     // In case we're adding these on the fly, let's see if we can find a "decent" player side to "be",
     // in other words one that hasn't been assigned to any clock yet. This is a little bit tongue-in-cheek,
     // but it's intended to be heuristic not perfect, and doesn't have to be perfect. So there.
@@ -924,7 +924,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
   public Command startClock() {
     Command c = new NullCommand();
     final ChessClockControl ccc = ChessClockControl.getInstance();
-    if (ccc != null){
+    if (ccc != null) {
       c = c.append(ccc.startClock(this));
     }
     return c;
@@ -937,7 +937,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
   public Command stopClock() {
     Command c = new NullCommand();
     final ChessClockControl ccc = ChessClockControl.getInstance();
-    if (ccc != null){
+    if (ccc != null) {
       c = c.append(ccc.stopClock(this));
     }
     return c;
@@ -1067,11 +1067,14 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
       Command c = new NullCommand();
       final ChessClockControl ccc = ChessClockControl.getInstance();
       if (ccc == null) return;
-      if (command.contains(CHESSMENU_START) ) {
-          c = c.append(startClock());
+      if (command.contains(CHESSMENU_START)) {
+        c = c.append(startClock());
       }
       else if (command.contains(CHESSMENU_STOP)) {
-          c = c.append(stopClock());
+        c = c.append(stopClock());
+      }
+      else if (command.contains(CHESSMENU_NEXT)) {
+        c = c.append(ccc.startNextClock());
       }
       else if (command.contains(CHESSMENU_RESET)) {
         c = resetState();
@@ -1118,12 +1121,16 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
       if (isTicking()) {
         item = new JMenuItem(CHESSMENU_STOP + "  " + NamedHotKeyConfigurer.getString(stopListener.getNamedKeyStroke()));
         item.addActionListener(this);
+        popup.add(item);
+        item = new JMenuItem(CHESSMENU_NEXT);
+        item.addActionListener(this);
+        popup.add(item);
       }
       else {
         item = new JMenuItem(CHESSMENU_START + "  " + NamedHotKeyConfigurer.getString(startListener.getNamedKeyStroke()));
         item.addActionListener(this);
+        popup.add(item);
       }
-      popup.add(item);
 
       final ChessClockControl ccc = ChessClockControl.getInstance();
       if ((ccc == null) || ccc.isAllowReset()) {

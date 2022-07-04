@@ -79,6 +79,7 @@ public class ChessClockControl extends AbstractConfigurable
   protected boolean onlineGame;             // If we've ever detected a live "online" connection during use of the clocks
 
   protected NamedKeyStrokeListener nextListener;   // Hotkey listeners
+  protected NamedKeyStrokeListener startOpponentListener;
   protected NamedKeyStrokeListener showListener;
   protected NamedKeyStrokeListener pauseListener;
 
@@ -98,6 +99,7 @@ public class ChessClockControl extends AbstractConfigurable
 
   public static final String PAUSE_HOTKEY = "pauseHotkey"; //NON-NLS
   public static final String NEXT_HOTKEY = "nextHotkey"; //NON-NLS
+  public static final String START_OPPONENT_HOTKEY = "startOpponentHotkey"; //NON-NLS
   public static final String SHOW_HOTKEY = "showHotkey"; //NON-NLS
 
   public static final String SHOW_TENTHSECONDS = "showTenths"; //NON-NLS
@@ -115,6 +117,7 @@ public class ChessClockControl extends AbstractConfigurable
   public static final String CHESSMENU_SHOW  = Resources.getString("ChessClock.show"); //NON-NLS
   public static final String CHESSMENU_HIDE  = Resources.getString("ChessClock.hide"); //NON-NLS
   public static final String CHESSMENU_NEXT  = Resources.getString("ChessClock.next"); //NON-NLS
+  public static final String CHESSMENU_START_OPPONENT  = Resources.getString("ChessClock.startOpponent"); //NON-NLS
 
   public static final String COMMAND_PREFIX = "CLOCKCONTROL" + DELIMITER; //NON-NLS-1$
 
@@ -140,6 +143,15 @@ public class ChessClockControl extends AbstractConfigurable
       }
     });
     GameModule.getGameModule().addKeyStrokeListener(nextListener);
+
+    startOpponentListener = new NamedKeyStrokeListener(e -> {
+      final Command c = startOpponentClock();
+      if ((c != null) && !c.isNull()) {
+        c.execute();
+        GameModule.getGameModule().sendAndLog(c);
+      }
+    });
+    GameModule.getGameModule().addKeyStrokeListener(startOpponentListener);
 
     showListener = new NamedKeyStrokeListener(e -> pressControlButton());
     GameModule.getGameModule().addKeyStrokeListener(showListener);
@@ -300,7 +312,7 @@ public class ChessClockControl extends AbstractConfigurable
    */
   @Override
   public String[] getAttributeNames() {
-    return new String[] { NAME, DESCRIPTION, ICON, BUTTON_TEXT, BUTTON_TOOLTIP, SHOW_HOTKEY, NEXT_HOTKEY,
+    return new String[] { NAME, DESCRIPTION, ICON, BUTTON_TEXT, BUTTON_TOOLTIP, SHOW_HOTKEY, NEXT_HOTKEY, START_OPPONENT_HOTKEY,
       PAUSE_HOTKEY, SHOW_TENTHSECONDS, SHOW_SECONDS, SHOW_HOURS, SHOW_DAYS, ALLOW_RESET };
   }
 
@@ -317,6 +329,7 @@ public class ChessClockControl extends AbstractConfigurable
       Resources.getString("Editor.tooltip_text_label"),
       Resources.getString("Editor.ChessClock.show_clocks_hotkey"),
       Resources.getString("Editor.ChessClock.start_next_clock_hotkey"),
+      Resources.getString("Editor.ChessClock.start_opponent_clock_hotkey"),
       Resources.getString("Editor.ChessClock.pause_all_clocks_hotkey"),
       Resources.getString("Editor.ChessClock.show_tenths_of_seconds"),
       Resources.getString("Editor.ChessClock.show_seconds"),
@@ -332,7 +345,7 @@ public class ChessClockControl extends AbstractConfigurable
   @Override
   public Class<?>[] getAttributeTypes() {
     return new Class[] { String.class, String.class, IconConfig.class, String.class, String.class,
-      NamedKeyStroke.class, NamedKeyStroke.class, NamedKeyStroke.class, TimeStyleConfig.class, TimeStyleConfig.class,
+      NamedKeyStroke.class, NamedKeyStroke.class, NamedKeyStroke.class, NamedKeyStroke.class, TimeStyleConfig.class, TimeStyleConfig.class,
       TimeStyleConfig.class, TimeStyleConfig.class, Boolean.class };
   }
 
@@ -354,6 +367,12 @@ public class ChessClockControl extends AbstractConfigurable
         value = NamedHotKeyConfigurer.decode((String) value);
       }
       nextListener.setKeyStroke((NamedKeyStroke) value);
+    }
+    else if (START_OPPONENT_HOTKEY.equals(key)) {
+      if (value instanceof String) {
+        value = NamedHotKeyConfigurer.decode((String) value);
+      }
+      startOpponentListener.setKeyStroke((NamedKeyStroke) value);
     }
     else if (PAUSE_HOTKEY.equals(key)) {
       if (value instanceof String) {
@@ -412,6 +431,9 @@ public class ChessClockControl extends AbstractConfigurable
     }
     else if (NEXT_HOTKEY.equals(key)) {
       return NamedHotKeyConfigurer.encode(nextListener.getNamedKeyStroke());
+    }
+    else if (START_OPPONENT_HOTKEY.equals(key)) {
+      return NamedHotKeyConfigurer.encode(startOpponentListener.getNamedKeyStroke());
     }
     else if (PAUSE_HOTKEY.equals(key)) {
       return NamedHotKeyConfigurer.encode(pauseListener.getNamedKeyStroke());
@@ -560,6 +582,36 @@ public class ChessClockControl extends AbstractConfigurable
     if (first != null) {
       command = command.append(first.updateState(true));
     }
+    return command;
+  }
+
+  /**
+   * @return a command to start the opponents clock after stopping the one currently running (if any)
+   */
+  public Command startOpponentClock() {
+    Command command = new NullCommand();
+    String mySide = PlayerRoster.getMySide();
+
+    // If we don't have any clocks, can't start one.
+    // If there are not exactly 2 clocks, this function is invalid
+    // If player doesn't belong to a side, they don't have an opponent to send to
+    if (chessclocks.isEmpty() || chessclocks.size() != 2 || mySide == null) {
+      return command;
+    }
+
+    Boolean clockStarted = false;
+    for (final ChessClock clock : chessclocks) {
+      System.out.println("Clock side: " + clock.getSide());
+      // We want to start exactly one clock, which doesn't belong to us, and only if it isn't already started
+      if (!clockStarted && !mySide.equals(clock.getSide()) && !clock.isTicking()) {
+        command = command.append(clock.updateState(true));
+        clockStarted = true;
+      }
+      else if (clock.isTicking() && mySide.equals(clock.getSide())) { // If our clock is ticking, stop it
+        command = command.append(clock.updateState(false));
+      }
+    }
+    //If we aren't inside either case, do nothing
     return command;
   }
 
@@ -841,8 +893,16 @@ public class ChessClockControl extends AbstractConfigurable
     @Override
     public void actionPerformed(ActionEvent e) {
       final String command = e.getActionCommand();
+
       if (command.contains(CHESSMENU_NEXT)) {
         final Command c = startNextClock();
+        if ((c != null) && !c.isNull()) {
+          c.execute();
+          GameModule.getGameModule().sendAndLog(c);
+        }
+      }
+      else if (command.contains(CHESSMENU_START_OPPONENT)) {
+        final Command c = startOpponentClock();
         if ((c != null) && !c.isNull()) {
           c.execute();
           GameModule.getGameModule().sendAndLog(c);
@@ -901,6 +961,10 @@ public class ChessClockControl extends AbstractConfigurable
       popup.add(item);
 
       item = new JMenuItem(CHESSMENU_NEXT + "  " + NamedHotKeyConfigurer.getString(nextListener.getNamedKeyStroke()));
+      item.addActionListener(this);
+      popup.add(item);
+
+      item = new JMenuItem(CHESSMENU_START_OPPONENT + "  " + NamedHotKeyConfigurer.getString(startOpponentListener.getNamedKeyStroke()));
       item.addActionListener(this);
       popup.add(item);
     }
