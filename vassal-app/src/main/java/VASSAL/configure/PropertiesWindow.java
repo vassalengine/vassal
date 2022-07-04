@@ -32,17 +32,12 @@ import net.miginfocom.swing.MigLayout;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.KeyStroke;
 import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -127,18 +122,8 @@ public class PropertiesWindow extends JDialog {
 
     add(buttonBox, "growy 0"); // NON-NLS
 
-    getRootPane().setDefaultButton(okButton);
-
-    // on ESC key close / cancel
-    getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
-
-    getRootPane().getActionMap().put("Cancel", new AbstractAction() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        cancelButton.doClick();
-      }
-    });
+    // Default actions on Enter/ESC
+    SwingUtils.setDefaultButtons(getRootPane(), okButton, cancelButton);
 
     pack();
     setLocationRelativeTo(getParent());

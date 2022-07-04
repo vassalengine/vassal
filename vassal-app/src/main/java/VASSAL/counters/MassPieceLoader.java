@@ -40,7 +40,6 @@ import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 import org.jdesktop.swingx.treetable.TreeTableNode;
 
-import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultListModel;
@@ -54,7 +53,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.event.TreeModelEvent;
@@ -68,8 +66,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -212,15 +208,7 @@ public class MassPieceLoader {
       add(buttonBox, "span 2,center,grow 0"); // NON-NLS
 
       // Default actions for Enter/ESC
-      getRootPane().setDefaultButton(okButton);
-      getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-        KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
-      getRootPane().getActionMap().put("Cancel", new AbstractAction() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          cancelButton.doClick();
-        }
-      });
+      SwingUtils.setDefaultButtons(getRootPane(), okButton, cancelButton);
 
       pack();
       setLocationRelativeTo(getParent());

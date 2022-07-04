@@ -22,21 +22,17 @@ import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ScrollPane;
+import VASSAL.tools.swing.SwingUtils;
 
-import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.KeyStroke;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 /**
@@ -82,16 +78,7 @@ public class ChooseComponentDialog extends JDialog implements TreeSelectionListe
     add(b);
 
     // Default actions on Enter/ESC
-    getRootPane().setDefaultButton(okButton);
-
-    getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
-    getRootPane().getActionMap().put("Cancel", new AbstractAction() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        cancelButton.doClick();
-      }
-    });
+    SwingUtils.setDefaultButtons(getRootPane(), okButton, cancelButton);
 
     pack();
   }

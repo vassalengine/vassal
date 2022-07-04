@@ -37,12 +37,10 @@ import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.swing.SwingUtils;
 import org.apache.commons.lang3.SystemUtils;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
@@ -52,7 +50,6 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
@@ -539,15 +536,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       add(bottomPanel, BorderLayout.SOUTH);
 
       // Default actions for Enter/ESC
-      getRootPane().setDefaultButton(okButton);
-      getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-        KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
-      getRootPane().getActionMap().put("Cancel", new AbstractAction() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          canButton.doClick();
-        }
-      });
+      SwingUtils.setDefaultButtons(getRootPane(), okButton, canButton);
 
       //BR// Scroll the possibly-8000-pixel-wide map to some semi-sensible place to start :)
       if (!grid.regionList.isEmpty()) {

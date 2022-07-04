@@ -1113,7 +1113,7 @@ public class PieceDefiner extends JPanel {
 
       JButton b = new JButton(Resources.getString("General.ok"));
       b.addActionListener(evt -> dispose());
-      getRootPane().setDefaultButton(b); // Register as default button (should make Enter activate it by default on Windows / Mac)
+
       buttonBox.add(b, "sg,tag ok"); //NON-NLS
 
       cancel = new JButton(Resources.getString("General.cancel"));
@@ -1124,16 +1124,7 @@ public class PieceDefiner extends JPanel {
 
       buttonBox.add(cancel, "sg,tag cancel"); //NON-NLS
 
-      // on ESC key close / cancel editor
-      getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-        KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
-
-      getRootPane().getActionMap().put("Cancel", new AbstractAction() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          cancel.doClick();
-        }
-      });
+      SwingUtils.setDefaultButtons(getRootPane(), b, cancel);
 
       if (p.getHelpFile() != null) {
         b = new JButton(Resources.getString("General.help"));

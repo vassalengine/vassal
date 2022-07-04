@@ -54,12 +54,10 @@ import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.SwingUtils;
 import org.apache.commons.lang3.SystemUtils;
 
-import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
@@ -67,7 +65,6 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
@@ -904,18 +901,8 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 
       add(mainPanel, BorderLayout.SOUTH);
 
-      getRootPane().setDefaultButton(okButton);
-
-      // on ESC key close / cancel editor
-      getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-        KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
-
-      getRootPane().getActionMap().put("Cancel", new AbstractAction() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          canButton.doClick();
-        }
-      });
+      // Default actions on Enter/ESC
+      SwingUtils.setDefaultButtons(getRootPane(), okButton, canButton);
 
       scroll.revalidate();
       updateDisplay();

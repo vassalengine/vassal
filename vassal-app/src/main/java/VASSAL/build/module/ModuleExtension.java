@@ -36,6 +36,7 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.DataArchive;
+import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.version.VersionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,14 +48,11 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -519,15 +517,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       d.add(b);
 
       // Default actions on Enter/ESC
-      d.getRootPane().setDefaultButton(ok);
-      d.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-        KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
-      d.getRootPane().getActionMap().put("Cancel", new AbstractAction() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          cancel.doClick();
-        }
-      });
+      SwingUtils.setDefaultButtons(d.getRootPane(), ok, cancel);
 
       d.pack();
       d.setLocationRelativeTo(d.getParent());

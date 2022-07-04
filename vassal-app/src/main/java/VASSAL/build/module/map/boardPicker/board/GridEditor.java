@@ -28,16 +28,13 @@ import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.swing.SwingUtils;
 import org.apache.commons.lang3.SystemUtils;
 
-import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -48,7 +45,6 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -181,15 +177,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     add(controlPanel, BorderLayout.SOUTH);
 
     // Default actions for Enter/ESC
-    getRootPane().setDefaultButton(okButton);
-    getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
-    getRootPane().getActionMap().put("Cancel", new AbstractAction() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        canButton.doClick();
-      }
-    });
+    SwingUtils.setDefaultButtons(getRootPane(), okButton, canButton);
 
     scroll.revalidate();
     pack();

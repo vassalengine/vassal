@@ -55,17 +55,14 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -586,15 +583,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       exitButton.addActionListener(e -> exit());
 
       // Default actions on Enter/ESC
-      getRootPane().setDefaultButton(runButton);
-      getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-        KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
-      getRootPane().getActionMap().put("Cancel", new AbstractAction() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          exitButton.doClick();
-        }
-      });
+      SwingUtils.setDefaultButtons(getRootPane(), runButton, exitButton);
 
       final JButton helpButton = new JButton(Resources.getString("General.help"));
       helpButton.addActionListener(e -> help());

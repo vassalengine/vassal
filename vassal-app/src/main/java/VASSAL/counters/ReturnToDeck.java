@@ -35,12 +35,11 @@ import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.swing.SwingUtils;
 
-import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -51,8 +50,6 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -267,15 +264,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     d.add(box);
 
     // Default actions for Enter/ESC
-    d.getRootPane().setDefaultButton(okButton);
-    d.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
-    d.getRootPane().getActionMap().put("Cancel", new AbstractAction() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        cancelButton.doClick();
-      }
-    });
+    SwingUtils.setDefaultButtons(d.getRootPane(), okButton, cancelButton);
 
     d.pack();
     d.setLocationRelativeTo(d.getOwner());

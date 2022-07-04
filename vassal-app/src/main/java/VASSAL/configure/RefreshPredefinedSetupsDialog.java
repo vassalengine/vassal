@@ -31,20 +31,15 @@ import net.miginfocom.swing.MigLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-import javax.swing.KeyStroke;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.Frame;
 import java.awt.HeadlessException;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -146,15 +141,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     SwingUtils.repack(this);
 
     // Default actions on Enter/ESC
-    getRootPane().setDefaultButton(refreshButton);
-    getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
-    getRootPane().getActionMap().put("Cancel", new AbstractAction() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        closeButton.doClick();
-      }
-    });
+    SwingUtils.setDefaultButtons(getRootPane(), refreshButton, closeButton);
 
     deleteOldDecks.setVisible(refreshDecks.isSelected());
     addNewDecks.setVisible(refreshDecks.isSelected());

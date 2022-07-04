@@ -31,8 +31,8 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.WarningDialog;
+import VASSAL.tools.swing.SwingUtils;
 
-import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -43,7 +43,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
-import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
@@ -53,10 +52,8 @@ import javax.swing.table.TableColumn;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -483,15 +480,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       d.add(buttonPanel);
 
       // Default actions for Enter/ESC
-      d.getRootPane().setDefaultButton(okButton);
-      d.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-        KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
-      d.getRootPane().getActionMap().put("Cancel", new AbstractAction() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          cancelButton.doClick();
-        }
-      });
+      SwingUtils.setDefaultButtons(d.getRootPane(), okButton, cancelButton);
 
       d.pack();
       d.setLocationRelativeTo(d.getOwner());

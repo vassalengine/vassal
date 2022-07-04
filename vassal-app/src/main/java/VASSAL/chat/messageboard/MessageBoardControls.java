@@ -20,6 +20,7 @@ package VASSAL.chat.messageboard;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.menu.MenuManager;
+import VASSAL.tools.swing.SwingUtils;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -27,15 +28,12 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.KeyStroke;
 import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
@@ -238,15 +236,7 @@ public class MessageBoardControls {
       add(b);
 
       // Default actions for Enter/ESC
-      getRootPane().setDefaultButton(okButton);
-      getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-        KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
-      getRootPane().getActionMap().put("Cancel", new AbstractAction() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          cancelButton.doClick();
-        }
-      });
+      SwingUtils.setDefaultButtons(getRootPane(), okButton, cancelButton);
 
       pack();
       setLocation(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width / 2 - getSize().width / 2, 0);

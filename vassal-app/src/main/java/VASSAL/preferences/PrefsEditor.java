@@ -32,13 +32,11 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -47,7 +45,6 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -117,15 +114,7 @@ public class PrefsEditor {
       dialog.add(buttonPanel, "grow");
 
       // Default actions for Enter/ESC
-      dialog.getRootPane().setDefaultButton(ok);
-      dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-        KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
-      dialog.getRootPane().getActionMap().put("Cancel", new AbstractAction() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          cancel.doClick();
-        }
-      });
+      SwingUtils.setDefaultButtons(dialog.getRootPane(), ok, cancel);
     }
   }
 
@@ -164,15 +153,7 @@ public class PrefsEditor {
       setupDialog.add(p);
 
       // Default actions for Enter/ESC
-      setupDialog.getRootPane().setDefaultButton(okButton);
-      setupDialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-        KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
-      setupDialog.getRootPane().getActionMap().put("Cancel", new AbstractAction() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          okButton.doClick();
-        }
-      });
+      SwingUtils.setDefaultButtons(setupDialog.getRootPane(), okButton, okButton); // okButton for both
 
       setupDialog.pack();
       final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();

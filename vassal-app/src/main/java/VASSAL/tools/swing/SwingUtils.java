@@ -19,6 +19,10 @@ package VASSAL.tools.swing;
 import VASSAL.build.module.GlobalOptions;
 import org.apache.commons.lang3.SystemUtils;
 
+import javax.swing.AbstractAction;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JRootPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import java.awt.Component;
@@ -30,6 +34,7 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.dnd.DragGestureEvent;
+import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -575,6 +580,30 @@ public class SwingUtils {
       w.pack();
       w.setMinimumSize(new Dimension(0, 0));
       SwingUtils.ensureOnScreen(w);
+    }
+  }
+
+  /**
+   * Set up the default Enter/ESC behavior for a dialog or frame
+   * @param rp Root pane of dialog or frame
+   * @param ok OK button (triggers on ENTER)
+   * @param cancel Cancel button (triggers on ESC)
+   */
+  public static void setDefaultButtons(JRootPane rp, JButton ok, JButton cancel) {
+    if (ok != null) {
+      rp.setDefaultButton(ok);
+    }
+    if (cancel != null) {
+      rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+        KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+        "Cancel"
+      );
+      rp.getActionMap().put("Cancel", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          cancel.doClick();
+        }
+      });
     }
   }
 }

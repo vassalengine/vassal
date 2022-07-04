@@ -22,15 +22,10 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.swing.SwingUtils;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-import javax.swing.KeyStroke;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -92,18 +87,8 @@ public class ConfigurerWindow extends JDialog {
     add(panel, "grow"); // NON-NLS
     cancelled = false;
 
-    getRootPane().setDefaultButton(okButton);
-
-    // on ESC key close / cancel editor
-    getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
-
-    getRootPane().getActionMap().put("Cancel", new AbstractAction() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        canButton.doClick();
-      }
-    });
+    // Default actions on Enter/ESC
+    SwingUtils.setDefaultButtons(getRootPane(), okButton, canButton);
 
     SwingUtils.repack(this);
   }
