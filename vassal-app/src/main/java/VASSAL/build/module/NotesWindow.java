@@ -36,9 +36,9 @@ import VASSAL.configure.TextConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.swing.SwingUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
-import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -47,9 +47,6 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.KeyStroke;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -215,15 +212,7 @@ public class NotesWindow extends AbstractToolbarItem
       p.add(cancelButton);
       add(p);
 
-      // Default actions for ESC
-      getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-        KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); //$NON-NLS-1$
-      getRootPane().getActionMap().put("Cancel", new AbstractAction() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          cancelButton.doClick();
-        }
-      });
+      SwingUtils.setDefaultButtons(getRootPane(), null, cancelButton);
     }
   }
 
