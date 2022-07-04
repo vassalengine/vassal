@@ -37,11 +37,13 @@ public class ValidationReportDialog extends JDialog {
   private static final long serialVersionUID = 1L;
 
   private final CallBack callback;
-  JButton okButton;
-  JButton cancelButton;
 
   public ValidationReportDialog(ValidationReport report, CallBack cb) {
     super(GameModule.getGameModule().getPlayerWindow(), false);
+
+    final JButton okButton;
+    final JButton cancelButton;
+
     setTitle(Resources.getString("Editor.ValidationReportDialog.problems"));
     setLayout(new MigLayout("ins panel", "[fill,grow]"));
     this.callback = cb;
