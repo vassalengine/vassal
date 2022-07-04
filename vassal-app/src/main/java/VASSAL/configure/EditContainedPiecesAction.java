@@ -31,16 +31,22 @@ import VASSAL.i18n.Resources;
 public class EditContainedPiecesAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
 
-  private final Configurable target;
+  private ConfigureTree tree;
+  private Configurable target;
 
   public EditContainedPiecesAction(Configurable target) {
     super(Resources.getString("Editor.EditContainedPiecesAction.what_it_does"));
     this.target = target;
   }
 
+  public EditContainedPiecesAction(Configurable target, ConfigureTree tree) {
+    this(target);
+    this.tree = tree;
+  }
+
   @Override
   public void actionPerformed(ActionEvent evt) {
-    final MassPieceDefiner mass = new MassPieceDefiner(target);
+    final MassPieceDefiner mass = new MassPieceDefiner(target, tree);
     final Configurer c = new Configurer("", "") {
       @Override
       public void setValue(String s) {

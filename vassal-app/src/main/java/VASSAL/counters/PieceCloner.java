@@ -40,10 +40,26 @@ public class PieceCloner {
 
   /**
    * Create a new instance that is a clone of the given piece.
+   * Expand any prototypes to create a fully functional piece
    *
    * @return the new instance
    */
   public GamePiece clonePiece(GamePiece piece) {
+    return clonePiece(piece, true);
+  }
+
+  /**
+   * Create a new instance that is a clone of the given piece.
+   * Do not expand any prototypes.
+   *
+   * @return the new instance
+   */
+  public GamePiece clonePieceUnexpanded(GamePiece piece) {
+    return clonePiece(piece, false);
+  }
+
+
+  public GamePiece clonePiece(GamePiece piece, boolean expandPiece) {
     GamePiece clone = null;
     if (piece instanceof BasicPiece) {
       clone = GameModule.getGameModule().createPiece(piece.getType());
@@ -55,7 +71,7 @@ public class PieceCloner {
       clone.setState(piece.getState());
       piece.setMap(m);
     }
-    else if (piece instanceof UsePrototype) {
+    else if (piece instanceof UsePrototype && expandPiece) {
       clone = clonePiece(((UsePrototype)piece).getExpandedInner());
     }
     else if (piece instanceof EditablePiece && piece instanceof Decorator) {
@@ -85,4 +101,6 @@ public class PieceCloner {
     }
     return clone;
   }
+
 }
+
