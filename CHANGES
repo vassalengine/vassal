@@ -5,6 +5,8 @@
 * 11543: Closing game should reset multiplayer flag for console
 * 11540: Display translated Basic Piece/Basic Name in Scrollable lists in Game
     Piece Palette
+* 11537: Cancel key in Multi-Piece Editor (Edit all contained pieces)
+    correctly backs out with no changes
 * 11524: Option to 'always use format' on text label (even if label is blank)
 * 11521: BoundsTracker - Track bounds and repaint just for the regions of
     added pieces; rather than the whole map
