@@ -1708,9 +1708,6 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
   }
 
-  private JButton okButton;
-  private JButton cancelButton;
-
   protected void promptForNextDraw() {
     final JDialog d = new JDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, map.getView()), true);
     d.setTitle(Resources.getString("Deck.draw")); //$NON-NLS-1$
@@ -1758,6 +1755,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     if (selectSortProperty != null && selectSortProperty.length() > 0) {
       Arrays.sort(pieces);
     }
+
+    final JButton okButton;
+    final JButton cancelButton;
 
     final JList<AvailablePiece> list = new JList<>(pieces);
     list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
