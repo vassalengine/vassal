@@ -591,23 +591,25 @@ public class ChessClockControl extends AbstractConfigurable
   public Command startOpponentClock() {
     Command command = new NullCommand();
     final String mySide = PlayerRoster.getMySide();
+    System.out.println(mySide);
 
     // If we don't have any clocks, can't start one.
     // If there are not exactly 2 clocks, this function is invalid
     // If player doesn't belong to a side, they don't have an opponent to send to
-    if (chessclocks.isEmpty() || chessclocks.size() != 2 || mySide == null) {
+    if (chessclocks.isEmpty() || chessclocks.size() != 2 || mySide == null || mySide.contains("observer")) {
       return command;
     }
 
-    Boolean clockStarted = false;
+    Boolean clockTicking = false;
     for (final ChessClock clock : chessclocks) {
-      System.out.println("Clock side: " + clock.getSide());
       // We want to start exactly one clock, which doesn't belong to us, and only if it isn't already started
-      if (!clockStarted && !mySide.equals(clock.getSide()) && !clock.isTicking()) {
-        command = command.append(clock.updateState(true));
-        clockStarted = true;
+      if (!clockTicking && !mySide.equals(clock.getSide())) {
+        if (!clock.isTicking()) {
+          command = command.append(clock.updateState(true));
+        }
+        clockTicking = true;
       }
-      else if (clock.isTicking() && mySide.equals(clock.getSide())) { // If our clock is ticking, stop it
+      else if (clock.isTicking() && (mySide.equals(clock.getSide()) || clockTicking)) { // If our clock is ticking, stop it
         command = command.append(clock.updateState(false));
       }
     }
