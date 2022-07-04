@@ -590,7 +590,7 @@ public class ChessClockControl extends AbstractConfigurable
    */
   public Command startOpponentClock() {
     Command command = new NullCommand();
-    String mySide = PlayerRoster.getMySide();
+    final String mySide = PlayerRoster.getMySide();
 
     // If we don't have any clocks, can't start one.
     // If there are not exactly 2 clocks, this function is invalid
