@@ -64,8 +64,6 @@ public class PrefsEditor {
   private final JTabbedPane optionsTab = new JTabbedPane();
   private JDialog setupDialog;
   private Action editAction;
-  private JButton ok;
-  private JButton cancel;
 
   public void initDialog(Frame parent) {
     if (dialog == null) {
@@ -90,10 +88,10 @@ public class PrefsEditor {
         BrowserSupport.openURL(helpFile.getContents().toString());
       });
 
-      ok = new JButton(Resources.getString(Resources.OK));
+      final JButton ok = new JButton(Resources.getString(Resources.OK));
       ok.addActionListener(e -> save());
 
-      cancel = new JButton(Resources.getString(Resources.CANCEL));
+      final JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
       cancel.addActionListener(e -> cancel());
 
       dialog.setLayout(new MigLayout("insets dialog", "[push,fill]"));
@@ -126,8 +124,6 @@ public class PrefsEditor {
     prefs.add(p);
   }
 
-  private JButton okButton;
-
   public void addOption(String category, Configurer c, String prompt) {
     if (prompt != null) {
       if (setupDialog == null) {
@@ -146,7 +142,7 @@ public class PrefsEditor {
       p.add(new JLabel(prompt));
       setupDialog.add(p);
       setupDialog.add(c.getControls());
-      final JButton b = okButton = new JButton(Resources.getString(Resources.OK));
+      final JButton okButton = new JButton(Resources.getString(Resources.OK));
       b.addActionListener(evt -> setupDialog.setVisible(false));
       p = new JPanel();
       p.add(b);

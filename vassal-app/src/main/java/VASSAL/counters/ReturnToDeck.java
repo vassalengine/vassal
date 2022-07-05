@@ -209,10 +209,6 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
 
   private DrawPile promptForDrawPile() {
     final JDialog d = new JDialog(GameModule.getGameModule().getPlayerWindow(), true);
-
-    JButton okButton;
-    JButton cancelButton;
-
     d.setTitle(Decorator.getInnermost(this).getName()); //$NON-NLS-1$
     d.setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
 
@@ -248,19 +244,23 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     prompt.setAlignmentX(0.5f);
     d.add(prompt); //$NON-NLS-1$
     d.add(new ScrollPane(list));
+
     final Box box = Box.createHorizontalBox();
     box.setAlignmentX(0.5F);
-    JButton b = okButton = new JButton(Resources.getString(Resources.OK));
-    b.addActionListener(e -> {
+
+    final JButton okButton = new JButton(Resources.getString(Resources.OK));
+    okButton.addActionListener(e -> {
       final AvailableDeck selection = list.getSelectedValue();
       if (selection != null)
         deck = selection.pile;
       d.dispose();
     });
-    box.add(b);
-    b = cancelButton = new JButton(Resources.getString(Resources.CANCEL));
-    b.addActionListener(e -> d.dispose());
-    box.add(b);
+    box.add(okButton);
+
+    final JButton cancelButton = new JButton(Resources.getString(Resources.CANCEL));
+    cancelButton.addActionListener(e -> d.dispose());
+    box.add(cancelButton);
+
     d.add(box);
 
     // Default actions for Enter/ESC

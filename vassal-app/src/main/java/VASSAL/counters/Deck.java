@@ -1756,17 +1756,16 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       Arrays.sort(pieces);
     }
 
-    final JButton okButton;
-    final JButton cancelButton;
-
     final JList<AvailablePiece> list = new JList<>(pieces);
     list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
     d.add(new ScrollPane(list));
     d.add(new JLabel(Resources.getString("Deck.select_cards"))); //$NON-NLS-1$
     d.add(new JLabel(Resources.getString("Deck.then_click"))); //$NON-NLS-1$
+
     final Box box = Box.createHorizontalBox();
-    JButton b = okButton = new JButton(Resources.getString(Resources.OK));
-    b.addActionListener(e -> {
+
+    final JButton okButton = new JButton(Resources.getString(Resources.OK));
+    okButton.addActionListener(e -> {
       final int[] selection = list.getSelectedIndices();
       if (selection.length > 0) {
         nextDraw = new ArrayList<>();
@@ -1779,10 +1778,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       }
       d.dispose();
     });
-    box.add(b);
-    b = cancelButton = new JButton(Resources.getString(Resources.CANCEL));
-    b.addActionListener(e -> d.dispose());
-    box.add(b);
+    box.add(okButton);
+
+    final JButton cancelButton = new JButton(Resources.getString(Resources.CANCEL));
+    cancelButton.addActionListener(e -> d.dispose());
+    box.add(cancelButton);
     d.add(box);
 
     // Default actions for Enter/ESC
