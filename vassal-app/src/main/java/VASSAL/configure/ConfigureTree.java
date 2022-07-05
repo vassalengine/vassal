@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2000-2003 by Rodney Kinney
+ * Copyright (c) 2000-2022 by Rodney Kinney, The Vassal Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -448,7 +448,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     final JPopupMenu popup = new JPopupMenu();
     final List<Action> l = new ArrayList<>();
     l.add(buildEditAction(target));
-    l.add(buildEditPiecesAction(target));
     addActionGroup(popup, l);
     l.add(buildTranslateAction(target));
     addActionGroup(popup, l);
@@ -473,6 +472,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       addAction(popup, buildMassPieceLoaderAction(target));
     }
     addAction(popup, buildImportAction(target));
+
+    popup.addSeparator();
+    addAction(popup, buildOpenPiecesAction(target));
+    addAction(popup, buildEditPiecesAction(target));
+
     return popup;
   }
 
@@ -1035,6 +1039,15 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected Action buildEditPiecesAction(final Configurable target) {
     if (canContainGamePiece(target)) {
       return new EditContainedPiecesAction(target, this);
+    }
+    else {
+      return null;
+    }
+  }
+
+  protected Action buildOpenPiecesAction(final Configurable target) {
+    if (canContainGamePiece(target)) {
+      return new OpenContainedPiecesAction(target, helpWindow, (Frame) SwingUtilities.getAncestorOfClass(Frame.class, this), this);
     }
     else {
       return null;

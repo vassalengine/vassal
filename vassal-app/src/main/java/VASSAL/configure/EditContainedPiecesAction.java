@@ -17,8 +17,10 @@
  */
 package VASSAL.configure;
 
+import VASSAL.build.widget.PieceSlot;
 import java.awt.event.ActionEvent;
 
+import java.util.Arrays;
 import javax.swing.AbstractAction;
 
 import VASSAL.build.Configurable;
@@ -37,6 +39,7 @@ public class EditContainedPiecesAction extends AbstractAction {
   public EditContainedPiecesAction(Configurable target) {
     super(Resources.getString("Editor.EditContainedPiecesAction.what_it_does"));
     this.target = target;
+    setEnabled(Arrays.stream(target.getConfigureComponents()).anyMatch(c -> c instanceof PieceSlot));
   }
 
   public EditContainedPiecesAction(Configurable target, ConfigureTree tree) {
