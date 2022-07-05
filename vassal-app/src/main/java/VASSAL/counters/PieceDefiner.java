@@ -1194,7 +1194,6 @@ public class PieceDefiner extends JPanel {
     private static final long serialVersionUID = 1L;
 
     PieceEditor ed;
-    JButton cancel;
 
     private Ed(Frame owner, final EditablePiece p) {
       super(owner, Resources.getString("Editor.PieceDefiner.properties", p.getDescription()), true);
@@ -1222,7 +1221,7 @@ public class PieceDefiner extends JPanel {
 
       buttonBox.add(b, "sg,tag ok"); //NON-NLS
 
-      cancel = new JButton(Resources.getString("General.cancel"));
+      final JButton cancel = new JButton(Resources.getString("General.cancel"));
       cancel.addActionListener(evt -> {
         ed = null;
         dispose();

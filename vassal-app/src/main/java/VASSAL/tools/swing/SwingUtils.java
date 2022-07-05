@@ -25,6 +25,8 @@ import javax.swing.JComponent;
 import javax.swing.JRootPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.text.JTextComponent;
+import javax.swing.undo.UndoManager;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -605,5 +607,39 @@ public class SwingUtils {
         }
       });
     }
+  }
+
+  /**
+   * Sets a text component to allow Undo
+   * @param field the text component
+   */
+  public static UndoManager allowUndo(JTextComponent field) {
+    // Ctrl+Z/Cmd+Z performs undo
+    final UndoManager um = new UndoManager();
+    field.getDocument().addUndoableEditListener(um);
+    field.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_Z, SwingUtils.getModifierKeyMask()), "Undo"); //$NON-NLS-1$
+    field.getActionMap().put("Undo", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        if (um.canUndo()) {
+          um.undo();
+        }
+      }
+    });
+
+    // Ctrl+Shift+Z/Cmd+Shift+Z performs undo
+    field.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_Z, SwingUtils.getModifierKeyMask() + KeyEvent.SHIFT_DOWN_MASK), "Redo"); //$NON-NLS-1$
+    field.getActionMap().put("Redo", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        if (um.canRedo()) {
+          um.redo();
+        }
+      }
+    });
+
+    return um;
   }
 }
