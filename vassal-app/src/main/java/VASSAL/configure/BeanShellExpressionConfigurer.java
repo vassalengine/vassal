@@ -17,13 +17,14 @@
  */
 package VASSAL.configure;
 
+import VASSAL.counters.EditablePiece;
+import VASSAL.counters.GamePiece;
+import VASSAL.i18n.Resources;
+import VASSAL.script.expression.FunctionBuilder;
+import VASSAL.tools.icon.IconFactory;
+import VASSAL.tools.icon.IconFamily;
 import bsh.BeanShellExpressionValidator;
-
-import java.awt.Component;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
-import java.util.List;
+import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
@@ -34,14 +35,11 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-
-import VASSAL.counters.EditablePiece;
-import VASSAL.counters.GamePiece;
-import VASSAL.i18n.Resources;
-import VASSAL.script.expression.FunctionBuilder;
-import VASSAL.tools.icon.IconFactory;
-import VASSAL.tools.icon.IconFamily;
-import net.miginfocom.swing.MigLayout;
+import java.awt.Component;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.util.List;
 
 /**
  * A Configurer for Java Expressions
@@ -174,6 +172,20 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
           updateParentBuilder();
         }
       });
+
+      // Edit box selects all text when first focused
+      nameField.addFocusListener(new java.awt.event.FocusAdapter() {
+        @Override
+        public void focusGained(java.awt.event.FocusEvent evt) {
+          SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+              nameField.selectAll();
+            }
+          });
+        }
+      });
+
       panel.add(validator);
       panel.add(extraDetails);
       expressionPanel.add(panel, "grow"); // NON-NLS
