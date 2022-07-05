@@ -513,7 +513,7 @@ public class PieceDefiner extends JPanel {
           return;
         }
 
-        final String key = "" + Character.toLowerCase(ch);
+        final String key = Character.toString(Character.toLowerCase(ch));
 
         // Iterate through items in the list until a matching prefix is found.
         for (int i = 0; i < availableList.getModel().getSize(); i++) {
@@ -737,12 +737,12 @@ public class PieceDefiner extends JPanel {
           return;
         }
 
-        final String key = "" + Character.toLowerCase(ch);
+        final String key = Character.toString(Character.toLowerCase(ch));
 
         // Iterate through items in the list until a matching prefix is found.
         for (int i = 0; i < inUseList.getModel().getSize(); i++) {
 
-          int index = (i + inUseList.getSelectedIndex() + 1) % inUseList.getModel().getSize();
+          final int index = (i + inUseList.getSelectedIndex() + 1) % inUseList.getModel().getSize();
 
           final GamePiece trait = inUseList.getModel().getElementAt(index);
           final String str;
