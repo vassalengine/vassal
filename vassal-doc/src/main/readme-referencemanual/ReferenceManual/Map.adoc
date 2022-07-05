@@ -235,7 +235,7 @@ NOTE: Zoom in and out can also be performed by holding the Control key down whil
 |===
 |
 *Preset Zoom Levels:*::  Configures a series of fractional scale factors for display of the Map Window.
-In the list on the right-hand side, all of the currently configured scale factors are listed.
+In the list on the right-hand side, all the currently configured scale factors are listed.
 The one with an asterisk (*) indicates the scale factor at which the Map Window will begin when the module is started.
 The other scale factors represent the settings along a range which clicking the "Zoom in" and "Zoom out" buttons will move the zoom level.
 +
@@ -487,7 +487,7 @@ This is the key command that will _initiate_ the Global Key Command, not the one
 *Global Key Command:*:: The key command or <<NamedKeyCommand.adoc#top,Named Key Command>> that will be sent and applied to the selected pieces.
 
 *Apply to counters on this map only?:*::  If checked, then only pieces on this map will be eligible to receive the key command.
-Otherwise all pieces in the game will be eligible provide they match the expression above.
+Otherwise, all pieces in the game will be eligible provided they match the expression above.
 
 *Pre-select (Fast Match):*::  New from VASSAL 3.5, the *Fast Match* selections can be used to improve the performance of "slow" Global Key Commands by pre-matching the location and/or a single property value of the target piece. Essentially these run limited but much faster comparisons, to screen out some of the potentially hundreds of pieces needing to be checked for each Global Key Command. Fast Match expressions are _optional_ in that the same comparisons can always be run in the standard "Additional matching expression" field. Judicious use of them, however, can improve the performance of a Global Key Command by 25-33%.
 +

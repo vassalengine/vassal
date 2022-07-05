@@ -38,7 +38,7 @@ Then, you will need to right-click each _[Symbolic Die]_ entry, and select _Add 
 
 *Report format:*::  A <<MessageFormat.adoc#top,Message Format>> specifying the format for reporting text results: _$name$_ is the name of the button as specified above, __$result1$, $result2$, etc__is the result of the 1st, 2nd, etc.
 _[Symbolic Die]_ component.
-_$numericalTotal$_ is the sum of the numerical values all of the Symbolic Die rolls.
+_$numericalTotal$_ is the sum of the numerical values of all the Symbolic Die rolls.
 
 NOTE:  as of Vassal 3.3.3 these reports can include HTML tags, including _<img>_ tags to place dice images directly into the chat log (see example below).
 

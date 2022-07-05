@@ -38,7 +38,7 @@ image:images/GamePiece.png[]
 [#TraitOrder]
 === Trait Ordering and YOU
 
-Although you can probably make it a reasonable way into designing your first VASSAL module by just loading <<#Traits,Traits>> into a piece in whatever order they occur to you, _eventually_ as your mastery grows and you begin to think of more and more ambitious ways to improve your game and module there may well come a time when your traits will seem to be interacting oddly with each other.
+Although you can probably make it a reasonable way into designing your first VASSAL module by just loading <<#Traits,Traits>> into a piece in whatever order they occur to you, _eventually_ as your mastery grows, and you begin to think of more and more ambitious ways to improve your game and module there may well come a time when your traits will seem to be interacting oddly with each other.
 Perhaps the trait you expected to be hidden by the Mask trait you just added isn't disappearing? Or parts of the piece you set up to be rotatable aren't rotating? Or parts that you set up _not_ to rotate _are_ rotating? Or maybe the Trigger Actions you are sending aren't being resolved in the order you expected they would?
 
 Well it turns out that the interactions between different traits within the same piece are substantially affected by the _order_ those traits appear in the Game Piece's trait list! This section will walk you through the relationships between traits, provide you with some basic "rules of thumb" for ordering your traits, and then end with a comprehensive trait ordering guide that should be a regular touchstone even when you've become a VASSAL master!
@@ -47,13 +47,13 @@ Well it turns out that the interactions between different traits within the same
 
 [cols=",",]
 |===
-|_Most_ <<#Traits,Traits>> which draw something are drawn starting from the <<BasicPiece.adoc#top,Basic Piece>> and proceeding downwards, meaning that the last Layer (or Text Label, etc) in the list will be drawn overtop everything else.
-However there are two exceptions: Area of Effect traits, and any Layer with the _Underneath when highlighted?_ option when the piece is currently selected.
+|_Most_ <<#Traits,Traits>> which draw something are drawn starting from the <<BasicPiece.adoc#top,Basic Piece>> and proceeding downwards, meaning that the last Layer (or Text Label, etc.) in the list will be drawn overtop everything else.
+However, there are two exceptions: Area of Effect traits, and any Layer with the _Underneath when highlighted?_ option when the piece is currently selected.
 In both of these cases, the "exception" traits (Area-of-Effect or Draw-Underneath) are drawn _before_ the Basic Piece.
-If more than one of these exceptions exists in a single piece, then the first to draw will be the _lowest_ trait in the list, then the next lowest, etc -- the opposite of the normal order, and all before the Basic Piece.
+If more than one of these exceptions exists in a single piece, then the first to draw will be the _lowest_ trait in the list, then the next lowest, etc. -- the opposite of the normal order, and all before the Basic Piece.
 
 The chart at right illustrates the draw order for a sample set of piece traits.
-The two exception traits are drawn first (in bottom up order), followed by everything else (in top down order). Changing the order of the traits in this piece would change the order in which they were drawn.
+The two exception traits are drawn first (in bottom up order), followed by everything else (in top-down order). Changing the order of the traits in this piece would change the order in which they were drawn.
 For example if the _Text Label_ trait were moved up to the position directly underneath the Basic Piece, then it would be drawn right after the Basic Piece.
 |image:images/GamePieceDrawOrder.png[] +
 |===
@@ -63,7 +63,7 @@ For example if the _Text Label_ trait were moved up to the position directly und
 [cols=",",]
 |===
 |Some <<#Traits,Traits>>, such as _Can Rotate_, _Mask_, and _Restrict Commands_ are designed to directly control and affect other traits (without the use of Key Commands). These traits will _only_ affect traits which appear _above_ them in the list of traits after taking prototypes into account.
-Conversely each trait can only be affected/controlled/modified by traits which appear _below_ them in the list of traits.
+Conversely, each trait can only be affected/controlled/modified by traits which appear _below_ them in the list of traits.
 You must think about each trait, how it affects the Game Piece, and whether it should affect, or be affected by other traits of the Game Piece.
 The chart at right provides some general guidance for an ordering that will frequently be the best, but it is not exhaustive -- there will be special cases where you will want to deviate from it.
 
@@ -161,7 +161,7 @@ Spreadsheet +
 Property Sheet +
 Dynamic Property
 |Property traits can have their values read faster (so that Vassal runs slightly faster) the *_lower_* they are in the trait list.
-However you'll normally want the "setter" actions of e.g.
+However, you'll normally want the "setter" actions of e.g.
 Dynamic Properties and Set Global Property to remain *_above_* any Mask, Invisible, Restrict Access, and Restrict Commands traits that could affect them.
 
 |Mask +
@@ -219,7 +219,7 @@ a|
 
 Every Game Piece contains a Basic Piece, which itself contains a name string and can also be assigned an image.
 For a truly simple piece this is all that is necessary.
-However for pieces that need more complex images or combinations of them, the image from the Basic Piece element can be omitted in favor of ones from e.g.
+However, for pieces that need more complex images or combinations of them, the image from the Basic Piece element can be omitted in favor of ones from e.g.
 Layer traits.
 
 The Basic Piece exposes a list of <<Properties.adoc#top,Properties>> concerning name, location, and other common piece details.
@@ -335,7 +335,7 @@ a|
 
 Allows pieces to activate a function from the Toolbar, via the Hotkey associated with the button on the Toolbar.
 
-<<GlobalHotkey.adoc#top,See full article for details.>>
+<<GlobalHotKey.adoc#top,See full article for details.>>
 
 |image:images/GlobalHotkey.png[]
 |===

@@ -32,6 +32,7 @@ import javax.swing.JLayer;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.plaf.LayerUI;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
@@ -205,6 +206,19 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
       keyName.setText(getValueNamedKeyStroke() == null ? null : getValueNamedKeyStroke().getName());
       ((AbstractDocument) keyName.getDocument()).setDocumentFilter(new KeyNameFilter());
       keyName.addFocusListener(this);
+
+      // Edit box selects all text when first focused
+      keyName.addFocusListener(new java.awt.event.FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent evt) {
+          SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+              keyName.selectAll();
+            }
+          });
+        }
+      });
 
       final JPanel panel = new JPanel(new MigLayout("ins 0", "[fill,grow]0[]0[fill,grow]0[]")); // NON-NLS
 

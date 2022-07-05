@@ -10,7 +10,7 @@ When you update the <<Prototypes.adoc#top,Prototypes>> in a module, those change
 
 But particularly since the <<GameModule.adoc#PredefinedSetup, Predefined Setups>> for module scenarios are stored internally as saved games, it is often important to module designers to be able to update an existing game to use the latest prototypes. That way a module designer can often avoid re-doing complex setups simply because prototypes have been updated and improved.
 
-Running the _Refresh Predefined Setups_ tool is equivalent to running the <<SavedGameUpdater.adoc, Refresh Counters Tool>> on each of the predefined setups in a module.
+Running the _Refresh Predefined Setups_ tool is equivalent to running the <<GameRefresher.adoc#top, Refresh Counters Tool>> on each of the predefined setups in a module.
 
 [width="100%",cols="50%,^50%",]
 |===
@@ -26,7 +26,7 @@ Note that you should then save your module to complete the update.
 
 As of VASSAL 3.6 you can also refresh the <<Deck.adoc#top, Decks>> in a module. Like Game Pieces, Decks are not normally updated from the module definitions _during_ a game, and so if you have an updated version of the module and load a saved game the deck will still behave according to the original settings. This maintains backward-compatibility with saves and logs made with earlier versions of a module, but it can become awkward when managing modules that use <<GameModule.adoc#PredefinedSetup,Pre-defined Setups>> as starting positions. The Deck Refresher lets you update, add, and delete decks in a game, for this reason.
 
-If you select the _Refresh decks_ option when running the Game Refresher, existing decks will be refreshed from the latest settings and positions in the module definition. This will update almost all of the properties of the deck, including key commands, menu text, and the various check-box options that configure a deck. A deck can even be moved from one position to another this way. However decks are matched by name, so changing the _name_ of a deck will make the deck refresher think that a deck of the old name has been deleted and a new deck has been created.
+If you select the _Refresh decks_ option when running the Game Refresher, existing decks will be refreshed from the latest settings and positions in the module definition. This will update almost all of the properties of the deck, including key commands, menu text, and the various check-box options that configure a deck. A deck can even be moved from one position to another this way. However, decks are matched by name, so changing the _name_ of a deck will make the deck refresher think that a deck of the old name has been deleted and a new deck has been created.
 
 ===== Adding and Deleting Decks
 When _Refresh decks_ is selected, two additional options also become available, to add and delete decks.

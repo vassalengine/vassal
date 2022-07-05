@@ -406,6 +406,15 @@ public class ExtensionTree extends ConfigureTree {
   }
 
   @Override
+  protected Action buildOpenPiecesAction(Configurable target) {
+    Action a = null;
+    if (isEditable(target)) {
+      a = super.buildOpenPiecesAction(target);
+    }
+    return a;
+  }
+
+  @Override
   protected boolean isValidParent(Configurable parent, Configurable child) {
     return super.isValidParent(parent, child) && isEditable(parent);
   }

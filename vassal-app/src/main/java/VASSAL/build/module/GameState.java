@@ -952,6 +952,11 @@ public class GameState implements CommandEncoder {
   public void closeGame() {
     GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
     setup(false);
+
+    final Logger log = GameModule.getGameModule().getLogger();
+    if (log instanceof BasicLogger) {
+      ((BasicLogger)log).setMultiPlayer(false);
+    }
   }
 
   /** Saves the game to an existing file, or prompts for a new one. */

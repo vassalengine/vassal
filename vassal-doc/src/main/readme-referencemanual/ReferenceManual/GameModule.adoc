@@ -8,15 +8,15 @@
 [#module]
 === Module
 
-The Module is the top component in the <<editor.adoc#top,Editor>> Configuration Window.
+The Module is the top component in the <<Editor.adoc#top,Editor>> Configuration Window.
 Its properties are simply the name of the game, a version number, and a description.
 These properties are each displayed separately their own columns when the module is listed in the Module Manager that appears when Vassal starts up.
 The version number is used to warn users who attempt to load save files created by a _later_ version of a module into an _earlier_ one.
 
-All additions and modifications to a module are done through the <<editor.adoc#top,Configuration Window>>, also frequently referred to as the <<editor.adoc#top,Editor>> window, which is a familiar file/folder type browser in which each file/folder represents a module Component.
+All additions and modifications to a module are done through the <<Editor.adoc#top,Configuration Window>>, also frequently referred to as the <<Editor.adoc#top,Editor>> window, which is a familiar file/folder type browser in which each file/folder represents a module Component.
 The second illustration on the right shows the Editor's configuration window for a "Brand New Module", with all of the Components that are added by default.
 Right-click on the _[Module]_ to get a context menu with options for the many types of <<#SubComponents,Components>> you can add to a Vassal module, including <<Map.adoc#top,maps>>, <<ChartWindow.adoc#top,charts>>, and <<PieceWindow.adoc#top,palettes>> full of <<GamePiece.adoc#top,game pieces>>. The
-components and pieces will in turn reference <<Properties.adoc#top, Properties>> and <<Expressions.adoc#top, Expressions>> that determine how they operate. See <<#SubComponents,below>> for more details on individual types of component.
+components and pieces will in turn reference <<Properties.adoc#top, Properties>> and <<Expression.adoc#top, Expressions>> that determine how they operate. See <<#SubComponents,below>> for more details on individual types of component.
 
 Actually _playing_ the game takes place in the Module window (see example below). This window includes a <<Toolbar.adoc#top,Toolbar>> that can be configured by the module designer, as well as a <<ChatLog.adoc#top,Chat Log>> to record player messages and game moves.
 The game's main <<Map.adoc#top,Map>> will be displayed just below the Chat Log.
@@ -44,7 +44,7 @@ image:images/BrandNewModule.png[]
 
 image:images/Toolbar.png[]
 
-The <<Toolbar.adoc#top,Toolbar>> of the main Module window contains buttons for basic functions such as <<Toolbar.adoc#Undo,Undo>>, <<Toolbar.adoc#StepForward,Step Forward>>, and <<Toolbar.adoc#ServerControls,Server Controls>>, but you can also configure buttons to <<SpecialDiceButton.adoc#top,roll dice>>, <<PieceWindow.adoc#top,add pieces to the map>>, display <<Chartwindow.adoc#top,charts>> and <<Map.adoc#top,maps>>, keep <<PlayerHand.adoc#top,player hands>> and <<PrivateWindow.adoc#top,reinforcement pools>> private, and more.
+The <<Toolbar.adoc#top,Toolbar>> of the main Module window contains buttons for basic functions such as <<Toolbar.adoc#Undo,Undo>>, <<Toolbar.adoc#StepForward,Step Forward>>, and <<Toolbar.adoc#ServerControls,Server Controls>>, but you can also configure buttons to <<SpecialDiceButton.adoc#top,roll dice>>, <<PieceWindow.adoc#top,add pieces to the map>>, display <<ChartWindow.adoc#top,charts>> and <<Map.adoc#top,maps>>, keep <<PlayerHand.adoc#top,player hands>> and <<PrivateWindow.adoc#top,reinforcement pools>> private, and more.
 
 Buttons for basic functions are created by configuring the existing basic components of the module, such as <<GlobalOptions.adoc#top,Global Options>> and the <<#Definition_of_Player_Sides,Definition of Player Sides>>.
 
@@ -174,7 +174,7 @@ image:images/PieceWindow.png[]
 [width="100%",cols="40%,60%",]
 |===
 |image:images/PrototypeComponent.png[]
-|Game Piece Prototypes allow you to define sets of commonly-used traits for various types of <<GamePiece.adoc#top,Game Pieces>>. For example you could give all of your cards a particular back and a key command to send it to the discard pile, without having to cut-and-paste those traits into every single one of your cards.
+|Game Piece Prototypes allow you to define sets of commonly-used traits for various types of <<GamePiece.adoc#top,Game Pieces>>. For example, you could give all of your cards a particular back and a key command to send it to the discard pile, without having to cut-and-paste those traits into every single one of your cards.
 This also has the advantage of allowing you to change these traits in one place and have the changes affect every one of the pieces assigned to the Prototype.
 
 <<Prototypes.adoc#top,See full article for details.>>
@@ -348,7 +348,7 @@ Otherwise, the side you chose when creating the game you will be permanently ass
 
 [width="100%",cols="60%,^40%",]
 |===
-|Adds a button to the Toolbar which opens a window for holding game play aids: charts, tables, etc for player reference.
+|Adds a button to the Toolbar which opens a window for holding game play aids: charts, tables, etc. for player reference.
 
 <<ChartWindow.adoc#top,See full article for details.>>
 |image:images/ChartWindow.png[]

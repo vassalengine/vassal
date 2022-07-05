@@ -17,6 +17,7 @@
  */
 package VASSAL.counters;
 
+import VASSAL.configure.ConfigureTree;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -31,6 +32,7 @@ public class MassPieceDefiner extends PieceDefiner {
   private static final long serialVersionUID = 1L;
 
   protected List<Entry> definers;
+  protected ConfigureTree tree;
 
   public MassPieceDefiner(Configurable top) {
     super();
@@ -38,7 +40,7 @@ public class MassPieceDefiner extends PieceDefiner {
     changed = false;
     init(top);
     if (!definers.isEmpty()) {
-      setPiece(definers.get(0).slot.getPiece());
+      setPiece(PieceCloner.getInstance().clonePieceUnexpanded(definers.get(0).slot.getPiece()));
       final List<Class<? extends GamePiece>> template = getTemplate();
 
       for (int i = 0; i < definers.size(); ++i) {
@@ -50,11 +52,17 @@ public class MassPieceDefiner extends PieceDefiner {
     }
   }
 
+  public MassPieceDefiner(Configurable top, ConfigureTree tree) {
+    this(top);
+    this.tree = tree;
+  }
+
   private void init(Configurable c) {
     if (c instanceof PieceSlot) {
+      final PieceSlot slot = (PieceSlot) c;
       final PieceDefiner def = new Def();
-      def.setPiece(((PieceSlot) c).getPiece());
-      definers.add(new Entry((PieceSlot) c, def));
+      def.setPiece(PieceCloner.getInstance().clonePieceUnexpanded(slot.getPiece()));
+      definers.add(new Entry(slot, def));
     }
     final Configurable[] child = c.getConfigureComponents();
     for (final Configurable configurable : child) {
@@ -63,7 +71,7 @@ public class MassPieceDefiner extends PieceDefiner {
   }
 
   private List<Class<? extends GamePiece>> getTemplate() {
-    GamePiece p = definers.get(0).definer.getPiece();
+    GamePiece p = PieceCloner.getInstance().clonePieceUnexpanded(definers.get(0).definer.getPiece());
     final ArrayList<Class<? extends GamePiece>> types = new ArrayList<>();
     while (p instanceof Decorator) {
       types.add(p.getClass());
@@ -145,6 +153,7 @@ public class MassPieceDefiner extends PieceDefiner {
   public void save() {
     for (final Entry e : definers) {
       e.slot.setPiece(e.definer.getPiece());
+      tree.nodeEdited(e.slot);
     }
   }
 

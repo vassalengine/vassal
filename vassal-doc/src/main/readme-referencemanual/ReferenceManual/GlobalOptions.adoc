@@ -12,11 +12,11 @@ If an option has a _Use Preferences Setting_ choice, selecting it will add an en
 
 [width="100%",cols="50%a,^50%a",]
 |===
-|*Allow non-owners to unmask pieces:*::  By default, only the player who originally masked a piece (see the Mask trait for Game Pieces) is allowed to unmask it.
-This option allows other players to unmask a masked piece.
+|
+*Description:*::  A short description of this component that appears on the main editor dialog (optional).
 
-*Center on opponent's moves:*::  This option will center a map window on an opponent's move when reading a logfile or receiving a move on the server.
-_It is recommended that in most cases this be set to "Use Preferences" so that players can turn this behavior on and off themselves._
+*Allow non-owners to unmask pieces:*::  By default, only the player who originally masked a piece (see the <<Mask.adoc#top,Mask trait>> for Game Pieces) is allowed to unmask it.
+This option allows other players to unmask a masked piece.
 
 *Auto-report moves:*::  This option will automatically report a text description (e.g.
 "3rd Cav moves A10 ->B11") to the chat log of the control window whenever a player moves a piece in a Map Window.
@@ -34,7 +34,11 @@ It is recommended that for new modules you set this option to _Always_, as the o
 
 *Send-to-Location trait generates Movement Trails:*:: If this option is enabled, Send-to-Location traits generate Movement Trails (and mark pieces moved) when they cause a piece to move, assuming the piece in question has a Movement Trail trait of course.
 
-*Icons and hotkeys:*:: You can specify your own button icons and keyboard shortcuts for the logfile step/undo buttons and the button that shows/hides the server controls.
+[#leadingzeros]
+*Preserve leading zeros in Integers:*::  This option should not normally be used. It is for the specific case where you use leading zeros in Grid co-ordinates and need to maintain these leading zeros for later reporting. By default, Vassal will strip leading zeros off and convert to an integer. Enabling this option forces Vassal to keep the leading zeros and store the number 02 as the string "02", not the number 2.
+NOTE: If you later need to do arithimetic on this value in a Beanshell expression, you will have to explicitly convert it to a number using Integer.parseInt(value).
+
+*Icons and hotkeys:*:: You can specify your own button icons and keyboard shortcuts for the logfile step/undo buttons and the button that shows/hides the server controls and the button that displays the Debug Window.
 
 |image:images/GlobalOptions.png[]
 |===
@@ -49,7 +53,7 @@ a|
 You may add your own arbitrary preference settings to the global options.
 To add your own preferences, right-click on the _[Global Options]_ component in the Editor and select one of the _Add_ options.
 The different sub-components support different constraints on the values of the preference setting.
-The values of these preference setting are exposed as <<Properties.adoc#top,Properties>>.
+The values of these preference settings are exposed as <<Properties.adoc#top,Properties>>.
 
 _You must save and re-load the module before these sub-components will show up in the Preferences window_
 
@@ -83,5 +87,6 @@ A floating-point value.
 
 A true/false value.
 
-|image:images/GlobalOptionsComponent.png[]|===
+|image:images/GlobalOptionsComponent.png[]
+|===
 

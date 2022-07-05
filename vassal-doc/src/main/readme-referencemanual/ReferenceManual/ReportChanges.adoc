@@ -11,7 +11,7 @@ A Game Piece with this trait will report a configurable message to the <<ChatLog
 
 NOTE: Note that the Chat Log now supports *bold text*, _italicized text_, *and even colored text* and image:images/ChatLogDice.png[]. See the <<ChatLog.adoc#top,Chat Log>> article for full details.
 
-*IMPORTANT*: When HTML is enabled in the chat log, it is important to remember that the `<` character will be interpreted as the beginning of an HTML tag, rather than simply displaying a "less than" or "left angle bracket" symbol. Thus, modules which use the `<` symbol to indicate "less than" or to "draw an arrow" or enclose a user name, etc, will need to have those instances changed to `\&lt;` (the HTML escape code which causes a literal `<` character to be printed). Otherwise you may
+*IMPORTANT*: When HTML is enabled in the chat log, it is important to remember that the `<` character will be interpreted as the beginning of an HTML tag, rather than simply displaying a "less than" or "left angle bracket" symbol. Thus, modules which use the `<` symbol to indicate "less than" or to "draw an arrow" or enclose a username, etc., will need to have those instances changed to `\&lt;` (the HTML escape code which causes a literal `<` character to be printed). Otherwise, you may
 experience odd behaviors such as chat log messages failing to appear (or seeming to be delayed until the next chat message is printed).
 
 *Troubleshooting:* (If a Report Action trait doesn't seem to be showing a message)

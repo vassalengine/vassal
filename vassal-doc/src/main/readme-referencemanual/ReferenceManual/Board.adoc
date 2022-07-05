@@ -15,7 +15,7 @@ If a board image is specified (a PNG, JPEG, SVG or GIF image file that must be c
 If the board image is set to null (by clicking the "Select" button and then canceling the file dialog), then no image is used for the board, and the size and color may be specified directly.
 
 To add a board to your map, use the Editor's configuration window to navigate to the _[Map Window]_ entry for your map.
-Click to the left of it to open its subcomponents and you should find a _[Map Boards]_ component.
+Click to the left of it to open its sub-components and you should find a _[Map Boards]_ component.
 You can then right-click on the _[Map Boards]_ component and select _Add Board_.
 You will then have a _[Board]_ component for your map!
 

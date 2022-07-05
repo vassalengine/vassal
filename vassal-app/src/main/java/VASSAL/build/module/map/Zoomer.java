@@ -429,6 +429,19 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       levelField.setMaximumSize(new Dimension(
         Integer.MAX_VALUE, levelField.getPreferredSize().height));
 
+      // Edit box selects all text when first focused
+      levelField.addFocusListener(new java.awt.event.FocusAdapter() {
+        @Override
+        public void focusGained(java.awt.event.FocusEvent evt) {
+          SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+              levelField.selectAll();
+            }
+          });
+        }
+      });
+
       // validator for the level entry field
       levelField.getDocument().addDocumentListener(new DocumentListener() {
         @Override

@@ -22,7 +22,7 @@ image:images/MassPieceLoader.png[]
 . A level image is matched to a base image when it commences with the base image, but has a different suffix and matches the rule recorded against the level.
 . Images that match one of the level definitions, but do not match any base image are ignored.
 . A Layer trait is added to the counter only if it has at least one image in a level.
-. By default all Levels in a Layer trait are created, whether the matching image is found or not. By checking the option 'Do not load Layer Level if no matching image found' only levels with a matching image will be created.
+. By default, all Levels in a Layer trait are created, whether the matching image is found or not. By checking the option 'Do not load Layer Level if no matching image found' only levels with a matching image will be created.
 
 The table in the lower half of the screen shows the Game Pieces that will be created.
 
@@ -57,7 +57,7 @@ image:images/MassPieceLoader-2.png[]
 
 The Piece Template used to create each piece looks like the standard <<GamePiece.adoc#top,Piece Window>> used to define Prototypes.
 You can add any traits to the template except for the <<BasicPiece.adoc#top,Basic Piece>> , this is created for you automatically.
-Define each trait in exactly the same way as you would for a normal piece, they are all the same as the for the standard Piece Window with the exception of the Layer trait.
+Define each trait in exactly the same way as you would for a normal piece, they are all the same as the for the standard Piece Window except the Layer trait.
 The Layer trait included in the Mass Piece Definer is a modified version that allows you to specify which images will be loaded into levels with the trait.
 
 ==== Modified Layer Trait
