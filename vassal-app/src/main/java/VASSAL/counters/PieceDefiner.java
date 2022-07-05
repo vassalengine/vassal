@@ -17,6 +17,7 @@
  */
 package VASSAL.counters;
 
+import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.GpIdSupport;
 import VASSAL.build.module.KeyNamer;
@@ -46,6 +47,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
@@ -778,6 +780,31 @@ public class PieceDefiner extends JPanel {
 
   }
 
+  public void initCustomControls(final JDialog d, final Configurable target) {
+    final JRootPane rp = d.getRootPane();
+    rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, SwingUtils.getModifierKeyMask()), "ToAvail"); //$NON-NLS-1$
+    rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK), "ToAvail"); //$NON-NLS-1$
+    rp.getActionMap().put("ToAvail", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        availableList.requestFocus();
+      }
+    });
+
+    rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, SwingUtils.getModifierKeyMask()), "ToInUse"); //$NON-NLS-1$
+    rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK), "ToInUse"); //$NON-NLS-1$
+    rp.getActionMap().put("ToInUse", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        inUseList.requestFocus();
+      }
+    });
+  }
+
   /**
    * The user has manually dragged the divider to change the split size.
    * Record the level as current maximum and resize the image if it is not
@@ -1131,6 +1158,8 @@ public class PieceDefiner extends JPanel {
         b.addActionListener(evt -> BrowserSupport.openURL(p.getHelpFile().getContents().toString()));
         buttonBox.add(b, "sg,tag help"); //NON-NLS
       }
+
+      ed.initCustomControls(this);
 
       add(buttonBox, "center"); // NON-NLS-
       pack();

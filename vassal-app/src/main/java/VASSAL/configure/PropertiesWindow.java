@@ -125,6 +125,8 @@ public class PropertiesWindow extends JDialog {
     // Default actions on Enter/ESC
     SwingUtils.setDefaultButtons(getRootPane(), okButton, cancelButton);
 
+    configurer.initCustomControls(this, target);
+
     pack();
     setLocationRelativeTo(getParent());
     SwingUtils.ensureOnScreen(this);

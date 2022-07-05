@@ -17,10 +17,16 @@
  */
 package VASSAL.counters;
 
+import javax.swing.JDialog;
+
 public interface PieceEditor {
   java.awt.Component getControls();
 
   String getType();
 
   String getState();
+
+  default void initCustomControls(JDialog dialog) {
+
+  }
 }
