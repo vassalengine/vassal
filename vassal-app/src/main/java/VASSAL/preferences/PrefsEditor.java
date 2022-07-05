@@ -142,10 +142,11 @@ public class PrefsEditor {
       p.add(new JLabel(prompt));
       setupDialog.add(p);
       setupDialog.add(c.getControls());
+
       final JButton okButton = new JButton(Resources.getString(Resources.OK));
-      b.addActionListener(evt -> setupDialog.setVisible(false));
+      okButton.addActionListener(evt -> setupDialog.setVisible(false));
       p = new JPanel();
-      p.add(b);
+      p.add(okButton);
       setupDialog.add(p);
 
       // Default actions for Enter/ESC

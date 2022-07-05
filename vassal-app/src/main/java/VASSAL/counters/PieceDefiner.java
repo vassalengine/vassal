@@ -52,6 +52,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
 import javax.swing.ListCellRenderer;
+import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -406,6 +407,51 @@ public class PieceDefiner extends JPanel {
     return changed;
   }
 
+  private static class SearchHighlighter extends KeyAdapter {
+    private final JList<GamePiece> gpl;
+
+    public SearchHighlighter(JList<GamePiece> l) {
+      gpl = l;
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+      final char ch = e.getKeyChar();
+
+      // ignore searches for non alpha-numeric characters
+      if (!Character.isLetterOrDigit(ch)) {
+        return;
+      }
+
+      final String key = Character.toString(Character.toLowerCase(ch));
+
+      // Iterate through items in the list until a matching prefix is found.
+      final ListModel<GamePiece> m = gpl.getModel();
+      final int msize = m.getSize();
+
+      for (int i = 0; i < msize; i++) {
+        final int index = (i + gpl.getSelectedIndex() + 1) % msize;
+
+        final GamePiece trait = m.getElementAt(index);
+        final String str;
+
+        if (trait instanceof EditablePiece) {
+          str = ((EditablePiece)trait).getDescription();
+        }
+        else {
+          final String s = trait.getClass().getName();
+          str = s.substring(s.lastIndexOf('.') + 1);
+        }
+
+        if (str.toLowerCase().startsWith(key)) {
+          gpl.setSelectedIndex(index);     //change selected item in list
+          gpl.ensureIndexIsVisible(index); //change listbox scroll-position
+          break;
+        }
+      }
+    }
+  }
+
   /**
    * This method is called from within the constructor to initialize the form.
    */
@@ -501,44 +547,7 @@ public class PieceDefiner extends JPanel {
     });
 
     // Use typed keys to jump to entries in trait list
-    availableList.addKeyListener(new KeyAdapter() {
-      private long time;
-
-      @Override
-      public void keyTyped(KeyEvent e) {
-        final char ch = e.getKeyChar();
-
-        //ignore searches for non alpha-numeric characters
-        if (!Character.isLetterOrDigit(ch)) {
-          return;
-        }
-
-        final String key = Character.toString(Character.toLowerCase(ch));
-
-        // Iterate through items in the list until a matching prefix is found.
-        for (int i = 0; i < availableList.getModel().getSize(); i++) {
-
-          final int index = (i + availableList.getSelectedIndex() + 1) % availableList.getModel().getSize();
-
-          final GamePiece trait = availableList.getModel().getElementAt(index);
-          final String str;
-
-          if (trait instanceof EditablePiece) {
-            str = ((EditablePiece)trait).getDescription();
-          }
-          else {
-            final String s = trait.getClass().getName();
-            str = s.substring(s.lastIndexOf('.') + 1);
-          }
-
-          if (str.toLowerCase().startsWith(key)) {
-            availableList.setSelectedIndex(index);     //change selected item in list
-            availableList.ensureIndexIsVisible(index); //change listbox scroll-position
-            break;
-          }
-        }
-      }
-    });
+    availableList.addKeyListener(new SearchHighlighter(availableList));
 
     final JPanel availableListPanel = new JPanel(new MigLayout("ins 0, fill")); // NON-NLS
     availableListPanel.add(availableList, "grow,push"); // NON-NLS
@@ -725,44 +734,7 @@ public class PieceDefiner extends JPanel {
     });
 
     // Use typed keys to jump to entries in trait list
-    inUseList.addKeyListener(new KeyAdapter() {
-      private long time;
-
-      @Override
-      public void keyTyped(KeyEvent e) {
-        final char ch = e.getKeyChar();
-
-        //ignore searches for non alpha-numeric characters
-        if (!Character.isLetterOrDigit(ch)) {
-          return;
-        }
-
-        final String key = Character.toString(Character.toLowerCase(ch));
-
-        // Iterate through items in the list until a matching prefix is found.
-        for (int i = 0; i < inUseList.getModel().getSize(); i++) {
-
-          final int index = (i + inUseList.getSelectedIndex() + 1) % inUseList.getModel().getSize();
-
-          final GamePiece trait = inUseList.getModel().getElementAt(index);
-          final String str;
-
-          if (trait instanceof EditablePiece) {
-            str = ((EditablePiece)trait).getDescription();
-          }
-          else {
-            final String s = trait.getClass().getName();
-            str = s.substring(s.lastIndexOf('.') + 1);
-          }
-
-          if (str.toLowerCase().startsWith(key)) {
-            inUseList.setSelectedIndex(index);     //change selected item in list
-            inUseList.ensureIndexIsVisible(index); //change listbox scroll-position
-            break;
-          }
-        }
-      }
-    });
+    inUseList.addKeyListener(new SearchHighlighter(inUseList));
 
     final JPanel inUseListPanel = new JPanel(new BorderLayout());
     inUseListPanel.add(inUseList, BorderLayout.CENTER);
@@ -1216,10 +1188,10 @@ public class PieceDefiner extends JPanel {
 
       final JPanel buttonBox = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
 
-      JButton b = new JButton(Resources.getString("General.ok"));
-      b.addActionListener(evt -> dispose());
+      final JButton ok = new JButton(Resources.getString("General.ok"));
+      ok.addActionListener(evt -> dispose());
 
-      buttonBox.add(b, "sg,tag ok"); //NON-NLS
+      buttonBox.add(ok, "sg,tag ok"); //NON-NLS
 
       final JButton cancel = new JButton(Resources.getString("General.cancel"));
       cancel.addActionListener(evt -> {
@@ -1229,12 +1201,12 @@ public class PieceDefiner extends JPanel {
 
       buttonBox.add(cancel, "sg,tag cancel"); //NON-NLS
 
-      SwingUtils.setDefaultButtons(getRootPane(), b, cancel);
+      SwingUtils.setDefaultButtons(getRootPane(), ok, cancel);
 
       if (p.getHelpFile() != null) {
-        b = new JButton(Resources.getString("General.help"));
-        b.addActionListener(evt -> BrowserSupport.openURL(p.getHelpFile().getContents().toString()));
-        buttonBox.add(b, "sg,tag help"); //NON-NLS
+        final JButton help = new JButton(Resources.getString("General.help"));
+        help.addActionListener(evt -> BrowserSupport.openURL(p.getHelpFile().getContents().toString()));
+        buttonBox.add(help, "sg,tag help"); //NON-NLS
       }
 
       ed.initCustomControls(this);
