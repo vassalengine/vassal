@@ -76,6 +76,7 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DragSource;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -499,6 +500,45 @@ public class PieceDefiner extends JPanel {
       }
     });
 
+    // Use typed keys to jump to entries in trait list
+    availableList.addKeyListener(new KeyAdapter() {
+      private long time;
+
+      @Override
+      public void keyTyped(KeyEvent e) {
+        final char ch = e.getKeyChar();
+
+        //ignore searches for non alpha-numeric characters
+        if (!Character.isLetterOrDigit(ch)) {
+          return;
+        }
+
+        final String key = "" + Character.toLowerCase(ch);
+
+        // Iterate through items in the list until a matching prefix is found.
+        for (int i = 0; i < availableList.getModel().getSize(); i++) {
+
+          final int index = (i + availableList.getSelectedIndex() + 1) % availableList.getModel().getSize();
+
+          final GamePiece trait = availableList.getModel().getElementAt(index);
+          final String str;
+
+          if (trait instanceof EditablePiece) {
+            str = ((EditablePiece)trait).getDescription();
+          }
+          else {
+            final String s = trait.getClass().getName();
+            str = s.substring(s.lastIndexOf('.') + 1);
+          }
+
+          if (str.toLowerCase().startsWith(key)) {
+            availableList.setSelectedIndex(index);     //change selected item in list
+            availableList.ensureIndexIsVisible(index); //change listbox scroll-position
+            break;
+          }
+        }
+      }
+    });
 
     final JPanel availableListPanel = new JPanel(new MigLayout("ins 0, fill")); // NON-NLS
     availableListPanel.add(availableList, "grow,push"); // NON-NLS
@@ -684,6 +724,45 @@ public class PieceDefiner extends JPanel {
       }
     });
 
+    // Use typed keys to jump to entries in trait list
+    inUseList.addKeyListener(new KeyAdapter() {
+      private long time;
+
+      @Override
+      public void keyTyped(KeyEvent e) {
+        final char ch = e.getKeyChar();
+
+        //ignore searches for non alpha-numeric characters
+        if (!Character.isLetterOrDigit(ch)) {
+          return;
+        }
+
+        final String key = "" + Character.toLowerCase(ch);
+
+        // Iterate through items in the list until a matching prefix is found.
+        for (int i = 0; i < inUseList.getModel().getSize(); i++) {
+
+          int index = (i + inUseList.getSelectedIndex() + 1) % inUseList.getModel().getSize();
+
+          final GamePiece trait = inUseList.getModel().getElementAt(index);
+          final String str;
+
+          if (trait instanceof EditablePiece) {
+            str = ((EditablePiece)trait).getDescription();
+          }
+          else {
+            final String s = trait.getClass().getName();
+            str = s.substring(s.lastIndexOf('.') + 1);
+          }
+
+          if (str.toLowerCase().startsWith(key)) {
+            inUseList.setSelectedIndex(index);     //change selected item in list
+            inUseList.ensureIndexIsVisible(index); //change listbox scroll-position
+            break;
+          }
+        }
+      }
+    });
 
     final JPanel inUseListPanel = new JPanel(new BorderLayout());
     inUseListPanel.add(inUseList, BorderLayout.CENTER);
