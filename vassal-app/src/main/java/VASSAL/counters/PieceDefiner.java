@@ -1216,10 +1216,10 @@ public class PieceDefiner extends JPanel {
 
       final JPanel buttonBox = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
 
-      JButton b = new JButton(Resources.getString("General.ok"));
-      b.addActionListener(evt -> dispose());
+      final JButton ok = new JButton(Resources.getString("General.ok"));
+      ok.addActionListener(evt -> dispose());
 
-      buttonBox.add(b, "sg,tag ok"); //NON-NLS
+      buttonBox.add(ok, "sg,tag ok"); //NON-NLS
 
       final JButton cancel = new JButton(Resources.getString("General.cancel"));
       cancel.addActionListener(evt -> {
@@ -1229,12 +1229,12 @@ public class PieceDefiner extends JPanel {
 
       buttonBox.add(cancel, "sg,tag cancel"); //NON-NLS
 
-      SwingUtils.setDefaultButtons(getRootPane(), b, cancel);
+      SwingUtils.setDefaultButtons(getRootPane(), ok, cancel);
 
       if (p.getHelpFile() != null) {
-        b = new JButton(Resources.getString("General.help"));
-        b.addActionListener(evt -> BrowserSupport.openURL(p.getHelpFile().getContents().toString()));
-        buttonBox.add(b, "sg,tag help"); //NON-NLS
+        final JButton help = new JButton(Resources.getString("General.help"));
+        help.addActionListener(evt -> BrowserSupport.openURL(p.getHelpFile().getContents().toString()));
+        buttonBox.add(help, "sg,tag help"); //NON-NLS
       }
 
       ed.initCustomControls(this);
