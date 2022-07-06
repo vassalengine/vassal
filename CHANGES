@@ -1,5 +1,10 @@
 3.6.8 - ???
 
+* 11570: Update Module Extension window, add missing description
+* 11565: Global Option List Preferences not initialising Global Property
+    correctly
+* 11564: Prevent Notes windows always starting open at very last character of
+    note
 * 11557: Auto-select contents of Edit boxes when they get focus
 * 11545: Description of Prototype will auto-include any BasicName
 * 11546: Default dialog-closing button behaviors for Enter/Esc
