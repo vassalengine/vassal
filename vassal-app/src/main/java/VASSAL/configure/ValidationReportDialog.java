@@ -20,16 +20,15 @@ package VASSAL.configure;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ScrollPane;
-
-import java.util.List;
+import VASSAL.tools.swing.SwingUtils;
+import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-
-import net.miginfocom.swing.MigLayout;
+import java.util.List;
 
 /**
  * Dialog for reporting the results of validating a GameModule
@@ -41,6 +40,10 @@ public class ValidationReportDialog extends JDialog {
 
   public ValidationReportDialog(ValidationReport report, CallBack cb) {
     super(GameModule.getGameModule().getPlayerWindow(), false);
+
+    final JButton okButton;
+    final JButton cancelButton;
+
     setTitle(Resources.getString("Editor.ValidationReportDialog.problems"));
     setLayout(new MigLayout("ins panel", "[fill,grow]"));
     this.callback = cb;
@@ -51,7 +54,9 @@ public class ValidationReportDialog extends JDialog {
     switch (warnings.size()) {
     case 0:
       add(new JLabel(Resources.getString("Editor.ValidationReportDialog.no_problems")), "wrap");
-      buttonPanel.add(createOkButton());
+      okButton = createOkButton();
+      buttonPanel.add(okButton);
+      cancelButton = okButton;
       break;
     default:
       add(new JLabel(Resources.getString("Editor.ValidationReportDialog.following_problems")), "wrap");
@@ -59,9 +64,14 @@ public class ValidationReportDialog extends JDialog {
       final JList<String> list = new JList<>(warnings.toArray(new String[0]));
       list.setVisibleRowCount(Math.min(list.getVisibleRowCount(), warnings.size()));
       add(new ScrollPane(list), "wrap");
-      buttonPanel.add(createOkButton(), "sg 1, tag ok");
-      buttonPanel.add(createCancelButton(), "sg 1, tag cancel");
+      okButton = createOkButton();
+      cancelButton = createCancelButton();
+      buttonPanel.add(okButton, "sg 1, tag ok");
+      buttonPanel.add(cancelButton, "sg 1, tag cancel");
     }
+
+    // Default actions on Enter/ESC
+    SwingUtils.setDefaultButtons(getRootPane(), okButton, cancelButton);
 
     add(buttonPanel);
     pack();

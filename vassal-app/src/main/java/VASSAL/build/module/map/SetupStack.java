@@ -901,6 +901,9 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 
       add(mainPanel, BorderLayout.SOUTH);
 
+      // Default actions on Enter/ESC
+      SwingUtils.setDefaultButtons(getRootPane(), okButton, canButton);
+
       scroll.revalidate();
       updateDisplay();
       pack();
@@ -1035,6 +1038,9 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       case KeyEvent.VK_RIGHT:
         adjustX(1, e);
         break;
+      case KeyEvent.VK_ENTER:
+      case KeyEvent.VK_ESCAPE:
+        return; // Prevent these unlikely-and-inadvisable-anyway hotkeys from interfering with dialog defaults
       default :
         if (myPiece != null) {
           myPiece.keyEvent(SwingUtils.getKeyStrokeForEvent(e));

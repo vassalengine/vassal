@@ -37,6 +37,15 @@ import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.swing.FlowLabel;
 import VASSAL.tools.swing.SwingUtils;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -60,16 +69,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.StringTokenizer;
-
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.KeyStroke;
 
 /**
  * A Trait (aka {@link Decorator} that acts like a button on a GamePiece, such that clicking on a
@@ -424,6 +423,9 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
 
       updateCoords();
       updateCoord("");
+
+      // Default actions on Enter/ESC
+      SwingUtils.setDefaultButtons(frame.getRootPane(), closeButton, canButton);
 
       frame.pack();
       final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();

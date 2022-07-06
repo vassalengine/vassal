@@ -25,8 +25,19 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.SplashScreen;
 import VASSAL.tools.WriteErrorDialog;
-
 import VASSAL.tools.swing.SwingUtils;
+import net.miginfocom.swing.MigLayout;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -41,19 +52,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.WindowConstants;
-
-import net.miginfocom.swing.MigLayout;
 
 public class PrefsEditor {
   private JDialog
@@ -112,6 +110,9 @@ public class PrefsEditor {
       buttonPanel.add(cancel, "tag cancel, sg 1"); //NON-NLS
       buttonPanel.add(help, "tag help, split, sg 1"); //NON-NLS
       dialog.add(buttonPanel, "grow");
+
+      // Default actions for Enter/ESC
+      SwingUtils.setDefaultButtons(dialog.getRootPane(), ok, cancel);
     }
   }
 
@@ -141,11 +142,16 @@ public class PrefsEditor {
       p.add(new JLabel(prompt));
       setupDialog.add(p);
       setupDialog.add(c.getControls());
-      final JButton b = new JButton(Resources.getString(Resources.OK));
-      b.addActionListener(evt -> setupDialog.setVisible(false));
+
+      final JButton okButton = new JButton(Resources.getString(Resources.OK));
+      okButton.addActionListener(evt -> setupDialog.setVisible(false));
       p = new JPanel();
-      p.add(b);
+      p.add(okButton);
       setupDialog.add(p);
+
+      // Default actions for Enter/ESC
+      SwingUtils.setDefaultButtons(setupDialog.getRootPane(), okButton, okButton); // okButton for both
+
       setupDialog.pack();
       final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
       setupDialog.setLocation(

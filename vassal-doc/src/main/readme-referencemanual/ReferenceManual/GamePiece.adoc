@@ -19,6 +19,8 @@ You can select the Piece and type commands for it or right-click to bring up its
 
 Once added to your Piece, a Trait's properties can be edited by selecting the Trait and clicking the Properties button, or by double-clicking on the Trait in the list.
 
+While editing a Piece, a number of keyboard shortcuts are available, including _Alt+Right_ to jump to the list of your Piece's current traits, _Alt+Left_ to jump to the list of available traits, and _Space_ as a substitute for double-clicking a Trait in either list. Typing a character in either list will jump to the next entry that starts with the typed character.
+
 When a Piece is drawn, the Traits are drawn _in order_, beginning with the <<BasicPiece.adoc#top,Basic Piece>> and continuing downward.
 The order of Traits can be important.
 For example the image in a Layer trait may obscure the Basic Piece or other Layers before it in the list of Traits.

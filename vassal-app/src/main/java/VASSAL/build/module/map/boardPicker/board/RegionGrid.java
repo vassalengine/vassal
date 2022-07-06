@@ -535,6 +535,9 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
       add(bottomPanel, BorderLayout.SOUTH);
 
+      // Default actions for Enter/ESC
+      SwingUtils.setDefaultButtons(getRootPane(), okButton, canButton);
+
       //BR// Scroll the possibly-8000-pixel-wide map to some semi-sensible place to start :)
       if (!grid.regionList.isEmpty()) {
         // If any regions have been defined, then use that list

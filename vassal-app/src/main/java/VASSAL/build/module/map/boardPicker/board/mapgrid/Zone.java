@@ -880,6 +880,9 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       buttonPanel.add(canButton);
       frame.add(buttonPanel);
 
+      // Default actions on Enter/ESC
+      SwingUtils.setDefaultButtons(frame.getRootPane(), closeButton, canButton);
+
       board = zone.getBoard();
       editor.setPreferredSize(board != null ? board.getSize() : DEFAULT_SIZE);
       editor.reset();

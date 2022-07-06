@@ -51,6 +51,7 @@ import VASSAL.tools.swing.SwingUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.event.PopupMenuEvent;
@@ -481,6 +482,9 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
   @Override
   public void keyPressed(KeyEvent e) {
+    if ((e.getKeyCode() == KeyEvent.VK_ENTER) || (e.getKeyCode() == KeyEvent.VK_ESCAPE)) {
+      return; // Prevent these unlikely-and-inadvisable-anyway hotkeys from interfering with dialog defaults
+    }
     KeyBuffer.getBuffer().keyCommand(SwingUtils.getKeyStrokeForEvent(e));
     e.consume();
     clearExpandedPiece();
@@ -750,6 +754,12 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     public Component getControls() {
       return definer;
     }
-  }
 
+    @Override
+    public void initCustomControls(JDialog d, Configurable target) {
+      if (definer != null) {
+        definer.initCustomControls(d, target);
+      }
+    }
+  }
 }

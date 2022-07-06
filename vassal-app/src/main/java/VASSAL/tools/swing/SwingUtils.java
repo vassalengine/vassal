@@ -17,7 +17,16 @@
 package VASSAL.tools.swing;
 
 import VASSAL.build.module.GlobalOptions;
+import org.apache.commons.lang3.SystemUtils;
 
+import javax.swing.AbstractAction;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JRootPane;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+import javax.swing.text.JTextComponent;
+import javax.swing.undo.UndoManager;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -27,17 +36,13 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.dnd.DragGestureEvent;
+import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.util.Collections;
 import java.util.Map;
-
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-
-import org.apache.commons.lang3.SystemUtils;
 
 public class SwingUtils {
 
@@ -91,6 +96,11 @@ public class SwingUtils {
     boolean isModifierKeyDown(KeyEvent e);
 
     /**
+     * @return Returns InputEvent.META_DOWN_MASK on Mac or InputEvent.CTRL_DOWN_MASK on others.
+     */
+    int getModifierKeyMask();
+
+    /**
      * @return translation of keystroke from local system to Vassal (to handle Mac platform support)
      */
     KeyStroke systemToGeneric(KeyStroke k);
@@ -124,6 +134,11 @@ public class SwingUtils {
     @Override
     public boolean isModifierKeyDown(KeyEvent e) {
       return e.isControlDown();
+    }
+
+    @Override
+    public int getModifierKeyMask() {
+      return InputEvent.CTRL_DOWN_MASK;
     }
 
     @Override
@@ -215,6 +230,11 @@ public class SwingUtils {
     @Override
     public boolean isModifierKeyDown(KeyEvent e) {
       return e.isMetaDown();
+    }
+
+    @Override
+    public int getModifierKeyMask() {
+      return InputEvent.META_DOWN_MASK;
     }
 
     /**
@@ -339,6 +359,13 @@ public class SwingUtils {
    */
   public static boolean isModifierKeyDown(KeyEvent e) {
     return INPUT_CLASSIFIER.isModifierKeyDown(e);
+  }
+
+  /**
+   * @return returns InputEvent.META_DOWN_MASK on Mac or InputEvent.CTRL_DOWN_MASK on others
+   */
+  public static int getModifierKeyMask() {
+    return INPUT_CLASSIFIER.getModifierKeyMask();
   }
 
   /**
@@ -556,5 +583,63 @@ public class SwingUtils {
       w.setMinimumSize(new Dimension(0, 0));
       SwingUtils.ensureOnScreen(w);
     }
+  }
+
+  /**
+   * Set up the default Enter/ESC behavior for a dialog or frame
+   * @param rp Root pane of dialog or frame
+   * @param ok OK button (triggers on ENTER)
+   * @param cancel Cancel button (triggers on ESC)
+   */
+  public static void setDefaultButtons(JRootPane rp, JButton ok, JButton cancel) {
+    if (ok != null) {
+      rp.setDefaultButton(ok);
+    }
+    if (cancel != null) {
+      rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+        KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+        "Cancel"
+      );
+      rp.getActionMap().put("Cancel", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          cancel.doClick();
+        }
+      });
+    }
+  }
+
+  /**
+   * Sets a text component to allow Undo
+   * @param field the text component
+   */
+  public static UndoManager allowUndo(JTextComponent field) {
+    // Ctrl+Z/Cmd+Z performs undo
+    final UndoManager um = new UndoManager();
+    field.getDocument().addUndoableEditListener(um);
+    field.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_Z, SwingUtils.getModifierKeyMask()), "Undo"); //$NON-NLS-1$
+    field.getActionMap().put("Undo", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        if (um.canUndo()) {
+          um.undo();
+        }
+      }
+    });
+
+    // Ctrl+Shift+Z/Cmd+Shift+Z performs undo
+    field.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_Z, SwingUtils.getModifierKeyMask() + KeyEvent.SHIFT_DOWN_MASK), "Redo"); //$NON-NLS-1$
+    field.getActionMap().put("Redo", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        if (um.canRedo()) {
+          um.redo();
+        }
+      }
+    });
+
+    return um;
   }
 }

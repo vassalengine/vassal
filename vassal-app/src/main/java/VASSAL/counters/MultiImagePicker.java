@@ -17,6 +17,15 @@
  */
 package VASSAL.counters;
 
+import VASSAL.i18n.Resources;
+import VASSAL.tools.ScrollPane;
+import net.miginfocom.swing.MigLayout;
+
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.event.ListSelectionListener;
 import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.event.KeyAdapter;
@@ -26,18 +35,6 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.stream.IntStream;
-
-import javax.swing.DefaultListModel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-
-import javax.swing.event.ListSelectionListener;
-
-import VASSAL.i18n.Resources;
-import VASSAL.tools.ScrollPane;
-
-import net.miginfocom.swing.MigLayout;
 
 public class MultiImagePicker extends JPanel {
   private static final long serialVersionUID = 1L;

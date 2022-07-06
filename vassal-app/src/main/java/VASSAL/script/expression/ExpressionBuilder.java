@@ -17,21 +17,21 @@
  */
 package VASSAL.script.expression;
 
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-
-import VASSAL.i18n.Resources;
-import net.miginfocom.swing.MigLayout;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.BeanShellExpressionConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.counters.EditablePiece;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.ButtonFactory;
+import VASSAL.tools.swing.SwingUtils;
+import net.miginfocom.swing.MigLayout;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /**
  * Interactively build inline(beanshell) expressions
@@ -81,6 +81,9 @@ public class ExpressionBuilder extends JDialog {
 
     p.add(buttonBox, "align center"); //NON-NLS
     add(p);
+
+    // Default actions for Enter/ESC
+    SwingUtils.setDefaultButtons(getRootPane(), okButton, cancelButton);
 
     pack();
     setLocationRelativeTo(getParent());

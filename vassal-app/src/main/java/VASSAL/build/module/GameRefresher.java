@@ -582,6 +582,9 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       final JButton exitButton = new JButton(Resources.getString("General.cancel"));
       exitButton.addActionListener(e -> exit());
 
+      // Default actions on Enter/ESC
+      SwingUtils.setDefaultButtons(getRootPane(), runButton, exitButton);
+
       final JButton helpButton = new JButton(Resources.getString("General.help"));
       helpButton.addActionListener(e -> help());
 

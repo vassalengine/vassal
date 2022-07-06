@@ -17,6 +17,8 @@
  */
 package VASSAL.configure;
 
+import VASSAL.tools.swing.SwingUtils;
+
 import javax.swing.JComponent;
 import javax.swing.JLayer;
 import javax.swing.JPanel;
@@ -123,6 +125,8 @@ public class StringConfigurer extends Configurer {
           });
         }
       });
+
+      SwingUtils.allowUndo(nameField);
 
       final LayerUI<JTextField> layerUI = new ConfigLayerUI(this);
       final JLayer<JTextField> layer = new JLayer<>(nameField, layerUI);

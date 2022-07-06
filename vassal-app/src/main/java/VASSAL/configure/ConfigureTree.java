@@ -561,6 +561,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           });
           d.add(box);
           d.add(ok);
+
+          // Default actions for Enter/Esc
+          SwingUtils.setDefaultButtons(d.getRootPane(), ok, ok); // ESC also does OK
+
           SwingUtils.repack(d);
           d.setLocationRelativeTo(d.getParent());
           d.setVisible(true);

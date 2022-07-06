@@ -21,11 +21,16 @@
  */
 package VASSAL.script.expression;
 
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.configure.BeanShellExpressionConfigurer;
 import VASSAL.configure.Configurer;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.List;
+import VASSAL.configure.StringConfigurer;
+import VASSAL.counters.EditablePiece;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.BrowserSupport;
+import VASSAL.tools.ButtonFactory;
+import VASSAL.tools.swing.SwingUtils;
+import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -33,15 +38,10 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
-
-import VASSAL.i18n.Resources;
-import net.miginfocom.swing.MigLayout;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.configure.BeanShellExpressionConfigurer;
-import VASSAL.configure.StringConfigurer;
-import VASSAL.counters.EditablePiece;
-import VASSAL.tools.BrowserSupport;
-import VASSAL.tools.ButtonFactory;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FunctionBuilder extends JDialog {
 
@@ -102,6 +102,9 @@ public class FunctionBuilder extends JDialog {
 
     p.add(buttonBox, "span 2,align center,growx,wrap"); //NON-NLS
     add(p, "growx"); //NON-NLS
+
+    // Default actions for Enter/ESC
+    SwingUtils.setDefaultButtons(getRootPane(), okButton, cancelButton);
 
     pack();
     setLocationRelativeTo(getParent());

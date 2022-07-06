@@ -51,6 +51,7 @@ import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.UniqueIdManager;
+import VASSAL.tools.swing.SwingUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -1189,6 +1190,9 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
         setVisible(false);
       });
       p.add(cancelButton);
+
+      // Default actions for Enter/ESC
+      SwingUtils.setDefaultButtons(getRootPane(), saveButton, cancelButton);
 
       add(p);
     }

@@ -14,6 +14,8 @@ A Layer may be "active" or "inactive", and only active layers are drawn--a Layer
 The image from the current level will be drawn whenever the Layer is active.
 The Layer is drawn on top the traits that appear before it in the piece's list of traits.
 
+While editing a layer, several keyboard shortcuts are available, including _Alt+Enter_ to change the image of the currently selected level, _Alt+I_ to jump focus to the list of levels, _Alt+Insert_ to insert a level, _Alt+Delete_ to delete the currently selected level, _Alt+Up/Alt+Down_ to move the currently selected level up/down the list, and _Alt+N_ to jump focus to the name field.
+
 [width="100%",cols="50%a,^50%",]
 |===
 

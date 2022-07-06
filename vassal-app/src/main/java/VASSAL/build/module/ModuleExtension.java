@@ -17,16 +17,30 @@
  */
 package VASSAL.build.module;
 
-import java.awt.event.ActionEvent;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.NoSuchFileException;
-import java.util.UUID;
+import VASSAL.Info;
+import VASSAL.build.AbstractBuildable;
+import VASSAL.build.Buildable;
+import VASSAL.build.Builder;
+import VASSAL.build.GameModule;
+import VASSAL.build.GpIdChecker;
+import VASSAL.build.GpIdSupport;
+import VASSAL.build.IllegalBuildException;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.metadata.AbstractMetaData;
+import VASSAL.build.module.metadata.ExtensionMetaData;
+import VASSAL.build.module.metadata.MetaDataFactory;
+import VASSAL.build.widget.PieceSlot;
+import VASSAL.command.Command;
+import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.ArchiveWriter;
+import VASSAL.tools.DataArchive;
+import VASSAL.tools.swing.SwingUtils;
+import VASSAL.tools.version.VersionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -38,31 +52,16 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-
-import VASSAL.build.module.metadata.AbstractMetaData;
-import VASSAL.build.module.metadata.MetaDataFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-
-import VASSAL.Info;
-import VASSAL.build.AbstractBuildable;
-import VASSAL.build.Buildable;
-import VASSAL.build.Builder;
-import VASSAL.build.GameModule;
-import VASSAL.build.GpIdChecker;
-import VASSAL.build.GpIdSupport;
-import VASSAL.build.IllegalBuildException;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.metadata.ExtensionMetaData;
-import VASSAL.build.widget.PieceSlot;
-import VASSAL.command.Command;
-import VASSAL.configure.BooleanConfigurer;
-import VASSAL.configure.StringConfigurer;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.ArchiveWriter;
-import VASSAL.tools.DataArchive;
-import VASSAL.tools.version.VersionUtils;
+import java.awt.event.ActionEvent;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.NoSuchFileException;
+import java.util.UUID;
 
 /**
  * An optional extension to a GameModule
@@ -516,6 +515,10 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       cancel.addActionListener(e -> d.dispose());
       b.add(cancel);
       d.add(b);
+
+      // Default actions on Enter/ESC
+      SwingUtils.setDefaultButtons(d.getRootPane(), ok, cancel);
+
       d.pack();
       d.setLocationRelativeTo(d.getParent());
       editAction = new AbstractAction() {

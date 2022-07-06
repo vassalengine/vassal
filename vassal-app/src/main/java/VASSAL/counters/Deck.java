@@ -50,7 +50,18 @@ import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
+import VASSAL.tools.swing.SwingUtils;
 
+import javax.swing.Action;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -73,17 +84,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Random;
-
-import javax.swing.Action;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
 
 /**
  * A collection of pieces that behaves like a deck, i.e.: Doesn't move.
@@ -1761,9 +1761,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     d.add(new ScrollPane(list));
     d.add(new JLabel(Resources.getString("Deck.select_cards"))); //$NON-NLS-1$
     d.add(new JLabel(Resources.getString("Deck.then_click"))); //$NON-NLS-1$
+
     final Box box = Box.createHorizontalBox();
-    JButton b = new JButton(Resources.getString(Resources.OK));
-    b.addActionListener(e -> {
+
+    final JButton okButton = new JButton(Resources.getString(Resources.OK));
+    okButton.addActionListener(e -> {
       final int[] selection = list.getSelectedIndices();
       if (selection.length > 0) {
         nextDraw = new ArrayList<>();
@@ -1776,11 +1778,16 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       }
       d.dispose();
     });
-    box.add(b);
-    b = new JButton(Resources.getString(Resources.CANCEL));
-    b.addActionListener(e -> d.dispose());
-    box.add(b);
+    box.add(okButton);
+
+    final JButton cancelButton = new JButton(Resources.getString(Resources.CANCEL));
+    cancelButton.addActionListener(e -> d.dispose());
+    box.add(cancelButton);
     d.add(box);
+
+    // Default actions for Enter/ESC
+    SwingUtils.setDefaultButtons(d.getRootPane(), okButton, cancelButton);
+
     d.pack();
     d.setLocationRelativeTo(d.getOwner());
     d.setVisible(true);

@@ -385,6 +385,14 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
       case KeyEvent.VK_ALT_GRAPH:
       case KeyEvent.VK_UNDEFINED:
         break;
+
+      //BR// Consume ESC & Enter events so that we don't close a piece editor dialog while editing a keystroke
+      case KeyEvent.VK_ESCAPE:
+      case KeyEvent.VK_ENTER:
+        e.consume();
+        setValue(NamedKeyStroke.of(SwingUtils.convertKeyEvent(e)));
+        break;
+
       default:
         setValue(NamedKeyStroke.of(SwingUtils.convertKeyEvent(e)));
       }

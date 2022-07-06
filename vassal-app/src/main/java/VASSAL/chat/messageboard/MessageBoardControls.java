@@ -17,11 +17,10 @@
  */
 package VASSAL.chat.messageboard;
 
-import java.awt.event.ActionEvent;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.concurrent.ExecutionException;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.menu.MenuManager;
+import VASSAL.tools.swing.SwingUtils;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -34,10 +33,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
-
-import VASSAL.i18n.Resources;
-import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.menu.MenuManager;
+import java.awt.event.ActionEvent;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.concurrent.ExecutionException;
 
 /**
  * UI controls for posting and retrieving messages from a
@@ -234,6 +234,9 @@ public class MessageBoardControls {
       b.add(cancelButton);
       add(new JScrollPane(msgArea));
       add(b);
+
+      // Default actions for Enter/ESC
+      SwingUtils.setDefaultButtons(getRootPane(), okButton, cancelButton);
 
       pack();
       setLocation(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width / 2 - getSize().width / 2, 0);

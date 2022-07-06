@@ -1171,7 +1171,6 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
       okButton = new JButton(Resources.getString(Resources.OK));
       okButton.addActionListener(this);
-      getRootPane().setDefaultButton(okButton);
       buttonBox.add(okButton);
 
       buttonBox.add(Box.createHorizontalStrut(hsep));
@@ -1194,6 +1193,9 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       contentPane.setLayout(new BorderLayout(0, 11));
       contentPane.add(controlsPane, BorderLayout.CENTER);
       contentPane.add(buttonBox, BorderLayout.PAGE_END);
+
+      // Default actions on Enter/ESC
+      SwingUtils.setDefaultButtons(getRootPane(), okButton, cancelButton);
 
       setResizable(false);
       pack();

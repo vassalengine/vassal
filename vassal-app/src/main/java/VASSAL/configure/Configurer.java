@@ -17,9 +17,11 @@
  */
 package VASSAL.configure;
 
+import VASSAL.build.Configurable;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.swing.SwingUtils;
 
+import javax.swing.JDialog;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -270,6 +272,13 @@ public abstract class Configurer {
    * Move the cursor to the first input field of this Configurer
    */
   public void requestFocus() {
+
+  }
+
+  /**
+   * Initialize any custom controls / keystrokes
+   */
+  public void initCustomControls(JDialog d, Configurable target) {
 
   }
 }
