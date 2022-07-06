@@ -108,7 +108,7 @@ public class StringEnumConfigurer extends Configurer {
 
   @Override
   public String getValueString() {
-    return (String) value;
+    return value == null ? "" : (String) value;
   }
 
   @Override
