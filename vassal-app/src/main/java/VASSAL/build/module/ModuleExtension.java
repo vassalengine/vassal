@@ -32,26 +32,14 @@ import VASSAL.build.module.metadata.MetaDataFactory;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.ComponentConfigPanel;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.version.VersionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 import java.awt.event.ActionEvent;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -62,6 +50,22 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.NoSuchFileException;
 import java.util.UUID;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import net.miginfocom.swing.MigLayout;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
 
 /**
  * An optional extension to a GameModule
@@ -463,19 +467,25 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
   public Action getEditAction(final JDialog d) {
     if (editAction == null) {
       d.setName(getName());
-      final StringConfigurer config = new StringConfigurer(VERSION, Resources.getString("Editor.ExtensionEditor.version"), version);
-      d.setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
-      d.add(config.getControls());
+      d.setTitle(getName());
+      d.setLayout(new MigLayout("ins panel"));
 
-      final StringConfigurer dconfig = new StringConfigurer(DESCRIPTION, Resources.getString("Editor.description_label"), description);
-      d.add(dconfig.getControls());
+      final ComponentConfigPanel panel = new ComponentConfigPanel();
+      panel.setBorder(BorderFactory.createEtchedBorder());
+
+
+      final StringConfigurer config = new StringConfigurer(VERSION, "", version);
+      panel.add("Editor.ExtensionEditor.version", config);
+
+      final StringConfigurer dconfig = new StringConfigurer(DESCRIPTION, "", description);
+      panel.add("Editor.description_label", dconfig);
 
       /*
        * The Extension id should not normally be changed once saved games
        * have been created. Display a dialog with warnings.
        */
-      final Box idBox = Box.createHorizontalBox();
-      idBox.add(new JLabel(Resources.getString("Editor.ExtensionEditor.extension_id")));
+      final JPanel idBox = new JPanel(new MigLayout("ins 0"));
+
       idDisplay = new JTextField(12);
       idDisplay.setText(extensionId);
       idDisplay.setEditable(false);
@@ -497,12 +507,12 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
         }
       });
       idBox.add(change);
-      d.add(idBox);
+      panel.add("Editor.ExtensionEditor.extension_id", idBox);
 
-      final BooleanConfigurer uconfig = new BooleanConfigurer(UNIVERSAL, Resources.getString("Editor.ExtensionEditor.universal_checkbox"), universal);
-      d.add(uconfig.getControls());
+      final BooleanConfigurer uconfig = new BooleanConfigurer(UNIVERSAL, "", universal);
+      panel.add("Editor.ExtensionEditor.universal_checkbox", uconfig);
 
-      final Box b = Box.createHorizontalBox();
+      final JPanel b = new JPanel(new MigLayout("ins 0", "push[][]push"));
       final JButton ok = new JButton(Resources.getString("General.save"));
       ok.addActionListener(e -> {
         setAttribute(VERSION, config.getValue());
@@ -514,10 +524,12 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       final JButton cancel = new JButton(Resources.getString("General.cancel"));
       cancel.addActionListener(e -> d.dispose());
       b.add(cancel);
-      d.add(b);
 
       // Default actions on Enter/ESC
       SwingUtils.setDefaultButtons(d.getRootPane(), ok, cancel);
+
+      d.add(panel, "wrap");
+      d.add(b, "span 2,align center");
 
       d.pack();
       d.setLocationRelativeTo(d.getParent());
@@ -526,6 +538,10 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
 
         @Override
         public void actionPerformed(ActionEvent e) {
+          config.setValue(getAttributeValueString(VERSION));
+          dconfig.setValue(getAttributeValueString(DESCRIPTION));
+          uconfig.setValue(getAttributeValueString(UNIVERSAL));
+          idDisplay.setText(extensionId);
           d.setVisible(true);
         }
       };
