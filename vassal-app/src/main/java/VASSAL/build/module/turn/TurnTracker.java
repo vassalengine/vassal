@@ -1020,9 +1020,9 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     }
 
     protected void doPrev() {
-        captureState();          
-        prev();
-        save();
+      captureState();
+      prev();
+      save();
     }
 
     protected void initComponents() {
