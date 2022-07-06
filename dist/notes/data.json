@@ -33,6 +33,7 @@
       ],
       "other_improvements": [
         { "num": 11557, "desc": "Auto-select contents of Edit boxes when they get focus" },
+        { "num": 11546, "desc": "Default dialog-closing button behaviors for Enter/Esc" },
         { "num": 11545, "desc": "Description of Prototype will auto-include any BasicName" },
         { "num": 11534, "desc": "Add Open all Contained Pieces option" },
         { "num": 11524, "desc": "Option to 'always use format' on text label (even if label is blank)" },
