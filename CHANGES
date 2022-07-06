@@ -6,6 +6,7 @@
          Key shortcuts added to Piece Definer (see Game Piece help)
          Piece Definer list boxes jump to entry starting with that letter
          Key shortcuts added editing Layer trait (see Layer help)
+         Most text fields support Ctrl/Cmd+Z for undo/redo
 * 11544: Broken links to and within Reference Manual
 * 11543: Closing game should reset multiplayer flag for console
 * 11540: Display translated Basic Piece/Basic Name in Scrollable lists in Game
