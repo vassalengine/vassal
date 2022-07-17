@@ -23,6 +23,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.script.expression.FunctionBuilder;
 import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.icon.IconFamily;
+import VASSAL.tools.swing.SwingUtils;
 import bsh.BeanShellExpressionValidator;
 import net.miginfocom.swing.MigLayout;
 
@@ -172,6 +173,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
           updateParentBuilder();
         }
       });
+      SwingUtils.allowUndo(nameField);
 
       // Edit box selects all text when first focused
       nameField.addFocusListener(new java.awt.event.FocusAdapter() {
