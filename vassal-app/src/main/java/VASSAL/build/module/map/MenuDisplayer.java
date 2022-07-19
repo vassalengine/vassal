@@ -109,7 +109,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
   // Menu text & behavior can now be custom-classed without needing to override the monster that is MenuDisplayer#createPopup.
   protected static JMenuItem makeMenuItem(KeyCommand keyCommand) {
     // We remember the oldAcceleratorFont so that we can set it back after creating the JMenuItem
-    Object oldAcceleratorFont = UIManager.get("MenuItem.acceleratorFont");
+    final Object oldAcceleratorFont = UIManager.get("MenuItem.acceleratorFont");
     UIManager.put("MenuItem.acceleratorFont", POPUP_MENU_FONT);
     final JMenuItem item = new JMenuItem(keyCommand.isMenuSeparator() ? MenuSeparator.SEPARATOR_NAME : getMenuText(keyCommand));
     item.setAccelerator(keyCommand.getKeyStroke());
