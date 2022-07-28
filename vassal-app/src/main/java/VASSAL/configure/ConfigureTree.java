@@ -2425,9 +2425,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         }
 
         if (c instanceof PrototypeDefinition) {
-          final String basicName = (String)((PrototypeDefinition) c).getPiece().getProperty(BasicPiece.BASIC_NAME);
-          if ((basicName != null) && !basicName.isEmpty()) {
-            description += " - " + basicName;
+          final GamePiece p = ((PrototypeDefinition) c).getPiece();
+          if (p != null) {
+            final String basicName = (String) (p.getProperty(BasicPiece.BASIC_NAME));
+            if ((basicName != null) && !basicName.isEmpty()) {
+              description += " - " + basicName;
+            }
           }
         }
       }
