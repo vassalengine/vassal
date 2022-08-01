@@ -1021,11 +1021,9 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     }
 
     protected void doPrev() {
-      if (!fwdOnly) {                // FWD_ONLY start wrap - only the "if"
-        captureState();           // standard code
-        prev();
-        save();
-      }                            // FWD_ONLY end wrap
+      captureState();
+      prev();
+      save();
     }
 
     protected void initComponents() {
