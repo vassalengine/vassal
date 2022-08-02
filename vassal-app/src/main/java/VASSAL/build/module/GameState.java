@@ -738,12 +738,14 @@ public class GameState implements CommandEncoder {
    * @return true if a file load was successfully started
    */
   public boolean loadGame(File f, boolean continuation, boolean forceForeground) {
+    final GameModule g = GameModule.getGameModule();
+
     try {
       if (!f.exists()) throw new FileNotFoundException("Unable to locate " + f.getPath());
 
       // Check the Save game for validity
       if (!isSaveMetaDataValid(f)) {
-        GameModule.getGameModule().warn(Resources.getString("GameState.cancel_load", f.getName()));
+        g.warn(Resources.getString("GameState.cancel_load", f.getName()));
         return false;
       }
 
@@ -759,20 +761,20 @@ public class GameState implements CommandEncoder {
           }
         }
 
-        GameModule.getGameModule().setGameFile(f.getName(), GameModule.GameFileMode.LOADED_GAME);
+        g.setGameFile(f.getName(), GameModule.GameFileMode.LOADED_GAME);
 
         //BR// New preferred style load for vlogs is close the old stuff and hard-reset to the new log state.
         if (gameStarted) {
-          GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
+          g.setGameFileMode(GameModule.GameFileMode.NEW_GAME);
 
-          GameModule.getGameModule().setLoadOverSemaphore(true); // Stop updating Map UI etc for a bit
+          g.setLoadOverSemaphore(true); // Stop updating Map UI etc for a bit
           try {
             gameStarted = false; // Prevent setup(false) from re-asking about saving the game
             setup(false);        // Completely wipe the game state *before* we decode the saved game
             loadGameInForeground(f); // Foreground loading minimizes the bad behavior of windows during vlog load "mid game"
           }
           finally {
-            GameModule.getGameModule().setLoadOverSemaphore(false); // Resume normal UI updates
+            g.setLoadOverSemaphore(false); // Resume normal UI updates
           }
         }
         else if (forceForeground) {

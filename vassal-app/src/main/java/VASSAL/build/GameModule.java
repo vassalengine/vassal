@@ -132,12 +132,6 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
 import java.awt.Container;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
@@ -159,6 +153,13 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 
 import static VASSAL.preferences.Prefs.MAIN_WINDOW_HEIGHT;
 import static VASSAL.preferences.Prefs.MAIN_WINDOW_REMEMBER;
@@ -708,7 +709,6 @@ public class GameModule extends AbstractConfigurable
     }
     initFrame();
   }
-
 
   /**
    * Associates our user identity with the module's preferences.
