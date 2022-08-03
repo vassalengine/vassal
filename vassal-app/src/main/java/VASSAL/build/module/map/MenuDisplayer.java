@@ -36,6 +36,7 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
 import VASSAL.counters.ActionButton;
+import VASSAL.tools.NamedKeyManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -110,9 +111,11 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
   protected static JMenuItem makeMenuItem(KeyCommand keyCommand) {
     // We remember the oldAcceleratorFont so that we can set it back after creating the JMenuItem
     final Object oldAcceleratorFont = UIManager.get("MenuItem.acceleratorFont");
-    UIManager.put("MenuItem.acceleratorFont", POPUP_MENU_FONT);
+    UIManager.put("MenuItem.acceleratorFont", POPUP_MENU_FONT); // This needs to be set prior to creating the JMenuItem
     final JMenuItem item = new JMenuItem(keyCommand.isMenuSeparator() ? MenuSeparator.SEPARATOR_NAME : getMenuText(keyCommand));
-    item.setAccelerator(keyCommand.getKeyStroke());
+    if (!NamedKeyManager.isNamed(keyCommand.getKeyStroke())) { // If the KeyStroke is named, then there is no accelerator
+      item.setAccelerator(keyCommand.getKeyStroke());
+    }
     UIManager.put("MenuItem.acceleratorFont", oldAcceleratorFont);
 
     item.addActionListener(keyCommand);
