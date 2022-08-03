@@ -2866,7 +2866,11 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
             topWindow.addWindowListener(new WindowAdapter() {
               @Override
               public void windowClosing(WindowEvent e) {
-                if (useLaunchButtonEdit) {
+                // If there is no way of reopening the window,
+                // we close the game. Otherwise just the window.
+                // But there are three ways of reopening it:
+                // Button, the toggle hot key, the show hot key
+                if (useLaunchButtonEdit || !getAttributeValueString(HOTKEY).isEmpty() || !getAttributeValueString(SHOW_KEY).isEmpty()) {
                   topWindow.setVisible(false);
                 }
                 else {
