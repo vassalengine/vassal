@@ -1,5 +1,6 @@
 3.6.8 - ???
 
+* 11617: Closing a reopenable Map should not close game
 * 11570: Update Module Extension window, add missing description
 * 11565: Global Option List Preferences not initialising Global Property
     correctly
