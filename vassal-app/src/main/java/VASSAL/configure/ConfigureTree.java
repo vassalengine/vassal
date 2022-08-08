@@ -186,6 +186,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   private final SearchParameters searchParameters;
   protected static Chatter chatter;
 
+  @Deprecated(since = "2022-08-08", forRemoval = true)
   public static final Font POPUP_MENU_FONT = new Font(Font.DIALOG, Font.PLAIN, 11);
   protected static final List<AdditionalComponent> additionalComponents = new ArrayList<>();
 
@@ -414,7 +415,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected void addAction(JPopupMenu menu, Action a) {
     if (a != null) {
-      menu.add(a).setFont(POPUP_MENU_FONT);
+      menu.add(a);
     }
   }
 
@@ -422,9 +423,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     if ((l != null) && !l.isEmpty()) {
       final JMenu subMenu = new JMenu(name);
       for (final Action a: l) {
-        subMenu.add(a).setFont(POPUP_MENU_FONT);
+        subMenu.add(a);
       }
-      menu.add(subMenu).setFont(POPUP_MENU_FONT);
+      menu.add(subMenu);
       l.clear();
     }
   }
@@ -434,7 +435,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     boolean empty = true;
     for (final Action a : l) {
       if (a != null) {
-        menu.add(a).setFont(POPUP_MENU_FONT);
+        menu.add(a);
         empty = false;
       }
     }
