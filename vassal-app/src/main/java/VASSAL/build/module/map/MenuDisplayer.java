@@ -51,6 +51,7 @@ import VASSAL.counters.PieceFinder;
 import VASSAL.counters.Properties;
 
 public class MenuDisplayer extends MouseAdapter implements Buildable {
+  @Deprecated(since = "2022-08-08", forRemoval = true)
   public static final Font POPUP_MENU_FONT = new Font(Font.DIALOG, Font.PLAIN, 10);
 
   protected Map map;
@@ -110,7 +111,6 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
 
     final JMenuItem item = new JMenuItem(keyCommand.isMenuSeparator() ? MenuSeparator.SEPARATOR_NAME : getMenuText(keyCommand));
     item.addActionListener(keyCommand);
-    item.setFont(POPUP_MENU_FONT);
     item.setEnabled(keyCommand.isEnabled());
 
     return item;
@@ -156,7 +156,6 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
         JMenuItem item = null;
         if (keyCommand instanceof KeyCommandSubMenu) {
           final JMenu subMenu = new JMenu(getMenuText(keyCommand));
-          subMenu.setFont(POPUP_MENU_FONT);
           subMenus.put((KeyCommandSubMenu) keyCommand, subMenu);
           item = subMenu;
           commands.add(item);

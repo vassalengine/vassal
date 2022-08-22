@@ -107,7 +107,10 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
   public static final String CLICKED_X = "ClickedX"; // NON-NLS
   public static final String CLICKED_Y = "ClickedY"; // NON-NLS
   public static final String PIECE_UID = "PieceUID"; // NON-NLS
+
+  @Deprecated(since = "2022-08-08", forRemoval = true)
   public static Font POPUP_MENU_FONT = new Font(Font.DIALOG, Font.PLAIN, 11);
+
   protected JPopupMenu popup;
   protected Rectangle imageBounds;
   protected ScaledImagePainter imagePainter = new ScaledImagePainter();
