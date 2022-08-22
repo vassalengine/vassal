@@ -31,7 +31,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
-import javax.swing.UIManager;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
@@ -110,14 +109,10 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
   // This both eliminates duplicate code AND makes this critical menu-building functionality able to "play well with others".
   // Menu text & behavior can now be custom-classed without needing to override the monster that is MenuDisplayer#createPopup.
   protected static JMenuItem makeMenuItem(KeyCommand keyCommand) {
-    // We remember the oldAcceleratorFont so that we can set it back after creating the JMenuItem
-    final Object oldAcceleratorFont = UIManager.get("MenuItem.acceleratorFont");
-    UIManager.put("MenuItem.acceleratorFont", POPUP_MENU_FONT); // This needs to be set prior to creating the JMenuItem
     final JMenuItem item = new JMenuItem(keyCommand.isMenuSeparator() ? MenuSeparator.SEPARATOR_NAME : getMenuText(keyCommand));
     if (!NamedKeyManager.isNamed(keyCommand.getKeyStroke())) { // If the KeyStroke is named, then there is no accelerator
       item.setAccelerator(keyCommand.getKeyStroke());
     }
-    UIManager.put("MenuItem.acceleratorFont", oldAcceleratorFont);
 
     item.addActionListener(keyCommand);
     item.setEnabled(keyCommand.isEnabled());
