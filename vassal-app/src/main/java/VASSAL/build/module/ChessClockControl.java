@@ -600,7 +600,7 @@ public class ChessClockControl extends AbstractConfigurable
       return command;
     }
 
-    Boolean clockTicking = false;
+    boolean clockTicking = false;
     for (final ChessClock clock : chessclocks) {
       // We want to start exactly one clock, which doesn't belong to us, and only if it isn't already started
       if (!clockTicking && !mySide.equals(clock.getSide())) {
