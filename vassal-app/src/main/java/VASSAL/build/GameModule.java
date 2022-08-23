@@ -89,6 +89,7 @@ import VASSAL.configure.CompoundValidityChecker;
 import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.MandatoryComponent;
 import VASSAL.configure.SingleChildInstance;
+import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.TextConfigurer;
 import VASSAL.configure.ValidationReport;
@@ -122,9 +123,11 @@ import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.image.ImageTileSource;
 import VASSAL.tools.image.tilecache.ImageTileDiskCache;
+import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.version.VersionUtils;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -134,6 +137,7 @@ import org.w3c.dom.Element;
 
 import java.awt.Container;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -149,11 +153,14 @@ import java.nio.file.NoSuchFileException;
 import java.security.SecureRandom;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
+import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -221,6 +228,10 @@ public class GameModule extends AbstractConfigurable
   public static final String IS_VISIBLE = "_isVisible"; //NON-NLS
 
   private static final char COMMAND_SEPARATOR = KeyEvent.VK_ESCAPE;
+
+  public static final String RECENT_GAMES = "RecentGames"; //NON-NLS
+
+  private final List<MenuItemProxy> openRecentItems = new ArrayList<>();
 
   /**
    * Last type of game save/load for our current game
@@ -685,6 +696,7 @@ public class GameModule extends AbstractConfigurable
 
     initIdentityPreferences();
     Prefs.initSharedGlobalPrefs();
+    initRecentGamesMenu();
     initGameState();
     initLogger();
     initServer();
@@ -725,6 +737,42 @@ public class GameModule extends AbstractConfigurable
     getPrefs().addOption(Resources.getString("Prefs.personal_tab"), passwordConfigurer);   //$NON-NLS-1$ //$NON-NLS-2$
     getPrefs().addOption(Resources.getString("Prefs.personal_tab"), profile);  //$NON-NLS-1$
     GameModule.setUserId(passwordConfigurer.getValueString());
+  }
+
+  private void initRecentGamesMenu() {
+    final StringArrayConfigurer recentGames = new StringArrayConfigurer(RECENT_GAMES, "");
+    getPrefs().addOption(null, recentGames);
+
+    updateRecentGamesMenu();
+    recentGames.addPropertyChangeListener(e -> updateRecentGamesMenu());
+  }
+
+  private void updateRecentGamesMenu() {
+    final MenuManager mm = MenuManager.getInstance();
+
+    // remove old recent games
+    for (final MenuItemProxy i : openRecentItems) {
+      mm.removeFromSection("OpenRecent", i);
+    }
+    openRecentItems.clear();
+
+    // recreate recent games
+    final List<String> rgs = new ArrayList<>(Arrays.asList((String[]) getPrefs().getValue(RECENT_GAMES)));
+    Collections.reverse(rgs);
+
+    for (final String rg : rgs) {
+      final MenuItemProxy i = new MenuItemProxy(new AbstractAction(new File(rg).getName()) {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          getGameState().loadGame(new File(rg), false);
+        }
+      });
+
+      mm.addToSection("OpenRecent", i);
+      openRecentItems.add(i);
+    }
   }
 
   /**

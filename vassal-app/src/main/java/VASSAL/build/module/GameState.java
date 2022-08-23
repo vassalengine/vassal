@@ -32,6 +32,7 @@ import VASSAL.command.ConditionalCommand;
 import VASSAL.command.Logger;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.DirectoryConfigurer;
+import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.ModuleManagerUpdateHelper;
@@ -83,6 +84,7 @@ import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -790,7 +792,25 @@ public class GameState implements CommandEncoder {
       return false;
     }
 
+    updateRecentGames(f);
+
     return true;
+  }
+
+  private void updateRecentGames(File f) {
+    // get existing recent games list
+    final StringArrayConfigurer recentGamesConf = (StringArrayConfigurer) GameModule.getGameModule().getPrefs().getOption(GameModule.RECENT_GAMES);
+    final List<String> rgs = new ArrayList<>(Arrays.asList(recentGamesConf.getStringArray()));
+    final String path = f.toString();
+
+    // advance new file to the end of the list
+    rgs.remove(path);
+    rgs.add(path);
+
+    // truncate the list to the last 24 elements and reset
+    final int max = 24;
+    final int end = rgs.size();
+    recentGamesConf.setValue(rgs.subList(Math.max(0, end - max), end).toArray(new String[0]));
   }
 
   /**

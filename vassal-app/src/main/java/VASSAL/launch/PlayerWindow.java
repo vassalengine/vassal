@@ -87,6 +87,13 @@ public class PlayerWindow extends JFrame {
     fileMenu.add(mm.addKey("GameState.new_game"));
     fileMenu.add(mm.addKey("GameState.load_game_new"));
     fileMenu.add(mm.addKey("GameState.load_game_old"));
+
+    final MenuProxy openRecent = new MenuProxy(Resources.getString("GameState.open_recent"));
+    fileMenu.add(openRecent);
+
+    openRecent.add(mm.addMarker("OpenRecent.start"));  //NON-NLS
+    openRecent.add(mm.addMarker("OpenRecent.end"));  //NON-NLS
+
     fileMenu.add(mm.addKey("GameState.save_game"));
     fileMenu.add(mm.addKey("GameState.save_game_as"));
     fileMenu.add(mm.addKey("GameState.close_game"));
