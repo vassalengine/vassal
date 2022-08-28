@@ -34,11 +34,14 @@
         { "num": 11496, "desc": "Safer GKC Configurer for Fixed # From Deck" }
       ],
       "other_improvements": [
+        { "num": 11622, "desc": "Added support for Open Recent... submenu" },
+        { "num": 11600, "desc": "Player context menus: Show keyboard shortcuts right-aligned and with symbols" },
         { "num": 11570, "desc": "Update Module Extension window, add missing description" },
         { "num": 11564, "desc": "Prevent Notes windows always starting open at very last character of note" },
         { "num": 11557, "desc": "Auto-select contents of Edit boxes when they get focus" },
         { "num": 11546, "desc": "Default dialog-closing button behaviors for Enter/Esc; Key shortcuts added to Piece Definer (see Game Piece help); Piece Definer list boxes jump to entry starting with that letter; Key shortcuts added editing Layer trait (see Layer help); Most text fields support Ctrl/Cmd+Z for undo/redo" },
         { "num": 11545, "desc": "Description of Prototype will auto-include any BasicName" },
+        { "num": 11541, "desc": "Add hotkey to start specific chess clock" },
         { "num": 11534, "desc": "Add Open all Contained Pieces option" },
         { "num": 11524, "desc": "Option to 'always use format' on text label (even if label is blank)" },
         { "num": 11521, "desc": "BoundsTracker - Track bounds and repaint just for the regions of added pieces; rather than the whole map" },
