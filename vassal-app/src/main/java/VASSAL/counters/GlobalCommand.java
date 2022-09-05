@@ -678,7 +678,7 @@ public class GlobalCommand implements Auditable {
     private final PieceFilter filter;
     private final KeyStroke stroke;
     private int selectedCount;
-    private AuditTrail auditSoFar = null;
+    private final AuditTrail auditSoFar;
 
     public Visitor(Command command, PieceFilter filter, KeyStroke stroke) {
       this(command, filter, stroke, null);
