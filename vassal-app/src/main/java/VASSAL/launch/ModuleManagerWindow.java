@@ -283,7 +283,14 @@ public class ModuleManagerWindow extends JFrame {
     }, serverStatusConfig.booleanValue()));
 
     toolsMenu.add(mm.addKey("Main.import_module"));
-    toolsMenu.add(new MenuItemProxy(new ClearTileCacheAction()));
+
+    final ClearTileCacheAction ctca = new ClearTileCacheAction();
+    AbstractLaunchAction.getUseTracker().addPropertyChangeListener(e -> {
+      if ("open".equals(e.getPropertyName())) {
+        ctca.setEnabled(Boolean.TRUE.equals(e.getNewValue()));
+      }
+    });
+    toolsMenu.add(new MenuItemProxy(ctca));
 
     // help menu
     final MenuProxy helpMenu =
