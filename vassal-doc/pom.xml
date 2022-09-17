@@ -9,8 +9,6 @@
     </parent>
 
     <artifactId>vassal-doc</artifactId>
-    <version>3.6.8-SNAPSHOT</version>
-
     <properties>
         <main.basedir>${project.basedir}${file.separator}..</main.basedir>
     </properties>

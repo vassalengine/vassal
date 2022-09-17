@@ -9,7 +9,6 @@
     </parent>
 
     <artifactId>vassal-deprecation</artifactId>
-    <version>3.6.8-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <properties>
