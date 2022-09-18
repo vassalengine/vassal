@@ -9,7 +9,6 @@
     </parent>
 
     <artifactId>release-prepare</artifactId>
-    <version>3.6.8-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
