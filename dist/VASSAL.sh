@@ -17,7 +17,7 @@ fi
 
 # Dereference any possible symbolic link to executable script, then find
 # absolute path where VASSAL is installed 
-EXEC_PATH=$(readlink "$0")
+EXEC_PATH=$(realpath "$0")
 INSTALL_DIR=$(dirname ${EXEC_PATH})
 
 # Check that java is new enough
