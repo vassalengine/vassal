@@ -16,7 +16,7 @@
     <properties>
         <main.basedir>${project.basedir}${file.separator}..</main.basedir>
         <project.reporting.outputEncoding>${project.build.sourceEncoding}</project.reporting.outputEncoding>
-        <version.batik>1.14</version.batik>
+        <version.batik>1.15</version.batik>
     </properties>
 
     <dependencyManagement>
