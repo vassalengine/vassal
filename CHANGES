@@ -1,5 +1,7 @@
 3.6.8 - ???
 
+* 11727: Fixed incorrect properties file path, which prevents working on
+    translations
 * 11716: Dereference symbolic link to executable before attemping to find
     install dir
 * 11678: Prevent clearing the tile cache when a module is open
