@@ -5,6 +5,7 @@
     translations
 * 11716: Dereference symbolic link to executable before attemping to find
     install dir
+* 11700: Irregular Grid editor - add region with Insert or Ctrl+Right Click
 * 11678: Prevent clearing the tile cache when a module is open
 * 11630: Use default font for all context menus
 * 11622: Added support for Open Recent... submenu

@@ -38,6 +38,7 @@
         { "num": 11496, "desc": "Safer GKC Configurer for Fixed # From Deck" }
       ],
       "other_improvements": [
+        { "num": 11700, "desc": "Irregular Grid editor - add region with Insert or Ctrl+Right Click" },
         { "num": 11622, "desc": "Added support for Open Recent... submenu" },
         { "num": 11600, "desc": "Player context menus: Show keyboard shortcuts right-aligned and with symbols" },
         { "num": 11570, "desc": "Update Module Extension window, add missing description" },
