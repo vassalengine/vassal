@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 11778, "desc": "System.setProperty() in BugDialog throws if the value is null" },
         { "num": 11727, "desc": "Fixed incorrect properties file path, which prevents working on translations" },
         { "num": 11716, "desc": "Dereference symbolic link to executable before attemping to find install dir" },
         { "num": 11678, "desc": "Prevent clearing the tile cache when a module is open" },

@@ -1,5 +1,6 @@
 3.6.8 - ???
 
+* 11778: System.setProperty() in BugDialog throws if the value is null
 * 11727: Fixed incorrect properties file path, which prevents working on
     translations
 * 11716: Dereference symbolic link to executable before attemping to find
