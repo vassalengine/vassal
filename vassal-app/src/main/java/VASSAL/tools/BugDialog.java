@@ -487,7 +487,9 @@ public class BugDialog extends JDialog {
           return VersionUtils.compareReportable(ourVersion);
         }
         finally {
-          System.setProperty("javax.net.debug", prevProp);
+          if (prevProp != null) {
+            System.setProperty("javax.net.debug", prevProp);
+          }
         }
       }
     }
