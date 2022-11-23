@@ -48,10 +48,7 @@ import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.SequenceEncoder;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.AbstractAction;
 import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
@@ -63,8 +60,6 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
@@ -578,6 +573,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       visPanel.add(pieceInput.getComponent(), "grow"); // NON-NLS
       b.add(visPanel);
 
+      defineButton.setMnemonic('D');
       defineButton.addActionListener(e -> {
         markerSlotPath = null;
         new PropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class,  p), true, pieceInput, null).setVisible(true);
@@ -587,6 +583,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       b.add(defineButton);
       adjustVisualiserSize();
 
+      selectButton.setMnemonic('S');
       selectButton.addActionListener(e -> {
         final ChoosePieceDialog d = new ChoosePieceDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, p), PieceSlot.class);
         d.setVisible(true);
@@ -645,27 +642,6 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       p.add("Editor.PlaceMarker.keystroke.after.placement", afterBurner);
 
       slotId = piece.getGpId();
-    }
-
-    @Override
-    public void initCustomControls(JDialog d) {
-      d.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-        KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.ALT_DOWN_MASK), "Define"); //$NON-NLS-1$
-      d.getRootPane().getActionMap().put("Define", new AbstractAction() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          defineButton.doClick();
-        }
-      });
-
-      d.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-        KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.ALT_DOWN_MASK), "Select"); //$NON-NLS-1$
-      d.getRootPane().getActionMap().put("Select", new AbstractAction() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          selectButton.doClick();
-        }
-      });
     }
 
     private void adjustVisualiserSize() {
