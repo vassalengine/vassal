@@ -59,6 +59,8 @@ pushd "$L4JDIR"
 
 wget https://downloads.sourceforge.net/project/launch4j/launch4j-3/${L4JVER}/launch4j-${L4JVER}-linux-x64.tgz
 tar -xvf launch4j-${L4JVER}-linux-x64.tgz
+# fix DOS line endings in script in 3.50
+dos2unix launch4j/launch4j
 
 popd
 
