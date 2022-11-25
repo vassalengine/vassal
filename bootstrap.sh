@@ -5,7 +5,7 @@
 #
 DMGDIR=dist/dmg
 
-L4JVER=3.14
+L4JVER=3.50
 L4JDIR=dist/launch4j
 
 JDKDIR=dist/jdks
