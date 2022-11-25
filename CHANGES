@@ -1,4 +1,4 @@
-3.6.8 - 25 November 2022
+3.6.8 - 26 November 2022
 
 * 11791: Updated bundled Java to 18.0.2.1 for Windows and MacOS
 * 11778: System.setProperty() in BugDialog throws if the value is null
