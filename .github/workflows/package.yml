@@ -65,49 +65,49 @@ jobs:
         run: make release
 
       - name: Archive Linux
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: VASSAL-${{ steps.version.outputs.VERSION }}-linux.tar.bz2
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-linux.tar.bz2
 
       - name: Archive MacOS x86_64
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: VASSAL-${{ steps.version.outputs.VERSION }}-macos-x86_64.dmg
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-macos-x86_64.dmg
 
       - name: Archive MacOS aarch64
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: VASSAL-${{ steps.version.outputs.VERSION }}-macos-aarch64.dmg
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-macos-aarch64.dmg
 
       - name: Archive other
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: VASSAL-${{ steps.version.outputs.VERSION }}-other.zip
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-other.zip
 
       - name: Archive Windows x86_32
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: VASSAL-${{ steps.version.outputs.VERSION }}-windows-x86_32.exe
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-windows-x86_32.exe
 
       - name: Archive Windows x86_64
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: VASSAL-${{ steps.version.outputs.VERSION }}-windows-x86_64.exe
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-windows-x86_64.exe
 
       - name: Archive Windows aarch64
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: VASSAL-${{ steps.version.outputs.VERSION }}-windows-aarch64.exe
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-windows-aarch64.exe
 
       - name: Archive SHA256 hashes
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: VASSAL-${{ steps.version.outputs.VERSION }}.sha256
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}.sha256
