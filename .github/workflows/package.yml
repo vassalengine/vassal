@@ -37,7 +37,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: 18
+          java-version: 19
           java-package: jdk
 
       - name: Cache Maven packages
