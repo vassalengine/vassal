@@ -41,15 +41,16 @@ jobs:
           java-package: jdk
 
       - name: Cache Maven packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
+        id: cache-maven
         with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
 
       - name: Cache packaging dependencies
         id: cache-bootstrap
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ./dist/dmg
