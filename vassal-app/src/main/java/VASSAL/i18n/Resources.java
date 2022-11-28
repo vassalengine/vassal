@@ -73,6 +73,7 @@ public class Resources {
   protected final List<Locale> supportedLocales =
     new ArrayList<>(Arrays.asList(
       Locale.ENGLISH,
+      new Locale("zh"),  // Chinese //$NON-NLS-1$
       new Locale("nl"),  // Dutch   //$NON-NLS-1$
       Locale.FRENCH,
       Locale.GERMAN,
