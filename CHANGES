@@ -1,6 +1,7 @@
 3.6.8 - 29 November 2022
 
-* 11798: Added Polish translation
+* 11798: Added Chinese translation
+* 11796: Added Polish translation
 * 11790: Updated bundled Java to 19 for Windows and MacOS
 * 11778: System.setProperty() in BugDialog throws if the value is null
 * 11727: Fixed incorrect properties file path, which prevents working on

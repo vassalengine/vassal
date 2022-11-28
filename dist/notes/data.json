@@ -38,7 +38,8 @@
         { "num": 11496, "desc": "Safer GKC Configurer for Fixed # From Deck" }
       ],
       "other_improvements": [
-        { "num": 11798, "desc": "Added Polish translation" },
+        { "num": 11798, "desc": "Added Chinese translation" },
+        { "num": 11796, "desc": "Added Polish translation" },
         { "num": 11790, "desc": "Updated bundled Java to 19 for Windows and MacOS" },
         { "num": 11704, "desc": "Added Place Marker editor hotkeys" },
         { "num": 11700, "desc": "Irregular Grid editor - add region with Insert or Ctrl+Right Click" },
