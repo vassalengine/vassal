@@ -57,38 +57,6 @@
         { "num": 11499, "desc": "TurnTracker Forward Only Toggle: Allow module designers to disable the backwards TurnTracker button" },
         { "num": 11497, "desc": "Don't play sounds while fast-forwarding a log" }
       ]
-    },
-    {
-      "in": "3.6.7",
-      "since": "3.6.6",
-      "new_features": [
-      ],
-      "bug_fixes": [
-        { "num": 11465, "desc": "DoActionButton claims its icon in remove-unused-images" },
-        { "num": 11417, "desc": "Fix Ctrl key with Does Not Stack trait" },
-        { "num": 11406, "desc": "Don't show image scale option for panels inside Chart Windows" },
-        { "num": 11388, "desc": "Correctly draw hex coordinates for odd-numbered columns spanning tile boundaries" },
-        { "num": 11372, "desc": "Delayed Notes from subsequent saves displayed out of order" },
-        { "num": 11369, "desc": "Leading zeros handling in Set Dynamic Property" },
-        { "num": 11362, "desc": "Match expanded Inventory nodes by entry value, not by display text" },
-        { "num": 11347, "desc": "Inventory should not reveal face down deck images" },
-        { "num": 11344, "desc": "Prevent Undo from triggering Deck Empty Hotkey" },
-        { "num": 11343, "desc": "Ensure that the pivot point is used for rotating Cargo" },
-        { "num": 11329, "desc": "Invisible Pieces belonging to another player can still stack together" }
-      ],
-      "other_improvements": [
-        { "num": 11487, "desc": "Removed obsolete option from startup script" },
-        { "num": 11460, "desc": "Show a dialog when connection to the game server is lost" },
-        { "num": 11446, "desc": "Tweak version number display in online window (numbers at end, grayed out)" },
-        { "num": 11414, "desc": "Improved version mismatch messaging" },
-        { "num": 11373, "desc": "Make columns in Delayed Notes table sortable" },
-        { "num": 11361, "desc": "Allow Calculated properties to set Game Piece Layer" },
-        { "num": 11356, "desc": "SetupStack can match literal grid names even if Zone only reports Zone name (e.g., uses $name$ as Location Format)" },
-        { "num": 11351, "desc": "Documented that Mats w/ cargo can't go in decks" },
-        { "num": 11348, "desc": "Polygon Editor improvements (move whole shape, tab between points)" },
-        { "num": 11346, "desc": "Update bundled Java to 18" },
-        { "num": 11330, "desc": "Allow .toString() to be called properly on property names in Beanshell" }
-      ]
     }
   ]
 }
