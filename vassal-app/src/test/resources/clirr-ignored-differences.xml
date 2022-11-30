@@ -22,11 +22,4 @@
         <method>*</method>
     </difference>
 
-    <difference>
-        <className>VASSAL/launch/AbstractLaunchAction</className>
-        <differenceType>6001</differenceType>
-        <field>using</field>
-        <justification>Nothing external should use this</justification>
-    </difference>
-
 </differences>
