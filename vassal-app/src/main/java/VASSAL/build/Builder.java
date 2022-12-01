@@ -87,7 +87,8 @@ public class Builder {
           ErrorDialog.bug(ex);
         }
         catch (RuntimeException | Error ex) {
-          logger.error("Error building " + child.getNodeName()); //NON-NLS
+          final Node attr = child.getAttributes().getNamedItem("name"); //NON-NLS
+          logger.error("Error building " + child.getNodeName() + (attr != null ? " " + attr.getNodeValue() : "")); //NON-NLS
           throw ex;
         }
       }
