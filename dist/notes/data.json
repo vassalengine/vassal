@@ -17,6 +17,17 @@
   ],
   "changes": [
     {
+      "in": "3.6.9",
+      "since": "3.6.8",
+      "new_features": [
+      ],
+      "bug_fixes": [
+      ],
+      "other_improvements": [
+        { "num": 11803, "desc": "Report exceptions thrown while loading modules" }
+      ]
+    },
+    {
       "in": "3.6.8",
       "since": "3.6.7",
       "new_features": [

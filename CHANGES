@@ -1,3 +1,7 @@
+3.6.9 - ???
+
+* 11803: Report exceptions thrown while loading modules
+
 3.6.8 - 29 November 2022
 
 * 11798: Added Chinese translation
