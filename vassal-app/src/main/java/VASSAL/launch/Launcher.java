@@ -91,7 +91,6 @@ public abstract class Launcher {
 
     createMenuManager();
 
-
     final SimpleRunnableFuture<Void> fut = new SimpleRunnableFuture() {
       @Override
       public void run() {
@@ -162,6 +161,9 @@ public abstract class Launcher {
           )
         );
         System.exit(1);
+      }
+      else {
+        throw new RuntimeException(e);
       }
     }
   }
