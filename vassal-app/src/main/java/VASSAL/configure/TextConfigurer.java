@@ -21,7 +21,6 @@ import VASSAL.build.AutoConfigurable;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.swing.SwingUtils;
-import javax.swing.text.DefaultCaret;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.BoxLayout;
@@ -127,6 +126,12 @@ public class TextConfigurer extends Configurer implements ConfigurerFactory {
   }
 
   @Override
+  public void requestFocus() {
+    super.requestFocus();
+    textArea.requestFocus();
+  }
+
+  @Override
   public java.awt.Component getControls() {
     if (p == null) {
       p = new JPanel();
@@ -143,9 +148,6 @@ public class TextConfigurer extends Configurer implements ConfigurerFactory {
         }
       });
 
-      // Prevent setting the text forcing the caret to the end of the text
-      ((DefaultCaret)textArea.getCaret()).setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
-      
       textArea.setText((String) getValue());
       SwingUtils.allowUndo(textArea);
       final JScrollPane scroll = new ScrollPane(textArea);
