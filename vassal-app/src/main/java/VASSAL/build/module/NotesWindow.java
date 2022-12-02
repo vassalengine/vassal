@@ -62,8 +62,8 @@ public class NotesWindow extends AbstractToolbarItem
   public static final String BUTTON_TEXT = "buttonText"; //NON-NLS // non-standard legacy difference from AbstractToolbarItem
   public static final String DESCRIPTION = "description"; //NON-NLS
 
-  public static final int TAB_INDEX_SCEN = 0;
-  public static final int TAB_INDEX_PUBLIC = 1;
+  static final int TAB_INDEX_SCEN = 0;
+  static final int TAB_INDEX_PUBLIC = 1;
 
   // These three identical to AbstractToolbarItem, and are only here for "clirr purposes"
   @Deprecated(since = "2020-10-21", forRemoval = true) public static final String HOT_KEY = "hotkey"; //$NON-NLS-1$
