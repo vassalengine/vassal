@@ -1,4 +1,4 @@
-3.6.9 - ???
+3.6.9 - 3 December 2022
 
 * 11806: NotesWindow re-open assigns focus properly to retain caret position
 * 11805: Fixed NPE: tab.getTitleAt() can return null, so check for that
