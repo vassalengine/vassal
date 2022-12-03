@@ -22,7 +22,8 @@
       "new_features": [
       ],
       "bug_fixes": [
-        { "num": 11806, "desc": "NotesWindow re-open assigns focus properly to retain caret position" }
+        { "num": 11806, "desc": "NotesWindow re-open assigns focus properly to retain caret position" },
+        { "num": 11805, "desc": "Fixed NPE: tab.getTitleAt() can return null, so check for that" }
       ],
       "other_improvements": [
         { "num": 11804, "desc": "Log element name on build exception, if available" },
