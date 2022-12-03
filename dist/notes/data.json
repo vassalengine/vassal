@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 11806, "desc": "NotesWindow re-open assigns focus properly to retain caret position" }
       ],
       "other_improvements": [
         { "num": 11804, "desc": "Log element name on build exception, if available" },

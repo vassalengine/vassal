@@ -1,5 +1,6 @@
 3.6.9 - ???
 
+* 11806: NotesWindow re-open assigns focus properly to retain caret position
 * 11804: Log element name on build exception, if available
 * 11803: Report exceptions thrown while loading modules
 
