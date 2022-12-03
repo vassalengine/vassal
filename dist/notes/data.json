@@ -24,6 +24,7 @@
       "bug_fixes": [
       ],
       "other_improvements": [
+        { "num": 11804, "desc": "Log element name on build exception, if available" },
         { "num": 11803, "desc": "Report exceptions thrown while loading modules" }
       ]
     },

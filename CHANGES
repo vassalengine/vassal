@@ -1,5 +1,6 @@
 3.6.9 - ???
 
+* 11804: Log element name on build exception, if available
 * 11803: Report exceptions thrown while loading modules
 
 3.6.8 - 29 November 2022
