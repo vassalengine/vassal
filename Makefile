@@ -89,6 +89,7 @@ SKIPS:=
 # -Dclirr.skip=true
 # -Dmaven.javadoc.skip=true
 # -Dpmd.skip=true
+# -Dmaven.test.skip=true
 
 jar: SKIPS:=-Dasciidoctor.skip=true -Dspotbugs.skip=true -Dlicense.skipDownloadLicenses
 jar: $(LIBDIR)/Vengine.jar
