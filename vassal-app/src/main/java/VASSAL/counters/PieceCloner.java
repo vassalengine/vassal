@@ -80,7 +80,7 @@ public class PieceCloner {
         final Decorator dclone = (Decorator) clone;
         final Decorator dpiece = (Decorator) piece;
 
-        dclone.setInner(clonePiece(dpiece.getInner()));
+        dclone.setInner(clonePiece(dpiece.getInner(), expandPiece));
         ((EditablePiece)clone).mySetType(dpiece.myGetType());
         dclone.mySetState(dpiece.myGetState());
       }
@@ -101,6 +101,4 @@ public class PieceCloner {
     }
     return clone;
   }
-
 }
-
