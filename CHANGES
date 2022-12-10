@@ -1,5 +1,7 @@
 3.6.9 - ???
 
+* 11814: Ensure that valid BasicName property is used to identify piece when
+    no translation is available
 * 11808: PieceCloner.clonePiece() should not expand inner pieces unconditionally
 * 11806: NotesWindow re-open assigns focus properly to retain caret position
 * 11805: Fixed NPE: tab.getTitleAt() can return null, so check for that

@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 11814, "desc": "Ensure that valid BasicName property is used to identify piece when no translation is available" },
         { "num": 11808, "desc": "PieceCloner.clonePiece() should not expand inner pieces unconditionally" },
         { "num": 11806, "desc": "NotesWindow re-open assigns focus properly to retain caret position" },
         { "num": 11805, "desc": "Fixed NPE: tab.getTitleAt() can return null, so check for that" }
