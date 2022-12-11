@@ -170,12 +170,15 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
   public Rectangle boundingBox() {
     final Rectangle r = piece.boundingBox();
 
-    final Area a = getArea();
-    if (a != null) {
-      final Rectangle aoeBounds = getArea().getBounds();
-      final Point mapPosition = getPosition();
-      aoeBounds.translate(-mapPosition.x, -mapPosition.y);
-      r.add(aoeBounds);
+    // include the AoE in the bounding box if it's visible
+    if ((alwaysActive || active) && mapShaderName == null) {
+      final Area a = getArea();
+      if (a != null) {
+        final Rectangle aoeBounds = getArea().getBounds();
+        final Point mapPosition = getPosition();
+        aoeBounds.translate(-mapPosition.x, -mapPosition.y);
+        r.add(aoeBounds);
+      }
     }
 
     return r;
