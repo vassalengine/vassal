@@ -43,14 +43,6 @@ public class BoundsTracker {
 
   public void addPiece(GamePiece p) {
     if (p.getMap() != null) {
-      if (p.getParent() != null) {
-        // NB: We track the Stack if there is one. This is because individual pieces
-        // within a Stack do not include their stack-offsets in `boundingBox()` and
-        // so the repaint would not include these offsets. This matters for
-        // rotate-piece (for example). Note: other effects (like area-of-effect) are
-        // not offset from the Stack.
-        p = p.getParent();
-      }
       final Rectangle region = p.boundingBox();
       region.translate(p.getPosition().x, p.getPosition().y);
       regions.add(Pair.of(p.getMap(), region));
