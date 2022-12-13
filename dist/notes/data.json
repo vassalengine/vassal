@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 11821, "desc": "Include the AreaOfEffect bounds in the piece bounding box only if the AoE is visible" },
         { "num": 11814, "desc": "Ensure that valid BasicName property is used to identify piece when no translation is available" },
         { "num": 11808, "desc": "PieceCloner.clonePiece() should not expand inner pieces unconditionally" },
         { "num": 11806, "desc": "NotesWindow re-open assigns focus properly to retain caret position" },

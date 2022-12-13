@@ -1,5 +1,7 @@
 3.6.9 - ???
 
+* 11821: Include the AreaOfEffect bounds in the piece bounding box only if the
+    AoE is visible
 * 11814: Ensure that valid BasicName property is used to identify piece when
     no translation is available
 * 11808: PieceCloner.clonePiece() should not expand inner pieces unconditionally
