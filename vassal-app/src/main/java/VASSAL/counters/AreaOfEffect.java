@@ -174,7 +174,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     if ((alwaysActive || active) && mapShaderName == null) {
       final Area a = getArea();
       if (a != null) {
-        final Rectangle aoeBounds = getArea().getBounds();
+        final Rectangle aoeBounds = a.getBounds();
         final Point mapPosition = getPosition();
         aoeBounds.translate(-mapPosition.x, -mapPosition.y);
         r.add(aoeBounds);
