@@ -17,12 +17,10 @@
  */
 package VASSAL.counters;
 
-import java.awt.Rectangle;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import VASSAL.build.module.Map;
-import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Records the bounding boxes of GamePieces.  Use addPiece() to
@@ -31,35 +29,25 @@ import org.apache.commons.lang3.tuple.Pair;
  * added pieces belonged.
  */
 public class BoundsTracker {
-  private final List<Pair<Map, Rectangle>> regions;
+  private final Set<Map> maps;
 
   public BoundsTracker() {
-    regions = new ArrayList<>();
+    maps = new HashSet<>();
   }
 
   public void clear() {
-    regions.clear();
+    maps.clear();
   }
 
   public void addPiece(GamePiece p) {
     if (p.getMap() != null) {
-      if (p.getParent() != null) {
-        // NB: We track the Stack if there is one. This is because individual pieces
-        // within a Stack do not include their stack-offsets in `boundingBox()` and
-        // so the repaint would not include these offsets. This matters for
-        // rotate-piece (for example). Note: other effects (like area-of-effect) are
-        // not offset from the Stack.
-        p = p.getParent();
-      }
-      final Rectangle region = p.boundingBox();
-      region.translate(p.getPosition().x, p.getPosition().y);
-      regions.add(Pair.of(p.getMap(), region));
+      maps.add(p.getMap());
     }
   }
 
   public void repaint() {
-    for (final Pair<Map, Rectangle> mrPair : regions) {
-      mrPair.getLeft().repaint(mrPair.getRight());
+    for (final Map m : maps) {
+      m.repaint();
     }
   }
 }
