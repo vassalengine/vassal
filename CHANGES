@@ -1,6 +1,6 @@
 3.6.9 - ???
 
-* 11825: BoundsTracker once again repaints entier maps, reverting 11521
+* 11825: BoundsTracker once again repaints entire maps, reverting 11521
 * 11821: Include the AreaOfEffect bounds in the piece bounding box only if the
     AoE is visible
 * 11814: Ensure that valid BasicName property is used to identify piece when
