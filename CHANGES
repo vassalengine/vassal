@@ -1,4 +1,4 @@
-3.6.9 - ???
+3.6.9 - 14 December 2022
 
 * 11825: BoundsTracker once again repaints entire maps, reverting 11521
 * 11821: Include the AreaOfEffect bounds in the piece bounding box only if the
