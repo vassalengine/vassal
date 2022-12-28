@@ -25,7 +25,7 @@ jobs:
 
       - name: Store version
         id: version
-        run: echo "::set-output name=VERSION::$(make version-print)"
+        run: echo "VERSION=$(make version-print)" >>$GITHUB_OUTPUT
 
       - name: Update container
         run: sudo apt update
