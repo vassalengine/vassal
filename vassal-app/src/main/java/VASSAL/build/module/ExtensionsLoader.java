@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipException;
 
+import VASSAL.build.widget.PieceSlot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,8 +70,14 @@ public class ExtensionsLoader implements CommandEncoder {
       });
     }
     addExtensions();
+
     // Force the module checksum to be regenerated
     mod.getCrc(true);
+
+    // Clear all PieceSlot caches in case this extension changed any already expanded pieces
+    for (final PieceSlot s : mod.getAllDescendantComponentsOf(PieceSlot.class)) {
+      s.clearCache();
+    }
   }
 
   protected void addExtensions() {
