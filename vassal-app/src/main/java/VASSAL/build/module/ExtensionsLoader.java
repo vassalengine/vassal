@@ -25,10 +25,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipException;
 
-import VASSAL.build.widget.PieceSlot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import VASSAL.build.widget.PieceSlot;
 import VASSAL.build.GameModule;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
