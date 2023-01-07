@@ -1350,9 +1350,9 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
    */
   @Override
   public List<String> getMenuTextList() {
-    return List.of(getAttributeValueString(IN_BUTTON_TEXT), getAttributeValueString(IN_TOOLTIP),
-                   getAttributeValueString(OUT_BUTTON_TEXT), getAttributeValueString(OUT_TOOLTIP),
-                   getAttributeValueString(PICK_BUTTON_TEXT), getAttributeValueString(PICK_TOOLTIP));
+    return Arrays.asList(getAttributeValueString(IN_BUTTON_TEXT), getAttributeValueString(IN_TOOLTIP),
+                         getAttributeValueString(OUT_BUTTON_TEXT), getAttributeValueString(OUT_TOOLTIP),
+                         getAttributeValueString(PICK_BUTTON_TEXT), getAttributeValueString(PICK_TOOLTIP));
   }
 
   /**

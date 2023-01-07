@@ -726,7 +726,7 @@ public class DoActionButton extends AbstractToolbarItem
    */
   @Override
   public List<String> getFormattedStringList() {
-    return List.of(reportFormat.getFormat());
+    return Arrays.asList(reportFormat.getFormat());
   }
 
   /**
@@ -734,7 +734,7 @@ public class DoActionButton extends AbstractToolbarItem
    */
   @Override
   public List<String> getPropertyList() {
-    return List.of(indexProperty);
+    return Arrays.asList(indexProperty);
   }
 
   /**

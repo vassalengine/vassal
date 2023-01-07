@@ -421,7 +421,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
    */
   @Override
   public List<String> getMenuTextList() {
-    return List.of(getAttributeValueString(BUTTON_TEXT), getAttributeValueString(TOOLTIP));
+    return Arrays.asList(getAttributeValueString(BUTTON_TEXT), getAttributeValueString(TOOLTIP));
   }
 
   /**
