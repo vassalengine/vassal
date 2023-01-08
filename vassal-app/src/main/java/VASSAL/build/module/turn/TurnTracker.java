@@ -1307,7 +1307,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
    */
   @Override
   public List<String> getFormattedStringList() {
-    return List.of(turnFormat.getFormat(), reportFormat.getFormat());
+    return Arrays.asList(turnFormat.getFormat(), reportFormat.getFormat());
   }
 
   /**
@@ -1316,7 +1316,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
    */
   @Override
   public List<String> getMenuTextList() {
-    return List.of(getAttributeValueString(BUTTON_TEXT), getAttributeValueString(TOOLTIP));
+    return Arrays.asList(getAttributeValueString(BUTTON_TEXT), getAttributeValueString(TOOLTIP));
   }
 
   /**

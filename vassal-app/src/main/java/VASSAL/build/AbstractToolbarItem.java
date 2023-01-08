@@ -491,7 +491,7 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
    */
   @Override
   public List<String> getMenuTextList() {
-    return List.of(getAttributeValueString(buttonTextKey), getAttributeValueString(tooltipKey));
+    return Arrays.asList(getAttributeValueString(buttonTextKey), getAttributeValueString(tooltipKey));
   }
 
   /**
