@@ -79,7 +79,8 @@ public class DataArchiveHTMLEditorKit extends HTMLEditorKit {
 
       if (kind == HTML.Tag.IMG) {
         final String file = (String) attrs.getAttribute(HTML.Attribute.SRC);
-        if (!file.isBlank() && !file.contains("/")) {
+        // file may be null if invalid src file specified
+        if (file != null && !file.isBlank() && !file.contains("/")) {
           return new DataArchiveImageView(e);
         }
       }
