@@ -1,6 +1,7 @@
 3.6.10 - ???
 
 11846: Protect from null property results during search
+11813: NPE in PieceSlot.getLocalizedConfigureName()
 11759: Do not allow negative number of Dice or Sides
 11452: Prevent NPE if invalid file specified in img tag
 

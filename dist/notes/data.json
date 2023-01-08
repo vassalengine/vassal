@@ -23,6 +23,7 @@
       ],
       "bug_fixes": [
         { "num": 11846, "desc": "Protect from null property results during search" },
+        { "num": 11813, "desc": "NPE in PieceSlot.getLocalizedConfigureName()" },
         { "num": 11759, "desc": "Do not allow negative number of Dice or Sides" },
         { "num": 11452, "desc": " Prevent NPE if invalid file specified in img tag" }
       ],
