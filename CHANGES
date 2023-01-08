@@ -1,3 +1,8 @@
+3.6.10 - ???
+
+11846: Protect from null property results during search
+11759: Do not allow negative number of Dice or Sides
+
 3.6.9 - 14 December 2022
 
 * 11825: BoundsTracker once again repaints entire maps, reverting 11521
