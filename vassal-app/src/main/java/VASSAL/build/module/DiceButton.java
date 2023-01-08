@@ -531,6 +531,7 @@ public class DiceButton extends AbstractToolbarItem {
       else if (o instanceof String) {
         nDice = Integer.parseInt((String) o);
       }
+      nDice = nDice < 0 ? 0 : nDice;
     }
     else if (LOCK_DICE.equals(key)) {
       if (o instanceof Boolean) {
@@ -547,6 +548,7 @@ public class DiceButton extends AbstractToolbarItem {
       else if (o instanceof String) {
         nSides = Integer.parseInt((String) o);
       }
+      nSides = nSides < 0 ? 0 : nSides;
     }
     else if (LOCK_SIDES.equals(key)) {
       if (o instanceof Boolean) {
