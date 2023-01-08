@@ -22,7 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
-        { "num": 11858, "desc": "Clear all PieceSlot caches after loading extensions },
+        { "num": 11858, "desc": "Clear all PieceSlot caches after loading extensions" },
         { "num": 11846, "desc": "Protect from null property results during search" },
         { "num": 11813, "desc": "NPE in PieceSlot.getLocalizedConfigureName()" },
         { "num": 11759, "desc": "Do not allow negative number of Dice or Sides" },
