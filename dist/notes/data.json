@@ -34,47 +34,5 @@
         { "num": 11803, "desc": "Report exceptions thrown while loading modules" }
       ]
     },
-    {
-      "in": "3.6.8",
-      "since": "3.6.7",
-      "new_features": [
-      ],
-      "bug_fixes": [
-        { "num": 11778, "desc": "System.setProperty() in BugDialog throws if the value is null" },
-        { "num": 11727, "desc": "Fixed incorrect properties file path, which prevents working on translations" },
-        { "num": 11716, "desc": "Dereference symbolic link to executable before attemping to find install dir" },
-        { "num": 11678, "desc": "Prevent clearing the tile cache when a module is open" },
-        { "num": 11617, "desc": "Closing a reopenable Map should not close game" },
-        { "num": 11565, "desc": "Global Option List Preferences not initialising Global Property correctly" },
-        { "num": 11544, "desc": "Broken links to and within Reference Manual" },
-        { "num": 11543, "desc": "Closing game should reset multiplayer flag for console" },
-        { "num": 11540, "desc": "Display translated Basic Piece/Basic Name in Scrollable lists in Game Piece Palette" },
-        { "num": 11537, "desc": "Cancel key in Multi-Piece Editor (Edit all contained pieces) correctly backs out with no changes" },
-        { "num": 11515, "desc": "Piece dropped into incorrect position in the stack when dragging within a stack to a lower position" },
-        { "num": 11513, "desc": "Piece \"disappears\" when dragged to grid space with an existing stack and \"snap to defined point\"" },
-        { "num": 11510, "desc": "Updated Opt-in version of the 'Leading Zeros in Integers' handing" },
-        { "num": 11496, "desc": "Safer GKC Configurer for Fixed # From Deck" }
-      ],
-      "other_improvements": [
-        { "num": 11798, "desc": "Added Chinese translation" },
-        { "num": 11796, "desc": "Added Polish translation" },
-        { "num": 11790, "desc": "Updated bundled Java to 19 for Windows and MacOS" },
-        { "num": 11704, "desc": "Added Place Marker editor hotkeys" },
-        { "num": 11700, "desc": "Irregular Grid editor - add region with Insert or Ctrl+Right Click" },
-        { "num": 11622, "desc": "Added support for Open Recent... submenu" },
-        { "num": 11600, "desc": "Player context menus: Show keyboard shortcuts right-aligned and with symbols" },
-        { "num": 11570, "desc": "Update Module Extension window, add missing description" },
-        { "num": 11564, "desc": "Prevent Notes windows always starting open at very last character of note" },
-        { "num": 11557, "desc": "Auto-select contents of Edit boxes when they get focus" },
-        { "num": 11546, "desc": "Default dialog-closing button behaviors for Enter/Esc; Key shortcuts added to Piece Definer (see Game Piece help); Piece Definer list boxes jump to entry starting with that letter; Key shortcuts added editing Layer trait (see Layer help); Most text fields support Ctrl/Cmd+Z for undo/redo" },
-        { "num": 11545, "desc": "Description of Prototype will auto-include any BasicName" },
-        { "num": 11541, "desc": "Add hotkey to start specific chess clock" },
-        { "num": 11534, "desc": "Add Open all Contained Pieces option" },
-        { "num": 11524, "desc": "Option to 'always use format' on text label (even if label is blank)" },
-        { "num": 11521, "desc": "BoundsTracker - Track bounds and repaint just for the regions of added pieces; rather than the whole map" },
-        { "num": 11499, "desc": "TurnTracker Forward Only Toggle: Allow module designers to disable the backwards TurnTracker button" },
-        { "num": 11497, "desc": "Don't play sounds while fast-forwarding a log" }
-      ]
-    }
   ]
 }
