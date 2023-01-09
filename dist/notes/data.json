@@ -25,10 +25,10 @@
         { "num": 11860, "desc": "Warn when same piece is both Mat and Mat Cargo" },
         { "num": 11858, "desc": "Clear all PieceSlot caches after loading extensions" },
         { "num": 11846, "desc": "Protect from null property results during search" },
+        { "num": 11823, "desc": "NPE in GameRefresher when refreshing unnamed Decks" },
         { "num": 11813, "desc": "NPE in PieceSlot.getLocalizedConfigureName()" },
         { "num": 11759, "desc": "Do not allow negative number of Dice or Sides" },
         { "num": 11748, "desc": "NPE when cutting and pasting a prototype folder" },
-
         { "num": 11455, "desc": "Prevent NPE when adding empty KeyStrokes to list" },
         { "num": 11452, "desc": " Prevent NPE if invalid file specified in img tag" }
       ],
