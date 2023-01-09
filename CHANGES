@@ -1,5 +1,6 @@
 3.6.10 - ???
 
+* 11860: Warn when same piece is both Mat and Mat Cargo
 * 11858: Clear all PieceSlot caches after loading extensions
 * 11846: Protect from null property results during search
 * 11813: NPE in PieceSlot.getLocalizedConfigureName()

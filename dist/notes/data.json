@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 11860, "desc": "Warn when same piece is both Mat and Mat Cargo" },
         { "num": 11858, "desc": "Clear all PieceSlot caches after loading extensions" },
         { "num": 11846, "desc": "Protect from null property results during search" },
         { "num": 11813, "desc": "NPE in PieceSlot.getLocalizedConfigureName()" },
