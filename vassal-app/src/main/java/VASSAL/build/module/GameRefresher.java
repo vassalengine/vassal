@@ -475,7 +475,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
           final Board board = drawPile.getConfigureBoard(true);
           if ((boardName == null) || boards.contains(board)) {
             for (final DrawPile drawPile2 : foundDrawPiles) {
-              if (drawPile.getAttributeValueString(SetupStack.NAME).equals(drawPile2.getAttributeValueString(SetupStack.NAME))) {
+              if (Objects.equals(drawPile.getAttributeValueString(SetupStack.NAME), drawPile2.getAttributeValueString(SetupStack.NAME))) {
                 matchFound = true;
                 break;
               }
