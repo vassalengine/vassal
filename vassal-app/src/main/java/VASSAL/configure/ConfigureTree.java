@@ -32,6 +32,7 @@ import VASSAL.build.module.PrototypeDefinition;
 import VASSAL.build.module.PrototypesContainer;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
+import VASSAL.build.module.folder.GlobalPropertyFolder;
 import VASSAL.build.module.folder.PrototypeFolder;
 import VASSAL.build.module.gamepieceimage.GamePieceImage;
 import VASSAL.build.module.map.DeckGlobalKeyCommand;
@@ -636,8 +637,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         }
       }
     }
-  }
 
+    // Global properties need some extra validation onto their parents, because the new ones get built w/o full knowledge of ancestors
+    if (target instanceof GlobalPropertyFolder) {
+      for (final GlobalProperty child : ((GlobalPropertyFolder) target).getAllDescendantComponentsOf(GlobalProperty.class)) {
+        child.addTo(child.getAncestor());
+      }
+    }
+  }
 
   protected Action buildPasteAction(final Configurable target) {
     final Action a = new AbstractAction(pasteCmd) {
