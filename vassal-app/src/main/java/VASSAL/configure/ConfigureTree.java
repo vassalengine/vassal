@@ -29,8 +29,10 @@ import VASSAL.build.module.GlobalKeyCommand;
 import VASSAL.build.module.KeyNamer;
 import VASSAL.build.module.Plugin;
 import VASSAL.build.module.PrototypeDefinition;
+import VASSAL.build.module.PrototypesContainer;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
+import VASSAL.build.module.folder.PrototypeFolder;
 import VASSAL.build.module.gamepieceimage.GamePieceImage;
 import VASSAL.build.module.map.DeckGlobalKeyCommand;
 import VASSAL.build.module.map.DrawPile;
@@ -58,11 +60,8 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ReflectionUtils;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.SwingUtils;
-
 import net.miginfocom.swing.MigLayout;
-
 import org.apache.commons.lang3.StringUtils;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -624,6 +623,16 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         if (!ss.getValidOwningBoards().contains(owning)) {
           ConfigureTree.chat(Resources.getString("Editor.convert_setupstack_or_deck", (target instanceof DrawPile) ? DrawPile.getConfigureTypeName() : SetupStack.getConfigureTypeName(), ss.getConfigureName(), owning));
           ss.setOwningBoardName(null);
+        }
+      }
+    }
+
+    // PrototypeFolder needs any prototype children added to the main prototype definition list
+    if (target instanceof PrototypeFolder) {
+      final PrototypesContainer protos = (PrototypesContainer)(((PrototypeFolder)target).getNonFolderAncestor());
+      if (protos != null) {
+        for (final PrototypeDefinition child : ((PrototypeFolder) target).getAllDescendantComponentsOf(PrototypeDefinition.class)) {
+          protos.addDefinition(child);
         }
       }
     }

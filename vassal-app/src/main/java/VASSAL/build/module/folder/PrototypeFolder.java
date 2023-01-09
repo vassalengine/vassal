@@ -34,7 +34,9 @@ public class PrototypeFolder extends AbstractFolder {
     super.add(b);
     if (b instanceof PrototypeDefinition) {
       final PrototypesContainer protos = (PrototypesContainer)getNonFolderAncestor();
-      protos.addDefinition((PrototypeDefinition) b);
+      if (protos != null) {
+        protos.addDefinition((PrototypeDefinition) b);
+      }
     }
   }
 }
