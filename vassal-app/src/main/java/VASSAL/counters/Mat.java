@@ -16,6 +16,7 @@
  */
 package VASSAL.counters;
 
+import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GameState;
 import VASSAL.build.module.documentation.HelpFile;
@@ -25,6 +26,7 @@ import VASSAL.command.NullCommand;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.SequenceEncoder;
 
 import javax.swing.KeyStroke;
@@ -74,6 +76,12 @@ public class Mat extends Decorator implements TranslatablePiece {
   public Mat(String type, GamePiece inner) {
     mySetType(type);
     setInner(inner);
+
+    for (GamePiece check = inner; check instanceof Decorator; check = ((Decorator)check).getInner()) {
+      if (check instanceof MatCargo) {
+        ErrorDialog.dataWarning(new BadDataReport("Same piece must not be both Mat and Mat Cargo -- will create infinite loops", type));
+      }
+    }
   }
 
   @Override
