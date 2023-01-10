@@ -1,5 +1,7 @@
 3.6.10 - 10 January 2023
 
+* 11883: Fixed order of labels for "Select play mode" and "Enter your name"
+    steps in the Welcome Wizard
 * 11879: NPE when cutting and pasting a GlobalPropertyFolder
 * 11860: Warn when same piece is both Mat and Mat Cargo
 * 11858: Clear all PieceSlot caches after loading extensions

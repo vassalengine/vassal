@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 11883, "desc": "Fixed order of labels for \"Select play mode\" and \"Enter your name\" steps in the Welcome Wizard" },
         { "num": 11879, "desc": "NPE when cutting and pasting a GlobalPropertyFolder" },
         { "num": 11860, "desc": "Warn when same piece is both Mat and Mat Cargo" },
         { "num": 11858, "desc": "Clear all PieceSlot caches after loading extensions" },
