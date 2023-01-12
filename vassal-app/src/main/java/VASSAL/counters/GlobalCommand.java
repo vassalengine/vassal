@@ -39,14 +39,13 @@ import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
 
+import javax.swing.KeyStroke;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-
-import javax.swing.KeyStroke;
 
 /**
  * The heart of all the different forms of Global Key Command, GlobalCommand handles sending a key command to
@@ -373,7 +372,15 @@ public class GlobalCommand implements Auditable {
           if (stack instanceof Deck) {
             visitor.setSelectedCount(0);
           }
-          List<GamePiece> pieces = stack.asList();
+
+          List<GamePiece> pieces;
+          if (stack != null) {
+            pieces = stack.asList();
+          }
+          else {
+            pieces = List.of(curPiece); //BR// It is possible to set this search option on a nonstacking piece, in which case we just use the piece itself as the only possible target.
+          }
+
           if (stack instanceof Deck) {
             pieces = ((Deck) stack).getOrderedPieces();
 
