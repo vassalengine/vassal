@@ -39,14 +39,13 @@ import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
 
+import javax.swing.KeyStroke;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-
-import javax.swing.KeyStroke;
 
 /**
  * The heart of all the different forms of Global Key Command, GlobalCommand handles sending a key command to
@@ -369,19 +368,26 @@ public class GlobalCommand implements Auditable {
       if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.CURSTACK) {
         if (curPiece != null) {
           final Stack stack = curPiece.getParent();
-          int useFromDeck = (stack instanceof Deck) ? getSelectFromDeck() : -1;
+          List<GamePiece> pieces = null;
+          final int useFromDeck;
+
           if (stack instanceof Deck) {
             visitor.setSelectedCount(0);
-          }
-          List<GamePiece> pieces = stack.asList();
-          if (stack instanceof Deck) {
-            pieces = ((Deck) stack).getOrderedPieces();
 
             // Not if deck isn't accessible to us
-            if (!((Deck)stack).isAccessible()) {
-              useFromDeck = 0;
+            useFromDeck = ((Deck)stack).isAccessible() ? getSelectFromDeck() : 0;
+
+            if (useFromDeck != 0) {
+              pieces = ((Deck) stack).getOrderedPieces();
             }
           }
+          else {
+            useFromDeck = -1;
+
+            //BR// It is possible to set this search option on a nonstacking piece, in which case we just use the piece itself as the only possible target.
+            pieces = stack != null ? stack.asList() : List.of(curPiece);
+          }
+
           if (useFromDeck != 0) {
             for (final GamePiece gamePiece : pieces) {
               // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
