@@ -74,7 +74,7 @@ public class ToggleablePasswordConfigurer extends Configurer {
   }
 
   @Override
-  public void setLabelVisibile(boolean visible) {
+  public void setLabelVisible(boolean visible) {
     panel.setLabeLVisible(visible);
   }
 }

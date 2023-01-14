@@ -174,7 +174,7 @@ public class SoundConfigurer extends Configurer {
   }
 
   @Override
-  public void setLabelVisibile(boolean visible) {
+  public void setLabelVisible(boolean visible) {
     controls.setLabelVisibility(visible);
   }
 }
