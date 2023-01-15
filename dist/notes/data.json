@@ -17,6 +17,17 @@
   ],
   "changes": [
     {
+      "in": "3.6.11",
+      "since": "3.6.10",
+      "new_features": [
+      ],
+      "bug_fixes": [
+        { "num": 11890, "desc": "NPE when current-stack option used on non-stacking piece" }
+      ],
+      "other_improvements": [
+      ]
+    },
+    {
       "in": "3.6.10",
       "since": "3.6.9",
       "new_features": [
@@ -35,24 +46,6 @@
         { "num": 11452, "desc": " Prevent NPE if invalid file specified in img tag" }
       ],
       "other_improvements": [
-      ]
-    },
-    {
-      "in": "3.6.9",
-      "since": "3.6.8",
-      "new_features": [
-      ],
-      "bug_fixes": [
-        { "num": 11825, "desc": "BoundsTracker once again repaints entire maps, reverting 11521" },
-        { "num": 11821, "desc": "Include the AreaOfEffect bounds in the piece bounding box only if the AoE is visible" },
-        { "num": 11814, "desc": "Ensure that valid BasicName property is used to identify piece when no translation is available" },
-        { "num": 11808, "desc": "PieceCloner.clonePiece() should not expand inner pieces unconditionally" },
-        { "num": 11806, "desc": "NotesWindow re-open assigns focus properly to retain caret position" },
-        { "num": 11805, "desc": "Fixed NPE: tab.getTitleAt() can return null, so check for that" }
-      ],
-      "other_improvements": [
-        { "num": 11804, "desc": "Log element name on build exception, if available" },
-        { "num": 11803, "desc": "Report exceptions thrown while loading modules" }
       ]
     }
   ]

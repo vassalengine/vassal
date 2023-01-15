@@ -118,6 +118,13 @@ public class FileConfigurer extends Configurer {
   }
 
   @Override
+  public void setLabelVisible(boolean visible) {
+    if (p instanceof ConfigurerPanel) {
+      ((ConfigurerPanel) p).setLabelVisibility(visible);
+    }
+  }
+
+  @Override
   public Component getControls() {
     if (p == null) {
       p = new ConfigurerPanel(getName(), "[]rel[grow,fill]", "[]rel[]rel[grow,fill]"); // NON-NLS

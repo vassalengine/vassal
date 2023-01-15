@@ -190,7 +190,7 @@ public class PrefsEditor {
 
     final String name = c.getName();
     final JLabel label = new JLabel(name);
-    c.setLabelVisibile(false);
+    c.setLabelVisible(false);
     label.setLabelFor(c.getControls());
     pan.add(label);
     pan.add(c.getControls(), "grow,wrap,aligny center"); // NON-NLS

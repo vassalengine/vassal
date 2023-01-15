@@ -135,7 +135,7 @@ public class ColorConfigurer extends Configurer {
   }
 
   @Override
-  public void setLabelVisibile(boolean visible) {
+  public void setLabelVisible(boolean visible) {
     if (p instanceof ConfigurerPanel) {
       ((ConfigurerPanel) p).setLabelVisibility(visible);
     }

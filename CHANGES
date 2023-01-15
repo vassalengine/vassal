@@ -1,5 +1,7 @@
 3.6.11 - ???
 
+* 11890: NPE when current-stack option used on non-stacking piece
+
 3.6.10 - 11 January 2023
 
 * 11883: Fixed order of labels for "Select play mode" and "Enter your name"

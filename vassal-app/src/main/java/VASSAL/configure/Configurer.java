@@ -226,8 +226,13 @@ public abstract class Configurer {
    *
    * @param visible Hide label if true
    */
-  public void setLabelVisibile(boolean visible) {
+  public void setLabelVisible(boolean visible) {
+  }
 
+  /** @deprecated Use {@link #setLabelVisiblelaunch} instead. */
+  @Deprecated(since = "2023-01-14", forRemoval = true)
+  public void setLabelVisibile(boolean visible) {
+    setLabelVisible(visible);
   }
 
   /**
