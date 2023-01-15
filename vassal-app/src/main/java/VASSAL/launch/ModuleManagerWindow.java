@@ -40,6 +40,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -83,7 +85,6 @@ import javax.swing.tree.TreePath;
 import net.miginfocom.swing.MigLayout;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jdesktop.swingx.JXTreeTable;
@@ -117,6 +118,7 @@ import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.ModuleExtensionFileFilter;
+import VASSAL.tools.io.DirectoryTreeDeleter;
 import VASSAL.tools.logging.LogPane;
 import VASSAL.tools.menu.CheckBoxMenuItemProxy;
 import VASSAL.tools.menu.MenuBarProxy;
@@ -495,14 +497,14 @@ public class ModuleManagerWindow extends JFrame {
         public Void doInBackground() throws InterruptedException, IOException {
           // clear tiles in both old (conf) and new (cache) locations
           for (final File d : List.of(Info.getCacheDir(), Info.getConfDir())) {
-            final File tdir = new File(d, "tiles");
-            if (tdir.exists()) {
+            final Path tdir = d.toPath().resolve("tiles");
+            if (Files.exists(tdir)) {
               try {
-                FileUtils.forceDelete(tdir);
-                FileUtils.forceMkdir(tdir);
+                Files.walkFileTree(tdir, new DirectoryTreeDeleter());
+                Files.createDirectory(tdir);
               }
               catch (IOException e) {
-                WriteErrorDialog.error(e, tdir);
+                WriteErrorDialog.error(e, tdir.toFile());
               }
             }
           }
@@ -1633,13 +1635,13 @@ public class ModuleManagerWindow extends JFrame {
         metadata.getName() + "_" + metadata.getVersion()
       );
 
-      final File tdir = new File(Info.getCacheDir(), "tiles/" + hstr);
-      if (tdir.exists()) {
+      final Path tdir = Info.getCacheDir().toPath().resolve("tiles/" + hstr);
+      if (Files.exists(tdir)) {
         try {
-          FileUtils.forceDelete(tdir);
+          Files.walkFileTree(tdir, new DirectoryTreeDeleter());
         }
         catch (IOException e) {
-          WriteErrorDialog.error(e, tdir);
+          WriteErrorDialog.error(e, tdir.toFile());
         }
       }
     }
