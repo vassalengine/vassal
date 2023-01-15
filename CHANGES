@@ -1,5 +1,6 @@
 3.6.11 - ???
 
+* 11899: Hide FileConfigurer label in preferences dialogs
 * 11890: NPE when current-stack option used on non-stacking piece
 
 3.6.10 - 11 January 2023
