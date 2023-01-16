@@ -15,7 +15,7 @@ This _Moved_ property can be toggled back to _false_ with the configured key com
 
 *NOTES:*
 
-* *In order to enable this feature*, you must also go to the <<GlobalOptions.adoc#top,Global Options>> of the module and enable the _Mark pieces that move_ setting.
+* *In order to enable this feature*, you must also go to the <<Map.adoc#top,Map Window>> of the module and enable the _Mark pieces that move_ setting.
 * A Toolbar button can also be configured in the properties of each <<Map.adoc#top,Map Window>> that clears the moved status of all pieces on the map.
 * For pieces containing this trait, the <<Properties.adoc#top,Property>>  _Moved=true_ is set when the piece has been moved.
 * When the trait is activated with the menu item or Key Command, then _Moved=false_ is set.
