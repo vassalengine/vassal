@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 11901, "desc": "Corrected \"Mark When Moved\" documentation" },
         { "num": 11899, "desc": "Hide FileConfigurer label in preferences dialogs" },
         { "num": 11890, "desc": "NPE when current-stack option used on non-stacking piece" }
       ],
