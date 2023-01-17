@@ -248,7 +248,9 @@ public class StackMetrics extends AbstractConfigurable {
    * Different instances of StackMetrics may render a {@link Stack}
    * in different ways.  The default algorithm is: If not expanded,
    * all but the top visible GamePiece is drawn as a white square
-   * with size given by {@link GamePiece#getShape}.  The
+   * with size given by {@link GamePiece#getShape}.
+   *
+   * FDL: Is this still true? >> The
    * separation between GamePieces is given by {@link
    * #relativePosition}
    *
@@ -257,6 +259,7 @@ public class StackMetrics extends AbstractConfigurable {
    * drawn in front of other GamePieces, even those above them in
    * the stack.
    */
+  // FDL: Does this method get called?
   public void draw(Stack stack, Graphics g, int x, int y, Component obs, double zoom) {
     final Highlighter highlighter = stack.getMap() == null ? BasicPiece.getHighlighter() : stack.getMap().getHighlighter();
     final Point[] positions = new Point[stack.getPieceCount()];
@@ -324,9 +327,11 @@ public class StackMetrics extends AbstractConfigurable {
         final Point pt = map.mapToDrawing(positions[index], os_scale);
         if (bounds == null || isVisible(region, bounds[index])) {
           if (stack.isExpanded() || !e.hasMoreElements()) {
+            // FDL: expanded stack draw.
             next.draw(g, pt.x, pt.y, view, zoom);
           }
           else {
+            // FDL: unexpanded stack draw.
             drawUnexpanded(next, g, pt.x, pt.y, view, zoom);
           }
         }
@@ -388,9 +393,9 @@ public class StackMetrics extends AbstractConfigurable {
   /**
    * Fill the argument arrays with the positions, selection bounds and bounding boxes of the pieces in the argument stack
    * @param parent The parent Stack
-   * @param positions If non-null will contain a {@link Point} giving the position of each piece in <code>parent</code>
-   * @param shapes If non-null will contain a {@link Shape} giving the shape of for each piece in <code>parent</code>
-   * @param boundingBoxes If non-null will contain a {@link Rectangle} giving the bounding box for each piece in <code>parent</code>
+   * @param positions If non-null will be filled with a {@link Point} giving the position of each piece in <code>parent</code>
+   * @param shapes If non-null will be filled with a {@link Shape} giving the shape of for each piece in <code>parent</code>
+   * @param boundingBoxes If non-null will be filled with a {@link Rectangle} giving the bounding box for each piece in <code>parent</code>
    * @param x the x-location of the parent
    * @param y the y-location of the parent
    * @return the number of pieces processed in the stack
@@ -406,11 +411,14 @@ public class StackMetrics extends AbstractConfigurable {
     if (shapes != null) {
       count = Math.min(count, shapes.length);
     }
-    final int dx = parent.isExpanded() ? exSepX : unexSepX;
-    final int dy = parent.isExpanded() ? exSepY : unexSepY;
     Point currentPos = null, nextPos;
     Rectangle currentSelBounds = null, nextSelBounds;
     for (int index = 0; index < count; ++index) {
+      final int xOffset = parent.insertGapAtPosition == index ? exSepX : 0;
+      final int yOffset = parent.insertGapAtPosition == index ? exSepY : 0;
+      final int dx = parent.isExpanded() ? exSepX + xOffset : unexSepX;
+      final int dy = parent.isExpanded() ? exSepY + yOffset : unexSepY;
+
       final GamePiece child = parent.getPieceAt(index);
       if (Boolean.TRUE.equals(child.getProperty(Properties.INVISIBLE_TO_ME))) {
         final Rectangle blank = new Rectangle(x, y, 0, 0);

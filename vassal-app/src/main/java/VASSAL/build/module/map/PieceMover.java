@@ -96,6 +96,8 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -860,7 +862,7 @@ public class PieceMover extends AbstractBuildable
    * <br>(1) Moves each piece in the {@link DragBuffer} to its proper destination,
    * based on the mouse having been released at point "p" (if multiple pieces
    * were being dragged after being e.g. band-selected, each individual piece's
-   * destination point will vary with the piece's offset from the anhor point
+   * destination point will vary with the piece's offset from the anchor point
    * that started the drag). This also involves removing each piece from any
    * stacks/decks it was part of, and possibly removing it from its old map if
    * it is changing maps.
@@ -1316,6 +1318,8 @@ public class PieceMover extends AbstractBuildable
    */
   @Override
   public void mouseDragged(MouseEvent e) {
+    // FDL: I would prefer to execute the make-stack-gap logic here, since it would be targeted at the appropriate
+    // window/map, but this method is called unreliably (MacOS).
     if (!breachedThreshold && (dragBegin != null)) {
       final Point pt = map.componentToMap(e.getPoint());
       if (map.mapToComponent(Math.abs(pt.x - dragBegin.x)) > GlobalOptions.getInstance().getDragThreshold() ||
@@ -1324,7 +1328,6 @@ public class PieceMover extends AbstractBuildable
       }
     }
   }
-
 
   /**
    * Moves the group of dragged (in the DragBuffer) pieces to the target point (p).
@@ -1984,7 +1987,84 @@ public class PieceMover extends AbstractBuildable
 
         final DebugControls dc = GameModule.getGameModule().getDebugControls();
         dc.setCursorLocation(pt);
+
+        if ((System.currentTimeMillis() - dmmThrottleMs) > 200) {
+          dmmThrottleMs = System.currentTimeMillis();
+          makeStackGap(map, pt);
+        }
       }
+    }
+
+    private long dmmThrottleMs = 0; // used by dragMouseMoved to throttle calls to dragMouseMovedThrottled
+    private Stack stackWihGap = null; // represents the stack that is currently displaying a gap
+
+    // FDL: This is of course a temporary method to help me see what is happening.
+    private void logConsole(String s) {
+      final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
+      final LocalDateTime now = LocalDateTime.now();
+      System.out.println(dtf.format(now) + ": " + s);
+    }
+
+    // NOTE: This currently only works when dragging within the same map. I'm not sure the best way to handle dragging
+    // from one map to another, but I am guessing that the associated PieceMover should signal in some way that it is
+    // the current one being dragged-over.
+    private void makeStackGap(Map map, Point location) {
+      logConsole("makeStackGap");
+
+      final PieceMover pieceMover = map.getPieceMover();
+
+      ////////////////////////////////////////////////
+      // 1. get piece being dragged
+      final List<GamePiece> draggedPieces = new ArrayList<>();
+      final PieceIterator it = DragBuffer.getBuffer().getIterator();
+      while (it.hasMoreElements()) {
+        final GamePiece piece = it.nextPiece();
+        if (piece.getProperty(MatCargo.IS_CARGO) == null && piece.getProperty(Mat.MAT_ID) == null) {
+          draggedPieces.add(piece);
+        }
+      }
+
+      if (draggedPieces.size() != 1) {
+        return;
+      }
+
+      final GamePiece draggedPiece = draggedPieces.get(0);
+      logConsole("piece being dragged: " + draggedPiece.getName());
+
+      ////////////////////////////////////////////////
+      // 2. check if piece intersects another piece
+      final MatCargo currentCargo = (MatCargo) Decorator.getDecorator(draggedPiece, MatCargo.class);
+      final Mat currentMat = (Mat) Decorator.getDecorator(draggedPiece, Mat.class);
+
+      final int exSepX = Integer.parseInt((String)map.getStackMetrics().getAttributeValueString(StackMetrics.EXSEP_X));
+      final int exSepY = Integer.parseInt((String)map.getStackMetrics().getAttributeValueString(StackMetrics.EXSEP_Y));
+
+      // This is a hack so we can see if we are below the stack (allowing us to insert at bottom of stack).
+      // Note: This doesn't work, since both StackMetrics and the display logic not set up to handle the bottom piece
+      // of a stack being offset.
+      location.translate(-exSepX, -exSepY);
+
+      final GamePiece targetPiece = map.findAnyPiece(
+        location, pieceMover.getDropTargetSelector(draggedPiece, currentCargo, currentMat));
+
+      final BoundsTracker tracker = new BoundsTracker();
+      final Stack targetStack = targetPiece != null ? targetPiece.getParent() : null;
+      if (targetPiece != null && targetStack != null && targetStack.isExpanded()) {
+        targetStack.insertGapAtPosition = targetStack.indexOf(targetPiece);
+        stackWihGap = targetStack;
+        logConsole("We can merge with: " + targetPiece.getName() +
+                ", index: " + targetStack.indexOf(targetPiece) +
+                ", insert-at-gap: " + targetStack.insertGapAtPosition);
+        tracker.addPiece(targetPiece);
+        tracker.addPiece(targetStack);
+      }
+      else if (stackWihGap != null) {
+        logConsole("Clearing gap");
+        stackWihGap.insertGapAtPosition = -1;
+        tracker.addPiece(stackWihGap);
+        stackWihGap = null;
+      }
+      tracker.repaint();
     }
 
     protected Point lastDragLocation = new Point();
@@ -2020,6 +2100,12 @@ public class PieceMover extends AbstractBuildable
       final DropTargetListener forward = getListener(e);
       if (forward != null) {
         forward.drop(e);
+      }
+
+      if (stackWihGap != null) {
+        logConsole("Clearing gap");
+        stackWihGap.insertGapAtPosition = -1;
+        stackWihGap = null;
       }
     }
 

@@ -77,6 +77,8 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
   protected int layer = LAYER_NOT_SET; // Visual layer for this stack. Once the first piece is added, it is bound permanently.
   private boolean expanded = false;    // Is stack currently visually expanded by the player (for easier viewing, and/or to drag individual pieces)
 
+  public int insertGapAtPosition = -1;
+
   private String id;
 
   private static StackMetrics defaultMetrics;
