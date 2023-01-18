@@ -28,6 +28,7 @@
         { "num": 11890, "desc": "NPE when current-stack option used on non-stacking piece" }
       ],
       "other_improvements": [
+        { "num": 11906, "desc": "MatCargo's mat detection did unnecessary computations for lack of parentheses" },
         { "num": 11900, "desc": "Clear Tile Cache with more efficient Files.walkFileTree()" }
       ]
     },

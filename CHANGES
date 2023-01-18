@@ -1,5 +1,7 @@
 3.6.11 - ???
 
+* 11906: MatCargo's mat detection did unnecessary computations for lack of
+    parentheses
 * 11904: Global Key Command fastmatch for Mats fixed to avoid trait-order bugs
 * 11901: Corrected "Mark When Moved" documentation
 * 11900: Clear Tile Cache with more efficient Files.walkFileTree()
