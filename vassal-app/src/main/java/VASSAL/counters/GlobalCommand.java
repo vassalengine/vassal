@@ -438,18 +438,21 @@ public class GlobalCommand implements Auditable {
       else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.CURMAT) {
         if (curPiece instanceof Decorator) {
           // First check if we are a mat
-          GamePiece matPiece = Decorator.getDecorator(curPiece, Mat.class);
+          GamePiece matPiece = Decorator.getDecorator(Decorator.getOutermost(curPiece), Mat.class);
           if (matPiece == null) {
             // Otherwise check if we're a cargo that's currently ON a mat.
-            final MatCargo cargo = (MatCargo)Decorator.getDecorator(curPiece, MatCargo.class);
+            final MatCargo cargo = (MatCargo)Decorator.getDecorator(Decorator.getOutermost(curPiece), MatCargo.class);
             if (cargo != null) {
               matPiece = cargo.getMat();
             }
           }
           if (matPiece != null) {
             final Mat mat = (Mat)Decorator.getDecorator(matPiece, Mat.class);
-            final List<GamePiece> pieces = new ArrayList<>(mat.getContents());
-            pieces.add(0, mat);
+            final List<GamePiece> pieces = new ArrayList<>();
+            for (final GamePiece p : mat.getContents()) {
+              pieces.add(Decorator.getOutermost(p));
+            }
+            pieces.add(0, Decorator.getOutermost(matPiece));
 
             for (final GamePiece gamePiece : pieces) {
               // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
