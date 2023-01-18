@@ -2,6 +2,7 @@
 
 * 11904: Global Key Command fastmatch for Mats fixed to avoid trait-order bugs
 * 11901: Corrected "Mark When Moved" documentation
+* 11900: Clear Tile Cache with more efficient Files.walkFileTree()
 * 11899: Hide FileConfigurer label in preferences dialogs
 * 11890: NPE when current-stack option used on non-stacking piece
 
