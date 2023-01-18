@@ -271,7 +271,7 @@ public class MatCargo extends Decorator implements TranslatablePiece {
 
     GamePiece newMat = map.findAnyPiece(pt, PieceFinder.MAT_ONLY);
 
-    if ((newMat == null) && (detectionDistanceX != 0) || (detectionDistanceY != 0)) {
+    if ((newMat == null) && ((detectionDistanceX != 0) || (detectionDistanceY != 0))) {
       final Point pt2 = new Point();
 
       pt2.x = pt.x + detectionDistanceX;
