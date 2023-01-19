@@ -18,8 +18,6 @@
  */
 package VASSAL.build.module.map;
 
-import static VASSAL.build.module.Map.MAP_NAME;
-
 import VASSAL.build.AbstractBuildable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -64,7 +62,14 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.swing.SwingUtils;
+import org.apache.commons.lang3.SystemUtils;
 
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JRootPane;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Component;
@@ -102,14 +107,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
-import javax.swing.JRootPane;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-
-import org.apache.commons.lang3.SystemUtils;
+import static VASSAL.build.module.Map.MAP_NAME;
 
 /**
  * PieceMover handles the "Drag and Drop" of pieces and stacks, onto or within a Map window. It implements
@@ -1983,7 +1981,7 @@ public class PieceMover extends AbstractBuildable
         pt = map.componentToMap(pt);
 
         final DebugControls dc = GameModule.getGameModule().getDebugControls();
-        dc.setCursorLocation(pt);
+        dc.setCursorLocation(pt, map);
       }
     }
 
