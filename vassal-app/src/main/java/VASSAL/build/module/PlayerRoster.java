@@ -37,7 +37,18 @@ import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.swing.FlowLabel;
+import net.miginfocom.swing.MigLayout;
+import org.netbeans.spi.wizard.WizardController;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.NodeList;
 
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import java.awt.Component;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
@@ -45,20 +56,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
-import net.miginfocom.swing.MigLayout;
-
-import org.netbeans.spi.wizard.WizardController;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
 
 /**
  * Maintains a list of players involved in the current game
@@ -299,6 +296,8 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
     newSide = getMySide();
     fireSideChange(mySide, newSide);
+
+    GameModule.getGameModule().getGameState().doStartupGlobalKeyCommands(true);
   }
 
   protected void fireSideChange(String oldSide, String newSide) {

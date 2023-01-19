@@ -426,30 +426,37 @@ public class GameState implements CommandEncoder {
    * assuming they haven't been applied already.
    * @param target the Game Module to be thoroughly reamed for SGKCs
    */
-  private boolean applyStartupGlobalKeyCommands(AbstractBuildable target) {
+  private boolean applyStartupGlobalKeyCommands(AbstractBuildable target, boolean playerChange) {
     boolean any = false;
     for (final Buildable b : target.getBuildables()) {
       if (b instanceof StartupGlobalKeyCommand) {
-        any |= ((StartupGlobalKeyCommand)b).applyIfNotApplied();
+        if (playerChange) {
+          any |= ((StartupGlobalKeyCommand) b).applyPlayerChange();
+        }
+        else {
+          any |= ((StartupGlobalKeyCommand) b).applyIfNotApplied();
+        }
       }
       else if (b instanceof AbstractBuildable) {
-        any |= applyStartupGlobalKeyCommands((AbstractBuildable)b);
+        any |= applyStartupGlobalKeyCommands((AbstractBuildable)b, playerChange);
       }
     }
     return any;
   }
 
+
   /**
    * Applies all of the Startup Global Key Commands in order, and then blocks undo past this point if any were applied.
    */
-  private void doStartupGlobalKeyCommands() {
-    if (applyStartupGlobalKeyCommands(GameModule.getGameModule())) {
+  public void doStartupGlobalKeyCommands(boolean playerChange) {
+    if (applyStartupGlobalKeyCommands(GameModule.getGameModule(), playerChange)) {
       // This "finished" command blocks undoing past Startup Global Key Commands
       final FinishedStartupGlobalKeyCommands finished = new FinishedStartupGlobalKeyCommands();
       finished.execute();
       GameModule.getGameModule().sendAndLog(finished);
     }
   }
+
 
   private static class FinishedStartupGlobalKeyCommands extends Command {
     @Override
@@ -551,10 +558,10 @@ public class GameState implements CommandEncoder {
         // Things that we invokeLater
         SwingUtilities.invokeLater(fastForwarding ? () -> {
           // Apply all of the startup global key commands, in order
-          doStartupGlobalKeyCommands();
+          doStartupGlobalKeyCommands(false);
         } : () -> {
           // Apply all of the startup global key commands, in order
-          doStartupGlobalKeyCommands();
+          doStartupGlobalKeyCommands(false);
 
           // If we're starting a new session, prompt to create a new logfile.
           // But NOT if we're starting a session by *replaying* a logfile -- in that case we'd get the reminder at the

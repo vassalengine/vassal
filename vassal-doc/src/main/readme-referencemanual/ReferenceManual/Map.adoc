@@ -456,6 +456,7 @@ Startup Global Key Commands can be configured to any of three modes:
 
 **(3) At Start Of Every Fresh Game Only**: These fire only when a _new game_ is starting. If the game is saved and later restored, or is being exchanged back and forth in log form, the key command will not fire on subsequent loads. For clarity, a new game started from a <<GameModule.adoc#PredefinedSetup, Pre-defined Setup>> _does_ count as a fresh new game.
 
+**(4) At Start of Fresh Game or Player Join/Side-Change**: These fire only when a _new game_ is starting _OR_ a new player joins or changes sides. 
 
 '''
 [#GlobalKeyCommand]
