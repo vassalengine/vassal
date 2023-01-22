@@ -90,24 +90,19 @@ public class DebugControls extends AbstractBuildable implements ActionListener {
     return cursorLocation;
   }
 
+  private Point getBoardLocation(Point pt, Map map) {
+    if (map == null) return pt;
+    final Board b = map.findBoard(pt);
+    if (b == null) return pt;
+    final Rectangle r = b.bounds();
+    final Point bp = new Point(pt);
+    bp.translate(-r.x, -r.y);
+    return bp;
+  }
+
   public void setCursorLocation(Point pt, Map map) {
     cursorLocation = pt;
-
-    if (map != null) {
-      final Board b = map.findBoard(pt);
-      if (b != null) {
-        final Rectangle r = b.bounds();
-        final Point bp = new Point(pt);
-        bp.translate(-r.x, -r.y);
-        cursorLocationBoard = bp;
-      }
-      else {
-        cursorLocationBoard = pt;
-      }
-    }
-    else {
-      cursorLocationBoard = pt;
-    }
+    cursorLocationBoard = getBoardLocation(pt, map);
 
     updateCoords();
     updateSelected();
@@ -198,24 +193,10 @@ public class DebugControls extends AbstractBuildable implements ActionListener {
     selectedNameLabel.setText(piece.getName());
     selectedCoordsLabel.setText(piece.getPosition().x + "," + piece.getPosition().y);
 
-    final Map map = piece.getMap();
-    if (map != null) {
-      final Point pt = piece.getPosition();
-      final Board b = map.findBoard(pt);
-      if (b != null) {
-        final Rectangle r = b.bounds();
-        final Point bp = new Point(pt);
-        bp.translate(-r.x, -r.y);
-        if (!bp.equals(pt)) {
-          selectedCoordsBoardLabel.setText(bp.x + "," + bp.y);
-        }
-        else {
-          selectedCoordsBoardLabel.setText("");
-        }
-      }
-      else {
-        selectedCoordsBoardLabel.setText("");
-      }
+    final Point pt = piece.getPosition();
+    final Point bp = getBoardLocation(pt, piece.getMap());
+    if (!bp.equals(pt)) {
+      selectedCoordsBoardLabel.setText(bp.x + "," + bp.y);
     }
     else {
       selectedCoordsBoardLabel.setText("");
