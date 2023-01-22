@@ -415,7 +415,13 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
         switch (e.getKeyCode()) {
         case KeyEvent.VK_DELETE:
         case KeyEvent.VK_BACK_SPACE:
-          setValue(NamedKeyStroke.NULL_KEYSTROKE);
+          // Allow mapping of Delete
+          if (getValue().equals(NamedKeyStroke.NULL_KEYSTROKE) || e.isShiftDown() || e.isControlDown() || e.isMetaDown() || e.isAltDown()) {
+            setValue(NamedKeyStroke.of(SwingUtils.convertKeyEvent(e)));
+          }
+          else {
+            setValue(NamedKeyStroke.NULL_KEYSTROKE);
+          }
           break;
         case KeyEvent.VK_SHIFT:
         case KeyEvent.VK_CONTROL:
