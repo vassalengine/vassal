@@ -286,8 +286,9 @@ public class NonRectangular extends Decorator implements EditablePiece {
         }
         else {
           final Image img = Op.load(imageName).getImage();
-          if (img != null)
+          if (img != null) {
             setShapeFromImage(img);
+          }
         }
       });
 
