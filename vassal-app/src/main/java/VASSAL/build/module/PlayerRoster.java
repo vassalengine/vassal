@@ -30,6 +30,7 @@ import VASSAL.configure.ComponentDescription;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.configure.password.ToggleablePasswordConfigurer;
+import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
@@ -41,10 +42,7 @@ import VASSAL.tools.swing.FlowLabel;
 import java.awt.Component;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -922,9 +920,15 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   public void setAttribute(String key, Object value) {
     if (SIDES.equals(key)) {
       untranslatedSides = sides.toArray(new String[0]);
-      final String[] s = (String[]) value;
-      sides = new ArrayList<>(s.length);
-      Collections.addAll(sides, s);
+      // When the module is being translated, the translated sides are passed in as a comma delimited string, not as an array
+      if (value instanceof String) {
+        setSidesFromString((String) value);
+      }
+      else {
+        final String[] s = (String[]) value;
+        sides = new ArrayList<>(s.length);
+        Collections.addAll(sides, s);
+      }
     }
     else if (DESCRIPTION.equals(key)) {
       description = (String)value;
@@ -937,6 +941,10 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   protected String getSidesAsString() {
     final String[] s = sides.toArray(new String[0]);
     return StringArrayConfigurer.arrayToString(s);
+  }
+
+  protected void setSidesFromString(String newSides) {
+    sides = Arrays.asList(StringArrayConfigurer.stringToArray(newSides));
   }
 
   public String untranslateSide(String side) {
@@ -991,5 +999,12 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   @Override
   public List<String> getPropertyList() {
     return sides;
+  }
+
+  @Override
+  public ComponentI18nData getI18nData() {
+    final ComponentI18nData c = super.getI18nData();
+    c.setAttributeTranslatable(SIDES, true);
+    return c;
   }
 }
