@@ -1,5 +1,6 @@
 3.6.11 - ???
 
+* 11924: Reinstate translation of Player Sides
 * 11911: Debug window shows board-relative coordinates if they are different
     from the map-relative ones
 * 11906: MatCargo's mat detection did unnecessary computations for lack of
