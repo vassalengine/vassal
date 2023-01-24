@@ -42,7 +42,11 @@ import VASSAL.tools.swing.FlowLabel;
 import java.awt.Component;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
