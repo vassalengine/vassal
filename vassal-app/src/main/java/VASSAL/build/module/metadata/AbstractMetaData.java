@@ -43,6 +43,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import VASSAL.i18n.Resources;
+import VASSAL.tools.version.VersionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -101,6 +102,13 @@ public abstract class AbstractMetaData {
   protected static final String BUILDFILE_MODULE_ELEMENT1 = "VASSAL.launch.BasicModule"; //NON-NLS
   protected static final String BUILDFILE_MODULE_ELEMENT2 = "VASSAL.build.GameModule"; //NON-NLS
   protected static final String BUILDFILE_EXTENSION_ELEMENT = "VASSAL.build.module.ModuleExtension"; //NON-NLS
+
+  // Vassal versions prior to 3.6.11 reversed the language and translated details in the metadata
+  protected static final String BUG_11929_VASSAL_FIX_VERSION = "3.6.11";
+
+  public static boolean isPreBug11929(String version) {
+    return VersionUtils.compareVersions(VersionUtils.truncateToIncrementalVersion(version), BUG_11929_VASSAL_FIX_VERSION) < 0;
+  }
 
   protected String version;
   protected String vassalVersion;
@@ -462,7 +470,13 @@ public abstract class AbstractMetaData {
           setDescription(new Attribute(DESCRIPTION_ELEMENT, value));
         }
         else {
-          descriptionAttr.addTranslation(language, value);
+          // Modules saved prior to 3.6.11 have the language and the translation reversed
+          if (isPreBug11929(getVassalVersion())) {
+            descriptionAttr.addTranslation(value, language);
+          }
+          else {
+            descriptionAttr.addTranslation(language, value);
+          }
         }
       }
       else if (DATE_SAVED_ELEMENT.equals(qName)) {
