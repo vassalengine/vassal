@@ -42,6 +42,7 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import VASSAL.i18n.Resources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -365,7 +366,7 @@ public abstract class AbstractMetaData {
      * @return translated value
      */
     public String getLocalizedValue() {
-      final String lang = Locale.getDefault().getLanguage();
+      final String lang = Resources.getLocale().getLanguage(); // Use the current Vassal language, not the default Local language
       final String tx = translations.get(lang);
       return tx == null ? getValue() : tx;
     }
@@ -391,8 +392,8 @@ public abstract class AbstractMetaData {
 
       for (final Map.Entry<String, String> en : translations.entrySet()) {
         e = doc.createElement(prefix);
-        e.setAttribute(LANG_ATTR, en.getValue());
-        e.appendChild(doc.createTextNode(en.getKey()));
+        e.setAttribute(LANG_ATTR, en.getKey());
+        e.appendChild(doc.createTextNode(en.getValue()));
         root.appendChild(e);
       }
     }
