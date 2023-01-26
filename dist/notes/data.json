@@ -27,7 +27,8 @@
         { "num": 11904, "desc": "Global Key Command fastmatch for Mats fixed to avoid trait-order bugs" },
         { "num": 11901, "desc": "Corrected \"Mark When Moved\" documentation" },
         { "num": 11899, "desc": "Hide FileConfigurer label in preferences dialogs" },
-        { "num": 11890, "desc": "NPE when current-stack option used on non-stacking piece" }
+        { "num": 11890, "desc": "NPE when current-stack option used on non-stacking piece" },
+        { "num": 11505, "desc": "Insert items into formatted strings from drop-down list into the correctly selected position" }
       ],
       "other_improvements": [
         { "num": 11911, "desc": "Debug window shows board-relative coordinates if they are different from the map-relative ones" },

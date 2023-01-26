@@ -11,6 +11,8 @@
 * 11900: Clear Tile Cache with more efficient Files.walkFileTree()
 * 11899: Hide FileConfigurer label in preferences dialogs
 * 11890: NPE when current-stack option used on non-stacking piece
+* 11505: Insert items into formatted strings from drop-down list into the
+    correctly selected position
 
 3.6.10 - 11 January 2023
 
