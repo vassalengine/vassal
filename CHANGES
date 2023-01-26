@@ -1,5 +1,6 @@
 3.6.11 - ???
 
+* 11929: Show translated module name and descriptions in Module Manager
 * 11924: Reinstate translation of Player Sides
 * 11911: Debug window shows board-relative coordinates if they are different
     from the map-relative ones
