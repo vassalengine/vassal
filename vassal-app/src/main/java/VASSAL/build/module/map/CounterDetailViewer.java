@@ -220,7 +220,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     return anyMouseoverDrawn;
   }
 
-  public static void setAnyMouseoverDrawn (boolean flag) {
+  public static void setAnyMouseoverDrawn(boolean flag) {
     anyMouseoverDrawn = flag;
   }
 
