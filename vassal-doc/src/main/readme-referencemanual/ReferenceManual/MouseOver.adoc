@@ -11,6 +11,8 @@ A Mouseover Stack Viewer displays a "rollover" or "tooltip" for a stack when the
 
 Occasionally pieces will want to "draw themselves differently" inside of a Mouseover Stack Viewer. For this purpose they can check the property `DrawingMouseover` in e.g. a Calculated Property or a Label's "Follows Expression Value" field. Alternatively the property `DrawingMouseoverIndex` will contain 2 while drawing the mouseover, 1 otherwise; this can be useful as an index for a Follows Expression layer because it avoids the substantial performance cost of a full Beanshell expression e.g. `{ DrawingMouseover ? 2 : 1 }`.
 
+If a Map contains multiple Mouse-over Stack Viewers, they will be processed in order from the top until one of them causes a rollover to be drawn, after which no further rollovers will be drawn. If you change the order of the Mouseover-stack Viewers, you will need to restart VASSAL before the ordering change will take effect.
+
 [width="100%",cols="50%a,^50%a",]
 |===
 |

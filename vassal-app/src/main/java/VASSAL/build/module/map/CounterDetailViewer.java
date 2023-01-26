@@ -60,6 +60,9 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.image.LabelUtils;
 import VASSAL.tools.swing.SwingUtils;
 
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
+import javax.swing.Timer;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -83,10 +86,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
-import javax.swing.JComponent;
-import javax.swing.KeyStroke;
-import javax.swing.Timer;
 
 /**
  * This is a {@link Drawable} class that draws the counters horizontally when
@@ -215,6 +214,16 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     return drawingMouseOver;
   }
 
+  private static boolean anyMouseoverDrawn = false;
+
+  public static boolean isAnyMouseoverDrawn() {
+    return anyMouseoverDrawn;
+  }
+
+  public static void setAnyMouseoverDrawn (boolean flag) {
+    anyMouseoverDrawn = flag;
+  }
+
   public CounterDetailViewer() {
     // Set up the timer; this isn't the real delay---we always check the
     // preferences for that.
@@ -281,6 +290,10 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
   public void draw(Graphics g, Point pt, JComponent comp) {
     if (!graphicsVisible && !textVisible) {
+      return;
+    }
+
+    if (isAnyMouseoverDrawn()) {
       return;
     }
 
@@ -387,6 +400,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
           comp,
           graphicsZoom * os_scale
         );
+        setAnyMouseoverDrawn(true);
       }
       if (parent instanceof Deck) piece.setProperty(Properties.OBSCURED_BY, owner);
       if (unrotatePieces) piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.FALSE);
@@ -560,6 +574,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         LabelUtils.drawLabel(g, label, pt.x, pt.y, g.getFont(), hAlign, vAlign, fgColor, (skipBox ? null : bgColor), (skipBox ? null : fgColor), objectWidth, extraTextPadding, minWidth, extraBorder);
       }
       g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+      setAnyMouseoverDrawn(true);
     }
   }
 

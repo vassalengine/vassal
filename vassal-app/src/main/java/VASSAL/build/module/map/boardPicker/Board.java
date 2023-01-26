@@ -43,6 +43,8 @@ import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.Repainter;
 import VASSAL.tools.imageop.ScaleOp;
 import VASSAL.tools.imageop.SourceOp;
+import org.jdesktop.animation.timing.Animator;
+import org.jdesktop.animation.timing.TimingTargetAdapter;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -65,9 +67,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-
-import org.jdesktop.animation.timing.Animator;
-import org.jdesktop.animation.timing.TimingTargetAdapter;
 
 public class Board extends AbstractConfigurable implements GridContainer {
   /**
