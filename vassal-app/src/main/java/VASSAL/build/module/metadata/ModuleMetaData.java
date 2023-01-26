@@ -161,7 +161,13 @@ public class ModuleMetaData extends AbstractMetaData {
           nameAttr = new Attribute(NAME_ELEMENT, accumulator.toString().trim());
         }
         else {
-          nameAttr.addTranslation(language, accumulator.toString().trim());
+          // Modules saved prior to 3.6.11 have the language and the translation reversed
+          if (isPreBug11929(getVassalVersion())) {
+            nameAttr.addTranslation(accumulator.toString().trim(), language);
+          }
+          else {
+            nameAttr.addTranslation(language, accumulator.toString().trim());
+          }
         }
       }
       else {
