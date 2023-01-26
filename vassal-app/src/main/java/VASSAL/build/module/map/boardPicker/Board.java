@@ -129,7 +129,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
   public void build(Element e) {
     super.build(e);
     if (e == null) {
-      setConfigureName(Resources.getString("Editor.Board.main_board"));
+      setConfigureName(Resources.getString("Editor.Board.component_type"));
     }
   }
 
