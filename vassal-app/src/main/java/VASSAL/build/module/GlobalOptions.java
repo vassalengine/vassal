@@ -148,7 +148,7 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
   private String inventoryVisibleToAll = ALWAYS; // Inventory can see private windows -> default to on
   private String sendToLocationMoveTrails = NEVER; // Send-to-Location generates movement trails (default to off)
   private boolean storeLeadingZeroIntegersAsStrings = false; // Store integers with leading zeroes as String internally
-  private boolean purgeBlankPropertyPrompts = false; // Purge blank property prompts
+  private boolean purgeBlankPropertyPrompts = true; // Purge blank property prompts
 
   // Configurable prompt string for unmask-my-pieces
   private String promptString = Resources.getString("GlobalOptions.opponents_can_unmask_my_pieces");
