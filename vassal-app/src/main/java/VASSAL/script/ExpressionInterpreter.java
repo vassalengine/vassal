@@ -18,45 +18,45 @@
 package VASSAL.script;
 
 import VASSAL.build.BadDataReport;
+import VASSAL.build.GameModule;
 import VASSAL.build.module.GlobalOptions;
+import VASSAL.build.module.Map;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
+import VASSAL.build.module.properties.PropertySource;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
+import VASSAL.counters.Mat;
+import VASSAL.counters.MatCargo;
 import VASSAL.counters.PieceFilter;
 import VASSAL.counters.ReportState;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.script.expression.AuditTrail;
 import VASSAL.script.expression.Auditable;
+import VASSAL.script.expression.ExpressionException;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-
+import VASSAL.tools.WarningDialog;
+import bsh.BeanShellExpressionValidator;
+import bsh.EvalError;
+import bsh.NameSpace;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import VASSAL.build.GameModule;
-import VASSAL.build.module.Map;
-import VASSAL.build.module.properties.PropertySource;
-import VASSAL.script.expression.ExpressionException;
-import VASSAL.tools.WarningDialog;
-import bsh.BeanShellExpressionValidator;
-import bsh.EvalError;
-import bsh.NameSpace;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -530,6 +530,141 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     }
     return result;
   }
+
+  /**
+   * SumMat(property) function
+   * Total the value of the named property in all counters
+   * among the Mat-and-MatCargo grouping of the current piece
+   *
+   * @param property Property Name
+   * @param ps       GamePiece
+   * @return total
+   */
+  public Object sumMat(String property, PropertySource ps) {
+    int result = 0;
+
+    // This allows ReportState to sum properties properly
+    if (ps instanceof ReportState.OldAndNewPieceProperties) {
+      ps = ((ReportState.OldAndNewPieceProperties)ps).getNewPiece();
+    }
+
+    if (ps instanceof GamePiece) {
+      GamePiece gp = (GamePiece) ps;
+      GamePiece mat;
+      if (gp instanceof Decorator) {
+        gp  = Decorator.getOutermost(gp);
+        mat = Decorator.getDecorator(gp, Mat.class);
+
+        if (mat == null) {
+          final MatCargo cargo = (MatCargo) Decorator.getDecorator(gp, MatCargo.class);
+          if (cargo != null) {
+            mat = cargo.getMat();
+          }
+        }
+      }
+      else {
+        mat = null;
+      }
+
+      if (mat != null) {
+        mat = Decorator.getOutermost(mat);
+        final Mat actualMat = (Mat) Decorator.getDecorator(mat, Mat.class);
+
+        Object prop = mat.getProperty(property);
+        if (prop != null) {
+          final String s1 = prop.toString();
+          result += NumberUtils.toInt(s1, 0);
+        }
+
+        for (final GamePiece cargo : actualMat.getContents()) {
+          prop = Decorator.getOutermost(cargo).getProperty(property);
+          if (prop != null) {
+            final String s1 = prop.toString();
+            result += NumberUtils.toInt(s1, 0);
+          }
+        }
+      }
+      else {
+        final Object prop = ps.getProperty(property);
+        if (prop != null) {
+          final String s1 = prop.toString();
+          result += NumberUtils.toInt(s1, 0);
+        }
+      }
+    }
+    return result;
+  }
+
+  /**
+   * CountMat(property) function
+   * Return the total number of counters with a non-blank value for the specified property
+   * among the Mat-and-MatCargo grouping of the current piece
+   *
+   * @param property Property Name
+   * @param ps       GamePiece
+   * @return total
+   */
+  public Object countMat(String property, PropertySource ps) {
+    int result = 0;
+
+    // This allows ReportState to sum properties properly
+    if (ps instanceof ReportState.OldAndNewPieceProperties) {
+      ps = ((ReportState.OldAndNewPieceProperties)ps).getNewPiece();
+    }
+
+    if (ps instanceof GamePiece) {
+      GamePiece gp = (GamePiece) ps;
+      GamePiece mat;
+      if (gp instanceof Decorator) {
+        gp  = Decorator.getOutermost(gp);
+        mat = Decorator.getDecorator(gp, Mat.class);
+
+        if (mat == null) {
+          final MatCargo cargo = (MatCargo) Decorator.getDecorator(gp, MatCargo.class);
+          if (cargo != null) {
+            mat = cargo.getMat();
+          }
+        }
+      }
+      else {
+        mat = null;
+      }
+
+      if (mat != null) {
+        mat = Decorator.getOutermost(mat);
+        final Mat actualMat = (Mat) Decorator.getDecorator(mat, Mat.class);
+
+        Object prop = mat.getProperty(property);
+        if (prop != null) {
+          final String val = prop.toString();
+          if (!"".equals(val)) {
+            result++;
+          }
+        }
+
+        for (final GamePiece cargo : actualMat.getContents()) {
+          prop = Decorator.getOutermost(cargo).getProperty(property);
+          if (prop != null) {
+            final String val = prop.toString();
+            if (!"".equals(val)) {
+              result++;
+            }
+          }
+        }
+      }
+      else {
+        final Object prop = ps.getProperty(property);
+        if (prop != null) {
+          final String val = prop.toString();
+          if (!"".equals(val)) {
+            result++;
+          }
+        }
+      }
+    }
+    return result;
+  }
+
 
   /**
    * SumLocation(property) function
