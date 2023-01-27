@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module.properties;
 
+import VASSAL.build.module.GlobalOptions;
 import VASSAL.script.expression.AuditTrail;
 import VASSAL.script.expression.Expression;
 import VASSAL.script.expression.ExpressionException;
@@ -69,9 +70,11 @@ public class EnumeratedPropertyPrompt extends PropertyPrompt {
       finalValues[i] = value;
     }
 
+    final boolean purgeBlanks = GlobalOptions.getInstance().isPurgeBlankPropertyPrompts();
+
     final List<String> nonBlankValues = new ArrayList<>();
     for (final String value : finalValues) {
-      if (value.isEmpty()) continue;
+      if (purgeBlanks && value.isEmpty()) continue;
       nonBlankValues.add(value);
     }
 
