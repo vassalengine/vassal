@@ -44,6 +44,11 @@ import java.awt.geom.AffineTransform;
 import java.util.Collections;
 import java.util.Map;
 
+import static java.awt.event.KeyEvent.VK_0;
+import static java.awt.event.KeyEvent.VK_2;
+import static java.awt.event.KeyEvent.VK_7;
+import static java.awt.event.KeyEvent.VK_9;
+
 public class SwingUtils {
 
   private static boolean macLegacy = GlobalOptions.FORCE_MAC_LEGACY;
@@ -249,10 +254,36 @@ public class SwingUtils {
     @Override
     @SuppressWarnings("deprecation")
     public KeyStroke systemToGeneric(KeyStroke k) {
+      int modifiers = k.getModifiers();
+
+      // French/Belgian AZERTY keyboards on Mac do some funky stuff with modifier keys & the number key row
+      // This is essentially a bandaid to keep modules working
+      if ((modifiers & (InputEvent.META_DOWN_MASK | InputEvent.ALT_DOWN_MASK | InputEvent.CTRL_DOWN_MASK)) != 0) {
+        int code = k.getKeyCode();
+
+        switch (code) {
+        case 'é':
+          code = VK_2;
+          break;
+        case 'è':
+          code = VK_7;
+          break;
+        case 'ç':
+          code = VK_9;
+          break;
+        case 'à':
+          code = VK_0;
+          break;
+        }
+
+        if (code != k.getKeyCode()) {
+          return systemToGeneric(KeyStroke.getKeyStroke(code, modifiers, k.isOnKeyRelease()));
+        }
+      }
+
       if (macLegacy) {
         return k;
       }
-      int modifiers = k.getModifiers();
       if ((modifiers & InputEvent.META_DOWN_MASK) != 0) {
         // Here we make "Meta" (Command) keystrokes from a Mac look like "Ctrl" keystrokes to Vassal
         // We must also remove the deprecated META_MASK, or Java will end up restoring the META_DOWN_MASK.
