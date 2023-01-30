@@ -26,7 +26,9 @@ import VASSAL.build.module.GameState;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
+import VASSAL.configure.CompoundValidityChecker;
 import VASSAL.configure.NotNullConfigureName;
+import VASSAL.configure.SingleChildInstance;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.FormattedString;
@@ -199,12 +201,26 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
 
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class<?>[]{ChangePropertyButton.class};
+    // Only module-level Global Properties can be used for Scenario Options
+    if (getParent() instanceof GlobalProperties) {
+      if (((GlobalProperties) getParent()).getParent() instanceof GameModule) {
+        return new Class<?>[]{
+          ChangePropertyButton.class,
+          CheckboxScenarioOption.class,
+          StringScenarioOption.class,
+          ListScenarioOption.class,
+          NumberScenarioOption.class
+        };
+      }
+    }
+    return new Class<?>[] {ChangePropertyButton.class};
   }
 
   @Override
   public void addTo(Buildable parent) {
-    validator = new NotNullConfigureName(this);
+    validator = new CompoundValidityChecker(
+            new NotNullConfigureName(this),
+            new SingleChildInstance(this, AbstractScenarioOption.class));
     if (parent instanceof AbstractFolder) {
       parent = ((AbstractFolder) parent).getNonFolderAncestor();
     }

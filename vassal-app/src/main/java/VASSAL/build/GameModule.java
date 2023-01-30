@@ -67,6 +67,7 @@ import VASSAL.build.module.properties.GlobalTranslatableMessages;
 import VASSAL.build.module.properties.MutablePropertiesContainer;
 import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.build.module.properties.PropertySource;
+import VASSAL.build.module.properties.ScenarioOptions;
 import VASSAL.build.module.properties.TranslatableString;
 import VASSAL.build.module.properties.TranslatableStringContainer;
 import VASSAL.build.module.turn.TurnTracker;
@@ -667,6 +668,9 @@ public class GameModule extends AbstractConfigurable
       "GameRefresher.refresh_counters", //NON-NLS
       gameRefresher.getRefreshAction()
     );
+
+    // Initialise the Scenario Options Window
+    ScenarioOptions.getInstance();
 
     // Run a Validator and record any issues in the errorLog
     final ValidationReport report = new ValidationReport();

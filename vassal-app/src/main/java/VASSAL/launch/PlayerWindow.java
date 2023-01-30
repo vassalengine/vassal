@@ -108,6 +108,10 @@ public class PlayerWindow extends JFrame {
     else {
       fileMenu.addSeparator();
       fileMenu.add(mm.addKey("Prefs.edit_preferences"));
+
+      fileMenu.add(mm.addKey("ScenarioOptions.menu_text"));
+
+
       fileMenu.addSeparator();
       fileMenu.add(mm.addKey("General.quit"));
     }
