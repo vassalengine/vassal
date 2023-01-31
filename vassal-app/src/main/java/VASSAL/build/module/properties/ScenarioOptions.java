@@ -112,15 +112,16 @@ public class ScenarioOptions implements GameComponent {
       openAction = new AbstractAction(Resources.getString("ScenarioOptions.menu_text")) {
         @Override
         public void actionPerformed(ActionEvent e) {
-          final Dimension d = SwingUtils.getScreenSize();
-          getDialog().setLocation(d.width / 2 - getDialog().getWidth() / 2, 0);
-          SwingUtils.ensureOnScreen(dialog);
           open();
         }
       };
 
       MenuManager.getInstance().addAction("ScenarioOptions.menu_text", getOpenAction());
       getOpenAction().setEnabled(false);
+
+      rebuild();
+      final Dimension d = SwingUtils.getScreenSize();
+      dialog.setLocation(d.width / 2 - dialog.getWidth() / 2, 0);
 
     }
     return dialog;
@@ -152,7 +153,7 @@ public class ScenarioOptions implements GameComponent {
   // one Scenario option has been defined
   @Override
   public void setup(boolean gameStarting) {
-    getOpenAction().setEnabled(gameStarting && options.isEmpty());
+    getOpenAction().setEnabled(gameStarting && ! options.isEmpty());
   }
 
   // The option values are stored in their Global Properties, no restore command needed here.
@@ -174,7 +175,7 @@ public class ScenarioOptions implements GameComponent {
       final ComponentConfigPanel tab = buildTab(tabName);
       tab.add(new JLabel(option.getPrompt()), option.getCachedConfigurer());
     }
-
+    dialog.pack();
   }
 
   // Find or build the required tab
