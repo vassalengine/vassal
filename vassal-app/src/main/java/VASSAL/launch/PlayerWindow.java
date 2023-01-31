@@ -102,16 +102,15 @@ public class PlayerWindow extends JFrame {
     fileMenu.add(mm.addKey("BasicLogger.end_logfile"));
 
     if (SystemUtils.IS_OS_MAC) {
+      fileMenu.addSeparator();
+      fileMenu.add(mm.addKey("ScenarioOptions.menu_text"));
       fileMenu.add(mm.addMarker("Editor.File.start"));  //NON-NLS
       fileMenu.add(mm.addMarker("Editor.File.end"));  //NON-NLS
     }
     else {
       fileMenu.addSeparator();
       fileMenu.add(mm.addKey("Prefs.edit_preferences"));
-
       fileMenu.add(mm.addKey("ScenarioOptions.menu_text"));
-
-
       fileMenu.addSeparator();
       fileMenu.add(mm.addKey("General.quit"));
     }
