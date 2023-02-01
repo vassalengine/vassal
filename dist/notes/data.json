@@ -23,6 +23,7 @@
       ],
       "bug_fixes": [
         { "num": 11938, "desc": "IndexOutOfBoundsException trying to open a private note" },
+        { "num": 11933, "desc": "At-Start stacks were getting confused by blank boards" },
         { "num": 11929, "desc": "Show translated module name and descriptions in Module Manager" },
         { "num": 11924, "desc": "Reinstate translation of Player Sides" },
         { "num": 11904, "desc": "Global Key Command fastmatch for Mats fixed to avoid trait-order bugs" },
