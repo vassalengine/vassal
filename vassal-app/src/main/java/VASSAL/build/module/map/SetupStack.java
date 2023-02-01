@@ -386,7 +386,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
           owningBoardName = null;
         }
       }
-      else if (value.equals("")) {
+      else if ("".equals(value)) {
         owningBoardName = null; // Because "" is what null sometimes turns into during Vassal configurers
       }
       else {
