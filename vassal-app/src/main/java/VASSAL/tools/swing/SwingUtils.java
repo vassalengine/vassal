@@ -262,16 +262,16 @@ public class SwingUtils {
         int code = k.getKeyCode();
 
         switch (code) {
-        case 'é':
+        case 16777449:
           code = VK_2;
           break;
-        case 'è':
+        case 16777448:
           code = VK_7;
           break;
-        case 'ç':
+        case 16777447:
           code = VK_9;
           break;
-        case 'à':
+        case 16777440:
           code = VK_0;
           break;
         }
