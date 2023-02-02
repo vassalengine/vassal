@@ -2676,6 +2676,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
           if (remove(getParent(sourceNode), cutObj)) {
             insert(target, convertedCutObj, childIndex);
+            postPasteFixups(convertedCutObj);
           }
         }
       }

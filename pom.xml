@@ -64,7 +64,7 @@
             <plugins>
                 <plugin>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>3.2.1</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-clean-plugin</artifactId>
@@ -101,7 +101,7 @@
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>10.6.0</version>
+                            <version>10.7.0</version>
                         </dependency>
                     </dependencies>
                 </plugin>

@@ -27,7 +27,7 @@ See _Sub-Components_, below, for more details on grids.
 [width="100%",cols="50%a,^50%a",]
 |===
 |
-*Name:*:: The name of the Board.
+*Name:*:: The name of the Board. It should NOT be left blank.
 
 *Board image:*:: The image to use for the board display.
 
