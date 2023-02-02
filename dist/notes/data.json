@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 11941, "desc": "Since 3.6.7, French/Belgian AZERTY keyboards on Mac were experiencing problems with Ctrl / Alt keys on the number key row" },
         { "num": 11938, "desc": "IndexOutOfBoundsException trying to open a private note" },
         { "num": 11933, "desc": "At-Start stacks were getting confused by blank boards" },
         { "num": 11929, "desc": "Show translated module name and descriptions in Module Manager" },

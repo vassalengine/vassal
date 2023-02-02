@@ -1,5 +1,7 @@
 3.6.11 - ???
 
+* 11941: Since 3.6.7, French/Belgian AZERTY keyboards on Mac were experiencing
+    problems with Ctrl / Alt keys on the number key row
 * 11938: IndexOutOfBoundsException trying to open a private note
 * 11933: At-Start stacks were getting confused by blank boards
 * 11929: Show translated module name and descriptions in Module Manager
