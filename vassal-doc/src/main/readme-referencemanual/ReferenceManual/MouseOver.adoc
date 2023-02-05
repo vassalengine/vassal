@@ -82,5 +82,7 @@ Otherwise, they are excluded regardless of any other filters.
 *Number of pieces in Deck to show:*:: This many cards/pieces from the top of a deck are eligible for inclusion.
 
 *Show all pieces overlapping the first piece found:*:: If selected, then all Game Pieces that overlap the mouse cursor location are eligible to be displayed; otherwise only pieces at the _exact_ X,Y position of the _top_ piece found are displayed.
+
+*Don't process further Mouse-over Stack Viewers when this one displayed:*:: If selected, then whenever this viewer is actively displaying (i.e. has found sufficient targets to display either pieces or text), then no further Mouse-over Stack Viewers will be processed -- any additional viewers listed lower in the editor's list of viewers for this map will be ignored. This can be used to prevent multiple viewers from drawing over top of each other without the need for highly elaborate filter logic.
 |image:images/CounterDetailViewer.png[]
 |===
