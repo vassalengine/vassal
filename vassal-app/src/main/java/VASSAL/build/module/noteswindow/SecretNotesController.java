@@ -382,7 +382,18 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
 
       @Override
       public Class<?> getColumnClass(int c) {
-        return getValueAt(0, c).getClass();
+        switch (c) {
+        case COL_HANDLE:
+          return String.class;
+        case COL_DTM:
+          return Date.class;
+        case COL_NAME:
+          return String.class;
+        case COL_REVEALED:
+          return Boolean.class;
+        default:
+          return super.getColumnClass(c);
+        }
       }
 
       @Override
