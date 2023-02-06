@@ -248,7 +248,7 @@ public class GlobalCommand implements Auditable {
       final String reportText = reportFormat.getLocalizedText(source, owner, "Editor.report_format");
       if (reportText.length() > 0) {
         command = new Chatter.DisplayText(
-          GameModule.getGameModule().getChatter(), "*" + reportText); //NON-NLS
+          GameModule.getGameModule().getChatter(), "* " + reportText); //NON-NLS
         command.execute();
       }
 
