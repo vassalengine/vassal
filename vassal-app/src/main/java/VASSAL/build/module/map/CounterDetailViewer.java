@@ -81,6 +81,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -141,6 +143,15 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public static final String EXTRA_TEXT_PADDING = "extraTextPadding"; //NON-NLS
   public static final String PROPERTY_FILTER = "propertyFilter"; //NON-NLS
   public static final String STOP_AFTER_SHOWING = "stopAfterShowing"; //NON-NLS
+  public static final String SHOW_TERRAIN_BENEATH = "showTerrainBeneath"; //NON-NLS
+  public static final String SHOW_TERRAIN_X = "showTerrainX"; //NON-NLS
+  public static final String SHOW_TERRAIN_Y = "showTerrainY"; //NON-NLS
+  public static final String SHOW_TERRAIN_ZOOM = "showTerrainZoom"; //NON-NLS
+  public static final String SHOW_TERRAIN_TEXT = "showTerrainText"; //NON-NLS
+
+  public static final String NEVER = "never"; //NON-NLS
+  public static final String IF_ONE = "ifOne"; //NON-NLS
+  public static final String ALWAYS = "always"; //NON-NLS
 
   public static final String TOP_LAYER = "from top-most layer only";             //NON-NLS (yes, really)
   public static final String ALL_LAYERS = "from all layers";                     //NON-NLS (yes, really)
@@ -176,6 +187,10 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected boolean unrotatePieces = false;
   protected boolean showDeck = false;
   protected boolean stopAfterShowing = false;
+  protected String showTerrainBeneath = NEVER;
+  protected int showTerrainX = 150;
+  protected int showTerrainY = 150;
+  protected double showTerrainZoom = 1.0;
 
   @Deprecated(since = "2021-12-01", forRemoval = true)
   protected static int showDeckDepth = 1; //BR// deprecated (and was-always-broken) field, use showNumberFromDeck instead.
@@ -195,6 +210,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected FormattedString summaryReportFormat = new FormattedString("$" + BasicPiece.LOCATION_NAME + "$"); //NON-NLS
   protected FormattedString counterReportFormat = new FormattedString(""); //NON-NLS
   protected FormattedString emptyHexReportFormat = new FormattedString("$" + BasicPiece.LOCATION_NAME + "$"); //NON-NLS
+  protected FormattedString showTerrainText = new FormattedString("$" + BasicPiece.LOCATION_NAME + "$"); //NON-NLS
   protected String version = ""; //NON-NLS
   protected Color fgColor = Color.black;
   protected Color bgColor;
@@ -206,6 +222,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected Rectangle lastPieceBounds = new Rectangle();
   protected boolean mouseInView = true;
   protected List<GamePiece> displayablePieces = null;
+  protected boolean displayableTerrain = false;
 
   /** the JComponent which is repainted when the detail viewer changes */
   protected JComponent view;
@@ -370,6 +387,35 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
     final Shape oldClip = g.getClip();
 
+    if (displayableTerrain) {
+      // draw the map
+      final Point ptMap = pieces.isEmpty() ?
+        map.componentToMap(currentMousePosition.getPoint()) :
+        pieces.get(0).getPosition();
+
+      // get the icon of the map
+      final BufferedImage imgMapIcon = map.getImageMapIcon(ptMap, showTerrainX, showTerrainY, os_scale);
+
+      // draw the image
+      final int dborderWidth = (int) (borderWidth * os_scale);
+      g.setClip(dbounds.x - 3, dbounds.y - 3, dbounds.width + 5, dbounds.height + 5);
+
+      final AffineTransform orig_t = g2d.getTransform();
+      final AffineTransform at = AffineTransform.getScaleInstance(showTerrainZoom, showTerrainZoom);
+      //at.translate(-(showTerrainX * showTerrainZoom)/2, -(showTerrainY * showTerrainZoom)/2);
+      g2d.setTransform(at);
+      g.drawImage(imgMapIcon, dbounds.x + dborderWidth, dbounds.y + dborderWidth, null);
+      g2d.setTransform(orig_t);
+
+      //g.setColor(fgColor);
+      //g.drawRect(dbounds.x + dborderWidth, dbounds.y + dborderWidth, showTerrainX, showTerrainY);
+      //g.drawRect(dbounds.x + dborderWidth, dbounds.y + dborderWidth, imgMapIcon.getWidth(), imgMapIcon.getHeight());
+
+      g.setClip(oldClip);
+
+      dbounds.translate((int) (showTerrainX * showTerrainZoom * os_scale), 0);
+    }
+
     Object owner = null;
     int borderOffset = borderWidth;
     final double graphicsZoom = graphicsZoomLevel;
@@ -446,6 +492,11 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
   /** Set the bounds field large enough to accommodate the given set of pieces */
   protected void fixBounds(List<GamePiece> pieces) {
+    if (displayableTerrain) {
+      bounds.width += (int) Math.round(showTerrainX * showTerrainZoom) + borderWidth;
+      bounds.height = Math.max(bounds.height, (int)Math.round(showTerrainY * showTerrainZoom) + borderWidth * 2);
+    }
+
     for (final GamePiece piece : pieces) {
       final Dimension pieceBounds = getBounds(piece).getSize();
       bounds.width += (int) Math.round(pieceBounds.width * graphicsZoomLevel) + borderWidth;
@@ -583,6 +634,16 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
     displayablePieces = getDisplayablePieces();
 
+    if (ALWAYS.equals(showTerrainBeneath)) {
+      displayableTerrain = true;
+    }
+    else if (IF_ONE.equals(showTerrainBeneath)) {
+      displayableTerrain = (displayablePieces.size() > 0);
+    }
+    else {
+      displayableTerrain = false;
+    }
+
     /*
      * Visibility Rules: Stack - Depends on setting of showGraphics/showText
      * Single Unit - Depends on setting of showGraphics/showText and
@@ -590,11 +651,12 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
      * space - Depends on setting of
      */
 
+    final int eligiblePieces = displayablePieces.size() + (displayableTerrain ? 1 : 0);
     final double zoom = getZoom();
-    if (displayablePieces.size() < minimumDisplayablePieces) {
-      if (!displayablePieces.isEmpty()) {
+    if (eligiblePieces < minimumDisplayablePieces) {
+      if (eligiblePieces > 0) {
         graphicsVisible = drawPieces && (zoom < zoomLevel);
-        textVisible = showText && (zoom < zoomLevel) && (summaryReportFormat.getFormat().length() > 0 || counterReportFormat.getFormat().length() > 0);
+        textVisible = showText && (zoom < zoomLevel) && (summaryReportFormat.getFormat().length() > 0 || counterReportFormat.getFormat().length() > 0 || (displayableTerrain && showTerrainText.getFormat().length() > 0));
       }
       else {
         textVisible = (minimumDisplayablePieces == 0 && emptyHexReportFormat.getFormat().length() > 0);
@@ -603,7 +665,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     else {
       graphicsVisible = drawPieces;
-      textVisible = showText && (summaryReportFormat.getFormat().length() > 0 || counterReportFormat.getFormat().length() > 0);
+      textVisible = showText && (summaryReportFormat.getFormat().length() > 0 || counterReportFormat.getFormat().length() > 0 || (displayableTerrain && showTerrainText.getFormat().length() > 0));
     }
     map.repaint();
   }
@@ -1027,6 +1089,11 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       DISPLAY,
       LAYER_LIST,
       PROPERTY_FILTER,
+      SHOW_TERRAIN_BENEATH,
+      SHOW_TERRAIN_X,
+      SHOW_TERRAIN_Y,
+      SHOW_TERRAIN_ZOOM,
+      SHOW_TERRAIN_TEXT,
       SHOW_NOSTACK,
       SHOW_MOVE_SELECTED,
       SHOW_NON_MOVABLE,
@@ -1071,6 +1138,11 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       Resources.getString("Editor.MouseOverStackViewer.include_pieces"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.listed_layers"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.piece_filter"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.show_terrain_beneath"),
+      Resources.getString("Editor.MouseOverStackViewer.show_terrain_x"),
+      Resources.getString("Editor.MouseOverStackViewer.show_terrain_y"),
+      Resources.getString("Editor.MouseOverStackViewer.show_terrain_zoom"),
+      Resources.getString("Editor.MouseOverStackViewer.show_terrain_text"),
       Resources.getString("Editor.MouseOverStackViewer.non_stacking"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.move_selected"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.non_moveable"), //$NON-NLS-1$
@@ -1116,6 +1188,11 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       DisplayConfig.class,
       String[].class,
       PropertyExpression.class,
+      TerrainConfig.class,
+      Integer.class,
+      Integer.class,
+      Double.class,
+      EmptyFormatConfig.class,
       Boolean.class,
       Boolean.class,
       Boolean.class,
@@ -1140,6 +1217,21 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
                             "Editor.CounterDetailViewer.all_layers",
                             "Editor.CounterDetailViewer.inc_layers",
                             "Editor.CounterDetailViewer.exc_layers"
+      };
+    }
+  }
+
+  public static class TerrainConfig extends TranslatableStringEnum {
+    @Override
+    public String[] getValidValues(AutoConfigurable target) {
+      return new String[] { NEVER, IF_ONE, ALWAYS };
+    }
+
+    @Override
+    public String[] getI18nKeys(AutoConfigurable target) {
+      return new String[] { "Editor.CounterDetailViewer.never",
+                            "Editor.CounterDetailViewer.if_one",
+                            "Editor.CounterDetailViewer.always"
       };
     }
   }
@@ -1455,6 +1547,34 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         stopAfterShowing = "true".equals(value); //NON-NLS
       }
     }
+    else if (SHOW_TERRAIN_BENEATH.equals(name)) {
+      showTerrainBeneath = (String) value;
+    }
+    else if (SHOW_TERRAIN_X.equals(name)) {
+      if (value instanceof Integer) {
+        showTerrainX = (Integer) value;
+      }
+      else if (value instanceof String) {
+        showTerrainX = Integer.parseInt((String) value); //NON-NLS
+      }
+    }
+    else if (SHOW_TERRAIN_Y.equals(name)) {
+      if (value instanceof Integer) {
+        showTerrainY = (Integer) value;
+      }
+      else if (value instanceof String) {
+        showTerrainY = Integer.parseInt((String) value); //NON-NLS
+      }
+    }
+    else if (SHOW_TERRAIN_TEXT.equals(name)) {
+      showTerrainText.setFormat((String) value);
+    }
+    else if (SHOW_TERRAIN_ZOOM.equals(name)) {
+      if (value instanceof String) {
+        value = Double.valueOf((String) value);
+      }
+      showTerrainZoom = (Double) value;
+    }
   }
 
   @Override
@@ -1573,6 +1693,21 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     else if (STOP_AFTER_SHOWING.equals(name)) {
       return String.valueOf(stopAfterShowing);
     }
+    else if (SHOW_TERRAIN_BENEATH.equals(name)) {
+      return showTerrainBeneath;
+    }
+    else if (SHOW_TERRAIN_X.equals(name)) {
+      return String.valueOf(showTerrainX);
+    }
+    else if (SHOW_TERRAIN_Y.equals(name)) {
+      return String.valueOf(showTerrainY);
+    }
+    else if (SHOW_TERRAIN_TEXT.equals(name)) {
+      return showTerrainText.getFormat();
+    }
+    else if (SHOW_TERRAIN_ZOOM.equals(name)) {
+      return String.valueOf(showTerrainZoom);
+    }
     else
       return null;
   }
@@ -1615,6 +1750,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     else if (SHOW_MOVE_SELECTED.equals(name) || SHOW_NON_MOVABLE.equals(name)) {
       return () -> showNoStack;
     }
+    else if (List.of(SHOW_TERRAIN_X, SHOW_TERRAIN_Y, SHOW_TERRAIN_ZOOM, SHOW_TERRAIN_TEXT).contains(name)) {
+      return () -> !NEVER.equals(showTerrainBeneath);
+    }
     /*
      * The following fields are not to be displayed. They are either obsolete
      * or maintained for backward compatibility
@@ -1641,7 +1779,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
    */
   @Override
   public List<String> getFormattedStringList() {
-    return List.of(summaryReportFormat.getFormat(), counterReportFormat.getFormat(), emptyHexReportFormat.getFormat());
+    return List.of(summaryReportFormat.getFormat(), counterReportFormat.getFormat(), emptyHexReportFormat.getFormat(), showTerrainText.getFormat());
   }
 
   /**
@@ -1666,6 +1804,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     h = new HTMLImageFinder(counterReportFormat.getFormat());
     h.addImageNames(s);
     h = new HTMLImageFinder(emptyHexReportFormat.getFormat());
+    h.addImageNames(s);
+    h = new HTMLImageFinder(showTerrainText.getFormat());
     h.addImageNames(s);
   }
 }
