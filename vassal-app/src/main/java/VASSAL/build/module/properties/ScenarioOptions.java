@@ -209,6 +209,7 @@ public class ScenarioOptions implements GameComponent {
       }
 
       optionTabs.add(sptab.getConfigureName(), sptab.getUI());
+      optionTabs.add(sptab.getConfigureName(), sptab.getUI());
     }
     dialog.pack();
   }
