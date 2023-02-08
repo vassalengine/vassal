@@ -137,7 +137,7 @@ public class MovementReporter {
     final Map mappy = Map.getMapById(summary.getNewMapId());
     String option = (mappy == null) ? null : mappy.getAttributeValueString(Map.MARK_MOVED);
     if (option == null) {
-      option = GlobalOptions.getInstance().getAttributeValueString(GlobalOptions.MARK_MOVED);
+      option = GlobalOptions.ALWAYS;
     }
     if (GlobalOptions.ALWAYS.equals(option)) {
       return true;
