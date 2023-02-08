@@ -536,6 +536,11 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
 
         c = tracker.getChangeCommand();
         c = c.append(putOldProperties(this));
+
+        if (parent != null) {
+          c = c.append(parent.pieceRemoved(outer));
+        }
+
         if (!Boolean.TRUE.equals(outer.getProperty(Properties.IGNORE_GRID))) {
           dest = map.snapTo(dest);
         }
@@ -554,13 +559,10 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         if (map.getMoveKey() != null) {
           c = c.append(outer.keyEvent(map.getMoveKey()));
         }
-
-        if (parent != null) {
-          c = c.append(parent.pieceRemoved(outer));
-        }
       }
     }
     else {
+      final Stack parent = outer.getParent();
       backMap = (Map) getProperty(BACK_MAP);
       final Point backPoint = (Point) getProperty(BACK_POINT);
       final ChangeTracker tracker = new ChangeTracker(this);
@@ -576,6 +578,11 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
 
       if (backMap != null && backPoint != null) {
         c = c.append(putOldProperties(this));
+
+        if (parent != null) {
+          c = c.append(parent.pieceRemoved(outer));
+        }
+
         c = c.append(backMap.placeOrMerge(outer, backPoint));
         dest = backPoint;
 
@@ -620,6 +627,10 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
             c = c.append(tracker.getChangeCommand());
             c = c.append(putOldProperties(piece));
 
+            if (pieceParent != null) {
+              c = c.append(pieceParent.pieceRemoved(piece));
+            }
+
             //BR// I sort of think cargo shouldn't snap when moving in lockstep with its mat.
             //BR// This may lead to the eventual conclusion that cargo pieces shouldn't snap
             //BR// even when dragged, IF they land on an eligible Mat.
@@ -631,9 +642,6 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
             // Apply Auto-move key
             if (map.getMoveKey() != null) {
               c = c.append(piece.keyEvent(map.getMoveKey()));
-            }
-            if (pieceParent != null) {
-              c = c.append(pieceParent.pieceRemoved(piece));
             }
           }
         }

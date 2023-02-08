@@ -36,7 +36,12 @@ import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
+import net.miginfocom.swing.MigLayout;
 
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -49,13 +54,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-
-import net.miginfocom.swing.MigLayout;
 
 /**
  * d/b/a "Move Fixed Distance"
@@ -331,6 +329,12 @@ public class Translate extends Decorator implements TranslatablePiece {
     outer.setProperty(Properties.MOVED, Boolean.TRUE);
     c = c.append(comm.getChangeCommand());
 
+    // Unlink from Parent Stack (in case it is a Deck).
+    final Stack parent = outer.getParent();
+    if (parent != null) {
+      c = c.append(parent.pieceRemoved(outer));
+    }
+
     // Move the piece
     c = c.append(map.placeOrMerge(outer, dest));
 
@@ -340,12 +344,6 @@ public class Translate extends Decorator implements TranslatablePiece {
     // Apply after Move Key
     if (map.getMoveKey() != null) {
       c = c.append(outer.keyEvent(map.getMoveKey()));
-    }
-
-    // Unlink from Parent Stack (in case it is a Deck).
-    final Stack parent = outer.getParent();
-    if (parent != null) {
-      c = c.append(parent.pieceRemoved(outer));
     }
 
     return c;
