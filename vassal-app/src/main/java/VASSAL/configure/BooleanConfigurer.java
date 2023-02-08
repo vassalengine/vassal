@@ -117,7 +117,9 @@ public class BooleanConfigurer extends Configurer {
 
       box = new JCheckBox();
       box.setSelected(booleanValue());
-      box.addItemListener(e -> setValue(box.isSelected()));
+      // NOTE: Changed from ItemListener to ActionListener. There is a know problem with ItemListener if the
+      // listener fires off a hotkey that opens another window, it causes the checkbox to untick, firing a second event
+      box.addActionListener(e -> setValue(box.isSelected()));
       p.add(box);
     }
 
@@ -143,9 +145,16 @@ public class BooleanConfigurer extends Configurer {
   }
 
   @Override
+  public void setEnabled(boolean enabled) {
+    box.setEnabled(enabled);
+  }
+
+  @Override
   public void setLabelVisible(boolean visible) {
     if (p instanceof ConfigurerPanel) {
       ((ConfigurerPanel) p).setLabelVisibility(visible);
     }
+
+
   }
 }

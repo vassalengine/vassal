@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2021 by vassalengine.org, Brian Reynolds
+ * Copyright (c) 2021-2023 by vassalengine.org, Brian Reynolds
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -19,11 +19,22 @@
 package VASSAL.build.module.folder;
 
 import VASSAL.build.AbstractFolder;
+import VASSAL.build.Buildable;
+import VASSAL.build.GameModule;
+import VASSAL.build.module.properties.GlobalProperties;
 import VASSAL.build.module.properties.GlobalProperty;
+import VASSAL.build.module.properties.ScenarioPropertiesOptionTab;
 
 public class GlobalPropertyFolder extends AbstractFolder {
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
+    final Buildable parent = getAncestor();
+    if (parent instanceof GlobalProperties) {
+      if (((GlobalProperties) parent).getAncestor() instanceof GameModule) {
+        // Only Module-level Global Property hierachy can contain Scenario Options
+        return new Class<?>[] { this.getClass(), GlobalProperty.class, ScenarioPropertiesOptionTab.class };
+      }
+    }
     return new Class<?>[] { this.getClass(), GlobalProperty.class };
   }
 }

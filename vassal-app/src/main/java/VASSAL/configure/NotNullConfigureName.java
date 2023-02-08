@@ -34,7 +34,7 @@ public class NotNullConfigureName implements ValidityChecker {
   @Override
   public void validate(Buildable b, ValidationReport report) {
     if (b == target && ((target.getConfigureName() == null) || (target.getConfigureName().equals("")))) {
-      report.addWarning(Resources.getString("Editor.ValidationReportDialog.blank_name", target.getClass().getName()));
+      report.addWarning(Resources.getString("Editor.ValidationReportDialog.blank_name", ConfigureTree.getConfigureName(target.getClass()), target.getClass().getName()));
     }
   }
 }

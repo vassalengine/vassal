@@ -286,4 +286,12 @@ public abstract class Configurer {
   public void initCustomControls(JDialog d, Configurable target) {
 
   }
+
+  /**
+   * Enable or Disable the action of this configurer/
+   * @param enabled
+   */
+  public void setEnabled(boolean enabled) {
+
+  }
 }

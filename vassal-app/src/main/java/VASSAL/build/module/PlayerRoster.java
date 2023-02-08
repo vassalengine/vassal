@@ -819,6 +819,10 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       return Objects.hash(playerId);
     }
 
+    public boolean isObserver() {
+      return OBSERVER.equals(side);
+    }
+
     public String getSide() {
       return side;
     }
