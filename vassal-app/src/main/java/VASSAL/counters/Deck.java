@@ -1814,7 +1814,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       // move cards to deck
       final int cnt = getPieceCount() - 1;
       for (int i = cnt; i >= 0; i--) {
-        c = c.append(target.addToContents(getPieceAt(i)));
+        final GamePiece p = getPieceAt(i);
+        c = c.append(pieceRemoved(p));
+        c = c.append(target.addToContents(p));
       }
     }
     return c;

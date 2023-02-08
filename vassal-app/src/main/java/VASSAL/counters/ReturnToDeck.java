@@ -167,6 +167,14 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
       final Map preMap = getMap();
       final Point prePos = getPosition();
       comm = putOldProperties(this);
+
+      // Unlink from Parent Stack (in case it is a Deck).
+      final GamePiece outer = Decorator.getOutermost(this);
+      final Stack parent = outer.getParent();
+      if (parent != null) {
+        comm = comm.append(parent.pieceRemoved(outer));
+      }
+
       comm = comm.append(pile.addToContents(Decorator.getOutermost(this)));
 
       // If this piece is also loaded cargo, remove it from it's mat
