@@ -8,7 +8,7 @@
 
 === Border Outline
 
-Pieces which have the _Border Outline_ trait will automatically display a colored border around the piece's image. Specify the color and thickness of the border, and an optional property name to control whether the border is displayed.
+Pieces which have the _Border Outline_ trait will automatically display a colored border around the piece's image. Specify the color and thickness of the border, and an optional property name to control whether the border is displayed. Note that if you use a NonRectangular trait to control your piece's shape, the outline will conform to the designated shape.
 
 [width="100%",cols="50%a,50%a",]
 |===

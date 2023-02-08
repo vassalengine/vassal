@@ -130,8 +130,8 @@ public class BorderOutline extends Decorator implements TranslatablePiece {
       else if (propValue instanceof Integer) {
         if (((Integer)propValue) == 0) return;
       }
-      border.draw(this, g, x, y, obs, zoom);
     }
+    border.draw(this, g, x, y, obs, zoom);
   }
 
   @Override
