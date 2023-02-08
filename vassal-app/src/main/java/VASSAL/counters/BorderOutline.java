@@ -117,7 +117,7 @@ public class BorderOutline extends Decorator implements TranslatablePiece {
     piece.draw(g, x, y, obs, zoom);
 
     if ((propertyName != null) && !propertyName.isEmpty()) {
-      final Object propValue = getProperty(propertyName);
+      final Object propValue = Decorator.getOutermost(this).getProperty(propertyName);
       if (propValue instanceof String) {
         final String string = (String)propValue;
         if ("".equals(string) || "false".equals(string) || "0".equals(string)) { //NON-NLS
