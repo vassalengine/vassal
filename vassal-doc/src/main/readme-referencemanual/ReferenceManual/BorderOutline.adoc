@@ -21,5 +21,7 @@ Pieces which have the _Border Outline_ trait will automatically display a colore
 
 *Thickness:*:: The pixel thickness of the border outline.
 
-|image:images/BorderOutline.png[] +
+|image:images/BorderOutline.png[]
+
+image:images/BorderOutline2.png[] +
 |===
