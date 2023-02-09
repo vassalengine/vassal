@@ -85,6 +85,8 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Random;
 
+import static VASSAL.counters.Decorator.putOldProperties;
+
 /**
  * A collection of pieces that behaves like a deck, i.e.: Doesn't move.
  * Can't be expanded. Can be shuffled. Can be turned face-up and face-down.
@@ -1815,6 +1817,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       final int cnt = getPieceCount() - 1;
       for (int i = cnt; i >= 0; i--) {
         final GamePiece p = getPieceAt(i);
+        c = c.append(putOldProperties(p));
         c = c.append(pieceRemoved(p));
         c = c.append(target.addToContents(p));
       }
@@ -1907,7 +1910,15 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
     // Send them
     for (final GamePiece piece : sending) {
+      c = c.append(putOldProperties(piece));
+      c = c.append(pieceRemoved(piece));
       c = c.append(target.addToContents(piece));
+
+      // Apply Auto-move key if that option is selected
+      if (dkc.isApplyOnMove() && (map != null)) {
+        c = c.append(piece.keyEvent(map.getMoveKey()));
+        map.repaint();
+      }
     }
 
     // And add a report

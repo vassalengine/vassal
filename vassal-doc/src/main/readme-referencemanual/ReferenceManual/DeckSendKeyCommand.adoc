@@ -54,7 +54,9 @@ NOTE: If you add new Decks to the module, you will need to save and reload the m
 
 *Stop sending expression:*:: A <<PropertyMatchExpression.adoc#top,Property Match Expression>> that when it matches a card, no more cards will be sent to the target Deck as part of this Deck Send Command.
 
-Also send card that matches stop condition:*:: Controls whether the card that triggers the _Stop sending expression_ is sent to the target Deck or not.
+*Also send card that matches stop condition:*:: Controls whether the card that triggers the _Stop sending expression_ is sent to the target Deck or not.
+
+*Apply any apply-on-move key commands for destination map:*:: If selected, then if the destination deck's map has an apply-on-move key (aka _Key Command to apply to all units ending movement on this map_), then it will be applied to each card after it is moved to the destination. If unchecked, then no apply-on-move commands will activate.
 
 a|
 image:images/DeckSendKeyCommand.png[]
