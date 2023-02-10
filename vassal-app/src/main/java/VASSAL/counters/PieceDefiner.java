@@ -1146,7 +1146,9 @@ public class PieceDefiner extends JPanel {
       if (c != null) {
         p.mySetType(c.getType());
         if (p instanceof Decorator) {
-          ((Decorator) p).mySetState(c.getState());
+          if (!(p instanceof PropertySheet)) {
+            ((Decorator) p).mySetState(c.getState());
+          }
         }
         else {
           p.setState(c.getState());
