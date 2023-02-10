@@ -60,6 +60,9 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.image.LabelUtils;
 import VASSAL.tools.swing.SwingUtils;
 
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
+import javax.swing.Timer;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -83,10 +86,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
-import javax.swing.JComponent;
-import javax.swing.KeyStroke;
-import javax.swing.Timer;
 
 /**
  * This is a {@link Drawable} class that draws the counters horizontally when
@@ -225,6 +224,13 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     delayTimer.setRepeats(false);
   }
 
+  /**
+   * @return This CounterDetailViewer's parent map
+   */
+  public Map getMap() {
+    return map;
+  }
+
   @Override
   public void addTo(Buildable b) {
     checkUpgrade();
@@ -234,6 +240,11 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
 
     map = (Map) b;
+    // Can happen during copy/paste operation of a CounterDetailViewer inside a folder. Means we will redo this operation in post-paste-fixups.
+    if (map == null) {
+      return;
+    }
+
     view = map.getView();
     map.addDrawComponent(this);
     final String keyDesc = hotkey == null ? "" : "(" + HotKeyConfigurer.getString(hotkey) + ")"; //NON-NLS

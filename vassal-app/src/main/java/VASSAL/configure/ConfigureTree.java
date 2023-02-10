@@ -35,6 +35,7 @@ import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.build.module.folder.GlobalPropertyFolder;
 import VASSAL.build.module.folder.PrototypeFolder;
 import VASSAL.build.module.gamepieceimage.GamePieceImage;
+import VASSAL.build.module.map.CounterDetailViewer;
 import VASSAL.build.module.map.DeckGlobalKeyCommand;
 import VASSAL.build.module.map.DrawPile;
 import VASSAL.build.module.map.MassKeyCommand;
@@ -642,6 +643,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     if (target instanceof GlobalPropertyFolder) {
       for (final GlobalProperty child : ((GlobalPropertyFolder) target).getAllDescendantComponentsOf(GlobalProperty.class)) {
         child.addTo(child.getAncestor());
+      }
+    }
+
+    // CounterDetailViewers in folders may need to be "acquainted" with their new maps.
+    if (target instanceof CounterDetailViewer) {
+      final CounterDetailViewer cdv = (CounterDetailViewer) target;
+      if (cdv.getMap() == null) {
+        cdv.addTo(cdv.getAncestor());
       }
     }
   }
