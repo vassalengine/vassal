@@ -177,6 +177,27 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   /** The matching DrawPile that generated this Deck */
   protected DrawPile myPile;
 
+  // List of decks who want to fire off their I-just-got-emptied key
+  protected static List<Deck> deckEmptiedKeyQueue = new ArrayList<>();
+
+  /**
+   * If any decks want to send their I-am-empty key, send it now.
+   */
+  public static void checkEmptyDecks() {
+    for (final Deck deck : deckEmptiedKeyQueue) {
+      deck.sendEmptyKey();
+    }
+
+    deckEmptiedKeyQueue.clear();
+  }
+
+  /**
+   * Sends the I-am-empty key for this deck (whether to send it was already determined when the last piece was removed)
+   */
+  protected void sendEmptyKey() {
+    gameModule.fireKeyStroke(emptyKey);
+  }
+
   /**
    * Special {@link CommandEncoder} to handle loading/saving Decks from files.
    */
@@ -469,7 +490,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       fireNumCardsProperty();
       // Do NOT fire a Deck Empty key if it has been caused by an Undo Command
       if (hotkeyOnEmpty && emptyKey != null && startCount > 0 && pieceCount == 0 && ! GameModule.getGameModule().getBasicLogger().isUndoInProgress()) {
-        gameModule.fireKeyStroke(emptyKey);
+        deckEmptiedKeyQueue.add(this);
       }
     }
   }

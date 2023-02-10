@@ -1172,6 +1172,9 @@ public class PieceMover extends AbstractBuildable
       comm = comm.append(applyKeyAfterMove(allDraggedPieces, map.getMoveKey()));
     }
 
+    // If we emptied any decks, let them send their I-am-empty key commands
+    Deck.checkEmptyDecks();
+
     // Repaint any areas of the map window changed by our move
     tracker.repaint();
 

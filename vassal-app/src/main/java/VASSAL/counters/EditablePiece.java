@@ -89,7 +89,8 @@ public interface EditablePiece extends GamePiece {
 
   /**
    * Centralized method for finishing up after a piece moves. Optionally finds a new mat if needed,
-   * and optionally applies any afterburner apply-on-move key for the piece's map.
+   * and optionally applies any afterburner apply-on-move key for the piece's map. If we emptied any
+   * decks, allows them to send their I-am-empty key commands
    * @param c Command to which will be appended a command for recreating anything this method does
    * @param afterburner if true, apply the afterburner apply-on-move key for the piece's map
    * @param findmat if true, find a new mat for this piece if needed (if this piece is cargo)
@@ -110,6 +111,9 @@ public interface EditablePiece extends GamePiece {
         c = c.append(outer.keyEvent(map.getMoveKey()));
       }
     }
+
+    // If we emptied any decks, let them send their I-am-empty key commands
+    Deck.checkEmptyDecks();
 
     return c;
   }
