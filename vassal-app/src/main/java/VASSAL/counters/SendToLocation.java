@@ -502,7 +502,6 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     Command c = null;
     Point dest = null;
     final Map oldMap = outer.getMap();
-    Map backMap = null;
 
     // If we're about to move a Mat, establish the initial relative positions of all its "contents"
     if (GameModule.getGameModule().isMatSupport()) {
@@ -518,7 +517,6 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     }
 
     if (send) {
-      final Stack parent = outer.getParent();
       dest = getSendLocation();
       if (map != null && dest != null) {
         if (map == getMap() && dest.equals(getPosition())) {
@@ -528,18 +526,10 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         final ChangeTracker tracker = new ChangeTracker(this);
         setProperty(BACK_MAP, getMap());
         setProperty(BACK_POINT, getPosition());
-
-        // Mark moved and generate movement trail if global options setting is on
-        if (GlobalOptions.getInstance().isSendToLocationMoveTrails()) {
-          outer.setProperty(Properties.MOVED, Boolean.TRUE);
-        }
-
         c = tracker.getChangeCommand();
-        c = c.append(putOldProperties(this));
 
-        if (parent != null) {
-          c = c.append(parent.pieceRemoved(outer));
-        }
+        // Prepare piece for move, setting "old location" properties. Mark moved and generate movement trail if global options setting is on
+        c = prepareMove(c, GlobalOptions.getInstance().isSendToLocationMoveTrails());
 
         if (!Boolean.TRUE.equals(outer.getProperty(Properties.IGNORE_GRID))) {
           dest = map.snapTo(dest);
@@ -552,47 +542,27 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         }
         map.repaint();
 
-        // If a cargo piece has been "sent", find it a new Mat if needed.
-        c = MatCargo.findNewMat(c, outer);
-
-        // Apply Auto-move key
-        if (map.getMoveKey() != null) {
-          c = c.append(outer.keyEvent(map.getMoveKey()));
-        }
+        // Complete the move, finding new mat if needed and applying map afterburner key
+        c = finishMove(c, true, true);
       }
     }
     else {
-      final Stack parent = outer.getParent();
-      backMap = (Map) getProperty(BACK_MAP);
+      final Map backMap = (Map) getProperty(BACK_MAP);
       final Point backPoint = (Point) getProperty(BACK_POINT);
       final ChangeTracker tracker = new ChangeTracker(this);
       setProperty(BACK_MAP, null);
       setProperty(BACK_POINT, null);
-
-      // Mark moved and generate movement trail if global options setting
-      if (GlobalOptions.getInstance().isSendToLocationMoveTrails()) {
-        outer.setProperty(Properties.MOVED, Boolean.TRUE);
-      }
-
       c = tracker.getChangeCommand();
 
       if (backMap != null && backPoint != null) {
-        c = c.append(putOldProperties(this));
-
-        if (parent != null) {
-          c = c.append(parent.pieceRemoved(outer));
-        }
+        // Prepare piece for move, setting "old location" properties. Mark moved and generate movement trail if global options setting is on
+        c = prepareMove(c, GlobalOptions.getInstance().isSendToLocationMoveTrails());
 
         c = c.append(backMap.placeOrMerge(outer, backPoint));
         dest = backPoint;
 
-        // If a cargo piece has been "sent", find it a new Mat if needed.
-        c = MatCargo.findNewMat(c, outer);
-
-        // Apply Auto-move key
-        if (backMap.getMoveKey() != null) {
-          c = c.append(outer.keyEvent(backMap.getMoveKey()));
-        }
+        // Complete the move, finding new mat if needed and applying map afterburner key
+        c = finishMove(c, true, true);
 
         if (oldMap != null && oldMap != backMap) {
           oldMap.repaint();
@@ -607,7 +577,6 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       if ((offsets != null) && dest != null) {
         for (int i = 0; i < contents.size(); i++) {
           final GamePiece piece = contents.get(i);
-          final Stack pieceParent = piece.getParent();
           final MatCargo cargo = (MatCargo) Decorator.getDecorator(piece, MatCargo.class);
           if (cargo != null) {
 
@@ -616,20 +585,10 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
             pt.x += offsets.get(i).x;
             pt.y += offsets.get(i).y;
 
-            // From here down we're just duplicating a send-to-location command for the Cargo piece
+            // From here down we're basically just duplicating a send-to-location command for the Cargo piece
 
-            final ChangeTracker tracker = new ChangeTracker(piece);
-            // Mark moved and generate movement trail if Global Options setting
-            if (GlobalOptions.getInstance().isSendToLocationMoveTrails()) {
-              piece.setProperty(Properties.MOVED, Boolean.TRUE);
-            }
-
-            c = c.append(tracker.getChangeCommand());
-            c = c.append(putOldProperties(piece));
-
-            if (pieceParent != null) {
-              c = c.append(pieceParent.pieceRemoved(piece));
-            }
+            // Prepare piece for move, setting "old location" properties. Mark moved and generate movement trail if global options setting is on
+            c = piece.prepareMove(c, GlobalOptions.getInstance().isSendToLocationMoveTrails());
 
             //BR// I sort of think cargo shouldn't snap when moving in lockstep with its mat.
             //BR// This may lead to the eventual conclusion that cargo pieces shouldn't snap
@@ -639,10 +598,9 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
             //}
 
             c = c.append(map.placeOrMerge(piece, pt));
-            // Apply Auto-move key
-            if (map.getMoveKey() != null) {
-              c = c.append(piece.keyEvent(map.getMoveKey()));
-            }
+
+            // Complete the move, applying map afterburner key
+            c = piece.finishMove(c, true, false);
           }
         }
       }

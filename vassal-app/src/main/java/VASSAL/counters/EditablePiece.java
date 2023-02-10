@@ -17,7 +17,12 @@
  */
 package VASSAL.counters;
 
+import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.command.ChangeTracker;
+import VASSAL.command.Command;
+
+import static VASSAL.counters.Decorator.putOldProperties;
 
 /**
  * If class implementing GamePiece also implements the EditablePiece interface, then
@@ -56,5 +61,41 @@ public interface EditablePiece extends GamePiece {
       return desc.substring(0, desc.indexOf(" - "));
     }
     return desc;
+  }
+
+  @Override
+  default Command prepareMove(Command c, boolean mark_moved) {
+    final GamePiece outer = Decorator.getOutermost(this);
+    if (mark_moved) {
+      final ChangeTracker tracker = new ChangeTracker(outer);
+      outer.setProperty(Properties.MOVED, Boolean.TRUE);
+      c = c.append(tracker.getChangeCommand());
+    }
+    c = c.append(putOldProperties(this));
+
+    final Stack parent = outer.getParent();
+    if (parent != null) {
+      c = c.append(parent.pieceRemoved(outer));
+    }
+    return c;
+  }
+
+  @Override
+  default Command finishMove(Command c, boolean afterburner, boolean findmat) {
+    final GamePiece outer = Decorator.getOutermost(this);
+    if (findmat) {
+      // If a cargo piece has been moved, find it a new Mat if needed.
+      c = MatCargo.findNewMat(c, outer);
+    }
+
+    // Apply "afterburner" apply-on-move key command
+    if (afterburner) {
+      final Map map = outer.getMap();
+      if (map.getMoveKey() != null) {
+        c = c.append(outer.keyEvent(map.getMoveKey()));
+      }
+    }
+
+    return c;
   }
 }

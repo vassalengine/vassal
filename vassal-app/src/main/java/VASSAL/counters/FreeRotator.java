@@ -23,6 +23,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.Drawable;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
+import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.FormattedExpressionConfigurer;
 import VASSAL.configure.IntConfigurer;
@@ -501,33 +502,14 @@ public class FreeRotator extends Decorator
       return null;
     }
 
-    // Set the Old... properties
-    Command c = putOldProperties(this);
-
-    // Mark the piece moved
-    final GamePiece outer = Decorator.getOutermost(gp);
-    final ChangeTracker comm = new ChangeTracker(outer);
-    outer.setProperty(Properties.MOVED, Boolean.TRUE);
-    c = c.append(comm.getChangeCommand());
-
-    // Unlink from Parent Stack (in case it is a Deck).
-    final Stack parent = outer.getParent();
-    if (parent != null) {
-      c = c.append(parent.pieceRemoved(outer));
-    }
+    // Prepare the piece for move, writing "old location" properties, marking moved, and unlinking from any deck
+    Command c = prepareMove(new NullCommand(), true);
 
     // Move the piece
-    c = c.append(map.placeOrMerge(outer, dest));
+    c = c.append(map.placeOrMerge(Decorator.getOutermost(gp), dest));
 
-    // If a cargo piece has been "sent" (but not moving in tandem with its mat), find it a new Mat if needed.
-    if (!cargoFollowup) {
-      c = MatCargo.findNewMat(c, outer);
-    }
-
-    // Apply after Move Key
-    if (map.getMoveKey() != null) {
-      c = c.append(outer.keyEvent(map.getMoveKey()));
-    }
+    // Post move actions -- find a new mat if needed, and apply any afterburner apply-on-move key
+    c = finishMove(c, true, !cargoFollowup);
 
     return c;
   }

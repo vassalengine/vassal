@@ -22,6 +22,7 @@ import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.DrawPile;
 import VASSAL.command.Command;
+import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.DeckSelectionConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
@@ -166,28 +167,24 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
 
       final Map preMap = getMap();
       final Point prePos = getPosition();
-      comm = putOldProperties(this);
 
-      // Unlink from Parent Stack (in case it is a Deck).
-      final GamePiece outer = Decorator.getOutermost(this);
-      final Stack parent = outer.getParent();
-      if (parent != null) {
-        comm = comm.append(parent.pieceRemoved(outer));
-      }
+      // Prepare the piece for move, writing "old location" properties and unlinking from any deck
+      comm = prepareMove(new NullCommand(), false);
 
+      // Move the piece to its new deck
       comm = comm.append(pile.addToContents(Decorator.getOutermost(this)));
 
-      // If this piece is also loaded cargo, remove it from it's mat
+      // If this piece is also loaded cargo, remove it from its mat
       final MatCargo cargo = (MatCargo) Decorator.getDecorator(Decorator.getOutermost(this), MatCargo.class);
       if (cargo != null && cargo.getMat() != null) {
         comm = comm.append(cargo.makeClearMatCommand());
       }
 
-      // Apply Auto-move key if the piece has moved
       final Map m = pile.getMap();
-      if (m != null && m.getMoveKey() != null && (m != preMap || !getPosition().equals(prePos))) {
-        comm.append(Decorator.getOutermost(this).keyEvent(m.getMoveKey()));
-      }
+
+      // Post move actions -- apply any afterburner apply-on-move key (but only if the piece was actually moved)
+      comm = finishMove(comm, (m != null && m.getMoveKey() != null && (m != preMap || !getPosition().equals(prePos))), false);
+
       if (m != null) {
         m.repaint();
       }

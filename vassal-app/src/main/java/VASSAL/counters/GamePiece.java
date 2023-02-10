@@ -17,20 +17,19 @@
  */
 package VASSAL.counters;
 
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Shape;
-
-import javax.swing.KeyStroke;
-
 import VASSAL.build.module.BasicCommandEncoder;
 import VASSAL.build.module.GameState;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.ChangePiece;
 import VASSAL.command.Command;
+
+import javax.swing.KeyStroke;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Shape;
 
 /**
  * Interface to deal with the behaviors of a physical component of the game, <b><i>or a Trait of one</i></b>. Although from
@@ -217,4 +216,12 @@ public interface GamePiece extends PropertySource {
    */
   @Override
   Object getProperty(Object key);
+
+  default Command prepareMove(Command c, boolean mark_moved) {
+    return c;
+  }
+
+  default Command finishMove(Command c, boolean afterburner, boolean findmat) {
+    return c;
+  }
 }
