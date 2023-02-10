@@ -192,6 +192,13 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   }
 
   /**
+   * Clears the list of I-am-empty decks
+   */
+  public static void clearEmptyDecksList() {
+    deckEmptiedKeyQueue.clear();
+  }
+
+  /**
    * Sends the I-am-empty key for this deck (whether to send it was already determined when the last piece was removed)
    */
   protected void sendEmptyKey() {

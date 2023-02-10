@@ -72,14 +72,22 @@ public interface EditablePiece extends GamePiece {
    */
   @Override
   default Command prepareMove(Command c, boolean mark_moved) {
+    // Make sure we don't send deck-is-empty hotkeys when deck is emptied by another player in an online game or by a log-step
+    Deck.clearEmptyDecksList();
+
     final GamePiece outer = Decorator.getOutermost(this);
+
+    // If selected, mark piece as moved.
     if (mark_moved) {
       final ChangeTracker tracker = new ChangeTracker(outer);
       outer.setProperty(Properties.MOVED, Boolean.TRUE);
       c = c.append(tracker.getChangeCommand());
     }
+
+    // Write the "Old Location" properties of the piece using the current location
     c = c.append(putOldProperties(this));
 
+    // Tell our stack (in case it is a deck) that we've removed a piece
     final Stack parent = outer.getParent();
     if (parent != null) {
       c = c.append(parent.pieceRemoved(outer));

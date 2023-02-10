@@ -772,6 +772,9 @@ public class PieceMover extends AbstractBuildable
    * @return Command encapsulating anything this method did, for replay in log file or on other clients
    */
   protected Command movedPiece(GamePiece p, Point loc) {
+    // Make sure we don't end up sending I'm-empty commands from decks that were emptied by other players (e.g. online or log-step)
+    Deck.clearEmptyDecksList();
+
     Command c = new NullCommand();
     c = c.append(setOldLocations(p));
     if (!loc.equals(p.getPosition())) {
