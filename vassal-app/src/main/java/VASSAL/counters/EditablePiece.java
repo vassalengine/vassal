@@ -63,6 +63,13 @@ public interface EditablePiece extends GamePiece {
     return desc;
   }
 
+  /**
+   * Centralized method for preparing a piece to move. Writes the "Old Map" properties based on its current location,
+   * optionally marks the piece as moved, and tells any deck its in that it is leaving.
+   * @param c Command to which will be appended a command for recreating anything this method does
+   * @param mark_moved If true the piece will be mark moved
+   * @return A command for recreating anything this method does, appended to the command passed
+   */
   @Override
   default Command prepareMove(Command c, boolean mark_moved) {
     final GamePiece outer = Decorator.getOutermost(this);
@@ -80,6 +87,14 @@ public interface EditablePiece extends GamePiece {
     return c;
   }
 
+  /**
+   * Centralized method for finishing up after a piece moves. Optionally finds a new mat if needed,
+   * and optionally applies any afterburner apply-on-move key for the piece's map.
+   * @param c Command to which will be appended a command for recreating anything this method does
+   * @param afterburner if true, apply the afterburner apply-on-move key for the piece's map
+   * @param findmat if true, find a new mat for this piece if needed (if this piece is cargo)
+   * @return A command for recreating anything this method does, appended to the command passed
+   */
   @Override
   default Command finishMove(Command c, boolean afterburner, boolean findmat) {
     final GamePiece outer = Decorator.getOutermost(this);

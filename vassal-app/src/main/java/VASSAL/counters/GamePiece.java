@@ -17,6 +17,7 @@
  */
 package VASSAL.counters;
 
+import VASSAL.build.GameModule;
 import VASSAL.build.module.BasicCommandEncoder;
 import VASSAL.build.module.GameState;
 import VASSAL.build.module.Map;
@@ -218,10 +219,12 @@ public interface GamePiece extends PropertySource {
   Object getProperty(Object key);
 
   default Command prepareMove(Command c, boolean mark_moved) {
+    GameModule.getGameModule().warn("GamePiece#prepareMove called by Deck or Stack"); //NON-NLS
     return c;
   }
 
   default Command finishMove(Command c, boolean afterburner, boolean findmat) {
+    GameModule.getGameModule().warn("GamePiece#finishMove called by Deck or Stack"); //NON-NLS
     return c;
   }
 }
