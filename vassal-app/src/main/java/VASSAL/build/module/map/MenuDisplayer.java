@@ -17,30 +17,9 @@
  */
 package VASSAL.build.module.map;
 
-import java.awt.Font;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-
-import javax.swing.Action;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.KeyStroke;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
-
-import VASSAL.counters.ActionButton;
-import VASSAL.tools.NamedKeyManager;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import VASSAL.build.Buildable;
 import VASSAL.build.module.Map;
+import VASSAL.counters.ActionButton;
 import VASSAL.counters.Deck;
 import VASSAL.counters.EventFilter;
 import VASSAL.counters.GamePiece;
@@ -50,6 +29,25 @@ import VASSAL.counters.KeyCommandSubMenu;
 import VASSAL.counters.MenuSeparator;
 import VASSAL.counters.PieceFinder;
 import VASSAL.counters.Properties;
+import VASSAL.tools.NamedKeyManager;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import javax.swing.Action;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.KeyStroke;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
+import java.awt.Font;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 
 public class MenuDisplayer extends MouseAdapter implements Buildable {
   @Deprecated(since = "2022-08-08", forRemoval = true)
@@ -147,7 +145,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
       if (target instanceof Deck) {
         if (c.length == 1) {
           final String menu_item = c[0].getName();
-          if (menu_item.equals(((Deck)target).getDrawMultipleMessage()) || menu_item.equals(((Deck)target).getDrawSpecificMessage())) {
+          if ((menu_item != null) && (menu_item.equals(((Deck)target).getDrawMultipleMessage()) || menu_item.equals(((Deck)target).getDrawSpecificMessage()))) {
             c[0].actionPerformed(new ActionEvent(popup, 0, ""));
             return null;
           }
