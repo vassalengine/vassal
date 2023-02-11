@@ -72,7 +72,6 @@ import java.util.List;
 /**
  * ...
  */
-// TODO Expose result as property
 public class SpecialDiceButton extends DoActionButton implements CommandEncoder, UniqueIdManager.Identifyable, ComponentDescription {
   private static final Logger logger =
     LoggerFactory.getLogger(SpecialDiceButton.class);
