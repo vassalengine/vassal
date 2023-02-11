@@ -24,6 +24,7 @@
       "bug_fixes": [
       ],
       "other_improvements": [
+        { "num": 11986, "desc": "Add missing Section size symbol to NATO markers" },
         { "num": 11957, "desc": "Spaces in GKC reports made consistent with all other reports" }
       ]
     },
