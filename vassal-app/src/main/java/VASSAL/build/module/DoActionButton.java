@@ -116,22 +116,24 @@ public class DoActionButton extends AbstractToolbarItem
   protected boolean loopPropertyRegistered = false;
 
   public DoActionButton() {
-    final ActionListener rollAction = e -> {
-      try {
-        doActions();
-      }
-      catch (RecursionLimitException ex) {
-        RecursionLimiter.infiniteLoop(ex);
-      }
-    };
+    if (!(this instanceof SpecialDiceButton)) {
+      final ActionListener rollAction = e -> {
+        try {
+          doActions();
+        }
+        catch (RecursionLimitException ex) {
+          RecursionLimiter.infiniteLoop(ex);
+        }
+      };
 
-    setLaunchButton(makeLaunchButton(
-      getConfigureTypeName(),
-      getConfigureTypeName(),
-      "",
-      rollAction
-    ));
-    launch = getLaunchButton(); // for compatibility
+      setLaunchButton(makeLaunchButton(
+        getConfigureTypeName(),
+        getConfigureTypeName(),
+        "",
+        rollAction
+      ));
+      launch = getLaunchButton(); // for compatibility
+    }
   }
 
   public static String getConfigureTypeName() {
