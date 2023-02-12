@@ -41,7 +41,9 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.swing.SwingUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
+import javax.swing.KeyStroke;
 import java.awt.Component;
 import java.awt.Point;
 import java.util.ArrayList;
@@ -49,10 +51,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
-
-import javax.swing.KeyStroke;
-
-import org.apache.commons.lang3.ArrayUtils;
 
 import static VASSAL.counters.BasicPiece.BASIC_NAME;
 import static VASSAL.counters.BasicPiece.PIECE_NAME;
@@ -748,7 +746,7 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
 
       if (GameModule.getGameModule().isMatSupport()) {
         if (Boolean.TRUE.equals(p.getProperty(MatCargo.IS_CARGO))) {
-          final MatCargo cargo = (MatCargo) Decorator.getDecorator(p, MatCargo.class);
+          final MatCargo cargo = (MatCargo) Decorator.getDecorator(Decorator.getOutermost(p), MatCargo.class);
           if (cargo != null) {
             final GamePiece mat = cargo.getMat();
             if (mat != null) {
