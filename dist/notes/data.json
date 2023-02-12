@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 11884, "desc": "'OldMat' properties now set correctly regardless of order of Mat Cargo and Send-to-Location (etc.) traits" }
       ],
       "other_improvements": [
         { "num": 11986, "desc": "Add missing Section size symbol to NATO markers" },
