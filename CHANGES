@@ -9,6 +9,7 @@
 * 11884: 'OldMat' properties now set correctly regardless of order of Mat
     Cargo and Send-to-Location (etc.) traits
 * 11180: Triggers set to count 0 times don't spuriously execute 1 time
+* 11462: Don't +1 inventory sum if property isn't even defined
 * 11437: Prevent NPE when right-clicking on a Deck with no menu items
 
 3.6.11 - 3 February 2023

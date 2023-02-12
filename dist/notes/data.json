@@ -25,6 +25,7 @@
         { "num": 11961, "desc": "Clear up mark-when-moved problems for modules which still had a legacy value set" },
         { "num": 11884, "desc": "'OldMat' properties now set correctly regardless of order of Mat Cargo and Send-to-Location (etc.) traits" },
         { "num": 11180, "desc": "Triggers set to count 0 times don't spuriously execute 1 time" },
+        { "num": 11462, "desc": "Don't +1 inventory sum if property isn't even defined" },
         { "num": 11437, "desc": "Prevent NPE when right-clicking on a Deck with no menu items" }
       ],
       "other_improvements": [
