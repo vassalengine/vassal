@@ -1,5 +1,6 @@
 3.6.12 - ???
 
+* 11993: ActionButtons set to count 0 times don't spuriously execute 1 time
 * 11986: Add missing Section size symbol to NATO markers
 * 11961: Clear up mark-when-moved problems for modules which still had a
     legacy value set
