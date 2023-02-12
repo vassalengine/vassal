@@ -161,7 +161,7 @@ public class Deselect extends Decorator implements TranslatablePiece {
             stack.remove(outer);                       //BR// Remove our piece from the stack
 
             c = new ChangePiece(stack.getId(), oldStackState, stack.getState());
-            c = c.append(new ChangePiece(outer.getId(), oldPieceState, piece.getState()));
+            c = c.append(new ChangePiece(outer.getId(), oldPieceState, outer.getState()));
             c = c.append(m.placeAt(outer, pos));       //BR// Put it back on the map so it won't be missing
           }
         }
