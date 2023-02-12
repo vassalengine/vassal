@@ -25,8 +25,8 @@ import VASSAL.counters.Stack;
  * Command is {@link StackPiece}.  */
 public class UnstackPiece extends Command {
   private Command undo = null;
-  private Stack stack;
-  private GamePiece piece;
+  private final Stack stack;
+  private final GamePiece piece;
 
   public UnstackPiece(Stack s, GamePiece p) {
     stack = s;
