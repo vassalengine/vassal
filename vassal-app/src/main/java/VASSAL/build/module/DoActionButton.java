@@ -17,11 +17,14 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.build.AbstractFolder;
 import VASSAL.build.AbstractToolbarItem;
 import VASSAL.build.AutoConfigurable;
+import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.properties.MutableProperty;
+import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.command.PlayAudioClipCommand;
@@ -526,6 +529,16 @@ public class DoActionButton extends AbstractToolbarItem
   protected void doActions() throws RecursionLimitException {
     final Command c = new NullCommand();
     final GameModule mod = GameModule.getGameModule();
+    final PropertySource ps;
+
+    Buildable parent = this.getAncestor();
+    if (parent instanceof AbstractFolder) {
+      parent = ((AbstractFolder)parent).getNonFolderAncestor();
+      if (!(parent instanceof PropertySource)) {
+        parent = mod;
+      }
+    }
+    ps = (PropertySource)parent;
 
     // Non looping case
     if (! doLoop) {
@@ -545,7 +558,7 @@ public class DoActionButton extends AbstractToolbarItem
     int loopCounter = 0;
     int loopCountLimit = 0;
     if (LoopControl.LOOP_COUNTED.equals(loopType)) {
-      loopCountLimit = loopCount.getTextAsInt(mod, Resources.getString("Editor.LoopControl.loop_count"), this); //$NON-NLS-1$
+      loopCountLimit = loopCount.getTextAsInt(ps, Resources.getString("Editor.LoopControl.loop_count"), this); //$NON-NLS-1$
     }
 
     RecursionLimitException loopException = null;
@@ -554,7 +567,7 @@ public class DoActionButton extends AbstractToolbarItem
 
       // While loop - test condition is still true before actions
       if (LoopControl.LOOP_WHILE.equals(loopType)) {
-        if (!whileExpression.isTrue(mod)) {
+        if (!whileExpression.isTrue(ps)) {
           break;
         }
       }
@@ -572,7 +585,7 @@ public class DoActionButton extends AbstractToolbarItem
 
       // Until loop - test condition is not false after loop
       if (LoopControl.LOOP_UNTIL.equals(loopType)) {
-        if (untilExpression.isTrue(mod)) {
+        if (untilExpression.isTrue(ps)) {
           break;
         }
       }
@@ -619,6 +632,16 @@ public class DoActionButton extends AbstractToolbarItem
    */
   protected void executeActions(Command command) throws RecursionLimitException {
     final GameModule mod = GameModule.getGameModule();
+    final PropertySource ps;
+
+    Buildable parent = this.getAncestor();
+    if (parent instanceof AbstractFolder) {
+      parent = ((AbstractFolder)parent).getNonFolderAncestor();
+      if (!(parent instanceof PropertySource)) {
+        parent = mod;
+      }
+    }
+    ps = (PropertySource)parent;
 
     // GameModule.pauseLogging() returns false if logging is already paused by
     // a higher level component.
@@ -627,14 +650,14 @@ public class DoActionButton extends AbstractToolbarItem
     try {
       RecursionLimiter.startExecution(this);
       if (doReport) {
-        final String report = "* " + reportFormat.getLocalizedText(mod, this, "Editor.report_format");
+        final String report = "* " + reportFormat.getLocalizedText(ps, this, "Editor.report_format");
         final Command c = new Chatter.DisplayText(mod.getChatter(), report);
         c.execute();
         mod.sendAndLog(c);
       }
 
       if (doSound) {
-        final String clipName = new FormattedString(soundClip).getText(mod, this, "Editor.DoAction.sound_clip");
+        final String clipName = new FormattedString(soundClip).getText(ps, this, "Editor.DoAction.sound_clip");
         final Command c = new PlayAudioClipCommand(clipName);
         c.execute();
         mod.sendAndLog(c);
