@@ -25,7 +25,8 @@
       ],
       "other_improvements": [
         { "num": 11986, "desc": "Add missing Section size symbol to NATO markers" },
-        { "num": 11957, "desc": "Spaces in GKC reports made consistent with all other reports" }
+        { "num": 11957, "desc": "Spaces in GKC reports made consistent with all other reports" },
+        { "num": 11935, "desc": "Allow option for only first Mouseover-stack Viewer that generates a tooltip will be drawn" }
       ]
     },
     {
