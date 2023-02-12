@@ -22,7 +22,9 @@
       "new_features": [
       ],
       "bug_fixes": [
-        { "num": 11884, "desc": "'OldMat' properties now set correctly regardless of order of Mat Cargo and Send-to-Location (etc.) traits" }
+        { "num": 11961, "desc": "Clear up mark-when-moved problems for modules which still had a legacy value set" },
+        { "num": 11884, "desc": "'OldMat' properties now set correctly regardless of order of Mat Cargo and Send-to-Location (etc.) traits" },
+        { "num": 11437, "desc": "Prevent NPE when right-clicking on a Deck with no menu items" }
       ],
       "other_improvements": [
         { "num": 11986, "desc": "Add missing Section size symbol to NATO markers" },
