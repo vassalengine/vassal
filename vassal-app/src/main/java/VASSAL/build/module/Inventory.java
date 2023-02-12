@@ -1262,7 +1262,10 @@ public class Inventory extends AbstractToolbarItem
           for (int i = 0; i < n; ++i) {
             try {
               final CounterNode childNode = (CounterNode) results.getChild(node, i);
-              sum += Integer.parseInt((String) (childNode.getCounter()).getProperty(key));
+              final Object prop = childNode.getCounter().getProperty(key);
+              if (prop != null) { // Don't want to end up adding 1 if property isn't even defined
+                sum += Integer.parseInt((String) prop);
+              }
             }
             catch (NumberFormatException e) {
               // Count each piece as 1 if property isn't a number
