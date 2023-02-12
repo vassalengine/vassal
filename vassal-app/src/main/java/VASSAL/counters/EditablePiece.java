@@ -121,7 +121,7 @@ public interface EditablePiece extends GamePiece {
     }
 
     // If we emptied any decks, let them send their I-am-empty key commands
-    Deck.checkEmptyDecks();
+    c = Deck.checkEmptyDecks(c);
 
     return c;
   }

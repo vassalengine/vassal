@@ -183,12 +183,17 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   /**
    * If any decks want to send their I-am-empty key, send it now.
    */
-  public static void checkEmptyDecks() {
+  public static Command checkEmptyDecks(Command c) {
+    final GameModule gm = GameModule.getGameModule();
+    gm.pauseLogging();
     for (final Deck deck : deckEmptiedKeyQueue) {
       deck.sendEmptyKey();
     }
 
     deckEmptiedKeyQueue.clear();
+
+    c = c.append(gm.resumeLogging());
+    return c;
   }
 
   /**
