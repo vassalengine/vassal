@@ -1275,6 +1275,23 @@ public class Inventory extends AbstractToolbarItem
           value = String.valueOf(sum);
         }
       }
+      else if (s.startsWith("count_")) { //$NON-NLS-1$
+        if (piece != null) {
+          value = piece.getProperty(s.substring(6));
+        }
+        else {
+          int count = 0;
+          final int n = results.getChildCount(node);
+          for (int i = 0; i < n; ++i) {
+            final CounterNode childNode = (CounterNode) results.getChild(node, i);
+            final Object prop = childNode.getCounter().getProperty(key);
+            if (prop != null) {
+              count++; // Increment count if piece has the named property
+            }
+          }
+          value = String.valueOf(count);
+        }
+      }
       else if ("PropertyValue".equals(s)) { //$NON-NLS-1$
         return localName;
       }
