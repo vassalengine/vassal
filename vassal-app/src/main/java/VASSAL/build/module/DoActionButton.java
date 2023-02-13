@@ -629,10 +629,12 @@ public class DoActionButton extends AbstractToolbarItem
     try {
       RecursionLimiter.startExecution(this);
       if (doReport) {
-        final String report = "* " + reportFormat.getLocalizedText(mod, this, "Editor.report_format");
-        final Command c = new Chatter.DisplayText(mod.getChatter(), report);
-        c.execute();
-        mod.sendAndLog(c);
+        final String report = reportFormat.getLocalizedText(mod, this, "Editor.report_format");
+        if (!report.isEmpty()) {
+          final Command c = new Chatter.DisplayText(mod.getChatter(), "* " + report);
+          c.execute();
+          mod.sendAndLog(c);
+        }
       }
 
       if (doSound) {
