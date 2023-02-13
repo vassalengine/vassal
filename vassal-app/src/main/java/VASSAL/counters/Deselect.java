@@ -20,7 +20,6 @@ package VASSAL.counters;
 
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.command.ChangePiece;
 import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
@@ -154,15 +153,12 @@ public class Deselect extends Decorator implements TranslatablePiece {
           if (stack != null) {
             final Point pos = outer.getPosition();     //BR// Figure out where stack was/is
 
-            final String oldStackState = stack.getState();
-            final String oldPieceState = outer.getState();
+            c = m.placeAt(outer, pos);                 //BR// Place it right on the map (which auto-removes it from stack)
 
-            stack.setExpanded(true);                   //BR// Expand the stack
-            stack.remove(outer);                       //BR// Remove our piece from the stack
-
-            c = new ChangePiece(stack.getId(), oldStackState, stack.getState());
-            c = c.append(new ChangePiece(outer.getId(), oldPieceState, outer.getState()));
-            c = c.append(m.placeAt(outer, pos));       //BR// Put it back on the map so it won't be missing
+            final Stack parent = m.getStackMetrics().createStack(outer);
+            if (parent != null) {
+              c = c.append(m.placeAt(parent, pos));    //BR// Place it in a new stack at the same location
+            }
           }
         }
         DragBuffer.getBuffer().remove(outer);          //BR// Remove from the drag buffer
