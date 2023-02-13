@@ -730,6 +730,7 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
     String matOldOffsetY = "";
     final Map m = p.getMap();
     final Point pos = p.getPosition();
+    final String deckName = p.getParent() instanceof Deck ? ((Deck) p.getParent()).getDeckName() : "";
     Command comm = new NullCommand();
 
     if (m != null) {
@@ -770,6 +771,7 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
     comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_BOARD, boardName));
     comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_ZONE, zoneName));
     comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_LOCATION_NAME, locationName));
+    comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_DECK_NAME, deckName));
     if (GameModule.getGameModule().isMatSupport()) {
       comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_MAT, matName));
       comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_MAT_ID, matID));
