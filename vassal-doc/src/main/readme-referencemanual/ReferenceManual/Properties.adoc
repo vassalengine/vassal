@@ -79,6 +79,7 @@ the level in a <<Layer.adoc#Properties,Layer)>> you can use _<_, _\<=_, _>_, and
 |*Obscured* |<<Mask.adoc#top,Mask>> |"true" if this piece is masked from the current player.
 |*ObscuredToOthers* |<<Mask.adoc#top,Mask>> |"true" if this piece is masked from other players.
 |*OldBoard* |<<BasicPiece#top,Basic Piece>> |Board name prior to most recent movement.
+|*OldDeckName* |<<BasicPiece#top,Basic Piece>> |Name of any <<Deck.adoc#top,Deck>> the piece was in before its last move (will be an empty string piece wasn't in a deck)
 |*OldLocationName* |<<BasicPiece#top,Basic Piece>>|Location name prior to most recent movement.
 |*OldMap* |<<BasicPiece#top,Basic Piece>>|Map name prior to most recent movement.
 |*OldX* |<<BasicPiece#top,Basic Piece>>|X coordinate prior to most recent movement.
