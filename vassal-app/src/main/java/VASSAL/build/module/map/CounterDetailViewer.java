@@ -387,6 +387,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
     final Shape oldClip = g.getClip();
 
+    int borderOffset = borderWidth;
+
     if (displayableTerrain) {
       g.setClip(dbounds.x - 3, dbounds.y - 3, dbounds.width + 5, dbounds.height + 5);
 
@@ -402,13 +404,12 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
       // get the rectangle of the map to draw
       final Rectangle vrMap = new Rectangle(
-        ptMap.x,
-        ptMap.y,
-        map.componentToMap(showTerrainX),
-        map.componentToMap(showTerrainY)
+        ptMap.x - showTerrainWidth/2,
+        ptMap.y - showTerrainHeight/2,
+        showTerrainWidth,
+        showTerrainHeight
       );
 
-      vrMap.translate(-showTerrainX/2, -showTerrainY/2);
       // translate the drawing transform by the difference between the
       // drawing bounds and the drawing reference point
       final AffineTransform orig_t = g2d.getTransform();
@@ -416,25 +417,22 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       at.translate(dbounds.x - ptDr.x, dbounds.y - ptDr.y);
       g2d.setTransform(at);
 
-//      g.setColor(Color.RED);
-//      g.drawOval(ptDr.x, ptDr.y, dbounds.width, dbounds.height);
-
-      double dzoom = 0.0;
+      // draw the map
+      double dzoom = showTerrainZoom * os_scale;
       Rectangle rect = null;
       for (final Board b: map.getBoards()) {
         if (rect == null) {
           final double mag = b.getMagnification();
-          dzoom = os_scale / mag;
+          dzoom /= mag;
 
           rect = new Rectangle(
-            (int)((ptMap.x * os_scale - showTerrainX/2) / mag),
-            (int)((ptMap.y * os_scale - showTerrainY/2) / mag),
-            (int)(showTerrainX / mag),
-            (int)(showTerrainY / mag)
+            (int)(vrMap.x * showTerrainZoom * os_scale / mag),
+            (int)(vrMap.y * showTerrainZoom * os_scale  / mag),
+            (int)(vrMap.width * showTerrainZoom * os_scale  / mag),
+            (int)(vrMap.height * showTerrainZoom * os_scale / mag)
           );
 
-          g2d.translate(-rect.x, -rect.y);
-          g2d.translate(ptDr.x, ptDr.y);
+          g2d.translate(ptDr.x - rect.x, ptDr.y - rect.y);
         }
         b.drawRegion(g2d, map.getLocation(b, dzoom), rect, dzoom, null);
       }
@@ -442,18 +440,11 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       g2d.setTransform(orig_t);
       g2d.setClip(oldClip);
 
-
-      final int dborderWidth = (int) (borderWidth * os_scale);
-
-      g.setColor(fgColor);
-      g.drawRect(dbounds.x + dborderWidth, dbounds.y + dborderWidth, showTerrainX, showTerrainY);
-//      g.drawRect(dbounds.x + dborderWidth, dbounds.y + dborderWidth, imgMapIcon.getWidth(), imgMapIcon.getHeight());
-
-      dbounds.translate((int) (showTerrainX * showTerrainZoom * os_scale), 0);
+      dbounds.translate((int) (showTerrainWidth * showTerrainZoom * os_scale), 0);
+      borderOffset += borderWidth;
     }
 
     Object owner = null;
-    int borderOffset = borderWidth;
     final double graphicsZoom = graphicsZoomLevel;
     boolean anyUnderText = false;
     for (final GamePiece piece : pieces) {
