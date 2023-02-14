@@ -30,7 +30,6 @@ import VASSAL.build.widget.PieceSlot;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
-import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.BoundsTracker;
@@ -54,7 +53,6 @@ import VASSAL.counters.PieceVisitorDispatcher;
 import VASSAL.counters.Properties;
 import VASSAL.counters.PropertyExporter;
 import VASSAL.counters.Stack;
-import VASSAL.i18n.Resources;
 import VASSAL.tools.DebugControls;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
@@ -645,12 +643,6 @@ public class PieceMover extends AbstractBuildable
    */
   protected void initButton() {
     final String value = getMarkOption();
-    if (GlobalOptions.PROMPT.equals(value)) {
-      final BooleanConfigurer config = new BooleanConfigurer(
-        Map.MARK_MOVED, Resources.getString("Editor.PieceMover.mark_moved_pieces"), Boolean.TRUE);
-      GameModule.getGameModule().getPrefs().addOption(config);
-    }
-
     if (!GlobalOptions.NEVER.equals(value)) {
       if (markUnmovedButton == null) {
         final ActionListener al = e -> {
@@ -713,12 +705,8 @@ public class PieceMover extends AbstractBuildable
    * @return Our setting w/ regard to marking pieces moved.
    */
   private String getMarkOption() {
-    String value = map.getAttributeValueString(Map.MARK_MOVED);
-    if (value == null) {
-      value = GlobalOptions.getInstance()
-                           .getAttributeValueString(GlobalOptions.MARK_MOVED);
-    }
-    return value;
+    final String value = map.getAttributeValueString(Map.MARK_MOVED);
+    return (value == null) ? GlobalOptions.ALWAYS : value;
   }
 
   @Override
@@ -841,16 +829,7 @@ public class PieceMover extends AbstractBuildable
    */
   protected boolean shouldMarkMoved() {
     final String option = getMarkOption();
-    if (GlobalOptions.ALWAYS.equals(option)) {
-      return true;
-    }
-    else if (GlobalOptions.NEVER.equals(option)) {
-      return false;
-    }
-    else {
-      return Boolean.TRUE.equals(
-        GameModule.getGameModule().getPrefs().getValue(Map.MARK_MOVED));
-    }
+    return !GlobalOptions.NEVER.equals(option);
   }
 
   /**

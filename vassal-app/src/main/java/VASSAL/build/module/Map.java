@@ -2269,6 +2269,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @param c observer component
    */
   public void paintRegion(Graphics g, Rectangle visibleRect, Component c) {
+    CounterDetailViewer.setAnyMouseoverDrawn(false);
     clearMapBorder(g); // To avoid ghost pieces around the edge
     drawBoardsInRegion(g, visibleRect, c);
     drawDrawable(g, false);

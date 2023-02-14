@@ -738,10 +738,6 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
     }
     else if (MARK_MOVED.equals(key)) {
       markMoved = (String) value;
-      if (PROMPT.equals(markMoved)) {
-        final BooleanConfigurer config = new BooleanConfigurer(MARK_MOVED, Resources.getString("GlobalOptions.mark_moved")); //$NON-NLS-1$
-        GameModule.getGameModule().getPrefs().addOption(config);
-      }
     }
     else if (PLAYER_ID_FORMAT.equals(key)) {
       playerIdFormat.setFormat((String) value);

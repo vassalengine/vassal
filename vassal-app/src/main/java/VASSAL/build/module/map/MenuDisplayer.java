@@ -147,7 +147,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
       if (target instanceof Deck) {
         if (c.length == 1) {
           final String menu_item = c[0].getName();
-          if (menu_item.equals(((Deck)target).getDrawMultipleMessage()) || menu_item.equals(((Deck)target).getDrawSpecificMessage())) {
+          if ((menu_item != null) && (menu_item.equals(((Deck)target).getDrawMultipleMessage()) || menu_item.equals(((Deck)target).getDrawSpecificMessage()))) {
             c[0].actionPerformed(new ActionEvent(popup, 0, ""));
             return null;
           }

@@ -543,58 +543,60 @@ public class DoActionButton extends AbstractToolbarItem
 
     // Set up counters for a counted loop
     int loopCounter = 0;
-    int loopCountLimit = 0;
+    int loopCountLimit = 1; //BR// This ugly setting lets non-counted loops execute, while stopping loopCount of <= 0 from sneaking a loop in
     if (LoopControl.LOOP_COUNTED.equals(loopType)) {
       loopCountLimit = loopCount.getTextAsInt(mod, Resources.getString("Editor.LoopControl.loop_count"), this); //$NON-NLS-1$
     }
 
     RecursionLimitException loopException = null;
 
-    for (;;) {
+    if (loopCountLimit > 0) {
+      for (;;) {
 
-      // While loop - test condition is still true before actions
-      if (LoopControl.LOOP_WHILE.equals(loopType)) {
-        if (!whileExpression.isTrue(mod)) {
+        // While loop - test condition is still true before actions
+        if (LoopControl.LOOP_WHILE.equals(loopType)) {
+          if (!whileExpression.isTrue(mod)) {
+            break;
+          }
+        }
+
+        // Execute the actions and catch and looping. Save any
+        // loop Exception to be thrown after the post-loop code
+        // to ensure post-loop key is executed.
+        try {
+          executeActions(c);
+        }
+        catch (RecursionLimitException ex) {
+          loopException = ex;
           break;
         }
-      }
 
-      // Execute the actions and catch and looping. Save any
-      // loop Exception to be thrown after the post-loop code
-     // to ensure post-loop key is executed.
-      try {
-        executeActions(c);
-      }
-      catch (RecursionLimitException ex) {
-        loopException = ex;
-        break;
-      }
-
-      // Until loop - test condition is not false after loop
-      if (LoopControl.LOOP_UNTIL.equals(loopType)) {
-        if (untilExpression.isTrue(mod)) {
-          break;
+        // Until loop - test condition is not false after loop
+        if (LoopControl.LOOP_UNTIL.equals(loopType)) {
+          if (untilExpression.isTrue(mod)) {
+            break;
+          }
         }
-      }
 
-      // Counted loop - Check if looped enough times
-      loopCounter++;
-      if (LoopControl.LOOP_COUNTED.equals(loopType)) {
-        if (loopCounter >= loopCountLimit) {
-          break;
+        // Counted loop - Check if looped enough times
+        loopCounter++;
+        if (LoopControl.LOOP_COUNTED.equals(loopType)) {
+          if (loopCounter >= loopCountLimit) {
+            break;
+          }
         }
-      }
-      // Otherwise check for too much looping.
-      else {
-        if (loopCounter >= LoopControl.LOOP_LIMIT) {
-          loopException = new RecursionLimitException(this);
-          break;
+        // Otherwise check for too much looping.
+        else {
+          if (loopCounter >= LoopControl.LOOP_LIMIT) {
+            loopException = new RecursionLimitException(this);
+            break;
+          }
         }
-      }
 
-      // Increment the Index Variable
-      indexValue += indexStep;
-      setIndexPropertyValue();
+        // Increment the Index Variable
+        indexValue += indexStep;
+        setIndexPropertyValue();
+      }
     }
 
     // Issue the Post-loop key

@@ -41,6 +41,8 @@ import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
 import VASSAL.tools.SequenceEncoder;
 
+import javax.swing.JLabel;
+import javax.swing.KeyStroke;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -52,9 +54,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
-import javax.swing.JLabel;
-import javax.swing.KeyStroke;
 
 /**
  * Macro Execute a series of Keystrokes against this same piece - Triggered by
@@ -221,57 +220,59 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
 
     // Set up counters for a counted loop
     int loopCounter = 0;
-    int loopCountLimit = 0;
+    int loopCountLimit = 1; //BR// Ugly, but detects non-counted loops to get executed once, while not executing "count 0" loops. Doesn't in practice limit number of loops for non-counted loops.
     if (LoopControl.LOOP_COUNTED.equals(loopType)) {
       loopCountLimit = loopCount.getTextAsInt(outer, Resources.getString("Editor.LoopControl.loop_count"), this); //$NON-NLS-1$
     }
     RecursionLimitException loopException = null;
 
-    for (;;) {
+    if (loopCountLimit > 0) {
+      for (;;) {
 
-      // While loop - test condition is still true before actions
-      if (LoopControl.LOOP_WHILE.equals(loopType)) {
-        if (!whileExpression.accept(outer)) {
+        // While loop - test condition is still true before actions
+        if (LoopControl.LOOP_WHILE.equals(loopType)) {
+          if (!whileExpression.accept(outer)) {
+            break;
+          }
+        }
+
+        // Execute the actions and catch and looping. Save any
+        // loop Exception to be thrown after the post-loop code
+        // to ensure post-loop key is executed.
+        try {
+          c = c.append(doLoopOnce());
+        }
+        catch (RecursionLimitException ex) {
+          loopException = ex;
           break;
         }
-      }
 
-      // Execute the actions and catch and looping. Save any
-      // loop Exception to be thrown after the post-loop code
-      // to ensure post-loop key is executed.
-      try {
-        c = c.append(doLoopOnce());
-      }
-      catch (RecursionLimitException ex) {
-        loopException = ex;
-        break;
-      }
+        // Until loop - test condition is not false after loop
+        if (LoopControl.LOOP_UNTIL.equals(loopType)) {
+          if (untilExpression.accept(outer)) {
+            break;
+          }
+        }
 
-      // Until loop - test condition is not false after loop
-      if (LoopControl.LOOP_UNTIL.equals(loopType)) {
-        if (untilExpression.accept(outer)) {
+        // Check for infinite looping. Save any
+        // loop Exception to be thrown after the post-loop code
+        // to ensure post-loop key is executed.
+        if (loopCounter++ >= LoopControl.LOOP_LIMIT) {
+          loopException = new RecursionLimitException(this);
           break;
         }
-      }
 
-      // Check for infinite looping. Save any
-      // loop Exception to be thrown after the post-loop code
-      // to ensure post-loop key is executed.
-      if (loopCounter++ >= LoopControl.LOOP_LIMIT) {
-        loopException = new RecursionLimitException(this);
-        break;
-      }
-
-      // Counted loop - Check if looped enough times
-      if (LoopControl.LOOP_COUNTED.equals(loopType)) {
-        if (loopCounter >= loopCountLimit) {
-          break;
+        // Counted loop - Check if looped enough times
+        if (LoopControl.LOOP_COUNTED.equals(loopType)) {
+          if (loopCounter >= loopCountLimit) {
+            break;
+          }
         }
+
+        // Increment the Index Variable
+        indexValue += step;
+
       }
-
-      // Increment the Index Variable
-      indexValue += step;
-
     }
 
     // Issue the Post-loop key
