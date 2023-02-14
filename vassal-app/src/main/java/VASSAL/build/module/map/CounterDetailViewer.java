@@ -123,6 +123,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public static final String DRAW_PIECES_AT_ZOOM = "graphicsZoom"; //NON-NLS
   public static final String BORDER_WIDTH = "borderWidth"; //NON-NLS
   public static final String SHOW_NOSTACK = "showNoStack"; //NON-NLS
+
   public static final String SHOW_MOVE_SELECTED = "showMoveSelectde"; //NON-NLS
   public static final String SHOW_NON_MOVABLE = "showNonMovable"; //NON-NLS
   public static final String SHOW_DECK = "showDeck"; //NON-NLS
@@ -459,7 +460,10 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       // Draw the next piece
       // pt is the location of the left edge of the piece
       final Rectangle pieceBounds = getBounds(piece);
-      if (unrotatePieces) piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.TRUE);
+      if (unrotatePieces) {
+        piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.TRUE);
+      }
+
       g.setClip(dbounds.x - 3, dbounds.y - 3, dbounds.width + 5, dbounds.height + 5);
       final Stack parent = piece.getParent();
       if (parent instanceof Deck) {
@@ -476,12 +480,20 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
           comp,
           graphicsZoom * os_scale
         );
+
         if (isStopAfterShowing()) {
           map.setAnyMouseoverDrawn(true);
         }
       }
-      if (parent instanceof Deck) piece.setProperty(Properties.OBSCURED_BY, owner);
-      if (unrotatePieces) piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.FALSE);
+
+      if (parent instanceof Deck) {
+        piece.setProperty(Properties.OBSCURED_BY, owner);
+      }
+
+      if (unrotatePieces) {
+        piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.FALSE);
+      }
+
       g.setClip(oldClip);
 
       // Draw text underneath counters if any is specified
