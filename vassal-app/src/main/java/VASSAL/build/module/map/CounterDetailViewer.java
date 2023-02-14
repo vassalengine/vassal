@@ -144,8 +144,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public static final String PROPERTY_FILTER = "propertyFilter"; //NON-NLS
   public static final String STOP_AFTER_SHOWING = "stopAfterShowing"; //NON-NLS
   public static final String SHOW_TERRAIN_BENEATH = "showTerrainBeneath"; //NON-NLS
-  public static final String SHOW_TERRAIN_X = "showTerrainX"; //NON-NLS
-  public static final String SHOW_TERRAIN_Y = "showTerrainY"; //NON-NLS
+  public static final String SHOW_TERRAIN_WIDTH = "showTerrainWidth"; //NON-NLS
+  public static final String SHOW_TERRAIN_HEIGHT = "showTerrainHeight"; //NON-NLS
   public static final String SHOW_TERRAIN_ZOOM = "showTerrainZoom"; //NON-NLS
   public static final String SHOW_TERRAIN_TEXT = "showTerrainText"; //NON-NLS
 
@@ -188,8 +188,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected boolean showDeck = false;
   protected boolean stopAfterShowing = false;
   protected String showTerrainBeneath = NEVER;
-  protected int showTerrainX = 150;
-  protected int showTerrainY = 150;
+  protected int showTerrainWidth = 150;
+  protected int showTerrainHeight = 150;
   protected double showTerrainZoom = 1.0;
 
   @Deprecated(since = "2021-12-01", forRemoval = true)
@@ -540,8 +540,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   /** Set the bounds field large enough to accommodate the given set of pieces */
   protected void fixBounds(List<GamePiece> pieces) {
     if (displayableTerrain) {
-      bounds.width += (int) Math.round(showTerrainX * showTerrainZoom) + borderWidth;
-      bounds.height = Math.max(bounds.height, (int)Math.round(showTerrainY * showTerrainZoom) + borderWidth * 2);
+      bounds.width += (int) Math.round(showTerrainWidth * showTerrainZoom) + borderWidth;
+      bounds.height = Math.max(bounds.height, (int)Math.round(showTerrainHeight * showTerrainZoom) + borderWidth * 2);
     }
 
     for (final GamePiece piece : pieces) {
@@ -1137,8 +1137,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       LAYER_LIST,
       PROPERTY_FILTER,
       SHOW_TERRAIN_BENEATH,
-      SHOW_TERRAIN_X,
-      SHOW_TERRAIN_Y,
+      SHOW_TERRAIN_WIDTH,
+      SHOW_TERRAIN_HEIGHT,
       SHOW_TERRAIN_ZOOM,
       SHOW_TERRAIN_TEXT,
       SHOW_NOSTACK,
@@ -1597,20 +1597,20 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     else if (SHOW_TERRAIN_BENEATH.equals(name)) {
       showTerrainBeneath = (String) value;
     }
-    else if (SHOW_TERRAIN_X.equals(name)) {
+    else if (SHOW_TERRAIN_WIDTH.equals(name)) {
       if (value instanceof Integer) {
-        showTerrainX = (Integer) value;
+        showTerrainWidth = (Integer) value;
       }
       else if (value instanceof String) {
-        showTerrainX = Integer.parseInt((String) value); //NON-NLS
+        showTerrainWidth = Integer.parseInt((String) value); //NON-NLS
       }
     }
-    else if (SHOW_TERRAIN_Y.equals(name)) {
+    else if (SHOW_TERRAIN_HEIGHT.equals(name)) {
       if (value instanceof Integer) {
-        showTerrainY = (Integer) value;
+        showTerrainHeight = (Integer) value;
       }
       else if (value instanceof String) {
-        showTerrainY = Integer.parseInt((String) value); //NON-NLS
+        showTerrainHeight = Integer.parseInt((String) value); //NON-NLS
       }
     }
     else if (SHOW_TERRAIN_TEXT.equals(name)) {
@@ -1743,11 +1743,11 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     else if (SHOW_TERRAIN_BENEATH.equals(name)) {
       return showTerrainBeneath;
     }
-    else if (SHOW_TERRAIN_X.equals(name)) {
-      return String.valueOf(showTerrainX);
+    else if (SHOW_TERRAIN_WIDTH.equals(name)) {
+      return String.valueOf(showTerrainWidth);
     }
-    else if (SHOW_TERRAIN_Y.equals(name)) {
-      return String.valueOf(showTerrainY);
+    else if (SHOW_TERRAIN_HEIGHT.equals(name)) {
+      return String.valueOf(showTerrainHeight);
     }
     else if (SHOW_TERRAIN_TEXT.equals(name)) {
       return showTerrainText.getFormat();
@@ -1797,7 +1797,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     else if (SHOW_MOVE_SELECTED.equals(name) || SHOW_NON_MOVABLE.equals(name)) {
       return () -> showNoStack;
     }
-    else if (List.of(SHOW_TERRAIN_X, SHOW_TERRAIN_Y, SHOW_TERRAIN_ZOOM, SHOW_TERRAIN_TEXT).contains(name)) {
+    else if (List.of(SHOW_TERRAIN_WIDTH, SHOW_TERRAIN_HEIGHT, SHOW_TERRAIN_ZOOM, SHOW_TERRAIN_TEXT).contains(name)) {
       return () -> !NEVER.equals(showTerrainBeneath);
     }
     /*
