@@ -82,7 +82,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -388,30 +387,66 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     final Shape oldClip = g.getClip();
 
     if (displayableTerrain) {
-      // draw the map
+      g.setClip(dbounds.x - 3, dbounds.y - 3, dbounds.width + 5, dbounds.height + 5);
+
+      // get map reference point
       final Point ptMap = pieces.isEmpty() ?
         map.componentToMap(currentMousePosition.getPoint()) :
         pieces.get(0).getPosition();
 
-      // get the icon of the map
-      final BufferedImage imgMapIcon = map.getImageMapIcon(ptMap, showTerrainX, showTerrainY, os_scale);
+      // get the drawing reference point
+      final Point ptDr = map.mapToDrawing(ptMap, os_scale);
+      ptDr.x -= dbounds.width / 2;
+      ptDr.y -= dbounds.height / 2;
 
-      // draw the image
-      final int dborderWidth = (int) (borderWidth * os_scale);
-      g.setClip(dbounds.x - 3, dbounds.y - 3, dbounds.width + 5, dbounds.height + 5);
+      // get the rectangle of the map to draw
+      final Rectangle vrMap = new Rectangle(
+        ptMap.x,
+        ptMap.y,
+        map.componentToMap(showTerrainX),
+        map.componentToMap(showTerrainY)
+      );
 
+      vrMap.translate(-showTerrainX/2, -showTerrainY/2);
+      // translate the drawing transform by the difference between the
+      // drawing bounds and the drawing reference point
       final AffineTransform orig_t = g2d.getTransform();
-      final AffineTransform at = AffineTransform.getScaleInstance(showTerrainZoom, showTerrainZoom);
-      //at.translate(-(showTerrainX * showTerrainZoom)/2, -(showTerrainY * showTerrainZoom)/2);
+      final AffineTransform at = new AffineTransform(orig_t);
+      at.translate(dbounds.x - ptDr.x, dbounds.y - ptDr.y);
       g2d.setTransform(at);
-      g.drawImage(imgMapIcon, dbounds.x + dborderWidth, dbounds.y + dborderWidth, null);
+
+//      g.setColor(Color.RED);
+//      g.drawOval(ptDr.x, ptDr.y, dbounds.width, dbounds.height);
+
+      double dzoom = 0.0;
+      Rectangle rect = null;
+      for (final Board b: map.getBoards()) {
+        if (rect == null) {
+          final double mag = b.getMagnification();
+          dzoom = os_scale / mag;
+
+          rect = new Rectangle(
+            (int)((ptMap.x * os_scale - showTerrainX/2) / mag),
+            (int)((ptMap.y * os_scale - showTerrainY/2) / mag),
+            (int)(showTerrainX / mag),
+            (int)(showTerrainY / mag)
+          );
+
+          g2d.translate(-rect.x, -rect.y);
+          g2d.translate(ptDr.x, ptDr.y);
+        }
+        b.drawRegion(g2d, map.getLocation(b, dzoom), rect, dzoom, null);
+      }
+
       g2d.setTransform(orig_t);
+      g2d.setClip(oldClip);
 
-      //g.setColor(fgColor);
-      //g.drawRect(dbounds.x + dborderWidth, dbounds.y + dborderWidth, showTerrainX, showTerrainY);
-      //g.drawRect(dbounds.x + dborderWidth, dbounds.y + dborderWidth, imgMapIcon.getWidth(), imgMapIcon.getHeight());
 
-      g.setClip(oldClip);
+      final int dborderWidth = (int) (borderWidth * os_scale);
+
+      g.setColor(fgColor);
+      g.drawRect(dbounds.x + dborderWidth, dbounds.y + dborderWidth, showTerrainX, showTerrainY);
+//      g.drawRect(dbounds.x + dborderWidth, dbounds.y + dborderWidth, imgMapIcon.getWidth(), imgMapIcon.getHeight());
 
       dbounds.translate((int) (showTerrainX * showTerrainZoom * os_scale), 0);
     }
@@ -638,7 +673,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       displayableTerrain = true;
     }
     else if (IF_ONE.equals(showTerrainBeneath)) {
-      displayableTerrain = (displayablePieces.size() > 0);
+      displayableTerrain = !displayablePieces.isEmpty();
     }
     else {
       displayableTerrain = false;

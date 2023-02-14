@@ -2632,7 +2632,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @param zoom zoom factor to use
    * @return Relative position of the board at given scale
    */
-  protected Point getLocation(Board b, double zoom) {
+  public Point getLocation(Board b, double zoom) {
     final Point p;
     if (zoom == 1.0) {
       p = b.bounds().getLocation();
