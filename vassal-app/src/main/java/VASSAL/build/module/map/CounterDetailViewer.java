@@ -669,14 +669,19 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   }
 
   protected void showDetails() {
+    final double zoom = getZoom();
 
     displayablePieces = getDisplayablePieces();
+
+    final int eligiblePieces = displayablePieces.size();
+    final boolean anyPieces = (eligiblePieces > 0) &&
+                              ((eligiblePieces >= minimumDisplayablePieces) || (zoom < zoomLevel));
 
     if (ALWAYS.equals(showTerrainBeneath)) {
       displayableTerrain = true;
     }
     else if (IF_ONE.equals(showTerrainBeneath)) {
-      displayableTerrain = !displayablePieces.isEmpty();
+      displayableTerrain = anyPieces;
     }
     else {
       displayableTerrain = false;
@@ -689,22 +694,17 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
      * space - Depends on setting of
      */
 
-    final int eligiblePieces = displayablePieces.size() + (displayableTerrain ? 1 : 0);
-    final double zoom = getZoom();
-    if (eligiblePieces < minimumDisplayablePieces) {
-      if (eligiblePieces > 0) {
-        graphicsVisible = drawPieces && (zoom < zoomLevel);
-        textVisible = showText && (zoom < zoomLevel) && (summaryReportFormat.getFormat().length() > 0 || counterReportFormat.getFormat().length() > 0 || (displayableTerrain && showTerrainText.getFormat().length() > 0));
-      }
-      else {
-        textVisible = (minimumDisplayablePieces == 0 && emptyHexReportFormat.getFormat().length() > 0);
-        graphicsVisible = false;
-      }
-    }
-    else {
+    if (anyPieces || displayableTerrain) { // Enough pieces (or a forced terrain-show), so show draw "all the kinds of stuff"
       graphicsVisible = drawPieces;
-      textVisible = showText && (summaryReportFormat.getFormat().length() > 0 || counterReportFormat.getFormat().length() > 0 || (displayableTerrain && showTerrainText.getFormat().length() > 0));
+      textVisible = showText &&
+        ((anyPieces && (summaryReportFormat.getFormat().length() > 0 || counterReportFormat.getFormat().length() > 0)) ||
+        (displayableTerrain && showTerrainText.getFormat().length() > 0));
     }
+    else { // No pieces, but maybe a when-no-pieces summary line
+      textVisible = (minimumDisplayablePieces == 0) && (emptyHexReportFormat.getFormat().length() > 0);
+      graphicsVisible = false;
+    }
+    
     map.repaint();
   }
 
