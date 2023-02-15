@@ -461,7 +461,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         if (text.length() > 0) {
           // If we're doing the "stretch the bottom all the way across" thing, then draw our "master box" now.
           if (combineCounterSummary && stretchWidthSummary) {
-            drawLabel(g, new Point(lastPieceBounds.x - 1, y), text, LabelUtils.CENTER, LabelUtils.CENTER,
+            drawLabel(g, new Point(lastPieceBounds.x - 1, y), (pieces.size() == 0) ? text : " ", LabelUtils.CENTER, LabelUtils.CENTER,
               lastPieceBounds.width + 2,
               lastPieceBounds.width + 2,
               1,
@@ -529,7 +529,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
           // If this is our very first counter to have text, AND we're doing the "stretch the bottom all the way across" thing, then draw our "master box" now.
           if (combineCounterSummary && stretchWidthSummary) {
             if (!anyUnderText) {
-              drawLabel(g, new Point(lastPieceBounds.x - 1, y), (pieces.size() == 1) ? text : " ", LabelUtils.CENTER, LabelUtils.CENTER,
+              drawLabel(g, new Point(lastPieceBounds.x - 1, y), ((pieces.size() == 1) && !displayableTerrain) ? text : " ", LabelUtils.CENTER, LabelUtils.CENTER,
                 lastPieceBounds.width + 2,
                 lastPieceBounds.width + 2,
                 1,
@@ -539,7 +539,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
           }
 
           // Draw text label for this counter. If we already have a combine-o-rama box, don't draw an extra round of box & background
-          if (!combineCounterSummary || !stretchWidthSummary || (pieces.size() != 1)) {
+          if (!combineCounterSummary || !stretchWidthSummary || ((pieces.size() != 1) || displayableTerrain)) {
             //BR// We now use the left-side position of the piece region and pass the full width of the piece to center
             //BR// in (pieceBounds.width appropriately scaled), rather than the old method of scaling pieceBounds.x and
             //BR// applying to the X position, because for whatever reason a 100x100 square piece can apparently return
