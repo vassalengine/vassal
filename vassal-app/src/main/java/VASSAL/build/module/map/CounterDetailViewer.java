@@ -390,7 +390,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     int borderOffset = borderWidth;
 
     if (displayableTerrain) {
-      g.setClip(dbounds.x, dbounds.y, (int)(showTerrainWidth * showTerrainZoom * os_scale), (int)(showTerrainHeight * showTerrainZoom * os_scale));
+      g.setClip(dbounds.x, dbounds.y, (int) Math.ceil(showTerrainWidth * showTerrainZoom * os_scale), (int) Math.ceil(showTerrainHeight * showTerrainZoom * os_scale));
 
       // get map reference point
       final Point ptMap = pieces.isEmpty() ?
@@ -440,7 +440,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       g2d.setTransform(orig_t);
       g2d.setClip(oldClip);
 
-      dbounds.translate((int) (showTerrainWidth * showTerrainZoom * os_scale), 0);
+      dbounds.translate((int) Math.ceil(showTerrainWidth * showTerrainZoom * os_scale), 0);
       borderOffset += borderWidth;
     }
 
