@@ -306,6 +306,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public void setDrawingMouseOver(boolean flag) {
     drawingMouseOver = flag;
   }
+
   public Map() {
     getView();
     theMap.addMouseListener(this);
