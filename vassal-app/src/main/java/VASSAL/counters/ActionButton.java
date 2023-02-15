@@ -62,6 +62,7 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -99,6 +100,10 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
     mySetType(type);
     setInner(inner);
     pusher = globalPusher;
+  }
+
+  public boolean isLaunchPopupMenu() {
+    return launchPopupMenu;
   }
 
   @Override
@@ -568,6 +573,70 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
   }
 
   /**
+   * Finds all the ActionButton traits within a game piece which mouse a particular mouse stroke
+   * @param p GamePiece
+   * @param point Point (relative to the center of the piece) that was clicked
+   * @return List of matching ActionButtons
+   */
+  public static List<GamePiece> matchingTraits(GamePiece p, Point point) {
+    final List<GamePiece> results = new ArrayList<>();
+
+    for (GamePiece trait = p; trait instanceof Decorator;
+         trait = ((Decorator) trait).getInner()) {
+      if (trait instanceof Obscurable) {
+        if (((Obscurable) trait).obscuredToMe()) {
+          break;
+        }
+      }
+      else if (trait instanceof Hideable) {
+        if (((Hideable) trait).invisibleToMe()) {
+          break;
+        }
+      }
+      else if (trait instanceof ActionButton) {
+        final ActionButton action = (ActionButton) trait;
+
+        // If we're not a use-whole-shape piece, then check this click against the special designated polygon
+        if (!action.useWholeShape) {
+          // Handle rotation of the piece, movement is relative to the current facing of the unit.
+          // Traverse any traits outward from this trait (ones that could rotate this trait),
+          // and find out what the cumulative rotation is
+          Decorator rotateTrait = action.getOuter();
+          double cumulative = 0.0;
+          while (rotateTrait != null) {
+            if (rotateTrait instanceof FreeRotator) {
+              cumulative += ((FreeRotator) rotateTrait).getAngleInRadians();
+            }
+            else if (rotateTrait instanceof MatCargo) {
+              cumulative += ((MatCargo) rotateTrait).getMatAngleInRadians();
+            }
+            rotateTrait = rotateTrait.getOuter();
+          }
+
+          final Shape shape;
+          // If rotated, apply the rotation
+          if (cumulative != 0.0) {
+            shape = AffineTransform.getRotateInstance(cumulative,
+              0,
+              0)
+              .createTransformedShape(action.polygon);
+          }
+          else {
+            shape = action.polygon;
+          }
+          if (!shape.contains(point)) {
+            continue;
+          }
+        }
+
+        results.add(trait);
+      }
+    }
+
+    return results;
+  }
+
+  /**
    * Registers mouse listeners with Maps and other components. Clicking the
    * mouse checks for pieces with an ActionButton trait and invokes them if the
    * click falls within the button's boundaries
@@ -613,71 +682,29 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
      *          ActionButton trait
      */
     public void doClick(GamePiece p, Point point) {
-      for (GamePiece piece = p; piece instanceof Decorator;
-           piece = ((Decorator) piece).getInner()) {
-        if (piece instanceof Obscurable) {
-          if (((Obscurable) piece).obscuredToMe()) {
-            return;
-          }
+      // Get a list of the ActionButton traits in this piece that overlap this mouseclick
+      final List<GamePiece> actionButtons = matchingTraits(p, point);
+
+      // Process the list, executing their commands.
+      for (final GamePiece trait : actionButtons) {
+        final ActionButton action = (ActionButton) trait;
+
+        if (action.stroke == null || action.stroke.getKeyStroke() == null) {
+          continue;
         }
-        else if (piece instanceof Hideable) {
-          if (((Hideable) piece).invisibleToMe()) {
-            return;
-          }
+
+        // Save state prior to command
+        p.setProperty(Properties.SNAPSHOT, ((PropertyExporter) p).getProperties());
+        try {
+          RecursionLimiter.startExecution(action);
+          final Command command = p.keyEvent(action.stroke.getKeyStroke());
+          GameModule.getGameModule().sendAndLog(command);
         }
-        else if (piece instanceof ActionButton) {
-          final ActionButton action = (ActionButton) piece;
-
-          if (action.stroke == null || action.stroke.getKeyStroke() == null) {
-            continue;
-          }
-
-          // If we're not a use-whole-shape piece, then check this click against the special designated polygon
-          if (!action.useWholeShape) {
-            // Handle rotation of the piece, movement is relative to the current facing of the unit.
-            // Traverse any traits outward from this trait (ones that could rotate this trait),
-            // and find out what the cumulative rotation is
-            Decorator rotateTrait = action.getOuter();
-            double cumulative = 0.0;
-            while (rotateTrait != null) {
-              if (rotateTrait instanceof FreeRotator) {
-                cumulative += ((FreeRotator) rotateTrait).getAngleInRadians();
-              }
-              else if (rotateTrait instanceof MatCargo) {
-                cumulative += ((MatCargo) rotateTrait).getMatAngleInRadians();
-              }
-              rotateTrait = rotateTrait.getOuter();
-            }
-
-            final Shape shape;
-            // If rotated, apply the rotation
-            if (cumulative != 0.0) {
-              shape = AffineTransform.getRotateInstance(cumulative,
-                0,
-                0)
-                .createTransformedShape(action.polygon);
-            }
-            else {
-              shape = action.polygon;
-            }
-            if (!shape.contains(point)) {
-              continue;
-            }
-          }
-
-          // Save state prior to command
-          p.setProperty(Properties.SNAPSHOT, ((PropertyExporter) p).getProperties());
-          try {
-            RecursionLimiter.startExecution(action);
-            final Command command = p.keyEvent(action.stroke.getKeyStroke());
-            GameModule.getGameModule().sendAndLog(command);
-          }
-          catch (RecursionLimitException e) {
-            RecursionLimiter.infiniteLoop(e);
-          }
-          finally {
-            RecursionLimiter.endExecution();
-          }
+        catch (RecursionLimitException e) {
+          RecursionLimiter.infiniteLoop(e);
+        }
+        finally {
+          RecursionLimiter.endExecution();
         }
       }
     }
