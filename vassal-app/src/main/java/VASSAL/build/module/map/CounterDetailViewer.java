@@ -210,20 +210,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   /** the JComponent which is repainted when the detail viewer changes */
   protected JComponent view;
 
-  private static boolean drawingMouseOver = false;
-
+  @Deprecated(since = "2023-02-15", forRemoval = true)
   public static boolean isDrawingMouseOver() {
-    return drawingMouseOver;
-  }
-
-  private static boolean anyMouseoverDrawn = false;
-
-  public static boolean isAnyMouseoverDrawn() {
-    return anyMouseoverDrawn;
-  }
-
-  public static void setAnyMouseoverDrawn(boolean flag) {
-    anyMouseoverDrawn = flag;
+    return Map.getMapList().stream().anyMatch(m -> m.isDrawingMouseOver());
   }
 
   public boolean isStopAfterShowing() {
@@ -299,7 +288,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       return;
     }
 
-    if (isAnyMouseoverDrawn()) {
+    if (map.isAnyMouseoverDrawn()) {
       return;
     }
 
@@ -312,7 +301,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
     g2d.setFont(font.deriveFont((float)(fontSize * os_scale)));
 
-    drawingMouseOver = true;
+    map.setDrawingMouseOver(true);
 
     if (graphicsVisible) {
       drawGraphics(g, pt, comp, displayablePieces);
@@ -322,7 +311,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       drawText(g, pt, comp, displayablePieces);
     }
 
-    drawingMouseOver = false;
+    map.setDrawingMouseOver(false);
   }
 
   protected void drawGraphics(Graphics g, @SuppressWarnings("unused") Point pt, JComponent comp, List<GamePiece> pieces) {
@@ -407,7 +396,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
           graphicsZoom * os_scale
         );
         if (isStopAfterShowing()) {
-          setAnyMouseoverDrawn(true);
+          map.setAnyMouseoverDrawn(true);
         }
       }
       if (parent instanceof Deck) piece.setProperty(Properties.OBSCURED_BY, owner);
@@ -581,9 +570,11 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       else {
         LabelUtils.drawLabel(g, label, pt.x, pt.y, g.getFont(), hAlign, vAlign, fgColor, (skipBox ? null : bgColor), (skipBox ? null : fgColor), objectWidth, extraTextPadding, minWidth, extraBorder);
       }
+
       g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
       if (isStopAfterShowing()) {
-        setAnyMouseoverDrawn(true);
+        map.setAnyMouseoverDrawn(true);
       }
     }
   }
