@@ -3,6 +3,7 @@
 * 12007: Update Apple Silicon terminology in preferences and docs
 * 11993: ActionButtons set to count 0 times don't spuriously execute 1 time
 * 11986: Add missing Section size symbol to NATO markers
+* 11982: Fixed multiplayer problems with detach option on Deselect trait
 * 11961: Clear up mark-when-moved problems for modules which still had a
     legacy value set
 * 11957: Spaces in GKC reports made consistent with all other reports
