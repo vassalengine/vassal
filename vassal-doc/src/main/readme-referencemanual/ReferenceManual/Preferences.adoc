@@ -98,7 +98,7 @@ Compatibility preferences are useful for troubleshooting certain rare platform-s
 |===
 |
 
-*Disable OpenGL FBOs (Recommended for Apple Silicon):*:: If you are having poor graphics performance (slow scrolling, e.g.) on a Mac, and particularly on a non-Intel, Apple Silicon Mac (eg M1, M2, etc), go to Vassal's preferences and check the box for Disable OpenGL FBOs.
+*Disable OpenGL FBOs (Recommended for Apple Silicon):*:: If you are having poor graphics performance (slow scrolling, e.g.) on a Mac, and particularly on a non-Intel, Apple Silicon Mac (e.g., M1, M2, etc.), go to Vassal's preferences and check the box for Disable OpenGL FBOs.
 
 NOTE: This preference will only appear on Mac systems.
 

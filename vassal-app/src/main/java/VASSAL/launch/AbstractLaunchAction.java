@@ -578,7 +578,8 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         result.add("-Xdock:name=" + d_name); //NON-NLS
         result.add("-Xdock:icon=" + d_icon); //NON-NLS
 
-        // M1 Macs need FBOs disabled in OpenGL, at least until Metal in Java 17
+        // Apple Silicon Macs need FBOs disabled in OpenGL, at least until
+        // Metal in Java 17
         final Boolean disableOGLFBO =
           (Boolean) Prefs.getGlobalPrefs().getValue(Prefs.DISABLE_OGL_FBO);
         if (Boolean.TRUE.equals(disableOGLFBO)) {
