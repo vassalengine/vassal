@@ -389,6 +389,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
     int borderOffset = borderWidth;
 
+    boolean anyUnderText = false;
+    final double graphicsZoom = graphicsZoomLevel;
+
     if (displayableTerrain) {
       g.setClip(dbounds.x, dbounds.y, (int) Math.ceil(showTerrainWidth * showTerrainZoom * os_scale), (int) Math.ceil(showTerrainHeight * showTerrainZoom * os_scale));
 
@@ -440,13 +443,44 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       g2d.setTransform(orig_t);
       g2d.setClip(oldClip);
 
+      if (textVisible && showTerrainText.getFormat().length() > 0) {
+        final Point mapPt = map.componentToMap(currentMousePosition.getPoint());
+        final Point snapPt = map.snapTo(mapPt);
+        final String locationName = map.localizedLocationName(snapPt);
+        showTerrainText.setProperty(BasicPiece.LOCATION_NAME, locationName.equals(Resources.getString("Map.offboard")) ? "" : locationName);
+        showTerrainText.setProperty(BasicPiece.CURRENT_MAP, map.getLocalizedMapName());
+        final Board b = map.findBoard(snapPt);
+        final String boardName = (b == null) ? "" : b.getLocalizedName();
+        showTerrainText.setProperty(BasicPiece.CURRENT_BOARD, boardName);
+        final Zone z = map.findZone(snapPt);
+        final String zone = (z == null) ? "" : z.getLocalizedName();
+        showTerrainText.setProperty(BasicPiece.CURRENT_ZONE, zone);
+
+        final String text = showTerrainText.getLocalizedText(this, "Editor.MouseOverStackViewer.text_below");
+        int y = dbounds.y + dbounds.height + 10 + extraTextPadding * 2;
+        if (text.length() > 0) {
+          // If we're doing the "stretch the bottom all the way across" thing, then draw our "master box" now.
+          if (combineCounterSummary && stretchWidthSummary) {
+            drawLabel(g, new Point(lastPieceBounds.x - 1, y), text, LabelUtils.CENTER, LabelUtils.CENTER,
+              lastPieceBounds.width + 2,
+              lastPieceBounds.width + 2,
+              1,
+              false);
+            y -= 1; // Because the text just looks better in the combine-o-rama box this way.
+          }
+          else {
+            final int x = dbounds.x + (int) (borderOffset * os_scale);
+            drawLabel(g, new Point(x, y), text, LabelUtils.CENTER, LabelUtils.CENTER, (int)(showTerrainWidth * graphicsZoom * os_scale), 0, 0, false);
+          }
+          anyUnderText = true;
+        }
+      }
+
       dbounds.translate((int) Math.ceil(showTerrainWidth * showTerrainZoom * os_scale), 0);
       borderOffset += borderWidth;
     }
 
     Object owner = null;
-    final double graphicsZoom = graphicsZoomLevel;
-    boolean anyUnderText = false;
     for (final GamePiece piece : pieces) {
       // Draw the next piece
       // pt is the location of the left edge of the piece
@@ -518,7 +552,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         }
       }
 
-      dbounds.translate((int) (pieceBounds.width * graphicsZoom * os_scale), 0);
+      dbounds.translate((int) Math.ceil(pieceBounds.width * graphicsZoom * os_scale), 0);
       borderOffset += borderWidth;
     }
 
@@ -585,6 +619,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     final String offboard = Resources.getString("Map.offboard");  //$NON-NLS-1$
 
     if (displayablePieces.isEmpty()) {
+      // No displayable pieces; either we have terrain-only or an empty space summary
       x = (int)((bounds.x - bounds.width) * os_scale);
       y = (int)((bounds.y - verticalTopText) * os_scale);
       final Point mapPt = map.componentToMap(currentMousePosition.getPoint());
@@ -609,7 +644,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     else {
       final GamePiece topPiece = displayablePieces.get(0);
       final String locationName = (String) topPiece.getLocalizedProperty(BasicPiece.LOCATION_NAME);
-      emptyHexReportFormat.setProperty(BasicPiece.LOCATION_NAME, locationName.equals(offboard) ? "" : locationName);
+
+      summaryReportFormat.setProperty(BasicPiece.LOCATION_NAME, locationName.equals(offboard) ? "" : locationName);
       report = summaryReportFormat.getLocalizedText(new SumProperties(displayablePieces), this, "Editor.MouseOverStackViewer.summary_text");
       if (report.length() > 0) {
         if (graphicsVisible) {
@@ -687,13 +723,6 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       displayableTerrain = false;
     }
 
-    /*
-     * Visibility Rules: Stack - Depends on setting of showGraphics/showText
-     * Single Unit - Depends on setting of showGraphics/showText and
-     * showGraphicsSingle/showTextSingle and stack must not be expanded. Empty
-     * space - Depends on setting of
-     */
-
     if (anyPieces || displayableTerrain) { // Enough pieces (or a forced terrain-show), so show draw "all the kinds of stuff"
       graphicsVisible = drawPieces;
       textVisible = showText &&
@@ -704,7 +733,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       textVisible = (minimumDisplayablePieces == 0) && (emptyHexReportFormat.getFormat().length() > 0);
       graphicsVisible = false;
     }
-    
+
     map.repaint();
   }
 
