@@ -1,5 +1,7 @@
 3.6.13 - ???
 
+* 11995: ActionButtons with reports shouldn't display them if report is empty
+
 3.6.12 - 16 February 2023
 
 * 12013: Reinstate removal of module tile cache when a module is removed from
