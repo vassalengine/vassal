@@ -440,6 +440,10 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         b.drawRegion(g2d, map.getLocation(b, dzoom), rect, dzoom, null);
       }
 
+      if (isStopAfterShowing()) {
+        map.setAnyMouseoverDrawn(true);
+      }
+
       g2d.setTransform(orig_t);
       g2d.setClip(oldClip);
 
