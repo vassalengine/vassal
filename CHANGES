@@ -1,5 +1,7 @@
-3.6.12 - ???
+3.6.12 - 16 February 2023
 
+* 12013: Reinstate removal of module tile cache when a module is removed from
+    the Module Manager
 * 12007: Update Apple Silicon terminology in preferences and docs
 * 11993: ActionButtons set to count 0 times don't spuriously execute 1 time
 * 11986: Add missing Section size symbol to NATO markers
