@@ -47,6 +47,10 @@ Otherwise, it will display only if 1 or 2 pieces have been included via the sett
 
 *Stretch summary text box to width of pieces:*:: Stretch the size of the summary text piece to be the same with as the display of pieces, even if it would normally be narrower.
 
+*Combined counter summary text box:*:: When stretching the summary text box to the full width, also don't draw individual boxes around each summary entry.
+
+*Only show first piece's summary entry:*:: When stretching the summary text box to the full width, only show the summary entry for the first piece displayed.
+
 *Additional offset upward (summary text):*:: The number of pixels to adjust the summary text box upwards from its usual position. Use negative numbers to adjust it down.
 
 *Font size:*:: Fort size for the text drawn by the stack viewer.

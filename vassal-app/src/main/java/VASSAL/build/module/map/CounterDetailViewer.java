@@ -113,6 +113,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public static final String CENTER_TEXT = "centerText"; //NON-NLS
   public static final String CENTER_ALL  = "centerAll"; //NON-NLS
   public static final String COMBINE_COUNTER_SUMMARY = "combineCounterSummary"; //NON-NLS
+  public static final String ONLY_SHOW_FIRST_SUMMARY = "onlyShowFirstSummary"; //NON-NLS
   public static final String VERTICAL_OFFSET = "verticalOffset"; //NON-NLS
   public static final String VERTICAL_TOP_TEXT = "verticalTopText"; //NON-NLS
   public static final String STRETCH_WIDTH_SUMMARY = "stretchWidthSummary"; //NON-NLS
@@ -181,6 +182,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected boolean centerAll  = false;
   protected boolean centerText = false;
   protected boolean combineCounterSummary = false;
+  protected boolean onlyShowFirstSummary = false;
   protected int verticalOffset = 0;
   protected int verticalTopText = 5;
   protected boolean stretchWidthSummary = false;
@@ -390,6 +392,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     int borderOffset = borderWidth;
 
     boolean anyUnderText = false;
+    boolean didadukey = false;
     final double graphicsZoom = graphicsZoomLevel;
 
     if (displayableTerrain) {
@@ -471,6 +474,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
               1,
               false);
             y -= 1; // Because the text just looks better in the combine-o-rama box this way.
+            didadukey = true;
           }
           else {
             final int x = dbounds.x + (int) (borderOffset * os_scale);
@@ -533,7 +537,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
           // If this is our very first counter to have text, AND we're doing the "stretch the bottom all the way across" thing, then draw our "master box" now.
           if (combineCounterSummary && stretchWidthSummary) {
             if (!anyUnderText) {
-              drawLabel(g, new Point(lastPieceBounds.x - 1, y), ((pieces.size() == 1) && !displayableTerrain) ? text : " ", LabelUtils.CENTER, LabelUtils.CENTER,
+              drawLabel(g, new Point(lastPieceBounds.x - 1, y), ((pieces.size() == 1) || onlyShowFirstSummary) ? text : " ", LabelUtils.CENTER, LabelUtils.CENTER,
                 lastPieceBounds.width + 2,
                 lastPieceBounds.width + 2,
                 1,
@@ -543,14 +547,16 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
           }
 
           // Draw text label for this counter. If we already have a combine-o-rama box, don't draw an extra round of box & background
-          if (!combineCounterSummary || !stretchWidthSummary || ((pieces.size() != 1) || displayableTerrain)) {
-            //BR// We now use the left-side position of the piece region and pass the full width of the piece to center
-            //BR// in (pieceBounds.width appropriately scaled), rather than the old method of scaling pieceBounds.x and
-            //BR// applying to the X position, because for whatever reason a 100x100 square piece can apparently return
-            //BR// values like "-46" for the pieceBounds.x. Which apparently causes the *piece* to get *drawn* in the
-            //BR// right place but is clearly NOT the way to center text beneath the piece. AIEEEEEEEEEEEEEEEEEEEEEE!!!
-            final int x = dbounds.x + (int) (borderOffset * os_scale);
-            drawLabel(g, new Point(x, y), text, LabelUtils.CENTER, LabelUtils.CENTER, (int)(pieceBounds.width * graphicsZoom * os_scale), 0, 0, combineCounterSummary && stretchWidthSummary);
+          if (!stretchWidthSummary || !onlyShowFirstSummary) {
+            if (!combineCounterSummary || !stretchWidthSummary || ((pieces.size() != 1) || didadukey)) {
+              //BR// We now use the left-side position of the piece region and pass the full width of the piece to center
+              //BR// in (pieceBounds.width appropriately scaled), rather than the old method of scaling pieceBounds.x and
+              //BR// applying to the X position, because for whatever reason a 100x100 square piece can apparently return
+              //BR// values like "-46" for the pieceBounds.x. Which apparently causes the *piece* to get *drawn* in the
+              //BR// right place but is clearly NOT the way to center text beneath the piece. AIEEEEEEEEEEEEEEEEEEEEEE!!!
+              final int x = dbounds.x + (int) (borderOffset * os_scale);
+              drawLabel(g, new Point(x, y), text, LabelUtils.CENTER, LabelUtils.CENTER, (int) (pieceBounds.width * graphicsZoom * os_scale), 0, 0, combineCounterSummary && stretchWidthSummary);
+            }
           }
           anyUnderText = true;
         }
@@ -1150,6 +1156,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       CENTER_TEXT,
       STRETCH_WIDTH_SUMMARY,
       COMBINE_COUNTER_SUMMARY,
+      ONLY_SHOW_FIRST_SUMMARY,
       EXTRA_TEXT_PADDING,
       VERTICAL_TOP_TEXT,
       SHOW_TEXT_SINGLE_DEPRECATED,
@@ -1199,6 +1206,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       Resources.getString("Editor.MouseOverStackViewer.center_text"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.stretch_width_summary"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.combine_counter_summary"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.only_show_first_summary"),
       Resources.getString("Editor.MouseOverStackViewer.extra_text_padding"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.vertical_top_text"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.display_text_obsolete"), //$NON-NLS-1$ Obsolete
@@ -1244,6 +1252,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       Boolean.class,
       Integer.class,
       Integer.class,
+      Boolean.class,
       Boolean.class,
       Boolean.class,
       Boolean.class,
@@ -1402,6 +1411,14 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       }
       else {
         combineCounterSummary = (Boolean) value;
+      }
+    }
+    else if (ONLY_SHOW_FIRST_SUMMARY.equals(name)) {
+      if (value instanceof String) {
+        onlyShowFirstSummary = "true".equals(value); //NON-NLS
+      }
+      else {
+        onlyShowFirstSummary = (Boolean) value;
       }
     }
     else if (EXTRA_TEXT_PADDING.equals(name)) {
@@ -1668,6 +1685,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     else if (COMBINE_COUNTER_SUMMARY.equals(name)) {
       return String.valueOf(combineCounterSummary);
     }
+    else if (ONLY_SHOW_FIRST_SUMMARY.equals(name)) {
+      return String.valueOf(onlyShowFirstSummary);
+    }
     else if (EXTRA_TEXT_PADDING.equals(name)) {
       return String.valueOf(extraTextPadding);
     }
@@ -1800,7 +1820,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     else if (List.of(FONT_SIZE, SUMMARY_REPORT_FORMAT, COUNTER_REPORT_FORMAT, ENABLE_HTML, CENTER_TEXT, EXTRA_TEXT_PADDING, VERTICAL_TOP_TEXT, STRETCH_WIDTH_SUMMARY).contains(name)) {
       return () -> showText;
     }
-    else if (COMBINE_COUNTER_SUMMARY.equals(name)) {
+    else if (List.of(COMBINE_COUNTER_SUMMARY, ONLY_SHOW_FIRST_SUMMARY).contains(name)) {
       return () -> showText && stretchWidthSummary;
     }
     else if (List.of(DRAW_PIECES, SHOW_TEXT, SHOW_NOSTACK, SHOW_DECK, DISPLAY, DESCRIPTION, CENTER_ALL).contains(name)) {
