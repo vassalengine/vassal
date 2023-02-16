@@ -402,7 +402,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
       // get map reference point
       final Point ptMap = pieces.isEmpty() ?
-        map.componentToMap(currentMousePosition.getPoint()) :
+        map.snapTo(map.componentToMap(currentMousePosition.getPoint())) :
         pieces.get(0).getPosition();
 
       // get the drawing reference point
