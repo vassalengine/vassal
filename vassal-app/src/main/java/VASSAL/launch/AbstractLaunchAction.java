@@ -114,6 +114,13 @@ public abstract class AbstractLaunchAction extends AbstractAction {
   }
 
   /**
+   * @return <code>true</code> iff any files are in use
+   */
+  public static boolean anyInUse() {
+    return useTracker.anyInUse();
+  }
+
+  /**
    * @param file the file to check
    * @return <code>true</code> iff the file is in use
    */
