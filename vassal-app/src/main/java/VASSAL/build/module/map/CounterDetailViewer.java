@@ -121,6 +121,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public static final String ENABLE_HTML = "enableHTML"; //NON-NLS
   public static final String SHOW_TEXT_SINGLE_DEPRECATED = "showtextsingle"; //NON-NLS
   public static final String ZOOM_LEVEL = "zoomlevel"; //NON-NLS
+  public static final String CENTER_PIECES_VERTICALLY = "centerPiecesVertically"; //NON-NLS
   public static final String DRAW_PIECES_AT_ZOOM = "graphicsZoom"; //NON-NLS
   public static final String BORDER_WIDTH = "borderWidth"; //NON-NLS
   public static final String SHOW_NOSTACK = "showNoStack"; //NON-NLS
@@ -175,6 +176,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected String desc = ""; //NON-NLS
   protected int minimumDisplayablePieces = 2;
   protected boolean drawPieces = true;
+  protected boolean centerPiecesVertically = false;
   protected boolean drawSingleDeprecated = false;
   protected boolean showText = false;
   protected boolean showTextSingleDeprecated = false;
@@ -231,7 +233,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
   @Deprecated(since = "2023-02-15", forRemoval = true)
   public static boolean isDrawingMouseOver() {
-    return Map.getMapList().stream().anyMatch(m -> m.isDrawingMouseOver());
+    return Map.getMapList().stream().anyMatch(Map::isDrawingMouseOver);
   }
 
   public boolean isStopAfterShowing() {
@@ -421,7 +423,10 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       final AffineTransform orig_t = g2d.getTransform();
       final AffineTransform at = new AffineTransform(orig_t);
       at.translate(dbounds.x - ptDr.x, dbounds.y - ptDr.y);
+
       g2d.setTransform(at);
+
+      // - (centerPiecesVertically ? (int)(dbounds.height/2 - showTerrainHeight * showTerrainZoom * os_scale / 2) : 0)
 
       // draw the map
       double dzoom = showTerrainZoom * os_scale;
@@ -464,7 +469,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         showTerrainText.setProperty(BasicPiece.CURRENT_ZONE, zone);
 
         final String text = showTerrainText.getLocalizedText(this, "Editor.MouseOverStackViewer.text_below");
-        int y = dbounds.y + dbounds.height + 10 + extraTextPadding * 2;
+        final int y = dbounds.y + dbounds.height + 10 + extraTextPadding * 2;
         if (text.length() > 0) {
           // If we're doing the "stretch the bottom all the way across" thing, then draw our "master box" now.
           if (combineCounterSummary && stretchWidthSummary) {
@@ -473,7 +478,6 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
               lastPieceBounds.width + 2,
               1,
               false);
-            y -= 1; // Because the text just looks better in the combine-o-rama box this way.
             didadukey = true;
           }
           else {
@@ -506,10 +510,17 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       }
 
       if (graphicsZoom > 0.0) {
+        int yOffset = (int) (pieceBounds.y * graphicsZoom * os_scale);
+        if (centerPiecesVertically) {
+          yOffset -= dbounds.height/2 - (int) (pieceBounds.height * graphicsZoom * os_scale) / 2;
+        }
+        else {
+          yOffset -= (int) (borderWidth * os_scale);
+        }
         piece.draw(
           g,
           dbounds.x - (int) (pieceBounds.x * graphicsZoom * os_scale) + (int) (borderOffset * os_scale),
-          dbounds.y - (int) (pieceBounds.y * graphicsZoom * os_scale) + (int) (borderWidth * os_scale),
+          dbounds.y - yOffset,
           comp,
           graphicsZoom * os_scale
         );
@@ -1147,6 +1158,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       ZOOM_LEVEL,
       CENTER_ALL,
       DRAW_PIECES,
+      CENTER_PIECES_VERTICALLY,
       DRAW_PIECES_AT_ZOOM,
       GRAPH_SINGLE_DEPRECATED,
       BORDER_WIDTH,
@@ -1197,6 +1209,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       Resources.getString("Editor.MouseOverStackViewer.display_zoom"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.center_all"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.draw_pieces"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.center_pieces_vertically"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.draw_zoom"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.display_graphics_obselete"), //$NON-NLS-1$ Obsolete
       Resources.getString("Editor.MouseOverStackViewer.piece_gap"), //$NON-NLS-1$
@@ -1246,6 +1259,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       Color.class,
       MinConfig.class,
       Double.class,
+      Boolean.class,
       Boolean.class,
       Boolean.class,
       Double.class,
@@ -1467,6 +1481,14 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       }
       else if (value instanceof String) {
         drawPieces = "true".equals(value); //NON-NLS
+      }
+    }
+    else if (CENTER_PIECES_VERTICALLY.equals(name)) {
+      if (value instanceof Boolean) {
+        centerPiecesVertically = (Boolean) value;
+      }
+      else if (value instanceof String) {
+        centerPiecesVertically = "true".equals(value); //NON-NLS
       }
     }
     else if (GRAPH_SINGLE_DEPRECATED.equals(name)) {
@@ -1718,6 +1740,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     else if (ZOOM_LEVEL.equals(name)) {
       return String.valueOf(zoomLevel);
     }
+    else if (CENTER_PIECES_VERTICALLY.equals(name)) {
+      return String.valueOf(centerPiecesVertically);
+    }
     else if (DRAW_PIECES_AT_ZOOM.equals(name)) {
       return String.valueOf(graphicsZoomLevel);
     }
@@ -1814,7 +1839,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
-    if (BORDER_WIDTH.equals(name) || DRAW_PIECES_AT_ZOOM.equals(name) || VERTICAL_OFFSET.equals(name)) {
+    if (List.of(CENTER_PIECES_VERTICALLY, BORDER_WIDTH, DRAW_PIECES_AT_ZOOM, VERTICAL_OFFSET).contains(name)) {
       return () -> drawPieces;
     }
     else if (List.of(FONT_SIZE, SUMMARY_REPORT_FORMAT, COUNTER_REPORT_FORMAT, ENABLE_HTML, CENTER_TEXT, EXTRA_TEXT_PADDING, VERTICAL_TOP_TEXT, STRETCH_WIDTH_SUMMARY).contains(name)) {
@@ -1841,8 +1866,11 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     else if (SHOW_MOVE_SELECTED.equals(name) || SHOW_NON_MOVABLE.equals(name)) {
       return () -> showNoStack;
     }
-    else if (List.of(SHOW_TERRAIN_WIDTH, SHOW_TERRAIN_HEIGHT, SHOW_TERRAIN_ZOOM, SHOW_TERRAIN_TEXT).contains(name)) {
+    else if (List.of(SHOW_TERRAIN_WIDTH, SHOW_TERRAIN_HEIGHT, SHOW_TERRAIN_ZOOM).contains(name)) {
       return () -> !NEVER.equals(showTerrainBeneath);
+    }
+    else if (SHOW_TERRAIN_TEXT.equals(name)) {
+      return () -> showText && !NEVER.equals(showTerrainBeneath);
     }
     /*
      * The following fields are not to be displayed. They are either obsolete

@@ -35,6 +35,8 @@ Otherwise, it will display only if 1 or 2 pieces have been included via the sett
 
 *Draw pieces:*::  If selected, then the included pieces will be drawn in the viewer.
 
+*Center pieces vertically in box (if different sizes):*:: If selected, and multiple pieces of different heights are being shown, the smaller pieces will be vertically centered in the viewer
+
 *Draw pieces using zoom factor:*::  The magnification factor to use to draw the pieces in the viewer.
 
 *Width of gap between pieces:*::  Empty space in pixels to place between each drawn piece.
