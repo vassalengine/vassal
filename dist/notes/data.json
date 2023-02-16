@@ -24,6 +24,7 @@
       "bug_fixes": [
         { "num": 11993, "desc": "11993: ActionButtons set to count 0 times don't spuriously execute 1 time" },
         { "num": 11982, "desc": "Fixed multiplayer problems with detach option on Deselect trait" },
+        { "num": 11963, "desc": "SendToLocation, Can Rotate, and MoveFixedDistance were all unlinking from deck/stack at wrong time, causing buggy behavior in some instances especially involving decks" },
         { "num": 11961, "desc": "Clear up mark-when-moved problems for modules which still had a legacy value set" },
         { "num": 11884, "desc": "'OldMat' properties now set correctly regardless of order of Mat Cargo and Send-to-Location (etc.) traits" },
         { "num": 11180, "desc": "Triggers set to count 0 times don't spuriously execute 1 time" },
