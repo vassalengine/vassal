@@ -473,7 +473,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         if (text.length() > 0) {
           // If we're doing the "stretch the bottom all the way across" thing, then draw our "master box" now.
           if (combineCounterSummary && stretchWidthSummary) {
-            drawLabel(g, new Point(lastPieceBounds.x - 1, y), (pieces.size() == 0) ? text : " ", LabelUtils.CENTER, LabelUtils.CENTER,
+            drawLabel(g, new Point(lastPieceBounds.x - 1, y), pieces.isEmpty() ? text : " ", LabelUtils.CENTER, LabelUtils.CENTER,
               lastPieceBounds.width + 2,
               lastPieceBounds.width + 2,
               1,
