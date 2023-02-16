@@ -17,6 +17,7 @@
  */
 package VASSAL.counters;
 
+import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangeTracker;
@@ -73,7 +74,7 @@ public interface EditablePiece extends GamePiece {
   @Override
   default Command prepareMove(Command c, boolean mark_moved) {
     // Make sure we don't send deck-is-empty hotkeys when deck is emptied by another player in an online game or by a log-step
-    Deck.clearEmptyDecksList();
+    GameModule.getGameModule().getDeckManager().clearEmptyDecksList();
 
     final GamePiece outer = Decorator.getOutermost(this);
 
@@ -121,7 +122,7 @@ public interface EditablePiece extends GamePiece {
     }
 
     // If we emptied any decks, let them send their I-am-empty key commands
-    c = Deck.checkEmptyDecks(c);
+    c = GameModule.getGameModule().getDeckManager().checkEmptyDecks(c);
 
     return c;
   }

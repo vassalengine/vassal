@@ -761,7 +761,7 @@ public class PieceMover extends AbstractBuildable
    */
   protected Command movedPiece(GamePiece p, Point loc) {
     // Make sure we don't end up sending I'm-empty commands from decks that were emptied by other players (e.g. online or log-step)
-    Deck.clearEmptyDecksList();
+    GameModule.getGameModule().getDeckManager().clearEmptyDecksList();
 
     Command c = new NullCommand();
     c = c.append(setOldLocations(p));
@@ -919,6 +919,9 @@ public class PieceMover extends AbstractBuildable
       newDragBuffer.add(mm.getMatPiece());
       newDragBuffer.addAll(mm.getCargo());
     }
+
+    final GameModule gm = GameModule.getGameModule();
+    final boolean isMatSupport = gm.isMatSupport();
 
     // Non-null when a Mat being processed, or when cargo loaded on the Mat is being processed
     Mat currentMat = null;
@@ -1104,7 +1107,7 @@ public class PieceMover extends AbstractBuildable
         KeyBuffer.getBuffer().add(piece);
 
         // Support for Mats and Cargo
-        if (GameModule.getGameModule().isMatSupport()) {
+        if (isMatSupport) {
           // If this is a piece that can be placed on mats, look for an overlapping mat, and put it there.
           if (Boolean.TRUE.equals(piece.getProperty(MatCargo.IS_CARGO))) {
             final MatCargo cargo = (MatCargo)Decorator.getDecorator(piece, MatCargo.class);
@@ -1155,7 +1158,7 @@ public class PieceMover extends AbstractBuildable
     }
 
     // If we emptied any decks, let them send their I-am-empty key commands
-    comm = Deck.checkEmptyDecks(comm);
+    comm = gm.getDeckManager().checkEmptyDecks(comm);
 
     // Repaint any areas of the map window changed by our move
     tracker.repaint();
