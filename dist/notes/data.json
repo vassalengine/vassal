@@ -22,15 +22,18 @@
       "new_features": [
       ],
       "bug_fixes": [
-        { "num": 11993, "desc": "11993: ActionButtons set to count 0 times don't spuriously execute 1 time" },
+        { "num": 11994, "desc": "Deck \"send-when-empty\" hotkeys no longer create extra undo steps" },
+        { "num": 11993, "desc": "ActionButtons set to count 0 times don't spuriously execute 1 time" },
         { "num": 11982, "desc": "Fixed multiplayer problems with detach option on Deselect trait" },
         { "num": 11963, "desc": "SendToLocation, Can Rotate, and MoveFixedDistance were all unlinking from deck/stack at wrong time, causing buggy behavior in some instances especially involving decks" },
         { "num": 11961, "desc": "Clear up mark-when-moved problems for modules which still had a legacy value set" },
         { "num": 11884, "desc": "'OldMat' properties now set correctly regardless of order of Mat Cargo and Send-to-Location (etc.) traits" },
-        { "num": 11180, "desc": "Triggers set to count 0 times don't spuriously execute 1 time" },
+        { "num": 11880, "desc": "Triggers set to count 0 times don't spuriously execute 1 time" },
+        { "num": 11714, "desc": "Deck's Send-when-Empty key now processes AFTER fully moving last card" },
         { "num": 11627, "desc": "ActionButtons with context menu flag no longer trigger context menu when a different ActionButton on same piece (that doesn't have the flag set) is clicked" },
         { "num": 11462, "desc": "Don't +1 inventory sum if property isn't even defined" },
-        { "num": 11437, "desc": "Prevent NPE when right-clicking on a Deck with no menu items" }
+        { "num": 11437, "desc": "Prevent NPE when right-clicking on a Deck with no menu items" },
+        { "num": 11429, "desc": "Deck Empty Hotkey no longer repeats per online player instance, nor when stepping forward a log" }
       ],
       "other_improvements": [
         { "num": 12013, "desc": "Reinstate removal of module tile cache when a module is removed from the Module Manager" },
