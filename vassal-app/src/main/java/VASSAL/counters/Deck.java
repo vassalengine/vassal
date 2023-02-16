@@ -177,6 +177,39 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   /** The matching DrawPile that generated this Deck */
   protected DrawPile myPile;
 
+  // List of decks who want to fire off their I-just-got-emptied key
+  protected static List<Deck> deckEmptiedKeyQueue = new ArrayList<>();
+
+  /**
+   * If any decks want to send their I-am-empty key, send it now.
+   */
+  public static Command checkEmptyDecks(Command c) {
+    final GameModule gm = GameModule.getGameModule();
+    gm.pauseLogging();
+    for (final Deck deck : deckEmptiedKeyQueue) {
+      deck.sendEmptyKey();
+    }
+
+    deckEmptiedKeyQueue.clear();
+
+    c = c.append(gm.resumeLogging());
+    return c;
+  }
+
+  /**
+   * Clears the list of I-am-empty decks
+   */
+  public static void clearEmptyDecksList() {
+    deckEmptiedKeyQueue.clear();
+  }
+
+  /**
+   * Sends the I-am-empty key for this deck (whether to send it was already determined when the last piece was removed)
+   */
+  protected void sendEmptyKey() {
+    gameModule.fireKeyStroke(emptyKey);
+  }
+
   /**
    * Special {@link CommandEncoder} to handle loading/saving Decks from files.
    */
@@ -469,7 +502,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       fireNumCardsProperty();
       // Do NOT fire a Deck Empty key if it has been caused by an Undo Command
       if (hotkeyOnEmpty && emptyKey != null && startCount > 0 && pieceCount == 0 && ! GameModule.getGameModule().getBasicLogger().isUndoInProgress()) {
-        gameModule.fireKeyStroke(emptyKey);
+        deckEmptiedKeyQueue.add(this);
       }
     }
   }
@@ -1814,7 +1847,12 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       // move cards to deck
       final int cnt = getPieceCount() - 1;
       for (int i = cnt; i >= 0; i--) {
-        c = c.append(target.addToContents(getPieceAt(i)));
+        final GamePiece p = getPieceAt(i);
+
+        // Prepare the piece for move, writing "old location" properties and unlinking from any deck
+        c = p.prepareMove(c, false);
+        c = c.append(target.addToContents(p));
+        c = p.finishMove(c, false, false);
       }
     }
     return c;
@@ -1905,7 +1943,18 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
     // Send them
     for (final GamePiece piece : sending) {
+
+      // Prepare the piece for move, writing "old location" properties and unlinking from any deck
+      c = piece.prepareMove(c, false);
+
+      // Move it to the new deck
       c = c.append(target.addToContents(piece));
+
+      // Finish up after piece's move. Apply afterburner key if that option is selected
+      c = piece.finishMove(c, dkc.isApplyOnMove() && (map != null), false);
+      if (dkc.isApplyOnMove() && (map != null)) {
+        map.repaint();
+      }
     }
 
     // And add a report

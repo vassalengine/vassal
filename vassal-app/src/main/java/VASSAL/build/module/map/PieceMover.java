@@ -760,6 +760,9 @@ public class PieceMover extends AbstractBuildable
    * @return Command encapsulating anything this method did, for replay in log file or on other clients
    */
   protected Command movedPiece(GamePiece p, Point loc) {
+    // Make sure we don't end up sending I'm-empty commands from decks that were emptied by other players (e.g. online or log-step)
+    Deck.clearEmptyDecksList();
+
     Command c = new NullCommand();
     c = c.append(setOldLocations(p));
     if (!loc.equals(p.getPosition())) {
@@ -1150,6 +1153,9 @@ public class PieceMover extends AbstractBuildable
     if (map.getMoveKey() != null) {
       comm = comm.append(applyKeyAfterMove(allDraggedPieces, map.getMoveKey()));
     }
+
+    // If we emptied any decks, let them send their I-am-empty key commands
+    comm = Deck.checkEmptyDecks(comm);
 
     // Repaint any areas of the map window changed by our move
     tracker.repaint();
