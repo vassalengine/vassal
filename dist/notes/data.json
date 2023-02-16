@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 11693, "desc": "Prevent NPE when copying folders containing Mouse-over Stack Viewers" }
       ],
       "other_improvements": [
         { "num": 11995, "desc": "ActionButtons with reports shouldn't display them if report is empty" }
