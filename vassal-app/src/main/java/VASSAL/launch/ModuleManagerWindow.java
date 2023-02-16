@@ -1610,7 +1610,9 @@ public class ModuleManagerWindow extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
           removeModule(file);
-          //cleanupTileCache();  // Sometimes they might have another copy of same module in the list, and ended up with TileNotFound exceptions
+          if (!AbstractLaunchAction.anyInUse()) {
+            cleanupTileCache();
+          }
         }
       });
 
