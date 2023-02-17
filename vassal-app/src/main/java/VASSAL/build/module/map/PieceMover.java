@@ -1727,10 +1727,15 @@ public class PieceMover extends AbstractBuildable
           final int y = EXTRA_BORDER - boundingBox.y + pos.y - offset.y;
 
           String owner = "";
-          if (piece.getParent() instanceof Deck) {
+          final GamePiece parent = piece.getParent();
+          boolean faceDown = false;
+          if (parent instanceof Deck) {
             owner = (String)piece.getProperty(Properties.OBSCURED_BY);
-            piece.setProperty(Properties.OBSCURED_BY, ((Deck) piece.getParent()).isFaceDown() ? Deck.NO_USER : null);
-            piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.TRUE);
+            faceDown = ((Deck) parent).isFaceDown();
+            piece.setProperty(Properties.OBSCURED_BY, faceDown ? Deck.NO_USER : null);
+            if (faceDown) {
+              piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.TRUE);
+            }
           }
 
           final AffineTransform t = AffineTransform.getScaleInstance(zoom, zoom);
@@ -1747,7 +1752,9 @@ public class PieceMover extends AbstractBuildable
 
           if (piece.getParent() instanceof Deck) {
             piece.setProperty(Properties.OBSCURED_BY, owner);
-            piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.FALSE);
+            if (faceDown) {
+              piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.FALSE);
+            }
           }
 
           final Mat mat = (Mat) Decorator.getDecorator(piece, Mat.class);
