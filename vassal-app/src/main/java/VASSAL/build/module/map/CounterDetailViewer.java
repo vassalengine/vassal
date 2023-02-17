@@ -396,15 +396,16 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     lastPieceBounds.width = dbounds.width;
     lastPieceBounds.height = dbounds.height;
 
+    if (fgColor != null) {
+      g.setColor(fgColor);
+      g.fillRect(dbounds.x - borderThickness, dbounds.y - borderThickness, dbounds.width + borderThickness*2, dbounds.height + borderThickness*2);
+      //g.drawRect(dbounds.x - 1, dbounds.y - 1, dbounds.width + 1, dbounds.height + 1);
+      //g.drawRect(dbounds.x - 2, dbounds.y - 2, dbounds.width + 3, dbounds.height + 3);
+    }
+
     if (bgColor != null) {
       g.setColor(bgColor);
       g.fillRect(dbounds.x, dbounds.y, dbounds.width, dbounds.height);
-    }
-
-    if (fgColor != null) {
-      g.setColor(fgColor);
-      g.drawRect(dbounds.x - 1, dbounds.y - 1, dbounds.width + 1, dbounds.height + 1);
-      g.drawRect(dbounds.x - 2, dbounds.y - 2, dbounds.width + 3, dbounds.height + 3);
     }
 
     final Shape oldClip = g.getClip();
