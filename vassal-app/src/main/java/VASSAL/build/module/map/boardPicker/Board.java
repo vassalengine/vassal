@@ -608,14 +608,18 @@ public class Board extends AbstractConfigurable implements GridContainer {
     return grid == null ? null : grid.localizedLocationName(localCoordinates(p));
   }
 
-  public Point snapTo(Point p) {
-    return grid == null ? p : globalCoordinates(grid.snapTo(localCoordinates(p)));
+  public Point snapTo(Point p, boolean force) {
+    return grid == null ? p : globalCoordinates(grid.snapTo(localCoordinates(p), force));
   }
 
-  /**
-   * @return true if the given point may not be a local location.
-   * I.e., if this grid will attempt to snap it to the nearest grid location.
-   */
+  public Point snapTo(Point p) {
+    return snapTo(p, false);
+  }
+
+    /**
+     * @return true if the given point may not be a local location.
+     * I.e., if this grid will attempt to snap it to the nearest grid location.
+     */
   public boolean isLocationRestricted(Point p) {
     return grid != null && grid.isLocationRestricted(localCoordinates(p));
   }

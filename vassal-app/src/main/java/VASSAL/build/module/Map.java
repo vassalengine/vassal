@@ -1250,7 +1250,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @see Board#snapTo
    * @see VASSAL.build.module.map.boardPicker.board.MapGrid#snapTo
    */
-  public Point snapTo(Point p) {
+  public Point snapTo(Point p, boolean force) {
     Point snap = new Point(p);
 
     final Board b = findBoard(p);
@@ -1258,7 +1258,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 
     final Rectangle r = b.bounds();
     snap.translate(-r.x, -r.y);
-    snap = b.snapTo(snap);
+    snap = b.snapTo(snap, force);
     snap.translate(r.x, r.y);
 
     //CC bugfix13409
@@ -1267,7 +1267,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     if (bSnappedTo != null && !b.equals(bSnappedTo)) {
       final Rectangle rSnappedTo = bSnappedTo.bounds();
       snap.translate(-rSnappedTo.x, -rSnappedTo.y);
-      snap = bSnappedTo.snapTo(snap);
+      snap = bSnappedTo.snapTo(snap, force);
       snap.translate(rSnappedTo.x, rSnappedTo.y);
     }
     // RFE 882378
@@ -1293,10 +1293,16 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     return snap;
   }
 
-  /**
-   * @return The buffer of empty space around the boards in the Map window,
-   * in component coordinates at 100% zoom
-   */
+
+  public Point snapTo(Point p) {
+    return snapTo(p, false);
+  }
+
+
+    /**
+     * @return The buffer of empty space around the boards in the Map window,
+     * in component coordinates at 100% zoom
+     */
   public Dimension getEdgeBuffer() {
     return new Dimension(edgeBuffer);
   }

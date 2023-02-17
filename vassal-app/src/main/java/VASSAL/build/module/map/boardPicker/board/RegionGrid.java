@@ -335,16 +335,20 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
   // Locate nearest point
   //
   @Override
-  public Point snapTo(Point p) {
+  public Point snapTo(Point p, boolean force) {
 
     //
     // Need at least one point to snap to and snapping needs to be pn.
     //
-    if (!snapTo || regionList.isEmpty()) {
+    if ((!snapTo && !force) || regionList.isEmpty()) {
       return p;
     }
 
     return doSnap(p);
+  }
+
+  public Point snapTo(Point p) {
+    return snapTo(p, false);
   }
 
   @Override
