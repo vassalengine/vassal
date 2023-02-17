@@ -1234,6 +1234,9 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       if (isShowOthers()) {
         prepareOtherConfigurers();
       }
+      else {
+        setCachedBoard("^#%$NO-WANNA-WONGA=="); //NON-NLS  //BR// Whump the cache so we know to re-prepare if it gets turned on later
+      }
     }
 
     private void drawOtherStack(SetupStack s, Graphics2D g, Rectangle vrect, double os_scale) {
