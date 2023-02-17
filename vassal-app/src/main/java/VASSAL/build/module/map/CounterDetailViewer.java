@@ -398,62 +398,60 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     final double graphicsZoom = graphicsZoomLevel;
 
     if (displayableTerrain) {
-      g.setClip(dbounds.x, dbounds.y, (int) Math.ceil(showTerrainWidth * showTerrainZoom * os_scale), (int) Math.ceil(showTerrainHeight * showTerrainZoom * os_scale));
+      final Collection<Board> boards = map.getBoards();
 
-      // get map reference point
-      final Point ptMap = pieces.isEmpty() ?
-        map.snapTo(map.componentToMap(currentMousePosition.getPoint())) :
-        pieces.get(0).getPosition();
+      if (!boards.isEmpty()) {
+        // get map reference point
+        final Point ptMap = pieces.isEmpty() ?
+          map.componentToMap(currentMousePosition.getPoint()) :
+          pieces.get(0).getPosition();
 
-      // get the drawing reference point
-      final Point ptDr = map.mapToDrawing(ptMap, os_scale);
-      ptDr.x -= dbounds.width / 2;
-      ptDr.y -= dbounds.height / 2;
+        // get the rectangle of the map to draw
+        final Rectangle vrMap = new Rectangle(
+          ptMap.x - showTerrainWidth/2,
+          ptMap.y - showTerrainHeight/2,
+          showTerrainWidth,
+          showTerrainHeight
+        );
 
-      // get the rectangle of the map to draw
-      final Rectangle vrMap = new Rectangle(
-        ptMap.x - showTerrainWidth/2,
-        ptMap.y - showTerrainHeight/2,
-        showTerrainWidth,
-        showTerrainHeight
-      );
+        final double mag = boards.iterator().next().getMagnification();
+        final double dzoom = showTerrainZoom * os_scale / mag;
 
-      // translate the drawing transform by the difference between the
-      // drawing bounds and the drawing reference point
-      final AffineTransform orig_t = g2d.getTransform();
-      final AffineTransform at = new AffineTransform(orig_t);
-      at.translate(dbounds.x - ptDr.x, dbounds.y - ptDr.y);
+        final Rectangle drect = new Rectangle(
+          (int)(vrMap.x * showTerrainZoom * os_scale / mag),
+          (int)(vrMap.y * showTerrainZoom * os_scale / mag),
+          (int)(vrMap.width * showTerrainZoom * os_scale / mag),
+          (int)(vrMap.height * showTerrainZoom * os_scale / mag)
+        );
 
-      g2d.setTransform(at);
+        // restrict drawing to the area we want to draw on
+        g2d.setClip(
+          dbounds.x,
+          dbounds.y + (centerPiecesVertically ? (dbounds.height - drect.height) / 2 : 0),
+          (int) Math.ceil(showTerrainWidth * showTerrainZoom * os_scale),
+          (int) Math.ceil(showTerrainHeight * showTerrainZoom * os_scale)
+        );
 
-      // - (centerPiecesVertically ? (int)(dbounds.height/2 - showTerrainHeight * showTerrainZoom * os_scale / 2) : 0)
+        // translate the drawing transform
+        final AffineTransform orig_t = g2d.getTransform();
 
-      // draw the map
-      double dzoom = showTerrainZoom * os_scale;
-      Rectangle rect = null;
-      for (final Board b: map.getBoards()) {
-        if (rect == null) {
-          final double mag = b.getMagnification();
-          dzoom /= mag;
+        final AffineTransform at = new AffineTransform(orig_t);
+        at.translate(dbounds.x - drect.x, dbounds.y - drect.y);
 
-          rect = new Rectangle(
-            (int)(vrMap.x * showTerrainZoom * os_scale / mag),
-            (int)(vrMap.y * showTerrainZoom * os_scale  / mag),
-            (int)(vrMap.width * showTerrainZoom * os_scale  / mag),
-            (int)(vrMap.height * showTerrainZoom * os_scale / mag)
-          );
+        g2d.setTransform(at);
 
-          g2d.translate(ptDr.x - rect.x, ptDr.y - rect.y);
+        // draw the terrain
+        for (final Board b: boards) {
+          b.drawRegion(g2d, map.getLocation(b, dzoom), drect, dzoom, null);
         }
-        b.drawRegion(g2d, map.getLocation(b, dzoom), rect, dzoom, null);
-      }
 
-      if (isStopAfterShowing()) {
-        map.setAnyMouseoverDrawn(true);
-      }
+        if (isStopAfterShowing()) {
+          map.setAnyMouseoverDrawn(true);
+        }
 
-      g2d.setTransform(orig_t);
-      g2d.setClip(oldClip);
+        g2d.setTransform(orig_t);
+        g2d.setClip(oldClip);
+      }
 
       if (textVisible && showTerrainText.getFormat().length() > 0) {
         final Point mapPt = map.componentToMap(currentMousePosition.getPoint());
