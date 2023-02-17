@@ -1730,6 +1730,7 @@ public class PieceMover extends AbstractBuildable
           if (piece.getParent() instanceof Deck) {
             owner = (String)piece.getProperty(Properties.OBSCURED_BY);
             piece.setProperty(Properties.OBSCURED_BY, ((Deck) piece.getParent()).isFaceDown() ? Deck.NO_USER : null);
+            piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.TRUE);
           }
 
           final AffineTransform t = AffineTransform.getScaleInstance(zoom, zoom);
@@ -1739,6 +1740,7 @@ public class PieceMover extends AbstractBuildable
           piece.draw(g, x, y, map == null ? target : map.getView(), zoom);
           if (piece.getParent() instanceof Deck) {
             piece.setProperty(Properties.OBSCURED_BY, owner);
+            piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.FALSE);
           }
 
           g.setClip(null);
