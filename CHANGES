@@ -1,7 +1,9 @@
 3.6.13 - ???
 
 * 11995: ActionButtons with reports shouldn't display them if report is empty
+* 11897: Ensure that deleted extensions don't crash the Module Manager
 * 11693: Prevent NPE when copying folders containing Mouse-over Stack Viewers
+* 11173: Fixed crash in sorting a deck
 
 3.6.12 - 16 February 2023
 

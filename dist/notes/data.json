@@ -22,7 +22,9 @@
       "new_features": [
       ],
       "bug_fixes": [
-        { "num": 11693, "desc": "Prevent NPE when copying folders containing Mouse-over Stack Viewers" }
+        { "num": 11897, "desc": "Ensure that deleted extensions don't crash the Module Manager" },
+        { "num": 11693, "desc": "Prevent NPE when copying folders containing Mouse-over Stack Viewers" },
+        { "num": 11173, "desc": "Fixed crash in sorting a deck" }
       ],
       "other_improvements": [
         { "num": 11995, "desc": "ActionButtons with reports shouldn't display them if report is empty" }
