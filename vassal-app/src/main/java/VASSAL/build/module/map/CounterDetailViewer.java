@@ -125,6 +125,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public static final String DRAW_PIECES_AT_ZOOM = "graphicsZoom"; //NON-NLS
   public static final String BORDER_WIDTH = "borderWidth"; //NON-NLS
   public static final String SHOW_ONLY_TOP_OF_STACK = "showOnlyTopOfStack"; //NON-NLS
+  public static final String BORDER_THICKNESS = "borderThickness"; //NON-NLS
   public static final String SHOW_NOSTACK = "showNoStack"; //NON-NLS
 
   public static final String SHOW_MOVE_SELECTED = "showMoveSelectde"; //NON-NLS
@@ -207,7 +208,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected boolean showOverlap = false;
   protected double zoomLevel = 1.0;
   protected double graphicsZoomLevel = 1.0;
-  protected int borderWidth = 0;
+  protected int borderWidth = 0;      // This ill-named field is actually the extra horizontal padding between pieces
+  protected int borderThickness = 2;  // This is the thickness of the surrounding border
   protected int extraTextPadding = 0;
   protected boolean showOnlyTopOfStack = false;
   protected boolean showNoStack = false;
@@ -975,8 +977,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
             apply(s.topPiece());
           }
           else {
-            s.asList().forEach(this::apply);
-          }
+          s.asList().forEach(this::apply);
+        }
         }
         else {
           for (int i = 0; (i < shapes.length) && (i < s.getPieceCount()); ++i) {
@@ -1182,6 +1184,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       MINIMUM_DISPLAYABLE,
       ZOOM_LEVEL,
       CENTER_ALL,
+      BORDER_THICKNESS,
       DRAW_PIECES,
       CENTER_PIECES_VERTICALLY,
       DRAW_PIECES_AT_ZOOM,
@@ -1235,6 +1238,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       Resources.getString("Editor.MouseOverStackViewer.display_pieces"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.display_zoom"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.center_all"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.border_thickness"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.draw_pieces"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.center_pieces_vertically"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.draw_zoom"), //$NON-NLS-1$
@@ -1289,6 +1293,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       MinConfig.class,
       Double.class,
       Boolean.class,
+      Integer.class,
       Boolean.class,
       Boolean.class,
       Double.class,
@@ -1448,6 +1453,14 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       }
       else {
         centerAll = (Boolean) value;
+      }
+    }
+    else if (BORDER_THICKNESS.equals(name)) {
+      if (value instanceof String) {
+        borderThickness = Integer.parseInt((String)value);
+      }
+      else {
+        borderThickness = (Integer) value;
       }
     }
     else if (COMBINE_COUNTER_SUMMARY.equals(name)) {
@@ -1750,6 +1763,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     else if (CENTER_ALL.equals(name)) {
       return String.valueOf(centerAll);
+    }
+    else if (BORDER_THICKNESS.equals(name)) {
+      return String.valueOf(borderThickness);
     }
     else if (COMBINE_COUNTER_SUMMARY.equals(name)) {
       return String.valueOf(combineCounterSummary);
