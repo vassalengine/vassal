@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 12016, "desc": "Fix a possible crash scenario in At-Start Stacks" },
         { "num": 11897, "desc": "Ensure that deleted extensions don't crash the Module Manager" },
         { "num": 11693, "desc": "Prevent NPE when copying folders containing Mouse-over Stack Viewers" },
         { "num": 11173, "desc": "Fixed crash in sorting a deck" }

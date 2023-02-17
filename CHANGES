@@ -1,5 +1,6 @@
 3.6.13 - ???
 
+* 12016: Fix a possible crash scenario in At-Start Stacks
 * 11995: ActionButtons with reports shouldn't display them if report is empty
 * 11897: Ensure that deleted extensions don't crash the Module Manager
 * 11693: Prevent NPE when copying folders containing Mouse-over Stack Viewers
