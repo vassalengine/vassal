@@ -347,6 +347,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     return doSnap(p);
   }
 
+  @Override
   public Point snapTo(Point p) {
     return snapTo(p, false);
   }
