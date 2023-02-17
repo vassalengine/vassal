@@ -162,6 +162,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   public static void setUsedBoardWildcard(String s) {
     usedBoardWildcard = s;
   }
+
   public static void setCachedBoard(String s) {
     cachedBoard = s;
   }
