@@ -2243,7 +2243,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
 
     // Create a mutable list containing all the pieces
-    final List<GamePiece> pieces = new ArrayList<>(Arrays.asList(contents));
+    final List<GamePiece> pieces = new ArrayList<>(Arrays.asList(contents).subList(0, pieceCount));
 
     // Sort using the supplied SortParameters
     Collections.sort(pieces, new SortParameterComparator(sortParameters));
