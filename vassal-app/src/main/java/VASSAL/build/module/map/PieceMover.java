@@ -1738,16 +1738,17 @@ public class PieceMover extends AbstractBuildable
           g.setClip(t.createTransformedShape(piece.getShape()));
 
           piece.draw(g, x, y, map == null ? target : map.getView(), zoom);
-          if (piece.getParent() instanceof Deck) {
-            piece.setProperty(Properties.OBSCURED_BY, owner);
-            piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.FALSE);
-          }
 
           g.setClip(null);
 
           final Highlighter highlighter = map == null ?
             BasicPiece.getHighlighter() : map.getHighlighter();
           highlighter.draw(piece, g, x, y, null, zoom);
+
+          if (piece.getParent() instanceof Deck) {
+            piece.setProperty(Properties.OBSCURED_BY, owner);
+            piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.FALSE);
+          }
 
           final Mat mat = (Mat) Decorator.getDecorator(piece, Mat.class);
           if (mat != null) {
