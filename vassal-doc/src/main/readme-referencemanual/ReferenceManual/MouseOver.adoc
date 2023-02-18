@@ -68,7 +68,19 @@ The sum of the numeric values of this property for all included pieces will be s
 *Include individual pieces:*::  Specifies whether/how pieces are to be selected for inclusion in the viewer based on their layer.
 You may restrict the pieces according to the <<GamePieceLayers.adoc#top,Game Piece Layer>> to which they belong.
 
-*Property Match Expression:*::  You may specify a <<PropertyMatchExpression.adoc#top,Property Match Expression>> to match desired values of one or more <<Properties.adoc#top,Properties>> in order for a piece to be included.
+*Piece selection property filter:*::  You may specify a <<PropertyMatchExpression.adoc#top,Property Match Expression>> to match desired values of one or more <<Properties.adoc#top,Properties>> in order for a piece to be included.
+
+*Include terrain beneath as an additional "piece":*::  If set to _Always_, the map/board surface beneath the pieces will be shown as if it were an additional piece. If set to _If at least one other piece_, the mapboard surface will be shown as long as at least one actual piece is found by this mouseover. If set to _Never_, the map/board surface beneath the piece(s) will not be shown.
+
+*Force snap to map grid when displaying terrain:*::  If selected, then when showing terrain the center point will be determined by "snapping" the cursor location to the nearest region/hex/square in the map grid, regardless of whether the grid is normally set to "snap to".
+
+*Width of terrain on map to grab for display:*::  When showing terrain, this specifies the width (in map coordinates) to be grabbed for display.
+
+*Height of terrain on map to grab for display:*::  When showing terrain, this specifies the height (in map coordinates) to be grabbed for display.
+
+*Zoom factor to display terrain:*::  When showing terrain, this specifies the zoom factor to display the terrain after it has been grabbed from the map.
+
+*Text below terrain:*::  When showing terrain, this specifies optional summary text to display beneath the grabbed terrain icon (a similar function to the _Text below each piece_ field).
 
 *Include non-stacking pieces:*::  If selected, then pieces with a <<NonStacking.adoc#top,Does not stack>> trait specifying the piece does not Stack are eligible for inclusion in the viewer.
 Otherwise, they are excluded regardless of any other filters.
