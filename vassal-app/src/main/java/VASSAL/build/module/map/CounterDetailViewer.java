@@ -396,7 +396,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     lastPieceBounds.width = dbounds.width;
     lastPieceBounds.height = dbounds.height;
 
-    if (fgColor != null) {
+    if ((fgColor != null) && (borderThickness > 0)) {
       g.setColor(fgColor);
       g.fillRect(dbounds.x - borderThickness, dbounds.y - borderThickness, dbounds.width + borderThickness*2, dbounds.height + borderThickness*2);
       //g.drawRect(dbounds.x - 1, dbounds.y - 1, dbounds.width + 1, dbounds.height + 1);
@@ -493,7 +493,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
             drawLabel(g, new Point(lastPieceBounds.x - 1, y), pieces.isEmpty() ? text : " ", LabelUtils.CENTER, LabelUtils.CENTER,
               lastPieceBounds.width + 2,
               lastPieceBounds.width + 2,
-              1,
+              borderThickness - 1,
               false);
             didadukey = true;
           }
@@ -568,7 +568,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
               drawLabel(g, new Point(lastPieceBounds.x - 1, y), ((pieces.size() == 1) || onlyShowFirstSummary) ? text : " ", LabelUtils.CENTER, LabelUtils.CENTER,
                 lastPieceBounds.width + 2,
                 lastPieceBounds.width + 2,
-                1,
+                borderThickness - 1,
                 false);
             }
             y -= 1; // Because the text just looks better in the combine-o-rama box this way.
@@ -691,7 +691,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
           drawLabel(g, new Point(x, y), report, centerText ? LabelUtils.CENTER : LabelUtils.RIGHT, LabelUtils.BOTTOM,
             lastPieceBounds.width + 2, // Because for some reason somebody made the default box be "one pixel bigger in all directions". THANKS, somebody!
             stretchWidthSummary ? lastPieceBounds.width + 2 : 0, // If we're stretching-to-fit, our same width as the stretch-to-fit box.
-            stretchWidthSummary ? 1 : 0, // If stretching-to-fit, this tells the drawer about the entertaining "one extra pixel" issue.
+            stretchWidthSummary ? borderThickness - 1 : 0, // If stretching-to-fit, this tells the drawer about the entertaining "one extra pixel" issue.
             false);
         }
         else {
