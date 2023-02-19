@@ -236,12 +236,12 @@ public class LabelUtils {
 
     // Dimensions including extra text padding and extra border.
     final Dimension size2 = new Dimension();
-    size2.width  = size.width + textPad*2 + extraBorder;
+    size2.width  = size.width + textPad*2 + extraBorder*2;
     size2.height = size.height + textPad*2 + extraTop + extraBottom;
 
     // Dimensions also including any forced-stretch of width. This will be the outer bounds of the box we draw.
     final Dimension size3 = new Dimension();
-    size3.width   = Math.max(size2.width, minWidth + extraBorder);
+    size3.width   = Math.max(size2.width, minWidth);
     size3.height  = size2.height;
 
     g.setFont(f);
@@ -316,15 +316,15 @@ public class LabelUtils {
         if (extraTop > 0) {
           for (int extra = 0; extra < extraTop; extra++) {
             y1 += 1;
-            g.drawLine(xBox, y1, xBox + size3.width - 1, y1);
+            g.drawRect(xBox, y1, size3.width, 0);
           }
         }
 
         if (extraBottom > 0) {
-          y1 = y0 + size3.height - 1;
+          y1 = y0 + size3.height;
           for (int extra = 0; extra < extraBottom; extra++) {
             y1 -= 1;
-            g.drawLine(xBox, y1, xBox + size3.width - 1, y1);
+            g.drawRect(xBox, y1, size3.width, 0);
           }
         }
 
