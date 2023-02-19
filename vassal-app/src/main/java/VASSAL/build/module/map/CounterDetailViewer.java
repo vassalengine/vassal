@@ -586,14 +586,14 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   /** Set the bounds field large enough to accommodate the given set of pieces */
   protected void fixBounds(List<GamePiece> pieces) {
     if (displayableTerrain) {
-      bounds.width += (int) Math.round(showTerrainWidth * showTerrainZoom) + borderWidth;
-      bounds.height = Math.max(bounds.height, (int)Math.round(showTerrainHeight * showTerrainZoom) + borderWidth * 2);
+      bounds.width += (int) Math.ceil(showTerrainWidth * showTerrainZoom) + borderWidth;
+      bounds.height = Math.max(bounds.height, (int)Math.ceil(showTerrainHeight * showTerrainZoom) + borderWidth * 2);
     }
 
     for (final GamePiece piece : pieces) {
       final Dimension pieceBounds = getBounds(piece).getSize();
-      bounds.width += (int) Math.round(pieceBounds.width * graphicsZoomLevel) + borderWidth;
-      bounds.height = Math.max(bounds.height, (int) Math.round(pieceBounds.height * graphicsZoomLevel) + borderWidth * 2);
+      bounds.width += (int) Math.ceil(pieceBounds.width * graphicsZoomLevel) + borderWidth;
+      bounds.height = Math.max(bounds.height, (int) Math.ceil(pieceBounds.height * graphicsZoomLevel) + borderWidth * 2);
     }
 
     bounds.width += borderWidth;
