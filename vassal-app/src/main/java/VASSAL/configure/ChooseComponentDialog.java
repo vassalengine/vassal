@@ -51,7 +51,7 @@ public class ChooseComponentDialog extends JDialog implements TreeSelectionListe
     this.targetClass = targetClass;
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-    tree = new ConfigureTree(GameModule.getGameModule(), null) {
+    tree = new ConfigureTree(GameModule.getGameModule(), null, null, true) {
       private static final long serialVersionUID = 1L;
 
       @Override

@@ -195,10 +195,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
    * Creates new ConfigureTree
    */
   public ConfigureTree(Configurable root, HelpWindow helpWindow) {
-    this(root, helpWindow, null);
+    this(root, helpWindow, null, false);
   }
 
   public ConfigureTree(Configurable root, HelpWindow helpWindow, EditorWindow editorWindow) {
+    this(root, helpWindow, null, false);
+  }
+
+  public ConfigureTree(Configurable root, HelpWindow helpWindow, EditorWindow editorWindow, boolean disableDragAndDrop) {
     toggleClickCount = 3;
     this.helpWindow = helpWindow;
     this.editorWindow = editorWindow;
@@ -266,9 +270,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
     createKeyBindings();
 
-    setDragEnabled(true);
-    setDropMode(DropMode.ON_OR_INSERT);
-    setTransferHandler(new TreeTransferHandler());
+    if (!disableDragAndDrop) {
+      setDragEnabled(true);
+      setDropMode(DropMode.ON_OR_INSERT);
+      setTransferHandler(new TreeTransferHandler());
+    }
   }
 
 
