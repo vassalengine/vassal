@@ -199,7 +199,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   public ConfigureTree(Configurable root, HelpWindow helpWindow, EditorWindow editorWindow) {
-    this(root, helpWindow, null, false);
+    this(root, helpWindow, editorWindow, false);
   }
 
   public ConfigureTree(Configurable root, HelpWindow helpWindow, EditorWindow editorWindow, boolean disableDragAndDrop) {
