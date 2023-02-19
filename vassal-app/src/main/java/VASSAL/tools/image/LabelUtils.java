@@ -298,7 +298,7 @@ public class LabelUtils {
     // Draws our border
     if (borderColor != null) {
       g.setColor(borderColor);
-      g.drawRect(xBox, y0, size3.width, size3.height); // The basic single box for 0 extra height/width
+      g.drawRect(xBox, y0, size3.width - 1, size3.height - 1); // The basic single box for 0 extra height/width
 
       if ((extraBorder > 0) || (extraTop > 0) || (extraBottom > 0)) {
         int x1 = xBox;
@@ -309,14 +309,14 @@ public class LabelUtils {
           for (int extra = 0; extra < extraBorder; extra++) {
             x1 += 1;
             width -= 2;
-            g.drawRect(x1, y1, width, size3.height);
+            g.drawRect(x1, y1, width - 1, size3.height - 1);
           }
         }
 
         if (extraTop > 0) {
           for (int extra = 0; extra < extraTop; extra++) {
             y1 += 1;
-            g.drawRect(xBox, y1, size3.width, 0);
+            g.drawRect(xBox, y1, size3.width - 1, 0);
           }
         }
 
@@ -324,7 +324,7 @@ public class LabelUtils {
           y1 = y0 + size3.height;
           for (int extra = 0; extra < extraBottom; extra++) {
             y1 -= 1;
-            g.drawRect(xBox, y1, size3.width, 0);
+            g.drawRect(xBox, y1, size3.width - 1, 0);
           }
         }
 
