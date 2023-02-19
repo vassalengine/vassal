@@ -30,6 +30,7 @@ import VASSAL.counters.PieceCloner;
 import VASSAL.counters.PlaceMarker;
 import VASSAL.counters.Properties;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.NamedKeyStroke;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -308,8 +309,12 @@ public class GpIdChecker {
         final String newState = findState(oldPiece, p, decoratorNew, p.getClass());
         // Do not copy the state of Marker traits, we want to see the new value from the new definition
         if (newState != null && newState.length() > 0 && !(decoratorNew instanceof Marker)) {
-          decoratorNew.mySetState(newState);
+          // Do not copy Labeler (Text Label) label state UNLESS this Text Label has the capacity to be manually updated
+          if (!(decoratorNew instanceof Labeler) || ((((Labeler)decoratorNew).getLabelKey() != null) && !NamedKeyStroke.NULL_KEYSTROKE.equals(((Labeler)decoratorNew).getLabelKey()))) {
+            decoratorNew.mySetState(newState);
+          }
         }
+
         p = decoratorNew.getInner();
       }
     }

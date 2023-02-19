@@ -127,6 +127,10 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     setInner(d);
   }
 
+  public NamedKeyStroke getLabelKey() {
+    return labelKey;
+  }
+
   @Override
   public void mySetType(String type) {
     commands = null;
