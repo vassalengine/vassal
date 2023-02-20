@@ -116,6 +116,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public static final String ONLY_SHOW_FIRST_SUMMARY = "onlyShowFirstSummary"; //NON-NLS
   public static final String VERTICAL_OFFSET = "verticalOffset"; //NON-NLS
   public static final String VERTICAL_TOP_TEXT = "verticalTopText"; //NON-NLS
+  public static final String VERTICAL_BOTTOM_TEXT = "verticalBottomText"; //NON-NLS
   public static final String STRETCH_WIDTH_SUMMARY = "stretchWidthSummary"; //NON-NLS
   public static final String SHOW_TEXT = "showtext"; //NON-NLS
   public static final String ENABLE_HTML = "enableHTML"; //NON-NLS
@@ -189,7 +190,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected boolean combineCounterSummary = false;
   protected boolean onlyShowFirstSummary = false;
   protected int verticalOffset = 0;
-  protected int verticalTopText = 5;
+  protected int verticalTopText = 5;               // Here we preserve the Magic Numbers Of The Ancients as defaults
+  protected int verticalBottomText = 10;           // Here we preserve the Magic Numbers Of The Ancients as defaults
   protected boolean stretchWidthSummary = false;
   protected boolean unrotatePieces = false;
   protected boolean showDeck = false;
@@ -486,13 +488,13 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         showTerrainText.setProperty(BasicPiece.CURRENT_ZONE, zone);
 
         final String text = showTerrainText.getLocalizedText(this, "Editor.MouseOverStackViewer.text_below");
-        final int y = dbounds.y + dbounds.height + 10 + extraTextPadding * 2;
+        final int y = dbounds.y + dbounds.height + verticalBottomText + extraTextPadding * 2;
         if (text.length() > 0) {
           // If we're doing the "stretch the bottom all the way across" thing, then draw our "master box" now.
           if (combineCounterSummary && stretchWidthSummary) {
             drawLabel(g, new Point(lastPieceBounds.x - 1, y), pieces.isEmpty() ? text : " ", LabelUtils.CENTER, LabelUtils.CENTER,
               lastPieceBounds.width + 2,
-              lastPieceBounds.width + 2,
+              lastPieceBounds.width + borderThickness * 2,
               borderThickness - 1,
               false);
             didadukey = true;
@@ -560,18 +562,18 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       // Draw text underneath counters if any is specified
       if (isTextUnderCounters()) {
         final String text = counterReportFormat.getLocalizedText(piece, this, "Editor.MouseOverStackViewer.text_below");
-        int y = dbounds.y + dbounds.height + 10 + extraTextPadding * 2;
+        int y = dbounds.y + dbounds.height + verticalBottomText + extraTextPadding * 2;
         if (text.length() > 0) {
           // If this is our very first counter to have text, AND we're doing the "stretch the bottom all the way across" thing, then draw our "master box" now.
           if (combineCounterSummary && stretchWidthSummary) {
             if (!anyUnderText) {
               drawLabel(g, new Point(lastPieceBounds.x - 1, y), ((pieces.size() == 1) || onlyShowFirstSummary) ? text : " ", LabelUtils.CENTER, LabelUtils.CENTER,
                 lastPieceBounds.width + 2,
-                lastPieceBounds.width + 2,
+                lastPieceBounds.width + borderThickness * 2,
                 borderThickness - 1,
                 false);
             }
-            y -= 1; // Because the text just looks better in the combine-o-rama box this way.
+            y -= borderThickness - 1; // Since we won't be drawing borders w/ the individual entries, adjust the text position
           }
 
           // Draw text label for this counter. If we already have a combine-o-rama box, don't draw an extra round of box & background
@@ -1200,6 +1202,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       ONLY_SHOW_FIRST_SUMMARY,
       EXTRA_TEXT_PADDING,
       VERTICAL_TOP_TEXT,
+      VERTICAL_BOTTOM_TEXT,
       SHOW_TEXT_SINGLE_DEPRECATED,
       FONT_SIZE,
       SUMMARY_REPORT_FORMAT,
@@ -1254,6 +1257,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       Resources.getString("Editor.MouseOverStackViewer.only_show_first_summary"),
       Resources.getString("Editor.MouseOverStackViewer.extra_text_padding"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.vertical_top_text"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.vertical_bottom_text"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.display_text_obsolete"), //$NON-NLS-1$ Obsolete
       Resources.getString("Editor.font_size"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.summary_text"), //$NON-NLS-1$
@@ -1307,6 +1311,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       Boolean.class,
       Boolean.class,
       Boolean.class,
+      Integer.class,
       Integer.class,
       Integer.class,
       Boolean.class,
@@ -1502,6 +1507,14 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       }
       else {
         verticalTopText = (Integer) value;
+      }
+    }
+    else if (VERTICAL_BOTTOM_TEXT.equals(name)) {
+      if (value instanceof String) {
+        verticalBottomText = Integer.parseInt((String)value);
+      }
+      else {
+        verticalBottomText = (Integer) value;
       }
     }
     else if (STRETCH_WIDTH_SUMMARY.equals(name)) {
@@ -1783,6 +1796,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     else if (VERTICAL_TOP_TEXT.equals(name)) {
       return String.valueOf(verticalTopText);
     }
+    else if (VERTICAL_BOTTOM_TEXT.equals(name)) {
+      return String.valueOf(verticalBottomText);
+    }
     else if (STRETCH_WIDTH_SUMMARY.equals(name)) {
       return String.valueOf(stretchWidthSummary);
     }
@@ -1912,7 +1928,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     if (List.of(CENTER_PIECES_VERTICALLY, BORDER_WIDTH, DRAW_PIECES_AT_ZOOM, VERTICAL_OFFSET).contains(name)) {
       return () -> drawPieces;
     }
-    else if (List.of(FONT_SIZE, SUMMARY_REPORT_FORMAT, COUNTER_REPORT_FORMAT, ENABLE_HTML, CENTER_TEXT, EXTRA_TEXT_PADDING, VERTICAL_TOP_TEXT, STRETCH_WIDTH_SUMMARY).contains(name)) {
+    else if (List.of(FONT_SIZE, SUMMARY_REPORT_FORMAT, COUNTER_REPORT_FORMAT, ENABLE_HTML, CENTER_TEXT, EXTRA_TEXT_PADDING, VERTICAL_TOP_TEXT, VERTICAL_BOTTOM_TEXT, STRETCH_WIDTH_SUMMARY).contains(name)) {
       return () -> showText;
     }
     else if (List.of(COMBINE_COUNTER_SUMMARY, ONLY_SHOW_FIRST_SUMMARY).contains(name)) {

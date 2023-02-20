@@ -321,7 +321,7 @@ public class LabelUtils {
         }
 
         if (extraBottom > 0) {
-          y1 = y0 + size3.height;
+          y1 = y0 + size3.height - 1;
           for (int extra = 0; extra < extraBottom; extra++) {
             y1 -= 1;
             g.drawRect(xBox, y1, size3.width - 1, 0);
