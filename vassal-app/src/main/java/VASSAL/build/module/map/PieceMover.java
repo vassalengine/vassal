@@ -1727,9 +1727,15 @@ public class PieceMover extends AbstractBuildable
           final int y = EXTRA_BORDER - boundingBox.y + pos.y - offset.y;
 
           String owner = "";
-          if (piece.getParent() instanceof Deck) {
+          final GamePiece parent = piece.getParent();
+          boolean faceDown = false;
+          if (parent instanceof Deck) {
             owner = (String)piece.getProperty(Properties.OBSCURED_BY);
-            piece.setProperty(Properties.OBSCURED_BY, ((Deck) piece.getParent()).isFaceDown() ? Deck.NO_USER : null);
+            faceDown = ((Deck) parent).isFaceDown();
+            piece.setProperty(Properties.OBSCURED_BY, faceDown ? Deck.NO_USER : null);
+            if (faceDown) {
+              piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.TRUE);
+            }
           }
 
           final AffineTransform t = AffineTransform.getScaleInstance(zoom, zoom);
@@ -1737,15 +1743,19 @@ public class PieceMover extends AbstractBuildable
           g.setClip(t.createTransformedShape(piece.getShape()));
 
           piece.draw(g, x, y, map == null ? target : map.getView(), zoom);
-          if (piece.getParent() instanceof Deck) {
-            piece.setProperty(Properties.OBSCURED_BY, owner);
-          }
 
           g.setClip(null);
 
           final Highlighter highlighter = map == null ?
             BasicPiece.getHighlighter() : map.getHighlighter();
           highlighter.draw(piece, g, x, y, null, zoom);
+
+          if (piece.getParent() instanceof Deck) {
+            piece.setProperty(Properties.OBSCURED_BY, owner);
+            if (faceDown) {
+              piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.FALSE);
+            }
+          }
 
           final Mat mat = (Mat) Decorator.getDecorator(piece, Mat.class);
           if (mat != null) {
