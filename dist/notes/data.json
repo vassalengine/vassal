@@ -30,6 +30,7 @@
       ],
       "other_improvements": [
         { "num": 11995, "desc": "ActionButtons with reports shouldn't display them if report is empty" },
+        { "num": 11967, "desc": "When dragging piece out of face-down deck, use unrotated shape" },
         { "num": 10877, "desc": "Added a 'player joined' message when playing online" },
         { "num": 9786, "desc": "Text Label traits will respond to GameRefresher (unless trait has a manually-change-label hotkey defined)" }
       ]

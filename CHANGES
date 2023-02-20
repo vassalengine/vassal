@@ -2,6 +2,7 @@
 
 * 12016: Fix a possible crash scenario in At-Start Stacks
 * 11995: ActionButtons with reports shouldn't display them if report is empty
+* 11967: When dragging piece out of face-down deck, use unrotated shape
 * 11897: Ensure that deleted extensions don't crash the Module Manager
 * 11693: Prevent NPE when copying folders containing Mouse-over Stack Viewers
 * 11451: Don't permit drag-and-drop within PlaceMarker, Replace with Other
