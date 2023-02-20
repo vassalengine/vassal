@@ -8,6 +8,8 @@
     selection dialogs
 * 11173: Fixed crash in sorting a deck
 * 10877: Added a 'player joined' message when playing online
+*  9786: Text Label traits will respond to GameRefresher (unless trait has a
+    manually-change-label hotkey defined)
 
 3.6.12 - 16 February 2023
 
