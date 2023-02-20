@@ -29,7 +29,8 @@
         { "num": 11173, "desc": "Fixed crash in sorting a deck" }
       ],
       "other_improvements": [
-        { "num": 11995, "desc": "ActionButtons with reports shouldn't display them if report is empty" }
+        { "num": 11995, "desc": "ActionButtons with reports shouldn't display them if report is empty" },
+        { "num": 10877, "desc": "Added a 'player joined' message when playing online" }
       ]
     },
     {

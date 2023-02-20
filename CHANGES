@@ -7,6 +7,7 @@
 * 11451: Don't permit drag-and-drop within PlaceMarker, Replace with Other
     selection dialogs
 * 11173: Fixed crash in sorting a deck
+* 10877: Added a 'player joined' message when playing online
 
 3.6.12 - 16 February 2023
 
