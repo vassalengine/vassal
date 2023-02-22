@@ -46,8 +46,8 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 /**
@@ -64,6 +64,10 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
   private int yOffset = 0;
   private String command;
   private NamedKeyStroke key;
+  private String commandTrue;
+  private NamedKeyStroke keyTrue;
+  private String commandFalse;
+  private NamedKeyStroke keyFalse;
   private final IconConfigurer movedIcon = new IconConfigurer("/images/moved.gif"); // NON-NLS
   private boolean hasMoved = false;
   private String description;
@@ -97,6 +101,20 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
     key = st.nextNamedKeyStroke('M');
     description = st.nextToken("");
     ignoreSameLocation = st.nextBoolean(false);
+    commandTrue = st.nextToken(Resources.getString("Editor.MovementMarkable.default_command_true"));
+    try {
+      keyTrue = st.nextNamedKeyStroke();
+    }
+    catch (NoSuchElementException e) {
+      keyTrue = NamedKeyStroke.NULL_KEYSTROKE;
+    }
+    commandFalse = st.nextToken(Resources.getString("Editor.MovementMarkable.default_command_false"));
+    try {
+      keyFalse = st.nextNamedKeyStroke();
+    }
+    catch (NoSuchElementException e) {
+      keyFalse = NamedKeyStroke.NULL_KEYSTROKE;
+    }
   }
 
   @Override
@@ -116,7 +134,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
   @Override
   public String myGetType() {
     final SequenceEncoder se = new SequenceEncoder(';');
-    se.append(movedIcon.getValueString()).append(xOffset).append(yOffset).append(command).append(key).append(description).append(ignoreSameLocation);
+    se.append(movedIcon.getValueString()).append(xOffset).append(yOffset).append(command).append(key).append(description).append(ignoreSameLocation).append(commandTrue).append(keyTrue).append(commandFalse).append(keyFalse);
     return ID + se.getValue();
   }
 
@@ -125,7 +143,9 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
     return command.isEmpty() || key == null || key.isNull() ?
       KeyCommand.NONE :
       new KeyCommand[] {
-        new KeyCommand(command, key, Decorator.getOutermost(this), this)
+        new KeyCommand(command, key, Decorator.getOutermost(this), this),
+        new KeyCommand(commandTrue, keyTrue, Decorator.getOutermost(this), this),
+        new KeyCommand(commandFalse, keyFalse, Decorator.getOutermost(this), this)
       };
   }
 
@@ -137,6 +157,18 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
       final ChangeTracker c = new ChangeTracker(this);
       // Set the property on the entire piece so all traits can respond
       Decorator.getOutermost(this).setProperty(Properties.MOVED, !hasMoved);
+      return c.getChangeCommand();
+    }
+    else if (keyTrue.equals(stroke)) {
+      final ChangeTracker c = new ChangeTracker(this);
+      // Set the property on the entire piece so all traits can respond
+      Decorator.getOutermost(this).setProperty(Properties.MOVED, true);
+      return c.getChangeCommand();
+    }
+    else if (keyFalse.equals(stroke)) {
+      final ChangeTracker c = new ChangeTracker(this);
+      // Set the property on the entire piece so all traits can respond
+      Decorator.getOutermost(this).setProperty(Properties.MOVED, false);
       return c.getChangeCommand();
     }
     else {
@@ -266,6 +298,10 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
     if (! Objects.equals(command, c.command)) return false;
     if (! Objects.equals(key, c.key)) return false;
     if (! Objects.equals(ignoreSameLocation, c.ignoreSameLocation)) return false;
+    if (! Objects.equals(keyTrue, c.keyTrue)) return false;
+    if (! Objects.equals(keyFalse, c.keyFalse)) return false;
+    if (! Objects.equals(commandTrue, c.commandTrue)) return false;
+    if (! Objects.equals(commandFalse, c.commandFalse)) return false;
     return Objects.equals(hasMoved, c.hasMoved);
   }
 
@@ -278,6 +314,10 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
     private final TraitConfigPanel box;
     private final StringConfigurer descInput;
     private final BooleanConfigurer sameConfig;
+    private final StringConfigurer commandTrue;
+    private final NamedHotKeyConfigurer keyTrue;
+    private final StringConfigurer commandFalse;
+    private final NamedHotKeyConfigurer keyFalse;
 
     private Ed(MovementMarkable p) {
 
@@ -289,10 +329,24 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
 
       command = new StringConfigurer(p.command);
       command.setHintKey("Editor.menu_command_hint");
-      box.add("Editor.menu_command", command);
+      box.add("Editor.MovementMarkable.menu_command", command);
 
       key = new NamedHotKeyConfigurer(p.key);
-      box.add("Editor.keyboard_command", key);
+      box.add("Editor.MovementMarkable.key_command", key);
+
+      commandTrue = new StringConfigurer(p.commandTrue);
+      commandTrue.setHintKey("Editor.menu_command_hint");
+      box.add("Editor.MovementMarkable.menu_command_true", commandTrue);
+
+      keyTrue = new NamedHotKeyConfigurer(p.keyTrue);
+      box.add("Editor.MovementMarkable.key_command_true", keyTrue);
+
+      commandFalse = new StringConfigurer(p.commandFalse);
+      commandFalse.setHintKey("Editor.menu_command_hint");
+      box.add("Editor.MovementMarkable.menu_command_false", commandFalse);
+
+      keyFalse = new NamedHotKeyConfigurer(p.keyFalse);
+      box.add("Editor.MovementMarkable.key_command_false", keyFalse);
 
       sameConfig = new BooleanConfigurer(p.ignoreSameLocation);
       box.add("Editor.MovementMarkable.ignore_same_location", sameConfig);
@@ -332,7 +386,11 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
           .append(command.getValueString())
           .append(key.getValueString())
           .append(descInput.getValueString())
-          .append(sameConfig.getValueString());
+          .append(sameConfig.getValueString())
+          .append(commandTrue.getValueString())
+          .append(keyTrue.getValueString())
+          .append(commandFalse.getValueString())
+          .append(keyFalse.getValueString());
       return ID + se.getValue();
     }
 
@@ -357,7 +415,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    return Collections.singletonList(key);
+    return List.of(key, keyTrue, keyFalse);
   }
 
   /**
@@ -365,7 +423,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getMenuTextList() {
-    return List.of(command);
+    return List.of(command, commandTrue, commandFalse);
   }
 
   @Override
