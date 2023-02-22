@@ -17,6 +17,26 @@
  */
 package VASSAL.counters;
 
+import VASSAL.build.GameModule;
+import VASSAL.build.module.GlobalOptions;
+import VASSAL.build.module.Map;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.command.ChangeTracker;
+import VASSAL.command.Command;
+import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.IconConfigurer;
+import VASSAL.configure.IntConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.Resources;
+import VASSAL.i18n.TranslatablePiece;
+import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.SequenceEncoder;
+
+import javax.swing.Icon;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -28,26 +48,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
 import java.util.Objects;
-import javax.swing.Icon;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-
-import VASSAL.build.module.GlobalOptions;
-import VASSAL.build.module.Map;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.command.ChangeTracker;
-import VASSAL.command.Command;
-import VASSAL.configure.IconConfigurer;
-import VASSAL.configure.IntConfigurer;
-import VASSAL.configure.NamedHotKeyConfigurer;
-import VASSAL.configure.StringConfigurer;
-import VASSAL.i18n.PieceI18nData;
-import VASSAL.i18n.Resources;
-import VASSAL.i18n.TranslatablePiece;
-import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.SequenceEncoder;
 
 /**
  *
@@ -66,6 +67,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
   private final IconConfigurer movedIcon = new IconConfigurer("/images/moved.gif"); // NON-NLS
   private boolean hasMoved = false;
   private String description;
+  private boolean ignoreSameLocation = false;
 
   public MovementMarkable() {
     this(ID + "moved.gif;0;0", null); // NON-NLS
@@ -94,11 +96,16 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
     command = st.nextToken(Resources.getString("Editor.MovementMarkable.default_command"));
     key = st.nextNamedKeyStroke('M');
     description = st.nextToken("");
+    ignoreSameLocation = st.nextBoolean(false);
   }
 
   @Override
   public void mySetState(String newState) {
     hasMoved = "true".equals(newState); // NON-NLS
+
+    if (ignoreSameLocation) {
+      GameModule.getGameModule().setTrueMovedSupport(true);
+    }
   }
 
   @Override
@@ -109,7 +116,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
   @Override
   public String myGetType() {
     final SequenceEncoder se = new SequenceEncoder(';');
-    se.append(movedIcon.getValueString()).append(xOffset).append(yOffset).append(command).append(key).append(description);
+    se.append(movedIcon.getValueString()).append(xOffset).append(yOffset).append(command).append(key).append(description).append(ignoreSameLocation);
     return ID + se.getValue();
   }
 
@@ -228,6 +235,12 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
       setMoved(Boolean.TRUE.equals(val));
       piece.setProperty(key, val); // So other traits can respond to the property change
     }
+    else if (Properties.MAYBE_MOVED.equals(key)) {
+      if (!ignoreSameLocation) {
+        setMoved(Boolean.TRUE.equals(val));
+      }
+      piece.setProperty(key, val); // So other traits can respond to the property change
+    }
     else {
       super.setProperty(key, val);
     }
@@ -252,6 +265,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
     if (! Objects.equals(yOffset, c.yOffset)) return false;
     if (! Objects.equals(command, c.command)) return false;
     if (! Objects.equals(key, c.key)) return false;
+    if (! Objects.equals(ignoreSameLocation, c.ignoreSameLocation)) return false;
     return Objects.equals(hasMoved, c.hasMoved);
   }
 
@@ -263,6 +277,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
     private final NamedHotKeyConfigurer key;
     private final TraitConfigPanel box;
     private final StringConfigurer descInput;
+    private final BooleanConfigurer sameConfig;
 
     private Ed(MovementMarkable p) {
 
@@ -278,6 +293,9 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
 
       key = new NamedHotKeyConfigurer(p.key);
       box.add("Editor.keyboard_command", key);
+
+      sameConfig = new BooleanConfigurer(p.ignoreSameLocation);
+      box.add("Editor.MovementMarkable.ignore_same_location", sameConfig);
 
       iconConfig = p.movedIcon;
       box.add("Editor.MovementMarkable.marker_image", iconConfig);
@@ -313,7 +331,8 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
           .append(yOff.getValueString())
           .append(command.getValueString())
           .append(key.getValueString())
-          .append(descInput.getValueString());
+          .append(descInput.getValueString())
+          .append(sameConfig.getValueString());
       return ID + se.getValue();
     }
 

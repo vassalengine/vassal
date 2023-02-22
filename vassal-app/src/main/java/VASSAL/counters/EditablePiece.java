@@ -80,9 +80,12 @@ public interface EditablePiece extends GamePiece {
 
     // If selected, mark piece as moved.
     if (mark_moved) {
-      final ChangeTracker tracker = new ChangeTracker(outer);
-      outer.setProperty(Properties.MOVED, Boolean.TRUE);
-      c = c.append(tracker.getChangeCommand());
+      final Map map = getMap();
+      if ((map != null) && map.isMarkMoved()) {
+        final ChangeTracker tracker = new ChangeTracker(outer);
+        outer.setProperty(Properties.MAYBE_MOVED, Boolean.TRUE);
+        c = c.append(tracker.getChangeCommand());
+      }
     }
 
     // Write the "Old Location" properties of the piece using the current location
@@ -96,6 +99,42 @@ public interface EditablePiece extends GamePiece {
     return c;
   }
 
+
+  /**
+   * Centralized method used when finishing up after a piece moves. Checks if LocationName or CurrentMatID changed
+   * and marks the piece moved if-and-only-if that happened.
+   * @return command to replicate any changes on another Vassal instance
+   */
+  @Override
+  default Command checkTrueMoved() {
+    final String loc = (String)getProperty(BasicPiece.LOCATION_NAME);
+    final String oldLoc = (String)getProperty(BasicPiece.OLD_LOCATION_NAME);
+
+    if ((loc == null) || loc.equals(oldLoc)) {
+      if (GameModule.getGameModule().isMatSupport()) {
+        final String mat = (String) getProperty(Mat.MAT_ID);
+        final String oldMat = (String) getProperty(BasicPiece.OLD_MAT_ID);
+        if ((mat == null) || mat.equals(oldMat)) {
+          return null;
+        }
+      }
+      else {
+        return null;
+      }
+    }
+
+    final GamePiece outer = Decorator.getOutermost(this);
+    final ChangeTracker tracker = new ChangeTracker(outer);
+    outer.setProperty(Properties.MOVED, Boolean.TRUE);
+    return tracker.getChangeCommand();
+  }
+
+
+  @Override
+  default Command finishMove(Command c, boolean afterburner, boolean findmat) {
+    return finishMove(c, afterburner, findmat, false);
+  }
+
   /**
    * Centralized method for finishing up after a piece moves. Optionally finds a new mat if needed,
    * and optionally applies any afterburner apply-on-move key for the piece's map. If we emptied any
@@ -106,11 +145,19 @@ public interface EditablePiece extends GamePiece {
    * @return A command for recreating anything this method does, appended to the command passed
    */
   @Override
-  default Command finishMove(Command c, boolean afterburner, boolean findmat) {
+  default Command finishMove(Command c, boolean afterburner, boolean findmat, boolean mark_moved) {
     final GamePiece outer = Decorator.getOutermost(this);
     if (findmat) {
       // If a cargo piece has been moved, find it a new Mat if needed.
       c = MatCargo.findNewMat(c, outer);
+    }
+
+    // If we're tracking "true moved" pieces then do the checks
+    if (mark_moved && GameModule.getGameModule().isTrueMovedSupport()) {
+      final Map map = getMap();
+      if ((map != null) && map.isMarkMoved()) {
+        c = c.append(checkTrueMoved());
+      }
     }
 
     // Apply "afterburner" apply-on-move key command

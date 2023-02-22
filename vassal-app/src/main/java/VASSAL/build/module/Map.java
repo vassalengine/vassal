@@ -367,6 +367,13 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   }
 
   /**
+   * @return true if the map marks pieces as moved
+   */
+  public boolean isMarkMoved() {
+    return !markMovedOption.equals(GlobalOptions.NEVER);
+  }
+
+  /**
    * Global Change Reporting control - used by Global Key Commands (see {@link GlobalCommand}) to
    * temporarily disable reporting while they run, if their "Suppress individual reports" option is selected.
    * @param b true to turn global change reporting on, false to turn it off.
