@@ -41,7 +41,7 @@ SEE ALSO: <<MovementTrail.adoc#top,Movement Trails>>)
 
 *Key command to mark as unmoved:*:: <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to force the piece's moved status to _false_ and clear any Movement Trails.
 
-*Ignore moves which don't change either Location Name or Mat:*:: If checked, then don't the piece as moved if neither its Location Name nor its mat changed as a result of its move. This can be used to ignore insignificant moves (e.g. a couple pixels in an area movement game).
+*Ignore moves which don't change either Location Name or Mat:*:: If checked, then don't mark the piece as moved if neither its Location Name nor its mat changed as a result of its move. This can be used to ignore insignificant moves (e.g. a couple pixels in an area movement game).
 
 *Marker Image:*:: Use the _Select_ button to load a new image or the _Default_ button to return to the default image.
 
