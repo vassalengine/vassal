@@ -231,9 +231,6 @@ public class LabelUtils {
       borderColor = null;
     }
 
-    x -= extraBorder;
-    y -= extraTop;
-
     // Dimensions including extra text padding and extra border.
     final Dimension size2 = new Dimension();
     size2.width  = size.width + textPad*2 + extraBorder*2;
@@ -245,8 +242,8 @@ public class LabelUtils {
     size3.height  = size2.height;
 
     g.setFont(f);
-    int x0 = x;
-    int y0 = y;
+    int x0 = x - extraBorder;
+    int y0 = y - extraTop;
     final int xBox;
 
     // If objectWidth is 0 (default), then x is the position for the text box (subject to alignment choice)
@@ -254,13 +251,12 @@ public class LabelUtils {
     if (objectWidth <= 0) {
       switch (hAlign) {
       case CENTER:
-        x0 = x - size2.width / 2;
+        x0 = x0 - size2.width / 2;
         break;
       case LEFT:
-        x0 = x - size2.width;
+        x0 = x0 - size2.width;
         break;
       case RIGHT:
-        x0 = x;
         break;
       }
       xBox = x0;
@@ -268,24 +264,23 @@ public class LabelUtils {
     else {
       switch (hAlign) {
       case CENTER:
-        x0 = x + objectWidth/2 - size2.width / 2;
+        x0 = x0 + objectWidth/2 - size2.width / 2;
         break;
       case LEFT:
-        x0 = x + objectWidth - size2.width;
+        x0 = x0 + objectWidth - size2.width;
         break;
       case RIGHT:
-        x0 = x;
         break;
       }
-      xBox = ((minWidth > 0) && (size3.width > size2.width)) ? x : x0;
+      xBox = (((minWidth > 0) && (size3.width > size2.width)) ? x - extraBorder : x0);
     }
 
     switch (vAlign) {
     case CENTER:
-      y0 = y - size2.height / 2;
+      y0 = y0 - size2.height / 2;
       break;
     case BOTTOM:
-      y0 = y - size2.height;
+      y0 = y0 - size2.height;
       break;
     }
 
@@ -327,21 +322,6 @@ public class LabelUtils {
             g.drawRect(xBox, y1, size3.width - 1, 0);
           }
         }
-
-        /*
-        if (extraBorder > 0) {
-          final Dimension size4 = new Dimension(size3);
-          int x1 = xBox;
-          int y1 = y0;
-          for (int extra = 0; extra < extraBorder; extra++) {
-            x1 += 1;
-            y1 += 1;
-            size4.width -= 2;
-            size4.height -= 2;
-            g.drawRect(x1, y1, size4.width, size4.height);
-          }
-        }
-        */
       }
     }
 
