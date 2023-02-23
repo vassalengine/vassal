@@ -400,9 +400,10 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
     if ((fgColor != null) && (borderThickness > 0)) {
       g.setColor(fgColor);
-      g.fillRect(dbounds.x - borderThickness, dbounds.y - borderThickness, dbounds.width + borderThickness*2, dbounds.height + borderThickness*2);
-      //g.drawRect(dbounds.x - 1, dbounds.y - 1, dbounds.width + 1, dbounds.height + 1);
-      //g.drawRect(dbounds.x - 2, dbounds.y - 2, dbounds.width + 3, dbounds.height + 3);
+      g.fillRect(dbounds.x - ((int)(borderThickness * os_scale)),
+                 dbounds.y - ((int)(borderThickness * os_scale)),
+              dbounds.width + ((int)(borderThickness*2 * os_scale)),
+             dbounds.height + ((int)(borderThickness*2 * os_scale)));
     }
 
     if (bgColor != null) {
@@ -488,14 +489,17 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         showTerrainText.setProperty(BasicPiece.CURRENT_ZONE, zone);
 
         final String text = showTerrainText.getLocalizedText(this, "Editor.MouseOverStackViewer.text_below");
-        final int y = dbounds.y + dbounds.height + verticalBottomText + extraTextPadding * 2;
+        int y = dbounds.y + dbounds.height + (int)((verticalBottomText + extraTextPadding * 2) * os_scale);
+        if (borderThickness > 2) {
+          y -= (borderThickness - 2) * os_scale; // Stuff was previously built around a border thickness of 2, so if it's more we attempt to adjust upwards for better results. Designer can manually adjust.
+        }
         if (text.length() > 0) {
           // If we're doing the "stretch the bottom all the way across" thing, then draw our "master box" now.
           if (combineCounterSummary && stretchWidthSummary) {
             drawLabel(g, new Point(lastPieceBounds.x - 1, y), pieces.isEmpty() ? text : " ", LabelUtils.CENTER, LabelUtils.CENTER,
               lastPieceBounds.width + 2,
-              lastPieceBounds.width + borderThickness * 2,
-              borderThickness - 1,
+              lastPieceBounds.width + (int)((borderThickness * 2) * os_scale),
+              (int)((borderThickness - 1) * os_scale),
               false);
             didadukey = true;
           }
@@ -562,18 +566,23 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       // Draw text underneath counters if any is specified
       if (isTextUnderCounters()) {
         final String text = counterReportFormat.getLocalizedText(piece, this, "Editor.MouseOverStackViewer.text_below");
-        int y = dbounds.y + dbounds.height + verticalBottomText + extraTextPadding * 2;
+        int y = dbounds.y + dbounds.height + (int)((verticalBottomText + extraTextPadding * 2) * os_scale);
+
+        if (borderThickness > 2) {
+          y += (borderThickness - 2) * os_scale; // Stuff was previously built around a border thickness of 2, so if it's more we attempt to adjust upwards for better results. Designer can manually adjust.
+        }
+
         if (text.length() > 0) {
           // If this is our very first counter to have text, AND we're doing the "stretch the bottom all the way across" thing, then draw our "master box" now.
           if (combineCounterSummary && stretchWidthSummary) {
             if (!anyUnderText) {
               drawLabel(g, new Point(lastPieceBounds.x - 1, y), ((pieces.size() == 1) || onlyShowFirstSummary) ? text : " ", LabelUtils.CENTER, LabelUtils.CENTER,
                 lastPieceBounds.width + 2,
-                lastPieceBounds.width + borderThickness * 2,
-                borderThickness - 1,
+                lastPieceBounds.width + (int)(borderThickness * 2 * os_scale),
+                (int)((borderThickness - 1) * os_scale),
                 false);
             }
-            y -= borderThickness - 1; // Since we won't be drawing borders w/ the individual entries, adjust the text position
+            y -= (borderThickness - 1) * os_scale; // Since we won't be drawing borders w/ the individual entries, adjust the text position
           }
 
           // Draw text label for this counter. If we already have a combine-o-rama box, don't draw an extra round of box & background
@@ -694,10 +703,13 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       if (report.length() > 0) {
         if (graphicsVisible) {
           x = (lastPieceBounds.x - 1); // We pass a clear picture of where our full piece-box is, to allow more options
+          if (borderThickness > 2) {
+            y += (borderThickness - 2) * os_scale; // Stuff was previously built around a border thickness of 2, so if it's more we attempt to adjust upwards for better results. Designer can manually adjust.
+          }
           drawLabel(g, new Point(x, y), report, centerText ? LabelUtils.CENTER : LabelUtils.RIGHT, LabelUtils.BOTTOM,
             lastPieceBounds.width + 2, // Because for some reason somebody made the default box be "one pixel bigger in all directions". THANKS, somebody!
-            stretchWidthSummary ? lastPieceBounds.width + borderThickness * 2 : 0, // If we're stretching-to-fit, our same width as the stretch-to-fit box.
-            stretchWidthSummary ? borderThickness - 1 : 0, // If stretching-to-fit, this tells the drawer about the entertaining "one extra pixel" issue.
+            stretchWidthSummary ? lastPieceBounds.width + (int)(borderThickness * 2 * os_scale) : 0, // If we're stretching-to-fit, our same width as the stretch-to-fit box.
+            stretchWidthSummary ? (int)((borderThickness - 1) * os_scale) : 0, // If stretching-to-fit, this tells the drawer about the entertaining "one extra pixel" issue.
             false);
         }
         else {
