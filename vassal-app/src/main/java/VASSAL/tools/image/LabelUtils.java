@@ -272,7 +272,7 @@ public class LabelUtils {
       case RIGHT:
         break;
       }
-      xBox = (((minWidth > 0) && (size3.width > size2.width)) ? x - extraBorder : x0 - extraBorder);
+      xBox = (((minWidth > 0) && (size3.width > size2.width)) ? x - extraBorder : x0);
     }
 
     switch (vAlign) {
