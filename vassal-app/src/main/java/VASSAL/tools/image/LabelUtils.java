@@ -242,8 +242,8 @@ public class LabelUtils {
     size3.height  = size2.height;
 
     g.setFont(f);
-    int x0 = x - extraBorder;
-    int y0 = y - extraTop;
+    int x0 = x;
+    int y0 = y;
     final int xBox;
 
     // If objectWidth is 0 (default), then x is the position for the text box (subject to alignment choice)
@@ -259,7 +259,7 @@ public class LabelUtils {
       case RIGHT:
         break;
       }
-      xBox = x0;
+      xBox = x0 - extraBorder;
     }
     else {
       switch (hAlign) {
@@ -272,7 +272,7 @@ public class LabelUtils {
       case RIGHT:
         break;
       }
-      xBox = (((minWidth > 0) && (size3.width > size2.width)) ? x - extraBorder : x0);
+      xBox = (((minWidth > 0) && (size3.width > size2.width)) ? x - extraBorder : x0 - extraBorder);
     }
 
     switch (vAlign) {
@@ -284,20 +284,22 @@ public class LabelUtils {
       break;
     }
 
+    final int yBox = y0 - extraTop;
+
     // Draws our background color
     if (bgColor != null) {
       g.setColor(bgColor);
-      g.fillRect(xBox, y0, size3.width, size3.height);
+      g.fillRect(xBox, yBox, size3.width, size3.height);
     }
 
     // Draws our border
     if (borderColor != null) {
       g.setColor(borderColor);
-      g.drawRect(xBox, y0, size3.width - 1, size3.height - 1); // The basic single box for 0 extra height/width
+      g.drawRect(xBox, yBox, size3.width - 1, size3.height - 1); // The basic single box for 0 extra height/width
 
       if ((extraBorder > 0) || (extraTop > 0) || (extraBottom > 0)) {
         int x1 = xBox;
-        int y1 = y0;
+        int y1 = yBox;
 
         if (extraBorder > 0) {
           int width = size3.width;
@@ -316,7 +318,7 @@ public class LabelUtils {
         }
 
         if (extraBottom > 0) {
-          y1 = y0 + size3.height - 1;
+          y1 = yBox + size3.height - 1;
           for (int extra = 0; extra < extraBottom; extra++) {
             y1 -= 1;
             g.drawRect(xBox, y1, size3.width - 1, 0);
@@ -343,23 +345,23 @@ public class LabelUtils {
     // If no extra padding or border was specified, we can draw the label
     // directly. Otherwise we need an extra layer of indirection "lest our
     // JLabel wriggle from our grasp"
-    if ((textPad <= 0) && (extraBorder <= 0) && (extraTop <= 0)) {
-      g.drawImage(im, x0, y0, comp);
-    }
-    else {
-      final BufferedImage im2 = ImageUtils.createCompatibleImage(
-        size3.width,
-        size3.height,
-        true
-      );
-      final Graphics2D gTemp2 = im2.createGraphics();
-      gTemp2.addRenderingHints(SwingUtils.FONT_HINTS);
-      gTemp2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-        RenderingHints.VALUE_ANTIALIAS_ON);
+    //if ((textPad <= 0) && (extraBorder <= 0) && (extraTop <= 0)) {
+    //  g.drawImage(im, x0, y0, comp);
+    //}
+    //else {
+    final BufferedImage im2 = ImageUtils.createCompatibleImage(
+      size3.width,
+      size3.height,
+      true
+    );
+    final Graphics2D gTemp2 = im2.createGraphics();
+    gTemp2.addRenderingHints(SwingUtils.FONT_HINTS);
+    gTemp2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+      RenderingHints.VALUE_ANTIALIAS_ON);
 
-      gTemp2.drawImage(im, textPad + extraBorder, textPad + extraTop, null);
-      g.drawImage(im2, x0, y0, comp);
-    }
+    gTemp2.drawImage(im, textPad + extraBorder, textPad, null);
+    g.drawImage(im2, x0, y0, comp);
+    //}
   }
 
   public static int labelWidth(Font font, String s) {

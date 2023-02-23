@@ -585,7 +585,11 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
               //BR// values like "-46" for the pieceBounds.x. Which apparently causes the *piece* to get *drawn* in the
               //BR// right place but is clearly NOT the way to center text beneath the piece. AIEEEEEEEEEEEEEEEEEEEEEE!!!
               final int x = dbounds.x + (int) (borderOffset * os_scale);
-              drawLabel(g, new Point(x, y), text, LabelUtils.CENTER, LabelUtils.CENTER, (int) (pieceBounds.width * graphicsZoom * os_scale), 0, 0, combineCounterSummary && stretchWidthSummary);
+              drawLabel(g, new Point(x, y), text, LabelUtils.CENTER, LabelUtils.CENTER,
+                (int) (pieceBounds.width * graphicsZoom * os_scale),
+                0,
+                0,
+                combineCounterSummary && stretchWidthSummary);
             }
           }
           anyUnderText = true;
