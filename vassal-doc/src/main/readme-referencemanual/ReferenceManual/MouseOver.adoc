@@ -26,7 +26,9 @@ This can be disabled in the preferences.
 
 *Background color:*::  Pieces/text are drawn against a background of this color.
 
-*Border/text color:*::  Color of any text drawn and the border around the overall viewer.
+*Text color:*::  Color of any text drawn.
+
+*Border color:*::  Color of border around the overall viewer.
 
 *Display when at least this many pieces will be included:*::  If set to 0, then the viewer will display even if the location is empty.
 Otherwise, it will display only if 1 or 2 pieces have been included via the settings below.

@@ -100,7 +100,7 @@ import java.util.List;
  */
 public class CounterDetailViewer extends AbstractConfigurable implements Drawable, DragSourceMotionListener, MouseMotionListener, MouseListener, KeyListener {
 
-  public static final String LATEST_VERSION = "3";                //NON-NLS
+  public static final String LATEST_VERSION = "4";                //NON-NLS
   public static final String USE_KEYBOARD = "ShowCounterDetails"; //NON-NLS
   public static final String PREFERRED_DELAY = "PreferredDelay";  //NON-NLS
 
@@ -147,6 +147,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public static final String VERSION = "version"; //NON-NLS
   public static final String FG_COLOR = "fgColor"; //NON-NLS
   public static final String BG_COLOR = "bgColor"; //NON-NLS
+  public static final String BORDER_COLOR = "borderColor"; //NON-NLS
   public static final String FONT_SIZE = "fontSize"; //NON-NLS
   public static final String EXTRA_TEXT_PADDING = "extraTextPadding"; //NON-NLS
   public static final String PROPERTY_FILTER = "propertyFilter"; //NON-NLS
@@ -231,6 +232,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected String version = ""; //NON-NLS
   protected Color fgColor = Color.black;
   protected Color bgColor;
+  protected Color borderColor = Color.black;
   protected int fontSize = 9;
   protected Font font = new Font("Dialog", Font.PLAIN, fontSize); //NON-NLS
   protected PropertyExpression propertyFilter = new PropertyExpression();
@@ -409,8 +411,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     lastPieceBounds.width = dbounds.width;
     lastPieceBounds.height = dbounds.height;
 
-    if ((fgColor != null) && (borderThickness > 0)) {
-      g.setColor(fgColor);
+    if ((borderColor != null) && (borderThickness > 0)) {
+      g.setColor(borderColor);
 
       final int topThickness = (useInnerTop ? borderInnerThickness : borderThickness);
       final int bottomThickness = (useInnerBottom ? borderInnerThickness : borderThickness);
@@ -875,7 +877,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
       // If HTML is enabled in the checkbox, OR the text has an explicit <html> tag surrounding it, we use HTML.
       final boolean useHTML = ((label.length() > 0) && (enableHTML || ((label.length() > 6) && "<html>".equalsIgnoreCase(label.substring(0, 6))))); //NON-NLS
-      LabelUtils.drawHTMLLabel(g, label, pt.x, pt.y, g.getFont(), hAlign, vAlign, fgColor, (skipBox ? null : bgColor), (skipBox ? null : fgColor), map.getComponent(), objectWidth, extraTextPadding, minWidth, extraBorder, extraTop, extraBottom, useHTML);
+      LabelUtils.drawHTMLLabel(g, label, pt.x, pt.y, g.getFont(), hAlign, vAlign, fgColor, (skipBox ? null : bgColor), (skipBox ? null : borderColor), map.getComponent(), objectWidth, extraTextPadding, minWidth, extraBorder, extraTop, extraBottom, useHTML);
 
       g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
@@ -1311,6 +1313,11 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       else {
         propertyFilter.setExpression("");
       }
+      version = "3";
+    }
+
+    if ("3".equals(version)) {
+      borderColor = fgColor;
     }
 
     version = LATEST_VERSION;
@@ -1325,6 +1332,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       HOTKEY,
       BG_COLOR,
       FG_COLOR,
+      BORDER_COLOR,
       MINIMUM_DISPLAYABLE,
       ZOOM_LEVEL,
       CENTER_ALL,
@@ -1382,6 +1390,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       Resources.getString("Editor.MouseOverStackViewer.keyboard_shortcut"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.bg_color"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.text_color"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.border_color"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.display_pieces"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.display_zoom"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.center_all"), //$NON-NLS-1$
@@ -1438,6 +1447,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       String.class,
       Integer.class,
       KeyStroke.class,
+      Color.class,
       Color.class,
       Color.class,
       MinConfig.class,
@@ -1866,6 +1876,12 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       }
       bgColor = (Color) value;
     }
+    else if (BORDER_COLOR.equals(name)) {
+      if (value instanceof String) {
+        value = ColorConfigurer.stringToColor((String) value);
+      }
+      borderColor = (Color) value;
+    }
     else if (FONT_SIZE.equals(name)) {
       if (value instanceof String) {
         value = Integer.valueOf((String) value);
@@ -2051,6 +2067,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     else if (BG_COLOR.equals(name)) {
       return ColorConfigurer.colorToString(bgColor);
+    }
+    else if (BORDER_COLOR.equals(name)) {
+      return ColorConfigurer.colorToString(borderColor);
     }
     else if (FONT_SIZE.equals(name)) {
       return String.valueOf(fontSize);
