@@ -31,7 +31,13 @@ This can be disabled in the preferences.
 *Display when at least this many pieces will be included:*::  If set to 0, then the viewer will display even if the location is empty.
 Otherwise, it will display only if 1 or 2 pieces have been included via the settings below.
 
-*Always display when zoom level is less than:* :: Regardless of the above "at least this many" setting, the viewer will also display when the map's magnification factor is less than this number.
+*Always display when zoom level is less than:*:: Regardless of the above "at least this many" setting, the viewer will also display when the map's magnification factor is less than this number.
+
+*Center viewer over mouse position:*:: If checked, attempts to center the viewer over the mouse position.
+
+*Outer border thickness:*:: Thickness in pixels of the border drawn around the rollover display.
+
+*Inner border thickness:*:: If _both_ Stretch options, below, are selected, then the inner border (between the pieces display and any text boxes) can be given a separate pixel thickness.
 
 *Draw pieces:*::  If selected, then the included pieces will be drawn in the viewer.
 

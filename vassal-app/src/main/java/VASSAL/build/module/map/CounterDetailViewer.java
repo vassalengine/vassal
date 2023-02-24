@@ -126,9 +126,10 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public static final String ZOOM_LEVEL = "zoomlevel"; //NON-NLS
   public static final String CENTER_PIECES_VERTICALLY = "centerPiecesVertically"; //NON-NLS
   public static final String DRAW_PIECES_AT_ZOOM = "graphicsZoom"; //NON-NLS
-  public static final String BORDER_WIDTH = "borderWidth"; //NON-NLS
+  public static final String BORDER_WIDTH = "borderWidth"; //NON-NLS  // This ill-named field is actually the extra horizontal padding between pieces
   public static final String SHOW_ONLY_TOP_OF_STACK = "showOnlyTopOfStack"; //NON-NLS
   public static final String BORDER_THICKNESS = "borderThickness"; //NON-NLS
+  public static final String BORDER_INNER_THICKNESS = "borderInnerThickness"; //NON-NLS
   public static final String SHOW_NOSTACK = "showNoStack"; //NON-NLS
 
   public static final String SHOW_MOVE_SELECTED = "showMoveSelectde"; //NON-NLS
@@ -215,6 +216,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected double graphicsZoomLevel = 1.0;
   protected int borderWidth = 0;      // This ill-named field is actually the extra horizontal padding between pieces
   protected int borderThickness = 2;  // This is the thickness of the surrounding border
+  protected int borderInnerThickness = 2; // This is the thickness of "inner" borders
   protected int extraTextPadding = 0;
   protected boolean showOnlyTopOfStack = false;
   protected boolean showNoStack = false;
@@ -409,10 +411,14 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
     if ((fgColor != null) && (borderThickness > 0)) {
       g.setColor(fgColor);
+
+      final int topThickness = (useInnerTop ? borderInnerThickness : borderThickness);
+      final int bottomThickness = (useInnerBottom ? borderInnerThickness : borderThickness);
+
       g.fillRect(dbounds.x - ((int)(borderThickness * os_scale)),
-                 dbounds.y - ((int)(borderThickness * os_scale)),
+                 dbounds.y - ((int)(topThickness * os_scale)),
               dbounds.width + ((int)(borderThickness*2 * os_scale)),
-             dbounds.height + ((int)(borderThickness*2 * os_scale)));
+             dbounds.height + ((int)((topThickness + bottomThickness) * os_scale)));
     }
 
     if (bgColor != null) {
@@ -489,8 +495,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
       if (textVisible && !terrainText.isEmpty()) {
         int y = dbounds.y + dbounds.height + (int)((verticalBottomText + extraTextPadding * 2) * os_scale);
-        if (borderThickness > 2) {
-          y -= (borderThickness - 2) * os_scale; // Stuff was previously built around a border thickness of 2, so if it's more we attempt to adjust upwards for better results. Designer can manually adjust.
+        if ((useInnerBottom ? borderInnerThickness : borderThickness) > 2) {
+          y -= ((useInnerBottom ? borderInnerThickness : borderThickness) - 2) * os_scale; // Stuff was previously built around a border thickness of 2, so if it's more we attempt to adjust upwards for better results. Designer can manually adjust.
         }
         // If we're doing the "stretch the bottom all the way across" thing, then draw our "master box" now.
         if (combineCounterSummary && stretchWidthSummary) {
@@ -498,12 +504,15 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
             lastPieceBounds.width + 2,
             lastPieceBounds.width + (int)((borderThickness * 2) * os_scale),
             (int)((borderThickness - 1) * os_scale),
-            false);
+            false,
+            (int)(((useInnerBottom ? borderInnerThickness : borderThickness) - 1) * os_scale),
+            (int)((borderThickness - 1) * os_scale)
+          );
           didadukey = true;
         }
         else {
           final int x = dbounds.x + (int) (borderOffset * os_scale);
-          drawLabel(g, new Point(x, y), terrainText, LabelUtils.CENTER, LabelUtils.CENTER, (int)(showTerrainWidth * graphicsZoom * os_scale), 0, 0, false);
+          drawLabel(g, new Point(x, y), terrainText, LabelUtils.CENTER, LabelUtils.CENTER, (int)(showTerrainWidth * graphicsZoom * os_scale), 0, 0, false, 0, 0);
         }
         anyUnderText = true;
       }
@@ -565,8 +574,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         final String text = counterReportFormat.getLocalizedText(piece, this, "Editor.MouseOverStackViewer.text_below");
         int y = dbounds.y + dbounds.height + (int)((verticalBottomText + extraTextPadding * 2) * os_scale);
 
-        if (borderThickness > 2) {
-          y += (borderThickness - 2) * os_scale; // Stuff was previously built around an arbitrary border thickness of 2, so if it's more we heuristically attempt to auto-adjust upwards for better results. Designer can manually adjust with verticalBottomText setting.
+        if ((useInnerBottom ? borderInnerThickness : borderThickness) > 2) {
+          y += ((useInnerBottom ? borderInnerThickness : borderThickness) - 2) * os_scale; // Stuff was previously built around an arbitrary border thickness of 2, so if it's more we heuristically attempt to auto-adjust upwards for better results. Designer can manually adjust with verticalBottomText setting.
         }
 
         if (text.length() > 0) {
@@ -577,7 +586,10 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
                 lastPieceBounds.width + 2,
                 lastPieceBounds.width + (int)(borderThickness * 2 * os_scale),
                 (int)((borderThickness - 1) * os_scale),
-                false);
+                false,
+                (int)(((useInnerBottom ? borderInnerThickness : borderThickness) - 1) * os_scale),
+                (int)((borderThickness - 1) * os_scale)
+              );
             }
             y -= (borderThickness - 1) * os_scale; // Since we won't be drawing borders w/ the individual entries, adjust the text position
           }
@@ -595,7 +607,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
                 (int) (pieceBounds.width * graphicsZoom * os_scale),
                 0,
                 0,
-                combineCounterSummary && stretchWidthSummary);
+                combineCounterSummary && stretchWidthSummary,
+                0,
+                0);
             }
           }
           anyUnderText = true;
@@ -612,6 +626,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     bounds.height = (int)(dbounds.height / os_scale);
   }
 
+
+  boolean useInnerTop = false; // Whether to count top of pieces box as an "inner" border
+  boolean useInnerBottom = false; // Whether to count bottom of pieces box as an "inner" border
 
   protected void fixBounds(List<GamePiece> pieces) {
     fixBounds(pieces, null);
@@ -642,9 +659,13 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     // User-specified additional offset
     bounds.y -= verticalOffset;
 
+    useInnerTop = false;
+    useInnerBottom = false;
+
     // Check if we will need to stretch the main pieces box to fit the text summary
     excessWidth = 0;
     if (textVisible && stretchWidthPieces && (!pieces.isEmpty() || displayableTerrain) && (g != null)) {
+      useInnerTop = !topText.isEmpty();
       int width = getTextWidth(topText, g);
       width += extraTextPadding*2 + borderThickness*2;
 
@@ -666,6 +687,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         }
 
         if (!bottomText.isEmpty()) {
+          useInnerBottom = true;
           width = getTextWidth(bottomText, g);
           width += extraTextPadding*2 + borderThickness*2;
 
@@ -674,11 +696,20 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
             bounds.width = width;
           }
         }
+        else if (isTextUnderCounters() && combineCounterSummary) {
+          useInnerBottom = true;
+        }
       }
     }
   }
 
 
+  /**
+   * Determines the width of some text we're planning to display. Takes into account HTML-i-ness
+   * @param text the text
+   * @param g the graphics (for using the font)
+   * @return the width
+   */
   int getTextWidth(String text, Graphics g) {
     if (enableHTML) {
       if (!text.contains("<html>")) { //NON-NLS
@@ -690,8 +721,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     final JLabel j = new JLabel(text);
     j.setFont(g.getFont());
-    final Dimension size = j.getPreferredSize();
-    return size.width;
+    return j.getPreferredSize().width;
   }
 
 
@@ -797,26 +827,32 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     else {
       if (graphicsVisible) {
         x = (lastPieceBounds.x - 1); // We pass a clear picture of where our full piece-box is, to allow more options
-        if (borderThickness > 2) {
-          y += (borderThickness - 2) * os_scale; // Stuff was previously built around a border thickness of 2, so if it's more we attempt to adjust upwards for better results. Designer can manually adjust.
+        if ((useInnerTop ? borderInnerThickness : borderThickness) > 2) {
+          y += ((useInnerTop ? borderInnerThickness : borderThickness) - 2) * os_scale; // Stuff was previously built around a border thickness of 2, so if it's more we attempt to adjust upwards for better results. Designer can manually adjust.
         }
         drawLabel(g, new Point(x, y), topText, centerText ? LabelUtils.CENTER : LabelUtils.RIGHT, LabelUtils.BOTTOM,
           lastPieceBounds.width + 2, // Because for some reason somebody made the default box be "one pixel bigger in all directions". THANKS, somebody!
           stretchWidthSummary ? lastPieceBounds.width + (int)(borderThickness * 2 * os_scale) : 0, // If we're stretching-to-fit, our same width as the stretch-to-fit box.
           stretchWidthSummary ? (int)((borderThickness - 1) * os_scale) : 0, // If stretching-to-fit, this tells the drawer about the entertaining "one extra pixel" issue.
-          false);
+          false,
+          stretchWidthSummary ? (int)((borderThickness - 1) * os_scale) : 0,
+          stretchWidthSummary ? (int)(((useInnerTop ? borderInnerThickness : borderThickness) - 1) * os_scale) : 0);
       }
       else {
         // If we didn't draw any pieces "but there are valid pieces"
         x = (int)((bounds.x - bounds.width) * os_scale);
         drawLabel(g, new Point(x, y), topText, centerText ? LabelUtils.CENTER : LabelUtils.RIGHT, LabelUtils.BOTTOM,
-          0, 0, borderThickness - 1, false);
+          0, 0, (int)((borderThickness - 1) * os_scale), false);
       }
     }
   }
 
   protected void drawLabel(Graphics g, Point pt, String label, int hAlign, int vAlign) {
     drawLabel(g, pt, label, hAlign, vAlign, 0, 0, 0, false);
+  }
+
+  protected void drawLabel(Graphics g, Point pt, String label, int hAlign, int vAlign, int objectWidth, int minWidth, int extraBorder, boolean skipBox) {
+    drawLabel(g, pt, label, hAlign, vAlign, objectWidth, minWidth, extraBorder, skipBox, extraBorder, extraBorder);
   }
 
   /**
@@ -832,14 +868,14 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
    * @param extraBorder 0 for default, or number of extra pixels of border (expands size of label drawn)
    * @param skipBox If true, ONLY draws the text, with no box or background (for filling in existing combine-o-rama boxes)
    */
-  protected void drawLabel(Graphics g, Point pt, String label, int hAlign, int vAlign, int objectWidth, int minWidth, int extraBorder, boolean skipBox) {
+  protected void drawLabel(Graphics g, Point pt, String label, int hAlign, int vAlign, int objectWidth, int minWidth, int extraBorder, boolean skipBox, int extraTop, int extraBottom) {
     if (label != null && fgColor != null) {
       final Graphics2D g2d = (Graphics2D) g;
       g2d.addRenderingHints(SwingUtils.FONT_HINTS);
       g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
       // If HTML is enabled in the checkbox, OR the text has an explicit <html> tag surrounding it, we use HTML.
       final boolean useHTML = ((label.length() > 0) && (enableHTML || ((label.length() > 6) && "<html>".equalsIgnoreCase(label.substring(0, 6))))); //NON-NLS
-      LabelUtils.drawHTMLLabel(g, label, pt.x, pt.y, g.getFont(), hAlign, vAlign, fgColor, (skipBox ? null : bgColor), (skipBox ? null : fgColor), map.getComponent(), objectWidth, extraTextPadding, minWidth, extraBorder, extraBorder, extraBorder, useHTML);
+      LabelUtils.drawHTMLLabel(g, label, pt.x, pt.y, g.getFont(), hAlign, vAlign, fgColor, (skipBox ? null : bgColor), (skipBox ? null : fgColor), map.getComponent(), objectWidth, extraTextPadding, minWidth, extraBorder, extraTop, extraBottom, useHTML);
 
       g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
@@ -1293,11 +1329,12 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       ZOOM_LEVEL,
       CENTER_ALL,
       BORDER_THICKNESS,
+      BORDER_INNER_THICKNESS,
       DRAW_PIECES,
       CENTER_PIECES_VERTICALLY,
       DRAW_PIECES_AT_ZOOM,
       GRAPH_SINGLE_DEPRECATED,
-      BORDER_WIDTH,
+      BORDER_WIDTH,                   // This ill-named field is actually the extra horizontal padding between pieces
       VERTICAL_OFFSET,
       SHOW_TEXT,
       ENABLE_HTML,
@@ -1349,6 +1386,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       Resources.getString("Editor.MouseOverStackViewer.display_zoom"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.center_all"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.border_thickness"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.border_inner_thickness"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.draw_pieces"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.center_pieces_vertically"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.draw_zoom"), //$NON-NLS-1$
@@ -1405,6 +1443,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       MinConfig.class,
       Double.class,
       Boolean.class,
+      Integer.class,
       Integer.class,
       Boolean.class,
       Boolean.class,
@@ -1575,6 +1614,14 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       }
       else {
         borderThickness = (Integer) value;
+      }
+    }
+    else if (BORDER_INNER_THICKNESS.equals(name)) {
+      if (value instanceof String) {
+        borderInnerThickness = Integer.parseInt((String)value);
+      }
+      else {
+        borderInnerThickness = (Integer) value;
       }
     }
     else if (COMBINE_COUNTER_SUMMARY.equals(name)) {
@@ -1897,6 +1944,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     else if (BORDER_THICKNESS.equals(name)) {
       return String.valueOf(borderThickness);
     }
+    else if (BORDER_INNER_THICKNESS.equals(name)) {
+      return String.valueOf(borderInnerThickness);
+    }
     else if (COMBINE_COUNTER_SUMMARY.equals(name)) {
       return String.valueOf(combineCounterSummary);
     }
@@ -2052,6 +2102,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     else if (STRETCH_WIDTH_PIECES.equals(name)) {
       return () -> showText && drawPieces;
+    }
+    else if (BORDER_INNER_THICKNESS.equals(name)) {
+      return () -> showText && drawPieces && stretchWidthSummary && stretchWidthPieces;
     }
     else if (List.of(COMBINE_COUNTER_SUMMARY, ONLY_SHOW_FIRST_SUMMARY).contains(name)) {
       return () -> showText && stretchWidthSummary;
