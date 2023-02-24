@@ -1161,6 +1161,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     try {
       theChild.addTo(parent);
       parent.add(theChild);
+
+      // Update ancestor tree for child
+      if (theChild instanceof AbstractBuildable) {
+        ((AbstractBuildable)theChild).setAncestor(parent);
+      }
+
       parentNode.insert(childNode, index);
       final int[] childI = new int[1];
       childI[0] = index;
