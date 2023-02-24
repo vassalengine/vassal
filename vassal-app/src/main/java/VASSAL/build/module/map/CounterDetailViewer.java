@@ -349,6 +349,10 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
     map.setDrawingMouseOver(true);
 
+    if (textVisible) {
+      prepareText();
+    }
+
     if (graphicsVisible) {
       drawGraphics(g, pt, comp, displayablePieces);
     }
@@ -577,7 +581,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         int y = dbounds.y + dbounds.height + (int)((verticalBottomText + extraTextPadding * 2) * os_scale);
 
         if (borderThickness > 2) {
-          y += (borderThickness - 2) * os_scale; // Stuff was previously built around a border thickness of 2, so if it's more we attempt to adjust upwards for better results. Designer can manually adjust.
+          y += (borderThickness - 2) * os_scale; // Stuff was previously built around an arbitrary border thickness of 2, so if it's more we heuristically attempt to auto-adjust upwards for better results. Designer can manually adjust with verticalBottomText setting.
         }
 
         if (text.length() > 0) {
@@ -655,36 +659,80 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
     // Check if we will need to stretch the main pieces box to fit the text summary
     excessWidth = 0;
-    if (stretchWidthPieces && textVisible && !pieces.isEmpty() && (g != null)) {
-      String summary = getSummaryText();
-      if (enableHTML) {
-        if (!summary.contains("<html>")) { //NON-NLS
-          summary = "<html>" + summary + "</html>"; //NON-NLS
-        }
-      }
-      else {
-        summary = " " + summary + " ";
-      }
-      final JLabel j = new JLabel(summary);
-      j.setFont(g.getFont());
-      final Dimension size = j.getPreferredSize();
-      size.width += extraTextPadding*2 + borderThickness*2;
+    if (stretchWidthPieces && textVisible && (!pieces.isEmpty() || displayableTerrain) && (g != null)) {
+      int width = getTextWidth(topText, g);
+      width += extraTextPadding*2 + borderThickness*2;
 
-      if (size.width > bounds.width) {
-        excessWidth = size.width - bounds.width;
-        bounds.width = size.width;
+      if (width > bounds.width) {
+        excessWidth = width - bounds.width;
+        bounds.width = width;
       }
 
+      /*
+      if (stretchWidthSummary) {
+        if ()
+      }
 
+        counterReportFormat.getFormat().length() > 0
+
+      String bottomText;
+      if (!pieces.isEmpty()) {
+        bottomText = counterReportFormat.getLocalizedText(pieces.get(0), this, "Editor.MouseOverStackViewer.text_below");
+      }
+      //
+       */
     }
   }
 
+
+  int getTextWidth(String text, Graphics g) {
+    if (enableHTML) {
+      if (!text.contains("<html>")) { //NON-NLS
+        text = "<html>" + topText + "</html>"; //NON-NLS
+      }
+    }
+    else {
+      text = " " + text + " ";
+    }
+    final JLabel j = new JLabel(text);
+    j.setFont(g.getFont());
+    final Dimension size = j.getPreferredSize();
+    return size.width;
+  }
+
+
+  String topText = "";
+
+  void prepareText() {
+    if (displayablePieces.isEmpty()) {
+      topText = getEmptyText();
+    }
+    else {
+      topText = getSummaryText();
+    }
+  }
 
   String getSummaryText() {
     final GamePiece topPiece = displayablePieces.get(0);
     final String locationName = (String) topPiece.getLocalizedProperty(BasicPiece.LOCATION_NAME);
     summaryReportFormat.setProperty(BasicPiece.LOCATION_NAME, locationName.equals(Resources.getString("Map.offboard")) ? "" : locationName);
     return summaryReportFormat.getLocalizedText(new SumProperties(displayablePieces), this, "Editor.MouseOverStackViewer.summary_text");
+  }
+
+
+  String getEmptyText() {
+    final Point mapPt = map.componentToMap(currentMousePosition.getPoint());
+    final Point snapPt = map.snapTo(mapPt);
+    final String locationName = map.localizedLocationName(snapPt);
+    emptyHexReportFormat.setProperty(BasicPiece.LOCATION_NAME, locationName.equals(Resources.getString("Map.offboard")) ? "" : locationName);
+    emptyHexReportFormat.setProperty(BasicPiece.CURRENT_MAP, map.getLocalizedMapName());
+    final Board b = map.findBoard(snapPt);
+    final String boardName = (b == null) ? "" : b.getLocalizedName();
+    emptyHexReportFormat.setProperty(BasicPiece.CURRENT_BOARD, boardName);
+    final Zone z = map.findZone(snapPt);
+    final String zone = (z == null) ? "" : z.getLocalizedName();
+    emptyHexReportFormat.setProperty(BasicPiece.CURRENT_ZONE, zone);
+    return emptyHexReportFormat.getLocalizedText(this, "Editor.MouseOverStackViewer.text_empty");
   }
 
 
@@ -713,56 +761,39 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     final Graphics2D g2d = (Graphics2D) g;
     final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
 
-    final String report;
+    if (topText.isEmpty()) {
+      return;
+    }
+
     int x;
     int y = (int)((bounds.y - verticalTopText) * os_scale);
 
-    final String offboard = Resources.getString("Map.offboard");  //$NON-NLS-1$
-
-    if (displayablePieces.isEmpty()) {
+    if (displayablePieces.isEmpty() && !displayableTerrain) {
       // No displayable pieces; either we have terrain-only or an empty space summary
       x = (int)((bounds.x - bounds.width) * os_scale);
       y = (int)((bounds.y - verticalTopText) * os_scale);
-      final Point mapPt = map.componentToMap(currentMousePosition.getPoint());
-      final Point snapPt = map.snapTo(mapPt);
-      final String locationName = map.localizedLocationName(snapPt);
-      emptyHexReportFormat.setProperty(BasicPiece.LOCATION_NAME, locationName.equals(offboard) ? "" : locationName);
-      emptyHexReportFormat.setProperty(BasicPiece.CURRENT_MAP, map.getLocalizedMapName());
-      final Board b = map.findBoard(snapPt);
-      final String boardName = (b == null) ? "" : b.getLocalizedName();
-      emptyHexReportFormat.setProperty(BasicPiece.CURRENT_BOARD, boardName);
-      final Zone z = map.findZone(snapPt);
-      final String zone = (z == null) ? "" : z.getLocalizedName();
-      emptyHexReportFormat.setProperty(BasicPiece.CURRENT_ZONE, zone);
-      report = emptyHexReportFormat.getLocalizedText(this, "Editor.MouseOverStackViewer.text_empty");
-      if (report.length() > 0) {
-        if (centerAll) {
-          x -= g.getFontMetrics().stringWidth(report) / 2;
-        }
-        drawLabel(g, new Point(x, y), report, LabelUtils.RIGHT, LabelUtils.BOTTOM, 0, 0, borderThickness - 1, false);
+      if (centerAll) {
+        x -= g.getFontMetrics().stringWidth(topText) / 2;
       }
+      drawLabel(g, new Point(x, y), topText, LabelUtils.RIGHT, LabelUtils.BOTTOM, 0, 0, borderThickness - 1, false);
     }
     else {
-      report = getSummaryText();
-
-      if (report.length() > 0) {
-        if (graphicsVisible) {
-          x = (lastPieceBounds.x - 1); // We pass a clear picture of where our full piece-box is, to allow more options
-          if (borderThickness > 2) {
-            y += (borderThickness - 2) * os_scale; // Stuff was previously built around a border thickness of 2, so if it's more we attempt to adjust upwards for better results. Designer can manually adjust.
-          }
-          drawLabel(g, new Point(x, y), report, centerText ? LabelUtils.CENTER : LabelUtils.RIGHT, LabelUtils.BOTTOM,
-            lastPieceBounds.width + 2, // Because for some reason somebody made the default box be "one pixel bigger in all directions". THANKS, somebody!
-            stretchWidthSummary ? lastPieceBounds.width + (int)(borderThickness * 2 * os_scale) : 0, // If we're stretching-to-fit, our same width as the stretch-to-fit box.
-            stretchWidthSummary ? (int)((borderThickness - 1) * os_scale) : 0, // If stretching-to-fit, this tells the drawer about the entertaining "one extra pixel" issue.
-            false);
+      if (graphicsVisible) {
+        x = (lastPieceBounds.x - 1); // We pass a clear picture of where our full piece-box is, to allow more options
+        if (borderThickness > 2) {
+          y += (borderThickness - 2) * os_scale; // Stuff was previously built around a border thickness of 2, so if it's more we attempt to adjust upwards for better results. Designer can manually adjust.
         }
-        else {
-          // If we didn't draw any pieces "but there are valid pieces"
-          x = (int)((bounds.x - bounds.width) * os_scale);
-          drawLabel(g, new Point(x, y), report, centerText ? LabelUtils.CENTER : LabelUtils.RIGHT, LabelUtils.BOTTOM,
-            0, 0, borderThickness - 1, false);
-        }
+        drawLabel(g, new Point(x, y), topText, centerText ? LabelUtils.CENTER : LabelUtils.RIGHT, LabelUtils.BOTTOM,
+          lastPieceBounds.width + 2, // Because for some reason somebody made the default box be "one pixel bigger in all directions". THANKS, somebody!
+          stretchWidthSummary ? lastPieceBounds.width + (int)(borderThickness * 2 * os_scale) : 0, // If we're stretching-to-fit, our same width as the stretch-to-fit box.
+          stretchWidthSummary ? (int)((borderThickness - 1) * os_scale) : 0, // If stretching-to-fit, this tells the drawer about the entertaining "one extra pixel" issue.
+          false);
+      }
+      else {
+        // If we didn't draw any pieces "but there are valid pieces"
+        x = (int)((bounds.x - bounds.width) * os_scale);
+        drawLabel(g, new Point(x, y), topText, centerText ? LabelUtils.CENTER : LabelUtils.RIGHT, LabelUtils.BOTTOM,
+          0, 0, borderThickness - 1, false);
       }
     }
   }
