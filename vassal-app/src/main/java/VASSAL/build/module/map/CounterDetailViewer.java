@@ -487,40 +487,25 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         g2d.setClip(oldClip);
       }
 
-      if (textVisible && showTerrainText.getFormat().length() > 0) {
-        final Point mapPt = map.componentToMap(currentMousePosition.getPoint());
-        final Point snapPt = map.snapTo(mapPt, showTerrainSnappy);
-        final String locationName = map.localizedLocationName(snapPt);
-        showTerrainText.setProperty(BasicPiece.LOCATION_NAME, locationName.equals(Resources.getString("Map.offboard")) ? "" : locationName);
-        showTerrainText.setProperty(BasicPiece.CURRENT_MAP, map.getLocalizedMapName());
-        final Board b = map.findBoard(snapPt);
-        final String boardName = (b == null) ? "" : b.getLocalizedName();
-        showTerrainText.setProperty(BasicPiece.CURRENT_BOARD, boardName);
-        final Zone z = map.findZone(snapPt);
-        final String zone = (z == null) ? "" : z.getLocalizedName();
-        showTerrainText.setProperty(BasicPiece.CURRENT_ZONE, zone);
-
-        final String text = showTerrainText.getLocalizedText(this, "Editor.MouseOverStackViewer.text_below");
+      if (textVisible && !terrainText.isEmpty()) {
         int y = dbounds.y + dbounds.height + (int)((verticalBottomText + extraTextPadding * 2) * os_scale);
         if (borderThickness > 2) {
           y -= (borderThickness - 2) * os_scale; // Stuff was previously built around a border thickness of 2, so if it's more we attempt to adjust upwards for better results. Designer can manually adjust.
         }
-        if (text.length() > 0) {
-          // If we're doing the "stretch the bottom all the way across" thing, then draw our "master box" now.
-          if (combineCounterSummary && stretchWidthSummary) {
-            drawLabel(g, new Point(lastPieceBounds.x - 1, y), pieces.isEmpty() ? text : " ", LabelUtils.CENTER, LabelUtils.CENTER,
-              lastPieceBounds.width + 2,
-              lastPieceBounds.width + (int)((borderThickness * 2) * os_scale),
-              (int)((borderThickness - 1) * os_scale),
-              false);
-            didadukey = true;
-          }
-          else {
-            final int x = dbounds.x + (int) (borderOffset * os_scale);
-            drawLabel(g, new Point(x, y), text, LabelUtils.CENTER, LabelUtils.CENTER, (int)(showTerrainWidth * graphicsZoom * os_scale), 0, 0, false);
-          }
-          anyUnderText = true;
+        // If we're doing the "stretch the bottom all the way across" thing, then draw our "master box" now.
+        if (combineCounterSummary && stretchWidthSummary) {
+          drawLabel(g, new Point(lastPieceBounds.x - 1, y), pieces.isEmpty() ? terrainText : " ", LabelUtils.CENTER, LabelUtils.CENTER,
+            lastPieceBounds.width + 2,
+            lastPieceBounds.width + (int)((borderThickness * 2) * os_scale),
+            (int)((borderThickness - 1) * os_scale),
+            false);
+          didadukey = true;
         }
+        else {
+          final int x = dbounds.x + (int) (borderOffset * os_scale);
+          drawLabel(g, new Point(x, y), terrainText, LabelUtils.CENTER, LabelUtils.CENTER, (int)(showTerrainWidth * graphicsZoom * os_scale), 0, 0, false);
+        }
+        anyUnderText = true;
       }
 
       dbounds.translate((int) Math.ceil(showTerrainWidth * showTerrainZoom * os_scale), 0);
@@ -650,7 +635,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     bounds.y -= bounds.height;
 
     // So text-under-counters won't draw directly on top of mouse position.
-    if (isTextUnderCounters()) {
+    if (isTextUnderCounters() || (displayableTerrain && !showTerrainBeneath.isEmpty())) {
       bounds.y -= (fontSize + 2 + extraTextPadding * 2);
     }
 
@@ -659,7 +644,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
     // Check if we will need to stretch the main pieces box to fit the text summary
     excessWidth = 0;
-    if (stretchWidthPieces && textVisible && (!pieces.isEmpty() || displayableTerrain) && (g != null)) {
+    if (textVisible && stretchWidthPieces && (!pieces.isEmpty() || displayableTerrain) && (g != null)) {
       int width = getTextWidth(topText, g);
       width += extraTextPadding*2 + borderThickness*2;
 
@@ -668,19 +653,28 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         bounds.width = width;
       }
 
-      /*
       if (stretchWidthSummary) {
-        if ()
-      }
+        String bottomText = "";
 
-        counterReportFormat.getFormat().length() > 0
+        if (!pieces.isEmpty()) {
+          if ((pieces.size() == 1) || onlyShowFirstSummary) {
+            bottomText = counterReportFormat.getLocalizedText(pieces.get(0), this, "Editor.MouseOverStackViewer.text_below");
+          }
+        }
+        else if (displayableTerrain && !showTerrainText.getFormat().isEmpty()) {
+          bottomText = terrainText;
+        }
 
-      String bottomText;
-      if (!pieces.isEmpty()) {
-        bottomText = counterReportFormat.getLocalizedText(pieces.get(0), this, "Editor.MouseOverStackViewer.text_below");
+        if (!bottomText.isEmpty()) {
+          width = getTextWidth(bottomText, g);
+          width += extraTextPadding*2 + borderThickness*2;
+
+          if (width > bounds.width) {
+            excessWidth += width - bounds.width;
+            bounds.width = width;
+          }
+        }
       }
-      //
-       */
     }
   }
 
@@ -688,7 +682,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   int getTextWidth(String text, Graphics g) {
     if (enableHTML) {
       if (!text.contains("<html>")) { //NON-NLS
-        text = "<html>" + topText + "</html>"; //NON-NLS
+        text = "<html>" + text + "</html>"; //NON-NLS
       }
     }
     else {
@@ -702,6 +696,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
 
   String topText = "";
+  String terrainText = "";
 
   void prepareText() {
     if (displayablePieces.isEmpty()) {
@@ -710,6 +705,28 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     else {
       topText = getSummaryText();
     }
+
+    terrainText = "";
+    if (displayableTerrain && !showTerrainText.getFormat().isEmpty()) {
+      terrainText = getTerrainBeneathText();
+    }
+  }
+
+
+  String getTerrainBeneathText() {
+    final Point mapPt = map.componentToMap(currentMousePosition.getPoint());
+    final Point snapPt = map.snapTo(mapPt, showTerrainSnappy);
+    final String locationName = map.localizedLocationName(snapPt);
+    showTerrainText.setProperty(BasicPiece.LOCATION_NAME, locationName.equals(Resources.getString("Map.offboard")) ? "" : locationName);
+    showTerrainText.setProperty(BasicPiece.CURRENT_MAP, map.getLocalizedMapName());
+    final Board b = map.findBoard(snapPt);
+    final String boardName = (b == null) ? "" : b.getLocalizedName();
+    showTerrainText.setProperty(BasicPiece.CURRENT_BOARD, boardName);
+    final Zone z = map.findZone(snapPt);
+    final String zone = (z == null) ? "" : z.getLocalizedName();
+    showTerrainText.setProperty(BasicPiece.CURRENT_ZONE, zone);
+
+    return showTerrainText.getLocalizedText(this, "Editor.MouseOverStackViewer.text_below");
   }
 
   String getSummaryText() {
