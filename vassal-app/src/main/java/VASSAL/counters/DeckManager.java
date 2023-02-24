@@ -48,7 +48,9 @@ public class DeckManager {
     final GameModule gm = GameModule.getGameModule();
     gm.pauseLogging();
 
-    for (final Deck deck : deckEmptiedKeyQueue) {
+    final List<Deck> decksEmpty = new ArrayList(deckEmptiedKeyQueue); // Defensively defensify
+
+    for (final Deck deck : decksEmpty) {
       deck.sendEmptyKey();
     }
 
