@@ -1,4 +1,4 @@
-3.6.13 - ???
+3.6.13 - 24 February 2023
 
 * 12037: Fix concurrent modification exception in Decks
 * 12016: Fix a possible crash scenario in At-Start Stacks
