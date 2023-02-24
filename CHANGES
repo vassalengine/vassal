@@ -1,5 +1,56 @@
-3.6.11 - ???
+3.6.13 - ???
 
+* 12016: Fix a possible crash scenario in At-Start Stacks
+* 11995: ActionButtons with reports shouldn't display them if report is empty
+* 11967: When dragging piece out of face-down deck, use unrotated shape
+* 11897: Ensure that deleted extensions don't crash the Module Manager
+* 11693: Prevent NPE when copying folders containing Mouse-over Stack Viewers
+* 11451: Don't permit drag-and-drop within PlaceMarker, Replace with Other
+    selection dialogs
+* 11173: Fixed crash in sorting a deck
+* 10877: Added a 'player joined' message when playing online
+*  9786: Text Label traits will respond to GameRefresher (unless trait has a
+    manually-change-label hotkey defined)
+
+3.6.12 - 16 February 2023
+
+* 12013: Reinstate removal of module tile cache when a module is removed from
+    the Module Manager
+* 12007: Update Apple Silicon terminology in preferences and docs
+* 11994: Deck "send-when-empty" hotkeys no longer create extra undo steps
+* 11993: ActionButtons set to count 0 times don't spuriously execute 1 time
+* 11986: Add missing Section size symbol to NATO markers
+* 11982: Fixed multiplayer problems with detach option on Deselect trait
+* 11963: SendToLocation, Can Rotate, and MoveFixedDistance were all unlinking
+    from deck/stack at wrong time, causing buggy behavior in some instances
+    especially involving decks
+* 11961: Clear up mark-when-moved problems for modules which still had a
+    legacy value set
+* 11957: Spaces in GKC reports made consistent with all other reports
+* 11935: Allow option for only first Mouseover-stack Viewer that generates a
+    tooltip will be drawn
+* 11884: 'OldMat' properties now set correctly regardless of order of Mat
+    Cargo and Send-to-Location (etc.) traits
+* 11880: Triggers set to count 0 times don't spuriously execute 1 time
+* 11714: Deck's Send-when-Empty key now processes AFTER fully moving last card
+* 11627: ActionButtons with context menu flag no longer trigger context menu
+    when a different ActionButton on same piece (that doesn't have the flag
+    set) is clicked
+* 11462: Don't +1 inventory sum if property isn't even defined
+* 11437: Prevent NPE when right-clicking on a Deck with no menu items
+* 11429: Deck Empty Hotkey no longer repeats per online player instance, nor
+    when stepping forward a log
+
+3.6.11 - 3 February 2023
+
+* 11941: Since 3.6.7, French/Belgian AZERTY keyboards on Mac were experiencing
+    problems with Ctrl / Alt keys on the number key row
+* 11938: IndexOutOfBoundsException trying to open a private note
+* 11933: At-Start stacks were getting confused by blank boards
+* 11929: Show translated module name and descriptions in Module Manager
+* 11924: Reinstate translation of Player Sides
+* 11911: Debug window shows board-relative coordinates if they are different
+    from the map-relative ones
 * 11906: MatCargo's mat detection did unnecessary computations for lack of
     parentheses
 * 11904: Global Key Command fastmatch for Mats fixed to avoid trait-order bugs
@@ -7,6 +58,8 @@
 * 11900: Clear Tile Cache with more efficient Files.walkFileTree()
 * 11899: Hide FileConfigurer label in preferences dialogs
 * 11890: NPE when current-stack option used on non-stacking piece
+* 11505: Insert items into formatted strings from drop-down list into the
+    correctly selected position
 
 3.6.10 - 11 January 2023
 

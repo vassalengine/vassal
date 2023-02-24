@@ -44,6 +44,11 @@ import VASSAL.tools.imageop.Repainter;
 import VASSAL.tools.imageop.ScaleOp;
 import VASSAL.tools.imageop.SourceOp;
 
+import org.jdesktop.animation.timing.Animator;
+import org.jdesktop.animation.timing.TimingTargetAdapter;
+
+import org.w3c.dom.Element;
+
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Component;
@@ -65,9 +70,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-
-import org.jdesktop.animation.timing.Animator;
-import org.jdesktop.animation.timing.TimingTargetAdapter;
 
 public class Board extends AbstractConfigurable implements GridContainer {
   /**
@@ -123,6 +125,14 @@ public class Board extends AbstractConfigurable implements GridContainer {
   public String getName() {
     final String s = getConfigureName();
     return s != null ? s : "";
+  }
+
+  @Override
+  public void build(Element e) {
+    super.build(e);
+    if (e == null) {
+      setConfigureName(Resources.getString("Editor.Board.component_type"));
+    }
   }
 
   @Override

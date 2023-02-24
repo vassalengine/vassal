@@ -17,40 +17,49 @@
   ],
   "changes": [
     {
-      "in": "3.6.11",
-      "since": "3.6.10",
+      "in": "3.6.13",
+      "since": "3.6.12",
       "new_features": [
       ],
       "bug_fixes": [
-        { "num": 11904, "desc": "Global Key Command fastmatch for Mats fixed to avoid trait-order bugs" },
-        { "num": 11901, "desc": "Corrected \"Mark When Moved\" documentation" },
-        { "num": 11899, "desc": "Hide FileConfigurer label in preferences dialogs" },
-        { "num": 11890, "desc": "NPE when current-stack option used on non-stacking piece" }
+        { "num": 12016, "desc": "Fix a possible crash scenario in At-Start Stacks" },
+        { "num": 11897, "desc": "Ensure that deleted extensions don't crash the Module Manager" },
+        { "num": 11693, "desc": "Prevent NPE when copying folders containing Mouse-over Stack Viewers" },
+        { "num":  11451, "desc": "Don't permit drag-and-drop within PlaceMarker, Replace with Other selection dialogs" },
+        { "num": 11173, "desc": "Fixed crash in sorting a deck" }
       ],
       "other_improvements": [
-        { "num": 11906, "desc": "MatCargo's mat detection did unnecessary computations for lack of parentheses" },
-        { "num": 11900, "desc": "Clear Tile Cache with more efficient Files.walkFileTree()" }
+        { "num": 11995, "desc": "ActionButtons with reports shouldn't display them if report is empty" },
+        { "num": 11967, "desc": "When dragging piece out of face-down deck, use unrotated shape" },
+        { "num": 10877, "desc": "Added a 'player joined' message when playing online" },
+        { "num": 9786, "desc": "Text Label traits will respond to GameRefresher (unless trait has a manually-change-label hotkey defined)" }
       ]
     },
     {
-      "in": "3.6.10",
-      "since": "3.6.9",
+      "in": "3.6.12",
+      "since": "3.6.11",
       "new_features": [
       ],
       "bug_fixes": [
-        { "num": 11883, "desc": "Fixed order of labels for \"Select play mode\" and \"Enter your name\" steps in the Welcome Wizard" },
-        { "num": 11879, "desc": "NPE when cutting and pasting a GlobalPropertyFolder" },
-        { "num": 11860, "desc": "Warn when same piece is both Mat and Mat Cargo" },
-        { "num": 11858, "desc": "Clear all PieceSlot caches after loading extensions" },
-        { "num": 11846, "desc": "Protect from null property results during search" },
-        { "num": 11823, "desc": "NPE in GameRefresher when refreshing unnamed Decks" },
-        { "num": 11813, "desc": "NPE in PieceSlot.getLocalizedConfigureName()" },
-        { "num": 11759, "desc": "Do not allow negative number of Dice or Sides" },
-        { "num": 11748, "desc": "NPE when cutting and pasting a prototype folder" },
-        { "num": 11455, "desc": "Prevent NPE when adding empty KeyStrokes to list" },
-        { "num": 11452, "desc": " Prevent NPE if invalid file specified in img tag" }
+        { "num": 11994, "desc": "Deck \"send-when-empty\" hotkeys no longer create extra undo steps" },
+        { "num": 11993, "desc": "ActionButtons set to count 0 times don't spuriously execute 1 time" },
+        { "num": 11982, "desc": "Fixed multiplayer problems with detach option on Deselect trait" },
+        { "num": 11963, "desc": "SendToLocation, Can Rotate, and MoveFixedDistance were all unlinking from deck/stack at wrong time, causing buggy behavior in some instances especially involving decks" },
+        { "num": 11961, "desc": "Clear up mark-when-moved problems for modules which still had a legacy value set" },
+        { "num": 11884, "desc": "'OldMat' properties now set correctly regardless of order of Mat Cargo and Send-to-Location (etc.) traits" },
+        { "num": 11880, "desc": "Triggers set to count 0 times don't spuriously execute 1 time" },
+        { "num": 11714, "desc": "Deck's Send-when-Empty key now processes AFTER fully moving last card" },
+        { "num": 11627, "desc": "ActionButtons with context menu flag no longer trigger context menu when a different ActionButton on same piece (that doesn't have the flag set) is clicked" },
+        { "num": 11462, "desc": "Don't +1 inventory sum if property isn't even defined" },
+        { "num": 11437, "desc": "Prevent NPE when right-clicking on a Deck with no menu items" },
+        { "num": 11429, "desc": "Deck Empty Hotkey no longer repeats per online player instance, nor when stepping forward a log" }
       ],
       "other_improvements": [
+        { "num": 12013, "desc": "Reinstate removal of module tile cache when a module is removed from the Module Manager" },
+        { "num": 12007, "desc": "Update Apple Silicon terminology in preferences and docs" },
+        { "num": 11986, "desc": "Add missing Section size symbol to NATO markers" },
+        { "num": 11957, "desc": "Spaces in GKC reports made consistent with all other reports" },
+        { "num": 11935, "desc": "Allow option for only first Mouseover-stack Viewer that generates a tooltip will be drawn" }
       ]
     }
   ]

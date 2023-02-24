@@ -287,6 +287,26 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   private IntConfigurer preferredScrollConfig;
   private DoubleConfigurer preferredScrollRateConfig;
 
+  private boolean anyMouseoverDrawn = false;
+
+  public boolean isAnyMouseoverDrawn() {
+    return anyMouseoverDrawn;
+  }
+
+  public void setAnyMouseoverDrawn(boolean flag) {
+    anyMouseoverDrawn = flag;
+  }
+
+  private boolean drawingMouseOver = false;
+
+  public boolean isDrawingMouseOver() {
+    return drawingMouseOver;
+  }
+
+  public void setDrawingMouseOver(boolean flag) {
+    drawingMouseOver = flag;
+  }
+
   public Map() {
     getView();
     theMap.addMouseListener(this);
@@ -2090,7 +2110,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   @Override
   public void mouseMoved(MouseEvent e) {
     final DebugControls dc = GameModule.getGameModule().getDebugControls();
-    dc.setCursorLocation(componentToMap(e.getPoint()));
+    dc.setCursorLocation(componentToMap(e.getPoint()), this);
   }
 
   /**
@@ -2103,7 +2123,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   @Override
   public void mouseDragged(MouseEvent e) {
     final DebugControls dc = GameModule.getGameModule().getDebugControls();
-    dc.setCursorLocation(componentToMap(e.getPoint()));
+    dc.setCursorLocation(componentToMap(e.getPoint()), this);
 
     if (!SwingUtils.isContextMouseButtonDown(e)) {
       scrollAtEdge(e.getPoint(), SCROLL_ZONE);
@@ -2269,6 +2289,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @param c observer component
    */
   public void paintRegion(Graphics g, Rectangle visibleRect, Component c) {
+    setAnyMouseoverDrawn(false);
     clearMapBorder(g); // To avoid ghost pieces around the edge
     drawBoardsInRegion(g, visibleRect, c);
     drawDrawable(g, false);

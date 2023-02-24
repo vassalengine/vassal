@@ -94,6 +94,7 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.TextConfigurer;
 import VASSAL.configure.ValidationReport;
 import VASSAL.configure.password.ToggleablePasswordConfigurer;
+import VASSAL.counters.DeckManager;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.I18nResourcePathFinder;
@@ -278,6 +279,12 @@ public class GameModule extends AbstractConfigurable
   private final TranslatableStringContainer transContainer = new TranslatableStringContainer.Impl();
 
   private boolean matSupport = false; // If no Mats exist in the module, we don't need to spend any time doing mat-related calculations during moves/selects
+
+  private final DeckManager deckMgr = new DeckManager();
+
+  public DeckManager getDeckManager() {
+    return deckMgr;
+  }
 
   private ToggleablePasswordConfigurer passwordConfigurer;
 
