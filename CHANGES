@@ -1,5 +1,6 @@
 3.6.13 - ???
 
+* 12037: Fix concurrent modification exception in Decks
 * 12016: Fix a possible crash scenario in At-Start Stacks
 * 11995: ActionButtons with reports shouldn't display them if report is empty
 * 11967: When dragging piece out of face-down deck, use unrotated shape
