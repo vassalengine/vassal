@@ -61,6 +61,7 @@ import VASSAL.tools.image.LabelUtils;
 import VASSAL.tools.swing.SwingUtils;
 
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.KeyStroke;
 import javax.swing.Timer;
 import java.awt.Color;
@@ -118,6 +119,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public static final String VERTICAL_TOP_TEXT = "verticalTopText"; //NON-NLS
   public static final String VERTICAL_BOTTOM_TEXT = "verticalBottomText"; //NON-NLS
   public static final String STRETCH_WIDTH_SUMMARY = "stretchWidthSummary"; //NON-NLS
+  public static final String STRETCH_WIDTH_PIECES = "stretchWidthPieces"; //NON-NLS;
   public static final String SHOW_TEXT = "showtext"; //NON-NLS
   public static final String ENABLE_HTML = "enableHTML"; //NON-NLS
   public static final String SHOW_TEXT_SINGLE_DEPRECATED = "showtextsingle"; //NON-NLS
@@ -193,6 +195,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected int verticalTopText = 5;               // Here we preserve the Magic Numbers Of The Ancients as defaults
   protected int verticalBottomText = 10;           // Here we preserve the Magic Numbers Of The Ancients as defaults
   protected boolean stretchWidthSummary = false;
+  protected boolean stretchWidthPieces = false;
   protected boolean unrotatePieces = false;
   protected boolean showDeck = false;
   protected boolean stopAfterShowing = false;
@@ -238,6 +241,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
   /** the JComponent which is repainted when the detail viewer changes */
   protected JComponent view;
+
+  private int excessWidth = 0;
 
   @Deprecated(since = "2023-02-15", forRemoval = true)
   public static boolean isDrawingMouseOver() {
@@ -356,7 +361,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   }
 
   protected void drawGraphics(Graphics g, @SuppressWarnings("unused") Point pt, JComponent comp, List<GamePiece> pieces) {
-    fixBounds(pieces);
+    fixBounds(pieces, g);
 
     if (bounds.width <= 0) {
       return;
@@ -410,6 +415,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       g.setColor(bgColor);
       g.fillRect(dbounds.x, dbounds.y, dbounds.width, dbounds.height);
     }
+
+    // If we're stretching the pieces window to fit the summary, offset by half the excess width before we start drawing pieces
+    dbounds.x += excessWidth/2;
 
     final Shape oldClip = g.getClip();
 
@@ -615,8 +623,14 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     bounds.height = (int)(dbounds.height / os_scale);
   }
 
-  /** Set the bounds field large enough to accommodate the given set of pieces */
+
   protected void fixBounds(List<GamePiece> pieces) {
+    fixBounds(pieces, null);
+  }
+
+
+  /** Set the bounds field large enough to accommodate the given set of pieces */
+  protected void fixBounds(List<GamePiece> pieces, Graphics g) {
     if (displayableTerrain) {
       bounds.width += (int) Math.ceil(showTerrainWidth * showTerrainZoom) + borderWidth;
       bounds.height = Math.max(bounds.height, (int)Math.ceil(showTerrainHeight * showTerrainZoom) + borderWidth * 2);
@@ -638,7 +652,41 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
     // User-specified additional offset
     bounds.y -= verticalOffset;
+
+    // Check if we will need to stretch the main pieces box to fit the text summary
+    excessWidth = 0;
+    if (stretchWidthPieces && textVisible && !pieces.isEmpty() && (g != null)) {
+      String summary = getSummaryText();
+      if (enableHTML) {
+        if (!summary.contains("<html>")) { //NON-NLS
+          summary = "<html>" + summary + "</html>"; //NON-NLS
+        }
+      }
+      else {
+        summary = " " + summary + " ";
+      }
+      final JLabel j = new JLabel(summary);
+      j.setFont(g.getFont());
+      final Dimension size = j.getPreferredSize();
+      size.width += extraTextPadding*2 + borderThickness*2;
+
+      if (size.width > bounds.width) {
+        excessWidth = size.width - bounds.width;
+        bounds.width = size.width;
+      }
+
+
+    }
   }
+
+
+  String getSummaryText() {
+    final GamePiece topPiece = displayablePieces.get(0);
+    final String locationName = (String) topPiece.getLocalizedProperty(BasicPiece.LOCATION_NAME);
+    summaryReportFormat.setProperty(BasicPiece.LOCATION_NAME, locationName.equals(Resources.getString("Map.offboard")) ? "" : locationName);
+    return summaryReportFormat.getLocalizedText(new SumProperties(displayablePieces), this, "Editor.MouseOverStackViewer.summary_text");
+  }
+
 
   protected Rectangle getBounds(GamePiece piece) {
     if (unrotatePieces) piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.TRUE);
@@ -695,11 +743,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       }
     }
     else {
-      final GamePiece topPiece = displayablePieces.get(0);
-      final String locationName = (String) topPiece.getLocalizedProperty(BasicPiece.LOCATION_NAME);
+      report = getSummaryText();
 
-      summaryReportFormat.setProperty(BasicPiece.LOCATION_NAME, locationName.equals(offboard) ? "" : locationName);
-      report = summaryReportFormat.getLocalizedText(new SumProperties(displayablePieces), this, "Editor.MouseOverStackViewer.summary_text");
       if (report.length() > 0) {
         if (graphicsVisible) {
           x = (lastPieceBounds.x - 1); // We pass a clear picture of where our full piece-box is, to allow more options
@@ -1210,6 +1255,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       ENABLE_HTML,
       CENTER_TEXT,
       STRETCH_WIDTH_SUMMARY,
+      STRETCH_WIDTH_PIECES,
       COMBINE_COUNTER_SUMMARY,
       ONLY_SHOW_FIRST_SUMMARY,
       EXTRA_TEXT_PADDING,
@@ -1265,6 +1311,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       Resources.getString("Editor.MouseOverStackViewer.enable_html"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.center_text"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.stretch_width_summary"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.stretch_width_pieces"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.combine_counter_summary"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.only_show_first_summary"),
       Resources.getString("Editor.MouseOverStackViewer.extra_text_padding"), //$NON-NLS-1$
@@ -1317,6 +1364,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       Boolean.class,
       Integer.class,
       Integer.class,
+      Boolean.class,
       Boolean.class,
       Boolean.class,
       Boolean.class,
@@ -1535,6 +1583,14 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       }
       else if (value instanceof String) {
         stretchWidthSummary = "true".equals(value); //NON-NLS
+      }
+    }
+    else if (STRETCH_WIDTH_PIECES.equals(name)) {
+      if (value instanceof Boolean) {
+        stretchWidthPieces = (Boolean) value;
+      }
+      else if (value instanceof String) {
+        stretchWidthPieces = "true".equals(value); //NON-NLS
       }
     }
     else if (HOTKEY.equals(name)) {
@@ -1814,6 +1870,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     else if (STRETCH_WIDTH_SUMMARY.equals(name)) {
       return String.valueOf(stretchWidthSummary);
     }
+    else if (STRETCH_WIDTH_PIECES.equals(name)) {
+      return String.valueOf(stretchWidthPieces);
+    }
     else if (HOTKEY.equals(name)) {
       return HotKeyConfigurer.encode(hotkey);
     }
@@ -1942,6 +2001,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     else if (List.of(FONT_SIZE, SUMMARY_REPORT_FORMAT, COUNTER_REPORT_FORMAT, ENABLE_HTML, CENTER_TEXT, EXTRA_TEXT_PADDING, VERTICAL_TOP_TEXT, VERTICAL_BOTTOM_TEXT, STRETCH_WIDTH_SUMMARY).contains(name)) {
       return () -> showText;
+    }
+    else if (STRETCH_WIDTH_PIECES.equals(name)) {
+      return () -> showText && drawPieces;
     }
     else if (List.of(COMBINE_COUNTER_SUMMARY, ONLY_SHOW_FIRST_SUMMARY).contains(name)) {
       return () -> showText && stretchWidthSummary;

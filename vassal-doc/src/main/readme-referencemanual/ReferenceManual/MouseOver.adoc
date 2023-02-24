@@ -47,7 +47,9 @@ Otherwise, it will display only if 1 or 2 pieces have been included via the sett
 
 *Center text over pieces:*:: When selected, the text displayed above each piece will be centered over the piece, otherwise it will be left-justified.
 
-*Stretch summary text box to width of pieces:*:: Stretch the size of the summary text piece to be the same with as the display of pieces, even if it would normally be narrower.
+*Stretch summary text box to width of pieces:*:: Stretch the size of the summary text piece to be the same width as the display of pieces, even if it would normally be narrower. Has no effect when text is already at least as wide as the pieces.
+
+*Stretch pieces box to width of summary text:*:: Stretch the size of the pieces box to be the same width as the display of the summary text above the pieces, even if pieces display would normally be narrower. Has no effect when pieces already at least as wide as the text.
 
 *Combined counter summary text box:*:: When stretching the summary text box to the full width, also don't draw individual boxes around each summary entry.
 
