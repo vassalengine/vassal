@@ -56,6 +56,6 @@ To "decrement" the value, simple increment by a negative number.
 * _Prompt user:_  Pop up a dialog and ask the user for a new value for the property.
 They will be prompted for a new value using the text prompt entered in the *Prompt* field.
 * _Prompt user to select from list:_  Similar to _Prompt User_ but displays a list of items to select from in a drop-down menu.
-The items in the list can be generated dynamically by <<Expression.adoc#top,Expressions>>.
+The items in the list can be generated dynamically by <<Expression.adoc#top,Expressions>>. If some items evaluate to a blank string, then those items are only purged from the menu if the <<GlobalOptions.adoc#purgeblanks,Purge Blanks option in Global Options>> is selected; otherwise the blank options appear.
 
 *SEE ALSO:* <<PropertyMarker.adoc#top,Marker>>, <<DynamicProperty.adoc#top,Dynamic Property>>, <<Properties.adoc#top,Properties>>
