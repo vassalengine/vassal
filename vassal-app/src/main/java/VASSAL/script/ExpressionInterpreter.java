@@ -41,9 +41,11 @@ import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
 import VASSAL.tools.WarningDialog;
+
 import bsh.BeanShellExpressionValidator;
 import bsh.EvalError;
 import bsh.NameSpace;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
