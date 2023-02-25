@@ -19,6 +19,7 @@
       "in": "3.7.0-beta1",
       "since": "3.6.13",
       "new_features": [
+        { "num": 11937, "desc": "SumMat and CountMat functions for Beanshell expression" }
       ],
       "bug_fixes": [
       ],
