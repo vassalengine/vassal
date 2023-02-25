@@ -1,10 +1,9 @@
 {
   "headline": "The VASSAL Team is happy to announce VASSAL {{version}}.",
   "important": [
-    "NEW! 64-bit ARM packages: There are now MacOS and Windows packages for 64-bit ARM processors. If you have a Mac with an Apple Silicon CPU (which is a 64-bit ARM processor), we recommend using the 64-bit ARM build.",
-    "Code deprecated more than a year ago has been removed. Modules containing custom code using that code MUST be updated if they are to work with {{version_feature}}.",
-    "Things may be broken which worked previously. If you find a new bug, please report it.",
-    "Modules saved in {{version_feature}} are not openable by earlier versions of VASSAL. We recommend keeping a backup copy of any pre-{{version_feature}} modules you plan to modify in {{version_feature}} until you've verified that everything works to your satisfaction."
+    "Modules saved in {{version_feature}} are not openable by earlier versions of VASSAL. We recommend keeping a backup copy of any pre-{{version_feature}} modules you plan to modify in {{version_feature}} until you've verified that everything works to your satisfaction.",
+    "Some code deprecated more than a year ago has been removed. Modules containing custom code using that code MUST be updated if they are to work with {{version_feature}}.",
+    "Things may be broken which worked previously. If you find a new bug, please report it."
   ],
   "downloads": [
     { "display_name": "Linux", "suffix": "linux.tar.bz2" },
@@ -16,6 +15,17 @@
     { "display_name": "Other", "suffix": "other.zip" }
   ],
   "changes": [
+    {
+      "in": "3.7.0-beta1",
+      "since": "3.6.13",
+      "new_features": [
+      ],
+      "bug_fixes": [
+      ],
+      "other_improvements": [
+        { "num": 11178, "desc": "Omit empty lines in non-blank property setting prompts" }
+      ]
+    },
     {
       "in": "3.6.13",
       "since": "3.6.12",
@@ -35,33 +45,6 @@
         { "num": 11967, "desc": "When dragging piece out of face-down deck, use unrotated shape" },
         { "num": 10877, "desc": "Added a 'player joined' message when playing online" },
         { "num": 9786, "desc": "Text Label traits will respond to GameRefresher (unless trait has a manually-change-label hotkey defined)" }
-      ]
-    },
-    {
-      "in": "3.6.12",
-      "since": "3.6.11",
-      "new_features": [
-      ],
-      "bug_fixes": [
-        { "num": 11994, "desc": "Deck \"send-when-empty\" hotkeys no longer create extra undo steps" },
-        { "num": 11993, "desc": "ActionButtons set to count 0 times don't spuriously execute 1 time" },
-        { "num": 11982, "desc": "Fixed multiplayer problems with detach option on Deselect trait" },
-        { "num": 11963, "desc": "SendToLocation, Can Rotate, and MoveFixedDistance were all unlinking from deck/stack at wrong time, causing buggy behavior in some instances especially involving decks" },
-        { "num": 11961, "desc": "Clear up mark-when-moved problems for modules which still had a legacy value set" },
-        { "num": 11884, "desc": "'OldMat' properties now set correctly regardless of order of Mat Cargo and Send-to-Location (etc.) traits" },
-        { "num": 11880, "desc": "Triggers set to count 0 times don't spuriously execute 1 time" },
-        { "num": 11714, "desc": "Deck's Send-when-Empty key now processes AFTER fully moving last card" },
-        { "num": 11627, "desc": "ActionButtons with context menu flag no longer trigger context menu when a different ActionButton on same piece (that doesn't have the flag set) is clicked" },
-        { "num": 11462, "desc": "Don't +1 inventory sum if property isn't even defined" },
-        { "num": 11437, "desc": "Prevent NPE when right-clicking on a Deck with no menu items" },
-        { "num": 11429, "desc": "Deck Empty Hotkey no longer repeats per online player instance, nor when stepping forward a log" }
-      ],
-      "other_improvements": [
-        { "num": 12013, "desc": "Reinstate removal of module tile cache when a module is removed from the Module Manager" },
-        { "num": 12007, "desc": "Update Apple Silicon terminology in preferences and docs" },
-        { "num": 11986, "desc": "Add missing Section size symbol to NATO markers" },
-        { "num": 11957, "desc": "Spaces in GKC reports made consistent with all other reports" },
-        { "num": 11935, "desc": "Allow option for only first Mouseover-stack Viewer that generates a tooltip will be drawn" }
       ]
     }
   ]
