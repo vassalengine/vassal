@@ -1,7 +1,7 @@
 3.7.0-beta1 - ???
 
 * 11937: SumMat and CountMat functions for Beanshell expressions
-* 11178: Omit empty lines in non-blank property setting prompts
+* 11178: Global Option added to omit empty lines in property setting prompts
 
 3.6.13 - 24 February 2023
 
