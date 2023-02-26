@@ -34,6 +34,17 @@
       ]
     },
     {
+      "in": "3.6.14",
+      "since": "3.6.13",
+      "new_features": [
+      ],
+      "bug_fixes": [
+        { "num": 12048, "desc": "Fix bugs when deleting groups of decks/stacks from the editor" }
+      ],
+      "other_improvements": [
+      ]
+    },
+    {
       "in": "3.6.13",
       "since": "3.6.12",
       "new_features": [
