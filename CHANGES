@@ -1,5 +1,6 @@
 3.7.0-beta1 - ???
 
+* 12003: OldDeckName now supported as a piece property
 * 11937: SumMat and CountMat functions for Beanshell expressions
 * 11178: Global Option added to omit empty lines in property setting prompts
 

@@ -19,12 +19,13 @@
       "in": "3.7.0-beta1",
       "since": "3.6.13",
       "new_features": [
-        { "num": 11937, "desc": "SumMat and CountMat functions for Beanshell expression" }
+        { "num": 12003, "desc": "OldDeckName now supported as a piece property" },
+        { "num": 11937, "desc": "SumMat and CountMat functions for Beanshell expression" },
+        { "num": 11178, "desc": "Global Option added to omit empty lines in property setting prompts" }
       ],
       "bug_fixes": [
       ],
       "other_improvements": [
-        { "num": 11178, "desc": "Omit empty lines in non-blank property setting prompts" }
       ]
     },
     {
