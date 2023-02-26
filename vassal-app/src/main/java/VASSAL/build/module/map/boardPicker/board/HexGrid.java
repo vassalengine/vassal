@@ -17,14 +17,6 @@
  */
 package VASSAL.build.module.map.boardPicker.board;
 
-import static java.lang.Math.abs;
-import static java.lang.Math.ceil;
-import static java.lang.Math.floor;
-import static java.lang.Math.max;
-import static java.lang.Math.min;
-import static java.lang.Math.round;
-import static java.lang.Math.sqrt;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.module.documentation.HelpFile;
@@ -39,6 +31,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.hex.Hex;
 import VASSAL.tools.hex.OffsetCoord;
 
+import javax.swing.JButton;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Graphics;
@@ -52,7 +45,13 @@ import java.awt.geom.Area;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.JButton;
+import static java.lang.Math.abs;
+import static java.lang.Math.ceil;
+import static java.lang.Math.floor;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+import static java.lang.Math.round;
+import static java.lang.Math.sqrt;
 
 /**
  * A Hexgrid is a map grid composed of hexes.
@@ -453,8 +452,8 @@ public class HexGrid extends AbstractConfigurable
   }
 
   @Override
-  public Point snapTo(Point p) {
-    if (! snapTo) {
+  public Point snapTo(Point p, boolean force) {
+    if (!snapTo && !force) {
       return p;
     }
     final Point center = snapToHex(p);
@@ -483,6 +482,11 @@ public class HexGrid extends AbstractConfigurable
     }
   }
 
+  @Override
+  public Point snapTo(Point p) {
+    return snapTo(p, false);
+  }
+
   // FIXME: snapToHexVertex() does not always return the correct X co-ordinate
   // if the point is close to the center of the Hex. Workaround by returning
   // the real hex center if it is within 1 pixel x/y
@@ -495,7 +499,6 @@ public class HexGrid extends AbstractConfigurable
       return target;
     }
   }
-
 
   @Override
   public boolean isLocationRestricted(Point p) {

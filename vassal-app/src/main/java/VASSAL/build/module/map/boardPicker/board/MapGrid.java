@@ -17,11 +17,11 @@
  */
 package VASSAL.build.module.map.boardPicker.board;
 
+import VASSAL.build.module.map.boardPicker.board.mapgrid.GridNumbering;
+
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
-
-import VASSAL.build.module.map.boardPicker.board.mapgrid.GridNumbering;
 
 /**
  * A MapGrid overlays a map board to constrain
@@ -32,6 +32,10 @@ public interface MapGrid {
    * @return the nearest grid location to the given point
    */
   Point snapTo(Point p);
+
+  default Point snapTo(Point p, boolean force) {
+    return snapTo(p);
+  }
 
   /**
    * @return true if the given point may not be a local location.

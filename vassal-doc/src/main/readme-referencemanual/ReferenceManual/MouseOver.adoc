@@ -35,6 +35,8 @@ Otherwise, it will display only if 1 or 2 pieces have been included via the sett
 
 *Draw pieces:*::  If selected, then the included pieces will be drawn in the viewer.
 
+*Center pieces vertically in box (if different sizes):*:: If selected, and multiple pieces of different heights are being shown, the smaller pieces will be vertically centered in the viewer
+
 *Draw pieces using zoom factor:*::  The magnification factor to use to draw the pieces in the viewer.
 
 *Width of gap between pieces:*::  Empty space in pixels to place between each drawn piece.
@@ -46,6 +48,10 @@ Otherwise, it will display only if 1 or 2 pieces have been included via the sett
 *Center text over pieces:*:: When selected, the text displayed above each piece will be centered over the piece, otherwise it will be left-justified.
 
 *Stretch summary text box to width of pieces:*:: Stretch the size of the summary text piece to be the same with as the display of pieces, even if it would normally be narrower.
+
+*Combined counter summary text box:*:: When stretching the summary text box to the full width, also don't draw individual boxes around each summary entry.
+
+*Only show first piece's summary entry:*:: When stretching the summary text box to the full width, only show the summary entry for the first piece displayed.
 
 *Additional offset upward (summary text):*:: The number of pixels to adjust the summary text box upwards from its usual position. Use negative numbers to adjust it down.
 
@@ -62,7 +68,21 @@ The sum of the numeric values of this property for all included pieces will be s
 *Include individual pieces:*::  Specifies whether/how pieces are to be selected for inclusion in the viewer based on their layer.
 You may restrict the pieces according to the <<GamePieceLayers.adoc#top,Game Piece Layer>> to which they belong.
 
-*Property Match Expression:*::  You may specify a <<PropertyMatchExpression.adoc#top,Property Match Expression>> to match desired values of one or more <<Properties.adoc#top,Properties>> in order for a piece to be included.
+*Piece selection property filter:*::  You may specify a <<PropertyMatchExpression.adoc#top,Property Match Expression>> to match desired values of one or more <<Properties.adoc#top,Properties>> in order for a piece to be included.
+
+*Include terrain beneath as an additional "piece":*::  If set to _Always_, the map/board surface beneath the pieces will be shown as if it were an additional piece. If set to _If at least one other piece_, the mapboard surface will be shown as long as at least one actual piece is found by this mouseover. If set to _Never_, the map/board surface beneath the piece(s) will not be shown.
+
+*Force snap to map grid when displaying terrain:*::  If selected, then when showing terrain the center point will be determined by "snapping" the cursor location to the nearest region/hex/square in the map grid, regardless of whether the grid is normally set to "snap to".
+
+*Width of terrain on map to grab for display:*::  When showing terrain, this specifies the width (in map coordinates) to be grabbed for display.
+
+*Height of terrain on map to grab for display:*::  When showing terrain, this specifies the height (in map coordinates) to be grabbed for display.
+
+*Zoom factor to display terrain:*::  When showing terrain, this specifies the zoom factor to display the terrain after it has been grabbed from the map.
+
+*Text below terrain:*::  When showing terrain, this specifies optional summary text to display beneath the grabbed terrain icon (a similar function to the _Text below each piece_ field).
+
+*Show only top piece in stack:*:: If selected, then only the top piece in a stack is eligible to be displayed; otherwise the whole stack is shown.
 
 *Include non-stacking pieces:*::  If selected, then pieces with a <<NonStacking.adoc#top,Does not stack>> trait specifying the piece does not Stack are eligible for inclusion in the viewer.
 Otherwise, they are excluded regardless of any other filters.
