@@ -103,7 +103,7 @@ Once you configure it, your new sub-component will appear at the bottom of the M
 |<<GamePieceLayers.adoc#top,Game Piece Layers>> |<<#GlobalKeyCommand,Global Key Command>> |<<GlobalProperties.adoc#top,Global Properties>> |<<#HidePieces,Hide Pieces Button>>
 |<<#ImageCapture,Image Capture Tool>>|<<#LastMoveHighlighter,Last Move Highlighter>> |<<#LOS,Line of Sight Thread>> |<<#MapBoards,Map Boards>> |<<#MapShading,Map Shading>>
 |<<#StackViewer,Mouse-over Stack Viewer>> |<<#OverviewWindow,Overview Window>> |<<#PieceRecenterer,Recenter Pieces Button>> |<<#StackingOptions,Stacking Options>>
-|<<#StartupGlobalKeyCommand,Startup Global Key Command>> |<<#TextCapture,Text Capture Tool>> |<<ToolbarMenu.adoc#top,Toolbar Menu>> |<<#Zoom,Zoom Capability>>
+|<<#TextCapture,Text Capture Tool>> |<<ToolbarMenu.adoc#top,Toolbar Menu>> |<<#Zoom,Zoom Capability>>
 |===
 
 '''''
@@ -433,29 +433,6 @@ This is useful for games where there are no absolute terrain features, such as s
 
 |image:images/PieceRecenterer.png[]
 |===
-
-[#StartupGlobalKeyCommand]
-
-==== Startup Global Key Command
-
-Can print a welcome message, or perform some other task that needs to be done whenever the module is started up.
-
-
-image:images/StartupGlobalKeyCommand.png[]
-
-An extension of <<#GlobalKeyCommand,Global Key Command>> that fires automatically upon completion of module load, once all the key listeners are started up.
-All fields behave identically to the corresponding ones in <<#GlobalKeyCommand,Global Key Command>>, except that those pertaining to the physical representation of a Toolbar button are suppressed as being inapplicable.
-
-As of VASSAL 3.6, multiple start-up global key commands _can_ be depended on to run in the order they are listed in the module.
-
-Startup Global Key Commands can be configured to any of three modes:
-
-**(1) On First Game Launch/Load Of Session**: These fire every time the _module_ starts up, regardless of whether it is to begin a new game or to load and continue an existing one.
-
-**(2) On Every Game Launch/Load Of Session**: These fire every time a game is launched or loaded during the session.
-
-**(3) At Start Of Every Fresh Game Only**: These fire only when a _new game_ is starting. If the game is saved and later restored, or is being exchanged back and forth in log form, the key command will not fire on subsequent loads. For clarity, a new game started from a <<GameModule.adoc#PredefinedSetup, Pre-defined Setup>> _does_ count as a fresh new game.
-
 
 '''
 [#GlobalKeyCommand]
