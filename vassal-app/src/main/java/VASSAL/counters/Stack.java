@@ -241,14 +241,12 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
    * @return The index of the piece, or -1 if it is not present in the stack
    */
   public int indexOf(GamePiece p) {
-    int index = -1;
     for (int i = 0; i < pieceCount; ++i) {
       if (p == contents[i]) {
-        index = i;
-        break;
+        return i;
       }
     }
-    return index;
+    return -1;
   }
 
   /**
