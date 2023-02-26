@@ -102,7 +102,6 @@ public class BorderOutline extends Decorator implements TranslatablePiece {
   @Override
   public Rectangle boundingBox() {
     final Rectangle r = piece.boundingBox();
-    r.add(piece.boundingBox());
     r.add(border.boundingBox(this));
     return r;
   }
