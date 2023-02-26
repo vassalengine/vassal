@@ -441,6 +441,24 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     return map == null ? wrap("") : wrap((String) map.getProperty(propertyName));
   }
 
+  private static int propValue(Object prop) {
+    if (prop != null) {
+      final String s1 = prop.toString();
+      return NumberUtils.toInt(s1, 0);
+    }
+    return 0;
+  }
+
+  private static int propNonempty(Object prop) {
+    if (prop != null) {
+      final String val = prop.toString();
+      if (!"".equals(val)) {
+        return 1;
+      }
+    }
+    return 0;
+  }
+
   /**
    * SumStack(property) function
    * Total the value of the named property in all counters in the
@@ -462,18 +480,12 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       final Stack s = ((GamePiece) ps).getParent();
       if (s == null) {
         final Object prop = ps.getProperty(property);
-        if (prop != null) {
-          final String s1 = prop.toString();
-          result += NumberUtils.toInt(s1, 0);
-        }
+        result += propValue(prop);
       }
       else {
         for (final GamePiece gamePiece : s.asList()) {
           final Object prop = gamePiece.getProperty(property);
-          if (prop != null) {
-            final String s1 = prop.toString();
-            result += NumberUtils.toInt(s1, 0);
-          }
+          result += propValue(prop);
         }
       }
     }
@@ -505,12 +517,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         }
         else {
           final Object prop = ps.getProperty(property);
-          if (prop != null) {
-            final String val = prop.toString();
-            if (!"".equals(val)) {
-              result++;
-            }
-          }
+          result += propNonempty(prop);
         }
       }
       else {
@@ -520,12 +527,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         else {
           for (final GamePiece gamePiece: s.asList()) {
             final Object prop = gamePiece.getProperty(property);
-            if (prop != null) {
-              final String val = prop.toString();
-              if (!"".equals(val)) {
-                result++;
-              }
-            }
+            result += propNonempty(prop);
           }
         }
       }
@@ -573,25 +575,16 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         final Mat actualMat = (Mat) Decorator.getDecorator(mat, Mat.class);
 
         Object prop = mat.getProperty(property);
-        if (prop != null) {
-          final String s1 = prop.toString();
-          result += NumberUtils.toInt(s1, 0);
-        }
+        result += propValue(prop);
 
         for (final GamePiece cargo : actualMat.getContents()) {
           prop = Decorator.getOutermost(cargo).getProperty(property);
-          if (prop != null) {
-            final String s1 = prop.toString();
-            result += NumberUtils.toInt(s1, 0);
-          }
+          result += propValue(prop);
         }
       }
       else {
         final Object prop = ps.getProperty(property);
-        if (prop != null) {
-          final String s1 = prop.toString();
-          result += NumberUtils.toInt(s1, 0);
-        }
+        result += propValue(prop);
       }
     }
     return result;
@@ -637,36 +630,21 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         final Mat actualMat = (Mat) Decorator.getDecorator(mat, Mat.class);
 
         Object prop = mat.getProperty(property);
-        if (prop != null) {
-          final String val = prop.toString();
-          if (!"".equals(val)) {
-            result++;
-          }
-        }
+        result += propNonempty(prop);
 
         for (final GamePiece cargo : actualMat.getContents()) {
           prop = Decorator.getOutermost(cargo).getProperty(property);
-          if (prop != null) {
-            final String val = prop.toString();
-            if (!"".equals(val)) {
-              result++;
-            }
-          }
+          result += propNonempty(prop);
         }
       }
       else {
         final Object prop = ps.getProperty(property);
-        if (prop != null) {
-          final String val = prop.toString();
-          if (!"".equals(val)) {
-            result++;
-          }
-        }
+        result += propNonempty(prop);
       }
     }
+
     return result;
   }
-
 
   /**
    * SumLocation(property) function
@@ -700,18 +678,12 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
               final Stack s = (Stack) piece;
               for (final GamePiece gamePiece : s.asList()) {
                 final Object prop = gamePiece.getProperty(property);
-                if (prop != null) {
-                  final String s1 = prop.toString();
-                  result += NumberUtils.toInt(s1, 0);
-                }
+                result += propValue(prop);
               }
             }
             else {
               final Object prop = piece.getProperty(property);
-              if (prop != null) {
-                final String s1 = prop.toString();
-                result += NumberUtils.toInt(s1, 0);
-              }
+              result += propValue(prop);
             }
           }
         }
