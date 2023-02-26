@@ -21,6 +21,7 @@
       "new_features": [
         { "num": 12003, "desc": "OldDeckName now supported as a piece property" },
         { "num": 11937, "desc": "SumMat and CountMat functions for Beanshell expression" },
+        { "num": 11918, "desc": "Startup GKC that fires when player joins or changes sides" },
         { "num": 11178, "desc": "Global Option added to omit empty lines in property setting prompts" }
       ],
       "bug_fixes": [

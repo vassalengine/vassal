@@ -2,6 +2,7 @@
 
 * 12003: OldDeckName now supported as a piece property
 * 11937: SumMat and CountMat functions for Beanshell expressions
+* 11918: Startup GKC that fires when player joins or changes sides
 * 11178: Global Option added to omit empty lines in property setting prompts
 
 3.6.13 - 24 February 2023
