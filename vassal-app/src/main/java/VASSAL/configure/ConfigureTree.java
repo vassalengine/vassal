@@ -966,7 +966,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
                   // Child could have been already deleted or dragged elsewhere
                   final DefaultMutableTreeNode currentParent = (DefaultMutableTreeNode)getTreeNode(child).getParent();
                   if (currentParent != null) {
-                    ConfigureTree.this.remove((Configurable)currentParent.getUserObject(), child);
+                    ConfigureTree.this.delete(child);
                   }
                   dispose();
                 }
@@ -1057,7 +1057,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         @Override
         public void actionPerformed(ActionEvent evt) {
           final int row = selectedRow;
-          remove(parent, target);
+          delete(target);
           if (row < getRowCount()) {
             setSelectionRow(row);
           }
@@ -1110,6 +1110,30 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
     return canContainPiece;
   }
+
+
+  /**
+   * Delete removes an item from the tree but ALSO traverses the tree throwing all the childrens' children manually out
+   * the airlock, one by one. Lest they return and live on as zombies...
+   */
+  protected boolean delete(Configurable target) {
+    boolean result = true;
+
+    final Enumeration<?> e = getTreeNode(target).postorderEnumeration();
+    final List<DefaultMutableTreeNode> victims = new ArrayList<>();
+    while (e.hasMoreElements()) {
+      victims.add((DefaultMutableTreeNode) e.nextElement());
+    }
+
+    for (final DefaultMutableTreeNode nextChild : victims) {
+      final DefaultMutableTreeNode nextParent = (DefaultMutableTreeNode)nextChild.getParent();
+      final Configurable child  = (Configurable) nextChild.getUserObject();
+      final Configurable parent = (Configurable) nextParent.getUserObject();
+      result &= remove(parent, child);
+    }
+    return result;
+  }
+
 
   protected boolean remove(Configurable parent, Configurable child) {
     try {
