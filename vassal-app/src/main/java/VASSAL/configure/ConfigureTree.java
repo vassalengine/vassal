@@ -966,7 +966,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
                   // Child could have been already deleted or dragged elsewhere
                   final DefaultMutableTreeNode currentParent = (DefaultMutableTreeNode)getTreeNode(child).getParent();
                   if (currentParent != null) {
-                    ConfigureTree.this.remove((Configurable)currentParent.getUserObject(), child);
+                    ConfigureTree.this.delete(child);
                   }
                   dispose();
                 }
@@ -1049,7 +1049,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected Action buildDeleteAction(final Configurable target) {
     final DefaultMutableTreeNode targetNode = getTreeNode(target);
-    final Configurable parent = getParent(targetNode);
     if (targetNode.getParent() != null) {
       return new AbstractAction(deleteCmd) {
         private static final long serialVersionUID = 1L;
@@ -1057,7 +1056,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         @Override
         public void actionPerformed(ActionEvent evt) {
           final int row = selectedRow;
-          remove(parent, target);
+          delete(target);
           if (row < getRowCount()) {
             setSelectionRow(row);
           }
@@ -1110,6 +1109,27 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
     return canContainPiece;
   }
+
+
+  /**
+   * Delete removes an item from the tree but ALSO traverses the tree throwing all the childrens' children manually out
+   * the airlock, one by one. Lest they return and live on as zombies...
+   */
+  protected boolean delete(Configurable target) {
+    boolean result = true;
+
+    final Enumeration<?> e = getTreeNode(target).postorderEnumeration();
+    final List<DefaultMutableTreeNode> victims = new ArrayList<>();
+    while (e.hasMoreElements()) {
+      victims.add((DefaultMutableTreeNode) e.nextElement());
+    }
+
+    for (final DefaultMutableTreeNode victim : victims) {
+      result &= remove((Configurable) ((DefaultMutableTreeNode)victim.getParent()).getUserObject(), (Configurable) victim.getUserObject());
+    }
+    return result;
+  }
+
 
   protected boolean remove(Configurable parent, Configurable child) {
     try {
