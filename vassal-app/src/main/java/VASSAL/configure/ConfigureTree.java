@@ -1049,7 +1049,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected Action buildDeleteAction(final Configurable target) {
     final DefaultMutableTreeNode targetNode = getTreeNode(target);
-    final Configurable parent = getParent(targetNode);
     if (targetNode.getParent() != null) {
       return new AbstractAction(deleteCmd) {
         private static final long serialVersionUID = 1L;
