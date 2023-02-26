@@ -82,6 +82,8 @@ You may restrict the pieces according to the <<GamePieceLayers.adoc#top,Game Pie
 
 *Text below terrain:*::  When showing terrain, this specifies optional summary text to display beneath the grabbed terrain icon (a similar function to the _Text below each piece_ field).
 
+*Show only top piece in stack:*:: If selected, then only the top piece in a stack is eligible to be displayed; otherwise the whole stack is shown.
+
 *Include non-stacking pieces:*::  If selected, then pieces with a <<NonStacking.adoc#top,Does not stack>> trait specifying the piece does not Stack are eligible for inclusion in the viewer.
 Otherwise, they are excluded regardless of any other filters.
 

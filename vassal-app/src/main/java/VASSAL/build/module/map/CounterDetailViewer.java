@@ -124,6 +124,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public static final String CENTER_PIECES_VERTICALLY = "centerPiecesVertically"; //NON-NLS
   public static final String DRAW_PIECES_AT_ZOOM = "graphicsZoom"; //NON-NLS
   public static final String BORDER_WIDTH = "borderWidth"; //NON-NLS
+  public static final String SHOW_ONLY_TOP_OF_STACK = "showOnlyTopOfStack"; //NON-NLS
   public static final String SHOW_NOSTACK = "showNoStack"; //NON-NLS
 
   public static final String SHOW_MOVE_SELECTED = "showMoveSelectde"; //NON-NLS
@@ -208,6 +209,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected double graphicsZoomLevel = 1.0;
   protected int borderWidth = 0;
   protected int extraTextPadding = 0;
+  protected boolean showOnlyTopOfStack = false;
   protected boolean showNoStack = false;
   protected boolean showMoveSelected = false;
   protected boolean showNonMovable = false;
@@ -771,7 +773,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
     final Visitor visitor = new Visitor(new Filter(), map,
       map.componentToMap(currentMousePosition.getPoint()),
-      showOverlap, showNumberFromDeck, showDeckMasked
+      showOverlap, showNumberFromDeck, showDeckMasked, showOnlyTopOfStack
     );
     final DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
 
@@ -900,6 +902,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     protected boolean showingOverlap;
     protected final int showNumberFromDeck;
     protected final boolean showDeckMasked;
+    protected final boolean showOnlyTopOfStack;
 
     @Deprecated(since = "2021-12-01", forRemoval = true)
     public Visitor(Filter filter, Map map, Point pt, boolean showOverlap) {
@@ -907,6 +910,10 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
 
     public Visitor(Filter filter, Map map, Point pt, boolean showOverlap, int showNumberFromDeck, boolean showDeckMasked) {
+      this(filter, map, pt, showOverlap, showNumberFromDeck, showDeckMasked, false);
+    }
+
+    public Visitor(Filter filter, Map map, Point pt, boolean showOverlap, int showNumberFromDeck, boolean showDeckMasked, boolean showOnlyTopOfStack) {
       super(map, pt);
       if (map.getPieceCollection() instanceof CompoundPieceCollection) {
         collection = (CompoundPieceCollection) map.getPieceCollection();
@@ -916,6 +923,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       showingOverlap = showOverlap;
       this.showNumberFromDeck = showNumberFromDeck;
       this.showDeckMasked = showDeckMasked;
+      this.showOnlyTopOfStack = showOnlyTopOfStack;
     }
 
 
@@ -951,7 +959,12 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         super.visitStack(s) != null : foundPieceAt.equals(s.getPosition());
       if (addContents) {
         if (!(map instanceof PlayerHand)) {
-          s.asList().forEach(this::apply);
+          if (showOnlyTopOfStack) {
+            apply(s.topPiece());
+          }
+          else {
+            s.asList().forEach(this::apply);
+          }
         }
         else {
           for (int i = 0; (i < shapes.length) && (i < s.getPieceCount()); ++i) {
@@ -1185,6 +1198,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       SHOW_TERRAIN_HEIGHT,
       SHOW_TERRAIN_ZOOM,
       SHOW_TERRAIN_TEXT,
+      SHOW_ONLY_TOP_OF_STACK,
       SHOW_NOSTACK,
       SHOW_MOVE_SELECTED,
       SHOW_NON_MOVABLE,
@@ -1237,6 +1251,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       Resources.getString("Editor.MouseOverStackViewer.show_terrain_y"),
       Resources.getString("Editor.MouseOverStackViewer.show_terrain_zoom"),
       Resources.getString("Editor.MouseOverStackViewer.show_terrain_text"),
+      Resources.getString("Editor.MouseOverStackViewer.show_only_top_of_stack"),
       Resources.getString("Editor.MouseOverStackViewer.non_stacking"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.move_selected"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.non_moveable"), //$NON-NLS-1$
@@ -1290,6 +1305,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       Integer.class,
       Double.class,
       EmptyFormatConfig.class,
+      Boolean.class,
       Boolean.class,
       Boolean.class,
       Boolean.class,
@@ -1536,6 +1552,14 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       }
       borderWidth = (Integer) value;
     }
+    else if (SHOW_ONLY_TOP_OF_STACK.equals(name)) {
+      if (value instanceof Boolean) {
+        showOnlyTopOfStack = (Boolean) value;
+      }
+      else if (value instanceof String) {
+        showOnlyTopOfStack = "true".equals(value); //NON-NLS
+      }
+    }
     else if (SHOW_NOSTACK.equals(name)) {
       if (value instanceof Boolean) {
         showNoStack = (Boolean) value;
@@ -1759,6 +1783,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     else if (BORDER_WIDTH.equals(name)) {
       return String.valueOf(borderWidth);
+    }
+    else if (SHOW_ONLY_TOP_OF_STACK.equals(name)) {
+      return String.valueOf(showOnlyTopOfStack);
     }
     else if (SHOW_NOSTACK.equals(name)) {
       return String.valueOf(showNoStack);
