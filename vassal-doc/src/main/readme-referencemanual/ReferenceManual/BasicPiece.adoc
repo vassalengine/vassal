@@ -60,6 +60,10 @@ All pieces sourced from the same <<PieceWindow.adoc#top,Game Piece Palette>> slo
 * _DrawingMouseover_ contains _true_ when a <<MouseOver.adoc#top, Mouseover Stack Viewer>> is currently being drawn, and contains _false_ otherwise.
 * _DrawingMouseoverIndex_ contains 2 when a <<MouseOver.adoc#top, Mouseover Stack Viewer>> is currently being drawn, and contains 1 otherwise. This can be used e.g. in the _Follows Expression_ field of a <<Layer.adoc#top, Layer trait>> to draw a different image for the Mouseover than is normally used when drawing the piece on the map.
 
+* _StackPos_ contains the position of the piece within the piece's current Stack, 1 being the top. If the piece is a Non-stacking piece, StackPos will return 1.
+
+* _StackSize_ contains the number of pieces in the piece's current Stack. If the piece is a Non-stacking piece, StackSize will return 1.
+
 The following <<Properties.adoc#top,Properties>> are defined after a piece is moved, either manually by drag-and-drop movement or by a <<SendToLocation.adoc#top,Send To Location>> trait:
 
 * _OldLocationName_ contains the name of the previous location, as determined by the local grid +
