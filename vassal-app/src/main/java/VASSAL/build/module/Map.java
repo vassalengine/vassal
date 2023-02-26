@@ -3740,45 +3740,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     return UniqueIdManager.getIdentifier(this);
   }
 
-
-  /**
-   * Creates an image (of designated size) of the board(s) at a particular point
-   * @param pt - center point of map location to generate image for
-   * @param width - width of map to include
-   * @param height - height of map to include
-   * @param os_scale - OS scaling factor
-   * @return an image
-   */
-  public BufferedImage getImageMapIcon(Point pt, int width, int height, double os_scale) {
-    final BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-    final Graphics2D g2d = img.createGraphics();
-
-    double dzoom = 0.0;
-    Rectangle rect = null;
-
-    for (final Board b: getBoards()) {
-      if (rect == null) {
-        final double mag = b.getMagnification();
-        dzoom = os_scale / mag;
-
-        rect = new Rectangle(
-          (int)((pt.x * os_scale - width/2) / mag),
-          (int)((pt.y * os_scale - height/2) / mag),
-          (int)(width / mag),
-          (int)(height / mag)
-        );
-
-        g2d.translate(-rect.x, -rect.y);
-      }
-
-      b.drawRegion(g2d, getLocation(b, dzoom), rect, dzoom, null);
-    }
-
-    g2d.dispose();
-    return img;
-  }
-
-
+  
   /** @return the Swing component representing the map */
   public JComponent getView() {
     if (theMap == null) {
