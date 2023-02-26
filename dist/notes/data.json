@@ -24,6 +24,7 @@
         { "num": 12001, "desc": "count_ supported for counting properties in Inventory windows" },
         { "num": 11937, "desc": "SumMat and CountMat functions for Beanshell expression" },
         { "num": 11918, "desc": "Startup GKC that fires when player joins or changes sides" },
+        { "num": 11530, "desc": "Add new StackPos and StackSize properties to Basic Piece" },
         { "num": 11178, "desc": "Global Option added to omit empty lines in property setting prompts" },
         { "num": 11100, "desc": "Allow begin-logfile and end-logfile to have configurable hotkeys in Global Options" }
       ],
