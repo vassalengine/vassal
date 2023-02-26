@@ -25,6 +25,7 @@
         { "num": 12048, "desc": "Fix bugs when deleting groups of decks/stacks from the editor" }
       ],
       "other_improvements": [
+        { "num": 10249, "desc": "Duplicating a prototype no longer disables that prototype until next module reload" }
       ]
     },
     {
