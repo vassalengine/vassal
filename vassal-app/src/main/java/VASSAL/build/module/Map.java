@@ -180,7 +180,6 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -3740,7 +3739,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     return UniqueIdManager.getIdentifier(this);
   }
 
-  
+
   /** @return the Swing component representing the map */
   public JComponent getView() {
     if (theMap == null) {
