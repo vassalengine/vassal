@@ -444,7 +444,6 @@ public class GameState implements CommandEncoder {
     return any;
   }
 
-
   /**
    * Applies all of the Startup Global Key Commands in order, and then blocks undo past this point if any were applied.
    */
@@ -456,7 +455,6 @@ public class GameState implements CommandEncoder {
       GameModule.getGameModule().sendAndLog(finished);
     }
   }
-
 
   private static class FinishedStartupGlobalKeyCommands extends Command {
     @Override
