@@ -1126,10 +1126,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
 
     for (final DefaultMutableTreeNode nextChild : victims) {
-      final DefaultMutableTreeNode nextParent = (DefaultMutableTreeNode)nextChild.getParent();
-      final Configurable child  = (Configurable) nextChild.getUserObject();
-      final Configurable parent = (Configurable) nextParent.getUserObject();
-      result &= remove(parent, child);
+      result &= remove((Configurable) ((DefaultMutableTreeNode)nextChild.getParent()).getUserObject(), (Configurable) nextChild.getUserObject());
     }
     return result;
   }
