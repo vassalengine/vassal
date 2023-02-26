@@ -18,31 +18,29 @@
 
 package VASSAL.counters;
 
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.Point;
-
-import java.util.Objects;
-import javax.swing.JLabel;
-import javax.swing.KeyStroke;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.TranslatingStringEnumConfigurer;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
-import VASSAL.i18n.PieceI18nData;
-import VASSAL.i18n.Resources;
-import VASSAL.configure.StringConfigurer;
+
+import javax.swing.JLabel;
+import javax.swing.KeyStroke;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -154,9 +152,13 @@ public class Deselect extends Decorator implements TranslatablePiece {
           final Stack stack = outer.getParent();       //BR// If we're now being dragged around as part of a stack
           if (stack != null) {
             final Point pos = outer.getPosition();     //BR// Figure out where stack was/is
-            stack.setExpanded(true);                   //BR// Expand the stack
-            stack.remove(outer);                       //BR// Remove our piece from the stack
-            c = m.placeAt(outer, pos);                 //BR// Put it back on the map so it won't be missing
+
+            c = m.placeAt(outer, pos);                 //BR// Place it right on the map (which auto-removes it from stack)
+
+            final Stack parent = m.getStackMetrics().createStack(outer);
+            if (parent != null) {
+              c = c.append(m.placeAt(parent, pos));    //BR// Place it in a new stack at the same location
+            }
           }
         }
         DragBuffer.getBuffer().remove(outer);          //BR// Remove from the drag buffer

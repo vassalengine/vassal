@@ -23,7 +23,7 @@ A <<GamePiece.adoc#top,Game Piece>> with this trait will have a command that cau
 *Deselection type:*:: Choose whether you wish to deselect this piece, deselect all pieces, or select only this piece.
 
 |image:images/Deselect.png[]
-_Deselect this piece without removing it from it's Stack when the *Deselect* menu command is selected, on receipt of the *Ctrl+K* Keystroke Command._
+_Deselect this piece without removing it from its Stack when the *Deselect* menu command is selected, on receipt of the *Ctrl+K* Keystroke Command._
 |===
 
 

@@ -36,26 +36,6 @@ import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.swing.SwingUtils;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-
 import javax.swing.AbstractListModel;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -83,6 +63,25 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * Controls the zooming in/out of a {@link Map} window.
@@ -429,6 +428,19 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       levelField = new JTextField(8);
       levelField.setMaximumSize(new Dimension(
         Integer.MAX_VALUE, levelField.getPreferredSize().height));
+
+      // Edit box selects all text when first focused
+      levelField.addFocusListener(new java.awt.event.FocusAdapter() {
+        @Override
+        public void focusGained(java.awt.event.FocusEvent evt) {
+          SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+              levelField.selectAll();
+            }
+          });
+        }
+      });
 
       // validator for the level entry field
       levelField.getDocument().addDocumentListener(new DocumentListener() {
@@ -1159,7 +1171,6 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
       okButton = new JButton(Resources.getString(Resources.OK));
       okButton.addActionListener(this);
-      getRootPane().setDefaultButton(okButton);
       buttonBox.add(okButton);
 
       buttonBox.add(Box.createHorizontalStrut(hsep));
@@ -1182,6 +1193,9 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       contentPane.setLayout(new BorderLayout(0, 11));
       contentPane.add(controlsPane, BorderLayout.CENTER);
       contentPane.add(buttonBox, BorderLayout.PAGE_END);
+
+      // Default actions on Enter/ESC
+      SwingUtils.setDefaultButtons(getRootPane(), okButton, cancelButton);
 
       setResizable(false);
       pack();
@@ -1336,9 +1350,9 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
    */
   @Override
   public List<String> getMenuTextList() {
-    return List.of(getAttributeValueString(IN_BUTTON_TEXT), getAttributeValueString(IN_TOOLTIP),
-                   getAttributeValueString(OUT_BUTTON_TEXT), getAttributeValueString(OUT_TOOLTIP),
-                   getAttributeValueString(PICK_BUTTON_TEXT), getAttributeValueString(PICK_TOOLTIP));
+    return Arrays.asList(getAttributeValueString(IN_BUTTON_TEXT), getAttributeValueString(IN_TOOLTIP),
+                         getAttributeValueString(OUT_BUTTON_TEXT), getAttributeValueString(OUT_TOOLTIP),
+                         getAttributeValueString(PICK_BUTTON_TEXT), getAttributeValueString(PICK_TOOLTIP));
   }
 
   /**

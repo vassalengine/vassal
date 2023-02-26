@@ -17,7 +17,7 @@ A standard rectangular grid for regulating movement on a Board.
 
 *Range calculation metric:*:: Determines the algorithm to be used in range calculations.
 +
-*_Metric_* range uses the larger of the X distance and the Y distance in cells.
+*_Metric_* range uses the largest of the X distance and the Y distance in cells.
 +
 *_Manhattan_* range uses the sum of the X distance and the Y distance, in cells.
 

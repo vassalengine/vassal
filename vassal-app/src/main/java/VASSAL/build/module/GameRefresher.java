@@ -475,7 +475,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
           final Board board = drawPile.getConfigureBoard(true);
           if ((boardName == null) || boards.contains(board)) {
             for (final DrawPile drawPile2 : foundDrawPiles) {
-              if (drawPile.getAttributeValueString(SetupStack.NAME).equals(drawPile2.getAttributeValueString(SetupStack.NAME))) {
+              if (Objects.equals(drawPile.getAttributeValueString(SetupStack.NAME), drawPile2.getAttributeValueString(SetupStack.NAME))) {
                 matchFound = true;
                 break;
               }
@@ -581,6 +581,9 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
       final JButton exitButton = new JButton(Resources.getString("General.cancel"));
       exitButton.addActionListener(e -> exit());
+
+      // Default actions on Enter/ESC
+      SwingUtils.setDefaultButtons(getRootPane(), runButton, exitButton);
 
       final JButton helpButton = new JButton(Resources.getString("General.help"));
       helpButton.addActionListener(e -> help());

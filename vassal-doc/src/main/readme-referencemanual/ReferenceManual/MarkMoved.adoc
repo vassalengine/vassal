@@ -15,7 +15,7 @@ This _Moved_ property can be toggled back to _false_ with the configured key com
 
 *NOTES:*
 
-* *In order to enable this feature*, you must also go to the <<GlobalOptions.adoc#top,Global Options>> of the module and enable the _Mark pieces that move_ setting.
+* *In order to enable this feature*, you must also go to the <<Map.adoc#top,Map Window>> of the module and enable the _Mark pieces that move_ setting.
 * A Toolbar button can also be configured in the properties of each <<Map.adoc#top,Map Window>> that clears the moved status of all pieces on the map.
 * For pieces containing this trait, the <<Properties.adoc#top,Property>>  _Moved=true_ is set when the piece has been moved.
 * When the trait is activated with the menu item or Key Command, then _Moved=false_ is set.
@@ -29,9 +29,19 @@ SEE ALSO: <<MovementTrail.adoc#top,Movement Trails>>)
 |
 *Description:*:: A short description of this trait for your own reference.
 
-*Menu command:*:: Right-click context menu item that will clear the piece's move history (setting _Moved_ property back to _false_ and clearing any <<MovementTrail.adoc#top,Movement Trails>>). If this item is left blank, no context menu entry will appear but the move history can still be cleared with the Key Command, below.
+*Menu command to toggle:*:: Right-click context menu item that will toggle the moved status (flipping _Moved_ property between _true_ and _false_ and clearing any <<MovementTrail.adoc#top,Movement Trails>> if set to false). If this item is left blank, no context menu entry will appear but the flag can still be toggled with the key command, below.
 
-*Key command:*:: <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to clear the piece's move history (setting _Moved_ property back to _false_ and clearing any <<MovementTrail.adoc#top,Movement Trails>>).
+*Key command to toggle:*:: <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to toggle the piece's moved status (flipping _Moved_ property between _true_ and _false_ and clearing any <<MovementTrail.adoc#top,Movement Trails>> if set to false).
+
+*Menu command to mark as moved:*:: Context menu item that will force the piece's moved status to _true_.
+
+*Key command to mark as moved:*:: <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to force the piece's moved status to _true_.
+
+*Menu command to mark as unmoved:*:: Context menu item that will force the piece's moved status to _false_ and clear any Movement Trails.
+
+*Key command to mark as unmoved:*:: <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to force the piece's moved status to _false_ and clear any Movement Trails.
+
+*Ignore moves which don't change either Location Name or Mat:*:: If checked, then don't mark the piece as moved if neither its Location Name nor its mat changed as a result of its move. This can be used to ignore insignificant moves (e.g. a couple pixels in an area movement game).
 
 *Marker Image:*:: Use the _Select_ button to load a new image or the _Default_ button to return to the default image.
 

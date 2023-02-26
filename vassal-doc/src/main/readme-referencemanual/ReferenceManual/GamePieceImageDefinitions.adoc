@@ -16,7 +16,7 @@ Within the Game Piece Image Definitions you can build your own images by combini
 Images defined in this component will appear in the drop-down menu for selecting images for any Trait of any Game Piece just like an imported GIF, JPEG, or PNG.
 
 You can also use your own images instead of the vector drawn NATO ones, so for many games you will be able to define the whole counter set with just a handful of images.
-Furthermore you can change the size and layout of all the counters in your game easily by adjusting the layouts.
+Furthermore, you can change the size and layout of all the counters in your game easily by adjusting the layouts.
 
 *Set up a Game Piece Image in three steps:*
 

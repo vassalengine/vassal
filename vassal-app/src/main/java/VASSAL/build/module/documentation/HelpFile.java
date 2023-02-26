@@ -17,8 +17,6 @@
  */
 package VASSAL.build.module.documentation;
 
-import VASSAL.i18n.Resources;
-import VASSAL.search.HTMLImageFinder;
 import java.awt.Dialog;
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -35,6 +33,8 @@ import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Documentation;
+import VASSAL.i18n.Resources;
+import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.URLUtils;

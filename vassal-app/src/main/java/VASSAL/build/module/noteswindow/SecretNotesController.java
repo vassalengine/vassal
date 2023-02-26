@@ -17,19 +17,21 @@
  */
 package VASSAL.build.module.noteswindow;
 
-import java.awt.Dialog;
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.beans.PropertyChangeListener;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import VASSAL.build.BadDataReport;
+import VASSAL.build.GameModule;
+import VASSAL.build.module.Chatter;
+import VASSAL.build.module.GameComponent;
+import VASSAL.build.module.GlobalOptions;
+import VASSAL.command.Command;
+import VASSAL.command.CommandEncoder;
+import VASSAL.configure.StringConfigurer;
+import VASSAL.configure.TextConfigurer;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ScrollPane;
+import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.WarningDialog;
+import VASSAL.tools.swing.SwingUtils;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -47,21 +49,19 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
-
-import VASSAL.build.BadDataReport;
-import VASSAL.build.GameModule;
-import VASSAL.build.module.Chatter;
-import VASSAL.build.module.GameComponent;
-import VASSAL.build.module.GlobalOptions;
-import VASSAL.command.Command;
-import VASSAL.command.CommandEncoder;
-import VASSAL.configure.StringConfigurer;
-import VASSAL.configure.TextConfigurer;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ScrollPane;
-import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.WarningDialog;
+import java.awt.Dialog;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.beans.PropertyChangeListener;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 public class SecretNotesController implements GameComponent, CommandEncoder, AddSecretNoteCommand.Interface {
   public static final String COMMAND_PREFIX = "SNOTE\t"; //$NON-NLS-1$
@@ -382,7 +382,18 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
 
       @Override
       public Class<?> getColumnClass(int c) {
-        return getValueAt(0, c).getClass();
+        switch (c) {
+        case COL_HANDLE:
+          return String.class;
+        case COL_DTM:
+          return Date.class;
+        case COL_NAME:
+          return String.class;
+        case COL_REVEALED:
+          return Boolean.class;
+        default:
+          return super.getColumnClass(c);
+        }
       }
 
       @Override
@@ -478,6 +489,9 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
         new JButton(Resources.getString(Resources.CANCEL));
       cancelButton.addActionListener(e -> d.dispose());
       d.add(buttonPanel);
+
+      // Default actions for Enter/ESC
+      SwingUtils.setDefaultButtons(d.getRootPane(), okButton, cancelButton);
 
       d.pack();
       d.setLocationRelativeTo(d.getOwner());

@@ -37,6 +37,7 @@ import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.image.LabelUtils;
 
+import javax.swing.KeyStroke;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -57,8 +58,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-
-import javax.swing.KeyStroke;
 
 /**
  * Displays a movement trail indicating where a piece has been moved
@@ -244,7 +243,7 @@ public class Footprint extends MovementMarkable {
 
   @Override
   public void setProperty(Object key, Object val) {
-    if (Properties.MOVED.equals(key)) {
+    if (Properties.MOVED.equals(key) || Properties.MAYBE_MOVED.equals(key)) {
       setMoved(Boolean.TRUE.equals(val));
       piece.setProperty(key, val); // Pass on to MovementMarkable
       myBoundingBox = null;

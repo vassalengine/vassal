@@ -25,18 +25,18 @@
 
 package VASSAL.script.expression;
 
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.ButtonFactory;
+import VASSAL.tools.swing.SwingUtils;
+import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
-import VASSAL.i18n.Resources;
-import net.miginfocom.swing.MigLayout;
-import VASSAL.configure.StringConfigurer;
-import VASSAL.tools.ButtonFactory;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class StrBuilder extends JDialog {
   private static final long serialVersionUID = 1L;
@@ -76,6 +76,9 @@ public class StrBuilder extends JDialog {
     p.add(buttonBox, "span 2,align center"); //NON-NLS
     add(p, "growx"); //NON-NLS
 
+    // Default actions for Enter/ESC
+    SwingUtils.setDefaultButtons(getRootPane(), okButton, cancelButton);
+
     pack();
     setLocationRelativeTo(getParent());
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -85,7 +88,6 @@ public class StrBuilder extends JDialog {
         cancel();
       }
     });
-
   }
 
   protected void save() {

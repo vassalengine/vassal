@@ -42,6 +42,7 @@ import VASSAL.counters.PieceDefiner;
 import VASSAL.counters.PlaceMarker;
 import VASSAL.counters.Properties;
 import VASSAL.i18n.ComponentI18nData;
+import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.search.ImageSearchTarget;
 import VASSAL.tools.ErrorDialog;
@@ -50,6 +51,7 @@ import VASSAL.tools.swing.SwingUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.event.PopupMenuEvent;
@@ -192,14 +194,20 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
   /**
    * Return defined GamePiece with prototypes fully expanded.
-   *
+   * Do NOT cache the expanded piece unless Translation is complete, it may change under us.
    * @return expanded piece
    */
   protected GamePiece getExpandedPiece() {
     if (expanded == null) {
       final GamePiece p = getPiece();
       if (p != null) {  // Possible when PlaceMarker is building
-        expanded = PieceCloner.getInstance().clonePiece(p);
+        if (Localization.getInstance().isTranslationComplete()) {
+          expanded = PieceCloner.getInstance().clonePiece(p);
+          return expanded;
+        }
+        else {
+          return PieceCloner.getInstance().clonePiece(p);
+        }
       }
     }
     return expanded;
@@ -474,6 +482,9 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
   @Override
   public void keyPressed(KeyEvent e) {
+    if ((e.getKeyCode() == KeyEvent.VK_ENTER) || (e.getKeyCode() == KeyEvent.VK_ESCAPE)) {
+      return; // Prevent these unlikely-and-inadvisable-anyway hotkeys from interfering with dialog defaults
+    }
     KeyBuffer.getBuffer().keyCommand(SwingUtils.getKeyStrokeForEvent(e));
     e.consume();
     clearExpandedPiece();
@@ -590,6 +601,22 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     }
     else {
       return name; // Name could possibly be empty string, or otherwise null.
+    }
+  }
+
+  @Override
+  public String getLocalizedConfigureName() {
+    if (getPiece() != null) {
+      final GamePiece p = Decorator.getOutermost(getExpandedPiece());
+      final String translatedBasicName = (String) p.getLocalizedProperty(BasicPiece.BASIC_NAME);
+      if ((translatedBasicName != null) && !translatedBasicName.isBlank()) {
+        return translatedBasicName;
+      }
+      final String translatedName = p.getLocalizedName();
+      return (translatedName == null || translatedName.isBlank()) ? super.getLocalizedConfigureName() : translatedName;
+    }
+    else {
+      return getConfigureName();
     }
   }
 
@@ -737,6 +764,12 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     public Component getControls() {
       return definer;
     }
-  }
 
+    @Override
+    public void initCustomControls(JDialog d, Configurable target) {
+      if (definer != null) {
+        definer.initCustomControls(d, target);
+      }
+    }
+  }
 }

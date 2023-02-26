@@ -19,8 +19,10 @@ package VASSAL.build;
 
 import VASSAL.build.module.ChartWindow;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.widget.PieceSlot;
 import VASSAL.configure.ComponentDescription;
 import VASSAL.i18n.Localization;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -174,8 +176,18 @@ public abstract class Widget extends AbstractConfigurable implements ComponentDe
       boolean cellHasFocus) {
 
       super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-      if (value instanceof Configurable)
-        setText(((Configurable) value).getConfigureName());
+      if (value instanceof PieceSlot) {
+        // PieceSlot names are exposed in the Player in Scrollable Lists.
+        // PieceSlot names are not translated as such, they are based on the translation of the contained piece
+        final PieceSlot slot = (PieceSlot) value;
+        final String localizedName = slot.getLocalizedConfigureName();
+        setText((localizedName == null || localizedName.isBlank()) ? slot.getConfigureName() : localizedName);
+      }
+      else if (value instanceof AbstractConfigurable) {
+        final AbstractConfigurable c = (AbstractConfigurable) value;
+        final String localizedName = c.getLocalizedConfigureName();
+        setText((localizedName == null || localizedName.isBlank()) ? c.getConfigureName() : localizedName);
+      }
       return this;
     }
   }

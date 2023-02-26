@@ -286,6 +286,10 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer implements Configu
 
   @Override
   public int getSelectedEntryIndex() {
+    if (selectedEntryIndex >= entries.size()) {
+      // Empty added entries may have been removed from under us
+      selectedEntryIndex = entries.size() - 1;
+    }
     return selectedEntryIndex;
   }
 

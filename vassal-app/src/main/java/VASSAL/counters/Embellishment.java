@@ -43,13 +43,26 @@ import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.icon.IconFamily;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.ScaledImagePainter;
+import net.miginfocom.swing.MigLayout;
 
+import javax.swing.AbstractAction;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.KeyStroke;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.geom.Area;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,16 +70,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.KeyStroke;
-
-import net.miginfocom.swing.MigLayout;
 
 /**
  * d/b/a "Layer"
@@ -1060,6 +1063,9 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
     private final JLabel menuLabel;
     private final JLabel keyLabel;
 
+    private final JButton addLevel;
+    private final JButton removeLevel;
+
     public Ed(Embellishment e) {
       final Box box;
       version = e.version;
@@ -1214,7 +1220,7 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
       controls.add(box, "wrap"); // NON-NLS
 
       final JPanel buttonPanel = new JPanel(new MigLayout("ins 0", "[grow 1]rel[grow 1]")); // NON-NLS
-      JButton b = new JButton(Resources.getString("Editor.Embellishment.add_level"));
+      JButton b = addLevel = new JButton(Resources.getString("Editor.Embellishment.add_level"));
       b.addActionListener(evt -> {
         names.add(null);
         isPrefix.add(null);
@@ -1222,7 +1228,7 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
       });
       buttonPanel.add(b, "growx"); // NON-NLS
 
-      b = new JButton(Resources.getString("Editor.Embellishment.remove_level"));
+      b = removeLevel = new JButton(Resources.getString("Editor.Embellishment.remove_level"));
       b.addActionListener(evt -> {
         final int index = images.getList().getSelectedIndex();
         if (index >= 0) {
@@ -1239,6 +1245,100 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
       showHideFields();
 
       reset(e);
+    }
+
+    @Override
+    public void initCustomControls(JDialog d) {
+      d.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+        KeyStroke.getKeyStroke(KeyEvent.VK_UP, KeyEvent.ALT_DOWN_MASK), "AltUp"); //$NON-NLS-1$
+
+      d.getRootPane().getActionMap().put("AltUp", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          up.doClick();
+        }
+      });
+
+      d.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+        KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, KeyEvent.ALT_DOWN_MASK), "AltDown"); //$NON-NLS-1$
+
+      d.getRootPane().getActionMap().put("AltDown", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          down.doClick();
+        }
+      });
+
+      d.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+        KeyStroke.getKeyStroke(KeyEvent.VK_HOME, KeyEvent.ALT_DOWN_MASK), "Images"); //$NON-NLS-1$
+      d.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+        KeyStroke.getKeyStroke(KeyEvent.VK_I, KeyEvent.ALT_DOWN_MASK), "Images"); //$NON-NLS-1$
+
+      d.getRootPane().getActionMap().put("Images", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          images.imageList.requestFocus();
+        }
+      });
+
+      d.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+        KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, KeyEvent.ALT_DOWN_MASK), "ChangeImage"); //$NON-NLS-1$
+
+      d.getRootPane().getActionMap().put("ChangeImage", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          // Finds the currently active/visible image picker (for the currently active/visible image) and tells it we want to pick a new image
+          for (final Component comp : images.getComponents()) {
+            if (comp instanceof JPanel) {
+              for (final Component comp2 : ((JPanel) comp).getComponents()) {
+                if (comp2.isVisible() && comp2 instanceof ImagePicker) {
+                  ((ImagePicker)(comp2)).pickImage();
+                }
+              }
+            }
+          }
+        }
+      });
+
+      d.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+        KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.ALT_DOWN_MASK), "AltL"); //$NON-NLS-1$
+
+      d.getRootPane().getActionMap().put("AltL", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          levelNameInput.requestFocus();
+        }
+      });
+
+      d.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+        KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.ALT_DOWN_MASK), "AltN"); //$NON-NLS-1$
+
+      d.getRootPane().getActionMap().put("AltN", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          nameConfig.requestFocus();
+        }
+      });
+
+      d.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+        KeyStroke.getKeyStroke(KeyEvent.VK_INSERT, KeyEvent.ALT_DOWN_MASK), "Insert"); //$NON-NLS-1$
+
+      d.getRootPane().getActionMap().put("Insert", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          addLevel.doClick();
+        }
+      });
+
+      d.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+        KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, KeyEvent.ALT_DOWN_MASK), "Delete"); //$NON-NLS-1$
+
+      d.getRootPane().getActionMap().put("Delete", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          removeLevel.doClick();
+        }
+      });
     }
 
     protected void moveSelectedUp() {

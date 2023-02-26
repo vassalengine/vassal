@@ -18,44 +18,47 @@
 package VASSAL.script;
 
 import VASSAL.build.BadDataReport;
+import VASSAL.build.GameModule;
+import VASSAL.build.module.GlobalOptions;
+import VASSAL.build.module.Map;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
+import VASSAL.build.module.properties.PropertySource;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
+import VASSAL.counters.Mat;
+import VASSAL.counters.MatCargo;
 import VASSAL.counters.PieceFilter;
 import VASSAL.counters.ReportState;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.script.expression.AuditTrail;
 import VASSAL.script.expression.Auditable;
+import VASSAL.script.expression.ExpressionException;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
+import VASSAL.tools.WarningDialog;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
+import bsh.BeanShellExpressionValidator;
+import bsh.EvalError;
+import bsh.NameSpace;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import VASSAL.build.GameModule;
-import VASSAL.build.module.Map;
-import VASSAL.build.module.properties.PropertySource;
-import VASSAL.script.expression.ExpressionException;
-import VASSAL.tools.WarningDialog;
-import bsh.BeanShellExpressionValidator;
-import bsh.EvalError;
-import bsh.NameSpace;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -287,15 +290,18 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         else if (! StringUtils.containsOnly(value, "+-.0123456789")) { // NON-NLS
           setVar(var, value);
         }
+        // Special case where the 'Store Integers with leading zeros as Strings' option is turned on AND
+        // the string is 2 or more numerical digits commencing with 0, then store it as a String so that
+        // the leading zeros are preserved. It is up to the Designer to convert this to an integer later
+        // using Integer.parseInt(x) if they need to do arithmetic on it.
+        else if (GlobalOptions.getInstance() != null && GlobalOptions.getInstance().isStoreLeadingZeroIntegersAsStrings()
+                  && value.length() > 1 && value.startsWith("0")
+                  && StringUtils.containsOnly(value, "0123456789")) {
+          setVar(var, value);
+        }
         else {
           try {
-            // Convert an Integer commencing with 0, or +/- 0 to a String
-            if ((value.length() > 1 && (value.startsWith("0")) || (value.length() > 2 && value.startsWith("-0")))) {
-              setVar(var, value);
-            }
-            else {
-              setVar(var, Integer.parseInt(value));
-            }
+            setVar(var, Integer.parseInt(value));
           }
           catch (NumberFormatException ex1) {
 
@@ -435,6 +441,24 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     return map == null ? wrap("") : wrap((String) map.getProperty(propertyName));
   }
 
+  private static int propValue(Object prop) {
+    if (prop != null) {
+      final String s1 = prop.toString();
+      return NumberUtils.toInt(s1, 0);
+    }
+    return 0;
+  }
+
+  private static int propNonempty(Object prop) {
+    if (prop != null) {
+      final String val = prop.toString();
+      if (!"".equals(val)) {
+        return 1;
+      }
+    }
+    return 0;
+  }
+
   /**
    * SumStack(property) function
    * Total the value of the named property in all counters in the
@@ -456,18 +480,12 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       final Stack s = ((GamePiece) ps).getParent();
       if (s == null) {
         final Object prop = ps.getProperty(property);
-        if (prop != null) {
-          final String s1 = prop.toString();
-          result += NumberUtils.toInt(s1, 0);
-        }
+        result += propValue(prop);
       }
       else {
         for (final GamePiece gamePiece : s.asList()) {
           final Object prop = gamePiece.getProperty(property);
-          if (prop != null) {
-            final String s1 = prop.toString();
-            result += NumberUtils.toInt(s1, 0);
-          }
+          result += propValue(prop);
         }
       }
     }
@@ -499,12 +517,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         }
         else {
           final Object prop = ps.getProperty(property);
-          if (prop != null) {
-            final String val = prop.toString();
-            if (!"".equals(val)) {
-              result++;
-            }
-          }
+          result += propNonempty(prop);
         }
       }
       else {
@@ -514,16 +527,122 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         else {
           for (final GamePiece gamePiece: s.asList()) {
             final Object prop = gamePiece.getProperty(property);
-            if (prop != null) {
-              final String val = prop.toString();
-              if (!"".equals(val)) {
-                result++;
-              }
-            }
+            result += propNonempty(prop);
           }
         }
       }
     }
+    return result;
+  }
+
+  /**
+   * SumMat(property) function
+   * Total the value of the named property in all counters
+   * among the Mat-and-MatCargo grouping of the current piece
+   *
+   * @param property Property Name
+   * @param ps       GamePiece
+   * @return total
+   */
+  public Object sumMat(String property, PropertySource ps) {
+    int result = 0;
+
+    // This allows ReportState to sum properties properly
+    if (ps instanceof ReportState.OldAndNewPieceProperties) {
+      ps = ((ReportState.OldAndNewPieceProperties)ps).getNewPiece();
+    }
+
+    if (ps instanceof GamePiece) {
+      GamePiece gp = (GamePiece) ps;
+      GamePiece mat;
+      if (gp instanceof Decorator) {
+        gp  = Decorator.getOutermost(gp);
+        mat = Decorator.getDecorator(gp, Mat.class);
+
+        if (mat == null) {
+          final MatCargo cargo = (MatCargo) Decorator.getDecorator(gp, MatCargo.class);
+          if (cargo != null) {
+            mat = cargo.getMat();
+          }
+        }
+      }
+      else {
+        mat = null;
+      }
+
+      if (mat != null) {
+        mat = Decorator.getOutermost(mat);
+        final Mat actualMat = (Mat) Decorator.getDecorator(mat, Mat.class);
+
+        Object prop = mat.getProperty(property);
+        result += propValue(prop);
+
+        for (final GamePiece cargo : actualMat.getContents()) {
+          prop = Decorator.getOutermost(cargo).getProperty(property);
+          result += propValue(prop);
+        }
+      }
+      else {
+        final Object prop = ps.getProperty(property);
+        result += propValue(prop);
+      }
+    }
+    return result;
+  }
+
+  /**
+   * CountMat(property) function
+   * Return the total number of counters with a non-blank value for the specified property
+   * among the Mat-and-MatCargo grouping of the current piece
+   *
+   * @param property Property Name
+   * @param ps       GamePiece
+   * @return total
+   */
+  public Object countMat(String property, PropertySource ps) {
+    int result = 0;
+
+    // This allows ReportState to sum properties properly
+    if (ps instanceof ReportState.OldAndNewPieceProperties) {
+      ps = ((ReportState.OldAndNewPieceProperties)ps).getNewPiece();
+    }
+
+    if (ps instanceof GamePiece) {
+      GamePiece gp = (GamePiece) ps;
+      GamePiece mat;
+      if (gp instanceof Decorator) {
+        gp  = Decorator.getOutermost(gp);
+        mat = Decorator.getDecorator(gp, Mat.class);
+
+        if (mat == null) {
+          final MatCargo cargo = (MatCargo) Decorator.getDecorator(gp, MatCargo.class);
+          if (cargo != null) {
+            mat = cargo.getMat();
+          }
+        }
+      }
+      else {
+        mat = null;
+      }
+
+      if (mat != null) {
+        mat = Decorator.getOutermost(mat);
+        final Mat actualMat = (Mat) Decorator.getDecorator(mat, Mat.class);
+
+        Object prop = mat.getProperty(property);
+        result += propNonempty(prop);
+
+        for (final GamePiece cargo : actualMat.getContents()) {
+          prop = Decorator.getOutermost(cargo).getProperty(property);
+          result += propNonempty(prop);
+        }
+      }
+      else {
+        final Object prop = ps.getProperty(property);
+        result += propNonempty(prop);
+      }
+    }
+
     return result;
   }
 
@@ -559,18 +678,12 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
               final Stack s = (Stack) piece;
               for (final GamePiece gamePiece : s.asList()) {
                 final Object prop = gamePiece.getProperty(property);
-                if (prop != null) {
-                  final String s1 = prop.toString();
-                  result += NumberUtils.toInt(s1, 0);
-                }
+                result += propValue(prop);
               }
             }
             else {
               final Object prop = piece.getProperty(property);
-              if (prop != null) {
-                final String s1 = prop.toString();
-                result += NumberUtils.toInt(s1, 0);
-              }
+              result += propValue(prop);
             }
           }
         }

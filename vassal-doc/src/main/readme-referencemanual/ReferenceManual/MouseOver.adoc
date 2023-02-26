@@ -11,6 +11,8 @@ A Mouseover Stack Viewer displays a "rollover" or "tooltip" for a stack when the
 
 Occasionally pieces will want to "draw themselves differently" inside of a Mouseover Stack Viewer. For this purpose they can check the property `DrawingMouseover` in e.g. a Calculated Property or a Label's "Follows Expression Value" field. Alternatively the property `DrawingMouseoverIndex` will contain 2 while drawing the mouseover, 1 otherwise; this can be useful as an index for a Follows Expression layer because it avoids the substantial performance cost of a full Beanshell expression e.g. `{ DrawingMouseover ? 2 : 1 }`.
 
+If a Map contains multiple Mouse-over Stack Viewers, they will be processed in order from the top until one of them causes a rollover to be drawn, after which no further rollovers will be drawn. If you change the order of the Mouseover-stack Viewers, you will need to restart VASSAL before the ordering change will take effect.
+
 [width="100%",cols="50%a,^50%a",]
 |===
 |
@@ -51,7 +53,7 @@ Otherwise, it will display only if 1 or 2 pieces have been included via the sett
 
 *Summary text above pieces:*::  A <<MessageFormat.adoc#top,Message Format>> specifying the text to display above the drawn pieces in the viewer.
 In addition to standard <<Properties.adoc#top,Properties>>, you can include $countPieces$ to count the pieces included in the display. You can also include a property with the name _sum(propertyName)_ where _propertyName_ is a property defined on a Game Piece.
-The sum of the numeric values of this property for all included pieces will be substituted. **Note:** If you are using a Beanshell expression here instead of just substitution with $..$ then for _sum_ you will need to use _sumProperties_ as Beanshell has its own separate sum keyword as documented in <<Expressions.adoc#top, Expressions>>.
+The sum of the numeric values of this property for all included pieces will be substituted. **Note:** If you are using a Beanshell expression here instead of just substitution with $..$ then for _sum_ you will need to use _sumProperties_ as Beanshell has its own separate sum keyword as documented in <<Expression.adoc#top, Expressions>>.
 
 *Text below each piece:*::  A <<MessageFormat.adoc#top,Message Format>> specifying the text to display below each included piece.
 
@@ -80,5 +82,7 @@ Otherwise, they are excluded regardless of any other filters.
 *Number of pieces in Deck to show:*:: This many cards/pieces from the top of a deck are eligible for inclusion.
 
 *Show all pieces overlapping the first piece found:*:: If selected, then all Game Pieces that overlap the mouse cursor location are eligible to be displayed; otherwise only pieces at the _exact_ X,Y position of the _top_ piece found are displayed.
+
+*Don't process further Mouse-over Stack Viewers when this one displayed:*:: If selected, then whenever this viewer is actively displaying (i.e. has found sufficient targets to display either pieces or text), then no further Mouse-over Stack Viewers will be processed -- any additional viewers listed lower in the editor's list of viewers for this map will be ignored. This can be used to prevent multiple viewers from drawing over top of each other without the need for highly elaborate filter logic.
 |image:images/CounterDetailViewer.png[]
 |===

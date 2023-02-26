@@ -17,18 +17,6 @@
  */
 package VASSAL.build.module;
 
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-
 import VASSAL.build.AbstractToolbarItem;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -48,7 +36,19 @@ import VASSAL.configure.TextConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.swing.SwingUtils;
 import org.apache.commons.lang3.ArrayUtils;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /**
  * This is a {@link GameComponent} that allows players to type and
@@ -62,6 +62,9 @@ public class NotesWindow extends AbstractToolbarItem
   public static final String BUTTON_TEXT = "buttonText"; //NON-NLS // non-standard legacy difference from AbstractToolbarItem
   public static final String DESCRIPTION = "description"; //NON-NLS
 
+  private static final int TAB_INDEX_SCEN = 0;
+  private static final int TAB_INDEX_PUBLIC = 1;
+
   // These three identical to AbstractToolbarItem, and are only here for "clirr purposes"
   @Deprecated(since = "2020-10-21", forRemoval = true) public static final String HOT_KEY = "hotkey"; //$NON-NLS-1$
   @Deprecated(since = "2020-10-21", forRemoval = true) public static final String ICON = "icon"; //$NON-NLS-1$
@@ -72,6 +75,8 @@ public class NotesWindow extends AbstractToolbarItem
   /** @deprecated use launch from the superclass */
   @Deprecated(since = "2021-04-03", forRemoval = true)
   protected LaunchButton launch;
+
+  protected JTabbedPane tab;
 
   protected TextConfigurer scenarioNotes;
   protected TextConfigurer publicNotes;
@@ -100,7 +105,19 @@ public class NotesWindow extends AbstractToolbarItem
       "/images/notes.gif", //NON-NLS
       e -> {
         captureState();
-        frame.setVisible(!frame.isShowing());
+
+        if (!frame.isShowing()) {
+          frame.setVisible(true);
+          if (tab.getSelectedIndex() == TAB_INDEX_SCEN) {
+            scenarioNotes.requestFocus();
+          }
+          else if (tab.getSelectedIndex() == TAB_INDEX_PUBLIC) {
+            publicNotes.requestFocus();
+          }
+        }
+        else {
+          frame.setVisible(false);
+        }
       }
     ));
     launch = getLaunchButton();
@@ -180,7 +197,7 @@ public class NotesWindow extends AbstractToolbarItem
 
       scenarioNotes = new TextConfigurer(null, null);
       publicNotes = new TextConfigurer(null, null);
-      final JTabbedPane tab = new JTabbedPane();
+      tab = new JTabbedPane();
       add(tab);
 
       Box b = Box.createVerticalBox();
@@ -211,6 +228,8 @@ public class NotesWindow extends AbstractToolbarItem
       });
       p.add(cancelButton);
       add(p);
+
+      SwingUtils.setDefaultButtons(getRootPane(), null, cancelButton);
     }
   }
 

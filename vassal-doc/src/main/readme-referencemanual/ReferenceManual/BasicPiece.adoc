@@ -72,6 +72,7 @@ The following <<Properties.adoc#top,Properties>> are defined after a piece is mo
 * _OldZone_ contains the name of the previous <<ZonedGrid.adoc#top,Zone>>
 * _OldX_ contains the previous map X coordinate
 * _OldY_ contains the previous map Y coordinate
+* _OldDeckName_ contains the name of any deck the piece was in before its last move (will be an empty string if piece wasn't in a deck)
 * _OldMat_ contains the previous <<Mat.adoc#top,Mat>>, if this is a <<MatCargo.adoc#top, Mat Cargo>> piece.
 * _OldMatID_ contains the previous <<Mat.adoc#top,Mat>> ID, if this is a <<MatCargo.adoc#top, Mat Cargo>> piece.
 * _OldMatPieceName_ contains the previous Mat's Piece Name

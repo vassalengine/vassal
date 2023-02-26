@@ -60,6 +60,9 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.image.LabelUtils;
 import VASSAL.tools.swing.SwingUtils;
 
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
+import javax.swing.Timer;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -83,10 +86,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
-import javax.swing.JComponent;
-import javax.swing.KeyStroke;
-import javax.swing.Timer;
 
 /**
  * This is a {@link Drawable} class that draws the counters horizontally when
@@ -141,6 +140,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public static final String FONT_SIZE = "fontSize"; //NON-NLS
   public static final String EXTRA_TEXT_PADDING = "extraTextPadding"; //NON-NLS
   public static final String PROPERTY_FILTER = "propertyFilter"; //NON-NLS
+  public static final String STOP_AFTER_SHOWING = "stopAfterShowing"; //NON-NLS
 
   public static final String TOP_LAYER = "from top-most layer only";             //NON-NLS (yes, really)
   public static final String ALL_LAYERS = "from all layers";                     //NON-NLS (yes, really)
@@ -175,6 +175,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected boolean stretchWidthSummary = false;
   protected boolean unrotatePieces = false;
   protected boolean showDeck = false;
+  protected boolean stopAfterShowing = false;
 
   @Deprecated(since = "2021-12-01", forRemoval = true)
   protected static int showDeckDepth = 1; //BR// deprecated (and was-always-broken) field, use showNumberFromDeck instead.
@@ -209,10 +210,13 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   /** the JComponent which is repainted when the detail viewer changes */
   protected JComponent view;
 
-  private static boolean drawingMouseOver = false;
-
+  @Deprecated(since = "2023-02-15", forRemoval = true)
   public static boolean isDrawingMouseOver() {
-    return drawingMouseOver;
+    return Map.getMapList().stream().anyMatch(m -> m.isDrawingMouseOver());
+  }
+
+  public boolean isStopAfterShowing() {
+    return stopAfterShowing;
   }
 
   public CounterDetailViewer() {
@@ -225,6 +229,13 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     delayTimer.setRepeats(false);
   }
 
+  /**
+   * @return This CounterDetailViewer's parent map
+   */
+  public Map getMap() {
+    return map;
+  }
+
   @Override
   public void addTo(Buildable b) {
     checkUpgrade();
@@ -234,6 +245,11 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
 
     map = (Map) b;
+    // Can happen during copy/paste operation of a CounterDetailViewer inside a folder. Means we will redo this operation in post-paste-fixups.
+    if (map == null) {
+      return;
+    }
+
     view = map.getView();
     map.addDrawComponent(this);
     final String keyDesc = hotkey == null ? "" : "(" + HotKeyConfigurer.getString(hotkey) + ")"; //NON-NLS
@@ -284,6 +300,10 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       return;
     }
 
+    if (map.isAnyMouseoverDrawn()) {
+      return;
+    }
+
     bounds.x = pt.x;
     bounds.y = pt.y;
     bounds.width = 0;
@@ -293,7 +313,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
     g2d.setFont(font.deriveFont((float)(fontSize * os_scale)));
 
-    drawingMouseOver = true;
+    map.setDrawingMouseOver(true);
 
     if (graphicsVisible) {
       drawGraphics(g, pt, comp, displayablePieces);
@@ -303,7 +323,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       drawText(g, pt, comp, displayablePieces);
     }
 
-    drawingMouseOver = false;
+    map.setDrawingMouseOver(false);
   }
 
   protected void drawGraphics(Graphics g, @SuppressWarnings("unused") Point pt, JComponent comp, List<GamePiece> pieces) {
@@ -387,6 +407,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
           comp,
           graphicsZoom * os_scale
         );
+        if (isStopAfterShowing()) {
+          map.setAnyMouseoverDrawn(true);
+        }
       }
       if (parent instanceof Deck) piece.setProperty(Properties.OBSCURED_BY, owner);
       if (unrotatePieces) piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.FALSE);
@@ -559,7 +582,12 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       else {
         LabelUtils.drawLabel(g, label, pt.x, pt.y, g.getFont(), hAlign, vAlign, fgColor, (skipBox ? null : bgColor), (skipBox ? null : fgColor), objectWidth, extraTextPadding, minWidth, extraBorder);
       }
+
       g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+      if (isStopAfterShowing()) {
+        map.setAnyMouseoverDrawn(true);
+      }
     }
   }
 
@@ -1019,6 +1047,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       SHOW_DECK_MASKED,
       SHOW_DECK_DEPTH,
       SHOW_OVERLAP,
+      STOP_AFTER_SHOWING
     };
   }
 
@@ -1062,6 +1091,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       Resources.getString("Editor.MouseOverStackViewer.show_deck_masked"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.show_deck_depth"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.show_overlap"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.stop_after_showing"),
     };
 
   }
@@ -1105,6 +1135,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       Boolean.class,
       Boolean.class,
       Integer.class,
+      Boolean.class,
       Boolean.class,
     };
   }
@@ -1428,6 +1459,14 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     else if (PROPERTY_FILTER.equals(name)) {
       propertyFilter.setExpression((String) value);
     }
+    else if (STOP_AFTER_SHOWING.equals(name)) {
+      if (value instanceof Boolean) {
+        stopAfterShowing = (Boolean) value;
+      }
+      else if (value instanceof String) {
+        stopAfterShowing = "true".equals(value); //NON-NLS
+      }
+    }
   }
 
   @Override
@@ -1542,6 +1581,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     else if (PROPERTY_FILTER.equals(name)) {
       return propertyFilter.getExpression();
+    }
+    else if (STOP_AFTER_SHOWING.equals(name)) {
+      return String.valueOf(stopAfterShowing);
     }
     else
       return null;

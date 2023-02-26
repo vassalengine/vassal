@@ -103,6 +103,7 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
   public static final String LOCALIZED_BASIC_NAME = "LocalizedBasicName"; //NON-NLS
   public static final String LOCALIZED_PIECE_NAME = "LocalizedPieceName"; //NON-NLS
   public static final String DECK_NAME = "DeckName"; // NON-NLS
+  public static final String OLD_DECK_NAME = "OldDeckName"; //NON-NLS
   public static final String DECK_POSITION = "DeckPosition"; // NON-NLS
   public static final String CLICKED_X = "ClickedX"; // NON-NLS
   public static final String CLICKED_Y = "ClickedY"; // NON-NLS
@@ -110,7 +111,9 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
   public static final String STACK_POS = "StackPos";
   public static final String STACK_SIZE = "StackSize";
 
+  @Deprecated(since = "2022-08-08", forRemoval = true)
   public static Font POPUP_MENU_FONT = new Font(Font.DIALOG, Font.PLAIN, 11);
+
   protected JPopupMenu popup;
   protected Rectangle imageBounds;
   protected ScaledImagePainter imagePainter = new ScaledImagePainter();
@@ -1227,7 +1230,7 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
     l.add(OLD_MAT_BASIC_NAME);
     l.add(OLD_MAT_OFFSET_X);
     l.add(OLD_MAT_OFFSET_Y);
-    l.add(PIECE_UID);
+    l.add(OLD_DECK_NAME);
     l.add(STACK_SIZE);
     l.add(STACK_POS);
     return l;

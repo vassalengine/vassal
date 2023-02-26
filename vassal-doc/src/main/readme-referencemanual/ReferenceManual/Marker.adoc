@@ -13,7 +13,7 @@ A new piece will be placed each time this trait is activated.
 
 NOTE:  This trait should not be confused with the <<PropertyMarker.adoc#top,Marker>> trait which allows a piece to be assigned a <<Properties.adoc#top,Property>> with a static constant value.
 
-*EXAMPLE:*  If a game uses a fortification counter to indicate fortified status of an army counter, this trait could be given to the army counter to place a fortification marker on the army with the right-click context menu or a keyboard shortcut, as an alternative to dragging the a fortification counter from the Game Piece Palette.
+*EXAMPLE:*  If a game uses a fortification counter to indicate fortified status of an army counter, this trait could be given to the army counter to place a fortification marker on the army with the right-click context menu or a keyboard shortcut, as an alternative to dragging the fortification counter from the Game Piece Palette.
 
 *SEE ALSO:*  <<Replace.adoc#top,Replace with Other>> trait.
 

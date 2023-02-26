@@ -168,11 +168,20 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
 
   @Override
   public Rectangle boundingBox() {
-    // TODO: Need the context of the parent Component, because the transparency is only drawn
-    // on a Map.View object.  Because this context is not known, the bounding box returned by
-    // this method does not encompass the bounds of the transparency.  The result of this is
-    // that portions of the transparency will not be drawn after scrolling the Map window.
-    return piece.boundingBox();
+    final Rectangle r = piece.boundingBox();
+
+    // include the AoE in the bounding box if it's visible
+    if ((alwaysActive || active) && mapShaderName == null) {
+      final Area a = getArea();
+      if (a != null) {
+        final Rectangle aoeBounds = a.getBounds();
+        final Point mapPosition = getPosition();
+        aoeBounds.translate(-mapPosition.x, -mapPosition.y);
+        r.add(aoeBounds);
+      }
+    }
+
+    return r;
   }
 
   @Override

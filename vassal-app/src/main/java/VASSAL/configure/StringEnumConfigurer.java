@@ -108,12 +108,7 @@ public class StringEnumConfigurer extends Configurer {
 
   @Override
   public String getValueString() {
-    if (box != null) {
-      return (String) box.getSelectedItem();
-    }
-    else {
-      return validValues.length > 0 ? validValues[0] : "";
-    }
+    return value == null ? "" : (String) value;
   }
 
   @Override
@@ -122,7 +117,7 @@ public class StringEnumConfigurer extends Configurer {
   }
 
   @Override
-  public void setLabelVisibile(boolean visible) {
+  public void setLabelVisible(boolean visible) {
     panel.setLabelVisibility(visible);
   }
 }

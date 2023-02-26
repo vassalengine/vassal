@@ -267,6 +267,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   protected boolean allowMultiple = false;
   protected VisibilityCondition visibilityCondition;
   protected DragGestureListener dragGestureListener;
+  protected boolean onlyReportChangedLocation = false;
   protected String moveWithinFormat;
   protected String moveToFormat;
   protected String createFormat;
@@ -286,6 +287,26 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 
   private IntConfigurer preferredScrollConfig;
   private DoubleConfigurer preferredScrollRateConfig;
+
+  private boolean anyMouseoverDrawn = false;
+
+  public boolean isAnyMouseoverDrawn() {
+    return anyMouseoverDrawn;
+  }
+
+  public void setAnyMouseoverDrawn(boolean flag) {
+    anyMouseoverDrawn = flag;
+  }
+
+  private boolean drawingMouseOver = false;
+
+  public boolean isDrawingMouseOver() {
+    return drawingMouseOver;
+  }
+
+  public void setDrawingMouseOver(boolean flag) {
+    drawingMouseOver = flag;
+  }
 
   public Map() {
     getView();
@@ -347,6 +368,20 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   }
 
   /**
+   * @return true if the map marks pieces as moved
+   */
+  public boolean isMarkMoved() {
+    return !markMovedOption.equals(GlobalOptions.NEVER);
+  }
+
+  /**
+   * @return true if auto-reporting moves should only happen if location changed
+   */
+  public boolean isOnlyReportChangedLocation() {
+    return onlyReportChangedLocation;
+  }
+
+  /**
    * Global Change Reporting control - used by Global Key Commands (see {@link GlobalCommand}) to
    * temporarily disable reporting while they run, if their "Suppress individual reports" option is selected.
    * @param b true to turn global change reporting on, false to turn it off.
@@ -382,6 +417,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public static final String ICON = "icon"; //$NON-NLS-1$
   public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
   public static final String SUPPRESS_AUTO = "suppressAuto"; //$NON-NLS-1$
+  public static final String ONLY_REPORT_CHANGED_LOCATION = "onlyReportChangedLocation"; //NON-NLS
   public static final String MOVE_WITHIN_FORMAT = "moveWithinFormat"; //$NON-NLS-1$
   public static final String MOVE_TO_FORMAT = "moveToFormat"; //$NON-NLS-1$
   public static final String CREATE_FORMAT = "createFormat"; //$NON-NLS-1$
@@ -518,6 +554,12 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
         moveWithinFormat = ""; //$NON-NLS-1$
       }
     }
+    else if (ONLY_REPORT_CHANGED_LOCATION.equals(key)) {
+      if (value instanceof String) {
+        value = Boolean.valueOf((String) value);
+      }
+      onlyReportChangedLocation = (Boolean) value;
+    }
     else if (MOVE_WITHIN_FORMAT.equals(key)) {
       moveWithinFormat = (String) value;
     }
@@ -626,6 +668,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     }
     else if (USE_LAUNCH_BUTTON.equals(key)) {
       return String.valueOf(useLaunchButtonEdit);
+    }
+    else if (ONLY_REPORT_CHANGED_LOCATION.equals(key)) {
+      return String.valueOf(onlyReportChangedLocation);
     }
     else if (MOVE_WITHIN_FORMAT.equals(key)) {
       return getMoveWithinFormat();
@@ -2090,7 +2135,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   @Override
   public void mouseMoved(MouseEvent e) {
     final DebugControls dc = GameModule.getGameModule().getDebugControls();
-    dc.setCursorLocation(componentToMap(e.getPoint()));
+    dc.setCursorLocation(componentToMap(e.getPoint()), this);
   }
 
   /**
@@ -2103,7 +2148,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   @Override
   public void mouseDragged(MouseEvent e) {
     final DebugControls dc = GameModule.getGameModule().getDebugControls();
-    dc.setCursorLocation(componentToMap(e.getPoint()));
+    dc.setCursorLocation(componentToMap(e.getPoint()), this);
 
     if (!SwingUtils.isContextMouseButtonDown(e)) {
       scrollAtEdge(e.getPoint(), SCROLL_ZONE);
@@ -2269,6 +2314,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @param c observer component
    */
   public void paintRegion(Graphics g, Rectangle visibleRect, Component c) {
+    setAnyMouseoverDrawn(false);
     clearMapBorder(g); // To avoid ghost pieces around the edge
     drawBoardsInRegion(g, visibleRect, c);
     drawDrawable(g, false);
@@ -2866,7 +2912,11 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
             topWindow.addWindowListener(new WindowAdapter() {
               @Override
               public void windowClosing(WindowEvent e) {
-                if (useLaunchButtonEdit) {
+                // If there is no way of reopening the window,
+                // we close the game. Otherwise just the window.
+                // But there are three ways of reopening it:
+                // Button, the toggle hot key, the show hot key
+                if (useLaunchButtonEdit || !getAttributeValueString(HOTKEY).isEmpty() || !getAttributeValueString(SHOW_KEY).isEmpty()) {
                   topWindow.setVisible(false);
                 }
                 else {
@@ -3323,6 +3373,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       Resources.getString("Editor.Map.toggle_key"),
       Resources.getString("Editor.Map.show_key"),
       Resources.getString("Editor.Map.hide_key"),
+      Resources.getString("Editor.Map.only_report_changed_location"),
       Resources.getString("Editor.Map.report_move_within"), //$NON-NLS-1$
       Resources.getString("Editor.Map.report_move_to"), //$NON-NLS-1$
       Resources.getString("Editor.Map.report_created"), //$NON-NLS-1$
@@ -3362,6 +3413,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       HOTKEY,
       SHOW_KEY,
       HIDE_KEY,
+      ONLY_REPORT_CHANGED_LOCATION,
       MOVE_WITHIN_FORMAT,
       MOVE_TO_FORMAT,
       CREATE_FORMAT,
@@ -3402,6 +3454,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       NamedKeyStroke.class,
       NamedKeyStroke.class,
       NamedKeyStroke.class,
+      Boolean.class,
       MoveWithinFormatConfig.class,
       MoveToFormatConfig.class,
       CreateFormatConfig.class,

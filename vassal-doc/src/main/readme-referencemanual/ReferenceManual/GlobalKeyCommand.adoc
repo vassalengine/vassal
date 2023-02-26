@@ -59,7 +59,7 @@ A <<Layer.adoc#top,Layer>> trait represents the rallied state of an infantry cou
 A Global Key Command on the leader counter can select and rally all infantry counters within two hexes of the same nationality that are not rallied by checking the 
 boxes for _Restrict Range_ and _Fixed Range_, specifying _Range_ of 2 and additional matching properties _{ type == "Infantry" } && { nation == "$nation$" } && { Rally_Active == "false" }_. Or, as in the example
 shown in the dialog box, the _type=="Infantry"_ check can be made faster by moving it out of the additional matching expression and into the Fast Match, by checking _by Property?_, and putting the expression _{ "type" }_ for
-the property name and _{"Infantry"}_ for the property value. Likewise the effects can be restricted to pieces on the main map by checking the _by Location?_ box selecting _Specific Map_, and putting _{"Main Map"}_ in the _Map_ field. If
+the property name and _{"Infantry"}_ for the property value. Likewise, the effects can be restricted to pieces on the main map by checking the _by Location?_ box selecting _Specific Map_, and putting _{"Main Map"}_ in the _Map_ field. If
 instead you wanted to match pieces on the same map as the issuing piece, you could select _Current Map_ instead. 
 
 *EXAMPLE 2 (see below):*::  An Army unit that may stack with multiple generals can be given a command to "Put Senior General In Command" with the shortcut key command Alt+Ctrl+R.

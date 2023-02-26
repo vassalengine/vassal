@@ -17,6 +17,7 @@
  */
 package VASSAL.counters;
 
+import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.GpIdSupport;
 import VASSAL.build.module.KeyNamer;
@@ -34,6 +35,7 @@ import VASSAL.tools.image.LabelUtils;
 import VASSAL.tools.swing.SwingUtils;
 import net.miginfocom.swing.MigLayout;
 
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
@@ -45,10 +47,12 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
 import javax.swing.ListCellRenderer;
+import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -72,6 +76,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DragSource;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -402,6 +407,51 @@ public class PieceDefiner extends JPanel {
     return changed;
   }
 
+  private static class SearchHighlighter extends KeyAdapter {
+    private final JList<GamePiece> gpl;
+
+    public SearchHighlighter(JList<GamePiece> l) {
+      gpl = l;
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+      final char ch = e.getKeyChar();
+
+      // ignore searches for non alpha-numeric characters
+      if (!Character.isLetterOrDigit(ch)) {
+        return;
+      }
+
+      final String key = Character.toString(Character.toLowerCase(ch));
+
+      // Iterate through items in the list until a matching prefix is found.
+      final ListModel<GamePiece> m = gpl.getModel();
+      final int msize = m.getSize();
+
+      for (int i = 0; i < msize; i++) {
+        final int index = (i + gpl.getSelectedIndex() + 1) % msize;
+
+        final GamePiece trait = m.getElementAt(index);
+        final String str;
+
+        if (trait instanceof EditablePiece) {
+          str = ((EditablePiece)trait).getDescription();
+        }
+        else {
+          final String s = trait.getClass().getName();
+          str = s.substring(s.lastIndexOf('.') + 1);
+        }
+
+        if (str.toLowerCase().startsWith(key)) {
+          gpl.setSelectedIndex(index);     //change selected item in list
+          gpl.ensureIndexIsVisible(index); //change listbox scroll-position
+          break;
+        }
+      }
+    }
+  }
+
   /**
    * This method is called from within the constructor to initialize the form.
    */
@@ -457,7 +507,6 @@ public class PieceDefiner extends JPanel {
     availableList.setModel(availableModel);
     availableList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     availableList.setCellRenderer(availableRenderer);
-    availableList.addKeyListener(new AvailableListKeyAdapter(this));
     availableList.setVisibleRowCount(99);
     availableList.addListSelectionListener(evt -> {
       final Object o = availableList.getSelectedValue();
@@ -472,6 +521,33 @@ public class PieceDefiner extends JPanel {
         }
       }
     });
+
+    availableList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "AddAvailable"); //$NON-NLS-1$
+    availableList.getActionMap().put("AddAvailable", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        doAdd();
+      }
+    });
+
+    availableList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, SwingUtils.getModifierKeyMask()), "ToInUse"); //$NON-NLS-1$
+    availableList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "ToInUse"); //$NON-NLS-1$
+    availableList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, SwingUtils.getModifierKeyMask()), "ToInUse"); //$NON-NLS-1$
+    availableList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "ToInUse"); //$NON-NLS-1$
+    availableList.getActionMap().put("ToInUse", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        inUseList.requestFocus();
+      }
+    });
+
+    // Use typed keys to jump to entries in trait list
+    availableList.addKeyListener(new SearchHighlighter(availableList));
 
     final JPanel availableListPanel = new JPanel(new MigLayout("ins 0, fill")); // NON-NLS
     availableListPanel.add(availableList, "grow,push"); // NON-NLS
@@ -524,7 +600,6 @@ public class PieceDefiner extends JPanel {
     final JPanel inUsePanel = new JPanel(new MigLayout("ins 0,wrap 1,fill")); // NON-NLS
     inUseList = new JList<>();
     inUseList.setName(INUSE);
-    inUseList.addKeyListener(new InUseListKeyAdapter(this));
     inUseList.setDragEnabled(true);
     inUseList.setDropMode(DropMode.INSERT);
     inUseList.setTransferHandler(transferHandler);
@@ -560,6 +635,107 @@ public class PieceDefiner extends JPanel {
         }
       }
     });
+
+    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "EditInUse"); //$NON-NLS-1$
+    inUseList.getActionMap().put("EditInUse", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        propsButton.doClick();
+      }
+    });
+
+    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "DeleteInUse"); //$NON-NLS-1$
+    inUseList.getActionMap().put("DeleteInUse", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        removeButton.doClick();
+      }
+    });
+
+    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_C, SwingUtils.getModifierKeyMask()), "CopyInUse"); //$NON-NLS-1$
+    inUseList.getActionMap().put("CopyInUse", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        copyButton.doClick();
+      }
+    });
+
+    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_V, SwingUtils.getModifierKeyMask()), "PasteInUse"); //$NON-NLS-1$
+    inUseList.getActionMap().put("PasteInUse", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        pasteButton.doClick();
+      }
+    });
+
+    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_X, SwingUtils.getModifierKeyMask()), "CutInUse"); //$NON-NLS-1$
+    inUseList.getActionMap().put("CutInUse", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        doCopy();
+        removeButton.doClick();
+      }
+    });
+
+    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_UP, SwingUtils.getModifierKeyMask()), "UpInUse"); //$NON-NLS-1$
+    inUseList.getActionMap().put("UpInUse", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        moveUpButton.doClick();
+      }
+    });
+
+    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, SwingUtils.getModifierKeyMask()), "DownInUse"); //$NON-NLS-1$
+    inUseList.getActionMap().put("DownInUse", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        moveDownButton.doClick();
+      }
+    });
+
+    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_HOME, SwingUtils.getModifierKeyMask()), "TopInUse"); //$NON-NLS-1$
+    inUseList.getActionMap().put("TopInUse", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        moveTopButton.doClick();
+      }
+    });
+
+    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_END, SwingUtils.getModifierKeyMask()), "BottomInUse"); //$NON-NLS-1$
+    inUseList.getActionMap().put("BottomInUse", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        moveBottomButton.doClick();
+      }
+    });
+
+    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, SwingUtils.getModifierKeyMask()), "ToAvail"); //$NON-NLS-1$
+    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "ToAvail"); //$NON-NLS-1$
+    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, SwingUtils.getModifierKeyMask()), "ToAvail"); //$NON-NLS-1$
+    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "ToAvail"); //$NON-NLS-1$
+    inUseList.getActionMap().put("ToAvail", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        availableList.requestFocus();
+      }
+    });
+
+    // Use typed keys to jump to entries in trait list
+    inUseList.addKeyListener(new SearchHighlighter(inUseList));
+
     final JPanel inUseListPanel = new JPanel(new BorderLayout());
     inUseListPanel.add(inUseList, BorderLayout.CENTER);
     final JScrollPane inUseScroll = new JScrollPane(inUseListPanel);
@@ -653,6 +829,31 @@ public class PieceDefiner extends JPanel {
 
     controls.add(noteLabel, "span 3,center"); // NON-NLS
 
+  }
+
+  public void initCustomControls(final JDialog d, final Configurable target) {
+    final JRootPane rp = d.getRootPane();
+    rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, SwingUtils.getModifierKeyMask()), "ToAvail"); //$NON-NLS-1$
+    rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK), "ToAvail"); //$NON-NLS-1$
+    rp.getActionMap().put("ToAvail", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        availableList.requestFocus();
+      }
+    });
+
+    rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, SwingUtils.getModifierKeyMask()), "ToInUse"); //$NON-NLS-1$
+    rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK), "ToInUse"); //$NON-NLS-1$
+    rp.getActionMap().put("ToInUse", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        inUseList.requestFocus();
+      }
+    });
   }
 
   /**
@@ -987,24 +1188,28 @@ public class PieceDefiner extends JPanel {
 
       final JPanel buttonBox = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
 
-      JButton b = new JButton(Resources.getString("General.ok"));
-      b.addActionListener(evt -> dispose());
+      final JButton ok = new JButton(Resources.getString("General.ok"));
+      ok.addActionListener(evt -> dispose());
 
-      buttonBox.add(b, "sg,tag ok"); //NON-NLS
+      buttonBox.add(ok, "sg,tag ok"); //NON-NLS
 
-      b = new JButton(Resources.getString("General.cancel"));
-      b.addActionListener(evt -> {
+      final JButton cancel = new JButton(Resources.getString("General.cancel"));
+      cancel.addActionListener(evt -> {
         ed = null;
         dispose();
       });
 
-      buttonBox.add(b, "sg,tag cancel"); //NON-NLS
+      buttonBox.add(cancel, "sg,tag cancel"); //NON-NLS
+
+      SwingUtils.setDefaultButtons(getRootPane(), ok, cancel);
 
       if (p.getHelpFile() != null) {
-        b = new JButton(Resources.getString("General.help"));
-        b.addActionListener(evt -> BrowserSupport.openURL(p.getHelpFile().getContents().toString()));
-        buttonBox.add(b, "sg,tag help"); //NON-NLS
+        final JButton help = new JButton(Resources.getString("General.help"));
+        help.addActionListener(evt -> BrowserSupport.openURL(p.getHelpFile().getContents().toString()));
+        buttonBox.add(help, "sg,tag help"); //NON-NLS
       }
+
+      ed.initCustomControls(this);
 
       add(buttonBox, "center"); // NON-NLS-
       pack();
@@ -1259,66 +1464,6 @@ public class PieceDefiner extends JPanel {
       }
 
       return true;
-    }
-  }
-
-  /**
-   * KeyAdapter added to the InUseList. Look for cut/copy/paste and
-   * call the matching buttons to do the work.
-   */
-  static class InUseListKeyAdapter extends KeyAdapter {
-
-    private final PieceDefiner definer;
-
-    public InUseListKeyAdapter(PieceDefiner definer) {
-      this.definer = definer;
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-
-      if (SwingUtils.isModifierKeyDown(e)) {
-        switch (e.getKeyCode()) {
-        case KeyEvent.VK_C:
-          definer.copyButton.doClick();
-          break;
-        case KeyEvent.VK_V:
-          definer.pasteButton.doClick();
-          break;
-        case KeyEvent.VK_X:
-          definer.doCopy();
-          definer.removeButton.doClick();
-          break;
-        default:
-          break;
-        }
-      }
-      else if (e.getKeyCode() == KeyEvent.VK_DELETE) {
-        definer.removeButton.doClick();
-      }
-      else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-        definer.propsButton.doClick();
-      }
-    }
-  }
-
-  /**
-   * KeyAdapter added to the AvailableList. Look for Enter and
-   * call the add button
-   */
-  static class AvailableListKeyAdapter extends KeyAdapter {
-
-    private final PieceDefiner definer;
-
-    public AvailableListKeyAdapter(PieceDefiner definer) {
-      this.definer = definer;
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-      if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-        definer.addButton.doClick();
-      }
     }
   }
 

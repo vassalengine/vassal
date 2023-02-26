@@ -9,9 +9,9 @@
 
 image:images/Toolbar.png[]
 
-The <<Toolbar.adoc#top,Toolbar>> of the main <<GameModule.adoc#top,Module>> window contains buttons for basic functions such as <<#Undo,Undo>>, <<#StepForward,Step Forward>>, and <<#ServerControls,Server Controls>>, but you can also configure buttons to <<SpecialDiceButton.adoc#top,roll dice>>, <<PieceWindow.adoc#top,add pieces to the map>>, display <<Chartwindow.adoc#top,charts>> and <<Map.adoc#top,maps>>, keep <<PlayerHand.adoc#top,player hands>> and <<PrivateWindow.adoc#top,reinforcement pools>> private, and more.
+The <<Toolbar.adoc#top,Toolbar>> of the main <<GameModule.adoc#top,Module>> window contains buttons for basic functions such as <<#Undo,Undo>>, <<#StepForward,Step Forward>>, and <<#ServerControls,Server Controls>>, but you can also configure buttons to <<SpecialDiceButton.adoc#top,roll dice>>, <<PieceWindow.adoc#top,add pieces to the map>>, display <<ChartWindow.adoc#top,charts>> and <<Map.adoc#top,maps>>, keep <<PlayerHand.adoc#top,player hands>> and <<PrivateWindow.adoc#top,reinforcement pools>> private, and more.
 
-Buttons for basic functions are created by configuring the existing basic components of the module, such as <<GlobalOptions.adoc#top,[Global Options>>] and the <<#Definition_of_Player_Sides,Definition of Player Sides>>.
+Buttons for basic functions are created by configuring the existing basic components of the module, such as <<GlobalOptions.adoc#top,Global Options>> and the <<#Definition_of_Player_Sides,Definition of Player Sides>>.
 
 Buttons for Maps, Charts, Dice, and other additional buttons are created by adding new <<GameModule.adoc#SubComponents,Sub-Components>> to the Module.
 In some cases, Toolbar buttons can also be created by adding sub-components to a Map window.
@@ -68,7 +68,7 @@ a|
 ==== Undo
 
 An Undo button allows players to back up one or more steps, undoing those moves and/or actions, if a mistake has been made.
-An Undo button can be added by configuring the <<GlobalOptions.adoc#top,[Global Options>>] component of the main <<GameModule.adoc#top,Module>>. The Undo button can be given a button image and a hotkey.
+An Undo button can be added by configuring the <<GlobalOptions.adoc#top,Global Options>> component of the main <<GameModule.adoc#top,Module>>. The Undo button can be given a button image and a hotkey.
 
 [#StepForward]
 ==== Step Forward
@@ -76,13 +76,13 @@ An Undo button can be added by configuring the <<GlobalOptions.adoc#top,[Global 
 The Step Forward button is how play-by-email (PBEM) players can step forward through an opponent's actions when loading a LogFile (VLOG) file from them.
 Upon loading the log file, the Step Forward button will become "active", and the player viewing the log can use the button to step forward a move at a time.
 Once the log file reaches its end, the Step Forward button will grey back out again and the player can make the next moves.
-The Step Forward button is configured in the <<GlobalOptions.adoc#top,[Global Options>>] component of the main <<GameModule.adoc#top,Module>>: it can be given an image and a hotkey.
+The Step Forward button is configured in the <<GlobalOptions.adoc#top,Global Options>> component of the main <<GameModule.adoc#top,Module>>: it can be given an image and a hotkey.
 
 [#ServerControls]
 ==== Server Controls
 
 The Server Controls button opens the sub-window that allows online players to communicate with a VASSAL Server to find and begin online games.
-The Server Controls button is configured in the <<GlobalOptions.adoc#top,[Global Options>>] component of the main <<GameModule.adoc#top,Module>>: it can be given an image and a hotkey.
+The Server Controls button is configured in the <<GlobalOptions.adoc#top,Global Options>> component of the main <<GameModule.adoc#top,Module>>: it can be given an image and a hotkey.
 
 [#Retire]
 [#SwitchSides]
@@ -115,7 +115,7 @@ a|
 
 A Game Piece Palette allows an unlimited number of pieces to be created and placed onto any map.
 This can have several uses -- it can be used as an unlimited supply for certain counters and markers during play.
-One can also fleshed out with the full counter-set and used as a place from which to set up a game initially to create <<GameModule.adoc#PredefinedSetup,Predefined Scenarios>>.
+One can also be fleshed out with the full counter-set and used as a place from which to set up a game initially to create <<GameModule.adoc#PredefinedSetup,Predefined Scenarios>>.
 
 A module can have more than one Game Piece Palette, each with its own Toolbar button.
 Or, a single Game Piece Palette can have any number of tabs and sub-panels.
@@ -181,7 +181,7 @@ a|
 
 ==== <<SpecialDiceButton.adoc#top,Symbolic Dice Button>>
 
-A <<SpecialDiceButton.adoc#top,Symbolic Dice Button>> places a button on the Toolbar which rolls dice that use graphical images to display theirfaces -- in simpler terms, "dice that look like dice". Multiple dice can be rolled at once, and the results can be shown in many different ways, including by the Toolbar button itself and by messages displayed in the <<ChatLog.adoc#top,Chat Log>>
+A <<SpecialDiceButton.adoc#top,Symbolic Dice Button>> places a button on the Toolbar which rolls dice that use graphical images to display theirfaces -- in simpler terms, "dice that look like dice". Multiple dice can be rolled at once, and the results can be shown in many ways, including by the Toolbar button itself and by messages displayed in the <<ChatLog.adoc#top,Chat Log>>
 
 <<SpecialDiceButton.adoc#top,See full article for details.>>
 

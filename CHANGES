@@ -1,11 +1,157 @@
-3.6.8 - ???
+3.7.0-beta1 - ???
 
+* 12032: Mark-When-Moved trait can be configured to only flag when piece
+    changes LocationName or Mat. Similarly Map auto-report can be configured
+    to ignore same-location movements.
+* 12003: OldDeckName now supported as a piece property
+* 12001: count_ supported for counting properties in Inventory windows
+* 11937: SumMat and CountMat functions for Beanshell expressions
+* 11918: Startup GKC that fires when player joins or changes sides
+* 11178: Global Option added to omit empty lines in property setting prompts
+* 11100: Allow begin-logfile and end-logfile to have configurable hotkeys in
+    Global Options
+
+3.6.13 - 24 February 2023
+
+* 12042: Fix bug when copying Decks and At-Start Stacks to other maps
+* 12037: Fix concurrent modification exception in Decks
+* 12016: Fix a possible crash scenario in At-Start Stacks
+* 11995: ActionButtons with reports shouldn't display them if report is empty
+* 11967: When dragging piece out of face-down deck, use unrotated shape
+* 11897: Ensure that deleted extensions don't crash the Module Manager
+* 11693: Prevent NPE when copying folders containing Mouse-over Stack Viewers
+* 11451: Don't permit drag-and-drop within PlaceMarker, Replace with Other
+    selection dialogs
+* 11173: Fixed crash in sorting a deck
+* 10877: Added a 'player joined' message when playing online
+*  9786: Text Label traits will respond to GameRefresher (unless trait has a
+    manually-change-label hotkey defined)
+
+3.6.12 - 16 February 2023
+
+* 12013: Reinstate removal of module tile cache when a module is removed from
+    the Module Manager
+* 12007: Update Apple Silicon terminology in preferences and docs
+* 11994: Deck "send-when-empty" hotkeys no longer create extra undo steps
+* 11993: ActionButtons set to count 0 times don't spuriously execute 1 time
+* 11986: Add missing Section size symbol to NATO markers
+* 11982: Fixed multiplayer problems with detach option on Deselect trait
+* 11963: SendToLocation, Can Rotate, and MoveFixedDistance were all unlinking
+    from deck/stack at wrong time, causing buggy behavior in some instances
+    especially involving decks
+* 11961: Clear up mark-when-moved problems for modules which still had a
+    legacy value set
+* 11957: Spaces in GKC reports made consistent with all other reports
+* 11935: Allow option for only first Mouseover-stack Viewer that generates a
+    tooltip will be drawn
+* 11884: 'OldMat' properties now set correctly regardless of order of Mat
+    Cargo and Send-to-Location (etc.) traits
+* 11880: Triggers set to count 0 times don't spuriously execute 1 time
+* 11714: Deck's Send-when-Empty key now processes AFTER fully moving last card
+* 11627: ActionButtons with context menu flag no longer trigger context menu
+    when a different ActionButton on same piece (that doesn't have the flag
+    set) is clicked
+* 11462: Don't +1 inventory sum if property isn't even defined
+* 11437: Prevent NPE when right-clicking on a Deck with no menu items
+* 11429: Deck Empty Hotkey no longer repeats per online player instance, nor
+    when stepping forward a log
+
+3.6.11 - 3 February 2023
+
+* 11941: Since 3.6.7, French/Belgian AZERTY keyboards on Mac were experiencing
+    problems with Ctrl / Alt keys on the number key row
+* 11938: IndexOutOfBoundsException trying to open a private note
+* 11933: At-Start stacks were getting confused by blank boards
+* 11929: Show translated module name and descriptions in Module Manager
+* 11924: Reinstate translation of Player Sides
+* 11911: Debug window shows board-relative coordinates if they are different
+    from the map-relative ones
+* 11906: MatCargo's mat detection did unnecessary computations for lack of
+    parentheses
+* 11904: Global Key Command fastmatch for Mats fixed to avoid trait-order bugs
+* 11901: Corrected "Mark When Moved" documentation
+* 11900: Clear Tile Cache with more efficient Files.walkFileTree()
+* 11899: Hide FileConfigurer label in preferences dialogs
+* 11890: NPE when current-stack option used on non-stacking piece
+* 11505: Insert items into formatted strings from drop-down list into the
+    correctly selected position
+
+3.6.10 - 11 January 2023
+
+* 11883: Fixed order of labels for "Select play mode" and "Enter your name"
+    steps in the Welcome Wizard
+* 11879: NPE when cutting and pasting a GlobalPropertyFolder
+* 11860: Warn when same piece is both Mat and Mat Cargo
+* 11858: Clear all PieceSlot caches after loading extensions
+* 11846: Protect from null property results during search
+* 11823: NPE in GameRefresher when refreshing unnamed Decks
+* 11813: NPE in PieceSlot.getLocalizedConfigureName()
+* 11759: Do not allow negative number of Dice or Sides
+* 11748: NPE when cutting and pasting a prototype folder
+* 11455: Prevent NPE when adding empty KeyStrokes to list
+* 11452: Prevent NPE if invalid file specified in img tag
+
+3.6.9 - 14 December 2022
+
+* 11825: BoundsTracker once again repaints entire maps, reverting 11521
+* 11821: Include the AreaOfEffect bounds in the piece bounding box only if the
+    AoE is visible
+* 11814: Ensure that valid BasicName property is used to identify piece when
+    no translation is available
+* 11808: PieceCloner.clonePiece() should not expand inner pieces unconditionally
+* 11806: NotesWindow re-open assigns focus properly to retain caret position
+* 11805: Fixed NPE: tab.getTitleAt() can return null, so check for that
+* 11804: Log element name on build exception, if available
+* 11803: Report exceptions thrown while loading modules
+
+3.6.8 - 29 November 2022
+
+* 11798: Added Chinese translation
+* 11796: Added Polish translation
+* 11790: Updated bundled Java to 19 for Windows and MacOS
+* 11778: System.setProperty() in BugDialog throws if the value is null
+* 11727: Fixed incorrect properties file path, which prevents working on
+    translations
+* 11716: Dereference symbolic link to executable before attemping to find
+    install dir
+* 11704: Added Place Marker editor hotkeys
+* 11700: Irregular Grid editor - add region with Insert or Ctrl+Right Click
+* 11678: Prevent clearing the tile cache when a module is open
+* 11630: Use default font for all context menus
+* 11622: Added support for Open Recent... submenu
+* 11617: Closing a reopenable Map should not close game
+* 11600: Player context menus: Show keyboard shortcuts right-aligned and with
+    symbols
+* 11570: Update Module Extension window, add missing description
+* 11565: Global Option List Preferences not initialising Global Property
+    correctly
+* 11564: Prevent Notes windows always starting open at very last character of
+    note
+* 11557: Auto-select contents of Edit boxes when they get focus
+* 11545: Description of Prototype will auto-include any BasicName
+* 11546: Default dialog-closing button behaviors for Enter/Esc
+         Key shortcuts added to Piece Definer (see Game Piece help)
+         Piece Definer list boxes jump to entry starting with that letter
+         Key shortcuts added editing Layer trait (see Layer help)
+         Most text fields support Ctrl/Cmd+Z for undo/redo
+* 11544: Broken links to and within Reference Manual
+* 11543: Closing game should reset multiplayer flag for console
+* 11541: Add hotkey to start specific chess clock
+* 11540: Display translated Basic Piece/Basic Name in Scrollable lists in Game
+    Piece Palette
+* 11537: Cancel key in Multi-Piece Editor (Edit all contained pieces)
+    correctly backs out with no changes
+* 11534: Add Open all Contained Pieces option
+* 11524: Option to 'always use format' on text label (even if label is blank)
 * 11521: BoundsTracker - Track bounds and repaint just for the regions of
     added pieces; rather than the whole map
 * 11515: Piece dropped into incorrect position in the stack when dragging
     within a stack to a lower position
 * 11513: Piece "disappears" when dragged to grid space with an existing stack
     and "snap to defined point"
+* 11510: Updated Opt-in version of the 'Leading Zeros in Integers' handing
+* 11499: TurnTracker Forward Only Toggle: Allow module designers to disable
+    the backwards TurnTracker button
 * 11497: Don't play sounds while fast-forwarding a log
 * 11496: Safer GKC Configurer for Fixed # From Deck
 

@@ -11,7 +11,7 @@
 Most games have many pieces which share similar categories of similar traits -- "French Units", "German Units", "Tanks", "Cards", "Control Markers", "Units with shadows".  Prototypes are templates to vastly simplify the creation and maintenance of groups of game pieces with similar traits.
 You first create a Prototype _Definition_ in the _[Game Piece Prototype Definitions]_ section of the Editor and give it a set traits just as you would give traits to a Game Piece.
 Then, you add a <<UsePrototype.adoc#top,Prototype trait>> to the definition of one or more Game Pieces.
-All of these Game Pieces will thenceforth function _as if they had all of the exact traits listed in the Prototype Definition._
+All of these Game Pieces will thenceforth function _as if they had all the exact traits listed in the Prototype Definition._
 
 Use of Prototypes means a lot less copy-and-pasting of the same traits will be necessary to create large groups of units.
 Even better, when you change the traits in a Prototype, they are immediately changed for every piece that uses the Prototype, so you can update and maintain your modules much more quickly and accurately (and without having to try to remember whether you got every single one of the 57 different armored units...)
@@ -47,7 +47,7 @@ To add a <<#Prototypes,Prototype Definition>>, navigate to the _[Game Piece Prot
 Right-click on it and select _Add Definition_.
 You can then give your Prototype a set traits just as you would give traits to a Game Piece.
 Then, you add a <<UsePrototype.adoc#top,Prototype trait>> to one or more Game Pieces.
-All of these Game Pieces will thenceforth function as if they had all of the exact traits listed in the Prototype Definition.
+All of these Game Pieces will thenceforth function as if they had all the exact traits listed in the Prototype Definition.
 
 The dialog for defining a prototype is just the same as for defining a Game Piece, but with a name and without the innermost Basic Piece.
 Prototypes may contain other prototypes.

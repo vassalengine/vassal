@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2000-2003 by Rodney Kinney
+ * Copyright (c) 2000-2022 by Rodney Kinney, The Vassal Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -29,9 +29,13 @@ import VASSAL.build.module.GlobalKeyCommand;
 import VASSAL.build.module.KeyNamer;
 import VASSAL.build.module.Plugin;
 import VASSAL.build.module.PrototypeDefinition;
+import VASSAL.build.module.PrototypesContainer;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
+import VASSAL.build.module.folder.GlobalPropertyFolder;
+import VASSAL.build.module.folder.PrototypeFolder;
 import VASSAL.build.module.gamepieceimage.GamePieceImage;
+import VASSAL.build.module.map.CounterDetailViewer;
 import VASSAL.build.module.map.DeckGlobalKeyCommand;
 import VASSAL.build.module.map.DrawPile;
 import VASSAL.build.module.map.MassKeyCommand;
@@ -43,6 +47,7 @@ import VASSAL.build.module.properties.GlobalTranslatableMessage;
 import VASSAL.build.module.properties.ZoneProperty;
 import VASSAL.build.widget.CardSlot;
 import VASSAL.build.widget.PieceSlot;
+import VASSAL.counters.BasicPiece;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.EditablePiece;
 import VASSAL.counters.GamePiece;
@@ -57,11 +62,8 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ReflectionUtils;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.SwingUtils;
-
 import net.miginfocom.swing.MigLayout;
-
 import org.apache.commons.lang3.StringUtils;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -185,6 +187,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   private final SearchParameters searchParameters;
   protected static Chatter chatter;
 
+  @Deprecated(since = "2022-08-08", forRemoval = true)
   public static final Font POPUP_MENU_FONT = new Font(Font.DIALOG, Font.PLAIN, 11);
   protected static final List<AdditionalComponent> additionalComponents = new ArrayList<>();
 
@@ -192,10 +195,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
    * Creates new ConfigureTree
    */
   public ConfigureTree(Configurable root, HelpWindow helpWindow) {
-    this(root, helpWindow, null);
+    this(root, helpWindow, null, false);
   }
 
   public ConfigureTree(Configurable root, HelpWindow helpWindow, EditorWindow editorWindow) {
+    this(root, helpWindow, editorWindow, false);
+  }
+
+  public ConfigureTree(Configurable root, HelpWindow helpWindow, EditorWindow editorWindow, boolean disableDragAndDrop) {
     toggleClickCount = 3;
     this.helpWindow = helpWindow;
     this.editorWindow = editorWindow;
@@ -263,9 +270,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
     createKeyBindings();
 
-    setDragEnabled(true);
-    setDropMode(DropMode.ON_OR_INSERT);
-    setTransferHandler(new TreeTransferHandler());
+    if (!disableDragAndDrop) {
+      setDragEnabled(true);
+      setDropMode(DropMode.ON_OR_INSERT);
+      setTransferHandler(new TreeTransferHandler());
+    }
   }
 
 
@@ -413,7 +422,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected void addAction(JPopupMenu menu, Action a) {
     if (a != null) {
-      menu.add(a).setFont(POPUP_MENU_FONT);
+      menu.add(a);
     }
   }
 
@@ -421,9 +430,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     if ((l != null) && !l.isEmpty()) {
       final JMenu subMenu = new JMenu(name);
       for (final Action a: l) {
-        subMenu.add(a).setFont(POPUP_MENU_FONT);
+        subMenu.add(a);
       }
-      menu.add(subMenu).setFont(POPUP_MENU_FONT);
+      menu.add(subMenu);
       l.clear();
     }
   }
@@ -433,7 +442,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     boolean empty = true;
     for (final Action a : l) {
       if (a != null) {
-        menu.add(a).setFont(POPUP_MENU_FONT);
+        menu.add(a);
         empty = false;
       }
     }
@@ -447,7 +456,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     final JPopupMenu popup = new JPopupMenu();
     final List<Action> l = new ArrayList<>();
     l.add(buildEditAction(target));
-    l.add(buildEditPiecesAction(target));
     addActionGroup(popup, l);
     l.add(buildTranslateAction(target));
     addActionGroup(popup, l);
@@ -472,6 +480,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       addAction(popup, buildMassPieceLoaderAction(target));
     }
     addAction(popup, buildImportAction(target));
+
+    popup.addSeparator();
+    addAction(popup, buildOpenPiecesAction(target));
+    addAction(popup, buildEditPiecesAction(target));
+
     return popup;
   }
 
@@ -556,6 +569,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           });
           d.add(box);
           d.add(ok);
+
+          // Default actions for Enter/Esc
+          SwingUtils.setDefaultButtons(d.getRootPane(), ok, ok); // ESC also does OK
+
           SwingUtils.repack(d);
           d.setLocationRelativeTo(d.getParent());
           d.setVisible(true);
@@ -617,8 +634,32 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         }
       }
     }
-  }
 
+    // PrototypeFolder needs any prototype children added to the main prototype definition list
+    if (target instanceof PrototypeFolder) {
+      final PrototypesContainer protos = (PrototypesContainer)(((PrototypeFolder)target).getNonFolderAncestor());
+      if (protos != null) {
+        for (final PrototypeDefinition child : ((PrototypeFolder) target).getAllDescendantComponentsOf(PrototypeDefinition.class)) {
+          protos.addDefinition(child);
+        }
+      }
+    }
+
+    // Global properties need some extra validation onto their parents, because the new ones get built w/o full knowledge of ancestors
+    if (target instanceof GlobalPropertyFolder) {
+      for (final GlobalProperty child : ((GlobalPropertyFolder) target).getAllDescendantComponentsOf(GlobalProperty.class)) {
+        child.addTo(child.getAncestor());
+      }
+    }
+
+    // CounterDetailViewers in folders may need to be "acquainted" with their new maps.
+    if (target instanceof CounterDetailViewer) {
+      final CounterDetailViewer cdv = (CounterDetailViewer) target;
+      if (cdv.getMap() == null) {
+        cdv.addTo(cdv.getAncestor());
+      }
+    }
+  }
 
   protected Action buildPasteAction(final Configurable target) {
     final Action a = new AbstractAction(pasteCmd) {
@@ -1033,7 +1074,16 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected Action buildEditPiecesAction(final Configurable target) {
     if (canContainGamePiece(target)) {
-      return new EditContainedPiecesAction(target);
+      return new EditContainedPiecesAction(target, this);
+    }
+    else {
+      return null;
+    }
+  }
+
+  protected Action buildOpenPiecesAction(final Configurable target) {
+    if (canContainGamePiece(target)) {
+      return new OpenContainedPiecesAction(target, helpWindow, (Frame) SwingUtilities.getAncestorOfClass(Frame.class, this), this);
     }
     else {
       return null;
@@ -1111,6 +1161,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     try {
       theChild.addTo(parent);
       parent.add(theChild);
+
+      // Update ancestor tree for child
+      if (theChild instanceof AbstractBuildable) {
+        ((AbstractBuildable)theChild).setAncestor(parent);
+      }
+
       parentNode.insert(childNode, index);
       final int[] childI = new int[1];
       childI[0] = index;
@@ -2405,6 +2461,16 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             description += " - " + desc;
           }
         }
+
+        if (c instanceof PrototypeDefinition) {
+          final GamePiece p = ((PrototypeDefinition) c).getPiece();
+          if (p != null) {
+            final String basicName = (String) (p.getProperty(BasicPiece.BASIC_NAME));
+            if ((basicName != null) && !basicName.isEmpty()) {
+              description += " - " + basicName;
+            }
+          }
+        }
       }
       return description;
     }
@@ -2631,6 +2697,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
           if (remove(getParent(sourceNode), cutObj)) {
             insert(target, convertedCutObj, childIndex);
+            postPasteFixups(convertedCutObj);
           }
         }
       }

@@ -535,6 +535,9 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
       add(bottomPanel, BorderLayout.SOUTH);
 
+      // Default actions for Enter/ESC
+      SwingUtils.setDefaultButtons(getRootPane(), okButton, canButton);
+
       //BR// Scroll the possibly-8000-pixel-wide map to some semi-sensible place to start :)
       if (!grid.regionList.isEmpty()) {
         // If any regions have been defined, then use that list
@@ -1009,6 +1012,16 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     protected static final String SELECT_ALL = Resources.getString("Editor.IrregularGrid.select_all");
 
     protected void doPopupMenu(MouseEvent e) {
+
+      // Ctrl+Click or Shift+Click add region directly at cursor
+      if (SwingUtils.isSelectionToggle(e) || e.isShiftDown()) {
+        lastClick = mouseLoc;
+        final ActionEvent a = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ADD_REGION);
+        actionPerformed(a);
+        e.consume();
+        return;
+      }
+
       myPopup = new JPopupMenu();
 
       JMenuItem menuItem = new JMenuItem(ADD_REGION);
@@ -1289,8 +1302,11 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       }
     }
 
+    protected Point mouseLoc;
+
     @Override
     public void mouseMoved(MouseEvent e) {
+      mouseLoc = e.getPoint();
     }
 
     // Scroll map if necessary
@@ -1320,6 +1336,15 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
     @Override
     public void keyPressed(KeyEvent e) {
+
+      // Insert key adds region at current mouse position
+      if (e.getKeyCode() == KeyEvent.VK_INSERT) {
+        lastClick = mouseLoc;
+        final ActionEvent a = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ADD_REGION);
+        actionPerformed(a);
+        e.consume();
+        return;
+      }
 
       /*
        * Pass key onto window scroller if no region selected

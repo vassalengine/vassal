@@ -22,6 +22,7 @@ import VASSAL.build.AbstractFolder;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GameComponent;
+import VASSAL.build.module.GameState;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
@@ -33,10 +34,9 @@ import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.TemporaryToolBar;
 import VASSAL.tools.ToolBarComponent;
 
+import javax.swing.JToolBar;
 import java.beans.PropertyChangeListener;
 import java.util.List;
-
-import javax.swing.JToolBar;
 
 /**
  * Adds a global property to a Map or Module
@@ -209,13 +209,21 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
       parent = ((AbstractFolder) parent).getNonFolderAncestor();
     }
 
-    parentContainer = (MutablePropertiesContainer) parent;
-    property.addTo(parentContainer);
-    tempToolbar.setDelegate((ToolBarComponent) parent);
-    GameModule.getGameModule().addCommandEncoder(this);
-    GameModule.getGameModule().getGameState().addGameComponent(this);
-    propertySource = (PropertySource) parent;
-    setAllAttributesUntranslatable();
+    if (parent != null) {
+      parentContainer = (MutablePropertiesContainer) parent;
+      property.addTo(parentContainer);
+      tempToolbar.setDelegate((ToolBarComponent) parent);
+      propertySource = (PropertySource) parent;
+    }
+
+    // For copy-pasting purposes this method may end up getting called twice on the same component. Only do this part once.
+    final GameModule gm = GameModule.getGameModule();
+    final GameState gs = gm.getGameState();
+    if (!gs.getGameComponents().contains(this)) {
+      gs.addGameComponent(this);
+      gm.addCommandEncoder(this);
+      setAllAttributesUntranslatable();
+    }
   }
 
   @Override

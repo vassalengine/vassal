@@ -49,7 +49,7 @@ a certain class of terrain markers or immobile markers from being swept up in ba
 Options are:
 
 * _normally:_  The piece can be moved normally.
-* _only if selected:_  The piece can only by moved if it is selected.
+* _only if selected:_  The piece can only be moved if it is selected.
 * _never:_  The piece can never be moved manually by a player.
 
 *Piece can stack:*:: This option controls whether the piece can form Stacks with other pieces when moved. This option

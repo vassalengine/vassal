@@ -49,9 +49,16 @@ import net.miginfocom.swing.MigLayout;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import javax.swing.AbstractAction;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRootPane;
+import javax.swing.KeyStroke;
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Collection;
@@ -279,6 +286,24 @@ public class PrototypeDefinition extends AbstractConfigurable
       pieceDefiner.setPrototypeName(def.name);
       box.add(pieceDefiner, "growy");  // NON-NLS
       this.def = def;
+    }
+
+    @Override
+    public void initCustomControls(JDialog d, Configurable target) {
+      if (pieceDefiner != null) {
+        pieceDefiner.initCustomControls(d, target);
+      }
+
+      final JRootPane rp = d.getRootPane();
+      rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+        KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.ALT_DOWN_MASK), "ToName"); //$NON-NLS-1$
+      rp.getActionMap().put("ToName", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          name.requestFocus();
+        }
+      });
+
     }
 
     @Override

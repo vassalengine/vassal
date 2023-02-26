@@ -27,22 +27,21 @@ import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
-
 import VASSAL.tools.swing.SwingUtils;
-import java.awt.Frame;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import net.miginfocom.swing.MigLayout;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-
-import net.miginfocom.swing.MigLayout;
-
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
+import java.awt.Frame;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Window for editing properties of a {@link Configurable} object
@@ -53,6 +52,8 @@ public class PropertiesWindow extends JDialog {
   private Configurer configurer;
   private Configurable target;
   private Element originalState;
+
+  private static List<PropertiesWindow> propertiesWindowQueue = new ArrayList<>();
 
   public PropertiesWindow(Frame owner, boolean modal, final Configurable target, HelpWindow helpWindow) {
     super(owner, modal);
@@ -121,6 +122,11 @@ public class PropertiesWindow extends JDialog {
 
     add(buttonBox, "growy 0"); // NON-NLS
 
+    // Default actions on Enter/ESC
+    SwingUtils.setDefaultButtons(getRootPane(), okButton, cancelButton);
+
+    configurer.initCustomControls(this, target);
+
     pack();
     setLocationRelativeTo(getParent());
     SwingUtils.ensureOnScreen(this);
@@ -132,6 +138,18 @@ public class PropertiesWindow extends JDialog {
         cancel();
       }
     });
+
+    propertiesWindowQueue.add(this);
+  }
+
+  @Override
+  public void dispose() {
+    super.dispose();
+    propertiesWindowQueue.remove(this);
+
+    if (!propertiesWindowQueue.isEmpty()) {
+      propertiesWindowQueue.get(propertiesWindowQueue.size() - 1).requestFocus();
+    }
   }
 
   public void cancel() {

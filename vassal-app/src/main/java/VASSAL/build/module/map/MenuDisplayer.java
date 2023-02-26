@@ -17,29 +17,9 @@
  */
 package VASSAL.build.module.map;
 
-import java.awt.Font;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-
-import javax.swing.Action;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.KeyStroke;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
-
-import VASSAL.counters.ActionButton;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import VASSAL.build.Buildable;
 import VASSAL.build.module.Map;
+import VASSAL.counters.ActionButton;
 import VASSAL.counters.Deck;
 import VASSAL.counters.EventFilter;
 import VASSAL.counters.GamePiece;
@@ -49,8 +29,30 @@ import VASSAL.counters.KeyCommandSubMenu;
 import VASSAL.counters.MenuSeparator;
 import VASSAL.counters.PieceFinder;
 import VASSAL.counters.Properties;
+import VASSAL.tools.NamedKeyManager;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import javax.swing.Action;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.KeyStroke;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
+import java.awt.Font;
+import java.awt.Point;
+import java.awt.Shape;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 public class MenuDisplayer extends MouseAdapter implements Buildable {
+  @Deprecated(since = "2022-08-08", forRemoval = true)
   public static final Font POPUP_MENU_FONT = new Font(Font.DIALOG, Font.PLAIN, 10);
 
   protected Map map;
@@ -107,10 +109,12 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
   // This both eliminates duplicate code AND makes this critical menu-building functionality able to "play well with others".
   // Menu text & behavior can now be custom-classed without needing to override the monster that is MenuDisplayer#createPopup.
   protected static JMenuItem makeMenuItem(KeyCommand keyCommand) {
-
     final JMenuItem item = new JMenuItem(keyCommand.isMenuSeparator() ? MenuSeparator.SEPARATOR_NAME : getMenuText(keyCommand));
+    if (!NamedKeyManager.isNamed(keyCommand.getKeyStroke())) { // If the KeyStroke is named, then there is no accelerator
+      item.setAccelerator(keyCommand.getKeyStroke());
+    }
+
     item.addActionListener(keyCommand);
-    item.setFont(POPUP_MENU_FONT);
     item.setEnabled(keyCommand.isEnabled());
 
     return item;
@@ -143,7 +147,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
       if (target instanceof Deck) {
         if (c.length == 1) {
           final String menu_item = c[0].getName();
-          if (menu_item.equals(((Deck)target).getDrawMultipleMessage()) || menu_item.equals(((Deck)target).getDrawSpecificMessage())) {
+          if ((menu_item != null) && (menu_item.equals(((Deck)target).getDrawMultipleMessage()) || menu_item.equals(((Deck)target).getDrawSpecificMessage()))) {
             c[0].actionPerformed(new ActionEvent(popup, 0, ""));
             return null;
           }
@@ -156,7 +160,6 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
         JMenuItem item = null;
         if (keyCommand instanceof KeyCommandSubMenu) {
           final JMenu subMenu = new JMenu(getMenuText(keyCommand));
-          subMenu.setFont(POPUP_MENU_FONT);
           subMenus.put((KeyCommandSubMenu) keyCommand, subMenu);
           item = subMenu;
           commands.add(item);
@@ -253,6 +256,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
       return;
     }
 
+    // This block detects ActionButton traits
     if (!e.isPopupTrigger()) {
       if (e.isAltDown() || e.isShiftDown() || !specialLaunchAllowed) {
         return;
@@ -263,8 +267,29 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
       if (map.getKeyBufferer().isLasso()) { // If we dragged a selection box
         return;
       }
-      final String launchPopup = (String) p.getProperty(ActionButton.LAUNCH_POPUP_MENU);
-      if (!"true".equals(launchPopup)) { //NON-NLS
+
+      final Point epos = e.getPoint();
+      final Point rel = map.positionOf(p);
+      epos.translate(-rel.x, -rel.y);
+      final Shape s = p.getShape();
+      if (!s.contains(epos)) {
+        return;
+      }
+
+      // Get a list of the ActionButton traits in this piece that overlap this mouseclick
+      final List<GamePiece> actionButtons = ActionButton.matchingTraits(p, epos);
+
+      boolean anyMenu = false;
+      // Check if any of the overlapping action buttons have the launch-menu flag set
+      for (final GamePiece trait : actionButtons) {
+        final ActionButton action = (ActionButton) trait;
+
+        if (!action.isLaunchPopupMenu()) continue;
+        anyMenu = true;
+        break;
+      }
+
+      if (!anyMenu) {
         return;
       }
     }

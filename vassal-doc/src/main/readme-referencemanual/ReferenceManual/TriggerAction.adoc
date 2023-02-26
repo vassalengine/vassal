@@ -45,7 +45,7 @@ Click the _Add_ button to add additional fields to accomodate more keystrokes.
 To remove unwanted keystrokes, simply blank the lines -- extra lines will be removed next time you open the trait's properties.
 
 *Repeat this set of Key Commands (Loop):*::  If checked, allows you to define logic for a "loop" to generate the specified key commands multiple times.
-Otherwise the listed key commands are triggered once each.
+Otherwise, the listed key commands are triggered once each.
 
 *Type of loop:*:: lets you configure your loop.
 +
@@ -100,6 +100,6 @@ image:images/TriggerAction3.png[]
 
 *Example #4:*  A trait that is activated whenever any of a whole list of types of piece are due to be placed on the map.
 It performs a looping function to look for a piece of the appropriate type in a prioritized list of places to find them (e.g.
-"in the force pool", "in the reserve", "in the dead pool", etc), and stops when it either places a piece successfully or when it runs out of places to look.
+"in the force pool", "in the reserve", "in the dead pool", etc.), and stops when it either places a piece successfully or when it runs out of places to look.
 
 image:images/TriggerAction4.png[]

@@ -24,7 +24,6 @@ import javax.swing.KeyStroke;
 
 import VASSAL.build.GameModule;
 import VASSAL.command.Command;
-import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.NamedKeyStroke;
 
@@ -53,7 +52,7 @@ public class KeyCommand extends AbstractAction {
   }
 
   public KeyCommand(String name, KeyStroke key, GamePiece target, TranslatablePiece i18nPiece) {
-    super(makeMenuText(key, name));
+    super(makeMenuText(name));
     this.target = target;
     this.name = name;
     this.stroke = key;
@@ -169,13 +168,12 @@ public class KeyCommand extends AbstractAction {
       if (i18nPiece != null && GameModule.getGameModule().isLocalizationEnabled()) {
         localizedName = i18nPiece.getI18nData().translate(name);
       }
-      localizedMenuText = makeMenuText(stroke, localizedName);
+      localizedMenuText = makeMenuText(localizedName);
     }
     return localizedMenuText;
   }
 
-  private static String makeMenuText(KeyStroke ks, String text) {
-    return (ks != null && text != null && !text.isBlank() ?
-      text + "  " + NamedHotKeyConfigurer.getString(ks) : (text == null) ? "" : text).intern();
+  private static String makeMenuText(String text) {
+    return (text == null ? "" : text).intern();
   }
 }

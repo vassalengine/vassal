@@ -44,7 +44,15 @@ import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.ScaledImagePainter;
 import VASSAL.tools.swing.SwingUtils;
+import net.miginfocom.swing.MigLayout;
+import org.apache.commons.lang3.SystemUtils;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+import javax.swing.plaf.basic.BasicHTML;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -66,17 +74,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.DoubleConsumer;
-
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
-import javax.swing.plaf.basic.BasicHTML;
-
-import net.miginfocom.swing.MigLayout;
-
-import org.apache.commons.lang3.SystemUtils;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * d/b/a "Text Label"
@@ -117,6 +114,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   protected String propertyName;
   protected KeyCommand menuKeyCommand;
   protected String description = "";
+  protected boolean alwaysUseFormat;
 
   private Point position = null; // Label position cache
 
@@ -127,6 +125,10 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   public Labeler(String s, GamePiece d) {
     mySetType(s);
     setInner(d);
+  }
+
+  public NamedKeyStroke getLabelKey() {
+    return labelKey;
   }
 
   @Override
@@ -152,6 +154,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     rotateDegrees = st.nextInt(0);
     propertyName = st.nextToken("TextLabel"); // NON-NLS
     description = st.nextToken("");
+    alwaysUseFormat = st.nextBoolean(false);
   }
 
   /*
@@ -207,7 +210,8 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       .append(font.getStyle())
       .append(rotateDegrees)
       .append(propertyName)
-      .append(description);
+      .append(description)
+      .append(alwaysUseFormat);
     return ID + se.getValue();
   }
 
@@ -224,7 +228,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   @Override
   public String getName() {
     String result = "";
-    if (label.length() == 0) {
+    if ((label.length() == 0) && !alwaysUseFormat) {
       result =  piece.getName();
     }
     else {
@@ -254,7 +258,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
 
   @Override
   public String getLocalizedName() {
-    if (label.length() == 0) {
+    if ((label.length() == 0) && !alwaysUseFormat) {
       return piece.getLocalizedName();
     }
     else {
@@ -802,6 +806,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     if (! Objects.equals(rotateDegrees, l.rotateDegrees)) return false;
     if (! Objects.equals(propertyName, l.propertyName)) return false;
     if (! Objects.equals(description, l.description)) return false;
+    if (! Objects.equals(alwaysUseFormat, l.alwaysUseFormat)) return false;
 
     // Check State
     return Objects.equals(label, l.label);
@@ -835,6 +840,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     private final BooleanConfigurer bold, italic;
     private final StringConfigurer propertyNameConfig;
     private final StringConfigurer descConfig;
+    private final BooleanConfigurer alwaysUseFormatConfig;
 
     public Ed(Labeler l) {
       controls = new TraitConfigPanel();
@@ -851,6 +857,9 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       format.setValue(l.nameFormat.getFormat()); // NON-NLS
       format.setHintKey("Editor.TextLabel.name_format_hint");
       controls.add("Editor.TextLabel.name_format", format); //NON-NLS
+
+      alwaysUseFormatConfig = new BooleanConfigurer(l.alwaysUseFormat);
+      controls.add("Editor.TextLabel.always_use_format", alwaysUseFormatConfig);
 
       command = new StringConfigurer(l.menuCommand);
       command.setHintKey("Editor.menu_command_hint");
@@ -995,7 +1004,8 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
 
       se.append(i.toString())
         .append(propertyNameConfig.getValueString())
-        .append(descConfig.getValueString());
+        .append(descConfig.getValueString())
+        .append(alwaysUseFormatConfig.getValueString());
 
       return ID + se.getValue();
     }

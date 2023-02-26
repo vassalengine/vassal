@@ -232,8 +232,16 @@ public class WizardSupport {
   public InitialWelcomeSteps createInitialWelcomeSteps() {
     final GameModule gm = GameModule.getGameModule();
     if (!gm.isRealName() || !gm.isNonBlankPassword()) {
-      return new InitialWelcomeSteps(new String[]{ACTION_KEY, InitialWelcomeSteps.NAME_STEP},
-        new String[]{Resources.getString("WizardSupport.WizardSupport.EnterName"), Resources.getString("WizardSupport.WizardSupport.SelectPlayMode")}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+      return new InitialWelcomeSteps(
+        new String[]{
+          ACTION_KEY,
+          InitialWelcomeSteps.NAME_STEP
+        },
+        new String[]{
+          Resources.getString("WizardSupport.WizardSupport.SelectPlayMode"), //$NON-NLS-1$
+          Resources.getString("WizardSupport.WizardSupport.EnterName") //$NON-NLS-1$
+        }
+      );
     }
     else {
       return new InitialWelcomeSteps(new String[]{ACTION_KEY}, new String[]{Resources.getString("WizardSupport.SelectPlayMode")}); //$NON-NLS-1$

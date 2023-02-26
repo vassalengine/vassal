@@ -16,20 +16,7 @@
  */
 package VASSAL.counters;
 
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.geom.AffineTransform;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
-
-import javax.swing.KeyStroke;
-
+import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
@@ -42,11 +29,25 @@ import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.imageop.GamePieceOp;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.RotateScaleOp;
+
+import javax.swing.KeyStroke;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 
 import static VASSAL.counters.BasicPiece.BASIC_NAME;
 import static VASSAL.counters.BasicPiece.CURRENT_BOARD;
@@ -113,6 +114,12 @@ public class MatCargo extends Decorator implements TranslatablePiece {
   public MatCargo(String type, GamePiece inner) {
     mySetType(type);
     setInner(inner);
+
+    for (GamePiece check = inner; check instanceof Decorator; check = ((Decorator)check).getInner()) {
+      if (check instanceof Mat) {
+        ErrorDialog.dataWarning(new BadDataReport("Same piece must not be both Mat and Mat Cargo -- will create infinite loops", type));
+      }
+    }
   }
 
   @Override
@@ -264,7 +271,7 @@ public class MatCargo extends Decorator implements TranslatablePiece {
 
     GamePiece newMat = map.findAnyPiece(pt, PieceFinder.MAT_ONLY);
 
-    if ((newMat == null) && (detectionDistanceX != 0) || (detectionDistanceY != 0)) {
+    if ((newMat == null) && ((detectionDistanceX != 0) || (detectionDistanceY != 0))) {
       final Point pt2 = new Point();
 
       pt2.x = pt.x + detectionDistanceX;

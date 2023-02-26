@@ -22,7 +22,7 @@ Right-click on that component and select _Add Deck_ from the menu.
 After you have configured your Deck and clicked the OK button, your new _[Deck]_ component will appear at the bottom of the map's list of Sub-Components.
 You can then right-click on the _[Deck]_ entry and begin adding Cards and other Deck Sub-Components.
 
-NOTE:  Because Decks are quite often used to hold "cards", the Game Pieces contained within a Deck will be frequently referred to in Vassal and in documentation as "cards". However keep in mind that a "card" is simply a type of Game Piece, and a Deck can be used to contain _any_ type of Game Piece.
+NOTE:  Because Decks are quite often used to hold "cards", the Game Pieces contained within a Deck will be frequently referred to in Vassal and in documentation as "cards". However, keep in mind that a "card" is simply a type of Game Piece, and a Deck can be used to contain _any_ type of Game Piece.
 The difference between a "card" and a "piece" is only notional, and perhaps represented in the artwork and function of the piece/card.
 
 
@@ -30,7 +30,7 @@ The difference between a "card" and a "piece" is only notional, and perhaps repr
 The discard pile would be: _Allow Multiple = false_, _Allow Specific = false_, _Face Down = Never_, _Re-shuffle = Never_, _Reversible = false_.
 
 A Deck may contain any kind of Game Piece, so it can also be used for draw piles of chits or counters that are drawn randomly and whose total number are limited by the game.
-If the pieces/cards do not need to be selected randomly and you simply wish to provide a pile of them on the board at game start, consider an <<SetupStack.adoc#top,At-Start Stack>>.
+If the pieces/cards do not need to be selected randomly, and you simply wish to provide a pile of them on the board at game start, consider an <<SetupStack.adoc#top,At-Start Stack>>.
 
 *EXAMPLE:*  A strategic game in which a nationality has a fixed force pool of variable-strength Infantry, Armor, etc.
 counters can be modeled by making a Map Window representing the force pool, with a Deck of Infantry counters, a Deck of Armor counters, etc.
@@ -99,7 +99,7 @@ If set to _Via right-click menu_ then a _Shuffle_ entry is added to the Deck's r
 
 *Re-shuffle report format:*::  A <<MessageFormat.adoc#top,Message Format>> that is echoed to the chat log whenever a player selects the _Shuffle_ menu item (if enabled above): _deckName_ is the name of this Deck, _commandName_ is the name of the context menu item.
 
-*Re-shuffle hotkey:*::  A <<NamedKeyStroke.adoc#top,Keystroke or Named Command>> that will cause a reshuffle.
+*Re-shuffle hotkey:*::  A <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> that will cause a reshuffle.
 If left blank, a reshuffle can be caused only with the right-click context menu.
 
 *Reversible:*:: Adds an entry to the right-click context menu that reverses the order of cards in the Deck.
@@ -108,7 +108,7 @@ If left blank, a reshuffle can be caused only with the right-click context menu.
 
 *Reverse report format:*::  A <<MessageFormat.adoc#top,Message Format>> that is echoed to the chat log window whenever a player selects the "Reverse" menu item: _deckName_ is the name of this deck, _commandName_ is the name of the menu item.
 
-*Reverse hotkey:*:: A <<NamedKeyStroke.adoc#top,Keystroke or Named Command>> that will cause a reverse.
+*Reverse hotkey:*:: A <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> that will cause a reverse.
 
 *Draw Outline When Empty?*::  Whether to draw the "tray" for the cards.
 The "tray" is a rectangle of size _width,height_ centered at _x,y_.
@@ -117,7 +117,7 @@ May not be necessary or desirable if the Map Window contains a board on which th
 
 *Color:*::  The color used to draw the rectangle representing the "tray" above.
 
-*Hotkey to send when Deck empties:*::  Select the <<NamedKeyStroke.adoc#top,Keystroke Command or Named Command>> to send whenever enough cards are removed from the Deck to empty it.
+*Hotkey to send when Deck empties:*::  Select the <<NamedKeyCommand.adoc#top,Keystroke Command or Named Command>> to send whenever enough cards are removed from the Deck to empty it.
 
 *Include command to send entire deck to another deck:*::  If checked, the right-click context menu for this Deck will include a command that sends every Game Piece in this Deck to a different designated Deck.
 For example, this can be used to reshuffle a discard pile into its original deck.
@@ -127,7 +127,7 @@ The following four attributes are used to configure this option.
 
 *Send report format:*::  A <<MessageFormat.adoc#top,Send Message Format>> that is echoed to the chat log window whenever a player selects the "send to another deck" menu item: _deckName_ is the name of this deck, _commandName_ is the name of the menu item.
 
-*Send Hotkey:*::  Select a <<NamedKeyStroke.adoc#top,Keystroke Command or Named Command>> that will cause the Deck contents to be moved to the target Deck.
+*Send Hotkey:*::  Select a <<NamedKeyCommand.adoc#top,Keystroke Command or Named Command>> that will cause the Deck contents to be moved to the target Deck.
 
 *Name of deck to send to:*::  The name of the Deck that the contents of this Deck will be sent to.
 

@@ -51,6 +51,7 @@ import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.UniqueIdManager;
+import VASSAL.tools.swing.SwingUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -1020,11 +1021,9 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     }
 
     protected void doPrev() {
-      if (!fwdOnly) {                // FWD_ONLY start wrap - only the "if"
-        captureState();           // standard code
-        prev();
-        save();
-      }                            // FWD_ONLY end wrap
+      captureState();
+      prev();
+      save();
     }
 
     protected void initComponents() {
@@ -1190,6 +1189,9 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       });
       p.add(cancelButton);
 
+      // Default actions for Enter/ESC
+      SwingUtils.setDefaultButtons(getRootPane(), saveButton, cancelButton);
+
       add(p);
     }
 
@@ -1305,7 +1307,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
    */
   @Override
   public List<String> getFormattedStringList() {
-    return List.of(turnFormat.getFormat(), reportFormat.getFormat());
+    return Arrays.asList(turnFormat.getFormat(), reportFormat.getFormat());
   }
 
   /**
@@ -1314,7 +1316,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
    */
   @Override
   public List<String> getMenuTextList() {
-    return List.of(getAttributeValueString(BUTTON_TEXT), getAttributeValueString(TOOLTIP));
+    return Arrays.asList(getAttributeValueString(BUTTON_TEXT), getAttributeValueString(TOOLTIP));
   }
 
   /**

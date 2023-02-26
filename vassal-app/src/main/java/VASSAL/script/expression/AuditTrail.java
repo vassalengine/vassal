@@ -34,7 +34,7 @@ import java.util.List;
 public class AuditTrail {
 
   private Auditable source;
-  private List<String> messages = new ArrayList<>();
+  private final List<String> messages;
 
   /** Tracks the Auditing preference, true if auditing is enabled */
   private static Boolean enabled;
@@ -155,6 +155,8 @@ public class AuditTrail {
    * @return An AuditTrail object if auditing is enabled, otherwise null
    */
   public AuditTrail(Auditable source, String originalExpression, String sourceField) {
+    messages = new ArrayList<>();
+
     setSource(source);
     if (sourceField != null && ! sourceField.isEmpty()) {
       addMessage(Resources.getString("Audit.source_field", sourceField));

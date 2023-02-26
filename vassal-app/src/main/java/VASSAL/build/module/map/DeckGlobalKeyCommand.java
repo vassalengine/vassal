@@ -292,7 +292,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
       final String reportText = reportFormat.getText(source, (Auditable) this, "Editor.report_format");
       Command c;
       if (reportText.length() > 0) {
-        c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "*" + reportText);
+        c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* " + reportText);
         c.execute();
       }
       else {
