@@ -1,3 +1,7 @@
+3.6.14 - ???
+
+* 12048: Fix bugs when deleting groups of decks/stacks from the editor
+
 3.6.13 - 24 February 2023
 
 * 12042: Fix bug when copying Decks and At-Start Stacks to other maps
