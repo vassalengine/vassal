@@ -7,6 +7,8 @@
 * 12001: count_ supported for counting properties in Inventory windows
 * 11937: SumMat and CountMat functions for Beanshell expressions
 * 11918: Startup GKC that fires when player joins or changes sides
+* 11913: Numeric global properties with increments other than 1 and -1 now
+    wrap around correctly
 * 11530: Add new StackPos and StackSize properties to Basic Piece
 * 11178: Global Option added to omit empty lines in property setting prompts
 * 11100: Allow begin-logfile and end-logfile to have configurable hotkeys in

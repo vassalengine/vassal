@@ -29,6 +29,7 @@
         { "num": 11100, "desc": "Allow begin-logfile and end-logfile to have configurable hotkeys in Global Options" }
       ],
       "bug_fixes": [
+        { "num": 11913, "desc": "Numeric global properties with increments other than 1 and -1 now wrap around correctly" }
       ],
       "other_improvements": [
       ]
