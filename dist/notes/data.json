@@ -21,6 +21,7 @@
       "new_features": [
         { "num": 12032, "desc": "Mark-When-Moved trait can be configured to only flag when piece changes LocationName or Mat. Similarly Map auto-report can be configured to ignore same-location movements." },
         { "num": 12003, "desc": "OldDeckName now supported as a piece property" },
+        { "num": 12001, "desc": "count_ supported for counting properties in Inventory windows" },
         { "num": 11937, "desc": "SumMat and CountMat functions for Beanshell expression" },
         { "num": 11918, "desc": "Startup GKC that fires when player joins or changes sides" },
         { "num": 11178, "desc": "Global Option added to omit empty lines in property setting prompts" },
