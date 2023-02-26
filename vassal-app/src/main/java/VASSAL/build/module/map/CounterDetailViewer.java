@@ -196,7 +196,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected FormattedString counterReportFormat = new FormattedString(""); //NON-NLS
   protected FormattedString emptyHexReportFormat = new FormattedString("$" + BasicPiece.LOCATION_NAME + "$"); //NON-NLS
   protected String version = ""; //NON-NLS
-  protected Color fgColor;
+  protected Color fgColor = Color.black;
   protected Color bgColor;
   protected int fontSize = 9;
   protected Font font = new Font("Dialog", Font.PLAIN, fontSize); //NON-NLS
