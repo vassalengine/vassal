@@ -316,10 +316,9 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
         return "1";
       }
       final GamePiece outer = Decorator.getOutermost(this);
-      for (int i = 0; i < parent.getPieceCount(); i++) {
-        if (parent.contents[i] == outer) {
-          return String.valueOf(parent.getPieceCount() - i);
-        }
+      final int i = parent.indexOf(outer);
+      if (i != -1) {
+        return String.valueOf(parent.getPieceCount() - i);
       }
       return "1";
     }
