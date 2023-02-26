@@ -183,7 +183,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
       final Map m = pile.getMap();
 
       // Post move actions -- apply any afterburner apply-on-move key (but only if the piece was actually moved)
-      comm = finishMove(comm, (m != null && m.getMoveKey() != null && (m != preMap || !getPosition().equals(prePos))), false);
+      comm = finishMove(comm, (m != null && m.getMoveKey() != null && (m != preMap || !getPosition().equals(prePos))), false, false);
 
       if (m != null) {
         m.repaint();

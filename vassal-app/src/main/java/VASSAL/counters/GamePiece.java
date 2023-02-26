@@ -223,7 +223,16 @@ public interface GamePiece extends PropertySource {
     return c;
   }
 
+  default Command checkTrueMoved() {
+    GameModule.getGameModule().warn("GamePiece#checkTrueMove called by Deck or Stack"); //NON-NLS
+    return null;
+  }
+
   default Command finishMove(Command c, boolean afterburner, boolean findmat) {
+    return finishMove(c, afterburner, findmat, false);
+  }
+
+  default Command finishMove(Command c, boolean afterburner, boolean findmat, boolean markMoved) {
     GameModule.getGameModule().warn("GamePiece#finishMove called by Deck or Stack"); //NON-NLS
     return c;
   }

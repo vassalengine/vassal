@@ -649,7 +649,7 @@ public class PieceMover extends AbstractBuildable
           final GamePiece[] p = map.getAllPieces();
           final Command c = new NullCommand();
           for (final GamePiece gamePiece : p) {
-            c.append(markMoved(gamePiece, false));
+            c.append(markMoved(gamePiece, false, false));
           }
 
           if ((markUnmovedReport != null) && !markUnmovedReport.isEmpty()) {
@@ -766,7 +766,7 @@ public class PieceMover extends AbstractBuildable
     Command c = new NullCommand();
     c = c.append(setOldLocations(p));
     if (!loc.equals(p.getPosition())) {
-      c = c.append(markMoved(p, true));
+      c = c.append(markMoved(p, true, false));
     }
     if (p.getParent() != null) {
       final Command removedCommand = p.getParent().pieceRemoved(p);
@@ -794,14 +794,20 @@ public class PieceMover extends AbstractBuildable
     return comm;
   }
 
+
+  public Command markMoved(GamePiece p, boolean hasMoved) {
+    return markMoved(p, hasMoved, true);
+  }
+
   /**
    * Handles marking pieces as "moved" or "not moved", based on Global Options settings. Updates the
    * "moved" property of the pieces, if they have one.
    * @param p Piece (could be a Stack)
    * @param hasMoved True if piece has just moved, false if it is to be reset to not-moved status
+   * @param locDefinitelyChanged true if piece definitely changed locations or mats (for possibly ignoring small moves)
    * @return Command encapsulating any changes made, for replay in log file or on other clients
    */
-  public Command markMoved(GamePiece p, boolean hasMoved) {
+  public Command markMoved(GamePiece p, boolean hasMoved, boolean locDefinitelyChanged) {
     if (GlobalOptions.NEVER.equals(getMarkOption())) {
       hasMoved = false;
     }
@@ -810,13 +816,13 @@ public class PieceMover extends AbstractBuildable
     if (!hasMoved || shouldMarkMoved()) {
       if (p instanceof Stack) {
         for (final GamePiece gamePiece : ((Stack) p).asList()) {
-          c = c.append(markMoved(gamePiece, hasMoved));
+          c = c.append(markMoved(gamePiece, hasMoved, locDefinitelyChanged));
         }
       }
       else if (p.getProperty(Properties.MOVED) != null) {
         if (p.getId() != null) {
           final ChangeTracker comm = new ChangeTracker(p);
-          p.setProperty(Properties.MOVED,
+          p.setProperty((!hasMoved || locDefinitelyChanged) ? Properties.MOVED : Properties.MAYBE_MOVED,
                         hasMoved ? Boolean.TRUE : Boolean.FALSE);
           c = c.append(comm.getChangeCommand());
         }
@@ -1145,6 +1151,11 @@ public class PieceMover extends AbstractBuildable
       tracker.addPiece(dragging);
     }
 
+    // If there might be ignore-small-moves traits in pieces, track which locations actually changed
+    if (GameModule.getGameModule().isTrueMovedSupport()) {
+      comm = comm.append(doTrueMovedSupport(allDraggedPieces));
+    }
+
     // We've finished the actual drag and drop of pieces, so we now create any auto-report message that is appropriate.
     if (GlobalOptions.getInstance().autoReportEnabled()) {
       final Command report = createMovementReporter(comm).getReportCommand().append(new MovementReporter.HiddenMovementReporter(comm).getReportCommand());
@@ -1165,6 +1176,44 @@ public class PieceMover extends AbstractBuildable
 
     return comm; // A command that, if executed, will fully replay the effects of this drag-and-drop on another client, or via a logfile.
   }
+
+  /**
+   * For a piece, mark it moved IF it changed locations or mats
+   * @param p piece or stack
+   * @return command to replicate any actions taken on another VASSAL instance
+   */
+  public Command checkTrueMoved(GamePiece p) {
+    Command c = new NullCommand();
+    if (p instanceof Stack) {
+      for (final GamePiece gamePiece : ((Stack) p).asList()) {
+        c = c.append(checkTrueMoved(gamePiece));
+      }
+    }
+    else if (p.getProperty(Properties.MOVED) != null) {
+      if (p.getId() != null) {
+        c = c.append(p.checkTrueMoved());
+      }
+    }
+    return c;
+  }
+
+  /**
+   * For a list of pieces, mark them moved IF they changed locations or mats
+   * @param pieces list of pieces
+   * @return command to replicate any actions taken on another Vassal instance
+   */
+  protected Command doTrueMovedSupport(List<GamePiece> pieces) {
+    if (GlobalOptions.NEVER.equals(getMarkOption()) || !shouldMarkMoved()) {
+      return null;
+    }
+
+    Command comm = new NullCommand();
+    for (final GamePiece piece : pieces) {
+      comm = comm.append(checkTrueMoved(piece));
+    }
+    return comm;
+  }
+
 
   /**
    * Applies a key command to each of a list of pieces.
