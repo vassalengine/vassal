@@ -103,6 +103,7 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
   public static final String LOCALIZED_BASIC_NAME = "LocalizedBasicName"; //NON-NLS
   public static final String LOCALIZED_PIECE_NAME = "LocalizedPieceName"; //NON-NLS
   public static final String DECK_NAME = "DeckName"; // NON-NLS
+  public static final String OLD_DECK_NAME = "OldDeckName"; //NON-NLS
   public static final String DECK_POSITION = "DeckPosition"; // NON-NLS
   public static final String CLICKED_X = "ClickedX"; // NON-NLS
   public static final String CLICKED_Y = "ClickedY"; // NON-NLS
@@ -1208,6 +1209,7 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
     l.add(OLD_MAT_BASIC_NAME);
     l.add(OLD_MAT_OFFSET_X);
     l.add(OLD_MAT_OFFSET_Y);
+    l.add(OLD_DECK_NAME);
     return l;
   }
 
