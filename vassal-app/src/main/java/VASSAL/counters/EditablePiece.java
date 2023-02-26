@@ -17,7 +17,13 @@
  */
 package VASSAL.counters;
 
+import VASSAL.build.GameModule;
+import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.command.ChangeTracker;
+import VASSAL.command.Command;
+
+import static VASSAL.counters.Decorator.putOldProperties;
 
 /**
  * If class implementing GamePiece also implements the EditablePiece interface, then
@@ -56,5 +62,115 @@ public interface EditablePiece extends GamePiece {
       return desc.substring(0, desc.indexOf(" - "));
     }
     return desc;
+  }
+
+  /**
+   * Centralized method for preparing a piece to move. Writes the "Old Map" properties based on its current location,
+   * optionally marks the piece as moved, and tells any deck its in that it is leaving.
+   * @param c Command to which will be appended a command for recreating anything this method does
+   * @param mark_moved If true the piece will be mark moved
+   * @return A command for recreating anything this method does, appended to the command passed
+   */
+  @Override
+  default Command prepareMove(Command c, boolean mark_moved) {
+    // Make sure we don't send deck-is-empty hotkeys when deck is emptied by another player in an online game or by a log-step
+    GameModule.getGameModule().getDeckManager().clearEmptyDecksList();
+
+    final GamePiece outer = Decorator.getOutermost(this);
+
+    // If selected, mark piece as moved.
+    if (mark_moved) {
+      final Map map = getMap();
+      if ((map != null) && map.isMarkMoved()) {
+        final ChangeTracker tracker = new ChangeTracker(outer);
+        outer.setProperty(Properties.MAYBE_MOVED, Boolean.TRUE);
+        c = c.append(tracker.getChangeCommand());
+      }
+    }
+
+    // Write the "Old Location" properties of the piece using the current location
+    c = c.append(putOldProperties(this));
+
+    // Tell our stack (in case it is a deck) that we've removed a piece
+    final Stack parent = outer.getParent();
+    if (parent != null) {
+      c = c.append(parent.pieceRemoved(outer));
+    }
+    return c;
+  }
+
+
+  /**
+   * Centralized method used when finishing up after a piece moves. Checks if LocationName or CurrentMatID changed
+   * and marks the piece moved if-and-only-if that happened.
+   * @return command to replicate any changes on another Vassal instance
+   */
+  @Override
+  default Command checkTrueMoved() {
+    final String loc = (String)getProperty(BasicPiece.LOCATION_NAME);
+    final String oldLoc = (String)getProperty(BasicPiece.OLD_LOCATION_NAME);
+
+    if ((loc == null) || loc.equals(oldLoc)) {
+      if (GameModule.getGameModule().isMatSupport()) {
+        final String mat = (String) getProperty(Mat.MAT_ID);
+        final String oldMat = (String) getProperty(BasicPiece.OLD_MAT_ID);
+        if ((mat == null) || mat.equals(oldMat)) {
+          return null;
+        }
+      }
+      else {
+        return null;
+      }
+    }
+
+    final GamePiece outer = Decorator.getOutermost(this);
+    final ChangeTracker tracker = new ChangeTracker(outer);
+    outer.setProperty(Properties.MOVED, Boolean.TRUE);
+    return tracker.getChangeCommand();
+  }
+
+
+  @Override
+  default Command finishMove(Command c, boolean afterburner, boolean findmat) {
+    return finishMove(c, afterburner, findmat, false);
+  }
+
+  /**
+   * Centralized method for finishing up after a piece moves. Optionally finds a new mat if needed,
+   * and optionally applies any afterburner apply-on-move key for the piece's map. If we emptied any
+   * decks, allows them to send their I-am-empty key commands
+   * @param c Command to which will be appended a command for recreating anything this method does
+   * @param afterburner if true, apply the afterburner apply-on-move key for the piece's map
+   * @param findmat if true, find a new mat for this piece if needed (if this piece is cargo)
+   * @return A command for recreating anything this method does, appended to the command passed
+   */
+  @Override
+  default Command finishMove(Command c, boolean afterburner, boolean findmat, boolean mark_moved) {
+    final GamePiece outer = Decorator.getOutermost(this);
+    if (findmat) {
+      // If a cargo piece has been moved, find it a new Mat if needed.
+      c = MatCargo.findNewMat(c, outer);
+    }
+
+    // If we're tracking "true moved" pieces then do the checks
+    if (mark_moved && GameModule.getGameModule().isTrueMovedSupport()) {
+      final Map map = getMap();
+      if ((map != null) && map.isMarkMoved()) {
+        c = c.append(checkTrueMoved());
+      }
+    }
+
+    // Apply "afterburner" apply-on-move key command
+    if (afterburner) {
+      final Map map = outer.getMap();
+      if (map.getMoveKey() != null) {
+        c = c.append(outer.keyEvent(map.getMoveKey()));
+      }
+    }
+
+    // If we emptied any decks, let them send their I-am-empty key commands
+    c = GameModule.getGameModule().getDeckManager().checkEmptyDecks(c);
+
+    return c;
   }
 }

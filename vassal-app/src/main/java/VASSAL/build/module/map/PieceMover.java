@@ -30,7 +30,6 @@ import VASSAL.build.widget.PieceSlot;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
-import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.BoundsTracker;
@@ -54,7 +53,6 @@ import VASSAL.counters.PieceVisitorDispatcher;
 import VASSAL.counters.Properties;
 import VASSAL.counters.PropertyExporter;
 import VASSAL.counters.Stack;
-import VASSAL.i18n.Resources;
 import VASSAL.tools.DebugControls;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
@@ -645,19 +643,13 @@ public class PieceMover extends AbstractBuildable
    */
   protected void initButton() {
     final String value = getMarkOption();
-    if (GlobalOptions.PROMPT.equals(value)) {
-      final BooleanConfigurer config = new BooleanConfigurer(
-        Map.MARK_MOVED, Resources.getString("Editor.PieceMover.mark_moved_pieces"), Boolean.TRUE);
-      GameModule.getGameModule().getPrefs().addOption(config);
-    }
-
     if (!GlobalOptions.NEVER.equals(value)) {
       if (markUnmovedButton == null) {
         final ActionListener al = e -> {
           final GamePiece[] p = map.getAllPieces();
           final Command c = new NullCommand();
           for (final GamePiece gamePiece : p) {
-            c.append(markMoved(gamePiece, false));
+            c.append(markMoved(gamePiece, false, false));
           }
 
           if ((markUnmovedReport != null) && !markUnmovedReport.isEmpty()) {
@@ -713,12 +705,8 @@ public class PieceMover extends AbstractBuildable
    * @return Our setting w/ regard to marking pieces moved.
    */
   private String getMarkOption() {
-    String value = map.getAttributeValueString(Map.MARK_MOVED);
-    if (value == null) {
-      value = GlobalOptions.getInstance()
-                           .getAttributeValueString(GlobalOptions.MARK_MOVED);
-    }
-    return value;
+    final String value = map.getAttributeValueString(Map.MARK_MOVED);
+    return (value == null) ? GlobalOptions.ALWAYS : value;
   }
 
   @Override
@@ -772,10 +760,13 @@ public class PieceMover extends AbstractBuildable
    * @return Command encapsulating anything this method did, for replay in log file or on other clients
    */
   protected Command movedPiece(GamePiece p, Point loc) {
+    // Make sure we don't end up sending I'm-empty commands from decks that were emptied by other players (e.g. online or log-step)
+    GameModule.getGameModule().getDeckManager().clearEmptyDecksList();
+
     Command c = new NullCommand();
     c = c.append(setOldLocations(p));
     if (!loc.equals(p.getPosition())) {
-      c = c.append(markMoved(p, true));
+      c = c.append(markMoved(p, true, false));
     }
     if (p.getParent() != null) {
       final Command removedCommand = p.getParent().pieceRemoved(p);
@@ -803,14 +794,20 @@ public class PieceMover extends AbstractBuildable
     return comm;
   }
 
+
+  public Command markMoved(GamePiece p, boolean hasMoved) {
+    return markMoved(p, hasMoved, true);
+  }
+
   /**
    * Handles marking pieces as "moved" or "not moved", based on Global Options settings. Updates the
    * "moved" property of the pieces, if they have one.
    * @param p Piece (could be a Stack)
    * @param hasMoved True if piece has just moved, false if it is to be reset to not-moved status
+   * @param locDefinitelyChanged true if piece definitely changed locations or mats (for possibly ignoring small moves)
    * @return Command encapsulating any changes made, for replay in log file or on other clients
    */
-  public Command markMoved(GamePiece p, boolean hasMoved) {
+  public Command markMoved(GamePiece p, boolean hasMoved, boolean locDefinitelyChanged) {
     if (GlobalOptions.NEVER.equals(getMarkOption())) {
       hasMoved = false;
     }
@@ -819,13 +816,13 @@ public class PieceMover extends AbstractBuildable
     if (!hasMoved || shouldMarkMoved()) {
       if (p instanceof Stack) {
         for (final GamePiece gamePiece : ((Stack) p).asList()) {
-          c = c.append(markMoved(gamePiece, hasMoved));
+          c = c.append(markMoved(gamePiece, hasMoved, locDefinitelyChanged));
         }
       }
       else if (p.getProperty(Properties.MOVED) != null) {
         if (p.getId() != null) {
           final ChangeTracker comm = new ChangeTracker(p);
-          p.setProperty(Properties.MOVED,
+          p.setProperty((!hasMoved || locDefinitelyChanged) ? Properties.MOVED : Properties.MAYBE_MOVED,
                         hasMoved ? Boolean.TRUE : Boolean.FALSE);
           c = c.append(comm.getChangeCommand());
         }
@@ -841,16 +838,7 @@ public class PieceMover extends AbstractBuildable
    */
   protected boolean shouldMarkMoved() {
     final String option = getMarkOption();
-    if (GlobalOptions.ALWAYS.equals(option)) {
-      return true;
-    }
-    else if (GlobalOptions.NEVER.equals(option)) {
-      return false;
-    }
-    else {
-      return Boolean.TRUE.equals(
-        GameModule.getGameModule().getPrefs().getValue(Map.MARK_MOVED));
-    }
+    return !GlobalOptions.NEVER.equals(option);
   }
 
   /**
@@ -937,6 +925,9 @@ public class PieceMover extends AbstractBuildable
       newDragBuffer.add(mm.getMatPiece());
       newDragBuffer.addAll(mm.getCargo());
     }
+
+    final GameModule gm = GameModule.getGameModule();
+    final boolean isMatSupport = gm.isMatSupport();
 
     // Non-null when a Mat being processed, or when cargo loaded on the Mat is being processed
     Mat currentMat = null;
@@ -1122,7 +1113,7 @@ public class PieceMover extends AbstractBuildable
         KeyBuffer.getBuffer().add(piece);
 
         // Support for Mats and Cargo
-        if (GameModule.getGameModule().isMatSupport()) {
+        if (isMatSupport) {
           // If this is a piece that can be placed on mats, look for an overlapping mat, and put it there.
           if (Boolean.TRUE.equals(piece.getProperty(MatCargo.IS_CARGO))) {
             final MatCargo cargo = (MatCargo)Decorator.getDecorator(piece, MatCargo.class);
@@ -1160,6 +1151,11 @@ public class PieceMover extends AbstractBuildable
       tracker.addPiece(dragging);
     }
 
+    // If there might be ignore-small-moves traits in pieces, track which locations actually changed
+    if (GameModule.getGameModule().isTrueMovedSupport()) {
+      comm = comm.append(doTrueMovedSupport(allDraggedPieces));
+    }
+
     // We've finished the actual drag and drop of pieces, so we now create any auto-report message that is appropriate.
     if (GlobalOptions.getInstance().autoReportEnabled()) {
       final Command report = createMovementReporter(comm).getReportCommand().append(new MovementReporter.HiddenMovementReporter(comm).getReportCommand());
@@ -1172,11 +1168,52 @@ public class PieceMover extends AbstractBuildable
       comm = comm.append(applyKeyAfterMove(allDraggedPieces, map.getMoveKey()));
     }
 
+    // If we emptied any decks, let them send their I-am-empty key commands
+    comm = gm.getDeckManager().checkEmptyDecks(comm);
+
     // Repaint any areas of the map window changed by our move
     tracker.repaint();
 
     return comm; // A command that, if executed, will fully replay the effects of this drag-and-drop on another client, or via a logfile.
   }
+
+  /**
+   * For a piece, mark it moved IF it changed locations or mats
+   * @param p piece or stack
+   * @return command to replicate any actions taken on another VASSAL instance
+   */
+  public Command checkTrueMoved(GamePiece p) {
+    Command c = new NullCommand();
+    if (p instanceof Stack) {
+      for (final GamePiece gamePiece : ((Stack) p).asList()) {
+        c = c.append(checkTrueMoved(gamePiece));
+      }
+    }
+    else if (p.getProperty(Properties.MOVED) != null) {
+      if (p.getId() != null) {
+        c = c.append(p.checkTrueMoved());
+      }
+    }
+    return c;
+  }
+
+  /**
+   * For a list of pieces, mark them moved IF they changed locations or mats
+   * @param pieces list of pieces
+   * @return command to replicate any actions taken on another Vassal instance
+   */
+  protected Command doTrueMovedSupport(List<GamePiece> pieces) {
+    if (GlobalOptions.NEVER.equals(getMarkOption()) || !shouldMarkMoved()) {
+      return null;
+    }
+
+    Command comm = new NullCommand();
+    for (final GamePiece piece : pieces) {
+      comm = comm.append(checkTrueMoved(piece));
+    }
+    return comm;
+  }
+
 
   /**
    * Applies a key command to each of a list of pieces.
@@ -1739,9 +1776,15 @@ public class PieceMover extends AbstractBuildable
           final int y = EXTRA_BORDER - boundingBox.y + pos.y - offset.y;
 
           String owner = "";
-          if (piece.getParent() instanceof Deck) {
+          final GamePiece parent = piece.getParent();
+          boolean faceDown = false;
+          if (parent instanceof Deck) {
             owner = (String)piece.getProperty(Properties.OBSCURED_BY);
-            piece.setProperty(Properties.OBSCURED_BY, ((Deck) piece.getParent()).isFaceDown() ? Deck.NO_USER : null);
+            faceDown = ((Deck) parent).isFaceDown();
+            piece.setProperty(Properties.OBSCURED_BY, faceDown ? Deck.NO_USER : null);
+            if (faceDown) {
+              piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.TRUE);
+            }
           }
 
           final AffineTransform t = AffineTransform.getScaleInstance(zoom, zoom);
@@ -1749,15 +1792,19 @@ public class PieceMover extends AbstractBuildable
           g.setClip(t.createTransformedShape(piece.getShape()));
 
           piece.draw(g, x, y, map == null ? target : map.getView(), zoom);
-          if (piece.getParent() instanceof Deck) {
-            piece.setProperty(Properties.OBSCURED_BY, owner);
-          }
 
           g.setClip(null);
 
           final Highlighter highlighter = map == null ?
             BasicPiece.getHighlighter() : map.getHighlighter();
           highlighter.draw(piece, g, x, y, null, zoom);
+
+          if (piece.getParent() instanceof Deck) {
+            piece.setProperty(Properties.OBSCURED_BY, owner);
+            if (faceDown) {
+              piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.FALSE);
+            }
+          }
 
           final Mat mat = (Mat) Decorator.getDecorator(piece, Mat.class);
           if (mat != null) {

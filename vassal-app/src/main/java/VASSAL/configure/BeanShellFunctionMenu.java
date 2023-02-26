@@ -1,7 +1,5 @@
 package VASSAL.configure;
 
-import static VASSAL.configure.BeanShellExpressionConfigurer.Option;
-
 import VASSAL.build.AbstractBuildable;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
@@ -22,14 +20,15 @@ import VASSAL.script.expression.StrBuilder;
 import VASSAL.tools.menu.MenuScroller;
 import VASSAL.tools.swing.SwingUtils;
 
-import java.awt.Dimension;
-import java.util.Arrays;
-import java.util.List;
-
 import javax.swing.JDialog;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import java.awt.Dimension;
+import java.util.Arrays;
+import java.util.List;
+
+import static VASSAL.configure.BeanShellExpressionConfigurer.Option;
 
 public class BeanShellFunctionMenu extends JPopupMenu {
   private static final long serialVersionUID = 1L;
@@ -156,6 +155,8 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     addFunction(countMenu, "SumStack", Resources.getString("Editor.BeanShell.sum1"), new String[] { Resources.getString("Editor.BeanShell.property_name") }, "(name)"); //NON-NLS
     addFunction(countMenu, "CountStack", Resources.getString("Editor.BeanShell.sum6"), new String[] { }, "()"); //NON-NLS
     addFunction(countMenu, "CountStack", Resources.getString("Editor.BeanShell.sum7"), new String[] { Resources.getString("Editor.BeanShell.property_name") }, "(name)"); //NON-NLS
+    addFunction(countMenu, "SumMat", Resources.getString("Editor.BeanShell.sum8"), new String[] { Resources.getString("Editor.BeanShell.property_name") }, "(name)"); //NON-NLS
+    addFunction(countMenu, "CountMat", Resources.getString("Editor.BeanShell.sum9"), new String[] { Resources.getString("Editor.BeanShell.property_name") }, "(name)"); //NON-NLS
     addFunction(countMenu, "Sum", Resources.getString("Editor.BeanShell.sum2"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression") }, "(name, expr)", SUM_COUNT_HINTS, new Option[] {Option.NONE, Option.PME}); //NON-NLS
     addFunction(countMenu, "Sum", Resources.getString("Editor.BeanShell.sum3"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression"), Resources.getString("Editor.BeanShell.map_name") }, "(name, expr, map)", SUM_COUNT_MAP_HINTS, new Option[] {Option.NONE, Option.PME, Option.NONE}); //NON-NLS
     addFunction(countMenu, "Count", Resources.getString("Editor.BeanShell.sum4"), new String[] { Resources.getString("Editor.BeanShell.property_match_expression") }, "(expr)", SUM_COUNT_HINTS, new Option[] {Option.PME}); //NON-NLS

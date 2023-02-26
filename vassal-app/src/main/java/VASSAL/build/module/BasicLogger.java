@@ -51,7 +51,6 @@ import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
-import javax.swing.KeyStroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -102,6 +101,8 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
 
   private NamedHotKeyConfigurer stepKeyConfig;
   private NamedHotKeyConfigurer undoKeyConfig;
+  private NamedHotKeyConfigurer newLogKeyConfig;
+  private NamedHotKeyConfigurer endLogKeyConfig;
 
   private boolean undoInProgress = false;
 
@@ -131,6 +132,13 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     if (undoKeyConfig != null) {
       list.add(undoKeyConfig.getValueNamedKeyStroke());
     }
+    if (newLogKeyConfig != null) {
+      list.add(newLogKeyConfig.getValueNamedKeyStroke());
+    }
+    if (endLogKeyConfig != null) {
+      list.add(endLogKeyConfig.getValueNamedKeyStroke());
+    }
+
     return list;
   }
 
@@ -168,8 +176,25 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     final NamedKeyStrokeListener stepKeyListener = new NamedKeyStrokeListener(stepAction, NamedKeyStroke.of(KeyEvent.VK_PAGE_DOWN, 0));
     mod.addKeyStrokeListener(stepKeyListener);
 
-    final KeyStrokeListener newLogKeyListener = new KeyStrokeListener(newLogAction, KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.ALT_DOWN_MASK));
+    final NamedKeyStrokeListener newLogKeyListener = new NamedKeyStrokeListener(newLogAction, NamedKeyStroke.of(KeyEvent.VK_W, InputEvent.ALT_DOWN_MASK));
     mod.addKeyStrokeListener(newLogKeyListener);
+
+    final NamedKeyStrokeListener endLogKeyListener = new NamedKeyStrokeListener(endLogAction, NamedKeyStroke.of(KeyEvent.VK_W, InputEvent.ALT_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+    mod.addKeyStrokeListener(endLogKeyListener);
+
+    newLogKeyConfig = new NamedHotKeyConfigurer("newHotKey", Resources.getString("BasicLogger.newlog_hotkey"), newLogKeyListener.getNamedKeyStroke()); //NON-NLS
+    newLogKeyConfig.addPropertyChangeListener(evt -> {
+      newLogKeyListener.setKeyStroke(newLogKeyConfig.getValueNamedKeyStroke());
+    });
+    GlobalOptions.getInstance().addOption(newLogKeyConfig);
+    newLogKeyConfig.fireUpdate();
+
+    endLogKeyConfig = new NamedHotKeyConfigurer("endHotKey", Resources.getString("BasicLogger.endlog_hotkey"), endLogKeyListener.getNamedKeyStroke());  //$NON-NLS-1$ //$NON-NLS-2$
+    endLogKeyConfig.addPropertyChangeListener(evt -> {
+      endLogKeyListener.setKeyStroke(endLogKeyConfig.getValueNamedKeyStroke());
+    });
+    GlobalOptions.getInstance().addOption(endLogKeyConfig);
+    endLogKeyConfig.fireUpdate();
 
     final IconConfigurer stepIconConfig = new IconConfigurer("stepIcon", Resources.getString("BasicLogger.step_forward_button"), STEP_ICON); //$NON-NLS-1$ //$NON-NLS-2$
     stepIconConfig.setValue(STEP_ICON);

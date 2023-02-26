@@ -27,27 +27,27 @@ import VASSAL.script.expression.FormattedStringExpression;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.NamedKeyStrokeListener;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.awt.event.ActionEvent;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 public class DeckSendKeyCommand extends AbstractDeckKeyCommand {
 
-  public static final String TARGET_DECK = "targetDeck";
-  public static final String VARIABLE_DECK = "variableDeck";
-  public static final String DECK_EXPRESSION = "deckExpression";
-  public static final String SEND_MATCHING = "sendMatching";
-  public static final String MATCH_EXPRESSION = "matchExpression";
-  public static final String LIMIT_TOTAL = "limitTotal";
-  public static final String LIMIT_EXPRESSION = "limitExpression";
-  public static final String STOP = "stop";
-  public static final String STOP_EXPRESSION = "stopExpression";
-  public static final String STOP_INCLUDE = "stopAlso";
-  public static final String ORDER = "order";
-  public static final String SENT_COUNT = "sentCount";
+  public static final String TARGET_DECK = "targetDeck"; //NON-NLS
+  public static final String VARIABLE_DECK = "variableDeck"; //NON-NLS
+  public static final String DECK_EXPRESSION = "deckExpression"; //NON-NLS
+  public static final String SEND_MATCHING = "sendMatching"; //NON-NLS
+  public static final String MATCH_EXPRESSION = "matchExpression"; //NON-NLS
+  public static final String LIMIT_TOTAL = "limitTotal"; //NON-NLS
+  public static final String LIMIT_EXPRESSION = "limitExpression"; //NON-NLS
+  public static final String STOP = "stop"; //NON-NLS
+  public static final String STOP_EXPRESSION = "stopExpression"; //NON-NLS
+  public static final String STOP_INCLUDE = "stopAlso"; //NON-NLS
+  public static final String ORDER = "order"; //NON-NLS
+  public static final String SENT_COUNT = "sentCount"; //NON-NLS
+  public static final String APPLY_ON_MOVE = "applyOnMove"; //NON-NLS
 
   private NamedKeyStrokeListener sendListener;
   private String targetDeck = "";
@@ -60,6 +60,7 @@ public class DeckSendKeyCommand extends AbstractDeckKeyCommand {
   private boolean stop = false;
   private final FormattedString stopExpresson =  new FormattedString("{}");
   private boolean stopInclude;
+  private boolean applyOnMove = false;
 
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.DeckSendKeyCommand.component_type"); //$NON-NLS-1$
@@ -109,6 +110,10 @@ public class DeckSendKeyCommand extends AbstractDeckKeyCommand {
     return stopInclude;
   }
 
+  public boolean isApplyOnMove() {
+    return applyOnMove;
+  }
+
   @Override
   public String[] getAttributeNames() {
     return ArrayUtils.addAll(
@@ -122,7 +127,8 @@ public class DeckSendKeyCommand extends AbstractDeckKeyCommand {
       LIMIT_EXPRESSION,
       STOP,
       STOP_EXPRESSION,
-      STOP_INCLUDE
+      STOP_INCLUDE,
+      APPLY_ON_MOVE
     );
   }
 
@@ -140,7 +146,8 @@ public class DeckSendKeyCommand extends AbstractDeckKeyCommand {
       Resources.getString("Editor.DeckSendKeyCommand.stop"),
       Resources.getString("Editor.DeckSendKeyCommand.stop_expression"),
       Resources.getString("Editor.DeckSendKeyCommand.stop_include"),
-      Resources.getString("Editor.DeckSendKeyCommand.order")
+      Resources.getString("Editor.DeckSendKeyCommand.order"),
+      Resources.getString("Editor.DeckSendKeyCommand.apply_on_move")
     );
   }
 
@@ -157,6 +164,7 @@ public class DeckSendKeyCommand extends AbstractDeckKeyCommand {
       FormattedStringExpression.class,
       Boolean.class,
       FormattedStringExpression.class,
+      Boolean.class,
       Boolean.class
     );
   }
@@ -208,6 +216,12 @@ public class DeckSendKeyCommand extends AbstractDeckKeyCommand {
       }
       stopInclude = (Boolean) value;
     }
+    else if (APPLY_ON_MOVE.equals(key)) {
+      if (value instanceof String) {
+        value = Boolean.valueOf((String) value);
+      }
+      applyOnMove = (Boolean) value;
+    }
     else {
       super.setAttribute(key, value);
     }
@@ -244,6 +258,9 @@ public class DeckSendKeyCommand extends AbstractDeckKeyCommand {
     }
     else if (STOP_INCLUDE.equals(key)) {
       return String.valueOf(stopInclude);
+    }
+    else if (APPLY_ON_MOVE.equals(key)) {
+      return String.valueOf(applyOnMove);
     }
     else {
       return super.getAttributeValueString(key);
@@ -323,5 +340,4 @@ public class DeckSendKeyCommand extends AbstractDeckKeyCommand {
     }
     return Collections.emptyList();
   }
-
 }

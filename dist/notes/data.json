@@ -1,10 +1,9 @@
 {
   "headline": "The VASSAL Team is happy to announce VASSAL {{version}}.",
   "important": [
-    "NEW! 64-bit ARM packages: There are now MacOS and Windows packages for 64-bit ARM processors. If you have a Mac with an Apple Silicon CPU (which is a 64-bit ARM processor), we recommend using the 64-bit ARM build.",
-    "Code deprecated more than a year ago has been removed. Modules containing custom code using that code MUST be updated if they are to work with {{version_feature}}.",
-    "Things may be broken which worked previously. If you find a new bug, please report it.",
-    "Modules saved in {{version_feature}} are not openable by earlier versions of VASSAL. We recommend keeping a backup copy of any pre-{{version_feature}} modules you plan to modify in {{version_feature}} until you've verified that everything works to your satisfaction."
+    "Modules saved in {{version_feature}} are not openable by earlier versions of VASSAL. We recommend keeping a backup copy of any pre-{{version_feature}} modules you plan to modify in {{version_feature}} until you've verified that everything works to your satisfaction.",
+    "Some code deprecated more than a year ago has been removed. Modules containing custom code using that code MUST be updated if they are to work with {{version_feature}}.",
+    "Things may be broken which worked previously. If you find a new bug, please report it."
   ],
   "downloads": [
     { "display_name": "Linux", "suffix": "linux.tar.bz2" },
@@ -17,37 +16,42 @@
   ],
   "changes": [
     {
-      "in": "3.6.12",
-      "since": "3.6.11",
+      "in": "3.7.0-beta1",
+      "since": "3.6.13",
       "new_features": [
+        { "num": 12032, "desc": "Mark-When-Moved trait can be configured to only flag when piece changes LocationName or Mat. Similarly Map auto-report can be configured to ignore same-location movements." },
+        { "num": 12003, "desc": "OldDeckName now supported as a piece property" },
+        { "num": 12001, "desc": "count_ supported for counting properties in Inventory windows" },
+        { "num": 11937, "desc": "SumMat and CountMat functions for Beanshell expression" },
+        { "num": 11918, "desc": "Startup GKC that fires when player joins or changes sides" },
+        { "num": 11530, "desc": "Add new StackPos and StackSize properties to Basic Piece" },
+        { "num": 11178, "desc": "Global Option added to omit empty lines in property setting prompts" },
+        { "num": 11100, "desc": "Allow begin-logfile and end-logfile to have configurable hotkeys in Global Options" }
       ],
       "bug_fixes": [
       ],
       "other_improvements": [
-        { "num": 11957, "desc": "Spaces in GKC reports made consistent with all other reports" }
       ]
     },
     {
-      "in": "3.6.11",
-      "since": "3.6.10",
+      "in": "3.6.13",
+      "since": "3.6.12",
       "new_features": [
       ],
       "bug_fixes": [
-        { "num": 11941, "desc": "Since 3.6.7, French/Belgian AZERTY keyboards on Mac were experiencing problems with Ctrl / Alt keys on the number key row" },
-        { "num": 11938, "desc": "IndexOutOfBoundsException trying to open a private note" },
-        { "num": 11933, "desc": "At-Start stacks were getting confused by blank boards" },
-        { "num": 11929, "desc": "Show translated module name and descriptions in Module Manager" },
-        { "num": 11924, "desc": "Reinstate translation of Player Sides" },
-        { "num": 11904, "desc": "Global Key Command fastmatch for Mats fixed to avoid trait-order bugs" },
-        { "num": 11901, "desc": "Corrected \"Mark When Moved\" documentation" },
-        { "num": 11899, "desc": "Hide FileConfigurer label in preferences dialogs" },
-        { "num": 11890, "desc": "NPE when current-stack option used on non-stacking piece" },
-        { "num": 11505, "desc": "Insert items into formatted strings from drop-down list into the correctly selected position" }
+        { "num": 12042, "desc": "Fix bug when copying Decks and At-Start Stacks to other maps" },
+        { "num": 12037, "desc": "Fix concurrent modification exception in Decks " },
+        { "num": 12016, "desc": "Fix a possible crash scenario in At-Start Stacks" },
+        { "num": 11897, "desc": "Ensure that deleted extensions don't crash the Module Manager" },
+        { "num": 11693, "desc": "Prevent NPE when copying folders containing Mouse-over Stack Viewers" },
+        { "num":  11451, "desc": "Don't permit drag-and-drop within PlaceMarker, Replace with Other selection dialogs" },
+        { "num": 11173, "desc": "Fixed crash in sorting a deck" }
       ],
       "other_improvements": [
-        { "num": 11911, "desc": "Debug window shows board-relative coordinates if they are different from the map-relative ones" },
-        { "num": 11906, "desc": "MatCargo's mat detection did unnecessary computations for lack of parentheses" },
-        { "num": 11900, "desc": "Clear Tile Cache with more efficient Files.walkFileTree()" }
+        { "num": 11995, "desc": "ActionButtons with reports shouldn't display them if report is empty" },
+        { "num": 11967, "desc": "When dragging piece out of face-down deck, use unrotated shape" },
+        { "num": 10877, "desc": "Added a 'player joined' message when playing online" },
+        { "num": 9786, "desc": "Text Label traits will respond to GameRefresher (unless trait has a manually-change-label hotkey defined)" }
       ]
     }
   ]
