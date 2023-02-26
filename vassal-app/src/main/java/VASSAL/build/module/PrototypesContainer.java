@@ -96,6 +96,19 @@ public class PrototypesContainer extends AbstractConfigurable {
     return Resources.getString("Editor.PrototypesContainer.component_type"); //$NON-NLS-1$
   }
 
+
+  private void rebuildPrototypeMap(AbstractBuildable target) {
+    for (final Buildable b : target.getBuildables()) {
+      if (b instanceof PrototypeDefinition) {
+        addDefinition((PrototypeDefinition)b);
+      }
+      else if (b instanceof AbstractBuildable) {
+        rebuildPrototypeMap((AbstractBuildable)b);
+      }
+    }
+  }
+
+
   public void addDefinition(PrototypeDefinition def) {
     definitions.put(def.getConfigureName(), def);
     def.addPropertyChangeListener(evt -> {
@@ -103,6 +116,10 @@ public class PrototypesContainer extends AbstractConfigurable {
         definitions.remove(evt.getOldValue());
         definitions.put((String) evt.getNewValue(),
           (PrototypeDefinition) evt.getSource());
+
+        // When a prototype is renamed we need to rebuild the prototype map, so that if there was a duplicate of the same name it will re-establish its presence
+        definitions.clear();
+        rebuildPrototypeMap(GameModule.getGameModule());
       }
     });
   }
