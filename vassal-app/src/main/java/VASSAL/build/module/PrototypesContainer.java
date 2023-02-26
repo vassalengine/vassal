@@ -113,10 +113,6 @@ public class PrototypesContainer extends AbstractConfigurable {
     definitions.put(def.getConfigureName(), def);
     def.addPropertyChangeListener(evt -> {
       if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
-        definitions.remove(evt.getOldValue());
-        definitions.put((String) evt.getNewValue(),
-          (PrototypeDefinition) evt.getSource());
-
         // When a prototype is renamed we need to rebuild the prototype map, so that if there was a duplicate of the same name it will re-establish its presence
         definitions.clear();
         rebuildPrototypeMap(GameModule.getGameModule());
