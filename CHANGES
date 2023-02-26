@@ -1,5 +1,8 @@
 3.7.0-beta1 - ???
 
+* 12032: Mark-When-Moved trait can be configured to only flag when piece
+    changes LocationName or Mat. Similarly Map auto-report can be configured
+    to ignore same-location movements.
 * 12003: OldDeckName now supported as a piece property
 * 11937: SumMat and CountMat functions for Beanshell expressions
 * 11918: Startup GKC that fires when player joins or changes sides
