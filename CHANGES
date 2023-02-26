@@ -16,6 +16,8 @@
 
 3.6.14 - ???
 
+* 12049: Duplicating a prototype no longer disables that prototype until next
+    module reload
 * 12048: Fix bugs when deleting groups of decks/stacks from the editor
 
 3.6.13 - 24 February 2023
