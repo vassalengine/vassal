@@ -5,6 +5,7 @@
     to ignore same-location movements.
 * 12003: OldDeckName now supported as a piece property
 * 12001: count_ supported for counting properties in Inventory windows
+* 11964: Mouse-over Stack Viewers can display an image of underlying terrain
 * 11937: SumMat and CountMat functions for Beanshell expressions
 * 11918: Startup GKC that fires when player joins or changes sides
 * 11913: Numeric global properties with increments other than 1 and -1 now
