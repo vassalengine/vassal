@@ -436,7 +436,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     int borderOffset = borderWidth;
 
     boolean anyUnderText = false;
-    boolean didadukey = false;
+    boolean masterBoxDrawn = false;
     final double graphicsZoom = graphicsZoomLevel;
 
     if (displayableTerrain) {
@@ -510,7 +510,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
             (int)(((useInnerBottom ? borderInnerThickness : borderThickness) - 1) * os_scale),
             (int)((borderThickness - 1) * os_scale)
           );
-          didadukey = true;
+          masterBoxDrawn = true;
         }
         else {
           final int x = dbounds.x + (int) (borderOffset * os_scale);
@@ -598,7 +598,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
           // Draw text label for this counter. If we already have a combine-o-rama box, don't draw an extra round of box & background
           if (!stretchWidthSummary || !onlyShowFirstSummary) {
-            if (!combineCounterSummary || !stretchWidthSummary || ((pieces.size() != 1) || didadukey)) {
+            if (!combineCounterSummary || !stretchWidthSummary || ((pieces.size() != 1) || masterBoxDrawn)) {
               //BR// We now use the left-side position of the piece region and pass the full width of the piece to center
               //BR// in (pieceBounds.width appropriately scaled), rather than the old method of scaling pieceBounds.x and
               //BR// applying to the X position, because for whatever reason a 100x100 square piece can apparently return
