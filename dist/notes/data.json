@@ -22,7 +22,8 @@
       "new_features": [
       ],
       "bug_fixes": [
-        { "num": 12048, "desc": "Fix bugs when deleting groups of decks/stacks from the editor" }
+        { "num": 12048, "desc": "Fix bugs when deleting groups of decks/stacks from the editor" },
+        { "num": 11249, "desc": "Enhanced recursion protection to catch self-referencing prototypes" }
       ],
       "other_improvements": [
         { "num": 10249, "desc": "Duplicating a prototype no longer disables that prototype until next module reload" }
