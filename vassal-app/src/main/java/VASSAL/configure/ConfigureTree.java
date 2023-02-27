@@ -60,6 +60,8 @@ import VASSAL.search.SearchTarget;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ReflectionUtils;
+import VASSAL.tools.WriteErrorDialog;
+import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.SwingUtils;
 import net.miginfocom.swing.MigLayout;
@@ -115,7 +117,13 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.IOException;
+import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -481,12 +489,47 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
     addAction(popup, buildImportAction(target));
 
+    if (getTreeNode(target).getParent() != null) {
+      popup.addSeparator();
+      addAction(popup, buildExportTreeAction(target));
+    }
+
     popup.addSeparator();
     addAction(popup, buildOpenPiecesAction(target));
     addAction(popup, buildEditPiecesAction(target));
 
     return popup;
   }
+
+
+  public static final String defaultExportExtension = ".xml"; //NON-NLS
+
+  protected boolean exportTreeBranch(AbstractBuildable target) {
+    final FileChooser fc = FileChooser.createFileChooser(
+      GameModule.getGameModule().getPlayerWindow(),
+      (DirectoryConfigurer) Prefs.getGlobalPrefs()
+        .getOption(Prefs.MODULES_DIR_KEY));
+    if (fc.showSaveDialog() != FileChooser.APPROVE_OPTION) return false;
+    String filename = fc.getSelectedFile().getPath();
+
+    if (!StringUtils.isEmpty(defaultExportExtension) && (filename.lastIndexOf('.') < 0)) {
+      filename = filename + defaultExportExtension;
+      if (new File(filename).exists() && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(GameModule.getGameModule().getPlayerWindow(), Resources.getString("Editor.ConfigureTree.export_overwrite", filename), Resources.getString("Editor.ConfigureTree.export_exists"), JOptionPane.YES_NO_OPTION)) {
+        return false;
+      }
+    }
+
+    try (Writer w = Files.newBufferedWriter(Path.of(filename), StandardCharsets.UTF_8)) {
+      w.write(target.buildString());
+    }
+    catch (IOException e) {
+      WriteErrorDialog.error(e, e, filename);
+      return false;
+    }
+
+    return true;
+  }
+
 
 
   /**
@@ -529,6 +572,25 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     a.setEnabled(true);
     return a;
   }
+
+
+  protected Action buildExportTreeAction(final Configurable target) {
+    Action a = null;
+    if (getTreeNode(target).getParent() != null) {
+      a = new AbstractAction(Resources.getString("Editor.ConfigureTree.export_object")) {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          if (target instanceof AbstractBuildable) {
+            exportTreeBranch((AbstractBuildable) target);
+          }
+        }
+      };
+    }
+    return a;
+  }
+
 
 
   protected Action buildMoveAction(final Configurable target) {
