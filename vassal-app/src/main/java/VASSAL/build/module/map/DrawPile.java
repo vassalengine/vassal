@@ -32,10 +32,12 @@ import VASSAL.build.module.map.deck.DeckSortKeyCommand;
 import VASSAL.build.module.properties.PropertyNameSource;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.build.widget.CardSlot;
+import VASSAL.command.AddPiece;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.ComponentDescription;
+import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.GamePieceFormattedStringConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
@@ -1282,4 +1284,22 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     return getAllDescendantComponentsOf(DeckKeyCommand.class);
   }
 
+  public void importDeck(ConfigureTree tree) {
+    if (dummy == null) return;
+
+    final Command c = dummy.importDeck();
+
+    final Command[] sub = c.getSubCommands();
+    for (final Command command : sub) {
+      if (!(command instanceof AddPiece)) continue;
+
+      final AddPiece ap = (AddPiece)command;
+      final CardSlot cs = new CardSlot();
+      final GamePiece p = ap.getTarget();
+      p.setState(ap.getState());
+      cs.setPiece(p);
+
+      tree.externalInsert(this, cs);
+    }
+  }
 }

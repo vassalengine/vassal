@@ -2114,6 +2114,61 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     return c;
   }
 
+
+  private File getImportFileName() {
+    final FileChooser fc = gameModule.getFileChooser();
+    fc.selectDotSavFile();
+    if (fc.showOpenDialog(GameModule.getGameModule().getControlPanel()) != FileChooser.APPROVE_OPTION)
+      return null;
+    return fc.getSelectedFile();
+  }
+
+
+  public Command importDeck() {
+    Command c = new NullCommand();
+    gameModule.warn(Resources.getString("Deck.importing_deck"));
+
+    final File loadFile = getImportFileName();
+    try {
+      if (loadFile != null) {
+        c = importDeck(loadFile);
+      }
+      else {
+        gameModule.warn(Resources.getString("Deck.import_canceled"));
+      }
+    }
+    catch (IOException e) {
+      ReadErrorDialog.error(e, loadFile);
+    }
+    catch (NoSuchElementException e) {
+      JOptionPane.showMessageDialog(
+        GameModule.getGameModule().getPlayerWindow(),
+        Resources.getString("Deck.import_failed_title"),
+        Resources.getString("Deck.import_failed_text", (loadFile != null) ? loadFile.getName() : ""),
+        JOptionPane.ERROR_MESSAGE
+      );
+    }
+
+    return c;
+  }
+
+
+  public Command importDeck(File f) throws IOException {
+    final String ds = Files.readString(f.toPath(), StandardCharsets.UTF_8);
+
+    gameModule.addCommandEncoder(commandEncoder);
+    final Command c = gameModule.decode(ds);
+    gameModule.removeCommandEncoder(commandEncoder);
+
+    if (!(c instanceof LoadDeckCommand)) {
+      gameModule.warn(Resources.getString("Deck.not_a_saved_deck", f.getName())); //$NON-NLS-1$
+      return null;
+    }
+
+    return c;
+  }
+
+
   /**
    * Command to set the contents of this deck from a saved file. The contents
    * are saved with whatever id's the pieces have in the game when the deck was
