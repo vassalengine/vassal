@@ -137,6 +137,12 @@ public class DoActionButton extends AbstractToolbarItem
     launch = getLaunchButton(); // for compatibility
   }
 
+  // This only exists so SpecialDiceButton can avoid calling the other constructor
+  @SuppressWarnings("PMD.UnusedFormalParameter")
+  protected DoActionButton(boolean dummy) { 
+
+  }
+
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.DoAction.component_type"); //$NON-NLS-1$
   }

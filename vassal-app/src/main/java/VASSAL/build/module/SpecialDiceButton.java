@@ -18,7 +18,6 @@
 package VASSAL.build.module;
 
 import VASSAL.build.AbstractFolder;
-import VASSAL.build.AbstractToolbarItem;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -41,12 +40,23 @@ import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.KeyStrokeListener;
+import VASSAL.tools.LaunchButton;
+import VASSAL.tools.RecursionLimitException;
+import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OwningOpMultiResolutionImage;
+import net.miginfocom.swing.MigLayout;
+import org.apache.commons.lang3.ArrayUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -59,22 +69,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-
-import net.miginfocom.swing.MigLayout;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * ...
  */
-// TODO Expose result as property
-public class SpecialDiceButton extends AbstractToolbarItem implements CommandEncoder, UniqueIdManager.Identifyable, ComponentDescription {
+public class SpecialDiceButton extends DoActionButton implements CommandEncoder, UniqueIdManager.Identifyable, ComponentDescription {
   private static final Logger logger =
     LoggerFactory.getLogger(SpecialDiceButton.class);
 
@@ -121,6 +119,8 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
   @Deprecated(since = "2020-10-21", forRemoval = true) public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
 
   public SpecialDiceButton() {
+    super(false); // Make a DoActionButton, but don't call its normal constructor
+
     dialog = new JDialog(GameModule.getGameModule().getPlayerWindow());
     dialog.setLayout(new MigLayout("ins 0")); //NON-NLS
     dialogLabel = new JLabel();
@@ -166,6 +166,14 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
     if (reportResultAsText) {
       c = c.append(reportTextResults(results));
     }
+
+    try {
+      doActions();
+    }
+    catch (RecursionLimitException ex) {
+      RecursionLimiter.infiniteLoop(ex);
+    }
+
     GameModule.getGameModule().sendAndLog(c);
   }
 
@@ -181,7 +189,7 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
       dialogLabel.repaint();
     }
     if (reportResultInButton) {
-      launch.repaint();
+      getLaunchButton().repaint();
     }
     return new ShowResults(this, results);
   }
@@ -310,6 +318,9 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
     else if (WINDOW_TITLE_RESULT_FORMAT.equals(name)) {
       return () -> reportResultInWindow;
     }
+    else if (DoActionButton.REPORT_FORMAT.equals(name) || DoActionButton.DO_REPORT.equals(name)) {
+      return () -> false;
+    }
     else
       return super.getAttributeVisibility(name); // AbstractToolbarItem
   }
@@ -322,6 +333,8 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
     dice.remove(d);
   }
 
+  private HierarchyListener hl;
+
   /**
    * Expects to be added to a SymbolDice. Adds the button to the control window's toolbar and registers itself as a
    * {@link KeyStrokeListener}
@@ -333,19 +346,27 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
     }
 
     resultsIcon.setResults(new int[dice.size()]);
-    launch.addHierarchyListener(new HierarchyListener() {
+    final LaunchButton lb = getLaunchButton();
+
+    lb.setForceVisible(reportResultInButton);
+    if (reportResultInButton) {
+      lb.setIcon(resultsIcon);
+    }
+
+    hl = new HierarchyListener() {
       @Override
       public void hierarchyChanged(HierarchyEvent e) {
-        if (launch.isShowing()) {
-          dialog.setLocationRelativeTo(launch);
-          launch.removeHierarchyListener(this);
+        if (lb.isShowing()) {
+          dialog.setLocationRelativeTo(lb);
+          lb.removeHierarchyListener(this);
         }
       }
-    });
+    };
+    lb.addHierarchyListener(hl);
     final GameModule mod = GameModule.getGameModule();
     mod.getGameState().addGameComponent(this);
     ran = mod.getRNG();
-    mod.getToolBar().add(launch);
+    mod.getToolBar().add(lb);
     idMgr.add(this);
     mod.addCommandEncoder(this);
     property.addTo((MutablePropertiesContainer)parent);
@@ -355,9 +376,11 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
   public void removeFrom(Buildable b) {
     final GameModule mod = GameModule.getGameModule();
     mod.removeCommandEncoder(this);
-    mod.getToolBar().remove(launch);
+    mod.getToolBar().remove(getLaunchButton());
     mod.getToolBar().revalidate();
     mod.getGameState().removeGameComponent(this);
+    idMgr.remove(this);
+    getLaunchButton().removeHierarchyListener(hl);
   }
 
   @Override
@@ -403,8 +426,12 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
   public void setAttribute(String key, Object o) {
     if (NAME.equals(key)) {
       setConfigureName((String) o);
-      property.setPropertyName(getConfigureName() + "_result"); //$NON-NLS-1$
-      getLaunchButton().setToolTipText((String) o);
+      if (property != null) {
+        property.setPropertyName(getConfigureName() + "_result"); //$NON-NLS-1$
+      }
+      if (getLaunchButton() != null) {
+        getLaunchButton().setToolTipText((String) o);
+      }
     }
     else if (RESULT_CHATTER.equals(key)) {
       reportResultAsText = getBoolVal(o);
@@ -415,7 +442,9 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
     else if (RESULT_BUTTON.equals(key)) {
       reportResultInButton = getBoolVal(o);
       if (reportResultInButton) {
-        launch.setIcon(resultsIcon);
+        if (getLaunchButton() != null) {
+          getLaunchButton().setIcon(resultsIcon);
+        }
       }
     }
     else if (RESULT_WINDOW.equals(key)) {
@@ -446,10 +475,15 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
     }
     else if (TOOLTIP.equals(key)) {
       tooltip = (String) o;
-      launch.setAttribute(key, o);
+      if (getLaunchButton() != null) {
+        getLaunchButton().setAttribute(key, o);
+      }
     }
     else if (DESCRIPTION.equals(key)) {
       description = (String)o;
+    }
+    else if (DoActionButton.DO_REPORT.equals(key)) {
+      doReport = false; // Always false
     }
     else {
       super.setAttribute(key, o);
@@ -483,10 +517,13 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
       return ColorConfigurer.colorToString(bgColor);
     }
     else if (TOOLTIP.equals(key)) {
-      return tooltip.length() == 0 ? launch.getAttributeValueString(BUTTON_TEXT) : tooltip;
+      return tooltip.length() == 0 ? getLaunchButton().getAttributeValueString(BUTTON_TEXT) : tooltip;
     }
     else if (DESCRIPTION.equals(key)) {
       return description;
+    }
+    else if (DoActionButton.DO_REPORT.equals(key)) {
+      return String.valueOf(false); // Always false
     }
     else {
       return super.getAttributeValueString(key);
@@ -549,7 +586,7 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
    */
   @Override
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = super.getPropertyNames();
     l.add(getConfigureName() + "_result"); //NON-NLS
     return l;
   }
@@ -683,7 +720,10 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
    */
   @Override
   public List<String> getFormattedStringList() {
-    return List.of(windowTitleResultFormat, chatResultFormat);
+    final List<String> list = super.getFormattedStringList();
+    list.add(windowTitleResultFormat);
+    list.add(chatResultFormat);
+    return list;
   }
 
   /**
@@ -692,6 +732,7 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
    */
   @Override
   public void addLocalImageNames(Collection<String> s) {
+    super.addLocalImageNames(s);
     final HTMLImageFinder h = new HTMLImageFinder(chatResultFormat);
     h.addImageNames(s);
   }

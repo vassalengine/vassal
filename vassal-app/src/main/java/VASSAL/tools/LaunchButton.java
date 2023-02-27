@@ -17,12 +17,6 @@
  */
 package VASSAL.tools;
 
-import java.awt.event.ActionListener;
-
-import javax.swing.Icon;
-import javax.swing.JButton;
-import javax.swing.KeyStroke;
-
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.configure.Configurer;
@@ -31,6 +25,11 @@ import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
+
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.KeyStroke;
+import java.awt.event.ActionListener;
 
 /**
  * A JButton for placing into a VASSAL component's toolbar.
@@ -49,6 +48,7 @@ public class LaunchButton extends JButton {
   protected NamedKeyStrokeListener keyListener;
   protected Configurer nameConfig, keyConfig;
   protected boolean alwaysAcceptKeystroke;
+  protected boolean forceVisible = false;
 
   public LaunchButton(String text, String textAttribute,
                       String hotkeyAttribute, ActionListener al) {
@@ -96,6 +96,14 @@ public class LaunchButton extends JButton {
 
   public void setAlwaysAcceptKeystroke(boolean always) {
     alwaysAcceptKeystroke = always;
+  }
+
+  public boolean isForcevisible() {
+    return forceVisible;
+  }
+
+  public void setForceVisible(boolean fv) {
+    forceVisible = fv;
   }
 
   @Override
@@ -203,6 +211,6 @@ public class LaunchButton extends JButton {
   }
 
   protected void checkVisibility() {
-    setVisible(isNonBlank());
+    setVisible(isNonBlank() || forceVisible);
   }
 }
