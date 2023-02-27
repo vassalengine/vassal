@@ -135,7 +135,7 @@ public class DoActionButton extends AbstractToolbarItem
   }
 
   // This only exists so SpecialDiceButton can avoid calling the other constructor
-  public DoActionButton(boolean dummy) {
+  protected DoActionButton(boolean dummy) {
 
   }
 
