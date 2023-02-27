@@ -481,6 +481,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
     addAction(popup, buildImportAction(target));
 
+    if (target instanceof DrawPile) {
+      addAction(popup, buildImportDeckAction(target));
+    }
+
     popup.addSeparator();
     addAction(popup, buildOpenPiecesAction(target));
     addAction(popup, buildEditPiecesAction(target));
@@ -839,6 +843,19 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
     };
   }
+
+  protected Action buildImportDeckAction(final Configurable target) {
+    final ConfigureTree tree = this;
+    return new AbstractAction(Resources.getString("Editor.ConfigureTree.import_deck_file")) {
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void actionPerformed(ActionEvent evt) {
+        ((DrawPile)(target)).importDeck(tree);
+      }
+    };
+  }
+
 
 
   protected Action buildMassPieceLoaderAction(final Configurable target) {
