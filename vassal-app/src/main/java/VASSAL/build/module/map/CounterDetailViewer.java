@@ -1123,8 +1123,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
             apply(s.topPiece());
           }
           else {
-          s.asList().forEach(this::apply);
-        }
+            s.asList().forEach(this::apply);
+          }
         }
         else {
           for (int i = 0; (i < shapes.length) && (i < s.getPieceCount()); ++i) {
