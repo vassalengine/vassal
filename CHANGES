@@ -1,5 +1,7 @@
 3.7.0-beta1 - ???
 
+* 12035: Mouse-over Stack Viewers allow configuring thickness of outer border,
+    and more padding/stretching options
 * 12032: Mark-When-Moved trait can be configured to only flag when piece
     changes LocationName or Mat. Similarly Map auto-report can be configured
     to ignore same-location movements.
