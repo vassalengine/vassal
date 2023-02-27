@@ -88,4 +88,10 @@
         <field>Y_OFFSET</field>
         <justification>String constants should be final</justification>
     </difference>
+    <difference>
+        <className>VASSAL/tools/NamedKeyManager</className>
+        <differenceType>6006</differenceType>
+        <field>instance</field>
+        <justification>Singletons should be final</justification>
+    </difference>
 </differences>
