@@ -18,10 +18,9 @@
 
 package VASSAL.tools.menu;
 
-import java.lang.ref.WeakReference;
-
 import javax.swing.JComponent;
 import javax.swing.JMenu;
+import java.lang.ref.WeakReference;
 
 /**
  * @author Joel Uckelman
@@ -30,11 +29,20 @@ import javax.swing.JMenu;
 public class MenuProxy extends AbstractParent<JMenu> {
   private String text;
   private char mnemonic = 0;
+  private boolean hideIfBlank = false;
 
   public MenuProxy() { }
 
+  public MenuProxy(boolean hideIfBlank) {
+    this.hideIfBlank = hideIfBlank;
+  }
+
   public MenuProxy(String text) {
     this.text = text;
+  }
+
+  public boolean isHideIfBlank() {
+    return hideIfBlank;
   }
 
   public SeparatorProxy addSeparator() {
@@ -57,6 +65,10 @@ public class MenuProxy extends AbstractParent<JMenu> {
     this.text = text;
 
     forEachPeer(menu -> menu.setText(text));
+
+    if (isHideIfBlank()) {
+      forEachPeer(menu -> menu.setVisible(!text.isEmpty()));
+    }
   }
 
   @Override

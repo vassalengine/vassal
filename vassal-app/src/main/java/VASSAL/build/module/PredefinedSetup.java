@@ -83,13 +83,11 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     };
     menuItem = new MenuItemProxy(launchAction);
 
-    menu = new MenuProxy();
+    menu = new MenuProxy(true);
 
     showFile = () -> !isMenu && useFile;
 
     showUseFile = () -> !isMenu;
-
-
   }
 
  /*  protected void  setRefresherOptions() {
