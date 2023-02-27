@@ -141,14 +141,15 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
     final PrototypeDefinition def =
       PrototypesContainer.getPrototype(prototypeName);
     if (def != null) {
-      final GamePiece expandedPrototype = def.getPiece(properties);
+      try {
+        RecursionLimiter.startExecution(this);
 
-      // Check to see if prototype definition has changed
-      final String type = expandedPrototype.getType();
-      if (!type.equals(lastCachedPrototype)) {
-        lastCachedPrototype = type.intern();
-        try {
-          RecursionLimiter.startExecution(this);
+        final GamePiece expandedPrototype = def.getPiece(properties);
+
+        // Check to see if prototype definition has changed
+        final String type = expandedPrototype.getType();
+        if (!type.equals(lastCachedPrototype)) {
+          lastCachedPrototype = type.intern();
 
           prototype = PieceCloner.getInstance().clonePiece(expandedPrototype);
           final Decorator outer = (Decorator)
@@ -161,13 +162,13 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
             prototype = null;
           }
         }
-        catch (RecursionLimitException e) {
-          RecursionLimiter.infiniteLoop(e);
-          prototype = null;
-        }
-        finally {
-          RecursionLimiter.endExecution();
-        }
+      }
+      catch (RecursionLimitException e) {
+        RecursionLimiter.infiniteLoop(e);
+        prototype = null;
+      }
+      finally {
+        RecursionLimiter.endExecution();
       }
     }
     else {
