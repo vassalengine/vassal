@@ -22,4 +22,13 @@
         <method>*</method>
     </difference>
 
+
+    <difference>
+        <className>VASSAL.build.module.Map</className>
+        <differenceType>7002</differenceType>
+        <method>public java.awt.image.BufferedImage getImageMapIcon(java.awt.Point, int, int, double)</method>
+        <justification>Just added it, now taking it out :)</justification>
+    </difference>
+
+
 </differences>
