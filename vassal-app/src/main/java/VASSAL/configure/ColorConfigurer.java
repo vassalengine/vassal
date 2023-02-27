@@ -17,16 +17,15 @@
  */
 package VASSAL.configure;
 
-import java.awt.Color;
-import java.util.NoSuchElementException;
-import java.util.StringTokenizer;
-
-import javax.swing.JColorChooser;
-import javax.swing.JPanel;
-
 import VASSAL.build.BadDataReport;
 import VASSAL.tools.ColorButton;
 import VASSAL.tools.ErrorDialog;
+
+import javax.swing.JColorChooser;
+import javax.swing.JPanel;
+import java.awt.Color;
+import java.util.NoSuchElementException;
+import java.util.StringTokenizer;
 
 /**
  * Configurer for {@link Color} values.
@@ -84,7 +83,7 @@ public class ColorConfigurer extends Configurer {
 
   public static String colorToString(Color c) {
     if (c == null) {
-      return null;
+      return ""; 
     }
     else if (c.getTransparency() == c.OPAQUE) {
       return c.getRed() + ","
