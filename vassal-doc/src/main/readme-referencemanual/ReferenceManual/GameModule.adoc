@@ -355,7 +355,7 @@ image:images/PredefinedSetup2.png[]
 
 *Name:*::  Text of the menu item.
 
-*Parent menu:*::  When checked, this entry will create a sub-menu that other pre-defined setups can be added to.
+*Parent menu:*::  When checked, this entry will create a sub-menu that other pre-defined setups can be added to. If this is checked *and* the _Name_ field is left blank, the sub-menu will not be shown to players (useful in certain custom code situations).
 
 *Use pre-defined file:*::  If left unchecked, this menu entry will start a new game from scratch, like the normal _New Game_ action.
 
