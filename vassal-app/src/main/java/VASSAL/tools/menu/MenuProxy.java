@@ -31,7 +31,8 @@ public class MenuProxy extends AbstractParent<JMenu> {
   private char mnemonic = 0;
   private boolean hideIfBlank = false;
 
-  public MenuProxy() { }
+  public MenuProxy() {
+  }
 
   public MenuProxy(boolean hideIfBlank) {
     this.hideIfBlank = hideIfBlank;
@@ -43,6 +44,10 @@ public class MenuProxy extends AbstractParent<JMenu> {
 
   public boolean isHideIfBlank() {
     return hideIfBlank;
+  }
+
+  public void setHideIfBlank(boolean hideIfBlank) {
+    this.hideIfBlank = hideIfBlank;
   }
 
   public SeparatorProxy addSeparator() {
