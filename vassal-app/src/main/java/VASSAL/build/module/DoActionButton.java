@@ -116,24 +116,27 @@ public class DoActionButton extends AbstractToolbarItem
   protected boolean loopPropertyRegistered = false;
 
   public DoActionButton() {
-    if (!(this instanceof SpecialDiceButton)) {
-      final ActionListener rollAction = e -> {
-        try {
-          doActions();
-        }
-        catch (RecursionLimitException ex) {
-          RecursionLimiter.infiniteLoop(ex);
-        }
-      };
+    final ActionListener rollAction = e -> {
+      try {
+        doActions();
+      }
+      catch (RecursionLimitException ex) {
+        RecursionLimiter.infiniteLoop(ex);
+      }
+    };
 
-      setLaunchButton(makeLaunchButton(
-        getConfigureTypeName(),
-        getConfigureTypeName(),
-        "",
-        rollAction
-      ));
-      launch = getLaunchButton(); // for compatibility
-    }
+    setLaunchButton(makeLaunchButton(
+      getConfigureTypeName(),
+      getConfigureTypeName(),
+      "",
+      rollAction
+    ));
+    launch = getLaunchButton(); // for compatibility
+  }
+
+  // This only exists so SpecialDiceButton can avoid calling the other constructor
+  public DoActionButton(boolean dummy) {
+
   }
 
   public static String getConfigureTypeName() {

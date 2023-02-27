@@ -119,6 +119,8 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
   @Deprecated(since = "2020-10-21", forRemoval = true) public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
 
   public SpecialDiceButton() {
+    super(false); // Make a DoActionButton, but don't call its normal constructor
+
     dialog = new JDialog(GameModule.getGameModule().getPlayerWindow());
     dialog.setLayout(new MigLayout("ins 0")); //NON-NLS
     dialogLabel = new JLabel();
