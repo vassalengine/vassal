@@ -193,9 +193,6 @@ public class ImageUtils {
       return src;
     }
 
-    // use the default hints if we weren't given any
-    if (hints == null) hints = getDefaultHints();
-
     src = coerceToIntType(src);
 
     final Rectangle sbox = new Rectangle(0, 0, sw, sh);
