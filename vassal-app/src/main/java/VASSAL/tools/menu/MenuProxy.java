@@ -72,7 +72,7 @@ public class MenuProxy extends AbstractParent<JMenu> {
     forEachPeer(menu -> menu.setText(text));
 
     if (isHideIfBlank()) {
-      forEachPeer(menu -> menu.setVisible(!text.isEmpty()));
+      forEachPeer(menu -> menu.setVisible((text != null) && !text.isEmpty()));
     }
   }
 

@@ -81,7 +81,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
         launch();
       }
     };
-    menuItem = new MenuItemProxy(launchAction);
+    menuItem = new MenuItemProxy(launchAction, true);
 
     menu = new MenuProxy(true);
 

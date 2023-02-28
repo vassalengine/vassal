@@ -18,10 +18,9 @@
 
 package VASSAL.tools.menu;
 
-import java.lang.ref.WeakReference;
-
 import javax.swing.Action;
 import javax.swing.JMenuItem;
+import java.lang.ref.WeakReference;
 
 /**
  * @author Joel Uckelman
@@ -29,6 +28,7 @@ import javax.swing.JMenuItem;
  */
 public class MenuItemProxy extends AbstractProxy<JMenuItem> {
   protected Action action;
+  private boolean hideIfBlank = false;
 
   public MenuItemProxy() {
     this(null);
@@ -36,6 +36,11 @@ public class MenuItemProxy extends AbstractProxy<JMenuItem> {
 
   public MenuItemProxy(Action action) {
     this.action = action;
+  }
+
+  public MenuItemProxy(Action action, boolean hideIfBlank) {
+    this.action = action;
+    this.hideIfBlank = hideIfBlank;
   }
 
   public Action getAction() {
@@ -47,7 +52,13 @@ public class MenuItemProxy extends AbstractProxy<JMenuItem> {
 
     forEachPeer(item -> {
       item.setAction(action);
-      item.setVisible(action != null);
+      if (action == null) {
+        item.setVisible(false);
+      }
+      else {
+        final String name = (String)action.getValue(Action.NAME);
+        item.setVisible(!hideIfBlank || ((name != null) && !name.isEmpty()));
+      }
     });
   }
 
