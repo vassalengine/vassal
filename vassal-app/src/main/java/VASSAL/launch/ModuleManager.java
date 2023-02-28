@@ -332,14 +332,14 @@ public class ModuleManager {
 
     // set the time for the next version check
     if (nextVersionCheck == -1L) {
-      // this was our first check; randomly check after 0-10 days to
-      // to spread version checks evenly over a 10-day period
+      // this was our first check; randomly check after 0-5 days to
+      // to spread version checks evenly over a 5-day period
       nextVersionCheck = System.currentTimeMillis() +
-                         (long) (Math.random() * 10 * 86400000);
+                         (long) (Math.random() * 5 * 86400000);
     }
     else {
-      // check again in 10 days
-      nextVersionCheck += 10 * 86400000;
+      // check again in 5 days
+      nextVersionCheck += 5 * 86400000;
     }
 
     nextVersionCheckConfig.setValue(nextVersionCheck);

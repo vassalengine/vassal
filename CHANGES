@@ -27,6 +27,7 @@
 
 3.6.14 - ???
 
+* 12065: Reduce update check delay to 5 days, from 10
 * 12063: Fixed Deck save/load hotkeys being mixed up
 * 12059: Various PMD and Spotbugs fixes
 * 12049: Duplicating a prototype no longer disables that prototype until next
