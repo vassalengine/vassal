@@ -19,6 +19,8 @@ package VASSAL.tools.filechooser;
 
 import java.io.File;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * The file filter abstract base class for {link VASSAL.tools.FileChooser}.
  * This class joins together the {@link javax.swing.filechooser.FileFilter}
@@ -28,6 +30,7 @@ import java.io.File;
  *
  * @author uckelman
  */
+@SuppressFBWarnings(value = "NM_SAME_SIMPLE_NAME_AS_SUPERCLASS")
 public abstract class FileFilter extends javax.swing.filechooser.FileFilter
                                  implements java.io.FilenameFilter {
   /**

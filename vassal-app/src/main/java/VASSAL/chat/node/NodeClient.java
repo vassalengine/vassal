@@ -711,7 +711,7 @@ public class NodeClient implements LockableChatServerConnection,
    */
   @Deprecated(since = "2020-03-01")
   public void checkCompatibility(NodeRoom targetRoom, boolean compatible, List<String> errors) {
-    compatible = checkCompatibility(targetRoom, errors);
+    checkCompatibility(targetRoom, errors);
   }
 
   public boolean checkCompatibility(NodeRoom targetRoom, List<String> errors) {

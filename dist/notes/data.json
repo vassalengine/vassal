@@ -45,6 +45,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 12059, "desc": "Various PMD and Spotbugs fixes" },
         { "num": 12048, "desc": "Fix bugs when deleting groups of decks/stacks from the editor" },
         { "num": 12041, "desc": "Rollover border color of 'no color' did not save to file, nor copy correctly" },
         { "num": 11249, "desc": "Enhanced recursion protection to catch self-referencing prototypes" }
