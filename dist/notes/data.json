@@ -29,6 +29,7 @@
         { "num": 11249, "desc": "Enhanced recursion protection to catch self-referencing prototypes" }
       ],
       "other_improvements": [
+        { "num": 12065, "desc": "Reduce update check delay to 5 days, from 10" },
         { "num": 10249, "desc": "Duplicating a prototype no longer disables that prototype until next module reload" }
       ]
     },
