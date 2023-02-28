@@ -573,7 +573,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     if (loadListener == null) {
       loadListener = new NamedKeyStrokeListener(e -> doLoadDeck());
       gameModule.addKeyStrokeListener(loadListener);
-      saveListener.setKeyStroke(getLoadKey());
+      loadListener.setKeyStroke(getLoadKey());
     }
 
     // Add Listeners for DeckKeyCommands
