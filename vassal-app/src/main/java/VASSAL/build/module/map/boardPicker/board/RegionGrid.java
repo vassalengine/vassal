@@ -335,16 +335,21 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
   // Locate nearest point
   //
   @Override
-  public Point snapTo(Point p) {
+  public Point snapTo(Point p, boolean force) {
 
     //
     // Need at least one point to snap to and snapping needs to be pn.
     //
-    if (!snapTo || regionList.isEmpty()) {
+    if ((!snapTo && !force) || regionList.isEmpty()) {
       return p;
     }
 
     return doSnap(p);
+  }
+
+  @Override
+  public Point snapTo(Point p) {
+    return snapTo(p, false);
   }
 
   @Override
@@ -534,6 +539,9 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       bottomPanel.add(buttonPanel);
 
       add(bottomPanel, BorderLayout.SOUTH);
+
+      // Default actions for Enter/ESC
+      SwingUtils.setDefaultButtons(getRootPane(), okButton, canButton);
 
       //BR// Scroll the possibly-8000-pixel-wide map to some semi-sensible place to start :)
       if (!grid.regionList.isEmpty()) {
@@ -1009,6 +1017,16 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     protected static final String SELECT_ALL = Resources.getString("Editor.IrregularGrid.select_all");
 
     protected void doPopupMenu(MouseEvent e) {
+
+      // Ctrl+Click or Shift+Click add region directly at cursor
+      if (SwingUtils.isSelectionToggle(e) || e.isShiftDown()) {
+        lastClick = mouseLoc;
+        final ActionEvent a = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ADD_REGION);
+        actionPerformed(a);
+        e.consume();
+        return;
+      }
+
       myPopup = new JPopupMenu();
 
       JMenuItem menuItem = new JMenuItem(ADD_REGION);
@@ -1289,8 +1307,11 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       }
     }
 
+    protected Point mouseLoc;
+
     @Override
     public void mouseMoved(MouseEvent e) {
+      mouseLoc = e.getPoint();
     }
 
     // Scroll map if necessary
@@ -1320,6 +1341,15 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
     @Override
     public void keyPressed(KeyEvent e) {
+
+      // Insert key adds region at current mouse position
+      if (e.getKeyCode() == KeyEvent.VK_INSERT) {
+        lastClick = mouseLoc;
+        final ActionEvent a = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ADD_REGION);
+        actionPerformed(a);
+        e.consume();
+        return;
+      }
 
       /*
        * Pass key onto window scroller if no region selected

@@ -47,7 +47,7 @@ JDKDIR:=$(DISTDIR)/jdks
 JDOCDIR:=jdoc
 
 # numeric part of the version only
-VNUM:=3.6.8
+VNUM:=3.7.0
 # major-minor part of the version
 V_MAJ_MIN:=$(shell echo "$(VNUM)" | cut -f1,2 -d'.')
 
@@ -89,6 +89,7 @@ SKIPS:=
 # -Dclirr.skip=true
 # -Dmaven.javadoc.skip=true
 # -Dpmd.skip=true
+# -Dmaven.test.skip=true
 
 jar: SKIPS:=-Dasciidoctor.skip=true -Dspotbugs.skip=true -Dlicense.skipDownloadLicenses
 jar: $(LIBDIR)/Vengine.jar
@@ -136,7 +137,7 @@ $(TMPDIR)/macos-%-$(VERSION)-build/VASSAL.app: $(LIBDIR)/Vengine.jar $(TMPDIR)/m
 	sed -i -e 's/%NUMVERSION%/$(VNUM)/g' \
          -e 's/%YEAR%/$(YEAR)/g' $@/Contents/Info.plist
 	cp $(DISTDIR)/macos/VASSAL.sh $@/Contents/MacOS
-	jlink --module-path $(JDKDIR)/macos-$(*)/jmods --no-header-files --no-man-pages --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/Contents/MacOS/jre
+	jlink --module-path $(JDKDIR)/macos-$(*)/Contents/Home/jmods --no-header-files --no-man-pages --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/Contents/MacOS/jre
 	cp $(DISTDIR)/macos/VASSAL.icns $@/Contents/Resources
 	cp -a $(LIBDIR) $@/Contents/Resources/Java
 	cp -a $(DOCDIR) $@/Contents/Resources/doc

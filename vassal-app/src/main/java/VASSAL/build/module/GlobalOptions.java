@@ -94,6 +94,8 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
   public static final String TRANSLATABLE_SUPPORT = "translatableSupport"; //NON-NLS
   public static final String INVENTORY_VISIBLE_TO_ALL = "inventoryForAll"; //NON-NLS
   public static final String SEND_TO_LOCATION_MOVE_TRAILS = "sendToLocationMoveTrails"; //NON-NLS
+  public static final String STORE_LEADING_ZERO_INTEGERS_AS_STRINGS = "storeLeadingZeroIntegersAsStrings"; //NON-NLS
+  public static final String PURGE_BLANK_PROPERTY_PROMPTS = "purgeBlankPropertyPrompts"; //NON-NLS
 
   // Hybrid preference settings
   public static final String ALWAYS = "Always"; //$NON-NLS-1$
@@ -145,6 +147,8 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
   private String hotKeysOnClosedWindows = NEVER; // Hotkeys on Closed Windows -> defaults to off
   private String inventoryVisibleToAll = ALWAYS; // Inventory can see private windows -> default to on
   private String sendToLocationMoveTrails = NEVER; // Send-to-Location generates movement trails (default to off)
+  private boolean storeLeadingZeroIntegersAsStrings = false; // Store integers with leading zeroes as String internally
+  private boolean purgeBlankPropertyPrompts = true; // Purge blank property prompts
 
   // Configurable prompt string for unmask-my-pieces
   private String promptString = Resources.getString("GlobalOptions.opponents_can_unmask_my_pieces");
@@ -462,7 +466,9 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
       Resources.getString("Editor.GlobalOption.chatter_html_support"), //$NON-NLS-1$
       Resources.getString("Editor.GlobalOption.hot_keys_on_closed_windows"), //NON-NLS
       Resources.getString("Editor.GlobalOption.inventory_visible_to_all"),
-      Resources.getString("Editor.GlobalOption.send_to_location_movement_trails")
+      Resources.getString("Editor.GlobalOption.send_to_location_movement_trails"),
+      Resources.getString("Editor.GlobalOption.leading_zero_integer_strings"),
+      Resources.getString("Editor.GlobalOption.purge_blank_property_prompts")
     };
   }
 
@@ -481,7 +487,9 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
         CHATTER_HTML_SUPPORT,
         HOTKEYS_ON_CLOSED_WINDOWS,
         INVENTORY_VISIBLE_TO_ALL,
-        SEND_TO_LOCATION_MOVE_TRAILS
+        SEND_TO_LOCATION_MOVE_TRAILS,
+        STORE_LEADING_ZERO_INTEGERS_AS_STRINGS,
+        PURGE_BLANK_PROPERTY_PROMPTS
       )
     );
 
@@ -505,6 +513,8 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
       PromptOnOff.class,
       PromptOnOff.class,
       PromptOnOff.class,
+      Boolean.class,
+      Boolean.class
     };
   }
 
@@ -632,6 +642,12 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
     else if (SEND_TO_LOCATION_MOVE_TRAILS.equals(key)) {
       return sendToLocationMoveTrails;
     }
+    else if (STORE_LEADING_ZERO_INTEGERS_AS_STRINGS.equals(key)) {
+      return String.valueOf(storeLeadingZeroIntegersAsStrings);
+    }
+    else if (PURGE_BLANK_PROPERTY_PROMPTS.equals(key)) {
+      return String.valueOf(purgeBlankPropertyPrompts);
+    }
     else if (INVENTORY_VISIBLE_TO_ALL.equals(key)) {
       return inventoryVisibleToAll;
     }
@@ -710,6 +726,22 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
     else if (SEND_TO_LOCATION_MOVE_TRAILS.equals(key)) {
       sendToLocationMoveTrails = (String) value;
     }
+    else if (STORE_LEADING_ZERO_INTEGERS_AS_STRINGS.equals(key)) {
+      if (value instanceof Boolean) {
+        storeLeadingZeroIntegersAsStrings = (Boolean) value;
+      }
+      else if (value instanceof String) {
+        storeLeadingZeroIntegersAsStrings = "true".equals(value); //$NON-NLS-1$
+      }
+    }
+    else if (PURGE_BLANK_PROPERTY_PROMPTS.equals(key)) {
+      if (value instanceof Boolean) {
+        purgeBlankPropertyPrompts = (Boolean) value;
+      }
+      else if (value instanceof String) {
+        purgeBlankPropertyPrompts = "true".equals(value); //NON-NLS
+      }
+    }
     else if (INVENTORY_VISIBLE_TO_ALL.equals(key)) {
       inventoryVisibleToAll = (String) value;
     }
@@ -722,10 +754,6 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
     }
     else if (MARK_MOVED.equals(key)) {
       markMoved = (String) value;
-      if (PROMPT.equals(markMoved)) {
-        final BooleanConfigurer config = new BooleanConfigurer(MARK_MOVED, Resources.getString("GlobalOptions.mark_moved")); //$NON-NLS-1$
-        GameModule.getGameModule().getPrefs().addOption(config);
-      }
     }
     else if (PLAYER_ID_FORMAT.equals(key)) {
       playerIdFormat.setFormat((String) value);
@@ -808,6 +836,14 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
     playerIdFormat.setProperty(PLAYER_NAME, (String) GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME));
     playerIdFormat.setProperty(PLAYER_SIDE, PlayerRoster.getMyLocalizedSide());
     return playerIdFormat.getText(this, "Editor.GlobalOption.playerid_format");
+  }
+
+  public boolean isStoreLeadingZeroIntegersAsStrings() {
+    return storeLeadingZeroIntegersAsStrings;
+  }
+
+  public boolean isPurgeBlankPropertyPrompts() {
+    return purgeBlankPropertyPrompts;
   }
 
   /** @return whether specific hybrid preference is enabled (could be designer-forced setting, could be player preference) */

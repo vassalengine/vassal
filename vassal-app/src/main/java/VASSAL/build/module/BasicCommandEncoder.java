@@ -17,9 +17,6 @@
  */
 package VASSAL.build.module;
 
-import java.awt.Point;
-import java.util.Map;
-
 import VASSAL.build.BadDataReport;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
@@ -36,6 +33,7 @@ import VASSAL.counters.ActionButton;
 import VASSAL.counters.AreaOfEffect;
 import VASSAL.counters.BasicName;
 import VASSAL.counters.BasicPiece;
+import VASSAL.counters.BorderOutline;
 import VASSAL.counters.CalculatedProperty;
 import VASSAL.counters.Clone;
 import VASSAL.counters.CounterGlobalKeyCommand;
@@ -56,7 +54,6 @@ import VASSAL.counters.Labeler;
 import VASSAL.counters.Marker;
 import VASSAL.counters.Mat;
 import VASSAL.counters.MatCargo;
-import VASSAL.counters.TranslatableMessage;
 import VASSAL.counters.MenuSeparator;
 import VASSAL.counters.MovementMarkable;
 import VASSAL.counters.NonRectangular;
@@ -76,11 +73,15 @@ import VASSAL.counters.SetGlobalProperty;
 import VASSAL.counters.Stack;
 import VASSAL.counters.SubMenu;
 import VASSAL.counters.TableInfo;
+import VASSAL.counters.TranslatableMessage;
 import VASSAL.counters.Translate;
 import VASSAL.counters.TriggerAction;
 import VASSAL.counters.UsePrototype;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.SequenceEncoder;
+
+import java.awt.Point;
+import java.util.Map;
 
 /**
  * Although it is the {@link CommandEncoder} which handles the basic commands: {@link AddPiece},
@@ -198,7 +199,8 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     Map.entry(Deselect.ID, Deselect::new),
     Map.entry(Mat.ID, Mat::new),
     Map.entry(MatCargo.ID, MatCargo::new),
-    Map.entry(BasicName.ID, BasicName::new)
+    Map.entry(BasicName.ID, BasicName::new),
+    Map.entry(BorderOutline.ID, BorderOutline::new)
   );
 
   /**

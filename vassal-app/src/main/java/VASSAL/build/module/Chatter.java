@@ -30,6 +30,7 @@ import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.QuickColors;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.swing.DataArchiveHTMLEditorKit;
+import VASSAL.tools.swing.SwingUtils;
 
 import javax.swing.Action;
 import javax.swing.BoxLayout;
@@ -47,6 +48,7 @@ import javax.swing.text.DefaultEditorKit;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
+import javax.swing.undo.UndoManager;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -138,10 +140,6 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
 
     input = new JTextField(60);
     input.setFocusTraversalKeysEnabled(false);
-    input.addActionListener(e -> {
-      send(formatChat(e.getActionCommand()), e.getActionCommand());
-      input.setText(""); //$NON-NLS-1$
-    });
     input.setMaximumSize(new Dimension(input.getMaximumSize().width, input.getPreferredSize().height));
 
     input.addKeyListener(new KeyListener() {
@@ -178,6 +176,14 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
           input.setText(newCommand);
         }
       }
+    });
+
+    final UndoManager um = SwingUtils.allowUndo(input);
+
+    input.addActionListener(e -> {
+      send(formatChat(e.getActionCommand()), e.getActionCommand());
+      input.setText(""); //$NON-NLS-1$
+      um.discardAllEdits();
     });
 
     final FontMetrics fm = getFontMetrics(myFont);

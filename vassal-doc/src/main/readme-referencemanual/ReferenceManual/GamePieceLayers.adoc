@@ -21,7 +21,7 @@ The middle layer will contain Pieces with the value "Land" and the top layer wil
 [width="100%",cols="50%a,^50%a",]
 |===
 |*Property name for layer:*:: The name of the Property of each Game Piece that determines the order.
-Typically this will be specified with a <<PropertyMarker.adoc#top,Marker>> trait with the specified property name.
+Typically, this will be specified with a <<PropertyMarker.adoc#top,Marker>> trait with the specified property name.
 
 *Layer order (Lowest first):*:: lists the expected values for that property, in the order that they will be drawn on the map (pieces draw last will naturally appear on top of those drawn before).  Pieces assigned to different layers will never combine into a Stack.
 Pieces with no value specified for the given property are placed in the topmost layer.
@@ -37,7 +37,7 @@ Pieces with no value specified for the given property are placed in the topmost 
 ==== Game Piece Layer Control
 
 This adds a button or buttons to the Map Window's Toolbar that allows you to activate/deactivate the Game Piece Layers for that map, and to change their relative order.
-Game Pieces belonging to Layers that have been deactivated are be hidden from view until the Layer is activated again.
+Game Pieces belonging to Layers that have been deactivated are  hidden from view until the Layer is activated again.
 Each player can activate/deactivate Layers independently, and layer activation is not saved when the game is saved.
 
 [width="100%",cols="50%a,^50%a",]

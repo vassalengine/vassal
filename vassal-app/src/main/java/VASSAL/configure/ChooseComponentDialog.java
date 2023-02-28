@@ -17,8 +17,12 @@
  */
 package VASSAL.configure;
 
-import java.awt.Frame;
-import java.awt.event.MouseEvent;
+import VASSAL.build.Buildable;
+import VASSAL.build.Configurable;
+import VASSAL.build.GameModule;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.ScrollPane;
+import VASSAL.tools.swing.SwingUtils;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -28,12 +32,8 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
-
-import VASSAL.build.Buildable;
-import VASSAL.build.Configurable;
-import VASSAL.build.GameModule;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.ScrollPane;
+import java.awt.Frame;
+import java.awt.event.MouseEvent;
 
 /**
  * Dialog that prompts the user to select a component from the {@link ConfigureTree}
@@ -51,7 +51,7 @@ public class ChooseComponentDialog extends JDialog implements TreeSelectionListe
     this.targetClass = targetClass;
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-    tree = new ConfigureTree(GameModule.getGameModule(), null) {
+    tree = new ConfigureTree(GameModule.getGameModule(), null, null, true) {
       private static final long serialVersionUID = 1L;
 
       @Override
@@ -76,6 +76,10 @@ public class ChooseComponentDialog extends JDialog implements TreeSelectionListe
     b.add(okButton);
     b.add(cancelButton);
     add(b);
+
+    // Default actions on Enter/ESC
+    SwingUtils.setDefaultButtons(getRootPane(), okButton, cancelButton);
+
     pack();
   }
 

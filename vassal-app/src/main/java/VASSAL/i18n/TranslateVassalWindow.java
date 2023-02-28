@@ -17,25 +17,6 @@
  */
 package VASSAL.i18n;
 
-import java.awt.Component;
-import java.awt.Frame;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Locale;
-
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
-import javax.swing.SwingUtilities;
-
 import VASSAL.Info;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.ConfigureTree;
@@ -44,6 +25,24 @@ import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.ExtensionFileFilter;
 import VASSAL.tools.filechooser.FileChooser;
+
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JSplitPane;
+import javax.swing.SwingUtilities;
+import java.awt.Component;
+import java.awt.Frame;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Locale;
 
 public class TranslateVassalWindow extends TranslateWindow {
   private static final long serialVersionUID = 1L;
@@ -132,7 +131,7 @@ public class TranslateVassalWindow extends TranslateWindow {
     buttonBox.add(helpButton);
     buttonBox.add(loadButton);
 
-    final JButton okButton = new JButton(Resources.getString(Resources.SAVE));
+    okButton = new JButton(Resources.getString(Resources.SAVE));
     okButton.addActionListener(e -> {
       try {
 // FIXME: can this ever throw?
@@ -144,7 +143,7 @@ public class TranslateVassalWindow extends TranslateWindow {
     });
     buttonBox.add(okButton);
 
-    final JButton cancelButton =
+    cancelButton =
       new JButton(Resources.getString(Resources.CANCEL));
     cancelButton.addActionListener(e -> cancel());
     buttonBox.add(cancelButton);

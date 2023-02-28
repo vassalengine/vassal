@@ -19,17 +19,15 @@ package VASSAL.configure;
 
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
-
 import VASSAL.tools.swing.SwingUtils;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-
-import net.miginfocom.swing.MigLayout;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /**
  * A Window for displaying a {@link Configurer}.  The title of the window
@@ -88,6 +86,9 @@ public class ConfigurerWindow extends JDialog {
     panel.add(buttonPanel, "grow"); // NON-NLS
     add(panel, "grow"); // NON-NLS
     cancelled = false;
+
+    // Default actions on Enter/ESC
+    SwingUtils.setDefaultButtons(getRootPane(), okButton, canButton);
 
     SwingUtils.repack(this);
   }

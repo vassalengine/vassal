@@ -45,10 +45,11 @@ import java.util.List;
  *
  */
 public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameComponent, CommandEncoder, UniqueIdManager.Identifyable {
-  public static final String WHEN_TO_APPLY                 = "whenToApply";          //NON-NLS
-  public static final String APPLY_FIRST_LAUNCH_OF_SESSION = "firstLaunchOfSession"; //NON-NLS
-  public static final String APPLY_EVERY_LAUNCH_OF_SESSION = "everyLaunchOfSession"; //NON-NLS
-  public static final String APPLY_START_OF_GAME_ONLY      = "startOfGameOnly";      //NON-NLS
+  public static final String WHEN_TO_APPLY                   = "whenToApply";          //NON-NLS
+  public static final String APPLY_FIRST_LAUNCH_OF_SESSION   = "firstLaunchOfSession"; //NON-NLS
+  public static final String APPLY_EVERY_LAUNCH_OF_SESSION   = "everyLaunchOfSession"; //NON-NLS
+  public static final String APPLY_START_OF_GAME_ONLY        = "startOfGameOnly";      //NON-NLS
+  public static final String APPLY_START_GAME_OR_SIDE_CHANGE = "sideChange";           //NON-NLS
 
   private static final char DELIMITER = '\t'; //$NON-NLS-1$
   public static final String COMMAND_PREFIX = "SGKC" + DELIMITER; //NON-NLS-1$
@@ -64,7 +65,7 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
   public static class Prompt extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
-      return new String[]{ APPLY_FIRST_LAUNCH_OF_SESSION, APPLY_EVERY_LAUNCH_OF_SESSION, APPLY_START_OF_GAME_ONLY };
+      return new String[]{ APPLY_FIRST_LAUNCH_OF_SESSION, APPLY_EVERY_LAUNCH_OF_SESSION, APPLY_START_OF_GAME_ONLY, APPLY_START_GAME_OR_SIDE_CHANGE };
     }
 
     @Override
@@ -72,7 +73,8 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
       return new String[] {
         "Editor.StartupGlobalKeyCommand.first_launch_of_session",
         "Editor.StartupGlobalKeyCommand.every_launch_of_session",
-        "Editor.StartupGlobalKeyCommand.start_of_game_only"
+        "Editor.StartupGlobalKeyCommand.start_of_game_only",
+        "Editor.StartupGlobalKeyCommand.start_or_side_change"
       };
     }
   }
@@ -208,7 +210,7 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
         return false;
       }
     }
-    else if (APPLY_START_OF_GAME_ONLY.equals(whenToApply)) {
+    else if (APPLY_START_OF_GAME_ONLY.equals(whenToApply) || APPLY_START_GAME_OR_SIDE_CHANGE.equals(whenToApply)) {
       if (hasAppliedThisGame) {
         return false;
       }
@@ -216,6 +218,20 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
 
     hasEverApplied = true;     // This one will be false again next time anything calls GameState.setup(true)
     hasAppliedThisGame = true; // This one will be remembered as part of the game state (i.e. even after loading a game)
+    apply();
+    return true;
+  }
+
+  /**
+   * Apply the command, but only if it is eligible to be applied on Player Join / Change
+   * @return true if command was applied
+   */
+  public boolean applyPlayerChange() {
+    if (!APPLY_START_GAME_OR_SIDE_CHANGE.equals(whenToApply)) {
+      return false;
+    }
+    hasEverApplied     = true;
+    hasAppliedThisGame = true;
     apply();
     return true;
   }

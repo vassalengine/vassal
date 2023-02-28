@@ -9,6 +9,12 @@
 A Symbolic Dice Button places a button on the <<Toolbar.adoc#top,Toolbar>> which rolls dice that use graphical images to display their faces -- in simpler terms, "dice that look like dice". A Symbolic Dice Button can roll one or more individual dice, each represented by a _[Symbolic Die]_ component, each of which may in turn have any number of faces (represented by _[Symbolic Die Face]_ sub-components). When the button is clicked, a random face is selected for each Symbolic Die that this component contains.
 The results of the roll can be reported as text into the chat area, and/or graphically in a separate window and/or in the button itself.
 
+A Symbolic Dice Button can be configured to play a sound when it is pressed.
+
+A Symbolic Dice Button can also be configured to send one or more "hotkeys" or Named Key Commands when it is pressed, allowing other effects to be chained as well.
+
+After the button is pressed, a property named _<name-of-dice-button>_result_ will also contain the result, which can be referenced by other pieces and/or toolbar items. For example, if your dice button's name is _RedDie_ then the property _RedDie_result_ will contain the result.
+
 To add a Symbolic Dice Button to your module, right-click on the main _[Module]_ entry at the very top of the Editor's configuration window, and select _Add Symbolic Dice Button_.
 Then, once you do the initial configuration of its options, navigate to the _[Symbolic Dice Button]_ component that will have been added at the very end of the Module's list of components.
 Right-click on the _[Symbolic Dice Button]_ entry, and select _Add Symbolic Die_.
@@ -18,7 +24,7 @@ Then, you will need to right-click each _[Symbolic Die]_ entry, and select _Add 
 [width="100%",cols="50%a,^50%a",]
 |===
 |
-*Description:*:: The name of the dice button.
+*Name:*:: The name of the dice button.
 
 *Button text:*::  Text for the <<Toolbar.adoc#top,Toolbar>> button in the main window.
 
@@ -34,11 +40,53 @@ Then, you will need to right-click each _[Symbolic Die]_ entry, and select _Add 
 
 **Button Icon when disabled:**:: If you select an alternative icon here, then that icon will be used when the button is currently disabled. If you leave the icon empty, then the normal icon, if any, will stay in place. Any button text for the toolbar button will be greyed out when the button is disabled, regardless of your choice in this field.
 
+*Play a sound:*:: Select to play a sound clip when the button is activated.
+
+*Sound Clip:*:: The Sound clip file to be played.
+
+*Send hotkeys:*:: Select to send a list of Hotkeys to other components when the button is activated.
+
+*Hot keys:*:: The list of <<NamedKeyCommand.adoc#top,Keystrokes or Named Commands>> to be sent.
+Use the New button to add another key, or the Remove buttons to remove existing keys.
+
+NOTE: Because these are _Global Hotkeys_ rather than _Global Key Commands_, they are sent to Module and Map Toolbar components, _not_ to individual Game Pieces.
+Of course a Hotkey could be used to activate a Global Key Command component which could then affect individual Game Pieces.
+
+*Repeat this set of actions (Loop):*:: Allows you to perform the specified actions multiple times.
+
+*Type of loop:*:: Select the type of loop from the drop-down menu:
+
+*Repeat fixed number of times:*::: This loop option allows you to repeat the set of actions a specified number of times.
+
+*Repeat while condition is true:*::: This loop option allows you to repeat the set of actions while a <<PropertyMatchExpression.adoc#top,Property Expression>> remains true.
+If the expression begins the loop already false, the actions will not be performed at all (compare "until", below).
+
+*Repeat until condition is true:*::: This loop option allows you to repeat the set of actions until a <<PropertyMatchExpression.adoc#top,Property Expression>> becomes true.
+The set of actions will be performed at least once.
+
+*Loop how many times:*:: An <<Expression.adoc#top,Expression>> that defines how many times to generate the set of actions (for a fixed loop).
+
+*Loop while/until condition is true:*:: Enter the <<PropertyMatchExpression.adoc#top,Property Expression>> that controls how long to keep looping (for a while or until loop).
+
+*Perform this Hotkey once before looping starts:*:: For all loop types, enter a <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> that will be performed once before the looping process commences.
+
+*Perform this Hotkey once after looping complete:*:: For all loop types, enter a <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> that will be performed once after the looping process finishes.
+
+*Create a loop index property?:*:: For all loop types, allows you to create a Property whose value will change as the looping process proceeds.
+
+*Index property name:*:: The name of the property that will be created.
+
+*Index property start value:*:: An <<Expression.adoc#top,Expression>> that sets the value of the index property prior to looping commencing.
+The expression must evaluate to a whole number.
+
+*Index property increment value:*:: An <<Expression.adoc#top,Expression>> that defines how much will be added to the Index Property at the start of each loop.
+The expression must evaluate to a whole number.
+
 *Report results as text:*::  If true, report results to the <<ChatLog.adoc#top,Chat Log>>.
 
 *Report format:*::  A <<MessageFormat.adoc#top,Message Format>> specifying the format for reporting text results: _$name$_ is the name of the button as specified above, __$result1$, $result2$, etc__is the result of the 1st, 2nd, etc.
 _[Symbolic Die]_ component.
-_$numericalTotal$_ is the sum of the numerical values all of the Symbolic Die rolls.
+_$numericalTotal$_ is the sum of the numerical values of all the Symbolic Die rolls.
 
 NOTE:  as of Vassal 3.3.3 these reports can include HTML tags, including _<img>_ tags to place dice images directly into the chat log (see example below).
 

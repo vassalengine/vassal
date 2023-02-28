@@ -27,6 +27,17 @@ import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.swing.FlowLabel;
 import VASSAL.tools.swing.SwingUtils;
+import net.miginfocom.swing.MigLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.io.File;
@@ -36,17 +47,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
-import net.miginfocom.swing.MigLayout;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class RefreshPredefinedSetupsDialog extends JDialog {
   private static final Logger logger = LoggerFactory.getLogger(RefreshPredefinedSetupsDialog.class);
@@ -139,6 +139,9 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
     setLocationRelativeTo(getOwner());
     SwingUtils.repack(this);
+
+    // Default actions on Enter/ESC
+    SwingUtils.setDefaultButtons(getRootPane(), refreshButton, closeButton);
 
     deleteOldDecks.setVisible(refreshDecks.isSelected());
     addNewDecks.setVisible(refreshDecks.isSelected());

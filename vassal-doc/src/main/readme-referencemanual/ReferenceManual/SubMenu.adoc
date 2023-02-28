@@ -9,13 +9,13 @@
 
 This trait allows you to cluster menu items associated with other traits into a sub-menu of the game piece's right-click context menu.
 
-image:images/SubMenuExample.png[]
+image:images/subMenuExample.png[]
 
 Provide a name for the menu and the exact menu text of the menu items that should be moved to the sub-menu.
 
 Sub-menus may contain other sub-menus to any nesting level.
 
-*EXAMPLE:* If a game piece has three separate layer traits with corresponding activate commands _Entrench_, _Fortify_, and _Blockade_, then those menu items can be gathered under a single sub-menu named _Defense_ by creating a Sub-Menu trait with menu name "Defense" and sub-commands "Entrench", "Fortify" and "Blockade".
+*EXAMPLE:* If a game piece has three separate layer traits with the corresponding activate commands _Entrench_, _Fortify_, and _Blockade_, then those menu items can be gathered under a single sub-menu named _Defense_ by creating a Sub-Menu trait with menu name "Defense" and sub-commands "Entrench", "Fortify" and "Blockade".
 
 *SEE ALSO:*  <<MenuSeparator.adoc#top,Menu Separator>>
 

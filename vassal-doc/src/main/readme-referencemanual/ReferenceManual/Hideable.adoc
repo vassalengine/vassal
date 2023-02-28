@@ -46,5 +46,6 @@ Only players assigned to one of the named sides can hide the piece, but the play
 This is useful for referee players or games with multiplayer teams.
 
 |image:images/Hideable.png[]
+|===
 
 '''''

@@ -22,6 +22,7 @@ import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.DrawPile;
 import VASSAL.command.Command;
+import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.DeckSelectionConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
@@ -35,15 +36,7 @@ import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
-
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import VASSAL.tools.swing.SwingUtils;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -53,6 +46,14 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * GamePiece trait that returns a piece to a {@link DrawPile}
@@ -166,20 +167,24 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
 
       final Map preMap = getMap();
       final Point prePos = getPosition();
-      comm = putOldProperties(this);
+
+      // Prepare the piece for move, writing "old location" properties and unlinking from any deck
+      comm = prepareMove(new NullCommand(), false);
+
+      // Move the piece to its new deck
       comm = comm.append(pile.addToContents(Decorator.getOutermost(this)));
 
-      // If this piece is also loaded cargo, remove it from it's mat
+      // If this piece is also loaded cargo, remove it from its mat
       final MatCargo cargo = (MatCargo) Decorator.getDecorator(Decorator.getOutermost(this), MatCargo.class);
       if (cargo != null && cargo.getMat() != null) {
         comm = comm.append(cargo.makeClearMatCommand());
       }
 
-      // Apply Auto-move key if the piece has moved
       final Map m = pile.getMap();
-      if (m != null && m.getMoveKey() != null && (m != preMap || !getPosition().equals(prePos))) {
-        comm.append(Decorator.getOutermost(this).keyEvent(m.getMoveKey()));
-      }
+
+      // Post move actions -- apply any afterburner apply-on-move key (but only if the piece was actually moved)
+      comm = finishMove(comm, (m != null && m.getMoveKey() != null && (m != preMap || !getPosition().equals(prePos))), false, false);
+
       if (m != null) {
         m.repaint();
       }
@@ -209,7 +214,6 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
 
   private DrawPile promptForDrawPile() {
     final JDialog d = new JDialog(GameModule.getGameModule().getPlayerWindow(), true);
-
     d.setTitle(Decorator.getInnermost(this).getName()); //$NON-NLS-1$
     d.setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
 
@@ -245,20 +249,28 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     prompt.setAlignmentX(0.5f);
     d.add(prompt); //$NON-NLS-1$
     d.add(new ScrollPane(list));
+
     final Box box = Box.createHorizontalBox();
     box.setAlignmentX(0.5F);
-    JButton b = new JButton(Resources.getString(Resources.OK));
-    b.addActionListener(e -> {
+
+    final JButton okButton = new JButton(Resources.getString(Resources.OK));
+    okButton.addActionListener(e -> {
       final AvailableDeck selection = list.getSelectedValue();
       if (selection != null)
         deck = selection.pile;
       d.dispose();
     });
-    box.add(b);
-    b = new JButton(Resources.getString(Resources.CANCEL));
-    b.addActionListener(e -> d.dispose());
-    box.add(b);
+    box.add(okButton);
+
+    final JButton cancelButton = new JButton(Resources.getString(Resources.CANCEL));
+    cancelButton.addActionListener(e -> d.dispose());
+    box.add(cancelButton);
+
     d.add(box);
+
+    // Default actions for Enter/ESC
+    SwingUtils.setDefaultButtons(d.getRootPane(), okButton, cancelButton);
+
     d.pack();
     d.setLocationRelativeTo(d.getOwner());
     d.setVisible(true);

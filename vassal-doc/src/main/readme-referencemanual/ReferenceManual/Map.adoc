@@ -68,6 +68,8 @@ NOTE: changing this option will not take effect until the module has been reload
 
 NOTE: The following reports are separate from, and in addition to, any reports the piece itself generates with <<ReportChanges.adoc#top,Report Action>> traits in response to the Key Command applied by the bottom field.
 
+*Only auto-report move "within this map" if piece's Location Name changed:*::  If selected, then movement "within this map" will only be auto-reported if the piece's LocationName property is changed by the move.
+
 *Auto-report format for movement within this map:*::  A <<MessageFormat.adoc#top,Message Format>> that will be used to automatically report movement of pieces completely within this map window: _$pieceName$_ is the name of the piece being moved, _$location$_ is the location to which the piece is being moved (in the format specified below), _$previousLocation$_ is the location from which the piece is being moved.
 
 *Auto-report format for movement to this map:*::  A <<MessageFormat.adoc#top,Message Format>> that will be used to report movement of pieces to this map window from another map window: In addition to the properties noted for the above item, _$previousMap$_ is the name of the map from which the piece is being moved.
@@ -103,7 +105,7 @@ Once you configure it, your new sub-component will appear at the bottom of the M
 |<<GamePieceLayers.adoc#top,Game Piece Layers>> |<<#GlobalKeyCommand,Global Key Command>> |<<GlobalProperties.adoc#top,Global Properties>> |<<#HidePieces,Hide Pieces Button>>
 |<<#ImageCapture,Image Capture Tool>>|<<#LastMoveHighlighter,Last Move Highlighter>> |<<#LOS,Line of Sight Thread>> |<<#MapBoards,Map Boards>> |<<#MapShading,Map Shading>>
 |<<#StackViewer,Mouse-over Stack Viewer>> |<<#OverviewWindow,Overview Window>> |<<#PieceRecenterer,Recenter Pieces Button>> |<<#StackingOptions,Stacking Options>>
-|<<#StartupGlobalKeyCommand,Startup Global Key Command>> |<<#TextCapture,Text Capture Tool>> |<<ToolbarMenu.adoc#top,Toolbar Menu>> |<<#Zoom,Zoom Capability>>
+|<<#TextCapture,Text Capture Tool>> |<<ToolbarMenu.adoc#top,Toolbar Menu>> |<<#Zoom,Zoom Capability>>
 |===
 
 '''''
@@ -235,7 +237,7 @@ NOTE: Zoom in and out can also be performed by holding the Control key down whil
 |===
 |
 *Preset Zoom Levels:*::  Configures a series of fractional scale factors for display of the Map Window.
-In the list on the right-hand side, all of the currently configured scale factors are listed.
+In the list on the right-hand side, all the currently configured scale factors are listed.
 The one with an asterisk (*) indicates the scale factor at which the Map Window will begin when the module is started.
 The other scale factors represent the settings along a range which clicking the "Zoom in" and "Zoom out" buttons will move the zoom level.
 +
@@ -434,29 +436,6 @@ This is useful for games where there are no absolute terrain features, such as s
 |image:images/PieceRecenterer.png[]
 |===
 
-[#StartupGlobalKeyCommand]
-
-==== Startup Global Key Command
-
-Can print a welcome message, or perform some other task that needs to be done whenever the module is started up.
-
-
-image:images/StartupGlobalKeyCommand.png[]
-
-An extension of <<#GlobalKeyCommand,Global Key Command>> that fires automatically upon completion of module load, once all the key listeners are started up.
-All fields behave identically to the corresponding ones in <<#GlobalKeyCommand,Global Key Command>>, except that those pertaining to the physical representation of a Toolbar button are suppressed as being inapplicable.
-
-As of VASSAL 3.6, multiple start-up global key commands _can_ be depended on to run in the order they are listed in the module.
-
-Startup Global Key Commands can be configured to any of three modes:
-
-**(1) On First Game Launch/Load Of Session**: These fire every time the _module_ starts up, regardless of whether it is to begin a new game or to load and continue an existing one.
-
-**(2) On Every Game Launch/Load Of Session**: These fire every time a game is launched or loaded during the session.
-
-**(3) At Start Of Every Fresh Game Only**: These fire only when a _new game_ is starting. If the game is saved and later restored, or is being exchanged back and forth in log form, the key command will not fire on subsequent loads. For clarity, a new game started from a <<GameModule.adoc#PredefinedSetup, Pre-defined Setup>> _does_ count as a fresh new game.
-
-
 '''
 [#GlobalKeyCommand]
 ==== Global Key Command
@@ -487,7 +466,7 @@ This is the key command that will _initiate_ the Global Key Command, not the one
 *Global Key Command:*:: The key command or <<NamedKeyCommand.adoc#top,Named Key Command>> that will be sent and applied to the selected pieces.
 
 *Apply to counters on this map only?:*::  If checked, then only pieces on this map will be eligible to receive the key command.
-Otherwise all pieces in the game will be eligible provide they match the expression above.
+Otherwise, all pieces in the game will be eligible provided they match the expression above.
 
 *Pre-select (Fast Match):*::  New from VASSAL 3.5, the *Fast Match* selections can be used to improve the performance of "slow" Global Key Commands by pre-matching the location and/or a single property value of the target piece. Essentially these run limited but much faster comparisons, to screen out some of the potentially hundreds of pieces needing to be checked for each Global Key Command. Fast Match expressions are _optional_ in that the same comparisons can always be run in the standard "Additional matching expression" field. Judicious use of them, however, can improve the performance of a Global Key Command by 25-33%.
 +

@@ -1,13 +1,8 @@
 {{headline}}
 
-<h3>IMPORTANT</h3>
-{% for item in important -%}
-* {{item}}
-{% endfor %}
-<h3>Download</h3>
-{% for item in downloads -%}
-* <a href='https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-{{item.suffix}}' target='_new'>{{item.display_name}}</a>
-{% endfor %}
+<h3><a href="https://github.com/vassalengine/vassal/releases/tag/{{version}}">Download</a></h3>
+
+<h3><a href="https://vassalengine.org/wiki/VASSAL_{{version_feature}}_Release_Notes">Release notes</a>/h3>
 
 {% for v in changes -%}
 <h3>Changes since {{ v['since'] }}</h3>
@@ -36,16 +31,3 @@ Other improvements
 {% endfor %}
 {% endif -%}
 {% endfor -%}
-
-See the <a href="https://vassalengine.org/wiki/VASSAL_{{version_feature}}_Release_Notes">Release Notes</a> for descriptions of the changes in {{version_feature}}.
-
-<h3>Minimum Requirements</h3>
-VASSAL {{version_feature}} requires Java 11 or later.
-
-The Windows and MacOS packages have an appropriate version of Java bundled with them, so there is no need to install Java separately on those operating systems. On Linux, use your package manager to install Java 11 or later.
-<h3>Help us test</h3>
-Please report bugs here in the Technical Support & Bugs category at the <a href="https://forum.vassalengine.org/c/technical-support-bugs/6" target="_new">VASSAL forum</a>.
-
-Cheers,
-
-The VASSAL Team

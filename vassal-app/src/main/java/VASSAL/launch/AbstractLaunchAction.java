@@ -26,8 +26,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
@@ -100,8 +98,11 @@ public abstract class AbstractLaunchAction extends AbstractAction {
   protected final String entryPoint;
   protected final LaunchRequest lr;
 
-  protected static final Map<File, Integer> using =
-    Collections.synchronizedMap(new HashMap<>());
+  private static final UseTracker useTracker = new UseTracker();
+
+  public static UseTracker getUseTracker() {
+    return useTracker;
+  }
 
   public AbstractLaunchAction(String name, Window window,
                               String entryPoint, LaunchRequest lr) {
@@ -113,11 +114,18 @@ public abstract class AbstractLaunchAction extends AbstractAction {
   }
 
   /**
+   * @return <code>true</code> iff any files are in use
+   */
+  public static boolean anyInUse() {
+    return useTracker.anyInUse();
+  }
+
+  /**
    * @param file the file to check
    * @return <code>true</code> iff the file is in use
    */
   public static boolean isInUse(File file) {
-    return using.containsKey(file);
+    return useTracker.isInUse(file);
   }
 
   /**
@@ -125,23 +133,23 @@ public abstract class AbstractLaunchAction extends AbstractAction {
    * @return <code>true</code> iff the file is being edited
    */
   public static boolean isEditing(File file) {
-    return Integer.valueOf(-1).equals(using.get(file));
+    return useTracker.isEditing(file);
   }
 
   protected static void incrementUsed(File file) {
-    using.merge(file, 1, Integer::sum);
+    useTracker.incrementUsed(file);
   }
 
   protected static void decrementUsed(File file) {
-    using.merge(file, 0, (v, n) -> v == 1 ? null : v - 1);
+    useTracker.decrementUsed(file);
   }
 
   protected static void markEditing(File file) {
-    using.put(file, -1);
+    useTracker.markEditing(file);
   }
 
   protected static void unmarkEditing(File file) {
-    using.remove(file);
+    useTracker.unmarkEditing(file);
   }
 
   /** {@inheritDoc} */
@@ -577,7 +585,8 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         result.add("-Xdock:name=" + d_name); //NON-NLS
         result.add("-Xdock:icon=" + d_icon); //NON-NLS
 
-        // M1 Macs need FBOs disabled in OpenGL, at least until Metal in Java 17
+        // Apple Silicon Macs need FBOs disabled in OpenGL, at least until
+        // Metal in Java 17
         final Boolean disableOGLFBO =
           (Boolean) Prefs.getGlobalPrefs().getValue(Prefs.DISABLE_OGL_FBO);
         if (Boolean.TRUE.equals(disableOGLFBO)) {

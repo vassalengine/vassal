@@ -336,16 +336,21 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
   }
 
   @Override
-  public Point snapTo(Point p) {
+  public Point snapTo(Point p, boolean force) {
     Point snap = null;
     final Zone z = findZone(p);
     if (z != null) {
-      snap = z.snapTo(p);
+      snap = z.snapTo(p, force);
     }
     if (snap == null) {
-      snap = background != null ? background.snapTo(p) : p;
+      snap = background != null ? background.snapTo(p, force) : p;
     }
     return snap;
+  }
+
+  @Override
+  public Point snapTo(Point p) {
+    return snapTo(p, false);
   }
 
   @Override

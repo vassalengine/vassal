@@ -50,7 +50,18 @@ import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
+import VASSAL.tools.swing.SwingUtils;
 
+import javax.swing.Action;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -73,17 +84,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Random;
-
-import javax.swing.Action;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
 
 /**
  * A collection of pieces that behaves like a deck, i.e.: Doesn't move.
@@ -176,6 +176,13 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   /** The matching DrawPile that generated this Deck */
   protected DrawPile myPile;
+
+  /**
+   * Sends the I-am-empty key for this deck (whether to send it was already determined when the last piece was removed)
+   */
+  protected void sendEmptyKey() {
+    gameModule.fireKeyStroke(emptyKey);
+  }
 
   /**
    * Special {@link CommandEncoder} to handle loading/saving Decks from files.
@@ -468,8 +475,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     if (!suppressDeckCounts) {
       fireNumCardsProperty();
       // Do NOT fire a Deck Empty key if it has been caused by an Undo Command
-      if (hotkeyOnEmpty && emptyKey != null && startCount > 0 && pieceCount == 0 && ! GameModule.getGameModule().getBasicLogger().isUndoInProgress()) {
-        gameModule.fireKeyStroke(emptyKey);
+      if (hotkeyOnEmpty && emptyKey != null && startCount > 0 && pieceCount == 0) {
+        final GameModule gm = GameModule.getGameModule();
+        if (!gm.getBasicLogger().isUndoInProgress()) {
+          gm.getDeckManager().addEmptyDeck(this);
+        }
       }
     }
   }
@@ -1761,9 +1771,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     d.add(new ScrollPane(list));
     d.add(new JLabel(Resources.getString("Deck.select_cards"))); //$NON-NLS-1$
     d.add(new JLabel(Resources.getString("Deck.then_click"))); //$NON-NLS-1$
+
     final Box box = Box.createHorizontalBox();
-    JButton b = new JButton(Resources.getString(Resources.OK));
-    b.addActionListener(e -> {
+
+    final JButton okButton = new JButton(Resources.getString(Resources.OK));
+    okButton.addActionListener(e -> {
       final int[] selection = list.getSelectedIndices();
       if (selection.length > 0) {
         nextDraw = new ArrayList<>();
@@ -1776,11 +1788,16 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       }
       d.dispose();
     });
-    box.add(b);
-    b = new JButton(Resources.getString(Resources.CANCEL));
-    b.addActionListener(e -> d.dispose());
-    box.add(b);
+    box.add(okButton);
+
+    final JButton cancelButton = new JButton(Resources.getString(Resources.CANCEL));
+    cancelButton.addActionListener(e -> d.dispose());
+    box.add(cancelButton);
     d.add(box);
+
+    // Default actions for Enter/ESC
+    SwingUtils.setDefaultButtons(d.getRootPane(), okButton, cancelButton);
+
     d.pack();
     d.setLocationRelativeTo(d.getOwner());
     d.setVisible(true);
@@ -1807,7 +1824,12 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       // move cards to deck
       final int cnt = getPieceCount() - 1;
       for (int i = cnt; i >= 0; i--) {
-        c = c.append(target.addToContents(getPieceAt(i)));
+        final GamePiece p = getPieceAt(i);
+
+        // Prepare the piece for move, writing "old location" properties and unlinking from any deck
+        c = p.prepareMove(c, false);
+        c = c.append(target.addToContents(p));
+        c = p.finishMove(c, false, false, false);
       }
     }
     return c;
@@ -1898,7 +1920,18 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
     // Send them
     for (final GamePiece piece : sending) {
+
+      // Prepare the piece for move, writing "old location" properties and unlinking from any deck
+      c = piece.prepareMove(c, false);
+
+      // Move it to the new deck
       c = c.append(target.addToContents(piece));
+
+      // Finish up after piece's move. Apply afterburner key if that option is selected
+      c = piece.finishMove(c, dkc.isApplyOnMove() && (map != null), false, false);
+      if (dkc.isApplyOnMove() && (map != null)) {
+        map.repaint();
+      }
     }
 
     // And add a report
@@ -2210,7 +2243,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
 
     // Create a mutable list containing all the pieces
-    final List<GamePiece> pieces = new ArrayList<>(Arrays.asList(contents));
+    final List<GamePiece> pieces = new ArrayList<>(Arrays.asList(contents).subList(0, pieceCount));
 
     // Sort using the supplied SortParameters
     Collections.sort(pieces, new SortParameterComparator(sortParameters));

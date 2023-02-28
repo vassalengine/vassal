@@ -17,7 +17,11 @@
  */
 package VASSAL.configure;
 
-import java.util.StringTokenizer;
+import VASSAL.build.AutoConfigurable;
+import VASSAL.tools.ScrollPane;
+import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.swing.SwingUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -25,12 +29,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
-
-import org.apache.commons.lang3.StringUtils;
-
-import VASSAL.build.AutoConfigurable;
-import VASSAL.tools.ScrollPane;
-import VASSAL.tools.SequenceEncoder;
+import java.util.StringTokenizer;
 
 /**
  * A Configurer that allows multi-line string input via a JTextArea
@@ -127,6 +126,12 @@ public class TextConfigurer extends Configurer implements ConfigurerFactory {
   }
 
   @Override
+  public void requestFocus() {
+    super.requestFocus();
+    textArea.requestFocus();
+  }
+
+  @Override
   public java.awt.Component getControls() {
     if (p == null) {
       p = new JPanel();
@@ -142,7 +147,9 @@ public class TextConfigurer extends Configurer implements ConfigurerFactory {
           queueForUpdate(textArea.getText());
         }
       });
+
       textArea.setText((String) getValue());
+      SwingUtils.allowUndo(textArea);
       final JScrollPane scroll = new ScrollPane(textArea);
       if (name != null) {
         scroll.setBorder(new TitledBorder(name));

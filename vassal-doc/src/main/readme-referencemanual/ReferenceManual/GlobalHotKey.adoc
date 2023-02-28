@@ -9,7 +9,7 @@
 
 This trait adds an action that invokes a Hotkey, usually a <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> for a Toolbar button in the Module window or a Map Window, but it also works for other Hotkeys. For example, you can use it to shuffle a deck via a deck's "shuffle" Hotkey.
 
-NOTE: Sometimes you may have a deck of cards or pieces that you want shuffled at the start of the game but not auto-shuffled afterwards. You can use this this trait to shuffle the deck during a setup sequence to get your one-time start-up shuffle.
+NOTE: Sometimes you may have a deck of cards or pieces that you want shuffled at the start of the game but not auto-shuffled afterwards. You can use this trait to shuffle the deck during a setup sequence to get your one-time start-up shuffle.
 
 *EXAMPLE:*  A Dice Button component has been added to the Toolbar and assigned the Hotkey F2.
 A Game Piece is given a Global Hotkey trait with Menu text _Roll Dice,_ Keyboard Command _CTRL+R_ and Global Hotkey _F2_.

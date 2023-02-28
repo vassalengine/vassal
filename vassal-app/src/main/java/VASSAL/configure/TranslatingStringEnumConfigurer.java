@@ -403,7 +403,7 @@ public class TranslatingStringEnumConfigurer extends Configurer {
   }
 
   @Override
-  public void setLabelVisibile(boolean visible) {
+  public void setLabelVisible(boolean visible) {
     if (panel instanceof ConfigurerPanel) {
       ((ConfigurerPanel) panel).setLabelVisibility(visible);
     }

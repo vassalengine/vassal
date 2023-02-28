@@ -5,11 +5,10 @@
     <parent>
         <groupId>org.vassalengine</groupId>
         <artifactId>vassal-parent</artifactId>
-        <version>3.6.8-SNAPSHOT</version>
+        <version>3.7.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>release-prepare</artifactId>
-    <version>3.6.8-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>

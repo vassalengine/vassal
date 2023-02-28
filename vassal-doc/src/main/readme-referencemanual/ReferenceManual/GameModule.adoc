@@ -8,15 +8,15 @@
 [#module]
 === Module
 
-The Module is the top component in the <<editor.adoc#top,Editor>> Configuration Window.
+The Module is the top component in the <<Editor.adoc#top,Editor>> Configuration Window.
 Its properties are simply the name of the game, a version number, and a description.
 These properties are each displayed separately their own columns when the module is listed in the Module Manager that appears when Vassal starts up.
 The version number is used to warn users who attempt to load save files created by a _later_ version of a module into an _earlier_ one.
 
-All additions and modifications to a module are done through the <<editor.adoc#top,Configuration Window>>, also frequently referred to as the <<editor.adoc#top,Editor>> window, which is a familiar file/folder type browser in which each file/folder represents a module Component.
+All additions and modifications to a module are done through the <<Editor.adoc#top,Configuration Window>>, also frequently referred to as the <<Editor.adoc#top,Editor>> window, which is a familiar file/folder type browser in which each file/folder represents a module Component.
 The second illustration on the right shows the Editor's configuration window for a "Brand New Module", with all of the Components that are added by default.
 Right-click on the _[Module]_ to get a context menu with options for the many types of <<#SubComponents,Components>> you can add to a Vassal module, including <<Map.adoc#top,maps>>, <<ChartWindow.adoc#top,charts>>, and <<PieceWindow.adoc#top,palettes>> full of <<GamePiece.adoc#top,game pieces>>. The
-components and pieces will in turn reference <<Properties.adoc#top, Properties>> and <<Expressions.adoc#top, Expressions>> that determine how they operate. See <<#SubComponents,below>> for more details on individual types of component.
+components and pieces will in turn reference <<Properties.adoc#top, Properties>> and <<Expression.adoc#top, Expressions>> that determine how they operate. See <<#SubComponents,below>> for more details on individual types of component.
 
 Actually _playing_ the game takes place in the Module window (see example below). This window includes a <<Toolbar.adoc#top,Toolbar>> that can be configured by the module designer, as well as a <<ChatLog.adoc#top,Chat Log>> to record player messages and game moves.
 The game's main <<Map.adoc#top,Map>> will be displayed just below the Chat Log.
@@ -44,7 +44,7 @@ image:images/BrandNewModule.png[]
 
 image:images/Toolbar.png[]
 
-The <<Toolbar.adoc#top,Toolbar>> of the main Module window contains buttons for basic functions such as <<Toolbar.adoc#Undo,Undo>>, <<Toolbar.adoc#StepForward,Step Forward>>, and <<Toolbar.adoc#ServerControls,Server Controls>>, but you can also configure buttons to <<SpecialDiceButton.adoc#top,roll dice>>, <<PieceWindow.adoc#top,add pieces to the map>>, display <<Chartwindow.adoc#top,charts>> and <<Map.adoc#top,maps>>, keep <<PlayerHand.adoc#top,player hands>> and <<PrivateWindow.adoc#top,reinforcement pools>> private, and more.
+The <<Toolbar.adoc#top,Toolbar>> of the main Module window contains buttons for basic functions such as <<Toolbar.adoc#Undo,Undo>>, <<Toolbar.adoc#StepForward,Step Forward>>, and <<Toolbar.adoc#ServerControls,Server Controls>>, but you can also configure buttons to <<SpecialDiceButton.adoc#top,roll dice>>, <<PieceWindow.adoc#top,add pieces to the map>>, display <<ChartWindow.adoc#top,charts>> and <<Map.adoc#top,maps>>, keep <<PlayerHand.adoc#top,player hands>> and <<PrivateWindow.adoc#top,reinforcement pools>> private, and more.
 
 Buttons for basic functions are created by configuring the existing basic components of the module, such as <<GlobalOptions.adoc#top,Global Options>> and the <<#Definition_of_Player_Sides,Definition of Player Sides>>.
 
@@ -85,10 +85,9 @@ Any of them can be added by right-clicking on the _[Module]_ component in the Mo
 |<<#DiceButton,Dice Button>>|<<GamePieceImageDefinitions.adoc#top,Game Piece Image Definitions>>|<<Inventory.adoc#top,Game Piece Inventory Window>>|<<PieceWindow.adoc#top,Game Piece Palette>>|<<Prototypes.adoc#top,Game Piece Prototype Definitions>>
 |<<Map.adoc#GlobalKeyCommand,Global Key Command>>|<<GlobalOptions.adoc#top,Global Options>>|<<GlobalProperties.adoc#top,Global Properties>>|<<GlobalTranslatableMessages.adoc#top, Global Translatable Messages>>|<<HelpMenu.adoc#top,Help Menu>>
 |<<Map.adoc#top,Map Window>>|<<MultiActionButton.adoc#top,Multi-Action Button>>|<<#NotesWindow,Notes Window>>|<<PlayerHand.adoc#top,Player Hand>>|<<#PredefinedSetup,Predefined Setup>>
-|<<PrivateWindow.adoc#top,Private Window>>|<<#RandomTextButton,Random Text Button>>|<<SpecialDiceButton.adoc#top,Symbolic Dice Button>>|<<Toolbar.adoc#top,Toolbar>>|<<ToolbarMenu.adoc#top,Toolbar Menu>>
+|<<PrivateWindow.adoc#top,Private Window>>|<<#RandomTextButton,Random Text Button>>|<<#StartupGlobalKeyCommand,Startup Global Key Command>>|<<SpecialDiceButton.adoc#top,Symbolic Dice Button>>|<<Toolbar.adoc#top,Toolbar>>|<<ToolbarMenu.adoc#top,Toolbar Menu>>
 |<<TurnTracker.adoc#top,Turn Counter>>||||
 |===
-
 
 
 '''''
@@ -174,7 +173,7 @@ image:images/PieceWindow.png[]
 [width="100%",cols="40%,60%",]
 |===
 |image:images/PrototypeComponent.png[]
-|Game Piece Prototypes allow you to define sets of commonly-used traits for various types of <<GamePiece.adoc#top,Game Pieces>>. For example you could give all of your cards a particular back and a key command to send it to the discard pile, without having to cut-and-paste those traits into every single one of your cards.
+|Game Piece Prototypes allow you to define sets of commonly-used traits for various types of <<GamePiece.adoc#top,Game Pieces>>. For example, you could give all of your cards a particular back and a key command to send it to the discard pile, without having to cut-and-paste those traits into every single one of your cards.
 This also has the advantage of allowing you to change these traits in one place and have the changes affect every one of the pieces assigned to the Prototype.
 
 <<Prototypes.adoc#top,See full article for details.>>
@@ -266,6 +265,30 @@ Applies to <<GamePiece.adoc#top,Game Pieces>> on all <<Map.adoc#top,Map Windows>
 |image:images/GlobalKeyCommand.png[]
 |===
 
+
+[#StartupGlobalKeyCommand]
+==== Startup Global Key Command
+
+Can print a welcome message, or perform some other task that needs to be done whenever the module is started up.
+
+image:images/StartupGlobalKeyCommand.png[]
+
+An extension of <<#GlobalKeyCommand,Global Key Command>> that fires automatically upon completion of module load, once all the key listeners are started up.
+All fields behave identically to the corresponding ones in <<#GlobalKeyCommand,Global Key Command>>, except that those pertaining to the physical representation of a Toolbar button are suppressed as being inapplicable.
+
+As of VASSAL 3.6, multiple start-up global key commands _can_ be depended on to run in the order they are listed in the module.
+
+Startup Global Key Commands can be configured to any of three modes:
+
+**(1) On First Game Launch/Load Of Session**: These fire every time the _module_ starts up, regardless of whether it is to begin a new game or to load and continue an existing one.
+
+**(2) On Every Game Launch/Load Of Session**: These fire every time a game is launched or loaded during the session.
+
+**(3) At Start Of Every Fresh Game Only**: These fire only when a _new game_ is starting. If the game is saved and later restored, or is being exchanged back and forth in log form, the key command will not fire on subsequent loads. For clarity, a new game started from a <<GameModule.adoc#PredefinedSetup, Pre-defined Setup>> _does_ count as a fresh new game.
+
+**(4) At Start of Fresh Game or Player Join/Side-Change**: These fire only when a _new game_ is starting _OR_ a new player joins or changes sides.
+
+
 ==== <<Inventory.adoc#top,Game Piece Inventory Window>>
 [width="100%",cols="40%,60%",]
 |===
@@ -348,7 +371,7 @@ Otherwise, the side you chose when creating the game you will be permanently ass
 
 [width="100%",cols="60%,^40%",]
 |===
-|Adds a button to the Toolbar which opens a window for holding game play aids: charts, tables, etc for player reference.
+|Adds a button to the Toolbar which opens a window for holding game play aids: charts, tables, etc. for player reference.
 
 <<ChartWindow.adoc#top,See full article for details.>>
 |image:images/ChartWindow.png[]

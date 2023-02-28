@@ -21,6 +21,8 @@ import VASSAL.build.AbstractBuildable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GlobalOptions;
+import VASSAL.build.module.Map;
+import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.counters.GamePiece;
@@ -49,6 +51,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
@@ -63,11 +66,13 @@ public class DebugControls extends AbstractBuildable implements ActionListener {
   protected SplitPane splitPane;
 
   protected Point cursorLocation;
+  protected Point cursorLocationBoard;
 
   protected JLabel cursorCoordsLabel;
 
   protected FlowLabel selectedNameLabel;
   protected JLabel selectedCoordsLabel;
+  protected JLabel selectedCoordsBoardLabel;
 
   //protected JLabel heapSizeLabel;
   //protected JLabel heapMaxLabel;
@@ -85,10 +90,26 @@ public class DebugControls extends AbstractBuildable implements ActionListener {
     return cursorLocation;
   }
 
-  public void setCursorLocation(Point pt) {
+  private Point getBoardLocation(Point pt, Map map) {
+    if (map == null) return pt;
+    final Board b = map.findBoard(pt);
+    if (b == null) return pt;
+    final Rectangle r = b.bounds();
+    final Point bp = new Point(pt);
+    bp.translate(-r.x, -r.y);
+    return bp;
+  }
+
+  public void setCursorLocation(Point pt, Map map) {
     cursorLocation = pt;
+    cursorLocationBoard = getBoardLocation(pt, map);
+
     updateCoords();
     updateSelected();
+  }
+
+  public void setCursorLocation(Point pt) {
+    setCursorLocation(pt, null);
   }
 
   public DebugControls() {
@@ -109,8 +130,10 @@ public class DebugControls extends AbstractBuildable implements ActionListener {
     final Box selectedBox = Box.createVerticalBox();
     selectedNameLabel = new FlowLabel("");
     selectedCoordsLabel = new JLabel("");
+    selectedCoordsBoardLabel = new JLabel("");
     selectedBox.add(selectedNameLabel);
     selectedBox.add(selectedCoordsLabel);
+    selectedBox.add(selectedCoordsBoardLabel);
 
     leftBox.add(cursorBox);
     leftBox.add(Box.createVerticalStrut(10));
@@ -151,7 +174,8 @@ public class DebugControls extends AbstractBuildable implements ActionListener {
   }
 
   private void updateCoords() {
-    cursorCoordsLabel.setText(Resources.getString("Debug.cursor", cursorLocation.x, cursorLocation.y));
+    cursorCoordsLabel.setText(Resources.getString("Debug.cursor", cursorLocation.x, cursorLocation.y) +
+      (!cursorLocationBoard.equals(cursorLocation) ? "  " + Resources.getString("Debug.cursor_board", cursorLocationBoard.x, cursorLocationBoard.y) : ""));
   }
 
 
@@ -160,6 +184,7 @@ public class DebugControls extends AbstractBuildable implements ActionListener {
     if (selected.isEmpty()) {
       selectedNameLabel.setText("");
       selectedCoordsLabel.setText("");
+      selectedCoordsBoardLabel.setText("");
       return;
     }
 
@@ -167,6 +192,15 @@ public class DebugControls extends AbstractBuildable implements ActionListener {
 
     selectedNameLabel.setText(piece.getName());
     selectedCoordsLabel.setText(piece.getPosition().x + "," + piece.getPosition().y);
+
+    final Point pt = piece.getPosition();
+    final Point bp = getBoardLocation(pt, piece.getMap());
+    if (!bp.equals(pt)) {
+      selectedCoordsBoardLabel.setText(bp.x + "," + bp.y);
+    }
+    else {
+      selectedCoordsBoardLabel.setText("");
+    }
   }
 
 

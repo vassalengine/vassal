@@ -25,7 +25,7 @@ import java.net.UnknownHostException;
 public class IpWatch implements Runnable {
   private final PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
   private String currentIp;
-  private long wait = 1000;
+  private final long wait;
 
   public IpWatch(long waitInterval) {
     wait = waitInterval;

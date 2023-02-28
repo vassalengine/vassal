@@ -39,14 +39,13 @@ import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
 
+import javax.swing.KeyStroke;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-
-import javax.swing.KeyStroke;
 
 /**
  * The heart of all the different forms of Global Key Command, GlobalCommand handles sending a key command to
@@ -249,7 +248,7 @@ public class GlobalCommand implements Auditable {
       final String reportText = reportFormat.getLocalizedText(source, owner, "Editor.report_format");
       if (reportText.length() > 0) {
         command = new Chatter.DisplayText(
-          GameModule.getGameModule().getChatter(), "*" + reportText); //NON-NLS
+          GameModule.getGameModule().getChatter(), "* " + reportText); //NON-NLS
         command.execute();
       }
 
@@ -369,19 +368,26 @@ public class GlobalCommand implements Auditable {
       if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.CURSTACK) {
         if (curPiece != null) {
           final Stack stack = curPiece.getParent();
-          int useFromDeck = (stack instanceof Deck) ? getSelectFromDeck() : -1;
+          List<GamePiece> pieces = null;
+          final int useFromDeck;
+
           if (stack instanceof Deck) {
             visitor.setSelectedCount(0);
-          }
-          List<GamePiece> pieces = stack.asList();
-          if (stack instanceof Deck) {
-            pieces = ((Deck) stack).getOrderedPieces();
 
             // Not if deck isn't accessible to us
-            if (!((Deck)stack).isAccessible()) {
-              useFromDeck = 0;
+            useFromDeck = ((Deck)stack).isAccessible() ? getSelectFromDeck() : 0;
+
+            if (useFromDeck != 0) {
+              pieces = ((Deck) stack).getOrderedPieces();
             }
           }
+          else {
+            useFromDeck = -1;
+
+            //BR// It is possible to set this search option on a nonstacking piece, in which case we just use the piece itself as the only possible target.
+            pieces = stack != null ? stack.asList() : List.of(curPiece);
+          }
+
           if (useFromDeck != 0) {
             for (final GamePiece gamePiece : pieces) {
               // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
@@ -432,18 +438,21 @@ public class GlobalCommand implements Auditable {
       else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.CURMAT) {
         if (curPiece instanceof Decorator) {
           // First check if we are a mat
-          GamePiece matPiece = Decorator.getDecorator(curPiece, Mat.class);
+          GamePiece matPiece = Decorator.getDecorator(Decorator.getOutermost(curPiece), Mat.class);
           if (matPiece == null) {
             // Otherwise check if we're a cargo that's currently ON a mat.
-            final MatCargo cargo = (MatCargo)Decorator.getDecorator(curPiece, MatCargo.class);
+            final MatCargo cargo = (MatCargo)Decorator.getDecorator(Decorator.getOutermost(curPiece), MatCargo.class);
             if (cargo != null) {
               matPiece = cargo.getMat();
             }
           }
           if (matPiece != null) {
             final Mat mat = (Mat)Decorator.getDecorator(matPiece, Mat.class);
-            final List<GamePiece> pieces = new ArrayList<>(mat.getContents());
-            pieces.add(0, mat);
+            final List<GamePiece> pieces = new ArrayList<>();
+            for (final GamePiece p : mat.getContents()) {
+              pieces.add(Decorator.getOutermost(p));
+            }
+            pieces.add(0, Decorator.getOutermost(matPiece));
 
             for (final GamePiece gamePiece : pieces) {
               // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
@@ -678,7 +687,7 @@ public class GlobalCommand implements Auditable {
     private final PieceFilter filter;
     private final KeyStroke stroke;
     private int selectedCount;
-    private AuditTrail auditSoFar = null;
+    private final AuditTrail auditSoFar;
 
     public Visitor(Command command, PieceFilter filter, KeyStroke stroke) {
       this(command, filter, stroke, null);

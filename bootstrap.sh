@@ -17,35 +17,40 @@ mkdir -p "$JDKDIR"
 pushd "$JDKDIR"
 
 ZULU_URL='https://cdn.azul.com/zulu/bin'
-ZULU_BASENAME=zulu18.30.11-ca-jdk18.0.1
+
+TEMURIN_URL='https://github.com/adoptium/temurin19-binaries/releases/download'
+TEMURIN_VERSION=jdk-19.0.2+7
+
+BELLSOFT_URL='https://download.bell-sw.com/java/19.0.2%2B9'
+
 
 # Windows x86_32
-filename=$ZULU_BASENAME-win_i686.zip
-curl -O "$ZULU_URL/$filename"
+filename=OpenJDK19U-jdk_x86-32_windows_hotspot_19.0.2_7.zip
+curl -L -O "$TEMURIN_URL/$TEMURIN_VERSION/$filename"
 unzip $filename
-mv $(basename $filename .zip) windows-x86_32
+mv $TEMURIN_VERSION windows-x86_32
 
 # Windows x86_64
-filename=$ZULU_BASENAME-win_x64.zip
-curl -O "$ZULU_URL/$filename"
+filename=OpenJDK19U-jdk_x64_windows_hotspot_19.0.2_7.zip
+curl -L -O "$TEMURIN_URL/$TEMURIN_VERSION/$filename"
 unzip $filename
-mv $(basename $filename .zip) windows-x86_64
+mv $TEMURIN_VERSION windows-x86_64
 
 # Windows aarch64
-filename=$ZULU_BASENAME-win_aarch64.zip
-curl -O "$ZULU_URL/$filename"
+filename=bellsoft-jdk19.0.2+9-windows-aarch64.zip
+curl -O "$BELLSOFT_URL/$filename"
 unzip $filename
-mv $(basename $filename .zip) windows-aarch64
+mv jdk-19.0.2 windows-aarch64
 
 # MacOS x86_64
-filename=$ZULU_BASENAME-macosx_x64.tar.gz
-curl -O "$ZULU_URL/$filename"
+filename=OpenJDK19U-jdk_x64_mac_hotspot_19.0.2_7.tar.gz
+curl -L -O "$TEMURIN_URL/$TEMURIN_VERSION/$filename"
 mkdir macos-x86_64
 tar -C macos-x86_64 --strip-components=1 -xvf $filename
 
 # MacOS aarch64
-filename=$ZULU_BASENAME-macosx_aarch64.tar.gz
-curl -O "$ZULU_URL/$filename"
+filename=OpenJDK19U-jdk_aarch64_mac_hotspot_19.0.2_7.tar.gz
+curl -L -O "$TEMURIN_URL/$TEMURIN_VERSION/$filename"
 mkdir macos-aarch64
 tar -C macos-aarch64 --strip-components=1 -xvf $filename
 

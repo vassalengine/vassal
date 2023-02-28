@@ -6,11 +6,10 @@
     <parent>
         <groupId>org.vassalengine</groupId>
         <artifactId>vassal-parent</artifactId>
-        <version>3.6.8-SNAPSHOT</version>
+        <version>3.7.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>vassal-app</artifactId>
-    <version>3.6.8-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -18,7 +17,7 @@
     <properties>
         <main.basedir>${project.basedir}${file.separator}..</main.basedir>
         <project.reporting.outputEncoding>${project.build.sourceEncoding}</project.reporting.outputEncoding>
-        <version.batik>1.14</version.batik>
+        <version.batik>1.16</version.batik>
     </properties>
 
     <dependencyManagement>
@@ -26,7 +25,7 @@
             <dependency>
                 <groupId>org.junit</groupId>
                 <artifactId>junit-bom</artifactId>
-                <version>5.8.2</version>
+                <version>5.9.2</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -37,7 +36,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.2.11</version>
+            <version>1.4.5</version>
         </dependency>
         <dependency>
             <groupId>com.miglayout</groupId>
@@ -70,9 +69,9 @@
             <version>3.12.0</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.httpcomponents.client5</groupId>
-            <artifactId>httpclient5</artifactId>
-            <version>5.1.3</version>
+          <groupId>org.apache.httpcomponents.client5</groupId>
+          <artifactId>httpclient5</artifactId>
+          <version>5.2.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.xmlgraphics</groupId>
@@ -107,12 +106,12 @@
         <dependency>
             <groupId>org.codehaus.janino</groupId>
             <artifactId>janino</artifactId>
-            <version>3.1.7</version>
+            <version>3.1.9</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.36</version>
+            <version>2.0.6</version>
         </dependency>
         <dependency>
             <groupId>org.swinglabs.swingx</groupId>
@@ -132,12 +131,12 @@
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-artifact</artifactId>
-            <version>3.8.6</version>
+            <version>3.9.0</version>
         </dependency>
         <dependency>
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm</artifactId>
-            <version>9.3</version>
+            <version>9.4</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -148,7 +147,7 @@
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
-            <version>1.15.1</version>
+            <version>1.15.4</version>
         </dependency>
 
         <!-- Test Dependencies -->
@@ -192,13 +191,13 @@
         <dependency>
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy</artifactId>
-            <version>1.12.10</version>
+            <version>1.14.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-inline</artifactId>
-            <version>4.6.1</version>
+            <version>5.1.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -290,34 +289,34 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <configuration>
-                    <failOnViolation>true</failOnViolation>
-                    <printFailingErrors>true</printFailingErrors>
-                    <analysisCache>true</analysisCache>
-                    <rulesets>
-                        <ruleset>src/test/resources/pmd.xml</ruleset>
-                    </rulesets>
-                    <excludes>
-                        <exclude>bsh/**</exclude>
-                        <exclude>org/**</exclude>
-                    </excludes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.ow2.asm</groupId>
-                        <artifactId>asm</artifactId>
-                        <version>9.3</version>
-                    </dependency>
-                </dependencies>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-pmd-plugin</artifactId>
+              <configuration>
+                <failOnViolation>true</failOnViolation>
+                <printFailingErrors>true</printFailingErrors>
+                <analysisCache>true</analysisCache>
+                <rulesets>
+                    <ruleset>src/test/resources/pmd.xml</ruleset>
+                </rulesets>
+                <excludes>
+                  <exclude>bsh/**</exclude>
+                  <exclude>org/**</exclude>
+                </excludes>
+              </configuration>
+              <executions>
+                <execution>
+                  <goals>
+                    <goal>check</goal>
+                  </goals>
+                </execution>
+              </executions>
+              <dependencies>
+                <dependency>
+                  <groupId>org.ow2.asm</groupId>
+                  <artifactId>asm</artifactId>
+                  <version>9.4</version>
+                </dependency>
+              </dependencies>
             </plugin>
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -408,25 +407,24 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>3.0.0</version>
-                <executions>
-                    <execution>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <mainClass>VASSAL.tools.deprecation.DeprecationWriter</mainClass>
-                    <arguments>
-                        <argument>-o</argument>
-                        <argument>${project.build.outputDirectory}/deprecated</argument>
-                        <argument>${project.build.outputDirectory}/VASSAL</argument>
-                    </arguments>
-                </configuration>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>exec-maven-plugin</artifactId>
+              <executions>
+                <execution>
+                  <phase>prepare-package</phase>
+                  <goals>
+                    <goal>java</goal>
+                  </goals>
+                </execution>
+              </executions>
+              <configuration>
+                <mainClass>VASSAL.tools.deprecation.DeprecationWriter</mainClass>
+                <arguments>
+                  <argument>-o</argument>
+                  <argument>${project.build.outputDirectory}/deprecated</argument>
+                  <argument>${project.build.outputDirectory}/VASSAL</argument>
+                </arguments>
+              </configuration>
             </plugin>
         </plugins>
     </build>

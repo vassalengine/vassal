@@ -45,9 +45,11 @@ public class VassalTranslation extends Translation {
   public VassalTranslation() {
     setConfigureName(Resources.VASSAL);
 
-    try (InputStream is = getClass().getResourceAsStream(Resources.BASE_BUNDLE)) {
+    final String propFile = "VASSAL" + Resources.BASE_BUNDLE;
+
+    try (InputStream is = getClass().getResourceAsStream(propFile)) {
       if (is == null) {
-        throw new FileNotFoundException("VASSAL.properties not found");
+        throw new FileNotFoundException(propFile + " not found");
       }
 
       try (BufferedInputStream in = new BufferedInputStream(is)) {
@@ -55,7 +57,7 @@ public class VassalTranslation extends Translation {
       }
     }
     catch (IOException e) {
-      ReadErrorDialog.error(e, Resources.BASE_BUNDLE);
+      ReadErrorDialog.error(e, propFile);
     }
   }
 

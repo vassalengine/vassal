@@ -17,10 +17,36 @@
  */
 package VASSAL.counters;
 
+import VASSAL.build.GameModule;
+import VASSAL.build.module.Map;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.map.Drawable;
+import VASSAL.command.ChangeTracker;
+import VASSAL.command.Command;
+import VASSAL.command.NullCommand;
+import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.FormattedExpressionConfigurer;
+import VASSAL.configure.IntConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.Resources;
+import VASSAL.i18n.TranslatablePiece;
 import VASSAL.script.expression.AuditTrail;
 import VASSAL.script.expression.AuditableException;
 import VASSAL.tools.FormattedString;
+import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.imageop.GamePieceOp;
+import VASSAL.tools.imageop.Op;
+import VASSAL.tools.imageop.RotateScaleOp;
+import VASSAL.tools.swing.SwingUtils;
+import net.miginfocom.swing.MigLayout;
+
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 import java.awt.AlphaComposite;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -45,32 +71,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
-
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
-
-import VASSAL.build.GameModule;
-import VASSAL.build.module.Map;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.map.Drawable;
-import VASSAL.command.ChangeTracker;
-import VASSAL.command.Command;
-import VASSAL.configure.BooleanConfigurer;
-import VASSAL.configure.IntConfigurer;
-import VASSAL.configure.NamedHotKeyConfigurer;
-import VASSAL.configure.StringConfigurer;
-import VASSAL.i18n.PieceI18nData;
-import VASSAL.i18n.Resources;
-import VASSAL.i18n.TranslatablePiece;
-import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.imageop.GamePieceOp;
-import VASSAL.tools.imageop.Op;
-import VASSAL.tools.imageop.RotateScaleOp;
-import VASSAL.tools.swing.SwingUtils;
-import net.miginfocom.swing.MigLayout;
 
 /**
  * d/b/a "Can Rotate"
@@ -502,33 +502,14 @@ public class FreeRotator extends Decorator
       return null;
     }
 
-    // Set the Old... properties
-    Command c = putOldProperties(this);
-
-    // Mark the piece moved
-    final GamePiece outer = Decorator.getOutermost(gp);
-    final ChangeTracker comm = new ChangeTracker(outer);
-    outer.setProperty(Properties.MOVED, Boolean.TRUE);
-    c = c.append(comm.getChangeCommand());
+    // Prepare the piece for move, writing "old location" properties, marking moved, and unlinking from any deck
+    Command c = prepareMove(new NullCommand(), true);
 
     // Move the piece
-    c = c.append(map.placeOrMerge(outer, dest));
+    c = c.append(map.placeOrMerge(Decorator.getOutermost(gp), dest));
 
-    // If a cargo piece has been "sent" (but not moving in tandem with its mat), find it a new Mat if needed.
-    if (!cargoFollowup) {
-      c = MatCargo.findNewMat(c, outer);
-    }
-
-    // Apply after Move Key
-    if (map.getMoveKey() != null) {
-      c = c.append(outer.keyEvent(map.getMoveKey()));
-    }
-
-    // Unlink from Parent Stack (in case it is a Deck).
-    final Stack parent = outer.getParent();
-    if (parent != null) {
-      c = c.append(parent.pieceRemoved(outer));
-    }
+    // Post move actions -- find a new mat if needed, and apply any afterburner apply-on-move key
+    c = finishMove(c, true, !cargoFollowup, true);
 
     return c;
   }

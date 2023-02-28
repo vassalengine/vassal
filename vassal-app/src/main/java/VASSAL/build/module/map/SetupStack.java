@@ -150,11 +150,12 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   }
 
   protected static String usedBoardWildcard = ""; // Forces "any board" stacks to prefer to match a specific name. Used during configurer draw cycle only.
-  protected static String cachedBoard = ""; // Most recently cached board for stack configurer
+  protected static String cachedBoard = null; // Most recently cached board for stack configurer
 
   public static String getUsedBoardWildcard() {
     return usedBoardWildcard;
   }
+
   public static String getCachedBoard() {
     return cachedBoard;
   }
@@ -162,6 +163,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   public static void setUsedBoardWildcard(String s) {
     usedBoardWildcard = s;
   }
+
   public static void setCachedBoard(String s) {
     cachedBoard = s;
   }
@@ -385,6 +387,9 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         else {
           owningBoardName = null;
         }
+      }
+      else if ("".equals(value)) {
+        owningBoardName = null; // Because "" is what null sometimes turns into during Vassal configurers
       }
       else {
         owningBoardName = (String) value;
@@ -901,6 +906,9 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 
       add(mainPanel, BorderLayout.SOUTH);
 
+      // Default actions on Enter/ESC
+      SwingUtils.setDefaultButtons(getRootPane(), okButton, canButton);
+
       scroll.revalidate();
       updateDisplay();
       pack();
@@ -1035,6 +1043,9 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       case KeyEvent.VK_RIGHT:
         adjustX(1, e);
         break;
+      case KeyEvent.VK_ENTER:
+      case KeyEvent.VK_ESCAPE:
+        return; // Prevent these unlikely-and-inadvisable-anyway hotkeys from interfering with dialog defaults
       default :
         if (myPiece != null) {
           myPiece.keyEvent(SwingUtils.getKeyStrokeForEvent(e));
@@ -1224,6 +1235,9 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 
       if (isShowOthers()) {
         prepareOtherConfigurers();
+      }
+      else {
+        setCachedBoard(null); //NON-NLS  //BR// Whump the cache so we know to re-prepare if it gets turned on later
       }
     }
 

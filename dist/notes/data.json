@@ -1,10 +1,9 @@
 {
   "headline": "The VASSAL Team is happy to announce VASSAL {{version}}.",
   "important": [
-    "NEW! 64-bit ARM packages: There are now MacOS and Windows packages for 64-bit ARM processors. If you have a Mac with an Apple Silicon CPU (which is a 64-bit ARM processor), we recommend using the 64-bit ARM build.",
-    "Code deprecated more than a year ago has been removed. Modules containing custom code using that code MUST be updated if they are to work with {{version_feature}}.",
-    "Things may be broken which worked previously. If you find a new bug, please report it.",
-    "Modules saved in {{version_feature}} are not openable by earlier versions of VASSAL. We recommend keeping a backup copy of any pre-{{version_feature}} modules you plan to modify in {{version_feature}} until you've verified that everything works to your satisfaction."
+    "Modules saved in {{version_feature}} are not openable by earlier versions of VASSAL. We recommend keeping a backup copy of any pre-{{version_feature}} modules you plan to modify in {{version_feature}} until you've verified that everything works to your satisfaction.",
+    "Some code deprecated more than a year ago has been removed. Modules containing custom code using that code MUST be updated if they are to work with {{version_feature}}.",
+    "Things may be broken which worked previously. If you find a new bug, please report it."
   ],
   "downloads": [
     { "display_name": "Linux", "suffix": "linux.tar.bz2" },
@@ -17,49 +16,62 @@
   ],
   "changes": [
     {
-      "in": "3.6.8",
-      "since": "3.6.7",
+      "in": "3.7.0-beta1",
+      "since": "3.6.13",
       "new_features": [
+        { "num": 12035, "desc": "Mouse-over Stack Viewers allow configuring thickness of outer border, and more padding/stretching options" },
+        { "num": 12032, "desc": "Mark-When-Moved trait can be configured to only flag when piece changes LocationName or Mat. Similarly Map auto-report can be configured to ignore same-location movements." },
+        { "num": 12003, "desc": "OldDeckName now supported as a piece property" },
+        { "num": 12001, "desc": "count_ supported for counting properties in Inventory windows" },
+        { "num": 11969, "desc": "New Border Outline trait",
+        { "num": 11964, "desc": "Mouse-over Stack Viewers can display an image of underlying terrain" },
+        { "num": 11937, "desc": "SumMat and CountMat functions for Beanshell expression" },
+        { "num": 11918, "desc": "Startup GKC that fires when player joins or changes sides" },
+        { "num": 11530, "desc": "Add new StackPos and StackSize properties to Basic Piece" },
+        { "num": 11178, "desc": "Global Option added to omit empty lines in property setting prompts" },
+        { "num": 11100, "desc": "Allow begin-logfile and end-logfile to have configurable hotkeys in Global Options" },
+        { "num": 10821, "desc": "Symbolic Dice buttons how have full Action Button capabilities (sounds, hotkeys, etc.)" },
+        { "num": 10820, "desc": "Make Action Button available on all windows where other similar buttons (e.g., GKC, Multi-Action, etc) are available" }
       ],
       "bug_fixes": [
-        { "num": 11515, "desc": "Piece dropped into incorrect position in the stack when dragging within a stack to a lower position" },
-        { "num": 11513, "desc": "Piece \"disappears\" when dragged to grid space with an existing stack and \"snap to defined point\"" },
-        { "num": 11496, "desc": "Safer GKC Configurer for Fixed # From Deck" }
+        { "num": 11913, "desc": "Numeric global properties with increments other than 1 and -1 now wrap around correctly" }
       ],
       "other_improvements": [
-        { "num": 11497, "desc": "Don't play sounds while fast-forwarding a log" }
       ]
     },
     {
-      "in": "3.6.7",
-      "since": "3.6.6",
+      "in": "3.6.14",
+      "since": "3.6.13",
       "new_features": [
       ],
       "bug_fixes": [
-        { "num": 11465, "desc": "DoActionButton claims its icon in remove-unused-images" },
-        { "num": 11417, "desc": "Fix Ctrl key with Does Not Stack trait" },
-        { "num": 11406, "desc": "Don't show image scale option for panels inside Chart Windows" },
-        { "num": 11388, "desc": "Correctly draw hex coordinates for odd-numbered columns spanning tile boundaries" },
-        { "num": 11372, "desc": "Delayed Notes from subsequent saves displayed out of order" },
-        { "num": 11369, "desc": "Leading zeros handling in Set Dynamic Property" },
-        { "num": 11362, "desc": "Match expanded Inventory nodes by entry value, not by display text" },
-        { "num": 11347, "desc": "Inventory should not reveal face down deck images" },
-        { "num": 11344, "desc": "Prevent Undo from triggering Deck Empty Hotkey" },
-        { "num": 11343, "desc": "Ensure that the pivot point is used for rotating Cargo" },
-        { "num": 11329, "desc": "Invisible Pieces belonging to another player can still stack together" }
+        { "num": 12048, "desc": "Fix bugs when deleting groups of decks/stacks from the editor" },
+        { "num": 12041, "desc": "Rollover border color of 'no color' did not save to file, nor copy correctly" },
+        { "num": 11249, "desc": "Enhanced recursion protection to catch self-referencing prototypes" }
       ],
       "other_improvements": [
-        { "num": 11487, "desc": "Removed obsolete option from startup script" },
-        { "num": 11460, "desc": "Show a dialog when connection to the game server is lost" },
-        { "num": 11446, "desc": "Tweak version number display in online window (numbers at end, grayed out)" },
-        { "num": 11414, "desc": "Improved version mismatch messaging" },
-        { "num": 11373, "desc": "Make columns in Delayed Notes table sortable" },
-        { "num": 11361, "desc": "Allow Calculated properties to set Game Piece Layer" },
-        { "num": 11356, "desc": "SetupStack can match literal grid names even if Zone only reports Zone name (e.g., uses $name$ as Location Format)" },
-        { "num": 11351, "desc": "Documented that Mats w/ cargo can't go in decks" },
-        { "num": 11348, "desc": "Polygon Editor improvements (move whole shape, tab between points)" },
-        { "num": 11346, "desc": "Update bundled Java to 18" },
-        { "num": 11330, "desc": "Allow .toString() to be called properly on property names in Beanshell" }
+        { "num": 10249, "desc": "Duplicating a prototype no longer disables that prototype until next module reload" }
+      ]
+    },
+    {
+      "in": "3.6.13",
+      "since": "3.6.12",
+      "new_features": [
+      ],
+      "bug_fixes": [
+        { "num": 12042, "desc": "Fix bug when copying Decks and At-Start Stacks to other maps" },
+        { "num": 12037, "desc": "Fix concurrent modification exception in Decks " },
+        { "num": 12016, "desc": "Fix a possible crash scenario in At-Start Stacks" },
+        { "num": 11897, "desc": "Ensure that deleted extensions don't crash the Module Manager" },
+        { "num": 11693, "desc": "Prevent NPE when copying folders containing Mouse-over Stack Viewers" },
+        { "num":  11451, "desc": "Don't permit drag-and-drop within PlaceMarker, Replace with Other selection dialogs" },
+        { "num": 11173, "desc": "Fixed crash in sorting a deck" }
+      ],
+      "other_improvements": [
+        { "num": 11995, "desc": "ActionButtons with reports shouldn't display them if report is empty" },
+        { "num": 11967, "desc": "When dragging piece out of face-down deck, use unrotated shape" },
+        { "num": 10877, "desc": "Added a 'player joined' message when playing online" },
+        { "num": 9786, "desc": "Text Label traits will respond to GameRefresher (unless trait has a manually-change-label hotkey defined)" }
       ]
     }
   ]

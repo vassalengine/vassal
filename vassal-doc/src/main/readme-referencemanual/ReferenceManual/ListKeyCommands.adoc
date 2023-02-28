@@ -6,7 +6,7 @@
 '''''
 
 === List Key Commands
-When working on a large module it can be helpful to have a centralized list of what <<NamedKeyCommands.adoc#top,keystrokes>> have already been assigned to actions--whether to prevent conflicts in the first place or to resolve them when you've discovered them later. Similarly finding all references to a particular <<NamedKeyCommands.adoc#top,Named Command>> can come in handy.
+When working on a large module it can be helpful to have a centralized list of what <<NamedKeyCommand.adoc#top,keystrokes>> have already been assigned to actions--whether to prevent conflicts in the first place or to resolve them when you've discovered them later. Similarly, finding all references to a particular <<NamedKeyCommand.adoc#top,Named Command>> can come in handy.
 
 The _List Key Commands_ tool on the <<Editor.adoc#top,Editor's>> _Tools Menu_ can help you with this. It will provide a list of every key command and named key command reference in the entire module. You can then apply filters (e.g. "Alt+K") to find the ones you're looking for, and you can sort the columns if desired.
 

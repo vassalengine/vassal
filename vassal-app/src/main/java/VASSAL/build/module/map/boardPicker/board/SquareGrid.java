@@ -17,26 +17,6 @@
  */
 package VASSAL.build.module.map.boardPicker.board;
 
-import static java.lang.Math.abs;
-import static java.lang.Math.floor;
-import static java.lang.Math.max;
-import static java.lang.Math.min;
-import static java.lang.Math.round;
-
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Area;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.swing.JButton;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -50,6 +30,25 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
+
+import javax.swing.JButton;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
+import java.util.HashMap;
+import java.util.Map;
+
+import static java.lang.Math.abs;
+import static java.lang.Math.floor;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+import static java.lang.Math.round;
 
 public class SquareGrid extends AbstractConfigurable implements GeometricGrid, GridEditor.EditableGrid {
   protected double dx = 48.0;
@@ -405,8 +404,8 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   }
 
   @Override
-  public Point snapTo(Point p) {
-    if (! snapTo) {
+  public Point snapTo(Point p, boolean force) {
+    if (!snapTo && !force) {
       return p;
     }
 
@@ -465,6 +464,11 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
       snap = new Point(origin.x + (int)round(nx * dx / 2), origin.y + (int) round(ny * dy / 2));
     }
     return snap;
+  }
+
+  @Override
+  public Point snapTo(Point p) {
+    return snapTo(p, false);
   }
 
   @Override

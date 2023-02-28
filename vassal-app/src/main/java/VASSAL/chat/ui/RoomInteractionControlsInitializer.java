@@ -47,6 +47,7 @@ import VASSAL.tools.swing.SwingUtils;
  *
  */
 public class RoomInteractionControlsInitializer implements ChatControlsInitializer {
+  @Deprecated(since = "2022-08-08", forRemoval = true)
   public static final Font POPUP_MENU_FONT = new Font("Dialog", 0, 10); //$NON-NLS-1$
   private final List<PlayerActionFactory> playerActionFactories = new ArrayList<>();
   private final List<RoomActionFactory> roomActionFactories = new ArrayList<>();
@@ -82,10 +83,6 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
             if (target instanceof Player) {
               final JPopupMenu popup = buildPopupForPlayer((SimplePlayer) target, tree);
               if (popup != null) {
-                final int n = popup.getComponentCount();
-                for (int i = 0; i < n; ++i) {
-                  popup.getComponent(i).setFont(POPUP_MENU_FONT);
-                }
                 popup.show(tree, e.getX(), e.getY());
               }
             }
@@ -141,10 +138,6 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
           }
 
           if (popup != null) {
-            final int n = popup.getComponentCount();
-            for (int i = 0; i < n; ++i) {
-              popup.getComponent(i).setFont(POPUP_MENU_FONT);
-            }
             popup.show(tree, e.getX(), e.getY());
           }
         }

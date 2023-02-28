@@ -109,8 +109,15 @@ public class TabWidget extends Widget
   private void refreshTabs() {
     int index = 0;
     for (final Widget w : widgets) {
+      final String currentTitle = tab.getTitleAt(index);
       tab.setTitleAt(index, "");
-      tab.setTitleAt(index, w.getConfigureName());
+      // In Play mode, the title may have been translated, so need to keep the existing title
+      // In Edit mode, the title will not have been set yet, so need to reset it to the actual title
+      tab.setTitleAt(
+        index,
+        currentTitle == null || currentTitle.isEmpty() ?
+          w.getConfigureName() : currentTitle
+      );
       index++;
     }
   }

@@ -164,6 +164,9 @@ public class Localization extends Language {
       translatableItems.clear();
       GameModule.getGameModule().initFrameTitle();
     }
+    else {
+      translationComplete = true; // Ensure Translation marked complete even if no actual translation took place
+    }
   }
 
   /**

@@ -2,22 +2,22 @@ name: Build
 
 on:
   push:
-    branches: [ master, release-3.5.9 ]
+    branches: [ master, release-3.6 ]
   pull_request:
-    branches: [ master, release-3.5.9 ]
+    branches: [ master, release-3.6 ]
 
 jobs:
   package:
     name: Test & Package
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 1
 
       - name: Set branch
-        if: github.ref != 'refs/heads/master' && github.ref != 'refs/heads/release-3.5.9'
+        if: github.ref != 'refs/heads/master' && github.ref != 'refs/heads/release-3.6'
         # Checking out a detached head for PR means we have to set the branch
         # name for it to show up later; shallow checkout means the branch
         # won't exist yet so there's no conflict.
@@ -25,7 +25,7 @@ jobs:
 
       - name: Store version
         id: version
-        run: echo "::set-output name=VERSION::$(make version-print)"
+        run: echo "VERSION=$(make version-print)" >>$GITHUB_OUTPUT
 
       - name: Update container
         run: sudo apt update
@@ -34,21 +34,23 @@ jobs:
         run: sudo apt-get install genisoimage ghostscript nsis
 
       - name: Install Java
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
-          java-version: 18
+          distribution: 'temurin'
+          java-version: 19
           java-package: jdk
 
       - name: Cache Maven packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
+        id: cache-maven
         with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
 
       - name: Cache packaging dependencies
         id: cache-bootstrap
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ./dist/dmg
@@ -64,49 +66,49 @@ jobs:
         run: make release
 
       - name: Archive Linux
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: VASSAL-${{ steps.version.outputs.VERSION }}-linux.tar.bz2
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-linux.tar.bz2
 
       - name: Archive MacOS x86_64
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: VASSAL-${{ steps.version.outputs.VERSION }}-macos-x86_64.dmg
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-macos-x86_64.dmg
 
       - name: Archive MacOS aarch64
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: VASSAL-${{ steps.version.outputs.VERSION }}-macos-aarch64.dmg
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-macos-aarch64.dmg
 
       - name: Archive other
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: VASSAL-${{ steps.version.outputs.VERSION }}-other.zip
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-other.zip
 
       - name: Archive Windows x86_32
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: VASSAL-${{ steps.version.outputs.VERSION }}-windows-x86_32.exe
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-windows-x86_32.exe
 
       - name: Archive Windows x86_64
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: VASSAL-${{ steps.version.outputs.VERSION }}-windows-x86_64.exe
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-windows-x86_64.exe
 
       - name: Archive Windows aarch64
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: VASSAL-${{ steps.version.outputs.VERSION }}-windows-aarch64.exe
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-windows-aarch64.exe
 
       - name: Archive SHA256 hashes
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: VASSAL-${{ steps.version.outputs.VERSION }}.sha256
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}.sha256
