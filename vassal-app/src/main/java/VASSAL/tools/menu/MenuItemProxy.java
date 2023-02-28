@@ -43,6 +43,10 @@ public class MenuItemProxy extends AbstractProxy<JMenuItem> {
     this.hideIfBlank = hideIfBlank;
   }
 
+  public void setHideIfBlank(boolean hideIfBlank) {
+    this.hideIfBlank = hideIfBlank;
+  }
+  
   public Action getAction() {
     return action;
   }
