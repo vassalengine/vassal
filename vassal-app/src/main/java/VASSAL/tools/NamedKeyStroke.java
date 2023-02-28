@@ -24,9 +24,11 @@ import java.util.Objects;
 
 import javax.swing.KeyStroke;
 
-import VASSAL.build.module.KeyNamer;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import org.apache.commons.lang3.tuple.Pair;
 
+import VASSAL.build.module.KeyNamer;
 import VASSAL.tools.concurrent.ConcurrentSoftHashMap;
 import VASSAL.tools.swing.SwingUtils;
 
@@ -115,6 +117,7 @@ public class NamedKeyStroke {
     }
   }
 
+  @SuppressFBWarnings(value = "EQ_CHECK_FOR_OPERAND_NOT_COMPATIBLE_WITH_THIS")
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -131,6 +134,11 @@ public class NamedKeyStroke {
     }
 
     return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return stroke.hashCode();
   }
 
   /**

@@ -22,4 +22,76 @@
         <method>*</method>
     </difference>
 
+    <difference>
+        <className>VASSAL/build/module/map/MoveCameraButton</className>
+        <differenceType>6006</differenceType>
+        <field>MOVE_CAMERA_MODE</field>
+        <justification>String constants should be final</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/MoveCameraButton</className>
+        <differenceType>6006</differenceType>
+        <field>ZOOM</field>
+        <justification>String constants should be final</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/MoveCameraButton</className>
+        <differenceType>6006</differenceType>
+        <field>BOARD_NAME</field>
+        <justification>String constants should be final</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/MoveCameraButton</className>
+        <differenceType>6006</differenceType>
+        <field>X_POS</field>
+        <justification>String constants should be final</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/MoveCameraButton</className>
+        <differenceType>6006</differenceType>
+        <field>Y_POS</field>
+        <justification>String constants should be final</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/MoveCameraButton</className>
+        <differenceType>6006</differenceType>
+        <field>ZONE_NAME</field>
+        <justification>String constants should be final</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/MoveCameraButton</className>
+        <differenceType>6006</differenceType>
+        <field>GRID_LOCATION</field>
+        <justification>String constants should be final</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/MoveCameraButton</className>
+        <differenceType>6006</differenceType>
+        <field>REGION_NAME</field>
+        <justification>String constants should be final</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/MoveCameraButton</className>
+        <differenceType>6006</differenceType>
+        <field>PROPERTY_FILTER</field>
+        <justification>String constants should be final</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/MoveCameraButton</className>
+        <differenceType>6006</differenceType>
+        <field>X_OFFSET</field>
+        <justification>String constants should be final</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/MoveCameraButton</className>
+        <differenceType>6006</differenceType>
+        <field>Y_OFFSET</field>
+        <justification>String constants should be final</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/NamedKeyManager</className>
+        <differenceType>6006</differenceType>
+        <field>instance</field>
+        <justification>Singletons should be final</justification>
+    </difference>
 </differences>

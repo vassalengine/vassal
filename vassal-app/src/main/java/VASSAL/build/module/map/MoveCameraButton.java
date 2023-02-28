@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2021 by Brian Reynolds & VASSAL Team
  *
  * This library is free software; you can redistribute it and/or
@@ -43,17 +42,17 @@ import java.util.List;
  * Adds a button to a Maps toolbar that moves the view/camera to a specific point
  */
 public class MoveCameraButton extends AbstractToolbarItem {
-  public static String MOVE_CAMERA_MODE = "moveCameraMode"; //NON-NLS
-  public static String ZOOM = "zoom"; // NON-NLS
-  public static String BOARD_NAME = "boardName"; //NON-NLS
-  public static String X_POS = "xPos"; //NON-NLS;
-  public static String Y_POS = "yPos"; //NON-NLS;
-  public static String ZONE_NAME = "zoneName"; //NON-NLS;
-  public static String GRID_LOCATION = "gridLocation"; //NON-NLS;
-  public static String REGION_NAME = "regionName"; //NON-NLS
-  public static String PROPERTY_FILTER = "propertyFilter"; //NON-NLS
-  public static String X_OFFSET = "xOffset"; //NON-NLS
-  public static String Y_OFFSET = "yOffset"; //NON-NLS
+  public static final String MOVE_CAMERA_MODE = "moveCameraMode"; //NON-NLS
+  public static final String ZOOM = "zoom"; // NON-NLS
+  public static final String BOARD_NAME = "boardName"; //NON-NLS
+  public static final String X_POS = "xPos"; //NON-NLS;
+  public static final String Y_POS = "yPos"; //NON-NLS;
+  public static final String ZONE_NAME = "zoneName"; //NON-NLS;
+  public static final String GRID_LOCATION = "gridLocation"; //NON-NLS;
+  public static final String REGION_NAME = "regionName"; //NON-NLS
+  public static final String PROPERTY_FILTER = "propertyFilter"; //NON-NLS
+  public static final String X_OFFSET = "xOffset"; //NON-NLS
+  public static final String Y_OFFSET = "yOffset"; //NON-NLS
 
   protected String moveCameraMode = SendToLocation.DEST_LOCATION;
   protected FormattedString zoom = new FormattedString("");

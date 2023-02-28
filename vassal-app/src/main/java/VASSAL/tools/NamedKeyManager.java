@@ -24,7 +24,7 @@ import java.util.Map;
 import javax.swing.KeyStroke;
 
 public class NamedKeyManager {
-  protected static NamedKeyManager instance = new NamedKeyManager();
+  protected static final NamedKeyManager instance = new NamedKeyManager();
 
   /*
    * Named Keys are allocated real Keystrokes

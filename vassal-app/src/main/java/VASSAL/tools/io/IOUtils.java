@@ -17,6 +17,8 @@
  */
 package VASSAL.tools.io;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -33,6 +35,7 @@ import java.nio.channels.FileChannel;
  *
  * @deprecated Use {@link org.apache.commons.io.IOUtils} instead.
  */
+@SuppressFBWarnings(value = "NM_SAME_SIMPLE_NAME_AS_SUPERCLASS")
 @Deprecated(since = "2020-11-14", forRemoval = true)
 public class IOUtils extends org.apache.commons.io.IOUtils {
   protected IOUtils() {}

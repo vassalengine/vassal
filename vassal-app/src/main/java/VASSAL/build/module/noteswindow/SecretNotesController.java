@@ -63,6 +63,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 public class SecretNotesController implements GameComponent, CommandEncoder, AddSecretNoteCommand.Interface {
   public static final String COMMAND_PREFIX = "SNOTE\t"; //$NON-NLS-1$
 
@@ -84,6 +86,8 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
    *
    * Not thread-safe!
    */
+  @SuppressFBWarnings(value = "STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE")
+  @Deprecated(since = "2023-02-27", forRemoval = true)
   public static final DateFormat INTERNAL_DATE_FORMATTER =
     new SimpleDateFormat(INTERNAL_DATETIME_FORMAT);
 
@@ -92,6 +96,8 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
    *
    * Not thread-safe!
    */
+  @SuppressFBWarnings(value = "STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE")
+  @Deprecated(since = "2023-02-27", forRemoval = true)
   public static final DateFormat LOCAL_DATE_FORMATTER =
     DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.getDefault());
 
@@ -338,10 +344,14 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
     public class DateRenderer extends DefaultTableCellRenderer {
       private static final long serialVersionUID = 1L;
 
+      private final DateFormat fmt = DateFormat.getDateTimeInstance(
+        DateFormat.SHORT, DateFormat.SHORT, Locale.getDefault()
+      );
+
       @Override
       public void setValue(Object val) {
         // timestamps sort by actual value, but display in their local format
-        setText(val == null ? "" : LOCAL_DATE_FORMATTER.format(val));
+        setText(val == null ? "" : fmt.format(val));
       }
     }
 

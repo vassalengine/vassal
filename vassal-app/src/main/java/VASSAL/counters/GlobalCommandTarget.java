@@ -251,6 +251,11 @@ public class GlobalCommandTarget implements ConfigurerFactory, SearchTarget {
     return encode().equals(t.encode());
   }
 
+  @Override
+  public int hashCode() {
+    return encode().hashCode();
+  }
+
 /*
   protected boolean fastMatchLocation = false; // True if we are doing Fast Match by location (else other values in this block unused)
   protected Target targetType = Target.MAP;    // Type of location Fast Match we are doing
