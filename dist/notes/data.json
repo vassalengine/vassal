@@ -27,6 +27,7 @@
         { "num": 11964, "desc": "Mouse-over Stack Viewers can display an image of underlying terrain" },
         { "num": 11937, "desc": "SumMat and CountMat functions for Beanshell expression" },
         { "num": 11918, "desc": "Startup GKC that fires when player joins or changes sides" },
+        { "num": 11917, "desc": "Create Non-Rectangular mask directly from SVG outline" },
         { "num": 11530, "desc": "Add new StackPos and StackSize properties to Basic Piece" },
         { "num": 11523, "desc": "Area of Effect improvements: Active property, local/global visibility, separate on/off Key Commands" },
         { "num": 11178, "desc": "Global Option added to omit empty lines in property setting prompts" },
