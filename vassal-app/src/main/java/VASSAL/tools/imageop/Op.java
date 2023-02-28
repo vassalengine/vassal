@@ -21,6 +21,7 @@ package VASSAL.tools.imageop;
 import java.awt.image.BufferedImage;
 
 import VASSAL.build.BadDataReport;
+import VASSAL.build.GameModule;
 import VASSAL.counters.GamePiece;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.image.ImageIOException;
@@ -28,7 +29,6 @@ import VASSAL.tools.image.ImageNotFoundException;
 import VASSAL.tools.image.UnrecognizedImageTypeException;
 import VASSAL.tools.image.tilecache.TileNotFoundException;
 import VASSAL.tools.opcache.OpFailedException;
-import VASSAL.build.GameModule;
 
 public class Op {
   protected Op() {}
