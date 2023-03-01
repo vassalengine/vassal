@@ -59,6 +59,7 @@ import VASSAL.preferences.Prefs;
 import VASSAL.search.SearchTarget;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ReflectionUtils;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
@@ -68,6 +69,7 @@ import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -102,6 +104,8 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Frame;
@@ -489,9 +493,19 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
     addAction(popup, buildImportAction(target));
 
-    if (getTreeNode(target).getParent() != null) {
+    final boolean canExport = getTreeNode(target).getParent() != null;
+    final boolean canImport = (target.getAllowableConfigureComponents().length > 0);
+
+    if (canImport || canExport) {
       popup.addSeparator();
+    }
+
+    if (canExport) {
       addAction(popup, buildExportTreeAction(target));
+    }
+
+    if (canImport) {
+      addAction(popup, buildImportTreeAction(target));
     }
 
     popup.addSeparator();
@@ -530,6 +544,31 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     return true;
   }
 
+  protected boolean importTreeBranch(AbstractBuildable target) {
+
+    final FileChooser fc = GameModule.getGameModule().getFileChooser();
+    if (fc.showOpenDialog() != FileChooser.APPROVE_OPTION) return false;
+
+    String filename = fc.getSelectedFile().getPath();
+
+    if (fc.getSelectedFile().getName().indexOf('.') < 0) {
+      filename += defaultExportExtension;
+    }
+
+    try {
+      Builder.build(DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File(filename)).getDocumentElement(), target);
+    }
+    catch (ParserConfigurationException | SAXException e) {
+      ErrorDialog.bug(e);
+      return false;
+    }
+    catch (IOException e) {
+      ReadErrorDialog.error(e, filename);
+      return false;
+    }
+
+    return true;
+  }
 
 
   /**
@@ -591,6 +630,23 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     return a;
   }
 
+
+  protected Action buildImportTreeAction(final Configurable target) {
+    Action a = null;
+    if (getTreeNode(target).getParent() != null) {
+      a = new AbstractAction(Resources.getString("Editor.ConfigureTree.import_object")) {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          if (target instanceof AbstractBuildable) {
+            importTreeBranch((AbstractBuildable) target);
+          }
+        }
+      };
+    }
+    return a;
+  }
 
 
   protected Action buildMoveAction(final Configurable target) {
