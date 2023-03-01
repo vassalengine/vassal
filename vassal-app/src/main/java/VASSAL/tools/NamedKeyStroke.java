@@ -21,6 +21,7 @@ package VASSAL.tools;
 import VASSAL.build.module.KeyNamer;
 import VASSAL.tools.concurrent.ConcurrentSoftHashMap;
 import VASSAL.tools.swing.SwingUtils;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.swing.KeyStroke;
@@ -28,15 +29,6 @@ import java.awt.event.KeyEvent;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.swing.KeyStroke;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-import org.apache.commons.lang3.tuple.Pair;
-
-import VASSAL.build.module.KeyNamer;
-import VASSAL.tools.concurrent.ConcurrentSoftHashMap;
-import VASSAL.tools.swing.SwingUtils;
 import static java.awt.event.KeyEvent.VK_BACK_SPACE;
 import static java.awt.event.KeyEvent.VK_DELETE;
 
