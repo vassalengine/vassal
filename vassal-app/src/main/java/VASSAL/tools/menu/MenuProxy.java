@@ -89,8 +89,14 @@ public class MenuProxy extends AbstractParent<JMenu> {
     }
 
     peers.add(new WeakReference<>(menu, queue));
+
+    if (isHideIfBlank()) {
+      forEachPeer(m -> m.setVisible((text != null) && !text.isEmpty()));
+    }
+
     return menu;
   }
+
 
   public void setMnemonic(final char mnemonic) {
     this.mnemonic = mnemonic;

@@ -70,6 +70,14 @@ public class MenuItemProxy extends AbstractProxy<JMenuItem> {
   public JMenuItem createPeer() {
     final JMenuItem item = new JMenuItem(action);
 
+    if (action == null) {
+      item.setVisible(false);
+    }
+    else {
+      final String name = (String) action.getValue(Action.NAME);
+      item.setVisible(!hideIfBlank || ((name != null) && !name.isEmpty()));
+    }
+
     peers.add(new WeakReference<>(item, queue));
     return item;
   }
