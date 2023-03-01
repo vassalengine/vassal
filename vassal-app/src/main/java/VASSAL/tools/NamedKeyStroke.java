@@ -127,10 +127,12 @@ public class NamedKeyStroke {
     if (o instanceof NamedKeyStroke) {
       return Objects.equals(stroke, ((NamedKeyStroke) o).stroke);
     }
+    if (stroke == null) {
+      return false;
+    }
     // checking for parameter being a completely unrelated class to this class
     // deliberate misuse of equals()
     else if (o instanceof KeyStroke) {
-      if (stroke == null) return false;
       final int code = stroke.getKeyCode();
       // Either DEL or BACKSPACE matches to either
       if ((code == VK_DELETE) || (code == VK_BACK_SPACE)) {
