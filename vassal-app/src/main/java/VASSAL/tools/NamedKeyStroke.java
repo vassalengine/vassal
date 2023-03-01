@@ -130,13 +130,15 @@ public class NamedKeyStroke {
     // checking for parameter being a completely unrelated class to this class
     // deliberate misuse of equals()
     else if (o instanceof KeyStroke) {
-      final int code = stroke.getKeyCode();
-      // Either DEL or BACKSPACE matches to either
-      if ((code == VK_DELETE) || (code == VK_BACK_SPACE)) {
-        final KeyStroke k = (KeyStroke)o;
-        if ((k.getKeyCode() == VK_DELETE) || (k.getKeyCode() == VK_BACK_SPACE)) {
-          return o.equals(KeyStroke.getKeyStroke(VK_DELETE, k.getModifiers(), k.isOnKeyRelease())) ||
-                 o.equals(KeyStroke.getKeyStroke(VK_BACK_SPACE, k.getModifiers(), k.isOnKeyRelease()));
+      if (stroke != null) {
+        final int code = stroke.getKeyCode();
+        // Either DEL or BACKSPACE matches to either
+        if ((code == VK_DELETE) || (code == VK_BACK_SPACE)) {
+          final KeyStroke k = (KeyStroke) o;
+          if ((k.getKeyCode() == VK_DELETE) || (k.getKeyCode() == VK_BACK_SPACE)) {
+            return o.equals(KeyStroke.getKeyStroke(VK_DELETE, k.getModifiers(), k.isOnKeyRelease())) ||
+                   o.equals(KeyStroke.getKeyStroke(VK_BACK_SPACE, k.getModifiers(), k.isOnKeyRelease()));
+          }
         }
       }
       return o.equals(stroke);
