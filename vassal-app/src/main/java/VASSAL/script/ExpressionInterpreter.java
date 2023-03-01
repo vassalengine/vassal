@@ -332,7 +332,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
       try {
         eval(MAGIC1 + "=" + MAGIC2 + "(" + argList.toString() + ")");
-        result = get(MAGIC1).toString();
+        final Object magic1 = get(MAGIC1);
+        result = (magic1 == null) ? "" : magic1.toString();
       }
       catch (EvalError e) {
         final String s = e.getRawMessage();
