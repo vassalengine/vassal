@@ -83,7 +83,7 @@ public class ColorConfigurer extends Configurer {
 
   public static String colorToString(Color c) {
     if (c == null) {
-      return ""; 
+      return "";
     }
     else if (c.getTransparency() == c.OPAQUE) {
       return c.getRed() + ","
