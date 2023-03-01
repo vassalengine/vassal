@@ -138,7 +138,7 @@ public class NamedKeyStroke {
 
   @Override
   public int hashCode() {
-    return stroke.hashCode();
+    return Objects.hashCode(stroke);
   }
 
   /**
