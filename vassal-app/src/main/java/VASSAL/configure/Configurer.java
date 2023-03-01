@@ -69,8 +69,8 @@ public abstract class Configurer {
   public Configurer(String key, String name, Object val) {
     this.key = key;
     this.name = name == null ? "" : name;
-    value = val;
     changeSupport = new PropertyChangeSupport(this);
+    setValue(val);
   }
 
   /**
