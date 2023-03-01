@@ -563,6 +563,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
       else {
         GameModule.getGameModule().warn(Resources.getString("Editor.ConfigureTree.import_invalid_file"));
+        ErrorDialog.show("Error.import_invalid_file", b.toString());
         return false;
       }
 
@@ -578,7 +579,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         insert(target, (Configurable)b, getTreeNode(target).getChildCount());
       }
       else {
-        GameModule.getGameModule().warn(Resources.getString("Editor.ConfigureTree.import_not_allowed"));
+        GameModule.getGameModule().warn(Resources.getString("Editor.ConfigureTree.import_not_allowed", b.toString()));
+        ErrorDialog.show("Error.import_not_allowed", b.toString());
+        return false;
       }
     }
     catch (ParserConfigurationException | SAXException e) {
