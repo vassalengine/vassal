@@ -138,8 +138,8 @@ public class NamedKeyStroke {
       if ((code == VK_DELETE) || (code == VK_BACK_SPACE)) {
         final KeyStroke k = (KeyStroke) o;
         if ((k.getKeyCode() == VK_DELETE) || (k.getKeyCode() == VK_BACK_SPACE)) {
-          return o.equals(KeyStroke.getKeyStroke(VK_DELETE, k.getModifiers(), k.isOnKeyRelease())) ||
-                 o.equals(KeyStroke.getKeyStroke(VK_BACK_SPACE, k.getModifiers(), k.isOnKeyRelease()));
+          return o.equals(KeyStroke.getKeyStroke(VK_DELETE, stroke.getModifiers(), k.isOnKeyRelease())) ||
+                 o.equals(KeyStroke.getKeyStroke(VK_BACK_SPACE, stroke.getModifiers(), k.isOnKeyRelease()));
         }
       }
       return o.equals(stroke);
