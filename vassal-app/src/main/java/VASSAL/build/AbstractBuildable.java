@@ -195,7 +195,7 @@ public abstract class AbstractBuildable extends AbstractImageFinder implements B
 
 
   @Override
-  public Element getBuildElement(org.w3c.dom.Document doc) {
+  public Element getBuildElement(Document doc) {
     final Element el = doc.createElement(getClass().getName());
     final String[] names = getAttributeNames();
     for (final String name : names) {

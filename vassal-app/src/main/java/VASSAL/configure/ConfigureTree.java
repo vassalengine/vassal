@@ -2801,7 +2801,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       catch (UnsupportedFlavorException ufe) {
         logger.error("Unsupported Flavor: " + ufe.getMessage()); //NON-NLS
       }
-      catch (java.io.IOException ioe) {
+      catch (IOException ioe) {
         logger.error("I/O error: " + ioe.getMessage()); //NON-NLS
       }
       catch (InvalidDnDOperationException id) {
