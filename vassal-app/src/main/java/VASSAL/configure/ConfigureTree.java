@@ -544,7 +544,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     return true;
   }
 
-  protected boolean importTreeBranch(AbstractBuildable target) {
+  protected boolean importTreeBranch(Configurable target) {
 
     final FileChooser fc = GameModule.getGameModule().getFileChooser();
     if (fc.showOpenDialog() != FileChooser.APPROVE_OPTION) return false;
@@ -556,7 +556,30 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
 
     try {
-      Builder.build(DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File(filename)).getDocumentElement(), target);
+      Buildable b = Builder.create(DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File(filename)).getDocumentElement(), target);
+
+      if (b instanceof Configurable) {
+        b = convertChild(target, (Configurable)b);
+      }
+      else {
+        GameModule.getGameModule().warn(Resources.getString("Editor.ConfigureTree.import_invalid_file"));
+        return false;
+      }
+
+      boolean allowed = false;
+      for (final Class c : target.getAllowableConfigureComponents()) {
+        if (c.isInstance(b)) {
+          allowed = true;
+          break;
+        }
+      }
+
+      if (allowed) {
+        insert(target, (Configurable)b, getTreeNode(target).getChildCount());
+      }
+      else {
+        GameModule.getGameModule().warn(Resources.getString("Editor.ConfigureTree.import_not_allowed"));
+      }
     }
     catch (ParserConfigurationException | SAXException e) {
       ErrorDialog.bug(e);
@@ -639,9 +662,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
         @Override
         public void actionPerformed(ActionEvent e) {
-          if (target instanceof AbstractBuildable) {
-            importTreeBranch((AbstractBuildable) target);
-          }
+          importTreeBranch(target);
         }
       };
     }
