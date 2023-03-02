@@ -17,31 +17,6 @@
 
 package VASSAL.launch;
 
-import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.STARTING_IMAGE;
-import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILE_WRITTEN;
-import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILER_READY;
-import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILING_FINISHED;
-
-import java.awt.Dimension;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-
-import org.apache.commons.io.FileUtils;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import VASSAL.Info;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
@@ -59,6 +34,29 @@ import VASSAL.tools.lang.Pair;
 import VASSAL.tools.swing.EDT;
 import VASSAL.tools.swing.ProgressDialog;
 import VASSAL.tools.swing.Progressor;
+import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.awt.Dimension;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
+import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.STARTING_IMAGE;
+import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILER_READY;
+import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILE_WRITTEN;
+import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILING_FINISHED;
 
 /**
  * A launcher for the process which tiles large images.
@@ -283,6 +281,10 @@ public class TilingHandler {
     return new MyStateMachineHandler(tcount, fut);
   }
 
+
+  public static final int SLICER_SUCCESS = -1;
+  public static final int SLICER_GAVE_UP = -2;
+
   protected Pair<Integer, Integer> runSlicer(List<String> multi, int tcount, int maxheap) throws CancellationException, IOException {
 
     // don't exceed the maxheap limit
@@ -369,7 +371,7 @@ public class TilingHandler {
       if (retval == 0) {
         h.handleSuccess();
         // done, don't retry
-        maxheap = -1;
+        maxheap = SLICER_SUCCESS;
       }
       else {
         h.handleFailure();
@@ -380,12 +382,12 @@ public class TilingHandler {
         if (maxheap < maxheap_limit) {
           // The tiler possibly ran out of memory; we can't reliably detect
           // this, so assume it did. Try again with 50% more max heap.
-          logger.info("Tiling possibly ran out of memory. Retrying tiling with 50% more."); //NON-NLS
+          logger.info("Tiling with " + maxheap + " possibly ran out of memory. Retrying tiling with 50% more (" + (int)(maxheap * 1.5) + ")."); //NON-NLS
           maxheap *= 1.5;
         }
         else {
           // give up, don't retry
-          maxheap = -1;
+          maxheap = SLICER_GAVE_UP;
         }
       }
       return Pair.of(retval, maxheap);
@@ -446,10 +448,10 @@ public class TilingHandler {
       Pair<Integer, Integer> result = Pair.of(0, maxheap);
       do {
         result = runSlicer(multi, s.first, result.second);
-      } while (result.second != -1);
+      } while (result.second > 0);
 
       if (result.first != 0) {
-        throw new IOException("Tiling failed with return value == " + result.first);
+        throw new IOException((((result.first == 1) && (result.second == SLICER_GAVE_UP)) ? "Probably" : "Possibly") + " ran out of memory. Tiling failed with return value == " + result.first);
       }
     }
     catch (CancellationException | IOException e) {

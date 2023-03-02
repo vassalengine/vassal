@@ -26,7 +26,11 @@ import VASSAL.tools.bug.BugHandler;
 import VASSAL.tools.concurrent.FutureUtils;
 import VASSAL.tools.image.tilecache.TileNotFoundException;
 import VASSAL.tools.version.VersionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import java.awt.Component;
 import java.awt.Frame;
 import java.io.IOException;
@@ -37,12 +41,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
-
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Joel Uckelman
@@ -90,6 +88,10 @@ public class ErrorDialog {
       final Frame frame = GameModule.getGameModule() == null
         ? null : GameModule.getGameModule().getPlayerWindow();
 
+      if (thrown.getMessage().contains("ran out of memory")) { //NON-NLS
+        ErrorDialog.show("Bug10900.help");
+      }
+
       // remove this when the tile cache bug is fixed
       if (showSpecialTileBugAdmonition(thrown)) {
         new Thread(() -> {
@@ -114,6 +116,7 @@ public class ErrorDialog {
     }
     return false;
   }
+
 
   public static Future<?> show(
     String messageKey,
