@@ -443,6 +443,7 @@ public class TilingHandler {
 
     // slice, and cleanup on failure
     try {
+      // result is (return value, next max heap to try)
       Pair<Integer, Integer> result = Pair.of(0, maxheap);
       do {
         result = runSlicer(multi, s.first, result.second);
