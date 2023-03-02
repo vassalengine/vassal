@@ -17,11 +17,29 @@
 
 package VASSAL.launch;
 
-import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.IMAGE_FINISHED;
-import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.STARTING_IMAGE;
-import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILE_WRITTEN;
-import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILER_READY;
-import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILING_FINISHED;
+import VASSAL.Info;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.DataArchive;
+import VASSAL.tools.image.ImageUtils;
+import VASSAL.tools.image.tilecache.ImageTileDiskCache;
+import VASSAL.tools.image.tilecache.TileUtils;
+import VASSAL.tools.io.ArgEncoding;
+import VASSAL.tools.io.FileArchive;
+import VASSAL.tools.io.FileStore;
+import VASSAL.tools.io.InputOutputStreamPump;
+import VASSAL.tools.io.InputStreamPump;
+import VASSAL.tools.io.ProcessLauncher;
+import VASSAL.tools.io.ProcessWrapper;
+import VASSAL.tools.lang.MemoryUtils;
+import VASSAL.tools.lang.Pair;
+import VASSAL.tools.swing.EDT;
+import VASSAL.tools.swing.ProgressDialog;
+import VASSAL.tools.swing.Progressor;
+
+import org.apache.commons.io.FileUtils;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.Dimension;
 import java.io.ByteArrayOutputStream;
@@ -38,28 +56,11 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import org.apache.commons.io.FileUtils;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import VASSAL.Info;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.DataArchive;
-import VASSAL.tools.image.ImageUtils;
-import VASSAL.tools.image.tilecache.ImageTileDiskCache;
-import VASSAL.tools.image.tilecache.TileUtils;
-import VASSAL.tools.io.ArgEncoding;
-import VASSAL.tools.io.FileArchive;
-import VASSAL.tools.io.FileStore;
-import VASSAL.tools.io.InputOutputStreamPump;
-import VASSAL.tools.io.InputStreamPump;
-import VASSAL.tools.io.ProcessLauncher;
-import VASSAL.tools.io.ProcessWrapper;
-import VASSAL.tools.lang.Pair;
-import VASSAL.tools.swing.EDT;
-import VASSAL.tools.swing.ProgressDialog;
-import VASSAL.tools.swing.Progressor;
+import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.IMAGE_FINISHED;
+import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.STARTING_IMAGE;
+import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILER_READY;
+import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILE_WRITTEN;
+import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILING_FINISHED;
 
 /**
  * A launcher for the process which tiles large images.
@@ -297,6 +298,9 @@ public class TilingHandler {
     return new MyStateMachineHandler(tcount, fut);
   }
 
+  protected static final int SLICER_SUCCESS = -1;
+  protected static final int SLICER_GAVE_UP = -2;
+
   protected Pair<Integer, Integer> runSlicer(
     List<String> multi,
     int maxheap,
@@ -393,23 +397,23 @@ public class TilingHandler {
       final int retval = proc.future.get();
       if (retval == 0) {
         // done, don't retry
-        maxheap = -1;
+        maxheap = SLICER_SUCCESS;
       }
       else {
         proc.future.cancel(true);
 
-        logger.info("Tiling failed with return value == " + retval);
+        logger.info("Tiling failed with return value == " + retval + "   MaxHeap=" + maxheap + "  MaxHeapLimit=" + maxheap_limit + "  PhysMemory:" + (MemoryUtils.getPhysicalMemory() >> 20)); //NON-NLS
 
         if (maxheap < maxheap_limit) {
           // The tiler possibly ran out of memory; we can't reliably detect
           // this, so assume it did. Try again with 50% more max heap.
-          logger.info("Tiling possibly ran out of memory. Retrying tiling with 50% more."); //NON-NLS
+          logger.info("Tiling with " + maxheap + " possibly ran out of memory. Retrying tiling with 50% more (" + (int)(maxheap * 1.5) + ")."); //NON-NLS
           maxheap *= 1.5;
           multi.removeAll(tiled);
         }
         else {
           // give up, don't retry
-          maxheap = -1;
+          maxheap = SLICER_GAVE_UP;
         }
       }
       return Pair.of(retval, maxheap);
@@ -462,7 +466,7 @@ public class TilingHandler {
     final int max_data_mbytes = (4 * s.second) >> 20;
 
     // This was determined empirically.
-    final int maxheap = (int) (1.66 * max_data_mbytes + 150);
+    final int maxheap = Math.min(Math.max((int) (1.66 * max_data_mbytes + 150), 1024), maxheap_limit);
 
     final StateMachineHandler h = createStateMachineHandler(s.first, null);
     h.handleStart();
@@ -473,14 +477,16 @@ public class TilingHandler {
       Pair<Integer, Integer> result = Pair.of(0, maxheap);
       do {
         result = runSlicer(multi, result.second, h);
-      } while (result.second != -1);
+      } while (result.second > 0);
 
       if (result.first == 0) {
         h.handleSuccess();
       }
       else {
         h.handleFailure();
-        throw new IOException("Tiling failed with return value == " + result.first);
+
+        final String likely = result.first == 2 ? "Probably" : "Possibly"; //NON-NLS
+        throw new IOException(likely + " ran out of memory. Tiling failed with return value == " + result.first);
       }
     }
     catch (CancellationException | IOException e) {
