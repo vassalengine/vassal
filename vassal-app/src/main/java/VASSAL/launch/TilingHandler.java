@@ -179,7 +179,7 @@ public class TilingHandler {
 
     void handleStartingImageState(String in);
 
-    void handleFinishedImageState(String in);
+    default void handleFinishedImageState(String in) {}
 
     void handleTileWrittenState();
 
