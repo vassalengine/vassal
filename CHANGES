@@ -25,7 +25,7 @@
 * 10820: Make Action Button available on all windows where other similar
     buttons (e.g., GKC, Multi-Action, etc) are available
 
-3.6.14 - ???
+3.6.14 - 1 March 2023
 
 * 12065: Reduce update check delay to 5 days, from 10
 * 12063: Fixed Deck save/load hotkeys being mixed up
