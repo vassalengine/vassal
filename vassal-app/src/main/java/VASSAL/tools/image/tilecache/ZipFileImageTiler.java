@@ -81,7 +81,10 @@ public class ZipFileImageTiler {
 
       // Ensure that exceptions are logged.
       Thread.setDefaultUncaughtExceptionHandler(
-        (thread, thrown) -> logger.error(thread.getName(), thrown)
+        (thread, thrown) -> {
+          logger.error(thread.getName(), thrown);
+          System.exit(thrown instanceof OutOfMemoryError ? 2 : 1);
+        }
       );
 
       args = decodeArgs(args);
