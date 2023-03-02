@@ -283,7 +283,7 @@ public class TilingHandler {
     return new MyStateMachineHandler(tcount, fut);
   }
 
-  protected void runSlicer(List<String> multi, int tcount, int maxheap) throws CancellationException, IOException {
+  protected Pair<Integer, Integer> runSlicer(List<String> multi, int tcount, int maxheap) throws CancellationException, IOException {
 
     // don't exceed the maxheap limit
     maxheap = Math.min(maxheap, maxheap_limit);
@@ -368,6 +368,8 @@ public class TilingHandler {
       final int retval = proc.future.get();
       if (retval == 0) {
         h.handleSuccess();
+        // done, don't retry
+        maxheap = -1;
       }
       else {
         h.handleFailure();
@@ -379,12 +381,14 @@ public class TilingHandler {
           // The tiler possibly ran out of memory; we can't reliably detect
           // this, so assume it did. Try again with 50% more max heap.
           logger.info("Tiling possibly ran out of memory. Retrying tiling with 50% more."); //NON-NLS
-          runSlicer(multi, tcount, (int)(maxheap * 1.5));
+          maxheap *= 1.5;
         }
         else {
-          throw new IOException("return value == " + retval);
+          // give up, don't retry
+          maxheap = -1;
         }
       }
+      return Pair.of(retval, maxheap);
     }
     catch (ExecutionException | InterruptedException e) {
       // should never happen
@@ -439,7 +443,14 @@ public class TilingHandler {
 
     // slice, and cleanup on failure
     try {
-      runSlicer(multi, s.first, maxheap);
+      Pair<Integer, Integer> result = Pair.of(0, maxheap);
+      do {
+        result = runSlicer(multi, s.first, result.second);
+      } while (result.second != -1);
+
+      if (result.first != 0) {
+        throw new IOException("Tiling failed with return value == " + result.first);
+      }
     }
     catch (CancellationException | IOException e) {
       cleanup();

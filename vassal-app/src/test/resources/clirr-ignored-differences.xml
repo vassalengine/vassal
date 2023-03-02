@@ -94,4 +94,13 @@
         <field>instance</field>
         <justification>Singletons should be final</justification>
     </difference>
+
+    <difference>
+        <className>VASSAL/launch/TilingHandler</className>
+        <differenceType>7006</differenceType>
+        <method>void runSlicer(java.util.List, int, int)</method>
+        <to>VASSAL.tools.lang.Pair</to>
+        <justification>No one should be using this externally</justification>
+    </difference>
+
 </differences>
