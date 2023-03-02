@@ -30,6 +30,7 @@ import VASSAL.tools.io.InputOutputStreamPump;
 import VASSAL.tools.io.InputStreamPump;
 import VASSAL.tools.io.ProcessLauncher;
 import VASSAL.tools.io.ProcessWrapper;
+import VASSAL.tools.lang.MemoryUtils;
 import VASSAL.tools.lang.Pair;
 import VASSAL.tools.swing.EDT;
 import VASSAL.tools.swing.ProgressDialog;
@@ -377,7 +378,7 @@ public class TilingHandler {
         h.handleFailure();
         proc.future.cancel(true);
 
-        logger.info("Tiling failed with return value == " + retval);
+        logger.info("Tiling failed with return value == " + retval + "   MaxHeap=" + maxheap + "  MaxHeapLimit=" + maxheap_limit + "  PhysMemory:" + (MemoryUtils.getPhysicalMemory() >> 20)); //NON-NLS
 
         if (maxheap < maxheap_limit) {
           // The tiler possibly ran out of memory; we can't reliably detect

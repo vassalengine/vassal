@@ -22,15 +22,26 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.swing.DetailsButton;
 import VASSAL.tools.swing.FlowLabel;
 import VASSAL.tools.version.VersionUtils;
-
 import net.miginfocom.swing.MigLayout;
-
 import org.jdesktop.swingx.JXBusyLabel;
 import org.jdesktop.swingx.JXHeader;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.SSLHandshakeException;
+import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
+import javax.swing.Timer;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Component;
@@ -48,21 +59,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import javax.net.ssl.SSLHandshakeException;
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
-import javax.swing.Timer;
 
 /**
  * @since 3.1.0
@@ -88,6 +84,11 @@ public class BugDialog extends JDialog {
   private JScrollPane descriptionScroll;
 
   public BugDialog(Frame owner, Throwable thrown) {
+    this(owner, thrown, "BugDialog", "/icons/48x48/bug.png"); //NON-NLS
+  }
+
+
+  public BugDialog(Frame owner, Throwable thrown, String key, String resource) {
     super(owner, true);
 
     this.thrown = thrown;
@@ -96,16 +97,21 @@ public class BugDialog extends JDialog {
     //
     // header
     //
-    final JXHeader header = new JXHeader(
-      Resources.getString("BugDialog.heading"),
-      Resources.getString("BugDialog.message"),
-      new ImageIcon(BugDialog.class.getResource("/icons/48x48/bug.png"))  //NON-NLS
-    );
+    final JXHeader header;
+    if (resource == null) {
+      header = new JXHeader(key + ".heading", key + ".message"); //NON-NLS
+    }
+    else {
+      if ("".equals(resource)) {
+        resource = "/icons/48x48/bug.png"; //NON-NLS
+      }
+      header = new JXHeader(key + ".heading", key + ".message", new ImageIcon(BugDialog.class.getResource(resource))); //NON-NLS
+    }
 
     //
     // dialog
     //
-    setTitle(Resources.getString("BugDialog.title"));
+    setTitle(Resources.getString(key + ".title")); //NON-NLS
     setLocationRelativeTo(owner);
     setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     setResizable(true);
