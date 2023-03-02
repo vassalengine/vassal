@@ -127,7 +127,7 @@ public class NamedKeyStroke {
     if (o instanceof NamedKeyStroke) {
       return Objects.equals(stroke, ((NamedKeyStroke) o).stroke);
     }
-    if (stroke == null) {
+    else if (stroke == null) {
       return false;
     }
     // checking for parameter being a completely unrelated class to this class
