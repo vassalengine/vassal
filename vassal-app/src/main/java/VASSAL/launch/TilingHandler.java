@@ -459,9 +459,8 @@ public class TilingHandler {
     // ensure that the tile directories exist
     makeHashDirs();
 
+    // Fix the max heap
     final int max_data_mbytes = (4 * s.second) >> 20;
-
-    // fix the max heap
 
     // This was determined empirically.
     final int maxheap = (int) (1.66 * max_data_mbytes + 150);
