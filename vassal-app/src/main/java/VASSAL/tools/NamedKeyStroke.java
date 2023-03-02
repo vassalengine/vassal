@@ -134,15 +134,16 @@ public class NamedKeyStroke {
     // deliberate misuse of equals()
     else if (o instanceof KeyStroke) {
       final int code = stroke.getKeyCode();
-      // Either DEL or BACKSPACE matches to either
-      if ((code == VK_DELETE) || (code == VK_BACK_SPACE)) {
+
+      if (code == VK_DELETE || code == VK_BACK_SPACE) {
         final KeyStroke k = (KeyStroke) o;
-        if ((k.getKeyCode() == VK_DELETE) || (k.getKeyCode() == VK_BACK_SPACE)) {
-          return o.equals(KeyStroke.getKeyStroke(VK_DELETE, stroke.getModifiers())) ||
-                 o.equals(KeyStroke.getKeyStroke(VK_BACK_SPACE, stroke.getModifiers()));
-        }
+        final int k_code = k.getKeyCode();
+        // Either DEL or BACKSPACE matches to either
+        return (k_code == VK_DELETE || k_code == VK_BACK_SPACE) && k.getModifiers() == stroke.getModifiers();
       }
-      return o.equals(stroke);
+      else {
+        return o.equals(stroke);
+      }
     }
 
     return false;
