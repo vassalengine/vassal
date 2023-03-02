@@ -10,6 +10,7 @@
 * 11969: New Border Outline trait
 * 11964: Mouse-over Stack Viewers can display an image of underlying terrain
 * 11937: SumMat and CountMat functions for Beanshell expressions
+* 11919: Allow DEL/BACKSPACE to be mapped as a hotkey
 * 11918: Startup GKC that fires when player joins or changes sides
 * 11917: Create Non-Rectangular mask directly from SVG outline
 * 11913: Numeric global properties with increments other than 1 and -1 now
