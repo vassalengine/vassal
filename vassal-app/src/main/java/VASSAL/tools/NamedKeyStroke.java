@@ -18,19 +18,19 @@
 
 package VASSAL.tools;
 
+import VASSAL.build.module.KeyNamer;
+import VASSAL.tools.concurrent.ConcurrentSoftHashMap;
+import VASSAL.tools.swing.SwingUtils;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.apache.commons.lang3.tuple.Pair;
+
+import javax.swing.KeyStroke;
 import java.awt.event.KeyEvent;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.swing.KeyStroke;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-import org.apache.commons.lang3.tuple.Pair;
-
-import VASSAL.build.module.KeyNamer;
-import VASSAL.tools.concurrent.ConcurrentSoftHashMap;
-import VASSAL.tools.swing.SwingUtils;
+import static java.awt.event.KeyEvent.VK_BACK_SPACE;
+import static java.awt.event.KeyEvent.VK_DELETE;
 
 /**
  * A NamedKeyStroke is a KeyStroke with a name given by the module developer.
@@ -127,10 +127,23 @@ public class NamedKeyStroke {
     if (o instanceof NamedKeyStroke) {
       return Objects.equals(stroke, ((NamedKeyStroke) o).stroke);
     }
+    else if (stroke == null) {
+      return false;
+    }
     // checking for parameter being a completely unrelated class to this class
     // deliberate misuse of equals()
     else if (o instanceof KeyStroke) {
-      return o.equals(stroke);
+      final int code = stroke.getKeyCode();
+
+      if (code == VK_DELETE || code == VK_BACK_SPACE) {
+        final KeyStroke k = (KeyStroke) o;
+        final int k_code = k.getKeyCode();
+        // Either DEL or BACKSPACE matches to either
+        return (k_code == VK_DELETE || k_code == VK_BACK_SPACE) && k.getModifiers() == stroke.getModifiers();
+      }
+      else {
+        return o.equals(stroke);
+      }
     }
 
     return false;
