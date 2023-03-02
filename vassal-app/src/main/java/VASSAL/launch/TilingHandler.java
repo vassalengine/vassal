@@ -442,7 +442,7 @@ public class TilingHandler {
     // fix the max heap
 
     // This was determined empirically.
-    final int maxheap = (int) (1.66 * max_data_mbytes + 150);
+    final int maxheap = Math.min(Math.max((int) (1.66 * max_data_mbytes + 150), 1024), maxheap_limit);
 
     // slice, and cleanup on failure
     try {
@@ -453,7 +453,8 @@ public class TilingHandler {
       } while (result.second > 0);
 
       if (result.first != 0) {
-        throw new IOException((((result.first == 1) && (result.second == SLICER_GAVE_UP)) ? "Probably" : "Possibly") + " ran out of memory. Tiling failed with return value == " + result.first);
+        final String likely = (result.first == 2) ? "Probably" : "Possibly"; //NON-NLS
+        throw new IOException(likely + " ran out of memory. Tiling failed with return value == " + result.first);
       }
     }
     catch (CancellationException | IOException e) {

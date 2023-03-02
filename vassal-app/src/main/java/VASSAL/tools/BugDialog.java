@@ -83,6 +83,8 @@ public class BugDialog extends JDialog {
 
   private JScrollPane descriptionScroll;
 
+  private final String key;
+
   public BugDialog(Frame owner, Throwable thrown) {
     this(owner, thrown, "BugDialog", "/icons/48x48/bug.png"); //NON-NLS
   }
@@ -90,6 +92,8 @@ public class BugDialog extends JDialog {
 
   public BugDialog(Frame owner, Throwable thrown, String key, String resource) {
     super(owner, true);
+
+    this.key = key;
 
     this.thrown = thrown;
     this.errorLog = BugUtils.getErrorLog();
@@ -99,13 +103,13 @@ public class BugDialog extends JDialog {
     //
     final JXHeader header;
     if (resource == null) {
-      header = new JXHeader(key + ".heading", key + ".message"); //NON-NLS
+      header = new JXHeader(Resources.getString(key + ".heading"), Resources.getString(key + ".message")); //NON-NLS
     }
     else {
       if ("".equals(resource)) {
         resource = "/icons/48x48/bug.png"; //NON-NLS
       }
-      header = new JXHeader(key + ".heading", key + ".message", new ImageIcon(BugDialog.class.getResource(resource))); //NON-NLS
+      header = new JXHeader(Resources.getString(key + ".heading"), Resources.getString(key + ".message"), new ImageIcon(BugDialog.class.getResource(resource))); //NON-NLS
     }
 
     //
@@ -143,8 +147,8 @@ public class BugDialog extends JDialog {
     contents.add(buildVersionCheckPanel(),     "versionCheckPanel");  //NON-NLS
     contents.add(buildCurrentVersionPanel(),   "currentVersionPanel"); //NON-NLS
     contents.add(buildSendingBugReportPanel(), "sendingBugReportPanel"); //NON-NLS
-    contents.add(buildNonReportingVersionPanel("BugDialog.old_version_instructions"), "oldVersionPanel"); //NON-NLS
-    contents.add(buildNonReportingVersionPanel("BugDialog.test_version_instructions"), "testVersionPanel"); //NON-NLS
+    contents.add(buildNonReportingVersionPanel(key + ".old_version_instructions"), "oldVersionPanel"); //NON-NLS
+    contents.add(buildNonReportingVersionPanel(key + ".test_version_instructions"), "testVersionPanel"); //NON-NLS
     contents.add(buildConnectionFailedPanel(), "connectionFailedPanel"); //NON-NLS
     contents.add(buildEmergencySavePanel(),    "emergencySavePanel"); //NON-NLS
 
@@ -202,7 +206,7 @@ public class BugDialog extends JDialog {
 
   private Component buildCurrentVersionPanel() {
     final FlowLabel label = new FlowLabel(
-      Resources.getString("BugDialog.current_version_instructions"));
+      Resources.getString(key + ".current_version_instructions")); //NON-NLS
 
     descriptionArea = new JTextArea(10, 1);
     descriptionArea.setLineWrap(true);
@@ -335,7 +339,7 @@ public class BugDialog extends JDialog {
 
     final FlowLabel label = new FlowLabel(
       Resources.getString(
-        "BugDialog.connection_failed_instructions",
+        key + ".connection_failed_instructions", //NON-NLS
         makeErrorLogURLString(errorLog),
         errorLog.getAbsolutePath()
       )
@@ -380,7 +384,7 @@ public class BugDialog extends JDialog {
 
   private Component buildEmergencySavePanel() {
     final FlowLabel label =
-      new FlowLabel(Resources.getString("BugDialog.how_to_proceed"));
+      new FlowLabel(Resources.getString(key + ".how_to_proceed")); //NON-NLS
 
     final JPanel panel = new JPanel(new MigLayout("", "", "[]push")); //NON-NLS
     panel.add(label, "cell 0 0, growx, pushx"); //NON-NLS

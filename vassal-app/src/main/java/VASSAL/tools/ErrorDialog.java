@@ -89,11 +89,10 @@ public class ErrorDialog {
         ? null : GameModule.getGameModule().getPlayerWindow();
 
       if (thrown.getMessage().contains("ran out of memory")) { //NON-NLS
-        ErrorDialog.show("Bug10900.help");
+        SwingUtilities.invokeLater(() -> new BugDialog(frame, thrown, "TilingMemoryDialog", "/icons/48x48/ram.png").setVisible(true)); //NON-NLS
       }
-
       // remove this when the tile cache bug is fixed
-      if (showSpecialTileBugAdmonition(thrown)) {
+      else if (showSpecialTileBugAdmonition(thrown)) {
         new Thread(() -> {
           FutureUtils.wait(ErrorDialog.show("Bug10900.help"));
           SwingUtilities.invokeLater(() -> new BugDialog(frame, thrown).setVisible(true));
