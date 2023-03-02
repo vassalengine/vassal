@@ -17,6 +17,7 @@
 
 package VASSAL.launch;
 
+import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.IMAGE_FINISHED;
 import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.STARTING_IMAGE;
 import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILE_WRITTEN;
 import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILER_READY;
@@ -173,7 +174,11 @@ public class TilingHandler {
   protected interface StateMachineHandler {
     void handleStart();
 
+    default void handleRestart(Future<Integer> fut) {}
+
     void handleStartingImageState(String in);
+
+    void handleFinishedImageState(String in);
 
     void handleTileWrittenState();
 
@@ -185,7 +190,7 @@ public class TilingHandler {
   }
 
   private static class MyStateMachineHandler implements StateMachineHandler {
-    private final Future<Integer> fut;
+    private Future<Integer> fut;
     private final int tcount;
     private final ProgressDialog pd;
     private final Progressor progressor;
@@ -219,6 +224,11 @@ public class TilingHandler {
     }
 
     @Override
+    public void handleRestart(Future<Integer> f) {
+      fut = f;
+    }
+
+    @Override
     public void handleStartingImageState(String ipath) {
       EDT.execute(() -> {
         pd.setLabel(Resources.getString("TilingHandler.tiling", ipath));
@@ -226,6 +236,10 @@ public class TilingHandler {
           pd.setVisible(true);
         }
       });
+    }
+
+    @Override
+    public void handleFinishedImageState(String ipath) {
     }
 
     @Override
@@ -283,7 +297,11 @@ public class TilingHandler {
     return new MyStateMachineHandler(tcount, fut);
   }
 
-  protected Pair<Integer, Integer> runSlicer(List<String> multi, int tcount, int maxheap) throws CancellationException, IOException {
+  protected Pair<Integer, Integer> runSlicer(
+    List<String> multi,
+    int maxheap,
+    StateMachineHandler h
+  ) throws CancellationException, IOException {
 
     // don't exceed the maxheap limit
     maxheap = Math.min(maxheap, maxheap_limit);
@@ -297,7 +315,7 @@ public class TilingHandler {
       null, null, errP, args
     );
 
-    final StateMachineHandler h = createStateMachineHandler(tcount, proc.future);
+    final List<String> tiled = new ArrayList<>();
 
     // read state changes from child's stdout
     try (DataInputStream in = new DataInputStream(proc.stdout)) {
@@ -333,8 +351,9 @@ public class TilingHandler {
         }
       }).start();
 
-      h.handleStart();
+      h.handleRestart(proc.future);
 
+      String imgname;
       boolean done = false;
       byte type;
       while (!done && !proc.future.isCancelled()) {
@@ -352,6 +371,12 @@ public class TilingHandler {
         case TILING_FINISHED:
           done = true;
           h.handleTilingFinishedState();
+          break;
+
+        case IMAGE_FINISHED:
+          imgname = in.readUTF();
+          tiled.add(imgname);
+          h.handleFinishedImageState(imgname);
           break;
 
         default:
@@ -372,7 +397,6 @@ public class TilingHandler {
         maxheap = -1;
       }
       else {
-        h.handleFailure();
         proc.future.cancel(true);
 
         logger.info("Tiling failed with return value == " + retval);
@@ -382,6 +406,7 @@ public class TilingHandler {
           // this, so assume it did. Try again with 50% more max heap.
           logger.info("Tiling possibly ran out of memory. Retrying tiling with 50% more."); //NON-NLS
           maxheap *= 1.5;
+          multi.removeAll(tiled);
         }
         else {
           // give up, don't retry
@@ -441,15 +466,19 @@ public class TilingHandler {
     // This was determined empirically.
     final int maxheap = (int) (1.66 * max_data_mbytes + 150);
 
+    final StateMachineHandler h = createStateMachineHandler(s.first, null);
+    h.handleStart();
+
     // slice, and cleanup on failure
     try {
       // result is (return value, next max heap to try)
       Pair<Integer, Integer> result = Pair.of(0, maxheap);
       do {
-        result = runSlicer(multi, s.first, result.second);
+        result = runSlicer(multi, result.second, h);
       } while (result.second != -1);
 
       if (result.first != 0) {
+        h.handleFailure();
         throw new IOException("Tiling failed with return value == " + result.first);
       }
     }

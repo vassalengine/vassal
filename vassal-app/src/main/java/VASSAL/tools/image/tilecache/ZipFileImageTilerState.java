@@ -7,4 +7,5 @@ public class ZipFileImageTilerState {
   public static final byte STARTING_IMAGE  = 2;
   public static final byte TILE_WRITTEN    = 3;
   public static final byte TILING_FINISHED = 4;
+  public static final byte IMAGE_FINISHED  = 5;
 }

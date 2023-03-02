@@ -18,6 +18,7 @@
 
 package VASSAL.tools.image.tilecache;
 
+import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.IMAGE_FINISHED;
 import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.STARTING_IMAGE;
 import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILE_WRITTEN;
 import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILER_READY;
@@ -157,8 +158,14 @@ public class ZipFileImageTiler {
         out.writeByte(TILER_READY);
         out.flush();
 
-        final Callback<String> imageL = ipath -> {
+        final Callback<String> imageStartL = ipath -> {
           out.writeByte(STARTING_IMAGE);
+          out.writeUTF(ipath);
+          out.flush();
+        };
+
+        final Callback<String> imageDoneL = ipath -> {
+          out.writeByte(IMAGE_FINISHED);
           out.writeUTF(ipath);
           out.flush();
         };
@@ -177,7 +184,8 @@ public class ZipFileImageTiler {
           // Tile the images
           tiler.run(
             fa, tpath, tw, th, ipaths, exec,
-            loader, slicer, imageL, tileL, doneL
+            loader, slicer,
+            imageStartL, imageDoneL, tileL, doneL
           );
         }
         catch (IOException e) {
