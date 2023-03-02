@@ -83,7 +83,7 @@ public class ZipFileImageTiler {
       Thread.setDefaultUncaughtExceptionHandler(
         (thread, thrown) -> {
           logger.error(thread.getName(), thrown);
-          System.exit(thrown instanceof OutOfMemoryError ? 1 : 2);
+          System.exit(thrown instanceof OutOfMemoryError ? 2 : 1);
         }
       );
 
