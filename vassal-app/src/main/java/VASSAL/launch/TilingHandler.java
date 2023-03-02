@@ -392,7 +392,6 @@ public class TilingHandler {
     try {
       final int retval = proc.future.get();
       if (retval == 0) {
-        h.handleSuccess();
         // done, don't retry
         maxheap = -1;
       }
@@ -476,7 +475,10 @@ public class TilingHandler {
         result = runSlicer(multi, result.second, h);
       } while (result.second != -1);
 
-      if (result.first != 0) {
+      if (result.first == 0) {
+        h.handleSuccess();
+      }
+      else {
         h.handleFailure();
         throw new IOException("Tiling failed with return value == " + result.first);
       }
