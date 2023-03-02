@@ -18,6 +18,7 @@
 * 11530: Add new StackPos and StackSize properties to Basic Piece
 * 11523: Area of Effect improvements: Active property, local/global visibility,
     separate on/off Key Commands
+* 11506: Predefined Setup "menus" with blank names will not be shown
 * 11178: Global Option added to omit empty lines in property setting prompts
 * 11100: Allow begin-logfile and end-logfile to have configurable hotkeys in
     Global Options

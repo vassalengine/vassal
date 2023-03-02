@@ -39,7 +39,8 @@
         { "num": 11913, "desc": "Numeric global properties with increments other than 1 and -1 now wrap around correctly" }
       ],
       "other_improvements": [
-        { "num": 11919, "desc": "Allow DEL/BACKSPACE to be mapped as a hotkey" }
+        { "num": 11919, "desc": "Allow DEL/BACKSPACE to be mapped as a hotkey" },
+        { "num": 11506, "desc": "Predefined Setup \"menus\" with blank names will not be shown" }
       ]
     },
     {
