@@ -412,14 +412,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     }
     return name;
   }
-
-  @Override
-  public String buildString() {
-    final Document doc = Builder.createNewDocument();
-    doc.appendChild(getBuildElement(doc));
-    return Builder.toString(doc);
-  }
-
+  
   protected void write(boolean saveAs) throws IOException {
     vassalVersionCreated = Info.getVersion();
     if (archive instanceof ArchiveWriter) {
