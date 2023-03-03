@@ -228,10 +228,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
           return;
         }
 
-        try {
-          final FileOutputStream fos = new FileOutputStream(outputFile);
+        try (FileOutputStream fos = new FileOutputStream(outputFile)) {
           kit.write(fos, doc, 0, doc.getLength());
-          fos.close();
         }
         catch (IOException | BadLocationException ex) {
           GameModule.getGameModule().warn(Resources.getString("Chat.file_save_failed"));
