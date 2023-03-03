@@ -779,9 +779,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
     // PrototypeFolder needs any prototype children added to the main prototype definition list
     if (target instanceof PrototypeFolder) {
-      final PrototypesContainer protos = (PrototypesContainer)(((PrototypeFolder)target).getNonFolderAncestor());
-      if (protos != null) {
-        for (final PrototypeDefinition child : ((PrototypeFolder) target).getAllDescendantComponentsOf(PrototypeDefinition.class)) {
+      final PrototypeFolder folder = (PrototypeFolder)target;
+      final Buildable ancestor = folder.getNonFolderAncestor();
+      if (ancestor instanceof PrototypesContainer) {
+        final PrototypesContainer protos = (PrototypesContainer)ancestor;
+        for (final PrototypeDefinition child : folder.getAllDescendantComponentsOf(PrototypeDefinition.class)) {
           protos.addDefinition(child);
         }
       }
