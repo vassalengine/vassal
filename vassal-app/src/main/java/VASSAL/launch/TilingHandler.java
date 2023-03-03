@@ -42,11 +42,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.Dimension;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -56,11 +56,11 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.IMAGE_FINISHED;
-import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.STARTING_IMAGE;
-import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILER_READY;
-import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILE_WRITTEN;
-import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILING_FINISHED;
+import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.DONE;
+import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.IMAGE_BEGIN;
+import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.IMAGE_END;
+import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.READY;
+import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILE_END;
 
 /**
  * A launcher for the process which tiles large images.
@@ -322,28 +322,18 @@ public class TilingHandler {
     final List<String> tiled = new ArrayList<>();
 
     // read state changes from child's stdout
-    try (DataInputStream in = new DataInputStream(proc.stdout)) {
-
+    try (BufferedReader in = new BufferedReader(new InputStreamReader(proc.stdout, StandardCharsets.UTF_8))) {
       // This code exists because the JVM prints errors to stdout.
       // Nothing should do this in 2022. What a piece of shit.
-      final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      try {
-        byte b;
-        while (true) {
-          b = in.readByte();
+      String line;
+      while (true) {
+        line = in.readLine();
 
-          if (b == TILER_READY) {
-            break;
-          }
-          else {
-            // Collect whatever garbage the JVM prints
-            baos.write(b);
-          }
+        if (READY.equals(line)) {
+          break;
         }
-      }
-      finally {
-        if (baos.size() > 0) {
-          logger.error(baos.toString(StandardCharsets.UTF_8));
+        else {
+          logger.error(line);
         }
       }
 
@@ -359,32 +349,33 @@ public class TilingHandler {
 
       String imgname;
       boolean done = false;
-      byte type;
+      char type;
       while (!done && !proc.future.isCancelled()) {
-        type = in.readByte();
+        line = in.readLine();
+        type = line.charAt(0);
 
         switch (type) {
-        case STARTING_IMAGE:
-          h.handleStartingImageState(in.readUTF());
+        case IMAGE_BEGIN:
+          h.handleStartingImageState(line.substring(1));
           break;
 
-        case TILE_WRITTEN:
-          h.handleTileWrittenState();
-          break;
-
-        case TILING_FINISHED:
-          done = true;
-          h.handleTilingFinishedState();
-          break;
-
-        case IMAGE_FINISHED:
-          imgname = in.readUTF();
+        case IMAGE_END:
+          imgname = line.substring(1);
           tiled.add(imgname);
           h.handleFinishedImageState(imgname);
           break;
 
+        case TILE_END:
+          h.handleTileWrittenState();
+          break;
+
+        case DONE:
+          done = true;
+          h.handleTilingFinishedState();
+          break;
+
         default:
-          throw new IllegalStateException("bad type: " + type);
+          throw new IOException("Read bad line during tiling: " + line); //NON-NLS
         }
       }
     }

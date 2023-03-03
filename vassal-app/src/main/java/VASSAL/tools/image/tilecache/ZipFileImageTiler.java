@@ -18,17 +18,17 @@
 
 package VASSAL.tools.image.tilecache;
 
-import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.IMAGE_FINISHED;
-import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.STARTING_IMAGE;
-import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILE_WRITTEN;
-import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILER_READY;
-import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILING_FINISHED;
+import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.DONE;
+import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.IMAGE_BEGIN;
+import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.IMAGE_END;
+import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.READY;
+import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILE_END;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -154,30 +154,23 @@ public class ZipFileImageTiler {
     try (BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8))) {
       final Iterable<String> ipaths = IteratorUtils.iterate(new LineIterator(stdin));
 
-      try (DataOutputStream out = new DataOutputStream(os)) {
-        out.writeByte(TILER_READY);
-        out.flush();
+      try (PrintStream out = new PrintStream(os, true, StandardCharsets.UTF_8)) {
+        out.println(READY);
 
         final Callback<String> imageStartL = ipath -> {
-          out.writeByte(STARTING_IMAGE);
-          out.writeUTF(ipath);
-          out.flush();
+          out.println(IMAGE_BEGIN + ipath);
         };
 
         final Callback<String> imageDoneL = ipath -> {
-          out.writeByte(IMAGE_FINISHED);
-          out.writeUTF(ipath);
-          out.flush();
+          out.println(IMAGE_END + ipath);
         };
 
         final Callback<Void> tileL = obj -> {
-          out.writeByte(TILE_WRITTEN);
-          out.flush();
+          out.println(TILE_END);
         };
 
         final Callback<Void> doneL = obj -> {
-          out.writeByte(TILING_FINISHED);
-          out.flush();
+          out.println(DONE);
         };
 
         try (FileArchive fa = new ZipArchive(zpath)) {
