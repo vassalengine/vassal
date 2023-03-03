@@ -17,6 +17,18 @@
   ],
   "changes": [
     {
+      "in": "3.6.15",
+      "since": "3.6.14",
+      "new_features": [
+      ],
+      "bug_fixes": [
+      ],
+      "other_improvements": [
+        { "num": 12069, "desc": "Tiling: Improved detection of and recovery from running out of memory; improved error dialogs" },
+        { "num": 9894, "desc": "Improved error dialog for failure to start child process" }
+      ]
+    },
+    {
       "in": "3.6.14",
       "since": "3.6.13",
       "new_features": [
