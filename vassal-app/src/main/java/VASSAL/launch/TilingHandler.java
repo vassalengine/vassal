@@ -457,7 +457,7 @@ public class TilingHandler {
     final int max_data_mbytes = (4 * s.second) >> 20;
 
     // This was determined empirically.
-    final int maxheap = Math.min(Math.max((int) (1.66 * max_data_mbytes + 150), 1024), maxheap_limit);
+    final int maxheap = (int) (1.66 * max_data_mbytes + 150);
 
     final StateMachineHandler h = createStateMachineHandler(s.first, null);
     h.handleStart();
