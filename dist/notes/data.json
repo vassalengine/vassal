@@ -34,7 +34,8 @@
         { "num": 11178, "desc": "Global Option added to omit empty lines in property setting prompts" },
         { "num": 11100, "desc": "Allow begin-logfile and end-logfile to have configurable hotkeys in Global Options" },
         { "num": 10821, "desc": "Symbolic Dice buttons how have full Action Button capabilities (sounds, hotkeys, etc.)" },
-        { "num": 10820, "desc": "Make Action Button available on all windows where other similar buttons (e.g., GKC, Multi-Action, etc) are available" }
+        { "num": 10820, "desc": "Make Action Button available on all windows where other similar buttons (e.g., GKC, Multi-Action, etc) are available" },
+        { "num": 4454, "desc": "Save chat text to file" }
       ],
       "bug_fixes": [
         { "num": 11913, "desc": "Numeric global properties with increments other than 1 and -1 now wrap around correctly" }
