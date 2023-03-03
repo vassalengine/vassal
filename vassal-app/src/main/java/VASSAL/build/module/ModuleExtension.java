@@ -39,17 +39,10 @@ import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.version.VersionUtils;
-
-import java.awt.event.ActionEvent;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.NoSuchFileException;
-import java.util.UUID;
+import net.miginfocom.swing.MigLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -60,12 +53,16 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
-import net.miginfocom.swing.MigLayout;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
+import java.awt.event.ActionEvent;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.NoSuchFileException;
+import java.util.UUID;
 
 /**
  * An optional extension to a GameModule
@@ -415,13 +412,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     }
     return name;
   }
-
-  public String buildString() {
-    final Document doc = Builder.createNewDocument();
-    doc.appendChild(getBuildElement(doc));
-    return Builder.toString(doc);
-  }
-
+  
   protected void write(boolean saveAs) throws IOException {
     vassalVersionCreated = Info.getVersion();
     if (archive instanceof ArchiveWriter) {

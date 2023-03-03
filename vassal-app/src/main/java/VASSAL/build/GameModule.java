@@ -2175,15 +2175,6 @@ public class GameModule extends AbstractConfigurable
 
 
   /**
-   * @return an XML element that can be used to {@link Buildable#build} the module object.
-   */
-  private String buildString() {
-    final Document doc = Builder.createNewDocument();
-    doc.appendChild(getBuildElement(doc));
-    return Builder.toString(doc);
-  }
-
-  /**
    * Gets the value of a module level global property -- this includes identification information for the
    * local player as well as the contents of any Global Property objects defined at module level in the Module.
    * @param key identifies the global property to be returned

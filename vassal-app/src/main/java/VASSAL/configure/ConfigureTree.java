@@ -59,13 +59,17 @@ import VASSAL.preferences.Prefs;
 import VASSAL.search.SearchTarget;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ReflectionUtils;
+import VASSAL.tools.WriteErrorDialog;
+import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.SwingUtils;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -100,6 +104,8 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Frame;
@@ -115,7 +121,13 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.IOException;
+import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -481,11 +493,107 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
     addAction(popup, buildImportAction(target));
 
+    final boolean canExport = getTreeNode(target).getParent() != null;
+    final boolean canImport = (target.getAllowableConfigureComponents().length > 0);
+
+    if (canImport || canExport) {
+      popup.addSeparator();
+    }
+
+    if (canExport) {
+      addAction(popup, buildExportTreeAction(target));
+    }
+
+    if (canImport) {
+      addAction(popup, buildImportTreeAction(target));
+    }
+
     popup.addSeparator();
     addAction(popup, buildOpenPiecesAction(target));
     addAction(popup, buildEditPiecesAction(target));
 
     return popup;
+  }
+
+
+  public static final String defaultExportExtension = ".xml"; //NON-NLS
+
+  protected boolean exportTreeBranch(AbstractBuildable target) {
+    final FileChooser fc = FileChooser.createFileChooser(
+      GameModule.getGameModule().getPlayerWindow(),
+      (DirectoryConfigurer) Prefs.getGlobalPrefs()
+        .getOption(Prefs.MODULES_DIR_KEY));
+    if (fc.showSaveDialog() != FileChooser.APPROVE_OPTION) return false;
+    String filename = fc.getSelectedFile().getPath();
+
+    if (!StringUtils.isEmpty(defaultExportExtension) && (filename.lastIndexOf('.') < 0)) {
+      filename = filename + defaultExportExtension;
+      if (new File(filename).exists() && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(GameModule.getGameModule().getPlayerWindow(), Resources.getString("Editor.ConfigureTree.export_overwrite", filename), Resources.getString("Editor.ConfigureTree.export_exists"), JOptionPane.YES_NO_OPTION)) {
+        return false;
+      }
+    }
+
+    try (Writer w = Files.newBufferedWriter(Path.of(filename), StandardCharsets.UTF_8)) {
+      w.write(target.buildString());
+    }
+    catch (IOException e) {
+      WriteErrorDialog.error(e, e, filename);
+      return false;
+    }
+
+    return true;
+  }
+
+  protected boolean importTreeBranch(Configurable target) {
+
+    final FileChooser fc = GameModule.getGameModule().getFileChooser();
+    if (fc.showOpenDialog() != FileChooser.APPROVE_OPTION) return false;
+
+    String filename = fc.getSelectedFile().getPath();
+
+    if (fc.getSelectedFile().getName().indexOf('.') < 0) {
+      filename += defaultExportExtension;
+    }
+
+    try {
+      Buildable b = Builder.create(DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File(filename)).getDocumentElement(), target);
+
+      if (b instanceof Configurable) {
+        b = convertChild(target, (Configurable)b);
+      }
+      else {
+        GameModule.getGameModule().warn(Resources.getString("Editor.ConfigureTree.import_invalid_file"));
+        ErrorDialog.show("Error.import_invalid_file", b.toString());
+        return false;
+      }
+
+      boolean allowed = false;
+      for (final Class c : target.getAllowableConfigureComponents()) {
+        if (c.isInstance(b)) {
+          allowed = true;
+          break;
+        }
+      }
+
+      if (allowed) {
+        insert(target, (Configurable)b, getTreeNode(target).getChildCount());
+      }
+      else {
+        GameModule.getGameModule().warn(Resources.getString("Editor.ConfigureTree.import_not_allowed", b.toString()));
+        ErrorDialog.show("Error.import_not_allowed", b.toString());
+        return false;
+      }
+    }
+    catch (ParserConfigurationException | SAXException e) {
+      ErrorDialog.bug(e);
+      return false;
+    }
+    catch (IOException e) {
+      ReadErrorDialog.error(e, filename);
+      return false;
+    }
+
+    return true;
   }
 
 
@@ -527,6 +635,40 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected Action buildSearchAction(final Configurable target) {
     final Action a = new SearchAction(this, searchParameters);
     a.setEnabled(true);
+    return a;
+  }
+
+
+  protected Action buildExportTreeAction(final Configurable target) {
+    Action a = null;
+    if (getTreeNode(target).getParent() != null) {
+      a = new AbstractAction(Resources.getString("Editor.ConfigureTree.export_object")) {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          if (target instanceof AbstractBuildable) {
+            exportTreeBranch((AbstractBuildable) target);
+          }
+        }
+      };
+    }
+    return a;
+  }
+
+
+  protected Action buildImportTreeAction(final Configurable target) {
+    Action a = null;
+    if (getTreeNode(target).getParent() != null) {
+      a = new AbstractAction(Resources.getString("Editor.ConfigureTree.import_object")) {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          importTreeBranch(target);
+        }
+      };
+    }
     return a;
   }
 
@@ -637,9 +779,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
     // PrototypeFolder needs any prototype children added to the main prototype definition list
     if (target instanceof PrototypeFolder) {
-      final PrototypesContainer protos = (PrototypesContainer)(((PrototypeFolder)target).getNonFolderAncestor());
-      if (protos != null) {
-        for (final PrototypeDefinition child : ((PrototypeFolder) target).getAllDescendantComponentsOf(PrototypeDefinition.class)) {
+      final PrototypeFolder folder = (PrototypeFolder)target;
+      final Buildable ancestor = folder.getNonFolderAncestor();
+      if (ancestor instanceof PrototypesContainer) {
+        final PrototypesContainer protos = (PrototypesContainer)ancestor;
+        for (final PrototypeDefinition child : folder.getAllDescendantComponentsOf(PrototypeDefinition.class)) {
           protos.addDefinition(child);
         }
       }
@@ -2659,7 +2803,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       catch (UnsupportedFlavorException ufe) {
         logger.error("Unsupported Flavor: " + ufe.getMessage()); //NON-NLS
       }
-      catch (java.io.IOException ioe) {
+      catch (IOException ioe) {
         logger.error("I/O error: " + ioe.getMessage()); //NON-NLS
       }
       catch (InvalidDnDOperationException id) {

@@ -282,12 +282,12 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       b = ((AbstractFolder)b).getNonFolderAncestor();
     }
 
-    map = (Map) b;
     // Can happen during copy/paste operation of a CounterDetailViewer inside a folder. Means we will redo this operation in post-paste-fixups.
-    if (map == null) {
+    if (!(b instanceof Map)) {
       return;
     }
 
+    map = (Map) b;
     view = map.getView();
     map.addDrawComponent(this);
     final String keyDesc = hotkey == null ? "" : "(" + HotKeyConfigurer.getString(hotkey) + ")"; //NON-NLS
