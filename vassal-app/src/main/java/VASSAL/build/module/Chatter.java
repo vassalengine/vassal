@@ -71,9 +71,8 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 
 /**
  * The chat window component. Displays text messages and accepts input. Also
@@ -230,7 +229,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
           return;
         }
 
-        try (OutputStream fos = Files.newOutputStream(Path.of(outputFile.getPath()))) {
+        try (OutputStream fos = Files.newOutputStream(outputFile.toPath())) {
           kit.write(fos, doc, 0, doc.getLength());
         }
         catch (IOException | BadLocationException ex) {
@@ -262,7 +261,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
         }
 
         try {
-          FileUtils.writeStringToFile(outputFile, doc.getText(0, doc.getLength()), Charset.forName("UTF-8")); //NON-NLS
+          FileUtils.writeStringToFile(outputFile, doc.getText(0, doc.getLength()), StandardCharsets.UTF_8); //NON-NLS
         }
         catch (IOException | BadLocationException ex) {
           GameModule.getGameModule().warn(Resources.getString("Chat.file_save_failed"));
