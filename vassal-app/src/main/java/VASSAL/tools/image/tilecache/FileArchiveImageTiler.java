@@ -58,14 +58,15 @@ public class FileArchiveImageTiler {
     ExecutorService exec,
     ImageLoader loader,
     TileSlicer slicer,
-    Callback<String> imageListener,
+    Callback<String> imageStartListener,
+    Callback<String> imageDoneListener,
     Callback<Void> tileListener,
     Callback<Void> doneListener
   ) throws IOException {
 
     for (final String ipath : ipaths) {
       logger.info("Tiling {}, heap size is {}", ipath, Runtime.getRuntime().totalMemory() >> 20); //NON-NLS
-      imageListener.receive(ipath);
+      imageStartListener.receive(ipath);
 
       final BufferedImage src;
       try (InputStream in = fa.getInputStream(ipath)) {
@@ -80,6 +81,7 @@ public class FileArchiveImageTiler {
       }
 
       slicer.slice(src, ipath, tpath, tw, th, exec, tileListener);
+      imageDoneListener.receive(ipath);
       logger.info("Tiled {}, heap size is {}", ipath, Runtime.getRuntime().totalMemory() >> 20); //NON-NLS
     }
 

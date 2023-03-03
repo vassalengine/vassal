@@ -17,13 +17,13 @@
   "changes": [
     {
       "in": "3.7.0-beta1",
-      "since": "3.6.13",
+      "since": "3.6.15",
       "new_features": [
         { "num": 12035, "desc": "Mouse-over Stack Viewers allow configuring thickness of outer border, and more padding/stretching options" },
         { "num": 12032, "desc": "Mark-When-Moved trait can be configured to only flag when piece changes LocationName or Mat. Similarly Map auto-report can be configured to ignore same-location movements." },
         { "num": 12003, "desc": "OldDeckName now supported as a piece property" },
         { "num": 12001, "desc": "count_ supported for counting properties in Inventory windows" },
-        { "num": 11969, "desc": "New Border Outline trait",
+        { "num": 11969, "desc": "New Border Outline trait" },
         { "num": 11964, "desc": "Mouse-over Stack Viewers can display an image of underlying terrain" },
         { "num": 11937, "desc": "SumMat and CountMat functions for Beanshell expression" },
         { "num": 11918, "desc": "Startup GKC that fires when player joins or changes sides" },
@@ -41,45 +41,6 @@
       "other_improvements": [
         { "num": 11919, "desc": "Allow DEL/BACKSPACE to be mapped as a hotkey" },
         { "num": 11506, "desc": "Predefined Setup \"menus\" with blank names will not be shown" }
-      ]
-    },
-    {
-      "in": "3.6.14",
-      "since": "3.6.13",
-      "new_features": [
-      ],
-      "bug_fixes": [
-        { "num": 12063, "desc": "Fixed Deck save/load hotkeys being mixed up" },
-        { "num": 12061, "desc": "Fixed bug with pasting invalid/incomplete regex expressions" },
-        { "num": 12059, "desc": "Various PMD and Spotbugs fixes" },
-        { "num": 12048, "desc": "Fix bugs when deleting groups of decks/stacks from the editor" },
-        { "num": 12041, "desc": "Rollover border color of 'no color' did not save to file, nor copy correctly" },
-        { "num": 11249, "desc": "Enhanced recursion protection to catch self-referencing prototypes" }
-      ],
-      "other_improvements": [
-        { "num": 12065, "desc": "Reduce update check delay to 5 days, from 10" },
-        { "num": 10249, "desc": "Duplicating a prototype no longer disables that prototype until next module reload" }
-      ]
-    },
-    {
-      "in": "3.6.13",
-      "since": "3.6.12",
-      "new_features": [
-      ],
-      "bug_fixes": [
-        { "num": 12042, "desc": "Fix bug when copying Decks and At-Start Stacks to other maps" },
-        { "num": 12037, "desc": "Fix concurrent modification exception in Decks " },
-        { "num": 12016, "desc": "Fix a possible crash scenario in At-Start Stacks" },
-        { "num": 11897, "desc": "Ensure that deleted extensions don't crash the Module Manager" },
-        { "num": 11693, "desc": "Prevent NPE when copying folders containing Mouse-over Stack Viewers" },
-        { "num":  11451, "desc": "Don't permit drag-and-drop within PlaceMarker, Replace with Other selection dialogs" },
-        { "num": 11173, "desc": "Fixed crash in sorting a deck" }
-      ],
-      "other_improvements": [
-        { "num": 11995, "desc": "ActionButtons with reports shouldn't display them if report is empty" },
-        { "num": 11967, "desc": "When dragging piece out of face-down deck, use unrotated shape" },
-        { "num": 10877, "desc": "Added a 'player joined' message when playing online" },
-        { "num": 9786, "desc": "Text Label traits will respond to GameRefresher (unless trait has a manually-change-label hotkey defined)" }
       ]
     }
   ]

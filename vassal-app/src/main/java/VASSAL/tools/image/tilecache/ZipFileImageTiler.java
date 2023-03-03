@@ -18,16 +18,17 @@
 
 package VASSAL.tools.image.tilecache;
 
-import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.STARTING_IMAGE;
-import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILE_WRITTEN;
-import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILER_READY;
-import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILING_FINISHED;
+import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.DONE;
+import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.IMAGE_BEGIN;
+import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.IMAGE_END;
+import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.READY;
+import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILE_END;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -81,7 +82,10 @@ public class ZipFileImageTiler {
 
       // Ensure that exceptions are logged.
       Thread.setDefaultUncaughtExceptionHandler(
-        (thread, thrown) -> logger.error(thread.getName(), thrown)
+        (thread, thrown) -> {
+          logger.error(thread.getName(), thrown);
+          System.exit(thrown instanceof OutOfMemoryError ? 2 : 1);
+        }
       );
 
       args = decodeArgs(args);
@@ -150,23 +154,27 @@ public class ZipFileImageTiler {
     try (BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8))) {
       final Iterable<String> ipaths = IteratorUtils.iterate(new LineIterator(stdin));
 
-      try (DataOutputStream out = new DataOutputStream(os)) {
-        out.writeByte(TILER_READY);
+      try (PrintStream out = new PrintStream(os, false, StandardCharsets.UTF_8)) {
+        out.println("\n" + READY);
         out.flush();
 
-        final Callback<String> imageL = ipath -> {
-          out.writeByte(STARTING_IMAGE);
-          out.writeUTF(ipath);
+        final Callback<String> imageStartL = ipath -> {
+          out.println("\n" + IMAGE_BEGIN + ipath);
+          out.flush();
+        };
+
+        final Callback<String> imageDoneL = ipath -> {
+          out.println("\n" + IMAGE_END + ipath);
           out.flush();
         };
 
         final Callback<Void> tileL = obj -> {
-          out.writeByte(TILE_WRITTEN);
+          out.println("\n" + TILE_END);
           out.flush();
         };
 
         final Callback<Void> doneL = obj -> {
-          out.writeByte(TILING_FINISHED);
+          out.println("\n" + DONE);
           out.flush();
         };
 
@@ -174,7 +182,8 @@ public class ZipFileImageTiler {
           // Tile the images
           tiler.run(
             fa, tpath, tw, th, ipaths, exec,
-            loader, slicer, imageL, tileL, doneL
+            loader, slicer,
+            imageStartL, imageDoneL, tileL, doneL
           );
         }
         catch (IOException e) {

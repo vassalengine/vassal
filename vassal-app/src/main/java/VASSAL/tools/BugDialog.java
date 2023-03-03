@@ -22,15 +22,26 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.swing.DetailsButton;
 import VASSAL.tools.swing.FlowLabel;
 import VASSAL.tools.version.VersionUtils;
-
 import net.miginfocom.swing.MigLayout;
-
 import org.jdesktop.swingx.JXBusyLabel;
 import org.jdesktop.swingx.JXHeader;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.SSLHandshakeException;
+import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
+import javax.swing.Timer;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Component;
@@ -48,21 +59,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import javax.net.ssl.SSLHandshakeException;
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
-import javax.swing.Timer;
 
 /**
  * @since 3.1.0
@@ -87,8 +83,17 @@ public class BugDialog extends JDialog {
 
   private JScrollPane descriptionScroll;
 
+  private final String key;
+
   public BugDialog(Frame owner, Throwable thrown) {
+    this(owner, thrown, "BugDialog", "/icons/48x48/bug.png"); //NON-NLS
+  }
+
+
+  public BugDialog(Frame owner, Throwable thrown, String key, String resource) {
     super(owner, true);
+
+    this.key = key;
 
     this.thrown = thrown;
     this.errorLog = BugUtils.getErrorLog();
@@ -96,16 +101,21 @@ public class BugDialog extends JDialog {
     //
     // header
     //
-    final JXHeader header = new JXHeader(
-      Resources.getString("BugDialog.heading"),
-      Resources.getString("BugDialog.message"),
-      new ImageIcon(BugDialog.class.getResource("/icons/48x48/bug.png"))  //NON-NLS
-    );
+    final JXHeader header;
+    if (resource == null) {
+      header = new JXHeader(Resources.getString(key + ".heading"), Resources.getString(key + ".message")); //NON-NLS
+    }
+    else {
+      if ("".equals(resource)) {
+        resource = "/icons/48x48/bug.png"; //NON-NLS
+      }
+      header = new JXHeader(Resources.getString(key + ".heading"), Resources.getString(key + ".message"), new ImageIcon(BugDialog.class.getResource(resource))); //NON-NLS
+    }
 
     //
     // dialog
     //
-    setTitle(Resources.getString("BugDialog.title"));
+    setTitle(Resources.getString(key + ".title")); //NON-NLS
     setLocationRelativeTo(owner);
     setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     setResizable(true);
@@ -137,8 +147,8 @@ public class BugDialog extends JDialog {
     contents.add(buildVersionCheckPanel(),     "versionCheckPanel");  //NON-NLS
     contents.add(buildCurrentVersionPanel(),   "currentVersionPanel"); //NON-NLS
     contents.add(buildSendingBugReportPanel(), "sendingBugReportPanel"); //NON-NLS
-    contents.add(buildNonReportingVersionPanel("BugDialog.old_version_instructions"), "oldVersionPanel"); //NON-NLS
-    contents.add(buildNonReportingVersionPanel("BugDialog.test_version_instructions"), "testVersionPanel"); //NON-NLS
+    contents.add(buildNonReportingVersionPanel(key + ".old_version_instructions"), "oldVersionPanel"); //NON-NLS
+    contents.add(buildNonReportingVersionPanel(key + ".test_version_instructions"), "testVersionPanel"); //NON-NLS
     contents.add(buildConnectionFailedPanel(), "connectionFailedPanel"); //NON-NLS
     contents.add(buildEmergencySavePanel(),    "emergencySavePanel"); //NON-NLS
 
@@ -165,7 +175,7 @@ public class BugDialog extends JDialog {
     spinner.setBusy(true);
 
     final FlowLabel label =
-      new FlowLabel(Resources.getString("BugDialog.collecting_details"));
+      new FlowLabel(Resources.getString(key + ".collecting_details")); //NON-NLS
 
     final JPanel panel = new JPanel(
       new MigLayout("", "", "[]push[]push"));  //NON-NLS
@@ -196,7 +206,7 @@ public class BugDialog extends JDialog {
 
   private Component buildCurrentVersionPanel() {
     final FlowLabel label = new FlowLabel(
-      Resources.getString("BugDialog.current_version_instructions"));
+      Resources.getString(key + ".current_version_instructions")); //NON-NLS
 
     descriptionArea = new JTextArea(10, 1);
     descriptionArea.setLineWrap(true);
@@ -205,7 +215,7 @@ public class BugDialog extends JDialog {
     descriptionScroll = new JScrollPane(descriptionArea);
 
     final JLabel descriptionLabel =
-      new JLabel(Resources.getString("BugDialog.bug_description"));
+      new JLabel(Resources.getString(key + ".bug_description")); //NONNLS
     descriptionLabel.setFont(
       descriptionLabel.getFont().deriveFont(Font.BOLD));
     descriptionLabel.setLabelFor(descriptionScroll);
@@ -329,7 +339,7 @@ public class BugDialog extends JDialog {
 
     final FlowLabel label = new FlowLabel(
       Resources.getString(
-        "BugDialog.connection_failed_instructions",
+        key + ".connection_failed_instructions", //NON-NLS
         makeErrorLogURLString(errorLog),
         errorLog.getAbsolutePath()
       )
@@ -374,7 +384,7 @@ public class BugDialog extends JDialog {
 
   private Component buildEmergencySavePanel() {
     final FlowLabel label =
-      new FlowLabel(Resources.getString("BugDialog.how_to_proceed"));
+      new FlowLabel(Resources.getString(key + ".how_to_proceed")); //NON-NLS
 
     final JPanel panel = new JPanel(new MigLayout("", "", "[]push")); //NON-NLS
     panel.add(label, "cell 0 0, growx, pushx"); //NON-NLS

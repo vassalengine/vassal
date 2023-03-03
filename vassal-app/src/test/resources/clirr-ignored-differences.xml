@@ -22,7 +22,7 @@
         <method>*</method>
     </difference>
 
-    <!-- From 3.7.0 -->
+    <!-- 3.7.0 -->
 
     <difference>
         <className>VASSAL/build/module/Map</className>
@@ -31,7 +31,7 @@
         <justification>Just added it, now taking it out :)</justification>
     </difference>
 
-    <!-- From 3.6.14 -->
+    <!-- 3.6.14 -->
 
     <difference>
         <className>VASSAL/build/module/map/MoveCameraButton</className>
@@ -104,6 +104,29 @@
         <differenceType>6006</differenceType>
         <field>instance</field>
         <justification>Singletons should be final</justification>
+    </difference>
+
+    <!-- 3.6.15 -->
+
+    <difference>
+        <className>VASSAL/launch/TilingHandler</className>
+        <differenceType>7006</differenceType>
+        <method>void runSlicer(java.util.List, int, int)</method>
+        <to>VASSAL.tools.lang.Pair</to>
+        <justification>No one should be using this externally</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/TilingHandler</className>
+        <differenceType>7005</differenceType>
+        <method>void runSlicer(java.util.List, int, int)</method>
+        <to>*</to>
+        <justification>No one should be using this externally</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/image/tilecache/FileArchiveImageTiler</className>
+        <differenceType>7004</differenceType>
+        <method>void run(VASSAL.tools.io.FileArchive, java.lang.String, int, int, java.lang.Iterable, java.util.concurrent.ExecutorService, VASSAL.tools.image.ImageLoader, VASSAL.tools.image.tilecache.TileSlicer, VASSAL.tools.lang.Callback, VASSAL.tools.lang.Callback, VASSAL.tools.lang.Callback)</method>
+        <justification>No one should be using this externally</justification>
     </difference>
 
 </differences>
