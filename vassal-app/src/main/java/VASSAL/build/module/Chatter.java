@@ -69,9 +69,11 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * The chat window component. Displays text messages and accepts input. Also
@@ -228,7 +230,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
           return;
         }
 
-        try (FileOutputStream fos = new FileOutputStream(outputFile)) {
+        try (OutputStream fos = Files.newOutputStream(Path.of(outputFile.getPath()))) {
           kit.write(fos, doc, 0, doc.getLength());
         }
         catch (IOException | BadLocationException ex) {
