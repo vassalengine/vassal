@@ -17,13 +17,18 @@
  */
 package VASSAL.counters;
 
+import VASSAL.build.BadDataReport;
+import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.configure.DoubleConfigurer;
 import VASSAL.configure.ImageSelector;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.DataArchive;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
+import VASSAL.tools.image.svg.SVGImageUtils;
 import VASSAL.tools.imageop.Op;
 
 import java.awt.Color;
@@ -40,6 +45,8 @@ import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 import java.awt.image.BufferedImage;
+import java.io.InputStream;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -52,6 +59,12 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
 import net.miginfocom.swing.MigLayout;
+
+import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GVTTreeWalker;
+import org.apache.batik.swing.svg.JSVGComponent;
+import org.apache.batik.swing.svg.GVTTreeBuilderAdapter;
+import org.apache.batik.swing.svg.GVTTreeBuilderEvent;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -284,10 +297,39 @@ public class NonRectangular extends Decorator implements EditablePiece {
           controls.revalidate();
           repack(controls);
         }
+        else if (imageName.endsWith(".svg")) {
+          try (InputStream in = GameModule.getGameModule().getDataArchive().getInputStream(DataArchive.IMAGE_DIR + imageName)) {
+            final JSVGComponent c = new JSVGComponent();
+            c.addGVTTreeBuilderListener(new GVTTreeBuilderAdapter() {
+              @Override
+              public void gvtBuildCompleted(GVTTreeBuilderEvent e) {
+                final GVTTreeWalker tw = new GVTTreeWalker(e.getGVTRoot());
+                final GraphicsNode node = tw.firstChild();
+                shape = node.getOutline();
+
+                final Rectangle b = shape.getBounds();
+                shape = AffineTransform.getTranslateInstance(-b.width / 2.0, -b.height / 2.0)
+                                       .createTransformedShape(shape);
+
+                repack(controls);
+              }
+            });
+            c.setSVGDocument(SVGImageUtils.getDocument(imageName, in));
+          }
+          catch (IOException ex) {
+            shape = null;
+            ErrorDialog.dataWarning(new BadDataReport(
+              "Error reading image", //NON-NLS
+              imageName,
+              ex
+            ));
+          }
+        }
         else {
-          final Image img = Op.load(picker.getImageName()).getImage();
-          if (img != null)
+          final Image img = Op.load(imageName).getImage();
+          if (img != null) {
             setShapeFromImage(img);
+          }
         }
       });
 

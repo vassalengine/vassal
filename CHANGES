@@ -1,5 +1,47 @@
-3.6.14 - ???
+3.7.0-beta1 - ???
 
+* 12067: Import/export of groups of items from Editor as XML files (e.g., to
+    transfer between modules)
+* 12035: Mouse-over Stack Viewers allow configuring thickness of outer border,
+    and more padding/stretching options
+* 12032: Mark-When-Moved trait can be configured to only flag when piece
+    changes LocationName or Mat. Similarly Map auto-report can be configured
+    to ignore same-location movements.
+* 12003: OldDeckName now supported as a piece property
+* 12001: count_ supported for counting properties in Inventory windows
+* 11969: New Border Outline trait
+* 11964: Mouse-over Stack Viewers can display an image of underlying terrain
+* 11937: SumMat and CountMat functions for Beanshell expressions
+* 11919: Allow DEL/BACKSPACE to be mapped as a hotkey
+* 11918: Startup GKC that fires when player joins or changes sides
+* 11917: Create Non-Rectangular mask directly from SVG outline
+* 11913: Numeric global properties with increments other than 1 and -1 now
+    wrap around correctly
+* 11530: Add new StackPos and StackSize properties to Basic Piece
+* 11523: Area of Effect improvements: Active property, local/global visibility,
+    separate on/off Key Commands
+* 11506: Predefined Setup "menus" with blank names will not be shown
+* 11178: Global Option added to omit empty lines in property setting prompts
+* 11100: Allow begin-logfile and end-logfile to have configurable hotkeys in
+    Global Options
+* 10821: Symbolic Dice buttons how have full Action Button capabilities
+    (sounds, hotkeys, etc.)
+* 10820: Make Action Button available on all windows where other similar
+    buttons (e.g., GKC, Multi-Action, etc) are available
+*  4454: Save chat text to file
+
+3.6.15 - ???
+
+* 12069: Tiling: Improved detection of and recovery from running out of memory;
+  improved error dialogs
+*  9894: Improved error dialog for failure to start child process
+
+3.6.14 - 1 March 2023
+
+* 12065: Reduce update check delay to 5 days, from 10
+* 12063: Fixed Deck save/load hotkeys being mixed up
+* 12061: Fixed bug with pasting invalid/incomplete regex expressions
+* 12059: Various PMD and Spotbugs fixes
 * 12049: Duplicating a prototype no longer disables that prototype until next
     module reload
 * 12048: Fix bugs when deleting groups of decks/stacks from the editor

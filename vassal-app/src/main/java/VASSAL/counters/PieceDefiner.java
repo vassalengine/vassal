@@ -200,6 +200,7 @@ public class PieceDefiner extends JPanel {
       availableModel = new DefaultListModel<>();
       //addElement(new BasicPiece()); // Not needed since you can never add it
       addElement(new BasicName());
+      addElement(new BorderOutline());
       addElement(new Delete());
       addElement(new Clone());
       addElement(new Embellishment());

@@ -543,7 +543,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         map.repaint();
 
         // Complete the move, finding new mat if needed and applying map afterburner key
-        c = finishMove(c, true, true);
+        c = finishMove(c, true, true, GlobalOptions.getInstance().isSendToLocationMoveTrails());
       }
     }
     else {
@@ -562,7 +562,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         dest = backPoint;
 
         // Complete the move, finding new mat if needed and applying map afterburner key
-        c = finishMove(c, true, true);
+        c = finishMove(c, true, true, GlobalOptions.getInstance().isSendToLocationMoveTrails());
 
         if (oldMap != null && oldMap != backMap) {
           oldMap.repaint();
@@ -600,7 +600,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
             c = c.append(map.placeOrMerge(piece, pt));
 
             // Complete the move, applying map afterburner key
-            c = piece.finishMove(c, true, false);
+            c = piece.finishMove(c, true, false, GlobalOptions.getInstance().isSendToLocationMoveTrails());
           }
         }
       }

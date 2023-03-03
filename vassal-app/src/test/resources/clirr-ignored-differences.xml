@@ -22,4 +22,111 @@
         <method>*</method>
     </difference>
 
+    <!-- 3.7.0 -->
+
+    <difference>
+        <className>VASSAL/build/module/Map</className>
+        <differenceType>7002</differenceType>
+        <method>java.awt.image.BufferedImage getImageMapIcon(java.awt.Point, int, int, double)</method>
+        <justification>Just added it, now taking it out :)</justification>
+    </difference>
+
+    <!-- 3.6.14 -->
+
+    <difference>
+        <className>VASSAL/build/module/map/MoveCameraButton</className>
+        <differenceType>6006</differenceType>
+        <field>MOVE_CAMERA_MODE</field>
+        <justification>String constants should be final</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/MoveCameraButton</className>
+        <differenceType>6006</differenceType>
+        <field>ZOOM</field>
+        <justification>String constants should be final</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/MoveCameraButton</className>
+        <differenceType>6006</differenceType>
+        <field>BOARD_NAME</field>
+        <justification>String constants should be final</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/MoveCameraButton</className>
+        <differenceType>6006</differenceType>
+        <field>X_POS</field>
+        <justification>String constants should be final</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/MoveCameraButton</className>
+        <differenceType>6006</differenceType>
+        <field>Y_POS</field>
+        <justification>String constants should be final</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/MoveCameraButton</className>
+        <differenceType>6006</differenceType>
+        <field>ZONE_NAME</field>
+        <justification>String constants should be final</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/MoveCameraButton</className>
+        <differenceType>6006</differenceType>
+        <field>GRID_LOCATION</field>
+        <justification>String constants should be final</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/MoveCameraButton</className>
+        <differenceType>6006</differenceType>
+        <field>REGION_NAME</field>
+        <justification>String constants should be final</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/MoveCameraButton</className>
+        <differenceType>6006</differenceType>
+        <field>PROPERTY_FILTER</field>
+        <justification>String constants should be final</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/MoveCameraButton</className>
+        <differenceType>6006</differenceType>
+        <field>X_OFFSET</field>
+        <justification>String constants should be final</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/MoveCameraButton</className>
+        <differenceType>6006</differenceType>
+        <field>Y_OFFSET</field>
+        <justification>String constants should be final</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/NamedKeyManager</className>
+        <differenceType>6006</differenceType>
+        <field>instance</field>
+        <justification>Singletons should be final</justification>
+    </difference>
+
+    <!-- 3.6.15 -->
+
+    <difference>
+        <className>VASSAL/launch/TilingHandler</className>
+        <differenceType>7006</differenceType>
+        <method>void runSlicer(java.util.List, int, int)</method>
+        <to>VASSAL.tools.lang.Pair</to>
+        <justification>No one should be using this externally</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/TilingHandler</className>
+        <differenceType>7005</differenceType>
+        <method>void runSlicer(java.util.List, int, int)</method>
+        <to>*</to>
+        <justification>No one should be using this externally</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/image/tilecache/FileArchiveImageTiler</className>
+        <differenceType>7004</differenceType>
+        <method>void run(VASSAL.tools.io.FileArchive, java.lang.String, int, int, java.lang.Iterable, java.util.concurrent.ExecutorService, VASSAL.tools.image.ImageLoader, VASSAL.tools.image.tilecache.TileSlicer, VASSAL.tools.lang.Callback, VASSAL.tools.lang.Callback, VASSAL.tools.lang.Callback)</method>
+        <justification>No one should be using this externally</justification>
+    </difference>
+
 </differences>

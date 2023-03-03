@@ -509,7 +509,7 @@ public class FreeRotator extends Decorator
     c = c.append(map.placeOrMerge(Decorator.getOutermost(gp), dest));
 
     // Post move actions -- find a new mat if needed, and apply any afterburner apply-on-move key
-    c = finishMove(c, true, !cargoFollowup);
+    c = finishMove(c, true, !cargoFollowup, true);
 
     return c;
   }

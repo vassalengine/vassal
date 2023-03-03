@@ -30,6 +30,7 @@ import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.ToolBarComponent;
 
 import java.awt.Component;
 import java.awt.event.ActionListener;
@@ -449,26 +450,40 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
   }
 
   /**
-   * Default behavior adds the button to the module toolbar.
+   * Default behavior adds the button to the parent component
    * @param parent parent Buildable to add this component to as a subcomponent.
    */
   @Override
   public void addTo(Buildable parent) {
     final GameModule gm = GameModule.getGameModule();
     gm.getGameState().addGameComponent(this);
-    gm.getToolBar().add(getComponent());
+
+    if (parent instanceof AbstractFolder) {
+      parent = ((AbstractFolder)parent).getNonFolderAncestor();
+    }
+
+    if (parent instanceof ToolBarComponent) {
+      ((ToolBarComponent)parent).getToolBar().add(getComponent());
+    }
   }
 
   /**
-   * Default behavior assumes we are removing this from the module toolbar
-   * @param b parent
+   * Remove from our parent
+   * @param parent parent
    */
   @Override
-  public void removeFrom(Buildable b) {
+  public void removeFrom(Buildable parent) {
     final GameModule gm = GameModule.getGameModule();
-    gm.getToolBar().remove(getComponent());
-    gm.getToolBar().revalidate();
     gm.getGameState().removeGameComponent(this);
+
+    if (parent instanceof AbstractFolder) {
+      parent = ((AbstractFolder)parent).getNonFolderAncestor();
+    }
+
+    if (parent instanceof ToolBarComponent) {
+      ((ToolBarComponent)parent).getToolBar().remove(getComponent());
+      ((ToolBarComponent)parent).getToolBar().revalidate();
+    }
   }
 
   @Override

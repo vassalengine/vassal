@@ -103,10 +103,13 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
   public static final String LOCALIZED_BASIC_NAME = "LocalizedBasicName"; //NON-NLS
   public static final String LOCALIZED_PIECE_NAME = "LocalizedPieceName"; //NON-NLS
   public static final String DECK_NAME = "DeckName"; // NON-NLS
+  public static final String OLD_DECK_NAME = "OldDeckName"; //NON-NLS
   public static final String DECK_POSITION = "DeckPosition"; // NON-NLS
   public static final String CLICKED_X = "ClickedX"; // NON-NLS
   public static final String CLICKED_Y = "ClickedY"; // NON-NLS
   public static final String PIECE_UID = "PieceUID"; // NON-NLS
+  public static final String STACK_POS = "StackPos";
+  public static final String STACK_SIZE = "StackSize";
 
   @Deprecated(since = "2022-08-08", forRemoval = true)
   public static Font POPUP_MENU_FONT = new Font(Font.DIALOG, Font.PLAIN, 11);
@@ -307,6 +310,22 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
     else if (PIECE_UID.equals(key)) {
       return getId();
     }
+    else if (STACK_POS.equals(key)) {
+      final Stack parent = getParent();
+      if (parent == null) {
+        return "1";
+      }
+      final GamePiece outer = Decorator.getOutermost(this);
+      final int i = parent.indexOf(outer);
+      if (i != -1) {
+        return String.valueOf(parent.getPieceCount() - i);
+      }
+      return "1";
+    }
+    else if (STACK_SIZE.equals(key)) {
+      final Stack parent = getParent();
+      return parent == null ? "1" : String.valueOf(parent.getPieceCount());
+    }
     else if (Properties.VISIBLE_STATE.equals(key)) {
       return "";
     }
@@ -367,6 +386,8 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
       CURRENT_X,
       CURRENT_Y,
       PIECE_UID,
+      STACK_POS,
+      STACK_SIZE,
       Properties.VISIBLE_STATE
     ).contains(key)) {
       return getProperty(key);
@@ -1208,6 +1229,9 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
     l.add(OLD_MAT_BASIC_NAME);
     l.add(OLD_MAT_OFFSET_X);
     l.add(OLD_MAT_OFFSET_Y);
+    l.add(OLD_DECK_NAME);
+    l.add(STACK_SIZE);
+    l.add(STACK_POS);
     return l;
   }
 

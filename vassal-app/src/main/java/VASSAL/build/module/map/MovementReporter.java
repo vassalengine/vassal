@@ -181,7 +181,7 @@ public class MovementReporter {
       final Map fromMap = Map.getMapById(ms.getOldMapId());
       final Map toMap = Map.getMapById(ms.getNewMapId());
       format.clearProperties();
-      String sourceFieldKey;
+      final String sourceFieldKey;
       if (fromMap == null) {
         format.setFormat(toMap.getCreateFormat());
         sourceFieldKey = "Editor.Map.report_created";
@@ -198,10 +198,18 @@ public class MovementReporter {
         break;
       }
       format.setProperty(Map.PIECE_NAME, ms.getPieceName());
-      format.setProperty(Map.LOCATION, getLocation(toMap, ms.getNewPosition()));
+      final String loc = getLocation(toMap, ms.getNewPosition());
+      format.setProperty(Map.LOCATION, loc);
       if (fromMap != null) {
         format.setProperty(Map.OLD_MAP, fromMap.getLocalizedConfigureName());
-        format.setProperty(Map.OLD_LOCATION, getLocation(fromMap, ms.getOldPosition()));
+        final String oldLoc = getLocation(fromMap, ms.getOldPosition());
+        format.setProperty(Map.OLD_LOCATION, oldLoc);
+
+        if ((toMap == fromMap) && toMap.isOnlyReportChangedLocation()) {
+          if (loc.equals(oldLoc)) {
+            continue;
+          }
+        }
       }
       format.setProperty(Map.MAP_NAME, toMap.getLocalizedConfigureName());
 

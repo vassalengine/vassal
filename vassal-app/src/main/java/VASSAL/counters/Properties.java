@@ -126,6 +126,9 @@ public interface Properties {
   /** Return Boolean.TRUE if this piece has been moved */
   String MOVED = "Moved"; // NON-NLS
 
+  /** Write-only -- sets MOVED but only if ignore-same-location isn't checked in the trait */
+  String MAYBE_MOVED = "MaybeMoved"; //NON-NLS
+
   /** Used to store a duplicate of the target piece at some point in time */
   String SNAPSHOT = "snapshot"; // NON-NLS
 

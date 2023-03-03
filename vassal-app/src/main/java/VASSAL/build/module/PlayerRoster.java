@@ -298,6 +298,8 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
     newSide = getMySide();
     fireSideChange(mySide, newSide);
+
+    GameModule.getGameModule().getGameState().doStartupGlobalKeyCommands(true);
   }
 
   protected void fireSideChange(String oldSide, String newSide) {

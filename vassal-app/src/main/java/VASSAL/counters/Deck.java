@@ -573,7 +573,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     if (loadListener == null) {
       loadListener = new NamedKeyStrokeListener(e -> doLoadDeck());
       gameModule.addKeyStrokeListener(loadListener);
-      saveListener.setKeyStroke(getLoadKey());
+      loadListener.setKeyStroke(getLoadKey());
     }
 
     // Add Listeners for DeckKeyCommands
@@ -1829,7 +1829,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         // Prepare the piece for move, writing "old location" properties and unlinking from any deck
         c = p.prepareMove(c, false);
         c = c.append(target.addToContents(p));
-        c = p.finishMove(c, false, false);
+        c = p.finishMove(c, false, false, false);
       }
     }
     return c;
@@ -1928,7 +1928,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       c = c.append(target.addToContents(piece));
 
       // Finish up after piece's move. Apply afterburner key if that option is selected
-      c = piece.finishMove(c, dkc.isApplyOnMove() && (map != null), false);
+      c = piece.finishMove(c, dkc.isApplyOnMove() && (map != null), false, false);
       if (dkc.isApplyOnMove() && (map != null)) {
         map.repaint();
       }

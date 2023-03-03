@@ -326,7 +326,7 @@ public class Translate extends Decorator implements TranslatablePiece {
     c = c.append(map.placeOrMerge(Decorator.getOutermost(this), dest));
 
     // Post move actions -- find a new mat if needed, and apply any afterburner apply-on-move key
-    c = finishMove(c, true, true);
+    c = finishMove(c, true, true, true);
 
     return c;
   }
