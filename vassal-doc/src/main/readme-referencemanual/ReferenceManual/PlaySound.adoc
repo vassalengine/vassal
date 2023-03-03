@@ -26,5 +26,7 @@ You can select a specific Sound file using the _Select_ button, or you can load 
 *Send sound to other players?*::  If selected, then the Command to play the sound will be echoed to other players when playing live or reading from a logfile.
 Otherwise, the sound is only audible to the player who invoked the command.
 
+*Override suppression by Global Key Commands:*::  If selected, then the command to play the sound will be processed even during the processing of a Global Key Command with the _Suppress sounds_ option selected.
+
 |image:images/PlaySound.png[]
 |===
