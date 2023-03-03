@@ -175,7 +175,7 @@ public class BugDialog extends JDialog {
     spinner.setBusy(true);
 
     final FlowLabel label =
-      new FlowLabel(Resources.getString("BugDialog.collecting_details"));
+      new FlowLabel(Resources.getString(key + ".collecting_details")); //NON-NLS
 
     final JPanel panel = new JPanel(
       new MigLayout("", "", "[]push[]push"));  //NON-NLS
@@ -215,7 +215,7 @@ public class BugDialog extends JDialog {
     descriptionScroll = new JScrollPane(descriptionArea);
 
     final JLabel descriptionLabel =
-      new JLabel(Resources.getString("BugDialog.bug_description"));
+      new JLabel(Resources.getString(key + ".bug_description")); //NONNLS
     descriptionLabel.setFont(
       descriptionLabel.getFont().deriveFont(Font.BOLD));
     descriptionLabel.setLabelFor(descriptionScroll);
