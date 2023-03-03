@@ -328,12 +328,19 @@ public class TilingHandler {
       String line;
       while (true) {
         line = in.readLine();
+        if (line == null) {
+          throw new IOException("EOF before tiler started");
+        }
+
+        if (line.isEmpty()) {
+          continue;
+        }
 
         if (READY.equals(line)) {
           break;
         }
         else {
-          logger.error(line);
+          logger.info(line);
         }
       }
 
@@ -352,6 +359,14 @@ public class TilingHandler {
       char type;
       while (!done && !proc.future.isCancelled()) {
         line = in.readLine();
+        if (line == null) {
+          throw new IOException("EOF before tiler finished");
+        }
+
+        if (line.isEmpty()) {
+          continue;
+        }
+
         type = line.charAt(0);
 
         switch (type) {
@@ -375,7 +390,7 @@ public class TilingHandler {
           break;
 
         default:
-          throw new IOException("Read bad line during tiling: " + line); //NON-NLS
+          logger.info(line);
         }
       }
     }

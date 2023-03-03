@@ -154,23 +154,28 @@ public class ZipFileImageTiler {
     try (BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8))) {
       final Iterable<String> ipaths = IteratorUtils.iterate(new LineIterator(stdin));
 
-      try (PrintStream out = new PrintStream(os, true, StandardCharsets.UTF_8)) {
-        out.println(READY);
+      try (PrintStream out = new PrintStream(os, false, StandardCharsets.UTF_8)) {
+        out.println("\n" + READY);
+        out.flush();
 
         final Callback<String> imageStartL = ipath -> {
-          out.println(IMAGE_BEGIN + ipath);
+          out.println("\n" + IMAGE_BEGIN + ipath);
+          out.flush();
         };
 
         final Callback<String> imageDoneL = ipath -> {
-          out.println(IMAGE_END + ipath);
+          out.println("\n" + IMAGE_END + ipath);
+          out.flush();
         };
 
         final Callback<Void> tileL = obj -> {
-          out.println(TILE_END);
+          out.println("\n" + TILE_END);
+          out.flush();
         };
 
         final Callback<Void> doneL = obj -> {
-          out.println(DONE);
+          out.println("\n" + DONE);
+          out.flush();
         };
 
         try (FileArchive fa = new ZipArchive(zpath)) {
