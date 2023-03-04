@@ -24,6 +24,7 @@
 * 11178: Global Option added to omit empty lines in property setting prompts
 * 11100: Allow begin-logfile and end-logfile to have configurable hotkeys in
     Global Options
+* 10822: Sounds can be suppressed during GKC processing
 * 10821: Symbolic Dice buttons how have full Action Button capabilities
     (sounds, hotkeys, etc.)
 * 10820: Make Action Button available on all windows where other similar
