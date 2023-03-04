@@ -44,6 +44,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -827,15 +828,7 @@ public class GlobalCommand implements Auditable {
 
   @Override
   public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((keyStroke == null) ? 0 : keyStroke.hashCode());
-    result = prime * result
-      + ((reportFormat == null) ? 0 : reportFormat.hashCode());
-    result = prime * result + (reportSingle ? 1231 : 1237);
-    result = prime * result + (isSuppressSounds() ? 1231 : 1237); // No idea what is appropriate here, just copying the mysterious line above
-    result = prime * result + selectFromDeckExpression.hashCode();
-    return result;
+    return Objects.hash(keyStroke, reportFormat, reportSingle, selectFromDeckExpression, suppressSounds);
   }
 
   @Override
