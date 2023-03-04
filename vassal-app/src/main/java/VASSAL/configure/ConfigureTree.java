@@ -497,7 +497,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     final boolean canExport = getTreeNode(target).getParent() != null;
     final boolean canImport = (target.getAllowableConfigureComponents().length > 0);
 
-    if (canImport || canExport) {
+    if (canImport || canExport || (target instanceof DrawPile)) {
       popup.addSeparator();
     }
 
