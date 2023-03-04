@@ -279,6 +279,8 @@ public class GameModule extends AbstractConfigurable
   private boolean matSupport = false; // If no Mats exist in the module, we don't need to spend any time doing mat-related calculations during moves/selects
   private boolean trueMovedSupport = false; // If not ignore-small-moves traits exist in the module, we don't need to spend any time doing related calculations
 
+  private boolean suppressSounds = false; // Semaphore if currently suppressing sounds (eg during Global Key Command processing)
+
   private final DeckManager deckMgr = new DeckManager();
 
   public DeckManager getDeckManager() {
@@ -317,6 +319,21 @@ public class GameModule extends AbstractConfigurable
    */
   public void setTrueMovedSupport(boolean trueMovedSupport) {
     this.trueMovedSupport = trueMovedSupport;
+  }
+
+
+  /**
+   * @return True if currently suppressing sounds (eg during a Global Key Command)
+   */
+  public boolean isSuppressSounds() {
+    return suppressSounds;
+  }
+
+  /**
+   * @param suppressSounds true if sounds should be suppressed during command processing
+   */
+  public void setSuppressSounds(boolean suppressSounds) {
+    this.suppressSounds = suppressSounds;
   }
 
 

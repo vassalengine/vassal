@@ -44,6 +44,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -65,6 +66,7 @@ import java.util.regex.PatternSyntaxException;
 public class GlobalCommand implements Auditable {
   protected KeyStroke keyStroke;        // Key Command we will issue
   protected boolean reportSingle;       // If true, we temporarily disable Report traits in any receiving pieces
+  protected boolean suppressSounds;     // If true, we temporarily disable Play Sound traits in any receiving pieces
   protected int selectFromDeck = -1;    // selectFromDeck = -1 means process all cards in Deck; > 0 means select that many cards from the Deck
   protected String selectFromDeckExpression = "-1"; // selectFromDeck = -1 means process all cards in Deck; Otherwise an expression evaluating to # of cards to pick from deck
   protected FormattedString reportFormat = new FormattedString(); // Report to display before sending the command
@@ -129,6 +131,14 @@ public class GlobalCommand implements Auditable {
 
   public void setReportSingle(boolean reportSingle) {
     this.reportSingle = reportSingle;
+  }
+
+  public boolean isSuppressSounds() {
+    return suppressSounds;
+  }
+
+  public void setSuppressSounds(boolean suppressSounds) {
+    this.suppressSounds = suppressSounds;
   }
 
   public void setTarget(GlobalCommandTarget target) {
@@ -240,6 +250,10 @@ public class GlobalCommand implements Auditable {
     try {
       if (reportSingle) {
         Map.setChangeReportingEnabled(false); // Disable individual reports, if specified
+      }
+
+      if (suppressSounds) {
+        GameModule.getGameModule().setSuppressSounds(true);
       }
 
       RecursionLimiter.startExecution(owner); // Trap infinite loops of Global Key Commands
@@ -641,6 +655,9 @@ public class GlobalCommand implements Auditable {
       if (reportSingle) {
         Map.setChangeReportingEnabled(true); // Restore normal reporting behavior (if we'd disabled all individual reports)
       }
+      if (suppressSounds) {
+        GameModule.getGameModule().setSuppressSounds(false);
+      }
     }
 
     return command; // Here, eat this tasty command!
@@ -811,14 +828,7 @@ public class GlobalCommand implements Auditable {
 
   @Override
   public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((keyStroke == null) ? 0 : keyStroke.hashCode());
-    result = prime * result
-      + ((reportFormat == null) ? 0 : reportFormat.hashCode());
-    result = prime * result + (reportSingle ? 1231 : 1237);
-    result = prime * result + selectFromDeckExpression.hashCode();
-    return result;
+    return Objects.hash(keyStroke, reportFormat, reportSingle, selectFromDeckExpression, suppressSounds);
   }
 
   @Override
@@ -844,6 +854,7 @@ public class GlobalCommand implements Auditable {
       return false;
     if (reportSingle != other.reportSingle)
       return false;
+    if (suppressSounds != other.suppressSounds) return false;
     if (!selectFromDeckExpression.equals(other.selectFromDeckExpression)) {
       return false;
     }

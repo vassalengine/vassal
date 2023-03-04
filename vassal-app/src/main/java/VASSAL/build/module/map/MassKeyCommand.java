@@ -101,6 +101,7 @@ public class MassKeyCommand extends AbstractToolbarItem
   public static final String CHECK_PROPERTY = "property"; // NON-NLS
   public static final String CHECK_VALUE = "propValue"; // NON-NLS
   public static final String SINGLE_MAP = "singleMap"; // NON-NLS
+  public static final String SUPPRESS_SOUNDS = "suppressSounds"; //NON-NLS
 
   // TODO: When these are removed, look for all of the "removal" warning
   // suppressions we added for them, and remove those.
@@ -224,6 +225,7 @@ public class MassKeyCommand extends AbstractToolbarItem
         Resources.getString("Editor.MassKey.match"), //$NON-NLS-1$          // Match properties        
         Resources.getString("Editor.GlobalKeyCommand.deck_policy"), //$NON-NLS-1$   // Apply to pieces in deck
         Resources.getString("Editor.MassKey.suppress"), //$NON-NLS-1$       // Suppress individual reports?
+        Resources.getString("Editor.MassKey.suppress_sounds"), //NON-NLS    // Suppress sounds
         Resources.getString("Editor.report_format") //$NON-NLS-1$           // Report format
       );
     }
@@ -257,6 +259,7 @@ public class MassKeyCommand extends AbstractToolbarItem
       PROPERTIES_FILTER,                    // Match properties
       DECK_COUNT,                           // Apply to pieces in deck
       REPORT_SINGLE,                        // Suppress individual reports?
+      SUPPRESS_SOUNDS,                      // Suppress individual reports?
       REPORT_FORMAT,                        // Report format
       CONDITION,                            // Legacy condition
       CHECK_VALUE,                          // NOT DISPLAYED
@@ -294,6 +297,7 @@ public class MassKeyCommand extends AbstractToolbarItem
         PropertyExpression.class,           // Match properties
         DeckPolicyConfig.class,             // Apply to pieces in deck
         Boolean.class,                      // Suppress individual reports?
+        Boolean.class,                      // Suppress sounds
         ReportFormatConfig.class            // Report format
       );
     }
@@ -487,6 +491,9 @@ public class MassKeyCommand extends AbstractToolbarItem
     else if (REPORT_SINGLE.equals(key)) {
       return String.valueOf(globalCommand.isReportSingle());
     }
+    else if (SUPPRESS_SOUNDS.equals(key)) {
+      return String.valueOf(globalCommand.isSuppressSounds());
+    }
     else if (DECK_COUNT.equals(key)) {
       return globalCommand.getSelectFromDeckExpression();
     }
@@ -624,6 +631,12 @@ public class MassKeyCommand extends AbstractToolbarItem
         value = Boolean.valueOf((String) value);
       }
       globalCommand.setReportSingle((Boolean) value);
+    }
+    else if (SUPPRESS_SOUNDS.equals(key)) {
+      if (value instanceof String) {
+        value = Boolean.valueOf((String) value);
+      }
+      globalCommand.setSuppressSounds((Boolean) value);
     }
     else if (DECK_COUNT.equals(key)) {
       if (value instanceof Integer) {
