@@ -310,6 +310,9 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
     else if (Properties.VISIBLE_STATE.equals(key)) {
       return "";
     }
+    else if (Properties.OBSCURED_TO_OTHERS.equals(key)) {
+      return false;
+    }
 
     // Check for a property in the scratch-pad properties
     Object prop = props == null ? null : props.get(key);
