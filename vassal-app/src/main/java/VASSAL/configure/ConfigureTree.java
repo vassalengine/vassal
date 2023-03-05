@@ -508,9 +508,15 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       addAction(popup, buildImportTreeAction(target));
     }
 
-    popup.addSeparator();
-    addAction(popup, buildOpenPiecesAction(target));
-    addAction(popup, buildEditPiecesAction(target));
+    final Action aOpen = buildOpenPiecesAction(target);
+    final Action aEdit = buildEditPiecesAction(target);
+
+    if ((aOpen != null) || (aEdit != null)) {
+      popup.addSeparator();
+    }
+
+    addAction(popup, aOpen);
+    addAction(popup, aEdit);
 
     return popup;
   }
@@ -658,18 +664,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
 
   protected Action buildImportTreeAction(final Configurable target) {
-    Action a = null;
-    if (getTreeNode(target).getParent() != null) {
-      a = new AbstractAction(Resources.getString("Editor.ConfigureTree.import_object")) {
-        private static final long serialVersionUID = 1L;
+    return new AbstractAction(Resources.getString("Editor.ConfigureTree.import_object")) {
+      private static final long serialVersionUID = 1L;
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          importTreeBranch(target);
-        }
-      };
-    }
-    return a;
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        importTreeBranch(target);
+      }
+    };
   }
 
 
