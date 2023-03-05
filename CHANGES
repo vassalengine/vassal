@@ -2,6 +2,8 @@
 
 * 12067: Import/export of groups of items from Editor as XML files (e.g., to
     transfer between modules)
+* 12060: Editor allows Deck files to be imported into a deck to become
+    permanent part of module
 * 12035: Mouse-over Stack Viewers allow configuring thickness of outer border,
     and more padding/stretching options
 * 12032: Mark-When-Moved trait can be configured to only flag when piece

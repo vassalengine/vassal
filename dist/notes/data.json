@@ -20,6 +20,7 @@
       "since": "3.6.15",
       "new_features": [
         { "num": 12067, "desc": "Import/export of groups of items from Editor as XML files (e.g., to transfer between modules)" },
+        { "num": 12060, "desc": "Editor allows Deck files to be imported into a deck to become permanent part of module" },
         { "num": 12035, "desc": "Mouse-over Stack Viewers allow configuring thickness of outer border, and more padding/stretching options" },
         { "num": 12032, "desc": "Mark-When-Moved trait can be configured to only flag when piece changes LocationName or Mat. Similarly Map auto-report can be configured to ignore same-location movements." },
         { "num": 12003, "desc": "OldDeckName now supported as a piece property" },
