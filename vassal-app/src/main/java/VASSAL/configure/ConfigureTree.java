@@ -491,12 +491,13 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     if (hasChild(target, PieceSlot.class) || hasChild(target, CardSlot.class)) {
       addAction(popup, buildMassPieceLoaderAction(target));
     }
+    
     addAction(popup, buildImportAction(target));
 
     final boolean canExport = getTreeNode(target).getParent() != null;
     final boolean canImport = (target.getAllowableConfigureComponents().length > 0);
 
-    if (canImport || canExport) {
+    if (canImport || canExport || (target instanceof DrawPile)) {
       popup.addSeparator();
     }
 
@@ -506,6 +507,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
     if (canImport) {
       addAction(popup, buildImportTreeAction(target));
+    }
+    
+    if (target instanceof DrawPile) {
+      addAction(popup, buildImportDeckAction(target));
     }
 
     final Action aOpen = buildOpenPiecesAction(target);
@@ -520,7 +525,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
     return popup;
   }
-
 
   public static final String defaultExportExtension = ".xml"; //NON-NLS
 
@@ -985,6 +989,19 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
     };
   }
+
+  protected Action buildImportDeckAction(final Configurable target) {
+    final ConfigureTree tree = this;
+    return new AbstractAction(Resources.getString("Editor.ConfigureTree.import_deck_file")) {
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void actionPerformed(ActionEvent evt) {
+        ((DrawPile)(target)).importDeck(tree);
+      }
+    };
+  }
+
 
 
   protected Action buildMassPieceLoaderAction(final Configurable target) {

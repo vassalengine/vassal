@@ -96,6 +96,10 @@ When configuring a component that can hold Game Pieces or Cards, this option ope
 
 Allows you to import an appropriate custom java class at this point in the module hierachy.
 
+===== Import Deck File
+
+Allows you to import a file saved from a <<Deck.adoc#top,Deck>> (one configured to allow saving its cards) into the module, as permanent cards. _Warning_: any prototypes used in the cards will have been fully expanded (replaced recursively by the individual traits in the prototypes), so further changes to the original prototypes will no longer change any of the imported cards even if the Game Refresher is run.
+
 ===== Open all contained pieces
 
 When configuring a component that can hold Game pieces or Cards, will open all pieces within the component in separate <<PieceWindow.adoc#top,Piece Editor Windows>>
