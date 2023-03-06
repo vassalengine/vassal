@@ -285,6 +285,8 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 
   protected String description;
 
+  protected Point preferredCenter = new Point(0, 0);
+
   private IntConfigurer preferredScrollConfig;
   private DoubleConfigurer preferredScrollRateConfig;
 
@@ -3200,6 +3202,21 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     theMap.repaint();
   }
 
+
+  /**
+   * Accepts the current actual center of the map as the new "preferred center" (e.g. if we scroll)
+   */
+  public void updateCenter() {
+    preferredCenter = getCenter();
+  }
+
+  /**
+   * @return last location the player has requested to be the center of the map
+   */
+  public Point getPreferredCenter() {
+    return preferredCenter;
+  }
+
   /**
    * Center the map at given map coordinates within its JScrollPane container
    * @param p Point to center
@@ -3216,6 +3233,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @param dy y tolerance for nearness to center
    */
   public void centerAt(Point p, int dx, int dy) {
+    preferredCenter = p;
     if (scroll != null) {
       p = mapToComponent(p);
 
@@ -3305,6 +3323,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     r.translate(dx, dy);
     r = r.intersection(new Rectangle(getPreferredSize()));
     theMap.scrollRectToVisible(r);
+    updateCenter();
   }
 
   /**

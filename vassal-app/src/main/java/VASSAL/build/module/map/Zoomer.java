@@ -890,30 +890,26 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
   }
 
   public void setZoomLevel(int l) {
-    final Point center = getMapCenter();
     state.setLevel(l);
-    updateZoomer(center);
+    updateZoomer(map.getPreferredCenter());
   }
 
   public void setZoomFactor(double z) {
-    final Point center = getMapCenter();
     state.setZoom(z);
-    updateZoomer(center);
+    updateZoomer(map.getPreferredCenter());
   }
 
   public void zoomIn() {
     if (state.hasHigherLevel()) {
-      final Point center = getMapCenter();
       state.higherLevel();
-      updateZoomer(center);
+      updateZoomer(map.getPreferredCenter());
     }
   }
 
   public void zoomOut() {
     if (state.hasLowerLevel()) {
-      final Point center = getMapCenter();
       state.lowerLevel();
-      updateZoomer(center);
+      updateZoomer(map.getPreferredCenter());
     }
   }
 
