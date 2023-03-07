@@ -3203,11 +3203,24 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   }
 
 
+  private boolean suppressAutoCenterUpdate = false;
+
+  public void setSuppressAutoCenterUpdate(boolean suppressAutoCenterUpdate) {
+    this.suppressAutoCenterUpdate = suppressAutoCenterUpdate;
+  }
+
+  public boolean isSuppressAutoCenterUpdate() {
+    return suppressAutoCenterUpdate;
+  }
+
+
   /**
    * Accepts the current actual center of the map as the new "preferred center" (e.g. if we scroll)
    */
   public void updateCenter() {
-    preferredCenter = getCenter();
+    if (!suppressAutoCenterUpdate) {
+      preferredCenter = getCenter();
+    }
   }
 
   /**
@@ -3787,25 +3800,56 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   }
 
 
+  /**
+   * Common view setup code for Map and PrivateMap, which confusingly have different View classes that sharing the same name
+   */
+  public void setUpView() {
+    scroll = new AdjustableSpeedScrollPane(
+      theMap,
+      JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+      JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    scroll.unregisterKeyboardAction(
+      KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, 0));
+    scroll.unregisterKeyboardAction(
+      KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, 0));
+    scroll.setAlignmentX(0.0f);
+    scroll.setAlignmentY(0.0f);
+
+    layeredPane.setLayout(new InsetLayout(layeredPane, scroll));
+    layeredPane.add(scroll, JLayeredPane.DEFAULT_LAYER);
+
+    /*
+    scroll.getViewport().addChangeListener(new ChangeListener() {
+      @Override
+      public void stateChanged(ChangeEvent e) {
+        updateCenter();
+      }
+    });
+    */
+
+    /*
+    final AdjustmentListener adjuster = new AdjustmentListener() {
+      @Override
+      public void adjustmentValueChanged(AdjustmentEvent e) {
+        if (e.getAdjustmentType() != TRACK) {
+          updateCenter();
+        }
+      }
+    };
+
+    scroll.getHorizontalScrollBar().addAdjustmentListener(adjuster);
+    scroll.getVerticalScrollBar().addAdjustmentListener(adjuster);
+    */
+  }
+
+
   /** @return the Swing component representing the map */
   public JComponent getView() {
     if (theMap == null) {
       theMap = new View(this);
-
-      scroll = new AdjustableSpeedScrollPane(
-        theMap,
-        JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-        JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-      scroll.unregisterKeyboardAction(
-        KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, 0));
-      scroll.unregisterKeyboardAction(
-        KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, 0));
-      scroll.setAlignmentX(0.0f);
-      scroll.setAlignmentY(0.0f);
-
-      layeredPane.setLayout(new InsetLayout(layeredPane, scroll));
-      layeredPane.add(scroll, JLayeredPane.DEFAULT_LAYER);
+      setUpView();
     }
+
     return theMap;
   }
 
@@ -3985,6 +4029,8 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       g2d.setColor(map.bgColor);
       g2d.fillRect(r.x, r.y, r.width, r.height);
       map.paintRegion(g2d, r);
+
+      map.setSuppressAutoCenterUpdate(false);
 
       g2d.setTransform(orig_t);
     }
