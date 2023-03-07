@@ -878,10 +878,8 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
 
   protected void updateZoomer(Point center) {
+    // Suppress auto-updating the map's center based on its view, so that we won't change/lose the user's preferred center point
     GameModule.getGameModule().setSuppressAutoCenterUpdate(true);
-
-
-
 
     zoomInButton.setEnabled(state.hasHigherLevel());
     zoomOutButton.setEnabled(state.hasLowerLevel());

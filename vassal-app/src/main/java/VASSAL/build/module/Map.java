@@ -3207,6 +3207,8 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 
   /**
    * Accepts the current actual center of the map as the new "preferred center" (e.g. if we scroll)
+   * Just not if suppressed after a zoom level change (we don't want zoom level changes to cause us to
+   * lose track of the user's preferred ceter point)
    */
   public void updateCenter() {
     if (!GameModule.getGameModule().isSuppressAutoCenterUpdate()) {
@@ -3215,7 +3217,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   }
 
   /**
-   * @return last location the player has requested to be the center of the map
+   * @return last location the player has requested to be the center of the map (eg by manually clicking or scrolling)
    */
   public Point getPreferredCenter() {
     return preferredCenter;
@@ -3809,26 +3811,13 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     layeredPane.setLayout(new InsetLayout(layeredPane, scroll));
     layeredPane.add(scroll, JLayeredPane.DEFAULT_LAYER);
 
+    // When our Viewport changes for any reason, check if we need to update our "preferred center point"
     scroll.getViewport().addChangeListener(new ChangeListener() {
       @Override
       public void stateChanged(ChangeEvent e) {
         updateCenter();
       }
     });
-
-    /*
-    final AdjustmentListener adjuster = new AdjustmentListener() {
-      @Override
-      public void adjustmentValueChanged(AdjustmentEvent e) {
-        if (e.getAdjustmentType() != TRACK) {
-          updateCenter();
-        }
-      }
-    };
-
-    scroll.getHorizontalScrollBar().addAdjustmentListener(adjuster);
-    scroll.getVerticalScrollBar().addAdjustmentListener(adjuster);
-    */
   }
 
 

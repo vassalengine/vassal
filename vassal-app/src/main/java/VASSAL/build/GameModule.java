@@ -356,7 +356,7 @@ public class GameModule extends AbstractConfigurable
 
     zoomTimer.stop();
     if (suppressAutoCenterUpdate) {
-      zoomTimer.start();
+      zoomTimer.start(); // When we do a zoom change, we suppress auto-updating the map center for 1 second. This is only necessary because JScrollbar gives us no way to distinguish actual explicit user scrolling (via the UI) from Viewport changes via other sources (eg repaint after zoom)
     }
   }
 
