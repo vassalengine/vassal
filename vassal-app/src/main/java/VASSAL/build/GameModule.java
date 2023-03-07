@@ -142,9 +142,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
+import javax.swing.Timer;
 import java.awt.Container;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -334,6 +336,32 @@ public class GameModule extends AbstractConfigurable
    */
   public void setSuppressSounds(boolean suppressSounds) {
     this.suppressSounds = suppressSounds;
+  }
+
+
+
+
+
+  private final Timer zoomTimer = new Timer(1000, new ActionListener() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      suppressAutoCenterUpdate = false;
+    }
+  });
+  
+  private boolean suppressAutoCenterUpdate = false;
+
+  public void setSuppressAutoCenterUpdate(boolean suppressAutoCenterUpdate) {
+    this.suppressAutoCenterUpdate = suppressAutoCenterUpdate;
+
+    zoomTimer.stop();
+    if (suppressAutoCenterUpdate) {
+      zoomTimer.start();
+    }
+  }
+
+  public boolean isSuppressAutoCenterUpdate() {
+    return suppressAutoCenterUpdate;
   }
 
 

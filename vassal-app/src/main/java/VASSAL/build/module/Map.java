@@ -145,6 +145,8 @@ import javax.swing.OverlayLayout;
 import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.AWTEventMulticaster;
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -3203,22 +3205,11 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   }
 
 
-  private boolean suppressAutoCenterUpdate = false;
-
-  public void setSuppressAutoCenterUpdate(boolean suppressAutoCenterUpdate) {
-    this.suppressAutoCenterUpdate = suppressAutoCenterUpdate;
-  }
-
-  public boolean isSuppressAutoCenterUpdate() {
-    return suppressAutoCenterUpdate;
-  }
-
-
   /**
    * Accepts the current actual center of the map as the new "preferred center" (e.g. if we scroll)
    */
   public void updateCenter() {
-    if (!suppressAutoCenterUpdate) {
+    if (!GameModule.getGameModule().isSuppressAutoCenterUpdate()) {
       preferredCenter = getCenter();
     }
   }
@@ -3818,14 +3809,12 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     layeredPane.setLayout(new InsetLayout(layeredPane, scroll));
     layeredPane.add(scroll, JLayeredPane.DEFAULT_LAYER);
 
-    /*
     scroll.getViewport().addChangeListener(new ChangeListener() {
       @Override
       public void stateChanged(ChangeEvent e) {
         updateCenter();
       }
     });
-    */
 
     /*
     final AdjustmentListener adjuster = new AdjustmentListener() {
@@ -4029,8 +4018,6 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       g2d.setColor(map.bgColor);
       g2d.fillRect(r.x, r.y, r.width, r.height);
       map.paintRegion(g2d, r);
-
-      map.setSuppressAutoCenterUpdate(false);
 
       g2d.setTransform(orig_t);
     }

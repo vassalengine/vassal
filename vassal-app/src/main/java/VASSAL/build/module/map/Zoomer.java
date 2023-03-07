@@ -876,8 +876,12 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     return map.componentToMap(new Point(r.x + r.width / 2, r.y + r.height / 2));
   }
 
+
   protected void updateZoomer(Point center) {
-    map.setSuppressAutoCenterUpdate(true);
+    GameModule.getGameModule().setSuppressAutoCenterUpdate(true);
+
+
+
 
     zoomInButton.setEnabled(state.hasHigherLevel());
     zoomOutButton.setEnabled(state.hasLowerLevel());
