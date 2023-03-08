@@ -145,8 +145,6 @@ import javax.swing.OverlayLayout;
 import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.AWTEventMulticaster;
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -3812,12 +3810,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     layeredPane.add(scroll, JLayeredPane.DEFAULT_LAYER);
 
     // When our Viewport changes for any reason, check if we need to update our "preferred center point"
-    scroll.getViewport().addChangeListener(new ChangeListener() {
-      @Override
-      public void stateChanged(ChangeEvent e) {
-        updateCenter();
-      }
-    });
+    scroll.getViewport().addChangeListener(e -> updateCenter());
   }
 
 
