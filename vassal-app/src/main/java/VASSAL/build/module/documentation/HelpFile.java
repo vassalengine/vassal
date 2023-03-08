@@ -18,9 +18,13 @@
 package VASSAL.build.module.documentation;
 
 import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Documentation;
+import VASSAL.configure.Configurer;
+import VASSAL.configure.ConfigurerFactory;
+import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.ErrorDialog;
@@ -55,6 +59,9 @@ public class HelpFile extends AbstractConfigurable {
   public static final String RESOURCE = "resource"; //$NON-NLS-1$
   public static final String LOCAL_FILE = "file"; //$NON-NLS-1$
 
+  public static final String USER_SECTION = "user"; //NON-NLS
+  public static final String VASSAL_SECTION = "vassal"; //NON-NLS
+
   protected HelpWindow frame;
   protected DialogHelpWindow dialog;
   protected URL contents;
@@ -62,7 +69,17 @@ public class HelpFile extends AbstractConfigurable {
   protected String fileName;
   protected Action launch;
   protected String fileType = ARCHIVE_ENTRY;
-  protected Boolean vassalDoc = false;
+  protected String vassalDoc = "";
+
+
+  public static class VassalHelpConfig implements ConfigurerFactory {
+    @Override
+    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+      return new TranslatingStringEnumConfigurer(key, name,
+        new String[] {USER_SECTION, VASSAL_SECTION},
+        new String[] {"Editor.HelpFile.user_section", "Editor.HelpFile.vassal_section"});
+    }
+  }
 
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.HelpFile.component_type");
@@ -189,9 +206,9 @@ public class HelpFile extends AbstractConfigurable {
     return new String[] {
       TITLE,
       FILE,
+      VASSAL_DOC,
       IMAGE,
-      TYPE,
-      VASSAL_DOC
+      TYPE
     };
   }
 
@@ -207,7 +224,15 @@ public class HelpFile extends AbstractConfigurable {
       return fileType;
     }
     else if (VASSAL_DOC.equals(key)) {
-      return String.valueOf(vassalDoc);
+      if (vassalDoc.isEmpty()) {
+        if (Documentation.INTRO_FILENAME.equals(fileName)) { // Move old unconfigured "Quick Start" to the Vassal part of the menu
+          return VASSAL_SECTION;
+        }
+        else {
+          return USER_SECTION;
+        }
+      }
+      return vassalDoc;
     }
     return null;
   }
@@ -233,12 +258,7 @@ public class HelpFile extends AbstractConfigurable {
       fileType = (String) val;
     }
     else if (VASSAL_DOC.equals(key)) {
-      if (val instanceof String) {
-        vassalDoc = "true".equals(val); //NON-NLS
-      }
-      else {
-        vassalDoc = (Boolean) val;
-      }
+      vassalDoc = (String) val;
     }
   }
 
@@ -246,7 +266,8 @@ public class HelpFile extends AbstractConfigurable {
   public String[] getAttributeDescriptions() {
     return new String[]{
       Resources.getString("Editor.menu_command"),
-      Resources.getString("Editor.HelpFile.text_file")
+      Resources.getString("Editor.HelpFile.text_file"),
+      Resources.getString("Editor.HelpFile.display_with_vassal_section")
     };
   }
 
@@ -254,7 +275,8 @@ public class HelpFile extends AbstractConfigurable {
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       String.class,
-      File.class
+      File.class,
+      VassalHelpConfig.class
     };
   }
 
@@ -268,14 +290,14 @@ public class HelpFile extends AbstractConfigurable {
   @Override
   public void addTo(Buildable b) {
     launchItem = new MenuItemProxy(launch);
-    MenuManager.getInstance().addToSection(vassalDoc ? "Documentation.VASSAL" : "Documentation.Module", launchItem); //NON-NLS
+    MenuManager.getInstance().addToSection((VASSAL_SECTION.equals(getAttributeValueString(VASSAL_DOC))) ? "Documentation.VASSAL" : "Documentation.Module", launchItem); //NON-NLS
     launch.setEnabled(true);
   }
 
   @Override
   public void removeFrom(Buildable b) {
     MenuManager.getInstance()
-               .removeFromSection(vassalDoc ? "Documentation.VASSAL" : "Documentation.Module", launchItem); //NON-NLS
+               .removeFromSection((VASSAL_SECTION.equals(getAttributeValueString(VASSAL_DOC))) ? "Documentation.VASSAL" : "Documentation.Module", launchItem); //NON-NLS
     launch.setEnabled(false);
   }
 
