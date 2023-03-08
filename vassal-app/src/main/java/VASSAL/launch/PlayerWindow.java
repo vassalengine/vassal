@@ -166,14 +166,15 @@ public class PlayerWindow extends JFrame {
     toolsMenu.add(debugCheckbox);
     DebugControls.setCheckBox(debugCheckbox);
 
-    try {
-      final URL url = new File(Documentation.getDocumentationBaseDir(),
-                               "README.html").toURI().toURL();
-      mm.addAction("General.help", new ShowHelpAction(url, null));
-    }
-    catch (MalformedURLException e) {
-      ErrorDialog.bug(e);
-    }
+    // This file doesn't have particularly useful information, and the weird entry ("Help"???) was cluttering the Help menu.
+    //try {
+    //  final URL url = new File(Documentation.getDocumentationBaseDir(),
+    //                           "README.html").toURI().toURL();
+    //  mm.addAction("General.help", new ShowHelpAction(url, null));
+    //}
+    //catch (MalformedURLException e) {
+    //  ErrorDialog.bug(e);
+    //}
 
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(),
