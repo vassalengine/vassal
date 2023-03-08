@@ -17,18 +17,6 @@
  */
 package VASSAL.build.module.documentation;
 
-import java.awt.Dialog;
-import java.awt.event.ActionEvent;
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Collection;
-import java.util.List;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -41,6 +29,17 @@ import VASSAL.tools.URLUtils;
 import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import java.awt.Dialog;
+import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Collection;
+import java.util.List;
+
 /**
  * Places an entry in the <code>Help</code> menu.  Selecting the entry
  * displays a window with stored text on it.
@@ -50,6 +49,7 @@ public class HelpFile extends AbstractConfigurable {
   public static final String FILE = "fileName"; //$NON-NLS-1$
   public static final String TYPE = "fileType"; //$NON-NLS-1$
   private static final String IMAGE = "image"; //$NON-NLS-1$
+  public static final String VASSAL_DOC = "vassalDoc"; //NON-NLS
 
   public static final String ARCHIVE_ENTRY = "archive"; //$NON-NLS-1$
   public static final String RESOURCE = "resource"; //$NON-NLS-1$
@@ -62,6 +62,7 @@ public class HelpFile extends AbstractConfigurable {
   protected String fileName;
   protected Action launch;
   protected String fileType = ARCHIVE_ENTRY;
+  protected Boolean vassalDoc = false;
 
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.HelpFile.component_type");
@@ -189,7 +190,8 @@ public class HelpFile extends AbstractConfigurable {
       TITLE,
       FILE,
       IMAGE,
-      TYPE
+      TYPE,
+      VASSAL_DOC
     };
   }
 
@@ -203,6 +205,9 @@ public class HelpFile extends AbstractConfigurable {
     }
     else if (TYPE.equals(key)) {
       return fileType;
+    }
+    else if (VASSAL_DOC.equals(key)) {
+      return String.valueOf(vassalDoc);
     }
     return null;
   }
@@ -226,6 +231,14 @@ public class HelpFile extends AbstractConfigurable {
     }
     else if (TYPE.equals(key)) {
       fileType = (String) val;
+    }
+    else if (VASSAL_DOC.equals(key)) {
+      if (val instanceof String) {
+        vassalDoc = "true".equals(val); //NON-NLS
+      }
+      else {
+        vassalDoc = (Boolean) val;
+      }
     }
   }
 
@@ -255,14 +268,14 @@ public class HelpFile extends AbstractConfigurable {
   @Override
   public void addTo(Buildable b) {
     launchItem = new MenuItemProxy(launch);
-    MenuManager.getInstance().addToSection("Documentation.Module", launchItem); //NON-NLS
+    MenuManager.getInstance().addToSection(vassalDoc ? "Documentation.VASSAL" : "Documentation.Module", launchItem); //NON-NLS
     launch.setEnabled(true);
   }
 
   @Override
   public void removeFrom(Buildable b) {
     MenuManager.getInstance()
-               .removeFromSection("Documentation.Module", launchItem); //NON-NLS
+               .removeFromSection(vassalDoc ? "Documentation.VASSAL" : "Documentation.Module", launchItem); //NON-NLS
     launch.setEnabled(false);
   }
 
