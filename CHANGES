@@ -1,7 +1,9 @@
 3.6.15 - ???
 
+* 12085: Screen capture default icon height adjusted to match the other
+    16-pixel-high icons
 * 12069: Tiling: Improved detection of and recovery from running out of memory;
-  improved error dialogs
+    improved error dialogs
 *  9894: Improved error dialog for failure to start child process
 
 3.6.14 - 1 March 2023
