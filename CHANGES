@@ -1,5 +1,7 @@
 3.7.0-beta1 - ???
 
+* 12077: ObscuredToOthers can be counted on to be 'false' for pieces that
+    don't even have a Mask property
 * 12067: Import/export of groups of items from Editor as XML files (e.g., to
     transfer between modules)
 * 12060: Editor allows Deck files to be imported into a deck to become
