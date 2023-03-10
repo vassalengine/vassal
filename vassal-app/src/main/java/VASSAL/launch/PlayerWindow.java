@@ -125,7 +125,6 @@ public class PlayerWindow extends JFrame {
     helpMenu.add(mm.addMarker("Documentation.Module.end"));  //NON-NLS
 
     helpMenu.add(mm.addMarker("Documentation.VASSAL.start"));  //NON-NLS
-    //helpMenu.add(mm.addKey("General.help"));
     helpMenu.add(mm.addKey("Help.user_guide"));
     helpMenu.addSeparator();
     helpMenu.add(mm.addMarker("Documentation.VASSAL.end"));  //NON-NLS
@@ -165,16 +164,6 @@ public class PlayerWindow extends JFrame {
 
     toolsMenu.add(debugCheckbox);
     DebugControls.setCheckBox(debugCheckbox);
-
-    // This file doesn't have particularly useful information, and the weird entry ("Help"???) was cluttering the Help menu.
-    //try {
-    //  final URL url = new File(Documentation.getDocumentationBaseDir(),
-    //                           "README.html").toURI().toURL();
-    //  mm.addAction("General.help", new ShowHelpAction(url, null));
-    //}
-    //catch (MalformedURLException e) {
-    //  ErrorDialog.bug(e);
-    //}
 
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(),
