@@ -1,6 +1,8 @@
 3.7.0-beta1 - ???
 
 * 12084: Help menu shows module-specific help items before generic Vassal ones
+* 12080: Zooming in and out no longer loses track of player's preferred center
+    point for map
 * 12077: ObscuredToOthers can be counted on to be 'false' for pieces that
     don't even have a Mask property
 * 12067: Import/export of groups of items from Editor as XML files (e.g., to

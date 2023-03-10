@@ -44,6 +44,7 @@
       ],
       "other_improvements": [
         { "num": 12084, "desc": "Help menu shows module-specific help items before generic Vassal ones" },
+        { "num": 12080, "desc": "Zooming in and out no longer loses track of player's preferred center point for map" },
         { "num": 12077, "desc": "ObscuredToOthers can be counted on to be 'false' for pieces that don't even have a Mask property" },
         { "num": 11919, "desc": "Allow DEL/BACKSPACE to be mapped as a hotkey" },
         { "num": 11506, "desc": "Predefined Setup \"menus\" with blank names will not be shown" }
