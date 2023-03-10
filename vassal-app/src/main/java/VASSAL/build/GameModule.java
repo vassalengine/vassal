@@ -142,6 +142,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
+import javax.swing.Timer;
 import java.awt.Container;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -334,6 +335,25 @@ public class GameModule extends AbstractConfigurable
    */
   public void setSuppressSounds(boolean suppressSounds) {
     this.suppressSounds = suppressSounds;
+  }
+
+
+  private final Timer zoomTimer = new Timer(1000, e -> suppressAutoCenterUpdate = false);
+
+
+  private boolean suppressAutoCenterUpdate = false;
+
+  public void setSuppressAutoCenterUpdate(boolean suppressAutoCenterUpdate) {
+    this.suppressAutoCenterUpdate = suppressAutoCenterUpdate;
+
+    zoomTimer.stop();
+    if (suppressAutoCenterUpdate) {
+      zoomTimer.start(); // When we do a zoom change, we suppress auto-updating the map center for 1 second. This is only necessary because JScrollbar gives us no way to distinguish actual explicit user scrolling (via the UI) from Viewport changes via other sources (eg repaint after zoom)
+    }
+  }
+
+  public boolean isSuppressAutoCenterUpdate() {
+    return suppressAutoCenterUpdate;
   }
 
 

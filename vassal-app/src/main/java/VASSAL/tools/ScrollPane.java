@@ -17,13 +17,14 @@
  */
 package VASSAL.tools;
 
-import java.awt.Component;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
+import VASSAL.build.GameModule;
+import VASSAL.tools.swing.SwingUtils;
 
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
-import VASSAL.tools.swing.SwingUtils;
+import java.awt.Component;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 
 /**
  ScrollPane extends JScrollPane to have complete mouse-wheel functionality.
@@ -114,6 +115,8 @@ public class ScrollPane extends JScrollPane {
           horizontalScrollBar : verticalScrollBar;
         if (bar == null || !bar.isVisible()) return;
 
+        GameModule.getGameModule().setSuppressAutoCenterUpdate(false);
+
         bar.setValue(
           bar.getValue() +
           e.getUnitsToScroll() *
@@ -126,6 +129,8 @@ public class ScrollPane extends JScrollPane {
       if (e.getScrollAmount() == 0) return;
 
       if (e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) {
+        GameModule.getGameModule().setSuppressAutoCenterUpdate(false);
+
         verticalScrollBar.setValue(
           verticalScrollBar.getValue() +
           e.getUnitsToScroll() *
@@ -138,6 +143,8 @@ public class ScrollPane extends JScrollPane {
       if (e.getScrollAmount() == 0) return;
 
       if (e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) {
+        GameModule.getGameModule().setSuppressAutoCenterUpdate(false);
+
         horizontalScrollBar.setValue(
           horizontalScrollBar.getValue() +
           e.getUnitsToScroll() *

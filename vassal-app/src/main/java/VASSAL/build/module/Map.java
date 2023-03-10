@@ -285,6 +285,8 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 
   protected String description;
 
+  protected Point preferredCenter = new Point(0, 0);
+
   private IntConfigurer preferredScrollConfig;
   private DoubleConfigurer preferredScrollRateConfig;
 
@@ -3200,6 +3202,25 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     theMap.repaint();
   }
 
+
+  /**
+   * Accepts the current actual center of the map as the new "preferred center" (e.g. if we scroll)
+   * Just not if suppressed after a zoom level change (we don't want zoom level changes to cause us to
+   * lose track of the user's preferred ceter point)
+   */
+  public void updateCenter() {
+    if (!GameModule.getGameModule().isSuppressAutoCenterUpdate()) {
+      preferredCenter = getCenter();
+    }
+  }
+
+  /**
+   * @return last location the player has requested to be the center of the map (eg by manually clicking or scrolling)
+   */
+  public Point getPreferredCenter() {
+    return preferredCenter;
+  }
+
   /**
    * Center the map at given map coordinates within its JScrollPane container
    * @param p Point to center
@@ -3216,6 +3237,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @param dy y tolerance for nearness to center
    */
   public void centerAt(Point p, int dx, int dy) {
+    preferredCenter = p;
     if (scroll != null) {
       p = mapToComponent(p);
 
@@ -3305,6 +3327,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     r.translate(dx, dy);
     r = r.intersection(new Rectangle(getPreferredSize()));
     theMap.scrollRectToVisible(r);
+    updateCenter();
   }
 
   /**
@@ -3768,25 +3791,36 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   }
 
 
+  /**
+   * Common view setup code for Map and PrivateMap, which confusingly have different View classes that sharing the same name
+   */
+  public void setUpView() {
+    scroll = new AdjustableSpeedScrollPane(
+      theMap,
+      JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+      JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    scroll.unregisterKeyboardAction(
+      KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, 0));
+    scroll.unregisterKeyboardAction(
+      KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, 0));
+    scroll.setAlignmentX(0.0f);
+    scroll.setAlignmentY(0.0f);
+
+    layeredPane.setLayout(new InsetLayout(layeredPane, scroll));
+    layeredPane.add(scroll, JLayeredPane.DEFAULT_LAYER);
+
+    // When our Viewport changes for any reason, check if we need to update our "preferred center point"
+    scroll.getViewport().addChangeListener(e -> updateCenter());
+  }
+
+
   /** @return the Swing component representing the map */
   public JComponent getView() {
     if (theMap == null) {
       theMap = new View(this);
-
-      scroll = new AdjustableSpeedScrollPane(
-        theMap,
-        JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-        JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-      scroll.unregisterKeyboardAction(
-        KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, 0));
-      scroll.unregisterKeyboardAction(
-        KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, 0));
-      scroll.setAlignmentX(0.0f);
-      scroll.setAlignmentY(0.0f);
-
-      layeredPane.setLayout(new InsetLayout(layeredPane, scroll));
-      layeredPane.add(scroll, JLayeredPane.DEFAULT_LAYER);
+      setUpView();
     }
+
     return theMap;
   }
 
