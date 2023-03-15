@@ -23,15 +23,31 @@ public class LabelerDataArchiveHTMLEditorKit extends DataArchiveHTMLEditorKit {
     super(arch);
   }
 
-  float valignImages = 0.5f;
-  float valignText   = 0.5f;
+  float valignImagesDefault = 0.5f;
+  float valignTextDefault   = 0.5f;
 
-  public void setValignImages(float align) {
-    valignImages = align;
+  public void setValignImagesDefault(float align) {
+    valignImagesDefault = align;
   }
 
-  public void setValignText(float align) {
-    valignText = align;
+  public void setValignTextDefault(float align) {
+    valignTextDefault = align;
+  }
+
+  private float getValign(Element e, float def) {
+    final AttributeSet attrs = e.getAttributes();
+    final String v = (String) attrs.getAttribute(HTML.Attribute.VALIGN);
+
+    if ("top".equals(v)) { //NON-NLS
+      return 0f;
+    }
+    else if ("middle".equals(v)) { //NON-NLS
+      return .5f;
+    }
+    else if ("bottom".equals(v)) { //NON-NLS
+      return 1.0f;
+    }
+    return def;
   }
 
   @Override
@@ -40,15 +56,18 @@ public class LabelerDataArchiveHTMLEditorKit extends DataArchiveHTMLEditorKit {
   }
 
   protected class LabelerInlineView extends InlineView {
+    protected float valign;
+
     public LabelerInlineView(Element e) {
       super(e);
+      valign = getValign(e, valignTextDefault);
     }
 
     @Override
     public float getAlignment(int axis) {
       switch (axis) {
       case View.Y_AXIS:
-        return valignText;
+        return valign;
       default:
         return super.getAlignment(axis);
       }
@@ -56,16 +75,19 @@ public class LabelerDataArchiveHTMLEditorKit extends DataArchiveHTMLEditorKit {
   }
 
   private class LabelerDataArchiveImageView extends DataArchiveImageView {
+    protected float valign;
+
     public LabelerDataArchiveImageView(Element e) {
       super(e);
       setLoadsSynchronously(true); //BR// make sure these actually load
+      valign = getValign(e, valignImagesDefault);
     }
 
     @Override
     public float getAlignment(int axis) {
       switch (axis) {
       case View.Y_AXIS:
-        return valignImages;
+        return valign;
       default:
         return super.getAlignment(axis);
       }
