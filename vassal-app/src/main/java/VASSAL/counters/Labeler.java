@@ -17,7 +17,6 @@
 package VASSAL.counters;
 
 import VASSAL.build.GameModule;
-import VASSAL.build.module.Console;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
@@ -50,7 +49,6 @@ import VASSAL.tools.swing.SwingUtils;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -630,9 +628,6 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       g.dispose();
       return im;
     }
-
-    private static final org.slf4j.Logger log =
-      LoggerFactory.getLogger(Console.class);
 
     protected JTextPane makePane() {
       // Build a JTextPane to render HTML with images
