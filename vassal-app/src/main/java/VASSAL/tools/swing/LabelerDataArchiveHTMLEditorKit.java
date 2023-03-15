@@ -17,6 +17,7 @@ import javax.swing.text.html.InlineView;
  * This version also allows the inline images to be vertically aligned w/r/t the text
  */
 public class LabelerDataArchiveHTMLEditorKit extends DataArchiveHTMLEditorKit {
+  private static final long serialVersionUID = 1L;
 
   public LabelerDataArchiveHTMLEditorKit(DataArchive arch) {
     super(arch);
@@ -43,6 +44,7 @@ public class LabelerDataArchiveHTMLEditorKit extends DataArchiveHTMLEditorKit {
       super(e);
     }
 
+    @Override
     public float getAlignment(int axis) {
       switch (axis) {
       case View.Y_AXIS:
@@ -59,6 +61,7 @@ public class LabelerDataArchiveHTMLEditorKit extends DataArchiveHTMLEditorKit {
       setLoadsSynchronously(true); //BR// make sure these actually load
     }
 
+    @Override
     public float getAlignment(int axis) {
       switch (axis) {
       case View.Y_AXIS:
