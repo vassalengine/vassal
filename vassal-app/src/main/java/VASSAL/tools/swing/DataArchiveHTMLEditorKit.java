@@ -1,10 +1,9 @@
 package VASSAL.tools.swing;
 
-import java.net.URL;
-import java.io.InputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import VASSAL.Info;
+import VASSAL.tools.DataArchive;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.text.AttributeSet;
 import javax.swing.text.Element;
@@ -14,12 +13,11 @@ import javax.swing.text.ViewFactory;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.ImageView;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import VASSAL.Info;
-import VASSAL.tools.DataArchive;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * Extended HTML Editor kit to let the <src> tag display images from the
@@ -44,6 +42,7 @@ public class DataArchiveHTMLEditorKit extends HTMLEditorKit {
   private class DataArchiveImageView extends ImageView {
     public DataArchiveImageView(Element e) {
       super(e);
+      setLoadsSynchronously(true); //BR// make sure these actually load
     }
 
     @Override
