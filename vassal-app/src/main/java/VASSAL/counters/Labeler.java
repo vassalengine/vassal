@@ -44,7 +44,7 @@ import VASSAL.tools.imageop.AbstractTileOpImpl;
 import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.ScaledImagePainter;
-import VASSAL.tools.swing.DataArchiveHTMLEditorKit;
+import VASSAL.tools.swing.LabelerDataArchiveHTMLEditorKit;
 import VASSAL.tools.swing.SwingUtils;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.SystemUtils;
@@ -633,7 +633,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       // Build a JTextPane to render HTML with images
       final JTextPane tp = new JTextPane();
       tp.setContentType("text/html"); //NON-NLS
-      final DataArchiveHTMLEditorKit kit = new DataArchiveHTMLEditorKit(GameModule.getGameModule().getDataArchive());
+      final LabelerDataArchiveHTMLEditorKit kit = new LabelerDataArchiveHTMLEditorKit(GameModule.getGameModule().getDataArchive());
       tp.setEditorKit(kit);
 
       final StyleSheet style = kit.getStyleSheet();

@@ -39,7 +39,7 @@ public class DataArchiveHTMLEditorKit extends HTMLEditorKit {
     return new DataArchiveHTMLFactory();
   }
 
-  private class DataArchiveImageView extends ImageView {
+  protected class DataArchiveImageView extends ImageView {
     public DataArchiveImageView(Element e) {
       super(e);
       setLoadsSynchronously(true); //BR// make sure these actually load
@@ -70,7 +70,7 @@ public class DataArchiveHTMLEditorKit extends HTMLEditorKit {
     }
   }
 
-  private class DataArchiveHTMLFactory extends HTMLFactory {
+  protected class DataArchiveHTMLFactory extends HTMLFactory {
     @Override
     public View create(Element e) {
       final AttributeSet attrs = e.getAttributes();
