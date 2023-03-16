@@ -1,5 +1,5 @@
 {
-  "headline": "The VASSAL Team is happy to announce VASSAL {{version}}.",
+  "headline": "The VASSAL Team is happy to announce VASSAL {{version}}, which is a preview release.",
   "important": [
     "Modules saved in {{version_feature}} are not openable by earlier versions of VASSAL. We recommend keeping a backup copy of any pre-{{version_feature}} modules you plan to modify in {{version_feature}} until you've verified that everything works to your satisfaction.",
     "Some code deprecated more than a year ago has been removed. Modules containing custom code using that code MUST be updated if they are to work with {{version_feature}}.",
