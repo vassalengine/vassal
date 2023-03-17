@@ -1854,7 +1854,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     final String targetDeckName;
     final String data;
     if (dkc.isVariableDeck()) {
-      targetDeckName = dkc.getDeckExpression().getText(this, dkc, "Editor.DeckSendKeyCommand.deck_expression");
+      targetDeckName = dkc.getDeckExpression().getText(propertySource, dkc, "Editor.DeckSendKeyCommand.deck_expression");
       data = targetDeckName + " from expression " + dkc.getDeckExpression(); //NON-NLS
     }
     else {
