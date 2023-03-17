@@ -1885,11 +1885,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
     // Process the cards and create a list of those that will be sent
     final List<GamePiece> sending = new ArrayList<>();
+    final List<GamePiece> drawing = getOrderedPieces();
 
-    final int cnt = getPieceCount() - 1;
-    for (int i = cnt; i >= 0; i--) {
-      final GamePiece nextCard = getPieceAt(i);
-
+    for (final GamePiece nextCard : drawing) { // Draw them in random order if this is an always-shuffle deck
       // Is this a card we are not interested in?
       if (dkc.isSendMatching()) {
         final String result = dkc.getMatchExpression().getText(nextCard, dkc, "Editor.DeckSendKeyCommand.send_expression");
@@ -1915,7 +1913,6 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       if (sendLimit > 0 && sending.size() >= sendLimit) {
         break;
       }
-
     }
 
     // Send them
