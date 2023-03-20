@@ -600,6 +600,8 @@ public class GameState implements CommandEncoder {
     String saveVassalVersion = "?";
     final GameModule g = GameModule.getGameModule();
 
+    loadComments = saveData.getLocalizedDescription();
+
     // Was the Module Data that created the save stored in the save? (Vassal 3.0+)
     if (saveData.getModuleData() != null) {
       saveModuleVersion = saveData.getModuleVersion();
