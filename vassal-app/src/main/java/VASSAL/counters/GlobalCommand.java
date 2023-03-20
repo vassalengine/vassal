@@ -470,6 +470,10 @@ public class GlobalCommand implements Auditable {
         // For most Global Key Commands we need to run through the larger lists of maps & pieces. Ideally the Fast Matches
         // here will filter some of that out to improve performance, but we also want to do the best job possible for old
         // modules that don't take advantage of Fast Match yet.
+
+        // Make a lists of pieces for each of the maps we're interested in. We need to do this in advance so that a
+        // piece doesn't potentially receive multiple GKCs if it is moved from one map to another.
+        final List<GamePiece[]> gkcMapPieces = new ArrayList<>();
         for (final Map map : maps) {
           // First check that this is a map we're even interested in
           if (target.fastMatchLocation) {
@@ -484,10 +488,11 @@ public class GlobalCommand implements Auditable {
               continue;
             }
           }
+          gkcMapPieces.add(map.getPieces());
+        }
 
-          // Now we go through all the pieces/stacks/decks on this map
-          final GamePiece[] everythingOnMap = map.getPieces();
-
+        // Now we go through all the pieces/stacks/decks on each map
+        for (final GamePiece[] everythingOnMap : gkcMapPieces) {
           if (!target.fastMatchLocation) {
             // If NOT doing Location fast-matching we do tighter loops (because perf is important during GKCs)
             if (!target.fastMatchProperty) {
