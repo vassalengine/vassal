@@ -17,13 +17,14 @@
  */
 package VASSAL.build.module.properties;
 
+import VASSAL.build.GameModule;
+import VASSAL.command.Command;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
-
-import VASSAL.command.Command;
 
 /**
  * A container for a String property that can be updated
@@ -146,6 +147,7 @@ public interface MutableProperty {
       final Command c = getChangeCommand(value, newValue);
       value = newValue;
       propSupport.firePropertyChange(propertyName, oldValue, newValue);
+      GameModule.getGameModule().updateMutableButtonLabels();
       return c;
     }
   }
