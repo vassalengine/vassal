@@ -2312,6 +2312,8 @@ public class GameModule extends AbstractConfigurable
     buttonLabelUpdateScheduled = true;
 
     SwingUtilities.invokeLater(() -> {
+        buttonLabelUpdateScheduled = false;
+
         updateToolbarButtons();
 
         for (final Map map : Map.getMapList()) {

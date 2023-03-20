@@ -119,6 +119,7 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
    */
   protected LaunchButton makeLaunchButton(String tooltip, String button_text, String iconFile, ActionListener action) {
     launch = new LaunchButton(button_text, tooltipKey, buttonTextKey, hotKeyKey, iconKey, action, true);
+    //launch = new LaunchButton(button_text, tooltipKey, buttonTextKey, hotKeyKey, iconKey, action);
     if (!tooltip.isEmpty()) {
       setAttribute(tooltipKey, tooltip);
     }
@@ -318,7 +319,7 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
     if (!nameKey.isEmpty()) {
       return new Class<?>[]{
         String.class,
-        String.class,
+        FormattedStringConfig.class,
         String.class,
         IconConfig.class,
         NamedKeyStroke.class,
@@ -329,7 +330,7 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
     }
     else {
       return new Class<?>[]{
-        String.class,
+        FormattedStringConfig.class,
         String.class,
         IconConfig.class,
         NamedKeyStroke.class,

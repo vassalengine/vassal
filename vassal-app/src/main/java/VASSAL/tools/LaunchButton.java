@@ -75,13 +75,13 @@ public class LaunchButton extends JButton implements Auditable {
     tooltipAtt = tooltipAttribute;
   }
 
+
   public LaunchButton(String text, String textAttribute, String hotkeyAttribute, String iconAttribute, final ActionListener al, boolean allowExpression) {
     super(text);
 
     this.allowExpression = allowExpression;
     if (allowExpression) {
       setFormat(text);
-      updateText();
     }
 
     alwaysAcceptKeystroke = false;
@@ -109,7 +109,9 @@ public class LaunchButton extends JButton implements Auditable {
 
   private void setFormat(String text) {
     formatted.setFormat(text);
-    usesExpression = formatted.getFormat().contains("$") || formatted.getFormat().contains("{");
+    usesExpression = true;
+    updateText();
+    usesExpression = text.contains("$") || text.contains("{");
     if (usesExpression) {
       GameModule.getGameModule().setMutableButtonSupport(true); // We're gonna need a bigger updater...
     }
@@ -192,7 +194,6 @@ public class LaunchButton extends JButton implements Auditable {
 
         if (allowExpression) {
           setFormat((String)value);
-          updateText();
         }
         else {
           setText((String) value);
