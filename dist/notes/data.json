@@ -22,6 +22,9 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 12119, "desc": "Restore vanished Load Comments",
+        { "num": 12116, "desc": "Pieces shouldn't receive same GKC twice just because it sent them to a new map" },
+        { "num": 12105, "desc": "Deck's 'Send-to-Deck' subcomponent has access to properties (e.g., PlayerSide) and properly shuffles \"always shuffle\" decks" }
       ],
       "other_improvements": [
         { "num": 12085, "desc": "Screen capture default icon height adjusted to match the other 16-pixel-high icons" },
