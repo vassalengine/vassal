@@ -1,5 +1,9 @@
 3.7.0-beta2 - ???
 
+* 12100: Text Labels support <img> tags
+*  4446: Dynamic button labels (can use expressions and $...$ in certain
+    toolbar buttons)
+
 3.7.0-beta1 - 11 March 2023
 
 * 12084: Help menu shows module-specific help items before generic Vassal ones
