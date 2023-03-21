@@ -40,6 +40,11 @@
 
 3.6.15 - ???
 
+* 12119: Restore vanished Load Comments
+* 12116: Pieces shouldn't receive same GKC twice just because it sent them to
+    a new map
+* 12105: Deck's 'Send-to-Deck' subcomponent has access to properties (e.g.,
+    PlayerSide) and properly shuffles "always shuffle" decks
 * 12085: Screen capture default icon height adjusted to match the other
     16-pixel-high icons
 * 12069: Tiling: Improved detection of and recovery from running out of memory;
