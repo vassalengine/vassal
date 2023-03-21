@@ -58,6 +58,7 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
   public static final String CAN_DISABLE   = "canDisable";   //NON-NLS
   public static final String PROPERTY_GATE = "propertyGate"; //NON-NLS
   public static final String DISABLED_ICON = "disabledIcon"; //NON-NLS
+  public static final String HIDE_WHEN_DISABLED = "hideWhenDisabled"; //NON-NLS
 
   protected LaunchButton launch;              // Our toolbar "launch button"
 
@@ -65,6 +66,7 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
 
   protected boolean showDisabledOptions = true; // True if our configurers are allowed to show the disable-this-button properties
   protected boolean canDisable = false;         // True if we have a disable-this-button property
+  protected boolean hideWhenDisabled = false;   // True if we hide the button when disabled
   protected String propertyGate = "";           // Name of our gating property (button is disabled if this global property is "true")
   protected MutableProperty.Impl property;
 
@@ -214,6 +216,8 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
   public void checkDisabled() {
     if ((!isShowDisabledOptions() || !canDisable) && (launch != null)) {
       launch.setEnabled(true);
+      launch.setForceInvisible(false);
+      launch.checkVisibility();
       return;
     }
     if ((property == null) && !propertyGate.isEmpty()) {
@@ -230,6 +234,8 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
   public void disableIfTrue(boolean disable) {
     if (launch != null) {
       launch.setEnabled(!isShowDisabledOptions() || !canDisable || !disable);
+      launch.setForceInvisible(disable && canDisable && hideWhenDisabled);
+      launch.checkVisibility();
     }
   }
 
@@ -258,10 +264,10 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
   @Override
   public String[] getAttributeNames() {
     if (!nameKey.isEmpty()) {
-      return new String[]{nameKey, buttonTextKey, tooltipKey, iconKey, hotKeyKey, CAN_DISABLE, PROPERTY_GATE, DISABLED_ICON};
+      return new String[]{nameKey, buttonTextKey, tooltipKey, iconKey, hotKeyKey, CAN_DISABLE, PROPERTY_GATE, HIDE_WHEN_DISABLED, DISABLED_ICON};
     }
     else {
-      return new String[]{buttonTextKey, tooltipKey, iconKey, hotKeyKey, CAN_DISABLE, PROPERTY_GATE, DISABLED_ICON};
+      return new String[]{buttonTextKey, tooltipKey, iconKey, hotKeyKey, CAN_DISABLE, PROPERTY_GATE, HIDE_WHEN_DISABLED, DISABLED_ICON};
     }
   }
 
@@ -286,6 +292,7 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
         Resources.getString(Resources.HOTKEY_LABEL),
         Resources.getString("Editor.AbstractToolbarItem.can_disable"),
         Resources.getString("Editor.AbstractToolbarItem.property_gate"),
+        Resources.getString("Editor.AbstractToolbarItem.hide_when_disabled"),
         Resources.getString("Editor.AbstractToolbarItem.disabled_icon"),
       };
     }
@@ -297,6 +304,7 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
         Resources.getString(Resources.HOTKEY_LABEL),
         Resources.getString("Editor.AbstractToolbarItem.can_disable"),
         Resources.getString("Editor.AbstractToolbarItem.property_gate"),
+        Resources.getString("Editor.AbstractToolbarItem.hide_when_disabled"),
         Resources.getString("Editor.AbstractToolbarItem.disabled_icon"),
       };
     }
@@ -325,6 +333,7 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
         NamedKeyStroke.class,
         Boolean.class,
         String.class,
+        Boolean.class,
         IconConfig.class,
       };
     }
@@ -336,7 +345,8 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
         NamedKeyStroke.class,
         Boolean.class,
         String.class,
-        IconConfig.class,
+        Boolean.class,
+        IconConfig.class
       };
     }
   }
@@ -406,6 +416,15 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
         }
       }
     }
+    else if (HIDE_WHEN_DISABLED.equals(key)) {
+      if (value instanceof String) {
+        hideWhenDisabled = "true".equals(value); //NON-NLS
+      }
+      else if (value instanceof Boolean) {
+        hideWhenDisabled = (Boolean)value;
+      }
+      checkDisabled();
+    }
     else {
       launch.setAttribute(key, value);
     }
@@ -435,6 +454,9 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
     else if (DISABLED_ICON.equals(key)) {
       return disabledIconConfig.getValueString();
     }
+    else if (HIDE_WHEN_DISABLED.equals(key)) {
+      return String.valueOf(hideWhenDisabled);
+    }
     else {
       return launch.getAttributeValueString(key);
     }
@@ -442,8 +464,11 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
 
   @Override
   public VisibilityCondition getAttributeVisibility(String key) {
-    if (List.of(PROPERTY_GATE, DISABLED_ICON).contains(key)) {
+    if (List.of(PROPERTY_GATE, HIDE_WHEN_DISABLED).contains(key)) {
       return () -> isShowDisabledOptions() && canDisable;
+    }
+    if (DISABLED_ICON.equals(key)) {
+      return () -> isShowDisabledOptions() && canDisable && !hideWhenDisabled;
     }
     else if (CAN_DISABLE.equals(key)) {
       return this::isShowDisabledOptions;

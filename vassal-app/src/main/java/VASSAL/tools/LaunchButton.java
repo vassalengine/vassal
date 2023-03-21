@@ -50,6 +50,7 @@ public class LaunchButton extends JButton implements Auditable {
   protected Configurer nameConfig, keyConfig;
   protected boolean alwaysAcceptKeystroke;
   protected boolean forceVisible = false;
+  protected boolean forceInvisible = false;
   protected boolean allowExpression;
   protected boolean usesExpression = false;
   protected FormattedString formatted = new FormattedString("");
@@ -144,6 +145,14 @@ public class LaunchButton extends JButton implements Auditable {
 
   public void setForceVisible(boolean fv) {
     forceVisible = fv;
+  }
+
+  public boolean isForceInvisible() {
+    return forceInvisible;
+  }
+
+  public void setForceInvisible(boolean fiv) {
+    forceInvisible = fiv;
   }
 
   @Override
@@ -256,8 +265,8 @@ public class LaunchButton extends JButton implements Auditable {
     return (getText() != null && getText().length() > 0) || getIcon() != null;
   }
 
-  protected void checkVisibility() {
-    setVisible(isNonBlank() || forceVisible);
+  public void checkVisibility() {
+    setVisible((isNonBlank() || forceVisible) && !forceInvisible);
   }
 
   @Override
