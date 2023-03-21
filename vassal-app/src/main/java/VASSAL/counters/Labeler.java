@@ -31,7 +31,6 @@ import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.search.HTMLImageFinder;
-import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimitException;
@@ -44,7 +43,7 @@ import VASSAL.tools.imageop.AbstractTileOpImpl;
 import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.ScaledImagePainter;
-import VASSAL.tools.swing.LabelerDataArchiveHTMLEditorKit;
+import VASSAL.tools.swing.DataArchiveTextPane;
 import VASSAL.tools.swing.SwingUtils;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.SystemUtils;
@@ -53,13 +52,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
 import javax.swing.plaf.basic.BasicHTML;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.StyleSheet;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -74,7 +68,6 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -616,7 +609,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       // paint the foreground
       if (fg != null) {
         if (txt.contains("<img")) { //NON-NLS
-          final JTextPane p = makePane();
+          final DataArchiveTextPane p = new DataArchiveTextPane(txt, "label", fg, font); //NON-NLS
           p.paint(g);
         }
         else {
@@ -627,46 +620,6 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
 
       g.dispose();
       return im;
-    }
-
-    protected JTextPane makePane() {
-      // Build a JTextPane to render HTML with images
-      final JTextPane tp = new JTextPane();
-      tp.setContentType("text/html"); //NON-NLS
-      final LabelerDataArchiveHTMLEditorKit kit = new LabelerDataArchiveHTMLEditorKit(GameModule.getGameModule().getDataArchive());
-      tp.setEditorKit(kit);
-
-      final StyleSheet style = kit.getStyleSheet();
-      style.addRule(".label" + //NON-NLS
-        " {color:" +                                                               //NON-NLS
-        String.format("#%02x%02x%02x", fg.getRed(), fg.getGreen(), fg.getBlue()) + //NON-NLS
-        "; font-family:" +                                                         //NON-NLS
-        font.getFamily() +
-        "; font-size:" +                                                           //NON-NLS
-        font.getSize() + "pt" +                                                    //NON-NLS
-        "; " +                                                                     //NON-NLS
-        ((font.isBold()) ? "font-weight:bold" : "") +                              //NON-NLS
-        "; background-color: rgba(255, 0, 0, 0.5);" +                              //NON-NLS
-        "}");                                                                      //NON-NLS
-      style.addRule(".label" + "color {color:" + String.format("#%02x%02x%02x", fg.getRed(), fg.getGreen(), fg.getBlue()) + "; }"); //NON-NLS
-
-      tp.setOpaque(false);
-      // Transparent background
-      StyleConstants.setBackground(style.getStyle(".label"), new Color(0, 0, 0, 0)); //NON-NLS
-
-      // Remove original HTML markers if present and replace wrapping a styled div, inserting into document
-      final String fixed = txt.replaceFirst("<html>", "").replaceFirst("</html>", ""); //NON-NLS
-      final HTMLDocument doc = (HTMLDocument) tp.getDocument();
-      try {
-        kit.insertHTML(doc, doc.getLength(), "<html><div class=\"label\">" + fixed + "</div></html>", 0, 0, null); //NON-NLS
-      }
-      catch (BadLocationException | IOException ble) {
-        ErrorDialog.bug(ble);
-      }
-
-      tp.setSize(tp.getPreferredSize());
-
-      return tp;
     }
 
     protected JLabel makeLabel() {
