@@ -32,6 +32,7 @@ import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.ChooseComponentPathDialog;
 import VASSAL.configure.FormattedExpressionConfigurer;
+import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PropertiesWindow;
 import VASSAL.configure.StringConfigurer;
@@ -560,8 +561,10 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     private String markerSlotPath;
     protected JButton defineButton = new JButton(Resources.getString("Editor.PlaceMarker.define_marker"));
     protected JButton selectButton = new JButton(Resources.getString("Editor.select"));
-    protected FormattedExpressionConfigurer xOffsetConfig;
-    protected FormattedExpressionConfigurer yOffsetConfig;
+    protected IntConfigurer xOffsetConfig; // Legacy clirr
+    protected IntConfigurer yOffsetConfig;
+    protected FormattedExpressionConfigurer xOffsetConfigEXP;
+    protected FormattedExpressionConfigurer yOffsetConfigEXP;
     protected BooleanConfigurer matchRotationConfig;
     protected BooleanConfigurer aboveConfig;
     private final JLabel aboveLabel;
@@ -623,11 +626,11 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       b.add(selectButton);
       p.add("Editor.Placemarker.marker_definition", b);
 
-      xOffsetConfig = new FormattedExpressionConfigurer(piece.xOffsetExpression.getExpression());
-      p.add("Editor.PlaceMarker.horizontal_offset", xOffsetConfig);
+      xOffsetConfigEXP = new FormattedExpressionConfigurer(piece.xOffsetExpression.getExpression());
+      p.add("Editor.PlaceMarker.horizontal_offset", xOffsetConfigEXP);
 
-      yOffsetConfig = new FormattedExpressionConfigurer(piece.yOffsetExpression.getExpression());
-      p.add("Editor.PlaceMarker.vertical_offset", yOffsetConfig);
+      yOffsetConfigEXP = new FormattedExpressionConfigurer(piece.yOffsetExpression.getExpression());
+      p.add("Editor.PlaceMarker.vertical_offset", yOffsetConfigEXP);
 
       matchRotationConfig = createMatchRotationConfig();
       matchRotationConfig.setValue(piece.matchRotation);
@@ -732,8 +735,8 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       }
       se.append("null"); // Older versions specified a text message to echo. Now performed by the ReportState trait, // NON-NLS
                           // but we remain backward-compatible.
-      se.append(xOffsetConfig.getValueString());
-      se.append(yOffsetConfig.getValueString());
+      se.append(xOffsetConfigEXP.getValueString());
+      se.append(yOffsetConfigEXP.getValueString());
       se.append(matchRotationConfig.getValueString());
       se.append(afterBurner.getValueString());
       se.append(descConfig.getValueString());
