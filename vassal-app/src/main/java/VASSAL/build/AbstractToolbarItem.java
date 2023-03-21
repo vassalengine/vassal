@@ -26,8 +26,10 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.configure.PlayerIdFormattedExpressionConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
+import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ToolBarComponent;
@@ -116,7 +118,8 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
    * @return launch button
    */
   protected LaunchButton makeLaunchButton(String tooltip, String button_text, String iconFile, ActionListener action) {
-    launch = new LaunchButton(button_text, tooltipKey, buttonTextKey, hotKeyKey, iconKey, action);
+    launch = new LaunchButton(button_text, tooltipKey, buttonTextKey, hotKeyKey, iconKey, action, true);
+    //launch = new LaunchButton(button_text, tooltipKey, buttonTextKey, hotKeyKey, iconKey, action);
     if (!tooltip.isEmpty()) {
       setAttribute(tooltipKey, tooltip);
     }
@@ -316,7 +319,7 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
     if (!nameKey.isEmpty()) {
       return new Class<?>[]{
         String.class,
-        String.class,
+        FormattedStringConfig.class,
         String.class,
         IconConfig.class,
         NamedKeyStroke.class,
@@ -327,7 +330,7 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
     }
     else {
       return new Class<?>[]{
-        String.class,
+        FormattedStringConfig.class,
         String.class,
         IconConfig.class,
         NamedKeyStroke.class,
@@ -335,6 +338,14 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
         String.class,
         IconConfig.class,
       };
+    }
+  }
+
+
+  public static class FormattedStringConfig implements TranslatableConfigurerFactory {
+    @Override
+    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+      return new PlayerIdFormattedExpressionConfigurer(key, name, new String[]{});
     }
   }
 

@@ -142,6 +142,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import java.awt.Container;
 import java.awt.Rectangle;
@@ -279,6 +280,7 @@ public class GameModule extends AbstractConfigurable
 
   private boolean matSupport = false; // If no Mats exist in the module, we don't need to spend any time doing mat-related calculations during moves/selects
   private boolean trueMovedSupport = false; // If not ignore-small-moves traits exist in the module, we don't need to spend any time doing related calculations
+  private boolean mutableButtonLabelSupport = false; // If no mutable buttons, we don't need to spend time checking for updates of them;
 
   private boolean suppressSounds = false; // Semaphore if currently suppressing sounds (eg during Global Key Command processing)
 
@@ -316,11 +318,27 @@ public class GameModule extends AbstractConfigurable
   }
 
   /**
-   * @param fancyMoveSupport true if a ignore-small-moves trait exists in the module
+   * @param trueMovedSupport true if a ignore-small-moves trait exists in the module
    */
   public void setTrueMovedSupport(boolean trueMovedSupport) {
     this.trueMovedSupport = trueMovedSupport;
   }
+
+
+  /**
+   * @param support true if any toolbar buttons use $...$ or { } expressions
+   */
+  public void setMutableButtonSupport(boolean support) {
+    mutableButtonLabelSupport = support;
+  }
+
+  /**
+   * @return True if there are toolbar buttons using $...$ or {   } expressions in the module
+   */
+  public boolean isMutableButtonLabelSupport() {
+    return mutableButtonLabelSupport;
+  }
+
 
 
   /**
@@ -2281,6 +2299,30 @@ public class GameModule extends AbstractConfigurable
     final TranslatableString s = transContainer.getTranslatableString(String.valueOf(key));
     return s == null ? null : s.getPropertyValue();
   }
+
+
+  private boolean buttonLabelUpdateScheduled = false;
+
+  /**
+   * A property has changed somewhere, so we need to redraw all the toolbar buttons that use properties
+   */
+  public void updateMutableButtonLabels() {
+    if (!isMutableButtonLabelSupport() || buttonLabelUpdateScheduled) return;
+
+    buttonLabelUpdateScheduled = true;
+
+    SwingUtilities.invokeLater(() -> {
+        buttonLabelUpdateScheduled = false;
+
+        updateToolbarButtons();
+
+        for (final Map map : Map.getMapList()) {
+          map.updateToolbarButtons();
+        }
+      }
+    );
+  }
+
 
   /**
    * Gets the value of a mutable (changeable) "Global Property". Module level Global Properties serve as the
