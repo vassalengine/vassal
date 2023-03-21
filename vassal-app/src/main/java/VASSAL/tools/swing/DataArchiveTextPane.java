@@ -34,6 +34,8 @@ import java.io.IOException;
  * Essentially behaves like a JLabel on steroids, the key thing being that <img> links in the HTML can access images in the module.
  */
 public class DataArchiveTextPane extends JTextPane {
+  private static final long serialVersionUID = 1L;
+
   public DataArchiveTextPane(String text, String styleName, Color color, Font font) {
 
     if ((styleName == null) || styleName.isBlank()) {
