@@ -318,7 +318,7 @@ public class GameModule extends AbstractConfigurable
   }
 
   /**
-   * @param trueMoveSupport true if a ignore-small-moves trait exists in the module
+   * @param trueMovedSupport true if a ignore-small-moves trait exists in the module
    */
   public void setTrueMovedSupport(boolean trueMovedSupport) {
     this.trueMovedSupport = trueMovedSupport;
