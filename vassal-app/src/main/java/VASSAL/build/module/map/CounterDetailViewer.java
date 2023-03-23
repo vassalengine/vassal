@@ -73,6 +73,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.Toolkit;
 import java.awt.dnd.DragSource;
 import java.awt.dnd.DragSourceDragEvent;
 import java.awt.dnd.DragSourceMotionListener;
@@ -215,6 +216,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected boolean showOverlap = false;
   protected double zoomLevel = 1.0;
   protected double graphicsZoomLevel = 1.0;
+  private double graphicsZoom = 1.0;
+  private double terrainZoom = 1.0;
   protected int borderWidth = 0;      // This ill-named field is actually the extra horizontal padding between pieces
   protected int borderThickness = 2;  // This is the thickness of the surrounding border
   protected int borderInnerThickness = 2; // This is the thickness of "inner" borders
@@ -437,7 +440,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
     boolean anyUnderText = false;
     boolean masterBoxDrawn = false;
-    final double graphicsZoom = graphicsZoomLevel;
+    //final double graphicsZoom = graphicsZoomLevel;
 
     if (displayableTerrain) {
       final Collection<Board> boards = map.getBoards();
@@ -457,21 +460,21 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         );
 
         final double mag = boards.iterator().next().getMagnification();
-        final double dzoom = showTerrainZoom * os_scale / mag;
+        final double dzoom = terrainZoom * os_scale / mag;
 
         final Rectangle drect = new Rectangle(
-          (int)(vrMap.x * showTerrainZoom * os_scale / mag),
-          (int)(vrMap.y * showTerrainZoom * os_scale / mag),
-          (int)(vrMap.width * showTerrainZoom * os_scale / mag),
-          (int)(vrMap.height * showTerrainZoom * os_scale / mag)
+          (int)(vrMap.x * terrainZoom * os_scale / mag),
+          (int)(vrMap.y * terrainZoom * os_scale / mag),
+          (int)(vrMap.width * terrainZoom * os_scale / mag),
+          (int)(vrMap.height * terrainZoom * os_scale / mag)
         );
 
         // restrict drawing to the area we want to draw on
         g2d.setClip(
           dbounds.x,
           dbounds.y + (centerPiecesVertically ? (dbounds.height - drect.height) / 2 : 0),
-          (int) Math.ceil(showTerrainWidth * showTerrainZoom * os_scale),
-          (int) Math.ceil(showTerrainHeight * showTerrainZoom * os_scale)
+          (int) Math.ceil(showTerrainWidth * terrainZoom * os_scale),
+          (int) Math.ceil(showTerrainHeight * terrainZoom * os_scale)
         );
 
         // translate the drawing transform
@@ -519,7 +522,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         anyUnderText = true;
       }
 
-      dbounds.translate((int) Math.ceil(showTerrainWidth * showTerrainZoom * os_scale), 0);
+      dbounds.translate((int) Math.ceil(showTerrainWidth * terrainZoom * os_scale), 0);
       borderOffset += borderWidth;
     }
 
@@ -639,18 +642,38 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
   /** Set the bounds field large enough to accommodate the given set of pieces */
   protected void fixBounds(List<GamePiece> pieces, Graphics g) {
-    if (displayableTerrain) {
-      bounds.width += (int) Math.ceil(showTerrainWidth * showTerrainZoom) + borderWidth;
-      bounds.height = Math.max(bounds.height, (int)Math.ceil(showTerrainHeight * showTerrainZoom) + borderWidth * 2);
-    }
+    graphicsZoom = graphicsZoomLevel;
+    terrainZoom = showTerrainZoom;
 
-    for (final GamePiece piece : pieces) {
-      final Dimension pieceBounds = getBounds(piece).getSize();
-      bounds.width += (int) Math.ceil(pieceBounds.width * graphicsZoomLevel) + borderWidth;
-      bounds.height = Math.max(bounds.height, (int) Math.ceil(pieceBounds.height * graphicsZoomLevel) + borderWidth * 2);
-    }
+    final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    final double maxWidth = screenSize.getWidth();
 
-    bounds.width += borderWidth;
+    final int origWidth = bounds.width;
+    final int origHeight = bounds.height;
+
+    do {
+      bounds.width = origWidth;
+      bounds.height = origHeight;
+
+      if (displayableTerrain) {
+        bounds.width += (int) Math.ceil(showTerrainWidth * terrainZoom) + borderWidth;
+        bounds.height = Math.max(bounds.height, (int) Math.ceil(showTerrainHeight * terrainZoom) + borderWidth * 2);
+      }
+
+      for (final GamePiece piece : pieces) {
+        final Dimension pieceBounds = getBounds(piece).getSize();
+        bounds.width += (int) Math.ceil(pieceBounds.width * graphicsZoom) + borderWidth;
+        bounds.height = Math.max(bounds.height, (int) Math.ceil(pieceBounds.height * graphicsZoom) + borderWidth * 2);
+      }
+
+      bounds.width += borderWidth;
+
+      if (bounds.width > maxWidth) {
+        graphicsZoom *= 0.66666;
+        terrainZoom *= 0.66666;
+      }
+    } while (bounds.width > maxWidth);
+
     bounds.y -= bounds.height;
 
     // So text-under-counters won't draw directly on top of mouse position.
