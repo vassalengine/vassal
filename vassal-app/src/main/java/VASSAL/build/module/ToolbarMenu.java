@@ -283,7 +283,7 @@ public class ToolbarMenu extends AbstractToolbarItem
     scheduleBuildMenu();
   }
 
-  // Well, almost pure
+  // Well, almost pure...
 
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
