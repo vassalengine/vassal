@@ -440,7 +440,6 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
     boolean anyUnderText = false;
     boolean masterBoxDrawn = false;
-    //final double graphicsZoom = graphicsZoomLevel;
 
     if (displayableTerrain) {
       final Collection<Board> boards = map.getBoards();
