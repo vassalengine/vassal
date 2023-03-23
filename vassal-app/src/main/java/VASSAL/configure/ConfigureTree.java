@@ -41,6 +41,7 @@ import VASSAL.build.module.map.DrawPile;
 import VASSAL.build.module.map.MassKeyCommand;
 import VASSAL.build.module.map.SetupStack;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
+import VASSAL.build.module.properties.ChangePropertyButton;
 import VASSAL.build.module.properties.GlobalProperties;
 import VASSAL.build.module.properties.GlobalProperty;
 import VASSAL.build.module.properties.GlobalTranslatableMessage;
@@ -2652,6 +2653,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             if ((basicName != null) && !basicName.isEmpty()) {
               description += " - " + basicName;
             }
+          }
+        }
+
+        if (c instanceof ChangePropertyButton) {
+          final ChangePropertyButton cpb = (ChangePropertyButton)c;
+          final String desc = cpb.getAttributeValueString(ChangePropertyButton.DESCRIPTION);
+          if ((desc != null) && !desc.isEmpty()) {
+            description += " - " + desc;
           }
         }
       }
