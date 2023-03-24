@@ -11,15 +11,14 @@ import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 
+import javax.swing.KeyStroke;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.util.Arrays;
 import java.util.List;
-
 import java.util.Objects;
-import javax.swing.KeyStroke;
 
 /**
  * Adds a menu entry that fires a specified key event to the module window.
@@ -113,7 +112,7 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return buildDescription("Editor.GlobalHotKey.trait_description", description);
+    return buildDescription("Editor.GlobalHotKey.trait_description", description) + getCommandDesc(commandName, commandKey) + " => " + getCommandDesc("", globalHotKey);
   }
 
   @Override
