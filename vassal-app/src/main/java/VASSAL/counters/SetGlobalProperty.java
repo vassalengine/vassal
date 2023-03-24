@@ -36,17 +36,15 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
+import org.apache.commons.lang3.StringUtils;
 
+import javax.swing.JLabel;
+import javax.swing.KeyStroke;
 import java.awt.Component;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
-
-import javax.swing.JLabel;
-import javax.swing.KeyStroke;
-
-import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -77,7 +75,7 @@ public class SetGlobalProperty extends DynamicProperty {
 
   @Override
   public String getDescription() {
-    return buildDescription("Editor.SetGlobalProperty.trait_description", key, description);
+    return buildDescription("Editor.SetGlobalProperty.trait_description", key, description) + getCommandsList();
   }
 
   @Override

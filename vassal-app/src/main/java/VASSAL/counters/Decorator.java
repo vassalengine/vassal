@@ -933,7 +933,7 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
       s += " - " + command;
     }
     if (key != null) {
-      s += " - " + key.getDesc();
+      s += (s.isEmpty() ? " - " : " => ") + key.getDesc();
     }
     return s;
   }
