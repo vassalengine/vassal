@@ -48,6 +48,8 @@ public class KeyBuffer {
 
   private boolean fromPalette = false; // True if we're selecting things from a Piece Palette
 
+  private final int SUPPRESS_ACTION_BUTTONS_MILLISECONDS = 500;
+
   private KeyBuffer() {
     pieces = new ArrayList<>();
     bounds = new BoundsTracker();
@@ -69,7 +71,7 @@ public class KeyBuffer {
   }
 
 
-  private final Timer actionButtonTimer = new Timer(500, e -> suppressActionButtons = false);
+  private final Timer actionButtonTimer = new Timer(SUPPRESS_ACTION_BUTTONS_MILLISECONDS, e -> suppressActionButtons = false);
 
 
   private boolean suppressActionButtons = false;
