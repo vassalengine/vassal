@@ -581,6 +581,10 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
   public static List<GamePiece> matchingTraits(GamePiece p, Point point) {
     final List<GamePiece> results = new ArrayList<>();
 
+    // If we're suppressing action buttons on recently moved pieces, ignore click on this piece if it's selected
+    final KeyBuffer kb = KeyBuffer.getBuffer();
+    if (kb.isSuppressActionButtons() && kb.contains(p)) return results;
+
     for (GamePiece trait = p; trait instanceof Decorator;
          trait = ((Decorator) trait).getInner()) {
       if (trait instanceof Obscurable) {
