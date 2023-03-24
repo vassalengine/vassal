@@ -48,7 +48,7 @@ public class KeyBuffer {
 
   private boolean fromPalette = false; // True if we're selecting things from a Piece Palette
 
-  private final int SUPPRESS_ACTION_BUTTONS_MILLISECONDS = 500;
+  private static final int SUPPRESS_ACTION_BUTTONS_MILLISECONDS = 500;
 
   private KeyBuffer() {
     pieces = new ArrayList<>();
