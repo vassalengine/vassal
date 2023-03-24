@@ -25,6 +25,7 @@
       "bug_fixes": [
       ],
       "other_improvements": [
+        { "num": 12138, "desc": "Better editor descriptions of Global Hotkey traits" },
         { "num": 12137, "desc": "Editor shows better descriptions for Dynamic Property and Set Global Property traits" }
       ]
     },
