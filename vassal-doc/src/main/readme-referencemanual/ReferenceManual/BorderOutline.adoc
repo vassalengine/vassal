@@ -15,7 +15,9 @@ Pieces which have the _Border Outline_ trait will automatically display a colore
 |
 *Description:*:: A short description of this trait for your own reference.
 
-*Property Name (or none for "always show"):*:: If blank, the border will always be shown. Otherwise the value of the named property will be checked, and the outline will be shown if the property value is anything other than 0, false, or an empty string.
+*Property Name (or none for true):*:: A property which, if specified, must have a value other than 0, false, or the empty string for the border outline to be shown.
+
+*Second Property Name (or none for true):*:: A second property which, if specified, must have a value other than 0, false, or the empty string in order for the outline to be shown. If both property names are left blank, the border outline will always be shown. If both property names are specified, then _both_ properties must be non-0, non-false, non-empty. If a single property name is specified (in either field), then only that property must be non-0, non-false, non-empty.
 
 *Color:*:: The color of the border outline.
 

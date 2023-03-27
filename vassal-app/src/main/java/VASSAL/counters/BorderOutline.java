@@ -40,6 +40,7 @@ public class BorderOutline extends Decorator implements TranslatablePiece {
   public static final String ID = "border;"; // NON-NLS
 
   private String propertyName;
+  private String propertyName2;
   private String description;
   private int thickness = 2;
   private Color color = Color.RED;
@@ -60,6 +61,7 @@ public class BorderOutline extends Decorator implements TranslatablePiece {
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
     propertyName = st.nextToken("");
+    propertyName2 = st.nextToken("");
     description  = st.nextToken("");
     thickness    = st.nextInt(2);
     color        = st.nextColor(Color.RED);
@@ -80,7 +82,7 @@ public class BorderOutline extends Decorator implements TranslatablePiece {
   @Override
   public String myGetType() {
     final SequenceEncoder se = new SequenceEncoder(';');
-    se.append(propertyName).append(description).append(thickness).append(color);
+    se.append(propertyName).append(description).append(thickness).append(color).append(propertyName2);
     return ID + se.getValue();
   }
 
@@ -111,34 +113,41 @@ public class BorderOutline extends Decorator implements TranslatablePiece {
     return piece.getName();
   }
 
-  @Override
-  public void draw(Graphics g, int x, int y, Component obs, double zoom) {
-    piece.draw(g, x, y, obs, zoom);
-
-    if ((propertyName != null) && !propertyName.isEmpty()) {
-      final Object propValue = Decorator.getOutermost(this).getProperty(propertyName);
+  protected boolean checkProperty(String name) {
+    if ((name != null) && !name.isEmpty()) {
+      final Object propValue = Decorator.getOutermost(this).getProperty(name);
       if (propValue == null) {
-        return;
+        return true;
       }
       else if (propValue instanceof String) {
         final String string = (String)propValue;
         if ("".equals(string) || "false".equals(string) || "0".equals(string)) { //NON-NLS
-          return;
+          return true;
         }
       }
       else if (propValue instanceof Boolean) {
-        if (!((Boolean)propValue)) return;
+        if (!((Boolean)propValue)) return true;
       }
       else if (propValue instanceof Integer) {
-        if (((Integer)propValue) == 0) return;
+        if (((Integer)propValue) == 0) return true;
       }
     }
+    return false;
+  }
+
+  @Override
+  public void draw(Graphics g, int x, int y, Component obs, double zoom) {
+    piece.draw(g, x, y, obs, zoom);
+
+    if (checkProperty(propertyName)) return;
+    if (checkProperty(propertyName2)) return;
+
     border.draw(this, g, x, y, obs, zoom);
   }
 
   @Override
   public String getDescription() {
-    return buildDescription("Editor.BorderOutline.trait_description", propertyName, description);
+    return buildDescription("Editor.BorderOutline.trait_description", propertyName + (((propertyName2 != null) && !propertyName2.isEmpty()) ? " / " + propertyName2 : 0), description);
   }
 
   @Override
@@ -171,11 +180,13 @@ public class BorderOutline extends Decorator implements TranslatablePiece {
     final BorderOutline c = (BorderOutline) o;
     if (! Objects.equals(color, c.color)) return false;
     if (! Objects.equals(propertyName, c.propertyName)) return false;
+    if (! Objects.equals(propertyName2, c.propertyName2)) return false;
     return Objects.equals(thickness, c.thickness);
   }
 
   private static class Ed implements PieceEditor {
     private final StringConfigurer propertyInput;
+    private final StringConfigurer propertyInput2;
     private final StringConfigurer descInput;
     private final IntConfigurer thicknessConfig;
     private final ColorConfigurer colorConfig;
@@ -192,6 +203,9 @@ public class BorderOutline extends Decorator implements TranslatablePiece {
       propertyInput = new StringConfigurer(p.propertyName);
       box.add("Editor.BorderOutline.property_name", propertyInput);
 
+      propertyInput2 = new StringConfigurer(p.propertyName2);
+      box.add("Editor.BorderOutline.property_name_2", propertyInput2);
+
       colorConfig = new ColorConfigurer(p.color);
       box.add("Editor.BorderOutline.color", colorConfig);
 
@@ -207,7 +221,7 @@ public class BorderOutline extends Decorator implements TranslatablePiece {
     @Override
     public String getType() {
       final SequenceEncoder se = new SequenceEncoder(';');
-      se.append(propertyInput.getValueString()).append(descInput.getValueString()).append(thicknessConfig.getValueString()).append(colorConfig.getValueString());
+      se.append(propertyInput.getValueString()).append(descInput.getValueString()).append(thicknessConfig.getValueString()).append(colorConfig.getValueString()).append(propertyInput2.getValueString());
       return ID + se.getValue();
     }
 
