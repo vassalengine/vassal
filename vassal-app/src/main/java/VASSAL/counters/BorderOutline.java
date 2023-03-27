@@ -187,25 +187,27 @@ public class BorderOutline extends Decorator implements TranslatablePiece {
 
     final boolean p1 = checkProperty(propertyName);
 
-    if (propertyName2.isEmpty()) {
-      if (!p1) return;
-    }
-    else {
-      final boolean p2 = checkProperty(propertyName2);
-      final LogicalCompareMode mode = LogicalCompareMode.whichSymbol(compareMode);
-      switch (mode) {
-      case OR:
-        if (!p1 && !p2) return;
-        break;
-      case XOR:
-        if ((p1 && p2) || (!p1 && !p2)) return;
-        break;
-      case NOR:
-        if (p1 || p2) return;
-        break;
-      default:
-        if (!(p1 && p2)) return;
-        break;
+    if (!propertyName.isEmpty()) {
+      if (propertyName2.isEmpty()) {
+        if (!p1) return;
+      }
+      else {
+        final boolean p2 = checkProperty(propertyName2);
+        final LogicalCompareMode mode = LogicalCompareMode.whichSymbol(compareMode);
+        switch (mode) {
+        case OR:
+          if (!p1 && !p2) return;
+          break;
+        case XOR:
+          if ((p1 && p2) || (!p1 && !p2)) return;
+          break;
+        case NOR:
+          if (p1 || p2) return;
+          break;
+        default:
+          if (!(p1 && p2)) return;
+          break;
+        }
       }
     }
 
