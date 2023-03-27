@@ -22,6 +22,7 @@ import VASSAL.command.Command;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.SequenceEncoder;
@@ -31,6 +32,7 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -40,6 +42,7 @@ public class BorderOutline extends Decorator implements TranslatablePiece {
   public static final String ID = "border;"; // NON-NLS
 
   private String propertyName;
+  private String compareMode;
   private String propertyName2;
   private String description;
   private int thickness = 2;
@@ -56,6 +59,48 @@ public class BorderOutline extends Decorator implements TranslatablePiece {
     setInner(p);
   }
 
+  /**
+   * Comparison Modes for property match
+   */
+  public enum LogicalCompareMode {
+    AND("AND"), //NON-NLS
+    OR("OR"),   //NON-NLS
+    XOR("XOR"), //NON-NLS
+    NOR("NOR"); //NON-NLS
+
+
+    private static final String[] KEYS = new String[] { "Editor.AND", "Editor.OR", "Editor.XOR", "Editor.NOR" };
+
+    String symbol;
+
+    LogicalCompareMode(String symbol) {
+      this.symbol = symbol;
+    }
+
+    public String getSymbol() {
+      return symbol;
+    }
+
+    public static BorderOutline.LogicalCompareMode whichSymbol(String symbol) {
+      for (final BorderOutline.LogicalCompareMode mode : BorderOutline.LogicalCompareMode.values()) {
+        if (mode.getSymbol().equals(symbol)) {
+          return mode;
+        }
+      }
+      return AND;
+    }
+
+    public static String[] getSymbols() {
+      return Arrays.stream(values())
+        .map(BorderOutline.LogicalCompareMode::getSymbol)
+        .toArray(String[]::new);
+    }
+
+    public static String[] getKeys() {
+      return KEYS;
+    }
+  }
+
   @Override
   public void mySetType(String type) {
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
@@ -65,6 +110,7 @@ public class BorderOutline extends Decorator implements TranslatablePiece {
     thickness    = st.nextInt(2);
     color        = st.nextColor(Color.RED);
     propertyName2 = st.nextToken("");
+    compareMode   = st.nextToken(LogicalCompareMode.AND.toString()); //NON-NLS
 
     border.setColor(color);
     border.setThickness(thickness);
@@ -82,7 +128,7 @@ public class BorderOutline extends Decorator implements TranslatablePiece {
   @Override
   public String myGetType() {
     final SequenceEncoder se = new SequenceEncoder(';');
-    se.append(propertyName).append(description).append(thickness).append(color).append(propertyName2);
+    se.append(propertyName).append(description).append(thickness).append(color).append(propertyName2).append(compareMode);
     return ID + se.getValue();
   }
 
@@ -117,37 +163,58 @@ public class BorderOutline extends Decorator implements TranslatablePiece {
     if ((name != null) && !name.isEmpty()) {
       final Object propValue = Decorator.getOutermost(this).getProperty(name);
       if (propValue == null) {
-        return true;
+        return false;
       }
       else if (propValue instanceof String) {
         final String string = (String)propValue;
         if ("".equals(string) || "false".equals(string) || "0".equals(string)) { //NON-NLS
-          return true;
+          return false;
         }
       }
       else if (propValue instanceof Boolean) {
-        if (!((Boolean)propValue)) return true;
+        if (!((Boolean)propValue)) return false;
       }
       else if (propValue instanceof Integer) {
-        if (((Integer)propValue) == 0) return true;
+        if (((Integer)propValue) == 0) return false;
       }
     }
-    return false;
+    return true;
   }
 
   @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
 
-    if (checkProperty(propertyName)) return;
-    if (checkProperty(propertyName2)) return;
+    final boolean p1 = checkProperty(propertyName);
+
+    if (propertyName2.isEmpty()) {
+      if (!p1) return;
+    }
+    else {
+      final boolean p2 = checkProperty(propertyName2);
+      final LogicalCompareMode mode = LogicalCompareMode.whichSymbol(compareMode);
+      switch (mode) {
+      case OR:
+        if (!p1 && !p2) return;
+        break;
+      case XOR:
+        if ((p1 && p2) || (!p1 && !p2)) return;
+        break;
+      case NOR:
+        if (p1 || p2) return;
+        break;
+      default:
+        if (!(p1 && p2)) return;
+        break;
+      }
+    }
 
     border.draw(this, g, x, y, obs, zoom);
   }
 
   @Override
   public String getDescription() {
-    return buildDescription("Editor.BorderOutline.trait_description", propertyName + (((propertyName2 != null) && !propertyName2.isEmpty()) ? " / " + propertyName2 : ""), description);
+    return buildDescription("Editor.BorderOutline.trait_description", propertyName + (((propertyName2 != null) && !propertyName2.isEmpty()) ? " " + compareMode + " " + propertyName2 : ""), description);
   }
 
   @Override
@@ -181,11 +248,13 @@ public class BorderOutline extends Decorator implements TranslatablePiece {
     if (! Objects.equals(color, c.color)) return false;
     if (! Objects.equals(propertyName, c.propertyName)) return false;
     if (! Objects.equals(propertyName2, c.propertyName2)) return false;
+    if (! Objects.equals(compareMode, c.compareMode)) return false;
     return Objects.equals(thickness, c.thickness);
   }
 
   private static class Ed implements PieceEditor {
     private final StringConfigurer propertyInput;
+    private final LogicalCompareConfigurer compareInput;
     private final StringConfigurer propertyInput2;
     private final StringConfigurer descInput;
     private final IntConfigurer thicknessConfig;
@@ -202,6 +271,10 @@ public class BorderOutline extends Decorator implements TranslatablePiece {
 
       propertyInput = new StringConfigurer(p.propertyName);
       box.add("Editor.BorderOutline.property_name", propertyInput);
+
+      compareInput = new LogicalCompareConfigurer();
+      compareInput.setValue(p.compareMode);
+      box.add("Editor.BorderOutline.compare_mode", compareInput);
 
       propertyInput2 = new StringConfigurer(p.propertyName2);
       box.add("Editor.BorderOutline.property_name_2", propertyInput2);
@@ -221,13 +294,22 @@ public class BorderOutline extends Decorator implements TranslatablePiece {
     @Override
     public String getType() {
       final SequenceEncoder se = new SequenceEncoder(';');
-      se.append(propertyInput.getValueString()).append(descInput.getValueString()).append(thicknessConfig.getValueString()).append(colorConfig.getValueString()).append(propertyInput2.getValueString());
+      se.append(propertyInput.getValueString()).append(descInput.getValueString()).append(thicknessConfig.getValueString()).append(colorConfig.getValueString()).append(propertyInput2.getValueString()).append(compareInput.getValueString());
       return ID + se.getValue();
     }
 
     @Override
     public String getState() {
       return "false"; // NON-NLS
+    }
+  }
+
+  /**
+   * Happy little Configurer class for the Compare Modes
+   */
+  private static class LogicalCompareConfigurer extends TranslatingStringEnumConfigurer {
+    LogicalCompareConfigurer() {
+      super(null, null, LogicalCompareMode.getSymbols(), LogicalCompareMode.getKeys());
     }
   }
 }
