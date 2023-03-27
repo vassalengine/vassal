@@ -178,36 +178,36 @@ public class BorderOutline extends Decorator implements TranslatablePiece {
     return true;
   }
 
+  protected boolean checkProperties() {
+    final boolean p1 = checkProperty(propertyName);
+    if (propertyName.isEmpty()) return true;
+
+    if (propertyName2.isEmpty()) {
+      return p1;
+    }
+    else {
+      final boolean p2 = checkProperty(propertyName2);
+      final LogicalCompareMode mode = LogicalCompareMode.whichSymbol(compareMode);
+      switch (mode) {
+      case OR:
+        return p1 || p2;
+      case XOR:
+        return (p1 || p2) && !(p1 && p2);
+      case NOR:
+        return !p1 && !p2;
+      default:
+        return p1 && p2;
+      }
+    }
+  }
+
   @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
 
-    final boolean p1 = checkProperty(propertyName);
-    if (!propertyName.isEmpty()) {
-      if (propertyName2.isEmpty()) {
-        if (!p1) return;
-      }
-      else {
-        final boolean p2 = checkProperty(propertyName2);
-        final LogicalCompareMode mode = LogicalCompareMode.whichSymbol(compareMode);
-        switch (mode) {
-        case OR:
-          if (!p1 && !p2) return;
-          break;
-        case XOR:
-          if ((p1 && p2) || (!p1 && !p2)) return;
-          break;
-        case NOR:
-          if (p1 || p2) return;
-          break;
-        default:
-          if (!(p1 && p2)) return;
-          break;
-        }
-      }
+    if (checkProperties()) {
+      border.draw(this, g, x, y, obs, zoom);
     }
-
-    border.draw(this, g, x, y, obs, zoom);
   }
 
   @Override
@@ -249,6 +249,23 @@ public class BorderOutline extends Decorator implements TranslatablePiece {
     if (! Objects.equals(compareMode, c.compareMode)) return false;
     return Objects.equals(thickness, c.thickness);
   }
+
+  @Override
+  public Object getProperty(Object key) {
+    if (key.equals(Properties.VISIBLE_STATE)) {
+      return String.valueOf(super.getProperty(key)) + checkProperties();
+    }
+    return super.getProperty(key);
+  }
+
+  @Override
+  public Object getLocalizedProperty(Object key) {
+    if (key.equals(Properties.VISIBLE_STATE)) {
+      return getProperty(key);
+    }
+    return super.getLocalizedProperty(key);
+  }
+
 
   private static class Ed implements PieceEditor {
     private final StringConfigurer propertyInput;
