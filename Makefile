@@ -109,9 +109,10 @@ $(TMPDIR) $(JDOCDIR):
 $(LIBDIR)/Vengine.jar: version-set
 	$(MVN) deploy -DgitVersion=$(VERSION) $(SKIPS)
 	mv $(LIBDIR)/$(JARNAME).jar $@
+	mv $(LIBDIR)/vassal-agent-$(MAVEN_VERSION).jar $(LIBDIR)/vassal-agent.jar
 
 $(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar | $(TMPDIR)
-	echo -n jdk.crypto.ec, >$@
+	echo -n jdk.crypto.ec,java.instrument, >$@
 	jdeps --ignore-missing-deps --print-module-deps --multi-release 11 $(LIBDIR)/*.jar | tr -d '\n' >>$@
 
 #$(DISTDIR)/windows/VASSAL.ico:
@@ -206,7 +207,7 @@ $(TMPDIR)/windows-%-$(VERSION)-build:
 
 JREOPTS:=
 
-$(TMPDIR)/windows-noinst-$(VERSION)-build/VASSAL.l4j.xml: JREOPTS:=<opt>-DVASSAL.conf="%EXEDIR%\\..\\VASSAL"</opt>
+$(TMPDIR)/windows-noinst-$(VERSION)-build/VASSAL.l4j.xml: JREOPTS:=<opt>-javaagent:lib\\vassal-agent.jar</opt><opt>--add-opens java.desktop/sun.awt.shell=org.vassalengine.agent</opt><opt>-DVASSAL.conf="%EXEDIR%\\..\\VASSAL"</opt>
 
 $(TMPDIR)/windows-%-$(VERSION)-build/VASSAL.l4j.xml: $(DISTDIR)/windows/VASSAL.l4j.xml.in | $(TMPDIR)/windows-%-$(VERSION)-build
 	sed -e 's/%NUMVERSION%/$(VNUM)/g' \
