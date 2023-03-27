@@ -166,15 +166,13 @@ public class BorderOutline extends Decorator implements TranslatablePiece {
       }
       else if (propValue instanceof String) {
         final String string = (String)propValue;
-        if ("".equals(string) || "false".equals(string) || "0".equals(string)) { //NON-NLS
-          return false;
-        }
+        return !"".equals(string) && !"false".equals(string) && !"0".equals(string); //NON-NLS
       }
       else if (propValue instanceof Boolean) {
-        if (!((Boolean)propValue)) return false;
+        return (Boolean) propValue;
       }
       else if (propValue instanceof Integer) {
-        if (((Integer)propValue) == 0) return false;
+        return ((Integer) propValue) != 0;
       }
     }
     return true;
