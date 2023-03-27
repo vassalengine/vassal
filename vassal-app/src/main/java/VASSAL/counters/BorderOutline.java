@@ -61,10 +61,10 @@ public class BorderOutline extends Decorator implements TranslatablePiece {
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
     propertyName = st.nextToken("");
-    propertyName2 = st.nextToken("");
     description  = st.nextToken("");
     thickness    = st.nextInt(2);
     color        = st.nextColor(Color.RED);
+    propertyName2 = st.nextToken("");
 
     border.setColor(color);
     border.setThickness(thickness);
@@ -147,7 +147,7 @@ public class BorderOutline extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return buildDescription("Editor.BorderOutline.trait_description", propertyName + (((propertyName2 != null) && !propertyName2.isEmpty()) ? " / " + propertyName2 : 0), description);
+    return buildDescription("Editor.BorderOutline.trait_description", propertyName + (((propertyName2 != null) && !propertyName2.isEmpty()) ? " / " + propertyName2 : ""), description);
   }
 
   @Override
