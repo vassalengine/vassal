@@ -69,7 +69,7 @@ public class BorderOutline extends Decorator implements TranslatablePiece {
     NOR("NOR"); //NON-NLS
 
 
-    private static final String[] KEYS = new String[] { "Editor.AND", "Editor.OR", "Editor.XOR", "Editor.NOR" };
+    private static final String[] KEYS = { "Editor.AND", "Editor.OR", "Editor.XOR", "Editor.NOR" };
 
     String symbol;
 
