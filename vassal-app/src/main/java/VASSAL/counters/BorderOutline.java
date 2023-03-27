@@ -68,7 +68,6 @@ public class BorderOutline extends Decorator implements TranslatablePiece {
     XOR("XOR"), //NON-NLS
     NOR("NOR"); //NON-NLS
 
-
     private static final String[] KEYS = { "Editor.AND", "Editor.OR", "Editor.XOR", "Editor.NOR" };
 
     String symbol;
@@ -186,7 +185,6 @@ public class BorderOutline extends Decorator implements TranslatablePiece {
     piece.draw(g, x, y, obs, zoom);
 
     final boolean p1 = checkProperty(propertyName);
-
     if (!propertyName.isEmpty()) {
       if (propertyName2.isEmpty()) {
         if (!p1) return;
