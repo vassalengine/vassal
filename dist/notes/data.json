@@ -30,7 +30,8 @@
       ],
       "other_improvements": [
         { "num": 12138, "desc": "Better editor descriptions of Global Hotkey traits" },
-        { "num": 12137, "desc": "Editor shows better descriptions for Dynamic Property and Set Global Property traits" }
+        { "num": 12137, "desc": "Editor shows better descriptions for Dynamic Property and Set Global Property traits" },
+        { "num": 12133, "desc": "Rollovers automatically shrink scale if the pieces are too wide to fit the screen width" }
       ]
     },
     {
