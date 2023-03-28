@@ -22,7 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
-        { "num": 12119, "desc": "Restore vanished Load Comments",
+        { "num": 12119, "desc": "Restore vanished Load Comments" },
         { "num": 12116, "desc": "Pieces shouldn't receive same GKC twice just because it sent them to a new map" },
         { "num": 12105, "desc": "Deck's 'Send-to-Deck' subcomponent has access to properties (e.g., PlayerSide) and properly shuffles \"always shuffle\" decks" },
         { "num": 12093, "desc": "Fix disabling of toolbar items nested in multiple Toolbar Menus" }
