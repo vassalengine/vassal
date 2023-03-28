@@ -13,7 +13,7 @@
 
     <properties>
         <main.basedir>${project.basedir}${file.separator}..</main.basedir>
-        <version.byte-buddy>1.14.2</version.byte-buddy>
+        <version.byte-buddy>1.14.3</version.byte-buddy>
     </properties>
 
     <dependencies>
