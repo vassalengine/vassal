@@ -18,6 +18,11 @@
     </properties>
 
     <dependencies>
+         <dependency>
+            <groupId>org.vassalengine</groupId>
+            <artifactId>vassal-agent</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.vassalengine</groupId>
             <artifactId>vassal-app</artifactId>
