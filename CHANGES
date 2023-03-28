@@ -1,5 +1,6 @@
 3.7.0-beta2 - ???
 
+* 12153: Layer traits allow a show-only-if-this-property-true filter
 * 12138: Better editor descriptions of Global Hotkey traits
 * 12137: Editor shows better descriptions for Dynamic Property and Set Global
     Property traits

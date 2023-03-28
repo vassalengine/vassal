@@ -19,6 +19,7 @@
       "in": "3.7.0-beta2",
       "since": "3.7.0-beta1",
       "new_features": [
+        { "num": 12153, "desc": "Layer traits allow a show-only-if-this-property-true filter" },
         { "num": 12127, "desc": "Toolbar buttons disableable by a property (e.g., GKC, ActionButton, etc.) can be set to hide when disabled" },
         { "num": 12100, "desc": "Text Labels support <img> tags" },
         { "num": 4446, "desc": "Dynamic button labels (can use expressions and $...$ in certain toolbar buttons)" }
