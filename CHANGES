@@ -3,6 +3,8 @@
 * 12138: Better editor descriptions of Global Hotkey traits
 * 12137: Editor shows better descriptions for Dynamic Property and Set Global
     Property traits
+* 12127: Toolbar buttons disableable by a property (e.g., GKC, ActionButton,
+    etc.) can be set to hide when disabled
 * 12100: Text Labels support <img> tags
 *  4446: Dynamic button labels (can use expressions and $...$ in certain
     toolbar buttons)
