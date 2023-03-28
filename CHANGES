@@ -1,5 +1,7 @@
 3.6.15 - ???
 
+* 12140: Action Buttons on pieces that have just been drag-moved are
+  suppressed for a half second for user-error avoidance
 * 12119: Restore vanished Load Comments
 * 12116: Pieces shouldn't receive same GKC twice just because it sent them to
     a new map

@@ -27,6 +27,7 @@
         { "num": 12105, "desc": "Deck's 'Send-to-Deck' subcomponent has access to properties (e.g., PlayerSide) and properly shuffles \"always shuffle\" decks" }
       ],
       "other_improvements": [
+        { "num": 12140, "desc": "Action Buttons on pieces that have just been drag-moved are suppressed for a half second for user-error avoidance" },
         { "num": 12085, "desc": "Screen capture default icon height adjusted to match the other 16-pixel-high icons" },
         { "num": 12069, "desc": "Tiling: Improved detection of and recovery from running out of memory; improved error dialogs" },
         { "num": 9894, "desc": "Improved error dialog for failure to start child process" }
