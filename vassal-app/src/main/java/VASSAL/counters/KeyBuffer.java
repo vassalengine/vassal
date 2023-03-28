@@ -17,19 +17,19 @@
  */
 package VASSAL.counters;
 
-import java.awt.Point;
+import VASSAL.build.widget.PieceSlot;
+import VASSAL.command.Command;
+import VASSAL.command.NullCommand;
+import VASSAL.property.PersistentPropertyContainer;
 
+import javax.swing.Timer;
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
-
-import VASSAL.build.widget.PieceSlot;
-import VASSAL.command.Command;
-import VASSAL.command.NullCommand;
-import VASSAL.property.PersistentPropertyContainer;
 
 /**
  * The KeyBuffer is the list of "currently selected pieces" in the VASSAL UI (map windows). Its somewhat confusing name
@@ -47,6 +47,8 @@ public class KeyBuffer {
   private final List<PieceSlot> slots;   // Piece Slots in palettes that we have selected
 
   private boolean fromPalette = false; // True if we're selecting things from a Piece Palette
+
+  private static final int SUPPRESS_ACTION_BUTTONS_MILLISECONDS = 500;
 
   private KeyBuffer() {
     pieces = new ArrayList<>();
@@ -67,6 +69,26 @@ public class KeyBuffer {
     }
     return theBuffer;
   }
+
+
+  private final Timer actionButtonTimer = new Timer(SUPPRESS_ACTION_BUTTONS_MILLISECONDS, e -> suppressActionButtons = false);
+
+
+  private boolean suppressActionButtons = false;
+
+  public void setSuppressActionButtons(boolean suppress) {
+    this.suppressActionButtons = suppress;
+
+    actionButtonTimer.stop();
+    if (suppress) {
+      actionButtonTimer.start(); // When we drag a group of pieces in Piece Mover, we briefly disable action buttons on any pieces that moved, to prevent too many "fat finger problems"
+    }
+  }
+
+  public boolean isSuppressActionButtons() {
+    return suppressActionButtons;
+  }
+
 
 
   public PieceSlot getSlotForPiece(GamePiece piece) {
