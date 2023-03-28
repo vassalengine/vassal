@@ -26,6 +26,7 @@
         { "num": 4446, "desc": "Dynamic button labels (can use expressions and $...$ in certain toolbar buttons)" }
       ],
       "bug_fixes": [
+        { "num": 12152, "desc": "Work around Java bug which prevents displaying Windows file dialog" }
       ],
       "other_improvements": [
         { "num": 12138, "desc": "Better editor descriptions of Global Hotkey traits" },
