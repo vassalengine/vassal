@@ -40,7 +40,7 @@ For example, if a layer image is 40x40 pixels, and you want it to be drawn so th
 *Additional scaling factor for draw:*::  An additional scaling factor which is applied when drawing images for this Layer. Useful when downscaling categories of art supplied in higher resolution than other items.
 
 *Levels follow expression value:*::  If selected, then you can enter an <<Expression.adoc#top,Expression>> that is evaluated to determine the active level, rather than having the trait respond directly to key commands.
-A typical case will reference the name of a <<DynamicProperty.adoc#top,Dynamic Property>> or occasionally a <<GlobalProperty.adoc#top,Global Property>>. Note that larger expressions (e.g. comparisons, arithmetic, etc) are permitted, but performance may suffer as this expression will be checked every time a piece with the expression is drawn. You can also specify the numeric value of the Property that should correspond to the first level of this Layer.
+A typical case will reference the name of a <<DynamicProperty.adoc#top,Dynamic Property>> or occasionally a <<GlobalProperty.adoc#top,Global Property>>. Note that larger expressions (e.g., comparisons, arithmetic, etc.) are permitted, but performance may suffer as this expression will be checked every time a piece with the expression is drawn. You can also specify the numeric value of the Property that should correspond to the first level of this Layer.
 
 *Only show layer if property:*::  An additional property name can be filled in here; if it is supplied, then the piece will be checked for the named property, and this layer will only be drawn if the property value matches the setting of the combo box -- you can choose either to check for "true, non-zero, non-blank" or "false, 0, or blank".
 
