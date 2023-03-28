@@ -4,6 +4,7 @@
 * 12138: Better editor descriptions of Global Hotkey traits
 * 12137: Editor shows better descriptions for Dynamic Property and Set Global
     Property traits
+* 12129: PlaceMarker and ReplaceWithOther can use expression for X/Y offsets
 * 12127: Toolbar buttons disableable by a property (e.g., GKC, ActionButton,
     etc.) can be set to hide when disabled
 * 12100: Text Labels support <img> tags
