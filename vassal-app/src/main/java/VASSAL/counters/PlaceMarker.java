@@ -31,6 +31,7 @@ import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.ChooseComponentPathDialog;
+import VASSAL.configure.FormattedExpressionConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PropertiesWindow;
@@ -40,6 +41,8 @@ import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.property.PersistentPropertyContainer;
+import VASSAL.script.expression.Expression;
+import VASSAL.script.expression.FormattedStringExpression;
 import VASSAL.search.ImageSearchTarget;
 import VASSAL.tools.ComponentPathBuilder;
 import VASSAL.tools.NamedKeyStroke;
@@ -47,6 +50,7 @@ import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.SequenceEncoder;
 import net.miginfocom.swing.MigLayout;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -91,6 +95,8 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
   protected String markerText = "";
   protected int xOffset = 0;
   protected int yOffset = 0;
+  protected FormattedStringExpression xOffsetExpression = new FormattedStringExpression("0");
+  protected FormattedStringExpression yOffsetExpression = new FormattedStringExpression("0");
   protected boolean matchRotation = false;
   protected KeyCommand[] commands;
   protected NamedKeyStroke afterBurnerKey;
@@ -149,7 +155,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       .append(key)
       .append(markerSpec == null ? "null" : markerSpec) // NON-NLS
       .append(markerText == null ? "null" : markerText) // NON-NLS
-      .append(xOffset).append(yOffset)
+      .append(xOffsetExpression.getExpression()).append(yOffsetExpression.getExpression())
       .append(matchRotation)
       .append(afterBurnerKey)
       .append(description)
@@ -180,6 +186,15 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     Command c;
     final GamePiece outer = getOutermost(this);
     Point p = getPosition();
+
+    String evalX = xOffsetExpression.tryEvaluate(outer, this, "Editor.PlaceMarker.getX");
+    evalX = Expression.createExpression(evalX).tryEvaluate(outer, this, "Editor.PlaceMarker.getX");
+    String evalY = yOffsetExpression.tryEvaluate(outer, this, "Editor.PlaceMarker.getY");
+    evalY = Expression.createExpression(evalY).tryEvaluate(outer, this, "Editor.PlaceMarker.getY");
+
+    xOffset = NumberUtils.toInt(evalX);
+    yOffset = NumberUtils.toInt(evalY);
+
     p.translate(xOffset, -yOffset);
     if (matchRotation) {
       final FreeRotator myRotation =
@@ -477,8 +492,12 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     if ("null".equals(markerText)) { // NON-NLS
       markerText = null;
     }
-    xOffset = st.nextInt(0);
-    yOffset = st.nextInt(0);
+
+    xOffsetExpression = new FormattedStringExpression(st.nextToken("0"));
+    yOffsetExpression = new FormattedStringExpression(st.nextToken("0"));
+    //xOffset = st.nextInt(0);
+    //yOffset = st.nextInt(0);
+
     matchRotation = st.nextBoolean(false);
     afterBurnerKey = st.nextNamedKeyStroke(null);
     description = st.nextToken("");
@@ -523,8 +542,8 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     if (! Objects.equals(key, c.key)) return false;
     if (! Objects.equals(markerSpec, c.markerSpec)) return false;
     if (! Objects.equals(markerText, c.markerText)) return false;
-    if (! Objects.equals(xOffset, c.xOffset)) return false;
-    if (! Objects.equals(yOffset, c.yOffset)) return false;
+    if (! Objects.equals(xOffsetExpression, c.xOffsetExpression)) return false;
+    if (! Objects.equals(yOffsetExpression, c.yOffsetExpression)) return false;
     if (! Objects.equals(matchRotation, c.matchRotation)) return false;
     if (! Objects.equals(afterBurnerKey, c.afterBurnerKey)) return false;
     if (! Objects.equals(description, c.description)) return false;
@@ -542,8 +561,10 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     private String markerSlotPath;
     protected JButton defineButton = new JButton(Resources.getString("Editor.PlaceMarker.define_marker"));
     protected JButton selectButton = new JButton(Resources.getString("Editor.select"));
-    protected IntConfigurer xOffsetConfig;
+    protected IntConfigurer xOffsetConfig; // Legacy clirr
     protected IntConfigurer yOffsetConfig;
+    protected FormattedExpressionConfigurer xOffsetConfigEXP;
+    protected FormattedExpressionConfigurer yOffsetConfigEXP;
     protected BooleanConfigurer matchRotationConfig;
     protected BooleanConfigurer aboveConfig;
     private final JLabel aboveLabel;
@@ -605,11 +626,11 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       b.add(selectButton);
       p.add("Editor.Placemarker.marker_definition", b);
 
-      xOffsetConfig = new IntConfigurer(piece.xOffset);
-      p.add("Editor.PlaceMarker.horizontal_offset", xOffsetConfig);
+      xOffsetConfigEXP = new FormattedExpressionConfigurer(piece.xOffsetExpression.getExpression());
+      p.add("Editor.PlaceMarker.horizontal_offset", xOffsetConfigEXP);
 
-      yOffsetConfig = new IntConfigurer(piece.yOffset);
-      p.add("Editor.PlaceMarker.vertical_offset", yOffsetConfig);
+      yOffsetConfigEXP = new FormattedExpressionConfigurer(piece.yOffsetExpression.getExpression());
+      p.add("Editor.PlaceMarker.vertical_offset", yOffsetConfigEXP);
 
       matchRotationConfig = createMatchRotationConfig();
       matchRotationConfig.setValue(piece.matchRotation);
@@ -714,8 +735,8 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       }
       se.append("null"); // Older versions specified a text message to echo. Now performed by the ReportState trait, // NON-NLS
                           // but we remain backward-compatible.
-      se.append(xOffsetConfig.getValueString());
-      se.append(yOffsetConfig.getValueString());
+      se.append(xOffsetConfigEXP.getValueString());
+      se.append(yOffsetConfigEXP.getValueString());
       se.append(matchRotationConfig.getValueString());
       se.append(afterBurner.getValueString());
       se.append(descConfig.getValueString());
