@@ -56,6 +56,7 @@
     a new map
 * 12105: Deck's 'Send-to-Deck' subcomponent has access to properties (e.g.,
     PlayerSide) and properly shuffles "always shuffle" decks
+* 12093: Fix disabling of toolbar items nested in multiple Toolbar Menus
 * 12085: Screen capture default icon height adjusted to match the other
     16-pixel-high icons
 * 12069: Tiling: Improved detection of and recovery from running out of memory;
