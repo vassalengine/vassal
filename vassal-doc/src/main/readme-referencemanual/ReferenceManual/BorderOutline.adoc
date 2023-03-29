@@ -15,7 +15,11 @@ Pieces which have the _Border Outline_ trait will automatically display a colore
 |
 *Description:*:: A short description of this trait for your own reference.
 
-*Property Name (or none for "always show"):*:: If blank, the border will always be shown. Otherwise the value of the named property will be checked, and the outline will be shown if the property value is anything other than 0, false, or an empty string.
+*Property Name (optional):*:: A property which, if specified, is checked to make sure it has a value other than 0, false, or an empty string. If no property is specified, the border outline is always displayed. If this property is the only one specified, then the border outline is displayed when this property's value is anything _except_ 0, false, or an empty string.
+
+*Comparison:*:: If two property names are specified, then this field determines the comparison done. The default _AND_ means to display the border outline if *both* properties have values other than 0, false, and empty string. If the comparison is _OR_ then the outline is displayed if *either* property is non-0, non-false,  non-blank. _XOR_ means *either but not both*, and _NOR_ means *neither*.
+
+*Second Property Name (optional):*:: A second property which, if specified, is checked whether it has a value other than 0, false, or an empty string. If a second property is specified, the _Comparison_ field above determine how the properties are used.
 
 *Color:*:: The color of the border outline.
 
