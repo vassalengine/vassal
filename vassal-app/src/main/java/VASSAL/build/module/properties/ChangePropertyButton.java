@@ -37,7 +37,9 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import java.awt.Component;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Adds a toolbar button that changes the value of a global property
@@ -112,13 +114,12 @@ public class ChangePropertyButton extends AbstractToolbarItem implements Propert
 
   @Override
   public String[] getAttributeDescriptions() {
-    String[] descs = { Resources.getString("Editor.description_label") };
-    for (final String s : super.getAttributeDescriptions()) {
-      descs = ArrayUtils.add(descs, s);
-    }
-    descs = ArrayUtils.add(descs, Resources.getString("Editor.report_format"));
-    descs = ArrayUtils.add(descs, Resources.getString("Editor.ChangePropertyButton.options"));
-    return descs;
+    final Stream.Builder<Object> b = Stream.builder().add(Resources.getString("Editor.description_label"));
+    Arrays.stream(super.getAttributeDescriptions()).forEach(b::add);
+    b.add(Resources.getString("Editor.report_format"))
+      .add(Resources.getString("Editor.ChangePropertyButton.options"));
+
+    return b.build().toArray(String[]::new);
   }
 
   @Override
