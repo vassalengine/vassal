@@ -36,9 +36,9 @@ import VASSAL.tools.LaunchButton;
 
 import java.awt.Component;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-
-import org.apache.commons.lang3.ArrayUtils;
+import java.util.stream.Stream;
 
 /**
  * Adds a toolbar button that changes the value of a global property
@@ -51,6 +51,7 @@ public class ChangePropertyButton extends AbstractToolbarItem implements Propert
   public static final String BUTTON_TOOLTIP = "tooltip"; //NON-NLS
   public static final String BUTTON_ICON = "icon"; //NON-NLS
   public static final String HOTKEY = "hotkey"; //NON-NLS
+  public static final String DESCRIPTION = "desc"; //NON-NLS
 
   public static final String PROPERTY_CHANGER = "propChanger"; //NON-NLS
 
@@ -67,6 +68,7 @@ public class ChangePropertyButton extends AbstractToolbarItem implements Propert
   protected GlobalProperty property;
   protected PropertyChangerConfigurer propChangeConfig = new PropertyChangerConfigurer(null, null, this);
   protected FormattedString format = new FormattedString();
+  protected String desc = "";
 
   public ChangePropertyButton() {
     setNameKey("");
@@ -111,29 +113,27 @@ public class ChangePropertyButton extends AbstractToolbarItem implements Propert
 
   @Override
   public String[] getAttributeDescriptions() {
-    return ArrayUtils.addAll(
-      super.getAttributeDescriptions(),
-      Resources.getString("Editor.report_format"),
-      Resources.getString("Editor.ChangePropertyButton.options")
-    );
+    final Stream.Builder<Object> b = Stream.builder().add(Resources.getString("Editor.description_label"));
+    Arrays.stream(super.getAttributeDescriptions()).forEach(b::add);
+    b.add(Resources.getString("Editor.report_format"))
+      .add(Resources.getString("Editor.ChangePropertyButton.options"));
+    return b.build().toArray(String[]::new);
   }
 
   @Override
   public Class<?>[] getAttributeTypes() {
-    return ArrayUtils.addAll(
-      super.getAttributeTypes(),
-      ReportFormatConfig.class,
-      PropChangerOptions.class
-    );
+    final Stream.Builder<Object> b = Stream.builder().add(String.class);
+    Arrays.stream(super.getAttributeTypes()).forEach(b::add);
+    b.add(ReportFormatConfig.class).add(PropChangerOptions.class);
+    return b.build().toArray(Class<?>[]::new);
   }
 
   @Override
   public String[] getAttributeNames() {
-    return ArrayUtils.addAll(
-      super.getAttributeNames(),
-      REPORT_FORMAT,
-      PROPERTY_CHANGER
-    );
+    final Stream.Builder<Object> b = Stream.builder().add(DESCRIPTION);
+    Arrays.stream(super.getAttributeNames()).forEach(b::add);
+    b.add(REPORT_FORMAT).add(PROPERTY_CHANGER);
+    return b.build().toArray(String[]::new);
   }
 
   @Override
@@ -157,7 +157,10 @@ public class ChangePropertyButton extends AbstractToolbarItem implements Propert
 
   @Override
   public void setAttribute(String key, Object value) {
-    if (PROPERTY_CHANGER.equals(key)) {
+    if (DESCRIPTION.equals(key)) {
+      desc = (String) value;
+    }
+    else if (PROPERTY_CHANGER.equals(key)) {
       if (value instanceof String) {
         propChangeConfig.setValue((String)value);
       }
@@ -178,7 +181,10 @@ public class ChangePropertyButton extends AbstractToolbarItem implements Propert
 
   @Override
   public String getAttributeValueString(String key) {
-    if (PROPERTY_CHANGER.equals(key)) {
+    if (DESCRIPTION.equals(key)) {
+      return desc;
+    }
+    else if (PROPERTY_CHANGER.equals(key)) {
       return propChangeConfig.getValueString();
     }
     else if (REPORT_FORMAT.equals(key)) {
