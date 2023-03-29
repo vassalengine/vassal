@@ -60,6 +60,8 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -245,6 +247,14 @@ public class ListKeyCommandsDialog extends JDialog {
     setModal(false);
 
     SwingUtils.repack(this);
+
+    this.addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowClosing(WindowEvent e) {
+        dispose();
+        owner.clearListKeyCommands();
+      }
+    });
   }
 
   public void updateConfigurable(AbstractConfigurable target) {
