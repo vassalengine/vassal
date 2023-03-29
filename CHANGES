@@ -3,6 +3,7 @@
 * 12158: List Key Commands tool can be re-opened after closing with X button
 * 12153: Layer traits allow a show-only-if-this-property-true filter
 * 12152: Work around Java bug which prevents displaying Windows file dialogs
+* 12149: BorderOutline trait now accepts two fields
 * 12138: Better editor descriptions of Global Hotkey traits
 * 12137: Editor shows better descriptions for Dynamic Property and Set Global
     Property traits

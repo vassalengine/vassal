@@ -20,6 +20,7 @@
       "since": "3.7.0-beta1",
       "new_features": [
         { "num": 12153, "desc": "Layer traits allow a show-only-if-this-property-true filter" },
+        { "num": 12149, "desc": "BorderOutline trait now accepts two fields" },
         { "num": 12129, "desc": "PlaceMarker and ReplaceWithOther can use expression for X/Y offset" },
         { "num": 12127, "desc": "Toolbar buttons disableable by a property (e.g., GKC, ActionButton, etc.) can be set to hide when disabled" },
         { "num": 12100, "desc": "Text Labels support <img> tags" },
