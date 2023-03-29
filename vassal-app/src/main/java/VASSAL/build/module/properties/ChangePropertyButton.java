@@ -33,7 +33,6 @@ import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.script.expression.Expression;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.awt.Component;
 import java.util.ArrayList;
@@ -118,30 +117,23 @@ public class ChangePropertyButton extends AbstractToolbarItem implements Propert
     Arrays.stream(super.getAttributeDescriptions()).forEach(b::add);
     b.add(Resources.getString("Editor.report_format"))
       .add(Resources.getString("Editor.ChangePropertyButton.options"));
-
     return b.build().toArray(String[]::new);
   }
 
   @Override
   public Class<?>[] getAttributeTypes() {
-    Class<?>[] types = { String.class };
-    for (final Class<?> c : super.getAttributeTypes()) {
-      types = ArrayUtils.add(types, c);
-    }
-    types = ArrayUtils.add(types, ReportFormatConfig.class);
-    types = ArrayUtils.add(types, PropChangerOptions.class);
-    return types;
+    final Stream.Builder<Object> b = Stream.builder().add(String.class);
+    Arrays.stream(super.getAttributeTypes()).forEach(b::add);
+    b.add(ReportFormatConfig.class).add(PropChangerOptions.class);
+    return b.build().toArray(Class<?>[]::new);
   }
 
   @Override
   public String[] getAttributeNames() {
-    String[] names = { DESCRIPTION };
-    for (final String s : super.getAttributeNames()) {
-      names = ArrayUtils.add(names, s);
-    }
-    names = ArrayUtils.add(names, REPORT_FORMAT);
-    names = ArrayUtils.add(names, PROPERTY_CHANGER);
-    return names;
+    final Stream.Builder<Object> b = Stream.builder().add(DESCRIPTION);
+    Arrays.stream(super.getAttributeNames()).forEach(b::add);
+    b.add(REPORT_FORMAT).add(PROPERTY_CHANGER);
+    return b.build().toArray(String[]::new);
   }
 
   @Override
