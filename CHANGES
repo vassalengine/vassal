@@ -54,7 +54,7 @@
     buttons (e.g., GKC, Multi-Action, etc) are available
 *  4454: Save chat text to file
 
-3.6.15 - ???
+3.6.15 - 28 March 2023
 
 * 12140: Action Buttons on pieces that have just been drag-moved are
   suppressed for a half second for user-error avoidance
