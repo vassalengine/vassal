@@ -70,7 +70,7 @@ public class BorderOutline extends Decorator implements TranslatablePiece {
 
     private static final String[] KEYS = { "Editor.AND", "Editor.OR", "Editor.XOR", "Editor.NOR" };
 
-    String symbol;
+    private final String symbol;
 
     LogicalCompareMode(String symbol) {
       this.symbol = symbol;
