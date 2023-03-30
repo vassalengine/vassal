@@ -27,6 +27,7 @@
         { "num": 4446, "desc": "Dynamic button labels (can use expressions and $...$ in certain toolbar buttons)" }
       ],
       "bug_fixes": [
+        { "num": 12159, "desc": "Correctly handle install paths containing spaces in VASSAL.sh" },
         { "num": 12158, "desc": "List Key Commands tool can be re-opened after closing with X button" },
         { "num": 12152, "desc": "Work around Java bug which prevents displaying Windows file dialog" }
       ],
