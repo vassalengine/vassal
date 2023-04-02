@@ -1657,7 +1657,18 @@ public class ModuleManagerWindow extends JFrame {
 
     @Override
     public String getVersion() {
-      return metadata.getVersion();
+      final String version = metadata.getVersion();
+      final String extra1 = metadata.getExtra1();
+      final String extra2 = metadata.getExtra2();
+      if (!extra1.isEmpty() && (extra1.charAt(0) >= '0') && (extra1.charAt(0) <= '9')) {
+        if (!extra2.isEmpty() && (extra2.charAt(0) >= '0') && (extra2.charAt(0) <= '9')) {
+          return version + "." + extra1 + "." + extra2;
+        }
+        else {
+          return version + "." + extra1;
+        }
+      }
+      return version;
     }
 
     public String getLocalizedDescription() {
