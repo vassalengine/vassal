@@ -42,7 +42,6 @@ public class DataArchiveHTMLEditorKit extends HTMLEditorKit {
   protected class DataArchiveImageView extends ImageView {
     public DataArchiveImageView(Element e) {
       super(e);
-      setLoadsSynchronously(true); //BR// make sure these actually load
     }
 
     @Override
