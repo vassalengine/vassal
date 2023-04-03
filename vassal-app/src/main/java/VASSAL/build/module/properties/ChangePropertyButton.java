@@ -91,10 +91,15 @@ public class ChangePropertyButton extends AbstractToolbarItem implements Propert
         report.setProperty(OLD_VALUE_FORMAT, oldValue);
         report.setProperty(NEW_VALUE_FORMAT, property.getPropertyValue());
         report.setProperty(DESCRIPTION_FORMAT, property.getDescription());
-        final Chatter.DisplayText chatCommand =
-          new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* " + report.getLocalizedText(this, "Editor.report_format"));
-        chatCommand.execute();
-        c.append(chatCommand);
+
+        final String reportText = report.getLocalizedText(this, "Editor.report_format");
+
+        if (!reportText.isEmpty()) {
+          final Chatter.DisplayText chatCommand =
+            new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* " + reportText);
+          chatCommand.execute();
+          c.append(chatCommand);
+        }
       }
       GameModule.getGameModule().sendAndLog(c);
     }
