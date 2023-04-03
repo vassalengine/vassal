@@ -240,7 +240,7 @@ public class ToolbarMenu extends AbstractToolbarItem
             final JMenuItem myItem =
               new JMenuItem(otherItem.getText(), otherItem.getIcon());
             myItem.addActionListener(e -> otherItem.doClick());
-            myItem.setEnabled(otherItem.isEnabled());
+            //myItem.setEnabled(otherItem.isEnabled());
             subMenu.add(myItem);
             buttonsToMenuMap.put(otherItem, myItem);
           }
