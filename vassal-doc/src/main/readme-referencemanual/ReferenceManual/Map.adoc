@@ -30,6 +30,7 @@ They are designed for holding pieces and cards that are private to one player or
 |===
 |*Map name:*::  The name of this map window.
 
+[#MarkMoved]
 *Mark pieces that move (if they possess the proper trait):*:: If checked, then any pieces with the <<MarkMoved.adoc#top,Mark When Moved>> trait will be marked whenever being moved in this map window.
 The module designer can also allow players to control this option in their preferences.
 

@@ -184,9 +184,10 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
   @Override
   public Rectangle boundingBox() {
     final Rectangle r = piece.boundingBox();
-    r.add(piece.boundingBox());
-    final Dimension d = getImageSize();
-    r.add(new Rectangle(xOffset, yOffset, d.width, d.height));
+    if (GlobalOptions.getInstance().isShowMarkMoved() && hasMoved) {
+      final Dimension d = getImageSize();
+      r.add(new Rectangle(xOffset, yOffset, d.width, d.height));
+    }
     return r;
   }
 
@@ -198,6 +199,9 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
   @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
+
+    if (!GlobalOptions.getInstance().isShowMarkMoved()) return;
+
     if (hasMoved
         && movedIcon.getIconValue() != null) {
       final Graphics2D g2d = (Graphics2D) g;
