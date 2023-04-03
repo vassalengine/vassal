@@ -21,6 +21,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 12175, "desc": "Fix stretchy images in chat" }
       ],
       "other_improvements": [
       ]
