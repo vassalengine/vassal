@@ -162,7 +162,8 @@ public class Pivot extends Decorator implements TranslatablePiece {
       .append(angle)
       .append(description)
       .append(command2)
-      .append(key2);
+      .append(key2)
+      .append(angle2);
     return ID + se.getValue();
   }
 
@@ -328,6 +329,8 @@ public class Pivot extends Decorator implements TranslatablePiece {
     private final DoubleConfigurer angle2;
     private final JLabel angleLabel;
     private final JLabel angle2Label;
+    private final JLabel command2Label;
+    private final JLabel key2Label;
     private final BooleanConfigurer fixedAngle;
     private final TraitConfigPanel controls;
     private final StringConfigurer desc;
@@ -366,10 +369,14 @@ public class Pivot extends Decorator implements TranslatablePiece {
 
       command2 = new StringConfigurer(p.command2);
       command2.setHintKey("Editor.menu_command_hint");
-      controls.add("Editor.Pivot.menu_command_2", command2);
+      command2Label = new JLabel(Resources.getString("Editor.Pivot.menu_command_2"));
+      controls.add(command2Label);
+      controls.add(command2.getControls());
 
       key2 = new NamedHotKeyConfigurer(p.key2);
-      controls.add("Editor.Pivot.keyboard_command_2", key2);
+      key2Label = new JLabel(Resources.getString("Editor.Pivot.keyboard_command_2"));
+      controls.add(key2Label);
+      controls.add(key2.getControls());
 
       angle2Label = new JLabel(Resources.getString("Editor.Pivot.angle_2"));
       angle2 = new DoubleConfigurer(p.angle2);
@@ -379,15 +386,20 @@ public class Pivot extends Decorator implements TranslatablePiece {
       angle.getControls().setVisible(p.fixedAngle);
       angleLabel.setVisible(p.fixedAngle);
       command2.getControls().setVisible(p.fixedAngle);
+      command2Label.setVisible(p.fixedAngle);
       key2.getControls().setVisible(p.fixedAngle);
+      key2Label.setVisible(p.fixedAngle);
       angle2.getControls().setVisible(p.fixedAngle);
+      angle2Label.setVisible(p.fixedAngle);
       fixedAngle.addPropertyChangeListener(evt -> {
         angle.getControls().setVisible(Boolean.TRUE.equals(fixedAngle.getValue()));
         angle2.getControls().setVisible(Boolean.TRUE.equals(fixedAngle.getValue()));
         angleLabel.setVisible(Boolean.TRUE.equals(fixedAngle.getValue()));
         angle2Label.setVisible(Boolean.TRUE.equals(fixedAngle.getValue()));
         command2.getControls().setVisible(Boolean.TRUE.equals(fixedAngle.getValue()));
+        command2Label.setVisible(Boolean.TRUE.equals(fixedAngle.getValue()));
         key2.getControls().setVisible(Boolean.TRUE.equals(fixedAngle.getValue()));
+        key2Label.setVisible(Boolean.TRUE.equals(fixedAngle.getValue()));
       });
     }
 
