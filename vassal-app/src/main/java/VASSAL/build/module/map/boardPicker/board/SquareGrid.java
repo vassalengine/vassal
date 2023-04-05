@@ -27,7 +27,9 @@ import VASSAL.build.module.map.boardPicker.board.mapgrid.SquareGridNumbering;
 import VASSAL.configure.AutoConfigurer;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.Configurer;
+import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.StringEnum;
+import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 
@@ -144,6 +146,16 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     }
   }
 
+  public static final String[] RANGE_OPTIONS = { RANGE_METRIC, RANGE_MANHATTAN };
+  public static final String[] RANGE_KEYS    = { "Editor.Grid.euclidean", "Editor.Grid.manhattan"};
+
+  public static class RangeConfig implements ConfigurerFactory {
+    @Override
+    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+      return new TranslatingStringEnumConfigurer(key, name, RANGE_OPTIONS, RANGE_KEYS);
+    }
+  }
+
   @Override
   public String[] getAttributeNames() {
     return new String[] {
@@ -185,7 +197,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
       Integer.class,
       Double.class,
       Double.class,
-      RangeOptions.class,
+      RangeConfig.class,
       Boolean.class,
       Boolean.class,
       Boolean.class,

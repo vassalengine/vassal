@@ -17,9 +17,9 @@ A standard rectangular grid for regulating movement on a Board.
 
 *Range calculation metric:*:: Determines the algorithm to be used in range calculations.
 +
-*_Metric_* range uses the largest of the X distance and the Y distance in cells.
+*_Euclidean_* range uses the largest of the X distance and the Y distance in cells. It is analogous to King Moves in chess, where the range represents the number of moves the King would have to make to reach the target space from the source: moving diagonally is permitted.
 +
-*_Manhattan_* range uses the sum of the X distance and the Y distance, in cells.
+*_Manhattan_* range uses the sum of the X distance and the Y distance, in cells. It is analogous to walking blocks in its eponymous city: moving diagonally isn't allowed when counting ranges, and the distance from the corner of 3rd St and 5th Ave to the corner of 1st St and 3rd Ave is 4, since four non-diagonal blocks must be walked.
 
 *Snap to defined point:*:: If checked, pieces placed anywhere within the grid will automatically snap to the nearest legal location.
 +
