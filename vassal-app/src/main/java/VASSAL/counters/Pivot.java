@@ -33,7 +33,11 @@ import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
+import net.miginfocom.swing.MigLayout;
 
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -41,14 +45,8 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
-import net.miginfocom.swing.MigLayout;
 
 /**
  * d/b/a "Can Pivot"
@@ -61,11 +59,15 @@ public class Pivot extends Decorator implements TranslatablePiece {
   protected int pivotX;
   protected int pivotY;
   protected double angle;
+  protected double angle2;
   protected String command;
+  protected String command2;
   protected NamedKeyStroke key;
+  protected NamedKeyStroke key2;
   protected boolean fixedAngle;
   protected KeyCommand[] commands;
   protected KeyCommand pivotCommand;
+  protected KeyCommand pivot2Command;
   protected FreeRotator rotator;
   protected String description;
 
@@ -111,6 +113,9 @@ public class Pivot extends Decorator implements TranslatablePiece {
     fixedAngle = st.nextBoolean(true);
     angle = st.nextDouble(90.0);
     description = st.nextToken("");
+    command2 = st.nextToken("");
+    key2 = st.nextNamedKeyStroke(null);
+    angle2 = st.nextDouble(45.0);
     commands = null;
   }
 
@@ -118,14 +123,25 @@ public class Pivot extends Decorator implements TranslatablePiece {
   protected KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
       pivotCommand = new KeyCommand(command, key, Decorator.getOutermost(this), this);
+      pivot2Command = new KeyCommand(command2, key2, Decorator.getOutermost(this), this);
+
       if (command.length() > 0 && key != null && !key.isNull()) {
-        commands = new KeyCommand[]{pivotCommand};
+        if (command2.length() > 0 && key2 != null && !key2.isNull()) {
+          commands = new KeyCommand[]{pivotCommand, pivot2Command};
+        }
+        else {
+          commands = new KeyCommand[]{pivotCommand};
+        }
+      }
+      else if (command2.length() > 0 && key2 != null && !key2.isNull()) {
+        commands = new KeyCommand[]{pivot2Command};
       }
       else {
         commands = KeyCommand.NONE;
       }
       rotator = (FreeRotator) Decorator.getDecorator(this, FreeRotator.class);
       pivotCommand.setEnabled(rotator != null);
+      pivot2Command.setEnabled(rotator != null);
     }
     return commands;
   }
@@ -144,69 +160,87 @@ public class Pivot extends Decorator implements TranslatablePiece {
       .append(pivotY)
       .append(fixedAngle)
       .append(angle)
-      .append(description);
+      .append(description)
+      .append(command2)
+      .append(key2);
     return ID + se.getValue();
   }
+
+  private Command doInteractive(Command c) {
+    c = putOldProperties(this);
+    final double oldAngle = rotator.getAngleInRadians();
+    final Point2D pivot2D = new Point2D.Double(pivotX, pivotY);
+    final AffineTransform t = AffineTransform.getRotateInstance(oldAngle);
+    t.transform(pivot2D, pivot2D);
+    rotator.beginInteractiveRotate();
+    rotator.setPivot(getPosition().x + (int) Math.round(pivot2D.getX()),
+      getPosition().y + (int) Math.round(pivot2D.getY()));
+    return c;
+  }
+
+  private Command doFixedAngle(Command c, double ang) {
+    final ChangeTracker t = new ChangeTracker(this);
+
+    final double oldAngle = rotator.getAngle();
+
+    final Point oldPos = getPosition();
+    final Point piv = new Point(oldPos.x + pivotX, oldPos.y + pivotY);
+    AffineTransform.getRotateInstance(-oldAngle * PI_180, oldPos.x, oldPos.y).transform(piv, piv);
+
+    rotator.setAngle(oldAngle - ang);
+    final double newAngle = rotator.getAngle();
+
+    if (getMap() != null) {
+      c = putOldProperties(this);
+      Point pos = getPosition();
+      pivotPoint(pos, -oldAngle * PI_180, -newAngle * PI_180);
+      final GamePiece outer = getOutermost(this);
+      if (!Boolean.TRUE.equals(outer.getProperty(Properties.IGNORE_GRID))) {
+        pos = getMap().snapTo(pos);
+      }
+      outer.setProperty(Properties.MOVED, Boolean.TRUE);
+      c = c.append(t.getChangeCommand());
+      final MoveTracker moveTracker = new MoveTracker(outer);
+      getMap().placeOrMerge(outer, pos);
+      c = c.append(moveTracker.getMoveCommand());
+
+      final MovementReporter r = new MovementReporter(c);
+      if (GlobalOptions.getInstance().autoReportEnabled()) {
+        final Command reportCommand = r.getReportCommand();
+        if (reportCommand != null) {
+          reportCommand.execute();
+        }
+        c = c.append(reportCommand);
+      }
+      c = c.append(r.markMovedPieces());
+
+      c = rotator.rotateCargo(c, piv, newAngle - oldAngle);
+
+      getMap().ensureVisible(getMap().selectionBoundsOf(outer));
+    }
+    else {
+      c = t.getChangeCommand();
+    }
+
+    return c;
+  }
+
 
   @Override
   public Command myKeyEvent(KeyStroke stroke) {
     myGetKeyCommands();
     Command c = null;
+
     if (pivotCommand.matches(stroke)) {
       if (fixedAngle) {
-        final ChangeTracker t = new ChangeTracker(this);
-
-        final double oldAngle = rotator.getAngle();
-
-        final Point oldPos = getPosition();
-        final Point piv = new Point(oldPos.x + pivotX, oldPos.y + pivotY);
-        AffineTransform.getRotateInstance(-oldAngle * PI_180, oldPos.x, oldPos.y).transform(piv, piv);
-
-        rotator.setAngle(oldAngle - angle);
-        final double newAngle = rotator.getAngle();
-
-        if (getMap() != null) {
-          c = putOldProperties(this);
-          Point pos = getPosition();
-          pivotPoint(pos, -oldAngle * PI_180, -newAngle * PI_180);
-          final GamePiece outer = getOutermost(this);
-          if (!Boolean.TRUE.equals(outer.getProperty(Properties.IGNORE_GRID))) {
-            pos = getMap().snapTo(pos);
-          }
-          outer.setProperty(Properties.MOVED, Boolean.TRUE);
-          c = c.append(t.getChangeCommand());
-          final MoveTracker moveTracker = new MoveTracker(outer);
-          getMap().placeOrMerge(outer, pos);
-          c = c.append(moveTracker.getMoveCommand());
-
-          final MovementReporter r = new MovementReporter(c);
-          if (GlobalOptions.getInstance().autoReportEnabled()) {
-            final Command reportCommand = r.getReportCommand();
-            if (reportCommand != null) {
-              reportCommand.execute();
-            }
-            c = c.append(reportCommand);
-          }
-          c = c.append(r.markMovedPieces());
-
-          c = rotator.rotateCargo(c, piv, newAngle - oldAngle);
-
-          getMap().ensureVisible(getMap().selectionBoundsOf(outer));
-        }
-        else {
-          c = t.getChangeCommand();
-        }
+        c = doFixedAngle(c, angle);
       }
       else if (getMap() != null) {
-        c = putOldProperties(this);
-        final double oldAngle = rotator.getAngleInRadians();
-        final Point2D pivot2D = new Point2D.Double(pivotX, pivotY);
-        final AffineTransform t = AffineTransform.getRotateInstance(oldAngle);
-        t.transform(pivot2D, pivot2D);
-        rotator.beginInteractiveRotate();
-        rotator.setPivot(getPosition().x + (int) Math.round(pivot2D.getX()),
-                         getPosition().y + (int) Math.round(pivot2D.getY()));
+        c = doInteractive(c);
       }
+    }
+    else if (fixedAngle && pivot2Command.matches(stroke)) {
+      c = doFixedAngle(c, angle2);
     }
 
     // Apply map auto-move key
@@ -277,16 +311,23 @@ public class Pivot extends Decorator implements TranslatablePiece {
     if (! Objects.equals(pivotY, c.pivotY)) return false;
     if (! Objects.equals(fixedAngle, c.fixedAngle)) return false;
     if (! Objects.equals(description, c.description)) return false;
-    return Objects.equals(angle, c.angle);
+    if (! Objects.equals(angle, c.angle)) return false;
+    if (! Objects.equals(command2, c.command2)) return false;
+    if (! Objects.equals(key2, c.key2)) return false;
+    return Objects.equals(angle2, c.angle2);
   }
 
   public static class Ed implements PieceEditor {
     private final StringConfigurer command;
     private final NamedHotKeyConfigurer key;
+    private final StringConfigurer command2;
+    private final NamedHotKeyConfigurer key2;
     private final IntConfigurer xOff;
     private final IntConfigurer yOff;
     private final DoubleConfigurer angle;
+    private final DoubleConfigurer angle2;
     private final JLabel angleLabel;
+    private final JLabel angle2Label;
     private final BooleanConfigurer fixedAngle;
     private final TraitConfigPanel controls;
     private final StringConfigurer desc;
@@ -323,10 +364,30 @@ public class Pivot extends Decorator implements TranslatablePiece {
       controls.add(angleLabel);
       controls.add(angle.getControls());
 
+      command2 = new StringConfigurer(p.command2);
+      command2.setHintKey("Editor.menu_command_hint");
+      controls.add("Editor.Pivot.menu_command_2", command2);
+
+      key2 = new NamedHotKeyConfigurer(p.key2);
+      controls.add("Editor.Pivot.keyboard_command_2", key2);
+
+      angle2Label = new JLabel(Resources.getString("Editor.Pivot.angle_2"));
+      angle2 = new DoubleConfigurer(p.angle2);
+      controls.add(angle2Label);
+      controls.add(angle2.getControls());
+
       angle.getControls().setVisible(p.fixedAngle);
+      angleLabel.setVisible(p.fixedAngle);
+      command2.getControls().setVisible(p.fixedAngle);
+      key2.getControls().setVisible(p.fixedAngle);
+      angle2.getControls().setVisible(p.fixedAngle);
       fixedAngle.addPropertyChangeListener(evt -> {
         angle.getControls().setVisible(Boolean.TRUE.equals(fixedAngle.getValue()));
+        angle2.getControls().setVisible(Boolean.TRUE.equals(fixedAngle.getValue()));
         angleLabel.setVisible(Boolean.TRUE.equals(fixedAngle.getValue()));
+        angle2Label.setVisible(Boolean.TRUE.equals(fixedAngle.getValue()));
+        command2.getControls().setVisible(Boolean.TRUE.equals(fixedAngle.getValue()));
+        key2.getControls().setVisible(Boolean.TRUE.equals(fixedAngle.getValue()));
       });
     }
 
@@ -349,7 +410,10 @@ public class Pivot extends Decorator implements TranslatablePiece {
         .append(yOff.getValueString())
         .append(Boolean.TRUE.equals(fixedAngle.getValue()))
         .append(angle.getValueString())
-        .append(desc.getValueString());
+        .append(desc.getValueString())
+        .append(command2.getValueString())
+        .append(key2.getValueString())
+        .append(angle2.getValueString());
       return ID + se.getValue();
     }
   }
@@ -359,7 +423,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    return Collections.singletonList(key);
+    return List.of(key, key2);
   }
 
   /**
@@ -367,6 +431,6 @@ public class Pivot extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getMenuTextList() {
-    return List.of(command);
+    return List.of(command, command2);
   }
 }
