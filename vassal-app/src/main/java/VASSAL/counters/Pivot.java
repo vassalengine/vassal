@@ -115,7 +115,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
     description = st.nextToken("");
     command2 = st.nextToken("");
     key2 = st.nextNamedKeyStroke(null);
-    angle2 = st.nextDouble(45.0);
+    angle2 = st.nextDouble(270.0);
     commands = null;
   }
 
