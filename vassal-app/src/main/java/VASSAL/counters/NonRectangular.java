@@ -186,44 +186,56 @@ public class NonRectangular extends Decorator implements EditablePiece {
       setScale(st.nextDouble(1.0));
       shapeSpec = st.getRemaining(); //BR// Everything else is our shape spec
     }
-    shape = buildPath(shapeSpec);
+    shape = getPath(shapeSpec);
   }
 
-  private Shape buildPath(String spec) {
-    final Pair<String, Shape> p = cache.get(spec);
-    Shape sh = p == null ?  null : p.getRight();
-    imageName = p == null ? "" : p.getLeft();
+  private Shape getPath(String spec) {
+    final Pair<String, Shape> p = cache.computeIfAbsent(spec, NonRectangular::buildPath);
+    if (p == null) {
+      imageName = "";
+      return null;
+    }
+    else {
+      imageName = p.getLeft();
+      return p.getRight();
+    }
+  }
 
-    if (sh == null) {
-      final GeneralPath path = new GeneralPath();
-      final StringTokenizer st = new StringTokenizer(spec, ",");
-      if (st.hasMoreTokens()) {
-        while (st.hasMoreTokens()) {
-          final String token = st.nextToken();
-          switch (token.charAt(0)) {
-          case 'c':
-            path.closePath();
-            break;
-          case 'm':
-            path.moveTo(Integer.parseInt(st.nextToken()),
-              Integer.parseInt(st.nextToken()));
-            break;
-          case 'l':
-            path.lineTo(Integer.parseInt(st.nextToken()),
-              Integer.parseInt(st.nextToken()));
-            break;
-          // Note the image name is stored as a single token so older clients will ignore it.
-          case 'n':
-            imageName = token.length() > 1 ? token.substring(1) : "";
-            break;
-          }
+  private static Pair<String, Shape> buildPath(String spec) {
+    final GeneralPath path = new GeneralPath();
+    String iname = "";
+
+    final StringTokenizer st = new StringTokenizer(spec, ",");
+    if (st.hasMoreTokens()) {
+      while (st.hasMoreTokens()) {
+        final String token = st.nextToken();
+        switch (token.charAt(0)) {
+        case 'c':
+          path.closePath();
+          break;
+        case 'm':
+          path.moveTo(
+            Integer.parseInt(st.nextToken()),
+            Integer.parseInt(st.nextToken())
+          );
+          break;
+        case 'l':
+          path.lineTo(
+            Integer.parseInt(st.nextToken()),
+            Integer.parseInt(st.nextToken())
+          );
+          break;
+        // Note the image name is stored as a single token so older clients will ignore it.
+        case 'n':
+          iname = token.length() > 1 ? token.substring(1) : "";
+          break;
         }
-        sh = new Area(path);
-        cache.put(spec, Pair.of(imageName, sh));
       }
+
+      return Pair.of(iname, new Area(path));
     }
 
-    return sh;
+    return null;
   }
 
   @Override
