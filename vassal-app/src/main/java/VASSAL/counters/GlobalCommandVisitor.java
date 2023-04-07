@@ -1,3 +1,20 @@
+/*
+ *
+ * Copyright (c) 2020-2023 by vassalengine.org, Brian Reynolds
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
+ */
 package VASSAL.counters;
 
 import VASSAL.command.Command;
@@ -7,8 +24,12 @@ import VASSAL.script.expression.Auditable;
 
 import javax.swing.KeyStroke;
 
+/**
+ * When processing a GlobalCommand (either a Global Key Command or an Attachment command), this applies the
+ * "additional properties filter"
+ */
 public class GlobalCommandVisitor implements DeckVisitor {
-  private final Command command;
+  protected final Command command;
   private final BoundsTracker tracker;
   protected final PieceFilter filter;
   private final KeyStroke stroke;
@@ -90,11 +111,11 @@ public class GlobalCommandVisitor implements DeckVisitor {
     return null;
   }
 
-  private void apply(GamePiece p) {
+  protected void apply(GamePiece p) {
     apply(p, false);
   }
 
-  private void apply(GamePiece p, boolean visitingDeck) {
+  protected void apply(GamePiece p, boolean visitingDeck) {
 
     /*
       If an AuditTrail has been supplied for the evaulation history of the filter up to this point,

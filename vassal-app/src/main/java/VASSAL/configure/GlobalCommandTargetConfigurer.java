@@ -18,18 +18,16 @@
 package VASSAL.configure;
 
 import VASSAL.counters.GlobalCommandTarget;
+import VASSAL.counters.TraitLayout;
+import VASSAL.i18n.Resources;
+import net.miginfocom.swing.MigLayout;
 
-import java.awt.Component;
-import java.util.ArrayList;
-import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
-import VASSAL.i18n.Resources;
-import VASSAL.counters.TraitLayout;
-
-import net.miginfocom.swing.MigLayout;
+import java.awt.Component;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GlobalCommandTargetConfigurer extends Configurer {
 
@@ -158,11 +156,13 @@ public class GlobalCommandTargetConfigurer extends Configurer {
         options.add(GlobalCommandTarget.Target.CURZONE.toString());
         options.add(GlobalCommandTarget.Target.CURLOC.toString());
         options.add(GlobalCommandTarget.Target.CURMAT.toString());
+        options.add(GlobalCommandTarget.Target.CURATTACH.toString());
         i18nKeys.add(GlobalCommandTarget.Target.CURSTACK.toTranslatedString());
         i18nKeys.add(GlobalCommandTarget.Target.CURMAP.toTranslatedString());
         i18nKeys.add(GlobalCommandTarget.Target.CURZONE.toTranslatedString());
         i18nKeys.add(GlobalCommandTarget.Target.CURLOC.toTranslatedString());
         i18nKeys.add(GlobalCommandTarget.Target.CURMAT.toTranslatedString());
+        i18nKeys.add(GlobalCommandTarget.Target.CURATTACH.toTranslatedString());
       }
       options.add(GlobalCommandTarget.Target.MAP.toString());
       options.add(GlobalCommandTarget.Target.ZONE.toString());
