@@ -1,13 +1,13 @@
 package VASSAL.counters;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import VASSAL.build.module.properties.PropertyNameSource;
 import VASSAL.build.module.properties.PropertySource;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * Interface for classes that can exporty the names and values of the properties they maintain
+ * Interface for classes that can export the names and values of the properties they maintain
  */
 public interface PropertyExporter extends PropertyNameSource, PropertySource {
 
