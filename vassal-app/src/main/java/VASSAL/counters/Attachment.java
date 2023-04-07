@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 by The VASSAL Development team
+ * Copyright (c) 2023 by The VASSAL Development team, Brian Reynolds
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -16,46 +16,42 @@
  */
 package VASSAL.counters;
 
-import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GameState;
+import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.map.MassKeyCommand;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
+import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.GlobalCommandTargetConfigurer;
+import VASSAL.configure.IntConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PropertyExpression;
+import VASSAL.configure.PropertyExpressionConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
-import VASSAL.tools.ErrorDialog;
+import VASSAL.script.expression.AuditTrail;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.SequenceEncoder;
 
+import javax.swing.JLabel;
 import javax.swing.KeyStroke;
 import java.awt.Component;
 import java.awt.Graphics;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP0;
-import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP1;
-import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP2;
-import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP3;
-import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP4;
-import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP5;
-import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP6;
-import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP7;
-import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP8;
-import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP9;
-
 /**
- * Allows creation of an "attachment" to one or more other pieces, which can then be sent GKCs very swiftly and whose
+ * Trait allowing creation of an "attachment" to one or more other pieces, which can then be sent GKCs very swiftly and whose
  * properties can be easily read.
  */
 public class Attachment extends Decorator implements TranslatablePiece, RecursionLimiter.Loopable {
@@ -83,11 +79,9 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   protected String rangeProperty = "";
   private KeyCommand myAttachCommand;
   private KeyCommand myClearCommand;
-  protected String description;
-
 
   public Attachment() {
-    this(ID, null);
+    this(ID + ";", null);
   }
 
   public Attachment(String type, GamePiece inner) {
@@ -112,7 +106,6 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     range = st.nextInt(1);
     fixedRange = st.nextBoolean(true);
     rangeProperty = st.nextToken("");
-    description = st.nextToken("");
     globalCommand.setSelectFromDeckExpression(st.nextToken("-1"));
     target.decode(st.nextToken(""));
     target.setGKCtype(GlobalCommandTarget.GKCtype.COUNTER);
@@ -179,8 +172,28 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   }
 
   public Command attach() {
+    final GamePiece outer = Decorator.getOutermost(this);
+    globalCommand.setPropertySource(outer); // Doing this here ensures trait is linked into GamePiece before finding source
+    final AuditTrail audit = AuditTrail.create(this, propertiesFilter.getExpression(), Resources.getString("Editor.GlobalKeyCommand.matching_properties"));
+    PieceFilter filter = propertiesFilter.getFilter(outer, this, audit);
+    Command c = new NullCommand();
+    if (restrictRange) {
+      int r = range;
+      if (!fixedRange) {
+        final String rangeValue = (String) Decorator.getOutermost(this).getProperty(rangeProperty);
+        try {
+          r = Integer.parseInt(rangeValue);
+        }
+        catch (NumberFormatException e) {
+          reportDataError(this, Resources.getString("Error.non_number_error"), "range[" + rangeProperty + "]=" + rangeValue, e); // NON-NLS
+        }
+      }
+      filter = new BooleanAndPieceFilter(filter, new RangeFilter(getMap(), getPosition(), r));
+    }
 
-    ///
+    c = c.append(globalCommand.apply(Map.getMapList().toArray(new Map[0]), filter, target, audit));
+
+    return c;
   }
 
   public Command clear() {
@@ -307,8 +320,22 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
 
   @Override
   public String getDescription() {
-    return buildDescription("Editor.Attachment.trait_description", attachName, desc);
+    String d = Resources.getString("Editor.Attachment.trait_description");
+    if (desc.length() > 0) {
+      d += " - " + desc;
+    }
+
+    if (attachKey != null) {
+      d += getCommandDesc(attachCommandName, attachKey);
+    }
+
+    if (clearKey != null) {
+      d += getCommandDesc(clearCommandName, clearKey);
+    }
+
+    return d;
   }
+
 
   @Override
   public String getBaseDescription() {
@@ -331,10 +358,11 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     else if (ATTACH_COUNT.equals(key)) {
       return String.valueOf(contents.size());
     }
-    else if (!attachName.isEmpty() && (key instanceof String)) {
+    else if (!attachName.isEmpty() && (key instanceof String) && !contents.isEmpty()) {
+      // If property name starts with our non-blank name plus an underscore, use the rest of the string as a property key for our first *target* piece instead.
       final String k = (String)key;
-      if ((k.length() > attachName.length()) && k.startsWith(attachName)) {
-
+      if ((k.length() > attachName.length() + 1) && k.startsWith(attachName) && (k.charAt(attachName.length()) == '_')) {
+        return contents.get(0).getProperty(k.substring(attachName.length() + 1));
       }
     }
     return super.getProperty(key);
@@ -347,6 +375,13 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     }
     else if (ATTACH_COUNT.equals(key)) {
       return String.valueOf(contents.size());
+    }
+    else if (!attachName.isEmpty() && (key instanceof String) && !contents.isEmpty()) {
+      // If property name starts with our non-blank name plus an underscore, use the rest of the string as a property key for our first *target* piece instead.
+      final String k = (String)key;
+      if ((k.length() > attachName.length() + 1) && k.startsWith(attachName) && (k.charAt(attachName.length()) == '_')) {
+        return contents.get(0).getLocalizedProperty(k.substring(attachName.length() + 1));
+      }
     }
     return super.getLocalizedProperty(key);
   }
@@ -393,39 +428,129 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   }
 
   public static class Ed implements PieceEditor {
-    private final StringConfigurer matNameInput;
+    private final StringConfigurer attachNameInput;
     private final StringConfigurer descInput;
-    private final TraitConfigPanel controls;
+    private final TraitConfigPanel traitPanel;
+    private final StringConfigurer attachCommandNameInput;
+    protected NamedHotKeyConfigurer attachKeyInput;
+    private final StringConfigurer clearCommandNameInput;
+    protected NamedHotKeyConfigurer clearKeyInput;
+
+    protected PropertyExpressionConfigurer propertyMatch;
+    protected MassKeyCommand.DeckPolicyConfig deckPolicy;
+    protected BooleanConfigurer restrictRange;
+    protected BooleanConfigurer fixedRange;
+    protected JLabel fixedRangeLabel;
+    protected IntConfigurer range;
+    protected JLabel rangeLabel;
+    protected StringConfigurer rangeProperty;
+    protected JLabel rangePropertyLabel;
+
+    protected GlobalCommandTargetConfigurer targetConfig;
+
+    protected Attachment attachment;
+
 
     public Ed(Attachment p) {
-      controls = new TraitConfigPanel();
+      final PropertyChangeListener pl = evt -> {
 
-      matNameInput = new StringConfigurer(p.matName);
-      matNameInput.setHintKey("Editor.Mat.name_hint");
-      controls.add("Editor.Mat.name_label", matNameInput);
+        final boolean isRange = Boolean.TRUE.equals(restrictRange.getValue());
+        final boolean isFixed = Boolean.TRUE.equals(fixedRange.getValue());
+
+        range.getControls().setVisible(isRange && isFixed);
+        rangeLabel.setVisible(isRange && isFixed);
+        fixedRange.getControls().setVisible(isRange);
+        fixedRangeLabel.setVisible(isRange);
+        rangeProperty.getControls().setVisible(isRange && !isFixed);
+        rangePropertyLabel.setVisible(isRange && !isFixed);
+
+        repack(range);
+      };
+
+      attachment = p;
+      traitPanel = new TraitConfigPanel();
+
+      attachNameInput = new StringConfigurer(p.attachName);
+      attachNameInput.setHintKey("Editor.Attachment.name_hint");
+      traitPanel.add("Editor.Attachment.name_label", attachNameInput);
 
       descInput = new StringConfigurer(p.desc);
       descInput.setHintKey("Editor.description_hint");
-      controls.add("Editor.description_label", descInput);
-    }
+      traitPanel.add("Editor.description_label", descInput);
 
+      attachCommandNameInput = new StringConfigurer(p.attachCommandName);
+      attachCommandNameInput.setHintKey("Editor.menu_command_hint");
+      traitPanel.add("Editor.Attachment.attach_menu_command", attachCommandNameInput);
+
+      attachKeyInput = new NamedHotKeyConfigurer(p.attachKey);
+      traitPanel.add("Editor.Attachment.attach_key_command", attachKeyInput);
+
+      clearCommandNameInput = new StringConfigurer(p.clearCommandName);
+      clearCommandNameInput.setHintKey("Editor.menu_command_hint");
+      traitPanel.add("Editor.Attachment.clear_menu_command", clearCommandNameInput);
+
+      clearKeyInput = new NamedHotKeyConfigurer(p.clearKey);
+      traitPanel.add("Editor.Attachment.clear_key_command", clearKeyInput);
+
+      targetConfig = new GlobalCommandTargetConfigurer(p.target);
+      traitPanel.add("Editor.GlobalKeyCommand.pre_select", targetConfig);
+
+      propertyMatch = new PropertyExpressionConfigurer(p.propertiesFilter);
+      traitPanel.add("Editor.GlobalKeyCommand.matching_properties", propertyMatch);
+
+      deckPolicy = new MassKeyCommand.DeckPolicyConfig(false);
+      deckPolicy.setValue(p.globalCommand.getSelectFromDeckExpression());
+      traitPanel.add("Editor.GlobalKeyCommand.deck_policy", deckPolicy);
+
+      restrictRange = new BooleanConfigurer(p.restrictRange);
+      traitPanel.add("Editor.GlobalKeyCommand.restrict_range", restrictRange);
+      restrictRange.addPropertyChangeListener(pl);
+
+      fixedRange = new BooleanConfigurer(p.fixedRange);
+      fixedRangeLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.fixed_range"));
+      traitPanel.add(fixedRangeLabel, fixedRange);
+      fixedRange.addPropertyChangeListener(pl);
+
+      range = new IntConfigurer(p.range);
+      rangeLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.range"));
+      traitPanel.add(rangeLabel, range);
+
+      rangeProperty = new StringConfigurer(p.rangeProperty);
+      rangeProperty.setHintKey("Editor.GlobalKeyCommand.range_property_hint");
+      rangePropertyLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.range_property"));
+      traitPanel.add(rangePropertyLabel, rangeProperty);
+
+      pl.propertyChange(null);
+    }
 
     @Override
     public Component getControls() {
-      return controls;
+      return traitPanel;
     }
 
     @Override
     public String getType() {
       final SequenceEncoder se = new SequenceEncoder(';');
-      se.append(matNameInput.getValueString());
-      se.append(descInput.getValueString());
+      se.append(attachNameInput.getValueString())
+        .append(descInput.getValueString())
+        .append(attachCommandNameInput.getValueString())
+        .append(attachKeyInput.getValueString())
+        .append(clearCommandNameInput.getValueString())
+        .append(clearKeyInput.getValueString())
+        .append(propertyMatch.getValueString())
+        .append(restrictRange.getValueString())
+        .append(range.getValueString())
+        .append(fixedRange.getValueString())
+        .append(rangeProperty.getValueString())
+        .append(deckPolicy.getValueString())
+        .append(targetConfig.getValueString());
+
       return ID + se.getValue();
     }
 
     @Override
     public String getState() {
-      return "";
+      return attachment.myGetState();
     }
   }
 }
