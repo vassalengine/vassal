@@ -144,6 +144,10 @@ public class GlobalCommand implements Auditable {
     this.target = target;
   }
 
+  public boolean isAbortIfNoCommand() {
+    return true;
+  }
+
   public GlobalCommandTarget getTarget() {
     return target;
   }
@@ -267,7 +271,9 @@ public class GlobalCommand implements Auditable {
 
       // If there actually isn't any key command to execute, we're finished here, having issued the report-if-any.
       if ((keyStroke == null) || ((keyStroke.getKeyCode() == 0) && (keyStroke.getModifiers() == 0))) {
-        return command;
+        if (isAbortIfNoCommand()) {
+          return command;
+        }
       }
 
       // These will hold the *evaluated results* of our various Fast Match expressions
@@ -476,6 +482,26 @@ public class GlobalCommand implements Auditable {
               // Anything else we send to dispatcher to apply BeanShell filter and issue the command if the piece matches
               dispatcher.accept(gamePiece);
             }
+          }
+        }
+      }
+      // If we're using "Current Attachments", make a list of all the pieces we're attached to and then process that
+      else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.CURATTACH) {
+        if (curPiece instanceof Decorator) {
+          GamePiece piece = Decorator.getOutermost(curPiece);
+          final List<GamePiece> pieces = new ArrayList<>();
+          while (piece instanceof Decorator) {
+            if (piece instanceof Attachment) {
+              pieces.addAll(((Attachment) piece).getContents());
+            }
+            piece = ((Decorator) piece).getInner();
+          }
+          for (final GamePiece p : pieces) {
+            // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
+            if (!passesPropertyFastMatch(p)) continue;
+
+            // Anything else we send to dispatcher to apply BeanShell filter and issue the command if the piece matches
+            dispatcher.accept(p);
           }
         }
       }

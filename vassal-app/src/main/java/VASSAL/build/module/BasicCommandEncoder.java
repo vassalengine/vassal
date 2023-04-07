@@ -31,6 +31,7 @@ import VASSAL.command.PlayAudioClipCommand;
 import VASSAL.command.RemovePiece;
 import VASSAL.counters.ActionButton;
 import VASSAL.counters.AreaOfEffect;
+import VASSAL.counters.Attachment;
 import VASSAL.counters.BasicName;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.BorderOutline;
@@ -202,7 +203,8 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     Map.entry(MatCargo.ID, MatCargo::new),
     Map.entry(BasicName.ID, BasicName::new),
     Map.entry(BorderOutline.ID, BorderOutline::new),
-    Map.entry(MultiLocationCommand.ID, MultiLocationCommand::new)
+    Map.entry(MultiLocationCommand.ID, MultiLocationCommand::new),
+    Map.entry(Attachment.ID, Attachment::new)
   );
 
   /**
