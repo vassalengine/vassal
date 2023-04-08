@@ -498,6 +498,9 @@ public class GlobalCommand implements Auditable {
             piece = ((Decorator) piece).getInner();
           }
           for (final GamePiece p : pieces) {
+            // Pieces that no longer have a map were probably deleted. We will speak no more of them.
+            if (p.getName() == null) continue;
+
             // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
             if (!passesPropertyFastMatch(p)) continue;
 
