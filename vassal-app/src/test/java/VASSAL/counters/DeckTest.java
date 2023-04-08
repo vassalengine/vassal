@@ -11,7 +11,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -67,17 +66,7 @@ public class DeckTest {
     final GameModule gameModule = mock(GameModule.class);
     final GamePiece gamePiece1 = mock(GamePiece.class);
     final GamePiece gamePiece2 = mock(GamePiece.class);
-
-    assertNotEquals(gameModule, null);
-
-    try {
-      GameModule.init(gameModule);
-    }
-    catch (Exception e) {
-      assertEquals(1, 2);
-    }
-    assertNotEquals(GameModule.getGameModule(), null);
-
+    
     // run
     Deck d = new Deck(gameModule);
     d.add(gamePiece1);
