@@ -204,34 +204,37 @@ public class SetGlobalProperty extends DynamicProperty {
         GamePiece p = Decorator.getOutermost(this);
         while (p instanceof Decorator) {
           if (p instanceof Attachment) {
-            final Attachment a = (Attachment)p;
+            final Attachment attachment = (Attachment)p;
 
             // When we find an Attachment trait, check if our propertyName begins with the Attachment's name plus an underscore
-            if (!a.contents.isEmpty() && (propertyName.length() > a.attachName.length() + 1) && propertyName.startsWith(a.attachName) && propertyName.charAt(a.attachName.length()) == '_') {
-              final String attachPropertyName = propertyName.substring(a.attachName.length() + 1);
-
+            final String attachPropertyName = attachment.translatePropertyName(propertyName);
+            if (attachPropertyName != null) {
               // Get the attached piece (first attached piece in the list), and search it for matching Dynamic Properties
-              GamePiece dp = Decorator.getOutermost(a.contents.get(0));
-              while (dp instanceof Decorator) {
-                if (dp instanceof DynamicProperty) {
 
-                  // If we find a matching property, apply our setter on IT and we're done
-                  if (attachPropertyName.equals(((DynamicProperty) dp).key)) {
-                    String newValue = keyCommand.propChanger.getNewValue(((DynamicProperty) dp).value);
-                    // The PropertyChanger has already evaluated any Beanshell, only need to handle any remaining $$variables.
-                    if (newValue.indexOf('$') >= 0) {
-                      format.setFormat(newValue);
-                      newValue = format.getText(Decorator.getOutermost(this), this, "Editor.PropertyChangeConfigurer.new_value");
+              final GamePiece propPiece = attachment.getPropertyPiece();
+              if (propPiece != null) {
+                GamePiece dp = Decorator.getOutermost(propPiece);
+                while (dp instanceof Decorator) {
+                  if (dp instanceof DynamicProperty) {
+
+                    // If we find a matching property, apply our setter on IT and we're done
+                    if (attachPropertyName.equals(((DynamicProperty) dp).key)) {
+                      String newValue = keyCommand.propChanger.getNewValue(((DynamicProperty) dp).value);
+                      // The PropertyChanger has already evaluated any Beanshell, only need to handle any remaining $$variables.
+                      if (newValue.indexOf('$') >= 0) {
+                        format.setFormat(newValue);
+                        newValue = format.getText(Decorator.getOutermost(this), this, "Editor.PropertyChangeConfigurer.new_value");
+                      }
+
+                      final ChangeTracker ct = new ChangeTracker(dp);
+
+                      ((DynamicProperty) dp).value = newValue;
+
+                      return ct.getChangeCommand();
                     }
-
-                    final ChangeTracker ct = new ChangeTracker(dp);
-
-                    ((DynamicProperty)dp).value = newValue;
-
-                    return ct.getChangeCommand();
                   }
+                  dp = ((Decorator) dp).getInner();
                 }
-                dp = ((Decorator) dp).getInner();
               }
             }
           }

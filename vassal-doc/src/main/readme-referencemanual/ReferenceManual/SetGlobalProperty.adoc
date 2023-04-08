@@ -9,6 +9,8 @@
 
 This trait allows a <<GamePiece.adoc#top,Game Piece>> to change the value of a <<GlobalProperties.adoc#top,Global Property>>.
 
+*NOTE:* In certain special situations it can also allow a piece to set the value of a Dynamic Property of another piece, if the piece is attached to this one with an <<Attachment.doc#top, Attachment>> trait on the current piece (see the <<Attachment.adoc#top, Attachment>> trait for further details.)
+
 image:images/SetGlobalProperty.png[]
 
 *Description:*::  A brief description of this trait for reference in the editor (not used during play).
