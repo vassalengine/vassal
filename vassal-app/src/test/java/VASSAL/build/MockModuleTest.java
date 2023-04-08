@@ -16,7 +16,7 @@ public class MockModuleTest {
   @BeforeEach
   public void init() throws Exception {
     if (initialized) {
-      if (GameModule.getGameModule() != null) {
+      if (GameModule.getGameModule() == null) {
         int x = 5 / 0;
       }
       return;
@@ -28,7 +28,7 @@ public class MockModuleTest {
     when(module.getDataArchive()).thenReturn(arch);
 
     GameModule.init(module);
-    if (GameModule.getGameModule() != null) {
+    if (GameModule.getGameModule() == null) {
       int x = 5 / 0;
     }
     initialized = true;
