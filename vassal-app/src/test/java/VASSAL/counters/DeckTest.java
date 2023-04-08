@@ -69,6 +69,13 @@ public class DeckTest {
     final GamePiece gamePiece2 = mock(GamePiece.class);
 
     assertNotEquals(gameModule, null);
+
+    try {
+      GameModule.init(gameModule);
+    }
+    catch (Exception e) {
+      assertEquals(1, 2);
+    }
     assertNotEquals(GameModule.getGameModule(), null);
 
     // run
