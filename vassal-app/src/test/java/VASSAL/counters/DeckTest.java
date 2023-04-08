@@ -1,6 +1,7 @@
 package VASSAL.counters;
 
 import VASSAL.build.GameModule;
+import VASSAL.build.MockModuleTest;
 import VASSAL.build.module.Map;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-public class DeckTest {
+public class DeckTest extends MockModuleTest {
 
   @Test
   public void defaultConstructorShouldCreateEmptyDeck() {
@@ -66,7 +67,7 @@ public class DeckTest {
     final GameModule gameModule = mock(GameModule.class);
     final GamePiece gamePiece1 = mock(GamePiece.class);
     final GamePiece gamePiece2 = mock(GamePiece.class);
-    
+
     // run
     Deck d = new Deck(gameModule);
     d.add(gamePiece1);
