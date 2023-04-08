@@ -52,7 +52,7 @@ import java.util.Objects;
 
 /**
  * Trait allowing creation of an "attachment" to one or more other pieces, which can then be sent GKCs very swiftly and whose
- * properties can be easily read.
+ * properties can be easily read (and if a Dynamic Property can also be set with a Set Global Property trait)
  */
 public class Attachment extends Decorator implements TranslatablePiece, RecursionLimiter.Loopable {
   public static final String ID = "attach;"; // NON-NLS
@@ -171,12 +171,20 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     return se.getValue();
   }
 
+  /**
+   * Runs a search using the provided filter (same as a Global Key Command), and any matching pieces become our attachments (stored in our "contents" list)
+   *
+   * @return Command to replicate action
+   */
   public Command attach() {
     final GamePiece outer = Decorator.getOutermost(this);
     globalCommand.setPropertySource(outer); // Doing this here ensures trait is linked into GamePiece before finding source
+
+    // Make piece properties filter
     final AuditTrail audit = AuditTrail.create(this, propertiesFilter.getExpression(), Resources.getString("Editor.GlobalKeyCommand.matching_properties"));
     PieceFilter filter = propertiesFilter.getFilter(outer, this, audit);
-    Command c = new NullCommand();
+
+    // Make a range filter if applicable
     if (restrictRange) {
       int r = range;
       if (!fixedRange) {
@@ -191,11 +199,20 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       filter = new BooleanAndPieceFilter(filter, new RangeFilter(getMap(), getPosition(), r));
     }
 
+    // Start our actual execution by clearing our attachment list
+    Command c = clear();
+
+    // Now apply our filter globally & add any matching pieces as attachments
     c = c.append(globalCommand.apply(Map.getMapList().toArray(new Map[0]), filter, target, audit));
 
     return c;
   }
 
+  /**
+   * Clears any existing attachment(s)
+   *
+   * @return Command to replicate action
+   */
   public Command clear() {
     if (contents.isEmpty()) {
       return new NullCommand();
@@ -238,8 +255,6 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
         contents.add(piece);
       }
     }
-
-    //GameModule.getGameModule().setMatSupport(true);
   }
 
   /**
@@ -248,10 +263,6 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
    */
   public boolean hasTarget(GamePiece p) {
     return contents.contains(p);
-  }
-
-  public int getTargetCount() {
-    return contents.size();
   }
 
   /**
@@ -347,6 +358,49 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     return desc;
   }
 
+  /**
+   * @return first piece in our list of attachments that still exists (hasn't been deleted), or null if none
+   */
+  public GamePiece getPropertyPiece() {
+    if (contents.isEmpty()) return null;
+
+    for (final GamePiece piece : contents) {
+      if (piece.getMap() == null) continue;
+      return piece;
+    }
+
+    return null;
+  }
+
+  /**
+   * Checks if a property reference could be a reference to a property on an attached piece
+   * @param key Property name to be checked if it's an attachment reference (it's a reference if it is attachName_propertyName
+   * @return propertyName for use in reading property from attached piece, if the key referenced a valid attachment property. (null otherwise)
+   */
+  public String translatePropertyName(Object key) {
+    if (!attachName.isEmpty() && (key instanceof String) && !contents.isEmpty()) {
+      // If property name starts with our non-blank name plus an underscore, use the rest of the string as a property key for our first *target* piece instead.
+      final String k = (String)key;
+      if ((k.length() > attachName.length() + 1) && k.startsWith(attachName) && (k.charAt(attachName.length()) == '_')) {
+        return k.substring(attachName.length() + 1);
+      }
+    }
+    return null;
+  }
+
+  /**
+   * @return number of attached pieces, not counting any that have since been deleted (from the game).
+   */
+  public int getAttachCount() {
+    int count = 0;
+    for (final GamePiece piece : contents) {
+      if (piece.getMap() == null) continue;
+      count++;
+    }
+    return count;
+  }
+
+
   @Override
   public Object getProperty(Object key) {
     if (ATTACH_NAME.equals(key)) {
@@ -356,13 +410,15 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       return new ArrayList<>(contents);
     }
     else if (ATTACH_COUNT.equals(key)) {
-      return String.valueOf(contents.size());
+      return String.valueOf(getAttachCount());
     }
-    else if (!attachName.isEmpty() && (key instanceof String) && !contents.isEmpty()) {
-      // If property name starts with our non-blank name plus an underscore, use the rest of the string as a property key for our first *target* piece instead.
-      final String k = (String)key;
-      if ((k.length() > attachName.length() + 1) && k.startsWith(attachName) && (k.charAt(attachName.length()) == '_')) {
-        return contents.get(0).getProperty(k.substring(attachName.length() + 1));
+    else {
+      final String attachProp = translatePropertyName(key);
+      if (attachProp != null) {
+        final GamePiece propPiece = getPropertyPiece();
+        if (propPiece != null) {
+          return propPiece.getProperty(attachProp);
+        }
       }
     }
     return super.getProperty(key);
@@ -374,13 +430,15 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       return attachName;
     }
     else if (ATTACH_COUNT.equals(key)) {
-      return String.valueOf(contents.size());
+      return String.valueOf(getAttachCount());
     }
-    else if (!attachName.isEmpty() && (key instanceof String) && !contents.isEmpty()) {
-      // If property name starts with our non-blank name plus an underscore, use the rest of the string as a property key for our first *target* piece instead.
-      final String k = (String)key;
-      if ((k.length() > attachName.length() + 1) && k.startsWith(attachName) && (k.charAt(attachName.length()) == '_')) {
-        return contents.get(0).getLocalizedProperty(k.substring(attachName.length() + 1));
+    else  {
+      final String attachProp = translatePropertyName(key);
+      if (attachProp != null) {
+        final GamePiece propPiece = getPropertyPiece();
+        if (propPiece != null) {
+          return propPiece.getLocalizedProperty(attachProp);
+        }
       }
     }
     return super.getLocalizedProperty(key);
