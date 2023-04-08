@@ -73,6 +73,7 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
   PropertyExporter, SearchTarget, ImageSearchTarget {
 
   protected GamePiece piece;
+  private GamePiece innermost;
   private Decorator dec;
   private boolean selected = false;
 
@@ -82,6 +83,8 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
     if (p != null) {
       p.setProperty(Properties.OUTER, this);
     }
+
+    innermost = getInnermost(p);
   }
 
   /** @param m Each GamePiece belongs to a single {@link Map}. Default behavior for a trait is to pass the new map inward toward the BasicPiece. */
@@ -95,7 +98,7 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
    * eventually reach it. */
   @Override
   public Map getMap() {
-    return piece.getMap();
+    return (innermost != null) ? innermost.getMap() : piece.getMap();
   }
 
   /**
@@ -123,7 +126,7 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
   /** @return the {@link Stack} to which this piece belongs, if any. Default behavior for a trait is to ask the next member inward. */
   @Override
   public Stack getParent() {
-    return piece.getParent();
+    return (innermost != null) ? innermost.getParent() : piece.getParent();
   }
 
   /**
@@ -313,7 +316,7 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
    */
   @Override
   public Point getPosition() {
-    return piece.getPosition();
+    return (innermost != null) ? innermost.getPosition() : piece.getPosition();
   }
 
   /**
@@ -499,7 +502,7 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
    */
   @Override
   public String getId() {
-    return piece.getId();
+    return (innermost != null) ? innermost.getId() : piece.getId();
   }
 
   /**
