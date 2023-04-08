@@ -45,6 +45,7 @@ public class GlobalAttach extends GlobalCommand {
     return false; // Unlike a normal GKC, we aren't actually sending a key, so it's okay if the key command doesn't exist
   }
 
+  @Override
   public GlobalCommandVisitor getVisitor(Command command, PieceFilter filter, KeyStroke keyStroke, AuditTrail audit, Auditable owner, int selectFromDeck) {
     return new AttachVisitor(command, filter, keyStroke, audit, owner, selectFromDeck);
   }
