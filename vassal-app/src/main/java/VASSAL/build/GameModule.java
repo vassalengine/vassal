@@ -1976,6 +1976,10 @@ public class GameModule extends AbstractConfigurable
           theModule.getDataArchive().getName()));
     }
 
+    if (module == null) {
+      throw new UnsupportedOperationException("Can't set THE MODULE to null!");
+    }
+
     theModule = module;
     theModule.setGpIdSupport(theModule);
     try {

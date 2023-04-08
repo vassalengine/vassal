@@ -17,7 +17,7 @@ public class MockModuleTest {
   public void init() throws Exception {
     if (initialized) {
       if (GameModule.getGameModule() == null) {
-        int x = 5 / 0;
+        throw new UnsupportedOperationException("why is it null when already initialized!");
       }
       return;
     }
@@ -29,7 +29,7 @@ public class MockModuleTest {
 
     GameModule.init(module);
     if (GameModule.getGameModule() == null) {
-      int x = 5 / 0;
+      throw new UnsupportedOperationException("Wait we just made it why is it null?!");
     }
     initialized = true;
   }
