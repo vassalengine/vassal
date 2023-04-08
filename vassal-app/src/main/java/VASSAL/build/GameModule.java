@@ -57,6 +57,7 @@ import VASSAL.build.module.gamepieceimage.ColorManager;
 import VASSAL.build.module.gamepieceimage.FontManager;
 import VASSAL.build.module.gamepieceimage.GamePieceImageDefinitions;
 import VASSAL.build.module.gamepieceimage.GamePieceLayoutsContainer;
+import VASSAL.build.module.index.IndexManager;
 import VASSAL.build.module.map.CounterDetailViewer;
 import VASSAL.build.module.metadata.AbstractMetaData;
 import VASSAL.build.module.metadata.MetaDataFactory;
@@ -499,6 +500,15 @@ public class GameModule extends AbstractConfigurable
   private int nextGpId = 0;
   private Long crc = null;
   private Long combinedCrc = null;
+
+  /**
+   * Management of piece property and location cross-references
+   */
+  private final IndexManager indexManager = new IndexManager();
+
+  public IndexManager getIndexManager() {
+    return indexManager;
+  }
 
   /**
    * Error Logging to {@link Chatter}?

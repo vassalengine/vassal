@@ -1213,6 +1213,11 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     return null;
   }
 
+  public int getMaxPixelsPerRangeUnit(Point p) {
+    final Board b = findBoard(p);
+    return b == null ? null : b.getGrid().getMaxPixelsPerRangeUnit(p);
+  }
+
   /**
    * Searches our list of boards for one with the given name
    * @param name Board Name
@@ -3098,6 +3103,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @return a {@link Command} that reproduces this action
    */
   public Command placeAt(GamePiece piece, Point pt) {
+
     final Command c;
     if (GameModule.getGameModule().getGameState().getPieceForId(piece.getId()) == null) {
       piece.setPosition(pt);
@@ -3111,6 +3117,8 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       addPiece(piece);
       c = tracker.getMoveCommand();
     }
+    // Update the position based indexes for this piece
+    GameModule.getGameModule().getIndexManager().pieceMoved(piece, this);
     return c;
   }
 
@@ -3164,6 +3172,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public void addPiece(GamePiece p) {
     // Temporarily change the piece to be on this map to ensure a CP can calculate a layer.
     // Then return the original map so the piece can be correctly unlinked
+
     final Map currentMap = p.getMap();
     p.setMap(this);
     final int index = indexOf(p);
@@ -3198,6 +3207,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @param p GamePiece to remove from map
    */
   public void removePiece(GamePiece p) {
+    GameModule.getGameModule().getIndexManager().pieceRemoved(p, this);
     pieces.remove(p);
     theMap.repaint();
   }

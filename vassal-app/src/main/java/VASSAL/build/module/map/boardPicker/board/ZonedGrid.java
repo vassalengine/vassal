@@ -300,6 +300,16 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
   }
 
   @Override
+  public int getMaxPixelsPerRangeUnit(Point p) {
+    MapGrid grid = background;
+    final Zone z = findZone(p);
+    if (z != null && z.getGrid() != null) {
+      grid = z.getGrid();
+    }
+    return grid != null ? grid.getMaxPixelsPerRangeUnit(p) : GeometricGrid.super.getMaxPixelsPerRangeUnit(p);
+  }
+
+  @Override
   public Area getGridShape(Point center, int range) {
     Area a = null;
     final Zone z = findZone(center);

@@ -49,8 +49,10 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import static VASSAL.counters.BasicPiece.BASIC_NAME;
 import static VASSAL.counters.BasicPiece.PIECE_NAME;
@@ -76,6 +78,17 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
   private GamePiece innermost;
   private Decorator dec;
   private boolean selected = false;
+
+  private static Set<String> innerMostProperties = new HashSet<>();
+  static {
+    innerMostProperties.add(BasicPiece.LOCATION_NAME);
+    innerMostProperties.add(BasicPiece.DECK_NAME);
+    innerMostProperties.add(BasicPiece.CURRENT_BOARD);
+    innerMostProperties.add(BasicPiece.CURRENT_MAP);
+    innerMostProperties.add(BasicPiece.CURRENT_ZONE);
+    innerMostProperties.add(BasicPiece.CURRENT_X);
+    innerMostProperties.add(BasicPiece.CURRENT_Y);
+  }
 
   /** @param p Set the inner GamePiece -- usually the next Trait (Decorator) inward, or the BasicPiece itself. */
   public void setInner(GamePiece p) {
@@ -157,7 +170,10 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
    */
   @Override
   public Object getProperty(Object key) {
-    if (Properties.OUTER.equals(key)) {
+    if (innerMostProperties.contains(key) && innermost != null) {
+      return innermost.getProperty(key);
+    }
+    else if (Properties.OUTER.equals(key)) {
       return dec;
     }
     else if (Properties.KEY_COMMANDS.equals(key)) {
@@ -185,7 +201,10 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
    */
   @Override
   public Object getLocalizedProperty(Object key) {
-    if (List.of(
+    if (innerMostProperties.contains(key) && innermost != null) {
+      return innermost.getLocalizedProperty(key);
+    }
+    else if (List.of(
       Properties.KEY_COMMANDS,
       Properties.INNER,
       Properties.OUTER,

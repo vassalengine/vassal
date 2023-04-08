@@ -575,6 +575,9 @@ public class GameState implements CommandEncoder {
           // Apply all of the startup global key commands, in order
           doStartupGlobalKeyCommands(false);
 
+          // Ask the IndexManager to rebuild all indexes so at-start stack pieces are all included
+          GameModule.getGameModule().getIndexManager().rebuild();
+
           // If we're starting a new session, prompt to create a new logfile.
           // But NOT if we're starting a session by *replaying* a logfile -- in that case we'd get the reminder at the
           // end of the logfile.

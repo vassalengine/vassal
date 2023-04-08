@@ -79,6 +79,7 @@ public class GlobalCommand implements Auditable {
   private boolean fastIsNumber = false; // Used during property Fast Match to remember if value is numeric
   private double fastNumber = 0;        // Used during property Fast Match to hold evaluated numerical value
   private Pattern fastPattern;          // Fast Match regex pattern
+  private Integer fastRange;            // Set by Counter GKC if the Range option is enabled as this will greatly limit the selected counters
 
   private static final Pattern fastCheckNumber = Pattern.compile("(\\+-)?\\d+(\\.\\d+)?");  //match a number with optional +/- and decimal.
 
@@ -143,6 +144,10 @@ public class GlobalCommand implements Auditable {
 
   public void setTarget(GlobalCommandTarget target) {
     this.target = target;
+  }
+
+  public void setRange(Integer fastRange) {
+    this.fastRange = fastRange;
   }
 
   /**
@@ -294,6 +299,9 @@ public class GlobalCommand implements Auditable {
       // Context piece, if we are doing current-piece-relative fast-matching (may be null otherwise)
       final GamePiece curPiece = target.getCurPiece();
 
+      // Map specified in a fastMatch location
+      Map targetFastMap = null;
+
       // Evaluate all location-based expressions we will be using - these are evaluated w/r/t the SOURCE of the command, not target pieces.
       if (target.fastMatchLocation) {
         switch (target.targetType) {
@@ -328,6 +336,7 @@ public class GlobalCommand implements Auditable {
         if (!target.targetType.isCurrent()) {
           fastMap = target.targetMap.tryEvaluate(source, owner, "Editor.GlobalKeyCommand.map_name");
           fastMap = Expression.createExpression(fastMap).tryEvaluate(source, owner, "Editor.GlobalKeyCommand.map_name");
+          targetFastMap = Map.getMapById(fastMap);
         }
       }
 
@@ -514,6 +523,54 @@ public class GlobalCommand implements Auditable {
           }
         }
       }
+
+      // If a specific X, Y target has been specified AND a valid target map, then we can go direct to the Qtree index to find those pieces
+      else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.XY && targetFastMap != null) {
+
+        int x = 0;
+        int y = 0;
+
+        try {
+          x = Integer.parseInt(fastX);
+        }
+        catch (Exception ignored) {
+          x = 0;
+        }
+
+        try {
+          y = Integer.parseInt(fastY);
+        }
+        catch (Exception ignored) {
+          y = 0;
+        }
+
+        // Process just the pieces at that exact location
+        for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(targetFastMap, new Point(x, y))) {
+          dispatcher.accept(piece);
+        }
+      }
+
+      // if Current Location has been specified (Counter GKC), we can go find the pieces directly from the Qtree index
+      else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.CURLOC && curPiece != null && curPiece.getMap() != null && curPiece.getPosition() != null) {
+        for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(curPiece.getMap(), curPiece.getPosition())) {
+          dispatcher.accept(piece);
+        }
+      }
+
+      // If a specific LocationName target has been specified AND a valid target map, then we can go direct to the LocationName index to find those pieces
+      else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.LOCATION && targetFastMap != null && !fastLocation.isEmpty())  {
+        for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(targetFastMap, BasicPiece.LOCATION_NAME, fastLocation)) {
+          dispatcher.accept(piece);
+        }
+      }
+
+      // If a specific Zone target has been specified AND a valid target map, then we can go direct to the Zone index to find those pieces
+      else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.ZONE && targetFastMap != null && !fastZone.isEmpty())  {
+        for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(targetFastMap, BasicPiece.CURRENT_ZONE, fastZone)) {
+          dispatcher.accept(piece);
+        }
+      }
+
       else {
         // For most Global Key Commands we need to run through the larger lists of maps & pieces. Ideally the Fast Matches
         // here will filter some of that out to improve performance, but we also want to do the best job possible for old
@@ -522,24 +579,34 @@ public class GlobalCommand implements Auditable {
         // Make a lists of pieces for each of the maps we're interested in. We need to do this in advance so that a
         // piece doesn't potentially receive multiple GKCs if it is moved from one map to another.
         final List<GamePiece[]> gkcMapPieces = new ArrayList<>();
-        for (final Map map : maps) {
-          // First check that this is a map we're even interested in
-          if (target.fastMatchLocation) {
-            // "Current Map" only cares about the map the issuing piece is on
-            if (target.targetType == GlobalCommandTarget.Target.CURMAP) {
-              if ((curPiece != null) && !map.equals(curPiece.getMap())) {
+
+        // If a Counter GKC range limit has been specified, then it can only apply to the one map
+        // Just use the pieces in range as the base selection for the remaining comparisons.
+        if (fastRange != null && curPiece != null && curPiece.getMap() != null && curPiece.getPosition() != null) {
+          gkcMapPieces.add(GameModule.getGameModule().getIndexManager().getPieces(curPiece, fastRange).toArray(new GamePiece[0]));
+        }
+
+        // No Range specified, grab all pieces with a bit of fastmatch filtering.
+        else {
+          for (final Map map : maps) {
+            // First check that this is a map we're even interested in
+            if (target.fastMatchLocation) {
+              // "Current Map" only cares about the map the issuing piece is on
+              if (target.targetType == GlobalCommandTarget.Target.CURMAP) {
+                if ((curPiece != null) && !map.equals(curPiece.getMap())) {
+                  continue;
+                }
+              }
+              // If a Fast Match Map is specified, only check that one.
+              else if (!target.targetType.isCurrent() && !fastMap.isEmpty() && !fastMap.equals(map.getConfigureName())) {
                 continue;
               }
             }
-            // If a Fast Match Map is specified, only check that one.
-            else if (!target.targetType.isCurrent() && !fastMap.isEmpty() && !fastMap.equals(map.getConfigureName())) {
-              continue;
-            }
+            gkcMapPieces.add(map.getPieces());
           }
-          gkcMapPieces.add(map.getPieces());
         }
 
-        // Now we go through all the pieces/stacks/decks on each map
+        // Now we go through all the pieces/stacks/decks pre-selected on each map from the previos step
         for (final GamePiece[] everythingOnMap : gkcMapPieces) {
           if (!target.fastMatchLocation) {
             // If NOT doing Location fast-matching we do tighter loops (because perf is important during GKCs)
