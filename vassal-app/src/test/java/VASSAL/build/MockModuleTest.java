@@ -16,6 +16,7 @@ public class MockModuleTest {
   @BeforeEach
   public void init() throws Exception {
     if (initialized) {
+      assert (GameModule.getGameModule() != null);
       return;
     }
 
@@ -25,6 +26,7 @@ public class MockModuleTest {
     when(module.getDataArchive()).thenReturn(arch);
 
     GameModule.init(module);
+    assert (GameModule.getGameModule() != null);
     initialized = true;
   }
 }
