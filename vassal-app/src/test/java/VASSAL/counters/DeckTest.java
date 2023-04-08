@@ -1,17 +1,17 @@
 package VASSAL.counters;
 
+import VASSAL.build.GameModule;
+import VASSAL.build.module.Map;
+import org.junit.jupiter.api.Test;
+
 import java.awt.Point;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import VASSAL.build.GameModule;
-import VASSAL.build.module.Map;
-
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -67,6 +67,9 @@ public class DeckTest {
     final GameModule gameModule = mock(GameModule.class);
     final GamePiece gamePiece1 = mock(GamePiece.class);
     final GamePiece gamePiece2 = mock(GamePiece.class);
+
+    assertNotEquals(gameModule, null);
+    assertNotEquals(GameModule.getGameModule(), null);
 
     // run
     Deck d = new Deck(gameModule);
