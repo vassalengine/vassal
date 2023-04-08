@@ -145,6 +145,11 @@ public class GlobalCommand implements Auditable {
     this.target = target;
   }
 
+  /**
+   * Allows subclasses like GlobalAttach to operate with no key command to send
+   *
+   * @return true if we should short-circuit (abort) the search if we have no key command to send
+   */
   public boolean isAbortIfNoCommand() {
     return true;
   }
@@ -270,7 +275,7 @@ public class GlobalCommand implements Auditable {
         command.execute();
       }
 
-      // If there actually isn't any key command to execute, we're finished here, having issued the report-if-any.
+      // If there actually isn't any key command to execute, we're normally finished here, having issued the report-if-any (exception is subclass like GlobalAttach, which is searching but not sending a key command)
       if ((keyStroke == null) || ((keyStroke.getKeyCode() == 0) && (keyStroke.getModifiers() == 0))) {
         if (isAbortIfNoCommand()) {
           return command;
@@ -499,7 +504,7 @@ public class GlobalCommand implements Auditable {
           }
           for (final GamePiece p : pieces) {
             // Pieces that no longer have a map were probably deleted. We will speak no more of them.
-            if (p.getName() == null) continue;
+            if (p.getMap() == null) continue;
 
             // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
             if (!passesPropertyFastMatch(p)) continue;
