@@ -46,6 +46,8 @@ import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
@@ -104,18 +106,16 @@ public class SVGImageUtils {
     }
   }
 
-  public static Dimension getImageSize(SVGDocument doc) throws IOException {
-    final SVGSVGElement root = doc.getRootElement();
-    final BridgeContext bctx = new BridgeContext(new UserAgentAdapter());
-    final UnitProcessor.Context uctx = UnitProcessor.createContext(bctx, root);
-
+  private static Pair<Float, Boolean> getSVGWidth(SVGSVGElement root, UnitProcessor.Context uctx) throws IOException {
     // try to parse the width
     float w = -1.0f;
     boolean wIsPct = false;
     final String ws = root.getAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE);
     if (!ws.isEmpty()) {
       try {
-        w = UnitProcessor.svgHorizontalLengthToUserSpace(ws, SVGConstants.SVG_WIDTH_ATTRIBUTE, uctx);
+        w = UnitProcessor.svgHorizontalLengthToUserSpace(
+          ws, SVGConstants.SVG_WIDTH_ATTRIBUTE, uctx
+        );
       }
       catch (BridgeException e) {
         // the width was invalid
@@ -124,13 +124,19 @@ public class SVGImageUtils {
       wIsPct = ws.contains("%");
     }
 
+    return Pair.of(w, wIsPct);
+  }
+
+  private static Pair<Float, Boolean> getSVGHeight(SVGSVGElement root, UnitProcessor.Context uctx) throws IOException {
     // try to parse the height
     float h = -1.0f;
     boolean hIsPct = false;
     final String hs = root.getAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE);
     if (!hs.isEmpty()) {
       try {
-        h = UnitProcessor.svgVerticalLengthToUserSpace(hs, SVGConstants.SVG_HEIGHT_ATTRIBUTE, uctx);
+        h = UnitProcessor.svgVerticalLengthToUserSpace(
+          hs, SVGConstants.SVG_HEIGHT_ATTRIBUTE, uctx
+        );
       }
       catch (BridgeException e) {
         // the height was invalid
@@ -138,6 +144,24 @@ public class SVGImageUtils {
       }
       hIsPct = hs.contains("%");
     }
+
+    return Pair.of(h, hIsPct);
+  }
+
+  public static Dimension getImageSize(SVGDocument doc) throws IOException {
+    final SVGSVGElement root = doc.getRootElement();
+    final BridgeContext bctx = new BridgeContext(new UserAgentAdapter());
+    final UnitProcessor.Context uctx = UnitProcessor.createContext(bctx, root);
+
+    // try to parse the width
+    Pair<Float, Boolean> p = getSVGWidth(root, uctx);
+    float w = p.getLeft();
+    final boolean wIsPct = p.getRight();
+
+    // try to parse the height
+    p = getSVGHeight(root, uctx);
+    float h = p.getLeft();
+    final boolean hIsPct = p.getRight();
 
     // try to parse the viewBox
     float[] vb = null;
@@ -171,7 +195,7 @@ public class SVGImageUtils {
             h = vb[3];
           }
           else if (hIsPct) {
-            // width is a percentage of the viewBox height 
+            // width is a percentage of the viewBox height
             h *= vb[3];
           }
         }
@@ -202,7 +226,7 @@ public class SVGImageUtils {
         h *= vb[3];
       }
     }
-    
+
     return new Dimension((int)(w + 0.5f), (int)(h + 0.5f));
   }
 
