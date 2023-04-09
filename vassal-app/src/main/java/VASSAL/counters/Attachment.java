@@ -332,6 +332,9 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   @Override
   public String getDescription() {
     String d = Resources.getString("Editor.Attachment.trait_description");
+
+    d += " - " + attachName;
+
     if (desc.length() > 0) {
       d += " - " + desc;
     }
@@ -388,6 +391,11 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     return null;
   }
 
+
+  public String getAttachName() {
+    return attachName;
+  }
+
   /**
    * @return number of attached pieces, not counting any that have since been deleted (from the game).
    */
@@ -400,6 +408,18 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     return count;
   }
 
+  /**
+   * @return A list of attached pieces, not counting any that have since been deleted (from the game)
+   */
+  public List<GamePiece> getAttachList() {
+    final List<GamePiece> attachList = new ArrayList<>();
+    for (final GamePiece p : contents) {
+      if (p.getMap() == null) continue;
+      attachList.add(p);
+    }
+    return attachList;
+  }
+
 
   @Override
   public Object getProperty(Object key) {
@@ -407,7 +427,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       return attachName;
     }
     else if (ATTACH_LIST.equals(key)) {
-      return new ArrayList<>(contents);
+      return getAttachList();
     }
     else if (ATTACH_COUNT.equals(key)) {
       return String.valueOf(getAttachCount());

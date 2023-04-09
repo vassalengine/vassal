@@ -24,6 +24,7 @@ import VASSAL.build.module.Map;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.configure.PropertyExpression;
+import VASSAL.counters.Attachment;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
@@ -41,11 +42,9 @@ import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
 import VASSAL.tools.WarningDialog;
-
 import bsh.BeanShellExpressionValidator;
 import bsh.EvalError;
 import bsh.NameSpace;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
@@ -535,6 +534,87 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     }
     return result;
   }
+
+
+  /**
+   * SumAttach(attachment, property) function
+   * Total the value of the named property in all pieces
+   * attached
+   *
+   * @param attachment Attachment Name
+   * @param property Property Name
+   * @param ps       GamePiece
+   * @return total
+   */
+  public Object sumAttachment(String attachment, String property, PropertySource ps) {
+    int result = 0;
+
+    // This allows ReportState to sum properties properly
+    if (ps instanceof ReportState.OldAndNewPieceProperties) {
+      ps = ((ReportState.OldAndNewPieceProperties)ps).getNewPiece();
+    }
+
+    if (ps instanceof GamePiece) {
+      GamePiece p = Decorator.getOutermost((Decorator)ps);
+      while (p instanceof Decorator) {
+        if (p instanceof Attachment) {
+          final Attachment a = (Attachment)p;
+          if (a.getAttachName().equals(attachment)) {
+            for (final GamePiece target : a.getAttachList()) {
+              final Object prop = target.getProperty(property);
+              result += propValue(prop);
+            }
+          }
+        }
+        p = ((Decorator) p).getInner();
+      }
+    }
+    return result;
+  }
+
+
+  /**
+   * CountStack(property) function count the number of pieces
+   * attached to this piece via a named Attachment trait that
+   * *contain* the specified property
+   *
+   * @param attachment Attachment Name
+   * @param property Property Name
+   * @param ps       GamePiece
+   * @return total
+   */
+  public Object countAttachment(String attachment, String property, PropertySource ps) {
+    int result = 0;
+
+    // This allows ReportState to count properties properly
+    if (ps instanceof ReportState.OldAndNewPieceProperties) {
+      ps = ((ReportState.OldAndNewPieceProperties)ps).getNewPiece();
+    }
+
+    if (ps instanceof GamePiece) {
+      GamePiece p = Decorator.getOutermost((Decorator)ps);
+      while (p instanceof Decorator) {
+        if (p instanceof Attachment) {
+          final Attachment a = (Attachment)p;
+          if (a.getAttachName().equals(attachment)) {
+            for (final GamePiece target : a.getAttachList()) {
+              if ("".equals(property)) {
+                result++;
+              }
+              else {
+                final Object prop = target.getProperty(property);
+                result += propNonempty(prop);
+              }
+            }
+          }
+        }
+        p = ((Decorator) p).getInner();
+      }
+    }
+    return result;
+  }
+
+
 
   /**
    * SumMat(property) function

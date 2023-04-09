@@ -97,17 +97,31 @@ CountStack() {
   return unwrap(_interp.countStack("", _source));
 }
 
+
 /**
- * Callback to Vassal to count the number of pieces in the same
- * stack that *contain* the target property
+ * Callback to Vassal to sum the value of a named property in all
+ * counters attached through a named Attachment trait
  *
- * Example: CountStack("Strength")
+ * Example: SumAttached("Sibling", "Strength")
  */
-CountStack(String property) {
+SumAttached(String attachment, String property) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.countStack(property, _source));
+  return unwrap(_interp.sumAttached(attachment, property, _source));
 }
+
+/**
+ * Callback to Vassal to count the number of pieces attached through
+ * the named Attachment trait which *contain* the target property
+ *
+ * Example: CountAttached("Sibling", "Strength")
+ */
+CountAttached(String attachment, String property) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.countAttached(attachment, property, _source));
+}
+
 
 
 /**

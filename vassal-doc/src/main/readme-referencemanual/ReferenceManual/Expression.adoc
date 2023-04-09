@@ -167,6 +167,8 @@ CountStack() +
 CountStack(propertyName) +
 SumMat(propertyName) +
 CountMat(propertyName) +
+SumAttachment(attachmentName, propertyName) +
+CountAttachment(attachmentName, propertyName) +
 Sum(prop, expression) +
 Sum(prop, expr, map) +
 Count(expr) +
@@ -175,6 +177,8 @@ Count(expr, map) + |{SumStack("Attack")} +
 {CountStack("Russian")} +
 {SumMat("AttackFactor")} +
 {CountMat("Followers")} +
+{SumAttachment("MyMinions", "Ammo")} +
+{CountAttachment("MyMinions", "Naval")} + 
 {Sum("Defense", "{Type != \"Artillery\"}")} +
 {Sum("Cost", "{ Value > 0 }", "Purchases")} +
 {Count("{ Nation == \"$Nation$\" }")} +
@@ -187,6 +191,10 @@ Count(expr, map) + |{SumStack("Attack")} +
 *SumMat(prop)* returns the total of the specified property among a Mat and its Mat Cargo. The asking piece can either be a Mat or a Mat Cargo. If the piece is not a Mat, and/or if it is a Mat Cargo piece not presently on a Mat, then only the piece itself is checked.
 
 *CountMat(prop)* returns the number of pieces with a non-blank value for the specified property, among a Mat and its Mat Cargo. The asking piece can either be a Mat or a Mat Cargo. If the piece is not a Mat, and/or if it is a Mat Cargo piece not presently on a Mat, then only the piece itself is checked.
+
+*SumAttachment(attachment, prop)* returns the total of the specified property summed across all the pieces attached to this piece via a named Attachment trait on this piece.
+
+*CountAttachment(attachment prop)* returns the number of pieces with a non-blank value for the specified property, among all the pieces attached to this piece via a named Attachment trait on this piece.
 
 *Sum(prop, expr)* returns the total of the specified property for all pieces in the game matching the expression.
 
