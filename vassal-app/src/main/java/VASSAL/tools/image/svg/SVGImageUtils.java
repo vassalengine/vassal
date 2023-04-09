@@ -19,6 +19,7 @@
 package VASSAL.tools.image.svg;
 
 import java.awt.Dimension;
+import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -163,6 +164,38 @@ public class SVGImageUtils {
     }
 
     return Pair.of(vb, vbs.isEmpty());
+  }
+
+  public static AffineTransform getViewBoxTransform(SVGDocument doc) throws IOException {
+    final SVGSVGElement root = doc.getRootElement();
+    final BridgeContext bctx = new BridgeContext(new UserAgentAdapter());
+    final UnitProcessor.Context uctx = UnitProcessor.createContext(bctx, root);
+
+    // try to parse the width
+    Pair<Float, Boolean> p = getSVGWidth(root, uctx);
+    final float w = p.getLeft();
+    final boolean wIsPct = p.getRight();
+
+    // try to parse the height
+    p = getSVGHeight(root, uctx);
+    final float h = p.getLeft();
+    final boolean hIsPct = p.getRight();
+
+    // try to parse the viewBox
+    final Pair<float[], Boolean> vbp = getViewBox(root, bctx);
+    final float[] vb = vbp.getLeft();
+
+    if (vb != null && !wIsPct && !hIsPct) {
+      // translate from viewBox coordinates to global coordinates
+      return new AffineTransform(
+        w / vb[2], 0,
+        0, h / vb[3],
+        -vb[0], -vb[1]
+      );
+    }
+    else {
+      return new AffineTransform();
+    }
   }
 
   public static Dimension getImageSize(SVGDocument doc) throws IOException {
