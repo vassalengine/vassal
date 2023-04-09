@@ -148,6 +148,23 @@ public class SVGImageUtils {
     return Pair.of(h, hIsPct);
   }
 
+  private static Pair<float[], Boolean> getViewBox(SVGSVGElement root, BridgeContext bctx) throws IOException {
+    // try to parse the viewBox
+    float[] vb = null;
+    final String vbs = root.getAttributeNS(null, SVGConstants.SVG_VIEW_BOX_ATTRIBUTE);
+    if (!vbs.isEmpty()) {
+      try {
+        vb = ViewBox.parseViewBoxAttribute(root, vbs, bctx);
+      }
+      catch (BridgeException e) {
+        // the viewBox was invalid
+        throw new IOException(e);
+      }
+    }
+
+    return Pair.of(vb, vbs.isEmpty());
+  }
+
   public static Dimension getImageSize(SVGDocument doc) throws IOException {
     final SVGSVGElement root = doc.getRootElement();
     final BridgeContext bctx = new BridgeContext(new UserAgentAdapter());
@@ -164,20 +181,12 @@ public class SVGImageUtils {
     final boolean hIsPct = p.getRight();
 
     // try to parse the viewBox
-    float[] vb = null;
-    final String vbs = root.getAttributeNS(null, SVGConstants.SVG_VIEW_BOX_ATTRIBUTE);
-    if (!vbs.isEmpty()) {
-      try {
-        vb = ViewBox.parseViewBoxAttribute(root, vbs, bctx);
-      }
-      catch (BridgeException e) {
-        // the viewBox was invalid
-        throw new IOException(e);
-      }
-    }
+    final Pair<float[], Boolean> vbp = getViewBox(root, bctx);
+    final float[] vb = vbp.getLeft();
+    final boolean vb_empty = vbp.getRight();
 
     if (w < 0.0f || h < 0.0f) {
-      if (!vbs.isEmpty()) {
+      if (!vb_empty) {
         // the viewBox array will be null if it had 0 height or width
         if (vb != null) {
           // we have a nonempty viewBox
@@ -216,7 +225,7 @@ public class SVGImageUtils {
         }
       }
     }
-    else if (!vbs.isEmpty() && vb != null) {
+    else if (!vb_empty && vb != null) {
       // we have a viewBox; adjust width, height if they are percentages of it
       if (wIsPct) {
         w *= vb[2];
