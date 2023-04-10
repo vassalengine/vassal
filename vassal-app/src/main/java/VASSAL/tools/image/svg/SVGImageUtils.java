@@ -19,6 +19,7 @@
 package VASSAL.tools.image.svg;
 
 import java.awt.Dimension;
+import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -45,6 +46,8 @@ import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.DOMException;
@@ -104,18 +107,16 @@ public class SVGImageUtils {
     }
   }
 
-  public static Dimension getImageSize(SVGDocument doc) throws IOException {
-    final SVGSVGElement root = doc.getRootElement();
-    final BridgeContext bctx = new BridgeContext(new UserAgentAdapter());
-    final UnitProcessor.Context uctx = UnitProcessor.createContext(bctx, root);
-
+  private static Pair<Float, Boolean> getSVGWidth(SVGSVGElement root, UnitProcessor.Context uctx) throws IOException {
     // try to parse the width
     float w = -1.0f;
     boolean wIsPct = false;
     final String ws = root.getAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE);
     if (!ws.isEmpty()) {
       try {
-        w = UnitProcessor.svgHorizontalLengthToUserSpace(ws, SVGConstants.SVG_WIDTH_ATTRIBUTE, uctx);
+        w = UnitProcessor.svgHorizontalLengthToUserSpace(
+          ws, SVGConstants.SVG_WIDTH_ATTRIBUTE, uctx
+        );
       }
       catch (BridgeException e) {
         // the width was invalid
@@ -124,13 +125,19 @@ public class SVGImageUtils {
       wIsPct = ws.contains("%");
     }
 
+    return Pair.of(w, wIsPct);
+  }
+
+  private static Pair<Float, Boolean> getSVGHeight(SVGSVGElement root, UnitProcessor.Context uctx) throws IOException {
     // try to parse the height
     float h = -1.0f;
     boolean hIsPct = false;
     final String hs = root.getAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE);
     if (!hs.isEmpty()) {
       try {
-        h = UnitProcessor.svgVerticalLengthToUserSpace(hs, SVGConstants.SVG_HEIGHT_ATTRIBUTE, uctx);
+        h = UnitProcessor.svgVerticalLengthToUserSpace(
+          hs, SVGConstants.SVG_HEIGHT_ATTRIBUTE, uctx
+        );
       }
       catch (BridgeException e) {
         // the height was invalid
@@ -139,6 +146,10 @@ public class SVGImageUtils {
       hIsPct = hs.contains("%");
     }
 
+    return Pair.of(h, hIsPct);
+  }
+
+  private static Pair<float[], Boolean> getViewBox(SVGSVGElement root, BridgeContext bctx) throws IOException {
     // try to parse the viewBox
     float[] vb = null;
     final String vbs = root.getAttributeNS(null, SVGConstants.SVG_VIEW_BOX_ATTRIBUTE);
@@ -152,8 +163,63 @@ public class SVGImageUtils {
       }
     }
 
+    return Pair.of(vb, vbs.isEmpty());
+  }
+
+  public static AffineTransform getViewBoxTransform(SVGDocument doc) throws IOException {
+    final SVGSVGElement root = doc.getRootElement();
+    final BridgeContext bctx = new BridgeContext(new UserAgentAdapter());
+    final UnitProcessor.Context uctx = UnitProcessor.createContext(bctx, root);
+
+    // try to parse the width
+    Pair<Float, Boolean> p = getSVGWidth(root, uctx);
+    final float w = p.getLeft();
+    final boolean wIsPct = p.getRight();
+
+    // try to parse the height
+    p = getSVGHeight(root, uctx);
+    final float h = p.getLeft();
+    final boolean hIsPct = p.getRight();
+
+    // try to parse the viewBox
+    final Pair<float[], Boolean> vbp = getViewBox(root, bctx);
+    final float[] vb = vbp.getLeft();
+
+    if (vb != null && !wIsPct && !hIsPct) {
+      // translate from viewBox coordinates to global coordinates
+      return new AffineTransform(
+        w / vb[2], 0,
+        0, h / vb[3],
+        -vb[0], -vb[1]
+      );
+    }
+    else {
+      return new AffineTransform();
+    }
+  }
+
+  public static Dimension getImageSize(SVGDocument doc) throws IOException {
+    final SVGSVGElement root = doc.getRootElement();
+    final BridgeContext bctx = new BridgeContext(new UserAgentAdapter());
+    final UnitProcessor.Context uctx = UnitProcessor.createContext(bctx, root);
+
+    // try to parse the width
+    Pair<Float, Boolean> p = getSVGWidth(root, uctx);
+    float w = p.getLeft();
+    final boolean wIsPct = p.getRight();
+
+    // try to parse the height
+    p = getSVGHeight(root, uctx);
+    float h = p.getLeft();
+    final boolean hIsPct = p.getRight();
+
+    // try to parse the viewBox
+    final Pair<float[], Boolean> vbp = getViewBox(root, bctx);
+    final float[] vb = vbp.getLeft();
+    final boolean vb_empty = vbp.getRight();
+
     if (w < 0.0f || h < 0.0f) {
-      if (!vbs.isEmpty()) {
+      if (!vb_empty) {
         // the viewBox array will be null if it had 0 height or width
         if (vb != null) {
           // we have a nonempty viewBox
@@ -171,7 +237,7 @@ public class SVGImageUtils {
             h = vb[3];
           }
           else if (hIsPct) {
-            // width is a percentage of the viewBox height 
+            // width is a percentage of the viewBox height
             h *= vb[3];
           }
         }
@@ -192,7 +258,7 @@ public class SVGImageUtils {
         }
       }
     }
-    else if (!vbs.isEmpty() && vb != null) {
+    else if (!vb_empty && vb != null) {
       // we have a viewBox; adjust width, height if they are percentages of it
       if (wIsPct) {
         w *= vb[2];
@@ -202,7 +268,7 @@ public class SVGImageUtils {
         h *= vb[3];
       }
     }
-    
+
     return new Dimension((int)(w + 0.5f), (int)(h + 0.5f));
   }
 
