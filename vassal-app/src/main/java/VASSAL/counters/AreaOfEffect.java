@@ -437,7 +437,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       return String.valueOf(isActive());
     }
     else if (key.equals(Properties.VISIBLE_STATE)) {
-      return String.valueOf(super.getProperty(key)) + String.valueOf(isActive());
+      return super.getProperty(key) + String.valueOf(isActive());
     }
     return super.getProperty(key);
   }
