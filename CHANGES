@@ -1,5 +1,6 @@
 3.7.0-beta3 - ???
 
+* 12177: Change-property buttons don't generate completely empty chat lines
 * 12175: Fix stretchy images in chat
 
 3.7.0-beta2 - 30 March 2023

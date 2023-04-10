@@ -24,6 +24,7 @@
         { "num": 12175, "desc": "Fix stretchy images in chat" }
       ],
       "other_improvements": [
+        { "num": 12177, "desc": "Change-property buttons don't generate completely empty chat lines" }
       ]
     },
     {
