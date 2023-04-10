@@ -241,6 +241,9 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     return new ArrayList<>(contents);
   }
 
+  public void setContents(List<GamePiece> newContents) {
+    contents = newContents;
+  }
 
   @Override
   public void mySetState(String newState) {
