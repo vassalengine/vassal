@@ -504,6 +504,10 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
     return se.append(String.valueOf(value)).getValue();
   }
 
+  /**
+   * @param name Property name
+   * @return false only if property name is non-blank/non-null, and property itself is false/0/null (return true otherwise)
+   */
   protected boolean checkProperty(String name) {
     if ((name != null) && !name.isEmpty()) {
       final Object propValue = Decorator.getOutermost(this).getProperty(name);
@@ -534,7 +538,7 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
 
     checkPropertyLevel();
 
-    if (!onlyPropertyName.isEmpty()) {
+    if (followProperty && !onlyPropertyName.isEmpty()) {
       final boolean check = checkProperty(onlyPropertyName);
 
       if (check != ("true".equals(onlyPropertyState))) { //NON-NLS
@@ -776,7 +780,7 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
 
     checkPropertyLevel(); //BR// Layer might have changed
 
-    if (value > 0 && !drawUnderneathWhenSelected && (onlyPropertyName.isEmpty() || (checkProperty(onlyPropertyName) == "true".equals(onlyPropertyState)))) { //NON-NLS
+    if (value > 0 && !drawUnderneathWhenSelected && ((!followProperty || onlyPropertyName.isEmpty()) || (checkProperty(onlyPropertyName) == "true".equals(onlyPropertyState)))) { //NON-NLS
       final Rectangle r = getCurrentImageBounds();
 
       // If the label is completely enclosed in the current counter shape, then we can just return
@@ -846,7 +850,7 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
       if (drawUnderneathWhenSelected) {
         s += getProperty(Properties.SELECTED);
       }
-      if (!onlyPropertyName.isEmpty()) {
+      if (followProperty && !onlyPropertyName.isEmpty()) {
         s += (checkProperty(onlyPropertyName) == "true".equals(onlyPropertyState)); //NON-NLS
       }
       return s;
