@@ -17,16 +17,39 @@ This <<GamePiece.adoc#Traits,Trait>> adds an action that creates a lasting "atta
 
 (4) For <<DynamicProperty.adoc#top, Dynamic Properties>> of an attached piece, the value of the properties can also be _set_ by this piece, by using a <<SetGlobalProperty.adoc#top, Set Global Property>> trait using the same naming convention (see _Attachment Name_, below)
 
+(5) If the attached-to piece *also* has an Attachment trait that shares the same _Attachment Name_, then mutual attachments between pieces can also be formed.
+
+*NOTES:*::
+* A Global Key Command sent to "Current Attachments" will execute very quickly
+* Pieces *can* attach to themselves.
+* While a single piece can contain one _or more_ Attachment traits, all of an individual piece's Attachment traits should have different names (no single piece should have two Attachment traits with the same name).
+* Two pieces, each with an Attachment trait sharing the same _Attachment Name_ can form a mutual attachment
+* Pieces which are deleted from the game are automatically removed as attachments. Other than that, attachments are _only_ removed when the _Clear All_ or _Clear Matching_ commands are used -- using the _Attach_ key command may attach _more_ pieces but it will never remove any.
+
 [width="100%",cols="50%a,^50%a",]
 |===
 |*Attachment Name:*:: The name for this Attachment trait. This name can be used by the piece to read properties from attached pieces. For example if the Attachment name were _Sibling_, then the property _Sibling_LocationName_ would contain the _LocationName_ property of the first currently attached piece. Similarly, if the attached piece contained a Dynamic Property called _Dynamite_, then a <<SetGlobalProperty.adoc#top, Set Global Property>> trait on this piece could change that property using the name _Sibling_Dynamite_.
 
 *Description:*:: A short description of this trait for your own reference.
 
-*Attach menu command:*:: Name of the right-click context menu item to attach pieces.
+*When another piece attaches to this one using this attachment's name*:: Determines what happens when another piece with an Attachment trait *sharing the same* _Attachment Name_ attaches to this piece. Can be used to create two-way and multi-way attachments.
++
+*No additional action*:: Nothing additional happens. This is the default setting, and useful for creating "one-way" attachments.
++
+*Attach to that piece*:: This piece adds that piece to its list of attachments--in other words a mutual attachment is formed. This setting is useful for creating mutual or "two-way" attachments.
++
+*Attach to that piece along with all pieces it has attached to*:: This piece adds that piece to its list of attachments. This piece _also_ adds to its attachment every _other_ piece that the new piece has attached (using an Attachment trait with the same _Attachment Name_). This setting is useful for creating "multi-way" attachments. NOTE: it will also normally result in the piece being attached to itself.
+
+*When clearing our attachment to another piece*:: Determines what happens when the _Clear Matching_ or _Clear All_ key command is used to remove one of our existing attachments.
++
+*No additional action*:: Nothing additional happens. This is the default setting.
++
+*Remove that piece's attachment to this one as well*:: Severs the other piece's attachment to this one as well (assuming it has one from an Attachment trait with the same _Attachment Name_)
+
+*Menu command to attach pieces:*:: Name of the right-click context menu item to attach pieces.
 If left blank, no context menu item will appear.
 
-*Attach key command:*::  A Key Command or <<NamedKeyCommand.adoc#top,Named Key Command>> that initiates attachment of pieces. Note that no pieces are _detached_ by this action -- so if you haven't otherwise cleared attachments, executing this a second or subsequent time will potentially add _more_ attachments while keeping any that already exist.
+*Key command to attach pieces:*::  A Key Command or <<NamedKeyCommand.adoc#top,Named Key Command>> that initiates attachment of pieces. Note that no pieces are _detached_ by this action -- so if you haven't otherwise cleared attachments, executing this a second or subsequent time will potentially add _more_ attachments while keeping any that already exist.
 
 *Pre-select (Fast Match):*::  *Fast Match* selections can be used to improve the performance of "slow" piece filters.
 +
@@ -53,10 +76,16 @@ If unselected, then the range will be given by the value of the named <<Properti
 
 *Range Property:*::  The name of a Property that contains the range to use when Fixed Range is not selected.
 
-*Clear menu command:*:: Name of the right-click context menu item to clear ALL current attachments (by _this_ individual Attachment trait).
+*Menu command to clear all outgoing attachments:*:: Name of the right-click context menu item to clear ALL current attachments (by _this_ individual Attachment trait).
 If left blank, no context menu item will appear.
 
-*Clear key command:*::  A Key Command or <<NamedKeyCommand.adoc#top,Named Key Command>> that initiates the clearing of ALL current attachments (by _this_ individual Attachment trait).
+*Key command to clear all outgoing attachments:*::  A Key Command or <<NamedKeyCommand.adoc#top,Named Key Command>> that initiates the clearing of ALL current attachments (by _this_ individual Attachment trait).
+
+*Menu command to clear matching attachments:*:: Name of the right-click context menu item to clear current attachments that match an expression. Only pieces attached by _this_ Attachment trait will be affected.
+
+*Key command to clear matching attachments:*::  A Key Command or <<NamedKeyCommand.adoc#top,Named Key Command>> that initiates the clearing of current attachments that match an expression. Only pieces attached by _this_ Attachment trait will be affected.
+
+*Property match expression for clearing attachments:*:: An expression determining which current attachments will be cleared when the above key command is executed. See *Additional matching expression*, above, for further information on how these expressions work.
 
 |image:images/Attachment.png[]
 |===
