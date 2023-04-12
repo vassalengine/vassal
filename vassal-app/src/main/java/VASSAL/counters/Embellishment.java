@@ -1181,6 +1181,8 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
       onlyBox.add(onlyConfig.getControls(), "growx"); //NON-NLS
       onlyStateLabel = new JLabel(Resources.getString("Editor.Embellishment.only_state"));
       onlyStateConfig = new TranslatingStringEnumConfigurer(STATE_OPTIONS, STATE_KEYS);
+      onlyStateConfig.setValue(STATE_OPTIONS[0].equals(e.onlyPropertyState) ? STATE_OPTIONS[0] : STATE_OPTIONS[1]);
+
       onlyBox.add(onlyStateLabel);
       onlyBox.add(onlyStateConfig.getControls());
       controls.add(onlyLabel, "gapleft 10"); // NON-NLS
