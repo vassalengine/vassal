@@ -11,9 +11,11 @@ This <<GamePiece.adoc#Traits,Trait>> adds an action that creates a lasting "atta
 
 (1) The piece will be able to issue <<GlobalKeyCommand.adoc#top, Global Key Commands>> to attached pieces using the very fast and efficient "Current Attachments" location filter. A piece that needs to repeatedly communicate with the same piece(s) every time can thus use an Attachment to make the commands process very quickly, overcoming the normal performance lag of Global Key Commands.
 
-(2) The piece will be able to directly read the properties of _one_ of the pieces that the Attachment trait is bound to. For cases where a single piece is bound to a particular Attachment trait, this can be quite useful in reading its properties quickly and easily. If a group of multiple pieces is attached with one Attachment trait, properties will be read from an undetermined _single piece_ from among the attached pieces. See _Attachment Name_, below, for an explanation of how to read a property from the attached piece.
+(2) The piece will be able to access the properties of _any_ of the pieces that the Attachment trait is bound to through GetAttachmentProperty(attachmentName, propertyName, index). The index starts at 1 for the first attached piece.
 
-(3) For <<DynamicProperty.adoc#top, Dynamic Properties>> of an attached piece, the value of the properties can also be _set_ by this piece, by using a <<SetGlobalProperty.adoc#top, Set Global Property>> trait using the same naming convention (see _Attachment Name_, below)
+(3) The piece will be able to directly read the properties of _one_ of the pieces that the Attachment trait is bound to through a simple syntax. For cases where a single piece is bound to a particular Attachment trait, this can be quite useful in reading its properties quickly and easily. If a group of multiple pieces is attached with one Attachment trait, properties will be read from an undetermined _single piece_ from among the attached pieces. See _Attachment Name_, below, for an explanation of how to read a property from the attached piece.
+
+(4) For <<DynamicProperty.adoc#top, Dynamic Properties>> of an attached piece, the value of the properties can also be _set_ by this piece, by using a <<SetGlobalProperty.adoc#top, Set Global Property>> trait using the same naming convention (see _Attachment Name_, below)
 
 [width="100%",cols="50%a,^50%a",]
 |===
@@ -24,12 +26,7 @@ This <<GamePiece.adoc#Traits,Trait>> adds an action that creates a lasting "atta
 *Attach menu command:*:: Name of the right-click context menu item to attach pieces.
 If left blank, no context menu item will appear.
 
-*Attach key command:*::  A Key Command or <<NamedKeyCommand.adoc#top,Named Key Command>> that initiates attachment of pieces.
-
-*Clear menu command:*:: Name of the right-click context menu item to clear all current attachments (by _this_ individual Attachment trait).
-If left blank, no context menu item will appear.
-
-*Clear key command:*::  A Key Command or <<NamedKeyCommand.adoc#top,Named Key Command>> that initiates the clearing of all current attachments (by _this_ individual Attachment trait).
+*Attach key command:*::  A Key Command or <<NamedKeyCommand.adoc#top,Named Key Command>> that initiates attachment of pieces. Note that no pieces are _detached_ by this action -- so if you haven't otherwise cleared attachments, executing this a second or subsequent time will potentially add _more_ attachments while keeping any that already exist.
 
 *Pre-select (Fast Match):*::  *Fast Match* selections can be used to improve the performance of "slow" piece filters.
 +
@@ -55,6 +52,11 @@ Otherwise, the distance is measured in screen pixels.
 If unselected, then the range will be given by the value of the named <<Properties.adoc#top,property>>.
 
 *Range Property:*::  The name of a Property that contains the range to use when Fixed Range is not selected.
+
+*Clear menu command:*:: Name of the right-click context menu item to clear ALL current attachments (by _this_ individual Attachment trait).
+If left blank, no context menu item will appear.
+
+*Clear key command:*::  A Key Command or <<NamedKeyCommand.adoc#top,Named Key Command>> that initiates the clearing of ALL current attachments (by _this_ individual Attachment trait).
 
 |image:images/Attachment.png[]
 |===

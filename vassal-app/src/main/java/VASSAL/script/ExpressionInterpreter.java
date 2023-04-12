@@ -441,6 +441,29 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     return map == null ? wrap("") : wrap((String) map.getProperty(propertyName));
   }
 
+  public Object getAttachmentProperty(String attachment, String property, int index, PropertySource ps) {
+    // This allows ReportState to sum properties properly
+    if (ps instanceof ReportState.OldAndNewPieceProperties) {
+      ps = ((ReportState.OldAndNewPieceProperties)ps).getNewPiece();
+    }
+
+    if (ps instanceof GamePiece) {
+      GamePiece p = Decorator.getOutermost((Decorator)ps);
+      while (p instanceof Decorator) {
+        if (p instanceof Attachment) {
+          final Attachment a = (Attachment)p;
+          if (a.getAttachName().equals(attachment)) {
+            final GamePiece target = a.getAttachedPieceAt(index - 1);
+            if (target == null) return "";
+            return target.getProperty(property);
+          }
+        }
+        p = ((Decorator) p).getInner();
+      }
+    }
+    return "";
+  }
+
   private static int propValue(Object prop) {
     if (prop != null) {
       final String s1 = prop.toString();
@@ -537,7 +560,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
 
   /**
-   * SumAttach(attachment, property) function
+   * SumAttachment(attachment, property) function
    * Total the value of the named property in all pieces
    * attached
    *
@@ -574,7 +597,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
 
   /**
-   * CountStack(property) function count the number of pieces
+   * CountAttachment(property) function count the number of pieces
    * attached to this piece via a named Attachment trait that
    * *contain* the specified property
    *

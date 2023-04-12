@@ -412,6 +412,24 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   }
 
   /**
+   * @param index index (0-based)
+   * @return the attached piece at a given index (0-based)
+   */
+  public GamePiece getAttachedPieceAt(int index) {
+    int count = 0;
+    for (final GamePiece piece : contents) {
+      if (piece.getMap() == null) continue;
+
+      if (count == index) {
+        return piece;
+      }
+
+      count++;
+    }
+    return null;
+  }
+
+  /**
    * @return A list of attached pieces, not counting any that have since been deleted (from the game)
    */
   public List<GamePiece> getAttachList() {
@@ -566,13 +584,6 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       attachKeyInput = new NamedHotKeyConfigurer(p.attachKey);
       traitPanel.add("Editor.Attachment.attach_key_command", attachKeyInput);
 
-      clearCommandNameInput = new StringConfigurer(p.clearCommandName);
-      clearCommandNameInput.setHintKey("Editor.menu_command_hint");
-      traitPanel.add("Editor.Attachment.clear_menu_command", clearCommandNameInput);
-
-      clearKeyInput = new NamedHotKeyConfigurer(p.clearKey);
-      traitPanel.add("Editor.Attachment.clear_key_command", clearKeyInput);
-
       targetConfig = new GlobalCommandTargetConfigurer(p.target);
       traitPanel.add("Editor.GlobalKeyCommand.pre_select", targetConfig);
 
@@ -600,6 +611,13 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       rangeProperty.setHintKey("Editor.GlobalKeyCommand.range_property_hint");
       rangePropertyLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.range_property"));
       traitPanel.add(rangePropertyLabel, rangeProperty);
+
+      clearCommandNameInput = new StringConfigurer(p.clearCommandName);
+      clearCommandNameInput.setHintKey("Editor.menu_command_hint");
+      traitPanel.add("Editor.Attachment.clear_menu_command", clearCommandNameInput);
+
+      clearKeyInput = new NamedHotKeyConfigurer(p.clearKey);
+      traitPanel.add("Editor.Attachment.clear_key_command", clearKeyInput);
 
       pl.propertyChange(null);
     }
