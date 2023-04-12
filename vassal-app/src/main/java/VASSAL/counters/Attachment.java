@@ -47,7 +47,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -111,6 +111,8 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   private KeyCommand myClearAllCommand;
   private KeyCommand myClearMatchingCommand;
 
+  private String attachCountName = "";
+
   private final GlobalDetach globalDetach = new GlobalDetach(this);
 
   public Attachment() {
@@ -127,7 +129,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     type = type.substring(ID.length());
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
 
-    attachName = st.nextToken();
+    setAttachName(st.nextToken());
     desc = st.nextToken();
 
     attachCommandName = st.nextToken(Resources.getString("Editor.Attachment.attach_command"));
@@ -536,6 +538,11 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     return attachName;
   }
 
+  void setAttachName(String name) {
+    attachName = name;
+    attachCountName = name + "_" + ATTACH_COUNT;
+  }
+
   /**
    * @return number of attached pieces, not counting any that have since been deleted (from the game).
    */
@@ -587,7 +594,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     else if (ATTACH_LIST.equals(key)) {
       return getAttachList();
     }
-    else if (ATTACH_COUNT.equals(key)) {
+    else if (attachCountName.equals(key) || ATTACH_COUNT.equals(key)) {
       return String.valueOf(getAttachCount());
     }
     else {
@@ -607,7 +614,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     if (ATTACH_NAME.equals(key)) {
       return attachName;
     }
-    else if (ATTACH_COUNT.equals(key)) {
+    else if (attachCountName.equals(key) || ATTACH_COUNT.equals(key)) {
       return String.valueOf(getAttachCount());
     }
     else  {
@@ -625,7 +632,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   @Override
   public void setProperty(Object key, Object value) {
     if (ATTACH_NAME.equals(key)) {
-      attachName = (String) value;
+      setAttachName((String)value);
       return;
     }
     super.setProperty(key, value);
@@ -665,7 +672,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
    */
   @Override
   public List<String> getPropertyNames() {
-    return Arrays.asList(ATTACH_NAME, ATTACH_COUNT);
+    return Collections.emptyList();
   }
 
   public static class Ed implements PieceEditor {

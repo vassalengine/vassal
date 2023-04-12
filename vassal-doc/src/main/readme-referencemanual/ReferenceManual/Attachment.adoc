@@ -20,6 +20,7 @@ This <<GamePiece.adoc#Traits,Trait>> adds an action that creates a lasting "atta
 (5) If the attached-to piece *also* has an Attachment trait that shares the same _Attachment Name_, then mutual attachments between pieces can also be formed.
 
 *NOTES:*::
+* The property _<AttachmentName>_AttachCount_ can be used to find out how many pieces are currently attached via this trait. For example if the _Attachment Name_ were "Sibling" then the property _Sibling_AttachCount_ would hold the attachment count.
 * A Global Key Command sent to "Current Attachments" will execute very quickly
 * Pieces *can* attach to themselves.
 * While a single piece can contain one _or more_ Attachment traits, all of an individual piece's Attachment traits should have different names (no single piece should have two Attachment traits with the same name).
