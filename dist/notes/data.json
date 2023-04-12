@@ -21,6 +21,8 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 12209, "desc": "Report correct trait in expression Audit Trail" },
+        { "num": 12205, "desc": "Area of Effect trait was eating other traits' visibility info in some cases" },
         { "num": 12203, "desc": "Properly extract outlines from SVG for NonRectangular" },
         { "num": 12175, "desc": "Fix stretchy images in chat" }
       ],

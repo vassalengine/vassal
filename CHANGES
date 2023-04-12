@@ -1,5 +1,8 @@
 3.7.0-beta3 - ???
 
+* 12209: Report correct trait in expression Audit Trail
+* 12205: Area of Effect trait was eating other traits' visibility info in some
+    cases
 * 12203: Properly extract outlines from SVG for NonRectangular
 * 12177: Change-property buttons don't generate completely empty chat lines
 * 12175: Fix stretchy images in chat
