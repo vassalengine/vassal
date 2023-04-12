@@ -32,6 +32,29 @@
       ]
     },
     {
+      "in": "3.7.0-beta2",
+      "since": "3.7.0-beta2",
+      "new_features": [
+        { "num": 12153, "desc": "Layer traits allow a show-only-if-this-property-true filter" },
+        { "num": 12149, "desc": "BorderOutline trait now accepts two fields" },
+        { "num": 12129, "desc": "PlaceMarker and ReplaceWithOther can use expression for X/Y offset" },
+        { "num": 12127, "desc": "Toolbar buttons disableable by a property (e.g., GKC, ActionButton, etc.) can be set to hide when disabled" },
+        { "num": 12100, "desc": "Text Labels support <img> tags" },
+        { "num": 4446, "desc": "Dynamic button labels (can use expressions and $...$ in certain toolbar buttons)" }
+      ],
+      "bug_fixes": [
+        { "num": 12159, "desc": "Correctly handle install paths containing spaces in VASSAL.sh" },
+        { "num": 12158, "desc": "List Key Commands tool can be re-opened after closing with X button" },
+        { "num": 12152, "desc": "Work around Java bug which prevents displaying Windows file dialog" }
+      ],
+      "other_improvements": [
+        { "num": 12138, "desc": "Better editor descriptions of Global Hotkey traits" },
+        { "num": 12137, "desc": "Editor shows better descriptions for Dynamic Property and Set Global Property traits" },
+        { "num": 12136, "desc": "Change Property Buttons now have a description field, which is displayed in the editor if filled in" },
+        { "num": 12133, "desc": "Rollovers automatically shrink scale if the pieces are too wide to fit the screen width" }
+      ]
+    },
+    {
       "in": "3.7.0-beta1",
       "since": "3.6.15",
       "new_features": [
