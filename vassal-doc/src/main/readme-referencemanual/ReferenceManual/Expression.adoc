@@ -93,16 +93,20 @@ Math.max(value1, value2) + |{Math.abs(Number - 5)} +
 
 |*Property* |GetProperty(property) +
 GetString(property) +
+GetAttachmentProperty(attachmentName, property, index) +
 GetMapProperty(property,map) +
 GetZoneProperty(property,zone) +
 GetZoneProperty(property,zone,map) + |{GetProperty("Nation"+myNation)} +
 {GetString("HowManyDogs")} +
+{GetAttachmentProperty("Sibling", "Moved", 2) +
 {GetMapProperty("Owner",CurrentMap)} +
 {GetZoneProperty("Militia","Georgia")} +
 {GetZoneProperty("Modifier",OldZone,OldMap)} + |All *GetProperty()* family functions return the value of a named property.
 The name of the property can be constructed from an expression.
 
 *GetString()* returns a string value even if the property contains a number or a boolean. You can also append *.toString()* to any other function or property to achieve the same effect.
+
+*GetAttachmentProperty()* retrieves the property from an _attached_ piece with the specified index (first attached piece is 1). 
 
 *GetMapProperty()* looks only on the specific map for the property.
 
