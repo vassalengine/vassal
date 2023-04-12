@@ -120,10 +120,6 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   public Attachment(String type, GamePiece inner) {
     mySetType(type);
     setInner(inner);
-
-    globalDetach.getTarget().fastMatchLocation = true;
-    globalDetach.getTarget().fastMatchProperty = false;
-    globalDetach.getTarget().setTargetType(GlobalCommandTarget.Target.CURATTACH);
   }
 
   @Override
@@ -300,6 +296,10 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
 
   public Command clearMatching() {
     final GamePiece outer = Decorator.getOutermost(this);
+
+    globalDetach.target.fastMatchLocation = true;
+    globalDetach.target.fastMatchProperty = false;
+    globalDetach.target.setTargetType(GlobalCommandTarget.Target.CURATTACH);
     globalDetach.setPropertySource(outer); // Doing this here ensures trait is linked into GamePiece before finding source
 
     // Make piece properties filter
