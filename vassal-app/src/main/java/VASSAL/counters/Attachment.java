@@ -31,6 +31,7 @@ import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.PropertyExpressionConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.script.expression.AuditTrail;
@@ -60,6 +61,29 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   public static final String ATTACH_LIST = "AttachList"; //NON-NLS
   public static final String ATTACH_COUNT = "AttachCount"; //NON-NLS
 
+  public static final String ON_ATTACH_NOTHING = "nothing"; //NON-NLS
+  public static final String ON_ATTACH_FOLLOW_BACK = "follow"; //NON-NLS
+  public static final String ON_ATTACH_ATTACH_ALL = "attachAll"; //NON-NLS
+  protected static final String[] ON_ATTACH_OPTIONS = {
+    ON_ATTACH_NOTHING, ON_ATTACH_FOLLOW_BACK, ON_ATTACH_ATTACH_ALL
+  };
+  protected static final String[] ON_ATTACH_KEYS = {
+    Resources.getString("Editor.Attachment.no_additional_action"),
+    Resources.getString("Editor.Attachment.remove_attachments"),
+    Resources.getString("Editor.Attachment.attach_to_all")
+  };
+
+
+  public static final String ON_DETACH_NOTHING = "nothing"; //NON-NLS
+  public static final String ON_DETACH_REMOVE  = "remove"; //NON-NLS
+  protected static final String[] ON_DETACH_OPTIONS = {
+    ON_DETACH_NOTHING, ON_DETACH_REMOVE
+  };
+  protected static final String[] ON_DETACH_KEYS = {
+    Resources.getString("Editor.Attachment.no_additional_action"),
+    Resources.getString("Editor.Attachment.remove_incoming_attachment"),
+  };
+
   protected String attachName;
   protected String desc;
 
@@ -68,17 +92,24 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   protected GlobalCommandTarget target = new GlobalCommandTarget(GlobalCommandTarget.GKCtype.COUNTER);
   protected KeyCommand[] command;
   protected String attachCommandName;
-  protected String clearCommandName;
   protected NamedKeyStroke attachKey;
-  protected NamedKeyStroke clearKey;
   protected GlobalAttach globalAttach = new GlobalAttach(this);
   protected PropertyExpression propertiesFilter = new PropertyExpression();
   protected boolean restrictRange;
   protected boolean fixedRange = true;
   protected int range;
   protected String rangeProperty = "";
+  protected String clearAllCommandName;
+  protected NamedKeyStroke clearAllKey;
+  protected String clearMatchingCommandName;
+  protected NamedKeyStroke clearMatchingKey;
+  protected PropertyExpression clearMatchingFilter = new PropertyExpression();
+  protected String onAttach = ON_ATTACH_NOTHING;
+  protected String onDetach = ON_DETACH_NOTHING;
+
   private KeyCommand myAttachCommand;
-  private KeyCommand myClearCommand;
+  private KeyCommand myClearAllCommand;
+  private KeyCommand myClearMatchingCommand;
 
   public Attachment() {
     this(ID + ";", null);
@@ -99,8 +130,8 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
 
     attachCommandName = st.nextToken(Resources.getString("Editor.Attachment.attach_command"));
     attachKey = st.nextNamedKeyStroke(null);
-    clearCommandName = st.nextToken(Resources.getString("Editor.Attachment.clear_command"));
-    clearKey = st.nextNamedKeyStroke(null);
+    clearAllCommandName = st.nextToken(Resources.getString("Editor.Attachment.clear_all_command"));
+    clearAllKey = st.nextNamedKeyStroke(null);
     propertiesFilter.setExpression(st.nextToken(""));
     restrictRange = st.nextBoolean(false);
     range = st.nextInt(1);
@@ -110,6 +141,13 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     target.decode(st.nextToken(""));
     target.setGKCtype(GlobalCommandTarget.GKCtype.COUNTER);
     target.setCurPiece(this);
+
+    clearMatchingCommandName = st.nextToken(Resources.getString("Editor.Attachment.clear_matching_command"));
+    clearMatchingKey = st.nextNamedKeyStroke(null);
+    clearMatchingFilter.setExpression(st.nextToken(""));
+
+    onAttach = st.nextToken(ON_ATTACH_NOTHING);
+    onDetach = st.nextToken(ON_DETACH_NOTHING);
 
     command = null;
   }
@@ -121,15 +159,20 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       .append(desc)
       .append(attachCommandName)
       .append(attachKey)
-      .append(clearCommandName)
-      .append(clearKey)
+      .append(clearAllCommandName)
+      .append(clearAllKey)
       .append(propertiesFilter)
       .append(restrictRange)
       .append(range)
       .append(fixedRange)
       .append(rangeProperty)
       .append(globalAttach.getSelectFromDeckExpression())
-      .append(target.encode());
+      .append(target.encode())
+      .append(clearMatchingCommandName)
+      .append(clearMatchingKey)
+      .append(clearMatchingFilter)
+      .append(onAttach)
+      .append(onDetach);
     return ID + se.getValue();
   }
 
@@ -137,22 +180,45 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   protected KeyCommand[] myGetKeyCommands() {
     if (command == null) {
       myAttachCommand = new KeyCommand(attachCommandName, attachKey, Decorator.getOutermost(this), this);
-      myClearCommand  = new KeyCommand(clearCommandName, clearKey, Decorator.getOutermost(this), this);
-      if (attachCommandName.length() > 0 && attachKey != null && !attachKey.isNull()) {
-        if (clearCommandName.length() > 0 && clearKey != null && !clearKey.isNull()) {
-          command = new KeyCommand[]{myAttachCommand, myClearCommand};
+      myClearAllCommand  = new KeyCommand(clearAllCommandName, clearAllKey, Decorator.getOutermost(this), this);
+      myClearMatchingCommand = new KeyCommand(clearMatchingCommandName, clearMatchingKey, Decorator.getOutermost(this), this);
+
+      final boolean doAttach = (attachCommandName.length() > 0) && attachKey != null && !attachKey.isNull();
+      final boolean doClearAll = (clearAllCommandName.length() > 0) && clearAllKey != null && !clearAllKey.isNull();
+      final boolean doClearMatching = (clearMatchingCommandName.length() > 0) && clearMatchingKey != null && !clearMatchingKey.isNull();
+
+      if (doAttach) {
+        if (doClearAll) {
+          if (doClearMatching) {
+            command = new KeyCommand[]{myAttachCommand, myClearMatchingCommand, myClearAllCommand};
+          }
+          else {
+            command = new KeyCommand[]{myAttachCommand, myClearAllCommand};
+          }
+        }
+        else if (doClearMatching) {
+          command = new KeyCommand[]{myAttachCommand, myClearMatchingCommand};
         }
         else {
           command = new KeyCommand[]{myAttachCommand};
         }
       }
-      else if (clearCommandName.length() > 0 && clearKey != null && !clearKey.isNull()) {
-        command = new KeyCommand[]{myClearCommand};
+      else if (doClearAll) {
+        if (doClearMatching) {
+          command = new KeyCommand[]{myClearMatchingCommand, myClearAllCommand};
+        }
+        else {
+          command = new KeyCommand[]{myClearAllCommand};
+        }
+      }
+      else if (doClearMatching) {
+        command = new KeyCommand[]{myClearMatchingCommand};
       }
       else {
         command = KeyCommand.NONE;
       }
     }
+
     for (final KeyCommand c : command) {
       c.setEnabled(getMap() != null);
     }
@@ -199,13 +265,8 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       filter = new BooleanAndPieceFilter(filter, new RangeFilter(getMap(), getPosition(), r));
     }
 
-    // Start our actual execution by clearing our attachment list
-    Command c = clear();
-
     // Now apply our filter globally & add any matching pieces as attachments
-    c = c.append(globalAttach.apply(Map.getMapList().toArray(new Map[0]), filter, target, audit));
-
-    return c;
+    return globalAttach.apply(Map.getMapList().toArray(new Map[0]), filter, target, audit);
   }
 
   /**
@@ -213,7 +274,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
    *
    * @return Command to replicate action
    */
-  public Command clear() {
+  public Command clearAll() {
     if (contents.isEmpty()) {
       return new NullCommand();
     }
@@ -223,6 +284,10 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     return ct.getChangeCommand();
   }
 
+  public Command clearMatching() {
+    //
+  }
+
   @Override
   public Command myKeyEvent(KeyStroke stroke) {
     myGetKeyCommands();
@@ -230,8 +295,11 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     if (myAttachCommand.matches(stroke)) {
       return attach();
     }
-    else if (myClearCommand.matches(stroke)) {
-      return clear();
+    else if (myClearAllCommand.matches(stroke)) {
+      return clearAll();
+    }
+    else if (myClearMatchingCommand.matches(stroke)) {
+      return clearMatching();
     }
 
     return null;
@@ -346,8 +414,12 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       d += getCommandDesc(attachCommandName, attachKey);
     }
 
-    if (clearKey != null) {
-      d += getCommandDesc(clearCommandName, clearKey);
+    if (clearAllKey != null) {
+      d += getCommandDesc(clearAllCommandName, clearAllKey);
+    }
+
+    if (clearMatchingKey != null) {
+      d += getCommandDesc(clearMatchingCommandName, clearMatchingKey);
     }
 
     return d;
@@ -502,15 +574,20 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     if (!Objects.equals(desc, c.desc)) return false;
     if (!Objects.equals(attachCommandName, c.attachCommandName)) return false;
     if (!Objects.equals(attachKey, c.attachKey)) return false;
-    if (!Objects.equals(clearCommandName, c.clearCommandName)) return false;
-    if (!Objects.equals(clearKey, c.clearKey)) return false;
+    if (!Objects.equals(clearAllCommandName, c.clearAllCommandName)) return false;
+    if (!Objects.equals(clearAllKey, c.clearAllKey)) return false;
     if (!Objects.equals(propertiesFilter.getExpression(), c.propertiesFilter.getExpression())) return false;
     if (!Objects.equals(restrictRange, c.restrictRange)) return false;
     if (!Objects.equals(range, c.range)) return false;
     if (!Objects.equals(fixedRange, c.fixedRange)) return false;
     if (!Objects.equals(rangeProperty, c.rangeProperty)) return false;
     if (!Objects.equals(target, c.target)) return false;
-    return Objects.equals(globalAttach.getSelectFromDeckExpression(), c.globalAttach.getSelectFromDeckExpression());
+    if (!Objects.equals(globalAttach.getSelectFromDeckExpression(), c.globalAttach.getSelectFromDeckExpression())) return false;
+    if (!Objects.equals(clearMatchingCommandName, c.clearMatchingCommandName)) return false;
+    if (!Objects.equals(clearMatchingKey, c.clearMatchingKey)) return false;
+    if (!Objects.equals(clearMatchingFilter.getExpression(), c.clearMatchingFilter.getExpression())) return false;
+    if (!Objects.equals(onAttach, c.onAttach)) return false;
+    return Objects.equals(onDetach, c.onDetach);
   }
 
   @Override
@@ -532,10 +609,14 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     private final TraitConfigPanel traitPanel;
     private final StringConfigurer attachCommandNameInput;
     protected NamedHotKeyConfigurer attachKeyInput;
-    private final StringConfigurer clearCommandNameInput;
-    protected NamedHotKeyConfigurer clearKeyInput;
+    private final StringConfigurer clearAllCommandNameInput;
+    protected NamedHotKeyConfigurer clearAllKeyInput;
+    private final StringConfigurer clearMatchingCommandNameInput;
+    protected NamedHotKeyConfigurer clearMatchingKeyInput;
 
     protected PropertyExpressionConfigurer propertyMatch;
+    protected PropertyExpressionConfigurer clearMatchingMatch;
+
     protected MassKeyCommand.DeckPolicyConfig deckPolicy;
     protected BooleanConfigurer restrictRange;
     protected BooleanConfigurer fixedRange;
@@ -546,6 +627,9 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     protected JLabel rangePropertyLabel;
 
     protected GlobalCommandTargetConfigurer targetConfig;
+
+    protected TranslatingStringEnumConfigurer onAttachInput;
+    protected TranslatingStringEnumConfigurer onDetachInput;
 
     protected Attachment attachment;
 
@@ -576,6 +660,24 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       descInput = new StringConfigurer(p.desc);
       descInput.setHintKey("Editor.description_hint");
       traitPanel.add("Editor.description_label", descInput);
+
+      onAttachInput = new TranslatingStringEnumConfigurer(ON_ATTACH_OPTIONS, ON_ATTACH_KEYS);
+      onAttachInput.setValue(ON_ATTACH_NOTHING);
+      for (final String option : ON_ATTACH_OPTIONS) {
+        if (option.equals(p.onAttach)) {
+          onAttachInput.setValue(option);
+        }
+      }
+      traitPanel.add("Editor.Attachment.on_attach", onAttachInput);
+
+      onDetachInput = new TranslatingStringEnumConfigurer(ON_DETACH_OPTIONS, ON_DETACH_KEYS);
+      onDetachInput.setValue(ON_DETACH_NOTHING);
+      for (final String option : ON_DETACH_OPTIONS) {
+        if (option.equals(p.onDetach)) {
+          onDetachInput.setValue(option);
+        }
+      }
+      traitPanel.add("Editor.Attachment.on_detach", onDetachInput);
 
       attachCommandNameInput = new StringConfigurer(p.attachCommandName);
       attachCommandNameInput.setHintKey("Editor.menu_command_hint");
@@ -612,12 +714,23 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       rangePropertyLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.range_property"));
       traitPanel.add(rangePropertyLabel, rangeProperty);
 
-      clearCommandNameInput = new StringConfigurer(p.clearCommandName);
-      clearCommandNameInput.setHintKey("Editor.menu_command_hint");
-      traitPanel.add("Editor.Attachment.clear_menu_command", clearCommandNameInput);
+      clearAllCommandNameInput = new StringConfigurer(p.clearAllCommandName);
+      clearAllCommandNameInput.setHintKey("Editor.menu_command_hint");
+      traitPanel.add("Editor.Attachment.clear_all_menu_command", clearAllCommandNameInput);
 
-      clearKeyInput = new NamedHotKeyConfigurer(p.clearKey);
-      traitPanel.add("Editor.Attachment.clear_key_command", clearKeyInput);
+      clearAllKeyInput = new NamedHotKeyConfigurer(p.clearAllKey);
+      traitPanel.add("Editor.Attachment.clear_all_key_command", clearAllKeyInput);
+
+      clearMatchingCommandNameInput = new StringConfigurer(p.clearAllCommandName);
+      clearMatchingCommandNameInput.setHintKey("Editor.menu_command_hint");
+      traitPanel.add("Editor.Attachment.clear_matching_menu_command", clearMatchingCommandNameInput);
+
+      clearMatchingKeyInput = new NamedHotKeyConfigurer(p.clearAllKey);
+      traitPanel.add("Editor.Attachment.clear_matching_key_command", clearMatchingKeyInput);
+
+      clearMatchingMatch = new PropertyExpressionConfigurer(p.clearMatchingFilter);
+      traitPanel.add("Editor.Attachment.clear_matching_properties", clearMatchingMatch);
+
 
       pl.propertyChange(null);
     }
@@ -634,16 +747,20 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
         .append(descInput.getValueString())
         .append(attachCommandNameInput.getValueString())
         .append(attachKeyInput.getValueString())
-        .append(clearCommandNameInput.getValueString())
-        .append(clearKeyInput.getValueString())
+        .append(clearAllCommandNameInput.getValueString())
+        .append(clearAllKeyInput.getValueString())
         .append(propertyMatch.getValueString())
         .append(restrictRange.getValueString())
         .append(range.getValueString())
         .append(fixedRange.getValueString())
         .append(rangeProperty.getValueString())
         .append(deckPolicy.getValueString())
-        .append(targetConfig.getValueString());
-
+        .append(targetConfig.getValueString())
+        .append(clearMatchingCommandNameInput.getValueString())
+        .append(clearMatchingKeyInput.getValueString())
+        .append(clearMatchingMatch.getValueString())
+        .append(onAttachInput.getValueString())
+        .append(onDetachInput.getValueString());
       return ID + se.getValue();
     }
 
