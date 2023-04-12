@@ -71,7 +71,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   protected String clearCommandName;
   protected NamedKeyStroke attachKey;
   protected NamedKeyStroke clearKey;
-  protected GlobalAttach globalCommand = new GlobalAttach(this);
+  protected GlobalAttach globalAttach = new GlobalAttach(this);
   protected PropertyExpression propertiesFilter = new PropertyExpression();
   protected boolean restrictRange;
   protected boolean fixedRange = true;
@@ -106,7 +106,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     range = st.nextInt(1);
     fixedRange = st.nextBoolean(true);
     rangeProperty = st.nextToken("");
-    globalCommand.setSelectFromDeckExpression(st.nextToken("-1"));
+    globalAttach.setSelectFromDeckExpression(st.nextToken("-1"));
     target.decode(st.nextToken(""));
     target.setGKCtype(GlobalCommandTarget.GKCtype.COUNTER);
     target.setCurPiece(this);
@@ -128,7 +128,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       .append(range)
       .append(fixedRange)
       .append(rangeProperty)
-      .append(globalCommand.getSelectFromDeckExpression())
+      .append(globalAttach.getSelectFromDeckExpression())
       .append(target.encode());
     return ID + se.getValue();
   }
@@ -178,7 +178,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
    */
   public Command attach() {
     final GamePiece outer = Decorator.getOutermost(this);
-    globalCommand.setPropertySource(outer); // Doing this here ensures trait is linked into GamePiece before finding source
+    globalAttach.setPropertySource(outer); // Doing this here ensures trait is linked into GamePiece before finding source
 
     // Make piece properties filter
     final AuditTrail audit = AuditTrail.create(this, propertiesFilter.getExpression(), Resources.getString("Editor.GlobalKeyCommand.matching_properties"));
@@ -203,7 +203,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     Command c = clear();
 
     // Now apply our filter globally & add any matching pieces as attachments
-    c = c.append(globalCommand.apply(Map.getMapList().toArray(new Map[0]), filter, target, audit));
+    c = c.append(globalAttach.apply(Map.getMapList().toArray(new Map[0]), filter, target, audit));
 
     return c;
   }
@@ -492,7 +492,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     if (!Objects.equals(fixedRange, c.fixedRange)) return false;
     if (!Objects.equals(rangeProperty, c.rangeProperty)) return false;
     if (!Objects.equals(target, c.target)) return false;
-    return Objects.equals(globalCommand.getSelectFromDeckExpression(), c.globalCommand.getSelectFromDeckExpression());
+    return Objects.equals(globalAttach.getSelectFromDeckExpression(), c.globalAttach.getSelectFromDeckExpression());
   }
 
   @Override
@@ -580,7 +580,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       traitPanel.add("Editor.GlobalKeyCommand.matching_properties", propertyMatch);
 
       deckPolicy = new MassKeyCommand.DeckPolicyConfig(false);
-      deckPolicy.setValue(p.globalCommand.getSelectFromDeckExpression());
+      deckPolicy.setValue(p.globalAttach.getSelectFromDeckExpression());
       traitPanel.add("Editor.GlobalKeyCommand.deck_policy", deckPolicy);
 
       restrictRange = new BooleanConfigurer(p.restrictRange);

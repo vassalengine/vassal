@@ -69,13 +69,15 @@ public class GlobalAttach extends GlobalCommand {
       }
 
       if (filter == null || filter.accept(p, owner, audit)) {
-        if (visitingDeck) {
-          p.setProperty(Properties.OBSCURED_BY, p.getProperty(Properties.OBSCURED_BY_PRE_DRAW));  // Bug 13433 restore correct OBSCURED_BY after checking filter
+        if (!attach.hasTarget(p)) {
+          if (visitingDeck) {
+            p.setProperty(Properties.OBSCURED_BY, p.getProperty(Properties.OBSCURED_BY_PRE_DRAW));  // Bug 13433 restore correct OBSCURED_BY after checking filter
+          }
+
+          command.append(attach.makeAddTargetCommand(p));
+
+          selectedCount++;
         }
-
-        command.append(attach.makeAddTargetCommand(p));
-
-        selectedCount++;
       }
       else {
         if (visitingDeck) {
