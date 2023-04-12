@@ -69,7 +69,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   };
   protected static final String[] ON_ATTACH_KEYS = {
     Resources.getString("Editor.Attachment.no_additional_action"),
-    Resources.getString("Editor.Attachment.remove_attachments"),
+    Resources.getString("Editor.Attachment.follow_back"),
     Resources.getString("Editor.Attachment.attach_to_all")
   };
 
@@ -285,7 +285,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   }
 
   public Command clearMatching() {
-    //
+    return null;
   }
 
   @Override
@@ -342,13 +342,39 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
    * @return Command that adds the target
    */
   public Command makeAddTargetCommand(GamePiece p) {
-    if (hasTarget(p)) {
-      return null;
+    Command c = new NullCommand();
+
+    // Attach to our target, if we aren't attached.
+    if (!hasTarget(p)) {
+      final ChangeTracker ct = new ChangeTracker(this);
+      contents.add(p);
+      c = c.append(ct.getChangeCommand());
     }
 
-    final ChangeTracker ct = new ChangeTracker(this);
-    contents.add(p);
-    return ct.getChangeCommand();
+    // If our target has "on attach" conditions in an equivalently named Attachment, process them
+    GamePiece target = Decorator.getOutermost(p);
+    while (target instanceof Decorator) {
+      if (target instanceof Attachment) {
+        final Attachment targetAttach = (Attachment)target;
+        if (attachName.equals(targetAttach.attachName)) {
+          // Found an attachment w/ the same name
+          if (!targetAttach.onAttach.equals(ON_ATTACH_NOTHING)) {
+            // They're either ON_ATTACH_FOLLOW_BACK or ON_ATTACH_ATTACH_ALL, so we definitely at last at an attach-back command
+            c = c.append(targetAttach.makeAddTargetCommand(Decorator.getOutermost(this)));
+
+            // If they're ON_ATTACH_ATTACH_ALL then they attach to ALL of our previously attached pieces
+            if (targetAttach.onAttach.equals(ON_ATTACH_ATTACH_ALL)) {
+              for (final GamePiece other : getAttachList()) {
+                c = c.append(targetAttach.makeAddTargetCommand(Decorator.getOutermost(other)));
+              }
+            }
+          }
+        }
+      }
+      target = ((Decorator) target).getInner();
+    }
+
+    return c;
   }
 
   /**
@@ -367,12 +393,29 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
    * @return Command to remove the piece
    */
   public Command makeRemoveTargetCommand(GamePiece p) {
+    Command c = new NullCommand();
+
     if (!hasTarget(p)) {
-      return null;
+      final ChangeTracker ct  = new ChangeTracker(this);
+      removeTarget(p);
+      c = c.append(ct.getChangeCommand());
     }
-    final ChangeTracker ct  = new ChangeTracker(this);
-    removeTarget(p);
-    return ct.getChangeCommand();
+
+    // If our detach condition is ON_DETACH_REMOVE, then remove incoming attachment at the same time
+    if (onDetach.equals(ON_DETACH_REMOVE)) {
+      GamePiece target = Decorator.getOutermost(p);
+      while (target instanceof Decorator) {
+        if (target instanceof Attachment) {
+          final Attachment targetAttach = (Attachment)target;
+          if (attachName.equals(targetAttach.attachName)) {
+            c = c.append(targetAttach.makeRemoveTargetCommand(Decorator.getOutermost(this)));
+          }
+        }
+        target = ((Decorator) target).getInner();
+      }
+    }
+
+    return c;
   }
 
   @Override
