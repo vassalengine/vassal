@@ -111,6 +111,8 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   private KeyCommand myClearAllCommand;
   private KeyCommand myClearMatchingCommand;
 
+  private final GlobalDetach globalDetach = new GlobalDetach(this);
+
   public Attachment() {
     this(ID + ";", null);
   }
@@ -118,6 +120,10 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   public Attachment(String type, GamePiece inner) {
     mySetType(type);
     setInner(inner);
+
+    globalDetach.getTarget().fastMatchLocation = true;
+    globalDetach.getTarget().fastMatchProperty = false;
+    globalDetach.getTarget().setTargetType(GlobalCommandTarget.Target.CURATTACH);
   }
 
   @Override
@@ -270,22 +276,38 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   }
 
   /**
-   * Clears any existing attachment(s)
+   * Clears all existing attachment(s)
    *
    * @return Command to replicate action
    */
   public Command clearAll() {
+    Command c = new NullCommand();
     if (contents.isEmpty()) {
-      return new NullCommand();
+      return c;
+    }
+
+    final List<GamePiece> targets = getAttachList();
+    for (final GamePiece target : targets) {
+      c = c.append(makeRemoveTargetCommand(target));
     }
 
     final ChangeTracker ct = new ChangeTracker(this);
     contents.clear();
-    return ct.getChangeCommand();
+    c = c.append(ct.getChangeCommand());
+
+    return c;
   }
 
   public Command clearMatching() {
-    return null;
+    final GamePiece outer = Decorator.getOutermost(this);
+    globalDetach.setPropertySource(outer); // Doing this here ensures trait is linked into GamePiece before finding source
+
+    // Make piece properties filter
+    final AuditTrail audit = AuditTrail.create(this, propertiesFilter.getExpression(), Resources.getString("Editor.GlobalKeyCommand.matching_properties"));
+    final PieceFilter filter = clearMatchingFilter.getFilter(outer, this, audit);
+
+    // Now apply our filter globally & add any matching pieces as attachments
+    return globalDetach.apply(Map.getMapList().toArray(new Map[0]), filter, target, audit);
   }
 
   @Override
