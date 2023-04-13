@@ -793,16 +793,15 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       clearAllKeyInput = new NamedHotKeyConfigurer(p.clearAllKey);
       traitPanel.add("Editor.Attachment.clear_all_key_command", clearAllKeyInput);
 
-      clearMatchingCommandNameInput = new StringConfigurer(p.clearAllCommandName);
+      clearMatchingCommandNameInput = new StringConfigurer(p.clearMatchingCommandName);
       clearMatchingCommandNameInput.setHintKey("Editor.menu_command_hint");
       traitPanel.add("Editor.Attachment.clear_matching_menu_command", clearMatchingCommandNameInput);
 
-      clearMatchingKeyInput = new NamedHotKeyConfigurer(p.clearAllKey);
+      clearMatchingKeyInput = new NamedHotKeyConfigurer(p.clearMatchingKey);
       traitPanel.add("Editor.Attachment.clear_matching_key_command", clearMatchingKeyInput);
 
       clearMatchingMatch = new PropertyExpressionConfigurer(p.clearMatchingFilter);
       traitPanel.add("Editor.Attachment.clear_matching_properties", clearMatchingMatch);
-
 
       pl.propertyChange(null);
     }
