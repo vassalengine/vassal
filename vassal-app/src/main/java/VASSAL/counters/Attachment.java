@@ -61,6 +61,17 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   public static final String ATTACH_LIST = "AttachList"; //NON-NLS
   public static final String ATTACH_COUNT = "AttachCount"; //NON-NLS
 
+  public static final String BEFORE_ATTACH_NOTHING = "nothing"; //NON-NLS
+  public static final String BEFORE_ATTACH_CLEAR = "clear"; //NON-NLS
+  protected static final String[] BEFORE_ATTACH_OPTIONS = {
+    BEFORE_ATTACH_NOTHING, BEFORE_ATTACH_CLEAR
+  };
+  protected static final String[] BEFORE_ATTACH_KEYS = {
+    Resources.getString("Editor.Attachment.leave_existing"),
+    Resources.getString("Editor.Attachment.clear_existing"),
+  };
+
+
   public static final String ON_ATTACH_NOTHING = "nothing"; //NON-NLS
   public static final String ON_ATTACH_FOLLOW_BACK = "follow"; //NON-NLS
   public static final String ON_ATTACH_ATTACH_ALL = "attachAll"; //NON-NLS
@@ -106,6 +117,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   protected PropertyExpression clearMatchingFilter = new PropertyExpression();
   protected String onAttach = ON_ATTACH_NOTHING;
   protected String onDetach = ON_DETACH_NOTHING;
+  protected String beforeAttach = BEFORE_ATTACH_CLEAR;
 
   private KeyCommand myAttachCommand;
   private KeyCommand myClearAllCommand;
@@ -152,6 +164,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
 
     onAttach = st.nextToken(ON_ATTACH_NOTHING);
     onDetach = st.nextToken(ON_DETACH_NOTHING);
+    beforeAttach = st.nextToken(BEFORE_ATTACH_CLEAR);
 
     command = null;
   }
@@ -176,7 +189,8 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       .append(clearMatchingKey)
       .append(clearMatchingFilter)
       .append(onAttach)
-      .append(onDetach);
+      .append(onDetach)
+      .append(beforeAttach);
     return ID + se.getValue();
   }
 
@@ -247,6 +261,12 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
    * @return Command to replicate action
    */
   public Command attach() {
+    Command c = new NullCommand();
+
+    if (BEFORE_ATTACH_CLEAR.equals(beforeAttach)) {
+      c = c.append(clearAll());
+    }
+
     final GamePiece outer = Decorator.getOutermost(this);
     globalAttach.setPropertySource(outer); // Doing this here ensures trait is linked into GamePiece before finding source
 
@@ -270,7 +290,9 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     }
 
     // Now apply our filter globally & add any matching pieces as attachments
-    return globalAttach.apply(Map.getMapList().toArray(new Map[0]), filter, target, audit);
+    c = c.append(globalAttach.apply(Map.getMapList().toArray(new Map[0]), filter, target, audit));
+
+    return c;
   }
 
   /**
@@ -659,7 +681,8 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     if (!Objects.equals(clearMatchingKey, c.clearMatchingKey)) return false;
     if (!Objects.equals(clearMatchingFilter.getExpression(), c.clearMatchingFilter.getExpression())) return false;
     if (!Objects.equals(onAttach, c.onAttach)) return false;
-    return Objects.equals(onDetach, c.onDetach);
+    if (!Objects.equals(onDetach, c.onDetach)) return false;
+    return Objects.equals(beforeAttach, c.beforeAttach);
   }
 
   @Override
@@ -702,6 +725,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
 
     protected TranslatingStringEnumConfigurer onAttachInput;
     protected TranslatingStringEnumConfigurer onDetachInput;
+    protected TranslatingStringEnumConfigurer beforeAttachInput;
 
     protected Attachment attachment;
 
@@ -733,6 +757,15 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       descInput.setHintKey("Editor.description_hint");
       traitPanel.add("Editor.description_label", descInput);
 
+      beforeAttachInput = new TranslatingStringEnumConfigurer(BEFORE_ATTACH_OPTIONS, BEFORE_ATTACH_KEYS);
+      beforeAttachInput.setValue(BEFORE_ATTACH_CLEAR);
+      for (final String option : BEFORE_ATTACH_OPTIONS) {
+        if (option.equals(p.beforeAttach)) {
+          beforeAttachInput.setValue(option);
+        }
+      }
+      traitPanel.add("Editor.Attachment.before_attach", beforeAttachInput);
+
       onAttachInput = new TranslatingStringEnumConfigurer(ON_ATTACH_OPTIONS, ON_ATTACH_KEYS);
       onAttachInput.setValue(ON_ATTACH_NOTHING);
       for (final String option : ON_ATTACH_OPTIONS) {
@@ -741,15 +774,6 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
         }
       }
       traitPanel.add("Editor.Attachment.on_attach", onAttachInput);
-
-      onDetachInput = new TranslatingStringEnumConfigurer(ON_DETACH_OPTIONS, ON_DETACH_KEYS);
-      onDetachInput.setValue(ON_DETACH_NOTHING);
-      for (final String option : ON_DETACH_OPTIONS) {
-        if (option.equals(p.onDetach)) {
-          onDetachInput.setValue(option);
-        }
-      }
-      traitPanel.add("Editor.Attachment.on_detach", onDetachInput);
 
       attachCommandNameInput = new StringConfigurer(p.attachCommandName);
       attachCommandNameInput.setHintKey("Editor.menu_command_hint");
@@ -785,6 +809,15 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       rangeProperty.setHintKey("Editor.GlobalKeyCommand.range_property_hint");
       rangePropertyLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.range_property"));
       traitPanel.add(rangePropertyLabel, rangeProperty);
+
+      onDetachInput = new TranslatingStringEnumConfigurer(ON_DETACH_OPTIONS, ON_DETACH_KEYS);
+      onDetachInput.setValue(ON_DETACH_NOTHING);
+      for (final String option : ON_DETACH_OPTIONS) {
+        if (option.equals(p.onDetach)) {
+          onDetachInput.setValue(option);
+        }
+      }
+      traitPanel.add("Editor.Attachment.on_detach", onDetachInput);
 
       clearAllCommandNameInput = new StringConfigurer(p.clearAllCommandName);
       clearAllCommandNameInput.setHintKey("Editor.menu_command_hint");
@@ -831,7 +864,8 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
         .append(clearMatchingKeyInput.getValueString())
         .append(clearMatchingMatch.getValueString())
         .append(onAttachInput.getValueString())
-        .append(onDetachInput.getValueString());
+        .append(onDetachInput.getValueString())
+        .append(beforeAttachInput.getValueString());
       return ID + se.getValue();
     }
 

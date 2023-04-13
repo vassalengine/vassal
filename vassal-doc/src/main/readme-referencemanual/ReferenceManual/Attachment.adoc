@@ -25,13 +25,19 @@ This <<GamePiece.adoc#Traits,Trait>> adds an action that creates a lasting "atta
 * Pieces *can* attach to themselves.
 * While a single piece can contain one _or more_ Attachment traits, all of an individual piece's Attachment traits should have different names (no single piece should have two Attachment traits with the same name).
 * Two pieces, each with an Attachment trait sharing the same _Attachment Name_ can form a mutual attachment
-* Pieces which are deleted from the game are automatically removed as attachments. Other than that, attachments are _only_ removed when the _Clear All_ or _Clear Matching_ commands are used -- using the _Attach_ key command may attach _more_ pieces but it will never remove any.
+* Pieces which are deleted from the game are automatically removed as attachments.
 
 [width="100%",cols="50%a,^50%a",]
 |===
 |*Attachment Name:*:: The name for this Attachment trait. This name can be used by the piece to read properties from attached pieces. For example if the Attachment name were _Sibling_, then the property _Sibling_LocationName_ would contain the _LocationName_ property of the first currently attached piece. Similarly, if the attached piece contained a Dynamic Property called _Dynamite_, then a <<SetGlobalProperty.adoc#top, Set Global Property>> trait on this piece could change that property using the name _Sibling_Dynamite_.
 
-*Description:*:: A short description of this trait for your own reference.
+*Description:*::  A short description of this trait for your own reference.
+
+*Before adding attachments:*::  Determines whether existing attachments are cleared before adding new attachments.
++
+*Clear existing attachments first*::  If this option is selected, then whenever the key command to attach pieces executes, all existing attachments are first cleared before adding any pieces that match the command.
++
+*Leave existing attachments alone*::  If this option is selected, then adding attachments will never _detach_ pieces -- meaning that executing the attach key command a second or subsequent time will only potentially add attachments, never remove any.
 
 *When another piece attaches to this one using this attachment's name*:: Determines what happens when another piece with an Attachment trait *sharing the same* _Attachment Name_ attaches to this piece. Can be used to create two-way and multi-way attachments.
 +
@@ -41,16 +47,10 @@ This <<GamePiece.adoc#Traits,Trait>> adds an action that creates a lasting "atta
 +
 *Attach to that piece along with all pieces it has attached to*:: This piece adds that piece to its list of attachments. This piece _also_ adds to its attachment every _other_ piece that the new piece has attached (using an Attachment trait with the same _Attachment Name_). This setting is useful for creating "multi-way" attachments. NOTE: it will also normally result in the piece being attached to itself.
 
-*When clearing our attachment to another piece*:: Determines what happens when the _Clear Matching_ or _Clear All_ key command is used to remove one of our existing attachments.
-+
-*No additional action*:: Nothing additional happens. This is the default setting.
-+
-*Remove that piece's attachment to this one as well*:: Severs the other piece's attachment to this one as well (assuming it has one from an Attachment trait with the same _Attachment Name_)
-
 *Menu command to attach pieces:*:: Name of the right-click context menu item to attach pieces.
 If left blank, no context menu item will appear.
 
-*Key command to attach pieces:*::  A Key Command or <<NamedKeyCommand.adoc#top,Named Key Command>> that initiates attachment of pieces. Note that no pieces are _detached_ by this action -- so if you haven't otherwise cleared attachments, executing this a second or subsequent time will potentially add _more_ attachments while keeping any that already exist.
+*Key command to attach pieces:*::  A Key Command or <<NamedKeyCommand.adoc#top,Named Key Command>> that initiates attachment of pieces.
 
 *Pre-select (Fast Match):*::  *Fast Match* selections can be used to improve the performance of "slow" piece filters.
 +
@@ -76,6 +76,12 @@ Otherwise, the distance is measured in screen pixels.
 If unselected, then the range will be given by the value of the named <<Properties.adoc#top,property>>.
 
 *Range Property:*::  The name of a Property that contains the range to use when Fixed Range is not selected.
+
+*When clearing our attachment to another piece*:: Determines what happens when the _Clear Matching_ or _Clear All_ key command is used to remove one of our existing attachments.
++
+*No additional action*:: Nothing additional happens. This is the default setting.
++
+*Remove that piece's attachment to this one as well*:: Severs the other piece's attachment to this one as well (assuming it has one from an Attachment trait with the same _Attachment Name_)
 
 *Menu command to clear all outgoing attachments:*:: Name of the right-click context menu item to clear ALL current attachments (by _this_ individual Attachment trait).
 If left blank, no context menu item will appear.
