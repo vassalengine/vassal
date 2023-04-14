@@ -19,9 +19,11 @@ package VASSAL.counters;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.command.ChangeTracker;
+import VASSAL.build.module.map.boardPicker.Board;
+import VASSAL.build.module.map.boardPicker.board.MapGrid;
+import VASSAL.build.module.map.boardPicker.board.RegionGrid;
+import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
 import VASSAL.command.Command;
-import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
@@ -41,12 +43,11 @@ import javax.swing.KeyStroke;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -77,6 +78,25 @@ public class LocationCommand extends Decorator implements TranslatablePiece {
   protected PropertyExpression propertiesFilter = new PropertyExpression();
   protected FormattedString menuText;
   protected NamedKeyStroke key;
+
+  // Private stuff
+  private List<LocationKeyCommand> keyCommands = new ArrayList<>();
+
+
+  private class LocationKeyCommand extends KeyCommand {
+    private String locationName;
+
+    public LocationKeyCommand(String name, NamedKeyStroke key, GamePiece target, TranslatablePiece i18nPiece, String locationName) {
+      super(name, key, target, i18nPiece);
+      this.locationName = locationName;
+    }
+
+    public String getLocationName() {
+      return locationName;
+    }
+  }
+
+
 
   public LocationCommand() {
     this(ID + ";", null); //NON-NLS
@@ -139,7 +159,21 @@ public class LocationCommand extends Decorator implements TranslatablePiece {
 
   @Override
   public KeyCommand[] myGetKeyCommands() {
-    return KeyCommand.NONE;
+    if ((key == null) || key.isNull()) {
+      return KeyCommand.NONE;
+    }
+
+    keyCommands.clear();
+
+    final Map map = getMap();
+    if (map == null) return KeyCommand.NONE;
+    for (final Board board : map.getBoardPicker().getSelectedBoards()) {
+      final MapGrid grid = board.getGrid();
+      if (!(grid instanceof ZonedGrid) && (!(grid instanceof RegionGrid) || )) continue;
+
+    }
+
+    return (KeyCommand[]) keyCommands.toArray();
   }
 
 
