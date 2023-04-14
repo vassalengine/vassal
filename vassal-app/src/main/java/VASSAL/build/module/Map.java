@@ -4052,7 +4052,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   @Override
   public List<String> getMenuTextList() {
-    final List<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>(super.getMenuTextList());
     if (!GlobalOptions.NEVER.equals(markMovedOption)) {
       l.add(markUnmovedText);
       l.add(markUnmovedTooltip);
@@ -4070,12 +4070,13 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    final List<NamedKeyStroke> l = new ArrayList<>(super.getNamedKeyStrokeList());
+    l.add(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)));
+    l.add(moveKey);
     if (!GlobalOptions.NEVER.equals(markMovedOption)) {
-      return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)), moveKey, NamedHotKeyConfigurer.decode(getAttributeValueString(MARK_UNMOVED_HOTKEY)));
+      l.add(NamedHotKeyConfigurer.decode(getAttributeValueString(MARK_UNMOVED_HOTKEY)));
     }
-    else {
-      return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)), moveKey);
-    }
+    return l;
   }
 
   /**
