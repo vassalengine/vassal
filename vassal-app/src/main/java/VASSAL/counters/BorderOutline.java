@@ -25,6 +25,7 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.search.SearchTarget;
 import VASSAL.tools.SequenceEncoder;
 
 import java.awt.Color;
@@ -33,6 +34,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -326,5 +328,14 @@ public class BorderOutline extends Decorator implements TranslatablePiece {
     LogicalCompareConfigurer() {
       super(null, null, LogicalCompareMode.getSymbols(), LogicalCompareMode.getKeys());
     }
+  }
+
+  /**
+   * {@link SearchTarget}
+   * @return a list of any Property Names referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    return Arrays.asList(propertyName, propertyName2);
   }
 }
