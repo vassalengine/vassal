@@ -1,5 +1,6 @@
 3.7.0-beta3 - ???
 
+* 12221: Fixed various missing searchability on various components
 * 12209: Report correct trait in expression Audit Trail
 * 12205: Area of Effect trait was eating other traits' visibility info in some
     cases
