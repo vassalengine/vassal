@@ -64,7 +64,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.awt.Component;
 import java.beans.PropertyChangeListener;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -706,6 +706,9 @@ public class MassKeyCommand extends AbstractToolbarItem
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)), NamedHotKeyConfigurer.decode(getAttributeValueString(KEY_COMMAND)));
+    final List<NamedKeyStroke> l = new ArrayList<>(super.getNamedKeyStrokeList());
+    l.add(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)));
+    l.add(NamedHotKeyConfigurer.decode(getAttributeValueString(KEY_COMMAND)));
+    return l;
   }
 }

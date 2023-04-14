@@ -738,7 +738,9 @@ public class DoActionButton extends AbstractToolbarItem
    */
   @Override
   public List<String> getPropertyList() {
-    return Arrays.asList(indexProperty);
+    final List<String> propList = new ArrayList<>(super.getPropertyList());
+    propList.add(indexProperty);
+    return propList;
   }
 
   /**
