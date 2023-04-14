@@ -21,8 +21,11 @@ import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.MapGrid;
+import VASSAL.build.module.map.boardPicker.board.Region;
 import VASSAL.build.module.map.boardPicker.board.RegionGrid;
 import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
+import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.IntConfigurer;
@@ -31,6 +34,7 @@ import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.script.expression.AuditTrail;
 import VASSAL.search.SearchTarget;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
@@ -67,23 +71,24 @@ public class LocationCommand extends Decorator implements TranslatablePiece {
   public static final String LOC_NAME = "Location";
 
   public static final String LOC_REGIONS = "locRegions"; //NON-NLS
-  public static final String LOC_ZONES   = "locZones"; //NON-NLS
-  public static final String[] LOC_OPTIONS = { LOC_REGIONS, LOC_ZONES };
-  public static final String[] LOC_KEYS    = { "Editor.LocationCommand.regions", "Editor.LocationCommand.zones"};
+  public static final String LOC_ZONES = "locZones"; //NON-NLS
+  public static final String[] LOC_OPTIONS = {LOC_REGIONS, LOC_ZONES};
+  public static final String[] LOC_KEYS = {"Editor.LocationCommand.regions", "Editor.LocationCommand.zones"};
 
 
   // Type variables (configured in Ed)
   protected String desc;
   protected String locType;
-  protected PropertyExpression propertiesFilter = new PropertyExpression();
-  protected FormattedString menuText;
+  protected PropertyExpression propertiesFilter = new PropertyExpression("");
+  protected FormattedString menuText = new FormattedString("");
   protected NamedKeyStroke key;
 
   // Private stuff
   private List<LocationKeyCommand> keyCommands = new ArrayList<>();
+  private LocationPropertySource locPS = new LocationPropertySource();
+  private String evalLocation = "";
 
-
-  private class LocationKeyCommand extends KeyCommand {
+  private static class LocationKeyCommand extends KeyCommand {
     private String locationName;
 
     public LocationKeyCommand(String name, NamedKeyStroke key, GamePiece target, TranslatablePiece i18nPiece, String locationName) {
@@ -96,6 +101,24 @@ public class LocationCommand extends Decorator implements TranslatablePiece {
     }
   }
 
+  /**
+   * Makes our location-currently-being-evaluated available to property evaluation; other than that, properties from the piece as usual
+   */
+  private class LocationPropertySource implements PropertySource {
+    public Object getProperty(Object key) {
+      if (LOC_NAME.equals(key)) {
+        return evalLocation;
+      }
+      else {
+        return Decorator.getOutermost(piece).getProperty(key);
+      }
+    }
+
+    @Override
+    public Object getLocalizedProperty(Object key) {
+      return getProperty(key);
+    }
+  }
 
 
   public LocationCommand() {
@@ -157,6 +180,42 @@ public class LocationCommand extends Decorator implements TranslatablePiece {
   }
 
 
+  private void tryName(String name) {
+    evalLocation = name;
+    if (propertiesFilter.isTrue(locPS)) {
+      final AuditTrail audit = AuditTrail.create(this, menuText.getFormat(), Resources.getString("Editor.LocationCommand.evaluate_menu_text"));
+      final String myMenuText = menuText.getLocalizedText(this, this, audit);
+      keyCommands.add(new LocationKeyCommand(myMenuText, key, Decorator.getOutermost(this), this, evalLocation));
+    }
+  }
+
+  private void tryZone(Zone zone) {
+    tryName(zone.getName());
+  }
+
+  private void tryRegion(Region region) {
+    tryName(region.getName());
+  }
+
+  private void tryGrid(MapGrid grid) {
+    if (grid instanceof ZonedGrid) {
+      for (final Zone zone : ((ZonedGrid) grid).getZonesList()) {
+        if (LOC_ZONES.equals(locType)) {
+          tryZone(zone);
+          continue;
+        }
+
+        tryGrid(zone.getGrid());
+      }
+    }
+    else if ((grid instanceof RegionGrid) && LOC_REGIONS.equals(locType)) {
+      for (final Region r : ((RegionGrid)grid).getRegionList().values()) {
+        tryRegion(r);
+      }
+    }
+  }
+
+
   @Override
   public KeyCommand[] myGetKeyCommands() {
     if ((key == null) || key.isNull()) {
@@ -168,9 +227,7 @@ public class LocationCommand extends Decorator implements TranslatablePiece {
     final Map map = getMap();
     if (map == null) return KeyCommand.NONE;
     for (final Board board : map.getBoardPicker().getSelectedBoards()) {
-      final MapGrid grid = board.getGrid();
-      if (!(grid instanceof ZonedGrid) && (!(grid instanceof RegionGrid) || )) continue;
-
+      tryGrid(board.getGrid());
     }
 
     return (KeyCommand[]) keyCommands.toArray();
@@ -186,15 +243,8 @@ public class LocationCommand extends Decorator implements TranslatablePiece {
 
   @Override
   public Command myKeyEvent(KeyStroke stroke) {
-    if (!keyCommandsSet) {
-      if (matFindKey != null && !matFindKey.isNull()) {
-        matFindKeyCommand = new KeyCommand("", matFindKey, Decorator.getOutermost(this), this);
-      }
-      if (matDetachKey != null && !matDetachKey.isNull()) {
-        matDetachKeyCommand = new KeyCommand("", matDetachKey, Decorator.getOutermost(this), this);
-      }
-      keyCommandsSet = true;
-    }
+    myGetKeyCommands();
+
 
     // Our Find command
     if ((matFindKeyCommand != null) && matFindKeyCommand.matches(stroke)) {

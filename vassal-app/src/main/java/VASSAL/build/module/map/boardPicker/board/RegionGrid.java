@@ -114,6 +114,10 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
   protected GridNumbering gridNumbering;
 
+  public Map<Point, Region> getRegionList() {
+    return regionList;
+  }
+
   public void addRegion(Region a) {
     regionList.put(a.getOrigin(), a);
     if (inConfig && regionConfigurer != null) {

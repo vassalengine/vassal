@@ -375,6 +375,10 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
     return zones.iterator();
   }
 
+  public List<Zone> getZonesList() {
+    return new ArrayList<>(zones);
+  }
+
   public MapGrid getBackgroundGrid() {
     return background;
   }
