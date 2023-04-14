@@ -96,6 +96,7 @@ import VASSAL.configure.ValidationReport;
 import VASSAL.configure.password.ToggleablePasswordConfigurer;
 import VASSAL.counters.DeckManager;
 import VASSAL.counters.GamePiece;
+import VASSAL.counters.KeyCommand;
 import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.I18nResourcePathFinder;
 import VASSAL.i18n.Language;
@@ -372,6 +373,17 @@ public class GameModule extends AbstractConfigurable
 
   public boolean isSuppressAutoCenterUpdate() {
     return suppressAutoCenterUpdate;
+  }
+
+
+  private KeyCommand locationKeyCommand = null;
+
+  public KeyCommand getLocationKeyCommand() {
+    return locationKeyCommand;
+  }
+
+  public void setLocationKeyCommand(KeyCommand kc) {
+    locationKeyCommand = kc;
   }
 
 

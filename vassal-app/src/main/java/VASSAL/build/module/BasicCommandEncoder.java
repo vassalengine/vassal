@@ -51,6 +51,7 @@ import VASSAL.counters.GlobalHotKey;
 import VASSAL.counters.Hideable;
 import VASSAL.counters.Immobilized;
 import VASSAL.counters.Labeler;
+import VASSAL.counters.LocationCommand;
 import VASSAL.counters.Marker;
 import VASSAL.counters.Mat;
 import VASSAL.counters.MatCargo;
@@ -200,7 +201,8 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     Map.entry(Mat.ID, Mat::new),
     Map.entry(MatCargo.ID, MatCargo::new),
     Map.entry(BasicName.ID, BasicName::new),
-    Map.entry(BorderOutline.ID, BorderOutline::new)
+    Map.entry(BorderOutline.ID, BorderOutline::new),
+    Map.entry(LocationCommand.ID, LocationCommand::new)
   );
 
   /**
