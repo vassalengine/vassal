@@ -35,6 +35,7 @@ import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.script.expression.AuditTrail;
+import VASSAL.search.SearchTarget;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.SequenceEncoder;
@@ -47,6 +48,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -873,5 +875,44 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     public String getState() {
       return attachment.myGetState();
     }
+  }
+
+  /**
+   * {@link SearchTarget}
+   * @return a list of the Decorator's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    final List<String> expList = target.getExpressionList();
+    expList.add(propertiesFilter.getExpression());
+    expList.add(clearMatchingFilter.getExpression());
+    return expList;
+  }
+
+  /**
+   * {@link SearchTarget}
+   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return Arrays.asList(attachCommandName, clearAllCommandName, clearMatchingCommandName);
+  }
+
+  /**
+   * {@link SearchTarget}
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(attachKey, clearAllKey, clearMatchingKey);
+  }
+
+  /**
+   * {@link SearchTarget}
+   * @return a list of any Property Names referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    return Arrays.asList(attachName, rangeProperty);
   }
 }
