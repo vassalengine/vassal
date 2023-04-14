@@ -336,6 +336,6 @@ public class BorderOutline extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getPropertyList() {
-    return Arrays.asList(propertyName, propertyName2);
+    return List.of(propertyName, propertyName2);
   }
 }
