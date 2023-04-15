@@ -89,6 +89,8 @@ public class MultiLocationCommand extends Decorator implements TranslatablePiece
   private boolean everBuilt = false;
 
   public static class MultiLocationKeyCommand extends KeyCommand {
+    private static final long serialVersionUID = 1L;
+
     private final String locationName;
     private final String zoneName;
     private final String boardName;
@@ -106,6 +108,7 @@ public class MultiLocationCommand extends Decorator implements TranslatablePiece
       return locationName;
     }
 
+    @Override
     public void actionPerformed(ActionEvent evt) {
       final GameModule gm = GameModule.getGameModule();
       gm.setLocationKeyCommand(this);
@@ -118,6 +121,7 @@ public class MultiLocationCommand extends Decorator implements TranslatablePiece
    * Makes our location-currently-being-evaluated available to property evaluation; other than that, properties from the piece as usual
    */
   private class MultiLocationPropertySource implements PropertySource {
+    @Override
     public Object getProperty(Object key) {
       if (LOC_NAME.equals(key)) {
         return evalLocation;
