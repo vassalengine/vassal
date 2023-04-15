@@ -80,7 +80,7 @@ public class LocationCommand extends Decorator implements TranslatablePiece {
   private String evalLocation = "";
   private boolean everBuilt = false;
 
-  private class LocationKeyCommand extends KeyCommand {
+  public class LocationKeyCommand extends KeyCommand {
     private String locationName;
 
     public LocationKeyCommand(String name, NamedKeyStroke key, GamePiece target, TranslatablePiece i18nPiece, String locationName) {
@@ -200,9 +200,9 @@ public class LocationCommand extends Decorator implements TranslatablePiece {
 
   private void tryName(String name) {
     evalLocation = name;
-    if (propertiesFilter.isTrue(locPS)) {
-      final AuditTrail audit = AuditTrail.create(this, menuText.getFormat(), Resources.getString("Editor.LocationCommand.evaluate_menu_text"));
-      final String myMenuText = menuText.getLocalizedText(this, this, audit);
+    if (propertiesFilter.getExpression().isBlank() || propertiesFilter.isTrue(locPS)) {
+      final AuditTrail audit = AuditTrail.create(locPS, menuText.getFormat(), Resources.getString("Editor.LocationCommand.evaluate_menu_text"));
+      final String myMenuText = menuText.getLocalizedText(locPS, this, audit);
       keyCommands.add(new LocationKeyCommand(myMenuText, key, Decorator.getOutermost(this), this, evalLocation));
     }
   }
@@ -250,7 +250,7 @@ public class LocationCommand extends Decorator implements TranslatablePiece {
       tryGrid(board.getGrid());
     }
 
-    return (KeyCommand[]) keyCommands.toArray();
+    return keyCommands.toArray(new KeyCommand[0]);
   }
 
 
