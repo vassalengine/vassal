@@ -26,7 +26,7 @@ import VASSAL.counters.GamePiece;
 import VASSAL.counters.KeyBuffer;
 import VASSAL.counters.KeyCommand;
 import VASSAL.counters.KeyCommandSubMenu;
-import VASSAL.counters.LocationCommand;
+import VASSAL.counters.MultiLocationCommand;
 import VASSAL.counters.MenuSeparator;
 import VASSAL.counters.PieceFinder;
 import VASSAL.counters.Properties;
@@ -167,7 +167,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
           strokes.add(KeyStroke.getKeyStroke('\0'));
         }
         else {
-          if (strokes.contains(stroke) && !keyCommand.isMenuSeparator() && !(keyCommand instanceof LocationCommand.LocationKeyCommand)) {
+          if (strokes.contains(stroke) && !keyCommand.isMenuSeparator() && !(keyCommand instanceof MultiLocationCommand.MultiLocationKeyCommand)) {
             final JMenuItem command = commands.get(strokes.indexOf(stroke));
             final Action action = command.getAction();
             if (action != null) {
