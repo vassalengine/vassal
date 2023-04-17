@@ -129,4 +129,12 @@
         <justification>No one should be using this externally</justification>
     </difference>
 
+  <!-- 3.6.16 -->
+
+  <difference>
+      <className>VASSAL/launch/DebugClassLoader</className>
+      <differenceType>8001</differenceType>
+      <justification>Never released</justification>
+    </difference>
+
 </differences>

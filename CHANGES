@@ -72,6 +72,16 @@
     buttons (e.g., GKC, Multi-Action, etc) are available
 *  4454: Save chat text to file
 
+3.6.16 - 17 April 2023
+
+* 12232: Notify user about mismatch between module and save version instead of
+    throwing IllegalStateException
+* 12221: Fixed various missing searchability on various components
+* 12209: Report correct trait in expression Audit Trail
+* 12159: Correctly handle install paths containing spaces in VASSAL.sh
+* 12158: List Key Commands tool can be re-opened after closing with X button
+* 12152: Work around Java bug which prevents displaying Windows file dialogs
+
 3.6.15 - 28 March 2023
 
 * 12140: Action Buttons on pieces that have just been drag-moved are

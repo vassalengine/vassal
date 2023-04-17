@@ -107,6 +107,46 @@ public class TilingHandler {
     this(aname, cdir, tdim, mhlim);
   }
 
+  protected boolean isFresh(
+    FileArchive archive,
+    FileStore tcache,
+    String ipath,
+    Dimension idim) throws IOException {
+
+    final long imtime = archive.getMTime(ipath);
+
+    if (imtime < 0) {
+      // time in archive might be goofy
+      return false;
+    }
+
+    final int iw = idim.width;
+    final int ih = idim.height;
+    final int tw = tdim.width;
+    final int th = tdim.height;
+
+    // iterate over all the tiles
+    for (int div = 1; iw / div > 0 && ih / div > 0; div <<= 1) {
+      final int cols = (int) Math.ceil((double) (iw / div) / tw);
+      final int rows = (int) Math.ceil((double) (ih / div) / th);
+
+      for (int c = 0; c < cols; ++c) {
+        for (int r = 0; r < rows; ++r) {
+          final String tpath = TileUtils.tileName(ipath, c, r, div);
+
+          // check whether the tile is newer than the image
+          if (imtime >= tcache.getMTime(tpath)) {
+            return false;
+          }
+        }
+      }
+    }
+
+    // all tiles exist and are newer than the image
+    return true;
+  }
+
+  @Deprecated(since = "2023-04-17", forRemoval = true)
   protected boolean isFresh(FileArchive archive,
                             FileStore tcache, String ipath)
                                                            throws IOException {
@@ -142,8 +182,6 @@ public class TilingHandler {
     final FileArchive fa = archive.getArchive();
 
     for (final String ipath : images) {
-      // skip images with fresh tiles
-      if (isFresh(fa, tcache, ipath)) continue;
       final Dimension idim;
       try {
         idim = getImageSize(archive, ipath);
@@ -151,6 +189,11 @@ public class TilingHandler {
       catch (IOException e) {
         // skip images we can't read
         failed.add(Pair.of(ipath, e));
+        continue;
+      }
+
+      // skip images with fresh tiles
+      if (isFresh(fa, tcache, ipath, idim)) {
         continue;
       }
 
