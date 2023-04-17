@@ -337,7 +337,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     final PieceFilter filter = clearMatchingFilter.getFilter(outer, this, audit);
 
     // Now apply our filter globally & add any matching pieces as attachments
-    return globalDetach.apply(Map.getMapList().toArray(new Map[0]), filter, target, audit);
+    return globalDetach.apply(Map.getMapList().toArray(new Map[0]), filter, globalDetach.target, audit);
   }
 
   @Override
