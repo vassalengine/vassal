@@ -1,5 +1,7 @@
 3.6.16 - 17 April 2023
 
+* 12232: Notify user about mismatch between module and save version instead of
+    throwing IllegalStateException
 * 12221: Fixed various missing searchability on various components
 * 12209: Report correct trait in expression Audit Trail
 * 12159: Correctly handle install paths containing spaces in VASSAL.sh

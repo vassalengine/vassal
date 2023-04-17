@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 12232, "desc": "Notify user about mismatch between module and save version instead of throwing IllegalStateException" },
         { "num": 12221, "desc": "Fixed various missing searchability on various components" },
         { "num": 12209, "desc": "Report correct trait in expression Audit Trail" },
         { "num": 12159, "desc": "Correctly handle install paths containing spaces in VASSAL.sh" },
