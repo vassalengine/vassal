@@ -75,6 +75,7 @@
 
 * 12232: Notify user about mismatch between module and save version instead of
     throwing IllegalStateException
+* 12231: Check that all tiles exist for an image when tiling, not just 0,0@1:1
 * 12221: Fixed various missing searchability on various components
 * 12209: Report correct trait in expression Audit Trail
 * 12159: Correctly handle install paths containing spaces in VASSAL.sh
