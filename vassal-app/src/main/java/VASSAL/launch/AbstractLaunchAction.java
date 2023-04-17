@@ -554,7 +554,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
       if (SystemUtils.IS_OS_WINDOWS) {
         final String noAgent = System.getProperty("VASSAL.noagent");
-        if (noAgent != null) {
+        if (noAgent == null) {
           result.add("-javaagent:lib\\vassal-agent.jar");
           result.add("--add-opens");
           result.add("java.desktop/sun.awt.shell=ALL-UNNAMED");
