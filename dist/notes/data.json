@@ -17,6 +17,21 @@
   ],
   "changes": [
     {
+      "in": "3.6.16",
+      "since": "3.6.15",
+      "new_features": [
+      ],
+      "bug_fixes": [
+        { "num": 12221, "desc": "Fixed various missing searchability on various components" },
+        { "num": 12209, "desc": "Report correct trait in expression Audit Trail" },
+        { "num": 12159, "desc": "Correctly handle install paths containing spaces in VASSAL.sh" },
+        { "num": 12158, "desc": "List Key Commands tool can be re-opened after closing with X button" },
+        { "num": 12152, "desc": "Work around Java bug which prevents displaying Windows file dialogs" }
+      ],
+      "other_improvements": [
+      ]
+    },
+    {
       "in": "3.6.15",
       "since": "3.6.14",
       "new_features": [
@@ -32,45 +47,6 @@
         { "num": 12085, "desc": "Screen capture default icon height adjusted to match the other 16-pixel-high icons" },
         { "num": 12069, "desc": "Tiling: Improved detection of and recovery from running out of memory; improved error dialogs" },
         { "num": 9894, "desc": "Improved error dialog for failure to start child process" }
-      ]
-    },
-    {
-      "in": "3.6.14",
-      "since": "3.6.13",
-      "new_features": [
-      ],
-      "bug_fixes": [
-        { "num": 12063, "desc": "Fixed Deck save/load hotkeys being mixed up" },
-        { "num": 12061, "desc": "Fixed bug with pasting invalid/incomplete regex expressions" },
-        { "num": 12059, "desc": "Various PMD and Spotbugs fixes" },
-        { "num": 12048, "desc": "Fix bugs when deleting groups of decks/stacks from the editor" },
-        { "num": 12041, "desc": "Rollover border color of 'no color' did not save to file, nor copy correctly" },
-        { "num": 11249, "desc": "Enhanced recursion protection to catch self-referencing prototypes" }
-      ],
-      "other_improvements": [
-        { "num": 12065, "desc": "Reduce update check delay to 5 days, from 10" },
-        { "num": 10249, "desc": "Duplicating a prototype no longer disables that prototype until next module reload" }
-      ]
-    },
-    {
-      "in": "3.6.13",
-      "since": "3.6.12",
-      "new_features": [
-      ],
-      "bug_fixes": [
-        { "num": 12042, "desc": "Fix bug when copying Decks and At-Start Stacks to other maps" },
-        { "num": 12037, "desc": "Fix concurrent modification exception in Decks " },
-        { "num": 12016, "desc": "Fix a possible crash scenario in At-Start Stacks" },
-        { "num": 11897, "desc": "Ensure that deleted extensions don't crash the Module Manager" },
-        { "num": 11693, "desc": "Prevent NPE when copying folders containing Mouse-over Stack Viewers" },
-        { "num":  11451, "desc": "Don't permit drag-and-drop within PlaceMarker, Replace with Other selection dialogs" },
-        { "num": 11173, "desc": "Fixed crash in sorting a deck" }
-      ],
-      "other_improvements": [
-        { "num": 11995, "desc": "ActionButtons with reports shouldn't display them if report is empty" },
-        { "num": 11967, "desc": "When dragging piece out of face-down deck, use unrotated shape" },
-        { "num": 10877, "desc": "Added a 'player joined' message when playing online" },
-        { "num": 9786, "desc": "Text Label traits will respond to GameRefresher (unless trait has a manually-change-label hotkey defined)" }
       ]
     }
   ]
