@@ -327,6 +327,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     clearTarget.fastMatchLocation = true;
     clearTarget.fastMatchProperty = false;
     clearTarget.setTargetType(GlobalCommandTarget.Target.CURATTACH);
+    clearTarget.setCurPiece(this);
     globalDetach.setPropertySource(outer); // Doing this here ensures trait is linked into GamePiece before finding source
 
     // Make piece properties filter
