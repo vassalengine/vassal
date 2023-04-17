@@ -343,7 +343,7 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
       piece.setState(st.nextToken());
     }
     catch (NoSuchElementException e) {
-      throw new IllegalStateException("No state for Decorator=" + myGetType());
+      throw new IllegalStateException(Resources.getString("Decorator.no_state_for_trait") + myGetType());
     }
   }
 

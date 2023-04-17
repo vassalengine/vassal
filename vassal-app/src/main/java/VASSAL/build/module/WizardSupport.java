@@ -17,33 +17,35 @@
  */
 package VASSAL.build.module;
 
-import java.awt.AlphaComposite;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Rectangle;
-import java.awt.event.ItemEvent;
-import java.awt.image.BufferedImage;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
+import VASSAL.build.GameModule;
+import VASSAL.build.module.documentation.Tutorial;
+import VASSAL.chat.ui.ChatServerControls;
+import VASSAL.command.Command;
+import VASSAL.command.CommandFilter;
+import VASSAL.command.NullCommand;
+import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.FileConfigurer;
+import VASSAL.configure.PasswordConfigurer;
+import VASSAL.configure.ShowHelpAction;
+import VASSAL.configure.StringConfigurer;
+import VASSAL.counters.TraitConfigPanel;
+import VASSAL.i18n.Resources;
+import VASSAL.preferences.Prefs;
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.SplashScreen;
+import VASSAL.tools.WarningDialog;
+import VASSAL.tools.image.ImageUtils;
+import net.miginfocom.swing.MigLayout;
+import org.netbeans.api.wizard.WizardDisplayer;
+import org.netbeans.spi.wizard.Wizard;
+import org.netbeans.spi.wizard.WizardBranchController;
+import org.netbeans.spi.wizard.WizardController;
+import org.netbeans.spi.wizard.WizardException;
+import org.netbeans.spi.wizard.WizardPage;
+import org.netbeans.spi.wizard.WizardPage.WizardResultProducer;
+import org.netbeans.spi.wizard.WizardPanelProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.Action;
 import javax.swing.Box;
@@ -61,36 +63,33 @@ import javax.swing.JRadioButton;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
-
-import net.miginfocom.swing.MigLayout;
-import org.netbeans.api.wizard.WizardDisplayer;
-import org.netbeans.spi.wizard.Wizard;
-import org.netbeans.spi.wizard.WizardBranchController;
-import org.netbeans.spi.wizard.WizardController;
-import org.netbeans.spi.wizard.WizardException;
-import org.netbeans.spi.wizard.WizardPage;
-import org.netbeans.spi.wizard.WizardPage.WizardResultProducer;
-import org.netbeans.spi.wizard.WizardPanelProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import VASSAL.build.GameModule;
-import VASSAL.build.module.documentation.Tutorial;
-import VASSAL.chat.ui.ChatServerControls;
-import VASSAL.command.Command;
-import VASSAL.command.CommandFilter;
-import VASSAL.command.NullCommand;
-import VASSAL.counters.TraitConfigPanel;
-import VASSAL.configure.BooleanConfigurer;
-import VASSAL.configure.FileConfigurer;
-import VASSAL.configure.PasswordConfigurer;
-import VASSAL.configure.ShowHelpAction;
-import VASSAL.configure.StringConfigurer;
-import VASSAL.i18n.Resources;
-import VASSAL.preferences.Prefs;
-import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.SplashScreen;
-import VASSAL.tools.image.ImageUtils;
+import java.awt.AlphaComposite;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Rectangle;
+import java.awt.event.ItemEvent;
+import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
 
 /**
  * Provides support for two different wizards. The WelcomeWizard is the initial screen shown to the user when loading a
@@ -631,17 +630,28 @@ public class WizardSupport {
     protected Command loadSavedGame() throws IOException {
       Command setupCommand =
         GameModule.getGameModule().getGameState().decodeSavedGame(in);
-      if (setupCommand == null) {
-        throw new IOException(Resources.getString("WizardSupport.InvalidSavefile")); //$NON-NLS-1$
-      }
-      // Strip out the setup(true) command. This will be applied when the "Finish" button is pressed
-      setupCommand = new CommandFilter() {
-        @Override
-        protected boolean accept(Command c) {
-          return !(c instanceof GameState.SetupCommand) ||
-            !((GameState.SetupCommand) c).isGameStarting();
+      try {
+        if (setupCommand == null) {
+          throw new IOException(Resources.getString("WizardSupport.InvalidSavefile")); //$NON-NLS-1$
         }
-      }.apply(setupCommand);
+        // Strip out the setup(true) command. This will be applied when the "Finish" button is pressed
+        setupCommand = new CommandFilter() {
+          @Override
+          protected boolean accept(Command c) {
+            return !(c instanceof GameState.SetupCommand) ||
+              !((GameState.SetupCommand) c).isGameStarting();
+          }
+        }.apply(setupCommand);
+      }
+      catch (IllegalStateException e) {
+        if (e.getMessage().startsWith(Resources.getString("Decorator.no_state_for_trait"))) { //BR//
+          WarningDialog.show("GameState.probably_wrong_version"); //NON-NLS
+        }
+        else {
+          throw e;
+        }
+      }
+
       return setupCommand;
     }
   }
