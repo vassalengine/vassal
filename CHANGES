@@ -1,8 +1,7 @@
 3.7.0-beta3 - ???
 
-* 12221: Fixed various missing searchability on various components
+* 12233: Ensure that OpMultiResolutionImage.getBaseImage() never returns null
 * 12220: Add BorderOutline's property names to the searchable target list
-* 12209: Report correct trait in expression Audit Trail
 * 12205: Area of Effect trait was eating other traits' visibility info in some
     cases
 * 12203: Properly extract outlines from SVG for NonRectangular
