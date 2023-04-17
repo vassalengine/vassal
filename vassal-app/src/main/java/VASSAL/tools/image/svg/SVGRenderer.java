@@ -225,6 +225,11 @@ public class SVGRenderer {
       final int w = (int)(width + 0.5);
       final int h = (int)(height + 0.5);
 
+      if (w <= 0 || h <= 0) {
+        writeImage(ImageUtils.NULL_IMAGE);
+        return;
+      }
+
       // paint the SVG document using the bridge package
       // create the appropriate renderer
       ImageRenderer renderer = rendFactory.createStaticImageRenderer();
