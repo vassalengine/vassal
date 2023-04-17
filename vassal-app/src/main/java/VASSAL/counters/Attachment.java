@@ -324,10 +324,6 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   public Command clearMatching() {
     final GamePiece outer = Decorator.getOutermost(this);
 
-    if (globalDetach.target == null) {
-      globalDetach.target = new GlobalCommandTarget();
-    }
-
     clearTarget.fastMatchLocation = true;
     clearTarget.fastMatchProperty = false;
     clearTarget.setTargetType(GlobalCommandTarget.Target.CURATTACH);
