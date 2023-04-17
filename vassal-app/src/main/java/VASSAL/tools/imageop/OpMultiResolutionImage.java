@@ -22,6 +22,8 @@ import java.awt.Image;
 import java.awt.image.AbstractMultiResolutionImage;
 import java.util.List;
 
+import VASSAL.tools.image.ImageUtils;
+
 public class OpMultiResolutionImage extends AbstractMultiResolutionImage {
   protected ImageOp sop;
 
@@ -36,11 +38,12 @@ public class OpMultiResolutionImage extends AbstractMultiResolutionImage {
 
   @Override
   public List<Image> getResolutionVariants() {
-    return List.of(sop.getImage());
+    return List.of(getBaseImage());
   }
 
   @Override
   protected Image getBaseImage() {
-    return sop.getImage();
+    final Image base = sop.getImage();
+    return base == null ? ImageUtils.NULL_IMAGE : sop.getImage();
   }
 }
