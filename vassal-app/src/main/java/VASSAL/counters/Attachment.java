@@ -103,6 +103,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   protected List<GamePiece> contents = new ArrayList<>();
 
   protected GlobalCommandTarget target = new GlobalCommandTarget(GlobalCommandTarget.GKCtype.COUNTER);
+  protected GlobalCommandTarget clearTarget = new GlobalCommandTarget(GlobalCommandTarget.GKCtype.COUNTER);
   protected KeyCommand[] command;
   protected String attachCommandName;
   protected NamedKeyStroke attachKey;
@@ -327,9 +328,9 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       globalDetach.target = new GlobalCommandTarget();
     }
 
-    globalDetach.target.fastMatchLocation = true;
-    globalDetach.target.fastMatchProperty = false;
-    globalDetach.target.setTargetType(GlobalCommandTarget.Target.CURATTACH);
+    clearTarget.fastMatchLocation = true;
+    clearTarget.fastMatchProperty = false;
+    clearTarget.setTargetType(GlobalCommandTarget.Target.CURATTACH);
     globalDetach.setPropertySource(outer); // Doing this here ensures trait is linked into GamePiece before finding source
 
     // Make piece properties filter
@@ -337,7 +338,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     final PieceFilter filter = clearMatchingFilter.getFilter(outer, this, audit);
 
     // Now apply our filter globally & add any matching pieces as attachments
-    return globalDetach.apply(Map.getMapList().toArray(new Map[0]), filter, globalDetach.target, audit);
+    return globalDetach.apply(Map.getMapList().toArray(new Map[0]), filter, clearTarget, audit);
   }
 
   @Override
