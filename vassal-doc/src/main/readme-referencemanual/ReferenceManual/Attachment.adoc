@@ -33,6 +33,8 @@ This <<GamePiece.adoc#Traits,Trait>> adds an action that creates a lasting "atta
 
 *Description:*::  A short description of this trait for your own reference.
 
+*Allow attachment to self:*::  If selected, the attachment is allowed to attach to _this piece_ (i.e. itself) if conditions are otherise met. If not selected, the Attachment will never attach to itself in any circumstances.
+
 *Before adding attachments:*::  Determines whether existing attachments are cleared before adding new attachments.
 +
 *Clear existing attachments first*::  If this option is selected, then whenever the key command to attach pieces executes, all existing attachments are first cleared before adding any pieces that match the command.
@@ -45,7 +47,7 @@ This <<GamePiece.adoc#Traits,Trait>> adds an action that creates a lasting "atta
 +
 *Attach to that piece*:: This piece adds that piece to its list of attachments--in other words a mutual attachment is formed. This setting is useful for creating mutual or "two-way" attachments.
 +
-*Attach to that piece along with all pieces it has attached to*:: This piece adds that piece to its list of attachments. This piece _also_ adds to its attachment every _other_ piece that the new piece has attached (using an Attachment trait with the same _Attachment Name_). This setting is useful for creating "multi-way" attachments. NOTE: it will also normally result in the piece being attached to itself.
+*Attach to that piece along with all pieces it has attached to*:: This piece adds that piece to its list of attachments. This piece _also_ adds to its attachment every _other_ piece that the new piece has attached (using an Attachment trait with the same _Attachment Name_). This setting is useful for creating "multi-way" attachments. NOTE: it will also normally result in the piece being attached to itself, unless the _Allow attachment to self_ box is unchecked.
 
 *Menu command to attach pieces:*:: Name of the right-click context menu item to attach pieces.
 If left blank, no context menu item will appear.
