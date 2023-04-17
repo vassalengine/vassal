@@ -323,13 +323,17 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   public Command clearMatching() {
     final GamePiece outer = Decorator.getOutermost(this);
 
+    if (globalDetach.target == null) {
+      globalDetach.target = new GlobalCommandTarget();
+    }
+
     globalDetach.target.fastMatchLocation = true;
     globalDetach.target.fastMatchProperty = false;
     globalDetach.target.setTargetType(GlobalCommandTarget.Target.CURATTACH);
     globalDetach.setPropertySource(outer); // Doing this here ensures trait is linked into GamePiece before finding source
 
     // Make piece properties filter
-    final AuditTrail audit = AuditTrail.create(this, propertiesFilter.getExpression(), Resources.getString("Editor.GlobalKeyCommand.matching_properties"));
+    final AuditTrail audit = AuditTrail.create(this, clearMatchingFilter.getExpression(), Resources.getString("Editor.GlobalKeyCommand.matching_properties"));
     final PieceFilter filter = clearMatchingFilter.getFilter(outer, this, audit);
 
     // Now apply our filter globally & add any matching pieces as attachments
@@ -443,7 +447,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   public Command makeRemoveTargetCommand(GamePiece p) {
     Command c = new NullCommand();
 
-    if (!hasTarget(p)) {
+    if (hasTarget(p)) {
       final ChangeTracker ct  = new ChangeTracker(this);
       removeTarget(p);
       c = c.append(ct.getChangeCommand());
