@@ -121,6 +121,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   protected String onAttach = ON_ATTACH_NOTHING;
   protected String onDetach = ON_DETACH_NOTHING;
   protected String beforeAttach = BEFORE_ATTACH_CLEAR;
+  protected boolean allowSelfAttach = true;
 
   private KeyCommand myAttachCommand;
   private KeyCommand myClearAllCommand;
@@ -168,6 +169,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     onAttach = st.nextToken(ON_ATTACH_NOTHING);
     onDetach = st.nextToken(ON_DETACH_NOTHING);
     beforeAttach = st.nextToken(BEFORE_ATTACH_CLEAR);
+    allowSelfAttach = st.nextBoolean(true);
 
     command = null;
   }
@@ -193,7 +195,8 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       .append(clearMatchingFilter)
       .append(onAttach)
       .append(onDetach)
-      .append(beforeAttach);
+      .append(beforeAttach)
+      .append(allowSelfAttach);
     return ID + se.getValue();
   }
 
@@ -393,6 +396,10 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
    */
   public Command makeAddTargetCommand(GamePiece p) {
     Command c = new NullCommand();
+
+    if (!allowSelfAttach && Decorator.getOutermost(this).equals(Decorator.getOutermost(p))) {
+      return c;
+    }
 
     // Attach to our target, if we aren't attached.
     if (!hasTarget(p)) {
@@ -686,7 +693,8 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     if (!Objects.equals(clearMatchingFilter.getExpression(), c.clearMatchingFilter.getExpression())) return false;
     if (!Objects.equals(onAttach, c.onAttach)) return false;
     if (!Objects.equals(onDetach, c.onDetach)) return false;
-    return Objects.equals(beforeAttach, c.beforeAttach);
+    if (!Objects.equals(beforeAttach, c.beforeAttach)) return false;
+    return Objects.equals(allowSelfAttach, c.allowSelfAttach);
   }
 
   @Override
@@ -730,6 +738,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     protected TranslatingStringEnumConfigurer onAttachInput;
     protected TranslatingStringEnumConfigurer onDetachInput;
     protected TranslatingStringEnumConfigurer beforeAttachInput;
+    protected BooleanConfigurer allowSelfAttachInput;
 
     protected Attachment attachment;
 
@@ -760,6 +769,9 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       descInput = new StringConfigurer(p.desc);
       descInput.setHintKey("Editor.description_hint");
       traitPanel.add("Editor.description_label", descInput);
+
+      allowSelfAttachInput = new BooleanConfigurer(p.allowSelfAttach);
+      traitPanel.add("Editor.Attachment.allow_self_attach", allowSelfAttachInput);
 
       beforeAttachInput = new TranslatingStringEnumConfigurer(BEFORE_ATTACH_OPTIONS, BEFORE_ATTACH_KEYS);
       beforeAttachInput.setValue(BEFORE_ATTACH_CLEAR);
@@ -869,7 +881,8 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
         .append(clearMatchingMatch.getValueString())
         .append(onAttachInput.getValueString())
         .append(onDetachInput.getValueString())
-        .append(beforeAttachInput.getValueString());
+        .append(beforeAttachInput.getValueString())
+        .append(allowSelfAttachInput.getValueString());
       return ID + se.getValue();
     }
 
