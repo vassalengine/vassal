@@ -15,7 +15,7 @@ This <<GamePiece.adoc#Traits,Trait>> adds an action that creates a lasting "atta
 
 (3) The piece will be able to directly read the properties of _one_ of the pieces that the Attachment trait is bound to through a simple syntax. For cases where a single piece is bound to a particular Attachment trait, this can be quite useful in reading its properties quickly and easily. If a group of multiple pieces is attached with one Attachment trait, properties will be read from an undetermined _single piece_ from among the attached pieces. See _Attachment Name_, below, for an explanation of how to read a property from the attached piece.
 
-(4) For <<DynamicProperty.adoc#top, Dynamic Properties>> of an attached piece, the value of the properties can also be _set_ by this piece, by using a <<SetGlobalProperty.adoc#top, Set Global Property>> trait using the same naming convention (see _Attachment Name_, below)
+(4) For <<DynamicProperty.adoc#top, Dynamic Properties>> of an attached piece, the value of the properties can also be _set_ by this piece, by using a <<SetAttachmentProperty.adoc#top, Set Attachment Property>> trait.
 
 (5) If the attached-to piece *also* has an Attachment trait that shares the same _Attachment Name_, then mutual attachments between pieces can also be formed.
 
@@ -26,10 +26,12 @@ This <<GamePiece.adoc#Traits,Trait>> adds an action that creates a lasting "atta
 * While a single piece can contain one _or more_ Attachment traits, all of an individual piece's Attachment traits should have different names (no single piece should have two Attachment traits with the same name).
 * Two pieces, each with an Attachment trait sharing the same _Attachment Name_ can form a mutual attachment
 * Pieces which are deleted from the game are automatically removed as attachments.
+* The _GetAttachmentProperty(attachmentName,propertyName,attachmentIndex)_ function can be used in expressions to read the values of Dynamic Properties on attached pieces.
+* A <<SetAttachmentProperty.adoc#top,Set Attachment Property>> trait can be used to change the values of Dynamic Properties on attached pieces.
 
 [width="100%",cols="50%a,^50%a",]
 |===
-|*Attachment Name:*:: The name for this Attachment trait. This name can be used by the piece to read properties from attached pieces. For example if the Attachment name were _Sibling_, then the property _Sibling_LocationName_ would contain the _LocationName_ property of the first currently attached piece. Similarly, if the attached piece contained a Dynamic Property called _Dynamite_, then a <<SetGlobalProperty.adoc#top, Set Global Property>> trait on this piece could change that property using the name _Sibling_Dynamite_.
+|*Attachment Name:*:: The name for this Attachment trait. This name can be used by the piece to read properties from attached pieces. For example if the Attachment name were _Sibling_, then the property _Sibling_LocationName_ would contain the _LocationName_ property of the first currently attached piece.
 
 *Description:*::  A short description of this trait for your own reference.
 
