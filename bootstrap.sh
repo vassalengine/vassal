@@ -87,4 +87,4 @@ popd
 #
 # Set up Maven Wrapper
 #
-mvn -N io.takari:maven:0.7.7:wrapper
+mvn wrapper:wrapper
