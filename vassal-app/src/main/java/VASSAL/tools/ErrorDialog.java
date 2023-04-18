@@ -26,7 +26,11 @@ import VASSAL.tools.bug.BugHandler;
 import VASSAL.tools.concurrent.FutureUtils;
 import VASSAL.tools.image.tilecache.TileNotFoundException;
 import VASSAL.tools.version.VersionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import java.awt.Component;
 import java.awt.Frame;
 import java.io.IOException;
@@ -37,12 +41,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
-
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Joel Uckelman
@@ -90,8 +88,14 @@ public class ErrorDialog {
       final Frame frame = GameModule.getGameModule() == null
         ? null : GameModule.getGameModule().getPlayerWindow();
 
+      if (thrown.getMessage().contains("ran out of memory")) { //NON-NLS
+        SwingUtilities.invokeLater(() -> new BugDialog(frame, thrown, "TilingMemoryDialog", "/icons/48x48/ram.png").setVisible(true)); //NON-NLS
+      }
+      else if (thrown.getMessage().contains("failed to start child process")) { //NON-NLS
+        SwingUtilities.invokeLater(() -> new BugDialog(frame, thrown, "ChildProcessDialog", "/icons/48x48/VASSAL.png").setVisible(true)); //NON-NLS
+      }
       // remove this when the tile cache bug is fixed
-      if (showSpecialTileBugAdmonition(thrown)) {
+      else if (showSpecialTileBugAdmonition(thrown)) {
         new Thread(() -> {
           FutureUtils.wait(ErrorDialog.show("Bug10900.help"));
           SwingUtilities.invokeLater(() -> new BugDialog(frame, thrown).setVisible(true));
@@ -114,6 +118,7 @@ public class ErrorDialog {
     }
     return false;
   }
+
 
   public static Future<?> show(
     String messageKey,

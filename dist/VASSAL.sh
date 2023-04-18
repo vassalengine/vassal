@@ -18,7 +18,7 @@ fi
 # Dereference any possible symbolic link to executable script, then find
 # absolute path where VASSAL is installed 
 EXEC_PATH=$(realpath "$0")
-INSTALL_DIR=$(dirname ${EXEC_PATH})
+INSTALL_DIR=$(dirname "${EXEC_PATH}")
 
 # Check that java is new enough
 if ! "$JAVA" -classpath "$INSTALL_DIR"/lib/Vengine.jar VASSAL.launch.JavaVersionChecker 2>/dev/null ; then

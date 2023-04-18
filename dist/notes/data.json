@@ -1,10 +1,9 @@
 {
-  "headline": "The VASSAL Team is happy to announce VASSAL {{version}}.",
+  "headline": "The VASSAL Team is happy to announce VASSAL {{version}}, which is a preview release.",
   "important": [
-    "NEW! 64-bit ARM packages: There are now MacOS and Windows packages for 64-bit ARM processors. If you have a Mac with an Apple Silicon CPU (which is a 64-bit ARM processor), we recommend using the 64-bit ARM build.",
-    "Code deprecated more than a year ago has been removed. Modules containing custom code using that code MUST be updated if they are to work with {{version_feature}}.",
-    "Things may be broken which worked previously. If you find a new bug, please report it.",
-    "Modules saved in {{version_feature}} are not openable by earlier versions of VASSAL. We recommend keeping a backup copy of any pre-{{version_feature}} modules you plan to modify in {{version_feature}} until you've verified that everything works to your satisfaction."
+    "Modules saved in {{version_feature}} are not openable by earlier versions of VASSAL. We recommend keeping a backup copy of any pre-{{version_feature}} modules you plan to modify in {{version_feature}} until you've verified that everything works to your satisfaction.",
+    "Some code deprecated more than a year ago has been removed. Modules containing custom code using that code MUST be updated if they are to work with {{version_feature}}.",
+    "Things may be broken which worked previously. If you find a new bug, please report it."
   ],
   "downloads": [
     { "display_name": "Linux", "suffix": "linux.tar.bz2" },
@@ -17,43 +16,80 @@
   ],
   "changes": [
     {
-      "in": "3.6.11",
-      "since": "3.6.10",
+      "in": "3.7.0-beta3",
+      "since": "3.7.0-beta2",
       "new_features": [
       ],
       "bug_fixes": [
-        { "num": 11929, "desc": "Show translated module name and descriptions in Module Manager" },
-        { "num": 11924, "desc": "Reinstate translation of Player Sides" },
-        { "num": 11904, "desc": "Global Key Command fastmatch for Mats fixed to avoid trait-order bugs" },
-        { "num": 11901, "desc": "Corrected \"Mark When Moved\" documentation" },
-        { "num": 11899, "desc": "Hide FileConfigurer label in preferences dialogs" },
-        { "num": 11890, "desc": "NPE when current-stack option used on non-stacking piece" }
+        { "num": 12234, "desc": "Don't try to render SVG which would have a width or height of zero" },
+        { "num": 12233, "desc": "Ensure that OpMultiResolutionImage.getBaseImage() never returns null" },
+        { "num": 12220, "desc": "Add BorderOutline's property names to the searchable target list" },
+        { "num": 12205, "desc": "Area of Effect trait was eating other traits' visibility info in some cases" },
+        { "num": 12203, "desc": "Properly extract outlines from SVG for NonRectangular" },
+        { "num": 12175, "desc": "Fix stretchy images in chat" }
       ],
       "other_improvements": [
-        { "num": 11911, "desc": "Debug window shows board-relative coordinates if they are different from the map-relative ones" },
-        { "num": 11906, "desc": "MatCargo's mat detection did unnecessary computations for lack of parentheses" },
-        { "num": 11900, "desc": "Clear Tile Cache with more efficient Files.walkFileTree()" }
+        { "num": 12238, "desc": "Upgrade bundled Java from 19 to 20" },
+        { "num": 12177, "desc": "Change-property buttons don't generate completely empty chat lines" },
+        { "num": 12172, "desc": "Metadata now contains the 'extra' fields, and Module Manager displays them if numeric" }
       ]
     },
     {
-      "in": "3.6.10",
-      "since": "3.6.9",
+      "in": "3.7.0-beta2",
+      "since": "3.7.0-beta1",
       "new_features": [
+        { "num": 12153, "desc": "Layer traits allow a show-only-if-this-property-true filter" },
+        { "num": 12149, "desc": "BorderOutline trait now accepts two fields" },
+        { "num": 12129, "desc": "PlaceMarker and ReplaceWithOther can use expression for X/Y offset" },
+        { "num": 12127, "desc": "Toolbar buttons disableable by a property (e.g., GKC, ActionButton, etc.) can be set to hide when disabled" },
+        { "num": 12100, "desc": "Text Labels support <img> tags" },
+        { "num": 4446, "desc": "Dynamic button labels (can use expressions and $...$ in certain toolbar buttons)" }
       ],
       "bug_fixes": [
-        { "num": 11883, "desc": "Fixed order of labels for \"Select play mode\" and \"Enter your name\" steps in the Welcome Wizard" },
-        { "num": 11879, "desc": "NPE when cutting and pasting a GlobalPropertyFolder" },
-        { "num": 11860, "desc": "Warn when same piece is both Mat and Mat Cargo" },
-        { "num": 11858, "desc": "Clear all PieceSlot caches after loading extensions" },
-        { "num": 11846, "desc": "Protect from null property results during search" },
-        { "num": 11823, "desc": "NPE in GameRefresher when refreshing unnamed Decks" },
-        { "num": 11813, "desc": "NPE in PieceSlot.getLocalizedConfigureName()" },
-        { "num": 11759, "desc": "Do not allow negative number of Dice or Sides" },
-        { "num": 11748, "desc": "NPE when cutting and pasting a prototype folder" },
-        { "num": 11455, "desc": "Prevent NPE when adding empty KeyStrokes to list" },
-        { "num": 11452, "desc": " Prevent NPE if invalid file specified in img tag" }
+        { "num": 12159, "desc": "Correctly handle install paths containing spaces in VASSAL.sh" },
+        { "num": 12158, "desc": "List Key Commands tool can be re-opened after closing with X button" },
+        { "num": 12152, "desc": "Work around Java bug which prevents displaying Windows file dialog" }
       ],
       "other_improvements": [
+        { "num": 12138, "desc": "Better editor descriptions of Global Hotkey traits" },
+        { "num": 12137, "desc": "Editor shows better descriptions for Dynamic Property and Set Global Property traits" },
+        { "num": 12136, "desc": "Change Property Buttons now have a description field, which is displayed in the editor if filled in" },
+        { "num": 12133, "desc": "Rollovers automatically shrink scale if the pieces are too wide to fit the screen width" }
+      ]
+    },
+    {
+      "in": "3.7.0-beta1",
+      "since": "3.6.15",
+      "new_features": [
+        { "num": 12067, "desc": "Import/export of groups of items from Editor as XML files (e.g., to transfer between modules)" },
+        { "num": 12060, "desc": "Editor allows Deck files to be imported into a deck to become permanent part of module" },
+        { "num": 12035, "desc": "Mouse-over Stack Viewers allow configuring thickness of outer border, and more padding/stretching options" },
+        { "num": 12032, "desc": "Mark-When-Moved trait can be configured to only flag when piece changes LocationName or Mat. Similarly Map auto-report can be configured to ignore same-location movements." },
+        { "num": 12003, "desc": "OldDeckName now supported as a piece property" },
+        { "num": 12001, "desc": "count_ supported for counting properties in Inventory windows" },
+        { "num": 11969, "desc": "New Border Outline trait" },
+        { "num": 11964, "desc": "Mouse-over Stack Viewers can display an image of underlying terrain" },
+        { "num": 11937, "desc": "SumMat and CountMat functions for Beanshell expression" },
+        { "num": 11918, "desc": "Startup GKC that fires when player joins or changes sides" },
+        { "num": 11917, "desc": "Create Non-Rectangular mask directly from SVG outline" },
+        { "num": 11530, "desc": "Add new StackPos and StackSize properties to Basic Piece" },
+        { "num": 11523, "desc": "Area of Effect improvements: Active property, local/global visibility, separate on/off Key Commands" },
+        { "num": 11178, "desc": "Global Option added to omit empty lines in property setting prompts" },
+        { "num": 11100, "desc": "Allow begin-logfile and end-logfile to have configurable hotkeys in Global Options" },
+        { "num": 10822, "desc": "Sounds can be suppressed during GKC processing" },
+        { "num": 10821, "desc": "Symbolic Dice buttons how have full Action Button capabilities (sounds, hotkeys, etc.)" },
+        { "num": 10820, "desc": "Make Action Button available on all windows where other similar buttons (e.g., GKC, Multi-Action, etc) are available" },
+        { "num": 4454, "desc": "Save chat text to file" }
+      ],
+      "bug_fixes": [
+        { "num": 11913, "desc": "Numeric global properties with increments other than 1 and -1 now wrap around correctly" }
+      ],
+      "other_improvements": [
+        { "num": 12084, "desc": "Help menu shows module-specific help items before generic Vassal ones" },
+        { "num": 12080, "desc": "Zooming in and out no longer loses track of player's preferred center point for map" },
+        { "num": 12077, "desc": "ObscuredToOthers can be counted on to be 'false' for pieces that don't even have a Mask property" },
+        { "num": 11919, "desc": "Allow DEL/BACKSPACE to be mapped as a hotkey" },
+        { "num": 11506, "desc": "Predefined Setup \"menus\" with blank names will not be shown" }
       ]
     }
   ]

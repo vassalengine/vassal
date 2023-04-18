@@ -17,12 +17,7 @@
  */
 package VASSAL.build.module.metadata;
 
-import java.io.BufferedInputStream;
-import java.io.InputStream;
-import java.io.IOException;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-
+import VASSAL.build.GameModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -32,7 +27,11 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import VASSAL.build.GameModule;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  *
@@ -63,6 +62,8 @@ public class ModuleMetaData extends AbstractMetaData {
     nameAttr = new Attribute(module, GameModule.MODULE_NAME);
     setDescription(new Attribute(module, GameModule.DESCRIPTION));
     setVersion(module.getGameVersion());
+    setExtra1(module.getModuleOther1());
+    setExtra2(module.getModuleOther2());
   }
 
   public ModuleMetaData(String name, String version) {

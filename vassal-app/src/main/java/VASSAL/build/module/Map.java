@@ -267,6 +267,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   protected boolean allowMultiple = false;
   protected VisibilityCondition visibilityCondition;
   protected DragGestureListener dragGestureListener;
+  protected boolean onlyReportChangedLocation = false;
   protected String moveWithinFormat;
   protected String moveToFormat;
   protected String createFormat;
@@ -284,8 +285,30 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 
   protected String description;
 
+  protected Point preferredCenter = new Point(0, 0);
+
   private IntConfigurer preferredScrollConfig;
   private DoubleConfigurer preferredScrollRateConfig;
+
+  private boolean anyMouseoverDrawn = false;
+
+  public boolean isAnyMouseoverDrawn() {
+    return anyMouseoverDrawn;
+  }
+
+  public void setAnyMouseoverDrawn(boolean flag) {
+    anyMouseoverDrawn = flag;
+  }
+
+  private boolean drawingMouseOver = false;
+
+  public boolean isDrawingMouseOver() {
+    return drawingMouseOver;
+  }
+
+  public void setDrawingMouseOver(boolean flag) {
+    drawingMouseOver = flag;
+  }
 
   public Map() {
     getView();
@@ -347,6 +370,20 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   }
 
   /**
+   * @return true if the map marks pieces as moved
+   */
+  public boolean isMarkMoved() {
+    return !markMovedOption.equals(GlobalOptions.NEVER);
+  }
+
+  /**
+   * @return true if auto-reporting moves should only happen if location changed
+   */
+  public boolean isOnlyReportChangedLocation() {
+    return onlyReportChangedLocation;
+  }
+
+  /**
    * Global Change Reporting control - used by Global Key Commands (see {@link GlobalCommand}) to
    * temporarily disable reporting while they run, if their "Suppress individual reports" option is selected.
    * @param b true to turn global change reporting on, false to turn it off.
@@ -382,6 +419,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public static final String ICON = "icon"; //$NON-NLS-1$
   public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
   public static final String SUPPRESS_AUTO = "suppressAuto"; //$NON-NLS-1$
+  public static final String ONLY_REPORT_CHANGED_LOCATION = "onlyReportChangedLocation"; //NON-NLS
   public static final String MOVE_WITHIN_FORMAT = "moveWithinFormat"; //$NON-NLS-1$
   public static final String MOVE_TO_FORMAT = "moveToFormat"; //$NON-NLS-1$
   public static final String CREATE_FORMAT = "createFormat"; //$NON-NLS-1$
@@ -518,6 +556,12 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
         moveWithinFormat = ""; //$NON-NLS-1$
       }
     }
+    else if (ONLY_REPORT_CHANGED_LOCATION.equals(key)) {
+      if (value instanceof String) {
+        value = Boolean.valueOf((String) value);
+      }
+      onlyReportChangedLocation = (Boolean) value;
+    }
     else if (MOVE_WITHIN_FORMAT.equals(key)) {
       moveWithinFormat = (String) value;
     }
@@ -626,6 +670,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     }
     else if (USE_LAUNCH_BUTTON.equals(key)) {
       return String.valueOf(useLaunchButtonEdit);
+    }
+    else if (ONLY_REPORT_CHANGED_LOCATION.equals(key)) {
+      return String.valueOf(onlyReportChangedLocation);
     }
     else if (MOVE_WITHIN_FORMAT.equals(key)) {
       return getMoveWithinFormat();
@@ -1229,7 +1276,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @see Board#snapTo
    * @see VASSAL.build.module.map.boardPicker.board.MapGrid#snapTo
    */
-  public Point snapTo(Point p) {
+  public Point snapTo(Point p, boolean force) {
     Point snap = new Point(p);
 
     final Board b = findBoard(p);
@@ -1237,7 +1284,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 
     final Rectangle r = b.bounds();
     snap.translate(-r.x, -r.y);
-    snap = b.snapTo(snap);
+    snap = b.snapTo(snap, force);
     snap.translate(r.x, r.y);
 
     //CC bugfix13409
@@ -1246,7 +1293,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     if (bSnappedTo != null && !b.equals(bSnappedTo)) {
       final Rectangle rSnappedTo = bSnappedTo.bounds();
       snap.translate(-rSnappedTo.x, -rSnappedTo.y);
-      snap = bSnappedTo.snapTo(snap);
+      snap = bSnappedTo.snapTo(snap, force);
       snap.translate(rSnappedTo.x, rSnappedTo.y);
     }
     // RFE 882378
@@ -1272,10 +1319,16 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     return snap;
   }
 
-  /**
-   * @return The buffer of empty space around the boards in the Map window,
-   * in component coordinates at 100% zoom
-   */
+
+  public Point snapTo(Point p) {
+    return snapTo(p, false);
+  }
+
+
+    /**
+     * @return The buffer of empty space around the boards in the Map window,
+     * in component coordinates at 100% zoom
+     */
   public Dimension getEdgeBuffer() {
     return new Dimension(edgeBuffer);
   }
@@ -2269,6 +2322,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @param c observer component
    */
   public void paintRegion(Graphics g, Rectangle visibleRect, Component c) {
+    setAnyMouseoverDrawn(false);
     clearMapBorder(g); // To avoid ghost pieces around the edge
     drawBoardsInRegion(g, visibleRect, c);
     drawDrawable(g, false);
@@ -2610,7 +2664,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @param zoom zoom factor to use
    * @return Relative position of the board at given scale
    */
-  protected Point getLocation(Board b, double zoom) {
+  public Point getLocation(Board b, double zoom) {
     final Point p;
     if (zoom == 1.0) {
       p = b.bounds().getLocation();
@@ -3148,6 +3202,25 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     theMap.repaint();
   }
 
+
+  /**
+   * Accepts the current actual center of the map as the new "preferred center" (e.g. if we scroll)
+   * Just not if suppressed after a zoom level change (we don't want zoom level changes to cause us to
+   * lose track of the user's preferred ceter point)
+   */
+  public void updateCenter() {
+    if (!GameModule.getGameModule().isSuppressAutoCenterUpdate()) {
+      preferredCenter = getCenter();
+    }
+  }
+
+  /**
+   * @return last location the player has requested to be the center of the map (eg by manually clicking or scrolling)
+   */
+  public Point getPreferredCenter() {
+    return preferredCenter;
+  }
+
   /**
    * Center the map at given map coordinates within its JScrollPane container
    * @param p Point to center
@@ -3164,6 +3237,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @param dy y tolerance for nearness to center
    */
   public void centerAt(Point p, int dx, int dy) {
+    preferredCenter = p;
     if (scroll != null) {
       p = mapToComponent(p);
 
@@ -3253,6 +3327,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     r.translate(dx, dy);
     r = r.intersection(new Rectangle(getPreferredSize()));
     theMap.scrollRectToVisible(r);
+    updateCenter();
   }
 
   /**
@@ -3327,6 +3402,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       Resources.getString("Editor.Map.toggle_key"),
       Resources.getString("Editor.Map.show_key"),
       Resources.getString("Editor.Map.hide_key"),
+      Resources.getString("Editor.Map.only_report_changed_location"),
       Resources.getString("Editor.Map.report_move_within"), //$NON-NLS-1$
       Resources.getString("Editor.Map.report_move_to"), //$NON-NLS-1$
       Resources.getString("Editor.Map.report_created"), //$NON-NLS-1$
@@ -3366,6 +3442,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       HOTKEY,
       SHOW_KEY,
       HIDE_KEY,
+      ONLY_REPORT_CHANGED_LOCATION,
       MOVE_WITHIN_FORMAT,
       MOVE_TO_FORMAT,
       CREATE_FORMAT,
@@ -3406,6 +3483,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       NamedKeyStroke.class,
       NamedKeyStroke.class,
       NamedKeyStroke.class,
+      Boolean.class,
       MoveWithinFormatConfig.class,
       MoveToFormatConfig.class,
       CreateFormatConfig.class,
@@ -3582,7 +3660,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class<?>[]{ MapSubFolder.class, GlobalMap.class, LOS_Thread.class, ToolbarMenu.class, MultiActionButton.class, HidePiecesButton.class, Zoomer.class,
+    return new Class<?>[]{ MapSubFolder.class, GlobalMap.class, LOS_Thread.class, ToolbarMenu.class, MultiActionButton.class, DoActionButton.class, HidePiecesButton.class, Zoomer.class,
       CounterDetailViewer.class, HighlightLastMoved.class, LayeredPieceCollection.class, ImageSaver.class, TextSaver.class, DrawPile.class, SetupStack.class,
       MassKeyCommand.class, MapShader.class, PieceRecenterer.class, Flare.class, MoveCameraButton.class };
   }
@@ -3712,25 +3790,37 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     return UniqueIdManager.getIdentifier(this);
   }
 
+
+  /**
+   * Common view setup code for Map and PrivateMap, which confusingly have different View classes that sharing the same name
+   */
+  public void setUpView() {
+    scroll = new AdjustableSpeedScrollPane(
+      theMap,
+      JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+      JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    scroll.unregisterKeyboardAction(
+      KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, 0));
+    scroll.unregisterKeyboardAction(
+      KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, 0));
+    scroll.setAlignmentX(0.0f);
+    scroll.setAlignmentY(0.0f);
+
+    layeredPane.setLayout(new InsetLayout(layeredPane, scroll));
+    layeredPane.add(scroll, JLayeredPane.DEFAULT_LAYER);
+
+    // When our Viewport changes for any reason, check if we need to update our "preferred center point"
+    scroll.getViewport().addChangeListener(e -> updateCenter());
+  }
+
+
   /** @return the Swing component representing the map */
   public JComponent getView() {
     if (theMap == null) {
       theMap = new View(this);
-
-      scroll = new AdjustableSpeedScrollPane(
-        theMap,
-        JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-        JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-      scroll.unregisterKeyboardAction(
-        KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, 0));
-      scroll.unregisterKeyboardAction(
-        KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, 0));
-      scroll.setAlignmentX(0.0f);
-      scroll.setAlignmentY(0.0f);
-
-      layeredPane.setLayout(new InsetLayout(layeredPane, scroll));
-      layeredPane.add(scroll, JLayeredPane.DEFAULT_LAYER);
+      setUpView();
     }
+
     return theMap;
   }
 
@@ -3962,7 +4052,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   @Override
   public List<String> getMenuTextList() {
-    final List<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>(super.getMenuTextList());
     if (!GlobalOptions.NEVER.equals(markMovedOption)) {
       l.add(markUnmovedText);
       l.add(markUnmovedTooltip);
@@ -3980,12 +4070,13 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    final List<NamedKeyStroke> l = new ArrayList<>(super.getNamedKeyStrokeList());
+    l.add(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)));
+    l.add(moveKey);
     if (!GlobalOptions.NEVER.equals(markMovedOption)) {
-      return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)), moveKey, NamedHotKeyConfigurer.decode(getAttributeValueString(MARK_UNMOVED_HOTKEY)));
+      l.add(NamedHotKeyConfigurer.decode(getAttributeValueString(MARK_UNMOVED_HOTKEY)));
     }
-    else {
-      return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)), moveKey);
-    }
+    return l;
   }
 
   /**

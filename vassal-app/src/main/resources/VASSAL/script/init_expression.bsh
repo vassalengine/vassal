@@ -109,6 +109,34 @@ CountStack(String property) {
   return unwrap(_interp.countStack(property, _source));
 }
 
+
+/**
+ * Callback to Vassal to sum the value of a property in all
+ * counters that include a Mat and its MatCargo
+ *
+ * Example: SumMat("Strength") 
+ */
+SumMat(String property) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.sumMat(property, _source));
+}
+
+
+/**
+ * Callback to Vassal to count the number of counters
+ * that contain a particular property among a Mat and its
+ * MatCargo
+ *
+ * Example: CountMat("Strength") 
+ */
+CountMat(String property) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.countMat(property, _source));
+}
+
+
 /**
  * Callback to Vassal to sum the value of a property in all
  * counters in the same location as the target property

@@ -38,6 +38,9 @@ It is recommended that for new modules you set this option to _Always_, as the o
 *Preserve leading zeros in Integers:*::  This option should not normally be used. It is for the specific case where you use leading zeros in Grid co-ordinates and need to maintain these leading zeros for later reporting. By default, Vassal will strip leading zeros off and convert to an integer. Enabling this option forces Vassal to keep the leading zeros and store the number 02 as the string "02", not the number 2.
 NOTE: If you later need to do arithimetic on this value in a Beanshell expression, you will have to explicitly convert it to a number using Integer.parseInt(value).
 
+[#purgeblanks]
+*Purge blank lines from dynamic/global property prompts?*:: When a <<DynamicProperty.adoc#top,Dynamic Property>> or <<SetGlobalProperty.adoc#top,Set Global Property>> trait is configured to prompt users from a list of options, if some of those options are determined by expressions which evaluate to be a blank string, then those options are omitted from the prompt if this option is selected.
+
 *Icons and hotkeys:*:: You can specify your own button icons and keyboard shortcuts for the logfile step/undo buttons and the button that shows/hides the server controls and the button that displays the Debug Window.
 
 |image:images/GlobalOptions.png[]

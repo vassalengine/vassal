@@ -23,7 +23,6 @@ import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.MovementReporter;
 import VASSAL.build.module.map.boardPicker.Board;
-import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
@@ -36,7 +35,12 @@ import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
+import net.miginfocom.swing.MigLayout;
 
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -49,13 +53,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-
-import net.miginfocom.swing.MigLayout;
 
 /**
  * d/b/a "Move Fixed Distance"
@@ -322,31 +319,14 @@ public class Translate extends Decorator implements TranslatablePiece {
       return null;
     }
 
-    // Set the Old... properties
-    Command c = putOldProperties(this);
-
-    // Mark the piece moved
-    final GamePiece outer = Decorator.getOutermost(gp);
-    final ChangeTracker comm = new ChangeTracker(outer);
-    outer.setProperty(Properties.MOVED, Boolean.TRUE);
-    c = c.append(comm.getChangeCommand());
+    // Prepare the piece for move, writing "old location" properties, marking moved, and unlinking from any deck
+    Command c = prepareMove(new NullCommand(), true);
 
     // Move the piece
-    c = c.append(map.placeOrMerge(outer, dest));
+    c = c.append(map.placeOrMerge(Decorator.getOutermost(this), dest));
 
-    // If a cargo piece has been "sent", find it a new Mat if needed.
-    c = MatCargo.findNewMat(c, outer);
-    
-    // Apply after Move Key
-    if (map.getMoveKey() != null) {
-      c = c.append(outer.keyEvent(map.getMoveKey()));
-    }
-
-    // Unlink from Parent Stack (in case it is a Deck).
-    final Stack parent = outer.getParent();
-    if (parent != null) {
-      c = c.append(parent.pieceRemoved(outer));
-    }
+    // Post move actions -- find a new mat if needed, and apply any afterburner apply-on-move key
+    c = finishMove(c, true, true, true);
 
     return c;
   }

@@ -16,6 +16,11 @@
  */
 package VASSAL.tools.image;
 
+import VASSAL.i18n.Resources;
+import VASSAL.tools.QuickColors;
+import VASSAL.tools.swing.SwingUtils;
+
+import javax.swing.JLabel;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -24,12 +29,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-
-import VASSAL.i18n.Resources;
-import VASSAL.tools.QuickColors;
-import VASSAL.tools.swing.SwingUtils;
-
-import javax.swing.JLabel;
 
 public class LabelUtils {
   private LabelUtils() {
@@ -87,6 +86,8 @@ public class LabelUtils {
    * @param textPad 0 for default, or extra padding around text in all 4 directions
    * @param minWidth 0 for default, or minimum width of text box
    * @param extraBorder 0 for default, or number of pixels of extra thickness of border box
+   *
+   *
    */
   public static void drawLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor, int objectWidth, int textPad, int minWidth, int extraBorder) {
     ((Graphics2D) g).addRenderingHints(SwingUtils.FONT_HINTS);
@@ -174,6 +175,11 @@ public class LabelUtils {
       y0 + textPad + extraBorder + g.getFontMetrics().getHeight() - g.getFontMetrics().getDescent());
   }
 
+
+  public static void drawHTMLLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor, Component comp, int objectWidth, int textPad, int minWidth, int extraBorder) {
+    drawHTMLLabel(g, text, x, y, f, hAlign, vAlign, fgColor, bgColor, borderColor, comp, objectWidth, textPad, minWidth, extraBorder, extraBorder, extraBorder, true);
+  }
+
   /**
    * Draw an HTML-compliant text label with appropriate alignment & foreground/background color, plus a border box, and extra configuration parameters.
    * Supports "Quick Colors".
@@ -192,7 +198,7 @@ public class LabelUtils {
    * @param minWidth 0 for default, or minimum width of text box
    * @param extraBorder 0 for default, or number of pixels of extra thickness of border box
    */
-  public static void drawHTMLLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor, Component comp, int objectWidth, int textPad, int minWidth, int extraBorder) {
+  public static void drawHTMLLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor, Component comp, int objectWidth, int textPad, int minWidth, int extraBorder, int extraTop, int extraBottom, boolean allowHTML) {
     ((Graphics2D) g).addRenderingHints(SwingUtils.FONT_HINTS);
     ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
       RenderingHints.VALUE_ANTIALIAS_ON);
@@ -208,7 +214,7 @@ public class LabelUtils {
     final String htmlString = (addTags ? "<html>" + (!style.isEmpty() ? "<div class=" + style + ">" : "<div>") + "&nbsp;" : "") + baseString + (addTags ? "&nbsp;</div></html>" : ""); //NON-NLS
 
     // Chapter 3, in which Winnie the Pooh kidnaps a JLabel and makes it rob banks...
-    final JLabel j = new JLabel(htmlString);
+    final JLabel j = new JLabel(allowHTML ? htmlString : " " + baseString + " ");
     j.setForeground(fgColor);
     j.setFont(f);
 
@@ -220,17 +226,19 @@ public class LabelUtils {
 
     j.setSize(size);
 
-    x -= extraBorder;
-    y -= extraBorder;
+    if ((extraBorder < 0) || (extraTop < 0) || (extraBottom < 0)) {
+      extraBorder = extraTop = extraBottom = 0;
+      borderColor = null;
+    }
 
     // Dimensions including extra text padding and extra border.
     final Dimension size2 = new Dimension();
-    size2.width  = size.width + textPad*2 + extraBorder;
-    size2.height = size.height + textPad*2 + extraBorder*2;
+    size2.width  = size.width + textPad*2 + extraBorder*2;
+    size2.height = size.height + textPad*2 + extraTop + extraBottom;
 
     // Dimensions also including any forced-stretch of width. This will be the outer bounds of the box we draw.
     final Dimension size3 = new Dimension();
-    size3.width   = Math.max(size2.width, minWidth + extraBorder);
+    size3.width   = Math.max(size2.width, minWidth);
     size3.height  = size2.height;
 
     g.setFont(f);
@@ -243,62 +251,78 @@ public class LabelUtils {
     if (objectWidth <= 0) {
       switch (hAlign) {
       case CENTER:
-        x0 = x - size2.width / 2;
+        x0 = x0 - size2.width / 2;
         break;
       case LEFT:
-        x0 = x - size2.width;
+        x0 = x0 - size2.width;
         break;
       case RIGHT:
-        x0 = x;
         break;
       }
-      xBox = x0;
+      xBox = x0 - extraBorder;
     }
     else {
       switch (hAlign) {
       case CENTER:
-        x0 = x + objectWidth/2 - size2.width / 2;
+        x0 = x0 + objectWidth/2 - size2.width / 2;
         break;
       case LEFT:
-        x0 = x + objectWidth - size2.width;
+        x0 = x0 + objectWidth - size2.width;
         break;
       case RIGHT:
-        x0 = x;
         break;
       }
-      xBox = ((minWidth > 0) && (size3.width > size2.width)) ? x : x0;
+      xBox = (((minWidth > 0) && (size3.width > size2.width)) ? x - extraBorder : x0);
     }
 
     switch (vAlign) {
     case CENTER:
-      y0 = y - size2.height / 2;
+      y0 = y0 - size2.height / 2;
       break;
     case BOTTOM:
-      y0 = y - size2.height;
+      y0 = y0 - size2.height;
       break;
     }
+
+    final int yBox = y0 - extraTop;
 
     // Draws our background color
     if (bgColor != null) {
       g.setColor(bgColor);
-      g.fillRect(xBox, y0, size3.width, size3.height);
+      g.fillRect(xBox, yBox, size3.width, size3.height);
     }
 
     // Draws our border
     if (borderColor != null) {
       g.setColor(borderColor);
-      g.drawRect(xBox, y0, size3.width, size3.height);
+      g.drawRect(xBox, yBox, size3.width - 1, size3.height); // The basic single box for 0 extra height/width
 
-      if (extraBorder > 0) {
-        final Dimension size4 = new Dimension(size3);
+      if ((extraBorder > 0) || (extraTop > 0) || (extraBottom > 0)) {
         int x1 = xBox;
-        int y1 = y0;
-        for (int extra = 0; extra < extraBorder; extra++) {
-          x1 += 1;
-          y1 += 1;
-          size4.width -= 2;
-          size4.height -= 2;
-          g.drawRect(x1, y1, size4.width, size4.height);
+        int y1 = yBox;
+
+        if (extraBorder > 0) {
+          int width = size3.width;
+          for (int extra = 0; extra < extraBorder; extra++) {
+            x1 += 1;
+            width -= 2;
+            g.drawRect(x1, y1, width - 1, size3.height);
+          }
+        }
+
+        if (extraTop > 0) {
+          for (int extra = 0; extra < extraTop; extra++) {
+            y1 += 1;
+            g.drawRect(xBox, y1, size3.width - 1, 0);
+          }
+        }
+
+        if (extraBottom > 0) {
+          y1 = yBox + size3.height;
+          for (int extra = 0; extra < extraBottom; extra++) {
+            y1 -= 1;
+            g.drawRect(xBox, y1, size3.width - 1, 0);
+          }
         }
       }
     }
@@ -318,26 +342,19 @@ public class LabelUtils {
 
     j.paint(gTemp);
 
-    // If no extra padding or border was specified, we can draw the label
-    // directly. Otherwise we need an extra layer of indirection "lest our
-    // JLabel wriggle from our grasp"
-    if ((textPad <= 0) && (extraBorder <= 0)) {
-      g.drawImage(im, x0, y0, comp);
-    }
-    else {
-      final BufferedImage im2 = ImageUtils.createCompatibleImage(
-        size3.width,
-        size3.height,
-        true
-      );
-      final Graphics2D gTemp2 = im2.createGraphics();
-      gTemp2.addRenderingHints(SwingUtils.FONT_HINTS);
-      gTemp2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-        RenderingHints.VALUE_ANTIALIAS_ON);
+    // Another layer of indirection, lest the JLabel wriggle from our grasp...
+    final BufferedImage im2 = ImageUtils.createCompatibleImage(
+      size3.width,
+      size3.height,
+      true
+    );
+    final Graphics2D gTemp2 = im2.createGraphics();
+    gTemp2.addRenderingHints(SwingUtils.FONT_HINTS);
+    gTemp2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+      RenderingHints.VALUE_ANTIALIAS_ON);
 
-      gTemp2.drawImage(im, textPad + extraBorder, textPad + extraBorder, null);
-      g.drawImage(im2, x0, y0, comp);
-    }
+    gTemp2.drawImage(im, textPad + extraBorder, textPad, null);
+    g.drawImage(im2, x0, y0, comp);
   }
 
   public static int labelWidth(Font font, String s) {

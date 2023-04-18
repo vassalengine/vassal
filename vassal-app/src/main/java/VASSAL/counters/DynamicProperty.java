@@ -43,7 +43,13 @@ import VASSAL.script.expression.Expression;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
+import net.miginfocom.swing.MigLayout;
+import org.apache.commons.lang3.StringUtils;
 
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -56,15 +62,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
-
-import net.miginfocom.swing.MigLayout;
-
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Trait that contains a property accessible via getProperty() and updatable
@@ -274,9 +271,26 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     return tracker.getChangeCommand();
   }
 
+  public String getCommandsList() {
+    String commandsList = "";
+    boolean any = false;
+    for (final DynamicKeyCommand dkc : keyCommands) {
+      String as = getCommandDesc(dkc.getName(), dkc.getNamedKeyStroke());
+      if (!any && !as.isEmpty()) {
+        any = true;
+        as = as.replaceFirst(" - ", " == ");
+      }
+      else {
+        as = as.replaceFirst(" - ", " / ");
+      }
+      commandsList += as;
+    }
+    return commandsList;
+  }
+
   @Override
   public String getDescription() {
-    return buildDescription("Editor.DynamicProperty.trait_description", getKey(), description);
+    return buildDescription("Editor.DynamicProperty.trait_description", getKey(), description) + getCommandsList();
   }
 
   @Override

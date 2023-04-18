@@ -48,7 +48,9 @@ public class DynamicKeyCommandConfigurer extends Configurer {
         NamedKeyStroke.NULL_KEYSTROKE,
         Decorator.getOutermost(target),
         target,
-        new PropertySetter("", target)));
+        new PropertySetter("", target)
+      )
+    );
 
     commandConfig = new StringConfigurer("");
     commandConfig.setHint(Resources.getString("Editor.menu_command_hint"));

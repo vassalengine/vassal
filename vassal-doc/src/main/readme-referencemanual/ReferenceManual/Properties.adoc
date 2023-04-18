@@ -32,6 +32,8 @@ the level in a <<Layer.adoc#Properties,Layer)>> you can use _<_, _\<=_, _>_, and
 
 *Properties defined by Game Pieces*
 
+* The <<AreaOfEffect.adoc#top,Area of Effect>> defines a property that returns the current visibity (on or off) of the highlight.
+
 * The <<BasicPiece.adoc#top,Basic Piece>> defines properties related to a piece's name, location, side, and whether it's selected.
 
 * The <<Layer.adoc#Properties,Layer>> trait defines properties related to the state of that Layer.
@@ -79,6 +81,7 @@ the level in a <<Layer.adoc#Properties,Layer)>> you can use _<_, _\<=_, _>_, and
 |*Obscured* |<<Mask.adoc#top,Mask>> |"true" if this piece is masked from the current player.
 |*ObscuredToOthers* |<<Mask.adoc#top,Mask>> |"true" if this piece is masked from other players.
 |*OldBoard* |<<BasicPiece#top,Basic Piece>> |Board name prior to most recent movement.
+|*OldDeckName* |<<BasicPiece#top,Basic Piece>> |Name of any <<Deck.adoc#top,Deck>> the piece was in before its last move (will be an empty string if piece wasn't in a deck)
 |*OldLocationName* |<<BasicPiece#top,Basic Piece>>|Location name prior to most recent movement.
 |*OldMap* |<<BasicPiece#top,Basic Piece>>|Map name prior to most recent movement.
 |*OldX* |<<BasicPiece#top,Basic Piece>>|X coordinate prior to most recent movement.
@@ -88,7 +91,10 @@ the level in a <<Layer.adoc#Properties,Layer)>> you can use _<_, _\<=_, _>_, and
 |*playerSide* |<<BasicPiece#top,Basic Piece>>|Side of the current player (not the side of the piece).
 |*Restricted* |<<RestrictedAccess.adoc#top,Restricted Access>> |"true" if there are restrictions as to who can access this piece.
 |*Selected* |<<BasicPiece#top,Basic Piece>>|"true" if the piece is currently selected.
+|*StackPos* |<<BasicPiece#top,Basic Piece>>|The position of the piece in its current Stack. Returns 1 if not stacked.
+|*StackSize* |<<BasicPiece#top,Basic Piece>>|Number of pieces in the Stack this piece is stacked in. Returns 1 if not stacked.
 |*_<property_name>_* |<<PropertySheet.adoc#top,PropertySheet>> |The value of each property on the Property Sheet can be accessed via the property name.
+|*_<traitname>__Active* |<<AreaOfEffect.adoc#top,Area of Effect>> |"true" if the Area of Effect with the name _<traitname>_ is currently active.
 |*_<layername>__Active* |<<Layer.adoc#top,Layer>> |"true" if the Layer _<layername>_ is currently active.
 |*_<layername>__Image* |<<Layer.adoc#top,Layer>> |The image name of the currently active layer for _Layer_ _<layername>_.
 |*_<layername>__Level* |<<Layer.adoc#top,Layer>> |The level number of the currently active layer for _Layer_ _<layername>_.

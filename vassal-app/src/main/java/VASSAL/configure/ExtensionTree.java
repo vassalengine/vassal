@@ -17,18 +17,6 @@
  */
 package VASSAL.configure;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Frame;
-import java.awt.event.ActionEvent;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JOptionPane;
-import javax.swing.JTree;
-import javax.swing.SwingUtilities;
-import javax.swing.tree.DefaultMutableTreeNode;
-
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
@@ -39,6 +27,17 @@ import VASSAL.build.widget.PieceSlot;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.EditorWindow;
 import VASSAL.tools.ReflectionUtils;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JOptionPane;
+import javax.swing.JTree;
+import javax.swing.SwingUtilities;
+import javax.swing.tree.DefaultMutableTreeNode;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Frame;
+import java.awt.event.ActionEvent;
 
 /**
  * The configuration tree for editing a module extension
@@ -155,7 +154,7 @@ public class ExtensionTree extends ConfigureTree {
 
                 @Override
                 public void cancel() {
-                  ExtensionTree.this.remove(target, child);
+                  ExtensionTree.this.delete(child);
                   dispose();
                 }
               };

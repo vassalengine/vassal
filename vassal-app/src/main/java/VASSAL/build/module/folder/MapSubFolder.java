@@ -19,6 +19,7 @@
 package VASSAL.build.module.folder;
 
 import VASSAL.build.AbstractFolder;
+import VASSAL.build.module.DoActionButton;
 import VASSAL.build.module.MultiActionButton;
 import VASSAL.build.module.ToolbarMenu;
 import VASSAL.build.module.map.CounterDetailViewer;
@@ -32,6 +33,6 @@ import VASSAL.build.module.map.SetupStack;
 public class MapSubFolder extends AbstractFolder {
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class<?>[] { this.getClass(), LOS_Thread.class, ToolbarMenu.class, MultiActionButton.class, CounterDetailViewer.class, DrawPile.class, SetupStack.class, MassKeyCommand.class, MapShader.class, Flare.class };
+    return new Class<?>[] { this.getClass(), LOS_Thread.class, ToolbarMenu.class, MultiActionButton.class, DoActionButton.class, CounterDetailViewer.class, DrawPile.class, SetupStack.class, MassKeyCommand.class, MapShader.class, Flare.class };
   }
 }

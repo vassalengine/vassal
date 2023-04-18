@@ -72,9 +72,9 @@ public class SortParameterConfigurer extends Configurer {
     setFrozen(true); // Prevent changes to the sub-configurers triggering further updates
     if (!noUpdate && o instanceof SortParameter) {
       final SortParameter param = (SortParameter) o;
-      propertyConfig.setValue(param == null ? "" : param.getSortProperty());
-      descendingConfig.setValue(param != null && param.isDescendingSort()); // Default to false
-      numericConfig.setValue(param != null && param.isNumericSort()); // Default to false
+      propertyConfig.setValue(param.getSortProperty());
+      descendingConfig.setValue(param.isDescendingSort()); // Default to false
+      numericConfig.setValue(param.isNumericSort()); // Default to false
     }
     setFrozen(false);
     super.setValue(o);

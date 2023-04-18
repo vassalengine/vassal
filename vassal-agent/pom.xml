@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.vassalengine</groupId>
+        <artifactId>vassal-parent</artifactId>
+        <version>3.7.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>vassal-agent</artifactId>
+    <packaging>jar</packaging>
+
+    <properties>
+        <main.basedir>${project.basedir}${file.separator}..</main.basedir>
+        <version.byte-buddy>1.14.4</version.byte-buddy>
+    </properties>
+
+    <dependencies>
+       <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+            <version>${version.byte-buddy}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <compilerVersion>${version.java.build}</compilerVersion>
+                    <source>${version.java.target}</source>
+                    <target>${version.java.target}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <index>true</index>
+                        <manifestEntries>
+                            <Can-Redefine-Classes>true</Can-Redefine-Classes>
+                            <Can-Retransform-Classes>true</Can-Retransform-Classes>
+                            <Agent-Class>org.vassalenigine.agent.Agent</Agent-Class>
+                            <Premain-Class>org.vassalengine.agent.Agent</Premain-Class>
+                            <Boot-Class-Path>byte-buddy-${version.byte-buddy}.jar</Boot-Class-Path>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

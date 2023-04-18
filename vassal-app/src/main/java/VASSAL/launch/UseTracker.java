@@ -30,6 +30,13 @@ public class UseTracker {
   private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
   /**
+   * @return <code>true</code> iff any files are in use
+   */
+  public synchronized boolean anyInUse() {
+    return !using.isEmpty();
+  }
+
+  /**
    * @param file the file to check
    * @return <code>true</code> iff the file is in use
    */

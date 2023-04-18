@@ -172,19 +172,17 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
     super.advance();
 
     if (getTurnLevelCount() == 0 || (getTurnLevelCount() > 0 && hasSubLevelRolledOver())) {
-      int idx = current;
       boolean done = false;
       for (int i = 0; i < list.length && !done; i++) {
-        idx++;
-        if (idx >= list.length) {
-          idx = 0;
+        current++;
+        if (current >= list.length) {
+          current = 0;
         }
-        if (idx == first) {
+        if (current == first) {
           rolledOver = true;
         }
-        done = active[idx];
+        done = active[current];
       }
-      current = idx;
       if (! done) {
         rolledOver = true;
       }
@@ -197,19 +195,17 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
     super.retreat();
 
     if (getTurnLevelCount() == 0 || (getTurnLevelCount() > 0 && hasSubLevelRolledOver())) {
-      int idx = current;
       boolean done = false;
       for (int i = 0; i < list.length && !done; i++) {
-        if (idx == first) {
+        if (current == first) {
           rolledOver = true;
         }
-        idx--;
-        if (idx < 0 || idx > (list.length - 1)) {
-          idx = list.length - 1;
+        current--;
+        if (current < 0 || current > (list.length - 1)) {
+          current = list.length - 1;
         }
-        done = active[idx];
+        done = active[current];
       }
-      current = idx;
     }
     myValue.setPropertyValue(getValueString());
   }

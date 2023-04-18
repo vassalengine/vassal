@@ -124,14 +124,13 @@ public class PlayerWindow extends JFrame {
     // FIXME: setting mnemonic from first letter could cause collisions in some languages
     helpMenu.setMnemonic(Resources.getString("General.help.shortcut").charAt(0));
 
-    helpMenu.add(mm.addMarker("Documentation.VASSAL.start"));  //NON-NLS
-    helpMenu.add(mm.addKey("General.help"));
-    helpMenu.add(mm.addKey("Help.user_guide"));
-    helpMenu.add(mm.addMarker("Documentation.VASSAL.end"));  //NON-NLS
-
-    helpMenu.addSeparator();
     helpMenu.add(mm.addMarker("Documentation.Module.start"));  //NON-NLS
     helpMenu.add(mm.addMarker("Documentation.Module.end"));  //NON-NLS
+
+    helpMenu.add(mm.addMarker("Documentation.VASSAL.start"));  //NON-NLS
+    helpMenu.add(mm.addKey("Help.user_guide"));
+    helpMenu.addSeparator();
+    helpMenu.add(mm.addMarker("Documentation.VASSAL.end"));  //NON-NLS
 
     helpMenu.add(mm.addKey("Documentation.about_module"));
 
@@ -168,15 +167,6 @@ public class PlayerWindow extends JFrame {
 
     toolsMenu.add(debugCheckbox);
     DebugControls.setCheckBox(debugCheckbox);
-
-    try {
-      final URL url = new File(Documentation.getDocumentationBaseDir(),
-                               "README.html").toURI().toURL();
-      mm.addAction("General.help", new ShowHelpAction(url, null));
-    }
-    catch (MalformedURLException e) {
-      ErrorDialog.bug(e);
-    }
 
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(),

@@ -18,10 +18,9 @@
 
 package VASSAL.tools.menu;
 
-import java.lang.ref.WeakReference;
-
 import javax.swing.Action;
 import javax.swing.JMenuItem;
+import java.lang.ref.WeakReference;
 
 /**
  * @author Joel Uckelman
@@ -29,6 +28,7 @@ import javax.swing.JMenuItem;
  */
 public class MenuItemProxy extends AbstractProxy<JMenuItem> {
   protected Action action;
+  private boolean hideIfBlank = false;
 
   public MenuItemProxy() {
     this(null);
@@ -38,6 +38,15 @@ public class MenuItemProxy extends AbstractProxy<JMenuItem> {
     this.action = action;
   }
 
+  public MenuItemProxy(Action action, boolean hideIfBlank) {
+    this.action = action;
+    this.hideIfBlank = hideIfBlank;
+  }
+
+  public void setHideIfBlank(boolean hideIfBlank) {
+    this.hideIfBlank = hideIfBlank;
+  }
+  
   public Action getAction() {
     return action;
   }
@@ -47,13 +56,27 @@ public class MenuItemProxy extends AbstractProxy<JMenuItem> {
 
     forEachPeer(item -> {
       item.setAction(action);
-      item.setVisible(action != null);
+      if (action == null) {
+        item.setVisible(false);
+      }
+      else {
+        final String name = (String)action.getValue(Action.NAME);
+        item.setVisible(!hideIfBlank || ((name != null) && !name.isEmpty()));
+      }
     });
   }
 
   @Override
   public JMenuItem createPeer() {
     final JMenuItem item = new JMenuItem(action);
+
+    if (action == null) {
+      item.setVisible(false);
+    }
+    else {
+      final String name = (String) action.getValue(Action.NAME);
+      item.setVisible(!hideIfBlank || ((name != null) && !name.isEmpty()));
+    }
 
     peers.add(new WeakReference<>(item, queue));
     return item;

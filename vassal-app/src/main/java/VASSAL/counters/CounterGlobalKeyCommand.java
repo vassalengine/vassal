@@ -38,6 +38,9 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.SequenceEncoder;
 
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -47,10 +50,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
 
 /**
  * Trait that sends a Key Command to other pieces, selected with various filters.
@@ -112,6 +111,7 @@ public class CounterGlobalKeyCommand extends Decorator
     description = st.nextToken("");
     globalCommand.setSelectFromDeckExpression(st.nextToken("-1"));
     target.decode(st.nextToken(""));
+    globalCommand.setSuppressSounds(st.nextBoolean(false));
     target.setGKCtype(GlobalCommandTarget.GKCtype.COUNTER);
     target.setCurPiece(this);
 
@@ -132,7 +132,8 @@ public class CounterGlobalKeyCommand extends Decorator
       .append(rangeProperty)
       .append(description)
       .append(globalCommand.getSelectFromDeckExpression())
-      .append(target.encode());
+      .append(target.encode())
+      .append(globalCommand.isSuppressSounds());
     return ID + se.getValue();
   }
 
@@ -322,6 +323,8 @@ public class CounterGlobalKeyCommand extends Decorator
       return false;
     if (!Objects.equals(globalCommand.isReportSingle(), trait.globalCommand.isReportSingle()))
       return false;
+    if (!Objects.equals(globalCommand.isSuppressSounds(), trait.globalCommand.isSuppressSounds()))
+      return false;
     if (!Objects.equals(fixedRange, trait.fixedRange))
       return false;
     if (!Objects.equals(rangeProperty, trait.rangeProperty))
@@ -340,6 +343,7 @@ public class CounterGlobalKeyCommand extends Decorator
     protected PropertyExpressionConfigurer propertyMatch;
     protected MassKeyCommand.DeckPolicyConfig deckPolicy;
     protected BooleanConfigurer suppress;
+    protected BooleanConfigurer suppressSounds;
     protected BooleanConfigurer restrictRange;
     protected BooleanConfigurer fixedRange;
     protected JLabel fixedRangeLabel;
@@ -418,6 +422,9 @@ public class CounterGlobalKeyCommand extends Decorator
       suppress = new BooleanConfigurer(p.globalCommand.isReportSingle());
       traitPanel.add("Editor.GlobalKeyCommand.Editor_MassKey_suppress", suppress);
 
+      suppressSounds = new BooleanConfigurer(p.globalCommand.isSuppressSounds());
+      traitPanel.add("Editor.GlobalKeyCommand.Editor_MassKey_suppress_sounds", suppressSounds);
+
       pl.propertyChange(null);
     }
 
@@ -440,7 +447,8 @@ public class CounterGlobalKeyCommand extends Decorator
         .append(rangeProperty.getValueString())
         .append(descInput.getValueString())
         .append(deckPolicy.getSingleValue())
-        .append(targetConfig.getValueString());
+        .append(targetConfig.getValueString())
+        .append(suppressSounds.getValueString());
       return ID + se.getValue();
     }
 

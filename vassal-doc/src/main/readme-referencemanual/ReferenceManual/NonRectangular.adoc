@@ -21,6 +21,9 @@ The Non-Rectangular trait allows you to specify the shape of the piece to be ide
 Simply select the appropriate image from the drop-down list.
 
 NOTE: For the most common case, a piece with a simple image that has some transparent portions, and that transparency is contained in the image file as "a transparent color", simply provide the same image again to the Non-Rectangular trait, and this will remove the transparent portions of the piece from the selectable part of the piece.
+
+Alternatively, the bounds of a piece may be given with an SVG image. If an SVG image is used, the outline of the first child of the root node becomes the bounds of the piece.
+
 [width="100%",cols="50%a,50%a",]
 |===
 |
