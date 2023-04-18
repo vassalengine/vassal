@@ -37,10 +37,6 @@ public class PropertySetter implements PropertyChanger {
     format = propSource != null ? new FormattedString() : null;
   }
 
-  public void setPropertySource(Constraints propSource) {
-    this.propSource = propSource;
-  }
-
   public String getRawValue() {
     return newValue;
   }

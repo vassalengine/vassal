@@ -18,8 +18,7 @@
 package VASSAL.counters;
 
 import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.properties.PropertyChangerConfigurer;
-import VASSAL.build.module.properties.PropertySetter;
+import VASSAL.build.module.properties.PropertyPrompt;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
@@ -75,7 +74,7 @@ public class SetAttachmentProperty extends DynamicProperty {
       if (INDEX_PROP.equals(key)) {
         return index;
       }
-      if (ATTACH_PROP.equals(key)) {
+      else if (ATTACH_PROP.equals(key)) {
         return currentAttachmentName;
       }
       else {
@@ -170,6 +169,12 @@ public class SetAttachmentProperty extends DynamicProperty {
     else if (Properties.VISIBLE_STATE.equals(key)) {
       return myGetState() + piece.getProperty(key);
     }
+    else if (INDEX_PROP.equals(key)) {
+      return index;
+    }
+    else if (ATTACH_PROP.equals(key)) {
+      return currentAttachmentName;
+    }
     else {
       return piece.getProperty(key);
     }
@@ -188,6 +193,12 @@ public class SetAttachmentProperty extends DynamicProperty {
     }
     else if (Properties.VISIBLE_STATE.equals(key)) {
       return getProperty(key);
+    }
+    else if (INDEX_PROP.equals(key)) {
+      return index;
+    }
+    else if (ATTACH_PROP.equals(key)) {
+      return currentAttachmentName;
     }
     else {
       return piece.getLocalizedProperty(key);
@@ -224,10 +235,10 @@ public class SetAttachmentProperty extends DynamicProperty {
       if (keyCommand.matches(stroke)) {
         final String propertyName = (new FormattedString(key)).getText(Decorator.getOutermost(this), this, "Editor.DynamicProperty.property_name");
 
-        // For evaluating name, we allow either (a) blank means any attachment, (b) string means that attachment name, (c) true/false expression with "Attachment" as an available property
+        // For evaluating name, we allow either (a) blank means any attachment, (b) string means that attachment name, (c) true/false expression with "AttachmentName" as an available property
         String attachmentName = (new FormattedString(attachName)).getText(propertiesWithIndex, this, "Editor.SetAttachmentProperty.attachment_name");
 
-        // For evaluating index, we allow either: (a) blank means every index, (b) number means 1-based specific index, or (c) true expression with "Index" as an available property
+        // For evaluating index, we allow either: (a) blank means every index, (b) number means 1-based specific index, or (c) true expression with "AttachmentIndex" as an available property
         String attachmentIndex = (new FormattedString(attachIndex)).getText(propertiesWithIndex, this, "Editor.SetAttachmentProperty.attachment_index");
 
         // Find matching attachments on our piece and set their properties
@@ -237,6 +248,8 @@ public class SetAttachmentProperty extends DynamicProperty {
             final Attachment attachment = (Attachment)p;
 
             currentAttachmentName = attachment.attachName;
+
+            String newValue = null;
 
             // When we find an Attachment trait, check attachment Name matches
             boolean match = false;
@@ -269,64 +282,24 @@ public class SetAttachmentProperty extends DynamicProperty {
                 GamePiece dp = Decorator.getOutermost(propPiece);
                 while (dp instanceof Decorator) {
                   if (dp instanceof DynamicProperty) {
+                    final DynamicProperty ourDP = (DynamicProperty)dp;
 
-                    // If we find a matching property, apply our setter on IT and we're done
-                    if (propertyName.equals(((DynamicProperty) dp).key)) {
-                      // Make our funkadoodle local properties (AttachmentName and AttachmentIndex) available during explicit sets
-                      if (keyCommand.propChanger instanceof PropertySetter) {
-                        final PropertyChangerConfigurer.Constraints constraints = new PropertyChangerConfigurer.Constraints() {
-                          @Override
-                          public boolean isWrap() {
-                            return false;
-                          }
+                    // If we find a matching property, apply our setter on it and we're done
+                    if (propertyName.equals(ourDP.key)) {
 
-                          @Override
-                          public boolean isNumeric() {
-                            return false;
-                          }
-
-                          @Override
-                          public int getMaximumValue() {
-                            return 0;
-                          }
-
-                          @Override
-                          public int getMinimumValue() {
-                            return 0;
-                          }
-
-                          @Override
-                          public PropertySource getPropertySource() {
-                            return propertiesWithIndex;
-                          }
-
-                          @Override
-                          public Component getComponent() {
-                            return null;
-                          }
-
-                          @Override
-                          public Object getProperty(Object key) {
-                            return null;
-                          }
-
-                          @Override
-                          public Object getLocalizedProperty(Object key) {
-                            return null;
-                          }
-                        };
-                        ((PropertySetter)keyCommand.propChanger).setPropertySource(constraints);
-                      }
-                      String newValue = keyCommand.propChanger.getNewValue(((DynamicProperty) dp).value);
-                      // The PropertyChanger has already evaluated any Beanshell, only need to handle any remaining $$variables.
-                      if (newValue.indexOf('$') >= 0) {
-                        format.setFormat(newValue);
-                        newValue = format.getText(propertiesWithIndex, this, "Editor.PropertyChangeConfigurer.new_value");
+                      // If we're doing a prompt, prompt only once. Otherwise re-evaluate setter each time
+                      if ((newValue == null) || !(keyCommand.propChanger instanceof PropertyPrompt)) {
+                        newValue = keyCommand.propChanger.getNewValue(ourDP.value);
+                        // The PropertyChanger has already evaluated any Beanshell, only need to handle any remaining $$variables.
+                        if (newValue.indexOf('$') >= 0) {
+                          format.setFormat(newValue);
+                          newValue = format.getText(propertiesWithIndex, this, "Editor.PropertyChangeConfigurer.new_value");
+                        }
                       }
 
-                      final ChangeTracker ct = new ChangeTracker(dp);
+                      final ChangeTracker ct = new ChangeTracker(ourDP);
 
-                      ((DynamicProperty) dp).value = newValue;
+                      ourDP.value = newValue;
 
                       comm = comm.append(ct.getChangeCommand());
                     }

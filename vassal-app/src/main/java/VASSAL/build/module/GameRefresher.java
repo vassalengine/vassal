@@ -920,7 +920,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       // Remove any existing cargo
       command = command.append(getMat().makeRemoveAllCargoCommand());
 
-      // Refresh the Mat piece
+  // Refresh the Mat piece
       final PieceRefresher pr = new PieceRefresher(getMatPiece(), true);
       pr.refresh(command);
       final GamePiece newMatPiece = pr.getRefreshedPieces().get(0);
