@@ -5,7 +5,7 @@
 #
 DMGDIR=dist/dmg
 
-L4JVER=3.14
+L4JVER=3.50
 L4JDIR=dist/launch4j
 
 JDKDIR=dist/jdks
@@ -63,7 +63,9 @@ pushd "$L4JDIR"
 
 wget https://downloads.sourceforge.net/project/launch4j/launch4j-3/${L4JVER}/launch4j-${L4JVER}-linux-x64.tgz
 tar -xvf launch4j-${L4JVER}-linux-x64.tgz
-
+# check if script is still broken in next release after 3.50
+# see https://sourceforge.net/p/launch4j/bugs/227/
+dos2unix launch4j/launch4j
 popd
 
 #
