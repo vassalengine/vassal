@@ -638,6 +638,44 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
 
+  /**
+   * CountAttachmentExpression(attachment, expression) function count the number of pieces
+   * attached to this piece via a named Attachment trait for which the expression is true
+   *
+   * @param attachment Attachment Name
+   * @param property Property Name
+   * @param ps       GamePiece
+   * @return total
+   */
+  public Object countAttachmentExpression(String attachment, String expression, PropertySource ps) {
+    int result = 0;
+
+    // This allows ReportState to count properties properly
+    if (ps instanceof ReportState.OldAndNewPieceProperties) {
+      ps = ((ReportState.OldAndNewPieceProperties)ps).getNewPiece();
+    }
+
+    if (ps instanceof GamePiece) {
+      GamePiece p = Decorator.getOutermost((Decorator)ps);
+      while (p instanceof Decorator) {
+        if (p instanceof Attachment) {
+          final Attachment a = (Attachment)p;
+          if (a.getAttachName().equals(attachment)) {
+            final String matchString = replaceDollarVariables(expression, ps);
+            final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(ps);
+            for (final GamePiece target : a.getAttachList()) {
+              if (filter == null || filter.accept(target)) {
+                result++;
+              }
+            }
+          }
+        }
+        p = ((Decorator) p).getInner();
+      }
+    }
+    return result;
+  }
+
 
   /**
    * SumMat(property) function

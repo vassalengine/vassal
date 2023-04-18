@@ -135,6 +135,18 @@ CountAttachment(String attachment, String property) {
 }
 
 
+/**
+ * Callback to Vassal to count the number of pieces attached through
+ * the named Attachment trait which pass the property match expression
+ *
+ * Example: CountAttachment("Sibling", "Strength > 1")
+ */
+CountAttachmentExpression(String attachment, String expression) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.countAttachmentExpression(attachment, expression, _source));
+}
+
 
 /**
  * Callback to Vassal to sum the value of a property in all
