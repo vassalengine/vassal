@@ -330,7 +330,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     piece.draw(g, x, y, obs, zoom);
 
     updateCachedImage();
-    if (lastCachedLabel == null ) {
+    if (lastCachedLabel == null) {
       return;
     }
 
