@@ -85,8 +85,8 @@ Any of them can be added by right-clicking on the _[Module]_ component in the Mo
 |<<#DiceButton,Dice Button>>|<<GamePieceImageDefinitions.adoc#top,Game Piece Image Definitions>>|<<Inventory.adoc#top,Game Piece Inventory Window>>|<<PieceWindow.adoc#top,Game Piece Palette>>|<<Prototypes.adoc#top,Game Piece Prototype Definitions>>
 |<<Map.adoc#GlobalKeyCommand,Global Key Command>>|<<GlobalOptions.adoc#top,Global Options>>|<<GlobalProperties.adoc#top,Global Properties>>|<<GlobalTranslatableMessages.adoc#top, Global Translatable Messages>>|<<HelpMenu.adoc#top,Help Menu>>
 |<<Map.adoc#top,Map Window>>|<<MultiActionButton.adoc#top,Multi-Action Button>>|<<#NotesWindow,Notes Window>>|<<PlayerHand.adoc#top,Player Hand>>|<<#PredefinedSetup,Predefined Setup>>
-|<<PrivateWindow.adoc#top,Private Window>>|<<#RandomTextButton,Random Text Button>>|<<SpecialDiceButton.adoc#top,Symbolic Dice Button>>|<<Toolbar.adoc#top,Toolbar>>|<<ToolbarMenu.adoc#top,Toolbar Menu>>
-|<<TurnTracker.adoc#top,Turn Counter>>||||
+|<<PrivateWindow.adoc#top,Private Window>>|<<#RandomTextButton,Random Text Button>>|<<ScenarioProperties.adoc#top,Scenario Options>>|<<SpecialDiceButton.adoc#top,Symbolic Dice Button>>|<<Toolbar.adoc#top,Toolbar>>
+|<<ToolbarMenu.adoc#top,Toolbar Menu>>|<<TurnTracker.adoc#top,Turn Counter>>|||
 |===
 
 

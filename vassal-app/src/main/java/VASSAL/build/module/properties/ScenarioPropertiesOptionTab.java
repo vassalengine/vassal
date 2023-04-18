@@ -42,8 +42,14 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.awt.Component;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -74,11 +80,17 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
   /** Password of User that locked this tab **/
   protected String lockedBypw = "";
 
+  /** UTD Date/Time tab was locked */
+  protected String lockedDt;
+
   /** Current locked status of the tab recorded in the UI, but not yet saved **/
   protected boolean uiTabLock;
 
   /** User who locked the UI **/
   protected String uiTabLockUser;
+
+  /** UTC Date/Time of lock */
+  protected String uiTabLockDt;
 
   protected JLabel lockLabel;
   protected JButton lockButton;
@@ -212,8 +224,9 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
 
     final String by = sd.nextToken("");
     final String pw = sd.nextToken("");
+    final String dt = sd.nextToken("");
 
-    return new LockScenarioOptionsTab(this, by, pw);
+    return new LockScenarioOptionsTab(this, by, pw, dt);
   }
 
   @Override
@@ -221,9 +234,10 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
     if (c instanceof LockScenarioOptionsTab) {
       final LockScenarioOptionsTab com = (LockScenarioOptionsTab) c;
       final SequenceEncoder se = new SequenceEncoder(COMMAND_PREFIX, COMMAND_DELIMITER);
-      se.append(com.getTab().getConfigureName());
-      se.append(com.getLockedBy());
-      se.append(com.getLockedPw());
+      se.append(com.getTab().getConfigureName())
+        .append(com.getLockedBy())
+        .append(com.getLockedPw())
+        .append(com.getLockedDt());
       return se.getValue();
     }
     return null;
@@ -231,18 +245,30 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
 
   @Override
   public void setup(boolean gameStarting) {
+    if (!gameStarting) {
+      resetTab();
+    }
+  }
 
+  protected void resetTab() {
+    lockedByuser = "";
+    lockedBypw = "";
+    lockedDt = "";
+    uiTabLock = false;
+    uiTabLockUser = "";
+    uiTabLockDt = "";
   }
 
   @Override
   public Command getRestoreCommand() {
-    return new LockScenarioOptionsTab(this, lockedByuser, lockedBypw);
+    return new LockScenarioOptionsTab(this, lockedByuser, lockedBypw, lockedDt);
   }
 
   // Return the UI to manipulate the options in this tab
   public Component getUI() {
     uiTabLock = isLocked();
     uiTabLockUser = lockedByuser;
+    uiTabLockDt = lockedDt;
     rebuildUI();
     return uiPanel;
   }
@@ -250,7 +276,7 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
   protected void rebuildUI() {
     entries.clear();
     uiPanel.removeAll();
-    uiPanel.add(getLockUI(), "span 2"); // NON-NLS
+    uiPanel.add(getLockUI(), "span 2, alignx left"); // NON-NLS
 
     // Loop through each option defined option
     for (final AbstractScenarioProperty option : getAllDescendantComponentsOf(AbstractScenarioProperty.class)) {
@@ -286,7 +312,7 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
     lockButton.addActionListener(e -> lockUi(true));
     p.add(lockButton);
 
-    unlockLabel = new JLabel(Resources.getString("ScenarioProperties.tabLocked", uiTabLockUser));
+    unlockLabel = new JLabel(Resources.getString("ScenarioProperties.tabLocked", uiTabLockUser, uiTabLockDt));
     p.add(unlockLabel);
     unlockButton = new JButton(Resources.getString("ScenarioProperties.unlock"));
     unlockButton.addActionListener(e -> lockUi(false));
@@ -303,9 +329,23 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
    * @param lock lock status
    */
   protected void lockUi(boolean lock) {
-    uiTabLock = lock;
-    uiTabLockUser = (String) GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME);
-    refreshLockUI();
+    final StringBuilder sb = new StringBuilder();
+    sb.append(Resources.getString(lock ? "ScenarioProperties.lock_messaage" : "ScenarioProperties.unlock_messaage"))
+      .append("\n\n")
+      .append(Resources.getString("ScenarioProperties.are_you_sure"))
+      .append("\n\n");
+
+    if (JOptionPane.YES_OPTION ==
+      JOptionPane.showConfirmDialog(uiPanel, sb.toString(), Resources.getString("ScenarioProperties.lock_title"), JOptionPane.YES_NO_OPTION)) {
+      uiTabLock = lock;
+      uiTabLockUser = (String) GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME);
+      final Instant now = Instant.now();
+      final DateTimeFormatter fmt = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.MEDIUM);
+      final String local = fmt.withZone(ZoneId.systemDefault()).format(now);
+      final String utc = fmt.withZone(ZoneOffset.UTC).format(now);
+      uiTabLockDt = local + " (" + utc + " UTC)";
+      refreshLockUI();
+    }
   }
 
   /**
@@ -317,7 +357,7 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
     lockButton.setVisible(!isUiLocked());
     lockButton.setEnabled(isLockingAllowed());
 
-    unlockLabel.setText(Resources.getString("ScenarioProperties.tabLocked", uiTabLockUser));
+    unlockLabel.setText(Resources.getString("ScenarioProperties.tabLocked", uiTabLockUser, uiTabLockDt));
     unlockLabel.setVisible(isUiLocked());
     unlockButton.setVisible(isUiLocked());
     unlockButton.setEnabled(isLockingAllowed());
@@ -338,7 +378,7 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
    *
    * @param locking true to lock
    */
-  protected void lockTab(boolean locking) {
+  protected void lockTab(boolean locking, String lockDt) {
 
     final GameModule gm = GameModule.getGameModule();
     final String user = (String) gm.getPrefs().getValue(GameModule.REAL_NAME);
@@ -346,11 +386,11 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
 
     Command c;
     if (locking) {
-      c = new LockScenarioOptionsTab(this, user, pw);
+      c = new LockScenarioOptionsTab(this, user, pw, lockDt);
       c = c.append(new Chatter.DisplayText(gm.getChatter(), Resources.getString("ScenarioProperties.lockReport", getConfigureName(), user)));
     }
     else {
-      c = new LockScenarioOptionsTab(this, "", "");
+      c = new LockScenarioOptionsTab(this, "", "", "");
       c = c.append(new Chatter.DisplayText(gm.getChatter(), Resources.getString("ScenarioProperties.unlockReport", getConfigureName(), user)));
     }
 
@@ -450,7 +490,7 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
     }
 
     if (isLocked() != uiTabLock) {
-      lockTab(uiTabLock);
+      lockTab(uiTabLock, uiTabLockDt);
     }
 
   }
@@ -464,26 +504,31 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
 
     private final String lockedBy;
     private final String lockedPw;
+    private final String lockedDt;
     private final String oldLockedBy;
     private final String oldLockedPw;
+    private final String oldLockedDt;
 
-    public LockScenarioOptionsTab(ScenarioPropertiesOptionTab tab, String lockedBy, String lockedPw) {
+    public LockScenarioOptionsTab(ScenarioPropertiesOptionTab tab, String lockedBy, String lockedPw, String lockedDt) {
       this.tab = tab;
       this.lockedBy = lockedBy;
       this.lockedPw = lockedPw;
+      this.lockedDt = lockedDt;
       oldLockedBy = tab.lockedByuser;
       oldLockedPw = tab.lockedBypw;
+      oldLockedDt = tab.lockedDt;
     }
 
     @Override
     protected void executeCommand() {
       tab.lockedByuser = lockedBy;
       tab.lockedBypw = lockedPw;
+      tab.lockedDt = lockedDt;
     }
 
     @Override
     protected Command myUndoCommand() {
-      return new LockScenarioOptionsTab(tab, oldLockedBy, oldLockedPw);
+      return new LockScenarioOptionsTab(tab, oldLockedBy, oldLockedPw, oldLockedDt);
     }
 
     public ScenarioPropertiesOptionTab getTab() {
@@ -496,6 +541,10 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
 
     public String getLockedPw() {
       return lockedPw;
+    }
+
+    public String getLockedDt() {
+      return lockedDt;
     }
   }
 

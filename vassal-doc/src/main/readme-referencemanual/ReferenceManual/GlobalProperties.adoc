@@ -1,7 +1,7 @@
 == VASSAL Reference Manual
 [#top]
 
-[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > *Global Properties*#
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > *Global Properties and Scenario Options*#
 
 '''''
 
@@ -73,6 +73,17 @@ _Prompt user_::: pops up a dialog for the user to type in a new value.
 _Prompt user to select from list_::: pops up a dialog with a drop-down menu for the user to select from.
 |image:images/ChangePropertyButton.png[]
 |===
+
+[#ScenarioProperties]
+==== Scenario Properties and Scenario Properties Option Tabs
+<<ScenarioProperties.adoc#ScenarioProperty,Scenario Properties>> are a special kind of Global Property that have an associated preference setting and are grouped together in a tabbed dialog box accessible from the main Vassal File menu when a Vassal game is
+in progress.
+
+image:images/ScenarioOptions1.png[] image:images/ScenarioOptions2.png[]
+
+<<ScenarioProperties.adoc#ScenarioProperty,Scenario Properties>> are defined by the Module Designer and create Global Properties that can be accessed by pieces in the module, but can be modified and optionally locked by players through a central user interface.
+
+See the <<ScenarioProperties.adoc#top,Scenario Properties>> page for more information.
 
 '''''
 === Custom Code
