@@ -111,6 +111,33 @@ CountStack(String property) {
 
 
 /**
+ * Callback to Vassal to find the highest value of a named property
+ * among all counters attached through a named Attachment trait.
+ * Returns 0 if no counters are attached.
+ *
+ * Example: MaxAttachment("Sibling", "Strength")
+ */
+MaxAttachment(String attachment, String property) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.maxAttachment(attachment, property, _source));
+}
+
+/**
+ * Callback to Vassal to find the lowest value of a named property
+ * among all counters attached through a named Attachment trait.
+ * Returns 0 if no counters are attached.
+ *
+ * Example: MinAttachment("Sibling", "Strength")
+ */
+MinAttachment(String attachment, String property) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.minAttachment(attachment, property, _source));
+}
+
+
+/**
  * Callback to Vassal to sum the value of a named property in all
  * counters attached through a named Attachment trait
  *
@@ -139,7 +166,7 @@ CountAttachment(String attachment, String property) {
  * Callback to Vassal to count the number of pieces attached through
  * the named Attachment trait which pass the property match expression
  *
- * Example: CountAttachment("Sibling", "Strength > 1")
+ * Example: CountAttachment("Sibling", "{ Strength > 1 }")
  */
 CountAttachmentExpression(String attachment, String expression) {
   _interp = this.caller.namespace.getVariable("_interp");
