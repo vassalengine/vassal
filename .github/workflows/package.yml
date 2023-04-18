@@ -31,7 +31,7 @@ jobs:
         run: sudo apt update
 
       - name: Install dependencies
-        run: sudo apt-get install genisoimage ghostscript nsis
+        run: sudo apt-get install dos2unix genisoimage ghostscript nsis
 
       - name: Install Java
         uses: actions/setup-java@v3
