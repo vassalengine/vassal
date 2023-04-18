@@ -64,11 +64,12 @@ public class SetAttachmentProperty extends DynamicProperty {
   private final SetAttachmentPropertySource propertiesWithIndex = new SetAttachmentPropertySource();
   private int index = 0;
   private String currentAttachmentName = "";
+  private SetAttachmentProperty This = this;
 
   /**
    * Makes our special location-currently-being-evaluated information available to our property-match evaluation; other than that, properties from the piece as usual
    */
-  private class SetAttachmentPropertySource implements PropertySource {
+  public class SetAttachmentPropertySource implements PropertySource {
     @Override
     public Object getProperty(Object key) {
       if (INDEX_PROP.equals(key)) {
@@ -80,6 +81,10 @@ public class SetAttachmentProperty extends DynamicProperty {
       else {
         return Decorator.getOutermost(piece).getProperty(key);
       }
+    }
+
+    public GamePiece getPiece() {
+      return This;
     }
 
     @Override
