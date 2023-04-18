@@ -28,6 +28,7 @@
         { "num": 12175, "desc": "Fix stretchy images in chat" }
       ],
       "other_improvements": [
+        { "num": 12238, "desc": "Upgrade bundled Java from 19 to 20" },
         { "num": 12177, "desc": "Change-property buttons don't generate completely empty chat lines" },
         { "num": 12172, "desc": "Metadata now contains the 'extra' fields, and Module Manager displays them if numeric" }
       ]

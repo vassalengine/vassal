@@ -1,5 +1,6 @@
 3.7.0-beta3 - ???
 
+* 12238: Upgrade bundled Java from 19 to 20
 * 12233: Ensure that OpMultiResolutionImage.getBaseImage() never returns null
 * 12220: Add BorderOutline's property names to the searchable target list
 * 12205: Area of Effect trait was eating other traits' visibility info in some
