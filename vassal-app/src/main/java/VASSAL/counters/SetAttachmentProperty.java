@@ -64,7 +64,7 @@ public class SetAttachmentProperty extends DynamicProperty {
   private final SetAttachmentPropertySource propertiesWithIndex = new SetAttachmentPropertySource();
   private int index = 0;
   private String currentAttachmentName = "";
-  private SetAttachmentProperty This = this;
+  private final SetAttachmentProperty This = this; // So our property source thing can report our identity downstream
 
   /**
    * Makes our special location-currently-being-evaluated information available to our property-match evaluation; other than that, properties from the piece as usual
