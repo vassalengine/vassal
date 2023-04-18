@@ -64,7 +64,7 @@ public class SetAttachmentProperty extends DynamicProperty {
 
   private final SetAttachmentPropertySource propertiesWithIndex = new SetAttachmentPropertySource();
   private int index = 0;
-  private String attachment = "";
+  private String currentAttachmentName = "";
 
   /**
    * Makes our special location-currently-being-evaluated information available to our property-match evaluation; other than that, properties from the piece as usual
@@ -76,7 +76,7 @@ public class SetAttachmentProperty extends DynamicProperty {
         return index;
       }
       if (ATTACH_PROP.equals(key)) {
-        return attachment;
+        return currentAttachmentName;
       }
       else {
         return Decorator.getOutermost(piece).getProperty(key);
@@ -235,6 +235,8 @@ public class SetAttachmentProperty extends DynamicProperty {
         while (p instanceof Decorator) {
           if (p instanceof Attachment) {
             final Attachment attachment = (Attachment)p;
+
+            currentAttachmentName = attachment.attachName;
 
             // When we find an Attachment trait, check attachment Name matches
             boolean match = false;
