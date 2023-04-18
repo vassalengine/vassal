@@ -609,7 +609,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   public Object countAttachment(String attachment, String property, PropertySource ps) {
     int result = 0;
 
-    // This allows ReportState to count properties properly
+  // This allows ReportState to count properties properly
     if (ps instanceof ReportState.OldAndNewPieceProperties) {
       ps = ((ReportState.OldAndNewPieceProperties)ps).getNewPiece();
     }
