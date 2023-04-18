@@ -32,7 +32,7 @@ The basic components are as follows:
 |===
 |Type |Options |Examples |Notes
 |*Numbers* |  |{35} |Vassal works with whole numbers.
-Decimal numbers are treated as strings.
+It stores decimal numbers as strings.
 |*Strings* |  |{"German"} |A String literal, or text message, must be enclosed in "" quotation marks
 |*Substitution* |$..$ |{"$Nation$"} +
 {$Attack$} |Property names enclosed by $..$ symbols immediately substitute the property value, based on the piece or component issuing the command.
@@ -171,6 +171,8 @@ CountStack() +
 CountStack(propertyName) +
 SumMat(propertyName) +
 CountMat(propertyName) +
+MaxAttachment(attachmentName, propertyName) +
+MinAttachment(attachmentName, propertyName) +
 SumAttachment(attachmentName, propertyName) +
 CountAttachment(attachmentName, propertyName) +
 CountAttachmentExpression(attachmentName, expression) +
@@ -182,6 +184,8 @@ Count(expr, map) + |{SumStack("Attack")} +
 {CountStack("Russian")} +
 {SumMat("AttackFactor")} +
 {CountMat("Followers")} +
+{MaxAttachment("MyMinions", "Strength")} +
+{MinAttachment("MyMinions", "Health")} +
 {SumAttachment("MyMinions", "Ammo")} +
 {CountAttachment("MyMinions", "Naval")} +
 {CountAttachmentExpression("MyMinions", "{ Ammo > 0 }")} +
@@ -197,6 +201,10 @@ Count(expr, map) + |{SumStack("Attack")} +
 *SumMat(prop)* returns the total of the specified property among a Mat and its Mat Cargo. The asking piece can either be a Mat or a Mat Cargo. If the piece is not a Mat, and/or if it is a Mat Cargo piece not presently on a Mat, then only the piece itself is checked.
 
 *CountMat(prop)* returns the number of pieces with a non-blank value for the specified property, among a Mat and its Mat Cargo. The asking piece can either be a Mat or a Mat Cargo. If the piece is not a Mat, and/or if it is a Mat Cargo piece not presently on a Mat, then only the piece itself is checked.
+
+*MaxAttachment(attachment, prop)* returns the highest value of the specified property summed among all the pieces attached to this piece via a named Attachment trait on this piece. Returns 0 if no pieces containing the property are attached.
+
+*MinAttachment(attachment, prop)* returns the lowest value of the specified property summed among all the pieces attached to this piece via a named Attachment trait on this piece. Returns 0 if no pieces containing the property are attached.
 
 *SumAttachment(attachment, prop)* returns the total of the specified property summed across all the pieces attached to this piece via a named Attachment trait on this piece.
 

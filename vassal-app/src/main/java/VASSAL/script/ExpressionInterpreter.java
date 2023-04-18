@@ -560,6 +560,86 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
 
   /**
+   * MaxAttachment(attachment, property) function
+   * Highest value of the named property among all pieces attached, or 0 if no pieces are attached
+   *
+   * @param attachment Attachment Name
+   * @param property Property Name
+   * @param ps       GamePiece
+   * @return total
+   */
+  public Object maxAttachment(String attachment, String property, PropertySource ps) {
+    int result = Integer.MIN_VALUE;
+
+    // This allows ReportState to sum properties properly
+    if (ps instanceof ReportState.OldAndNewPieceProperties) {
+      ps = ((ReportState.OldAndNewPieceProperties)ps).getNewPiece();
+    }
+
+    if (ps instanceof GamePiece) {
+      GamePiece p = Decorator.getOutermost((Decorator)ps);
+      while (p instanceof Decorator) {
+        if (p instanceof Attachment) {
+          final Attachment a = (Attachment)p;
+          if (a.getAttachName().equals(attachment)) {
+            for (final GamePiece target : a.getAttachList()) {
+              final Object prop = target.getProperty(property);
+              final int value = propValue(prop);
+              if (value > result) {
+                result = value;
+              }
+            }
+          }
+        }
+        p = ((Decorator) p).getInner();
+      }
+    }
+
+    return (result == Integer.MIN_VALUE) ? 0 : result;
+  }
+
+
+  /**
+   * MinAttachment(attachment, property) function
+   * Lowest value of the named property among all pieces attached, or 0 if no pieces are attached
+   *
+   * @param attachment Attachment Name
+   * @param property Property Name
+   * @param ps       GamePiece
+   * @return total
+   */
+  public Object minAttachment(String attachment, String property, PropertySource ps) {
+    int result = Integer.MAX_VALUE;
+
+    // This allows ReportState to sum properties properly
+    if (ps instanceof ReportState.OldAndNewPieceProperties) {
+      ps = ((ReportState.OldAndNewPieceProperties)ps).getNewPiece();
+    }
+
+    if (ps instanceof GamePiece) {
+      GamePiece p = Decorator.getOutermost((Decorator)ps);
+      while (p instanceof Decorator) {
+        if (p instanceof Attachment) {
+          final Attachment a = (Attachment)p;
+          if (a.getAttachName().equals(attachment)) {
+            for (final GamePiece target : a.getAttachList()) {
+              final Object prop = target.getProperty(property);
+              final int value = propValue(prop);
+              if (value < result) {
+                result = value;
+              }
+            }
+          }
+        }
+        p = ((Decorator) p).getInner();
+      }
+    }
+
+    return (result == Integer.MAX_VALUE) ? 0 : result;
+  }
+
+
+  /**
    * SumAttachment(attachment, property) function
    * Total the value of the named property in all pieces
    * attached
@@ -642,8 +722,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * CountAttachmentExpression(attachment, expression) function count the number of pieces
    * attached to this piece via a named Attachment trait for which the expression is true
    *
-   * @param attachment Attachment Name
-   * @param property Property Name
+   * @param attachment Attachment Name e.g. "MyTurrets"
+   * @param expression Expression e.g. " { Ammo > 2 } "
    * @param ps       GamePiece
    * @return total
    */
