@@ -17,38 +17,54 @@
 
 package VASSAL.launch;
 
+import VASSAL.Info;
+import VASSAL.build.module.Documentation;
+import VASSAL.build.module.ExtensionsManager;
+import VASSAL.build.module.metadata.AbstractMetaData;
+import VASSAL.build.module.metadata.ExtensionMetaData;
+import VASSAL.build.module.metadata.MetaDataFactory;
+import VASSAL.build.module.metadata.ModuleMetaData;
+import VASSAL.build.module.metadata.SaveMetaData;
+import VASSAL.chat.CgiServerStatus;
+import VASSAL.chat.ui.ServerStatusView;
+import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.DirectoryConfigurer;
+import VASSAL.configure.IntConfigurer;
+import VASSAL.configure.ShowHelpAction;
+import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringConfigurer;
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Frame;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.stream.Stream;
+import VASSAL.i18n.Resources;
+import VASSAL.preferences.PositionOption;
+import VASSAL.preferences.Prefs;
+import VASSAL.tools.ApplicationIcons;
+import VASSAL.tools.BrowserSupport;
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.WriteErrorDialog;
+import VASSAL.tools.filechooser.FileChooser;
+import VASSAL.tools.filechooser.ModuleExtensionFileFilter;
+import VASSAL.tools.io.DirectoryTreeDeleter;
+import VASSAL.tools.logging.LogPane;
+import VASSAL.tools.menu.CheckBoxMenuItemProxy;
+import VASSAL.tools.menu.MenuBarProxy;
+import VASSAL.tools.menu.MenuItemProxy;
+import VASSAL.tools.menu.MenuManager;
+import VASSAL.tools.menu.MenuProxy;
+import VASSAL.tools.swing.Dialogs;
+import VASSAL.tools.swing.ProgressDialog;
+import VASSAL.tools.swing.SplitPane;
+import VASSAL.tools.swing.SwingUtils;
+import VASSAL.tools.version.UpdateCheckAction;
+import VASSAL.tools.version.VersionUtils;
+import net.miginfocom.swing.MigLayout;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.SystemUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.jdesktop.swingx.JXTreeTable;
+import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
+import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -81,56 +97,37 @@ import javax.swing.text.DefaultEditorKit;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
-
-import net.miginfocom.swing.MigLayout;
-
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.SystemUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.jdesktop.swingx.JXTreeTable;
-import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
-import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import VASSAL.Info;
-import VASSAL.build.module.Documentation;
-import VASSAL.build.module.ExtensionsManager;
-import VASSAL.build.module.metadata.AbstractMetaData;
-import VASSAL.build.module.metadata.ExtensionMetaData;
-import VASSAL.build.module.metadata.MetaDataFactory;
-import VASSAL.build.module.metadata.ModuleMetaData;
-import VASSAL.build.module.metadata.SaveMetaData;
-import VASSAL.chat.CgiServerStatus;
-import VASSAL.chat.ui.ServerStatusView;
-import VASSAL.configure.BooleanConfigurer;
-import VASSAL.configure.DirectoryConfigurer;
-import VASSAL.configure.IntConfigurer;
-import VASSAL.configure.ShowHelpAction;
-import VASSAL.configure.StringArrayConfigurer;
-import VASSAL.i18n.Resources;
-import VASSAL.preferences.PositionOption;
-import VASSAL.preferences.Prefs;
-import VASSAL.tools.ApplicationIcons;
-import VASSAL.tools.BrowserSupport;
-import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.WriteErrorDialog;
-import VASSAL.tools.filechooser.FileChooser;
-import VASSAL.tools.filechooser.ModuleExtensionFileFilter;
-import VASSAL.tools.io.DirectoryTreeDeleter;
-import VASSAL.tools.logging.LogPane;
-import VASSAL.tools.menu.CheckBoxMenuItemProxy;
-import VASSAL.tools.menu.MenuBarProxy;
-import VASSAL.tools.menu.MenuItemProxy;
-import VASSAL.tools.menu.MenuManager;
-import VASSAL.tools.menu.MenuProxy;
-import VASSAL.tools.swing.Dialogs;
-import VASSAL.tools.swing.ProgressDialog;
-import VASSAL.tools.swing.SplitPane;
-import VASSAL.tools.swing.SwingUtils;
-import VASSAL.tools.version.UpdateCheckAction;
-import VASSAL.tools.version.VersionUtils;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.stream.Stream;
 
 public class ModuleManagerWindow extends JFrame {
   private static final long serialVersionUID = 1L;
@@ -1388,10 +1385,12 @@ public class ModuleManagerWindow extends JFrame {
           if (testExtInfo.isValid()) {
             final File f = getExtensionsManager().setActive(fc.getSelectedFile(), true);
             final MyTreeNode moduleNode = rootNode.findNode(selectedModule);
-            final ExtensionInfo extInfo = new ExtensionInfo(f, true, (ModuleInfo) moduleNode.getNodeInfo());
-            if (extInfo.isValid()) {
-              final MyTreeNode extNode = new MyTreeNode(extInfo);
-              treeModel.insertNodeInto(extNode, moduleNode, moduleNode.findInsertIndex(extInfo));
+            if (moduleNode.getNodeInfo() instanceof ModuleInfo) {
+              final ExtensionInfo extInfo = new ExtensionInfo(f, true, (ModuleInfo) moduleNode.getNodeInfo());
+              if (extInfo.isValid()) {
+                final MyTreeNode extNode = new MyTreeNode(extInfo);
+                treeModel.insertNodeInto(extNode, moduleNode, moduleNode.findInsertIndex(extInfo));
+              }
             }
           }
           else {
@@ -1610,7 +1609,9 @@ public class ModuleManagerWindow extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
           removeModule(file);
-          //cleanupTileCache();  // Sometimes they might have another copy of same module in the list, and ended up with TileNotFound exceptions
+          if (!AbstractLaunchAction.anyInUse()) {
+            cleanupTileCache();
+          }
         }
       });
 
@@ -1656,7 +1657,18 @@ public class ModuleManagerWindow extends JFrame {
 
     @Override
     public String getVersion() {
-      return metadata.getVersion();
+      final String version = metadata.getVersion();
+      final String extra1 = metadata.getExtra1();
+      final String extra2 = metadata.getExtra2();
+      if (!extra1.isEmpty() && (extra1.charAt(0) >= '0') && (extra1.charAt(0) <= '9')) {
+        if (!extra2.isEmpty() && (extra2.charAt(0) >= '0') && (extra2.charAt(0) <= '9')) {
+          return version + "." + extra1 + "." + extra2;
+        }
+        else {
+          return version + "." + extra1;
+        }
+      }
+      return version;
     }
 
     public String getLocalizedDescription() {

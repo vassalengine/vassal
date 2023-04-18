@@ -27,6 +27,8 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.opcache.OpCache;
 
@@ -51,6 +53,7 @@ import VASSAL.tools.opcache.OpCache;
  * @since 3.1.0
  * @author Joel Uckelman
  */
+@SuppressFBWarnings(value = "NM_SAME_SIMPLE_NAME_AS_SUPERCLASS")
 public abstract class AbstractOpImpl
   extends VASSAL.tools.opcache.AbstractOpImpl<BufferedImage>
   implements ImageOp {

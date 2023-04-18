@@ -17,6 +17,24 @@
  */
 package VASSAL.build.module.documentation;
 
+import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.AutoConfigurable;
+import VASSAL.build.Buildable;
+import VASSAL.build.GameModule;
+import VASSAL.build.module.Documentation;
+import VASSAL.configure.Configurer;
+import VASSAL.configure.ConfigurerFactory;
+import VASSAL.configure.TranslatingStringEnumConfigurer;
+import VASSAL.i18n.Resources;
+import VASSAL.search.HTMLImageFinder;
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ReadErrorDialog;
+import VASSAL.tools.URLUtils;
+import VASSAL.tools.menu.MenuItemProxy;
+import VASSAL.tools.menu.MenuManager;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import java.awt.Dialog;
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -25,21 +43,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.List;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-
-import VASSAL.build.AbstractConfigurable;
-import VASSAL.build.Buildable;
-import VASSAL.build.GameModule;
-import VASSAL.build.module.Documentation;
-import VASSAL.i18n.Resources;
-import VASSAL.search.HTMLImageFinder;
-import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ReadErrorDialog;
-import VASSAL.tools.URLUtils;
-import VASSAL.tools.menu.MenuItemProxy;
-import VASSAL.tools.menu.MenuManager;
 
 /**
  * Places an entry in the <code>Help</code> menu.  Selecting the entry
@@ -50,10 +53,14 @@ public class HelpFile extends AbstractConfigurable {
   public static final String FILE = "fileName"; //$NON-NLS-1$
   public static final String TYPE = "fileType"; //$NON-NLS-1$
   private static final String IMAGE = "image"; //$NON-NLS-1$
+  public static final String VASSAL_DOC = "vassalDoc"; //NON-NLS
 
   public static final String ARCHIVE_ENTRY = "archive"; //$NON-NLS-1$
   public static final String RESOURCE = "resource"; //$NON-NLS-1$
   public static final String LOCAL_FILE = "file"; //$NON-NLS-1$
+
+  public static final String USER_SECTION = "user"; //NON-NLS
+  public static final String VASSAL_SECTION = "vassal"; //NON-NLS
 
   protected HelpWindow frame;
   protected DialogHelpWindow dialog;
@@ -62,6 +69,17 @@ public class HelpFile extends AbstractConfigurable {
   protected String fileName;
   protected Action launch;
   protected String fileType = ARCHIVE_ENTRY;
+  protected String vassalDoc = "";
+
+
+  public static class VassalHelpConfig implements ConfigurerFactory {
+    @Override
+    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+      return new TranslatingStringEnumConfigurer(key, name,
+        new String[] {USER_SECTION, VASSAL_SECTION},
+        new String[] {"Editor.HelpFile.user_section", "Editor.HelpFile.vassal_section"});
+    }
+  }
 
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.HelpFile.component_type");
@@ -188,6 +206,7 @@ public class HelpFile extends AbstractConfigurable {
     return new String[] {
       TITLE,
       FILE,
+      VASSAL_DOC,
       IMAGE,
       TYPE
     };
@@ -203,6 +222,17 @@ public class HelpFile extends AbstractConfigurable {
     }
     else if (TYPE.equals(key)) {
       return fileType;
+    }
+    else if (VASSAL_DOC.equals(key)) {
+      if (vassalDoc.isEmpty()) {
+        if (Documentation.INTRO_FILENAME.equals(fileName)) { // Move old unconfigured "Quick Start" to the Vassal part of the menu
+          return VASSAL_SECTION;
+        }
+        else {
+          return USER_SECTION;
+        }
+      }
+      return vassalDoc;
     }
     return null;
   }
@@ -227,13 +257,17 @@ public class HelpFile extends AbstractConfigurable {
     else if (TYPE.equals(key)) {
       fileType = (String) val;
     }
+    else if (VASSAL_DOC.equals(key)) {
+      vassalDoc = (String) val;
+    }
   }
 
   @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
       Resources.getString("Editor.menu_command"),
-      Resources.getString("Editor.HelpFile.text_file")
+      Resources.getString("Editor.HelpFile.text_file"),
+      Resources.getString("Editor.HelpFile.display_with_vassal_section")
     };
   }
 
@@ -241,7 +275,8 @@ public class HelpFile extends AbstractConfigurable {
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       String.class,
-      File.class
+      File.class,
+      VassalHelpConfig.class
     };
   }
 
@@ -255,14 +290,14 @@ public class HelpFile extends AbstractConfigurable {
   @Override
   public void addTo(Buildable b) {
     launchItem = new MenuItemProxy(launch);
-    MenuManager.getInstance().addToSection("Documentation.Module", launchItem); //NON-NLS
+    MenuManager.getInstance().addToSection((VASSAL_SECTION.equals(getAttributeValueString(VASSAL_DOC))) ? "Documentation.VASSAL" : "Documentation.Module", launchItem); //NON-NLS
     launch.setEnabled(true);
   }
 
   @Override
   public void removeFrom(Buildable b) {
     MenuManager.getInstance()
-               .removeFromSection("Documentation.Module", launchItem); //NON-NLS
+               .removeFromSection((VASSAL_SECTION.equals(getAttributeValueString(VASSAL_DOC))) ? "Documentation.VASSAL" : "Documentation.Module", launchItem); //NON-NLS
     launch.setEnabled(false);
   }
 

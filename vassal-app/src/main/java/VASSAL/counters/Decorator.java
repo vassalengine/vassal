@@ -41,7 +41,9 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.swing.SwingUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
+import javax.swing.KeyStroke;
 import java.awt.Component;
 import java.awt.Point;
 import java.util.ArrayList;
@@ -49,10 +51,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
-
-import javax.swing.KeyStroke;
-
-import org.apache.commons.lang3.ArrayUtils;
 
 import static VASSAL.counters.BasicPiece.BASIC_NAME;
 import static VASSAL.counters.BasicPiece.PIECE_NAME;
@@ -345,7 +343,7 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
       piece.setState(st.nextToken());
     }
     catch (NoSuchElementException e) {
-      throw new IllegalStateException("No state for Decorator=" + myGetType());
+      throw new IllegalStateException(Resources.getString("Decorator.no_state_for_trait") + myGetType());
     }
   }
 
@@ -732,6 +730,7 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
     String matOldOffsetY = "";
     final Map m = p.getMap();
     final Point pos = p.getPosition();
+    final String deckName = p.getParent() instanceof Deck ? ((Deck) p.getParent()).getDeckName() : "";
     Command comm = new NullCommand();
 
     if (m != null) {
@@ -748,7 +747,7 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
 
       if (GameModule.getGameModule().isMatSupport()) {
         if (Boolean.TRUE.equals(p.getProperty(MatCargo.IS_CARGO))) {
-          final MatCargo cargo = (MatCargo) Decorator.getDecorator(p, MatCargo.class);
+          final MatCargo cargo = (MatCargo) Decorator.getDecorator(Decorator.getOutermost(p), MatCargo.class);
           if (cargo != null) {
             final GamePiece mat = cargo.getMat();
             if (mat != null) {
@@ -772,6 +771,7 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
     comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_BOARD, boardName));
     comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_ZONE, zoneName));
     comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_LOCATION_NAME, locationName));
+    comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_DECK_NAME, deckName));
     if (GameModule.getGameModule().isMatSupport()) {
       comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_MAT, matName));
       comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_MAT_ID, matID));
@@ -933,7 +933,7 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
       s += " - " + command;
     }
     if (key != null) {
-      s += " - " + key.getDesc();
+      s += (s.isEmpty() ? " - " : " => ") + key.getDesc();
     }
     return s;
   }

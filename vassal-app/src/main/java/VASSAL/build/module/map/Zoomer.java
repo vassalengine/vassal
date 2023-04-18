@@ -876,7 +876,11 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     return map.componentToMap(new Point(r.x + r.width / 2, r.y + r.height / 2));
   }
 
+
   protected void updateZoomer(Point center) {
+    // Suppress auto-updating the map's center based on its view, so that we won't change/lose the user's preferred center point
+    GameModule.getGameModule().setSuppressAutoCenterUpdate(true);
+
     zoomInButton.setEnabled(state.hasHigherLevel());
     zoomOutButton.setEnabled(state.hasLowerLevel());
 
@@ -890,30 +894,26 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
   }
 
   public void setZoomLevel(int l) {
-    final Point center = getMapCenter();
     state.setLevel(l);
-    updateZoomer(center);
+    updateZoomer(map.getPreferredCenter());
   }
 
   public void setZoomFactor(double z) {
-    final Point center = getMapCenter();
     state.setZoom(z);
-    updateZoomer(center);
+    updateZoomer(map.getPreferredCenter());
   }
 
   public void zoomIn() {
     if (state.hasHigherLevel()) {
-      final Point center = getMapCenter();
       state.higherLevel();
-      updateZoomer(center);
+      updateZoomer(map.getPreferredCenter());
     }
   }
 
   public void zoomOut() {
     if (state.hasLowerLevel()) {
-      final Point center = getMapCenter();
       state.lowerLevel();
-      updateZoomer(center);
+      updateZoomer(map.getPreferredCenter());
     }
   }
 

@@ -30,19 +30,21 @@ import VASSAL.configure.Configurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.menu.MenuManager;
-
-import java.io.File;
-import java.net.MalformedURLException;
+import org.w3c.dom.Element;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-
-import org.w3c.dom.Element;
+import java.io.File;
+import java.net.MalformedURLException;
 
 /**
  * Represents the <code>Help</code> menu of the controls window
  */
 public class Documentation extends AbstractConfigurable {
+
+  public static final String INTRO_FILE = "/help/Intro.html"; //NON-NLS
+  public static final String INTRO_FILENAME = "Intro.html"; //NON-NLS
+
   public JMenu getHelpMenu() {
     final JMenuBar mb = MenuManager.getInstance().getMenuBarFor(
       GameModule.getGameModule().getPlayerWindow());
@@ -63,8 +65,9 @@ public class Documentation extends AbstractConfigurable {
       final HelpFile intro = new HelpFile();
       intro.setAttribute(HelpFile.TITLE,
         Resources.getString("Documentation.quick_start")); //$NON-NLS-1$
-      intro.setAttribute(HelpFile.FILE, "/help/Intro.html"); //$NON-NLS-1$
+      intro.setAttribute(HelpFile.FILE, INTRO_FILE); //$NON-NLS-1$
       intro.setAttribute(HelpFile.TYPE, HelpFile.RESOURCE);
+      intro.setAttribute(HelpFile.VASSAL_DOC, HelpFile.VASSAL_SECTION);
       intro.addTo(this);
       add(intro);
     }

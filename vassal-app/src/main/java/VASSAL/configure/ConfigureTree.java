@@ -35,11 +35,13 @@ import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.build.module.folder.GlobalPropertyFolder;
 import VASSAL.build.module.folder.PrototypeFolder;
 import VASSAL.build.module.gamepieceimage.GamePieceImage;
+import VASSAL.build.module.map.CounterDetailViewer;
 import VASSAL.build.module.map.DeckGlobalKeyCommand;
 import VASSAL.build.module.map.DrawPile;
 import VASSAL.build.module.map.MassKeyCommand;
 import VASSAL.build.module.map.SetupStack;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
+import VASSAL.build.module.properties.ChangePropertyButton;
 import VASSAL.build.module.properties.GlobalProperties;
 import VASSAL.build.module.properties.GlobalProperty;
 import VASSAL.build.module.properties.GlobalTranslatableMessage;
@@ -58,13 +60,17 @@ import VASSAL.preferences.Prefs;
 import VASSAL.search.SearchTarget;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ReflectionUtils;
+import VASSAL.tools.WriteErrorDialog;
+import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.SwingUtils;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -99,6 +105,8 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Frame;
@@ -114,7 +122,13 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.IOException;
+import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -194,10 +208,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
    * Creates new ConfigureTree
    */
   public ConfigureTree(Configurable root, HelpWindow helpWindow) {
-    this(root, helpWindow, null);
+    this(root, helpWindow, null, false);
   }
 
   public ConfigureTree(Configurable root, HelpWindow helpWindow, EditorWindow editorWindow) {
+    this(root, helpWindow, editorWindow, false);
+  }
+
+  public ConfigureTree(Configurable root, HelpWindow helpWindow, EditorWindow editorWindow, boolean disableDragAndDrop) {
     toggleClickCount = 3;
     this.helpWindow = helpWindow;
     this.editorWindow = editorWindow;
@@ -265,9 +283,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
     createKeyBindings();
 
-    setDragEnabled(true);
-    setDropMode(DropMode.ON_OR_INSERT);
-    setTransferHandler(new TreeTransferHandler());
+    if (!disableDragAndDrop) {
+      setDragEnabled(true);
+      setDropMode(DropMode.ON_OR_INSERT);
+      setTransferHandler(new TreeTransferHandler());
+    }
   }
 
 
@@ -472,13 +492,119 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     if (hasChild(target, PieceSlot.class) || hasChild(target, CardSlot.class)) {
       addAction(popup, buildMassPieceLoaderAction(target));
     }
+    
     addAction(popup, buildImportAction(target));
 
-    popup.addSeparator();
-    addAction(popup, buildOpenPiecesAction(target));
-    addAction(popup, buildEditPiecesAction(target));
+    final boolean canExport = getTreeNode(target).getParent() != null;
+    final boolean canImport = (target.getAllowableConfigureComponents().length > 0);
+
+    if (canImport || canExport || (target instanceof DrawPile)) {
+      popup.addSeparator();
+    }
+
+    if (canExport) {
+      addAction(popup, buildExportTreeAction(target));
+    }
+
+    if (canImport) {
+      addAction(popup, buildImportTreeAction(target));
+    }
+    
+    if (target instanceof DrawPile) {
+      addAction(popup, buildImportDeckAction(target));
+    }
+
+    final Action aOpen = buildOpenPiecesAction(target);
+    final Action aEdit = buildEditPiecesAction(target);
+
+    if ((aOpen != null) || (aEdit != null)) {
+      popup.addSeparator();
+    }
+
+    addAction(popup, aOpen);
+    addAction(popup, aEdit);
 
     return popup;
+  }
+
+  public static final String defaultExportExtension = ".xml"; //NON-NLS
+
+  protected boolean exportTreeBranch(AbstractBuildable target) {
+    final FileChooser fc = FileChooser.createFileChooser(
+      GameModule.getGameModule().getPlayerWindow(),
+      (DirectoryConfigurer) Prefs.getGlobalPrefs()
+        .getOption(Prefs.MODULES_DIR_KEY));
+    if (fc.showSaveDialog() != FileChooser.APPROVE_OPTION) return false;
+    String filename = fc.getSelectedFile().getPath();
+
+    if (!StringUtils.isEmpty(defaultExportExtension) && (filename.lastIndexOf('.') < 0)) {
+      filename = filename + defaultExportExtension;
+      if (new File(filename).exists() && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(GameModule.getGameModule().getPlayerWindow(), Resources.getString("Editor.ConfigureTree.export_overwrite", filename), Resources.getString("Editor.ConfigureTree.export_exists"), JOptionPane.YES_NO_OPTION)) {
+        return false;
+      }
+    }
+
+    try (Writer w = Files.newBufferedWriter(Path.of(filename), StandardCharsets.UTF_8)) {
+      w.write(target.buildString());
+    }
+    catch (IOException e) {
+      WriteErrorDialog.error(e, e, filename);
+      return false;
+    }
+
+    return true;
+  }
+
+  protected boolean importTreeBranch(Configurable target) {
+
+    final FileChooser fc = GameModule.getGameModule().getFileChooser();
+    if (fc.showOpenDialog() != FileChooser.APPROVE_OPTION) return false;
+
+    String filename = fc.getSelectedFile().getPath();
+
+    if (fc.getSelectedFile().getName().indexOf('.') < 0) {
+      filename += defaultExportExtension;
+    }
+
+    try {
+      Buildable b = Builder.create(DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File(filename)).getDocumentElement(), target);
+
+      if (b instanceof Configurable) {
+        b = convertChild(target, (Configurable)b);
+      }
+      else {
+        GameModule.getGameModule().warn(Resources.getString("Editor.ConfigureTree.import_invalid_file"));
+        ErrorDialog.show("Error.import_invalid_file", b.toString());
+        return false;
+      }
+
+      boolean allowed = false;
+      for (final Class c : target.getAllowableConfigureComponents()) {
+        if (c.isInstance(b)) {
+          allowed = true;
+          break;
+        }
+      }
+
+      if (allowed) {
+        insert(target, (Configurable)b, getTreeNode(target).getChildCount());
+      }
+      else {
+        GameModule.getGameModule().warn(Resources.getString("Editor.ConfigureTree.import_not_allowed", b.toString()));
+        ErrorDialog.show("Error.import_not_allowed", b.toString());
+        return false;
+      }
+    }
+    catch (ParserConfigurationException | SAXException e) {
+      ErrorDialog.bug(e);
+      return false;
+    }
+    catch (IOException e) {
+      ReadErrorDialog.error(e, filename);
+      return false;
+    }
+
+    return true;
   }
 
 
@@ -521,6 +647,36 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     final Action a = new SearchAction(this, searchParameters);
     a.setEnabled(true);
     return a;
+  }
+
+
+  protected Action buildExportTreeAction(final Configurable target) {
+    Action a = null;
+    if (getTreeNode(target).getParent() != null) {
+      a = new AbstractAction(Resources.getString("Editor.ConfigureTree.export_object")) {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          if (target instanceof AbstractBuildable) {
+            exportTreeBranch((AbstractBuildable) target);
+          }
+        }
+      };
+    }
+    return a;
+  }
+
+
+  protected Action buildImportTreeAction(final Configurable target) {
+    return new AbstractAction(Resources.getString("Editor.ConfigureTree.import_object")) {
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        importTreeBranch(target);
+      }
+    };
   }
 
 
@@ -630,9 +786,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
     // PrototypeFolder needs any prototype children added to the main prototype definition list
     if (target instanceof PrototypeFolder) {
-      final PrototypesContainer protos = (PrototypesContainer)(((PrototypeFolder)target).getNonFolderAncestor());
-      if (protos != null) {
-        for (final PrototypeDefinition child : ((PrototypeFolder) target).getAllDescendantComponentsOf(PrototypeDefinition.class)) {
+      final PrototypeFolder folder = (PrototypeFolder)target;
+      final Buildable ancestor = folder.getNonFolderAncestor();
+      if (ancestor instanceof PrototypesContainer) {
+        final PrototypesContainer protos = (PrototypesContainer)ancestor;
+        for (final PrototypeDefinition child : folder.getAllDescendantComponentsOf(PrototypeDefinition.class)) {
           protos.addDefinition(child);
         }
       }
@@ -642,6 +800,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     if (target instanceof GlobalPropertyFolder) {
       for (final GlobalProperty child : ((GlobalPropertyFolder) target).getAllDescendantComponentsOf(GlobalProperty.class)) {
         child.addTo(child.getAncestor());
+      }
+    }
+
+    // CounterDetailViewers in folders may need to be "acquainted" with their new maps.
+    if (target instanceof CounterDetailViewer) {
+      final CounterDetailViewer cdv = (CounterDetailViewer) target;
+      if (cdv.getMap() == null) {
+        cdv.addTo(cdv.getAncestor());
       }
     }
   }
@@ -825,6 +991,19 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     };
   }
 
+  protected Action buildImportDeckAction(final Configurable target) {
+    final ConfigureTree tree = this;
+    return new AbstractAction(Resources.getString("Editor.ConfigureTree.import_deck_file")) {
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void actionPerformed(ActionEvent evt) {
+        ((DrawPile)(target)).importDeck(tree);
+      }
+    };
+  }
+
+
 
   protected Action buildMassPieceLoaderAction(final Configurable target) {
     Action a = null;
@@ -951,7 +1130,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
                   // Child could have been already deleted or dragged elsewhere
                   final DefaultMutableTreeNode currentParent = (DefaultMutableTreeNode)getTreeNode(child).getParent();
                   if (currentParent != null) {
-                    ConfigureTree.this.remove((Configurable)currentParent.getUserObject(), child);
+                    ConfigureTree.this.delete(child);
                   }
                   dispose();
                 }
@@ -1034,7 +1213,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected Action buildDeleteAction(final Configurable target) {
     final DefaultMutableTreeNode targetNode = getTreeNode(target);
-    final Configurable parent = getParent(targetNode);
     if (targetNode.getParent() != null) {
       return new AbstractAction(deleteCmd) {
         private static final long serialVersionUID = 1L;
@@ -1042,7 +1220,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         @Override
         public void actionPerformed(ActionEvent evt) {
           final int row = selectedRow;
-          remove(parent, target);
+          delete(target);
           if (row < getRowCount()) {
             setSelectionRow(row);
           }
@@ -1096,6 +1274,27 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     return canContainPiece;
   }
 
+
+  /**
+   * Delete removes an item from the tree but ALSO traverses the tree throwing all the childrens' children manually out
+   * the airlock, one by one. Lest they return and live on as zombies...
+   */
+  protected boolean delete(Configurable target) {
+    boolean result = true;
+
+    final Enumeration<?> e = getTreeNode(target).postorderEnumeration();
+    final List<DefaultMutableTreeNode> victims = new ArrayList<>();
+    while (e.hasMoreElements()) {
+      victims.add((DefaultMutableTreeNode) e.nextElement());
+    }
+
+    for (final DefaultMutableTreeNode victim : victims) {
+      result &= remove((Configurable) ((DefaultMutableTreeNode)victim.getParent()).getUserObject(), (Configurable) victim.getUserObject());
+    }
+    return result;
+  }
+
+
   protected boolean remove(Configurable parent, Configurable child) {
     try {
       child.removeFrom(parent);
@@ -1146,6 +1345,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     try {
       theChild.addTo(parent);
       parent.add(theChild);
+
+      // Update ancestor tree for child
+      if (theChild instanceof AbstractBuildable) {
+        ((AbstractBuildable)theChild).setAncestor(parent);
+      }
+
       parentNode.insert(childNode, index);
       final int[] childI = new int[1];
       childI[0] = index;
@@ -2450,6 +2655,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             }
           }
         }
+
+        if (c instanceof ChangePropertyButton) {
+          final ChangePropertyButton cpb = (ChangePropertyButton)c;
+          final String desc = cpb.getAttributeValueString(ChangePropertyButton.DESCRIPTION);
+          if ((desc != null) && !desc.isEmpty()) {
+            description += " - " + desc;
+          }
+        }
       }
       return description;
     }
@@ -2618,7 +2831,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       catch (UnsupportedFlavorException ufe) {
         logger.error("Unsupported Flavor: " + ufe.getMessage()); //NON-NLS
       }
-      catch (java.io.IOException ioe) {
+      catch (IOException ioe) {
         logger.error("I/O error: " + ioe.getMessage()); //NON-NLS
       }
       catch (InvalidDnDOperationException id) {
@@ -2676,6 +2889,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
           if (remove(getParent(sourceNode), cutObj)) {
             insert(target, convertedCutObj, childIndex);
+            postPasteFixups(convertedCutObj);
           }
         }
       }

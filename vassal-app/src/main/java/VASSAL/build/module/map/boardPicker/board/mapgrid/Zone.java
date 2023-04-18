@@ -414,12 +414,16 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   /**
    * Snap to the grid in this zone,
    */
-  public Point snapTo(Point p) {
+  public Point snapTo(Point p, boolean force) {
     Point snap = p;
     if (getGrid() != null) {
-      snap = getGrid().snapTo(p);
+      snap = getGrid().snapTo(p, force);
     }
     return snap;
+  }
+
+  public Point snapTo(Point p) {
+    return snapTo(p, false);
   }
 
   @Override

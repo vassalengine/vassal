@@ -17,28 +17,6 @@
  */
 package VASSAL.build.module;
 
-import java.awt.Container;
-import java.awt.Window;
-import java.awt.dnd.DropTarget;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLayeredPane;
-import javax.swing.JScrollPane;
-import javax.swing.KeyStroke;
-import javax.swing.WindowConstants;
-
-import org.apache.commons.lang3.ArrayUtils;
-
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
@@ -48,8 +26,23 @@ import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.ValidationReport;
 import VASSAL.configure.ValidityChecker;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.menu.MenuManager;
+import org.apache.commons.lang3.ArrayUtils;
+
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.WindowConstants;
+import java.awt.Container;
+import java.awt.Window;
+import java.awt.dnd.DropTarget;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * A Map that may be configured to be visible only a particular side.
@@ -150,24 +143,20 @@ public class PrivateMap extends Map {
     }
   }
 
+  /**
+   * Yes this LOOKS exactly the same as the method it overrides, but confusingly Map and PrivateMap each have
+   * *different* View classes sharing the same name.
+   * @return the Swing component representing the private map
+   */
   @Override
   public JComponent getView() {
     if (theMap == null) {
       theMap = new View(this);
-      scroll = new AdjustableSpeedScrollPane(
-            theMap,
-            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-            JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-      scroll.unregisterKeyboardAction(KeyStroke.getKeyStroke(
-            KeyEvent.VK_PAGE_DOWN, 0));
-      scroll.unregisterKeyboardAction(KeyStroke.getKeyStroke(
-            KeyEvent.VK_PAGE_UP, 0));
-
-      layeredPane.setLayout(new InsetLayout(layeredPane, scroll));
-      layeredPane.add(scroll, JLayeredPane.DEFAULT_LAYER);
+      setUpView();
     }
     return theMap;
   }
+
 
   @Override
   protected Window createParentFrame() {

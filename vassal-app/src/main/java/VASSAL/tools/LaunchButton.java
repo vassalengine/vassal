@@ -17,12 +17,6 @@
  */
 package VASSAL.tools;
 
-import java.awt.event.ActionListener;
-
-import javax.swing.Icon;
-import javax.swing.JButton;
-import javax.swing.KeyStroke;
-
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.configure.Configurer;
@@ -31,13 +25,19 @@ import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
+import VASSAL.script.expression.Auditable;
+
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.KeyStroke;
+import java.awt.event.ActionListener;
 
 /**
  * A JButton for placing into a VASSAL component's toolbar.
  * Handles configuration of a hotkey shortcut, maintains appropriate
  * tooltip text, etc.
  */
-public class LaunchButton extends JButton {
+public class LaunchButton extends JButton implements Auditable {
   private static final long serialVersionUID = 1L;
   public static final String UNTRANSLATED_TEXT = "unTranslatedText"; //$NON-NLS-1$
   protected String tooltipAtt;
@@ -49,6 +49,11 @@ public class LaunchButton extends JButton {
   protected NamedKeyStrokeListener keyListener;
   protected Configurer nameConfig, keyConfig;
   protected boolean alwaysAcceptKeystroke;
+  protected boolean forceVisible = false;
+  protected boolean forceInvisible = false;
+  protected boolean allowExpression;
+  protected boolean usesExpression = false;
+  protected FormattedString formatted = new FormattedString("");
 
   public LaunchButton(String text, String textAttribute,
                       String hotkeyAttribute, ActionListener al) {
@@ -63,7 +68,23 @@ public class LaunchButton extends JButton {
   }
 
   public LaunchButton(String text, String textAttribute, String hotkeyAttribute, String iconAttribute, final ActionListener al) {
+    this(text, textAttribute, hotkeyAttribute, iconAttribute, al, false);
+  }
+
+  public LaunchButton(String text, String tooltipAttribute, String textAttribute, String hotkeyAttribute, String iconAttribute, final ActionListener al, boolean allowExpression) {
+    this(text, textAttribute, hotkeyAttribute, iconAttribute, al, allowExpression);
+    tooltipAtt = tooltipAttribute;
+  }
+
+
+  public LaunchButton(String text, String textAttribute, String hotkeyAttribute, String iconAttribute, final ActionListener al, boolean allowExpression) {
     super(text);
+
+    this.allowExpression = allowExpression;
+    if (allowExpression) {
+      setFormat(text);
+    }
+
     alwaysAcceptKeystroke = false;
     nameAtt = textAttribute;
     keyAtt = hotkeyAttribute;
@@ -83,6 +104,26 @@ public class LaunchButton extends JButton {
     checkVisibility();
   }
 
+  public boolean isUsesExpression() {
+    return usesExpression;
+  }
+
+  private void setFormat(String text) {
+    formatted.setFormat(text);
+    usesExpression = true;
+    updateText();
+    usesExpression = text.contains("$") || text.contains("{");
+    if (usesExpression) {
+      GameModule.getGameModule().setMutableButtonSupport(true); // We're gonna need a bigger updater...
+    }
+  }
+
+  public void updateText() {
+    if (usesExpression) {
+      setText(formatted.getText(GameModule.getGameModule(), this, "Editor.DrawPile.count_express"));
+    }
+  }
+
   /**
    * @return Our current icon (used when we're a ToolbarMenu that's a submenu of another ToolbarMenu so that we keep our icon)
    */
@@ -96,6 +137,22 @@ public class LaunchButton extends JButton {
 
   public void setAlwaysAcceptKeystroke(boolean always) {
     alwaysAcceptKeystroke = always;
+  }
+
+  public boolean isForcevisible() {
+    return forceVisible;
+  }
+
+  public void setForceVisible(boolean fv) {
+    forceVisible = fv;
+  }
+
+  public boolean isForceInvisible() {
+    return forceInvisible;
+  }
+
+  public void setForceInvisible(boolean fiv) {
+    forceInvisible = fiv;
   }
 
   @Override
@@ -143,7 +200,13 @@ public class LaunchButton extends JButton {
         if (Localization.getInstance().isTranslationInProgress()) {
           putClientProperty(UNTRANSLATED_TEXT, getText());
         }
-        setText((String) value);
+
+        if (allowExpression) {
+          setFormat((String)value);
+        }
+        else {
+          setText((String) value);
+        }
         checkVisibility();
       }
       else if (key.equals(keyAtt)) {
@@ -202,7 +265,21 @@ public class LaunchButton extends JButton {
     return (getText() != null && getText().length() > 0) || getIcon() != null;
   }
 
-  protected void checkVisibility() {
-    setVisible(isNonBlank());
+  public void checkVisibility() {
+    setVisible((isNonBlank() || forceVisible) && !forceInvisible);
   }
+
+  @Override
+  public String getComponentTypeName() {
+    return "Launch Button";
+  };
+
+  /**
+   * Return the name of the trait or Component an Auditable is
+   * @return Component name
+   */
+  @Override
+  public String getComponentName() {
+    return "Launch Button";
+  };
 }

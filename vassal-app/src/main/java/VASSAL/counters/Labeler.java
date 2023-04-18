@@ -43,6 +43,7 @@ import VASSAL.tools.imageop.AbstractTileOpImpl;
 import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.ScaledImagePainter;
+import VASSAL.tools.swing.DataArchiveTextPane;
 import VASSAL.tools.swing.SwingUtils;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.SystemUtils;
@@ -125,6 +126,10 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   public Labeler(String s, GamePiece d) {
     mySetType(s);
     setInner(d);
+  }
+
+  public NamedKeyStroke getLabelKey() {
+    return labelKey;
   }
 
   @Override
@@ -607,8 +612,14 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
 
       // paint the foreground
       if (fg != null) {
-        final JLabel l = makeLabel();
-        l.paint(g);
+        if (txt.contains("<img")) { //NON-NLS
+          final DataArchiveTextPane p = new DataArchiveTextPane(txt, "label", fg, font); //NON-NLS
+          p.paint(g);
+        }
+        else {
+          final JLabel l = makeLabel();
+          l.paint(g);
+        }
       }
 
       g.dispose();

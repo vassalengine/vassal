@@ -25,16 +25,16 @@ import VASSAL.i18n.Translatable;
 import VASSAL.script.expression.Auditable;
 import VASSAL.search.AbstractImageFinder;
 import VASSAL.search.ImageSearchTarget;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
-
-import org.w3c.dom.Attr;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 
 /**
  * Abstract implementation of the {@link Buildable} interface. To make a Buildable component, in other words a component
@@ -184,8 +184,18 @@ public abstract class AbstractBuildable extends AbstractImageFinder implements B
     }
   }
 
+  /**
+   * @return an XML element that can be used to {@link Buildable#build} the object.
+   */
+  public String buildString() {
+    final Document doc = Builder.createNewDocument();
+    doc.appendChild(getBuildElement(doc));
+    return Builder.toString(doc);
+  }
+
+
   @Override
-  public Element getBuildElement(org.w3c.dom.Document doc) {
+  public Element getBuildElement(Document doc) {
     final Element el = doc.createElement(getClass().getName());
     final String[] names = getAttributeNames();
     for (final String name : names) {

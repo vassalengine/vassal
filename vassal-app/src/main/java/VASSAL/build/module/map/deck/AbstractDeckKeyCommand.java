@@ -18,7 +18,6 @@
 package VASSAL.build.module.map.deck;
 
 import VASSAL.build.AbstractConfigurable;
-import VASSAL.build.AbstractFolder;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.module.documentation.HelpFile;
@@ -122,16 +121,10 @@ public abstract class AbstractDeckKeyCommand extends AbstractConfigurable implem
 
   @Override
   public void addTo(Buildable parent) {
-    if (parent instanceof AbstractFolder) {
-      parent = ((AbstractFolder)parent).getNonFolderAncestor();
-    }
   }
 
   @Override
   public void removeFrom(Buildable parent) {
-    if (parent instanceof AbstractFolder) {
-      parent = ((AbstractFolder)parent).getNonFolderAncestor();
-    }
   }
 
   @Override

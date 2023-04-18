@@ -117,9 +117,7 @@ public class FormattedStringConfigurer
         final int start = nameField.getSelectionStart();
         final int end = nameField.getSelectionEnd();
         work = work.substring(0, start) + work.substring(end);
-        if (pos > work.length()) {
-          pos = work.length();
-        }
+        pos = start;
       }
 
       final String news = work.substring(0, pos) + item + work.substring(pos);

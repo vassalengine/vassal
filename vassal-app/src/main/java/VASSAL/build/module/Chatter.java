@@ -29,9 +29,12 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.QuickColors;
 import VASSAL.tools.ScrollPane;
+import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.swing.DataArchiveHTMLEditorKit;
 import VASSAL.tools.swing.SwingUtils;
+import org.apache.commons.io.FileUtils;
 
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
@@ -58,13 +61,18 @@ import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
+import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 /**
  * The chat window component. Displays text messages and accepts input. Also
@@ -197,10 +205,74 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
     add(input);
 
     final Action copyAction = new DefaultEditorKit.CopyAction();
-    copyAction.putValue(Action.NAME, Resources.getString("General.copy"));
+    copyAction.putValue(Action.NAME, Resources.getString("Chat.copy"));
+
+    final Action saveAction = new AbstractAction(Resources.getString("Chat.save_to_html_file")) {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        final FileChooser fc = GameModule.getGameModule().getFileChooser();
+
+        if (fc.showSaveDialog(GameModule.getGameModule().getControlPanel()) != FileChooser.APPROVE_OPTION) {
+          return;
+        }
+
+        final File sf = fc.getSelectedFile();
+        String name = sf.getPath();
+        final int index = name.lastIndexOf('.');
+        if (index < 0) {
+          name = name + ".html";
+          fc.setSelectedFile(new File(name));
+        }
+
+        final File outputFile = fc.getSelectedFile();
+        if (outputFile == null) {
+          return;
+        }
+
+        try (OutputStream fos = Files.newOutputStream(outputFile.toPath())) {
+          kit.write(fos, doc, 0, doc.getLength());
+        }
+        catch (IOException | BadLocationException ex) {
+          GameModule.getGameModule().warn(Resources.getString("Chat.file_save_failed"));
+        }
+      }
+    };
+
+    final Action saveTextAction = new AbstractAction(Resources.getString("Chat.save_to_text_file")) {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        final FileChooser fc = GameModule.getGameModule().getFileChooser();
+
+        if (fc.showSaveDialog(GameModule.getGameModule().getControlPanel()) != FileChooser.APPROVE_OPTION) {
+          return;
+        }
+
+        final File sf = fc.getSelectedFile();
+        String name = sf.getPath();
+        final int index = name.lastIndexOf('.');
+        if (index < 0) {
+          name = name + ".txt";
+          fc.setSelectedFile(new File(name));
+        }
+
+        final File outputFile = fc.getSelectedFile();
+        if (outputFile == null) {
+          return;
+        }
+
+        try {
+          FileUtils.writeStringToFile(outputFile, doc.getText(0, doc.getLength()), StandardCharsets.UTF_8); //NON-NLS
+        }
+        catch (IOException | BadLocationException ex) {
+          GameModule.getGameModule().warn(Resources.getString("Chat.file_save_failed"));
+        }
+      }
+    };
 
     final JPopupMenu pm = new JPopupMenu();
     pm.add(copyAction);
+    pm.add(saveAction);
+    pm.add(saveTextAction);
 
     conversationPane.addMouseListener(new MouseAdapter() {
       @Override

@@ -185,6 +185,8 @@ public class Symbol {
       new SizeOption(SZ_INSTALLATION, Resources.getString("Editor.Symbol.Size.installation"), 1, INSTALLATION_SYMBOL),
       new SizeOption(SZ_TEAM, Resources.getString("Editor.Symbol.Size.team"), 1, TEAM_SYMBOL),
       new SizeOption(SZ_SQUAD, Resources.getString("Editor.Symbol.Size.squad"), 1, SQUAD_SYMBOL),
+      // Note: Platoon and Section constants reversed due to earlier error. Maintain this switch for compatibility
+      new SizeOption(SZ_PLATOON, Resources.getString("Editor.Symbol.Size.section"), 2, SQUAD_SYMBOL),
       new SizeOption(SZ_SECTION, Resources.getString("Editor.Symbol.Size.platoon"), 3, SQUAD_SYMBOL),
       new SizeOption(SZ_ECHELON, Resources.getString("Editor.Symbol.Size.echelon"), 4, SQUAD_SYMBOL),
       new SizeOption(SZ_COMPANY, Resources.getString("Editor.Symbol.Size.company"), 1, COMPANY_SYMBOL),

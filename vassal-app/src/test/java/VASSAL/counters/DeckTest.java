@@ -1,14 +1,14 @@
 package VASSAL.counters;
 
+import VASSAL.build.GameModule;
+import VASSAL.build.MockModuleTest;
+import VASSAL.build.module.Map;
+import org.junit.jupiter.api.Test;
+
 import java.awt.Point;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-
-import VASSAL.build.GameModule;
-import VASSAL.build.module.Map;
-
-import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-public class DeckTest {
+public class DeckTest extends MockModuleTest {
 
   @Test
   public void defaultConstructorShouldCreateEmptyDeck() {

@@ -114,6 +114,13 @@ public abstract class AbstractLaunchAction extends AbstractAction {
   }
 
   /**
+   * @return <code>true</code> iff any files are in use
+   */
+  public static boolean anyInUse() {
+    return useTracker.anyInUse();
+  }
+
+  /**
    * @param file the file to check
    * @return <code>true</code> iff the file is in use
    */
@@ -545,6 +552,15 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       result.add("");   // reserved for initial heap
       result.add("");   // reserved for maximum heap
 
+      if (SystemUtils.IS_OS_WINDOWS) {
+        final String noAgent = System.getProperty("VASSAL.noagent");
+        if (noAgent == null) {
+          result.add("-javaagent:lib\\vassal-agent.jar");
+          result.add("--add-opens");
+          result.add("java.desktop/sun.awt.shell=ALL-UNNAMED");
+        }
+      }
+
       result.addAll(new CustomVmOptions().getCustomVmOptions());
 
       // pass on the user's home, if it's set
@@ -578,7 +594,8 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         result.add("-Xdock:name=" + d_name); //NON-NLS
         result.add("-Xdock:icon=" + d_icon); //NON-NLS
 
-        // M1 Macs need FBOs disabled in OpenGL, at least until Metal in Java 17
+        // Apple Silicon Macs need FBOs disabled in OpenGL, at least until
+        // Metal in Java 17
         final Boolean disableOGLFBO =
           (Boolean) Prefs.getGlobalPrefs().getValue(Prefs.DISABLE_OGL_FBO);
         if (Boolean.TRUE.equals(disableOGLFBO)) {

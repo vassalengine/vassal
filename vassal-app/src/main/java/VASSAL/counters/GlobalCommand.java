@@ -44,6 +44,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -65,6 +66,7 @@ import java.util.regex.PatternSyntaxException;
 public class GlobalCommand implements Auditable {
   protected KeyStroke keyStroke;        // Key Command we will issue
   protected boolean reportSingle;       // If true, we temporarily disable Report traits in any receiving pieces
+  protected boolean suppressSounds;     // If true, we temporarily disable Play Sound traits in any receiving pieces
   protected int selectFromDeck = -1;    // selectFromDeck = -1 means process all cards in Deck; > 0 means select that many cards from the Deck
   protected String selectFromDeckExpression = "-1"; // selectFromDeck = -1 means process all cards in Deck; Otherwise an expression evaluating to # of cards to pick from deck
   protected FormattedString reportFormat = new FormattedString(); // Report to display before sending the command
@@ -129,6 +131,14 @@ public class GlobalCommand implements Auditable {
 
   public void setReportSingle(boolean reportSingle) {
     this.reportSingle = reportSingle;
+  }
+
+  public boolean isSuppressSounds() {
+    return suppressSounds;
+  }
+
+  public void setSuppressSounds(boolean suppressSounds) {
+    this.suppressSounds = suppressSounds;
   }
 
   public void setTarget(GlobalCommandTarget target) {
@@ -242,13 +252,17 @@ public class GlobalCommand implements Auditable {
         Map.setChangeReportingEnabled(false); // Disable individual reports, if specified
       }
 
+      if (suppressSounds) {
+        GameModule.getGameModule().setSuppressSounds(true);
+      }
+
       RecursionLimiter.startExecution(owner); // Trap infinite loops of Global Key Commands
 
       // Send our report, if one is specified
       final String reportText = reportFormat.getLocalizedText(source, owner, "Editor.report_format");
       if (reportText.length() > 0) {
         command = new Chatter.DisplayText(
-          GameModule.getGameModule().getChatter(), "*" + reportText); //NON-NLS
+          GameModule.getGameModule().getChatter(), "* " + reportText); //NON-NLS
         command.execute();
       }
 
@@ -470,6 +484,10 @@ public class GlobalCommand implements Auditable {
         // For most Global Key Commands we need to run through the larger lists of maps & pieces. Ideally the Fast Matches
         // here will filter some of that out to improve performance, but we also want to do the best job possible for old
         // modules that don't take advantage of Fast Match yet.
+
+        // Make a lists of pieces for each of the maps we're interested in. We need to do this in advance so that a
+        // piece doesn't potentially receive multiple GKCs if it is moved from one map to another.
+        final List<GamePiece[]> gkcMapPieces = new ArrayList<>();
         for (final Map map : maps) {
           // First check that this is a map we're even interested in
           if (target.fastMatchLocation) {
@@ -484,10 +502,11 @@ public class GlobalCommand implements Auditable {
               continue;
             }
           }
+          gkcMapPieces.add(map.getPieces());
+        }
 
-          // Now we go through all the pieces/stacks/decks on this map
-          final GamePiece[] everythingOnMap = map.getPieces();
-
+        // Now we go through all the pieces/stacks/decks on each map
+        for (final GamePiece[] everythingOnMap : gkcMapPieces) {
           if (!target.fastMatchLocation) {
             // If NOT doing Location fast-matching we do tighter loops (because perf is important during GKCs)
             if (!target.fastMatchProperty) {
@@ -640,6 +659,9 @@ public class GlobalCommand implements Auditable {
       RecursionLimiter.endExecution();
       if (reportSingle) {
         Map.setChangeReportingEnabled(true); // Restore normal reporting behavior (if we'd disabled all individual reports)
+      }
+      if (suppressSounds) {
+        GameModule.getGameModule().setSuppressSounds(false);
       }
     }
 
@@ -811,14 +833,7 @@ public class GlobalCommand implements Auditable {
 
   @Override
   public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((keyStroke == null) ? 0 : keyStroke.hashCode());
-    result = prime * result
-      + ((reportFormat == null) ? 0 : reportFormat.hashCode());
-    result = prime * result + (reportSingle ? 1231 : 1237);
-    result = prime * result + selectFromDeckExpression.hashCode();
-    return result;
+    return Objects.hash(keyStroke, reportFormat, reportSingle, selectFromDeckExpression, suppressSounds);
   }
 
   @Override
@@ -844,6 +859,7 @@ public class GlobalCommand implements Auditable {
       return false;
     if (reportSingle != other.reportSingle)
       return false;
+    if (suppressSounds != other.suppressSounds) return false;
     if (!selectFromDeckExpression.equals(other.selectFromDeckExpression)) {
       return false;
     }
