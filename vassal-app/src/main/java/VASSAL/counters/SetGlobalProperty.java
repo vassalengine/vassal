@@ -24,7 +24,6 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.build.module.properties.MutablePropertiesContainer;
 import VASSAL.build.module.properties.MutableProperty;
-import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
@@ -199,47 +198,6 @@ public class SetGlobalProperty extends DynamicProperty {
     for (final DynamicKeyCommand keyCommand : keyCommands) {
       if (keyCommand.matches(stroke)) {
         final String propertyName = (new FormattedString(key)).getText(Decorator.getOutermost(this), this, "Editor.DynamicProperty.property_name");
-
-        // If our piece has Attachment traits, we first check for Dynamic Properties linked by the Attachment(s)
-        GamePiece p = Decorator.getOutermost(this);
-        while (p instanceof Decorator) {
-          if (p instanceof Attachment) {
-            final Attachment attachment = (Attachment)p;
-
-            // When we find an Attachment trait, check if our propertyName begins with the Attachment's name plus an underscore
-            final String attachPropertyName = attachment.translatePropertyName(propertyName);
-            if (attachPropertyName != null) {
-              // Get the attached piece (first attached piece in the list), and search it for matching Dynamic Properties
-
-              final GamePiece propPiece = attachment.getPropertyPiece();
-              if (propPiece != null) {
-                GamePiece dp = Decorator.getOutermost(propPiece);
-                while (dp instanceof Decorator) {
-                  if (dp instanceof DynamicProperty) {
-
-                    // If we find a matching property, apply our setter on IT and we're done
-                    if (attachPropertyName.equals(((DynamicProperty) dp).key)) {
-                      String newValue = keyCommand.propChanger.getNewValue(((DynamicProperty) dp).value);
-                      // The PropertyChanger has already evaluated any Beanshell, only need to handle any remaining $$variables.
-                      if (newValue.indexOf('$') >= 0) {
-                        format.setFormat(newValue);
-                        newValue = format.getText(Decorator.getOutermost(this), this, "Editor.PropertyChangeConfigurer.new_value");
-                      }
-
-                      final ChangeTracker ct = new ChangeTracker(dp);
-
-                      ((DynamicProperty) dp).value = newValue;
-
-                      return ct.getChangeCommand();
-                    }
-                  }
-                  dp = ((Decorator) dp).getInner();
-                }
-              }
-            }
-          }
-          p = ((Decorator) p).getInner();
-        }
 
         final ArrayList<MutablePropertiesContainer> propertyContainers =
           new ArrayList<>();
