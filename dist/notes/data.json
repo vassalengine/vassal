@@ -21,6 +21,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 12234, "desc": "Don't try to render SVG which would have a width or height of zero" },
         { "num": 12233, "desc": "Ensure that OpMultiResolutionImage.getBaseImage() never returns null" },
         { "num": 12220, "desc": "Add BorderOutline's property names to the searchable target list" },
         { "num": 12205, "desc": "Area of Effect trait was eating other traits' visibility info in some cases" },
