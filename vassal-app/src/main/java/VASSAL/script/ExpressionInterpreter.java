@@ -32,6 +32,7 @@ import VASSAL.counters.Mat;
 import VASSAL.counters.MatCargo;
 import VASSAL.counters.PieceFilter;
 import VASSAL.counters.ReportState;
+import VASSAL.counters.SetAttachmentProperty;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.script.expression.AuditTrail;
@@ -286,7 +287,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         else if (BeanShell.FALSE.equals(value)) {
           setVar(var, false);
         }
-        else if (! StringUtils.containsOnly(value, "+-.0123456789")) { // NON-NLS
+        else if (!StringUtils.containsOnly(value, "+-.0123456789")) { // NON-NLS
           setVar(var, value);
         }
         // Special case where the 'Store Integers with leading zeros as Strings' option is turned on AND
@@ -294,8 +295,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         // the leading zeros are preserved. It is up to the Designer to convert this to an integer later
         // using Integer.parseInt(x) if they need to do arithmetic on it.
         else if (GlobalOptions.getInstance() != null && GlobalOptions.getInstance().isStoreLeadingZeroIntegersAsStrings()
-                  && value.length() > 1 && value.startsWith("0")
-                  && StringUtils.containsOnly(value, "0123456789")) {
+          && value.length() > 1 && value.startsWith("0")
+          && StringUtils.containsOnly(value, "0123456789")) {
           setVar(var, value);
         }
         else {
@@ -406,7 +407,9 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     return value == null ? "" : wrap(value.toString());
   }
 
-  /** getProperty minus the wrap */
+  /**
+   * getProperty minus the wrap
+   */
   public Object getString(String name) {
     final Object value = source.getProperty(name);
     return value == null ? "" : value.toString();
@@ -442,16 +445,13 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   public Object getAttachmentProperty(String attachment, String property, int index, PropertySource ps) {
-    // This allows ReportState to sum properties properly
-    if (ps instanceof ReportState.OldAndNewPieceProperties) {
-      ps = ((ReportState.OldAndNewPieceProperties)ps).getNewPiece();
-    }
+    ps = translatePiece(ps);
 
     if (ps instanceof GamePiece) {
-      GamePiece p = Decorator.getOutermost((Decorator)ps);
+      GamePiece p = Decorator.getOutermost((Decorator) ps);
       while (p instanceof Decorator) {
         if (p instanceof Attachment) {
-          final Attachment a = (Attachment)p;
+          final Attachment a = (Attachment) p;
           if (a.getAttachName().equals(attachment)) {
             final GamePiece target = a.getAttachedPieceAt(index - 1);
             if (target == null) return "";
@@ -463,6 +463,19 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     }
     return "";
   }
+
+  private PropertySource translatePiece(PropertySource ps) {
+    // Allows SetAttachmentProperty to use these functions correctly
+    if (ps instanceof SetAttachmentProperty.SetAttachmentPropertySource) {
+      ps = ((SetAttachmentProperty.SetAttachmentPropertySource) ps).getPiece();
+    }
+    // This allows ReportState to sum properties properly
+    else if (ps instanceof ReportState.OldAndNewPieceProperties) {
+      ps = ((ReportState.OldAndNewPieceProperties) ps).getNewPiece();
+    }
+    return ps;
+  }
+
 
   private static int propValue(Object prop) {
     if (prop != null) {
@@ -494,11 +507,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   public Object sumStack(String property, PropertySource ps) {
     int result = 0;
 
-    // This allows ReportState to sum properties properly
-    if (ps instanceof ReportState.OldAndNewPieceProperties) {
-      ps = ((ReportState.OldAndNewPieceProperties)ps).getNewPiece();
-    }
-
+    ps = translatePiece(ps);
     if (ps instanceof GamePiece) {
       final Stack s = ((GamePiece) ps).getParent();
       if (s == null) {
@@ -527,10 +536,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   public Object countStack(String property, PropertySource ps) {
     int result = 0;
 
-    // This allows ReportState to count properties properly
-    if (ps instanceof ReportState.OldAndNewPieceProperties) {
-      ps = ((ReportState.OldAndNewPieceProperties)ps).getNewPiece();
-    }
+    ps = translatePiece(ps);
 
     if (ps instanceof GamePiece) {
       final Stack s = ((GamePiece) ps).getParent();
@@ -571,10 +577,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   public Object maxAttachment(String attachment, String property, PropertySource ps) {
     int result = Integer.MIN_VALUE;
 
-    // This allows ReportState to sum properties properly
-    if (ps instanceof ReportState.OldAndNewPieceProperties) {
-      ps = ((ReportState.OldAndNewPieceProperties)ps).getNewPiece();
-    }
+    ps = translatePiece(ps);
 
     if (ps instanceof GamePiece) {
       GamePiece p = Decorator.getOutermost((Decorator)ps);
@@ -611,10 +614,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   public Object minAttachment(String attachment, String property, PropertySource ps) {
     int result = Integer.MAX_VALUE;
 
-    // This allows ReportState to sum properties properly
-    if (ps instanceof ReportState.OldAndNewPieceProperties) {
-      ps = ((ReportState.OldAndNewPieceProperties)ps).getNewPiece();
-    }
+    ps = translatePiece(ps);
 
     if (ps instanceof GamePiece) {
       GamePiece p = Decorator.getOutermost((Decorator)ps);
@@ -652,10 +652,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   public Object sumAttachment(String attachment, String property, PropertySource ps) {
     int result = 0;
 
-    // This allows ReportState to sum properties properly
-    if (ps instanceof ReportState.OldAndNewPieceProperties) {
-      ps = ((ReportState.OldAndNewPieceProperties)ps).getNewPiece();
-    }
+    ps = translatePiece(ps);
 
     if (ps instanceof GamePiece) {
       GamePiece p = Decorator.getOutermost((Decorator)ps);
@@ -689,10 +686,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   public Object countAttachment(String attachment, String property, PropertySource ps) {
     int result = 0;
 
-  // This allows ReportState to count properties properly
-    if (ps instanceof ReportState.OldAndNewPieceProperties) {
-      ps = ((ReportState.OldAndNewPieceProperties)ps).getNewPiece();
-    }
+    ps = translatePiece(ps);
 
     if (ps instanceof GamePiece) {
       GamePiece p = Decorator.getOutermost((Decorator)ps);
@@ -730,10 +724,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   public Object countAttachmentExpression(String attachment, String expression, PropertySource ps) {
     int result = 0;
 
-    // This allows ReportState to count properties properly
-    if (ps instanceof ReportState.OldAndNewPieceProperties) {
-      ps = ((ReportState.OldAndNewPieceProperties)ps).getNewPiece();
-    }
+    ps = translatePiece(ps);
 
     if (ps instanceof GamePiece) {
       GamePiece p = Decorator.getOutermost((Decorator)ps);
@@ -769,10 +760,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   public Object sumMat(String property, PropertySource ps) {
     int result = 0;
 
-    // This allows ReportState to sum properties properly
-    if (ps instanceof ReportState.OldAndNewPieceProperties) {
-      ps = ((ReportState.OldAndNewPieceProperties)ps).getNewPiece();
-    }
+    ps = translatePiece(ps);
 
     if (ps instanceof GamePiece) {
       GamePiece gp = (GamePiece) ps;
@@ -824,10 +812,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   public Object countMat(String property, PropertySource ps) {
     int result = 0;
 
-    // This allows ReportState to sum properties properly
-    if (ps instanceof ReportState.OldAndNewPieceProperties) {
-      ps = ((ReportState.OldAndNewPieceProperties)ps).getNewPiece();
-    }
+    ps = translatePiece(ps);
 
     if (ps instanceof GamePiece) {
       GamePiece gp = (GamePiece) ps;
@@ -883,10 +868,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   public Object sumLocation(String property, PropertySource ps) {
     int result = 0;
 
-    // This allows ReportState to sum properties properly
-    if (ps instanceof ReportState.OldAndNewPieceProperties) {
-      ps = ((ReportState.OldAndNewPieceProperties)ps).getNewPiece();
-    }
+    ps = translatePiece(ps);
 
     if (ps instanceof GamePiece) {
       final GamePiece p = (GamePiece) ps;
