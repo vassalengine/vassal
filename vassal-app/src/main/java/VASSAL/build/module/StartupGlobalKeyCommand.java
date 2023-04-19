@@ -24,9 +24,11 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.MassKeyCommand;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.UniqueIdManager;
 
@@ -50,12 +52,15 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
   public static final String APPLY_EVERY_LAUNCH_OF_SESSION   = "everyLaunchOfSession"; //NON-NLS
   public static final String APPLY_START_OF_GAME_ONLY        = "startOfGameOnly";      //NON-NLS
   public static final String APPLY_START_GAME_OR_SIDE_CHANGE = "sideChange";           //NON-NLS
+  public static final String GLOBAL_HOTKEY                   = "globalHotkey";         //NON-NLS
 
   private static final char DELIMITER = '\t'; //$NON-NLS-1$
   public static final String COMMAND_PREFIX = "SGKC" + DELIMITER; //NON-NLS-1$
 
   protected static final UniqueIdManager idMgr = new UniqueIdManager("SGKC"); //$NON-NLS-1$
   protected String id = "";     // Our unique ID
+
+  protected NamedKeyStroke globalHotkey = NamedKeyStroke.NULL_KEYSTROKE;
 
   public String whenToApply = APPLY_EVERY_LAUNCH_OF_SESSION;
 
@@ -148,7 +153,9 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
   public String[] getAttributeDescriptions() {
     final List<String> descs = new ArrayList<>();
     descs.add(Resources.getString("Editor.StartupGlobalKeyCommand.when_to_apply"));
+    descs.add(Resources.getString("Editor.StartupGlobalKeyCommand.global_hotkey"));
     Collections.addAll(descs, super.getAttributeDescriptions());
+
     return descs.toArray(new String[0]);
   }
 
@@ -157,6 +164,7 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
     final List<String> names = new ArrayList<>();
 
     names.add(WHEN_TO_APPLY);
+    names.add(GLOBAL_HOTKEY);
 
     // Filter some of the crazy out of the original MassKeyCommand list, so we can add more things "safely"
     for (final String n : super.getAttributeNames()) {
@@ -173,6 +181,7 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
   public Class<?>[] getAttributeTypes() {
     final List<Class<?>> types = new ArrayList<>();
     types.add(Prompt.class);
+    types.add(NamedKeyStroke.class);
     Collections.addAll(types, super.getAttributeTypes());
     return types.toArray(new Class<?>[0]);
   }
@@ -184,6 +193,12 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
         whenToApply = (String)value;
       }
     }
+    else if (GLOBAL_HOTKEY.equals(key)) {
+      if (value instanceof String) {
+        value = NamedHotKeyConfigurer.decode((String) value);
+      }
+      globalHotkey = (NamedKeyStroke) value;
+    }
     else {
       super.setAttribute(key, value);
     }
@@ -193,6 +208,9 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
   public String getAttributeValueString(String key) {
     if (WHEN_TO_APPLY.equals(key)) {
       return whenToApply;
+    }
+    else if (GLOBAL_HOTKEY.equals(key)) {
+      return NamedHotKeyConfigurer.encode(globalHotkey);
     }
     else {
       return super.getAttributeValueString(key);
@@ -234,6 +252,31 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
     hasAppliedThisGame = true;
     apply();
     return true;
+  }
+
+  @Override
+  public void apply() {
+    super.apply();
+
+    if ((globalHotkey != null) && !globalHotkey.isNull()) {
+      final GameModule gm = GameModule.getGameModule();
+      final boolean loggingPausedByMe = gm.pauseLogging();
+      GameModule.getGameModule().fireKeyStroke(globalHotkey);
+      if (loggingPausedByMe) {
+        gm.resumeLogging();
+      }
+    }
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    final List<NamedKeyStroke> l = new ArrayList<>(super.getNamedKeyStrokeList());
+    l.add(NamedHotKeyConfigurer.decode(getAttributeValueString(GLOBAL_HOTKEY)));
+    return l;
   }
 
 
