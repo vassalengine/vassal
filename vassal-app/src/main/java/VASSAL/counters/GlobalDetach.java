@@ -69,15 +69,17 @@ public class GlobalDetach extends GlobalCommand {
       }
 
       if (filter == null || filter.accept(p, owner, audit)) {
-        if (attach.hasTarget(p)) {
-          selectedCount++;
-        }
-
         if (visitingDeck) {
           p.setProperty(Properties.OBSCURED_BY, p.getProperty(Properties.OBSCURED_BY_PRE_DRAW));  // Bug 13433 restore correct OBSCURED_BY after checking filter
         }
 
-        command.append(attach.makeRemoveTargetCommand(p));
+        if ((maxTotalPieces < 0) || (totalPieceCount < maxTotalPieces)) {
+          if (attach.hasTarget(p)) {
+            selectedCount++;
+            totalPieceCount++;
+            command.append(attach.makeRemoveTargetCommand(p));
+          }
+        }
       }
       else {
         if (visitingDeck) {

@@ -69,15 +69,17 @@ public class GlobalAttach extends GlobalCommand {
       }
 
       if (filter == null || filter.accept(p, owner, audit)) {
-        if (!attach.hasTarget(p)) {
-          selectedCount++;
-        }
-
         if (visitingDeck) {
           p.setProperty(Properties.OBSCURED_BY, p.getProperty(Properties.OBSCURED_BY_PRE_DRAW));  // Bug 13433 restore correct OBSCURED_BY after checking filter
         }
 
-        command.append(attach.makeAddTargetCommand(p));
+        if ((maxTotalPieces < 0) || (totalPieceCount < maxTotalPieces)) {
+          if (!attach.hasTarget(p)) {
+            totalPieceCount++;
+            selectedCount++;
+            command.append(attach.makeAddTargetCommand(p));
+          }
+        }
       }
       else {
         if (visitingDeck) {

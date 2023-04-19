@@ -38,6 +38,9 @@ public class GlobalCommandVisitor implements DeckVisitor {
   protected final AuditTrail auditSoFar;
   private int selectFromDeck;
 
+  protected int maxTotalPieces;
+  protected int totalPieceCount;
+
 
   public GlobalCommandVisitor(Command command, PieceFilter filter, KeyStroke stroke) {
     this(command, filter, stroke, null);
@@ -49,12 +52,20 @@ public class GlobalCommandVisitor implements DeckVisitor {
     this.filter = filter;
     this.stroke = stroke;
     auditSoFar = audit;
+
+    maxTotalPieces = -1;
+    totalPieceCount = 0;
   }
 
   public GlobalCommandVisitor(Command command, PieceFilter filter, KeyStroke stroke, AuditTrail audit, Auditable owner, int selectFromDeck) {
     this(command, filter, stroke, audit);
     this.owner = owner;
     this.selectFromDeck = selectFromDeck;
+  }
+
+  public GlobalCommandVisitor(Command command, PieceFilter filter, KeyStroke stroke, AuditTrail audit, Auditable owner, int selectFromDeck, int maxTotalPieces) {
+    this (command, filter, stroke, audit, owner, selectFromDeck);
+    this.maxTotalPieces = maxTotalPieces;
   }
 
   public void setOwner(Auditable val) {
@@ -75,6 +86,22 @@ public class GlobalCommandVisitor implements DeckVisitor {
 
   public int getSelectedCount() {
     return selectedCount;
+  }
+
+  public void setMaxTotalPieces(int maxTotalPieces) {
+    this.maxTotalPieces = maxTotalPieces;
+  }
+
+  public int getMaxTotalPieces() {
+    return maxTotalPieces;
+  }
+
+  public void setTotalPieceCount(int totalPieceCount) {
+    this.totalPieceCount = totalPieceCount;
+  }
+
+  public int getTotalPieceCount() {
+    return totalPieceCount;
   }
 
   @Override
@@ -131,11 +158,16 @@ public class GlobalCommandVisitor implements DeckVisitor {
       if (visitingDeck) {
         p.setProperty(Properties.OBSCURED_BY, p.getProperty(Properties.OBSCURED_BY_PRE_DRAW));  // Bug 13433 restore correct OBSCURED_BY after checking filter
       }
-      tracker.addPiece(p);
-      p.setProperty(Properties.SNAPSHOT, ((PropertyExporter) p).getProperties());
-      command.append(p.keyEvent(stroke));
-      tracker.addPiece(p);
-      selectedCount++;
+
+      if ((maxTotalPieces < 0) || (totalPieceCount < maxTotalPieces)) {
+        totalPieceCount++;
+
+        tracker.addPiece(p);
+        p.setProperty(Properties.SNAPSHOT, ((PropertyExporter) p).getProperties());
+        command.append(p.keyEvent(stroke));
+        tracker.addPiece(p);
+        selectedCount++;
+      }
     }
     else {
       if (visitingDeck) {

@@ -73,6 +73,8 @@ public class GlobalCommand implements Auditable {
   protected Loopable owner;             // For preventing infinite loops
   protected PropertySource source;      // Context for resolving properties (i.e. for our report message)
   protected GlobalCommandTarget target; // This holds all of the "Fast Match" information
+  protected String maxTotalPieceCountMode;
+  protected String maxTotalPieceCountExpression;
 
   private String fastProperty = "";     // Used during property Fast Match to hold *evaluated* expressions
   private String fastValue = "";        // Used during property Fast Match to hold *evaluated* expressions
@@ -386,7 +388,7 @@ public class GlobalCommand implements Auditable {
       }
 
       // This dispatcher will eventually handle applying the Beanshell filter and actually issuing the command to any pieces that match
-      final GlobalCommandVisitor visitor = getVisitor(command, filter, keyStroke, audit, owner, getSelectFromDeck());
+      final GlobalCommandVisitor visitor = getVisitor(command, filter, keyStroke, audit, owner, getSelectFromDeck(), getMaxTotalPieceCount());
       final DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
 
       // If we're using "current stack or deck" then we simply iterate quickly through the members of the stack or deck that the current piece is in
