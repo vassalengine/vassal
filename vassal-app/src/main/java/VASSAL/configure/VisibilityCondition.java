@@ -25,7 +25,7 @@ public interface VisibilityCondition {
     VisibilityCondition and1;
     VisibilityCondition and2;
 
-    VisibilityAND(VisibilityCondition a1, VisibilityCondition a2) {
+    public VisibilityAND(VisibilityCondition a1, VisibilityCondition a2) {
       and1 = a1;
       and2 = a2;
     }
