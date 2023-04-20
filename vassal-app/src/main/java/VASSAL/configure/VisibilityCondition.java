@@ -30,6 +30,7 @@ public interface VisibilityCondition {
       and2 = a2;
     }
 
+    @Override
     public boolean shouldBeVisible() {
       return ((and1 == null) || and1.shouldBeVisible()) && ((and2 == null) || and2.shouldBeVisible());
     }
