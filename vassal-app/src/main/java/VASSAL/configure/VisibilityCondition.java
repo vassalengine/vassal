@@ -21,7 +21,7 @@ package VASSAL.configure;
 public interface VisibilityCondition {
   boolean shouldBeVisible();
 
-  public class VisibilityAND implements VisibilityCondition {
+  class VisibilityAND implements VisibilityCondition {
     VisibilityCondition and1;
     VisibilityCondition and2;
 
