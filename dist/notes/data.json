@@ -16,6 +16,21 @@
     { "display_name": "Other", "suffix": "other.zip" }
   ],
   "changes": [
+     {
+      "in": "3.6.17",
+      "since": "3.6.16",
+      "new_features": [
+      ],
+      "bug_fixes": [
+        { "num": 12248, "desc": "Don't NPE when handling setup errors",
+        { "num": 12247, "desc": "Fix error dialog broken since 3.6.15 for exceptions with null messages" },
+        { "num": 12234, "desc": "Don't try to render SVG which would have a width or height of zero" },
+        { "num": 12233, "desc": "Ensure that OpMultiResolutionImage.getBaseImage() never returns null" }
+      ],
+      "other_improvements": [
+        { "num": 12238, "desc": "Upgrade bundled Java from 19 to 20" }
+      ]
+    },
     {
       "in": "3.6.16",
       "since": "3.6.15",
