@@ -56,6 +56,7 @@ public class SetAttachmentProperty extends DynamicProperty {
   public static final String ID = "setattachprop;"; // NON-NLS
   public static final String INDEX_PROP = "AttachmentIndex"; //NON-NLS
   public static final String ATTACH_PROP = "AttachmentName"; //NON-NLS
+  public static final String ATTACH_BASIC = "AttachmentBasicName"; //NON-NLS
   protected String description;
   protected String attachName;
   protected String attachIndex;
@@ -63,6 +64,7 @@ public class SetAttachmentProperty extends DynamicProperty {
 
   private final SetAttachmentPropertySource propertiesWithIndex = new SetAttachmentPropertySource();
   private int index = 0;
+  private String currentBasicName = "";
   private String currentAttachmentName = "";
   private final SetAttachmentProperty This = this; // So our property source thing can report our identity downstream
 
@@ -77,6 +79,9 @@ public class SetAttachmentProperty extends DynamicProperty {
       }
       else if (ATTACH_PROP.equals(key)) {
         return currentAttachmentName;
+      }
+      else if (ATTACH_BASIC.equals(key)) {
+        return currentBasicName;
       }
       else {
         return Decorator.getOutermost(piece).getProperty(key);
@@ -180,6 +185,9 @@ public class SetAttachmentProperty extends DynamicProperty {
     else if (ATTACH_PROP.equals(key)) {
       return currentAttachmentName;
     }
+    else if (ATTACH_BASIC.equals(key)) {
+      return currentBasicName;
+    }
     else {
       return piece.getProperty(key);
     }
@@ -204,6 +212,9 @@ public class SetAttachmentProperty extends DynamicProperty {
     }
     else if (ATTACH_PROP.equals(key)) {
       return currentAttachmentName;
+    }
+    else if (ATTACH_BASIC.equals(key)) {
+      return currentBasicName;
     }
     else {
       return piece.getLocalizedProperty(key);
@@ -243,7 +254,7 @@ public class SetAttachmentProperty extends DynamicProperty {
         // For evaluating name, we allow either (a) blank means any attachment, (b) string means that attachment name, (c) true/false expression with "AttachmentName" as an available property
         String attachmentName = (new FormattedString(attachName)).getText(propertiesWithIndex, this, "Editor.SetAttachmentProperty.attachment_name");
 
-        // For evaluating index, we allow either: (a) blank means every index, (b) number means 1-based specific index, or (c) true expression with "AttachmentIndex" as an available property
+        // For evaluating index, we allow either: (a) blank means every index, (b) number means 1-based specific index, or (c) true expression with "AttachmentIndex" and/or "AttachmentBasicName" as an available property
         String attachmentIndex = (new FormattedString(attachIndex)).getText(propertiesWithIndex, this, "Editor.SetAttachmentProperty.attachment_index");
 
         // Find matching attachments on our piece and set their properties
@@ -272,15 +283,19 @@ public class SetAttachmentProperty extends DynamicProperty {
               for (final GamePiece propPiece : attachment.getAttachList()) {
                 index++; // Intentionally first piece is considered index "1"
 
+                currentBasicName = (String)propPiece.getProperty(BasicPiece.BASIC_NAME);
+
                 if (!attachmentIndex.isBlank()) {
                   if (NumberUtils.isParsable(attachmentIndex)) {
                     final int parse = NumberUtils.toInt(attachmentIndex);
                     if ((parse != 0) && (parse != index)) continue;
                   }
-                  else {
+                  else if (!attachmentIndex.equals(currentBasicName)) {
                     // In this case only (a special "Index" expression), we need to re-evaluate for each index
                     attachmentIndex = (new FormattedString(attachIndex)).getText(propertiesWithIndex, this, "Editor.SetAttachmentProperty.attachment_index");
-                    if (!"true".equals(attachmentIndex)) continue; //NON-NLS
+                    if (!"true".equals(attachmentIndex)) { //NON-NLS
+                      continue;
+                    }
                   }
                 }
 
