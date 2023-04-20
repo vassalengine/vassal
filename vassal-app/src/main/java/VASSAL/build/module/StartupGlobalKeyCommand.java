@@ -176,7 +176,19 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
       return () -> SEND_HOTKEY.equals(hotkeyOrKeyCommand);
     }
     else {
+      //return () -> {
+      //  System.out.println(key + " " + SEND_KEY_COMMAND.equals(hotkeyOrKeyCommand));
+      //  System.out.println(key + " " + super.getAttributeVisibility(key).shouldBeVisible());
+      //  return SEND_KEY_COMMAND.equals(hotkeyOrKeyCommand) && super.getAttributeVisibility(key).shouldBeVisible();
+      //};
+      // THINGS THAT DON'T WORK
+      //return () -> (SEND_KEY_COMMAND.equals(hotkeyOrKeyCommand) && (super.getAttributeVisibility(key)).shouldBeVisible());
       return new VisibilityCondition.VisibilityAND(() -> SEND_KEY_COMMAND.equals(hotkeyOrKeyCommand), super.getAttributeVisibility(key));
+
+      // THINGS THAT DO "WORK"
+      //return super.getAttributeVisibility(key);
+      //return () -> SEND_KEY_COMMAND.equals(hotkeyOrKeyCommand);
+      //return new VisibilityCondition.VisibilityAND(() -> SEND_KEY_COMMAND.equals(hotkeyOrKeyCommand), () -> SEND_KEY_COMMAND.equals(hotkeyOrKeyCommand));
     }
   }
 

@@ -31,7 +31,7 @@ public interface VisibilityCondition {
     }
 
     public boolean shouldBeVisible() {
-      return and1.shouldBeVisible() && and2.shouldBeVisible();
+      return ((and1 == null) || and1.shouldBeVisible()) && ((and2 == null) || and2.shouldBeVisible());
     }
   }
 }
