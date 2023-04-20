@@ -50,9 +50,18 @@ public class GlobalAttach extends GlobalCommand {
     return new AttachVisitor(command, filter, keyStroke, audit, owner, selectFromDeck);
   }
 
+  @Override
+  public GlobalCommandVisitor getVisitor(Command command, PieceFilter filter, KeyStroke keyStroke, AuditTrail audit, Auditable owner, int selectFromDeck, int maxTotalPieces) {
+    return new AttachVisitor(command, filter, keyStroke, audit, owner, selectFromDeck, maxTotalPieces);
+  }
+
   protected class AttachVisitor extends GlobalCommandVisitor {
     public AttachVisitor(Command command, PieceFilter filter, KeyStroke stroke, AuditTrail audit, Auditable owner, int selectFromDeck) {
       super(command, filter, stroke, audit, owner, selectFromDeck);
+    }
+
+    public AttachVisitor(Command command, PieceFilter filter, KeyStroke stroke, AuditTrail audit, Auditable owner, int selectFromDeck, int maxTotalPieces) {
+      super(command, filter, stroke, audit, owner, selectFromDeck, maxTotalPieces);
     }
 
     @Override

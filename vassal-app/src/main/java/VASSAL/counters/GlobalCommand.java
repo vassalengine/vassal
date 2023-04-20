@@ -38,6 +38,7 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import javax.swing.KeyStroke;
 import java.awt.Point;
@@ -64,6 +65,15 @@ import java.util.regex.PatternSyntaxException;
  * {@link GlobalCommandTargetConfigurer} - configurer for "Fast Match" parameters
  */
 public class GlobalCommand implements Auditable {
+
+  public static final String MAX_MODE_ALL = "maxAll"; //NON-NLS
+  public static final String MAX_MODE_NUM = "maxNum"; //NON-NLS
+
+  public static final int MAX_ALL = -1;
+
+  public static final String[] MAX_MODE_OPTIONS = { MAX_MODE_ALL, MAX_MODE_NUM };
+  public static final String[] MAX_MODE_KEYS    = { "Editor.GlobalCommand.max_mode_all", "Editor.GlobalCommand.max_mode_num" }; //NON-NLS
+
   protected KeyStroke keyStroke;        // Key Command we will issue
   protected boolean reportSingle;       // If true, we temporarily disable Report traits in any receiving pieces
   protected boolean suppressSounds;     // If true, we temporarily disable Play Sound traits in any receiving pieces
@@ -73,8 +83,8 @@ public class GlobalCommand implements Auditable {
   protected Loopable owner;             // For preventing infinite loops
   protected PropertySource source;      // Context for resolving properties (i.e. for our report message)
   protected GlobalCommandTarget target; // This holds all of the "Fast Match" information
-  protected String maxTotalPieceCountMode;
-  protected String maxTotalPieceCountExpression;
+  protected String maxTotalPieceCountMode = MAX_MODE_ALL;  // Do we take every matching piece, or only a specified finite number?
+  protected String maxTotalPieceCountExpression = "{ 1 }"; // If a finite number, the expression for how many we take
 
   private String fastProperty = "";     // Used during property Fast Match to hold *evaluated* expressions
   private String fastValue = "";        // Used during property Fast Match to hold *evaluated* expressions
@@ -96,7 +106,7 @@ public class GlobalCommand implements Auditable {
   @Override
   public String getComponentTypeName() {
     return "Global Command";
-  }
+  } //NON-NLS
 
   @Override
   public String getComponentName() {
@@ -145,6 +155,22 @@ public class GlobalCommand implements Auditable {
 
   public void setTarget(GlobalCommandTarget target) {
     this.target = target;
+  }
+
+  public String getMaxTotalPieceCountMode() {
+    return maxTotalPieceCountMode;
+  }
+
+  public void setMaxTotalPieceCountMode(String mode) {
+    maxTotalPieceCountMode = mode;
+  }
+
+  public String getMaxTotalPieceCountExpression() {
+    return maxTotalPieceCountExpression;
+  }
+
+  public void setMaxTotalPieceCountExpression(String exp) {
+    maxTotalPieceCountExpression = exp;
   }
 
   /**
@@ -387,8 +413,16 @@ public class GlobalCommand implements Auditable {
         }
       }
 
+      final int maxTotalPieceCount;
+      if (MAX_MODE_ALL.equals(maxTotalPieceCountMode)) {
+        maxTotalPieceCount = -1;
+      }
+      else {
+        maxTotalPieceCount = NumberUtils.toInt(Expression.createExpression(maxTotalPieceCountExpression).tryEvaluate(source, owner, "Editor.GlobalCommand.max_total_piece_count_expression"), 0);
+      }
+
       // This dispatcher will eventually handle applying the Beanshell filter and actually issuing the command to any pieces that match
-      final GlobalCommandVisitor visitor = getVisitor(command, filter, keyStroke, audit, owner, getSelectFromDeck(), getMaxTotalPieceCount());
+      final GlobalCommandVisitor visitor = getVisitor(command, filter, keyStroke, audit, owner, getSelectFromDeck(), maxTotalPieceCount);
       final DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
 
       // If we're using "current stack or deck" then we simply iterate quickly through the members of the stack or deck that the current piece is in
@@ -740,7 +774,11 @@ public class GlobalCommand implements Auditable {
   }
 
   protected GlobalCommandVisitor getVisitor(Command command, PieceFilter filter, KeyStroke keyStroke, AuditTrail audit, Auditable owner, int selectFromDeck) {
-    return new GlobalCommandVisitor(command, filter, keyStroke, audit, owner, selectFromDeck);
+    return new GlobalCommandVisitor(command, filter, keyStroke, audit, owner, selectFromDeck, MAX_ALL);
+  }
+
+  protected GlobalCommandVisitor getVisitor(Command command, PieceFilter filter, KeyStroke keyStroke, AuditTrail audit, Auditable owner, int selectFromDeck, int maxTotalPieceCount) {
+    return new GlobalCommandVisitor(command, filter, keyStroke, audit, owner, selectFromDeck, maxTotalPieceCount);
   }
 
   public int getSelectFromDeck() {

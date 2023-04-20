@@ -50,9 +50,18 @@ public class GlobalDetach extends GlobalCommand {
     return new DetachVisitor(command, filter, keyStroke, audit, owner, selectFromDeck);
   }
 
+  @Override
+  public GlobalCommandVisitor getVisitor(Command command, PieceFilter filter, KeyStroke keyStroke, AuditTrail audit, Auditable owner, int selectFromDeck, int maxTotalPieces) {
+    return new DetachVisitor(command, filter, keyStroke, audit, owner, selectFromDeck, maxTotalPieces);
+  }
+
   protected class DetachVisitor extends GlobalCommandVisitor {
     public DetachVisitor(Command command, PieceFilter filter, KeyStroke stroke, AuditTrail audit, Auditable owner, int selectFromDeck) {
       super(command, filter, stroke, audit, owner, selectFromDeck);
+    }
+
+    public DetachVisitor(Command command, PieceFilter filter, KeyStroke stroke, AuditTrail audit, Auditable owner, int selectFromDeck, int maxTotalPieces) {
+      super(command, filter, stroke, audit, owner, selectFromDeck, maxTotalPieces);
     }
 
     @Override
