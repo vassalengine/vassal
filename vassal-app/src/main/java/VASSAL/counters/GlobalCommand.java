@@ -86,6 +86,8 @@ public class GlobalCommand implements Auditable {
   protected String maxTotalPieceCountMode = MAX_MODE_ALL;  // Do we take every matching piece, or only a specified finite number?
   protected String maxTotalPieceCountExpression = "{ 1 }"; // If a finite number, the expression for how many we take
 
+  protected int totalPieceCount = 0;    // How many pieces did we hit?
+
   private String fastProperty = "";     // Used during property Fast Match to hold *evaluated* expressions
   private String fastValue = "";        // Used during property Fast Match to hold *evaluated* expressions
   private boolean fastIsNumber = false; // Used during property Fast Match to remember if value is numeric
@@ -171,6 +173,14 @@ public class GlobalCommand implements Auditable {
 
   public void setMaxTotalPieceCountExpression(String exp) {
     maxTotalPieceCountExpression = exp;
+  }
+
+  public int getTotalPieceCount() {
+    return totalPieceCount;
+  }
+
+  public void setTotalPieceCount(int count) {
+    totalPieceCount = count;
   }
 
   /**
@@ -720,6 +730,8 @@ public class GlobalCommand implements Auditable {
       // single piece affected by this command. This command can be sent to other clients involved in the same
       // game to replicate all the stuff we just did.
       command = visitor.getCommand();
+
+      setTotalPieceCount(visitor.getTotalPieceCount()); // Memorialize how many hits we found
     }
     catch (RecursionLimitException e) {
       // It is very easy to construct a set of GKC commands that fire each other off infinitely. This catches those.
@@ -727,6 +739,7 @@ public class GlobalCommand implements Auditable {
     }
     finally {
       RecursionLimiter.endExecution();
+
       if (reportSingle) {
         Map.setChangeReportingEnabled(true); // Restore normal reporting behavior (if we'd disabled all individual reports)
       }

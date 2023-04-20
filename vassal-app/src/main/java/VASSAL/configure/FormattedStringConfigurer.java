@@ -24,14 +24,13 @@ package VASSAL.configure;
 
 import VASSAL.i18n.Resources;
 
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
 
 public class FormattedStringConfigurer
     extends StringConfigurer
@@ -39,6 +38,10 @@ public class FormattedStringConfigurer
 
   private final DefaultComboBoxModel<String> optionsModel;
   private JComboBox<String> dropList;
+
+  public FormattedStringConfigurer() {
+    this ("", "");
+  }
 
   public FormattedStringConfigurer(String key, String name) {
     this(key, name, new String[0]);
