@@ -20,4 +20,18 @@ package VASSAL.configure;
 @FunctionalInterface
 public interface VisibilityCondition {
   boolean shouldBeVisible();
+
+  public class VisibilityAND implements VisibilityCondition {
+    VisibilityCondition and1;
+    VisibilityCondition and2;
+
+    VisibilityAND(VisibilityCondition a1, VisibilityCondition a2) {
+      and1 = a1;
+      and2 = a2;
+    }
+
+    public boolean shouldBeVisible() {
+      return and1.shouldBeVisible() && and2.shouldBeVisible();
+    }
+  }
 }
