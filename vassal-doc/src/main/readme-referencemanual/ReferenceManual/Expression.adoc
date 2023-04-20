@@ -93,7 +93,7 @@ Math.max(value1, value2) + |{Math.abs(Number - 5)} +
 
 |*Property* |GetProperty(property) +
 GetString(property) +
-GetAttachmentProperty(attachmentName, property, index) +
+GetAttachmentProperty(attachmentName, property, basic_name_or_index) +
 GetMapProperty(property,map) +
 GetZoneProperty(property,zone) +
 GetZoneProperty(property,zone,map) + |{GetProperty("Nation"+myNation)} +
@@ -106,7 +106,7 @@ The name of the property can be constructed from an expression.
 
 *GetString()* returns a string value even if the property contains a number or a boolean. You can also append *.toString()* to any other function or property to achieve the same effect.
 
-*GetAttachmentProperty()* retrieves the property from an _attached_ piece with the specified index (first attached piece is 1). 
+*GetAttachmentProperty()* retrieves the property from an _attached_ piece with the specified BasicName or specified index (first attached piece is 1). 
 
 *GetMapProperty()* looks only on the specific map for the property.
 
