@@ -24,6 +24,7 @@
       "bug_fixes": [
         { "num": 12248, "desc": "Don't NPE when handling setup errors",
         { "num": 12247, "desc": "Fix error dialog broken since 3.6.15 for exceptions with null messages" },
+        { "num": 12237, "desc": "Fix edge case Mat Refresh bugs" },
         { "num": 12234, "desc": "Don't try to render SVG which would have a width or height of zero" },
         { "num": 12233, "desc": "Ensure that OpMultiResolutionImage.getBaseImage() never returns null" }
       ],

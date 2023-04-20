@@ -3,6 +3,7 @@
 * 12248: Don't NPE when handling setup errors
 * 12247: Fix error dialog broken since 3.6.15 for exceptions with null messages
 * 12238: Upgrade bundled Java from 19 to 20
+* 12237: Fix edge case Mat Refresh bugs
 * 12234: Don't try to render SVG which would have a width or height of zero
 * 12233: Ensure that OpMultiResolutionImage.getBaseImage() never returns null
 
