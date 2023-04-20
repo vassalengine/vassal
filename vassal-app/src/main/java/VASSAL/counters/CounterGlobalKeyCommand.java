@@ -24,7 +24,7 @@ import VASSAL.build.module.map.MassKeyCommand;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
-import VASSAL.configure.FormattedStringConfigurer;
+import VASSAL.configure.FormattedExpressionConfigurer;
 import VASSAL.configure.GlobalCommandTargetConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
@@ -371,7 +371,7 @@ public class CounterGlobalKeyCommand extends Decorator
 
     protected JLabel maxTotalLabel;
     protected TranslatingStringEnumConfigurer maxTotalMode;
-    protected FormattedStringConfigurer maxTotalExpression;
+    protected FormattedExpressionConfigurer maxTotalExpression;
 
     protected GlobalCommandTargetConfigurer targetConfig;
 
@@ -430,9 +430,10 @@ public class CounterGlobalKeyCommand extends Decorator
           maxTotalMode.setValue(key);
         }
       }
+      maxTotalMode.addPropertyChangeListener(pl);
       traitPanel.add("Editor.GlobalCommand.max_total_mode", maxTotalMode);
 
-      maxTotalExpression = new FormattedStringConfigurer();
+      maxTotalExpression = new FormattedExpressionConfigurer();
       maxTotalExpression.setValue(p.globalCommand.getMaxTotalPieceCountExpression());
       maxTotalLabel = new JLabel(Resources.getString("Editor.GlobalCommand.max_total_expression"));
       traitPanel.add(maxTotalLabel, maxTotalExpression);
