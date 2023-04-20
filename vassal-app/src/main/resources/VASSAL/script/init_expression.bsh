@@ -284,7 +284,7 @@ GetMapProperty(String propertyName, String mapName) {
   return unwrap(_interp.getMapProperty(propertyName, mapName));
 }
 
-GetAttachmentProperty(String attachmentName, String propertyName, int index) {
+GetAttachmentProperty(String attachmentName, String propertyName, String index) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
   return unwrap(_interp.getAttachmentProperty(attachmentName, propertyName, index, _source));
