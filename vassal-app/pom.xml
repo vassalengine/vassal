@@ -236,7 +236,7 @@
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <configuration>
-                   <propertiesEncoding>UTF-8</propertiesEncoding>
+                    <propertiesEncoding>UTF-8</propertiesEncoding>
                 </configuration>
             </plugin>
             <plugin>
