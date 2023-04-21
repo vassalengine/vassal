@@ -29,11 +29,7 @@ public class AttachmentManager {
   /**
    * Map of the attachment traits with the same attachment names
    */
-  final HashMap<String, List<Attachment>> attachments = new HashMap<>();
-
-  public AttachmentManager() {
-
-  }
+  final java.util.Map<String, List<Attachment>> attachments = new HashMap<>();
 
   public void clearAll() {
     attachments.clear();
@@ -47,7 +43,7 @@ public class AttachmentManager {
     if (!(p instanceof Decorator)) {
       return;
     }
-    for (GamePiece piece : Decorator.getDecorators(p, Attachment.class)) {
+    for (final GamePiece piece : Decorator.getDecorators(p, Attachment.class)) {
       final Attachment attachment = (Attachment) piece;
       // if (attachment.isAutoAttach()) {
       final String attachId = attachment.getAttachName();
@@ -55,7 +51,7 @@ public class AttachmentManager {
       if (currentAttachments == null) {
         currentAttachments = new ArrayList<>();
       }
-      for (Attachment target : currentAttachments) {
+      for (final Attachment target : currentAttachments) {
         // TODO Do attachy stuff betweem attachment and target
       }
       currentAttachments.add(attachment);
@@ -72,7 +68,7 @@ public class AttachmentManager {
     if (!(p instanceof Decorator)) {
       return;
     }
-    for (GamePiece piece : Decorator.getDecorators(p, Attachment.class)) {
+    for (final GamePiece piece : Decorator.getDecorators(p, Attachment.class)) {
       final Attachment attachment = (Attachment) piece;
       // if (attachment.isAutoAttach()) {
       final String attachId = attachment.getAttachName();
