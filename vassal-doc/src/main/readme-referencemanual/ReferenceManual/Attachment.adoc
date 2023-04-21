@@ -35,6 +35,8 @@ This <<GamePiece.adoc#Traits,Trait>> adds an action that creates a lasting "atta
 
 *Description:*::  A short description of this trait for your own reference.
 
+*Auto-attach to all pieces with identical attachment name:*::  If selected, the piece will automatically attach itself to other pieces which have an _Attachment_ trait with an identical attachment name; this can be used to easily and quickly attach pieces together. When selected, none of the advanced options for attaching and detaching pieces will be displayed. When this option _not_ selected, the advanced options for attaching and detaching pieces will be shown.
+
 *Allow attachment to self:*::  If selected, the attachment is allowed to attach to _this piece_ (i.e. itself) if conditions are otherise met. If not selected, the Attachment will never attach to itself in any circumstances.
 
 *Before adding attachments:*::  Determines whether existing attachments are cleared before adding new attachments.

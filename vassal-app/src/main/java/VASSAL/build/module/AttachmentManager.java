@@ -19,7 +19,6 @@ package VASSAL.build.module;
 import VASSAL.counters.Attachment;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
-import VASSAL.tools.SequenceEncoder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
