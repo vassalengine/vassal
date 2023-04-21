@@ -62,7 +62,7 @@ import java.util.regex.PatternSyntaxException;
  *
  * Other important classes:
  * {@link GlobalCommandTarget}           - "Fast Match" parameters
- * {@link GlobalCommandTargetConfigurer} - configurer for "Fast Match" parameters
+ * {@link GlobalCommandTargetConfigurer} - configurer for "Fast Match" parameters 
  */
 public class GlobalCommand implements Auditable {
 
