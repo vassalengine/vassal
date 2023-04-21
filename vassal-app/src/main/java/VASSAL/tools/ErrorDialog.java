@@ -88,10 +88,11 @@ public class ErrorDialog {
       final Frame frame = GameModule.getGameModule() == null
         ? null : GameModule.getGameModule().getPlayerWindow();
 
-      if (thrown.getMessage().contains("ran out of memory")) { //NON-NLS
+      final String message = thrown.getMessage();
+      if ((message != null) && message.contains("ran out of memory")) { //NON-NLS
         SwingUtilities.invokeLater(() -> new BugDialog(frame, thrown, "TilingMemoryDialog", "/icons/48x48/ram.png").setVisible(true)); //NON-NLS
       }
-      else if (thrown.getMessage().contains("failed to start child process")) { //NON-NLS
+      else if ((message != null) && message.contains("failed to start child process")) { //NON-NLS
         SwingUtilities.invokeLater(() -> new BugDialog(frame, thrown, "ChildProcessDialog", "/icons/48x48/VASSAL.png").setVisible(true)); //NON-NLS
       }
       // remove this when the tile cache bug is fixed
