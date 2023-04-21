@@ -141,6 +141,10 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     setInner(inner);
   }
 
+  public boolean isAutoAttach() {
+    return autoAttach;
+  }
+
   @Override
   public void mySetType(String type) {
     type = type.substring(ID.length());
@@ -330,6 +334,35 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
 
     return c;
   }
+
+
+  public void doAutoAttach(List<Attachment> attachments) {
+    for (final Attachment attach : attachments) {
+      if (!attach.isAutoAttach()) continue;
+      final GamePiece outer = Decorator.getOutermost(attach);
+      if (outer.getMap() == null) continue;
+
+      for (final Attachment attach2 : attachments) {
+        if (!attach2.isAutoAttach()) continue;
+        final GamePiece outer2 = Decorator.getOutermost(attach2);
+        if (outer.getMap() == null) continue;
+
+        // Don't attach to self if box not checked
+        if (attach.equals(attach2) && !attach.allowSelfAttach) continue;
+
+        // Auto-attach pieces all mutually attach to each other (if same attachment name, which is checked in AttachmentManager)
+
+        if (!attach.hasTarget(outer2)) {
+          attach.contents.add(outer2);
+        }
+
+        if (!attach2.hasTarget(outer)) {
+          attach2.contents.add(outer);
+        }
+      }
+    }
+  }
+
 
   public Command clearMatching() {
     final GamePiece outer = Decorator.getOutermost(this);

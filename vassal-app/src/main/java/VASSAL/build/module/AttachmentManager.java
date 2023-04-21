@@ -23,13 +23,14 @@ import VASSAL.counters.GamePiece;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AttachmentManager {
 
   /**
    * Map of the attachment traits with the same attachment names
    */
-  final java.util.Map<String, List<Attachment>> attachments = new HashMap<>();
+  final Map<String, List<Attachment>> attachments = new HashMap<>();
 
   public void clearAll() {
     attachments.clear();
@@ -45,18 +46,19 @@ public class AttachmentManager {
     }
     for (final GamePiece piece : Decorator.getDecorators(p, Attachment.class)) {
       final Attachment attachment = (Attachment) piece;
-      // if (attachment.isAutoAttach()) {
+      if (!attachment.isAutoAttach()) continue;
+
       final String attachId = attachment.getAttachName();
       List<Attachment> currentAttachments = attachments.get(attachId);
       if (currentAttachments == null) {
         currentAttachments = new ArrayList<>();
       }
-      for (final Attachment target : currentAttachments) {
-        // TODO Do attachy stuff betweem attachment and target
-      }
       currentAttachments.add(attachment);
       attachments.put(attachId, currentAttachments);
-      // }
+
+      for (final Attachment target : currentAttachments) {
+        target.doAutoAttach(currentAttachments);
+      }
     }
   }
 
@@ -65,6 +67,7 @@ public class AttachmentManager {
    * @param p
    */
   public void pieceRemoved(GamePiece p) {
+    /*
     if (!(p instanceof Decorator)) {
       return;
     }
@@ -74,7 +77,6 @@ public class AttachmentManager {
       final String attachId = attachment.getAttachName();
 
       // Remove any attachments
-      // TODO - Add code to detach this piece from all parents
 
       // Clean the attachments array
       final List<Attachment> currentAttachments = attachments.get(attachId);
@@ -84,5 +86,6 @@ public class AttachmentManager {
       attachments.put(attachId, currentAttachments);
       // }
     }
+   */
   }
 }
