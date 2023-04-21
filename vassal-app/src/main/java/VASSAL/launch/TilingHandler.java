@@ -51,7 +51,6 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -151,6 +150,10 @@ public class TilingHandler {
     }
   }
 
+  protected Iterable<String> getImagePaths(DataArchive archive) throws IOException {
+    return archive.getImageNameSet(true, true);
+  }
+
   protected Pair<Integer, Integer> findImages(
     DataArchive archive,
     FileStore tcache,
@@ -158,14 +161,13 @@ public class TilingHandler {
     List<Pair<String, IOException>> failed) throws IOException {
 
     // build a list of all multi-tile images and count tiles
-    final Set<String> images = archive.getImageNameSet(true, true);
 
     int maxpix = 0; // number of pixels in the largest image
     int tcount = 0; // tile count
 
     final FileArchive fa = archive.getArchive();
 
-    for (final String ipath : images) {
+    for (final String ipath : getImagePaths(archive)) {
       final Dimension idim;
       try {
         idim = getImageSize(archive, ipath);
