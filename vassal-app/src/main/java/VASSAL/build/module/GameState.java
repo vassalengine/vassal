@@ -124,7 +124,7 @@ public class GameState implements CommandEncoder {
   protected String loadComments;
   protected boolean loadingInBackground = false;
   private boolean fastForwarding = false;
-  private AttachmentManager attachmentManager = new AttachmentManager();
+  private final AttachmentManager attachmentManager = new AttachmentManager();
 
   /**
    * @return true if currently loading in background
