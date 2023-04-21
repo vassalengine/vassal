@@ -124,6 +124,7 @@ public class GameState implements CommandEncoder {
   protected String loadComments;
   protected boolean loadingInBackground = false;
   private boolean fastForwarding = false;
+  private AttachmentManager attachmentManager = new AttachmentManager();
 
   /**
    * @return true if currently loading in background
@@ -552,6 +553,7 @@ public class GameState implements CommandEncoder {
     lastSaveFile = null;
 
     if (gameStarted) {
+      attachmentManager.clearAll();
       if (gameStarting) {
         // Things that we invokeLater
         SwingUtilities.invokeLater(fastForwarding ? () -> {
@@ -1094,6 +1096,7 @@ public class GameState implements CommandEncoder {
     if (p.getId() == null) {
       p.setId(getNewPieceId());
     }
+    attachmentManager.pieceAdded(p);
     pieces.put(p.getId(), p);
   }
 
@@ -1110,6 +1113,12 @@ public class GameState implements CommandEncoder {
   public void removePiece(String id) {
     if (id != null) {
       pieces.remove(id);
+    }
+  }
+
+  public void removePiece(GamePiece piece) {
+    if (piece != null) {
+      removePiece(piece.getId());
     }
   }
 
