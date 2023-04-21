@@ -120,12 +120,34 @@
         <justification>No one should be using this externally</justification>
     </difference>
 
-  <!-- 3.6.16 -->
+    <!-- 3.6.16 -->
 
-  <difference>
-      <className>VASSAL/launch/DebugClassLoader</className>
-      <differenceType>8001</differenceType>
-      <justification>Never released</justification>
+    <difference>
+        <className>VASSAL/launch/DebugClassLoader</className>
+        <differenceType>8001</differenceType>
+        <justification>Never released</justification>
+    </difference>
+
+   <!-- 3.6.17 -->
+
+   <difference>
+      <className>VASSAL/launch/TilingHandler</className>
+      <differenceType>7002</differenceType>
+      <method>TilingHandler(java.lang.String, java.io.File, java.awt.Dimension, int, int)</method>
+      <justification>Kept for VASL 6.6.2 compatibility; no longer needed.</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/launch/TilingHandler</className>
+        <differenceType>6011</differenceType>
+        <field>pid</field>
+        <justification>Kept for VASL 6.6.2 compatibility; no longer needed.</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/launch/DebugClassLoader</className>
+        <differenceType>8001</differenceType>
+        <justification>Never released</justification>
     </difference>
 
 </differences>
