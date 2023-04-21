@@ -122,6 +122,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   protected String onDetach = ON_DETACH_NOTHING;
   protected String beforeAttach = BEFORE_ATTACH_CLEAR;
   protected boolean allowSelfAttach = true;
+  protected boolean autoAttach = true;
 
   private KeyCommand myAttachCommand;
   private KeyCommand myClearAllCommand;
@@ -170,6 +171,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     onDetach = st.nextToken(ON_DETACH_NOTHING);
     beforeAttach = st.nextToken(BEFORE_ATTACH_CLEAR);
     allowSelfAttach = st.nextBoolean(true);
+    autoAttach = st.nextBoolean(true);
 
     command = null;
   }
@@ -196,12 +198,17 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       .append(onAttach)
       .append(onDetach)
       .append(beforeAttach)
-      .append(allowSelfAttach);
+      .append(allowSelfAttach)
+      .append(autoAttach);
     return ID + se.getValue();
   }
 
   @Override
   protected KeyCommand[] myGetKeyCommands() {
+    if (autoAttach) {
+      return KeyCommand.NONE;
+    }
+
     if (command == null) {
       myAttachCommand = new KeyCommand(attachCommandName, attachKey, Decorator.getOutermost(this), this);
       myClearAllCommand  = new KeyCommand(clearAllCommandName, clearAllKey, Decorator.getOutermost(this), this);
@@ -345,6 +352,8 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   public Command myKeyEvent(KeyStroke stroke) {
     myGetKeyCommands();
 
+    if (autoAttach) return null;
+
     if (myAttachCommand.matches(stroke)) {
       return attach();
     }
@@ -415,12 +424,12 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
         final Attachment targetAttach = (Attachment)target;
         if (attachName.equals(targetAttach.attachName)) {
           // Found an attachment w/ the same name
-          if (!targetAttach.onAttach.equals(ON_ATTACH_NOTHING)) {
+          if (autoAttach || !targetAttach.onAttach.equals(ON_ATTACH_NOTHING)) {
             // They're either ON_ATTACH_FOLLOW_BACK or ON_ATTACH_ATTACH_ALL, so we definitely at last at an attach-back command
             c = c.append(targetAttach.makeAddTargetCommand(Decorator.getOutermost(this)));
 
             // If they're ON_ATTACH_ATTACH_ALL then they attach to ALL of our previously attached pieces
-            if (targetAttach.onAttach.equals(ON_ATTACH_ATTACH_ALL)) {
+            if (autoAttach || targetAttach.onAttach.equals(ON_ATTACH_ATTACH_ALL)) {
               for (final GamePiece other : getAttachList()) {
                 c = c.append(targetAttach.makeAddTargetCommand(Decorator.getOutermost(other)));
               }
@@ -506,20 +515,26 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
 
     d += " - " + attachName;
 
+    if (autoAttach) {
+      d += " " + Resources.getString("Editor.Attachment.auto");
+    }
+
     if (desc.length() > 0) {
       d += " - " + desc;
     }
 
-    if (attachKey != null) {
-      d += getCommandDesc(attachCommandName, attachKey);
-    }
+    if (!autoAttach) {
+      if (attachKey != null) {
+        d += getCommandDesc(attachCommandName, attachKey);
+      }
 
-    if (clearAllKey != null) {
-      d += getCommandDesc(clearAllCommandName, clearAllKey);
-    }
+      if (clearAllKey != null) {
+        d += getCommandDesc(clearAllCommandName, clearAllKey);
+      }
 
-    if (clearMatchingKey != null) {
-      d += getCommandDesc(clearMatchingCommandName, clearMatchingKey);
+      if (clearMatchingKey != null) {
+        d += getCommandDesc(clearMatchingCommandName, clearMatchingKey);
+      }
     }
 
     return d;
@@ -694,6 +709,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     if (!Objects.equals(onAttach, c.onAttach)) return false;
     if (!Objects.equals(onDetach, c.onDetach)) return false;
     if (!Objects.equals(beforeAttach, c.beforeAttach)) return false;
+    if (!Objects.equals(autoAttach, c.autoAttach)) return false;
     return Objects.equals(allowSelfAttach, c.allowSelfAttach);
   }
 
@@ -740,25 +756,27 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     protected TranslatingStringEnumConfigurer beforeAttachInput;
     protected BooleanConfigurer allowSelfAttachInput;
 
+    protected BooleanConfigurer autoAttachInput;
+
+    protected JLabel beforeAttachLabel;
+    protected JLabel onAttachLabel;
+    protected JLabel attachCommandNameLabel;
+    protected JLabel attachKeyLabel;
+    protected JLabel targetLabel;
+    protected JLabel propertyLabel;
+    protected JLabel deckLabel;
+    protected JLabel restrictLabel;
+    protected JLabel onDetachLabel;
+    protected JLabel clearAllCommandNameLabel;
+    protected JLabel clearAllKeyLabel;
+    protected JLabel clearMatchingKeyLabel;
+    protected JLabel clearMatchingCommandNameLabel;
+    protected JLabel clearMatchingMatchLabel;
+
     protected Attachment attachment;
 
 
     public Ed(Attachment p) {
-      final PropertyChangeListener pl = evt -> {
-
-        final boolean isRange = Boolean.TRUE.equals(restrictRange.getValue());
-        final boolean isFixed = Boolean.TRUE.equals(fixedRange.getValue());
-
-        range.getControls().setVisible(isRange && isFixed);
-        rangeLabel.setVisible(isRange && isFixed);
-        fixedRange.getControls().setVisible(isRange);
-        fixedRangeLabel.setVisible(isRange);
-        rangeProperty.getControls().setVisible(isRange && !isFixed);
-        rangePropertyLabel.setVisible(isRange && !isFixed);
-
-        repack(range);
-      };
-
       attachment = p;
       traitPanel = new TraitConfigPanel();
 
@@ -770,6 +788,9 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       descInput.setHintKey("Editor.description_hint");
       traitPanel.add("Editor.description_label", descInput);
 
+      autoAttachInput = new BooleanConfigurer(p.autoAttach);
+      traitPanel.add("Editor.Attachment.auto_attach", autoAttachInput);
+
       allowSelfAttachInput = new BooleanConfigurer(p.allowSelfAttach);
       traitPanel.add("Editor.Attachment.allow_self_attach", allowSelfAttachInput);
 
@@ -780,7 +801,8 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
           beforeAttachInput.setValue(option);
         }
       }
-      traitPanel.add("Editor.Attachment.before_attach", beforeAttachInput);
+      beforeAttachLabel = new JLabel(Resources.getString("Editor.Attachment.before_attach"));
+      traitPanel.add(beforeAttachLabel, beforeAttachInput);
 
       onAttachInput = new TranslatingStringEnumConfigurer(ON_ATTACH_OPTIONS, ON_ATTACH_KEYS);
       onAttachInput.setValue(ON_ATTACH_NOTHING);
@@ -789,33 +811,38 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
           onAttachInput.setValue(option);
         }
       }
-      traitPanel.add("Editor.Attachment.on_attach", onAttachInput);
+      onAttachLabel = new JLabel(Resources.getString("Editor.Attachment.on_attach"));
+      traitPanel.add(onAttachLabel, onAttachInput);
 
       attachCommandNameInput = new StringConfigurer(p.attachCommandName);
       attachCommandNameInput.setHintKey("Editor.menu_command_hint");
-      traitPanel.add("Editor.Attachment.attach_menu_command", attachCommandNameInput);
+      attachCommandNameLabel = new JLabel(Resources.getString("Editor.Attachment.attach_menu_command"));
+      traitPanel.add(attachCommandNameLabel, attachCommandNameInput);
 
       attachKeyInput = new NamedHotKeyConfigurer(p.attachKey);
-      traitPanel.add("Editor.Attachment.attach_key_command", attachKeyInput);
+      attachKeyLabel = new JLabel(Resources.getString("Editor.Attachment.attach_key_command"));
+      traitPanel.add(attachKeyLabel, attachKeyInput);
 
       targetConfig = new GlobalCommandTargetConfigurer(p.target);
-      traitPanel.add("Editor.GlobalKeyCommand.pre_select", targetConfig);
+      targetLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.pre_select"));
+      traitPanel.add(targetLabel, targetConfig);
 
       propertyMatch = new PropertyExpressionConfigurer(p.propertiesFilter);
-      traitPanel.add("Editor.GlobalKeyCommand.matching_properties", propertyMatch);
+      propertyLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.matching_properties"));
+      traitPanel.add(propertyLabel, propertyMatch);
 
       deckPolicy = new MassKeyCommand.DeckPolicyConfig(false);
       deckPolicy.setValue(p.globalAttach.getSelectFromDeckExpression());
-      traitPanel.add("Editor.GlobalKeyCommand.deck_policy", deckPolicy);
+      deckLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.deck_policy"));
+      traitPanel.add(deckLabel, deckPolicy);
 
       restrictRange = new BooleanConfigurer(p.restrictRange);
-      traitPanel.add("Editor.GlobalKeyCommand.restrict_range", restrictRange);
-      restrictRange.addPropertyChangeListener(pl);
+      restrictLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.restrict_range"));
+      traitPanel.add(restrictLabel, restrictRange);
 
       fixedRange = new BooleanConfigurer(p.fixedRange);
       fixedRangeLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.fixed_range"));
       traitPanel.add(fixedRangeLabel, fixedRange);
-      fixedRange.addPropertyChangeListener(pl);
 
       range = new IntConfigurer(p.range);
       rangeLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.range"));
@@ -833,24 +860,81 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
           onDetachInput.setValue(option);
         }
       }
-      traitPanel.add("Editor.Attachment.on_detach", onDetachInput);
+      onDetachLabel = new JLabel(Resources.getString("Editor.Attachment.on_detach"));
+      traitPanel.add(onDetachLabel, onDetachInput);
 
       clearAllCommandNameInput = new StringConfigurer(p.clearAllCommandName);
       clearAllCommandNameInput.setHintKey("Editor.menu_command_hint");
-      traitPanel.add("Editor.Attachment.clear_all_menu_command", clearAllCommandNameInput);
+      clearAllCommandNameLabel = new JLabel(Resources.getString("Editor.Attachment.clear_all_menu_command"));
+      traitPanel.add(clearAllCommandNameLabel, clearAllCommandNameInput);
 
       clearAllKeyInput = new NamedHotKeyConfigurer(p.clearAllKey);
-      traitPanel.add("Editor.Attachment.clear_all_key_command", clearAllKeyInput);
+      clearAllKeyLabel = new JLabel(Resources.getString("Editor.Attachment.clear_all_key_command"));
+      traitPanel.add(clearAllKeyLabel, clearAllKeyInput);
 
       clearMatchingCommandNameInput = new StringConfigurer(p.clearMatchingCommandName);
       clearMatchingCommandNameInput.setHintKey("Editor.menu_command_hint");
-      traitPanel.add("Editor.Attachment.clear_matching_menu_command", clearMatchingCommandNameInput);
+      clearMatchingCommandNameLabel = new JLabel(Resources.getString("Editor.Attachment.clear_matching_menu_command"));
+      traitPanel.add(clearMatchingCommandNameLabel, clearMatchingCommandNameInput);
 
       clearMatchingKeyInput = new NamedHotKeyConfigurer(p.clearMatchingKey);
-      traitPanel.add("Editor.Attachment.clear_matching_key_command", clearMatchingKeyInput);
+      clearMatchingKeyLabel = new JLabel(Resources.getString("Editor.Attachment.clear_matching_key_command"));
+      traitPanel.add(clearMatchingKeyLabel, clearMatchingKeyInput);
 
       clearMatchingMatch = new PropertyExpressionConfigurer(p.clearMatchingFilter);
-      traitPanel.add("Editor.Attachment.clear_matching_properties", clearMatchingMatch);
+      clearMatchingMatchLabel = new JLabel(Resources.getString("Editor.Attachment.clear_matching_properties"));
+      traitPanel.add(clearMatchingMatchLabel, clearMatchingMatch);
+
+      final PropertyChangeListener pl = evt -> {
+
+        final boolean isAuto = Boolean.TRUE.equals(autoAttachInput.getValue());
+        final boolean isRange = Boolean.TRUE.equals(restrictRange.getValue());
+        final boolean isFixed = Boolean.TRUE.equals(fixedRange.getValue());
+
+        range.getControls().setVisible(isRange && isFixed && !isAuto);
+        rangeLabel.setVisible(isRange && isFixed && !isAuto);
+        fixedRange.getControls().setVisible(isRange && !isAuto);
+        fixedRangeLabel.setVisible(isRange && !isAuto);
+        rangeProperty.getControls().setVisible(isRange && !isFixed && !isAuto);
+        rangePropertyLabel.setVisible(isRange && !isFixed && !isAuto);
+
+        beforeAttachInput.getControls().setVisible(!isAuto);
+        onAttachInput.getControls().setVisible(!isAuto);
+        attachCommandNameInput.getControls().setVisible(!isAuto);
+        attachKeyInput.getControls().setVisible(!isAuto);
+        targetConfig.getControls().setVisible(!isAuto);
+        propertyMatch.getControls().setVisible(!isAuto);
+        deckPolicy.getControls().setVisible(!isAuto);
+        restrictRange.getControls().setVisible(!isAuto);
+        onDetachInput.getControls().setVisible(!isAuto);
+        clearAllCommandNameInput.getControls().setVisible(!isAuto);
+        clearAllKeyInput.getControls().setVisible(!isAuto);
+        clearMatchingCommandNameInput.getControls().setVisible(!isAuto);
+        clearMatchingKeyInput.getControls().setVisible(!isAuto);
+        clearMatchingMatch.getControls().setVisible(!isAuto);
+
+        beforeAttachLabel.setVisible(!isAuto);
+        onAttachLabel.setVisible(!isAuto);
+        attachCommandNameLabel.setVisible(!isAuto);
+        attachKeyLabel.setVisible(!isAuto);
+        targetLabel.setVisible(!isAuto);
+        propertyLabel.setVisible(!isAuto);
+        deckLabel.setVisible(!isAuto);
+        restrictLabel.setVisible(!isAuto);
+        onDetachLabel.setVisible(!isAuto);
+        clearAllCommandNameLabel.setVisible(!isAuto);
+        clearAllKeyLabel.setVisible(!isAuto);
+        clearMatchingCommandNameLabel.setVisible(!isAuto);
+        clearMatchingKeyLabel.setVisible(!isAuto);
+        clearMatchingMatchLabel.setVisible(!isAuto);
+
+        repack(range);
+        repack(autoAttachInput);
+      };
+
+      autoAttachInput.addPropertyChangeListener(pl);
+      restrictRange.addPropertyChangeListener(pl);
+      fixedRange.addPropertyChangeListener(pl);
 
       pl.propertyChange(null);
     }
@@ -882,7 +966,8 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
         .append(onAttachInput.getValueString())
         .append(onDetachInput.getValueString())
         .append(beforeAttachInput.getValueString())
-        .append(allowSelfAttachInput.getValueString());
+        .append(allowSelfAttachInput.getValueString())
+        .append(autoAttachInput.getValueString());
       return ID + se.getValue();
     }
 
