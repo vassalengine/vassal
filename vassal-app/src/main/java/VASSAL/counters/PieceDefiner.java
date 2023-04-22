@@ -199,6 +199,7 @@ public class PieceDefiner extends JPanel {
     if (availableModel == null) {
       availableModel = new DefaultListModel<>();
       //addElement(new BasicPiece()); // Not needed since you can never add it
+      addElement(new Attachment());
       addElement(new BasicName());
       addElement(new BorderOutline());
       addElement(new Delete());
@@ -235,6 +236,7 @@ public class PieceDefiner extends JPanel {
       addElement(new Marker());
       addElement(new DynamicProperty());
       addElement(new CalculatedProperty());
+      addElement(new SetAttachmentProperty());
       addElement(new SetGlobalProperty());
       addElement(new Deselect());
       addElement(new TranslatableMessage());

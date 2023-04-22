@@ -124,6 +124,11 @@ public class GameState implements CommandEncoder {
   protected String loadComments;
   protected boolean loadingInBackground = false;
   private boolean fastForwarding = false;
+  private final AttachmentManager attachmentManager = new AttachmentManager();
+
+  public AttachmentManager getAttachmentManager() {
+    return attachmentManager;
+  }
 
   /**
    * @return true if currently loading in background
@@ -428,6 +433,15 @@ public class GameState implements CommandEncoder {
    */
   private boolean applyStartupGlobalKeyCommands(AbstractBuildable target, boolean playerChange) {
     boolean any = false;
+
+    // Ensure auto-attachments all connected (doing it here ensures any SetupStack pieces with Attachment traits
+    // get their auto-attach processed before any actual SGKCs are executed).
+    final Command c = attachmentManager.doAutoAttachments();
+    if ((c != null) && !c.isNull()) {
+      GameModule.getGameModule().sendAndLog(c);
+      any = true;
+    }
+
     for (final Buildable b : target.getBuildables()) {
       if (b instanceof StartupGlobalKeyCommand) {
         if (playerChange) {
@@ -552,6 +566,7 @@ public class GameState implements CommandEncoder {
     lastSaveFile = null;
 
     if (gameStarted) {
+      attachmentManager.clearAll();
       if (gameStarting) {
         // Things that we invokeLater
         SwingUtilities.invokeLater(fastForwarding ? () -> {
@@ -1094,6 +1109,7 @@ public class GameState implements CommandEncoder {
     if (p.getId() == null) {
       p.setId(getNewPieceId());
     }
+    attachmentManager.pieceAdded(p);
     pieces.put(p.getId(), p);
   }
 
@@ -1110,6 +1126,12 @@ public class GameState implements CommandEncoder {
   public void removePiece(String id) {
     if (id != null) {
       pieces.remove(id);
+    }
+  }
+
+  public void removePiece(GamePiece piece) {
+    if (piece != null) {
+      removePiece(piece.getId());
     }
   }
 

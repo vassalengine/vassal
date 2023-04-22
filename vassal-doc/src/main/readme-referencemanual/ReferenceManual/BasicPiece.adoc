@@ -41,6 +41,7 @@ _Choosing an image that has already been loaded into the module._
 
 The following <<Properties.adoc#top,Properties>> are defined in a Basic Piece, meaning that any trait in the piece can refer to them:
 
+[#properties]
 * _BasicName_ contains the name of Basic Piece trait. Can be overridden by adding a <<BasicName.adoc#top, Basic Name>> trait to the piece.
 * _PieceName_ contains the full name of the piece, including any additional strings added by e.g.
 <<Layer.adoc#top,Layer>> or <<Label.adoc#top,Text Label>> traits (Note the distinction from the use of $pieceName$ with lowercase p _inside_ the <<TextLabel.adoc#top,Text Label>> trait and in a <<Map.adoc#top, Map's>> movement report fields -- those are similar but separate uses specific to those situations. The general-purpose property for a piece's traits to use to get the piece's own full name, as well as for <<PropertyMatchExpression.adoc#top, Property Match Expressions>> selecting for target pieces in a <<GlobalKeyCommand.adoc#top, Global Key Command>>, is _PieceName_ with the capital P).

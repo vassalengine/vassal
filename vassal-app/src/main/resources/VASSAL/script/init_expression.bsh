@@ -111,6 +111,71 @@ CountStack(String property) {
 
 
 /**
+ * Callback to Vassal to find the highest value of a named property
+ * among all counters attached through a named Attachment trait.
+ * Returns 0 if no counters are attached.
+ *
+ * Example: MaxAttachment("Sibling", "Strength")
+ */
+MaxAttachment(String attachment, String property) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.maxAttachment(attachment, property, _source));
+}
+
+/**
+ * Callback to Vassal to find the lowest value of a named property
+ * among all counters attached through a named Attachment trait.
+ * Returns 0 if no counters are attached.
+ *
+ * Example: MinAttachment("Sibling", "Strength")
+ */
+MinAttachment(String attachment, String property) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.minAttachment(attachment, property, _source));
+}
+
+
+/**
+ * Callback to Vassal to sum the value of a named property in all
+ * counters attached through a named Attachment trait
+ *
+ * Example: SumAttachment("Sibling", "Strength")
+ */
+SumAttachment(String attachment, String property) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.sumAttachment(attachment, property, _source));
+}
+
+/**
+ * Callback to Vassal to count the number of pieces attached through
+ * the named Attachment trait which *contain* the target property
+ *
+ * Example: CountAttachment("Sibling", "Strength")
+ */
+CountAttachment(String attachment, String property) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.countAttachment(attachment, property, _source));
+}
+
+
+/**
+ * Callback to Vassal to count the number of pieces attached through
+ * the named Attachment trait which pass the property match expression
+ *
+ * Example: CountAttachment("Sibling", "{ Strength > 1 }")
+ */
+CountAttachmentExpression(String attachment, String expression) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.countAttachmentExpression(attachment, expression, _source));
+}
+
+
+/**
  * Callback to Vassal to sum the value of a property in all
  * counters that include a Mat and its MatCargo
  *
@@ -217,6 +282,18 @@ GetMapProperty(String propertyName, String mapName) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
   return unwrap(_interp.getMapProperty(propertyName, mapName));
+}
+
+GetAttachmentProperty(String attachmentName, String propertyName, String index) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.getAttachmentProperty(attachmentName, propertyName, index, _source));
+}
+
+GetAttachmentProperty(String attachmentName, String propertyName) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.getAttachmentProperty(attachmentName, propertyName, 1, _source));
 }
 
 /** 

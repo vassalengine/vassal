@@ -29,11 +29,13 @@ import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.command.AddPiece;
 import VASSAL.command.AlertCommand;
+import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.command.NullCommand;
 import VASSAL.command.RemovePiece;
 import VASSAL.configure.ConfigurerLayout;
+import VASSAL.counters.Attachment;
 import VASSAL.counters.Deck;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
@@ -70,6 +72,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -104,6 +107,10 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
   public List<DrawPile> getModuleDrawPiles() {
     return theModule.getAllDescendantComponentsOf(DrawPile.class);
   }
+
+  final java.util.Map<GamePiece, GamePiece> updatedPieces = new HashMap<>();      //BR// maps old pieces to new pieces
+  final java.util.Map<GamePiece, GamePiece> formerPieces = new HashMap<>();       //BR// maps new pieces to old pieces
+  final java.util.Map<String, List<GamePiece>> attachmentIndex = new HashMap<>(); //BR// maps old attachment traits to their original targets
 
   public GameRefresher(GpIdSupport gpIdSupport) {
     this.gpIdSupport = gpIdSupport;
@@ -331,12 +338,14 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     /*
      * And refresh them. Keep a list of the Decks in case we need to update their attributes
      */
+    indexAllAttachments();
     for (final Refresher refresher : refreshables) {
       refresher.refresh(command);
       if (refresher instanceof DeckRefresher) {
         decks.add(((DeckRefresher) refresher).getDeck());
       }
     }
+    refreshAllAttachments(command);
 
     log(Resources.getString("GameRefresher.run_refresh_counters_v3", theModule.getGameVersion()));
     log(Resources.getString("GameRefresher.counters_refreshed", updatedCount));
@@ -518,6 +527,118 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
         log(Resources.getString(options.contains("DeleteOldDecks") ? "GameRefresher.deletable_decks" : "GameRefresher.deletable_decks_2", deletable)); //NON-NLS
         log(Resources.getString(options.contains("AddNewDecks") ? "GameRefresher.addable_decks" : "GameRefresher.addable_decks_2", addable)); //NON-NLS
       }
+    }
+  }
+
+
+  /**
+   * Before refreshing, we need to go through every piece & commemorate all the Attachment trait relationships, since they contain direct references to other GamePieces, and all of the references are
+   * about to be jumbled/invalidated when new updated versions of pieces are created.
+   *
+   * attachmentIndex maps the old attachments (using a reference hash of the outermost piece's Unique ID plus the notionally unique Attachment Name) to the list of attachments (which are the actual old gamepieces)
+   * updatedPieces (which will be created during the piece Refresh) is a forward mapping of old pieces (outermost pieces) to their replacement pieces
+   * formerPieces (also created during the piece Refresh) is a backward mapping of replacement pieces (again outermost pieces) to their original old pieces
+   */
+  public void indexAllAttachments() {
+    updatedPieces.clear();
+    formerPieces.clear();
+    attachmentIndex.clear();
+
+    //BR// Now find any Attachment traits and update them
+    if (!isTestMode()) {
+      for (final Map map : Map.getMapList()) {
+        // All the pieces on each map, one by one
+        for (final GamePiece piece : map.getAllPieces()) {
+          if (piece instanceof Stack) {
+            for (final GamePiece p : ((Stack)piece).asList()) {
+              indexAttachment(p);
+            }
+          }
+          else {
+            indexAttachment(piece);
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Index any attachments in this piece, storing a list of the attachments' contents, each under a hash made by taking the outermost piece's Unique ID and adding the notionally unique Attachment Name
+   * @param piece outer piece to be indexed
+   */
+  public void indexAttachment(GamePiece piece) {
+    final GamePiece outer = piece;
+    while (piece instanceof Decorator) {
+      if (piece instanceof Attachment) {
+        final Attachment attachment = (Attachment)piece;
+        final String attachHash = outer.getId() + attachment.getAttachName();
+        attachmentIndex.put(attachHash, attachment.getContents());
+      }
+      piece = ((Decorator) piece).getInner();
+    }
+  }
+
+  /**
+   * AFTER the piece refresh, we now need to go through and restore all the broken Attachment mappings using the indices we created.
+   */
+  public void refreshAllAttachments(Command command) {
+    //BR// Now find any Attachment traits and update them
+    if (!isTestMode()) {
+      for (final Map map : Map.getMapList()) {
+        // All the pieces on each map, one by one
+        for (final GamePiece piece : map.getAllPieces()) {
+          if (piece instanceof Stack) {
+            for (final GamePiece p : ((Stack)piece).asList()) {
+              refreshAttachment(p, command);
+            }
+          }
+          else {
+            refreshAttachment(piece, command);
+          }
+        }
+      }
+
+      command.append(GameModule.getGameModule().getGameState().getAttachmentManager().doAutoAttachments());
+    }
+
+    // We're done with these, clean up the garbage
+    attachmentIndex.clear();
+    updatedPieces.clear();
+    formerPieces.clear();
+  }
+
+  /**
+   * For each *new* outermost piece that has Attachments, we look up the *old* outermost piece, and use its Unique ID plus each Attachment trait's name as a lookup hash
+   * to find the old list of contents. Then since the old list of contents is references to old versions of pieces, we use the "updatedPieces" index
+   * to look up the new pieces and create a new set of contents for the trait.
+   * @param piece
+   * @param command
+   */
+  public void refreshAttachment(GamePiece piece, Command command) {
+    while (piece instanceof Decorator) {
+      if (piece instanceof Attachment) {
+        final Attachment attachment = (Attachment)piece;
+        // Find the *old* outermost piece that was associated with this new one
+        final GamePiece oldOuter = formerPieces.get(Decorator.getOutermost(piece));
+        if (oldOuter != null) {
+          // Lookup hash is our *old* outermost piece's Unique ID plus the attachment name
+          final String attachHash = oldOuter.getId() + attachment.getAttachName();
+          final List<GamePiece> oldContents = attachmentIndex.get(attachHash);
+          final List<GamePiece> newContents = new ArrayList<>();
+
+          // For each piece in the old contents list we've retrieved, look up the corresponding *new* piece, making a new contents list for our Attachment trait
+          for (final GamePiece target : oldContents) {
+            final GamePiece updated = updatedPieces.get(target);
+            newContents.add((updated != null) ? updated : target);
+          }
+
+          // Apply the new attachment contents
+          final ChangeTracker ct = new ChangeTracker(attachment);
+          attachment.setContents(newContents);
+          command = command.append(ct.getChangeCommand());
+        }
+      }
+      piece = ((Decorator) piece).getInner();
     }
   }
 
@@ -805,7 +926,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       // Remove any existing cargo
       command = command.append(getMat().makeRemoveAllCargoCommand());
 
-      // Refresh the Mat piece
+  // Refresh the Mat piece
       final PieceRefresher pr = new PieceRefresher(getMatPiece(), true);
       pr.refresh(command);
       final GamePiece newMatPiece = pr.getRefreshedPieces().get(0);
@@ -905,6 +1026,8 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
         // Keep a list of the new pieces to add back into the Deck
         refreshedPieces.add(newPiece);
+        updatedPieces.put(piece, newPiece);
+        formerPieces.put(newPiece, piece);
 
         // Add the new pieces back into the GameState
         final Command add = new AddPiece(newPiece);
@@ -1002,6 +1125,8 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
         // Keep a list of the new pieces to add back into the Deck
         refreshedPieces.add(newPiece);
+        updatedPieces.put(piece, newPiece);
+        formerPieces.put(newPiece, piece);
 
         // Add the new pieces back into the GameState
         final Command add = new AddPiece(newPiece);
@@ -1098,6 +1223,9 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
           refreshedPiece = piece;
         }
 
+        updatedPieces.put(piece, refreshedPiece);
+        formerPieces.put(refreshedPiece, piece);
+
         // Add the new pieces back into the GameState
         final Command add = new AddPiece(refreshedPiece);
         add.execute();
@@ -1108,7 +1236,6 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       }
 
       map.getPieceCollection().moveToFront(refreshedPiece);
-
     }
   }
 }
