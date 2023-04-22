@@ -29,6 +29,7 @@ import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.command.AddPiece;
 import VASSAL.command.AlertCommand;
+import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.command.NullCommand;
@@ -344,7 +345,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
         decks.add(((DeckRefresher) refresher).getDeck());
       }
     }
-    refreshAllAttachments();
+    refreshAllAttachments(command);
 
     log(Resources.getString("GameRefresher.run_refresh_counters_v3", theModule.getGameVersion()));
     log(Resources.getString("GameRefresher.counters_refreshed", updatedCount));
@@ -580,7 +581,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
   /**
    * AFTER the piece refresh, we now need to go through and restore all the broken Attachment mappings using the indices we created.
    */
-  public void refreshAllAttachments() {
+  public void refreshAllAttachments(Command command) {
     //BR// Now find any Attachment traits and update them
     if (!isTestMode()) {
       for (final Map map : Map.getMapList()) {
@@ -588,18 +589,16 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
         for (final GamePiece piece : map.getAllPieces()) {
           if (piece instanceof Stack) {
             for (final GamePiece p : ((Stack)piece).asList()) {
-              refreshAttachment(p);
+              refreshAttachment(p, command);
             }
           }
           else {
-            refreshAttachment(piece);
+            refreshAttachment(piece, command);
           }
         }
       }
 
-      // Since we just re-created a bunch of pieces the Attachment Manager will have a huge list. Clear it -- since
-      // we presumably just restored everyone's attachments anyway, it shouldn't need to run.
-      GameModule.getGameModule().getGameState().getAttachmentManager().clearNew();
+      command.append(GameModule.getGameModule().getGameState().getAttachmentManager().doAutoAttachments());
     }
 
     // We're done with these, clean up the garbage
@@ -613,8 +612,9 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
    * to find the old list of contents. Then since the old list of contents is references to old versions of pieces, we use the "updatedPieces" index
    * to look up the new pieces and create a new set of contents for the trait.
    * @param piece
+   * @param command
    */
-  public void refreshAttachment(GamePiece piece) {
+  public void refreshAttachment(GamePiece piece, Command command) {
     while (piece instanceof Decorator) {
       if (piece instanceof Attachment) {
         final Attachment attachment = (Attachment)piece;
@@ -633,7 +633,9 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
           }
 
           // Apply the new attachment contents
+          final ChangeTracker ct = new ChangeTracker(attachment);
           attachment.setContents(newContents);
+          command = command.append(ct.getChangeCommand());
         }
       }
       piece = ((Decorator) piece).getInner();
