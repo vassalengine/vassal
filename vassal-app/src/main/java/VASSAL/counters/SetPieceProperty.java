@@ -342,14 +342,6 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
       nameConfig.setHintKey("Editor.SetPieceProperty.property_name_hint");
       controls.add("Editor.SetPieceProperty.property_name", nameConfig);
 
-      attachNameConfig = new FormattedExpressionConfigurer(m.attachName, (EditablePiece) m);
-      attachNameConfig.setHintKey("Editor.SetPieceProperty.attach_name_hint");
-      controls.add("Editor.SetPieceProperty.attach_name", attachNameConfig);
-
-      attachIndexConfig = new FormattedExpressionConfigurer(m.attachIndex, (EditablePiece) m);
-      attachIndexConfig.setHintKey("Editor.SetPieceProperty.attach_index_hint");
-      controls.add("Editor.SetPieceProperty.attach_index", attachIndexConfig);
-
       numericConfig = new BooleanConfigurer(m.isNumeric());
       controls.add("Editor.DynamicProperty.is_numeric", numericConfig);
 
@@ -364,6 +356,10 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
       wrapLabel  = new JLabel(Resources.getString("Editor.DynamicProperty.wrap"));
       wrapConfig = new BooleanConfigurer(m.isWrap());
       controls.add(wrapLabel, wrapConfig);
+
+
+
+
 
       controls.add("Editor.DynamicProperty.key_commands", keyCommandListConfig);
 
