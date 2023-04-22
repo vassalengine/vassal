@@ -18,17 +18,6 @@
 
 package VASSAL.counters;
 
-import VASSAL.i18n.Resources;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.util.Arrays;
-import java.util.List;
-
-import java.util.Objects;
-import javax.swing.KeyStroke;
-
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.AddPiece;
@@ -36,9 +25,19 @@ import VASSAL.command.Command;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
+
+import javax.swing.KeyStroke;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * This trait adds a command that creates a duplicate of the selected Gamepiece
@@ -115,6 +114,9 @@ public class Clone extends Decorator implements TranslatablePiece {
         c.append(getMap().placeOrMerge(newPiece, outer.getPosition()));
         KeyBuffer.getBuffer().remove(outer);
         KeyBuffer.getBuffer().add(newPiece);
+
+        // Handles any auto-attachment traits in newly created pieces
+        c = c.append(GameModule.getGameModule().getGameState().getAttachmentManager().doAutoAttachments());
       }
     }
     return c;
