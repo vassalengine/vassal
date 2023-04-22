@@ -126,6 +126,10 @@ public class GameState implements CommandEncoder {
   private boolean fastForwarding = false;
   private final AttachmentManager attachmentManager = new AttachmentManager();
 
+  public AttachmentManager getAttachmentManager() {
+    return attachmentManager;
+  }
+
   /**
    * @return true if currently loading in background
    */
@@ -429,6 +433,15 @@ public class GameState implements CommandEncoder {
    */
   private boolean applyStartupGlobalKeyCommands(AbstractBuildable target, boolean playerChange) {
     boolean any = false;
+
+    // Ensure auto-attachments all connected (doing it here ensures any SetupStack pieces with Attachment traits
+    // get their auto-attach processed before any actual SGKCs are executed).
+    final Command c = attachmentManager.doAutoAttachments();
+    if ((c != null) && !c.isNull()) {
+      GameModule.getGameModule().sendAndLog(c);
+      any = true;
+    }
+
     for (final Buildable b : target.getBuildables()) {
       if (b instanceof StartupGlobalKeyCommand) {
         if (playerChange) {

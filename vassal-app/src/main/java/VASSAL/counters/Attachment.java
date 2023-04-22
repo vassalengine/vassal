@@ -145,6 +145,10 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     return autoAttach;
   }
 
+  public boolean isAllowSelfAttach() {
+    return allowSelfAttach;
+  }
+
   @Override
   public void mySetType(String type) {
     type = type.substring(ID.length());
