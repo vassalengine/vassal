@@ -144,10 +144,4 @@
         <justification>Kept for VASL 6.6.2 compatibility; no longer needed.</justification>
     </difference>
 
-    <difference>
-        <className>VASSAL/launch/DebugClassLoader</className>
-        <differenceType>8001</differenceType>
-        <justification>Never released</justification>
-    </difference>
-
 </differences>
