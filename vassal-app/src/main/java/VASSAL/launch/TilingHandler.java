@@ -51,7 +51,6 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -77,11 +76,6 @@ public class TilingHandler {
   protected final Dimension tdim;
   protected final int maxheap_limit;
 
-  // Needed for VASL. Remove sometime after VASL 6.6.2
-  @Deprecated(since = "2021-12-01", forRemoval = true)
-  @SuppressWarnings("PMD.FinalFieldCouldBeStatic")
-  protected final int pid = 42;
-
   /**
    * Creates a {@code TilingHandler}.
    *
@@ -94,17 +88,6 @@ public class TilingHandler {
     this.cdir = cdir;
     this.tdim = tdim;
     this.maxheap_limit = mhlim;
-  }
-
-  /**
-   * @deprecated Retained for VASL compatibility. Remove sometime after
-   * VASL 6.6.2.
-   */
-  @Deprecated(since = "2021-12-01", forRemoval = true)
-  @SuppressWarnings("PMD.UnusedFormalParameter")
-  public TilingHandler(String aname, File cdir,
-                       Dimension tdim, int mhlim, int pid) {
-    this(aname, cdir, tdim, mhlim);
   }
 
   protected boolean isFresh(
@@ -167,6 +150,10 @@ public class TilingHandler {
     }
   }
 
+  protected Iterable<String> getImagePaths(DataArchive archive) throws IOException {
+    return archive.getImageNameSet(true, true);
+  }
+
   protected Pair<Integer, Integer> findImages(
     DataArchive archive,
     FileStore tcache,
@@ -174,14 +161,13 @@ public class TilingHandler {
     List<Pair<String, IOException>> failed) throws IOException {
 
     // build a list of all multi-tile images and count tiles
-    final Set<String> images = archive.getImageNameSet(true, true);
 
     int maxpix = 0; // number of pixels in the largest image
     int tcount = 0; // tile count
 
     final FileArchive fa = archive.getArchive();
 
-    for (final String ipath : images) {
+    for (final String ipath : getImagePaths(archive)) {
       final Dimension idim;
       try {
         idim = getImageSize(archive, ipath);
