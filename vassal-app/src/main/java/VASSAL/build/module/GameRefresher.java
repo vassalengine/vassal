@@ -596,6 +596,10 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
           }
         }
       }
+
+      // Since we just re-created a bunch of pieces the Attachment Manager will have a huge list. Clear it -- since
+      // we presumably just restored everyone's attachments anyway, it shouldn't need to run.
+      GameModule.getGameModule().getGameState().getAttachmentManager().clearNew();
     }
 
     // We're done with these, clean up the garbage
