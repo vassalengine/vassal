@@ -64,6 +64,7 @@ public class AttachmentManager {
 
         final String attachName = attach.getAttachName();
         final List<Attachment> siblings = attachments.get(attachName);
+        if (siblings == null) continue;
 
         for (final Attachment sibling : siblings) {
           final GamePiece outer = Decorator.getOutermost(sibling);
@@ -98,13 +99,13 @@ public class AttachmentManager {
     for (final GamePiece piece : myAttachments) {
       final Attachment attachment = (Attachment) piece;
 
-      final String attachId = attachment.getAttachName();
-      List<Attachment> currentAttachments = attachments.get(attachId);
+      final String attachName = attachment.getAttachName();
+      List<Attachment> currentAttachments = attachments.get(attachName);
       if (currentAttachments == null) {
         currentAttachments = new ArrayList<>();
       }
       currentAttachments.add(attachment);
-      attachments.put(attachId, currentAttachments);
+      attachments.put(attachName, currentAttachments);
     }
   }
 
