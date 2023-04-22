@@ -1,5 +1,6 @@
 3.6.17 - ???
 
+* 12250: Adjusted TilingHandler to simplify VASL and VSQL custom tilers
 * 12248: Don't NPE when handling setup errors
 * 12247: Fix error dialog broken since 3.6.15 for exceptions with null messages
 * 12238: Upgrade bundled Java from 19 to 20

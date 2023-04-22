@@ -29,6 +29,7 @@
         { "num": 12233, "desc": "Ensure that OpMultiResolutionImage.getBaseImage() never returns null" }
       ],
       "other_improvements": [
+        { "num": 12250, "desc": "Adjusted TilingHandler to simplify VASL and VSQL custom tilers" },
         { "num": 12238, "desc": "Upgrade bundled Java from 19 to 20" }
       ]
     },
