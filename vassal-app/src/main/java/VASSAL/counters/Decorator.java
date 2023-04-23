@@ -561,16 +561,11 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
   public static List<GamePiece> getDecorators(GamePiece p, Class<?> type) {
     final ArrayList<GamePiece> list = new ArrayList<>();
     GamePiece piece = p;
-    while (piece != null) {
+    while (piece instanceof Decorator) {
       if (type.isInstance(piece)) {
         list.add(piece);
       }
-      if (piece instanceof BasicPiece) {
-        piece = null;
-      }
-      else {
-        piece = getDecorator(piece, type);
-      }
+      piece = ((Decorator) piece).getInner();
     }
     return list;
   }
