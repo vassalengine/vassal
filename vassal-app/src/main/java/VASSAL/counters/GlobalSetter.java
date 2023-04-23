@@ -29,10 +29,10 @@ import javax.swing.KeyStroke;
  * Variant on GlobalCommand for use with SetPieceProperty -- instead of sending a key, finds pieces and sets their properties
  */
 public class GlobalSetter extends GlobalCommand {
-  private SetPieceProperty setTrait;
+  private final SetPieceProperty setTrait;
 
   public GlobalSetter(SetPieceProperty s, PropertySource ps) {
-    super(s, null);
+    super(s, ps);
     setTrait = s;
   }
 

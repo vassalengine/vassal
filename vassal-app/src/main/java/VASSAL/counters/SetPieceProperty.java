@@ -44,6 +44,7 @@ import org.apache.commons.lang3.StringUtils;
 import javax.swing.JLabel;
 import javax.swing.KeyStroke;
 import java.awt.Component;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -59,9 +60,6 @@ import java.util.Objects;
 public class SetPieceProperty extends DynamicProperty implements RecursionLimiter.Loopable {
   protected PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
   public static final String ID = "setpieceprop;"; // NON-NLS
-  public static final String INDEX_PROP = "AttachmentIndex"; //NON-NLS
-  public static final String ATTACH_PROP = "AttachmentName"; //NON-NLS
-  public static final String ATTACH_BASIC = "AttachmentBasicName"; //NON-NLS
   protected String description;
 
   protected GlobalCommandTarget target;
@@ -100,6 +98,7 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
   @Override
   public void mySetType(String s) {
 
+    // Because DynamicProperty's constructor calls mySetType, we have to put these initializations here rather than w/ the declarations
     if (target == null) {
       target = new GlobalCommandTarget(GlobalCommandTarget.GKCtype.COUNTER);
     }
@@ -223,10 +222,16 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
     return HelpFile.getReferenceManualPage("SetPieceProperty.html"); // NON-NLS
   }
 
+  // These are used to provide makeSetTargetCommand with the context of what we're doing up in myKeyEvent
   private String propName;
   private PropertyChanger changer = null;
   private String newValue = null;
 
+  /**
+   * Our filter has found a matching piece. Check it for a matching Dynamic Property and if found apply our setter.
+   * @param p Piece to check for matching Dynamic Properties
+   * @return command to reproduce any work we do here
+   */
   public Command makeSetTargetCommand(GamePiece p) {
     Command comm = new NullCommand();
 
@@ -271,13 +276,13 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
     Command comm = new NullCommand();
     for (final DynamicKeyCommand keyCommand : keyCommands) {
       if (keyCommand.matches(stroke)) {
-        propName = (new FormattedString(key)).getText(Decorator.getOutermost(this), this, "Editor.DynamicProperty.property_name");
-
-        changer = keyCommand.propChanger;
+        // Evaluate the property name expression & initialize the context information for makeSetTargetCommand
+        propName = (new FormattedString(key)).getText(Decorator.getOutermost(this), this, "Editor.SetPieceProperty.property_name");
+        changer  = keyCommand.propChanger;
         newValue = null;
 
         // Make piece properties filter
-        final AuditTrail audit = AuditTrail.create(this, propertiesFilter.getExpression(), Resources.getString("Editor.GlobalKeyCommand.matching_properties"));
+        final AuditTrail audit = AuditTrail.create(this, propertiesFilter.getExpression(), Resources.getString("Editor.SetPieceProperty.matching_properties"));
         PieceFilter filter = propertiesFilter.getFilter(outer, this, audit);
 
         // Make a range filter if applicable
@@ -295,7 +300,7 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
           filter = new BooleanAndPieceFilter(filter, new RangeFilter(getMap(), getPosition(), r));
         }
 
-        // Now apply our filter globally & add any matching pieces as attachments
+        // Now apply our filter globally -- we will get callbacks to our makeSetTargetCommand method
         comm = comm.append(globalSetter.apply(Map.getMapList().toArray(new Map[0]), filter, target, audit));
 
         return comm;
@@ -360,7 +365,6 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
     protected JLabel deckLabel;
     protected JLabel restrictLabel;
 
-
     public Ed(final SetPieceProperty m) {
       keyCommandListConfig = new DynamicKeyCommandListConfigurer(null, Resources.getString("Editor.DynamicProperty.commands"), m);
       keyCommandListConfig.setValue(new ArrayList<>(Arrays.asList(m.keyCommands)));
@@ -389,7 +393,6 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
       wrapLabel  = new JLabel(Resources.getString("Editor.DynamicProperty.wrap"));
       wrapConfig = new BooleanConfigurer(m.isWrap());
       controls.add(wrapLabel, wrapConfig);
-
 
       targetConfig = new GlobalCommandTargetConfigurer(m.target);
       targetLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.pre_select"));
@@ -421,7 +424,6 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
       rangePropertyLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.range_property"));
       controls.add(rangePropertyLabel, rangeProperty);
 
-
       controls.add("Editor.DynamicProperty.key_commands", keyCommandListConfig);
 
       numericConfig.addPropertyChangeListener(evt -> {
@@ -436,6 +438,26 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
       });
 
       numericConfig.fireUpdate();
+
+      final PropertyChangeListener pl = evt -> {
+
+        final boolean isRange = Boolean.TRUE.equals(restrictRange.getValue());
+        final boolean isFixed = Boolean.TRUE.equals(fixedRange.getValue());
+
+        range.getControls().setVisible(isRange && isFixed);
+        rangeLabel.setVisible(isRange && isFixed);
+        fixedRange.getControls().setVisible(isRange);
+        fixedRangeLabel.setVisible(isRange);
+        rangeProperty.getControls().setVisible(isRange && !isFixed);
+        rangePropertyLabel.setVisible(isRange && !isFixed);
+
+        repack(range);
+      };
+
+      restrictRange.addPropertyChangeListener(pl);
+      fixedRange.addPropertyChangeListener(pl);
+
+      pl.propertyChange(null);
     }
 
     @Override
