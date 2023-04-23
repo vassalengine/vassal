@@ -623,19 +623,21 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
         if (oldOuter != null) {
           // Lookup hash is our *old* outermost piece's Unique ID plus the attachment name
           final String attachHash = oldOuter.getId() + attachment.getAttachName();
-          final List<GamePiece> oldContents = attachmentIndex.get(attachHash);
           final List<GamePiece> newContents = new ArrayList<>();
+          final List<GamePiece> oldContents = attachmentIndex.get(attachHash);
 
-          // For each piece in the old contents list we've retrieved, look up the corresponding *new* piece, making a new contents list for our Attachment trait
-          for (final GamePiece target : oldContents) {
-            final GamePiece updated = updatedPieces.get(target);
-            newContents.add((updated != null) ? updated : target);
+          if (oldContents != null) {
+            // For each piece in the old contents list we've retrieved, look up the corresponding *new* piece, making a new contents list for our Attachment trait
+            for (final GamePiece target : oldContents) {
+              final GamePiece updated = updatedPieces.get(target);
+              newContents.add((updated != null) ? updated : target);
+            }
+
+            // Apply the new attachment contents
+            final ChangeTracker ct = new ChangeTracker(attachment);
+            attachment.setContents(newContents);
+            command = command.append(ct.getChangeCommand());
           }
-
-          // Apply the new attachment contents
-          final ChangeTracker ct = new ChangeTracker(attachment);
-          attachment.setContents(newContents);
-          command = command.append(ct.getChangeCommand());
         }
       }
       piece = ((Decorator) piece).getInner();
