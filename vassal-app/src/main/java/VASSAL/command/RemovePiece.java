@@ -81,7 +81,7 @@ public class RemovePiece extends Command {
       m.repaint(r);
     }
 
-    GameModule.getGameModule().getGameState().removePiece(target.getId());
+    GameModule.getGameModule().getGameState().removePiece(target);
     KeyBuffer.getBuffer().remove(target);
   }
 

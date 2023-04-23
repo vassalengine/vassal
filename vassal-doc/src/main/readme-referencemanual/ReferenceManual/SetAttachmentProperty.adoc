@@ -26,13 +26,15 @@ simply listed by name, but several other possibilities are available:
 +
 * An expression resulting in the value _true_ and in which the name of the target attachment being considered is available as the local property _AttachmentName_, so for example _{ AttachmentName.contains("ammo") }_ would succeed for any attachment name that contained the string _ammo_.
 
-*Attachment Index:*::  Matches attached pieces with a specific index. Indices start at 1. The index number can simply be designated, or several other formats can be used:
+*Attachment Basic Name or Index:*::  Matches attached pieces with a specific index. Indices start at 1. The index number can simply be designated, or several other formats can be used:
 +
 * Leaving this field blank matches _all_ attached pieces on any matching Attachment trait(s), as does index "0". This does indeed mean that the property values of multiple attached pieces could be altered by a single execution of this trait.
 +
-* A specific index number can be computed with a numerical expression, e.g. _{ Which + 2 }_
+* A specific index number can be computed with a numerical expression, e.g. _2_ or _{ Which + 2 }_
 +
-* An expression resulting in the value _true_ and in which the index of the target attachment being considered is available as the local property _AttachmentIndex_, so for example _{ AttachMentIndex > 3}_
+* A specific BasicName can be computed with a string expression and will match with an attachment that has that BasicName property, e.g. _{ "Victory Points" }_
++
+* An expression resulting in the value _true_ and in which the index of the target attachment being considered is available as the local property _AttachmentIndex_ and its BasicName property is available as _AttachmentBasicName_, so for example _{ AttachmentIndex > 3}_ or _{ AttachmentBasicName.contains("Front") }_. *NOTE:* Such expressions can result in _multiple_ attachments having their properties set, if multiple attachments match the criteria.
 
 *Is numeric:*:: If true, then changes to the value of the property by this trait will be restricted to integer values.
 

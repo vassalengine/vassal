@@ -26,7 +26,7 @@ This <<GamePiece.adoc#Traits,Trait>> adds an action that creates a lasting "atta
 * While a single piece can contain one _or more_ Attachment traits, all of an individual piece's Attachment traits should have different names (no single piece should have two Attachment traits with the same name).
 * Two pieces, each with an Attachment trait sharing the same _Attachment Name_ can form a mutual attachment
 * Pieces which are deleted from the game are automatically removed as attachments.
-* The _GetAttachmentProperty(attachmentName,propertyName,attachmentIndex)_ function can be used in expressions to read the values of Dynamic Properties on attached pieces.
+* The _GetAttachmentProperty(attachmentName,propertyName,attachmentIndexOrBasicName)_ function can be used in expressions to read the values of Dynamic Properties on attached pieces. Indices start at 1, or you can pass the <<BasicPiece.adoc#properties,_BasicName_>> you wish to find among the attachments.
 * A <<SetAttachmentProperty.adoc#top,Set Attachment Property>> trait can be used to change the values of Dynamic Properties on attached pieces.
 
 [width="100%",cols="50%a,^50%a",]
@@ -34,6 +34,8 @@ This <<GamePiece.adoc#Traits,Trait>> adds an action that creates a lasting "atta
 |*Attachment Name:*:: The name for this Attachment trait. This name can be used by the piece to read properties from attached pieces. For example if the Attachment name were _Sibling_, then the property _Sibling_LocationName_ would contain the _LocationName_ property of the first currently attached piece.
 
 *Description:*::  A short description of this trait for your own reference.
+
+*Auto-attach to all pieces with identical attachment name:*::  If selected, the piece will automatically attach itself to other pieces which have an _Attachment_ trait with an identical attachment name; this can be used to easily and quickly attach pieces together. When selected, none of the advanced options for attaching and detaching pieces will be displayed. When this option _not_ selected, the advanced options for attaching and detaching pieces will be shown.
 
 *Allow attachment to self:*::  If selected, the attachment is allowed to attach to _this piece_ (i.e. itself) if conditions are otherise met. If not selected, the Attachment will never attach to itself in any circumstances.
 

@@ -444,8 +444,10 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     return map == null ? wrap("") : wrap((String) map.getProperty(propertyName));
   }
 
-  public Object getAttachmentProperty(String attachment, String property, int index, PropertySource ps) {
+  public Object getAttachmentProperty(String attachment, String property, String indexOrName, PropertySource ps) {
     ps = translatePiece(ps);
+
+    final int index = NumberUtils.isParsable(indexOrName) ? NumberUtils.toInt(indexOrName) : -1;
 
     if (ps instanceof GamePiece) {
       GamePiece p = Decorator.getOutermost((Decorator) ps);
@@ -453,9 +455,22 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         if (p instanceof Attachment) {
           final Attachment a = (Attachment) p;
           if (a.getAttachName().equals(attachment)) {
-            final GamePiece target = a.getAttachedPieceAt(index - 1);
-            if (target == null) return "";
-            return target.getProperty(property);
+            if (index > 0) {
+              final GamePiece target = a.getAttachedPieceAt(index - 1);
+              if (target == null) return "";
+              return target.getProperty(property);
+            }
+            else {
+              final String myName = (String)Decorator.getOutermost((Decorator)ps).getProperty(BasicPiece.BASIC_NAME);
+              if (myName != null) {
+                for (final GamePiece target : a.getAttachList()) {
+                  final String name = (String) target.getProperty(BasicPiece.BASIC_NAME);
+                  if (myName.equals(name)) {
+                    return target.getProperty(property);
+                  }
+                }
+              }
+            }
           }
         }
         p = ((Decorator) p).getInner();
