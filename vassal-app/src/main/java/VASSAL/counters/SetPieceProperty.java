@@ -19,6 +19,7 @@ package VASSAL.counters;
 
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.map.MassKeyCommand;
 import VASSAL.build.module.properties.PropertyChanger;
 import VASSAL.build.module.properties.PropertyPrompt;
 import VASSAL.command.ChangeTracker;
@@ -27,8 +28,10 @@ import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.DynamicKeyCommandListConfigurer;
 import VASSAL.configure.FormattedExpressionConfigurer;
+import VASSAL.configure.GlobalCommandTargetConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.PropertyExpression;
+import VASSAL.configure.PropertyExpressionConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.i18n.Resources;
@@ -37,7 +40,6 @@ import VASSAL.tools.FormattedString;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.SequenceEncoder;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 
 import javax.swing.JLabel;
 import javax.swing.KeyStroke;
@@ -328,6 +330,24 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
     protected FormattedExpressionConfigurer attachIndexConfig;
     protected TraitConfigPanel controls;
 
+    protected GlobalCommandTargetConfigurer targetConfig;
+    protected PropertyExpressionConfigurer propertyMatch;
+    protected PropertyExpressionConfigurer clearMatchingMatch;
+
+    protected MassKeyCommand.DeckPolicyConfig deckPolicy;
+    protected BooleanConfigurer restrictRange;
+    protected BooleanConfigurer fixedRange;
+    protected JLabel fixedRangeLabel;
+    protected IntConfigurer range;
+    protected JLabel rangeLabel;
+    protected StringConfigurer rangeProperty;
+    protected JLabel rangePropertyLabel;
+    protected JLabel targetLabel;
+    protected JLabel propertyLabel;
+    protected JLabel deckLabel;
+    protected JLabel restrictLabel;
+
+
     public Ed(final SetPieceProperty m) {
       keyCommandListConfig = new DynamicKeyCommandListConfigurer(null, Resources.getString("Editor.DynamicProperty.commands"), m);
       keyCommandListConfig.setValue(new ArrayList<>(Arrays.asList(m.keyCommands)));
@@ -358,7 +378,35 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
       controls.add(wrapLabel, wrapConfig);
 
 
+      targetConfig = new GlobalCommandTargetConfigurer(m.target);
+      targetLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.pre_select"));
+      controls.add(targetLabel, targetConfig);
 
+      propertyMatch = new PropertyExpressionConfigurer(m.propertiesFilter);
+      propertyLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.matching_properties"));
+      controls.add(propertyLabel, propertyMatch);
+
+      deckPolicy = new MassKeyCommand.DeckPolicyConfig(false);
+      deckPolicy.setValue(m.globalSetter.getSelectFromDeckExpression());
+      deckLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.deck_policy"));
+      controls.add(deckLabel, deckPolicy);
+
+      restrictRange = new BooleanConfigurer(m.restrictRange);
+      restrictLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.restrict_range"));
+      controls.add(restrictLabel, restrictRange);
+
+      fixedRange = new BooleanConfigurer(m.fixedRange);
+      fixedRangeLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.fixed_range"));
+      controls.add(fixedRangeLabel, fixedRange);
+
+      range = new IntConfigurer(m.range);
+      rangeLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.range"));
+      controls.add(rangeLabel, range);
+
+      rangeProperty = new StringConfigurer(m.rangeProperty);
+      rangeProperty.setHintKey("Editor.GlobalKeyCommand.range_property_hint");
+      rangePropertyLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.range_property"));
+      controls.add(rangePropertyLabel, rangeProperty);
 
 
       controls.add("Editor.DynamicProperty.key_commands", keyCommandListConfig);
@@ -399,13 +447,13 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
       se.append(keyCommandListConfig.getValueString());
       se.append(descConfig.getValueString());
 
-      se.append(target.encode());
-      se.append(propertiesFilter);
-      se.append(restrictRange);
-      se.append(range);
-      se.append(fixedRange);
-      se.append(rangeProperty);
-      se.append(globalSetter.getSelectFromDeckExpression());
+      se.append(targetConfig.getValueString());
+      se.append(propertyMatch.getValueString());
+      se.append(restrictRange.getValueString());
+      se.append(range.getValueString());
+      se.append(fixedRange.getValueString());
+      se.append(rangeProperty.getValueString());
+      se.append(deckPolicy.getValueString());
 
       return ID + se.getValue();
     }
