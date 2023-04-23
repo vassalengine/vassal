@@ -1,4 +1,4 @@
-3.6.17 - 22 April 2023
+3.6.17 - 23 April 2023
 
 * 12250: Adjusted TilingHandler to simplify VASL and VSQL custom tilers
 * 12248: Don't NPE when handling setup errors
