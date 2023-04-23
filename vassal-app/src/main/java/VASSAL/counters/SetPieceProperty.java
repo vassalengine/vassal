@@ -64,9 +64,9 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
   public static final String ATTACH_BASIC = "AttachmentBasicName"; //NON-NLS
   protected String description;
 
-  protected GlobalCommandTarget target = new GlobalCommandTarget(GlobalCommandTarget.GKCtype.COUNTER);
-  protected GlobalSetter globalSetter = new GlobalSetter(this);
-  protected PropertyExpression propertiesFilter = new PropertyExpression();
+  protected GlobalCommandTarget target;
+  protected GlobalSetter globalSetter;
+  protected PropertyExpression propertiesFilter;
   protected boolean restrictRange;
   protected boolean fixedRange = true;
   protected int range;
@@ -99,6 +99,19 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
 
   @Override
   public void mySetType(String s) {
+
+    if (target == null) {
+      target = new GlobalCommandTarget(GlobalCommandTarget.GKCtype.COUNTER);
+    }
+
+    if (globalSetter == null) {
+      globalSetter = new GlobalSetter(this);
+    }
+
+    if (propertiesFilter == null) {
+      propertiesFilter = new PropertyExpression();
+    }
+
     final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');
     sd.nextToken(); // Skip over command prefix
     key = sd.nextToken("name");
