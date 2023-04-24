@@ -689,7 +689,8 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       if (attachProp != null) {
         final GamePiece propPiece = getPropertyPiece();
         if (propPiece != null) {
-          return propPiece.getProperty(attachProp);
+          final Object getIt = propPiece.getProperty(attachProp);
+          if (getIt != null) return getIt;
         }
       }
     }
@@ -709,7 +710,8 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       if (attachProp != null) {
         final GamePiece propPiece = getPropertyPiece();
         if (propPiece != null) {
-          return propPiece.getLocalizedProperty(attachProp);
+          final Object getIt = propPiece.getLocalizedProperty(attachProp);
+          if (getIt != null) return getIt;
         }
       }
     }
