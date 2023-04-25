@@ -108,9 +108,9 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     return theModule.getAllDescendantComponentsOf(DrawPile.class);
   }
 
-  final java.util.Map<GamePiece, GamePiece> updatedPieces = new HashMap<>();      //BR// maps old pieces to new pieces
-  final java.util.Map<GamePiece, GamePiece> formerPieces = new HashMap<>();       //BR// maps new pieces to old pieces
-  final java.util.Map<String, List<GamePiece>> attachmentIndex = new HashMap<>(); //BR// maps old attachment traits to their original targets
+  private final java.util.Map<GamePiece, GamePiece> updatedPieces = new HashMap<>();      //BR// maps old pieces to new pieces
+  private final java.util.Map<GamePiece, GamePiece> formerPieces = new HashMap<>();       //BR// maps new pieces to old pieces
+  private final java.util.Map<String, List<GamePiece>> attachmentIndex = new HashMap<>(); //BR// maps old attachment traits to their original targets
 
   public GameRefresher(GpIdSupport gpIdSupport) {
     this.gpIdSupport = gpIdSupport;

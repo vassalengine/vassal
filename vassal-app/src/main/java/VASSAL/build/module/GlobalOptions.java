@@ -109,6 +109,7 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
   public static final String MAXIMUM_HEAP = "maximumHeap"; //$NON-NLS-1$
   public static final String DRAG_THRESHOLD = "dragThreshold"; //$NON-NLS-1$
   public static final String STACK_VIEWER_ORDER = "stackViewerOrder"; //NON-NLS
+  public static final String SHOW_MARK_MOVED = "showMarkMoved"; //NON-NLS
 
   // Compatibility Tab preferences
   public static final String BUG_10295 = "bug10295"; //$NON-NLS-1$
@@ -249,6 +250,10 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
     // Preference to reverse the left-to-right order for the Mouseover Stack Viewer (CounterDetailViewer)
     final BooleanConfigurer stackViewerOrder = new BooleanConfigurer(STACK_VIEWER_ORDER, Resources.getString("GlobalOptions.stack_viewer_order"), Boolean.FALSE);
     prefs.addOption(stackViewerOrder);
+
+    // Preference whether to show mark-when-moved marks
+    final BooleanConfigurer showMarkMoved = new BooleanConfigurer(SHOW_MARK_MOVED, Resources.getString("GlobalOptions.show_mark_moved"), Boolean.TRUE);
+    prefs.addOption(showMarkMoved);
 
     //CC// Center-on-Moves Sensitivity (is the pct of distance from border to center of window that triggers a recenter)
     final IntConfigurer pctRecenterOn = new IntConfigurer(CENTER_ON_MOVE_SENSITIVITY,
@@ -782,6 +787,10 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
   /** @return true if stack viewer should reverse left-to-right order */
   public boolean isReverseStackViewerOrder() {
     return Boolean.TRUE.equals(GameModule.getGameModule().getPrefs().getValue(STACK_VIEWER_ORDER));
+  }
+
+  public boolean isShowMarkMoved() {
+    return Boolean.TRUE.equals(GameModule.getGameModule().getPrefs().getValue(SHOW_MARK_MOVED));
   }
 
   /** @return percent-distance-from-center sensitivity for centering on opponent's move */

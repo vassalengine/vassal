@@ -438,6 +438,27 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
   protected abstract KeyCommand[] myGetKeyCommands();
 
   /**
+   * @param menuText menu text
+   * @param keystroke keystroke or named keystroke
+   * @return true if a context menu item should be displayed for the text/keystroke combination
+   */
+  protected boolean isMenuCommand(String menuText, NamedKeyStroke keystroke) {
+    if ((menuText == null) || menuText.isEmpty()) return false;
+    return (keystroke != null) && !keystroke.isNull();
+  }
+
+  /**
+   * If text/keystroke pair is valid, add it to the provided list
+   * @param list
+   * @param menuText
+   * @param keyStroke
+   */
+  protected void addMenuCommand(List<KeyCommand> list, String menuText, NamedKeyStroke keyStroke) {
+    if (!isMenuCommand(menuText, keyStroke)) return;
+    list.add(new KeyCommand(menuText, keyStroke, Decorator.getOutermost(this), (TranslatablePiece)this));
+  }
+
+  /**
    * @return The set of key commands that will populate the piece's right-click menu.
    * The key commands are accessible through the {@link Properties#KEY_COMMANDS} property.
    * The commands for a Trait/{@link Decorator} are a composite of {@link #myGetKeyCommands} and the

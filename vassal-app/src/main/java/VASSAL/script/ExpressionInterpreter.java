@@ -747,6 +747,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         if (p instanceof Attachment) {
           final Attachment a = (Attachment)p;
           if (a.getAttachName().equals(attachment)) {
+            // We wait to run the beanshell until we've found a matching attachment, since there should properly speaking only be precisely 0 or 1 matches.
             final String matchString = replaceDollarVariables(expression, ps);
             final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(ps);
             for (final GamePiece target : a.getAttachList()) {

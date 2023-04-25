@@ -69,6 +69,10 @@ NOTE: Previous versions of VASSAL had a feature which let the value of this pref
 
 *Reverse left-to-right order of pieces in Stack Viewer:*:: When checked, the normal left-to-right ordering of pieces in the Mouse-over Stack Viewer is reversed.
 
+*Show when pieces have been marked as moved (if module supports):*:: When checked, and if the module supports showing a special graphic for pieces that have been marked as moved, then the graphic will be displayed. If not selected, the graphic will not be shown, but pieces will still be _marked_ as moved (their _Moved_ property will be set to true) when they are moved.
+
+NOTE: Earlier versions of VASSAL sometimes offered a different preference which prevented pieces from even being _marked_ as moved. This ended up creating various kinds of mystifying behavior for both players and designers, and has therefore been replaced with this display preference. Note that a _module designer_ can still set whether pieces are even marked when moved in the first place, by setting the proper <<Map.adoc#MarkMoved, Map setting>> in the editor.
+
 *Recenter Sensitivity (% of edge/center distance):*:: Adjusts the sensitivity when VASSAL decides whether to recenter the screen on an action. Larger numbers will produce more recentering.
 
 *Scroll increment (pixels):*:: Sets the increment, in mapboard pixels, by which the map scrolls when using its scrollbars.

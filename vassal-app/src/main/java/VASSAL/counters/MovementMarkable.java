@@ -72,6 +72,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
   private boolean hasMoved = false;
   private String description;
   private boolean ignoreSameLocation = false;
+  private KeyCommand[] commands = null;
 
   public MovementMarkable() {
     this(ID + "moved.gif;0;0", null); // NON-NLS
@@ -115,6 +116,8 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
     catch (NoSuchElementException e) {
       keyFalse = NamedKeyStroke.NULL_KEYSTROKE;
     }
+
+    commands = null;
   }
 
   @Override
@@ -140,13 +143,20 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
 
   @Override
   protected KeyCommand[] myGetKeyCommands() {
-    return command.isEmpty() || key == null || key.isNull() ?
-      KeyCommand.NONE :
-      new KeyCommand[] {
-        new KeyCommand(command, key, Decorator.getOutermost(this), this),
-        new KeyCommand(commandTrue, keyTrue, Decorator.getOutermost(this), this),
-        new KeyCommand(commandFalse, keyFalse, Decorator.getOutermost(this), this)
-      };
+    if (commands == null) {
+      final List<KeyCommand> list = new ArrayList<>();
+      addMenuCommand(list, command, key);
+      addMenuCommand(list, commandTrue, keyTrue);
+      addMenuCommand(list, commandFalse, keyFalse);
+
+      if (list.isEmpty()) {
+        commands = KeyCommand.NONE;
+      }
+      else {
+        commands = list.toArray(new KeyCommand[0]);
+      }
+    }
+    return commands;
   }
 
   @Override
@@ -184,9 +194,10 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
   @Override
   public Rectangle boundingBox() {
     final Rectangle r = piece.boundingBox();
-    r.add(piece.boundingBox());
-    final Dimension d = getImageSize();
-    r.add(new Rectangle(xOffset, yOffset, d.width, d.height));
+    if (GlobalOptions.getInstance().isShowMarkMoved() && hasMoved) {
+      final Dimension d = getImageSize();
+      r.add(new Rectangle(xOffset, yOffset, d.width, d.height));
+    }
     return r;
   }
 
@@ -198,6 +209,9 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
   @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
+
+    if (!GlobalOptions.getInstance().isShowMarkMoved()) return;
+
     if (hasMoved
         && movedIcon.getIconValue() != null) {
       final Graphics2D g2d = (Graphics2D) g;

@@ -21,8 +21,11 @@ package VASSAL.tools.image;
 import java.awt.Dimension;
 import java.awt.color.CMMException;
 import java.awt.color.ColorSpace;
+import java.awt.color.ICC_ColorSpace;
 import java.awt.color.ICC_Profile;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.ComponentColorModel;
 import java.awt.image.DataBufferInt;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -170,6 +173,7 @@ public class ImageIOImageLoader implements ImageLoader {
     int tRNS = 0x00000000;
 
     boolean fix_YCbCr = false;
+    boolean fix_grayscale_gamma = false;
 
     BufferedImage img = null;
     try (RereadableInputStream rin = new RereadableInputStream(in)) {
@@ -193,7 +197,6 @@ public class ImageIOImageLoader implements ImageLoader {
           // users is that VASSAL is broken when their 8-bit RGB PNGs don't
           // show the correct transparency.
 
-          // We check for type-2 8-bit PNGs with tRNS chunks.
           if (ch.data[8] == 8 && ch.data[9] == 2) {
             // This is an 8-bit-per-channel Truecolor image; we must check
             // whether there is a tRNS chunk, and if so, record the color
@@ -203,16 +206,16 @@ public class ImageIOImageLoader implements ImageLoader {
             // before the first IDAT chunk; therefore, if we find an IDAT
             // we're done.
 
-            DONE_PNG: for (;;) {
+            DONE_tRNS: for (;;) {
               ch = PNGDecoder.decodeChunk(din);
 
               switch (ch.type) {
               case PNGDecoder.tRNS:
                 fix_tRNS = true;
-                break DONE_PNG;
+                break DONE_tRNS;
               case PNGDecoder.IDAT:
                 fix_tRNS = false;
-                break DONE_PNG;
+                break DONE_tRNS;
               default:
               }
             }
@@ -237,6 +240,32 @@ public class ImageIOImageLoader implements ImageLoader {
                      ((ch.data[1] & 0xff) << 16) |
                      ((ch.data[3] & 0xff) <<  8) |
                       (ch.data[5] & 0xff);
+            }
+          }
+          else if (ch.data[9] == 4) {
+            // This is a type 4 (grayscale + alpha) PNG. We check if it has
+            // an embedded color profile. If not, Java will assume a gamma of
+            // 1.0 instead of the standard 2.2. They've helpefully declared
+            // this not to be a bug:
+            //
+            //   https://bugs.java.com/bugdatabase/view_bug?bug_id=5051418
+            //
+            // IHDR is required to be first, and iCCP is required to appear
+            // before the first IDAT chunk; therefore, if we find an IDAT
+            // we're done.
+
+            DONE_iCCP: for (;;) {
+              ch = PNGDecoder.decodeChunk(din);
+
+              switch (ch.type) {
+              case PNGDecoder.iCCP:
+                fix_grayscale_gamma = false;
+                break DONE_iCCP;
+              case PNGDecoder.IDAT:
+                fix_grayscale_gamma = true;
+                break DONE_iCCP;
+              default:
+              }
             }
           }
         }
@@ -360,7 +389,7 @@ public class ImageIOImageLoader implements ImageLoader {
     final Reference<BufferedImage> ref = new Reference<>(img);
 
     if (fix_tRNS) {
-      // Fix up transparency in type 2 Truecolor images.
+      // Fix up transparency in type 2 Truecolor PNGs.
       img = null;
       img = fix_tRNS(ref, tRNS, type);
       ref.obj = img;
@@ -371,12 +400,18 @@ public class ImageIOImageLoader implements ImageLoader {
       img = fix_YCbCr(ref, type);
       ref.obj = img;
     }
+    else if (fix_grayscale_gamma) {
+      // Fix up gamma in type 4 grayscale PNGs.
+      img = null;
+      img = fix_grayscale_gamma(ref, type);
+      ref.obj = img;
+    }
 
     // We convert the image in two cases:
     // 1) the image is not yet the requested type, or
     // 2) a managed image was requested, but the image
-    //    was unmanaged by the transparency fix.
-    if (img.getType() != type || (fix_tRNS && managed)) {
+    //    was unmanaged by the a fix.
+    if (img.getType() != type || ((fix_tRNS || fix_YCbCr) && managed)) {
       img = null;
       img = tconv.convert(ref, type);
     }
@@ -547,6 +582,38 @@ public class ImageIOImageLoader implements ImageLoader {
     }
 
     return img;
+  }
+
+  private static ICC_Profile load_grayscale_icc() throws ImageIOException {
+    // Load the D65 Grayscale with sRGB TRC color profile.
+    //
+    // This profile has a gamma of 2.2, which is what virtually everything
+    // assumes for grayscale images which lack an embedded color profile.
+    final String icc = "/grayscale.icc";
+    try (InputStream in = ImageIOImageLoader.class.getResourceAsStream(icc)) {
+      return ICC_Profile.getInstance(in);
+    }
+    catch (IOException e) {
+      throw new ImageIOException(icc, e);
+    }
+  }
+
+  protected BufferedImage fix_grayscale_gamma(Reference<BufferedImage> ref, int type) throws ImageIOException {
+    // Replace the incorrect linear color model with a gamma = 2.2 one.
+    final BufferedImage img = ref.obj;
+    final ColorModel cm = img.getColorModel();
+    return new BufferedImage(
+      new ComponentColorModel(
+        new ICC_ColorSpace(load_grayscale_icc()),
+        cm.hasAlpha(),
+        cm.isAlphaPremultiplied(),
+        cm.getTransparency(),
+        cm.getTransferType()
+      ),
+      img.getRaster(),
+      img.isAlphaPremultiplied(),
+      null
+    );
   }
 
   /**
