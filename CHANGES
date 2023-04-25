@@ -10,6 +10,7 @@
 * 12203: Properly extract outlines from SVG for NonRectangular
 * 12187: Improved Rectangular Grid range metric names and made them translatable
 * 12177: Change-property buttons don't generate completely empty chat lines
+* 12176: Add preference to not display Mark Moved status of pieces
 * 12175: Fix stretchy images in chat
 * 12172: Metadata now contains the 'extra' fields, and Module Manager displays
   them if numeric
