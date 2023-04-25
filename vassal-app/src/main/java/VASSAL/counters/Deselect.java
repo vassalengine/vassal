@@ -62,6 +62,7 @@ public class Deselect extends Decorator implements TranslatablePiece {
   protected static final String DESELECT_THIS = "D"; // NON-NLS
   protected static final String DESELECT_ALL = "A"; // NON-NLS
   protected static final String DESELECT_SELECT_ONLY = "S"; // NON-NLS
+
   protected static final String[] DESELECT_OPTIONS = {
     DESELECT_THIS, DESELECT_ALL, DESELECT_SELECT_ONLY
   };

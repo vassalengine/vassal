@@ -10,12 +10,12 @@
 image:images/Expression.png[]
 
 Any field within the Vassal Editor that is followed by a Calculator icon image:images/calculator.png[] allows the entry of an Expression.
-Expressions are essentially an in-line <<CalculatedProperty.adoc#top,Calculated Property>> that are re-evaluated whenever their value is required.
+Expressions are essentially an in-line <<CalculatedProperty.adoc#top,Calculated Property>>, re-evaluated every time VASSAL needs to know their value.
 There are two main flavors of Expression: <<#beanshell,BeanShell Expressions>> which are identified by being surrounded by curly braces {}, and <<#simple,Simple Expressions>> which are not.
 
-<<PropertyMatchExpression.adoc#top,Property Match Expressions>> are specialized expressions (of either type) used to select which pieces to operate on by checking properties, e.g. in a <<GlobalKeyCommand.adoc#top,Global Key Command>>.
+<<PropertyMatchExpression.adoc#top,Property Match Expressions>> select which pieces to operate on by checking properties, e.g. in a <<GlobalKeyCommand.adoc#top,Global Key Command>>.
 
-The <<ExpressionBuilder.adoc#top,Expression Builder>> is a convenient tool for building expressions from available properties, operations, and methods.
+The <<ExpressionBuilder.adoc#top,Expression Builder>> makes building expressions from available properties, operations, and methods a bit more convenient.
 
 NOTE: Beanshell expressions should not be confused with "old style" <<#simple,Simple Expressions>>, which have a different syntax and are far more limited.
 
@@ -23,8 +23,8 @@ NOTE: Beanshell expressions should not be confused with "old style" <<#simple,Si
 [#beanshell]
 ==== BeanShell Expressions
 
-BeanShell Expressions (named after the software package that implements them in Vassal) allow you to use arbitrarily complex formulae to define the value returned.
-BeanShell Expressions are marked by being surrounded by curly braces {}. The BeanShell processor is an accurate implementation of the Java programming language and BeanShell Expressions are made up of Java language components.
+BeanShell Expressions (named after the software package which implements them in Vassal) allow you to use arbitrarily complex formulae to define the value returned.
+BeanShell Expressions can be identified by their surrounding curly braces {}. The BeanShell processor is an accurate implementation of the Java programming language and BeanShell Expressions consist of Java language components.
 You can use any introductory Java tutorial to learn more about the syntax of BeanShell Expressions.
 The basic components are as follows:
 
@@ -32,7 +32,7 @@ The basic components are as follows:
 |===
 |Type |Options |Examples |Notes
 |*Numbers* |  |{35} |Vassal works with whole numbers.
-Decimal numbers are treated as strings.
+It stores decimal numbers as strings.
 |*Strings* |  |{"German"} |A String literal, or text message, must be enclosed in "" quotation marks
 |*Substitution* |$..$ |{"$Nation$"} +
 {$Attack$} |Property names enclosed by $..$ symbols immediately substitute the property value, based on the piece or component issuing the command.
@@ -40,7 +40,7 @@ Not normally needed in BeanShell as there are simpler ways to use a property val
 |*Properties* |  |{Nation} +
 {LocationName} +
 {CurrentMap} +
-{playerName} |Any word not enclosed in "" is interpreted as a <<Properties.adoc#top,Property>> name.
+{playerName} |VASSAL interprets any word not enclosed in "" as a <<Properties.adoc#top,Property>> name.
 
 Can refer by name to <<GlobalProperties.adoc#top,Global Properties>>, <<PropertyMarker.adoc#top,Marker>> and <<DynamicProperty.adoc#top,Dynamic Properties>> of pieces, and properties <<Properties.adoc#top,exposed by traits>>. The current value of the property will be used.
 |*Arithmetic* |+ Add +
@@ -65,7 +65,7 @@ Parentheses can be used to organize operations and/or override the ordinary orde
 {length < maxlength \|\| breadth \<= maxbreadth} +
 {Nation=="Germany"} +
 {Army!="Allied"} +
-{Type=="^A$"} |Comparison operators are used primarily in <<PropertyMatchExpression.adoc#top,Property Match Expressions>> and also with the ? (ternary) operator.
+{Type=="^A$"} |Comparison operators come in handy for <<PropertyMatchExpression.adoc#top,Property Match Expressions>> and also with the ? (ternary) operator.
 
 Parentheses can be used to organize operations and/or override the ordinary order of operations.
 |*Logical* |&& Logical AND +
@@ -93,16 +93,20 @@ Math.max(value1, value2) + |{Math.abs(Number - 5)} +
 
 |*Property* |GetProperty(property) +
 GetString(property) +
+GetAttachmentProperty(attachmentName, property, basic_name_or_index) +
 GetMapProperty(property,map) +
 GetZoneProperty(property,zone) +
 GetZoneProperty(property,zone,map) + |{GetProperty("Nation"+myNation)} +
 {GetString("HowManyDogs")} +
+{GetAttachmentProperty("MyCrewMembers", "Health", 2) +
 {GetMapProperty("Owner",CurrentMap)} +
 {GetZoneProperty("Militia","Georgia")} +
 {GetZoneProperty("Modifier",OldZone,OldMap)} + |All *GetProperty()* family functions return the value of a named property.
 The name of the property can be constructed from an expression.
 
 *GetString()* returns a string value even if the property contains a number or a boolean. You can also append *.toString()* to any other function or property to achieve the same effect.
+
+*GetAttachmentProperty()* retrieves the property from an _attached_ piece with the specified BasicName or specified index (first attached piece is 1). 
 
 *GetMapProperty()* looks only on the specific map for the property.
 
@@ -167,6 +171,11 @@ CountStack() +
 CountStack(propertyName) +
 SumMat(propertyName) +
 CountMat(propertyName) +
+MaxAttachment(attachmentName, propertyName) +
+MinAttachment(attachmentName, propertyName) +
+SumAttachment(attachmentName, propertyName) +
+CountAttachment(attachmentName, propertyName) +
+CountAttachmentExpression(attachmentName, expression) +
 Sum(prop, expression) +
 Sum(prop, expr, map) +
 Count(expr) +
@@ -175,6 +184,11 @@ Count(expr, map) + |{SumStack("Attack")} +
 {CountStack("Russian")} +
 {SumMat("AttackFactor")} +
 {CountMat("Followers")} +
+{MaxAttachment("MyMinions", "Strength")} +
+{MinAttachment("MyMinions", "Health")} +
+{SumAttachment("MyMinions", "Ammo")} +
+{CountAttachment("MyMinions", "Naval")} +
+{CountAttachmentExpression("MyMinions", "{ Ammo > 0 }")} +
 {Sum("Defense", "{Type != \"Artillery\"}")} +
 {Sum("Cost", "{ Value > 0 }", "Purchases")} +
 {Count("{ Nation == \"$Nation$\" }")} +
@@ -188,6 +202,16 @@ Count(expr, map) + |{SumStack("Attack")} +
 
 *CountMat(prop)* returns the number of pieces with a non-blank value for the specified property, among a Mat and its Mat Cargo. The asking piece can either be a Mat or a Mat Cargo. If the piece is not a Mat, and/or if it is a Mat Cargo piece not presently on a Mat, then only the piece itself is checked.
 
+*MaxAttachment(attachment, prop)* returns the highest value of the specified property summed among all the pieces attached to this piece via a named Attachment trait on this piece. Returns 0 if no pieces containing the property are attached.
+
+*MinAttachment(attachment, prop)* returns the lowest value of the specified property summed among all the pieces attached to this piece via a named Attachment trait on this piece. Returns 0 if no pieces containing the property are attached.
+
+*SumAttachment(attachment, prop)* returns the total of the specified property summed across all the pieces attached to this piece via a named Attachment trait on this piece.
+
+*CountAttachment(attachment, prop)* returns the number of pieces with a non-blank value for the specified property, among all the pieces attached to this piece via a named Attachment trait on this piece.
+
+*CountAttachmentExpression(attachment, expr)* returns the total number of pieces, among the pieces attached by the named attachment property, which also match the given expression.
+
 *Sum(prop, expr)* returns the total of the specified property for all pieces in the game matching the expression.
 
 *Sum(prop, expr, map)* returns the total of the specified property for all pieces on a specific map matching the expression.
@@ -196,7 +220,7 @@ Count(expr, map) + |{SumStack("Attack")} +
 
 *Count(expr, map)* returns the number of pieces on a specific map matching the expression.
 
-*NOTE:* Except for SumStack, these functions can have substantial performance cost as they must check all of the pieces on the map or in the entire game against the expression.
+*NOTE:* The last four functions (i.e. plain "Sum" and "Count", with or without the map parameter) can have substantial performance cost as they must check all of the pieces on the map or in the entire game against the expression.
 Also, because Java requires that the expression itself must be passed as a string, the syntax is tricky here and quotation marks inside the expression must be quoted as \" +
 |*Alert* |Alert(message) + |{Alert("Adding 1 to HP")} + |*Alert* displays a message in a popup dialog box, to the currently active player only.
 If a message needs to be shown to _all_ players, the recommended method is to send something to the Chat Log e.g.
@@ -207,17 +231,17 @@ with a <<ReportChanges.adoc#top,Report Action>> trait or other <<MessageFormat.a
 [#simple]
 ==== Simple Expressions
 
-Simple expressions are not surrounded by braces and exist to provide compatibility with earlier versions of Vassal that only implemented a much simpler version of Expressions.
+Simple expressions--expressions not surrounded by braces--exist to provide compatibility with earlier versions of Vassal that only implemented a much simpler version of Expressions.
 Simple Expressions are far more limited than BeanShell Expressions, only allowing the substitution of property values into a pre-determined string.
-If you are learning VASSAL for the first time, it is recommended that you mostly learn the more powerful BeanShell Expressions.
+If you are learning VASSAL for the first time, you should mostly concentrate on learning the more powerful BeanShell Expressions.
 
 [cols=",,",]
 |===
 |A Simple Integer Expression: |image:images/SimpleExpression1.png[] |A whole number.
 In general, Vassal does not support decimal numbers, except when stored and used as Strings.
-|A basic Simple String Expression: |image:images/SimpleExpression2.png[] |A String in a Simple Expression is defined without quotation marks.
+|A basic Simple String Expression: |image:images/SimpleExpression2.png[] |A String in a Simple Expression does not need quotation marks.
 |A more complex example: |image:images/SimpleExpression3.png[] |The string $Nation$ will be replaced by the value of the Nation property.
-You can use multiple $...$ strings in an expression ($Nation$-$Division$), but can NOT nest them ($Nation$Count$$).
+You can use multiple $...$ strings in an expression ($Nation$-$Division$), but CANNOT nest them ($Nation$Count$$).
 |===
 
 *SEE ALSO:* <<Properties.adoc#top,Properties>>

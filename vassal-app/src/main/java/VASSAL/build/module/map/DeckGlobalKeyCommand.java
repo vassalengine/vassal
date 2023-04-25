@@ -35,6 +35,7 @@ import VASSAL.counters.Deck;
 import VASSAL.counters.DeckVisitorDispatcher;
 import VASSAL.counters.GlobalCommand;
 import VASSAL.counters.GlobalCommandTarget;
+import VASSAL.counters.GlobalCommandVisitor;
 import VASSAL.counters.KeyCommand;
 import VASSAL.counters.PieceFilter;
 import VASSAL.i18n.Resources;
@@ -305,7 +306,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
         c = new NullCommand();
       }
 
-      final Visitor visitor = new Visitor(c, filter, keyStroke);
+      final GlobalCommandVisitor visitor = new GlobalCommandVisitor(c, filter, keyStroke, null, owner, getSelectFromDeck());
       final DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
 
       dispatcher.accept(d);

@@ -1,0 +1,106 @@
+== VASSAL Reference Manual
+[#top]
+
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<PieceWindow.adoc#top,Game Piece Palette>># [.small]#>  <<GamePiece.adoc#top,Game Piece>># [.small]#> *Attachment*#
+
+'''''
+
+=== Attachment
+
+This <<GamePiece.adoc#Traits,Trait>> adds an action that creates a lasting "attachment" to other pieces, allowing several special functions:
+
+(1) The piece will be able to issue <<GlobalKeyCommand.adoc#top, Global Key Commands>> to attached pieces using the very fast and efficient "Current Attachments" location filter. A piece that needs to repeatedly communicate with the same piece(s) every time can thus use an Attachment to make the commands process very quickly, overcoming the normal performance lag of Global Key Commands.
+
+(2) The piece will be able to access the properties of _any_ of the pieces that the Attachment trait is bound to through GetAttachmentProperty(attachmentName, propertyName, index). The index starts at 1 for the first attached piece.
+
+(3) The piece will be able to directly read the properties of _one_ of the pieces that the Attachment trait is bound to through a simple syntax. For cases where a single piece is bound to a particular Attachment trait, this can be quite useful in reading its properties quickly and easily. If a group of multiple pieces is attached with one Attachment trait, properties will be read from an undetermined _single piece_ from among the attached pieces. See _Attachment Name_, below, for an explanation of how to read a property from the attached piece.
+
+(4) For <<DynamicProperty.adoc#top, Dynamic Properties>> of an attached piece, the value of the properties can also be _set_ by this piece, by using a <<SetAttachmentProperty.adoc#top, Set Attachment Property>> trait.
+
+(5) If the attached-to piece *also* has an Attachment trait that shares the same _Attachment Name_, then mutual attachments between pieces can also be formed.
+
+*NOTES:*::
+* The property _<AttachmentName>_AttachCount_ can be used to find out how many pieces are currently attached via this trait. For example if the _Attachment Name_ were "Sibling" then the property _Sibling_AttachCount_ would hold the attachment count.
+* A Global Key Command sent to "Current Attachments" will execute very quickly
+* Pieces *can* attach to themselves.
+* While a single piece can contain one _or more_ Attachment traits, all of an individual piece's Attachment traits should have different names (no single piece should have two Attachment traits with the same name).
+* Two pieces, each with an Attachment trait sharing the same _Attachment Name_ can form a mutual attachment
+* Pieces which are deleted from the game are automatically removed as attachments.
+* The _GetAttachmentProperty(attachmentName,propertyName,attachmentIndexOrBasicName)_ function can be used in expressions to read the values of Dynamic Properties on attached pieces. Indices start at 1, or you can pass the <<BasicPiece.adoc#properties,_BasicName_>> you wish to find among the attachments.
+* A <<SetAttachmentProperty.adoc#top,Set Attachment Property>> trait can be used to change the values of Dynamic Properties on attached pieces.
+
+[width="100%",cols="50%a,^50%a",]
+|===
+|*Attachment Name:*:: The name for this Attachment trait. This name can be used by the piece to read properties from attached pieces. For example if the Attachment name were _Sibling_, then the property _Sibling_LocationName_ would contain the _LocationName_ property of the first currently attached piece.
+
+*Description:*::  A short description of this trait for your own reference.
+
+*Auto-attach to all pieces with identical attachment name:*::  If selected, the piece will automatically attach itself to other pieces which have an _Attachment_ trait with an identical attachment name; this can be used to easily and quickly attach pieces together. When selected, none of the advanced options for attaching and detaching pieces will be displayed. When this option _not_ selected, the advanced options for attaching and detaching pieces will be shown.
+
+*Allow attachment to self:*::  If selected, the attachment is allowed to attach to _this piece_ (i.e. itself) if conditions are otherise met. If not selected, the Attachment will never attach to itself in any circumstances.
+
+*Before adding attachments:*::  Determines whether existing attachments are cleared before adding new attachments.
++
+*Clear existing attachments first*::  If this option is selected, then whenever the key command to attach pieces executes, all existing attachments are first cleared before adding any pieces that match the command.
++
+*Leave existing attachments alone*::  If this option is selected, then adding attachments will never _detach_ pieces -- meaning that executing the attach key command a second or subsequent time will only potentially add attachments, never remove any.
+
+*When another piece attaches to this one using this attachment's name*:: Determines what happens when another piece with an Attachment trait *sharing the same* _Attachment Name_ attaches to this piece. Can be used to create two-way and multi-way attachments.
++
+*No additional action*:: Nothing additional happens. This is the default setting, and useful for creating "one-way" attachments.
++
+*Attach to that piece*:: This piece adds that piece to its list of attachments--in other words a mutual attachment is formed. This setting is useful for creating mutual or "two-way" attachments.
++
+*Attach to that piece along with all pieces it has attached to*:: This piece adds that piece to its list of attachments. This piece _also_ adds to its attachment every _other_ piece that the new piece has attached (using an Attachment trait with the same _Attachment Name_). This setting is useful for creating "multi-way" attachments. NOTE: it will also normally result in the piece being attached to itself, unless the _Allow attachment to self_ box is unchecked.
+
+*Menu command to attach pieces:*:: Name of the right-click context menu item to attach pieces.
+If left blank, no context menu item will appear.
+
+*Key command to attach pieces:*::  A Key Command or <<NamedKeyCommand.adoc#top,Named Key Command>> that initiates attachment of pieces.
+
+*Pre-select (Fast Match):*::  *Fast Match* selections can be used to improve the performance of "slow" piece filters.
++
+See the <<FastMatch.adoc#top>> page for full details on Fast Matches.
+
+*Additional matching expression:*::  If further refinement of which target pieces should be attached is needed, or if you do not wish to use Fast Match pre-selections, an Additional Matching Expression can be used. Only Game Pieces which match the specified <<PropertyMatchExpression.adoc#top,Property Match Expression>> will become attached. Note that the properties named in _this_ expression are evaluated against the properties _of the target pieces_, not the properties of the piece creating the Attachment.
+For example if you provided the expression _{ CurrentZone == "Europe" }_, that would use the CurrentZone property of each potential target piece (checking if _it_ is "Europe") to determine whether to attach it.
+If you want to compare a property in the target pieces against the value of _a property in *this* piece_, then use $property$. All $...$ property references will be evaluated against this piece before testing against other pieces.
+Note that this will often mean the expression needs to be put inside of quotation marks if the property in question is a string value.
+For example if the expression provided is { CurrentZone == "$CurrentZone$" } then the CurrentZone of each potential target piece will be checked against $CurrentZone$ which will read the CurrentZone of the _issuing_ piece.
+
+*Within a Deck, apply to:*::  Select how the Attachment command will be applied to pieces in a <<Deck.adoc#top,Deck>>. Options are _All pieces_, _No pieces_, or _Fixed number of pieces_.
+If _Fixed number of pieces_ is selected, a field appears to allow entry of the number of Pieces in the Deck to affect, starting at the top of the Deck.
+Thus, selecting 1 for the fixed number would cause only the top card or piece in a Deck to be attached. An <<Expression.adoc#top,Expression>> can be used. Note that such an expression will be evaluated _once_ at the beginning of the attachment (not each time a candidate piece is being checked).
+
+*Restrict Range:*::  If selected, the command will only attach pieces located within a specified distance of this piece.<<Properties.adoc#top>>
+
+*Range:*:: Only others pieces within this distance, inclusive, of this piece will be attached.
+If the pieces are on a board with a <<HexGrid.adoc#top,Hex Grid>> or <<RectangularGrid.adoc#top,Rectangular Grid>>, then the distance is in units of the grid.
+Otherwise, the distance is measured in screen pixels.
+
+*Fixed Range:*::  If selected, then the range is specified as a fixed number.
+If unselected, then the range will be given by the value of the named <<Properties.adoc#top,property>>.
+
+*Range Property:*::  The name of a Property that contains the range to use when Fixed Range is not selected.
+
+*When clearing our attachment to another piece*:: Determines what happens when the _Clear Matching_ or _Clear All_ key command is used to remove one of our existing attachments.
++
+*No additional action*:: Nothing additional happens. This is the default setting.
++
+*Remove that piece's attachment to this one as well*:: Severs the other piece's attachment to this one as well (assuming it has one from an Attachment trait with the same _Attachment Name_)
+
+*Menu command to clear all outgoing attachments:*:: Name of the right-click context menu item to clear ALL current attachments (by _this_ individual Attachment trait).
+If left blank, no context menu item will appear.
+
+*Key command to clear all outgoing attachments:*::  A Key Command or <<NamedKeyCommand.adoc#top,Named Key Command>> that initiates the clearing of ALL current attachments (by _this_ individual Attachment trait).
+
+*Menu command to clear matching attachments:*:: Name of the right-click context menu item to clear current attachments that match an expression. Only pieces attached by _this_ Attachment trait will be affected.
+
+*Key command to clear matching attachments:*::  A Key Command or <<NamedKeyCommand.adoc#top,Named Key Command>> that initiates the clearing of current attachments that match an expression. Only pieces attached by _this_ Attachment trait will be affected.
+
+*Property match expression for clearing attachments:*:: An expression determining which current attachments will be cleared when the above key command is executed. See *Additional matching expression*, above, for further information on how these expressions work.
+
+|image:images/Attachment.png[]
+|===
+
+'''''

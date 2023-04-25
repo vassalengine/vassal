@@ -145,6 +145,15 @@ public class GlobalCommand implements Auditable {
     this.target = target;
   }
 
+  /**
+   * Allows subclasses like GlobalAttach to operate with no key command to send
+   *
+   * @return true if we should short-circuit (abort) the search if we have no key command to send
+   */
+  public boolean isAbortIfNoCommand() {
+    return true;
+  }
+
   public GlobalCommandTarget getTarget() {
     return target;
   }
@@ -266,9 +275,11 @@ public class GlobalCommand implements Auditable {
         command.execute();
       }
 
-      // If there actually isn't any key command to execute, we're finished here, having issued the report-if-any.
+      // If there actually isn't any key command to execute, we're normally finished here, having issued the report-if-any (exception is subclass like GlobalAttach, which is searching but not sending a key command)
       if ((keyStroke == null) || ((keyStroke.getKeyCode() == 0) && (keyStroke.getModifiers() == 0))) {
-        return command;
+        if (isAbortIfNoCommand()) {
+          return command;
+        }
       }
 
       // These will hold the *evaluated results* of our various Fast Match expressions
@@ -375,7 +386,7 @@ public class GlobalCommand implements Auditable {
       }
 
       // This dispatcher will eventually handle applying the Beanshell filter and actually issuing the command to any pieces that match
-      final Visitor visitor = new Visitor(command, filter, keyStroke, audit);
+      final GlobalCommandVisitor visitor = getVisitor(command, filter, keyStroke, audit, owner, getSelectFromDeck());
       final DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
 
       // If we're using "current stack or deck" then we simply iterate quickly through the members of the stack or deck that the current piece is in
@@ -477,6 +488,29 @@ public class GlobalCommand implements Auditable {
               // Anything else we send to dispatcher to apply BeanShell filter and issue the command if the piece matches
               dispatcher.accept(gamePiece);
             }
+          }
+        }
+      }
+      // If we're using "Current Attachments", make a list of all the pieces we're attached to and then process that
+      else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.CURATTACH) {
+        if (curPiece instanceof Decorator) {
+          GamePiece piece = Decorator.getOutermost(curPiece);
+          final List<GamePiece> pieces = new ArrayList<>();
+          while (piece instanceof Decorator) {
+            if (piece instanceof Attachment) {
+              pieces.addAll(((Attachment) piece).getContents());
+            }
+            piece = ((Decorator) piece).getInner();
+          }
+          for (final GamePiece p : pieces) {
+            // Pieces that no longer have a map were probably deleted. We will speak no more of them.
+            if (p.getMap() == null) continue;
+
+            // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
+            if (!passesPropertyFastMatch(p)) continue;
+
+            // Anything else we send to dispatcher to apply BeanShell filter and issue the command if the piece matches
+            dispatcher.accept(p);
           }
         }
       }
@@ -703,6 +737,104 @@ public class GlobalCommand implements Auditable {
     return apply(new Map[]{map}, filter, fastMatch, audit);
   }
 
+  protected GlobalCommandVisitor getVisitor(Command command, PieceFilter filter, KeyStroke keyStroke, AuditTrail audit, Auditable owner, int selectFromDeck) {
+    return new GlobalCommandVisitor(command, filter, keyStroke, audit, owner, selectFromDeck);
+  }
+
+  public int getSelectFromDeck() {
+    return selectFromDeck;
+  }
+
+  public String getSelectFromDeckExpression() {
+    return selectFromDeckExpression;
+  }
+
+  /**
+   * Set the number of pieces to select from a deck that the command will apply to.  A value <0 means to apply to all pieces in the deck
+   * @param selectFromDeck Number of pieces to select
+   */
+  public void setSelectFromDeckExpression(String selectFromDeck) {
+    selectFromDeckExpression = selectFromDeck;
+  }
+
+  /**
+   * Set the number of pieces to select from a deck that the command will apply to.  A value <0 means to apply to all pieces in the deck
+   * @param selectFromDeck Number of pieces to select
+   */
+  public void setSelectFromDeck(int selectFromDeck) {
+    this.selectFromDeck = selectFromDeck;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(keyStroke, reportFormat, reportSingle, selectFromDeckExpression, suppressSounds);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    final GlobalCommand other = (GlobalCommand) obj;
+    if (keyStroke == null) {
+      if (other.keyStroke != null)
+        return false;
+    }
+    else if (!keyStroke.equals(other.keyStroke))
+      return false;
+    if (reportFormat == null) {
+      if (other.reportFormat != null)
+        return false;
+    }
+    else if (!reportFormat.equals(other.reportFormat))
+      return false;
+    if (reportSingle != other.reportSingle)
+      return false;
+    if (suppressSounds != other.suppressSounds) return false;
+    if (!selectFromDeckExpression.equals(other.selectFromDeckExpression)) {
+      return false;
+    }
+
+    // Match any specific targeting information, depending on the targeting type. targetType must always match.
+    if (target.fastMatchLocation != other.target.fastMatchLocation) {
+      return false;
+    }
+    if (target.targetType != other.target.targetType) {
+      return false;
+    }
+    if (!target.targetType.isCurrent() && !target.targetMap.equals(other.target.targetMap)) {
+      return false;
+    }
+    if ((target.targetType == GlobalCommandTarget.Target.ZONE) && !target.targetZone.equals(other.target.targetZone)) {
+      return false;
+    }
+    if ((target.targetType == GlobalCommandTarget.Target.LOCATION) && !target.targetLocation.equals(other.target.targetLocation)) {
+      return false;
+    }
+    if ((target.targetType == GlobalCommandTarget.Target.XY) && (!target.targetBoard.equals(other.target.targetBoard) || ((!target.targetX.equals(other.target.targetX)) || (!target.targetY.equals(other.target.targetY))))) {
+      return false;
+    }
+
+    if (target.fastMatchProperty != other.target.fastMatchProperty) {
+      return false;
+    }
+
+    if (target.fastMatchProperty) {
+      if (!target.targetProperty.equals(other.target.targetProperty)) {
+        return false;
+      }
+      if (!target.targetValue.equals(other.target.targetValue)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  // Obsolete, kept for clirr reasons
   protected class Visitor implements DeckVisitor {
     private final Command command;
     private final BoundsTracker tracker;
@@ -805,98 +937,5 @@ public class GlobalCommand implements Auditable {
     public BoundsTracker getTracker() {
       return tracker;
     }
-  }
-
-  public int getSelectFromDeck() {
-    return selectFromDeck;
-  }
-
-  public String getSelectFromDeckExpression() {
-    return selectFromDeckExpression;
-  }
-
-  /**
-   * Set the number of pieces to select from a deck that the command will apply to.  A value <0 means to apply to all pieces in the deck
-   * @param selectFromDeck Number of pieces to select
-   */
-  public void setSelectFromDeckExpression(String selectFromDeck) {
-    selectFromDeckExpression = selectFromDeck;
-  }
-
-  /**
-   * Set the number of pieces to select from a deck that the command will apply to.  A value <0 means to apply to all pieces in the deck
-   * @param selectFromDeck Number of pieces to select
-   */
-  public void setSelectFromDeck(int selectFromDeck) {
-    this.selectFromDeck = selectFromDeck;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(keyStroke, reportFormat, reportSingle, selectFromDeckExpression, suppressSounds);
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    final GlobalCommand other = (GlobalCommand) obj;
-    if (keyStroke == null) {
-      if (other.keyStroke != null)
-        return false;
-    }
-    else if (!keyStroke.equals(other.keyStroke))
-      return false;
-    if (reportFormat == null) {
-      if (other.reportFormat != null)
-        return false;
-    }
-    else if (!reportFormat.equals(other.reportFormat))
-      return false;
-    if (reportSingle != other.reportSingle)
-      return false;
-    if (suppressSounds != other.suppressSounds) return false;
-    if (!selectFromDeckExpression.equals(other.selectFromDeckExpression)) {
-      return false;
-    }
-
-    // Match any specific targeting information, depending on the targeting type. targetType must always match.
-    if (target.fastMatchLocation != other.target.fastMatchLocation) {
-      return false;
-    }
-    if (target.targetType != other.target.targetType) {
-      return false;
-    }
-    if (!target.targetType.isCurrent() && !target.targetMap.equals(other.target.targetMap)) {
-      return false;
-    }
-    if ((target.targetType == GlobalCommandTarget.Target.ZONE) && !target.targetZone.equals(other.target.targetZone)) {
-      return false;
-    }
-    if ((target.targetType == GlobalCommandTarget.Target.LOCATION) && !target.targetLocation.equals(other.target.targetLocation)) {
-      return false;
-    }
-    if ((target.targetType == GlobalCommandTarget.Target.XY) && (!target.targetBoard.equals(other.target.targetBoard) || ((!target.targetX.equals(other.target.targetX)) || (!target.targetY.equals(other.target.targetY))))) {
-      return false;
-    }
-
-    if (target.fastMatchProperty != other.target.fastMatchProperty) {
-      return false;
-    }
-
-    if (target.fastMatchProperty) {
-      if (!target.targetProperty.equals(other.target.targetProperty)) {
-        return false;
-      }
-      if (!target.targetValue.equals(other.target.targetValue)) {
-        return false;
-      }
-    }
-
-    return true;
   }
 }

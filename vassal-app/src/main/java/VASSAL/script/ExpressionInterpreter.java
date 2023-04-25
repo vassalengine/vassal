@@ -24,6 +24,7 @@ import VASSAL.build.module.Map;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.configure.PropertyExpression;
+import VASSAL.counters.Attachment;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
@@ -31,6 +32,7 @@ import VASSAL.counters.Mat;
 import VASSAL.counters.MatCargo;
 import VASSAL.counters.PieceFilter;
 import VASSAL.counters.ReportState;
+import VASSAL.counters.SetAttachmentProperty;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.script.expression.AuditTrail;
@@ -41,11 +43,9 @@ import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
 import VASSAL.tools.WarningDialog;
-
 import bsh.BeanShellExpressionValidator;
 import bsh.EvalError;
 import bsh.NameSpace;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
@@ -287,7 +287,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         else if (BeanShell.FALSE.equals(value)) {
           setVar(var, false);
         }
-        else if (! StringUtils.containsOnly(value, "+-.0123456789")) { // NON-NLS
+        else if (!StringUtils.containsOnly(value, "+-.0123456789")) { // NON-NLS
           setVar(var, value);
         }
         // Special case where the 'Store Integers with leading zeros as Strings' option is turned on AND
@@ -295,8 +295,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         // the leading zeros are preserved. It is up to the Designer to convert this to an integer later
         // using Integer.parseInt(x) if they need to do arithmetic on it.
         else if (GlobalOptions.getInstance() != null && GlobalOptions.getInstance().isStoreLeadingZeroIntegersAsStrings()
-                  && value.length() > 1 && value.startsWith("0")
-                  && StringUtils.containsOnly(value, "0123456789")) {
+          && value.length() > 1 && value.startsWith("0")
+          && StringUtils.containsOnly(value, "0123456789")) {
           setVar(var, value);
         }
         else {
@@ -407,7 +407,9 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     return value == null ? "" : wrap(value.toString());
   }
 
-  /** getProperty minus the wrap */
+  /**
+   * getProperty minus the wrap
+   */
   public Object getString(String name) {
     final Object value = source.getProperty(name);
     return value == null ? "" : value.toString();
@@ -442,6 +444,54 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     return map == null ? wrap("") : wrap((String) map.getProperty(propertyName));
   }
 
+  public Object getAttachmentProperty(String attachment, String property, String indexOrName, PropertySource ps) {
+    ps = translatePiece(ps);
+
+    final int index = NumberUtils.isParsable(indexOrName) ? NumberUtils.toInt(indexOrName) : -1;
+
+    if (ps instanceof GamePiece) {
+      GamePiece p = Decorator.getOutermost((Decorator) ps);
+      while (p instanceof Decorator) {
+        if (p instanceof Attachment) {
+          final Attachment a = (Attachment) p;
+          if (a.getAttachName().equals(attachment)) {
+            if (index > 0) {
+              final GamePiece target = a.getAttachedPieceAt(index - 1);
+              if (target == null) return "";
+              return target.getProperty(property);
+            }
+            else {
+              final String myName = (String)Decorator.getOutermost((Decorator)ps).getProperty(BasicPiece.BASIC_NAME);
+              if (myName != null) {
+                for (final GamePiece target : a.getAttachList()) {
+                  final String name = (String) target.getProperty(BasicPiece.BASIC_NAME);
+                  if (myName.equals(name)) {
+                    return target.getProperty(property);
+                  }
+                }
+              }
+            }
+          }
+        }
+        p = ((Decorator) p).getInner();
+      }
+    }
+    return "";
+  }
+
+  private PropertySource translatePiece(PropertySource ps) {
+    // Allows SetAttachmentProperty to use these functions correctly
+    if (ps instanceof SetAttachmentProperty.SetAttachmentPropertySource) {
+      ps = ((SetAttachmentProperty.SetAttachmentPropertySource) ps).getPiece();
+    }
+    // This allows ReportState to sum properties properly
+    else if (ps instanceof ReportState.OldAndNewPieceProperties) {
+      ps = ((ReportState.OldAndNewPieceProperties) ps).getNewPiece();
+    }
+    return ps;
+  }
+
+
   private static int propValue(Object prop) {
     if (prop != null) {
       final String s1 = prop.toString();
@@ -472,11 +522,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   public Object sumStack(String property, PropertySource ps) {
     int result = 0;
 
-    // This allows ReportState to sum properties properly
-    if (ps instanceof ReportState.OldAndNewPieceProperties) {
-      ps = ((ReportState.OldAndNewPieceProperties)ps).getNewPiece();
-    }
-
+    ps = translatePiece(ps);
     if (ps instanceof GamePiece) {
       final Stack s = ((GamePiece) ps).getParent();
       if (s == null) {
@@ -505,10 +551,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   public Object countStack(String property, PropertySource ps) {
     int result = 0;
 
-    // This allows ReportState to count properties properly
-    if (ps instanceof ReportState.OldAndNewPieceProperties) {
-      ps = ((ReportState.OldAndNewPieceProperties)ps).getNewPiece();
-    }
+    ps = translatePiece(ps);
 
     if (ps instanceof GamePiece) {
       final Stack s = ((GamePiece) ps).getParent();
@@ -536,6 +579,191 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     return result;
   }
 
+
+  /**
+   * MaxAttachment(attachment, property) function
+   * Highest value of the named property among all pieces attached, or 0 if no pieces are attached
+   *
+   * @param attachment Attachment Name
+   * @param property Property Name
+   * @param ps       GamePiece
+   * @return total
+   */
+  public Object maxAttachment(String attachment, String property, PropertySource ps) {
+    int result = Integer.MIN_VALUE;
+
+    ps = translatePiece(ps);
+
+    if (ps instanceof GamePiece) {
+      GamePiece p = Decorator.getOutermost((Decorator)ps);
+      while (p instanceof Decorator) {
+        if (p instanceof Attachment) {
+          final Attachment a = (Attachment)p;
+          if (a.getAttachName().equals(attachment)) {
+            for (final GamePiece target : a.getAttachList()) {
+              final Object prop = target.getProperty(property);
+              final int value = propValue(prop);
+              if (value > result) {
+                result = value;
+              }
+            }
+          }
+        }
+        p = ((Decorator) p).getInner();
+      }
+    }
+
+    return (result == Integer.MIN_VALUE) ? 0 : result;
+  }
+
+
+  /**
+   * MinAttachment(attachment, property) function
+   * Lowest value of the named property among all pieces attached, or 0 if no pieces are attached
+   *
+   * @param attachment Attachment Name
+   * @param property Property Name
+   * @param ps       GamePiece
+   * @return total
+   */
+  public Object minAttachment(String attachment, String property, PropertySource ps) {
+    int result = Integer.MAX_VALUE;
+
+    ps = translatePiece(ps);
+
+    if (ps instanceof GamePiece) {
+      GamePiece p = Decorator.getOutermost((Decorator)ps);
+      while (p instanceof Decorator) {
+        if (p instanceof Attachment) {
+          final Attachment a = (Attachment)p;
+          if (a.getAttachName().equals(attachment)) {
+            for (final GamePiece target : a.getAttachList()) {
+              final Object prop = target.getProperty(property);
+              final int value = propValue(prop);
+              if (value < result) {
+                result = value;
+              }
+            }
+          }
+        }
+        p = ((Decorator) p).getInner();
+      }
+    }
+
+    return (result == Integer.MAX_VALUE) ? 0 : result;
+  }
+
+
+  /**
+   * SumAttachment(attachment, property) function
+   * Total the value of the named property in all pieces
+   * attached
+   *
+   * @param attachment Attachment Name
+   * @param property Property Name
+   * @param ps       GamePiece
+   * @return total
+   */
+  public Object sumAttachment(String attachment, String property, PropertySource ps) {
+    int result = 0;
+
+    ps = translatePiece(ps);
+
+    if (ps instanceof GamePiece) {
+      GamePiece p = Decorator.getOutermost((Decorator)ps);
+      while (p instanceof Decorator) {
+        if (p instanceof Attachment) {
+          final Attachment a = (Attachment)p;
+          if (a.getAttachName().equals(attachment)) {
+            for (final GamePiece target : a.getAttachList()) {
+              final Object prop = target.getProperty(property);
+              result += propValue(prop);
+            }
+          }
+        }
+        p = ((Decorator) p).getInner();
+      }
+    }
+    return result;
+  }
+
+
+  /**
+   * CountAttachment(property) function count the number of pieces
+   * attached to this piece via a named Attachment trait that
+   * *contain* the specified property
+   *
+   * @param attachment Attachment Name
+   * @param property Property Name
+   * @param ps       GamePiece
+   * @return total
+   */
+  public Object countAttachment(String attachment, String property, PropertySource ps) {
+    int result = 0;
+
+    ps = translatePiece(ps);
+
+    if (ps instanceof GamePiece) {
+      GamePiece p = Decorator.getOutermost((Decorator)ps);
+      while (p instanceof Decorator) {
+        if (p instanceof Attachment) {
+          final Attachment a = (Attachment)p;
+          if (a.getAttachName().equals(attachment)) {
+            for (final GamePiece target : a.getAttachList()) {
+              if ("".equals(property)) {
+                result++;
+              }
+              else {
+                final Object prop = target.getProperty(property);
+                result += propNonempty(prop);
+              }
+            }
+          }
+        }
+        p = ((Decorator) p).getInner();
+      }
+    }
+    return result;
+  }
+
+
+  /**
+   * CountAttachmentExpression(attachment, expression) function count the number of pieces
+   * attached to this piece via a named Attachment trait for which the expression is true
+   *
+   * @param attachment Attachment Name e.g. "MyTurrets"
+   * @param expression Expression e.g. " { Ammo > 2 } "
+   * @param ps       GamePiece
+   * @return total
+   */
+  public Object countAttachmentExpression(String attachment, String expression, PropertySource ps) {
+    int result = 0;
+
+    ps = translatePiece(ps);
+
+    if (ps instanceof GamePiece) {
+      GamePiece p = Decorator.getOutermost((Decorator)ps);
+      while (p instanceof Decorator) {
+        if (p instanceof Attachment) {
+          final Attachment a = (Attachment)p;
+          if (a.getAttachName().equals(attachment)) {
+            // We wait to run the beanshell until we've found a matching attachment, since there should properly speaking only be precisely 0 or 1 matches.
+            final String matchString = replaceDollarVariables(expression, ps);
+            final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(ps);
+            for (final GamePiece target : a.getAttachList()) {
+              if (filter == null || filter.accept(target)) {
+                result++;
+              }
+            }
+          }
+        }
+        p = ((Decorator) p).getInner();
+      }
+    }
+    return result;
+  }
+
+
   /**
    * SumMat(property) function
    * Total the value of the named property in all counters
@@ -548,10 +776,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   public Object sumMat(String property, PropertySource ps) {
     int result = 0;
 
-    // This allows ReportState to sum properties properly
-    if (ps instanceof ReportState.OldAndNewPieceProperties) {
-      ps = ((ReportState.OldAndNewPieceProperties)ps).getNewPiece();
-    }
+    ps = translatePiece(ps);
 
     if (ps instanceof GamePiece) {
       GamePiece gp = (GamePiece) ps;
@@ -603,10 +828,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   public Object countMat(String property, PropertySource ps) {
     int result = 0;
 
-    // This allows ReportState to sum properties properly
-    if (ps instanceof ReportState.OldAndNewPieceProperties) {
-      ps = ((ReportState.OldAndNewPieceProperties)ps).getNewPiece();
-    }
+    ps = translatePiece(ps);
 
     if (ps instanceof GamePiece) {
       GamePiece gp = (GamePiece) ps;
@@ -662,10 +884,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   public Object sumLocation(String property, PropertySource ps) {
     int result = 0;
 
-    // This allows ReportState to sum properties properly
-    if (ps instanceof ReportState.OldAndNewPieceProperties) {
-      ps = ((ReportState.OldAndNewPieceProperties)ps).getNewPiece();
-    }
+    ps = translatePiece(ps);
 
     if (ps instanceof GamePiece) {
       final GamePiece p = (GamePiece) ps;

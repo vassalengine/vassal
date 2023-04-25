@@ -575,6 +575,22 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
     return null;
   }
 
+  /**
+   * @return Working inward from this Trait/Decorator, finds and returns a list of all Decorators within the given GamePiece
+   * that is an instance of the given Class.
+   */
+  public static List<GamePiece> getDecorators(GamePiece p, Class<?> type) {
+    final ArrayList<GamePiece> list = new ArrayList<>();
+    GamePiece piece = p;
+    while (piece instanceof Decorator) {
+      if (type.isInstance(piece)) {
+        list.add(piece);
+      }
+      piece = ((Decorator) piece).getInner();
+    }
+    return list;
+  }
+
 
   /**
    * {@link SearchTarget}
