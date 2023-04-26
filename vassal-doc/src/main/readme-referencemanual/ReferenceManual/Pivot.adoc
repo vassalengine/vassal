@@ -26,7 +26,8 @@ Positive numbers are down and to the right.
 _Example:_ For a piece of size 40x40, a pivot point of 20,-20 will rotate the piece around its upper right corner.
 
 *Pivot through fixed angle:*::  If selected, then invoking the command will pivot the piece through the angle specified in the _Angle_ field, in degrees clockwise.
-If left unselected, then invoking the command will allow the player to pivot the piece interactively to any angle by dragging the mouse.
+If left unselected, then invoking the command will allow the player to pivot the piece interactively to any angle by dragging the mouse. If a fixed angle is selected,
+then an _additional_ angle, along with an additional Menu Command and Key Command, can also be selected -- allowing, for example, commands to pivot both "forwards" and "backwards".
 
 | image:images/Pivot.png[]
 |===

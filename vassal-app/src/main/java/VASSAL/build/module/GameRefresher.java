@@ -40,6 +40,7 @@ import VASSAL.counters.Deck;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Mat;
+import VASSAL.counters.MatCargo;
 import VASSAL.counters.MatHolder;
 import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
@@ -107,9 +108,9 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     return theModule.getAllDescendantComponentsOf(DrawPile.class);
   }
 
-  final java.util.Map<GamePiece, GamePiece> updatedPieces = new HashMap<>();      //BR// maps old pieces to new pieces
-  final java.util.Map<GamePiece, GamePiece> formerPieces = new HashMap<>();       //BR// maps new pieces to old pieces
-  final java.util.Map<String, List<GamePiece>> attachmentIndex = new HashMap<>(); //BR// maps old attachment traits to their original targets
+  private final java.util.Map<GamePiece, GamePiece> updatedPieces = new HashMap<>();      //BR// maps old pieces to new pieces
+  private final java.util.Map<GamePiece, GamePiece> formerPieces = new HashMap<>();       //BR// maps new pieces to old pieces
+  private final java.util.Map<String, List<GamePiece>> attachmentIndex = new HashMap<>(); //BR// maps old attachment traits to their original targets
 
   public GameRefresher(GpIdSupport gpIdSupport) {
     this.gpIdSupport = gpIdSupport;
@@ -940,7 +941,16 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       // And add the cargo back onto the mat
       for (final Refresher r : loadedCargo) {
         for (final GamePiece refreshedCargo : r.getRefreshedPieces()) {
-          command = command.append(((Mat) Decorator.getDecorator(newMatPiece, Mat.class)).makeAddCargoCommand(refreshedCargo));
+          final Mat mat = (Mat) Decorator.getDecorator(Decorator.getOutermost(newMatPiece), Mat.class);
+
+          // New piece for "mat" could have conceivably had Mat trait deleted
+          if (mat == null) continue;
+
+          // New piece for "cargo" could have conceivably had Cargo trait deleted
+          if (Decorator.getDecorator(Decorator.getOutermost(refreshedCargo), MatCargo.class) == null) continue;
+
+          // So both freshened versions are still existentially capable: attach the cargo to the mat
+          command = command.append(mat.makeAddCargoCommand(refreshedCargo));
         }
       }
     }

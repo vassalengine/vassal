@@ -35,8 +35,8 @@ public class AttachmentManager {
   /**
    * Map of the attachment traits with the same attachment names
    */
-  final Map<String, List<Attachment>> attachments = new HashMap<>();
-  final List<GamePiece> newPiecesWithAttachments = new ArrayList<>();
+  private final Map<String, List<Attachment>> attachments = new HashMap<>();
+  private final List<GamePiece> newPiecesWithAttachments = new ArrayList<>();
 
   public void clearAll() {
     attachments.clear();

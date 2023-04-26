@@ -41,7 +41,6 @@ public class GlobalCommandVisitor implements DeckVisitor {
   protected int maxTotalPieces;
   protected int totalPieceCount;
 
-
   public GlobalCommandVisitor(Command command, PieceFilter filter, KeyStroke stroke) {
     this(command, filter, stroke, null);
   }
@@ -158,7 +157,7 @@ public class GlobalCommandVisitor implements DeckVisitor {
       if (visitingDeck) {
         p.setProperty(Properties.OBSCURED_BY, p.getProperty(Properties.OBSCURED_BY_PRE_DRAW));  // Bug 13433 restore correct OBSCURED_BY after checking filter
       }
-
+      
       if ((maxTotalPieces < 0) || (totalPieceCount < maxTotalPieces)) {
         totalPieceCount++;
 

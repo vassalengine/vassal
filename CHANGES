@@ -1,13 +1,19 @@
 3.7.0-beta3 - ???
 
-* 12238: Upgrade bundled Java from 19 to 20
-* 12234: Don't try to render SVG which would have a width or height of zero
-* 12233: Ensure that OpMultiResolutionImage.getBaseImage() never returns null
+* 12256: Work around Java's use of incorrect gamma for grayscale + alpha PNGs
+* 12222: Multi-Location Commands: One trait may create actions corresponding to
+    several map locations
 * 12220: Add BorderOutline's property names to the searchable target list
+* 12215: New MarkMoved commands shouldn't default to being displayed if no key
+    commands entered
 * 12205: Area of Effect trait was eating other traits' visibility info in some
     cases
 * 12203: Properly extract outlines from SVG for NonRectangular
+* 12192: New Attachment trait
+* 12187: Improved Rectangular Grid range metric names and made them translatable
+* 12184: Pivot can have two key commands/angles
 * 12177: Change-property buttons don't generate completely empty chat lines
+* 12176: Add preference to not display Mark Moved status of pieces
 * 12175: Fix stretchy images in chat
 * 12172: Metadata now contains the 'extra' fields, and Module Manager displays
   them if numeric
@@ -72,6 +78,16 @@
 * 10820: Make Action Button available on all windows where other similar
     buttons (e.g., GKC, Multi-Action, etc) are available
 *  4454: Save chat text to file
+
+3.6.17 - 23 April 2023
+
+* 12250: Adjusted TilingHandler to simplify VASL and VSQL custom tilers
+* 12248: Don't NPE when handling setup errors
+* 12247: Fix error dialog broken since 3.6.15 for exceptions with null messages
+* 12238: Upgrade bundled Java from 19 to 20
+* 12237: Fix edge case Mat Refresh bugs
+* 12234: Don't try to render SVG which would have a width or height of zero
+* 12233: Ensure that OpMultiResolutionImage.getBaseImage() never returns null
 
 3.6.16 - 17 April 2023
 

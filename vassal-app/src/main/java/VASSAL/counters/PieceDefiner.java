@@ -242,6 +242,7 @@ public class PieceDefiner extends JPanel {
       addElement(new TranslatableMessage());
       addElement(new Mat(""));
       addElement(new MatCargo());
+      addElement(new MultiLocationCommand());
 
       // Generate a model sorted by description, in the current users language
       buildAlphaModel();

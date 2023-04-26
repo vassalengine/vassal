@@ -809,7 +809,8 @@ public class GameState implements CommandEncoder {
       }
     }
     catch (IllegalStateException e) {
-      if (e.getMessage().startsWith(Resources.getString("Decorator.no_state_for_trait"))) { //BR//
+      final String msg = e.getMessage();
+      if (msg != null && msg.startsWith(Resources.getString("Decorator.no_state_for_trait"))) { //BR//
         WarningDialog.show("GameState.probably_wrong_version"); //NON-NLS
         gameStarted = false;
         setup(false);
