@@ -31,8 +31,8 @@ If you select the _Refresh decks_ option when running the Game Refresher, existi
 ===== Adding and Deleting Decks
 When _Refresh decks_ is selected, two additional options also become available, to add and delete decks.
 
-If you select the _Delete decks_ option, then any deck found in the game being refreshed that does not match (by name and board) a deck in the module definition will be deleted. Any current contents (e.g. cards) in that deck will be left in a stack at the deck's former location.
+If you select the _Delete decks_ option, then any deck found in the game being refreshed that does not match (by name and board) a deck in the module definition will be deleted. Any current contents (e.g., cards) in that deck will be left in a stack at the deck's former location.
 
-If you select the _Add decks_ option, then any _new_ deck found in the module definition that does not exist in the game being refreshed will be _added_. Note this will not add any _contents_ (e.g. cards) to the deck, it will only add the deck. If you need to add contents you will need to arrange to add them separately, e.g. from a piece palette, or dragged in from some other location.
+If you select the _Add decks_ option, then any _new_ deck found in the module definition that does not exist in the game being refreshed will be _added_. Note this will not add any _contents_ (e.g., cards) to the deck, it will only add the deck. If you need to add contents you will need to arrange to add them separately, e.g., from a piece palette, or dragged in from some other location.
 
 

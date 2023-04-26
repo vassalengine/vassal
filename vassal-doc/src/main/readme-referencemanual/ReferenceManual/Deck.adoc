@@ -76,7 +76,7 @@ It should be set to approximately the same size as the cards the Deck will hold.
 *When selecting, sort cards by:*::   When the player is prompted to select specific cards from the deck, the cards can optionally be sorted (alphabetically) using the listed property.
 Leave blank to list cards by their current position in the deck.
 +
-NOTE: Unlike the previous field this field simply names a single property, and should not use $..$ markers. To sort by multiple fields a <<CalculatedProperty.adoc#top,Calculated Property>> trait e.g. _SortName_ can be created and serve to concatenate the various fields in an appropriate order.
+NOTE: Unlike the previous field this field simply names a single property, and should not use $..$ markers. To sort by multiple fields a <<CalculatedProperty.adoc#top,Calculated Property>> trait, e.g., _SortName_, can be created and serve to concatenate the various fields in an appropriate order.
 +
 *Example:* cards in a deck can use a <<PropertyMarker.adoc#top,Marker>> trait to specify a card number (001,002, etc.) and always list cards in order of their assigned number: in this case simply fill _CardNum_ into the field, no $..$.
 
@@ -86,7 +86,7 @@ NOTE: Unlike the previous field this field simply names a single property, and s
 
 *Menu command to turn deck face down:*:: Text of the menu command to change the facing of subsequent cards drawn from the deck to face down.
 
-*Draw new cards face up:*::  If checked, then cards drawn from this Deck (e.g. by dragging them) will be placed face-up on the playing area.
+*Draw new cards face up:*::  If checked, then cards drawn from this Deck (e.g., by dragging them) will be placed face-up on the playing area.
 If unchecked, then cards from a face-down deck are drawn face down and owned by the drawing player.
 
 *Face down report format:*::  A <<MessageFormat.adoc#top,Message Format>> that is echoed to the chat log whenever a player selects the _Face Down_ menu item (if enabled above): _deckName_ is the name of this deck, _commandName_ is the name of the menu item.

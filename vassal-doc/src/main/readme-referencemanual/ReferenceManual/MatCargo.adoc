@@ -26,7 +26,7 @@ A Mat and its Mat Cargo, if set to the same <<GamePieceLayers.adoc#top,Game Piec
 be processed in an order such that the Mat Cargo pieces will remain "on top" of the Mat, visually. Mat Cargo pieces in higher
 Game Piece Layers will likewise of course always be drawn in front.
 
-A Mat Cargo placed in a _lower_ layer will appear to be _beneath_ the Mat when it is drawn. This can be useful for e.g.
+A Mat Cargo placed in a _lower_ layer will appear to be _beneath_ the Mat when it is drawn. This can be useful for, e.g.,
 "tucking cards underneath a Mat" -- the Mat Cargo will still stay attached to the Mat and will still move with it when the Mat
 is dragged or moved. **Warning:** This scheme _can_ produce a situation wherein a Mat Cargo piece is inadvertently placed _entirely_
 behind the Mat, and in this case simply "moving the Mat out of the way" isn't easy because the Mat Cargo will automatically
@@ -48,13 +48,13 @@ apply-on-move key command of a Map.
 Mat it has been placed on, changing facing if/when the Mat rotates.
 
 NOTE: This means that like a Can Rotate trait,
-the Mat Cargo trait should be placed _below_ the graphical elements (e.g. Layer and Non-Rectangular Traits) to
+the Mat Cargo trait should be placed _below_ the graphical elements (e.g., Layer and Non-Rectangular Traits) to
 potentially be rotated. A Mat Cargo piece does _not_ need a separate Can Rotate trait in order to be able to maintain
 relative facing, although it is permitted to have its own Can Rotate trait as well.
 
-*X Extra detection distance from center:*:: If non-zero, then VASSAL will look this distance to the left and right of the piece's center when trying to attach it to a mat. Useful e.g. for cards that are tucked halfway under a mat surface, as it does not require the precise center of the card to be on the mat.
+*X Extra detection distance from center:*:: If non-zero, then VASSAL will look this distance to the left and right of the piece's center when trying to attach it to a mat. Useful, e.g., for cards that are tucked halfway under a mat surface, as it does not require the precise center of the card to be on the mat.
 
-*Y Extra detection distance from center:*:: If non-zero, then VASSAL will look this distance above and below the piece's center when trying to attach it to a mat. Useful e.g. for cards that are tucked halfway under a mat surface, as it does not require the precise center of the card to be on the mat.
+*Y Extra detection distance from center:*:: If non-zero, then VASSAL will look this distance above and below the piece's center when trying to attach it to a mat. Useful, e.g., for cards that are tucked halfway under a mat surface, as it does not require the precise center of the card to be on the mat.
 
 *Key Command to force attach to any mat found at current location:*:: If the piece receives this key command, it will immediately search for (and attempt to attach itself to) any available mat at its current location; if it was already attached to a mat but is no longer overlapping it, it will be detached. Note that attachment and detachment are normally handled automatically whenever a cargo piece is moved, but this allows a check to be forced explicitly in special situations. An example of such a situation would be if you've just "shrunk" the mat (changed its visual shape to be smaller) and want to drop of all the pieces no longer overlapping the mat.
 

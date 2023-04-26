@@ -11,7 +11,7 @@ Or you may discover images that need to be resized. Or improved images may becom
 
 But when you point your layers and maps and pieces at new image files, that doesn't mean the old image files automatically go away -- having been copied into the ZIP structure of the module's VMOD file, they remain waiting to be called back to service. Obviously over time this can result in module files being a good deal bigger than they really need to be.
 
-The _Remove Unused Images_ tool on the <<Editor.adoc#top,Editor's>> _Tools Menu_ can help you sort this situation out. It will provide a list of all the image files in the module that are not referenced in the module's components, traits, and any linked HTML (e.g. HTML help files on the Help menu).
+The _Remove Unused Images_ tool on the <<Editor.adoc#top,Editor's>> _Tools Menu_ can help you sort this situation out. It will provide a list of all the image files in the module that are not referenced in the module's components, traits, and any linked HTML (e.g., HTML help files on the Help menu).
 
 You will have a chance to inspect the list of unused images and to select which ones to remove and which ones to keep, before any are removed. Files are only removed when you click the _Remove Files_ button at the end of the process, and only files you have manually moved to the _Files to remove_ column will be removed.
 

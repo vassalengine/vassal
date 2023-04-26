@@ -33,7 +33,7 @@ image:images/OverviewMapExample.png[]
 
 *Hotkey to show/hide:*:: A <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to show or hide the overiew window.
 
-*Scale factor:*:: The scale of the Overview window when showing. e.g. A scale factor of 0.2 will show the Overview window at 20% of full size.
+*Scale factor:*:: The scale of the Overview window when showing. E.g., A scale factor of 0.2 will show the Overview window at 20% of full size.
 
 *Visible rectangle highlight color:*:: Sets the color of the box showing the section of the main map currently visible.
 

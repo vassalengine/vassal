@@ -7,7 +7,7 @@
 === Global Translatable Messages
 
 Global Translatable Messages are similar to <<GlobalProperties.adoc#top, Global Properties>>, except that instead of holding a value that might change during the game,
-they hold a message that _might_ be translated into a foreign language (e.g. if running the module "in Spanish"). Global Translatable Messages _are_ <<Properties.adoc#top,Properties>>,
+they hold a message that _might_ be translated into a foreign language (e.g., if running the module "in Spanish"). Global Translatable Messages _are_ <<Properties.adoc#top,Properties>>,
 but they should _only_ be referenced in <<MessageFormat.adoc#top, Message Formats>> for display, or in <<Expression.adoc#top, Expressions>> used exclusively to generate messages to be displayed. They should not be used to change
 the "game state", since they may hold different values if two players in the same game are playing the module in two different languages.
 

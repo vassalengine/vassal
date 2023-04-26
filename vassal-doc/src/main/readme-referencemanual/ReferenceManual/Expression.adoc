@@ -13,7 +13,7 @@ Any field within the Vassal Editor that is followed by a Calculator icon image:i
 Expressions are essentially an in-line <<CalculatedProperty.adoc#top,Calculated Property>>, re-evaluated every time VASSAL needs to know their value.
 There are two main flavors of Expression: <<#beanshell,BeanShell Expressions>> which are identified by being surrounded by curly braces {}, and <<#simple,Simple Expressions>> which are not.
 
-<<PropertyMatchExpression.adoc#top,Property Match Expressions>> select which pieces to operate on by checking properties, e.g. in a <<GlobalKeyCommand.adoc#top,Global Key Command>>.
+<<PropertyMatchExpression.adoc#top,Property Match Expressions>> select which pieces to operate on by checking properties, e.g., in a <<GlobalKeyCommand.adoc#top,Global Key Command>>.
 
 The <<ExpressionBuilder.adoc#top,Expression Builder>> makes building expressions from available properties, operations, and methods a bit more convenient.
 
@@ -223,7 +223,7 @@ Count(expr, map) + |{SumStack("Attack")} +
 *NOTE:* The last four functions (i.e. plain "Sum" and "Count", with or without the map parameter) can have substantial performance cost as they must check all of the pieces on the map or in the entire game against the expression.
 Also, because Java requires that the expression itself must be passed as a string, the syntax is tricky here and quotation marks inside the expression must be quoted as \" +
 |*Alert* |Alert(message) + |{Alert("Adding 1 to HP")} + |*Alert* displays a message in a popup dialog box, to the currently active player only.
-If a message needs to be shown to _all_ players, the recommended method is to send something to the Chat Log e.g.
+If a message needs to be shown to _all_ players, the recommended method is to send something to the Chat Log, e.g.,
 with a <<ReportChanges.adoc#top,Report Action>> trait or other <<MessageFormat.adoc#top,Message Format>> field.
 
 |===

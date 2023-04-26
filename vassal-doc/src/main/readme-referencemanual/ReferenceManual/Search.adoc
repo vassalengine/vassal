@@ -40,7 +40,7 @@ Match against Beanshell expressions defined in piece traits.
 Match against the names of Properties provided by piece traits.
 
 ===== Match key commands
-Match against Key Commands defied in piece traits. You can search against user defined Named Key Strokes, or for the standard name of defined Key Strokes (e.g. Ctrl-C).
+Match against Key Commands defied in piece traits. You can search against user defined Named Key Strokes, or for the standard name of defined Key Strokes (e.g., Ctrl-C).
 
 ===== Match UI text
 

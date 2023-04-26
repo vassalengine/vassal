@@ -9,7 +9,7 @@
 
 Specifies how identifying names/numbers are assigned to cells in a <<HexGrid.adoc#top,Hex Grid>> or <<RectangularGrid.adoc#top,Rectangular Grid>> on a <<Board.adoc#top,Board>>, the format of those grid references, and whether the names are to be drawn on top of the board image.
 
-NOTE: When using Grids with fully numeric Column and Row numbers with leading zeros (e.g. 0203), then Vassal will internally remove leading zeros of any grid references generated. This makes it difficult to use column or row numbers in Beanshell expressions and keep the leading zeros intact. This can be overcome by setting the <<GlobalOptions.adoc#leadingzeros,Preserve leading zeros in Integers >> Global Option.
+NOTE: When using Grids with fully numeric Column and Row numbers with leading zeros (e.g., 0203), then Vassal will internally remove leading zeros of any grid references generated. This makes it difficult to use column or row numbers in Beanshell expressions and keep the leading zeros intact. This can be overcome by setting the <<GlobalOptions.adoc#leadingzeros,Preserve leading zeros in Integers >> Global Option.
 
 [width="100%",cols="50%a,^50%a",]
 |===
@@ -33,7 +33,7 @@ NOTE: If you are creating a grid inside a <<ZonedGrid.adoc#top,Zone>> the first 
 
 *Horizontal/Vertical numbering descending:*::  If checked, numbering of rows/columns begins on the bottom/right edge of the board and increases up/left.
 
-*Location format:*::  A <<MessageFormat.adoc#top,Message Format>> used to generate a piece's LocationName <<Properties.adoc#top,Property>> and for reporting locations within a map window (e.g.
+*Location format:*::  A <<MessageFormat.adoc#top,Message Format>> used to generate a piece's LocationName <<Properties.adoc#top,Property>> and for reporting locations within a map window (e.g.,
 for move reporting).
 +
 The default value of _$gridLocation$_ is the automatically generated name as drawn on the sample grid.
