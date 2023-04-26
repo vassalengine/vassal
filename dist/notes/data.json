@@ -23,7 +23,8 @@
         { "num": 12243, "desc": "Startup Global Key Commands can also send a Global Hotkey" },
         { "num": 12222, "desc": "Multi-Location Commands: One trait may create actions corresponding to several map locations" },
         { "num": 12192, "desc": "New Attachment trait" },
-        { "num": 12184, "desc": "Pivot can have two key commands/angles" }
+        { "num": 12184, "desc": "Pivot can have two key commands/angles" },
+        { "num": 11932, "desc": "Support for setting Scenario Options" }
       ],
       "bug_fixes": [
         { "num": 12256, "desc": "Work around Java's use of incorrect gamma for grayscale + alpha PNGs" },
