@@ -24,9 +24,12 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.MassKeyCommand;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.TranslatableStringEnum;
+import VASSAL.configure.VisibilityAND;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.UniqueIdManager;
 
@@ -40,8 +43,9 @@ import java.util.List;
  * <p>
  * As of 3.6, multiple Startup Global Key Commands can be depended on to
  * process in the correct order.
+ * As of 3.7, a global hotkey can be sent instead of a GKC
  *
- * @author Pieter Geerkens
+ * @author Pieter Geerkens, Brian Reynolds
  *
  */
 public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameComponent, CommandEncoder, UniqueIdManager.Identifyable {
@@ -50,12 +54,23 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
   public static final String APPLY_EVERY_LAUNCH_OF_SESSION   = "everyLaunchOfSession"; //NON-NLS
   public static final String APPLY_START_OF_GAME_ONLY        = "startOfGameOnly";      //NON-NLS
   public static final String APPLY_START_GAME_OR_SIDE_CHANGE = "sideChange";           //NON-NLS
+  public static final String GLOBAL_HOTKEY                   = "globalHotkey";         //NON-NLS
+  public static final String HOTKEY_OR_KEY_COMMAND           = "hotkeyOrKeyCommand";   //NON-NLS
+
+  public static final String SEND_KEY_COMMAND = "sendKeyCommand"; //NON-NLS
+  public static final String SEND_HOTKEY = "sendHotkey"; //NON-NLS
+
+  public static final String[] SEND_OPTIONS = { SEND_KEY_COMMAND, SEND_HOTKEY };
+  public static final String[] SEND_KEYS = { "Editor.StartupGlobalKeyCommand.send_key_command", "Editor.StartupGlobalKeyCommand.send_hotkey" };
 
   private static final char DELIMITER = '\t'; //$NON-NLS-1$
   public static final String COMMAND_PREFIX = "SGKC" + DELIMITER; //NON-NLS-1$
 
   protected static final UniqueIdManager idMgr = new UniqueIdManager("SGKC"); //$NON-NLS-1$
   protected String id = "";     // Our unique ID
+
+  protected String hotkeyOrKeyCommand = SEND_KEY_COMMAND;
+  protected NamedKeyStroke globalHotkey = NamedKeyStroke.NULL_KEYSTROKE;
 
   public String whenToApply = APPLY_EVERY_LAUNCH_OF_SESSION;
 
@@ -79,9 +94,24 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
     }
   }
 
+
+  public static class SendConfig extends TranslatableStringEnum {
+    @Override
+    public String[] getValidValues(AutoConfigurable target) {
+      return SEND_OPTIONS;
+    }
+
+    @Override
+    public String[] getI18nKeys(AutoConfigurable target) {
+      return SEND_KEYS;
+    }
+  }
+
+
   @SuppressWarnings("removal")
   public StartupGlobalKeyCommand() {
     super();
+
     condition = null;
     /* These four fields pertaining to the physical representation of the
      * GKC on the toolbar are not applicable in this implementation.
@@ -96,6 +126,7 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
   @SuppressWarnings("removal")
   public StartupGlobalKeyCommand(MassKeyCommand gkc) {
     super(gkc);
+
     condition = null;
     /* These four fields pertaining to the physical representation of the
      * GKC on the toolbar are not applicable in this implementation.
@@ -139,8 +170,14 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
     if (List.of(BUTTON_TEXT, TOOLTIP, ICON, HOTKEY).contains(key)) {
       return () -> false;
     }
+    else if (List.of(WHEN_TO_APPLY, HOTKEY_OR_KEY_COMMAND).contains(key)) {
+      return () -> true;
+    }
+    else if (List.of(GLOBAL_HOTKEY).contains(key)) {
+      return () -> SEND_HOTKEY.equals(hotkeyOrKeyCommand);
+    }
     else {
-      return super.getAttributeVisibility(key);
+      return new VisibilityAND(() -> SEND_KEY_COMMAND.equals(hotkeyOrKeyCommand), super.getAttributeVisibility(key));
     }
   }
 
@@ -148,7 +185,10 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
   public String[] getAttributeDescriptions() {
     final List<String> descs = new ArrayList<>();
     descs.add(Resources.getString("Editor.StartupGlobalKeyCommand.when_to_apply"));
+    descs.add(Resources.getString("Editor.StartupGlobalKeyCommand.what_to_apply"));
+    descs.add(Resources.getString("Editor.StartupGlobalKeyCommand.global_hotkey"));
     Collections.addAll(descs, super.getAttributeDescriptions());
+
     return descs.toArray(new String[0]);
   }
 
@@ -157,6 +197,8 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
     final List<String> names = new ArrayList<>();
 
     names.add(WHEN_TO_APPLY);
+    names.add(HOTKEY_OR_KEY_COMMAND);
+    names.add(GLOBAL_HOTKEY);
 
     // Filter some of the crazy out of the original MassKeyCommand list, so we can add more things "safely"
     for (final String n : super.getAttributeNames()) {
@@ -173,6 +215,8 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
   public Class<?>[] getAttributeTypes() {
     final List<Class<?>> types = new ArrayList<>();
     types.add(Prompt.class);
+    types.add(SendConfig.class);
+    types.add(NamedKeyStroke.class);
     Collections.addAll(types, super.getAttributeTypes());
     return types.toArray(new Class<?>[0]);
   }
@@ -184,6 +228,17 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
         whenToApply = (String)value;
       }
     }
+    else if (GLOBAL_HOTKEY.equals(key)) {
+      if (value instanceof String) {
+        value = NamedHotKeyConfigurer.decode((String) value);
+      }
+      globalHotkey = (NamedKeyStroke) value;
+    }
+    else if (HOTKEY_OR_KEY_COMMAND.equals(key)) {
+      if (value instanceof String) {
+        hotkeyOrKeyCommand = (String)value;
+      }
+    }
     else {
       super.setAttribute(key, value);
     }
@@ -193,6 +248,12 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
   public String getAttributeValueString(String key) {
     if (WHEN_TO_APPLY.equals(key)) {
       return whenToApply;
+    }
+    else if (GLOBAL_HOTKEY.equals(key)) {
+      return NamedHotKeyConfigurer.encode(globalHotkey);
+    }
+    else if (HOTKEY_OR_KEY_COMMAND.equals(key)) {
+      return hotkeyOrKeyCommand;
     }
     else {
       return super.getAttributeValueString(key);
@@ -234,6 +295,34 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
     hasAppliedThisGame = true;
     apply();
     return true;
+  }
+
+  @Override
+  public void apply() {
+    if (SEND_KEY_COMMAND.equals(hotkeyOrKeyCommand)) {
+      super.apply();
+    }
+    else {
+      if ((globalHotkey != null) && !globalHotkey.isNull()) {
+        final GameModule gm = GameModule.getGameModule();
+        final boolean loggingPausedByMe = gm.pauseLogging();
+        GameModule.getGameModule().fireKeyStroke(globalHotkey);
+        if (loggingPausedByMe) {
+          gm.resumeLogging();
+        }
+      }
+    }
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    final List<NamedKeyStroke> l = new ArrayList<>(super.getNamedKeyStrokeList());
+    l.add(NamedHotKeyConfigurer.decode(getAttributeValueString(GLOBAL_HOTKEY)));
+    return l;
   }
 
 

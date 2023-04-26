@@ -278,6 +278,8 @@ All fields behave identically to the corresponding ones in <<#GlobalKeyCommand,G
 
 As of VASSAL 3.6, multiple start-up global key commands _can_ be depended on to run in the order they are listed in the module.
 
+As of VASSAL 3.7, a startup global _hot key_ can optionally be specified (instead of a global key command) for the purpose of directly activating toolbar buttons or deck key commands (such as automatically shuffling a deck at game start).
+
 Startup Global Key Commands can be configured to any of three modes:
 
 **(1) On First Game Launch/Load Of Session**: These fire every time the _module_ starts up, regardless of whether it is to begin a new game or to load and continue an existing one.

@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2000-2003 by Rodney Kinney
+ * Copyright (c) 2023 by VASSAL Development Team, Brian Reynolds
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -17,8 +17,20 @@
  */
 package VASSAL.configure;
 
-@FunctionalInterface
-public interface VisibilityCondition {
-  boolean shouldBeVisible();
+/**
+ * Allow "Anding" two VisibilityCondition items together, dealing with the whole "null means visible" situation
+ */
+public class VisibilityAND implements VisibilityCondition {
+  final VisibilityCondition and1;
+  final VisibilityCondition and2;
 
+  public VisibilityAND(VisibilityCondition a1, VisibilityCondition a2) {
+    and1 = a1;
+    and2 = a2;
+  }
+
+  @Override
+  public boolean shouldBeVisible() {
+    return ((and1 == null) || and1.shouldBeVisible()) && ((and2 == null) || and2.shouldBeVisible());
+  }
 }
