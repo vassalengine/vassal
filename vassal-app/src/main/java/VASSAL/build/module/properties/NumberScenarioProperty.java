@@ -11,7 +11,7 @@ public class NumberScenarioProperty extends AbstractScenarioProperty {
   }
 
   @Override
-  public Class getInitialValueClass() {
+  public Class<?> getInitialValueClass() {
     return Integer.class;
   }
 

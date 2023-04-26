@@ -94,7 +94,7 @@ public abstract class AbstractScenarioProperty extends GlobalProperty {
     };
   }
 
-  public abstract Class getInitialValueClass();
+  public abstract Class<?> getInitialValueClass();
 
   @Override
   public String[] getAttributeNames() {

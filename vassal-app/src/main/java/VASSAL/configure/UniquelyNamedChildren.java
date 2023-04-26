@@ -22,10 +22,8 @@ import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
 import VASSAL.i18n.Resources;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Ensures that any children of a given type have unique configure names
@@ -43,20 +41,21 @@ public class UniquelyNamedChildren implements ValidityChecker {
   @Override
   public void validate(Buildable b, ValidationReport report) {
     if (b == target) {
-      final Map<String, String> children = new HashMap<>();
-      final List<String> duplicates = new ArrayList<>();
+      final Set<String> children = new HashSet<>();
+      final Set<String> duplicates = new HashSet<>();
 
       for (final Object child : target.getAllDescendantComponentsOf(childClass)) {
         if (child instanceof Configurable) {
+
           final String name = ((Configurable) child).getConfigureName();
-          final String exists = children.get(name);
-          if (exists == null) {
-            children.put(name, "Y");
-          }
-          else {
+
+          if (children.contains(name)) {
             if (!duplicates.contains(name)) {
               duplicates.add(name);
             }
+          }
+          else {
+            children.add(name);
           }
         }
       }

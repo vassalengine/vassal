@@ -22,7 +22,7 @@ public class ListScenarioProperty extends AbstractScenarioProperty {
   }
 
   @Override
-  public Class getInitialValueClass() {
+  public Class<?> getInitialValueClass() {
     return validOptions.class;
   }
 

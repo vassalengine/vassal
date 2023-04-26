@@ -11,7 +11,7 @@ public class BooleanScenarioProperty extends AbstractScenarioProperty {
   }
 
   @Override
-  public Class getInitialValueClass() {
+  public Class<?> getInitialValueClass() {
     return Boolean.class;
   }
 

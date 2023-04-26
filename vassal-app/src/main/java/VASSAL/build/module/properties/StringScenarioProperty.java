@@ -24,7 +24,7 @@ public class StringScenarioProperty extends AbstractScenarioProperty {
   }
 
   @Override
-  public Class getInitialValueClass() {
+  public Class<?> getInitialValueClass() {
     return String.class;
   }
 
