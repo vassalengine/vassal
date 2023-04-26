@@ -26,6 +26,7 @@ import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.TranslatableStringEnum;
+import VASSAL.configure.VisibilityAND;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.NamedKeyStroke;
@@ -183,7 +184,7 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
       //};
       // THINGS THAT DON'T WORK
       //return () -> (SEND_KEY_COMMAND.equals(hotkeyOrKeyCommand) && (super.getAttributeVisibility(key)).shouldBeVisible());
-      return new VisibilityCondition.VisibilityAND(() -> SEND_KEY_COMMAND.equals(hotkeyOrKeyCommand), super.getAttributeVisibility(key));
+      return new VisibilityAND(() -> SEND_KEY_COMMAND.equals(hotkeyOrKeyCommand), super.getAttributeVisibility(key));
 
       // THINGS THAT DO "WORK"
       //return super.getAttributeVisibility(key);
