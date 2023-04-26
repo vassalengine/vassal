@@ -29,7 +29,9 @@ import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.folder.GlobalPropertyFolder;
+import VASSAL.configure.CompoundValidityChecker;
 import VASSAL.configure.Configurer;
+import VASSAL.configure.UniquelyNamedChildren;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.TemporaryToolBar;
 import VASSAL.tools.ToolBarComponent;
@@ -88,9 +90,12 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
     return HelpFile.getReferenceManualPage("GlobalProperties.html"); //NON-NLS
   }
 
+  // Only the module-level GlobalProperties component can have Scenario Options.
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class<?>[] {GlobalPropertyFolder.class, GlobalProperty.class };
+    return parent instanceof GameModule ?
+      new Class<?>[] {GlobalPropertyFolder.class, GlobalProperty.class, ScenarioPropertiesOptionTab.class } :
+      new Class<?>[] {GlobalPropertyFolder.class, GlobalProperty.class};
   }
 
   @Override
@@ -105,6 +110,16 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
     propertySource = (PropertySource) parent;
     GameModule.getGameModule().addCommandEncoder(
       new ChangePropertyCommandEncoder(this));
+
+    validator = new CompoundValidityChecker(
+      new UniquelyNamedChildren(this, ScenarioPropertiesOptionTab.class),
+      new UniquelyNamedChildren(this, GlobalProperty.class)
+    );
+
+    // Initialise the Scenario Options
+    if (parent instanceof GameModule) {
+      new ScenarioOptions(this);
+    }
   }
 
   @Override

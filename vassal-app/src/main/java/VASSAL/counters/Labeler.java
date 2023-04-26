@@ -348,6 +348,10 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     AffineTransform saveXForm = null;
     final Graphics2D g2d = (Graphics2D) g;
 
+    if (lastCachedOp == null) {
+      return;
+    }
+
     if (rotateDegrees != 0) {
       saveXForm = g2d.getTransform();
       final AffineTransform newXForm = AffineTransform.getRotateInstance(

@@ -66,6 +66,7 @@ public class StringEnumConfigurer extends Configurer {
     return panel;
   }
 
+  @Override
   public void setEnabled(boolean enabled) {
     box.setEnabled(enabled);
   }

@@ -297,6 +297,7 @@ public class TranslatingStringEnumConfigurer extends Configurer {
    *
    * @param enabled set the Enabled status of the Configurer
    */
+  @Override
   public void setEnabled(boolean enabled) {
     box.setEnabled(enabled);
   }

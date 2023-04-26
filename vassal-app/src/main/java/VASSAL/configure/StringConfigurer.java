@@ -213,4 +213,9 @@ public class StringConfigurer extends Configurer {
       }
     }
   }
+
+  @Override
+  public void setEnabled(boolean enabled) {
+    nameField.setEnabled(enabled);
+  }
 }

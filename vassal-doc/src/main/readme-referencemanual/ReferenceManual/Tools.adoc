@@ -12,7 +12,9 @@ Various tools and preferences are available to users and module designers.
 |===
 
 |*<<Preferences.adoc#top,Preferences>>* |User preferences for personalization, customization, and compatibility.
+|*<<ScenarioProperties.adoc#top,Scenario Options>>* |Customizable, module specific preferences that can be used to record scenario specific options.
 |*<<GameRefresher.doc#top,Refresh Counters>>* |Tool menu option to update counters in a game or save file to use prototypes from a new version of a module.
 |*<<SavedGameUpdater.adoc#top,Saved Game Updater>>* |Editor tool menu option to update all predefined setups in a module to use the latest prototypes.
 |*<<RemoveUnusedImages.adoc#top,Remove Unused Images>>* |Editor tool menu option to remove unused image files from a module.
+|*<<Folders.adoc#top,Folders>>* |Folders can be created under many components and nested to any depth to help organise the parts that make up your module.
 |===
