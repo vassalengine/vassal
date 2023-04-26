@@ -73,6 +73,7 @@ import VASSAL.counters.ReturnToDeck;
 import VASSAL.counters.SendToLocation;
 import VASSAL.counters.SetAttachmentProperty;
 import VASSAL.counters.SetGlobalProperty;
+import VASSAL.counters.SetPieceProperty;
 import VASSAL.counters.Stack;
 import VASSAL.counters.SubMenu;
 import VASSAL.counters.TableInfo;
@@ -195,6 +196,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     Map.entry(DynamicProperty.ID, DynamicProperty::new),
     Map.entry(CalculatedProperty.ID, CalculatedProperty::new),
     Map.entry(SetGlobalProperty.ID, SetGlobalProperty::new),
+    Map.entry(SetPieceProperty.ID, SetPieceProperty::new),
     Map.entry(RestrictCommands.ID, RestrictCommands::new),
     Map.entry(PlaySound.ID, PlaySound::new),
     Map.entry(ActionButton.ID, ActionButton::new),
