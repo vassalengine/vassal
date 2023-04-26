@@ -50,9 +50,7 @@ public class UniquelyNamedChildren implements ValidityChecker {
           final String name = ((Configurable) child).getConfigureName();
 
           if (children.contains(name)) {
-            if (!duplicates.contains(name)) {
-              duplicates.add(name);
-            }
+            duplicates.add(name);
           }
           else {
             children.add(name);
