@@ -2,6 +2,7 @@
 
 * 12256: Work around Java's use of incorrect gamma for grayscale + alpha PNGs
 * 12251: New Set Piece Property trait
+* 12243: Startup Global Key Commands can also send a Global Hotkey
 * 12222: Multi-Location Commands: One trait may create actions corresponding to
     several map locations
 * 12220: Add BorderOutline's property names to the searchable target list
