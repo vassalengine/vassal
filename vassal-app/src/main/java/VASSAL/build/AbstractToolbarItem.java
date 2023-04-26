@@ -216,8 +216,11 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
   public void checkDisabled() {
     if ((!isShowDisabledOptions() || !canDisable) && (launch != null)) {
       launch.setEnabled(true);
-      launch.setForceInvisible(false);
-      launch.checkVisibility();
+
+      // Disabling hide-when-disabled for now, it seems to be creating problems
+      //launch.setForceInvisible(false);
+      //launch.checkVisibility();
+
       return;
     }
     if ((property == null) && !propertyGate.isEmpty()) {
@@ -234,8 +237,10 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
   public void disableIfTrue(boolean disable) {
     if (launch != null) {
       launch.setEnabled(!isShowDisabledOptions() || !canDisable || !disable);
-      launch.setForceInvisible(disable && canDisable && hideWhenDisabled);
-      launch.checkVisibility();
+
+      // Disabling hide-when-disabled for now, it seems to be creating problems
+      //launch.setForceInvisible(disable && canDisable && hideWhenDisabled);
+      //launch.checkVisibility();
     }
   }
 
@@ -464,11 +469,14 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
 
   @Override
   public VisibilityCondition getAttributeVisibility(String key) {
-    if (List.of(PROPERTY_GATE, HIDE_WHEN_DISABLED).contains(key)) {
+    if (List.of(PROPERTY_GATE).contains(key)) {
       return () -> isShowDisabledOptions() && canDisable;
     }
+    if (HIDE_WHEN_DISABLED.equals(key)) {
+      return () -> false;  // Disabling hide-when-disabled for now, it seems to be creating problems
+    }
     if (DISABLED_ICON.equals(key)) {
-      return () -> isShowDisabledOptions() && canDisable && !hideWhenDisabled;
+      return () -> isShowDisabledOptions() && canDisable; // && !hideWhenDisabled; // removed hide-when-disabled feature for now
     }
     else if (CAN_DISABLE.equals(key)) {
       return this::isShowDisabledOptions;
