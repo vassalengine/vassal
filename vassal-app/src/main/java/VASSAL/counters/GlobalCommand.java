@@ -564,6 +564,13 @@ public class GlobalCommand implements Auditable {
         }
       }
 
+      // If current Zone has been specified A to the Zone index to find those pieces
+      else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.CURZONE && curPiece != null && curPiece.getMap() != null)  {
+        final String currentZone = (String) curPiece.getProperty(BasicPiece.CURRENT_ZONE);
+        for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(curPiece.getMap(), BasicPiece.CURRENT_ZONE, currentZone)) {
+          dispatcher.accept(piece);
+        }
+      }
       // If a specific Zone target has been specified AND a valid target map, then we can go direct to the Zone index to find those pieces
       else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.ZONE && targetFastMap != null && !fastZone.isEmpty())  {
         for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(targetFastMap, BasicPiece.CURRENT_ZONE, fastZone)) {
