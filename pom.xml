@@ -45,8 +45,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <main.basedir>${project.basedir}</main.basedir>
-        <version.java.build>11</version.java.build>
-        <version.java.target>11</version.java.target>
+        <version.java.release>11</version.java.release>
 
         <!-- this is a default that will be overridden on the command line with -DgitVersion= -->
         <gitVersion>${project.version}</gitVersion>
