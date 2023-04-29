@@ -24,8 +24,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <compilerVersion>${version.java.build}</compilerVersion>
-                    <source>${version.java.target}</source>
-                    <target>${version.java.target}</target>
+                    <release>${version.java.release}</release>
                 </configuration>
             </plugin>
         </plugins>
