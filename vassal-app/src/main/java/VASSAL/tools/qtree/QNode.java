@@ -43,19 +43,19 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package VASSAL.tools.qtree;
 
-public class QNode {
+public class QNode<T> {
 
   private double x;
   private double y;
   private double w;
   private double h;
-  private QNode opt_parent;
-  private QPoint point;
+  private QNode<T> opt_parent;
+  private QPoint<T> point;
   private QNodeType nodetype = QNodeType.EMPTY;
-  private QNode nw;
-  private QNode ne;
-  private QNode sw;
-  private QNode se;
+  private QNode<T> nw;
+  private QNode<T> ne;
+  private QNode<T> sw;
+  private QNode<T> se;
 
   /**
    * Constructs a new quad tree node.
@@ -67,7 +67,7 @@ public class QNode {
    * @param {Node}   opt_parent Optional parent node.
    * @constructor
    */
-  public QNode(double x, double y, double w, double h, QNode opt_parent) {
+  public QNode(double x, double y, double w, double h, QNode<T> opt_parent) {
     this.x = x;
     this.y = y;
     this.w = w;
@@ -107,19 +107,19 @@ public class QNode {
     this.h = h;
   }
 
-  public QNode getParent() {
+  public QNode<T> getParent() {
     return opt_parent;
   }
 
-  public void setParent(QNode opt_parent) {
+  public void setParent(QNode<T> opt_parent) {
     this.opt_parent = opt_parent;
   }
 
-  public void setPoint(QPoint point) {
+  public void setPoint(QPoint<T> point) {
     this.point = point;
   }
 
-  public QPoint getPoint() {
+  public QPoint<T> getPoint() {
     return this.point;
   }
 
@@ -132,36 +132,35 @@ public class QNode {
   }
 
 
-  public void setNw(QNode nw) {
+  public void setNw(QNode<T> nw) {
     this.nw = nw;
   }
 
-  public void setNe(QNode ne) {
+  public void setNe(QNode<T> ne) {
     this.ne = ne;
   }
 
-  public void setSw(QNode sw) {
+  public void setSw(QNode<T> sw) {
     this.sw = sw;
   }
 
-  public void setSe(QNode se) {
+  public void setSe(QNode<T> se) {
     this.se = se;
   }
 
-  public QNode getNe() {
+  public QNode<T> getNe() {
     return ne;
   }
 
-  public QNode getNw() {
+  public QNode<T> getNw() {
     return nw;
   }
 
-  public QNode getSw() {
+  public QNode<T> getSw() {
     return sw;
   }
 
-  public QNode getSe() {
+  public QNode<T> getSe() {
     return se;
   }
 }
-

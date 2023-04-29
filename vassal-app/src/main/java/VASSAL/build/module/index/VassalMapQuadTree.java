@@ -11,7 +11,9 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A Quadtree index of pieces on the playable area of the Map.
@@ -90,7 +92,7 @@ public class VassalMapQuadTree extends QuadTree {
     if (currentLocation != null && bounds.contains(currentLocation)) {
 
       // Grab the list of pieces already at the new location
-      final ArrayList<GamePiece> nodePieces = (ArrayList<GamePiece>) get(currentLocation.x, currentLocation.y, new ArrayList<>());
+      final Set<GamePiece> nodePieces = (Set<GamePiece>) get(currentLocation.x, currentLocation.y, new HashSet<>());
 
       // Add this piece to the new location and write it back.
       if (!nodePieces.contains(p)) {
@@ -116,7 +118,7 @@ public class VassalMapQuadTree extends QuadTree {
     if (lastLocation != null) {
 
       // Grab the list of pieces at that location
-      final ArrayList<GamePiece> nodePieces = (ArrayList<GamePiece>) get(lastLocation.x, lastLocation.y, null);
+      final Set<GamePiece> nodePieces = (Set<GamePiece>) get(lastLocation.x, lastLocation.y, null);
 
       // Should not be null, but make sure we don't NPE
       if (nodePieces != null) {
@@ -142,7 +144,7 @@ public class VassalMapQuadTree extends QuadTree {
     final ArrayList<GamePiece> pieces = new ArrayList<>();
 
     for (final QPoint q : searchWithin(pos.x - range, pos.y - range, pos.x + range, pos.y + range)) {
-      pieces.addAll((ArrayList<GamePiece>) q.getValue());
+      pieces.addAll((Set<GamePiece>) q.getValue());
     }
 
     return pieces;

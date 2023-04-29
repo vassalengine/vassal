@@ -53,10 +53,10 @@ import java.util.List;
  * The implementation currently requires pre-determined bounds for data as it
  * can not rebalance itself to that degree.
  */
-public class QuadTree implements Cloneable {
+public class QuadTree<T> implements Cloneable {
 
 
-  private QNode root_;
+  private QNode<T> root_;
   private int count_ = 0;
 
   /**
@@ -68,7 +68,7 @@ public class QuadTree implements Cloneable {
    * @param {double} maxY Maximum y-value that can be held in tree.
    */
   public QuadTree(double minX, double minY, double maxX, double maxY) {
-    this.root_ = new QNode(minX, minY, maxX - minX, maxY - minY, null);
+    this.root_ = new QNode<>(minX, minY, maxX - minX, maxY - minY, null);
   }
 
   public QuadTree() {
@@ -80,28 +80,28 @@ public class QuadTree implements Cloneable {
    *
    * @return {Node} The root node.
    */
-  public QNode getRootNode() {
+  public QNode<T> getRootNode() {
     return this.root_;
   }
 
-  public void setRootNode(QNode root) {
+  public void setRootNode(QNode<T> root) {
     this.root_ = root;
   }
 
-    /**
+  /**
    * Sets the value of an (x, y) point within the quad-tree.
    *
    * @param {double} x The x-coordinate.
    * @param {double} y The y-coordinate.
-   * @param {Object} value The value associated with the point.
+   * @param {T} value The value associated with the point.
    */
-  public void set(double x, double y, Object value) {
+  public void set(double x, double y, T value) {
 
-    final QNode root = this.root_;
+    final QNode<T> root = this.root_;
     if (x < root.getX() || y < root.getY() || x > root.getX() + root.getW() || y > root.getY() + root.getH()) {
       throw new QuadTreeException("Out of bounds : (" + x + ", " + y + ")");
     }
-    if (this.insert(root, new QPoint(x, y, value))) {
+    if (this.insert(root, new QPoint<T>(x, y, value))) {
       this.count_++;
     }
   }
@@ -111,14 +111,14 @@ public class QuadTree implements Cloneable {
    *
    * @param {double} x The x-coordinate.
    * @param {double} y The y-coordinate.
-   * @param {Object} opt_default The default value to return if the node doesn't
+   * @param {T} opt_default The default value to return if the node doesn't
    *                 exist.
    * @return {*} The value of the node, the default value if the node
-   * doesn't exist, or undefined if the node doesn't exist and no default
-   * has been provided.
+   *         doesn't exist, or undefined if the node doesn't exist and no default
+   *         has been provided.
    */
-  public Object get(double x, double y, Object opt_default) {
-    final QNode node = this.find(this.root_, x, y);
+  public T get(double x, double y, T opt_default) {
+    final QNode<T> node = this.find(this.root_, x, y);
     return node != null ? node.getPoint().getValue() : opt_default;
   }
 
@@ -127,13 +127,13 @@ public class QuadTree implements Cloneable {
    *
    * @param {double} x The x-coordinate.
    * @param {double} y The y-coordinate.
-   * @return {Object} The value of the node that was removed, or null if the
-   * node doesn't exist.
+   * @return {T} The value of the node that was removed, or null if the
+   *         node doesn't exist.
    */
-  public Object remove(double x, double y) {
-    final QNode node = this.find(this.root_, x, y);
+  public T remove(double x, double y) {
+    final QNode<T> node = this.find(this.root_, x, y);
     if (node != null) {
-      final Object value = node.getPoint().getValue();
+      final T value = node.getPoint().getValue();
       node.setPoint(null);
       node.setNodeType(QNodeType.EMPTY);
       this.balance(node);
@@ -185,116 +185,106 @@ public class QuadTree implements Cloneable {
 
   /**
    * Returns an array containing the coordinates of each point stored in the tree.
-   *
    * @return {Array.<Point>} Array of coordinates.
    */
-  public QPoint[] getKeys() {
-    final List<QPoint> arr = new ArrayList<>();
-    this.traverse(this.root_, new QFunc() {
+  public QPoint<T>[] getKeys() {
+    final List<QPoint<T>> arr = new ArrayList<>();
+    this.traverse(this.root_, new QFunc<T>() {
       @Override
-      public void call(QuadTree quadTree, QNode node) {
+      public void call(QuadTree<T> quadTree, QNode<T> node) {
         arr.add(node.getPoint());
       }
     });
-    return arr.toArray(new QPoint[0]);
+    return arr.toArray((QPoint<T>[]) new QPoint[0]);
   }
 
   /**
-   * Returns an array containing all values stored within the tree.
-   *
-   * @return {Array.<Object>} The values stored within the tree.
+   * Returns a list containing all values stored within the tree.
+   * @return {List<T>} The values stored within the tree.
    */
-  public Object[] getValues() {
-    final List<Object> arr = new ArrayList<>();
-    this.traverse(this.root_, new QFunc() {
+  public List<T> getValues() {
+    final List<T> arr = new ArrayList<>();
+    this.traverse(this.root_, new QFunc<T>() {
       @Override
-      public void call(QuadTree quadTree, QNode node) {
+      public void call(QuadTree<T> quadTree, QNode<T> node) {
         arr.add(node.getPoint().getValue());
       }
     });
 
-    return arr.toArray(new Object[0]);
+    return arr;
   }
 
-  public QPoint[] searchIntersect(final double xmin, final double ymin, final double xmax, final double ymax) {
-    final List<QPoint> arr = new ArrayList<>();
-    this.navigate(this.root_, new QFunc() {
+  public QPoint<T>[] searchIntersect(final double xmin, final double ymin, final double xmax, final double ymax) {
+    final List<QPoint<T>> arr = new ArrayList<>();
+    this.navigate(this.root_, new QFunc<T>() {
       @Override
-      public void call(QuadTree quadTree, QNode node) {
-        final QPoint pt = node.getPoint();
-        if (pt.getX() < xmin || pt.getX() > xmax || pt.getY() < ymin || pt.getY() > ymax) {
-          return; // Definitely not within the polygon!
-        }
-        else {
+      public void call(QuadTree<T> quadTree, QNode<T> node) {
+        final QPoint<T> pt = node.getPoint();
+        if (!(pt.getX() < xmin || pt.getX() > xmax || pt.getY() < ymin || pt.getY() > ymax)) {
           arr.add(node.getPoint());
         }
 
       }
     }, xmin, ymin, xmax, ymax);
-    return arr.toArray(new QPoint[0]);
+    return arr.toArray((QPoint<T>[]) new QPoint[0]);
   }
 
-  public QPoint[] searchWithin(final double xmin, final double ymin, final double xmax, final double ymax) {
-    final List<QPoint> arr = new ArrayList<>();
-    this.navigate(this.root_, new QFunc() {
+  public QPoint<T>[] searchWithin(final double xmin, final double ymin, final double xmax, final double ymax) {
+    final List<QPoint<T>> arr = new ArrayList<>();
+    this.navigate(this.root_, new QFunc<T>() {
       @Override
-      public void call(QuadTree quadTree, QNode node) {
-        final QPoint pt = node.getPoint();
+      public void call(QuadTree<T> quadTree, QNode<T> node) {
+        final QPoint<T> pt = node.getPoint();
         if (pt.getX() > xmin && pt.getX() < xmax && pt.getY() > ymin && pt.getY() < ymax) {
           arr.add(node.getPoint());
         }
       }
     }, xmin, ymin, xmax, ymax);
-    return arr.toArray(new QPoint[0]);
+    return arr.toArray((QPoint<T>[]) new QPoint[0]);
   }
 
-  public void navigate(QNode node, QFunc QFunc, double xmin, double ymin, double xmax, double ymax) {
+  public void navigate(QNode<T> node, QFunc<T> func, double xmin, double ymin, double xmax, double ymax) {
     switch (node.getNodeType()) {
     case LEAF:
-      QFunc.call(this, node);
+      func.call(this, node);
       break;
 
     case POINTER:
       if (intersects(xmin, ymax, xmax, ymin, node.getNe()))
-        this.navigate(node.getNe(), QFunc, xmin, ymin, xmax, ymax);
+        this.navigate(node.getNe(), func, xmin, ymin, xmax, ymax);
       if (intersects(xmin, ymax, xmax, ymin, node.getSe()))
-        this.navigate(node.getSe(), QFunc, xmin, ymin, xmax, ymax);
+        this.navigate(node.getSe(), func, xmin, ymin, xmax, ymax);
       if (intersects(xmin, ymax, xmax, ymin, node.getSw()))
-        this.navigate(node.getSw(), QFunc, xmin, ymin, xmax, ymax);
+        this.navigate(node.getSw(), func, xmin, ymin, xmax, ymax);
       if (intersects(xmin, ymax, xmax, ymin, node.getNw()))
-        this.navigate(node.getNw(), QFunc, xmin, ymin, xmax, ymax);
-      break;
-
-    case EMPTY:
+        this.navigate(node.getNw(), func, xmin, ymin, xmax, ymax);
       break;
     }
   }
 
-  private boolean intersects(double left, double bottom, double right, double top, QNode node) {
+  private boolean intersects(double left, double bottom, double right, double top, QNode<T> node) {
     return !(node.getX() > right ||
       (node.getX() + node.getW()) < left ||
       node.getY() > bottom ||
       (node.getY() + node.getH()) < top);
   }
-
   /**
    * Clones the quad-tree and returns the new instance.
-   *
    * @return {QuadTree} A clone of the tree.
    */
   @Override
-  public QuadTree clone() {
+  public QuadTree<T> clone() {
     final double x1 = this.root_.getX();
     final double y1 = this.root_.getY();
     final double x2 = x1 + this.root_.getW();
     final double y2 = y1 + this.root_.getH();
-    final QuadTree clone = new QuadTree(x1, y1, x2, y2);
+    final QuadTree<T> clone = new QuadTree<>(x1, y1, x2, y2);
     // This is inefficient as the clone needs to recalculate the structure of the
     // tree, even though we know it already.  But this is easier and can be
     // optimized when/if needed.
-    this.traverse(this.root_, new QFunc() {
+    this.traverse(this.root_, new QFunc<T>() {
       @Override
-      public void call(QuadTree quadTree, QNode node) {
+      public void call(QuadTree<T> quadTree, QNode<T> node) {
         clone.set(node.getPoint().getX(), node.getPoint().getY(), node.getPoint().getValue());
       }
     });
@@ -305,153 +295,146 @@ public class QuadTree implements Cloneable {
 
   /**
    * Traverses the tree depth-first, with quadrants being traversed in clockwise
-   * order (NE, SE, SW, NW).  The provided QFunction will be called for each
-   * leaf QNode that is encountered.
-   *
-   * @param {QuadTree.QNode}            QNode The current QNode.
-   * @param {QFunction(QuadTree.QNode)} fn The QFunction to call
-   *                                    for each leaf QNode. This QFunction takes the QNode as an argument, and its
-   *                                    return value is irrelevant.
+   * order (NE, SE, SW, NW).  The provided function will be called for each
+   * leaf node that is encountered.
+   * @param {QuadTree.Node} node The current node.
+   * @param {function(QuadTree.Node)} fn The function to call
+   *     for each leaf node. This function takes the node as an argument, and its
+   *     return value is irrelevant.
    * @private
    */
-  public void traverse(QNode QNode, QFunc QFunc) {
-    switch (QNode.getNodeType()) {
+  public void traverse(QNode<T> node, QFunc<T> func) {
+    switch (node.getNodeType()) {
     case LEAF:
-      QFunc.call(this, QNode);
+      func.call(this, node);
       break;
 
     case POINTER:
-      this.traverse(QNode.getNe(), QFunc);
-      this.traverse(QNode.getSe(), QFunc);
-      this.traverse(QNode.getSw(), QFunc);
-      this.traverse(QNode.getNw(), QFunc);
-      break;
-    case EMPTY:
+      this.traverse(node.getNe(), func);
+      this.traverse(node.getSe(), func);
+      this.traverse(node.getSw(), func);
+      this.traverse(node.getNw(), func);
       break;
     }
   }
 
   /**
-   * Finds a leaf QNode with the same (x, y) coordinates as the target QPoint, or
-   * null if no QPoint exists.
-   *
-   * @param {QuadTree.QNode} QNode The QNode to search in.
-   * @param {number}         x The x-coordinate of the QPoint to search for.
-   * @param {number}         y The y-coordinate of the QPoint to search for.
-   * @return {QuadTree.QNode} The leaf QNode that matches the target,
-   * or null if it doesn't exist.
+   * Finds a leaf node with the same (x, y) coordinates as the target point, or
+   * null if no point exists.
+   * @param {QuadTree.Node} node The node to search in.
+   * @param {number} x The x-coordinate of the point to search for.
+   * @param {number} y The y-coordinate of the point to search for.
+   * @return {QuadTree.Node} The leaf node that matches the target,
+   *     or null if it doesn't exist.
    * @private
    */
-  public QNode find(QNode QNode, double x, double y) {
-    QNode resposne = null;
-    switch (QNode.getNodeType()) {
+  public QNode<T> find(QNode<T> node, double x, double y) {
+    QNode<T> resposne = null;
+    switch (node.getNodeType()) {
     case EMPTY:
       break;
 
     case LEAF:
-      resposne = QNode.getPoint().getX() == x && QNode.getPoint().getY() == y ? QNode : null;
+      resposne = node.getPoint().getX() == x && node.getPoint().getY() == y ? node : null;
       break;
 
     case POINTER:
-      resposne = this.find(this.getuadrantForQPoint(QNode, x, y), x, y);
+      resposne = this.find(this.getQuadrantForPoint(node, x, y), x, y);
       break;
 
     default:
-      throw new QuadTreeException("Invalid QNodeType");
+      throw new QuadTreeException("Invalid nodeType");
     }
     return resposne;
   }
 
   /**
-   * Inserts a QPoint into the tree, updating the tree's structure if necessary.
-   *
-   * @param {.QuadTree.QNode} parent The parent to insert the QPoint
-   *                          into.
-   * @param {QuadTree.QPoint} QPoint The QPoint to insert.
-   * @return {boolean} True if a new QNode was added to the tree; False if a QNode
-   * already existed with the correpsonding coordinates and had its value
-   * reset.
+   * Inserts a point into the tree, updating the tree's structure if necessary.
+   * @param {.QuadTree.Node} parent The parent to insert the point
+   *     into.
+   * @param {QuadTree.Point} point The point to insert.
+   * @return {boolean} True if a new node was added to the tree; False if a node
+   *     already existed with the correpsonding coordinates and had its value
+   *     reset.
    * @private
    */
-  private boolean insert(QNode parent, QPoint QPoint) {
+  private boolean insert(QNode<T> parent, QPoint<T> point) {
     Boolean result = false;
     switch (parent.getNodeType()) {
     case EMPTY:
-      this.setPointForQNode(parent, QPoint);
+      this.setPointForNode(parent, point);
       result = true;
       break;
     case LEAF:
-      if (parent.getPoint().getX() == QPoint.getX() && parent.getPoint().getY() == QPoint.getY()) {
-        this.setPointForQNode(parent, QPoint);
+      if (parent.getPoint().getX() == point.getX() && parent.getPoint().getY() == point.getY()) {
+        this.setPointForNode(parent, point);
         result = false;
       }
       else {
         this.split(parent);
-        result = this.insert(parent, QPoint);
+        result = this.insert(parent, point);
       }
       break;
     case POINTER:
       result = this.insert(
-        this.getuadrantForQPoint(parent, QPoint.getX(), QPoint.getY()), QPoint);
+        this.getQuadrantForPoint(parent, point.getX(), point.getY()), point);
       break;
 
     default:
-      throw new QuadTreeException("Invalid QNodeType in parent");
+      throw new QuadTreeException("Invalid nodeType in parent");
     }
     return result;
   }
 
   /**
-   * Converts a leaf QNode to a QPointer QNode and reinserts the QNode's QPoint into
+   * Converts a leaf node to a pointer node and reinserts the node's point into
    * the correct child.
-   *
-   * @param {QuadTree.QNode} QNode The QNode to split.
+   * @param {QuadTree.Node} node The node to split.
    * @private
    */
-  private void split(QNode QNode) {
-    final QPoint oldQPoint = QNode.getPoint();
-    QNode.setPoint(null);
+  private void split(QNode<T> node) {
+    final QPoint<T> oldPoint = node.getPoint();
+    node.setPoint(null);
 
-    QNode.setNodeType(QNodeType.POINTER);
+    node.setNodeType(QNodeType.POINTER);
 
-    final double x = QNode.getX();
-    final double y = QNode.getY();
-    final double hw = QNode.getW() / 2;
-    final double hh = QNode.getH() / 2;
+    final double x = node.getX();
+    final double y = node.getY();
+    final double hw = node.getW() / 2;
+    final double hh = node.getH() / 2;
 
-    QNode.setNw(new QNode(x, y, hw, hh, QNode));
-    QNode.setNe(new QNode(x + hw, y, hw, hh, QNode));
-    QNode.setSw(new QNode(x, y + hh, hw, hh, QNode));
-    QNode.setSe(new QNode(x + hw, y + hh, hw, hh, QNode));
+    node.setNw(new QNode<T>(x, y, hw, hh, node));
+    node.setNe(new QNode<T>(x + hw, y, hw, hh, node));
+    node.setSw(new QNode<T>(x, y + hh, hw, hh, node));
+    node.setSe(new QNode<T>(x + hw, y + hh, hw, hh, node));
 
-    this.insert(QNode, oldQPoint);
+    this.insert(node, oldPoint);
   }
 
   /**
-   * Attempts to balance a QNode. A QNode will need balancing if all its children
+   * Attempts to balance a node. A node will need balancing if all its children
    * are empty or it contains just one leaf.
-   *
-   * @param {QuadTree.QNode} QNode The QNode to balance.
+   * @param {QuadTree.Node} node The node to balance.
    * @private
    */
-  private void balance(QNode QNode) {
-    switch (QNode.getNodeType()) {
+  private void balance(QNode<T> node) {
+    switch (node.getNodeType()) {
     case EMPTY:
     case LEAF:
-      if (QNode.getParent() != null) {
-        this.balance(QNode.getParent());
+      if (node.getParent() != null) {
+        this.balance(node.getParent());
       }
       break;
 
     case POINTER: {
-      final QNode nw = QNode.getNw();
-      final QNode ne = QNode.getNe();
-      final QNode sw = QNode.getSw();
-      final QNode se = QNode.getSe();
-      QNode firstLeaf = null;
+      final QNode<T> nw = node.getNw();
+      final QNode<T> ne = node.getNe();
+      final QNode<T> sw = node.getSw();
+      final QNode<T> se = node.getSe();
+      QNode<T> firstLeaf = null;
 
       // Look for the first non-empty child, if there is more than one then we
-      // break as this QNode can't be balanced.
+      // break as this node can't be balanced.
       if (nw.getNodeType() != QNodeType.EMPTY) {
         firstLeaf = nw;
       }
@@ -475,31 +458,32 @@ public class QuadTree implements Cloneable {
       }
 
       if (firstLeaf == null) {
-        // All child QNodes are empty: so make this QNode empty.
-        QNode.setNodeType(QNodeType.EMPTY);
-        QNode.setNw(null);
-        QNode.setNe(null);
-        QNode.setSw(null);
-        QNode.setSe(null);
+        // All child nodes are empty: so make this node empty.
+        node.setNodeType(QNodeType.EMPTY);
+        node.setNw(null);
+        node.setNe(null);
+        node.setSw(null);
+        node.setSe(null);
+
       }
       else if (firstLeaf.getNodeType() == QNodeType.POINTER) {
-        // Only child was a QPointer, therefore we can't rebalance.
+        // Only child was a pointer, therefore we can't rebalance.
         break;
 
       }
       else {
-        // Only child was a leaf: so update QNode's QPoint and make it a leaf.
-        QNode.setNodeType(QNodeType.LEAF);
-        QNode.setNw(null);
-        QNode.setNe(null);
-        QNode.setSw(null);
-        QNode.setSe(null);
-        QNode.setPoint(firstLeaf.getPoint());
+        // Only child was a leaf: so update node's point and make it a leaf.
+        node.setNodeType(QNodeType.LEAF);
+        node.setNw(null);
+        node.setNe(null);
+        node.setSw(null);
+        node.setSe(null);
+        node.setPoint(firstLeaf.getPoint());
       }
 
       // Try and balance the parent as well.
-      if (QNode.getParent() != null) {
-        this.balance(QNode.getParent());
+      if (node.getParent() != null) {
+        this.balance(node.getParent());
       }
     }
     break;
@@ -507,17 +491,16 @@ public class QuadTree implements Cloneable {
   }
 
   /**
-   * Returns the child quadrant within a QNode that contains the given (x, y)
+   * Returns the child quadrant within a node that contains the given (x, y)
    * coordinate.
-   *
-   * @param {QuadTree.QNode} parent The QNode.
-   * @param {number}         x The x-coordinate to look for.
-   * @param {number}         y The y-coordinate to look for.
-   * @return {QuadTree.QNode} The child quadrant that contains the
-   * QPoint.
+   * @param {QuadTree.Node} parent The node.
+   * @param {number} x The x-coordinate to look for.
+   * @param {number} y The y-coordinate to look for.
+   * @return {QuadTree.Node} The child quadrant that contains the
+   *     point.
    * @private
    */
-  private QNode getuadrantForQPoint(QNode parent, double x, double y) {
+  private QNode<T> getQuadrantForPoint(QNode<T> parent, double x, double y) {
     final double mx = parent.getX() + parent.getW() / 2;
     final double my = parent.getY() + parent.getH() / 2;
     if (x < mx) {
@@ -529,18 +512,16 @@ public class QuadTree implements Cloneable {
   }
 
   /**
-   * Sets the QPoint for a QNode, as long as the QNode is a leaf or empty.
-   *
-   * @param {QuadTree.QNode}  QNode The QNode to set the QPoint for.
-   * @param {QuadTree.QPoint} QPoint The QPoint to set.
+   * Sets the point for a node, as long as the node is a leaf or empty.
+   * @param {QuadTree.Node} node The node to set the point for.
+   * @param {QuadTree.Point} point The point to set.
    * @private
    */
-  private void setPointForQNode(QNode QNode, QPoint QPoint) {
-    if (QNode.getNodeType() == QNodeType.POINTER) {
-      throw new QuadTreeException("Can not set QPoint for QNode of type QPointER");
+  private void setPointForNode(QNode<T> node, QPoint<T> point) {
+    if (node.getNodeType() == QNodeType.POINTER) {
+      throw new QuadTreeException("Can not set point for node of type POINTER");
     }
-    QNode.setNodeType(QNodeType.LEAF);
-    QNode.setPoint(QPoint);
+    node.setNodeType(QNodeType.LEAF);
+    node.setPoint(point);
   }
 }
-

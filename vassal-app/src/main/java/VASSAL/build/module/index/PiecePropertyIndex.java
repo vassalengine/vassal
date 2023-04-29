@@ -46,6 +46,11 @@ public class PiecePropertyIndex {
     this.propertyName = propertyName;
   }
 
+  /**
+   * Add a new piece to the index, or check and update the value for an existing piece
+   *
+   * @param piece Piece added/changed
+   */
   public void addOrUpdatePiece(GamePiece piece) {
 
     final String newValue = (String) piece.getProperty(propertyName);
@@ -75,6 +80,11 @@ public class PiecePropertyIndex {
     values.put(piece.getId(), newValue);
   }
 
+  /**
+   * Remove a piece from the index
+   *
+   * @param piece Piece removed
+   */
   public void removePiece(GamePiece piece) {
 
     // Do we know about this piece?
@@ -93,8 +103,15 @@ public class PiecePropertyIndex {
     }
   }
 
+  /**
+   * Return the set of pieces that have the specified value for the property we are indexing
+   *
+   * @param propertyValue Value to check
+   * @return              Set of pieces that have that value
+   */
   public Set<GamePiece> getPieces(String propertyValue) {
-    return pieces.get(propertyValue);
+    final Set<GamePiece> results = pieces.get(propertyValue);
+    return results == null ? new HashSet<>() : results;
   }
 
 }

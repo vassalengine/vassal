@@ -43,6 +43,6 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package VASSAL.tools.qtree;
 
-public interface QFunc { 
-  void call(QuadTree quadTree, QNode node);
+public interface QFunc<T> {
+  void call(QuadTree<T> quadTree, QNode<T> node);
 } 
