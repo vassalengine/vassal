@@ -43,9 +43,11 @@ import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
 import VASSAL.tools.WarningDialog;
+
 import bsh.BeanShellExpressionValidator;
 import bsh.EvalError;
 import bsh.NameSpace;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
@@ -491,7 +493,12 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     return ps;
   }
 
-
+  /**
+   * Convert an arbitrary property value to an integer and return the value,
+   * or retutn 0 if not an integer.
+   * @param prop  Property value
+   * @return      converted integer value
+   */
   private static int propValue(Object prop) {
     if (prop != null) {
       final String s1 = prop.toString();
@@ -874,39 +881,94 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * Total the value of the named property in all counters in the
    * same location as the specified piece.
    * <p>
-   * * WARNING * This WILL be inefficient as the number of counters on the
-   * map increases.
-   *
    * @param property Property Name
    * @param ps       GamePiece
    * @return total
    */
   public Object sumLocation(String property, PropertySource ps) {
-    int result = 0;
+    return sumLocation(property, "", ps);
+  }
 
-    ps = translatePiece(ps);
+  /**
+   * SumLocation(property, expression) function
+   * Total the value of the named property in all counters in the
+   * same location as the specified piece that meet the supplied expression.
+   * <p>
+   * @param property   Property Name
+   * @param expression Expression
+   * @param ps         GamePiece Source
+   * @return total
+   */
+  public Object sumLocation(String property, String expression, PropertySource ps) {
 
     if (ps instanceof GamePiece) {
       final GamePiece p = (GamePiece) ps;
       final Map m = p.getMap();
       if (m != null) {
         final String here = m.locationName(p.getPosition());
-        final GamePiece[] pieces = m.getPieces();
-        for (final GamePiece piece : pieces) {
-          if (here.equals(m.locationName(piece.getPosition()))) {
-            if (piece instanceof Stack) {
-              final Stack s = (Stack) piece;
-              for (final GamePiece gamePiece : s.asList()) {
-                final Object prop = gamePiece.getProperty(property);
-                result += propValue(prop);
-              }
-            }
-            else {
-              final Object prop = piece.getProperty(property);
-              result += propValue(prop);
-            }
-          }
-        }
+        return sumLocation(property, here, m.getConfigureName(), expression, ps);
+      }
+    }
+
+    return 0;
+  }
+
+  /**
+   * SumLocation(property, location, map) function
+   * Total the value of the named property in all counters in the
+   * specified map and location
+   * <p>
+   * @param property   Property Name
+   * @param location   Location Name
+   * @param map        Map Name
+   * @param ps         GamePiece source
+   * @return total
+   */
+  public Object sumLocation(String property, String location, String map, PropertySource ps) {
+    return sumLocation(property, location, map, null, ps);
+  }
+
+  /**
+   * SumLocation(property, location, map, expression) function
+   * Total the value of the named property in all counters in the
+   * specified map and location that match the supplied expression
+   * <p>
+   * @param property   Property Name
+   * @param location   Location Name
+   * @param map        Map Name
+   * @param expression Expression
+   * @param ps         GamePiece source
+   * @return total
+   */
+
+  public Object sumLocation(String property, String location, String map, String expression, PropertySource ps) {
+
+    ps = translatePiece(ps);
+
+    final String matchString = replaceDollarVariables((String) expression, ps);
+    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter((PropertySource) ps);
+    final Map targetMap = findVassalMap(map);
+
+    return targetMap == null ? 0 : sumLocation(property, location, targetMap, filter);
+  }
+
+  /**
+   * Generic lowest-level SumLocation function called by all other versions
+   *
+   * @param property      Property Name to sum
+   * @param locationName  Location Name to match
+   * @param mapName       Map to check
+   * @param filter        Optional PieceFilter to check expression match
+   * @return
+   */
+  private Object sumLocation(String property, String locationName, Map map, PieceFilter filter) {
+    int result = 0;
+
+    // Ask IndexManager for list of pieces on that map at that location. Stacks are not returned by the IM.
+    for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(map, BasicPiece.LOCATION_NAME, locationName)) {
+      final Object propertyValue = piece.getProperty(property);
+      if (filter == null || filter.accept(piece)) {
+        result += propValue(propertyValue);
       }
     }
     return result;

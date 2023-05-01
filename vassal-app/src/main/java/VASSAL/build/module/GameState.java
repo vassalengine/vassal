@@ -567,16 +567,18 @@ public class GameState implements CommandEncoder {
 
     if (gameStarted) {
       if (gameStarting) {
+        // Ask the IndexManager to rebuild all indexes so at-start stack pieces are all included
+        // This is required for any SGKC's to work
+        GameModule.getGameModule().getIndexManager().rebuild();
+
         // Things that we invokeLater
         SwingUtilities.invokeLater(fastForwarding ? () -> {
           // Apply all of the startup global key commands, in order
           doStartupGlobalKeyCommands(false);
         } : () -> {
+
           // Apply all of the startup global key commands, in order
           doStartupGlobalKeyCommands(false);
-
-          // Ask the IndexManager to rebuild all indexes so at-start stack pieces are all included
-          GameModule.getGameModule().getIndexManager().rebuild();
 
           // If we're starting a new session, prompt to create a new logfile.
           // But NOT if we're starting a session by *replaying* a logfile -- in that case we'd get the reminder at the

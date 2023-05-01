@@ -28,7 +28,7 @@ public class VassalMapQuadTree extends QuadTree {
   /** The actual playable bounds of the map **/
   private final Rectangle bounds;
 
-  /** Cross-reference for each piece to it's current location in the Quadtree to allow for quick updates as pieces move
+  /** Cross-reference for each piece to its current location in the Quadtree to allow for quick updates as pieces move
    * This index records the currently recorded location of each piece, key is Piece ID.
    * */
   java.util.Map<String, Point> pieces = new HashMap<>();

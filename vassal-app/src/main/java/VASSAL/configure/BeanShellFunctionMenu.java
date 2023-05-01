@@ -33,6 +33,11 @@ import static VASSAL.configure.BeanShellExpressionConfigurer.Option;
 public class BeanShellFunctionMenu extends JPopupMenu {
   private static final long serialVersionUID = 1L;
 
+  protected static final String[] GENERAL_PME_HINTS = {
+    Resources.getString("Editor.BeanShell.warning2"),
+    Resources.getString("Editor.BeanShell.warning3")
+  };
+
   protected static final String[] SUM_COUNT_HINTS = {
     Resources.getString("Editor.BeanShell.warning"),
     Resources.getString("Editor.BeanShell.warning2"),
@@ -152,21 +157,48 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     addFunction(randomMenu, "IsRandom", Resources.getString("Editor.BeanShell.random3"), new String[] {}, "()"); //NON-NLS
     addFunction(randomMenu, "IsRandom", Resources.getString("Editor.BeanShell.random4"), new String[] { Resources.getString("Editor.BeanShell.randomp") }, "(p)"); //NON-NLS
 
+
+    final JMenu attachmentMenu = new JMenu(Resources.getString("Editor.BeanShell.by_attachment"));
+    addFunction(attachmentMenu, "MaxAttachment", Resources.getString("Editor.BeanShell.sum13"), new String[] { Resources.getString("Editor.BeanShell.attachment_name"), Resources.getString("Editor.BeanShell.property_name") }, "(name, name)"); //NON-NLS
+    addFunction(attachmentMenu, "MinAttachment", Resources.getString("Editor.BeanShell.sum14"), new String[] { Resources.getString("Editor.BeanShell.attachment_name"), Resources.getString("Editor.BeanShell.property_name") }, "(name, name)"); //NON-NLS
+    addFunction(attachmentMenu, "SumAttachment", Resources.getString("Editor.BeanShell.sum10"), new String[] { Resources.getString("Editor.BeanShell.attachment_name"), Resources.getString("Editor.BeanShell.property_name") }, "(name, name)"); //NON-NLS
+    addFunction(attachmentMenu, "CountAttachment", Resources.getString("Editor.BeanShell.sum11"), new String[] { Resources.getString("Editor.BeanShell.attachment_name"), Resources.getString("Editor.BeanShell.property_name") }, "(name, name)"); //NON-NLS
+    addFunction(attachmentMenu, "CountAttachmentExpression", Resources.getString("Editor.BeanShell.sum12"), new String[] { Resources.getString("Editor.BeanShell.attachment_name"), Resources.getString("Editor.BeanShell.property_match_expression") }, "(name, expr)", GENERAL_PME_HINTS, new Option[] {Option.NONE, Option.PME}); //NON-NLS
+
+    final JMenu locationMenu = new JMenu(Resources.getString("Editor.BeanShell.by_location"));
+    if (target != null) {
+      addFunction(locationMenu, "SumLocation", Resources.getString("Editor.BeanShell.sum15"), new String[]{Resources.getString("Editor.BeanShell.property_name")}, "(prop)");
+      addFunction(locationMenu, "SumLocation", Resources.getString("Editor.BeanShell.sum16"), new String[]{Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression")}, "(prop, expr)", GENERAL_PME_HINTS, new Option[]{Option.NONE, Option.PME}); //NON-NLS
+    }
+    addFunction(locationMenu, "SumLocation", Resources.getString("Editor.BeanShell.sum17"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.location_name"), Resources.getString("Editor.BeanShell.map_name") }, "(prop, loc, map)");
+    addFunction(locationMenu, "SumLocation", Resources.getString("Editor.BeanShell.sum18"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.location_name"), Resources.getString("Editor.BeanShell.map_name"), Resources.getString("Editor.BeanShell.property_match_expression") }, "(prop, loc, map, expr)", GENERAL_PME_HINTS, new Option[] {Option.NONE, Option.NONE, Option.NONE, Option.PME}); //NON-NLS
+
+    final JMenu stackMenu = new JMenu(Resources.getString("Editor.BeanShell.by_stack"));
+    addFunction(stackMenu, "SumStack", Resources.getString("Editor.BeanShell.sum1"), new String[] { Resources.getString("Editor.BeanShell.property_name") }, "(prop)"); //NON-NLS
+    addFunction(stackMenu, "CountStack", Resources.getString("Editor.BeanShell.sum6"), new String[] { }, "()"); //NON-NLS
+    addFunction(stackMenu, "CountStack", Resources.getString("Editor.BeanShell.sum7"), new String[] { Resources.getString("Editor.BeanShell.property_name") }, "(prop)"); //NON-NLS
+
+    final JMenu matMenu = new JMenu(Resources.getString("Editor.BeanShell.by_mat"));
+    addFunction(matMenu, "SumMat", Resources.getString("Editor.BeanShell.sum8"), new String[] { Resources.getString("Editor.BeanShell.property_name") }, "(name)"); //NON-NLS
+    addFunction(matMenu, "CountMat", Resources.getString("Editor.BeanShell.sum9"), new String[] { Resources.getString("Editor.BeanShell.property_name") }, "(name)"); //NON-NLS
+
+    final JMenu zoneMenu = new JMenu(Resources.getString("Editor.BeanShell.by_zone"));
+
+    final JMenu legacyMenu = new JMenu(Resources.getString("Editor.BeanShell.slower_options"));
+    addFunction(legacyMenu, "Sum", Resources.getString("Editor.BeanShell.sum2"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression") }, "(name, expr)", SUM_COUNT_HINTS, new Option[] {Option.NONE, Option.PME}); //NON-NLS
+    addFunction(legacyMenu, "Sum", Resources.getString("Editor.BeanShell.sum3"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression"), Resources.getString("Editor.BeanShell.map_name") }, "(name, expr, map)", SUM_COUNT_MAP_HINTS, new Option[] {Option.NONE, Option.PME, Option.NONE}); //NON-NLS
+    addFunction(legacyMenu, "Count", Resources.getString("Editor.BeanShell.sum4"), new String[] { Resources.getString("Editor.BeanShell.property_match_expression") }, "(expr)", SUM_COUNT_HINTS, new Option[] {Option.PME}); //NON-NLS
+    addFunction(legacyMenu, "Count", Resources.getString("Editor.BeanShell.sum5"), new String[] { Resources.getString("Editor.BeanShell.property_match_expression"), Resources.getString("Editor.BeanShell.map_name") }, "(expr, map)", SUM_COUNT_MAP_HINTS, new Option[] {Option.PME, Option.NONE}); //NON-NLS
+
     final JMenu countMenu = new JMenu(Resources.getString("Editor.BeanShell.sumcount"));
-    addFunction(countMenu, "SumStack", Resources.getString("Editor.BeanShell.sum1"), new String[] { Resources.getString("Editor.BeanShell.property_name") }, "(name)"); //NON-NLS
-    addFunction(countMenu, "CountStack", Resources.getString("Editor.BeanShell.sum6"), new String[] { }, "()"); //NON-NLS
-    addFunction(countMenu, "CountStack", Resources.getString("Editor.BeanShell.sum7"), new String[] { Resources.getString("Editor.BeanShell.property_name") }, "(name)"); //NON-NLS
-    addFunction(countMenu, "SumMat", Resources.getString("Editor.BeanShell.sum8"), new String[] { Resources.getString("Editor.BeanShell.property_name") }, "(name)"); //NON-NLS
-    addFunction(countMenu, "CountMat", Resources.getString("Editor.BeanShell.sum9"), new String[] { Resources.getString("Editor.BeanShell.property_name") }, "(name)"); //NON-NLS
-    addFunction(countMenu, "MaxAttachment", Resources.getString("Editor.BeanShell.sum13"), new String[] { Resources.getString("Editor.BeanShell.attachment_name"), Resources.getString("Editor.BeanShell.property_name") }, "(name, name)"); //NON-NLS
-    addFunction(countMenu, "MinAttachment", Resources.getString("Editor.BeanShell.sum14"), new String[] { Resources.getString("Editor.BeanShell.attachment_name"), Resources.getString("Editor.BeanShell.property_name") }, "(name, name)"); //NON-NLS
-    addFunction(countMenu, "SumAttachment", Resources.getString("Editor.BeanShell.sum10"), new String[] { Resources.getString("Editor.BeanShell.attachment_name"), Resources.getString("Editor.BeanShell.property_name") }, "(name, name)"); //NON-NLS
-    addFunction(countMenu, "CountAttachment", Resources.getString("Editor.BeanShell.sum11"), new String[] { Resources.getString("Editor.BeanShell.attachment_name"), Resources.getString("Editor.BeanShell.property_name") }, "(name, name)"); //NON-NLS
-    addFunction(countMenu, "CountAttachmentExpression", Resources.getString("Editor.BeanShell.sum12"), new String[] { Resources.getString("Editor.BeanShell.attachment_name"), Resources.getString("Editor.BeanShell.property_match_expression") }, "(name, expr)"); //NON-NLS
-    addFunction(countMenu, "Sum", Resources.getString("Editor.BeanShell.sum2"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression") }, "(name, expr)", SUM_COUNT_HINTS, new Option[] {Option.NONE, Option.PME}); //NON-NLS
-    addFunction(countMenu, "Sum", Resources.getString("Editor.BeanShell.sum3"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression"), Resources.getString("Editor.BeanShell.map_name") }, "(name, expr, map)", SUM_COUNT_MAP_HINTS, new Option[] {Option.NONE, Option.PME, Option.NONE}); //NON-NLS
-    addFunction(countMenu, "Count", Resources.getString("Editor.BeanShell.sum4"), new String[] { Resources.getString("Editor.BeanShell.property_match_expression") }, "(expr)", SUM_COUNT_HINTS, new Option[] {Option.PME}); //NON-NLS
-    addFunction(countMenu, "Count", Resources.getString("Editor.BeanShell.sum5"), new String[] { Resources.getString("Editor.BeanShell.property_match_expression"), Resources.getString("Editor.BeanShell.map_name") }, "(expr, map)", SUM_COUNT_MAP_HINTS, new Option[] {Option.PME, Option.NONE}); //NON-NLS
+    if (target != null) {
+      countMenu.add(stackMenu);
+      countMenu.add(matMenu);
+      countMenu.add(attachmentMenu);
+    }
+    countMenu.add(locationMenu);
+    countMenu.add(zoneMenu);
+    countMenu.add(legacyMenu);
 
     final JMenu functionMenu = new JMenu(Resources.getString("Editor.BeanShell.function"));
     functionMenu.add(mathMenu);

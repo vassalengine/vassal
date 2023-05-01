@@ -864,7 +864,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       attachKeyLabel = new JLabel(Resources.getString("Editor.Attachment.attach_key_command"));
       traitPanel.add(attachKeyLabel, attachKeyInput);
 
-      targetConfig = new GlobalCommandTargetConfigurer(p.target);
+      targetConfig = new GlobalCommandTargetConfigurer(p.target, Decorator.getOutermost(p));
       targetLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.pre_select"));
       traitPanel.add(targetLabel, targetConfig);
 

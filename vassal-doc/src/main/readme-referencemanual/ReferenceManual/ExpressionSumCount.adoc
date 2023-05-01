@@ -1,0 +1,130 @@
+== VASSAL Reference Manual
+[#top]
+
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<Expression.adoc#top,Expressions>> > *Sum & Count Expressions*#
+
+'''''
+
+=== Sum and Count Expressions
+
+==== Overview
+Vassal provides a range of functions to allow efficient counting of pieces and summing the values of numeric properties that they hold.
+
+Depending on what is known about the location of the pieces that you want to Sum or Count, there are different sets of functions that can do this efficiently:
+
+* <<#StackBased,Stack based>> - Pieces in the same stack as the current piece
+* <<#LocationBased,Location based>> - Pieces in the same location as the current piece, or in a known location
+* <<#ZoneBased,Zone based>> - Pieces in the same zone as the current piece, or in a known zone
+* <<#AttachmentBased,Attachment based>> - Pieces atttached to the current piece
+* <<#MatBased,Mat based>> - Pieces on the same mat as the current piece
+* <<#Generic,Generic>> - Pieces where the location is not known
+
+NOTE: Functions that work relative to a 'current piece' only make sense to be used in expressions used in Game Piece traits. They cannot be used in a Map or Module level Global Key Command for example. If used outide of a Game Piece trait, these functions will always return 0.
+
+NOTE: When a *Sum* or *Count* function is used in a Counter GKC, then if the source piece also passes whatever selection options are used, then the source piece will be included in the Sum or Count returned.
+
+==== Common fields
+
+===== Property Name
+All the *Sum* functions total the numeric value of the specified property name (prop) in each of the matching pieces.
+
+If a matching piece does not specify the value of the property, or if the value of the property is not numeric, then nothing will be added to the sum for that piece.
+
+Some of the *Count* functions take a property name (prop) argument and will only add 1 to the count if that property has a non-blank value for a piece.
+
+The Property name used in a function can be the name of an actual property (which should be entered in quotes as "propName"), or can be another expression that evaluates to a property name),
+
+===== Property Match Expression
+When an expression is used in any *Sum* or *Count* function, it must have the special format defined for Property Match Expressions.
+
+See <<PropertyMatchExpression.adoc#top>> for more information.
+
+===== Zone, and Location and Map Names
+The Zone *Sum* and *Count* functions take a Zone name and a Map Name and will only act on pieces currently located in the name Zone on the named Map.
+
+The Location *Sum* and *Count* functions take a Zone name and a Map Name and will only act on pieces currently located in the named Location on the named Map.
+
+The Zone and Location names used in a function can be the name of an actual Zone or Location (which should be entered in quotes like "zoneRight"), or can be another expression that evaluates to a Zone or Location name),
+
+[#StackBased]
+==== Stack based functions
+Use these functions when you want to *Sum* or *Count* pieces that are in the same Stack as the current piece. These functions can only be used in BeanShell expressions created in Piece traits, they will not work in a Map-based Global Key Command (for example).
+
+*SumStack(prop)* returns the total of the specified property in all pieces in the same stack as the current piece.
+
+*CountStack()* returns the total number of pieces in the same stack as this one (including this piece)
+
+*CountStack(prop)* returns the number of pieces in the same stack as this one, that have a non-blank value for the named property. If this piece has a non-blank value for the named property, it is counted in the total.
+
+
+[#LocationBased]
+==== Location based functions
+Use these functions when you want to *Sum* or *Count* pieces that are either in the same Location as the current piece (Counter GKC's) or are in a know named Location on a specific map.
+
+The Location Name might be a Zone name, a region name or a HexGrid location, depending on how the Grid Location naming is set up on the target piece's map.
+
+*SumLocation(prop)* returns the total of the specified property (including the current piece) in all pieces with the same Location Name on the same Map as the current piece.
+
+*SumLocation(prop, expression)* returns the total of the specified property in all pieces (including the current piece) with the same Location Name on the same Map as the current piece and that match the expression .
+
+*SumLocation(prop, location, map)* returns the total of the specified property in all pieces in the specified Location Name on the specified Map.
+
+*SumLocation(prop, location, map, expression)* returns the total of the specified property in all pieces in the specified Location Name on the specified Map that match the expression.
+
+*CountLocation()* returns the count of the number of piecs (including the current piece) with the same Location Name on the same Map as the current piece.
+
+*CountLocation(prop)* returns the count of the number of piecs (including the current piece) with the same Location Name on the same Map as the current piece that have a non-blank value for the supplied property.
+
+*CountLocation(expression)* returns the count of the number of piecs (including the current piece) with the same Location Name on the same Map as the current piece that match the expression.
+
+*CountLocation(prop, expression)* returns the count of the number of piecs (including the current piece) with the same Location Name on the same Map as the current piece that have a non-blank value for the supplied property and that match the expression
+
+*CountMapLocation(location, map)* returns the count of the number of pieces in the specified Location Name on the specified Map.
+
+*CountMapLocation(location, map, prop)* returns the count of the number of pieces in the specified Location Name on the specified Map and that have a non-blank value for the supplied property.
+
+*CountMapLocation(location, map, expression)* returns the count of the number of pieces in the specified Location Name on the specified Map and that match the supplied expression.
+
+*CountMapLocation(location, map, prop, expression)* returns the count of the number of pieces in the specified Location Name on the specified Map and that have a non-blank value for the supplied property and that match the supplied expression.
+
+[#ZoneBased]
+==== Zone based functions
+
+[#AttachmentBased]
+==== Attachment based functions
+Use these functions to *Sum* or *Count* values on pieces that are currently Attached to the source piece. These functions only work in Counter GKC's.
+
+*SumAttachment(attachment, prop)* returns the total of the specified property summed across all the pieces attached to this piece via a named Attachment trait on this piece.
+
+*CountAttachment(attachment, prop)* returns the number of pieces with a non-blank value for the specified property, among all the pieces attached to this piece via a named Attachment trait on this piece.
+
+*CountAttachmentExpression(attachment, expr)* returns the total number of pieces, among the pieces attached by the named attachment property, which also match the given expression.
+
+*MaxAttachment(attachment, prop)* returns the highest value of the specified property summed among all the pieces attached to this piece via a named Attachment trait on this piece. Returns 0 if no pieces containing the property are attached.
+
+*MinAttachment(attachment, prop)* returns the lowest value of the specified property summed among all the pieces attached to this piece via a named Attachment trait on this piece. Returns 0 if no pieces containing the property are attached.
+
+
+[#MatBased]
+==== Mat based functions
+Use these functions to *Sum* or *Count* values on pieces that are part of a Mat and Cargo relationship. These functions only work in Counter GKC's.
+
+*SumMat(prop)* returns the total of the specified property among a Mat and its Mat Cargo. The asking piece can either be a Mat or a Mat Cargo. If the piece is not a Mat, and/or if it is a Mat Cargo piece not presently on a Mat, then only the piece itself is checked.
+
+*CountMat(prop)* returns the number of pieces with a non-blank value for the specified property, among a Mat and its Mat Cargo. The asking piece can either be a Mat or a Mat Cargo. If the piece is not a Mat, and/or if it is a Mat Cargo piece not presently on a Mat, then only the piece itself is checked.
+
+
+[#Generic]
+==== Generic functions
+These functions are provided for backwards compatibility, but are not recommended for general use as they are not efficient. When the location of the pieces to be summed or counted is not known, then every piece on the map (if known) or all maps (if not), must be checked to see if they need to be included.
+
+*Sum(prop, expr)* returns the total of the specified property for all pieces in the game matching the expression.
+
+*Sum(prop, expr, map)* returns the total of the specified property for all pieces on a specific map matching the expression.
+
+*Count(expr)* returns the number of pieces in the game that match the expression.
+
+*Count(expr, map)* returns the number of pieces on a specific map matching the expression.
+
+*NOTE:* The last four functions (i.e. plain "Sum" and "Count", with or without the map parameter) can have substantial performance cost as they must check all the pieces on the map or in the entire game against the expression.
+Also, because Java requires that the expression itself must be passed as a string, the syntax is tricky here and quotation marks inside the expression must be quoted as \"

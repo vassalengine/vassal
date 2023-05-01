@@ -394,7 +394,7 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
       wrapConfig = new BooleanConfigurer(m.isWrap());
       controls.add(wrapLabel, wrapConfig);
 
-      targetConfig = new GlobalCommandTargetConfigurer(m.target);
+      targetConfig = new GlobalCommandTargetConfigurer(m.target, Decorator.getOutermost(m));
       targetLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.pre_select"));
       controls.add(targetLabel, targetConfig);
 
