@@ -107,7 +107,7 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
   public static final String CENTER_ON_MOVE = "centerOnMove"; //$NON-NLS-1$
   public static final String CENTER_ON_MOVE_SENSITIVITY = "centerOnMoveSensitivity"; //$NON-NLS-1$
   public static final String SINGLE_WINDOW = "singleWindow"; //$NON-NLS-1$
-  public static final String MAXIMUM_HEAP = "maximumHeap3.7"; //$NON-NLS-1$
+  public static final String MAXIMUM_HEAP = "maximumHeap"; //$NON-NLS-1$
   public static final String DRAG_THRESHOLD = "dragThreshold"; //$NON-NLS-1$
   public static final String STACK_VIEWER_ORDER = "stackViewerOrder"; //NON-NLS
   public static final String SHOW_MARK_MOVED = "showMarkMoved"; //NON-NLS
