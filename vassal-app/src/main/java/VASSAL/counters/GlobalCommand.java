@@ -398,6 +398,13 @@ public class GlobalCommand implements Auditable {
       final GlobalCommandVisitor visitor = getVisitor(command, filter, keyStroke, audit, owner, getSelectFromDeck());
       final DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
 
+      // Check any fast-match conditions in the order most likely to be fastest and return the fewest pieces to pass to the dispatcher for full testing
+      // 1. First check current Stack, Deck, mat or attachment or specified Deck as we can find these directly.
+      // 2. Specific or current location can be quickly found via the Qtree
+      // 3. Range lookups can be quickly found via the qtree
+      // 4. Current or specific Zone can be quickly found, but can return many counters, so lower priority
+      // 5. No Fast match
+
       // If we're using "current stack or deck" then we simply iterate quickly through the members of the stack or deck that the current piece is in
       if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.CURSTACK) {
         if (curPiece != null) {
@@ -546,13 +553,10 @@ public class GlobalCommand implements Auditable {
 
         // Process just the pieces at that exact location
         for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(targetFastMap, new Point(x, y))) {
-          dispatcher.accept(piece);
-        }
-      }
 
-      // if Current Location has been specified (Counter GKC), we can go find the pieces directly from the Qtree index
-      else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.CURLOC && curPiece != null && curPiece.getMap() != null && curPiece.getPosition() != null) {
-        for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(curPiece.getMap(), curPiece.getPosition())) {
+          // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
+          if (!passesPropertyFastMatch(piece)) continue;
+
           dispatcher.accept(piece);
         }
       }
@@ -560,6 +564,33 @@ public class GlobalCommand implements Auditable {
       // If a specific LocationName target has been specified AND a valid target map, then we can go direct to the LocationName index to find those pieces
       else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.LOCATION && targetFastMap != null && !fastLocation.isEmpty())  {
         for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(targetFastMap, BasicPiece.LOCATION_NAME, fastLocation)) {
+
+          // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
+          if (!passesPropertyFastMatch(piece)) continue;
+
+          dispatcher.accept(piece);
+        }
+      }
+
+      // if Current Location has been specified (Counter GKC), we can go find the pieces directly from the Qtree index
+      else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.CURLOC && curPiece != null && curPiece.getMap() != null && curPiece.getPosition() != null) {
+        for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(curPiece.getMap(), curPiece.getPosition())) {
+
+          // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
+          if (!passesPropertyFastMatch(piece)) continue;
+
+          dispatcher.accept(piece);
+        }
+      }
+
+
+      // If a Range has been specified, quickly find the in-range pieces
+      else if (fastRange != null && curPiece != null && curPiece.getMap() != null && curPiece.getPosition() != null) {
+        for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(curPiece, fastRange)) {
+
+          // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
+          if (!passesPropertyFastMatch(piece)) continue;
+
           dispatcher.accept(piece);
         }
       }
@@ -568,12 +599,20 @@ public class GlobalCommand implements Auditable {
       else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.CURZONE && curPiece != null && curPiece.getMap() != null)  {
         final String currentZone = (String) curPiece.getProperty(BasicPiece.CURRENT_ZONE);
         for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(curPiece.getMap(), BasicPiece.CURRENT_ZONE, currentZone)) {
+
+          // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
+          if (!passesPropertyFastMatch(piece)) continue;
+
           dispatcher.accept(piece);
         }
       }
       // If a specific Zone target has been specified AND a valid target map, then we can go direct to the Zone index to find those pieces
       else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.ZONE && targetFastMap != null && !fastZone.isEmpty())  {
         for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(targetFastMap, BasicPiece.CURRENT_ZONE, fastZone)) {
+
+          // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
+          if (!passesPropertyFastMatch(piece)) continue;
+
           dispatcher.accept(piece);
         }
       }

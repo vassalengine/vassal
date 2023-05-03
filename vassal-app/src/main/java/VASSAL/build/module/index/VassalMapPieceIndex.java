@@ -23,6 +23,7 @@ import VASSAL.counters.BasicPiece;
 import VASSAL.counters.GamePiece;
 
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -37,12 +38,12 @@ import java.util.Set;
 public class VassalMapPieceIndex {
 
   /** Quadtree index allowing fast lookup of pieces by position */
-  private final VassalMapQuadTree qtree;
+  private VassalMapQuadTree qtree;
 
   /** A property cros-reference of CurrentZone for fast lookup of pieces in a given zone */
   private final PiecePropertyIndex zoneIndex;
 
-  /** A property cros-reference of LocationName for fast lookup of pieces in a given region or board position such as hex */
+  /** A property cross-reference of LocationName for fast lookup of pieces in a given region or board position such as hex */
   private final PiecePropertyIndex locationIndex;
 
   /** The Vassal Map these indexes apply to */
@@ -60,7 +61,21 @@ public class VassalMapPieceIndex {
    * @param piece Piece added
    */
   public void addOrUpdatePiece(GamePiece piece) {
-    qtree.addOrUpdatePiece(piece);
+    final Point pos = piece.getPosition();
+    if (pos != null) {
+      // If this piece does not reside within the bounds of the Qree,
+      // Then copy the existing Qtree to a new larger one that encompasses this piece, plus an extra 100 pixels.
+      // The Qtree is initially set to the size of the visible play area, so this should not happen often.
+      if (! qtree.getBounds().contains(pos)) {
+        final Rectangle bounds = qtree.getBounds();
+        final int minX = Math.min(pos.x - 100, bounds.x);
+        final int maxX = Math.max(pos.x + 100, bounds.x + bounds.width);
+        final int minY = Math.min(pos.y - 100, bounds.y);
+        final int maxY = Math.max(pos.y + 100, bounds.y + bounds.height);
+        qtree = new VassalMapQuadTree(qtree, minX, minY, maxX, maxY);
+      }
+      qtree.addOrUpdatePiece(piece);
+    }
     zoneIndex.addOrUpdatePiece(piece);
     locationIndex.addOrUpdatePiece(piece);
   }

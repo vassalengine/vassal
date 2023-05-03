@@ -953,7 +953,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   /**
-   * Generic lowest-level SumLocation function called by all other versions
+   * Lowest-level SumLocation function called by all other versions
    *
    * @param property      Property Name to sum
    * @param locationName  Location Name to match
@@ -974,6 +974,107 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     return result;
   }
 
+  /**
+   * CountLocation() function.
+   * Return count of pieces in the same location as the current piece
+   * @return  Piece Count
+   */
+  public Object countLocation(PropertySource ps) {
+    return countLocation("", ps);
+  }
+
+  /**
+   * CountLocation(property) and CountLocation(expression) functions.
+   * Return count of pieces in the same location as the current piece that have a non-nlank value for a property or that match an expression
+   * @param   propertyOrExpression  Property Name or Match Expression
+   * @return  Piece Count
+   */
+  public Object countLocation(String propertyOrExpression, PropertySource ps) {
+    if (propertyOrExpression != null && propertyOrExpression.trim().startsWith("{")) {
+      return countLocation(null, propertyOrExpression, ps);
+    }
+    else {
+      return countLocation(propertyOrExpression, null, ps);
+    }
+  }
+
+  /**
+   * CountLocation(property, expression) and CountLocation(locationName, map) functions.
+   * Return count of pieces in the same location as the current piece that have a non-nlank value for a property and that match an expression
+   * @param   propertyOrExpression  Property Name or Match Expression
+   * @return  Piece Count
+   */
+
+  public Object countLocation(String property, String expression, PropertySource ps) {
+    if (ps instanceof GamePiece) {
+      final GamePiece p = (GamePiece) ps;
+      final Map m = p.getMap();
+      if (m != null) {
+        final String here = m.locationName(p.getPosition());
+        return countMapLocation(m.getConfigureName(), here, property, expression, ps);
+      }
+    }
+    return 0;
+  }
+
+  public Object countMapLocation(String mapName, String locationName, String propertyOrExpression, PropertySource ps) {
+    if (propertyOrExpression != null && propertyOrExpression.trim().startsWith("{")) {
+      return countMapLocation(mapName, locationName, null, propertyOrExpression, ps);
+    }
+    else {
+      return countMapLocation(mapName, locationName, propertyOrExpression, "", ps);
+    }
+  }
+
+  public Object countMapLocation(String mapName, String locationName, String property, String expression, PropertySource ps) {
+    ps = translatePiece(ps);
+
+    final String matchString = replaceDollarVariables(expression, ps);
+    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter((PropertySource) ps);
+    final Map targetMap = findVassalMap(mapName);
+
+    String propValue;
+    if (property == null || property.isEmpty()) {
+      propValue = null;
+    }
+    else {
+      propValue = (String) ps.getProperty(property);
+      // If the propValue is null, switch it to "" to distinguish it from the case of no property supplied.
+      if (propValue == null) {
+        propValue = "";
+      }
+    }
+
+    return targetMap == null ? 0 : countLocation(locationName, targetMap, propValue, filter);
+  }
+
+  /**
+   * Lowest-level CountLocation function called by all other versions
+   * @param locationName Location Name to search for
+   * @param map          Map to search on
+   * @param propValue    null if no property was supplied, or value of supplied property
+   * @param filter       Option filter implementing Property Match Expression
+   * @return             Count of pieces
+   */
+  private Object countLocation(String locationName, Map map, String propValue, PieceFilter filter) {
+    int result = 0;
+
+    // Ask IndexManager for list of pieces on that map at that location. Stacks are not returned by the IM.
+    for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(map, BasicPiece.LOCATION_NAME, locationName)) {
+      // If a property was supplied to be checked and has an empty value, then skip this piece in the count.
+      // If a property was not supplied (propValue == null), then the piece is counted.
+      if (propValue != null && propValue.isEmpty()) {
+        continue;
+      }
+
+      // Add 1 to count if the no filter was supplied, or the piece passed the filter.
+      if (filter == null || filter.accept(piece)) {
+        result += 1;
+      }
+    }
+
+    return result;
+  }
   /*
    * Random Numbers
    *

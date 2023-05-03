@@ -167,11 +167,23 @@ public class BeanShellFunctionMenu extends JPopupMenu {
 
     final JMenu locationMenu = new JMenu(Resources.getString("Editor.BeanShell.by_location"));
     if (target != null) {
-      addFunction(locationMenu, "SumLocation", Resources.getString("Editor.BeanShell.sum15"), new String[]{Resources.getString("Editor.BeanShell.property_name")}, "(prop)");
-      addFunction(locationMenu, "SumLocation", Resources.getString("Editor.BeanShell.sum16"), new String[]{Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression")}, "(prop, expr)", GENERAL_PME_HINTS, new Option[]{Option.NONE, Option.PME}); //NON-NLS
+      addFunction(locationMenu, "SumLocation", Resources.getString("Editor.BeanShell.sum15"), new String[] { Resources.getString("Editor.BeanShell.property_name")}, "(prop)");
+      addFunction(locationMenu, "SumLocation", Resources.getString("Editor.BeanShell.sum16"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression")}, "(prop, expr)", GENERAL_PME_HINTS, new Option[]{Option.NONE, Option.PME}); //NON-NLS
     }
     addFunction(locationMenu, "SumLocation", Resources.getString("Editor.BeanShell.sum17"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.location_name"), Resources.getString("Editor.BeanShell.map_name") }, "(prop, loc, map)");
     addFunction(locationMenu, "SumLocation", Resources.getString("Editor.BeanShell.sum18"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.location_name"), Resources.getString("Editor.BeanShell.map_name"), Resources.getString("Editor.BeanShell.property_match_expression") }, "(prop, loc, map, expr)", GENERAL_PME_HINTS, new Option[] {Option.NONE, Option.NONE, Option.NONE, Option.PME}); //NON-NLS
+
+    if (target != null) {
+      addFunction(locationMenu, "CountLocation", Resources.getString("Editor.BeanShell.sum19"), new String[]{}, "()"); //NON-NLS
+      addFunction(locationMenu, "CountLocation", Resources.getString("Editor.BeanShell.sum20"), new String[]{Resources.getString("Editor.BeanShell.property_name")}, "(prop)"); //NON-NLS
+      addFunction(locationMenu, "CountLocation", Resources.getString("Editor.BeanShell.sum21"), new String[]{Resources.getString("Editor.BeanShell.property_match_expression")}, "(expr)", GENERAL_PME_HINTS, new Option[]{Option.PME}); //NON-NLS
+      addFunction(locationMenu, "CountLocation", Resources.getString("Editor.BeanShell.sum22"), new String[]{Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression")}, "(prop, expr)", GENERAL_PME_HINTS, new Option[]{Option.NONE, Option.PME}); //NON-NLS
+    }
+    addFunction(locationMenu, "CountMapLocation", Resources.getString("Editor.BeanShell.sum23"), new String[] { Resources.getString("Editor.BeanShell.location_name"), Resources.getString("Editor.BeanShell.map_name") }, "(loc, map)");
+    addFunction(locationMenu, "CountMapLocation", Resources.getString("Editor.BeanShell.sum24"), new String[] { Resources.getString("Editor.BeanShell.location_name"), Resources.getString("Editor.BeanShell.map_name"), Resources.getString("Editor.BeanShell.property_name") }, "(loc, map, prop)");
+    addFunction(locationMenu, "CountMapLocation", Resources.getString("Editor.BeanShell.sum25"), new String[] { Resources.getString("Editor.BeanShell.location_name"), Resources.getString("Editor.BeanShell.map_name"), Resources.getString("Editor.BeanShell.property_match_expression") }, "(loc, map, expr)", GENERAL_PME_HINTS, new Option[] {Option.NONE, Option.NONE, Option.PME}); //NON-NLS
+    addFunction(locationMenu, "CountMapLocation", Resources.getString("Editor.BeanShell.sum26"), new String[] { Resources.getString("Editor.BeanShell.location_name"), Resources.getString("Editor.BeanShell.map_name"), Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression") }, "(loc, map, prop, expr)", GENERAL_PME_HINTS, new Option[] {Option.NONE, Option.NONE, Option.NONE, Option.PME}); //NON-NLS
+
 
     final JMenu stackMenu = new JMenu(Resources.getString("Editor.BeanShell.by_stack"));
     addFunction(stackMenu, "SumStack", Resources.getString("Editor.BeanShell.sum1"), new String[] { Resources.getString("Editor.BeanShell.property_name") }, "(prop)"); //NON-NLS
@@ -179,8 +191,8 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     addFunction(stackMenu, "CountStack", Resources.getString("Editor.BeanShell.sum7"), new String[] { Resources.getString("Editor.BeanShell.property_name") }, "(prop)"); //NON-NLS
 
     final JMenu matMenu = new JMenu(Resources.getString("Editor.BeanShell.by_mat"));
-    addFunction(matMenu, "SumMat", Resources.getString("Editor.BeanShell.sum8"), new String[] { Resources.getString("Editor.BeanShell.property_name") }, "(name)"); //NON-NLS
-    addFunction(matMenu, "CountMat", Resources.getString("Editor.BeanShell.sum9"), new String[] { Resources.getString("Editor.BeanShell.property_name") }, "(name)"); //NON-NLS
+    addFunction(matMenu, "SumMat", Resources.getString("Editor.BeanShell.sum8"), new String[] { Resources.getString("Editor.BeanShell.property_name") }, "(prop)"); //NON-NLS
+    addFunction(matMenu, "CountMat", Resources.getString("Editor.BeanShell.sum9"), new String[] { Resources.getString("Editor.BeanShell.property_name") }, "(prop)"); //NON-NLS
 
     final JMenu zoneMenu = new JMenu(Resources.getString("Editor.BeanShell.by_zone"));
 

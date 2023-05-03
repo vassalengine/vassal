@@ -277,22 +277,20 @@ CountLocation(String property, String expression) {
   return unwrap(_interp.countLocation(property, expression, _source));
 }
 
-CountLocation(String location, String map) {
-  _interp = this.caller.namespace.getVariable("_interp");
-  _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.countLocation(location, map, _source));
+CountMapLocation(String location, String map) {
+   return CountMapLocation(location, map, "");
 }
 
-CountLocation(String location, String map, String propertyOrExpression) {
+CountMapLocation(String location, String map, String propertyOrExpression) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.countLocation(location, map, propertyOrExpression, _source));
+  return unwrap(_interp.countMapLocation(location, map, propertyOrExpression, _source));
 }
 
-CountLocation(String location, String map, String property, String expression) {
+CountMapLocation(String location, String map, String property, String expression) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.countLocation(location, map, property, expression, _source));
+  return unwrap(_interp.countMapLocation(location, map, property, expression, _source));
 }
 
 /**

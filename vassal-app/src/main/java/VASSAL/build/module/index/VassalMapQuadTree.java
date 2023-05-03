@@ -3,10 +3,12 @@ package VASSAL.build.module.index;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.counters.GamePiece;
+import VASSAL.tools.qtree.QFunc;
 import VASSAL.tools.qtree.QNode;
 import VASSAL.tools.qtree.QPoint;
 import VASSAL.tools.qtree.QuadTree;
 
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -59,15 +61,48 @@ public class VassalMapQuadTree extends QuadTree {
         maxY = bounds.y + bounds.height;
     }
 
-    // Add 100 pixel border for good measure
-    minX -= 100;
-    maxX += 100;
-    minY -= 100;
-    maxY += 100;
+
+    // Extend the boubds to include the Map edgeBuffer and an additional 100 pixels
+    final Dimension d = map.getEdgeBuffer();
+    minX -= (d.width + 100);
+    maxX += (d.width + 100);
+    minY -= (d.height + 100);
+    maxY += (d.height + 100);
 
     setRootNode(new QNode(minX, minY, maxX - minX, maxY - minY, null));
 
     bounds = new Rectangle(minX, minY, maxX - minX, maxY - minY);
+  }
+
+  /**
+   * Create a new Quadtree with larger bounds from an existing Quadtree
+   * @param qtree   Existing Quadtree
+   * @param x1      New left margin
+   * @param y1      New top margin
+   * @param x2      New right margin
+   * @param y2      New bottom margin
+   */
+  public VassalMapQuadTree(VassalMapQuadTree qtree, int x1, int y1, int x2, int y2) {
+    super();
+
+    setRootNode(new QNode(x1, y1, x2 - x1, y2 - y1, null));
+
+    bounds = new Rectangle(x1, y1, x2 - x1, y2 - y1);
+
+    this.traverse(qtree.getRootNode(), new QFunc() {
+      @Override
+      public void call(QuadTree quadTree, QNode node) {
+        set(node.getPoint().getX(), node.getPoint().getY(), node.getPoint().getValue());
+      }
+    });
+  }
+  
+  /**
+   * Return the bounds of the current Quadtree
+   * @return bounds
+   */
+  public Rectangle getBounds() {
+    return bounds;
   }
 
   /**

@@ -567,15 +567,18 @@ public class GameState implements CommandEncoder {
 
     if (gameStarted) {
       if (gameStarting) {
-        // Ask the IndexManager to rebuild all indexes so at-start stack pieces are all included
-        // This is required for any SGKC's to work
-        GameModule.getGameModule().getIndexManager().rebuild();
 
         // Things that we invokeLater
         SwingUtilities.invokeLater(fastForwarding ? () -> {
+          // Ask the IndexManager to rebuild all indexes so at-start stack pieces are all included
+          // This is required for any SGKC's to work
+          GameModule.getGameModule().getIndexManager().rebuild();
           // Apply all of the startup global key commands, in order
           doStartupGlobalKeyCommands(false);
         } : () -> {
+          // Ask the IndexManager to rebuild all indexes so at-start stack pieces are all included
+          // This is required for any SGKC's to work
+          GameModule.getGameModule().getIndexManager().rebuild();
 
           // Apply all of the startup global key commands, in order
           doStartupGlobalKeyCommands(false);
