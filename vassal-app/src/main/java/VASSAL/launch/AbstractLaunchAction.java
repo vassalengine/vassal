@@ -17,6 +17,36 @@
 
 package VASSAL.launch;
 
+import VASSAL.Info;
+import VASSAL.build.module.ExtensionsManager;
+import VASSAL.build.module.GlobalOptions;
+import VASSAL.build.module.metadata.AbstractMetaData;
+import VASSAL.build.module.metadata.MetaDataFactory;
+import VASSAL.build.module.metadata.ModuleMetaData;
+import VASSAL.configure.DirectoryConfigurer;
+import VASSAL.i18n.Resources;
+import VASSAL.preferences.Prefs;
+import VASSAL.preferences.ReadOnlyPrefs;
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ProblemDialog;
+import VASSAL.tools.ThrowableUtils;
+import VASSAL.tools.WarningDialog;
+import VASSAL.tools.concurrent.FutureUtils;
+import VASSAL.tools.deprecation.RemovalAndDeprecationChecker;
+import VASSAL.tools.filechooser.FileChooser;
+import VASSAL.tools.filechooser.ModuleFileFilter;
+import VASSAL.tools.io.ProcessLauncher;
+import VASSAL.tools.io.ProcessWrapper;
+import VASSAL.tools.lang.MemoryUtils;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.SystemUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.AbstractAction;
+import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
 import java.awt.Dimension;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -33,38 +63,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.zip.ZipFile;
-
-import javax.swing.AbstractAction;
-import javax.swing.SwingWorker;
-import javax.swing.JOptionPane;
-
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.SystemUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import VASSAL.Info;
-import VASSAL.build.module.ExtensionsManager;
-import VASSAL.build.module.GlobalOptions;
-import VASSAL.build.module.metadata.AbstractMetaData;
-import VASSAL.build.module.metadata.MetaDataFactory;
-import VASSAL.build.module.metadata.ModuleMetaData;
-import VASSAL.configure.DirectoryConfigurer;
-import VASSAL.preferences.Prefs;
-import VASSAL.preferences.ReadOnlyPrefs;
-import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ProblemDialog;
-import VASSAL.tools.ThrowableUtils;
-import VASSAL.tools.WarningDialog;
-import VASSAL.tools.concurrent.FutureUtils;
-import VASSAL.tools.deprecation.RemovalAndDeprecationChecker;
-import VASSAL.tools.filechooser.FileChooser;
-import VASSAL.tools.filechooser.ModuleFileFilter;
-import VASSAL.tools.io.ProcessLauncher;
-import VASSAL.tools.io.ProcessWrapper;
-import VASSAL.tools.lang.MemoryUtils;
-import VASSAL.i18n.Resources;
 
 /**
  *
@@ -84,7 +82,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
   // memory-related constants
   //
   protected static final int PHYS_MEMORY;
-  protected static final int DEFAULT_MAXIMUM_HEAP = 512;
+  public static final int DEFAULT_MAXIMUM_HEAP = 1024;
   protected static final int FAILSAFE_MAXIMUM_HEAP = 128;
 
   static {
