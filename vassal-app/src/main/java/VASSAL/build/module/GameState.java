@@ -595,6 +595,11 @@ public class GameState implements CommandEncoder {
         });
       }
     }
+
+    if (!gameStarting) {
+      // Clear the indexes on game shutdown to free memory during a PreDefinedSetup refresh loop.
+      GameModule.getGameModule().getIndexManager().clearAll();
+    }
   }
 
   /** Return true if a game is currently in progress */

@@ -65,7 +65,7 @@ unwrap(Object value) {
  * If function for Expressions. Note the capitalization to distinguish
  * it from the if java keyword.
  *
- * OBSOLETE and INNEFICIENT, SHOULD NOT BE USED
+ * OBSOLETE and INEFFICIENT, SHOULD NOT BE USED
  *
  *  Example: If(range < 5, 5, range+2)
  */
@@ -211,9 +211,9 @@ CountMat(String property) {
  *    Sum pieces in same location as caller
  * SumLocation(property, expression)
  *    Sum pieces in same location as caller that match expression
- * SumLocation(property, location, map))
+ * SumLocation(property, location, map)
  *    Sum pieces in the specified map/location
- * SumLocation(property, location, map, expression))
+ * SumLocation(property, location, map, expression)
  *    Sum pieces in the specified map/location that match expression
  *
  */ 
@@ -230,13 +230,13 @@ SumLocation(String property, String expression) {
   return unwrap(_interp.sumLocation(property, expression, _source));
 }
 
-SumLocation(String property, String location, String map) {
+SumMapLocation(String property, String location, String map) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
   return unwrap(_interp.sumLocation(property, location, map, _source));
 }
 
-SumLocation(String property, String location, String map, String expression) {
+SumMapLocation(String property, String location, String map, String expression) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
   return unwrap(_interp.sumLocation(property, location, map, expression, _source));
@@ -249,12 +249,12 @@ SumLocation(String property, String location, String map, String expression) {
  * CountLocation(expression)
  *    Count pieces in sane location as caller that match expression
  * CountLocation(property)
- *    Count pieces in same location as caller with a non-nlank value for the specified property
+ *    Count pieces in same location as caller with a non-blank value for the specified property
  * CountLocation(property, expression)
- *    Count pieces in same location as caller that match expression with a non-nlank value for the specified property
- * CountLocation(location, map, property))
+ *    Count pieces in same location as caller that match expression with a non-blank value for the specified property
+ * CountLocation(location, map, property)
  *    Count pieces in the specified map/location
- * CountLocation(location, map, property, expression))
+ * CountLocation(location, map, property, expression)
  *    Count pieces in the specified map/location that match expression
  *
  */ 
@@ -300,9 +300,9 @@ CountMapLocation(String location, String map, String property, String expression
  *    Sum value of property on all pieces in the same zone as the caller
  * SumZone(String property, String expression) 
  *    Sum value of property on pieces that match expression in the same zone as the caller
- * SumZone(String property, String location, String map)) 
+ * SumZone(String property, String location, String map)
  *    Sum value of property on all pieces in the specifed zone on the specified map
- * SumZone(String property, String location, String map, String expression))
+ * SumZone(String property, String location, String map, String expression)
  *    Sum value of property on pieces that match expression in the specifed zone on the specified map
  */
  SumZone(String property) {
@@ -317,13 +317,13 @@ SumZone(String property, String expression) {
   return unwrap(_interp.sumZone(property, expression, _source));
 }
 
-SumZone(String property, String location, String map) {
+SumMapZone(String property, String location, String map) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
   return unwrap(_interp.sumZone(property, location, map, _source));
 }
 
-SumZone(String property, String location, String map, String expression) {
+SumMapZone(String property, String location, String map, String expression) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
   return unwrap(_interp.sumZone(property, location, map, expression, _source));
@@ -341,11 +341,11 @@ SumZone(String property, String location, String map, String expression) {
  *    Count number of pieces that have a value for property on all pieces in the same zone as the caller
  * CountZone(String property, String expression) 
  *    Count number of pieces that have a value for property on pieces that match expression in the same zone as the caller
- * CountMapZone(String location, String map))
+ * CountMapZone(String location, String map)
  *    Count number of pieces in the specifed zone on the specified map
- * CountMapZone(String property, String location, String map))
+ * CountMapZone(String location, String map, String property)
  *    Count number of pieces that have a value for property on all pieces in the specifed zone on the specified map
- * CountMapZone(String property, String location, String map, String expression))
+ * CountMapZone(String location, String map, String property, String expression)
  *    Count number of pieces that have a value for property on pieces that match expression in the specifed zone on the specified map
  */
 
@@ -368,15 +368,13 @@ CountZone(String property, String expression) {
 }
 
 CountMapZone(String location, String map) {
-  _interp = this.caller.namespace.getVariable("_interp");
-  _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.countMapZone(property, location, map, _source));
+   return coutMapZone(location, Map, "");
 }
 
-CountMapZone(String location, String map, String property) {
+CountMapZone(String location, String map, String propertyOrExpression) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.countMapZone(location, map, property, _source));
+  return unwrap(_interp.countMapZone(location, map, propertyOrExpression, _source));
 }
 
 CountMapZone(String location, String map, String property, String expression) {

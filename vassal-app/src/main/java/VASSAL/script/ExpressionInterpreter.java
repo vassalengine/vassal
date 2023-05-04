@@ -495,7 +495,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
   /**
    * Convert an arbitrary property value to an integer and return the value,
-   * or retutn 0 if not an integer.
+   * or return 0 if not an integer.
    * @param prop  Property value
    * @return      converted integer value
    */
@@ -906,7 +906,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       final Map m = p.getMap();
       if (m != null) {
         final String here = m.locationName(p.getPosition());
-        return sumLocation(property, here, m.getConfigureName(), expression, ps);
+        return sumMapLocation(property, here, m.getConfigureName(), expression, ps);
       }
     }
 
@@ -914,7 +914,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   /**
-   * SumLocation(property, location, map) function
+   * SumMapLocation(property, location, map) function
    * Total the value of the named property in all counters in the
    * specified map and location
    * <p>
@@ -924,12 +924,12 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * @param ps         GamePiece source
    * @return total
    */
-  public Object sumLocation(String property, String location, String map, PropertySource ps) {
-    return sumLocation(property, location, map, null, ps);
+  public Object sumMapLocation(String property, String location, String map, PropertySource ps) {
+    return sumMapLocation(property, location, map, null, ps);
   }
 
   /**
-   * SumLocation(property, location, map, expression) function
+   * SumMapLocation(property, location, map, expression) function
    * Total the value of the named property in all counters in the
    * specified map and location that match the supplied expression
    * <p>
@@ -941,7 +941,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * @return total
    */
 
-  public Object sumLocation(String property, String location, String map, String expression, PropertySource ps) {
+  public Object sumMapLocation(String property, String location, String map, String expression, PropertySource ps) {
 
     ps = translatePiece(ps);
 
@@ -953,7 +953,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   /**
-   * Lowest-level SumLocation function called by all other versions
+   * Lowest-level SumMapLocation function called by all other versions
    *
    * @param property      Property Name to sum
    * @param locationName  Location Name to match
@@ -1075,6 +1075,106 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
     return result;
   }
+
+
+  /**
+   * SumZone(property) function
+   * Total the value of the named property in all counters in the
+   * same zone as the specified piece.
+   * <p>
+   * @param property Property Name
+   * @param ps       GamePiece
+   * @return total
+   */
+  public Object sumZone(String property, PropertySource ps) {
+    return sumZone(property, "", ps);
+  }
+
+  /**
+   * SumZone(property, expression) function
+   * Total the value of the named property in all counters in the
+   * same zone as the specified piece that meet the supplied expression.
+   * <p>
+   * @param property   Property Name
+   * @param expression Expression
+   * @param ps         GamePiece Source
+   * @return total
+   */
+  public Object sumZone(String property, String expression, PropertySource ps) {
+
+    if (ps instanceof GamePiece) {
+      final GamePiece p = (GamePiece) ps;
+      final Map m = p.getMap();
+      if (m != null) {
+        final String zone = (String) p.getProperty(BasicPiece.CURRENT_ZONE);
+        return sumMapZone(property, zone, m.getConfigureName(), expression, ps);
+      }
+    }
+
+    return 0;
+  }
+
+  /**
+   * SumMapZone(property, location, map) function
+   * Total the value of the named property in all counters in the
+   * specified map and zone
+   * <p>
+   * @param property   Property Name
+   * @param zone       Zone Name
+   * @param map        Map Name
+   * @param ps         GamePiece source
+   * @return total
+   */
+  public Object sumMapZone(String property, String zoneName, String map, PropertySource ps) {
+    return sumMapZone(property, zoneName, map, null, ps);
+  }
+
+  /**
+   * SumMapZone(property, location, map, expression) function
+   * Total the value of the named property in all counters in the
+   * specified map and zone that match the supplied expression
+   * <p>
+   * @param property   Property Name
+   * @param zone       Zone Name
+   * @param map        Map Name
+   * @param expression Expression
+   * @param ps         GamePiece source
+   * @return total
+   */
+
+  public Object sumMapZone(String property, String zoneName, String map, String expression, PropertySource ps) {
+
+    ps = translatePiece(ps);
+
+    final String matchString = replaceDollarVariables((String) expression, ps);
+    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter((PropertySource) ps);
+    final Map targetMap = findVassalMap(map);
+
+    return targetMap == null ? 0 : sumZone(property, zoneName, targetMap, filter);
+  }
+
+  /**
+   * Lowest-level SumZone function called by all other versions
+   *
+   * @param property      Property Name to sum
+   * @param zone          Zone Name to match
+   * @param mapName       Map to check
+   * @param filter        Optional PieceFilter to check expression match
+   * @return
+   */
+  private Object sumZone(String property, String zoneName, Map map, PieceFilter filter) {
+    int result = 0;
+
+    // Ask IndexManager for list of pieces on that map at that zone. Stacks are not returned by the IM.
+    for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(map, BasicPiece.CURRENT_ZONE, zoneName)) {
+      final Object propertyValue = piece.getProperty(property);
+      if (filter == null || filter.accept(piece)) {
+        result += propValue(propertyValue);
+      }
+    }
+    return result;
+  }
+
   /*
    * Random Numbers
    *
