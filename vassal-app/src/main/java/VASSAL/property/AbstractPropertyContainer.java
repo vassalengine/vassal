@@ -95,7 +95,6 @@ public abstract class AbstractPropertyContainer implements PropertyContainer {
     return ps.hasListeners(prop);
   }
 
-  /** {@inheritDoc} */
   protected <T> void fireChanged(Property<T> prop, T oldVal, T newVal) {
     ps.fireChanged(this, prop, oldVal, newVal);
   }

@@ -107,7 +107,7 @@ public class Expression {
     return evaluate(ps, null, false, null, null);
   }
 
-  /** @deprecated Use {@link #evaluate(boolean, Auditable, AuditTrail)} */
+  /** @deprecated Use {@link #evaluate(PropertySource, boolean, Auditable, AuditTrail)} */
   @Deprecated(since = "2021-06-11")
   public String evaluate(boolean localized) throws ExpressionException {
     return evaluate(null, null, localized, null, null);

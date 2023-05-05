@@ -52,7 +52,7 @@ import VASSAL.search.ImageSearchTarget;
  * {@link Decorator} traits.
  * <br><br>
  * A standard Stack will only contain pieces that are "stackable" (i.e. doesn't have a "Does Not Stack" {@link Immobilized}
- * trait with stacking disabled, so that {@link Properties.NO_STACK} is false) and share the same X/Y position on the same {@link Map}, and all
+ * trait with stacking disabled, so that {@link VASSAL.counters.Properties#NO_STACK} is false) and share the same X/Y position on the same {@link Map}, and all
  * stackable pieces on a {@link Map} will always be part of <i>some</i> Stack -- even single stackable pieces will have
  * a Stack created to contain them. Stacks <i>should</i> contain only pieces from the same visual layer (see
  * {@link VASSAL.build.module.map.LayeredPieceCollection}), but presently bad behaviors can still develop (e.g. a piece
@@ -472,7 +472,7 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
 
   /**
    * Finds the piece "underneath" the one provided
-   * @param c Starting piece
+   * @param p Starting piece
    * @return piece underneath it, or null if none.
    */
   public GamePiece getPieceBeneath(GamePiece p) {
@@ -487,7 +487,7 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
 
   /**
    * Finds the piece "above" the one provided
-   * @param c Starting piece
+   * @param p Starting piece
    * @return piece above it, or null if none.
    */
   public GamePiece getPieceAbove(GamePiece p) {

@@ -394,12 +394,9 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
   }
 
   /**
-   * Make a best gues for a unique identifier for the target. Use
-   * {@link VASSAL.tools.UniqueIdManager.Identifyable#getConfigureName if non-null, otherwise use
-   * {@link VASSAL.tools.UniqueIdManager.Identifyable#getId
-   *
-   * @param target
-   * @return
+   * Make a best guess for a unique identifier for the target. Use
+   * {@link VASSAL.tools.UniqueIdManager.Identifyable#getConfigureName} if non-null, otherwise use
+   * {@link VASSAL.tools.UniqueIdManager.Identifyable#getId}
    */
   public String getIdentifier() {
     return UniqueIdManager.getIdentifier(this);

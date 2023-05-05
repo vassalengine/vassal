@@ -58,56 +58,23 @@ public class Sort {
     quicksort(v, left, last - 1, comp);
     quicksort(v, last + 1, right, comp);
   }
-    //------------------------------------------------------------------
-    /*
-    * quicksort an array of objects.
-    *
-    * @param arr[] - an array of objects
-    * @param left - the start index - from where to begin sorting
-    * @param right - the last index.
-    private static void quicksort(
-       IComparable arr[], int left, int right, boolean ascending) {
 
-        int i, last;
-
-        if (left >= right) { // do nothing if array size < 2
-            return;
-        }
-        swap(arr, left, (left+right) / 2);
-        last = left;
-        for (i = left+1; i <= right; i++) {
-            if (ascending && arr[i].compareTo(arr[left]) < 0 ) {
-                swap(arr, ++last, i);
-            }
-            else if (!ascending && arr[i].compareTo(arr[left]) < 0 ) {
-                swap(arr, ++last, i);
-            }
-        }
-        swap(arr, left, last);
-        quicksort(arr, left, last-1,ascending);
-        quicksort(arr, last+1, right,ascending);
-    }
-*/
-  //------------------------------------------------------------------
   /**
    * Quicksort will rearrange elements when they are all equal. Make sure
-   * at least two elements differ
-   public static boolean needsSorting(Vector v) {
-   IComparable prev = null;
-   IComparable curr;
-   for (Enumeration e = v.elements(); e.hasMoreElements(); )
-   {
-   curr = (IComparable)e.nextElement();
-   if (prev != null && prev.compareTo(curr) != 0)
-   return true;
-
-   prev = curr;
-   }
-   return false;
-   }
-   */
-  /*
-   * Preform a sort using the specified comparator object.
+   * at least two elements differ. Sort using the specified comparator object
+   * <pre>{@code
+   * public static boolean needsSorting(Vector v) {
+   *   IComparable prev = null;
+   *   IComparable curr;
+   *   for (Enumeration e = v.elements(); e.hasMoreElements(); ) {
+   *     curr = (IComparable)e.nextElement();
+   *     if (prev != null && prev.compareTo(curr) != 0)
+   *       return true;
+   *     prev = curr;
+   *   }
+   *   return false;
+   * }
+   *}</pre>
    */
   public static void quicksort(Vector<Object> v, Comparator comp) { //NOPMD
     quicksort(v, 0, v.size() - 1, comp);

@@ -69,7 +69,7 @@ public class GlobalCommandTarget implements ConfigurerFactory, SearchTarget {
    * Specifies the type of GKC being configured (affects which Target options are allowed)
    */
   public enum GKCtype {
-    COUNTER, /** {@link CounterGlobalKeyCommand */
+    COUNTER, /** {@link CounterGlobalKeyCommand} */
     MAP,     /** {@link VASSAL.build.module.map.MassKeyCommand} */
     MODULE,  /** {@link VASSAL.build.module.GlobalKeyCommand} */
     DECK     // {@link VASSAL.build.module.map.DeckGlobalKeyCommand}

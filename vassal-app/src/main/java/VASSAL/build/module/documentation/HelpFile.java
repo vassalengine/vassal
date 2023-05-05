@@ -198,8 +198,8 @@ public class HelpFile extends AbstractConfigurable {
    * The attributes of a HelpFile are:
    *
    * <code>TITLE</code> the text of the menu entry in the Help menu
-   * <code>FILE</code> the name of an text file in the {@link
-   * DataArchive}.  The text is displayed in a window with the same title
+   * <code>FILE</code> the name of an text file in the {@link VASSAL.tools.DataArchive}.
+   * The text is displayed in a window with the same title
    */
   @Override
   public String[] getAttributeNames() {

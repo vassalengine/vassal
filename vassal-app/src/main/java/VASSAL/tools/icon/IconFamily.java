@@ -170,7 +170,7 @@ public class IconFamily extends AbstractConfigurable {
    *          IconFamily name or Icon name
    * @param scalableName
    *          Name of the scalable icon
-   * @param sizeNames
+   * @param sizeName
    *          Names of the sized Icons
    */
   public IconFamily(String familyName, String scalableName, String[] sizeName) {

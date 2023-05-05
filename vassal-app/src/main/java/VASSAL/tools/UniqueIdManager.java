@@ -73,10 +73,10 @@ public class UniqueIdManager implements ValidityChecker {
 
   /**
    * Make a best guess for a unique identifier for the target.
-   * Use {@link Identifyable#getConfigureName if non-null, otherwise
-   * use {@link Identifyable#getId
-   * @param target
-   * @return
+   * Use {@link Identifyable#getConfigureName} if non-null, otherwise
+   * use {@link Identifyable#getId}
+   * @param target identifiable target
+   * @return identifier for target
    */
   public static String getIdentifier(Identifyable target) {
     String id = target.getConfigureName();

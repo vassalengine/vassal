@@ -230,7 +230,7 @@ public class GlobalCommand implements Auditable {
   }
 
   /**
-   * Apply the key command to all pieces that pass the given filter & our Fast Match {@link GlobalCommandTarget} parameters on all the given maps
+   * Apply the key command to all pieces that pass the given filter and our Fast Match {@link GlobalCommandTarget} parameters on all the given maps
    *
    * @param maps Array of Maps
    * @param filter Filter to apply (created e.g. with {@link PropertyExpression#getFilter}
@@ -242,7 +242,7 @@ public class GlobalCommand implements Auditable {
   }
 
   /**
-   * Apply the key command to all pieces that pass the given filter & our Fast Match {@link GlobalCommandTarget} parameters on all the given maps
+   * Apply the key command to all pieces that pass the given filter and our Fast Match {@link GlobalCommandTarget} parameters on all the given maps
    *
    * @param maps Array of Maps
    * @param filter Filter to apply (created e.g. with {@link PropertyExpression#getFilter}
@@ -750,7 +750,7 @@ public class GlobalCommand implements Auditable {
   }
 
   /**
-   * Set the number of pieces to select from a deck that the command will apply to.  A value <0 means to apply to all pieces in the deck
+   * Set the number of pieces to select from a deck that the command will apply to.  A value lesser than 0 means to apply to all pieces in the deck
    * @param selectFromDeck Number of pieces to select
    */
   public void setSelectFromDeckExpression(String selectFromDeck) {
@@ -758,7 +758,7 @@ public class GlobalCommand implements Auditable {
   }
 
   /**
-   * Set the number of pieces to select from a deck that the command will apply to.  A value <0 means to apply to all pieces in the deck
+   * Set the number of pieces to select from a deck that the command will apply to.  A value lesser than 0 means to apply to all pieces in the deck
    * @param selectFromDeck Number of pieces to select
    */
   public void setSelectFromDeck(int selectFromDeck) {
