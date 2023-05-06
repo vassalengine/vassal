@@ -80,7 +80,8 @@ public class Resources {
       Locale.ITALIAN,
       Locale.JAPANESE,
       new Locale("pl"),  // Polish  //$NON-NLS-1$
-      new Locale("es")   // Spanish //$NON-NLS-1$
+      new Locale("es"),  // Spanish //$NON-NLS-1$
+      Locale.forLanguageTag("da-DK")   // Danish  //$NON-NLS-1$
     ));
 
   protected Locale locale = Locale.getDefault();
