@@ -2576,7 +2576,7 @@ public class MapBoard extends Importer {
 
   /**
    * Crude version information.  Comes near the end of the file!  Actually it's just a flag to indicate whether
-   * the version is < 2.08.  In version 2.08, the hexes are abutted slightly differently.
+   * the version is less than 2.08.  In version 2.08, the hexes are abutted slightly differently.
    */
   protected void readVersionBlock(DataInputStream in) throws IOException {
     ADC2Utils.readBlockHeader(in, "File Format Version");

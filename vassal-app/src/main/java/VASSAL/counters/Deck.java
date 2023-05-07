@@ -463,7 +463,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   /**
    * Removes a piece from a specific location in the deck
    * @param index Piece to remove, counting down from the top
-   * @param suppressDeckCounts true if deck counts & firing last card keystroke should be suppressed (because we're actually just rearranging deck order)
+   * @param suppressDeckCounts true if deck counts and firing last card keystroke should be suppressed (because we're actually just rearranging deck order)
    */
   @Override
   protected void removePieceAt(int index, boolean suppressDeckCounts) {

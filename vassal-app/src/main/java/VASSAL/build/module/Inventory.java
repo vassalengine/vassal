@@ -478,11 +478,9 @@ public class Inventory extends AbstractToolbarItem
   }
 
   /**
-   * @author Scot McConnachie.
    * Writes the inventory text data to a user selected file.
    * This allows a module designer to use Inventory to create customized text
    * reports from the game.
-   * @author spindler
    * Changed FileChooser to use the new Vassal.tool.FileChooser
    * Changed Separator before getResultString call
    * TODO add check for existing file

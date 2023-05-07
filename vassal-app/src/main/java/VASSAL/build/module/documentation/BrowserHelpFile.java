@@ -170,7 +170,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     url = new File(p.toFile(), startingPage).toURI().toURL();
   }
 
-  /** @deprecated Use {@link org.apache.commons.io.FileUtils.deleteDirectory} instead. */
+  /** @deprecated Use {@link org.apache.commons.io.FileUtils#deleteDirectory(File)} instead. */
   @Deprecated(since = "2020-10-04", forRemoval = true)
   protected void recursiveDelete(File output) {
     if (output.isDirectory()) {

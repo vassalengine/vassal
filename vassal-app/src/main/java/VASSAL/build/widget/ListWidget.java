@@ -42,7 +42,7 @@ import java.util.Map;
  * to the right of a {@link JPanel} with a {@link CardLayout} layout.
  * Adding a Widget to a ListWidget adds the child Widget's component to
  * the JPanel and adds the child's name (via {@link
- * Configurable#getConfigureName}) to the JList.  Changing the
+ * VASSAL.build.Configurable#getConfigureName}) to the JList.  Changing the
  * selection of the JList shows the corresponding child's
  * component */
 public class ListWidget extends Widget

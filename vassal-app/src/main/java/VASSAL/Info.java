@@ -115,7 +115,7 @@ public final class Info {
   /**
    * @return size of screen accounting for the screen insets (e.g., Windows
    * taskbar)
-   * @deprecated Use {@link VASSAL.tools.swing.SwingUtils.getScreenBounds}
+   * @deprecated Use {@link VASSAL.tools.swing.SwingUtils#getScreenBounds(Component)}
    * instead.
    */
   @Deprecated(since = "2020-10-03", forRemoval = true)

@@ -47,7 +47,7 @@ public class PropertiesPieceFilter {
 
   /**
    * Return a PieceFilter parsed from a boolean expression such as
-   * prop1 = value1 && prop2 = value2 || prop3 = value3
+   * prop1 = value1 {@literal &}{@literal &} prop2 = value2 || prop3 = value3
    * @param expression Expression
    * @return Piece Filter
    */

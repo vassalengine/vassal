@@ -41,7 +41,7 @@ public class LabelUtils {
   public static final int BOTTOM = 4;
 
   /**
-   * Draw a non-HTML text label with appropriate alignment & foreground/background color
+   * Draw a non-HTML text label with appropriate alignment and foreground/background color
    * @param g Graphics Object
    * @param text text to draw
    * @param x x location
@@ -56,7 +56,7 @@ public class LabelUtils {
   }
 
   /**
-   * Draw a non-HTML text label with appropriate alignment & foreground/background color, plus a border box
+   * Draw a non-HTML text label with appropriate alignment and foreground/background color, plus a border box
    * @param g Graphics Object
    * @param text text to draw
    * @param x x location
@@ -72,7 +72,7 @@ public class LabelUtils {
   }
 
   /**
-   * Draw a non-HTML text label with appropriate alignment & foreground/background color, plus a border box, and extra configuration parameters
+   * Draw a non-HTML text label with appropriate alignment and foreground/background color, plus a border box, and extra configuration parameters
    * @param g Graphics Object
    * @param text text to draw
    * @param x x location
@@ -181,7 +181,7 @@ public class LabelUtils {
   }
 
   /**
-   * Draw an HTML-compliant text label with appropriate alignment & foreground/background color, plus a border box, and extra configuration parameters.
+   * Draw an HTML-compliant text label with appropriate alignment and foreground/background color, plus a border box, and extra configuration parameters.
    * Supports "Quick Colors".
    * @param g Graphics Object
    * @param text text to draw

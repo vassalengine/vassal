@@ -89,7 +89,7 @@ public class HttpRequestWrapper {
 
   /**
    * Perform a GET request
-   * @param url the URL relative to the base URL
+   * @param path the URL relative to the base URL
    * @param props additional query parameters
    * @return a List of Strings, one for each line in the response
    * @throws IOException

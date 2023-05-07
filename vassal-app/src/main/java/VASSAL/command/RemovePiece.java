@@ -45,7 +45,7 @@ public class RemovePiece extends Command {
   /**
    * Removes a piece by invoking {@link Map#removePiece} if the
    * piece belongs to a {@link Map}, followed by {@link
-   * GameState#removePiece}.
+   * VASSAL.build.module.GameState#removePiece}.
    */
   @Override
   protected void executeCommand() {
