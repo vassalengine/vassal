@@ -73,15 +73,15 @@ public class Resources {
   protected final List<Locale> supportedLocales =
     new ArrayList<>(Arrays.asList(
       Locale.ENGLISH,
-      new Locale("zh"),  // Chinese //$NON-NLS-1$
-      new Locale("nl"),  // Dutch   //$NON-NLS-1$
+      Locale.forLanguageTag("zh"),  // Chinese //$NON-NLS-1$
+      Locale.forLanguageTag("nl"),  // Dutch   //$NON-NLS-1$
       Locale.FRENCH,
       Locale.GERMAN,
       Locale.ITALIAN,
       Locale.JAPANESE,
-      new Locale("pl"),  // Polish  //$NON-NLS-1$
-      new Locale("es"),  // Spanish //$NON-NLS-1$
-      Locale.forLanguageTag("da-DK")   // Danish  //$NON-NLS-1$
+      Locale.forLanguageTag("pl"),  // Polish  //$NON-NLS-1$
+      Locale.forLanguageTag("es"),  // Spanish //$NON-NLS-1$
+      Locale.forLanguageTag("da")   // Danish  //$NON-NLS-1$
     ));
 
   protected Locale locale = Locale.getDefault();
