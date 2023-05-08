@@ -2021,21 +2021,21 @@ public class PieceMover extends AbstractBuildable
       }
     }
 
-    /** ineffectual. Passes event along listener chain */
+    /** Passes event along listener chain */
     @Override
     public void dragExit(DropTargetEvent e) {
       final DropTargetListener forward = getListener(e);
       if (forward != null) forward.dragExit(e);
     }
 
-    /** ineffectual. Passes event along listener chain */
+    /** Passes event along listener chain */
     @Override
     public void dragOver(DropTargetDragEvent e) {
       final DropTargetListener forward = getListener(e);
       if (forward != null) forward.dragOver(e);
     }
 
-    /** ineffectual. Passes event along listener chain */
+    /** Passes event along listener chain */
     @Override
     public void dropActionChanged(DropTargetDragEvent e) {
       final DropTargetListener forward = getListener(e);
