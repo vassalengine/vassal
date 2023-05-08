@@ -1591,8 +1591,11 @@ public class PieceMover extends AbstractBuildable
         dragCursor = new JLabel();
         dragCursor.setVisible(false);
       }
-      dragCursor.setIcon(new ImageIcon(
-          makeDragImageCursorCommon(zoom, true, dragCursor, true)));
+      dragCursor.setIcon(
+        new ImageIcon(
+          makeDragImageCursorCommon(zoom, true, dragCursor, true)
+        )
+      );
     }
 
     private List<Point> buildBoundingBox(double zoom, boolean doOffset) {
