@@ -1571,26 +1571,24 @@ public class PieceMover extends AbstractBuildable
      * @param dragX x position
      * @param dragY y position
      */
-    protected void moveDragCursor(int dragX, int dragY) {
-    }
+    protected void moveDragCursor(int dragX, int dragY) {}
 
     /**
      * Removes the drag cursor from the current draw window
      */
-    protected void removeDragCursor() {
-    }
+    protected void removeDragCursor() {}
 
     /** calculates the offset between cursor dragCursor positions */
-    protected void calcDrawOffset() {
-    }
+    protected void calcDrawOffset() {}
 
     /**
-     * creates or moves cursor object to given window. Called when drag operation begins in a window or the cursor is
-     * dragged over a new drop-target window
+     * creates or moves cursor object to given window. Called when drag
+     * operation begins in a window or the cursor is dragged over a new
+     * drop-target window
+     *
      * @param newDropWin window component to be our new draw window.
      */
-    public void setDrawWinToOwnerOf(Component newDropWin) {
-    }
+    public void setDrawWinToOwnerOf(Component newDropWin) {}
 
     /**
      * Common functionality abstracted from makeDragImage and makeDragCursor
