@@ -1573,11 +1573,13 @@ public class PieceMover extends AbstractBuildable
      * @param dragX x position
      * @param dragY y position
      */
+    @Deprecated(since = "2023-05-08", forRemoval = true)
     protected void moveDragCursor(int dragX, int dragY) {}
 
     /**
      * Removes the drag cursor from the current draw window
      */
+    @Deprecated(since = "2023-05-08", forRemoval = true)
     protected void removeDragCursor() {}
 
     /** calculates the offset between cursor dragCursor positions */
@@ -1590,6 +1592,7 @@ public class PieceMover extends AbstractBuildable
      *
      * @param newDropWin window component to be our new draw window.
      */
+    @Deprecated(since = "2023-05-08", forRemoval = true)
     public void setDrawWinToOwnerOf(Component newDropWin) {}
 
     /**
@@ -1640,6 +1643,7 @@ public class PieceMover extends AbstractBuildable
       return makeDragImageCursorCommon(zoom, false, null);
     }
 
+    @Deprecated(since = "2023-05-08", forRemoval = true)
     protected void makeDragCursor(double zoom) {}
 
     private List<Point> buildBoundingBox(double zoom, boolean doOffset) {
