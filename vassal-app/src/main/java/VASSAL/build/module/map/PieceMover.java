@@ -1314,7 +1314,6 @@ public class PieceMover extends AbstractBuildable
     }
   }
 
-
   /**
    * Moves the group of dragged (in the DragBuffer) pieces to the target point (p).
    * @param p Point that mouse has been dragged to.
@@ -1362,11 +1361,9 @@ public class PieceMover extends AbstractBuildable
     }
   }
 
-
   /**
-   * Common functionality for DragHandler for cases with and without drag image support.
-   * <p>
-   * NOTE: DragSource.isDragImageSupported() returns false for j2sdk1.4.2_02 on Windows 2000
+   * Common functionality for DragHandler for cases with and without drag
+   * image support.
    *
    * @author Pieter Geerkens
    */
