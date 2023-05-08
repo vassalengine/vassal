@@ -1385,42 +1385,6 @@ public class PieceMover extends AbstractBuildable
       theDragHandler = myHandler;
     }
 
-    protected static final int CURSOR_ALPHA = 127; // pseudo cursor is 50% transparent
-    protected static final int EXTRA_BORDER = 4;   // pseudo cursor is includes a 4 pixel border
-
-    protected JLabel dragCursor;      // An image label. Lives on current DropTarget's LayeredPane.
-    protected final Point drawOffset = new Point(); // translates event coords to local drawing coords
-    protected Rectangle boundingBox;    // image bounds
-
-    private int originalPieceOffsetX; // How far drag STARTED from GamePiece's center (on original map)
-    private int originalPieceOffsetY;
-
-    protected double dragPieceOffCenterZoom = 1.0; // zoom at start of drag
-
-    protected int currentPieceOffsetX; // How far cursor is CURRENTLY off-center, a function of dragPieceOffCenter{X,Y,Zoom}
-    protected int currentPieceOffsetY; // I.e. on current map (which may have different zoom)
-
-    protected double dragCursorZoom = 1.0; // Current cursor scale (zoom)
-
-    protected Point lastDragLocation = new Point();
-
-    protected static List<PieceMover> pieceMovers = new ArrayList<>(); // our piece movers
-
-    // Seems there can be only one DropTargetListener per drop target. After we
-    // process a drop target event, we manually pass the event on to this listener.
-    protected java.util.Map<Component, DropTargetListener> dropTargetListeners = new HashMap<>();
-
-    /**
-     * @return platform-dependent offset multiplier
-     */
-    protected abstract int getOffsetMult();
-
-    /**
-     * @param dge DG event
-     * @return platform-dependent device scale
-     */
-    protected abstract double getDeviceScale(DragGestureEvent dge);
-
     /**
      * Picks the correct drag handler based on our OS, DragSource, and preferences.
      */
@@ -1496,6 +1460,54 @@ public class PieceMover extends AbstractBuildable
     public static void removeDropTarget(Component theComponent) {
       DragHandler.getTheDragHandler().dropTargetListeners.remove(theComponent);
     }
+
+    private static StackMetrics getStackMetrics(GamePiece piece) {
+      StackMetrics sm = null;
+      final Map map = piece.getMap();
+      if (map != null) {
+        sm = map.getStackMetrics();
+      }
+      if (sm == null) {
+        sm = new StackMetrics();
+      }
+      return sm;
+    }
+
+    protected static List<PieceMover> pieceMovers = new ArrayList<>(); // our piece movers
+
+    protected static final int CURSOR_ALPHA = 127; // pseudo cursor is 50% transparent
+    protected static final int EXTRA_BORDER = 4;   // pseudo cursor is includes a 4 pixel border
+
+    protected JLabel dragCursor;      // An image label. Lives on current DropTarget's LayeredPane.
+    protected final Point drawOffset = new Point(); // translates event coords to local drawing coords
+    protected Rectangle boundingBox;    // image bounds
+
+    private int originalPieceOffsetX; // How far drag STARTED from GamePiece's center (on original map)
+    private int originalPieceOffsetY;
+
+    protected double dragPieceOffCenterZoom = 1.0; // zoom at start of drag
+
+    protected int currentPieceOffsetX; // How far cursor is CURRENTLY off-center, a function of dragPieceOffCenter{X,Y,Zoom}
+    protected int currentPieceOffsetY; // I.e. on current map (which may have different zoom)
+
+    protected double dragCursorZoom = 1.0; // Current cursor scale (zoom)
+
+    protected Point lastDragLocation = new Point();
+
+    // Seems there can be only one DropTargetListener per drop target. After we
+    // process a drop target event, we manually pass the event on to this listener.
+    protected java.util.Map<Component, DropTargetListener> dropTargetListeners = new HashMap<>();
+
+    /**
+     * @return platform-dependent offset multiplier
+     */
+    protected abstract int getOffsetMult();
+
+    /**
+     * @param dge DG event
+     * @return platform-dependent device scale
+     */
+    protected abstract double getDeviceScale(DragGestureEvent dge);
 
     /**
      * @param e DropTargetEvent
@@ -1726,18 +1738,6 @@ public class PieceMover extends AbstractBuildable
       g.fillRect(0, 0, image.getWidth(), image.getHeight());
 
       g.dispose();
-    }
-
-    private StackMetrics getStackMetrics(GamePiece piece) {
-      StackMetrics sm = null;
-      final Map map = piece.getMap();
-      if (map != null) {
-        sm = map.getStackMetrics();
-      }
-      if (sm == null) {
-        sm = new StackMetrics();
-      }
-      return sm;
     }
 
     /******************************************************************************
