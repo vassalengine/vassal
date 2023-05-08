@@ -1567,55 +1567,16 @@ public class PieceMover extends AbstractBuildable
      * @param dragY y position
      */
     protected void moveDragCursor(int dragX, int dragY) {
-      if (drawWin != null) {
-        dragCursor.setLocation(dragX - drawOffset.x, dragY - drawOffset.y);
-      }
     }
 
     /**
      * Removes the drag cursor from the current draw window
      */
     protected void removeDragCursor() {
-      if (drawWin != null) {
-        if (dragCursor != null) {
-          dragCursor.setVisible(false);
-          drawWin.remove(dragCursor);
-        }
-        drawWin = null;
-      }
     }
 
     /** calculates the offset between cursor dragCursor positions */
-    private void calcDrawOffset() {
-      if (drawWin != null) {
-        // drawOffset is the offset between the mouse location during a drag
-        // and the upper-left corner of the cursor
-        // accounts for difference between event point (screen coords)
-        // and Layered Pane position, boundingBox and off-center drag
-        drawOffset.x = -boundingBox.x - currentPieceOffsetX + EXTRA_BORDER;
-        drawOffset.y = -boundingBox.y - currentPieceOffsetY + EXTRA_BORDER;
-        SwingUtilities.convertPointToScreen(drawOffset, drawWin);
-      }
-    }
-
-    /**
-     * creates or moves cursor object to given JLayeredPane. Usually called by setDrawWinToOwnerOf()
-     * @param newDrawWin JLayeredPane that is to be our new drawWin
-     */
-    private void setDrawWin(JLayeredPane newDrawWin) {
-      if (newDrawWin != drawWin) {
-        // remove cursor from old window
-        if (dragCursor.getParent() != null) {
-          dragCursor.getParent().remove(dragCursor);
-        }
-        if (drawWin != null) {
-          drawWin.repaint(dragCursor.getBounds());
-        }
-        drawWin = newDrawWin;
-        calcDrawOffset();
-        dragCursor.setVisible(false);
-        drawWin.add(dragCursor, JLayeredPane.DRAG_LAYER);
-      }
+    protected void calcDrawOffset() {
     }
 
     /**
@@ -1624,12 +1585,6 @@ public class PieceMover extends AbstractBuildable
      * @param newDropWin window component to be our new draw window.
      */
     public void setDrawWinToOwnerOf(Component newDropWin) {
-      if (newDropWin != null) {
-        final JRootPane rootWin = SwingUtilities.getRootPane(newDropWin);
-        if (rootWin != null) {
-          setDrawWin(rootWin.getLayeredPane());
-        }
-      }
     }
 
     /**
@@ -2169,6 +2124,81 @@ public class PieceMover extends AbstractBuildable
       moveDragCursor(mousePosition.x, mousePosition.y);
 
       super.dragGestureRecognized(dge);
+    }
+
+    /**
+     * Moves the drag cursor on the current draw window
+     * @param dragX x position
+     * @param dragY y position
+     */
+    @Override
+    protected void moveDragCursor(int dragX, int dragY) {
+      if (drawWin != null) {
+        dragCursor.setLocation(dragX - drawOffset.x, dragY - drawOffset.y);
+      }
+    }
+
+    /**
+     * Removes the drag cursor from the current draw window
+     */
+    @Override
+    protected void removeDragCursor() {
+      if (drawWin != null) {
+        if (dragCursor != null) {
+          dragCursor.setVisible(false);
+          drawWin.remove(dragCursor);
+        }
+        drawWin = null;
+      }
+    }
+
+    /**
+     * creates or moves cursor object to given JLayeredPane. Usually called by setDrawWinToOwnerOf()
+     * @param newDrawWin JLayeredPane that is to be our new drawWin
+     */
+    private void setDrawWin(JLayeredPane newDrawWin) {
+      if (newDrawWin != drawWin) {
+        // remove cursor from old window
+        if (dragCursor.getParent() != null) {
+          dragCursor.getParent().remove(dragCursor);
+        }
+        if (drawWin != null) {
+          drawWin.repaint(dragCursor.getBounds());
+        }
+        drawWin = newDrawWin;
+        calcDrawOffset();
+        dragCursor.setVisible(false);
+        drawWin.add(dragCursor, JLayeredPane.DRAG_LAYER);
+      }
+    }
+
+    /** calculates the offset between cursor dragCursor positions */
+    @Override
+    protected void calcDrawOffset() {
+      if (drawWin != null) {
+        // drawOffset is the offset between the mouse location during a drag
+        // and the upper-left corner of the cursor
+        // accounts for difference between event point (screen coords)
+        // and Layered Pane position, boundingBox and off-center drag
+        drawOffset.x = -boundingBox.x - currentPieceOffsetX + EXTRA_BORDER;
+        drawOffset.y = -boundingBox.y - currentPieceOffsetY + EXTRA_BORDER;
+        SwingUtilities.convertPointToScreen(drawOffset, drawWin);
+      }
+    }
+
+    /**
+     * creates or moves cursor object to given window. Called when drag operation begins in a window or the cursor is
+     * dragged over a new drop-target window
+     * @param newDropWin window component to be our new draw window.
+     */
+    @Override
+    public void setDrawWinToOwnerOf(Component newDropWin) {
+      if (newDropWin != null) {
+        final JRootPane rootWin = SwingUtilities.getRootPane(newDropWin);
+        if (rootWin != null) {
+          setDrawWin(rootWin.getLayeredPane());
+        }
+      }
     }
 
     @Override
