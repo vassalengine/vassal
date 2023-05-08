@@ -1402,10 +1402,6 @@ public class PieceMover extends AbstractBuildable
 
     protected double dragCursorZoom = 1.0; // Current cursor scale (zoom)
 
-    protected Component dragWin; // the component that initiated the drag operation
-    protected Component dropWin; // the drop target the mouse is currently over
-
-    protected JLayeredPane drawWin; // the component that owns our pseudo-cursor
     protected Point lastDragLocation = new Point();
 
     protected static List<PieceMover> pieceMovers = new ArrayList<>(); // our piece movers
@@ -2055,6 +2051,10 @@ public class PieceMover extends AbstractBuildable
    * @version 0.4.2
    */
   public static class DragHandlerNoImage extends AbstractDragHandler {
+    protected Component dragWin; // the component that initiated the drag operation
+    protected Component dropWin; // the drop target the mouse is currently over
+    protected JLayeredPane drawWin; // the component that owns our pseudo-cursor
+
     @Override
     public void dragGestureRecognized(DragGestureEvent dge) {
       final Point mousePosition = dragGestureRecognizedPrep(dge);
