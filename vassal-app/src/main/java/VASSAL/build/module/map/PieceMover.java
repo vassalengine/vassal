@@ -1475,7 +1475,6 @@ public class PieceMover extends AbstractBuildable
     protected static final int EXTRA_BORDER = 4;   // pseudo cursor is includes a 4 pixel border
 
     protected JLabel dragCursor;      // An image label. Lives on current DropTarget's LayeredPane.
-    protected final Point drawOffset = new Point(); // translates event coords to local drawing coords
     protected Rectangle boundingBox;    // image bounds
 
     private int originalPieceOffsetX; // How far drag STARTED from GamePiece's center (on original map)
@@ -2054,6 +2053,8 @@ public class PieceMover extends AbstractBuildable
     protected Component dragWin; // the component that initiated the drag operation
     protected Component dropWin; // the drop target the mouse is currently over
     protected JLayeredPane drawWin; // the component that owns our pseudo-cursor
+
+    protected final Point drawOffset = new Point(); // translates event coords to local drawing coords
 
     @Override
     public void dragGestureRecognized(DragGestureEvent dge) {
