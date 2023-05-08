@@ -2028,11 +2028,6 @@ public class PieceMover extends AbstractBuildable
       g2d.dispose();
       return os_scale;
     }
-
-    @Override
-    public void dragMouseMoved(DragSourceDragEvent dsde) {
-      super.dragMouseMoved(dsde);
-    }
   }
 
   /**
