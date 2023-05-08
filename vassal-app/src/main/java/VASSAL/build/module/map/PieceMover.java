@@ -1876,7 +1876,6 @@ public class PieceMover extends AbstractBuildable
           dragPieceOffCenterZoom = 1.0;
         }
       }
-      dragPieceOffCenterZoom *= getDeviceScale(dge);
 
       // Account for offset of piece within stack. We do this even for
       // un-expanded stacks, since the offset can still be significant if
@@ -1894,6 +1893,8 @@ public class PieceMover extends AbstractBuildable
       // dragging from UL results in positive offsets
       originalPieceOffsetX = piecePosition.x - mousePosition.x;
       originalPieceOffsetY = piecePosition.y - mousePosition.y;
+
+      dragPieceOffCenterZoom *= getDeviceScale(dge);
 
       return mousePosition;
     }
