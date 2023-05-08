@@ -1437,12 +1437,12 @@ public class PieceMover extends AbstractBuildable
       theDragHandler = myHandler;
     }
 
-    static final int CURSOR_ALPHA = 127; // pseudo cursor is 50% transparent
-    static final int EXTRA_BORDER = 4;   // pseudo cursor is includes a 4 pixel border
+    protected static final int CURSOR_ALPHA = 127; // pseudo cursor is 50% transparent
+    protected static final int EXTRA_BORDER = 4;   // pseudo cursor is includes a 4 pixel border
 
     protected JLabel dragCursor;      // An image label. Lives on current DropTarget's LayeredPane.
-    private final Point drawOffset = new Point(); // translates event coords to local drawing coords
-    private Rectangle boundingBox;    // image bounds
+    protected final Point drawOffset = new Point(); // translates event coords to local drawing coords
+    protected Rectangle boundingBox;    // image bounds
 
     private int originalPieceOffsetX; // How far drag STARTED from GamePiece's center (on original map)
     private int originalPieceOffsetY;
@@ -1524,7 +1524,7 @@ public class PieceMover extends AbstractBuildable
      * Registers a PieceMover
      * @param pm PieceMover for this dragHandler
      */
-    static void addPieceMover(PieceMover pm) {
+    public static void addPieceMover(PieceMover pm) {
       if (!pieceMovers.contains(pm)) {
         pieceMovers.add(pm);
       }
@@ -1641,7 +1641,7 @@ public class PieceMover extends AbstractBuildable
      * @param setSize Set Size
      * @return Drag Image
      */
-    BufferedImage makeDragImageCursorCommon(double zoom, boolean doOffset,
+    protected BufferedImage makeDragImageCursorCommon(double zoom, boolean doOffset,
       Component target, boolean setSize) {
 
       // FIXME: Should be an ImageOp for caching?
