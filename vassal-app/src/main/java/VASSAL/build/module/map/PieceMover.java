@@ -1526,7 +1526,6 @@ public class PieceMover extends AbstractBuildable
     protected static final int CURSOR_ALPHA = 127; // pseudo cursor is 50% transparent
     protected static final int EXTRA_BORDER = 4;   // pseudo cursor is includes a 4 pixel border
 
-    protected JLabel dragCursor;      // An image label. Lives on current DropTarget's LayeredPane.
     protected Rectangle boundingBox;    // image bounds
 
     private int originalPieceOffsetX; // How far drag STARTED from GamePiece's center (on original map)
@@ -1539,7 +1538,11 @@ public class PieceMover extends AbstractBuildable
 
     protected double dragCursorZoom = 1.0; // Current cursor scale (zoom)
 
+    // used by DragHandlerNoImage only
     protected Point lastDragLocation = new Point();
+
+    // used by DragHandlerNoImage only
+    protected JLabel dragCursor;      // An image label. Lives on current DropTarget's LayeredPane.
 
     // Seems there can be only one DropTargetListener per drop target. After we
     // process a drop target event, we manually pass the event on to this listener.
@@ -1598,8 +1601,20 @@ public class PieceMover extends AbstractBuildable
      * @param setSize Set Size
      * @return Drag Image
      */
+    @Deprecated(since = "2023-05-08", forRemoval = true)
     protected BufferedImage makeDragImageCursorCommon(double zoom, boolean doOffset, Component target, boolean setSize) {
+      return makeDragImageCursorCommon(zoom, doOffset, target);
+    }
 
+    /**
+     * Common functionality abstracted from makeDragImage and makeDragCursor
+     *
+     * @param zoom Zoom Level
+     * @param doOffset Drag Offset
+     * @param target Target Component
+     * @return Drag Image
+     */
+    protected BufferedImage makeDragImageCursorCommon(double zoom, boolean doOffset, Component target) {
       // FIXME: Should be an ImageOp for caching?
       dragCursorZoom = zoom;
 
@@ -1610,8 +1625,6 @@ public class PieceMover extends AbstractBuildable
 
       final BufferedImage image = ImageUtils.createCompatibleTranslucentImage(w, h);
       drawDragImage(image, target, relativePositions, zoom);
-
-      if (setSize) dragCursor.setSize(w, h);
 
       return image;
     }
@@ -1624,29 +1637,10 @@ public class PieceMover extends AbstractBuildable
      * @return dragImage
      */
     private BufferedImage makeDragImage(double zoom) {
-      return makeDragImageCursorCommon(zoom, false, null, false);
+      return makeDragImageCursorCommon(zoom, false, null);
     }
 
-    /**
-     * Installs the cursor image into our dragCursor JLabel.
-     * Sets current zoom. Should be called at beginning of drag
-     * and whenever zoom changes. INPUT: DragBuffer.getBuffer OUTPUT:
-     * dragCursorZoom cursorOffCenterX cursorOffCenterY boundingBox
-     * @param zoom DragBuffer.getBuffer
-     *
-     */
-    protected void makeDragCursor(double zoom) {
-      // create the cursor if necessary
-      if (dragCursor == null) {
-        dragCursor = new JLabel();
-        dragCursor.setVisible(false);
-      }
-      dragCursor.setIcon(
-        new ImageIcon(
-          makeDragImageCursorCommon(zoom, true, dragCursor, true)
-        )
-      );
-    }
+    protected void makeDragCursor(double zoom) {}
 
     private List<Point> buildBoundingBox(double zoom, boolean doOffset) {
       final ArrayList<Point> relativePositions = new ArrayList<>();
@@ -2122,6 +2116,27 @@ public class PieceMover extends AbstractBuildable
       moveDragCursor(mousePosition.x, mousePosition.y);
 
       super.dragGestureRecognized(dge);
+    }
+
+    /**
+     * Installs the cursor image into our dragCursor JLabel.
+     * Sets current zoom. Should be called at beginning of drag
+     * and whenever zoom changes. INPUT: DragBuffer.getBuffer OUTPUT:
+     * dragCursorZoom cursorOffCenterX cursorOffCenterY boundingBox
+     * @param zoom DragBuffer.getBuffer
+     *
+     */
+    @Override
+    protected void makeDragCursor(double zoom) {
+      // create the cursor if necessary
+      if (dragCursor == null) {
+        dragCursor = new JLabel();
+        dragCursor.setVisible(false);
+      }
+
+      final BufferedImage img = makeDragImageCursorCommon(zoom, true, dragCursor);
+      dragCursor.setSize(img.getWidth(), img.getHeight());
+      dragCursor.setIcon(new ImageIcon(img));
     }
 
     /**
