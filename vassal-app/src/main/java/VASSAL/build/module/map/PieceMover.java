@@ -1425,6 +1425,7 @@ public class PieceMover extends AbstractBuildable
   public abstract static class AbstractDragHandler
     implements DragGestureListener,       DragSourceListener,
                DragSourceMotionListener,  DropTargetListener   {
+
     private static AbstractDragHandler theDragHandler = AbstractDragHandlerFactory.getCorrectDragHandler();
 
     /** returns the singleton DragHandler instance */
@@ -1489,7 +1490,6 @@ public class PieceMover extends AbstractBuildable
       }
     }
 
-
     /**
      * Finds all the piece slots in a module and resets their drop targets to use a new DragHandler
      * @param target recursive search through components
@@ -1519,7 +1519,6 @@ public class PieceMover extends AbstractBuildable
 
       resetRecursivePieceSlots(GameModule.getGameModule());
     }
-
 
     /**
      * Registers a PieceMover
@@ -2097,14 +2096,14 @@ public class PieceMover extends AbstractBuildable
   }
 
 
-  /**********************************************************************************
+  /**
    * VASSAL's front-line drag handler for drag-and-drop of pieces.
    *
    * Implementation of AbstractDragHandler when DragImage is supported by JRE.
    * {@link DragHandlerMacOSX} extends this for special Mac platform
    *
    * @author Pieter Geerkens
-   **********************************************************************************/
+   */
   public static class DragHandler extends AbstractDragHandler {
     @Override
     public void dragGestureRecognized(DragGestureEvent dge) {
@@ -2119,7 +2118,8 @@ public class PieceMover extends AbstractBuildable
 
     @Override
     protected double getDeviceScale(DragGestureEvent dge) {
-      // Get the OS scaling; note that this is _probably_ running only on Windows.
+      // Get the OS scaling; note that this handler is _probably_ running only
+      // on Windows.
       final Graphics2D g2d = (Graphics2D) dge.getComponent().getGraphics();
       final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
       g2d.dispose();
@@ -2143,19 +2143,20 @@ public class PieceMover extends AbstractBuildable
 
     @Override
     protected double getDeviceScale(DragGestureEvent dge) {
-      // Retina Macs account for the device scaling for the drag icon, so we don't have to.
+      // Retina Macs account for the device scaling for the drag icon,
+      // so we don't have to.
       return 1.0;
     }
   }
 
-  /****************************************************************************************
+  /**
    * Fallback drag-handler when DragImage not supported by JRE. Implements a pseudo-cursor
    * that follows the mouse cursor when user drags game pieces. Supports map zoom by
    * resizing cursor when it enters a drop target of type Map.View.
    * <br>
    * @author Jim Urbas
    * @version 0.4.2
-   ****************************************************************************************/
+   */
   public static class DragHandlerNoImage extends AbstractDragHandler {
     @Override
     public void dragGestureRecognized(DragGestureEvent dge) {
