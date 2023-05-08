@@ -1511,15 +1511,14 @@ public class PieceMover extends AbstractBuildable
     }
 
     private static StackMetrics getStackMetrics(GamePiece piece) {
-      StackMetrics sm = null;
       final Map map = piece.getMap();
       if (map != null) {
-        sm = map.getStackMetrics();
+        final StackMetrics sm = map.getStackMetrics();
+        if (sm != null) {
+          return sm;
+        }
       }
-      if (sm == null) {
-        sm = new StackMetrics();
-      }
-      return sm;
+      return new StackMetrics();
     }
 
     protected static List<PieceMover> pieceMovers = new ArrayList<>(); // our piece movers
