@@ -1546,8 +1546,7 @@ public class PieceMover extends AbstractBuildable
      * @param setSize Set Size
      * @return Drag Image
      */
-    protected BufferedImage makeDragImageCursorCommon(double zoom, boolean doOffset,
-      Component target, boolean setSize) {
+    protected BufferedImage makeDragImageCursorCommon(double zoom, boolean doOffset, Component target, boolean setSize) {
 
       // FIXME: Should be an ImageOp for caching?
       dragCursorZoom = zoom;
