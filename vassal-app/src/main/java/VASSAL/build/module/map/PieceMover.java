@@ -1458,6 +1458,7 @@ public class PieceMover extends AbstractBuildable
     protected Component dropWin; // the drop target the mouse is currently over
 
     protected JLayeredPane drawWin; // the component that owns our pseudo-cursor
+    protected Point lastDragLocation = new Point();
 
     protected static List<PieceMover> pieceMovers = new ArrayList<>(); // our piece movers
 
@@ -1988,8 +1989,6 @@ public class PieceMover extends AbstractBuildable
         dc.setCursorLocation(pt, map);
       }
     }
-
-    protected Point lastDragLocation = new Point();
 
     /**************************************************************************
      * DROP TARGET INTERFACE
