@@ -1484,8 +1484,6 @@ public class PieceMover extends AbstractBuildable
     protected int currentPieceOffsetX; // How far cursor is CURRENTLY off-center, a function of dragPieceOffCenter{X,Y,Zoom}
     protected int currentPieceOffsetY; // I.e. on current map (which may have different zoom)
 
-    protected double dragCursorZoom = 1.0; // Current cursor scale (zoom)
-
     // Seems there can be only one DropTargetListener per drop target. After we
     // process a drop target event, we manually pass the event on to this listener.
     protected java.util.Map<Component, DropTargetListener> dropTargetListeners = new HashMap<>();
@@ -1495,6 +1493,9 @@ public class PieceMover extends AbstractBuildable
 
     // used by DragHandlerNoImage only
     protected JLabel dragCursor;      // An image label. Lives on current DropTarget's LayeredPane.
+
+    // used by DragHandlerNoImage only
+    protected double dragCursorZoom = 1.0; // Current cursor scale (zoom)
 
     /**
      * @return platform-dependent offset multiplier
@@ -1567,7 +1568,6 @@ public class PieceMover extends AbstractBuildable
      */
     protected BufferedImage makeDragImageCursorCommon(double zoom, boolean doOffset, Component target) {
       // FIXME: Should be an ImageOp for caching?
-      dragCursorZoom = zoom;
 
       final List<Point> relativePositions = buildBoundingBox(zoom, doOffset);
 
@@ -2090,6 +2090,7 @@ public class PieceMover extends AbstractBuildable
       final BufferedImage img = makeDragImageCursorCommon(zoom, true, dragCursor);
       dragCursor.setSize(img.getWidth(), img.getHeight());
       dragCursor.setIcon(new ImageIcon(img));
+      dragCursorZoom = zoom;
     }
 
     /**
