@@ -233,13 +233,13 @@ SumLocation(String property, String expression) {
 SumMapLocation(String property, String location, String map) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.sumLocation(property, location, map, _source));
+  return unwrap(_interp.sumMapLocation(property, location, map, _source));
 }
 
 SumMapLocation(String property, String location, String map, String expression) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.sumLocation(property, location, map, expression, _source));
+  return unwrap(_interp.sumMapLocation(property, location, map, expression, _source));
 }
 
 /**
@@ -278,7 +278,9 @@ CountLocation(String property, String expression) {
 }
 
 CountMapLocation(String location, String map) {
-   return CountMapLocation(location, map, "");
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.countMapLocation(location, map, _source));
 }
 
 CountMapLocation(String location, String map, String propertyOrExpression) {
@@ -305,7 +307,7 @@ CountMapLocation(String location, String map, String property, String expression
  * SumZone(String property, String location, String map, String expression)
  *    Sum value of property on pieces that match expression in the specifed zone on the specified map
  */
- SumZone(String property) {
+SumZone(String property) {
    _interp = this.caller.namespace.getVariable("_interp");
    _source = this.caller.namespace.getVariable("_source");
    return unwrap(_interp.sumZone(property, _source));
@@ -320,13 +322,13 @@ SumZone(String property, String expression) {
 SumMapZone(String property, String location, String map) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.sumZone(property, location, map, _source));
+  return unwrap(_interp.sumMapZone(property, location, map, _source));
 }
 
 SumMapZone(String property, String location, String map, String expression) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.sumZone(property, location, map, expression, _source));
+  return unwrap(_interp.sumMapZone(property, location, map, expression, _source));
 }
 
 /**
@@ -368,8 +370,9 @@ CountZone(String property, String expression) {
 }
 
 CountMapZone(String location, String map) {
-   return coutMapZone(location, Map, "");
-}
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+return unwrap(_interp.countMapZone(location, map, _source));}
 
 CountMapZone(String location, String map, String propertyOrExpression) {
   _interp = this.caller.namespace.getVariable("_interp");

@@ -765,7 +765,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       dealKeyInput = new NamedHotKeyConfigurer(p.dealKey);
       controls.add("Editor.Obscurable.deal_key", dealKeyInput);
 
-      dealExpressionInput = new FormattedExpressionConfigurer(p.dealExpression);
+      dealExpressionInput = new FormattedExpressionConfigurer(p.dealExpression, Decorator.getOutermost(p));
       controls.add("Editor.Obscurable.deal_expression", dealExpressionInput);
 
       picker = new ImageSelector(p.imageName, 512, 512);

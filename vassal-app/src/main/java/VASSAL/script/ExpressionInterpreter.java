@@ -999,9 +999,10 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   /**
-   * CountLocation(property, expression) and CountLocation(locationName, map) functions.
+   * CountLocation(property, expression) functions.
    * Return count of pieces in the same location as the current piece that have a non-nlank value for a property and that match an expression
-   * @param   propertyOrExpression  Property Name or Match Expression
+   * @param   property      Property Name
+   * @param   expression    Match Expression
    * @return  Piece Count
    */
 
@@ -1011,22 +1012,26 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       final Map m = p.getMap();
       if (m != null) {
         final String here = m.locationName(p.getPosition());
-        return countMapLocation(m.getConfigureName(), here, property, expression, ps);
+        return countMapLocation(here, m.getConfigureName(), property, expression, ps);
       }
     }
     return 0;
   }
 
-  public Object countMapLocation(String mapName, String locationName, String propertyOrExpression, PropertySource ps) {
+  public Object countMapLocation(String locationName, String mapName, PropertySource ps) {
+    return countMapLocation(locationName, mapName, null, ps);
+  }
+
+  public Object countMapLocation(String locationName, String mapName, String propertyOrExpression, PropertySource ps) {
     if (propertyOrExpression != null && propertyOrExpression.trim().startsWith("{")) {
-      return countMapLocation(mapName, locationName, null, propertyOrExpression, ps);
+      return countMapLocation(locationName, mapName, null, propertyOrExpression, ps);
     }
     else {
-      return countMapLocation(mapName, locationName, propertyOrExpression, "", ps);
+      return countMapLocation(locationName, mapName, propertyOrExpression, "", ps);
     }
   }
 
-  public Object countMapLocation(String mapName, String locationName, String property, String expression, PropertySource ps) {
+  public Object countMapLocation(String locationName, String mapName, String property, String expression, PropertySource ps) {
     ps = translatePiece(ps);
 
     final String matchString = replaceDollarVariables(expression, ps);
@@ -1038,11 +1043,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       propValue = null;
     }
     else {
-      propValue = (String) ps.getProperty(property);
-      // If the propValue is null, switch it to "" to distinguish it from the case of no property supplied.
-      if (propValue == null) {
-        propValue = "";
-      }
+      propValue = property;
     }
 
     return targetMap == null ? 0 : countLocation(locationName, targetMap, propValue, filter);
@@ -1052,19 +1053,22 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * Lowest-level CountLocation function called by all other versions
    * @param locationName Location Name to search for
    * @param map          Map to search on
-   * @param propValue    null if no property was supplied, or value of supplied property
+   * @param propValue    null if no property was supplied, or property name if supplied
    * @param filter       Option filter implementing Property Match Expression
    * @return             Count of pieces
    */
-  private Object countLocation(String locationName, Map map, String propValue, PieceFilter filter) {
+  private Object countLocation(String locationName, Map map, String property, PieceFilter filter) {
     int result = 0;
 
     // Ask IndexManager for list of pieces on that map at that location. Stacks are not returned by the IM.
     for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(map, BasicPiece.LOCATION_NAME, locationName)) {
       // If a property was supplied to be checked and has an empty value, then skip this piece in the count.
       // If a property was not supplied (propValue == null), then the piece is counted.
-      if (propValue != null && propValue.isEmpty()) {
-        continue;
+      if (property != null && !property.isEmpty()) {
+        final String propValue = (String) piece.getProperty(property);
+        if (propNonempty(propValue) == 0) {
+          continue;
+        }
       }
 
       // Add 1 to count if the no filter was supplied, or the piece passed the filter.
@@ -1120,7 +1124,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * specified map and zone
    * <p>
    * @param property   Property Name
-   * @param zone       Zone Name
+   * @param zoneName   Zone Name
    * @param map        Map Name
    * @param ps         GamePiece source
    * @return total
@@ -1135,7 +1139,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * specified map and zone that match the supplied expression
    * <p>
    * @param property   Property Name
-   * @param zone       Zone Name
+   * @param zoneName   Zone Name
    * @param map        Map Name
    * @param expression Expression
    * @param ps         GamePiece source
@@ -1172,6 +1176,144 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         result += propValue(propertyValue);
       }
     }
+    return result;
+  }
+
+  /**
+   * CountZone() function.
+   * Return count of pieces in the same zone as the current piece
+   * @return  Piece Count
+   */
+  public Object countZone(PropertySource ps) {
+    return countZone("", ps);
+  }
+
+  /**
+   * CountZone(property) and CountZone(expression) functions.
+   * Return count of pieces in the same zone as the current piece that have a non-nlank value for a property or that match an expression
+   * @param   propertyOrExpression  Property Name or Match Expression
+   * @return  Piece Count
+   */
+  public Object countZone(String propertyOrExpression, PropertySource ps) {
+    if (propertyOrExpression != null && propertyOrExpression.trim().startsWith("{")) {
+      return countZone(null, propertyOrExpression, ps);
+    }
+    else {
+      return countZone(propertyOrExpression, null, ps);
+    }
+  }
+
+  /**
+   * CountLocation(zone, expression) function
+   * Return count of pieces in the same zome as the current piece that have a non-nlank value for a property and that match an expression
+   * @param   property      property name
+   * @param   expression    match expression
+   * @return  Piece Count
+   */
+
+  public Object countZone(String property, String expression, PropertySource ps) {
+    if (ps instanceof GamePiece) {
+      final GamePiece p = (GamePiece) ps;
+      final Map m = p.getMap();
+      if (m != null) {
+        final String here = (String) p.getProperty(BasicPiece.CURRENT_ZONE);
+        return countMapZone(here, m.getConfigureName(), property, expression, ps);
+      }
+    }
+    return 0;
+  }
+
+  /**
+   * CountMapZone(Zone, Map) function
+   * Return the count of pieces in the specified Zone/Map
+   *
+   * @param zoneName  Target Zone Name
+   * @param mapName   Target Map Name
+   * @param ps        Source Piece
+   * @return          Count
+   */
+  public Object countMapZone(String zoneName, String mapName, PropertySource ps) {
+    return countMapZone(zoneName, mapName, null, ps);
+  }
+
+  /**
+   * CountMapZone(Zone, Map, property) and CountMapZone(Zone, Map, expression) function
+   * Return the count of pieces in the specified Zone/Map that match the supplied expression OR
+   * have a non-blank value for the supplied property name
+   *
+   * @param zoneName              Target Zone Name
+   * @param mapName               Target Map Name
+   * @param propertyOrExpression  A Property Name or a Beanshell expression
+   * @param ps                    Source Piece
+   * @return                      Count
+   */
+  public Object countMapZone(String zoneName, String mapName, String propertyOrExpression, PropertySource ps) {
+    if (propertyOrExpression != null && propertyOrExpression.trim().startsWith("{")) {
+      return countMapZone(zoneName, mapName, null, propertyOrExpression, ps);
+    }
+    else {
+      return countMapZone(zoneName, mapName, propertyOrExpression, "", ps);
+    }
+  }
+
+  /**
+   * CountMapZone(Zone, Map, property, expression) function
+   * Return the count of pieces in the specified Zone/Map that match the supplied expression AND
+   * have a non-blank value for the supplied property name
+   *
+   * @param zoneName              Target Zone Name
+   * @param mapName               Target Map Name
+   * @param property              A Property Name
+   * @param expression            A Beanshell expression
+   * @param ps                    Source Piece
+   * @return                      Count
+   */
+  public Object countMapZone(String zoneName, String mapName, String property, String expression, PropertySource ps) {
+    ps = translatePiece(ps);
+
+    final String matchString = replaceDollarVariables(expression, ps);
+    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter((PropertySource) ps);
+    final Map targetMap = findVassalMap(mapName);
+
+    String propValue;
+    if (property == null || property.isEmpty()) {
+      propValue = null;
+    }
+    else {
+      propValue = property;
+    }
+
+    return targetMap == null ? 0 : countZone(zoneName, targetMap, propValue, filter);
+  }
+
+  /**
+   * Lowest-level CountZone function called by all other versions
+   * @param zoneName     Zone Name to search for
+   * @param map          Map to search on
+   * @param propValue    null if no property was supplied, or value of supplied property
+   * @param filter       Option filter implementing Property Match Expression
+   * @return             Count of pieces
+   */
+  private Object countZone(String zoneName, Map map, String property, PieceFilter filter) {
+    int result = 0;
+
+    // Ask IndexManager for list of pieces on that map at that location. Stacks are not returned by the IM.
+    for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(map, BasicPiece.CURRENT_ZONE, zoneName)) {
+      // If a property was supplied to be checked and has an empty value, then skip this piece in the count.
+      // If a property was not supplied (propValue == null), then the piece is counted.
+      if (property != null && !property.isEmpty()) {
+        final String propValue = (String) piece.getProperty(property);
+        if (propNonempty(propValue) == 0) {
+          continue;
+        }
+      }
+
+      // Add 1 to count if the no filter was supplied, or the piece passed the filter.
+      if (filter == null || filter.accept(piece)) {
+        result += 1;
+      }
+    }
+
     return result;
   }
 
