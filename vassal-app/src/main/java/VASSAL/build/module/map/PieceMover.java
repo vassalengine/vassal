@@ -1902,6 +1902,7 @@ public class PieceMover extends AbstractBuildable
       // dragging from UL results in positive offsets
       originalPieceOffsetX = piecePosition.x - mousePosition.x;
       originalPieceOffsetY = piecePosition.y - mousePosition.y;
+
       return mousePosition;
     }
 
