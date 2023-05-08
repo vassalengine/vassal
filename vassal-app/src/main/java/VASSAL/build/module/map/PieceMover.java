@@ -1883,7 +1883,8 @@ public class PieceMover extends AbstractBuildable
                                   .relativePosition(piece.getParent(), piece);
         piecePosition.translate(
           (int) Math.round(offset.x * dragPieceOffCenterZoom),
-          (int) Math.round(offset.y * dragPieceOffCenterZoom));
+          (int) Math.round(offset.y * dragPieceOffCenterZoom)
+        );
       }
 
       // dragging from UL results in positive offsets
