@@ -1454,16 +1454,16 @@ public class PieceMover extends AbstractBuildable
 
     protected double dragCursorZoom = 1.0; // Current cursor scale (zoom)
 
-    Component dragWin; // the component that initiated the drag operation
-    Component dropWin; // the drop target the mouse is currently over
+    protected Component dragWin; // the component that initiated the drag operation
+    protected Component dropWin; // the drop target the mouse is currently over
 
-    JLayeredPane drawWin; // the component that owns our pseudo-cursor
+    protected JLayeredPane drawWin; // the component that owns our pseudo-cursor
 
     protected static List<PieceMover> pieceMovers = new ArrayList<>(); // our piece movers
 
     // Seems there can be only one DropTargetListener per drop target. After we
     // process a drop target event, we manually pass the event on to this listener.
-    java.util.Map<Component, DropTargetListener> dropTargetListeners = new HashMap<>();
+    protected java.util.Map<Component, DropTargetListener> dropTargetListeners = new HashMap<>();
 
     /**
      * @return platform-dependent offset multiplier
