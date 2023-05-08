@@ -2009,8 +2009,9 @@ public class PieceMover extends AbstractBuildable
   public static class DragHandler extends AbstractDragHandler {
     @Override
     public void dragGestureRecognized(DragGestureEvent dge) {
-      if (dragGestureRecognizedPrep(dge) == null) return;
-      super.dragGestureRecognized(dge);
+      if (dragGestureRecognizedPrep(dge) != null) {
+        super.dragGestureRecognized(dge);
+      }
     }
 
     @Override
