@@ -1538,15 +1538,16 @@ public class PieceMover extends AbstractBuildable
 
     protected double dragCursorZoom = 1.0; // Current cursor scale (zoom)
 
+    // Seems there can be only one DropTargetListener per drop target. After we
+    // process a drop target event, we manually pass the event on to this listener.
+    protected java.util.Map<Component, DropTargetListener> dropTargetListeners = new HashMap<>();
+
     // used by DragHandlerNoImage only
     protected Point lastDragLocation = new Point();
 
     // used by DragHandlerNoImage only
     protected JLabel dragCursor;      // An image label. Lives on current DropTarget's LayeredPane.
 
-    // Seems there can be only one DropTargetListener per drop target. After we
-    // process a drop target event, we manually pass the event on to this listener.
-    protected java.util.Map<Component, DropTargetListener> dropTargetListeners = new HashMap<>();
 
     /**
      * @return platform-dependent offset multiplier
