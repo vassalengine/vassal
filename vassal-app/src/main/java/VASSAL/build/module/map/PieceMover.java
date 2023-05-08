@@ -1830,8 +1830,9 @@ public class PieceMover extends AbstractBuildable
       }
       dragPieceOffCenterZoom *= getDeviceScale(dge);
 
-      // Account for offset of piece within stack. We do this even for un-expanded stacks, since the offset can
-      // still be significant if the stack is large
+      // Account for offset of piece within stack. We do this even for
+      // un-expanded stacks, since the offset can still be significant if
+      // the stack is large
       if (piece.getParent() != null && map != null) {
         final Point offset = piece.getParent()
                                   .getStackMetrics()
@@ -1910,14 +1911,15 @@ public class PieceMover extends AbstractBuildable
     @Override
     public void dropActionChanged(DragSourceDragEvent e) {}
 
-    /**************************************************************************************
+    /*************************************************************************
      * DRAG SOURCE MOTION LISTENER INTERFACE
      *
      * EVENT uses UNSCALED, SCREEN coordinate system
      *
      * Moves cursor after mouse. Used to check for real mouse movement.
-     * Warning: dragMouseMoved fires 8 times for each point on development system (Win2k)
-     **************************************************************************************/
+     * Warning: dragMouseMoved fires 8 times for each point on development
+     * system (Win2k)
+     ************************************************************************/
     @Override
     public void dragMouseMoved(DragSourceDragEvent dsde) {
       if (dsde.getDragSourceContext().getComponent() instanceof Map.View) {
