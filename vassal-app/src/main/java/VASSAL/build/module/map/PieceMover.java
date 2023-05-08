@@ -1858,7 +1858,8 @@ public class PieceMover extends AbstractBuildable
         piecePosition = mousePosition;
       }
 
-      // If coming from a map, we use the map's zoom. Otherwise if our PieceWindow has stashed a starting scale for us then use that, else 1.0
+      // If coming from a map, we use the map's zoom. Otherwise if our
+      // PieceWindow has stashed a starting scale for us then use that, else 1.0
       if (map != null) {
         dragPieceOffCenterZoom = map.getZoom();
       }
