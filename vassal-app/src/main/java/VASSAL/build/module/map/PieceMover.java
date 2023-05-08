@@ -1901,9 +1901,6 @@ public class PieceMover extends AbstractBuildable
       // dragging from UL results in positive offsets
       originalPieceOffsetX = piecePosition.x - mousePosition.x;
       originalPieceOffsetY = piecePosition.y - mousePosition.y;
-      dragWin = dge.getComponent();
-      drawWin = null;
-      dropWin = null;
       return mousePosition;
     }
 
@@ -2114,6 +2111,10 @@ public class PieceMover extends AbstractBuildable
     public void dragGestureRecognized(DragGestureEvent dge) {
       final Point mousePosition = dragGestureRecognizedPrep(dge);
       if (mousePosition == null) return;
+
+      dragWin = dge.getComponent();
+      drawWin = null;
+      dropWin = null;
 
       makeDragCursor(dragPieceOffCenterZoom);
       setDrawWinToOwnerOf(dragWin);
