@@ -2050,7 +2050,6 @@ public class PieceMover extends AbstractBuildable
     }
   }
 
-
   /**
    * VASSAL's front-line drag handler for drag-and-drop of pieces.
    *
@@ -2088,7 +2087,8 @@ public class PieceMover extends AbstractBuildable
   }
 
   /**
-   * Special MacOSX variant of DragHandler, because of differences in how device scaling is handled.
+   * Special MacOSX variant of DragHandler, because of differences in how
+   * device scaling is handled.
    */
   public static class DragHandlerMacOSX extends DragHandler {
     @Override
@@ -2105,9 +2105,10 @@ public class PieceMover extends AbstractBuildable
   }
 
   /**
-   * Fallback drag-handler when DragImage not supported by JRE. Implements a pseudo-cursor
-   * that follows the mouse cursor when user drags game pieces. Supports map zoom by
-   * resizing cursor when it enters a drop target of type Map.View.
+   * Fallback drag-handler when DragImage not supported by JRE. Implements a
+   * pseudo-cursor that follows the mouse cursor when user drags game pieces.
+   * Supports map zoom by resizing cursor when it enters a drop target of
+   * type Map.View.
    * <br>
    * @author Jim Urbas
    * @version 0.4.2
