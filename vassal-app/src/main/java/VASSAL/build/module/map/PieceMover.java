@@ -1548,7 +1548,6 @@ public class PieceMover extends AbstractBuildable
     // used by DragHandlerNoImage only
     protected JLabel dragCursor;      // An image label. Lives on current DropTarget's LayeredPane.
 
-
     /**
      * @return platform-dependent offset multiplier
      */
