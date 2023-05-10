@@ -1190,7 +1190,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
   /**
    * CountZone(property) and CountZone(expression) functions.
-   * Return count of pieces in the same zone as the current piece that have a non-nlank value for a property or that match an expression
+   * Return count of pieces in the same zone as the current piece that have a non-blank value for a property or that match an expression
    * @param   propertyOrExpression  Property Name or Match Expression
    * @return  Piece Count
    */
@@ -1205,7 +1205,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
   /**
    * CountLocation(zone, expression) function
-   * Return count of pieces in the same zome as the current piece that have a non-nlank value for a property and that match an expression
+   * Return count of pieces in the same zome as the current piece that have a non-blank value for a property and that match an expression
    * @param   property      property name
    * @param   expression    match expression
    * @return  Piece Count

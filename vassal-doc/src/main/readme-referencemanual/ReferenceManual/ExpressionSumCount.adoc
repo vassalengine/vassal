@@ -32,7 +32,7 @@ If a matching piece does not specify the value of the property, or if the value 
 
 Some of the *Count* functions take a property name (prop) argument and will only add 1 to the count if that property has a non-blank value for a piece.
 
-The Property name used in a function can be the name of an actual property (which should be entered in quotes as "propName"), or can be another expression that evaluates to a property name).
+The Property name used in a function can be the name of an actual property (which should be entered in quotes as "propName"), or can be another expression that evaluates to a property name.
 
 ===== Property Match Expression
 When an expression is used in any *Sum* or *Count* function, it must have the special format defined for Property Match Expressions.
@@ -44,7 +44,7 @@ The Zone *Sum* and *Count* functions take a Zone name and a Map name and will on
 
 The Location *Sum* and *Count* functions take a Zone name and a Map Name and will only act on pieces currently located in the named Location on the named Map.
 
-The Zone and Location names used in a function can be the name of an actual Zone or Location (which should be entered in quotes like "zoneRight"), or can be another expression that evaluates to a Zone or Location name).
+The Zone and Location names used in a function can be the name of an actual Zone or Location (which should be entered in quotes like "zoneRight"), or can be another expression that evaluates to a Zone or Location name.
 
 [#StackBased]
 ==== Stack based functions
@@ -94,7 +94,7 @@ Use these functions when you want to *Sum* or *Count* pieces that are either in 
 
 *SumZone(prop)* returns the total of the specified property (including the current piece) in all pieces with the same Zone on the same Map as the current piece.
 
-*SumZone(prop, expression)* returns the total of the specified property in all pieces (including the current piece) with the same Zone on the same Map as the current piece and that match the expression .
+*SumZone(prop, expression)* returns the total of the specified property in all pieces (including the current piece) with the same Zone on the same Map as the current piece and that match the expression.
 
 *SumMapZone(prop, zone, map)* returns the total of the specified property in all pieces in the specified Zone on the specified Map.
 
@@ -104,9 +104,9 @@ Use these functions when you want to *Sum* or *Count* pieces that are either in 
 
 *CountZone(prop)* returns the count of the number of pieces (including the current piece) within the same Zone on the same Map as the current piece, that have a non-blank value for the supplied property.
 
-*CountZone(expression)* returns the count of the number of pieces (including the current piece) within the same Zone on the same Map as the current, piece that match the expression.
+*CountZone(expression)* returns the count of the number of pieces (including the current piece) within the same Zone on the same Map as the current piece and that match the expression.
 
-*CountZone(prop, expression)* returns the count of the number of pieces (including the current piece) within the same Zone on the same Map as the current piece, that have a non-blank value for the supplied property and that match the expression
+*CountZone(prop, expression)* returns the count of the number of pieces (including the current piece) within the same Zone on the same Map as the current piece, that have a non-blank value for the supplied property and that match the expression.
 
 *CountMapZone(zone, map)* returns the count of the number of pieces in the specified Zone on the specified Map.
 

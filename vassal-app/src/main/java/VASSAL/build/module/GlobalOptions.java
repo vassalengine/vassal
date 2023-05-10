@@ -96,6 +96,7 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
   public static final String SEND_TO_LOCATION_MOVE_TRAILS = "sendToLocationMoveTrails"; //NON-NLS
   public static final String STORE_LEADING_ZERO_INTEGERS_AS_STRINGS = "storeLeadingZeroIntegersAsStrings"; //NON-NLS
   public static final String PURGE_BLANK_PROPERTY_PROMPTS = "purgeBlankPropertyPrompts"; //NON-NLS
+  public static final String DISABLE_PIECE_INDEXING = "disablePieceIndexing";
 
   // Hybrid preference settings
   public static final String ALWAYS = "Always"; //$NON-NLS-1$
@@ -150,6 +151,7 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
   private String sendToLocationMoveTrails = NEVER; // Send-to-Location generates movement trails (default to off)
   private boolean storeLeadingZeroIntegersAsStrings = false; // Store integers with leading zeroes as String internally
   private boolean purgeBlankPropertyPrompts = true; // Purge blank property prompts
+  private boolean disableUsePieceIndexes = false; // Should FastMatch use piece Indexes?
 
   // Configurable prompt string for unmask-my-pieces
   private String promptString = Resources.getString("GlobalOptions.opponents_can_unmask_my_pieces");
@@ -473,7 +475,8 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
       Resources.getString("Editor.GlobalOption.inventory_visible_to_all"),
       Resources.getString("Editor.GlobalOption.send_to_location_movement_trails"),
       Resources.getString("Editor.GlobalOption.leading_zero_integer_strings"),
-      Resources.getString("Editor.GlobalOption.purge_blank_property_prompts")
+      Resources.getString("Editor.GlobalOption.purge_blank_property_prompts"),
+      Resources.getString("Editor.GlobalOption.disable_use_location_indexes")
     };
   }
 
@@ -494,7 +497,8 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
         INVENTORY_VISIBLE_TO_ALL,
         SEND_TO_LOCATION_MOVE_TRAILS,
         STORE_LEADING_ZERO_INTEGERS_AS_STRINGS,
-        PURGE_BLANK_PROPERTY_PROMPTS
+        PURGE_BLANK_PROPERTY_PROMPTS,
+        DISABLE_PIECE_INDEXING
       )
     );
 
@@ -518,6 +522,7 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
       PromptOnOff.class,
       PromptOnOff.class,
       PromptOnOff.class,
+      Boolean.class,
       Boolean.class,
       Boolean.class
     };
@@ -653,6 +658,9 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
     else if (PURGE_BLANK_PROPERTY_PROMPTS.equals(key)) {
       return String.valueOf(purgeBlankPropertyPrompts);
     }
+    else if (DISABLE_PIECE_INDEXING.equals(key)) {
+      return String.valueOf(disableUsePieceIndexes);
+    }
     else if (INVENTORY_VISIBLE_TO_ALL.equals(key)) {
       return inventoryVisibleToAll;
     }
@@ -745,6 +753,14 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
       }
       else if (value instanceof String) {
         purgeBlankPropertyPrompts = "true".equals(value); //NON-NLS
+      }
+    }
+    else if (DISABLE_PIECE_INDEXING.equals(key)) {
+      if (value instanceof Boolean) {
+        disableUsePieceIndexes = (Boolean) value;
+      }
+      else if (value instanceof String) {
+        disableUsePieceIndexes = "true".equals(value); //NON-NLS
       }
     }
     else if (INVENTORY_VISIBLE_TO_ALL.equals(key)) {
@@ -853,6 +869,10 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
 
   public boolean isPurgeBlankPropertyPrompts() {
     return purgeBlankPropertyPrompts;
+  }
+
+  public boolean isDisableUsePieceIndexes() {
+    return disableUsePieceIndexes;
   }
 
   /** @return whether specific hybrid preference is enabled (could be designer-forced setting, could be player preference) */

@@ -20,6 +20,7 @@ package VASSAL.counters;
 import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
+import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.map.DrawPile;
 import VASSAL.build.module.properties.PropertySource;
@@ -394,6 +395,17 @@ public class GlobalCommand implements Auditable {
         }
       }
 
+      // Piece Indexing (by position, LocationName and CurrentZone) is a new feature in 3.7.0 to help speed up
+      // GKC's using Location specific Fast Matches or Ranges.
+      // Using Piece Indexing causes the pieces that match a GKC to be presented in a different order that when
+      // not using Piece Indexing. This should (!) not be a problem in a properly designed module, however, it
+      // may causes some modules to behave differently where they have a dependency on the order that pieces are
+      // processed in a GKC. Piece Indexing can be disabled via a Global Option
+      boolean usePieceIndexing = false;
+      if (GlobalOptions.getInstance() != null) {
+        usePieceIndexing = !GlobalOptions.getInstance().isDisableUsePieceIndexes();
+      }
+
       // This dispatcher will eventually handle applying the Beanshell filter and actually issuing the command to any pieces that match
       final GlobalCommandVisitor visitor = getVisitor(command, filter, keyStroke, audit, owner, getSelectFromDeck());
       final DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
@@ -532,7 +544,7 @@ public class GlobalCommand implements Auditable {
       }
 
       // If a specific X, Y target has been specified AND a valid target map, then we can go direct to the Qtree index to find those pieces
-      else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.XY && targetFastMap != null) {
+      else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.XY && targetFastMap != null && usePieceIndexing) {
 
         int x = 0;
         int y = 0;
@@ -562,7 +574,7 @@ public class GlobalCommand implements Auditable {
       }
 
       // If a specific LocationName target has been specified AND a valid target map, then we can go direct to the LocationName index to find those pieces
-      else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.LOCATION && targetFastMap != null && !fastLocation.isEmpty())  {
+      else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.LOCATION && targetFastMap != null && !fastLocation.isEmpty() && usePieceIndexing)  {
         for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(targetFastMap, BasicPiece.LOCATION_NAME, fastLocation)) {
 
           // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
@@ -573,7 +585,7 @@ public class GlobalCommand implements Auditable {
       }
 
       // if Current Location has been specified (Counter GKC), we can go find the pieces directly from the Qtree index
-      else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.CURLOC && curPiece != null && curPiece.getMap() != null && curPiece.getPosition() != null) {
+      else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.CURLOC && curPiece != null && curPiece.getMap() != null && curPiece.getPosition() != null && usePieceIndexing) {
         for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(curPiece.getMap(), curPiece.getPosition())) {
 
           // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
@@ -585,7 +597,7 @@ public class GlobalCommand implements Auditable {
 
 
       // If a Range has been specified, quickly find the in-range pieces
-      else if (fastRange != null && curPiece != null && curPiece.getMap() != null && curPiece.getPosition() != null) {
+      else if (fastRange != null && curPiece != null && curPiece.getMap() != null && curPiece.getPosition() != null && usePieceIndexing) {
         for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(curPiece, fastRange)) {
 
           // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
@@ -595,8 +607,8 @@ public class GlobalCommand implements Auditable {
         }
       }
 
-      // If current Zone has been specified A to the Zone index to find those pieces
-      else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.CURZONE && curPiece != null && curPiece.getMap() != null)  {
+      // If current Zone has been specified use the Zone index to find those pieces
+      else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.CURZONE && curPiece != null && curPiece.getMap() != null && usePieceIndexing)  {
         final String currentZone = (String) curPiece.getProperty(BasicPiece.CURRENT_ZONE);
         for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(curPiece.getMap(), BasicPiece.CURRENT_ZONE, currentZone)) {
 
@@ -607,7 +619,7 @@ public class GlobalCommand implements Auditable {
         }
       }
       // If a specific Zone target has been specified AND a valid target map, then we can go direct to the Zone index to find those pieces
-      else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.ZONE && targetFastMap != null && !fastZone.isEmpty())  {
+      else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.ZONE && targetFastMap != null && !fastZone.isEmpty() && usePieceIndexing)  {
         for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(targetFastMap, BasicPiece.CURRENT_ZONE, fastZone)) {
 
           // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
@@ -628,7 +640,7 @@ public class GlobalCommand implements Auditable {
 
         // If a Counter GKC range limit has been specified, then it can only apply to the one map
         // Just use the pieces in range as the base selection for the remaining comparisons.
-        if (fastRange != null && curPiece != null && curPiece.getMap() != null && curPiece.getPosition() != null) {
+        if (fastRange != null && curPiece != null && curPiece.getMap() != null && curPiece.getPosition() != null && usePieceIndexing) {
           gkcMapPieces.add(GameModule.getGameModule().getIndexManager().getPieces(curPiece, fastRange).toArray(new GamePiece[0]));
         }
 
