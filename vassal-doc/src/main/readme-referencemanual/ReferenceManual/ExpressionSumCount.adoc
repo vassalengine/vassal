@@ -59,7 +59,7 @@ Use these functions when you want to *Sum* or *Count* pieces that are in the sam
 
 [#LocationBased]
 ==== Location based functions
-Use these functions when you want to *Sum* or *Count* pieces that are either in the same Location as the current piece (Counter GKC's) or are in a known named Location on a specific map.
+Use these functions when you want to *Sum* or *Count* pieces that are either in the same Location as the current piece (Counter GKCs) or are in a known named Location on a specific map.
 
 The Location Name might be a Zone name, a region name or a HexGrid location, depending on how the Grid Location naming is set up on the target piece's map.
 
@@ -89,7 +89,7 @@ The Location Name might be a Zone name, a region name or a HexGrid location, dep
 
 [#ZoneBased]
 ==== Zone based functions
-Use these functions when you want to *Sum* or *Count* pieces that are either in the same Zone as the current piece (Counter GKC's) or are in a known Zone on a specific map.
+Use these functions when you want to *Sum* or *Count* pieces that are either in the same Zone as the current piece (Counter GKCs) or are in a known Zone on a specific map.
 
 
 *SumZone(prop)* returns the total of the specified property (including the current piece) in all pieces with the same Zone on the same Map as the current piece.
@@ -117,7 +117,7 @@ Use these functions when you want to *Sum* or *Count* pieces that are either in 
 *CountMapZone(zone, map, prop, expression)* returns the count of the number of pieces in the specified Zone on the specified Map and that have a non-blank value for the supplied property and that match the supplied expression.
 [#AttachmentBased]
 ==== Attachment based functions
-Use these functions to *Sum* or *Count* values on pieces that are currently Attached to the source piece. These functions only work in Counter GKC's.
+Use these functions to *Sum* or *Count* values on pieces that are currently Attached to the source piece. These functions only work in Counter GKCs.
 
 *SumAttachment(attachment, prop)* returns the total of the specified property summed across all the pieces attached to this piece via a named Attachment trait on this piece.
 
@@ -132,7 +132,7 @@ Use these functions to *Sum* or *Count* values on pieces that are currently Atta
 
 [#MatBased]
 ==== Mat based functions
-Use these functions to *Sum* or *Count* values on pieces that are part of a Mat and Cargo relationship. These functions only work in Counter GKC's.
+Use these functions to *Sum* or *Count* values on pieces that are part of a Mat and Cargo relationship. These functions only work in Counter GKCs.
 
 *SumMat(prop)* returns the total of the specified property among a Mat and its Mat Cargo. The asking piece can either be a Mat or a Mat Cargo. If the piece is not a Mat, and/or if it is a Mat Cargo piece not presently on a Mat, then only the piece itself is checked.
 

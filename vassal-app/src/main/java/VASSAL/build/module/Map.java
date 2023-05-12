@@ -3189,6 +3189,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       p.setMap(this);
       pieces.add(p);
       theMap.repaint();
+      GameModule.getGameModule().getIndexManager().pieceMoved(p, this);
     }
   }
 
@@ -3210,6 +3211,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     GameModule.getGameModule().getIndexManager().pieceRemoved(p, this);
     pieces.remove(p);
     theMap.repaint();
+    GameModule.getGameModule().getIndexManager().pieceRemoved(p, this);
   }
 
 

@@ -397,10 +397,10 @@ public class GlobalCommand implements Auditable {
 
       // Piece Indexing (by position, LocationName and CurrentZone) is a new feature in 3.7.0 to help speed up
       // GKC's using Location specific Fast Matches or Ranges.
-      // Using Piece Indexing causes the pieces that match a GKC to be presented in a different order that when
+      // Using Piece Indexing causes the pieces that match a GKC to be presented in a different order than when
       // not using Piece Indexing. This should (!) not be a problem in a properly designed module, however, it
-      // may causes some modules to behave differently where they have a dependency on the order that pieces are
-      // processed in a GKC. Piece Indexing can be disabled via a Global Option
+      // may cause some modules to behave differently where they have a dependency on the order that pieces are
+      // processed in a GKC. Piece Indexing can be disabled via a Global Option.
       boolean usePieceIndexing = false;
       if (GlobalOptions.getInstance() != null) {
         usePieceIndexing = !GlobalOptions.getInstance().isDisableUsePieceIndexes();

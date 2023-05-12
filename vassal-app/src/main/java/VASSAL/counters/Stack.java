@@ -629,26 +629,27 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
     }
     pieceCount = 0;
 
+    Map m = null;
+    if (!"null".equals(mapId)) { //$NON-NLS-1$//
+      m = Map.getMapById(mapId);
+      if (m == null) {
+        ErrorDialog.dataWarning(new BadDataReport("Could not find map", mapId, null)); // NON-NLS
+      }
+    }
+
     final GameState gs = GameModule.getGameModule().getGameState();
     while (st.hasMoreTokens()) {
       final String token = st.nextToken();
       final GamePiece child = gs.getPieceForId(token);
       if (child != null) {
         insertChild(child, pieceCount);
+        GameModule.getGameModule().getIndexManager().pieceMoved(child, m);
       }
       else {
         //BR// This encoding format with the "while" at the end made it challenging to work in a new parameter.
         if (token.startsWith(HAS_LAYER_MARKER)) {
           layer = Integer.parseInt(token.substring(HAS_LAYER_MARKER.length()));
         }
-      }
-    }
-
-    Map m = null;
-    if (!"null".equals(mapId)) { //$NON-NLS-1$//
-      m = Map.getMapById(mapId);
-      if (m == null) {
-        ErrorDialog.dataWarning(new BadDataReport("Could not find map", mapId, null)); // NON-NLS
       }
     }
 

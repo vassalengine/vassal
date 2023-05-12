@@ -92,13 +92,15 @@ public class IndexManager {
    * @param map   Map that the piece has arrived on
    */
   public void pieceMoved(GamePiece piece, Map map) {
-    if (piece instanceof Stack) {
-      for (final GamePiece p : ((Stack) piece).asList()) {
-        getIndex(map).addOrUpdatePiece(p);
+    if (map != null) {
+      if (piece instanceof Stack) {
+        for (final GamePiece p : ((Stack) piece).asList()) {
+          getIndex(map).addOrUpdatePiece(p);
+        }
       }
-    }
-    else {
-      getIndex(map).addOrUpdatePiece(piece);
+      else {
+        getIndex(map).addOrUpdatePiece(piece);
+      }
     }
   }
 
@@ -109,14 +111,16 @@ public class IndexManager {
    * @param map   Map piece was removed from
    */
   public void pieceRemoved(GamePiece piece, Map map) {
-    if (!(piece instanceof Stack)) {
-      if (piece instanceof Stack) {
-        for (final GamePiece p : ((Stack) piece).asList()) {
-          getIndex(map).removePiece(p);
+    if (map != null) {
+      if (!(piece instanceof Stack)) {
+        if (piece instanceof Stack) {
+          for (final GamePiece p : ((Stack) piece).asList()) {
+            getIndex(map).removePiece(p);
+          }
         }
-      }
-      else {
-        getIndex(map).removePiece(piece);
+        else {
+          getIndex(map).removePiece(piece);
+        }
       }
     }
   }
