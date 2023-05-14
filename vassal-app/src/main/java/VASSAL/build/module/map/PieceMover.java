@@ -1808,6 +1808,19 @@ public class PieceMover extends AbstractBuildable
       // PieceWindow has stashed a starting scale for us then use that, else 1.0
       if (map != null) {
         dragPieceOffCenterZoom = map.getZoom();
+
+        // Account for offset of piece within stack. We do this even for
+        // un-expanded stacks, since the offset can still be significant if
+        // the stack is large
+        final Stack parent = piece.getParent();
+        if (parent != null) {
+          final Point offset = parent.getStackMetrics()
+                                     .relativePosition(parent, piece);
+          piecePosition.translate(
+            (int) Math.round(offset.x * dragPieceOffCenterZoom),
+            (int) Math.round(offset.y * dragPieceOffCenterZoom)
+          );
+        }
       }
       else {
         final Object tempZoom = piece.getProperty(PieceSlot.PIECE_PALETTE_SCALE);
