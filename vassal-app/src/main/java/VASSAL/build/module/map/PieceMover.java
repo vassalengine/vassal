@@ -1610,9 +1610,6 @@ public class PieceMover extends AbstractBuildable
       boundingBox.height *= zoom;
       boundingBox.x *= zoom;
       boundingBox.y *= zoom;
-      if (doOffset) {
-        calcDrawOffset();
-      }
 
       relativePositions.add(new Point(0, 0));
       int stackCount = 0;
@@ -1643,6 +1640,10 @@ public class PieceMover extends AbstractBuildable
         boundingBox.add(r);
         relativePositions.add(p);
         lastPiece = nextPiece;
+      }
+
+      if (doOffset) {
+        calcDrawOffset();
       }
 
       return relativePositions;
