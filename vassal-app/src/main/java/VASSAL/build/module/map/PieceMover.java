@@ -1606,40 +1606,41 @@ public class PieceMover extends AbstractBuildable
       GamePiece lastPiece = firstPiece;
 
       boundingBox = firstPiece.getShape().getBounds();
-      boundingBox.width *= zoom;
-      boundingBox.height *= zoom;
-      boundingBox.x *= zoom;
-      boundingBox.y *= zoom;
-
       relativePositions.add(new Point(0, 0));
+
       int stackCount = 0;
       while (dragContents.hasMoreElements()) {
         final GamePiece nextPiece = dragContents.nextPiece();
         final Rectangle r = nextPiece.getShape().getBounds();
-        r.width *= zoom;
-        r.height *= zoom;
-        r.x *= zoom;
-        r.y *= zoom;
 
         final Point p = new Point(
-          (int) Math.round(
-            zoom * (nextPiece.getPosition().x - firstPiece.getPosition().x)),
-          (int) Math.round(
-            zoom * (nextPiece.getPosition().y - firstPiece.getPosition().y)));
+          nextPiece.getPosition().x - firstPiece.getPosition().x,
+          nextPiece.getPosition().y - firstPiece.getPosition().y
+        );
         r.translate(p.x, p.y);
 
         if (nextPiece.getPosition().equals(lastPiece.getPosition())) {
           stackCount++;
           final StackMetrics sm = getStackMetrics(nextPiece);
           r.translate(
-            (int) Math.round(sm.unexSepX * stackCount * zoom),
-            (int) Math.round(-sm.unexSepY * stackCount * zoom)
+            sm.unexSepX * stackCount,
+            -sm.unexSepY * stackCount
           );
         }
 
         boundingBox.add(r);
         relativePositions.add(p);
         lastPiece = nextPiece;
+      }
+
+      boundingBox.width *= zoom;
+      boundingBox.height *= zoom;
+      boundingBox.x *= zoom;
+      boundingBox.y *= zoom;
+
+      for (Point p: relativePositions) {
+        p.x *= zoom;
+        p.y *= zoom;
       }
 
       if (doOffset) {
