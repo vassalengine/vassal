@@ -31,6 +31,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.FocusListener;
 
 /**
@@ -127,7 +128,9 @@ public class StringConfigurer extends Configurer {
       });
 
       SwingUtils.allowUndo(nameField);
-      nameField.setDragEnabled(true);
+      if (!GraphicsEnvironment.isHeadless()) {
+        nameField.setDragEnabled(true);
+      }
 
       final LayerUI<JTextField> layerUI = new ConfigLayerUI(this);
       final JLayer<JTextField> layer = new JLayer<>(nameField, layerUI);

@@ -37,6 +37,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import java.awt.Component;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -174,7 +175,9 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
         }
       });
       SwingUtils.allowUndo(nameField);
-      nameField.setDragEnabled(true);
+      if (!GraphicsEnvironment.isHeadless()) {
+        nameField.setDragEnabled(true);
+      }
 
       // Edit box selects all text when first focused
       nameField.addFocusListener(new java.awt.event.FocusAdapter() {

@@ -29,6 +29,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
+import java.awt.GraphicsEnvironment;
 import java.util.StringTokenizer;
 
 /**
@@ -150,7 +151,9 @@ public class TextConfigurer extends Configurer implements ConfigurerFactory {
 
       textArea.setText((String) getValue());
       SwingUtils.allowUndo(textArea);
-      textArea.setDragEnabled(true);
+      if (!GraphicsEnvironment.isHeadless()) {
+        textArea.setDragEnabled(true);
+      }
       final JScrollPane scroll = new ScrollPane(textArea);
       if (name != null) {
         scroll.setBorder(new TitledBorder(name));
