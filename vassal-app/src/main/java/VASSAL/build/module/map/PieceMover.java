@@ -1569,6 +1569,11 @@ public class PieceMover extends AbstractBuildable
     protected BufferedImage makeDragImageCursorCommon(double zoom, boolean doOffset, Component target) {
       // FIXME: Should be an ImageOp for caching?
 
+      currentPieceOffsetX =
+        (int) (originalPieceOffsetX / dragPieceOffCenterZoom * zoom + 0.5);
+      currentPieceOffsetY =
+        (int) (originalPieceOffsetY / dragPieceOffCenterZoom * zoom + 0.5);
+
       final List<Point> relativePositions = buildBoundingBox(zoom, doOffset);
 
       final int w = boundingBox.width + EXTRA_BORDER * 2;
@@ -1599,11 +1604,6 @@ public class PieceMover extends AbstractBuildable
       final PieceIterator dragContents = DragBuffer.getBuffer().getIterator();
       final GamePiece firstPiece = dragContents.nextPiece();
       GamePiece lastPiece = firstPiece;
-
-      currentPieceOffsetX =
-        (int) (originalPieceOffsetX / dragPieceOffCenterZoom * zoom + 0.5);
-      currentPieceOffsetY =
-        (int) (originalPieceOffsetY / dragPieceOffCenterZoom * zoom + 0.5);
 
       boundingBox = firstPiece.getShape().getBounds();
       boundingBox.width *= zoom;
