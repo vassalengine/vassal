@@ -150,6 +150,7 @@ public class TextConfigurer extends Configurer implements ConfigurerFactory {
 
       textArea.setText((String) getValue());
       SwingUtils.allowUndo(textArea);
+      textArea.setDragEnabled(true);
       final JScrollPane scroll = new ScrollPane(textArea);
       if (name != null) {
         scroll.setBorder(new TitledBorder(name));

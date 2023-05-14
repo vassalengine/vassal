@@ -174,6 +174,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
         }
       });
       SwingUtils.allowUndo(nameField);
+      nameField.setDragEnabled(true);
 
       // Edit box selects all text when first focused
       nameField.addFocusListener(new java.awt.event.FocusAdapter() {

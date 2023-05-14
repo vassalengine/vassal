@@ -127,6 +127,7 @@ public class StringConfigurer extends Configurer {
       });
 
       SwingUtils.allowUndo(nameField);
+      nameField.setDragEnabled(true);
 
       final LayerUI<JTextField> layerUI = new ConfigLayerUI(this);
       final JLayer<JTextField> layer = new JLayer<>(nameField, layerUI);
