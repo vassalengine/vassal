@@ -1799,7 +1799,8 @@ public class PieceMover extends AbstractBuildable
       // If DragBuffer holds a piece with invalid coordinates (for example, a
       // card drawn from a deck), drag from center of piece
       if (piecePosition.x <= 0 || piecePosition.y <= 0) {
-        piecePosition = mousePosition;
+        piecePosition = map == null ? mousePosition :
+                                      map.componentToMap(mousePosition);
       }
 
       // If coming from a map, we use the map's zoom. Otherwise if our
