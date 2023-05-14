@@ -1820,6 +1820,9 @@ public class PieceMover extends AbstractBuildable
         dragPieceOffCenterZoom = map.getZoom();
       }
       else {
+        // NB: In the case where there is no map, piecePosition is already
+        // in the component coordinate system, so we don't convert here.
+
         final Object tempZoom = piece.getProperty(PieceSlot.PIECE_PALETTE_SCALE);
         if (tempZoom != null) {
           final BasicPiece bp = (BasicPiece)Decorator.getInnermost(piece);
