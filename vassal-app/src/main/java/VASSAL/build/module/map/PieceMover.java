@@ -1794,9 +1794,7 @@ public class PieceMover extends AbstractBuildable
 
       final Point mousePosition = dge.getDragOrigin(); //BR// Bug13137 - now that we're not pre-adulterating dge's event, it already arrives in component coordinates
 
-      Point piecePosition = (map == null)
-                    ?  piece.getPosition()
-                    : map.mapToComponent(piece.getPosition());
+      Point piecePosition = piece.getPosition();
 
       // If DragBuffer holds a piece with invalid coordinates (for example, a
       // card drawn from a deck), drag from center of piece
@@ -1812,15 +1810,12 @@ public class PieceMover extends AbstractBuildable
         // the stack is large
         final Stack parent = piece.getParent();
         if (parent != null) {
-          final Point offset = map.mapToComponent(
-              parent.getStackMetrics().relativePosition(parent, piece)
-          );
-
-          piecePosition.translate(
-            (int) Math.round(offset.x),
-            (int) Math.round(offset.y)
-          );
+          final Point offset = parent.getStackMetrics()
+                                     .relativePosition(parent, piece);
+          piecePosition.translate(offset.x, offset.y);
         }
+
+        piecePosition = map.mapToComponent(piecePosition);
 
         dragPieceOffCenterZoom = map.getZoom();
       }
