@@ -1696,6 +1696,7 @@ public class PieceMover extends AbstractBuildable
         relativePositions.add(p);
         lastPiece = nextPiece;
       }
+
       return relativePositions;
     }
 
