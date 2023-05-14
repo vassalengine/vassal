@@ -1842,11 +1842,11 @@ public class PieceMover extends AbstractBuildable
         }
       }
 
+      dragPieceOffCenterZoom *= getDeviceScale(dge);
+
       // dragging from UL results in positive offsets
       originalPieceOffsetX = piecePosition.x - mousePosition.x;
       originalPieceOffsetY = piecePosition.y - mousePosition.y;
-
-      dragPieceOffCenterZoom *= getDeviceScale(dge);
 
       return mousePosition;
     }
