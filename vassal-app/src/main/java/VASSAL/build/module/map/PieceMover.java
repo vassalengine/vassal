@@ -1666,6 +1666,9 @@ public class PieceMover extends AbstractBuildable
     protected void makeDragCursor(double zoom) {}
 
     private List<Point> buildBoundingBox() {
+      // boundingBox and relativePositions are constructed in map
+      // coordinates in this function
+
       final ArrayList<Point> relativePositions = new ArrayList<>();
       final PieceIterator dragContents = DragBuffer.getBuffer().getIterator();
       final GamePiece firstPiece = dragContents.nextPiece();
