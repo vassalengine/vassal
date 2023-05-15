@@ -1560,6 +1560,8 @@ public class PieceMover extends AbstractBuildable
      */
     protected abstract double getDeviceScale(DragGestureEvent dge);
 
+    protected abstract double getDeviceScale(DropTargetDragEvent e);
+
     /**
      * @param e DropTargetEvent
      * @return associated DropTargetListener
@@ -2080,6 +2082,16 @@ public class PieceMover extends AbstractBuildable
       g2d.dispose();
       return os_scale;
     }
+
+    @Override
+    protected double getDeviceScale(DropTargetDragEvent e) {
+      // Get the OS scaling; note that this handler is _probably_ running only
+      // on Windows.
+      final Graphics2D g2d = (Graphics2D) e.getDropTargetContext().getComponent().getGraphics();
+      final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
+      g2d.dispose();
+      return os_scale;
+    }
   }
 
   /**
@@ -2096,6 +2108,11 @@ public class PieceMover extends AbstractBuildable
     protected double getDeviceScale(DragGestureEvent dge) {
       // Retina Macs account for the device scaling for the drag icon,
       // so we don't have to.
+      return 1.0;
+    }
+
+    @Override
+    protected double getDeviceScale(DropTargetDragEvent e) {
       return 1.0;
     }
   }
@@ -2237,6 +2254,11 @@ public class PieceMover extends AbstractBuildable
 
     @Override
     protected double getDeviceScale(DragGestureEvent dge) {
+      return 1.0;
+    }
+
+    @Override
+    protected double getDeviceScale(DropTargetDragEvent e) {
       return 1.0;
     }
 
