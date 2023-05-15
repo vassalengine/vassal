@@ -1574,7 +1574,17 @@ public class PieceMover extends AbstractBuildable
       currentPieceOffsetY =
         (int) (originalPieceOffsetY / dragPieceOffCenterZoom * zoom + 0.5);
 
-      final List<Point> relativePositions = buildBoundingBox(zoom);
+      final List<Point> relativePositions = buildBoundingBox();
+
+      boundingBox.width *= zoom;
+      boundingBox.height *= zoom;
+      boundingBox.x *= zoom;
+      boundingBox.y *= zoom;
+
+      for (Point p: relativePositions) {
+        p.x *= zoom;
+        p.y *= zoom;
+      }
 
       if (doOffset) {
         calcDrawOffset();
@@ -1603,7 +1613,7 @@ public class PieceMover extends AbstractBuildable
     @Deprecated(since = "2023-05-08", forRemoval = true)
     protected void makeDragCursor(double zoom) {}
 
-    private List<Point> buildBoundingBox(double zoom) {
+    private List<Point> buildBoundingBox() {
       final ArrayList<Point> relativePositions = new ArrayList<>();
       final PieceIterator dragContents = DragBuffer.getBuffer().getIterator();
       final GamePiece firstPiece = dragContents.nextPiece();
@@ -1635,16 +1645,6 @@ public class PieceMover extends AbstractBuildable
         boundingBox.add(r);
         relativePositions.add(p);
         lastPiece = nextPiece;
-      }
-
-      boundingBox.width *= zoom;
-      boundingBox.height *= zoom;
-      boundingBox.x *= zoom;
-      boundingBox.y *= zoom;
-
-      for (Point p: relativePositions) {
-        p.x *= zoom;
-        p.y *= zoom;
       }
 
       return relativePositions;
