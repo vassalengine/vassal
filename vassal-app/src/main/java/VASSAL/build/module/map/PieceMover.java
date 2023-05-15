@@ -1527,6 +1527,7 @@ public class PieceMover extends AbstractBuildable
     protected static final int EXTRA_BORDER = 4;   // pseudo cursor is includes a 4 pixel border
 
     protected Rectangle boundingBox;    // image bounds
+    protected Rectangle boundingBoxComp;    // image bounds
 
     private int originalPieceOffsetX; // How far drag STARTED from GamePiece's center (on original map)
     private int originalPieceOffsetY;
@@ -1609,27 +1610,32 @@ public class PieceMover extends AbstractBuildable
      */
     @Deprecated(since = "2023-05-08", forRemoval = true)
     protected BufferedImage makeDragImageCursorCommon(double zoom, boolean doOffset, Component target, boolean setSize) {
-      return makeDragImageCursorCommon(zoom, doOffset, target);
+      return makeDragImageCursorCommon(zoom, 1.0, doOffset, target);
     }
 
-    /**
-     * Common functionality abstracted from makeDragImage and makeDragCursor
-     *
-     * @param zoom Zoom Level
-     * @param doOffset Drag Offset
-     * @param target Target Component
-     * @return Drag Image
-     */
-    protected BufferedImage makeDragImageCursorCommon(double zoom, boolean doOffset, Component target) {
+    protected BufferedImage makeDragImageCursorCommon(double mapzoom, double os_scale, boolean doOffset, Component target) {
       // FIXME: Should be an ImageOp for caching?
+      final double zoom = mapzoom * os_scale;
 
       currentPieceOffsetX =
-        (int) (originalPieceOffsetX / dragPieceOffCenterZoom * zoom + 0.5);
+        (int) (originalPieceOffsetX / dragPieceOffCenterZoom * mapzoom + 0.5);
       currentPieceOffsetY =
-        (int) (originalPieceOffsetY / dragPieceOffCenterZoom * zoom + 0.5);
+        (int) (originalPieceOffsetY / dragPieceOffCenterZoom * mapzoom + 0.5);
 
       final List<Point> relativePositions = buildBoundingBox();
 
+      // convert boundingBoxComp to component space
+      boundingBoxComp = new Rectangle(boundingBox);
+      boundingBoxComp.width *= mapzoom;
+      boundingBoxComp.height *= mapzoom;
+      boundingBoxComp.x *= mapzoom;
+      boundingBoxComp.y *= mapzoom;
+
+      if (doOffset) {
+        calcDrawOffset();
+      }
+
+      // convert boundingBox, relativePosisions to drawing space
       boundingBox.width *= zoom;
       boundingBox.height *= zoom;
       boundingBox.x *= zoom;
@@ -1638,10 +1644,6 @@ public class PieceMover extends AbstractBuildable
       for (Point p: relativePositions) {
         p.x *= zoom;
         p.y *= zoom;
-      }
-
-      if (doOffset) {
-        calcDrawOffset();
       }
 
       final int w = boundingBox.width + EXTRA_BORDER * 2;
@@ -1660,8 +1662,8 @@ public class PieceMover extends AbstractBuildable
      * @param zoom DragBuffer.getBuffer
      * @return dragImage
      */
-    private BufferedImage makeDragImage(double zoom) {
-      return makeDragImageCursorCommon(zoom, false, null);
+    private BufferedImage makeDragImage(double mapzoom, double os_scale) {
+      return makeDragImageCursorCommon(mapzoom, os_scale, false, null);
     }
 
     @Deprecated(since = "2023-05-08", forRemoval = true)
@@ -1901,8 +1903,6 @@ public class PieceMover extends AbstractBuildable
         }
       }
 
-      dragPieceOffCenterZoom *= getDeviceScale(dge);
-
       // dragging from UL results in positive offsets
       originalPieceOffsetX = piecePosition.x - mousePosition.x;
       originalPieceOffsetY = piecePosition.y - mousePosition.y;
@@ -1915,12 +1915,14 @@ public class PieceMover extends AbstractBuildable
      * @param dge DG event
      */
     protected void beginDragging(DragGestureEvent dge) {
+      final double os_scale = getDeviceScale(dge);
+
       // this call is needed to instantiate the boundingBox object
-      final BufferedImage bImage = makeDragImage(dragPieceOffCenterZoom);
+      final BufferedImage bImage = makeDragImage(dragPieceOffCenterZoom, os_scale);
 
       final Point dragPointOffset = new Point(
-        getOffsetMult() * (boundingBox.x + currentPieceOffsetX - EXTRA_BORDER),
-        getOffsetMult() * (boundingBox.y + currentPieceOffsetY - EXTRA_BORDER)
+        (int) Math.round(getOffsetMult() * ((boundingBoxComp.x + currentPieceOffsetX) * os_scale - EXTRA_BORDER)),
+        (int) Math.round(getOffsetMult() * ((boundingBoxComp.y + currentPieceOffsetY) * os_scale - EXTRA_BORDER))
       );
 
       //BR// Inform PieceMovers of relevant metrics
@@ -2142,12 +2144,18 @@ public class PieceMover extends AbstractBuildable
       drawWin = null;
       dropWin = null;
 
-      makeDragCursor(dragPieceOffCenterZoom);
+      makeDragCursor(dragPieceOffCenterZoom, getDeviceScale(dge));
       setDrawWinToOwnerOf(dragWin);
       SwingUtilities.convertPointToScreen(mousePosition, drawWin);
       moveDragCursor(mousePosition.x, mousePosition.y);
 
       super.dragGestureRecognized(dge);
+    }
+
+    @Override
+    @Deprecated(since = "2023-05-15", forRemoval = true)
+    protected void makeDragCursor(double zoom) {
+      makeDragCursor(zoom, 1.0);
     }
 
     /**
@@ -2158,15 +2166,14 @@ public class PieceMover extends AbstractBuildable
      * @param zoom DragBuffer.getBuffer
      *
      */
-    @Override
-    protected void makeDragCursor(double zoom) {
+    protected void makeDragCursor(double zoom, double os_scale) {
       // create the cursor if necessary
       if (dragCursor == null) {
         dragCursor = new JLabel();
         dragCursor.setVisible(false);
       }
 
-      final BufferedImage img = makeDragImageCursorCommon(zoom, true, dragCursor);
+      final BufferedImage img = makeDragImageCursorCommon(zoom, os_scale, true, dragCursor);
       dragCursor.setSize(img.getWidth(), img.getHeight());
       dragCursor.setIcon(new ImageIcon(img));
       dragCursorZoom = zoom;
@@ -2226,8 +2233,8 @@ public class PieceMover extends AbstractBuildable
         // and the upper-left corner of the cursor
         // accounts for difference between event point (screen coords)
         // and Layered Pane position, boundingBox and off-center drag
-        drawOffset.x = -boundingBox.x - currentPieceOffsetX + EXTRA_BORDER;
-        drawOffset.y = -boundingBox.y - currentPieceOffsetY + EXTRA_BORDER;
+        drawOffset.x = -boundingBoxComp.x - currentPieceOffsetX + EXTRA_BORDER;
+        drawOffset.y = -boundingBoxComp.y - currentPieceOffsetY + EXTRA_BORDER;
         SwingUtilities.convertPointToScreen(drawOffset, drawWin);
       }
     }
@@ -2288,7 +2295,7 @@ public class PieceMover extends AbstractBuildable
         final double newZoom = newDropWin instanceof Map.View
           ? ((Map.View) newDropWin).getMap().getZoom() : 1.0;
         if (Math.abs(newZoom - dragCursorZoom) > 0.01) {
-          makeDragCursor(newZoom);
+          makeDragCursor(newZoom, getDeviceScale(e));
         }
         setDrawWinToOwnerOf(e.getDropTargetContext().getComponent());
         dropWin = newDropWin;
