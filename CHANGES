@@ -83,6 +83,10 @@
     buttons (e.g., GKC, Multi-Action, etc) are available
 *  4454: Save chat text to file
 
+3.6.18 - ???
+
+* 12256: Work around Java's use of incorrect gamma for grayscale + alpha PNGs
+
 3.6.17 - 23 April 2023
 
 * 12250: Adjusted TilingHandler to simplify VASL and VSQL custom tilers
