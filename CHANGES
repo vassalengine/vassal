@@ -85,6 +85,7 @@
 
 3.6.18 - ???
 
+* 12291: Fix incorrect drag offset on Windows with UI scaling > 100%
 * 12256: Work around Java's use of incorrect gamma for grayscale + alpha PNGs
 
 3.6.17 - 23 April 2023
