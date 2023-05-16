@@ -16,7 +16,19 @@
     { "display_name": "Other", "suffix": "other.zip" }
   ],
   "changes": [
-     {
+    {
+      "in": "3.6.18",
+      "since": "3.6.17",
+      "new_features": [
+        { "num": 12291, "desc": ""Fix incorrect drag offset on Windows with UI scaling > 100%" },
+        { "num": 12256, "desc": "Work around Java's use of incorrect gamma for grayscale + alpha PNGs" }
+      ],
+      "bug_fixes": [
+      ],
+      "other_improvements": [
+      ]
+    },
+    {
       "in": "3.6.17",
       "since": "3.6.16",
       "new_features": [
@@ -31,41 +43,6 @@
       "other_improvements": [
         { "num": 12250, "desc": "Adjusted TilingHandler to simplify VASL and VSQL custom tilers" },
         { "num": 12238, "desc": "Upgrade bundled Java from 19 to 20" }
-      ]
-    },
-    {
-      "in": "3.6.16",
-      "since": "3.6.15",
-      "new_features": [
-      ],
-      "bug_fixes": [
-        { "num": 12232, "desc": "Notify user about mismatch between module and save version instead of throwing IllegalStateException" },
-        { "num": 12231, "desc": "Check that all tiles exist for an image when tiling, not just 0,0@1:1" },
-        { "num": 12221, "desc": "Fixed various missing searchability on various components" },
-        { "num": 12209, "desc": "Report correct trait in expression Audit Trail" },
-        { "num": 12159, "desc": "Correctly handle install paths containing spaces in VASSAL.sh" },
-        { "num": 12158, "desc": "List Key Commands tool can be re-opened after closing with X button" },
-        { "num": 12152, "desc": "Work around Java bug which prevents displaying Windows file dialogs" }
-      ],
-      "other_improvements": [
-      ]
-    },
-    {
-      "in": "3.6.15",
-      "since": "3.6.14",
-      "new_features": [
-      ],
-      "bug_fixes": [
-        { "num": 12119, "desc": "Restore vanished Load Comments" },
-        { "num": 12116, "desc": "Pieces shouldn't receive same GKC twice just because it sent them to a new map" },
-        { "num": 12105, "desc": "Deck's 'Send-to-Deck' subcomponent has access to properties (e.g., PlayerSide) and properly shuffles \"always shuffle\" decks" },
-        { "num": 12093, "desc": "Fix disabling of toolbar items nested in multiple Toolbar Menus" }
-      ],
-      "other_improvements": [
-        { "num": 12140, "desc": "Action Buttons on pieces that have just been drag-moved are suppressed for a half second for user-error avoidance" },
-        { "num": 12085, "desc": "Screen capture default icon height adjusted to match the other 16-pixel-high icons" },
-        { "num": 12069, "desc": "Tiling: Improved detection of and recovery from running out of memory; improved error dialogs" },
-        { "num": 9894, "desc": "Improved error dialog for failure to start child process" }
       ]
     }
   ]
