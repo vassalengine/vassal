@@ -7,9 +7,12 @@ import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringEnum;
 import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.i18n.Resources;
+
 import org.apache.commons.lang3.ArrayUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class ListScenarioProperty extends AbstractScenarioProperty {
 
@@ -106,5 +109,16 @@ public class ListScenarioProperty extends AbstractScenarioProperty {
     public String[] getValidValues(AutoConfigurable target) {
       return ((ListScenarioProperty) target).options;
     }
+  }
+
+  @Override
+  public List<String> getExpressionList() {
+    final List<String> l = new ArrayList<>();
+    for (final String option : options) {
+      if (option != null) {
+        l.add(option);
+      }
+    }
+    return l;
   }
 }
