@@ -1,6 +1,7 @@
 3.7.0-beta3 - ???
 
 * 12284: Add Danish localization
+* 12279: Default heap raised to 1024MB
 * 12256: Work around Java's use of incorrect gamma for grayscale + alpha PNGs
 * 12251: New Set Piece Property trait
 * 12243: Startup Global Key Commands can also send a Global Hotkey
