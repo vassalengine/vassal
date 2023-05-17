@@ -34,6 +34,7 @@ import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.StringEnum;
 import VASSAL.i18n.Resources;
+import VASSAL.launch.AbstractLaunchAction;
 import VASSAL.preferences.BasicPreference;
 import VASSAL.preferences.BooleanPreference;
 import VASSAL.preferences.DoublePreference;
@@ -226,7 +227,7 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
     final IntConfigurer maxHeapConf = new IntConfigurer(
       MAXIMUM_HEAP,
       Resources.getString("GlobalOptions.maximum_heap"),  //$NON-NLS-1$
-      512
+      AbstractLaunchAction.DEFAULT_MAXIMUM_HEAP
     );
     prefs.addOption(maxHeapConf);
 
