@@ -26,6 +26,7 @@
       "bug_fixes": [
       ],
       "other_improvements": [
+        { "num": 12313, "desc": "Added MAYBE_MOVED property for 3.7 compatibility" }
       ]
     },
     {
