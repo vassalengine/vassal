@@ -38,6 +38,7 @@
         { "num": 12175, "desc": "Fix stretchy images in chat" }
       ],
       "other_improvements": [
+        { "num": 12314, "desc": "Update bundled Java to 20.0.1" },
         { "num": 12279, "desc": "Default heap raised to 1024MB" },
         { "num": 12187, "desc": "Improved Rectangular Grid range metric names and made them translatable" },
         { "num": 12177, "desc": "Change-property buttons don't generate completely empty chat lines" },
