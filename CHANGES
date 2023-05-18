@@ -1,4 +1,4 @@
-3.6.18 - ???
+3.6.18 - 18 May 2023
 
 * 12313: Added MAYBE_MOVED property for 3.7 compatibility
 * 12291: Fix incorrect drag offset on Windows with UI scaling > 100%
