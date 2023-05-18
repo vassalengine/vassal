@@ -22,7 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
-        { "num": 12291, "desc": ""Fix incorrect drag offset on Windows with UI scaling > 100%" },
+        { "num": 12291, "desc": "Fix incorrect drag offset on Windows with UI scaling > 100%" },
         { "num": 12256, "desc": "Work around Java's use of incorrect gamma for grayscale + alpha PNGs" }
       ],
       "other_improvements": [
