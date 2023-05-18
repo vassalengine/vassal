@@ -17,6 +17,17 @@
   ],
   "changes": [
     {
+      "in": "3.6.19",
+      "since": "3.6.18",
+      "new_features": [
+      ],
+      "bug_fixes": [
+      ],
+      "other_improvements": [
+        { "num": 12313, "desc": "Added MAYBE_MOVED property for 3.7 compatibility" }
+      ]
+    },
+    {
       "in": "3.6.18",
       "since": "3.6.17",
       "new_features": [
@@ -26,7 +37,6 @@
         { "num": 12256, "desc": "Work around Java's use of incorrect gamma for grayscale + alpha PNGs" }
       ],
       "other_improvements": [
-        { "num": 12313, "desc": "Added MAYBE_MOVED property for 3.7 compatibility" }
       ]
     },
     {
