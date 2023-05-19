@@ -154,8 +154,9 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
     }
   }
 
-
-
+  public boolean isEmpty() {
+    return getPieceCount() == 0;
+  }
 
   /**
    * @param index Index of piece to remove from the stack

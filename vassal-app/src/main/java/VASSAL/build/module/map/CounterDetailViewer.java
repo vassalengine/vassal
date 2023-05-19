@@ -1141,7 +1141,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         super.visitStack(s) != null : foundPieceAt.equals(s.getPosition());
       if (addContents) {
         if (!(map instanceof PlayerHand)) {
-          if (showOnlyTopOfStack) {
+          if (showOnlyTopOfStack && !s.isEmpty()) {
             apply(s.topPiece());
           }
           else {
