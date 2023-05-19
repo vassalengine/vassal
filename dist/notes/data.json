@@ -28,6 +28,7 @@
         { "num": 11932, "desc": "Support for setting Scenario Options" }
       ],
       "bug_fixes": [
+        { "num": 12315, "desc": "Prevent NPE in MouseOverStackViewer trying to show top piece of empty stack" },
         { "num": 12291, "desc": ""Fix incorrect drag offset on Windows with UI scaling > 100%" },
         { "num": 12256, "desc": "Work around Java's use of incorrect gamma for grayscale + alpha PNGs" },
         { "num": 12220, "desc": "Add BorderOutline's property names to the searchable target list" },
@@ -39,6 +40,7 @@
       ],
       "other_improvements": [
         { "num": 12314, "desc": "Update bundled Java to 20.0.1" },
+        { "num": 12287, "desc": "Enable text field DnD" },
         { "num": 12279, "desc": "Default heap raised to 1024MB" },
         { "num": 12187, "desc": "Improved Rectangular Grid range metric names and made them translatable" },
         { "num": 12177, "desc": "Change-property buttons don't generate completely empty chat lines" },
