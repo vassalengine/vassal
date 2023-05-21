@@ -865,7 +865,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       controls.add(regionLabel, regionInput);
 
       propertyLabel = new JLabel(Resources.getString("Editor.property_match_label"));
-      propertyInput = new PropertyExpressionConfigurer(p.propertyFilter);
+      propertyInput = new PropertyExpressionConfigurer(p.propertyFilter, p);
       controls.add(propertyLabel, propertyInput);
 
       gridLabel = new JLabel(Resources.getString("Editor.SendToLocation.grid_location"));

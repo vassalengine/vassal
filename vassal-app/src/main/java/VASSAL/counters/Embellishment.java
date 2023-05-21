@@ -1166,7 +1166,7 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
 
       final JPanel levelBox = new JPanel(new MigLayout("ins 0", "[grow,fill]rel[]rel[]")); // NON-NLS
       propertyLabel = new JLabel(Resources.getString("Editor.Embellishment.follow_expression"));
-      propertyConfig = new PropertyNameExpressionConfigurer("");
+      propertyConfig = new PropertyNameExpressionConfigurer("", "", "", Decorator.getOutermost(e));
       levelBox.add(propertyConfig.getControls(), "growx"); // NON-NLS
       firstLevelConfig = new IntConfigurer(e.firstLevelValue);
       levelLabel = new JLabel(Resources.getString("Editor.Embellishment.level_1"));

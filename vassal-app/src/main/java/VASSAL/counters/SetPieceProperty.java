@@ -394,15 +394,15 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
       wrapConfig = new BooleanConfigurer(m.isWrap());
       controls.add(wrapLabel, wrapConfig);
 
-      targetConfig = new GlobalCommandTargetConfigurer(m.target, Decorator.getOutermost(m));
+      targetConfig = new GlobalCommandTargetConfigurer(m.target, m);
       targetLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.pre_select"));
       controls.add(targetLabel, targetConfig);
 
-      propertyMatch = new PropertyExpressionConfigurer(m.propertiesFilter);
+      propertyMatch = new PropertyExpressionConfigurer(m.propertiesFilter, m);
       propertyLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.matching_properties"));
       controls.add(propertyLabel, propertyMatch);
 
-      deckPolicy = new MassKeyCommand.DeckPolicyConfig(false);
+      deckPolicy = new MassKeyCommand.DeckPolicyConfig(false, m);
       deckPolicy.setValue(m.globalSetter.getSelectFromDeckExpression());
       deckLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.deck_policy"));
       controls.add(deckLabel, deckPolicy);

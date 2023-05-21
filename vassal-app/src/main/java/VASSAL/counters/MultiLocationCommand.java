@@ -455,7 +455,7 @@ public class MultiLocationCommand extends Decorator implements TranslatablePiece
       curMapOnlyInput = new BooleanConfigurer(p.curMapOnly);
       controls.add("Editor.MultiLocationCommand.current_map_only", curMapOnlyInput);
 
-      propertyMatchInput = new PropertyExpressionConfigurer(p.propertiesFilter);
+      propertyMatchInput = new PropertyExpressionConfigurer(p.propertiesFilter, p);
       controls.add("Editor.MultiLocationCommand.matching_properties", propertyMatchInput);
 
       menuTextInput = new FormattedExpressionConfigurer(p.menuText.getFormat(), p);

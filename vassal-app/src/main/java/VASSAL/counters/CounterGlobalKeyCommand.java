@@ -403,13 +403,13 @@ public class CounterGlobalKeyCommand extends Decorator
       globalKey = new NamedHotKeyConfigurer(p.globalKey);
       traitPanel.add("Editor.GlobalkeyCommand.global_key_command", globalKey);
 
-      targetConfig = new GlobalCommandTargetConfigurer(p.target, Decorator.getOutermost(p));
+      targetConfig = new GlobalCommandTargetConfigurer(p.target, p);
       traitPanel.add("Editor.GlobalKeyCommand.pre_select", targetConfig);
 
-      propertyMatch = new PropertyExpressionConfigurer(p.propertiesFilter, Decorator.getOutermost(p));
+      propertyMatch = new PropertyExpressionConfigurer(p.propertiesFilter, p);
       traitPanel.add("Editor.GlobalKeyCommand.matching_properties", propertyMatch);
 
-      deckPolicy = new MassKeyCommand.DeckPolicyConfig(false);
+      deckPolicy = new MassKeyCommand.DeckPolicyConfig(false, p);
       deckPolicy.setValue(p.globalCommand.getSelectFromDeckExpression());
       traitPanel.add("Editor.GlobalKeyCommand.deck_policy", deckPolicy);
 

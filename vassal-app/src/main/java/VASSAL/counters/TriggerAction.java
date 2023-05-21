@@ -552,7 +552,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
       name.setHintKey("Editor.description_hint");
       box.add("Editor.description_label", name);
 
-      propertyMatch = new PropertyExpressionConfigurer(piece.propertyMatch, Decorator.getOutermost(piece));
+      propertyMatch = new PropertyExpressionConfigurer(piece.propertyMatch, piece);
       propertyMatch.setHintKey("Editor.TriggerAction.property_match_hint");
       box.add("Editor.TriggerAction.trigger_when_properties", propertyMatch);
 
@@ -585,11 +585,11 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
       box.add(loopCountLabel, loopCountConfig);
 
       whileLabel = new JLabel(Resources.getString("Editor.TriggerAction.looping_continues"));
-      whileExpressionConfig = new PropertyExpressionConfigurer(piece.whileExpression, Decorator.getOutermost(piece));
+      whileExpressionConfig = new PropertyExpressionConfigurer(piece.whileExpression, piece);
       box.add(whileLabel, whileExpressionConfig);
 
       untilLabel = new JLabel(Resources.getString("Editor.TriggerAction.looping_ends"));
-      untilExpressionConfig = new PropertyExpressionConfigurer(piece.untilExpression, Decorator.getOutermost(piece));
+      untilExpressionConfig = new PropertyExpressionConfigurer(piece.untilExpression, piece);
       box.add(untilLabel, untilExpressionConfig);
 
       preLabel = new JLabel(Resources.getString("Editor.TriggerAction.keystroke_before"));

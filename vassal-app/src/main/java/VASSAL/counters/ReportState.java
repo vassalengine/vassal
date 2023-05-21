@@ -405,7 +405,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
           OLD_MAP_NAME,
           LOCATION_NAME,
           OLD_LOCATION_NAME},
-        piece.reportFormat);
+        piece.reportFormat, piece);
       box.add(formatLabel, format);
 
       cycleLabel = new JLabel(Resources.getString("Editor.ReportState.message_formats"));
