@@ -2711,12 +2711,15 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   protected Point getLocation(int column, int row, double zoom) {
     final Point p = new Point();
+    int dx = 0;
     for (int x = 0; x < column; ++x) {
-      p.translate((int) Math.floor(zoom * boardWidths[x][row]), 0);
+      dx += boardWidths[x][row];
     }
+    int dy = 0;
     for (int y = 0; y < row; ++y) {
-      p.translate(0, (int) Math.floor(zoom * boardHeights[column][y]));
+      dy += boardHeights[column][y];
     }
+    p.translate((int) round(zoom * dx), (int) round(zoom * dy));
     return p;
   }
 
