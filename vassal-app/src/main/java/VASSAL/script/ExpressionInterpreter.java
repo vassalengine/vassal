@@ -53,6 +53,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -499,8 +500,11 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * @param prop  Property value
    * @return      converted integer value
    */
-  private static int propValue(Object prop) {
+  private static int IntPropValue(Object prop) {
     if (prop != null) {
+      if (prop instanceof Integer) {
+        return (Integer) prop;
+      }
       final String s1 = prop.toString();
       return NumberUtils.toInt(s1, 0);
     }
@@ -534,12 +538,12 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       final Stack s = ((GamePiece) ps).getParent();
       if (s == null) {
         final Object prop = ps.getProperty(property);
-        result += propValue(prop);
+        result += IntPropValue(prop);
       }
       else {
         for (final GamePiece gamePiece : s.asList()) {
           final Object prop = gamePiece.getProperty(property);
-          result += propValue(prop);
+          result += IntPropValue(prop);
         }
       }
     }
@@ -609,7 +613,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
           if (a.getAttachName().equals(attachment)) {
             for (final GamePiece target : a.getAttachList()) {
               final Object prop = target.getProperty(property);
-              final int value = propValue(prop);
+              final int value = IntPropValue(prop);
               if (value > result) {
                 result = value;
               }
@@ -646,7 +650,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
           if (a.getAttachName().equals(attachment)) {
             for (final GamePiece target : a.getAttachList()) {
               final Object prop = target.getProperty(property);
-              final int value = propValue(prop);
+              final int value = IntPropValue(prop);
               if (value < result) {
                 result = value;
               }
@@ -684,7 +688,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
           if (a.getAttachName().equals(attachment)) {
             for (final GamePiece target : a.getAttachList()) {
               final Object prop = target.getProperty(property);
-              result += propValue(prop);
+              result += IntPropValue(prop);
             }
           }
         }
@@ -711,23 +715,14 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     ps = translatePiece(ps);
 
     if (ps instanceof GamePiece) {
-      GamePiece p = Decorator.getOutermost((Decorator)ps);
-      while (p instanceof Decorator) {
-        if (p instanceof Attachment) {
-          final Attachment a = (Attachment)p;
-          if (a.getAttachName().equals(attachment)) {
-            for (final GamePiece target : a.getAttachList()) {
-              if ("".equals(property)) {
-                result++;
-              }
-              else {
-                final Object prop = target.getProperty(property);
-                result += propNonempty(prop);
-              }
-            }
-          }
+      for (final GamePiece target : Attachment.getAttachList((GamePiece) ps, attachment)) {
+        if ("".equals(property)) {
+          result++;
         }
-        p = ((Decorator) p).getInner();
+        else {
+          final Object prop = target.getProperty(property);
+          result += propNonempty(prop);
+        }
       }
     }
     return result;
@@ -749,24 +744,16 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     ps = translatePiece(ps);
 
     if (ps instanceof GamePiece) {
-      GamePiece p = Decorator.getOutermost((Decorator)ps);
-      while (p instanceof Decorator) {
-        if (p instanceof Attachment) {
-          final Attachment a = (Attachment)p;
-          if (a.getAttachName().equals(attachment)) {
-            // We wait to run the beanshell until we've found a matching attachment, since there should properly speaking only be precisely 0 or 1 matches.
-            final String matchString = replaceDollarVariables(expression, ps);
-            final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(ps);
-            for (final GamePiece target : a.getAttachList()) {
-              if (filter == null || filter.accept(target)) {
-                result++;
-              }
-            }
-          }
+      for (final GamePiece target : Attachment.getAttachList((GamePiece) ps, attachment)) {
+        // We wait to run the beanshell until we've found a matching attachment, since there should properly speaking only be precisely 0 or 1 matches.
+        final String matchString = replaceDollarVariables(expression, ps);
+        final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(ps);
+        if (filter == null || filter.accept(target)) {
+          result++;
         }
-        p = ((Decorator) p).getInner();
       }
     }
+
     return result;
   }
 
@@ -808,16 +795,16 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         final Mat actualMat = (Mat) Decorator.getDecorator(mat, Mat.class);
 
         Object prop = mat.getProperty(property);
-        result += propValue(prop);
+        result += IntPropValue(prop);
 
         for (final GamePiece cargo : actualMat.getContents()) {
           prop = Decorator.getOutermost(cargo).getProperty(property);
-          result += propValue(prop);
+          result += IntPropValue(prop);
         }
       }
       else {
         final Object prop = ps.getProperty(property);
-        result += propValue(prop);
+        result += IntPropValue(prop);
       }
     }
     return result;
@@ -968,7 +955,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(map, BasicPiece.LOCATION_NAME, locationName)) {
       final Object propertyValue = piece.getProperty(property);
       if (filter == null || filter.accept(piece)) {
-        result += propValue(propertyValue);
+        result += IntPropValue(propertyValue);
       }
     }
     return result;
@@ -1173,7 +1160,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(map, BasicPiece.CURRENT_ZONE, zoneName)) {
       final Object propertyValue = piece.getProperty(property);
       if (filter == null || filter.accept(piece)) {
-        result += propValue(propertyValue);
+        result += IntPropValue(propertyValue);
       }
     }
     return result;
@@ -1315,6 +1302,93 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     }
 
     return result;
+  }
+
+  /**
+   * Implementation of Range functions
+   */
+
+  public int rangeInPixels(String attachmentName, PropertySource ps) {
+    return rangeAttach(attachmentName, ps, true);
+  }
+
+  public int rangeInCells(String attachmentName, PropertySource ps) {
+    return rangeAttach(attachmentName, ps, false);
+  }
+
+  private int rangeAttach(String attachmentName, PropertySource ps, boolean asPixels) {
+    if (ps instanceof GamePiece) {
+      final Map map = ((GamePiece) ps).getMap();
+      final Point from = ((GamePiece) ps).getPosition();
+      for (final GamePiece target : Attachment.getAttachList((GamePiece) ps, attachmentName)) {
+        // Act on the first attached piece on the same Map that is not the source piece (in case of self-attachments)
+        if (target != ps) {
+          final Map toMap = target.getMap();
+          final Point to = target.getPosition();
+          // Pieces must be on the same map
+          if (map != null && map.equals(toMap)) {
+            return range(from, to, map, asPixels);
+          }
+        }
+      }
+    }
+    return 0;
+  }
+
+  public int rangeInPixels(Object x, Object y, PropertySource ps) {
+    return rangeXY(x, y, ps, true);
+  }
+
+  public int rangeInCells(Object x, Object y, PropertySource ps) {
+    return rangeXY(x, y, ps, false);
+  }
+
+  private int rangeXY(Object x, Object y, PropertySource ps, boolean asPixels) {
+    if (ps instanceof GamePiece) {
+      final Map map = ((GamePiece) ps).getMap();
+      final Point from = ((GamePiece) ps).getPosition();
+      return range(from, new Point(IntPropValue(x), IntPropValue(y)), map, asPixels);
+    }
+    return 0;
+  }
+
+  public int rangeInPixels(Object x1, Object y1, Object x2, Object y2, PropertySource ps) {
+    return rangeMap(x1, y1, x2, y2, (String) ps.getProperty(BasicPiece.CURRENT_MAP), true);
+  }
+
+  public int rangeInCells(Object x1, Object y1, Object x2, Object y2, PropertySource ps) {
+    return rangeMap(x1, y1, x2, y2, (String) ps.getProperty(BasicPiece.CURRENT_MAP), false);
+  }
+
+  public int rangeInPixels(Object x1, Object y1, Object x2, Object y2, String mapName, PropertySource ps) {
+    return rangeMap(x1, y1, x2, y2, mapName, true);
+  }
+
+  public int rangeInCells(Object x1, Object y1, Object x2, Object y2, String mapName, PropertySource ps) {
+    return rangeMap(x1, y1, x2, y2, mapName, false);
+  }
+
+  private int rangeMap(Object x1, Object y1, Object x2, Object y2, String mapName, boolean asPixels) {
+    final Point from = new Point(IntPropValue(x1), IntPropValue(y1));
+    final Point to = new Point(IntPropValue(x2), IntPropValue(y2));
+    final Map map = Map.getMapById(mapName);
+    return range(from, to, map, asPixels);
+  }
+
+  private int range(Point from, Point to, Map map, boolean asPixels) {
+
+    if (from == null || to == null) {
+      return 0;
+    }
+
+    // If range needed in pixels, or if the map/board/grid cannot be determined, just calculate it directly.
+    if (asPixels || map == null || map.findBoard(from) == null || map.findBoard(from).getGrid() == null) {
+      return (int) Math.round(from.distance(to));
+    }
+
+    // Otherwise ask the grid at the from point to calculate the range as it sees fit.
+    // NOTE: the from and to points may not be on the same grid (in the case of a zoned grid) so range(from, to) is not necessarily equal to range(to, from)
+    return map.findBoard(from).getGrid().range(from, to);
   }
 
   /*
