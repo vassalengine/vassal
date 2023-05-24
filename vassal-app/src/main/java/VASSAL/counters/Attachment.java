@@ -149,6 +149,25 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     return allowSelfAttach;
   }
 
+  /**
+   * Return the named attachment list on the supplied GamePiece
+   * @param attachmentName Attachment name to look up
+   * @return               List of attached pieces
+   */
+  public static List<GamePiece> getAttachList(GamePiece piece, String attachmentName) {
+    GamePiece p = Decorator.getOutermost(piece);
+    while (p instanceof Decorator) {
+      if (p instanceof Attachment) {
+        final Attachment a = (Attachment) p;
+        if (a.getAttachName().equals(attachmentName)) {
+          return a.getAttachList();
+        }
+      }
+      p = ((Decorator) p).getInner();
+    }
+    return Collections.emptyList();
+  }
+
   @Override
   public void mySetType(String type) {
     type = type.substring(ID.length());
