@@ -230,12 +230,25 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     countMenu.add(zoneMenu);
     countMenu.add(legacyMenu);
 
+    final JMenu rangeMenu = new JMenu(Resources.getString("Editor.BeanShell.range"));
+    if (target != null) {
+      addFunction(rangeMenu, "RangeInPixels", Resources.getString("Editor.BeanShell.range1"), new String[] { Resources.getString("Editor.BeanShell.x"), Resources.getString("Editor.BeanShell.y") }, "(x, y)");
+      addFunction(rangeMenu, "RangeInCells", Resources.getString("Editor.BeanShell.range2"), new String[] { Resources.getString("Editor.BeanShell.x"), Resources.getString("Editor.BeanShell.y") }, "(x, y)");
+      addFunction(rangeMenu, "RangeInPixels", Resources.getString("Editor.BeanShell.range7"), new String[] { Resources.getString("Editor.BeanShell.fromx"), Resources.getString("Editor.BeanShell.fromy"), Resources.getString("Editor.BeanShell.tox"), Resources.getString("Editor.BeanShell.toy") }, "(x1, y1, x2, y2)");
+      addFunction(rangeMenu, "RangeInCells", Resources.getString("Editor.BeanShell.range8"), new String[] { Resources.getString("Editor.BeanShell.fromx"), Resources.getString("Editor.BeanShell.fromy"), Resources.getString("Editor.BeanShell.tox"), Resources.getString("Editor.BeanShell.toy") }, "(x1, y1, x2, y2)");
+      addFunction(rangeMenu, "RangeInPixels", Resources.getString("Editor.BeanShell.range3"), new String[] { Resources.getString("Editor.BeanShell.attachment") }, "(attachment)");
+      addFunction(rangeMenu, "RangeInCells", Resources.getString("Editor.BeanShell.range4"), new String[] { Resources.getString("Editor.BeanShell.attachment") }, "(attachment)");
+    }
+    addFunction(rangeMenu, "RangeInPixels", Resources.getString("Editor.BeanShell.range5"), new String[] { Resources.getString("Editor.BeanShell.fromx"), Resources.getString("Editor.BeanShell.fromy"), Resources.getString("Editor.BeanShell.tox"), Resources.getString("Editor.BeanShell.toy"), Resources.getString("Editor.BeanShell.map") }, "(x1, y1, x2, y2, map)");
+    addFunction(rangeMenu, "RangeInCells", Resources.getString("Editor.BeanShell.range6"), new String[] { Resources.getString("Editor.BeanShell.fromx"), Resources.getString("Editor.BeanShell.fromy"), Resources.getString("Editor.BeanShell.tox"), Resources.getString("Editor.BeanShell.toy"), Resources.getString("Editor.BeanShell.map") }, "(x1, y1, x2, y2, map)");
+
     final JMenu functionMenu = new JMenu(Resources.getString("Editor.BeanShell.function"));
     functionMenu.add(mathMenu);
     functionMenu.add(propMenu);
     functionMenu.add(randomMenu);
     functionMenu.add(stringMenu);
     functionMenu.add(countMenu);
+    functionMenu.add(rangeMenu);
     addFunction(functionMenu, "?", Resources.getString("Editor.BeanShell.ternary"), new String[] { Resources.getString("Editor.BeanShell.logical_expression"), Resources.getString("Editor.BeanShell.if_true"), Resources.getString("Editor.BeanShell.if_false") }, "(expr ? r1 : r2)"); //NON-NLS
     addFunction(functionMenu, "Alert", Resources.getString("Editor.BeanShell.alert"), new String[] { Resources.getString("Editor.BeanShell.text_to_display") }, "(text)"); //NON-NLS
 

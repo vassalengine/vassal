@@ -414,6 +414,57 @@ Count(Object selection, Object mapName) {
 }
 
 /**
+ * Callbacks for Range functions
+ */
+RangeInPixels(String attachmentName) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.rangeInPixels(attachmentName, _source));
+}
+
+RangeInCells(String attachmentName) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.rangeInCells(attachmentName, _source));
+}
+
+RangeInPixels(Object x, Object y) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.rangeInPixels(x, y, _source));
+}
+
+RangeInCells(Object x, Object y) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.rangeInCells(x, y, _source));
+}
+
+RangeInPixels(Object x1, Object y1, Object x2, Object y2) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.rangeInPixels(x1, y1, x2, y2, _source));
+}
+
+RangeInCells(Object x1, Object y1, Object x2, Object y2) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.rangeInCells(x1, y1, x2, y2, _source));
+}
+
+RangeInPixels(Object x1, Object y1, Object x2, Object y2, String mapName) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.rangeInPixels(x1, y1, x2, y2, mapName, _source));
+}
+
+RangeInCells(Object x1, Object y1, Object x2, Object y2, String mapName) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.rangeInCells(x1, y1, x2, y2, mapName, _source));
+}
+
+/**
  * Callback to Vassal to display text in a dialog box
  */
 Alert(String text) {
