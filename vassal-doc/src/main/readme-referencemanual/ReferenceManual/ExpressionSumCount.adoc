@@ -5,7 +5,7 @@
 
 '''''
 
-=== Sum and Count Expressions
+=== Sum and Count Functions
 
 ==== Overview
 Vassal provides a range of functions to allow efficient counting of pieces and summing the values of numeric properties that they hold.
