@@ -29,12 +29,24 @@ import java.awt.Rectangle;
  */
 public interface MapGrid {
   /**
-   * @return the nearest grid location to the given point
+   * @see MapGrid#snapTo(Point p, boolean force, boolean onlyCenter)
    */
   Point snapTo(Point p);
 
-  default Point snapTo(Point p, boolean force) {
+  /**
+   * @param onlyCenter If true, snaps only to the center, never to the edge or corner.
+   * @return The nearest grid location to the given point. This can for instance snap
+   * to center, edge or corner, depending on settings and arguments.
+   */
+  default Point snapTo(Point p, boolean force, boolean onlyCenter) {
     return snapTo(p);
+  }
+
+  /**
+   * @see MapGrid#snapTo(Point p, boolean force, boolean onlyCenter)
+   */
+  default Point snapTo(Point p, boolean force) {
+    return snapTo(p, force, false);
   }
 
   /**

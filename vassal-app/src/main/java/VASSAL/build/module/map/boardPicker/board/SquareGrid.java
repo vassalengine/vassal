@@ -416,7 +416,8 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   }
 
   @Override
-  public Point snapTo(Point p, boolean force) {
+  public Point snapTo(Point p, boolean force, boolean onlyCenter) {
+
     if (!snapTo && !force) {
       return p;
     }
@@ -434,7 +435,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     Point snap = null;
 
     if (!cornersLegal || !edgesLegal) {
-      if (cornersLegal) {
+      if (cornersLegal && !onlyCenter) {
         if (ny % 2 == 0) {  // on a cell center
           nx = 2 * (int) round(offsetX / dx);
         }
@@ -442,7 +443,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
           nx = 1 + 2 * (int) round(offsetX / dx - 0.5);
         }
       }
-      else if (edgesLegal) {
+      else if (edgesLegal && !onlyCenter) {
         if (ny % 2 == 0) {
           if (nx % 2 == 0) { // Cell center
             nx = 2 * (int) round(offsetX / dx);
@@ -479,8 +480,13 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   }
 
   @Override
+  public Point snapTo(Point p, boolean force) {
+    return snapTo(p, force, false);
+  }
+
+  @Override
   public Point snapTo(Point p) {
-    return snapTo(p, false);
+    return snapTo(p, false, false);
   }
 
   @Override

@@ -452,11 +452,15 @@ public class HexGrid extends AbstractConfigurable
   }
 
   @Override
-  public Point snapTo(Point p, boolean force) {
+  public Point snapTo(Point p, boolean force, boolean centerOnly) {
+
     if (!snapTo && !force) {
       return p;
     }
     final Point center = snapToHex(p);
+    if (centerOnly) {
+      return center;
+    }
 
     if (edgesLegal && cornersLegal) {
       final Point edge = snapToHexSide(p);
@@ -483,8 +487,13 @@ public class HexGrid extends AbstractConfigurable
   }
 
   @Override
+  public Point snapTo(Point p, boolean force) {
+    return snapTo(p, force, false);
+  }
+
+  @Override
   public Point snapTo(Point p) {
-    return snapTo(p, false);
+    return snapTo(p, false, false);
   }
 
   // FIXME: snapToHexVertex() does not always return the correct X co-ordinate
