@@ -1,5 +1,6 @@
 3.7.0-beta3 - ???
 
+* 12342: Fixed bad link in Reference Manual
 * 12315: Prevent NPE in MouseOverStackViewer trying to show top piece of empty
     stack
 * 12314: Update bundled Java to 20.0.1

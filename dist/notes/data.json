@@ -28,6 +28,7 @@
         { "num": 11932, "desc": "Support for setting Scenario Options" }
       ],
       "bug_fixes": [
+        { "num": 12342, "desc": "Fixed bad link in Reference Manual" },
         { "num": 12315, "desc": "Prevent NPE in MouseOverStackViewer trying to show top piece of empty stack" },
         { "num": 12220, "desc": "Add BorderOutline's property names to the searchable target list" },
         { "num": 12215, "desc": "New MarkMoved commands shouldn't default to being displayed if no key commands entered" },
