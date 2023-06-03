@@ -520,7 +520,7 @@ public class HexGrid extends AbstractConfigurable
   public Point snapToHex(Point p) {
     p = new Point(p);
     rotateIfSideways(p);
-    p.setLocation(hexX(p.x, p.y), hexY(p.x, p.y));
+    p.setLocation(hexPoint(p.x, p.y));
     rotateIfSideways(p);
     return p;
   }
@@ -534,11 +534,10 @@ public class HexGrid extends AbstractConfigurable
     int x = sideX(p.x, p.y);
     int y = sideY(p.x, p.y);
     if (snapScale > 0) {
-      final int hexX = hexX(p.x, p.y);
-      final int hexY = hexY(p.x, p.y);
-      if (abs(p.x - hexX) + abs(p.y - hexY) <= abs(p.x - x) + abs(p.y - y)) {
-        x = hexX;
-        y = hexY;
+      final Point hexPoint = hexPoint(p.x, p.y);
+      if (abs(p.x - hexPoint.x) + abs(p.y - hexPoint.y) <= abs(p.x - x) + abs(p.y - y)) {
+        x = hexPoint.x;
+        y = hexPoint.y;
       }
     }
     p.setLocation(x, y);
@@ -555,11 +554,10 @@ public class HexGrid extends AbstractConfigurable
     int x = vertexX(p.x, p.y);
     int y = vertexY(p.x, p.y);
     if (snapScale > 0) {
-      final int hexX = hexX(p.x, p.y);
-      final int hexY = hexY(p.x, p.y);
-      if (abs(p.x - hexX) + abs(p.y - hexY) <= abs(p.x - x) + abs(p.y - y)) {
-        x = hexX;
-        y = hexY;
+      final Point hexPoint = hexPoint(p.x, p.y);
+      if (abs(p.x - hexPoint.x) + abs(p.y - hexPoint.y) <= abs(p.x - x) + abs(p.y - y)) {
+        x = hexPoint.x;
+        y = hexPoint.y;
       }
     }
     p.setLocation(x, y);
@@ -748,37 +746,50 @@ public class HexGrid extends AbstractConfigurable
     return h1.distance(h2);
   }
 
+  @Deprecated(since = "2023-06-03", forRemoval = true)
   protected int hexX(int x, int y) {
-    int loc = ((int) (dx * (int) floor((x - origin.x + dx / 2) / dx) + origin.x));
-    if (snapScale > 0) {
-      int delta = x - loc;
-      delta = (int)round(delta / (0.5 * dx / snapScale));
-      delta = max(delta, 1 - snapScale);
-      delta = min(delta, snapScale - 1);
-      delta = (int)round(delta * 0.5 * dx / snapScale);
-      loc += delta;
-    }
-    return loc;
+    return hexPoint(x, y).x;
   }
 
+  @Deprecated(since = "2023-06-03", forRemoval = true)
   protected int hexY(int x, int y) {
+    return hexPoint(x, y).y;
+  }
+
+  private Point hexPoint(int x, int y) {
+
     final int nx = (int) floor((x - origin.x + dx / 2) / dx);
-    int loc;
+
+    int xLoc = ((int) (dx * nx + origin.x));
+
+    int yLoc;
     if (nx % 2 == 0)
-      loc = ((int)
-          (dy * (int) floor((y - origin.y + dy / 2) / dy) + origin.y));
+      yLoc = ((int)
+              (dy * (int) floor((y - origin.y + dy / 2) / dy) + origin.y));
     else
-      loc = ((int)
-          (dy * (int) floor((y - origin.y) / dy) + (int) (dy / 2) + origin.y));
+      yLoc = ((int)
+              (dy * (int) floor((y - origin.y) / dy) + (int) (dy / 2) + origin.y));
+
     if (snapScale > 0) {
-      int delta = y - loc;
-      delta = (int)round(delta / (0.5 * dy / snapScale));
-      delta = max(delta, 1 - snapScale);
-      delta = min(delta, snapScale - 1);
-      delta = (int)round(delta * 0.5 * dy / snapScale);
-      loc += delta;
+      {
+        int delta = x - xLoc;
+        delta = (int)round(delta / (0.5 * dx / snapScale));
+        delta = max(delta, 1 - snapScale);
+        delta = min(delta, snapScale - 1);
+        delta = (int)round(delta * 0.5 * dx / snapScale);
+        xLoc += delta;
+      }
+      {
+        int delta = y - yLoc;
+        delta = (int)round(delta / (0.5 * dy / snapScale));
+        delta = max(delta, 1 - snapScale);
+        delta = min(delta, snapScale - 1);
+        delta = (int)round(delta * 0.5 * dy / snapScale);
+        yLoc += delta;
+      }
     }
-    return loc;
+
+    return new Point(xLoc, yLoc);
   }
 
   protected int sideX(int x, int y) {
