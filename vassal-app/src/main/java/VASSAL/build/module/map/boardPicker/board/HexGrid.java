@@ -44,6 +44,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.ceil;
@@ -565,10 +566,14 @@ public class HexGrid extends AbstractConfigurable
     return p;
   }
 
-  public void rotate(Point p) {
+  private static void rotatePoint(Point p) {
     final int swap = p.x;
     p.x = p.y;
     p.y = swap;
+  }
+
+  public void rotate(Point p) {
+    HexGrid.rotatePoint(p);
   }
 
   public void rotateIfSideways(Point p) {
@@ -619,11 +624,17 @@ public class HexGrid extends AbstractConfigurable
 
   /**
    * Return the Shape of a single hex
-   * @param centerX X co-ord of hex centre
-   * @param centerY Y co-ord of hex centre
+   * @param centerX X co-ord of hex centre .
+   * @param centerY Y co-ord of hex centre .
+   * @param reversed ?
+   * @param sideways See HexGrid.sideways .
+   * @param dx Grid cell width, see HexGrid.dx .
+   * @param dy Grid cell height, see HexGrid.dy .
    * @return Hex Shape
    */
-  protected Area getSingleHexShape(int centerX, int centerY, boolean reversed) {
+  private static Area getSingleHexShape(
+          int centerX, int centerY, boolean reversed, boolean sideways, double dx, double dy) {
+
     final Polygon poly = new Polygon();
 
     final float x = (sideways ? centerY : centerX);
@@ -642,8 +653,8 @@ public class HexGrid extends AbstractConfigurable
     final float x6;
     final float y6;
 
-    final float deltaX = (float) (this.dx);
-    final float deltaY = (float) (this.dy);
+    final float deltaX = (float) dx;
+    final float deltaY = (float) dy;
 
     final float r = 2.F * deltaX / 3.F;
 
@@ -679,12 +690,12 @@ public class HexGrid extends AbstractConfigurable
     p6.setLocation(round(x6), round(y6) + 1);
 
     if (sideways) {
-      rotate(p1);
-      rotate(p2);
-      rotate(p3);
-      rotate(p4);
-      rotate(p5);
-      rotate(p6);
+      rotatePoint(p1);
+      rotatePoint(p2);
+      rotatePoint(p3);
+      rotatePoint(p4);
+      rotatePoint(p5);
+      rotatePoint(p6);
     }
 
     poly.addPoint(p1.x, p1.y);
@@ -696,6 +707,14 @@ public class HexGrid extends AbstractConfigurable
     poly.addPoint(p1.x, p1.y);
 
     return new Area(poly);
+  }
+
+  /**
+   * @see HexGrid#getSingleHexShape(int, int, boolean, boolean, double, double)
+   */
+  protected Area getSingleHexShape(int centerX, int centerY, boolean reversed) {
+
+    return getSingleHexShape(centerX, centerY, reversed, sideways, dx, dy);
   }
 
   // Calculate the Raw Column number (independent of any grid numbering).
@@ -756,19 +775,85 @@ public class HexGrid extends AbstractConfigurable
     return hexPoint(x, y).y;
   }
 
+  private Point hexPointCenterFromRawIndex(int nx, int ny) {
+
+    final int xLoc = ((int) (dx * nx + origin.x));
+    final int yLoc = nx % 2 == 0
+        ? (int) (dy * ny + origin.y)
+        : (int) (dy * ny + (int) (dy / 2) + origin.y);
+
+    return new Point(xLoc, yLoc);
+  }
+
+  private static final List<Point> hexPointRawIndexOffsets1 = List.of(
+          new Point(-1, -1),
+          new Point(-1, 0),
+          new Point(1, -1),
+          new Point(1, 0)
+  );
+
+  private static final List<Point> hexPointRawIndexOffsets2 = List.of(
+          new Point(-1, 0),
+          new Point(-1, 1),
+          new Point(1, 0),
+          new Point(1, 1)
+  );
+
+  // Assumes that the point has already been rotated by callers if sideways.
   private Point hexPoint(int x, int y) {
 
+    ////////////////////////////////////////////////////////////////////////////
+    // First find a candidate hex cell by treating hex cells as rectangles.   //
+    ////////////////////////////////////////////////////////////////////////////
+
     final int nx = (int) floor((x - origin.x + dx / 2) / dx);
+    final int ny = nx % 2 == 0
+        ? (int) floor((y - origin.y + dy / 2) / dy)
+        : (int) floor((y - origin.y) / dy);
 
-    int xLoc = ((int) (dx * nx + origin.x));
+    final Point firstCenter = hexPointCenterFromRawIndex(nx, ny);
+    // Start off with using the first candidate hex.
+    int xLoc = firstCenter.x;
+    int yLoc = firstCenter.y;
 
-    int yLoc;
-    if (nx % 2 == 0)
-      yLoc = ((int)
-              (dy * (int) floor((y - origin.y + dy / 2) / dy) + origin.y));
-    else
-      yLoc = ((int)
-              (dy * (int) floor((y - origin.y) / dy) + (int) (dy / 2) + origin.y));
+    ////////////////////////////////////////////////////////////////////////////
+    // Then check and find the precise hex cell by first checking the         //
+    // first candidate hex, and then checking the neighboring hexes.          //
+    ////////////////////////////////////////////////////////////////////////////
+
+    // Always pass 'false' for 'sideways', since the input point has already been rotated by callers of 'hexPoint'.
+    final Area firstHex = HexGrid.getSingleHexShape(xLoc, yLoc, false, false, dx, dy);
+
+    // In case the first candidate hex apparently does not contain the
+    // point (apart possibly from floating-point rounding issues).
+    if (!firstHex.contains(x, y)) {
+
+      // Try each of the other 4 potential hexes. If the point is contained there, use the center
+      // of that hex. If the point is found nowhere (possibly floating-point issue), just
+      // use the first candidate hex - presumably the point lies on the edge or corner of
+      // the originally found hex.
+
+      final var hexPointRawIndexOffsets = nx % 2 == 0
+              ? hexPointRawIndexOffsets1
+              : hexPointRawIndexOffsets2;
+
+      for (final var offset : hexPointRawIndexOffsets) {
+
+        final Point c = hexPointCenterFromRawIndex(nx + offset.x, ny + offset.y);
+        final Area candidateHex = HexGrid.getSingleHexShape(c.x, c.y, false, false, dx, dy);
+
+        if (candidateHex.contains(x, y)) {
+
+          xLoc = c.x;
+          yLoc = c.y;
+          break;
+        }
+      }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Then handle `snapeScale`.                                              //
+    ////////////////////////////////////////////////////////////////////////////
 
     if (snapScale > 0) {
       {
@@ -788,6 +873,10 @@ public class HexGrid extends AbstractConfigurable
         yLoc += delta;
       }
     }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Return result.                                                         //
+    ////////////////////////////////////////////////////////////////////////////
 
     return new Point(xLoc, yLoc);
   }
