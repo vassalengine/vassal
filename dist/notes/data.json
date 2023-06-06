@@ -16,6 +16,16 @@
   ],
   "changes": [
     {
+      "in": "3.7.0-beta4",
+      "since": "3.7.0-beta3",
+      "new_features": [
+      ],
+      "bug_fixes": [
+      ],
+      "other_improvements": [
+      ]
+    },
+    {
       "in": "3.7.0-beta3",
       "since": "3.7.0-beta2",
       "new_features": [
