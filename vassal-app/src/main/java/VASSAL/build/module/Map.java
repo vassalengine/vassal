@@ -1276,7 +1276,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @see Board#snapTo
    * @see VASSAL.build.module.map.boardPicker.board.MapGrid#snapTo
    */
-  public Point snapTo(Point p, boolean force) {
+  public Point snapTo(Point p, boolean force, boolean onlyCenter) {
     Point snap = new Point(p);
 
     final Board b = findBoard(p);
@@ -1284,7 +1284,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 
     final Rectangle r = b.bounds();
     snap.translate(-r.x, -r.y);
-    snap = b.snapTo(snap, force);
+    snap = b.snapTo(snap, force, onlyCenter);
     snap.translate(r.x, r.y);
 
     //CC bugfix13409
@@ -1293,7 +1293,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     if (bSnappedTo != null && !b.equals(bSnappedTo)) {
       final Rectangle rSnappedTo = bSnappedTo.bounds();
       snap.translate(-rSnappedTo.x, -rSnappedTo.y);
-      snap = bSnappedTo.snapTo(snap, force);
+      snap = bSnappedTo.snapTo(snap, force, onlyCenter);
       snap.translate(rSnappedTo.x, rSnappedTo.y);
     }
     // RFE 882378
@@ -1319,9 +1319,12 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     return snap;
   }
 
+  public Point snapTo(Point p, boolean force) {
+    return snapTo(p, force, true);
+  }
 
   public Point snapTo(Point p) {
-    return snapTo(p, false);
+    return snapTo(p, false, false);
   }
 
 

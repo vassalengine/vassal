@@ -608,12 +608,25 @@ public class Board extends AbstractConfigurable implements GridContainer {
     return grid == null ? null : grid.localizedLocationName(localCoordinates(p));
   }
 
-  public Point snapTo(Point p, boolean force) {
-    return grid == null ? p : globalCoordinates(grid.snapTo(localCoordinates(p), force));
+  /**
+   * @see MapGrid#snapTo(Point p, boolean force, boolean onlyCenter)
+   */
+  public Point snapTo(Point p, boolean force, boolean onlyCenter) {
+    return grid == null ? p : globalCoordinates(grid.snapTo(localCoordinates(p), force, onlyCenter));
   }
 
+  /**
+   * @see MapGrid#snapTo(Point p, boolean force, boolean onlyCenter)
+   */
+  public Point snapTo(Point p, boolean force) {
+    return snapTo(p, force, false);
+  }
+
+  /**
+   * @see Board#snapTo(Point p, boolean force, boolean onlyCenter)
+   */
   public Point snapTo(Point p) {
-    return snapTo(p, false);
+    return snapTo(p, false, false);
   }
 
     /**

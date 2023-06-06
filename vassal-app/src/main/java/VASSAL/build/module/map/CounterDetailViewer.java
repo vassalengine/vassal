@@ -447,7 +447,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       if (!boards.isEmpty()) {
         // get map reference point
         final Point ptMap = pieces.isEmpty() ?
-          map.snapTo(map.componentToMap(currentMousePosition.getPoint()), showTerrainSnappy) :
+          map.snapTo(map.componentToMap(currentMousePosition.getPoint()), showTerrainSnappy, false) :
           pieces.get(0).getPosition();
 
         // get the rectangle of the map to draw
@@ -769,7 +769,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
   String getTerrainBeneathText() {
     final Point mapPt = map.componentToMap(currentMousePosition.getPoint());
-    final Point snapPt = map.snapTo(mapPt, showTerrainSnappy);
+    final Point snapPt = map.snapTo(mapPt, showTerrainSnappy, false);
     final String locationName = map.localizedLocationName(snapPt);
     showTerrainText.setProperty(BasicPiece.LOCATION_NAME, locationName.equals(Resources.getString("Map.offboard")) ? "" : locationName);
     showTerrainText.setProperty(BasicPiece.CURRENT_MAP, map.getLocalizedMapName());
@@ -793,7 +793,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
   String getEmptyText() {
     final Point mapPt = map.componentToMap(currentMousePosition.getPoint());
-    final Point snapPt = map.snapTo(mapPt);
+    // When snapping, only snap to the center point, not edges or corners,
+    // to ensure that the right text is retrieved.
+    final Point snapPt = map.snapTo(mapPt, false, true);
     final String locationName = map.localizedLocationName(snapPt);
     emptyHexReportFormat.setProperty(BasicPiece.LOCATION_NAME, locationName.equals(Resources.getString("Map.offboard")) ? "" : locationName);
     emptyHexReportFormat.setProperty(BasicPiece.CURRENT_MAP, map.getLocalizedMapName());
