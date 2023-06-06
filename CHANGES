@@ -1,4 +1,4 @@
-3.7.0-beta3 - ???
+3.7.0-beta3 - 6 June 2023
 
 * 12342: Fixed bad link in Reference Manual
 * 12315: Prevent NPE in MouseOverStackViewer trying to show top piece of empty
