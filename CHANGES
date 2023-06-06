@@ -1,5 +1,7 @@
 3.7.0-beta4 - ???
 
+* 12340: Fix inaccurate Hex Grid location reports
+
 3.7.0-beta3 - 6 June 2023
 
 * 12342: Fixed bad link in Reference Manual
