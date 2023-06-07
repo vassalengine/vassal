@@ -176,6 +176,9 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
     else if (List.of(GLOBAL_HOTKEY).contains(key)) {
       return () -> SEND_HOTKEY.equals(hotkeyOrKeyCommand);
     }
+    else if ((getNameKey() != null) && getNameKey().equals(key)) {
+      return () -> true;
+    }
     else {
       return new VisibilityAND(() -> SEND_KEY_COMMAND.equals(hotkeyOrKeyCommand), super.getAttributeVisibility(key));
     }
