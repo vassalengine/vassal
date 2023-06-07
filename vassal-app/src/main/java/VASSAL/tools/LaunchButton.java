@@ -178,7 +178,12 @@ public class LaunchButton extends JButton implements Auditable {
 
   public String getAttributeValueString(String key) {
     if (key.equals(nameAtt)) {
-      return getText();
+      if (allowExpression) {
+        return formatted.getFormat();
+      }
+      else {
+        return getText();
+      }
     }
     else if (key.equals(keyAtt)) {
       return NamedHotKeyConfigurer.encode(keyListener.getNamedKeyStroke());
