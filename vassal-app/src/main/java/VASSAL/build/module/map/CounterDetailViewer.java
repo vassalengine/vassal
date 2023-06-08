@@ -1596,7 +1596,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.html", "StackViewer"); //NON-NLS
+    return HelpFile.getReferenceManualPage("MouseOver.html"); //NON-NLS
   }
 
   @Override
