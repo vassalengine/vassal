@@ -27,14 +27,13 @@ import VASSAL.tools.FormattedString;
 import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.icon.IconFamily;
 
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
 
 /**
  * A standard Formatted String configurer that has an additional
@@ -46,6 +45,10 @@ import javax.swing.JPanel;
 public class FormattedExpressionConfigurer extends FormattedStringConfigurer {
   protected ExpressionButton button;
   protected EditablePiece pieceTarget;
+
+  public FormattedExpressionConfigurer() {
+    this("", "");
+  }
 
   public FormattedExpressionConfigurer(String key, String name) {
     super(key, name);

@@ -24,12 +24,14 @@ import VASSAL.build.module.map.MassKeyCommand;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.FormattedExpressionConfigurer;
 import VASSAL.configure.GlobalCommandTargetConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.PropertyExpressionConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
@@ -51,6 +53,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import static VASSAL.counters.GlobalCommand.MAX_MODE_ALL;
+import static VASSAL.counters.GlobalCommand.MAX_MODE_NUM;
+
 /**
  * Trait that sends a Key Command to other pieces, selected with various filters.
  * Shares {@link GlobalCommand} with the other types of Global Key Command.
@@ -71,6 +76,7 @@ public class CounterGlobalKeyCommand extends Decorator
   implements TranslatablePiece,
   RecursionLimiter.Loopable {
   public static final String ID = "globalkey;"; // NON-NLS
+  public static final String GKC_PROPERTY_NAME = "MostRecentMatches"; //NON-NLS
   protected KeyCommand[] command;
   protected String commandName;
   protected NamedKeyStroke key;
@@ -112,6 +118,9 @@ public class CounterGlobalKeyCommand extends Decorator
     globalCommand.setSelectFromDeckExpression(st.nextToken("-1"));
     target.decode(st.nextToken(""));
     globalCommand.setSuppressSounds(st.nextBoolean(false));
+    globalCommand.setMaxTotalPieceCountMode(st.nextToken(MAX_MODE_ALL));
+    globalCommand.setMaxTotalPieceCountExpression(st.nextToken("{ 1 }"));
+
     target.setGKCtype(GlobalCommandTarget.GKCtype.COUNTER);
     target.setCurPiece(this);
 
@@ -133,7 +142,9 @@ public class CounterGlobalKeyCommand extends Decorator
       .append(description)
       .append(globalCommand.getSelectFromDeckExpression())
       .append(target.encode())
-      .append(globalCommand.isSuppressSounds());
+      .append(globalCommand.isSuppressSounds())
+      .append(globalCommand.getMaxTotalPieceCountMode())
+      .append(globalCommand.getMaxTotalPieceCountExpression());
     return ID + se.getValue();
   }
 
@@ -188,7 +199,6 @@ public class CounterGlobalKeyCommand extends Decorator
   public Shape getShape() {
     return piece.getShape();
   }
-
 
   /**
    * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
@@ -295,6 +305,8 @@ public class CounterGlobalKeyCommand extends Decorator
 
     c = c.append(globalCommand.apply(Map.getMapList().toArray(new Map[0]), filter, target, audit));
 
+    setProperty(GKC_PROPERTY_NAME, globalCommand.getTotalPieceCount()); // Memorialize our total piece count in the scratch pad
+
     return c;
   }
 
@@ -333,6 +345,8 @@ public class CounterGlobalKeyCommand extends Decorator
       return false;
     if (!Objects.equals(target, trait.target))
       return false;
+    if (!Objects.equals(globalCommand.getMaxTotalPieceCountMode(), trait.globalCommand.getMaxTotalPieceCountMode())) return false;
+    if (!Objects.equals(globalCommand.getMaxTotalPieceCountExpression(), trait.globalCommand.getMaxTotalPieceCountExpression())) return false;
     return Objects.equals(globalCommand.getSelectFromDeckExpression(), trait.globalCommand.getSelectFromDeckExpression());
   }
 
@@ -355,6 +369,10 @@ public class CounterGlobalKeyCommand extends Decorator
     protected JPanel controls;
     protected TraitConfigPanel traitPanel;
 
+    protected JLabel maxTotalLabel;
+    protected TranslatingStringEnumConfigurer maxTotalMode;
+    protected FormattedExpressionConfigurer maxTotalExpression;
+
     protected GlobalCommandTargetConfigurer targetConfig;
 
     public Ed(CounterGlobalKeyCommand p) {
@@ -371,7 +389,11 @@ public class CounterGlobalKeyCommand extends Decorator
         rangeProperty.getControls().setVisible(isRange && !isFixed);
         rangePropertyLabel.setVisible(isRange && !isFixed);
 
+        maxTotalLabel.setVisible(MAX_MODE_NUM.equals(maxTotalMode.getValueString()));
+        maxTotalExpression.getControls().setVisible(MAX_MODE_NUM.equals(maxTotalMode.getValueString()));
+
         repack(range);
+        repack(maxTotalExpression);
       };
 
       traitPanel = new TraitConfigPanel();
@@ -400,6 +422,21 @@ public class CounterGlobalKeyCommand extends Decorator
       deckPolicy = new MassKeyCommand.DeckPolicyConfig(false);
       deckPolicy.setValue(p.globalCommand.getSelectFromDeckExpression());
       traitPanel.add("Editor.GlobalKeyCommand.deck_policy", deckPolicy);
+
+      maxTotalMode = new TranslatingStringEnumConfigurer(GlobalCommand.MAX_MODE_OPTIONS, GlobalCommand.MAX_MODE_KEYS);
+      maxTotalMode.setValue(MAX_MODE_ALL);
+      for (final String key : GlobalCommand.MAX_MODE_KEYS) {
+        if (key.equals(p.globalCommand.getMaxTotalPieceCountMode())) {
+          maxTotalMode.setValue(key);
+        }
+      }
+      maxTotalMode.addPropertyChangeListener(pl);
+      traitPanel.add("Editor.GlobalCommand.max_total_mode", maxTotalMode);
+
+      maxTotalExpression = new FormattedExpressionConfigurer();
+      maxTotalExpression.setValue(p.globalCommand.getMaxTotalPieceCountExpression());
+      maxTotalLabel = new JLabel(Resources.getString("Editor.GlobalCommand.max_total_expression"));
+      traitPanel.add(maxTotalLabel, maxTotalExpression);
 
       restrictRange = new BooleanConfigurer(p.restrictRange);
       traitPanel.add("Editor.GlobalKeyCommand.restrict_range", restrictRange);
@@ -448,7 +485,9 @@ public class CounterGlobalKeyCommand extends Decorator
         .append(descInput.getValueString())
         .append(deckPolicy.getSingleValue())
         .append(targetConfig.getValueString())
-        .append(suppressSounds.getValueString());
+        .append(suppressSounds.getValueString())
+        .append(maxTotalMode.getValueString())
+        .append(maxTotalExpression.getValueString());
       return ID + se.getValue();
     }
 
