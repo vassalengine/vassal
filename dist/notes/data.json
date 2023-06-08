@@ -26,6 +26,7 @@
         { "num": 12302, "desc": "Description field now properly appears with Startup GKC set to send Global Hotkey" }
       ],
       "other_improvements": [
+        { "num": 12362, "desc": "Rollover component help button goes to MouseOver.html instead of Map.html" }
       ]
     },
     {
