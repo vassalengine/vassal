@@ -1,6 +1,7 @@
 3.7.0-beta4 - ???
 
 * 12340: Fix inaccurate Hex Grid location reports
+* 12303: Dynamic button text was resolved too soon
 * 12302: Description field now properly appears with Startup GKC set to send
     Global Hotkey
 
