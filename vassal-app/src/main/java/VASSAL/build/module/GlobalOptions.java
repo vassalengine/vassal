@@ -34,6 +34,7 @@ import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.StringEnum;
 import VASSAL.i18n.Resources;
+import VASSAL.launch.AbstractLaunchAction;
 import VASSAL.preferences.BasicPreference;
 import VASSAL.preferences.BooleanPreference;
 import VASSAL.preferences.DoublePreference;
@@ -78,7 +79,7 @@ import java.util.Properties;
  * preferences shown on the "General" tab, though some of that tab's preferences are also set elsewhere -- see:
  * <br>{@link Prefs} - reading/writing the preference file, maintaining lists of configurers for tabs
  * <br>{@link Prefs#initSharedGlobalPrefs} - disable d3d pipeline, wizard support
- * <br>{@link BasicLogger} - configurers for Undo & Step Forward. Adds logging-related preferences to pane
+ * <br>{@link BasicLogger} - configurers for Undo and Step Forward. Adds logging-related preferences to pane
  * <br>{@link VASSAL.tools.AdjustableSpeedScrollPane} - scroll increment
  */
 public class GlobalOptions extends AbstractConfigurable implements ComponentDescription {
@@ -228,7 +229,7 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
     final IntConfigurer maxHeapConf = new IntConfigurer(
       MAXIMUM_HEAP,
       Resources.getString("GlobalOptions.maximum_heap"),  //$NON-NLS-1$
-      512
+      AbstractLaunchAction.DEFAULT_MAXIMUM_HEAP
     );
     prefs.addOption(maxHeapConf);
 

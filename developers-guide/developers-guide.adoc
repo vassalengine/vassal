@@ -1,3 +1,7 @@
+
+Refer also to the Wiki for developer documentation:
+link:https://vassalengine.org/wiki/Main_Page#Engine_Development[]
+
 = Developer's guide
 :toc: left
 :toclevels: 4

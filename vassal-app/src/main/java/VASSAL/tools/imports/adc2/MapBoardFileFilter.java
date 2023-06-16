@@ -20,7 +20,7 @@ package VASSAL.tools.imports.adc2;
 import VASSAL.tools.filechooser.ExtensionFileFilter;
 
 /**
- * A {@link FileFilter} for ADC2 map boards. Used by file choosers to filter
+ * A {@link VASSAL.tools.filechooser.FileFilter} for ADC2 map boards. Used by file choosers to filter
  * out files which are not Aide de Camp 2 map boards.
  *
  * @author Joel Uckelman

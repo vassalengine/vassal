@@ -300,7 +300,7 @@ public class MultiLocationCommand extends Decorator implements TranslatablePiece
 
   /**
    * Here is when we're being asked, essentially for "what goes on our context menu". So this is when we search
-   * through maps & boards & grids & zones & regions to generate our items
+   * through maps, boards, grids, zones and regions to generate our items
    * @return array of key commands
    */
   @Override

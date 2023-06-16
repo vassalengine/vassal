@@ -30,6 +30,9 @@ import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ToolBarComponent;
 
+import java.util.Collections;
+import java.util.List;
+
 public abstract class AbstractScenarioProperty extends GlobalProperty {
 
   public static final String HOTKEY = "hotkey"; // NON-NLS
@@ -177,4 +180,11 @@ public abstract class AbstractScenarioProperty extends GlobalProperty {
   public void setHotkey(NamedKeyStroke hotkey) {
     this.hotkey = hotkey;
   }
+
+  @Override
+  public List<String> getExpressionList() {
+    return Collections.emptyList();
+  }
+
+
 }

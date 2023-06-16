@@ -532,7 +532,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
 
   /**
-   * Before refreshing, we need to go through every piece & commemorate all the Attachment trait relationships, since they contain direct references to other GamePieces, and all of the references are
+   * Before refreshing, we need to go through every piece and commemorate all the Attachment trait relationships, since they contain direct references to other GamePieces, and all of the references are
    * about to be jumbled/invalidated when new updated versions of pieces are created.
    *
    * attachmentIndex maps the old attachments (using a reference hash of the outermost piece's Unique ID plus the notionally unique Attachment Name) to the list of attachments (which are the actual old gamepieces)

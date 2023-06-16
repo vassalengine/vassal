@@ -180,7 +180,7 @@ public class BadDataReport {
    * Expanded Bad Data Report for PieceSlot
    * Display the name of the slot
    *
-   * @param c PieceSlot that generated the error
+   * @param slot PieceSlot that generated the error
    * @param message Resource message key to display
    * @param data Data causing error
    */

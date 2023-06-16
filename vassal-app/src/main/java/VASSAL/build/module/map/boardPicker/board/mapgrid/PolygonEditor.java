@@ -241,7 +241,8 @@ public class PolygonEditor extends JPanel {
     return p; //p.npoints == 0 ? null : p;
   }
 
-  /** @deprecated Use {@link {#stringToPolygon(String)} for parsing and
+
+  /** @deprecated Use {@link PolygonEditor#stringToPolygon(String) stringToPolygon} for parsing and
    *  {@link #setPolygon(Polygon)} for setting the editor instead.
    */
   @Deprecated(since = "2021-11-29", forRemoval = true)

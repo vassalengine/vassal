@@ -78,7 +78,7 @@ import java.util.Objects;
  * <li>The centre of a named Zone on a named map</li>
  * <li>A named Region on a named map</li>
  * <li>The location of another counter selected by a Property Match String</li>
- * <li>A specified grid-location on a given board & map </li>
+ * <li>A specified grid-location on a given board and map </li>
  * <p>Once the target location is identified, it can be further offset in the X and Y directions
  * by a set of multipliers.
  * All Input Fields may use $...$ variable names
@@ -269,7 +269,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
    * @param propertyFilter Property filter to be used if we're selecting a destination counter based on one
    * @param sourceMap The source map if we're matching a counter by property filter expression (and used as the map for all purposes if mapId is null)
    * @param startPosition Starting position to base any "nearest piece" calculation from
-   * @return Destination object (includes map & point)
+   * @return Destination object (includes map and point)
    */
   public static Destination getSendLocation(PropertySource source, Auditable auditSource, String destination, FormattedString mapId, FormattedString boardName, FormattedString zone, FormattedString region, FormattedString gridLocation, FormattedString x, FormattedString y, PropertyExpression propertyFilter, Map sourceMap, Point startPosition) {
     Map map = null;

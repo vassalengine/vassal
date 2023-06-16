@@ -229,7 +229,7 @@ public abstract class Configurer {
   public void setLabelVisible(boolean visible) {
   }
 
-  /** @deprecated Use {@link #setLabelVisiblelaunch} instead. */
+  /** @deprecated Use {@link #setLabelVisible} instead. */
   @Deprecated(since = "2023-01-14", forRemoval = true)
   public void setLabelVisibile(boolean visible) {
     setLabelVisible(visible);

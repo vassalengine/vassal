@@ -1,6 +1,21 @@
-3.7.0-beta3 - ???
+3.7.0-beta4 - ???
 
-* 12256: Work around Java's use of incorrect gamma for grayscale + alpha PNGs
+* 12362: Rollover component help button goes to MouseOver.html instead of
+    Map.html
+* 12340: Fix inaccurate Hex Grid location reports
+* 12303: Dynamic button text was resolved too soon
+* 12302: Description field now properly appears with Startup GKC set to send
+    Global Hotkey
+
+3.7.0-beta3 - 6 June 2023
+
+* 12342: Fixed bad link in Reference Manual
+* 12315: Prevent NPE in MouseOverStackViewer trying to show top piece of empty
+    stack
+* 12314: Update bundled Java to 20.0.1
+* 12287: Enable text field DnD
+* 12284: Add Danish localization
+* 12279: Default heap raised to 1024MB
 * 12251: New Set Piece Property trait
 * 12243: Startup Global Key Commands can also send a Global Hotkey
 * 12222: Multi-Location Commands: One trait may create actions corresponding to
@@ -82,6 +97,15 @@
 * 10820: Make Action Button available on all windows where other similar
     buttons (e.g., GKC, Multi-Action, etc) are available
 *  4454: Save chat text to file
+
+3.6.19 - 18 May 2023
+
+* 12313: Added MAYBE_MOVED property for 3.7 compatibility
+
+3.6.18 - 18 May 2023
+
+* 12291: Fix incorrect drag offset on Windows with UI scaling > 100%
+* 12256: Work around Java's use of incorrect gamma for grayscale + alpha PNGs
 
 3.6.17 - 23 April 2023
 

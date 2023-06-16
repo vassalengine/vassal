@@ -1281,7 +1281,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @see Board#snapTo
    * @see VASSAL.build.module.map.boardPicker.board.MapGrid#snapTo
    */
-  public Point snapTo(Point p, boolean force) {
+  public Point snapTo(Point p, boolean force, boolean onlyCenter) {
     Point snap = new Point(p);
 
     final Board b = findBoard(p);
@@ -1289,7 +1289,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 
     final Rectangle r = b.bounds();
     snap.translate(-r.x, -r.y);
-    snap = b.snapTo(snap, force);
+    snap = b.snapTo(snap, force, onlyCenter);
     snap.translate(r.x, r.y);
 
     //CC bugfix13409
@@ -1298,7 +1298,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     if (bSnappedTo != null && !b.equals(bSnappedTo)) {
       final Rectangle rSnappedTo = bSnappedTo.bounds();
       snap.translate(-rSnappedTo.x, -rSnappedTo.y);
-      snap = bSnappedTo.snapTo(snap, force);
+      snap = bSnappedTo.snapTo(snap, force, onlyCenter);
       snap.translate(rSnappedTo.x, rSnappedTo.y);
     }
     // RFE 882378
@@ -1324,9 +1324,12 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     return snap;
   }
 
+  public Point snapTo(Point p, boolean force) {
+    return snapTo(p, force, true);
+  }
 
   public Point snapTo(Point p) {
-    return snapTo(p, false);
+    return snapTo(p, false, false);
   }
 
 
@@ -1418,7 +1421,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    *           (see {@link StackMetrics#draw}.
    *
    * @param c value in Map coordinate space to be scaled
-   * @param os_scale Operating system's scale factor, (obtained from {@link Graphics2D#getDeviceConfiguration().getDefaultTransform().getScaleX()})
+   * @param os_scale Operating system's scale factor, (obtained from {@link java.awt.Graphics2D#getDeviceConfiguration() getDeviceConfiguration()}
+   *     .{@link java.awt.GraphicsConfiguration#getDefaultTransform() getDefaultTransform()}
+   *     .{@link java.awt.geom.AffineTransform#getScaleX() getScaleX()})
    * @return scaled value in Drawing coordinate space
    */
   public int mapToDrawing(int c, double os_scale) {
@@ -1435,7 +1440,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    *           (see {@link StackMetrics#draw}.
    *
    * @param p point in Map coordinates to be scaled
-   * @param os_scale Operating system's scale factor, (obtained from {@link Graphics2D#getDeviceConfiguration().getDefaultTransform().getScaleX()})
+   * @param os_scale Operating system's scale factor, (obtained from {@link java.awt.Graphics2D#getDeviceConfiguration() getDeviceConfiguration()}
+   *    *     .{@link java.awt.GraphicsConfiguration#getDefaultTransform() getDefaultTransform()}
+   *    *     .{@link java.awt.geom.AffineTransform#getScaleX() getScaleX()})
    * @return scaled point in Drawing coordinates
    */
   public Point mapToDrawing(Point p, double os_scale) {
@@ -1452,7 +1459,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    *           (see {@link StackMetrics#draw}.
    *
    * @param r rectangle in Map coordinates to be scaled
-   * @param os_scale Operating system's scale factor, (obtained from {@link Graphics2D#getDeviceConfiguration().getDefaultTransform().getScaleX()})
+   * @param os_scale Operating system's scale factor, (obtained from {@link java.awt.Graphics2D#getDeviceConfiguration() getDeviceConfiguration()}
+   *    *    *     .{@link java.awt.GraphicsConfiguration#getDefaultTransform() getDefaultTransform()}
+   *    *    *     .{@link java.awt.geom.AffineTransform#getScaleX() getScaleX()})
    * @return scaled rectangle in Drawing coordinates
    */
   public Rectangle mapToDrawing(Rectangle r, double os_scale) {
@@ -1514,7 +1523,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * using it in the context of drawing move trails.
    *
    * @param c value in Component coordinate space to be scaled
-   * @param os_scale Operating system's scale factor, (obtained from {@link Graphics2D#getDeviceConfiguration().getDefaultTransform().getScaleX()})
+   * @param os_scale Operating system's scale factor, (obtained from {@link java.awt.Graphics2D#getDeviceConfiguration() getDeviceConfiguration()}
+   *    *     .{@link java.awt.GraphicsConfiguration#getDefaultTransform() getDefaultTransform()}
+   *    *     .{@link java.awt.geom.AffineTransform#getScaleX() getScaleX()})
    * @return scaled value in Drawing coordinate space
    */
   public int componentToDrawing(int c, double os_scale) {
@@ -1531,7 +1542,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * using it in the context of drawing move trails.
    *
    * @param p Point in Component coordinate space to be scaled
-   * @param os_scale Operating system's scale factor, (obtained from {@link Graphics2D#getDeviceConfiguration().getDefaultTransform().getScaleX()})
+   * @param os_scale Operating system's scale factor, (obtained from {@link java.awt.Graphics2D#getDeviceConfiguration() getDeviceConfiguration()}
+   *    *     .{@link java.awt.GraphicsConfiguration#getDefaultTransform() getDefaultTransform()}
+   *    *     .{@link java.awt.geom.AffineTransform#getScaleX() getScaleX()})
    * @return scaled Point in Drawing coordinate space
    */
   public Point componentToDrawing(Point p, double os_scale) {
@@ -1548,7 +1561,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * using it in the context of drawing move trails.
    *
    * @param r Rectangle in Component coordinate space to be scaled
-   * @param os_scale Operating system's scale factor, (obtained from {@link Graphics2D#getDeviceConfiguration().getDefaultTransform().getScaleX()})
+   * @param os_scale Operating system's scale factor, (obtained from {@link java.awt.Graphics2D#getDeviceConfiguration() getDeviceConfiguration()}
+   *    *     .{@link java.awt.GraphicsConfiguration#getDefaultTransform() getDefaultTransform()}
+   *    *     .{@link java.awt.geom.AffineTransform#getScaleX() getScaleX()})
    * @return scaled Rectangle in Drawing coordinate space
    */
   public Rectangle componentToDrawing(Rectangle r, double os_scale) {
@@ -1607,7 +1622,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * have the traditional 1-to-1 relationship with component coordinates, on HiDPI monitors it will not.
    *
    * @param c value in Drawing coordinate space to be scaled
-   * @param os_scale Operating system's scale factor, (obtained from {@link Graphics2D#getDeviceConfiguration().getDefaultTransform().getScaleX()})
+   * @param os_scale Operating system's scale factor, (obtained from {@link java.awt.Graphics2D#getDeviceConfiguration() getDeviceConfiguration()}
+   *    *     .{@link java.awt.GraphicsConfiguration#getDefaultTransform() getDefaultTransform()}
+   *    *     .{@link java.awt.geom.AffineTransform#getScaleX() getScaleX()})
    * @return scaled value in Map coordinates
    */
   @SuppressWarnings("unused")
@@ -1622,7 +1639,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * have the traditional 1-to-1 relationship with component coordinates, on HiDPI monitors it will not.
    *
    * @param p Point in Drawing coordinate space to be scaled
-   * @param os_scale Operating system's scale factor, (obtained from {@link Graphics2D#getDeviceConfiguration().getDefaultTransform().getScaleX()})
+   * @param os_scale Operating system's scale factor, (obtained from {@link java.awt.Graphics2D#getDeviceConfiguration() getDeviceConfiguration()}
+   *    *     .{@link java.awt.GraphicsConfiguration#getDefaultTransform() getDefaultTransform()}
+   *    *     .{@link java.awt.geom.AffineTransform#getScaleX() getScaleX()})
    * @return scaled point in Map coordinates
    */
   public Point drawingToMap(Point p, double os_scale) {
@@ -1636,7 +1655,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * have the traditional 1-to-1 relationship with component coordinates, on HiDPI monitors it will not.
    *
    * @param r Rectangle in Drawing coordinate space to be scaled
-   * @param os_scale Operating system's scale factor, (obtained from {@link Graphics2D#getDeviceConfiguration().getDefaultTransform().getScaleX()})
+   * @param os_scale Operating system's scale factor, (obtained from {@link java.awt.Graphics2D#getDeviceConfiguration() getDeviceConfiguration()}
+   *    *     .{@link java.awt.GraphicsConfiguration#getDefaultTransform() getDefaultTransform()}
+   *    *     .{@link java.awt.geom.AffineTransform#getScaleX() getScaleX()})
    * @return scaled Rectangle in Map coordinates
    */
   public Rectangle drawingToMap(Rectangle r, double os_scale) {
@@ -1650,7 +1671,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * 1-to-1 relationship with Component coordinates, on HiDPI monitors it will not.
    *
    * @param c value in Drawing coordinates
-   * @param os_scale Operating system's scale factor, (obtained from {@link Graphics2D#getDeviceConfiguration().getDefaultTransform().getScaleX()})
+   * @param os_scale Operating system's scale factor, (obtained from {@link java.awt.Graphics2D#getDeviceConfiguration() getDeviceConfiguration()}
+   *    *     .{@link java.awt.GraphicsConfiguration#getDefaultTransform() getDefaultTransform()}
+   *    *     .{@link java.awt.geom.AffineTransform#getScaleX() getScaleX()})
    * @return scaled value in Component coordinates
    */
   public int drawingToComponent(int c, double os_scale) {
@@ -1664,7 +1687,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * 1-to-1 relationship with Component coordinates, on HiDPI monitors it will not.
    *
    * @param p Point in Drawing coordinates
-   * @param os_scale Operating system's scale factor, (obtained from {@link Graphics2D#getDeviceConfiguration().getDefaultTransform().getScaleX()})
+   * @param os_scale Operating system's scale factor, (obtained from {@link java.awt.Graphics2D#getDeviceConfiguration() getDeviceConfiguration()}
+   *    *     .{@link java.awt.GraphicsConfiguration#getDefaultTransform() getDefaultTransform()}
+   *    *     .{@link java.awt.geom.AffineTransform#getScaleX() getScaleX()})
    * @return scaled Point in Component coordinates
    */
   public Point drawingToComponent(Point p, double os_scale) {
@@ -1678,7 +1703,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * 1-to-1 relationship with Component coordinates, on HiDPI monitors it will not.
    *
    * @param r Rectangle in Drawing coordinates
-   * @param os_scale Operating system's scale factor, (obtained from {@link Graphics2D#getDeviceConfiguration().getDefaultTransform().getScaleX()})
+   * @param os_scale Operating system's scale factor, (obtained from {@link java.awt.Graphics2D#getDeviceConfiguration() getDeviceConfiguration()}
+   *    *     .{@link java.awt.GraphicsConfiguration#getDefaultTransform() getDefaultTransform()}
+   *    *     .{@link java.awt.geom.AffineTransform#getScaleX() getScaleX()})
    * @return scaled Rectangle in Component coordinates
    */
   public Rectangle drawingToComponent(Rectangle r, double os_scale) {
@@ -1756,7 +1783,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * Return the name of the {@link Deck} whose position is precisely p
    *
    * @param p Point to look for Deck
-   * @return Name of {@link Deck whose position is precisely p
+   * @return Name of {@link Deck} whose position is precisely p
    */
   public String getDeckNameAt(Point p) {
     String deck = null;
@@ -1775,7 +1802,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * Return the localized name of the {@link Deck} whose position is precisely p
    *
    * @param p Point to look for Deck
-   * @return Name of {@link Deck whose position is precisely p
+   * @return Name of {@link Deck} whose position is precisely p
    */
   public String getLocalizedDeckNameAt(Point p) {
     String deck = null;
@@ -3930,7 +3957,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 
     /**
      * Returns a command to merge our piece into the specified stack, provided that the stack is in the precise
-     * map location specified, the map allows stacking, our piece allows stacking, and our stack & piece are in the
+     * map location specified, the map allows stacking, our piece allows stacking, and our stack and piece are in the
      * same layer.
      * @param s Stack to consider merging with
      * @return Command to merge into the stack, or null if any of the necessary conditions weren't met

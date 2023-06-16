@@ -62,14 +62,11 @@ public abstract class AbstractOpImpl<V> implements Op<V> {
   @Override
   public abstract V eval() throws Exception;
 
-  /** {@inheritDoc} */
   public V get() {
     return cache.get(newKey());
   }
 
   /**
-   * {@inheritDoc}
-   *
    * @throws CancellationException if the operation was cancelled
    * @throws InterruptedException if the operation was interrupted
    * @throws ExecutionException if the operation failed
@@ -81,8 +78,6 @@ public abstract class AbstractOpImpl<V> implements Op<V> {
   }
 
   /**
-   * {@inheritDoc}
-   *
    * @throws CancellationException if the operation was cancelled
    * @throws InterruptedException if the operation was interrupted
    * @throws ExecutionException if the operation failed
@@ -94,7 +89,6 @@ public abstract class AbstractOpImpl<V> implements Op<V> {
   private static final ConcurrentMap<Op<?>, OpCache.Key<?>> kcache =
     new ConcurrentHashMap<>();
 
-  /** {@inheritDoc} */
   @Override
   @SuppressWarnings("unchecked")
   public OpCache.Key<V> newKey() {

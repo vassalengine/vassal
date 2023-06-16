@@ -1366,7 +1366,6 @@ public class PieceMover extends AbstractBuildable
     }
   }
 
-
   /**
    * Moves the group of dragged (in the DragBuffer) pieces to the target point (p).
    * @param p Point that mouse has been dragged to.
@@ -1414,17 +1413,16 @@ public class PieceMover extends AbstractBuildable
     }
   }
 
-
   /**
-   * Common functionality for DragHandler for cases with and without drag image support.
-   * <p>
-   * NOTE: DragSource.isDragImageSupported() returns false for j2sdk1.4.2_02 on Windows 2000
+   * Common functionality for DragHandler for cases with and without drag
+   * image support.
    *
    * @author Pieter Geerkens
    */
   public abstract static class AbstractDragHandler
     implements DragGestureListener,       DragSourceListener,
                DragSourceMotionListener,  DropTargetListener   {
+
     private static AbstractDragHandler theDragHandler = AbstractDragHandlerFactory.getCorrectDragHandler();
 
     /** returns the singleton DragHandler instance */
@@ -1435,45 +1433,6 @@ public class PieceMover extends AbstractBuildable
     public static void setTheDragHandler(AbstractDragHandler myHandler) {
       theDragHandler = myHandler;
     }
-
-    static final int CURSOR_ALPHA = 127; // pseudo cursor is 50% transparent
-    static final int EXTRA_BORDER = 4;   // pseudo cursor is includes a 4 pixel border
-
-    protected JLabel dragCursor;      // An image label. Lives on current DropTarget's LayeredPane.
-    private final Point drawOffset = new Point(); // translates event coords to local drawing coords
-    private Rectangle boundingBox;    // image bounds
-
-    private int originalPieceOffsetX; // How far drag STARTED from GamePiece's center (on original map)
-    private int originalPieceOffsetY;
-
-    protected double dragPieceOffCenterZoom = 1.0; // zoom at start of drag
-
-    protected int currentPieceOffsetX; // How far cursor is CURRENTLY off-center, a function of dragPieceOffCenter{X,Y,Zoom}
-    protected int currentPieceOffsetY; // I.e. on current map (which may have different zoom)
-
-    protected double dragCursorZoom = 1.0; // Current cursor scale (zoom)
-
-    Component dragWin; // the component that initiated the drag operation
-    Component dropWin; // the drop target the mouse is currently over
-
-    JLayeredPane drawWin; // the component that owns our pseudo-cursor
-
-    protected static List<PieceMover> pieceMovers = new ArrayList<>(); // our piece movers
-
-    // Seems there can be only one DropTargetListener per drop target. After we
-    // process a drop target event, we manually pass the event on to this listener.
-    java.util.Map<Component, DropTargetListener> dropTargetListeners = new HashMap<>();
-
-    /**
-     * @return platform-dependent offset multiplier
-     */
-    protected abstract int getOffsetMult();
-
-    /**
-     * @param dge DG event
-     * @return platform-dependent device scale
-     */
-    protected abstract double getDeviceScale(DragGestureEvent dge);
 
     /**
      * Picks the correct drag handler based on our OS, DragSource, and preferences.
@@ -1488,7 +1447,6 @@ public class PieceMover extends AbstractBuildable
         }
       }
     }
-
 
     /**
      * Finds all the piece slots in a module and resets their drop targets to use a new DragHandler
@@ -1520,12 +1478,11 @@ public class PieceMover extends AbstractBuildable
       resetRecursivePieceSlots(GameModule.getGameModule());
     }
 
-
     /**
      * Registers a PieceMover
      * @param pm PieceMover for this dragHandler
      */
-    static void addPieceMover(PieceMover pm) {
+    public static void addPieceMover(PieceMover pm) {
       if (!pieceMovers.contains(pm)) {
         pieceMovers.add(pm);
       }
@@ -1553,6 +1510,59 @@ public class PieceMover extends AbstractBuildable
       DragHandler.getTheDragHandler().dropTargetListeners.remove(theComponent);
     }
 
+    private static StackMetrics getStackMetrics(GamePiece piece) {
+      final Map map = piece.getMap();
+      if (map != null) {
+        final StackMetrics sm = map.getStackMetrics();
+        if (sm != null) {
+          return sm;
+        }
+      }
+      return new StackMetrics();
+    }
+
+    protected static List<PieceMover> pieceMovers = new ArrayList<>(); // our piece movers
+
+    protected static final int CURSOR_ALPHA = 127; // pseudo cursor is 50% transparent
+    protected static final int EXTRA_BORDER = 4;   // pseudo cursor is includes a 4 pixel border
+
+    protected Rectangle boundingBox;    // image bounds
+    protected Rectangle boundingBoxComp;    // image bounds
+
+    private int originalPieceOffsetX; // How far drag STARTED from GamePiece's center (on original map)
+    private int originalPieceOffsetY;
+
+    protected double dragPieceOffCenterZoom = 1.0; // zoom at start of drag
+
+    protected int currentPieceOffsetX; // How far cursor is CURRENTLY off-center, a function of dragPieceOffCenter{X,Y,Zoom}
+    protected int currentPieceOffsetY; // I.e. on current map (which may have different zoom)
+
+    // Seems there can be only one DropTargetListener per drop target. After we
+    // process a drop target event, we manually pass the event on to this listener.
+    protected java.util.Map<Component, DropTargetListener> dropTargetListeners = new HashMap<>();
+
+    // used by DragHandlerNoImage only
+    protected Point lastDragLocation = new Point();
+
+    // used by DragHandlerNoImage only
+    protected JLabel dragCursor;      // An image label. Lives on current DropTarget's LayeredPane.
+
+    // used by DragHandlerNoImage only
+    protected double dragCursorZoom = 1.0; // Current cursor scale (zoom)
+
+    /**
+     * @return platform-dependent offset multiplier
+     */
+    protected abstract int getOffsetMult();
+
+    /**
+     * @param dge DG event
+     * @return platform-dependent device scale
+     */
+    protected abstract double getDeviceScale(DragGestureEvent dge);
+
+    protected abstract double getDeviceScale(DropTargetDragEvent e);
+
     /**
      * @param e DropTargetEvent
      * @return associated DropTargetListener
@@ -1567,71 +1577,27 @@ public class PieceMover extends AbstractBuildable
      * @param dragX x position
      * @param dragY y position
      */
-    protected void moveDragCursor(int dragX, int dragY) {
-      if (drawWin != null) {
-        dragCursor.setLocation(dragX - drawOffset.x, dragY - drawOffset.y);
-      }
-    }
+    @Deprecated(since = "2023-05-08", forRemoval = true)
+    protected void moveDragCursor(int dragX, int dragY) {}
 
     /**
      * Removes the drag cursor from the current draw window
      */
-    protected void removeDragCursor() {
-      if (drawWin != null) {
-        if (dragCursor != null) {
-          dragCursor.setVisible(false);
-          drawWin.remove(dragCursor);
-        }
-        drawWin = null;
-      }
-    }
+    @Deprecated(since = "2023-05-08", forRemoval = true)
+    protected void removeDragCursor() {}
 
     /** calculates the offset between cursor dragCursor positions */
-    private void calcDrawOffset() {
-      if (drawWin != null) {
-        // drawOffset is the offset between the mouse location during a drag
-        // and the upper-left corner of the cursor
-        // accounts for difference between event point (screen coords)
-        // and Layered Pane position, boundingBox and off-center drag
-        drawOffset.x = -boundingBox.x - currentPieceOffsetX + EXTRA_BORDER;
-        drawOffset.y = -boundingBox.y - currentPieceOffsetY + EXTRA_BORDER;
-        SwingUtilities.convertPointToScreen(drawOffset, drawWin);
-      }
-    }
+    protected void calcDrawOffset() {}
 
     /**
-     * creates or moves cursor object to given JLayeredPane. Usually called by setDrawWinToOwnerOf()
-     * @param newDrawWin JLayeredPane that is to be our new drawWin
-     */
-    private void setDrawWin(JLayeredPane newDrawWin) {
-      if (newDrawWin != drawWin) {
-        // remove cursor from old window
-        if (dragCursor.getParent() != null) {
-          dragCursor.getParent().remove(dragCursor);
-        }
-        if (drawWin != null) {
-          drawWin.repaint(dragCursor.getBounds());
-        }
-        drawWin = newDrawWin;
-        calcDrawOffset();
-        dragCursor.setVisible(false);
-        drawWin.add(dragCursor, JLayeredPane.DRAG_LAYER);
-      }
-    }
-
-    /**
-     * creates or moves cursor object to given window. Called when drag operation begins in a window or the cursor is
-     * dragged over a new drop-target window
+     * creates or moves cursor object to given window. Called when drag
+     * operation begins in a window or the cursor is dragged over a new
+     * drop-target window
+     *
      * @param newDropWin window component to be our new draw window.
      */
-    public void setDrawWinToOwnerOf(Component newDropWin) {
-      if (newDropWin != null) {
-        final JRootPane rootWin = SwingUtilities.getRootPane(newDropWin);
-        if (rootWin != null) {
-          setDrawWin(rootWin.getLayeredPane());
-        }
-      }
-    }
+    @Deprecated(since = "2023-05-08", forRemoval = true)
+    public void setDrawWinToOwnerOf(Component newDropWin) {}
 
     /**
      * Common functionality abstracted from makeDragImage and makeDragCursor
@@ -1642,21 +1608,49 @@ public class PieceMover extends AbstractBuildable
      * @param setSize Set Size
      * @return Drag Image
      */
-    BufferedImage makeDragImageCursorCommon(double zoom, boolean doOffset,
-      Component target, boolean setSize) {
+    @Deprecated(since = "2023-05-08", forRemoval = true)
+    protected BufferedImage makeDragImageCursorCommon(double zoom, boolean doOffset, Component target, boolean setSize) {
+      return makeDragImageCursorCommon(zoom, 1.0, doOffset, target);
+    }
 
+    protected BufferedImage makeDragImageCursorCommon(double mapzoom, double os_scale, boolean doOffset, Component target) {
       // FIXME: Should be an ImageOp for caching?
-      dragCursorZoom = zoom;
+      final double zoom = mapzoom * os_scale;
 
-      final List<Point> relativePositions = buildBoundingBox(zoom, doOffset);
+      currentPieceOffsetX =
+        (int) (originalPieceOffsetX / dragPieceOffCenterZoom * mapzoom + 0.5);
+      currentPieceOffsetY =
+        (int) (originalPieceOffsetY / dragPieceOffCenterZoom * mapzoom + 0.5);
+
+      final List<Point> relativePositions = buildBoundingBox();
+
+      // convert boundingBoxComp to component space
+      boundingBoxComp = new Rectangle(boundingBox);
+      boundingBoxComp.width *= mapzoom;
+      boundingBoxComp.height *= mapzoom;
+      boundingBoxComp.x *= mapzoom;
+      boundingBoxComp.y *= mapzoom;
+
+      if (doOffset) {
+        calcDrawOffset();
+      }
+
+      // convert boundingBox, relativePosisions to drawing space
+      boundingBox.width *= zoom;
+      boundingBox.height *= zoom;
+      boundingBox.x *= zoom;
+      boundingBox.y *= zoom;
+
+      for (Point p: relativePositions) {
+        p.x *= zoom;
+        p.y *= zoom;
+      }
 
       final int w = boundingBox.width + EXTRA_BORDER * 2;
       final int h = boundingBox.height + EXTRA_BORDER * 2;
 
       final BufferedImage image = ImageUtils.createCompatibleTranslucentImage(w, h);
       drawDragImage(image, target, relativePositions, zoom);
-
-      if (setSize) dragCursor.setSize(w, h);
 
       return image;
     }
@@ -1668,71 +1662,42 @@ public class PieceMover extends AbstractBuildable
      * @param zoom DragBuffer.getBuffer
      * @return dragImage
      */
-    private BufferedImage makeDragImage(double zoom) {
-      return makeDragImageCursorCommon(zoom, false, null, false);
+    private BufferedImage makeDragImage(double mapzoom, double os_scale) {
+      return makeDragImageCursorCommon(mapzoom, os_scale, false, null);
     }
 
-    /**
-     * Installs the cursor image into our dragCursor JLabel.
-     * Sets current zoom. Should be called at beginning of drag
-     * and whenever zoom changes. INPUT: DragBuffer.getBuffer OUTPUT:
-     * dragCursorZoom cursorOffCenterX cursorOffCenterY boundingBox
-     * @param zoom DragBuffer.getBuffer
-     *
-     */
-    protected void makeDragCursor(double zoom) {
-      // create the cursor if necessary
-      if (dragCursor == null) {
-        dragCursor = new JLabel();
-        dragCursor.setVisible(false);
-      }
-      dragCursor.setIcon(new ImageIcon(
-          makeDragImageCursorCommon(zoom, true, dragCursor, true)));
-    }
+    @Deprecated(since = "2023-05-08", forRemoval = true)
+    protected void makeDragCursor(double zoom) {}
 
-    private List<Point> buildBoundingBox(double zoom, boolean doOffset) {
+    private List<Point> buildBoundingBox() {
+      // boundingBox and relativePositions are constructed in map
+      // coordinates in this function
+
       final ArrayList<Point> relativePositions = new ArrayList<>();
       final PieceIterator dragContents = DragBuffer.getBuffer().getIterator();
       final GamePiece firstPiece = dragContents.nextPiece();
       GamePiece lastPiece = firstPiece;
 
-      currentPieceOffsetX =
-        (int) (originalPieceOffsetX / dragPieceOffCenterZoom * zoom + 0.5);
-      currentPieceOffsetY =
-        (int) (originalPieceOffsetY / dragPieceOffCenterZoom * zoom + 0.5);
-
       boundingBox = firstPiece.getShape().getBounds();
-      boundingBox.width *= zoom;
-      boundingBox.height *= zoom;
-      boundingBox.x *= zoom;
-      boundingBox.y *= zoom;
-      if (doOffset) {
-        calcDrawOffset();
-      }
-
       relativePositions.add(new Point(0, 0));
+
       int stackCount = 0;
       while (dragContents.hasMoreElements()) {
         final GamePiece nextPiece = dragContents.nextPiece();
         final Rectangle r = nextPiece.getShape().getBounds();
-        r.width *= zoom;
-        r.height *= zoom;
-        r.x *= zoom;
-        r.y *= zoom;
 
         final Point p = new Point(
-          (int) Math.round(
-            zoom * (nextPiece.getPosition().x - firstPiece.getPosition().x)),
-          (int) Math.round(
-            zoom * (nextPiece.getPosition().y - firstPiece.getPosition().y)));
+          nextPiece.getPosition().x - firstPiece.getPosition().x,
+          nextPiece.getPosition().y - firstPiece.getPosition().y
+        );
         r.translate(p.x, p.y);
 
         if (nextPiece.getPosition().equals(lastPiece.getPosition())) {
           stackCount++;
           final StackMetrics sm = getStackMetrics(nextPiece);
           r.translate(
-            (int) Math.round(sm.unexSepX * stackCount * zoom),
-            (int) Math.round(-sm.unexSepY * stackCount * zoom)
+            sm.unexSepX * stackCount,
+            -sm.unexSepY * stackCount
           );
         }
 
@@ -1740,6 +1705,7 @@ public class PieceMover extends AbstractBuildable
         relativePositions.add(p);
         lastPiece = nextPiece;
       }
+
       return relativePositions;
     }
 
@@ -1829,18 +1795,6 @@ public class PieceMover extends AbstractBuildable
       g.dispose();
     }
 
-    private StackMetrics getStackMetrics(GamePiece piece) {
-      StackMetrics sm = null;
-      final Map map = piece.getMap();
-      if (map != null) {
-        sm = map.getStackMetrics();
-      }
-      if (sm == null) {
-        sm = new StackMetrics();
-      }
-      return sm;
-    }
-
     /******************************************************************************
      * DRAG GESTURE LISTENER INTERFACE
      *
@@ -1901,20 +1855,37 @@ public class PieceMover extends AbstractBuildable
                       ((Map.View) dge.getComponent()).getMap() : null;
 
       final Point mousePosition = dge.getDragOrigin(); //BR// Bug13137 - now that we're not pre-adulterating dge's event, it already arrives in component coordinates
-      Point piecePosition = (map == null)
-                    ?  piece.getPosition()
-                    : map.mapToComponent(piece.getPosition());
+
+      Point piecePosition = piece.getPosition();
+
       // If DragBuffer holds a piece with invalid coordinates (for example, a
       // card drawn from a deck), drag from center of piece
       if (piecePosition.x <= 0 || piecePosition.y <= 0) {
-        piecePosition = mousePosition;
+        piecePosition = map == null ? mousePosition :
+                                      map.componentToMap(mousePosition);
       }
 
-      // If coming from a map, we use the map's zoom. Otherwise if our PieceWindow has stashed a starting scale for us then use that, else 1.0
+      // If coming from a map, we use the map's zoom. Otherwise if our
+      // PieceWindow has stashed a starting scale for us then use that, else 1.0
       if (map != null) {
+        // Account for offset of piece within stack. We do this even for
+        // un-expanded stacks, since the offset can still be significant if
+        // the stack is large
+        final Stack parent = piece.getParent();
+        if (parent != null) {
+          final Point offset = parent.getStackMetrics()
+                                     .relativePosition(parent, piece);
+          piecePosition.translate(offset.x, offset.y);
+        }
+
+        piecePosition = map.mapToComponent(piecePosition);
+
         dragPieceOffCenterZoom = map.getZoom();
       }
       else {
+        // NB: In the case where there is no map, piecePosition is already
+        // in the component coordinate system, so we don't convert here.
+
         final Object tempZoom = piece.getProperty(PieceSlot.PIECE_PALETTE_SCALE);
         if (tempZoom != null) {
           final BasicPiece bp = (BasicPiece)Decorator.getInnermost(piece);
@@ -1931,25 +1902,11 @@ public class PieceMover extends AbstractBuildable
           dragPieceOffCenterZoom = 1.0;
         }
       }
-      dragPieceOffCenterZoom *= getDeviceScale(dge);
-
-      // Account for offset of piece within stack. We do this even for un-expanded stacks, since the offset can
-      // still be significant if the stack is large
-      if (piece.getParent() != null && map != null) {
-        final Point offset = piece.getParent()
-                                  .getStackMetrics()
-                                  .relativePosition(piece.getParent(), piece);
-        piecePosition.translate(
-          (int) Math.round(offset.x * dragPieceOffCenterZoom),
-          (int) Math.round(offset.y * dragPieceOffCenterZoom));
-      }
 
       // dragging from UL results in positive offsets
       originalPieceOffsetX = piecePosition.x - mousePosition.x;
       originalPieceOffsetY = piecePosition.y - mousePosition.y;
-      dragWin = dge.getComponent();
-      drawWin = null;
-      dropWin = null;
+
       return mousePosition;
     }
 
@@ -1958,12 +1915,14 @@ public class PieceMover extends AbstractBuildable
      * @param dge DG event
      */
     protected void beginDragging(DragGestureEvent dge) {
+      final double os_scale = getDeviceScale(dge);
+
       // this call is needed to instantiate the boundingBox object
-      final BufferedImage bImage = makeDragImage(dragPieceOffCenterZoom);
+      final BufferedImage bImage = makeDragImage(dragPieceOffCenterZoom, os_scale);
 
       final Point dragPointOffset = new Point(
-        getOffsetMult() * (boundingBox.x + currentPieceOffsetX - EXTRA_BORDER),
-        getOffsetMult() * (boundingBox.y + currentPieceOffsetY - EXTRA_BORDER)
+        (int) Math.round(getOffsetMult() * ((boundingBoxComp.x + currentPieceOffsetX) * os_scale - EXTRA_BORDER)),
+        (int) Math.round(getOffsetMult() * ((boundingBoxComp.y + currentPieceOffsetY) * os_scale - EXTRA_BORDER))
       );
 
       //BR// Inform PieceMovers of relevant metrics
@@ -2015,14 +1974,15 @@ public class PieceMover extends AbstractBuildable
     @Override
     public void dropActionChanged(DragSourceDragEvent e) {}
 
-    /**************************************************************************************
+    /*************************************************************************
      * DRAG SOURCE MOTION LISTENER INTERFACE
      *
      * EVENT uses UNSCALED, SCREEN coordinate system
      *
      * Moves cursor after mouse. Used to check for real mouse movement.
-     * Warning: dragMouseMoved fires 8 times for each point on development system (Win2k)
-     **************************************************************************************/
+     * Warning: dragMouseMoved fires 8 times for each point on development
+     * system (Win2k)
+     ************************************************************************/
     @Override
     public void dragMouseMoved(DragSourceDragEvent dsde) {
       if (dsde.getDragSourceContext().getComponent() instanceof Map.View) {
@@ -2037,8 +1997,6 @@ public class PieceMover extends AbstractBuildable
         dc.setCursorLocation(pt, map);
       }
     }
-
-    protected Point lastDragLocation = new Point();
 
     /**************************************************************************
      * DROP TARGET INTERFACE
@@ -2074,21 +2032,21 @@ public class PieceMover extends AbstractBuildable
       }
     }
 
-    /** ineffectual. Passes event along listener chain */
+    /** Passes event along listener chain */
     @Override
     public void dragExit(DropTargetEvent e) {
       final DropTargetListener forward = getListener(e);
       if (forward != null) forward.dragExit(e);
     }
 
-    /** ineffectual. Passes event along listener chain */
+    /** Passes event along listener chain */
     @Override
     public void dragOver(DropTargetDragEvent e) {
       final DropTargetListener forward = getListener(e);
       if (forward != null) forward.dragOver(e);
     }
 
-    /** ineffectual. Passes event along listener chain */
+    /** Passes event along listener chain */
     @Override
     public void dropActionChanged(DropTargetDragEvent e) {
       final DropTargetListener forward = getListener(e);
@@ -2096,20 +2054,20 @@ public class PieceMover extends AbstractBuildable
     }
   }
 
-
-  /**********************************************************************************
+  /**
    * VASSAL's front-line drag handler for drag-and-drop of pieces.
    *
    * Implementation of AbstractDragHandler when DragImage is supported by JRE.
    * {@link DragHandlerMacOSX} extends this for special Mac platform
    *
    * @author Pieter Geerkens
-   **********************************************************************************/
+   */
   public static class DragHandler extends AbstractDragHandler {
     @Override
     public void dragGestureRecognized(DragGestureEvent dge) {
-      if (dragGestureRecognizedPrep(dge) == null) return;
-      super.dragGestureRecognized(dge);
+      if (dragGestureRecognizedPrep(dge) != null) {
+        super.dragGestureRecognized(dge);
+      }
     }
 
     @Override
@@ -2119,7 +2077,8 @@ public class PieceMover extends AbstractBuildable
 
     @Override
     protected double getDeviceScale(DragGestureEvent dge) {
-      // Get the OS scaling; note that this is _probably_ running only on Windows.
+      // Get the OS scaling; note that this handler is _probably_ running only
+      // on Windows.
       final Graphics2D g2d = (Graphics2D) dge.getComponent().getGraphics();
       final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
       g2d.dispose();
@@ -2127,13 +2086,19 @@ public class PieceMover extends AbstractBuildable
     }
 
     @Override
-    public void dragMouseMoved(DragSourceDragEvent dsde) {
-      super.dragMouseMoved(dsde);
+    protected double getDeviceScale(DropTargetDragEvent e) {
+      // Get the OS scaling; note that this handler is _probably_ running only
+      // on Windows.
+      final Graphics2D g2d = (Graphics2D) e.getDropTargetContext().getComponent().getGraphics();
+      final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
+      g2d.dispose();
+      return os_scale;
     }
   }
 
   /**
-   * Special MacOSX variant of DragHandler, because of differences in how device scaling is handled.
+   * Special MacOSX variant of DragHandler, because of differences in how
+   * device scaling is handled.
    */
   public static class DragHandlerMacOSX extends DragHandler {
     @Override
@@ -2143,31 +2108,150 @@ public class PieceMover extends AbstractBuildable
 
     @Override
     protected double getDeviceScale(DragGestureEvent dge) {
-      // Retina Macs account for the device scaling for the drag icon, so we don't have to.
+      // Retina Macs account for the device scaling for the drag icon,
+      // so we don't have to.
+      return 1.0;
+    }
+
+    @Override
+    protected double getDeviceScale(DropTargetDragEvent e) {
       return 1.0;
     }
   }
 
-  /****************************************************************************************
-   * Fallback drag-handler when DragImage not supported by JRE. Implements a pseudo-cursor
-   * that follows the mouse cursor when user drags game pieces. Supports map zoom by
-   * resizing cursor when it enters a drop target of type Map.View.
+  /**
+   * Fallback drag-handler when DragImage not supported by JRE. Implements a
+   * pseudo-cursor that follows the mouse cursor when user drags game pieces.
+   * Supports map zoom by resizing cursor when it enters a drop target of
+   * type Map.View.
    * <br>
    * @author Jim Urbas
    * @version 0.4.2
-   ****************************************************************************************/
+   */
   public static class DragHandlerNoImage extends AbstractDragHandler {
+    protected Component dragWin; // the component that initiated the drag operation
+    protected Component dropWin; // the drop target the mouse is currently over
+    protected JLayeredPane drawWin; // the component that owns our pseudo-cursor
+
+    protected final Point drawOffset = new Point(); // translates event coords to local drawing coords
+
     @Override
     public void dragGestureRecognized(DragGestureEvent dge) {
       final Point mousePosition = dragGestureRecognizedPrep(dge);
       if (mousePosition == null) return;
 
-      makeDragCursor(dragPieceOffCenterZoom);
+      dragWin = dge.getComponent();
+      drawWin = null;
+      dropWin = null;
+
+      makeDragCursor(dragPieceOffCenterZoom, getDeviceScale(dge));
       setDrawWinToOwnerOf(dragWin);
       SwingUtilities.convertPointToScreen(mousePosition, drawWin);
       moveDragCursor(mousePosition.x, mousePosition.y);
 
       super.dragGestureRecognized(dge);
+    }
+
+    @Override
+    @Deprecated(since = "2023-05-15", forRemoval = true)
+    protected void makeDragCursor(double zoom) {
+      makeDragCursor(zoom, 1.0);
+    }
+
+    /**
+     * Installs the cursor image into our dragCursor JLabel.
+     * Sets current zoom. Should be called at beginning of drag
+     * and whenever zoom changes. INPUT: DragBuffer.getBuffer OUTPUT:
+     * dragCursorZoom cursorOffCenterX cursorOffCenterY boundingBox
+     * @param zoom DragBuffer.getBuffer
+     *
+     */
+    protected void makeDragCursor(double zoom, double os_scale) {
+      // create the cursor if necessary
+      if (dragCursor == null) {
+        dragCursor = new JLabel();
+        dragCursor.setVisible(false);
+      }
+
+      final BufferedImage img = makeDragImageCursorCommon(zoom, os_scale, true, dragCursor);
+      dragCursor.setSize(img.getWidth(), img.getHeight());
+      dragCursor.setIcon(new ImageIcon(img));
+      dragCursorZoom = zoom;
+    }
+
+    /**
+     * Moves the drag cursor on the current draw window
+     * @param dragX x position
+     * @param dragY y position
+     */
+    @Override
+    protected void moveDragCursor(int dragX, int dragY) {
+      if (drawWin != null) {
+        dragCursor.setLocation(dragX - drawOffset.x, dragY - drawOffset.y);
+      }
+    }
+
+    /**
+     * Removes the drag cursor from the current draw window
+     */
+    @Override
+    protected void removeDragCursor() {
+      if (drawWin != null) {
+        if (dragCursor != null) {
+          dragCursor.setVisible(false);
+          drawWin.remove(dragCursor);
+        }
+        drawWin = null;
+      }
+    }
+
+    /**
+     * creates or moves cursor object to given JLayeredPane. Usually called by setDrawWinToOwnerOf()
+     * @param newDrawWin JLayeredPane that is to be our new drawWin
+     */
+    private void setDrawWin(JLayeredPane newDrawWin) {
+      if (newDrawWin != drawWin) {
+        // remove cursor from old window
+        if (dragCursor.getParent() != null) {
+          dragCursor.getParent().remove(dragCursor);
+        }
+        if (drawWin != null) {
+          drawWin.repaint(dragCursor.getBounds());
+        }
+        drawWin = newDrawWin;
+        calcDrawOffset();
+        dragCursor.setVisible(false);
+        drawWin.add(dragCursor, JLayeredPane.DRAG_LAYER);
+      }
+    }
+
+    /** calculates the offset between cursor dragCursor positions */
+    @Override
+    protected void calcDrawOffset() {
+      if (drawWin != null) {
+        // drawOffset is the offset between the mouse location during a drag
+        // and the upper-left corner of the cursor
+        // accounts for difference between event point (screen coords)
+        // and Layered Pane position, boundingBox and off-center drag
+        drawOffset.x = -boundingBoxComp.x - currentPieceOffsetX + EXTRA_BORDER;
+        drawOffset.y = -boundingBoxComp.y - currentPieceOffsetY + EXTRA_BORDER;
+        SwingUtilities.convertPointToScreen(drawOffset, drawWin);
+      }
+    }
+
+    /**
+     * creates or moves cursor object to given window. Called when drag operation begins in a window or the cursor is
+     * dragged over a new drop-target window
+     * @param newDropWin window component to be our new draw window.
+     */
+    @Override
+    public void setDrawWinToOwnerOf(Component newDropWin) {
+      if (newDropWin != null) {
+        final JRootPane rootWin = SwingUtilities.getRootPane(newDropWin);
+        if (rootWin != null) {
+          setDrawWin(rootWin.getLayeredPane());
+        }
+      }
     }
 
     @Override
@@ -2177,6 +2261,11 @@ public class PieceMover extends AbstractBuildable
 
     @Override
     protected double getDeviceScale(DragGestureEvent dge) {
+      return 1.0;
+    }
+
+    @Override
+    protected double getDeviceScale(DropTargetDragEvent e) {
       return 1.0;
     }
 
@@ -2206,7 +2295,7 @@ public class PieceMover extends AbstractBuildable
         final double newZoom = newDropWin instanceof Map.View
           ? ((Map.View) newDropWin).getMap().getZoom() : 1.0;
         if (Math.abs(newZoom - dragCursorZoom) > 0.01) {
-          makeDragCursor(newZoom);
+          makeDragCursor(newZoom, getDeviceScale(e));
         }
         setDrawWinToOwnerOf(e.getDropTargetContext().getComponent());
         dropWin = newDropWin;

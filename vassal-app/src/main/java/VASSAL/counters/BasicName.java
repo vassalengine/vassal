@@ -33,7 +33,7 @@ import java.util.Objects;
 
 /**
  * This trait overrides the $BasicName$ property provided by the "Basic Piece", allowing a module designer
- * deeking to define pieces entirely by prototype to safely ignore & leave empty the Basic Piece.
+ * decking to define pieces entirely by prototype to safely ignore and leave empty the Basic Piece.
  */
 public class BasicName extends Decorator implements TranslatablePiece {
   public static final String ID = "basicName;"; // NON-NLS

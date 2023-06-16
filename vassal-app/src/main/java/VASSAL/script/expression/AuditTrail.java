@@ -152,7 +152,6 @@ public class AuditTrail {
    * @param source             Audit source component
    * @param originalExpression Expression being audited
    * @param sourceField        Comment describing the source field of the expression being audited
-   * @return An AuditTrail object if auditing is enabled, otherwise null
    */
   public AuditTrail(Auditable source, String originalExpression, String sourceField) {
     messages = new ArrayList<>();

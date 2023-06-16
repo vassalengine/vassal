@@ -18,33 +18,31 @@
 
 package VASSAL.launch;
 
-import java.io.IOException;
-import java.io.PrintStream;
-import java.nio.charset.Charset;
-import java.util.List;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
-
-import javax.swing.SwingUtilities;
-
 import VASSAL.Info;
+import VASSAL.build.GameModule;
+import VASSAL.build.module.ExtensionsLoader;
+import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.metadata.ModuleMetaData;
-import VASSAL.tools.version.VersionUtils;
-import org.apache.commons.lang3.SystemUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import VASSAL.configure.IntConfigurer;
 import VASSAL.preferences.Prefs;
-import VASSAL.build.GameModule;
-import VASSAL.build.module.GlobalOptions;
-import VASSAL.build.module.ExtensionsLoader;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ThrowableUtils;
 import VASSAL.tools.concurrent.FutureUtils;
 import VASSAL.tools.concurrent.SimpleRunnableFuture;
 import VASSAL.tools.logging.LoggedOutputStream;
 import VASSAL.tools.menu.MenuManager;
+import VASSAL.tools.version.VersionUtils;
+import org.apache.commons.lang3.SystemUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.SwingUtilities;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.nio.charset.Charset;
+import java.util.List;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author Joel Uckelman
@@ -134,13 +132,13 @@ public abstract class Launcher {
         final String gname = GameModule.getGameModule().getGameName();
         try (Prefs p = new Prefs(Prefs.getGlobalPrefs().getEditor(), gname)) {
           final IntConfigurer maxHeapConf = new IntConfigurer(
-            GlobalOptions.MAXIMUM_HEAP, "", 512
+            GlobalOptions.MAXIMUM_HEAP, "", 1024
           );
           p.addOption(maxHeapConf);
 
           Integer h = (Integer) p.getValue(GlobalOptions.MAXIMUM_HEAP);
           if (h == null) {
-            h = 512;
+            h = 1024;
           }
           p.setValue(GlobalOptions.MAXIMUM_HEAP, 2*h);
         }

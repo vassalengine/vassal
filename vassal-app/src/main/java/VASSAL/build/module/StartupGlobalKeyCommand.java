@@ -176,6 +176,9 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
     else if (List.of(GLOBAL_HOTKEY).contains(key)) {
       return () -> SEND_HOTKEY.equals(hotkeyOrKeyCommand);
     }
+    else if ((getNameKey() != null) && getNameKey().equals(key)) {
+      return () -> true;
+    }
     else {
       return new VisibilityAND(() -> SEND_KEY_COMMAND.equals(hotkeyOrKeyCommand), super.getAttributeVisibility(key));
     }
@@ -364,7 +367,7 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
   /**
    * Deserializes our command from a string version, if the command belongs to us.
    * @param command Serialized string command
-   * @return An {@link ChessClockControl.UpdateStartupGlobalKeyCommand}
+   * @return An {@link UpdateStartupGlobalKeyCommand}
    */
   @Override
   public Command decode(final String command) {
