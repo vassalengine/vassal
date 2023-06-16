@@ -107,7 +107,7 @@ $(TMPDIR) $(JDOCDIR):
 	mkdir -p $@
 
 $(LIBDIR)/Vengine.jar: version-set
-	$(MVN) deploy -DgitVersion=$(VERSION) $(SKIPS)
+	$(MVN) deploy -DgitVersion=$(VERSION) -Dasciidoctor.attributes=optimize $(SKIPS)
 	mv $(LIBDIR)/$(JARNAME).jar $@
 	mv $(LIBDIR)/vassal-agent-$(MAVEN_VERSION).jar $(LIBDIR)/vassal-agent.jar
 
