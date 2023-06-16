@@ -83,11 +83,6 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
   static {
     innerMostProperties.add(BasicPiece.LOCATION_NAME);
     innerMostProperties.add(BasicPiece.DECK_NAME);
-    innerMostProperties.add(BasicPiece.CURRENT_BOARD);
-    innerMostProperties.add(BasicPiece.CURRENT_MAP);
-    innerMostProperties.add(BasicPiece.CURRENT_ZONE);
-    innerMostProperties.add(BasicPiece.CURRENT_X);
-    innerMostProperties.add(BasicPiece.CURRENT_Y);
   }
 
   /** @param p Set the inner GamePiece -- usually the next Trait (Decorator) inward, or the BasicPiece itself. */

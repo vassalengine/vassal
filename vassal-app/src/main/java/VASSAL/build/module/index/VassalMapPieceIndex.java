@@ -63,7 +63,7 @@ public class VassalMapPieceIndex {
   public void addOrUpdatePiece(GamePiece piece) {
     final Point pos = piece.getPosition();
     if (pos != null) {
-      // If this piece does not reside within the bounds of the Qree,
+      // If this piece does not reside within the bounds of the Qtree,
       // Then copy the existing Qtree to a new larger one that encompasses this piece, plus an extra 100 pixels.
       // The Qtree is initially set to the size of the visible play area, so this should not happen often.
       if (! qtree.getBounds().contains(pos)) {

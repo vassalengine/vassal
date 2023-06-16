@@ -112,15 +112,13 @@ public class IndexManager {
    */
   public void pieceRemoved(GamePiece piece, Map map) {
     if (map != null) {
-      if (!(piece instanceof Stack)) {
-        if (piece instanceof Stack) {
-          for (final GamePiece p : ((Stack) piece).asList()) {
-            getIndex(map).removePiece(p);
-          }
+      if (piece instanceof Stack) {
+        for (final GamePiece p : ((Stack) piece).asList()) {
+          getIndex(map).removePiece(p);
         }
-        else {
-          getIndex(map).removePiece(piece);
-        }
+      }
+      else {
+        getIndex(map).removePiece(piece);
       }
     }
   }

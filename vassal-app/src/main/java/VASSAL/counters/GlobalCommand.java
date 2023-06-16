@@ -552,14 +552,14 @@ public class GlobalCommand implements Auditable {
         try {
           x = Integer.parseInt(fastX);
         }
-        catch (Exception ignored) {
+        catch (NumberFormatException ignored) {
           x = 0;
         }
 
         try {
           y = Integer.parseInt(fastY);
         }
-        catch (Exception ignored) {
+        catch (NumberFormatException ignored) {
           y = 0;
         }
 
