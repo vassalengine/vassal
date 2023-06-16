@@ -10,7 +10,6 @@
 // :compress: // needs ghostscript
 :front-cover-image: image:image1.png[image,width=816,height=1054]
 :media: screen
-:optimize:
 
 Version {project-version}, {docdate}
 
