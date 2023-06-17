@@ -54,12 +54,7 @@ public class IndexManager {
    * @return Index
    */
   private VassalMapPieceIndex getIndex(Map map) {
-    VassalMapPieceIndex index = indexes.get(map);
-    if (index == null) {
-      index = new VassalMapPieceIndex(map);
-      indexes.put(map, index);
-    }
-    return index;
+    return indexes.computeIfAbsent(map, m -> new VassalMapPieceIndex(m));
   }
 
   /**

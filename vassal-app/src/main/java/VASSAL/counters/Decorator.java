@@ -79,12 +79,6 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
   private Decorator dec;
   private boolean selected = false;
 
-  private static Set<String> innerMostProperties = new HashSet<>();
-  static {
-    innerMostProperties.add(BasicPiece.LOCATION_NAME);
-    innerMostProperties.add(BasicPiece.DECK_NAME);
-  }
-
   /** @param p Set the inner GamePiece -- usually the next Trait (Decorator) inward, or the BasicPiece itself. */
   public void setInner(GamePiece p) {
     piece = p;
@@ -165,10 +159,7 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
    */
   @Override
   public Object getProperty(Object key) {
-    if (innerMostProperties.contains(key) && innermost != null) {
-      return innermost.getProperty(key);
-    }
-    else if (Properties.OUTER.equals(key)) {
+    if (Properties.OUTER.equals(key)) {
       return dec;
     }
     else if (Properties.KEY_COMMANDS.equals(key)) {
@@ -196,10 +187,7 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
    */
   @Override
   public Object getLocalizedProperty(Object key) {
-    if (innerMostProperties.contains(key) && innermost != null) {
-      return innermost.getLocalizedProperty(key);
-    }
-    else if (List.of(
+    if (List.of(
       Properties.KEY_COMMANDS,
       Properties.INNER,
       Properties.OUTER,
