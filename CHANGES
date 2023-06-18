@@ -3,6 +3,8 @@
 * 12362: Rollover component help button goes to MouseOver.html instead of
     Map.html
 * 12340: Fix inaccurate Hex Grid location reports
+* 12322: Scale summed board locations instead of summing scaled board
+    locations to reduce rounding error
 * 12323: Add Beanshell Range functions
 * 12303: Dynamic button text was resolved too soon
 * 12302: Description field now properly appears with Startup GKC set to send
