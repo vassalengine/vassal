@@ -567,11 +567,19 @@ public class GameState implements CommandEncoder {
 
     if (gameStarted) {
       if (gameStarting) {
+
         // Things that we invokeLater
         SwingUtilities.invokeLater(fastForwarding ? () -> {
+          // Ask the IndexManager to rebuild all indexes so at-start stack pieces are all included
+          // This is required for any SGKC's to work
+          GameModule.getGameModule().getIndexManager().rebuild();
           // Apply all of the startup global key commands, in order
           doStartupGlobalKeyCommands(false);
         } : () -> {
+          // Ask the IndexManager to rebuild all indexes so at-start stack pieces are all included
+          // This is required for any SGKC's to work
+          GameModule.getGameModule().getIndexManager().rebuild();
+
           // Apply all of the startup global key commands, in order
           doStartupGlobalKeyCommands(false);
 
@@ -586,6 +594,11 @@ public class GameState implements CommandEncoder {
           }
         });
       }
+    }
+
+    if (!gameStarting) {
+      // Clear the indexes on game shutdown to free memory during a PreDefinedSetup refresh loop.
+      GameModule.getGameModule().getIndexManager().clearAll();
     }
   }
 

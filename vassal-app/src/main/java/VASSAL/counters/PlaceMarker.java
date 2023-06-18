@@ -631,10 +631,10 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       b.add(selectButton);
       p.add("Editor.Placemarker.marker_definition", b);
 
-      xOffsetConfigEXP = new FormattedExpressionConfigurer(piece.xOffsetExpression.getExpression());
+      xOffsetConfigEXP = new FormattedExpressionConfigurer(piece.xOffsetExpression.getExpression(), Decorator.getOutermost(piece));
       p.add("Editor.PlaceMarker.horizontal_offset", xOffsetConfigEXP);
 
-      yOffsetConfigEXP = new FormattedExpressionConfigurer(piece.yOffsetExpression.getExpression());
+      yOffsetConfigEXP = new FormattedExpressionConfigurer(piece.yOffsetExpression.getExpression(), Decorator.getOutermost(piece));
       p.add("Editor.PlaceMarker.vertical_offset", yOffsetConfigEXP);
 
       matchRotationConfig = createMatchRotationConfig();

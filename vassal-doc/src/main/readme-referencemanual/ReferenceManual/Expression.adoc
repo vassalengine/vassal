@@ -176,8 +176,12 @@ MinAttachment(attachmentName, propertyName) +
 SumAttachment(attachmentName, propertyName) +
 CountAttachment(attachmentName, propertyName) +
 CountAttachmentExpression(attachmentName, expression) +
+SumLocation(propertyName) +
+SumLocation(propertyName, expression) +
+SumLocation(propertyName, locationName, mapName) +
+SumLocation(propertyName, locationName, mapName, expression) +
 Sum(prop, expression) +
-Sum(prop, expr, map) +
+Sum(prop, expression, map) +
 Count(expr) +
 Count(expr, map) + |{SumStack("Attack")} +
 {CountStack()} +
@@ -191,37 +195,14 @@ Count(expr, map) + |{SumStack("Attack")} +
 {CountAttachmentExpression("MyMinions", "{ Ammo > 0 }")} +
 {Sum("Defense", "{Type != \"Artillery\"}")} +
 {Sum("Cost", "{ Value > 0 }", "Purchases")} +
+{SumLocation("Strength")} +
+{SumLocation("Strength", "{Range > 1}")} +
+{SumLocation("Strength", "ReinforcementPool", "MainMap")} +
+{SumLocation("Strength", "ReinforcementPool", "MainMap"), "{Range <= 1}")} +
 {Count("{ Nation == \"$Nation$\" }")} +
-{Count("{ CombatValue > 0 }", "BattleMap") } + |*SumStack(prop)* returns the total of the specified property in all pieces in the same stack as this one.
+{Count("{ CombatValue > 0 }", "BattleMap") } + |
+There is an extensive range of Sum and Count functions to count pieces and to sum properties attached to pieces. See the <<ExpressionsSumCount.adoc#top,Sum and Count Functions>> page for more details on choosing and using these Functions.
 
-*CountStack()* returns the total number of pieces in the same stack as this one (including this piece)
-
-*CountStack(prop)* returns the number of pieces in the same stack as this one, that have a non-blank value for the named property. If this piece has a non-blank value for the named property, it is counted in the total.
-
-*SumMat(prop)* returns the total of the specified property among a Mat and its Mat Cargo. The asking piece can either be a Mat or a Mat Cargo. If the piece is not a Mat, and/or if it is a Mat Cargo piece not presently on a Mat, then only the piece itself is checked.
-
-*CountMat(prop)* returns the number of pieces with a non-blank value for the specified property, among a Mat and its Mat Cargo. The asking piece can either be a Mat or a Mat Cargo. If the piece is not a Mat, and/or if it is a Mat Cargo piece not presently on a Mat, then only the piece itself is checked.
-
-*MaxAttachment(attachment, prop)* returns the highest value of the specified property summed among all the pieces attached to this piece via a named Attachment trait on this piece. Returns 0 if no pieces containing the property are attached.
-
-*MinAttachment(attachment, prop)* returns the lowest value of the specified property summed among all the pieces attached to this piece via a named Attachment trait on this piece. Returns 0 if no pieces containing the property are attached.
-
-*SumAttachment(attachment, prop)* returns the total of the specified property summed across all the pieces attached to this piece via a named Attachment trait on this piece.
-
-*CountAttachment(attachment, prop)* returns the number of pieces with a non-blank value for the specified property, among all the pieces attached to this piece via a named Attachment trait on this piece.
-
-*CountAttachmentExpression(attachment, expr)* returns the total number of pieces, among the pieces attached by the named attachment property, which also match the given expression.
-
-*Sum(prop, expr)* returns the total of the specified property for all pieces in the game matching the expression.
-
-*Sum(prop, expr, map)* returns the total of the specified property for all pieces on a specific map matching the expression.
-
-*Count(expr)* returns the number of pieces in the game that match the expression.
-
-*Count(expr, map)* returns the number of pieces on a specific map matching the expression.
-
-*NOTE:* The last four functions (i.e. plain "Sum" and "Count", with or without the map parameter) can have substantial performance cost as they must check all of the pieces on the map or in the entire game against the expression.
-Also, because Java requires that the expression itself must be passed as a string, the syntax is tricky here and quotation marks inside the expression must be quoted as \" +
 |*Alert* |Alert(message) + |{Alert("Adding 1 to HP")} + |*Alert* displays a message in a popup dialog box, to the currently active player only.
 If a message needs to be shown to _all_ players, the recommended method is to send something to the Chat Log, e.g.,
 with a <<ReportChanges.adoc#top,Report Action>> trait or other <<MessageFormat.adoc#top,Message Format>> field.

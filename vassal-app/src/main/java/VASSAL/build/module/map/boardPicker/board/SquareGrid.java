@@ -382,6 +382,26 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     }
   }
 
+  /**
+   * Return the largest number of pixels that a range unit can have
+   * NOTE this is just an estimate and is used a a heuristic in the GKC fast match process, so it MUST encompass all
+   * units that could be in range, but may be larger.
+   *
+   * For Euclidean style, Largest range unit is the diagonal length of a cell unit
+   * For Manhattan style, it is the length of the longest side
+   *
+   * @return max pixels per range
+   */
+  @Override
+  public int getMaxPixelsPerRangeUnit(Point p) {
+    if (rangeOption.equals(RANGE_METRIC)) {
+      return (int) floor(Math.sqrt(dx * dx + dy * dy) + 0.5);
+    }
+    else {
+      return (int) floor(max(dx, dy) + 1.0);
+    }
+  }
+
   @Override
   public Area getGridShape(Point center, int range) {
     Area shape = shapeCache.get(range);

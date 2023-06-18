@@ -43,9 +43,11 @@ import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
 import VASSAL.tools.WarningDialog;
+
 import bsh.BeanShellExpressionValidator;
 import bsh.EvalError;
 import bsh.NameSpace;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
@@ -491,7 +493,12 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     return ps;
   }
 
-
+  /**
+   * Convert an arbitrary property value to an integer and return the value,
+   * or return 0 if not an integer.
+   * @param prop  Property value
+   * @return      converted integer value
+   */
   private static int propValue(Object prop) {
     if (prop != null) {
       final String s1 = prop.toString();
@@ -874,41 +881,439 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * Total the value of the named property in all counters in the
    * same location as the specified piece.
    * <p>
-   * * WARNING * This WILL be inefficient as the number of counters on the
-   * map increases.
-   *
    * @param property Property Name
    * @param ps       GamePiece
    * @return total
    */
   public Object sumLocation(String property, PropertySource ps) {
-    int result = 0;
+    return sumLocation(property, "", ps);
+  }
 
-    ps = translatePiece(ps);
+  /**
+   * SumLocation(property, expression) function
+   * Total the value of the named property in all counters in the
+   * same location as the specified piece that meet the supplied expression.
+   * <p>
+   * @param property   Property Name
+   * @param expression Expression
+   * @param ps         GamePiece Source
+   * @return total
+   */
+  public Object sumLocation(String property, String expression, PropertySource ps) {
 
     if (ps instanceof GamePiece) {
       final GamePiece p = (GamePiece) ps;
       final Map m = p.getMap();
       if (m != null) {
         final String here = m.locationName(p.getPosition());
-        final GamePiece[] pieces = m.getPieces();
-        for (final GamePiece piece : pieces) {
-          if (here.equals(m.locationName(piece.getPosition()))) {
-            if (piece instanceof Stack) {
-              final Stack s = (Stack) piece;
-              for (final GamePiece gamePiece : s.asList()) {
-                final Object prop = gamePiece.getProperty(property);
-                result += propValue(prop);
-              }
-            }
-            else {
-              final Object prop = piece.getProperty(property);
-              result += propValue(prop);
-            }
-          }
-        }
+        return sumMapLocation(property, here, m.getConfigureName(), expression, ps);
       }
     }
+
+    return 0;
+  }
+
+  /**
+   * SumMapLocation(property, location, map) function
+   * Total the value of the named property in all counters in the
+   * specified map and location
+   * <p>
+   * @param property   Property Name
+   * @param location   Location Name
+   * @param map        Map Name
+   * @param ps         GamePiece source
+   * @return total
+   */
+  public Object sumMapLocation(String property, String location, String map, PropertySource ps) {
+    return sumMapLocation(property, location, map, null, ps);
+  }
+
+  /**
+   * SumMapLocation(property, location, map, expression) function
+   * Total the value of the named property in all counters in the
+   * specified map and location that match the supplied expression
+   * <p>
+   * @param property   Property Name
+   * @param location   Location Name
+   * @param map        Map Name
+   * @param expression Expression
+   * @param ps         GamePiece source
+   * @return total
+   */
+
+  public Object sumMapLocation(String property, String location, String map, String expression, PropertySource ps) {
+
+    ps = translatePiece(ps);
+
+    final String matchString = replaceDollarVariables((String) expression, ps);
+    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter((PropertySource) ps);
+    final Map targetMap = findVassalMap(map);
+
+    return targetMap == null ? 0 : sumLocation(property, location, targetMap, filter);
+  }
+
+  /**
+   * Lowest-level SumMapLocation function called by all other versions
+   *
+   * @param property      Property Name to sum
+   * @param locationName  Location Name to match
+   * @param mapName       Map to check
+   * @param filter        Optional PieceFilter to check expression match
+   * @return
+   */
+  private Object sumLocation(String property, String locationName, Map map, PieceFilter filter) {
+    int result = 0;
+
+    // Ask IndexManager for list of pieces on that map at that location. Stacks are not returned by the IM.
+    for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(map, BasicPiece.LOCATION_NAME, locationName)) {
+      final Object propertyValue = piece.getProperty(property);
+      if (filter == null || filter.accept(piece)) {
+        result += propValue(propertyValue);
+      }
+    }
+    return result;
+  }
+
+  /**
+   * CountLocation() function.
+   * Return count of pieces in the same location as the current piece
+   * @return  Piece Count
+   */
+  public Object countLocation(PropertySource ps) {
+    return countLocation("", ps);
+  }
+
+  /**
+   * CountLocation(property) and CountLocation(expression) functions.
+   * Return count of pieces in the same location as the current piece that have a non-nlank value for a property or that match an expression
+   * @param   propertyOrExpression  Property Name or Match Expression
+   * @return  Piece Count
+   */
+  public Object countLocation(String propertyOrExpression, PropertySource ps) {
+    if (propertyOrExpression != null && propertyOrExpression.trim().startsWith("{")) {
+      return countLocation(null, propertyOrExpression, ps);
+    }
+    else {
+      return countLocation(propertyOrExpression, null, ps);
+    }
+  }
+
+  /**
+   * CountLocation(property, expression) functions.
+   * Return count of pieces in the same location as the current piece that have a non-nlank value for a property and that match an expression
+   * @param   property      Property Name
+   * @param   expression    Match Expression
+   * @return  Piece Count
+   */
+
+  public Object countLocation(String property, String expression, PropertySource ps) {
+    if (ps instanceof GamePiece) {
+      final GamePiece p = (GamePiece) ps;
+      final Map m = p.getMap();
+      if (m != null) {
+        final String here = m.locationName(p.getPosition());
+        return countMapLocation(here, m.getConfigureName(), property, expression, ps);
+      }
+    }
+    return 0;
+  }
+
+  public Object countMapLocation(String locationName, String mapName, PropertySource ps) {
+    return countMapLocation(locationName, mapName, null, ps);
+  }
+
+  public Object countMapLocation(String locationName, String mapName, String propertyOrExpression, PropertySource ps) {
+    if (propertyOrExpression != null && propertyOrExpression.trim().startsWith("{")) {
+      return countMapLocation(locationName, mapName, null, propertyOrExpression, ps);
+    }
+    else {
+      return countMapLocation(locationName, mapName, propertyOrExpression, "", ps);
+    }
+  }
+
+  public Object countMapLocation(String locationName, String mapName, String property, String expression, PropertySource ps) {
+    ps = translatePiece(ps);
+
+    final String matchString = replaceDollarVariables(expression, ps);
+    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter((PropertySource) ps);
+    final Map targetMap = findVassalMap(mapName);
+
+    String propValue;
+    if (property == null || property.isEmpty()) {
+      propValue = null;
+    }
+    else {
+      propValue = property;
+    }
+
+    return targetMap == null ? 0 : countLocation(locationName, targetMap, propValue, filter);
+  }
+
+  /**
+   * Lowest-level CountLocation function called by all other versions
+   * @param locationName Location Name to search for
+   * @param map          Map to search on
+   * @param propValue    null if no property was supplied, or property name if supplied
+   * @param filter       Option filter implementing Property Match Expression
+   * @return             Count of pieces
+   */
+  private Object countLocation(String locationName, Map map, String property, PieceFilter filter) {
+    int result = 0;
+
+    // Ask IndexManager for list of pieces on that map at that location. Stacks are not returned by the IM.
+    for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(map, BasicPiece.LOCATION_NAME, locationName)) {
+      // If a property was supplied to be checked and has an empty value, then skip this piece in the count.
+      // If a property was not supplied (propValue == null), then the piece is counted.
+      if (property != null && !property.isEmpty()) {
+        final String propValue = (String) piece.getProperty(property);
+        if (propNonempty(propValue) == 0) {
+          continue;
+        }
+      }
+
+      // Add 1 to count if the no filter was supplied, or the piece passed the filter.
+      if (filter == null || filter.accept(piece)) {
+        result += 1;
+      }
+    }
+
+    return result;
+  }
+
+
+  /**
+   * SumZone(property) function
+   * Total the value of the named property in all counters in the
+   * same zone as the specified piece.
+   * <p>
+   * @param property Property Name
+   * @param ps       GamePiece
+   * @return total
+   */
+  public Object sumZone(String property, PropertySource ps) {
+    return sumZone(property, "", ps);
+  }
+
+  /**
+   * SumZone(property, expression) function
+   * Total the value of the named property in all counters in the
+   * same zone as the specified piece that meet the supplied expression.
+   * <p>
+   * @param property   Property Name
+   * @param expression Expression
+   * @param ps         GamePiece Source
+   * @return total
+   */
+  public Object sumZone(String property, String expression, PropertySource ps) {
+
+    if (ps instanceof GamePiece) {
+      final GamePiece p = (GamePiece) ps;
+      final Map m = p.getMap();
+      if (m != null) {
+        final String zone = (String) p.getProperty(BasicPiece.CURRENT_ZONE);
+        return sumMapZone(property, zone, m.getConfigureName(), expression, ps);
+      }
+    }
+
+    return 0;
+  }
+
+  /**
+   * SumMapZone(property, location, map) function
+   * Total the value of the named property in all counters in the
+   * specified map and zone
+   * <p>
+   * @param property   Property Name
+   * @param zoneName   Zone Name
+   * @param map        Map Name
+   * @param ps         GamePiece source
+   * @return total
+   */
+  public Object sumMapZone(String property, String zoneName, String map, PropertySource ps) {
+    return sumMapZone(property, zoneName, map, null, ps);
+  }
+
+  /**
+   * SumMapZone(property, location, map, expression) function
+   * Total the value of the named property in all counters in the
+   * specified map and zone that match the supplied expression
+   * <p>
+   * @param property   Property Name
+   * @param zoneName   Zone Name
+   * @param map        Map Name
+   * @param expression Expression
+   * @param ps         GamePiece source
+   * @return total
+   */
+
+  public Object sumMapZone(String property, String zoneName, String map, String expression, PropertySource ps) {
+
+    ps = translatePiece(ps);
+
+    final String matchString = replaceDollarVariables((String) expression, ps);
+    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter((PropertySource) ps);
+    final Map targetMap = findVassalMap(map);
+
+    return targetMap == null ? 0 : sumZone(property, zoneName, targetMap, filter);
+  }
+
+  /**
+   * Lowest-level SumZone function called by all other versions
+   *
+   * @param property      Property Name to sum
+   * @param zone          Zone Name to match
+   * @param mapName       Map to check
+   * @param filter        Optional PieceFilter to check expression match
+   * @return
+   */
+  private Object sumZone(String property, String zoneName, Map map, PieceFilter filter) {
+    int result = 0;
+
+    // Ask IndexManager for list of pieces on that map at that zone. Stacks are not returned by the IM.
+    for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(map, BasicPiece.CURRENT_ZONE, zoneName)) {
+      final Object propertyValue = piece.getProperty(property);
+      if (filter == null || filter.accept(piece)) {
+        result += propValue(propertyValue);
+      }
+    }
+    return result;
+  }
+
+  /**
+   * CountZone() function.
+   * Return count of pieces in the same zone as the current piece
+   * @return  Piece Count
+   */
+  public Object countZone(PropertySource ps) {
+    return countZone("", ps);
+  }
+
+  /**
+   * CountZone(property) and CountZone(expression) functions.
+   * Return count of pieces in the same zone as the current piece that have a non-blank value for a property or that match an expression
+   * @param   propertyOrExpression  Property Name or Match Expression
+   * @return  Piece Count
+   */
+  public Object countZone(String propertyOrExpression, PropertySource ps) {
+    if (propertyOrExpression != null && propertyOrExpression.trim().startsWith("{")) {
+      return countZone(null, propertyOrExpression, ps);
+    }
+    else {
+      return countZone(propertyOrExpression, null, ps);
+    }
+  }
+
+  /**
+   * CountLocation(zone, expression) function
+   * Return count of pieces in the same zome as the current piece that have a non-blank value for a property and that match an expression
+   * @param   property      property name
+   * @param   expression    match expression
+   * @return  Piece Count
+   */
+
+  public Object countZone(String property, String expression, PropertySource ps) {
+    if (ps instanceof GamePiece) {
+      final GamePiece p = (GamePiece) ps;
+      final Map m = p.getMap();
+      if (m != null) {
+        final String here = (String) p.getProperty(BasicPiece.CURRENT_ZONE);
+        return countMapZone(here, m.getConfigureName(), property, expression, ps);
+      }
+    }
+    return 0;
+  }
+
+  /**
+   * CountMapZone(Zone, Map) function
+   * Return the count of pieces in the specified Zone/Map
+   *
+   * @param zoneName  Target Zone Name
+   * @param mapName   Target Map Name
+   * @param ps        Source Piece
+   * @return          Count
+   */
+  public Object countMapZone(String zoneName, String mapName, PropertySource ps) {
+    return countMapZone(zoneName, mapName, null, ps);
+  }
+
+  /**
+   * CountMapZone(Zone, Map, property) and CountMapZone(Zone, Map, expression) function
+   * Return the count of pieces in the specified Zone/Map that match the supplied expression OR
+   * have a non-blank value for the supplied property name
+   *
+   * @param zoneName              Target Zone Name
+   * @param mapName               Target Map Name
+   * @param propertyOrExpression  A Property Name or a Beanshell expression
+   * @param ps                    Source Piece
+   * @return                      Count
+   */
+  public Object countMapZone(String zoneName, String mapName, String propertyOrExpression, PropertySource ps) {
+    if (propertyOrExpression != null && propertyOrExpression.trim().startsWith("{")) {
+      return countMapZone(zoneName, mapName, null, propertyOrExpression, ps);
+    }
+    else {
+      return countMapZone(zoneName, mapName, propertyOrExpression, "", ps);
+    }
+  }
+
+  /**
+   * CountMapZone(Zone, Map, property, expression) function
+   * Return the count of pieces in the specified Zone/Map that match the supplied expression AND
+   * have a non-blank value for the supplied property name
+   *
+   * @param zoneName              Target Zone Name
+   * @param mapName               Target Map Name
+   * @param property              A Property Name
+   * @param expression            A Beanshell expression
+   * @param ps                    Source Piece
+   * @return                      Count
+   */
+  public Object countMapZone(String zoneName, String mapName, String property, String expression, PropertySource ps) {
+    ps = translatePiece(ps);
+
+    final String matchString = replaceDollarVariables(expression, ps);
+    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter((PropertySource) ps);
+    final Map targetMap = findVassalMap(mapName);
+
+    String propValue;
+    if (property == null || property.isEmpty()) {
+      propValue = null;
+    }
+    else {
+      propValue = property;
+    }
+
+    return targetMap == null ? 0 : countZone(zoneName, targetMap, propValue, filter);
+  }
+
+  /**
+   * Lowest-level CountZone function called by all other versions
+   * @param zoneName     Zone Name to search for
+   * @param map          Map to search on
+   * @param propValue    null if no property was supplied, or value of supplied property
+   * @param filter       Option filter implementing Property Match Expression
+   * @return             Count of pieces
+   */
+  private Object countZone(String zoneName, Map map, String property, PieceFilter filter) {
+    int result = 0;
+
+    // Ask IndexManager for list of pieces on that map at that location. Stacks are not returned by the IM.
+    for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(map, BasicPiece.CURRENT_ZONE, zoneName)) {
+      // If a property was supplied to be checked and has an empty value, then skip this piece in the count.
+      // If a property was not supplied (propValue == null), then the piece is counted.
+      if (property != null && !property.isEmpty()) {
+        final String propValue = (String) piece.getProperty(property);
+        if (propNonempty(propValue) == 0) {
+          continue;
+        }
+      }
+
+      // Add 1 to count if the no filter was supplied, or the piece passed the filter.
+      if (filter == null || filter.accept(piece)) {
+        result += 1;
+      }
+    }
+
     return result;
   }
 

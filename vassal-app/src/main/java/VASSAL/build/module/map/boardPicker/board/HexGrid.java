@@ -765,6 +765,18 @@ public class HexGrid extends AbstractConfigurable
     return h1.distance(h2);
   }
 
+  /**
+   * Return the largest number of pixels that a range unit can have
+   * NOTE this is just an estimate and is used as a heuristic in the GKC fast match process, so it MUST encompass all
+   * units that could be in range, but may be larger. The range of selected pieces will be accurately checked.
+   *
+   * @return max pixels per range
+   */
+  @Override
+  public int getMaxPixelsPerRangeUnit(Point p) {
+    return (int) (max(dx, dy) * 1.1);
+  }
+
   @Deprecated(since = "2023-06-03", forRemoval = true)
   protected int hexX(int x, int y) {
     return hexPoint(x, y).x;

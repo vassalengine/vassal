@@ -17,6 +17,7 @@
  */
 package VASSAL.configure;
 
+import VASSAL.counters.GamePiece;
 import VASSAL.counters.GlobalCommandTarget;
 import VASSAL.counters.TraitLayout;
 import VASSAL.i18n.Resources;
@@ -62,9 +63,13 @@ public class GlobalCommandTargetConfigurer extends Configurer {
   // A local copy of the target used for configuring
   private final GlobalCommandTarget target;
 
+  // Null for components, otherwise the current piece being editied
+  private GamePiece sourcePiece;
+
   public GlobalCommandTargetConfigurer(String key, String name, GlobalCommandTarget target) {
     super(key, name, target);
     this.target = new GlobalCommandTarget(target);
+    this.sourcePiece = null;
   }
 
   public GlobalCommandTargetConfigurer(String key, String name) {
@@ -75,6 +80,10 @@ public class GlobalCommandTargetConfigurer extends Configurer {
     this(null, null, target);
   }
 
+  public GlobalCommandTargetConfigurer(GlobalCommandTarget target, GamePiece sourcePiece) {
+    this(target);
+    this.sourcePiece = sourcePiece;
+  }
   public GlobalCommandTarget getTarget() {
     return (GlobalCommandTarget) getValue();
   }
@@ -181,41 +190,41 @@ public class GlobalCommandTargetConfigurer extends Configurer {
       controls.add(targetTypeLabel, "span 2"); // NON-NLS
       controls.add(targetTypeConfig.getControls(), "growx, wrap"); // NON-NLS
 
-      targetMapConfig = new FormattedExpressionConfigurer(target.getTargetMap().getExpression());
+      targetMapConfig = new FormattedExpressionConfigurer(target.getTargetMap().getExpression(), sourcePiece);
       targetMapConfig.addPropertyChangeListener(evt -> update());
       targetMapConfig.setHintKey("Editor.GlobalKeyCommand.map_name_hint");
       targetMapLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.map_name"));
       controls.add(targetMapLabel, "span 2"); // NON-NLS
       controls.add(targetMapConfig.getControls(), "growx, wrap"); // NON-NLS
 
-      targetBoardConfig = new FormattedExpressionConfigurer(target.getTargetBoard().getExpression());
+      targetBoardConfig = new FormattedExpressionConfigurer(target.getTargetBoard().getExpression(), sourcePiece);
       targetBoardConfig.addPropertyChangeListener(evt -> update());
       targetBoardConfig.setHintKey("Editor.GlobalKeyCommand.board_name_hint");
       targetBoardLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.board_name"));
       controls.add(targetBoardLabel, "span 2"); // NON-NLS
       controls.add(targetBoardConfig.getControls(), "growx, wrap"); // NON-NLS
 
-      targetZoneConfig = new FormattedExpressionConfigurer(target.getTargetZone().getExpression());
+      targetZoneConfig = new FormattedExpressionConfigurer(target.getTargetZone().getExpression(), sourcePiece);
       targetZoneConfig.addPropertyChangeListener(evt -> update());
       targetZoneConfig.setHintKey("Editor.GlobalKeyCommand.zone_name_hint");
       targetZoneLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.zone_name"));
       controls.add(targetZoneLabel, "span 2"); // NON-NLS
       controls.add(targetZoneConfig.getControls(), "growx, wrap"); // NON-NLS
 
-      targetLocationConfig = new FormattedExpressionConfigurer(target.getTargetLocation().getExpression());
+      targetLocationConfig = new FormattedExpressionConfigurer(target.getTargetLocation().getExpression(), sourcePiece);
       targetLocationConfig.addPropertyChangeListener(evt -> update());
       targetLocationConfig.setHintKey("Editor.GlobalKeyCommand.location_name_hint");
       targetLocationLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.location_name"));
       controls.add(targetLocationLabel, "span 2"); // NON-NLS
       controls.add(targetLocationConfig.getControls(), "growx, wrap"); // NON-NLS
 
-      targetXConfig = new FormattedExpressionConfigurer(target.getTargetX().getExpression());
+      targetXConfig = new FormattedExpressionConfigurer(target.getTargetX().getExpression(), sourcePiece);
       targetXConfig.addPropertyChangeListener(evt -> update());
       targetXLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.x_position"));
       controls.add(targetXLabel, "span 2"); // NON-NLS
       controls.add(targetXConfig.getControls(), "growx, wrap"); // NON-NLS
 
-      targetYConfig = new FormattedExpressionConfigurer(target.getTargetY().getExpression());
+      targetYConfig = new FormattedExpressionConfigurer(target.getTargetY().getExpression(), sourcePiece);
       targetYConfig.addPropertyChangeListener(evt -> update());
       targetYLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.y_position"));
       controls.add(targetYLabel, "span 2"); // NON-NLS
@@ -233,7 +242,7 @@ public class GlobalCommandTargetConfigurer extends Configurer {
       controls.add(fastMatchPropertyConfig.getControls());
       controls.add(new JLabel(Resources.getString("Editor.GlobalKeyCommand.by_property")), "wrap"); //NON-NLS
 
-      targetPropertyConfig = new FormattedExpressionConfigurer(target.getTargetProperty().getExpression());
+      targetPropertyConfig = new FormattedExpressionConfigurer(target.getTargetProperty().getExpression(), sourcePiece);
       targetPropertyConfig.addPropertyChangeListener(evt -> update());
       targetPropertyConfig.setHintKey("Editor.GlobalKeyCommand.property_name_hint");
       targetPropertyLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.property_name"));
@@ -247,7 +256,7 @@ public class GlobalCommandTargetConfigurer extends Configurer {
       controls.add(targetCompareLabel, "span 2"); //NON-NLS
       controls.add(targetCompareConfig.getControls(), "wrap"); //NON-NLS
 
-      targetValueConfig = new FormattedExpressionConfigurer(target.getTargetValue().getExpression());
+      targetValueConfig = new FormattedExpressionConfigurer(target.getTargetValue().getExpression(), sourcePiece);
       targetValueConfig.addPropertyChangeListener(evt -> update());
       targetValueConfig.setHintKey("Editor.GlobalKeyCommand.property_value_hint");
       targetValueLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.property_value"));

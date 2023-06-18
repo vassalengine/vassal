@@ -992,7 +992,7 @@ public class FreeRotator extends Decorator
       panel.add(directKeyConfig.getControls(), "wrap");
 
       panel.add(new JLabel(Resources.getString("Editor.FreeRotator.rotate_direct")));
-      directTargetConfig = new FormattedExpressionConfigurer(p.directExpression.getFormat());
+      directTargetConfig = new FormattedExpressionConfigurer(p.directExpression.getFormat(), Decorator.getOutermost(p));
       panel.add(directTargetConfig.getControls());
       final JPanel facingPanel = new JPanel(new MigLayout("ins 0", "[fill,grow,sg 1]0[fill,grow,sg 1]"));
       facingPanel.add(directTypeLabel, "grow");

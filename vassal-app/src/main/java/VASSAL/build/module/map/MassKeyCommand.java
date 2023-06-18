@@ -42,6 +42,7 @@ import VASSAL.counters.BooleanAndPieceFilter;
 import VASSAL.counters.CounterGlobalKeyCommand;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.Embellishment;
+import VASSAL.counters.GamePiece;
 import VASSAL.counters.GlobalCommand;
 import VASSAL.counters.GlobalCommandTarget;
 import VASSAL.counters.PieceFilter;
@@ -56,12 +57,15 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.ToolBarComponent;
 import VASSAL.tools.swing.SwingUtils;
+
 import net.miginfocom.swing.MigLayout;
+
 import org.apache.commons.lang3.ArrayUtils;
 
 import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
 import java.awt.Component;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -352,6 +356,11 @@ public class MassKeyCommand extends AbstractToolbarItem
     }
 
     public DeckPolicyConfig(boolean showPrompt) {
+      this(showPrompt, null);
+    }
+
+    public DeckPolicyConfig(boolean showPrompt, GamePiece sourcePiece) {
+
       super(null, "");
 
       typeConfig = new TranslatingStringEnumConfigurer(
@@ -362,7 +371,7 @@ public class MassKeyCommand extends AbstractToolbarItem
           "Editor.GlobalKeyCommand.fixed_number_of_pieces"
         }
       );
-      piecesConfig = new FormattedExpressionConfigurer("");
+      piecesConfig = new FormattedExpressionConfigurer("", sourcePiece);
 
       if (showPrompt) {
         controls2 = new JPanel(new MigLayout("ins 0", "[]rel[]rel[]")); // NON-NLS

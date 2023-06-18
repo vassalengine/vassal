@@ -218,7 +218,7 @@ public class PlaySound extends Decorator implements TranslatablePiece {
       menuConfig = new StringConfigurer(p.menuText);
       menuConfig.setHintKey("Editor.menu_command_hint");
       keyConfig = new NamedHotKeyConfigurer(p.stroke);
-      soundConfig = new AudioClipConfigurer(null, "", GameModule.getGameModule().getArchiveWriter());
+      soundConfig = new AudioClipConfigurer(null, "", GameModule.getGameModule().getArchiveWriter(), p);
       soundConfig.setValue(p.format.getFormat());
       soundConfig.setEditable(true);
       sendConfig = new BooleanConfigurer(p.sendToOthers);

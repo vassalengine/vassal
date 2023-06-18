@@ -624,6 +624,7 @@ public class StackMetrics extends AbstractConfigurable {
    * @return a Command that accomplishes this task
    */
   public Command merge(GamePiece fixed, GamePiece moving) {
+
     Command comm;
     if (fixed instanceof Stack && ((Stack) fixed).topPiece() != null) {  //NOTE: topPiece() returns the top VISIBLE piece (not hidden by Invisible trait)
       comm = merge(((Stack) fixed).topPiece(), moving);
@@ -672,6 +673,8 @@ public class StackMetrics extends AbstractConfigurable {
         }
       }
     }
+    // Update the position based indexes for this piece
+    GameModule.getGameModule().getIndexManager().pieceMoved(moving, map);
     return comm;
   }
 }

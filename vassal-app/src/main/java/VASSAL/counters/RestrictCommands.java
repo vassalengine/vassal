@@ -246,7 +246,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
       actionOption = new TranslatingStringEnumConfigurer(new String[] { HIDE, DISABLE }, restrictionKeys, piece.action);
       box.add("Editor.RestrictCommands.restriction", actionOption);
 
-      propertyMatch = new PropertyExpressionConfigurer(piece.propertyMatch, Decorator.getOutermost(piece));
+      propertyMatch = new PropertyExpressionConfigurer(piece.propertyMatch, piece);
       box.add("Editor.RestrictCommands.restrict_when_properties_match", propertyMatch);
 
       watchKeys = new NamedKeyStrokeArrayConfigurer(piece.watchKeys);

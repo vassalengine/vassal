@@ -73,6 +73,16 @@ public interface MapGrid {
   int range(Point p1, Point p2);
 
 
+  /**
+   * Return an estimation of the maximum number of pixels per range unit for the grid that applies at the specified point.
+   * Does not need to be exact, but must defer on the larger side to ensure fast range-checking by QTree lookup finds all target pieces.
+   *
+   * @return maximum number of pixels per range unit.
+   */
+  default int getMaxPixelsPerRangeUnit(Point p) {
+    return 1;
+  }
+
   /** Whether this grid should be drawn on the map */
   boolean isVisible();
 

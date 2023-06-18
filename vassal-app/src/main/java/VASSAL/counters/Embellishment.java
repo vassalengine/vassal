@@ -1070,7 +1070,7 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
     private final JRadioButton suffix = new JRadioButton(Resources.getString("Editor.Embellishment.is_suffix"));
     private final JCheckBox drawUnderneath = new JCheckBox();
     private final JLabel resetLevelLabel = new JLabel(Resources.getString("Editor.Embellishment.level_number"));
-    private final FormattedExpressionConfigurer resetLevel = new FormattedExpressionConfigurer("");
+    private final FormattedExpressionConfigurer resetLevel;
     private final StringConfigurer resetCommand;
     private final JCheckBox loop = new JCheckBox();
 
@@ -1166,7 +1166,7 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
 
       final JPanel levelBox = new JPanel(new MigLayout("ins 0", "[grow,fill]rel[]rel[]")); // NON-NLS
       propertyLabel = new JLabel(Resources.getString("Editor.Embellishment.follow_expression"));
-      propertyConfig = new PropertyNameExpressionConfigurer("");
+      propertyConfig = new PropertyNameExpressionConfigurer("", "", "", Decorator.getOutermost(e));
       levelBox.add(propertyConfig.getControls(), "growx"); // NON-NLS
       firstLevelConfig = new IntConfigurer(e.firstLevelValue);
       levelLabel = new JLabel(Resources.getString("Editor.Embellishment.level_1"));
@@ -1235,6 +1235,7 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
       controls.add(resetLabel);
       resetCommand = new StringConfigurer(e.resetCommand);
       resetCommand.setHintKey("Editor.menu_command_hint");
+      resetLevel = new FormattedExpressionConfigurer("", Decorator.getOutermost(e));
       controls.add(resetCommand.getControls(), "grow 1"); // NON-NLS
       controls.add(resetConfig.getControls(), "grow 2,wrap"); // NON-NLS
       controls.add(resetLevelLabel);

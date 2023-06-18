@@ -864,15 +864,15 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       attachKeyLabel = new JLabel(Resources.getString("Editor.Attachment.attach_key_command"));
       traitPanel.add(attachKeyLabel, attachKeyInput);
 
-      targetConfig = new GlobalCommandTargetConfigurer(p.target);
+      targetConfig = new GlobalCommandTargetConfigurer(p.target, p);
       targetLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.pre_select"));
       traitPanel.add(targetLabel, targetConfig);
 
-      propertyMatch = new PropertyExpressionConfigurer(p.propertiesFilter);
+      propertyMatch = new PropertyExpressionConfigurer(p.propertiesFilter, p);
       propertyLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.matching_properties"));
       traitPanel.add(propertyLabel, propertyMatch);
 
-      deckPolicy = new MassKeyCommand.DeckPolicyConfig(false);
+      deckPolicy = new MassKeyCommand.DeckPolicyConfig(false, p);
       deckPolicy.setValue(p.globalAttach.getSelectFromDeckExpression());
       deckLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.deck_policy"));
       traitPanel.add(deckLabel, deckPolicy);
@@ -922,7 +922,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       clearMatchingKeyLabel = new JLabel(Resources.getString("Editor.Attachment.clear_matching_key_command"));
       traitPanel.add(clearMatchingKeyLabel, clearMatchingKeyInput);
 
-      clearMatchingMatch = new PropertyExpressionConfigurer(p.clearMatchingFilter);
+      clearMatchingMatch = new PropertyExpressionConfigurer(p.clearMatchingFilter, p);
       clearMatchingMatchLabel = new JLabel(Resources.getString("Editor.Attachment.clear_matching_properties"));
       traitPanel.add(clearMatchingMatchLabel, clearMatchingMatch);
 

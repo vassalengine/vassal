@@ -22,6 +22,7 @@ import java.awt.Component;
 import javax.swing.JPanel;
 
 import VASSAL.build.GameModule;
+import VASSAL.counters.EditablePiece;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.filechooser.AudioFileFilter;
 import VASSAL.tools.filechooser.FileChooser;
@@ -36,6 +37,12 @@ import VASSAL.tools.filechooser.FileChooser;
 public class AudioClipConfigurer extends FileConfigurer {
   protected static DirectoryConfigurer resourceDirPref;
   protected FormattedExpressionConfigurer.ExpressionButton button;
+  protected EditablePiece sourcePiece;
+
+  public AudioClipConfigurer(String key, String name, ArchiveWriter archive, EditablePiece piece) {
+    super(key, name, archive);
+    this.sourcePiece = piece;
+  }
 
   public AudioClipConfigurer(String key, String name, ArchiveWriter archive) {
     super(key, name);
@@ -62,7 +69,7 @@ public class AudioClipConfigurer extends FileConfigurer {
   public Component getControls() {
     final Component c = super.getControls();
     if (button == null) {
-      button = new FormattedExpressionConfigurer.ExpressionButton(this, tf.getPreferredSize().height);
+      button = new FormattedExpressionConfigurer.ExpressionButton(this, tf.getPreferredSize().height, sourcePiece);
       ((JPanel) c).add(button);
     }
     return c;
