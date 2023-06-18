@@ -1,4 +1,5 @@
 3.7.0-beta4 - ???
+
 * 12362: Rollover component help button goes to MouseOver.html instead of
     Map.html
 * 12340: Fix inaccurate Hex Grid location reports
