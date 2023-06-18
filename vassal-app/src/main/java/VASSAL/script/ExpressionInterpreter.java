@@ -275,7 +275,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         // Check for a propoerty in the passed property Map, then check the source if not found
         Object prop = properties == null ? null : properties.get(name);
         if (prop == null) {
-          prop = localized ? source.getLocalizedProperty(name) : source.getProperty(name);
+          prop = (source == null) ? "" : localized ? source.getLocalizedProperty(name) : source.getProperty(name);
         }
         final String value = prop == null ? "" : prop.toString();
         if (audit != null) {
