@@ -1,5 +1,6 @@
 3.7.0-beta4 - 18 June 2023
 
+* 12382: Prevent NPE in Beanshell execution during module initialisation
 * 12362: Rollover component help button goes to MouseOver.html instead of
     Map.html
 * 12340: Fix inaccurate Hex Grid location reports

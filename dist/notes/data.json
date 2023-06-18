@@ -22,6 +22,7 @@
         { "num": 12323, "desc": "Add Beanshell Range functions" }
       ],
       "bug_fixes": [
+        { "num": 12382, "desc": "Prevent NPE in Beanshell execution during module initialisation" },
         { "num": 12340, "desc": "Fix inaccurate Hex Grid location reports" },
         { "num": 12322, "desc": "Scale summed board locations instead of summing scaled board locations to reduce rounding error" },
         { "num": 12303, "desc": "Dynamic button text was resolved too soon" },
