@@ -1,8 +1,8 @@
 3.7.0-beta4 - ???
-
 * 12362: Rollover component help button goes to MouseOver.html instead of
     Map.html
 * 12340: Fix inaccurate Hex Grid location reports
+* 12327: ! operator will always return false, not error if arg is invalid
 * 12303: Dynamic button text was resolved too soon
 * 12302: Description field now properly appears with Startup GKC set to send
     Global Hotkey
