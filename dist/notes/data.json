@@ -19,6 +19,7 @@
       "in": "3.7.0-beta4",
       "since": "3.7.0-beta3",
       "new_features": [
+        { "num": 12323, "desc": "Add Beanshell Range functions" }
       ],
       "bug_fixes": [
         { "num": 12340, "desc": "Fix inaccurate Hex Grid location reports" },
