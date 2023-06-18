@@ -1,0 +1,45 @@
+== VASSAL Reference Manual
+[#top]
+
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<Expression.adoc#top,Expressions>> > *Range Expressions*#
+
+'''''
+
+=== Range Functions
+
+==== Overview
+Vassal provides a set of functions to calculate the range between 2 different locatons on a map. The range can be calulcated either in pixels, or in the native cell size of the map for Hex and Square grids.
+
+If you ask for a range in Cells on a map that does not support it, then the range will be provided in pixels. The 'Cell' size will be based on the grid that applies at the *From* point.
+
+NOTE: On maps with a <<ZonedGrid.adoc#top,Zoned Grid>>, the Grid at the *From* location is assumed to fill the entire Map for the purposes of the Range calculation.
+
+If there are any errors during calculation (for example, trying to calculate the range to a piece on a different map), then a range of 0 will be reported.
+
+Most of the functions are designed to be used within piece traits and calculate the range from the position of the current piece to another location.
+
+==== Trait specifix functions
+
+ RangeInPixels(x, y)
+ RangeInCells(x, y)
+
+Calculate the range from the current piece to the specified X, Y position on the same Map.
+
+ RangeInPixels(attachmentName)
+ RangeInCells(attachmentName)
+
+Calculate the range from the current piece to the position of the first piece attached to this piece using the Attachment Name "attachmentName" that is also on the same map as the current piece.
+
+ RangeInPixels(x1, y1, x2, y2)
+ RangeInCells(x1, y1, x2, y2)
+
+Calculate the range from the position x1, y1 to x2, y2 on the current map
+
+ RangeInPixels(x1, y1, x2, y2, mapName)
+ RangeInCells(x1, y1, x2, y2, mapName)
+
+Calculate the range from the position x1, y1 to x2, y2 on the named map. This is the only form of the Range functions that can be used outside of piece traits.
+
+
+
+
