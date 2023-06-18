@@ -33,12 +33,12 @@ Calculate the range from the current piece to the position of the first piece at
  RangeInPixels(x1, y1, x2, y2)
  RangeInCells(x1, y1, x2, y2)
 
-Calculate the range from the position x2, y1 to x2, y2 on the current map
+Calculate the range from the position x1, y1 to x2, y2 on the current map
 
  RangeInPixels(x1, y1, x2, y2, mapName)
  RangeInCells(x1, y1, x2, y2, mapName)
 
-Calculate the range from the position x2, y1 to x2, y2 on the named map. This is the only form of the Range functions that can be used outside of piece traits.
+Calculate the range from the position x1, y1 to x2, y2 on the named map. This is the only form of the Range functions that can be used outside of piece traits.
 
 
 
