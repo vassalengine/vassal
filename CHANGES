@@ -1,3 +1,7 @@
+3.7.0-beta5 - ???
+
+* 12396: Add missing Global Option message
+
 3.7.0-beta4 - 18 June 2023
 
 * 12382: Prevent NPE in Beanshell execution during module initialisation
