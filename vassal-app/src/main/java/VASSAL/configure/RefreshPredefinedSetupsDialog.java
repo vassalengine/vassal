@@ -118,7 +118,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     panel.add(deletePieceNoMap);
 
     resetProperties = new JCheckBox(Resources.getString("GameRefresher.reset_properties"));
-    resetProperties.setSelected(true);
+    resetProperties.setSelected(false);
     panel.add(resetProperties);
 
     refreshDecks = new JCheckBox(Resources.getString("GameRefresher.refresh_decks"));
