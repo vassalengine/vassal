@@ -18,10 +18,12 @@
 package VASSAL.build;
 
 import VASSAL.build.module.Chatter;
+import VASSAL.build.module.GameRefresher;
 import VASSAL.build.module.PrototypeDefinition;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.Decorator;
+import VASSAL.counters.DynamicProperty;
 import VASSAL.counters.Embellishment;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Labeler;
@@ -76,14 +78,18 @@ public class GpIdChecker {
   }
 
   public boolean useLabelerName() {
-    return refresherOptions.contains("UseLabelerName"); //$NON-NLS-1$
+    return refresherOptions.contains(GameRefresher.OPTION_USE_LABELER_NAME);
   }
   public boolean useLayerName() {
-    return refresherOptions.contains("UseLayerName"); //$NON-NLS-1$
+    return refresherOptions.contains(GameRefresher.OPTION_USE_LAYER_NAME);
   }
 
   public boolean useName() {
-    return refresherOptions.contains("UseName"); //$NON-NLS-1$
+    return refresherOptions.contains(GameRefresher.OPTION_USE_NAME);
+  }
+
+  public boolean resetDynamicProperties() {
+    return refresherOptions.contains(GameRefresher.OPTION_RESET_DYNAMIC_PROPERTIES);
   }
 
   /**
@@ -309,8 +315,20 @@ public class GpIdChecker {
         final String newState = findState(oldPiece, p, decoratorNew, p.getClass());
         // Do not copy the state of Marker traits, we want to see the new value from the new definition
         if (newState != null && newState.length() > 0 && !(decoratorNew instanceof Marker)) {
-          // Do not copy Labeler (Text Label) label state UNLESS this Text Label has the capacity to be manually updated
-          if (!(decoratorNew instanceof Labeler) || ((((Labeler)decoratorNew).getLabelKey() != null) && !NamedKeyStroke.NULL_KEYSTROKE.equals(((Labeler)decoratorNew).getLabelKey()))) {
+          // Labellers are only state copied if the Text Label has the capacity to be manually updated
+          if (decoratorNew instanceof Labeler) {
+            if (((Labeler) decoratorNew).getLabelKey() != null && !NamedKeyStroke.NULL_KEYSTROKE.equals(((Labeler) decoratorNew).getLabelKey())) {
+              decoratorNew.mySetState(newState);
+            }
+          }
+          // Dynamic Properties are only state copied if the user specifically requested it
+          else if (decoratorNew instanceof DynamicProperty) {
+            if (resetDynamicProperties()) {
+              decoratorNew.mySetState(newState);
+            }
+          }
+          // All other trait types get state copied
+          else {
             decoratorNew.mySetState(newState);
           }
         }

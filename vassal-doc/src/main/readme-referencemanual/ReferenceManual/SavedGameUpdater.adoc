@@ -12,16 +12,49 @@ But particularly since the <<GameModule.adoc#PredefinedSetup, Predefined Setups>
 
 Running the _Refresh Predefined Setups_ tool is equivalent to running the <<GameRefresher.adoc#top, Refresh Counters Tool>> on each of the predefined setups in a module.
 
-[width="100%",cols="50%,^50%",]
-|===
-|To use the refresher on all the <<GameModule.adoc#PredefinedSetup, Predefined Setups>> in a module go to the _Editor's_ _Tools_ menu and select _Refresh Pre-Defined Setups_. You will be shown a dialog with several choices affecting the manner in which the operation is to be carried out.
+To use the refresher on all the <<GameModule.adoc#PredefinedSetup, Predefined Setups>> in a module go to the _Editor's_ _Tools_ menu and select _Refresh Pre-Defined Setups_. You will be shown a dialog with several choices affecting the manner in which the operation is to be carried out.
 
 Click the _Run_ button when you are ready to perform the refresh. _All_ Predefined Setups in the module will be updated, _which may take some time, especially for complex modules with many pre-defined setups._ The chat log will show output and statistics from the operation. Once the operation is finished, pieces in all pre-defined setups will have been updated to use the latest prototypes.
+
+[width="100%",cols="^50%,50%a",]
+|===
 |image:images/SavedGameUpdater.png[]+
+|
+
+*Use counter names to identify unkown counters?:*::
+
+The Game Refresher identifies the new definition of each piece to refresh based on an internal Game Piece Id. If the module is from a pre-Game Refresher version of Vassal, or if the original piece definition has been deleted, then the Refresher cannot identify which piece definition to use. Enabling this option requests the refresher to locate the new definition based on the Basice Name recorded in the definition. You can use Test Mode to see if this resolves the missing definition error messages, without affecting the module
+
+*Use names to match modified Text Label traits?:*::
+
+When refreshing a Piece, it attempts to match each trait within the Piece to a matching trait in the new definition. For Text Label traits, changing the text or other properties causes the Refresher to skip updating the text label trait. Enabling this option causes the Refresher to use a trait with the same Name to update the piece, even if the definition of the trait has changed.
+
+*Use names to match modified Layer traits?:*::
+
+This option enables the same processing for Layer traits, forcing a Layer trait to be updated from a Layer in the definition with the same name, even if the definition has been changed.
+
+*Test Mode - Game will not be updated:*::
+
+This option performs the refresh and prints any summary or error messages, but makes no change to the module. It is useful if you have errors about missing definitions and want to see the effect of using different Refresher options, without making any changes.
+
+*Delete pieces without a map:*::
+
+This option deletes any pieces defined in the Game that do not exist on any map. These pieces cannot be used in the game, so normally, you do want to delete these.
+
+*Refresh Dynamic Property values with latest default values from module:*::
+
+If the default value of a Dynamic Property trait has been changed, then this option sets whether that default value should be used to replace the existing value in the matching Dynamic Property in the game.
+
+Refresh decks' properties with latest settings from module:*::
+
+This option enables the <<#deckRefresher,Deck Refresher>> to update Decks in the game. See the section below for more details
+
+
 |===
 
 Note that you should then save your module to complete the update.
 
+[#deckRefresher]
 ==== Deck Refresher
 
 As of VASSAL 3.6 you can also refresh the <<Deck.adoc#top, Decks>> in a module. Like Game Pieces, Decks are not normally updated from the module definitions _during_ a game, and so if you have an updated version of the module and load a saved game the deck will still behave according to the original settings. This maintains backward-compatibility with saves and logs made with earlier versions of a module, but it can become awkward when managing modules that use <<GameModule.adoc#PredefinedSetup,Pre-defined Setups>> as starting positions. The Deck Refresher lets you update, add, and delete decks in a game, for this reason.

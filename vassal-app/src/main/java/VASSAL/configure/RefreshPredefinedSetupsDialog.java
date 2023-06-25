@@ -19,6 +19,7 @@ package VASSAL.configure;
 
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Documentation;
+import VASSAL.build.module.GameRefresher;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.build.module.PredefinedSetup;
 import VASSAL.build.module.documentation.HelpFile;
@@ -58,6 +59,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   private JCheckBox testModeOn;
   private JCheckBox deletePieceNoMap;
   private JCheckBox refreshDecks;
+  private JCheckBox resetProperties;
   private JCheckBox deleteOldDecks;
   private JCheckBox addNewDecks;
   private final Set<String> options = new HashSet<>();
@@ -115,6 +117,10 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     deletePieceNoMap.setSelected(false);
     panel.add(deletePieceNoMap);
 
+    resetProperties = new JCheckBox(Resources.getString("GameRefresher.reset_properties"));
+    resetProperties.setSelected(true);
+    panel.add(resetProperties);
+
     refreshDecks = new JCheckBox(Resources.getString("GameRefresher.refresh_decks"));
     refreshDecks.setSelected(false);
     refreshDecks.addChangeListener(new ChangeListener() {
@@ -150,28 +156,31 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   protected void  setOptions() {
     options.clear();
     if (nameCheck.isSelected()) {
-      options.add("UseName"); //$NON-NLS-1$
+      options.add(GameRefresher.OPTION_USE_NAME);
     }
     if (labelerNameCheck.isSelected()) {
-      options.add("UseLabelerName"); //$NON-NLS-1$
+      options.add(GameRefresher.OPTION_USE_LABELER_NAME);
     }
     if (layerNameCheck.isSelected()) {
-      options.add("UseLayerName"); //$NON-NLS-1$
+      options.add(GameRefresher.OPTION_USE_LAYER_NAME);
     }
     if (testModeOn.isSelected()) {
-      options.add("TestMode"); //$NON-NLS-1$
+      options.add(GameRefresher.OPTION_TEST_MODE);
     }
     if (deletePieceNoMap.isSelected()) {
-      options.add("DeleteNoMap"); //$NON-NLS-1$
+      options.add(GameRefresher.OPTION_DELETE_NO_MAP);
     }
     if (refreshDecks.isSelected()) {
-      options.add("RefreshDecks"); //NON-NLS
+      options.add(GameRefresher.OPTION_REFRESH_DECKS);
       if (deleteOldDecks.isSelected()) {
-        options.add("DeleteOldDecks"); //NON-NLS
+        options.add(GameRefresher.OPTION_REFRESH_DECKS);
       }
       if (addNewDecks.isSelected()) {
-        options.add("AddNewDecks"); //NON-NLS
+        options.add(GameRefresher.OPTION_ADD_NEW_DECKS);
       }
+    }
+    if (resetProperties.isSelected()) {
+      options.add(GameRefresher.OPTION_RESET_DYNAMIC_PROPERTIES);
     }
   }
 
@@ -181,7 +190,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   }
 
   public boolean isTestMode() {
-    return options.contains("TestMode"); //$NON-NLS-1$
+    return options.contains(GameRefresher.OPTION_TEST_MODE);
   }
 
 
