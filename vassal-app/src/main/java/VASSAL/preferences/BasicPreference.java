@@ -144,10 +144,9 @@ public abstract class BasicPreference extends AbstractConfigurable {
     final GameModule g = GameModule.getGameModule();
 
     property.addTo(g);
-
-    if (tabName != null && tabName.length() > 0) {
-      g.getPrefs().addOption(tabName, getPreferenceConfigurer());
-    }
+    // if a tab name is not specified, then pass null as tab name to addOption, which causes the preference to
+    // be created, but not placed on any tab.
+    g.getPrefs().addOption((tabName == null || tabName.isEmpty()) ? null : tabName, getPreferenceConfigurer());
 
   }
 
