@@ -21,6 +21,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 12401, "desc": "Allow Ctrl-V to be entered as a Key Command" },
         { "num": 12396, "desc": "Add missing Global Option message" },
         { "num": 12363, "desc": "Initialise Global Option preferences that have no Tab name" }
       ],
