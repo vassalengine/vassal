@@ -201,6 +201,8 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
       keyStroke.addKeyListener(new KeyStrokeAdapter());
       ((AbstractDocument) keyStroke.getDocument()).setDocumentFilter(new KeyStrokeFilter());
       keyStroke.addFocusListener(this);
+      // Turn off Swing-level paste in the keystroke field
+      keyStroke.setTransferHandler(null);
 
       keyName = getKeyName();
       keyName.setMaximumSize(new Dimension(keyName.getMaximumSize().width, keyName.getPreferredSize().height));
