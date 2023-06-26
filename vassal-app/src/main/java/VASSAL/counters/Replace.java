@@ -155,7 +155,10 @@ public class Replace extends PlaceMarker {
       while (candidate != null) {
         candidate = (Decorator) Decorator.getDecorator(candidate, currentTrait.getClass());
         if (candidate != null) {
-          if (candidate.myGetType().equals(currentTrait.myGetType())) {
+          // Only copy state if we can find a trait with exactly the same Type
+          if (candidate.myGetType().equals(currentTrait.myGetType()) &&
+            // Only copy the state for Markers and Dynamic Properties if explicitly requested
+            (! (candidate instanceof Marker || candidate instanceof DynamicProperty) || copyMarkerValues)) {
             candidate.mySetState(currentTrait.myGetState());
             lastMatch = candidate;
             candidate = null;
@@ -185,11 +188,6 @@ public class Replace extends PlaceMarker {
     return getI18nData(command.getName(), getCommandDescription(description, Resources.getString("Editor.Replace.replace_command")));
   }
 
-  //@Override
-  //public boolean testEquals(Object o) {
-  //  return super.testEquals(o);
-  //}
-
   protected static class Ed extends PlaceMarker.Ed {
 
     public Ed(Replace piece) {
@@ -206,6 +204,12 @@ public class Replace extends PlaceMarker {
     protected BooleanConfigurer createAboveConfig() {
       return new BooleanConfigurer(null, Resources.getString("Editor.Replace.only_match_above"));
     }
+
+    @Override
+    protected BooleanConfigurer createMarkerConfig() {
+      return new BooleanConfigurer(null, Resources.getString("Editor.Replace.copy_marker_values"));
+    }
+
 
     @Override
     public String getType() {

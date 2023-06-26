@@ -49,6 +49,7 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.swing.SwingUtils;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -110,6 +111,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
   protected static final int BELOW = 3;
   protected int placement = STACK_TOP;
   protected boolean above;
+  protected boolean copyMarkerValues;
 
   protected String descString;
 
@@ -161,7 +163,8 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       .append(description)
       .append(gpId)
       .append(placement)
-      .append(above);
+      .append(above)
+      .append(copyMarkerValues);
     return ID + se.getValue();
   }
 
@@ -509,6 +512,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     setGpId(st.nextToken(""));
     placement = st.nextInt(STACK_TOP);
     above = st.nextBoolean(false);
+    copyMarkerValues = st.nextBoolean(false);
     gpidSupport = GameModule.getGameModule().getGpIdSupport();
   }
 
@@ -554,6 +558,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     if (! Objects.equals(description, c.description)) return false;
     if (! Objects.equals(gpId, c.gpId)) return false;
     if (! Objects.equals(placement, c.placement)) return false;
+    if (! Objects.equals(copyMarkerValues, c.copyMarkerValues)) return false;
 
     return Objects.equals(above, c.above);
   }
@@ -573,6 +578,8 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     protected BooleanConfigurer matchRotationConfig;
     protected BooleanConfigurer aboveConfig;
     private final JLabel aboveLabel;
+    protected BooleanConfigurer markerConfig;
+    private final JLabel markerLabel;
     protected TranslatingStringEnumConfigurer placementConfig;
     protected NamedHotKeyConfigurer afterBurner;
     protected StringConfigurer descConfig;
@@ -644,6 +651,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       p.add(matchLabel, matchRotationConfig);
 
       aboveConfig = createAboveConfig();
+      markerConfig = createMarkerConfig();
       if (aboveConfig != null) {
         aboveConfig.setValue(piece.above);
         aboveLabel = new JLabel(aboveConfig.getName());
@@ -651,13 +659,25 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
         p.add(aboveLabel, aboveConfig);
         aboveConfig.getControls().setVisible(piece.matchRotation);
         aboveLabel.setVisible(piece.matchRotation);
+
+        markerConfig.setValue(piece.copyMarkerValues);
+        markerLabel = new JLabel(markerConfig.getName());
+        markerConfig.setName("");
+        p.add(markerLabel, markerConfig);
+        markerConfig.getControls().setVisible(piece.matchRotation);
+        markerLabel.setVisible(piece.matchRotation);
+
         matchRotationConfig.addPropertyChangeListener(e -> {
           aboveConfig.getControls().setVisible(matchRotationConfig.getValueBoolean());
           aboveLabel.setVisible(matchRotationConfig.getValueBoolean());
+          markerConfig.getControls().setVisible(matchRotationConfig.getValueBoolean());
+          markerLabel.setVisible(matchRotationConfig.getValueBoolean());
+          SwingUtils.repack(markerLabel);
         });
       }
       else {
         aboveLabel = null;
+        markerLabel = null;
       }
 
       placementConfig = new TranslatingStringEnumConfigurer(
@@ -713,6 +733,10 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       return null;
     }
 
+    protected BooleanConfigurer createMarkerConfig() {
+      return null;
+    }
+
     @Override
     public Component getControls() {
       return p;
@@ -748,6 +772,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       se.append(slotId);
       se.append(placementConfig.getSelectedIndex());
       se.append(aboveConfig == null ? "false" : aboveConfig.getValueString()); // NON-NLS
+      se.append(markerConfig == null ? "false" : markerConfig.getValueString()); // NON-NLS
       return ID + se.getValue();
     }
     public static class ChoosePieceDialog extends ChooseComponentPathDialog {
