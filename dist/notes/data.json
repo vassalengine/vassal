@@ -25,6 +25,7 @@
         { "num": 12363, "desc": "Initialise Global Option preferences that have no Tab name" }
       ],
       "other_improvements": [
+        { "num": 12341, "desc": "Expression documentation improvements" }
       ]
     },
     {
