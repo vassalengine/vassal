@@ -61,26 +61,28 @@ Parentheses can be used to organize operations and/or override the ordinary orde
 \<= Not greater than +
 == Equals +
 != Not Equals +
-=~ Match regular Expression |{height > 10 && width >= Level} +
-{length < maxlength \|\| breadth \<= maxbreadth} +
-{Nation=="Germany"} +
-{Army!="Allied"} +
-{Type=="^A$"} |Comparison operators come in handy for <<PropertyMatchExpression.adoc#top,Property Match Expressions>> and also with the ? (ternary) operator.
+=~ Match regular Expression |{height > 10 } +
+{width < Level} +
+{Total >= HitPoints} +
+{breadth \<= maxbreadth} +
+{Nation == "Germany"} +
+{Army != "Allied"} +
+{Type =~ "^A$"} |Comparison operators come in handy for <<PropertyMatchExpression.adoc#top,Property Match Expressions>> and also with the ? (ternary) operator.
 
 Parentheses can be used to organize operations and/or override the ordinary order of operations.
 |*Logical* |&& Logical AND +
 \|\| Logical OR +
 ! Logical NOT +
-() Grouping |{Nation=="Germany" && Type=="Unit"} +
-{Nation=="Germany" \|\| Type=="Unit"} +
-{Nation=="Germany" && Type=="Unit"} +
+() Grouping |{Nation=="Germany" && Type == "Unit"} +
+{Nation == "Germany" \|\| Type == "Unit"} +
+{Nation == "Germany" && Type == "Unit"} +
 {!isInUse} +
-{A==B && (C==1 \|\| D==2)} |Comparison operators are used primarily in <<PropertyMatchExpression.adoc#top,Property Match Expressions>> and also in the If function.
+{A==B && (C == 1 \|\| D == 2)} |Comparison operators are used primarily in <<PropertyMatchExpression.adoc#top,Property Match Expressions>> and also in the If function.
 |*Ternary* |_Expr_ *?* _IfTrue_ *:* _IfFalse_ |{ (Nation=="Germany") ? "Axis" : "Allies" } +
-{ (Nation=="Germany") ? 5 : 2 } +
+{ (Nation == "Germany") ? 5 : 2 } +
 { States.contains(CurrentZone) ? 1 : 0 } +
 { IsRandom() ? "Heads" : "Tails" } +
-{A==B ? C : D} |The Ternary or "?" operator can be thought of as posing a yes/no question: if the expression before the ? symbol evaluates as "true", then the value of the expression as a whole is equal to the middle ("if true") part of the expression; otherwise (initial part is false), the result is the right ("if false") side.
+{A == B ? C : D} |The Ternary or "?" operator can be thought of as posing a yes/no question: if the expression before the ? symbol evaluates as "true", then the value of the expression as a whole is equal to the middle ("if true") part of the expression; otherwise (initial part is false), the result is the right ("if false") side.
 |*Math* |Math.abs(value1) +
 Math.min(value1, value2) +
 Math.max(value1, value2) + |{Math.abs(Number - 5)} +
