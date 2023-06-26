@@ -111,7 +111,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
   protected static final int BELOW = 3;
   protected int placement = STACK_TOP;
   protected boolean above;
-  protected boolean copyMarkerValues;
+  protected boolean doNotCopyDPValues;
 
   protected String descString;
 
@@ -164,7 +164,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       .append(gpId)
       .append(placement)
       .append(above)
-      .append(copyMarkerValues);
+      .append(doNotCopyDPValues);
     return ID + se.getValue();
   }
 
@@ -512,7 +512,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     setGpId(st.nextToken(""));
     placement = st.nextInt(STACK_TOP);
     above = st.nextBoolean(false);
-    copyMarkerValues = st.nextBoolean(false);
+    doNotCopyDPValues = st.nextBoolean(false);
     gpidSupport = GameModule.getGameModule().getGpIdSupport();
   }
 
@@ -558,7 +558,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     if (! Objects.equals(description, c.description)) return false;
     if (! Objects.equals(gpId, c.gpId)) return false;
     if (! Objects.equals(placement, c.placement)) return false;
-    if (! Objects.equals(copyMarkerValues, c.copyMarkerValues)) return false;
+    if (! Objects.equals(doNotCopyDPValues, c.doNotCopyDPValues)) return false;
 
     return Objects.equals(above, c.above);
   }
@@ -660,7 +660,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
         aboveConfig.getControls().setVisible(piece.matchRotation);
         aboveLabel.setVisible(piece.matchRotation);
 
-        markerConfig.setValue(piece.copyMarkerValues);
+        markerConfig.setValue(piece.doNotCopyDPValues);
         markerLabel = new JLabel(markerConfig.getName());
         markerConfig.setName("");
         p.add(markerLabel, markerConfig);

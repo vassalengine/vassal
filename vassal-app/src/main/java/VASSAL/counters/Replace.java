@@ -154,11 +154,11 @@ public class Replace extends PlaceMarker {
       Decorator candidate = lastMatch;
       while (candidate != null) {
         candidate = (Decorator) Decorator.getDecorator(candidate, currentTrait.getClass());
-        if (candidate != null) {
-          // Only copy state if we can find a trait with exactly the same Type
-          if (candidate.myGetType().equals(currentTrait.myGetType()) &&
-            // Only copy the state for Markers and Dynamic Properties if explicitly requested
-            (! (candidate instanceof Marker || candidate instanceof DynamicProperty) || copyMarkerValues)) {
+        // Never copy the state of Markers, which will update their value
+        // Do not copy the state (i.e. the current value) of Dynamic Properties if the designer says not to
+        if (candidate != null && ! (candidate instanceof Marker) && (!(candidate instanceof DynamicProperty) || !doNotCopyDPValues)) {
+          // Only copy state if we can find a trait with exactly the same Type.
+          if (candidate.myGetType().equals(currentTrait.myGetType())) {
             candidate.mySetState(currentTrait.myGetState());
             lastMatch = candidate;
             candidate = null;
