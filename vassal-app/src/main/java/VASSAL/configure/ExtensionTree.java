@@ -252,6 +252,17 @@ public class ExtensionTree extends ConfigureTree {
             final DefaultMutableTreeNode targetNode = getTreeNode(target);
             final Configurable cutTarget = (Configurable) cutData.getUserObject();
             if (remove(getParent(cutData), cutTarget)) {
+              // The cutTarget has been removed from the ConfigureTree, also delete it from the extension if it is the
+              // child of a non-editable Node (i.e. has been added to a module via the extension)
+              if (!isEditable(getParent(cutData))) {
+                for (final ExtensionElement el :
+                  extension.getComponentsOf(ExtensionElement.class)) {
+                  if (el.getExtension() == cutTarget) {
+                    extension.remove(el);
+                    break;
+                  }
+                }
+              }
               if (insert(target, cutTarget, targetNode.getChildCount())) {
                 extension.add(new ExtensionElement(cutTarget, getPath(targetNode)));
               }
