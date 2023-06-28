@@ -2958,12 +2958,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   // ExtensionTree to over-ride
   protected void postInsertProcessing(Configurable parent, Configurable child) {
-    return;
+
   }
 
   // ExtensionTree to over-ride
   protected void postRemoveProcessing(Configurable parent, Configurable child) {
-    return;
+
   }
 
 }
