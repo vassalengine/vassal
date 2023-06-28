@@ -251,34 +251,26 @@ public class ExtensionTree extends ConfigureTree {
           if (cutData != null) {
             final DefaultMutableTreeNode targetNode = getTreeNode(target);
             final Configurable cutTarget = (Configurable) cutData.getUserObject();
+            final Configurable convertedCutTarget = convertChild(target, cutTarget);
             if (remove(getParent(cutData), cutTarget)) {
               // The cutTarget has been removed from the ConfigureTree, also delete it from the extension if it is the
               // child of a non-editable Node (i.e. has been added to a module via the extension)
-              if (!isEditable(getParent(cutData))) {
-                for (final ExtensionElement el :
-                  extension.getComponentsOf(ExtensionElement.class)) {
-                  if (el.getExtension() == cutTarget) {
-                    extension.remove(el);
-                    break;
-                  }
-                }
-              }
-              if (insert(target, cutTarget, targetNode.getChildCount())) {
-                extension.add(new ExtensionElement(cutTarget, getPath(targetNode)));
+              deleteFromExtension(getParent(cutData), cutTarget);
+              if (insert(target, convertedCutTarget, targetNode.getChildCount())) {
+                postPasteFixups(convertedCutTarget);
+                extension.add(new ExtensionElement(convertedCutTarget, getPath(targetNode)));
               }
             }
           }
           else if (copyData != null) {
-            final Configurable copyTarget =
-              (Configurable) copyData.getUserObject();
+            final Configurable copyTarget = (Configurable) copyData.getUserObject();
 
             Configurable clone = null;
             try {
-              clone = copyTarget.getClass().getConstructor().newInstance();
+              clone = convertChild(target, copyTarget.getClass().getConstructor().newInstance());
             }
             catch (Throwable t) {
-              ReflectionUtils.handleNewInstanceFailure(
-                t, copyTarget.getClass());
+              ReflectionUtils.handleNewInstanceFailure(t, copyTarget.getClass());
             }
 
             if (clone != null) {
@@ -287,6 +279,7 @@ public class ExtensionTree extends ConfigureTree {
 
               if (insert(target, clone, getTreeNode(target).getChildCount())) {
                 updateGpIds(clone);
+                postPasteFixups(clone);
                 extension.add(
                   new ExtensionElement(clone, getPath(getTreeNode(target))));
               }
@@ -350,15 +343,8 @@ public class ExtensionTree extends ConfigureTree {
         @Override
         public void actionPerformed(ActionEvent evt) {
           final boolean removed = remove(parent, target);
-          if (removed && !isEditable(parent)) {
-            // We've removed an ExtensionElement
-            for (final ExtensionElement el :
-                 extension.getComponentsOf(ExtensionElement.class)) {
-              if (el.getExtension() == target) {
-                extension.remove(el);
-                break;
-              }
-            }
+          if (removed) {
+            deleteFromExtension(parent, target);
           }
         }
       };
@@ -436,6 +422,47 @@ public class ExtensionTree extends ConfigureTree {
     cutAction.setEnabled(selected != null && isEditable(selected));
 //    cutAction.setEnabled(selected != null && isEditable(selected));
     propertiesAction.setEnabled(selected != null && isEditable(selected) && selected.getConfigurer() != null);
+  }
+
+
+  /**
+   * Delete the corresponding ExtensionElement from the Extension if the parent is non-editable
+   * i.e. It is part of the base module
+   */
+  protected void deleteFromExtension(Configurable parent, Configurable child) {
+    if (!isEditable(parent)) {
+      // We've removed an ExtensionElement
+      for (final ExtensionElement el :
+        extension.getComponentsOf(ExtensionElement.class)) {
+        if (el.getExtension() == child) {
+          extension.remove(el);
+          break;
+        }
+      }
+    }
+  }
+
+  /**
+   * If the parent we are adding an element to is non-editable, then it is part of the base module and
+   * we need to add a new ExtensionElement to the Extension to record the location of child
+   */
+  protected void addToExtension(Configurable parent, Configurable child) {
+    if (!isEditable(parent)) {
+      final ExtensionElement el = new ExtensionElement(child, getPath(getTreeNode(parent)));
+      extension.add(el);
+    }
+  }
+
+  // Post Dnd processing - Add inserted item to Extension
+  @Override
+  protected void postInsertProcessing(Configurable parent, Configurable child) {
+    addToExtension(parent, child);
+  }
+
+  // Post Dnd processing - Add removed item from Extension
+  @Override
+  protected void postRemoveProcessing(Configurable parent, Configurable child) {
+    deleteFromExtension(parent, child);
   }
 
   /**

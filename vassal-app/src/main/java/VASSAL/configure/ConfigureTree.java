@@ -771,7 +771,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
    * we can make them here.
    * @param target Item we just pasted
    */
-  private void postPasteFixups(final Configurable target) {
+  protected void postPasteFixups(final Configurable target) {
     // SetupStacks (and thus DrawPiles) pasted to a new map, but whose owning board setting doesnt exist for this map, are forced to "any"
     if (target instanceof SetupStack) {
       final SetupStack ss = (SetupStack)target;
@@ -2888,7 +2888,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           }
 
           if (remove(getParent(sourceNode), cutObj)) {
+            postRemoveProcessing(getParent(sourceNode), cutObj);
             insert(target, convertedCutObj, childIndex);
+            postInsertProcessing(target, convertedCutObj);
             postPasteFixups(convertedCutObj);
           }
         }
@@ -2907,12 +2909,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         if (clone != null) {
           clone.build(copyBase.getBuildElement(Builder.createNewDocument()));
           insert(target, clone, childIndex);
+          postInsertProcessing(target, clone);
           updateGpIds(clone);
         }
       }
 
       return true;
     }
+
 
     @Override
     public String toString() {
@@ -2951,4 +2955,15 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
     }
   }
+
+  // ExtensionTree to over-ride
+  protected void postInsertProcessing(Configurable parent, Configurable child) {
+    return;
+  }
+
+  // ExtensionTree to over-ride
+  protected void postRemoveProcessing(Configurable parent, Configurable child) {
+    return;
+  }
+
 }
