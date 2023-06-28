@@ -112,6 +112,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
   protected boolean above;
 
   protected String descString;
+  protected boolean copyDPsByName;
 
   public PlaceMarker() {
     this(ID + Resources.getString("Editor.PlaceMarker.default_command") + ";M;null;null;null", null); // NON-NLS
@@ -161,7 +162,8 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       .append(description)
       .append(gpId)
       .append(placement)
-      .append(above);
+      .append(above)
+      .append(copyDPsByName);
     return ID + se.getValue();
   }
 
@@ -509,6 +511,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     setGpId(st.nextToken(""));
     placement = st.nextInt(STACK_TOP);
     above = st.nextBoolean(false);
+    copyDPsByName = st.nextBoolean(false);
     gpidSupport = GameModule.getGameModule().getGpIdSupport();
   }
 
@@ -554,6 +557,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     if (! Objects.equals(description, c.description)) return false;
     if (! Objects.equals(gpId, c.gpId)) return false;
     if (! Objects.equals(placement, c.placement)) return false;
+    if (! Objects.equals(copyDPsByName, c.copyDPsByName)) return false;
 
     return Objects.equals(above, c.above);
   }
@@ -573,6 +577,8 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     protected BooleanConfigurer matchRotationConfig;
     protected BooleanConfigurer aboveConfig;
     private final JLabel aboveLabel;
+    protected BooleanConfigurer copyConfig;
+    private final JLabel copyLabel;
     protected TranslatingStringEnumConfigurer placementConfig;
     protected NamedHotKeyConfigurer afterBurner;
     protected StringConfigurer descConfig;
@@ -651,13 +657,25 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
         p.add(aboveLabel, aboveConfig);
         aboveConfig.getControls().setVisible(piece.matchRotation);
         aboveLabel.setVisible(piece.matchRotation);
+
+        copyConfig = createCopyConfig();
+        copyLabel = new JLabel(copyConfig.getName());
+        copyConfig.setValue(piece.copyDPsByName);
+        copyConfig.setName("");
+        p.add(copyLabel, copyConfig);
+        copyConfig.getControls().setVisible(piece.matchRotation);
+        copyLabel.setVisible(piece.matchRotation);
+
         matchRotationConfig.addPropertyChangeListener(e -> {
           aboveConfig.getControls().setVisible(matchRotationConfig.getValueBoolean());
           aboveLabel.setVisible(matchRotationConfig.getValueBoolean());
+          copyConfig.getControls().setVisible(matchRotationConfig.getValueBoolean());
+          copyLabel.setVisible(matchRotationConfig.getValueBoolean());
         });
       }
       else {
         aboveLabel = null;
+        copyLabel = null;
       }
 
       placementConfig = new TranslatingStringEnumConfigurer(
@@ -713,6 +731,10 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       return null;
     }
 
+    protected BooleanConfigurer createCopyConfig() {
+      return null;
+    }
+
     @Override
     public Component getControls() {
       return p;
@@ -748,6 +770,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       se.append(slotId);
       se.append(placementConfig.getSelectedIndex());
       se.append(aboveConfig == null ? "false" : aboveConfig.getValueString()); // NON-NLS
+      se.append(copyConfig == null ? "false" : copyConfig.getValueString()); // NON-NLS
       return ID + se.getValue();
     }
     public static class ChoosePieceDialog extends ChooseComponentPathDialog {

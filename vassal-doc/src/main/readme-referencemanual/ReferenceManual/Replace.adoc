@@ -40,11 +40,14 @@ Layers will be set to the same level, labels will be given the same value, rotat
 The state of a particular trait will carry over only if it has an exact match in the replacement, i.e.
 the properties settings of that trait are the same in both the original and replacement piece.
 +
-*_Markers_* and *_Dynamic Properties_* are handled slightly differently.
+NOTE: _Markers_ are never state matched. A _Marker_ defined in the replacement piece will always get the value defined in the replacement piece, even if the same _Marker_ is defined in the source piece.
+
+*Copy Dynamic Property values whre Property name matches:*::
+The default option for _Dynamic Properties_ is that the trait must be defined exactly in the replacement as it is in the original (including description, minimum and maximum values and Key Commands).
 +
-A _Marker_ defined in the replacement piece will always get the value defined in the replacement piece, even if the same _Marker__ is defined in the source piece.
+Selecting this option causes the match process to just compare the name of the Dynamic Property between the original and the replacement, regardless of the other settings.
 +
-_Dynamic Properties_ are just compared on the property name, not the full range of options (e.g. minimum value).  This makes it easy to copy the value of a _Dynamic Property_ into the replacement piece. If you want to use 'Match State', but do not want to copy the value of a _Dynamic Property_, then move the _Dynamic Property_ trait in the source piece below the _Replace With Other_ trait and select the 'Only match states above this trait' option.
+This makes it easier to simply copy the value of _Dynamic Propertys_ into the matching properties replacement piece where you may need to define them differently in the replaceement piece.
 
 *Only match states above this trait:*::  If selected, VASSAL will only replace states in traits that appear above this one in the list of traits in the <<GamePiece.adoc#top,game piece editor>>. For example, the state of a _Layer_ that's above this one _will_ change if the state in the new game piece changes.
 If it's below, then it _will not_ change if the new game piece has the same _Layer_ property.
