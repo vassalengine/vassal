@@ -143,41 +143,99 @@ public class Replace extends PlaceMarker {
     return marker;
   }
 
+  /**
+   * Match trait states from the supplied base Decorator to the marker
+   *  - Markers are never matched
+   *  - Dynamic Properties are matched on Name only
+   *  - All other traits matched on full Type
+   *
+   * @param base    Decorator in Base marker to start matching
+   * @param marker  Marker to set matched values into
+   *
+   */
   protected void matchTraits(GamePiece base, GamePiece marker) {
-    if (!(base instanceof Decorator)
-        || !(marker instanceof Decorator)) {
+    if (!(base instanceof Decorator) || !(marker instanceof Decorator)) {
       return;
     }
-    Decorator currentTrait = (Decorator) base;
-    Decorator lastMatch = (Decorator) marker;
-    while (currentTrait != null) {
-      Decorator candidate = lastMatch;
+    Decorator currentMarker = (Decorator) marker;
+    while (currentMarker != null) {
+
+      Decorator candidate = (Decorator) base;
       while (candidate != null) {
-        candidate = (Decorator) Decorator.getDecorator(candidate, currentTrait.getClass());
+
+        // Find the next Decorator of the same type as the Marker Decorator we are working on
+        candidate = (Decorator) Decorator.getDecorator(candidate, currentMarker.getClass());
         if (candidate != null) {
-          if (candidate.myGetType().equals(currentTrait.myGetType())) {
-            candidate.mySetState(currentTrait.myGetState());
-            lastMatch = candidate;
-            candidate = null;
+
+          // Ignore Markers
+          if (! (candidate instanceof Marker)) {
+
+            // Match DP's on name only
+            if (candidate instanceof DynamicProperty) {
+              if (((DynamicProperty) candidate).getKey().equals(((DynamicProperty) currentMarker).getKey())) {
+                currentMarker.mySetState(candidate.myGetState());
+                candidate = null;
+              }
+            }
+            // Match all other Decorators on full type
+            else {
+              if (candidate.myGetType().equals(currentMarker.myGetType())) {
+                currentMarker.mySetState(candidate.myGetState());
+                candidate = null;
+              }
+            }
+          }
+
+          // Repeat from next inner Decorator if no match found.
+          if (candidate != null && candidate.getInner() instanceof Decorator) {
+            candidate = (Decorator) candidate.getInner();
           }
           else {
-            final GamePiece inner = candidate.getInner();
-            if (inner instanceof Decorator) {
-              candidate = (Decorator) inner;
-            }
-            else {
-              candidate = null;
-            }
+            candidate = null;
           }
         }
       }
-      if (currentTrait.getInner() instanceof Decorator) {
-        currentTrait = (Decorator) currentTrait.getInner();
+
+      // Process the next inner Decorator of the target marker
+      if (currentMarker.getInner() instanceof Decorator) {
+        currentMarker = (Decorator) currentMarker.getInner();
       }
       else {
-        currentTrait = null;
+        currentMarker = null;
       }
     }
+
+//
+//    Decorator currentTrait = (Decorator) base;
+//    Decorator lastMatch = (Decorator) marker;
+//    while (currentTrait != null) {
+//      Decorator candidate = lastMatch;
+//      while (candidate != null) {
+//        candidate = (Decorator) Decorator.getDecorator(candidate, currentTrait.getClass());
+//        if (candidate != null) {
+//          if (candidate.myGetType().equals(currentTrait.myGetType())) {
+//            candidate.mySetState(currentTrait.myGetState());
+//            lastMatch = candidate;
+//            candidate = null;
+//          }
+//          else {
+//            final GamePiece inner = candidate.getInner();
+//            if (inner instanceof Decorator) {
+//              candidate = (Decorator) inner;
+//            }
+//            else {
+//              candidate = null;
+//            }
+//          }
+//        }
+//      }
+//      if (currentTrait.getInner() instanceof Decorator) {
+//        currentTrait = (Decorator) currentTrait.getInner();
+//      }
+//      else {
+//        currentTrait = null;
+//      }
+//    }
   }
 
   @Override

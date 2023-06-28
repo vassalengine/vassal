@@ -39,9 +39,15 @@ This acts as a pointer to an existing definition: if the original piece is chang
 Layers will be set to the same level, labels will be given the same value, rotation angles will match, etc.
 The state of a particular trait will carry over only if it has an exact match in the replacement, i.e.
 the properties settings of that trait are the same in both the original and replacement piece.
++
+*_Markers_* and *_Dynamic Properties_* are handled slightly differently.
++
+A _Marker_ defined in the replacement piece will always get the value defined in the replacement piece, even if the same _Marker__ is defined in the source piece.
++
+_Dynamic Properties_ are just compared on the property name, not the full range of options (e.g. minimum value).  This makes it easy to copy the value of a _Dynamic Property_ into the replacement piece. If you want to use 'Match State', but do not want to copy the value of a _Dynamic Property_, then move the _Dynamic Property_ trait in the source piece below the _Replace With Other_ trait and select the 'Only match states above this trait' option.
 
-*Only match states above this trait:*::  If selected, VASSAL will only replace states in traits that appear above this one in the list of traits in the <<GamePiece.adoc#top,game piece editor>>. For example, the state of a <<PropertyMarker.adoc#top,Marker>> that's above this one _will_ change if the state in the new game piece changes.
-If it's below, then it _will not_ change if the new game piece has the same marker property.
+*Only match states above this trait:*::  If selected, VASSAL will only replace states in traits that appear above this one in the list of traits in the <<GamePiece.adoc#top,game piece editor>>. For example, the state of a _Layer_ that's above this one _will_ change if the state in the new game piece changes.
+If it's below, then it _will not_ change if the new game piece has the same _Layer_ property.
 
 *Place marker:*::  Choose whether the new piece should be placed on the top of this piece's stack, on the bottom of the stack, or directly above/below the triggering piece.
 
