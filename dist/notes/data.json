@@ -23,7 +23,9 @@
       "bug_fixes": [
         { "num": 12401, "desc": "Allow Ctrl-V to be entered as a Key Command" },
         { "num": 12396, "desc": "Add missing Global Option message" },
-        { "num": 12363, "desc": "Initialise Global Option preferences that have no Tab name" }
+        { "num": 12363, "desc": "Initialise Global Option preferences that have no Tab name" },
+        { "num": 12347, "desc": "Refresh Dynamic Properties correctly when they have no value" },
+        { "num": 12261, "desc": "Report error if more than one grid added to a Zone" }
       ],
       "other_improvements": [
         { "num": 12341, "desc": "Expression documentation improvements" }
