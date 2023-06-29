@@ -41,6 +41,7 @@ import VASSAL.command.Command;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.FormattedStringConfigurer;
+import VASSAL.configure.SingleChildInstance;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
@@ -50,6 +51,7 @@ import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.swing.FlowLabel;
 import VASSAL.tools.swing.SwingUtils;
+
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.Box;
@@ -60,6 +62,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -199,6 +202,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     GameModule.getGameModule().getGameState().addGameComponent(this);
     GameModule.getGameModule().addCommandEncoder(new ChangePropertyCommandEncoder(this));
     setAttributeTranslatable(HIGHLIGHT_PROPERTY, false);
+    validator = new SingleChildInstance(this, MapGrid.class);
   }
 
   public void repaint() {
