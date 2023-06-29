@@ -420,7 +420,6 @@ public class ExtensionTree extends ConfigureTree {
     super.updateEditMenu();
     deleteAction.setEnabled(selected != null && isEditable(selected));
     cutAction.setEnabled(selected != null && isEditable(selected));
-//    cutAction.setEnabled(selected != null && isEditable(selected));
     propertiesAction.setEnabled(selected != null && isEditable(selected) && selected.getConfigurer() != null);
   }
 
