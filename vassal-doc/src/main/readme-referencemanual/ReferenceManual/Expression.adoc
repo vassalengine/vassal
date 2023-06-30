@@ -204,7 +204,7 @@ Count(expr, map) + |{SumStack("Attack")} +
 {SumLocation("Strength", "ReinforcementPool", "MainMap"), "{Range <= 1}")} +
 {Count("{ Nation == \"$Nation$\" }")} +
 {Count("{ CombatValue > 0 }", "BattleMap") } + |
-There is an extensive range of Sum and Count functions to count pieces and to sum properties attached to pieces. See the <<ExpressionsSumCount.adoc#top,Sum and Count Functions>> page for more details on choosing and using these Functions.
+There is an extensive range of Sum and Count functions to count pieces and to sum properties attached to pieces. See the <<ExpressionSumCount.adoc#top,Sum and Count Functions>> page for more details on choosing and using these Functions.
 
 |*Range* |
 RangeInPixels(x, y) +
