@@ -204,7 +204,7 @@ Count(expr, map) + |{SumStack("Attack")} +
 {SumLocation("Strength", "ReinforcementPool", "MainMap"), "{Range <= 1}")} +
 {Count("{ Nation == \"$Nation$\" }")} +
 {Count("{ CombatValue > 0 }", "BattleMap") } + |
-There is an extensive range of Sum and Count functions to count pieces and to sum properties attached to pieces. See the <<ExpressionsSumCount.adoc#top,Sum and Count Functions>> page for more details on choosing and using these Functions.
+There is an extensive range of Sum and Count functions to count pieces and to sum properties attached to pieces. See the <<ExpressionSumCount.adoc#top,Sum and Count Functions>> page for more details on choosing and using these Functions.
 
 |*Range* |
 RangeInPixels(x, y) +
@@ -224,7 +224,7 @@ RangeInPixels(0, 0, gp_x, gp_y) +
 RangeInCells(oldX, oldY, newX, newY) +
 RangeInPixels(0, 0, gp_x, gp_y, "Main") +
 RangeInCells(oldX, oldY, newX, newY, "Battle") + |
-Range functions calculate the range in pixels, or in grid units (hexes, squares) between 2 locations. See the <<ExpressionsRange.adoc#top,Range Functions>> page for more details on choosing and using these Functions.
+Range functions calculate the range in pixels, or in grid units (hexes, squares) between 2 locations. See the <<ExpressionRange.adoc#top,Range Functions>> page for more details on choosing and using these Functions.
 
 |*Alert* |Alert(message) + |{Alert("Adding 1 to HP")} + |*Alert* displays a message in a popup dialog box, to the currently active player only.
 If a message needs to be shown to _all_ players, the recommended method is to send something to the Chat Log, e.g.,
