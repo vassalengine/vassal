@@ -28,6 +28,7 @@
         { "num": 12261, "desc": "Report error if more than one grid added to a Zone" }
       ],
       "other_improvements": [
+        { "num": 12427, "desc": "Fixed bad links in Reference Manual" },
         { "num": 12341, "desc": "Expression documentation improvements" }
       ]
     },

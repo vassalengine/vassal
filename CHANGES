@@ -1,5 +1,6 @@
 3.7.0-beta5 - ???
 
+* 12427: Fixed bad links in Reference Manual
 * 12401: Allow Ctrl-V to be entered as a Key Command
 * 12396: Add missing Global Option message
 * 12363: Initialise Global Option preferences that have no Tab name
