@@ -40,9 +40,7 @@ import VASSAL.build.module.map.DeckGlobalKeyCommand;
 import VASSAL.build.module.map.DrawPile;
 import VASSAL.build.module.map.MassKeyCommand;
 import VASSAL.build.module.map.SetupStack;
-import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.build.module.properties.ChangePropertyButton;
-import VASSAL.build.module.properties.GlobalProperties;
 import VASSAL.build.module.properties.GlobalProperty;
 import VASSAL.build.module.properties.GlobalTranslatableMessage;
 import VASSAL.build.module.properties.ZoneProperty;
@@ -1313,14 +1311,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   protected boolean insert(Configurable parent, Configurable child, int index) {
-    Configurable theChild = child;
-    // Convert subclasses of GlobalProperty to an actual GlobalProperty before inserting into the GlobalProperties container
-    if (parent.getClass() == GlobalProperties.class && child.getClass() == ZoneProperty.class) {
-      theChild = new GlobalProperty((GlobalProperty) child);
-    }
-    if (parent.getClass() == Zone.class && child.getClass() == GlobalProperty.class) {
-      theChild = new ZoneProperty((GlobalProperty) child);
-    }
+    // Check if the child needs to be converted to a compatible type for this parent
+    final Configurable theChild = convertChild(parent, child);
+
     final DefaultMutableTreeNode childNode = buildTreeNode(theChild);
     final DefaultMutableTreeNode parentNode = getTreeNode(parent);
     final Configurable[] oldContents = parent.getConfigureComponents();
