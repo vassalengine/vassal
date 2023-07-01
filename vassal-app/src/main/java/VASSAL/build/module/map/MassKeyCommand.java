@@ -719,7 +719,10 @@ public class MassKeyCommand extends AbstractToolbarItem
    */
   @Override
   public List<String> getFormattedStringList() {
-    return List.of(reportFormat.getFormat());
+    final List<String> l = new ArrayList<>();
+    l.add(reportFormat.getFormat());
+    return l;
+
   }
 
   /**

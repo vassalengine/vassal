@@ -759,7 +759,9 @@ public class DoActionButton extends AbstractToolbarItem
    */
   @Override
   public List<String> getFormattedStringList() {
-    return Arrays.asList(reportFormat.getFormat());
+    final List<String> l = new ArrayList<>();
+    l.add(reportFormat.getFormat());
+    return l;
   }
 
   /**

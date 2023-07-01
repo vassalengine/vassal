@@ -40,9 +40,7 @@ import VASSAL.build.module.map.DeckGlobalKeyCommand;
 import VASSAL.build.module.map.DrawPile;
 import VASSAL.build.module.map.MassKeyCommand;
 import VASSAL.build.module.map.SetupStack;
-import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.build.module.properties.ChangePropertyButton;
-import VASSAL.build.module.properties.GlobalProperties;
 import VASSAL.build.module.properties.GlobalProperty;
 import VASSAL.build.module.properties.GlobalTranslatableMessage;
 import VASSAL.build.module.properties.ZoneProperty;
@@ -771,7 +769,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
    * we can make them here.
    * @param target Item we just pasted
    */
-  private void postPasteFixups(final Configurable target) {
+  protected void postPasteFixups(final Configurable target) {
     // SetupStacks (and thus DrawPiles) pasted to a new map, but whose owning board setting doesnt exist for this map, are forced to "any"
     if (target instanceof SetupStack) {
       final SetupStack ss = (SetupStack)target;
@@ -1313,14 +1311,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   protected boolean insert(Configurable parent, Configurable child, int index) {
-    Configurable theChild = child;
-    // Convert subclasses of GlobalProperty to an actual GlobalProperty before inserting into the GlobalProperties container
-    if (parent.getClass() == GlobalProperties.class && child.getClass() == ZoneProperty.class) {
-      theChild = new GlobalProperty((GlobalProperty) child);
-    }
-    if (parent.getClass() == Zone.class && child.getClass() == GlobalProperty.class) {
-      theChild = new ZoneProperty((GlobalProperty) child);
-    }
+    // Check if the child needs to be converted to a compatible type for this parent
+    final Configurable theChild = convertChild(parent, child);
+
     final DefaultMutableTreeNode childNode = buildTreeNode(theChild);
     final DefaultMutableTreeNode parentNode = getTreeNode(parent);
     final Configurable[] oldContents = parent.getConfigureComponents();
@@ -2888,7 +2881,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           }
 
           if (remove(getParent(sourceNode), cutObj)) {
+            postRemoveProcessing(getParent(sourceNode), cutObj);
             insert(target, convertedCutObj, childIndex);
+            postInsertProcessing(target, convertedCutObj);
             postPasteFixups(convertedCutObj);
           }
         }
@@ -2907,12 +2902,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         if (clone != null) {
           clone.build(copyBase.getBuildElement(Builder.createNewDocument()));
           insert(target, clone, childIndex);
+          postInsertProcessing(target, clone);
           updateGpIds(clone);
         }
       }
 
       return true;
     }
+
 
     @Override
     public String toString() {
@@ -2951,4 +2948,15 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
     }
   }
+
+  // ExtensionTree to over-ride
+  protected void postInsertProcessing(Configurable parent, Configurable child) {
+
+  }
+
+  // ExtensionTree to over-ride
+  protected void postRemoveProcessing(Configurable parent, Configurable child) {
+
+  }
+
 }
