@@ -531,58 +531,43 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * @return total
    */
   public Object sumStack(String property, PropertySource ps) {
-    int result = 0;
-
-    ps = translatePiece(ps);
-    if (ps instanceof GamePiece) {
-      final Stack s = ((GamePiece) ps).getParent();
-      if (s == null) {
-        final Object prop = ps.getProperty(property);
-        result += IntPropValue(prop);
-      }
-      else {
-        for (final GamePiece gamePiece : s.asList()) {
-          final Object prop = gamePiece.getProperty(property);
-          result += IntPropValue(prop);
-        }
-      }
-    }
-    return result;
+    return sumStack(property, "", ps);
   }
 
   /**
-   * CountStack(property) function count the number of pieces in
-   * the same stack which have any non-blank value for the
-   * specified property.
+   * SumStack(property, expression) function
+   * Total the value of the named property in all counters in the
+   * same stack as the specified piece that meet the specified expression
    *
-   * @param property Property Name
-   * @param ps       GamePiece
+   * @param property   Property Name
+   * @param expression Expression
+   * @param ps         GamePiece
    * @return total
    */
-  public Object countStack(String property, PropertySource ps) {
+  public Object sumStack(String property, String expression, PropertySource ps) {
+    final String matchString = replaceDollarVariables(expression, ps);
+    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(ps);
+    return sumStack(property, filter, ps);
+  }
+
+  private Object sumStack(String property, PieceFilter filter, PropertySource ps) {
     int result = 0;
 
     ps = translatePiece(ps);
-
     if (ps instanceof GamePiece) {
+      final GamePiece piece = (GamePiece) ps;
       final Stack s = ((GamePiece) ps).getParent();
-      if (s == null) {        
-        if ("".equals(property)) {
-          result++;
-        }
-        else {
+      if (s == null) {
+        if (filter == null || filter.accept(piece)) {
           final Object prop = ps.getProperty(property);
-          result += propNonempty(prop);
+          result += IntPropValue(prop);
         }
       }
       else {
-        if ("".equals(property)) {
-          result = s.nVisible(); // Blank property returns number of visible-to-me pieces in the stack
-        }
-        else {
-          for (final GamePiece gamePiece: s.asList()) {
+        for (final GamePiece gamePiece : s.asList()) {
+          if (filter == null || filter.accept(gamePiece)) {
             final Object prop = gamePiece.getProperty(property);
-            result += propNonempty(prop);
+            result += IntPropValue(prop);
           }
         }
       }
@@ -590,6 +575,71 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     return result;
   }
 
+  /**
+   * CountStack(property) & CountStack(expression) function count the number of pieces in
+   * the same stack which have any non-blank value for the
+   * specified property.
+   *
+   * @param property Property Name
+   * @param ps       GamePiece
+   * @return total
+   */
+  public Object countStack(String propertyOrExpression, PropertySource ps) {
+    if (propertyOrExpression != null && propertyOrExpression.trim().startsWith("{")) {
+      return countStack("", propertyOrExpression, ps);
+    }
+    else {
+      return countStack(propertyOrExpression, (String) null, ps);
+    }
+  }
+
+  public Object countStack(String property, String expression, PropertySource ps) {
+    final String matchString = replaceDollarVariables(expression, ps);
+    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(ps);
+    return countStack(property, filter, ps);
+  }
+
+
+  private Object countStack(String property, PieceFilter filter, PropertySource ps) {
+    int result = 0;
+
+    ps = translatePiece(ps);
+
+    if (ps instanceof GamePiece) {
+      final GamePiece piece = (GamePiece) ps;
+      final Stack s = ((GamePiece) ps).getParent();
+      if (s == null) {
+        if (filter == null || filter.accept(piece)) {
+          if ("".equals(property)) {
+            result++;
+          }
+          else {
+            final Object prop = ps.getProperty(property);
+            result += propNonempty(prop);
+          }
+        }
+      }
+      else {
+        if (filter == null && (property == null || property.isEmpty())) {
+          result = s.nVisible(); // Blank property with no filter returns number of visible-to-me pieces in the stack
+        }
+        else {
+          for (final GamePiece gamePiece: s.asList()) {
+            if (filter == null || filter.accept(gamePiece)) {
+              if (property == null || property.isEmpty()) {
+                result++;
+              }
+              else {
+                final Object prop = gamePiece.getProperty(property);
+                result += propNonempty(prop);
+              }
+            }
+          }
+        }
+      }
+    }
+    return result;
+  }
 
   /**
    * MaxAttachment(attachment, property) function

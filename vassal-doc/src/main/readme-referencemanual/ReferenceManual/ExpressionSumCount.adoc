@@ -39,10 +39,17 @@ When an expression is used in any *Sum* or *Count* function, it must have the sp
 
 See <<PropertyMatchExpression.adoc#top>> for more information.
 
+Additionally, the expression must be supplied as a full Beanshell expression (including the curly braces {}), inside double quotation marks, and you must use a special syntax *\"* for any double quotes included inside the expression. +
+
+Examples: +
+ CountStack("{Strength>3}") +
+ CountStack("{StepCount < 2 && Army == \"Russian\"}")
+
+
 ===== Zone, and Location and Map Names
 The Zone *Sum* and *Count* functions take a Zone name and a Map name and will only act on pieces currently located in the named Zone on the named Map.
 
-The Location *Sum* and *Count* functions take a Zone name and a Map Name and will only act on pieces currently located in the named Location on the named Map.
+The Location *Sum* and *Count* functions take a Location name and a Map Name and will only act on pieces currently on the named Map that in Locations with the specified Location Name.
 
 The Zone and Location names used in a function can be the name of an actual Zone or Location (which should be entered in quotes like "zoneRight"), or can be another expression that evaluates to a Zone or Location name.
 
@@ -52,10 +59,15 @@ Use these functions when you want to *Sum* or *Count* pieces that are in the sam
 
 *SumStack(prop)* returns the total of the specified property in all pieces in the same stack as the current piece.
 
+*SumStack(prop, expression)* returns the total of the specified property in all pieces in the same stack as the current piece that also match the expression
+
 *CountStack()* returns the total number of pieces in the same stack as this one (including this piece)
 
 *CountStack(prop)* returns the number of pieces in the same stack as this one, that have a non-blank value for the named property. If this piece has a non-blank value for the named property, it is counted in the total.
 
+*CountStack(expression)* returns the number of pieces in the same stack as this one, that match the supplied expression.
+
+*CountStack(prop, expression)* returns the number of pieces in the same stack as this one, that have a non-blank value for the named property and that also match the supplied expression.
 
 [#LocationBased]
 ==== Location based functions
@@ -65,7 +77,7 @@ The Location Name might be a Zone name, a region name or a HexGrid location, dep
 
 *SumLocation(prop)* returns the total of the specified property (including the current piece) in all pieces with the same Location Name on the same Map as the current piece.
 
-*SumLocation(prop, expression)* returns the total of the specified property in all pieces (including the current piece) with the same Location Name on the same Map as the current piece and that match the expression .
+*SumLocation(prop, expression)* returns the total of the specified property in all pieces (including the current piece) with the same Location Name on the same Map as the current piece and that match the expression.
 
 *SumMapLocation(prop, location, map)* returns the total of the specified property in all pieces in the specified Location Name on the specified Map.
 
