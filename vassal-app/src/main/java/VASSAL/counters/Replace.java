@@ -143,27 +143,54 @@ public class Replace extends PlaceMarker {
     return marker;
   }
 
+  /**
+   * Match trait states from the supplied base Decorator to the marker
+   *  - Markers are never matched
+   *  - Dynamic Properties are matched on Name only
+   *  - All other traits matched on full Type
+   *
+   * @param base    Decorator in Base marker to start matching
+   * @param marker  Marker to set matched values into
+   *
+   */
   protected void matchTraits(GamePiece base, GamePiece marker) {
-    if (!(base instanceof Decorator)
-        || !(marker instanceof Decorator)) {
+    if (!(base instanceof Decorator) || !(marker instanceof Decorator)) {
       return;
     }
-    Decorator currentTrait = (Decorator) base;
-    Decorator lastMatch = (Decorator) marker;
-    while (currentTrait != null) {
-      Decorator candidate = lastMatch;
-      while (candidate != null) {
-        candidate = (Decorator) Decorator.getDecorator(candidate, currentTrait.getClass());
-        if (candidate != null) {
-          if (candidate.myGetType().equals(currentTrait.myGetType())) {
-            candidate.mySetState(currentTrait.myGetState());
-            lastMatch = candidate;
-            candidate = null;
-          }
-          else {
-            final GamePiece inner = candidate.getInner();
-            if (inner instanceof Decorator) {
-              candidate = (Decorator) inner;
+
+    // Process each trait in the Replacement
+    Decorator currentMarker = (Decorator) marker;
+    while (currentMarker != null) {
+
+      // Markers are never state matched
+      if (! (currentMarker instanceof Marker)) {
+
+        // Search for matching traits in the source piece, starting at the supplied trait
+        Decorator candidate = (Decorator) base;
+        while (candidate != null) {
+
+          // Find the next trait of the same type as the Replacement trait we are working on
+          candidate = (Decorator) Decorator.getDecorator(candidate, currentMarker.getClass());
+          if (candidate != null) {
+
+            // Match DP's on property name only if Copy by name option is selected
+            if (candidate instanceof DynamicProperty && copyDPsByName) {
+              if (((DynamicProperty) candidate).getKey().equals(((DynamicProperty) currentMarker).getKey())) {
+                currentMarker.mySetState(candidate.myGetState());
+                candidate = null;
+              }
+            }
+            // Match all other Decorators on full type
+            else {
+              if (candidate.myGetType().equals(currentMarker.myGetType())) {
+                currentMarker.mySetState(candidate.myGetState());
+                candidate = null;
+              }
+            }
+
+            // Repeat from next inner Decorator in the base
+            if (candidate != null && candidate.getInner() instanceof Decorator) {
+              candidate = (Decorator) candidate.getInner();
             }
             else {
               candidate = null;
@@ -171,11 +198,13 @@ public class Replace extends PlaceMarker {
           }
         }
       }
-      if (currentTrait.getInner() instanceof Decorator) {
-        currentTrait = (Decorator) currentTrait.getInner();
+
+      // Process the next inner Decorator of the target marker
+      if (currentMarker.getInner() instanceof Decorator) {
+        currentMarker = (Decorator) currentMarker.getInner();
       }
       else {
-        currentTrait = null;
+        currentMarker = null;
       }
     }
   }
@@ -184,11 +213,6 @@ public class Replace extends PlaceMarker {
   public PieceI18nData getI18nData() {
     return getI18nData(command.getName(), getCommandDescription(description, Resources.getString("Editor.Replace.replace_command")));
   }
-
-  //@Override
-  //public boolean testEquals(Object o) {
-  //  return super.testEquals(o);
-  //}
 
   protected static class Ed extends PlaceMarker.Ed {
 
@@ -205,6 +229,11 @@ public class Replace extends PlaceMarker {
     @Override
     protected BooleanConfigurer createAboveConfig() {
       return new BooleanConfigurer(null, Resources.getString("Editor.Replace.only_match_above"));
+    }
+
+    @Override
+    protected BooleanConfigurer createCopyConfig() {
+      return new BooleanConfigurer(null, Resources.getString("Editor.Replace.copy_dps_by_name"));
     }
 
     @Override
