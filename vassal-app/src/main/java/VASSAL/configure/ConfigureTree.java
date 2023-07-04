@@ -490,7 +490,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     if (hasChild(target, PieceSlot.class) || hasChild(target, CardSlot.class)) {
       addAction(popup, buildMassPieceLoaderAction(target));
     }
-    
+
     addAction(popup, buildImportAction(target));
 
     final boolean canExport = getTreeNode(target).getParent() != null;
@@ -507,7 +507,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     if (canImport) {
       addAction(popup, buildImportTreeAction(target));
     }
-    
+
     if (target instanceof DrawPile) {
       addAction(popup, buildImportDeckAction(target));
     }
@@ -948,45 +948,37 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
   }
 
-  protected Action buildImportAction(final Configurable target) {
-    return new AbstractAction(Resources.getString("Editor.ConfigureTree.add_imported_class")) {
-      private static final long serialVersionUID = 1L;
+  protected class ImportAction extends AddAction {
+    private static final long serialVersionUID = 1L;
 
-      @Override
-      public void actionPerformed(ActionEvent evt) {
-        final Configurable child = importConfigurable();
-        if (child != null) {
-          try {
-            child.build(null);
-            if (child.getConfigurer() != null) {
-              final PropertiesWindow w = new PropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ConfigureTree.this), false, child, helpWindow) {
-                private static final long serialVersionUID = 1L;
+    public ImportAction(Configurable target, String name) {
+      super(target, null, name, -1, null);
+    }
 
-                @Override
-                public void save() {
-                  super.save();
-                  insert(target, child, getTreeNode(target).getChildCount());
-                }
+    @Override
+    protected Configurable getChild() {
+      return importConfigurable();
+    }
 
-                @Override
-                public void cancel() {
-                  dispose();
-                }
-              };
-              w.setVisible(true);
-            }
-            else {
-              insert(target, child, getTreeNode(target).getChildCount());
-            }
-          }
-          // FIXME: review error message
-          catch (Exception ex) {
-            JOptionPane.showMessageDialog(getTopLevelAncestor(), "Error adding " + getConfigureName(child) + " to " + getConfigureName(target) + "\n" //NON-NLS
-              + ex.getMessage(), "Illegal configuration", JOptionPane.ERROR_MESSAGE); //NON-NLS
-          }
-        }
+    @Override
+    public void actionPerformed(ActionEvent evt) {
+      final Configurable child = getChild();
+      try {
+        doIt(child);
       }
-    };
+      // FIXME: review error message
+      catch (Exception ex) {
+        JOptionPane.showMessageDialog(getTopLevelAncestor(), "Error adding " + getConfigureName(child) + " to " + getConfigureName(target) + "\n" //NON-NLS
+            + ex.getMessage(), "Illegal configuration", JOptionPane.ERROR_MESSAGE); //NON-NLS
+      }
+    }
+  }
+
+  protected Action buildImportAction(Configurable target) {
+    return new ImportAction(
+      target,
+      Resources.getString("Editor.ConfigureTree.add_imported_class")
+    );
   }
 
   protected Action buildImportDeckAction(final Configurable target) {
@@ -1077,89 +1069,117 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     return buildAddAction(target, newConfig, "Editor.ConfigureTree.add_component", -1, null);
   }
 
+  protected class AddAction extends AbstractAction {
+    private static final long serialVersionUID = 1L;
 
-  protected Action buildAddAction(final Configurable target, final Class<? extends Buildable> newConfig, String key, int index, final Configurable duplicate) {
-    return new AbstractAction(Resources.getString(key, getConfigureName(newConfig))) {
-      private static final long serialVersionUID = 1L;
+    protected final Configurable target;
+    private final Class<? extends Buildable> newConfig;
+    private final int index;
+    private final Configurable duplicate;
 
-      @Override
-      public void actionPerformed(ActionEvent evt) {
-        Configurable ch = null;
-        try {
-          ch = (Configurable) newConfig.getConstructor().newInstance();
-        }
-        catch (Throwable t) {
-          ReflectionUtils.handleNewInstanceFailure(t, newConfig);
-        }
+    public AddAction(Configurable target, Class<? extends Buildable> newConfig, String name, int index, Configurable duplicate) {
+      super(name);
 
-        if (ch != null) {
-          final Configurable child = ch;
+      this.target = target;
+      this.newConfig = newConfig;
+      this.index = index;
+      this.duplicate = duplicate;
+    }
 
-          //BR// We do an early & extra set of the ancestor before build so that if, during the addTo() sequence,
-          //BR// an item in an AbstractFolder needs to know its "first non-folder ancestor", it can walk up the
-          //BR// tree as necessary.
-          if (ch instanceof AbstractBuildable) {
-            ((AbstractBuildable)ch).setAncestor(target);
+    protected Configurable getChild() {
+      try {
+        return (Configurable) newConfig.getConstructor().newInstance();
+      }
+      catch (Throwable t) {
+        ReflectionUtils.handleNewInstanceFailure(t, newConfig);
+        return null;
+      }
+    }
+
+    protected void doIt(Configurable child) {
+      if (child == null) {
+        return;
+      }
+
+      //BR// We do an early & extra set of the ancestor before build so that if, during the addTo() sequence,
+      //BR// an item in an AbstractFolder needs to know its "first non-folder ancestor", it can walk up the
+      //BR// tree as necessary.
+      if (child instanceof AbstractBuildable) {
+        ((AbstractBuildable) child).setAncestor(target);
+      }
+
+      child.build((duplicate != null) ? duplicate.getBuildElement(Builder.createNewDocument()) : null);
+
+      if (child instanceof PieceSlot) {
+        ((PieceSlot) child).updateGpId(GameModule.getGameModule());
+      }
+
+      final int finalIndex = (index < 0) ? getTreeNode(target).getChildCount() : checkMinimumIndex(getTreeNode(target), index);
+
+      if (child.getConfigurer() != null) {
+        if (insert(target, child, finalIndex)) {
+          if (duplicate != null) {
+            updateGpIds(child);
           }
 
-          child.build((duplicate != null) ? duplicate.getBuildElement(Builder.createNewDocument()) : null);
+          // expand the new node
+          final TreePath path = new TreePath(getTreeNode(child).getPath());
+          expandPath(path);
 
-          if (child instanceof PieceSlot) {
-            ((PieceSlot) child).updateGpId(GameModule.getGameModule());
-          }
+          final PropertiesWindow w = new PropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ConfigureTree.this), false, child, helpWindow) {
+            private static final long serialVersionUID = 1L;
 
-          final int finalIndex = (index < 0) ? getTreeNode(target).getChildCount() : checkMinimumIndex(getTreeNode(target), index);
-
-          if (child.getConfigurer() != null) {
-            if (insert(target, child, finalIndex)) {
-              if (duplicate != null) {
-                updateGpIds(child);
+// HERE
+            @Override
+            public void cancel() {
+              // Child could have been already deleted or dragged elsewhere
+              final DefaultMutableTreeNode currentParent = (DefaultMutableTreeNode)getTreeNode(child).getParent();
+              if (currentParent != null) {
+                ConfigureTree.this.delete(child);
               }
-
-              // expand the new node
-              final TreePath path = new TreePath(getTreeNode(child).getPath());
-              expandPath(path);
-
-              final PropertiesWindow w = new PropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ConfigureTree.this), false, child, helpWindow) {
-                private static final long serialVersionUID = 1L;
-
-                @Override
-                public void cancel() {
-                  // Child could have been already deleted or dragged elsewhere
-                  final DefaultMutableTreeNode currentParent = (DefaultMutableTreeNode)getTreeNode(child).getParent();
-                  if (currentParent != null) {
-                    ConfigureTree.this.delete(child);
-                  }
-                  dispose();
-                }
-
-                @Override
-                public void save() {
-                  notifyUpdate(child);
-                  //BR// If we've just created a new duplicate and saved it, then select the duplicate rather than leaving the original selected
-                  if (duplicate != null) {
-                    final DefaultMutableTreeNode node = getTreeNode(child);
-                    if (node != null) {
-                      final TreePath path = new TreePath(node.getPath());
-                      setSelectionPath(path);
-                      scrollPathToVisible(path);
-                    }
-                  }
-                  super.save();
-                }
-              };
-              w.setVisible(true);
+              dispose();
             }
-          }
-          else {
-            insert(target, child, finalIndex);
-            if (duplicate != null) {
-              updateGpIds(child);
+
+            @Override
+            public void save() {
+              notifyUpdate(child);
+              //BR// If we've just created a new duplicate and saved it, then select the duplicate rather than leaving the original selected
+              if (duplicate != null) {
+                final DefaultMutableTreeNode node = getTreeNode(child);
+                if (node != null) {
+                  final TreePath path = new TreePath(node.getPath());
+                  setSelectionPath(path);
+                  scrollPathToVisible(path);
+                }
+              }
+              super.save();
             }
-          }
+          };
+          w.setVisible(true);
         }
       }
-    };
+      else {
+        insert(target, child, finalIndex);
+        if (duplicate != null) {
+          updateGpIds(child);
+        }
+      }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent evt) {
+      doIt(getChild());
+    }
+  }
+
+  protected Action buildAddAction(Configurable target, Class<? extends Buildable> newConfig, String key, int index, Configurable duplicate) {
+    return new AddAction(
+      target,
+      newConfig,
+      Resources.getString(key, getConfigureName(newConfig)),
+      index,
+      duplicate
+    );
   }
 
   protected Action buildHelpAction(final Configurable target) {
