@@ -146,10 +146,17 @@ Use these functions to *Sum* or *Count* values on pieces that are currently Atta
 ==== Mat based functions
 Use these functions to *Sum* or *Count* values on pieces that are part of a Mat and Cargo relationship. These functions only work in Counter GKCs.
 
-*SumMat(prop)* returns the total of the specified property among a Mat and its Mat Cargo. The asking piece can either be a Mat or a Mat Cargo. If the piece is not a Mat, and/or if it is a Mat Cargo piece not presently on a Mat, then only the piece itself is checked.
+For all Math base functions, the asking piece can either be a Mat or a Mat Cargo. If the piece is not a Mat, and/or if it is a Mat Cargo piece not presently on a Mat, then only the piece itself is checked.
 
-*CountMat(prop)* returns the number of pieces with a non-blank value for the specified property, among a Mat and its Mat Cargo. The asking piece can either be a Mat or a Mat Cargo. If the piece is not a Mat, and/or if it is a Mat Cargo piece not presently on a Mat, then only the piece itself is checked.
+*SumMat(prop)* returns the total of the specified property among a Mat and its Mat Cargo.
 
+*SumMat(prop, expression)* returns the total of the specified property among a Mat and its Mat Cargo. The Mat and each Cargo must also match the supplied Property Expression before being added to the total.
+
+*CountMat(prop)* returns the number of pieces with a non-blank value for the specified property, among a Mat and its Mat Cargo.
+
+*CountMat(expression)* returns the number of pieces that match the supplied expression, among a Mat and its Mat Cargo.
+
+*CountMat(prop, expression)* returns the number of pieces with a non-blank value for the specified property, among a Mat and its Mat Cargo. The Mat and each Cargo must also match the supplied Property Expression before being added to the total.
 
 [#Generic]
 ==== Generic functions

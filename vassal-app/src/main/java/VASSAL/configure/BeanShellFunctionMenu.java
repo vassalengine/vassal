@@ -195,7 +195,10 @@ public class BeanShellFunctionMenu extends JPopupMenu {
 
     final JMenu matMenu = new JMenu(Resources.getString("Editor.BeanShell.by_mat"));
     addFunction(matMenu, "SumMat", Resources.getString("Editor.BeanShell.sum8"), new String[] { Resources.getString("Editor.BeanShell.property_name") }, "(prop)"); //NON-NLS
+    addFunction(matMenu, "SumMat", Resources.getString("Editor.BeanShell.sum8e"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression") }, "(prop, expr)"); //NON-NLS
     addFunction(matMenu, "CountMat", Resources.getString("Editor.BeanShell.sum9"), new String[] { Resources.getString("Editor.BeanShell.property_name") }, "(prop)"); //NON-NLS
+    addFunction(matMenu, "CountMat", Resources.getString("Editor.BeanShell.sum9e"), new String[] { Resources.getString("Editor.BeanShell.property_match_expression") }, "(expr)"); //NON-NLS
+    addFunction(matMenu, "CountMat", Resources.getString("Editor.BeanShell.sum9ee"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression") }, "(prop, expr)"); //NON-NLS
 
     final JMenu zoneMenu = new JMenu(Resources.getString("Editor.BeanShell.by_zone"));
     if (target != null) {
