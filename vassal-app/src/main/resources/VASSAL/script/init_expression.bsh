@@ -89,6 +89,19 @@ SumStack(String property) {
 }
 
 /**
+ * Callback to Vassal to sum the value of a property in all
+ * counters in the same stack as the target property
+ *
+ * Example: SumStack("Strength", "{Type==\"Unit\"}")
+ */
+SumStack(String property, String expression) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.sumStack(property, expression, _source));
+}
+
+
+/**
  * Callback to Vassal to count the number of pieces in the same stack
  *
  * Example: CountStack()
@@ -101,16 +114,32 @@ CountStack() {
 
 /**
  * Callback to Vassal to count the number of pieces in the same
- * stack that *contain* the target property
+ * stack that have a non-blank value for the target property
+ * OR that match an exppresion
+ *
  *
  * Example: CountStack("Strength")
+ *          CountStack("{Type==\"Unit\"}")
  */
-CountStack(String property) {
+CountStack(String propertyOrExpression) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.countStack(property, _source));
+  return unwrap(_interp.countStack(propertyOrExpression, _source));
 }
 
+/**
+ * Callback to Vassal to count the number of pieces in the same
+ * stack that have a non-blank value for the target property
+ * AND that match an exppresion
+ *
+ *
+ * Example: CountStack("Strength", "{Type==\"Unit\"}")
+ */
+CountStack(String property, String expression) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.countStack(property, expression, _source));
+}
 
 /**
  * Callback to Vassal to find the highest value of a named property
@@ -189,6 +218,19 @@ SumMat(String property) {
   return unwrap(_interp.sumMat(property, _source));
 }
 
+/**
+ * Callback to Vassal to sum the value of a property in all
+ * counters that include a Mat and its MatCargo
+ * and that match an expression
+ *
+ * Example: SumMat("Strength", "{Strength >= 0}")
+ */
+SumMat(String property, String expression) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.sumMat(property, expression, _source));
+}
+
 
 /**
  * Callback to Vassal to count the number of counters
@@ -197,12 +239,17 @@ SumMat(String property) {
  *
  * Example: CountMat("Strength") 
  */
-CountMat(String property) {
+CountMat(String propertyOrExpression) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.countMat(property, _source));
+  return unwrap(_interp.countMat(propertyOrExpression, _source));
 }
 
+CountMat(String property, String expression) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.countMat(property, expression, _source));
+}
 
 /**
  * Callbacks to vassal for functions that sum the value of the specified property in a Location

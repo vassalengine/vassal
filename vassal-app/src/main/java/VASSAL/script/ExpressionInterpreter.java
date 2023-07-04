@@ -531,58 +531,43 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * @return total
    */
   public Object sumStack(String property, PropertySource ps) {
-    int result = 0;
-
-    ps = translatePiece(ps);
-    if (ps instanceof GamePiece) {
-      final Stack s = ((GamePiece) ps).getParent();
-      if (s == null) {
-        final Object prop = ps.getProperty(property);
-        result += IntPropValue(prop);
-      }
-      else {
-        for (final GamePiece gamePiece : s.asList()) {
-          final Object prop = gamePiece.getProperty(property);
-          result += IntPropValue(prop);
-        }
-      }
-    }
-    return result;
+    return sumStack(property, "", ps);
   }
 
   /**
-   * CountStack(property) function count the number of pieces in
-   * the same stack which have any non-blank value for the
-   * specified property.
+   * SumStack(property, expression) function
+   * Total the value of the named property in all counters in the
+   * same stack as the specified piece that meet the specified expression
    *
-   * @param property Property Name
-   * @param ps       GamePiece
+   * @param property   Property Name
+   * @param expression Expression
+   * @param ps         GamePiece
    * @return total
    */
-  public Object countStack(String property, PropertySource ps) {
+  public Object sumStack(String property, String expression, PropertySource ps) {
+    final String matchString = replaceDollarVariables(expression, ps);
+    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(ps);
+    return sumStack(property, filter, ps);
+  }
+
+  private Object sumStack(String property, PieceFilter filter, PropertySource ps) {
     int result = 0;
 
     ps = translatePiece(ps);
-
     if (ps instanceof GamePiece) {
+      final GamePiece piece = (GamePiece) ps;
       final Stack s = ((GamePiece) ps).getParent();
-      if (s == null) {        
-        if ("".equals(property)) {
-          result++;
-        }
-        else {
+      if (s == null) {
+        if (filter == null || filter.accept(piece)) {
           final Object prop = ps.getProperty(property);
-          result += propNonempty(prop);
+          result += IntPropValue(prop);
         }
       }
       else {
-        if ("".equals(property)) {
-          result = s.nVisible(); // Blank property returns number of visible-to-me pieces in the stack
-        }
-        else {
-          for (final GamePiece gamePiece: s.asList()) {
+        for (final GamePiece gamePiece : s.asList()) {
+          if (filter == null || filter.accept(gamePiece)) {
             final Object prop = gamePiece.getProperty(property);
-            result += propNonempty(prop);
+            result += IntPropValue(prop);
           }
         }
       }
@@ -590,6 +575,71 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     return result;
   }
 
+  /**
+   * CountStack(property) & CountStack(expression) function count the number of pieces in
+   * the same stack which have any non-blank value for the
+   * specified property.
+   *
+   * @param property Property Name
+   * @param ps       GamePiece
+   * @return total
+   */
+  public Object countStack(String propertyOrExpression, PropertySource ps) {
+    if (propertyOrExpression != null && propertyOrExpression.trim().startsWith("{")) {
+      return countStack("", propertyOrExpression, ps);
+    }
+    else {
+      return countStack(propertyOrExpression, (String) null, ps);
+    }
+  }
+
+  public Object countStack(String property, String expression, PropertySource ps) {
+    final String matchString = replaceDollarVariables(expression, ps);
+    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(ps);
+    return countStack(property, filter, ps);
+  }
+
+
+  private Object countStack(String property, PieceFilter filter, PropertySource ps) {
+    int result = 0;
+
+    ps = translatePiece(ps);
+
+    if (ps instanceof GamePiece) {
+      final GamePiece piece = (GamePiece) ps;
+      final Stack s = ((GamePiece) ps).getParent();
+      if (s == null) {
+        if (filter == null || filter.accept(piece)) {
+          if ("".equals(property)) {
+            result++;
+          }
+          else {
+            final Object prop = ps.getProperty(property);
+            result += propNonempty(prop);
+          }
+        }
+      }
+      else {
+        if (filter == null && (property == null || property.isEmpty())) {
+          result = s.nVisible(); // Blank property with no filter returns number of visible-to-me pieces in the stack
+        }
+        else {
+          for (final GamePiece gamePiece: s.asList()) {
+            if (filter == null || filter.accept(gamePiece)) {
+              if (property == null || property.isEmpty()) {
+                result++;
+              }
+              else {
+                final Object prop = gamePiece.getProperty(property);
+                result += propNonempty(prop);
+              }
+            }
+          }
+        }
+      }
+    }
+    return result;
+  }
 
   /**
    * MaxAttachment(attachment, property) function
@@ -768,6 +818,16 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * @return total
    */
   public Object sumMat(String property, PropertySource ps) {
+    return sumMat(property, (String) null, ps);
+  }
+
+  public Object sumMat(String property, String expression, PropertySource ps) {
+    final String matchString = replaceDollarVariables((String) expression, ps);
+    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(ps);
+    return sumMat(property, filter, ps);
+  }
+
+  private Object sumMat(String property, PieceFilter filter, PropertySource ps) {
     int result = 0;
 
     ps = translatePiece(ps);
@@ -794,12 +854,16 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         mat = Decorator.getOutermost(mat);
         final Mat actualMat = (Mat) Decorator.getDecorator(mat, Mat.class);
 
-        Object prop = mat.getProperty(property);
-        result += IntPropValue(prop);
+        if (filter == null || filter.accept(mat)) {
+          final Object prop = mat.getProperty(property);
+          result += IntPropValue(prop);
+        }
 
         for (final GamePiece cargo : actualMat.getContents()) {
-          prop = Decorator.getOutermost(cargo).getProperty(property);
-          result += IntPropValue(prop);
+          if (filter == null || filter.accept(cargo)) {
+            final Object prop = Decorator.getOutermost(cargo).getProperty(property);
+            result += IntPropValue(prop);
+          }
         }
       }
       else {
@@ -809,7 +873,6 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     }
     return result;
   }
-
   /**
    * CountMat(property) function
    * Return the total number of counters with a non-blank value for the specified property
@@ -819,7 +882,22 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * @param ps       GamePiece
    * @return total
    */
-  public Object countMat(String property, PropertySource ps) {
+  public Object countMat(String propertyOrExpression, PropertySource ps) {
+    if (propertyOrExpression != null && propertyOrExpression.trim().startsWith("{")) {
+      return countMat("", propertyOrExpression, ps);
+    }
+    else {
+      return countMat(propertyOrExpression, (String) null, ps);
+    }
+  }
+
+  public Object countMat(String property, String expression, PropertySource ps) {
+    final String matchString = replaceDollarVariables(expression, ps);
+    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(ps);
+    return countMat(property, filter, ps);
+  }
+
+  private Object countMat(String property, PieceFilter filter, PropertySource ps) {
     int result = 0;
 
     ps = translatePiece(ps);
@@ -846,17 +924,50 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         mat = Decorator.getOutermost(mat);
         final Mat actualMat = (Mat) Decorator.getDecorator(mat, Mat.class);
 
-        Object prop = mat.getProperty(property);
-        result += propNonempty(prop);
+        if (filter != null) {
+          if (filter.accept(mat)) {
+            if (!property.isBlank()) {
+              result += propNonempty(mat.getProperty(property));
+            }
+            else {
+              result += 1;
+            }
+          }
+        }
+        else {
+          result += propNonempty(mat.getProperty(property));
+        }
 
         for (final GamePiece cargo : actualMat.getContents()) {
-          prop = Decorator.getOutermost(cargo).getProperty(property);
-          result += propNonempty(prop);
+          if (filter != null) {
+            if (filter.accept(mat)) {
+              if (!property.isBlank()) {
+                result += propNonempty(Decorator.getOutermost(cargo).getProperty(property));
+              }
+              else {
+                result += 1;
+              }
+            }
+          }
+          else {
+            result += propNonempty(Decorator.getOutermost(cargo).getProperty(property));
+          }
         }
       }
       else {
-        final Object prop = ps.getProperty(property);
-        result += propNonempty(prop);
+        if (filter != null) {
+          if (filter.accept((GamePiece) ps)) {
+            if (!property.isBlank()) {
+              result += propNonempty(Decorator.getOutermost((GamePiece) ps).getProperty(property));
+            }
+            else {
+              result += 1;
+            }
+          }
+        }
+        else {
+          result += propNonempty(ps.getProperty(property));
+        }
       }
     }
 
