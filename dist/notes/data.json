@@ -22,6 +22,7 @@
       ],
       "bug_fixes": [
         { "num": 12439, "desc": "Uniformly handle addition of standard and imported Configurables" },
+        { "num": 12420, "desc": "Set Piece Property does not work" },
         { "num": 12403, "desc": "Extension Editing fixes: Cut & Paste now deletes cut element, Drag & Drop between folders in Extension are saved, stopped UnsupportedOperationException during search" },
         { "num": 12401, "desc": "Allow Ctrl-V to be entered as a Key Command" },
         { "num": 12396, "desc": "Add missing Global Option message" },
@@ -31,6 +32,7 @@
         { "num": 12261, "desc": "Report error if more than one grid added to a Zone" }
       ],
       "other_improvements": [
+        { "num": 12443, "desc": "Clarified MouseOverViewer documentation" },
         { "num": 12432, "desc": "Add missing Sum & Count expressions" },
         { "num": 12427, "desc": "Fixed bad links in Reference Manual" },
         { "num": 12341, "desc": "Expression documentation improvements" }

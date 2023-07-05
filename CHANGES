@@ -1,8 +1,10 @@
 3.7.0-beta5 - ???
 
+* 12443: Clarified MouseOverViewer documentation
 * 12439: Uniformly handle addition of standard and imported Configurables
 * 12432: Add missing Sum & Count expressions
 * 12427: Fixed bad links in Reference Manual
+* 12420: Set Piece Property does not work
 * 12403: Extension Editing fixes: Cut & Paste now deletes cut element, Drag &
     Drop between folders in Extension are saved, stopped
     UnsupportedOperationException during search
