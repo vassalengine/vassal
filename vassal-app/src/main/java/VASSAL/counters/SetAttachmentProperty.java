@@ -301,11 +301,12 @@ public class SetAttachmentProperty extends DynamicProperty {
 
                 GamePiece dp = Decorator.getOutermost(propPiece);
                 while (dp instanceof Decorator) {
-                  if (dp instanceof DynamicProperty) {
+                  // Compare class directly, not via instanceof as we need to exclude all subclasses
+                  if (dp.getClass() == DynamicProperty.class) {
                     final DynamicProperty ourDP = (DynamicProperty)dp;
 
                     // If we find a matching property, apply our setter on it and we're done
-                    if (propertyName.equals(ourDP.key)) {
+                    if (propertyName.equals(ourDP.getKey())) {
 
                       // If we're doing a prompt, prompt only once. Otherwise re-evaluate setter each time
                       if ((newValue == null) || !(keyCommand.propChanger instanceof PropertyPrompt)) {
@@ -322,6 +323,7 @@ public class SetAttachmentProperty extends DynamicProperty {
                       ourDP.value = newValue;
 
                       comm = comm.append(ct.getChangeCommand());
+                      break;  // No need to search further, any deeper DP's of the same name are shadowed by this one.
                     }
                   }
                   dp = ((Decorator) dp).getInner();

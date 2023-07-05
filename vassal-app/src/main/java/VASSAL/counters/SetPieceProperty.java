@@ -236,10 +236,11 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
     Command comm = new NullCommand();
 
     while (p instanceof Decorator) {
-      if (p instanceof DynamicProperty) {
+      // Compare class directly, not via instanceof as we need to exclude all subclasses
+      if (p.getClass() == DynamicProperty.class) {
         final DynamicProperty currentDP = (DynamicProperty)p;
 
-        if (propName.equals(currentDP.getName())) {
+        if (propName.equals(currentDP.getKey())) {
           if ((newValue == null) || !(changer instanceof PropertyPrompt)) {
             newValue = changer.getNewValue(currentDP.value);
             // The PropertyChanger has already evaluated any Beanshell, only need to handle any remaining $$variables.
@@ -254,6 +255,7 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
           currentDP.value = newValue;
 
           comm = comm.append(ct.getChangeCommand());
+          break;  // No need to search further, any deeper DP's of the same name are shadowed by this one.
         }
       }
 
