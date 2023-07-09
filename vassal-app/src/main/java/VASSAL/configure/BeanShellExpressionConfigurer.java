@@ -24,9 +24,12 @@ import VASSAL.script.expression.FunctionBuilder;
 import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.icon.IconFamily;
 import VASSAL.tools.swing.SwingUtils;
+
 import bsh.BeanShellExpressionValidator;
+
 import net.miginfocom.swing.MigLayout;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -34,10 +37,18 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JTextField;
+import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.GraphicsEnvironment;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -72,6 +83,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
   protected String selectedText;
   protected boolean displayOnly;
   protected FunctionBuilder builder;
+  protected JTextArea nameField;
 
   /**
    * Create an unlabeled BeanShellConfigurer with an initial value and target piece
@@ -148,22 +160,59 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     setValue((Object) s);
   }
 
+  @Override
+  public void requestFocus() {
+    if (nameField != null) {
+      nameField.requestFocus();
+    }
+  }
+
+  @Override
+  public void setHighlighted(boolean highlighted) {
+    super.setHighlighted(highlighted);
+    getControls();
+    nameField.setBackground(highlighted ? LIST_ENTRY_HIGHLIGHT_COLOR : Color.white);
+    nameField.repaint();
+  }
+
+  @Override
+  public void addFocusListener(FocusListener listener) {
+    super.addFocusListener(listener);
+    getControls();
+    nameField.addFocusListener(listener);
+  }
+
+  @Override
+  public void removeFocusListener(FocusListener listener) {
+    super.removeFocusListener(listener);
+    getControls();
+    nameField.removeFocusListener(listener);
+  }
+
   protected Component getTopLevelAncestor() {
     return p.getTopLevelAncestor();
   }
+
 
   @Override
   public Component getControls() {
     if (p == null) {
       // expressionPanel = new JPanel(new MigLayout("fillx,ins 0", "[][grow][][]")); //NON-NLS
-      expressionPanel = new ConfigurerPanel(getName(), "[grow,fill]", "[][grow,fill]"); // NON-NLS
+      expressionPanel = new ConfigurerPanel(getName(), "[grow,fill]", "[][grow,fill]", "[grow, fill]"); // NON-NLS
+      ((MigLayout) expressionPanel.getLayout()).setLayoutConstraints("ins 0,fill");
 
-      final JPanel panel = new JPanel(new MigLayout("ins 0,hidemode 3", "[fill,grow]2[]2[]")); // NON-NLS
+      final JPanel panel = new JPanel(new MigLayout("ins 0,hidemode 3", "[fill,grow]2[]2[]", "[grow]")); // NON-NLS
 
       validator = new Validator();
-      nameField = new JTextField(30);
+      nameField = new JTextArea(1, 100);
+      nameField.setFont(new Font("Monospaced", Font.PLAIN, 14));
+      nameField.setLineWrap(true);
+      nameField.setWrapStyleWord(true);
+      nameField.setBorder(BorderFactory.createLineBorder(Color.gray));
+
       nameField.setText(getValueString());
-      panel.add(nameField, "growx"); //NON-NLS
+      panel.add(nameField, "grow"); //NON-NLS
+
       nameField.addKeyListener(new KeyAdapter() {
         @Override
         public void keyReleased(KeyEvent evt) {
@@ -178,6 +227,27 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
       if (!GraphicsEnvironment.isHeadless()) {
         nameField.setDragEnabled(true);
       }
+
+      nameField.getDocument().addDocumentListener(new DocumentListener() {
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+          update();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+          update();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {}
+
+        private void update() {
+          noUpdate = true;
+          setValue(nameField.getText());
+          noUpdate = false;
+        }
+      });
 
       // Edit box selects all text when first focused
       nameField.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -218,6 +288,15 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
       p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
       p.add(expressionPanel);
       p.add(detailPanel);
+
+      final ComponentAdapter a = new ComponentAdapter() {
+        @Override
+        public void componentResized(ComponentEvent e) {
+          super.componentResized(e);
+          repack();
+        }
+      };
+      nameField.addComponentListener(a);
     }
     return p;
   }
@@ -306,6 +385,11 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
 
   protected void setDetails() {
     setDetails("", null, null);
+  }
+
+  @Override
+  public void setEnabled(boolean enabled) {
+    nameField.setEnabled(enabled);
   }
 
   public String getSelectedText() {
