@@ -624,12 +624,12 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   /**
-   * CountStack(property) & CountStack(expression) function count the number of pieces in
+   * CountStack(property) and CountStack(expression) function count the number of pieces in
    * the same stack which have any non-blank value for the
    * specified property.
    *
-   * @param property Property Name
-   * @param ps       GamePiece
+   * @param propertyOrExpression Property Name or Expression
+   * @param ps                   GamePiece
    * @return total
    */
   public Object countStack(Object propertyOrExpression, PropertySource ps) {
@@ -686,7 +686,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     ps = translatePiece(ps);
 
     if (ps instanceof GamePiece) {
-      GamePiece p = Decorator.getOutermost((Decorator)ps);
+      final GamePiece p = Decorator.getOutermost((Decorator)ps);
       for (final GamePiece decorator : Decorator.getDecorators(p, Attachment.class)) {
         final Attachment a = (Attachment) decorator;
         if (a.getAttachName().equals(attachment)) {
@@ -720,7 +720,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     ps = translatePiece(ps);
 
     if (ps instanceof GamePiece) {
-      GamePiece p = Decorator.getOutermost((Decorator)ps);
+      final GamePiece p = Decorator.getOutermost((Decorator)ps);
       for (final GamePiece decorator : Decorator.getDecorators(p, Attachment.class)) {
         final Attachment a = (Attachment) decorator;
         if (a.getAttachName().equals(attachment)) {
@@ -803,8 +803,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * Total the value of the named property in all counters
    * among the Mat-and-MatCargo grouping of the current piece
    *
-   * @param property Property Name
-   * @param ps       GamePiece
+   * @param propertyOrExpression Property Name
+   * @param ps                   GamePiece
    * @return total
    */
   public Object sumMat(Object propertyOrExpression, PropertySource ps) {
@@ -865,8 +865,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * Return the total number of counters with a non-blank value for the specified property
    * among the Mat-and-MatCargo grouping of the current piece
    *
-   * @param property Property Name
-   * @param ps       GamePiece
+   * @param propertyOrExpression Property Name
+   * @param ps                   GamePiece
    * @return total
    */
   public Object countMat(Object propertyOrExpression, PropertySource ps) {
@@ -1016,8 +1016,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     int result = 0;
 
     // Ask IndexManager for list of pieces on that map at that location. Stacks are not returned by the IM.
-    for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(map, BasicPiece.LOCATION_NAME, locationName.toString())) {
-      result = updateTotal(result, piece, property.toString(), filter, true);
+    for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(map, BasicPiece.LOCATION_NAME, locationName)) {
+      result = updateTotal(result, piece, property, filter, true);
     }
     return result;
   }
@@ -1762,7 +1762,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * Write a message to the errorloh
    *
    * @param message   Message to display. Can be an Expression
-   * @param condition If provided, is an expression that will be evaluated and the message will only be written if true
+   * @param conditionOrOptionList If provided, is an expression that will be evaluated and the message will only be written if true
    * @param options   A String containing any of the following letters to invoke various options
    *                   'F' - Include full audit of the current expression
    *                   'C' - Display in Chatter

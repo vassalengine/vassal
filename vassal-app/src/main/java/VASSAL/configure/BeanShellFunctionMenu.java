@@ -70,7 +70,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
   protected final JMenu allPiecePropertyMenu;
   protected final JMenu allGlobalPropertyMenu;
 
-  static enum PropertyType { PIECE, GLOBAL, VASSAL, ALL };
+  enum PropertyType { PIECE, GLOBAL, VASSAL, ALL };
 
   public BeanShellFunctionMenu(EditablePiece target, BeanShellExpressionConfigurer configurer) {
     super();
