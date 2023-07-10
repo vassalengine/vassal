@@ -35,6 +35,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 import javax.swing.KeyStroke;
@@ -221,6 +222,11 @@ public class Restricted extends Decorator implements EditablePiece {
   @Override
   public void mySetState(String newState) {
     owningPlayer = newState;
+  }
+
+  @Override
+  public List<String> getPropertyNames() {
+    return List.of(Properties.RESTRICTED, Properties.RESTRICTED_MOVEMENT);
   }
 
   @Override

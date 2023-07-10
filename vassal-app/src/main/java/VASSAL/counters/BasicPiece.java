@@ -1208,33 +1208,32 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
   @Override
   public List<String> getPropertyNames() {
     final ArrayList<String> l = new ArrayList<>();
-    l.add(LOCATION_NAME);
-    l.add(CURRENT_MAP);
-    l.add(CURRENT_BOARD);
-    l.add(CURRENT_ZONE);
-    l.add(CURRENT_X);
-    l.add(CURRENT_Y);
-    l.add(OLD_LOCATION_NAME);
-    l.add(OLD_MAP);
-    l.add(OLD_BOARD);
-    l.add(OLD_ZONE);
-    l.add(OLD_X);
-    l.add(OLD_Y);
     l.add(BASIC_NAME);
-    l.add(PIECE_NAME);
-    l.add(DECK_NAME);
     l.add(CLICKED_X);
     l.add(CLICKED_Y);
-    l.add(PIECE_UID);
-    l.add(OLD_MAT);
-    l.add(OLD_MAT_ID);
-    l.add(OLD_MAT_PIECE_NAME);
-    l.add(OLD_MAT_BASIC_NAME);
-    l.add(OLD_MAT_OFFSET_X);
-    l.add(OLD_MAT_OFFSET_Y);
+    l.add(CURRENT_BOARD);
+    l.add(CURRENT_MAP);
+    l.add(CURRENT_X);
+    l.add(CURRENT_Y);
+    l.add(CURRENT_ZONE);
+    l.add(DECK_NAME);
+    l.add(DECK_POSITION);
+    l.add(GameModule.DRAWING_MOUSEOVER_PROPERTY);
+    l.add(GameModule.DRAWING_MOUSEOVER_INDEX_PROPERTY);
+    l.add(LOCATION_NAME);
+    l.add(OLD_BOARD);
     l.add(OLD_DECK_NAME);
-    l.add(STACK_SIZE);
+    l.add(OLD_LOCATION_NAME);
+    l.add(OLD_MAP);
+    l.add(OLD_X);
+    l.add(OLD_Y);
+    l.add(OLD_ZONE);
+    l.add(Properties.PIECE_ID);
+    l.add(PIECE_NAME);
+    l.add(PIECE_UID);
+    l.add(Properties.SELECTED);
     l.add(STACK_POS);
+    l.add(STACK_SIZE);
     return l;
   }
 

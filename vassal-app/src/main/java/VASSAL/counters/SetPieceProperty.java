@@ -48,6 +48,8 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -215,6 +217,12 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
     else {
       piece.setProperty(key, val);
     }
+  }
+
+  @Override
+  public List<String> getPropertyNames() {
+    // This is not a real Property source, so don't return the property name
+    return Collections.emptyList();
   }
 
   @Override

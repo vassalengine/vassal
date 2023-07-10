@@ -2826,6 +2826,16 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     return value;
   }
 
+
+  @Override
+  // Even though the IS_VISIBLE Map property is handled by GameModule, pretend it is satisfied here so that
+  // it appears under the map in the Function Builder menu
+  public List<String> getPropertyNames() {
+    final List<String> l = new ArrayList<>();
+    l.add(getConfigureName() + GameModule.IS_VISIBLE);
+    return l;
+  }
+
   /**
    * Return the apply-on-move key. It may be named, so just return
    * the allocated KeyStroke.

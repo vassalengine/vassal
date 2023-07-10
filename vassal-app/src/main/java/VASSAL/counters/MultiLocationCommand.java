@@ -423,7 +423,7 @@ public class MultiLocationCommand extends Decorator implements TranslatablePiece
    */
   @Override
   public List<String> getPropertyNames() {
-    return Arrays.asList(LOC_NAME);
+    return Arrays.asList(LOC_BOARD, LOC_MAP, LOC_NAME, LOC_ZONE);
   }
 
   public static class Ed implements PieceEditor {

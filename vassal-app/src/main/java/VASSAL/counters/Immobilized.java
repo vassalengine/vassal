@@ -497,6 +497,7 @@ public class Immobilized extends Decorator implements EditablePiece {
     l.add(Properties.TERRAIN);
     l.add(Properties.IGNORE_GRID);
     l.add(Properties.NON_MOVABLE);
+    l.add(Properties.NO_STACK);
     return l;
   }
 

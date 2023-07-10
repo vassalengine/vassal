@@ -2331,17 +2331,12 @@ public class GameModule extends AbstractConfigurable
     l.add(MODULE_NAME_PROPERTY);
     l.add(MODULE_VERSION_PROPERTY);
     l.add(MODULE_DESCRIPTION_PROPERTY);
-    l.add(MODULE_VASSAL_VERSION_CREATED_PROPERTY);
-    l.add(MODULE_VASSAL_VERSION_RUNNING_PROPERTY);
     l.add(MODULE_OTHER1_PROPERTY);
     l.add(MODULE_OTHER2_PROPERTY);
     l.add(MODULE_CURRENT_LOCALE);
     l.add(MODULE_CURRENT_LOCALE_NAME);
-    l.add(DRAWING_MOUSEOVER_PROPERTY);
-    l.add(DRAWING_MOUSEOVER_INDEX_PROPERTY);
-    for (final Map map : Map.getMapList()) {
-      l.add(map.getConfigureName() + IS_VISIBLE);
-    }
+    l.add(MODULE_VASSAL_VERSION_CREATED_PROPERTY);
+    l.add(MODULE_VASSAL_VERSION_RUNNING_PROPERTY);
 
     return l;
   }

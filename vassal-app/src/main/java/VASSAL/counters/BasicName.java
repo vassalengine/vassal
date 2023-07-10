@@ -29,6 +29,8 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -77,6 +79,18 @@ public class BasicName extends Decorator implements TranslatablePiece {
       return getLocalizedProperty(BasicPiece.BASIC_NAME);
     }
     return super.getProperty(key);
+  }
+
+  @Override
+  public List<String> getPropertyList() {
+    return getPropertyNames();
+  }
+
+  @Override
+  public List<String> getPropertyNames() {
+    final List<String> l = new ArrayList<>();
+    l.add(BasicPiece.BASIC_NAME);
+    return l;
   }
 
   /**

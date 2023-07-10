@@ -41,17 +41,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP0;
-import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP1;
-import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP2;
-import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP3;
-import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP4;
-import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP5;
-import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP6;
-import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP7;
-import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP8;
-import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP9;
-
 /**
  * Designates the piece as a "Mat" on which other pieces ("Cargo") can be placed.
  */
@@ -379,10 +368,16 @@ public class Mat extends Decorator implements TranslatablePiece {
 
   /**
    * Return Property names exposed by this trait
+   * Do not return the CURRENT_MAT_PROPn properties. These are defined for the Cargo.
+   * The real properties on the Mat will be exposed by the individual Marks or DP's that implement them.
    */
   @Override
   public List<String> getPropertyNames() {
-    return Arrays.asList(MAT_NAME, MAT_ID, MAT_NUM_CARGO, CURRENT_MAT_PROP0, CURRENT_MAT_PROP1, CURRENT_MAT_PROP2, CURRENT_MAT_PROP3, CURRENT_MAT_PROP4, CURRENT_MAT_PROP5, CURRENT_MAT_PROP6, CURRENT_MAT_PROP7, CURRENT_MAT_PROP8, CURRENT_MAT_PROP9);
+    return Arrays.asList(
+      MAT_NAME,
+      MAT_ID,
+      MAT_NUM_CARGO,
+      Properties.NO_STACK);
   }
 
   public static class Ed implements PieceEditor {

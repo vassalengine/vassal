@@ -304,9 +304,7 @@ public class Deselect extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<>();
-    l.add(Properties.SELECTED);
-    return l;
+    return new ArrayList<>();
   }
 
   /**

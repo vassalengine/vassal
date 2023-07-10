@@ -783,7 +783,10 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
    */
   @Override
   public List<String> getPropertyNames() {
-    return Collections.emptyList();
+    final List<String> l = new ArrayList<>();
+    l.add(ATTACH_COUNT);
+    l.add(attachCountName);
+    return l;
   }
 
   public static class Ed implements PieceEditor {

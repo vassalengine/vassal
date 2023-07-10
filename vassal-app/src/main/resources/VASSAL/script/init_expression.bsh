@@ -61,6 +61,10 @@ unwrap(Object value) {
   return value;
 }
 
+booleanValue(Object value) {
+  return (value instanceof Boolean || value instanceof boolean) ? value : "true".equals(value);
+}
+
 /**
  * If function for Expressions. Note the capitalization to distinguish
  * it from the if java keyword.
@@ -82,7 +86,7 @@ If(boolean exp, Object o1, Object o2) {
  *
  * Example: SumStack("Strength") 
  */
-SumStack(String property) {
+SumStack(Object property) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
   return unwrap(_interp.sumStack(property, _source));
@@ -94,7 +98,7 @@ SumStack(String property) {
  *
  * Example: SumStack("Strength", "{Type==\"Unit\"}")
  */
-SumStack(String property, String expression) {
+SumStack(Object property, Object expression) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
   return unwrap(_interp.sumStack(property, expression, _source));
@@ -121,7 +125,7 @@ CountStack() {
  * Example: CountStack("Strength")
  *          CountStack("{Type==\"Unit\"}")
  */
-CountStack(String propertyOrExpression) {
+CountStack(Object propertyOrExpression) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
   return unwrap(_interp.countStack(propertyOrExpression, _source));
@@ -135,7 +139,7 @@ CountStack(String propertyOrExpression) {
  *
  * Example: CountStack("Strength", "{Type==\"Unit\"}")
  */
-CountStack(String property, String expression) {
+CountStack(Object property, Object expression) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
   return unwrap(_interp.countStack(property, expression, _source));
@@ -148,7 +152,7 @@ CountStack(String property, String expression) {
  *
  * Example: MaxAttachment("Sibling", "Strength")
  */
-MaxAttachment(String attachment, String property) {
+MaxAttach(Object attachment, Object property) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
   return unwrap(_interp.maxAttachment(attachment, property, _source));
@@ -161,7 +165,7 @@ MaxAttachment(String attachment, String property) {
  *
  * Example: MinAttachment("Sibling", "Strength")
  */
-MinAttachment(String attachment, String property) {
+MinAttach(Object attachment, Object property) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
   return unwrap(_interp.minAttachment(attachment, property, _source));
@@ -174,10 +178,16 @@ MinAttachment(String attachment, String property) {
  *
  * Example: SumAttachment("Sibling", "Strength")
  */
-SumAttachment(String attachment, String property) {
+SumAttach(Object attachment, Object property) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
   return unwrap(_interp.sumAttachment(attachment, property, _source));
+}
+
+SumAttach(Object attachment, Object property, Object expression) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.sumAttachment(attachment, property, expression, _source));
 }
 
 /**
@@ -186,10 +196,10 @@ SumAttachment(String attachment, String property) {
  *
  * Example: CountAttachment("Sibling", "Strength")
  */
-CountAttachment(String attachment, String property) {
+CountAttach(Object attachment, Object propOrExpression) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.countAttachment(attachment, property, _source));
+  return unwrap(_interp.countAttachment(attachment, propOrExpression, _source));
 }
 
 
@@ -199,10 +209,10 @@ CountAttachment(String attachment, String property) {
  *
  * Example: CountAttachment("Sibling", "{ Strength > 1 }")
  */
-CountAttachmentExpression(String attachment, String expression) {
+CountAttach(Object attachment, Object property, Object expression) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.countAttachmentExpression(attachment, expression, _source));
+  return unwrap(_interp.countAttachmentExpression(attachment, property, expression, _source));
 }
 
 
@@ -212,7 +222,7 @@ CountAttachmentExpression(String attachment, String expression) {
  *
  * Example: SumMat("Strength") 
  */
-SumMat(String property) {
+SumMat(Object property) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
   return unwrap(_interp.sumMat(property, _source));
@@ -225,7 +235,7 @@ SumMat(String property) {
  *
  * Example: SumMat("Strength", "{Strength >= 0}")
  */
-SumMat(String property, String expression) {
+SumMat(Object property, Object expression) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
   return unwrap(_interp.sumMat(property, expression, _source));
@@ -239,13 +249,19 @@ SumMat(String property, String expression) {
  *
  * Example: CountMat("Strength") 
  */
-CountMat(String propertyOrExpression) {
+ CountMat() {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.countMat(propertyOrExpression, _source));
+ }
+
+CountMat(Object propertyOrExpression) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
   return unwrap(_interp.countMat(propertyOrExpression, _source));
 }
 
-CountMat(String property, String expression) {
+CountMat(Object property, Object expression) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
   return unwrap(_interp.countMat(property, expression, _source));
@@ -265,28 +281,28 @@ CountMat(String property, String expression) {
  *
  */ 
 
-SumLocation(String property) {
+SumLocation(Object property) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
   return unwrap(_interp.sumLocation(property, _source));
 }
 
-SumLocation(String property, String expression) {
+SumLocation(Object property, Object expression) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
   return unwrap(_interp.sumLocation(property, expression, _source));
 }
 
-SumMapLocation(String property, String location, String map) {
+SumLocation(Object property, Object location, Object map) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.sumMapLocation(property, location, map, _source));
+  return unwrap(_interp.sumLocation(property, location, map, _source));
 }
 
-SumMapLocation(String property, String location, String map, String expression) {
+SumLocation(Object property, Object location, Object map, Object expression) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.sumMapLocation(property, location, map, expression, _source));
+  return unwrap(_interp.sumLocation(property, location, map, expression, _source));
 }
 
 /**
@@ -312,34 +328,28 @@ CountLocation() {
   return unwrap(_interp.countLocation(_source));
 }
 
-CountLocation(String propertyOrExpression) {
+CountLocation(Object propertyOrExpression) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
   return unwrap(_interp.countLocation(propertyOrExpression, _source));
 }
 
-CountLocation(String property, String expression) {
+CountLocation(Object propertyOrLocation, Object expressionOrMap) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.countLocation(property, expression, _source));
+  return unwrap(_interp.countLocation(propertyOrLocation, expressionOrMap, _source));
 }
 
-CountMapLocation(String location, String map) {
+CountLocation(Object location, Object map, Object propertyOrExpression) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.countMapLocation(location, map, _source));
+  return unwrap(_interp.countLocation(location, map, propertyOrExpression, _source));
 }
 
-CountMapLocation(String location, String map, String propertyOrExpression) {
+CountLocation(Object location, Object map, Object property, Object expression) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.countMapLocation(location, map, propertyOrExpression, _source));
-}
-
-CountMapLocation(String location, String map, String property, String expression) {
-  _interp = this.caller.namespace.getVariable("_interp");
-  _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.countMapLocation(location, map, property, expression, _source));
+  return unwrap(_interp.countLocation(location, map, property, expression, _source));
 }
 
 /**
@@ -354,28 +364,28 @@ CountMapLocation(String location, String map, String property, String expression
  * SumZone(String property, String location, String map, String expression)
  *    Sum value of property on pieces that match expression in the specifed zone on the specified map
  */
-SumZone(String property) {
+SumZone(Object property) {
    _interp = this.caller.namespace.getVariable("_interp");
    _source = this.caller.namespace.getVariable("_source");
-   return unwrap(_interp.sumZone(property, _source));
+   return unwrap(_interp.sumZone(property, null, null, null, _source));
  }
  
-SumZone(String property, String expression) {
+SumZone(Object property, Object expression) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.sumZone(property, expression, _source));
+  return unwrap(_interp.sumZone(property, null, null, expression, _source));
 }
 
-SumMapZone(String property, String location, String map) {
+SumZone(Object property, Object location, Object map) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.sumMapZone(property, location, map, _source));
+  return unwrap(_interp.sumZone(property, location, map, null, _source));
 }
 
-SumMapZone(String property, String location, String map, String expression) {
+SumZone(Object property, Object location, Object map, Object expression) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.sumMapZone(property, location, map, expression, _source));
+  return unwrap(_interp.sumZone(property, location, map, expression, _source));
 }
 
 /**
@@ -398,39 +408,34 @@ SumMapZone(String property, String location, String map, String expression) {
  *    Count number of pieces that have a value for property on pieces that match expression in the specifed zone on the specified map
  */
 
- CountZone() {
-   _interp = this.caller.namespace.getVariable("_interp");
-   _source = this.caller.namespace.getVariable("_source");
-   return unwrap(_interp.countZone(_source));
- }
+CountZone() {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.countZone(_source));
+}
 
- CountZone(String propertyOrExpression) {
-   _interp = this.caller.namespace.getVariable("_interp");
-   _source = this.caller.namespace.getVariable("_source");
-   return unwrap(_interp.countZone(propertyOrExpression, _source));
- }
+CountZone(Object propertyOrExpression) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.countZone(propertyOrExpression, _source));
+}
  
-CountZone(String property, String expression) {
+CountZone(Object propertyorLocation, Object expressionOrMap) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.countZone(property, expression, _source));
+  return unwrap(_interp.countZone(propertyorLocation, expressionOrMap, _source));
 }
 
-CountMapZone(String location, String map) {
+CountZone(Object location, Object map, Object propertyOrExpression) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
-return unwrap(_interp.countMapZone(location, map, _source));}
-
-CountMapZone(String location, String map, String propertyOrExpression) {
-  _interp = this.caller.namespace.getVariable("_interp");
-  _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.countMapZone(location, map, propertyOrExpression, _source));
+  return unwrap(_interp.countZone(location, map, propertyOrExpression, _source));
 }
 
-CountMapZone(String location, String map, String property, String expression) {
+CountZone(Object location, Object map, Object property, Object expression) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.countMapZone(location, map, property, expression, _source));
+  return unwrap(_interp.countZone(location, map, property, expression, _source));
 }
 
 /**
@@ -463,66 +468,178 @@ Count(Object selection, Object mapName) {
 /**
  * Callbacks for Range functions
  */
-RangeInPixels(String attachmentName) {
+
+Range(Object attachmentName) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.rangeInPixels(attachmentName, _source));
+  return unwrap(_interp.rangeAttach(attachmentName, "", false, _source));
 }
 
-RangeInCells(String attachmentName) {
+RangePx(Object attachmentName) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.rangeInCells(attachmentName, _source));
+  return unwrap(_interp.rangeAttach(attachmentName, "", true, _source));
 }
 
-RangeInPixels(Object x, Object y) {
+Range(Object attachmentName, Object expression) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.rangeInPixels(x, y, _source));
+  return unwrap(_interp.rangeAttach(attachmentName, expression, false, _source));
 }
 
-RangeInCells(Object x, Object y) {
+RangePx(Object attachmentName, Object expression) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.rangeAttach(attachmentName, expression, true, _source));
+}
+
+
+Range(Object x, Object y) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
   return unwrap(_interp.rangeInCells(x, y, _source));
 }
 
-RangeInPixels(Object x1, Object y1, Object x2, Object y2) {
+RangePx(Object x, Object y) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.rangeInPixels(x1, y1, x2, y2, _source));
+  return unwrap(_interp.rangeInPixels(x, y, _source));
 }
 
-RangeInCells(Object x1, Object y1, Object x2, Object y2) {
+Range(Object x1, Object y1, Object x2, Object y2) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
   return unwrap(_interp.rangeInCells(x1, y1, x2, y2, _source));
 }
 
-RangeInPixels(Object x1, Object y1, Object x2, Object y2, String mapName) {
+RangePx(Object x1, Object y1, Object x2, Object y2) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.rangeInPixels(x1, y1, x2, y2, _source));
+}
+
+Range(Object x1, Object y1, Object x2, Object y2, Object mapName){
+  _interp=this.caller.namespace.getVariable("_interp");
+  _source=this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.rangeInCells(x1,y1,x2,y2,mapName,_source));
+}
+
+RangePx(Object x1, Object y1, Object x2, Object y2, Object mapName) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
   return unwrap(_interp.rangeInPixels(x1, y1, x2, y2, mapName, _source));
 }
 
-RangeInCells(Object x1, Object y1, Object x2, Object y2, String mapName) {
+/**
+ * Callbacks for combined Sum/Count & Range functions
+ * NOTE we force the asPixels argument to be boolean or Boolean to distinguish
+ * between similar call signatures in the Interpreter
+ *
+ * SumRange(min, max, prop)
+ * SumRangePx(min, max, prop)
+ * SumRange(min, max, prop, expr)
+ * SumRangePx(min, max, prop, expr)
+ *
+ * CountRange(min, max)
+ * CountRangex(min, max)
+ * CountRange(min, max, propOrExpr)
+ * CountRangePx(min, max, propOrExpr)
+ * CountRange(min, max, prop, expr)
+ * CountRangePx(min, max, prop, expr)
+ */
+
+
+SumRange(Object min, Object max, Object prop) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.rangeInCells(x1, y1, x2, y2, mapName, _source));
+  return unwrap(_interp.sumRange(prop, "", min, max, false, _source));
+}
+
+SumRangePx(Object min, Object max, Object prop) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.sumRange(prop, "", min, max, true, _source));
+}
+
+SumRange(Object min, Object max, Object prop, Object expr) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.sumRange(prop, expr, min, max, false, _source));
+}
+
+SumRangePx(Object min, Object max, Object prop, Object expr) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.sumRange(prop, expr, min, max, true, _source));
+}
+
+
+CountRange(Object min, Object max) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.countRange("", "", min, max, false, _source));
+}
+
+CountRangePx(Object min, Object max) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.countRange("", "", min, max, true, _source));
+}
+
+CountRange(Object min, Object max, Object propOrExpression) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.countRange(propOrExpression, "", min, max, false, _source));
+}
+
+CountRangePx(Object min, Object max, Object propOrExpression) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.countRange(propOrExpression, "", min, max, true, _source));
+}
+
+CountRange(Object min, Object max, Object prop, Object expression) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.countRange(prop, expression, min, max, false, _source));
+}
+
+CountRangePx(Object min, Object max, Object prop, Object expression) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.countRange(prop, expression, min, max, true, _source));
 }
 
 /**
  * Callback to Vassal to display text in a dialog box
  */
-Alert(String text) {
+Alert(Object text) {
   _interp = this.caller.namespace.getVariable("_interp");
   _interp.alert(text);
 }
 
-/** 
+Audit(Object message) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  _interp.audit(message, "", "", _source);
+}
+
+Audit(Object message, Object conditionOrOptions) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  _interp.audit(message, conditionOrOptions, "", _source);
+}
+
+Audit(Object message, Object condition, Object options) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  _interp.audit(message, condition, options, _source);
+}
+
+/**
  * Callback to Vassal to get a property
  */
-GetProperty(String name) {
+GetProperty(Object name) {
   _interp = this.caller.namespace.getVariable("_interp");
   return unwrap(_interp.getProperty(name));
 }
@@ -530,36 +647,36 @@ GetProperty(String name) {
 /**
  * Get a property, but always as a string
  */
-GetString(String name) {
+GetString(Object name) {
   _interp = this.caller.namespace.getVariable("_interp");
   return _interp.getString(name);
 }
 
-GetZoneProperty(String propertyName, String zoneName) {
+GetZoneProperty(Object propertyName, Object zoneName) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
   return unwrap(_interp.getZoneProperty(propertyName, zoneName));
 }
 
-GetZoneProperty(String propertyName, String zoneName, String mapName) {
+GetZoneProperty(Object propertyName, Object zoneName, Object mapName) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
   return unwrap(_interp.getZoneProperty(propertyName, zoneName, mapName));
 }
 
-GetMapProperty(String propertyName, String mapName) {
+GetMapProperty(Object propertyName, Object mapName) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
   return unwrap(_interp.getMapProperty(propertyName, mapName));
 }
 
-GetAttachmentProperty(String attachmentName, String propertyName, String index) {
+GetAttachProperty(Object attachmentName, Object propertyName, Object index) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
   return unwrap(_interp.getAttachmentProperty(attachmentName, propertyName, index, _source));
 }
 
-GetAttachmentProperty(String attachmentName, String propertyName) {
+GetAttachProperty(Object attachmentName, Object propertyName) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
   return unwrap(_interp.getAttachmentProperty(attachmentName, propertyName, 1, _source));
@@ -568,7 +685,7 @@ GetAttachmentProperty(String attachmentName, String propertyName) {
 /** 
  * Callback to Vassal to get a localized property
  */
-GetLocalizedProperty(String name) {
+GetLocalizedProperty(Object name) {
   _interp = this.caller.namespace.getVariable("_interp");
   return unwrap(_interp.getLocalizedProperty(name));
 }
@@ -601,5 +718,3 @@ GetLocalizedProperty(String name) {
   _source = this.caller.namespace.getVariable("_source");
   return unwrap(_interp.isRandom(_source, percent));
 }
-
-

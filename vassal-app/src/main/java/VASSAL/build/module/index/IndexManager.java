@@ -121,27 +121,36 @@ public class IndexManager {
   /**
    * Return a list of pieces within a given range of another piece
    *
-   * @param piece Piece to use as origin
-   * @param range range in units appropriate to the grid at the pieces location
+   * @param piece         Piece to use as origin
+   * @param range         range in units appropriate to the grid at the pieces location
+   * @param forceAsPixels Force the range check to be in pixels, over-riding any grid at the target point
    * @return List of pieces (not including the souurce piece)
    */
-  public List<GamePiece> getPieces(GamePiece piece, int range) {
+  public List<GamePiece> getPieces(GamePiece piece, int range, boolean forceAsPixels) {
     final Map map = piece.getMap();
     final VassalMapPieceIndex index = getIndex(map);
-    return index.getPieces(piece, range);
+    return index.getPieces(piece, range, forceAsPixels);
+  }
+  public List<GamePiece> getPieces(GamePiece piece, int range) {
+    return getPieces(piece, range, false);
   }
 
   /**
    * Return a list of pieces within a given range of a specified point
    *
-   * @param map   Map
-   * @param point Position to search from
-   * @param range Range in units appropriate to the grid at the search point.
-   * @return List of pieces
+   * @param map           Map
+   * @param point         Position to search from
+   * @param range         Range in units appropriate to the grid at the search point.
+   * @param forceAsPixels Force the range check to be in pixels, over-riding any grid at the target point
+   * @return              List of pieces
    */
-  public List<GamePiece> getPieces(Map map, Point point, int range) {
+  public List<GamePiece> getPieces(Map map, Point point, int range, boolean forceAsPixels) {
     final VassalMapPieceIndex index = getIndex(map);
-    return index.getPieces(point, range);
+    return index.getPieces(point, range, forceAsPixels);
+  }
+
+  public List<GamePiece> getPieces(Map map, Point point, int range) {
+    return getPieces(map, point, range, false);
   }
 
   /**

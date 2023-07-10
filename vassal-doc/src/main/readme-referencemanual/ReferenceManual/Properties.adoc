@@ -58,50 +58,146 @@ the level in a <<Layer.adoc#Properties,Layer)>> you can use _<_, _\<=_, _>_, and
 
 ==== Handy Combined List of VASSAL-defined Properties for Game Pieces
 
+===== Fixed Property Names
+[width="100%",cols="33%a,33%a,33%a",]
 |===
 |*Property* |*Trait* |*Description*
-|*BasicName* |<<BasicPiece.adoc#top,Basic Piece>> |The basic name of the piece.
+
+|*AttachCount* |<<Attachment.adoc#top,Attachment>> |Returns the current Attachment count of the last defined _Attachment_ trait.
+|*BasicName* |<<BasicPiece.adoc#top,Basic Piece>> or <<BasicName.adoc#top,Basic Name>>|The basic name of the piece.
+|*BoardOfCommand* |<<MultiLocationCommand.adoc#top,Multi-Location Command>> |Contains the Board Name of the last selected _Multi-Location_ Command.
+|*cannotMove* |<<NonStacking.adoc#top,Does not stack>> |"true" if this piece cannot move at all (note spelling).
 |*ClickedX* |<<BasicPiece#top,Basic Piece>>|Map X-coordinate where player last right-clicked on piece to bring up context menu (or 0 if never).
 |*ClickedY* |<<BasicPiece#top,Basic Piece>>|Map Y-coordinate where player last right-clicked on piece to bring up context menu (or 0 if never).
 |*CurrentBoard* |<<BasicPiece#top,Basic Piece>>|Current Board name or "" if not on a map.
 |*CurrentMap* |<<BasicPiece#top,Basic Piece>>|Current Map name or "" if not on a map.
+|*CurrentMat* |<<Cargo#top,Cargo>>|If the piece is Cargo loaded on a Mat, then the name of the Mat, otherwise ""
+|*CurrentMatBasicName* |<<Cargo#top,Cargo>>|If the piece is Cargo loaded on a Mat, then the BasicName of the Mat piece, otherwise ""
+|*CurrentMatBoard* |<<Cargo#top,Cargo>>|If the piece is Cargo loaded on a Mat, then the CurrentBoard of the Mat, otherwise ""
+|*CurrentMatID* |<<Cargo#top,Cargo>>|If the piece is Cargo loaded on a Mat, then the unique identifying ID string of the Mat, otherwise ""
+|*CurrentMatLocationName* |<<Cargo#top,Cargo>>|If the piece is Cargo loaded on a Mat, then the LocationName of the Mat, otherwise ""
+|*CurrentMatMap* |<<Cargo#top,Cargo>>|If the piece is Cargo loaded on a Mat, then the CurrentMap of the Mat, otherwise ""
+|*CurrentMatOffsetX* |<<Cargo#top,Cargo>>|If the piece is Cargo loaded on a Mat, then the difference between the CurrentX of this piece and of the Mat, otherwise ""
+|*CurrentMatOffsetY* |<<Cargo#top,Cargo>>|If the piece is Cargo loaded on a Mat, then the difference between the CurrentY of this piece and of the Mat, otherwise ""
+|*CurrentMatPieceName* |<<Cargo#top,Cargo>>|If the piece is Cargo loaded on a Mat, then the PieceName of the Mat piece, otherwise ""
+|*CurrentMatProp0 +
+CurrentMatProp1 +
+... +
+CurrentMatProp9* |<<Cargo#top,Cargo>>|If the piece is Cargo loaded on a Mat, then the value of exact same named property in the Mat piece, otherwise ""
+|*CurrentMatX* |<<Cargo#top,Cargo>>|If the piece is Cargo loaded on a Mat, then the CurrentX of the Mat, otherwise ""
+|*CurrentMatY* |<<Cargo#top,Cargo>>|If the piece is Cargo loaded on a Mat, then the CurrentY of the Mat, otherwise ""
+|*CurrentMatZone* |<<Cargo#top,Cargo>>|If the piece is Cargo loaded on a Mat, then the CurrentZone of the Mat, otherwise ""
 |*CurrentX* |<<BasicPiece#top,Basic Piece>>|Current X-coordinate of the piece.
 |*CurrentY* |<<BasicPiece#top,Basic Piece>>|Current Y-coordinate of the piece.
 |*CurrentZone* |<<BasicPiece#top,Basic Piece>>|Current Zone name if the current map has a <<ZonedGrid.adoc#top,multi-zoned grid>>, or "" if the piece is not in any zone, or not on a map.
 |*DeckName* |<<BasicPiece#top,Basic Piece>>|Current Deck name if stacked in a <<Deck.adoc#top,Deck>>, or "" if not in a Deck.
+|*DeckPosition* |<<BasicPiece#top,Basic Piece>>|Current position of the piece (top = 1) if stacked in a <<Deck.adoc#top,Deck>>, or "" if not in a Deck.
 |*DrawingMouseover* |<<BasicPiece#top,Basic Piece>>|"true" when a <<MouseOver.adoc#top, Mouseover Stack Viewer>> is currently being drawn, "false" otherwise.
 |*DrawingMouseoverIndex* |<<BasicPiece#top,Basic Piece>>|2 when a <<MouseOver.adoc#top, Mouseover Stack Viewer>> is currently being drawn, 1 otherwise.
-|*IgnoreGrid* |<<NonStacking.adoc#top,Does not stack>> |"true" if this piece ignores the map grid when moving.
+|*IgnoreGrid* |<<NonStacking.adoc#top,Does not stack>> +
+<<Cargo.adoc#top,Cargo>>
+|"true" if this piece ignores the map grid when moving. Note that a Cargo trait in a piece currently loaded onto a <<Mat.adoc#top,Mat>> will force the IgnoreGrid property to be "true".
 |*Immobile* |<<NonStacking.adoc#top,Does not stack>> |"true" if this piece cannot be moved by drag and drop.
 |*Invisible* |<<Hideable.adoc#top,Invisible>> |"true" if this piece is invisible to the current player.
 |*InvisibleToOthers* |<<Hideable.adoc#top,Invisible>> |"true" if this piece is invisible to other players.
+|*IsCargo* |<<Cargo#top,Cargo>>|Will always be "true" for a Cargo piece, "" otherwise. Use *CurrentMat* to check if a Cargo piece is currently loaded on a Mat.
 |*LocationName* |<<BasicPiece#top,Basic Piece>>|Name of the piece's current location, as determined by the map's <<ZonedGrid.adoc#Zone,Zone>> (if any) and grid settings.
-|*Moved* |<<MarkMoved.adoc#top,Mark When Moved>> |"true" if this piece has moved since the last time its movement history was cleared.
-|*NoStack* |<<NonStacking.adoc#top,Does not stack>> |"true" if this piece cannot stack with other pieces.
+|*LocationOfCommand* |<<MultiLocationCommand.adoc#top,Multi-Location Command>> |Contains the Location Name of the last selected _Multi-Location_ Command.
+|*MapOfCommand* |<<MultiLocationCommand.adoc#top,Multi-Location Command>> |Contains the Map Name of the last selected _Multi-Location_ Command.
+|*MatID* |<<Mat.adoc#top,Mat>> |A string uniquely identifying a particular Mat, even if it shares the same Mat Name with another trait containing a Mat.
+|*MatName* |<<Mat.adoc#top,Mat>> |The name of the Mat.
+|*MatNumCargo* |<<Mat.adoc#top,Mat>> |The number of pieces of <<Cargo#top,Cargo>> currently loaded on the Mat.
+|*Moved* |<<MarkMoved.adoc#top,Mark When Moved>> +
+<<MovementTrail.adoc#top,Movement Trail>>
+|"true" if this piece has moved since the last time its movement history was cleared.
+|*NoStack* |<<NonStacking.adoc#top,Does not stack>> +
+<<Mat.adoc#top,Mat>>
+|"true" if this piece cannot stack with other pieces. Note that the _Mat_ trait forces a piece to be Non-Stacking as it is required for Mats to function correctly.
 |*Obscured* |<<Mask.adoc#top,Mask>> |"true" if this piece is masked from the current player.
 |*ObscuredToOthers* |<<Mask.adoc#top,Mask>> |"true" if this piece is masked from other players.
 |*OldBoard* |<<BasicPiece#top,Basic Piece>> |Board name prior to most recent movement.
 |*OldDeckName* |<<BasicPiece#top,Basic Piece>> |Name of any <<Deck.adoc#top,Deck>> the piece was in before its last move (will be an empty string if piece wasn't in a deck)
 |*OldLocationName* |<<BasicPiece#top,Basic Piece>>|Location name prior to most recent movement.
 |*OldMap* |<<BasicPiece#top,Basic Piece>>|Map name prior to most recent movement.
+|*OldMat* |<<Cargo#top,Cargo>>|Mat name prior to most recent movement.
+|*OldMatBasicName* |<<Cargo#top,Cargo>>|Mat BasicName prior to most recent movement.
+|*OldMatID* |<<Cargo#top,Cargo>>|MatID prior to most recent movement.
+|*OldMatOffsetX* |<<Cargo#top,Cargo>>|MatOffsetX prior to most recent movement.
+|*OldMatOffsetY* |<<Cargo#top,Cargo>>|MatOffsetY prior to most recent movement.
+|*OldMatPieceName* |<<Cargo#top,Cargo>>|MatPieceName prior to most recent movement.
 |*OldX* |<<BasicPiece#top,Basic Piece>>|X coordinate prior to most recent movement.
 |*OldY* |<<BasicPiece#top,Basic Piece>>|Y coordinate prior to most recent movement.
 |*OldZone* |<<BasicPiece#top,Basic Piece>>|Zone name prior to most recent movement.
+|*PieceId* |<<BasicPiece#top,Basic Piece>>|A string that uniquely identifies the source of a piece (e.g. A Game Piece Palette entry, an At-Start Stack or Definition, or a Place Marker or Replace definition). All pieces created from the same source will have the same PieceId.
 |*PieceName* |<<BasicPiece#top,Basic Piece>>|Full piece name including both Basic Name and all additional strings provided by traits.
-|*playerSide* |<<BasicPiece#top,Basic Piece>>|Side of the current player (not the side of the piece).
+|*PieceUID* |<<BasicPiece#top,Basic Piece>>|A string that uniquely identifies an individual piece. No two pieces will ever have the same PieceUID.
 |*Restricted* |<<RestrictedAccess.adoc#top,Restricted Access>> |"true" if there are restrictions as to who can access this piece.
+|*RestrictedMovement* |<<RestrictedAccess.adoc#top,Restricted Access>> |"true" if non-owning players are resticted from moving the current piece.
 |*Selected* |<<BasicPiece#top,Basic Piece>>|"true" if the piece is currently selected.
 |*StackPos* |<<BasicPiece#top,Basic Piece>>|The position of the piece in its current Stack. Returns 1 if not stacked.
 |*StackSize* |<<BasicPiece#top,Basic Piece>>|Number of pieces in the Stack this piece is stacked in. Returns 1 if not stacked.
-|*_<property_name>_* |<<PropertySheet.adoc#top,PropertySheet>> |The value of each property on the Property Sheet can be accessed via the property name.
-|*_<traitname>__Active* |<<AreaOfEffect.adoc#top,Area of Effect>> |"true" if the Area of Effect with the name _<traitname>_ is currently active.
-|*_<layername>__Active* |<<Layer.adoc#top,Layer>> |"true" if the Layer _<layername>_ is currently active.
-|*_<layername>__Image* |<<Layer.adoc#top,Layer>> |The image name of the currently active layer for _Layer_ _<layername>_.
-|*_<layername>__Level* |<<Layer.adoc#top,Layer>> |The level number of the currently active layer for _Layer_ _<layername>_.
-|*_<layername>__Name* |<<Layer.adoc#top,Layer>> |The level name of the currently active layer for _Layer_ _<layername>_.
-|*_<rotatename>__Facing* |<<Rotate.adoc#top,Can Rotate>> |The current facing number (1, 2, etc.) for the _Can Rotate_ trait _<rotatename>_.
-|*_<rotatename>__Degrees* |<<Rotate.adoc#top,Can Rotate>> |The current degrees of rotation for the _Can Rotate_ trait _<name>_.
-|_<Property Name>_ |<<Label.adoc#top,Text Label>> |If the "Property Name" field in the trait is filled out, then a property with that name will be filled with the current value of the _Text Label_ trait's Text field.
-|*_<deckname>__numPieces* |<<Deck.adoc#top,Deck>> (Map level property) |Number of pieces/"cards" in the _Deck_ _<deckname>_.
-|*_<deckname>___<expression_name>_* |<<Deck.adoc#top,Deck>> (Map level property) |The number of pieces/"cards" for which the named expression evaluates to true in the _Deck_ _<deckname>_.
+|*ZoneOfCommand* |<<MultiLocationCommand.adoc#top,Multi-Location Command>> |Contains the Zone Name of the last selected _Multi-Location_ Command.
+
+|===
+
+===== Properties dependent on the data in the trait
+[width="100%",cols="33%a,33%a,33%a",]
+|===
+|*Property* |*Trait* |*Description*
+
+|*<propertyName>* |<<CalculatedProperty.adoc#top,Calculated Property>> +
+<<DynamicProperty.adoc#top,Dynamic Property>> +
+<<PropertyMarker.adoc#top,Marker>>
+|The value of the properties defined by the 3 types of property traits can be accessed directly using their defined Property Name.
+|*<traitname>_Active* |<<AreaOfEffect.adoc#top,Area of Effect>> |"true" if the Area of Effect with the name _<traitname>_ is currently active.
+|*<traitname>_AttachCount* |<<Attachment.adoc#top,Attachment>> |The current Attachment count for the _Attachment_ trait _<traitname>_.
+|*<rotatename>_Facing* |<<Rotate.adoc#top,Can Rotate>> |The current facing number (1, 2, etc.) for the _Can Rotate_ trait _<rotatename>_.
+|*<rotatename>_Degrees* |<<Rotate.adoc#top,Can Rotate>> |The current degrees of rotation for the _Can Rotate_ trait _<name>_.
+|*<layername>_Active* |<<Layer.adoc#top,Layer>> |"true" if the Layer _<layername>_ is currently active.
+|*<layername>_Image* |<<Layer.adoc#top,Layer>> |The image name of the currently active layer for _Layer_ _<layername>_.
+|*<layername>_Level* |<<Layer.adoc#top,Layer>> |The level number of the currently active layer for _Layer_ _<layername>_.
+|*<layername>_Name* |<<Layer.adoc#top,Layer>> |The level name of the currently active layer for _Layer_ _<layername>_.
+|*<property_name>* |<<PropertySheet.adoc#top,PropertySheet>> |The value of each property on the Property Sheet can be accessed via the property name recorded in the trait.
+|*<Property Name>* |<<Label.adoc#top,Text Label>> |If the "Property Name" field in the trait is filled out, then a property with that name will be filled with the current value of the _Text Label_ trait's Text field.
+|*<Property Name>* |<<TranslatableMessage.adoc#top,Translatable Message>> |The value of a _Translatable Message_ can be referenced using the Property name defined in the trait.
+|*<Property Name>* |<<TriggerAction.adoc#top,Trigger Action>> |The value of a Loop Index Property defined in a _Trigger Action_ can be referenced using the Property name defined in the trait.
+|===
+
+
+===== Fixed named properties provided by VASSAL that can be accessed by traits
+[width="100%",cols="33%a,33%a,33%a",]
+|===
+|*Property* |*Property Level* |*Description*
+
+|*CurrentLanguage* |Module| The 2 letter language code for the language selected by the current player.
+|*CurrentLanguageName* |Module| The name of the language seleted by the current player.
+|*ModuleDescription* |Module| The Module description text from the main <<GameModule.adoc#top, Game Module>> component.
+|*ModuleName* |Module| The Module name text from the main <<GameModule.adoc#top, Game Module>> component.
+|*ModuleOther1* |Module| The Additional Module Info 1 text from the main <<GameModule.adoc#top, Game Module>> component.
+|*ModuleOther2* |Module| The Additional Module Info 2 text from the main <<GameModule.adoc#top, Game Module>> component.
+|*ModuleVersion* |Module| The Module version text from the main <<GameModule.adoc#top, Game Module>> component.
+
+|*PlayerId* |Module| The Player Id string for the current player, as defined in <<GlobalOptions.adoc#top, Global Options>>
+|*PlayerName* |Module| The Player Name of the current player
+|*PlayerSide* |Module| The Side taken by the current player if Sides have been defined in the module
+|*VassalVersionCreated* |Module| The version number of Vassal that was used to create the current module.
+|*VassalVersionRuning* |Module| The version number of Vassal that is currently running.
+|===
+
+===== Property names provided by VASSAL that can be accessed by traits, but are dependent on the module
+[width="100%",cols="33%a,33%a,33%a",]
+|===
+|*Property* |*Property Level* |*Description*
+
+|*<propertyname>* |Zone |Global Properties defined within a <<Zone.adoc#top,Zone>> can be referenced directly by the property name by pieces that are inside that Zone. To reference a Global Property in a different zone, use the <<Expression.adoc#top,GetZoneProperty>> function.
+
+|*<propertyname>* |Map |Global Properties defined within a <<Map.adoc#top,Map>> can be referenced directly by the property name by pieces that are reside on that Map. To reference a Global Property in a different map, use the <<Expression.adoc#top,GetMapProperty>> function.
+
+|*<propertyname>* |Module |Global Properties defined within the top-level <<GameModule.adoc#top,Game Module>> can be referenced directly by the property name by any pieces in the game.
+
+|*<various>* |Module |Various component create Module Level Global Properties. These can then be accessed by traits like normal <<GlobalProperties.adoc#top,Global Properties>> defined in the  <<GameModule.adoc#top,Game Module>>. See the detailed documentation about individual components for more information.
+
+|*<deckname>_numPieces* |Map |Number of pieces/"cards" in the _Deck_ _<deckname>_.
+|*<deckname>_<expression_name>* |Map |The number of pieces/"cards" for which the named expression evaluates to true in the _Deck_ _<deckname>_.
+|*<mapname>_isVisible* |Map |True if the specified Map is currenly visible.
 |===
