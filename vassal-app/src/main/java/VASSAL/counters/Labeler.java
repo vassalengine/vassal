@@ -53,6 +53,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+import javax.swing.UIManager;
 import javax.swing.plaf.basic.BasicHTML;
 import java.awt.Color;
 import java.awt.Component;
@@ -749,6 +750,8 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     Command c = null;
     if (menuKeyCommand.matches(stroke)) {
       ChangeTracker tracker = new ChangeTracker(this);
+      final Dimension oldDimension = (Dimension) UIManager.get("OptionPane.minimumSize");
+      UIManager.put("OptionPane.minimumSize", new Dimension(800, 40));
       final String s = (String) JOptionPane.showInputDialog(
         getMap() == null ? GameModule.getGameModule().getPlayerWindow() : getMap().getView().getTopLevelAncestor(),
         menuKeyCommand.getName(),
@@ -758,6 +761,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
         null,
         label
       );
+      UIManager.put("OptionPane.minimumSize", oldDimension);
       if (s == null) {
         tracker = null;
       }
