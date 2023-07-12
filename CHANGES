@@ -1,5 +1,6 @@
 3.7.0-beta5 - ???
 
+* 12454: BeanShell Editor improvements: larger, multi-line, more properties
 * 12443: Clarified MouseOverViewer documentation
 * 12439: Uniformly handle addition of standard and imported Configurables
 * 12432: Add missing Sum & Count expressions

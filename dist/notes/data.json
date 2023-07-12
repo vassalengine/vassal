@@ -19,6 +19,7 @@
       "in": "3.7.0-beta5",
       "since": "3.7.0-beta4",
       "new_features": [
+        { "num": 12454, "desc": "BeanShell Editor improvements: larger, multi-line, more properties" }
       ],
       "bug_fixes": [
         { "num": 12439, "desc": "Uniformly handle addition of standard and imported Configurables" },
