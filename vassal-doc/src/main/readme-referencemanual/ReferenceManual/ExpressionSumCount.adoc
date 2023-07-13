@@ -14,25 +14,37 @@ Depending on what is known about the location of the pieces that you want to Sum
 
 * <<#StackBased,Stack based>> - Pieces in the same stack as the current piece
 * <<#LocationBased,Location based>> - Pieces in the same location as the current piece, or in a known location
-* <<#ZoneBased,Zone based>> - Pieces in the same zone as the current piece, or in a known zone
+* <<#ZoneBased,Zone based>> - Pieces in the same zZne as the current piece, or in a known Zone
+* <<#MapBased,Map based>> - Pieces on the same Map as the current piece, or on a known Map
 * <<#AttachmentBased,Attachment based>> - Pieces atttached to the current piece
 * <<#MatBased,Mat based>> - Pieces on the same mat as the current piece
+* <<#RangeBased,Range based>> - Pieces within a specified range of the current piece, or a known location,
 * <<#Generic,Generic>> - Pieces where the location is not known
+* <<#Summary,Summary>> - Function Summary
 
-NOTE: Functions that work relative to a 'current piece' only make sense to be used in expressions used in Game Piece traits. They cannot be used in a Map or Module level Global Key Command for example. If used outside of a Game Piece trait, these functions will always return 0.
+NOTE: When any of these functions are used in a piece trait, then if that source piece also passes whatever selection options are used, then the source piece will also be included in the Sum or Count returned.
 
-NOTE: When a *Sum* or *Count* function is used in a Counter GKC, then if the source piece also passes whatever selection options are used, then the source piece will be included in the Sum or Count returned.
+==== Trait Only Functions
+Some functions are marked with the notation #[ Trait Only ]#. These functions can only be used inside expressions in Piece Traits, or in components where they will be applied to individual pieces.
+
+The fields in components where these functions can be used are:
+
+ * The _Additional matching expression_ field in any Global Key Command
+
+Using these functions in any other context (for example a Map movement report) will return a result of 0.
 
 ==== Common fields
 
 ===== Property Name
-All the *Sum* functions total the numeric value of the specified property name (prop) in each of the matching pieces.
+The Property name used in a function can be the name of an actual property (which should be entered in quotes as "propName"), or can be another expression that evaluates to a property name.
+
+All *Sum* functions total the numeric value for the specified property name (prop) in each of the matching pieces.
 
 If a matching piece does not specify the value of the property, or if the value of the property is not numeric, then nothing will be added to the sum for that piece.
 
-Some of the *Count* functions take a property name (prop) argument and will only add 1 to the count if that property has a non-blank value for a piece.
+Some *Count* functions take a property name (prop) argument and will only add 1 to the count if that property has a non-blank value for a piece.
 
-The Property name used in a function can be the name of an actual property (which should be entered in quotes as "propName"), or can be another expression that evaluates to a property name.
+NOTE: The Property Name in a *Count* function is a convenient shorthand for using "{ property != \"\" }" in an expression.
 
 ===== Property Match Expression
 When an expression is used in any *Sum* or *Count* function, it must have the special format defined for Property Match Expressions.
@@ -41,9 +53,11 @@ See <<PropertyMatchExpression.adoc#top>> for more information.
 
 Additionally, the expression must be supplied as a full Beanshell expression (including the curly braces {}), inside double quotation marks, and you must use a special syntax *\"* for any double quotes included inside the expression. +
 
-Examples: +
+[example]
  CountStack("{Strength>3}") +
  CountStack("{StepCount < 2 && Army == \"Russian\"}")
+
+NOTE: The BeanShell Function builder will automatically add the special syntax for you.
 
 
 ===== Zone, and Location and Map Names
@@ -51,124 +65,851 @@ The Zone *Sum* and *Count* functions take a Zone name and a Map name and will on
 
 The Location *Sum* and *Count* functions take a Location name and a Map Name and will only act on pieces currently on the named Map that in Locations with the specified Location Name.
 
-The Zone and Location names used in a function can be the name of an actual Zone or Location (which should be entered in quotes like "zoneRight"), or can be another expression that evaluates to a Zone or Location name.
+The Map, Zone and Location names used in a function can be the name of an actual Map, Zone or Location (which should be entered in quotes like "zoneRight"), or can be another expression that evaluates to a Zone or Location name.
+
+[#Summary]
+=== Function Summary
+[%autowidth]
+|===
+| <<#SumStack,SumStack>> | Sum a property in pieces in a Stack
+| <<#CountStack,CountStack>> | Count the number of pieces in a Stack
+| <<#SumLocation,SumLocation>> | Sum a property in pieces in a Map location
+| <<#CountLocation,CountLocation>> | Count the number of pieces in a Map location
+| <<#SumZone,SumZone>> | Sum a property in pieces in a Zone
+| <<#CountZone,CountZone>> | Count the number of pieces in a Zone
+| <<#SumMap,SumMap>> | Sum a property in pieces on a Map
+| <<#CountMap,CountMap>> | Count the number of pieces on a Map
+| <<#SumMat,SumMat>> | Sum a property in pieces in a Mat and Cargo group
+| <<#CountMat,CountMat>> | Count the number of pieces in a Mat and Cargo group
+| <<#SumAttach,SumAttach>> | Sum a property in pieces in an Attachment group
+| <<#CountAttach,CountAttach>> | Count the number of pieces in an Attachment group
+| <<#SumRange,SumRange>> | Sum a property in pieces within range
+| <<#SumRangePx,SumRangePx>> | Sum a property in pieces within range (in pixels)
+| <<#CountRange,CountRange>> | Count the number of pieces within range
+| <<#CountRangePx,CountRangePx>> | Count the number of pieces within range (in pixels)
+| <<#Sum,Sum>> | Sum a property in pieces that match an expression
+| <<#Count,Count>> | Count the number of pieces that match an expression
+|===
 
 [#StackBased]
 ==== Stack based functions
-Use these functions when you want to *Sum* or *Count* pieces that are in the same Stack as the current piece. These functions can only be used in BeanShell expressions created in Piece traits, they will not work in a Map-based Global Key Command (for example).
+Use these functions when you want to *Sum*  or *Count* pieces that are in the same Stack as the current piece.
 
-*SumStack(prop)* returns the total of the specified property in all pieces in the same stack as the current piece.
+Only pieces in exactly the same Stack as the source piece (including the source piece) will be included. Other pieces that may be in the same location, but not in the same Stack, such as non-stacking pieces, or pieces stacked in other <<GamePieceLayers.adoc#top,Game Piece Layers>>, will not be totalled. +
 
-*SumStack(prop, expression)* returns the total of the specified property in all pieces in the same stack as the current piece that also match the expression
+NOTE: A <<Deck.adoc#top,Deck>> is a special kind of Stack, so Stack function also work to Sum & Count pieces in a Deck.
 
-*CountStack()* returns the total number of pieces in the same stack as this one (including this piece)
+[#SumStack]
+[width=100%,cols="33%a,67%a"]
+|===
+|*SumStack* |Returns the total of the specified property in pieces in the same Stack as the current piece. +
 
-*CountStack(prop)* returns the number of pieces in the same stack as this one, that have a non-blank value for the named property. If this piece has a non-blank value for the named property, it is counted in the total.
 
-*CountStack(expression)* returns the number of pieces in the same stack as this one, that match the supplied expression.
+|SumStack(prop) 
 
-*CountStack(prop, expression)* returns the number of pieces in the same stack as this one, that have a non-blank value for the named property and that also match the supplied expression.
+#[ Trait Only ]#
+| All pieces in the current stack will be included. +
+
+[example]
+SumStack("Strength") +
+
+Sum the value of the property _Strength_ in all pieces in the current stack.
+
+|SumStack(prop, expression) +
+
+#[ Trait Only ]#
+|Only pieces that match the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>> will have their value of the property included in the total. +
+
+[example]
+SumStack("Strength", "{Size > 5}"}) +
+
+Sum the value of the property _Strength_ in all pieces in the current stack that have a value of more than 5 for the _Size_ property.
+
+|===
+
+[#CountStack]
+[width=100%,cols="33%a,67%a"]
+|===
+|*CountStack* |Returns the count of pieces in the same Stack as the current piece. +
+
+|CountStack()
+
+#[ Trait Only ]#| Count all pieces in the current Stack. +
+
+[example]
+CountStack()
+
+Just a a straight count of the pieces in the target pieces Stack.
+|CountStack(prop)
+
+#[ Trait Only ]#|  Count the number of pieces in the current Stack, that have a non-blank value for the named property. +
+
+[example]
+CountStack("Strength") +
+
+Count the number of pieces that have some value for the _Strength_ property.
+
+|CountStack(expression)
+
+#[ Trait Only ]#|  Count the number of pieces in the current Stack that match the supplied expression. +
+
+[example]
+CountStack("{Army==\"Russian\"})
+
+Count the number of pieces (including the source piece) that have a Property named 'Army' with a value of 'Russian'.
+
+|CountStack(prop, expression)
+
+#[ Trait Only ]#|  Count the number of pieces in the current Stack that have a non-blank value for the named property AND that match the supplied expression. +
+
+[example]
+CountStack("Strength", "{Army==\"Russian\"}) +
+
+Count the number of pieces (including the source piece) that have some value for the Strength property AND that have a Property named 'Army' with a value of 'Russian'.
+
+|===
+
 
 [#LocationBased]
 ==== Location based functions
-Use these functions when you want to *Sum* or *Count* pieces that are either in the same Location as the current piece (Counter GKCs) or are in a known named Location on a specific map.
+Use these functions when you want to *Sum* or *Count* pieces that have the same Location Name as the current piece or are in a known named Location on a specific map.
 
 The Location Name might be a Zone name, a region name or a HexGrid location, depending on how the Grid Location naming is set up on the target piece's map.
 
-*SumLocation(prop)* returns the total of the specified property (including the current piece) in all pieces with the same Location Name on the same Map as the current piece.
+The pieces do not necessarily need to be in exactly the same place, (or even on the same Map!) as long as they have the same value for the LocationName property.
 
-*SumLocation(prop, expression)* returns the total of the specified property in all pieces (including the current piece) with the same Location Name on the same Map as the current piece and that match the expression.
+[#SumLocation]
+[width=100%,cols="33%a,67%a"]
+|===
+|*SumLocation* |Returns the total of the named property in pieces in a specified Location.  +
 
-*SumMapLocation(prop, location, map)* returns the total of the specified property in all pieces in the specified Location Name on the specified Map.
+|SumLocation(prop)
 
-*SumMapLocation(prop, location, map, expression)* returns the total of the specified property in all pieces in the specified Location Name on the specified Map that match the expression.
+#[ Trait Only ]# | All pieces with the same Location Name  as the current piece will be included. +
 
-*CountLocation()* returns the count of the number of pieces (including the current piece) with the same Location Name on the same Map as the current piece.
+[example]
+SumLocation("Strength") +
 
-*CountLocation(prop)* returns the count of the number of pieces (including the current piece) with the same Location Name on the same Map as the current piece that have a non-blank value for the supplied property.
+Sum the value of the property _Strength_ in all pieces with the same Location Name as the current piece.
 
-*CountLocation(expression)* returns the count of the number of pieces (including the current piece) with the same Location Name on the same Map as the current piece that match the expression.
+|SumLocation(prop, expression)
 
-*CountLocation(prop, expression)* returns the count of the number of pieces (including the current piece) with the same Location Name on the same Map as the current piece that have a non-blank value for the supplied property and that match the expression.
+#[ Trait Only ]# |Only pieces with the same Location Name as the current piece AND that match the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>> will have their value of the property included in the total. +
 
-*CountMapLocation(location, map)* returns the count of the number of pieces in the specified Location Name on the specified Map.
+[example]
+SumLocation("Strength", "{Unit==true"}) +
 
-*CountMapLocation(location, map, prop)* returns the count of the number of pieces in the specified Location Name on the specified Map and that have a non-blank value for the supplied property.
+Sum the value of the property _Strength_ in all pieces with the same Location Name as the current piece, that also have a value of true for the _Unit_ property.
 
-*CountMapLocation(location, map, expression)* returns the count of the number of pieces in the specified Location Name on the specified Map and that match the supplied expression.
+|SumLocation(prop, location, map)|Only include pieces at the specified location on the specified Map.
 
-*CountMapLocation(location, map, prop, expression)* returns the count of the number of pieces in the specified Location Name on the specified Map and that have a non-blank value for the supplied property and that match the supplied expression.
+[example]
+SumLocation("Strength","B-06","East") +
+
+Sum the value of the _Strength_ property in Location _B-06_ on the Map named _East_.
+
+|SumLocation(prop, location, map, expression)|
+Only include pieces at the specified location on the specified Map that also match the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>>.
+
+[example]
+SumLocation("Strength",LastLocation,"East", "{SuppressedCount > 1}") +
+
+Sum the value of the _Strength_ property in the Location recorded in the _LastLocation_ property on the Map named _East_, that also have a value of more than 1 for the _SuppressedCount_ property.
+|===
+
+[#CountLocation]
+[width=100%,cols="33%a,67%a"]
+|===
+|*CountLocation* |Returns the count of the number of pieces in a specified Location.  +
+
+|CountLocation()
+
+#[ Trait Only ]#| Count pieces with the same Location Name as the current piece. +
+
+[example]
+CountLocation() +
+
+Count the number of pieces with the same Location Name as the current piece.
+
+|CountLocation(prop)
+
+#[ Trait Only ]#| Count pieces with the same Location Name as the current piece AND that have a non-blank value for the named property. +
+
+[example]
+CountLocation("Strength") +
+
+Count the number of pieces that have a non-blank value for the property _Strength_ in all pieces with the same Location Name as the current piece.
+
+|CountLocation(expression)
+
+#[ Trait Only ]#|Count pieces with the same Location Name as the current piece AND that match the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>>. +
+
+[example]
+CountLocation("{Size==2}") +
+
+Count the number of pieces with the same Location Name as the current piece, that also have a value of 2 for the _Size_ property.
+
+|CountLocation(prop, expression)
+
+#[ Trait Only ]#| Count pieces with the same Location Name as the current piece AND that have a non-blank value for the named property AND that match the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>>.
+
+[example]
+CountLocation("Strength","{Size==2}") +
+
+Count the number of pieces with the same Location Name as the current piece, that also have a non-blank value for the _Strength_ and have a value of 2 for the _Size_ property.
+
+|CountLocation(location, map)| Count pieces at a specified location on the specified Map.
+
+[example]
+CountLocation("B-06","East") +
+
+Count the number of pieces at Location _B-06_ on the Map named _East_.
+
+|CountLocation(location, map, prop)| Count pieces at the specified location on the specified Map that have a non-blank value for the named property.
+
+[example]
+CountLocation("B-06","East", "Suppressed") +
+
+Count the number of pieces at Location _B-06_ on the Map named _East_ that have a non-blank value for the property _Suppressed_.
+
+|CountLocation(location, map, expr)| Count pieces at the specified location on the specified Map that match the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>>
+
+[example]
+CountLocation("B-06","East", "{Suppressed==2}") +
+
+Count the number of pieces at Location _B-06_ on the Map named _East_ that have a value of 2 for the property _Suppressed_.
+
+|CountLocation(location, map, prop, expr)| Count pieces at the specified location on the specified Map that have a non-blank value for a property and that match a <<PropertyMatchExpression.adoc#top,Property Match Expression>>
+
+[example]
+CountLocation("B-06","East", "CombatType", "{Suppressed==2}") +
+
+Count the number of pieces at Location _B-06_ on the Map named _East_ that have a non-blank value for the _CombatType_ property and that have a value of 2 for the property _Suppressed_.
+|===
+
 
 [#ZoneBased]
 ==== Zone based functions
-Use these functions when you want to *Sum* or *Count* pieces that are either in the same Zone as the current piece (Counter GKCs) or are in a known Zone on a specific map.
+Use these functions when you want to *Sum* or *Count* pieces that are either in the same Zone as the current piece or are in a known Zone on a specific map.
 
+If these functions are used within a piece trait, then that piece may be included in the total if it also meets the requirements.
 
-*SumZone(prop)* returns the total of the specified property (including the current piece) in all pieces with the same Zone on the same Map as the current piece.
+[#SumZone]
+[width=100%,cols="33%a,67%a"]
+|===
+|*SumZone* |Returns the total of the named property in pieces in a particular Zone.  +
 
-*SumZone(prop, expression)* returns the total of the specified property in all pieces (including the current piece) with the same Zone on the same Map as the current piece and that match the expression.
+|SumZone(prop)
 
-*SumMapZone(prop, zone, map)* returns the total of the specified property in all pieces in the specified Zone on the specified Map.
+#[ Trait Only ]#| All pieces in the same Zone as the current piece, including the current piece, will have their value for the specified property added to the total. +
 
-*SumMapZone(prop, zone, map, expression)* returns the total of the specified property in all pieces in the specified Zone on the specified Map that match the expression.
+[example]
+SumZone("Strength") +
 
-*CountZone()* returns the count of the number of pieces (including the current piece) within the same Zone and on the same Map as the current piece.
+Sum the value of the property _Strength_ in all pieces in the same Zone as the current piece.
 
-*CountZone(prop)* returns the count of the number of pieces (including the current piece) within the same Zone on the same Map as the current piece, that have a non-blank value for the supplied property.
+|SumZone(prop, expression)
 
-*CountZone(expression)* returns the count of the number of pieces (including the current piece) within the same Zone on the same Map as the current piece and that match the expression.
+#[ Trait Only ]# |Only pieces in the same Zone as the current piece AND that match the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>> will have their value of the property included in the total. +
 
-*CountZone(prop, expression)* returns the count of the number of pieces (including the current piece) within the same Zone on the same Map as the current piece, that have a non-blank value for the supplied property and that match the expression.
+[example]
+SumZone("Strength", "{Unit==true"}) +
 
-*CountMapZone(zone, map)* returns the count of the number of pieces in the specified Zone on the specified Map.
+Sum the value of the property _Strength_ in all pieces in the same Zone as the current piece, that also have a value of true for the _Unit_ property.
 
-*CountMapZone(zone, map, prop)* returns the count of the number of pieces in the specified Zone on the specified Map and that have a non-blank value for the supplied property.
+|SumZone(prop, zone, map)|Only include pieces in the specified Zone on the specified Map.
 
-*CountMapZone(zone, map, expression)* returns the count of the number of pieces in the specified Zone on the specified Map and that match the supplied expression.
+[example]
+SumZone("Strength","Repair","East") +
 
-*CountMapZone(zone, map, prop, expression)* returns the count of the number of pieces in the specified Zone on the specified Map and that have a non-blank value for the supplied property and that match the supplied expression.
+Sum the value of the _Strength_ property in Zone _Repair_ on the Map named _East_.
+
+|SumZone(prop, location, map, expression)|
+Only include pieces in the specified Zone on the specified Map that also match the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>>.
+
+[example]
+SumZone("Strength",LastZone,"East", "{SuppressedCount > 1}") +
+
+Sum the value of the _Strength_ property in the Zone recorded in the _LastZone_ property on the Map named _East_, that also have a value of more than 1 for the _SuppressedCount_ property.
+|===
+
+[#CountZone]
+[width=100%,cols="33%a,67%a"]
+|===
+|*CountZone* |Returns the count of the number of pieces in a Zone.  +
+
+|CountZone()
+
+#[ Trait Only ]#| Count pieces in the same Zone as the current piece. +
+
+[example]
+CountZone() +
+
+Count the number of pieces in the same Zone as the current piece.
+
+|CountZone(prop)
+
+#[ Trait Only ]#| Count pieces in the same Zone as the current piece AND that have a non-blank value for the named property. +
+
+[example]
+CountZone("Strength") +
+
+Count the number of pieces that have a non-blank value for the property _Strength_ in all pieces in the same Zone as the current piece.
+
+|CountZone(expression)
+
+#[ Trait Only ]#|Count pieces in the same Zone as the current piece AND that match the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>>. +
+
+[example]
+CountZone("{Size==2}") +
+
+Count the number of pieces in the same Zone as the current piece, that also have a value of 2 for the _Size_ property.
+
+|CountZone(prop, expression)
+
+#[ Trait Only ]#| Count pieces in the same Zone as the current piece AND that have a non-blank value for the named property AND that match the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>>.
+
+[example]
+CountZone("Strength","{Size==2}") +
+
+Count the number of pieces in the same Zone as the current piece, that also have a non-blank value for the _Strength_ and have a value of 2 for the _Size_ property.
+
+|CountZone(zone, map)| Count pieces in the specified Zone on the specified Map.
+
+[example]
+CountZone("DeadPool","East") +
+
+Count the number of pieces in Zone _DeadPool_ on the Map named _East_.
+
+|CountZone(zone, map, prop)| Count pieces in the specified Zone on the specified Map that have a non-blank value for the named property.
+
+[example]
+CountZone("Retired","East", "Suppressed") +
+
+Count the number of pieces in Zone _Retired_ on the Map named _East_ that have a non-blank value for the property _Suppressed_.
+
+|CountZone(zone, map, expr)| Count pieces in the specified Zone on the specified Map that match the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>>
+
+[example]
+CountZone("B-06","East", "{Suppressed==2}") +
+
+Count the number of pieces in Zone _B-06_ on the Map named _East_ that have a value of 2 for the property _Suppressed_.
+
+|CountZone(location, map, prop, expr)| Count pieces in the specified Zone on the specified Map that have a non-blank value for a property and that match a <<PropertyMatchExpression.adoc#top,Property Match Expression>>
+
+[example]
+CountZone("B-06","East", "CombatType", "{Suppressed==2}") +
+
+Count the number of pieces in Zone _B-06_ on the Map named _East_ that have a non-blank value for the _CombatType_ property and that have a value of 2 for the property _Suppressed_.
+|===
+
+[#MapBased]
+==== Map based functions
+Use these functions when you want to *Sum* or *Count* pieces that are either on the same Map as the current piece or are on a specific map.
+
+If these functions are used within a piece trait, then that piece may be included in the total if it also meets the requirements.
+
+[#SumMap]
+[width=100%,cols="33%a,67%a"]
+|===
+|*SumMap* |Returns the total of the named property in pieces on a particular Map.  +
+
+|SumMap(prop)
+
+#[ Trait Only ]#| All pieces on the same Map as the current piece, including the current piece, will have their value for the specified property added to the total. +
+
+[example]
+SumMap("Strength") +
+
+Sum the value of the property _Strength_ in all pieces on the same Map as the current piece.
+
+|SumMap(prop, expression)
+
+#[ Trait Only ]# |Only pieces on the same Map as the current piece AND that match the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>> will have their value of the property included in the total. +
+
+[example]
+SumMap("Strength", "{Unit==true"}) +
+
+Sum the value of the property _Strength_ in all pieces on the same Map as the current piece, that also have a value of true for the _Unit_ property.
+
+|SumMap(prop, map)|Sum the value of the property in pieces on the specified Map.
+
+[example]
+SumMap("Strength", "East") +
+
+Sum the value of the _Strength_ property in pieces on the Map named _East_.
+
+|SumMap(prop, map, expression)|
+Only include pieces on the specified Map that also match the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>>.
+
+[example]
+SumMap("Strength",LastMap, "{SuppressedCount > 1}") +
+
+Sum the value of the _Strength_ property in pieces on the Map recorded in the _LastMap_ property AND that also have a value of more than 1 for the _SuppressedCount_ property.
+|===
+
+[#CountMap]
+[width=100%,cols="33%a,67%a"]
+|===
+|*CountMap* |Returns the count of the number of pieces on a Map.  +
+
+|CountMap()
+
+#[ Trait Only ]#| Count pieces on the same Map as the current piece. +
+
+[example]
+CountMap() +
+
+Count the number of pieces on the same Map as the current piece.
+
+|CountMap(prop)
+
+#[ Trait Only ]#| Count pieces with ion the same Map as the current piece AND that have a non-blank value for the named property. +
+
+[example]
+CountMap("Strength") +
+
+Count the number of pieces that have a non-blank value for the property _Strength_ in all pieces on the same Map as the current piece.
+
+|CountMap(expression)
+
+#[ Trait Only ]#|Count pieces on the same Map as the current piece AND that match the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>>. +
+
+[example]
+CountMap("{Size==2}") +
+
+Count the number of pieces on the same Map as the current piece, that also have a value of 2 for the _Size_ property.
+
+|CountMap(prop, expression)
+
+#[ Trait Only ]#| Count pieces on the same Map as the current piece that have a non-blank value for the named property AND that match the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>>.
+
+[example]
+CountMap("Strength","{Size==2}") +
+
+Count the number of pieces on the same Map as the current piece that have a non-blank value for the property _Strength_ and have a value of 2 for the _Size_ property.
+
+|CountMap(map)| Count all pieces on the specified Map.
+
+[example]
+CountMap("East") +
+
+Count the number of pieces on the Map named _East_.
+
+|CountMap(map, prop)| Count pieces on the specified Map that have a non-blank value for the named property.
+
+[example]
+CountMap("East", "Suppressed") +
+
+Count the number of pieces on the Map named _East_ that have a non-blank value for the property _Suppressed_.
+
+|CountMap(map, expr)| Count pieces on the specified Map that match the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>>
+
+[example]
+CountMap("East", "{Suppressed==2}") +
+
+Count the number of pieces on the Map named _East_ that have a value of 2 for the property _Suppressed_.
+
+|CountMap(map, prop, expr)| Count pieces on the specified Map that have a non-blank value for a property and that match a <<PropertyMatchExpression.adoc#top,Property Match Expression>>
+
+[example]
+CountMap("East", "CombatType", "{Suppressed==2}") +
+
+Count the number of pieces on the Map named _East_ that have a non-blank value for the _CombatType_ property and that have a value of 2 for the property _Suppressed_.
+|===
+
 [#AttachmentBased]
 ==== Attachment based functions
-Use these functions to *Sum* or *Count* values on pieces that are currently Attached to the source piece. These functions only work in Counter GKCs.
+Use these functions to *Sum* or *Count* values on pieces that are currently Attached to the source piece using the <<Attachment.adoc#top,Attachment>> trait.
 
-*SumAttachment(attachment, prop)* returns the total of the specified property summed across all the pieces attached to this piece via a named Attachment trait on this piece.
+NOTE: The Attachment functionality allows pieces to be attached to themselves. If this is the case, then the current piece will be included in the Sum or Count reurned by the functions.
 
-*CountAttachment(attachment, prop)* returns the number of pieces with a non-blank value for the specified property, among all the pieces attached to this piece via a named Attachment trait on this piece.
+[#SumAttach]
+[width=100%,cols="33%a,67%a"]
+|===
+|*SumAttach* |Returns the total of the named property in pieces attached to the current piece.  +
 
-*CountAttachmentExpression(attachment, expr)* returns the total number of pieces, among the pieces attached by the named attachment property, which also match the given expression.
+|SumAttach(attachment, prop)
 
-*MaxAttachment(attachment, prop)* returns the highest value of the specified property among all the pieces attached to this piece via a named Attachment trait on this piece. Returns 0 if no pieces containing the property are attached.
+#[ Trait Only ]#| Sum a property across all pieces attached to the current piece using the named Attachment +
 
-*MinAttachment(attachment, prop)* returns the lowest value of the specified property among all the pieces attached to this piece via a named Attachment trait on this piece. Returns 0 if no pieces containing the property are attached.
+[example]
+SumAttach("Grouped", "Strength") +
 
+Sum the value of the property _Strength_ in all pieces attached to the current piece by the _Grouped_ Attachment.
+
+|SumAttach(attachment, prop, expression)
+
+#[ Trait Only ]# |Sum a property across all pieces attached to the current piece using the named Attachment AND that matches the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>>. +
+
+[example]
+SumAttach("G1", "Strength", "{Unit==true"}) +
+
+Sum the value of the property _Strength_ in all pieces attached to the current piece by Attachment _G1_ AND that has a value of true for the _Unit_ property. +
+
+|===
+
+[#CountAttach]
+[width=100%,cols="33%a,67%a"]
+|===
+|*CountAttach* |Count the number of pieces attached to the current piece.  +
+
+|CountAttach(attachment)
+
+#[ Trait Only ]#| Count the number of pieces attached to the current piece using the named Attachment. +
+
+[example]
+CountAttach("Grouped") +
+
+Count the number of pieces attached to the current piece by the _Grouped_ Attachment.
+
+|CountAttach(attachment, prop)
+
+#[ Trait Only ]#|Count the number of pieces attached to the current piece using the named Attachment AND that have a non-blank value for the named property. +
+
+[example]
+CountAttach("G1", "Unit"}) +
+
+Count the number of pieces attached to the current piece by the _G1_ attachment that also have a non-blank value for the _Unit_ property. +
+
+|CountAttach(attachment, expression)
+
+#[ Trait Only ]# |Count the number of pieces attached to the current piece using the named Attachment AND that match the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>>. +
+
+[example]
+CountAttach("G1", "{Unit==true"}) +
+
+Count the number of pieces attached to the current piece by the _G1_ attachment and that have a value of true for the _Unit_ property. +
+
+|CountAttach(attachment, prop, expression)
+
+#[ Trait Only ]#|Count the number of pieces attached to the current piece using the named Attachment AND that have a non-blank value for the named property AND that match the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>>. +
+
+[example]
+CountAttach("G1", "StepCount", "{Unit==true"}) +
+
+Count the number of pieces attached to the current piece by the _G1_ attachment and that have a non-blank value for the _StepCount_ property and that have a value of true for the _Unit_ property. +
+
+|===
+
+[#MaxAttach]
+[width=100%,cols="33%a,67%a"]
+|===
+|*MaxAttach* |Find the highest value of a Property among attached pieces.  +
+
+|MaxAttach(attachment, prop)
+
+#[ Trait Only ]#| Find the highest value of the named Property among pieces attached by the named Attachment. Returns 0 if no pieces containing the property are attached. +
+
+[example]
+MaxAttach("Group", "Strength") +
+
+Find the highest value of the _Strength_ property among the pieces attached to the current piece by the _Group_ Attachment.
+
+|===
+
+[#MinAttach]
+[width=100%,cols="33%a,67%a"]
+|===
+|*MinAttach* |Find the lowest value of a Property among attached pieces.  +
+
+|MinAttach(attachment, prop)
+
+#[ Trait Only ]#| Find the lowest value of the named Property among pieces attached by the named Attachment. Returns 0 if no pieces containing the property are attached. +
+
+[example]
+MinAttach("Group", "Bravery") +
+
+Find the lowest value of the _Bravery_ property among the pieces attached to the current piece by the _Group_ Attachment.
+
+|===
 
 [#MatBased]
 ==== Mat based functions
-Use these functions to *Sum* or *Count* values on pieces that are part of a Mat and Cargo relationship. These functions only work in Counter GKCs.
+Use these functions to *Sum* or *Count* values on pieces that are part of a Mat and Cargo relationship.
 
-For all Math base functions, the asking piece can either be a Mat or a Mat Cargo. If the piece is not a Mat, and/or if it is a Mat Cargo piece not presently on a Mat, then only the piece itself is checked.
+For all Mat based functions, the asking piece can either be a Mat or a Mat Cargo, and a Mat Cargo can only be attached to at most one Mat. If the piece is not a Mat, and/or if it is a Mat Cargo piece not presently on a Mat, then only the piece itself is checked.
 
-*SumMat(prop)* returns the total of the specified property among a Mat and its Mat Cargo.
+NOTE: The current piece calling the Mat-based functions will always check and potentially include itself in the total if it passes the requirements.
 
-*SumMat(prop, expression)* returns the total of the specified property among a Mat and its Mat Cargo. The Mat and each Cargo must also match the supplied Property Expression before being added to the total.
+[#SumMat]
+[width=100%,cols="33%a,67%a"]
+|===
+|*SumMat* |Returns the total of the named property in the current Mat/Cargo group.  +
 
-*CountMat(prop)* returns the number of pieces with a non-blank value for the specified property, among a Mat and its Mat Cargo.
+|SumMat(prop)
 
-*CountMat(expression)* returns the number of pieces that match the supplied expression, among a Mat and its Mat Cargo.
+#[ Trait Only ]#| Sum a property across all pieces in the current Mat and Cargo group. +
 
-*CountMat(prop, expression)* returns the number of pieces with a non-blank value for the specified property, among a Mat and its Mat Cargo. The Mat and each Cargo must also match the supplied Property Expression before being added to the total.
+[example]
+SumMat("Strength") +
+
+Sum the value of the property _Strength_ in all pieces in the current Mat/Cargo group.
+
+|SumMat(prop, prop, expression)
+
+#[ Trait Only ]#|Sum a property across all pieces in the current Mat/Cargo group AND that matches the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>>. +
+
+[example]
+SumMat("Strength", "{Unit==true"}) +
+
+Sum the value of the property _Strength_ in all pieces in the current Mat/Cargo group AND that has a value of true for the _Unit_ property. +
+
+|===
+
+[#CountMat]
+[width=100%,cols="33%a,67%a"]
+|===
+|*CountMat* |Count the number of pieces in the current Mat/Cargo group.  +
+
+|CountMat()
+
+#[ Trait Only ]#| Count the number of pieces in the current Mat/Cargo group. +
+
+[example]
+CountMat() +
+
+Count the number of pieces in the Mat/Cargo group for the current piece.
+
+|CountMat(prop)
+
+#[ Trait Only ]#|Count the number of pieces in the current Mat/Cargo group AND that have a non-blank value for the named property. +
+
+[example]
+CountMat("Unit"}) +
+
+Count the number of pieces Count the number of pieces in the current Mat/Cargo group that also have a non-blank value for the _Unit_ property. +
+
+|CountMat(expression)
+
+#[ Trait Only ]#| Count the number of pieces in the current Mat/Cargo group AND that match the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>>. +
+
+[example]
+CountMat("{Unit==true"}) +
+
+Count the number of pieces in the current Mat/Cargo group and that have a value of true for the _Unit_ property. +
+
+|CountMat(prop, expression)
+
+#[ Trait Only ]# | Count the number of pieces in the current Mat/Cargo group AND that have a non-blank value for the named property AND that match the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>>. +
+
+[example]
+CountMat("G1", "StepCount", "{Unit==true"})
+
+Count the number of pieces in the current Mat/Cargo group and that have a non-blank value for the _StepCount_ property and that have a value of true for the _Unit_ property. +
+
+|===
+
+[#RangeBased]
+==== Range based functions
+Use these functions to *Sum* or *Count* values on pieces that are with a certain range of a source piece, or of a known location.
+
+Each function has two versions. +
+
+The first version assumes the range is in the 'native' format of the *from* location (Grid Units). If a Hex or Square grid exists at that location, then the Range will be assumed to be in appropriate grid cells (hexes or squares). If there is no grid, or an Irregular grid at that location, then the range is assumed to be in pixels. +
+
+The second *Px* version of the function forces the Range to be checked in Pixels, even if a Hex or Square grid exists at the *From* location.
+
+All Range functions take a minimum and a maximum range as parameters. Pieces will be included in the *Count* or *Sum* if their range from the calling piece is greater than or equals to the minimum range and less than or equal to the maximum range.
+
+Error checking is performed and a negative or non-numeric minimum range will be treated as 0. A non-numeric maximum range, or one that is less than the minimum range will be treated as equal to the minimum range.
+
+NOTE: On maps with a <<ZonedGrid.adoc#top,Zoned Grid>>, the Grid at the *From* location is assumed to fill the entire Map for the purposes of the Range calculation.
+
+NOTE: If a range-based function is called from within a Piece and a minimum range of 0 is specified, then the calling piece will be included in the *Sum* or *Count* returned.
+
+[#SumRange]
+[width=100%,cols="33%a,67%a"]
+|===
+|*SumRange* |Returns the total of the named property in pieces within range (in Grid Units) of the current piece +
+
+|SumRange(min, max, prop)
+
+#[ Trait Only ]#| Sum a property across all pieces within the specified range in Grid Units +
+
+[example]
+SumRange(0, 0, "Strength") +
+
+Sum the value of the property _Strength_ in all pieces in exactly the same X,Y location as the current piece.
+
+[example]
+SumRange(1, 2, "Strength") +
+
+Sum the value of the property _Strength_ in all pieces in that are 1 or 2 grid units away. On a Hex map, this will be all units in adjacent hexes, or 2 hexes away.
+
+|SumRange(min, max, prop, expr)
+
+#[ Trait Only ]#| Sum a property across all pieces within the specified range in grid units AND that match the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>>. +
+
+[example]
+SumRange(1, 1, "Strength", "{Army==\"German\"}") +
+
+Sum the value of the property _Strength_ in pieces in the adjacent hexes that have a value of "German" for the _Army_ property.
+|===
+
+[#SumRangePx]
+[width=100%,cols="33%a,67%a"]
+|===
+|*SumRangePx* |Returns the total of the named property in pieces within range (in pixels) of the current piece +
+
+|SumRangePx(min, max, prop)
+
+#[ Trait Only ]#| Sum a property across all pieces within the specified range in Pixels +
+
+[example]
+SumRangePx(1, 100, "Strength") +
+
+Sum the value of the property _Strength_ in all pieces in within 100 pixels of the current piece, but excluding the current piece and any piece stacked in the same location as the current piece
+
+|SumRangePx(min, max, prop, expr)
+
+#[ Trait Only ]#| Sum a property across all pieces within the specified range in grid units AND that match the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>>. +
+
+[example]
+SumRangePx(0, 500, "Strength", "{Alien==true}") +
+
+Sum the value of the property _Strength_ in pieces within 500 pixels that have a value of *true** for the _Alien_ property.
+|===
+
+
+[#CountRange]
+[width=100%,cols="33%a,67%a"]
+|===
+|*CountRange* |Count the number of pieces within range (in Grid Units) of the current piece +
+
+|CountRange(min, max)
+
+#[ Trait Only ]#| Count all pieces within the specified range in Grid Units +
+
+[example]
+CountRange(1, 5) +
+
+Count all pieces within 5 hexes of the current piece,
+but not in the same hex as the current piece.
+
+|CountRange(min, max, prop)
+
+#[ Trait Only ]#| Count all pieces within the specified range in Grid Units AND that have a non-blank value for the named property.
+
+[example]
+CountRange(1, 5, "Russian") +
+
+Count all pieces within 5 hexes of the current piece,
+but not in the same hex as the current piece and that have a non-blank value for the _Russian_ property.
+
+|CountRange(min, max, expr)
+
+#[ Trait Only ]#| Count all pieces within the specified range in Grid Units that match the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>>. +
+
+[example]
+CountRange(1, 5, "{Army==\"Russian\"}") +
+
+Count all pieces within 5 hexes of the current piece,
+but not in the same hex as the current piece and that have a value of "Russian" for the _Army_ property.
+
+
+|CountRange(min, max, prop, expr)
+
+#[ Trait Only ]#| Count all pieces within the specified range in grid units that have a non-blank value for the named property AND that match the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>>. +
+
+[example]
+CountRange(0, 2, "Isolated", "{Army==\"German\"}") +
+
+Cout the pieces within 2 hexes of the current piece that have a non-blank value for the property _Isolated_ AND that have a value of "German" for the _Army_ property.
+|===
+
+
+[#CountRangePx]
+[width=100%,cols="33%a,67%a"]
+|===
+|*CountRangePx* |Count the number of pieces within range (in pixels) of the current piece +
+
+|CountRangePx(min, max)
+
+#[ Trait Only ]#| Count all pieces within the specified range in pixels +
+
+[example]
+CountRangePx(1, 5) +
+
+Count all pieces within 5 hexes of the current piece,
+but not in the same hex as the current piece.
+
+|CountRangePx(min, max, prop)
+
+#[ Trait Only ]#| Count all pieces within the specified range in Grid Units AND that have a non-blank value for the named property.
+
+[example]
+CountRangePx(1, 500, "Alien") +
+
+Count all pieces within 500 pixels of the current piece, but not in the X, Y position as the current piece and that have a non-blank value for the _Alien_ property.
+
+|CountRangePx(min, max, expr)
+
+#[ Trait Only ]#| Count all pieces within the specified range in pixels that match the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>>. +
+
+[example]
+CountRangePx(0, 500, "{Armed==true}") +
+
+Count all pieces within 500 pixels of the current piece, that have a value of true for the _Armed_ property.
+
+
+|CountRangePx(min, max, prop, expr)
+
+#[ Trait Only ]#| Count all pieces within the specified range in pixels that have a non-blank value for the named property AND that match the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>>. +
+
+[example]
+CountRangePx(0, 200, "Isolated", "{Army==\"German\"}") +
+
+Count the pieces within 200 pixels of the current piece that have a non-blank value for the property _Isolated_ AND that have a value of "German" for the _Army_ property.
+|===
+
 
 [#Generic]
 ==== Generic functions
 These functions are provided for backwards compatibility, but are not recommended for general use as they are not efficient. When the location of the pieces to be summed or counted is not known, then every piece on the map (if known) or all maps (if not), must be checked to see if they need to be included.
 
-*Sum(prop, expr)* returns the total of the specified property for all pieces in the game matching the expression.
+NOTE: These plain *Sum* and *Count* functions are provided for backwards-compatibibility with modules created with earlier versions of Vassal and can have substantial performance cost as they must check all the pieces on the map or in the entire game against the expression. +
+ +
+ Wherever possible, use the specific *Sum* and *Count*  functions detailed above.
 
-*Sum(prop, expr, map)* returns the total of the specified property for all pieces on a specific map matching the expression.
+[#Sum]
+[width=100%,cols="33%a,67%a"]
+|===
+|*Sum* |Sum the total of a property across all pieces in the game  +
 
-*Count(expr)* returns the number of pieces in the game that match the expression.
+|Sum(prop, expr) | Sum the value of a property across all pieces in the game that match the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>>.+
 
-*Count(expr, map)* returns the number of pieces on a specific map matching the expression.
+[example]
+Sum("Isolated", "{Army == \"Russian\" && Isolated > 0}") +
 
-*NOTE:* The last four functions (i.e. plain "Sum" and "Count", with or without the map parameter) can have substantial performance cost as they must check all the pieces on the map or in the entire game against the expression.
-Also, because Java requires that the expression itself must be passed as a string, the syntax is tricky here and quotation marks inside the expression must be quoted as \"
+Sum the value of the property _Isolated_ across all pieces in the game that have a value of "Russian" for the _Army_ property, and a value greater than 0 for the _Isolated_ property.
+
+|Sum(prop, expr, map) | Sum the value of a property across all pieces on the named Map that match the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>>.+
+
+[example]
+Sum("Isolated", "{Army == \"Russian\" && Isolated > 0}", "EastFront") +
+
+Sum the value of the property _Isolated_ across all pieces on the Map named "EastFront" that have a value of "Russian" for the _Army_ property, and a value greater than 0 for the _Isolated_ property.
+
+|===
+
+[#Count]
+[width=100%,cols="33%a,67%a"]
+|===
+|*Count* |Count the number of pieces in the game  +
+
+|Count(expr) | Count the number of pieces in the game that match the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>>.+
+
+[example]
+Count("Isolated", "{Army == \"Russian\" && Isolated > 0}") +
+
+Count the number of pieces in the game that have a value of "Russian" for the _Army_ property, and a value greater than 0 for the _Isolated_ property.
+
+|Count(expr, map) | Count the number of pieces on the named Map that match the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>>.+
+
+[example]
+Count("{Army == \"Russian\" && Isolated > 0}", "EastFront") +
+
+Count the number of pieces on the Map named "EastFront" that have a value of "Russian" for the _Army_ property, and a value greater than 0 for the _Isolated_ property.
+
+|===

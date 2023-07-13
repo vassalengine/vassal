@@ -161,7 +161,7 @@ _When creating comparisons, remember that Property names and values are case-sen
 To check if the value of a Property matches a single value, use a simple expression. For example:
 
 * PieceName = Paratrooper (text)
-* CurrentTurn => 10 (numerical)
+* CurrentTurn = 10 (numerical)
 * ObscuredToOthers = true (Boolean)
 
 _In these comparisons, the value on the right side is called a_ literal__, because the text, number, or condition must be literally true—as written—for the comparison to be true.__

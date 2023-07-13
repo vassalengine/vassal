@@ -46,6 +46,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -206,6 +207,9 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
       nameField.setLineWrap(true);
       nameField.setWrapStyleWord(true);
       nameField.setBorder(BorderFactory.createLineBorder(Color.gray));
+      // Reset the standard docus traversal keys so Tab doesn't get used by the Text Area
+      nameField.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, null);
+      nameField.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, null);
 
       nameField.setText(getValueString());
       panel.add(nameField, "grow"); //NON-NLS

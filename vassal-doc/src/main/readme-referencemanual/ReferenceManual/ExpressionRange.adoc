@@ -18,28 +18,85 @@ If there are any errors during calculation (for example, trying to calculate the
 
 Most of the functions are designed to be used within piece traits and calculate the range from the position of the current piece to another location.
 
-==== Trait specifix functions
+==== Trait Only Functions
+Most of the Range functions are marked with the notation #[ Trait Only ]#. These functions can only be used inside expressions in Piece Traits, or in components where they will be applied to individual pieces.
 
- RangeInPixels(x, y)
- RangeInCells(x, y)
+The fields in components where these functions can be used are:
 
-Calculate the range from the current piece to the specified X, Y position on the same Map.
+* The _Additional matching expression_ field in any Global Key Command
 
- RangeInPixels(attachmentName)
- RangeInCells(attachmentName)
+Using these functions in any other context (for example a Map movement report) will return a result of 0.
 
-Calculate the range from the current piece to the position of the first piece attached to this piece using the Attachment Name "attachmentName" that is also on the same map as the current piece.
-
- RangeInPixels(x1, y1, x2, y2)
- RangeInCells(x1, y1, x2, y2)
-
-Calculate the range from the position x1, y1 to x2, y2 on the current map
-
- RangeInPixels(x1, y1, x2, y2, mapName)
- RangeInCells(x1, y1, x2, y2, mapName)
-
-Calculate the range from the position x1, y1 to x2, y2 on the named map. This is the only form of the Range functions that can be used outside of piece traits.
+==== Range functions
 
 
+[#Range]
+[width=100%,cols="33%a,67%a"]
+|===
+|*Range* |Calculate the range in Grid Units between two locations. +
 
+|Range(x, y) +
+RangePx(x, y) +
+
+#[ Trait Only ]#
+| Calculate the range in Grid Units or pixels from the current piece to the specified X, Y co-ordinate on the current Map. +
+
+[example]
+Range(100, 200) +
+RangePx(100, 200) +
+
+Calculate the range in Grid Units or pixels from the current piece to 100, 200 on the same Map.
+
+|Range(x1, y1, x2, y2) +
+RangePx(x1, y1, x2, y2)
+
+#[ Trait Only ]#
+| Calculate the range in Grid Units or pixels from on X, Y position to another X, Y positiom on the current Map. +
+
+[example]
+Range(OldCurrentX, OldCurrentY, CurrentX, CurrentY) +
+RangePx(OldCurrentX, OldCurrentY, CurrentX, CurrentY)
+
+Calculate the range in Grid Units or pixels from the previous position of the current piece to its current position.
+
+|Range(x1, y1, x2, y2, map) +
+RangePx(x1, y1, x2, y2, map)
+
+| Calculate the range in Grid Units or pixels from on X, Y position to another X, Y positiom on named Map. +
+
+[example]
+Range(LastSeenX, LastSeenY, HomeX, HomeY, "BaseMap") +
+RangePx(LastSeenX, LastSeenY, HomeX, HomeY, "BaseMap")
+
+Calculate the range in Grid Units or pixels on the Map _BaseMap_ from position given by _LastSeenX_, _LastSeenY_ to the position given by _HomeX_, _HomeY_.
+
+
+|Range(attachment) +
+RangePx(attachment) +
+
+#[ Trait Only ]#
+|Calculate the range in Grid Units or pixels from the current piece to the first piece attached to this piece by the named <<Attachment.adoc#top,Attachment>>. +
+
+If the current piece is self-attached, it will not be selected as the piece to check the range.
+
+[example]
+Range("MyGroup") +
+RangePx("MyGroup") +
+
+Calculate the range in Grid Units or pixels from the current piece to the first piece attached to this piece by the _MyGroup_ <<Attachment.adoc#top,Attachment>>.
+
+|RangePx(attachment, expr) +
+
+#[ Trait Only ]#
+|Calculate the range in Grid Units or pixels from the current piece to the first piece attached to this piece by the named <<Attachment.adoc#top,Attachment>> that also matches the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>>. +
+
+If the current piece is self-attached, it will not be selected as the piece to check the range.
+
+[example]
+Range("MyGroup", "{Strength > 10}") +
+RangePx("MyGroup", "{Strength > 10}") +
+
+Calculate the range in Grid Units or pixels from the current piece to the first piece attached to this piece by the _MyGroup_ <<Attachment.adoc#top,Attachment>> that has a _Strength_ property value greateer than 10.
+
+|===
 

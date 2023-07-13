@@ -11,7 +11,7 @@ This <<GamePiece.adoc#Traits,Trait>> adds an action that creates a lasting "atta
 
 (1) The piece will be able to issue <<GlobalKeyCommand.adoc#top, Global Key Commands>> to attached pieces using the very fast and efficient "Current Attachments" location filter. A piece that needs to repeatedly communicate with the same piece(s) every time can thus use an Attachment to make the commands process very quickly, overcoming the normal performance lag of Global Key Commands.
 
-(2) The piece will be able to access the properties of _any_ of the pieces that the Attachment trait is bound to through GetAttachmentProperty(attachmentName, propertyName, index). The index starts at 1 for the first attached piece.
+(2) The piece will be able to access the properties of _any_ of the pieces that the Attachment trait is bound to through the various versions of the GetAttachProperty function.
 
 (3) The piece will be able to directly read the properties of _one_ of the pieces that the Attachment trait is bound to through a simple syntax. For cases where a single piece is bound to a particular Attachment trait, this can be quite useful in reading its properties quickly and easily. If a group of multiple pieces is attached with one Attachment trait, properties will be read from an undetermined _single piece_ from among the attached pieces. See _Attachment Name_, below, for an explanation of how to read a property from the attached piece.
 
@@ -19,14 +19,16 @@ This <<GamePiece.adoc#Traits,Trait>> adds an action that creates a lasting "atta
 
 (5) If the attached-to piece *also* has an Attachment trait that shares the same _Attachment Name_, then mutual attachments between pieces can also be formed.
 
+(6) Attachments are also allowed to be made from a piece to itself (`Allow attachments to self'). This allows you to create a group of pieces that are all equivalently attached to all other piecs in the group and can all issue the same Attachment related commands. By default, this option is disabled, which creates an assymetric Attachment group, where one piece is the 'driver' that sends commands to an attached set of pieces, but they cannot necessarily send commands back.
+
 *NOTES:*::
 * The property _<AttachmentName>_AttachCount_ can be used to find out how many pieces are currently attached via this trait. For example if the _Attachment Name_ were "Sibling" then the property _Sibling_AttachCount_ would hold the attachment count.
 * A Global Key Command sent to "Current Attachments" will execute very quickly
-* Pieces *can* attach to themselves.
+* Pieces *can* attach to themselves, but only if the `Allow attachment to self` option is enabled.
 * While a single piece can contain one _or more_ Attachment traits, all of an individual piece's Attachment traits should have different names (no single piece should have two Attachment traits with the same name).
 * Two pieces, each with an Attachment trait sharing the same _Attachment Name_ can form a mutual attachment
 * Pieces which are deleted from the game are automatically removed as attachments.
-* The _GetAttachmentProperty(attachmentName, propertyName, attachmentIndexOrBasicName)_ function can be used in expressions to read the values of Dynamic Properties on attached pieces. Indices start at 1, or you can pass the <<BasicPiece.adoc#properties,_BasicName_>> you wish to find among the attachments.
+* The _GetAttachmentProperty(attachmentName, propertyName, attachmentIndexOrBasicNameOrExpression)_ function can be used in expressions to read the values of Dynamic Properties on attached pieces. Indices start at 1, or you can pass the <<BasicPiece.adoc#properties,_BasicName_>> you wish to find among the attachments, or a Beanshell Property Match Expression expression to match more complex rules.
 * A <<SetAttachmentProperty.adoc#top,Set Attachment Property>> trait can be used to change the values of Dynamic Properties on attached pieces.
 
 [width="100%",cols="50%a,^50%a",]
@@ -37,7 +39,8 @@ This <<GamePiece.adoc#Traits,Trait>> adds an action that creates a lasting "atta
 
 *Auto-attach to all pieces with identical attachment name:*::  If selected, the piece will automatically attach itself to other pieces which have an _Attachment_ trait with an identical attachment name; this can be used to easily and quickly attach pieces together. When selected, none of the advanced options for attaching and detaching pieces will be displayed. When this option _not_ selected, the advanced options for attaching and detaching pieces will be shown.
 
-*Allow attachment to self:*::  If selected, the attachment is allowed to attach to _this piece_ (i.e., itself) if conditions are otherwise met. If not selected, the Attachment will never attach to itself in any circumstances.
+*Allow attachment to self:*::  If selected, the attachment is allowed to attach to _this piece_ (i.e., itself) if conditions are otherwise met. If not selected, the Attachment will never attach to itself in any circumstances. +
+NOTE: This has implications when using the GetAttachProperty function - The function can potentially select the current piece to read the property from.
 
 *Before adding attachments:*::  Determines whether existing attachments are cleared before adding new attachments.
 +

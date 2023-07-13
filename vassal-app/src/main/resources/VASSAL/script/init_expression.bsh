@@ -353,6 +353,83 @@ CountLocation(Object location, Object map, Object property, Object expression) {
 }
 
 /**
+ * Callbacks to vassal for functions that sum the value of the specified property in a Map
+ *
+ * SumMap(property)
+ *    Sum pieces in same map as caller
+ * SumMap(property, expression)
+ *    Sum pieces in same map as caller that match expression
+ * SumMap(property, map)
+ *    Sum pieces in the specified map
+ * SumMap(property, map, expression)
+ *    Sum pieces in the specified map that match expression
+ *
+ */
+
+SumMap(Object property) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.sumMap(property, _source));
+}
+
+SumMap(Object property, Object expressionOrMap) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.sumMap(property, expressionOrMap, _source));
+}
+
+SumMap(Object property, Object map, Object expression) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.sumMap(property, map, expression, _source));
+}
+
+/**
+ * Callbacks to vassal for functions that count pieces on a Map, optionally with a non-blank value for the specified property or expression
+ * CountMap()
+ *    Count pieces in same map as caller
+ * CountMap(expression)
+ *    Count pieces in sane map as caller that match expression
+ * CountMap(property)
+ *    Count pieces in same map as caller with a non-blank value for the specified property
+ * CountMap(property, expression)
+ *    Count pieces in same map as caller that match expression
+ * CountMap(map)
+ *    Count pieces in the specified map
+ * CountMap(map, property)
+ *    Count pieces in the specified map
+ * CountMap(map, expression)
+ *    Count pieces in the specified map that match expression
+ * CountMap(map, property, expression)
+ *    Count pieces in the specified map  that match expression
+ *
+ */
+
+CountMap() {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.countMap(_source));
+}
+
+CountMap(Object propertyOrExpressionOrMap) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.countMap(propertyOrExpressionOrMap, _source));
+}
+
+CountMap(Object propertyOrMap, Object expressionOrProperty) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.countMap(propertyOrMap, expressionOrProperty, _source));
+}
+
+CountMap(Object map, Object property, Object expression) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.countMap(map, property, expression, _source));
+}
+  
+/**
  * Callbacks to Vassal for functions to sum properties in a Zone
  *
  * SumZone(String property) 
@@ -713,7 +790,7 @@ GetLocalizedProperty(Object name) {
   return unwrap(_interp.isRandom(_source, "50"));
 }
 
- IsRandom(Object percent) {
+IsRandom(Object percent) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
   return unwrap(_interp.isRandom(_source, percent));

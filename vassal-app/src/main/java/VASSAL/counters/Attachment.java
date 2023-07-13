@@ -121,7 +121,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   protected String onAttach = ON_ATTACH_NOTHING;
   protected String onDetach = ON_DETACH_NOTHING;
   protected String beforeAttach = BEFORE_ATTACH_CLEAR;
-  protected boolean allowSelfAttach = true;
+  protected boolean allowSelfAttach = false;
   protected boolean autoAttach = true;
 
   private KeyCommand myAttachCommand;
