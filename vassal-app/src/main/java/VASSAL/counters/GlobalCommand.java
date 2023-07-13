@@ -1044,7 +1044,7 @@ public class GlobalCommand implements Auditable {
     /**
      * Class to track the acceptance count of pieces from multiple Decks
      */
-    class DeckInfo {
+    private class DeckInfo {
 
       // Use Limit for this Deck. -1 = unlimited, 0 = none, >0 = limit
       private final int useLimit;
