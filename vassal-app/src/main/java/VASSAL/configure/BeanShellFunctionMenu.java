@@ -4,12 +4,12 @@ import VASSAL.build.AbstractBuildable;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
-import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.map.BoardPicker;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
 import VASSAL.build.module.properties.GlobalProperties;
 import VASSAL.build.module.properties.PropertyNameSource;
+import VASSAL.counters.BasicPiece;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.EditablePiece;
 import VASSAL.counters.Properties;
@@ -24,6 +24,7 @@ import javax.swing.JDialog;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+
 import java.awt.Dimension;
 import java.util.Arrays;
 import java.util.List;
@@ -71,6 +72,16 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     stringItem.setToolTipText(Resources.getString("Editor.BeanShell.a_string"));
     stringItem.addActionListener(e -> buildString());
     constantMenu.add(stringItem);
+    addSeparator(constantMenu);
+
+    final JMenuItem trueItem = new JMenuItem(Resources.getString("Editor.BeanShell.true"));
+    trueItem.addActionListener(e -> buildBoolean(true));
+    constantMenu.add(trueItem);
+
+    final JMenuItem falseItem = new JMenuItem(Resources.getString("Editor.BeanShell.false"));
+    falseItem.addActionListener(e -> buildBoolean(false));
+    constantMenu.add(falseItem);
+
     add(constantMenu);
 
 
@@ -91,9 +102,9 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     propertyMenu.add(globalsMenu);
 
     final JMenu vassalMenu = new JMenu(Resources.getString("Editor.BeanShell.vassal_property"));
-    addProp(vassalMenu, GlobalOptions.PLAYER_SIDE);
-    addProp(vassalMenu, GlobalOptions.PLAYER_NAME);
-    addProp(vassalMenu, GlobalOptions.PLAYER_ID);
+    for (final String prop : GameModule.getGameModule().getPropertyNames()) {
+      addProp(vassalMenu, prop);
+    }
     propertyMenu.add(vassalMenu);
 
     add(propertyMenu);
@@ -154,6 +165,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     final JMenu randomMenu = new JMenu(Resources.getString("Editor.BeanShell.random"));
     addFunction(randomMenu, "Random", Resources.getString("Editor.BeanShell.random1"), new String[] { Resources.getString("Editor.BeanShell.randomhi") }, "(x)"); //NON-NLS
     addFunction(randomMenu, "Random", Resources.getString("Editor.BeanShell.random2"), new String[] { Resources.getString("Editor.BeanShell.randomlo"), Resources.getString("Editor.BeanShell.randomhi") }, "(x, y)"); //NON-NLS
+    addSeparator(randomMenu);
     addFunction(randomMenu, "IsRandom", Resources.getString("Editor.BeanShell.random3"), new String[] {}, "()"); //NON-NLS
     addFunction(randomMenu, "IsRandom", Resources.getString("Editor.BeanShell.random4"), new String[] { Resources.getString("Editor.BeanShell.randomp") }, "(p)"); //NON-NLS
 
@@ -169,15 +181,18 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     if (target != null) {
       addFunction(locationMenu, "SumLocation", Resources.getString("Editor.BeanShell.sum15"), new String[] { Resources.getString("Editor.BeanShell.property_name")}, "(prop)");
       addFunction(locationMenu, "SumLocation", Resources.getString("Editor.BeanShell.sum16"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression")}, "(prop, expr)", GENERAL_PME_HINTS, new Option[]{Option.NONE, Option.PME}); //NON-NLS
+      addSeparator(locationMenu);
     }
     addFunction(locationMenu, "SumMapLocation", Resources.getString("Editor.BeanShell.sum17"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.location_name"), Resources.getString("Editor.BeanShell.map_name") }, "(prop, loc, map)");
     addFunction(locationMenu, "SumMapLocation", Resources.getString("Editor.BeanShell.sum18"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.location_name"), Resources.getString("Editor.BeanShell.map_name"), Resources.getString("Editor.BeanShell.property_match_expression") }, "(prop, loc, map, expr)", GENERAL_PME_HINTS, new Option[] {Option.NONE, Option.NONE, Option.NONE, Option.PME}); //NON-NLS
+    addSeparator(locationMenu);
 
     if (target != null) {
       addFunction(locationMenu, "CountLocation", Resources.getString("Editor.BeanShell.sum19"), new String[]{}, "()"); //NON-NLS
       addFunction(locationMenu, "CountLocation", Resources.getString("Editor.BeanShell.sum20"), new String[]{Resources.getString("Editor.BeanShell.property_name")}, "(prop)"); //NON-NLS
       addFunction(locationMenu, "CountLocation", Resources.getString("Editor.BeanShell.sum21"), new String[]{Resources.getString("Editor.BeanShell.property_match_expression")}, "(expr)", GENERAL_PME_HINTS, new Option[]{Option.PME}); //NON-NLS
       addFunction(locationMenu, "CountLocation", Resources.getString("Editor.BeanShell.sum22"), new String[]{Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression")}, "(prop, expr)", GENERAL_PME_HINTS, new Option[]{Option.NONE, Option.PME}); //NON-NLS
+      addSeparator(locationMenu);
     }
     addFunction(locationMenu, "CountMapLocation", Resources.getString("Editor.BeanShell.sum23"), new String[] { Resources.getString("Editor.BeanShell.location_name"), Resources.getString("Editor.BeanShell.map_name") }, "(loc, map)");
     addFunction(locationMenu, "CountMapLocation", Resources.getString("Editor.BeanShell.sum24"), new String[] { Resources.getString("Editor.BeanShell.location_name"), Resources.getString("Editor.BeanShell.map_name"), Resources.getString("Editor.BeanShell.property_name") }, "(loc, map, prop)");
@@ -188,6 +203,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     final JMenu stackMenu = new JMenu(Resources.getString("Editor.BeanShell.by_stack"));
     addFunction(stackMenu, "SumStack", Resources.getString("Editor.BeanShell.sum1"), new String[] { Resources.getString("Editor.BeanShell.property_name") }, "(prop)"); //NON-NLS
     addFunction(stackMenu, "SumStack", Resources.getString("Editor.BeanShell.sum1e"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression") }, "(prop, expr)"); //NON-NLS
+    addSeparator(stackMenu);
     addFunction(stackMenu, "CountStack", Resources.getString("Editor.BeanShell.sum6"), new String[] { }, "()"); //NON-NLS
     addFunction(stackMenu, "CountStack", Resources.getString("Editor.BeanShell.sum7"), new String[] { Resources.getString("Editor.BeanShell.property_name") }, "(prop)"); //NON-NLS
     addFunction(stackMenu, "CountStack", Resources.getString("Editor.BeanShell.sum6e"), new String[] { Resources.getString("Editor.BeanShell.property_match_expression") }, "(expr)"); //NON-NLS
@@ -196,23 +212,27 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     final JMenu matMenu = new JMenu(Resources.getString("Editor.BeanShell.by_mat"));
     addFunction(matMenu, "SumMat", Resources.getString("Editor.BeanShell.sum8"), new String[] { Resources.getString("Editor.BeanShell.property_name") }, "(prop)"); //NON-NLS
     addFunction(matMenu, "SumMat", Resources.getString("Editor.BeanShell.sum8e"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression") }, "(prop, expr)"); //NON-NLS
+    addSeparator(matMenu);
     addFunction(matMenu, "CountMat", Resources.getString("Editor.BeanShell.sum9"), new String[] { Resources.getString("Editor.BeanShell.property_name") }, "(prop)"); //NON-NLS
     addFunction(matMenu, "CountMat", Resources.getString("Editor.BeanShell.sum9e"), new String[] { Resources.getString("Editor.BeanShell.property_match_expression") }, "(expr)"); //NON-NLS
     addFunction(matMenu, "CountMat", Resources.getString("Editor.BeanShell.sum9ee"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression") }, "(prop, expr)"); //NON-NLS
 
     final JMenu zoneMenu = new JMenu(Resources.getString("Editor.BeanShell.by_zone"));
     if (target != null) {
-      addFunction(zoneMenu, "SumZpne", Resources.getString("Editor.BeanShell.sum27"), new String[] { Resources.getString("Editor.BeanShell.property_name")}, "(prop)");
+      addFunction(zoneMenu, "SumZone", Resources.getString("Editor.BeanShell.sum27"), new String[] { Resources.getString("Editor.BeanShell.property_name")}, "(prop)");
       addFunction(zoneMenu, "SumZone", Resources.getString("Editor.BeanShell.sum28"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression")}, "(prop, expr)", GENERAL_PME_HINTS, new Option[]{Option.NONE, Option.PME}); //NON-NLS
+      addSeparator(zoneMenu);
     }
     addFunction(zoneMenu, "SumMapZone", Resources.getString("Editor.BeanShell.sum29"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.zone_name"), Resources.getString("Editor.BeanShell.map_name") }, "(prop, zone, map)");
     addFunction(zoneMenu, "SumMapZone", Resources.getString("Editor.BeanShell.sum30"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.zone_name"), Resources.getString("Editor.BeanShell.map_name"), Resources.getString("Editor.BeanShell.property_match_expression") }, "(prop, zone, map, expr)", GENERAL_PME_HINTS, new Option[] {Option.NONE, Option.NONE, Option.NONE, Option.PME}); //NON-NLS
+    addSeparator(zoneMenu);
 
     if (target != null) {
       addFunction(zoneMenu, "CountZone", Resources.getString("Editor.BeanShell.sum31"), new String[] { }, "()"); //NON-NLS
       addFunction(zoneMenu, "CountZone", Resources.getString("Editor.BeanShell.sum32"), new String[] { Resources.getString("Editor.BeanShell.property_name")}, "(prop)"); //NON-NLS
       addFunction(zoneMenu, "CountZone", Resources.getString("Editor.BeanShell.sum33"), new String[] { Resources.getString("Editor.BeanShell.property_match_expression")}, "(expr)", GENERAL_PME_HINTS, new Option[]{Option.PME}); //NON-NLS
       addFunction(zoneMenu, "CountZone", Resources.getString("Editor.BeanShell.sum34"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression")}, "(prop, expr)", GENERAL_PME_HINTS, new Option[]{Option.NONE, Option.PME}); //NON-NLS
+      addSeparator(zoneMenu);
     }
     addFunction(zoneMenu, "CountMapZone", Resources.getString("Editor.BeanShell.sum35"), new String[] { Resources.getString("Editor.BeanShell.zone_name"), Resources.getString("Editor.BeanShell.map_name") }, "(zone, map)"); //NON-NLS
     addFunction(zoneMenu, "CountMapZone", Resources.getString("Editor.BeanShell.sum36"), new String[] { Resources.getString("Editor.BeanShell.zone_name"), Resources.getString("Editor.BeanShell.map_name"), Resources.getString("Editor.BeanShell.property_name")}, "(zone, map, prop)"); //NON-NLS
@@ -223,6 +243,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     final JMenu legacyMenu = new JMenu(Resources.getString("Editor.BeanShell.slower_options"));
     addFunction(legacyMenu, "Sum", Resources.getString("Editor.BeanShell.sum2"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression") }, "(name, expr)", SUM_COUNT_HINTS, new Option[] {Option.NONE, Option.PME}); //NON-NLS
     addFunction(legacyMenu, "Sum", Resources.getString("Editor.BeanShell.sum3"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression"), Resources.getString("Editor.BeanShell.map_name") }, "(name, expr, map)", SUM_COUNT_MAP_HINTS, new Option[] {Option.NONE, Option.PME, Option.NONE}); //NON-NLS
+    addSeparator(legacyMenu);
     addFunction(legacyMenu, "Count", Resources.getString("Editor.BeanShell.sum4"), new String[] { Resources.getString("Editor.BeanShell.property_match_expression") }, "(expr)", SUM_COUNT_HINTS, new Option[] {Option.PME}); //NON-NLS
     addFunction(legacyMenu, "Count", Resources.getString("Editor.BeanShell.sum5"), new String[] { Resources.getString("Editor.BeanShell.property_match_expression"), Resources.getString("Editor.BeanShell.map_name") }, "(expr, map)", SUM_COUNT_MAP_HINTS, new Option[] {Option.PME, Option.NONE}); //NON-NLS
 
@@ -278,6 +299,10 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     menu.add(item);
   }
 
+  protected void addSeparator(JMenu menu) {
+    menu.addSeparator();
+  }
+
   protected void buildFunction(String op, String desc, String[] parmDesc, String[] hints, Option[] options) {
     if (parmDesc.length == 0) {
       configurer.insertName(op + "()");
@@ -305,6 +330,10 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     if (result.getValue() != null && result.getValueString().length() > 0) {
       configurer.insertName(result.getValueString());
     }
+  }
+
+  protected void buildBoolean(boolean b) {
+    configurer.insertName(b ? "true" : "false");
   }
 
   protected void addOperator(JMenu menu, final String op, String desc) {
@@ -364,7 +393,9 @@ public class BeanShellFunctionMenu extends JPopupMenu {
       for (final String propName : propNames) {
         if (pieceMenu == null) {
           pieceMenu = new JMenu();
-          pieceMenu.setText(piece.getDescription());
+          // Provide a meaningful menu text for the dummy basic Piece at the bottom of prototypes
+          final String menuText = (piece instanceof BasicPiece && piece.getDescription().isEmpty()) ? Resources.getString("Editor.BasicPiece.trait_description") : piece.getDescription();
+          pieceMenu.setText(menuText);
         }
         final JMenuItem item = new JMenuItem(propName);
         item.addActionListener(e -> configurer.insertPropertyName(((JMenuItem) e.getSource()).getText()));
@@ -397,9 +428,12 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     }
     final JMenu myMenu = new JMenu(menuName);
 
-    final List<String> propNames = target.getPropertyNames();
-    for (final String propName : propNames) {
-      addProp(useParentMenu ? parentMenu : myMenu, propName, true);
+    // Don't include GameModule's property Names, these are added to a separate menu
+    if (!(target instanceof GameModule)) {
+      final List<String> propNames = target.getPropertyNames();
+      for (final String propName : propNames) {
+        addProp(useParentMenu ? parentMenu : myMenu, propName, true);
+      }
     }
 
     for (final Buildable b : buildables) {

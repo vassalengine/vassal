@@ -53,7 +53,8 @@ public class ExpressionBuilder extends JDialog {
     target = c;
     pieceTarget = piece;
     save = target.getValueString();
-    final JPanel p = new JPanel(new MigLayout("wrap 1,fill")); //NON-NLS
+    setLayout(new MigLayout("ins 0,filly", "[]", "[grow]rel[]"));
+    final JPanel p = new JPanel(new MigLayout("wrap 1,filly", "[]", "[grow]rel[]")); //NON-NLS
 
     final String value = target.getValueString();
 
@@ -64,7 +65,7 @@ public class ExpressionBuilder extends JDialog {
       setExpression(convert(value));
     }
 
-    p.add(expression.getControls(), "growx"); //NON-NLS
+    p.add(expression.getControls(), "grow"); //NON-NLS
 
     final JPanel buttonBox = new JPanel(new MigLayout("", "[]rel[]rel[]")); //NON-NLS
     final JButton okButton = ButtonFactory.getOkButton();
@@ -80,7 +81,7 @@ public class ExpressionBuilder extends JDialog {
     buttonBox.add(helpButton);
 
     p.add(buttonBox, "align center"); //NON-NLS
-    add(p);
+    add(p, "growy");
 
     // Default actions for Enter/ESC
     SwingUtils.setDefaultButtons(getRootPane(), okButton, cancelButton);

@@ -50,7 +50,9 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -493,6 +495,20 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
       lockTab(uiTabLock, uiTabLockDt);
     }
 
+  }
+
+  @Override
+  public List<String> getPropertyNames() {
+    final List<String> l = new ArrayList<>();
+    for (final AbstractScenarioProperty b : getComponentsOf(AbstractScenarioProperty.class)) {
+      l.add(b.getConfigureName());
+    }
+    return l;
+  }
+
+  @Override
+  public List<String> getPropertyList() {
+    return getPropertyNames();
   }
 
   /**

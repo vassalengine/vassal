@@ -115,7 +115,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
   protected boolean copyDPsByName;
 
   public PlaceMarker() {
-    this(ID + Resources.getString("Editor.PlaceMarker.default_command") + ";M;null;null;null", null); // NON-NLS
+    this(ID + Resources.getString("Editor.PlaceMarker.default_command") + ";M;null;null", null); // NON-NLS
   }
 
   public PlaceMarker(String type, GamePiece inner) {

@@ -1,8 +1,13 @@
 3.7.0-beta5 - ???
 
+* 12470: Place Marker X Offset should default to 0, not null
+* 12454: BeanShell Editor improvements: larger, multi-line, more properties
+* 12443: Clarified MouseOverViewer documentation
+* 12434: FastMatch by Location now respects Deck limits
 * 12439: Uniformly handle addition of standard and imported Configurables
 * 12432: Add missing Sum & Count expressions
 * 12427: Fixed bad links in Reference Manual
+* 12420: Set Piece Property does not work
 * 12403: Extension Editing fixes: Cut & Paste now deletes cut element, Drag &
     Drop between folders in Extension are saved, stopped
     UnsupportedOperationException during search
