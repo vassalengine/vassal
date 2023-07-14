@@ -80,6 +80,7 @@ public class ChangePropertyButton extends AbstractToolbarItem implements Propert
     ));
 
     launch = getLaunchButton(); // for compatibility
+    propChangeConfig.setContext(getAncestor());
   }
 
   public void launch() {
@@ -156,7 +157,9 @@ public class ChangePropertyButton extends AbstractToolbarItem implements Propert
   public static class PropChangerOptions implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return ((ChangePropertyButton)c).propChangeConfig;
+      final Configurer cfg = ((ChangePropertyButton)c).propChangeConfig;
+      cfg.setContext(c);
+      return cfg;
     }
   }
 

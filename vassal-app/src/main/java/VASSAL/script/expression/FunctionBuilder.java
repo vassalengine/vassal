@@ -67,6 +67,7 @@ public class FunctionBuilder extends JDialog {
     p.add(new JLabel(desc), "span 2,align center,wrap,growx"); //NON-NLS
     for (int i = 0; i < parmDesc.length; i++) {
       final BeanShellExpressionConfigurer config = new BeanShellExpressionConfigurer(null, "", "", targetPiece, options[i], this);
+      config.setContext(target.getContext());
       if (i == 0 && isStringFunction() && selectedText != null) {
         config.setValue(selectedText);
       }

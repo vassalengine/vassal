@@ -146,6 +146,10 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     return option;
   }
 
+  public void setOption(Option option) {
+    this.option = option;
+  }
+
   @Override
   public String getValueString() {
     return (String) value;

@@ -18,6 +18,7 @@
 
 package VASSAL.configure;
 
+import VASSAL.build.AbstractBuildable;
 import VASSAL.counters.TraitLayout;
 import VASSAL.tools.SequenceEncoder;
 
@@ -411,5 +412,13 @@ public class StringArrayConfigurer extends Configurer implements ConfigurableLis
 
   public List<StringEntry> getEntries() {
     return entries;
+  }
+
+  @Override
+  public void setContext(AbstractBuildable context) {
+    super.setContext(context);
+    for (final StringEntry entry : entries) {
+      entry.getConfigurer().setContext(context);
+    }
   }
 }

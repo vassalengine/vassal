@@ -17,6 +17,7 @@
  */
 package VASSAL.configure;
 
+import VASSAL.build.AbstractBuildable;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.GlobalCommandTarget;
 import VASSAL.counters.TraitLayout;
@@ -352,6 +353,22 @@ public class GlobalCommandTargetConfigurer extends Configurer {
   @Override
   public void repack() {
     repack(controls);
+  }
+
+  @Override
+  public void setContext(AbstractBuildable context) {
+    super.setContext(context);
+    // Set the context into any Configurers that might need it
+    if (targetMapConfig == null) getControls();
+    targetMapConfig.setContext(context);
+    targetBoardConfig.setContext(context);
+    targetZoneConfig.setContext(context);
+    targetLocationConfig.setContext(context);
+    targetXConfig.setContext(context);
+    targetYConfig.setContext(context);
+    targetDeckConfig.setContext(context);
+    targetPropertyConfig.setContext(context);
+    targetValueConfig.setContext(context);
   }
 
   /**

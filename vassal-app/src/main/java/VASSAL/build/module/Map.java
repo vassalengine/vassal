@@ -91,6 +91,7 @@ import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PlayerIdFormattedExpressionConfigurer;
 import VASSAL.configure.SingleChildInstance;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.counters.BasicPiece;
 import VASSAL.counters.ColoredBorder;
 import VASSAL.counters.Deck;
 import VASSAL.counters.DeckVisitor;
@@ -2797,6 +2798,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public Object getProperty(Object key) {
     final Object value;
 
+    if (BasicPiece.CURRENT_MAP.equals(key)) {
+      return getMapName();
+    }
     final MutableProperty p = propsContainer.getMutableProperty(String.valueOf(key));
     if (p != null) {
       value = p.getPropertyValue();
@@ -2816,6 +2820,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   @Override
   public Object getLocalizedProperty(Object key) {
     Object value = null;
+    if (BasicPiece.CURRENT_MAP.equals(key)) {
+      return getMapName();
+    }
     final MutableProperty p = propsContainer.getMutableProperty(String.valueOf(key));
     if (p != null) {
       value = p.getPropertyValue();

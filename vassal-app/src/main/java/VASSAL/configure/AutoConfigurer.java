@@ -86,6 +86,7 @@ public class AutoConfigurer extends Configurer
       final Configurer config;
       config = createConfigurer(type[i], name[i], "", target);
       if (config != null) {
+        config.setContext(target);
         config.addPropertyChangeListener(this);
         config.setValue(target.getAttributeValueString(name[i]));
         // Add field hints for common labels

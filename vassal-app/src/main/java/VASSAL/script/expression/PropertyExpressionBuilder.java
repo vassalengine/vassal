@@ -19,6 +19,7 @@ package VASSAL.script.expression;
 
 import javax.swing.JDialog;
 
+import VASSAL.configure.BeanShellExpressionConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.counters.EditablePiece;
 import VASSAL.counters.PropertiesPieceFilter;
@@ -44,4 +45,9 @@ public class PropertyExpressionBuilder extends ExpressionBuilder {
     return PropertiesPieceFilter.toBeanShellString(s);
   }
 
+  @Override
+  public void setExpression(String value) {
+    super.setExpression(value);
+    expression.setOption(BeanShellExpressionConfigurer.Option.PME);
+  }
 }

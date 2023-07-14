@@ -17,6 +17,7 @@
  */
 package VASSAL.script.expression;
 
+import VASSAL.build.AbstractBuildable;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.BeanShellExpressionConfigurer;
 import VASSAL.configure.Configurer;
@@ -43,6 +44,7 @@ public class ExpressionBuilder extends JDialog {
   protected String save;
   protected Configurer target;
   protected EditablePiece pieceTarget;
+  protected AbstractBuildable context;
 
   public ExpressionBuilder(Configurer c, JDialog parent) {
     this(c, parent, null);
@@ -52,6 +54,7 @@ public class ExpressionBuilder extends JDialog {
     super(parent, Resources.getString("Editor.ExpressionBuilder.component_type"), true);
     target = c;
     pieceTarget = piece;
+    context = c.getContext();
     save = target.getValueString();
     setLayout(new MigLayout("ins 0,filly", "[]", "[grow]rel[]"));
     final JPanel p = new JPanel(new MigLayout("wrap 1,filly", "[]", "[grow]rel[]")); //NON-NLS
@@ -131,6 +134,7 @@ public class ExpressionBuilder extends JDialog {
       expression = new BeanShellExpressionConfigurer(null, prompt, value, pieceTarget);
     }
     expression.setValue(value);
+    expression.setContext(context);
   }
 
   public String getExpression() {
