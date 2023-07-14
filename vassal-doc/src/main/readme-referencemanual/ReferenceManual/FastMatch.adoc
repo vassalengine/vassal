@@ -33,7 +33,9 @@ You should aim to choose Fast-match conditions that exclude as many pieces as po
 +
 *_Current Mat_* - If this piece is a Mat, or if it is a Mat Cargo piece that is currently _on_ a Mat, then the Mat itself and all of its current Cargo will be checked.
 +
-*_Current Attachments_* - Only pieces attached by an <<Attachment.adoc#top,Attachment>> trait on this piece will be checked. But all pieces attached by _any_ Attachment trait on this piece will be checked.
+*_Current Attachments_* - Only pieces attached by an <<Attachment.adoc#top,Attachment>> trait on this piece will be checked.
++
+You can optionally add an expression that evaluates to an Attachment name and only pieces attached using that name will be checked. If the Attachment name field is left blank, then all pieces attached by _any_ Attachment trait on this piece will be checked.
 +
 *_Specific Map_* - Only sends to pieces that are on the Map matching the supplied expression. The _expression_ is evaluated against the properties of the _source_ piece, i.e. the piece issuing the Global Key Command, but then the result of the expression is compared to the Map of potential _target_ pieces to determine if they are valid targets.
 +

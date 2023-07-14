@@ -52,6 +52,7 @@ public class GlobalCommandTarget implements ConfigurerFactory, SearchTarget {
   protected FormattedStringExpression targetDeck;             // Specified Deck (for DECK type)
   protected FormattedStringExpression targetX;                // Specified X (for XY type)
   protected FormattedStringExpression targetY;                // Specified Y (for XY type)
+  protected FormattedStringExpression targetAttachment;       // Specified Attachment Name (for CURATTCH type)
 
   protected boolean fastMatchProperty = false; // True if we're doing a Fast Match by property value (else next two values ignored)
   protected FormattedStringExpression targetProperty;         // Name/Key of Fast Match property
@@ -171,16 +172,17 @@ public class GlobalCommandTarget implements ConfigurerFactory, SearchTarget {
     setGKCtype(gkc);
 
     // Can't just let this shit be null => ANGRY ENCODER IS ANGRY!!!
-    targetMap      = new FormattedStringExpression("");
-    targetBoard    = new FormattedStringExpression("");
-    targetZone     = new FormattedStringExpression("");
-    targetLocation = new FormattedStringExpression("");
-    targetDeck     = new FormattedStringExpression("");
-    targetProperty = new FormattedStringExpression("");
-    targetValue    = new FormattedStringExpression("");
-    targetX        = new FormattedStringExpression("0");
-    targetY        = new FormattedStringExpression("0");
-    targetCompare  = CompareMode.EQUALS;
+    targetMap        = new FormattedStringExpression("");
+    targetBoard      = new FormattedStringExpression("");
+    targetZone       = new FormattedStringExpression("");
+    targetLocation   = new FormattedStringExpression("");
+    targetDeck       = new FormattedStringExpression("");
+    targetProperty   = new FormattedStringExpression("");
+    targetValue      = new FormattedStringExpression("");
+    targetX          = new FormattedStringExpression("0");
+    targetY          = new FormattedStringExpression("0");
+    targetAttachment = new FormattedStringExpression("");
+    targetCompare    = CompareMode.EQUALS;
   }
 
   public GlobalCommandTarget(String s) {
@@ -210,7 +212,8 @@ public class GlobalCommandTarget implements ConfigurerFactory, SearchTarget {
       .append(fastMatchProperty)
       .append(targetProperty.getExpression())
       .append(targetValue.getExpression())
-      .append(targetCompare.name());
+      .append(targetCompare.name())
+      .append(targetAttachment.getExpression());
 
     return se.getValue();
   }
@@ -238,6 +241,7 @@ public class GlobalCommandTarget implements ConfigurerFactory, SearchTarget {
     targetValue = new FormattedStringExpression(sd.nextToken(""));
     final String compare = sd.nextToken(CompareMode.EQUALS.name());
     targetCompare = compare.isEmpty() ? CompareMode.EQUALS : CompareMode.valueOf(compare);
+    targetAttachment = new FormattedStringExpression(sd.nextToken(""));
   }
 
   /**
@@ -256,23 +260,6 @@ public class GlobalCommandTarget implements ConfigurerFactory, SearchTarget {
   public int hashCode() {
     return encode().hashCode();
   }
-
-/*
-  protected boolean fastMatchLocation = false; // True if we are doing Fast Match by location (else other values in this block unused)
-  protected Target targetType = Target.MAP;    // Type of location Fast Match we are doing
-  protected Expression targetMap;              // Specified Map (for MAP, ZONE, LOCATION, XY types)
-  protected Expression targetBoard;            // Specified Board (for XY type)
-  protected Expression targetZone;             // Specified Zone (for ZONE type)
-  protected Expression targetLocation;         // Specified Location (for LOCATION type)
-  protected Expression targetDeck;             // Specified Deck (for DECK type)
-  protected Expression targetX;                // Specified X (for XY type)
-  protected Expression targetY;                // Specified Y (for XY type)
-
-  protected boolean fastMatchProperty = false; // True if we're doing a Fast Match by property value (else next two values ignored)
-  protected Expression targetProperty;         // Name/Key of Fast Match property
-  protected Expression targetValue;            // Value to match for that property
-  protected CompareMode targetCompare;         // Comparison mode
-*/
 
   /**
    * @return a list of the item's string/expression fields if any (for search)
@@ -298,6 +285,10 @@ public class GlobalCommandTarget implements ConfigurerFactory, SearchTarget {
       }
       else if (targetType == Target.DECK) {
         expList.add(targetDeck.getExpression());
+      }
+      // Target attachment may be blank, indicating all attachments
+      else if (targetType == Target.CURATTACH && !targetAttachment.getExpression().isBlank()) {
+        expList.add(targetAttachment.getExpression());
       }
     }
 
@@ -505,6 +496,14 @@ public class GlobalCommandTarget implements ConfigurerFactory, SearchTarget {
   }
   public void setTargetY(int targetY) {
     this.targetY = new FormattedStringExpression(Integer.toString(targetY));
+  }
+
+  public FormattedStringExpression getTargetAttachment() {
+    return targetAttachment;
+  }
+
+  public void setTargetAttachment(String targetAttachment) {
+    this.targetAttachment = new FormattedStringExpression(targetAttachment);
   }
 
   public void setCurPiece(GamePiece curPiece) {

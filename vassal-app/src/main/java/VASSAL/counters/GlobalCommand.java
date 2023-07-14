@@ -41,12 +41,15 @@ import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
 
 import javax.swing.KeyStroke;
+
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -297,6 +300,7 @@ public class GlobalCommand implements Auditable {
       String fastDeck = "";
       String fastX = "";
       String fastY = "";
+      String fastAttachment = "";
 
       // Context piece, if we are doing current-piece-relative fast-matching (may be null otherwise)
       final GamePiece curPiece = target.getCurPiece();
@@ -312,6 +316,10 @@ public class GlobalCommand implements Auditable {
           break;
         case CURLOC:
           fastLocation = (curPiece != null) ? (String) curPiece.getProperty(BasicPiece.LOCATION_NAME) : "";
+          break;
+        case CURATTACH:
+          fastAttachment = target.targetAttachment.tryEvaluate(source, owner, "Editor.GlobalKeyCommand.attachment_name");
+          fastAttachment = Expression.createExpression(fastAttachment).tryEvaluate(source, owner, "Editor.GlobalKeyCommand.attachment_name");
           break;
         case ZONE:
           fastZone = target.targetZone.tryEvaluate(source, owner, "Editor.GlobalKeyCommand.zone_name");
@@ -538,10 +546,13 @@ public class GlobalCommand implements Auditable {
       else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.CURATTACH) {
         if (curPiece instanceof Decorator) {
           GamePiece piece = Decorator.getOutermost(curPiece);
-          final List<GamePiece> pieces = new ArrayList<>();
+          final Set<GamePiece> pieces = new HashSet<>();  // Use Set to prevent duplication
           while (piece instanceof Decorator) {
             if (piece instanceof Attachment) {
-              pieces.addAll(((Attachment) piece).getContents());
+              final Attachment attach = (Attachment) piece;
+              if (fastAttachment.isBlank() || fastAttachment.equals(attach.getAttachName())) {
+                pieces.addAll(((Attachment) piece).getContents());
+              }
             }
             piece = ((Decorator) piece).getInner();
           }
@@ -1044,8 +1055,8 @@ public class GlobalCommand implements Auditable {
     /**
      * Class to track the acceptance count of pieces from multiple Decks
      */
-    private class DeckInfo {
 
+    protected class DeckInfo {
       // Use Limit for this Deck. -1 = unlimited, 0 = none, >0 = limit
       private final int useLimit;
 
