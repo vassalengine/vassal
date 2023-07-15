@@ -18,6 +18,7 @@
 
 package VASSAL.counters;
 
+import VASSAL.build.AbstractBuildable;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.configure.BeanShellExpressionConfigurer;
@@ -255,6 +256,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
       box.add("Editor.CalculatedProperty.property_name", nameConfig);
 
       expressionConfig = new BeanShellExpressionConfigurer(piece.getExpression(), Decorator.getOutermost(piece));
+      expressionConfig.setContext((AbstractBuildable) null);
       box.add("Editor.CalculatedProperty.expression", expressionConfig);
 
     }

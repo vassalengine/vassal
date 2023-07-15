@@ -284,12 +284,12 @@ public class BeanShellFunctionMenu extends JPopupMenu {
 
     final JMenu mapMenu = new JMenu(Resources.getString("Editor.BeanShell.by_map"));
     if (isPieceContext()) {
-      addFunction(mapMenu, "sumMap", Resources.getString("Editor.BeanShell.sum39"), new String[] { Resources.getString("Editor.BeanShell.property_name")}, "(prop)", NAME_HINTS);
-      addFunction(mapMenu, "sumMap", Resources.getString("Editor.BeanShell.sum40"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression")}, "(prop, expr)", NAME_PME_HINTS, new Option[]{Option.NONE, Option.PME}); //NON-NLS
+      addFunction(mapMenu, "SumMap", Resources.getString("Editor.BeanShell.sum39"), new String[] { Resources.getString("Editor.BeanShell.property_name")}, "(prop)", NAME_HINTS);
+      addFunction(mapMenu, "SumMap", Resources.getString("Editor.BeanShell.sum40"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression")}, "(prop, expr)", NAME_PME_HINTS, new Option[]{Option.NONE, Option.PME}); //NON-NLS
       addSeparator(mapMenu);
     }
-    addFunction(mapMenu, "sumMap", Resources.getString("Editor.BeanShell.sum41"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.map_name") }, "(prop, map)", NAME_HINTS);
-    addFunction(mapMenu, "sumMap", Resources.getString("Editor.BeanShell.sum42"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.map_name"), Resources.getString("Editor.BeanShell.property_match_expression") }, "(prop, map, expr)", NAME_PME_HINTS, new Option[] {Option.NONE, Option.NONE, Option.PME}); //NON-NLS
+    addFunction(mapMenu, "SumMap", Resources.getString("Editor.BeanShell.sum41"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.map_name") }, "(prop, map)", NAME_HINTS);
+    addFunction(mapMenu, "SumMap", Resources.getString("Editor.BeanShell.sum42"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.map_name"), Resources.getString("Editor.BeanShell.property_match_expression") }, "(prop, map, expr)", NAME_PME_HINTS, new Option[] {Option.NONE, Option.NONE, Option.PME}); //NON-NLS
     addSeparator(mapMenu);
 
     if (isPieceContext()) {

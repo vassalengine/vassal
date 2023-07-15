@@ -47,6 +47,8 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.KeyboardFocusManager;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -207,6 +209,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
 
       validator = new Validator();
       nameField = new JTextArea(1, 100);
+
       nameField.setFont(new Font("Monospaced", Font.PLAIN, 14));
       nameField.setLineWrap(true);
       nameField.setWrapStyleWord(true);
@@ -292,6 +295,17 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
       p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
       p.add(expressionPanel);
       p.add(detailPanel);
+
+      // Force field to open at it's minimum size
+      nameField.setPreferredSize(nameField.getPreferredSize());
+
+      final ComponentAdapter l = new ComponentAdapter() {
+        @Override
+        public void componentResized(ComponentEvent e) {
+          repack();
+        }
+      };
+      nameField.addComponentListener(l);
     }
     return p;
   }
