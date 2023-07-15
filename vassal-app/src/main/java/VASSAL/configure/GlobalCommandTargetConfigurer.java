@@ -61,6 +61,9 @@ public class GlobalCommandTargetConfigurer extends Configurer {
   private FormattedExpressionConfigurer targetValueConfig;
   private JLabel targetValueLabel;
 
+  private FormattedExpressionConfigurer targetAttachmentConfig;
+  private JLabel targetAttachmentLabel;
+
   // A local copy of the target used for configuring
   private final GlobalCommandTarget target;
 
@@ -117,6 +120,7 @@ public class GlobalCommandTargetConfigurer extends Configurer {
       targetPropertyConfig.setValue(t.getTargetProperty().getExpression());
       targetCompareConfig.setValue(t.getTargetCompare());
       targetValueConfig.setValue(t.getTargetValue().getExpression());
+      targetAttachmentConfig.setValue(t.getTargetAttachment().getExpression());
       targetChanged();
       fastMatchPropertyChanged();
       setFrozen(false);
@@ -146,6 +150,7 @@ public class GlobalCommandTargetConfigurer extends Configurer {
     targetPropertyConfig.setFrozen(val);
     targetCompareConfig.setFrozen(val);
     targetValueConfig.setFrozen(val);
+    targetAttachmentConfig.setFrozen(val);
   }
 
   @Override
@@ -238,6 +243,13 @@ public class GlobalCommandTargetConfigurer extends Configurer {
       controls.add(targetDeckLabel, "span 2"); //NON-NLS
       controls.add(targetDeckConfig.getControls(), "growx, wrap"); //NON-NLS
 
+      targetAttachmentConfig = new FormattedExpressionConfigurer(target.getTargetAttachment().getExpression(), sourcePiece);
+      targetAttachmentConfig.addPropertyChangeListener(evt -> update());
+      targetAttachmentConfig.setHintKey("Editor.GlobalKeyCommand.attachment_name_hint");
+      targetAttachmentLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.attachment_name"));
+      controls.add(targetAttachmentLabel, "span 2"); // NON-NLS
+      controls.add(targetAttachmentConfig.getControls(), "growx, wrap"); // NON-NLS
+
       fastMatchPropertyConfig = new BooleanConfigurer(target.isFastMatchProperty());
       fastMatchPropertyConfig.addPropertyChangeListener(evt -> update());
       controls.add(fastMatchPropertyConfig.getControls());
@@ -311,6 +323,8 @@ public class GlobalCommandTargetConfigurer extends Configurer {
     targetYLabel.setVisible(fastMatchLocation && targetType.equals(GlobalCommandTarget.Target.XY));
     targetDeckLabel.setVisible(fastMatchLocation && targetType.equals(GlobalCommandTarget.Target.DECK));
     targetDeckConfig.getControls().setVisible(fastMatchLocation && targetType.equals(GlobalCommandTarget.Target.DECK));
+    targetAttachmentLabel.setVisible(fastMatchLocation && targetType.equals(GlobalCommandTarget.Target.CURATTACH));
+    targetAttachmentConfig.getControls().setVisible(fastMatchLocation && targetType.equals(GlobalCommandTarget.Target.CURATTACH));
     repack();
   }
 
@@ -346,6 +360,7 @@ public class GlobalCommandTargetConfigurer extends Configurer {
     target.setTargetZone(targetZoneConfig.getValueString());
     target.setTargetBoard(targetBoardConfig.getValueString());
     target.setTargetMap(targetMapConfig.getValueString());
+    target.setTargetAttachment(targetAttachmentConfig.getValueString());
 
     setValue(target);
   }

@@ -41,11 +41,15 @@ import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
 
 import javax.swing.KeyStroke;
+
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -296,6 +300,7 @@ public class GlobalCommand implements Auditable {
       String fastDeck = "";
       String fastX = "";
       String fastY = "";
+      String fastAttachment = "";
 
       // Context piece, if we are doing current-piece-relative fast-matching (may be null otherwise)
       final GamePiece curPiece = target.getCurPiece();
@@ -311,6 +316,10 @@ public class GlobalCommand implements Auditable {
           break;
         case CURLOC:
           fastLocation = (curPiece != null) ? (String) curPiece.getProperty(BasicPiece.LOCATION_NAME) : "";
+          break;
+        case CURATTACH:
+          fastAttachment = target.targetAttachment.tryEvaluate(source, owner, "Editor.GlobalKeyCommand.attachment_name");
+          fastAttachment = Expression.createExpression(fastAttachment).tryEvaluate(source, owner, "Editor.GlobalKeyCommand.attachment_name");
           break;
         case ZONE:
           fastZone = target.targetZone.tryEvaluate(source, owner, "Editor.GlobalKeyCommand.zone_name");
@@ -410,6 +419,19 @@ public class GlobalCommand implements Auditable {
       final GlobalCommandVisitor visitor = getVisitor(command, filter, keyStroke, audit, owner, getSelectFromDeck());
       final DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
 
+      // Fastmatch lookups that use the IndexManager to return location based lists of units need to handle Deck Policy
+      // limits differently.
+      //
+      // Other types of GKC processing (property fastmatch or no fastmatch) always process Decks as a whole, scanning the
+      // individual units within them. This means the Deck Policy limits are checked at the Deck level.
+      //
+      // The Indexmanager does not know about Decks. It returns an unordered list of single pieces that may reside in
+      // different Decks (e.g. a Zone="X" lookup where multiple Decks reside in Zone X). Pieces for some of the lookups
+      // will NOT be in Deck order.
+      // The IndexedFastmatchDeckPolicyManager handles the Deck Policy limit checks for an arbitrary ordered list of units.
+      //
+      final IndexedFastmatchDeckPolicyManager indexedFastmatchDeckPolicyManager = new IndexedFastmatchDeckPolicyManager(this);
+
       // Check any fast-match conditions in the order most likely to be fastest and return the fewest pieces to pass to the dispatcher for full testing
       // 1. First check current Stack, Deck, mat or attachment or specified Deck as we can find these directly.
       // 2. Specific or current location can be quickly found via the Qtree
@@ -488,6 +510,7 @@ public class GlobalCommand implements Auditable {
       }
       // If we're using "current mat", then we find either this piece (if it is a Mat), or a mat this pieces is on (if it is a MatCargo).
       // We then iterate through the Mat itself (first) followed by each MatCargo piece.
+      // The DeckPolicyManager is not needed here, because pieces on a Mat cannot be in a Deck
       else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.CURMAT) {
         if (curPiece instanceof Decorator) {
           // First check if we are a mat
@@ -523,13 +546,17 @@ public class GlobalCommand implements Auditable {
       else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.CURATTACH) {
         if (curPiece instanceof Decorator) {
           GamePiece piece = Decorator.getOutermost(curPiece);
-          final List<GamePiece> pieces = new ArrayList<>();
+          final Set<GamePiece> pieces = new HashSet<>();  // Use Set to prevent duplication
           while (piece instanceof Decorator) {
             if (piece instanceof Attachment) {
-              pieces.addAll(((Attachment) piece).getContents());
+              final Attachment attach = (Attachment) piece;
+              if (fastAttachment.isBlank() || fastAttachment.equals(attach.getAttachName())) {
+                pieces.addAll(((Attachment) piece).getContents());
+              }
             }
             piece = ((Decorator) piece).getInner();
           }
+
           for (final GamePiece p : pieces) {
             // Pieces that no longer have a map were probably deleted. We will speak no more of them.
             if (p.getMap() == null) continue;
@@ -537,8 +564,8 @@ public class GlobalCommand implements Auditable {
             // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
             if (!passesPropertyFastMatch(p)) continue;
 
-            // Anything else we send to dispatcher to apply BeanShell filter and issue the command if the piece matches
-            dispatcher.accept(p);
+            // Check for Deck Policy limits.
+            indexedFastmatchDeckPolicyManager.accept(p, dispatcher, visitor);
           }
         }
       }
@@ -569,18 +596,21 @@ public class GlobalCommand implements Auditable {
           // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
           if (!passesPropertyFastMatch(piece)) continue;
 
-          dispatcher.accept(piece);
+          // Check for Deck Policy limits.
+          indexedFastmatchDeckPolicyManager.accept(piece, dispatcher, visitor);
         }
       }
 
       // If a specific LocationName target has been specified AND a valid target map, then we can go direct to the LocationName index to find those pieces
       else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.LOCATION && targetFastMap != null && !fastLocation.isEmpty() && usePieceIndexing)  {
+
         for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(targetFastMap, BasicPiece.LOCATION_NAME, fastLocation)) {
 
           // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
           if (!passesPropertyFastMatch(piece)) continue;
 
-          dispatcher.accept(piece);
+          // Check for Deck Policy limits.
+          indexedFastmatchDeckPolicyManager.accept(piece, dispatcher, visitor);
         }
       }
 
@@ -591,10 +621,10 @@ public class GlobalCommand implements Auditable {
           // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
           if (!passesPropertyFastMatch(piece)) continue;
 
-          dispatcher.accept(piece);
+          // Check for Deck Policy limits.
+          indexedFastmatchDeckPolicyManager.accept(piece, dispatcher, visitor);
         }
       }
-
 
       // If a Range has been specified, quickly find the in-range pieces
       else if (fastRange != null && curPiece != null && curPiece.getMap() != null && curPiece.getPosition() != null && usePieceIndexing) {
@@ -603,7 +633,8 @@ public class GlobalCommand implements Auditable {
           // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
           if (!passesPropertyFastMatch(piece)) continue;
 
-          dispatcher.accept(piece);
+          // Check for Deck Policy limits.
+          indexedFastmatchDeckPolicyManager.accept(piece, dispatcher, visitor);
         }
       }
 
@@ -615,7 +646,8 @@ public class GlobalCommand implements Auditable {
           // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
           if (!passesPropertyFastMatch(piece)) continue;
 
-          dispatcher.accept(piece);
+          // Check for Deck Policy limits.
+          indexedFastmatchDeckPolicyManager.accept(piece, dispatcher, visitor);
         }
       }
       // If a specific Zone target has been specified AND a valid target map, then we can go direct to the Zone index to find those pieces
@@ -625,7 +657,9 @@ public class GlobalCommand implements Auditable {
           // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
           if (!passesPropertyFastMatch(piece)) continue;
 
-          dispatcher.accept(piece);
+          // Check for Deck Policy limits.
+          indexedFastmatchDeckPolicyManager.accept(piece, dispatcher, visitor);
+
         }
       }
 
@@ -664,7 +698,7 @@ public class GlobalCommand implements Auditable {
           }
         }
 
-        // Now we go through all the pieces/stacks/decks pre-selected on each map from the previos step
+        // Now we go through all the pieces/stacks/decks pre-selected on each map from the previous step
         for (final GamePiece[] everythingOnMap : gkcMapPieces) {
           if (!target.fastMatchLocation) {
             // If NOT doing Location fast-matching we do tighter loops (because perf is important during GKCs)
@@ -957,6 +991,103 @@ public class GlobalCommand implements Auditable {
     }
 
     return true;
+  }
+
+  /**
+   * A class to manage the application of GKC's against multiple Decks by the Fast Match Code
+   * that uses Location indexes.
+   *
+   * Standard GKC process Scans a whole Deck at once and applys the Deck Limits once only.
+   *
+   * Location based fast-match by-passes the normal Deck processing and returns an unordered list of
+   * individual pieces that may reside in multiple Decks.
+   */
+  protected class IndexedFastmatchDeckPolicyManager {
+
+    /** Acceptance count limit for the GKC in progress */
+    private final int useFromDeck;
+    /** Map of DeckInfo objects, one for each Deck seen so far. */
+    private final java.util.Map<Deck, DeckInfo> applyCounts = new HashMap<>();
+
+    public IndexedFastmatchDeckPolicyManager(GlobalCommand globalCommand) {
+      useFromDeck = globalCommand.getSelectFromDeck();
+    }
+
+    /**
+     * If a piece resides in a Deck, check if the Deck acceptance limit has been reached for that particular Deck
+     * before running the piece through the dispatcher.
+     *
+     * @param piece       Piece to Check
+     * @param dispatcher  Dispatcher
+     * @param visitor     Visitor
+     */
+    public void accept(GamePiece piece, DeckVisitorDispatcher dispatcher, GlobalCommandVisitor visitor) {
+      final Stack s = piece.getParent();
+      if (s instanceof Deck) {
+        final Deck deck = (Deck) s;
+
+        // Piece is in a Deck, see how many matches we have already found from this Deck
+        final DeckInfo info = applyCounts.computeIfAbsent(deck, k -> new DeckInfo(k, getSelectFromDeck()));
+
+        // Limit reached? Don't test the piece
+        if (info.isLimitReached()) {
+          return;
+        }
+
+        // Record the current count for applications to this Deck
+        final int currentCount = visitor.getSelectedCount();
+
+        // Test the piece
+        dispatcher.accept(piece);
+
+        // If it matched, then update the count against the Deck, and update the Map entry
+        if (visitor.getSelectedCount() > currentCount) {
+          applyCounts.compute(deck, (k, v) -> info.increment());
+        }
+      }
+      else {
+        // Piece is not in a Deck, just handle as normal
+        dispatcher.accept(piece);
+      }
+
+    }
+
+    /**
+     * Class to track the acceptance count of pieces from multiple Decks
+     */
+
+    protected class DeckInfo {
+      // Use Limit for this Deck. -1 = unlimited, 0 = none, >0 = limit
+      private final int useLimit;
+
+      // Number of pieces accepted from this Deck so far
+      private int useCount;
+
+      public DeckInfo(Deck deck, int useLimit) {
+        this.useCount = 0;
+        // Never apply to a Deck that is innaccessible to us
+        this.useLimit = deck.isAccessible() ? useLimit : 0;
+      }
+
+      /**
+       * Has the acceptance limit been reached for this Deck?
+       *
+       * @return  true if no more pieces to be accepted from this Deck
+       */
+      public boolean isLimitReached() {
+        return useLimit >= 0 && useCount >= useLimit;
+      }
+
+      /**
+       * Increment the acceptance count for this Deck
+       * @return  The DeckInfo class for updating the Deck map
+       */
+      public DeckInfo increment() {
+        useCount++;
+        return this;
+      }
+    }
+
   }
 
   // Obsolete, kept for clirr reasons

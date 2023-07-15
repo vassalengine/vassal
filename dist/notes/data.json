@@ -22,7 +22,10 @@
         { "num": 12454, "desc": "BeanShell Editor improvements: larger, multi-line, more properties" }
       ],
       "bug_fixes": [
+        { "num": 12470, "desc": "Place Marker X Offset should default to 0, not null" },
         { "num": 12439, "desc": "Uniformly handle addition of standard and imported Configurables" },
+        { "num": 12434, "desc": "FastMatch by Location now respects Deck limits" },
+        { "num": 12433, "desc": "Attachment Fastmatch: match each piece at most once, limit checking by name" },
         { "num": 12420, "desc": "Set Piece Property does not work" },
         { "num": 12403, "desc": "Extension Editing fixes: Cut & Paste now deletes cut element, Drag & Drop between folders in Extension are saved, stopped UnsupportedOperationException during search" },
         { "num": 12401, "desc": "Allow Ctrl-V to be entered as a Key Command" },
