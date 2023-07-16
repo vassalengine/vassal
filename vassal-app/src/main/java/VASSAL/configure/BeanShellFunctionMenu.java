@@ -454,9 +454,42 @@ public class BeanShellFunctionMenu extends JPopupMenu {
       return;
     }
 
+
     // Ignore Duplicates
     for (int i = 0; i < menu.getItemCount(); i++) {
       if (menu.getItem(i).getText().equals(propName)) {
+        return;
+      }
+    }
+
+    if (isPieceContext() && PropertyType.GLOBAL == propertyType) {
+      // Adding a Zone-level global property to a piece-level expression
+      if (menuZone != null) {
+        final JMenu pieceMenu = new JMenu(propName);
+        final JMenuItem sameZone = new JMenuItem(Resources.getString("Editor.BeanShell.same_zone"));
+        sameZone.addActionListener(e -> configurer.insertPropertyName(propName));
+        final JMenuItem sameItem = new JMenuItem(Resources.getString("Editor.BeanShell.same_map"));
+        final String actionName = getActionName(propName, true);
+        sameItem.addActionListener(e -> configurer.insertName(actionName));
+        final JMenuItem diffItem = new JMenuItem(Resources.getString("Editor.BeanShell.different_map"));
+        diffItem.addActionListener(e -> configurer.insertName(actionName));
+        pieceMenu.add(sameZone);
+        pieceMenu.add(sameItem);
+        pieceMenu.add(diffItem);
+        insertMenuItem(menu, propName, pieceMenu);
+        return;
+      }
+      // Adding a Map-level global property to a piece-level expression
+      else if (menuMap != null) {
+        final JMenu pieceMenu = new JMenu(propName);
+        final JMenuItem sameItem = new JMenuItem(Resources.getString("Editor.BeanShell.same_map"));
+        sameItem.addActionListener(e -> configurer.insertPropertyName(propName));
+        final JMenuItem diffItem = new JMenuItem(Resources.getString("Editor.BeanShell.different_map"));
+        final String actionName = getActionName(propName);
+        diffItem.addActionListener(e -> configurer.insertName(actionName));
+        pieceMenu.add(sameItem);
+        pieceMenu.add(diffItem);
+        insertMenuItem(menu, propName, pieceMenu);
         return;
       }
     }
@@ -471,9 +504,13 @@ public class BeanShellFunctionMenu extends JPopupMenu {
       item.addActionListener(e -> configurer.insertName(actionName));
     }
 
+    insertMenuItem(menu, propName, item);
+  }
+
+  protected void insertMenuItem(JMenu menu, String name, JMenuItem item) {
     int pos = -1;
     for (int i = 0; i < menu.getItemCount() && pos < 0; i++) {
-      if (propName.compareTo(menu.getItem(i).getText()) <= 0) {
+      if (name.compareTo(menu.getItem(i).getText()) <= 0) {
         pos = i;
       }
     }
@@ -481,9 +518,13 @@ public class BeanShellFunctionMenu extends JPopupMenu {
   }
 
   protected String getActionName(String propName) {
+    return getActionName(propName, false);
+  }
+
+  protected String getActionName(String propName, boolean zoneCurrentMapOverride) {
     if (menuZone != null) {
       // Adding a Zone property, use GetZoneProperty
-      if (menuMap.equals(configurer.getContext())) {
+      if (menuMap.equals(configurer.getContext()) || zoneCurrentMapOverride) {
         // Zone on the current Map
         return "GetZoneProperty(\"" + propName + "\", \"" + menuZone.getName() + "\", CurrentMap)";
       }
