@@ -1105,12 +1105,12 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * @param filter       Option filter implementing Property Match Expression
    * @return             Count of pieces
    */
-  private Object countLocation(Object locationName, Map map, Object property, PieceFilter filter) {
+  private Object countLocation(Object locationName, Map map, String property, PieceFilter filter) {
     int result = 0;
 
     // Ask IndexManager for list of pieces on that map at that location. Stacks are not returned by the IM.
     for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(map, BasicPiece.LOCATION_NAME, locationName.toString())) {
-      result = updateTotal(result, piece, property.toString(), filter, false);
+      result = updateTotal(result, piece, property, filter, false);
     }
 
     return result;
@@ -1512,7 +1512,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * @return              Sum of properties
    */
   public Object sumRange(Object propertyName, Object expression, Object minRange, Object maxRange, Boolean asPixels, PropertySource ps) {
-    return sumOrCountRange(propertyName, expression, minRange, maxRange, asPixels, true, ps);
+    final String property = propertyName == null ? null : propertyName.toString();
+    return sumOrCountRange(property, expression, minRange, maxRange, asPixels, true, ps);
   }
 
   /**
@@ -1550,7 +1551,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * @param ps            The initiating piece
    * @return              Sum or Count
    */
-  private Object sumOrCountRange(Object propertyName, Object expression, Object minRange, Object maxRange, boolean asPixels, boolean doSum, PropertySource ps) {
+  private Object sumOrCountRange(String propertyName, Object expression, Object minRange, Object maxRange, boolean asPixels, boolean doSum, PropertySource ps) {
 
     final PieceFilter filter = createFilter(expression, ps);
 
@@ -1571,8 +1572,6 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
     final Point position = sourcePiece.getPosition();
 
-
-
     // Ask the IndexManager for the pieces within the maximum range
     // NOTE: The IndexManager will NOT return the source piece in the list if the minRange is 0. We need to handle this separately.
     for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(sourcePiece, max, asPixels)) {
@@ -1581,12 +1580,12 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         final int range = range(position, piece.getPosition(), sourcePiece.getMap(), asPixels);
         if (range < min) break;
       }
-      result = updateTotal(result, piece, propertyName.toString(), filter, doSum);
+      result = updateTotal(result, piece, propertyName, filter, doSum);
     }
 
     // If the range is 0, check our sourcepiece as well.
     if (min == 0) {
-      result = updateTotal(result, sourcePiece, (String) propertyName, filter, doSum);
+      result = updateTotal(result, sourcePiece, propertyName, filter, doSum);
     }
 
     return result;
