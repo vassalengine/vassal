@@ -6,7 +6,7 @@ image:images/Vassal.png[]
 [cols=",",]
 |===
 
-|*<<Concepts.adoc#top,Concepts>>* |Some ideas you need to get your head wrapped around before you dive in to creating a module.
+|*<<Concepts.adoc#top,VASSAL Concepts>>* |Some ideas you need to get your head wrapped around before you dive in to creating a module.
 
 |*<<Editor.adoc#top,Editor>>* |The main tool for creating, improving, and maintaining Vassal Game Modules.
 

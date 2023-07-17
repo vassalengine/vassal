@@ -122,7 +122,12 @@ public class BeanShellExpressionValidator {
   public List<String> getVariables() {
     return variables;
   }
-  
+
+  public List<String> getAllVariables() {
+    final List<String> l = new ArrayList<>(getVariables());
+    l.addAll(getStringVariables());
+    return l;
+  }
   /**
    * Return a list of Methods called by the expression
    * @return List of Methods

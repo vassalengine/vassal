@@ -491,7 +491,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
           else {
             validator.setStatus(INVALID);
           }
-          setDetails(v.getError(), v.getVariables(), v.getMethods());
+          setDetails(v.getError(), v.getAllVariables(), v.getMethods());
         }
         validating = false;
         if (dirty) {

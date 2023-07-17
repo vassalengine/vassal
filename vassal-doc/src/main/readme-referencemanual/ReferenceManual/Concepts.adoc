@@ -3,25 +3,89 @@
 
 [.small]#<<index.adoc#toc,Home>> > *Concepts*#
 
-'''''
 
-=== Concepts
+== Concepts
 
-* Module
+Module +
+Extension +
+Component +
+Hot Key +
+Map +
+Player Hand +
+Board +
+Zone +
+Piece +
+Prototype +
+Stack +
+Deck +
+At-Start Stack +
+Key Command +
+Global Key Command +
+Values +
+Properties +
+Piece Properties +
+Global Properties +
+Translation +
+BeanShell +
 
-* Extension
+[#module]
+=== Module
+All the pieces that make up a Vassal implementation of a game are collected together into a single file called a <<GameModule.adoc#top,*Module*>>, which typically have a `.vmod` suffix. +
 
-* Component
+Physically, a <<GameModule.adoc#top,*Module*>> is a ZIP archive containing the different files that go together to make up the <<GameModule.adoc#top,*Module*>>.
+
+You can inspect the files that make up a <<GameModule.adoc#top,*Module*>> by opening it with any utility that can open ZIP Archives.
+
+NOTE: Some tools may require you to rename the module file from `.vmod` to `.zip` before you can open it. Just rename it back to `.vmod` when you have finished.
+
+A <<GameModule.adoc#top,*Module*>> contains various files and folders:
+
+ * The *buildfile.xml* is an XML file that links all the parts of your module together and includes all  the definitions of the different <<#components,*Components*>> and <<#pieces,*Pieces*>> that make up your module. +
+The *buildfile* is normally maintained for you by the VASSAL Module Editor, but you can manually edit and update the *buildfile* if you know what you are doing. Make a backup first!!!
+ * The *moduledata* file holds the summary information about your module that is displayed in the Module Manager.
+ * The *images* folder holds all the image files used in your module.
+ * HTML files shown in Chart Windows.
+ * Pre-defined Setup files used to start games.
+
+[#extension]
+=== Extension
+An <<Extension.adoc#top,*Extension*>> is a fragment of a *Module* that can be used to add additional functionality to an existing *Module* without modifying that *Module* directly.
+
+A typical use for an<<Extension.adoc#top,*Extension*>>  is to add additional scenarios to a module and some additional units that are needed to play those scenarios.
+
+=== Components and Pieces
+A VASSAL Module is made up of two fundamentally different types of elements that are defined and manipulated in two different ways.
+
+[width="100%"]
+[cols="20%,40%,50%"]
+|===
+| | *Components* | *Pieces* +
+
+| Mobility | Fixed element making up the structure of the module. | Mobile element that can move about on Map components. +
+
+| Duplication | Only one of each Component exists in a game. | There can be multiple instances of each Piece in a game. +
+
+| Activation | Activated by <<#hotkeys,Hotkeys>>, ignores <<#keycommand,Key Commands>> | Activated by <<#keycommand,Key Commands>>, ignores  <<#hotkeys,Hotkeys>> +
+
+| Flexibility | Limited to in-built configuration and flexibility provided by core VASSAL | Highly configurable and extensible by module designer.
+
+|===
+
+[#components]
+==== Components
+*Comp*
 
 ** Hot Key
 
+[#map]
 ** Map
 
 ** Board
 
 ** Zone
 
-* Piece
+[#pieces]
+==== Pieces
 
 ** Trait
 
@@ -33,6 +97,9 @@
 
 ** At-Start Stack
 
+=== Values in Vassal
+
+=== Properties
 * Properties
 
 Making a GP of the same name will have no effect. Each individual Property is complete unique and unrelated. When you reference a property named ‘X’ in a piece trait, the following happens to find a value for that property. The first find of a value of property ‘X’ is used as the value:
@@ -67,7 +134,6 @@ It doesn’t work the other way. Nothing else can directly ‘see’ any propert
 
 
 * BeanShell
-
 ** Strings and Numbers
 ** true and false
 ** Property Match Expressions

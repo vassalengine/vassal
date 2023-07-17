@@ -283,7 +283,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         }
         final String value = prop == null ? "" : prop.toString();
         if (audit != null) {
-          audit.addMessage(origName + "=" + (value == null ? "" : value));
+          audit.addMessage(" " + origName + "=" + (value == null ? "" : value));
         }
         if (value == null) {
           setVar(var, "");
@@ -324,11 +324,24 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
       final StringBuilder argList = new StringBuilder();
       for (final String var : stringVariables) {
+        String name = var;
+        final String origName = name;
+        if (name.length() > 2 && name.startsWith("$") && name.endsWith("$")) {
+          name = name.substring(1, name.length() - 1);
+        }
+        // Check for a property in the passed property Map, then check the source if not found
+        Object prop = properties == null ? null : properties.get(name);
+        if (prop == null) {
+          prop = (source == null) ? "" : localized ? source.getLocalizedProperty(name) : source.getProperty(name);
+        }
+        final String value = prop == null ? "" : prop.toString();
+        if (audit != null) {
+          audit.addMessage(" " + origName + "=" + (value == null ? "" : value));
+        }
         if (argList.length() > 0) {
           argList.append(',');
         }
-        final Object value = localized ? source.getLocalizedProperty(var) : source.getProperty(var);
-        argList.append('"').append(value == null ? "" : value.toString().replace("\"", "\\\"")).append('"');
+        argList.append('"').append(value == null ? "" : value.replace("\"", "\\\"")).append('"');
       }
 
       // Re-evaluate the pre-parsed expression now that the undefined variables have
@@ -1932,13 +1945,13 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * Audit
    * Write a message to the errorloh
    *
-   * @param message   Message to display. Can be an Expression
+   * @param message               Message to display. Can be an Expression
    * @param conditionOrOptionList If provided, is an expression that will be evaluated and the message will only be written if true
-   * @param options   A String containing any of the following letters to invoke various options
-   *                   'F' - Include full audit of the current expression
-   *                   'C' - Display in Chatter
-   *                   'S' - Suppress logging to errorLog
-   * @return          Returns a blank string
+   * @param optionList            A String containing any of the following letters to invoke various options
+   *                             'F' - Include full audit of the current expression
+   *                             'C' - Display in Chatter
+   *                             'S' - Suppress logging to errorLog
+   * @return                     Returns a blank string
    */
   public Object audit(Object message, Object conditionOrOptionList, Object optionList, PropertySource ps) {
 
@@ -1967,7 +1980,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       }
     }
 
-    String mess = message.toString();
+    String mess = "Audit: " + message.toString();
     if (mess.startsWith("{")) {
       final Expression expr = BeanShellExpression.createExpression(mess);
       mess = expr.quietEvaluate(ps, null, "");
