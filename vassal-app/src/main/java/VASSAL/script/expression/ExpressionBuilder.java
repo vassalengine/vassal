@@ -135,6 +135,7 @@ public class ExpressionBuilder extends JDialog {
     }
     expression.setValue(value);
     expression.setContext(context);
+    expression.setContextLevel(target.getContextLevel());
   }
 
   public String getExpression() {

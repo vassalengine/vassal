@@ -35,7 +35,7 @@ import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
-import VASSAL.configure.FormattedStringConfigurer;
+import VASSAL.configure.FormattedExpressionConfigurer;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
@@ -1563,7 +1563,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public static class EmptyFormatConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new FormattedStringConfigurer(key, name, new String[] {
+      return new FormattedExpressionConfigurer(key, name, new String[] {
         BasicPiece.LOCATION_NAME,
         BasicPiece.CURRENT_MAP,
         BasicPiece.CURRENT_BOARD,
@@ -1574,7 +1574,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public static class ReportFormatConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new FormattedStringConfigurer(key, name, new String[] {
+      return new FormattedExpressionConfigurer(key, name, new String[] {
         BasicPiece.LOCATION_NAME,
         BasicPiece.CURRENT_MAP,
         BasicPiece.CURRENT_BOARD,
@@ -1585,7 +1585,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public static class CounterFormatConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new FormattedStringConfigurer(key, name, new String[] {BasicPiece.PIECE_NAME});
+      final Configurer configurer = new FormattedExpressionConfigurer(key, name, new String[] {BasicPiece.PIECE_NAME});
+      configurer.setContextLevel(Configurer.ContextLevel.PIECE);
+      return configurer;
     }
   }
 

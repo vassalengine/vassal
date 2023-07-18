@@ -326,16 +326,23 @@ public abstract class Configurer {
 
   /**
    * Set the Context for this Configurer to the first ancestor that of type GameModule or Map
+   *
+   * NOTE: The ContextLevel may already have been preset by the ConfigureFactory when the Configurer was created.
+   *       Don't let the AutoConfigurer over-write this
+   *
    * @param context Owning Configurable
    */
   public void setContext(AbstractBuildable context) {
+
     AbstractBuildable c = context;
     this.context = null;
-    this.contextLevel = ContextLevel.PIECE;
+
     while (c != null) {
       if (c instanceof GameModule || c instanceof Map) {
         this.context = c;
-        this.contextLevel = c instanceof GameModule ? ContextLevel.MODULE : ContextLevel.MAP;
+        if (this.contextLevel == null) {
+          this.contextLevel = c instanceof GameModule ? ContextLevel.MODULE : ContextLevel.MAP;
+        }
         return;
       }
       if (c instanceof AbstractBuildable) {
@@ -348,6 +355,7 @@ public abstract class Configurer {
     }
 
     if (c == null) this.context = GameModule.getGameModule();
+    if (this.contextLevel == null) this.contextLevel = ContextLevel.PIECE;
   }
 
   public void setContext(Configurable context) {
@@ -368,5 +376,9 @@ public abstract class Configurer {
 
   public boolean isPieceContext() {
     return ContextLevel.PIECE == contextLevel;
+  }
+
+  public void setContextLevel(ContextLevel contextLevel) {
+    this.contextLevel = contextLevel;
   }
 }
