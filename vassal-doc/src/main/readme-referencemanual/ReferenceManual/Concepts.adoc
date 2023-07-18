@@ -4,10 +4,14 @@
 [.small]#<<index.adoc#toc,Home>> > *Concepts*#
 
 
-== Concepts
+= Concepts
 
-Module +
-Extension +
+* <<#Module,Module>> +
+* <<#extension,Extension>> +
+* <<#componentsandpieces,Components and Pieces>> +
+** <<#components,Components>> +
+** <<#pieces,Pieces>> +
+
 Component +
 Hot Key +
 Map +
@@ -29,7 +33,7 @@ Translation +
 BeanShell +
 
 [#module]
-=== Module
+== Module
 All the pieces that make up a Vassal implementation of a game are collected together into a single file called a <<GameModule.adoc#top,*Module*>>, which typically have a `.vmod` suffix. +
 
 Physically, a <<GameModule.adoc#top,*Module*>> is a ZIP archive containing the different files that go together to make up the <<GameModule.adoc#top,*Module*>>.
@@ -48,12 +52,13 @@ The *buildfile* is normally maintained for you by the VASSAL Module Editor, but 
  * Pre-defined Setup files used to start games.
 
 [#extension]
-=== Extension
+== Extension
 An <<Extension.adoc#top,*Extension*>> is a fragment of a *Module* that can be used to add additional functionality to an existing *Module* without modifying that *Module* directly.
 
 A typical use for an<<Extension.adoc#top,*Extension*>>  is to add additional scenarios to a module and some additional units that are needed to play those scenarios.
 
-=== Components and Pieces
+[#componentsandpieces]
+== Components and Pieces
 A VASSAL Module is made up of two fundamentally different types of elements that are defined and manipulated in two different ways.
 
 [width="100%"]
@@ -61,23 +66,23 @@ A VASSAL Module is made up of two fundamentally different types of elements that
 |===
 | | *Components* | *Pieces* +
 
-| Mobility | Fixed element making up the structure of the module. | Mobile element that can move about on Map components. +
+| Mobility | Fixed elements making up the structure of the module. | Mobile element that can move about on Map components. +
 
 | Duplication | Only one of each Component exists in a game. | There can be multiple instances of each Piece in a game. +
 
-| Activation | Activated by <<#hotkeys,Hotkeys>>, ignores <<#keycommand,Key Commands>> | Activated by <<#keycommand,Key Commands>>, ignores  <<#hotkeys,Hotkeys>> +
+| Activation | Activated by <<#hotkey,Hotkeys>>, ignore <<#keycommand,Key Commands>>. | Activated by <<#keycommand,Key Commands>>, ignore  <<#hotkey,Hotkeys>>. +
 
-| Flexibility | Limited to in-built configuration and flexibility provided by core VASSAL | Highly configurable and extensible by module designer.
+| Toolbar Buttons | Many Components can be activated by buttons that reside on the main Vassal toolbar. | Pieces are never associated with a Toolbar button.
+| Flexibility | Limited to in-built configuration and flexibility provided by core VASSAL. | Highly configurable and extensible by module designer.
 
 |===
 
 [#components]
-==== Components
+=== Components
 *Comp*
 
 ** Hot Key
 
-[#map]
 ** Map
 
 ** Board
@@ -85,7 +90,7 @@ A VASSAL Module is made up of two fundamentally different types of elements that
 ** Zone
 
 [#pieces]
-==== Pieces
+=== Pieces
 
 ** Trait
 
@@ -97,9 +102,17 @@ A VASSAL Module is made up of two fundamentally different types of elements that
 
 ** At-Start Stack
 
-=== Values in Vassal
+== Hotkeys and Key Commands
 
-=== Properties
+[#hotkey]
+=== Hotkeys
+
+[#keycommand]
+=== Key Commands
+
+== Values in Vassal
+
+== Properties
 * Properties
 
 Making a GP of the same name will have no effect. Each individual Property is complete unique and unrelated. When you reference a property named ‘X’ in a piece trait, the following happens to find a value for that property. The first find of a value of property ‘X’ is used as the value:
