@@ -22,6 +22,7 @@
         { "num": 12454, "desc": "BeanShell Editor improvements: larger, multi-line, more properties" }
       ],
       "bug_fixes": [
+        { "num": 12478, "desc": "Revert 12077 - Do not return a default value for ObscuredToOthers" },
         { "num": 12470, "desc": "Place Marker X Offset should default to 0, not null" },
         { "num": 12439, "desc": "Uniformly handle addition of standard and imported Configurables" },
         { "num": 12434, "desc": "FastMatch by Location now respects Deck limits" },
