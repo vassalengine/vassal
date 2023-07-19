@@ -33,7 +33,15 @@ The basic components are as follows:
 |Type |Options |Examples |Notes
 |*Numbers* |  |{35} |Vassal works with whole numbers.
 It stores decimal numbers as strings.
+
 |*Strings* |  |{"German"} |A String literal, or text message, must be enclosed in "" quotation marks
+
+|*Comments*| | /* Check not flipped */| Comments can be included in-line in an expression in any break between elements. .e.g. +
+
+`{AmmoAP > 0 /* Check AP Ammo */}`
+
+Adding comments to expression does not affect performance in any way.
+
 |*Properties* |  |{Nation} +
 {LocationName} +
 {CurrentMap} +

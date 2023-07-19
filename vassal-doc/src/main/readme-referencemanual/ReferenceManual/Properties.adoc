@@ -20,6 +20,15 @@ Properties can be matched using <<Expression.adoc#top,Expressions>> like _name =
 For properties that return a numeric value (e.g.
 the level in a <<Layer.adoc#Properties,Layer)>> you can use _<_, _\<=_, _>_, and _>=._  You can combine expressions using && for logical AND and || for a logical OR.
 
+NOTE: Properties associated with specific traits (e.g. Obscured) have a value of true or false if that trait exists in the piece, but will have a value of "" if that trait does not exist. So when using these traits in expression, you should always test if the value is true, or not true, never test for false: +
+`{property == true}` +
+`{property != true}` +
+Do not use +
+`{! property}` +
+in cases like these as this will generate an error if the property does not have a value.
+
+
+
 *Components that use properties*
 
 * Any <<MessageFormat.adoc#top,Message Format>> defined in a Game Piece will substitute values for the properties defined on that Game Piece.
@@ -98,8 +107,8 @@ CurrentMatProp9* |<<Cargo#top,Cargo>>|If the piece is Cargo loaded on a Mat, the
 <<Cargo.adoc#top,Cargo>>
 |"true" if this piece ignores the map grid when moving. Note that a Cargo trait in a piece currently loaded onto a <<Mat.adoc#top,Mat>> will force the IgnoreGrid property to be "true".
 |*Immobile* |<<NonStacking.adoc#top,Does not stack>> |"true" if this piece cannot be moved by drag and drop.
-|*Invisible* |<<Hideable.adoc#top,Invisible>> |"true" if this piece is invisible to the current player.
-|*InvisibleToOthers* |<<Hideable.adoc#top,Invisible>> |"true" if this piece is invisible to other players.
+|*Invisible* |<<Hideable.adoc#top,Invisible>> |"true" if this piece is invisible to the current player. May be false or "" if the piece is not invisible.
+|*InvisibleToOthers* |<<Hideable.adoc#top,Invisible>> |"true" if this piece is invisible to other players. May be false or "" if the piece is not invisible.
 |*IsCargo* |<<Cargo#top,Cargo>>|Will always be "true" for a Cargo piece, "" otherwise. Use *CurrentMat* to check if a Cargo piece is currently loaded on a Mat.
 |*LocationName* |<<BasicPiece#top,Basic Piece>>|Name of the piece's current location, as determined by the map's <<ZonedGrid.adoc#Zone,Zone>> (if any) and grid settings.
 |*LocationOfCommand* |<<MultiLocationCommand.adoc#top,Multi-Location Command>> |Contains the Location Name of the last selected _Multi-Location_ Command.
@@ -113,8 +122,8 @@ CurrentMatProp9* |<<Cargo#top,Cargo>>|If the piece is Cargo loaded on a Mat, the
 |*NoStack* |<<NonStacking.adoc#top,Does not stack>> +
 <<Mat.adoc#top,Mat>>
 |"true" if this piece cannot stack with other pieces. Note that the _Mat_ trait forces a piece to be Non-Stacking as it is required for Mats to function correctly.
-|*Obscured* |<<Mask.adoc#top,Mask>> |"true" if this piece is masked from the current player.
-|*ObscuredToOthers* |<<Mask.adoc#top,Mask>> |"true" if this piece is masked from other players.
+|*Obscured* |<<Mask.adoc#top,Mask>> |"true" if this piece is masked from the current player. May be false or "" if the piece is not masked.
+|*ObscuredToOthers* |<<Mask.adoc#top,Mask>> |"true" if this piece is masked from other players. May be false or "" if the piece is not masked.
 |*OldBoard* |<<BasicPiece#top,Basic Piece>> |Board name prior to most recent movement.
 |*OldDeckName* |<<BasicPiece#top,Basic Piece>> |Name of any <<Deck.adoc#top,Deck>> the piece was in before its last move (will be an empty string if piece wasn't in a deck)
 |*OldLocationName* |<<BasicPiece#top,Basic Piece>>|Location name prior to most recent movement.
