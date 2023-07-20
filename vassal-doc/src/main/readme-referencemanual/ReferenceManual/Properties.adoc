@@ -174,39 +174,56 @@ CurrentMatProp9* |<<Cargo#top,Cargo>>|If the piece is Cargo loaded on a Mat, the
 
 
 ===== Fixed named properties provided by VASSAL that can be accessed by traits
-[width="100%",cols="33%a,33%a,33%a",]
+[width="100%",cols="33%a,23%a,10%,33%a",]
 |===
-|*Property* |*Property Level* |*Description*
+|*Property* |*Component* |*Global Property Level*| *Description*
 
-|*CurrentLanguage* |Module| The 2 letter language code for the language selected by the current player.
-|*CurrentLanguageName* |Module| The name of the language seleted by the current player.
-|*ModuleDescription* |Module| The Module description text from the main <<GameModule.adoc#top, Game Module>> component.
-|*ModuleName* |Module| The Module name text from the main <<GameModule.adoc#top, Game Module>> component.
-|*ModuleOther1* |Module| The Additional Module Info 1 text from the main <<GameModule.adoc#top, Game Module>> component.
-|*ModuleOther2* |Module| The Additional Module Info 2 text from the main <<GameModule.adoc#top, Game Module>> component.
-|*ModuleVersion* |Module| The Module version text from the main <<GameModule.adoc#top, Game Module>> component.
+|*CurrentLanguage* |<<GameModule.adoc#top,Game Module>>| Module| The 2 letter language code for the language selected by the current player.
+|*CurrentLanguageName* |<<GameModule.adoc#top,Game Module>>| Module| The name of the language seleted by the current player.
+|*ModuleDescription* |<<GameModule.adoc#top,Game Module>>| Module| The Module description text from the main <<GameModule.adoc#top, Game Module>> component.
+|*ModuleName* |<<GameModule.adoc#top,Game Module>>| Module| The Module name text from the main <<GameModule.adoc#top, Game Module>> component.
+|*ModuleOther1* |<<GameModule.adoc#top,Game Module>>| Module| The Additional Module Info 1 text from the main <<GameModule.adoc#top, Game Module>> component.
+|*ModuleOther2* |<<GameModule.adoc#top,Game Module>>| Module| The Additional Module Info 2 text from the main <<GameModule.adoc#top, Game Module>> component.
+|*ModuleVersion* |<<GameModule.adoc#top,Game Module>>| Module| The Module version text from the main <<GameModule.adoc#top, Game Module>> component.
 
-|*PlayerId* |Module| The Player Id string for the current player, as defined in <<GlobalOptions.adoc#top, Global Options>>
-|*PlayerName* |Module| The Player Name of the current player
-|*PlayerSide* |Module| The Side taken by the current player if Sides have been defined in the module
-|*VassalVersionCreated* |Module| The version number of Vassal that was used to create the current module.
-|*VassalVersionRuning* |Module| The version number of Vassal that is currently running.
+|*PlayerId* |<<GameModule.adoc#top,Game Module>>| Module| The Player Id string for the current player, as defined in <<GlobalOptions.adoc#top, Global Options>>
+|*PlayerName* |<<GameModule.adoc#top,Game Module>>| Module| The Player Name of the current player
+|*PlayerSide* |<<GameModule.adoc#top,Game Module>>| Module| The Side taken by the current player if Sides have been defined in the module
+|*VassalVersionCreated* |<<GameModule.adoc#top,Game Module>>| Module| The version number of Vassal that was used to create the current module.
+|*VassalVersionRuning* |<<GameModule.adoc#top,Game Module>>| Module| The version number of Vassal that is currently running.
 |===
 
-===== Property names provided by VASSAL that can be accessed by traits, but are dependent on the module
-[width="100%",cols="33%a,33%a,33%a",]
+===== Property names provided by VASSAL Components that can be accessed by traits, but are dependent on the module
+[width="100%",cols="33%a,23%a,10%,33%a",]
 |===
-|*Property* |*Property Level* |*Description*
+|*Property* |*Component* |*Global Property Level*| *Description*
 
-|*<propertyname>* |Zone |Global Properties defined within a <<Zone.adoc#top,Zone>> can be referenced directly by the property name by pieces that are inside that Zone. To reference a Global Property in a different zone, use the <<Expression.adoc#top,GetZoneProperty>> function.
+|*<propertyname>* |<<GlobalProperties.adoc#top,Global Property>> |Zone| <<GlobalProperties.adoc#top,Global Properties>> defined within a <<Zone.adoc#top,Zone>> can be referenced directly by the property name by pieces that are inside that Zone. To reference a Global Property in a different zone, use the <<Expression.adoc#top,GetZoneProperty>> function.
 
-|*<propertyname>* |Map |Global Properties defined within a <<Map.adoc#top,Map>> can be referenced directly by the property name by pieces that are reside on that Map. To reference a Global Property in a different map, use the <<Expression.adoc#top,GetMapProperty>> function.
+|*<propertyname>* |<<GlobalProperties.adoc#top,Global Property>> |Map| <<GlobalProperties.adoc#top,Global Properties>> defined within a <<Map.adoc#top,Map>> can be referenced directly by the property name by pieces that are reside on that Map. To reference a Global Property in a different map, use the <<Expression.adoc#top,GetMapProperty>> function.
 
-|*<propertyname>* |Module |Global Properties defined within the top-level <<GameModule.adoc#top,Game Module>> can be referenced directly by the property name by any pieces in the game.
+|*<propertyname>* |<<GlobalProperties.adoc#top,Global Property>> |Module| <<GlobalProperties.adoc#top,Global Properties>> defined within the top-level <<GameModule.adoc#top,Game Module>> can be referenced directly by the property name by any pieces in the game.
 
-|*<various>* |Module |Various component create Module Level Global Properties. These can then be accessed by traits like normal <<GlobalProperties.adoc#top,Global Properties>> defined in the  <<GameModule.adoc#top,Game Module>>. See the detailed documentation about individual components for more information.
+|*<propertyname>* |<<DoActionButton.adoc#top,Action Button>> |Module| Returns the value of a Loop Index property defined in an <<DoActionButton.adoc#top,Action Button>>.
 
-|*<deckname>_numPieces* |Map |Number of pieces/"cards" in the _Deck_ _<deckname>_.
-|*<deckname>_<expression_name>* |Map |The number of pieces/"cards" for which the named expression evaluates to true in the _Deck_ _<deckname>_.
-|*<mapname>_isVisible* |Map |True if the specified Map is currenly visible.
+
+|*<propertyname>* |<<GlobalOptions.adoc#custom,Custom Preference>> |Module| Returns the value of a  Custom Preference defined within the <<GlobalOptions.adoc#top,Global Options>> component.
+
+|*<dicename>_result* |<<DiceButton.adoc#top,Dice Button>> |Module| Returns the list of dice rolled during the last die roll of the <<DiceButton.adoc#top,Dice Button>> <diceName>.
+
+|*<dicename>_total* |<<DiceButton.adoc#top,Dice Button>> |Module| Returns the number of dice that where kept from the last die roll of the <<DiceButton.adoc#top,Dice Button>> <diceName>.
+
+|*<dicename>_keep* |<<DiceButton.adoc#top,Dice Button>> |Module| Returns the numeric total of the last die roll of the <<DiceButton.adoc#top,Dice Button>> <diceName>.
+
+|*<deckname>_numPieces* |<<Map.adoc#top,Map>> |Map| Returns the number of pieces/"cards" in the <<Deck.adoc#top,Deck>> _<deckname>_.
+
+|*<deckname>_<expression_name>* |<<Map.adoc#top,Map>> |Map| Returns the number of pieces/"cards" for which the named expression evaluates to true in the  <<Deck.adoc#top,Deck>> _<deckname>_.
+
+|*<mapname>_isVisible* |<<Map.adoc#top,Map>> |Map| Returns the True if the <<Map.adoc#top,Map>> named <mapname> is currenly visible.
+
+|*<propertyname>* |<<ScenarioProperties.adoc#ScenarioProperty,Scenario Property>> |Module| Returns the value a Scenatio Property defined within a <<ScenarioProperties.adoc#ScenarioPropertiesOptionTab,Scenario Properties Option Tab>> component.
+
+|*<propertyname>* |<<TurnTracker.adoc#top,Turn Counter>> |Module| Returns the current value of the <<TurnTracker.adoc#Counter,Turn Counter Level>> named <propertyname>.
+
+|*<propertyname>* |<<TurnTracker.adoc#top,Turn Counter>> |Module| Returns the current value of the <<TurnTracker.adoc#List,Turn List Level>> named <propertyname>.
 |===

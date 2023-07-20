@@ -3,35 +3,25 @@
 
 [.small]#<<index.adoc#toc,Home>> > *Concepts*#
 
-
 = Concepts
+
+A brief overwiew of some of the main concepts you need to know to get started creating a VASSAL module.
 
 * <<#Module,Module>> +
 * <<#extension,Extension>> +
 * <<#componentsandpieces,Components and Pieces>> +
 ** <<#components,Components>> +
 ** <<#pieces,Pieces>> +
+*** <<#stackLayers,Stacking and Game Piece Layers>> +
+*** <<#stack,Stacks>> +
+*** <<#atstart,At-Start Stacks>> +
+*** <<#deck,Decks>> +
 * <<#hotkeys_and_key_commands,Hotkeys and Key Commands>>
 ** <<#hotkeys,Hotkeys>> +
 ** <<#keycommands,Key Commands>> +
+* <<#values,Values in VASSAL>> +
+* <<#properties,Properties>> +
 
-Map +
-Player Hand +
-Board +
-Zone +
-Piece +
-Prototype +
-Stack +
-Deck +
-At-Start Stack +
-Key Command +
-Global Key Command +
-Values +
-Properties +
-Piece Properties +
-Global Properties +
-Translation +
-BeanShell
 
 '''
 [#module]
@@ -88,12 +78,53 @@ VASSAL Components consist of the structural pieces that are used to implement a 
 * <<ZonedGrid.adoc#top,Zones>> identify individual subsections of a Board.
 * <<ChartWindow.adoc#top,Charts>> allow the display of reference materials.
 * <<PieceWindow.adoc#top,Game Piece Palettes>> where <<#pieces,Pieces>> can be defined.
-
+* <<DiceButton.adoc#top,Dice Buttons>> to roll and report on Die rolls.
 
 [#pieces]
 === Pieces
 
 Pieces are used to implement the individual units, counters and other display pieces that make up a game.
+
+Pieces are constructed from more than 40 different 'trait's, each of which adds or modififies the behaviour of a piece. The number, order and configuration of the different traits within a piece control how it looks and acts in a VASSAL game.
+
+Some important traits used in many pieces are:
+
+* <<BasicPiece.adoc#top,Basic Piece>> defines the base image and name of a Piece.
+* <<Layer.adoc#top,Layers>> add additional layers of images to a Piece than can be shown or hidden.
+* <<Marker.adoc#top,Markers>> and <<DynamicProperty.adoc#top,Dynamic Properties>> add <<#properties,values>> to a Piece that can change over time and can be referenced in other Traits, Pieces and Components.
+* <<TriggerAction.adoc#top,Triggers>> allow sequences of actions to be generated.
+* <<Prototype.adoc#top,Prototypes>> allow a group of the same traits to be applied to different Pieces that share similar actions.
+* <<SendToLocation.adoc#top,Send To Location>> and <<Translate.adoc#top,Move Fixed Distance>> allow pieces to be moved on Command.
+* <<GlobalKeyCommand.adoc#top,Global Key Commands>> allow <<#keycommands,Key Commands>> to be sent to other pieces.
+
+See the <<GamePiece<<#keycommands,Game Piece>> for full details of all available traits.
+
+[#stackLayers]
+==== Stacking and Game Piece Layers
+By default, Pieces that are placed in the same Location in a Map will form a group called a Stack.
+
+[#stack]
+==== Stacks
+A Stack is a set of Pieces in the same location and Game Piece Layer.
+
+Pieces in a Stack are slightly offset from each other to give a visual cue that there are multiple pieces tacked together in that location.
+
+Clicking on a Stack selects all Pieces in the Stack and the whole Stack can be moved as one unit. Double-clicking on a Stack expands it with a greated visual offset to show more of the counters in the Stack. Individual counters in the Stack can be selected and acted on.
+
+The size of the visual offset for expanded and unexpanded Stacks is configurable in the <<Map.adoc#StackingOptions, Stacking Options>> Component of a Map.
+
+[#atstart]
+==== At-Start Stacks
+<<SetupStack.adoc#top,At-Start Stacks>> are a special kind of Stack that are defined as part of a  <<Map.adoc#top,Map>>. The Pieces on the Map are defined as part of the Map, not in a <<GamePieceWindow.adoc#top,Game Piece Palette>> like ordinary Pieces.
+
+Whenever a new game is started that uses that Map, a new Stack of those pieces is automatically created. Once the Pieces in an At-Start Stack have been moved away, the At-Start Stack no longer exists.
+
+[#deck]
+==== Decks
+<<Deck.adoc#top,Decks>> are a special version of an <<#atstart,At-Start Stack>> that have an independent existence, regardless of whether they contain any Pieces or not.
+
+Decks act like a Deck of card, to hold and potentially hide the identity of Pieces (in the case of a face-down Deck.)
+
 
 [#hotkeys_and_key_commands]
 == Hotkeys and Key Commands
@@ -109,7 +140,7 @@ image:images/KeyCommand.png[] +
 [#hotkeys]
 === Hotkeys
 
-Hotkeys are recognized by VASSAL Components and are ignored by Pieces.
+Hotkeys are recognized by VASSAL Components and are completely ignored by Pieces.
 
 Whenever a Hotkey is generated,  it is sent to ALL VASSAL Components in no particular order.
 
@@ -129,10 +160,26 @@ Whenever Key Commands are generated, they are always sent to a specific set of P
 . By activating a <<TriggerAction.adoc#top,Trigger Action>> trait that can issue a sequence of Key Commands to the Piece that contains it.
 . By activating any <<GlobalKeyCommand.adoc#top,Global Key Command>> Component or Piece trait to send a Key Command to a specific group of Pieces selected by the conditions specified in the <<GlobalKeyCommand.adoc#top,Global Key Command>>.
 
-== Values in Vassal
+[#values]
+== Values in VASSAL
+Al values used in VASSAL are stored as strings of characters. A number like 42 is actually stored as "42". True and False values are stored as "true" and "false".
 
+When needed, Vassal will convert to and from numbers and true/false values, for example when adding numbers, or checking of a condition is true. You generally do not need to worry about this, but it is good to understand what is happening under the hood.
+
+In general all Components and Piece Traits that use numbers, require whole numbers (Integers).
+
+Decimal numbers (e.g. 1.5) can be used and stored if you are experienced enough to know the limitations.
+
+
+
+[#properties]
 == Properties
-* Properties
+<<Properties.adoc#top, Properties>> are named values provided by VASSAL, by Components and by Pieces that can be referenced and used in other Components and Pieces.
+
+The values of Properties can change over time and represent the current state of the different Pieces and Components in the current game and of VASSAL itself.
+
+
+
 
 Making a GP of the same name will have no effect. Each individual Property is complete unique and unrelated. When you reference a property named ‘X’ in a piece trait, the following happens to find a value for that property. The first find of a value of property ‘X’ is used as the value:
 
@@ -147,6 +194,11 @@ Still not found, then check if VASSAL knows what ‘X’ is. This might be a mod
 So, a piece can directly ‘see’ and ‘read’ any property in itself, it’s current Zone, it’s current Map or in the top-level module.
 
 It doesn’t work the other way. Nothing else can directly ‘see’ any property inside the piece, without using some of the new functions I am developing for v3.7.
+
+
+
+[#expressions]
+== Expressions
 
 ** Piece Property
 
