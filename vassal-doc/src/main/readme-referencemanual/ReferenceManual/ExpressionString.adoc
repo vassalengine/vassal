@@ -14,7 +14,7 @@ Vassal provides a set of functions to manipulate strings of characters. String f
 
 The `<string>` part can be any string in double quotes ("), or any function or expression that returns a string. See the examples below for ideas on typical usage.
 
-The resulting string is returned for use in furthre processing. The target string (the part before the '.' is NOT updated by the string function.
+The resulting string is returned for use in further processing. The target string (the part before the '.') is NOT updated by the string function.
 
 NOTE: All String functions in Vassal are implemented by an underlying Java engine (BeanShell). In Java, BeanShell and Vassal, the characters in a string are numbered starting from 0, not 1. +
 So the first character in a string is always character 0, not character 1
@@ -61,11 +61,11 @@ Return the length of the string contained in the _LastZone_ property.
 Returns true if the target string contains the _search_ string. +
 
 [example]
-Test.contains("X") +
+Test.contains("x") +
 
 Return true of the property Test contains the string "x". +
 
- "Pos@23".contains("x") = true
+ "Posx23".contains("x") = true
  "Pos-23".contains("x") = false
  "".contains("x") = false
 
@@ -84,12 +84,12 @@ Return true of the property _CurrentMap__ is empty. +
 
 |.isBlank() |
 [#isBlank]
-Returns true if the target string is empty, or only contains spaces
+Returns true if the target string is empty, or only contains spaces.
 
 [example]
 Test.isBlank() +
 
-Return true of the property _Test_ is empty except for space characters +
+Return true of the property _Test_ is empty except for space characters. +
 
  "".isBlank() = true
  "   ".isBlank() = true
@@ -148,7 +148,7 @@ Return the last position of the hyphen character in the property _Test_. +
 
 |.matches(regex) |
 [#matches]
-Returns true if the target string matches a Regular Expression +
+Returns true if the target string matches a Regular Expression. +
 
 [example]
 Test.matches("bowler\|batsman") +

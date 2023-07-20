@@ -51,7 +51,7 @@ Calculate the range in Grid Units or pixels from the current piece to 100, 200 o
 RangePx(x1, y1, x2, y2)
 
 #[ Trait Only ]#
-| Calculate the range in Grid Units or pixels from on X, Y position to another X, Y positiom on the current Map. +
+| Calculate the range in Grid Units or pixels from one X, Y position to another X, Y position on the current Map. +
 
 [example]
 Range(OldCurrentX, OldCurrentY, CurrentX, CurrentY) +
@@ -62,7 +62,7 @@ Calculate the range in Grid Units or pixels from the previous position of the cu
 |Range(x1, y1, x2, y2, map) +
 RangePx(x1, y1, x2, y2, map)
 
-| Calculate the range in Grid Units or pixels from on X, Y position to another X, Y positiom on named Map. +
+| Calculate the range in Grid Units or pixels from one X, Y position to another X, Y position on named Map. +
 
 [example]
 Range(LastSeenX, LastSeenY, HomeX, HomeY, "BaseMap") +

@@ -16,7 +16,7 @@ There are several groups of functions, depending on where the property you want 
 * <<#General,General Property Access>> - Get the value of a property.
 * <<#Map,Map based>> - Get the value of a Global Property residing in a different Map.
 * <<#Zone,Zone based>> - Get the value of a Global Property residing in a different Zone.
-* <<#Attachment,Attachment based>> - Get the value of a Property from a different piece connected by an <<Attachment.adoc#top,Attachment>> to the current piece
+* <<#Attachment,Attachment based>> - Get the value of a Property from a different piece connected by an <<Attachment.adoc#top,Attachment>> to the current piece.
 
 [#General]
 ==== General Functions
@@ -62,11 +62,11 @@ Return the value of the property named _'X'_ as a String.
 
 [#Map]
 ==== Map-based Functions
-These functions return the value of a Map-level property defined on another map
+These functions return the value of a Map-level property defined on another map.
 
 [width=100%,cols="33%a,67%a"]
 |===
-|*GetMapProperty* |Return the value of a property from a different Map .  +
+|*GetMapProperty* |Return the value of a property from a different Map.  +
 
 
 |GetMapProperty(prop, map) | Return the value of the property that resides on the named Map.
@@ -110,7 +110,7 @@ These functions return the value of a Property from a piece attached to the curr
 
 All Attachment-based Functions will return the value of the property from the first attached piece it that meets the criteria of the function.
 
-Note that if your Attachment includes the 'Allow attachment to self' option, then it is possible for these functions to find and return the Property value from itself.
+Note that if your Attachment includes the 'Allow attachment to self' option, then it is possible for these functions to find and return the Property value from the same piece that is calling the property.
 
 [width=100%,cols="33%a,67%a"]
 |===
@@ -121,7 +121,7 @@ Note that if your Attachment includes the 'Allow attachment to self' option, the
 #[ Trait Only ]#| Return the value of a property _'prop'_ from the first piece attached to the current piece using the attachment named _'attach'_.
 
 [example]
-GetAttachProperty("Supplies", "SUP") +
+GetAttachProperty("SUP", "Supplies") +
 
 Return the value of the Property named _'Supplies'_ from the first piece attached to the current piece using the attachment name _'SUP'_.
 

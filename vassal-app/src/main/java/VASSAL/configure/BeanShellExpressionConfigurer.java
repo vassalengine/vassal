@@ -296,7 +296,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
       p.add(expressionPanel);
       p.add(detailPanel);
 
-      // Force field to open at it's minimum size
+      // Force field to open at its minimum size
       nameField.setPreferredSize(nameField.getPreferredSize());
 
       final ComponentAdapter l = new ComponentAdapter() {

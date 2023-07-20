@@ -19,7 +19,7 @@ This <<GamePiece.adoc#Traits,Trait>> adds an action that creates a lasting "atta
 
 (5) If the attached-to piece *also* has an Attachment trait that shares the same _Attachment Name_, then mutual attachments between pieces can also be formed.
 
-(6) Attachments are also allowed to be made from a piece to itself (`Allow attachments to self'). This allows you to create a group of pieces that are all equivalently attached to all other piecs in the group and can all issue the same Attachment related commands. By default, this option is disabled, which creates an assymetric Attachment group, where one piece is the 'driver' that sends commands to an attached set of pieces, but they cannot necessarily send commands back.
+(6) Attachments are also allowed to be made from a piece to itself (`Allow attachments to self'). This allows you to create a group of pieces that are all equivalently attached to all other pieces in the group and can all issue the same Attachment related commands. By default, this option is disabled, which creates an assymetric Attachment group, where one piece is the 'driver' that sends commands to an attached set of pieces, but they cannot necessarily send commands back.
 
 *NOTES:*::
 * The property _<AttachmentName>_AttachCount_ can be used to find out how many pieces are currently attached via this trait. For example if the _Attachment Name_ were "Sibling" then the property _Sibling_AttachCount_ would hold the attachment count.
