@@ -82,6 +82,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.util.Collections;
+import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -1494,5 +1496,12 @@ public class PieceDefiner extends JPanel {
     }
   }
 
+  /**
+   * Export a List of all the allowable traits
+   * @return
+   */
+  public List<GamePiece> getTraitList() {
+    return Collections.list(availableModel.elements());
+  }
 }
 
