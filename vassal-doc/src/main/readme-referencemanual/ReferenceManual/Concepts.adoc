@@ -181,19 +181,19 @@ The values of Properties can change over time and represent the current state of
 
 
 
-Making a GP of the same name will have no effect. Each individual Property is complete unique and unrelated. When you reference a property named ‘X’ in a piece trait, the following happens to find a value for that property. The first find of a value of property ‘X’ is used as the value:
+Making a GP of the same name will have no effect. Each individual Property is completely unique and unrelated. When you reference a property named ‘X’ in a piece trait, the following happens to find a value for that property. The first find of a value of property ‘X’ is used as the value:
 
-Search each trait in the current piece to see if any of the traits has a value for property ‘X’. The traits are searched in reverse order (bottom up) of what they appear in the Piece Definer.
+Search each trait in the current piece to see if any of the traits has a value for property ‘X’. The traits are searched in reverse order (bottom up) from what they appear in the Piece Definer.
 
-If we reach the end of all the traits, then see if the piece is currently in a Zone on a Map. If so, see of the Zone has a Global property named X.
+If we reach the end of all the traits, then see if the piece is currently in a Zone on a Map. If so, see if the Zone has a Global property named 'X'.
 
 Still not found, Check the Map the piece is on to see if it has a Global property named ‘X’.
 
 Still not found, then check if VASSAL knows what ‘X’ is. This might be a module level Global Property, or a system property.
 
-So, a piece can directly ‘see’ and ‘read’ any property in itself, it’s current Zone, it’s current Map or in the top-level module.
+So, a piece can directly ‘see’ and ‘read’ any property in itself, its current Zone, its current Map or in the top-level module.
 
-It doesn’t work the other way. Nothing else can directly ‘see’ any property inside the piece, without using some of the new functions I am developing for v3.7.
+It doesn’t work the other way. Nothing else can directly ‘see’ any property inside the piece, without using some of the new functions being developed for v3.7.
 
 
 

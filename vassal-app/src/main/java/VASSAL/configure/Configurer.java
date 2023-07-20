@@ -67,7 +67,7 @@ public abstract class Configurer {
   public static final Color LIST_ENTRY_HIGHLIGHT_COLOR = new Color(255, 230, 230);
 
   /**
-   * The ContextLevel of a Configurer defines the level that ot is defined at.
+   * The ContextLevel of a Configurer defines the level that it is defined at.
    * It is used by the FunctionBuilder (FB) to provide better contextual help for Function calls.
    *  o PIECE  - The Configurer is defined at the Piece level. Pieces move around, so we can make no assumptions
    *             about where the piece may be. All functions are to be displayed by the FB
@@ -325,7 +325,7 @@ public abstract class Configurer {
   }
 
   /**
-   * Set the Context for this Configurer to the first ancestor that of type GameModule or Map
+   * Set the Context for this Configurer to the first ancestor that is of type GameModule or Map
    *
    * NOTE: The ContextLevel may already have been preset by the ConfigureFactory when the Configurer was created.
    *       Don't let the AutoConfigurer over-write this

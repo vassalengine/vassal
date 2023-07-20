@@ -1131,7 +1131,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
 
   /**
-   * SumMapZone(property, location, map, expression) function
+   * SumZone(property, location, map, expression) function
    * Total the value of the named property in all counters in the
    * specified map and zone that match the supplied expression
    * <p>
@@ -1943,7 +1943,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
   /**
    * Audit
-   * Write a message to the errorloh
+   * Write a message to the errorlog
    *
    * @param message               Message to display. Can be an Expression
    * @param conditionOrOptionList If provided, is an expression that will be evaluated and the message will only be written if true

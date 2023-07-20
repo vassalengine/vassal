@@ -271,7 +271,7 @@ Note, however, that Sub-Menu traits must always go *_below_* the traits that it 
 
 |<<ReportChanges.adoc#top,Report Action>> | Display a message in the Chat Window when a Key Command is seen.
 
-|<<RestrictCommands.adoc#top,Restrict Commands>> | Dynamically restrict access to reigh-click menu commands.
+|<<RestrictCommands.adoc#top,Restrict Commands>> | Dynamically restrict traits from being activated by right-click menu commands or from other traits or Global Key Commands.
 
 |<<RestrictedAccess.adoc#top,Restricted Access>> | Restrict access to a piece to specified users.
 

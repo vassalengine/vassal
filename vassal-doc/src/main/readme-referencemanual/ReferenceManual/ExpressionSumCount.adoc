@@ -14,11 +14,11 @@ Depending on what is known about the location of the pieces that you want to Sum
 
 * <<#StackBased,Stack based>> - Pieces in the same stack as the current piece
 * <<#LocationBased,Location based>> - Pieces in the same location as the current piece, or in a known location
-* <<#ZoneBased,Zone based>> - Pieces in the same zZne as the current piece, or in a known Zone
+* <<#ZoneBased,Zone based>> - Pieces in the same Zone as the current piece, or in a known Zone
 * <<#MapBased,Map based>> - Pieces on the same Map as the current piece, or on a known Map
-* <<#AttachmentBased,Attachment based>> - Pieces atttached to the current piece
+* <<#AttachmentBased,Attachment based>> - Pieces attached to the current piece
 * <<#MatBased,Mat based>> - Pieces on the same mat as the current piece
-* <<#RangeBased,Range based>> - Pieces within a specified range of the current piece, or a known location,
+* <<#RangeBased,Range based>> - Pieces within a specified range of the current piece, or a known location
 * <<#Generic,Generic>> - Pieces where the location is not known
 * <<#Summary,Summary>> - Function Summary
 
@@ -60,10 +60,10 @@ Additionally, the expression must be supplied as a full Beanshell expression (in
 NOTE: The BeanShell Function builder will automatically add the special syntax for you.
 
 
-===== Zone, and Location and Map Names
+===== Zone, Location and Map Names
 The Zone *Sum* and *Count* functions take a Zone name and a Map name and will only act on pieces currently located in the named Zone on the named Map.
 
-The Location *Sum* and *Count* functions take a Location name and a Map Name and will only act on pieces currently on the named Map that in Locations with the specified Location Name.
+The Location *Sum* and *Count* functions take a Location name and a Map Name and will only act on pieces currently on the named Map in Locations with the specified Location Name.
 
 The Map, Zone and Location names used in a function can be the name of an actual Map, Zone or Location (which should be entered in quotes like "zoneRight"), or can be another expression that evaluates to a Zone or Location name.
 
@@ -97,7 +97,7 @@ Use these functions when you want to *Sum*  or *Count* pieces that are in the sa
 
 Only pieces in exactly the same Stack as the source piece (including the source piece) will be included. Other pieces that may be in the same location, but not in the same Stack, such as non-stacking pieces, or pieces stacked in other <<GamePieceLayers.adoc#top,Game Piece Layers>>, will not be totalled. +
 
-NOTE: A <<Deck.adoc#top,Deck>> is a special kind of Stack, so Stack function also work to Sum & Count pieces in a Deck.
+NOTE: A <<Deck.adoc#top,Deck>> is a special kind of Stack, so Stack functions also work to Sum & Count pieces in a Deck.
 
 [#SumStack]
 [width=100%,cols="33%a,67%a"]
@@ -139,7 +139,7 @@ Sum the value of the property _Strength_ in all pieces in the current stack that
 [example]
 CountStack()
 
-Just a a straight count of the pieces in the target pieces Stack.
+Just a straight count of the pieces in the target piece's Stack.
 |CountStack(prop)
 
 #[ Trait Only ]#|  Count the number of pieces in the current Stack, that have a non-blank value for the named property. +
@@ -522,7 +522,7 @@ Count the number of pieces on the Map named _East_ that have a non-blank value f
 ==== Attachment based functions
 Use these functions to *Sum* or *Count* values on pieces that are currently Attached to the source piece using the <<Attachment.adoc#top,Attachment>> trait.
 
-NOTE: The Attachment functionality allows pieces to be attached to themselves. If this is the case, then the current piece will be included in the Sum or Count reurned by the functions.
+NOTE: The Attachment functionality allows pieces to be attached to themselves. If this is the case, then the current piece will be included in the Sum or Count returned by the these functions.
 
 [#SumAttach]
 [width=100%,cols="33%a,67%a"]
@@ -531,7 +531,7 @@ NOTE: The Attachment functionality allows pieces to be attached to themselves. I
 
 |SumAttach(attachment, prop)
 
-#[ Trait Only ]#| Sum a property across all pieces attached to the current piece using the named Attachment +
+#[ Trait Only ]#| Sum a property across all pieces attached to the current piece using the named Attachment. +
 
 [example]
 SumAttach("Grouped", "Strength") +
@@ -718,6 +718,8 @@ NOTE: On maps with a <<ZonedGrid.adoc#top,Zoned Grid>>, the Grid at the *From* l
 
 NOTE: If a range-based function is called from within a Piece and a minimum range of 0 is specified, then the calling piece will be included in the *Sum* or *Count* returned.
 
+NOTE: In range-based functions, a maximum range of 0 will only find pieces in EXACTLY the same X, Y location as the calling Piece.
+
 [#SumRange]
 [width=100%,cols="33%a,67%a"]
 |===
@@ -759,16 +761,16 @@ Sum the value of the property _Strength_ in pieces in the adjacent hexes that ha
 [example]
 SumRangePx(1, 100, "Strength") +
 
-Sum the value of the property _Strength_ in all pieces in within 100 pixels of the current piece, but excluding the current piece and any piece stacked in the same location as the current piece
+Sum the value of the property _Strength_ in all pieces within 100 pixels of the current piece, but excluding the current piece and any piece stacked in the same location as the current piece.
 
 |SumRangePx(min, max, prop, expr)
 
-#[ Trait Only ]#| Sum a property across all pieces within the specified range in grid units AND that match the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>>. +
+#[ Trait Only ]#| Sum a property across all pieces within the specified range in pixels AND that match the supplied <<PropertyMatchExpression.adoc#top,Property Match Expression>>. +
 
 [example]
 SumRangePx(0, 500, "Strength", "{Alien==true}") +
 
-Sum the value of the property _Strength_ in pieces within 500 pixels that have a value of *true** for the _Alien_ property.
+Sum the value of the property _Strength_ in pieces within 500 pixels that have a value of *true* for the _Alien_ property.
 |===
 
 
@@ -831,17 +833,17 @@ Cout the pieces within 2 hexes of the current piece that have a non-blank value 
 [example]
 CountRangePx(1, 5) +
 
-Count all pieces within 5 hexes of the current piece,
-but not in the same hex as the current piece.
+Count all pieces within 5 pixels of the current piece,
+but not in the same X, Y location as the current piece.
 
 |CountRangePx(min, max, prop)
 
-#[ Trait Only ]#| Count all pieces within the specified range in Grid Units AND that have a non-blank value for the named property.
+#[ Trait Only ]#| Count all pieces within the specified range in pixels AND that have a non-blank value for the named property.
 
 [example]
 CountRangePx(1, 500, "Alien") +
 
-Count all pieces within 500 pixels of the current piece, but not in the X, Y position as the current piece and that have a non-blank value for the _Alien_ property.
+Count all pieces within 500 pixels of the current piece, but not in the same X, Y position as the current piece and that have a non-blank value for the _Alien_ property.
 
 |CountRangePx(min, max, expr)
 
