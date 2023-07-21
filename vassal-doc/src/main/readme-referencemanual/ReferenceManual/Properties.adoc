@@ -65,6 +65,7 @@ in cases like these as this will generate an error if the property does not have
 * The results of a roll by a <<GameModule.adoc#DiceButton,Dice Button>> is exposed as a property
 * A <<Deck.adoc#top,Deck>> component exposes the number of cards remaining as a Map-level property.
 
+[#combined]
 ==== Handy Combined List of VASSAL-defined Properties for Game Pieces
 
 ===== Fixed Property Names

@@ -21,8 +21,15 @@ A brief overwiew of some of the main concepts you need to know to get started cr
 ** <<#keycommands,Key Commands>> +
 * <<#values,Values in VASSAL>> +
 * <<#properties,Properties>> +
+** <<#globalProperties, Global Properties>> +
+** <<#pieceProperties, Piece Properties>> +
+** <<#propertyVisibility,Property Visibility>> +
+* <<#expressions,Expressions>> +
+** <<#oldStyle,Old-Style Expressions>> +
+** <<#beanshell,BeanShell Expressions>> +
+** <<#PME,Property Match Expressions>> +
 
-
+=== Property Match Expressions
 '''
 [#module]
 == Module
@@ -160,6 +167,7 @@ Whenever Key Commands are generated, they are always sent to a specific set of P
 . By activating a <<TriggerAction.adoc#top,Trigger Action>> trait that can issue a sequence of Key Commands to the Piece that contains it.
 . By activating any <<GlobalKeyCommand.adoc#top,Global Key Command>> Component or Piece trait to send a Key Command to a specific group of Pieces selected by the conditions specified in the <<GlobalKeyCommand.adoc#top,Global Key Command>>.
 
+
 [#values]
 == Values in VASSAL
 Al values used in VASSAL are stored as strings of characters. A number like 42 is actually stored as "42". True and False values are stored as "true" and "false".
@@ -170,54 +178,75 @@ In general all Components and Piece Traits that use numbers, require whole numbe
 
 Decimal numbers (e.g. 1.5) can be used and stored if you are experienced enough to know the limitations.
 
-
-
 [#properties]
 == Properties
 <<Properties.adoc#top, Properties>> are named values provided by VASSAL, by Components and by Pieces that can be referenced and used in other Components and Pieces.
 
 The values of Properties can change over time and represent the current state of the different Pieces and Components in the current game and of VASSAL itself.
 
+See the <<Properties.adoc#combined, Properties Page>> for a comprehensive list of the Properties available in VASSAL.
+
+Many of the properties have values that are controlled by VASSAL, but the following two types are Properties defined by the Module Designer.
+
+[#globalProperties]
+=== Global Properties
+Global Properties are user-defined properties that can have their value changed by user actions during Play. Global Properties can be created at the Module level, the Map level or the Zone Level and follow the visibility rules outlined in the previous section.
+
+Global Properties can have their value changed by +
+
+ * <<GlobalProperties.adoc#ChangePropertyToolbarButton,Change Property Toolbar Button>> Component +
+ * <<SetGlobalProperty.adoc#top,Set Global Property Piece>> trait
+
+[#pieceProperties]
+=== Piece Properties
+Piece Properties are user defined properties that exist within a specific Piece and can have their value changed by user actions during play.
+
+* A <<Marker.adoc#top,Marker>> defines a read-only Property that can't be changed.
+
+* A <<DynamicProperty.adoc#top,Dynamic Property>> defines a Property that can have its value updated.
+
+* A <<CalculatedProperty.adoc#top,Calculated Property>> defines a Property whose value is defined by a <<#beanshell,BeanShell Expression>> and is freshly re-calculated whenever its value is needed.
+
+Dynamic Properties can have their value changed by
+
+* A Change value command defined in the <<DynamicProperty.adoc#top,Dynamic Property>>.
+* A <<SetPieceProperty.adoc#top,Set Piece Property>> trait.
+* A <<SetAttachmentProperty.adoc#top,Set Attachment Property>> trait.
 
 
+[#propertyVisibility]
+=== Property Visiblility
 
-Making a GP of the same name will have no effect. Each individual Property is completely unique and unrelated. When you reference a property named ‘X’ in a piece trait, the following happens to find a value for that property. The first find of a value of property ‘X’ is used as the value:
+.Properties exist at one of four levels:
+. Module level properties
+. Map level properties
+. Zone level properties
+. Piece properties
 
-Search each trait in the current piece to see if any of the traits has a value for property ‘X’. The traits are searched in reverse order (bottom up) from what they appear in the Piece Definer.
+The <<Properties.adoc#combined, Properties Page>> lists which level each Property is defined at.
 
-If we reach the end of all the traits, then see if the piece is currently in a Zone on a Map. If so, see if the Zone has a Global property named 'X'.
+When a Property value is needed, VASSAL starts searching at the level appropriate to the Component or Piece that needs the valie and searches upwards to find a value for the Property. If a Property of the same name exists on more than one level, then only the lowest level will be seen.
 
-Still not found, Check the Map the piece is on to see if it has a Global property named ‘X’.
+Module level components (such as Dice Buttons or Global Key Commands defined at the Module level) can only 'see' Module level properties.
 
-Still not found, then check if VASSAL knows what ‘X’ is. This might be a module level Global Property, or a system property.
+Map level components (such as the Map Report Formats or the Line of Sight thread) can only 'see' the Map level properties defined on their own Map, plus Module level properties.
 
-So, a piece can directly ‘see’ and ‘read’ any property in itself, its current Zone, its current Map or in the top-level module.
+There are no Zone level components.
 
-It doesn’t work the other way. Nothing else can directly ‘see’ any property inside the piece, without using some of the new functions being developed for v3.7.
+Pieces can only 'see' the Zone level properties in their current Zone, the Map level properties on their current Map and all Module level properties.
+
+These visibility rules can be over-ridden using the <<ExpressionProperty.adoc#top,GetProperty>> <<#beanshell,BeanShell>> functions.
 
 
 
 [#expressions]
 == Expressions
 
-** Piece Property
+[#oldStyle]
+=== Old-Style Expressions
 
-*** Marker
-*** Calculated Property
-*** Dynamic Property
-*** Setting Piece Properties
+=== BeanShell Expressions
+[#beanshell]
 
-* Global Property
-*** Setting Global Properties
-
-* Key Commands and Hotkeys
-
-** Global Key Command
-
-** Global Hot Key
-
-
-* BeanShell
-** Strings and Numbers
-** true and false
-** Property Match Expressions
+[#PME]
+=== Property Match Expressions
