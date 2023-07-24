@@ -522,7 +522,7 @@ Count the number of pieces on the Map named _East_ that have a non-blank value f
 ==== Attachment based functions
 Use these functions to *Sum* or *Count* values on pieces that are currently Attached to the source piece using the <<Attachment.adoc#top,Attachment>> trait.
 
-NOTE: The Attachment functionality allows pieces to be attached to themselves. If this is the case, then the current piece will be included in the Sum or Count returned by the these functions.
+NOTE: The Attachment functionality allows pieces to be attached to themselves. If this is the case, then the current piece will be included in the Sum or Count returned by these functions.
 
 [#SumAttach]
 [width=100%,cols="33%a,67%a"]
