@@ -38,6 +38,7 @@ import VASSAL.counters.BorderOutline;
 import VASSAL.counters.CalculatedProperty;
 import VASSAL.counters.Clone;
 import VASSAL.counters.CounterGlobalKeyCommand;
+import VASSAL.counters.Comment;
 import VASSAL.counters.Deck;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.Delete;
@@ -208,7 +209,8 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     Map.entry(BorderOutline.ID, BorderOutline::new),
     Map.entry(Attachment.ID, Attachment::new),
     Map.entry(SetAttachmentProperty.ID, SetAttachmentProperty::new),
-    Map.entry(MultiLocationCommand.ID, MultiLocationCommand::new)    
+    Map.entry(MultiLocationCommand.ID, MultiLocationCommand::new),
+    Map.entry(Comment.ID, Comment::new)
   );
 
   /**
