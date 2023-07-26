@@ -190,8 +190,8 @@ public class PieceDefiner extends JPanel {
     // Add piece to the standard model
     availableModel.addElement(piece);
 
-    // Store the piece in a SortedMap, order by translated trait description
-    alphaMap.put(((EditablePiece) piece).getDescription(), piece);
+    // Store the piece in a SortedMap, order by translated base trait description
+    alphaMap.put(((EditablePiece) piece).getBaseDescription(), piece);
   }
 
 
@@ -204,6 +204,7 @@ public class PieceDefiner extends JPanel {
       addElement(new BorderOutline());
       addElement(new Delete());
       addElement(new Clone());
+      addElement(new Comment());
       addElement(new Embellishment());
       addElement(new UsePrototype());
       addElement(new Labeler());
@@ -467,7 +468,7 @@ public class PieceDefiner extends JPanel {
     setLayout(new MigLayout("ins 0, fill")); // NON-NLS
 
     // A Panel to hold the trait lists
-    controls = new JPanel(new MigLayout("ins 0, fill", "[grow 1,:200:]rel[]rel[grow 4,:400:]rel[]", "[grow][][]")); // NON-NLS
+    controls = new JPanel(new MigLayout("ins 0, fill", "[grow 1,200!]rel[]rel[grow 4,:600:]rel[]", "[grow]0")); // NON-NLS
 
     // A Panel to hold the generated PieceSlot image
     slotPanel = new JPanel(new MigLayout("ins 0", "push[]push", "push[]2[]push")); // NON-NLS
@@ -559,10 +560,7 @@ public class PieceDefiner extends JPanel {
     final JScrollPane availableScroll = new JScrollPane(availableListPanel);
 
     availableScroll.setBorder(BorderFactory.createTitledBorder(Resources.getString("Editor.PieceDefiner.available_traits")));
-    availablePanel.add(availableScroll, "grow,push"); // NON-NLS
-
-    // A Panel to hold the Help and Import button below the Available Traits
-    final JPanel availableButtonPanel = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
+    availablePanel.add(availableScroll, "grow,push,wrap"); // NON-NLS
 
     helpButton = new JButton(Resources.getString("General.help"));
     helpButton.setToolTipText(Resources.getString("Editor.PieceDefiner.help_tip"));
@@ -577,13 +575,11 @@ public class PieceDefiner extends JPanel {
       importPiece(className);
     });
 
-    availableButtonPanel.add(importButton, "sg 2"); // NON-NLS
-    availableButtonPanel.add(helpButton, "sg 2"); // NON-NLS
     controls.add(availablePanel, "grow,pushy"); // NON-NLS
 
     // A Panel holding the add and Remove buttons between the two trait lists
     final JPanel addRemovePanel = new JPanel();
-    addRemovePanel.setLayout(new MigLayout("ins 0,wrap 1")); // NON-NLS
+    addRemovePanel.setLayout(new MigLayout("ins 0,wrap 1", "[]", "[][][]20[][]")); // NON-NLS
 
     addButton = new JButton(Resources.getString("Editor.PieceDefiner.add"), IconFactory.getIcon("go-next", IconFamily.SMALL)); // NON-NLS
     addButton.setHorizontalTextPosition(SwingUtilities.LEFT);
@@ -598,11 +594,13 @@ public class PieceDefiner extends JPanel {
     removeButton.addActionListener(evt -> doRemove());
     addRemovePanel.add(removeButton, "sg"); // NON-NLS
     addRemovePanel.add(pieceIdLabel, "center"); // NON-NLS
+    addRemovePanel.add(importButton, "sg");
+    addRemovePanel.add(helpButton, "sg");
 
     controls.add(addRemovePanel, "aligny center"); // NON-NLS
 
     // The list of traits in use in this GamePiece
-    final JPanel inUsePanel = new JPanel(new MigLayout("ins 0,wrap 1,fill")); // NON-NLS
+    final JPanel inUsePanel = new JPanel(new MigLayout("ins 0,wrap 1,fill", "[]", "[]rel[]0[]")); // NON-NLS
     inUseList = new JList<>();
     inUseList.setName(INUSE);
     inUseList.setDragEnabled(true);
@@ -745,7 +743,7 @@ public class PieceDefiner extends JPanel {
     inUseListPanel.add(inUseList, BorderLayout.CENTER);
     final JScrollPane inUseScroll = new JScrollPane(inUseListPanel);
     inUseScroll.setBorder(BorderFactory.createTitledBorder(Resources.getString("Editor.PieceDefiner.current_traits")));
-    inUsePanel.add(inUseScroll, "grow"); // NON-NLS
+    inUsePanel.add(inUseScroll, "grow,push,wrap"); // NON-NLS
 
     // A panel holding the cut/paste/propertiues buttons below the In Use traits
     final JPanel inUseButtonPanel = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
@@ -765,9 +763,18 @@ public class PieceDefiner extends JPanel {
       }
     });
 
-    inUseButtonPanel.add(propsButton, "sg 1"); // NON-NLS
+    inUseButtonPanel.add(propsButton, "sg 1,wrap"); // NON-NLS
 
+    // A label to hold the notes at the bottom of the screen
+    final JLabel noteLabel = new JLabel(Resources.getString("Editor.PieceDefiner.note1"));
+    final Font standardFont = noteLabel.getFont();
+    final Font italicFont = new Font(standardFont.getFontName(), Font.ITALIC, standardFont.getSize());
+    noteLabel.setFont(italicFont);
+
+    inUsePanel.add(inUseButtonPanel, "center,wrap"); // NON-NLS
+    inUsePanel.add(noteLabel, "center"); // NON-NLS
     controls.add(inUsePanel, "grow"); // NON-NLS
+
 
     // A panel to hold the trait navigation buttons.
     final JPanel moveUpDownPanel = new JPanel(new MigLayout("ins 0,wrap 1")); // NON-NLS
@@ -821,18 +828,6 @@ public class PieceDefiner extends JPanel {
     moveUpDownPanel.add(moveBottomButton, "sg"); // NON-NLS
 
     controls.add(moveUpDownPanel, "wrap"); // NON-NLS
-
-    controls.add(availableButtonPanel, "center"); // NON-NLS
-    controls.add(new JLabel(""));
-    controls.add(inUseButtonPanel, "center,wrap"); // NON-NLS
-
-    // A label to hold the notes at the bottom of the screen
-    final JLabel noteLabel = new JLabel(Resources.getString("Editor.PieceDefiner.note1"));
-    final Font standardFont = noteLabel.getFont();
-    final Font italicFont = new Font(standardFont.getFontName(), Font.ITALIC, standardFont.getSize());
-    noteLabel.setFont(italicFont);
-
-    controls.add(noteLabel, "span 3,center"); // NON-NLS
 
   }
 

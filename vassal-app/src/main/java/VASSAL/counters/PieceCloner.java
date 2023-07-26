@@ -74,6 +74,10 @@ public class PieceCloner {
     else if (piece instanceof UsePrototype && expandPiece) {
       clone = clonePiece(((UsePrototype)piece).getExpandedInner());
     }
+    // Do not Clone Comments when expanding a piece, just skip on to the next trait.
+    else if (piece instanceof Comment && expandPiece) {
+      clone = clonePiece(((Comment) piece).getInner());
+    }
     else if (piece instanceof EditablePiece && piece instanceof Decorator) {
       try {
         clone = piece.getClass().getConstructor().newInstance();
