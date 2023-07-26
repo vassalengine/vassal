@@ -2167,9 +2167,6 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     else if (EMPTY_HEX_REPORT_FORMAT.equals(name)) {
       return () -> showText && minimumDisplayablePieces == 0;
     }
-    else if (SHOW_MOVE_SELECTED.equals(name) || SHOW_NON_MOVABLE.equals(name)) {
-      return () -> showNoStack;
-    }
     else if (List.of(SHOW_TERRAIN_WIDTH, SHOW_TERRAIN_HEIGHT, SHOW_TERRAIN_ZOOM, SHOW_TERRAIN_SNAPPY).contains(name)) {
       return () -> !NEVER.equals(showTerrainBeneath);
     }
