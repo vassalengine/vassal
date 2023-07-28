@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module.map;
 
+import VASSAL.build.AbstractBuildable;
 import VASSAL.build.AbstractFolder;
 import VASSAL.build.AbstractToolbarItem;
 import VASSAL.build.AutoConfigurable;
@@ -474,6 +475,12 @@ public class MassKeyCommand extends AbstractToolbarItem
       setName(name);
       this.key = key;
       return this;
+    }
+
+    @Override
+    public void setContext(AbstractBuildable context) {
+      super.setContext(context);
+      piecesConfig.setContext(context);
     }
   }
 

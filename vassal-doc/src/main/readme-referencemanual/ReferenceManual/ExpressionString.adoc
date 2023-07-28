@@ -1,0 +1,247 @@
+== VASSAL Reference Manual
+[#top]
+
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<Expression.adoc#top,Expressions>> > *String Expressions*#
+
+'''''
+
+=== String Functions
+
+Vassal provides a set of functions to manipulate strings of characters. String functions are always applied to an existing String in an expression in the folowing form:
+
+[example]
+ <string>.function(parameters)
+
+The `<string>` part can be any string in double quotes ("), or any function or expression that returns a string. See the examples below for ideas on typical usage.
+
+The resulting string is returned for use in further processing. The target string (the part before the '.') is NOT updated by the string function.
+
+NOTE: All String functions in Vassal are implemented by an underlying Java engine (BeanShell). In Java, BeanShell and Vassal, the characters in a string are numbered starting from 0, not 1. +
+So the first character in a string is always character 0, not character 1
+
+==== Summary
+[%autowidth]
+|===
+| <<#length,length>> | Get length of a String
+| <<#contains,contains>> | Check if a string contains another string
+| <<#isEmpty,isEmpty>> | Check if a string is empty of characters
+| <<#isBlank,isBlank>> | Check if a string is empty, or only contains space characters
+| <<#startsWith,startsWith>> | Check if a string starts with a particular string
+| <<#endsWith,endsWith>> | Check if a string ends with a particular string
+| <<#indexOf,indexOf>> | Find the first position within a string where another string starts
+| <<#lastIndexOf,lastIndexOf>> | Find the last position within a string where another string starts
+| <<#matches,matches>> | Test if a string matches a pattern
+| <<#substring,substring>> | Return a section of a string
+| <<#replace,replace>> | Replace part of a string with a different string
+| <<#trim,trim>> | Remove spaces from the start and end of a string
+| <<#toUpperCase,toUpperCase>> | Convert lowercase characters in a string to uppercase
+| <<#toLowerCase,toLowerCase>> | Convert uppercase characters in a string to lowercase
+| <<#toString,toString>> | Convert a non-string to a String
+|===
+
+==== Functions
+[width=100%,cols="33%,67%a"]
+|===
+|*Function* |Description  +
+
+|.length() |
+[#length]
+Return the number of characters in the String.  +
+
+[example]
+LastZone.length() +
+
+Return the length of the string contained in the _LastZone_ property.
+
+ "Beach".length() = 5
+ "".length = 0
+
+|.contains(search) |
+[#contains]
+Returns true if the target string contains the _search_ string. +
+
+[example]
+Test.contains("x") +
+
+Return true of the property Test contains the string "x". +
+
+ "Posx23".contains("x") = true
+ "Pos-23".contains("x") = false
+ "".contains("x") = false
+
+|.isEmpty() |
+[#isEmpty]
+Returns true if the target string has no characters in it. +
+
+[example]
+CurrentMap.isEmpty() +
+
+Return true of the property _CurrentMap__ is empty. +
+
+ "".isEmpty() = true
+ "   ".isEmpty() = false
+ " a".isEmpty() = false
+
+|.isBlank() |
+[#isBlank]
+Returns true if the target string is empty, or only contains spaces.
+
+[example]
+Test.isBlank() +
+
+Return true of the property _Test_ is empty except for space characters. +
+
+ "".isBlank() = true
+ "   ".isBlank() = true
+ " a".isBlank() = false
+
+|.startsWith(search) |
+[#startsWith]
+Returns true if the target string starts with the _search_ string. +
+
+[example]
+GetProperty("Test-1").startsWith("ZZ") +
+
+Return true if the property _Test-1_ starts with the string "ZZ". +
+
+ "ZZ-23".startsWith("ZZ") = true
+ "ZY-23".startsWith("ZZ") = false
+
+|.endsWith(search) |
+[#endsWith]
+Returns true if the target string ends with the _search_ string. +
+
+[example]
+Test.endsWith("ZZ") +
+
+Return true if the property _Test_ ends with the string "ZZ". +
+
+ "23-ZZ".endsWith("ZZ") = true
+ "ZZ-23".endsWith("ZZ") = false
+
+|.indexOf(search) |
+[#indexOf]
+Searches the target string for the search string and returns the character position within the target string where it is first found, or -1 if not found. +
+
+[example]
+{ Test.indexOf("zone") < 0 ? "Not Found" : "Found" } +
+
+If the property _Test_ has the String "zone" anywhere in it, then return "Found", otherwise return "Not Found". +
+
+ "ZZ-23".indexOf("ZZ") = 0
+ "ZY-23".indexOf("ZZ") = -1
+ "ZY-23-Y2".indexOf("Y") = 1
+
+
+|.lastIndexOf(search) |
+[#lastIndexOf]
+Searches the target string for the search string and returns the character position within the target string where it is last found, or -1 if not found. +
+
+[example]
+Test.lastIndexOf("-") +
+
+Return the last position of the hyphen character in the property _Test_. +
+
+ "23-ZZ-23".lastIndexOf("23") = 6
+ "ZZ-23".lastIndexOf("ZZ") = 0
+ "abcdefa".lastIndexOf("A") = -1
+
+|.matches(regex) |
+[#matches]
+Returns true if the target string matches a Regular Expression. +
+
+[example]
+Test.matches("bowler\|batsman") +
+
+Return true if the property _Test_ is either of the strings "bowler" or "batsman". +
+
+See the <<ExpressionRegular.adoc#top,Regular Expressions>> page for examples and more information.
+
+|.substring(start) |
+[#substring]
+Return the right-hand part of the string starting from character position _start_. +
+
+[example]
+Test.substring(1) +
+
+Strip off the first character from the value in the _Test_ property and return the rest. +
+
+ "abcdef".substring(2) = "cdef"
+ "abcdef".substring(5) = "f"
+
+|.substring(start, end) | Return the portion of the string starting from character position _start_ and ending immediately before character position _end_. +
+
+[example]
+Test.substring(1, 3) +
+
+Strip off the first character from the value in the _Test_ property and return the next 2 characters. +
+
+ "abcdef".substring(0,0) = ""
+ "abcdef".substring(0,1) = "a"
+ "abcdef".substring(0,2) = "ab"
+ "abcdef".substring(3,5) = "de"
+
+|.replace(old, new) |
+[#replace]
+Return a new string where all occurences in the target string of _old_ are replace by _new_. +
+
+[example]
+Test.replace(".", "-") +
+
+Return the string in the property _Test_ with all periods (.) replaced by hyphens (-). +
+
+ "abcabc".replace("a","X") = "XbcXbc"
+ "abcabc".replace("bca","1") = "a1bc"
+ "abcabc".replace("b","42") = "a42ca42c"
+
+|.trim() |
+[#trim]
+Remove spaces from the start and end of a string. +
+
+[example]
+UserEntry.trim() +
+
+Return the string in the property _UserEntry_ with any leading or trailing spaced removed. +
+
+ "abc".trim() = "abc"
+ " abc  ".trim() = "abc"
+ "  abc  def ".trim() = "abc  def"
+
+|.toUpperCase() |
+[#toUpperCase]
+Replace all lower case letters with their upper case equivalent. Does not affect non-letters. +
+
+[example]
+UserEntry.toUpperCase() +
+
+Return the string in the property _UserEntry_ with any lowercase letters converted to uppercase.+
+
+ "abc".toUpperCase() = "ABC"
+ " abc12DE[]".toUpperCase() = " ABC12DE[]"
+
+|.toLowerCase() |
+[#toLowerCase]
+Replace all upper case letters with their lower case equivalent. Does not affect non-letters. +
+
+[example]
+UserEntry.toLowerCase() +
+
+Return the string in the property _UserEntry_ with any lowercase letters converted to uppercase.+
+
+ "AbC".toLowerCase() = "abc"
+ " abc12DE[]".toLowerCase() = "abc12de[]"
+
+
+|.toString() |
+[#toString]
+Convert a number or a true/false value to a string that can be operated on by String functions. This is for advanced usage where you need to process a number as if it was a String. +
+
+[example]
+ANumber.toString() +
+
+Return the string equivalent of the number in proprety _ANumber_.
+
+ If x = 2, x.toString() = "2"
+ if x = false, x.toString = "false"
+
+|===

@@ -17,6 +17,7 @@
  */
 package VASSAL.configure;
 
+import VASSAL.build.AbstractBuildable;
 import VASSAL.build.module.properties.PropertyChangerConfigurer;
 import VASSAL.build.module.properties.PropertySetter;
 import VASSAL.counters.Decorator;
@@ -208,5 +209,21 @@ public class DynamicKeyCommandConfigurer extends Configurer {
     if (commandConfig != null) {
       commandConfig.requestFocus();
     }
+  }
+
+  @Override
+  public void setContext(AbstractBuildable context) {
+    super.setContext(context);
+    commandConfig.setContext(context);
+    keyConfig.setContext(context);
+    propChangeConfig.setContext(context);
+  }
+
+  @Override
+  public void setContextLevel(ContextLevel contextLevel) {
+    super.setContextLevel(contextLevel);
+    commandConfig.setContextLevel(contextLevel);
+    keyConfig.setContextLevel(contextLevel);
+    propChangeConfig.setContextLevel(contextLevel);
   }
 }

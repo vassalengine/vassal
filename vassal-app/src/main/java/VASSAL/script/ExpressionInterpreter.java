@@ -37,6 +37,8 @@ import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.script.expression.AuditTrail;
 import VASSAL.script.expression.Auditable;
+import VASSAL.script.expression.BeanShellExpression;
+import VASSAL.script.expression.Expression;
 import VASSAL.script.expression.ExpressionException;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.RecursionLimitException;
@@ -105,7 +107,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
   // source is not persistent; it should be set during evaluate() only
   protected PropertySource source;
-
+  protected AuditTrail currentAudit;
+  protected Auditable currentOwner;
   @Override
   public String getComponentTypeName() {
     return Resources.getString("Editor.ExpressionInterpreter.component_type");
@@ -201,7 +204,6 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
     // Read the Expression initialisation script into the top level namespace
     final URL ini = getClass().getResource(INIT_SCRIPT);
-    // logger.info("Attempting to load " + INIT_SCRIPT + " URI generated=" + ini); // No longer required
 
     try (InputStream is = ini.openStream();
          InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
@@ -261,6 +263,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       // Default to the GameModule to satisfy properties if no
       // GamePiece supplied.
       source = ps == null ? GameModule.getGameModule() : ps;
+      currentAudit = audit;
+      currentOwner = owner;
 
       setNameSpace(expressionNameSpace);
 
@@ -279,7 +283,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         }
         final String value = prop == null ? "" : prop.toString();
         if (audit != null) {
-          audit.addMessage(origName + "=" + (value == null ? "" : value));
+          audit.addMessage(" " + origName + "=" + (value == null ? "" : value));
         }
         if (value == null) {
           setVar(var, "");
@@ -320,11 +324,24 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
       final StringBuilder argList = new StringBuilder();
       for (final String var : stringVariables) {
+        String name = var;
+        final String origName = name;
+        if (name.length() > 2 && name.startsWith("$") && name.endsWith("$")) {
+          name = name.substring(1, name.length() - 1);
+        }
+        // Check for a property in the passed property Map, then check the source if not found
+        Object prop = properties == null ? null : properties.get(name);
+        if (prop == null) {
+          prop = (source == null) ? "" : localized ? source.getLocalizedProperty(name) : source.getProperty(name);
+        }
+        final String value = prop == null ? "" : prop.toString();
+        if (audit != null) {
+          audit.addMessage(" " + origName + "=" + (value == null ? "" : value));
+        }
         if (argList.length() > 0) {
           argList.append(',');
         }
-        final Object value = localized ? source.getLocalizedProperty(var) : source.getProperty(var);
-        argList.append('"').append(value == null ? "" : value.toString().replace("\"", "\\\"")).append('"');
+        argList.append('"').append(value == null ? "" : value.replace("\"", "\\\"")).append('"');
       }
 
       // Re-evaluate the pre-parsed expression now that the undefined variables have
@@ -400,83 +417,129 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * Callbacks from BeanShell Expressions to Vassal
    **/
 
-  public Object getProperty(String name) {
-    final Object value = source.getProperty(name);
+  public Object getProperty(Object name) {
+    final Object value = source.getProperty(name.toString());
     return value == null ? "" : wrap(value.toString());
   }
 
-  public Object getLocalizedProperty(String name) {
-    final Object value = source.getLocalizedProperty(name);
+  public Object getLocalizedProperty(Object name) {
+    final Object value = source.getLocalizedProperty(name.toString());
     return value == null ? "" : wrap(value.toString());
   }
 
   /**
    * getProperty minus the wrap
    */
-  public Object getString(String name) {
-    final Object value = source.getProperty(name);
+  public Object getString(Object name) {
+    final Object value = source.getProperty(name.toString());
     return value == null ? "" : value.toString();
   }
 
-  public Object getZoneProperty(String propertyName, String zoneName) {
+  public Object getZoneProperty(Object propertyName, Object zoneName) {
     if (source instanceof GamePiece) {
       final Map map = ((GamePiece) source).getMap();
       if (map != null) {
-        final Zone zone = map.findZone(zoneName);
+        final Zone zone = map.findZone(zoneName.toString());
         if (zone != null) {
-          return wrap((String) zone.getProperty(propertyName));
+          return wrap((String) zone.getProperty(propertyName.toString()));
         }
       }
     }
     return wrap("");
   }
 
-  public Object getZoneProperty(String propertyName, String zoneName, String mapName) {
-    final Map map = findVassalMap(mapName);
+  public Object getZoneProperty(Object propertyName, Object zoneName, Object mapName) {
+    final Map map = findVassalMap(mapName.toString());
     if (map != null) {
-      final Zone zone = map.findZone(zoneName);
+      final Zone zone = map.findZone(zoneName.toString());
       if (zone != null) {
-        return wrap((String) zone.getProperty(propertyName));
+        return wrap((String) zone.getProperty(propertyName.toString()));
       }
     }
     return wrap("");
   }
 
-  public Object getMapProperty(String propertyName, String mapName) {
-    final Map map = findVassalMap(mapName);
-    return map == null ? wrap("") : wrap((String) map.getProperty(propertyName));
+  public Object getMapProperty(Object propertyName, Object mapName) {
+    final Map map = findVassalMap(mapName.toString());
+    return map == null ? wrap("") : wrap((String) map.getProperty(propertyName.toString()));
   }
 
-  public Object getAttachmentProperty(String attachment, String property, String indexOrName, PropertySource ps) {
+  /**
+   * Callback for Beanshell getAttachProperty functions
+   *
+   * @param attachment              Attachment name
+   * @param property                Property name
+   * @param indexOrNameOrexpression An index number, a piece Basic Name or an Expression
+   * @param ps                      Source Piece
+   * @return                        Property value
+   */
+  public Object getAttachmentProperty(Object attachment, Object property, Object indexOrNameOrexpression, PropertySource ps) {
+    final String attach = attachment.toString();
+    final String prop = property.toString();
+
+    if (attach.isEmpty() || prop.isEmpty()) return "";
+
+    int index = -1;
+    String pieceName = "";
+    PieceFilter filter = null;
+
+    if (indexOrNameOrexpression instanceof Integer) {
+      index = (Integer) indexOrNameOrexpression;
+    }
+    else {
+      final String s = indexOrNameOrexpression.toString();
+      if (NumberUtils.isDigits(s)) {
+        index = Integer.parseInt(s);
+      }
+      else if (s.startsWith("{")) {
+        filter = createFilter(s, ps);
+      }
+      else {
+        pieceName = s;
+      }
+    }
+
+    return getAttachmentProperty(attach, prop, index, pieceName, filter, ps);
+  }
+
+  /**
+   * Internal implementation of all types of getAttachment Property
+   * NOTE: Only one of (index>0), !pieceName.isEmprty() or filter != null should be true
+   *
+   * @param attachment  Name of attachment
+   * @param property    Name of Property
+   * @param index       If > 0, then return the property from the index'th attached piece (starting at 1)
+   * @param pieceName   If not empty, then return the property from the first attached piece with this Basic Name
+   * @param filter      If not null, then return the property from the first piece that matches the expression
+   * @param ps          Source Piece
+   * @return            Property value
+   */
+  private Object getAttachmentProperty(String attachment, String property, Integer index, String pieceName, PieceFilter filter, PropertySource ps) {
     ps = translatePiece(ps);
 
-    final int index = NumberUtils.isParsable(indexOrName) ? NumberUtils.toInt(indexOrName) : -1;
-
     if (ps instanceof GamePiece) {
-      GamePiece p = Decorator.getOutermost((Decorator) ps);
-      while (p instanceof Decorator) {
-        if (p instanceof Attachment) {
-          final Attachment a = (Attachment) p;
-          if (a.getAttachName().equals(attachment)) {
-            if (index > 0) {
-              final GamePiece target = a.getAttachedPieceAt(index - 1);
-              if (target == null) return "";
+      final GamePiece p = Decorator.getOutermost((Decorator) ps);
+      for (final GamePiece gp : Decorator.getDecorators(p, Attachment.class)) {
+        final Attachment attach = (Attachment) gp;
+        if (attachment.equals(attach.getAttachName())) {
+
+          // Found the named attachment, handle the index case
+          if (index > 0) {
+            final GamePiece target = attach.getAttachedPieceAt(index - 1);
+            if (target == null) return "";
+            return target.getProperty(property);
+          }
+
+          //Search through the attachments, looking for a match on name or expression
+          for (final GamePiece target : attach.getAttachList()) {
+            if (!pieceName.isEmpty() && pieceName.equals(target.getProperty(BasicPiece.BASIC_NAME))) {
               return target.getProperty(property);
             }
-            else {
-              final String myName = (String)Decorator.getOutermost((Decorator)ps).getProperty(BasicPiece.BASIC_NAME);
-              if (myName != null) {
-                for (final GamePiece target : a.getAttachList()) {
-                  final String name = (String) target.getProperty(BasicPiece.BASIC_NAME);
-                  if (myName.equals(name)) {
-                    return target.getProperty(property);
-                  }
-                }
-              }
+            if (filter != null && filter.accept(target)) {
+              return target.getProperty(property);
             }
           }
         }
-        p = ((Decorator) p).getInner();
       }
     }
     return "";
@@ -511,16 +574,6 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     return 0;
   }
 
-  private static int propNonempty(Object prop) {
-    if (prop != null) {
-      final String val = prop.toString();
-      if (!"".equals(val)) {
-        return 1;
-      }
-    }
-    return 0;
-  }
-
   /**
    * SumStack(property) function
    * Total the value of the named property in all counters in the
@@ -530,9 +583,34 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * @param ps       GamePiece
    * @return total
    */
-  public Object sumStack(String property, PropertySource ps) {
+  public Object sumStack(Object property, PropertySource ps) {
     return sumStack(property, "", ps);
   }
+
+  /**
+   * Create a PieceFilter from an expression.
+   *
+   * @param expression  Beanshell Expression
+   * @param ps          Property Source
+   * @return            Generated filter
+   */
+  private PieceFilter createFilter(String expression, PropertySource ps, String comment) {
+    final String matchString = replaceDollarVariables(expression, ps);
+    return matchString == null || matchString.isEmpty() ? null : new PropertyExpression(unescape(matchString)).getFilter(ps, currentOwner, AuditTrail.create(ps, expression, comment));
+  }
+
+  private PieceFilter createFilter(String expression, PropertySource ps) {
+    return createFilter(expression, ps, "");
+  }
+
+  private PieceFilter createFilter(Object expression, PropertySource ps, String comment) {
+    return createFilter(expression.toString(), ps, comment);
+  }
+
+  private PieceFilter createFilter(Object expression, PropertySource ps) {
+    return createFilter(expression, ps, "");
+  }
+
 
   /**
    * SumStack(property, expression) function
@@ -544,10 +622,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * @param ps         GamePiece
    * @return total
    */
-  public Object sumStack(String property, String expression, PropertySource ps) {
-    final String matchString = replaceDollarVariables(expression, ps);
-    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(ps);
-    return sumStack(property, filter, ps);
+  public Object sumStack(Object property, Object expression, PropertySource ps) {
+    return sumStack(property.toString(), createFilter(expression, ps), ps);
   }
 
   private Object sumStack(String property, PieceFilter filter, PropertySource ps) {
@@ -558,17 +634,11 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       final GamePiece piece = (GamePiece) ps;
       final Stack s = ((GamePiece) ps).getParent();
       if (s == null) {
-        if (filter == null || filter.accept(piece)) {
-          final Object prop = ps.getProperty(property);
-          result += IntPropValue(prop);
-        }
+        result = updateTotal(result, piece, property, filter, true);
       }
       else {
         for (final GamePiece gamePiece : s.asList()) {
-          if (filter == null || filter.accept(gamePiece)) {
-            final Object prop = gamePiece.getProperty(property);
-            result += IntPropValue(prop);
-          }
+          result = updateTotal(result, gamePiece, property, filter, true);
         }
       }
     }
@@ -576,27 +646,25 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   /**
-   * CountStack(property) & CountStack(expression) function count the number of pieces in
+   * CountStack(property) and CountStack(expression) function count the number of pieces in
    * the same stack which have any non-blank value for the
    * specified property.
    *
-   * @param property Property Name
-   * @param ps       GamePiece
+   * @param propertyOrExpression Property Name or Expression
+   * @param ps                   GamePiece
    * @return total
    */
-  public Object countStack(String propertyOrExpression, PropertySource ps) {
-    if (propertyOrExpression != null && propertyOrExpression.trim().startsWith("{")) {
+  public Object countStack(Object propertyOrExpression, PropertySource ps) {
+    if (propertyOrExpression != null && propertyOrExpression.toString().trim().startsWith("{")) {
       return countStack("", propertyOrExpression, ps);
     }
     else {
-      return countStack(propertyOrExpression, (String) null, ps);
+      return countStack(propertyOrExpression.toString(), (PieceFilter) null, ps);
     }
   }
 
-  public Object countStack(String property, String expression, PropertySource ps) {
-    final String matchString = replaceDollarVariables(expression, ps);
-    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(ps);
-    return countStack(property, filter, ps);
+  public Object countStack(Object property, Object expression, PropertySource ps) {
+    return countStack(property.toString(), createFilter(expression, ps), ps);
   }
 
 
@@ -609,15 +677,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       final GamePiece piece = (GamePiece) ps;
       final Stack s = ((GamePiece) ps).getParent();
       if (s == null) {
-        if (filter == null || filter.accept(piece)) {
-          if ("".equals(property)) {
-            result++;
-          }
-          else {
-            final Object prop = ps.getProperty(property);
-            result += propNonempty(prop);
-          }
-        }
+        result = updateTotal(result, piece, property, filter, false);
       }
       else {
         if (filter == null && (property == null || property.isEmpty())) {
@@ -625,15 +685,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         }
         else {
           for (final GamePiece gamePiece: s.asList()) {
-            if (filter == null || filter.accept(gamePiece)) {
-              if (property == null || property.isEmpty()) {
-                result++;
-              }
-              else {
-                final Object prop = gamePiece.getProperty(property);
-                result += propNonempty(prop);
-              }
-            }
+            result = updateTotal(result, gamePiece, property, filter, false);
           }
         }
       }
@@ -650,27 +702,24 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * @param ps       GamePiece
    * @return total
    */
-  public Object maxAttachment(String attachment, String property, PropertySource ps) {
+  public Object maxAttachment(Object attachment, Object property, PropertySource ps) {
     int result = Integer.MIN_VALUE;
 
     ps = translatePiece(ps);
 
     if (ps instanceof GamePiece) {
-      GamePiece p = Decorator.getOutermost((Decorator)ps);
-      while (p instanceof Decorator) {
-        if (p instanceof Attachment) {
-          final Attachment a = (Attachment)p;
-          if (a.getAttachName().equals(attachment)) {
-            for (final GamePiece target : a.getAttachList()) {
-              final Object prop = target.getProperty(property);
-              final int value = IntPropValue(prop);
-              if (value > result) {
-                result = value;
-              }
+      final GamePiece p = Decorator.getOutermost((Decorator)ps);
+      for (final GamePiece decorator : Decorator.getDecorators(p, Attachment.class)) {
+        final Attachment a = (Attachment) decorator;
+        if (a.getAttachName().equals(attachment)) {
+          for (final GamePiece target : a.getAttachList()) {
+            final Object prop = target.getProperty(property);
+            final int value = IntPropValue(prop);
+            if (value > result) {
+              result = value;
             }
           }
         }
-        p = ((Decorator) p).getInner();
       }
     }
 
@@ -687,27 +736,24 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * @param ps       GamePiece
    * @return total
    */
-  public Object minAttachment(String attachment, String property, PropertySource ps) {
+  public Object minAttachment(Object attachment, Object property, PropertySource ps) {
     int result = Integer.MAX_VALUE;
 
     ps = translatePiece(ps);
 
     if (ps instanceof GamePiece) {
-      GamePiece p = Decorator.getOutermost((Decorator)ps);
-      while (p instanceof Decorator) {
-        if (p instanceof Attachment) {
-          final Attachment a = (Attachment)p;
-          if (a.getAttachName().equals(attachment)) {
-            for (final GamePiece target : a.getAttachList()) {
-              final Object prop = target.getProperty(property);
-              final int value = IntPropValue(prop);
-              if (value < result) {
-                result = value;
-              }
+      final GamePiece p = Decorator.getOutermost((Decorator)ps);
+      for (final GamePiece decorator : Decorator.getDecorators(p, Attachment.class)) {
+        final Attachment a = (Attachment) decorator;
+        if (a.getAttachName().equals(attachment)) {
+          for (final GamePiece target : a.getAttachList()) {
+            final Object prop = target.getProperty(property);
+            final int value = IntPropValue(prop);
+            if (value < result) {
+              result = value;
             }
           }
         }
-        p = ((Decorator) p).getInner();
       }
     }
 
@@ -716,115 +762,86 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
 
   /**
-   * SumAttachment(attachment, property) function
-   * Total the value of the named property in all pieces
-   * attached
-   *
-   * @param attachment Attachment Name
-   * @param property Property Name
-   * @param ps       GamePiece
-   * @return total
+   * SumAttach Beanshell function implementation
    */
-  public Object sumAttachment(String attachment, String property, PropertySource ps) {
+  public Object sumAttachment(Object attachment, Object property, PropertySource ps) {
+    return sumAttachment(attachment, property, "", ps);
+  }
+
+  public Object sumAttachment(Object attachment, Object property, Object expression, PropertySource ps) {
+    return sumAttachment(attachment.toString(), property.toString(), createFilter(expression, ps), ps);
+  }
+
+  private Object sumAttachment(String attachment, String property, PieceFilter filter, PropertySource ps) {
     int result = 0;
 
     ps = translatePiece(ps);
 
     if (ps instanceof GamePiece) {
-      GamePiece p = Decorator.getOutermost((Decorator)ps);
-      while (p instanceof Decorator) {
-        if (p instanceof Attachment) {
-          final Attachment a = (Attachment)p;
-          if (a.getAttachName().equals(attachment)) {
-            for (final GamePiece target : a.getAttachList()) {
-              final Object prop = target.getProperty(property);
-              result += IntPropValue(prop);
-            }
+      final GamePiece p = Decorator.getOutermost((Decorator)ps);
+      for (final GamePiece decorator : Decorator.getDecorators(p, Attachment.class)) {
+        final Attachment a = (Attachment) decorator;
+        if (a.getAttachName().equals(attachment)) {
+          for (final GamePiece target : a.getAttachList()) {
+            result = updateTotal(result, target, property, filter, true);
           }
         }
-        p = ((Decorator) p).getInner();
       }
     }
     return result;
   }
 
-
   /**
-   * CountAttachment(property) function count the number of pieces
-   * attached to this piece via a named Attachment trait that
-   * *contain* the specified property
-   *
-   * @param attachment Attachment Name
-   * @param property Property Name
-   * @param ps       GamePiece
-   * @return total
+   * CountAttach Beanshell function implementation
    */
-  public Object countAttachment(String attachment, String property, PropertySource ps) {
-    int result = 0;
 
+  public Object countAttachment(Object attachment, Object propertyOrExpression, PropertySource ps) {
+    if (propertyOrExpression != null && propertyOrExpression.toString().trim().startsWith("{")) {
+      return countAttachment(attachment, "", propertyOrExpression, ps);
+    }
+    else {
+      return countAttachment(attachment, propertyOrExpression.toString(), "", ps);
+    }
+  }
+
+  public Object countAttachment(Object attachment, Object property, Object expression, PropertySource ps) {
+    return countAttachment(attachment.toString(), property.toString(), createFilter(expression, ps), ps);
+  }
+
+  private Object countAttachment(String attachment, String property, PieceFilter filter, PropertySource ps) {
+    int result = 0;
     ps = translatePiece(ps);
 
     if (ps instanceof GamePiece) {
       for (final GamePiece target : Attachment.getAttachList((GamePiece) ps, attachment)) {
-        if ("".equals(property)) {
-          result++;
-        }
-        else {
-          final Object prop = target.getProperty(property);
-          result += propNonempty(prop);
-        }
-      }
-    }
-    return result;
-  }
-
-
-  /**
-   * CountAttachmentExpression(attachment, expression) function count the number of pieces
-   * attached to this piece via a named Attachment trait for which the expression is true
-   *
-   * @param attachment Attachment Name e.g. "MyTurrets"
-   * @param expression Expression e.g. " { Ammo > 2 } "
-   * @param ps       GamePiece
-   * @return total
-   */
-  public Object countAttachmentExpression(String attachment, String expression, PropertySource ps) {
-    int result = 0;
-
-    ps = translatePiece(ps);
-
-    if (ps instanceof GamePiece) {
-      for (final GamePiece target : Attachment.getAttachList((GamePiece) ps, attachment)) {
-        // We wait to run the beanshell until we've found a matching attachment, since there should properly speaking only be precisely 0 or 1 matches.
-        final String matchString = replaceDollarVariables(expression, ps);
-        final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(ps);
-        if (filter == null || filter.accept(target)) {
-          result++;
-        }
+        result = updateTotal(result, target, property, filter, false);
       }
     }
 
     return result;
   }
-
-
   /**
    * SumMat(property) function
    * Total the value of the named property in all counters
    * among the Mat-and-MatCargo grouping of the current piece
    *
-   * @param property Property Name
-   * @param ps       GamePiece
+   * @param propertyOrExpression Property Name
+   * @param ps                   GamePiece
    * @return total
    */
-  public Object sumMat(String property, PropertySource ps) {
-    return sumMat(property, (String) null, ps);
+  public Object sumMat(Object propertyOrExpression, PropertySource ps) {
+    final String s = propertyOrExpression.toString();
+    if (s.startsWith("{")) {
+      return sumMat("", propertyOrExpression, ps);
+    }
+    else {
+      return sumMat(propertyOrExpression.toString(), (PieceFilter) null, ps);
+    }
   }
 
-  public Object sumMat(String property, String expression, PropertySource ps) {
-    final String matchString = replaceDollarVariables((String) expression, ps);
-    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(ps);
-    return sumMat(property, filter, ps);
+  public Object sumMat(Object property, Object expression, PropertySource ps) {
+    final PieceFilter filter = createFilter(expression, ps);
+    return sumMat(property.toString(), filter, ps);
   }
 
   private Object sumMat(String property, PieceFilter filter, PropertySource ps) {
@@ -853,22 +870,14 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       if (mat != null) {
         mat = Decorator.getOutermost(mat);
         final Mat actualMat = (Mat) Decorator.getDecorator(mat, Mat.class);
-
-        if (filter == null || filter.accept(mat)) {
-          final Object prop = mat.getProperty(property);
-          result += IntPropValue(prop);
-        }
+        result = updateTotal(result, actualMat, property, filter, true);
 
         for (final GamePiece cargo : actualMat.getContents()) {
-          if (filter == null || filter.accept(cargo)) {
-            final Object prop = Decorator.getOutermost(cargo).getProperty(property);
-            result += IntPropValue(prop);
-          }
+          result = updateTotal(result, cargo, property, filter, true);
         }
       }
       else {
-        final Object prop = ps.getProperty(property);
-        result += IntPropValue(prop);
+        result = updateTotal(result, (GamePiece) ps, property, filter, true);
       }
     }
     return result;
@@ -878,23 +887,26 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * Return the total number of counters with a non-blank value for the specified property
    * among the Mat-and-MatCargo grouping of the current piece
    *
-   * @param property Property Name
-   * @param ps       GamePiece
+   * @param propertyOrExpression Property Name
+   * @param ps                   GamePiece
    * @return total
    */
-  public Object countMat(String propertyOrExpression, PropertySource ps) {
-    if (propertyOrExpression != null && propertyOrExpression.trim().startsWith("{")) {
+  public Object countMat(Object propertyOrExpression, PropertySource ps) {
+    if (propertyOrExpression != null && propertyOrExpression.toString().trim().startsWith("{")) {
       return countMat("", propertyOrExpression, ps);
     }
     else {
-      return countMat(propertyOrExpression, (String) null, ps);
+      return countMat(propertyOrExpression.toString(), (PieceFilter) null, ps);
     }
   }
 
-  public Object countMat(String property, String expression, PropertySource ps) {
-    final String matchString = replaceDollarVariables(expression, ps);
-    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(ps);
-    return countMat(property, filter, ps);
+  public Object countMat(PropertySource ps) {
+    return countMat("", null, ps);
+  }
+
+  public Object countMat(Object property, Object expression, PropertySource ps) {
+    final PieceFilter filter = createFilter(expression, ps);
+    return countMat(property.toString(), filter, ps);
   }
 
   private Object countMat(String property, PieceFilter filter, PropertySource ps) {
@@ -923,51 +935,15 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       if (mat != null) {
         mat = Decorator.getOutermost(mat);
         final Mat actualMat = (Mat) Decorator.getDecorator(mat, Mat.class);
+        result = updateTotal(result, actualMat, property, filter, false);
 
-        if (filter != null) {
-          if (filter.accept(mat)) {
-            if (!property.isBlank()) {
-              result += propNonempty(mat.getProperty(property));
-            }
-            else {
-              result += 1;
-            }
-          }
-        }
-        else {
-          result += propNonempty(mat.getProperty(property));
-        }
 
         for (final GamePiece cargo : actualMat.getContents()) {
-          if (filter != null) {
-            if (filter.accept(mat)) {
-              if (!property.isBlank()) {
-                result += propNonempty(Decorator.getOutermost(cargo).getProperty(property));
-              }
-              else {
-                result += 1;
-              }
-            }
-          }
-          else {
-            result += propNonempty(Decorator.getOutermost(cargo).getProperty(property));
-          }
+          result = updateTotal(result, cargo, property, filter, false);
         }
       }
       else {
-        if (filter != null) {
-          if (filter.accept((GamePiece) ps)) {
-            if (!property.isBlank()) {
-              result += propNonempty(Decorator.getOutermost((GamePiece) ps).getProperty(property));
-            }
-            else {
-              result += 1;
-            }
-          }
-        }
-        else {
-          result += propNonempty(ps.getProperty(property));
-        }
+        result = updateTotal(result, (GamePiece) ps, property, filter, false);
       }
     }
 
@@ -983,7 +959,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * @param ps       GamePiece
    * @return total
    */
-  public Object sumLocation(String property, PropertySource ps) {
+  public Object sumLocation(Object property, PropertySource ps) {
     return sumLocation(property, "", ps);
   }
 
@@ -997,14 +973,14 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * @param ps         GamePiece Source
    * @return total
    */
-  public Object sumLocation(String property, String expression, PropertySource ps) {
+  public Object sumLocation(Object property, Object expression, PropertySource ps) {
 
     if (ps instanceof GamePiece) {
       final GamePiece p = (GamePiece) ps;
       final Map m = p.getMap();
       if (m != null) {
         final String here = m.locationName(p.getPosition());
-        return sumMapLocation(property, here, m.getConfigureName(), expression, ps);
+        return sumLocation(property, here, m.getConfigureName(), expression, ps);
       }
     }
 
@@ -1022,8 +998,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * @param ps         GamePiece source
    * @return total
    */
-  public Object sumMapLocation(String property, String location, String map, PropertySource ps) {
-    return sumMapLocation(property, location, map, null, ps);
+  public Object sumLocation(Object property, Object location, Object map, PropertySource ps) {
+    return sumLocation(property, location, map, "", ps);
   }
 
   /**
@@ -1039,15 +1015,14 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * @return total
    */
 
-  public Object sumMapLocation(String property, String location, String map, String expression, PropertySource ps) {
+  public Object sumLocation(Object property, Object location, Object map, Object expression, PropertySource ps) {
 
     ps = translatePiece(ps);
 
-    final String matchString = replaceDollarVariables((String) expression, ps);
-    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter((PropertySource) ps);
-    final Map targetMap = findVassalMap(map);
+    final PieceFilter filter = createFilter(expression, ps, "SumLocation");
+    final Map targetMap = findVassalMap(map.toString());
 
-    return targetMap == null ? 0 : sumLocation(property, location, targetMap, filter);
+    return targetMap == null ? 0 : sumLocation(property.toString(), location.toString(), targetMap, filter);
   }
 
   /**
@@ -1064,16 +1039,13 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
     // Ask IndexManager for list of pieces on that map at that location. Stacks are not returned by the IM.
     for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(map, BasicPiece.LOCATION_NAME, locationName)) {
-      final Object propertyValue = piece.getProperty(property);
-      if (filter == null || filter.accept(piece)) {
-        result += IntPropValue(propertyValue);
-      }
+      result = updateTotal(result, piece, property, filter, true);
     }
     return result;
   }
 
   /**
-   * CountLocation() function.
+   * BeanShell CountLocation implementation
    * Return count of pieces in the same location as the current piece
    * @return  Piece Count
    */
@@ -1081,30 +1053,26 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     return countLocation("", ps);
   }
 
-  /**
-   * CountLocation(property) and CountLocation(expression) functions.
-   * Return count of pieces in the same location as the current piece that have a non-nlank value for a property or that match an expression
-   * @param   propertyOrExpression  Property Name or Match Expression
-   * @return  Piece Count
-   */
-  public Object countLocation(String propertyOrExpression, PropertySource ps) {
-    if (propertyOrExpression != null && propertyOrExpression.trim().startsWith("{")) {
-      return countLocation(null, propertyOrExpression, ps);
+
+  public Object countLocation(Object propertyOrExpression, PropertySource ps) {
+    if (propertyOrExpression != null && propertyOrExpression.toString().trim().startsWith("{")) {
+      return countCurrentLocation("", propertyOrExpression, ps);
     }
     else {
-      return countLocation(propertyOrExpression, null, ps);
+      return countCurrentLocation(propertyOrExpression, "", ps);
     }
   }
 
-  /**
-   * CountLocation(property, expression) functions.
-   * Return count of pieces in the same location as the current piece that have a non-nlank value for a property and that match an expression
-   * @param   property      Property Name
-   * @param   expression    Match Expression
-   * @return  Piece Count
-   */
+  public Object countLocation(Object propertyOrLocation, Object expressionOrMap, PropertySource ps) {
+    if (expressionOrMap != null && expressionOrMap.toString().trim().startsWith("{")) {
+      return countCurrentLocation(propertyOrLocation, expressionOrMap,  ps);
+    }
+    else {
+      return countMapLocation(propertyOrLocation, expressionOrMap, "", ps);
+    }
+  }
 
-  public Object countLocation(String property, String expression, PropertySource ps) {
+  private Object countCurrentLocation(Object property, Object expression, PropertySource ps) {
     if (ps instanceof GamePiece) {
       final GamePiece p = (GamePiece) ps;
       final Map m = p.getMap();
@@ -1116,35 +1084,30 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     return 0;
   }
 
-  public Object countMapLocation(String locationName, String mapName, PropertySource ps) {
-    return countMapLocation(locationName, mapName, null, ps);
-  }
-
-  public Object countMapLocation(String locationName, String mapName, String propertyOrExpression, PropertySource ps) {
-    if (propertyOrExpression != null && propertyOrExpression.trim().startsWith("{")) {
-      return countMapLocation(locationName, mapName, null, propertyOrExpression, ps);
+  public Object countMapLocation(Object locationName, Object mapName, Object propertyOrExpression, PropertySource ps) {
+    if (propertyOrExpression != null && propertyOrExpression.toString().trim().startsWith("{")) {
+      return countMapLocation(locationName, mapName, "", propertyOrExpression, ps);
     }
     else {
       return countMapLocation(locationName, mapName, propertyOrExpression, "", ps);
     }
   }
 
-  public Object countMapLocation(String locationName, String mapName, String property, String expression, PropertySource ps) {
+  public Object countMapLocation(Object locationName, Object mapName, Object property, Object expression, PropertySource ps) {
     ps = translatePiece(ps);
 
-    final String matchString = replaceDollarVariables(expression, ps);
-    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter((PropertySource) ps);
-    final Map targetMap = findVassalMap(mapName);
+    final PieceFilter filter = createFilter(expression, ps);
+    final Map targetMap = findVassalMap(mapName.toString());
 
     String propValue;
-    if (property == null || property.isEmpty()) {
+    if (property == null || property.toString().isEmpty()) {
       propValue = null;
     }
     else {
-      propValue = property;
+      propValue = property.toString();
     }
 
-    return targetMap == null ? 0 : countLocation(locationName, targetMap, propValue, filter);
+    return targetMap == null ? 0 : countLocation(locationName.toString(), targetMap, propValue, filter);
   }
 
   /**
@@ -1155,24 +1118,12 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * @param filter       Option filter implementing Property Match Expression
    * @return             Count of pieces
    */
-  private Object countLocation(String locationName, Map map, String property, PieceFilter filter) {
+  private Object countLocation(Object locationName, Map map, String property, PieceFilter filter) {
     int result = 0;
 
     // Ask IndexManager for list of pieces on that map at that location. Stacks are not returned by the IM.
-    for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(map, BasicPiece.LOCATION_NAME, locationName)) {
-      // If a property was supplied to be checked and has an empty value, then skip this piece in the count.
-      // If a property was not supplied (propValue == null), then the piece is counted.
-      if (property != null && !property.isEmpty()) {
-        final String propValue = (String) piece.getProperty(property);
-        if (propNonempty(propValue) == 0) {
-          continue;
-        }
-      }
-
-      // Add 1 to count if the no filter was supplied, or the piece passed the filter.
-      if (filter == null || filter.accept(piece)) {
-        result += 1;
-      }
+    for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(map, BasicPiece.LOCATION_NAME, locationName.toString())) {
+      result = updateTotal(result, piece, property, filter, false);
     }
 
     return result;
@@ -1180,79 +1131,34 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
 
   /**
-   * SumZone(property) function
-   * Total the value of the named property in all counters in the
-   * same zone as the specified piece.
-   * <p>
-   * @param property Property Name
-   * @param ps       GamePiece
-   * @return total
-   */
-  public Object sumZone(String property, PropertySource ps) {
-    return sumZone(property, "", ps);
-  }
-
-  /**
-   * SumZone(property, expression) function
-   * Total the value of the named property in all counters in the
-   * same zone as the specified piece that meet the supplied expression.
-   * <p>
-   * @param property   Property Name
-   * @param expression Expression
-   * @param ps         GamePiece Source
-   * @return total
-   */
-  public Object sumZone(String property, String expression, PropertySource ps) {
-
-    if (ps instanceof GamePiece) {
-      final GamePiece p = (GamePiece) ps;
-      final Map m = p.getMap();
-      if (m != null) {
-        final String zone = (String) p.getProperty(BasicPiece.CURRENT_ZONE);
-        return sumMapZone(property, zone, m.getConfigureName(), expression, ps);
-      }
-    }
-
-    return 0;
-  }
-
-  /**
-   * SumMapZone(property, location, map) function
-   * Total the value of the named property in all counters in the
-   * specified map and zone
-   * <p>
-   * @param property   Property Name
-   * @param zoneName   Zone Name
-   * @param map        Map Name
-   * @param ps         GamePiece source
-   * @return total
-   */
-  public Object sumMapZone(String property, String zoneName, String map, PropertySource ps) {
-    return sumMapZone(property, zoneName, map, null, ps);
-  }
-
-  /**
-   * SumMapZone(property, location, map, expression) function
+   * SumZone(property, location, map, expression) function
    * Total the value of the named property in all counters in the
    * specified map and zone that match the supplied expression
    * <p>
    * @param property   Property Name
-   * @param zoneName   Zone Name
+   * @param zone       Zone Name
    * @param map        Map Name
    * @param expression Expression
    * @param ps         GamePiece source
    * @return total
    */
 
-  public Object sumMapZone(String property, String zoneName, String map, String expression, PropertySource ps) {
-
+  public Object sumZone(Object property, Object zone, Object map, Object expression, PropertySource ps) {
     ps = translatePiece(ps);
 
-    final String matchString = replaceDollarVariables((String) expression, ps);
-    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter((PropertySource) ps);
-    final Map targetMap = findVassalMap(map);
+    String mapName = map == null ? "" : map.toString();
+    String zoneName = zone == null ? "" : zone.toString();
 
-    return targetMap == null ? 0 : sumZone(property, zoneName, targetMap, filter);
+    // GamePiece versions of SumZone may not have provided a map or zone, use the ones where the source piece is.
+    if (ps instanceof GamePiece && mapName.isEmpty()) {
+      mapName = (String) ps.getProperty(BasicPiece.CURRENT_MAP);
+      zoneName = (String) ps.getProperty(BasicPiece.CURRENT_ZONE);
+    }
+
+    final PieceFilter filter = createFilter(expression, ps);
+    final Map targetMap = findVassalMap(map.toString());
+
+    return targetMap == null ? 0 : sumZone(property.toString(), zoneName, targetMap, filter);
   }
 
   /**
@@ -1269,10 +1175,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
     // Ask IndexManager for list of pieces on that map at that zone. Stacks are not returned by the IM.
     for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(map, BasicPiece.CURRENT_ZONE, zoneName)) {
-      final Object propertyValue = piece.getProperty(property);
-      if (filter == null || filter.accept(piece)) {
-        result += IntPropValue(propertyValue);
-      }
+      result = updateTotal(result, piece, property, filter, true);
     }
     return result;
   }
@@ -1283,106 +1186,64 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * @return  Piece Count
    */
   public Object countZone(PropertySource ps) {
-    return countZone("", ps);
+    return countCurrentZone("", "", ps);
   }
 
-  /**
-   * CountZone(property) and CountZone(expression) functions.
-   * Return count of pieces in the same zone as the current piece that have a non-blank value for a property or that match an expression
-   * @param   propertyOrExpression  Property Name or Match Expression
-   * @return  Piece Count
-   */
-  public Object countZone(String propertyOrExpression, PropertySource ps) {
-    if (propertyOrExpression != null && propertyOrExpression.trim().startsWith("{")) {
-      return countZone(null, propertyOrExpression, ps);
+
+  public Object countZone(Object propertyOrExpression, PropertySource ps) {
+    if (propertyOrExpression != null && propertyOrExpression.toString().trim().startsWith("{")) {
+      return countCurrentZone("", propertyOrExpression, ps);
     }
     else {
-      return countZone(propertyOrExpression, null, ps);
+      return countCurrentZone(propertyOrExpression, "", ps);
     }
   }
 
-  /**
-   * CountLocation(zone, expression) function
-   * Return count of pieces in the same zome as the current piece that have a non-blank value for a property and that match an expression
-   * @param   property      property name
-   * @param   expression    match expression
-   * @return  Piece Count
-   */
+  public Object countZone(Object propertyOrZone, Object expressionOrMap, PropertySource ps) {
+    if (expressionOrMap != null && expressionOrMap.toString().trim().startsWith("{")) {
+      return countCurrentZone(propertyOrZone, expressionOrMap,  ps);
+    }
+    else {
+      return countZone(propertyOrZone, expressionOrMap, "", ps);
+    }
+  }
 
-  public Object countZone(String property, String expression, PropertySource ps) {
+  public Object countCurrentZone(Object propertyName, Object expression, PropertySource ps) {
     if (ps instanceof GamePiece) {
-      final GamePiece p = (GamePiece) ps;
-      final Map m = p.getMap();
-      if (m != null) {
-        final String here = (String) p.getProperty(BasicPiece.CURRENT_ZONE);
-        return countMapZone(here, m.getConfigureName(), property, expression, ps);
-      }
+      final String mapName = (String) ps.getProperty(BasicPiece.CURRENT_MAP);
+      final String zoneName = (String) ps.getProperty(BasicPiece.CURRENT_ZONE);
+      return countZone(zoneName, mapName, propertyName, expression, ps);
     }
     return 0;
   }
 
-  /**
-   * CountMapZone(Zone, Map) function
-   * Return the count of pieces in the specified Zone/Map
-   *
-   * @param zoneName  Target Zone Name
-   * @param mapName   Target Map Name
-   * @param ps        Source Piece
-   * @return          Count
-   */
-  public Object countMapZone(String zoneName, String mapName, PropertySource ps) {
-    return countMapZone(zoneName, mapName, null, ps);
-  }
 
-  /**
-   * CountMapZone(Zone, Map, property) and CountMapZone(Zone, Map, expression) function
-   * Return the count of pieces in the specified Zone/Map that match the supplied expression OR
-   * have a non-blank value for the supplied property name
-   *
-   * @param zoneName              Target Zone Name
-   * @param mapName               Target Map Name
-   * @param propertyOrExpression  A Property Name or a Beanshell expression
-   * @param ps                    Source Piece
-   * @return                      Count
-   */
-  public Object countMapZone(String zoneName, String mapName, String propertyOrExpression, PropertySource ps) {
-    if (propertyOrExpression != null && propertyOrExpression.trim().startsWith("{")) {
-      return countMapZone(zoneName, mapName, null, propertyOrExpression, ps);
+  public Object countZone(Object zoneName, Object mapName, Object propertyOrExpression, PropertySource ps) {
+    if (propertyOrExpression != null && propertyOrExpression.toString().trim().startsWith("{")) {
+      return countZone(zoneName, mapName, "", propertyOrExpression, ps);
     }
     else {
-      return countMapZone(zoneName, mapName, propertyOrExpression, "", ps);
+      return countZone(zoneName, mapName, propertyOrExpression, "", ps);
     }
   }
 
-  /**
-   * CountMapZone(Zone, Map, property, expression) function
-   * Return the count of pieces in the specified Zone/Map that match the supplied expression AND
-   * have a non-blank value for the supplied property name
-   *
-   * @param zoneName              Target Zone Name
-   * @param mapName               Target Map Name
-   * @param property              A Property Name
-   * @param expression            A Beanshell expression
-   * @param ps                    Source Piece
-   * @return                      Count
-   */
-  public Object countMapZone(String zoneName, String mapName, String property, String expression, PropertySource ps) {
+  public Object countZone(Object zoneName, Object mapName, Object property, Object expression, PropertySource ps) {
     ps = translatePiece(ps);
 
-    final String matchString = replaceDollarVariables(expression, ps);
-    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter((PropertySource) ps);
-    final Map targetMap = findVassalMap(mapName);
+    final PieceFilter filter = createFilter(expression, ps);
+    final Map targetMap = findVassalMap(mapName.toString());
 
     String propValue;
-    if (property == null || property.isEmpty()) {
+    if (property == null || property.toString().isEmpty()) {
       propValue = null;
     }
     else {
-      propValue = property;
+      propValue = property.toString();
     }
 
-    return targetMap == null ? 0 : countZone(zoneName, targetMap, propValue, filter);
+    return targetMap == null ? 0 : countZone(zoneName.toString(), targetMap, propValue, filter);
   }
+
 
   /**
    * Lowest-level CountZone function called by all other versions
@@ -1397,18 +1258,168 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
     // Ask IndexManager for list of pieces on that map at that location. Stacks are not returned by the IM.
     for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(map, BasicPiece.CURRENT_ZONE, zoneName)) {
-      // If a property was supplied to be checked and has an empty value, then skip this piece in the count.
-      // If a property was not supplied (propValue == null), then the piece is counted.
-      if (property != null && !property.isEmpty()) {
-        final String propValue = (String) piece.getProperty(property);
-        if (propNonempty(propValue) == 0) {
-          continue;
+      result = updateTotal(result, piece, property, filter, false);
+    }
+
+    return result;
+  }
+
+
+
+
+  // 1 Argument form of SumMap
+  public Object sumMap(Object property, PropertySource ps) {
+    return sumMap(property, "", "", ps);
+  }
+
+  // 2 Argument form of SumMap
+  public Object sumMap(Object property, Object mapOrExpression, PropertySource ps) {
+    if (mapOrExpression != null && mapOrExpression.toString().trim().startsWith("{")) {
+      return sumMap(property, "", mapOrExpression, ps);
+    }
+    else {
+      return sumMap(property, mapOrExpression, "", ps);
+    }
+  }
+
+  // 3 Argument form of SumMap
+  public Object sumMap(Object property, Object map, Object expression, PropertySource ps) {
+    ps = translatePiece(ps);
+
+    final String propertyName = property == null ? "" : property.toString();
+    if (propertyName.isEmpty()) {
+      return 0;
+    }
+
+    String mapName = map == null ? "" : map.toString();
+
+    // GamePiece versions of SumZone may not have provided a map or zone, use the ones where the source piece is.
+    if (ps instanceof GamePiece && mapName.isEmpty()) {
+      mapName = (String) ps.getProperty(BasicPiece.CURRENT_MAP);
+    }
+
+    final PieceFilter filter = createFilter(expression, ps);
+    final Map targetMap = findVassalMap(mapName);
+
+    return sumMap(propertyName, targetMap, filter);
+  }
+
+  /**
+   * Lowest-level SumMap function called by all other versions
+   * @param propertyName Property to sum
+   * @param map          Map to search on
+   * @param propValue    null if no property was supplied, or value of supplied property
+   * @param filter       Option filter implementing Property Match Expression
+   * @return             Count of pieces
+   */
+  private Object sumMap(String propertyName, Map map, PieceFilter filter) {
+    int result = 0;
+
+    if (map != null) {
+      for (final GamePiece piece : map.getAllPieces()) {
+        if (piece instanceof Stack) {
+          for (final GamePiece p : ((Stack) piece).asList()) {
+            result = updateTotal(result, p, propertyName, filter, true);
+          }
+        }
+        else {
+          result = updateTotal(result, piece, propertyName, filter, true);
         }
       }
+    }
 
-      // Add 1 to count if the no filter was supplied, or the piece passed the filter.
-      if (filter == null || filter.accept(piece)) {
-        result += 1;
+    return result;
+  }
+
+
+  // 0 Arg version of CountMap
+  public Object countMap(PropertySource ps) {
+    return countMap("", "", "", ps);
+  }
+  // 1 Arg version of CountMap
+  public Object countMap(Object propertyOrExpressionOrMap, PropertySource ps) {
+    if (propertyOrExpressionOrMap != null && propertyOrExpressionOrMap.toString().trim().startsWith("{")) {
+      return countMap("", "", propertyOrExpressionOrMap, ps);
+    }
+    final Map map = findVassalMap((String) propertyOrExpressionOrMap);
+    if (map == null) {
+      return countMap("", propertyOrExpressionOrMap, "", ps);
+    }
+    else {
+      return countMap(propertyOrExpressionOrMap, "", "", ps);
+    }
+  }
+
+  // 2 Arg version of CountMap
+  public Object countMap(Object propertyOrMap, Object expressionOrProperty, PropertySource ps) {
+    Object map = null;
+    Object property = null;
+    Object expression = null;
+
+    if (expressionOrProperty != null && expressionOrProperty.toString().trim().startsWith("{")) {
+      // 2nd arg is expression, must be (map, expr) or (prop, expr)
+      expression = expressionOrProperty;
+
+      final Map targetMap = findVassalMap((String) propertyOrMap);
+      if (targetMap == null) {
+        property = propertyOrMap;
+      }
+      else {
+        map = propertyOrMap;
+      }
+    }
+    else {
+      // 2nd arg not an expression, must be (map, property)
+      map = propertyOrMap;
+      property = expressionOrProperty;
+    }
+
+    return countMap(map, property, expression, ps);
+  }
+
+
+  // 3 Arg version of CountMap
+  public Object countMap(Object map, Object property, Object expression, PropertySource ps) {
+
+    final String mapName = map == null ? "" : map.toString();
+    final String propertyName = property == null ? "" : property.toString();
+    Map targetMap = null;
+
+    // GamePiece versions of SumZone may not have provided a map or zone, use the ones where the source piece is.
+    if (ps instanceof GamePiece && mapName.isEmpty()) {
+      targetMap = ((GamePiece) ps).getMap();
+    }
+    else {
+      targetMap = findVassalMap(mapName);
+    }
+
+
+    final PieceFilter filter = createFilter(expression, ps);
+
+    return countMap(targetMap, propertyName, filter);
+  }
+
+  /**
+   * Lowest-level CountMap function called by all other versions
+   * @param propertyName Property to sum
+   * @param map          Map to search on
+   * @param propValue    null if no property was supplied, or value of supplied property
+   * @param filter       Option filter implementing Property Match Expression
+   * @return             Count of pieces
+   */
+  private Object countMap(Map map, String propertyName, PieceFilter filter) {
+    int result = 0;
+
+    if (map != null) {
+      for (final GamePiece piece : map.getAllPieces()) {
+        if (piece instanceof Stack) {
+          for (final GamePiece p : ((Stack) piece).asList()) {
+            result = updateTotal(result, p, propertyName, filter, false);
+          }
+        }
+        else {
+          result = updateTotal(result, piece, propertyName, filter, false);
+        }
       }
     }
 
@@ -1419,21 +1430,21 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * Implementation of Range functions
    */
 
-  public int rangeInPixels(String attachmentName, PropertySource ps) {
-    return rangeAttach(attachmentName, ps, true);
+
+  public int rangeAttach(Object attachmentName, Object expression, boolean asPixels, PropertySource ps) {
+    if (!(attachmentName instanceof String)) return 0;
+    if (!(expression instanceof String)) return 0;
+    final PieceFilter filter = createFilter((String) expression, ps);
+    return rangeAttach((String) attachmentName, filter, asPixels, ps);
   }
 
-  public int rangeInCells(String attachmentName, PropertySource ps) {
-    return rangeAttach(attachmentName, ps, false);
-  }
-
-  private int rangeAttach(String attachmentName, PropertySource ps, boolean asPixels) {
+  private int rangeAttach(String attachmentName, PieceFilter filter, boolean asPixels,  PropertySource ps) {
     if (ps instanceof GamePiece) {
       final Map map = ((GamePiece) ps).getMap();
       final Point from = ((GamePiece) ps).getPosition();
       for (final GamePiece target : Attachment.getAttachList((GamePiece) ps, attachmentName)) {
         // Act on the first attached piece on the same Map that is not the source piece (in case of self-attachments)
-        if (target != ps) {
+        if (target != ps && (filter == null || filter.accept(target))) {
           final Map toMap = target.getMap();
           final Point to = target.getPosition();
           // Pieces must be on the same map
@@ -1471,18 +1482,18 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     return rangeMap(x1, y1, x2, y2, (String) ps.getProperty(BasicPiece.CURRENT_MAP), false);
   }
 
-  public int rangeInPixels(Object x1, Object y1, Object x2, Object y2, String mapName, PropertySource ps) {
+  public int rangeInPixels(Object x1, Object y1, Object x2, Object y2, Object mapName, PropertySource ps) {
     return rangeMap(x1, y1, x2, y2, mapName, true);
   }
 
-  public int rangeInCells(Object x1, Object y1, Object x2, Object y2, String mapName, PropertySource ps) {
+  public int rangeInCells(Object x1, Object y1, Object x2, Object y2, Object mapName, PropertySource ps) {
     return rangeMap(x1, y1, x2, y2, mapName, false);
   }
 
-  private int rangeMap(Object x1, Object y1, Object x2, Object y2, String mapName, boolean asPixels) {
+  private int rangeMap(Object x1, Object y1, Object x2, Object y2, Object mapName, boolean asPixels) {
     final Point from = new Point(IntPropValue(x1), IntPropValue(y1));
     final Point to = new Point(IntPropValue(x2), IntPropValue(y2));
-    final Map map = Map.getMapById(mapName);
+    final Map map = Map.getMapById(mapName.toString());
     return range(from, to, map, asPixels);
   }
 
@@ -1500,6 +1511,138 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     // Otherwise ask the grid at the from point to calculate the range as it sees fit.
     // NOTE: the from and to points may not be on the same grid (in the case of a zoned grid) so range(from, to) is not necessarily equal to range(to, from)
     return map.findBoard(from).getGrid().range(from, to);
+  }
+
+  /**
+   * Implementation of all flavours of SumRange and SumRangePx functions
+   *
+   * @param propertyName  Property name to sum
+   * @param expression    Optional expression to select targets
+   * @param minRange      minimum Range
+   * @param maxRange      maximum range
+   * @param asPixels      true to force range check to be pixels
+   * @param ps            Source piece
+   * @return              Sum of properties
+   */
+  public Object sumRange(Object propertyName, Object expression, Object minRange, Object maxRange, Boolean asPixels, PropertySource ps) {
+    final String property = propertyName == null ? null : propertyName.toString();
+    return sumOrCountRange(property, expression, minRange, maxRange, asPixels, true, ps);
+  }
+
+  /**
+   * Implementation of all flavours of CountRange and CounrRangePx functions
+   *
+   * @param propertyOrExpression  Property name to sum OR Expression if no property supplied
+   * @param expression            Optional expression to select targets
+   * @param minRange              minimum Range
+   * @param maxRange              maximum range
+   * @param asPixels              true to force range check to be pixels
+   * @param ps                    Source piece
+   * @return                      Count of matching pieces
+   */
+  public Object countRange(Object propertyOrExpression, Object expression, Object minRange, Object maxRange, Boolean asPixels, PropertySource ps) {
+    String prop = propertyOrExpression.toString();
+    String expr = expression.toString();
+
+    // Check if an Expression was supplied in the prop argument.
+    if (prop.startsWith("{")) {
+      expr = prop;
+      prop = "";
+    }
+
+    return sumOrCountRange(prop, expr, minRange, maxRange, asPixels, false, ps);
+  }
+
+  /**
+   * Internal function to process all ranged Sum and Count functions
+   * @param propertyName  For Sum, name of property to be Summed. For count, Only count target piece if it has a non-blank value for this property.
+   * @param expression    Selection expression
+   * @param minRange      Minimum range to check
+   * @param maxRange      Maximum range to check
+   * @param asPixels      True to use the min/max range as pixels. False to use as cells.
+   * @param doSum         True to Sum, false to Count
+   * @param ps            The initiating piece
+   * @return              Sum or Count
+   */
+  private Object sumOrCountRange(String propertyName, Object expression, Object minRange, Object maxRange, boolean asPixels, boolean doSum, PropertySource ps) {
+
+    final PieceFilter filter = createFilter(expression, ps);
+
+    if (!(ps instanceof GamePiece)) return 0;
+
+    int result = 0;
+
+    final GamePiece sourcePiece = (GamePiece) ps;
+    if (sourcePiece == null || sourcePiece.getMap() == null) {
+      return result;
+    }
+
+    int min = IntPropValue(minRange);
+    if (min < 0) min = 0;
+    int max = IntPropValue(maxRange);
+    if (max < min) max = min;
+
+
+    final Point position = sourcePiece.getPosition();
+
+    // Ask the IndexManager for the pieces within the maximum range
+    // NOTE: The IndexManager will NOT return the source piece in the list if the minRange is 0. We need to handle this separately.
+    for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(sourcePiece, max, asPixels)) {
+      // Check the minimum range
+      if (min > 0) {
+        final int range = range(position, piece.getPosition(), sourcePiece.getMap(), asPixels);
+        if (range < min) break;
+      }
+      result = updateTotal(result, piece, propertyName, filter, doSum);
+    }
+
+    // If the range is 0, check our sourcepiece as well.
+    if (min == 0) {
+      result = updateTotal(result, sourcePiece, propertyName, filter, doSum);
+    }
+
+    return result;
+  }
+
+  /**
+   * Update the total for a given piece, Check if it meets the requirements and return an updated total depending on the
+   * type being processed.
+   *
+   * @param currentTotal  The current running total
+   * @param piece         The piece to be tested
+   * @param propertyName  If doSum is true, then the property to be summed, for doSum false, check it has a non-null value
+   * @param filter        Filter the piece must pass
+   * @param doSum         True if summing a property total, false if counting
+   * @return              Updated total
+   */
+  private int updateTotal(int currentTotal, GamePiece piece, String propertyName, PieceFilter filter, boolean doSum) {
+    int newTotal = currentTotal;
+
+    // Check if this piece fails the filter. Null filter means no filter expression specified and we accept the piece.
+    if (filter != null && !filter.accept(piece)) {
+      // Failed, return the current total
+      return newTotal;
+    }
+
+    // Find the value of the specified property in the piece being tested
+    String value = "";
+    if (propertyName != null && !propertyName.isEmpty()) {
+      value = (String) piece.getProperty(propertyName);
+      if (value == null) value = "";
+    }
+
+    if (doSum) {
+      // Summing - add the integer value of the property value, which will add 0 if not integer value found for the property
+      newTotal += IntPropValue(value);
+    }
+    else {
+      // Counting - Add 1 if the property name was not supplied, or the value of the property is non-blank.
+      if (propertyName == null || propertyName.isEmpty() || !value.isEmpty()) {
+        newTotal++;
+      }
+    }
+
+    return newTotal;
   }
 
   /*
@@ -1572,8 +1715,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     if (! (propertyMatch == null || propertyMatch instanceof String)) return 0;
     if (! (mapName == null || mapName instanceof String)) return 0;
 
-    final String matchString = replaceDollarVariables((String) propertyMatch, (PropertySource) src);
-    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter((PropertySource) src);
+    final PieceFilter filter = createFilter((String) propertyMatch, (PropertySource) src);
 
     if (src instanceof GamePiece) {
       mapList = getMapList(mapName, (GamePiece) src);
@@ -1798,4 +1940,69 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
     return buffer.toString();
   }
+
+  /**
+   * Audit
+   * Write a message to the errorlog
+   *
+   * @param message               Message to display. Can be an Expression
+   * @param conditionOrOptionList If provided, is an expression that will be evaluated and the message will only be written if true
+   * @param optionList            A String containing any of the following letters to invoke various options
+   *                             'F' - Include full audit of the current expression
+   *                             'C' - Display in Chatter
+   *                             'S' - Suppress logging to errorLog
+   * @return                     Returns a blank string
+   */
+  public Object audit(Object message, Object conditionOrOptionList, Object optionList, PropertySource ps) {
+
+    // If this is being called from a GamePiece that isn't on Map, do nothing
+    if (ps instanceof GamePiece && ((GamePiece) ps).getMap() == null) return "";
+
+    // Arg 2 may be the condition, or it may have been skipped and its the optionlist.
+    String condition = "";
+    String options = optionList == null ? "" : optionList.toString();
+    final String combined = conditionOrOptionList == null ? "" : conditionOrOptionList.toString();
+    if (!combined.isEmpty()) {
+      if (combined.startsWith("{")) {
+        condition = combined;
+      }
+      else {
+        options = combined;
+      }
+    }
+
+    // Evaluate condition if supplied, skip reporting if not true
+    if (!condition.isEmpty()) {
+      final Expression expr = BeanShellExpression.createExpression(condition);
+      final String result = expr.quietEvaluate(ps, null, "");
+      if (!("true".equals(result))) {
+        return "";
+      }
+    }
+
+    String mess = "Audit: " + message.toString();
+    if (mess.startsWith("{")) {
+      final Expression expr = BeanShellExpression.createExpression(mess);
+      mess = expr.quietEvaluate(ps, null, "");
+    }
+
+    // Add full Expression audit if requested
+    if (options.indexOf('F') >= 0) {
+      mess += "\n" + currentAudit.toString();
+    }
+
+    // Log to error log if not suppressed
+    if (options.indexOf('S') < 0) {
+      logger.warn(mess);
+    }
+
+    // Log to Chatter if requested
+    if (options.indexOf('C') >= 0) {
+      GameModule.getGameModule().warn(mess);
+    }
+
+    return "";
+  }
+
 }
+

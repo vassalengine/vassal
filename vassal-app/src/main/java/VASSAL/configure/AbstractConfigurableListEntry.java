@@ -88,6 +88,9 @@ public abstract class AbstractConfigurableListEntry implements ConfigurableListE
   public Configurer getConfigurer() {
     if (configurer == null) {
       configurer = buildChildConfigurer(savedValue);
+      if (parent instanceof Configurer) {
+        configurer.setContext(((Configurer) parent).getContext());
+      }
       configurer.addPropertyChangeListener(e -> updateVisibility());
       addPropertyChangeListener(this);
 

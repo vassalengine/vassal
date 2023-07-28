@@ -28,21 +28,32 @@ BeanShell Expressions can be identified by their surrounding curly braces {}. Th
 You can use any introductory Java tutorial to learn more about the syntax of BeanShell Expressions.
 The basic components are as follows:
 
-[cols="^,,,",options="header",]
+[width="100%", cols="^14%a,20%,33%a,33%a",options="header",]
 |===
 |Type |Options |Examples |Notes
 |*Numbers* |  |{35} |Vassal works with whole numbers.
 It stores decimal numbers as strings.
+
 |*Strings* |  |{"German"} |A String literal, or text message, must be enclosed in "" quotation marks
-|*Substitution* |$..$ |{"$Nation$"} +
-{$Attack$} |Property names enclosed by $..$ symbols immediately substitute the property value, based on the piece or component issuing the command.
-Not normally needed in BeanShell as there are simpler ways to use a property value in an expression, but sometimes useful in <<PropertyMatchExpression.adoc#top,Property Match Expressions>> to use properties from the issueing piece rather than target piece.
+
+|*Comments*| | /* Check not flipped */| Comments can be included in-line in an expression in any break between elements. .e.g. +
+
+`{AmmoAP > 0 /* Check AP Ammo */}`
+
+Adding comments to expression does not affect performance in any way.
+
 |*Properties* |  |{Nation} +
 {LocationName} +
 {CurrentMap} +
 {playerName} |VASSAL interprets any word not enclosed in "" as a <<Properties.adoc#top,Property>> name.
 
 Can refer by name to <<GlobalProperties.adoc#top,Global Properties>>, <<PropertyMarker.adoc#top,Marker>> and <<DynamicProperty.adoc#top,Dynamic Properties>> of pieces, and properties <<Properties.adoc#top,exposed by traits>>. The current value of the property will be used.
+
+|*Substitution* |$..$ |{"$Nation$"} +
+{$Attack$} |Property names enclosed by $..$ symbols immediately substitute the property value, based on the piece or component issuing the command.
+
+Should only be used in <<PropertyMatchExpression.adoc#top,Property Match Expressions>> to use properties from the issuing piece rather than target piece.
+
 |*Arithmetic* |+ Add +
 - Subtract +
 * Multiply +
@@ -55,21 +66,26 @@ Can refer by name to <<GlobalProperties.adoc#top,Global Properties>>, <<Property
 If the values on both sides of the + look like whole numbers, Vassal will attempt to add them.
 
 Parentheses can be used to organize operations and/or override the ordinary order of operations.
+
 |*Comparison* |> Greater than +
 < Less than +
 >= Not less than +
 \<= Not greater than +
 == Equals +
 != Not Equals +
-=~ Match regular Expression |{height > 10 } +
+=~ Regular Expression +
+!~ Negated Regular Expression |{height > 10 } +
 {width < Level} +
 {Total >= HitPoints} +
 {breadth \<= maxbreadth} +
 {Nation == "Germany"} +
 {Army != "Allied"} +
-{Type =~ "^A$"} |Comparison operators come in handy for <<PropertyMatchExpression.adoc#top,Property Match Expressions>> and also with the ? (ternary) operator.
+{Type =~ "A\|B\|C} +
+{Type !~ "A\|B\|C}|Comparison operators come in handy for <<PropertyMatchExpression.adoc#top,Property Match Expressions>> and also with the ? (ternary) operator.
 
 Parentheses can be used to organize operations and/or override the ordinary order of operations.
+
+For more examples and information about <<ExpressionRegular.adoc#top,Regular Expressions>> see the dedicated RE page.
 |*Logical* |&& Logical AND +
 \|\| Logical OR +
 ! Logical NOT +
@@ -83,9 +99,9 @@ Parentheses can be used to organize operations and/or override the ordinary orde
 { States.contains(CurrentZone) ? 1 : 0 } +
 { IsRandom() ? "Heads" : "Tails" } +
 {A == B ? C : D} |The Ternary or "?" operator can be thought of as posing a yes/no question: if the expression before the ? symbol evaluates as "true", then the value of the expression as a whole is equal to the middle ("if true") part of the expression; otherwise (initial part is false), the result is the right ("if false") side.
-|*Math* |Math.abs(value1) +
-Math.min(value1, value2) +
-Math.max(value1, value2) + |{Math.abs(Number - 5)} +
+|*Math* |Math.abs +
+Math.min +
+Math.max + |{Math.abs(Number - 5)} +
 {Math.min(Health, Armor)} +
 {Math.max(3, Random(6))} + |*Math.abs()* Returns the absolute value of the numeric property _value1_.
 
@@ -93,31 +109,30 @@ Math.max(value1, value2) + |{Math.abs(Number - 5)} +
 
 *Math.max()* Returns the larger of two numeric values.
 
-|*Property* |GetProperty(property) +
-GetString(property) +
-GetAttachmentProperty(attachmentName, property, basic_name_or_index) +
-GetMapProperty(property,map) +
-GetZoneProperty(property,zone) +
-GetZoneProperty(property,zone,map) + |{GetProperty("Nation"+myNation)} +
+|*Property* |GetProperty +
+GetString +
+
+GetAttachProperty +
+GetMapProperty +
+GetZoneProperty +
+
+
+|{GetProperty("Nation"+myNation)} +
 {GetString("HowManyDogs")} +
-{GetAttachmentProperty("MyCrewMembers", "Health", 2) +
+{GetAttachProperty("MyCrewMembers", "Health", 2) +
+{GetAttachProperty("MyCrewMembers", "Health", "Unit2") +
+{GetAttachProperty("MyCrewMembers", "Health", "{Str > 0}") +
 {GetMapProperty("Owner",CurrentMap)} +
 {GetZoneProperty("Militia","Georgia")} +
-{GetZoneProperty("Modifier",OldZone,OldMap)} + |All *GetProperty()* family functions return the value of a named property.
+{GetZoneProperty("Modifier",OldZone,OldMap)} +
+
+|All *GetProperty()* family functions return the value of a named property.
 The name of the property can be constructed from an expression.
 
-*GetString()* returns a string value even if the property contains a number or a boolean. You can also append *.toString()* to any other function or property to achieve the same effect.
+See the <<ExpressionProperty.adoc#top,Property Functions>> page for full details.
 
-*GetAttachmentProperty()* retrieves the property from an _attached_ piece with the specified BasicName or specified index (first attached piece is 1). 
-
-*GetMapProperty()* looks only on the specific map for the property.
-
-*GetZoneProperty()* looks only in a specific zone (and if specified, map) for the property.
-
-|*Random* |Random(value1) +
-Random(value1,value2) +
-IsRandom() +
-IsRandom(percent) + |{Random(6)} +
+|*Random* |Random +
+IsRandom() |{Random(6)} +
 {Random(AttackPower,AttackPower * 2)} +
 {IsRandom()} +
 {IsRandom(75)} + |*Random(value1)* returns a random number between 1 and _value1_.
@@ -127,18 +142,25 @@ IsRandom(percent) + |{Random(6)} +
 *IsRandom()* returns "true" 50% of the time.
 
 *IsRandom(percent)* returns "true" the specified percent of the time.
-|*String Methods* |.length() +
-.contains(string2) +
-.startsWith(string2) +
-.endsWith(string2) +
-.matches(regExpr) +
-.indexOf(string2) +
-.lastIndexOf(string2) +
-.substring(start) +
-.substring(start, end) +
-.replace(old, new) +
-.toString() |{ LocationName.length() } +
+|*String Methods* |length +
+contains +
+isEmpty +
+startsWith +
+endsWith +
+matches +
+indexOf +
+lastIndexOf +
+substring +
+substring +
+replace +
+trim +
+toLowerCase +
+toUpperCase +
+toString
+
+|{ LocationName.length() } +
 { States.contains("Arkansas") } +
+{ CurrentMap.isEmpty() }
 { OwnerString.startsWith("Axis") } +
 { MaybeQuestion.endsWith("?") } +
 { String.matches("[^abc]") } +
@@ -147,86 +169,78 @@ IsRandom(percent) + |{Random(6)} +
 { CurrentZone.substring(5) } +
 { PlayerName.substring(1,5) } +
 { GetProperty("XX").replace("A","YY") } +
-{ AttackValue.toString() } |*length()* the length in characters of the string.
+{ Name.trim() } +
+{ Name.toUpperCase() } +
+{ Name.toLowerCase() } +
+{ AttackValue.toString() }
 
-*contains(string2)* true if _string2_ is a substring of the original string.
+|See the <<ExpressionString.adoc#top,String Function>> page for examples and more information about String Functions.
 
-*startsWith(string2)* true if _string2_ is the starting sequence of the original string.
+|*Sum and Count* |SumStack +
+CountStack +
 
-*endsWith(string2)* true if _string2_ is the final sequence of the original string.
+SumMat +
+CountMat +
 
-*matches(regex)* true if the original string matches the regular expression _regex_.
+SumAttach +
+CountAttach +
+MaxAttach +
+MinAttach +
 
-*indexOf(string2)* the first index where _string2_ can be found in the original string.
+SumMap +
+CountMap +
 
-*lastIndexOf(string2)* the last index where _string2_ begins within the original string.
+SumLocation +
+CountLocation +
 
-*substring(start)* from character indexed by _start_, the rest of the string.
+SumZone +
+CountZone +
 
-*substring(start,end)* returns the substring from _start_ to _end_, exclusive.
+SumRange +
+SumRangePX +
+CountRange +
+CountRangePx +
 
-*replace(old,new)* the original string with all instances of the string _old_ replaced by the string _new_
-
-*toString()* converts the property or result into a string even if it was a number or a boolean
-
-|*Sum and Count* |SumStack(propertyName) +
-CountStack() +
-CountStack(propertyName) +
-SumMat(propertyName) +
-CountMat(propertyName) +
-MaxAttachment(attachmentName, propertyName) +
-MinAttachment(attachmentName, propertyName) +
-SumAttachment(attachmentName, propertyName) +
-CountAttachment(attachmentName, propertyName) +
-CountAttachmentExpression(attachmentName, expression) +
-SumLocation(propertyName) +
-SumLocation(propertyName, expression) +
-SumLocation(propertyName, locationName, mapName) +
-SumLocation(propertyName, locationName, mapName, expression) +
-Sum(prop, expression) +
-Sum(prop, expression, map) +
-Count(expr) +
-Count(expr, map) + |{SumStack("Attack")} +
-{CountStack()} +
+Sum +
+Count +
+|{SumStack("Attack")} +
 {CountStack("Russian")} +
+
 {SumMat("AttackFactor")} +
 {CountMat("Followers")} +
-{MaxAttachment("MyMinions", "Strength")} +
-{MinAttachment("MyMinions", "Health")} +
-{SumAttachment("MyMinions", "Ammo")} +
-{CountAttachment("MyMinions", "Naval")} +
-{CountAttachmentExpression("MyMinions", "{ Ammo > 0 }")} +
-{Sum("Defense", "{Type != \"Artillery\"}")} +
-{Sum("Cost", "{ Value > 0 }", "Purchases")} +
+
+{SumAttach("MyMinions", "Ammo")} +
+{CountAttach("MyMinions", "{ Ammo > 0 }")} +
+{MaxAttach("MyMinions", "Strength")} +
+{MinAttach("MyMinions", "Health")} +
+
 {SumLocation("Strength")} +
-{SumLocation("Strength", "{Range > 1}")} +
-{SumLocation("Strength", "ReinforcementPool", "MainMap")} +
-{SumLocation("Strength", "ReinforcementPool", "MainMap"), "{Range <= 1}")} +
-{Count("{ Nation == \"$Nation$\" }")} +
-{Count("{ CombatValue > 0 }", "BattleMap") } + |
-There is an extensive range of Sum and Count functions to count pieces and to sum properties attached to pieces. See the <<ExpressionSumCount.adoc#top,Sum and Count Functions>> page for more details on choosing and using these Functions.
+{CountLocation("Strength", "ReinforcementPool", "MainMap")} +
+
+{SumZone("Strength")} +
+{CountZone("Zone1", "Map2", "{Size > 2}") +
+
+{Sum("Strength", "{Owner=\"me\"}"} +
+{Count("{Owner=\"me\"}"}
+
+
+|There is an extensive range of Sum and Count functions to count pieces and to sum properties attached to pieces. See the <<ExpressionSumCount.adoc#top,Sum and Count Functions>> page for more details on choosing and using these Functions.
 
 |*Range* |
-RangeInPixels(x, y) +
-RangeInCells(x, y) +
-RangeInPixels(attachmentName) +
-RangeInCells(attachmentName) +
-RangeInPixels(x1, y1, x2, y2) +
-RangeInCells(x1, y1, x2, y2) +
-RangeInPixels(x1, y1, x2, y2, mapName) +
-RangeInCells(x1, y1, x2, y2, mapName) +
+Range +
+RangePx +
 |
-RangeInPixels(0, 0) +
-RangeInCells(oldX, oldY) +
-RangeInPixels("MyAttachment") +
-RangeInCells("Attack") +
-RangeInPixels(0, 0, gp_x, gp_y) +
-RangeInCells(oldX, oldY, newX, newY) +
-RangeInPixels(0, 0, gp_x, gp_y, "Main") +
-RangeInCells(oldX, oldY, newX, newY, "Battle") + |
+Range(0, 0) +
+RangePx(oldX, oldY) +
+Range("MyAttachment") +
+RangePx("Attack") +
+Range(0, 0, gp_x, gp_y) +
+RangePx(oldX, oldY, newX, newY) +
+Range(0, 0, gp_x, gp_y, "Main") +
+RangePx(oldX, oldY, newX, newY, "Battle") + |
 Range functions calculate the range in pixels, or in grid units (hexes, squares) between 2 locations. See the <<ExpressionRange.adoc#top,Range Functions>> page for more details on choosing and using these Functions.
 
-|*Alert* |Alert(message) + |{Alert("Adding 1 to HP")} + |*Alert* displays a message in a popup dialog box, to the currently active player only.
+|*Alert* |Alert + |{Alert("Adding 1 to HP")} + |*Alert* displays a message in a popup dialog box, to the currently active player only.
 If a message needs to be shown to _all_ players, the recommended method is to send something to the Chat Log, e.g.,
 with a <<ReportChanges.adoc#top,Report Action>> trait or other <<MessageFormat.adoc#top,Message Format>> field.
 

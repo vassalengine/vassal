@@ -23,6 +23,7 @@ package VASSAL.script.expression;
 
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.BeanShellExpressionConfigurer;
+import VASSAL.configure.BeanShellFunctionMenu;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.counters.EditablePiece;
@@ -66,6 +67,7 @@ public class FunctionBuilder extends JDialog {
     p.add(new JLabel(desc), "span 2,align center,wrap,growx"); //NON-NLS
     for (int i = 0; i < parmDesc.length; i++) {
       final BeanShellExpressionConfigurer config = new BeanShellExpressionConfigurer(null, "", "", targetPiece, options[i], this);
+      config.setContext(target.getContext());
       if (i == 0 && isStringFunction() && selectedText != null) {
         config.setValue(selectedText);
       }
@@ -141,6 +143,9 @@ public class FunctionBuilder extends JDialog {
     else if (isStringFunction()) {
       return configs.get(0).getValueString() + getFunctionBody(true);
     }
+    else if (isComment()) {
+      return "/* " + configs.get(0).getValueString() + " */";
+    }
     return getFunctionBody(false);
   }
 
@@ -172,6 +177,10 @@ public class FunctionBuilder extends JDialog {
 
   private boolean isStringFunction() {
     return function.startsWith(".");
+  }
+
+  private boolean isComment() {
+    return BeanShellFunctionMenu.COMMENT.equals(function);
   }
 
   public void cancel() {

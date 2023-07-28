@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module.properties;
 
+import VASSAL.build.AbstractBuildable;
 import VASSAL.configure.ConfigurableListEntry;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.FormattedExpressionConfigurer;
@@ -346,6 +347,15 @@ public class PropertyChangerConfigurer extends Configurer {
     super.removeFocusListener(listener);
     getControls();
     subConfigurers.forEach(c -> c.removeFocusListener(listener));
+  }
+
+  @Override
+  public void setContext(AbstractBuildable context) {
+    super.setContext(context);
+    if (valueConfig == null) getControls();
+    valueConfig.setContext(context);
+    incrConfig.setContext(context);
+    validValuesConfig.setContext(context);
   }
 
   private static class NoUpdateFormattedStringArrayConfigurer extends FormattedStringArrayConfigurer {

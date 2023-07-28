@@ -1017,6 +1017,15 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
   }
 
   @Override
+  public List<String> getPropertyList() {
+    final ArrayList<String> l = new ArrayList<>();
+    if (followProperty) {
+      l.add(onlyPropertyName);
+    }
+    return l;
+  }
+
+  @Override
   public boolean testEquals(Object o) {
     if (! (o instanceof Embellishment)) return false;
     final Embellishment c = (Embellishment) o;

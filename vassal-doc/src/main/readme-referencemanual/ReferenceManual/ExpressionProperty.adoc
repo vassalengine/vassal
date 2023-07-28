@@ -1,0 +1,154 @@
+== VASSAL Reference Manual
+[#top]
+
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<Expression.adoc#top,Expressions>> > *Property Expressions*#
+
+'''''
+
+=== Property Functions
+
+==== Overview
+
+Vassal provides a set of functions to read the value of properties where the name of the property is not known in advance, or where the property exists in a different part of Vassal.
+
+There are several groups of functions, depending on where the property you want to access resides.
+
+* <<#General,General Property Access>> - Get the value of a property.
+* <<#Map,Map based>> - Get the value of a Global Property residing in a different Map.
+* <<#Zone,Zone based>> - Get the value of a Global Property residing in a different Zone.
+* <<#Attachment,Attachment based>> - Get the value of a Property from a different piece connected by an <<Attachment.adoc#top,Attachment>> to the current piece.
+
+[#General]
+==== General Functions
+These functions are useful to access properties in specific situations where standard Property access can't be used.
+[width=100%,cols="33%a,67%a"]
+|===
+|*GetProperty* |Returns the value of the specified property.  +
+
+
+|GetProperty(prop) | This function is useful in two situations in Vassal: +
+
+ - Where the property name contains spaces or special characters that affect the creation of an expression.
+ - Where the property name is not known in advance and needs to be generated from other Properties.
+
+__ __
+
+[example]
+GetProperty("M-3 Result") +
+
+Return the value of the property named _'M-3 Result'_.
+
+[example]
+GetProperty("Table" + x + "-" + y)
+
+If x currently has a value of 2 and y has a value of 6, then this will return the value of the property _'Table2-6'_.
+
+|===
+
+[width=100%,cols="33%a,67%a"]
+|===
+|*GetString* |Returns the value of the specified property as a String.  +
+
+
+|GetString(prop) | This function returns the value of the property as a String, even if it is a Number.
+
+
+[example]
+GetString("X") +
+
+Return the value of the property named _'X'_ as a String.
+
+|===
+
+[#Map]
+==== Map-based Functions
+These functions return the value of a Map-level property defined on another map.
+
+[width=100%,cols="33%a,67%a"]
+|===
+|*GetMapProperty* |Return the value of a property from a different Map.  +
+
+
+|GetMapProperty(prop, map) | Return the value of the property that resides on the named Map.
+
+[example]
+GetMapProperty("SupplyLevel", "SupplyMap") +
+
+Return the value of the Global Property named _'SupplyLevel'_ that is defined on the Map named _'SupplyMap'_.
+
+|===
+
+[#Zone]
+==== Zone-based Functions
+These functions return the value of a Zone-level property defined in another Zone.
+
+[width=100%,cols="33%a,67%a"]
+|===
+|*GetZoneProperty* |Return the value of a property from a different Zone.  +
+
+|GetZoneProperty(prop, zone) +
+
+#[ Trait Only ]#| Return the value of the property that resides in a different named Zone, but on the same Map as the source piece.
+
+[example]
+GetZoneProperty("Supplies", "zone2") +
+
+Return the value of the Property named _'Supplies'_ that is defined in the Zone named _'zone2'_ on the current Map name.
+
+|GetZoneProperty(prop, zone, map) | Return the value of the property that resides in a named Zone on the named Map.
+
+[example]
+GetZoneProperty("Supplies", "zone2", "East") +
+
+Return the value of the Property named _'Supplies'_ that is defined in the Zone named _'zone2'_ on the Map named _'East'_.
+
+|===
+
+[#Attachment]
+==== Attachment-based Functions
+These functions return the value of a Property from a piece attached to the current piece using the <<Attachment.adoc#top, Attachment>> trait.
+
+All Attachment-based Functions will return the value of the property from the first attached piece it that meets the criteria of the function.
+
+Note that if your Attachment includes the 'Allow attachment to self' option, then it is possible for these functions to find and return the Property value from the same piece that is calling the property.
+
+[width=100%,cols="33%a,67%a"]
+|===
+|*GetAttachProperty* |Return the value of a property from a piece attached to the current piece.  +
+
+|GetAttachProperty(attach, prop)
+
+#[ Trait Only ]#| Return the value of a property _'prop'_ from the first piece attached to the current piece using the attachment named _'attach'_.
+
+[example]
+GetAttachProperty("SUP", "Supplies") +
+
+Return the value of the Property named _'Supplies'_ from the first piece attached to the current piece using the attachment name _'SUP'_.
+
+|GetAttachProperty(attach, prop, index)
+
+#[ Trait Only ]#| Return the value of the property from a specific attached piece.
+
+[example]
+GetAttachProperty("SUP", "Supplies", 4)  +
+
+Return the value of the Property named _'Supplies'_ from the 4th piece attached to the current piece using the attachment name _'SUP'_.
+
+|GetAttachProperty(attach, prop, basicName)
+
+#[ Trait Only ]#| Return the value of the property from an attached piece with a specified name.
+
+[example]
+GetAttachProperty("SUP", "Supplies", "RU-2")  +
+
+Return the value of the Property named _'Supplies'_ from the piece attached to the current piece using the attachment name _'SUP'_ that has a Basic Name of '_RU-2'_.
+
+|GetAttachProperty(attach, prop, expr)
+
+#[ Trait Only ]#| Return the value of the property from an attached piece that matches a <<PropertyMatchExpression.adoc#top,Property Match Expression>>.
+
+[example]
+GetAttachProperty("SUP", "Supplies", "{Suppressed==false}")  +
+
+Return the value of the Property named _'Supplies'_ from the piece attached to the current piece using the attachment name _'SUP'_ that has a value of _false_ for the property name '_Suppressed_'.
+|===

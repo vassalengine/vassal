@@ -6,6 +6,8 @@ image:images/Vassal.png[]
 [cols=",",]
 |===
 
+|*<<Concepts.adoc#top,VASSAL Concepts>>* |Some ideas you need to get your head wrapped around before you dive in to creating a module.
+
 |*<<Editor.adoc#top,Editor>>* |The main tool for creating, improving, and maintaining Vassal Game Modules.
 
 |*<<GameModule.adoc#top,Game Module>>* |A Vassal Module is everything needed to play a particular Game.

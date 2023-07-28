@@ -46,6 +46,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.FocusListener;
@@ -66,7 +67,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
    *  PME = Property Match Expression handling.
    */
   public enum Option {
-    NONE, PME
+    NONE, PME, COMMENT
   }
 
   protected JPanel expressionPanel;
@@ -147,6 +148,10 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     return option;
   }
 
+  public void setOption(Option option) {
+    this.option = option;
+  }
+
   @Override
   public String getValueString() {
     return (String) value;
@@ -193,7 +198,6 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     return p.getTopLevelAncestor();
   }
 
-
   @Override
   public Component getControls() {
     if (p == null) {
@@ -205,14 +209,17 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
 
       validator = new Validator();
       nameField = new JTextArea(1, 100);
+
       nameField.setFont(new Font("Monospaced", Font.PLAIN, 14));
       nameField.setLineWrap(true);
       nameField.setWrapStyleWord(true);
       nameField.setBorder(BorderFactory.createLineBorder(Color.gray));
+      // Reset the standard docus traversal keys so Tab doesn't get used by the Text Area
+      nameField.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, null);
+      nameField.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, null);
 
       nameField.setText(getValueString());
       panel.add(nameField, "grow"); //NON-NLS
-
       nameField.addKeyListener(new KeyAdapter() {
         @Override
         public void keyReleased(KeyEvent evt) {
@@ -289,14 +296,16 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
       p.add(expressionPanel);
       p.add(detailPanel);
 
-      final ComponentAdapter a = new ComponentAdapter() {
+      // Force field to open at its minimum size
+      nameField.setPreferredSize(nameField.getPreferredSize());
+
+      final ComponentAdapter l = new ComponentAdapter() {
         @Override
         public void componentResized(ComponentEvent e) {
-          super.componentResized(e);
           repack();
         }
       };
-      nameField.addComponentListener(a);
+      nameField.addComponentListener(l);
     }
     return p;
   }
@@ -385,11 +394,6 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
 
   protected void setDetails() {
     setDetails("", null, null);
-  }
-
-  @Override
-  public void setEnabled(boolean enabled) {
-    nameField.setEnabled(enabled);
   }
 
   public String getSelectedText() {
@@ -487,7 +491,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
           else {
             validator.setStatus(INVALID);
           }
-          setDetails(v.getError(), v.getVariables(), v.getMethods());
+          setDetails(v.getError(), v.getAllVariables(), v.getMethods());
         }
         validating = false;
         if (dirty) {

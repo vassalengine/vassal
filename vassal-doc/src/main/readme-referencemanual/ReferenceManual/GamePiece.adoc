@@ -198,16 +198,101 @@ Note, however, that Sub-Menu traits must always go *_below_* the traits that it 
 [#Traits]
 === Comprehensive List of Piece Traits
 
-[cols=",,,,",]
+[%autowidth]
+[cols=",",]
 |===
-|<<ActionButton.adoc#top,Action Button>> |<<AreaOfEffect.adoc#top,Area Of Effect>> |<<BasicPiece.adoc#top,Basic Piece>> |<<CalculatedProperty.adoc#top,Calculated Property>> |<<Pivot.adoc#top,Can Pivot>>
-|<<Rotate.adoc#top,Can Rotate>> |<<#Clone,Clone>> |<<#Delete,Delete>> |<<NonStacking.adoc#top,Does not stack>> |<<DynamicProperty.adoc#top,Dynamic Property>>
-|<<GlobalHotKey.adoc#top,Global Hotkey>> |<<GlobalKeyCommand.adoc#top,Global Key Command>> |<<SetGlobalProperty.adoc#top,Global Property, Set>> |<<Hideable.adoc#top,Invisible>> |<<Layer.adoc#top,Layer>>
-|<<MarkMoved.adoc#top,Mark When Moved>> |<<PropertyMarker.adoc#top,Marker>> |<<Mask.adoc#top,Mask>> |<<Mat.adoc#top,Mat>> |<<MatCargo.adoc#top,Mat Cargo>>
-|<<MenuSeparator.adoc#top,Menu Separator>> |<<Translate.adoc#top,Move fixed distance>>|<<MovementTrail.adoc#top,Movement Trail>> |<<NonRectangular.adoc#top,Non-Rectangular>> |<<Marker.adoc#top,Place Marker>>
-|<<PlaySound.adoc#top,Play Sound>> |<<PropertySheet.adoc#top,Property Sheet>> |<<UsePrototype.adoc#top,Prototype>> |<<Replace.adoc#top,Replace with Other>> |<<ReportChanges.adoc#top,Report Action>>
-|<<RestrictCommands.adoc#top,Restrict Commands>> |<<RestrictedAccess.adoc#top,Restricted Access>> |<<SendToLocation.adoc#top,Send to Location>> |<<Spreadsheet.adoc#top,Spreadsheet>> |<<SubMenu.adoc#top,Sub-Menu>>
-|<<Label.adoc#top,Text Label>> |<<TranslatableMessage.adoc#top,Translatable Message>> |<<TriggerAction.adoc#top,Trigger Action>>||||
+|Trait| Description
+
+|<<ActionButton.adoc#top,Action Button>> | Create a clickable button on a piece.
+
+|<<AreaOfEffect.adoc#top,Area Of Effect>> | Display a shaded area around a piece.
+
+|<<Attachment.adoc#top,Attachment>>| Create groups of 'Attached' counters that can easily interact with each other.
+
+| <<BasicName.adoc#top,Basic Name>> | Specify a primary name for a piece that over-rides the Basic Piece name.
+
+| <<BasicPiece.adoc#top,Basic Piece>> | Set the Base name and image for a piece.
+
+|<<BorderOutline.adoc#top,Border Outline>>| Specify a colored border around a piece that will appear under specified conditions.
+
+|<<CalculatedProperty.adoc#top,Calculated Property>> | Create a named Property whose value is calculated by a formula.
+
+|<<Pivot.adoc#top,Can Pivot>> | Allows a piece to be rotated around an off-center position.
+
+|<<Rotate.adoc#top,Can Rotate>> | Allows a piece to be rotated around its center.
+
+|<<#Clone,Clone>> | Creates a duplicate of a piece.
+
+|<<#Delete,Delete>> | Deletes the piece from the current game.
+
+|<<NonStacking.adoc#top,Does not stack>> | Provides options to limit stacking, selection and movement of a piece.
+
+|<<Deselect.adoc#top,Deselect>> | Remove a piece from the current piece selection.
+
+| <<DynamicProperty.adoc#top,Dynamic Property>> | Create a named Property that can be changed.
+
+|<<GlobalHotKey.adoc#top,Global Hotkey>> | Issue a <<Concepts.adoc#hotkey,Hotkey>> to activate game <<Concepts.adoc#components,Components>>.
+
+|<<GlobalKeyCommand.adoc#top,Global Key Command>> | Issue a <<Concepts.adoc#keycommand,Key Command>> to activate multiple pieces.
+
+|<<Hideable.adoc#top,Invisible>> | Hide a piece from other players by making it invisible.
+
+|<<Layer.adoc#top,Layer>> | Add additional images to a piece that can turned on and off.
+
+|<<MarkMoved.adoc#top,Mark When Moved>> | Automatically flag a piece whenever it moves.
+
+|<<PropertyMarker.adoc#top,Marker>> | Add a named Property with a fixed value.
+
+|<<Mask.adoc#top,Mask>> | Hide the identity of a piece from other players.
+
+|<<Mat.adoc#top,Mat>> | Create a piece that can carry other pieces around on it.
+
+|<<MatCargo.adoc#top,Mat Cargo>> | Create a pieces that cn be carried on a Mat.
+
+|<<MenuSeparator.adoc#top,Menu Separator>> | Add a separator to the drop-down menu that is generated when you right-click on a piece.
+
+|<<Translate.adoc#top,Move fixed distance>> | Move a piece a set distance.
+
+|<<MovementTrail.adoc#top,Movement Trail>> | Show a visible history of piece movements.
+
+|<<MultiLocationCommand.adoc#top,Multi-location Command>> | Generate multiple menu commands based on Map Zone or Region names.
+
+| <<NonRectangular.adoc#top,Non-Rectangular>> | Specifiy a non-rectangular shape for a piece.
+
+|<<Marker.adoc#top,Place Marker>> | Place a newly created piece.
+
+|<<PlaySound.adoc#top,Play Sound>> | Play a sound.
+
+|<<PropertySheet.adoc#top,Property Sheet>> | Maintain a set of independent values for a piece.
+
+|<<UsePrototype.adoc#top,Prototype>> | Include traits from a pre-defined template piece.
+
+|<<Replace.adoc#top,Replace with Other>> | Replace a piece with a new piece.
+
+|<<ReportChanges.adoc#top,Report Action>> | Display a message in the Chat Window when a Key Command is seen.
+
+|<<RestrictCommands.adoc#top,Restrict Commands>> | Dynamically restrict traits from being activated by right-click menu commands or from other traits or Global Key Commands.
+
+|<<RestrictedAccess.adoc#top,Restricted Access>> | Restrict access to a piece to specified users.
+
+|<<SendToLocation.adoc#top,Send to Location>> | Send a piece to another location.
+
+|<<SetAttachmentProperty.adoc#top,Set Attachment Property>> | Set a value in a Dynamic Property in an Attached piece.
+
+|<<SetGlobalProperty.adoc#top,Set Global Property>> | Set a value in a Global property.
+
+|<<SetPieceProperty.adoc#top,Set Piece Property>> | Set a value in a Dynamic Property in selected pieces.
+
+|<<Spreadsheet.adoc#top,Spreadsheet>> | Maintain a spreadsheet of values in a piece.
+
+|<<SubMenu.adoc#top,Sub-Menu>> | Organise right-click Menu Commands into a sub-menu.
+
+|<<Label.adoc#top,Text Label>> | Display text on a piece.
+
+|<<TranslatableMessage.adoc#top,Translatable Message>> | Specify a text message that can be translated and displayed in the players' local language.
+
+|<<TriggerAction.adoc#top,Trigger Action>>| Specify a sequence of Key Commands that can be issued in order.
+
 |===
 
 '''''
@@ -229,11 +314,12 @@ See the full <<BasicPiece.adoc#top,Basic Piece>> article for details.
 |===
 
 [#Delete]
-==== Delete
+
 [width="100%",cols="50%,50%",]
 |===
 |image:images/Delete.png[] a|
 
+==== Delete
 The ability to be deleted by players during a game.
 When this trait's Key Command or menu item is activated, the piece is deleted from the game.
 
@@ -269,14 +355,12 @@ If left blank, no context menu item will appear, but the piece can still be clon
 
 ==== <<Layer.adoc#top,Layer>>
 
-A Layer is the most powerful way to add images to a piece.
+[cols=",",]
+|===
+|image:images/Layer.png[] | A Layer is the most powerful way to add images to a piece.
 Each Layer you add can contain multiple images along with with Key Commands and/or Expressions to switch between them and activate/deactivate them.
 A piece can contain as many Layers as you wish.
 <<Layer.adoc#top,See full article for details.>>
-
-[cols=",",]
-|===
-|image:images/Layer.png[] |
 |===
 
 [width="100%",cols="50%,50%",]

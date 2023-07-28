@@ -17,7 +17,11 @@
  */
 package VASSAL.configure;
 
+import VASSAL.build.AbstractBuildable;
+import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
+import VASSAL.build.GameModule;
+import VASSAL.build.module.Map;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.swing.SwingUtils;
 
@@ -61,6 +65,23 @@ public abstract class Configurer {
   private boolean highlighted = false;
   /** Default Highlight Color for Configurable Lists */
   public static final Color LIST_ENTRY_HIGHLIGHT_COLOR = new Color(255, 230, 230);
+
+  /**
+   * The ContextLevel of a Configurer defines the level that it is defined at.
+   * It is used by the FunctionBuilder (FB) to provide better contextual help for Function calls.
+   *  o PIECE  - The Configurer is defined at the Piece level. Pieces move around, so we can make no assumptions
+   *             about where the piece may be. All functions are to be displayed by the FB
+   *  o MAP    - The Configurer is defined at the Map level, with the actual Map recorded in context
+   *             FB will not show 'Trait Only' versions of functions.
+   *             Any reference to map or zone level properties on a different map to be wrapped in an appropriate GetXXXProperty function.
+   *  o MODULE - The Configurer is defined at the Module level
+   *             FB will not show 'Trait Only' versions of functions.
+   *             Any references to Map or Zone level properties to be wrapped in an appropriate GetXXXProperty function.
+   */
+  public enum ContextLevel { PIECE, MAP, MODULE };
+
+  protected ContextLevel contextLevel;
+  protected AbstractBuildable context;
 
   public Configurer(String key, String name) {
     this(key, name, null);
@@ -293,5 +314,71 @@ public abstract class Configurer {
    */
   public void setEnabled(boolean enabled) {
 
+  }
+
+  /**
+   * Get the Context for this Configurer
+   * @return  Owning Configurable
+   */
+  public AbstractBuildable getContext() {
+    return context;
+  }
+
+  /**
+   * Set the Context for this Configurer to the first ancestor that is of type GameModule or Map
+   *
+   * NOTE: The ContextLevel may already have been preset by the ConfigureFactory when the Configurer was created.
+   *       Don't let the AutoConfigurer over-write this
+   *
+   * @param context Owning Configurable
+   */
+  public void setContext(AbstractBuildable context) {
+
+    AbstractBuildable c = context;
+    this.context = null;
+
+    while (c != null) {
+      if (c instanceof GameModule || c instanceof Map) {
+        this.context = c;
+        if (this.contextLevel == null) {
+          this.contextLevel = c instanceof GameModule ? ContextLevel.MODULE : ContextLevel.MAP;
+        }
+        return;
+      }
+      if (c instanceof AbstractBuildable) {
+        c = (AbstractBuildable) c.getAncestor();
+      }
+      // If we hit a straight Buildable in the parent tree, can't go any further. Defer to GameModule
+      else {
+        c = null;
+      }
+    }
+
+    if (c == null) this.context = GameModule.getGameModule();
+    if (this.contextLevel == null) this.contextLevel = ContextLevel.PIECE;
+  }
+
+  public void setContext(Configurable context) {
+    if (context instanceof AbstractBuildable) {
+      setContext((AbstractBuildable) context);
+    }
+  }
+
+  public void setContext(Buildable context) {
+    if (context instanceof AbstractBuildable) {
+      setContext((AbstractBuildable) context);
+    }
+  }
+
+  public ContextLevel getContextLevel() {
+    return contextLevel;
+  }
+
+  public boolean isPieceContext() {
+    return ContextLevel.PIECE == contextLevel;
+  }
+
+  public void setContextLevel(ContextLevel contextLevel) {
+    this.contextLevel = contextLevel;
   }
 }

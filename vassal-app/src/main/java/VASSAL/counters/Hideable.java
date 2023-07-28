@@ -318,6 +318,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
   @Override
   public List<String> getPropertyNames() {
     final ArrayList<String> l = new ArrayList<>();
+    l.add(Properties.INVISIBLE_TO_ME);
     l.add(Properties.INVISIBLE_TO_OTHERS);
     return l;
   }

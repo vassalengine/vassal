@@ -28,6 +28,7 @@ import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.Configurer;
 import VASSAL.configure.FormattedExpressionConfigurer;
 import VASSAL.configure.FormattedStringConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
@@ -423,7 +424,7 @@ public class MultiLocationCommand extends Decorator implements TranslatablePiece
    */
   @Override
   public List<String> getPropertyNames() {
-    return Arrays.asList(LOC_NAME);
+    return Arrays.asList(LOC_BOARD, LOC_MAP, LOC_NAME, LOC_ZONE);
   }
 
   public static class Ed implements PieceEditor {
@@ -456,6 +457,7 @@ public class MultiLocationCommand extends Decorator implements TranslatablePiece
       controls.add("Editor.MultiLocationCommand.current_map_only", curMapOnlyInput);
 
       propertyMatchInput = new PropertyExpressionConfigurer(p.propertiesFilter, p);
+      propertyMatchInput.setContextLevel(Configurer.ContextLevel.MAP); // This PME is NOT applied to pieces
       controls.add("Editor.MultiLocationCommand.matching_properties", propertyMatchInput);
 
       menuTextInput = new FormattedExpressionConfigurer(p.menuText.getFormat(), p);

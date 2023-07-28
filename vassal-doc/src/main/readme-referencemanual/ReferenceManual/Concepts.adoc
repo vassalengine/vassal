@@ -1,0 +1,152 @@
+== VASSAL Reference Manual
+[#top]
+
+[.small]#<<index.adoc#toc,Home>> > *Concepts*#
+
+
+= Concepts
+
+* <<#Module,Module>> +
+* <<#extension,Extension>> +
+* <<#componentsandpieces,Components and Pieces>> +
+** <<#components,Components>> +
+** <<#pieces,Pieces>> +
+
+Component +
+Hot Key +
+Map +
+Player Hand +
+Board +
+Zone +
+Piece +
+Prototype +
+Stack +
+Deck +
+At-Start Stack +
+Key Command +
+Global Key Command +
+Values +
+Properties +
+Piece Properties +
+Global Properties +
+Translation +
+BeanShell +
+
+[#module]
+== Module
+All the pieces that make up a Vassal implementation of a game are collected together into a single file called a <<GameModule.adoc#top,*Module*>>, which typically have a `.vmod` suffix. +
+
+Physically, a <<GameModule.adoc#top,*Module*>> is a ZIP archive containing the different files that go together to make up the <<GameModule.adoc#top,*Module*>>.
+
+You can inspect the files that make up a <<GameModule.adoc#top,*Module*>> by opening it with any utility that can open ZIP Archives.
+
+NOTE: Some tools may require you to rename the module file from `.vmod` to `.zip` before you can open it. Just rename it back to `.vmod` when you have finished.
+
+A <<GameModule.adoc#top,*Module*>> contains various files and folders:
+
+ * The *buildfile.xml* is an XML file that links all the parts of your module together and includes all  the definitions of the different <<#components,*Components*>> and <<#pieces,*Pieces*>> that make up your module. +
+The *buildfile* is normally maintained for you by the VASSAL Module Editor, but you can manually edit and update the *buildfile* if you know what you are doing. Make a backup first!!!
+ * The *moduledata* file holds the summary information about your module that is displayed in the Module Manager.
+ * The *images* folder holds all the image files used in your module.
+ * HTML files shown in Chart Windows.
+ * Pre-defined Setup files used to start games.
+
+[#extension]
+== Extension
+An <<Extension.adoc#top,*Extension*>> is a fragment of a *Module* that can be used to add additional functionality to an existing *Module* without modifying that *Module* directly.
+
+A typical use for an<<Extension.adoc#top,*Extension*>>  is to add additional scenarios to a module and some additional units that are needed to play those scenarios.
+
+[#componentsandpieces]
+== Components and Pieces
+A VASSAL Module is made up of two fundamentally different types of elements that are defined and manipulated in two different ways.
+
+[width="100%"]
+[cols="20%,40%,50%"]
+|===
+| | *Components* | *Pieces* +
+
+| Mobility | Fixed elements making up the structure of the module. | Mobile element that can move about on Map components. +
+
+| Duplication | Only one of each Component exists in a game. | There can be multiple instances of each Piece in a game. +
+
+| Activation | Activated by <<#hotkey,Hotkeys>>, ignore <<#keycommand,Key Commands>>. | Activated by <<#keycommand,Key Commands>>, ignore  <<#hotkey,Hotkeys>>. +
+
+| Toolbar Buttons | Many Components can be activated by buttons that reside on the main Vassal toolbar. | Pieces are never associated with a Toolbar button.
+| Flexibility | Limited to in-built configuration and flexibility provided by core VASSAL. | Highly configurable and extensible by module designer.
+
+|===
+
+[#components]
+=== Components
+*Comp*
+
+** Hot Key
+
+** Map
+
+** Board
+
+** Zone
+
+[#pieces]
+=== Pieces
+
+** Trait
+
+** Key Command
+
+** Stack
+
+** Deck
+
+** At-Start Stack
+
+== Hotkeys and Key Commands
+
+[#hotkey]
+=== Hotkeys
+
+[#keycommand]
+=== Key Commands
+
+== Values in Vassal
+
+== Properties
+* Properties
+
+Making a GP of the same name will have no effect. Each individual Property is completely unique and unrelated. When you reference a property named ‘X’ in a piece trait, the following happens to find a value for that property. The first find of a value of property ‘X’ is used as the value:
+
+Search each trait in the current piece to see if any of the traits has a value for property ‘X’. The traits are searched in reverse order (bottom up) from what they appear in the Piece Definer.
+
+If we reach the end of all the traits, then see if the piece is currently in a Zone on a Map. If so, see if the Zone has a Global property named 'X'.
+
+Still not found, Check the Map the piece is on to see if it has a Global property named ‘X’.
+
+Still not found, then check if VASSAL knows what ‘X’ is. This might be a module level Global Property, or a system property.
+
+So, a piece can directly ‘see’ and ‘read’ any property in itself, its current Zone, its current Map or in the top-level module.
+
+It doesn’t work the other way. Nothing else can directly ‘see’ any property inside the piece, without using some of the new functions being developed for v3.7.
+
+** Piece Property
+
+*** Marker
+*** Calculated Property
+*** Dynamic Property
+*** Setting Piece Properties
+
+* Global Property
+*** Setting Global Properties
+
+* Key Commands and Hotkeys
+
+** Global Key Command
+
+** Global Hot Key
+
+
+* BeanShell
+** Strings and Numbers
+** true and false
+** Property Match Expressions

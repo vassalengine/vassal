@@ -108,8 +108,8 @@ public abstract class AbstractInterpreter extends Interpreter {
    *
    * @param message message to display
    */
-  public Object alert(String message) {
-    JOptionPane.showMessageDialog(GameModule.getGameModule().getPlayerWindow(), message);
+  public Object alert(Object message) {
+    JOptionPane.showMessageDialog(GameModule.getGameModule().getPlayerWindow(), message.toString());
     return "";
   }
 

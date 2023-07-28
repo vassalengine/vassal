@@ -98,7 +98,11 @@ public class VassalMapPieceIndex {
    * @return List of pieces
    */
   public List<GamePiece> getPieces(GamePiece piece, int range) {
-    final List<GamePiece> pieces = getPieces(piece.getPosition(), range);
+    return getPieces(piece, range, false);
+  }
+
+  public List<GamePiece> getPieces(GamePiece piece, int range, boolean forceAsPixels) {
+    final List<GamePiece> pieces = getPieces(piece.getPosition(), range, forceAsPixels);
     // Do not return the source piece in the list of in-range pieces
     pieces.remove(piece);
     return pieces;
@@ -114,9 +118,23 @@ public class VassalMapPieceIndex {
    * @return List of pieces
    */
   public List<GamePiece> getPieces(Point point, int range) {
+    return getPieces(point, range, false);
+  }
+
+  /**
+   * Return a list of pieces in range of a given point.
+   * NOTE: Does not need to be accurate, may include pieces out of range, range will be accurately checked later,
+   * but must not exclude pieces that are in range
+   *
+   * @param point         Point to search around
+   * @param range         Range in units appropriate to the search point
+   * @param forceAsPixels Force the search to be in pixels, even if the target point is on a regular grid
+   * @return List of pieces
+   */
+  public List<GamePiece> getPieces(Point point, int range, boolean forceAsPixels) {
 
     // Determine roughly how many pixels each Range element represents at the point in question
-    final int pixelsPerRangeElement = map.getMaxPixelsPerRangeUnit(point);
+    final int pixelsPerRangeElement = forceAsPixels ? 1 : map.getMaxPixelsPerRangeUnit(point);
 
     // Determine the pieces in range (ish). Pieces in the Qtree are stored in straight X,Y co-ords, so need
     // to convert the range (if in grid cells) to a pixel distance.
