@@ -1,5 +1,7 @@
 3.7.0-beta5 - ???
 
+* 12495: Mouse-over Stack Viewer 'Show move limited pieces' option no longer
+    dependent on 'Show non-stacking' option
 * 12492: Add Comment trait
 * 12478: Revert 12077 - Do not return a default value for ObscuredToOthers
 * 12470: Place Marker X Offset should default to 0, not null
