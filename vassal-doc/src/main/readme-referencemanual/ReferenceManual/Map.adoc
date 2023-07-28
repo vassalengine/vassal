@@ -524,6 +524,11 @@ Otherwise, visibility is controlled by a button on the Toolbar.
 
 *Button icon:*::  Icon for the Toolbar button.
 
+*Add to map-level Toolbar:*:: Untick this box to add the button to the Module level Toolbar instead of the current Maps Toolbar. Affects which <<ToolbarMenu.adoc#top,Toolbar Menus>> the button can be added to.
+
+NOTE: Map-level components are normally added to the Toolbar on their own Map, but in older versions of Vassal (pre 3.7), Map Shader buttons where added to the Module Toolbar. This option is provide for backwards compatibility.
+
+
 *Hotkey:*:: <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> for the Toolbar button.
 
 *All boards in map get Shaded:*::  Allows you to select which <<Board.adoc#top,Boards>> in the map to apply the shading to.
