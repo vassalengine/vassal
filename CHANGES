@@ -4,6 +4,8 @@
 * 12478: Revert 12077 - Do not return a default value for ObscuredToOthers
 * 12470: Place Marker X Offset should default to 0, not null
 * 12454: BeanShell Editor improvements: larger, multi-line, more properties
+* 12445: Add Ranged Sum/Count Functions; updated Function Builder and
+    documentation; updated Property documentation
 * 12443: Clarified MouseOverViewer documentation
 * 12439: Uniformly handle addition of standard and imported Configurables
 * 12434: FastMatch by Location now respects Deck limits
