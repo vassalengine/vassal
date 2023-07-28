@@ -196,14 +196,14 @@ Note, however, that Sub-Menu traits must always go *_below_* the traits that it 
 '''''
 
 [#Traits]
-=== Comprehensive List of Piece Traits
+=== List of Piece Traits
 
 [%autowidth]
 [cols=",",]
 |===
 |Trait| Description
 
-|<<ActionButton.adoc#top,Action Button>> | Create a clickable button on a piece.
+|<<ActionButton.adoc#top,Action Button>> | Create a clickable button on a piece that issues a Key Command when clicked.
 
 |<<AreaOfEffect.adoc#top,Area Of Effect>> | Display a shaded area around a piece.
 
@@ -211,7 +211,7 @@ Note, however, that Sub-Menu traits must always go *_below_* the traits that it 
 
 | <<BasicName.adoc#top,Basic Name>> | Specify a primary name for a piece that over-rides the Basic Piece name.
 
-| <<BasicPiece.adoc#top,Basic Piece>> | Set the Base name and image for a piece.
+| <<#BasicPiece.adoc#top,Basic Piece>> | Set the Base name and image for a piece.
 
 |<<BorderOutline.adoc#top,Border Outline>>| Specify a colored border around a piece that will appear under specified conditions.
 
@@ -221,25 +221,27 @@ Note, however, that Sub-Menu traits must always go *_below_* the traits that it 
 
 |<<Rotate.adoc#top,Can Rotate>> | Allows a piece to be rotated around its center.
 
-|<<#Clone,Clone>> | Creates a duplicate of a piece.
+|<<Clone.adoc#top,Clone>> | Creates a duplicate of a piece.
 
-|<<#Delete,Delete>> | Deletes the piece from the current game.
+|<<Comment.adoc#top,Comment>> | Creates a comment line in the Piece Definer display.
+
+|<<Delete.adoc#top,Delete>> | Deletes the piece from the current game.
 
 |<<NonStacking.adoc#top,Does not stack>> | Provides options to limit stacking, selection and movement of a piece.
 
-|<<Deselect.adoc#top,Deselect>> | Remove a piece from the current piece selection.
+|<<Deselect.adoc#top,Deselect>> | Remove a piece, or all pieces, from the current piece selection.
 
 | <<DynamicProperty.adoc#top,Dynamic Property>> | Create a named Property that can be changed.
 
-|<<GlobalHotKey.adoc#top,Global Hotkey>> | Issue a <<Concepts.adoc#hotkey,Hotkey>> to activate game <<Concepts.adoc#components,Components>>.
+|<<GlobalHotKey.adoc#top,Global Hotkey>> | Issue a <<Concepts.adoc#hotkeys,Hotkey>> to activate game <<Concepts.adoc#components,Components>>.
 
-|<<GlobalKeyCommand.adoc#top,Global Key Command>> | Issue a <<Concepts.adoc#keycommand,Key Command>> to activate multiple pieces.
+|<<GlobalKeyCommand.adoc#top,Global Key Command>> | Issue a <<Concepts.adoc#keycommands,Key Command>> to activate multiple pieces.
 
 |<<Hideable.adoc#top,Invisible>> | Hide a piece from other players by making it invisible.
 
-|<<Layer.adoc#top,Layer>> | Add additional images to a piece that can turned on and off.
+|<<Layer.adoc#top,Layer>> | Add additional images to a piece that can be turned on and off.
 
-|<<MarkMoved.adoc#top,Mark When Moved>> | Automatically flag a piece whenever it moves.
+|<<MarkMoved.adoc#top,Mark When Moved>> | Automatically highlight a piece whenever it moves.
 
 |<<PropertyMarker.adoc#top,Marker>> | Add a named Property with a fixed value.
 
@@ -247,17 +249,17 @@ Note, however, that Sub-Menu traits must always go *_below_* the traits that it 
 
 |<<Mat.adoc#top,Mat>> | Create a piece that can carry other pieces around on it.
 
-|<<MatCargo.adoc#top,Mat Cargo>> | Create a pieces that cn be carried on a Mat.
+|<<MatCargo.adoc#top,Mat Cargo>> | Create a pieces that can be carried on a Mat.
 
 |<<MenuSeparator.adoc#top,Menu Separator>> | Add a separator to the drop-down menu that is generated when you right-click on a piece.
 
-|<<Translate.adoc#top,Move fixed distance>> | Move a piece a set distance.
+|<<Translate.adoc#top,Move fixed distance>> | Move a piece a set distance on aMap from its starting point.
 
 |<<MovementTrail.adoc#top,Movement Trail>> | Show a visible history of piece movements.
 
 |<<MultiLocationCommand.adoc#top,Multi-location Command>> | Generate multiple menu commands based on Map Zone or Region names.
 
-| <<NonRectangular.adoc#top,Non-Rectangular>> | Specifiy a non-rectangular shape for a piece.
+| <<NonRectangular.adoc#top,Non-Rectangular>> | Specifiy a non-rectangular shape for a piece that will be used as the selection border.
 
 |<<Marker.adoc#top,Place Marker>> | Place a newly created piece.
 
@@ -267,7 +269,7 @@ Note, however, that Sub-Menu traits must always go *_below_* the traits that it 
 
 |<<UsePrototype.adoc#top,Prototype>> | Include traits from a pre-defined template piece.
 
-|<<Replace.adoc#top,Replace with Other>> | Replace a piece with a new piece.
+|<<Replace.adoc#top,Replace with Other>> | Replace a piece with a new, different piece.
 
 |<<ReportChanges.adoc#top,Report Action>> | Display a message in the Chat Window when a Key Command is seen.
 
@@ -279,7 +281,7 @@ Note, however, that Sub-Menu traits must always go *_below_* the traits that it 
 
 |<<SetAttachmentProperty.adoc#top,Set Attachment Property>> | Set a value in a Dynamic Property in an Attached piece.
 
-|<<SetGlobalProperty.adoc#top,Set Global Property>> | Set a value in a Global property.
+|<<SetGlobalProperty.adoc#top,Set Global Property>> | Set a value in a Zone, Map or Module level Global property.
 
 |<<SetPieceProperty.adoc#top,Set Piece Property>> | Set a value in a Dynamic Property in selected pieces.
 
@@ -293,504 +295,4 @@ Note, however, that Sub-Menu traits must always go *_below_* the traits that it 
 
 |<<TriggerAction.adoc#top,Trigger Action>>| Specify a sequence of Key Commands that can be issued in order.
 
-|===
-
-'''''
-
-[width="100%",cols="50%,50%",]
-|===
-a|
-==== <<BasicPiece.adoc#top,Basic Piece>>
-
-Every Game Piece contains a Basic Piece, which itself contains a name string and can also be assigned an image.
-For a truly simple piece this is all that is necessary.
-However, for pieces that need more complex images or combinations of them, the image from the Basic Piece element can be omitted in favor of ones from e.g.
-Layer traits.
-
-The Basic Piece exposes a list of <<Properties.adoc#top,Properties>> concerning name, location, and other common piece details.
-See the full <<BasicPiece.adoc#top,Basic Piece>> article for details.
-
-|image:images/BasicPiece.png[]
-|===
-
-[#Delete]
-
-[width="100%",cols="50%,50%",]
-|===
-|image:images/Delete.png[] a|
-
-==== Delete
-The ability to be deleted by players during a game.
-When this trait's Key Command or menu item is activated, the piece is deleted from the game.
-
-*Description:* An optional description for you own use.
-
-*Command:*  Text for the right-click context menu item that will delete the piece.
-If left blank, no context menu item will appear, but the piece can still be deleted with the Key Command.
-
-*Key command:*  The <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> that will cause the piece to be deleted.
-
-NOTE:  When this trait is activated the piece is deleted and therefore does not do any further processing on the Key Command.
-This can prevent Report Action traits from reporting the deletion, because of the <<#TraitOrder,order>> traits are processed.
-Such a situation can be worked around by using a Trigger Action trait to first send a Key Command to cause a Report Action and then send a second Key Command to process the delete.
-
-|===
-
-[#Clone]
-==== Clone
-[width="100%",cols="50%,50%",]
-|===
-a|
-
-The ability to be duplicated by players during a game.
-When this trait's Key Command or menu item is activated, an exact copy of the piece is placed in the game at the same location.
-
-*Command:*  Text for the right-click context menu item that will clone the piece.
-If left blank, no context menu item will appear, but the piece can still be cloned with the Key Command.
-
-*Key command:*  The <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> that will cause the piece to be duplicated.
-
-|image:images/Clone.png[]
-|===
-
-==== <<Layer.adoc#top,Layer>>
-
-[cols=",",]
-|===
-|image:images/Layer.png[] | A Layer is the most powerful way to add images to a piece.
-Each Layer you add can contain multiple images along with with Key Commands and/or Expressions to switch between them and activate/deactivate them.
-A piece can contain as many Layers as you wish.
-<<Layer.adoc#top,See full article for details.>>
-|===
-
-[width="100%",cols="50%,50%",]
-|===
-a|
-==== <<UsePrototype.adoc#top,Prototype>>
-
-Inserts a pre-defined set of Traits defined in a <<Prototypes.adoc#Definition,Prototype Definition>> elsewhere.
-This allows you to define a set of Traits for a whole class of Pieces all in one place; likewise, by changing the Prototype later your changes will automatically apply to every piece which inherits the Prototype.
-
-See <<UsePrototype.adoc#top,Prototype (Trait)>> and <<Prototypes.adoc#top,Prototype (Definition)>> for further details.
-
-|image:images/UsePrototype.png[]
-|===
-
-[width="100%",cols="50%,50%",]
-|===
-|image:images/Label.png[] a|
-==== <<Label.adoc#top,Text Label>>
-
-A text message drawn somewhere on or near the piece.
-Font sizes, colors, and position can be customized, and the text of the message can be created indirectly using the contents of <<Properties.adoc#top,Properties>>.
-
-<<Label.adoc#top,See full article for details.>>
-
-|===
-
-[width="100%",cols="50%,50%",]
-|===
-a|
-==== <<ReportChanges.adoc#top,Report Action>>
-
-Allows the piece to automatically report messages, state changes, and other game information to the chat log.
-
-<<ReportChanges.adoc#top,See full article for details.>>
-
-|image:images/ReportChanges.png[]
-|===
-
-[width="100%",cols="50%,50%",]
-|===
-|image:images/TriggerAction.png[] a|
-==== <<TriggerAction.adoc#top,Trigger Action>>
-
-Allows pieces to trigger Keystroke Commands and Named Commands.
-Triggers can be used to combine multiple commands into a single menu entry, place conditions on a command's execution, create repeating loops, and more.
-
-<<TriggerAction.adoc#top,See full article for details.>>
-
-|===
-
-[width="100%",cols="50%,50%",]
-|===
-a|
-==== <<GlobalHotKey.adoc#top,Global Hotkey>>
-
-Allows pieces to activate a function from the Toolbar, via the Hotkey associated with the button on the Toolbar.
-
-<<GlobalHotKey.adoc#top,See full article for details.>>
-
-|image:images/GlobalHotkey.png[]
-|===
-
-[width="100%",cols="50%,50%",]
-|===
-|image:images/ActionButton.png[] a|
-==== <<ActionButton.adoc#top,Action Button>>
-
-Allows a region of a piece to be configured to act like a button, invoking a command when a player clicks within the designated region.
-
-<<ActionButton.adoc#top,See full article for details.>>
-
-|===
-
-[width="100%",cols="50%,50%",]
-|===
-a|
-==== <<Rotate.adoc#top,Can Rotate>>
-
-Gives a piece, or parts of it, the ability to rotate through a specified number of facings.
-
-<<Rotate.adoc#top,See full article for details.>>
-
-|image:images/Rotate.png[]
-|===
-
-[width="100%",cols="50%,50%",]
-|===
-|image:images/Pivot.png[] a|
-==== <<Pivot.adoc#top,Can Pivot>>
-
-Gives a piece, or parts of it, the ability to pivot, i.e.
-rotate around a point other than the center.
-
-<<Pivot.adoc#top,See full article for details.>>
-
-|===
-
-[width="100%",cols="50%,50%",]
-|===
-a|
-==== <<Hideable.adoc#top,Invisible>>
-
-Allows the piece to be hidden from opponents and other non-owning players, with a toggle to reveal it.
-Appears partially transparent to the owner while it is hidden, as a reminder.
-
-The player sides who are allowed to hide the piece can be specified.
-
-<<Hideable.adoc#top,See full article for details.>>
-
-|image:images/Hideable.png[]
-|===
-
-[width="100%",cols="50%,50%",]
-|===
-|image:images/Mask.png[] a|
-==== <<Mask.adoc#top,Mask>>
-
-Allows a piece to be flipped to a generic "reverse side" so that only limited information is shown to opponents and other non-owning players.
-The most common application is to give playing cards a generic "back side" which obscures the face of the card from players who aren't currently entitled to see it.
-
-The player sides who are allowed to flip the card or piece over can be specified.
-
-<<Mask.adoc#top,See full article for details.>>
-
-|===
-
-[width="100%",cols="50%,50%",]
-|===
-a|
-==== <<SendToLocation.adoc#top,Send to Location>>
-
-Adds a command that moves a piece directly to another location.
-
-<<SendToLocation.adoc#top,See full article for details.>>
-
-|image:images/SendToLocation.png[]
-|===
-
-[width="100%",cols="50%,50%",]
-|===
-|image:images/CounterGlobalKeyCommand.png[] a|
-==== <<GlobalKeyCommand.adoc#top,Global Key Command>>
-
-Adds an action that applies a Keystroke Command or <<NamedKeyCommand.adoc#top,Named Command>> to other pieces, similar to the <<Map.adoc#GlobalKeyCommand,Global Key Command>> component of a Map Window.
-Global Key Commands are the main avenue by which pieces can prompt action by other pieces.
-
-<<GlobalKeyCommand.adoc#top,See full article for details.>>
-
-|===
-
-[width="100%",cols="50%,50%",]
-|===
-a|
-==== <<Translate.adoc#top,Move Fixed Distance>>
-
-Adds a command to move a piece a fixed distance in a direction.
-
-<<Translate.adoc#top,See full article for details.>>
-
-|image:images/Translate.png[]
-|===
-
-[width="100%",cols="50%,50%",]
-|===
-a|
-image:images/ReturnToDeck.png[]
-
-a|==== <<ReturnToDeck.adoc#top,Return to Deck>>
-
-Adds a command to send a piece to a <<Deck.adoc#top,Deck>>.
-
-Can be used to send cards to a discard pile, back to the draw pile, etc.
-Also useful with groups of chits or for fixed pools of counters.
-
-<<ReturnToDeck.adoc#top,See full article for details.>>
-
-|===
-
-[width="100%",cols="50%,50%",]
-|===
-a|
-
-==== <<NonStacking.adoc#top,Does Not Stack>>
-
-Prevents the piece from combining with other pieces to form a stack, and can also be used to control whether the piece can be moved, selected, and/or band-selected by a player.
-
-<<NonStacking.adoc#top,See full article for details.>>
-
-|image:images/NonStacking.png[]
-|===
-
-[width="100%",cols="50%,50%",]
-|===
-|image:images/PropertySheet.png[]
-a|
-
-==== <<PropertySheet.adoc#top,Property Sheet>>
-
-Provides a popup window from which players may set and view auxiliary information about a piece.
-Includes sophisticated controls for specifying single- and multi-line text notes and tick-mark boxes for depletable resources (hit points, shield levels, damage, etc.)
-
-<<PropertySheet.adoc#top,See full article for details.>>
-
-image:images/property_sheet_map.png[]
-|===
-
-
-
-[width="100%",cols="50%,50%",]
-|===
-a|
-
-==== <<Spreadsheet.adoc#top,Spreadsheet>>
-
-Attaches an editable informational table to a piece.
-Unlike a Property Sheet, it contains only plain-text fields, but can contain arbitrary numbers of rows and columns.
-
-<<Spreadsheet.adoc#top,See full article for details.>>
-
-|image:images/Spreadsheet.png[]
-|===
-
-[width="100%",cols="50%,50%",]
-|===
-|image:images/Marker.png[]
-a|
-
-==== <<Marker.adoc#top,Place Marker>>
-
-Adds a command to place another piece (of any type) at the same location as this piece.
-An optional additional command can then be applied to e.g.
-move the piece somewhere else.
-
-<<Marker.adoc#top,See full article for details.>>
-
-|===
-
-[width="100%",cols="50%,50%",]
-|===
-a|
-
-==== <<Replace.adoc#top,Replace with Other>>
-
-Adds a command that replaces this piece with a different piece.
-
-NOTE:  When this trait is activated the piece is deleted and therefore does not do any further processing on the Key Command.
-This can prevent Report Action traits from reporting the deletion, because of the <<#TraitOrder,order>> traits are processed.
-Such a situation can be worked around by using a Trigger Action trait to first send a Key Command to cause a Report Action and then send a second Key Command to process the delete.
-
-<<Replace.adoc#top,See full article for details.>>
-
-|image:images/Replace.png[]
-|===
-
-[width="100%",cols="50%,50%",]
-|===
-|image:images/NonRectangular.png[]
-a|
-
-==== <<NonRectangular.adoc#top,Non-Rectangular>>
-
-Allows pieces with unconventional shapes to use their actual image boundaries for selection and dragging.
-In technical terms, directs the piece to ignore transparent areas of its image for purposes of selecting the piece with the mouse.
-
-<<NonRectangular.adoc#top,See full article for details.>>
-
-|===
-
-[width="100%",cols="50%,50%",]
-|===
-a|
-
-==== <<PlaySound.adoc#top,Play Sound>>
-
-Adds a command that plays a specified sound when invoked.
-
-<<PlaySound.adoc#top,See full article for details.>>
-
-|image:images/PlaySound.png[]
-|===
-
-[width="100%",cols="50%,50%",]
-|===
-|image:images/MarkMoved.png[]
-a|
-
-==== <<MarkMoved.adoc#top,Mark When Moved>>
-
-Allows the piece to be automatically marked with a visible image when moved in a Map Window.
-
-<<MarkMoved.adoc#top,See full article for details.>>
-
-|===
-
-[width="100%",cols="50%,50%",]
-|===
-a|
-
-==== <<MovementTrail.adoc#top,Movement Trail>>
-
-Pieces with this trait will leave behind a graphical trail showing the positions through which the piece has been moved.
-
-<<MovementTrail.adoc#top,See full article for details.>>
-
-|image:images/MovementTrail.png[]
-|===
-
-[width="100%",cols="50%,50%",]
-|===
-|image:images/AreaOfEffect.png[]
-a|
-
-==== <<AreaOfEffect.adoc#top,Area Of Effect>>
-
-The Area of Effect trait allows you to graphically highlight an area surrounding a gamepiece.
-The area is shaded with a specified color and transparency.
-Alternatively, you canpoint to a <<Map.adoc#MapShading,Map Shading>> component, contributing to the area that it draws.
-
-<<AreaOfEffect.adoc#top,See full article for details.>>
-
-|===
-
-[width="100%",cols="50%,50%",]
-|===
-a|
-
-==== <<SubMenu.adoc#top,Sub-Menu>>
-
-Creates a sub-menu in the right-click context menu and groups some of the piece's other commands into it.
-
-<<SubMenu.adoc#top,See full article for details.>>
-
-|image:images/SubMenu.png[]
-|===
-
-[width="100%",cols="50%,50%",]
-|===
-|image:images/MenuSeparator.png[]
-a|
-
-==== <<MenuSeparator.adoc#top,Menu Separator>>
-
-Creates a menu separator (horizontal bar) in the piece's right-click context menu.
-
-<<MenuSeparator.adoc#top,See full article for details.>>
-
-|===
-
-[width="100%",cols="50%,50%",]
-|===
-a|
-
-==== <<RestrictCommands.adoc#top,Restrict Commands>>
-
-Hides or removes key/menu commands from the piece when certain conditions apply.
-
-<<RestrictCommands.adoc#top,See full article for details.>>
-
-|image:images/RestrictCommands.png[]
-|===
-
-[width="100%",cols="50%,50%",]
-|===
-|image:images/RestrictedAccess.png[]
-a|
-
-==== <<RestrictedAccess.adoc#top,Restricted Access>>
-
-Limits control of a Piece by opponents and other non-owning players.
-Such players will not be able to access protected commands of the piece.
-
-<<RestrictedAccess.adoc#top,See full article for details.>>
-
-|===
-
-[width="100%",cols="50%,50%",]
-|===
-a|
-==== <<PropertyMarker.adoc#top,Marker>>
-
-Assigns a fixed value to a named property on a piece.
-Analogous to creating a "constant" in programming.
-
-<<PropertyMarker.adoc#top,See full article for details.>>
-
-|image:images/PropertyMarker.png[]
-|===
-
-[width="100%",cols="50%,50%",]
-|===
-|image:images/DynamicProperty.png[]
-a|
-==== <<DynamicProperty.adoc#top,Dynamic Property>>
-
-Adds a named property to the piece, with a user-changeable value.
-Allows any number of commands to change and manipulate the value to be defined.
-
-<<DynamicProperty.adoc#top,See full article for details.>>
-|===
-[width="100%",cols="50%,50%",]
-|===
-a|
-==== <<CalculatedProperty.adoc#top,Calculated Property>>
-
-Adds a named property to the piece, whose value is automatically calculated according to a specified formula.
-
-<<CalculatedProperty.adoc#top,See full article for details.>>
-
-|image:images/CalculatedProperty.png[]
-|===
-[width="100%",cols="50%,50%",]
-|===
-|
-image:images/SetGlobalProperty.png[]
-a|
-==== <<SetGlobalProperty.adoc#top,Set Global Property>>
-
-Defines commands to change the value of a <<GlobalProperties.adoc#top,Global Property>>.
-
-<<SetGlobalProperty.adoc#top,See full article for details.>>
-|===
-[width="100%",cols="50%,50%",]
-|===
-a|
-==== <<Mat.adoc#top,Mat />> <<MatCargo.adoc#top,Mat Cargo>>
-
-Allows designated smaller "cargo" pieces to be moved and optionally rotated along with a larger "mat" piece.
-
-<<Mat.adoc#top,See full article for details.>>
-
-|image:images/Mat2.png[]
 |===
