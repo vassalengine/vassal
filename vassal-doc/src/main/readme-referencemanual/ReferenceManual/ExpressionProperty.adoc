@@ -130,7 +130,7 @@ Return the value of the Property named _'Supplies'_ from the first piece attache
 #[ Trait Only ]#| Return the value of the property from a specific attached piece.
 
 [example]
-GetAttachProperty("Supplies", "SUP", 4)  +
+GetAttachProperty("SUP", "Supplies", 4)  +
 
 Return the value of the Property named _'Supplies'_ from the 4th piece attached to the current piece using the attachment name _'SUP'_.
 
@@ -139,7 +139,7 @@ Return the value of the Property named _'Supplies'_ from the 4th piece attached 
 #[ Trait Only ]#| Return the value of the property from an attached piece with a specified name.
 
 [example]
-GetAttachProperty("Supplies", "SUP", "RU-2")  +
+GetAttachProperty("SUP", "Supplies", "RU-2")  +
 
 Return the value of the Property named _'Supplies'_ from the piece attached to the current piece using the attachment name _'SUP'_ that has a Basic Name of '_RU-2'_.
 
@@ -148,7 +148,7 @@ Return the value of the Property named _'Supplies'_ from the piece attached to t
 #[ Trait Only ]#| Return the value of the property from an attached piece that matches a <<PropertyMatchExpression.adoc#top,Property Match Expression>>.
 
 [example]
-GetAttachProperty("Supplies", "SUP", "{Suppressed==false}")  +
+GetAttachProperty("SUP", "Supplies", "{Suppressed==false}")  +
 
 Return the value of the Property named _'Supplies'_ from the piece attached to the current piece using the attachment name _'SUP'_ that has a value of _false_ for the property name '_Suppressed_'.
 |===

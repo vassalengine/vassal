@@ -10,6 +10,9 @@
 The Toolbar Menu component lets you group buttons from the <<Toolbar.adoc#top,Toolbar>> of the main <<GameModule.adoc#top,Module>> window or a <<Map.adoc#top,Map>> window into a drop-down menu.
 Each button named in this component will be removed from the Toolbar and instead appear as a menu item in the drop-down menu.
 
+NOTE: Buttons defined in a Map or any subcomponents of a Map can only be added to a Toolbar Menu defined on that Map. +
+Buttons defined in any other Components can only be added to a Toolbar Menu defined at the Module level.
+
 [width="100%",cols="50%a,^50%a",]
 |===
 |

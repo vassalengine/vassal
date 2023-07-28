@@ -20,8 +20,35 @@ package VASSAL.build.module.map;
 
 import VASSAL.build.AbstractFolder;
 import VASSAL.build.AbstractToolbarItem;
+import VASSAL.build.AutoConfigurable;
+import VASSAL.build.Buildable;
+import VASSAL.build.GameModule;
+import VASSAL.build.module.GameComponent;
+import VASSAL.build.module.Map;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.map.boardPicker.Board;
+import VASSAL.command.Command;
+import VASSAL.configure.ColorConfigurer;
+import VASSAL.configure.Configurer;
+import VASSAL.configure.ConfigurerFactory;
+import VASSAL.configure.IconConfigurer;
+import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.TranslatableStringEnum;
+import VASSAL.configure.VisibilityCondition;
+import VASSAL.counters.Decorator;
+import VASSAL.counters.GamePiece;
+import VASSAL.counters.Stack;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.UniqueIdManager;
+import VASSAL.tools.image.ImageUtils;
+import VASSAL.tools.imageop.AbstractTileOpImpl;
+import VASSAL.tools.imageop.ImageOp;
+import VASSAL.tools.imageop.Op;
+
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -44,33 +71,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
-import VASSAL.build.AutoConfigurable;
-import VASSAL.build.Buildable;
-import VASSAL.build.GameModule;
-import VASSAL.build.module.GameComponent;
-import VASSAL.build.module.Map;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.map.boardPicker.Board;
-import VASSAL.command.Command;
-import VASSAL.configure.ColorConfigurer;
-import VASSAL.configure.Configurer;
-import VASSAL.configure.ConfigurerFactory;
-import VASSAL.configure.IconConfigurer;
-import VASSAL.configure.StringArrayConfigurer;
-import VASSAL.configure.VisibilityCondition;
-import VASSAL.counters.Decorator;
-import VASSAL.counters.GamePiece;
-import VASSAL.counters.Stack;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.UniqueIdManager;
-import VASSAL.tools.image.ImageUtils;
-import VASSAL.tools.imageop.AbstractTileOpImpl;
-import VASSAL.tools.imageop.ImageOp;
-import VASSAL.tools.imageop.Op;
-
 /**
  * Draw shaded regions on a map.
  *
@@ -92,6 +92,8 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
   public static final String ALL_BOARDS = "Yes"; //NON-NLS (really)
   public static final String EXC_BOARDS = "No, exclude Boards in list"; //NON-NLS (really)
   public static final String INC_BOARDS = "No, only shade Boards in List"; //NON-NLS (really)
+
+  public static final String ADD_TO_MAP_TOOLBAR = "addToMapToolbar";
 
   protected static final UniqueIdManager idMgr = new UniqueIdManager("MapShader"); //NON-NLS
 
@@ -152,6 +154,18 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
   protected AlphaComposite composite = null;
   protected AlphaComposite borderComposite = null;
   protected BasicStroke stroke = null;
+
+  protected String version = ""; //NON-NLS
+
+  /**
+   * Should the toolbar button for this shader be added to the Map toolbar instead of the Global toolbar?
+   * Map Shader buttons SHOULD be added to the Map Toolbar, but have mistakenly been added to the GLobal
+   * Toolbar since before the dawn of time. Changing this will break existing module that have already
+   * added Shader buttons to global toolbar menus.
+   * Existing Map Shaders will have addToMapToolbar default to false to maintain compatibility
+   * New Map Shaders will have addToMapToolbar set to True
+   */
+  protected boolean addToMapToolbar = false;
 
   public MapShader() {
     setButtonTextKey(BUTTON_TEXT);
@@ -438,6 +452,7 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
       BUTTON_TEXT,
       TOOLTIP,
       ICON,
+      ADD_TO_MAP_TOOLBAR,
       HOT_KEY,
       BOARDS,
       BOARD_LIST,
@@ -464,6 +479,7 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
       String.class,
       String.class,
       IconConfig.class,
+      Boolean.class,
       NamedKeyStroke.class,
       BoardPrompt.class,
       String[].class,
@@ -490,6 +506,7 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
       Resources.getString(Resources.BUTTON_TEXT),
       Resources.getString(Resources.TOOLTIP_TEXT),
       Resources.getString(Resources.BUTTON_ICON),
+      Resources.getString("Editor.MapShader.addToMapToolbar"),
       Resources.getString(Resources.HOTKEY_LABEL),
       Resources.getString("Editor.MapShader.shade_boards"), //$NON-NLS-1$
       Resources.getString("Editor.MapShader.board_list"), //$NON-NLS-1$
@@ -776,6 +793,12 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
       }
       buildBorderComposite();
     }
+    else if (ADD_TO_MAP_TOOLBAR.equals(key)) {
+      if (value instanceof String) {
+        value = Boolean.valueOf((String)value);
+      }
+      addToMapToolbar = (Boolean) value;
+    }
     else {
       super.setAttribute(key, value);
     }
@@ -830,6 +853,9 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
     }
     else if (BORDER_OPACITY.equals(key)) {
       return Integer.toString(borderOpacity);
+    }
+    else if (ADD_TO_MAP_TOOLBAR.equals(key)) {
+      return String.valueOf(addToMapToolbar);
     }
     else {
       return super.getAttributeValueString(key);
@@ -889,14 +915,24 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
       parent = ((AbstractFolder)parent).getNonFolderAncestor();
     }
 
-    final LaunchButton lb = getLaunchButton();
-    GameModule.getGameModule().getToolBar().add(lb);
-    lb.setAlignmentY(0.0F);
-    GameModule.getGameModule().getGameState().addGameComponent(this);
     map = (Map) parent;
+
+    // Create a launch button and add to correct toolbar.
+    final LaunchButton lb = getLaunchButton();
+    lb.setAlignmentY(0.0F);
+    if (addToMapToolbar) {
+      map.getToolBar().add(lb);
+    }
+    else {
+      GameModule.getGameModule().getToolBar().add(lb);
+    }
+
+    GameModule.getGameModule().getGameState().addGameComponent(this);
     map.addDrawComponent(this);
+
     idMgr.add(this);
     validator = idMgr;
+
     setAttributeTranslatable(NAME, false);
   }
 
@@ -931,5 +967,14 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
   @Override
   public List<String> getPropertyList() {
     return Arrays.asList(boardList);
+  }
+
+  @Override
+  public Configurer getConfigurer() {
+    if (map == null) {
+      // New shader being created, change default for add to Map Toolbar to True.
+      addToMapToolbar = true;
+    }
+    return super.getConfigurer();
   }
 }

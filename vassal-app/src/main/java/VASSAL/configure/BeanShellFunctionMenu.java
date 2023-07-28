@@ -11,9 +11,13 @@ import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.build.module.properties.GlobalProperties;
 import VASSAL.build.module.properties.PropertyNameSource;
+import VASSAL.counters.Attachment;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.EditablePiece;
+import VASSAL.counters.GamePiece;
+import VASSAL.counters.Labeler;
+import VASSAL.counters.PieceDefiner;
 import VASSAL.i18n.Resources;
 import VASSAL.script.expression.FunctionBuilder;
 import VASSAL.script.expression.IntBuilder;
@@ -117,10 +121,14 @@ public class BeanShellFunctionMenu extends JPopupMenu {
 
     final JMenu propertyMenu = new JMenu(Resources.getString("Editor.BeanShell.property"));
 
-    if (isPieceContext()) {
+    if (isPieceContext() || requiresGenericPiecePropertyMenu()) {
       final JMenu pieceMenu = new JMenu(Resources.getString("Editor.BeanShell.piece_property"));
       addPieceProps(pieceMenu, target);
+      if (requiresGenericPiecePropertyMenu()) {
+        addGenericPiecePropMenu(pieceMenu);
+      }
       propertyMenu.add(pieceMenu);
+
     }
 
     final JMenu globalsMenu = new JMenu(Resources.getString("Editor.BeanShell.global_property"));
@@ -585,6 +593,47 @@ public class BeanShellFunctionMenu extends JPopupMenu {
   }
 
   /**
+   * Create a menu of Generic Piece properties applicable to any piece
+   * Include properties for all possible traits.
+   * provide placeholder names for variably named properties
+   *
+   * @param menu
+   */
+  protected void addGenericPiecePropMenu(JMenu menu) {
+    final JMenu propMenu = new JMenu(Resources.getString("Editor.BeanShell.generic_piece_propertys"));
+
+    final BasicPiece basicPiece = new BasicPiece();
+    addPieceProps(propMenu, basicPiece);
+
+    /*
+     * Loop through the available traits in current VASSAL.
+     * We create a new PieceDefiner here to ensure PieceDefiner static info has been initialised
+     */
+    for (final GamePiece piece : (new PieceDefiner()).getTraitList()) {
+      final List<String> propNames = ((PropertyNameSource) piece).getPropertyNames();
+      if (! propNames.isEmpty()) {
+        final JMenu pieceMenu = new JMenu(((Decorator) piece).getBaseDescription());
+        for (final String propName : propNames) {
+          String displayName = propName;
+
+          // Add placeholders for user defined names
+          if (propName.isEmpty()) {
+            displayName = "<" + Resources.getString("Editor.BeanShell.prop_name") + ">";
+          }
+          else if (propName.startsWith("_")) {
+            displayName = "<" + Resources.getString((piece instanceof Attachment) ? "Editor.BeanShell.attach_name" : "Editor.BeanShell.trait_name") + ">" + propName;
+          }
+          else if (piece instanceof Labeler) {
+            displayName = "<" + Resources.getString("Editor.BeanShell.label_name") + ">";
+          }
+          addProp(pieceMenu, displayName, PropertyType.PIECE);
+        }
+        propMenu.add(pieceMenu);
+      }
+    }
+    menu.add(propMenu);
+  }
+  /**
    * Create a menu of Global Properties recorded in this module, based on
    * the module build structure
    */
@@ -668,5 +717,17 @@ public class BeanShellFunctionMenu extends JPopupMenu {
   protected boolean isPieceContext() {
     return configurer.isPieceContext() || configurer.getOption() == Option.PME;
   }
-  
+
+  /**
+   * Does this builder need a Generic piece property menu added to the drop-down.
+   * Needed when we are building an expression on a Piece that is not currently being edited
+   *
+   *  - Needed for all PME's
+   *  - Needed if the context level is PIECE, but we are not currently editing a piece
+   *
+   * @return true if a generic piece property Menu is required
+   */
+  protected boolean requiresGenericPiecePropertyMenu() {
+    return configurer.getOption() == Option.PME || (configurer.isPieceContext() && target == null);
+  }
 }
