@@ -257,6 +257,10 @@ public class FreeRotator extends Decorator
     return -PI_180 * getAngle();
   }
 
+  public String getRotateName() {
+    return name;
+  }
+
   @Override
   public void mySetType(String type) {
     type = type.substring(ID.length());
