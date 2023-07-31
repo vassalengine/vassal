@@ -107,11 +107,11 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
     nameCheck = new JCheckBox(Resources.getString("GameRefresher.use_basic_name"));
     panel.add(nameCheck);
-    labelerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_labeler_descr"));
+    labelerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_labeler_descr"), true);
     panel.add(labelerNameCheck);
-    layerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_layer_descr"));
+    layerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_layer_descr"), true);
     panel.add(layerNameCheck);
-    rotateNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_rotate_descr"));
+    rotateNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_rotate_descr"), true);
     panel.add(rotateNameCheck);
     testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"));
     panel.add(testModeOn);
