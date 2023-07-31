@@ -72,7 +72,6 @@ import VASSAL.counters.RestrictCommands;
 import VASSAL.counters.Restricted;
 import VASSAL.counters.ReturnToDeck;
 import VASSAL.counters.SendToLocation;
-import VASSAL.counters.SetAttachmentProperty;
 import VASSAL.counters.SetGlobalProperty;
 import VASSAL.counters.SetPieceProperty;
 import VASSAL.counters.Stack;
@@ -208,7 +207,6 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     Map.entry(BasicName.ID, BasicName::new),
     Map.entry(BorderOutline.ID, BorderOutline::new),
     Map.entry(Attachment.ID, Attachment::new),
-    Map.entry(SetAttachmentProperty.ID, SetAttachmentProperty::new),
     Map.entry(MultiLocationCommand.ID, MultiLocationCommand::new),
     Map.entry(Comment.ID, Comment::new)
   );

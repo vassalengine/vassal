@@ -28,7 +28,7 @@ Other pieces which have that same shortcut or Named Key Command filled in as the
 
 *Pre-select (Fast Match):*::  New from VASSAL 3.5, the *Fast Match* selections can be used to improve the performance of "slow" Global Key Commands by pre-matching the location and/or a single property value of the target piece. Essentially these run limited but much faster comparisons, to screen out some of the potentially hundreds of pieces needing to be checked for each Global Key Command. Fast Match expressions are _optional_ in that the same comparisons can always be run in the standard "Additional matching expression" field. Judicious use of them, however, can improve the performance of a Global Key Command by 25-33%.
 +
-See the <<FastMatch.adoc#top>> page for full details on Fast Matches.
+See the <<FastMatch.adoc#top,Fast Match>> page for full details on Fast Matches.
 
 *Additional matching expression:*::  If further refinement of which target pieces should receive the Global Key Command is needed, or if you do not wish to use Fast Match pre-selections, an Additional Matching Expression can be used. The Global Key Command will only be applied to Game Pieces which match the specified <<PropertyMatchExpression.adoc#top,Property Match Expression>>. Note that the properties named in _this_ expression are evaluated against the properties _of the target pieces_, not the properties of the piece issuing the Global Key Command.
 For example if you provided the expression _{ CurrentZone == "Europe" }_, that would use the CurrentZone property of each potential target piece (checking if _it_ is "Europe") to determine whether to apply the Global Key Command.

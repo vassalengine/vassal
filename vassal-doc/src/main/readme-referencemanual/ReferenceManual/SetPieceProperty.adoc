@@ -25,7 +25,7 @@ _{ "Resources" + GetProperty("Side")_ }. In this case when the property Side hol
 
 *Wrap:*::  If true, then when incrementing this numeric property, values will wrap around from the maximum to the minimum and vice versa.
 
-*Pre-select (Fast Match):*:: Fast match expressions help filter which pieces will have their property/properties set. See <<FastMatch.adoc#top>> for details.
+*Pre-select (Fast Match):*:: Fast match expressions help filter which pieces will have their property/properties set. See <<FastMatch.adoc#top, Fast Match>> for details.
 
 *Additional matching expression:*::  If further refinement of which target pieces should have their property/properties set is needed, or if you do not wish to use Fast Match pre-selections, an Additional Matching Expression can be used. Properties will only be set on Game Pieces which match the specified <<PropertyMatchExpression.adoc#top,Property Match Expression>>. Note that the properties named in _this_ expression are evaluated against the properties _of the target pieces_, not the properties of the piece issuing the Set Piece Property.
 For example if you provided the expression _{ CurrentZone == "Europe" }_, that would use the CurrentZone property of each potential target piece (checking if _it_ is "Europe") to determine whether to apply the property change.
@@ -66,4 +66,4 @@ They will be prompted for a new value using the text prompt entered in the *Prom
 * _Prompt user to select from list:_  Similar to _Prompt User_ but displays a list of items to select from in a drop-down menu.
 The items in the list can be generated dynamically by <<Expression.adoc#top,Expressions>>. If some items evaluate to a blank string, then those items are only purged from the menu if the <<GlobalOptions.adoc#purgeblanks,Purge Blanks option in Global Options>> is selected; otherwise the blank options appear.
 
-*SEE ALSO:* <<Attachment.adoc#top,Attachment>>, <<Properties.adoc#top,Properties>>, <<DynamicProperty.adoc#top,Dynamic Property>>, <<SetGlobalProperty.adoc#top, Set Global Property>>, <<SetAttachmentProperty.adoc#top, Set Attachment Property>>
+*SEE ALSO:* <<Attachment.adoc#top,Attachment>>, <<Properties.adoc#top,Properties>>, <<DynamicProperty.adoc#top,Dynamic Property>>, <<SetGlobalProperty.adoc#top, Set Global Property>>

@@ -39,6 +39,7 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import javax.swing.KeyStroke;
 
@@ -301,6 +302,7 @@ public class GlobalCommand implements Auditable {
       String fastX = "";
       String fastY = "";
       String fastAttachment = "";
+      String fastAttachmentId = "";
 
       // Context piece, if we are doing current-piece-relative fast-matching (may be null otherwise)
       final GamePiece curPiece = target.getCurPiece();
@@ -320,6 +322,8 @@ public class GlobalCommand implements Auditable {
         case CURATTACH:
           fastAttachment = target.targetAttachment.tryEvaluate(source, owner, "Editor.GlobalKeyCommand.attachment_name");
           fastAttachment = Expression.createExpression(fastAttachment).tryEvaluate(source, owner, "Editor.GlobalKeyCommand.attachment_name");
+          fastAttachmentId = target.targetAttachmentId.tryEvaluate(source, owner, "Editor.GlobalKeyCommand.attachment_id");
+          fastAttachmentId = Expression.createExpression(fastAttachmentId).tryEvaluate(source, owner, "Editor.GlobalKeyCommand.attachment_id");
           break;
         case ZONE:
           fastZone = target.targetZone.tryEvaluate(source, owner, "Editor.GlobalKeyCommand.zone_name");
@@ -549,10 +553,7 @@ public class GlobalCommand implements Auditable {
           final Set<GamePiece> pieces = new HashSet<>();  // Use Set to prevent duplication
           while (piece instanceof Decorator) {
             if (piece instanceof Attachment) {
-              final Attachment attach = (Attachment) piece;
-              if (fastAttachment.isBlank() || fastAttachment.equals(attach.getAttachName())) {
-                pieces.addAll(((Attachment) piece).getContents());
-              }
+              checkForMatchingAttachments((Attachment) piece, fastAttachment, fastAttachmentId, pieces);
             }
             piece = ((Decorator) piece).getInner();
           }
@@ -859,6 +860,40 @@ public class GlobalCommand implements Auditable {
     }
 
     return command; // Here, eat this tasty command!
+  }
+
+  /**
+   *
+   * @param attach          Attachment trait to test
+   * @param attachmentName  Optional Attachment name to check for match
+   * @param attachmentId    Optional Basic Name or Attachment Index to check for match
+   * @param pieces          List of matching pieces to update
+   */
+  protected void checkForMatchingAttachments(Attachment attach, String attachmentName, String attachmentId, Set<GamePiece> pieces) {
+    if (attachmentName.isBlank() || attachmentName.equals(attach.getAttachName())) {
+      final List<GamePiece> attachments = attach.getContents();
+      if (attachmentId.isBlank()) {
+        // No Basic Name or index specified, add all Attachments for this attachment name
+        pieces.addAll(attachments);
+      }
+      else {
+        // A specific Basic Name or Attachment Index has been requested
+        final int parse = NumberUtils.toInt(attachmentId);
+        if (parse > 0 && parse <= attachments.size()) {
+          // A valid Attachment index has been supplied, just return that entry
+          // NOTE: Attachment Indices start at 1!!!
+          pieces.add(attachments.get(parse - 1));
+        }
+        else {
+          // A Basic name has been specified, search through the attachments for matching Basic Names
+          for (final GamePiece p : attachments) {
+            if (attachmentId.equals(p.getProperty(BasicPiece.BASIC_NAME))) {
+              pieces.add(p);
+            }
+          }
+        }
+      }
+    }
   }
 
   /**
