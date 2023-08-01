@@ -36,10 +36,10 @@ public class AttachmentManager {
   /**
    * A Map of the set of Attachment traits that are using the same Attachment name
    */
-  private final java.util.Map<String, HashSet<Attachment>> attachments = new HashMap<>();
+  private final java.util.Map<String, HashSet<Attachment>> attachments;
 
   public AttachmentManager() {
-
+    attachments = new HashMap<>();
   }
 
   /**
@@ -120,7 +120,7 @@ public class AttachmentManager {
 
       // Find all attachments using this Attach name and process each one
       final HashSet<Attachment> currentAttachments = attachments.computeIfAbsent(attachName, k -> new HashSet<>());
-      final List<GamePiece> removedAttachments = new ArrayList<>();
+
       for (final Attachment attachment : currentAttachments) {
         if (attachment.isAutoAttach()) {
           attachment.removeTarget(piece);
@@ -152,7 +152,7 @@ public class AttachmentManager {
 
         // Find all attachments using this Attach name and process each one
         final HashSet<Attachment> currentAttachments = attachments.computeIfAbsent(attachName, k -> new HashSet<>());
-        final List<GamePiece> removedAttachments = new ArrayList<>();
+
         for (final Attachment targetAttachment : currentAttachments) {
           // If the target attachment is not auto-attachable, remove any attachment back to us
           if (!targetAttachment.isAutoAttach()) {
