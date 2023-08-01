@@ -306,11 +306,6 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       }
     }
 
-    // Handles any auto-attachment traits in newly created pieces
-    if (c != null) {
-      c = c.append(GameModule.getGameModule().getGameState().getAttachmentManager().doAutoAttachments());
-    }
-
     if ((c != null) && (afterBurnerKey != null) && !afterBurnerKey.isNull()) {
       marker.setProperty(Properties.SNAPSHOT, ((PropertyExporter) marker).getProperties());
       try {
