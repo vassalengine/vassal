@@ -472,7 +472,7 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
       // Otherwise, player must have a side to be able to lock
       // Note side=null means no player sides defined, so Ok to lock
       final String side = PlayerRoster.getMySide();
-      return !PlayerRoster.OBSERVER.equals(side);
+      return side != null && !PlayerRoster.OBSERVER.equals(side);
     }
   }
 
