@@ -45,7 +45,8 @@
         { "num": 12443, "desc": "Clarified MouseOverViewer documentation" },
         { "num": 12432, "desc": "Add missing Sum & Count expressions" },
         { "num": 12427, "desc": "Fixed bad links in Reference Manual" },
-        { "num": 12341, "desc": "Expression documentation improvements" }
+        { "num": 12341, "desc": "Expression documentation improvements" },
+        { "num": 11104, "desc": "Refresh Can Rotate trait by Rotator Name match option for Game Refreshers" }
       ]
     },
     {
