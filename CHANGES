@@ -1,5 +1,6 @@
 3.7.0-beta5 - ???
 
+* 12509: Allow and empty Deck or At-start Stack to be repositioned
 * 12495: Mouse-over Stack Viewer 'Show move limited pieces' option no longer
     dependent on 'Show non-stacking' option
 * 12492: Add Comment trait

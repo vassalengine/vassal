@@ -119,7 +119,10 @@ import java.util.stream.Collectors;
 public class SetupStack extends AbstractConfigurable implements GameComponent, UniqueIdManager.Identifyable {
   private static final UniqueIdManager idMgr = new UniqueIdManager("SetupStack"); //NON-NLS
   public static final String COMMAND_PREFIX = "SETUP_STACK\t"; //NON-NLS
-  protected Point pos = new Point();
+
+  // Set a default starting position that is well on the board so the reposition drag image is easier to find
+  protected Point pos = new Point(100, 100);
+
   public static final String OWNING_BOARD = "owningBoard"; //NON-NLS
   public static final String X_POSITION = "x"; //NON-NLS
   public static final String Y_POSITION = "y"; //NON-NLS
@@ -687,7 +690,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       configureButton = new JButton(Resources.getString("Editor.SetupStack.reposition_stack"));
       configureButton.addActionListener(e -> configureStack());
     }
-    configureButton.setEnabled(getConfigureBoard(true) != null && buildComponents.size() > 0);
+    configureButton.setEnabled(getConfigureBoard(true) != null);
   }
 
   public void prepareConfigurer(Board board) {
