@@ -92,6 +92,16 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
   private static final char DELIMITER = '\t'; //$NON-NLS-1$
   public static final String COMMAND_PREFIX = "DECKREPOS" + DELIMITER; //$NON-NLS-1$
 
+  public static final String USE_NAME = "UseName";
+  public static final String USE_LABELER_NAME = "UseLabelerName";
+  public static final String USE_LAYER_NAME = "UseLayerName";
+  public static final String USE_ROTATE_NAME = "UseRotateName";
+  public static final String TEST_MODE = "TestMode";
+  public static final String DELETE_NO_MAP = "DeleteNoMap";
+  public static final String REFRESH_DECKS = "RefreshDecks";
+  public static final String DELETE_OLD_DECKS = "DeleteOldDecks";
+  public static final String ADD_NEW_DECKS = "AddNewDecks";
+
   private Action refreshAction;
   private final GpIdSupport gpIdSupport;
   private GpIdChecker gpIdChecker;
@@ -665,6 +675,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     private JCheckBox testModeOn;
     private JCheckBox labelerNameCheck;
     private JCheckBox layerNameCheck;
+    private JCheckBox rotateNameCheck;
     private JCheckBox deletePieceNoMap;
     private JCheckBox refreshDecks;
     private JCheckBox deleteOldDecks;
@@ -718,10 +729,12 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
       nameCheck = new JCheckBox(Resources.getString("GameRefresher.use_basic_name"));
       panel.add(nameCheck);
-      labelerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_labeler_descr"));
+      labelerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_labeler_descr"), true);
       panel.add(labelerNameCheck);
-      layerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_layer_descr"));
+      layerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_layer_descr"), true);
       panel.add(layerNameCheck);
+      rotateNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_rotate_descr"), true);
+      panel.add(rotateNameCheck);
       testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"));
       panel.add(testModeOn);
       deletePieceNoMap = new JCheckBox(Resources.getString("GameRefresher.delete_piece_no_map"));
@@ -770,27 +783,30 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     protected void setOptions() {
       options.clear();
       if (nameCheck.isSelected()) {
-        options.add("UseName"); //$NON-NLS-1$
+        options.add(USE_NAME); //$NON-NLS-1$
       }
       if (labelerNameCheck.isSelected()) {
-        options.add("UseLabelerName"); //$NON-NLS-1$
+        options.add(USE_LABELER_NAME); //$NON-NLS-1$
       }
       if (layerNameCheck.isSelected()) {
-        options.add("UseLayerName"); //$NON-NLS-1$
+        options.add(USE_LAYER_NAME); //$NON-NLS-1$
+      }
+      if (rotateNameCheck.isSelected()) {
+        options.add(GameRefresher.USE_ROTATE_NAME); //$NON-NLS-1$
       }
       if (testModeOn.isSelected()) {
-        options.add("TestMode"); //$NON-NLS-1$
+        options.add(TEST_MODE); //$NON-NLS-1$
       }
       if (deletePieceNoMap.isSelected()) {
-        options.add("DeleteNoMap"); //$NON-NLS-1$
+        options.add(DELETE_NO_MAP); //$NON-NLS-1$
       }
       if (refreshDecks.isSelected()) {
-        options.add("RefreshDecks"); //NON-NLS
+        options.add(REFRESH_DECKS); //NON-NLS
         if (deleteOldDecks.isSelected()) {
-          options.add("DeleteOldDecks"); //NON-NLS
+          options.add(DELETE_OLD_DECKS); //NON-NLS
         }
         if (addNewDecks.isSelected()) {
-          options.add("AddNewDecks"); //NON-NLS
+          options.add(ADD_NEW_DECKS); //NON-NLS
         }
       }
     }
@@ -798,15 +814,6 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     protected void exit() {
       setVisible(false);
     }
-
-/*
-    protected void test() {
-      setOptions();
-      options.add("TestMode");
-      refresher.log(Resources.getString("GameRefresher.refresh_counters_test_mode"));
-      refresher.execute(options, null);
-    }
-*/
 
     private boolean hasAlreadyRun = false;
 
