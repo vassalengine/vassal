@@ -78,7 +78,7 @@ A VASSAL Module is made up of two fundamentally different types of elements that
 
 [#components]
 === Components
-VASSAL Components consist of the structural pieces that are used to implement a game. Some key Components used in nearly every module are
+VASSAL Components consist of the structural pieces that are used to implement a game. Some key Components used in nearly every module are:
 
 * <<Map.adoc#top, Maps>> that combine one or more boards into a playing surface that <<#pieces,Pieces>> can be placed on.
 * <<Board.adoc#top,Boards>> that implement an individual map or part of map
