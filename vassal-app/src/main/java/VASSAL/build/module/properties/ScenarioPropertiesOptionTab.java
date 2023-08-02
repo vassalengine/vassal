@@ -91,8 +91,9 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
   /** Current locked status of the tab recorded in the UI, but not yet saved **/
   protected boolean uiTabLock;
 
-  /** User who locked the UI **/
+  /** User and password who locked the UI **/
   protected String uiTabLockUser;
+  protected String uiTabLockPw;
 
   /** Date/Time of lock */
   protected String uiTabLockDt;
@@ -284,6 +285,7 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
     uiTabLock = isLocked();
     uiTabLockUser = lockedByuser;
     uiTabLockDt = lockedDt;
+    uiTabLockPw = lockedBypw;
     rebuildUI();
     return uiPanel;
   }
@@ -356,13 +358,15 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
     if (JOptionPane.YES_OPTION ==
       JOptionPane.showConfirmDialog(uiPanel, sb.toString(), Resources.getString("ScenarioProperties.lock_title"), JOptionPane.YES_NO_OPTION)) {
       uiTabLock = lock;
-      uiTabLockUser = (String) GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME);
+      uiTabLockUser = lock ? (String) GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME) : "";
+      uiTabLockPw = lock ? (String) GameModule.getGameModule().getPrefs().getValue(GameModule.SECRET_NAME) : "";
       final Instant now = Instant.now();
       final DateTimeFormatter fmt = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.MEDIUM);
       final String utc = fmt.withZone(ZoneOffset.UTC).format(now);
       uiTabLockDt = utc + " UTC";
-      refreshLockUI();
     }
+
+    refreshLockUI();
   }
 
   /**
@@ -404,11 +408,11 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
     Command c;
     if (locking) {
       c = new LockScenarioOptionsTab(this, user, pw, lockDt);
-      c = c.append(new Chatter.DisplayText(gm.getChatter(), Resources.getString("ScenarioProperties.lockReport", getConfigureName(), user)));
+      c = c.append(new Chatter.DisplayText(gm.getChatter(), "*" + deHtml(Resources.getString("ScenarioProperties.lockReport", getConfigureName(), user))));
     }
     else {
       c = new LockScenarioOptionsTab(this, "", "", "");
-      c = c.append(new Chatter.DisplayText(gm.getChatter(), Resources.getString("ScenarioProperties.unlockReport", getConfigureName(), user)));
+      c = c.append(new Chatter.DisplayText(gm.getChatter(), "*" + deHtml(Resources.getString("ScenarioProperties.unlockReport", getConfigureName(), user))));
     }
 
     c.execute();
@@ -416,6 +420,19 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
 
   }
 
+  private String deHtml(String message) {
+    int pos = message.toUpperCase().indexOf("<HTML>");
+    if (pos > 0) {
+      message = message.substring(0, pos) + message.substring(pos + 6);
+    }
+
+    pos = message.toUpperCase().indexOf("</HTML>");
+    if (pos > 0) {
+      message = message.substring(0, pos) + message.substring(pos + 7);
+    }
+
+    return message;
+  }
   /**
    * Is the current user allowed to change the locked state of a Scenario Option tab
    *  - A Locked tab can only be unlocked by the user who locked it.
@@ -432,7 +449,7 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
     final String pw = (String) gm.getPrefs().getValue(GameModule.SECRET_NAME);
 
     if (isUiLocked()) {
-      return getLockedBypw().equals(pw);
+      return getLockedBypw().equals(pw) || uiTabLockPw.equals(pw);
     }
     else {
 
