@@ -11,7 +11,6 @@ import VASSAL.i18n.Resources;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ListScenarioProperty extends AbstractScenarioProperty {
@@ -76,12 +75,10 @@ public class ListScenarioProperty extends AbstractScenarioProperty {
         value = StringArrayConfigurer.stringToArray((String) value);
       }
       final String[] newOptions = ((String[]) value);
-
-      if (! Arrays.equals(options, newOptions)) {
-        // Clear our configurer to force the initial values list to repopulate next time it is opened
-        config = null;
-      }
       options = newOptions;
+
+      // Clear our configurer to force the initial values list to repopulate next time it is opened
+      config = null;
     }
     else {
       super.setAttribute(key, value);

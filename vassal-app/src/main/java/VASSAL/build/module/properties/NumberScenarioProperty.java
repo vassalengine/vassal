@@ -20,7 +20,7 @@ public class NumberScenarioProperty extends AbstractScenarioProperty {
     if (INITIAL_VALUE.equals(key)) {
       if (value instanceof String) {
         try {
-          value = Integer.parseInt(getPropertyValue());
+          value = Integer.parseInt((String) value);
         }
         catch (Exception ignored) {
           value = Integer.valueOf(0);
