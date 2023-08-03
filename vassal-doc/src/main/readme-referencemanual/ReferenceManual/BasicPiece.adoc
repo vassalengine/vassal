@@ -14,7 +14,7 @@ The image is optional, or different pieces can share the same image, but you sho
 Simple piece images can be created from scratch within Vassal using <<GamePieceImageDefinitions.adoc#top,Game Piece Image Definitions>>, but you will usually get a better result by loading images sourced from existing artwork or created with specialist graphics software.
 
 To give a piece more complex behaviors, you can add more Traits to it in the <<GamePiece.adoc#top,Piece Definer>> dialog.
-For example you could omit or remove the image from the Basic Piece and instead add a <<Layer.adoc#top,Layer>> trait to allow the piece to use multiple images.
+For example, you could omit or remove the image from the Basic Piece and instead add a <<Layer.adoc#top,Layer>> trait to allow the piece to use multiple images.
 
 [width="100%",cols="50%a,^50%a",]
 |===
@@ -36,6 +36,7 @@ image:images/BasicPiece2.png[]
 _Choosing an image that has already been loaded into the module._
 
 |===
+Back to <<GamePiece.adoc#Traits, Trait List>>
 
 '''''
 

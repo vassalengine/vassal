@@ -44,7 +44,7 @@ NOTE: If you later need to do arithimetic on this value in a Beanshell expressio
 [#disableindex]
 *Disable use of location indexes to speed up Global Key Command?*:: A new feature was added to Vassal 3.7 to speed up the execution of all varieties of Global Key Commands (GKCs) where a <<FastMatch.adoc#top,Fast-Match>> 'by location' has been specified. It also speeds up all Ranged GKCs. The use of these indexes can cause the GKCs to be applied to matching pieces in a different order than previously. Modules should not make any assumptions about the order that GKCs are applied to matching pieces. This option turns off the use of location indexes to speed up GKCs and reverts to the slower pre 3.7 behaviour.
 
-*Icons and hotkeys:*:: You can specify your own button icons and keyboard shortcuts for the logfile step/undo buttons and the button that shows/hides the server controls and the button that displays the Debug Window.
+*Icons and hotkeys:*:: You can specify your own button icons and keyboard shortcuts for the logfile step/undo buttons, the button that shows/hides the server controls, a button to display the Debug Window and a button to show the <<ScenarioProperties.adoc#top,Scenario Properties>> windows if you have defined any.
 
 |image:images/GlobalOptions.png[]
 |===
@@ -54,9 +54,10 @@ NOTE: If you later need to do arithimetic on this value in a Beanshell expressio
 [width="100%",cols="50%a,^50%a",]
 |===
 a|
+[#custom]
 === Sub-Components
 
-You may add your own arbitrary preference settings to the global options.
+You may add your own custom preference settings to the global options.
 To add your own preferences, right-click on the _[Global Options]_ component in the Editor and select one of the _Add_ options.
 The different sub-components support different constraints on the values of the preference setting.
 The values of these preference settings are exposed as <<Properties.adoc#top,Properties>>.

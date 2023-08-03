@@ -18,11 +18,13 @@
 package VASSAL.build;
 
 import VASSAL.build.module.Chatter;
+import VASSAL.build.module.GameRefresher;
 import VASSAL.build.module.PrototypeDefinition;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.Embellishment;
+import VASSAL.counters.FreeRotator;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Labeler;
 import VASSAL.counters.Marker;
@@ -38,6 +40,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 
 /**
  * Build a cross-reference of all GpId-able elements in a module or ModuleExtension,
@@ -67,8 +70,6 @@ public class GpIdChecker {
   // This constructor is used by the GameRefresher to refresh a game with extensions possibly loaded
   public GpIdChecker(Set<String> options) {
     this();
-//    this.useName = useName;
-//    this.useLabelerName = useLabelerName;
     this.extensionsLoaded = true;
     if (!options.isEmpty()) {
       this.refresherOptions.addAll(options);
@@ -76,14 +77,16 @@ public class GpIdChecker {
   }
 
   public boolean useLabelerName() {
-    return refresherOptions.contains("UseLabelerName"); //$NON-NLS-1$
+    return refresherOptions.contains(GameRefresher.USE_LABELER_NAME); //$NON-NLS-1$
   }
   public boolean useLayerName() {
-    return refresherOptions.contains("UseLayerName"); //$NON-NLS-1$
+    return refresherOptions.contains(GameRefresher.USE_LAYER_NAME); //$NON-NLS-1$
   }
-
+  public boolean useRotateName() {
+    return refresherOptions.contains(GameRefresher.USE_ROTATE_NAME); //$NON-NLS-1$
+  }
   public boolean useName() {
-    return refresherOptions.contains("UseName"); //$NON-NLS-1$
+    return refresherOptions.contains(GameRefresher.USE_NAME); //$NON-NLS-1$
   }
 
   /**
@@ -264,31 +267,6 @@ public class GpIdChecker {
     return oldPiece;
   }
 
-
- /* public boolean findUpdatedPiece(GamePiece oldPiece) {
-    // Find a slot with a matching gpid
-    final String gpid = (String) oldPiece.getProperty(Properties.PIECE_ID);
-    if (gpid != null && gpid.length() > 0) {
-      final SlotElement element = goodSlots.get(gpid);
-      if (element != null) {
-        return true;
-      }
-    }
-
-    // Failed to find a slot by gpid, try by matching piece name if option selected
-    if (useName()) {
-      final String oldPieceName = Decorator.getInnermost(oldPiece).getName();
-      for (final SlotElement el : goodSlots.values()) {
-        final GamePiece newPiece = el.getPiece();
-        final String newPieceName = Decorator.getInnermost(newPiece).getName();
-        if (oldPieceName.equals(newPieceName)) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  }*/
   /**
    * Copy as much state information as possible from the old
    * piece to the new piece
@@ -351,6 +329,14 @@ public class GpIdChecker {
             if (useLayerName()) {
               final String nameToFind = ((Embellishment)decoratorNewPc).getLayerName();
               if (((Embellishment) d).getLayerName().equals(nameToFind)) {
+                return d.myGetState();
+              }
+            }
+          }
+          else if (d instanceof FreeRotator) {
+            if (useRotateName()) {
+              final String nameToFind = ((FreeRotator)decoratorNewPc).getRotateName();
+              if (((FreeRotator) d).getRotateName().equals(nameToFind)) {
                 return d.myGetState();
               }
             }

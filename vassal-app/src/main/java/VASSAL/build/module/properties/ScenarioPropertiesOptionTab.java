@@ -46,7 +46,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.awt.Component;
 import java.time.Instant;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -64,6 +63,7 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
   public static final String NAME = "name"; // NON-NLS
   public static final String DESCRIPTION = "description"; // NON-NLS
   public static final String REPORT = "report"; // NON-NLS
+  public static final String ALIGN_LABELS_RIGHT = "alignLabelsRight"; // NON-NLS
 
   public static final String REPORT_PROP_NAME = "propertyName"; // NON-NLS
   public static final String REPORT_OLD_VALUE = "oldValue"; // NON-NLS
@@ -75,6 +75,9 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
   protected MutablePropertiesContainer parentContainer;
   protected Buildable parent; // Since we delegate all the action up to the ScenarioOptions component
   protected FormattedString reportFormat = new FormattedString(Resources.getString("ScenarioOptions.default_report"));
+
+  /** Should the labels on the tab be aligned right or left? **/
+  protected boolean alignLabelsRight = true;
 
   /** Username that locked this tab **/
   protected String lockedByuser = "";
@@ -88,10 +91,11 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
   /** Current locked status of the tab recorded in the UI, but not yet saved **/
   protected boolean uiTabLock;
 
-  /** User who locked the UI **/
+  /** User and password who locked the UI **/
   protected String uiTabLockUser;
+  protected String uiTabLockPw;
 
-  /** UTC Date/Time of lock */
+  /** Date/Time of lock */
   protected String uiTabLockDt;
 
   protected JLabel lockLabel;
@@ -108,7 +112,7 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
 
   @Override
   public String[] getAttributeNames() {
-    return new String[]{NAME, DESCRIPTION, REPORT};
+    return new String[]{NAME, DESCRIPTION, REPORT, ALIGN_LABELS_RIGHT};
   }
 
   @Override
@@ -121,6 +125,12 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
     }
     else if (REPORT.equals(key)) {
       reportFormat.setFormat((String) value);
+    }
+    else if (ALIGN_LABELS_RIGHT.equals(key)) {
+      if (value instanceof String) {
+        value = Boolean.valueOf((String) value);
+      }
+      alignLabelsRight = (Boolean) value;
     }
   }
 
@@ -135,6 +145,9 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
     else if (REPORT.equals(key)) {
       return reportFormat.getFormat();
     }
+    else if (ALIGN_LABELS_RIGHT.equals(key)) {
+      return String.valueOf(alignLabelsRight);
+    }
     return null;
   }
 
@@ -143,13 +156,14 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
     return new String[]{
       Resources.getString(Resources.NAME_LABEL),
       Resources.getString(Resources.DESCRIPTION),
-      Resources.getString(Resources.REPORT_FORMAT_LABEL)
+      Resources.getString(Resources.REPORT_FORMAT_LABEL),
+      Resources.getString("Editor.ScenarioProperties.align_labels_right")
     };
   }
 
   @Override
   public Class<?>[] getAttributeTypes() {
-    return new Class[]{String.class, String.class, ChangeOptionConfig.class};
+    return new Class[]{String.class, String.class, ChangeOptionConfig.class, Boolean.class};
   }
 
   @Override
@@ -271,6 +285,7 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
     uiTabLock = isLocked();
     uiTabLockUser = lockedByuser;
     uiTabLockDt = lockedDt;
+    uiTabLockPw = lockedBypw;
     rebuildUI();
     return uiPanel;
   }
@@ -278,7 +293,7 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
   protected void rebuildUI() {
     entries.clear();
     uiPanel.removeAll();
-    uiPanel.add(getLockUI(), "span 2, alignx left"); // NON-NLS
+
 
     // Loop through each option defined option
     for (final AbstractScenarioProperty option : getAllDescendantComponentsOf(AbstractScenarioProperty.class)) {
@@ -288,9 +303,12 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
       entries.put(option.getConfigureName(), entry);
 
       // Add the option configurer to the tab
-      uiPanel.add(new JLabel(entry.getDescription()), entry.getConfigurer());
+      uiPanel.add(new JLabel(entry.getDescription()), alignLabelsRight ? "right" : "left");
+      uiPanel.add(entry.getConfigurer().getControls());
 
     }
+
+    uiPanel.add(getLockUI(), "span 2, alignx left, gapy 10"); // NON-NLS
     refreshLockUI();
   }
 
@@ -340,14 +358,15 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
     if (JOptionPane.YES_OPTION ==
       JOptionPane.showConfirmDialog(uiPanel, sb.toString(), Resources.getString("ScenarioProperties.lock_title"), JOptionPane.YES_NO_OPTION)) {
       uiTabLock = lock;
-      uiTabLockUser = (String) GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME);
+      uiTabLockUser = lock ? (String) GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME) : "";
+      uiTabLockPw = lock ? (String) GameModule.getGameModule().getPrefs().getValue(GameModule.SECRET_NAME) : "";
       final Instant now = Instant.now();
       final DateTimeFormatter fmt = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.MEDIUM);
-      final String local = fmt.withZone(ZoneId.systemDefault()).format(now);
       final String utc = fmt.withZone(ZoneOffset.UTC).format(now);
-      uiTabLockDt = local + " (" + utc + " UTC)";
-      refreshLockUI();
+      uiTabLockDt = utc + " UTC";
     }
+
+    refreshLockUI();
   }
 
   /**
@@ -389,11 +408,11 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
     Command c;
     if (locking) {
       c = new LockScenarioOptionsTab(this, user, pw, lockDt);
-      c = c.append(new Chatter.DisplayText(gm.getChatter(), Resources.getString("ScenarioProperties.lockReport", getConfigureName(), user)));
+      c = c.append(new Chatter.DisplayText(gm.getChatter(), "*" + deHtml(Resources.getString("ScenarioProperties.lockReport", getConfigureName(), user))));
     }
     else {
       c = new LockScenarioOptionsTab(this, "", "", "");
-      c = c.append(new Chatter.DisplayText(gm.getChatter(), Resources.getString("ScenarioProperties.unlockReport", getConfigureName(), user)));
+      c = c.append(new Chatter.DisplayText(gm.getChatter(), "*" + deHtml(Resources.getString("ScenarioProperties.unlockReport", getConfigureName(), user))));
     }
 
     c.execute();
@@ -401,6 +420,19 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
 
   }
 
+  private String deHtml(String message) {
+    int pos = message.toUpperCase().indexOf("<HTML>");
+    if (pos > 0) {
+      message = message.substring(0, pos) + message.substring(pos + 6);
+    }
+
+    pos = message.toUpperCase().indexOf("</HTML>");
+    if (pos > 0) {
+      message = message.substring(0, pos) + message.substring(pos + 7);
+    }
+
+    return message;
+  }
   /**
    * Is the current user allowed to change the locked state of a Scenario Option tab
    *  - A Locked tab can only be unlocked by the user who locked it.
@@ -417,7 +449,7 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
     final String pw = (String) gm.getPrefs().getValue(GameModule.SECRET_NAME);
 
     if (isUiLocked()) {
-      return getLockedBypw().equals(pw);
+      return getLockedBypw().equals(pw) || uiTabLockPw.equals(pw);
     }
     else {
 
@@ -440,7 +472,7 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
       // Otherwise, player must have a side to be able to lock
       // Note side=null means no player sides defined, so Ok to lock
       final String side = PlayerRoster.getMySide();
-      return !PlayerRoster.OBSERVER.equals(side);
+      return side != null && !PlayerRoster.OBSERVER.equals(side);
     }
   }
 

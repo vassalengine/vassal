@@ -1,13 +1,17 @@
 == VASSAL Reference Manual
 [#top]
 
-[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > *Scenario Options*#
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > *Scenario Properties*#
 
 '''''
 
 === Scenario Properties
 
 <<ScenarioProperties.adoc#ScenarioProperty,Scenario Properties>> are a special kind of Global Property that are collected into groups in tabs within a single dialog box that is activated by the _File_ -> _Scenario Options_ menu option.
+
+A Toolbar Button with an Icon and/or a Hotkey can also be defined in the <<GlobalOptions.adoc#top,Global Options>> component to open the Scenario Properties window.
+
+The Menu option, button and hotkey are only enabled when a game is in progress AND at least one Scenario Property has been defined.
 
 Scenario Options are designed to be a central place to record scenario specific options such as special rules, visibility, weather etc.
 
@@ -16,6 +20,8 @@ Scenario Properties (or Scenario Options) are grouped together in named <<Scenar
 <<ScenarioProperties.adoc#ScenarioPropertiesOptionTab,Scenario Properties Option Tabs>> can be locked from further changes.
 
 The values of all Scenario Options are saved in each Save Game.
+
+
 
 image:images/ScenarioOptions1.png[] image:images/ScenarioOptions2.png[]
 
