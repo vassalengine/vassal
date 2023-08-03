@@ -41,6 +41,7 @@
       ],
       "other_improvements": [
         { "num": 12509, "desc": "Allow and empty Deck or At-start Stack to be repositioned" },
+        { "num": 12504, "desc": "Updated documentation for 3.7" },
         { "num": 12495, "desc": "Mouse-over Stack Viewer 'Show move limited pieces' option no longer dependent on 'Show non-stacking' option" },
         { "num": 12443, "desc": "Clarified MouseOverViewer documentation" },
         { "num": 12432, "desc": "Add missing Sum & Count expressions" },
