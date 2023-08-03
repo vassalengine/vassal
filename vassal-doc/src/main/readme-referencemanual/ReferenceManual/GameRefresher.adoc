@@ -6,20 +6,68 @@
 '''''
 
 === Refresh Counters
-When you update the <<Prototypes.adoc#top,Prototypes>> in a module, those changes will affect any *future* games started using that module, but the changes will not--by default at least--affect pieces in any ongoing games that you load with the new version of the module. VASSAL saved games include the complete definition of each piece in order to maintain saved game compatibility with older versions of a module: so that replays and saves sent to you by someone with an earlier version of the module will continue to work in the same way they always did with the old version.
+When you update the <<GamePiece.adoc#top,Game Pieces>> and <<Prototypes.adoc#top,Prototypes>> in a module, those changes will affect any *future* games started using that module, but the changes will not--by default at least--affect pieces in any ongoing games that you load with the new version of the module. VASSAL saved games include the complete definition of each piece in order to maintain saved game compatibility with older versions of a module: so that replays and saves sent to you by someone with an earlier version of the module will continue to work in the same way they always did with the old version.
 
 But particularly since the <<GameModule.adoc#PredefinedSetup, Predefined Setups>> for module scenarios are stored internally as saved games, it is often important to module designers to be able to update an existing game to use the latest prototypes. That way a module designer can often avoid re-doing complex setups simply because prototypes have been updated and improved.
 
-[width="100%",cols="50%,^50%",]
-|===
-|To use the refresher on the currently loaded game, go to the _Tools_ menu in your main VASSAL window and select _Refresh Counters_. You will be shown a dialog with several choices affecting the manner in which the operation is to be carried out.
+To use the refresher on the currently loaded game, go to the _Tools_ menu in your main VASSAL window and select _Refresh Counters_. You will be shown a dialog with several choices affecting the manner in which the operation is to be carried out.
 
 Click the _Run_ button when you are ready to perform the refresh. The chat log will show output and statistics from the operation. Once the operation is finished, pieces in the game (as well as new pieces created from <<PieceWindow.adoc#top, Game Piece Palettes>>) will make use of the most recent prototypes.
-|image:images/GameRefresher.png[]+
-|===
 
+Whenever a piece is created in a VASSAL game, the Id of the definition used to create it is saved in the Piece. This Id identifies a piece in a <<PieceWindow.adoc#top,Game Piece Palette>>, or a Piece Definition in a <<PlaceMarker.adoc#top,Place Marker>> or <<Replace.adoc#top,Replace With Other>> trait.
+
+The Game Refresher works by matching the Id in each piece in the current game to the Id's of all piece definitions in the current module to find the new definition. If a match is found, then the piece is replaced with one created from the new defintion. Then each trait in the new Piece is checked to see if there is an EXACTLY matching trait in the old definition. If an EXACT match is found, then the 'state' of the old trait is copied over (e.g. what is the current layer showing, or current rotation facing).
+
+Problems occur when the definition used to create the piece no longer exists in the module, or if traits are modified slightly so that they no longer EXACTLY match the old piece. There are various options in the Game Refresher dialog that can be used to help match and update these pieces and traits.
+
+[.text-center]
+image:images/GameRefresher.png[]
+
+[width="100%",cols="50%a",]
+|===
+| *Use counter names to identify unkown counters:*::
+Use this option when the piece defintion used to create a Game Piece no longer exists in the module. +
++
+This option tells the Refresher to find a Piece Definition with the same Basic Name as the old definition to use for the Refresh. The first such definition found will be used.
+
+*Use Label descriptions to match modified Text Label traits:*::
+If you change any of the options in a <<Label.adoc#top,Text Label>> trait, then the new definition will not exactly match the old counter and the current setting of the *Text Label* will revert to the default recorded in the new definition. +
++
+This option tells the Refresher to find a *Text Label* trait in the new definition that has the same *Description* as in the old definition. This allows the current value of the *Text Label* to be carried across to the piece, even if the *Text Label* trait has been modified as long as the Description field has not been changed.
+
+*Use Layer names to match modified Layer traits:*::
+If you change any of the options in a <<Layer.adoc#top,Layer>> trait, then the new definition will not exactly match the old counter and the current Activation and Layer level will revert to the default recorded in the new definition. +
++
+This option tells the Refresher to find a *Layer* trait in the new definition that has the same *Name* as in the old definition. This allows the current activation status and Layer level to be carried across to the piece, even if the *Layer* trait has been modified as long as the *Name* field has not been changed.
+
+*Use Rotator names to match modified Can Rotate traits:*::
+If you change any of the options in a <<Rotate.adoc#top,Can Rotate>> trait, then the new definition will not exactly match the old counter and the current rotation angle will revert to the default recorded in the new definition. +
++
+This option tells the Refresher to find a *Can Rotate* trait in the new definition that has the same *Rotator Name* as in the old definition. This allows the current rotation angle to be carried across to the piece, even if the *Can Rotate* trait has been modified as long as the *Rotator Name* field has not been changed.
+
+*Refresh Counters - Test Mode - Game will not be updated:*::
+Runs a full refresh and generates a report on how many counters are refreshed and how many could not be refreshed using the current options, but does NOT make any changes to the module.
+
+*Delete pieces without a map:*::
+Remove any pieces found in the game that do not exist on a Map. These pieces would be inaccessible to players and are a result of Vassal bugs. This option cleans these pieces up and helps reduce the size of a saved game file.
+
+*Refresh decks' properties with latest settings from module:*::
+
+Allow <<Deck.adoc#top,Decks>> in the game to be refreshed. See the <<#DeckRefresher,Deck Refresher>> section below for full details.
+
+*Delete decks which no longer exist in the module (any contents will be left on map in a stack):*::
+
+Remove Decks from the game that no longer exist in the module. See the <<#DeckRefresher,Deck Refresher>> section below for full details.
+
+*Add decks to game which have been added to the module since this game was created (empty deck will be added):*::
+
+Add Decks to teh game that have been added to the module. See the <<#DeckRefresher,Deck Refresher>> section below for full details.
+
+
+|===
 You can then save the game, or simply continue playing it from that point.
 
+[#DeckRefresher]
 ==== Deck Refresher
 
 As of VASSAL 3.6 you can also refresh the <<Deck.adoc#top, Decks>> in a module. Like Game Pieces, Decks are not normally updated from the module definitions _during_ a game, and so if you have an updated version of the module and load a saved game the deck will still behave according to the original settings. This maintains backward-compatibility with saves and logs made with earlier versions of a module, but it can become awkward when managing modules that use <<GameModule.adoc#PredefinedSetup,Pre-defined Setups>> as starting positions. The Deck Refresher lets you update, add, and delete decks in a game, for this reason.

@@ -3,35 +3,34 @@
 
 [.small]#<<index.adoc#toc,Home>> > *Concepts*#
 
-
 = Concepts
+
+A brief overwiew of some of the main concepts you need to know to get started creating a VASSAL module.
 
 * <<#Module,Module>> +
 * <<#extension,Extension>> +
 * <<#componentsandpieces,Components and Pieces>> +
 ** <<#components,Components>> +
 ** <<#pieces,Pieces>> +
+*** <<#stackLayers,Stacking and Game Piece Layers>> +
+*** <<#stack,Stacks>> +
+*** <<#atstart,At-Start Stacks>> +
+*** <<#deck,Decks>> +
+* <<#hotkeys_and_key_commands,Hotkeys and Key Commands>>
+** <<#hotkeys,Hotkeys>> +
+** <<#keycommands,Key Commands>> +
+* <<#values,Values in VASSAL>> +
+* <<#properties,Properties>> +
+** <<#globalProperties, Global Properties>> +
+** <<#pieceProperties, Piece Properties>> +
+** <<#propertyVisibility,Property Visibility>> +
+* <<#expressions,Expressions>> +
+** <<#oldStyle,Old-Style Expressions>> +
+** <<#beanshell,BeanShell Expressions>> +
+** <<#PME,Property Match Expressions>> +
 
-Component +
-Hot Key +
-Map +
-Player Hand +
-Board +
-Zone +
-Piece +
-Prototype +
-Stack +
-Deck +
-At-Start Stack +
-Key Command +
-Global Key Command +
-Values +
-Properties +
-Piece Properties +
-Global Properties +
-Translation +
-BeanShell +
-
+=== Property Match Expressions
+'''
 [#module]
 == Module
 All the pieces that make up a Vassal implementation of a game are collected together into a single file called a <<GameModule.adoc#top,*Module*>>, which typically have a `.vmod` suffix. +
@@ -70,7 +69,7 @@ A VASSAL Module is made up of two fundamentally different types of elements that
 
 | Duplication | Only one of each Component exists in a game. | There can be multiple instances of each Piece in a game. +
 
-| Activation | Activated by <<#hotkey,Hotkeys>>, ignore <<#keycommand,Key Commands>>. | Activated by <<#keycommand,Key Commands>>, ignore  <<#hotkey,Hotkeys>>. +
+| Activation | Activated by <<#hotkeys,Hotkeys>>, ignore <<#keycommands,Key Commands>>. | Activated by <<#keycommands,Key Commands>>, ignore  <<#hotkeys,Hotkeys>>. +
 
 | Toolbar Buttons | Many Components can be activated by buttons that reside on the main Vassal toolbar. | Pieces are never associated with a Toolbar button.
 | Flexibility | Limited to in-built configuration and flexibility provided by core VASSAL. | Highly configurable and extensible by module designer.
@@ -79,74 +78,175 @@ A VASSAL Module is made up of two fundamentally different types of elements that
 
 [#components]
 === Components
-*Comp*
+VASSAL Components consist of the structural pieces that are used to implement a game. Some key Components used in nearly every module are:
 
-** Hot Key
-
-** Map
-
-** Board
-
-** Zone
+* <<Map.adoc#top, Maps>> that combine one or more boards into a playing surface that <<#pieces,Pieces>> can be placed on.
+* <<Board.adoc#top,Boards>> that implement an individual map or part of map
+* <<ZonedGrid.adoc#top,Zones>> identify individual subsections of a Board.
+* <<ChartWindow.adoc#top,Charts>> allow the display of reference materials.
+* <<PieceWindow.adoc#top,Game Piece Palettes>> where <<#pieces,Pieces>> can be defined.
+* <<DiceButton.adoc#top,Dice Buttons>> to roll and report on Die rolls.
 
 [#pieces]
 === Pieces
 
-** Trait
+Pieces are used to implement the individual units, counters and other display pieces that make up a game.
 
-** Key Command
+Pieces are constructed from more than 40 different 'trait's, each of which adds or modififies the behaviour of a piece. The number, order and configuration of the different traits within a piece control how it looks and acts in a VASSAL game.
 
-** Stack
+Some important traits used in many pieces are:
 
-** Deck
+* <<BasicPiece.adoc#top,Basic Piece>> defines the base image and name of a Piece.
+* <<Layer.adoc#top,Layers>> add additional layers of images to a Piece than can be shown or hidden.
+* <<Marker.adoc#top,Markers>> and <<DynamicProperty.adoc#top,Dynamic Properties>> add <<#properties,values>> to a Piece that can change over time and can be referenced in other Traits, Pieces and Components.
+* <<TriggerAction.adoc#top,Triggers>> allow sequences of actions to be generated.
+* <<Prototype.adoc#top,Prototypes>> allow a group of the same traits to be applied to different Pieces that share similar actions.
+* <<SendToLocation.adoc#top,Send To Location>> and <<Translate.adoc#top,Move Fixed Distance>> allow pieces to be moved on Command.
+* <<GlobalKeyCommand.adoc#top,Global Key Commands>> allow <<#keycommands,Key Commands>> to be sent to other pieces.
 
-** At-Start Stack
+See the <<GamePiece<<#keycommands,Game Piece>> for full details of all available traits.
 
+[#stackLayers]
+==== Stacking and Game Piece Layers
+By default, Pieces that are placed in the same Location in a Map will form a group called a Stack.
+
+[#stack]
+==== Stacks
+A Stack is a set of Pieces in the same location and Game Piece Layer.
+
+Pieces in a Stack are slightly offset from each other to give a visual cue that there are multiple pieces tacked together in that location.
+
+Clicking on a Stack selects all Pieces in the Stack and the whole Stack can be moved as one unit. Double-clicking on a Stack expands it with a greated visual offset to show more of the counters in the Stack. Individual counters in the Stack can be selected and acted on.
+
+The size of the visual offset for expanded and unexpanded Stacks is configurable in the <<Map.adoc#StackingOptions, Stacking Options>> Component of a Map.
+
+[#atstart]
+==== At-Start Stacks
+<<SetupStack.adoc#top,At-Start Stacks>> are a special kind of Stack that are defined as part of a  <<Map.adoc#top,Map>>. The Pieces on the Map are defined as part of the Map, not in a <<GamePieceWindow.adoc#top,Game Piece Palette>> like ordinary Pieces.
+
+Whenever a new game is started that uses that Map, a new Stack of those pieces is automatically created. Once the Pieces in an At-Start Stack have been moved away, the At-Start Stack no longer exists.
+
+[#deck]
+==== Decks
+<<Deck.adoc#top,Decks>> are a special version of an <<#atstart,At-Start Stack>> that have an independent existence, regardless of whether they contain any Pieces or not.
+
+Decks act like a Deck of card, to hold and potentially hide the identity of Pieces (in the case of a face-down Deck.)
+
+
+[#hotkeys_and_key_commands]
 == Hotkeys and Key Commands
 
-[#hotkey]
+image:images/KeyCommand.png[] +
+
+<<#hotkeys,Hotkeys>> and  <<#keycommands,Key Commands>> represent a Keystroke that Vassal components and Piece traits 'listen' out for and perform actions when they see one that they are interested in. They allow one VASSAL Component or Piece to activate a completely different Component or Piece.
+
+<<#hotkeys,Hotkeys>> and  <<#keycommands,Key Commands>> can be defined as an actual Keystroke that can be pressed on a keyboard, or can be defined as a 'virtual' Named Keystroke. Named Keystrokes can only be generated by VASSAL Components and Piece traits. See the <<NamedKeyCommand.adoc#top,Keystroke Commands, Named Commands, Key Commands and Hotkeys>> page for more information.
+
+<<#hotkeys,Hotkeys>> and  <<#keycommands,Key Commands>> look very similar when you define them, but they have two different uses.
+
+[#hotkeys]
 === Hotkeys
 
-[#keycommand]
+Hotkeys are recognized by VASSAL Components and are completely ignored by Pieces.
+
+Whenever a Hotkey is generated,  it is sent to ALL VASSAL Components in no particular order.
+
+.Hotkeys are generated in one of two ways:
+. By the user pressing a key or key combination while a VASSAL Map or Chart component has the focus (Not if the Chat Windows is currenly in focus).
+. By the <<DoActionButton.adoc#top,Action Button>> Component, which can initiate a sequence of Hotkeys.
+. By the <<GlobalHotKey.adoc#top,Global Hotkey>> Piece trait.
+
+[#keycommands]
 === Key Commands
+Key Commands are completely ignored by VASSAL Components.
 
-== Values in Vassal
+Whenever Key Commands are generated, they are always sent to a specific set of Pieces. The Key Commands are sent to every trait within the selected set of pieces, that can then react to them if they are configured to do so.
 
+.Key Commands are generated in the following ways:
+. By right-clicking on a Piece and selecting a Menu Command. The Key Command associated with tha Menu Command will be sent to the piece that is being right-clicked.
+. By activating a <<TriggerAction.adoc#top,Trigger Action>> trait that can issue a sequence of Key Commands to the Piece that contains it.
+. By activating any <<GlobalKeyCommand.adoc#top,Global Key Command>> Component or Piece trait to send a Key Command to a specific group of Pieces selected by the conditions specified in the <<GlobalKeyCommand.adoc#top,Global Key Command>>.
+
+
+[#values]
+== Values in VASSAL
+Al values used in VASSAL are stored as strings of characters. A number like 42 is actually stored as "42". True and False values are stored as "true" and "false".
+
+When needed, Vassal will convert to and from numbers and true/false values, for example when adding numbers, or checking of a condition is true. You generally do not need to worry about this, but it is good to understand what is happening under the hood.
+
+In general all Components and Piece Traits that use numbers, require whole numbers (Integers).
+
+Decimal numbers (e.g. 1.5) can be used and stored if you are experienced enough to know the limitations.
+
+[#properties]
 == Properties
-* Properties
+<<Properties.adoc#top, Properties>> are named values provided by VASSAL, by Components and by Pieces that can be referenced and used in other Components and Pieces.
 
-Making a GP of the same name will have no effect. Each individual Property is completely unique and unrelated. When you reference a property named ‘X’ in a piece trait, the following happens to find a value for that property. The first find of a value of property ‘X’ is used as the value:
+The values of Properties can change over time and represent the current state of the different Pieces and Components in the current game and of VASSAL itself.
 
-Search each trait in the current piece to see if any of the traits has a value for property ‘X’. The traits are searched in reverse order (bottom up) from what they appear in the Piece Definer.
+See the <<Properties.adoc#combined, Properties Page>> for a comprehensive list of the Properties available in VASSAL.
 
-If we reach the end of all the traits, then see if the piece is currently in a Zone on a Map. If so, see if the Zone has a Global property named 'X'.
+Many of the properties have values that are controlled by VASSAL, but the following two types are Properties defined by the Module Designer.
 
-Still not found, Check the Map the piece is on to see if it has a Global property named ‘X’.
+[#globalProperties]
+=== Global Properties
+Global Properties are user-defined properties that can have their value changed by user actions during Play. Global Properties can be created at the Module level, the Map level or the Zone Level and follow the visibility rules outlined in the previous section.
 
-Still not found, then check if VASSAL knows what ‘X’ is. This might be a module level Global Property, or a system property.
+Global Properties can have their value changed by +
 
-So, a piece can directly ‘see’ and ‘read’ any property in itself, its current Zone, its current Map or in the top-level module.
+ * <<GlobalProperties.adoc#ChangePropertyToolbarButton,Change Property Toolbar Button>> Component +
+ * <<SetGlobalProperty.adoc#top,Set Global Property Piece>> trait
 
-It doesn’t work the other way. Nothing else can directly ‘see’ any property inside the piece, without using some of the new functions being developed for v3.7.
+[#pieceProperties]
+=== Piece Properties
+Piece Properties are user defined properties that exist within a specific Piece and can have their value changed by user actions during play.
 
-** Piece Property
+* A <<Marker.adoc#top,Marker>> defines a read-only Property that can't be changed.
 
-*** Marker
-*** Calculated Property
-*** Dynamic Property
-*** Setting Piece Properties
+* A <<DynamicProperty.adoc#top,Dynamic Property>> defines a Property that can have its value updated.
 
-* Global Property
-*** Setting Global Properties
+* A <<CalculatedProperty.adoc#top,Calculated Property>> defines a Property whose value is defined by a <<#beanshell,BeanShell Expression>> and is freshly re-calculated whenever its value is needed.
 
-* Key Commands and Hotkeys
+Dynamic Properties can have their value changed by
 
-** Global Key Command
-
-** Global Hot Key
+* A Change value command defined in the <<DynamicProperty.adoc#top,Dynamic Property>>.
+* A <<SetPieceProperty.adoc#top,Set Piece Property>> trait.
+* A <<SetAttachmentProperty.adoc#top,Set Attachment Property>> trait.
 
 
-* BeanShell
-** Strings and Numbers
-** true and false
-** Property Match Expressions
+[#propertyVisibility]
+=== Property Visiblility
+
+.Properties exist at one of four levels:
+. Module level properties
+. Map level properties
+. Zone level properties
+. Piece properties
+
+The <<Properties.adoc#combined, Properties Page>> lists which level each Property is defined at.
+
+When a Property value is needed, VASSAL starts searching at the level appropriate to the Component or Piece that needs the valie and searches upwards to find a value for the Property. If a Property of the same name exists on more than one level, then only the lowest level will be seen.
+
+Module level components (such as Dice Buttons or Global Key Commands defined at the Module level) can only 'see' Module level properties.
+
+Map level components (such as the Map Report Formats or the Line of Sight thread) can only 'see' the Map level properties defined on their own Map, plus Module level properties.
+
+There are no Zone level components.
+
+Pieces can only 'see' the Zone level properties in their current Zone, the Map level properties on their current Map and all Module level properties.
+
+These visibility rules can be over-ridden using the <<ExpressionProperty.adoc#top,GetProperty>> <<#beanshell,BeanShell>> functions.
+
+
+
+[#expressions]
+== Expressions
+
+[#oldStyle]
+=== Old-Style Expressions
+
+=== BeanShell Expressions
+[#beanshell]
+
+[#PME]
+=== Property Match Expressions

@@ -18,9 +18,13 @@ package VASSAL.build.module.properties;
 
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GameComponent;
+import VASSAL.build.module.GlobalOptions;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
+import VASSAL.configure.IconConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.NamedKeyStrokeListener;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.SwingUtils;
 import net.miginfocom.swing.MigLayout;
@@ -36,6 +40,7 @@ import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -49,9 +54,11 @@ public class ScenarioOptions implements GameComponent {
   protected JDialog dialog;
   protected final JTabbedPane optionTabs = new JTabbedPane();
   protected Action openAction;
+  protected JButton launch;
 
   /** Parent Global Properties component **/
   protected GlobalProperties globalProperties;
+
 
   public static void setInstance(ScenarioOptions options) {
     instance = options;
@@ -62,10 +69,61 @@ public class ScenarioOptions implements GameComponent {
   }
 
   public ScenarioOptions(GlobalProperties props) {
+    final GameModule gm = GameModule.getGameModule();
+    final GlobalOptions go = GlobalOptions.getInstance();
+
     setInstance(this);
     globalProperties = props;
     getDialog();
-    GameModule.getGameModule().getGameState().addGameComponent(this);
+    gm.getGameState().addGameComponent(this);
+
+    // Launch Button that will only be visible if an Icon has been configured
+    launch = new JButton();
+    launch.setFocusable(false);
+    launch.setAlignmentY(0.0F);
+    launch.setText("ScenarioOptions");
+    final ActionListener al = evt -> toggleVisible();
+    launch.addActionListener(al);
+    final NamedKeyStrokeListener l = new NamedKeyStrokeListener(al);
+    GameModule.getGameModule().getToolBar().add(launch);
+    launch.setEnabled(getOpenAction().isEnabled());
+
+    // Icon Configurer the button, added to Global Options
+    final IconConfigurer iconConfig = new IconConfigurer("scenarioPropertiesIcon", Resources.getString("Editor.ScenarioProperties.icon"), "");
+    iconConfig.setValue("");  //$NON-NLS-1$
+    go.addOption(iconConfig);
+    iconConfig.addPropertyChangeListener(evt -> {
+      launch.setIcon(iconConfig.getIconValue());
+      launch.setText((launch.getText() == null) ? " " : null);
+      launch.setVisible(launch.getIcon() != null);
+    });
+    iconConfig.fireUpdate();
+
+    // Hotkey Configurer to open window, added to Global Options
+    final NamedHotKeyConfigurer keyConfig = new NamedHotKeyConfigurer("scenarioPropertiesHotKey", Resources.getString("Editor.ScenarioProperties.hotkey"), l.getNamedKeyStroke());
+    go.addOption(keyConfig);
+    keyConfig.addPropertyChangeListener(evt -> {
+      l.setKeyStroke(keyConfig.getValueNamedKeyStroke());
+      launch.setToolTipText(Resources.getString("Editor.ScenarioProperties.hotkey_tooltip", NamedHotKeyConfigurer.getString(l.getKeyStroke())));  //$NON-NLS-1$
+    });
+    keyConfig.fireUpdate();
+
+    gm.addKeyStrokeListener(l);
+    gm.getToolBar().add(launch);
+
+    // Launch Button is Icon only and only shown if an Icon is specified.
+    launch.setText((launch.getIcon() == null) ? " " : null);
+    launch.setVisible(launch.getIcon() != null);
+
+  }
+
+  protected void toggleVisible() {
+    if (getDialog().isVisible()) {
+      cancel();
+    }
+    else if (getOpenAction().isEnabled()) {
+      open();
+    }
   }
 
   /**
@@ -133,6 +191,10 @@ public class ScenarioOptions implements GameComponent {
     return openAction;
   }
 
+  public JButton getLaunchButton() {
+    return launch;
+  }
+
   /**
     * OK Button has been clicked, loop tabs and generate and combine actions for any that have changed.
     */
@@ -181,6 +243,8 @@ public class ScenarioOptions implements GameComponent {
   @Override
   public void setup(boolean gameStarting) {
     getOpenAction().setEnabled(gameStarting && hasScenarioOptions());
+    getLaunchButton().setEnabled(gameStarting && hasScenarioOptions());
+
   }
 
   // The option values are stored in their Global Properties, no restore command needed here.

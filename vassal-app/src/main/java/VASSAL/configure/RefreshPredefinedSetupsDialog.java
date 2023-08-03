@@ -19,6 +19,7 @@ package VASSAL.configure;
 
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Documentation;
+import VASSAL.build.module.GameRefresher;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.build.module.PredefinedSetup;
 import VASSAL.build.module.documentation.HelpFile;
@@ -55,6 +56,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   private JCheckBox nameCheck;
   private JCheckBox labelerNameCheck;
   private JCheckBox layerNameCheck;
+  private JCheckBox rotateNameCheck;
   private JCheckBox testModeOn;
   private JCheckBox deletePieceNoMap;
   private JCheckBox refreshDecks;
@@ -105,10 +107,12 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
     nameCheck = new JCheckBox(Resources.getString("GameRefresher.use_basic_name"));
     panel.add(nameCheck);
-    labelerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_labeler_descr"));
+    labelerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_labeler_descr"), true);
     panel.add(labelerNameCheck);
-    layerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_layer_descr"));
+    layerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_layer_descr"), true);
     panel.add(layerNameCheck);
+    rotateNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_rotate_descr"), true);
+    panel.add(rotateNameCheck);
     testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"));
     panel.add(testModeOn);
     deletePieceNoMap = new JCheckBox(Resources.getString("GameRefresher.delete_piece_no_map"));
@@ -150,27 +154,30 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   protected void  setOptions() {
     options.clear();
     if (nameCheck.isSelected()) {
-      options.add("UseName"); //$NON-NLS-1$
+      options.add(GameRefresher.USE_NAME); //$NON-NLS-1$
     }
     if (labelerNameCheck.isSelected()) {
-      options.add("UseLabelerName"); //$NON-NLS-1$
+      options.add(GameRefresher.USE_LABELER_NAME); //$NON-NLS-1$
     }
     if (layerNameCheck.isSelected()) {
-      options.add("UseLayerName"); //$NON-NLS-1$
+      options.add(GameRefresher.USE_LAYER_NAME); //$NON-NLS-1$
+    }
+    if (rotateNameCheck.isSelected()) {
+      options.add(GameRefresher.USE_ROTATE_NAME); //$NON-NLS-1$
     }
     if (testModeOn.isSelected()) {
-      options.add("TestMode"); //$NON-NLS-1$
+      options.add(GameRefresher.TEST_MODE); //$NON-NLS-1$
     }
     if (deletePieceNoMap.isSelected()) {
-      options.add("DeleteNoMap"); //$NON-NLS-1$
+      options.add(GameRefresher.DELETE_NO_MAP); //$NON-NLS-1$
     }
     if (refreshDecks.isSelected()) {
-      options.add("RefreshDecks"); //NON-NLS
+      options.add(GameRefresher.REFRESH_DECKS); //NON-NLS
       if (deleteOldDecks.isSelected()) {
-        options.add("DeleteOldDecks"); //NON-NLS
+        options.add(GameRefresher.DELETE_OLD_DECKS); //NON-NLS
       }
       if (addNewDecks.isSelected()) {
-        options.add("AddNewDecks"); //NON-NLS
+        options.add(GameRefresher.ADD_NEW_DECKS); //NON-NLS
       }
     }
   }

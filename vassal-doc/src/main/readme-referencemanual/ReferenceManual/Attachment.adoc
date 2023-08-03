@@ -28,8 +28,8 @@ This <<GamePiece.adoc#Traits,Trait>> adds an action that creates a lasting "atta
 * While a single piece can contain one _or more_ Attachment traits, all of an individual piece's Attachment traits should have different names (no single piece should have two Attachment traits with the same name).
 * Two pieces, each with an Attachment trait sharing the same _Attachment Name_ can form a mutual attachment
 * Pieces which are deleted from the game are automatically removed as attachments.
-* The _GetAttachmentProperty(attachmentName, propertyName, attachmentIndexOrBasicNameOrExpression)_ function can be used in expressions to read the values of Dynamic Properties on attached pieces. Indices start at 1, or you can pass the <<BasicPiece.adoc#properties,_BasicName_>> you wish to find among the attachments, or a Beanshell Property Match Expression expression to match more complex rules.
-* A <<SetPieceProperty.adoc#top,Set Piece Property>> trait can be used to change the values of Dynamic Properties on attached pieces.
+* The _GetAttachProperty_ function can be used in expressions to read the values of Dynamic Properties on attached pieces. See the section on the <<ExpressionProperty.adoc#Attachment,GetProperty>> functions for more information.
+* A <<SetAttachmentProperty.adoc#top,Set Attachment Property>> trait can be used to change the values of Dynamic Properties on attached pieces.
 
 [width="100%",cols="50%a,^50%a",]
 |===
