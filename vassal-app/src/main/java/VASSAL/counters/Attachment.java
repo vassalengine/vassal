@@ -197,7 +197,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     onAttach = st.nextToken(ON_ATTACH_NOTHING);
     onDetach = st.nextToken(ON_DETACH_NOTHING);
     beforeAttach = st.nextToken(BEFORE_ATTACH_CLEAR);
-    allowSelfAttach = st.nextBoolean(true);
+    allowSelfAttach = st.nextBoolean(false);
     autoAttach = st.nextBoolean(true);
 
     command = null;
