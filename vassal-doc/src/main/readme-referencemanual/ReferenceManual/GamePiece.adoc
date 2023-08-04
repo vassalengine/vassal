@@ -279,9 +279,7 @@ Note, however, that Sub-Menu traits must always go *_below_* the traits that it 
 
 |<<SendToLocation.adoc#top,Send to Location>> | Send a piece to another location.
 
-|<<SetAttachmentProperty.adoc#top,Set Attachment Property>> | Set a value in a Dynamic Property in an Attached piece.
-
-|<<SetGlobalProperty.adoc#top,Set Global Property>> | Set a value in a Zone, Map or Module level Global property.
+|<<SetGlobalProperty.adoc#top,Set Global Property>> | Set a value in a Global property.
 
 |<<SetPieceProperty.adoc#top,Set Piece Property>> | Set a value in a Dynamic Property in selected pieces.
 

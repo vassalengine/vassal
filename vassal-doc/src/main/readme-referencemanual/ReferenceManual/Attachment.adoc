@@ -15,7 +15,7 @@ This <<GamePiece.adoc#Traits,Trait>> adds an action that creates a lasting "atta
 
 (3) The piece will be able to directly read the properties of _one_ of the pieces that the Attachment trait is bound to through a simple syntax. For cases where a single piece is bound to a particular Attachment trait, this can be quite useful in reading its properties quickly and easily. If a group of multiple pieces is attached with one Attachment trait, properties will be read from an undetermined _single piece_ from among the attached pieces. See _Attachment Name_, below, for an explanation of how to read a property from the attached piece.
 
-(4) For <<DynamicProperty.adoc#top, Dynamic Properties>> of an attached piece, the value of the properties can also be _set_ by this piece, by using a <<SetAttachmentProperty.adoc#top, Set Attachment Property>> trait.
+(4) For <<DynamicProperty.adoc#top, Dynamic Properties>> of an attached piece, the value of the properties can also be _set_ by this piece, by using a <<SetPieceProperty.adoc#top, Set Piece Property>> trait.
 
 (5) If the attached-to piece *also* has an Attachment trait that shares the same _Attachment Name_, then mutual attachments between pieces can also be formed.
 
