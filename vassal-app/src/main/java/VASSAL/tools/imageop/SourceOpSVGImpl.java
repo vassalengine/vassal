@@ -85,12 +85,9 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
    */
   @Override
   public BufferedImage eval() throws ImageIOException {
-    try {
-      final SVGRenderer renderer = new SVGRenderer(
-        archive.getURL(name),
-        new BufferedInputStream(archive.getInputStream(name))
-      );
-
+    try (InputStream in = archive.getInputStream(name);
+         BufferedInputStream bin = new BufferedInputStream(in)) {
+      final SVGRenderer renderer = new SVGRenderer(archive.getURL(name), bin);
       return renderer.render();
     }
     catch (FileNotFoundException | NoSuchFileException e) {
