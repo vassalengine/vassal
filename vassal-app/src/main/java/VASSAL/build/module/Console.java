@@ -21,6 +21,9 @@ import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.command.Logger;
+import VASSAL.counters.Attachment;
+import VASSAL.counters.BasicPiece;
+import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.KeyBuffer;
 import VASSAL.tools.BugUtils;
@@ -164,6 +167,38 @@ public class Console {
     return true;
   }
 
+  private boolean doAttachments() {
+    final AttachmentManager am = GameModule.getGameModule().getGameState().getAttachmentManager();
+
+    final String a = nextString("");
+    if (matches("?", a) || matches("help", a)) { //NON-NLS
+      show("Usage:"); //NON-NLS
+      show("  /attachments                 - show all Attachments"); //NON-NLS
+      show("  /attachments attachmentName  - show attachments for specified Attachment Name"); //NON-NLS
+    }
+    else if (a.isEmpty()) {
+      show("All Attachments:");
+    }
+    else {
+      show("Attachment " + a + ":");
+    }
+
+    for (final String attachName : am.getAttachmentList()) {
+      if (a.isEmpty() || a.equals(attachName)) {
+        show("Attachment [" + attachName + "] used by " + am.getAttachmentList(attachName).size() + " units:");
+        for (final Attachment attach : am.getAttachmentList(attachName)) {
+          final GamePiece gp = Decorator.getOutermost(attach);
+          final String gpName = (String) gp.getProperty(BasicPiece.BASIC_NAME);
+          String m = "..Piece [" + gpName + "] has " + attach.getContents().size() + " attachments: ";
+          for (final GamePiece atp : attach.getContents()) {
+            m += "[" + atp.getProperty(BasicPiece.BASIC_NAME) + " (" + atp.getProperty(BasicPiece.CURRENT_MAP) + ")] ";
+          }
+          show(m);
+        }
+      }
+    }
+    return true;
+  }
 
   private boolean doProperty() {
     final String first = nextString("");
@@ -328,6 +363,12 @@ public class Console {
 
     if (matches("errorlog", command)) { //NON-NLS
       return doErrorLog();
+    }
+
+    //TODO: Move to after multiplayer check
+    //FIXME: Move to after multiplayer check
+    if (matches("attachments", command)) {
+      return doAttachments();
     }
 
     // If this has EVER been a multiplayer game (has ever been connected to Server, or has ever had two player slots filled simultaneously), then

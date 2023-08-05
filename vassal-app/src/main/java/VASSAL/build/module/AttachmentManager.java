@@ -25,6 +25,7 @@ import VASSAL.counters.Stack;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Maintains a list of pieces with attachment traits
@@ -154,13 +155,10 @@ public class AttachmentManager {
         for (final Attachment targetAttachment : currentAttachments) {
           // If the target attachment is not auto-attachable, remove any attachment back to us
           if (!targetAttachment.isAutoAttach()) {
-            command = command.append(targetAttachment.makeRemoveTargetCommand(gp));
+            command = command.append(targetAttachment.makeRemoveTargetCommand(piece));
           }
-          final GamePiece target = Decorator.getOutermost(targetAttachment);
           // Remove any attachment we have to the target piece.
-          if (attach.hasTarget(target)) {
-            command = command.append(attach.makeRemoveTargetCommand(target));
-          }
+          command = command.append(attach.makeRemoveTargetCommand(Decorator.getOutermost(targetAttachment)));
         }
 
         // Remove the Attachment trait being processed from the index
@@ -171,5 +169,13 @@ public class AttachmentManager {
     }
 
     return command;
+  }
+
+  public Set<String> getAttachmentList() {
+    return attachments.keySet();
+  }
+
+  public Set<Attachment> getAttachmentList(String attachName) {
+    return attachments.get(attachName);
   }
 }
