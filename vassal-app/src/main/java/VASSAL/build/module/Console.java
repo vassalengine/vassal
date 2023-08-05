@@ -170,30 +170,57 @@ public class Console {
   private boolean doAttachments() {
     final AttachmentManager am = GameModule.getGameModule().getGameState().getAttachmentManager();
 
-    final String a = nextString("");
-    if (matches("?", a) || matches("help", a)) { //NON-NLS
-      show("Usage:"); //NON-NLS
-      show("  /attachments                 - show all Attachments"); //NON-NLS
-      show("  /attachments attachmentName  - show attachments for specified Attachment Name"); //NON-NLS
-    }
-    else if (a.isEmpty()) {
-      show("All Attachments:");
+    final String first = nextString("");
+    final String compareName;
+    final boolean useSelected;
+    if (first.toLowerCase().startsWith("sel")) { //NON-NLS
+      compareName = nextString("");
+      useSelected = true;
     }
     else {
-      show("Attachment " + a + ":");
+      compareName = first;
+      useSelected = false;
     }
 
-    for (final String attachName : am.getAttachmentList()) {
-      if (a.isEmpty() || a.equals(attachName)) {
-        show("Attachment [" + attachName + "] used by " + am.getAttachmentList(attachName).size() + " pieces:");
-        for (final Attachment attach : am.getAttachmentList(attachName)) {
-          final GamePiece gp = Decorator.getOutermost(attach);
-          final String gpName = (String) gp.getProperty(BasicPiece.BASIC_NAME);
-          String m = "..Piece [" + gpName + "] " + (attach.isAutoAttach() ? "(auto)" : "") + " has " + attach.getContents().size() + " attachments: ";
+    if (compareName.isEmpty()) {
+      show("All Attachments" + (useSelected ? " for selected Units" : "") + ":");
+    }
+    else {
+      show("Attachment" + compareName + (useSelected ? " for selected Units" : "") + ":");
+    }
+
+    if (useSelected) {
+      for (final GamePiece piece : KeyBuffer.getBuffer().asList()) {
+        for (final GamePiece a : Decorator.getDecorators(piece, Attachment.class)) {
+          final Attachment attach = (Attachment) a;
+          String m = "Piece [" + piece.getProperty(BasicPiece.BASIC_NAME)
+            + "] Attachment ["
+            + attach.getAttachName()
+            + "] "
+            + (attach.isAutoAttach() ? "(auto)" : "")
+            + " has "
+            + attach.getContents().size()
+            + " attachments: ";
           for (final GamePiece atp : attach.getContents()) {
             m += "[" + atp.getProperty(BasicPiece.BASIC_NAME) + " (" + atp.getProperty(BasicPiece.CURRENT_MAP) + ")] ";
           }
           show(m);
+        }
+      }
+    }
+    else {
+      for (final String attachName : am.getAttachmentList()) {
+        if (compareName.isEmpty() || compareName.equals(attachName)) {
+          show("Attachment [" + attachName + "] used by " + am.getAttachmentList(attachName).size() + " pieces:");
+          for (final Attachment attach : am.getAttachmentList(attachName)) {
+            final GamePiece gp = Decorator.getOutermost(attach);
+            final String gpName = (String) gp.getProperty(BasicPiece.BASIC_NAME);
+            String m = "..Piece [" + gpName + "] " + (attach.isAutoAttach() ? "(auto)" : "") + " has " + attach.getContents().size() + " attachments: ";
+            for (final GamePiece atp : attach.getContents()) {
+              m += "[" + atp.getProperty(BasicPiece.BASIC_NAME) + " (" + atp.getProperty(BasicPiece.CURRENT_MAP) + ")] ";
+            }
+            show(m);
+          }
         }
       }
     }
