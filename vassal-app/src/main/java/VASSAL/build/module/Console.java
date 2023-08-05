@@ -185,11 +185,11 @@ public class Console {
 
     for (final String attachName : am.getAttachmentList()) {
       if (a.isEmpty() || a.equals(attachName)) {
-        show("Attachment [" + attachName + "] used by " + am.getAttachmentList(attachName).size() + " units:");
+        show("Attachment [" + attachName + "] used by " + am.getAttachmentList(attachName).size() + " pieces:");
         for (final Attachment attach : am.getAttachmentList(attachName)) {
           final GamePiece gp = Decorator.getOutermost(attach);
           final String gpName = (String) gp.getProperty(BasicPiece.BASIC_NAME);
-          String m = "..Piece [" + gpName + "] has " + attach.getContents().size() + " attachments: ";
+          String m = "..Piece [" + gpName + "] " + (attach.isAutoAttach() ? "(auto)" : "") + " has " + attach.getContents().size() + " attachments: ";
           for (final GamePiece atp : attach.getContents()) {
             m += "[" + atp.getProperty(BasicPiece.BASIC_NAME) + " (" + atp.getProperty(BasicPiece.CURRENT_MAP) + ")] ";
           }
