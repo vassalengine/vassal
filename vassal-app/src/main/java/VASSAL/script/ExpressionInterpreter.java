@@ -32,7 +32,6 @@ import VASSAL.counters.Mat;
 import VASSAL.counters.MatCargo;
 import VASSAL.counters.PieceFilter;
 import VASSAL.counters.ReportState;
-import VASSAL.counters.SetAttachmentProperty;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.script.expression.AuditTrail;
@@ -546,12 +545,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   private PropertySource translatePiece(PropertySource ps) {
-    // Allows SetAttachmentProperty to use these functions correctly
-    if (ps instanceof SetAttachmentProperty.SetAttachmentPropertySource) {
-      ps = ((SetAttachmentProperty.SetAttachmentPropertySource) ps).getPiece();
-    }
     // This allows ReportState to sum properties properly
-    else if (ps instanceof ReportState.OldAndNewPieceProperties) {
+    if (ps instanceof ReportState.OldAndNewPieceProperties) {
       ps = ((ReportState.OldAndNewPieceProperties) ps).getNewPiece();
     }
     return ps;

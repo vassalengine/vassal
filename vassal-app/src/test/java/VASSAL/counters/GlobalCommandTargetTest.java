@@ -25,6 +25,8 @@ public class GlobalCommandTargetTest extends DecoratorTest {
     target.setFastMatchProperty(true);
     target.setTargetProperty("prop");
     target.setTargetValue("value");
+    target.setTargetAttachment("xyzzy");
+    target.setTargetAttachmentId("plugh");
 
     String code = target.encode();
 
@@ -48,6 +50,8 @@ public class GlobalCommandTargetTest extends DecoratorTest {
     target.setFastMatchProperty(true);
     target.setTargetProperty("prop");
     target.setTargetValue("{value+2}");
+    target.setTargetAttachment("{value-1}");
+    target.setTargetAttachmentId("{plugh + \"x\"");
 
     code = target.encode();
 
