@@ -13,8 +13,11 @@ New from VASSAL 3.5, the *Fast Match* selections can be used to improve the perf
 
 Fast Match expressions are _optional_ in that the same comparisons can always be run in the standard "Additional matching expression" field. Judicious use of them, however, can improve the performance of a Global Key Command by 25-33%.
 
+NOTE: From VASSAL 3.7, all Location-based Fast-match options have been optimised and are now lightning fast. For best performance, always use a Location Fast-match (if possible).
+
 You should aim to choose Fast-match conditions that exclude as many pieces as possible from the not Fast-match condtion checking.
 
+NOTE: The _Current_ options for Location Fast-match are only available for use in Counter Global Key Commands.
 [width="100%",cols="50%a,^50%a",]
 |===
 |
@@ -23,19 +26,21 @@ You should aim to choose Fast-match conditions that exclude as many pieces as po
 
 *Select By:*::: Selects the type of Location-based filtering that will be done on target pieces.
 +
-*_Current Stack or Deck_* - Only pieces in the same Stack or Deck as the issuing piece will be checked. This type of filtering, when applicable, is _very fast_.
+*_Current Stack or Deck_* - Only pieces in the same Stack or Deck as the issuing piece will be checked. This type of filtering, when applicable, is _very fast_. (Counter GKC only).
 +
-*_Current Map_* - Only pieces on the same Map as the piece issuing the Global Key Command will be checked.
+*_Current Map_* - Only pieces on the same Map as the piece issuing the Global Key Command will be checked. (Counter GKC only).
 +
-*_Current Zone_* - Only pieces in the same Zone (and therefore Map) as the piece issuing the Global Key Command will be checked.
+*_Current Zone_* - Only pieces in the same Zone (and therefore Map) as the piece issuing the Global Key Command will be checked. (Counter GKC only).
 +
-*_Current Location_* - Only pieces in the same Location (i.e. LocationName property the same) as the piece issuing the Global Key Command will be checked.
+*_Current Location_* - Only pieces in the same Location (i.e. LocationName property the same) as the piece issuing the Global Key Command will be checked. (Counter GKC only).
 +
-*_Current Mat_* - If this piece is a Mat, or if it is a Mat Cargo piece that is currently _on_ a Mat, then the Mat itself and all of its current Cargo will be checked.
+*_Current Mat & Cargo_* - If this piece is a Mat, or if it is a Mat Cargo piece that is currently _on_ a Mat, then the Mat itself and all of its current Cargo will be checked. (Counter GKC only).
 +
-*_Current Attachments_* - Only pieces attached by an <<Attachment.adoc#top,Attachment>> trait on this piece will be checked.
+*_Current Attachments_* - Only pieces attached by an <<Attachment.adoc#top,Attachment>> trait on this piece will be checked. (Counter GKC only).
 +
-You can optionally add an expression that evaluates to an Attachment name and only pieces attached using that name will be checked. If the Attachment name field is left blank, then all pieces attached by _any_ Attachment trait on this piece will be checked.
+You can optionally add an expression that evaluates to an Attachment name and only pieces attached using that name will be checked. If the Attachment name field is left blank, then all pieces attached by _any_ Attachment trait on this piece will be checked. +
++
+You can also optionally add a Basic Name or Attachment Index to further refine the selection. A Basic Name will only match attached pieces that have the specified Basic Name. An integer Attachment index will return the nth attached piece for a given Attachment name. The first piece attached using an Attachment names is index 1, the second index 2 etc. +
 +
 *_Specific Map_* - Only sends to pieces that are on the Map matching the supplied expression. The _expression_ is evaluated against the properties of the _source_ piece, i.e. the piece issuing the Global Key Command, but then the result of the expression is compared to the Map of potential _target_ pieces to determine if they are valid targets.
 +
@@ -53,6 +58,13 @@ You can optionally add an expression that evaluates to an Attachment name and on
 
 *Property Value*::: Can be a simple string or number containing a specific value which will be compared to the value of the property specified above, _or_ an expression to be evaluated against the _source_ piece (the piece issuing the Global Key Command). The result of evaluating the expression is then used as the value to be compared against the property specified above using the comparison specified above.
 |
+image::images/FastMatch3.png[]
 image::images/FastMatch.png[]
+image::images/FastMatch2.png[]
+image::images/FastMatch5.png[]
+image::images/FastMatch6.png[]
+image::images/FastMatch7.png[]
+image::images/FastMatch8.png[]
+image::images/FastMatch4.png[]
 |===
 

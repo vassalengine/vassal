@@ -239,7 +239,6 @@ public class PieceDefiner extends JPanel {
       addElement(new Marker());
       addElement(new DynamicProperty());
       addElement(new CalculatedProperty());
-      addElement(new SetAttachmentProperty());
       addElement(new SetGlobalProperty());
       addElement(new SetPieceProperty());
       addElement(new Deselect());
