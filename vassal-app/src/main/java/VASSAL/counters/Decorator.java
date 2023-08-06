@@ -278,7 +278,7 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
   @Override
   public Command setPersistentProperty(Object key, Object val) {
     // Not all GamePieces have persistent properties (though piece almost certainly will).
-    if (innermost != null && innermost instanceof PersistentPropertyContainer) {
+    if (innermost instanceof PersistentPropertyContainer) {
       return ((PersistentPropertyContainer) innermost).setPersistentProperty(key, val);
     }
     else if (piece instanceof PersistentPropertyContainer) {
