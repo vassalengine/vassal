@@ -90,7 +90,7 @@ import static VASSAL.counters.MatCargo.CURRENT_MAT_OFFSET_Y;
  */
 public class PlaceMarker extends Decorator implements TranslatablePiece, RecursionLimiter.Loopable {
   public static final String ID = "placemark;"; // NON-NLS
-  public static final String PARENT_ID = "parentID";
+  public static final String PARENT_ID = "ParentID";
 
   protected KeyCommand command;
   protected NamedKeyStroke key;

@@ -252,9 +252,9 @@ Vassal provides the following properties available on Game Pieces to assist with
 |  *Property* | *Description* +
 
 | PieceId | The *PieceId* property uniquely defines the definition that created this piece. All pieces created from the same definition (Piece Definition in a <<PieceWindow.adoc#top,Game Piece Palette>>, <<SetupStack.adoc#top,At-Start Stack>> or <<Deck.adoc#top,Deck>>, or a Piece Definition in a <<Marker.adoc#top,Place Marker>> or <<Replace.adoc#top,Replace>> trait) will have the same PieceId value.
-| PieceUID | The *PieceUID* property uniquely defines a piece. Each piece in a particular game is guaranteed to have a unique PieceUID and this is carried forward in Save games *UNTIL* the next time the game is manually refreshed by the <<GameRefresher.adoc#top, Game Refresher>>, when a new *PieceUID* will be allocated. It will nearly always be better to use the *UniqueId* property rather than *PieceUID*.
-| UniqueId | The *UniqueId* property uniquely defines a piece. Each piece in a particular game is guaranteed to have a unique UniqueId and this is carried forward in Save games *AND* is maintained when a Game is refreshed via the <<GameRefresher.adoc#top, Game Refresher>>. The *UniqueId* of a piece takes and keeps the value of the *PieceUID* that is first assigned to the piece.
-| ParentId | The *ParentId* only exists in pieces that have been created with the <<Replace.adoc#top,Replace>> trait and contains the *UniqueId* of the Game Piece that created piece.
+| PieceUID | The *PieceUID* property uniquely defines a piece. Each piece in a particular game is guaranteed to have a unique PieceUID and this is carried forward in Save games *UNTIL* the next time the game is manually refreshed by the <<GameRefresher.adoc#top, Game Refresher>>, when a new *PieceUID* will be allocated. It will nearly always be better to use the *UniqueID* property rather than *PieceUID*.
+| UniqueID | The *UniqueID* property uniquely defines a piece. Each piece in a particular game is guaranteed to have a unique UniqueID and this is carried forward in Save games *AND* is maintained when a Game is refreshed via the <<GameRefresher.adoc#top, Game Refresher>>. The *UniqueID* of a piece takes and keeps the value of the *PieceUID* that is first assigned to the piece.
+| ParentID | The *ParentID* only exists in pieces that have been created with the <<Replace.adoc#top,Replace>> trait and contains the *UniqueID* of the Game Piece that created piece.
 |===
 
 [#expressions]

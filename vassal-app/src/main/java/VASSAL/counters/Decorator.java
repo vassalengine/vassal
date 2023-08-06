@@ -278,7 +278,10 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
   @Override
   public Command setPersistentProperty(Object key, Object val) {
     // Not all GamePieces have persistent properties (though piece almost certainly will).
-    if (piece instanceof PersistentPropertyContainer) {
+    if (innermost != null && innermost instanceof PersistentPropertyContainer) {
+      return ((PersistentPropertyContainer) innermost).setPersistentProperty(key, val);
+    }
+    else if (piece instanceof PersistentPropertyContainer) {
       return ((PersistentPropertyContainer) piece).setPersistentProperty(key, val);
     }
     return null;
@@ -290,8 +293,8 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
    */
   @Override
   public Object getPersistentProperty(Object key) {
-    // Standard getProperty also returns persistent properties
-    return piece.getProperty(key);
+    // Standard getProperty also returns persistent properties.
+    return innermost == null ? piece.getProperty(key) : innermost.getProperty(key);
   }
 
   /** @return next piece "outward" (away from BasicPiece) in the trait list. This method is required

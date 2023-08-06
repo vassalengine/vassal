@@ -11,8 +11,8 @@ A Game Piece with this trait will have a menu command that places a different pi
 You can select any existing piece for the marker or define a new one from scratch.
 A new piece will be placed each time this trait is activated.
 
-The new piece placed by this trait will have the <<Properties.adoc#parentId,ParentId>> property set to the value of the <<Properties.adoc#uniqueId,UniqueId>> property from the piece that placed it. This allows the placed marker to use the <<GlobalKeyCommand.adoc#top, Global Key Command>> trait or the <<SetPieceProperty.adoc#top,Set Piece Property>> trait to communicate with the parent piece by including the following in the _Additional matching expression_:
-`{UniqueId=="$ParentId$"}` +
+The new piece placed by this trait will have the <<Properties.adoc#parentId,ParentID>> property set to the value of the <<Properties.adoc#uniqueId,UniqueID>> property from the piece that placed it. This allows the placed marker to use the <<GlobalKeyCommand.adoc#top, Global Key Command>> trait or the <<SetPieceProperty.adoc#top,Set Piece Property>> trait to communicate with the parent piece by including the following in the _Additional matching expression_:
+`{UniqueID=="$ParentID$"}` +
 
 
 
