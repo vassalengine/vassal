@@ -180,7 +180,7 @@ public class Console {
       show("Usage:"); //NON-NLS
       show("  /attachments [attachname] [selected] [active] [auto] [nonauto] - show current attachments"); //NON-NLS
       show("  [attachname] - Optional, if included, only show attachments with name attachname"); //NON-NLS
-      show("  [selected]   - Optional, if included, only show attachments for current selected pieces"); //NON-NLS
+      show("  [selected]   - Optional, if included, only show attachments for currently selected pieces"); //NON-NLS
       show("  [active]     - Optional, if included, only show active attachments"); //NON-NLS
       show("  [auto]       - Optional, if included, only show auto attachments"); //NON-NLS
       show("  [nonauto]    - Optional, if included, only show non-auto attachments"); //NON-NLS
@@ -215,12 +215,18 @@ public class Console {
     }
 
     final StringBuilder sb = new StringBuilder();
-    sb.append((compareName.isEmpty() ? "All Attachments" : ("Attachment " + compareName)));
-    sb.append(useSelected ? ", Selected units only" : ", All units");
-    sb.append(activeOnly ? ", Active only" : "");
-    sb.append(autoOnly ? ", Auto only" : "");
-    sb.append(nonAutoOnly ? ", Non-auto only" : "");
-    sb.append(":");
+    if (compareName.isEmpty()) {
+      sb.append("All Attachments");
+    }
+    else {
+      sb.append("Attachment ");
+      sb.append(compareName);
+    }
+    sb.append(useSelected ? ", Selected units only" : ", All units")
+      .append(activeOnly ? ", Active only" : "")
+      .append(autoOnly ? ", Auto only" : "")
+      .append(nonAutoOnly ? ", Non-auto only" : "")
+      .append(':');
     show(sb.toString());
 
     if (useSelected) {
@@ -249,7 +255,6 @@ public class Console {
             headingShown = true;
           }
           for (final Attachment attach : am.getAttachmentList(attachName)) {
-            final GamePiece gp = Decorator.getOutermost(attach);
             if (compareName.isEmpty() || compareName.equals(attach.getAttachName())) {
               if (!activeOnly || attach.getAttachCount() > 0) {
                 if (!autoOnly || attach.isAutoAttach()) {
@@ -274,20 +279,20 @@ public class Console {
     final GamePiece piece = Decorator.getOutermost(attach);
 
     final StringBuilder sb = new StringBuilder();
-    sb.append("Piece [");
-    sb.append(piece.getProperty(BasicPiece.BASIC_NAME));
-    sb.append("] Attachment [");
-    sb.append(attach.getAttachName());
-    sb.append("] ");
-    sb.append((attach.isAutoAttach() ? "(auto)" : ""));
-    sb.append(" has ");
-    sb.append(attach.getContents().size());
-    sb.append(" attachments: ");
+    sb.append("Piece [")
+      .append(piece.getProperty(BasicPiece.BASIC_NAME))
+      .append("] Attachment [")
+      .append(attach.getAttachName())
+      .append("] ")
+      .append((attach.isAutoAttach() ? "(auto)" : ""))
+      .append(" has ")
+      .append(attach.getContents().size())
+      .append(" attachments: ");
     for (final GamePiece atp : attach.getContents()) {
-      sb.append("[");
-      sb.append(atp.getProperty(BasicPiece.BASIC_NAME));
-      sb.append(" (");
-      sb.append(atp.getProperty(BasicPiece.CURRENT_MAP));
+      sb.append('[')
+        .append(atp.getProperty(BasicPiece.BASIC_NAME))
+        .append(" (")
+        .append(atp.getProperty(BasicPiece.CURRENT_MAP));
       if (atp.equals(piece)) {
         sb.append(",self");
       }
