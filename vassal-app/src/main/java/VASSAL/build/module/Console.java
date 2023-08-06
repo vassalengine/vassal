@@ -189,16 +189,16 @@ public class Console {
 
     while (!option.isEmpty()) {
 
-      if (matches("selected", option, 8)) {
+      if (matches("selected", option, 8) && !useSelected) {
         useSelected = true;
       }
-      else if (matches("active", option, 5)) {
+      else if (matches("active", option, 5) && !activeOnly) {
         activeOnly = true;
       }
-      else if (matches("auto", option, 4)) {
+      else if (matches("auto", option, 4) && !autoOnly) {
         autoOnly = true;
       }
-      else if (matches("nonauto", option, 7)) {
+      else if (matches("nonauto", option, 7) && !nonAutoOnly) {
         nonAutoOnly = true;
       }
       else {
