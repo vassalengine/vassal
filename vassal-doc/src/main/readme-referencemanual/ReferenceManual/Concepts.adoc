@@ -24,6 +24,7 @@ A brief overwiew of some of the main concepts you need to know to get started cr
 ** <<#globalProperties, Global Properties>> +
 ** <<#pieceProperties, Piece Properties>> +
 ** <<#propertyVisibility,Property Visibility>> +
+** <<#Unique, Uniquely Identifying Pieces>> +
 * <<#expressions,Expressions>> +
 ** <<#oldStyle,Old-Style Expressions>> +
 ** <<#beanshell,BeanShell Expressions>> +
@@ -201,7 +202,7 @@ Global Properties can have their value changed by +
 === Piece Properties
 Piece Properties are user defined properties that exist within a specific Piece and can have their value changed by user actions during play.
 
-* A <<Marker.adoc#top,Marker>> defines a read-only Property that can't be changed.
+* A <<PropertyMarker.adoc#top,Marker>> defines a read-only Property that can't be changed.
 
 * A <<DynamicProperty.adoc#top,Dynamic Property>> defines a Property that can have its value updated.
 
@@ -237,7 +238,24 @@ Pieces can only 'see' the Zone level properties in their current Zone, the Map l
 
 These visibility rules can be over-ridden using the <<ExpressionProperty.adoc#top,GetProperty>> <<#beanshell,BeanShell>> functions.
 
+[#Unique]
+==== Uniquely Identifying Pieces
+In more advanced modules, there is a need to be able to identify particular pieces to perform automated operations on them.
 
+Module designers can classify groups of pieces using <<PropertyMarker.adoc#top,Markers>>, applied via <<UsePrototype.adoc#top,Prototypes>>. Pieces can also be identified by their <<Properties.adoc#BasicName,BasicName>> property, but this will not be unique if multiple pieces have been created from the same definition.
+
+Vassal provides the following properties available on Game Pieces to assist with identifying pieces in advanced modules:
+
+[width="100%"]
+[cols="20%a,80%a"]
+|===
+|  *Property* | *Description* +
+
+| PieceId | The *PieceId* property uniquely defines the definition that created this piece. All pieces created from the same definition (Piece Definition in a <<PieceWindow.adoc#top,Game Piece Palette>>, <<SetupStack.adoc#top,At-Start Stack>> or <<Deck.adoc#top,Deck>>, or a Piece Definition in a <<Marker.adoc#top,Place Marker>> or <<Replace.adoc#top,Replace>> trait) will have the same PieceId value.
+| PieceUID | The *PieceUID* property uniquely defines a piece. Each piece in a particular game is guaranteed to have a unique PieceUID and this is carried forward in Save games *UNTIL* the next time the game is manually refreshed by the <<GameRefresher.adoc#top, Game Refresher>>, when a new *PieceUID* will be allocated. It will nearly always be better to use the *UniqueId* property rather than *PieceUID*.
+| UniqueId | The *UniqueId* property uniquely defines a piece. Each piece in a particular game is guaranteed to have a unique UniqueId and this is carried forward in Save games *AND* is maintained when a Game is refreshed via the <<GameRefresher.adoc#top, Game Refresher>>. The *UniqueId* of a piece takes and keeps the value of the *PieceUID* that is first assigned to the piece.
+| ParentId | The *ParentId* only exists in pieces that have been created with the <<Replace.adoc#top,Replace>> trait and contains the *UniqueId* of the Game Piece that created piece.
+|===
 
 [#expressions]
 == Expressions

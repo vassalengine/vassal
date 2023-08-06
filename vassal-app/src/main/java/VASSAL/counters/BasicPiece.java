@@ -110,6 +110,8 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
   public static final String PIECE_UID = "PieceUID"; // NON-NLS
   public static final String STACK_POS = "StackPos";
   public static final String STACK_SIZE = "StackSize";
+  public static final String UNIQUE_ID = "UniqueID";
+
 
   @Deprecated(since = "2022-08-08", forRemoval = true)
   public static Font POPUP_MENU_FONT = new Font(Font.DIALOG, Font.PLAIN, 11);
@@ -309,6 +311,9 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
     }
     else if (PIECE_UID.equals(key)) {
       return getId();
+    }
+    else if (UNIQUE_ID.equals(key)) {
+      return (String) persistentProps.get(BasicPiece.UNIQUE_ID);
     }
     else if (STACK_POS.equals(key)) {
       final Stack parent = getParent();
@@ -987,6 +992,19 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
   @Override
   public void setId(String id) {
     this.id = id;
+
+    // Piece's and hence Piece Id's are replaced during Refresh. Save the first Piece Id allocated in the
+    // persistent properties so it will be copied to the refreshed piece.
+    if (persistentProps == null) {
+      persistentProps = new HashMap<>();
+      persistentProps.put(UNIQUE_ID, id);
+    }
+    else {
+      if (persistentProps.get(UNIQUE_ID) == null) {
+        persistentProps.put(UNIQUE_ID, id);
+      }
+    }
+
   }
 
   /**
@@ -1231,6 +1249,7 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
     l.add(Properties.SELECTED);
     l.add(STACK_POS);
     l.add(STACK_SIZE);
+    l.add(UNIQUE_ID);
     return l;
   }
 

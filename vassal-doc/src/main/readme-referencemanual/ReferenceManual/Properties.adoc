@@ -45,18 +45,24 @@ in cases like these as this will generate an error if the property does not have
 
 * The <<BasicPiece.adoc#top,Basic Piece>> defines properties related to a piece's name, location, side, and whether it's selected.
 
+* The <<DynamicProperty.adoc#top,Dynamic Property>> trait allows you to define your own changeable properties.
+
+* The <<Hideable.adoc#top,Invisible>> trait sets a property when the piece is invisible.
+
 * The <<Layer.adoc#Properties,Layer>> trait defines properties related to the state of that Layer.
+
+* The <<PropertyMarker.adoc#top,Marker>> trait allows you to define your own static properties.
+
+* The <<MarkMoved.adoc#top,Mark When Moved>> trait sets a property when a piece has moved.
+
+* The <<Mask.adoc#Properties,Mask>> trait sets a property when the piece is masked.
+
+* The <<PropertySheet.adoc#top,Property Sheet>> trait exposes a set of user-editable properties.
+
 * The <<Rotate.adoc#top,Rotate>> trait defines properties related to the current facing of the piece.
 
 * The <<Label.adoc#top,Text Label>> trait returns the value of the label as a property.
-* The <<PropertyMarker.adoc#top,Marker>> trait allows you to define your own static properties.
-* The <<DynamicProperty.adoc#top,Dynamic Property>> trait allows you to define your own changeable properties.
 
-* The <<MarkMoved.adoc#top,Mark When Moved>> trait sets a property when a piece has moved.
-* The <<Mask.adoc#Properties,Mask>> trait sets a property when the piece is masked.
-* The <<Hideable.adoc#top,Invisible>> trait sets a property when the piece is invisible.
-
-* The <<PropertySheet.adoc#top,Property Sheet>> trait exposes a set of user-editable properties.
 
 *Properties defined by other components*
 
@@ -74,7 +80,9 @@ in cases like these as this will generate an error if the property does not have
 |*Property* |*Trait* |*Description*
 
 |*AttachCount* |<<Attachment.adoc#top,Attachment>> |Returns the current Attachment count of the last defined _Attachment_ trait.
-|*BasicName* |<<BasicPiece.adoc#top,Basic Piece>> or <<BasicName.adoc#top,Basic Name>>|The basic name of the piece.
+|*BasicName* |
+[#BasicName]
+<<BasicPiece.adoc#top,Basic Piece>> or <<BasicName.adoc#top,Basic Name>>|The basic name of the piece.
 |*BoardOfCommand* |<<MultiLocationCommand.adoc#top,Multi-Location Command>> |Contains the Board Name of the last selected _Multi-Location_ Command.
 |*cannotMove* |<<NonStacking.adoc#top,Does not stack>> |"true" if this piece cannot move at all (note spelling).
 |*ClickedX* |<<BasicPiece#top,Basic Piece>>|Map X-coordinate where player last right-clicked on piece to bring up context menu (or 0 if never).
@@ -138,14 +146,20 @@ CurrentMatProp9* |<<Cargo#top,Cargo>>|If the piece is Cargo loaded on a Mat, the
 |*OldX* |<<BasicPiece#top,Basic Piece>>|X coordinate prior to most recent movement.
 |*OldY* |<<BasicPiece#top,Basic Piece>>|Y coordinate prior to most recent movement.
 |*OldZone* |<<BasicPiece#top,Basic Piece>>|Zone name prior to most recent movement.
+|*ParentId* |<<Marker#top,Place Marker>>|
+[#parentId]
+The <<#uniqueId,UniqueId>> of the piece that placed this piece using the Place Marker trait. Can be used to communicate back to the parent piece.
 |*PieceId* |<<BasicPiece#top,Basic Piece>>|A string that uniquely identifies the source of a piece (e.g. A Game Piece Palette entry, an At-Start Stack or Definition, or a Place Marker or Replace definition). All pieces created from the same source will have the same PieceId.
 |*PieceName* |<<BasicPiece#top,Basic Piece>>|Full piece name including both Basic Name and all additional strings provided by traits.
-|*PieceUID* |<<BasicPiece#top,Basic Piece>>|A string that uniquely identifies an individual piece. No two pieces will ever have the same PieceUID.
+|*PieceUID* |<<BasicPiece#top,Basic Piece>>|A string that uniquely identifies an individual piece. No two pieces will ever have the same PieceUID. A new PieceUID is allocated when a game is <<GameRefresher.adoc#top,Refreshed>>. See <<#uniqueId,UniqueId>> for a Uniquely identifying property that is guaranteed to never change.
 |*Restricted* |<<RestrictedAccess.adoc#top,Restricted Access>> |"true" if there are restrictions as to who can access this piece.
 |*RestrictedMovement* |<<RestrictedAccess.adoc#top,Restricted Access>> |"true" if non-owning players are resticted from moving the current piece.
 |*Selected* |<<BasicPiece#top,Basic Piece>>|"true" if the piece is currently selected.
 |*StackPos* |<<BasicPiece#top,Basic Piece>>|The position of the piece in its current Stack. Returns 1 if not stacked.
 |*StackSize* |<<BasicPiece#top,Basic Piece>>|Number of pieces in the Stack this piece is stacked in. Returns 1 if not stacked.
+|*UniqueId* |<<BasicPiece#top,Basic Piece>>|
+[#uniqueId]
+A string that uniquely identifies an individual piece and is guaranteed to never change, even if a game is refreshed.
 |*ZoneOfCommand* |<<MultiLocationCommand.adoc#top,Multi-Location Command>> |Contains the Zone Name of the last selected _Multi-Location_ Command.
 
 |===
