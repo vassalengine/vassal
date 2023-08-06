@@ -169,62 +169,131 @@ public class Console {
 
   private boolean doAttachments() {
     final AttachmentManager am = GameModule.getGameModule().getGameState().getAttachmentManager();
+    String compareName = "";
+    boolean useSelected = false;
+    boolean activeOnly = false;
+    boolean autoOnly = false;
+    boolean nonAutoOnly = false;
 
-    final String first = nextString("");
-    final String compareName;
-    final boolean useSelected;
-    if (first.toLowerCase().startsWith("sel")) { //NON-NLS
-      compareName = nextString("");
-      useSelected = true;
-    }
-    else {
-      compareName = first;
-      useSelected = false;
+    String option = nextString("");
+    if (matches("?", option) || matches("help", option)) { //NON-NLS
+      show("Usage:"); //NON-NLS
+      show("  /attachments [attachname] [selected] [active] [auto] [nonauto] - show current attachments"); //NON-NLS
+      show("  [attachname] - Optional, if included, only show attachments with name attachname"); //NON-NLS
+      show("  [selected]   - Optional, if included, only show attachments for current selected pieces"); //NON-NLS
+      show("  [active]     - Optional, if included, only show active attachments"); //NON-NLS
+      show("  [auto]       - Optional, if included, only show auto attachments"); //NON-NLS
+      show("  [nonauto]    - Optional, if included, only show non-auto attachments"); //NON-NLS
+      return true;
     }
 
-    if (compareName.isEmpty()) {
-      show("All Attachments" + (useSelected ? " for selected Units" : "") + ":");
+    while (!option.isEmpty()) {
+
+      if (matches("selected", option, 8)) {
+        useSelected = true;
+      }
+      else if (matches("active", option, 5)) {
+        activeOnly = true;
+      }
+      else if (matches("auto", option, 4)) {
+        autoOnly = true;
+      }
+      else if (matches("nonauto", option, 7)) {
+        nonAutoOnly = true;
+      }
+      else {
+        compareName = option;
+      }
+
+      option = nextString("");
     }
-    else {
-      show("Attachment" + compareName + (useSelected ? " for selected Units" : "") + ":");
+
+    // If they ask for autoOnly and nonAutoOnly, set both to false
+    if (autoOnly && nonAutoOnly) {
+      autoOnly = false;
+      nonAutoOnly = false;
     }
+
+    final StringBuilder sb = new StringBuilder();
+    sb.append((compareName.isEmpty() ? "All Attachments" : ("Attachment " + compareName)));
+    sb.append(useSelected ? ", Selected units only" : ", All units");
+    sb.append(activeOnly ? ", Active only" : "");
+    sb.append(autoOnly ? ", Auto only" : "");
+    sb.append(nonAutoOnly ? ", Non-auto only" : "");
+    sb.append(":");
+    show(sb.toString());
 
     if (useSelected) {
       for (final GamePiece piece : KeyBuffer.getBuffer().asList()) {
         for (final GamePiece a : Decorator.getDecorators(piece, Attachment.class)) {
           final Attachment attach = (Attachment) a;
-          String m = "Piece [" + piece.getProperty(BasicPiece.BASIC_NAME)
-            + "] Attachment ["
-            + attach.getAttachName()
-            + "] "
-            + (attach.isAutoAttach() ? "(auto)" : "")
-            + " has "
-            + attach.getContents().size()
-            + " attachments: ";
-          for (final GamePiece atp : attach.getContents()) {
-            m += "[" + atp.getProperty(BasicPiece.BASIC_NAME) + " (" + atp.getProperty(BasicPiece.CURRENT_MAP) + ")] ";
+          if (compareName.isEmpty() || compareName.equals(attach.getAttachName())) {
+            if (!activeOnly || attach.getAttachCount() > 0) {
+              if (!autoOnly || attach.isAutoAttach()) {
+                if (!nonAutoOnly || !attach.isAutoAttach()) {
+                  show(describeAttachment(attach));
+                }
+              }
+            }
           }
-          show(m);
         }
       }
     }
     else {
       for (final String attachName : am.getAttachmentList()) {
         if (compareName.isEmpty() || compareName.equals(attachName)) {
-          show("Attachment [" + attachName + "] used by " + am.getAttachmentList(attachName).size() + " pieces:");
+          final String heading = "Attachment [" + attachName + "] used by " + am.getAttachmentList(attachName).size() + " pieces:";
+          boolean headingShown = false;
+          if (!activeOnly) {
+            show(heading);
+            headingShown = true;
+          }
           for (final Attachment attach : am.getAttachmentList(attachName)) {
             final GamePiece gp = Decorator.getOutermost(attach);
-            final String gpName = (String) gp.getProperty(BasicPiece.BASIC_NAME);
-            String m = "..Piece [" + gpName + "] " + (attach.isAutoAttach() ? "(auto)" : "") + " has " + attach.getContents().size() + " attachments: ";
-            for (final GamePiece atp : attach.getContents()) {
-              m += "[" + atp.getProperty(BasicPiece.BASIC_NAME) + " (" + atp.getProperty(BasicPiece.CURRENT_MAP) + ")] ";
+            if (compareName.isEmpty() || compareName.equals(attach.getAttachName())) {
+              if (!activeOnly || attach.getAttachCount() > 0) {
+                if (!autoOnly || attach.isAutoAttach()) {
+                  if (!nonAutoOnly || !attach.isAutoAttach()) {
+                    if (!headingShown) {
+                      show(heading);
+                      headingShown = true;
+                    }
+                    show(".." + describeAttachment(attach));
+                  }
+                }
+              }
             }
-            show(m);
           }
         }
       }
     }
     return true;
+  }
+
+  private String describeAttachment(Attachment attach) {
+    final GamePiece piece = Decorator.getOutermost(attach);
+
+    final StringBuilder sb = new StringBuilder();
+    sb.append("Piece [");
+    sb.append(piece.getProperty(BasicPiece.BASIC_NAME));
+    sb.append("] Attachment [");
+    sb.append(attach.getAttachName());
+    sb.append("] ");
+    sb.append((attach.isAutoAttach() ? "(auto)" : ""));
+    sb.append(" has ");
+    sb.append(attach.getContents().size());
+    sb.append(" attachments: ");
+    for (final GamePiece atp : attach.getContents()) {
+      sb.append("[");
+      sb.append(atp.getProperty(BasicPiece.BASIC_NAME));
+      sb.append(" (");
+      sb.append(atp.getProperty(BasicPiece.CURRENT_MAP));
+      if (atp.equals(piece)) {
+        sb.append(",self");
+      }
+      sb.append(")] ");
+    }
+    return sb.toString();
   }
 
   private boolean doProperty() {
@@ -308,9 +377,10 @@ public class Console {
 
     if (topic.isEmpty()) {
       show("VASSAL console commands:"); //NON-NLS
-      show("  /errorlog - commands for opening/clearing/altering errorlog"); //NON-NLS
-      show("  /help     - shows list of commands"); //NON-NLS
-      show("  /property - commands for reading/writing global properties"); //NON-NLS
+      show("  /errorlog    - commands for opening/clearing/altering errorlog"); //NON-NLS
+      show("  /help        - shows list of commands"); //NON-NLS
+      show("  /property    - commands for reading/writing global properties"); //NON-NLS
+      show("  /attachments - commands to display current attachments");
     }
     else {
       tok = Pattern.compile(" +").splitAsStream("help").iterator(); //NON-NLS // Fake up a help subcommand
@@ -319,6 +389,9 @@ public class Console {
       }
       else if (matches("property", topic)) { //NON-NLS
         return doProperty();
+      }
+      else if (matches("attachments", topic)) {
+        return doAttachments();
       }
 
       show("Unknown help topic"); //NON-NLS
@@ -392,20 +465,18 @@ public class Console {
       return doErrorLog();
     }
 
-    //TODO: Move to after multiplayer check
-    //FIXME: Move to after multiplayer check
-    if (matches("attachments", command)) {
-      return doAttachments();
-    }
-
     // If this has EVER been a multiplayer game (has ever been connected to Server, or has ever had two player slots filled simultaneously), then
     // it will not accept console commands.
     final Logger log = GameModule.getGameModule().getLogger();
     if (log instanceof BasicLogger) {
       if (((BasicLogger)log).isMultiPlayer() || GameModule.getGameModule().isMultiPlayer()) {
-        show("|<b>Console commands that affect game state not allowed in multiplayer games.</b>"); //NON-NLS
+        show("|<b>Console commands that view or affect game state not allowed in multiplayer games.</b>"); //NON-NLS
         return false;
       }
+    }
+
+    if (matches("attachments", command)) {
+      return doAttachments();
     }
 
     if (matches("property", command)) { //NON-NLS
