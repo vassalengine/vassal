@@ -946,7 +946,14 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
     // Persistent Property values will always be String (for now).
     // Create the HashMap as lazily as possible, no point in creating it for pieces that never move
     if (persistentProps != null) {
+      // Maintain the value of UNIQUE_ID, as it will have been defaulted for legacy units when they are first
+      // created, prior to getting their state set (which does not specify a value for UNIQUE_ID).
+      // Post UniqueID units will just overwrite this default from the new state being set
+      final Object uniqueId = persistentProps.get(UNIQUE_ID);
       persistentProps.clear();
+      if (uniqueId != null) {
+        persistentProps.put(UNIQUE_ID, uniqueId);
+      }
     }
     final int propCount = st.nextInt(0);
     for (int i = 0; i < propCount; i++) {

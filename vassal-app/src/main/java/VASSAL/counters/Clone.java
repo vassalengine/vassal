@@ -27,6 +27,7 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.property.PersistentPropertyContainer;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 
@@ -110,6 +111,12 @@ public class Clone extends Decorator implements TranslatablePiece {
       GameModule.getGameModule().getGameState().addPiece(newPiece);
       newPiece.setState(outer.getState());
       c = new AddPiece(newPiece);
+
+      // Set the UniqueID
+      if (newPiece instanceof PersistentPropertyContainer) {
+        c = c.append(((PersistentPropertyContainer) newPiece).setPersistentProperty(BasicPiece.UNIQUE_ID, newPiece.getProperty(BasicPiece.PIECE_UID)));
+      }
+
       if (getMap() != null) {
         c.append(getMap().placeOrMerge(newPiece, outer.getPosition()));
         KeyBuffer.getBuffer().remove(outer);
