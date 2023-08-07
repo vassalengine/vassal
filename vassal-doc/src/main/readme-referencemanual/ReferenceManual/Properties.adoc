@@ -45,6 +45,8 @@ in cases like these as this will generate an error if the property does not have
 
 * The <<BasicPiece.adoc#top,Basic Piece>> defines properties related to a piece's name, location, side, and whether it's selected.
 
+* The <<Clone.adoc#top,Clone>> trait sets a property in all pieces Cloned from the same piece that links them together.
+
 * The <<DynamicProperty.adoc#top,Dynamic Property>> trait allows you to define your own changeable properties.
 
 * The <<Hideable.adoc#top,Invisible>> trait sets a property when the piece is invisible.
@@ -56,6 +58,8 @@ in cases like these as this will generate an error if the property does not have
 * The <<MarkMoved.adoc#top,Mark When Moved>> trait sets a property when a piece has moved.
 
 * The <<Mask.adoc#Properties,Mask>> trait sets a property when the piece is masked.
+
+* The <<Marker.adoc#Properties,Place Marker>> trait sets a property in the created marker piece that links back to the piece that created it.
 
 * The <<PropertySheet.adoc#top,Property Sheet>> trait exposes a set of user-editable properties.
 
@@ -87,6 +91,7 @@ in cases like these as this will generate an error if the property does not have
 |*cannotMove* |<<NonStacking.adoc#top,Does not stack>> |"true" if this piece cannot move at all (note spelling).
 |*ClickedX* |<<BasicPiece#top,Basic Piece>>|Map X-coordinate where player last right-clicked on piece to bring up context menu (or 0 if never).
 |*ClickedY* |<<BasicPiece#top,Basic Piece>>|Map Y-coordinate where player last right-clicked on piece to bring up context menu (or 0 if never).
+|*CloneId* |<<Clone#top,Clone>>|All pieces Cloned from the same piece (including the original piece) will have the same unique value for CloneId.
 |*CurrentBoard* |<<BasicPiece#top,Basic Piece>>|Current Board name or "" if not on a map.
 |*CurrentMap* |<<BasicPiece#top,Basic Piece>>|Current Map name or "" if not on a map.
 |*CurrentMat* |<<Cargo#top,Cargo>>|If the piece is Cargo loaded on a Mat, then the name of the Mat, otherwise ""
