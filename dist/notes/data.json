@@ -42,6 +42,7 @@
         { "num": 12261, "desc": "Report error if more than one grid added to a Zone" }
       ],
       "other_improvements": [
+        { "num": 12538, "desc": "Scenario Options - Allow Observers to Lock option tabs if no Sides taken" },
         { "num": 12509, "desc": "Allow and empty Deck or At-start Stack to be repositioned" },
         { "num": 12504, "desc": "Updated documentation for 3.7" },
         { "num": 12501, "desc": "Merge Set Attachment property into Set Piece Property" },
