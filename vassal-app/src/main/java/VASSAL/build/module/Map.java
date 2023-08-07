@@ -181,6 +181,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -2376,7 +2377,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
     final double dzoom = getZoom() * os_scale;
     for (final Board b : boards) {
-      b.drawRegion(g, getLocation(b, dzoom), visibleRect, dzoom, c);
+      b.drawRegion2D(g, getLocation2D(b, dzoom), visibleRect, dzoom, c);
     }
   }
 
@@ -2729,6 +2730,33 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       dy += boardHeights[column][y];
     }
     p.translate((int) round(zoom * dx), (int) round(zoom * dy));
+    return p;
+  }
+
+  public Point2D getLocation2D(Board b, double zoom) {
+    final Point2D p;
+    if (zoom == 1.0) {
+      p = b.bounds().getLocation();
+    }
+    else {
+      final Point relPos = b.relativePosition();
+      p = getLocation2D(relPos.x, relPos.y, zoom);
+      p.setLocation(p.getX() + zoom * edgeBuffer.width, p.getY() + zoom * edgeBuffer.height);
+    }
+    return p;
+  }
+
+  protected Point2D getLocation2D(int column, int row, double zoom) {
+    final Point2D p = new Point2D.Double();
+    int dx = 0;
+    for (int x = 0; x < column; ++x) {
+      dx += boardWidths[x][row];
+    }
+    int dy = 0;
+    for (int y = 0; y < row; ++y) {
+      dy += boardHeights[column][y];
+    }
+    p.setLocation(p.getX() + zoom * dx, p.getY() + zoom * dy);
     return p;
   }
 
