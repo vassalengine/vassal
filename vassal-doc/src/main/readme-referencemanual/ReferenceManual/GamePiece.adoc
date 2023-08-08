@@ -5,6 +5,15 @@
 
 '''''
 
+* <<#GamePiece,Game Piece>> +
+* <<#TraitOrder,Trait Ordering and YOU>> +
+** <<#DrawOrder,Draw Order and Traits>> +
+** <<#OtherTraits,Traits That Control Other Traits>> +
+** <<#TraitOrderKeyCommands,Key Commands and Traits>> +
+* <<#Advanced,Advanced Trait Ordering>> +
+* <<#Traits,List of Piece Traits>> +
+
+[#GamePiece]
 === Game Piece
 
 A Game Piece, sometimes simply referred to as a piece, is any counter, marker, or card used in a game.
@@ -43,6 +52,7 @@ Perhaps the trait you expected to be hidden by the Mask trait you just added isn
 
 Well it turns out that the interactions between different traits within the same piece are substantially affected by the _order_ those traits appear in the Game Piece's trait list! This section will walk you through the relationships between traits, provide you with some basic "rules of thumb" for ordering your traits, and then end with a comprehensive trait ordering guide that should be a regular touchstone even when you've become a VASSAL master!
 
+[#DrawOrder]
 ==== Draw Order and Traits
 
 [cols=",",]
@@ -58,6 +68,7 @@ For example if the _Text Label_ trait were moved up to the position directly und
 |image:images/GamePieceDrawOrder.png[] +
 |===
 
+[#OtherTraits]
 ==== Traits That Control Other Traits
 
 [cols=",",]
@@ -96,6 +107,7 @@ This happens starting at the bottom of the list and proceeding up toward the <<B
 |image:images/GamePieceOrder.png[] +
 |===
 
+[#Advanced]
 === Advanced Trait Ordering
 
 [cols="a,a",]
