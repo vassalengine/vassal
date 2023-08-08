@@ -43,7 +43,6 @@ import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.property.PersistentPropertyContainer;
-import VASSAL.script.expression.AuditTrail;
 import VASSAL.script.expression.Expression;
 import VASSAL.script.expression.FormattedStringExpression;
 import VASSAL.search.ImageSearchTarget;
@@ -323,11 +322,11 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     }
 
     // Set any Parameters in the new piece
-      c = c.append(Decorator.setDynamicProperties(
-        parameterList,
-        marker,
-        Decorator.getOutermost(this),
-        this));
+    c = c.append(Decorator.setDynamicProperties(
+      parameterList,
+      marker,
+      Decorator.getOutermost(this),
+      this));
 
     if ((c != null) && (afterBurnerKey != null) && !afterBurnerKey.isNull()) {
       marker.setProperty(Properties.SNAPSHOT, ((PropertyExporter) marker).getProperties());

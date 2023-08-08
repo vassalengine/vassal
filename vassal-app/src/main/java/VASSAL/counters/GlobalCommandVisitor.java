@@ -18,14 +18,11 @@
 package VASSAL.counters;
 
 import VASSAL.command.Command;
-import VASSAL.configure.Parameter;
 import VASSAL.i18n.Resources;
 import VASSAL.script.expression.AuditTrail;
 import VASSAL.script.expression.Auditable;
-import VASSAL.tools.SequenceEncoder;
 
 import javax.swing.KeyStroke;
-import java.util.List;
 
 /**
  * When processing a GlobalCommand (either a Global Key Command or an Attachment command), this applies the

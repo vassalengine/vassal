@@ -312,11 +312,11 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
    *
    * @return              Command setting the properties
    */
-  public static Command setDynamicProperties (List<Parameter> parameters, GamePiece piece, PropertySource source, Auditable owner) {
+  public static Command setDynamicProperties(List<Parameter> parameters, GamePiece piece, PropertySource source, Auditable owner) {
     return setDynamicProperties(parameters, piece, source, owner, null);
   }
 
-  public static Command setDynamicProperties (List<Parameter> parameters, GamePiece piece, PropertySource source, Auditable owner, AuditTrail auditSoFar) {
+  public static Command setDynamicProperties(List<Parameter> parameters, GamePiece piece, PropertySource source, Auditable owner, AuditTrail auditSoFar) {
     Command c = new NullCommand();
     if (parameters != null) {
       AuditTrail audit = auditSoFar;

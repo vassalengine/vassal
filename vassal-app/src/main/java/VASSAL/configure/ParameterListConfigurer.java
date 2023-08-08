@@ -49,7 +49,7 @@ public class ParameterListConfigurer extends Configurer implements ConfigurableL
   private JPanel controls;
   private JPanel configControls;
   private final List<ConfigurableListEntry> entries = new ArrayList<>();
-  private boolean counterBased = false;
+  private final boolean counterBased;
 
   public static String encode(List<Parameter> parameters) {
     if (parameters == null) return "";
@@ -71,23 +71,23 @@ public class ParameterListConfigurer extends Configurer implements ConfigurableL
     }
     return parameters;
   }
-  public ParameterListConfigurer(String key, String name) {
+
+  public ParameterListConfigurer(String key, String name, List<Parameter> params, boolean counterBased) {
     super(key, name);
-    value = new ArrayList<>(0);
+    value = params;
+    this.counterBased = counterBased;
   }
 
   public ParameterListConfigurer(String key, String name, List<Parameter> params) {
-    this(key, name);
-    value = params;
+    this(key, name, params, false);
   }
 
-  public ParameterListConfigurer (List<Parameter> params) {
-    this("", "", params);
+  public ParameterListConfigurer(String key, String name) {
+    this(key, name, new ArrayList<>());
   }
 
-  public ParameterListConfigurer (List<Parameter> params, boolean counterBased) {
-    this("", "", params);
-    this.counterBased = counterBased;
+  public ParameterListConfigurer(List<Parameter> params, boolean counterBased) {
+    this("", "", params, counterBased);
   }
 
   /**
