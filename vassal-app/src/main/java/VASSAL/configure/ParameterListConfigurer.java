@@ -80,6 +80,10 @@ public class ParameterListConfigurer extends Configurer implements ConfigurableL
     value = params;
   }
 
+  public ParameterListConfigurer (List<Parameter> params) {
+    this("", "", params);
+  }
+
   /**
    * Return a list of the Parameter names in the current configurer value
    * @return  Parameter names
@@ -292,7 +296,7 @@ public class ParameterListConfigurer extends Configurer implements ConfigurableL
 
       controls = new JPanel(new MigLayout("hidemode 3,ins 2", "[grow,fill]", "[grow,fill]")); // NON-NLS
 
-      configControls = new JPanel(new MigLayout("hidemode 3,wrap 2," + ConfigurerLayout.STANDARD_INSERTS_GAPY, "[grow 1,fill]rel[grow 8,fill]", "[center]")); // NON-NLS
+      configControls = new JPanel(new MigLayout("hidemode 3,wrap 2," + ConfigurerLayout.STANDARD_INSERTS_GAPY, "[fill]rel[grow,fill]", "[center]")); // NON-NLS
 
       controls.add(configControls, "grow, aligny center"); // NON-NLS
       panel.add(controls, "grow"); // NON-NLS
@@ -356,7 +360,7 @@ public class ParameterListConfigurer extends Configurer implements ConfigurableL
 
   private void buildHeader() {
 
-    final JLabel propertyNameHeader = new JLabel(Resources.getString("Editor.property_name"));
+    final JLabel propertyNameHeader = new JLabel(Resources.getString("Editor.ParameterListConfigurer.dynamic_property_name"));
     final Font boldFont = new Font(propertyNameHeader.getFont().getFontName(), Font.BOLD, propertyNameHeader.getFont().getSize());
     propertyNameHeader.setFont(boldFont);
     configControls.add(propertyNameHeader, "alignx center"); // NON-NLS

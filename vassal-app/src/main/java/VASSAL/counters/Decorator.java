@@ -30,6 +30,7 @@ import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.Configurer;
+import VASSAL.configure.Parameter;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
@@ -301,13 +302,50 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
   }
 
   /**
+   * Find and set a series of Dynamic Properties in the supplied GamePiece named propertyName and generate a
+   * Command to set it to the specified values in other clients
+   *
+   * @param parameters    List of property name/value pairs
+   * @param piece         Game Piece containing the Dynamic Property
+   * @param source        A Property Source for evaluating any $$ Variables included in the value if it is an expression
+   * @param owner         Initiating piece/component for audit purposes
+   *
+   * @return              Command setting the properties
+   */
+  public static Command setDynamicProperties (List<Parameter> parameters, GamePiece piece, PropertySource source, Auditable owner) {
+    return setDynamicProperties(parameters, piece, source, owner, null);
+  }
+
+  public static Command setDynamicProperties (List<Parameter> parameters, GamePiece piece, PropertySource source, Auditable owner, AuditTrail auditSoFar) {
+    Command c = new NullCommand();
+    if (parameters != null) {
+      AuditTrail audit = auditSoFar;
+      for (final Parameter param : parameters) {
+        final String message = "Set DP " + param.getPropertyName() + " to " + param.getValue();
+        if (auditSoFar == null) {
+          // No Audit trail supplied, create a new one for each expression
+          audit = AuditTrail.create(owner, param.getValue(), message);
+        }
+        else {
+          // Audit trail supplied, append to exsting trail
+          audit.addMessage(message);
+          audit.setExpression(param.getValue());
+        }
+        c = c.append(setDynamicProperty(param.getPropertyName(), param.getValue(), piece, source, owner, audit));
+      }
+    }
+    return c;
+  }
+  /**
    * Find a Dynamic Property in the supplied GamePiece named propertyName and generate a
    * Command to set it to the specified value
    *
-   * @param piece         Game Piece containing the Dynamic Property
    * @param propertyName  Dynamic property name
    * @param value         New value
+   * @param piece         Game Piece containing the Dynamic Property
    * @param source        A Property Source for evaluating any $$ Variables included in the value if it is an expression
+   * @param owner         Initiating piece/component for audit purposes
+   * @param audit         Audit trail
    *
    * @return              Command setting the property
    */

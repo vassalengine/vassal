@@ -59,4 +59,12 @@ public class Parameter {
     return encode(this);
   }
 
+
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof Parameter)) return false;
+    final Parameter p = (Parameter) obj;
+
+    return getPropertyName().equals(p.getPropertyName()) && getValue().equals(p.getValue());
+  }
 }

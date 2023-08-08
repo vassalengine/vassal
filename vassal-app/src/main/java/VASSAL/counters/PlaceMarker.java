@@ -323,15 +323,11 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     }
 
     // Set any Parameters in the new piece
-    for (final Parameter parameter : parameterList) {
-      c = c.append(Decorator.setDynamicProperty(
-        parameter.getPropertyName(),
-        parameter.getValue(),
+      c = c.append(Decorator.setDynamicProperties(
+        parameterList,
         marker,
         Decorator.getOutermost(this),
-        this,
-        AuditTrail.create(this, parameter.getValue(), "Set DP " + parameter.getPropertyName() + " to " + parameter.getValue())));
-    }
+        this));
 
     if ((c != null) && (afterBurnerKey != null) && !afterBurnerKey.isNull()) {
       marker.setProperty(Properties.SNAPSHOT, ((PropertyExporter) marker).getProperties());
@@ -579,6 +575,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     if (! Objects.equals(gpId, c.gpId)) return false;
     if (! Objects.equals(placement, c.placement)) return false;
     if (! Objects.equals(copyDPsByName, c.copyDPsByName)) return false;
+    if (! Objects.equals(parameterList, c.parameterList)) return false;
 
     return Objects.equals(above, c.above);
   }
