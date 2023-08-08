@@ -21,7 +21,8 @@
       "new_features": [
         { "num": 12492, "desc": "Add Comment trait" },
         { "num": 12454, "desc": "BeanShell Editor improvements: larger, multi-line, more properties" },
-        { "num": 12445, "desc": "Add Ranged Sum/Count Functions; updated Function Builder and documentation; updated Property documentation" }
+        { "num": 12445, "desc": "Add Ranged Sum/Count Functions; updated Function Builder and documentation; updated Property documentation" },
+        { "num": 12444, "desc": "Implement real Unique Piece Id property UniqueID that does not change during refresh" }
       ],
       "bug_fixes": [
         { "num": 12529, "desc": "Allow Piece UIDs to be compared properly in expressions" },

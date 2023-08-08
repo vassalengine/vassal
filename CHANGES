@@ -1,5 +1,7 @@
 3.7.0-beta5 - ???
 
+* 12444: Implement real Unique Piece Id property UniqueID that does not change
+    during refresh
 * 12538: Scenario Options - Allow Observers to Lock option tabs if no Sides
     taken
 * 12529: Allow Piece UIDs to be compared properly in expressions
