@@ -27,6 +27,7 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.property.PersistentPropertyContainer;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 
@@ -35,6 +36,7 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -44,6 +46,8 @@ import java.util.Objects;
  */
 public class Clone extends Decorator implements TranslatablePiece {
   public static final String ID = "clone;"; // NON-NLS
+  public static final String CLONE_ID = "CloneID";
+
   protected KeyCommand[] command;
   protected String commandName;
   protected NamedKeyStroke key;
@@ -110,6 +114,26 @@ public class Clone extends Decorator implements TranslatablePiece {
       GameModule.getGameModule().getGameState().addPiece(newPiece);
       newPiece.setState(outer.getState());
       c = new AddPiece(newPiece);
+
+      // Set the UniqueID and CloneID
+      if (newPiece instanceof PersistentPropertyContainer) {
+
+        // Set the UniqueId in the target piece to its current PieceUID
+        c = c.append(((PersistentPropertyContainer) newPiece).setPersistentProperty(BasicPiece.UNIQUE_ID, newPiece.getProperty(BasicPiece.PIECE_UID)));
+
+        // Find the CloneID for this piece
+        String cloneId = (String) getProperty(CLONE_ID);
+        if (cloneId == null || cloneId.isEmpty()) {
+          // Never been cloned and not a clone, set a new CloneID
+          cloneId = (String) getProperty(BasicPiece.UNIQUE_ID);
+          c = c.append(((PersistentPropertyContainer) this).setPersistentProperty(CLONE_ID, cloneId));
+        }
+
+        // Set the CloneID into the target piece
+        c = c.append(((PersistentPropertyContainer) newPiece).setPersistentProperty(CLONE_ID, cloneId));
+
+      }
+
       if (getMap() != null) {
         c.append(getMap().placeOrMerge(newPiece, outer.getPosition()));
         KeyBuffer.getBuffer().remove(outer);
@@ -191,6 +215,13 @@ public class Clone extends Decorator implements TranslatablePiece {
   @Override
   public PieceI18nData getI18nData() {
     return getI18nData(commandName, Resources.getString("Editor.Clone.clone_command_description"));
+  }
+
+  @Override
+  public List<String> getPropertyNames() {
+    final ArrayList<String> l = new ArrayList<>();
+    l.add(CLONE_ID);
+    return l;
   }
 
   @Override

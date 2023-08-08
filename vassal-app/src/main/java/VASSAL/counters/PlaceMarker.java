@@ -71,6 +71,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -89,6 +90,8 @@ import static VASSAL.counters.MatCargo.CURRENT_MAT_OFFSET_Y;
  */
 public class PlaceMarker extends Decorator implements TranslatablePiece, RecursionLimiter.Loopable {
   public static final String ID = "placemark;"; // NON-NLS
+  public static final String PARENT_ID = "ParentID";
+
   protected KeyCommand command;
   protected NamedKeyStroke key;
   protected String markerSpec;
@@ -179,13 +182,19 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
   }
 
   protected Command placeMarker() {
+    return placeMarker(false);
+  }
+
+  protected Command placeMarker(boolean clearParentId) {
     final Map m = getMap();
     if (m == null) return null;
 
     final GamePiece marker = createMarker();
     if (marker == null) return null;
 
+
     Command c;
+
     final GamePiece outer = getOutermost(this);
     Point p = getPosition();
 
@@ -277,6 +286,11 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     }
     else {
       c = m.placeAt(marker, p);
+    }
+
+    // Set Our ParentID into the markers parent UniqueID. May have been called by Replace, in which case we do not set a parent Id as the parent will be deleted
+    if (!clearParentId) {
+      c = c.append(((PersistentPropertyContainer) marker).setPersistentProperty(PARENT_ID, getProperty(BasicPiece.UNIQUE_ID)));
     }
 
     // Mat support
@@ -430,6 +444,13 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
   @Override
   public Shape getShape() {
     return piece.getShape();
+  }
+
+  @Override
+  public List<String> getPropertyNames() {
+    final ArrayList<String> l = new ArrayList<>();
+    l.add(PARENT_ID);
+    return l;
   }
 
   static boolean updateSemaphore = false;

@@ -26,6 +26,8 @@ import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 
 import javax.swing.KeyStroke;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * GamePiece trait that replaces a GamePiece with another one
@@ -52,7 +54,7 @@ public class Replace extends PlaceMarker {
 
   protected Command replacePiece() {
     Command c;
-    c = placeMarker();
+    c = placeMarker(true);
     if (c == null) {
       reportDataError(this, Resources.getString("Error.bad_replace"));
     }
@@ -208,6 +210,11 @@ public class Replace extends PlaceMarker {
         currentMarker = null;
       }
     }
+  }
+
+  @Override
+  public List<String> getPropertyNames() {
+    return new ArrayList<>();
   }
 
   @Override
