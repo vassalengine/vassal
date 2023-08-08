@@ -139,8 +139,6 @@ public class Clone extends Decorator implements TranslatablePiece {
         KeyBuffer.getBuffer().remove(outer);
         KeyBuffer.getBuffer().add(newPiece);
 
-        // Handles any auto-attachment traits in newly created pieces
-        c = c.append(GameModule.getGameModule().getGameState().getAttachmentManager().doAutoAttachments());
       }
     }
     return c;

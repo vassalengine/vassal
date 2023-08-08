@@ -80,7 +80,8 @@ public class Replace extends PlaceMarker {
         }
       }
 
-      final Command remove = new RemovePiece(Decorator.getOutermost(this));
+      Command remove = GameModule.getGameModule().getGameState().getAttachmentManager().removeAttachments(this);
+      remove = remove.append(new RemovePiece(Decorator.getOutermost(this)));
       remove.execute();
       c.append(remove);
     }

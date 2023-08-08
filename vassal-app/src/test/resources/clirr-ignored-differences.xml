@@ -25,10 +25,10 @@
     <!-- 3.7.0 -->
 
     <difference>
-        <className>VASSAL/build/module/Map</className>
+        <className>VASSAL/build/module/AttachmentManager</className>
         <differenceType>7002</differenceType>
-        <method>java.awt.image.BufferedImage getImageMapIcon(java.awt.Point, int, int, double)</method>
-        <justification>Just added it, now taking it out :)</justification>
+        <method>*</method>
+        <justification>New class added in 3.7 beta.</justification>
     </difference>
 
     <difference>
@@ -39,18 +39,21 @@
         <to>*</to>
         <justification>No one should be using this externally</justification>
     </difference>
-    <difference>
-        <className>VASSAL/script/ExpressionInterpreter</className>
-        <differenceType>7002</differenceType>
-        <method>*</method>
-        <justification>Only called from Beanshell interface script which has been revamped.</justification>
-    </difference>
+
     <difference>
         <className>VASSAL/script/ExpressionInterpreter</className>
         <differenceType>7004</differenceType>
         <method>java.lang.Object sumZone(java.lang.String, java.lang.String, VASSAL.build.module.properties.PropertySource)</method>
         <justification>No one should be using this externally</justification>
     </difference>
+
+    <difference>
+        <className>VASSAL/script/ExpressionInterpreter</className>
+        <differenceType>7002</differenceType>
+        <method>*</method>
+        <justification>Only called from Beanshell interface script which has been revamped.</justification>
+    </difference>
+
     <difference>
         <className>VASSAL/script/AbstractInterpreter</className>
         <differenceType>7005</differenceType>
@@ -58,6 +61,7 @@
         <to>*</to>
         <justification>No one should be using this externally</justification>
     </difference>
+
     <difference>
         <className>VASSAL/configure/BeanShellFunctionMenu</className>
         <differenceType>7005</differenceType>
@@ -65,13 +69,13 @@
         <to>*</to>
         <justification>Internal use only</justification>
     </difference>
+
     <difference>
         <className>VASSAL/configure/BeanShellFunctionMenu</className>
         <differenceType>7002</differenceType>
         <method>*</method>
         <justification>Internal use only.</justification>
     </difference>
-
     <!-- 3.6.14 -->
 
     <difference>

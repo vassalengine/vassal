@@ -15,7 +15,7 @@ This <<GamePiece.adoc#Traits,Trait>> adds an action that creates a lasting "atta
 
 (3) The piece will be able to directly read the properties of _one_ of the pieces that the Attachment trait is bound to through a simple syntax. For cases where a single piece is bound to a particular Attachment trait, this can be quite useful in reading its properties quickly and easily. If a group of multiple pieces is attached with one Attachment trait, properties will be read from an undetermined _single piece_ from among the attached pieces. See _Attachment Name_, below, for an explanation of how to read a property from the attached piece.
 
-(4) For <<DynamicProperty.adoc#top, Dynamic Properties>> of an attached piece, the value of the properties can also be _set_ by this piece, by using a <<SetPieceProperty.adoc#top, Set Piece Property>> trait.
+(4) For <<DynamicProperty.adoc#top, Dynamic Properties>> of an attached piece, the value of the properties can also be _set_ by this piece, by using a <<SetPieceProperty.adoc#top, Set Piece Property>> trait with the _Current Attachments_ fastmatch option.
 
 (5) If the attached-to piece *also* has an Attachment trait that shares the same _Attachment Name_, then mutual attachments between pieces can also be formed.
 
@@ -63,7 +63,7 @@ If left blank, no context menu item will appear.
 
 *Pre-select (Fast Match):*::  *Fast Match* selections can be used to improve the performance of "slow" piece filters.
 +
-See the <<FastMatch.adoc#top>> page for full details on Fast Matches.
+See the <<FastMatch.adoc#top, Fast Match>> page for full details on Fast Matches.
 
 *Additional matching expression:*::  If further refinement of which target pieces should be attached is needed, or if you do not wish to use Fast Match pre-selections, an Additional Matching Expression can be used. Only Game Pieces which match the specified <<PropertyMatchExpression.adoc#top,Property Match Expression>> will become attached. Note that the properties named in _this_ expression are evaluated against the properties _of the target pieces_, not the properties of the piece creating the Attachment.
 For example if you provided the expression _{ CurrentZone == "Europe" }_, that would use the CurrentZone property of each potential target piece (checking if _it_ is "Europe") to determine whether to attach it.
@@ -75,7 +75,7 @@ For example if the expression provided is { CurrentZone == "$CurrentZone$" } the
 If _Fixed number of pieces_ is selected, a field appears to allow entry of the number of Pieces in the Deck to affect, starting at the top of the Deck.
 Thus, selecting 1 for the fixed number would cause only the top card or piece in a Deck to be attached. An <<Expression.adoc#top,Expression>> can be used. Note that such an expression will be evaluated _once_ at the beginning of the attachment (not each time a candidate piece is being checked).
 
-*Restrict Range:*::  If selected, the command will only attach pieces located within a specified distance of this piece.<<Properties.adoc#top>>
+*Restrict Range:*::  If selected, the command will only attach pieces located within a specified distance of this piece.
 
 *Range:*:: Only others pieces within this distance, inclusive, of this piece will be attached.
 If the pieces are on a board with a <<HexGrid.adoc#top,Hex Grid>> or <<RectangularGrid.adoc#top,Rectangular Grid>>, then the distance is in units of the grid.

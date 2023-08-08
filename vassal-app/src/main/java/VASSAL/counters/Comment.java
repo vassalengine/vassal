@@ -52,7 +52,7 @@ public class Comment extends Decorator implements EditablePiece {
 
   @Override
   public String getDescription() {
-    return "---" + comment;
+    return "<html><b>--- " + comment + "</b></html>";
   }
 
   @Override
