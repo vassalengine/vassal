@@ -31,6 +31,7 @@
     UnsupportedOperationException during search
 * 12401: Allow Ctrl-V to be entered as a Key Command
 * 12396: Add missing Global Option message
+* 12393: Fix Auto-attach breaking on Undo
 * 12392: Replace With Other incorrectly retains existing Marker values when
     Match Current State is checked
 * 12363: Initialise Global Option preferences that have no Tab name
