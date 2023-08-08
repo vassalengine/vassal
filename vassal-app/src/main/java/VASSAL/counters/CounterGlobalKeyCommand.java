@@ -454,7 +454,7 @@ public class CounterGlobalKeyCommand extends Decorator
       suppressSounds = new BooleanConfigurer(p.globalCommand.isSuppressSounds());
       traitPanel.add("Editor.GlobalKeyCommand.Editor_MassKey_suppress_sounds", suppressSounds);
 
-      paramConfig = new ParameterListConfigurer(p.parameters);
+      paramConfig = new ParameterListConfigurer(p.parameters, true);
       traitPanel.add("Editor.GlobalKeyCommand.pass_parameters", paramConfig);
 
       pl.propertyChange(null);

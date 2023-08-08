@@ -49,6 +49,7 @@ public class ParameterListConfigurer extends Configurer implements ConfigurableL
   private JPanel controls;
   private JPanel configControls;
   private final List<ConfigurableListEntry> entries = new ArrayList<>();
+  private boolean counterBased = false;
 
   public static String encode(List<Parameter> parameters) {
     if (parameters == null) return "";
@@ -82,6 +83,11 @@ public class ParameterListConfigurer extends Configurer implements ConfigurableL
 
   public ParameterListConfigurer (List<Parameter> params) {
     this("", "", params);
+  }
+
+  public ParameterListConfigurer (List<Parameter> params, boolean counterBased) {
+    this("", "", params);
+    this.counterBased = counterBased;
   }
 
   /**
@@ -365,7 +371,7 @@ public class ParameterListConfigurer extends Configurer implements ConfigurableL
     propertyNameHeader.setFont(boldFont);
     configControls.add(propertyNameHeader, "alignx center"); // NON-NLS
 
-    final JLabel valueHeader  = new JLabel(Resources.getString("Editor.ParameterListConfigurer.value"));
+    final JLabel valueHeader  = new JLabel(Resources.getString(counterBased ? "Editor.ParameterListConfigurer.value" : "Editor.ParameterListConfigurer.value2"));
     valueHeader.setFont(boldFont);
     configControls.add(valueHeader, "alignx center"); // NON-NLS
 

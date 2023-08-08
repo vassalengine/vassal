@@ -704,7 +704,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       );
       p.add("Editor.PlaceMarker.place_marker", placementConfig);
 
-      parameterListConfig = new ParameterListConfigurer("", "", piece.parameterList);
+      parameterListConfig = new ParameterListConfigurer(piece.parameterList, true);
       p.add("Editor.PlaceMarker.set_properties", parameterListConfig);
 
       afterBurner = new NamedHotKeyConfigurer(piece.afterBurnerKey);
