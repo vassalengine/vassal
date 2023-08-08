@@ -464,15 +464,19 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
       }
 
       // Observers can only lock if no player sides defined
-      final PlayerRoster r = gm.getPlayerRoster();
-      if (r == null) {
+      final PlayerRoster roster = gm.getPlayerRoster();
+      if (roster == null) {
         return true;
       }
 
       // Otherwise, player must have a side to be able to lock
+      // OR is an Observer and no player sides are currently taken
       // Note side=null means no player sides defined, so Ok to lock
       final String side = PlayerRoster.getMySide();
-      return side != null && !PlayerRoster.OBSERVER.equals(side);
+      if (side == null) {
+        return true;
+      }
+      return !PlayerRoster.OBSERVER.equals(side) || (roster.getAvailableSides().size() == roster.getSides().size());
     }
   }
 

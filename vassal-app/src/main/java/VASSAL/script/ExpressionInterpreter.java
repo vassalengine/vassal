@@ -310,12 +310,19 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
             setVar(var, Integer.parseInt(value));
           }
           catch (NumberFormatException ex1) {
-
+            // A very large integer (e.g. a PieceUID) will fail to convert to an Integer.
+            // Don't let it convert to a Float, store it as a String instead
             try {
-              setVar(var, Float.parseFloat(value));
-            }
-            catch (NumberFormatException ex2) {
+              NumberUtils.createBigInteger(value); // Will fail if non-integer
               setVar(var, value);
+            }
+            catch (NumberFormatException ex3) {
+              try {
+                setVar(var, Float.parseFloat(value));
+              }
+              catch (NumberFormatException ex2) {
+                setVar(var, value);
+              }
             }
           }
         }

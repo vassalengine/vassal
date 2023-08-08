@@ -23,6 +23,7 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 import java.util.Collections;
@@ -110,11 +111,9 @@ public class RotateScaleOpSVGImpl extends AbstractTileOpImpl
     final DataArchive archive = GameModule.getGameModule().getDataArchive();
     final String name = getName();
 
-    try {
-      final SVGRenderer renderer = new SVGRenderer(
-        archive.getURL(name),
-        new BufferedInputStream(archive.getInputStream(name))
-      );
+    try (InputStream in = archive.getInputStream(name);
+         BufferedInputStream bin = new BufferedInputStream(in)) {
+      final SVGRenderer renderer = new SVGRenderer(archive.getURL(name), bin);
 
       if (size == null) fixSize();
 

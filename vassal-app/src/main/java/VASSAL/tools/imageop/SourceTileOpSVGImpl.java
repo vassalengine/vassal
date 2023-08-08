@@ -23,6 +23,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 import java.util.Collections;
@@ -90,11 +91,9 @@ public class SourceTileOpSVGImpl extends AbstractTileOpImpl
     final DataArchive archive = GameModule.getGameModule().getDataArchive();
     final String name = getName();
 
-    try {
-      final SVGRenderer renderer = new SVGRenderer(
-        archive.getURL(name),
-        new BufferedInputStream(archive.getInputStream(name))
-      );
+    try (InputStream in = archive.getInputStream(name);
+         BufferedInputStream bin = new BufferedInputStream(in)) {
+      final SVGRenderer renderer = new SVGRenderer(archive.getURL(name), bin);
 
       final Rectangle2D aoi = new Rectangle2D.Float(x0, y0, x1 - x0, y1 - y0);
       return renderer.render(0.0, 1.0, aoi);
