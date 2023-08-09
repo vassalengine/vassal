@@ -1156,9 +1156,6 @@ public class PieceMover extends AbstractBuildable
       comm = comm.append(doTrueMovedSupport(allDraggedPieces));
     }
 
-    // Handle any auto-attachment traits in any newly created pieces
-    comm = comm.append(GameModule.getGameModule().getGameState().getAttachmentManager().doAutoAttachments());
-
     // We've finished the actual drag and drop of pieces, so we now create any auto-report message that is appropriate.
     if (GlobalOptions.getInstance().autoReportEnabled()) {
       final Command report = createMovementReporter(comm).getReportCommand().append(new MovementReporter.HiddenMovementReporter(comm).getReportCommand());

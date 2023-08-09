@@ -141,6 +141,7 @@ public class Delete extends Decorator implements TranslatablePiece {
       }
 
       c = putOldProperties(Decorator.getOutermost(this));
+      c = c.append(GameModule.getGameModule().getGameState().getAttachmentManager().removeAttachments(outer));
       c = c.append(new RemovePiece(outer));
 
       c.execute();

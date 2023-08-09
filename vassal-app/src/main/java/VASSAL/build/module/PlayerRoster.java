@@ -635,8 +635,18 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
    * @return True if this is currently a multiPlayer game (either connected to a server, or more than one player side allocated)
    */
   public boolean isMultiPlayer() {
-    // NB. Intentionally not excluding observers.
-    return players.size() > 1;
+    if (!sides.isEmpty()) {
+      // If Sides are defined, do not count Observers towards multi-player total.
+      int takenSideCount = 0;
+      for (final PlayerInfo p : players) {
+        if (sides.contains(p.side)) takenSideCount++;
+      }
+      return takenSideCount > 1;
+    }
+    else {
+      // No sides, need to check Observer Count
+      return players.size() > 1;
+    }
   }
 
   /**

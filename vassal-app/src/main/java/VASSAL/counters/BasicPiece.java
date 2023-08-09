@@ -110,6 +110,8 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
   public static final String PIECE_UID = "PieceUID"; // NON-NLS
   public static final String STACK_POS = "StackPos";
   public static final String STACK_SIZE = "StackSize";
+  public static final String UNIQUE_ID = "UniqueID";
+
 
   @Deprecated(since = "2022-08-08", forRemoval = true)
   public static Font POPUP_MENU_FONT = new Font(Font.DIALOG, Font.PLAIN, 11);
@@ -310,6 +312,9 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
     else if (PIECE_UID.equals(key)) {
       return getId();
     }
+    else if (UNIQUE_ID.equals(key)) {
+      return (String) getPersistentProps().get(BasicPiece.UNIQUE_ID);
+    }
     else if (STACK_POS.equals(key)) {
       final Stack parent = getParent();
       if (parent == null) {
@@ -334,8 +339,8 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
     Object prop = props == null ? null : props.get(key);
 
     // Check for a persistent property
-    if (prop == null && persistentProps != null) {
-      prop = persistentProps.get(key);
+    if (prop == null) {
+      prop = getPersistentProps().get(key);
     }
 
     // Check for higher level properties. Each level if it exists will check the higher level if required.
@@ -437,8 +442,8 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
     Object prop = props == null ? null : props.get(key);
 
     // Check for a persistent property
-    if (prop == null && persistentProps != null) {
-      prop = persistentProps.get(key);
+    if (prop == null) {
+      prop = getPersistentProps().get(key);
     }
 
     // Check for higher level properties. Each level if it exists will check the higher level if required.
@@ -519,11 +524,7 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
    */
   @Override
   public Command setPersistentProperty(Object key, Object newValue) {
-    if (persistentProps == null) {
-      persistentProps = new HashMap<>();
-    }
-
-    final Object oldValue = newValue == null ? persistentProps.remove(key) : persistentProps.put(key, newValue);
+    final Object oldValue = newValue == null ? getPersistentProps().remove(key) : getPersistentProps().put(key, newValue);
     return Objects.equals(oldValue, newValue) ? null : new SetPersistentPropertyCommand(getId(), key, oldValue, newValue);
   }
 
@@ -533,9 +534,15 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
    */
   @Override
   public Object getPersistentProperty(Object key) {
-    return persistentProps == null ? null : persistentProps.get(key);
+    return getPersistentProps().get(key);
   }
 
+  private java.util.Map<Object, Object> getPersistentProps() {
+    if (persistentProps == null) {
+      persistentProps = new HashMap<>();
+    }
+    return persistentProps;
+  }
   /**
    * @param s Name of a module preference to be read
    * @return Value of the preference
@@ -887,14 +894,12 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
     final Point p = getPosition();
     se.append(p.x).append(p.y);
     se.append(getGpId());
-    se.append(persistentProps == null ? 0 : persistentProps.size());
+    se.append(getPersistentProps().size());
     // Persistent Property values will always be String (for now).
-    if (persistentProps != null) {
-      persistentProps.forEach((key, val) -> {
-        se.append(key == null ? "" : key.toString());
-        se.append(val == null ? "" : val.toString());
-      });
-    }
+    getPersistentProps().forEach((key, val) -> {
+      se.append(key == null ? "" : key.toString());
+      se.append(val == null ? "" : val.toString());
+    });
     return se.getValue();
   }
 
@@ -940,17 +945,21 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
 
     // Persistent Property values will always be String (for now).
     // Create the HashMap as lazily as possible, no point in creating it for pieces that never move
-    if (persistentProps != null) {
-      persistentProps.clear();
+
+    // Maintain the value of UNIQUE_ID, as it will have been defaulted for legacy units when they are first
+    // created, prior to getting their state set (which does not specify a value for UNIQUE_ID).
+    // Post UniqueID units will just overwrite this default from the new state being set
+    final Object uniqueId = getPersistentProps().get(UNIQUE_ID);
+    getPersistentProps().clear();
+    if (uniqueId != null) {
+      getPersistentProps().put(UNIQUE_ID, uniqueId);
     }
+
     final int propCount = st.nextInt(0);
     for (int i = 0; i < propCount; i++) {
-      if (persistentProps == null) {
-        persistentProps = new HashMap<>();
-      }
       final String key = st.nextToken("");
       final String val = st.nextToken("");
-      persistentProps.put(key, val);
+      getPersistentProps().put(key, val);
     }
   }
 
@@ -987,6 +996,12 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
   @Override
   public void setId(String id) {
     this.id = id;
+
+    // Copy the PieceUID to UniqueID if no UniqueID has been set yet.
+    if (getPersistentProps().get(UNIQUE_ID) == null) {
+      getPersistentProps().put(UNIQUE_ID, id);
+    }
+
   }
 
   /**
@@ -1087,15 +1102,13 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
     if (! Objects.equals(getPosition(), bp.getPosition())) return false;
     if (! Objects.equals(getGpId(), bp.getGpId())) return false;
 
-    final int pp1 = persistentProps == null ? 0 : persistentProps.size();
-    final int pp2 = bp.persistentProps == null ? 0 : bp.persistentProps.size();
+    final int pp1 = getPersistentProps().size();
+    final int pp2 = bp.getPersistentProps().size();
     if (! Objects.equals(pp1, pp2)) return false;
 
-    if (persistentProps != null && bp.persistentProps != null) {
-      for (final Object key : persistentProps.keySet()) {
-        if (!Objects.equals(persistentProps.get(key), bp.persistentProps.get(key)))
-          return false;
-      }
+    for (final Object key : getPersistentProps().keySet()) {
+      if (!Objects.equals(getPersistentProps().get(key), bp.getPersistentProps().get(key)))
+        return false;
     }
 
     return true;
@@ -1231,6 +1244,7 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
     l.add(Properties.SELECTED);
     l.add(STACK_POS);
     l.add(STACK_SIZE);
+    l.add(UNIQUE_ID);
     return l;
   }
 

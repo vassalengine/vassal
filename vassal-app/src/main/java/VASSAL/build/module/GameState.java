@@ -433,14 +433,6 @@ public class GameState implements CommandEncoder {
   private boolean applyStartupGlobalKeyCommands(AbstractBuildable target, boolean playerChange) {
     boolean any = false;
 
-    // Ensure auto-attachments all connected (doing it here ensures any SetupStack pieces with Attachment traits
-    // get their auto-attach processed before any actual SGKCs are executed).
-    final Command c = attachmentManager.doAutoAttachments();
-    if ((c != null) && !c.isNull()) {
-      GameModule.getGameModule().sendAndLog(c);
-      any = true;
-    }
-
     for (final Buildable b : target.getBuildables()) {
       if (b instanceof StartupGlobalKeyCommand) {
         if (playerChange) {
@@ -1121,8 +1113,8 @@ public class GameState implements CommandEncoder {
     if (p.getId() == null) {
       p.setId(getNewPieceId());
     }
-    attachmentManager.pieceAdded(p);
     pieces.put(p.getId(), p);
+    getAttachmentManager().pieceAdded(p);
   }
 
   /**
@@ -1144,6 +1136,7 @@ public class GameState implements CommandEncoder {
   public void removePiece(GamePiece piece) {
     if (piece != null) {
       removePiece(piece.getId());
+      getAttachmentManager().pieceRemoved(piece);
     }
   }
 

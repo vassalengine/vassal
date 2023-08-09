@@ -1593,7 +1593,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       // Check the minimum range
       if (min > 0) {
         final int range = range(position, piece.getPosition(), sourcePiece.getMap(), asPixels);
-        if (range < min) break;
+        if (range < min) continue;
       }
       result = updateTotal(result, piece, propertyName, filter, doSum);
     }

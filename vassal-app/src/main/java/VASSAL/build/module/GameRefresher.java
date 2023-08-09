@@ -607,8 +607,6 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
           }
         }
       }
-
-      command.append(GameModule.getGameModule().getGameState().getAttachmentManager().doAutoAttachments());
     }
 
     // We're done with these, clean up the garbage

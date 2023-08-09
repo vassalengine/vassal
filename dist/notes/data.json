@@ -21,7 +21,8 @@
       "new_features": [
         { "num": 12492, "desc": "Add Comment trait" },
         { "num": 12454, "desc": "BeanShell Editor improvements: larger, multi-line, more properties" },
-        { "num": 12445, "desc": "Add Ranged Sum/Count Functions; updated Function Builder and documentation; updated Property documentation" }
+        { "num": 12445, "desc": "Add Ranged Sum/Count Functions; updated Function Builder and documentation; updated Property documentation" },
+        { "num": 12444, "desc": "Implement real Unique Piece Id property UniqueID that does not change during refresh" }
       ],
       "bug_fixes": [
         { "num": 12529, "desc": "Allow Piece UIDs to be compared properly in expressions" },
@@ -36,12 +37,14 @@
         { "num": 12403, "desc": "Extension Editing fixes: Cut & Paste now deletes cut element, Drag & Drop between folders in Extension are saved, stopped UnsupportedOperationException during search" },
         { "num": 12401, "desc": "Allow Ctrl-V to be entered as a Key Command" },
         { "num": 12396, "desc": "Add missing Global Option message" },
+        { "num": 12393, "desc": "Fix Auto-attach breaking on Undo" },
         { "num": 12392, "desc": "Replace With Other incorrectly retains existing Marker values when Match Current State is checked" },
         { "num": 12363, "desc": "Initialise Global Option preferences that have no Tab name" },
         { "num": 12347, "desc": "Refresh Dynamic Properties correctly when they have no value" },
         { "num": 12261, "desc": "Report error if more than one grid added to a Zone" }
       ],
       "other_improvements": [
+        { "num": 12538, "desc": "Scenario Options - Allow Observers to Lock option tabs if no Sides taken" },
         { "num": 12509, "desc": "Allow and empty Deck or At-start Stack to be repositioned" },
         { "num": 12504, "desc": "Updated documentation for 3.7" },
         { "num": 12501, "desc": "Merge Set Attachment property into Set Piece Property" },

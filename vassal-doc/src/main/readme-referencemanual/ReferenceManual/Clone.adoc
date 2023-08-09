@@ -11,6 +11,16 @@ The Clone trait provides the capability for a piece to be duplicated by players 
 
 When this trait's Key Command or menu item is activated, an exact copy of the piece is placed in the game at the same location.
 
+The piece that initiates the first Clone, and all subsequent pieces Cloned from Clones, have a unique value (the value of the <<Properties.adoc#uniqueId,UniqueID>> property from initially Cloning piece) stored into the property *CloneID* that uniquely identifies that set of clones.
+
+This allows any of the Clones to use the <<GlobalKeyCommand.adoc#top, Global Key Command>> trait or the <<SetPieceProperty.adoc#top,Set Piece Property>> trait to communicate with the other Clones by including the following in the _Additional matching expression_: +
+
+`{CloneID=="$CloneID$"}` +
+
+If you need to know which of the Clones was the initial piece that was cloned, it will have a value for the *CloneID* property that is equal to its own *UniqueID* property.
+
+NOTE: If you pull a new version of a piece that has been Cloned from a Piece Palette, it will NOT have a value for *CloneID* and if you then Clone it, the value of *CloneID* for it and the clone will be different to any earlier Clonings of the earlier version of the piece.
+
 [width="100%",cols="50%a,50%a",]
 |===
 |

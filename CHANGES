@@ -1,5 +1,9 @@
 3.7.0-beta5 - ???
 
+* 12444: Implement real Unique Piece Id property UniqueID that does not change
+    during refresh
+* 12538: Scenario Options - Allow Observers to Lock option tabs if no Sides
+    taken
 * 12529: Allow Piece UIDs to be compared properly in expressions
 * 12528: Close InputStreams opened for reading SVG
 * 12509: Allow and empty Deck or At-start Stack to be repositioned
@@ -27,6 +31,7 @@
     UnsupportedOperationException during search
 * 12401: Allow Ctrl-V to be entered as a Key Command
 * 12396: Add missing Global Option message
+* 12393: Fix Auto-attach breaking on Undo
 * 12392: Replace With Other incorrectly retains existing Marker values when
     Match Current State is checked
 * 12363: Initialise Global Option preferences that have no Tab name
