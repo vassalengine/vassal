@@ -49,7 +49,6 @@ public class ParameterListConfigurer extends Configurer implements ConfigurableL
   private JPanel controls;
   private JPanel configControls;
   private final List<ConfigurableListEntry> entries = new ArrayList<>();
-  private final boolean counterBased;
 
   public static String encode(List<Parameter> parameters) {
     if (parameters == null) return "";
@@ -63,7 +62,7 @@ public class ParameterListConfigurer extends Configurer implements ConfigurableL
 
   public static List<Parameter> decode(String s) {
     final List<Parameter> parameters = new ArrayList<>();
-    if (s.length() > 0) {
+    if (s != null && s.length() > 0) {
       final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
       while (sd.hasMoreTokens()) {
         parameters.add(new Parameter(sd.nextToken("")));
@@ -72,23 +71,19 @@ public class ParameterListConfigurer extends Configurer implements ConfigurableL
     return parameters;
   }
 
-  public ParameterListConfigurer(String key, String name, List<Parameter> params, boolean counterBased) {
+  public ParameterListConfigurer(String key, String name, List<Parameter> params) {
     super(key, name);
     value = params;
-    this.counterBased = counterBased;
-  }
-
-  public ParameterListConfigurer(String key, String name, List<Parameter> params) {
-    this(key, name, params, false);
   }
 
   public ParameterListConfigurer(String key, String name) {
     this(key, name, new ArrayList<>());
   }
 
-  public ParameterListConfigurer(List<Parameter> params, boolean counterBased) {
-    this("", "", params, counterBased);
+  public ParameterListConfigurer(List<Parameter> params) {
+    this("", "", params);
   }
+
 
   /**
    * Return a list of the Parameter names in the current configurer value
@@ -371,7 +366,7 @@ public class ParameterListConfigurer extends Configurer implements ConfigurableL
     propertyNameHeader.setFont(boldFont);
     configControls.add(propertyNameHeader, "alignx center"); // NON-NLS
 
-    final JLabel valueHeader  = new JLabel(Resources.getString(counterBased ? "Editor.ParameterListConfigurer.value" : "Editor.ParameterListConfigurer.value2"));
+    final JLabel valueHeader  = new JLabel(Resources.getString("Editor.ParameterListConfigurer.value"));
     valueHeader.setFont(boldFont);
     configControls.add(valueHeader, "alignx center"); // NON-NLS
 
