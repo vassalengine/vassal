@@ -29,8 +29,8 @@ A brief overwiew of some of the main concepts you need to know to get started cr
 ** <<#oldStyle,Old-Style Expressions>> +
 ** <<#beanshell,BeanShell Expressions>> +
 ** <<#PME,Property Match Expressions>> +
+* <<#parameters,Passing values to pieces>> +
 
-=== Property Match Expressions
 '''
 [#module]
 == Module
@@ -272,3 +272,13 @@ If a new version of a Cloned piece is pulled from a Piece Paletter and Cloned, i
 
 [#PME]
 === Property Match Expressions
+
+[#parameters]
+== Passing values to pieces
+The <<SetPieceProperty.adoc#top,Set Piece Property>> trait allows one piece to set a specific Dynamic Property in a selection of other pieces.
+
+The <<Marker.adoc#top,Place Marker>> and <<Replace.adoc#top,Replace With Other>> traits and all varieties of <<GlobalKeyCommand.adoc#top,Global Key Commands>> also have the ability to set the value of mulitple Dynamic Properties in the pieces they affect as well as perform their main purpose.
+
+Values can also be shared between pieces by storing them in <<GlobalProperties.adoc#top,Global Properties>> that are accessible to all the pieces involved.
+
+See the <<PassingValues.adoc#top,Passing value to pieces>> page for details on how to use these features.

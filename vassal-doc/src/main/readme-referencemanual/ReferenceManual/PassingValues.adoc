@@ -1,0 +1,9 @@
+== VASSAL Reference Manual
+[#top]
+
+[.small]#<<index.adoc#toc,Home>> > <<Concepts.adoc#top,Concepts>>  > *Passing values to pieces*#
+
+'''''
+
+=== Passing values to pieces
+

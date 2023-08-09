@@ -11,7 +11,9 @@ A Game Piece with this trait will have a menu command that places a different pi
 You can select any existing piece for the marker or define a new one from scratch.
 A new piece will be placed each time this trait is activated.
 
-The new piece placed by this trait will have the <<Properties.adoc#parentId,ParentID>> property set to the value of the <<Properties.adoc#uniqueId,UniqueID>> property from the piece that placed it. This allows the placed marker to use the <<GlobalKeyCommand.adoc#top, Global Key Command>> trait or the <<SetPieceProperty.adoc#top,Set Piece Property>> trait to communicate with the parent piece by including the following in the _Additional matching expression_: +
+It is also possible to set values into Dynamic Properties in the placed Marker.
+
+The new piece placed by this trait will have the <<Properties.adoc#parentId,ParentID>> property set to the value of the <<Properties.adoc#uniqueId,UniqueID>> property from the piece that placed it. This allows the placed marker to use the <<GlobalKeyCommand.adoc#top, Global Key Command>> trait or the <<SetPieceProperty.adoc#top,Set Piece Property>> trait to communicate with the parent piece by including the following in the <<PropertyMatchExpression.adoc#top,_Additional matching expression_>>: +
 
 `{UniqueID=="$ParentID$"}` +
 
@@ -49,6 +51,9 @@ Any value other than zero will prevent the new piece from stacking with the orig
 *Match Rotation:*::  If selected, and both the original piece and the new piece have the <<Rotate.adoc#top,Can Rotate>> trait, then the rotation angle of the new piece will be adjusted to match that of the original piece.
 
 *Place marker:*::  Choose whether the new piece should be placed on the top of this piece's stack, on the bottom, or directly above/below the triggering piece.
+
+*Set Dynamic Properties in marker:*::
+
 
 *Keystroke to apply after placement:*::  Optional <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to be applied automatically to the new piece immediately after being placed.
 This Key Command can be used to activate a trait in the new piece, for example to move it to a different location.
