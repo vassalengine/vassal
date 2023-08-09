@@ -1169,12 +1169,12 @@ public class PieceDefiner extends JPanel {
     PieceEditor ed;
 
     private Ed(Frame owner, final EditablePiece p) {
-      super(owner, Resources.getString("Editor.PieceDefiner.properties", p.getDescription()), true);
+      super(owner, Resources.getString("Editor.PieceDefiner.properties", p.getBaseDescription()), true);
       initialize(p);
     }
 
     private Ed(Dialog owner, final EditablePiece p) {
-      super(owner, Resources.getString("Editor.PieceDefiner.properties", p.getDescription()), true);
+      super(owner, Resources.getString("Editor.PieceDefiner.properties", p.getBaseDescription()), true);
       initialize(p);
     }
 
