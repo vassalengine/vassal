@@ -329,11 +329,6 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       }
     }
 
-    // Handles any auto-attachment traits in newly created pieces
-    if (c != null) {
-      c = c.append(GameModule.getGameModule().getGameState().getAttachmentManager().doAutoAttachments());
-    }
-
     // Set any Parameters in the new piece
     c = c.append(Decorator.setDynamicProperties(
       parameterList,
