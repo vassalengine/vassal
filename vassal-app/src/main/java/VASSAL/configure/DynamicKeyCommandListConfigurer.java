@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2004-2011 by Rodney Kinney, Brent Easton
+ * Copyright (c) 2004-2023 by Rodney Kinney, The VASSAL Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -49,11 +49,22 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Confi
   private JPanel controls;
   private JPanel configControls;
   private final List<ConfigurableListEntry> entries = new ArrayList<>();
+  private final boolean remote; // True if the Commands are to be executed on remote pieces (changes header text)
 
-  public DynamicKeyCommandListConfigurer(String key, String name,  DynamicProperty target) {
+  public DynamicKeyCommandListConfigurer(String key, String name,  DynamicProperty target, boolean remote) {
     super(key, name);
     setTarget(target);
     value = new ArrayList<>(0);
+    this.remote = remote;
+  }
+
+  public DynamicKeyCommandListConfigurer(String key, String name,  DynamicProperty target) {
+    this(key, name, target, false);
+  }
+
+
+  public boolean isRemote() {
+    return remote;
   }
 
   public DynamicProperty getTarget() {
@@ -256,7 +267,7 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Confi
 
       controls = new JPanel(new MigLayout("hidemode 3,ins 2", "[grow,fill]", "[grow,fill]")); // NON-NLS
 
-      configControls = new JPanel(new MigLayout("hidemode 3," + ConfigurerLayout.STANDARD_INSERTS_GAPY, "[grow,fill]rel[grow,fill]rel[]rel[grow,fill]rel[]", "[center]")); // NON-NLS
+      configControls = new JPanel(new MigLayout("hidemode 3," + ConfigurerLayout.STANDARD_INSERTS_GAPY, "[grow 1,fill]rel[grow 1,fill]rel[]rel[grow 4,fill]rel[]", "[center]")); // NON-NLS
 
       controls.add(configControls, "grow, aligny center"); // NON-NLS
       panel.add(controls, "grow"); // NON-NLS
@@ -333,7 +344,7 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Confi
     typeLabel.setFont(boldFont);
     configControls.add(typeLabel, "growx 0,alignx center"); // NON-NLS
 
-    final JLabel promptLabel = new JLabel(Resources.getString("Editor.PropertyChangeConfigurer.prompt"));
+    final JLabel promptLabel = new JLabel(Resources.getString(isRemote() ? "Editor.PropertyChangeConfigurer.prompt_remote" : "Editor.PropertyChangeConfigurer.prompt"));
     promptLabel.setFont(boldFont);
     configControls.add(promptLabel, "growx 0,alignx center,wrap"); // NON-NLS
 

@@ -238,12 +238,15 @@ public class SetGlobalProperty extends DynamicProperty {
         else {
           final String oldValue = prop.getPropertyValue();
           String newValue = keyCommand.propChanger.getNewValue(oldValue);
-          // The PropertyChanger has already evaluated any Beanshell, only need to handle any remaining $$variables.
-          if (newValue.indexOf('$') >= 0) {
-            format.setFormat(newValue);
-            newValue = format.getText(Decorator.getOutermost(this), this, "Editor.PropertyChangeConfigurer.new_value");
+          // Null indicates user cancelled a prompt dialog during chamnge
+          if (newValue != null) {
+            // The PropertyChanger has already evaluated any Beanshell, only need to handle any remaining $$variables.
+            if (newValue.indexOf('$') >= 0) {
+              format.setFormat(newValue);
+              newValue = format.getText(Decorator.getOutermost(this), this, "Editor.PropertyChangeConfigurer.new_value");
+            }
+            comm = comm.append(prop.setPropertyValue(newValue));
           }
-          comm = prop.setPropertyValue(newValue);
         }
       }
     }

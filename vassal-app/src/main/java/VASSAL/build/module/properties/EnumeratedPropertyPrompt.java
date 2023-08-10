@@ -19,8 +19,10 @@ package VASSAL.build.module.properties;
 
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.script.expression.AuditTrail;
+import VASSAL.script.expression.Auditable;
 import VASSAL.script.expression.Expression;
 import VASSAL.script.expression.ExpressionException;
+import VASSAL.script.expression.FormattedStringExpression;
 
 import javax.swing.JOptionPane;
 import java.util.ArrayList;
@@ -41,7 +43,8 @@ public class EnumeratedPropertyPrompt extends PropertyPrompt {
     this.validValues = validValues;
     valueExpressions = new Expression[validValues.length];
     for (int i = 0; i < validValues.length; i++) {
-      valueExpressions[i] = Expression.createExpression(validValues[i]);
+      final String updatedExpression = (new FormattedStringExpression(validValues[i]).tryEvaluate((PropertySource) propertySource, (Auditable) propertySource, AuditTrail.create((Auditable) propertySource, validValues[i])));
+      valueExpressions[i] = Expression.createExpression(updatedExpression);
     }
     this.dialogParent = dialogParent;
   }
@@ -82,9 +85,15 @@ public class EnumeratedPropertyPrompt extends PropertyPrompt {
       return oldValue;
     }
 
-    final String newValue = (String) JOptionPane.showInputDialog(
-      dialogParent.getComponent(), promptText, null, JOptionPane.QUESTION_MESSAGE, null, nonBlankValues.toArray(new String[0]), oldValue);
-    return newValue == null ? oldValue : newValue;
+    // Note, of user hit cancel button hit on dialog, null is returned, which will be handled at the next level up
+    return (String) JOptionPane.showInputDialog(
+      dialogParent.getComponent(),
+      promptText,
+      null,
+      JOptionPane.QUESTION_MESSAGE,
+      null,
+      nonBlankValues.toArray(new String[0]),
+      oldValue);
   }
 
   public String[] getValidValues() {

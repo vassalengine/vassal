@@ -44,7 +44,8 @@ public class PropertyPrompt implements PropertyChanger {
       newValue = (String) JOptionPane.showInputDialog(constraints.getComponent(), promptText, null, JOptionPane.QUESTION_MESSAGE, null, null, oldValue);
     }
 
-    return newValue == null ? oldValue : newValue;
+    // Null indicates cancel button hit on dialog, handle them at the level above
+    return newValue;
   }
 
   public String getPrompt() {

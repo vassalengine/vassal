@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2008-2020 by Rodney Kinney, Brent Easton
+ * Copyright (c) 2008-2023 by Rodney Kinney, The VASSAL Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -69,17 +69,18 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
   private JPanel controls;
   private String lastValue;
   private JButton undoButton;
+  private final int defaultFieldLength;
 
   private HintTextField getKeyStroke() {
     if (keyStroke == null) {
-      keyStroke = new HintTextField(StringConfigurer.DEFAULT_LENGTH, STROKE_HINT);
+      keyStroke = new HintTextField(defaultFieldLength, STROKE_HINT);
     }
     return keyStroke;
   }
 
   private HintTextField getKeyName() {
     if (keyName == null) {
-      keyName = new HintTextField(StringConfigurer.DEFAULT_LENGTH, NAME_HINT);
+      keyName = new HintTextField(defaultFieldLength, NAME_HINT);
     }
     return keyName;
   }
@@ -110,12 +111,21 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
     return NamedKeyManager.isNamed(k) ? "" : HotKeyConfigurer.getString(k);
   }
 
-  public NamedHotKeyConfigurer(String key, String name, NamedKeyStroke val) {
+  public NamedHotKeyConfigurer(String key, String name, NamedKeyStroke val, int defaultFieldLength) {
     super(key, name, val);
+    this.defaultFieldLength = defaultFieldLength;
+  }
+
+  public NamedHotKeyConfigurer(String key, String name, NamedKeyStroke val) {
+    this(key, name, val, StringConfigurer.DEFAULT_LENGTH);
   }
 
   public NamedHotKeyConfigurer(String key, String name) {
     this(key, name, NamedKeyStroke.NULL_KEYSTROKE);
+  }
+
+  public NamedHotKeyConfigurer(NamedKeyStroke val, int defaultFieldLength) {
+    this(null, null, val, defaultFieldLength);
   }
 
   public NamedHotKeyConfigurer(NamedKeyStroke val) {

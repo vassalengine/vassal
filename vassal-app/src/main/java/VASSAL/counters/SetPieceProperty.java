@@ -20,8 +20,16 @@ package VASSAL.counters;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.MassKeyCommand;
+import VASSAL.build.module.properties.EnumeratedPropertyPrompt;
+import VASSAL.build.module.properties.IncrementProperty;
 import VASSAL.build.module.properties.PropertyChanger;
 import VASSAL.build.module.properties.PropertyPrompt;
+import VASSAL.build.module.properties.PropertySetter;
+import VASSAL.build.module.properties.RemoteEnumeratedPropertyPrompt;
+import VASSAL.build.module.properties.RemoteIncrementProperty;
+import VASSAL.build.module.properties.RemotePropertyChanger;
+import VASSAL.build.module.properties.RemotePropertyPrompt;
+import VASSAL.build.module.properties.RemotePropertySetter;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
@@ -232,8 +240,9 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
 
   // These are used to provide makeSetTargetCommand with the context of what we're doing up in myKeyEvent
   private String propName;
-  private PropertyChanger changer = null;
+  private RemotePropertyChanger changer = null;
   private String newValue = null;
+  private boolean cancelled;
 
   /**
    * Our filter has found a matching piece. Check it for a matching Dynamic Property and if found apply our setter.
@@ -241,7 +250,11 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
    * @return command to reproduce any work we do here
    */
   public Command makeSetTargetCommand(GamePiece p) {
+
     Command comm = new NullCommand();
+
+    // User pressed Cancel?
+    if (cancelled) return comm;
 
     while (p instanceof Decorator) {
       // Compare class directly, not via instanceof as we need to exclude all subclasses
@@ -250,12 +263,14 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
 
         if (propName.equals(currentDP.getKey())) {
           if ((newValue == null) || !(changer instanceof PropertyPrompt)) {
-            newValue = changer.getNewValue(currentDP.value);
-            // The PropertyChanger has already evaluated any Beanshell, only need to handle any remaining $$variables.
-            if (newValue.indexOf('$') >= 0) {
-              format.setFormat(newValue);
-              newValue = format.getText(this, this, "Editor.PropertyChangeConfigurer.new_value");
+            final String userValue = changer.getNewValue(currentDP, this);
+            // A changer only returns null if the user pressed cancel in a Prompt or List dialog.
+            // This is callback, so just record that cancel has been pressed and get out of here.
+            if (userValue == null) {
+              cancelled = true;
+              return comm;
             }
+            newValue = userValue;
           }
 
           final ChangeTracker ct = new ChangeTracker(currentDP);
@@ -288,8 +303,9 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
       if (keyCommand.matches(stroke)) {
         // Evaluate the property name expression & initialize the context information for makeSetTargetCommand
         propName = (new FormattedString(key)).getText(Decorator.getOutermost(this), this, "Editor.SetPieceProperty.property_name");
-        changer  = keyCommand.propChanger;
+        changer  = createRemotePropertyChanger(keyCommand.propChanger);
         newValue = null;
+        cancelled = false;
 
         // Make piece properties filter
         final AuditTrail audit = AuditTrail.create(this, propertiesFilter.getExpression(), Resources.getString("Editor.SetPieceProperty.matching_properties"));
@@ -317,6 +333,27 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
       }
     }
     return comm;
+  }
+
+  /**
+   * Create a Remote version of a PropertyChanger that will operate sensibly on a DP in a remote piece
+   * @param changer Local propertyChanger
+   * @return        Remote PropertyChanger
+   */
+  public RemotePropertyChanger createRemotePropertyChanger(PropertyChanger changer) {
+    if (changer instanceof PropertySetter) {
+      return new RemotePropertySetter((PropertySetter) changer);
+    }
+    else if (changer instanceof IncrementProperty) {
+      return new RemoteIncrementProperty((IncrementProperty) changer);
+    }
+    else if (changer instanceof EnumeratedPropertyPrompt) {
+      return new RemoteEnumeratedPropertyPrompt((EnumeratedPropertyPrompt) changer);
+    }
+    else if (changer instanceof PropertyPrompt) {
+      return new RemotePropertyPrompt((PropertyPrompt) changer);
+    }
+    return null;
   }
 
   @Override
