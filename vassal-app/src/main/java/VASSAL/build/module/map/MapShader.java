@@ -95,8 +95,6 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
 
   public static final String ADD_TO_MAP_TOOLBAR = "addToMapToolbar";
 
-  protected static final UniqueIdManager idMgr = new UniqueIdManager("MapShader"); //NON-NLS
-
   /** @deprecated use launch from the superclass */
   @Deprecated(since = "2021-04-03", forRemoval = true)
   protected LaunchButton launch;
@@ -901,7 +899,6 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
     GameModule.getGameModule().getToolBar().remove(getLaunchButton());
     GameModule.getGameModule().getGameState().removeGameComponent(this);
     map.removeDrawComponent(this);
-    idMgr.remove(this);
   }
 
   @Override
@@ -929,9 +926,6 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
 
     GameModule.getGameModule().getGameState().addGameComponent(this);
     map.addDrawComponent(this);
-
-    idMgr.add(this);
-    validator = idMgr;
 
     setAttributeTranslatable(NAME, false);
   }
