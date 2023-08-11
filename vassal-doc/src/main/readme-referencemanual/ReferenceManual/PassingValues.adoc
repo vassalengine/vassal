@@ -3,7 +3,31 @@
 
 [.small]#<<index.adoc#toc,Home>> > <<Concepts.adoc#top,Concepts>>  > *Passing values to pieces*#
 
-'''''
-
+''''
 === Passing values to pieces
 
+There are several techniques that can be used to pass the values of properties between different pieces
+
+* <<#marker,Set multiple Dynamic Property values>> in a newly created Markers created with the <<Marker.adoc#top, Place Marker>> or <<Replace.adoc#top,Replace>> trait.
+* <<#gkc,Set multiple Dynamic Property values>> when running any <<GlobalKeyCommand.adoc#top,Global Key Command>>.
+* <<#spp,Set individual Dynamic Property values directly>> using the <<SetPieceProperty.adoc#top,Set Piece Property>> trait.
+* <<#gp,Passing values via Global properties>>.
+* <<#read, Reading values from other pieces>> using <<ExpressionProperty.adoc#property_functions,Get Property>> functions.
+
+
+[#marker]
+==== Newly created markers
+
+image:images/Parameters1.png[]
+
+[#spp]
+==== Set Piece Property
+
+[#gkc]
+==== Global Key Commands
+
+[#gp]
+==== Passing values via Global properties>
+
+[#read]
+==== Using GetProperty functions.

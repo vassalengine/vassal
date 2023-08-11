@@ -281,4 +281,4 @@ The <<Marker.adoc#top,Place Marker>> and <<Replace.adoc#top,Replace With Other>>
 
 Values can also be shared between pieces by storing them in <<GlobalProperties.adoc#top,Global Properties>> that are accessible to all the pieces involved.
 
-See the <<PassingValues.adoc#top,Passing value to pieces>> page for details on how to use these features.
+See the <<PassingValues.adoc#top,Passing values to pieces>> page for details on how to use these features.

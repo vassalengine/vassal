@@ -15,7 +15,7 @@ image:images/SetPieceProperty.png[]
 
 *Property Name:*::  An <<Expression.adoc#top,Expression>> that defines the name of the property to be set.
 Often, a specific Dynamic Property is simply listed by name, but it is possible to compute the name of the Dynamic Property to be changed based on other properties of this piece, e.g.
-_{ "Resources" + GetProperty("Side")_ }. In this case when the property Side holds the value "Allied" then the Global Property to be set will be _ResourcesAllied_.
+_{ "Resources" + GetProperty("Side")_ }. In this case when the property Side holds the value "Allied" then the Dynamic Property to be set will be _ResourcesAllied_.
 
 *Is numeric:*:: If true, then changes to the value of the property by this trait will be restricted to integer values.
 
