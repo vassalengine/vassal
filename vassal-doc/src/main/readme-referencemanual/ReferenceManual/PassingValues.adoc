@@ -12,7 +12,7 @@ There are several techniques that can be used to pass the values of properties b
 * <<#gkc,Set multiple Dynamic Property values>> when running any <<GlobalKeyCommand.adoc#top,Global Key Command>>.
 * <<#spp,Set individual Dynamic Property values directly>> using the <<SetPieceProperty.adoc#top,Set Piece Property>> trait.
 * <<#gp,Passing values via Global properties>>.
-* <<#read, Reading values from other pieces>> using <<ExpressionProperty.adoc#property_functions,Get Property>> functions.
+* <<#read, Reading values from other pieces>> using <<ExpressionProperty.adoc#general,Get Property>> functions.
 
 
 [#marker]
