@@ -41,7 +41,7 @@ public class ParameterListConfigurer extends Configurer implements ConfigurableL
   // The number of Components added to the header of the Controls panel
   private static final int HEADER_COMPONENT_COUNT = 2;
   // The number of Components added to the Controls panel for each Entry
-  private static final int COMPONENT_COUNT = 2;
+  private static final int COMPONENT_COUNT = 3;
 
   private ConfigurableListController controller;
   private int selectedEntryIndex = -1;
@@ -297,7 +297,7 @@ public class ParameterListConfigurer extends Configurer implements ConfigurableL
 
       controls = new JPanel(new MigLayout("hidemode 3,ins 2", "[grow,fill]", "[grow,fill]")); // NON-NLS
 
-      configControls = new JPanel(new MigLayout("hidemode 3,wrap 2," + ConfigurerLayout.STANDARD_INSERTS_GAPY, "[fill]rel[grow,fill]", "[center]")); // NON-NLS
+      configControls = new JPanel(new MigLayout("hidemode 3,wrap 3," + ConfigurerLayout.STANDARD_INSERTS_GAPY, "[fill]rel[grow,fill]rel[grow 0]", "[center]")); // NON-NLS
 
       controls.add(configControls, "grow, aligny center"); // NON-NLS
       panel.add(controls, "grow"); // NON-NLS
@@ -368,7 +368,7 @@ public class ParameterListConfigurer extends Configurer implements ConfigurableL
 
     final JLabel valueHeader  = new JLabel(Resources.getString("Editor.ParameterListConfigurer.value"));
     valueHeader.setFont(boldFont);
-    configControls.add(valueHeader, "alignx center"); // NON-NLS
+    configControls.add(valueHeader, "alignx center,wrap"); // NON-NLS
 
     configControls.setVisible(false);
 
@@ -380,8 +380,9 @@ public class ParameterListConfigurer extends Configurer implements ConfigurableL
   private void appendConfigControls(ParameterEntry entry) {
     final ParameterConfigurer c = entry.getParameterConfigurer();
     getControls();
-    configControls.add(c.getPropertyNameControls()); // NON-NLS
-    configControls.add(c.getValueControls()); // NON-NLS
+    configControls.add(c.getPropertyNameControls());
+    configControls.add(c.getValueControls());
+    configControls.add(entry.getRemoveButton());
   }
 
   /**
@@ -392,8 +393,9 @@ public class ParameterListConfigurer extends Configurer implements ConfigurableL
     int controlPos = listPosToControlsPos(listPos);
     final ParameterConfigurer c = entry.getParameterConfigurer();
     getControls();
-    configControls.add(c.getPropertyNameControls(), controlPos++); // NON-NLS
-    configControls.add(c.getValueControls(), controlPos++); // NON-NLS
+    configControls.add(c.getPropertyNameControls(), controlPos++);
+    configControls.add(c.getValueControls(), controlPos++);
+    configControls.add(entry.getRemoveButton(), controlPos++);
 
   }
 
@@ -405,6 +407,7 @@ public class ParameterListConfigurer extends Configurer implements ConfigurableL
     getControls();
     configControls.remove(c.getPropertyNameControls());
     configControls.remove(c.getValueControls());
+    configControls.remove(entry.getRemoveButton());
   }
 
   /**
