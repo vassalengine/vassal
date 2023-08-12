@@ -343,13 +343,13 @@ CountLocation(Object propertyOrLocation, Object expressionOrMap) {
 CountLocation(Object location, Object map, Object propertyOrExpression) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.countLocation(location, map, propertyOrExpression, _source));
+  return unwrap(_interp.countMapLocation(location, map, propertyOrExpression, _source));
 }
 
 CountLocation(Object location, Object map, Object property, Object expression) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.countLocation(location, map, property, expression, _source));
+  return unwrap(_interp.countMapLocation(location, map, property, expression, _source));
 }
 
 /**
