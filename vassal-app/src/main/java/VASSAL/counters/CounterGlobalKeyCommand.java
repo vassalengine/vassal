@@ -48,6 +48,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -86,7 +87,7 @@ public class CounterGlobalKeyCommand extends Decorator
   private KeyCommand myCommand;
   protected String description;
   protected GlobalCommandTarget target = new GlobalCommandTarget(GlobalCommandTarget.GKCtype.COUNTER);
-  protected List<Parameter> parameters;
+  protected List<Parameter> parameters = new ArrayList<>();
 
   public CounterGlobalKeyCommand() {
     this(ID, null);
