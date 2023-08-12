@@ -1,5 +1,6 @@
 3.7.0-beta5 - ???
 
+* 12549: Simplify Trait edit window title
 * 12547: CountLocation function with 3 parameters does not work
 * 12538: Scenario Options - Allow Observers to Lock option tabs if no Sides
     taken
