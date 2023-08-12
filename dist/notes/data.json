@@ -25,6 +25,7 @@
         { "num": 12444, "desc": "Implement real Unique Piece Id property UniqueID that does not change during refresh" }
       ],
       "bug_fixes": [
+        { "num": 12547, "desc": "CountLocation function with 3 parameters does not work" },
         { "num": 12529, "desc": "Allow Piece UIDs to be compared properly in expressions" },
         { "num": 12528, "desc": "Close InputStreams opened for reading SVG" },
         { "num": 12482, "desc": "Map Shader now able to add button to Map Toolbar" },

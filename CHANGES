@@ -1,7 +1,6 @@
 3.7.0-beta5 - ???
 
-* 12444: Implement real Unique Piece Id property UniqueID that does not change
-    during refresh
+* 12547: CountLocation function with 3 parameters does not work
 * 12538: Scenario Options - Allow Observers to Lock option tabs if no Sides
     taken
 * 12529: Allow Piece UIDs to be compared properly in expressions
@@ -18,6 +17,8 @@
 * 12454: BeanShell Editor improvements: larger, multi-line, more properties
 * 12445: Add Ranged Sum/Count Functions; updated Function Builder and
     documentation; updated Property documentation
+* 12444: Implement real Unique Piece Id property UniqueID that does not change
+    during refresh
 * 12443: Clarified MouseOverViewer documentation
 * 12439: Uniformly handle addition of standard and imported Configurables
 * 12434: FastMatch by Location now respects Deck limits
