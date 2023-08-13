@@ -3299,7 +3299,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   public void updateCenter() {
     if (!GameModule.getGameModule().isSuppressAutoCenterUpdate()) {
-      preferredCenter = getCenter();
+      preferredCenter = componentToMap(getCenter());
     }
   }
 
