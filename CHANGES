@@ -1,5 +1,6 @@
 3.7.0-beta5 - ???
 
+* 12568: Center of map view during zoom used incorrect coordinate space
 * 12556: Map Shaders on different maps can now have same name
 * 12549: Simplify Trait edit window title
 * 12547: CountLocation function with 3 parameters does not work
