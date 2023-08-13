@@ -90,6 +90,7 @@ import VASSAL.configure.MandatoryComponent;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PlayerIdFormattedExpressionConfigurer;
 import VASSAL.configure.SingleChildInstance;
+import VASSAL.configure.UniquelyNamedChildren;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.ColoredBorder;
@@ -977,7 +978,8 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       .append(new SingleChildInstance(this, GlobalProperties.class))
       .append(new SingleChildInstance(this, SelectionHighlighters.class))
       .append(new SingleChildInstance(this, LayeredPieceCollection.class))
-      .append(new SingleChildInstance(this, BoardPicker.class));
+      .append(new SingleChildInstance(this, BoardPicker.class))
+      .append(new UniquelyNamedChildren(this, MapShader.class));
 
     final DragGestureListener dgl = dge -> {
       if (dragGestureListener != null &&
