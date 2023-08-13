@@ -24,13 +24,16 @@ import VASSAL.build.module.PrivateMap;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.WarningDialog;
 
+import VASSAL.tools.swing.DialogCloser;
 import bsh.EvalError;
 import bsh.Interpreter;
 import bsh.NameSpace;
 import bsh.UtilEvalError;
 
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 
 public abstract class AbstractInterpreter extends Interpreter {
 
@@ -109,10 +112,44 @@ public abstract class AbstractInterpreter extends Interpreter {
    * @param message message to display
    */
   public Object alert(Object message) {
-    JOptionPane.showMessageDialog(GameModule.getGameModule().getPlayerWindow(), message.toString());
-    return "";
+    return alert(message, "0");
   }
 
+  /**
+   * Display a message in a Dialog box and optionally close the dialog after the specified delay
+   * @param message         Message to display
+   * @param closeAfterDelay Delay in milliseconds before automaticalltclosing (0 to not close)
+   * @return                blank string
+   */
+  public Object alert(Object message, Object closeAfterDelay) {
+    int ms;
+    try {
+      if (closeAfterDelay instanceof Integer) {
+        ms = (Integer) closeAfterDelay;
+      }
+      else {
+        ms = Integer.parseInt((String) closeAfterDelay);
+      }
+    }
+    catch (Exception ex) {
+      ms = 0;
+    }
+
+    final JDialog dialog = new JDialog(GameModule.getGameModule().getPlayerWindow(), true);
+    final JOptionPane pane = new JOptionPane(message.toString(), JOptionPane.INFORMATION_MESSAGE);
+    dialog.setContentPane(pane);
+    dialog.setTitle("Alert Message");
+    dialog.pack();
+    dialog.setLocationRelativeTo(GameModule.getGameModule().getPlayerWindow());
+    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    pane.addPropertyChangeListener(e -> dialog.setVisible(false));
+    if (ms > 0) {
+      SwingUtilities.invokeLater(new DialogCloser(dialog, ms));
+    }
+    dialog.setVisible(true);
+
+    return "";
+  }
   /**
    * Get a module level property value.
    *

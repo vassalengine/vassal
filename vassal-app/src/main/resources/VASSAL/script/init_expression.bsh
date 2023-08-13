@@ -695,6 +695,11 @@ Alert(Object text) {
   _interp.alert(text);
 }
 
+Alert(Object text, Object delay) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _interp.alert(text, delay);
+}
+
 Audit(Object message) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
@@ -794,4 +799,10 @@ IsRandom(Object percent) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
   return unwrap(_interp.isRandom(_source, percent));
+}
+
+Sleep(Object ms) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.sleep(ms, _source));
 }

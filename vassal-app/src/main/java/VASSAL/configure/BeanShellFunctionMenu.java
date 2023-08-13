@@ -378,8 +378,9 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     add(functionMenu);
 
     final JMenu otherMenu = new JMenu(Resources.getString("Editor.BeanShell.other"));
-    addFunction(otherMenu, "Alert", Resources.getString("Editor.BeanShell.sleep"), new String[] { Resources.getString("Editor.BeanShell.milliseconds") }, "(ms)"); //NON-NLS
-    addFunction(otherMenu, "Alert", Resources.getString("Editor.BeanShell.debug.alert"), new String[] { Resources.getString("Editor.BeanShell.text_to_display") }, "(text)"); //NON-NLS
+    addFunction(otherMenu, "Alert", Resources.getString("Editor.BeanShell.debug.alert"),  new String[] { Resources.getString("Editor.BeanShell.text_to_display") }, "(text)"); //NON-NLS
+    addFunction(otherMenu, "Alert", Resources.getString("Editor.BeanShell.debug.alert2"), new String[] { Resources.getString("Editor.BeanShell.text_to_display"), Resources.getString("Editor.BeanShell.milliseconds") }, "(text, ms)"); //NON-NLS
+    addFunction(otherMenu, "Sleep", Resources.getString("Editor.BeanShell.debug.sleep"),  new String[] { Resources.getString("Editor.BeanShell.milliseconds") }, "(ms)"); //NON-NLS
     addFunction(otherMenu, "Audit", Resources.getString("Editor.BeanShell.debug.audit1"), new String[] { Resources.getString("Editor.BeanShell.text_to_display") }, "(text)"); //NON-NLS
     addFunction(otherMenu, "Audit", Resources.getString("Editor.BeanShell.debug.audit2"), new String[] { Resources.getString("Editor.BeanShell.text_to_display"), Resources.getString("Editor.BeanShell.debug.audit.options") }, "(text, options)", AUDIT_OPTION_HINTS, new Option[]{Option.NONE, Option.NONE});
     addFunction(otherMenu, "Audit", Resources.getString("Editor.BeanShell.debug.audit3"), new String[] { Resources.getString("Editor.BeanShell.text_to_display"), Resources.getString("Editor.BeanShell.debug.audit.match_expression") }, "(text, expr)", NO_HINTS, new Option[]{Option.NONE, Option.PME});
