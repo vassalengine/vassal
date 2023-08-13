@@ -257,10 +257,9 @@ Images defined in this component will appear in the drop-down menu for selecting
 ==== <<Map.adoc#GlobalKeyCommand,Global Key Command>>
 [width="100%",cols="50%,50%",]
 |===
-|Creates a button on the Toolbar that applies a given <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to many pieces at once.
-Applies to <<GamePiece.adoc#top,Game Pieces>> on all <<Map.adoc#top,Map Windows>> simultaneously.
+|Creates a button on the Toolbar that applies a given <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to many <<GamePiece.adoc#top,Game Pieces>> across all <<Map.adoc#top,Map Windows>>.
 
-<<Map.adoc#GlobalKeyCommand,See full article for details.>>
+<<GlobalKeyCommands.adoc#top,See full article for details.>>
 
 |image:images/GlobalKeyCommand.png[]
 |===
@@ -276,20 +275,7 @@ image:images/StartupGlobalKeyCommand.png[]
 An extension of <<#GlobalKeyCommand,Global Key Command>> that fires automatically upon completion of module load, once all the key listeners are started up.
 All fields behave identically to the corresponding ones in <<#GlobalKeyCommand,Global Key Command>>, except that those pertaining to the physical representation of a Toolbar button are suppressed as being inapplicable.
 
-As of VASSAL 3.6, multiple start-up global key commands _can_ be depended on to run in the order they are listed in the module.
-
-As of VASSAL 3.7, a startup global _hot key_ can optionally be specified (instead of a global key command) for the purpose of directly activating toolbar buttons or deck key commands (such as automatically shuffling a deck at game start).
-
-Startup Global Key Commands can be configured to any of three modes:
-
-**(1) On First Game Launch/Load Of Session**: These fire every time the _module_ starts up, regardless of whether it is to begin a new game or to load and continue an existing one.
-
-**(2) On Every Game Launch/Load Of Session**: These fire every time a game is launched or loaded during the session.
-
-**(3) At Start Of Every Fresh Game Only**: These fire only when a _new game_ is starting. If the game is saved and later restored, or is being exchanged back and forth in log form, the key command will not fire on subsequent loads. For clarity, a new game started from a <<GameModule.adoc#PredefinedSetup, Pre-defined Setup>> _does_ count as a fresh new game.
-
-**(4) At Start of Fresh Game or Player Join/Side-Change**: These fire only when a _new game_ is starting _OR_ a new player joins or changes sides.
-
+See the <<GlobalKeyCommands.adoc#startup,Global Key Commands>> page for more details.
 
 ==== <<Inventory.adoc#top,Game Piece Inventory Window>>
 [width="100%",cols="40%,60%",]

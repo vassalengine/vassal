@@ -19,6 +19,7 @@ A brief overwiew of some of the main concepts you need to know to get started cr
 * <<#hotkeys_and_key_commands,Hotkeys and Key Commands>>
 ** <<#hotkeys,Hotkeys>> +
 ** <<#keycommands,Key Commands>> +
+** <<#GlobalKeyCommands,Global Key Commands>> +
 * <<#values,Values in VASSAL>> +
 * <<#properties,Properties>> +
 ** <<#globalProperties, Global Properties>> +
@@ -168,6 +169,19 @@ Whenever Key Commands are generated, they are always sent to a specific set of P
 . By activating a <<TriggerAction.adoc#top,Trigger Action>> trait that can issue a sequence of Key Commands to the Piece that contains it.
 . By activating any <<GlobalKeyCommand.adoc#top,Global Key Command>> Component or Piece trait to send a Key Command to a specific group of Pieces selected by the conditions specified in the <<GlobalKeyCommand.adoc#top,Global Key Command>>.
 
+[#GlobalKeyCommands]
+=== Global Key Commands
+Global Key Commands (commonly referred to as GKC's) are a group of very commonly used components that select a group of pieces and send a Key Command to all the selected pieces. From Vassal version 3.7, any GKC can also be used to set <<DynamicProperty.adoc#top,Dynamic Properties>> in the selected pieces. +
+ +
+There are 5 different kinds of GKCs:
+
+* *Counter* GKCs are a piece trait that can be included in any Piece definition. They are initiated by a Menu Command or Key Command on the piece and can affect any piece in the current game.
+* *Module* GKCs are defined in the top level <<GameModule.adoc#top,Module>> component and are initiated by an associated <<Toolbar.adoc#top, Toolbar>> button and can affect any piece in the current game.
+* *Map* GKCs are defined in a <<Map.adoc#top,Map>> and are initiated by an associated <<Toolbar.adoc#top, Toolbar>> button and can affect any piece on the <<Map.adoc#top,Map>> they are defined on.
+* *Deck* GKCs are defined in a <<Deck.adoc#top,Deck>> and are initiated by a right-click menu item on the Deck, and can affect any piece in the Deck.
+* *Startup* GKCs are defined in the top level <<GameModule.adoc#top,Module>> component and are initiated when a new game is started or loaded and can affect any piece in the current game.
+
+Many of the features of GKC's are shared between the different types and detailed usage of GKCs is detailed <<GlobalKeyCommands.adoc#top,here>>.
 
 [#values]
 == Values in VASSAL

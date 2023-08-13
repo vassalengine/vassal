@@ -42,20 +42,34 @@ the properties settings of that trait are the same in both the original and repl
 +
 NOTE: _Markers_ are never state matched. A _Marker_ defined in the replacement piece will always get the value defined in the replacement piece, even if the same _Marker_ is defined in the source piece.
 
-*Copy Dynamic Property values whre Property name matches:*::
-The default option for _Dynamic Properties_ is that the trait must be defined exactly in the replacement as it is in the original (including description, minimum and maximum values and Key Commands).
-+
-Selecting this option causes the match process to just compare the name of the Dynamic Property between the original and the replacement, regardless of the other settings.
-+
-This makes it easier to simply copy the value of _Dynamic Propertys_ into the matching properties replacement piece where you may need to define them differently in the replaceement piece.
-
 *Only match states above this trait:*::  If selected, VASSAL will only replace states in traits that appear above this one in the list of traits in the <<GamePiece.adoc#top,game piece editor>>. For example, the state of a _Layer_ that's above this one _will_ change if the state in the new game piece changes.
 If it's below, then it _will not_ change if the new game piece has the same _Layer_ property.
 
+*Copy Dynamic Property values whre Property name matches:*::
+The default option for <<DynamicProperty.adoc#top,Dynamic Properties>> is that the trait must be defined exactly in the replacement as it is in the original (including description, minimum and maximum values and Key Commands).
++
+Selecting this option causes the match process to just compare the name of the Dynamic Property between the original and the replacement, regardless of the other settings.
++
+This makes it easier to simply copy the value of  <<DynamicProperty.adoc#top,Dynamic Properties>> into the matching properties replacement piece where you may need to define them differently in the replacement piece.
+
+
 *Place marker:*::  Choose whether the new piece should be placed on the top of this piece's stack, on the bottom of the stack, or directly above/below the triggering piece.
 
-*Key Command to apply after placement:*:: Optional <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to be applied automatically to the new piece immediately after being placed.
 
+*Set Dynamic Properties in marker:*::
+Allows you to set the values of the named <<DynamicProperty.adoc#top,Dynamic Properties>> in the created marker. +
+ +
+Properties used in the expression reference values in the newly created marker. +
+ +
+The expression used to set the value can reference existing property values in both the piece creating the marker (Using $$ variables) and in the newly created marker. +
+ +
+The values are set into the new marker after any propert values are copied based on State matching, but before the Keystroke after placement is applied. +
++
+See <<PassingValues.adoc#marker,Passing values to pieces>> for more detailed information on using this feature.
+
+NOTE: The named <<DynamicProperty.adoc#top,Dynamic Properties>> must exist in the Piece Definition of the Marker to be created. This option does not create new Dynamic Properties
+
+*Key Command to apply after placement:*:: Optional <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to be applied automatically to the new piece immediately after being placed.
 
 
 *SEE ALSO:*  <<Marker.adoc#top,Place Marker>> trait, <<SendToLocation.adoc#top,Send to Location>> trait.
@@ -63,5 +77,4 @@ If it's below, then it _will not_ change if the new game piece has the same _Lay
 |
 image:images/Replace.png[]
 
-image:images/Replace2.png[]
 |===
