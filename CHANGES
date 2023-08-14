@@ -6,6 +6,7 @@
 * 12547: CountLocation function with 3 parameters does not work
 * 12538: Scenario Options - Allow Observers to Lock option tabs if no Sides
     taken
+* 12536: GKC and Place/Replace parameters
 * 12529: Allow Piece UIDs to be compared properly in expressions
 * 12528: Close InputStreams opened for reading SVG
 * 12509: Allow and empty Deck or At-start Stack to be repositioned
