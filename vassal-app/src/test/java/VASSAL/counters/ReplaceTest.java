@@ -22,8 +22,11 @@ import static org.mockito.Mockito.when;
 
 import VASSAL.build.GameModule;
 import VASSAL.build.GpIdSupport;
+import VASSAL.configure.Parameter;
 import VASSAL.tools.NamedKeyStroke;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -52,6 +55,9 @@ public class ReplaceTest extends DecoratorTest {
     trait.placement = Replace.STACK_TOP;
     trait.above = true;
     trait.description = "plover2";
+    trait.parameterList = new ArrayList<>();
+    trait.parameterList.add(new Parameter("A", "23"));
+    trait.parameterList.add(new Parameter("B", "{XYZZY + \"$Test2$\"}"));
     serializeTest("NamedKeyStroke", trait); // NON-NLS
 
 

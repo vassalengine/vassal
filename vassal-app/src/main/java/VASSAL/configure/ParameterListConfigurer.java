@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2004-2023 by Rodney Kinney, The VASSAL Development Team
+ * Copyright (c) 2023 by The VASSAL Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -17,62 +17,108 @@
  */
 package VASSAL.configure;
 
-import VASSAL.counters.DynamicProperty;
 import VASSAL.counters.TraitLayout;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
 
+import net.miginfocom.swing.MigLayout;
+
+import javax.swing.BorderFactory;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import java.awt.Component;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
-import net.miginfocom.swing.MigLayout;
-
-public class DynamicKeyCommandListConfigurer extends Configurer implements ConfigurableList {
+/**
+ * Configurer for a List of Parameters
+ * The object stored in the value of the Configurer is a List<Parameter>
+ */
+public class ParameterListConfigurer extends Configurer implements ConfigurableList {
 
   // The number of Components added to the header of the Controls panel
-  private static final int HEADER_COMPONENT_COUNT = 4;
+  private static final int HEADER_COMPONENT_COUNT = 2;
   // The number of Components added to the Controls panel for each Entry
-  private static final int COMPONENT_COUNT = 6;
+  private static final int COMPONENT_COUNT = 3;
 
-  private DynamicProperty target;
   private ConfigurableListController controller;
   private int selectedEntryIndex = -1;
   private JPanel panel;
   private JPanel controls;
   private JPanel configControls;
   private final List<ConfigurableListEntry> entries = new ArrayList<>();
-  private final boolean remote; // True if the Commands are to be executed on remote pieces (changes header text)
 
-  public DynamicKeyCommandListConfigurer(String key, String name,  DynamicProperty target, boolean remote) {
+  public static String encode(List<Parameter> parameters) {
+    if (parameters == null) return "";
+
+    final SequenceEncoder se = new SequenceEncoder(',');
+    for (final Parameter param : parameters) {
+      se.append(param.encode());
+    }
+    return se.getValue();
+  }
+
+  public static List<Parameter> decode(String s) {
+    final List<Parameter> parameters = new ArrayList<>();
+    if (s != null && s.length() > 0) {
+      final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
+      while (sd.hasMoreTokens()) {
+        parameters.add(new Parameter(sd.nextToken("")));
+      }
+    }
+    return parameters;
+  }
+
+  public ParameterListConfigurer(String key, String name, List<Parameter> params) {
     super(key, name);
-    setTarget(target);
-    value = new ArrayList<>(0);
-    this.remote = remote;
+    value = params;
   }
 
-  public DynamicKeyCommandListConfigurer(String key, String name,  DynamicProperty target) {
-    this(key, name, target, false);
+  public ParameterListConfigurer(String key, String name) {
+    this(key, name, new ArrayList<>());
+  }
+
+  public ParameterListConfigurer(List<Parameter> params) {
+    this("", "", params);
   }
 
 
-  public boolean isRemote() {
-    return remote;
+  /**
+   * Return a list of the Parameter names in the current configurer value
+   * @return  Parameter names
+   */
+  public List<String> getParameterNames() {
+    final List<String> l = new ArrayList<>();
+    if (getListValue() != null) {
+      for (final Object p : getListValue()) {
+        l.add(((Parameter) p).getPropertyName());
+      }
+    }
+    return l;
   }
 
-  public DynamicProperty getTarget() {
-    return target;
+  public List<Parameter> getParameterList() {
+    final List<Parameter> parameterList = new ArrayList<>();
+    for (final Object o : getListValue()) {
+      parameterList.add((Parameter) o);
+    }
+    return parameterList;
   }
 
-  public void setTarget(DynamicProperty target) {
-    this.target = target;
+  /**
+   * Return a list of the Parameter values in the current configurer value
+   * @return  Parameter values
+   */
+  public List<String> getParameterValues() {
+    final List<String> l = new ArrayList<>();
+    if (getListValue() != null) {
+      for (final Object p : getListValue()) {
+        l.add(((Parameter) p).getValue());
+      }
+    }
+    return l;
   }
 
   @Override
@@ -83,7 +129,7 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Confi
     }
 
     final int listPos = getSelectedEntryIndex();
-    final DKCEntry entry = (DKCEntry) entries.get(listPos);
+    final ParameterEntry entry = (ParameterEntry) entries.get(listPos);
 
     // Remove the Configurer controls from their current position and re-insert one position up
     removeConfigControls(entry);
@@ -112,7 +158,7 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Confi
     }
 
     final int listPos = getSelectedEntryIndex();
-    final DKCEntry entry = (DKCEntry) entries.get(listPos);
+    final ParameterEntry entry = (ParameterEntry) entries.get(listPos);
 
     // Remove the Configurer controls from their current position and re-insert one position down
     removeConfigControls(entry);
@@ -141,7 +187,7 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Confi
     final int pos = getSelectedEntryIndex();
 
     // Create a new empty entry
-    final DKCEntry newEntry = new DKCEntry(this);
+    final ParameterEntry newEntry = new ParameterEntry(this);
 
     // Insert the entry into the value
     getListValue().add(pos + 1, newEntry.getConfigurer().getValue());
@@ -216,37 +262,21 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Confi
 
   @Override
   public String getValueString() {
-    if (getListValue().isEmpty()) {
-      return "";
-    }
-    final DynamicKeyCommandConfigurer c = new DynamicKeyCommandConfigurer(getTarget());
-    final SequenceEncoder se = new SequenceEncoder(',');
-    for (final Object value : getListValue()) {
-      c.setFrozen(true); // Prevent subsidiary Configurers from firing PropertyChange Events
-      c.setValue(value);
-      c.setFrozen(false);
-      se.append(c.getValueString());
-    }
-    return se.getValue();
+    return encode(getParameterListValue());
   }
 
   public List<Object> getListValue() {
     return (List<Object>) getValue();
   }
 
+  public List<Parameter> getParameterListValue() {
+    return (List<Parameter>) getValue();
+  }
+
   @Override
   public void setValue(String s) {
     getListValue().clear();
-    if (s.length() > 0) {
-      final Configurer c = new DynamicKeyCommandConfigurer(getTarget());
-      final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
-      while (sd.hasMoreTokens()) {
-        c.setFrozen(true);
-        c.setValue(sd.nextToken());
-        c.setFrozen(false);
-        getListValue().add(c.getValue());
-      }
-    }
+    getListValue().addAll(decode(s));
     rebuildControls();
   }
 
@@ -267,7 +297,7 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Confi
 
       controls = new JPanel(new MigLayout("hidemode 3,ins 2", "[grow,fill]", "[grow,fill]")); // NON-NLS
 
-      configControls = new JPanel(new MigLayout("hidemode 3," + ConfigurerLayout.STANDARD_INSERTS_GAPY, "[grow 1,fill]rel[grow 1,fill]rel[]rel[grow 4,fill]rel[]", "[center]")); // NON-NLS
+      configControls = new JPanel(new MigLayout("hidemode 3,wrap 3," + ConfigurerLayout.STANDARD_INSERTS_GAPY, "[fill]rel[grow,fill]rel[grow 0]", "[center]")); // NON-NLS
 
       controls.add(configControls, "grow, aligny center"); // NON-NLS
       panel.add(controls, "grow"); // NON-NLS
@@ -290,7 +320,7 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Confi
 
       // Create a new set of entries and add the controls
       for (final Object value : getListValue()) {
-        final DKCEntry entry = new DKCEntry(this, value);
+        final ParameterEntry entry = new ParameterEntry(this, value);
         entries.add(entry);
         appendConfigControls(entry);
       }
@@ -331,22 +361,14 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Confi
 
   private void buildHeader() {
 
-    final JLabel commandHeader = new JLabel(Resources.getString("Editor.menu_command"));
-    final Font boldFont = new Font(commandHeader.getFont().getFontName(), Font.BOLD, commandHeader.getFont().getSize());
-    commandHeader.setFont(boldFont);
-    configControls.add(commandHeader, "growx 0,alignx center"); // NON-NLS
+    final JLabel propertyNameHeader = new JLabel(Resources.getString("Editor.ParameterListConfigurer.dynamic_property_name"));
+    final Font boldFont = new Font(propertyNameHeader.getFont().getFontName(), Font.BOLD, propertyNameHeader.getFont().getSize());
+    propertyNameHeader.setFont(boldFont);
+    configControls.add(propertyNameHeader, "alignx center"); // NON-NLS
 
-    final JLabel keyHeader  = new JLabel(Resources.getString("Editor.keyboard_command"));
-    keyHeader.setFont(boldFont);
-    configControls.add(keyHeader, "growx 0,alignx center"); // NON-NLS
-
-    final JLabel typeLabel = new JLabel(Resources.getString("Editor.PropertyChangeConfigurer.type"));
-    typeLabel.setFont(boldFont);
-    configControls.add(typeLabel, "growx 0,alignx center"); // NON-NLS
-
-    final JLabel promptLabel = new JLabel(Resources.getString(isRemote() ? "Editor.PropertyChangeConfigurer.prompt_remote" : "Editor.PropertyChangeConfigurer.prompt"));
-    promptLabel.setFont(boldFont);
-    configControls.add(promptLabel, "growx 0,alignx center,wrap"); // NON-NLS
+    final JLabel valueHeader  = new JLabel(Resources.getString("Editor.ParameterListConfigurer.value"));
+    valueHeader.setFont(boldFont);
+    configControls.add(valueHeader, "alignx center,wrap"); // NON-NLS
 
     configControls.setVisible(false);
 
@@ -355,48 +377,37 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Confi
   /**
    * Append an Entry's controls to the bottom of the panel
    */
-  private void appendConfigControls(DKCEntry entry) {
-    final DynamicKeyCommandConfigurer c = entry.getDkcConfigurer();
+  private void appendConfigControls(ParameterEntry entry) {
+    final ParameterConfigurer c = entry.getParameterConfigurer();
     getControls();
-    configControls.add(c.getCommandControls(), "growx"); // NON-NLS
-    configControls.add(c.getKeyControls(), "growx"); // NON-NLS
-    configControls.add(c.getTypeControls(), "growx"); // NON-NLS
-    configControls.add(entry.getPromptPanel(), "growx"); // NON-NLS
-    configControls.add(entry.getRemoveButton(), "growx 0,wrap"); // NON-NLS
-    configControls.add(c.getValuesControls(), "skip 2,span 2,grow,wrap"); // NON-NLS
-
+    configControls.add(c.getPropertyNameControls());
+    configControls.add(c.getValueControls());
+    configControls.add(entry.getRemoveButton());
   }
 
   /**
    * Append an Entry's controls after the currently selected entry
    */
-  private void insertConfigControls(DKCEntry entry, int listPos) {
+  private void insertConfigControls(ParameterEntry entry, int listPos) {
 
     int controlPos = listPosToControlsPos(listPos);
-    final DynamicKeyCommandConfigurer c = entry.getDkcConfigurer();
+    final ParameterConfigurer c = entry.getParameterConfigurer();
     getControls();
-    configControls.add(c.getCommandControls(), "growx", controlPos++); // NON-NLS
-    configControls.add(c.getKeyControls(), "growx", controlPos++); // NON-NLS
-    configControls.add(c.getTypeControls(), "growx 0", controlPos++); // NON-NLS
-    configControls.add(entry.getPromptPanel(), "growx", controlPos++); // NON-NLS
-    configControls.add(entry.getRemoveButton(), "growx 0,wrap", controlPos++); // NON-NLS
-    configControls.add(c.getValuesControls(), "skip 2,span 2,grow,wrap", controlPos); // NON-NLS
+    configControls.add(c.getPropertyNameControls(), controlPos++);
+    configControls.add(c.getValueControls(), controlPos++);
+    configControls.add(entry.getRemoveButton(), controlPos++);
 
   }
 
   /**
    * Remove an Entry's controls from the specified position
    */
-  private void removeConfigControls(DKCEntry entry) {
-    final DynamicKeyCommandConfigurer c = entry.getDkcConfigurer();
+  private void removeConfigControls(ParameterEntry entry) {
+    final ParameterConfigurer c = entry.getParameterConfigurer();
     getControls();
-    configControls.remove(c.getCommandControls());
-    configControls.remove(c.getKeyControls());
-    configControls.remove(c.getTypeControls());
-    configControls.remove(entry.getPromptPanel());
+    configControls.remove(c.getPropertyNameControls());
+    configControls.remove(c.getValueControls());
     configControls.remove(entry.getRemoveButton());
-    configControls.remove(c.getValuesControls());
-
   }
 
   /**
@@ -412,47 +423,34 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Confi
   }
 
 
-  private static class DKCEntry extends AbstractConfigurableListEntry {
+  private static class ParameterEntry extends AbstractConfigurableListEntry {
 
-    private final DynamicKeyCommandListConfigurer listConfig;
-    private NoInsetButton showHideValuesButton;
-    private JPanel promptPanel;
-    private boolean valuesShowing = false;
+    private final ParameterListConfigurer listConfig;
 
-    public DKCEntry(DynamicKeyCommandListConfigurer listConfig) {
+    public ParameterEntry(ParameterListConfigurer listConfig) {
       this(listConfig, null);
     }
 
-    public DKCEntry(DynamicKeyCommandListConfigurer listConfig, Object value) {
+    public ParameterEntry(ParameterListConfigurer listConfig, Object value) {
       this(listConfig, value, ConfigurableList.DEFAULT_ICON_SIZE);
     }
 
-    public DKCEntry(DynamicKeyCommandListConfigurer listConfig, Object value, int iconSize) {
+    public ParameterEntry(ParameterListConfigurer listConfig, Object value, int iconSize) {
       super(listConfig, value, iconSize);
       this.listConfig = listConfig;
     }
 
-    private DynamicKeyCommandConfigurer getDkcConfigurer() {
-      return (DynamicKeyCommandConfigurer) getConfigurer();
+    public ParameterConfigurer getParameterConfigurer() {
+      return (ParameterConfigurer) getConfigurer();
     }
 
     @Override
     public Configurer buildChildConfigurer(Object value) {
-      final Configurer c = new DynamicKeyCommandConfigurer(listConfig.getTarget());
+      final Configurer c = new ParameterConfigurer();
       c.setFrozen(true);
       c.setValue(value);
       c.setFrozen(false);
       return c;
-    }
-
-    public JPanel getPromptPanel() {
-      if (promptPanel == null) {
-        getDkcConfigurer().getValuesControls().setVisible(false);
-        promptPanel = new JPanel(new MigLayout("ins 0,hidemode 3", "[grow,fill]2[]")); // NON-NLS
-        promptPanel.add(getDkcConfigurer().getChangerControls(), "growx,aligny center"); // NON-NLS
-        promptPanel.add(getShowHideValuesButton(), "aligny center"); // NON-NLS
-      }
-      return promptPanel;
     }
 
     @Override
@@ -465,29 +463,5 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Confi
       getConfigurer().setHighlighted(highlighted);
     }
 
-    private void showHideValues() {
-      valuesShowing = !valuesShowing;
-      getDkcConfigurer().getValuesControls().setVisible(valuesShowing);
-      getParent().repack();
-    }
-
-    public JButton getShowHideValuesButton() {
-      if (showHideValuesButton == null) {
-        showHideValuesButton = new NoInsetButton("edit-find", ConfigurableList.DEFAULT_ICON_SIZE, "Editor.PropertyChangeConfigurer.showHide_hint"); // NON-NLS
-        showHideValuesButton.setVisible(false);
-        showHideValuesButton.addActionListener(e -> showHideValues());
-      }
-      return showHideValuesButton;
-    }
-
-    @Override
-    public void updateVisibility() {
-      final boolean show = getDkcConfigurer().isEnumType();
-
-      getShowHideValuesButton().setVisible(show);
-      getDkcConfigurer().getValuesControls().setVisible(show && valuesShowing);
-
-      getParent().repack();
-    }
   }
 }

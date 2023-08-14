@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2020 by The VASSAL Development Team
+ * Copyright (c) 2020-2023 by The VASSAL Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -53,9 +53,9 @@ public class DynamicKeyCommandConfigurer extends Configurer {
       )
     );
 
-    commandConfig = new StringConfigurer("");
+    commandConfig = new StringConfigurer("", "", 12);
     commandConfig.setHint(Resources.getString("Editor.menu_command_hint"));
-    keyConfig = new NamedHotKeyConfigurer(NamedKeyStroke.NULL_KEYSTROKE);
+    keyConfig = new NamedHotKeyConfigurer(NamedKeyStroke.NULL_KEYSTROKE, 12);
     propChangeConfig = new PropertyChangerConfigurer(null, target.getKey(), target);
     propChangeConfig.setValue(new PropertySetter("", target));
 

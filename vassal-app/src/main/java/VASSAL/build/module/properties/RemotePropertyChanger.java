@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2000-2008 by Rodney Kinney
+ * Copyright (c) 2023 by The VASSAL Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -17,16 +17,9 @@
  */
 package VASSAL.build.module.properties;
 
-/**
- * Provides a new value for a global property. This class is an abstraction around the act of prompting a user for the
- * new value of a property during a game. Concrete implementation might be to increment a value, prompt the user to
- * select from an enum, etc.
- *
- * @author rkinney
- *
- */
-public interface PropertyChanger {
-  default String getNewValue(String oldValue) {
-    return null;
-  }
+import VASSAL.counters.DynamicProperty;
+import VASSAL.script.expression.Auditable;
+
+public interface RemotePropertyChanger extends PropertyChanger {
+  String getNewValue(DynamicProperty target, Auditable owner);
 }

@@ -27,6 +27,7 @@ import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.GlobalCommandTargetConfigurer;
+import VASSAL.configure.Parameter;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.i18n.Resources;
 import VASSAL.script.expression.AuditTrail;
@@ -79,6 +80,7 @@ public class GlobalCommand implements Auditable {
   protected Loopable owner;             // For preventing infinite loops
   protected PropertySource source;      // Context for resolving properties (i.e. for our report message)
   protected GlobalCommandTarget target; // This holds all of the "Fast Match" information
+  protected List<Parameter> parameters; // A list of parameters (DP names and values) to set in matching pieces
 
   private String fastProperty = "";     // Used during property Fast Match to hold *evaluated* expressions
   private String fastValue = "";        // Used during property Fast Match to hold *evaluated* expressions
@@ -110,6 +112,10 @@ public class GlobalCommand implements Auditable {
 
   public void setPropertySource(PropertySource ps) {
     source = ps;
+  }
+
+  public PropertySource getPropertySource() {
+    return source;
   }
 
   public void setKeyStroke(KeyStroke keyStroke) {
@@ -154,6 +160,14 @@ public class GlobalCommand implements Auditable {
 
   public void setRange(Integer fastRange) {
     this.fastRange = fastRange;
+  }
+
+  public List<Parameter> getParameters() {
+    return parameters;
+  }
+
+  public void setParameters(List<Parameter> parameters) {
+    this.parameters = parameters;
   }
 
   /**
@@ -932,7 +946,7 @@ public class GlobalCommand implements Auditable {
   }
 
   protected GlobalCommandVisitor getVisitor(Command command, PieceFilter filter, KeyStroke keyStroke, AuditTrail audit, Auditable owner, int selectFromDeck) {
-    return new GlobalCommandVisitor(command, filter, keyStroke, audit, owner, selectFromDeck);
+    return new GlobalCommandVisitor(command, filter, keyStroke, audit, owner, selectFromDeck, this);
   }
 
   public int getSelectFromDeck() {

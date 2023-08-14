@@ -34,6 +34,8 @@ import VASSAL.configure.ChooseComponentPathDialog;
 import VASSAL.configure.FormattedExpressionConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.configure.Parameter;
+import VASSAL.configure.ParameterListConfigurer;
 import VASSAL.configure.PropertiesWindow;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.TranslatingStringEnumConfigurer;
@@ -49,7 +51,9 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.SequenceEncoder;
+
 import net.miginfocom.swing.MigLayout;
+
 import org.apache.commons.lang3.math.NumberUtils;
 
 import javax.swing.AbstractAction;
@@ -60,6 +64,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -117,6 +122,9 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
   protected String descString;
   protected boolean copyDPsByName;
 
+  // List of parameters to pass to new marker
+  protected List<Parameter> parameterList = new ArrayList<>();
+
   public PlaceMarker() {
     this(ID + Resources.getString("Editor.PlaceMarker.default_command") + ";M;null;null", null); // NON-NLS
   }
@@ -166,7 +174,8 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       .append(gpId)
       .append(placement)
       .append(above)
-      .append(copyDPsByName);
+      .append(copyDPsByName)
+      .append(ParameterListConfigurer.encode(parameterList));
     return ID + se.getValue();
   }
 
@@ -319,6 +328,13 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
         }
       }
     }
+
+    // Set any Parameters in the new piece
+    c = c.append(Decorator.setDynamicProperties(
+      parameterList,
+      marker,
+      Decorator.getOutermost(this),
+      this));
 
     if ((c != null) && (afterBurnerKey != null) && !afterBurnerKey.isNull()) {
       marker.setProperty(Properties.SNAPSHOT, ((PropertyExporter) marker).getProperties());
@@ -518,8 +534,6 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
 
     xOffsetExpression = new FormattedStringExpression(st.nextToken("0"));
     yOffsetExpression = new FormattedStringExpression(st.nextToken("0"));
-    //xOffset = st.nextInt(0);
-    //yOffset = st.nextInt(0);
 
     matchRotation = st.nextBoolean(false);
     afterBurnerKey = st.nextNamedKeyStroke(null);
@@ -529,6 +543,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     above = st.nextBoolean(false);
     copyDPsByName = st.nextBoolean(false);
     gpidSupport = GameModule.getGameModule().getGpIdSupport();
+    parameterList = ParameterListConfigurer.decode(st.nextToken(""));
   }
 
   @Override
@@ -574,6 +589,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     if (! Objects.equals(gpId, c.gpId)) return false;
     if (! Objects.equals(placement, c.placement)) return false;
     if (! Objects.equals(copyDPsByName, c.copyDPsByName)) return false;
+    if (! Objects.equals(parameterList, c.parameterList)) return false;
 
     return Objects.equals(above, c.above);
   }
@@ -600,6 +616,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     protected StringConfigurer descConfig;
     private final String slotId;
     private final JPanel visPanel;
+    protected ParameterListConfigurer parameterListConfig;
 
     protected Ed(PlaceMarker piece) {
 
@@ -701,6 +718,9 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       );
       p.add("Editor.PlaceMarker.place_marker", placementConfig);
 
+      parameterListConfig = new ParameterListConfigurer(piece.parameterList);
+      p.add("Editor.PlaceMarker.set_properties", parameterListConfig);
+
       afterBurner = new NamedHotKeyConfigurer(piece.afterBurnerKey);
       p.add("Editor.PlaceMarker.keystroke.after.placement", afterBurner);
 
@@ -787,6 +807,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       se.append(placementConfig.getSelectedIndex());
       se.append(aboveConfig == null ? "false" : aboveConfig.getValueString()); // NON-NLS
       se.append(copyConfig == null ? "false" : copyConfig.getValueString()); // NON-NLS
+      se.append(parameterListConfig.getValueString());
       return ID + se.getValue();
     }
     public static class ChoosePieceDialog extends ChooseComponentPathDialog {
@@ -817,5 +838,23 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
   @Override
   public List<String> getMenuTextList() {
     return List.of(command.getName());
+  }
+
+  @Override
+  public List<String> getExpressionList() {
+    final List<String> l = new ArrayList<>();
+    for (final Parameter p : parameterList) {
+      l.add(p.getPropertyName());
+    }
+    return l;
+  }
+
+  @Override
+  public List<String> getPropertyList() {
+    final List<String> l = new ArrayList<>();
+    for (final Parameter p : parameterList) {
+      l.add(p.getValue());
+    }
+    return l;
   }
 }

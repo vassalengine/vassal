@@ -33,6 +33,8 @@ import VASSAL.configure.GlobalCommandTargetConfigurer;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.configure.Parameter;
+import VASSAL.configure.ParameterListConfigurer;
 import VASSAL.configure.PlayerIdFormattedExpressionConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.StringArrayConfigurer;
@@ -107,6 +109,7 @@ public class MassKeyCommand extends AbstractToolbarItem
   public static final String CHECK_VALUE = "propValue"; // NON-NLS
   public static final String SINGLE_MAP = "singleMap"; // NON-NLS
   public static final String SUPPRESS_SOUNDS = "suppressSounds"; //NON-NLS
+  public static final String PARAMETERS = "parameters"; //NON-NLS
 
   // TODO: When these are removed, look for all of the "removal" warning
   // suppressions we added for them, and remove those.
@@ -131,6 +134,7 @@ public class MassKeyCommand extends AbstractToolbarItem
   protected GlobalCommand globalCommand = new GlobalCommand(this);
   protected FormattedString reportFormat = new FormattedString();
   protected boolean singleMap = true;
+  protected List<Parameter> parameters = new ArrayList<>();
 
   public static final String TARGET   = "target"; //NON-NLS
 
@@ -228,10 +232,11 @@ public class MassKeyCommand extends AbstractToolbarItem
         Resources.getString("Editor.GlobalKeyCommand.pre_select"),          // Fast match target info
 
         Resources.getString("Editor.MassKey.match"), //$NON-NLS-1$          // Match properties        
-        Resources.getString("Editor.GlobalKeyCommand.deck_policy"), //$NON-NLS-1$   // Apply to pieces in deck
+        Resources.getString("Editor.GlobalKeyCommand.deck_policy"),         // Apply to pieces in deck
         Resources.getString("Editor.MassKey.suppress"), //$NON-NLS-1$       // Suppress individual reports?
         Resources.getString("Editor.MassKey.suppress_sounds"), //NON-NLS    // Suppress sounds
-        Resources.getString("Editor.report_format") //$NON-NLS-1$           // Report format
+        Resources.getString("Editor.report_format"), //$NON-NLS-1$          // Report format
+        Resources.getString("Editor.MassKey.set_properties")                // Parameters
       );
     }
     else {
@@ -266,6 +271,7 @@ public class MassKeyCommand extends AbstractToolbarItem
       REPORT_SINGLE,                        // Suppress individual reports?
       SUPPRESS_SOUNDS,                      // Suppress individual reports?
       REPORT_FORMAT,                        // Report format
+      PARAMETERS,                           // Passed Parameters
       CONDITION,                            // Legacy condition
       CHECK_VALUE,                          // NOT DISPLAYED
       CHECK_PROPERTY,                       // NOT DISPLAYED
@@ -303,7 +309,8 @@ public class MassKeyCommand extends AbstractToolbarItem
         DeckPolicyConfig.class,             // Apply to pieces in deck
         Boolean.class,                      // Suppress individual reports?
         Boolean.class,                      // Suppress sounds
-        ReportFormatConfig.class            // Report format
+        ReportFormatConfig.class,           // Report format
+        ParameterListConfig.class           // Parameter list
       );
     }
     else {
@@ -337,6 +344,13 @@ public class MassKeyCommand extends AbstractToolbarItem
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new PlayerIdFormattedExpressionConfigurer(key, name, new String[0]);
+    }
+  }
+
+  public static class ParameterListConfig implements ConfigurerFactory {
+    @Override
+    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+      return new ParameterListConfigurer(key, name, new ArrayList<>());
     }
   }
 
@@ -522,6 +536,9 @@ public class MassKeyCommand extends AbstractToolbarItem
     else if (TARGET.equals(key)) {
       return target.encode();
     }
+    else if (PARAMETERS.equals(key)) {
+      return ParameterListConfigurer.encode(parameters);
+    }
     else {
       return super.getAttributeValueString(key);
     }
@@ -683,6 +700,13 @@ public class MassKeyCommand extends AbstractToolbarItem
         target.setFastMatchProperty(false);
       }
     }
+    else if (PARAMETERS.equals(key)) {
+      if (value instanceof String) {
+        value = ParameterListConfigurer.decode((String) value);
+      }
+      parameters = (List<Parameter>) value;
+      globalCommand.setParameters(parameters);
+    }
     else {
       super.setAttribute(key, value);
     }
@@ -706,7 +730,11 @@ public class MassKeyCommand extends AbstractToolbarItem
    */
   @Override
   public List<String> getPropertyList() {
-    return target.getPropertyList();
+    final List<String> l = target.getPropertyList();
+    for (final Parameter param : parameters) {
+      l.add(param.getPropertyName());
+    }
+    return l;
   }
 
   /**
@@ -717,6 +745,9 @@ public class MassKeyCommand extends AbstractToolbarItem
   public List<String> getExpressionList() {
     final List<String> expList = target.getExpressionList();
     expList.add(propertiesFilter.getExpression());
+    for (final Parameter param : parameters) {
+      expList.add(param.getValue());
+    }
     return expList;
   }
 

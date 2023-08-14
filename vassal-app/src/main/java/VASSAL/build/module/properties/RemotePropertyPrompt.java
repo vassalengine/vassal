@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2000-2008 by Rodney Kinney
+ * Copyright (c) 2006 by Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -17,16 +17,23 @@
  */
 package VASSAL.build.module.properties;
 
+import VASSAL.counters.DynamicProperty;
+import VASSAL.script.expression.Auditable;
+
 /**
- * Provides a new value for a global property. This class is an abstraction around the act of prompting a user for the
- * new value of a property during a game. Concrete implementation might be to increment a value, prompt the user to
- * select from an enum, etc.
- *
- * @author rkinney
+ * Change for updating a remote DP by a prompted entry.
+ * Only change from standard is that since Set Piece Property affects mulitiple pieces, we
+ * can't define an Old Value.
  *
  */
-public interface PropertyChanger {
-  default String getNewValue(String oldValue) {
-    return null;
+public class RemotePropertyPrompt extends PropertyPrompt implements RemotePropertyChanger {
+
+  public RemotePropertyPrompt(PropertyPrompt prompt) {
+    super(prompt.constraints, prompt.promptText);
+  }
+
+  @Override
+  public String getNewValue(DynamicProperty target, Auditable owner) {
+    return super.getNewValue("");
   }
 }

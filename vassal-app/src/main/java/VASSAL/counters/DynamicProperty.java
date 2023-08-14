@@ -264,7 +264,11 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     final ChangeTracker tracker = new ChangeTracker(this);
     for (final DynamicKeyCommand dkc : keyCommands) {
       if (dkc.matches(stroke)) {
-        setValue(dkc.propChanger.getNewValue(value));
+        final String newValue = dkc.propChanger.getNewValue(value);
+        // Null newValue indicates user has pressed Cancel button on a Prompt dialog
+        if (newValue != null) {
+          setValue(newValue);
+        }
       }
     }
 

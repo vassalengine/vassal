@@ -193,7 +193,7 @@ a|
 
 A Card is identical to a Game Piece, but is initialized with a <<Mask.adoc#top,Mask>> trait appropriate for a playing card.
 
-==== <<DeckGlobalKeyCommand.adoc#top,Deck Global Key Command>>
+==== <<GlobalKeyCommands.adoc#deck,Deck Global Key Command>>
 
 Global Key Commands can be added to a Deck and will appear in the right-click context menu of the Deck.
 The resulting Global Key Command will be applied _only_ to pieces contained in the Deck.

@@ -27,6 +27,8 @@ import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.GlobalCommandTargetConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.configure.Parameter;
+import VASSAL.configure.ParameterListConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.PropertyExpressionConfigurer;
 import VASSAL.configure.StringConfigurer;
@@ -46,6 +48,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -84,6 +87,7 @@ public class CounterGlobalKeyCommand extends Decorator
   private KeyCommand myCommand;
   protected String description;
   protected GlobalCommandTarget target = new GlobalCommandTarget(GlobalCommandTarget.GKCtype.COUNTER);
+  protected List<Parameter> parameters = new ArrayList<>();
 
   public CounterGlobalKeyCommand() {
     this(ID, null);
@@ -114,6 +118,7 @@ public class CounterGlobalKeyCommand extends Decorator
     globalCommand.setSuppressSounds(st.nextBoolean(false));
     target.setGKCtype(GlobalCommandTarget.GKCtype.COUNTER);
     target.setCurPiece(this);
+    parameters = ParameterListConfigurer.decode(st.nextToken(""));
 
     command = null;
   }
@@ -133,7 +138,8 @@ public class CounterGlobalKeyCommand extends Decorator
       .append(description)
       .append(globalCommand.getSelectFromDeckExpression())
       .append(target.encode())
-      .append(globalCommand.isSuppressSounds());
+      .append(globalCommand.isSuppressSounds())
+      .append(ParameterListConfigurer.encode(parameters));
     return ID + se.getValue();
   }
 
@@ -213,6 +219,9 @@ public class CounterGlobalKeyCommand extends Decorator
   public List<String> getExpressionList() {
     final List<String> expList = target.getExpressionList();
     expList.add(propertiesFilter.getExpression());
+    for (final Parameter param : parameters) {
+      expList.add(param.getValue());
+    }
     return expList;
   }
 
@@ -221,7 +230,11 @@ public class CounterGlobalKeyCommand extends Decorator
    */
   @Override
   public List<String> getPropertyList() {
-    return target.getPropertyList();
+    final List<String> l = target.getPropertyList();
+    for (final Parameter param : parameters) {
+      l.add(param.getPropertyName());
+    }
+    return l;
   }
 
   /**
@@ -303,6 +316,8 @@ public class CounterGlobalKeyCommand extends Decorator
       globalCommand.setRange(null);
     }
 
+    globalCommand.setParameters(parameters);
+
     // If Range restriction is requested, it can only apply to units on the same map. Otherwise check all maps.
     final Map[] maps = restrictRange ? new Map[] {getMap()} : Map.getMapList().toArray(new Map[0]);
     c = c.append(globalCommand.apply(maps, filter, target, audit));
@@ -345,6 +360,8 @@ public class CounterGlobalKeyCommand extends Decorator
       return false;
     if (!Objects.equals(target, trait.target))
       return false;
+    if (!Objects.equals(parameters, trait.parameters))
+      return false;
     return Objects.equals(globalCommand.getSelectFromDeckExpression(), trait.globalCommand.getSelectFromDeckExpression());
   }
 
@@ -366,6 +383,7 @@ public class CounterGlobalKeyCommand extends Decorator
     protected StringConfigurer descInput;
     protected JPanel controls;
     protected TraitConfigPanel traitPanel;
+    protected ParameterListConfigurer paramConfig;
 
     protected GlobalCommandTargetConfigurer targetConfig;
 
@@ -437,6 +455,9 @@ public class CounterGlobalKeyCommand extends Decorator
       suppressSounds = new BooleanConfigurer(p.globalCommand.isSuppressSounds());
       traitPanel.add("Editor.GlobalKeyCommand.Editor_MassKey_suppress_sounds", suppressSounds);
 
+      paramConfig = new ParameterListConfigurer(p.parameters);
+      traitPanel.add("Editor.GlobalKeyCommand.pass_parameters", paramConfig);
+
       pl.propertyChange(null);
     }
 
@@ -460,7 +481,8 @@ public class CounterGlobalKeyCommand extends Decorator
         .append(descInput.getValueString())
         .append(deckPolicy.getSingleValue())
         .append(targetConfig.getValueString())
-        .append(suppressSounds.getValueString());
+        .append(suppressSounds.getValueString())
+        .append(paramConfig.getValueString());
       return ID + se.getValue();
     }
 

@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2000-2008 by Rodney Kinney
+ * Copyright (c) 2000-2023 by Rodney Kinney, The VASSAL Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -43,6 +43,18 @@ public class IncrementProperty implements PropertyChanger {
     format.setFormat(incr);
   }
 
+  public String getRawValue() {
+    return format.getFormat();
+  }
+
+  public PropertyChangerConfigurer getProp() {
+    return prop;
+  }
+
+  public Constraints getPropSource() {
+    return constraints;
+  }
+
   @Override
   public String getNewValue(String oldValue) {
     int value;
@@ -62,7 +74,7 @@ public class IncrementProperty implements PropertyChanger {
     final AuditTrail audit = AuditTrail.create((Auditable) constraints, format.getFormat());
 
     try {
-      final String s = format.getText(constraints.getPropertySource(), constraints, audit);
+      final String s = format.getText(getTargetPropertySource(), constraints, audit);
       final int incr = Integer.parseInt(s);
       if (!constraints.isNumeric()) { // Don't apply hidden constraints that have been "turned off" by module designer unchecking the numeric box
         value += incr;
@@ -84,6 +96,10 @@ public class IncrementProperty implements PropertyChanger {
         "Increment " + prop.getName() + ": format=" + format.getFormat() + ", value=" + format.getText(constraints, constraints, audit), e, constraints, audit)); //NON-NLS
       return oldValue;
     }
+  }
+
+  public PropertySource getTargetPropertySource() {
+    return constraints.getPropertySource();
   }
 
   public String getIncrement() {

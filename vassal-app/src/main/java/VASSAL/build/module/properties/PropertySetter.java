@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2006 by Rodney Kinney
+ * Copyright (c) 2006-2023 by Rodney Kinney, The VASSAL Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -39,6 +39,14 @@ public class PropertySetter implements PropertyChanger {
 
   public String getRawValue() {
     return newValue;
+  }
+
+  public Constraints getPropSource() {
+    return propSource;
+  }
+
+  public FormattedString getFormat() {
+    return format;
   }
 
   @Override

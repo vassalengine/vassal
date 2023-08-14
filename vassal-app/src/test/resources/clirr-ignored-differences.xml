@@ -76,6 +76,25 @@
         <method>*</method>
         <justification>Internal use only.</justification>
     </difference>
+
+    <difference>
+        <className>VASSAL/counters/SetAttachmentProperty</className>
+        <differenceType>8001</differenceType>
+        <justification>Class added in beta, then removed</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/SetAttachmentProperty$Ed</className>
+        <differenceType>8001</differenceType>
+        <justification>Class added in beta, then removed</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/SetAttachmentProperty$SetAttachmentPropertySource</className>
+        <differenceType>8001</differenceType>
+        <justification>Class added in beta, then removed</justification>
+    </difference>
+
     <!-- 3.6.14 -->
 
     <difference>

@@ -29,7 +29,7 @@ import javax.swing.KeyStroke;
  * "additional properties filter"
  */
 public class GlobalCommandVisitor implements DeckVisitor {
-  protected final Command command;
+  protected Command command;
   private final BoundsTracker tracker;
   protected final PieceFilter filter;
   private final KeyStroke stroke;
@@ -37,6 +37,7 @@ public class GlobalCommandVisitor implements DeckVisitor {
   private Auditable owner;
   protected final AuditTrail auditSoFar;
   private int selectFromDeck;
+  private GlobalCommand globalCommand;
 
 
   public GlobalCommandVisitor(Command command, PieceFilter filter, KeyStroke stroke) {
@@ -55,6 +56,11 @@ public class GlobalCommandVisitor implements DeckVisitor {
     this(command, filter, stroke, audit);
     this.owner = owner;
     this.selectFromDeck = selectFromDeck;
+  }
+
+  public GlobalCommandVisitor(Command command, PieceFilter filter, KeyStroke stroke, AuditTrail audit, Auditable owner, int selectFromDeck, GlobalCommand globalCommand) {
+    this(command, filter, stroke, audit, owner, selectFromDeck);
+    this.globalCommand = globalCommand;
   }
 
   public void setOwner(Auditable val) {
@@ -133,7 +139,17 @@ public class GlobalCommandVisitor implements DeckVisitor {
       }
       tracker.addPiece(p);
       p.setProperty(Properties.SNAPSHOT, ((PropertyExporter) p).getProperties());
-      command.append(p.keyEvent(stroke));
+
+      // Set any Parameters into the piece prior to issuing the Key Command
+      command = command.append(Decorator.setDynamicProperties(
+        globalCommand.getParameters(),
+        p,
+        globalCommand.getPropertySource(),
+        owner,
+        auditSoFar
+      ));
+
+      command = command.append(p.keyEvent(stroke));
       tracker.addPiece(p);
       selectedCount++;
     }

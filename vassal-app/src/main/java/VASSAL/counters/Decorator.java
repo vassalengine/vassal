@@ -26,14 +26,20 @@ import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.build.module.properties.PropertyNameSource;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.ChangePiece;
+import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.Configurer;
+import VASSAL.configure.Parameter;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.property.PersistentPropertyContainer;
+import VASSAL.script.expression.AuditTrail;
+import VASSAL.script.expression.Auditable;
+import VASSAL.script.expression.Expression;
+import VASSAL.script.expression.FormattedStringExpression;
 import VASSAL.search.AbstractImageFinder;
 import VASSAL.search.ImageSearchTarget;
 import VASSAL.search.SearchTarget;
@@ -51,6 +57,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 import static VASSAL.counters.BasicPiece.BASIC_NAME;
 import static VASSAL.counters.BasicPiece.PIECE_NAME;
@@ -295,6 +302,91 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
   public Object getPersistentProperty(Object key) {
     // Standard getProperty also returns persistent properties.
     return innermost == null ? piece.getProperty(key) : innermost.getProperty(key);
+  }
+
+  /**
+   * Find and set a series of Dynamic Properties in the supplied GamePiece named propertyName and generate a
+   * Command to set it to the specified values in other clients
+   *
+   * @param parameters    List of property name/value pairs
+   * @param piece         Game Piece containing the Dynamic Property
+   * @param source        A Property Source for evaluating any $$ Variables included in the value if it is an expression
+   * @param owner         Initiating piece/component for audit purposes
+   *
+   * @return              Command setting the properties
+   */
+  public static Command setDynamicProperties(List<Parameter> parameters, GamePiece piece, PropertySource source, Auditable owner) {
+    return setDynamicProperties(parameters, piece, source, owner, null);
+  }
+
+  public static Command setDynamicProperties(List<Parameter> parameters, GamePiece piece, PropertySource source, Auditable owner, AuditTrail auditSoFar) {
+    Command c = new NullCommand();
+    if (parameters != null) {
+      AuditTrail audit = auditSoFar;
+      for (final Parameter param : parameters) {
+        final String message = "Set DP " + param.getPropertyName() + " to " + param.getValue();
+        if (auditSoFar == null) {
+          // No Audit trail supplied, create a new one for each expression
+          audit = AuditTrail.create(owner, param.getValue(), message);
+        }
+        else {
+          // Audit trail supplied, append to exsting trail
+          audit.addMessage(message);
+          audit.setExpression(param.getValue());
+        }
+        c = c.append(setDynamicProperty(param.getPropertyName(), param.getValue(), piece, source, owner, audit));
+      }
+    }
+    return c;
+  }
+  /**
+   * Find a Dynamic Property in the supplied GamePiece named propertyName and generate a
+   * Command to set it to the specified value
+   *
+   * @param propertyName  Dynamic property name
+   * @param value         New value
+   * @param piece         Game Piece containing the Dynamic Property
+   * @param source        A Property Source for evaluating any $$ Variables included in the value if it is an expression
+   * @param owner         Initiating piece/component for audit purposes
+   * @param audit         Audit trail
+   *
+   * @return              Command setting the property
+   */
+  public static Command setDynamicProperty(String propertyName, String value, GamePiece piece, PropertySource source, Auditable owner, AuditTrail audit) {
+    String newValue = value;
+
+    // If the value contains any $ signs, then first evaluate any potential $$ variables using the supplied property source
+    // This will leave any Beanshell untouched, just to a literal replacement of $$ variables
+    if (newValue.contains("$")) {
+      final FormattedStringExpression e = new FormattedStringExpression(value);
+      newValue = e.tryEvaluate(source, null, false, owner, audit);
+    }
+
+    // Now evaluate the expression properly as a potentially full Beanshell Expression, using the target piece as source for any properties
+    final Expression expression = Expression.createExpression(newValue);
+    newValue = expression.tryEvaluate(piece, owner, audit);
+
+    if (audit != null) {
+      audit.addMessage(Resources.getString("Audit.set_dynamic_property", propertyName, newValue));
+    }
+
+    Command c = new NullCommand();
+    for (final GamePiece p : Decorator.getDecorators(piece, DynamicProperty.class)) {
+      // Exclude subclasses of DynamicProperty
+      if (p.getClass().equals(DynamicProperty.class)) {
+        final DynamicProperty dp = (DynamicProperty) p;
+        if (dp.getKey().equals(propertyName)) {
+          // Same name
+          if (!Objects.equals(dp.getValue(), newValue)) {
+            // Value is changing
+            final ChangeTracker tracker = new ChangeTracker(piece);
+            dp.setValue(newValue == null ? "" : newValue);
+            c = c.append(tracker.getChangeCommand());
+          }
+        }
+      }
+    }
+    return c;
   }
 
   /** @return next piece "outward" (away from BasicPiece) in the trait list. This method is required

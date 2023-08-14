@@ -108,6 +108,8 @@ public class ChangePropertyButton extends AbstractToolbarItem implements Propert
 
   protected String getNewValue() {
     String newValue = getPropertyChanger().getNewValue(property.getPropertyValue());
+    // null result means Cancel button was hit on a prompt dialog, revert to old value
+    if (newValue == null) newValue = property.getPropertyValue();
     format.setFormat(newValue);
     newValue = format.getText(property, this, "Editor.PropertyChangeConfigurer.new_value");
     return newValue;

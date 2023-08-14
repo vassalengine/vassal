@@ -1219,7 +1219,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 
   public int getMaxPixelsPerRangeUnit(Point p) {
     final Board b = findBoard(p);
-    return b == null ? null : b.getGrid().getMaxPixelsPerRangeUnit(p);
+    return (b == null || b.getGrid() == null) ? 1 : b.getGrid().getMaxPixelsPerRangeUnit(p);
   }
 
   /**
