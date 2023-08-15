@@ -1,5 +1,6 @@
 3.7.0-beta5 - ???
 
+* 12573: Updated bundled Java to 20.0.2
 * 12568: Center of map view during zoom used incorrect coordinate space
 * 12566: Add Beanshell function to add Sleep/Delay processing
 * 12556: Map Shaders on different maps can now have same name
