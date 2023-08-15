@@ -19,6 +19,7 @@
       "in": "3.7.0-beta5",
       "since": "3.7.0-beta4",
       "new_features": [
+        { "num": 12566, "desc": "Add Beanshell function to add Sleep/Delay processing" },
         { "num": 12536, "desc": "GKC and Place/Replace parameters" },
         { "num": 12492, "desc": "Add Comment trait" },
         { "num": 12454, "desc": "BeanShell Editor improvements: larger, multi-line, more properties" },
