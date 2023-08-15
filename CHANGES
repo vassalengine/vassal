@@ -1,4 +1,4 @@
-3.7.0-beta5 - ???
+3.7.0-beta5 - 15 August 2023
 
 * 12573: Updated bundled Java to 20.0.2
 * 12568: Center of map view during zoom used incorrect coordinate space
