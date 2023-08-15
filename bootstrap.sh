@@ -19,12 +19,12 @@ pushd "$JDKDIR"
 ZULU_URL='https://cdn.azul.com/zulu/bin'
 
 TEMURIN_URL='https://github.com/adoptium/temurin20-binaries/releases/download'
-TEMURIN_VERSION=jdk-20.0.1+9
-TEMURIN_FILENAME_VERSION=20.0.1_9
+TEMURIN_VERSION=jdk-20.0.2+9
+TEMURIN_FILENAME_VERSION=20.0.2_9
 
-BELLSOFT_URL='https://download.bell-sw.com/java/20.0.1%2B10'
-BELLSOFT_VERSION=20.0.1+10
-BELLSOFT_DIR=jdk-20.0.1
+BELLSOFT_URL='https://download.bell-sw.com/java/20.0.2%2B10'
+BELLSOFT_VERSION=20.0.2+10
+BELLSOFT_DIR=jdk-20.0.2
 
 # Windows x86_32
 filename="bellsoft-jdk$BELLSOFT_VERSION-windows-i586.zip"
