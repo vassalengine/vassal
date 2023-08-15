@@ -45,6 +45,7 @@ import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
 import VASSAL.tools.WarningDialog;
 
+import VASSAL.tools.swing.DialogCloser;
 import bsh.BeanShellExpressionValidator;
 import bsh.EvalError;
 import bsh.NameSpace;
@@ -54,6 +55,8 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.JDialog;
+import javax.swing.SwingUtilities;
 import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -2005,6 +2008,29 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
     return "";
   }
+
+  /**
+   * Refresh the screen, then delay for the specified number of milliseconds
+   *
+   * This is not pretty, but is the only way I have found to force a proper UI refresh
+   * - Open a modal dialog box way offscreen. This forces a an actual real Swing UI refresh, then hangs the UI
+   * - Start a new thread that closes the dialog box after a specified delay
+   *
+   * @param ms  Milliseconds to delay
+   * @param ps  A Property source
+   * @return    blank String
+   */
+  public Object sleep(Object ms, PropertySource ps) {
+
+    final int milliSeconds = IntPropValue(ms);
+    final JDialog dialog = new JDialog(GameModule.getGameModule().getPlayerWindow(), true);
+    dialog.setLocation(-5000, -5000);
+    SwingUtilities.invokeLater(new DialogCloser(dialog, milliSeconds));
+
+    dialog.setVisible(true);
+    return "";
+  }
+
 
 }
 
