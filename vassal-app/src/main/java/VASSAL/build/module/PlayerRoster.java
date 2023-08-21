@@ -1020,7 +1020,9 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
    */
   @Override
   public List<String> getPropertyList() {
-    return sides;
+    final List<String> l = super.getPropertyList();
+    l.addAll(sides);
+    return l;
   }
 
   @Override

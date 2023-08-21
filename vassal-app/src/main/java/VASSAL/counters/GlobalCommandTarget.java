@@ -334,10 +334,11 @@ public class GlobalCommandTarget implements ConfigurerFactory, SearchTarget {
    */
   @Override
   public List<String> getPropertyList() {
+    final ArrayList<String> l = new ArrayList<>();
     if (fastMatchProperty) {
-      return List.of(targetProperty.getExpression());
+      l.add(targetProperty.getExpression());
     }
-    return Collections.emptyList();
+    return l;
   }
 
   // Welcome to Getters-and-Setters HELL!
