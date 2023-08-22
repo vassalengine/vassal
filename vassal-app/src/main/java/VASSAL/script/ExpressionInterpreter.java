@@ -95,6 +95,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   protected static final String MAGIC3 = "_plover"; // NON-NLS
   protected static final String ERROR_PREFIX = " inline evaluation of: ``_xyzzy=_plugh();''";
 
+  protected static final Integer ZERO = 0;
+
   // Top-level static NameSpace shared between all ExpressionInterpreters
   // Loaded with utility methods available to all interpreters
   protected static NameSpace topLevelNameSpace;
@@ -422,6 +424,16 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     }
   }
 
+  /**
+   * Wrap a possibly already wrapped value.
+   *
+   * @param value A value that may already be wrapped (due to auto-boxing)
+   * @return      Wrapped value
+   */
+  public Object wrap(Object value) {
+    return value instanceof String ? wrap((String) value) : value;
+  }
+
   /*****************************************************************
    * Callbacks from BeanShell Expressions to Vassal
    **/
@@ -536,16 +548,16 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
           if (index > 0) {
             final GamePiece target = attach.getAttachedPieceAt(index - 1);
             if (target == null) return "";
-            return target.getProperty(property);
+            return wrap(target.getProperty(property));
           }
 
           //Search through the attachments, looking for a match on name or expression
           for (final GamePiece target : attach.getAttachList()) {
             if (!pieceName.isEmpty() && pieceName.equals(target.getProperty(BasicPiece.BASIC_NAME))) {
-              return target.getProperty(property);
+              return wrap(target.getProperty(property));
             }
             if (filter != null && filter.accept(target)) {
-              return target.getProperty(property);
+              return wrap(target.getProperty(property));
             }
           }
         }
@@ -1436,14 +1448,14 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    */
 
 
-  public int rangeAttach(Object attachmentName, Object expression, boolean asPixels, PropertySource ps) {
+  public Object rangeAttach(Object attachmentName, Object expression, boolean asPixels, PropertySource ps) {
     if (!(attachmentName instanceof String)) return 0;
     if (!(expression instanceof String)) return 0;
     final PieceFilter filter = createFilter((String) expression, ps);
     return rangeAttach((String) attachmentName, filter, asPixels, ps);
   }
 
-  private int rangeAttach(String attachmentName, PieceFilter filter, boolean asPixels,  PropertySource ps) {
+  private Object rangeAttach(String attachmentName, PieceFilter filter, boolean asPixels,  PropertySource ps) {
     if (ps instanceof GamePiece) {
       final Map map = ((GamePiece) ps).getMap();
       final Point from = ((GamePiece) ps).getPosition();
@@ -1462,15 +1474,15 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     return 0;
   }
 
-  public int rangeInPixels(Object x, Object y, PropertySource ps) {
+  public Object rangeInPixels(Object x, Object y, PropertySource ps) {
     return rangeXY(x, y, ps, true);
   }
 
-  public int rangeInCells(Object x, Object y, PropertySource ps) {
+  public Object rangeInCells(Object x, Object y, PropertySource ps) {
     return rangeXY(x, y, ps, false);
   }
 
-  private int rangeXY(Object x, Object y, PropertySource ps, boolean asPixels) {
+  private Object rangeXY(Object x, Object y, PropertySource ps, boolean asPixels) {
     if (ps instanceof GamePiece) {
       final Map map = ((GamePiece) ps).getMap();
       final Point from = ((GamePiece) ps).getPosition();
@@ -1479,23 +1491,23 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     return 0;
   }
 
-  public int rangeInPixels(Object x1, Object y1, Object x2, Object y2, PropertySource ps) {
+  public Object rangeInPixels(Object x1, Object y1, Object x2, Object y2, PropertySource ps) {
     return rangeMap(x1, y1, x2, y2, (String) ps.getProperty(BasicPiece.CURRENT_MAP), true);
   }
 
-  public int rangeInCells(Object x1, Object y1, Object x2, Object y2, PropertySource ps) {
+  public Object rangeInCells(Object x1, Object y1, Object x2, Object y2, PropertySource ps) {
     return rangeMap(x1, y1, x2, y2, (String) ps.getProperty(BasicPiece.CURRENT_MAP), false);
   }
 
-  public int rangeInPixels(Object x1, Object y1, Object x2, Object y2, Object mapName, PropertySource ps) {
+  public Object rangeInPixels(Object x1, Object y1, Object x2, Object y2, Object mapName, PropertySource ps) {
     return rangeMap(x1, y1, x2, y2, mapName, true);
   }
 
-  public int rangeInCells(Object x1, Object y1, Object x2, Object y2, Object mapName, PropertySource ps) {
+  public Object rangeInCells(Object x1, Object y1, Object x2, Object y2, Object mapName, PropertySource ps) {
     return rangeMap(x1, y1, x2, y2, mapName, false);
   }
 
-  private int rangeMap(Object x1, Object y1, Object x2, Object y2, Object mapName, boolean asPixels) {
+  private Object rangeMap(Object x1, Object y1, Object x2, Object y2, Object mapName, boolean asPixels) {
     final Point from = new Point(IntPropValue(x1), IntPropValue(y1));
     final Point to = new Point(IntPropValue(x2), IntPropValue(y2));
     final Map map = Map.getMapById(mapName.toString());
