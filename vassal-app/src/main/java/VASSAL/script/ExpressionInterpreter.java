@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2008-2020 by Brent Easton
+ * Copyright (c) 2008-2023 by The VASSAL Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -44,8 +44,8 @@ import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
 import VASSAL.tools.WarningDialog;
-
 import VASSAL.tools.swing.DialogCloser;
+
 import bsh.BeanShellExpressionValidator;
 import bsh.EvalError;
 import bsh.NameSpace;
@@ -57,6 +57,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
+
 import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -94,8 +95,6 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   protected static final String MAGIC2 = "_plugh"; // NON-NLS
   protected static final String MAGIC3 = "_plover"; // NON-NLS
   protected static final String ERROR_PREFIX = " inline evaluation of: ``_xyzzy=_plugh();''";
-
-  protected static final Integer ZERO = 0;
 
   // Top-level static NameSpace shared between all ExpressionInterpreters
   // Loaded with utility methods available to all interpreters
