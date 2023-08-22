@@ -1,3 +1,7 @@
+3.7.0 - ???
+
+* 12595: Fix Search UnsupportedOperationException
+
 3.7.0-beta5 - 15 August 2023
 
 * 12573: Updated bundled Java to 20.0.2
