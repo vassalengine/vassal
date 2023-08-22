@@ -33,7 +33,7 @@ public class RemotePropertyPrompt extends PropertyPrompt implements RemoteProper
   }
 
   @Override
-  public String getNewValue(DynamicProperty target, Auditable owner) {
+  public String getNewValue(DynamicProperty target, Auditable owner, PropertySource ps) {
     return super.getNewValue("");
   }
 }

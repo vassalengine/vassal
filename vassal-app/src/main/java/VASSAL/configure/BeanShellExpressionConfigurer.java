@@ -210,7 +210,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
       validator = new Validator();
       nameField = new JTextArea(1, 100);
 
-      nameField.setFont(new Font("Monospaced", Font.PLAIN, 14));
+      nameField.setFont(new Font("courier new", Font.PLAIN, 14));
       nameField.setLineWrap(true);
       nameField.setWrapStyleWord(true);
       nameField.setBorder(BorderFactory.createLineBorder(Color.gray));
