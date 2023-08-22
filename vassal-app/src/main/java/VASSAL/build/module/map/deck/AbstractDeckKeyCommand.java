@@ -29,6 +29,7 @@ import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -143,7 +144,9 @@ public abstract class AbstractDeckKeyCommand extends AbstractConfigurable implem
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    return List.of(keyStroke);
+    final ArrayList<NamedKeyStroke> l = new ArrayList<>();
+    l.add(keyStroke);
+    return l;
   }
 
 
@@ -153,7 +156,9 @@ public abstract class AbstractDeckKeyCommand extends AbstractConfigurable implem
    */
   @Override
   public List<String> getMenuTextList() {
-    return List.of(getComponentName());
+    final ArrayList<String> l = new ArrayList<>();
+    l.add(getComponentName());
+    return l;
   }
 
 
@@ -163,7 +168,9 @@ public abstract class AbstractDeckKeyCommand extends AbstractConfigurable implem
    */
   @Override
   public List<String> getFormattedStringList() {
-    return List.of(reportFormat.getFormat());
+    final ArrayList<String> l = new ArrayList<>();
+    l.add(reportFormat.getFormat());
+    return l;
   }
 
   public static class DeckReportFormatConfig implements TranslatableConfigurerFactory {

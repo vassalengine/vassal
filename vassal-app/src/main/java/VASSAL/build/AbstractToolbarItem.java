@@ -38,9 +38,9 @@ import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -536,17 +536,18 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
 
   @Override
   public List<String> getPropertyList() {
+    final ArrayList<String> l = new ArrayList<>();
+
     if (!isShowDisabledOptions() || !canDisable) {
-      return Collections.emptyList();
+      return l;
     }
 
     final String prop = getAttributeValueString(PROPERTY_GATE);
     if ((prop != null) && !prop.isEmpty()) {
-      return List.of(prop);
+      l.add(prop);
     }
-    else {
-      return Collections.emptyList();
-    }
+
+    return l;
   }
 
   /**

@@ -730,7 +730,8 @@ public class MassKeyCommand extends AbstractToolbarItem
    */
   @Override
   public List<String> getPropertyList() {
-    final List<String> l = target.getPropertyList();
+    final List<String> l = super.getPropertyList();
+    l.addAll(target.getPropertyList());
     for (final Parameter param : parameters) {
       l.add(param.getPropertyName());
     }
