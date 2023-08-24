@@ -17,7 +17,6 @@
  */
 package VASSAL.configure;
 
-import VASSAL.build.GameModule;
 import VASSAL.counters.EditablePiece;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
@@ -54,7 +53,6 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.net.URL;
 import java.util.List;
 
@@ -331,10 +329,10 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
       final String fileName = "/fonts/JetBrainsMono.ttf";
       final URL url = getClass().getResource(fileName);
       final Font ms = Font.createFont(Font.TRUETYPE_FONT, url.openStream());
-      final String name = ms.getName();
-      final String family = ms.getFamily();
-      final String fontName = ms.getFontName();
-      final String psName = ms.getPSName();
+//      final String name = ms.getName();
+//      final String family = ms.getFamily();
+//      final String fontName = ms.getFontName();
+//      final String psName = ms.getPSName();
       return ms.deriveFont(style, size);
     }
     catch (Exception ignored) {
