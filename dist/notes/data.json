@@ -21,7 +21,9 @@
       "new_features": [
       ],
       "bug_fixes": [
-        { "num": 12595, "desc": "Fix Search UnsupportedOperationException" }
+        { "num": 12595, "desc": "Fix Search UnsupportedOperationException" },
+        { "num": 12578, "desc": "Process Set Piece Property expressions correctly" },
+        { "num": 12561, "desc": "Handle Beanshell functions correctly in expressions" }
       ],
       "other_improvements": [
       ]
