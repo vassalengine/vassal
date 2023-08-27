@@ -39,15 +39,16 @@ public class RemotePropertySetter extends PropertySetter implements RemoteProper
    * @param remoteDP  Remote DP being set
    * @return          New value to set
    */
+
   @Override
-  public String getNewValue(DynamicProperty remoteDP, Auditable owner) {
+  public String getNewValue(DynamicProperty remoteDP, Auditable owner, PropertySource ps) {
 
     String s = getRawValue();
 
     // Pre-Evaluate $$ variables against our source unit
     if (s.indexOf('$') >= 0) {
       final FormattedStringExpression fse = new FormattedStringExpression(s);
-      s = fse.tryEvaluate(getPropSource(), owner, "Editor.DynamicProperty.key_commands");
+      s = fse.tryEvaluate(ps, owner, "Editor.DynamicProperty.key_commands");
     }
 
     // Then evaluate the result against the target piece

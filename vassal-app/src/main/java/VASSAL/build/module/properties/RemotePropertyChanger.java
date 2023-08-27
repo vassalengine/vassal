@@ -21,5 +21,5 @@ import VASSAL.counters.DynamicProperty;
 import VASSAL.script.expression.Auditable;
 
 public interface RemotePropertyChanger extends PropertyChanger {
-  String getNewValue(DynamicProperty target, Auditable owner);
+  String getNewValue(DynamicProperty target, Auditable owner, PropertySource ps);
 }
