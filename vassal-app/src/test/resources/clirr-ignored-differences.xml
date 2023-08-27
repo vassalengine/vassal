@@ -55,6 +55,14 @@
     </difference>
 
     <difference>
+        <className>VASSAL/script/ExpressionInterpreter</className>
+        <differenceType>7006</differenceType>
+        <method>**</method>
+        <to>**</to>
+        <justification>No one should be using this externally, Internal changes only</justification>
+    </difference>
+
+    <difference>
         <className>VASSAL/script/AbstractInterpreter</className>
         <differenceType>7005</differenceType>
         <method>*</method>
