@@ -442,7 +442,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
     // still free to insert <span> tags and <img> tags and the like in Report
     // messages.
     try {
-      kit.insertHTML(doc, doc.getLength(), "\n<div class=" + style + ">" + s + "</div>", 0, 0, null); //NON-NLS
+      kit.insertHTML(doc, doc.getLength(), "\n<div class=\"" + style + "\">" + s + "</div>", 0, 0, null); //NON-NLS
     }
     catch (BadLocationException | IOException ble) {
       ErrorDialog.bug(ble);
