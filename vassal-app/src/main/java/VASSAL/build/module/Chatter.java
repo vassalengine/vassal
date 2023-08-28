@@ -748,8 +748,9 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
     else if (e.isOnKeyRelease()) {
       switch (e.getKeyCode()) {
       case KeyEvent.VK_ENTER:
-        if (!input.getText().isEmpty())
+        if (!input.getText().isEmpty()) {
           send(formatChat(input.getText()), input.getText());
+        }
         input.setText(""); //$NON-NLS-1$
         break;
       case KeyEvent.VK_BACK_SPACE:
