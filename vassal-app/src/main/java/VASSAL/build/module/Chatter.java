@@ -756,8 +756,9 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
       case KeyEvent.VK_BACK_SPACE:
       case KeyEvent.VK_DELETE:
         final String s = input.getText();
-        if (!s.isEmpty())
+        if (!s.isEmpty()) {
           input.setText(s.substring(0, s.length() - 1));
+        }
         break;
       }
     }
