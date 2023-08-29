@@ -55,7 +55,6 @@ import javax.swing.undo.UndoManager;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
@@ -196,11 +195,6 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
       um.discardAllEdits();
     });
 
-    final FontMetrics fm = getFontMetrics(myFont);
-    final int fontHeight = fm.getHeight();
-
-    conversationPane.setPreferredSize(new Dimension(input.getMaximumSize().width, fontHeight * 10));
-
     scroll.setViewportView(conversationPane);
     scroll.getVerticalScrollBar().setUnitIncrement(input.getPreferredSize().height); //Scroll this faster
     add(scroll);
@@ -327,12 +321,9 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
       }
     });
 
-    setPreferredSize(new Dimension(input.getMaximumSize().width, input.getPreferredSize().height + conversationPane.getPreferredSize().height));
-
     // Accept dropped files
     dt = new DropTarget(conversationPane, this);
   }
-
 
   /**
    * Because our Chatters make themselves visible in their constructor, providing a way for an overriding class to
@@ -765,7 +756,6 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
       }
     }
   }
-
 
   /**
    * This is a {@link Command} object that, when executed, displays
