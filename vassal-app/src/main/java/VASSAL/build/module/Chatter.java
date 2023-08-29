@@ -138,6 +138,9 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
     }
 
     conversationPane.setEditable(false);
+    conversationPane.getCaret().setVisible(false);
+    conversationPane.setCaretColor(new Color(0, 0, 0, 0));
+
     conversationPane.addComponentListener(new ComponentAdapter() {
       @Override
       public void componentResized(ComponentEvent e) {
