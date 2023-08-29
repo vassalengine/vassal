@@ -25,6 +25,13 @@
     <!-- 3.7.0 -->
 
     <difference>
+        <className>VASSAL/build/module/Chatter</className>
+        <differenceType>6001</differenceType>
+        <field>scroll2</field>
+        <justification>Accidentally added; nothing should use this.</justification>
+    </difference>
+
+    <difference>
         <className>VASSAL/build/module/AttachmentManager</className>
         <differenceType>7002</differenceType>
         <method>*</method>
