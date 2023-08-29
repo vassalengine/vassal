@@ -89,7 +89,6 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
 
   protected JTextField input;
   protected JScrollPane scroll = new ScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-  protected JScrollPane scroll2 = new ScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
   protected static final String MY_CHAT_COLOR = "HTMLChatColor";          //$NON-NLS-1$ // Different tags to "restart" w/ new default scheme
   protected static final String OTHER_CHAT_COLOR = "HTMLotherChatColor";     //$NON-NLS-1$
   protected static final String GAME_MSG1_COLOR = "HTMLgameMessage1Color";  //$NON-NLS-1$
