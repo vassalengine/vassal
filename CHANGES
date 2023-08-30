@@ -1,5 +1,7 @@
 3.7.0 - ???
 
+* 12627: Fix chat non-scrolling caused by setting preferred size for the
+    Chatter contents pane
 * 12626: Hide caret in chat pane
 * 12620: Ensure that HTML attribute values are quoted
 * 12595: Fix Search UnsupportedOperationException
