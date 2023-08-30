@@ -27,6 +27,7 @@
         { "num": 12561, "desc": "Handle Beanshell functions correctly in expressions" }
       ],
       "other_improvements": [
+        { "num": 12626, "desc": "Hide caret in chat pane" }
       ]
    },
    {

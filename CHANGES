@@ -1,5 +1,6 @@
 3.7.0 - ???
 
+* 12626: Hide caret in chat pane
 * 12620: Ensure that HTML attribute values are quoted
 * 12595: Fix Search UnsupportedOperationException
 * 12578: Process Set Piece Property expressions correctly
