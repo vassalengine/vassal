@@ -197,6 +197,13 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
 
     scroll.setViewportView(conversationPane);
     scroll.getVerticalScrollBar().setUnitIncrement(input.getPreferredSize().height); //Scroll this faster
+
+    final int fontHeight = getFontMetrics(myFont).getHeight();
+    setPreferredSize(new Dimension(
+      input.getMaximumSize().width,
+      input.getPreferredSize().height + 10 * fontHeight
+    ));
+
     add(scroll);
     add(input);
 
