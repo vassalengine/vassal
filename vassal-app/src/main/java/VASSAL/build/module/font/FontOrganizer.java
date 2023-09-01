@@ -132,12 +132,12 @@ public class FontOrganizer extends AbstractConfigurable {
    *  Using a Set as multiple fonts will have the same family */
   public Set<String> getAdditionalFonts() {
     final Set<String> families = new HashSet<>();
-    vassalFonts.forEach((k) -> families.add(k.getFontFamily()));
+    vassalFonts.forEach((k) -> {if (k.getFontName() != null) families.add(k.getFontName());});
     getAllDescendantComponentsOf(ModuleFont.class).forEach(
       (k) -> {
         final VassalFont font = k.getFont();
-        if (font != null) {
-          families.add(font.getFontFamily());
+        if (font != null && font.getFontName() != null) {
+          families.add(font.getFontName());
         }
       }
     );
