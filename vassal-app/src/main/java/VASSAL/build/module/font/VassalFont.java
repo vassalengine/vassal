@@ -75,24 +75,32 @@ public class VassalFont implements Comparable<VassalFont> {
 
     URL url = null;
     final String subPath = FontOrganizer.FONTS_FOLDER + "/" + fontFileName;
+
     // Resource?
     try {
       url = GameModule.getGameModule().getDataArchive().getURL("/" + subPath);
-      if (url == null) {
-        url = GameModule.getGameModule().getDataArchive().getURL(subPath);
-        if (url == null) {
-          loadError = Resources.getString("Editor.VassalFont.find_error");
-        }
-      }
-      else {
+      if (url != null) {
         vassalFont = true;
       }
     }
-    catch (IOException e) {
-      loadError = Resources.getString("Editor.VassalFont.find_error");
+    catch (IOException ignored) {
+
     }
 
-    if (url != null) {
+    // Module file?
+    if (url == null) {
+      try {
+        url = GameModule.getGameModule().getDataArchive().getURL(subPath);
+      }
+      catch (IOException ignored) {
+
+      }
+    }
+
+    if (url == null) {
+      loadError = Resources.getString("Editor.VassalFont.find_error");
+    }
+    else {
       try (InputStream stream = url.openStream()) {
         font = Font.createFont(Font.TRUETYPE_FONT, stream);
       }
