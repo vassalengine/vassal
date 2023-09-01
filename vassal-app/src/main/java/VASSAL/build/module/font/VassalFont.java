@@ -77,14 +77,9 @@ public class VassalFont implements Comparable<VassalFont> {
     final String subPath = FontOrganizer.FONTS_FOLDER + "/" + fontFileName;
 
     // Resource?
-    try {
-      url = GameModule.getGameModule().getDataArchive().getURL("/" + subPath);
-      if (url != null) {
-        vassalFont = true;
-      }
-    }
-    catch (IOException ignored) {
-
+    url = getClass().getResource("/" + subPath);
+    if (url != null) {
+      vassalFont = true;
     }
 
     // Module file?
