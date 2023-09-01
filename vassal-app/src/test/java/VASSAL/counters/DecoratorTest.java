@@ -27,10 +27,13 @@ import static org.mockito.Mockito.when;
 import VASSAL.build.GameModule;
 import VASSAL.build.GpIdSupport;
 import VASSAL.build.module.BasicCommandEncoder;
+import VASSAL.build.module.font.FontOrganizer;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.Op;
+
+import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -78,10 +81,16 @@ public class DecoratorTest {
           // Mock some GpID Support
           final GpIdSupport gpid = mock(GpIdSupport.class);
 
+          // Font Organizer
+          final FontOrganizer fo = mock(FontOrganizer.class);
+          when(fo.getEditorFont(any(Integer.class), any(Integer.class))).thenReturn(new Font("monospaced", Font.PLAIN, 10));
+
           // Mock GameModule to return various resources
           final GameModule gm = mock(GameModule.class);
           when(gm.getDataArchive()).thenReturn(da);
           when(gm.getGpIdSupport()).thenReturn(gpid);
+          when(gm.getFontOrganizer()).thenReturn(fo);
+
 
           staticGm.when(GameModule::getGameModule).thenReturn(gm);
 

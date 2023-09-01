@@ -88,6 +88,7 @@ public class AutoConfigurer extends Configurer
       if (config != null) {
         config.setContext(target);
         config.addPropertyChangeListener(this);
+        config.setParentConfigurer(this);
         config.setValue(target.getAttributeValueString(name[i]));
         // Add field hints for common labels
         if (Resources.getString("Editor.menu_command").equals(prompt[i])) {
@@ -211,6 +212,14 @@ public class AutoConfigurer extends Configurer
       throw new IllegalArgumentException("Invalid class " + type.getName());
     }
     return config;
+  }
+
+  /**
+   * One of the child configurers is asking us to refresh all values. Something has changed 'under the hood'.
+   */
+  @Override
+  public void refresh() {
+    reset();
   }
 
   public void reset() {
