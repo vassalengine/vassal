@@ -110,6 +110,36 @@
         <justification>Class added in beta, then removed</justification>
     </difference>
 
+    <difference>
+        <className>VASSAL/build/module/properties/RemoteEnumeratedPropertyPrompt</className>
+        <differenceType>7004</differenceType>
+        <method>java.lang.String getNewValue(VASSAL.counters.DynamicProperty, VASSAL.script.expression.Auditable)</method>
+        <justification>Only introduced in beta4</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/properties/RemoteIncrementProperty</className>
+        <differenceType>7004</differenceType>
+        <method>java.lang.String getNewValue(VASSAL.counters.DynamicProperty, VASSAL.script.expression.Auditable)</method>
+        <justification>Only introduced in beta4</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/properties/RemotePropertyChanger</className>
+        <differenceType>7004</differenceType>
+        <method>java.lang.String getNewValue(VASSAL.counters.DynamicProperty, VASSAL.script.expression.Auditable)</method>
+        <justification>Only introduced in beta4</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/properties/RemotePropertyPrompt</className>
+        <differenceType>7004</differenceType>
+        <method>java.lang.String getNewValue(VASSAL.counters.DynamicProperty, VASSAL.script.expression.Auditable)</method>
+        <justification>Only introduced in beta4</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/properties/RemotePropertySetter</className>
+        <differenceType>7004</differenceType>
+        <method>java.lang.String getNewValue(VASSAL.counters.DynamicProperty, VASSAL.script.expression.Auditable)</method>
+        <justification>Only introduced in beta4</justification>
+    </difference>
     <!-- 3.6.14 -->
 
     <difference>
