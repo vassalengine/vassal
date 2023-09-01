@@ -888,7 +888,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
 
       GameModule.getGameModule().getFontOrganizer().getAdditionalFonts().forEach(
         (k) -> {
-          fontNames.add(k);
+          if (k != null) fontNames.add(k);
         });
       fontNames.addAll(List.of(Font.SERIF, Font.SANS_SERIF, Font.MONOSPACED, Font.DIALOG, Font.DIALOG_INPUT));
       Collections.sort(fontNames);
