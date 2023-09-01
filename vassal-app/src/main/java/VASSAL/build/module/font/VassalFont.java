@@ -41,7 +41,7 @@ public class VassalFont implements Comparable<VassalFont> {
   private final String fontFamily;    // Font Family Name
   private final String fontName;      // Specific Font Name
   private final String fontFile;      // File loaded from
-  private boolean vassalFont = false; // true for a Font included with Vassal, false for a Font from a module
+  private boolean vassalFont;         // true for a Font included with Vassal, false for a Font from a module
   private Font font;                  // The base loaded font, null if the Font could not be loaded
   private String loadError = "";      // Error message if the font could not be loaded
   private final boolean registered;   // Did the font successfully regiester with Jave? Main reason for failure is font is already installed on system.
