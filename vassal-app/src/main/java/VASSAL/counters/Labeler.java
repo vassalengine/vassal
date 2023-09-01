@@ -889,15 +889,45 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       labelKeyInput = new NamedHotKeyConfigurer(l.labelKey);
       controls.add("Editor.keyboard_command", labelKeyInput);
 
-      fontFamily = new TranslatingStringEnumConfigurer(
-        new String[]{Font.SERIF, Font.SANS_SERIF, Font.MONOSPACED, Font.DIALOG, Font.DIALOG_INPUT},
-        new String[] {
-          "Editor.Font.serif",
-          "Editor.Font.sans_serif",
-          "Editor.Font.monospaced",
-          "Editor.Font.dialog",
-          "Editor.Font.dialog_input"},
-          l.font.getFamily());
+      final List<String> fontNames = new ArrayList<>();
+      final List<String> fontDescriptions = new ArrayList<>();
+
+      GameModule.getGameModule().getFontOrganizer().getAdditionalFonts().forEach(
+        (k) -> {
+          fontNames.add(k);
+        });
+      fontNames.addAll(List.of(Font.SERIF, Font.SANS_SERIF, Font.MONOSPACED, Font.DIALOG, Font.DIALOG_INPUT));
+      Collections.sort(fontNames);
+      fontNames.forEach(
+        (k) -> {
+          if (Font.SERIF.equals(k)) {
+            fontDescriptions.add(Resources.getString("Editor.Font.serif"));
+          }
+          else if (Font.SANS_SERIF.equals(k)) {
+            fontDescriptions.add(Resources.getString("Editor.Font.sans_serif"));
+          }
+          else if (Font.MONOSPACED.equals(k)) {
+            fontDescriptions.add(Resources.getString("Editor.Font.monospaced"));
+          }
+          else if (Font.DIALOG.equals(k)) {
+            fontDescriptions.add(Resources.getString("Editor.Font.dialog"));
+          }
+          else if (Font.DIALOG_INPUT.equals(k)) {
+            fontDescriptions.add(Resources.getString("Editor.Font.dialog_input"));
+          }
+          else {
+            // No translation for Vassal supplied fonts
+            fontDescriptions.add(k);
+          }
+        }
+      );
+
+      fontFamily = new TranslatingStringEnumConfigurer(null, null,
+        fontNames,
+        fontDescriptions,
+        l.font.getFamily(),
+        true
+      );
 
       JPanel p = new JPanel(new MigLayout("ins 0", "[]unrel[]rel[]unrel[]rel[]unrel[]rel[]")); // NON-NLS
       p.add(fontFamily.getControls());

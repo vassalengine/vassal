@@ -88,6 +88,10 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
 
   protected JTextField input;
   protected JScrollPane scroll = new ScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+  protected JScrollPane scroll2 = new ScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+  protected FontConfigurer fontConfig;
+
+  public static final String FONT = "ChatFont";
   protected static final String MY_CHAT_COLOR = "HTMLChatColor";          //$NON-NLS-1$ // Different tags to "restart" w/ new default scheme
   protected static final String OTHER_CHAT_COLOR = "HTMLotherChatColor";     //$NON-NLS-1$
   protected static final String GAME_MSG1_COLOR = "HTMLgameMessage1Color";  //$NON-NLS-1$
@@ -551,15 +555,14 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
     mod.addCommandEncoder(this);
     mod.addKeyStrokeSource(new KeyStrokeSource(this, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT));
 
-    final FontConfigurer chatFont = new FontConfigurer("ChatFont", //NON-NLS
-      Resources.getString("Chatter.chat_font_preference"));
+    fontConfig = new FontConfigurer(FONT, Resources.getString("Chatter.chat_font_preference"));
 
-    chatFont.addPropertyChangeListener(evt -> setFont((Font) evt.getNewValue()));
+    fontConfig.addPropertyChangeListener(evt -> setFont((Font) evt.getNewValue()));
 
     mod.getPlayerWindow().addChatter(this);
 
-    chatFont.fireUpdate();
-    mod.getPrefs().addOption(Resources.getString("Chatter.chat_window"), chatFont); //$NON-NLS-1$
+    fontConfig.fireUpdate();
+    mod.getPrefs().addOption(Resources.getString("Chatter.chat_window"), fontConfig); //$NON-NLS-1$
 
     // Bug 10179 - Do not re-read Chat colors each time the Chat Window is
     // repainted.
@@ -677,6 +680,11 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
     otherChat = (Color) globalPrefs.getValue(OTHER_CHAT_COLOR);
 
     makeStyleSheet(myFont);
+  }
+
+  /** A new font has been loaded into Vassal since the Chatter was built */
+  public void addFontFamily(String newFontFamilyName) {
+    fontConfig.addFontFamily(newFontFamilyName);
   }
 
   @Override

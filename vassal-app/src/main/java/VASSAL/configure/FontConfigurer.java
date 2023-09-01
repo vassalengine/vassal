@@ -38,13 +38,14 @@ public class FontConfigurer extends Configurer {
   private JComboBox<Integer> size;
   private JComboBox<String> family;
   private final int[] sizes;
+  private String preferredFontName;
 
   public FontConfigurer(String key, String name) {
     this(key, name, new Font(Font.SANS_SERIF, Font.PLAIN, 12));
   }
 
   public FontConfigurer(String key, String name, Font val) {
-    this(key, name, val, new int[]{9, 10, 11, 12, 15, 18});
+    this(key, name, val, new int[]{9, 10, 11, 12, 13, 14, 15, 16, 18, 20});
   }
 
   public FontConfigurer(String key, String name, Font val, int[] sizes) {
@@ -59,7 +60,10 @@ public class FontConfigurer extends Configurer {
 
   @Override
   public void setValue(String s) {
-    setValue(decode(s));
+    final Font f = decode(s);
+    // Save the preferred font name in case it is a Vassal font that hasn't been loaded yet.
+    preferredFontName = f.getName();
+    setValue(f);
   }
 
   @Override
@@ -94,6 +98,40 @@ public class FontConfigurer extends Configurer {
       family.addItemListener(l);
     }
     return p;
+  }
+
+  /**
+   * A new font has been loaded into Vassal. The supplied family may or may not exist in our
+   * drop-down. Check it doesn't already exist and add it in the correct place
+   * @param newFamily
+   */
+  public void addFontFamily(String newFamily) {
+    int pos = 0;
+    for (int i = 0; i < family.getItemCount(); i++) {
+      final String item = family.getItemAt(i);
+      if (item.equals(newFamily)) {
+        return;
+      }
+      if (item.compareTo(newFamily) <= 0) {
+        pos = i;
+      }
+      else {
+        break;
+      }
+    }
+    // Add the new family name to the drop-down
+    family.insertItemAt(newFamily, pos + 1);
+
+    // If this font is the one initally preferred, but was unavailable, create a proper version and set as the value
+    // and select oin the drop-down.
+    if (newFamily.equals(preferredFontName)) {
+      setValue(new Font(
+        (String) preferredFontName,
+        Font.PLAIN,
+        (Integer) size.getSelectedItem()
+      ));
+      family.setSelectedItem(preferredFontName);
+    }
   }
 
   public static Font decode(String s) {

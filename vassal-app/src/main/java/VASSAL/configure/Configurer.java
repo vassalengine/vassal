@@ -83,6 +83,8 @@ public abstract class Configurer {
   protected ContextLevel contextLevel;
   protected AbstractBuildable context;
 
+  protected Configurer parentConfigurer;
+
   public Configurer(String key, String name) {
     this(key, name, null);
   }
@@ -380,5 +382,23 @@ public abstract class Configurer {
 
   public void setContextLevel(ContextLevel contextLevel) {
     this.contextLevel = contextLevel;
+  }
+
+  public Configurer getParentConfigurer() {
+    return parentConfigurer;
+  }
+
+  public void setParentConfigurer(Configurer parentConfigurer) {
+    this.parentConfigurer = parentConfigurer;
+  }
+
+  public void refreshParent() {
+    if (parentConfigurer != null) {
+      parentConfigurer.refresh();
+    }
+  }
+
+  public void refresh() {
+
   }
 }
