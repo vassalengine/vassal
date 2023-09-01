@@ -211,7 +211,7 @@ public class LabelUtils {
     final boolean addTags = (text.length() <= 6) || !("<html>".equalsIgnoreCase(text.substring(0, 6))); //NON-NLS
 
     // HTML Niceties - Rather than make the user type a bunch of repetitive stuff, by default we wrap these up nicely.
-    final String htmlString = (addTags ? "<html>" + (!style.isEmpty() ? "<div class=" + style + ">" : "<div>") + "&nbsp;" : "") + baseString + (addTags ? "&nbsp;</div></html>" : ""); //NON-NLS
+    final String htmlString = (addTags ? "<html>" + (!style.isEmpty() ? "<div class=\"" + style + "\">" : "<div>") + "&nbsp;" : "") + baseString + (addTags ? "&nbsp;</div></html>" : ""); //NON-NLS
 
     // Chapter 3, in which Winnie the Pooh kidnaps a JLabel and makes it rob banks...
     final JLabel j = new JLabel(allowHTML ? htmlString : " " + baseString + " ");

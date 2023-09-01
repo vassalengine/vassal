@@ -25,6 +25,13 @@
     <!-- 3.7.0 -->
 
     <difference>
+        <className>VASSAL/build/module/Chatter</className>
+        <differenceType>6001</differenceType>
+        <field>scroll2</field>
+        <justification>Accidentally added; nothing should use this.</justification>
+    </difference>
+
+    <difference>
         <className>VASSAL/build/module/AttachmentManager</className>
         <differenceType>7002</differenceType>
         <method>*</method>
@@ -52,6 +59,14 @@
         <differenceType>7002</differenceType>
         <method>*</method>
         <justification>Only called from Beanshell interface script which has been revamped.</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/script/ExpressionInterpreter</className>
+        <differenceType>7006</differenceType>
+        <method>**</method>
+        <to>**</to>
+        <justification>No one should be using this externally, Internal changes only</justification>
     </difference>
 
     <difference>

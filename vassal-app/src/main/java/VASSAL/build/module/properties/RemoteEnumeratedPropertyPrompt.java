@@ -10,7 +10,7 @@ public class RemoteEnumeratedPropertyPrompt extends EnumeratedPropertyPrompt imp
   }
 
   @Override
-  public String getNewValue(DynamicProperty target, Auditable owner) {
+  public String getNewValue(DynamicProperty target, Auditable owner, PropertySource ps) {
     return super.getNewValue("");
   }
 }

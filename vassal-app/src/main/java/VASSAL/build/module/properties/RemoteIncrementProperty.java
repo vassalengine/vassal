@@ -36,14 +36,14 @@ public class RemoteIncrementProperty extends IncrementProperty implements Remote
   }
 
   @Override
-  public String getNewValue(DynamicProperty target, Auditable owner) {
+  public String getNewValue(DynamicProperty target, Auditable owner, PropertySource ps) {
 
     String s = getRawValue();
 
     // Pre-Evaluate $$ variables against our source unit
     if (s.indexOf('$') >= 0) {
       final FormattedStringExpression fse = new FormattedStringExpression(s);
-      s = fse.tryEvaluate(getPropSource(), owner, "Editor.DynamicProperty.key_commands");
+      s = fse.tryEvaluate(ps, owner, "Editor.DynamicProperty.key_commands");
     }
 
     // Set the updated format

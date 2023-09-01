@@ -21,9 +21,14 @@
       "new_features": [
       ],
       "bug_fixes": [
-        { "num": 12595, "desc": "Fix Search UnsupportedOperationException" }
+        { "num": 12627, "desc": "Fix chat non-scrolling caused by setting preferred size for the Chatter contents pane" },
+        { "num": 12620, "desc": "Ensure that HTML attribute values are quoted" },
+        { "num": 12595, "desc": "Fix Search UnsupportedOperationException" },
+        { "num": 12578, "desc": "Process Set Piece Property expressions correctly" },
+        { "num": 12561, "desc": "Handle Beanshell functions correctly in expressions" }
       ],
       "other_improvements": [
+        { "num": 12626, "desc": "Hide caret in chat pane" }
       ]
    },
    {

@@ -263,7 +263,8 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
 
         if (propName.equals(currentDP.getKey())) {
           if ((newValue == null) || !(changer instanceof PropertyPrompt)) {
-            final String userValue = changer.getNewValue(currentDP, this);
+            final String userValue = changer.getNewValue(currentDP, this, Decorator.getOutermost(this));
+
             // A changer only returns null if the user pressed cancel in a Prompt or List dialog.
             // This is callback, so just record that cancel has been pressed and get out of here.
             if (userValue == null) {
