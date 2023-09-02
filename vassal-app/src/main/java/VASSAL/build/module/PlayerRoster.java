@@ -622,13 +622,15 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
   /**
    * @param side Name of a side to see if it's a "solo side"
-   * @return True if the side is "Solitaire", "Solo", "Moderator", or "Referee"
+   * @return True if the side is "Solo" or begins "Solitaire", "Solo:", "Moderator", "Referee" or "."
    */
   public static boolean isSoloSide(String side) {
-    return Resources.getString("PlayerRoster.solitaire").equals(side) ||
-           Resources.getString("PlayerRoster.solo").equals(side) ||
-           Resources.getString("PlayerRoster.moderator").equals(side) ||
-           Resources.getString("PlayerRoster.referee").equals(side);
+    return side.startsWith(Resources.getString("PlayerRoster.solitaire")) ||
+            side.equals(Resources.getString("PlayerRoster.solo")) ||
+            side.startsWith(Resources.getString("PlayerRoster.solo") + ":") ||
+            side.startsWith(Resources.getString("PlayerRoster.moderator")) ||
+            side.startsWith(Resources.getString("PlayerRoster.referee")) ||
+            side.startsWith(" ");
   }
 
   /**
