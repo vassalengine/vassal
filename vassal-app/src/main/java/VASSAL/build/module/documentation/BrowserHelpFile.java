@@ -25,10 +25,10 @@ import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.configure.AutoConfigurer;
-import VASSAL.configure.BeanShellExpressionConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.DirectoryConfigurer;
+import VASSAL.configure.FormattedExpressionConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Resources;
@@ -498,8 +498,8 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   public static class StartPageConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      final BeanShellExpressionConfigurer configurer =
-        new BeanShellExpressionConfigurer(key, name, ((ConfigSupport) c).getAttributeValueString(STARTING_PAGE), null);
+      final FormattedExpressionConfigurer configurer = new FormattedExpressionConfigurer(key, name);
+      configurer.setValue(((ConfigSupport) c).getAttributeValueString(STARTING_PAGE));
       configurer.setContextLevel(Configurer.ContextLevel.MODULE);
       return configurer;
     }
