@@ -86,6 +86,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   protected String startingPage = "";
   protected Action launch;
   protected URL url;
+  protected File externalTempFile;
   protected PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
   protected ComponentI18nData myI18nData;
 
@@ -104,9 +105,12 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
 
   public void launch() {
     if (url == null) {
+      // Extract interal Help if it exists, or create an external URL
       extractContents();
     }
     if (url != null) {
+      // The starting page is now an expression, so regenerate the URL each time
+      url = regenerateUrl();
       BrowserSupport.openURL(url.toString());
     }
   }
@@ -118,6 +122,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     return name == null ? null : name.replace(' ', '_');
   }
 
+  /** Extract the HTML from the module, or create an External URL from the Starting page if there is none */
   protected void extractContents() {
     try (ZipInputStream in =
            new ZipInputStream(new BufferedInputStream(
@@ -136,6 +141,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     }
   }
 
+  /** No HTML found in the module, generate an External URL from the starting page */
   private void setFallbackUrl() {
     try {
       url = new URL(evaluateStartingPage());
@@ -171,7 +177,28 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
         }
       }
     }
-    url = new File(p.toFile(), evaluateStartingPage()).toURI().toURL();
+    externalTempFile = p.toFile();
+    url = regenerateUrl();
+  }
+
+  protected URL regenerateUrl() {
+    if (externalTempFile == null) {
+      try {
+        return new URL(evaluateStartingPage());
+      }
+      catch (MalformedURLException e) {
+        logger.error("Malformed URL: {}", startingPage, e); //NON-NLS
+      }
+    }
+    else {
+      try {
+        return new File(externalTempFile, evaluateStartingPage()).toURI().toURL();
+      }
+      catch (MalformedURLException e) {
+        logger.error("Malformed URL: {}", startingPage, e); //NON-NLS
+      }
+    }
+    return null;
   }
 
   protected String evaluateStartingPage() {
@@ -190,8 +217,9 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     }
     return startingPage;
   }
+
   /** @deprecated Use {@link org.apache.commons.io.FileUtils#deleteDirectory(File)} instead. */
-  @Deprecated(since = "2020-10-04", forRemoval = true)
+  @Deprecated(since = "2020-10-04")
   protected void recursiveDelete(File output) {
     if (output.isDirectory()) {
       for (final File f : output.listFiles()) {
