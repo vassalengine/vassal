@@ -18,6 +18,7 @@
         <main.basedir>${project.basedir}${file.separator}..</main.basedir>
         <project.reporting.outputEncoding>${project.build.sourceEncoding}</project.reporting.outputEncoding>
         <version.batik>1.17</version.batik>
+        <clirr.nofork.comparison.version>3.6.19</clirr.nofork.comparison.version>
     </properties>
 
     <dependencyManagement>
@@ -401,6 +402,7 @@
                 <artifactId>clirr-maven-plugin</artifactId>
                 <configuration>
                     <ignoredDifferencesFile>src/test/resources/clirr-ignored-differences.xml</ignoredDifferencesFile>
+                    <comparisonVersion>${clirr.nofork.comparison.version}</comparisonVersion>
                 </configuration>
                 <executions>
                     <execution>

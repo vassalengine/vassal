@@ -17,6 +17,39 @@
  */
 package VASSAL.build.module.documentation;
 
+import VASSAL.Info;
+import VASSAL.build.AbstractBuildable;
+import VASSAL.build.AutoConfigurable;
+import VASSAL.build.BadDataReport;
+import VASSAL.build.Buildable;
+import VASSAL.build.Configurable;
+import VASSAL.build.GameModule;
+import VASSAL.configure.AutoConfigurer;
+import VASSAL.configure.BeanShellExpressionConfigurer;
+import VASSAL.configure.Configurer;
+import VASSAL.configure.ConfigurerFactory;
+import VASSAL.configure.DirectoryConfigurer;
+import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.ComponentI18nData;
+import VASSAL.i18n.Resources;
+import VASSAL.script.expression.AuditTrail;
+import VASSAL.script.expression.Expression;
+import VASSAL.script.expression.ExpressionException;
+import VASSAL.script.expression.FormattedStringExpression;
+import VASSAL.tools.BrowserSupport;
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.WriteErrorDialog;
+import VASSAL.tools.menu.MenuItemProxy;
+import VASSAL.tools.menu.MenuManager;
+
+import org.apache.commons.io.file.PathUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
@@ -24,8 +57,8 @@ import java.beans.PropertyChangeSupport;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -35,35 +68,6 @@ import java.nio.file.Path;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-
-import org.apache.commons.io.file.PathUtils;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import VASSAL.Info;
-import VASSAL.build.AbstractBuildable;
-import VASSAL.build.AutoConfigurable;
-import VASSAL.build.Buildable;
-import VASSAL.build.Configurable;
-import VASSAL.build.GameModule;
-import VASSAL.configure.AutoConfigurer;
-import VASSAL.configure.Configurer;
-import VASSAL.configure.ConfigurerFactory;
-import VASSAL.configure.DirectoryConfigurer;
-import VASSAL.configure.VisibilityCondition;
-import VASSAL.i18n.ComponentI18nData;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.BrowserSupport;
-import VASSAL.tools.WriteErrorDialog;
-import VASSAL.tools.menu.MenuItemProxy;
-import VASSAL.tools.menu.MenuManager;
 
 /**
  * Unpacks a zipped directory stored in the module and displays it in an
@@ -79,7 +83,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   public static final String CONTENTS = "contents"; //$NON-NLS-1$
   public static final String STARTING_PAGE = "startingPage"; //$NON-NLS-1$
   protected String name;
-  protected String startingPage;
+  protected String startingPage = "";
   protected Action launch;
   protected URL url;
   protected PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
@@ -134,7 +138,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
 
   private void setFallbackUrl() {
     try {
-      url = new URL(startingPage);
+      url = new URL(evaluateStartingPage());
     }
     catch (MalformedURLException e) {
       logger.error("Malformed URL: {}", startingPage, e); //NON-NLS
@@ -167,9 +171,25 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
         }
       }
     }
-    url = new File(p.toFile(), startingPage).toURI().toURL();
+    url = new File(p.toFile(), evaluateStartingPage()).toURI().toURL();
   }
 
+  protected String evaluateStartingPage() {
+    try {
+      // Create a shared Audit trail
+      final AuditTrail trail = AuditTrail.create(this);
+      // Evaluate any $$ variables for old times sake
+      final String stage1 = new FormattedStringExpression(startingPage).evaluate(GameModule.getGameModule(), this, trail);
+      // Evaluate the resulting expression
+      return Expression.createExpression(stage1).evaluate(GameModule.getGameModule(), this, trail);
+    }
+    catch (ExpressionException e) {
+      // Not something that is going to happen often and indicates a broken module setup, so report it properly.
+      ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.expression_error"),
+        "Expression=" + startingPage + ", Error=" + e.getError(), e));
+    }
+    return startingPage;
+  }
   /** @deprecated Use {@link org.apache.commons.io.FileUtils#deleteDirectory(File)} instead. */
   @Deprecated(since = "2020-10-04", forRemoval = true)
   protected void recursiveDelete(File output) {
@@ -302,7 +322,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
       return new Class<?>[]{
         String.class,
         ContentsConfig.class,
-        String.class
+        StartPageConfig.class
       };
     }
 
@@ -473,5 +493,15 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
           new String[] {Resources.getString("Editor.menu_command")});
     }
     return myI18nData;
+  }
+
+  public static class StartPageConfig implements ConfigurerFactory {
+    @Override
+    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+      final BeanShellExpressionConfigurer configurer =
+        new BeanShellExpressionConfigurer(key, name, ((ConfigSupport) c).getAttributeValueString(STARTING_PAGE), null);
+      configurer.setContextLevel(Configurer.ContextLevel.MODULE);
+      return configurer;
+    }
   }
 }
