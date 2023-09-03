@@ -624,6 +624,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
    * @param side Name of a side to see if it's a "solo side"
    * @return True if the side is "Solo" or begins "Solitaire", "Solo:", "Moderator", "Referee" or a Side
    * found in the Global Translatable Message Property: VassalSkipSideList (a comma-separated list).
+   * To test specifically for Referee/Moderator, use isRefereeSide()
    */
   public static boolean isSoloSide(String side) {
     return side.startsWith(Resources.getString("PlayerRoster.solitaire")) ||
@@ -633,6 +634,16 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
             side.startsWith(Resources.getString("PlayerRoster.referee")) ||
             ("," + GameModule.getGameModule().getLocalizedProperty("VassalSkipSideList") + ",").contains("," + side + ",");
   }
+
+  /**
+   * @param side Name of a side to see if it's a "referee side"
+   * @return True if the side is begins "Moderator" or "Referee"
+   * To test for non-player sides in general, use isSoloSide()
+   */
+  public static boolean isRefereeSide(String side) {
+    return side.startsWith(Resources.getString("PlayerRoster.moderator")) ||
+            side.startsWith(Resources.getString("PlayerRoster.referee"));
+      }
 
   /**
    * @return True if this is currently a multiPlayer game (either connected to a server, or more than one player side allocated)

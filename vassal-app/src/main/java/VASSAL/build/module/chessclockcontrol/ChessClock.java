@@ -266,7 +266,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
    * @return True if passed side is a referee
    */
   protected static boolean isReferee(String name) {
-    return PlayerRoster.isSoloSide(name);
+    return PlayerRoster.isRefereeSide(name);
   }
 
   @Override
