@@ -643,7 +643,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   public static boolean isRefereeSide(String side) {
     return side.startsWith(Resources.getString("PlayerRoster.moderator")) ||
             side.startsWith(Resources.getString("PlayerRoster.referee"));
-      }
+  }
 
   /**
    * @return True if this is currently a multiPlayer game (either connected to a server, or more than one player side allocated)
