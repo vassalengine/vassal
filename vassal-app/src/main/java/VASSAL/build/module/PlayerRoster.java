@@ -759,7 +759,6 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   protected String promptForSide() {
     final ArrayList<String> availableSides = new ArrayList<>(sides);
     final ArrayList<String> alreadyTaken = new ArrayList<>();
-    final String nextChoice;
 
     for (final PlayerInfo p : players) {
       alreadyTaken.add(p.side);
@@ -771,19 +770,16 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     // Thus hotseat players can easily cycle through the player positions as they will appear successively as the default.
     // Common names for Solitaire players (Solitaire, Solo, Referee) do not count as "real" player sides, and will be skipped.
     // If we have no "next" side available to offer, we stay with the observer side as our default offering.
-    boolean found = false;       // If we find a usable side
-    final String mySide = getMySide(); // Get our own side, so we can find the "next" one
 
     // Automated method: set VassalNextSide (may be a Global Option ie private or a Module Global Property)
     // If not found / available method 2 is used to find likely next side
 
-    // to Translate can use this ?  Resources.getString("PlayerRoster.solitaire").equals(side)
+    // Reserved property VassalNextSide may override hotseat default
+    String nextChoice = (String) GameModule.getGameModule().getProperty("VassalNextSide");
 
-    if (GameModule.getGameModule().getProperty("VassalNextSide") != "" && !alreadyTaken.contains(GameModule.getGameModule().getProperty("VassalNextSide"))) {
-      found = true; // Matches an available slot that's not our current one.
-      nextChoice = (String) GameModule.getGameModule().getProperty("VassalNextSide");
-    }
-    else {
+    if ( nextChoice == "" || alreadyTaken.contains(nextChoice)) {
+      boolean found = false;       // If we find a usable side
+      final String mySide = getMySide(); // Get our own side, so we can find the "next" one
       final int myidx = (mySide != null) ? sides.indexOf(mySide) : -1; // See if we have a current non-observe side.
       int i = (myidx >= 0) ? ((myidx + 1) % sides.size()) : 0;   // If we do, start looking in the "next" slot, otherwise start at beginning.
       for (int tries = 0; i != myidx && tries < sides.size(); i = (i + 1) % sides.size(), tries++) { // Wrap-around search of sides
