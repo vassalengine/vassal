@@ -39,6 +39,7 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.swing.FlowLabel;
 import net.miginfocom.swing.MigLayout;
+import org.apache.commons.lang3.StringUtils;
 import org.netbeans.spi.wizard.WizardController;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -777,7 +778,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     // Reserved property VassalNextSide may override hotseat default; must be an available side
     String nextChoice = (String) GameModule.getGameModule().getProperty("VassalNextSide");
 
-    if (nextChoice.isEmpty() || !availableSides.contains(nextChoice)) {
+    if (StringUtils.isEmpty(nextChoice) || !availableSides.contains(nextChoice)) {
       boolean found = false;       // If we find a usable side
       final String mySide = getMySide(); // Get our own side, so we can find the "next" one
       final int myidx = (mySide != null) ? sides.indexOf(mySide) : -1; // See if we have a current non-observe side.
