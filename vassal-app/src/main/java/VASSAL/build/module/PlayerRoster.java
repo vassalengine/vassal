@@ -789,8 +789,10 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
           break;
         }
       }
+
       nextChoice = found ? sides.get(i) : translatedObserver; // This will be our defaulted choice for the dropdown.
     }
+
     availableSides.add(0, translatedObserver);
 
     final GameModule g = GameModule.getGameModule();
