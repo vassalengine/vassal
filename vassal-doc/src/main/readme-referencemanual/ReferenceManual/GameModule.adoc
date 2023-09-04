@@ -116,7 +116,11 @@ Simply type a name for each side and refer to that name in the restricted compon
 Only one player may be assigned to a side.
 When joining a game, players will be prompted to take one of the remaining available sides.
 Any number of observers (players who belong to no side) are allowed.
+
 The <<Toolbar.adoc#Retire,Retire>> or <<Toolbar.adoc#SwitchSides,Switch Sides>> button, in the main controls toolbar, allows a player to relinquish their side (making it available to the next player joining the game). You can specify the text, icon, and mouse-over tooltip for the toolbar button.
+
+The Switch Sides component includes hot-seat support. If the Module <<GlobalProperties.adoc#top,Global Property>> _VassalNextSide_ is defined and set to an available side, that side will be offered. Failing this, Vassal will determine the next side in order, excluding non-player sides. "Non-player" sides are "Solo" and those beginning "Solitaire", "Solo:", "Moderator" or "Referee". Additional sides can be listed, comma-separated, in the <<GlobalTranslatableMessages.adoc#top, Global Translatable Messages>> property _VassalSkipSideList_.
+
 |===
 
 ==== <<GlobalOptions.adoc#top,Global Options>>
