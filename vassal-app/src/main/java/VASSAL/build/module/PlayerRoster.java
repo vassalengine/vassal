@@ -777,7 +777,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     // Reserved property VassalNextSide may override hotseat default; must be an available side
     String nextChoice = (String) GameModule.getGameModule().getProperty("VassalNextSide");
 
-    if ( nextChoice.isEmpty() || !availableSides.contains(nextChoice)) {
+    if (nextChoice.isEmpty() || !availableSides.contains(nextChoice)) {
       boolean found = false;       // If we find a usable side
       final String mySide = getMySide(); // Get our own side, so we can find the "next" one
       final int myidx = (mySide != null) ? sides.indexOf(mySide) : -1; // See if we have a current non-observe side.
