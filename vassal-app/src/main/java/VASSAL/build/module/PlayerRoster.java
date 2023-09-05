@@ -504,7 +504,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     */
     for (int i = 0; i <= sides.size(); i++) {
       final String s = sides.get(i);
-      if (!alreadyTaken.contains(s) && (boolean) StringUtils.defaultString((GameModule.getGameModule().getProperty("VassalSideExcluded_" + s))) {
+      if (!alreadyTaken.contains(s) && (boolean) StringUtils.defaultString((String) GameModule.getGameModule().getProperty("VassalSideExcluded_" + s))) {
         alreadyTaken.add(s); // exclude this side
       }
     }
@@ -790,7 +790,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     */
     for (int i = 0; i <= sides.size(); i++) {
       final String s = sides.get(i);
-      if (!alreadyTaken.contains(s) && (boolean) StringUtils.defaultString(GameModule.getGameModule().getProperty("VassalSideExcluded_" + s))) {
+      if (!alreadyTaken.contains(s) && (boolean) StringUtils.defaultString((String) GameModule.getGameModule().getProperty("VassalSideExcluded_" + s))) {
         alreadyTaken.add(s); // exclude this side
       }
     }
