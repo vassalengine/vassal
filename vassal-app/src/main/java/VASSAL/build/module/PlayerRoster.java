@@ -493,6 +493,21 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       alreadyTaken.add(p.side);
     }
 
+     /*
+     Scan for excluded sides based on property VassalExcludeSide_<Side>
+     add such to the alreadyTaken list
+     Note that <observer> can't be excluded as it is added later
+     Usage:
+      For scenario-specific exclusion, define VassalExcludeSide_ properties in Scenario Options
+      For dynamic exclusion, define as module Global Properties
+    */
+    for (int i = 0; i <= sides.size(); i++) {
+      final String s = sides.get(i);
+      if (!alreadyTaken.contains(s) && (boolean) GameModule.getGameModule().getProperty("VassalSideExcluded_"+s)) {
+        alreadyTaken.add(s); // exclude this side
+      }
+    }
+
     availableSides.removeAll(alreadyTaken);
     availableSides.add(0, translatedObserver);
     sideConfig = new StringEnumConfigurer(null,
@@ -763,6 +778,21 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     for (final PlayerInfo p : players) {
       alreadyTaken.add(p.side);
     }
+
+    /*
+     Scan for excluded sides based on property VassalExcludeSide_<Side>
+     add such to the alreadyTaken list
+     Note that <observer> can't be excluded as it is added later
+     Usage:
+      For scenario-specific exclusion, define VassalExcludeSide_ properties in Scenario Options
+      For dynamic exclusion, define as module Global Properties
+    */
+     for (int i = 0; i <= sides.size(); i++) {
+       final String s = sides.get(i);
+       if (!alreadyTaken.contains(s) && (boolean) GameModule.getGameModule().getProperty("VassalSideExcluded_"+s)) {
+        alreadyTaken.add(s); // exclude this side
+       }
+     }
 
     availableSides.removeAll(alreadyTaken);
 
