@@ -39,6 +39,7 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.swing.FlowLabel;
 import net.miginfocom.swing.MigLayout;
+import org.apache.commons.lang3.StringUtils;
 import org.netbeans.spi.wizard.WizardController;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -503,7 +504,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     */
     for (int i = 0; i <= sides.size(); i++) {
       final String s = sides.get(i);
-      if (!alreadyTaken.contains(s) && (boolean) GameModule.getGameModule().getProperty("VassalSideExcluded_" + s)) {
+      if (!alreadyTaken.contains(s) && (boolean) StringUtils.defaultString((GameModule.getGameModule().getProperty("VassalSideExcluded_" + s))) {
         alreadyTaken.add(s); // exclude this side
       }
     }
@@ -789,7 +790,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     */
     for (int i = 0; i <= sides.size(); i++) {
       final String s = sides.get(i);
-      if (!alreadyTaken.contains(s) && (boolean) GameModule.getGameModule().getProperty("VassalSideExcluded_" + s)) {
+      if (!alreadyTaken.contains(s) && (boolean) StringUtils.defaultString(GameModule.getGameModule().getProperty("VassalSideExcluded_" + s))) {
         alreadyTaken.add(s); // exclude this side
       }
     }
