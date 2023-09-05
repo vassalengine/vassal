@@ -1,5 +1,6 @@
 3.7.0 - ???
 
+* 12644: Prevent NPE when Editing Deck count expressions
 * 12627: Fix chat non-scrolling caused by setting preferred size for the
     Chatter contents pane
 * 12626: Hide caret in chat pane
