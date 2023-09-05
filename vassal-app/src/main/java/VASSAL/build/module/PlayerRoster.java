@@ -495,7 +495,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     }
 
      /*
-     Scan for excluded sides based on property VassalExcludeSide_<Side>
+     Scan for excluded sides based on translation of property VassalExcludeSide_<Side>
      add such to the alreadyTaken list
      Note that <observer> can't be excluded as it is added later
      Usage:
@@ -504,7 +504,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     */
     for (int i = 0; i < sides.size(); i++) {
       final String s = sides.get(i);
-      if (!alreadyTaken.contains(s) && StringUtils.equalsIgnoreCase((String) GameModule.getGameModule().getProperty("VassalExcludeSide_" + s), "true")) {
+      if (!alreadyTaken.contains(s) && StringUtils.equalsIgnoreCase((String) GameModule.getGameModule().getProperty("VassalExcludeSide_" + untranslatedSides[i]), "true")) {
         alreadyTaken.add(s); // exclude this side
       }
     }
@@ -781,7 +781,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     }
 
     /*
-     Scan for excluded sides based on property VassalExcludeSide_<Side>
+     Scan for excluded sides based on translation of property VassalExcludeSide_<Side>
      add such to the alreadyTaken list
      Note that <observer> can't be excluded as it is added later
      Usage:
@@ -790,7 +790,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     */
     for (int i = 0; i < sides.size(); i++) {
       final String s = sides.get(i);
-      if (!alreadyTaken.contains(s) && StringUtils.equalsIgnoreCase((String) GameModule.getGameModule().getProperty("VassalExcludeSide_" + s), "true")) {
+      if (!alreadyTaken.contains(s) && StringUtils.equalsIgnoreCase((String) GameModule.getGameModule().getProperty("VassalExcludeSide_" + untranslatedSides[i]), "true")) {
         alreadyTaken.add(s); // exclude this side
       }
     }
