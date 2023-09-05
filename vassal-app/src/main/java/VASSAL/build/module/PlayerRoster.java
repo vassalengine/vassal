@@ -502,7 +502,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       For scenario-specific exclusion, define VassalExcludeSide_ properties in Scenario Options
       For dynamic exclusion, define as module Global Properties
     */
-    for (int i = 0; i <= sides.size(); i++) {
+    for (int i = 0; i < sides.size(); i++) {
       final String s = sides.get(i);
       if (!alreadyTaken.contains(s) && StringUtils.equalsIgnoreCase((String) GameModule.getGameModule().getProperty("VassalSideExcluded_" + s), "true")) {
         alreadyTaken.add(s); // exclude this side
@@ -788,7 +788,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       For scenario-specific exclusion, define VassalExcludeSide_ properties in Scenario Options
       For dynamic exclusion, define as module Global Properties
     */
-    for (int i = 0; i <= sides.size(); i++) {
+    for (int i = 0; i < sides.size(); i++) {
       final String s = sides.get(i);
       if (!alreadyTaken.contains(s) && StringUtils.equalsIgnoreCase((String) GameModule.getGameModule().getProperty("VassalSideExcluded_" + s), "true")) {
         alreadyTaken.add(s); // exclude this side
