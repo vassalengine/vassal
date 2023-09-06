@@ -1,6 +1,5 @@
 3.7.0 - ???
 
-* 12235: HTML Help file starting page can now be an expression
 * 12644: Prevent NPE when Editing Deck count expressions
 * 12627: Fix chat non-scrolling caused by setting preferred size for the
     Chatter contents pane
@@ -9,6 +8,7 @@
 * 12595: Fix Search UnsupportedOperationException
 * 12578: Process Set Piece Property expressions correctly
 * 12561: Handle Beanshell functions correctly in expressions
+* 12235: HTML Help file starting page can now be an expression
 
 3.7.0-beta5 - 15 August 2023
 
