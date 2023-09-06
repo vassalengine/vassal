@@ -1,5 +1,6 @@
 3.7.0 - ???
 
+* 12235: HTML Help file starting page can now be an expression
 * 12644: Prevent NPE when Editing Deck count expressions
 * 12627: Fix chat non-scrolling caused by setting preferred size for the
     Chatter contents pane
