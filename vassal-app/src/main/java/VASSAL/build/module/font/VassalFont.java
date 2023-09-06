@@ -20,6 +20,9 @@ package VASSAL.build.module.font;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
@@ -37,6 +40,8 @@ import java.util.Objects;
    * Classs used to encapsulate a Font loaded from a TTF/OTF file in Vassal or the Module
    */
 public class VassalFont implements Comparable<VassalFont> {
+
+  private static final Logger logger = LoggerFactory.getLogger(VassalFont.class);
 
   private final String fontFamily;    // Font Family Name
   private final String fontName;      // Specific Font Name
@@ -76,34 +81,48 @@ public class VassalFont implements Comparable<VassalFont> {
     URL url = null;
     final String subPath = FontOrganizer.FONTS_FOLDER + "/" + fontFileName;
 
+    logger.warn("Looking for font " + subPath);
+
     // Resource?
     url = getClass().getResource("/" + subPath);
     if (url != null) {
+      logger.warn("Resource URL built");
       vassalFont = true;
+    }
+    else {
+      logger.warn("Resource URL did NOT build");
     }
 
     // Module file?
     if (url == null) {
       try {
+        logger.warn("Building module URL");
         url = GameModule.getGameModule().getDataArchive().getURL(subPath);
+        logger.warn("Module URL built");
       }
       catch (IOException ignored) {
-
+        logger.warn("Exception building module URL");
       }
     }
 
     if (url == null) {
       loadError = Resources.getString("Editor.VassalFont.find_error");
+      logger.error(loadError);
     }
     else {
+      logger.warn("Attempt to open stram");
       try (InputStream stream = url.openStream()) {
+        logger.warn("Creating font from  URL stream");
         font = Font.createFont(Font.TRUETYPE_FONT, stream);
+        logger.warn("Font created");
       }
       catch (FontFormatException e) {
         loadError = Resources.getString("Editor.VassalFont.invalid_format");
+        logger.error(loadError);
       }
       catch (IOException e) {
         loadError = Resources.getString("Editor.VassalFont.read_error");
+        logger.error(loadError);
       }
     }
 
