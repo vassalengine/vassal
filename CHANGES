@@ -1,4 +1,4 @@
-3.7.0 - ???
+3.7.0 - 7 September 2023
 
 * 12644: Prevent NPE when Editing Deck count expressions
 * 12627: Fix chat non-scrolling caused by setting preferred size for the
