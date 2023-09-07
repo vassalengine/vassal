@@ -49,7 +49,6 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -77,20 +76,19 @@ public class FontOrganizer extends AbstractConfigurable {
 
   private FontOrganizerConfigurer fontOrganizerConfigurer;
 
+
+  /** True if the Map of additional fonts needs to be reloaded */
+  private boolean dirty = true;
+
+  /** List of the fonts loaded from Vassal */
   private final List<VassalFont> vassalFonts = new ArrayList<>();
-  private boolean dirty;
 
-  public final java.util.Map<String, Font> fontsByFile = new HashMap<>();
-
+  /** Return a Configurer that displays the status of all additional fonts */
   public FontOrganizerConfigurer getFontOrganizerConfigurer() {
     if (fontOrganizerConfigurer == null) {
       fontOrganizerConfigurer = new FontOrganizerConfigurer("", "", this);
     }
     return fontOrganizerConfigurer;
-  }
-
-  public void setFontOrganizerConfigurer(FontOrganizerConfigurer fontOrganizerConfigurer) {
-    this.fontOrganizerConfigurer = fontOrganizerConfigurer;
   }
 
   /**
@@ -103,7 +101,8 @@ public class FontOrganizer extends AbstractConfigurable {
    */
   public Font getEditorFont(int style, int size) {
 
-    final Font font = new Font(VASSAL_EDITOR_FONT, style, size);
+//    final Font font = new Font(VASSAL_EDITOR_FONT, style, size);
+    final Font font = vassalFonts.get(0).getDerivedFont(style, size);
 
     if (font == null) {
       return new Font(Font.MONOSPACED, style, size);
@@ -123,13 +122,13 @@ public class FontOrganizer extends AbstractConfigurable {
   public static void addFontToVassal(VassalFont font) {
 
     if (font != null && font.getFontFamily() != null) {
+      // TODO: Have Vassal components register with the FontOrganizer that they are interested in new Fonts
       // Update the list of Fonts available for the Chat Window
       GameModule.getGameModule().getChatter().addFontFamily(font.getFontFamily());
     }
   }
 
-  /** Return a Set of the additional font families available in this module
-   *  Using a Set as multiple fonts will have the same family */
+  /** Return a Set of the additional fonts available in this module */
   public Set<String> getAdditionalFonts() {
     final Set<String> families = new HashSet<>();
     vassalFonts.forEach((k) -> {
@@ -147,6 +146,7 @@ public class FontOrganizer extends AbstractConfigurable {
   }
 
   private List<VassalFont> getAllFonts() {
+
     // Sorted List
     final List<VassalFont> fonts = new ArrayList<>();
 
@@ -388,9 +388,9 @@ public class FontOrganizer extends AbstractConfigurable {
       buildTable();
       controls.removeAll();
       scroll = new JScrollPane(table);
-      //controls.add(scroll, "grow,push");
       controls.add(scroll, BorderLayout.CENTER);
       SwingUtils.repack(controls);
+      organizer.setDirty(false);
     }
 
     private static class MyTableModel extends DefaultTableModel {

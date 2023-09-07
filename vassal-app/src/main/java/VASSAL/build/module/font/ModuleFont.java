@@ -34,6 +34,9 @@ import java.awt.Component;
 import java.beans.PropertyChangeEvent;
 import java.io.File;
 
+/**
+ * A Component that allows a True or Open Type font to be loaded into a module.
+ */
 public class ModuleFont extends AbstractConfigurable {
 
   public static final String NAME = "name";

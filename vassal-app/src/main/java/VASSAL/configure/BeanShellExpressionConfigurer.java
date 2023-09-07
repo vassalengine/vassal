@@ -17,6 +17,7 @@
  */
 package VASSAL.configure;
 
+import VASSAL.build.GameModule;
 import VASSAL.counters.EditablePiece;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
@@ -28,8 +29,6 @@ import VASSAL.tools.swing.SwingUtils;
 import bsh.BeanShellExpressionValidator;
 
 import net.miginfocom.swing.MigLayout;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -55,15 +54,12 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.net.URL;
 import java.util.List;
 
 /**
  * A Configurer for Java Expressions
  */
 public class BeanShellExpressionConfigurer extends StringConfigurer {
-
-  private static final Logger logger = LoggerFactory.getLogger(BeanShellExpressionConfigurer.class);
 
   /**
    * enum describing any special processing that needs to be done for particular expression types
@@ -214,7 +210,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
       validator = new Validator();
       nameField = new JTextArea(1, 100);
 
-      nameField.setFont(getEditorFont(Font.PLAIN, 14));
+      nameField.setFont(GameModule.getGameModule().getFontOrganizer().getEditorFont(Font.PLAIN, 14));
       nameField.setLineWrap(true);
       nameField.setWrapStyleWord(true);
       nameField.setBorder(BorderFactory.createLineBorder(Color.gray));
@@ -327,20 +323,20 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     }
   }
 
-  protected Font getEditorFont(int style, int size) {
-    try {
-      final String fileName = "/fonts/JetBrainsMono.ttf";
-      logger.warn("Classloader=" + getClass().getClassLoader());
-      final URL url = getClass().getResource(fileName);
-      logger.warn("URL=" + url);
-      final Font ms = Font.createFont(Font.TRUETYPE_FONT, url.openStream());
-      return ms.deriveFont(style, size);
-    }
-    catch (Exception e) {
-      logger.warn("error finding font " + e.getMessage());
-    }
-    return new Font("monospaced", style, size);
-  }
+//  protected Font getEditorFont(int style, int size) {
+//    try {
+//      final String fileName = "/fonts/JetBrainsMono.ttf";
+//      logger.warn("Classloader=" + getClass().getClassLoader());
+//      final URL url = getClass().getResource(fileName);
+//      logger.warn("URL=" + url);
+//      final Font ms = Font.createFont(Font.TRUETYPE_FONT, url.openStream());
+//      return ms.deriveFont(style, size);
+//    }
+//    catch (Exception e) {
+//      logger.warn("error finding font " + e.getMessage());
+//    }
+//    return new Font("monospaced", style, size);
+//  }
 
   protected void doPopup() {
     final JPopupMenu popup = new BeanShellFunctionMenu(target, this);

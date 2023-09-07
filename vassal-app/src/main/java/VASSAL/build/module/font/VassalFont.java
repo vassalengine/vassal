@@ -79,62 +79,36 @@ public class VassalFont implements Comparable<VassalFont> {
     fontFile = fontFileName;
 
     URL url = null;
-    try {
-      final String fileName = "/fonts/JetBrainsMono.ttf";
-      logger.warn("Build URL for mono, classloader = " + getClass().getClassLoader());
-      url = getClass().getResource(fileName);
-      logger.warn("URL built=" + url);
-      Font.createFont(Font.TRUETYPE_FONT, url.openStream());
-      logger.warn("Font built");
-    }
-    catch (Exception e) {
-      logger.warn("Mono load exception: " + e.getMessage());
-    }
-
     final String subPath = FontOrganizer.FONTS_FOLDER + "/" + fontFileName;
-
-    logger.warn("Looking for font " + subPath);
 
     // Resource?
     url = getClass().getResource("/" + subPath);
     if (url != null) {
-      logger.warn("Resource URL built");
       vassalFont = true;
     }
-    else {
-      logger.warn("Resource URL did NOT build");
-    }
 
-    // Module file?
+    // Not found as a resource, is it in the Module archive?
     if (url == null) {
       try {
-        logger.warn("Building module URL");
         url = GameModule.getGameModule().getDataArchive().getURL(subPath);
-        logger.warn("Module URL built");
       }
-      catch (IOException e) {
-        logger.warn("Exception building module URL: " + e.getMessage());
+      catch (IOException ignored) {
+
       }
     }
 
     if (url == null) {
       loadError = Resources.getString("Editor.VassalFont.find_error");
-      logger.error(loadError);
     }
     else {
-      logger.warn("Attempt to open stram");
       try (InputStream stream = url.openStream()) {
-        logger.warn("Creating font from  URL stream");
         font = Font.createFont(Font.TRUETYPE_FONT, stream);
-        logger.warn("Font created");
       }
       catch (FontFormatException e) {
-        loadError = Resources.getString("Editor.VassalFont.invalid_format");
-        logger.error(loadError);
+        loadError = Resources.getString("Editor.VassalFont.invalid_format", e.getMessage());
       }
       catch (IOException e) {
-        loadError = Resources.getString("Editor.VassalFont.read_error");
-        logger.error(loadError);
+        loadError = Resources.getString("Editor.VassalFont.read_error", e.getMessage());
       }
     }
 
@@ -142,6 +116,7 @@ public class VassalFont implements Comparable<VassalFont> {
       fontName = null;
       fontFamily = null;
       registered = false;
+      logger.error(Resources.getString("Editor.VassalFont.unable_to_load_font", fontFileName, loadError));
       return;
     }
 
@@ -150,6 +125,7 @@ public class VassalFont implements Comparable<VassalFont> {
 
     // Register it with java
     registered = GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(font);
+    logger.info(Resources.getString("Editor.VassalFont.loaded", fontName, fontFile, isVassalFont() ? "VASSAL" : "Module"));
 
   }
 
@@ -179,6 +155,7 @@ public class VassalFont implements Comparable<VassalFont> {
       fontFamily = null;
       fontName = null;
       registered = false;
+      logger.error(Resources.getString("Editor.VassalFont.unable_to_load_font", fontFile.getPath(), loadError));
       return;
     }
 
@@ -187,7 +164,7 @@ public class VassalFont implements Comparable<VassalFont> {
 
     // Register it with java
     registered = GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(font);
-
+    logger.info(Resources.getString("Editor.VassalFont.loaded", fontName, fontFile, "External file"));
   }
 
   public String getFontFamily() {
@@ -202,14 +179,15 @@ public class VassalFont implements Comparable<VassalFont> {
     return fontFile;
   }
 
+  public boolean isValid() {
+    return fontFamily != null && fontName != null;
+  }
+
   public boolean isVassalFont() {
     return vassalFont;
   }
 
-  public Font getBaseFont() {
-    return font;
-  }
-
+  /** Derive a font based derived from the unsized, unstyled font loaded from the font file */
   public Font getDerivedFont(int style, int size) {
     return font.deriveFont(style, size);
   }
@@ -265,7 +243,4 @@ public class VassalFont implements Comparable<VassalFont> {
     return Objects.equals(fontFamily, ((VassalFont) obj).fontFamily) && Objects.equals(fontName, ((VassalFont) obj).fontName);
   }
 
-  public boolean isFamilyInfo() {
-    return fontFamily != null && fontName == null;
-  }
 }
