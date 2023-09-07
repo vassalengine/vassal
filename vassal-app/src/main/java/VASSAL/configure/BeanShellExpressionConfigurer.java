@@ -17,7 +17,6 @@
  */
 package VASSAL.configure;
 
-import VASSAL.build.GameModule;
 import VASSAL.counters.EditablePiece;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
@@ -207,7 +206,6 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
   @Override
   public Component getControls() {
     if (p == null) {
-      // expressionPanel = new JPanel(new MigLayout("fillx,ins 0", "[][grow][][]")); //NON-NLS
       expressionPanel = new ConfigurerPanel(getName(), "[grow,fill]", "[][grow,fill]", "[grow, fill]"); // NON-NLS
       ((MigLayout) expressionPanel.getLayout()).setLayoutConstraints("ins 0,fill");
 
@@ -216,7 +214,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
       validator = new Validator();
       nameField = new JTextArea(1, 100);
 
-      nameField.setFont(GameModule.getGameModule().getFontOrganizer().getEditorFont(Font.PLAIN, 14));
+      nameField.setFont(getEditorFont(Font.PLAIN, 14));
       nameField.setLineWrap(true);
       nameField.setWrapStyleWord(true);
       nameField.setBorder(BorderFactory.createLineBorder(Color.gray));
@@ -225,22 +223,6 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
       nameField.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, null);
 
       nameField.setText(getValueString());
-
-
-      try {
-        final String fileName = "/fonts/JetBrainsMono.ttf";
-
-        logger.warn("Build URL for mono, classloader = " + getClass().getClassLoader());
-        final URL url = getClass().getResource(fileName);
-        logger.warn("URL built");
-        final Font ms = Font.createFont(Font.TRUETYPE_FONT, url.openStream());
-        logger.warn("Font built");
-        nameField.setFont(ms.deriveFont(Font.PLAIN, 14));
-      }
-      catch (Exception e) {
-        logger.warn("Mono load exception: " + e.getMessage());
-      }
-
       panel.add(nameField, "grow"); //NON-NLS
       nameField.addKeyListener(new KeyAdapter() {
         @Override
@@ -343,6 +325,19 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     if (builder != null) {
       builder.update();
     }
+  }
+
+  protected Font getEditorFont(int style, int size) {
+    try {
+      final String fileName = "/fonts/JetBrainsMono.ttf";
+      final URL url = getClass().getResource(fileName);
+      logger.warn("URL=" + url);
+      final Font ms = Font.createFont(Font.TRUETYPE_FONT, url.openStream());
+      return ms.deriveFont(style, size);
+    }
+    catch (Exception ignored) {
+    }
+    return new Font("monospaced", style, size);
   }
 
   protected void doPopup() {
