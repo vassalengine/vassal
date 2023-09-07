@@ -121,7 +121,6 @@
         { "num": 12427, "desc": "Fixed bad links in Reference Manual" },
         { "num": 12362, "desc": "Rollover component help button goes to MouseOver.html instead of Map.html" },
         { "num": 12341, "desc": "Expression documentation improvements" },
-        { "num": 12314, "desc": "Update bundled Java to 20.0.1" },
         { "num": 12287, "desc": "Enable text field DnD" },
         { "num": 12279, "desc": "Default heap raised to 1024MB" },
         { "num": 12270, "desc": "Scenario Options tweaks" },
