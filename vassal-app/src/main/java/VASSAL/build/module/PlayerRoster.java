@@ -802,7 +802,8 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       availableSides.add(0, translatedObserver);
 
       final GameModule g = GameModule.getGameModule();
-              newSide = (String) JOptionPane.showInputDialog(
+
+      newSide = (String) JOptionPane.showInputDialog(
               g.getPlayerWindow(),
               Resources.getString("PlayerRoster.switch_sides", getMyLocalizedSide()), //$NON-NLS-1$
               Resources.getString("PlayerRoster.choose_side"), //$NON-NLS-1$
