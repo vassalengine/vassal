@@ -759,7 +759,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   protected String promptForSide() {
     final ArrayList<String> availableSides = new ArrayList<>(sides);
     final ArrayList<String> alreadyTaken = new ArrayList<>();
-    final String newSide = "";
+    String newSide = "";
 
     while (true) { // Loops until a valid side is found (repeats side check to minimuse race condition window)
 
