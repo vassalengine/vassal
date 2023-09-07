@@ -886,10 +886,10 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       final List<String> fontNames = new ArrayList<>();
       final List<String> fontDescriptions = new ArrayList<>();
 
-      GameModule.getGameModule().getFontOrganizer().getAdditionalFonts().forEach(
-        (k) -> {
-          if (k != null) fontNames.add(k);
-        });
+//      GameModule.getGameModule().getFontOrganizer().getAdditionalFonts().forEach(
+//        (k) -> {
+//          if (k != null) fontNames.add(k);
+//        });
       fontNames.addAll(List.of(Font.SERIF, Font.SANS_SERIF, Font.MONOSPACED, Font.DIALOG, Font.DIALOG_INPUT));
       Collections.sort(fontNames);
       fontNames.forEach(

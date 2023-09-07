@@ -25,11 +25,7 @@ import VASSAL.build.module.folder.FontSubFolder;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.i18n.Resources;
-
 import VASSAL.tools.swing.SwingUtils;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -42,11 +38,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -62,7 +53,7 @@ public class FontOrganizer extends AbstractConfigurable {
 
   public static final String FONTS = "Fonts";
 
-  private static final Logger log = LoggerFactory.getLogger(FontOrganizer.class);
+//  private static final Logger log = LoggerFactory.getLogger(FontOrganizer.class);
 
   public static final String FONTS_FOLDER = "fonts";          // Folder in Vengine containing font files
   public static final String FONTS_CONFIG = "fonts.config";   // List of font files in FONTS_FOLDER
@@ -205,17 +196,17 @@ public class FontOrganizer extends AbstractConfigurable {
 
   @Override
   public void addTo(Buildable parent) {
-    if (parent instanceof GameModule) {
-      ((GameModule) parent).setFontOrganizer(this);
-    }
-    loadVassalFonts();
+//    if (parent instanceof GameModule) {
+//    //  ((GameModule) parent).setFontOrganizer(this);
+//    }
+//    loadVassalFonts();
   }
 
   @Override
   public void removeFrom(Buildable parent) {
-    if (parent instanceof GameModule) {
-      ((GameModule) parent).setFontOrganizer(null);
-    }
+//    if (parent instanceof GameModule) {
+//    //  ((GameModule) parent).setFontOrganizer(null);
+//    }
   }
 
   @Override
@@ -242,41 +233,41 @@ public class FontOrganizer extends AbstractConfigurable {
     return getConfigureTypeName();
   }
 
-  /**
-   * Load any True/Open Type fonts included with Vassal. These reside in the /fonts folder of Vengine.jar (or on
-   * a folder on disk if we are running via a debugger.
-   * To side-step the shennanigans the IconFactory has to deal with to find all the fonts, the /fonts folder contains a
-   * file fonts.config that contains a list of the individual ttf files included with Vassal
-   */
-  private void loadVassalFonts() {
-
-    final URL url;
-    final String fontConfigFile = "/" + FONTS_FOLDER + "/" + FONTS_CONFIG;
-    try {
-      url = GameModule.getGameModule().getDataArchive().getURL(fontConfigFile);
-    }
-    catch (IOException e) {
-      log.error("VASSAL Font Config file " + fontConfigFile + " could not be found");
-      return;
-    }
-
-    try (InputStream stream = url.openStream(); BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
-      String line;
-      while ((line = reader.readLine()) != null) {
-        if (!line.trim().startsWith("#")) {
-
-          final String fontFile = line.trim();
-          final VassalFont font = new VassalFont(fontFile);
-          vassalFonts.add(font);
-          addFontToVassal(font);
-        }
-      }
-    }
-    catch (IOException e) {
-      log.error("Error reading Font Congig File " + fontConfigFile, e);
-      return;
-    }
-  }
+//  /**
+//   * Load any True/Open Type fonts included with Vassal. These reside in the /fonts folder of Vengine.jar (or on
+//   * a folder on disk if we are running via a debugger.
+//   * To side-step the shennanigans the IconFactory has to deal with to find all the fonts, the /fonts folder contains a
+//   * file fonts.config that contains a list of the individual ttf files included with Vassal
+//   */
+//  private void loadVassalFonts() {
+//
+//    final URL url;
+//    final String fontConfigFile = "/" + FONTS_FOLDER + "/" + FONTS_CONFIG;
+//    try {
+//      url = GameModule.getGameModule().getDataArchive().getURL(fontConfigFile);
+//    }
+//    catch (IOException e) {
+//      log.error("VASSAL Font Config file " + fontConfigFile + " could not be found");
+//      return;
+//    }
+//
+//    try (InputStream stream = url.openStream(); BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
+//      String line;
+//      while ((line = reader.readLine()) != null) {
+//        if (!line.trim().startsWith("#")) {
+//
+//          final String fontFile = line.trim();
+//          final VassalFont font = new VassalFont(fontFile);
+//          vassalFonts.add(font);
+//          addFontToVassal(font);
+//        }
+//      }
+//    }
+//    catch (IOException e) {
+//      log.error("Error reading Font Congig File " + fontConfigFile, e);
+//      return;
+//    }
+//  }
 
   /**
    * Utility class to provide a custom configurer for the Font Organizer

@@ -89,7 +89,7 @@ public class DecoratorTest {
           final GameModule gm = mock(GameModule.class);
           when(gm.getDataArchive()).thenReturn(da);
           when(gm.getGpIdSupport()).thenReturn(gpid);
-          when(gm.getFontOrganizer()).thenReturn(fo);
+          //when(gm.getFontOrganizer()).thenReturn(fo);
 
 
           staticGm.when(GameModule::getGameModule).thenReturn(gm);
