@@ -759,6 +759,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   protected String promptForSide() {
     final ArrayList<String> availableSides = new ArrayList<>(sides);
     final ArrayList<String> alreadyTaken = new ArrayList<>();
+    final String newSide;
 
     while (true) { // Loops until a valid side is found (repeats side check to minimuse race condition window)
 
@@ -801,7 +802,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       availableSides.add(0, translatedObserver);
 
       final GameModule g = GameModule.getGameModule();
-      String newSide = (String) JOptionPane.showInputDialog(
+              newSide = (String) JOptionPane.showInputDialog(
               g.getPlayerWindow(),
               Resources.getString("PlayerRoster.switch_sides", getMyLocalizedSide()), //$NON-NLS-1$
               Resources.getString("PlayerRoster.choose_side"), //$NON-NLS-1$
