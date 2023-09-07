@@ -49,7 +49,7 @@ import VASSAL.build.module.RandomTextButton;
 import VASSAL.build.module.ServerConnection;
 import VASSAL.build.module.SpecialDiceButton;
 import VASSAL.build.module.StartupGlobalKeyCommand;
-import VASSAL.build.module.font.FontOrganizer;
+//import VASSAL.build.module.font.FontOrganizer;
 import VASSAL.build.module.ToolbarMenu;
 import VASSAL.build.module.WizardSupport;
 import VASSAL.build.module.documentation.HelpFile;
@@ -69,7 +69,7 @@ import VASSAL.build.module.properties.GlobalTranslatableMessages;
 import VASSAL.build.module.properties.MutablePropertiesContainer;
 import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.build.module.properties.PropertySource;
-import VASSAL.build.module.properties.ScenarioOptions;
+//import VASSAL.build.module.properties.ScenarioOptions;
 import VASSAL.build.module.properties.TranslatableString;
 import VASSAL.build.module.properties.TranslatableStringContainer;
 import VASSAL.build.module.turn.TurnTracker;
@@ -148,9 +148,9 @@ import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
-import javax.swing.UIManager;
+//import javax.swing.UIManager;
 import java.awt.Container;
-import java.awt.Font;
+//import java.awt.Font;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -514,19 +514,19 @@ public class GameModule extends AbstractConfigurable
     return indexManager;
   }
 
-  /** Management of true-type fonts */
-  private FontOrganizer fontOrganizer;
-
-  public FontOrganizer getFontOrganizer() {
-    if (fontOrganizer == null) {
-      fontOrganizer = new FontOrganizer();
-    }
-    return fontOrganizer;
-  }
-
-  public void setFontOrganizer(FontOrganizer fontOrganizer) {
-    this.fontOrganizer = fontOrganizer;
-  }
+//  /** Management of true-type fonts */
+//  private FontOrganizer fontOrganizer;
+//
+//  public FontOrganizer getFontOrganizer() {
+//    if (fontOrganizer == null) {
+//      fontOrganizer = new FontOrganizer();
+//    }
+//    return fontOrganizer;
+//  }
+//
+//  public void setFontOrganizer(FontOrganizer fontOrganizer) {
+//    this.fontOrganizer = fontOrganizer;
+//  }
 
   /**
    * Error Logging to {@link Chatter}?
@@ -831,7 +831,7 @@ public class GameModule extends AbstractConfigurable
       ensureComponent(PrototypesContainer.class);
       ensureComponent(Chatter.class);
       ensureComponent(KeyNamer.class);
-      ensureComponent(FontOrganizer.class);
+      //ensureComponent(FontOrganizer.class);
     }
     else {
       buildDefaultComponents();
@@ -2044,23 +2044,23 @@ public class GameModule extends AbstractConfigurable
     }
   }
 
-  public void setUIFont() {
-    final Font f = theModule.getFontOrganizer().getEditorFont(Font.PLAIN, 12);
-
-    final java.util.Enumeration keys = UIManager.getDefaults().keys();
-    while (keys.hasMoreElements()) {
-      final Object key = keys.nextElement();
-      final Object value = UIManager.get(key);
-      if (value instanceof javax.swing.plaf.FontUIResource)
-        UIManager.put(key, f);
-    }
-
-    SwingUtilities.updateComponentTreeUI(theModule.frame);
-    SwingUtilities.updateComponentTreeUI(theModule.preferences.getGlobalPrefs().getEditor().getDialog());
-    SwingUtilities.updateComponentTreeUI(theModule.preferences.getEditor().getDialog());
-    SwingUtilities.updateComponentTreeUI(ScenarioOptions.getInstance().getDialog());
-
-  }
+//  public void setUIFont() {
+//    final Font f = theModule.getFontOrganizer().getEditorFont(Font.PLAIN, 12);
+//
+//    final java.util.Enumeration keys = UIManager.getDefaults().keys();
+//    while (keys.hasMoreElements()) {
+//      final Object key = keys.nextElement();
+//      final Object value = UIManager.get(key);
+//      if (value instanceof javax.swing.plaf.FontUIResource)
+//        UIManager.put(key, f);
+//    }
+//
+//    SwingUtilities.updateComponentTreeUI(theModule.frame);
+//    SwingUtilities.updateComponentTreeUI(theModule.preferences.getGlobalPrefs().getEditor().getDialog());
+//    SwingUtilities.updateComponentTreeUI(theModule.preferences.getEditor().getDialog());
+//    SwingUtilities.updateComponentTreeUI(ScenarioOptions.getInstance().getDialog());
+//
+//  }
   /**
    * Save the current buildString for comparison when we try and quit.
    */
