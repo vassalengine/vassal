@@ -29,6 +29,8 @@ import VASSAL.tools.swing.SwingUtils;
 import bsh.BeanShellExpressionValidator;
 
 import net.miginfocom.swing.MigLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -54,12 +56,15 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.net.URL;
 import java.util.List;
 
 /**
  * A Configurer for Java Expressions
  */
 public class BeanShellExpressionConfigurer extends StringConfigurer {
+
+  private static final Logger logger = LoggerFactory.getLogger(BeanShellExpressionConfigurer.class);
 
   /**
    * enum describing any special processing that needs to be done for particular expression types
@@ -220,6 +225,22 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
       nameField.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, null);
 
       nameField.setText(getValueString());
+
+
+      try {
+        final String fileName = "/fonts/JetBrainsMono.ttf";
+
+        logger.warn("Build URL for mono, classloader = " + getClass().getClassLoader());
+        final URL url = getClass().getResource(fileName);
+        logger.warn("URL built");
+        final Font ms = Font.createFont(Font.TRUETYPE_FONT, url.openStream());
+        logger.warn("Font built");
+        nameField.setFont(ms.deriveFont(Font.PLAIN, 14));
+      }
+      catch (Exception e) {
+        logger.warn("Mono load exception: " + e.getMessage());
+      }
+
       panel.add(nameField, "grow"); //NON-NLS
       nameField.addKeyListener(new KeyAdapter() {
         @Override

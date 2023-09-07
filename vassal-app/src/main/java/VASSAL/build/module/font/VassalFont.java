@@ -81,7 +81,7 @@ public class VassalFont implements Comparable<VassalFont> {
     URL url = null;
     try {
       final String fileName = "/fonts/JetBrainsMono.ttf";
-      logger.warn("Build URL for mono");
+      logger.warn("Build URL for mono, classloader = " + getClass().getClassLoader());
       url = getClass().getResource(fileName);
       logger.warn("URL built");
       Font.createFont(Font.TRUETYPE_FONT, url.openStream());
