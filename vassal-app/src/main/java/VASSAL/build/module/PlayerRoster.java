@@ -760,49 +760,56 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     final ArrayList<String> availableSides = new ArrayList<>(sides);
     final ArrayList<String> alreadyTaken = new ArrayList<>();
 
-    for (final PlayerInfo p : players) {
-      alreadyTaken.add(p.side);
-    }
+    while (true) { // Loops until a valid side is found (repeats side check to minimuse race condition window)
 
-    availableSides.removeAll(alreadyTaken);
+      for (final PlayerInfo p : players) {
+        alreadyTaken.add(p.side);
+      }
 
-    // If a "real" player side is available, we want to offer "the next one" as the default, rather than observer.
-    // Thus hotseat players can easily cycle through the player positions as they will appear successively as the default.
-    // Common names for Solitaire players (Solitaire, Solo, Referee) do not count as "real" player sides, and will be skipped.
-    // If we have no "next" side available to offer, we stay with the observer side as our default offering.
-    boolean found = false;       // If we find a usable side
-    final String mySide = getMySide(); // Get our own side, so we can find the "next" one
-    final int myidx = (mySide != null) ? sides.indexOf(mySide) : -1; // See if we have a current non-observe side.
-    int i = (myidx >= 0) ? ((myidx + 1) % sides.size()) : 0;   // If we do, start looking in the "next" slot, otherwise start at beginning.
-    for (int tries = 0; i != myidx && tries < sides.size(); i = (i + 1) % sides.size(), tries++) { // Wrap-around search of sides
-      final String s = sides.get(i);
-      if (!alreadyTaken.contains(s) && !isSoloSide(s)) {
-        found = true; // Found an available slot that's not our current one and not a "solo" slot.
+      if (!newSide.isEmpty() && !alreadyTaken.contains(newSide)) {
+        // found side is still available
+        // sides must always be stored internally in English.
+        if (translatedObserver.equals(newSide)) {
+          newSide = OBSERVER;
+        }
+        else {
+          newSide = untranslateSide(newSide);
+        }
         break;
       }
-    }
 
-    final String nextChoice = found ? sides.get(i) : translatedObserver; // This will be our defaulted choice for the dropdown.
+      availableSides.removeAll(alreadyTaken);
 
-    availableSides.add(0, translatedObserver);
+      // If a "real" player side is available, we want to offer "the next one" as the default, rather than observer.
+      // Thus hotseat players can easily cycle through the player positions as they will appear successively as the default.
+      // Common names for Solitaire players (Solitaire, Solo, Referee) do not count as "real" player sides, and will be skipped.
+      // If we have no "next" side available to offer, we stay with the observer side as our default offering.
+      final String mySide = getMySide(); // Get our own side, so we can find the "next" one
+      final int myidx = (mySide != null) ? sides.indexOf(mySide) : -1; // See if we have a current non-observe side.
+      boolean found = false;       // Set when we find a usable side
+      int i = (myidx >= 0) ? ((myidx + 1) % sides.size()) : 0;   // If we do, start looking in the "next" slot, otherwise start at beginning.
+      for (int tries = 0; i != myidx && tries < sides.size(); i = (i + 1) % sides.size(), tries++) { // Wrap-around search of sides
+        final String s = sides.get(i);
+        if (!alreadyTaken.contains(s) && !isSoloSide(s)) {
+          found = true; // Found an available slot that's not our current one and not a "solo" slot.
+          break;
+        }
+      }
 
-    final GameModule g = GameModule.getGameModule();
-    String newSide = (String) JOptionPane.showInputDialog(
-      g.getPlayerWindow(),
-      Resources.getString("PlayerRoster.switch_sides", getMyLocalizedSide()), //$NON-NLS-1$
-      Resources.getString("PlayerRoster.choose_side"), //$NON-NLS-1$
-      JOptionPane.QUESTION_MESSAGE,
-      null,
-      availableSides.toArray(new String[0]),
-      nextChoice // Offer calculated most likely "next side" as the default
-    );
+      final String nextChoice = found ? sides.get(i) : translatedObserver; // This will be our defaulted choice for the dropdown.
 
-    // sides must always be stored internally in English.
-    if (translatedObserver.equals(newSide)) {
-      newSide = OBSERVER;
-    }
-    else {
-      newSide = untranslateSide(newSide);
+      availableSides.add(0, translatedObserver);
+
+      final GameModule g = GameModule.getGameModule();
+      String newSide = (String) JOptionPane.showInputDialog(
+              g.getPlayerWindow(),
+              Resources.getString("PlayerRoster.switch_sides", getMyLocalizedSide()), //$NON-NLS-1$
+              Resources.getString("PlayerRoster.choose_side"), //$NON-NLS-1$
+              JOptionPane.QUESTION_MESSAGE,
+              null,
+              availableSides.toArray(new String[0]),
+              nextChoice // Offer calculated most likely "next side" as the default
+      );
     }
     return newSide;
   }
