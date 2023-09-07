@@ -770,12 +770,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       if (!newSide.isEmpty() && !alreadyTaken.contains(newSide)) {
         // found side is still available
         // sides must always be stored internally in English.
-        if (translatedObserver.equals(newSide)) {
-          newSide = OBSERVER;
-        }
-        else {
-          newSide = untranslateSide(newSide);
-        }
+        newSide = untranslateSide(newSide);
         break;
       }
 
@@ -812,6 +807,11 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
               availableSides.toArray(new String[0]),
               nextChoice // Offer calculated most likely "next side" as the default
       );
+
+      if (translatedObserver.equals(newSide)) { // Observer returns here, other returns are checked once more.
+        newSide = OBSERVER;
+        break;
+      }
     }
     return newSide;
   }
