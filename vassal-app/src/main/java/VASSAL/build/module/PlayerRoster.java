@@ -761,7 +761,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     final ArrayList<String> alreadyTaken = new ArrayList<>();
     String newSide = "";
 
-    while (true) { // Loops until a valid side is found (repeats side check to minimuse race condition window)
+    while (newSide != null) { // Loops until a valid side is found or op is canceled (repeats side check to minimuse race condition window)
 
       for (final PlayerInfo p : players) {
         alreadyTaken.add(p.side);
