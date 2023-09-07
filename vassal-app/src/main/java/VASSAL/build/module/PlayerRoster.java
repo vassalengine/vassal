@@ -800,7 +800,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
       newSide = (String) JOptionPane.showInputDialog(
               g.getPlayerWindow(),
-              Resources.getString("PlayerRoster.switch_sides", getMyLocalizedSide()), //$NON-NLS-1$
+              (newSide.isEmpty() ? "" : newSide + " unavailable!<br>") + Resources.getString("PlayerRoster.switch_sides", getMyLocalizedSide()), //$NON-NLS-1$
               Resources.getString("PlayerRoster.choose_side"), //$NON-NLS-1$
               JOptionPane.QUESTION_MESSAGE,
               null,
