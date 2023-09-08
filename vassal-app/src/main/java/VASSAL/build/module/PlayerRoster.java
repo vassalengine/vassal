@@ -46,10 +46,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import java.awt.Component;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
@@ -811,6 +808,9 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       if (translatedObserver.equals(newSide)) { // Observer returns here, other returns are checked once more.
         newSide = OBSERVER;
         break;
+      }
+      else {
+        alreadyTaken.removeAll(alreadyTaken); // prepare to loop again for exit check
       }
     }
     return newSide;
