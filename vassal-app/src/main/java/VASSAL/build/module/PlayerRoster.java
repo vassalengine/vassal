@@ -46,7 +46,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 
-import javax.swing.*;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import java.awt.Component;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
@@ -764,9 +767,10 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         alreadyTaken.add(p.side);
       }
 
+      // The while loop ensures that the selected side is re-checked here and only returned if the side is still available
+      // This prevents players switching to the same side if they enter the switch-side dialogue (below) at the same time.
       if (!newSide.isEmpty() && !alreadyTaken.contains(newSide)) {
-        // found side is still available
-        // sides must always be stored internally in English.
+        // side is returned in English for sharing in the game.
         newSide = untranslateSide(newSide);
         break;
       }
