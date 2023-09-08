@@ -35,7 +35,6 @@
         { "num": 12153, "desc": "Layer traits allow a show-only-if-this-property-true filter" },
         { "num": 12149, "desc": "BorderOutline trait now accepts two fields" },
         { "num": 12129, "desc": "PlaceMarker and ReplaceWithOther can use expression for X/Y offset" },
-        { "num": 12127, "desc": "Toolbar buttons disableable by a property (e.g., GKC, ActionButton, etc.) can be set to hide when disabled" },
         { "num": 12100, "desc": "Text Labels support <img> tags" },
 
         { "num": 12067, "desc": "Import/export of groups of items from Editor as XML files (e.g., to transfer between modules)" },
@@ -74,7 +73,6 @@
         { "num": 12529, "desc": "Allow Piece UIDs to be compared properly in expressions" },
         { "num": 12528, "desc": "Close InputStreams opened for reading SVG" },
         { "num": 12482, "desc": "Map Shader now able to add button to Map Toolbar" },
-        { "num": 12478, "desc": "Revert 12077 - Do not return a default value for ObscuredToOthers" },
         { "num": 12470, "desc": "Place Marker X Offset should default to 0, not null" },
         { "num": 12439, "desc": "Uniformly handle addition of standard and imported Configurables" },
         { "num": 12434, "desc": "FastMatch by Location now respects Deck limits" },
@@ -97,7 +95,6 @@
         { "num": 12261, "desc": "Report error if more than one grid added to a Zone" },
         { "num": 12220, "desc": "Add BorderOutline's property names to the searchable target list" },
         { "num": 12215, "desc": "New MarkMoved commands shouldn't default to being displayed if no key commands entered" },
-        { "num": 12208, "desc": "Hiding disabled toolbar buttons feature removed (reverts 12127)" },
         { "num": 12205, "desc": "Area of Effect trait was eating other traits' visibility info in some cases" },
         { "num": 12203, "desc": "Properly extract outlines from SVG for NonRectangular" },
         { "num": 12175, "desc": "Fix stretchy images in chat" },
@@ -136,7 +133,6 @@
         { "num": 12133, "desc": "Rollovers automatically shrink scale if the pieces are too wide to fit the screen width" },
         { "num": 12084, "desc": "Help menu shows module-specific help items before generic Vassal ones" },
         { "num": 12080, "desc": "Zooming in and out no longer loses track of player's preferred center point for map" },
-        { "num": 12077, "desc": "ObscuredToOthers can be counted on to be 'false' for pieces that don't even have a Mask property" },
         { "num": 11919, "desc": "Allow DEL/BACKSPACE to be mapped as a hotkey" },
         { "num": 11506, "desc": "Predefined Setup \"menus\" with blank names will not be shown" },
         { "num": 11104, "desc": "Refresh Can Rotate trait by Rotator Name match option for Game Refreshers" }
