@@ -470,18 +470,30 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     }
 
     final String newSide = untranslateSide(sideConfig.getValueString());
-    if (newSide != null) {
-      if (GameModule.getGameModule().isMultiplayerConnected()) {
-        final Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.joined_side_2" : "PlayerRoster.joined_side", GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME), newSide));
-        c.execute();
+
+    // FIXME: MTB INSERT EXISTING SIDE CHECK HERE.... IF FOUND RETURN WITHOUT SETTING SIDE (pickedSide = false)
+    final ArrayList<String> availableSides = new ArrayList<>(sides);
+    final ArrayList<String> alreadyTaken = new ArrayList<>();
+
+    for (final PlayerInfo p : players) {
+      alreadyTaken.add(p.side);
+    }
+
+    if (!alreadyTaken.contains(newSide)) {
+      if (newSide != null) {
+        if (GameModule.getGameModule().isMultiplayerConnected()) {
+          final Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.joined_side_2" : "PlayerRoster.joined_side", GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME), newSide));
+          c.execute();
+        }
       }
 
       final Add a = new Add(this, GameModule.getActiveUserId(), GlobalOptions.getInstance().getPlayerId(), newSide);
       a.execute();
       GameModule.getGameModule().getServer().sendToOthers(a);
+
+      getLaunchButton().setVisible(getMySide() != null);
+      pickedSide = true;
     }
-    getLaunchButton().setVisible(getMySide() != null);
-    pickedSide = true;
   }
 
   @Override
