@@ -471,7 +471,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
     final String newSide = untranslateSide(sideConfig.getValueString());
 
-    // FIXME: MTB INSERT EXISTING SIDE CHECK HERE.... IF FOUND RETURN WITHOUT SETTING SIDE (pickedSide = false)
+    // Checks if attempting switch to side taken whilst dialog was active. If found, return without setting side. (pickedSide = false)
     final ArrayList<String> availableSides = new ArrayList<>(sides);
     final ArrayList<String> alreadyTaken = new ArrayList<>();
 
