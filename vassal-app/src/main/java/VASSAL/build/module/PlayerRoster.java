@@ -767,12 +767,20 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         alreadyTaken.add(p.side);
       }
 
-      // The while loop ensures that the selected side is re-checked here and only returned if the side is still available
-      // This prevents players switching to the same side if they enter the switch-side dialogue (below) at the same time.
+      /*
+       The while loop ensures that the selected side is re-checked here and only returned if the side is still available.
+       This prevents players switching to the same side if they enter the switch-side dialogue (below) at the same time,
+       narrowing the race condition window to network latency.
+      */
       if (!newSide.isEmpty() && !alreadyTaken.contains(newSide)) {
         // side is returned in English for sharing in the game.
         newSide = untranslateSide(newSide);
         break;
+      }
+      else {
+        // Set up for another go...
+        availableSides.clear();
+        availableSides.addAll(sides);
       }
 
       availableSides.removeAll(alreadyTaken);
@@ -814,7 +822,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         break;
       }
       else {
-        alreadyTaken.removeAll(alreadyTaken); // prepare to loop again for exit check
+        alreadyTaken.clear(); // prepare to loop again for exit check
       }
     }
     return newSide;
