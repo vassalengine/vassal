@@ -34,7 +34,6 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.build.module.folder.GlobalPropertyFolder;
 import VASSAL.build.module.folder.PrototypeFolder;
-import VASSAL.build.module.gamepieceimage.GamePieceImage;
 import VASSAL.build.module.map.CounterDetailViewer;
 import VASSAL.build.module.map.DeckGlobalKeyCommand;
 import VASSAL.build.module.map.DrawPile;
@@ -725,6 +724,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           d.setVisible(true);
         }
       };
+      a.setEnabled(isMoveAllowed(target));
     }
     return a;
   }
@@ -858,6 +858,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected boolean isValidPasteTarget(Configurable target, DefaultMutableTreeNode sourceNode) {
     if (sourceNode == null) {
+      return false;
+    }
+
+    // Do not allow Immobile components to be moved
+    if (GameModule.getGameModule().getImmobileComponents().contains(((Configurable) sourceNode.getUserObject()).getClass())) {
       return false;
     }
 
@@ -1036,7 +1041,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         final DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) targetNode.getParent();
         if (parentNode != null) {
 
-          if (!(target instanceof GamePieceImage)) {
+          if (isDuplicateAllowed(target)) {
             l.add(buildAddAction((Configurable) parentNode.getUserObject(), target.getClass(), "Editor.ConfigureTree.add_duplicate", parentNode.getIndex(targetNode) + 1, target));
           }
 
@@ -1232,7 +1237,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected Action buildDeleteAction(final Configurable target) {
     final DefaultMutableTreeNode targetNode = getTreeNode(target);
     if (targetNode.getParent() != null) {
-      return new AbstractAction(deleteCmd) {
+      final Action a = new AbstractAction(deleteCmd) {
         private static final long serialVersionUID = 1L;
 
         @Override
@@ -1247,6 +1252,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           }
         }
       };
+      a.setEnabled(isDeleteAllowed(target));
+      return a;
     }
     else {
       return null;
@@ -1551,7 +1558,23 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   public void mouseDragged(MouseEvent evt) {
   }
 
+  /** Is the Component allowed to be moved? */
+  protected boolean isMoveAllowed(Configurable target) {
+    return !GameModule.getGameModule().getImmobileComponents().contains(target.getClass());
+  }
+
+  /** Is the Component allowed to be deleted? */
+  protected boolean isDeleteAllowed(Configurable target) {
+    return !GameModule.getGameModule().getEssentialComponents().contains(target.getClass());
+  }
+
+  /** Is the Component allowed to be duplicated? */
+  protected boolean isDuplicateAllowed(Configurable target) {
+    return isDeleteAllowed(target);
+  }
+
   protected boolean isValidParent(Configurable parent, Configurable child) {
+
     if (parent != null && child != null) {
       final Class<?>[] c = parent.getAllowableConfigureComponents();
       for (final Class<?> aClass : c) {
@@ -1711,12 +1734,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   protected void updateEditMenu() {
-    deleteAction.setEnabled(selected != null);
+    deleteAction.setEnabled(selected != null && isDeleteAllowed(selected));
     cutAction.setEnabled(selected != null);
     copyAction.setEnabled(selected != null);
     pasteAction.setEnabled(selected != null && isValidPasteTarget(selected));
-    moveAction.setEnabled(selected != null);
-    duplicateAction.setEnabled(selected != null);
+    moveAction.setEnabled(selected != null && isMoveAllowed(selected));
+    duplicateAction.setEnabled(selected != null && isDuplicateAllowed(selected));
     searchAction.setEnabled(true);
     // Check the cached Configurer in the TreeNode, not the Configurable as Configurable.getConfigurer()
     // is very expensive and resets the Configurer causing label truncation issues in the JTree
