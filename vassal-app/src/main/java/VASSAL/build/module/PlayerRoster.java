@@ -471,7 +471,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
     final String newSide = untranslateSide(sideConfig.getValueString());
 
-    // Checks if attempting switch to side taken whilst dialog was active. If found, return without setting side i.e. pickedSide = false.
+    // Check if attempting switch to side taken whilst dialog was active. If found, return without setting side i.e. pickedSide = false.
     final ArrayList<String> availableSides = new ArrayList<>(sides);
     final ArrayList<String> alreadyTaken = new ArrayList<>();
 
