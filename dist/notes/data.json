@@ -16,6 +16,16 @@
   ],
   "changes": [
    {
+      "in": "3.7.1",
+      "since": "3.7.0",
+      "new_features": [
+      ],
+      "bug_fixes": [
+      ],
+      "other_improvements": [
+      ]
+   },
+   {
       "in": "3.7.0",
       "since": "3.6.19",
       "new_features": [
@@ -58,8 +68,6 @@
         { "num": 10820, "desc": "Make Action Button available on all windows where other similar buttons (e.g., GKC, Multi-Action, etc) are available" },
         { "num": 4454, "desc": "Save chat text to file" },
         { "num": 4446, "desc": "Dynamic button labels (can use expressions and $...$ in certain toolbar buttons)" }
-
-
       ],
       "bug_fixes": [
         { "num": 12644, "desc": "Prevent NPE when Editing Deck count expressions" },
