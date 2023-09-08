@@ -947,6 +947,39 @@ public class GameModule extends AbstractConfigurable
   }
 
   /**
+   * Return a list of Components that should never be deleted or duplicated via the UI
+   * This would be better to implement this via isxxxx() methods in AbstractConfigrable
+   * but not all of these components are AbstractConfigurable, Sigh.
+   *
+   * @return List of Component classes
+   */
+  public List<Class<?>> getEssentialComponents() {
+    return List.of(
+      Documentation.class,
+      PlayerRoster.class,
+      GlobalOptions.class,
+      GamePieceImageDefinitions.class,
+      GlobalProperties.class,
+      GlobalTranslatableMessages.class,
+      PrototypesContainer.class,
+      Chatter.class,
+      KeyNamer.class,
+      Language.class
+    );
+  }
+
+  /**
+   * Return a list of Components that should not be movable via the UI.
+   * Some Components are forced to the start of the Build sequence so that they are available
+   * for all subsequent components as they build
+   *
+   * @return
+   */
+  public List<Class<?>> getImmobileComponents() {
+    return new ArrayList<>();
+  }
+
+  /**
    * Initializes our actual window frame -- size, title bar. Send a message with our module name and version number
    * to the chat log, to be displayed there once a Chatter is registered.
    */
