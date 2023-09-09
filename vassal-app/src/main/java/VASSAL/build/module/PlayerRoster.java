@@ -469,7 +469,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       GameModule.getGameModule().warn(Resources.getString("PlayerRoster.failed_pref_write", e.getLocalizedMessage()));
     }
 
-    final String newSide = untranslateSide(sideConfig.getValueString());
+    String newSide = untranslateSide(sideConfig.getValueString());
     final ArrayList<String> alreadyTaken = new ArrayList<>();
 
     // Check if attempting switch to side taken whilst dialog was active. If found, return without setting side i.e. pickedSide = false.
@@ -477,15 +477,20 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       alreadyTaken.add(p.side);
     }
 
-    if (alreadyTaken.contains(newSide)) {
-      wc.setProblem("Side already taken"); // Resources.getString("PlayerRoster.side_unavailable");
+    while (alreadyTaken.contains(newSide)) {
+      wc.setProblem(newSide + " already taken"); // Resources.getString("PlayerRoster.side_unavailable")
+      newSide = String.valueOf(getControls());
+      alreadyTaken.clear();
+      for (final PlayerInfo p : players) {
+        alreadyTaken.add(p.side);
+      }
+      newSide = untranslateSide(sideConfig.getValueString());
     }
-    else {
-      if (newSide != null) {
-        if (GameModule.getGameModule().isMultiplayerConnected()) {
-          final Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.joined_side_2" : "PlayerRoster.joined_side", GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME), newSide));
-          c.execute();
-        }
+
+    if (newSide != null) {
+      if (GameModule.getGameModule().isMultiplayerConnected()) {
+        final Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.joined_side_2" : "PlayerRoster.joined_side", GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME), newSide));
+        c.execute();
       }
 
       final Add a = new Add(this, GameModule.getActiveUserId(), GlobalOptions.getInstance().getPlayerId(), newSide);
