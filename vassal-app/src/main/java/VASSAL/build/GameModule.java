@@ -812,7 +812,7 @@ public class GameModule extends AbstractConfigurable
       ensureComponent(PrototypesContainer.class);
       ensureComponent(Chatter.class);
       ensureComponent(KeyNamer.class);
-      ensureComponent(FontOrganizer.class);
+      ensureFirstComponent(FontOrganizer.class);
     }
     else {
       buildDefaultComponents();
@@ -931,6 +931,7 @@ public class GameModule extends AbstractConfigurable
    * Adds the standard default components for a brand new module.
    */
   private void buildDefaultComponents() {
+    addComponent(FontOrganizer.class);
     addComponent(BasicCommandEncoder.class);
     addComponent(Documentation.class);
     addComponent(PlayerRoster.class);
@@ -1033,6 +1034,12 @@ public class GameModule extends AbstractConfigurable
     }
   }
 
+  private void ensureFirstComponent(Class<? extends Buildable> componentClass) {
+    if (getComponentsOf(componentClass).isEmpty()) {
+      addComponent(componentClass, 0);
+    }
+  }
+
   /**
    * Adds a subcomponent of the specified class to the module hierarchy. "Build" the
    * child in its default form, and register it with the module.
@@ -1054,6 +1061,21 @@ public class GameModule extends AbstractConfigurable
     }
   }
 
+  private void addComponent(Class<? extends Buildable> componentClass, int index) {
+    Buildable child = null;
+    try {
+      child = componentClass.getConstructor().newInstance();
+    }
+    catch (Throwable t) {
+      ReflectionUtils.handleNewInstanceFailure(t, componentClass);
+    }
+
+    if (child != null) {
+      child.build(null);
+      child.addTo(this);
+      add(child, index);
+    }
+  }
   /**
    * Sets a buildFile (XML) attribute value for this component.
    * @param name the name of the attribute. Will be one of those listed in {@link #getAttributeNames}

@@ -157,7 +157,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     nameFormat.setFormat(clean(st.nextToken("$" + PIECE_NAME + "$ ($" + LABEL + "$)")));
     final String fontFamily = st.nextToken(Font.DIALOG);
     final int fontStyle = st.nextInt(Font.PLAIN);
-    font = new Font(fontFamily, fontStyle, fontSize);
+    font = GameModule.getGameModule().getFontOrganizer().createFont(fontFamily, fontStyle, fontSize);
     rotateDegrees = st.nextInt(0);
     propertyName = st.nextToken("TextLabel"); // NON-NLS
     description = st.nextToken("");
