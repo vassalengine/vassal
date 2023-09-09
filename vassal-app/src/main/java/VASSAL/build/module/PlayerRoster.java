@@ -772,9 +772,12 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     }
     else {
       fromWizard = true;
+      if (newSide == null) {
+        newSide = "";
+      }
     }
 
-    while (newSide != null && !newSide.isEmpty()) { // Loops until a valid side is found or op is canceled (repeats side check to minimuse race condition window)
+    while (newSide != null) { // Loops until a valid side is found or op is canceled (repeats side check to minimuse race condition window)
 
       for (final PlayerInfo p : players) {
         alreadyTaken.add(p.side);
