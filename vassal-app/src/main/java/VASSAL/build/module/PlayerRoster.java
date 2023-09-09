@@ -262,7 +262,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     }
 
     String newSide;
-    newSide = promptForSide();
+    newSide = promptForSide("");
     if ((newSide == null) || newSide.equals(mySide)) {
       return;
     }
@@ -767,15 +767,14 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     boolean fromWizard;
     boolean found = false;       // Set when we find a usable side
 
-    if (newSide == null) {
-      newSide = "";
+    if (newSide != null && newSide.isEmpty()) {
       fromWizard = false;
     }
     else {
       fromWizard = true;
     }
 
-    while (newSide != null) { // Loops until a valid side is found or op is canceled (repeats side check to minimuse race condition window)
+    while (newSide != null && !newSide.isEmpty()) { // Loops until a valid side is found or op is canceled (repeats side check to minimuse race condition window)
 
       for (final PlayerInfo p : players) {
         alreadyTaken.add(p.side);
@@ -798,6 +797,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       }
 
       availableSides.removeAll(alreadyTaken);
+      String nextChoice = translatedObserver; // This will be our defaulted choice for the dropdown.
 
       // If a "real" player side is available, we want to offer "the next one" as the default, rather than observer.
       // Thus hotseat players can easily cycle through the player positions as they will appear successively as the default.
@@ -810,13 +810,11 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         for (int tries = 0; i != myidx && tries < sides.size(); i = (i + 1) % sides.size(), tries++) { // Wrap-around search of sides
           final String s = sides.get(i);
           if (!alreadyTaken.contains(s) && !isSoloSide(s)) {
-            found = true; // Found an available slot that's not our current one and not a "solo" slot.
+            nextChoice = sides.get(i); // Found an available slot that's not our current one and not a "solo" slot.
             break;
           }
         }
       }
-
-      final String nextChoice = found ? sides.get(i) : translatedObserver; // This will be our defaulted choice for the dropdown.
 
       availableSides.add(0, translatedObserver);
 
