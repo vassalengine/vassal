@@ -142,7 +142,6 @@ public class ModuleFont extends AbstractConfigurable {
     else {
       setConfigureName(font.getFontFamily() + " - " + font.getFontName());
       if (organizer != null) organizer.setDirty(true);
-      FontOrganizer.addFontToVassal(font);
     }
   }
 

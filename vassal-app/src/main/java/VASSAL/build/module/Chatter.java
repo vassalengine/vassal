@@ -32,6 +32,7 @@ import VASSAL.tools.ScrollPane;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.swing.DataArchiveHTMLEditorKit;
 import VASSAL.tools.swing.SwingUtils;
+
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.AbstractAction;
@@ -680,11 +681,6 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
     otherChat = (Color) globalPrefs.getValue(OTHER_CHAT_COLOR);
 
     makeStyleSheet(myFont);
-  }
-
-  /** A new font has been loaded into Vassal since the Chatter was built */
-  public void addFontFamily(String newFontFamilyName) {
-    fontConfig.addFontFamily(newFontFamilyName);
   }
 
   @Override

@@ -49,9 +49,9 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 /**
  * Support for TrueType fonts provided by VASSAL or within the module
@@ -63,9 +63,9 @@ public class FontOrganizer extends AbstractConfigurable {
 
   private static final Logger log = LoggerFactory.getLogger(FontOrganizer.class);
 
-  public static final String FONTS_FOLDER = "fonts";          // Folder in Vengine containing font files
-  public static final String FONTS_CONFIG = "fonts.config";   // List of font files in FONTS_FOLDER
-  public static final String VASSAL_EDITOR_FONT = "JetBrains Mono Regular"; // Monspaced font for editing
+  public static final String FONTS_FOLDER = "fonts";                        // Folder in Vengine containing font files
+  public static final String FONTS_CONFIG = "fonts.conf";                   // Contains List of font files in FONTS_FOLDER
+  public static final String VASSAL_EDITOR_FONT = "JetBrains Mono Regular"; // Preferred Monospaced font for editing
 
   private static final int COLUMNS = 5;
   private static final int FAMILY_COLUMN = 0;
@@ -76,6 +76,7 @@ public class FontOrganizer extends AbstractConfigurable {
 
   private FontOrganizerConfigurer fontOrganizerConfigurer;
 
+  private final Map<String, VassalFont> loadedFonts = new HashMap<>();
 
   /** True if the Map of additional fonts needs to be reloaded */
   private boolean dirty = true;
@@ -92,6 +93,34 @@ public class FontOrganizer extends AbstractConfigurable {
   }
 
   /**
+   * Centralized location for creating a new Font.
+   * If the font is supplied by Vassal or the module, then locate the loaded Font and directly derive the
+   * required font from it. Java does know about the newly loaded fonts, but you get better results if we
+   * derive the new fonts specifically.
+   *
+   * If it's not a Vassal/Module font, just pass it to Java to find something suitable.
+   *
+   * NOTE: Requests for a Vassal/Module font in Swinf rendered HTML do not come through here, they are directly
+   * satisified by Java
+   *
+   * @param fontName  Font Name or Family
+   * @param style     Required style
+   * @param size      Required size
+   *
+   * @return new Font.
+   */
+  public Font createFont(String fontName, int style, int size) {
+
+    final VassalFont font = getFontMap().get(fontName);
+    if (font != null && font.isValid()) {
+      return font.getDerivedFont(style, size);
+    }
+
+    return new Font(fontName, style, size);
+  }
+
+
+  /**
    * The default monospaced font for Java is usually Courier New which is not great.
    * See if we can do better
    *
@@ -99,76 +128,57 @@ public class FontOrganizer extends AbstractConfigurable {
    * @param size  Font Size
    * @return      A monospaced font
    */
+  // TODO: Make this a preference
   public Font getEditorFont(int style, int size) {
 
-//    final Font font = new Font(VASSAL_EDITOR_FONT, style, size);
-    final Font font = vassalFonts.get(0).getDerivedFont(style, size);
-
-    if (font == null) {
-      return new Font(Font.MONOSPACED, style, size);
+    final VassalFont font = getFontMap().get(VASSAL_EDITOR_FONT);
+    if (font != null && font.isValid()) {
+      return font.getDerivedFont(style, size);
     }
-    else {
-      return font;
-    }
+    return new Font(Font.MONOSPACED, style, size);
   }
 
-  /**
-   * A new font has been loaded, either from Vassal, or from the module.
-   * The font has been registered with Java (unless already installed) but
-   * various parts of Vassal have already been built and need to be informed of the new Font
-   *
-   * @param font  Added Font
-   */
-  public static void addFontToVassal(VassalFont font) {
-
-    if (font != null && font.getFontFamily() != null) {
-      // TODO: Have Vassal components register with the FontOrganizer that they are interested in new Fonts
-      // Update the list of Fonts available for the Chat Window
-      GameModule.getGameModule().getChatter().addFontFamily(font.getFontFamily());
-    }
-  }
-
-  /** Return a Set of the additional fonts available in this module */
-  public Set<String> getAdditionalFonts() {
-    final Set<String> families = new HashSet<>();
-    vassalFonts.forEach((k) -> {
-      if (k.getFontName() != null) families.add(k.getFontName());
+  /** Return a Set of the additional font names available in this module */
+  public List<String> getAdditionalFonts() {
+    final List<String> fonts = new ArrayList<>();
+    getAllFonts().forEach((k) -> {
+      if (k.isValid()) fonts.add(k.getFontName());
     });
-    getAllDescendantComponentsOf(ModuleFont.class).forEach(
-      (k) -> {
-        final VassalFont font = k.getFont();
-        if (font != null && font.getFontName() != null) {
-          families.add(font.getFontName());
-        }
-      }
-    );
-    return families;
+    return fonts;
   }
 
-  private List<VassalFont> getAllFonts() {
-
-    // Sorted List
-    final List<VassalFont> fonts = new ArrayList<>();
-
-    // Add the Vassal supplied fonts
-    for (final VassalFont font : vassalFonts) {
-      if (font != null) {
-        fonts.add(font);
-      }
-    }
-
-    // Add the module specific fonts
-    for (final ModuleFont mfont : getAllDescendantComponentsOf(ModuleFont.class)) {
-      final VassalFont font = mfont.getFont();
-      if (font != null) {
-        fonts.add(font);
-      }
-    }
-
+  /** Return a sorted list of all available fonts loaded from Vassal or the module */
+  public List<VassalFont> getAllFonts() {
+    final ArrayList<VassalFont> fonts = new ArrayList<>(getFontMap().values());
     Collections.sort(fonts);
     return fonts;
   }
 
+  /** Return the current font Map, rebuild if potentially dirty */
+  private Map<String, VassalFont> getFontMap() {
+    if (dirty) {
+      loadedFonts.clear();
+
+      // Add the Vassal supplied fonts
+      vassalFonts.forEach(
+        (k) -> {
+          if (k.isValid()) {
+            loadedFonts.put(k.getFontName(), k);
+          }
+        }
+      );
+
+      // Add the module specific fonts
+      getAllDescendantComponentsOf(ModuleFont.class).forEach(
+        (k) -> {
+          if (k.getFont().isValid()) {
+            loadedFonts.put(k.getFont().getFontName(), k.getFont());
+          }
+        }
+      );
+    }
+    return loadedFonts;
+  }
 
   public boolean isDirty() {
     return dirty;
@@ -176,6 +186,9 @@ public class FontOrganizer extends AbstractConfigurable {
 
   public void setDirty(boolean dirty) {
     this.dirty = dirty;
+    if (dirty) {
+      getFontOrganizerConfigurer().setDirty(dirty);
+    }
   }
 
   @Override
@@ -268,7 +281,6 @@ public class FontOrganizer extends AbstractConfigurable {
           final String fontFile = line.trim();
           final VassalFont font = new VassalFont(fontFile);
           vassalFonts.add(font);
-          addFontToVassal(font);
         }
       }
     }
@@ -303,6 +315,8 @@ public class FontOrganizer extends AbstractConfigurable {
     private JPanel controls;
     private final FontOrganizer organizer;
 
+    private boolean configurerDirty = true;
+
     public FontOrganizerConfigurer(String key, String name, FontOrganizer organizer) {
       super(key, name);
       this.organizer = organizer;
@@ -320,6 +334,10 @@ public class FontOrganizer extends AbstractConfigurable {
       }
     }
 
+    public void setDirty(boolean dirty) {
+      configurerDirty = dirty;
+    }
+
     @Override
     public Component getControls() {
       if (controls == null) {
@@ -333,7 +351,7 @@ public class FontOrganizer extends AbstractConfigurable {
         controls.addAncestorListener(new AncestorListener() {
           @Override
           public void ancestorAdded(AncestorEvent event) {
-            if (organizer.isDirty()) {
+            if (configurerDirty) {
               rebuildTable();
             }
           }
@@ -345,7 +363,7 @@ public class FontOrganizer extends AbstractConfigurable {
           // Called when the panel become visible
           @Override
           public void ancestorMoved(AncestorEvent event) {
-            if (organizer.isDirty()) {
+            if (configurerDirty) {
               rebuildTable();
             }
           }
@@ -366,12 +384,11 @@ public class FontOrganizer extends AbstractConfigurable {
       table.getColumnModel().getColumn(VASSAL_COLUMN).setCellRenderer(new CellCenterRenderer());
       table.getColumnModel().getColumn(STATUS_COLUMN).setMinWidth(200);
 
-
       for (final VassalFont font : organizer.getAllFonts()) {
         addFont(font);
       }
 
-      organizer.setDirty(false);
+      configurerDirty = false;
 
     }
 
@@ -390,7 +407,6 @@ public class FontOrganizer extends AbstractConfigurable {
       scroll = new JScrollPane(table);
       controls.add(scroll, BorderLayout.CENTER);
       SwingUtils.repack(controls);
-      organizer.setDirty(false);
     }
 
     private static class MyTableModel extends DefaultTableModel {

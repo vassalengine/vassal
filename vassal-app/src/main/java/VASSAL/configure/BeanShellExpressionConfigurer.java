@@ -323,21 +323,6 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     }
   }
 
-//  protected Font getEditorFont(int style, int size) {
-//    try {
-//      final String fileName = "/fonts/JetBrainsMono.ttf";
-//      logger.warn("Classloader=" + getClass().getClassLoader());
-//      final URL url = getClass().getResource(fileName);
-//      logger.warn("URL=" + url);
-//      final Font ms = Font.createFont(Font.TRUETYPE_FONT, url.openStream());
-//      return ms.deriveFont(style, size);
-//    }
-//    catch (Exception e) {
-//      logger.warn("error finding font " + e.getMessage());
-//    }
-//    return new Font("monospaced", style, size);
-//  }
-
   protected void doPopup() {
     final JPopupMenu popup = new BeanShellFunctionMenu(target, this);
     popup.show(extraDetails, 0, 0);
