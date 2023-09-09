@@ -477,7 +477,10 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       alreadyTaken.add(p.side);
     }
 
-    if (!alreadyTaken.contains(newSide)) {
+    if (alreadyTaken.contains(newSide)) {
+      wc.setProblem("Side already taken"); // Resources.getString("PlayerRoster.side_unavailable");
+    }
+    else {
       if (newSide != null) {
         if (GameModule.getGameModule().isMultiplayerConnected()) {
           final Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.joined_side_2" : "PlayerRoster.joined_side", GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME), newSide));
