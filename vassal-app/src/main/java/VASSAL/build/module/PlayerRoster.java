@@ -262,13 +262,12 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     }
 
     String newSide = null;
-    newSide = promptForSide(newSide);
+    newSide = promptForSide2(newSide);
     if ((newSide == null) || newSide.equals(mySide)) {
       return;
     }
 
     final GameModule gm = GameModule.getGameModule();
-
     // Avoid bug that allowed gaining access to a hidden/locked side
     if (GameModule.getGameModule().getGameState().isLoadingInBackground()) {
       return;
@@ -471,7 +470,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
    // Drop into standard routine, starting with checking side is still available (race condition mitigation)
     // returns untranslated side
-    String newSide = promptForSide(sideConfig.getValueString());
+    String newSide = promptForSide2(sideConfig.getValueString());
 
     if (newSide != null) {
       if (GameModule.getGameModule().isMultiplayerConnected()) {
@@ -760,7 +759,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     return availableSides;
   }
 
-  protected String promptForSide(String newSide) {
+  protected String promptForSide2(String newSide) {
 
     final ArrayList<String> availableSides = new ArrayList<>(sides);
     final ArrayList<String> alreadyTaken = new ArrayList<>();
