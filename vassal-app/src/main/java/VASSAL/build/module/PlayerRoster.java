@@ -469,7 +469,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
    // Drop into standard routine, starting with checking side is still available (race condition mitigation)
     // returns untranslated side
-    String newSide = promptForSide2(sideConfig.getValueString());
+    String newSide = promptForSide(sideConfig.getValueString());
 
     if (newSide != null) {
       if (GameModule.getGameModule().isMultiplayerConnected()) {
@@ -759,10 +759,10 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   }
 
   protected String promptForSide() {
-    return promptForSide2("");
+    return promptForSide("");
   }
 
-  protected String promptForSide2(String checkSide) {
+  protected String promptForSide(String checkSide) {
 
     final ArrayList<String> availableSides = new ArrayList<>(sides);
     final ArrayList<String> alreadyTaken = new ArrayList<>();
