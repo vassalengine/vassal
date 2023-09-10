@@ -759,7 +759,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   }
 
   protected String promptForSide() {
-    return promptForSide2(null);
+    return promptForSide2("");
   }
 
   protected String promptForSide2(String checkSide) {
@@ -770,7 +770,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     boolean found = false;       // Set when we find a usable side
     String newSide = "";
 
-    if (checkSide == null) {
+    if (checkSide != null && checkSide == "") {
       fromWizard = false;
     }
     else {
