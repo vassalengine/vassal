@@ -759,10 +759,10 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   }
 
   protected String promptForSide() {
-    return promptForSide2();
+    return promptForSide2(null);
   }
 
-  protected String promptForSide2(String... checkSide) {
+  protected String promptForSide2(String checkSide) {
 
     final ArrayList<String> availableSides = new ArrayList<>(sides);
     final ArrayList<String> alreadyTaken = new ArrayList<>();
@@ -770,12 +770,12 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     boolean found = false;       // Set when we find a usable side
     String newSide = "";
 
-    if (checkSide.length == 0) {
+    if (checkSide == null) {
       fromWizard = false;
     }
     else {
       fromWizard = true;
-      newSide = checkSide[0];
+      newSide = checkSide;
     }
 
     while (newSide != null) { // Loops until a valid side is found or op is canceled (repeats side check to minimuse race condition window)
