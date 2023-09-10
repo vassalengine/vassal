@@ -21,6 +21,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 12676, "desc": "IncrementPropertly: Corrected bad wrap-around calculation when increment is negative" }
       ],
       "other_improvements": [
       ]
