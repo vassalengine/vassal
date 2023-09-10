@@ -469,11 +469,11 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
    // Drop into standard routine, starting with checking side is still available (race condition mitigation)
     // returns untranslated side
-    String newSide = promptForSide(sideConfig.getValueString());
+    final String newSide = promptForSide(sideConfig.getValueString());
 
     if (newSide != null) {
       if (GameModule.getGameModule().isMultiplayerConnected()) {
-        final Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.joined_side_2" : "PlayerRoster.joined_side", GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME), newSide));
+        final Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.joined_side_2" : "PlayerRoster.joined_side", GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME), translateSide(newSide)));
         c.execute();
       }
 
@@ -767,10 +767,9 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     final ArrayList<String> availableSides = new ArrayList<>(sides);
     final ArrayList<String> alreadyTaken = new ArrayList<>();
     boolean fromWizard;
-    boolean found = false;       // Set when we find a usable default side
     String newSide = "";
 
-    if (checkSide != null && checkSide == "") {
+    if (checkSide != null && checkSide.isEmpty()) {
       fromWizard = false;
     }
     else {
