@@ -759,7 +759,8 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   }
 
   protected String promptForSide() {
-    return promptForSide("");
+    final String x = "";
+    return promptForSide(x);
   }
 
   protected String promptForSide(String checkSide) {
