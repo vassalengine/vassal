@@ -796,7 +796,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         break;
       }
       else {
-        // Set up for another go...
+        // Set up for another try...
         availableSides.clear();
         availableSides.addAll(sides);
       }
