@@ -261,8 +261,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       return;
     }
 
-    String newSide = null;
-    newSide = promptForSide2(newSide);
+    String newSide = promptForSide();
     if ((newSide == null) || newSide.equals(mySide)) {
       return;
     }
@@ -470,7 +469,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
    // Drop into standard routine, starting with checking side is still available (race condition mitigation)
     // returns untranslated side
-    String newSide = promptForSide2(sideConfig.getValueString());
+    String newSide = promptForSide(sideConfig.getValueString());
 
     if (newSide != null) {
       if (GameModule.getGameModule().isMultiplayerConnected()) {
@@ -759,21 +758,20 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     return availableSides;
   }
 
-  protected String promptForSide2(String newSide) {
+  protected String promptForSide(String... checkSide) {
 
     final ArrayList<String> availableSides = new ArrayList<>(sides);
     final ArrayList<String> alreadyTaken = new ArrayList<>();
     boolean fromWizard;
     boolean found = false;       // Set when we find a usable side
+    String newSide = "";
 
-    if (newSide != null && newSide.isEmpty()) {
+    if (checkSide.length == 0) {
       fromWizard = false;
     }
     else {
       fromWizard = true;
-      if (newSide == null) {
-        newSide = "";
-      }
+      newSide = checkSide[0];
     }
 
     while (newSide != null) { // Loops until a valid side is found or op is canceled (repeats side check to minimuse race condition window)
