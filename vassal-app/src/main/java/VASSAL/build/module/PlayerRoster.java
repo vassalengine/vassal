@@ -261,7 +261,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       return;
     }
 
-    String newSide = promptForSide2();
+    String newSide = promptForSide();
     if ((newSide == null) || newSide.equals(mySide)) {
       return;
     }
