@@ -261,7 +261,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       return;
     }
 
-    String newSide = promptForSide();
+    String newSide = promptForSide2();
     if ((newSide == null) || newSide.equals(mySide)) {
       return;
     }
@@ -469,7 +469,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
    // Drop into standard routine, starting with checking side is still available (race condition mitigation)
     // returns untranslated side
-    String newSide = promptForSide(sideConfig.getValueString());
+    String newSide = promptForSide2(sideConfig.getValueString());
 
     if (newSide != null) {
       if (GameModule.getGameModule().isMultiplayerConnected()) {
@@ -759,6 +759,89 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   }
 
   protected String promptForSide(String... checkSide) {
+
+    final ArrayList<String> availableSides = new ArrayList<>(sides);
+    final ArrayList<String> alreadyTaken = new ArrayList<>();
+    boolean fromWizard;
+    boolean found = false;       // Set when we find a usable side
+    String newSide = "";
+
+    if (checkSide.length == 0) {
+      fromWizard = false;
+    }
+    else {
+      fromWizard = true;
+      newSide = checkSide[0];
+    }
+
+    while (newSide != null) { // Loops until a valid side is found or op is canceled (repeats side check to minimuse race condition window)
+
+      for (final PlayerInfo p : players) {
+        alreadyTaken.add(p.side);
+      }
+
+      /*
+       The while loop ensures that the selected side is re-checked here and only returned if the side is still available.
+       This prevents players switching to the same side if they enter the switch-side dialogue (below) at the same time,
+       narrowing the race condition window to network latency.
+      */
+      if (!newSide.isEmpty() && !alreadyTaken.contains(newSide)) {
+        // side is returned in English for sharing in the game.
+        newSide = untranslateSide(newSide);
+        break;
+      }
+      else {
+        // Set up for another go...
+        availableSides.clear();
+        availableSides.addAll(sides);
+      }
+
+      availableSides.removeAll(alreadyTaken);
+      String nextChoice = translatedObserver; // This will be our defaulted choice for the dropdown.
+
+      // If a "real" player side is available, we want to offer "the next one" as the default, rather than observer.
+      // Thus hotseat players can easily cycle through the player positions as they will appear successively as the default.
+      // Common names for Solitaire players (Solitaire, Solo, Referee) do not count as "real" player sides, and will be skipped.
+      // If we have no "next" side available to offer, we stay with the observer side as our default offering.
+      if (!fromWizard) {
+        final String mySide = getMySide(); // Get our own side, so we can find the "next" one
+        final int myidx = (mySide != null) ? sides.indexOf(mySide) : -1; // See if we have a current non-observe side.
+        int i = (myidx >= 0) ? ((myidx + 1) % sides.size()) : 0;   // If we do, start looking in the "next" slot, otherwise start at beginning.
+        for (int tries = 0; i != myidx && tries < sides.size(); i = (i + 1) % sides.size(), tries++) { // Wrap-around search of sides
+          final String s = sides.get(i);
+          if (!alreadyTaken.contains(s) && !isSoloSide(s)) {
+            nextChoice = sides.get(i); // Found an available slot that's not our current one and not a "solo" slot.
+            break;
+          }
+        }
+      }
+
+      availableSides.add(0, translatedObserver);
+
+      final GameModule g = GameModule.getGameModule();
+
+      newSide = (String) JOptionPane.showInputDialog(
+              g.getPlayerWindow(),
+              newSide.isEmpty() ? Resources.getString("PlayerRoster.switch_sides", getMyLocalizedSide()) : Resources.getString("PlayerRoster.switch_sides2", newSide, getMyLocalizedSide()), //$NON-NLS-1$
+              Resources.getString("PlayerRoster.choose_side"), //$NON-NLS-1$
+              JOptionPane.QUESTION_MESSAGE,
+              null,
+              availableSides.toArray(new String[0]),
+              nextChoice // Offer calculated most likely "next side" as the default
+      );
+
+      if (translatedObserver.equals(newSide)) { // Observer returns here, other returns are checked once more.
+        newSide = OBSERVER;
+        break;
+      }
+      else {
+        alreadyTaken.clear(); // prepare to loop again for exit check
+      }
+    }
+    return newSide;
+  }
+
+  protected String promptForSide2(String... checkSide) {
 
     final ArrayList<String> availableSides = new ArrayList<>(sides);
     final ArrayList<String> alreadyTaken = new ArrayList<>();
