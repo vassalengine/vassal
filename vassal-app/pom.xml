@@ -18,7 +18,7 @@
         <main.basedir>${project.basedir}${file.separator}..</main.basedir>
         <project.reporting.outputEncoding>${project.build.sourceEncoding}</project.reporting.outputEncoding>
         <version.batik>1.17</version.batik>
-        <clirr.nofork.comparison.version>3.6.19</clirr.nofork.comparison.version>
+        <clirr.nofork.comparison.version>3.7.0</clirr.nofork.comparison.version>
     </properties>
 
     <dependencyManagement>
