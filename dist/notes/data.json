@@ -24,6 +24,7 @@
         { "num": 12676, "desc": "IncrementProperty: Corrected bad wrap-around calculation when increment is negative" }
       ],
       "other_improvements": [
+        { "num": 12661, "desc": "Translate side names in change sides message" }
       ]
    },
    {
