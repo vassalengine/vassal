@@ -768,7 +768,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     final ArrayList<String> availableSides = new ArrayList<>(sides);
     final ArrayList<String> alreadyTaken = new ArrayList<>();
     boolean fromWizard;
-    boolean found = false;       // Set when we find a usable side
+    boolean found = false;       // Set when we find a usable default side
     String newSide = "";
 
     if (checkSide != null && checkSide == "") {
