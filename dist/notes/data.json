@@ -21,7 +21,8 @@
       "new_features": [
       ],
       "bug_fixes": [
-        { "num": 12676, "desc": "IncrementProperty: Corrected bad wrap-around calculation when increment is negative" }
+        { "num": 12676, "desc": "IncrementProperty: Corrected bad wrap-around calculation when increment is negative" },
+        { "num": 12659, "desc": "Translate current side before checking for \"next side\"" }
       ],
       "other_improvements": [
         { "num": 12661, "desc": "Translate side names in change sides message" }
