@@ -32,11 +32,7 @@ public class RemoteIncrementProperty extends IncrementProperty implements Remote
   protected PropertySource targetPropertySource;
 
   public RemoteIncrementProperty(IncrementProperty ip) {
-    this(ip.getProp(), ip.getRawValue(), ip.constraints);
-  }
-
-  public RemoteIncrementProperty(PropertyChangerConfigurer prop, String incr, Constraints constraints) {
-    super(prop, incr, constraints);
+    super(ip.getProp(), ip.getRawValue(), ip.constraints);
   }
 
   @Override
