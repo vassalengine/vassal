@@ -55,6 +55,10 @@ public class IncrementProperty implements PropertyChanger {
     return constraints;
   }
 
+  public void setConstraints(Constraints constraints) {
+    this.constraints = constraints;
+  }
+
   @Override
   public String getNewValue(String oldValue) {
     int value;
