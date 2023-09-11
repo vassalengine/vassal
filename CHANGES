@@ -1,7 +1,7 @@
 3.7.1 - ???
 
 * 12676: IncrementProperty: Corrected bad wrap-around calculation when
-  increment is negative
+    increment is negative
 * 12661: Translate side names in change sides message
 * 12659: Translate current side before checking for "next side"
 
