@@ -627,12 +627,19 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
    * To test specifically for Referee/Moderator, use isRefereeSide()
    */
   public static boolean isSoloSide(String side) {
+    // FIXME: A future version of Vassal may provide a Side Type attribute in Definition of Sides that would allow this function to be rationalised.
+    // See also isRefereeSide()
     return side.startsWith(Resources.getString("PlayerRoster.solitaire")) ||
             side.equals(Resources.getString("PlayerRoster.solo")) ||
             side.startsWith(Resources.getString("PlayerRoster.solo") + ":") ||
             side.startsWith(Resources.getString("PlayerRoster.moderator")) ||
             side.startsWith(Resources.getString("PlayerRoster.referee")) ||
-            ("," + GameModule.getGameModule().getLocalizedProperty("VassalSkipSideList") + ",").contains("," + side + ",");
+            side.startsWith(Resources.getString("PlayerRoster.auxiliarySidePrefix")) || // auxiliary side prefix
+            side.startsWith(SOLITAIRE) || // these checks needed in case a translated module has not localised these side names
+            side.startsWith(SOLO) ||
+            side.startsWith(SOLO + ":") ||
+            side.startsWith(MODERATOR) ||
+            side.startsWith(REFEREE);
   }
 
   /**
@@ -642,7 +649,9 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
    */
   public static boolean isRefereeSide(String side) {
     return side.startsWith(Resources.getString("PlayerRoster.moderator")) ||
-            side.startsWith(Resources.getString("PlayerRoster.referee"));
+            side.startsWith(Resources.getString("PlayerRoster.referee")) ||
+            side.startsWith(MODERATOR) || // these checks needed for a translated module has not localised these side names
+            side.startsWith(REFEREE);
   }
 
   /**
