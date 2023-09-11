@@ -53,10 +53,7 @@ import VASSAL.build.module.ToolbarMenu;
 import VASSAL.build.module.WizardSupport;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.folder.ModuleSubFolder;
-import VASSAL.build.module.gamepieceimage.ColorManager;
-import VASSAL.build.module.gamepieceimage.FontManager;
 import VASSAL.build.module.gamepieceimage.GamePieceImageDefinitions;
-import VASSAL.build.module.gamepieceimage.GamePieceLayoutsContainer;
 import VASSAL.build.module.index.IndexManager;
 import VASSAL.build.module.map.CounterDetailViewer;
 import VASSAL.build.module.metadata.AbstractMetaData;
@@ -89,7 +86,7 @@ import VASSAL.configure.AutoConfigurer;
 import VASSAL.configure.CompoundValidityChecker;
 import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.MandatoryComponent;
-import VASSAL.configure.SingleChildInstance;
+import VASSAL.configure.RecursiveSingleChildInstance;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.TextConfigurer;
@@ -106,7 +103,6 @@ import VASSAL.i18n.Resources;
 import VASSAL.launch.PlayerWindow;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
-import VASSAL.script.ScriptContainer;
 import VASSAL.script.expression.Expression;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.CRCUtils;
@@ -681,23 +677,7 @@ public class GameModule extends AbstractConfigurable
     validator = new CompoundValidityChecker(
       new MandatoryComponent(this, Documentation.class),
       new MandatoryComponent(this, GlobalOptions.class))
-      .append(new SingleChildInstance(this, ChessClockControl.class))
-      .append(new SingleChildInstance(this, Documentation.class))
-      .append(new SingleChildInstance(this, GlobalOptions.class))
-      .append(new SingleChildInstance(this, PrototypesContainer.class))
-      .append(new SingleChildInstance(this, ColorManager.class))
-      .append(new SingleChildInstance(this, FontManager.class))
-      .append(new SingleChildInstance(this, GamePieceImageDefinitions.class))
-      .append(new SingleChildInstance(this, GamePieceLayoutsContainer.class))
-      .append(new SingleChildInstance(this, ScriptContainer.class))
-      .append(new SingleChildInstance(this, GlobalTranslatableMessages.class))
-      .append(new SingleChildInstance(this, GlobalProperties.class))
-      .append(new SingleChildInstance(this, Language.class))
-      .append(new SingleChildInstance(this, Documentation.class))
-      .append(new SingleChildInstance(this, PlayerRoster.class))
-      .append(new SingleChildInstance(this, Chatter.class))
-      .append(new SingleChildInstance(this, KeyNamer.class))
-      .append(new SingleChildInstance(this, Localization.class));
+      .append(new RecursiveSingleChildInstance());
 
     addCommandEncoder(new ChangePropertyCommandEncoder(propsContainer));
   }
@@ -945,39 +925,6 @@ public class GameModule extends AbstractConfigurable
     addComponent(Chatter.class);
     addComponent(KeyNamer.class);
     addComponent(Language.class);
-  }
-
-  /**
-   * Return a list of Components that should never be deleted or duplicated via the UI
-   * This would be better to implement this via isxxxx() methods in AbstractConfigrable
-   * but not all of these components are AbstractConfigurable, Sigh.
-   *
-   * @return List of Component classes
-   */
-  public List<Class<?>> getEssentialComponents() {
-    return List.of(
-      Documentation.class,
-      PlayerRoster.class,
-      GlobalOptions.class,
-      GamePieceImageDefinitions.class,
-      GlobalProperties.class,
-      GlobalTranslatableMessages.class,
-      PrototypesContainer.class,
-      Chatter.class,
-      KeyNamer.class,
-      Language.class
-    );
-  }
-
-  /**
-   * Return a list of Components that should not be movable via the UI.
-   * Some Components are forced to the start of the Build sequence so that they are available
-   * for all subsequent components as they build
-   *
-   * @return
-   */
-  public List<Class<?>> getImmobileComponents() {
-    return new ArrayList<>();
   }
 
   /**

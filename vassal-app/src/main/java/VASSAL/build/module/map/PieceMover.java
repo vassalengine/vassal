@@ -2338,4 +2338,14 @@ public class PieceMover extends AbstractBuildable
       setCargo(tempCargo);
     }
   }
+
+  @Override
+  public boolean isMandatory() {
+    return true;
+  }
+
+  @Override
+  public boolean isUnique() {
+    return true;
+  }
 }

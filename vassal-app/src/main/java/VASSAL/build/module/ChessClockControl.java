@@ -1006,4 +1006,10 @@ public class ChessClockControl extends AbstractConfigurable
       }
     }
   }
+
+  /** There can be only one! */
+  @Override
+  public boolean isUnique() {
+    return true;
+  }
 }

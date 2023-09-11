@@ -103,4 +103,13 @@ public class ScriptContainer extends AbstractConfigurable {
     return data;
   }
 
+  @Override
+  public boolean isMandatory() {
+    return true;
+  }
+
+  @Override
+  public boolean isUnique() {
+    return true;
+  }
 }

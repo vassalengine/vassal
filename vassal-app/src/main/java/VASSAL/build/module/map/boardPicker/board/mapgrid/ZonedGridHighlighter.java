@@ -110,4 +110,14 @@ public class ZonedGridHighlighter extends AbstractConfigurable  {
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[] {ZoneHighlight.class};
   }
+
+  @Override
+  public boolean isMandatory() {
+    return true;
+  }
+
+  @Override
+  public boolean isUnique() {
+    return true;
+  }
 }

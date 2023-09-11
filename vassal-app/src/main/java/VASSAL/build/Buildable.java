@@ -54,4 +54,30 @@ public interface Buildable {
    * @return an XML element from which this component can be built
    */
   Element getBuildElement(Document doc);
+
+  /**
+   * Is this component a reqired component within its parent?
+   *
+   * @return  true if component is mandatory
+   */
+  default boolean isMandatory() {
+    return false;
+  }
+
+  /**
+   * Is this component allowed to be moved around the Configure Tree?
+   * @return true is component is movable
+   */
+  default boolean isMovable() {
+    return true;
+  }
+
+  /**
+   * Does this component need to be unique within it's parent?
+   * @return
+   */
+  default boolean isUnique() {
+    return false;
+  }
+
 }
