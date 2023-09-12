@@ -151,4 +151,14 @@ public class Documentation extends AbstractConfigurable {
   public String getAttributeValueString(String name) {
     return null;
   }
+
+  @Override
+  public boolean isUnique() {
+    return true;
+  }
+
+  @Override
+  public boolean isMandatory() {
+    return true;
+  }
 }

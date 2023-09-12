@@ -193,4 +193,14 @@ public class PrototypesContainer extends AbstractConfigurable {
     data.setPrefix(""); //$NON-NLS-1$
     return data;
   }
+
+  @Override
+  public boolean isMandatory() {
+    return true;
+  }
+
+  @Override
+  public boolean isUnique() {
+    return true;
+  }
 }

@@ -1031,4 +1031,14 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     c.setAttributeTranslatable(SIDES, true);
     return c;
   }
+
+  @Override
+  public boolean isMandatory() {
+    return true;
+  }
+
+  @Override
+  public boolean isUnique() {
+    return true;
+  }
 }

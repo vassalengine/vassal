@@ -196,4 +196,14 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
     }
     return l;
   }
+
+  @Override
+  public boolean isMandatory() {
+    return true;
+  }
+
+  @Override
+  public boolean isUnique() {
+    return true;
+  }
 }

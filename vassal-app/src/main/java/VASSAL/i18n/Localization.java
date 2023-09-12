@@ -243,5 +243,14 @@ public class Localization extends Language {
     translations.remove(t);
   }
 
+  @Override
+  public boolean isMandatory() {
+    return true;
+  }
+
+  @Override
+  public boolean isUnique() {
+    return true;
+  }
 }
 

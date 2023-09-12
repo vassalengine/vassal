@@ -160,4 +160,14 @@ public class FontManager extends AbstractConfigurable {
     }
     return names.toArray(new String[0]);
   }
+
+  @Override
+  public boolean isUnique() {
+    return true;
+  }
+
+  @Override
+  public boolean isMandatory() {
+    return true;
+  }
 }

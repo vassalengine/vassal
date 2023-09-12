@@ -173,4 +173,14 @@ public class GlobalTranslatableMessages extends AbstractConfigurable implements 
     }
     return l;
   }
+
+  @Override
+  public boolean isMandatory() {
+    return true;
+  }
+
+  @Override
+  public boolean isUnique() {
+    return true;
+  }
 }

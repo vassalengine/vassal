@@ -318,4 +318,14 @@ public class LayeredPieceCollection extends AbstractConfigurable implements Comp
     l.addAll(Arrays.asList(collection.layerOrder));
     return l;
   }
+
+  @Override
+  public boolean isMandatory() {
+    return true;
+  }
+
+  @Override
+  public boolean isUnique() {
+    return true;
+  }
 }
