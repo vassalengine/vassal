@@ -1546,15 +1546,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
   }
 
-  /*
-   * protected void performDrop(Configurable target) { DefaultMutableTreeNode dragNode = getTreeNode(dragging);
-   * DefaultMutableTreeNode targetNode = getTreeNode(target); Configurable parent = null; int index = 0; if
-   * (isValidParent(target, dragging)) { parent = target; index = targetNode.getChildCount(); if (dragNode.getParent() ==
-   * targetNode) { index--; } } else if (targetNode.getParent() != null && isValidParent(getParent(targetNode),
-   * dragging)) { parent = (Configurable) ((DefaultMutableTreeNode) targetNode.getParent()).getUserObject(); index =
-   * targetNode.getParent().getIndex(targetNode); } if (parent != null) { remove(getParent(dragNode), dragging);
-   * insert(parent, dragging, index); } dragging = null; }
-   */
   public DefaultMutableTreeNode getTreeNode(Configurable target) {
     return nodes.get(target);
   }
@@ -1573,14 +1564,19 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
    * A mandatory component can be deleted if there is more than one of them with the same parent
    * */
   protected boolean isDeleteAllowed(Configurable target) {
+    if (!target.isMandatory()) {
+      return true;
+    }
+
     if (target instanceof AbstractBuildable) {
       final Buildable parent = ((AbstractBuildable) target).getAncestor();
       if (parent instanceof AbstractBuildable) {
         final int count = ((AbstractBuildable) parent).getComponentsOf(target.getClass()).size();
-        return !target.isMandatory() || count > 1;
+        return count > 1;
       }
     }
-    return !target.isMandatory();
+
+    return false;
   }
 
   /** Is the Component allowed to be duplicated? */
