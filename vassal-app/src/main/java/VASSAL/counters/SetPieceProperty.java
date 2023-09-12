@@ -76,10 +76,10 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
   protected GlobalSetter globalSetter;
   protected PropertyExpression propertiesFilter;
   protected boolean restrictRange;
-  protected boolean fixedRange = true;
+  protected boolean fixedRange;
   protected int range;
   protected String rangeProperty = "";
-  protected boolean overrideConstrants = false;
+  protected boolean overrideConstraints;
 
   protected Decorator dec;
 
@@ -145,7 +145,7 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
     fixedRange = sd.nextBoolean(true);
     rangeProperty = sd.nextToken("");
     globalSetter.setSelectFromDeckExpression(sd.nextToken("-1"));
-    overrideConstrants = sd.nextBoolean(false);
+    overrideConstraints = sd.nextBoolean(false);
   }
 
   @Override
@@ -162,7 +162,8 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
     se.append(fixedRange);
     se.append(rangeProperty);
     se.append(globalSetter.getSelectFromDeckExpression());
-    se.append(overrideConstrants);
+    se.append(overrideConstraints);
+
     return ID + se.getValue();
   }
 
@@ -372,22 +373,22 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
   //
   @Override
   public int getMaximumValue() {
-    return (overrideConstrants || currentDPTarget == null) ? super.getMaximumValue() : currentDPTarget.getMaximumValue();
+    return (overrideConstraints || currentDPTarget == null) ? super.getMaximumValue() : currentDPTarget.getMaximumValue();
   }
 
   @Override
   public int getMinimumValue() {
-    return (overrideConstrants || currentDPTarget == null)  ? super.getMinimumValue() : currentDPTarget.getMinimumValue();
+    return (overrideConstraints || currentDPTarget == null)  ? super.getMinimumValue() : currentDPTarget.getMinimumValue();
   }
 
   @Override
   public boolean isNumeric() {
-    return (overrideConstrants || currentDPTarget == null)  ? super.isNumeric() : currentDPTarget.isNumeric();
+    return (overrideConstraints || currentDPTarget == null)  ? super.isNumeric() : currentDPTarget.isNumeric();
   }
 
   @Override
   public boolean isWrap() {
-    return (overrideConstrants || currentDPTarget == null)  ? super.isWrap() : currentDPTarget.isWrap();
+    return (overrideConstraints || currentDPTarget == null)  ? super.isWrap() : currentDPTarget.isWrap();
   }
 
   @Override
@@ -410,7 +411,7 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
     if (! Objects.equals(range, c.range)) return false;
     if (! Objects.equals(fixedRange, c.fixedRange)) return false;
     if (! Objects.equals(rangeProperty, c.rangeProperty)) return false;
-    if (! Objects.equals(overrideConstrants, c.overrideConstrants)) return false;
+    if (! Objects.equals(overrideConstraints, c.overrideConstraints)) return false;
     return Objects.equals(globalSetter.getSelectFromDeckExpression(), c.globalSetter.getSelectFromDeckExpression());
   }
 
@@ -463,7 +464,7 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
       nameConfig.setHintKey("Editor.SetPieceProperty.property_name_hint");
       controls.add("Editor.SetPieceProperty.property_name", nameConfig);
 
-      overrideConfig = new BooleanConfigurer(m.overrideConstrants);
+      overrideConfig = new BooleanConfigurer(m.overrideConstraints);
       controls.add("Editor.SetPieceProperty.override_constraints", overrideConfig);
 
       numericLabel = new JLabel(Resources.getString("Editor.DynamicProperty.is_numeric"));
