@@ -490,7 +490,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     final ArrayList<String> alreadyTaken = new ArrayList<>();
 
     for (final PlayerInfo p : players) {
-      alreadyTaken.add(p.side);
+      alreadyTaken.add(p.getLocalizedSide());
     }
 
     availableSides.removeAll(alreadyTaken);
@@ -749,7 +749,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     final ArrayList<String> alreadyTaken = new ArrayList<>();
 
     for (final PlayerInfo p : players) {
-      alreadyTaken.add(p.side);
+      alreadyTaken.add(p.getLocalizedSide());
     }
 
     availableSides.removeAll(alreadyTaken);
@@ -761,7 +761,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     final ArrayList<String> alreadyTaken = new ArrayList<>();
 
     for (final PlayerInfo p : players) {
-      alreadyTaken.add(p.side);
+      alreadyTaken.add(p.getLocalizedSide());
     }
 
     availableSides.removeAll(alreadyTaken);
