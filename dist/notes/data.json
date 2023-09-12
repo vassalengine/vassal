@@ -27,6 +27,7 @@
         { "num": 12582, "desc": "Corrected divide-by-zero problem for Zones defined by zero-point polygons" }
       ],
       "other_improvements": [
+        { "num": 12670, "desc": "Prevent essential components being accidentally deleted" },
         { "num": 12661, "desc": "Translate side names in change sides message" }
       ]
    },
