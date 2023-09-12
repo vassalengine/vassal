@@ -1,11 +1,12 @@
 3.7.1 - ???
 
-* 12582: Corrected divide-by-zero problem for Zones defined by zero-point
-    polygons
 * 12676: IncrementProperty: Corrected bad wrap-around calculation when
     increment is negative
 * 12661: Translate side names in change sides message
 * 12659: Translate current side before checking for "next side"
+* 12645: Respect localization when filtering sides
+* 12582: Corrected divide-by-zero problem for Zones defined by zero-point
+    polygons
 
 3.7.0 - 7 September 2023
 
