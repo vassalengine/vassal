@@ -21,6 +21,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 12582, "desc": "Corrected divide-by-zero problem for Zones defined by zero-point polygons" },
         { "num": 12676, "desc": "IncrementProperty: Corrected bad wrap-around calculation when increment is negative" },
         { "num": 12659, "desc": "Translate current side before checking for \"next side\"" }
       ],
