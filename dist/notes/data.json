@@ -25,6 +25,7 @@
         { "num": 12659, "desc": "Translate current side before checking for \"next side\"" },
         { "num": 12645, "desc": "Respect localization when filtering sides" },
         { "num": 12582, "desc": "Corrected divide-by-zero problem for Zones defined by zero-point polygons" },
+        { "num": 12474, "desc": "Fixed NPE when moving EditablePiece which isn't on a map" },
         { "num": 12324, "desc": "Fixed ClassCastException caused by reordering columns in Delayed Notes table" }
       ],
       "other_improvements": [

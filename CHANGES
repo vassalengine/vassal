@@ -8,6 +8,7 @@
 * 12645: Respect localization when filtering sides
 * 12582: Corrected divide-by-zero problem for Zones defined by zero-point
     polygons
+* 12474: Fixed NPE when moving EditablePiece which isn't on a map
 * 12324: Fixed ClassCastException caused by reordering columns in Delayed
     Notes table
 
