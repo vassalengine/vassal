@@ -101,4 +101,14 @@ public class ForwardToKeyBuffer implements Buildable, KeyListener {
       }
     }
   }
+
+  @Override
+  public boolean isMandatory() {
+    return true;
+  }
+
+  @Override
+  public boolean isUnique() {
+    return true;
+  }
 }

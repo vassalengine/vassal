@@ -1380,4 +1380,14 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       }
     }
   }
+
+  @Override
+  public boolean isMandatory() {
+    return true;
+  }
+
+  @Override
+  public boolean isUnique() {
+    return true;
+  }
 }

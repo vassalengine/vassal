@@ -54,10 +54,7 @@ import VASSAL.build.module.ToolbarMenu;
 import VASSAL.build.module.WizardSupport;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.folder.ModuleSubFolder;
-import VASSAL.build.module.gamepieceimage.ColorManager;
-import VASSAL.build.module.gamepieceimage.FontManager;
 import VASSAL.build.module.gamepieceimage.GamePieceImageDefinitions;
-import VASSAL.build.module.gamepieceimage.GamePieceLayoutsContainer;
 import VASSAL.build.module.index.IndexManager;
 import VASSAL.build.module.map.CounterDetailViewer;
 import VASSAL.build.module.metadata.AbstractMetaData;
@@ -91,7 +88,7 @@ import VASSAL.configure.AutoConfigurer;
 import VASSAL.configure.CompoundValidityChecker;
 import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.MandatoryComponent;
-import VASSAL.configure.SingleChildInstance;
+import VASSAL.configure.RecursiveSingleChildInstance;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.TextConfigurer;
@@ -108,7 +105,6 @@ import VASSAL.i18n.Resources;
 import VASSAL.launch.PlayerWindow;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
-import VASSAL.script.ScriptContainer;
 import VASSAL.script.expression.Expression;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.CRCUtils;
@@ -699,23 +695,7 @@ public class GameModule extends AbstractConfigurable
     validator = new CompoundValidityChecker(
       new MandatoryComponent(this, Documentation.class),
       new MandatoryComponent(this, GlobalOptions.class))
-      .append(new SingleChildInstance(this, ChessClockControl.class))
-      .append(new SingleChildInstance(this, Documentation.class))
-      .append(new SingleChildInstance(this, GlobalOptions.class))
-      .append(new SingleChildInstance(this, PrototypesContainer.class))
-      .append(new SingleChildInstance(this, ColorManager.class))
-      .append(new SingleChildInstance(this, FontManager.class))
-      .append(new SingleChildInstance(this, GamePieceImageDefinitions.class))
-      .append(new SingleChildInstance(this, GamePieceLayoutsContainer.class))
-      .append(new SingleChildInstance(this, ScriptContainer.class))
-      .append(new SingleChildInstance(this, GlobalTranslatableMessages.class))
-      .append(new SingleChildInstance(this, GlobalProperties.class))
-      .append(new SingleChildInstance(this, Language.class))
-      .append(new SingleChildInstance(this, Documentation.class))
-      .append(new SingleChildInstance(this, PlayerRoster.class))
-      .append(new SingleChildInstance(this, Chatter.class))
-      .append(new SingleChildInstance(this, KeyNamer.class))
-      .append(new SingleChildInstance(this, Localization.class));
+      .append(new RecursiveSingleChildInstance());
 
     addCommandEncoder(new ChangePropertyCommandEncoder(propsContainer));
   }

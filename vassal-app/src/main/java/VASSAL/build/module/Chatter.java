@@ -852,6 +852,16 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
   public void drop(DropTargetDropEvent dtde) {
     GameModule.getGameModule().getGameState().dropFile(dtde);
   }
+
+  @Override
+  public boolean isMandatory() {
+    return true;
+  }
+
+  @Override
+  public boolean isUnique() {
+    return true;
+  }
 }
 
 

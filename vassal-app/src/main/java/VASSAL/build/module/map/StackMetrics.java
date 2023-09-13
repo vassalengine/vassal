@@ -677,4 +677,14 @@ public class StackMetrics extends AbstractConfigurable {
     GameModule.getGameModule().getIndexManager().pieceMoved(moving, map);
     return comm;
   }
+
+  @Override
+  public boolean isMandatory() {
+    return true;
+  }
+
+  @Override
+  public boolean isUnique() {
+    return true;
+  }
 }

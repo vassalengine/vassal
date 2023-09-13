@@ -160,6 +160,16 @@ public class FontManager extends AbstractConfigurable {
     return names.toArray(new String[0]);
   }
 
+  @Override
+  public boolean isUnique() {
+    return true;
+  }
+
+  @Override
+  public boolean isMandatory() {
+    return true;
+  }
+
   public static String[] getAllowableFonts() {
     // Do not cache the Allowable fonts, new ones may be added to the module
     ALLOWABLE_FONTS = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();

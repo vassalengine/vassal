@@ -158,4 +158,14 @@ public class GamePieceImageDefinitions extends AbstractConfigurable {
     return definitions.getGenericDefn(defnName);
 
   }
+
+  @Override
+  public boolean isUnique() {
+    return true;
+  }
+
+  @Override
+  public boolean isMandatory() {
+    return true;
+  }
 }

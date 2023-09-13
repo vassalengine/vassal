@@ -101,4 +101,14 @@ public class SelectionHighlighters extends AbstractConfigurable {
   public Configurer getConfigurer() {
     return null;
   }
+
+  @Override
+  public boolean isMandatory() {
+    return true;
+  }
+
+  @Override
+  public boolean isUnique() {
+    return true;
+  }
 }

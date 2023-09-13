@@ -949,4 +949,14 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
       s.add(c.getValueString());
     }
   }
+
+  @Override
+  public boolean isMandatory() {
+    return true;
+  }
+
+  @Override
+  public boolean isUnique() {
+    return true;
+  }
 }
