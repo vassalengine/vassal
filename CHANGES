@@ -8,6 +8,8 @@
 * 12645: Respect localization when filtering sides
 * 12582: Corrected divide-by-zero problem for Zones defined by zero-point
     polygons
+* 12324: Fixed ClassCastException caused by reordering columns in Delayed
+    Notes table
 
 3.7.0 - 7 September 2023
 
