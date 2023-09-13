@@ -24,7 +24,6 @@ import VASSAL.command.RemovePiece;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.NamedKeyStroke;
 
 import javax.swing.KeyStroke;
 import java.util.ArrayList;

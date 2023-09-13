@@ -32,7 +32,6 @@ import VASSAL.counters.PieceCloner;
 import VASSAL.counters.PlaceMarker;
 import VASSAL.counters.Properties;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.NamedKeyStroke;
 
 import java.util.ArrayList;
 import java.util.HashMap;
