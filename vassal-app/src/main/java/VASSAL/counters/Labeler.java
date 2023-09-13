@@ -133,6 +133,11 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     return labelKey;
   }
 
+  /** Can this Label be changed? */
+  public boolean canChange() {
+    return getLabelKey() != null && !NamedKeyStroke.NULL_KEYSTROKE.equals(getLabelKey());
+  }
+
   @Override
   public void mySetType(String type) {
     commands = null;

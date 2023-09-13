@@ -24,6 +24,7 @@ import VASSAL.command.RemovePiece;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.NamedKeyStroke;
 
 import javax.swing.KeyStroke;
 import java.util.ArrayList;
@@ -179,6 +180,13 @@ public class Replace extends PlaceMarker {
             // Match DP's on property name only if Copy by name option is selected
             if (candidate instanceof DynamicProperty && copyDPsByName) {
               if (((DynamicProperty) candidate).getKey().equals(((DynamicProperty) currentMarker).getKey())) {
+                currentMarker.mySetState(candidate.myGetState());
+                candidate = null;
+              }
+            }
+            // Labels are only state matched if they are adjustable. Note this matches the behaviour of the Game Refresher
+            else if (currentMarker instanceof Labeler) {
+              if (((Labeler) currentMarker).canChange()) {
                 currentMarker.mySetState(candidate.myGetState());
                 candidate = null;
               }
