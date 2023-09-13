@@ -772,7 +772,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     // Common names for Solitaire players (Solitaire, Solo, Referee) do not count as "real" player sides, and will be skipped.
     // If we have no "next" side available to offer, we stay with the observer side as our default offering.
 
-    // Automated method: set VassalNextSide (may be a Global Option ie private or a Module Global Property)
+    // Automated method: set VassalNextSide (a Module Global Property)
     // If not found / available method 2 is used to find likely next side
 
     // Reserved property VassalNextSide may override hotseat default; must be an available side
