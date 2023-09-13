@@ -490,26 +490,8 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     final ArrayList<String> availableSides = new ArrayList<>(sides);
     final ArrayList<String> alreadyTaken = new ArrayList<>();
 
-    for (final PlayerInfo p : players) {
-      alreadyTaken.add(p.side);
-    }
+    setAvailableSides();
 
-     /*
-     Scan for excluded sides based on translation of property VassalExcludeSide_<Side>
-     add such to the alreadyTaken list
-     Note that <observer> can't be excluded as it is added later
-     Usage:
-      For scenario-specific exclusion, define VassalExcludeSide_ properties in Scenario Options
-      For dynamic exclusion, define as module Global Properties
-    */
-    for (int i = 0; i < sides.size(); i++) {
-      final String s = sides.get(i);
-      if (!alreadyTaken.contains(s) && StringUtils.equalsIgnoreCase((String) GameModule.getGameModule().getProperty("VassalExcludeSide_" + (untranslatedSides == null ? s : untranslatedSides[i])), "true")) {
-        alreadyTaken.add(s); // exclude side
-      }
-    }
-
-    availableSides.removeAll(alreadyTaken);
     availableSides.add(0, translatedObserver);
     sideConfig = new StringEnumConfigurer(null,
       Resources.getString("PlayerRoster.join_game_as"), //$NON-NLS-1$
@@ -772,7 +754,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     return availableSides;
   }
 
-  protected String promptForSide() {
+  public void setAvailableSides() {
     final ArrayList<String> availableSides = new ArrayList<>(sides);
     final ArrayList<String> alreadyTaken = new ArrayList<>();
 
@@ -788,14 +770,24 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       For scenario-specific exclusion, define VassalExcludeSide_ properties in Scenario Options
       For dynamic exclusion, define as module Global Properties
     */
+    final GameModule gm = GameModule.getGameModule();
     for (int i = 0; i < sides.size(); i++) {
       final String s = sides.get(i);
-      if (!alreadyTaken.contains(s) && StringUtils.equalsIgnoreCase((String) GameModule.getGameModule().getProperty("VassalExcludeSide_" + (untranslatedSides == null ? s : untranslatedSides[i])), "true")) {
+      if (!alreadyTaken.contains(s) && StringUtils.equalsIgnoreCase((String) gm.getProperty("VassalExcludeSide_" + (untranslatedSides == null ? s : untranslatedSides[i])), "true")) {
         alreadyTaken.add(s); // exclude side
       }
     }
 
     availableSides.removeAll(alreadyTaken);
+
+    return;
+  }
+
+  protected String promptForSide() {
+    final ArrayList<String> availableSides = new ArrayList<>(sides);
+    final ArrayList<String> alreadyTaken = new ArrayList<>();
+
+    setAvailableSides();
 
     // If a "real" player side is available, we want to offer "the next one" as the default, rather than observer.
     // Thus hotseat players can easily cycle through the player positions as they will appear successively as the default.
