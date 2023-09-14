@@ -1,5 +1,6 @@
 3.7.1 - ???
 
+* 12696: Removed "Indexing pieces" message
 * 12676: IncrementProperty: Corrected bad wrap-around calculation when
     increment is negative
 * 12670: Prevent essential components being accidentally deleted
