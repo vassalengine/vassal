@@ -780,10 +780,9 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     }
 
     while (newSide != null) { // Loops until a valid side is found or op is canceled (repeats side check to minimuse race condition window)
-
-    for (final PlayerInfo p : players) {
-      alreadyTaken.add(p.getLocalizedSide());
-    }
+      for (final PlayerInfo p : players) {
+        alreadyTaken.add(p.getLocalizedSide());
+      }
 
       /*
        The while loop ensures that the selected side is re-checked here and only returned if the side is still available.
