@@ -28,6 +28,7 @@ import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.PlayerHand;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.font.FontOrganizer;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.build.module.properties.SumProperties;
@@ -42,6 +43,7 @@ import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringEnum;
+import VASSAL.configure.StructuredFontConfigurer;
 import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.BasicPiece;
@@ -101,7 +103,7 @@ import java.util.List;
  */
 public class CounterDetailViewer extends AbstractConfigurable implements Drawable, DragSourceMotionListener, MouseMotionListener, MouseListener, KeyListener {
 
-  public static final String LATEST_VERSION = "4";                //NON-NLS
+  public static final String LATEST_VERSION = "5";                //NON-NLS
   public static final String USE_KEYBOARD = "ShowCounterDetails"; //NON-NLS
   public static final String PREFERRED_DELAY = "PreferredDelay";  //NON-NLS
 
@@ -150,6 +152,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public static final String BG_COLOR = "bgColor"; //NON-NLS
   public static final String BORDER_COLOR = "borderColor"; //NON-NLS
   public static final String FONT_SIZE = "fontSize"; //NON-NLS
+  public static final String FONT = "font";
   public static final String EXTRA_TEXT_PADDING = "extraTextPadding"; //NON-NLS
   public static final String PROPERTY_FILTER = "propertyFilter"; //NON-NLS
   public static final String STOP_AFTER_SHOWING = "stopAfterShowing"; //NON-NLS
@@ -237,7 +240,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected Color bgColor;
   protected Color borderColor = Color.black;
   protected int fontSize = 9;
-  protected Font font = new Font("Dialog", Font.PLAIN, fontSize); //NON-NLS
+  protected Font font = new Font(FontOrganizer.VASSAL_DEFAULT_FONT, Font.PLAIN, fontSize); //NON-NLS
   protected PropertyExpression propertyFilter = new PropertyExpression();
 
   protected Rectangle bounds = new Rectangle();
@@ -268,6 +271,10 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     });
 
     delayTimer.setRepeats(false);
+  }
+
+  private boolean isPreVersion5() {
+    return List.of("1", "2", "3", "4").contains(version);
   }
 
   /**
@@ -1344,6 +1351,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       borderColor = fgColor;
     }
 
+    // No migration for version 4 to 5, font is already set
+
     version = LATEST_VERSION;
   }
 
@@ -1380,6 +1389,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       VERTICAL_BOTTOM_TEXT,
       SHOW_TEXT_SINGLE_DEPRECATED,
       FONT_SIZE,
+      FONT,
       SUMMARY_REPORT_FORMAT,
       COUNTER_REPORT_FORMAT,
       EMPTY_HEX_REPORT_FORMAT,
@@ -1438,6 +1448,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       Resources.getString("Editor.MouseOverStackViewer.vertical_bottom_text"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.display_text_obsolete"), //$NON-NLS-1$ Obsolete
       Resources.getString("Editor.font_size"), //$NON-NLS-1$
+      Resources.getString("Editor.TextLabel.label_font"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.summary_text"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.text_below"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.text_empty"), //$NON-NLS-1$
@@ -1497,6 +1508,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       Integer.class,
       Boolean.class,
       Integer.class,
+      FontConfig.class,
       ReportFormatConfig.class,
       CounterFormatConfig.class,
       EmptyFormatConfig.class,
@@ -1588,6 +1600,17 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       final Configurer configurer = new FormattedExpressionConfigurer(key, name, new String[] {BasicPiece.PIECE_NAME});
       configurer.setContextLevel(Configurer.ContextLevel.PIECE);
       return configurer;
+    }
+  }
+
+  public static class FontConfig implements ConfigurerFactory {
+    @Override
+    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+      final StructuredFontConfigurer config = new StructuredFontConfigurer(key, name);
+      config.setPlainOnly(false);
+      config.setModuleSpecific(true);
+      config.setLimitedSizes(false);
+      return config;
     }
   }
 
@@ -1913,9 +1936,18 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         value = Integer.valueOf((String) value);
       }
       if (value != null) {
-        fontSize = (Integer) value;
-        font = font.deriveFont((float) fontSize);
+        if (isPreVersion5()) {
+          fontSize = (Integer) value;
+          font = font.deriveFont((float) fontSize);
+        }
       }
+    }
+    else if (FONT.equals(name)) {
+      if (value instanceof String) {
+        value = StructuredFontConfigurer.decode((String) value);
+      }
+      font = (Font) value;
+      fontSize = font.getSize();
     }
     else if (PROPERTY_FILTER.equals(name)) {
       propertyFilter.setExpression((String) value);
@@ -2100,6 +2132,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     else if (FONT_SIZE.equals(name)) {
       return String.valueOf(fontSize);
     }
+    else if (FONT.equals(name)) {
+      return StructuredFontConfigurer.encode(font);
+    }
     else if (PROPERTY_FILTER.equals(name)) {
       return propertyFilter.getExpression();
     }
@@ -2142,7 +2177,10 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     if (List.of(CENTER_PIECES_VERTICALLY, BORDER_WIDTH, DRAW_PIECES_AT_ZOOM, VERTICAL_OFFSET).contains(name)) {
       return () -> drawPieces;
     }
-    else if (List.of(FONT_SIZE, SUMMARY_REPORT_FORMAT, COUNTER_REPORT_FORMAT, ENABLE_HTML, CENTER_TEXT, EXTRA_TEXT_PADDING, VERTICAL_TOP_TEXT, VERTICAL_BOTTOM_TEXT, STRETCH_WIDTH_SUMMARY).contains(name)) {
+    else if (FONT_SIZE.equals(name)) {
+      return () -> showText && isPreVersion5();
+    }
+    else if (List.of(FONT, SUMMARY_REPORT_FORMAT, COUNTER_REPORT_FORMAT, ENABLE_HTML, CENTER_TEXT, EXTRA_TEXT_PADDING, VERTICAL_TOP_TEXT, VERTICAL_BOTTOM_TEXT, STRETCH_WIDTH_SUMMARY).contains(name)) {
       return () -> showText;
     }
     else if (STRETCH_WIDTH_PIECES.equals(name)) {

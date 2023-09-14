@@ -152,6 +152,10 @@ public class StructuredFontConfigurer extends FontConfigurer {
     this.limitedSizes = limitedSizes;
   }
 
+  public void setSizeEditable(boolean editable) {
+    fontSizeConfig.setEditable(editable);
+  }
+
   @Override
   public void setValue(String s) {
     setValue(decode(s));
