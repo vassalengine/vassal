@@ -538,9 +538,10 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
         log(Resources.getString(options.contains("DeleteOldDecks") ? "GameRefresher.deletable_decks" : "GameRefresher.deletable_decks_2", deletable)); //NON-NLS
         log(Resources.getString(options.contains("AddNewDecks") ? "GameRefresher.addable_decks" : "GameRefresher.addable_decks_2", addable)); //NON-NLS
 
-        GameModule.getGameModule().fireKeyStroke(NamedKeyStroke.of("VassalRefreshGHK"));
       }
     }
+    // After all refreshing, allow a custom finish...
+    GameModule.getGameModule().fireKeyStroke(NamedKeyStroke.of("VassalRefreshGHK"));
   }
 
 
