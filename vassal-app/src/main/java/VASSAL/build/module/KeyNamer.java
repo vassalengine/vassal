@@ -110,4 +110,14 @@ public class KeyNamer implements Buildable {
     }
     return StringUtils.capitalize(sb.toString().replace(' ', '_'));
   }
+
+  @Override
+  public boolean isMandatory() {
+    return true;
+  }
+
+  @Override
+  public boolean isUnique() {
+    return true;
+  }
 }

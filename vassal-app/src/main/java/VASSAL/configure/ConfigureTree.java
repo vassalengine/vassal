@@ -34,7 +34,6 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.build.module.folder.GlobalPropertyFolder;
 import VASSAL.build.module.folder.PrototypeFolder;
-import VASSAL.build.module.gamepieceimage.GamePieceImage;
 import VASSAL.build.module.map.CounterDetailViewer;
 import VASSAL.build.module.map.DeckGlobalKeyCommand;
 import VASSAL.build.module.map.DrawPile;
@@ -64,7 +63,9 @@ import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.SwingUtils;
+
 import net.miginfocom.swing.MigLayout;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,6 +106,7 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Frame;
@@ -725,6 +727,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           d.setVisible(true);
         }
       };
+      a.setEnabled(isMoveAllowed(target));
     }
     return a;
   }
@@ -742,6 +745,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           updateEditMenu();
         }
       };
+      a.setEnabled(isDeleteAllowed(target));
     }
     return a;
   }
@@ -759,6 +763,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           updateEditMenu();
         }
       };
+      a.setEnabled(isDeleteAllowed(target));
     }
     return a;
   }
@@ -858,6 +863,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected boolean isValidPasteTarget(Configurable target, DefaultMutableTreeNode sourceNode) {
     if (sourceNode == null) {
+      return false;
+    }
+
+    // Do not allow Immobile components to be moved
+    if (!((Configurable) sourceNode.getUserObject()).isMovable()) {
       return false;
     }
 
@@ -1036,7 +1046,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         final DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) targetNode.getParent();
         if (parentNode != null) {
 
-          if (!(target instanceof GamePieceImage)) {
+          if (isDuplicateAllowed(target)) {
             l.add(buildAddAction((Configurable) parentNode.getUserObject(), target.getClass(), "Editor.ConfigureTree.add_duplicate", parentNode.getIndex(targetNode) + 1, target));
           }
 
@@ -1232,7 +1242,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected Action buildDeleteAction(final Configurable target) {
     final DefaultMutableTreeNode targetNode = getTreeNode(target);
     if (targetNode.getParent() != null) {
-      return new AbstractAction(deleteCmd) {
+      final Action a = new AbstractAction(deleteCmd) {
         private static final long serialVersionUID = 1L;
 
         @Override
@@ -1247,6 +1257,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           }
         }
       };
+      a.setEnabled(isDeleteAllowed(target));
+      return a;
     }
     else {
       return null;
@@ -1534,15 +1546,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
   }
 
-  /*
-   * protected void performDrop(Configurable target) { DefaultMutableTreeNode dragNode = getTreeNode(dragging);
-   * DefaultMutableTreeNode targetNode = getTreeNode(target); Configurable parent = null; int index = 0; if
-   * (isValidParent(target, dragging)) { parent = target; index = targetNode.getChildCount(); if (dragNode.getParent() ==
-   * targetNode) { index--; } } else if (targetNode.getParent() != null && isValidParent(getParent(targetNode),
-   * dragging)) { parent = (Configurable) ((DefaultMutableTreeNode) targetNode.getParent()).getUserObject(); index =
-   * targetNode.getParent().getIndex(targetNode); } if (parent != null) { remove(getParent(dragNode), dragging);
-   * insert(parent, dragging, index); } dragging = null; }
-   */
   public DefaultMutableTreeNode getTreeNode(Configurable target) {
     return nodes.get(target);
   }
@@ -1551,7 +1554,38 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   public void mouseDragged(MouseEvent evt) {
   }
 
+  /** Is the Component allowed to be moved? */
+  public boolean isMoveAllowed(Configurable target) {
+    return target.isMovable();
+  }
+
+  /**
+   * Is the Component allowed to be deleted?
+   * A mandatory component can be deleted if there is more than one of them with the same parent
+   * */
+  protected boolean isDeleteAllowed(Configurable target) {
+    if (!target.isMandatory()) {
+      return true;
+    }
+
+    if (target instanceof AbstractBuildable) {
+      final Buildable parent = ((AbstractBuildable) target).getAncestor();
+      if (parent instanceof AbstractBuildable) {
+        final int count = ((AbstractBuildable) parent).getComponentsOf(target.getClass()).size();
+        return count > 1;
+      }
+    }
+
+    return false;
+  }
+
+  /** Is the Component allowed to be duplicated? */
+  protected boolean isDuplicateAllowed(Configurable target) {
+    return !target.isUnique();
+  }
+
   protected boolean isValidParent(Configurable parent, Configurable child) {
+
     if (parent != null && child != null) {
       final Class<?>[] c = parent.getAllowableConfigureComponents();
       for (final Class<?> aClass : c) {
@@ -1711,12 +1745,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   protected void updateEditMenu() {
-    deleteAction.setEnabled(selected != null);
-    cutAction.setEnabled(selected != null);
-    copyAction.setEnabled(selected != null);
+    deleteAction.setEnabled(selected != null && isDeleteAllowed(selected));
+    cutAction.setEnabled(selected != null && isDeleteAllowed(selected));
+    copyAction.setEnabled(selected != null && isDeleteAllowed(selected));
     pasteAction.setEnabled(selected != null && isValidPasteTarget(selected));
-    moveAction.setEnabled(selected != null);
-    duplicateAction.setEnabled(selected != null);
+    moveAction.setEnabled(selected != null && isMoveAllowed(selected));
+    duplicateAction.setEnabled(selected != null && isDuplicateAllowed(selected));
     searchAction.setEnabled(true);
     // Check the cached Configurer in the TreeNode, not the Configurable as Configurable.getConfigurer()
     // is very expensive and resets the Configurer causing label truncation issues in the JTree

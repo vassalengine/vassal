@@ -279,7 +279,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       newSide
     );
 
-    Command c = new Chatter.DisplayText(gm.getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.changed_sides_2" : "PlayerRoster.changed_sides", GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME), mySide, newSide));
+    Command c = new Chatter.DisplayText(gm.getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.changed_sides_2" : "PlayerRoster.changed_sides", GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME), translateSide(mySide), translateSide(newSide)));
     c.execute();
 
     final Remove r = new Remove(this, GameModule.getActiveUserId());
@@ -493,7 +493,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     final ArrayList<String> alreadyTaken = new ArrayList<>();
 
     for (final PlayerInfo p : players) {
-      alreadyTaken.add(p.side);
+      alreadyTaken.add(p.getLocalizedSide());
     }
 
     availableSides.removeAll(alreadyTaken);
@@ -752,7 +752,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     final ArrayList<String> alreadyTaken = new ArrayList<>();
 
     for (final PlayerInfo p : players) {
-      alreadyTaken.add(p.side);
+      alreadyTaken.add(p.getLocalizedSide());
     }
 
     availableSides.removeAll(alreadyTaken);
@@ -781,9 +781,9 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
     while (newSide != null) { // Loops until a valid side is found or op is canceled (repeats side check to minimuse race condition window)
 
-      for (final PlayerInfo p : players) {
-        alreadyTaken.add(p.side);
-      }
+    for (final PlayerInfo p : players) {
+      alreadyTaken.add(p.getLocalizedSide());
+    }
 
       /*
        The while loop ensures that the selected side is re-checked here and only returned if the side is still available.
@@ -821,7 +821,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
         if (!availableSides.contains(nextChoice)) {
 
-          final String mySide = getMySide(); // Get our own side, so we can find the "next" one
+          final String mySide = translateSide(getMySide()); // Get our own side, so we can find the "next" one
           final int myidx = (mySide != null) ? sides.indexOf(mySide) : -1; // See if we have a current non-observe side.
           int i = (myidx >= 0) ? ((myidx + 1) % sides.size()) : 0;   // If we do, start looking in the "next" slot, otherwise start at beginning.
           for (int tries = 0; i != myidx && tries < sides.size(); i = (i + 1) % sides.size(), tries++) { // Wrap-around search of sides
@@ -1080,5 +1080,15 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     final ComponentI18nData c = super.getI18nData();
     c.setAttributeTranslatable(SIDES, true);
     return c;
+  }
+
+  @Override
+  public boolean isMandatory() {
+    return true;
+  }
+
+  @Override
+  public boolean isUnique() {
+    return true;
   }
 }

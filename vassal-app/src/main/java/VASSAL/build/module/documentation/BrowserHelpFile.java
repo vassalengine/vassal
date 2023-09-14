@@ -17,6 +17,39 @@
  */
 package VASSAL.build.module.documentation;
 
+import VASSAL.Info;
+import VASSAL.build.AbstractBuildable;
+import VASSAL.build.AutoConfigurable;
+import VASSAL.build.BadDataReport;
+import VASSAL.build.Buildable;
+import VASSAL.build.Configurable;
+import VASSAL.build.GameModule;
+import VASSAL.configure.AutoConfigurer;
+import VASSAL.configure.Configurer;
+import VASSAL.configure.ConfigurerFactory;
+import VASSAL.configure.DirectoryConfigurer;
+import VASSAL.configure.FormattedExpressionConfigurer;
+import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.ComponentI18nData;
+import VASSAL.i18n.Resources;
+import VASSAL.script.expression.AuditTrail;
+import VASSAL.script.expression.Expression;
+import VASSAL.script.expression.ExpressionException;
+import VASSAL.script.expression.FormattedStringExpression;
+import VASSAL.tools.BrowserSupport;
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.WriteErrorDialog;
+import VASSAL.tools.menu.MenuItemProxy;
+import VASSAL.tools.menu.MenuManager;
+
+import org.apache.commons.io.file.PathUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
@@ -24,8 +57,8 @@ import java.beans.PropertyChangeSupport;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -35,35 +68,6 @@ import java.nio.file.Path;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-
-import org.apache.commons.io.file.PathUtils;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import VASSAL.Info;
-import VASSAL.build.AbstractBuildable;
-import VASSAL.build.AutoConfigurable;
-import VASSAL.build.Buildable;
-import VASSAL.build.Configurable;
-import VASSAL.build.GameModule;
-import VASSAL.configure.AutoConfigurer;
-import VASSAL.configure.Configurer;
-import VASSAL.configure.ConfigurerFactory;
-import VASSAL.configure.DirectoryConfigurer;
-import VASSAL.configure.VisibilityCondition;
-import VASSAL.i18n.ComponentI18nData;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.BrowserSupport;
-import VASSAL.tools.WriteErrorDialog;
-import VASSAL.tools.menu.MenuItemProxy;
-import VASSAL.tools.menu.MenuManager;
 
 /**
  * Unpacks a zipped directory stored in the module and displays it in an
@@ -79,9 +83,10 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   public static final String CONTENTS = "contents"; //$NON-NLS-1$
   public static final String STARTING_PAGE = "startingPage"; //$NON-NLS-1$
   protected String name;
-  protected String startingPage;
+  protected String startingPage = "";
   protected Action launch;
   protected URL url;
+  protected File externalTempFile;
   protected PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
   protected ComponentI18nData myI18nData;
 
@@ -100,9 +105,12 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
 
   public void launch() {
     if (url == null) {
+      // Extract interal Help if it exists, or create an external URL
       extractContents();
     }
     if (url != null) {
+      // The starting page is now an expression, so regenerate the URL each time
+      url = regenerateUrl();
       BrowserSupport.openURL(url.toString());
     }
   }
@@ -114,6 +122,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     return name == null ? null : name.replace(' ', '_');
   }
 
+  /** Extract the HTML from the module, or create an External URL from the Starting page if there is none */
   protected void extractContents() {
     try (ZipInputStream in =
            new ZipInputStream(new BufferedInputStream(
@@ -132,9 +141,10 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     }
   }
 
+  /** No HTML found in the module, generate an External URL from the starting page */
   private void setFallbackUrl() {
     try {
-      url = new URL(startingPage);
+      url = new URL(evaluateStartingPage());
     }
     catch (MalformedURLException e) {
       logger.error("Malformed URL: {}", startingPage, e); //NON-NLS
@@ -167,7 +177,45 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
         }
       }
     }
-    url = new File(p.toFile(), startingPage).toURI().toURL();
+    externalTempFile = p.toFile();
+    url = regenerateUrl();
+  }
+
+  protected URL regenerateUrl() {
+    if (externalTempFile == null) {
+      try {
+        return new URL(evaluateStartingPage());
+      }
+      catch (MalformedURLException e) {
+        logger.error("Malformed URL: {}", startingPage, e); //NON-NLS
+      }
+    }
+    else {
+      try {
+        return new File(externalTempFile, evaluateStartingPage()).toURI().toURL();
+      }
+      catch (MalformedURLException e) {
+        logger.error("Malformed URL: {}", startingPage, e); //NON-NLS
+      }
+    }
+    return null;
+  }
+
+  protected String evaluateStartingPage() {
+    try {
+      // Create a shared Audit trail
+      final AuditTrail trail = AuditTrail.create(this);
+      // Evaluate any $$ variables for old times sake
+      final String stage1 = new FormattedStringExpression(startingPage).evaluate(GameModule.getGameModule(), this, trail);
+      // Evaluate the resulting expression
+      return Expression.createExpression(stage1).evaluate(GameModule.getGameModule(), this, trail);
+    }
+    catch (ExpressionException e) {
+      // Not something that is going to happen often and indicates a broken module setup, so report it properly.
+      ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.expression_error"),
+        "Expression=" + startingPage + ", Error=" + e.getError(), e));
+    }
+    return startingPage;
   }
 
   /** @deprecated Use {@link org.apache.commons.io.FileUtils#deleteDirectory(File)} instead. */
@@ -229,7 +277,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   @Override
   public void removeFrom(Buildable parent) {
     MenuManager.getInstance()
-               .removeFromSection("Documentation.Module", launchItem); //NON-NLS
+      .removeFromSection("Documentation.Module", launchItem); //NON-NLS
     launch.setEnabled(false);
   }
 
@@ -302,7 +350,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
       return new Class<?>[]{
         String.class,
         ContentsConfig.class,
-        String.class
+        StartPageConfig.class
       };
     }
 
@@ -354,7 +402,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     }
 
     protected void packFile(File packed, String prefix, ZipOutputStream out)
-                                                          throws IOException {
+      throws IOException {
       if (packed.isDirectory()) {
         for (final File f : packed.listFiles()) {
           packFile(f, prefix + packed.getName() + "/", out); //$NON-NLS-1$
@@ -468,10 +516,20 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   public ComponentI18nData getI18nData() {
     if (myI18nData == null) {
       myI18nData = new ComponentI18nData(this, "BrowserHelpFile." + getConfigureName(), null, //NON-NLS
-          new String[] {TITLE},
-          new boolean[] {true},
-          new String[] {Resources.getString("Editor.menu_command")});
+        new String[] {TITLE},
+        new boolean[] {true},
+        new String[] {Resources.getString("Editor.menu_command")});
     }
     return myI18nData;
+  }
+
+  public static class StartPageConfig implements ConfigurerFactory {
+    @Override
+    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+      final FormattedExpressionConfigurer configurer = new FormattedExpressionConfigurer(key, name);
+      configurer.setValue(((ConfigSupport) c).getAttributeValueString(STARTING_PAGE));
+      configurer.setContextLevel(Configurer.ContextLevel.MODULE);
+      return configurer;
+    }
   }
 }

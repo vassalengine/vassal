@@ -865,8 +865,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     for (int index = 0; index < countExpressionsString.length; index++) {
       final CountExpression n = new CountExpression(countExpressionsString[index]);
       if (n.getName() != null) {
-        c[index] = n;
-        goodExpressionCount++;
+        c[goodExpressionCount++] = n;
       }
     }
 
