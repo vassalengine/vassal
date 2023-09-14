@@ -22,7 +22,7 @@ import VASSAL.build.GameModule;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.configure.ColorConfigurer;
-import VASSAL.configure.FontConfigurer;
+import VASSAL.configure.StructuredFontConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorDialog;
@@ -90,7 +90,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
   protected JTextField input;
   protected JScrollPane scroll = new ScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
   protected JScrollPane scroll2 = new ScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-  protected FontConfigurer fontConfig;
+  protected StructuredFontConfigurer fontConfig;
 
   public static final String FONT = "ChatFont";
   protected static final String MY_CHAT_COLOR = "HTMLChatColor";          //$NON-NLS-1$ // Different tags to "restart" w/ new default scheme
@@ -556,8 +556,10 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
     mod.addCommandEncoder(this);
     mod.addKeyStrokeSource(new KeyStrokeSource(this, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT));
 
-    fontConfig = new FontConfigurer(FONT, Resources.getString("Chatter.chat_font_preference"));
-
+    fontConfig = new StructuredFontConfigurer(FONT, Resources.getString("Chatter.chat_font_preference"));
+    fontConfig.setModuleSpecific(false);
+    fontConfig.setPlainOnly(true);
+    fontConfig.setLimitedSizes(true);
     fontConfig.addPropertyChangeListener(evt -> setFont((Font) evt.getNewValue()));
 
     mod.getPlayerWindow().addChatter(this);

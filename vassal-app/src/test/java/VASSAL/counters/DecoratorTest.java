@@ -84,7 +84,6 @@ public class DecoratorTest {
           // Font Organizer
           final FontOrganizer fo = mock(FontOrganizer.class);
           when(fo.getEditorFont(any(Integer.class), any(Integer.class))).thenReturn(new Font(Font.MONOSPACED, Font.PLAIN, 10));
-          when(fo.createFont(any(String.class), any(Integer.class), any(Integer.class))).thenReturn(new Font(Font.DIALOG, Font.PLAIN, 10));
 
           // Mock GameModule to return various resources
           final GameModule gm = mock(GameModule.class);

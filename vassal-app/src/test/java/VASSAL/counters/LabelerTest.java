@@ -17,21 +17,20 @@
 
 package VASSAL.counters;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.awt.Font;
-import java.lang.reflect.InvocationTargetException;
-
 import VASSAL.build.GameModule;
 import VASSAL.build.module.font.FontOrganizer;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+
+import java.lang.reflect.InvocationTargetException;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class LabelerTest extends DecoratorTest {
 
@@ -41,7 +40,6 @@ public class LabelerTest extends DecoratorTest {
 
       // Font Organizer
       final FontOrganizer fo = mock(FontOrganizer.class);
-      when(fo.createFont(any(String.class), any(Integer.class), any(Integer.class))).thenReturn(new Font(Font.DIALOG, Font.PLAIN, 10));
 
       // Mock GameModule to return various resources
       final GameModule gm = mock(GameModule.class);
@@ -80,7 +78,6 @@ public class LabelerTest extends DecoratorTest {
 
       // Font Organizer
       final FontOrganizer fo = mock(FontOrganizer.class);
-      when(fo.createFont(any(String.class), any(Integer.class), any(Integer.class))).thenReturn(new Font(Font.DIALOG, Font.PLAIN, 10));
 
       // Mock GameModule to return various resources
       final GameModule gm = mock(GameModule.class);

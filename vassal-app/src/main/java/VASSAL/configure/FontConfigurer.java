@@ -17,7 +17,6 @@
  */
 package VASSAL.configure;
 
-import VASSAL.build.GameModule;
 import VASSAL.tools.ScrollPane;
 
 import java.awt.Dimension;
@@ -51,6 +50,16 @@ public class FontConfigurer extends Configurer {
   public FontConfigurer(String key, String name, Font val, int[] sizes) {
     super(key, name, val);
     this.sizes = sizes;
+  }
+
+  // Super Constructor used by the replacement StrurturedFontSupervisor so it can
+  // Subclass and call directly through to the Configurer constructor.
+  public FontConfigurer(String key, String name, Font val, Integer[] sizes) {
+    super(key, name, val);
+    this.sizes = new int[sizes.length];
+    for(int i = 0; i < sizes.length; i++) {
+      this.sizes[i] = sizes[i];
+    }
   }
 
   @Override
@@ -87,7 +96,7 @@ public class FontConfigurer extends Configurer {
       size.setMaximumSize(new Dimension(size.getMaximumSize().width, size.getPreferredSize().height));
       p.add(size);
 
-      final ItemListener l = evt -> setValue(GameModule.getGameModule().getFontOrganizer().createFont(
+      final ItemListener l = evt -> setValue(new Font(
         (String) family.getSelectedItem(),
         Font.PLAIN,
         (Integer) size.getSelectedItem()
@@ -97,6 +106,7 @@ public class FontConfigurer extends Configurer {
     }
     return p;
   }
+
   public static Font decode(String s) {
     final int i = s.indexOf(',');
     return new Font(s.substring(0, i), Font.PLAIN, Integer.parseInt(s.substring(i + 1)));
