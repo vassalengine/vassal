@@ -625,17 +625,21 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
 
   private void notifyUpdate(final Configurable target) {
-    if (target instanceof AbstractConfigurable) {
-      if (editorWindow.getListKeyCommands() != null) {
-        editorWindow.getListKeyCommands().updateConfigurable((AbstractConfigurable)target);
+    if (editorWindow != null) {
+      if (target instanceof AbstractConfigurable) {
+        if (editorWindow.getListKeyCommands() != null) {
+          editorWindow.getListKeyCommands().updateConfigurable((AbstractConfigurable)target);
+        }
       }
     }
   }
 
   private void notifyDelete(final Configurable target) {
-    if (target instanceof AbstractConfigurable) {
-      if (editorWindow.getListKeyCommands() != null) {
-        editorWindow.getListKeyCommands().deleteConfigurable((AbstractConfigurable)target);
+    if (editorWindow != null) {
+      if (target instanceof AbstractConfigurable) {
+        if (editorWindow.getListKeyCommands() != null) {
+          editorWindow.getListKeyCommands().deleteConfigurable((AbstractConfigurable)target);
+        }
       }
     }
   }
