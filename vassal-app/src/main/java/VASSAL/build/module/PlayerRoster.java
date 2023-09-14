@@ -780,10 +780,9 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     }
 
     while (newSide != null) { // Loops until a valid side is found or op is canceled (repeats side check to minimuse race condition window)
-
-    for (final PlayerInfo p : players) {
-      alreadyTaken.add(p.getLocalizedSide());
-    }
+      for (final PlayerInfo p : players) {
+        alreadyTaken.add(p.getLocalizedSide());
+      }
 
       /*
        The while loop ensures that the selected side is re-checked here and only returned if the side is still available.
@@ -802,7 +801,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       }
 
       availableSides.removeAll(alreadyTaken);
-      String nextChoice = translatedObserver; // This will be our defaulted choice for the dropdown.
+      String nextChoice = translatedObserver; // Default choice for the dropdown.
 
       // If a "real" player side is available, we want to offer "the next one" as the default, rather than observer.
       // Thus hotseat players can easily cycle through the player positions as they will appear successively as the default.
@@ -813,14 +812,13 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         // Module controlled method: set VassalNextSide (a Module Global Property)
         // If not found / available method 2 is used to find likely next side
         // Reserved property VassalNextSide may override hotseat default; must be an available side in english
-        // if (!StringUtils.isEmpty((String) g.getProperty("VassalNextSide"))) {
-        //  nextChoice = translateSide((String) g.getProperty("VassalNextSide"));
-        //}
-        // Until VassalNextSide is implemented, nextChoice is observer by default.
-        // To implement, must also handle restoring observer if no other nextChoice is found.
+        // sits within the loop in case property changes between iterations (due to other players)
+        if (!StringUtils.isEmpty((String) g.getProperty("VassalNextSide"))) {
+          nextChoice = translateSide((String) g.getProperty("VassalNextSide"));
+        }
 
         if (!availableSides.contains(nextChoice)) {
-
+          nextChoice = translatedObserver; // default if no valid alternative
           final String mySide = translateSide(getMySide()); // Get our own side, so we can find the "next" one
           final int myidx = (mySide != null) ? sides.indexOf(mySide) : -1; // See if we have a current non-observe side.
           int i = (myidx >= 0) ? ((myidx + 1) % sides.size()) : 0;   // If we do, start looking in the "next" slot, otherwise start at beginning.
