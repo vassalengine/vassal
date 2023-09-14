@@ -111,4 +111,14 @@ public class MapCenterer extends AbstractBuildable implements MouseListener {
   @Override
   public void mouseClicked(MouseEvent e) {
   }
+
+  @Override
+  public boolean isMandatory() {
+    return true;
+  }
+
+  @Override
+  public boolean isUnique() {
+    return true;
+  }
 }

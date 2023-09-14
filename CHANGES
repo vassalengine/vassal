@@ -1,5 +1,20 @@
-3.7.0 - ???
+3.7.1 - ???
 
+* 12676: IncrementProperty: Corrected bad wrap-around calculation when
+    increment is negative
+* 12670: Prevent essential components being accidentally deleted
+* 12661: Translate side names in change sides message
+* 12659: Translate current side before checking for "next side"
+* 12645: Respect localization when filtering sides
+* 12582: Corrected divide-by-zero problem for Zones defined by zero-point
+    polygons
+* 12474: Fixed NPE when moving EditablePiece which isn't on a map
+* 12324: Fixed ClassCastException caused by reordering columns in Delayed
+    Notes table
+
+3.7.0 - 7 September 2023
+
+* 12644: Prevent NPE when Editing Deck count expressions
 * 12627: Fix chat non-scrolling caused by setting preferred size for the
     Chatter contents pane
 * 12626: Hide caret in chat pane
@@ -7,6 +22,7 @@
 * 12595: Fix Search UnsupportedOperationException
 * 12578: Process Set Piece Property expressions correctly
 * 12561: Handle Beanshell functions correctly in expressions
+* 12235: HTML Help file starting page can now be an expression
 
 3.7.0-beta5 - 15 August 2023
 

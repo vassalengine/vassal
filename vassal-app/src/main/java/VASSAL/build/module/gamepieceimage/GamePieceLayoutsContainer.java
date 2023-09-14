@@ -123,5 +123,15 @@ public class GamePieceLayoutsContainer extends AbstractConfigurable {
     }
     return null;
   }
+
+  @Override
+  public boolean isMandatory() {
+    return true;
+  }
+
+  @Override
+  public boolean isUnique() {
+    return true;
+  }
 }
 

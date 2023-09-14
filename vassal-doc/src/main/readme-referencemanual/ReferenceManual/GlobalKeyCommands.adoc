@@ -178,13 +178,15 @@ You may wish to use a <<ReportChanges.adoc#top,Report Action>> trait on this pie
 <<#startup,Startup>> +
 <<#deck,Deck>> +
 <<#counter,Counter>>
-| Allows you to set the values of the named <<DynamicProperty.adoc#top,Dynamic Properties>> in pieces that are selected by this GKC.
+| Allows you to set the values of the named <<DynamicProperty.adoc#top,Dynamic Properties>> that exist in pieces that are selected by this GKC.
 
 Property names used in the Expression will be replaced by the value of those properties in the matched pieces.
 
 You can use $$ variables to replace values in the expression from the source GKC. This will be values from the issuing piece for a Counter GKC, the owning Map for a Map or Deck GKC or the Game Module for a Module or Startup GKC.
 
 The values are set into the new marker before the _Global Key Command_ is applied to the piece. This means the values are set even if the _Global Key Command_ is not recognized by the matched pieces. You can specify a dummy _Global Key Command_ in order to just set the Dynamic Properties in the target pieces without taking other actions.
+
+NOTE: The named <<DynamicProperty.adoc#top,Dynamic Properties>> must ealready exist in the target Pieces. This option does not create new Dynamic Properties
 
 See <<PassingValues.adoc#marker,Passing values to pieces>> for more detailed information on using this feature.
 
