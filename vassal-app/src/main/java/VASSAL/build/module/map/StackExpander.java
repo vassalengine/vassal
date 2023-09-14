@@ -70,4 +70,14 @@ public class StackExpander extends MouseAdapter implements Buildable {
       e.consume();
     }
   }
+
+  @Override
+  public boolean isMandatory() {
+    return true;
+  }
+
+  @Override
+  public boolean isUnique() {
+    return true;
+  }
 }

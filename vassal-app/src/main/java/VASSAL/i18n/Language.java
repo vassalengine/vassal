@@ -74,4 +74,14 @@ public class Language extends AbstractConfigurable {
   @Override
   public void removeFrom(Buildable parent) {
   }
+
+  @Override
+  public boolean isMandatory() {
+    return true;
+  }
+
+  @Override
+  public boolean isUnique() {
+    return true;
+  }
 }

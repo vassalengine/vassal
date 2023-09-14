@@ -897,4 +897,14 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
   public String[] getAttributeNames() {
     return new String[0];
   }
+
+  @Override
+  public boolean isMandatory() {
+    return true;
+  }
+
+  @Override
+  public boolean isUnique() {
+    return true;
+  }
 }

@@ -680,4 +680,14 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
   public boolean drawAboveCounters() {
     return true;
   }
+
+  @Override
+  public boolean isMandatory() {
+    return true;
+  }
+
+  @Override
+  public boolean isUnique() {
+    return true;
+  }
 }

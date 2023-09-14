@@ -89,7 +89,6 @@ import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.MandatoryComponent;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PlayerIdFormattedExpressionConfigurer;
-import VASSAL.configure.SingleChildInstance;
 import VASSAL.configure.UniquelyNamedChildren;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.BasicPiece;
@@ -965,20 +964,6 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       new MandatoryComponent(this, BoardPicker.class),
       new MandatoryComponent(this, StackMetrics.class))
       .append(idMgr)
-      .append(new SingleChildInstance(this, Zoomer.class))
-      .append(new SingleChildInstance(this, HighlightLastMoved.class))
-      .append(new SingleChildInstance(this, Scroller.class))
-      .append(new SingleChildInstance(this, ForwardToChatter.class))
-      .append(new SingleChildInstance(this, MenuDisplayer.class))
-      .append(new SingleChildInstance(this, MapCenterer.class))
-      .append(new SingleChildInstance(this, StackExpander.class))
-      .append(new SingleChildInstance(this, PieceMover.class))
-      .append(new SingleChildInstance(this, KeyBufferer.class))
-      .append(new SingleChildInstance(this, ForwardToKeyBuffer.class))
-      .append(new SingleChildInstance(this, GlobalProperties.class))
-      .append(new SingleChildInstance(this, SelectionHighlighters.class))
-      .append(new SingleChildInstance(this, LayeredPieceCollection.class))
-      .append(new SingleChildInstance(this, BoardPicker.class))
       .append(new UniquelyNamedChildren(this, MapShader.class));
 
     final DragGestureListener dgl = dge -> {

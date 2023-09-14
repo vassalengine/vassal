@@ -361,6 +361,10 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       // no grid to match against
       // try the geographic mean
       p = new Point(0, 0);
+      if (myPolygon.npoints <= 0) {
+        return p;
+      }
+
       for (int i = 0; i < myPolygon.npoints; ++i) {
         p.translate(myPolygon.xpoints[i], myPolygon.ypoints[i]);
       }
