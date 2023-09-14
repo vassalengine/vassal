@@ -72,6 +72,7 @@ public class FontOrganizer extends AbstractConfigurable {
   public static final String VASSAL_MONOSPACED_FONT = "VassalMono";
   public static final String VASSAL_CONDENSED_FONT = "VassalCondensed";
   public static final String VASSAL_EDITOR_FONT = "VassalEditor";
+  public static final String VASSAL_DEFAULT_FONT = VASSAL_SERIF_FONT;       // Improvement on good old Dialog
 
   public static final String FONTS = "Fonts";
   public static final String FONTS_FOLDER = "fonts";                        // Folder in Vengine containing font files

@@ -61,17 +61,6 @@ public class VassalFont implements Comparable<VassalFont> {
     this.registered = false;
   }
 
-//  /** Create an Empty Font for use by the Root Node of a Font tree */
-//  public VassalFont() {
-//    this(null, null, null, false);
-//  }
-//
-//  /** Create a Dummy Font for use by a non-leaf nodes of a Font tree */
-//  public VassalFont(String fontFamily, String fontName) {
-//    this(fontFamily, fontName, null, false);
-//  }
-
-
   public String getDescription() {
     return description;
   }
