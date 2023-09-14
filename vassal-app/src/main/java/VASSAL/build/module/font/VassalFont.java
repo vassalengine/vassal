@@ -46,6 +46,7 @@ public class VassalFont implements Comparable<VassalFont> {
   private final String fontFamily;    // Font Family Name
   private final String fontName;      // Specific Font Name
   private final String fontFile;      // File loaded from
+  private String description;
   private boolean vassalFont;         // true for a Font included with Vassal, false for a Font from a module
   private Font font;                  // The base loaded font, null if the Font could not be loaded
   private String loadError = "";      // Error message if the font could not be loaded
@@ -60,14 +61,23 @@ public class VassalFont implements Comparable<VassalFont> {
     this.registered = false;
   }
 
-  /** Create an Empty Font for use by the Root Node of a Font tree */
-  public VassalFont() {
-    this(null, null, null, false);
+//  /** Create an Empty Font for use by the Root Node of a Font tree */
+//  public VassalFont() {
+//    this(null, null, null, false);
+//  }
+//
+//  /** Create a Dummy Font for use by a non-leaf nodes of a Font tree */
+//  public VassalFont(String fontFamily, String fontName) {
+//    this(fontFamily, fontName, null, false);
+//  }
+
+
+  public String getDescription() {
+    return description;
   }
 
-  /** Create a Dummy Font for use by a non-leaf nodes of a Font tree */
-  public VassalFont(String fontFamily, String fontName) {
-    this(fontFamily, fontName, null, false);
+  public void setDescription(String description) {
+    this.description = description;
   }
 
   /**
@@ -75,7 +85,11 @@ public class VassalFont implements Comparable<VassalFont> {
    * @param fontFileName
    */
   public VassalFont(String fontFileName) {
+    this(fontFileName, "");
+  }
 
+  public VassalFont(String fontFileName, String description) {
+    setDescription(description);
     fontFile = fontFileName;
 
     URL url = null;
@@ -126,7 +140,6 @@ public class VassalFont implements Comparable<VassalFont> {
     // Register it with java
     registered = GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(font);
     logger.info(Resources.getString("Editor.VassalFont.loaded", fontName, fontFile, isVassalFont() ? "VASSAL" : "Module"));
-
   }
 
   /**
@@ -242,5 +255,7 @@ public class VassalFont implements Comparable<VassalFont> {
     }
     return Objects.equals(fontFamily, ((VassalFont) obj).fontFamily) && Objects.equals(fontName, ((VassalFont) obj).fontName);
   }
+
+
 
 }

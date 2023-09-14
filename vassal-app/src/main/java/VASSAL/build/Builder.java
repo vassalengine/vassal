@@ -73,8 +73,6 @@ public class Builder {
   public static void build(Element e, Buildable parent) {
     if (e == null) return;
 
-    System.out.println("Build " + parent + ": " + e);
-
     for (Node child = e.getFirstChild(); child != null;
          child = child.getNextSibling()) {
       if (Node.ELEMENT_NODE == child.getNodeType()) {

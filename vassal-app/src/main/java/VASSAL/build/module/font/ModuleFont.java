@@ -47,7 +47,6 @@ public class ModuleFont extends AbstractConfigurable {
 
   protected String fileName;
   protected VassalFont font;
-  protected FontOrganizer organizer;
 
   @Override
   public String[] getAttributeNames() {
@@ -67,7 +66,6 @@ public class ModuleFont extends AbstractConfigurable {
           font = new VassalFont(file);
           fileName =  ((File) value).getName();
           fontAdded();
-          if (organizer != null) organizer.setDirty(true);
           return;
         }
         else {
@@ -83,7 +81,6 @@ public class ModuleFont extends AbstractConfigurable {
         fileName = fname;
         font = new VassalFont(fileName);
         fontAdded();
-        if (organizer != null) organizer.setDirty(true);
       }
     }
   }
@@ -128,7 +125,6 @@ public class ModuleFont extends AbstractConfigurable {
     if (parent instanceof AbstractFolder) {
       parent = ((AbstractFolder) parent).getNonFolderAncestor();
     }
-    organizer = (FontOrganizer) parent;
   }
 
   public VassalFont getFont() {
@@ -141,7 +137,10 @@ public class ModuleFont extends AbstractConfigurable {
     }
     else {
       setConfigureName(font.getFontFamily() + " - " + font.getFontName());
-      if (organizer != null) organizer.setDirty(true);
+      final FontOrganizer fo = GameModule.getGameModule().getFontOrganizer();
+      if (fo != null) {
+        fo.setDirty(true);
+      }
     }
   }
 
@@ -192,7 +191,6 @@ public class ModuleFont extends AbstractConfigurable {
         moduleFont.fileName = ((File) e.getNewValue()).getName();
       }
       config.refreshParent();
-      if (moduleFont.organizer != null) moduleFont.organizer.setDirty(true);
       config.setFrozen(false);
     }
   }
