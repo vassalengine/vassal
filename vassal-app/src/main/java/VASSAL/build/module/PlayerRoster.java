@@ -39,6 +39,7 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.swing.FlowLabel;
 import net.miginfocom.swing.MigLayout;
+import org.apache.commons.lang3.StringUtils;
 import org.netbeans.spi.wizard.WizardController;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -818,6 +819,32 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
           }
         }
       }
+    // If a "real" player side is available, we want to offer "the next one" as the default, rather than observer.
+    // Thus hotseat players can easily cycle through the player positions as they will appear successively as the default.
+    // Common names for Solitaire players (Solitaire, Solo, Referee) do not count as "real" player sides, and will be skipped.
+    // If we have no "next" side available to offer, we stay with the observer side as our default offering.
+
+    // Automated method: set VassalNextSide (a Module Global Property)
+    // If not found / available method 2 is used to find likely next side
+
+    // Reserved property VassalNextSide may override hotseat default; must be an available side
+    String nextChoice = (String) GameModule.getGameModule().getProperty("VassalNextSide");
+
+    if (StringUtils.isEmpty(nextChoice) || !availableSides.contains(nextChoice)) {
+      boolean found = false;       // If we find a usable side
+      final String mySide = getMySide(); // Get our own side, so we can find the "next" one
+      final int myidx = (mySide != null) ? sides.indexOf(mySide) : -1; // See if we have a current non-observe side.
+      int i = (myidx >= 0) ? ((myidx + 1) % sides.size()) : 0;   // If we do, start looking in the "next" slot, otherwise start at beginning.
+      for (int tries = 0; i != myidx && tries < sides.size(); i = (i + 1) % sides.size(), tries++) { // Wrap-around search of sides
+        final String s = sides.get(i);
+        if (!alreadyTaken.contains(s) && !isSoloSide(s)) {
+          found = true; // Found an available slot that's not our current one and not a "solo" slot.
+          break;
+        }
+      }
+
+      nextChoice = found ? sides.get(i) : translatedObserver; // This will be our defaulted choice for the dropdown.
+    }
 
       availableSides.add(0, translatedObserver);
 
