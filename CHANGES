@@ -12,6 +12,7 @@
 * 12411: Fixed NPE when updating ConfigureTree
 * 12324: Fixed ClassCastException caused by reordering columns in Delayed
     Notes table
+* 12307: Prevent NPE when Return to Deck of a deleted Deck
 
 3.7.0 - 7 September 2023
 

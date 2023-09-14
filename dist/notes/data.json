@@ -27,7 +27,8 @@
         { "num": 12582, "desc": "Corrected divide-by-zero problem for Zones defined by zero-point polygons" },
         { "num": 12474, "desc": "Fixed NPE when moving EditablePiece which isn't on a map" },
         { "num": 12411, "desc": "Fixed NPE when updating ConfigureTree" },
-        { "num": 12324, "desc": "Fixed ClassCastException caused by reordering columns in Delayed Notes table" }
+        { "num": 12324, "desc": "Fixed ClassCastException caused by reordering columns in Delayed Notes table" },
+        { "num": 12307, "desc": "Prevent NPE when Return to Deck of a deleted Deck" }
       ],
       "other_improvements": [
         { "num": 12670, "desc": "Prevent essential components being accidentally deleted" },
