@@ -769,6 +769,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     final ArrayList<String> alreadyTaken = new ArrayList<>();
     boolean fromWizard;
     String newSide = "";
+    final GameModule g = GameModule.getGameModule();
 
     if (checkSide != null && checkSide.isEmpty()) {
       fromWizard = false;
@@ -808,13 +809,17 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       // Common names for Solitaire players (Solitaire, Solo, Referee) do not count as "real" player sides, and will be skipped.
       // If we have no "next" side available to offer, we stay with the observer side as our default offering.
       if (!fromWizard) {
+
         // Module controlled method: set VassalNextSide (a Module Global Property)
         // If not found / available method 2 is used to find likely next side
-
         // Reserved property VassalNextSide may override hotseat default; must be an available side in english
-        nextChoice = translateSide((String) GameModule.getGameModule().getProperty("VassalNextSide"));
+        // if (!StringUtils.isEmpty((String) g.getProperty("VassalNextSide"))) {
+        //  nextChoice = translateSide((String) g.getProperty("VassalNextSide"));
+        //}
+        // Until VassalNextSide is implemented, nextChoice is observer by default.
+        // To implement, must also handle restoring observer if no other nextChoice is found.
 
-        if (StringUtils.isEmpty(nextChoice) || !availableSides.contains(nextChoice)) {
+        if (!availableSides.contains(nextChoice)) {
 
           final String mySide = getMySide(); // Get our own side, so we can find the "next" one
           final int myidx = (mySide != null) ? sides.indexOf(mySide) : -1; // See if we have a current non-observe side.
@@ -822,7 +827,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
           for (int tries = 0; i != myidx && tries < sides.size(); i = (i + 1) % sides.size(), tries++) { // Wrap-around search of sides
             final String s = sides.get(i);
             if (!alreadyTaken.contains(s) && !isSoloSide(s)) {
-              nextChoice = sides.get(i); // Found an available slot that's not our current one and not a "solo" slot.
+              nextChoice = s; // Found an available slot that's not our current one and not a "solo" slot.
               break;
             }
           }
@@ -830,8 +835,6 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       }
 
       availableSides.add(0, translatedObserver);
-
-      final GameModule g = GameModule.getGameModule();
 
       newSide = (String) JOptionPane.showInputDialog(
               g.getPlayerWindow(),
