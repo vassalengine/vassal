@@ -57,7 +57,7 @@ public class FontConfigurer extends Configurer {
   public FontConfigurer(String key, String name, Font val, Integer[] sizes) {
     super(key, name, val);
     this.sizes = new int[sizes.length];
-    for(int i = 0; i < sizes.length; i++) {
+    for (int i = 0; i < sizes.length; i++) {
       this.sizes[i] = sizes[i];
     }
   }
