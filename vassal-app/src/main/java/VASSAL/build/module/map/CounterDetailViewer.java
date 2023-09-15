@@ -175,8 +175,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
   public static final String SUM = "sum(propertyName)"; //NON-NLS
 
-  protected KeyStroke hotkey =
-    KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, InputEvent.CTRL_DOWN_MASK);
+  protected KeyStroke hotkey = KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, InputEvent.CTRL_DOWN_MASK);
   protected Map map;
   protected int delay = 700;
   protected Timer delayTimer;
