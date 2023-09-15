@@ -18,7 +18,7 @@ Whenever a piece is created in a VASSAL game, the Id of the definition used to c
 
 The Game Refresher works by matching the Id in each piece in the current game to the Id's of all piece definitions in the current module to find the new definition. If a match is found, then the piece is replaced with one created from the new defintion. Then each trait in the new Piece is checked to see if there is an EXACTLY matching trait in the old definition. If an EXACT match is found, then the 'state' of the old trait is copied over (e.g. what is the current layer showing, or current rotation facing).
 
-Problems occur when the definition used to create the piece no longer exists in the module, or if traits are modified slightly so that they no longer EXACTLY match the old piece. There are various options in the Game Refresher dialog that can be used to help match and update these pieces and traits.
+Problems occur when the definition used to create the piece no longer exists in the module, or if traits are modified slightly so that they no longer EXACTLY match the old piece. There are various options in the Game Refresher dialog that can be used to help match and update these pieces and traits. In addition, at the end of each refresh, Vassal issues a <<#Post-Refresh,special hotkey>>  that can be used to trigger custom maintenance routines which you have designed.
 
 [.text-center]
 image:images/GameRefresher.png[]
@@ -81,3 +81,12 @@ If you select the _Delete decks_ option, then any deck found in the current game
 
 If you select the _Add decks_ option, then any _new_ deck found in the module definition that does not exist in the game being refreshed will be _added_. Note this will not add any _contents_ (e.g., cards) to the deck, it will only add the deck. If you need to add contents you will need to arrange to add them separately, e.g., from a piece palette, or dragged in from some other location.
 
+[#Post-Refresh]
+==== Post-Refresh Maintenance Hotkey
+After processing a file, the Refresher triggers a special hotkey _VassalRefreshGHK_. You may use this to perform maintenance that you wish to carry out on the refreshed Predefined Setup or game file. Potential uses include converting counters or populating a new deck.
+
+Design and test your maintenance actions carefully. You can use _Refresh Counters_ to do one-off tests. Also, remember that Startup GKCs are not executed during Refresh Predefined Setups.
+
+After a Refeshing Predefined Setups, save your module as a different file name so you can do re-runs on the original if need be.
+
+Once you are done, disable or remove the maintenance components so that further refreshes don’t trigger them accidentally.
