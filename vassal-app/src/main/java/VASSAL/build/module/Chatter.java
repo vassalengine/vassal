@@ -22,7 +22,7 @@ import VASSAL.build.GameModule;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.configure.ColorConfigurer;
-import VASSAL.configure.FontConfigurer;
+import VASSAL.configure.StructuredFontConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorDialog;
@@ -32,6 +32,7 @@ import VASSAL.tools.ScrollPane;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.swing.DataArchiveHTMLEditorKit;
 import VASSAL.tools.swing.SwingUtils;
+
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.AbstractAction;
@@ -88,6 +89,10 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
 
   protected JTextField input;
   protected JScrollPane scroll = new ScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+  protected JScrollPane scroll2 = new ScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+  protected StructuredFontConfigurer fontConfig;
+
+  public static final String FONT = "ChatFont";
   protected static final String MY_CHAT_COLOR = "HTMLChatColor";          //$NON-NLS-1$ // Different tags to "restart" w/ new default scheme
   protected static final String OTHER_CHAT_COLOR = "HTMLotherChatColor";     //$NON-NLS-1$
   protected static final String GAME_MSG1_COLOR = "HTMLgameMessage1Color";  //$NON-NLS-1$
@@ -551,15 +556,16 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
     mod.addCommandEncoder(this);
     mod.addKeyStrokeSource(new KeyStrokeSource(this, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT));
 
-    final FontConfigurer chatFont = new FontConfigurer("ChatFont", //NON-NLS
-      Resources.getString("Chatter.chat_font_preference"));
-
-    chatFont.addPropertyChangeListener(evt -> setFont((Font) evt.getNewValue()));
+    fontConfig = new StructuredFontConfigurer(FONT, Resources.getString("Chatter.chat_font_preference"));
+    fontConfig.setModuleSpecific(false);
+    fontConfig.setPlainOnly(true);
+    fontConfig.setLimitedSizes(true);
+    fontConfig.addPropertyChangeListener(evt -> setFont((Font) evt.getNewValue()));
 
     mod.getPlayerWindow().addChatter(this);
 
-    chatFont.fireUpdate();
-    mod.getPrefs().addOption(Resources.getString("Chatter.chat_window"), chatFont); //$NON-NLS-1$
+    fontConfig.fireUpdate();
+    mod.getPrefs().addOption(Resources.getString("Chatter.chat_window"), fontConfig); //$NON-NLS-1$
 
     // Bug 10179 - Do not re-read Chat colors each time the Chat Window is
     // repainted.

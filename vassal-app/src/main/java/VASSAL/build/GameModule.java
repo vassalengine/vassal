@@ -49,6 +49,7 @@ import VASSAL.build.module.RandomTextButton;
 import VASSAL.build.module.ServerConnection;
 import VASSAL.build.module.SpecialDiceButton;
 import VASSAL.build.module.StartupGlobalKeyCommand;
+import VASSAL.build.module.font.FontOrganizer;
 import VASSAL.build.module.ToolbarMenu;
 import VASSAL.build.module.WizardSupport;
 import VASSAL.build.module.documentation.HelpFile;
@@ -65,6 +66,7 @@ import VASSAL.build.module.properties.GlobalTranslatableMessages;
 import VASSAL.build.module.properties.MutablePropertiesContainer;
 import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.build.module.properties.PropertySource;
+import VASSAL.build.module.properties.ScenarioOptions;
 import VASSAL.build.module.properties.TranslatableString;
 import VASSAL.build.module.properties.TranslatableStringContainer;
 import VASSAL.build.module.turn.TurnTracker;
@@ -143,7 +145,9 @@ import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import javax.swing.UIManager;
 import java.awt.Container;
+import java.awt.Font;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -507,6 +511,20 @@ public class GameModule extends AbstractConfigurable
     return indexManager;
   }
 
+  /** Management of true-type fonts */
+  private FontOrganizer fontOrganizer;
+
+  public FontOrganizer getFontOrganizer() {
+    if (fontOrganizer == null) {
+      fontOrganizer = new FontOrganizer();
+    }
+    return fontOrganizer;
+  }
+
+  public void setFontOrganizer(FontOrganizer fontOrganizer) {
+    this.fontOrganizer = fontOrganizer;
+  }
+
   /**
    * Error Logging to {@link Chatter}?
    */
@@ -794,6 +812,7 @@ public class GameModule extends AbstractConfigurable
       ensureComponent(PrototypesContainer.class);
       ensureComponent(Chatter.class);
       ensureComponent(KeyNamer.class);
+      ensureFirstComponent(FontOrganizer.class);
     }
     else {
       buildDefaultComponents();
@@ -912,6 +931,7 @@ public class GameModule extends AbstractConfigurable
    * Adds the standard default components for a brand new module.
    */
   private void buildDefaultComponents() {
+    addComponent(FontOrganizer.class);
     addComponent(BasicCommandEncoder.class);
     addComponent(Documentation.class);
     addComponent(PlayerRoster.class);
@@ -925,6 +945,39 @@ public class GameModule extends AbstractConfigurable
     addComponent(Chatter.class);
     addComponent(KeyNamer.class);
     addComponent(Language.class);
+  }
+
+  /**
+   * Return a list of Components that should never be deleted or duplicated via the UI
+   * This would be better to implement this via isxxxx() methods in AbstractConfigrable
+   * but not all of these components are AbstractConfigurable, Sigh.
+   *
+   * @return List of Component classes
+   */
+  public List<Class<?>> getEssentialComponents() {
+    return List.of(
+      Documentation.class,
+      PlayerRoster.class,
+      GlobalOptions.class,
+      GamePieceImageDefinitions.class,
+      GlobalProperties.class,
+      GlobalTranslatableMessages.class,
+      PrototypesContainer.class,
+      Chatter.class,
+      KeyNamer.class,
+      Language.class
+    );
+  }
+
+  /**
+   * Return a list of Components that should not be movable via the UI.
+   * Some Components are forced to the start of the Build sequence so that they are available
+   * for all subsequent components as they build
+   *
+   * @return
+   */
+  public List<Class<?>> getImmobileComponents() {
+    return new ArrayList<>();
   }
 
   /**
@@ -981,6 +1034,12 @@ public class GameModule extends AbstractConfigurable
     }
   }
 
+  private void ensureFirstComponent(Class<? extends Buildable> componentClass) {
+    if (getComponentsOf(componentClass).isEmpty()) {
+      addComponent(componentClass, 0);
+    }
+  }
+
   /**
    * Adds a subcomponent of the specified class to the module hierarchy. "Build" the
    * child in its default form, and register it with the module.
@@ -1002,6 +1061,21 @@ public class GameModule extends AbstractConfigurable
     }
   }
 
+  private void addComponent(Class<? extends Buildable> componentClass, int index) {
+    Buildable child = null;
+    try {
+      child = componentClass.getConstructor().newInstance();
+    }
+    catch (Throwable t) {
+      ReflectionUtils.handleNewInstanceFailure(t, componentClass);
+    }
+
+    if (child != null) {
+      child.build(null);
+      child.addTo(this);
+      add(child, index);
+    }
+  }
   /**
    * Sets a buildFile (XML) attribute value for this component.
    * @param name the name of the attribute. Will be one of those listed in {@link #getAttributeNames}
@@ -2006,6 +2080,23 @@ public class GameModule extends AbstractConfigurable
     }
   }
 
+  public void setUIFont() {
+    final Font f = theModule.getFontOrganizer().getEditorFont(Font.PLAIN, 12);
+
+    final java.util.Enumeration keys = UIManager.getDefaults().keys();
+    while (keys.hasMoreElements()) {
+      final Object key = keys.nextElement();
+      final Object value = UIManager.get(key);
+      if (value instanceof javax.swing.plaf.FontUIResource)
+        UIManager.put(key, f);
+    }
+
+    SwingUtilities.updateComponentTreeUI(theModule.frame);
+    SwingUtilities.updateComponentTreeUI(theModule.preferences.getGlobalPrefs().getEditor().getDialog());
+    SwingUtilities.updateComponentTreeUI(theModule.preferences.getEditor().getDialog());
+    SwingUtilities.updateComponentTreeUI(ScenarioOptions.getInstance().getDialog());
+
+  }
   /**
    * Save the current buildString for comparison when we try and quit.
    */

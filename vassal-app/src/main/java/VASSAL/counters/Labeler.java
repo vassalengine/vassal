@@ -20,6 +20,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
+import VASSAL.configure.StructuredFontConfigurer;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.FormattedStringConfigurer;
@@ -853,14 +854,15 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     private final TranslatingStringEnumConfigurer hPos;
     private final TranslatingStringEnumConfigurer vJust;
     private final TranslatingStringEnumConfigurer hJust;
-    private final IntConfigurer hOff, vOff, fontSize;
+    private final IntConfigurer hOff, vOff; //, fontSize;
     private final FormattedStringConfigurer format;
-    private final TranslatingStringEnumConfigurer fontFamily;
+   // private final TranslatingStringEnumConfigurer fontFamily;
     private final IntConfigurer rotate;
-    private final BooleanConfigurer bold, italic;
+  //  private final BooleanConfigurer bold, italic;
     private final StringConfigurer propertyNameConfig;
     private final StringConfigurer descConfig;
     private final BooleanConfigurer alwaysUseFormatConfig;
+    private final StructuredFontConfigurer fontConfig;
 
     public Ed(Labeler l) {
       controls = new TraitConfigPanel();
@@ -888,30 +890,11 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       labelKeyInput = new NamedHotKeyConfigurer(l.labelKey);
       controls.add("Editor.keyboard_command", labelKeyInput);
 
-      fontFamily = new TranslatingStringEnumConfigurer(
-        new String[]{Font.SERIF, Font.SANS_SERIF, Font.MONOSPACED, Font.DIALOG, Font.DIALOG_INPUT},
-        new String[] {
-          "Editor.Font.serif",
-          "Editor.Font.sans_serif",
-          "Editor.Font.monospaced",
-          "Editor.Font.dialog",
-          "Editor.Font.dialog_input"},
-          l.font.getFamily());
-
-      JPanel p = new JPanel(new MigLayout("ins 0", "[]unrel[]rel[]unrel[]rel[]unrel[]rel[]")); // NON-NLS
-      p.add(fontFamily.getControls());
-      p.add(new JLabel(Resources.getString("Editor.size_label")));
-      fontSize = new IntConfigurer(l.font.getSize());
-      p.add(fontSize.getControls());
-      p.add(new JLabel(Resources.getString("Editor.TextLabel.bold")));
-      final int fontStyle = l.font.getStyle();
-      bold = new BooleanConfigurer(Boolean.valueOf(fontStyle != Font.PLAIN && fontStyle != Font.ITALIC));
-      p.add(bold.getControls());
-      p.add(new JLabel(Resources.getString("Editor.TextLabel.italic")));
-      italic = new BooleanConfigurer(Boolean.valueOf(fontStyle != Font.PLAIN && fontStyle != Font.BOLD));
-      p.add(italic.getControls());
-
-      controls.add("Editor.TextLabel.label_font", p);
+      fontConfig = new StructuredFontConfigurer(null, null, l.font);
+      fontConfig.setModuleSpecific(true);
+      fontConfig.setPlainOnly(false);
+      fontConfig.setLimitedSizes(false);
+      controls.add("Editor.TextLabel.label_font", fontConfig);
 
       fg = new ColorConfigurer(l.textFg);
       controls.add("Editor.TextLabel.text_color", fg);
@@ -929,7 +912,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
         l.verticalPos
       );
 
-      p = new JPanel(new MigLayout("ins 0", "[100]unrel[]rel[]")); // NON-NLS
+      JPanel p = new JPanel(new MigLayout("ins 0", "[100]unrel[]rel[]")); // NON-NLS
       p.add(vPos.getControls());
       p.add(new JLabel(Resources.getString("Editor.TextLabel.offset")));
       vOff = new IntConfigurer(l.verticalOffset);
@@ -994,15 +977,15 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       se.append(labelKeyInput.getValueString())
         .append(command.getValueString());
 
-      Integer i = (Integer) fontSize.getValue();
-      if (i == null || i <= 0) {
-        i = 10;
+      int size = fontConfig.getValueSize();
+      if (size <= 0) {
+        size = 10;
       }
-      se.append(i.toString())
+      se.append(size)
         .append(bg.getValueString())
         .append(fg.getValueString())
         .append(vPos.getValueString());
-      i = (Integer) vOff.getValue();
+      Integer i = (Integer) vOff.getValue();
       if (i == null) i = 0;
 
       se.append(i.toString())
@@ -1014,11 +997,8 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
         .append(vJust.getValueString())
         .append(hJust.getValueString())
         .append(format.getValueString())
-        .append(fontFamily.getValueString());
-      final int style = Font.PLAIN +
-        (bold.booleanValue() ? Font.BOLD : 0) +
-        (italic.booleanValue() ? Font.ITALIC : 0);
-      se.append(style);
+        .append(fontConfig.getValueFamily());
+      se.append(fontConfig.getValueStyle());
       i = (Integer) rotate.getValue();
       if (i == null) i = 0;
 
