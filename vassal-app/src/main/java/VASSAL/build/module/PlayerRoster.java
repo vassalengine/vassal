@@ -108,6 +108,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       "",
       e -> launch()
     ));
+    getLaunchButton().setEnabled(false); // not usuable without a game
     getLaunchButton().setVisible(false);
     retireButton = getLaunchButton(); // for compatibility
 
@@ -452,6 +453,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       players.clear();
     }
     getLaunchButton().setVisible(gameStarting && getMySide() != null);
+    getLaunchButton().setEnabled(gameStarting && getMySide() != null);
     pickedSide = false;
   }
 
