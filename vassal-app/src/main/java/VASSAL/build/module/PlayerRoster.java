@@ -320,10 +320,12 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     return GameModule.getGameModule().getPlayerRoster();
   }
 
+  /** Return my Untranslatted side */
   public static String getMySide() {
     return getMySide(false);
   }
 
+  /** Return my Translated Side */
   public static String getMyLocalizedSide() {
     return getMySide(true);
   }
@@ -358,6 +360,18 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     return new ArrayList<>(sides);
   }
 
+  public List<String> getUntranslatedSideList() {
+    return Arrays.asList(getUntranslatedSides());
+  }
+
+  public String[] getUntranslatedSides() {
+    // If the module is loaded in the editor, the module translation step does not run, so the untranslated side
+    // list will not have been set
+    if (untranslatedSides == null) {
+      untranslatedSides = sides.toArray(new String[0]);
+    }
+    return untranslatedSides;
+  }
   /**
    * Adds a player to the list of active players occupying sides
    * @param playerId player unique id (password)
@@ -624,11 +638,18 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
    * @param side Name of a side to see if it's a "solo side"
    * @return True if the side is "Solitaire", "Solo", "Moderator", or "Referee"
    */
-  public static boolean isSoloSide(String side) {
+  public static boolean isTranslatedSoloSide(String side) {
     return Resources.getString("PlayerRoster.solitaire").equals(side) ||
            Resources.getString("PlayerRoster.solo").equals(side) ||
            Resources.getString("PlayerRoster.moderator").equals(side) ||
            Resources.getString("PlayerRoster.referee").equals(side);
+  }
+
+  public static boolean isSoloSide(String side) {
+    return SOLITAIRE.equals(side) ||
+      SOLO.equals(side) ||
+      MODERATOR.equals(side) ||
+      REFEREE.equals(side);
   }
 
   /**
@@ -757,7 +778,8 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   }
 
   protected String promptForSide() {
-    final ArrayList<String> availableSides = new ArrayList<>(sides);
+    // availableSides and alreadyTaken are Translated side names
+    final ArrayList<String> availableSides = new ArrayList<>(getSides());
     final ArrayList<String> alreadyTaken = new ArrayList<>();
 
     for (final PlayerInfo p : players) {
@@ -771,12 +793,12 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     // Common names for Solitaire players (Solitaire, Solo, Referee) do not count as "real" player sides, and will be skipped.
     // If we have no "next" side available to offer, we stay with the observer side as our default offering.
     boolean found = false;       // If we find a usable side
-    final String mySide = translateSide(getMySide()); // Get our own side, so we can find the "next" one
+    final String mySide = getMyLocalizedSide(); // Get our own side, so we can find the "next" one
     final int myidx = (mySide != null) ? sides.indexOf(mySide) : -1; // See if we have a current non-observe side.
     int i = (myidx >= 0) ? ((myidx + 1) % sides.size()) : 0;   // If we do, start looking in the "next" slot, otherwise start at beginning.
     for (int tries = 0; i != myidx && tries < sides.size(); i = (i + 1) % sides.size(), tries++) { // Wrap-around search of sides
       final String s = sides.get(i);
-      if (!alreadyTaken.contains(s) && !isSoloSide(s)) {
+      if (!alreadyTaken.contains(s) && !isSoloSide(untranslateSide(s))) {
         found = true; // Found an available slot that's not our current one and not a "solo" slot.
         break;
       }
