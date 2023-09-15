@@ -109,7 +109,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       e -> launch()
     ));
     getLaunchButton().setEnabled(false); // not usuable without a game
-    getLaunchButton().setVisible(false); // this doesn't actually work for some reason
+    getLaunchButton().setVisible(false);
     retireButton = getLaunchButton(); // for compatibility
 
     setShowDisabledOptions(false); //AbstractToolbarItem
@@ -453,7 +453,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       players.clear();
     }
     getLaunchButton().setVisible(gameStarting && getMySide() != null);
-    getLaunchButton().setEnabled(gameStarting && getMySide() != null);
+    getLaunchButton().setEnabled(gameStarting);
     pickedSide = false;
   }
 
@@ -471,21 +471,17 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       GameModule.getGameModule().warn(Resources.getString("PlayerRoster.failed_pref_write", e.getLocalizedMessage()));
     }
 
-    String newSide = untranslateSide(sideConfig.getValueString());
+    final String newSide = untranslateSide(sideConfig.getValueString());
+    if (newSide != null) {
+      if (GameModule.getGameModule().isMultiplayerConnected()) {
+        final Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.joined_side_2" : "PlayerRoster.joined_side", GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME), newSide));
+        c.execute();
+      }
 
-    if (newSide == null) {
-      newSide = OBSERVER;
+      final Add a = new Add(this, GameModule.getActiveUserId(), GlobalOptions.getInstance().getPlayerId(), newSide);
+      a.execute();
+      GameModule.getGameModule().getServer().sendToOthers(a);
     }
-
-    if (GameModule.getGameModule().isMultiplayerConnected()) {
-      final Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.joined_side_2" : "PlayerRoster.joined_side", GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME), newSide));
-      c.execute();
-    }
-
-    final Add a = new Add(this, GameModule.getActiveUserId(), GlobalOptions.getInstance().getPlayerId(), newSide);
-    a.execute();
-    GameModule.getGameModule().getServer().sendToOthers(a);
-
     getLaunchButton().setVisible(getMySide() != null);
     pickedSide = true;
   }
