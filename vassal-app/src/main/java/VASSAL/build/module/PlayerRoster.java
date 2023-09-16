@@ -109,7 +109,6 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       e -> launch()
     ));
     getLaunchButton().setEnabled(false); // not usuable without a game
-   // getLaunchButton().setVisible(false);
     retireButton = getLaunchButton(); // for compatibility
 
     setShowDisabledOptions(false); //AbstractToolbarItem
@@ -482,9 +481,6 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       a.execute();
       GameModule.getGameModule().getServer().sendToOthers(a);
     }
-    // button is enabled / disabled at start and end of games.
-    // not clear what purpose is served by adjusting button visibility here
-    // getLaunchButton().setVisible(getMySide() != null);
     pickedSide = true;
   }
 
