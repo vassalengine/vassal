@@ -451,8 +451,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       GameModule.setTempUserId(null);
       players.clear();
     }
-    // getLaunchButton().setVisible(gameStarting && getMySide() != null);
-    getLaunchButton().setEnabled(gameStarting);
+    getLaunchButton().setEnabled(gameStarting && getMySide() != null);
     pickedSide = false;
   }
 
