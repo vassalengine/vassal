@@ -22,7 +22,7 @@ a|
 Force an Exact case search (i.e. abc is different to ABC).
 
 ===== Regular Expression
-The specified search string is a https://en.wikipedia.org/wiki/Regular_expression[Regular Expression]. e.g. If both _Exact Case_ and _Regular Expression_ are selected, a search for ^ABC$ will find matches that equate wholly to "ABC".
+The specified search string is a https://en.wikipedia.org/wiki/Regular_expression[Regular Expression]. In the simplest example, a search for ABC will find matches that equate wholly to "ABC", and lower or mixed case variants (unless _Exact Case_ is checked as well).
 
 ===== Advanced Search
 Show the advanced search options. All search options are on in a simple search. The advanced options allow you to turn off options to narrow your search.
