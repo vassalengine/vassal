@@ -27,12 +27,16 @@ import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.command.Logger;
 import VASSAL.configure.ComponentDescription;
+import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
+import VASSAL.configure.ValidationReport;
+import VASSAL.configure.ValidityChecker;
 import VASSAL.configure.password.ToggleablePasswordConfigurer;
 import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
+import VASSAL.i18n.Translation;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
@@ -249,6 +253,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     gm.getGameState().addGameComponent(this);
     gm.getGameState().addGameSetupStep(this);
     gm.addCommandEncoder(this);
+    validator = new SideTranslationValidator();
     super.addTo(b);
   }
 
@@ -987,8 +992,20 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     return StringArrayConfigurer.arrayToString(s);
   }
 
+  /**
+   * Set a new set of side names from a translation
+   * DO NOT apply if the number of sides does not match the number of currently defined sides as
+   * there is no way to tell which translation applies to which existing side
+   * @param newSides  Comma delimited string of translated sides
+   */
   protected void setSidesFromString(String newSides) {
-    sides = Arrays.asList(StringArrayConfigurer.stringToArray(newSides));
+    final String[] newSideArray = StringArrayConfigurer.stringToArray(newSides);
+    if (newSideArray.length == untranslatedSides.length) {
+      sides = Arrays.asList(StringArrayConfigurer.stringToArray(newSides));
+    }
+    else {
+      GameModule.getGameModule().warn(Resources.getString("PlayerRoster.side_translation_error", untranslatedSides.length, newSideArray.length));
+    }
   }
 
   public String untranslateSide(String side) {
@@ -1062,5 +1079,34 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   @Override
   public boolean isUnique() {
     return true;
+  }
+
+  /**
+   * Validator to check that the correct number of sides exist in any translations
+   */
+  private static class SideTranslationValidator implements ValidityChecker {
+
+    @Override
+    public void validate(Buildable target, ValidationReport report) {
+      if (target instanceof PlayerRoster) {
+        final PlayerRoster pr = (PlayerRoster) target;
+        for (final String language : Localization.getInstance().getTranslationList()) {
+          final Translation translation = Localization.getInstance().getTranslation(language);
+          final String translatedSides = translation.translate(pr.getI18nData().getPrefix() + PlayerRoster.SIDES);
+          if (translatedSides != null && !translatedSides.isEmpty()) {
+            final int translatedSideCount = translatedSides.split(",").length;
+            final int untranslatedSideCount = pr.sides.size();
+            if (translatedSideCount != untranslatedSideCount) {
+              report.addWarning(Resources.getString(
+                "Editor.ValidityChecker.side_warning",
+                language,
+                translatedSideCount,
+                ConfigureTree.getConfigureName(target.getClass()),
+                untranslatedSideCount));
+            }
+          }
+        }
+      }
+    }
   }
 }
