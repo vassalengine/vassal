@@ -1872,6 +1872,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
       prefs.addOption(null, new StringConfigurer(SearchParameters.SEARCH_STRING, null, ""));
       prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_CASE,   null, false));
+      prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_REGEX,   null, false));
       prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_NAMES,  null, true));
       prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_TYPES,  null, true));
       prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_ADVANCED, null, false));
