@@ -55,6 +55,7 @@ import VASSAL.i18n.TranslateAction;
 import VASSAL.launch.EditorWindow;
 import VASSAL.preferences.Prefs;
 import VASSAL.search.SearchTarget;
+import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ReadErrorDialog;
