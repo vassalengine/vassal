@@ -2215,6 +2215,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
         // options row
         panel.add(sensitive);
+        panel.add(regex);
         panel.add(advanced);
 
         // Advanced 1
