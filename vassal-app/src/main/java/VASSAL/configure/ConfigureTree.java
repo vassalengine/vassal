@@ -2663,7 +2663,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     private boolean checkString(String target, String searchString) {
       if (searchParameters.isMatchRegex()) {
         // patch search string to avoid exception when Regex starts with * only
-        if (searchString.substring(0, 1) == "*") {
+        if (searchString.substring(0, 1).equals("*")) {
           searchString = "." + searchString;
         }
         if (searchParameters.isMatchCase()) {
