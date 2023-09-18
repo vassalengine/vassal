@@ -2176,7 +2176,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             ConfigureTree.chat(Resources.getString("Editor.search_all_off"));
           }
 
-          if (!searchParameters.getSearchString().isEmpty()) {
+          if (!searchParameters.getSearchString().isEmpty() && (!searchParameters.isMatchRegex() || isValidRegex(searchParameters.getSearchString()))) {
             if (anyChanges) {
               // Unless we're just continuing to the next match in an existing search, compute & display hit count
               final int matches = getNumMatches(searchParameters.getSearchString());
@@ -2654,6 +2654,16 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
     }
 
+    private boolean isValidRegex(String searchString) { // avoid exceptions by checking the Regex before use
+      try {
+        return "".matches(searchString) || true;
+      }
+      catch (java.util.regex.PatternSyntaxException e) {
+        chat("Search string is not a valid Regular Expression: " + e.getMessage()); //NON-NLS
+        return false;
+      }
+    }
+
     /**
      * Checks a single string against our search parameters
      * @param target - string to check
@@ -2662,17 +2672,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
      */
     private boolean checkString(String target, String searchString) {
       if (searchParameters.isMatchRegex()) {
-        try {
-          if (searchParameters.isMatchCase()) {
-            return target.matches(searchString);
-          }
-          else {
-            return target.toLowerCase().matches(searchString.toLowerCase());
-          }
+        if (searchParameters.isMatchCase()) {
+          return target.matches(searchString);
         }
-        catch (java.util.regex.PatternSyntaxException e) {
-          logger.error("Search string is not a valid Regular Expression: " + e.getMessage()); //NON-NLS
-          return false;
+        else {
+          return target.toLowerCase().matches(searchString.toLowerCase());
         }
       }
       else {
