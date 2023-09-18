@@ -2662,15 +2662,17 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
      */
     private boolean checkString(String target, String searchString) {
       if (searchParameters.isMatchRegex()) {
-        // patch search string to avoid exception when Regex starts with * only
-        if (searchString.substring(0, 1).equals("*")) {
-          searchString = "." + searchString;
+        try {
+          if (searchParameters.isMatchCase()) {
+            return target.matches(searchString);
+          }
+          else {
+            return target.toLowerCase().matches(searchString.toLowerCase());
+          }
         }
-        if (searchParameters.isMatchCase()) {
-          return target.matches(searchString);
-        }
-        else {
-          return target.toLowerCase().matches(searchString.toLowerCase());
+        catch (java.util.regex.PatternSyntaxException e) {
+          logger.error("Search string is not a valid Regular Expression: " + e.getMessage()); //NON-NLS
+          return false;
         }
       }
       else {
