@@ -21,6 +21,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 12708, "desc": "Prevent ArrayIndexOutOfBoundsException if side translation count does not match module" },
         { "num": 12688, "desc": "Replace with Other should not update text of unchangeable labels" },
         { "num": 12683, "desc": "Prevent NPE on starting game in Main Room" },
         { "num": 12676, "desc": "IncrementProperty: Corrected bad wrap-around calculation when increment is negative" },

@@ -1,5 +1,7 @@
 3.7.1 - ???
 
+* 12708: Prevent ArrayIndexOutOfBoundsException if side translation count does
+    not match module
 * 12706: Keep the "retire" button disabled unless a game is running
 * 12696: Removed "Indexing pieces" message
 * 12688: Replace with Other should not update text of unchangeable labels
