@@ -1,5 +1,6 @@
 3.7.1 - ???
 
+* 12715: Enable help button for editor Search dialog
 * 12708: Prevent ArrayIndexOutOfBoundsException if side translation count does
     not match module
 * 12706: Keep the "retire" button disabled unless a game is running

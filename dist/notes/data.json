@@ -34,6 +34,7 @@
         { "num": 12307, "desc": "Prevent NPE when Return to Deck of a deleted Deck" }
       ],
       "other_improvements": [
+        { "num": 12715, "desc": "Enable help button for editor Search dialog" },
         { "num": 12706, "desc": "Keep the \"retire\" button disabled unless a game is running" },
         { "num": 12696, "desc": "Removed \"Indexing pieces\" message" },
         { "num": 12670, "desc": "Prevent essential components being accidentally deleted" },
