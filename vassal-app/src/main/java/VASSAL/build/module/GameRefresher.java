@@ -102,6 +102,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
   public static final String REFRESH_DECKS = "RefreshDecks";
   public static final String DELETE_OLD_DECKS = "DeleteOldDecks";
   public static final String ADD_NEW_DECKS = "AddNewDecks";
+  public static final String USE_HOTKEYS = "UseHotkeys";
 
   private Action refreshAction;
   private final GpIdSupport gpIdSupport;
@@ -341,6 +342,11 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       }
     }
 
+    if (options.contains("fireHotkeys")) { //NON-NLS
+      // About to commence refreshing the game, allow a custom start...
+      GameModule.getGameModule().fireKeyStroke(NamedKeyStroke.of("VassalPreRefreshGHK"));
+    }
+
     /*
      * 2. Build a list in visual order of all stacks, decks, mats and other pieces that need refreshing
      */
@@ -540,8 +546,10 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
       }
     }
-    // After all refreshing, allow a custom finish...
-    GameModule.getGameModule().fireKeyStroke(NamedKeyStroke.of("VassalRefreshGHK"));
+    if (options.contains("fireHotkeys")) { //NON-NLS
+      // After all refreshing, allow a custom finish...
+      GameModule.getGameModule().fireKeyStroke(NamedKeyStroke.of("VassalPostRefreshGHK"));
+    }
   }
 
 
@@ -682,6 +690,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     private JCheckBox refreshDecks;
     private JCheckBox deleteOldDecks;
     private JCheckBox addNewDecks;
+    private JCheckBox fireHotkeys;
     private final Set<String> options = new HashSet<>();
     JButton runButton;
 
@@ -780,6 +789,9 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
       deleteOldDecks.setVisible(refreshDecks.isSelected());
       addNewDecks.setVisible(refreshDecks.isSelected());
+
+      fireHotkeys = new JCheckBox(Resources.getString("GameRefresher.fire_global_hotkeys"));
+      panel.add(fireHotkeys);
     }
 
     protected void setOptions() {
@@ -810,6 +822,9 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
         if (addNewDecks.isSelected()) {
           options.add(ADD_NEW_DECKS); //NON-NLS
         }
+      }
+      if (fireHotkeys.isSelected()) {
+        options.add(USE_HOTKEYS); //$NON-NLS-1$
       }
     }
 

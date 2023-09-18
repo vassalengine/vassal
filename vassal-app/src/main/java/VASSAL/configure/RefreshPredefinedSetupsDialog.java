@@ -62,6 +62,8 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   private JCheckBox refreshDecks;
   private JCheckBox deleteOldDecks;
   private JCheckBox addNewDecks;
+  private JCheckBox fireHotkeys;
+
   private final Set<String> options = new HashSet<>();
 
   public RefreshPredefinedSetupsDialog(Frame owner) throws HeadlessException {
@@ -138,6 +140,9 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     addNewDecks.setSelected(false);
     panel.add(addNewDecks);
 
+    fireHotkeys = new JCheckBox(Resources.getString("GameRefresher.fire_global_hotkeys"));
+    panel.add(fireHotkeys);
+
     panel.add(buttonsBox, "grow"); // NON-NLS
     add(panel, "grow"); // NON-NLS
 
@@ -179,6 +184,9 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
       if (addNewDecks.isSelected()) {
         options.add(GameRefresher.ADD_NEW_DECKS); //NON-NLS
       }
+    }
+    if (fireHotkeys.isSelected()) {
+      options.add(GameRefresher.USE_HOTKEYS); //$NON-NLS-1$
     }
   }
 
