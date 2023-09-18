@@ -3,6 +3,7 @@
 * 12706: Keep the "retire" button disabled unless a game is running
 * 12696: Removed "Indexing pieces" message
 * 12688: Replace with Other should not update text of unchangeable labels
+* 12683: Prevent NPE on starting game in Main Room
 * 12676: IncrementProperty: Corrected bad wrap-around calculation when
     increment is negative
 * 12670: Prevent essential components being accidentally deleted
