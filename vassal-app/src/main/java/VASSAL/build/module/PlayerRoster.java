@@ -106,18 +106,21 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     setIconKey(BUTTON_ICON);
     setHotKeyKey(BUTTON_KEYSTROKE);
 
-    setLaunchButton(makeLaunchButton(
-      Resources.getString("PlayerRoster.allow_another"),
-      Resources.getString("PlayerRoster.retire"),
-      "",
-      e -> launch()
-    ));
-    getLaunchButton().setEnabled(false); // not usuable without a game
-    retireButton = getLaunchButton(); // for compatibility
+    if (getAvailableSides().size() == 0) {
+      setLaunchButton(makeLaunchButton(
+              Resources.getString("PlayerRoster.allow_another"),
+              Resources.getString("PlayerRoster.retire"),
+              "",
+              e -> launch()
+      ));
 
-    setShowDisabledOptions(false); //AbstractToolbarItem
+      getLaunchButton().setEnabled(false); // not usuable without a game
+      retireButton = getLaunchButton(); // for compatibility
 
-    translatedObserver = Resources.getString("PlayerRoster.observer"); //$NON-NLS-1$
+      setShowDisabledOptions(false); //AbstractToolbarItem
+
+      translatedObserver = Resources.getString("PlayerRoster.observer"); //$NON-NLS-1$
+    }
   }
 
   @Override
@@ -486,22 +489,22 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       GameModule.getGameModule().warn(Resources.getString("PlayerRoster.failed_pref_write", e.getLocalizedMessage()));
     }
 
-   // Drop into standard routine, starting with checking side is still available (race condition mitigation)
+   // Drop into standard routine, starting with checking that the side is still available (race condition mitigation)
     // returns untranslated side
     final String newSide = promptForSide(sideConfig.getValueString());
 
+    // null is a cancel op - player will not connect to the game
     if (newSide != null) {
       if (GameModule.getGameModule().isMultiplayerConnected()) {
         final Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.joined_side_2" : "PlayerRoster.joined_side", GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME), translateSide(newSide)));
         c.execute();
+
+        final Add a = new Add(this, GameModule.getActiveUserId(), GlobalOptions.getInstance().getPlayerId(), newSide);
+        a.execute();
+        GameModule.getGameModule().getServer().sendToOthers(a);
+
+        pickedSide = true;
       }
-
-      final Add a = new Add(this, GameModule.getActiveUserId(), GlobalOptions.getInstance().getPlayerId(), newSide);
-      a.execute();
-      GameModule.getGameModule().getServer().sendToOthers(a);
-
-      getLaunchButton().setVisible(getMySide() != null);
-      pickedSide = true;
     }
   }
 
