@@ -1,5 +1,12 @@
 3.7.1 - ???
 
+* 12715: Enable help button for editor Search dialog
+* 12708: Prevent ArrayIndexOutOfBoundsException if side translation count does
+    not match module
+* 12706: Keep the "retire" button disabled unless a game is running
+* 12696: Removed "Indexing pieces" message
+* 12688: Replace with Other should not update text of unchangeable labels
+* 12683: Prevent NPE on starting game in Main Room
 * 12676: IncrementProperty: Corrected bad wrap-around calculation when
     increment is negative
 * 12670: Prevent essential components being accidentally deleted
@@ -9,8 +16,10 @@
 * 12582: Corrected divide-by-zero problem for Zones defined by zero-point
     polygons
 * 12474: Fixed NPE when moving EditablePiece which isn't on a map
+* 12411: Fixed NPE when updating ConfigureTree
 * 12324: Fixed ClassCastException caused by reordering columns in Delayed
     Notes table
+* 12307: Prevent NPE when Return to Deck of a deleted Deck
 
 3.7.0 - 7 September 2023
 
@@ -116,7 +125,7 @@
 * 12176: Add preference to not display Mark Moved status of pieces
 * 12175: Fix stretchy images in chat
 * 12172: Metadata now contains the 'extra' fields, and Module Manager displays
-  them if numeric
+    them if numeric
 * 11932: Support for setting Scenario Options
 
 3.7.0-beta2 - 30 March 2023

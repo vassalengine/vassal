@@ -24,6 +24,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.swing.SwingUtils;
 
+import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -60,6 +61,11 @@ public class ChooseComponentDialog extends JDialog implements TreeSelectionListe
 
       @Override
       public void mouseReleased(MouseEvent e) {
+      }
+
+      @Override
+      protected Action buildEditAction(Configurable target) {
+        return null;
       }
     };
     tree.addTreeSelectionListener(this);

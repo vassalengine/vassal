@@ -18,7 +18,6 @@
 package VASSAL.build.module.index;
 
 import VASSAL.build.GameModule;
-import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Map;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Stack;
@@ -62,7 +61,6 @@ public class IndexManager {
    * Will usually only be called at the start of a game session after initial load of gamestate is complete.
    */
   public void rebuild() {
-    new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "Indexing pieces...").execute();
     clearAll();
     for (final GamePiece piece : GameModule.getGameModule().getGameState().getAllPieces()) {
       final Map map = piece.getMap();

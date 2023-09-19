@@ -55,6 +55,7 @@ import VASSAL.i18n.TranslateAction;
 import VASSAL.launch.EditorWindow;
 import VASSAL.preferences.Prefs;
 import VASSAL.search.SearchTarget;
+import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ReadErrorDialog;
@@ -126,6 +127,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -625,17 +627,21 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
 
   private void notifyUpdate(final Configurable target) {
-    if (target instanceof AbstractConfigurable) {
-      if (editorWindow.getListKeyCommands() != null) {
-        editorWindow.getListKeyCommands().updateConfigurable((AbstractConfigurable)target);
+    if (editorWindow != null) {
+      if (target instanceof AbstractConfigurable) {
+        if (editorWindow.getListKeyCommands() != null) {
+          editorWindow.getListKeyCommands().updateConfigurable((AbstractConfigurable)target);
+        }
       }
     }
   }
 
   private void notifyDelete(final Configurable target) {
-    if (target instanceof AbstractConfigurable) {
-      if (editorWindow.getListKeyCommands() != null) {
-        editorWindow.getListKeyCommands().deleteConfigurable((AbstractConfigurable)target);
+    if (editorWindow != null) {
+      if (target instanceof AbstractConfigurable) {
+        if (editorWindow.getListKeyCommands() != null) {
+          editorWindow.getListKeyCommands().deleteConfigurable((AbstractConfigurable)target);
+        }
       }
     }
   }
@@ -2237,7 +2243,17 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
 
     private void showSearchHelp() {
-      // FIXME - Add Help ref
+      File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
+      dir = new File(dir, "ReferenceManual"); //$NON-NLS-1$
+      final File theFile = new File(dir, "Search.html"); //$NON-NLS-1$
+      HelpFile h = null;
+      try {
+        h = new HelpFile(null, theFile, "#top"); //$NON-NLS-1$
+      }
+      catch (MalformedURLException e) {
+        ErrorDialog.bug(e);
+      }
+      BrowserSupport.openURL(h.getContents().toString());
     }
 
     /**
