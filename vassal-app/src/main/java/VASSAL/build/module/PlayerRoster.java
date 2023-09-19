@@ -789,20 +789,23 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     return promptForSide("");
   }
 
-  protected String promptForSide(String checkSide) {
+  protected String promptForSide(String newSide) {
     // availableSides and alreadyTaken are translated side names
     final ArrayList<String> availableSides = new ArrayList<>(getSides());
     final ArrayList<String> alreadyTaken = new ArrayList<>();
     boolean alreadyConnected;
-    String newSide = "";
     final GameModule g = GameModule.getGameModule();
 
-    if (checkSide != null && checkSide.isEmpty()) {
+    if (newSide != null && newSide.isEmpty()) {
       alreadyConnected = true;
     }
     else {
-      alreadyConnected = false;
-      newSide = checkSide;
+      if (newSide == null || translatedObserver.equals(newSide)) { // Observer checked and returned translated here
+        return OBSERVER;
+      }
+      else {
+        alreadyConnected = false;
+      }
     }
 
     while (newSide != null) { // Loops until a valid side is found or op is canceled (repeats side check to minimuse race condition window)
@@ -862,8 +865,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
       // side must be returned in English
       if (translatedObserver.equals(newSide)) { // Observer returns here, other returns are checked once more.
-        newSide = OBSERVER;
-        break;
+        return OBSERVER;
       }
       else {
         alreadyTaken.clear(); // prepare to loop again for exit check
