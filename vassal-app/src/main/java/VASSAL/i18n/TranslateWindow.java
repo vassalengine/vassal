@@ -61,6 +61,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -80,8 +81,8 @@ import java.util.List;
 public class TranslateWindow extends JDialog implements ListSelectionListener,
     TreeSelectionListener {
   private static final long serialVersionUID = 1L;
-  protected static final Color TRANSLATION_NEEDED_COLOR = Color.red;
-  protected static final Color TRANSLATION_DONE_COLOR = Color.blue;
+  protected static final Color TRANSLATION_NEEDED_COLOR = Color.black;
+  protected static final Color TRANSLATION_DONE_COLOR = Color.black;
   protected static final Color NO_TRANSLATION_NEEDED_COLOR = Color.black;
 
   protected Translatable target;
@@ -719,13 +720,16 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
 
       if (originalValue == null || originalValue.length() == 0) {
         c.setForeground(NO_TRANSLATION_NEEDED_COLOR);
+        c.setFont(c.getFont().deriveFont(Font.PLAIN));
       }
       else {
         if (translation == null || translation.length() == 0) {
           c.setForeground(TRANSLATION_NEEDED_COLOR);
+          c.setFont(c.getFont().deriveFont(Font.BOLD));
         }
         else {
           c.setForeground(TRANSLATION_DONE_COLOR);
+          c.setFont(c.getFont().deriveFont(Font.PLAIN));
         }
       }
 
@@ -784,9 +788,11 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       final Translatable t = ((MyTreeNode) value).getTarget();
       if (t.getI18nData().hasUntranslatedAttributes(currentTranslation)) {
         c.setForeground(TRANSLATION_NEEDED_COLOR);
+        c.setFont(c.getFont().deriveFont(Font.BOLD));
       }
       else {
         c.setForeground(NO_TRANSLATION_NEEDED_COLOR);
+        c.setFont(c.getFont().deriveFont(Font.PLAIN));
       }
       return c;
     }
