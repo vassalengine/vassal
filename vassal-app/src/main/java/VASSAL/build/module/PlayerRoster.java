@@ -789,18 +789,18 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   }
 
   protected String promptForSide(String checkSide) {
-    // availableSides and alreadyTaken are Translated side names
+    // availableSides and alreadyTaken are translated side names
     final ArrayList<String> availableSides = new ArrayList<>(getSides());
     final ArrayList<String> alreadyTaken = new ArrayList<>();
-    boolean fromWizard;
+    boolean alreadyConnected;
     String newSide = "";
     final GameModule g = GameModule.getGameModule();
 
     if (checkSide != null && checkSide.isEmpty()) {
-      fromWizard = false;
+      alreadyConnected = true;
     }
     else {
-      fromWizard = true;
+      alreadyConnected = false;
       newSide = checkSide;
     }
 
@@ -827,24 +827,25 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       }
 
       availableSides.removeAll(alreadyTaken);
+      String nextChoice = translatedObserver; // default for dropdown
 
+      // When player is already connected, offer a hot-seat...
       // If a "real" player side is available, we want to offer "the next one" as the default, rather than observer.
       // Thus hotseat players can easily cycle through the player positions as they will appear successively as the default.
       // Common names for Solitaire players (Solitaire, Solo, Referee) do not count as "real" player sides, and will be skipped.
       // If we have no "next" side available to offer, we stay with the observer side as our default offering.
-      boolean found = false;       // If we find a usable side
-      final String mySide = getMyLocalizedSide(); // Get our own side, so we can find the "next" one
-      final int myidx = (mySide != null) ? sides.indexOf(mySide) : -1; // See if we have a current non-observe side.
-      int i = (myidx >= 0) ? ((myidx + 1) % sides.size()) : 0;   // If we do, start looking in the "next" slot, otherwise start at beginning.
-      for (int tries = 0; i != myidx && tries < sides.size(); i = (i + 1) % sides.size(), tries++) { // Wrap-around search of sides
-        final String s = sides.get(i);
-        if (!alreadyTaken.contains(s) && !isSoloSide(untranslateSide(s))) {
-          found = true; // Found an available slot that's not our current one and not a "solo" slot.
-          break;
+      if (alreadyConnected) {
+        final String mySide = getMyLocalizedSide(); // Get our own side, so we can find the "next" one
+        final int myidx = (mySide != null) ? sides.indexOf(mySide) : -1; // See if we have a current non-observe side.
+        int i = (myidx >= 0) ? ((myidx + 1) % sides.size()) : 0;   // If we do, start looking in the "next" slot, otherwise start at beginning.
+        for (int tries = 0; i != myidx && tries < sides.size(); i = (i + 1) % sides.size(), tries++) { // Wrap-around search of sides
+          final String s = sides.get(i);
+          if (!alreadyTaken.contains(s) && !isSoloSide(untranslateSide(s))) {
+            nextChoice = sides.get(i); // Found an available slot that's not our current one and not a "solo" slot.
+            break;
+          }
         }
       }
-
-      final String nextChoice = found ? sides.get(i) : translatedObserver; // This will be our defaulted choice for the dropdown.
 
       availableSides.add(0, translatedObserver);
 
