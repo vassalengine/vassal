@@ -106,22 +106,19 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     setIconKey(BUTTON_ICON);
     setHotKeyKey(BUTTON_KEYSTROKE);
 
-    // Deploy button unless there are no sides to select
-    if (getAvailableSides().isEmpty()) {
-      setLaunchButton(makeLaunchButton(
-              Resources.getString("PlayerRoster.allow_another"),
-              Resources.getString("PlayerRoster.retire"),
-              "",
-              e -> launch()
-      ));
+    setLaunchButton(makeLaunchButton(
+            Resources.getString("PlayerRoster.allow_another"),
+            Resources.getString("PlayerRoster.retire"),
+            "",
+            e -> launch()
+    ));
 
-      getLaunchButton().setEnabled(false); // not usuable without a game
-      retireButton = getLaunchButton(); // for compatibility
+    getLaunchButton().setEnabled(false); // not usuable without a game
+    retireButton = getLaunchButton(); // for compatibility
 
-      setShowDisabledOptions(false); //AbstractToolbarItem
+    setShowDisabledOptions(false); //AbstractToolbarItem
 
-      translatedObserver = Resources.getString("PlayerRoster.observer"); //$NON-NLS-1$
-    }
+    translatedObserver = Resources.getString("PlayerRoster.observer"); //$NON-NLS-1$
   }
 
   @Override
