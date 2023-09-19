@@ -133,7 +133,7 @@ public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
       sd = rsop.getSize();
 
       // We want dx0 * xscale = sx0, unless that makes xscale = 0.
-      xscale = sd.width == 1 ?  dd.width : (float)(dd.width - 1) / (sd.width - 1);
+      xscale = sd.width == 1 ? dd.width : (float)(dd.width - 1) / (sd.width - 1);
 
       // We want dy0 * yscale = sy0, unless that makes yscale = 0.
       yscale = sd.height == 1 ? dd.height : (float)(dd.height - 1) / (sd.height - 1);
