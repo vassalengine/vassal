@@ -107,7 +107,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     setHotKeyKey(BUTTON_KEYSTROKE);
 
     // Deploy button unless there are no sides to select
-    if (getAvailableSides().size() == 0) {
+    if (getAvailableSides().isEmpty()) {
       setLaunchButton(makeLaunchButton(
               Resources.getString("PlayerRoster.allow_another"),
               Resources.getString("PlayerRoster.retire"),
