@@ -24,6 +24,7 @@ import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.PropertiesWindow;
 import VASSAL.configure.ShowHelpAction;
+import VASSAL.tools.WarningDialog;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.swing.SwingUtils;
 
@@ -172,8 +173,14 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
    * @param target new Translation
    */
   protected void refreshTranslationList(Configurable target) {
+    final Translation newTranslation = (Translation) target;
+
     final List<Language> list = GameModule.getGameModule().getComponentsOf(Language.class);
     if (list != null) {
+      if (list.get(0).contains(newTranslation)) {
+        WarningDialog.show("Editor.TranslateWindow.translation_exists", newTranslation.getDescription());
+        return;
+      }
       final Language language = list.iterator().next();
       myConfigureTree.externalInsert(language, target);
     }
@@ -182,7 +189,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     for (final String lang : langs) {
       langBox.addItem(lang);
     }
-    langBox.setSelectedItem(((Translation) target).getDescription());
+    langBox.setSelectedItem(newTranslation.getDescription());
     keyTable.setEnabled(true);
     tree.repaint();
   }
