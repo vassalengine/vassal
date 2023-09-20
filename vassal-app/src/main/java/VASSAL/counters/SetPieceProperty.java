@@ -364,11 +364,11 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
   }
 
   //
-  // The following 4 over-rides are called when the PropertyChanger is activated to determine
+  // The following 4 overrides are called when the PropertyChanger is activated to determine
   // the numeric constraints to follow when applying the change to a specific remote DP.
-  // If this trait is not over-riding the numeric constraints, then use the constraints of the
+  // If this trait is not overriding the numeric constraints, then use the constraints of the
   // target DP.
-  // NOTE: Constraints.getPropertySource() is not over-ridden, it is handled separately by the
+  // NOTE: Constraints.getPropertySource() is not overridden, it is handled separately by the
   //       Remote Property Setters.
   //
   @Override
