@@ -1,5 +1,6 @@
 3.7.1 - ???
 
+* 12727: Ensure that tiles are cobbled for fixed-size board scaling
 * 12715: Enable help button for editor Search dialog
 * 12708: Prevent ArrayIndexOutOfBoundsException if side translation count does
     not match module
