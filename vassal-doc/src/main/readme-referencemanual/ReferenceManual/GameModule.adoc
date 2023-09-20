@@ -119,7 +119,7 @@ Any number of observers (players who belong to no side) are allowed.
 
 The <<Toolbar.adoc#Retire,Retire>> or <<Toolbar.adoc#SwitchSides,Switch Sides>> button, in the main controls toolbar, allows a player to relinquish their side (making it available to the next player joining the game). You can specify the text, icon, and mouse-over tooltip for the toolbar button.
 
-The Switch Sides component includes hot-seat support. Vassal will determine the next side in order, excluding non-player sides "Solo", "Solitaire", "Moderator" and "Referee".
+The Switch Sides component includes hot-seat support. If the Module <<GlobalProperties.adoc#top,Global Property>> _VassalNextSide_ is defined and set to an available side, that side will be offered. Failing this, Vassal will determine the next side in order, excluding the non-player sides "Solo", "Solitaire", "Moderator" and "Referee".
 
 |===
 

@@ -43,6 +43,7 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.swing.FlowLabel;
 import net.miginfocom.swing.MigLayout;
+import org.apache.commons.lang3.StringUtils;
 import org.netbeans.spi.wizard.WizardController;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -107,10 +108,10 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     setHotKeyKey(BUTTON_KEYSTROKE);
 
     setLaunchButton(makeLaunchButton(
-            Resources.getString("PlayerRoster.allow_another"),
-            Resources.getString("PlayerRoster.retire"),
-            "",
-            e -> launch()
+      Resources.getString("PlayerRoster.allow_another"),
+      Resources.getString("PlayerRoster.retire"),
+      "",
+      e -> launch()
     ));
 
     getLaunchButton().setEnabled(false); // not usuable without a game
@@ -839,16 +840,28 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       // Common names for Solitaire players (Solitaire, Solo, Referee) do not count as "real" player sides, and will be skipped.
       // If we have no "next" side available to offer, we stay with the observer side as our default offering.
       if (alreadyConnected) {
-        final String mySide = getMyLocalizedSide(); // Get our own side, so we can find the "next" one
-        final int myidx = (mySide != null) ? sides.indexOf(mySide) : -1; // See if we have a current non-observe side.
-        int i = (myidx >= 0) ? ((myidx + 1) % sides.size()) : 0;   // If we do, start looking in the "next" slot, otherwise start at beginning.
-        for (int tries = 0; i != myidx && tries < sides.size(); i = (i + 1) % sides.size(), tries++) { // Wrap-around search of sides
-          final String s = sides.get(i);
-          if (!alreadyTaken.contains(s) && !isSoloSide(untranslateSide(s))) {
-            nextChoice = sides.get(i); // Found an available slot that's not our current one and not a "solo" slot.
-            break;
+
+          // Module controlled method: set VassalNextSide (a Module Global Property)
+          // If not found / available method 2 is used to find likely next side
+          // Reserved property VassalNextSide may override hotseat default; must be an available side in english
+          // sits within the loop in case property changes between iterations (due to other players)
+          if (!StringUtils.isEmpty((String) g.getProperty("VassalNextSide"))) {
+              nextChoice = translateSide((String) g.getProperty("VassalNextSide"));
           }
-        }
+
+          if (!availableSides.contains(nextChoice)) {
+              nextChoice = translatedObserver; // default if no valid alternative
+              final String mySide = getMyLocalizedSide(); // Get our own side, so we can find the "next" one
+              final int myidx = (mySide != null) ? sides.indexOf(mySide) : -1; // See if we have a current non-observe side.
+              int i = (myidx >= 0) ? ((myidx + 1) % sides.size()) : 0;   // If we do, start looking in the "next" slot, otherwise start at beginning.
+              for (int tries = 0; i != myidx && tries < sides.size(); i = (i + 1) % sides.size(), tries++) { // Wrap-around search of sides
+                  final String s = sides.get(i);
+                  if (!alreadyTaken.contains(s) && !isSoloSide(untranslateSide(s))) {
+                      nextChoice = sides.get(i); // Found an available slot that's not our current one and not a "solo" slot.
+                      break;
+                  }
+              }
+          }
       }
 
       availableSides.add(0, translatedObserver);
