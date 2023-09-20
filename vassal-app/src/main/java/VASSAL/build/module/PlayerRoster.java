@@ -834,12 +834,8 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       availableSides.removeAll(alreadyTaken);
       String nextChoice = translatedObserver; // default for dropdown
 
-      // When player is already connected, offer a hot-seat...
-      // If a "real" player side is available, we want to offer "the next one" as the default, rather than observer.
-      // Thus hotseat players can easily cycle through the player positions as they will appear successively as the default.
-      // Common names for Solitaire players (Solitaire, Solo, Referee) do not count as "real" player sides, and will be skipped.
-      // If we have no "next" side available to offer, we stay with the observer side as our default offering.
-      if (alreadyConnected) {
+      // When player is already connected, offer a hot-seat... first connections will default to observer
+       if (alreadyConnected) {
 
           // Module controlled method: set VassalNextSide (a Module Global Property)
           // If not found / available method 2 is used to find likely next side
@@ -847,20 +843,28 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
           // sits within the loop in case property changes between iterations (due to other players)
           if (!StringUtils.isEmpty((String) g.getProperty("VassalNextSide"))) {
               nextChoice = translateSide((String) g.getProperty("VassalNextSide"));
+            if (!availableSides.contains(nextChoice)) {
+              nextChoice = translatedObserver; // invalid value - revert to default
+            }
           }
 
-          if (!availableSides.contains(nextChoice)) {
-              nextChoice = translatedObserver; // default if no valid alternative
-              final String mySide = getMyLocalizedSide(); // Get our own side, so we can find the "next" one
-              final int myidx = (mySide != null) ? sides.indexOf(mySide) : -1; // See if we have a current non-observe side.
-              int i = (myidx >= 0) ? ((myidx + 1) % sides.size()) : 0;   // If we do, start looking in the "next" slot, otherwise start at beginning.
-              for (int tries = 0; i != myidx && tries < sides.size(); i = (i + 1) % sides.size(), tries++) { // Wrap-around search of sides
-                  final String s = sides.get(i);
-                  if (!alreadyTaken.contains(s) && !isSoloSide(untranslateSide(s))) {
-                      nextChoice = sides.get(i); // Found an available slot that's not our current one and not a "solo" slot.
-                      break;
-                  }
+          if (nextChoice.equals(translatedObserver)) {
+            // Module has not specified a valid hotseat option so we'll try and determine one...
+            // If a "real" player side is available, we want to offer "the next one" as the default, rather than observer.
+            // Thus hotseat players can easily cycle through the player positions as they will appear successively as the default.
+            // Common names for Solitaire players (Solitaire, Solo, Referee) do not count as "real" player sides, and will be skipped.
+            // If we have no "next" side available to offer, we stay with the observer side as our default offering.
+
+            final String mySide = getMyLocalizedSide(); // Get our own side, so we can find the "next" one
+            final int myidx = (mySide != null) ? sides.indexOf(mySide) : -1; // See if we have a current non-observe side.
+            int i = (myidx >= 0) ? ((myidx + 1) % sides.size()) : 0;   // If we do, start looking in the "next" slot, otherwise start at beginning.
+            for (int tries = 0; i != myidx && tries < sides.size(); i = (i + 1) % sides.size(), tries++) { // Wrap-around search of sides
+              final String s = sides.get(i);
+              if (!alreadyTaken.contains(s) && !isSoloSide(untranslateSide(s))) {
+                nextChoice = sides.get(i); // Found an available slot that's not our current one and not a "solo" slot.
+                break;
               }
+            }
           }
       }
 
