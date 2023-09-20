@@ -341,6 +341,10 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       }
     }
 
+    // About to commence refreshing the game, allow a custom start...
+    GameModule.getGameModule().fireKeyStroke(NamedKeyStroke.of("VassalPreRefreshGHK"));
+
+
     /*
      * 2. Build a list in visual order of all stacks, decks, mats and other pieces that need refreshing
      */
@@ -541,7 +545,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       }
     }
     // After all refreshing, allow a custom finish...
-    GameModule.getGameModule().fireKeyStroke(NamedKeyStroke.of("VassalRefreshGHK"));
+    GameModule.getGameModule().fireKeyStroke(NamedKeyStroke.of("VassalPostRefreshGHK"));
   }
 
 
