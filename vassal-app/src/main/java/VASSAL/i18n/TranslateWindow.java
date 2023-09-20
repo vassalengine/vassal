@@ -110,6 +110,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
   }
 
   protected void initComponents() {
+
     setTitle(Resources.getString("Editor.TranslateWindow.translate", ConfigureTree.getConfigureName((Configurable) target)));
     final JPanel mainPanel = new JPanel(new BorderLayout());
     /*
@@ -252,6 +253,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     final JPanel keyPanel = new JPanel(new BorderLayout());
     keyPanel.setMinimumSize(new Dimension(800, 100));
     keyTable = new MyTable();
+    keyTable.setSelectionBackground(new Color(184, 207, 229));
     keyTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
     keyTable.addFocusListener(new FocusListener() {
@@ -777,6 +779,11 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
   class MyTreeCellRenderer extends DefaultTreeCellRenderer {
 
     private static final long serialVersionUID = 1L;
+
+    @Override
+    public Color getBackgroundSelectionColor() {
+      return new Color(184, 207, 229);
+    }
 
     @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel,
