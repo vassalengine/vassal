@@ -343,7 +343,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     }
 
     if (options.contains("fireHotkeys")) { //NON-NLS
-      // About to commence refreshing the game, allow a custom start.
+      // About to commence refreshing the game, allow a custom start...
       GameModule.getGameModule().fireKeyStroke(NamedKeyStroke.of("VassalPreRefreshGHK"));
     }
 
