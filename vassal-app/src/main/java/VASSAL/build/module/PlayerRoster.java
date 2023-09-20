@@ -107,10 +107,10 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     setHotKeyKey(BUTTON_KEYSTROKE);
 
     setLaunchButton(makeLaunchButton(
-            Resources.getString("PlayerRoster.allow_another"),
-            Resources.getString("PlayerRoster.retire"),
-            "",
-            e -> launch()
+      Resources.getString("PlayerRoster.allow_another"),
+      Resources.getString("PlayerRoster.retire"),
+      "",
+      e -> launch()
     ));
 
     getLaunchButton().setEnabled(false); // not usuable without a game
