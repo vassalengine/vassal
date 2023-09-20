@@ -28,6 +28,8 @@ import VASSAL.tools.WarningDialog;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.swing.SwingUtils;
 
+import org.apache.commons.lang3.SystemUtils;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -41,6 +43,7 @@ import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.EventListenerList;
@@ -57,6 +60,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellEditor;
 import javax.swing.tree.TreeSelectionModel;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -110,6 +114,13 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
   }
 
   protected void initComponents() {
+
+    // Default selection color on Mac makes Translation text unreadable. Change to same as Windows
+    // NOTE: This is interim only until 3.8 when I will implement a Vassal-wide solution.
+    if (SystemUtils.IS_OS_MAC) {
+      UIManager.put("Table.selectionBackground", new Color(184, 207, 229));
+      UIManager.put("Tree.selectionBackground", new Color(184, 207, 229));
+    }
 
     setTitle(Resources.getString("Editor.TranslateWindow.translate", ConfigureTree.getConfigureName((Configurable) target)));
     final JPanel mainPanel = new JPanel(new BorderLayout());
@@ -253,7 +264,6 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     final JPanel keyPanel = new JPanel(new BorderLayout());
     keyPanel.setMinimumSize(new Dimension(800, 100));
     keyTable = new MyTable();
-    keyTable.setSelectionBackground(new Color(184, 207, 229));
     keyTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
     keyTable.addFocusListener(new FocusListener() {
@@ -779,11 +789,6 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
   class MyTreeCellRenderer extends DefaultTreeCellRenderer {
 
     private static final long serialVersionUID = 1L;
-
-    @Override
-    public Color getBackgroundSelectionColor() {
-      return new Color(184, 207, 229);
-    }
 
     @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel,
