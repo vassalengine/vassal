@@ -19,6 +19,7 @@
 * 12645: Respect localization when filtering sides
 * 12582: Corrected divide-by-zero problem for Zones defined by zero-point
     polygons
+* 12542: Mitigate race condition when selecting player sides
 * 12474: Fixed NPE when moving EditablePiece which isn't on a map
 * 12411: Fixed NPE when updating ConfigureTree
 * 12324: Fixed ClassCastException caused by reordering columns in Delayed
