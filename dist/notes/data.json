@@ -32,6 +32,7 @@
         { "num": 12307, "desc": "Prevent NPE when Return to Deck of a deleted Deck" }
       ],
       "other_improvements": [
+        { "num": 12706, "desc": "Keep the \"retire\" button disabled unless a game is running" },
         { "num": 12696, "desc": "Removed \"Indexing pieces\" message" },
         { "num": 12670, "desc": "Prevent essential components being accidentally deleted" },
         { "num": 12661, "desc": "Translate side names in change sides message" }
