@@ -39,11 +39,13 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.image.ImageIOException;
 import VASSAL.tools.image.ImageTileSource;
 import VASSAL.tools.imageop.FixedScaleOpBitmapImpl;
+import VASSAL.tools.imageop.FixedScaleOpTiledBitmapImpl;
 import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.Repainter;
 import VASSAL.tools.imageop.ScaleOp;
 import VASSAL.tools.imageop.SourceOp;
+import VASSAL.tools.imageop.SourceOpTiledBitmapImpl;
 import VASSAL.tools.imageop.SVGOp;
 
 import org.jdesktop.animation.timing.Animator;
@@ -379,6 +381,9 @@ public class Board extends AbstractConfigurable implements GridContainer {
         if (scaledImageOp == null || scaledImageOp.getScale() != zoom) {
           if (boardImageOp instanceof SVGOp) {
             scaledImageOp = Op.scale(boardImageOp, zoom);
+          }
+          else if (boardImageOp instanceof SourceOpTiledBitmapImpl) {
+            scaledImageOp = new FixedScaleOpTiledBitmapImpl(boardImageOp, zoom, bounds.width, bounds.height);
           }
           else {
             scaledImageOp = new FixedScaleOpBitmapImpl(boardImageOp, zoom, bounds.width, bounds.height);

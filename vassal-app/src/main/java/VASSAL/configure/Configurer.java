@@ -258,7 +258,7 @@ public abstract class Configurer {
 
   /**
    * Set the highlighted status of this configurer.
-   * It is up to individual Configurers to over-ride this method and implement a suitable visual highlighting scheme
+   * It is up to individual Configurers to override this method and implement a suitable visual highlighting scheme
    * Note: Cannot make this abstract as it will break custom code.
    *
    * @param highlighted New Highlighted status

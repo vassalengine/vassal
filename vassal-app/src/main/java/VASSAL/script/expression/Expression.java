@@ -243,7 +243,7 @@ public class Expression {
    *
    * The default PieceFilter always returns true.
    *
-   * Individual subclasses that are capable of selecting pieces MUST over-ride these defaults. Auditing
+   * Individual subclasses that are capable of selecting pieces MUST override these defaults. Auditing
    * functionality is supplied since creating a filter usually involves evaluating an Expression.
    *
    * @param ps PropertySource to use as source of filter

@@ -19,7 +19,10 @@ _{ "Resources" + GetProperty("Side")_ }. In this case when the property Side hol
 
 NOTE: The <<DynamicProperty.adoc#top,Dynamic Property>> trait must exist on the target pieces. This trait does not 'create' new <<DynamicProperty.adoc#top,Dynamic Properties>>.
 
-*Is numeric:*:: If true, then changes to the value of the property by this trait will be restricted to integer values.
+*Over-ride numeric constraints in target properties:*:: If left unticked, then the Set Property Piece trait will use whatever (if any) numeric constraints have been specified in the Dynamic Properties that it updates.  If ticked, then the following 4 options appear and allow you to ignore or override any numeric constraints in the target property.
+
+
+*Is numeric:*:: If true, then changes to the value of the property by this trait will be restricted to integer values. If left unticked, then the following 3 options do not appear and this trait will set exactly the value specified.
 
 *Minimum value:*::  Numeric values will be restricted to no less than this number when changed by this trait.
 
