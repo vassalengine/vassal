@@ -47,6 +47,7 @@ import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.swing.FlowLabel;
 import VASSAL.tools.swing.SwingUtils;
 import net.miginfocom.swing.MigLayout;
@@ -340,6 +341,10 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       }
     }
 
+    // About to commence refreshing the game, allow a custom start...
+    GameModule.getGameModule().fireKeyStroke(NamedKeyStroke.of("VassalGHKpreRefresh"));
+
+
     /*
      * 2. Build a list in visual order of all stacks, decks, mats and other pieces that need refreshing
      */
@@ -536,8 +541,11 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
         log(Resources.getString("GameRefresher.refreshable_decks", refreshable));
         log(Resources.getString(options.contains("DeleteOldDecks") ? "GameRefresher.deletable_decks" : "GameRefresher.deletable_decks_2", deletable)); //NON-NLS
         log(Resources.getString(options.contains("AddNewDecks") ? "GameRefresher.addable_decks" : "GameRefresher.addable_decks_2", addable)); //NON-NLS
+
       }
     }
+    // After all refreshing, allow a custom finish...
+    GameModule.getGameModule().fireKeyStroke(NamedKeyStroke.of("VassalGHKpostRefresh"));
   }
 
 
