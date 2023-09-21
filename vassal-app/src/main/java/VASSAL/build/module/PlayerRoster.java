@@ -285,7 +285,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       newSide
     );
 
-    // translated side names are lost in mixed language games when translateSide() used in Command parameters - this is a speculative fix
+    // translated side names are lost in mixed language games when translateSide() used in Command parameters. This is a speculative fix
     final String translatedMySide = translateSide(mySide);
     final String translatedNewSide = translateSide(newSide);
 
@@ -523,9 +523,8 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
     // Scan VassalHideSide_<side> properties for module-controlled exclusions
     for (int i = 0; i < availableSides.size(); i++) { // search of sides
-      String hideSide = (String) GameModule.getGameModule().getProperty("VassalHideSide" + availableSides.get(i));
-      if (!StringUtils.isEmpty(hideSide)) {
-        hideSide = translateSide(hideSide);
+      if (Boolean.valueOf((String) GameModule.getGameModule().getProperty("VassalHideSide_" + availableSides.get(i)))) {
+        String hideSide = translateSide(availableSides.get(i));
         if (!alreadyTaken.contains(hideSide)) {
           alreadyTaken.add(hideSide);
         }
@@ -846,12 +845,10 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         availableSides.clear();
         availableSides.addAll(sides);
 
-        // Scan VassalHideSide_<side> properties for module-controlled exclusions
-        // sits within the loop in case of property changes between iterations (due to other player activity)
+        // Scan VassalHideSide_<side> properties for module-controlled exclusions (when true)
         for (int i = 0; i < availableSides.size(); i++) { // search of sides
-          String hideSide = (String) g.getProperty("VassalHideSide" + availableSides.get(i));
-          if (!StringUtils.isEmpty(hideSide)) {
-            hideSide = translateSide(hideSide);
+          if (Boolean.valueOf((String) GameModule.getGameModule().getProperty("VassalHideSide_" + availableSides.get(i)))) {
+            String hideSide = translateSide(availableSides.get(i));
             if (!alreadyTaken.contains(hideSide)) {
               alreadyTaken.add(hideSide);
             }
