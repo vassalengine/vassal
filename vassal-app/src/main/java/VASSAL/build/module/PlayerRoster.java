@@ -526,7 +526,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     for (int i = 0; i < availableSides.size(); i++) { // search of sides
       final String s = availableSides.get(i);
       if (Boolean.valueOf((String) GameModule.getGameModule().getProperty("VassalHideSide_" + untranslateSide(s))) && !alreadyTaken.contains(s)) {
-          alreadyTaken.add(s);
+        alreadyTaken.add(s);
       }
     }
 
