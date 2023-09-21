@@ -252,6 +252,8 @@ Images defined in this component will appear in the drop-down menu for selecting
 
 <<GamePieceImageDefinitions.adoc#top,See full article for details.>>
 
+You may also define a set of module level <<GlobalProperties.adoc#top,Global Properties>> to control the sides presented by scenario or during a game. These properties must be defined in the form _VassalHideSide&#95;&lt;Side&gt;_, where   &lt;Side&gt; is a defined side. When such a property is set true, Vassal will not offer the specified side even if unoccupied. These properties may be defined as <<ScenarioProperties.adoc#ScenarioProperty,Scenario Properties>> to allow a module user to set up the side list specific to a scenario.
+
 |===
 
 ==== <<Map.adoc#GlobalKeyCommand,Global Key Command>>
@@ -351,7 +353,7 @@ image:images/PredefinedSetup2.png[]
 This game will be loaded when the menu item is selected.
 If the file does not exist, then the menu item behaves like the normal _New Game_ item.
 
-NOTE:  When creating a Pre-defined setup in a module with <<GameModule.adoc#Definition_of_Player_Sides,defined sides>>, always remember to click the _Retire_ button and switch to Observer status before saving.
+NOTE:  When creating a Pre-defined setup in a module with <<GameModule.adoc#,defined sides>>, always remember to click the _Retire_ button and switch to Observer status before saving.
 Otherwise, the side you chose when creating the game you will be permanently assigned to you.
 |===
 
