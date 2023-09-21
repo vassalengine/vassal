@@ -285,7 +285,11 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       newSide
     );
 
-    Command c = new Chatter.DisplayText(gm.getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.changed_sides_2" : "PlayerRoster.changed_sides", GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME), translateSide(mySide), translateSide(newSide)));
+    // translated side names are lost in mixed language games when translateSide() used in Command parameters - this is a speculative fix
+    String translatedMySide = translateSide(mySide);
+    String translatedNewSide = translateSide(newSide);
+
+    Command c = new Chatter.DisplayText(gm.getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.changed_sides_2" : "PlayerRoster.changed_sides", GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME), translatedMySide, translatedNewSide));
     c.execute();
 
     final Remove r = new Remove(this, GameModule.getActiveUserId());
@@ -325,7 +329,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     return GameModule.getGameModule().getPlayerRoster();
   }
 
-  /** Return my Untranslatted side */
+  /** Return my Untranslated side */
   public static String getMySide() {
     return getMySide(false);
   }
@@ -488,14 +492,15 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       GameModule.getGameModule().warn(Resources.getString("PlayerRoster.failed_pref_write", e.getLocalizedMessage()));
     }
 
-   // Drop into standard routine, starting with checking that the side is still available (race condition mitigation)
+    // Drop into standard routine, starting with checking that the side is still available (race condition mitigation)
     // returns untranslated side
     final String newSide = promptForSide(sideConfig.getValueString());
 
     // null is a cancel op - player will not connect to the game
     if (newSide != null) {
       if (GameModule.getGameModule().isMultiplayerConnected()) {
-        final Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.joined_side_2" : "PlayerRoster.joined_side", GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME), translateSide(newSide)));
+        final String translatedNewSide = translateSide(newSide); // speculative fix for translationSide() issue in Chatter.DisplayText()
+        final Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.joined_side_2" : "PlayerRoster.joined_side", GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME), translatedNewSide));
         c.execute();
       }
 
@@ -514,6 +519,17 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
     for (final PlayerInfo p : players) {
       alreadyTaken.add(p.getLocalizedSide());
+    }
+
+    // Scan VassalHideSide_<side> properties for module-controlled exclusions
+    for (int i = 0 ; i < availableSides.size() ; i++) { // search of sides
+      String hideSide = (String) GameModule.getGameModule().getProperty("VassalHideSide" + availableSides.get(i));
+      if (!StringUtils.isEmpty(hideSide)) {
+        hideSide = translateSide(hideSide);
+        if (!alreadyTaken.contains(hideSide)) {
+          alreadyTaken.add(hideSide);
+        }
+      }
     }
 
     availableSides.removeAll(alreadyTaken);
@@ -829,6 +845,18 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         // Set up for another try...
         availableSides.clear();
         availableSides.addAll(sides);
+
+        // Scan VassalHideSide_<side> properties for module-controlled exclusions
+        // sits within the loop in case of property changes between iterations (due to other player activity)
+        for (int i = 0 ; i < availableSides.size() ; i++) { // search of sides
+          String hideSide = (String) g.getProperty("VassalHideSide" + availableSides.get(i));
+          if (!StringUtils.isEmpty(hideSide)) {
+            hideSide = translateSide(hideSide);
+            if (!alreadyTaken.contains(hideSide)) {
+              alreadyTaken.add(hideSide);
+            }
+          }
+        }
       }
 
       availableSides.removeAll(alreadyTaken);
@@ -840,7 +868,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
          // Module controlled method: set VassalNextSide (a Module Global Property)
          // If not found / available method 2 is used to find likely next side
          // Reserved property VassalNextSide may override hotseat default; must be an available side in english
-         // sits within the loop in case property changes between iterations (due to other players)
+         // sits within the loop in case property changes between iterations (due to other player activity)
         if (!StringUtils.isEmpty((String) g.getProperty("VassalNextSide"))) {
           nextChoice = translateSide((String) g.getProperty("VassalNextSide"));
           if (!availableSides.contains(nextChoice)) {
