@@ -521,13 +521,12 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       alreadyTaken.add(p.getLocalizedSide());
     }
 
-    // Scan VassalHideSide_<side> properties for module-controlled exclusions
+    // Scan module VassalHideSide_<side> properties to exclude side when true
+    // The properties are named for untranslated sides!
     for (int i = 0; i < availableSides.size(); i++) { // search of sides
-      if (Boolean.valueOf((String) GameModule.getGameModule().getProperty("VassalHideSide_" + availableSides.get(i)))) {
-        String hideSide = translateSide(availableSides.get(i));
-        if (!alreadyTaken.contains(hideSide)) {
-          alreadyTaken.add(hideSide);
-        }
+      final String s = availableSides.get(i);
+      if (Boolean.valueOf((String) GameModule.getGameModule().getProperty("VassalHideSide_" + untranslateSide(s))) && !alreadyTaken.contains(s)) {
+          alreadyTaken.add(s);
       }
     }
 
@@ -845,13 +844,12 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         availableSides.clear();
         availableSides.addAll(sides);
 
-        // Scan VassalHideSide_<side> properties for module-controlled exclusions (when true)
+        // Scan module VassalHideSide_<side> properties to exclude side when true
+        // The properties are named for untranslated sides!
         for (int i = 0; i < availableSides.size(); i++) { // search of sides
-          if (Boolean.valueOf((String) GameModule.getGameModule().getProperty("VassalHideSide_" + availableSides.get(i)))) {
-            String hideSide = translateSide(availableSides.get(i));
-            if (!alreadyTaken.contains(hideSide)) {
-              alreadyTaken.add(hideSide);
-            }
+          final String s = availableSides.get(i);
+          if (Boolean.valueOf((String) GameModule.getGameModule().getProperty("VassalHideSide_" + untranslateSide(s))) && !alreadyTaken.contains(s)) {
+            alreadyTaken.add(s);
           }
         }
       }
