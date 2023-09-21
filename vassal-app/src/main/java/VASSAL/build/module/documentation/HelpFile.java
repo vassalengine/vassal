@@ -309,7 +309,7 @@ public class HelpFile extends AbstractConfigurable {
     if (anchor != null) {
       // pressumes that HelpFile deals with hash prefix.
       if (anchor.startsWith("#")) { //$NON-NLS-1$
-        anchor = anchor.substring(1,anchor.length()-1); //$NON-NLS-1$
+        anchor = anchor.substring(1, anchor.length() - 1); //$NON-NLS-1$
       }
       // names with spaces have spaceless anchors in the ref manual
       anchor = anchor.replace(" ", "");
