@@ -91,6 +91,8 @@ public class HelpFile extends AbstractConfigurable {
 
   public HelpFile(String title, File contents, String ref)
                                 throws MalformedURLException {
+    // FIXME it appears that Java URL() does not support anchor points on a local file.
+    // So for example, reference manual anchors passed here have no effect. https://github.com/vassalengine/vassal/issues/12734
     this(title, new URL(URLUtils.toURL(contents), ref));
   }
 
@@ -307,9 +309,8 @@ public class HelpFile extends AbstractConfigurable {
 
   public static HelpFile getReferenceManualPage(String page, String anchor) {
     if (anchor != null) {
-      // pressumes that HelpFile deals with hash prefix.
-      if (anchor.startsWith("#")) { //$NON-NLS-1$
-        anchor = anchor.substring(1, anchor.length() - 1); //$NON-NLS-1$
+      if (!anchor.startsWith("#")) { //$NON-NLS-1$
+        anchor = "#" + anchor; //$NON-NLS-1$
       }
       // names with spaces have spaceless anchors in the ref manual
       anchor = anchor.replace(" ", "");
