@@ -285,11 +285,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       newSide
     );
 
-    // translated side names are lost in mixed language games when translateSide() used in Command parameters. This is a speculative fix
-    final String translatedMySide = translateSide(mySide);
-    final String translatedNewSide = translateSide(newSide);
-
-    Command c = new Chatter.DisplayText(gm.getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.changed_sides_2" : "PlayerRoster.changed_sides", GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME), translatedMySide, translatedNewSide));
+    Command c = new Chatter.DisplayText(gm.getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.changed_sides_2" : "PlayerRoster.changed_sides", GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME), translateSide(mySide), translateSide(newSide)));
     c.execute();
 
     final Remove r = new Remove(this, GameModule.getActiveUserId());
@@ -499,8 +495,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     // null is a cancel op - player will not connect to the game
     if (newSide != null) {
       if (GameModule.getGameModule().isMultiplayerConnected()) {
-        final String translatedNewSide = translateSide(newSide); // speculative fix for translationSide() issue in Chatter.DisplayText()
-        final Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.joined_side_2" : "PlayerRoster.joined_side", GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME), translatedNewSide));
+        final Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.joined_side_2" : "PlayerRoster.joined_side", GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME), translateSide(newSide)));
         c.execute();
       }
 
