@@ -522,7 +522,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     }
 
     // Scan VassalHideSide_<side> properties for module-controlled exclusions
-    for (int i = 0 ; i < availableSides.size() ; i++) { // search of sides
+    for (int i = 0; i < availableSides.size(); i++) { // search of sides
       String hideSide = (String) GameModule.getGameModule().getProperty("VassalHideSide" + availableSides.get(i));
       if (!StringUtils.isEmpty(hideSide)) {
         hideSide = translateSide(hideSide);
@@ -848,7 +848,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
         // Scan VassalHideSide_<side> properties for module-controlled exclusions
         // sits within the loop in case of property changes between iterations (due to other player activity)
-        for (int i = 0 ; i < availableSides.size() ; i++) { // search of sides
+        for (int i = 0; i < availableSides.size(); i++) { // search of sides
           String hideSide = (String) g.getProperty("VassalHideSide" + availableSides.get(i));
           if (!StringUtils.isEmpty(hideSide)) {
             hideSide = translateSide(hideSide);
