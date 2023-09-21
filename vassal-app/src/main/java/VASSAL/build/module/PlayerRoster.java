@@ -286,8 +286,8 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     );
 
     // translated side names are lost in mixed language games when translateSide() used in Command parameters - this is a speculative fix
-    String translatedMySide = translateSide(mySide);
-    String translatedNewSide = translateSide(newSide);
+    final String translatedMySide = translateSide(mySide);
+    final String translatedNewSide = translateSide(newSide);
 
     Command c = new Chatter.DisplayText(gm.getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.changed_sides_2" : "PlayerRoster.changed_sides", GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME), translatedMySide, translatedNewSide));
     c.execute();
