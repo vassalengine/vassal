@@ -511,6 +511,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   public Component getControls() {
     final ArrayList<String> availableSides = new ArrayList<>(sides);
     final ArrayList<String> alreadyTaken = new ArrayList<>();
+    final GameModule g = GameModule.getGameModule();
 
     for (final PlayerInfo p : players) {
       alreadyTaken.add(p.getLocalizedSide());
@@ -520,7 +521,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     // The properties are named for untranslated sides!
     for (int i = 0; i < availableSides.size(); i++) { // search of sides
       final String s = availableSides.get(i);
-      if (Boolean.valueOf((String) GameModule.getGameModule().getProperty("VassalHideSide_" + untranslateSide(s))) && !alreadyTaken.contains(s)) {
+      if (Boolean.valueOf((String) g.getProperty("VassalHideSide_" + untranslateSide(s))) && !alreadyTaken.contains(s)) {
         alreadyTaken.add(s);
       }
     }
@@ -533,7 +534,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     sideConfig.setValue(translatedObserver);
 
     // If they have a non-blank password already, then we just return the side-picking controls
-    final String pwd = (String)GameModule.getGameModule().getPrefs().getValue(GameModule.SECRET_NAME);
+    final String pwd = (String) g.getPrefs().getValue(GameModule.SECRET_NAME);
     if (!forcePwd || ((pwd != null) && !pwd.isEmpty())) {
       return sideConfig.getControls();
     }
@@ -805,11 +806,32 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     final ArrayList<String> alreadyTaken = new ArrayList<>();
     boolean alreadyConnected;
     final GameModule g = GameModule.getGameModule();
+    String nextChoice;
 
     if (newSide != null && newSide.isEmpty()) {
-      alreadyConnected = true;
+      // In-game side changes enter here...
+
+      // Module will automatically connect to the side (in english) contained in VassalForceSide if valid
+      // VassalForceSide is expected to be a Global Option string property but there is no validation preventing use of a module level Global Property
+      // The property is nullified after use.
+      // property VassalForceSide may override hotseat default; must be an available side in english
+      // The side choice is immune to it's VassalHideSide_<side> property.
+      // Fails-over to standard prompt.
+
+      if (!StringUtils.isEmpty((String) g.getProperty("VassalForceSide"))) {
+        nextChoice = translateSide((String) g.getProperty("VassalForceSide"));
+
+        // FIXME: set VassalForceSide property null here so as not to rely on module; ForceSide should not prevent retiring or changing side afterwards.
+
+        if (getAvailableSides().contains(nextChoice)) {
+          return nextChoice;
+        }
+       }
+      alreadyConnected = false;
     }
     else {
+      // entry for connecting to game..
+
       if (newSide == null || translatedObserver.equals(newSide)) { // Observer checked and returned translated here
         return OBSERVER;
       }
@@ -843,20 +865,19 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         // The properties are named for untranslated sides!
         for (int i = 0; i < availableSides.size(); i++) { // search of sides
           final String s = availableSides.get(i);
-          if (Boolean.valueOf((String) GameModule.getGameModule().getProperty("VassalHideSide_" + untranslateSide(s))) && !alreadyTaken.contains(s)) {
+          if (Boolean.valueOf((String) g.getProperty("VassalHideSide_" + untranslateSide(s))) && !alreadyTaken.contains(s)) {
             alreadyTaken.add(s);
           }
         }
       }
 
       availableSides.removeAll(alreadyTaken);
-      String nextChoice = translatedObserver; // default for dropdown
+      nextChoice = translatedObserver; // default for dropdown
 
       // When player is already connected, offer a hot-seat... first connections will default to observer
       if (alreadyConnected) {
 
-         // Module controlled method: set VassalNextSide (a Module Global Property)
-         // If not found / available method 2 is used to find likely next side
+         // Module controlled hot-seat: set from VassalNextSide (a Module Global Property)
          // Reserved property VassalNextSide may override hotseat default; must be an available side in english
          // sits within the loop in case property changes between iterations (due to other player activity)
         if (!StringUtils.isEmpty((String) g.getProperty("VassalNextSide"))) {
