@@ -420,7 +420,6 @@ public class Console {
         show(s + " " + status);
       }
     }
-
     return true;
   }
 
@@ -519,6 +518,11 @@ public class Console {
 
     if (matches("errorlog", command)) { //NON-NLS
       return doErrorLog();
+    }
+
+    // sides can be listed regardless of game state
+    if (matches("sides", command)) { //NON-NLS
+      return doSides();
     }
 
     // If this has EVER been a multiplayer game (has ever been connected to Server, or has ever had two player slots filled simultaneously), then
