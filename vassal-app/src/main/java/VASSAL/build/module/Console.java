@@ -386,7 +386,6 @@ public class Console {
     else {
       option = first;
     }
-    final String property = nextString("");
 
     if (matches("?", option) || matches("help", option)) { //NON-NLS
       show("Usage:"); //NON-NLS
@@ -399,28 +398,26 @@ public class Console {
       // availableSides and alreadyTaken are translated side names
       final PlayerRoster pr = new PlayerRoster();
       final ArrayList<String> sides = new ArrayList<>(pr.getSides());
-      final ArrayList<String> alreadyTaken = new ArrayList<>();
 
       // List the sides, checking each
-      for (int i = 0; i < sides.size(); i++) { // search of sides
-        final String s = sides.get(i);
+      for (final String s : sides) { // search of sides
         // Is side allocated to a player? Which one ?
         for (final PlayerRoster.PlayerInfo p : pr.players) {
-          if (sides.get(i).equals(p.getLocalizedSide())) {
+          if (s.equals(p.getLocalizedSide())) {
             status = "Occupied (" + p.playerName + ")";
             break;
           }
         }
         if (status.isEmpty()) {
           // No matching player, so side is either locked (by module) or available...
-          if (Boolean.valueOf((String) gm.getProperty("VassalHideSide_" + pr.untranslateSide(s)))) {
+          if (Boolean.parseBoolean((String) gm.getProperty("VassalHideSide_" + pr.untranslateSide(s)))) {
             status = "Locked";
           }
           else {
             status = "Available";
           }
         }
-        show(sides.get(i) + " " + status);
+        show(s + " " + status);
       }
     }
 
