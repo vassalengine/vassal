@@ -399,11 +399,14 @@ public class Console {
       // availableSides and alreadyTaken are translated side names
       final PlayerRoster pr = new PlayerRoster();
       final ArrayList<String> sides = new ArrayList<>(pr.getSides());
+      show("action /sides"); //DEBUG
 
       // List the sides, checking each
-      for (final String s : sides) { // search of sides
+      for (final String s : sides) { // search of
+        show("checking " + s); //DEBUG
         // Is side allocated to a player? Which one ?
         for (final PlayerRoster.PlayerInfo p : pr.players) {
+          show("...check player " + p.playerName); //DEBUG
           if (s.equals(p.getLocalizedSide())) {
             // password checks
             String pwStatus = "";
@@ -411,6 +414,7 @@ public class Console {
               pwStatus = " Warning: Blank password"; // NON-NLS
             }
             else {
+              show("..CHECKING PASSWORDS "); //DEBUG
               for (final PlayerRoster.PlayerInfo p2 : pr.players) {
                 if (p.playerId.equals(p2.playerId) && !s.equals(p2.getLocalizedSide())) {
                   pwStatus = " Warning: Password identical to that of " + p2.playerName; // NON-NLS
@@ -433,6 +437,7 @@ public class Console {
         }
         show(s + " " + status);
       }
+      show("action /sides was skipped"); //DEBUG
     }
     return true;
   }
