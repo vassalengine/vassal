@@ -23,6 +23,7 @@ import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.command.Logger;
@@ -821,8 +822,10 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       if (!StringUtils.isEmpty((String) g.getProperty("VassalForceSide"))) {
         nextChoice = translateSide((String) g.getProperty("VassalForceSide"));
 
-        // FIXME: set VassalForceSide property null here so as not to rely on module; ForceSide should not prevent retiring or changing side afterwards.
+        // clear VassalForceSide property here so that this feature does not prevent retiring or changing side after use.
         // GlobalProperty.SetGlobalProperty(GlobalProperty("VassalForceSide"), "", "");
+        final MutableProperty.Impl propValue = (MutableProperty.Impl) g.getMutableProperty("VassalForceSide");
+        propValue.setPropertyValue("Test Setting Successful!");
 
         if (getAvailableSides().contains(nextChoice)) {
           return nextChoice;
