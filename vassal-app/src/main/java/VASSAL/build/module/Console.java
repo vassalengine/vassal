@@ -44,7 +44,7 @@ import java.util.regex.Pattern;
 /**
  * Expandable "Console" to allow entering commands into the Chatter.
  */
-public class Console {
+public class Console extends PlayerRoster {
   Iterator<String> tok;
   String commandLine;
   int commandIndex = 0;
@@ -398,6 +398,7 @@ public class Console {
 
       // get local sides list
       final PlayerRoster pr = new PlayerRoster();
+
       final ArrayList<String> sides = new ArrayList<>(pr.getSides());
 
       if (sides.isEmpty()) {

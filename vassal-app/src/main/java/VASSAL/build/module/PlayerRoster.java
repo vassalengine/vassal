@@ -480,13 +480,14 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
    */
   @Override
   public void finish() {
+    final GameModule gm = GameModule.getGameModule();
     // In case we set a new password at this step, update the prefs configurer, and write module preferences.
-    GameModule.getGameModule().getPasswordConfigurer().setValue(GameModule.getUserId());
+    gm.getPasswordConfigurer().setValue(GameModule.getUserId());
     try {
-      GameModule.getGameModule().getPrefs().save();
+      gm.getPrefs().save();
     }
     catch (IOException e) {
-      GameModule.getGameModule().warn(Resources.getString("PlayerRoster.failed_pref_write", e.getLocalizedMessage()));
+      gm.warn(Resources.getString("PlayerRoster.failed_pref_write", e.getLocalizedMessage()));
     }
 
     // Drop into standard routine, starting with checking that the side is still available (race condition mitigation)
@@ -495,14 +496,14 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
     // null is a cancel op - player will not connect to the game
     if (newSide != null) {
-      if (GameModule.getGameModule().isMultiplayerConnected()) {
-        final Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.joined_side_2" : "PlayerRoster.joined_side", GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME), translateSide(newSide)));
+      if (gm.isMultiplayerConnected()) {
+        final Command c = new Chatter.DisplayText(gm.getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.joined_side_2" : "PlayerRoster.joined_side", gm.getPrefs().getValue(GameModule.REAL_NAME), translateSide(newSide)));
         c.execute();
       }
 
       final Add a = new Add(this, GameModule.getActiveUserId(), GlobalOptions.getInstance().getPlayerId(), newSide);
       a.execute();
-      GameModule.getGameModule().getServer().sendToOthers(a);
+      gm.getServer().sendToOthers(a);
 
       pickedSide = true;
     }
@@ -818,7 +819,6 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       // property VassalForceSide may override hotseat default; must be an available side in english
       // The side choice is immune to it's VassalHideSide_<side> property.
       // Fails-over to standard prompt.
-
       if (!StringUtils.isEmpty((String) gm.getProperty("VassalForceSide"))) {
         nextChoice = translateSide((String) gm.getProperty("VassalForceSide"));
 
@@ -828,10 +828,11 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         propValue.setPropertyValue("Test Setting Successful!");
 
         if (getAvailableSides().contains(nextChoice)) {
+          gm.warn("Module side switch.");
           return nextChoice;
         }
       }
-      alreadyConnected = false;
+      alreadyConnected = true;
     }
     else {
       // entry for connecting to game..
