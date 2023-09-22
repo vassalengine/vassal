@@ -822,11 +822,12 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         nextChoice = translateSide((String) g.getProperty("VassalForceSide"));
 
         // FIXME: set VassalForceSide property null here so as not to rely on module; ForceSide should not prevent retiring or changing side afterwards.
+        // GlobalProperty.SetGlobalProperty(GlobalProperty("VassalForceSide"), "", "");
 
         if (getAvailableSides().contains(nextChoice)) {
           return nextChoice;
         }
-       }
+      }
       alreadyConnected = false;
     }
     else {

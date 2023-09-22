@@ -376,6 +376,56 @@ public class Console {
     return true;
   }
 
+  private boolean doSides() {
+    final String first = nextString("");
+    final String option;
+
+    if (first.toLowerCase().startsWith("lis")) { //NON-NLS
+      option = nextString("");
+    }
+    else {
+      option = first;
+    }
+    final String property = nextString("");
+
+    if (matches("?", option) || matches("help", option)) { //NON-NLS
+      show("Usage:"); //NON-NLS
+      show("  /sides [list]       - list status of sides in the game"); //NON-NLS
+    }
+    else if (option.isEmpty() || matches("list", option)) { //NON-NLS
+      String status = "";
+      final GameModule gm = GameModule.getGameModule();
+
+      // availableSides and alreadyTaken are translated side names
+      final PlayerRoster pr = new PlayerRoster();
+      final ArrayList<String> sides = new ArrayList<>(pr.getSides());
+      final ArrayList<String> alreadyTaken = new ArrayList<>();
+
+      // List the sides, checking each
+      for (int i = 0; i < sides.size(); i++) { // search of sides
+        final String s = sides.get(i);
+        // Is side allocated to a player? Which one ?
+        for (final PlayerRoster.PlayerInfo p : pr.players) {
+          if (sides.get(i).equals(p.getLocalizedSide())) {
+            status = "Occupied (" + p.playerName + ")";
+            break;
+          }
+        }
+        if (status.isEmpty()) {
+          // No matching player, so side is either locked (by module) or available...
+          if (Boolean.valueOf((String) gm.getProperty("VassalHideSide_" + pr.untranslateSide(s)))) {
+            status = "Locked";
+          }
+          else {
+            status = "Available";
+          }
+        }
+        show(sides.get(i) + " " + status);
+      }
+    }
+
+    return true;
+  }
 
   private boolean doHelp() {
     final String topic = nextString("");
@@ -385,7 +435,8 @@ public class Console {
       show("  /errorlog    - commands for opening/clearing/altering errorlog"); //NON-NLS
       show("  /help        - shows list of commands"); //NON-NLS
       show("  /property    - commands for reading/writing global properties"); //NON-NLS
-      show("  /attachments - commands to display current attachments");
+      show("  /attachments - commands to display current attachments"); //NON-NLS
+      show("  /sides       - shows list of sides and status"); //NON-NLS
     }
     else {
       tok = Pattern.compile(" +").splitAsStream("help").iterator(); //NON-NLS // Fake up a help subcommand
@@ -397,6 +448,9 @@ public class Console {
       }
       else if (matches("attachments", topic)) {
         return doAttachments();
+      }
+      else if (matches("sides", topic)) {
+        return doSides();
       }
 
       show("Unknown help topic"); //NON-NLS
