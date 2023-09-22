@@ -29,6 +29,7 @@ import VASSAL.counters.KeyBuffer;
 import VASSAL.tools.BugUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.codehaus.plexus.util.StringUtils;
 import org.slf4j.LoggerFactory;
 
 import java.awt.Desktop;
@@ -404,14 +405,27 @@ public class Console {
         // Is side allocated to a player? Which one ?
         for (final PlayerRoster.PlayerInfo p : pr.players) {
           if (s.equals(p.getLocalizedSide())) {
-            status = "Occupied (" + p.playerName + ")";
+            // password checks
+            String pwStatus = "";
+            if (StringUtils.isEmpty(p.playerId)) {
+              pwStatus = " Warning: Blank password"; // NON-NLS
+            }
+            else {
+              for (final PlayerRoster.PlayerInfo p2 : pr.players) {
+                if (p.playerId.equals(p2.playerId) && !s.equals(p2.getLocalizedSide())) {
+                  pwStatus = " Warning: Password identical to that of " + p2.playerName; // NON-NLS
+                  break;
+                }
+              }
+            }
+            status = "Occupied (" + p.playerName + ")" + pwStatus;  //NON-NLS
             break;
           }
         }
         if (status.isEmpty()) {
           // No matching player, so side is either locked (by module) or available...
           if (Boolean.parseBoolean((String) gm.getProperty("VassalHideSide_" + pr.untranslateSide(s)))) {
-            status = "Locked";
+            status = "Locked by module";
           }
           else {
             status = "Available";
