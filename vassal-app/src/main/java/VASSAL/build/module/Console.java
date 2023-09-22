@@ -399,7 +399,7 @@ public class Console {
       // availableSides and alreadyTaken are translated side names
       final PlayerRoster pr = new PlayerRoster();
       final ArrayList<String> sides = new ArrayList<>(pr.getSides());
-      show("action /sides number of side=" + sides.size() ); //DEBUG
+      show("action /sides number of side=" + sides.size()); //DEBUG
 
       // List the sides, checking each
       for (final String s : sides) { // search of

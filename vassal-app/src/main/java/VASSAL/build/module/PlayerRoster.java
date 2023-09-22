@@ -512,7 +512,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   public Component getControls() {
     final ArrayList<String> availableSides = new ArrayList<>(sides);
     final ArrayList<String> alreadyTaken = new ArrayList<>();
-    final GameModule g = GameModule.getGameModule();
+    final GameModule gm = GameModule.getGameModule();
 
     for (final PlayerInfo p : players) {
       alreadyTaken.add(p.getLocalizedSide());
@@ -522,7 +522,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     // The properties are named for untranslated sides!
     for (int i = 0; i < availableSides.size(); i++) { // search of sides
       final String s = availableSides.get(i);
-      if (Boolean.valueOf((String) g.getProperty("VassalHideSide_" + untranslateSide(s))) && !alreadyTaken.contains(s)) {
+      if (Boolean.valueOf((String) gm.getProperty("VassalHideSide_" + untranslateSide(s))) && !alreadyTaken.contains(s)) {
         alreadyTaken.add(s);
       }
     }
@@ -535,7 +535,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     sideConfig.setValue(translatedObserver);
 
     // If they have a non-blank password already, then we just return the side-picking controls
-    final String pwd = (String) g.getPrefs().getValue(GameModule.SECRET_NAME);
+    final String pwd = (String) gm.getPrefs().getValue(GameModule.SECRET_NAME);
     if (!forcePwd || ((pwd != null) && !pwd.isEmpty())) {
       return sideConfig.getControls();
     }
@@ -768,9 +768,9 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       availableNames.add(Resources.getString("PlayerRoster.none_of_the_above")); //NON-NLS
     }
 
-    final GameModule g = GameModule.getGameModule();
+    final GameModule gm = GameModule.getGameModule();
     final String choice = (String) JOptionPane.showInputDialog(
-      g.getPlayerWindow(),
+      gm.getPlayerWindow(),
       Resources.getString("PlayerRoster.pick_an_occupied_side"),
       Resources.getString("PlayerRoster.choose_side"),
       JOptionPane.QUESTION_MESSAGE,
@@ -806,7 +806,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     final ArrayList<String> availableSides = new ArrayList<>(getSides());
     final ArrayList<String> alreadyTaken = new ArrayList<>();
     boolean alreadyConnected;
-    final GameModule g = GameModule.getGameModule();
+    final GameModule gm = GameModule.getGameModule();
     String nextChoice;
 
     if (newSide != null && newSide.isEmpty()) {
@@ -819,12 +819,12 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       // The side choice is immune to it's VassalHideSide_<side> property.
       // Fails-over to standard prompt.
 
-      if (!StringUtils.isEmpty((String) g.getProperty("VassalForceSide"))) {
-        nextChoice = translateSide((String) g.getProperty("VassalForceSide"));
+      if (!StringUtils.isEmpty((String) gm.getProperty("VassalForceSide"))) {
+        nextChoice = translateSide((String) gm.getProperty("VassalForceSide"));
 
         // clear VassalForceSide property here so that this feature does not prevent retiring or changing side after use.
         // GlobalProperty.SetGlobalProperty(GlobalProperty("VassalForceSide"), "", "");
-        final MutableProperty.Impl propValue = (MutableProperty.Impl) g.getMutableProperty("VassalForceSide");
+        final MutableProperty.Impl propValue = (MutableProperty.Impl) gm.getMutableProperty("VassalForceSide");
         propValue.setPropertyValue("Test Setting Successful!");
 
         if (getAvailableSides().contains(nextChoice)) {
@@ -869,7 +869,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         // The properties are named for untranslated sides!
         for (int i = 0; i < availableSides.size(); i++) { // search of sides
           final String s = availableSides.get(i);
-          if (Boolean.valueOf((String) g.getProperty("VassalHideSide_" + untranslateSide(s))) && !alreadyTaken.contains(s)) {
+          if (Boolean.valueOf((String) gm.getProperty("VassalHideSide_" + untranslateSide(s))) && !alreadyTaken.contains(s)) {
             alreadyTaken.add(s);
           }
         }
@@ -884,8 +884,8 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
          // Module controlled hot-seat: set from VassalNextSide (a Module Global Property)
          // Reserved property VassalNextSide may override hotseat default; must be an available side in english
          // sits within the loop in case property changes between iterations (due to other player activity)
-        if (!StringUtils.isEmpty((String) g.getProperty("VassalNextSide"))) {
-          nextChoice = translateSide((String) g.getProperty("VassalNextSide"));
+        if (!StringUtils.isEmpty((String) gm.getProperty("VassalNextSide"))) {
+          nextChoice = translateSide((String) gm.getProperty("VassalNextSide"));
           if (!availableSides.contains(nextChoice)) {
             nextChoice = translatedObserver; // invalid value - revert to default
           }
@@ -914,7 +914,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       availableSides.add(0, translatedObserver);
 
       newSide = (String) JOptionPane.showInputDialog(
-              g.getPlayerWindow(),
+              gm.getPlayerWindow(),
               newSide.isEmpty() ? Resources.getString("PlayerRoster.switch_sides", getMyLocalizedSide()) : Resources.getString("PlayerRoster.switch_sides2", newSide, getMyLocalizedSide()), //$NON-NLS-1$
               Resources.getString("PlayerRoster.choose_side"), //$NON-NLS-1$
               JOptionPane.QUESTION_MESSAGE,
