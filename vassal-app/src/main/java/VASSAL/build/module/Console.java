@@ -44,7 +44,7 @@ import java.util.regex.Pattern;
 /**
  * Expandable "Console" to allow entering commands into the Chatter.
  */
-public class Console extends PlayerRoster {
+public class Console {
   Iterator<String> tok;
   String commandLine;
   int commandIndex = 0;
