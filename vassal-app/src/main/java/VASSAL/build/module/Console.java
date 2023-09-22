@@ -396,48 +396,51 @@ public class Console {
       String status = "";
       final GameModule gm = GameModule.getGameModule();
 
-      // availableSides and alreadyTaken are translated side names
+      // get local sides list
       final PlayerRoster pr = new PlayerRoster();
       final ArrayList<String> sides = new ArrayList<>(pr.getSides());
-      show("action /sides number of side=" + sides.size()); //DEBUG
 
-      // List the sides, checking each
-      for (final String s : sides) { // search of
-        show("checking " + s); //DEBUG
-        // Is side allocated to a player? Which one ?
-        for (final PlayerRoster.PlayerInfo p : pr.players) {
-          show("...check player " + p.playerName); //DEBUG
-          if (s.equals(p.getLocalizedSide())) {
-            // password checks
-            String pwStatus = "";
-            if (StringUtils.isEmpty(p.playerId)) {
-              pwStatus = " Warning: Blank password"; // NON-NLS
-            }
-            else {
-              show("..CHECKING PASSWORDS "); //DEBUG
-              for (final PlayerRoster.PlayerInfo p2 : pr.players) {
-                if (p.playerId.equals(p2.playerId) && !s.equals(p2.getLocalizedSide())) {
-                  pwStatus = " Warning: Password identical to that of " + p2.playerName; // NON-NLS
-                  break;
+      if (sides.isEmpty()) {
+        show("No sides defined.");
+      }
+      else {
+        // List the sides, checking each
+        for (final String s : sides) { // search of
+          show("checking " + s); //DEBUG
+          // Is side allocated to a player? Which one ?
+          for (final PlayerRoster.PlayerInfo p : pr.players) {
+            show("...check player " + p.playerName); //DEBUG
+            if (s.equals(p.getLocalizedSide())) {
+              // password checks
+              String pwStatus = "";
+              if (StringUtils.isEmpty(p.playerId)) {
+                pwStatus = " Warning: Blank password"; // NON-NLS
+              }
+              else {
+                show("..CHECKING PASSWORDS "); //DEBUG
+                for (final PlayerRoster.PlayerInfo p2 : pr.players) {
+                  if (p.playerId.equals(p2.playerId) && !s.equals(p2.getLocalizedSide())) {
+                    pwStatus = " Warning: Password identical to that of " + p2.playerName; // NON-NLS
+                    break;
+                  }
                 }
               }
+              status = "Occupied (" + p.playerName + ")" + pwStatus;  //NON-NLS
+              break;
             }
-            status = "Occupied (" + p.playerName + ")" + pwStatus;  //NON-NLS
-            break;
           }
+          if (status.isEmpty()) {
+            // No matching player, so side is either locked (by module) or available...
+            if (Boolean.parseBoolean((String) gm.getProperty("VassalHideSide_" + pr.untranslateSide(s)))) {
+              status = "Locked by module";
+            }
+            else {
+              status = "Available";
+            }
+          }
+          show(s + " " + status);
         }
-        if (status.isEmpty()) {
-          // No matching player, so side is either locked (by module) or available...
-          if (Boolean.parseBoolean((String) gm.getProperty("VassalHideSide_" + pr.untranslateSide(s)))) {
-            status = "Locked by module";
-          }
-          else {
-            status = "Available";
-          }
-        }
-        show(s + " " + status);
       }
-      show("action /sides was skipped"); //DEBUG
     }
     return true;
   }
