@@ -929,10 +929,10 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
          */
         randomSides = availableSides;
         // for loop out
-        gm.warn("number of initial randomSides ="+ randomSides.size());
+        gm.warn("number of initial randomSides =" + randomSides.size());
         randomSides.removeIf(randomSide -> isSoloSide(randomSide));
         // for loop out
-        gm.warn("number of final randomSides ="+ randomSides.size());
+        gm.warn("number of final randomSides =" + randomSides.size());
         if (randomSides.isEmpty()) {
           promptOn = true; // no sides left for random choice re-tries (another player took last one)
           noSides = true; // prompt will advise random choice failure
