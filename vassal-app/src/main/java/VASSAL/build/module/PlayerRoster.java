@@ -868,6 +868,11 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       if (!newSide.isEmpty() && !alreadyTaken.contains(newSide)) {
         // side is returned in English for sharing in the game.
         newSide = untranslateSide(newSide);
+        if (!promptOn) {
+          // in this case, a random side must have been chosen...
+          Command c = new Chatter.DisplayText(gm.getChatter(), Resources.getString("PlayerRoster.random_side", GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME), newSide));
+          c.execute();
+        }
         break;
       }
       else {
@@ -923,8 +928,11 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         Determine if we can offer a Random Side option (this routine will need to be replicated for initial connection
          */
         randomSides = availableSides;
+        // for loop out
+        gm.warn("number of initial randomSides ="+ randomSides.size());
         randomSides.removeIf(randomSide -> isSoloSide(randomSide));
-
+        // for loop out
+        gm.warn("number of final randomSides ="+ randomSides.size());
         if (randomSides.isEmpty()) {
           promptOn = true; // no sides left for random choice re-tries (another player took last one)
           noSides = true; // prompt will advise random choice failure
@@ -959,8 +967,9 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         return OBSERVER;
       }
       else {
-        if (!promptOn || newSide.equals(Resources.getString("PlayerRoster.random"))) {
+        if (!promptOn || translatedRandom.equals(newSide)) {
           newSide = randomSides.get((rn.nextInt(randomSides.size())));
+          gm.warn("Random newSide = " + newSide);
           promptOn = false; // will skip prompt and retry if side fails race-condition check (subject to sides limit)
           noSides = false; // status will be re-evaluated
         }
