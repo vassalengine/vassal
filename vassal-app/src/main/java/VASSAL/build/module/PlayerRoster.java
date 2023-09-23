@@ -59,11 +59,7 @@ import javax.swing.SwingUtilities;
 import java.awt.Component;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Maintains a list of players involved in the current game
@@ -80,6 +76,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   public static final String COMMAND_PREFIX = "PLAYER\t"; //$NON-NLS-1$
   public static final String REMOVE_PREFIX = "PYREMOVE\t"; //NON-NLS
   public static final String OBSERVER = "<observer>"; //$NON-NLS-1$
+  public static final String RANDOM = "* Choose Random Side *"; //$NON-NLS$
 
   public static final String SOLITAIRE = "Solitaire"; // Various common names for sides that have access to all pieces (and chess clocks) // NON-NLS
   public static final String REFEREE   = "Referee";   // NON-NLS
@@ -97,6 +94,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   protected List<SideChangeListener> sideChangeListeners = new ArrayList<>();
 
   protected String translatedObserver;
+  protected String translatedRandom;
 
   private boolean pickedSide = false;
 
@@ -121,6 +119,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     setShowDisabledOptions(false); //AbstractToolbarItem
 
     translatedObserver = Resources.getString("PlayerRoster.observer"); //$NON-NLS-1$
+    translatedRandom = Resources.getString("PlayerRoster.random"); //$NON-NLS-1$
   }
 
   @Override
@@ -806,6 +805,11 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     // availableSides and alreadyTaken are translated side names
     final ArrayList<String> availableSides = new ArrayList<>(getSides());
     final ArrayList<String> alreadyTaken = new ArrayList<>();
+    ArrayList<String> randomSides = new ArrayList<>();
+    Random rn = new Random();
+    boolean promptOn = true;
+    boolean noSides = false; // set when there are no sides left other than observer & Solitaire; set by random choice failure
+
     boolean alreadyConnected;
     final GameModule gm = GameModule.getGameModule();
     String nextChoice;
@@ -910,25 +914,52 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
             }
           }
         }
+        /*
+        Determine if we can offer a Random Side option (this routine will need to be replicated for initial connection
+         */
+        randomSides = availableSides;
+        randomSides.removeIf(randomSide -> isSoloSide(randomSide));
+
+        if (randomSides.size() > 0 ) {
+          if (Boolean.valueOf((String) gm.getProperty("VassalRandomSide"))) {
+            promptOn = false; // module set to straight to random choice
+          }
+          else{
+            availableSides.add(0, translatedRandom);
+          }
+        }
+        else {
+          promptOn = true; // no sides left for random choice re-tries (another player took last one)
+          noSides = true; // prompt will advise random choice failure
+        }
+
       }
 
-      availableSides.add(0, translatedObserver);
+      if (promptOn) {
 
-      newSide = (String) JOptionPane.showInputDialog(
-              gm.getPlayerWindow(),
-              newSide.isEmpty() ? Resources.getString("PlayerRoster.switch_sides", getMyLocalizedSide()) : Resources.getString("PlayerRoster.switch_sides2", newSide, getMyLocalizedSide()), //$NON-NLS-1$
-              Resources.getString("PlayerRoster.choose_side"), //$NON-NLS-1$
-              JOptionPane.QUESTION_MESSAGE,
-              null,
-              availableSides.toArray(new String[0]),
-              nextChoice // Offer calculated most likely "next side" as the default
-      );
+        availableSides.add(0, translatedObserver);
+
+        newSide = (String) JOptionPane.showInputDialog(
+                gm.getPlayerWindow(),
+                newSide.isEmpty() ? Resources.getString("PlayerRoster.switch_sides", getMyLocalizedSide()) : noSides ? Resources.getString("PlayerRoster.switch_sides3", getMyLocalizedSide()) : Resources.getString("PlayerRoster.switch_sides2", newSide, getMyLocalizedSide()), //$NON-NLS-1$
+                Resources.getString("PlayerRoster.choose_side"), //$NON-NLS-1$
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                availableSides.toArray(new String[0]),
+                nextChoice // Offer calculated most likely "next side" as the default
+        );
+      }
 
       // side must be returned in English
       if (translatedObserver.equals(newSide)) { // Observer returns here, other returns are checked once more.
         return OBSERVER;
       }
       else {
+        if (!promptOn || newSide.equals(Resources.getString("PlayerRoster.random"))) {
+          newSide = randomSides.get((rn.nextInt(randomSides.size())));
+          promptOn = false; // will skip prompt and retry if side fails race-condition check (subject to sides limit)
+          noSides = false; // status will be re-evaluated
+        }
         alreadyTaken.clear(); // prepare to loop again for exit check
       }
     }
