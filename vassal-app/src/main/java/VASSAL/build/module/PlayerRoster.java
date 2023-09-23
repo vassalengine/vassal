@@ -811,7 +811,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     final ArrayList<String> availableSides = new ArrayList<>(getSides());
     final ArrayList<String> alreadyTaken = new ArrayList<>();
     ArrayList<String> randomSides = new ArrayList<>();
-    Random rn = new Random();
+    final Random rn = new Random();
     boolean promptOn = true;
     boolean noSides = false; // set when there are no sides left other than observer & Solitaire; set by random choice failure
 
@@ -925,7 +925,11 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         randomSides = availableSides;
         randomSides.removeIf(randomSide -> isSoloSide(randomSide));
 
-        if (randomSides.size() > 0) {
+        if (randomSides.isEmpty()) {
+          promptOn = true; // no sides left for random choice re-tries (another player took last one)
+          noSides = true; // prompt will advise random choice failure
+        }
+        else {
           if (Boolean.valueOf((String) gm.getProperty("VassalRandomSide"))) {
             promptOn = false; // module set to straight to random choice
           }
@@ -933,11 +937,6 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
             availableSides.add(0, translatedRandom);
           }
         }
-        else {
-          promptOn = true; // no sides left for random choice re-tries (another player took last one)
-          noSides = true; // prompt will advise random choice failure
-        }
-
       }
 
       if (promptOn) {
