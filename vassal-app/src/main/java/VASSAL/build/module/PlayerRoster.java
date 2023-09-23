@@ -819,6 +819,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     boolean alreadyConnected;
     final GameModule gm = GameModule.getGameModule();
     String nextChoice;
+    final MutableProperty.Impl VassalForceSide = (MutableProperty.Impl) gm.getMutableProperty("VassalForceSide");
 
     if (newSide != null && newSide.isEmpty()) {
       // In-game side changes enter here...
@@ -831,13 +832,11 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       // Fails-over to standard prompt.
       if (!StringUtils.isEmpty((String) gm.getProperty("VassalForceSide"))) {
         nextChoice = translateSide((String) gm.getProperty("VassalForceSide"));
-
         // clear VassalForceSide property here so that this feature does not prevent retiring or changing side after use.
         // GlobalProperty.SetGlobalProperty(GlobalProperty("VassalForceSide"), "", "");
-        final MutableProperty.Impl propValue = (MutableProperty.Impl) gm.getMutableProperty("VassalForceSide");
-        propValue.setPropertyValue("");
+        VassalForceSide.setPropertyValue("");
 
-        if (getAvailableSides().contains(nextChoice)) {
+        if (getAvailableSides().contains(nextChoice)) { // check takes occupied sides into account
           gm.warn("Module side switch.");
           return nextChoice;
         }
@@ -845,8 +844,11 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       alreadyConnected = true;
     }
     else {
-      // entry for connecting to game..
-
+      // entry for connecting to game...
+      if (!StringUtils.isEmpty((String) gm.getProperty("VassalForceSide"))) {
+        // clear VassalForceSide property here in case Global Option Property has persisted from earlier module use
+        VassalForceSide.setPropertyValue("");
+      }
       if (newSide == null || translatedObserver.equals(newSide)) { // Observer checked and returned translated here
         return OBSERVER;
       }
@@ -877,7 +879,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         break;
       }
       else {
-        // Set up for another try...
+        // Set up to attempt to obtain side to join...
         availableSides.clear();
         availableSides.addAll(sides);
 
@@ -928,19 +930,14 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         /*
         Determine if we can offer a Random Side option (this routine will need to be replicated for initial connection
          */
-        availableRealSides = availableSides;
+        for (final String s : availableSides) {
+          if (!isSoloSide(s)) {
+            availableRealSides.add(s);
+          }
+        }
 
         // debug
         gm.warn("number of initial randomSides =" + availableRealSides.size());
-        for (final String s : availableRealSides) {
-          gm.warn(s);
-        }
-
-
-        availableRealSides.removeIf(availableRealSide -> isSoloSide(availableRealSide));
-
-        // debug
-        gm.warn("number of final randomSides =" + availableRealSides.size());
         for (final String s : availableRealSides) {
           gm.warn(s);
         }
@@ -985,7 +982,9 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
           promptOn = false; // will skip prompt and retry if side fails race-condition check (subject to sides limit)
           noSides = false; // status will be re-evaluated
         }
-        alreadyTaken.clear(); // prepare to loop again for exit check
+        // prepare to loop again for exit check
+        alreadyTaken.clear();
+        availableRealSides.clear();
       }
     }
     return newSide;
