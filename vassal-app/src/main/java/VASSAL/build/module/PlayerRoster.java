@@ -825,7 +825,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         // clear VassalForceSide property here so that this feature does not prevent retiring or changing side after use.
         // GlobalProperty.SetGlobalProperty(GlobalProperty("VassalForceSide"), "", "");
         final MutableProperty.Impl propValue = (MutableProperty.Impl) gm.getMutableProperty("VassalForceSide");
-        propValue.setPropertyValue("Test Setting Successful!");
+        propValue.setPropertyValue("");
 
         if (getAvailableSides().contains(nextChoice)) {
           gm.warn("Module side switch.");
