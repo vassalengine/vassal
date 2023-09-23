@@ -810,7 +810,8 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     // availableSides and alreadyTaken are translated side names
     final ArrayList<String> availableSides = new ArrayList<>(getSides());
     final ArrayList<String> alreadyTaken = new ArrayList<>();
-    ArrayList<String> randomSides = new ArrayList<>();
+    ArrayList<String> availableRealSides = new ArrayList<>();
+
     final Random rn = new Random();
     boolean promptOn = true;
     boolean noSides = false; // set when there are no sides left other than observer & Solitaire; set by random choice failure
@@ -927,13 +928,24 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         /*
         Determine if we can offer a Random Side option (this routine will need to be replicated for initial connection
          */
-        randomSides = availableSides;
-        // for loop out
-        gm.warn("number of initial randomSides =" + randomSides.size());
-        randomSides.removeIf(randomSide -> isSoloSide(randomSide));
-        // for loop out
-        gm.warn("number of final randomSides =" + randomSides.size());
-        if (randomSides.isEmpty()) {
+        availableRealSides = availableSides;
+
+        // debug
+        gm.warn("number of initial randomSides =" + availableRealSides.size());
+        for (final String s : availableRealSides) {
+          gm.warn(s);
+        }
+
+
+        availableRealSides.removeIf(availableRealSide -> isSoloSide(availableRealSide));
+
+        // debug
+        gm.warn("number of final randomSides =" + availableRealSides.size());
+        for (final String s : availableRealSides) {
+          gm.warn(s);
+        }
+
+        if (availableRealSides.isEmpty()) {
           promptOn = true; // no sides left for random choice re-tries (another player took last one)
           noSides = true; // prompt will advise random choice failure
         }
@@ -968,7 +980,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       }
       else {
         if (!promptOn || translatedRandom.equals(newSide)) {
-          newSide = randomSides.get((rn.nextInt(randomSides.size())));
+          newSide = availableRealSides.get((rn.nextInt(availableRealSides.size())));
           gm.warn("Random newSide = " + newSide);
           promptOn = false; // will skip prompt and retry if side fails race-condition check (subject to sides limit)
           noSides = false; // status will be re-evaluated
