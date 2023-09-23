@@ -59,7 +59,12 @@ import javax.swing.SwingUtilities;
 import java.awt.Component;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
 
 /**
  * Maintains a list of players involved in the current game
@@ -920,11 +925,11 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         randomSides = availableSides;
         randomSides.removeIf(randomSide -> isSoloSide(randomSide));
 
-        if (randomSides.size() > 0 ) {
+        if (randomSides.size() > 0) {
           if (Boolean.valueOf((String) gm.getProperty("VassalRandomSide"))) {
             promptOn = false; // module set to straight to random choice
           }
-          else{
+          else {
             availableSides.add(0, translatedRandom);
           }
         }
