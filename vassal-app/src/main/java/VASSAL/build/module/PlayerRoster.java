@@ -870,7 +870,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         newSide = untranslateSide(newSide);
         if (!promptOn) {
           // in this case, a random side must have been chosen...
-          Command c = new Chatter.DisplayText(gm.getChatter(), Resources.getString("PlayerRoster.random_side", GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME), newSide));
+          final Command c = new Chatter.DisplayText(gm.getChatter(), Resources.getString("PlayerRoster.random_side", GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME), newSide));
           c.execute();
         }
         break;
