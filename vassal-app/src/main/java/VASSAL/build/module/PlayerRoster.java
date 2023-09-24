@@ -858,8 +858,8 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     }
     else {
       // entry for connecting to game...
+      // clear VassalForceSide property here in case Global Option Property has persisted from earlier module use
       if (!StringUtils.isEmpty((String) gm.getProperty("VassalForceSide"))) {
-        // clear VassalForceSide property here in case Global Option Property has persisted from earlier module use
         VassalForceSide.setPropertyValue("");
       }
       if (newSide == null || translatedObserver.equals(newSide)) { // Observer checked and returned translated here
@@ -867,6 +867,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       }
       else {
         alreadyConnected = false;
+        promptOn = !translatedRandom.equals(newSide); // skip prompt if initial (external) selection is for random choice
       }
     }
 
@@ -913,9 +914,9 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       // When player is already connected, offer a hot-seat... first connections will default to observer
       if (alreadyConnected) {
 
-         // Module controlled hot-seat: set from VassalNextSide (a Module Global Property)
-         // Reserved property VassalNextSide may override hotseat default; must be an available side in english
-         // sits within the loop in case property changes between iterations (due to other player activity)
+        // Module controlled hot-seat: set from VassalNextSide (a Module Global Property)
+        // Reserved property VassalNextSide may override hotseat default; must be an available side in english
+        // sits within the loop in case property changes between iterations (due to other player activity)
         if (!StringUtils.isEmpty((String) gm.getProperty("VassalNextSide"))) {
           nextChoice = translateSide((String) gm.getProperty("VassalNextSide"));
           if (!availableSides.contains(nextChoice)) {
@@ -941,6 +942,9 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
             }
           }
         }
+      }
+
+      if (alreadyConnected || !promptOn) {
         /*
         Determine if we can offer a Random Side option (initial connection also performs this check independently)
          */
