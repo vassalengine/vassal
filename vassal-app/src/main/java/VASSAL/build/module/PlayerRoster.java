@@ -542,7 +542,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       }
     }
 
-    if (availableRealSides.isEmpty()) {
+    if (!availableRealSides.isEmpty()) {
       availableSides.add(0, translatedRandom);
     }
 
