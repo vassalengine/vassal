@@ -846,11 +846,11 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       // Fails-over to standard prompt.
       if (!StringUtils.isEmpty((String) gm.getProperty("VassalForceSide"))) {
         newSide = translateSide((String) gm.getProperty("VassalForceSide"));
+
         // clear VassalForceSide property here so that this feature does not prevent retiring or changing side after use.
-        // GlobalProperty.SetGlobalProperty(GlobalProperty("VassalForceSide"), "", "");
         VassalForceSide.setPropertyValue("");
 
-        if (getAvailableSides().contains(newSide)) { // check takes occupied sides into account
+        if (translatedObserver.equals(newSide) || getAvailableSides().contains(newSide)) { // check takes occupied sides into account
          //debug gm.warn("Module side switch.");
           return newSide;
         }
