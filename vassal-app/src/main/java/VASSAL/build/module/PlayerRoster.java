@@ -973,7 +973,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         if (availableRealSides.isEmpty()) {
           // exit here if we were in auto-random selection mode and no choices are available
           if (autoRandom) {
-            gm.warn(Resources.getString("PlayerRoster.no_sides"));
+            gm.warn(Resources.getString("PlayerRoster.no_player_sides"));
             return null;
           }
           // dialog mode
@@ -1004,6 +1004,12 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
         if (!StringUtils.equals(getMySide(), OBSERVER)) {
           availableSides.add(0, translatedObserver);
+        }
+        else {
+          if (availableSides.isEmpty()) {
+            JOptionPane.showMessageDialog(gm.getPlayerWindow(), Resources.getString("PlayerRoster.no_sides")); //$NON-NLS-1$
+            return null;
+          }
         }
 
         newSide = (String) JOptionPane.showInputDialog(
