@@ -81,8 +81,6 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   public static final String COMMAND_PREFIX = "PLAYER\t"; //$NON-NLS-1$
   public static final String REMOVE_PREFIX = "PYREMOVE\t"; //NON-NLS
   public static final String OBSERVER = "<observer>"; //$NON-NLS-1$
-  public static final String RANDOM = "* Choose Random Side *"; //$NON-NLS$
-
   public static final String SOLITAIRE = "Solitaire"; // Various common names for sides that have access to all pieces (and chess clocks) // NON-NLS
   public static final String REFEREE   = "Referee";   // NON-NLS
   public static final String SOLO      = "Solo";      // NON-NLS
@@ -527,12 +525,11 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
     // Scan module VassalHideSide_<side> properties to exclude side when true
     // The properties are named for untranslated sides!
-    for (int i = 0; i < availableSides.size(); i++) { // search of sides
-      final String s = availableSides.get(i);
-      if (Boolean.valueOf((String) gm.getProperty("VassalHideSide_" + untranslateSide(s))) && !alreadyTaken.contains(s)) {
-        alreadyTaken.add(s);
+      for (final String s : availableSides) { // search of sides
+          if (Boolean.parseBoolean((String) gm.getProperty("VassalHideSide_" + untranslateSide(s))) && !alreadyTaken.contains(s)) {
+              alreadyTaken.add(s);
+          }
       }
-    }
 
     availableSides.removeAll(alreadyTaken);
 
@@ -903,12 +900,11 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
         // Scan module VassalHideSide_<side> properties to exclude side when true
         // The properties are named for untranslated sides!
-        for (int i = 0; i < availableSides.size(); i++) { // search of sides
-          final String s = availableSides.get(i);
-          if (Boolean.valueOf((String) gm.getProperty("VassalHideSide_" + untranslateSide(s))) && !alreadyTaken.contains(s)) {
-            alreadyTaken.add(s);
+          for (final String s : availableSides) { // search of sides
+              if (Boolean.parseBoolean((String) gm.getProperty("VassalHideSide_" + untranslateSide(s))) && !alreadyTaken.contains(s)) {
+                  alreadyTaken.add(s);
+              }
           }
-        }
       }
 
       availableSides.removeAll(alreadyTaken);
@@ -967,7 +963,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         }
         else {
           // Check for Random selected by initial connection dialog or by module control
-          if (translatedRandom.equals(newSide) || Boolean.valueOf((String) gm.getProperty("VassalRandomSide"))) {
+          if (translatedRandom.equals(newSide) || Boolean.parseBoolean((String) gm.getProperty("VassalRandomSide"))) {
             promptOn = false; // module set to straight to random choice
           }
           else {
