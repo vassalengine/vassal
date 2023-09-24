@@ -826,7 +826,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     final ArrayList<String> availableRealSides = new ArrayList<>();
 
     final Random rn = new Random();
-    boolean autoRandom = false;
+    boolean autoRandom;
     boolean promptOn = true;
     boolean noSides = false; // set when there are no sides left other than observer & solo/moderator sides; set by random choice failure
 
