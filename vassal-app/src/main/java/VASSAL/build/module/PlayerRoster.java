@@ -971,9 +971,9 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
          */
 
         if (availableRealSides.isEmpty()) {
-          // exit here if we were in random selection mode and no choices remain
+          // exit here if we were in auto-random selection mode and no choices are available
           if (autoRandom) {
-            gm.warn("Automatic random fails");
+            gm.warn(Resources.getString("PlayerRoster.no_sides"));
             return null;
           }
           // dialog mode
@@ -982,6 +982,8 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         }
         else {
           // Check for Random selected by initial connection dialog or by module control
+          // FIXME: A slight race window exists here - to fix auto mode needs to contnue until no sides are found
+          // ... the impact is that the auto-mode will devolve to a dialog prompt if the side it selects turns out to be taken
           if (autoRandom || !promptOn) {
             promptOn = false; // module set to straight to random choice
           }
@@ -998,7 +1000,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         }
       }
 
-      if (promptOn && !autoRandom) {
+      if (promptOn) {
 
         if (!StringUtils.equals(getMySide(), OBSERVER)) {
           availableSides.add(0, translatedObserver);
@@ -1023,6 +1025,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         if (!promptOn || translatedRandom.equals(newSide)) {
           newSide = availableRealSides.get((rn.nextInt(availableRealSides.size())));
           promptOn = false; // will skip prompt and retry if side fails race-condition check (subject to sides limit)
+          autoRandom = false;
         }
         // prepare to loop again for exit check
         alreadyTaken.clear();
