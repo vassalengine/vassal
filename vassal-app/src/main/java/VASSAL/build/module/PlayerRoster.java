@@ -810,7 +810,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     // availableSides and alreadyTaken are translated side names
     final ArrayList<String> availableSides = new ArrayList<>(getSides());
     final ArrayList<String> alreadyTaken = new ArrayList<>();
-    ArrayList<String> availableRealSides = new ArrayList<>();
+    final ArrayList<String> availableRealSides = new ArrayList<>();
 
     final Random rn = new Random();
     boolean promptOn = true;

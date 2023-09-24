@@ -115,13 +115,25 @@ Simply type a name for each side and refer to that name in the restricted compon
 
 Only one player may be assigned to a side.
 When joining a game, players will be prompted to take one of the remaining available sides.
-Any number of observers (players who belong to no side) are allowed.
+Any number of observers (players who belong to no side) are allowed. Players will also be offered the option to allow Vassal to select a random side, ignoring the non-player and hidden sides. Recognised non-player sides are "Solo", "Solitaire", "Moderator" and "Referee".
+
+You may define a set of module level <<GlobalProperties.adoc#top,Global Properties>> to control the sides presented by scenario or during a game. These properties must be defined in the form _VassalHideSide&#95;&lt;Side&gt;_, where &lt;Side&gt; is a defined side. When such a property is set true, Vassal will not offer the specified side even if unoccupied. The properties may be set up as <<ScenarioProperties.adoc#CheckboxScenarioProperty,Checkbox Scenario Properties>> to allow a module user to set up the side list specific to a scenario.
 
 The <<Toolbar.adoc#Retire,Retire>> or <<Toolbar.adoc#SwitchSides,Switch Sides>> button, in the main controls toolbar, allows a player to relinquish their side (making it available to the next player joining the game). You can specify the text, icon, and mouse-over tooltip for the toolbar button. Leave button text and icon undefined if you define no sides.
 
-The Switch Sides component includes hot-seat support. If the Module <<GlobalProperties.adoc#top,Global Property>> _VassalNextSide_ is defined and set to an available side, that side will be offered. Failing this, Vassal will determine the next side in order, excluding the non-player sides "Solo", "Solitaire", "Moderator" and "Referee".
+The Switch Sides button includes a number of additional features:
 
-You may also define a set of module level <<GlobalProperties.adoc#top,Global Properties>> to control the sides presented by scenario or during a game. These properties must be defined in the form _VassalHideSide&#95;&lt;Side&gt;_, where &lt;Side&gt; is a defined side. When such a property is set true, Vassal will not offer the specified side even if unoccupied. The properties may be set up as <<ScenarioProperties.adoc#CheckboxScenarioProperty,Checkbox Scenario Properties>> to allow a module user to set up the side list specific to a scenario.
+*Hot Seating*. If the Module <<GlobalProperties.adoc#top,Global Property>> _VassalNextSide_ is defined and set to an available side, that side will be offered. Failing this, Vassal will determine the next side in order, excluding the non-player sides.
+
+*Automatic Side Selection* The Switch Sides button will connect to the side specified in the <<GlobalOptions.adoc#custom,Global Options custom>> string preference property _VassalForceSide_. Vassal clears the property after each use.
+
+*Automatic Random Side Selection* The Switch Sides button will select a random player side when a <<GlobalOptions.adoc#custom,Global Options custom>> string preference property _VassalRandomSide_ is set true. Vassal clears the property after each use.
+
+_Note: You may set Global Option preference properties under module control using the SetGlobalProperty.adoc#top,Set Global Property>> trait. To prevent the module user from setting such values, define the Preference on a blank-named tab._
+
+In all the above cases if a player side is not available, the standard switch sides dialog is displayed.
+
+
 
 |===
 
