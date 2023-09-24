@@ -525,11 +525,11 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
     // Scan module VassalHideSide_<side> properties to exclude side when true
     // The properties are named for untranslated sides!
-      for (final String s : availableSides) { // search of sides
-          if (Boolean.parseBoolean((String) gm.getProperty("VassalHideSide_" + untranslateSide(s))) && !alreadyTaken.contains(s)) {
-              alreadyTaken.add(s);
-          }
+    for (final String s : availableSides) { // search of sides
+      if (Boolean.parseBoolean((String) gm.getProperty("VassalHideSide_" + untranslateSide(s))) && !alreadyTaken.contains(s)) {
+        alreadyTaken.add(s);
       }
+    }
 
     availableSides.removeAll(alreadyTaken);
 
@@ -900,11 +900,11 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
         // Scan module VassalHideSide_<side> properties to exclude side when true
         // The properties are named for untranslated sides!
-          for (final String s : availableSides) { // search of sides
-              if (Boolean.parseBoolean((String) gm.getProperty("VassalHideSide_" + untranslateSide(s))) && !alreadyTaken.contains(s)) {
-                  alreadyTaken.add(s);
-              }
+        for (final String s : availableSides) { // search of sides
+          if (Boolean.parseBoolean((String) gm.getProperty("VassalHideSide_" + untranslateSide(s))) && !alreadyTaken.contains(s)) {
+            alreadyTaken.add(s);
           }
+        }
       }
 
       availableSides.removeAll(alreadyTaken);
