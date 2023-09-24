@@ -826,8 +826,9 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     final ArrayList<String> availableRealSides = new ArrayList<>();
 
     final Random rn = new Random();
+    boolean autoRandom = false;
     boolean promptOn = true;
-    boolean noSides = false; // set when there are no sides left other than observer & Solitaire; set by random choice failure
+    boolean noSides = false; // set when there are no sides left other than observer & solo/moderator sides; set by random choice failure
 
     boolean alreadyConnected;
     final GameModule gm = GameModule.getGameModule();
@@ -860,6 +861,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         }
       }
       alreadyConnected = true;
+      autoRandom = Boolean.parseBoolean((String) gm.getProperty("VassalRandomSide"));
     }
     else {
       // entry for connecting to game...
@@ -872,7 +874,8 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       }
       else {
         alreadyConnected = false;
-        promptOn = !translatedRandom.equals(newSide); // skip prompt if initial (external) selection is for random choice
+        autoRandom = translatedRandom.equals(newSide);
+        promptOn = !autoRandom; // skip prompt if initial (external) selection is for random choice
       }
     }
 
@@ -889,7 +892,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
        The random side check picks up selection by the initial connection dialog which will proceed to the common
        random side selection routine further down.
       */
-      if (!newSide.isEmpty() && !translatedRandom.equals(newSide) && !alreadyTaken.contains(newSide)) {
+      if (!newSide.isEmpty() && !autoRandom && !alreadyTaken.contains(newSide)) {
         // side is returned in English for sharing in the game.
         newSide = untranslateSide(newSide);
         if (!promptOn) {
@@ -951,7 +954,8 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
       if (alreadyConnected || !promptOn) {
         /*
-        Determine if we can offer a Random Side option (initial connection also performs this check independently)
+        Determine if we can process a Random Side option (initial connection also performs this check independently)
+        Only offered to observer but still worked out for prompt bypass modes
          */
         for (final String s : availableSides) {
           if (!isSoloSide(untranslateSide(s))) {
@@ -967,16 +971,24 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
          */
 
         if (availableRealSides.isEmpty()) {
-          promptOn = true; // no sides left for random choice re-tries (another player took last one)
-          noSides = true; // prompt will advise random choice failure
+          // exit here if we were in random selection mode and no choices remain
+          if (autoRandom) {
+            gm.warn("Automatic random fails");
+            return null;
+          }
+          // dialog mode
+          noSides = !promptOn; // promptOn is set false to direct random validation and re-try; on failure, revert to dialog with error warning.
+          promptOn = true; // no sides left for random choice re-tries (another player took last one) - redundant, see next comment
         }
         else {
           // Check for Random selected by initial connection dialog or by module control
-          if (translatedRandom.equals(newSide) || Boolean.parseBoolean((String) gm.getProperty("VassalRandomSide"))) {
+          if (autoRandom || !promptOn) {
             promptOn = false; // module set to straight to random choice
           }
           else {
-            availableSides.add(0, translatedRandom);
+            if (getMySide() == null || getMySide().equals(OBSERVER)) {
+              availableSides.add(0, translatedRandom);
+            }
           }
         }
         if (!StringUtils.isEmpty((String) gm.getProperty("VassalRandomSide"))) {
@@ -986,9 +998,11 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         }
       }
 
-      if (promptOn) {
+      if (promptOn && !autoRandom) {
 
-        availableSides.add(0, translatedObserver);
+        if (!StringUtils.equals(getMySide(), OBSERVER)) {
+          availableSides.add(0, translatedObserver);
+        }
 
         newSide = (String) JOptionPane.showInputDialog(
                 gm.getPlayerWindow(),
@@ -1009,7 +1023,6 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         if (!promptOn || translatedRandom.equals(newSide)) {
           newSide = availableRealSides.get((rn.nextInt(availableRealSides.size())));
           promptOn = false; // will skip prompt and retry if side fails race-condition check (subject to sides limit)
-          noSides = false; // status will be re-evaluated
         }
         // prepare to loop again for exit check
         alreadyTaken.clear();
