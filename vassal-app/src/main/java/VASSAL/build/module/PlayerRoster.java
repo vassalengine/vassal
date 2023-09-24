@@ -844,14 +844,19 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       // The side choice is immune to it's VassalHideSide_<side> property.
       // Fails-over to standard prompt.
       if (!StringUtils.isEmpty((String) gm.getProperty("VassalForceSide"))) {
-        nextChoice = translateSide((String) gm.getProperty("VassalForceSide"));
+        newSide = translateSide((String) gm.getProperty("VassalForceSide"));
         // clear VassalForceSide property here so that this feature does not prevent retiring or changing side after use.
         // GlobalProperty.SetGlobalProperty(GlobalProperty("VassalForceSide"), "", "");
         VassalForceSide.setPropertyValue("");
 
-        if (getAvailableSides().contains(nextChoice)) { // check takes occupied sides into account
+        if (getAvailableSides().contains(newSide)) { // check takes occupied sides into account
          //debug gm.warn("Module side switch.");
-          return nextChoice;
+          return newSide;
+        }
+        else {
+          // Force side failed; return null for no action
+          gm.warn(Resources.getString("PlayerRoster.side_not_available", newSide));
+          return null;
         }
       }
       alreadyConnected = true;
