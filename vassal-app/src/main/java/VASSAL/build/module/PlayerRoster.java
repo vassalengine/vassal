@@ -1007,7 +1007,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         }
         else {
           if (availableSides.isEmpty()) {
-            JOptionPane.showMessageDialog(gm.getPlayerWindow(), Resources.getString("PlayerRoster.no_sides")); //$NON-NLS-1$
+            JOptionPane.showMessageDialog(gm.getPlayerWindow(), Resources.getString("PlayerRoster.no_sides"), "Choose side", JOptionPane.ERROR_MESSAGE);
             return null;
           }
         }
