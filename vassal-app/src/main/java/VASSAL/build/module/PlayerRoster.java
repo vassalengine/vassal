@@ -268,11 +268,6 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     final GameModule gm = GameModule.getGameModule();
     final Prefs pr = gm.getPrefs();
 
-    gm.getGameState().addGameComponent(this);
-    gm.getGameState().addGameSetupStep(this);
-    gm.addCommandEncoder(this);
-    validator = new SideTranslationValidator();
-
     // Module control features: set required string prefs so that module designers don't need to.
     // Designers will be able to use Set Global Property without further set up.
     final String Demo = "Demo";
@@ -289,11 +284,10 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     pr.setValue(VassalRandomSide, false);
     pr.setValue(VassalForceSide, "");
 
-    final String VSQL = "VSQL Preferences";
-    final String RULE_LEVEL = "ruleLevel";
-    int ruleLevel = 3;
-    final StringConfigurer ruleLevelcfg = new StringConfigurer (RULE_LEVEL, "Rule Level", ruleLevel);
-    GameModule.getGameModule().getPrefs().addOption(VSQL, ruleLevelcfg);
+    gm.getGameState().addGameComponent(this);
+    gm.getGameState().addGameSetupStep(this);
+    gm.addCommandEncoder(this);
+    validator = new SideTranslationValidator();
 
     super.addTo(b);
   }
