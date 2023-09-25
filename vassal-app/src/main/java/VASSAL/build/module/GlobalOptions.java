@@ -340,20 +340,19 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
 
     ////////////////
     // RESERVED USER PREFS STORED HIDDEN - FACILITATES USER-SPECIFIC CONTROL INTERFACE
-    // Standardised here so that Designers will be able to use Set Global Property trait without further set up.
-    // Defined here so that the property set up occurs
+    // Defined here so that the property set up occurs & so that Designers will be able to use Set Global Property trait without further set up.
     ////////////////
 
-    // PlayerRoster control features
+    // PlayerRoster control features - see Definition of Sides ref manual for usage
     final BooleanConfigurer VassalRandomSideCfg = new BooleanConfigurer("VassalRandomSide", "", false);
     prefs.addOption(null, VassalRandomSideCfg);
 
-    final StringConfigurer VassalForceSideCfg = new StringConfigurer("VassalForceSide", "", null);
+    final StringConfigurer VassalForceSideCfg = new StringConfigurer("VassalForceSide", "", "");
     prefs.addOption(null, VassalForceSideCfg);
 
     // Initialise values that are intended to be transient within a module
     prefs.setValue("VassalRandomSide", false);
-    prefs.setValue("VassalForceSide", null);
+    prefs.setValue("VassalForceSide", "");
 
   }
 
