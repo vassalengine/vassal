@@ -119,9 +119,6 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     setIconKey(BUTTON_ICON);
     setHotKeyKey(BUTTON_KEYSTROKE);
 
-    final GameModule gm = GameModule.getGameModule();
-    final Prefs pr = gm.getPrefs();
-
     setLaunchButton(makeLaunchButton(
       Resources.getString("PlayerRoster.allow_another"),
       Resources.getString("PlayerRoster.retire"),
@@ -136,19 +133,6 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
     translatedObserver = Resources.getString("PlayerRoster.observer"); //$NON-NLS-1$
     translatedRandom = Resources.getString("PlayerRoster.random"); //$NON-NLS-1$
-
-    // Module control features: set required string prefs so that module designers don't need to.
-    // Designers will be able to use Set Global Property without further set up.
-    final BooleanConfigurer bConfig = new BooleanConfigurer(VassalRandomSide, VassalRandomSide, false);
-    gm.getPrefs().addOption(null, bConfig);
-    StringConfigurer sConfig = new StringConfigurer(VassalForceSide, VassalForceSide, null);
-    gm.getPrefs().addOption(null, sConfig);
-    // testing this works
-    sConfig = new StringConfigurer("TestCfg", "TestCfg", "this tests out lovely");
-    gm.getPrefs().addOption(null, sConfig);
-    // Initialise otherwise values might persist
-    pr.setValue(VassalRandomSide, false);
-    pr.setValue(VassalForceSide, "");
 
   }
 
@@ -282,10 +266,28 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   @Override
   public void addTo(Buildable b) {
     final GameModule gm = GameModule.getGameModule();
+    final Prefs pr = gm.getPrefs();
+
     gm.getGameState().addGameComponent(this);
     gm.getGameState().addGameSetupStep(this);
     gm.addCommandEncoder(this);
     validator = new SideTranslationValidator();
+
+    // Module control features: set required string prefs so that module designers don't need to.
+    // Designers will be able to use Set Global Property without further set up.
+    final BooleanConfigurer bConfig = new BooleanConfigurer(VassalRandomSide, VassalRandomSide, false);
+    pr.addOption(null, bConfig);
+    StringConfigurer sConfig = new StringConfigurer(VassalForceSide, VassalForceSide, null);
+    pr.addOption(null, sConfig);
+    // testing this works
+    sConfig = new StringConfigurer("TestCfg", "TestCfg", "this tests out lovely");
+    pr.addOption(sConfig);
+    sConfig = new StringConfigurer("TestCfg", "TestCfg2", "this tests out better");
+    pr.addOption("TEST", sConfig);
+    // Initialise otherwise values might persist
+    pr.setValue(VassalRandomSide, false);
+    pr.setValue(VassalForceSide, "");
+
     super.addTo(b);
   }
 
