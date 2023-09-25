@@ -346,19 +346,22 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
 
     // PlayerRoster control features - see Definition of Sides ref manual for usage
     // config custom pref and its global property
-    final BooleanConfigurer VassalRandomSideCfg = new BooleanConfigurer("VassalRandomSide", "Random", Boolean.FALSE);  //$NON-NLS$
-    prefs.addOption("Test", VassalRandomSideCfg);
-    prefs.setValue("VassalRandomSide", Boolean.FALSE);
-    final MutableProperty.Impl pVassalRandomSide = new MutableProperty.Impl("VassalRandomSide", this);
-    pVassalRandomSide.addTo(gm);
 
-    // if a tab name is not specified, then pass null as tab name to addOption, which causes the preference to
-    // be created, but not placed on any tab.
-    final StringConfigurer VassalForceSideCfg = new StringConfigurer("VassalForceSide", "Force", "test");  //$NON-NLS$
-    prefs.addOption("Test", VassalForceSideCfg);
-    prefs.setValue("VassalForceSide", "test2"); // Reset even if previously created
-    final MutableProperty.Impl pVassalForceSide = new MutableProperty.Impl("VassalForceSide", this);
+    final BooleanConfigurer VassalRandomSideCfg = new BooleanConfigurer("VassalRandomSide", "Random", Boolean.FALSE);  //$NON-NLS$
+    final MutableProperty.Impl pVassalRandomSide = new MutableProperty.Impl("", this);
+    pVassalRandomSide.addTo(gm);
+    prefs.addOption("Test", VassalRandomSideCfg);
+    VassalRandomSideCfg.addPropertyChangeListener(e -> pVassalRandomSide.setPropertyValue(VassalRandomSideCfg.getValueString()));
+    VassalRandomSideCfg.setValue(Boolean.FALSE);
+    pVassalRandomSide.setPropertyValue(VassalRandomSideCfg.getValueString());
+
+    final StringConfigurer VassalForceSideCfg = new StringConfigurer("VassalForceSide", "Force", "test3");  //$NON-NLS$
+    final MutableProperty.Impl pVassalForceSide = new MutableProperty.Impl("", this);
     pVassalForceSide.addTo(gm);
+    prefs.addOption("Test", VassalForceSideCfg);
+    VassalForceSideCfg.addPropertyChangeListener(e -> pVassalForceSide.setPropertyValue(VassalForceSideCfg.getValueString()));
+    VassalForceSideCfg.setValue("Test");
+    pVassalForceSide.setPropertyValue(VassalForceSideCfg.getValueString());
 
   }
 
