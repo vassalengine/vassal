@@ -348,7 +348,7 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
     // config custom pref and its global property
 
     final BooleanConfigurer VassalRandomSideCfg = new BooleanConfigurer("VassalRandomSide", "Random", Boolean.FALSE);  //$NON-NLS$
-    final MutableProperty.Impl pVassalRandomSide = new MutableProperty.Impl("", this);
+    final MutableProperty.Impl pVassalRandomSide = new MutableProperty.Impl("VassalRandomSide", this);
     pVassalRandomSide.addTo(gm);
     prefs.addOption("Test", VassalRandomSideCfg);
     VassalRandomSideCfg.addPropertyChangeListener(e -> pVassalRandomSide.setPropertyValue(VassalRandomSideCfg.getValueString()));
@@ -356,11 +356,11 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
     pVassalRandomSide.setPropertyValue(VassalRandomSideCfg.getValueString());
 
     final StringConfigurer VassalForceSideCfg = new StringConfigurer("VassalForceSide", "Force", "test3");  //$NON-NLS$
-    final MutableProperty.Impl pVassalForceSide = new MutableProperty.Impl("", this);
+    final MutableProperty.Impl pVassalForceSide = new MutableProperty.Impl("VassalForceSide", this);
     pVassalForceSide.addTo(gm);
     prefs.addOption("Test", VassalForceSideCfg);
     VassalForceSideCfg.addPropertyChangeListener(e -> pVassalForceSide.setPropertyValue(VassalForceSideCfg.getValueString()));
-    VassalForceSideCfg.setValue("Test");
+    VassalForceSideCfg.setValue("Test6");
     pVassalForceSide.setPropertyValue(VassalForceSideCfg.getValueString());
 
   }
