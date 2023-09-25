@@ -914,10 +914,10 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
 
     // PlayerRoster control features - see Definition of Sides ref manual for usage
     final BooleanConfigurer VassalRandomSideCfg = new BooleanConfigurer("VassalRandomSide", "", Boolean.FALSE);  //$NON-NLS$
-    prefs.addOption(null, VassalRandomSideCfg);
+    prefs.addOption("Test", VassalRandomSideCfg);
 
     final StringConfigurer VassalForceSideCfg = new StringConfigurer("VassalForceSide", "", "");  //$NON-NLS$
-    prefs.addOption(null, VassalForceSideCfg);
+    prefs.addOption("Test", VassalForceSideCfg);
 
     // Initialise values that are intended to be transient within a module
     prefs.setValue("VassalRandomSide", Boolean.FALSE);
