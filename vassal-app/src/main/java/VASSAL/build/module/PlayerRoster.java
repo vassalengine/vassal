@@ -849,11 +849,10 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       // In-game side changes enter here...
 
       // Module will automatically connect to the side (in english) contained in VassalForceSide if valid
-      // VassalForceSide is expected to be a Global Option string property but there is no validation preventing use of a module level Global Property
+      // VassalForceSide is initialised in GlobalOptions class to ensure it is local
       // The property is nullified after use.
-      // property VassalForceSide may override hotseat default; must be an available side in english
+      // property VassalForceSide has priority; must be an available side in english
       // The side choice is immune to it's VassalHideSide_<side> property.
-      // Fails-over to standard prompt.
       if (!StringUtils.isEmpty((String) gm.getProperty(VassalForceSide))) {
         newSide = translateSide((String) gm.getProperty(VassalForceSide));
 
@@ -871,7 +870,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         }
       }
       alreadyConnected = true;
-      autoRandom = Boolean.parseBoolean((String) gm.getProperty(VassalRandomSide));
+      autoRandom = Boolean.parseBoolean((String) gm.getProperty(VassalRandomSide)); // This property is initialised in GlobalOptions class to ensure it is local
     }
     else {
       // entry for connecting to game...
