@@ -348,12 +348,12 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
     final BooleanConfigurer VassalRandomSideCfg = new BooleanConfigurer("VassalRandomSide", "", false);
     prefs.addOption(null, VassalRandomSideCfg);
 
-    StringConfigurer VassalForceSideCfg = new StringConfigurer("VassalForceSide", "", null);
+    final StringConfigurer VassalForceSideCfg = new StringConfigurer("VassalForceSide", "", null);
     prefs.addOption(null, VassalForceSideCfg);
 
     // Initialise values that are intended to be transient within a module
     prefs.setValue("VassalRandomSide", false);
-    prefs.setValue("VassalForceSide", "");
+    prefs.setValue("VassalForceSide", null);
 
   }
 
