@@ -276,18 +276,24 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     // Module control features: set required string prefs so that module designers don't need to.
     // Designers will be able to use Set Global Property without further set up.
     final String Demo = "Demo";
-    final BooleanConfigurer bConfig = new BooleanConfigurer(VassalRandomSide, VassalRandomSide, false);
+    final BooleanConfigurer bConfig = new BooleanConfigurer(VassalRandomSide, "Random", false);
     pr.addOption(Demo, bConfig);
-    StringConfigurer sConfig = new StringConfigurer(VassalForceSide, VassalForceSide, null);
+    StringConfigurer sConfig = new StringConfigurer(VassalForceSide, "Force", null);
     pr.addOption(Demo, sConfig);
     // testing this works
-    sConfig = new StringConfigurer("TestCfg", "TestCfg", "this tests out lovely");
+    sConfig = new StringConfigurer("TestCfg", "Test Cfg", "this tests out lovely");
     pr.addOption(Demo, sConfig);
-    sConfig = new StringConfigurer("TestCfg2", "TestCfg2", "this tests out better");
+    sConfig = new StringConfigurer("TestCfg2", "Test Cfg2", "this tests out better");
     pr.addOption(Demo, sConfig);
     // Initialise otherwise values might persist
     pr.setValue(VassalRandomSide, false);
     pr.setValue(VassalForceSide, "");
+
+    final String VSQL = "VSQL Preferences";
+    final String RULE_LEVEL = "ruleLevel";
+    int ruleLevel = 3;
+    final StringConfigurer ruleLevelcfg = new StringConfigurer (RULE_LEVEL, "Rule Level", ruleLevel);
+    GameModule.getGameModule().getPrefs().addOption(VSQL, ruleLevelcfg);
 
     super.addTo(b);
   }
