@@ -27,9 +27,11 @@ import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.command.Logger;
+import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.ComponentDescription;
 import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.StringArrayConfigurer;
+import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.configure.ValidationReport;
 import VASSAL.configure.ValidityChecker;
@@ -38,6 +40,7 @@ import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.Translation;
+import VASSAL.preferences.Prefs;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
@@ -86,6 +89,13 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   public static final String SOLO      = "Solo";      // NON-NLS
   public static final String MODERATOR = "Moderator"; // NON-NLS
 
+  // Module control property names or prefixes
+  public static final String VassalRandomSide = "VassalRandomSide"; // NON-NLS
+  public static final String VassalForceSide = "VassalForceSide"; // NON-NLS
+  public static final String VassalHideSide = "VassalHideSide_"; // NON-NLS
+  public static final String VassalNextSide = "VassalNextSide"; // NON-NLS
+
+
   protected List<PlayerInfo> players = new ArrayList<>();
   protected List<String> sides = new ArrayList<>();
   protected String[] untranslatedSides;
@@ -109,6 +119,9 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     setIconKey(BUTTON_ICON);
     setHotKeyKey(BUTTON_KEYSTROKE);
 
+    final GameModule gm = GameModule.getGameModule();
+    final Prefs pr = gm.getPrefs();
+
     setLaunchButton(makeLaunchButton(
       Resources.getString("PlayerRoster.allow_another"),
       Resources.getString("PlayerRoster.retire"),
@@ -123,6 +136,20 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
     translatedObserver = Resources.getString("PlayerRoster.observer"); //$NON-NLS-1$
     translatedRandom = Resources.getString("PlayerRoster.random"); //$NON-NLS-1$
+
+    // Module control features: set required string prefs so that module designers don't need to.
+    // Designers will be able to use Set Global Property without further set up.
+    BooleanConfigurer bConfig = new BooleanConfigurer(null, VassalRandomSide, false);
+    gm.getPrefs().addOption("", bConfig);
+    StringConfigurer sConfig = new StringConfigurer(null, VassalForceSide, null);
+    gm.getPrefs().addOption("", sConfig);
+    // testing this works
+    sConfig = new StringConfigurer(null, "TestCfg", "this tests out lovely");
+    gm.getPrefs().addOption("", sConfig);
+    // Initialise otherwise values might persist
+    pr.setValue(VassalRandomSide, false);
+    pr.setValue(VassalForceSide, "");
+
   }
 
   @Override
@@ -526,7 +553,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     // Scan module VassalHideSide_<side> properties to exclude side when true
     // The properties are named for untranslated sides!
     for (final String s : availableSides) { // search of sides
-      if (Boolean.parseBoolean((String) gm.getProperty("VassalHideSide_" + untranslateSide(s))) && !alreadyTaken.contains(s)) {
+      if (Boolean.parseBoolean((String) gm.getProperty(VassalHideSide + untranslateSide(s))) && !alreadyTaken.contains(s)) {
         alreadyTaken.add(s);
       }
     }
@@ -833,7 +860,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     boolean alreadyConnected;
     final GameModule gm = GameModule.getGameModule();
     String nextChoice;
-    final MutableProperty.Impl VassalForceSide = (MutableProperty.Impl) gm.getMutableProperty("VassalForceSide");
+    final MutableProperty.Impl pVassalForceSide = (MutableProperty.Impl) gm.getMutableProperty(VassalForceSide);
 
     if (newSide != null && newSide.isEmpty()) {
       // In-game side changes enter here...
@@ -844,11 +871,11 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       // property VassalForceSide may override hotseat default; must be an available side in english
       // The side choice is immune to it's VassalHideSide_<side> property.
       // Fails-over to standard prompt.
-      if (!StringUtils.isEmpty((String) gm.getProperty("VassalForceSide"))) {
-        newSide = translateSide((String) gm.getProperty("VassalForceSide"));
+      if (!StringUtils.isEmpty((String) gm.getProperty(VassalForceSide))) {
+        newSide = translateSide((String) gm.getProperty(VassalForceSide));
 
         // clear VassalForceSide property here so that this feature does not prevent retiring or changing side after use.
-        VassalForceSide.setPropertyValue("");
+        pVassalForceSide.setPropertyValue("");
 
         if (translatedObserver.equals(newSide) || getAvailableSides().contains(newSide)) { // check takes occupied sides into account
          //debug gm.warn("Module side switch.");
@@ -861,13 +888,13 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         }
       }
       alreadyConnected = true;
-      autoRandom = Boolean.parseBoolean((String) gm.getProperty("VassalRandomSide"));
+      autoRandom = Boolean.parseBoolean((String) gm.getProperty(VassalRandomSide));
     }
     else {
       // entry for connecting to game...
       // clear VassalForceSide property here in case Global Option Property has persisted from earlier module use
-      if (!StringUtils.isEmpty((String) gm.getProperty("VassalForceSide"))) {
-        VassalForceSide.setPropertyValue("");
+      if (!StringUtils.isEmpty((String) gm.getProperty(VassalForceSide))) {
+        pVassalForceSide.setPropertyValue("");
       }
       if (newSide == null || translatedObserver.equals(newSide)) { // Observer checked and returned translated here
         return OBSERVER;
@@ -910,7 +937,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         // Scan module VassalHideSide_<side> properties to exclude side when true
         // The properties are named for untranslated sides!
         for (final String s : availableSides) { // search of sides
-          if (Boolean.parseBoolean((String) gm.getProperty("VassalHideSide_" + untranslateSide(s))) && !alreadyTaken.contains(s)) {
+          if (Boolean.parseBoolean((String) gm.getProperty(VassalHideSide + untranslateSide(s))) && !alreadyTaken.contains(s)) {
             alreadyTaken.add(s);
           }
         }
@@ -925,8 +952,8 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         // Module controlled hot-seat: set from VassalNextSide (a Module Global Property)
         // Reserved property VassalNextSide may override hotseat default; must be an available side in english
         // sits within the loop in case property changes between iterations (due to other player activity)
-        if (!StringUtils.isEmpty((String) gm.getProperty("VassalNextSide"))) {
-          nextChoice = translateSide((String) gm.getProperty("VassalNextSide"));
+        if (!StringUtils.isEmpty((String) gm.getProperty(VassalNextSide))) {
+          nextChoice = translateSide((String) gm.getProperty(VassalNextSide));
           if (!availableSides.contains(nextChoice)) {
             nextChoice = translatedObserver; // invalid value - revert to default
           }
@@ -993,10 +1020,10 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
             }
           }
         }
-        if (!StringUtils.isEmpty((String) gm.getProperty("VassalRandomSide"))) {
+        if (!StringUtils.isEmpty((String) gm.getProperty(VassalRandomSide))) {
           // clear VassalRandomSide (global option) property here to prevent persistence
-          final MutableProperty.Impl VassalRandomSide = (MutableProperty.Impl) gm.getMutableProperty("VassalRandomSide");
-          VassalRandomSide.setPropertyValue("");
+          final MutableProperty.Impl pVassalRandomSide = (MutableProperty.Impl) gm.getMutableProperty(VassalRandomSide);
+          pVassalRandomSide.setPropertyValue("");
         }
       }
 
