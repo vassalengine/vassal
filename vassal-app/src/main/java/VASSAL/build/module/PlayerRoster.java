@@ -139,7 +139,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
     // Module control features: set required string prefs so that module designers don't need to.
     // Designers will be able to use Set Global Property without further set up.
-    BooleanConfigurer bConfig = new BooleanConfigurer(null, VassalRandomSide, false);
+    final BooleanConfigurer bConfig = new BooleanConfigurer(null, VassalRandomSide, false);
     gm.getPrefs().addOption("", bConfig);
     StringConfigurer sConfig = new StringConfigurer(null, VassalForceSide, null);
     gm.getPrefs().addOption("", sConfig);
