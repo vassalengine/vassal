@@ -25,7 +25,6 @@ import VASSAL.build.GameModule;
 import VASSAL.build.IllegalBuildException;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.PieceMover;
-import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.ComponentDescription;
 import VASSAL.configure.Configurer;
@@ -33,7 +32,6 @@ import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.FormattedStringConfigurer;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.IntConfigurer;
-import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.StringEnum;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.AbstractLaunchAction;
@@ -338,31 +336,6 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
       Boolean.FALSE);
     soundGlobalMuteConf.addPropertyChangeListener(evt -> setSoundGlobalMute(soundGlobalMuteConf.getValueBoolean()));
     prefs.addOption(Resources.getString("Prefs.sounds_tab"), soundGlobalMuteConf);
-
-    ////////////////
-    // RESERVED USER PREFS STORED HIDDEN - FACILITATES USER-SPECIFIC CONTROL INTERFACE
-    // Defined here so that the property set up occurs & so that Designers will be able to use Set Global Property trait without further set up.
-    ////////////////
-
-    // PlayerRoster control features - see Definition of Sides ref manual for usage
-    // config custom pref and its global property
-
-    final BooleanConfigurer VassalRandomSideCfg = new BooleanConfigurer("VassalRandomSide", "Random", Boolean.FALSE);  //$NON-NLS$
-    final MutableProperty.Impl pVassalRandomSide = new MutableProperty.Impl("VassalRandomSide", this);
-    pVassalRandomSide.addTo(gm);
-    prefs.addOption("Test", VassalRandomSideCfg);
-    VassalRandomSideCfg.addPropertyChangeListener(e -> pVassalRandomSide.setPropertyValue(VassalRandomSideCfg.getValueString()));
-    VassalRandomSideCfg.setValue(Boolean.FALSE);
-    pVassalRandomSide.setPropertyValue(VassalRandomSideCfg.getValueString());
-
-    final StringConfigurer VassalForceSideCfg = new StringConfigurer("VassalForceSide", "Force", "test3");  //$NON-NLS$
-    final MutableProperty.Impl pVassalForceSide = new MutableProperty.Impl("VassalForceSide", this);
-    pVassalForceSide.addTo(gm);
-    prefs.addOption("Test", VassalForceSideCfg);
-    VassalForceSideCfg.addPropertyChangeListener(e -> pVassalForceSide.setPropertyValue(VassalForceSideCfg.getValueString()));
-    VassalForceSideCfg.setValue("Test6");
-    pVassalForceSide.setPropertyValue(VassalForceSideCfg.getValueString());
-
   }
 
   /**
@@ -928,7 +901,6 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
         l.add(((BasicPreference) b).getVariableName());
       }
     }
-
     return l;
   }
 
