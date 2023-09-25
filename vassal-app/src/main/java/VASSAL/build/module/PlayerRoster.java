@@ -27,11 +27,9 @@ import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.command.Logger;
-import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.ComponentDescription;
 import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.StringArrayConfigurer;
-import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.configure.ValidationReport;
 import VASSAL.configure.ValidityChecker;
@@ -40,7 +38,6 @@ import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.Translation;
-import VASSAL.preferences.Prefs;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
@@ -266,23 +263,6 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   @Override
   public void addTo(Buildable b) {
     final GameModule gm = GameModule.getGameModule();
-    final Prefs pr = gm.getPrefs();
-
-    // Module control features: set required string prefs so that module designers don't need to.
-    // Designers will be able to use Set Global Property without further set up.
-    final String Demo = "Demo";
-    final BooleanConfigurer bConfig = new BooleanConfigurer(VassalRandomSide, "Random", false);
-    pr.addOption(Demo, bConfig);
-    StringConfigurer sConfig = new StringConfigurer(VassalForceSide, "Force", null);
-    pr.addOption(Demo, sConfig);
-    // testing this works
-    sConfig = new StringConfigurer("TestCfg", "Test Cfg", "this tests out lovely");
-    pr.addOption(Demo, sConfig);
-    sConfig = new StringConfigurer("TestCfg2", "Test Cfg2", "this tests out better");
-    pr.addOption(Demo, sConfig);
-    // Initialise otherwise values might persist
-    pr.setValue(VassalRandomSide, false);
-    pr.setValue(VassalForceSide, "");
 
     gm.getGameState().addGameComponent(this);
     gm.getGameState().addGameSetupStep(this);

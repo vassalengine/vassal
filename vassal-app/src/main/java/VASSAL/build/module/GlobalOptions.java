@@ -32,6 +32,7 @@ import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.FormattedStringConfigurer;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.IntConfigurer;
+import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.StringEnum;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.AbstractLaunchAction;
@@ -336,6 +337,24 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
       Boolean.FALSE);
     soundGlobalMuteConf.addPropertyChangeListener(evt -> setSoundGlobalMute(soundGlobalMuteConf.getValueBoolean()));
     prefs.addOption(Resources.getString("Prefs.sounds_tab"), soundGlobalMuteConf);
+
+    ////////////////
+    // RESERVED USER PREFS STORED HIDDEN - FACILITATES USER-SPECIFIC CONTROL INTERFACE
+    // Standardised here so that Designers will be able to use Set Global Property trait without further set up.
+    // Defined here so that the property set up occurs
+    ////////////////
+
+    // PlayerRoster control features
+    final BooleanConfigurer VassalRandomSideCfg = new BooleanConfigurer("VassalRandomSide", "", false);
+    prefs.addOption(null, VassalRandomSideCfg);
+
+    StringConfigurer VassalForceSideCfg = new StringConfigurer("VassalForceSide", "", null);
+    prefs.addOption(null, VassalForceSideCfg);
+
+    // Initialise values that are intended to be transient within a module
+    prefs.setValue("VassalRandomSide", false);
+    prefs.setValue("VassalForceSide", "");
+
   }
 
   /**
