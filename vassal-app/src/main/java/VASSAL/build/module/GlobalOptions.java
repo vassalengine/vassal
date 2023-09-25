@@ -25,6 +25,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.IllegalBuildException;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.PieceMover;
+import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.ComponentDescription;
 import VASSAL.configure.Configurer;
@@ -344,15 +345,20 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
     ////////////////
 
     // PlayerRoster control features - see Definition of Sides ref manual for usage
+    // config custom pref and its global property
     final BooleanConfigurer VassalRandomSideCfg = new BooleanConfigurer("VassalRandomSide", "Random", Boolean.FALSE);  //$NON-NLS$
     prefs.addOption("Test", VassalRandomSideCfg);
     prefs.setValue("VassalRandomSide", Boolean.FALSE);
-    addTo((Buildable) VassalRandomSideCfg);
+    final MutableProperty.Impl pVassalRandomSide = new MutableProperty.Impl("VassalRandomSide", this);
+    pVassalRandomSide.addTo(gm);
 
+    // if a tab name is not specified, then pass null as tab name to addOption, which causes the preference to
+    // be created, but not placed on any tab.
     final StringConfigurer VassalForceSideCfg = new StringConfigurer("VassalForceSide", "Force", "test");  //$NON-NLS$
     prefs.addOption("Test", VassalForceSideCfg);
     prefs.setValue("VassalForceSide", "test2"); // Reset even if previously created
-    addTo((Buildable) VassalForceSideCfg);
+    final MutableProperty.Impl pVassalForceSide = new MutableProperty.Impl("VassalForceSide", this);
+    pVassalForceSide.addTo(gm);
 
   }
 
