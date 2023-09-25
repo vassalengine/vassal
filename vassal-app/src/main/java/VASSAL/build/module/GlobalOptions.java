@@ -338,6 +338,22 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
     soundGlobalMuteConf.addPropertyChangeListener(evt -> setSoundGlobalMute(soundGlobalMuteConf.getValueBoolean()));
     prefs.addOption(Resources.getString("Prefs.sounds_tab"), soundGlobalMuteConf);
 
+    ////////////////
+    // RESERVED USER PREFS STORED HIDDEN - FACILITATES USER-SPECIFIC CONTROL INTERFACE
+    // Defined here so that the property set up occurs & so that Designers will be able to use Set Global Property trait without further set up.
+    ////////////////
+
+    // PlayerRoster control features - see Definition of Sides ref manual for usage
+    final BooleanConfigurer VassalRandomSideCfg = new BooleanConfigurer("VassalRandomSide", "Random", Boolean.FALSE);  //$NON-NLS$
+    prefs.addOption("Test", VassalRandomSideCfg);
+    prefs.setValue("VassalRandomSide", Boolean.FALSE);
+    addTo((Buildable) VassalRandomSideCfg);
+
+    final StringConfigurer VassalForceSideCfg = new StringConfigurer("VassalForceSide", "Force", "test");  //$NON-NLS$
+    prefs.addOption("Test", VassalForceSideCfg);
+    prefs.setValue("VassalForceSide", "test2"); // Reset even if previously created
+    addTo((Buildable) VassalForceSideCfg);
+
   }
 
   /**
@@ -903,31 +919,6 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
         l.add(((BasicPreference) b).getVariableName());
       }
     }
-
-    ////////////////
-    // RESERVED USER PREFS STORED HIDDEN - FACILITATES USER-SPECIFIC CONTROL INTERFACE
-    // Defined here so that the property set up occurs & so that Designers will be able to use Set Global Property trait without further set up.
-    ////////////////
-
-    final GameModule gm = GameModule.getGameModule();
-    final Prefs prefs = gm.getPrefs();
-
-    // PlayerRoster control features - see Definition of Sides ref manual for usage
-    final BooleanConfigurer VassalRandomSideCfg = new BooleanConfigurer("VassalRandomSide", "Random", Boolean.FALSE);  //$NON-NLS$
-    prefs.addOption("Test", VassalRandomSideCfg);
-
-    final StringConfigurer VassalForceSideCfg = new StringConfigurer("VassalForceSide", "Force", "test");  //$NON-NLS$
-    prefs.addOption("Test", VassalForceSideCfg);
-
-    // Initialise values that are intended to be transient within a module
-    prefs.setValue("VassalRandomSide", Boolean.FALSE);
-    prefs.setValue("VassalForceSide", "");
-
-    // Add reserved preference names
-    l.add(VassalRandomSideCfg.getKey());
-    l.add(VassalForceSideCfg.getKey());
-    // l.add("VassalRandomSide");
-    // l.add("VassalForceSide");
 
     return l;
   }
