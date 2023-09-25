@@ -139,13 +139,13 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
     // Module control features: set required string prefs so that module designers don't need to.
     // Designers will be able to use Set Global Property without further set up.
-    final BooleanConfigurer bConfig = new BooleanConfigurer(null, VassalRandomSide, false);
-    gm.getPrefs().addOption("", bConfig);
-    StringConfigurer sConfig = new StringConfigurer(null, VassalForceSide, null);
-    gm.getPrefs().addOption("", sConfig);
+    final BooleanConfigurer bConfig = new BooleanConfigurer(VassalRandomSide, VassalRandomSide, false);
+    gm.getPrefs().addOption(null, bConfig);
+    StringConfigurer sConfig = new StringConfigurer(VassalForceSide, VassalForceSide, null);
+    gm.getPrefs().addOption(null, sConfig);
     // testing this works
-    sConfig = new StringConfigurer(null, "TestCfg", "this tests out lovely");
-    gm.getPrefs().addOption("", sConfig);
+    sConfig = new StringConfigurer("TestCfg", "TestCfg", "this tests out lovely");
+    gm.getPrefs().addOption(null, sConfig);
     // Initialise otherwise values might persist
     pr.setValue(VassalRandomSide, false);
     pr.setValue(VassalForceSide, "");
@@ -893,9 +893,11 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     else {
       // entry for connecting to game...
       // clear VassalForceSide property here in case Global Option Property has persisted from earlier module use
+      /* testing if required still
       if (!StringUtils.isEmpty((String) gm.getProperty(VassalForceSide))) {
         pVassalForceSide.setPropertyValue("");
       }
+      */
       if (newSide == null || translatedObserver.equals(newSide)) { // Observer checked and returned translated here
         return OBSERVER;
       }
@@ -1020,6 +1022,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
             }
           }
         }
+
         if (!StringUtils.isEmpty((String) gm.getProperty(VassalRandomSide))) {
           // clear VassalRandomSide (global option) property here to prevent persistence
           final MutableProperty.Impl pVassalRandomSide = (MutableProperty.Impl) gm.getMutableProperty(VassalRandomSide);
