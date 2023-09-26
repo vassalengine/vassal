@@ -829,7 +829,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     return promptForSide("");
   }
 
-  protected String promptForSide(String newSide) throws InterruptedException {
+  protected String promptForSide(String newSide) {
     // availableSides and alreadyTaken are translated side names
     final ArrayList<String> availableSides = new ArrayList<>(getSides());
     final ArrayList<String> alreadyTaken = new ArrayList<>();
