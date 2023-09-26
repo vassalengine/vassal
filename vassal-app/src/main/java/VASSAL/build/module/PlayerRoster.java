@@ -829,21 +829,20 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     return promptForSide("");
   }
 
-  protected String promptForSide(String newSide) {
+  protected String promptForSide(String newSide) throws InterruptedException {
     // availableSides and alreadyTaken are translated side names
     final ArrayList<String> availableSides = new ArrayList<>(getSides());
     final ArrayList<String> alreadyTaken = new ArrayList<>();
     final ArrayList<String> availableRealSides = new ArrayList<>();
 
     final Random rn = new Random();
-    boolean autoRandom;
+    int autoRandomPass = 0;
     boolean promptOn = true;
     boolean noSides = false; // set when there are no sides left other than observer & solo/moderator sides; set by random choice failure
 
     boolean alreadyConnected;
     final GameModule gm = GameModule.getGameModule();
     String nextChoice;
-    final MutableProperty.Impl pVassalForceSide = (MutableProperty.Impl) gm.getMutableProperty(VassalForceSide);
 
     if (newSide != null && newSide.isEmpty()) {
       // In-game side changes enter here...
@@ -857,10 +856,10 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         newSide = translateSide((String) gm.getProperty(VassalForceSide));
 
         // clear VassalForceSide property here so that this feature does not prevent retiring or changing side after use.
+        final MutableProperty.Impl pVassalForceSide = (MutableProperty.Impl) gm.getMutableProperty(VassalForceSide);
         pVassalForceSide.setPropertyValue("");
 
-        if (translatedObserver.equals(newSide) || getAvailableSides().contains(newSide)) { // check takes occupied sides into account
-         //debug gm.warn("Module side switch.");
+        if (translatedObserver.equals(newSide) || getAvailableSides().contains(newSide)) { // this check takes occupied sides into account
           return newSide;
         }
         else {
@@ -869,28 +868,33 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
           return null;
         }
       }
+
+      // Normal use...
       alreadyConnected = true;
-      autoRandom = Boolean.parseBoolean((String) gm.getProperty(VassalRandomSide)); // This property is initialised in GlobalOptions class to ensure it is local
+
+      // Automatically processing random side choice ?
+      if (Boolean.parseBoolean((String) gm.getProperty(VassalRandomSide))) { // property reset after use
+        autoRandomPass = 1;
+        promptOn = false; // skip prompt if initial (external) selection is for random choice
+        final MutableProperty.Impl pVassalRandomSide = (MutableProperty.Impl) gm.getMutableProperty(VassalRandomSide);
+        pVassalRandomSide.setPropertyValue("");
+      }
     }
     else {
       // entry for connecting to game...
-      // clear VassalForceSide property here in case Global Option Property has persisted from earlier module use
-      /* testing if required still
-      if (!StringUtils.isEmpty((String) gm.getProperty(VassalForceSide))) {
-        pVassalForceSide.setPropertyValue("");
-      }
-      */
       if (newSide == null || translatedObserver.equals(newSide)) { // Observer checked and returned translated here
         return OBSERVER;
       }
       else {
         alreadyConnected = false;
-        autoRandom = translatedRandom.equals(newSide);
-        promptOn = !autoRandom; // skip prompt if initial (external) selection is for random choice
+        if (translatedRandom.equals(newSide)) {
+          autoRandomPass = 1;
+          promptOn = false; // skip prompt if initial (external) selection is for random choice
+        }
       }
     }
 
-    while (newSide != null) { // Loops until a valid side is found or op is canceled (repeats side check to minimuse race condition window)
+    while (newSide != null) { // Loops until a valid side is found or op is canceled (repeats side check to minimise race condition window)
       // Refresh occupied slots from current game state
       for (final PlayerInfo p : players) {
         alreadyTaken.add(p.getLocalizedSide());
@@ -903,10 +907,10 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
        The random side check picks up selection by the initial connection dialog which will proceed to the common
        random side selection routine further down.
       */
-      if (!newSide.isEmpty() && !autoRandom && !alreadyTaken.contains(newSide)) {
+      if (!newSide.isEmpty() && autoRandomPass != 1 && !alreadyTaken.contains(newSide)) {
         // side is returned in English for sharing in the game.
         newSide = untranslateSide(newSide);
-        if (!promptOn) {
+        if (autoRandomPass > 0) {
           // in this case, a random side must have been chosen...
           final Command c = new Chatter.DisplayText(gm.getChatter(), Resources.getString("PlayerRoster.random_side", GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME), newSide));
           c.execute();
@@ -931,7 +935,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       nextChoice = translatedObserver; // default for dropdown
 
       // When player is already connected, offer a hot-seat... first connections will default to observer
-      if (alreadyConnected) {
+      if (alreadyConnected && autoRandomPass == 0) {
 
         // Module controlled hot-seat: set from VassalNextSide (a Module Global Property)
         // Reserved property VassalNextSide may override hotseat default; must be an available side in english
@@ -944,7 +948,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         }
 
         if (nextChoice.equals(translatedObserver)) {
-          // Module has not specified a valid hotseat option so we'll try and determine one...
+          // Module has not specified a valid hotseat option, so we'll try and determine one...
           // If a "real" player side is available, we want to offer "the next one" as the default, rather than observer.
           // Thus hotseat players can easily cycle through the player positions as they will appear successively as the default.
           // Common names for Solitaire players (Solitaire, Solo, Referee) do not count as "real" player sides, and will be skipped.
@@ -982,33 +986,20 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
          */
 
         if (availableRealSides.isEmpty()) {
-          // exit here if we were in auto-random selection mode and no choices are available
-          if (autoRandom) {
+          // exit here if we were in no prompt mode (random choice) and no choices are available
+          if (!promptOn) {
             gm.warn(Resources.getString("PlayerRoster.no_player_sides"));
             return null;
           }
-          // dialog mode
-          noSides = !promptOn; // promptOn is set false to direct random validation and re-try; on failure, revert to dialog with error warning.
-          promptOn = true; // no sides left for random choice re-tries (another player took last one) - redundant, see next comment
+          // dialog mode - warn that random choice is exhausted
+          noSides = true; // promptOn is set false to direct random validation and re-try; on failure, revert to dialog with error warning.
         }
         else {
-          // Check for Random selected by initial connection dialog or by module control
-          // FIXME: A slight race window exists here - to fix auto mode needs to contnue until no sides are found
+          // Prepare prompt mode
           // ... the impact is that the auto-mode will devolve to a dialog prompt if the side it selects turns out to be taken
-          if (autoRandom || !promptOn) {
-            promptOn = false; // module set to straight to random choice
+          if (promptOn && (getMySide() == null || getMySide().equals(OBSERVER))) {
+            availableSides.add(0, translatedRandom);
           }
-          else {
-            if (getMySide() == null || getMySide().equals(OBSERVER)) {
-              availableSides.add(0, translatedRandom);
-            }
-          }
-        }
-
-        if (!StringUtils.isEmpty((String) gm.getProperty(VassalRandomSide))) {
-          // clear VassalRandomSide (global option) property here to prevent persistence
-          final MutableProperty.Impl pVassalRandomSide = (MutableProperty.Impl) gm.getMutableProperty(VassalRandomSide);
-          pVassalRandomSide.setPropertyValue("");
         }
       }
 
@@ -1040,10 +1031,13 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         return OBSERVER;
       }
       else {
-        if (!promptOn || translatedRandom.equals(newSide)) {
+        // autoRandomPass - occurs on entry or after manual fails once. manual will get back into prompt if it fails.
+        if (translatedRandom.equals(newSide)) {
+          autoRandomPass = 1;
+        }
+        if (autoRandomPass > 0) {
           newSide = availableRealSides.get((rn.nextInt(availableRealSides.size())));
-          promptOn = false; // will skip prompt and retry if side fails race-condition check (subject to sides limit)
-          autoRandom = false;
+          autoRandomPass++;
         }
         // prepare to loop again for exit check
         alreadyTaken.clear();
@@ -1100,6 +1094,8 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
     public Add(PlayerRoster r, String playerId,
                String playerName, String side) {
+      // FIXME consider last ditch effort to prevent side collisions here
+      // e.g. allocate to player with the alpha least playerName and playerId combined and Remove(playerId) from the other
       roster = r;
       id = playerId;
       name = playerName;

@@ -125,12 +125,9 @@ The Switch Sides button includes a number of additional features:
 
 *Hot Seating*. If the Module <<GlobalProperties.adoc#top,Global Property>> _VassalNextSide_ is defined and set to an available side, that side will be offered. Failing this, Vassal will determine the next side in order, excluding the non-player sides but defaulting to observer as last resort.
 
-*Automatic Side Selection* The Switch Sides button will connect to the side specified in the <<GlobalOptions.adoc#custom,Global Options custom>> string preference property _VassalForceSide_. Vassal clears the property after each use. If the side is not available, no side change is performed and an error message is displayed in the chat log.
+*Automatic Side Selection* The Switch Sides button will connect to the side specified in the <<GlobalProperties.adoc#top,Global Property>> _VassalForceSide_. Vassal clears the property after each use. If the side is not available, no side change is performed and a warning is displayed in the chat log.
 
-*Automatic Random Side Selection* The Switch Sides button will select a random player side when a <<GlobalOptions.adoc#custom,Global Options custom>> string preference property _VassalRandomSide_ is set true. Vassal clears the property after each use. If no player sides are not available, no side change is performed and an error message is displayed in the chat log.
-
-_Note: You may set Global Option preference properties under module control using the <<SetGlobalProperty.adoc#top,Set Global Property>> trait. To prevent the module user from setting such values, define the Preference on a blank-named tab._
-
+*Automatic Random Side Selection* The Switch Sides button will select a random player side when a <<GlobalProperties.adoc#top,Global Property>> _VassalRandomSide_ is set to _true_. Vassal clears the property after each use. If no player sides are available, no side change is performed and a warning is displayed in the chat log.
 
 |===
 
