@@ -995,9 +995,8 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
           noSides = true; // promptOn is set false to direct random validation and re-try; on failure, revert to dialog with error warning.
         }
         else {
-          // Prepare prompt mode
-          // ... the impact is that the auto-mode will devolve to a dialog prompt if the side it selects turns out to be taken
-          if (promptOn && (getMySide() == null || getMySide().equals(OBSERVER))) {
+          // Prompt mode will offer random choice first time or to observer when there's more than one side to choose from
+          if (promptOn && (getMySide() == null || getMySide().equals(OBSERVER)) && availableRealSides.size() > 1) {
             availableSides.add(0, translatedRandom);
           }
         }
