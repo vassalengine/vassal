@@ -511,6 +511,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       if (gm.isMultiplayerConnected()) {
         final Command c = new Chatter.DisplayText(gm.getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.joined_side_2" : "PlayerRoster.joined_side", gm.getPrefs().getValue(GameModule.REAL_NAME), translateSide(newSide)));
         c.execute();
+        gm.getServer().sendToOthers(c);
       }
 
       final Add a = new Add(this, GameModule.getActiveUserId(), GlobalOptions.getInstance().getPlayerId(), newSide);
@@ -857,7 +858,9 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
         // clear VassalForceSide property here so that this feature does not prevent retiring or changing side after use.
         final MutableProperty.Impl pVassalForceSide = (MutableProperty.Impl) gm.getMutableProperty(VassalForceSide);
-        pVassalForceSide.setPropertyValue("");
+        final Command c = pVassalForceSide.setPropertyValue("");
+        c.execute();
+        gm.getServer().sendToOthers(c);
 
         if (translatedObserver.equals(newSide) || getAvailableSides().contains(newSide)) { // this check takes occupied sides into account
           return newSide;
@@ -877,20 +880,18 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         autoRandomPass = 1;
         promptOn = false; // skip prompt if initial (external) selection is for random choice
         final MutableProperty.Impl pVassalRandomSide = (MutableProperty.Impl) gm.getMutableProperty(VassalRandomSide);
-        pVassalRandomSide.setPropertyValue("");
+        final Command c = pVassalRandomSide.setPropertyValue("");
+        c.execute();
+        gm.getServer().sendToOthers(c);
       }
     }
     else {
       // entry for connecting to game...
-      if (newSide == null || translatedObserver.equals(newSide)) { // Observer checked and returned translated here
-        return OBSERVER;
-      }
-      else {
-        alreadyConnected = false;
-        if (translatedRandom.equals(newSide)) {
-          autoRandomPass = 1;
-          promptOn = false; // skip prompt if initial (external) selection is for random choice
-        }
+      if (newSide == null || translatedObserver.equals(newSide)) return OBSERVER; // Observer checked and returned translated here
+      alreadyConnected = false;
+      if (translatedRandom.equals(newSide)) {
+        autoRandomPass = 1;
+        promptOn = false; // skip prompt if initial (external) selection is for random choice
       }
     }
 
@@ -914,6 +915,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
           // in this case, a random side must have been chosen...
           final Command c = new Chatter.DisplayText(gm.getChatter(), Resources.getString("PlayerRoster.random_side", GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME), newSide));
           c.execute();
+          gm.getServer().sendToOthers(c);
         }
         break;
       }
@@ -925,9 +927,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         // Scan module VassalHideSide_<side> properties to exclude side when true
         // The properties are named for untranslated sides!
         for (final String s : availableSides) { // search of sides
-          if (Boolean.parseBoolean((String) gm.getProperty(VassalHideSide + untranslateSide(s))) && !alreadyTaken.contains(s)) {
-            alreadyTaken.add(s);
-          }
+          if (Boolean.parseBoolean((String) gm.getProperty(VassalHideSide + untranslateSide(s))) && !alreadyTaken.contains(s)) alreadyTaken.add(s);
         }
       }
 
@@ -973,9 +973,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         Only offered to observer but still worked out for prompt bypass modes
          */
         for (final String s : availableSides) {
-          if (!isSoloSide(untranslateSide(s))) {
-            availableRealSides.add(s);
-          }
+          if (!isSoloSide(untranslateSide(s))) availableRealSides.add(s);
         }
 
         /*debug
