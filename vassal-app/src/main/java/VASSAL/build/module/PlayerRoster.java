@@ -861,7 +861,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         final MutableProperty.Impl pVassalForceSide = (MutableProperty.Impl) gm.getMutableProperty(VassalForceSide);
         final Command c = pVassalForceSide.getChangeCommand(forceSide, "");
         c.execute();
-        gm.getServer().sendToOthers(c);
+        gm.sendAndLog(c);
 
         if (translatedObserver.equals(newSide) || getAvailableSides().contains(newSide)) { // this check takes occupied sides into account
           return newSide;
@@ -883,7 +883,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         final MutableProperty.Impl pVassalRandomSide = (MutableProperty.Impl) gm.getMutableProperty(VassalRandomSide);
         final Command c = pVassalRandomSide.getChangeCommand("true", "");
         c.execute();
-        gm.getServer().sendToOthers(c);
+        gm.sendAndLog(c);
       }
     }
     else {
