@@ -859,7 +859,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
         // clear VassalForceSide property here so that this feature does not prevent retiring or changing side after use.
         final MutableProperty.Impl pVassalForceSide = (MutableProperty.Impl) gm.getMutableProperty(VassalForceSide);
-        final Command c = pVassalForceSide.getChangeCommand(forceSide, "");
+        final Command c = pVassalForceSide.getChangeCommand("", ""); // old value = new; reset must not be subject to UnDo
         c.execute();
         gm.sendAndLog(c);
 
@@ -881,7 +881,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         autoRandomPass = 1;
         promptOn = false; // skip prompt if initial (external) selection is for random choice
         final MutableProperty.Impl pVassalRandomSide = (MutableProperty.Impl) gm.getMutableProperty(VassalRandomSide);
-        final Command c = pVassalRandomSide.getChangeCommand("true", "");
+        final Command c = pVassalRandomSide.getChangeCommand("", ""); // old value = new; reset must not be subject to UnDo
         c.execute();
         gm.sendAndLog(c);
       }
