@@ -125,8 +125,8 @@ public class Localization extends Language {
    * Translate the module. The module and all extensions have now been built,
    * so all Translations are available and all attributes that need to be
    * translated have been recorded. There may be multiple translations that
-   * match this Locale, merge them in order - Country over-rides Language
-   * over-rides default. NB - You cannot create a default translation
+   * match this Locale, merge them in order - Country overrides Language
+   * overrides default. NB - You cannot create a default translation
    * (Module.properties) using the VASSAL editor, but a default file can be
    * placed into a module or extension manually.
    *

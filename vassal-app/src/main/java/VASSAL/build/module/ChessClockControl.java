@@ -196,7 +196,7 @@ public class ChessClockControl extends AbstractConfigurable
     final PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
     int added = 0;
     if (r != null) {
-      for (final String s : r.sides) {
+      for (final String s : r.getUntranslatedSideList()) {
         if (!r.isSoloSide(s)) {
           addChild(new ChessClock(s));
           added++;

@@ -21,19 +21,23 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 12727, "desc": "Ensure that tiles are cobbled for fixed-size board scaling" },
         { "num": 12708, "desc": "Prevent ArrayIndexOutOfBoundsException if side translation count does not match module" },
         { "num": 12688, "desc": "Replace with Other should not update text of unchangeable labels" },
         { "num": 12683, "desc": "Prevent NPE on starting game in Main Room" },
+        { "num": 12679, "desc": "Set Piece Property respects target property numeric constraints unless overridden" },
         { "num": 12676, "desc": "IncrementProperty: Corrected bad wrap-around calculation when increment is negative" },
         { "num": 12659, "desc": "Translate current side before checking for \"next side\"" },
         { "num": 12645, "desc": "Respect localization when filtering sides" },
         { "num": 12582, "desc": "Corrected divide-by-zero problem for Zones defined by zero-point polygons" },
+        { "num": 12542, "desc": "Mitigate race condition when selecting player sides" },
         { "num": 12474, "desc": "Fixed NPE when moving EditablePiece which isn't on a map" },
         { "num": 12411, "desc": "Fixed NPE when updating ConfigureTree" },
         { "num": 12324, "desc": "Fixed ClassCastException caused by reordering columns in Delayed Notes table" },
         { "num": 12307, "desc": "Prevent NPE when Return to Deck of a deleted Deck" }
       ],
       "other_improvements": [
+        { "num": 12716, "desc": "Support regular expressions in Editor search" },
         { "num": 12715, "desc": "Enable help button for editor Search dialog" },
         { "num": 12706, "desc": "Keep the \"retire\" button disabled unless a game is running" },
         { "num": 12696, "desc": "Removed \"Indexing pieces\" message" },

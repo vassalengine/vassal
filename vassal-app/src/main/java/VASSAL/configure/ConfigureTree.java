@@ -55,6 +55,7 @@ import VASSAL.i18n.TranslateAction;
 import VASSAL.launch.EditorWindow;
 import VASSAL.preferences.Prefs;
 import VASSAL.search.SearchTarget;
+import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ReadErrorDialog;
@@ -126,6 +127,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -1811,6 +1813,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   private static class SearchParameters {
     public static final String SEARCH_STRING = "searchString"; //$NON-NLS-1$//
     public static final String MATCH_CASE    = "matchCase"; //$NON-NLS-1$//
+    public static final String MATCH_REGEX    = "matchRegex"; //$NON-NLS-1$//
     public static final String MATCH_NAMES   = "matchNames"; //$NON-NLS-1$//
     public static final String MATCH_TYPES   = "matchTypes"; //$NON-NLS-1$//
     public static final String MATCH_ADVANCED     = "matchAdvanced"; //$NON-NLS-1$//
@@ -1826,6 +1829,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
     /** True if case-sensitive */
     private boolean matchCase;
+
+    /** True if matching on a Regular Expression */
+    private boolean matchRegex;
 
     /** True if match configurable names */
     private boolean matchNames;
@@ -1866,6 +1872,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
       prefs.addOption(null, new StringConfigurer(SearchParameters.SEARCH_STRING, null, ""));
       prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_CASE,   null, false));
+      prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_REGEX,   null, false));
       prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_NAMES,  null, true));
       prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_TYPES,  null, true));
       prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_ADVANCED, null, false));
@@ -1878,6 +1885,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
       searchString = (String) prefs.getValue(SearchParameters.SEARCH_STRING);
       matchCase    = (Boolean)prefs.getValue(SearchParameters.MATCH_CASE);
+      matchRegex    = (Boolean)prefs.getValue(SearchParameters.MATCH_REGEX);
       matchNames   = (Boolean)prefs.getValue(SearchParameters.MATCH_NAMES);
       matchTypes       = (Boolean)prefs.getValue(SearchParameters.MATCH_TYPES);
       matchAdvanced    = (Boolean)prefs.getValue(SearchParameters.MATCH_ADVANCED);
@@ -1892,9 +1900,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     /**
      * Constructs a new search parameters object
      */
-    public SearchParameters(String searchString, boolean matchCase, boolean matchNames, boolean matchTypes, boolean matchAdvanced, boolean matchTraits, boolean matchExpressions, boolean matchProperties, boolean matchKeys, boolean matchMenus, boolean matchMessages) {
+    public SearchParameters(String searchString, boolean matchCase, boolean matchRegex, boolean matchNames, boolean matchTypes, boolean matchAdvanced, boolean matchTraits, boolean matchExpressions, boolean matchProperties, boolean matchKeys, boolean matchMenus, boolean matchMessages) {
       this.searchString = searchString;
       this.matchCase    = matchCase;
+      this.matchRegex    = matchRegex;
       this.matchNames   = matchNames;
       this.matchTypes   = matchTypes;
       this.matchAdvanced    = matchAdvanced;
@@ -1917,6 +1926,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
     public boolean isMatchCase() {
       return matchCase;
+    }
+
+    public boolean isMatchRegex() {
+      return matchRegex;
     }
 
     public void setMatchCase(boolean matchCase) {
@@ -2010,6 +2023,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     public void setFrom(final SearchParameters searchParameters) {
       searchString = searchParameters.getSearchString();
       matchCase = searchParameters.isMatchCase();
+      matchRegex = searchParameters.isMatchRegex();
       matchNames = searchParameters.isMatchNames();
       matchTypes = searchParameters.isMatchTypes();
       matchAdvanced    = searchParameters.isMatchAdvanced();
@@ -2026,6 +2040,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       if (prefs != null) {
         prefs.setValue(SEARCH_STRING, searchString);
         prefs.setValue(MATCH_CASE, matchCase);
+        prefs.setValue(MATCH_REGEX, matchRegex);
         prefs.setValue(MATCH_NAMES,       matchNames);
         prefs.setValue(MATCH_TYPES, matchTypes);
         prefs.setValue(MATCH_ADVANCED,    matchAdvanced);
@@ -2048,6 +2063,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
       final SearchParameters that = (SearchParameters) o;
       return isMatchCase() == that.isMatchCase() &&
+        isMatchRegex() == that.isMatchRegex() &&
         isMatchNames() == that.isMatchNames() &&
         isMatchTypes() == that.isMatchTypes() &&
         isMatchTraits() == that.isMatchTraits() &&
@@ -2062,7 +2078,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
     @Override
     public int hashCode() {
-      return Objects.hash(getSearchString(), isMatchCase(), isMatchNames(), isMatchTypes(), isMatchAdvanced(),
+      return Objects.hash(getSearchString(), isMatchCase(), isMatchRegex(), isMatchNames(), isMatchTypes(), isMatchAdvanced(),
         isMatchTraits(), isMatchExpressions(), isMatchProperties(), isMatchKeys(),
         isMatchMenus(), isMatchMessages());
     }
@@ -2108,6 +2124,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         search.selectAll();
 
         final JCheckBox sensitive = new JCheckBox(Resources.getString("Editor.search_case"), searchParameters.isMatchCase());
+        final JCheckBox regex = new JCheckBox(Resources.getString("Editor.search_regex"), searchParameters.isMatchRegex());
         final JCheckBox advanced  = new JCheckBox(Resources.getString("Editor.search_advanced"), searchParameters.isMatchAdvanced());
 
         final JCheckBox names = new JCheckBox(Resources.getString("Editor.search_names"), searchParameters.isMatchNames());
@@ -2144,7 +2161,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         final JButton find = new JButton(Resources.getString("Editor.search_next"));
         find.addActionListener(e12 -> {
           final SearchParameters parametersSetInDialog =
-            new SearchParameters(search.getText(), sensitive.isSelected(), names.isSelected(), types.isSelected(), true, traits.isSelected(), expressions.isSelected(), properties.isSelected(), keys.isSelected(), menus.isSelected(), messages.isSelected());
+            new SearchParameters(search.getText(), sensitive.isSelected(), regex.isSelected(), names.isSelected(), types.isSelected(), true, traits.isSelected(), expressions.isSelected(), properties.isSelected(), keys.isSelected(), menus.isSelected(), messages.isSelected());
 
           final boolean anyChanges = !searchParameters.equals(parametersSetInDialog);
 
@@ -2159,7 +2176,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             ConfigureTree.chat(Resources.getString("Editor.search_all_off"));
           }
 
-          if (!searchParameters.getSearchString().isEmpty()) {
+          if (!searchParameters.getSearchString().isEmpty() && (!searchParameters.isMatchRegex() || isValidRegex(searchParameters.getSearchString()))) {
             if (anyChanges) {
               // Unless we're just continuing to the next match in an existing search, compute & display hit count
               final int matches = getNumMatches(searchParameters.getSearchString());
@@ -2199,6 +2216,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
         // options row
         panel.add(sensitive);
+        panel.add(regex);
         panel.add(advanced);
 
         // Advanced 1
@@ -2241,7 +2259,17 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
 
     private void showSearchHelp() {
-      // FIXME - Add Help ref
+      File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
+      dir = new File(dir, "ReferenceManual"); //$NON-NLS-1$
+      final File theFile = new File(dir, "Search.html"); //$NON-NLS-1$
+      HelpFile h = null;
+      try {
+        h = new HelpFile(null, theFile, "#top"); //$NON-NLS-1$
+      }
+      catch (MalformedURLException e) {
+        ErrorDialog.bug(e);
+      }
+      BrowserSupport.openURL(h.getContents().toString());
     }
 
     /**
@@ -2626,18 +2654,38 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
     }
 
+    private boolean isValidRegex(String searchString) { // avoid exceptions by checking the Regex before use
+      try {
+        return "".matches(searchString) || true;
+      }
+      catch (java.util.regex.PatternSyntaxException e) {
+        chat("Search string is not a valid Regular Expression: " + e.getMessage()); //NON-NLS
+        return false;
+      }
+    }
+
     /**
      * Checks a single string against our search parameters
      * @param target - string to check
      * @param searchString - our search string
-     * @return true if this is a match based on our "matchCase" checkbox
+     * @return true if this is a match based on our "matchCase" & "matchRegex"checkboxes.
      */
     private boolean checkString(String target, String searchString) {
-      if (searchParameters.isMatchCase()) {
-        return target.contains(searchString);
+      if (searchParameters.isMatchRegex()) {
+        if (searchParameters.isMatchCase()) {
+          return target.matches(searchString);
+        }
+        else {
+          return target.toLowerCase().matches(searchString.toLowerCase());
+        }
       }
       else {
-        return target.toLowerCase().contains(searchString.toLowerCase());
+        if (searchParameters.isMatchCase()) {
+          return target.contains(searchString);
+        }
+        else {
+          return target.toLowerCase().contains(searchString.toLowerCase());
+        }
       }
     }
   }
@@ -3007,12 +3055,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
   }
 
-  // ExtensionTree to over-ride
+  // ExtensionTree to override
   protected void postInsertProcessing(Configurable parent, Configurable child) {
 
   }
 
-  // ExtensionTree to over-ride
+  // ExtensionTree to override
   protected void postRemoveProcessing(Configurable parent, Configurable child) {
 
   }
