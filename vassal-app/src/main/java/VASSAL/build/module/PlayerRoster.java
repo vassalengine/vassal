@@ -520,12 +520,11 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
     // Scan module VassalHideSide_<side> properties to exclude side when true
     // The properties are named for untranslated sides!
-    for (int i = 0; i < availableSides.size(); i++) { // search of sides
-      final String s = availableSides.get(i);
-      if (Boolean.valueOf((String) g.getProperty("VassalHideSide_" + untranslateSide(s))) && !alreadyTaken.contains(s)) {
-        alreadyTaken.add(s);
+      for (final String s : availableSides) { // search of sides
+          if (Boolean.parseBoolean((String) g.getProperty("VassalHideSide_" + untranslateSide(s))) && !alreadyTaken.contains(s)) {
+              alreadyTaken.add(s);
+          }
       }
-    }
 
     availableSides.removeAll(alreadyTaken);
     availableSides.add(0, translatedObserver);
@@ -843,12 +842,11 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
         // Scan module VassalHideSide_<side> properties to exclude side when true
         // The properties are named for untranslated sides!
-        for (int i = 0; i < availableSides.size(); i++) { // search of sides
-          final String s = availableSides.get(i);
-          if (Boolean.valueOf((String) g.getProperty("VassalHideSide_" + untranslateSide(s))) && !alreadyTaken.contains(s)) {
-            alreadyTaken.add(s);
+          for (final String s : availableSides) { // search of sides
+              if (Boolean.parseBoolean((String) g.getProperty("VassalHideSide_" + untranslateSide(s))) && !alreadyTaken.contains(s)) {
+                  alreadyTaken.add(s);
+              }
           }
-        }
       }
 
       availableSides.removeAll(alreadyTaken);
