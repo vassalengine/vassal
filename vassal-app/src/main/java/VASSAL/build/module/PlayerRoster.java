@@ -853,12 +853,13 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       // The property is nullified after use.
       // property VassalForceSide has priority; must be an available side in english
       // The side choice is immune to it's VassalHideSide_<side> property.
-      if (!StringUtils.isEmpty((String) gm.getProperty(VassalForceSide))) {
-        newSide = translateSide((String) gm.getProperty(VassalForceSide));
+      final String forceSide  = StringUtils.strip((String) gm.getProperty(VassalForceSide));
+      if (!forceSide.isEmpty()) {
+        newSide = translateSide((String) gm.getProperty(forceSide));
 
         // clear VassalForceSide property here so that this feature does not prevent retiring or changing side after use.
         final MutableProperty.Impl pVassalForceSide = (MutableProperty.Impl) gm.getMutableProperty(VassalForceSide);
-        final Command c = pVassalForceSide.setPropertyValue("");
+        final Command c = pVassalForceSide.getChangeCommand(forceSide, "");
         c.execute();
         gm.getServer().sendToOthers(c);
 
@@ -880,7 +881,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         autoRandomPass = 1;
         promptOn = false; // skip prompt if initial (external) selection is for random choice
         final MutableProperty.Impl pVassalRandomSide = (MutableProperty.Impl) gm.getMutableProperty(VassalRandomSide);
-        final Command c = pVassalRandomSide.setPropertyValue("");
+        final Command c = pVassalRandomSide.getChangeCommand("true", "");
         c.execute();
         gm.getServer().sendToOthers(c);
       }
