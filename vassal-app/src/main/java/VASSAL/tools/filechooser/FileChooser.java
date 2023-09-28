@@ -117,7 +117,7 @@ public abstract class FileChooser {
   public abstract void resetChoosableFileFilters();
 
   /**
-   * Selects <tt>filename.sav</tt> if <tt>filename.foo</tt> is selected.
+   * Selects <tt>filename.vsav</tt> if <tt>filename.foo</tt> is selected.
    */
   public void selectDotSavFile() {
     final File file = getSelectedFile();
