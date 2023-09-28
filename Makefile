@@ -145,6 +145,16 @@ $(TMPDIR)/macos-%-$(VERSION)-build/VASSAL.app: $(LIBDIR)/Vengine.jar $(TMPDIR)/m
 	cp -a CHANGES LICENSE README.md $@/Contents/Resources/doc
 	cp -a $(LIBDIR)/Vengine.jar $@/Contents/Resources/Java
 
+$(TMPDIR)/macos-universal-$(VERSION)-build/VASSAL.app: $(TMPDIR)/macos-x86_64-$(VERSION)-build/VASSAL.app $(TMPDIR)/macos-aarch64-$(VERSION)-build/VASSAL.app
+	mkdir -p $@
+	cp -av $(TMPDIR)/macos-aarch64-$(VERSION)-build/VASSAL.app/* $@
+	find $@ -type f | while read f ; do \
+		if file "$${f/universal/aarch64}" | grep 'Mach-O.\+arm64' ; then \
+			echo "$$f" ; \
+			$(DISTDIR)/lipo/lipo_linux_amd64 -create -output "$$f" "$${f/universal/x86_64}" "$${f/universal/aarch64}" ; \
+		fi ; \
+	done
+
 $(TMPDIR)/macos-%-$(VERSION)-build: $(TMPDIR)/macos-%-$(VERSION)-build/VASSAL.app
 	ln -s /Applications $@/Applications
 	cp $(DISTDIR)/macos/.DS_Store $@
@@ -271,6 +281,8 @@ release-macos: release-macos-x86_64 release-macos-aarch64
 release-macos-x86_64: $(TMPDIR)/VASSAL-$(VERSION)-macos-x86_64.dmg
 
 release-macos-aarch64: $(TMPDIR)/VASSAL-$(VERSION)-macos-aarch64.dmg
+
+release-macos-universal: $(TMPDIR)/VASSAL-$(VERSION)-macos-universal.dmg
 
 release-windows: release-windows-x86_32 release-windows-x86_64 release-windows-aarch64
 

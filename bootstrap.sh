@@ -10,6 +10,9 @@ L4JDIR=dist/launch4j
 
 JDKDIR=dist/jdks
 
+LIPOVER=0.8.4
+LIPODIR=dist/lipo
+
 #
 # Donwload and unpack JDKs
 #
@@ -55,6 +58,16 @@ filename="OpenJDK20U-jdk_aarch64_mac_hotspot_$TEMURIN_FILENAME_VERSION.tar.gz"
 curl -L -O "$TEMURIN_URL/$TEMURIN_VERSION/$filename"
 mkdir macos-aarch64
 tar -C macos-aarch64 --strip-components=1 -xvf $filename
+
+popd
+
+#
+# Download lipo
+#
+mkdir -p "$LIPODIR"
+pushd "$LIPODIR"
+
+wget https://github.com/konoui/lipo/releases/download/v${LIPOVER}/lipo_linux_amd64
 
 popd
 
