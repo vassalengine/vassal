@@ -24,21 +24,20 @@ import VASSAL.build.module.GameRefresher;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.build.module.PredefinedSetup;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.map.ImageSaver;
 import VASSAL.command.Command;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.swing.FlowLabel;
+import VASSAL.tools.swing.ProgressDialog;
 import VASSAL.tools.swing.SwingUtils;
+import javax.swing.SwingWorker;
 import net.miginfocom.swing.MigLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.Frame;
@@ -91,10 +90,9 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     HelpFile hf = null;
     try {
       hf = new HelpFile(null, new File(
-        new File(Documentation.getDocumentationBaseDir(), "ReferenceManual"),
-        "SavedGameUpdater.html"));
-    }
-    catch (MalformedURLException ex) {
+              new File(Documentation.getDocumentationBaseDir(), "ReferenceManual"),
+              "SavedGameUpdater.html"));
+    } catch (MalformedURLException ex) {
       ErrorDialog.bug(ex);
     }
 
@@ -153,7 +151,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     addNewDecks.setVisible(refreshDecks.isSelected());
   }
 
-  protected void  setOptions() {
+  protected void setOptions() {
     options.clear();
     if (nameCheck.isSelected()) {
       options.add(GameRefresher.USE_NAME); //$NON-NLS-1$
@@ -213,23 +211,22 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     Boolean isRefreshOfExtension = true;
     final GameModule mod = GameModule.getGameModule();
     final DataArchive dataArchive = mod.getDataArchive();
-    final List<ModuleExtension>  moduleExtensionList = mod.getComponentsOf(ModuleExtension.class);
+    final List<ModuleExtension> moduleExtensionList = mod.getComponentsOf(ModuleExtension.class);
     if (moduleExtensionList.isEmpty()) {
       isRefreshOfExtension = false;
     }
-    final List<PredefinedSetup>  modulePdsAndMenus = mod.getAllDescendantComponentsOf(PredefinedSetup.class);
-    final List<PredefinedSetup>  modulePds = new ArrayList<>();
+    final List<PredefinedSetup> modulePdsAndMenus = mod.getAllDescendantComponentsOf(PredefinedSetup.class);
+    final List<PredefinedSetup> modulePds = new ArrayList<>();
     for (final PredefinedSetup pds : modulePdsAndMenus) {
       if (!pds.isMenu() && pds.isUseFile()) {
         //Exclude scenario folders (isMenu == true)
         // and exclude any "New game" entries (no predefined setup) (isUseFile == false)
         // !! Some New Game entries have UseFile = true and filename empty. Check file name too
-        if (pds.getFileName() != null && ! pds.getFileName().isBlank()) {
+        if (pds.getFileName() != null && !pds.getFileName().isBlank()) {
           Boolean isExtensionPDS = true;
           try {
-            isExtensionPDS =  !dataArchive.contains(pds.getFileName());
-          }
-          catch (final IOException e) {
+            isExtensionPDS = !dataArchive.contains(pds.getFileName());
+          } catch (final IOException e) {
             ErrorDialog.bug(e);
           }
           if (isExtensionPDS == isRefreshOfExtension) {
@@ -251,22 +248,62 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
       //log(pds.getAttributeValueString(pds.NAME) + " (" + pds.getFileName() + ")");
     }
 
+    RefreshPDSTask(modulePds);
+
+    GameModule.getGameModule().getGameState().setup(false); //BR// Clear out whatever data (pieces, listeners, etc) left over from final game loaded.
+
+    refreshButton.setEnabled(true);
+  }
+
+  protected static ProgressDialog dialog;
+
+  /*
+  /**
+   * Helper method for refreshing PDS.
+   *
+   * @param modulePds the PDS set to refresh
+   */
+  /*
+  protected void refreshAllPDS(List<PredefinedSetup> modulePds) {
+    final RefreshPredefinedSetupsDialog task = new RefreshPredefinedSetupsDialog.RefreshPDSTask(modulePds);
+
+    task.addPropertyChangeListener(e -> {
+      if ("progress".equals(e.getPropertyName())) { //NON-NLS
+        dialog.setProgress((Integer) e.getNewValue());
+      } else if ("state".equals(e.getPropertyName())) { //NON-NLS
+        if (e.getNewValue() ==
+                SwingWorker.StateValue.DONE) {
+          // close the dialog on cancellation or completion
+          dialog.setVisible(false);
+          dialog.dispose();
+        }
+      }
+    });
+
+    dialog.addActionListener(e -> task.cancel(true));
+
+    task.execute();
+  }
+  */
+
+  /**
+   * Task to refreshing all PDS.
+   *
+   * @param modulePds the PDS set to refresh
+   */
+  protected void RefreshPDSTask(List<PredefinedSetup> modulePds) {
+
     for (final PredefinedSetup pds : modulePds) {
       GameModule.getGameModule().getGameState().setup(false);  //BR// Ensure we clear any existing game data/listeners/objects out.
       GameModule.getGameModule().setRefreshingSemaphore(true); //BR// Raise the semaphore that suppresses GameState.setup()
 
       try {
         pds.refresh(options);
-      }
-      catch (final IOException e) {
+      } catch (final IOException e) {
         ErrorDialog.bug(e);
-      }
-      finally {
+      } finally {
         GameModule.getGameModule().setRefreshingSemaphore(false); //BR// Make sure we definitely lower the semaphore
       }
     }
-    GameModule.getGameModule().getGameState().setup(false); //BR// Clear out whatever data (pieces, listeners, etc) left over from final game loaded.
-
-    refreshButton.setEnabled(true);
   }
 }
