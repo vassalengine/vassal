@@ -24,20 +24,20 @@ import VASSAL.build.module.GameRefresher;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.build.module.PredefinedSetup;
 import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.map.ImageSaver;
 import VASSAL.command.Command;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.swing.FlowLabel;
-import VASSAL.tools.swing.ProgressDialog;
 import VASSAL.tools.swing.SwingUtils;
-import javax.swing.SwingWorker;
 import net.miginfocom.swing.MigLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.Frame;
@@ -50,7 +50,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class RefreshPredefinedSetupsDialog extends JDialog {
+public class RefreshPredefinedSetupsDialog {
   private static final Logger logger = LoggerFactory.getLogger(RefreshPredefinedSetupsDialog.class);
   private static final long serialVersionUID = 1L;
   private JButton refreshButton;
@@ -92,7 +92,8 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
       hf = new HelpFile(null, new File(
               new File(Documentation.getDocumentationBaseDir(), "ReferenceManual"),
               "SavedGameUpdater.html"));
-    } catch (MalformedURLException ex) {
+    }
+    catch (MalformedURLException ex) {
       ErrorDialog.bug(ex);
     }
 
@@ -226,7 +227,8 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
           Boolean isExtensionPDS = true;
           try {
             isExtensionPDS = !dataArchive.contains(pds.getFileName());
-          } catch (final IOException e) {
+          }
+          catch (final IOException e) {
             ErrorDialog.bug(e);
           }
           if (isExtensionPDS == isRefreshOfExtension) {
@@ -255,7 +257,6 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     refreshButton.setEnabled(true);
   }
 
-  protected static ProgressDialog dialog;
 
   /*
   /**
@@ -299,9 +300,11 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
       try {
         pds.refresh(options);
-      } catch (final IOException e) {
+      }
+      catch (final IOException e) {
         ErrorDialog.bug(e);
-      } finally {
+      }
+      finally {
         GameModule.getGameModule().setRefreshingSemaphore(false); //BR// Make sure we definitely lower the semaphore
       }
     }
