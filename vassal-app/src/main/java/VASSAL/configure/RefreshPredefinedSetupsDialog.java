@@ -21,7 +21,6 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Documentation;
 import VASSAL.build.module.GameRefresher;
-import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.build.module.PredefinedSetup;
 import VASSAL.build.module.documentation.HelpFile;
@@ -241,13 +240,13 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     }
 
     final GameModule gm = GameModule.getGameModule();
-    final Command c = new Chatter.DisplayText(gm.getChatter(), modulePds.size() + " " + Resources.getString("GameRefresher.predefined_setups_found");
+    Command c = new Chatter.DisplayText(gm.getChatter(), modulePds.size() + " " + Resources.getString("GameRefresher.predefined_setups_found"));
     c.execute();
 
-    //log(modulePds.size() + " " + Resources.getString("GameRefresher.predefined_setups_found"));
+    log(modulePds.size() + " " + Resources.getString("GameRefresher.predefined_setups_found"));
 
     for (final PredefinedSetup pds : modulePds) {
-      final Command c = new Chatter.DisplayText(gm.getChatter(), modulePds.size() + " " + Resources.getString("GameRefresher.predefined_setups_found");
+      c = new Chatter.DisplayText(gm.getChatter(), pds.getAttributeValueString(pds.NAME) + " (" + pds.getFileName() + ")");
       c.execute();
       //log(pds.getAttributeValueString(pds.NAME) + " (" + pds.getFileName() + ")");
     }
