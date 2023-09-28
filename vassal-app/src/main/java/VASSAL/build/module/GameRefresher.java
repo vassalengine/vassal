@@ -341,7 +341,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       }
     }
 
-    // About to commence refreshing the game, allow a custom start...
+    // About to commence refreshing the game, allow a custom start
     GameModule.getGameModule().fireKeyStroke(NamedKeyStroke.of("VassalGHKpreRefresh"));
 
 
@@ -544,7 +544,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
       }
     }
-    // After all refreshing, allow a custom finish...
+    // After all refreshing, allow a custom finish
     GameModule.getGameModule().fireKeyStroke(NamedKeyStroke.of("VassalGHKpostRefresh"));
   }
 
