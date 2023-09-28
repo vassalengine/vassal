@@ -13,4 +13,4 @@ for ARG in "$@"; do
 done
 
 # fire it up
-exec Contents/MacOS/jre/bin/java -classpath Contents/Resources/Java/Vengine.jar  -Xdock:name=VASSAL -Xdock:icon=Contents/Resources/VASSAL.icns VASSAL.launch.ModuleManager "${ARGS[@]}"
+ARCHPREFERENCE=arm64,x86_64 exec arch Contents/MacOS/jre/bin/java -classpath Contents/Resources/Java/Vengine.jar  -Xdock:name=VASSAL -Xdock:icon=Contents/Resources/VASSAL.icns VASSAL.launch.ModuleManager "${ARGS[@]}"
