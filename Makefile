@@ -276,11 +276,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-windows-noinst.zip: $(TMPDIR)/windows-noinst-$(VERSI
 
 release-linux: $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2
 
-release-macos: release-macos-x86_64 release-macos-aarch64
-
-release-macos-x86_64: $(TMPDIR)/VASSAL-$(VERSION)-macos-x86_64.dmg
-
-release-macos-aarch64: $(TMPDIR)/VASSAL-$(VERSION)-macos-aarch64.dmg
+release-macos: release-macos-universal
 
 release-macos-universal: $(TMPDIR)/VASSAL-$(VERSION)-macos-universal.dmg
 
@@ -296,7 +292,7 @@ release-windows-noinst: $(TMPDIR)/VASSAL-$(VERSION)-windows-noinst.zip
 
 release-other: $(TMPDIR)/VASSAL-$(VERSION)-other.zip
 
-$(TMPDIR)/VASSAL-$(VERSION).sha256: $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2 $(TMPDIR)/VASSAL-$(VERSION)-macos-x86_64.dmg $(TMPDIR)/VASSAL-$(VERSION)-macos-aarch64.dmg $(TMPDIR)/VASSAL-$(VERSION)-windows-x86_32.exe $(TMPDIR)/VASSAL-$(VERSION)-windows-x86_64.exe $(TMPDIR)/VASSAL-$(VERSION)-windows-aarch64.exe $(TMPDIR)/VASSAL-$(VERSION)-other.zip
+$(TMPDIR)/VASSAL-$(VERSION).sha256: $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2 $(TMPDIR)/VASSAL-$(VERSION)-macos-universal.dmg $(TMPDIR)/VASSAL-$(VERSION)-windows-x86_32.exe $(TMPDIR)/VASSAL-$(VERSION)-windows-x86_64.exe $(TMPDIR)/VASSAL-$(VERSION)-windows-aarch64.exe $(TMPDIR)/VASSAL-$(VERSION)-other.zip
 	pushd $(TMPDIR) ; sha256sum $(^F) >$(@F) ; popd
 
 release-sha256: $(TMPDIR)/VASSAL-$(VERSION).sha256
@@ -333,4 +329,4 @@ clean: clean-release
 # prevents make from trying to delete intermediate files
 .SECONDARY:
 
-.PHONY: compile test clean release release-linux release-macos release-macos-x86_64 release-macos-aarch64 release-windows release-windows-x86_32 release-windows-x86_64 release-windows-aarch64 release-other release-sha256 release-announcements clean-release post-release javadoc jar clean-javadoc version-set version-print
+.PHONY: compile test clean release release-linux release-macos release-macos-universal release-windows release-windows-x86_32 release-windows-x86_64 release-windows-aarch64 release-other release-sha256 release-announcements clean-release post-release javadoc jar clean-javadoc version-set version-print
