@@ -496,7 +496,6 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       if (GameModule.getGameModule().isMultiplayerConnected()) {
         final Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.joined_side_2" : "PlayerRoster.joined_side", GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME), translateSide(newSide)));
         c.execute();
-        GameModule.getGameModule().getServer().sendToOthers(c);
       }
 
       final Add a = new Add(this, GameModule.getActiveUserId(), GlobalOptions.getInstance().getPlayerId(), newSide);
