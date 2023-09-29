@@ -853,9 +853,9 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       // The property is nullified after use.
       // property VassalForceSide has priority; must be an available side in english
       // The side choice is immune to it's VassalHideSide_<side> property.
-      final String forceSide  = StringUtils.strip((String) gm.getProperty(VassalForceSide));
-      if (!forceSide.isEmpty()) {
-        newSide = translateSide((String) gm.getProperty(forceSide));
+      final String forceSide  = StringUtils.defaultString((String) gm.getProperty(VassalForceSide));
+      if (!StringUtils.isEmpty(forceSide)) {
+        newSide = translateSide(forceSide);
 
         // clear VassalForceSide property here so that this feature does not prevent retiring or changing side after use.
         final MutableProperty.Impl pVassalForceSide = (MutableProperty.Impl) gm.getMutableProperty(VassalForceSide);
