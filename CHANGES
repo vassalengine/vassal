@@ -1,3 +1,8 @@
+3.7.2 - ???
+
+* 12729: Set Global Property to again record old GP value in oldValues for
+    reporting
+
 3.7.1 - 20 September 2023
 
 * 12727: Ensure that tiles are cobbled for fixed-size board scaling
