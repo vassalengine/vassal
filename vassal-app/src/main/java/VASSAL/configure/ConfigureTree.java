@@ -2705,7 +2705,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       // FIXME: this test may be insufficient - it curtails escape characters unless other Regex ops are specified.
       if (!searchString.matches("\\.|\\+|\\*|\\?|\\^|\\$|\\(.*\\)|\\[.*\\]|\\{.*\\}|\\|")) {
         try {
-          final Pattern wordPattern = Pattern.compile(".*\b" + searchString + "\b.*"); // test
+          Pattern.compile(".*\b" + searchString + "\b.*"); // test
           chat("No Regex special characters detected; a word boundary search will be performed."); // NON-NLS
           searchString = ".*\b" + searchString + "\b.*";
         }
