@@ -408,7 +408,7 @@ public class GameModule extends AbstractConfigurable
    * Our finder of the resources, for translation of images.
    */
   private final ResourcePathFinder resourceFinder;
-  
+
   /**
    * The user preferences
    */
@@ -1737,6 +1737,7 @@ public class GameModule extends AbstractConfigurable
    */
   public void setGameFileMode(GameFileMode mode) {
     gameFileMode = Objects.requireNonNull(mode);
+    if (mode == GameFileMode.NEW_GAME) gameFile = "";  // reset title bar in event of a new game
     updateTitleBar();
   }
 
