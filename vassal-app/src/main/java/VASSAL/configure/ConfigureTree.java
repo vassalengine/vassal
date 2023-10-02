@@ -2186,9 +2186,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
                 regexPattern = setupRegexSearch(searchParameters.getSearchString());
                 regexError = regexPattern == null;
               }
+              else {
+                regexPattern = null;
+              }
               if (!regexError) {
                 // Compute & display hit count
-                final int matches = getNumMatches(searchParameters.getSearchString());
+                final int matches = getNumMatches(searchParameters.getSearchString(), regexPattern);
                 chat(matches + " " + Resources.getString("Editor.search_count") + noHTML(searchParameters.getSearchString()));
               }
             }
@@ -2329,10 +2332,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     /**
      * @return how many total nodes match the search string
      */
-    private int getNumMatches(String searchString) {
+    private int getNumMatches(String searchString, Pattern regexP) {
       final List<DefaultMutableTreeNode> searchNodes = configureTree.getSearchNodes((DefaultMutableTreeNode)configureTree.getModel().getRoot());
-      // FIXME: should regex be passed here too ?
-      return (int) searchNodes.stream().filter(node -> checkNode(node, searchString, regexPattern)).count();
+      return (int) searchNodes.stream().filter(node -> checkNode(node, searchString, regexP)).count();
     }
 
 
