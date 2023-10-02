@@ -141,6 +141,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 /**
@@ -2090,6 +2091,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
     private final ConfigureTree configureTree;
     private final SearchParameters searchParameters;
+    private Pattern regexPattern;
 
     /**
      * Constructs a new {@link SearchAction}
@@ -2176,11 +2178,19 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             ConfigureTree.chat(Resources.getString("Editor.search_all_off"));
           }
 
-          if (!searchParameters.getSearchString().isEmpty() && (!searchParameters.isMatchRegex() || isValidRegex(searchParameters.getSearchString()))) {
+          if (!searchParameters.getSearchString().isEmpty()) {
             if (anyChanges) {
-              // Unless we're just continuing to the next match in an existing search, compute & display hit count
-              final int matches = getNumMatches(searchParameters.getSearchString());
-              chat(matches + " " + Resources.getString("Editor.search_count") + noHTML(searchParameters.getSearchString()));
+              boolean regexError = Boolean.FALSE;
+              // Unless we're just continuing to the next match in an existing search, setup.
+              if (searchParameters.isMatchRegex()) {
+                regexPattern = setupRegexSearch(searchParameters.getSearchString());
+                regexError = regexPattern == null;
+              }
+              if (!regexError) {
+                // Compute & display hit count
+                final int matches = getNumMatches(searchParameters.getSearchString());
+                chat(matches + " " + Resources.getString("Editor.search_count") + noHTML(searchParameters.getSearchString()));
+              }
             }
 
             // Find first match
@@ -2293,7 +2303,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             .orElse(-1);
       }
 
-      final Predicate<DefaultMutableTreeNode> nodeMatchesSearchString = node -> checkNode(node, searchString);
+      final Predicate<DefaultMutableTreeNode> nodeMatchesSearchString = node -> checkNode(node, searchString, regexPattern);
 
       final DefaultMutableTreeNode foundNode =
         searchNodes
@@ -2321,21 +2331,23 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
      */
     private int getNumMatches(String searchString) {
       final List<DefaultMutableTreeNode> searchNodes = configureTree.getSearchNodes((DefaultMutableTreeNode)configureTree.getModel().getRoot());
-      return (int) searchNodes.stream().filter(node -> checkNode(node, searchString)).count();
+      // FIXME: should regex be passed here too ?
+      return (int) searchNodes.stream().filter(node -> checkNode(node, searchString, regexPattern)).count();
     }
 
 
     /**
      * @param st - Search target (usually Decorator or AbstractConfigurable)
      * @param searchString - our search string
+     *  @param p - regex Pattern (has priority over searchString unless null)
      * @return true if the node matches our searchString based on search configuration ("match" checkboxes)
      */
-    private boolean checkSearchTarget(SearchTarget st, String searchString) {
+    private boolean checkSearchTarget(SearchTarget st, String searchString, Pattern p) {
       if (searchParameters.isMatchExpressions()) {
         final List<String> exps = st.getExpressionList();
         if (exps != null) {
           for (final String s : exps) {
-            if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
+            if (!StringUtils.isEmpty(s) && checkString(s, searchString, p)) {
               return true;
             }
           }
@@ -2346,7 +2358,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         final List<String> props = st.getPropertyList();
         if (props != null) {
           for (final String s : props) {
-            if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
+            if (!StringUtils.isEmpty(s) && checkString(s, searchString, p)) {
               return true;
             }
           }
@@ -2359,7 +2371,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           for (final NamedKeyStroke k : keys) {
             if (k != null) {
               final String s = k.isNamed() ? k.getName() : KeyNamer.getKeyString(k.getStroke());
-              if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
+              if (!StringUtils.isEmpty(s) && checkString(s, searchString, regexPattern)) {
                 return true;
               }
             }
@@ -2371,7 +2383,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         final List<String> menus = st.getMenuTextList();
         if (menus != null) {
           for (final String s : menus) {
-            if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
+            if (!StringUtils.isEmpty(s) && checkString(s, searchString, regexPattern)) {
               return true;
             }
           }
@@ -2382,7 +2394,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         final List<String> msgs = st.getFormattedStringList();
         if (msgs != null) {
           for (final String s : msgs) {
-            if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
+            if (!StringUtils.isEmpty(s) && checkString(s, searchString, regexPattern)) {
               return true;
             }
           }
@@ -2395,21 +2407,22 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     /**
      * @param node - any node of our module tree
      * @param searchString - our search string
+     * @param regexP - Regex pattern (used if not-null)
      * @return true if the node matches our searchString based on search configuration ("match" checkboxes)
      */
-    private boolean checkNode(DefaultMutableTreeNode node, String searchString) {
+    private boolean checkNode(DefaultMutableTreeNode node, String searchString, Pattern regexP) {
       final Configurable c = (Configurable) node.getUserObject();
 
       if (searchParameters.isMatchNames() || !searchParameters.isMatchAdvanced()) {
         final String objectName = c.getConfigureName();
-        if (objectName != null && checkString(objectName, searchString)) {
+        if (objectName != null && checkString(objectName, searchString, regexP)) {
           return true;
         }
       }
 
       if (searchParameters.isMatchTypes() || !searchParameters.isMatchAdvanced()) {
         final String className = getConfigureName(c.getClass());
-        if ((className != null) && checkString(className, searchString)) {
+        if ((className != null) && checkString(className, searchString, regexP)) {
           return true;
         }
       }
@@ -2417,7 +2430,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       if ((searchParameters.isMatchNames() && searchParameters.isMatchTypes()) || !searchParameters.isMatchAdvanced()) {
         if (c instanceof ComponentDescription) {
           final String desc = ((ComponentDescription) c).getDescription();
-          if ((desc != null) && checkString(desc, searchString)) {
+          if ((desc != null) && checkString(desc, searchString, regexP)) {
             return true;
           }
         }
@@ -2443,7 +2456,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         protoskip = true;
       }
       else if (c instanceof SearchTarget) {
-        return checkSearchTarget((SearchTarget) c, searchString);
+        return checkSearchTarget((SearchTarget) c, searchString, regexPattern);
       }
       else {
         return false;
@@ -2466,14 +2479,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           if (searchParameters.isMatchTraits()) {
             if (piece instanceof EditablePiece) {
               final String desc = ((EditablePiece) piece).getDescription();
-              if ((desc != null) && checkString(desc, searchString)) {
+              if ((desc != null) && checkString(desc, searchString, regexPattern)) {
                 return true;
               }
             }
           }
 
           if (piece instanceof SearchTarget) {
-            if (checkSearchTarget((SearchTarget)piece, searchString)) {
+            if (checkSearchTarget((SearchTarget)piece, searchString, regexPattern)) {
               return true;
             }
           }
@@ -2525,7 +2538,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
 
     private void hitCheck(String s, String searchString, String matchString, String item, String desc, String show, TargetProgress progress) {
-      if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
+      if (!StringUtils.isEmpty(s) && checkString(s, searchString, regexPattern)) {
         progress.checkShowTrait(matchString, item, desc);
         chat("&nbsp;&nbsp;&nbsp;&nbsp;{" + show + "} " + noHTML(s)); //NON-NLS
       }
@@ -2638,7 +2651,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           progress.startNewTrait();    // A new trait, so reset our "trait progress".
 
           if (searchParameters.isMatchTraits()) {
-            if ((desc != null) && checkString(desc, searchString)) {
+            if ((desc != null) && checkString(desc, searchString, regexPattern)) {
               progress.checkShowTrait(matchString, "Trait", desc); //NON-NLS
             }
           }
@@ -2654,38 +2667,60 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
     }
 
-    private boolean isValidRegex(String searchString) { // avoid exceptions by checking the Regex before use
-      try {
-        return "".matches(searchString) || true;
-      }
-      catch (java.util.regex.PatternSyntaxException e) {
-        chat("Search string is not a valid Regular Expression: " + e.getMessage()); //NON-NLS
-        return false;
-      }
-    }
-
     /**
      * Checks a single string against our search parameters
      * @param target - string to check
      * @param searchString - our search string
+     * @param regexP - regex pattern that replaces search string, unless null
      * @return true if this is a match based on our "matchCase" & "matchRegex"checkboxes.
      */
-    private boolean checkString(String target, String searchString) {
-      if (searchParameters.isMatchRegex()) {
-        if (searchParameters.isMatchCase()) {
-          return target.matches(searchString);
-        }
-        else {
-          return target.toLowerCase().matches(searchString.toLowerCase());
-        }
-      }
-      else {
+    private boolean checkString(String target, String searchString, Pattern regexP) {
+      if (regexP == null) {
         if (searchParameters.isMatchCase()) {
           return target.contains(searchString);
         }
         else {
           return target.toLowerCase().contains(searchString.toLowerCase());
         }
+      }
+      else {
+        // Regex check on  single string
+        // Match on pattern that has been established when search was intialised
+        return regexP.matcher(target).matches();
+      }
+    }
+
+    /**
+     * Initialise a Pattern for subsequent Matcher / Matches
+     * @param searchString - Regex search string
+     * @return Pattern for searches, with an applied default
+     */
+    private Pattern setupRegexSearch(String searchString) {
+
+
+      chat("You have specified a Regular Expression search!"); // NON-NLS
+
+
+      //  If the string contains no Regex operands, establish a useful default
+      // FIXME: this test may be insufficient - it curtails escape characters unless other Regex ops are specified.
+      if (!searchString.matches("\\.|\\+|\\*|\\?|\\^|\\$|\\(.*\\)|\\[.*\\]|\\{.*\\}|\\|")) {
+        try {
+          final Pattern wordPattern = Pattern.compile(".*\b" + searchString + "\b.*"); // test
+          chat("No Regex special characters detected; a word boundary search will be performed."); // NON-NLS
+          searchString = ".*\b" + searchString + "\b.*";
+        }
+        catch (java.util.regex.PatternSyntaxException e) {
+        }
+      }
+
+      if (!searchParameters.isMatchCase()) searchString = "(?i)" + searchString;   // case insensitive?
+
+      try {
+        return Pattern.compile(searchString);
+      }
+      catch (java.util.regex.PatternSyntaxException e) {
+        chat("Search string is not a valid Regular Expression: " + e.getMessage()); //NON-NLS
+        return null;
       }
     }
   }
