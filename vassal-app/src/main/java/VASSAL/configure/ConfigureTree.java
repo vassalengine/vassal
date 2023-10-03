@@ -2677,7 +2677,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
      * @return true if this is a match based on our "matchCase" & "matchRegex"checkboxes.
      */
     private boolean checkString(String target, String searchString, Pattern regexP) {
-      if (regexP == null) {
+      if (regexPattern == null) {
         if (searchParameters.isMatchCase()) {
           return target.contains(searchString);
         }
@@ -2687,8 +2687,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
       else {
         // Regex check on  single string
-        // Match on pattern that has been established when search was intialised
-        return regexP.matcher(target).matches();
+        // Match on pattern that has been established when search was initialized
+        chat("matching on " + target);
+        return regexPattern.matcher(target).matches();
       }
     }
 
@@ -2705,6 +2706,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
       //  If the string contains no Regex operands, establish a useful default
       // FIXME: this test may be insufficient - it curtails escape characters unless other Regex ops are specified.
+
       if (!searchString.matches("\\.|\\+|\\*|\\?|\\^|\\$|\\(.*\\)|\\[.*\\]|\\{.*\\}|\\|")) {
         try {
           Pattern.compile(".*\b" + searchString + "\b.*"); // test
