@@ -2677,7 +2677,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
      * @return true if this is a match based on our "matchCase" & "matchRegex"checkboxes.
      */
     private boolean checkString(String target, String searchString, Pattern regexP) {
-      if (regexPattern == null) {
+      if (regexP == null) {
         if (searchParameters.isMatchCase()) {
           return target.contains(searchString);
         }
