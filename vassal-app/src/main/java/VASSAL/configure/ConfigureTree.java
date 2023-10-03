@@ -2691,9 +2691,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         // Regex check on  single string
         // Match on pattern that has been established when search was initialized
         chat("regexP=" + regexP.toString() + "regexPattern=" + regexPattern.toString());
-        Boolean testregexP = regexP.matcher(target).matches();
+        final Boolean testregexP = regexP.matcher(target).matches();
         if (testregexP) chat("regexP=" + regexP.toString() + "regexPattern=" + regexPattern.toString());
-        Boolean testregexPattern = regexP.matcher(target).matches();
+        final Boolean testregexPattern = regexP.matcher(target).matches();
         if (testregexPattern) chat("regexP=" + regexP.toString() + "regexPattern=" + regexPattern.toString());
         return regexP.matcher(target).matches();
       }
