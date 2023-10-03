@@ -23,6 +23,7 @@
       "bug_fixes": [
         { "num": 12781, "desc": "Fix bad translation keys for Attachment, Deselect, Send To Location traits" },
         { "num": 12729, "desc": "Set Global Property to again record old GP value in oldValues for reporting" },
+        { "num": 12773, "desc": "Disabled Toolbar Button icons should not appear in unused images list" },
         { "num": 12770, "desc": "Prevent NPE when escaping from GKC trait after adding 'Set Dynamic Properties' entries" }
       ],
       "other_improvements": [

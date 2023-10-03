@@ -4,6 +4,7 @@
     traits
 * 12729: Set Global Property to again record old GP value in oldValues for
     reporting
+* 12773: Disabled Toolbar Button icons should not appear in unused images list
 * 12770: Prevent NPE when escaping from GKC trait after adding 'Set Dynamic
     Properties' entries
 
