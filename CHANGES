@@ -1,5 +1,7 @@
 3.7.2 - ???
 
+* 12781: Fix bad translation keys for Attachment, Deselect, Send To Location
+    traits
 * 12729: Set Global Property to again record old GP value in oldValues for
     reporting
 
