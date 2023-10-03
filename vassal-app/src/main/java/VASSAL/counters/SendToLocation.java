@@ -102,13 +102,13 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
   };
   // Actual valued recorded for Destination option
   public static final String[] DEST_KEYS = {
-    Resources.getString("Editor.SendToLocation.grid_location_on_selected_map"),
-    Resources.getString("Editor.SendToLocation.location_on_selected_map"),
-    Resources.getString("Editor.SendToLocation.zone_on_selected_map"),
-    Resources.getString("Editor.SendToLocation.region_on_selected_map"),
-    Resources.getString("Editor.SendToLocation.another_counter_selected_by_properties_any"),
-    Resources.getString("Editor.SendToLocation.another_counter_selected_by_properties_cycle"),
-    Resources.getString("Editor.SendToLocation.another_counter_selected_by_properties_nearest")
+    "Editor.SendToLocation.grid_location_on_selected_map",
+    "Editor.SendToLocation.location_on_selected_map",
+    "Editor.SendToLocation.zone_on_selected_map",
+    "Editor.SendToLocation.region_on_selected_map",
+    "Editor.SendToLocation.another_counter_selected_by_properties_any",
+    "Editor.SendToLocation.another_counter_selected_by_properties_cycle",
+    "Editor.SendToLocation.another_counter_selected_by_properties_nearest"
   };
 
   protected KeyCommand[] command;
