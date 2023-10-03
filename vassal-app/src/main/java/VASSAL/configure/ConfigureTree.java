@@ -2335,6 +2335,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
      */
     private int getNumMatches(String searchString, Pattern regexP) {
       final List<DefaultMutableTreeNode> searchNodes = configureTree.getSearchNodes((DefaultMutableTreeNode)configureTree.getModel().getRoot());
+      chat("nodes=" + searchNodes.stream().count());
       return (int) searchNodes.stream().filter(node -> checkNode(node, searchString, regexP)).count();
     }
 
@@ -2689,6 +2690,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       else {
         // Regex check on  single string
         // Match on pattern that has been established when search was initialized
+        chat("regexP=" + regexP.toString() + "regexPattern=" + regexPattern.toString());
+        Boolean testregexP = regexP.matcher(target).matches();
+        if (testregexP) chat("regexP=" + regexP.toString() + "regexPattern=" + regexPattern.toString());
+        Boolean testregexPattern = regexP.matcher(target).matches();
+        if (testregexPattern) chat("regexP=" + regexP.toString() + "regexPattern=" + regexPattern.toString());
         return regexP.matcher(target).matches();
       }
     }
@@ -2707,11 +2713,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       //  If the string contains no Regex operands, establish a useful default
       // FIXME: this test may be insufficient - it curtails escape characters unless other Regex ops are specified.
 
-      if (!searchString.matches("\\.|\\+|\\*|\\?|\\^|\\$|\\(.*\\)|\\[.*\\]|\\{.*\\}|\\|")) {
+      if (!searchString.matches("\\*|\\.|\\*|\\?|\\^|\\$|\\(.*\\)|\\[.*\\]|\\{.*\\}|\\|")) {
         try {
-          Pattern.compile(".*\b" + searchString + "\b.*"); // test
+          Pattern.compile(".*\\b" + searchString + "\\b.*"); // test
           chat("No Regex special characters detected; a word boundary search will be performed."); // NON-NLS
-          searchString = ".*\b" + searchString + "\b.*";
+          searchString = ".*\\b" + searchString + "\\b.*";
         }
         catch (java.util.regex.PatternSyntaxException e) {
         }
