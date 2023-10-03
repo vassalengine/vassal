@@ -4,6 +4,8 @@
     traits
 * 12729: Set Global Property to again record old GP value in oldValues for
     reporting
+* 12770: Prevent NPE when escaping from GKC trait after adding 'Set Dynamic
+    Properties' entries
 
 3.7.1 - 20 September 2023
 
