@@ -2707,11 +2707,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       //  If the string contains no Regex operands, establish a useful default
       // FIXME: this test may be insufficient - it curtails escape characters unless other Regex ops are specified.
 
-      if (!searchString.matches("\\*|\\.|\\*|\\?|\\^|\\$|\\(.*\\)|\\[.*\\]|\\{.*\\}|\\|")) {
+      if (!searchString.matches("\\*|\\.|\\?|\\^|\\$|\\(.*\\)|\\[.*\\]|\\{.*\\}|\\|")) {
         try {
-          Pattern.compile(".*\\b" + searchString + "\\b.*"); // test
-          chat("No Regex special characters detected; a word boundary search will be performed."); // NON-NLS
-          searchString = ".*\\b" + searchString + "\\b.*";
+          Pattern.compile(".*\\b" + searchString + "?"); // test
+          chat("No Regex special characters detected; will search for phrase starting with the search string."); // NON-NLS
+          searchString = ".*\\b" + searchString + "?";
         }
         catch (java.util.regex.PatternSyntaxException e) {
         }
