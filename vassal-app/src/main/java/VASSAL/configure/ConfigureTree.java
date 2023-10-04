@@ -2190,10 +2190,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
                 regexPattern = null;
               }
               if (!regexError) {
-                // Compute & display hit count
+                // Compute & display hit count as heading, no indent
                 final int matches = getNumMatches(searchParameters.getSearchString());
                 // FIXME: For some reason leading spaces now being stripped from Resource strings, hence added here
-                chat("<b>" + (matches == 0 ? "~" : "!") +  matches + " " + (regexPattern == null ? Resources.getString("Editor.search_count") : Resources.getString("Editor.search_countRegex")) + ":</b> " + noHTML(searchParameters.getSearchString()));
+                chatter.show("<b>" +  matches + " " + (regexPattern == null ? Resources.getString("Editor.search_count") : Resources.getString("Editor.search_countRegex")) + ":</b> " + noHTML(regexPattern == null ? searchParameters.getSearchString() : regexPattern.toString()));
               }
             }
 
@@ -2211,7 +2211,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             }
             else {
               // No need to display this on first pass, as we already said zero found.
-              if (!anyChanges) chat(Resources.getString("Editor.search_none_found") + noHTML(searchParameters.getSearchString()));
+              if (!anyChanges) chat(regexPattern == null ? Resources.getString("Editor.search_none_found") + noHTML(searchParameters.getSearchString()) : Resources.getString("Editor.search_noRegex_match") + noHTML(regexPattern.toString()));
             }
           }
         });
@@ -2719,7 +2719,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         return Pattern.compile(regexSearchString);
       }
       catch (java.util.regex.PatternSyntaxException e) {
-        chat("~Search string is not a valid Regular Expression: " + noHTML(e.getMessage())); //NON-NLS
+        chat("Search string is not a valid Regular Expression: " + noHTML(e.getMessage())); //NON-NLS
         return null;
       }
     }
