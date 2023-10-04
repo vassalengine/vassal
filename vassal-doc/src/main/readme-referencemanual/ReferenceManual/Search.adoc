@@ -11,6 +11,8 @@ VASSAL's Module Editor has a powerful Search facility to find components and pie
 
 The default search is to search for everything, but the Advanced Search options can be used to limit the type of search performed.
 
+Note that a search will continue from the last item found and will wrap-around, until you modify the search criteria. This applies even across a restart of editing sessions.
+
 '''''
 
 ==== Editing Modules

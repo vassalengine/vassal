@@ -2192,7 +2192,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
               if (!regexError) {
                 // Compute & display hit count
                 final int matches = getNumMatches(searchParameters.getSearchString());
-                chat(matches + (regexPattern == null ? Resources.getString("Editor.search_count") : Resources.getString("Editor.search_countRegex")) + noHTML(searchParameters.getSearchString()));
+                // FIXME: For some reason leading spaces now being stripped from Resource strings, hence added here
+                chat("<b>" + (matches == 0 ? "~" : "!") +  matches + " " + (regexPattern == null ? Resources.getString("Editor.search_count") : Resources.getString("Editor.search_countRegex")) + ":</b> " + noHTML(searchParameters.getSearchString()));
               }
             }
 
@@ -2209,7 +2210,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
               }
             }
             else {
-              chat(Resources.getString("Editor.search_none_found") + noHTML(searchParameters.getSearchString()));
+              // No need to display this on first pass, as we already said zero found.
+              if (!anyChanges) chat(Resources.getString("Editor.search_none_found") + noHTML(searchParameters.getSearchString()));
             }
           }
         });
@@ -2334,7 +2336,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
      */
     private int getNumMatches(String searchString) {
       final List<DefaultMutableTreeNode> searchNodes = configureTree.getSearchNodes((DefaultMutableTreeNode)configureTree.getModel().getRoot());
-      chat("found nodes=" + searchNodes.stream().filter(node -> checkNode(node, searchString)).count() + "/" + searchNodes.stream().count());
       return (int) searchNodes.stream().filter(node -> checkNode(node, searchString)).count();
     }
 
@@ -2706,7 +2707,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         try {
           regexSearchString = ".*\\b" + searchString + "?";
           Pattern.compile(regexSearchString); // test
-          chat(Resources.getString("Editor.search_regexDefault" + noHTML(searchString))); // NON-NLS
+          chat(Resources.getString("Editor.search_regexDefault") + noHTML(searchString)); // NON-NLS
         }
         catch (java.util.regex.PatternSyntaxException e) {
           // tolerate the exception and carry on
@@ -2718,7 +2719,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         return Pattern.compile(regexSearchString);
       }
       catch (java.util.regex.PatternSyntaxException e) {
-        chat("Search string is not a valid Regular Expression: " + noHTML(e.getMessage())); //NON-NLS
+        chat("~Search string is not a valid Regular Expression: " + noHTML(e.getMessage())); //NON-NLS
         return null;
       }
     }
