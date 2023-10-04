@@ -141,6 +141,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
@@ -2687,9 +2688,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       else {
         // Regex check on  single string
         // Match on pattern that has been established when search was initialized
-        final Boolean testregexPattern = regexPattern.matcher(target).matches();
-        if (testregexPattern) chat("regexPattern=" + regexPattern.toString());
-        return regexPattern.matcher(target).matches();
+        final boolean testRegexPattern = regexPattern.matcher(target).find();
+        final Matcher m = regexPattern.matcher(target);
+        final boolean found = m.find();
+        if (testRegexPattern) chat("Matched on" + regexPattern.toString());
+        if (found) chat("standalone Matcher worked");
+        return regexPattern.matcher(target).find();
       }
     }
 
@@ -2700,10 +2704,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
      */
     private Pattern setupRegexSearch(String searchString) {
 
-      final String defaultRegex1;
-      String defaultRegex;
-      final String defaultRegex2;
-      String defaultRegex3;
+      final String caseModifier = (!searchParameters.isMatchCase() ? "" : "(?i)");
+      String regexSearchString = caseModifier + searchString;
 
       chat("You have specified a Regular Expression search!"); // NON-NLS
 
@@ -2713,25 +2715,17 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
       if (!searchString.matches("(?i)\\[a-z]|\\*|\\.|\\?|\\^|\\$|\\(.*\\)|\\[.*\\]|\\{.*\\}|\\|")) {
         try {
-          Pattern.compile(".*\\b" + searchString + "?"); // test
+          regexSearchString = ".*\\b" + searchString + "?";
+          Pattern.compile(regexSearchString); // test
           chat("No Regex special characters detected; will search for phrase starting with the search string."); // NON-NLS
-          defaultRegex = ".*\\b";
-          defaultRegex3 = "?";
         }
         catch (java.util.regex.PatternSyntaxException e) {
-          defaultRegex = "";
-          defaultRegex3 =  "";
+          // tolerate the exception and carry on
         }
       }
-      else {
-        defaultRegex = "";
-        defaultRegex3 =  "";
-      }
 
-      defaultRegex2 = defaultRegex3;
-      defaultRegex1 = defaultRegex;
       try {
-        return Pattern.compile(!searchParameters.isMatchCase() ? defaultRegex1 +  searchString + defaultRegex2 : "(?i)" + defaultRegex1 + searchString + defaultRegex2);
+        return Pattern.compile(regexSearchString);
       }
       catch (java.util.regex.PatternSyntaxException e) {
         chat("Search string is not a valid Regular Expression: " + e.getMessage()); //NON-NLS
