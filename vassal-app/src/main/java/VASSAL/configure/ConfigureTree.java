@@ -2700,6 +2700,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
      */
     private Pattern setupRegexSearch(String searchString) {
 
+      final String defaultRegex1;
+      String defaultRegex;
+      final String defaultRegex2;
+      String defaultRegex3;
 
       chat("You have specified a Regular Expression search!"); // NON-NLS
 
@@ -2707,20 +2711,27 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       //  If the string contains no Regex operands, establish a useful default
       // FIXME: this test may be insufficient - it curtails escape characters unless other Regex ops are specified.
 
-      if (!searchString.matches("\\*|\\.|\\?|\\^|\\$|\\(.*\\)|\\[.*\\]|\\{.*\\}|\\|")) {
+      if (!searchString.matches("(?i)\\[a-z]|\\*|\\.|\\?|\\^|\\$|\\(.*\\)|\\[.*\\]|\\{.*\\}|\\|")) {
         try {
           Pattern.compile(".*\\b" + searchString + "?"); // test
           chat("No Regex special characters detected; will search for phrase starting with the search string."); // NON-NLS
-          searchString = ".*\\b" + searchString + "?";
+          defaultRegex = ".*\\b";
+          defaultRegex3 = "?";
         }
         catch (java.util.regex.PatternSyntaxException e) {
+          defaultRegex = "";
+          defaultRegex3 =  "";
         }
       }
+      else {
+        defaultRegex = "";
+        defaultRegex3 =  "";
+      }
 
-      if (!searchParameters.isMatchCase()) searchString = "(?i)" + searchString;   // case insensitive?
-
+      defaultRegex2 = defaultRegex3;
+      defaultRegex1 = defaultRegex;
       try {
-        return Pattern.compile(searchString);
+        return Pattern.compile(!searchParameters.isMatchCase() ? defaultRegex1 +  searchString + defaultRegex2 : "(?i)" + defaultRegex1 + searchString + defaultRegex2);
       }
       catch (java.util.regex.PatternSyntaxException e) {
         chat("Search string is not a valid Regular Expression: " + e.getMessage()); //NON-NLS
