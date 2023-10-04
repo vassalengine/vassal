@@ -77,6 +77,7 @@ VERSION_50:=$(shell echo "$(VERSION)" | cut -c1-50)
 MVN:=./mvnw
 
 DMG:=$(DISTDIR)/dmg/libdmg-hfsplus/build/dmg/dmg
+LIPO:=$(DISTDIR)/lipo/lipo_linux_amd64
 
 NSIS:=makensis
 LAUNCH4J:=$(DISTDIR)/launch4j/launch4j/launch4j
@@ -151,7 +152,7 @@ $(TMPDIR)/macos-universal-$(VERSION)-build/VASSAL.app: $(TMPDIR)/macos-x86_64-$(
 	find $@ -type f | while read f ; do \
 		if file "$${f/universal/aarch64}" | grep 'Mach-O.\+arm64' ; then \
 			echo "$$f" ; \
-			$(DISTDIR)/lipo/lipo_linux_amd64 -create -output "$$f" "$${f/universal/x86_64}" "$${f/universal/aarch64}" ; \
+			$(LIPO) -create -output "$$f" "$${f/universal/x86_64}" "$${f/universal/aarch64}" ; \
 		fi ; \
 	done
 
