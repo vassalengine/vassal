@@ -2193,7 +2193,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
                 // Compute & display hit count as heading, no indent
                 final int matches = getNumMatches(searchParameters.getSearchString());
                 // FIXME: For some reason leading spaces now being stripped from Resource strings, hence added here
-                chatter.show("<b>" +  matches + " " + (regexPattern == null ? Resources.getString("Editor.search_count") : Resources.getString("Editor.search_countRegex")) + ":</b> " + noHTML(regexPattern == null ? searchParameters.getSearchString() : regexPattern.toString()));
+                chatter.show(matches + " " + (regexPattern == null ? Resources.getString("Editor.search_count") : Resources.getString("Editor.search_countRegex")) + ": " + noHTML(regexPattern == null ? searchParameters.getSearchString() : regexPattern.toString()));
               }
             }
 
@@ -2702,11 +2702,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
       //  If the string contains no Regex operands, establish a useful default
       // FIXME: escape characters will be interpreted as regex, bypassing the default. This may be ok anyway.
-
       if (!searchString.matches("\\[a-zA-Z]|\\*|\\.|\\?|\\^|\\$|\\(.*?\\)|\\[.*?\\]|\\{.*?\\}|\\|")) {
         try {
-          regexSearchString = ".*\\b" + searchString + "?";
-          Pattern.compile(regexSearchString); // test
+          Pattern.compile(".*\\b" + regexSearchString + ".*?"); // test default
+          regexSearchString = ".*\\b" + regexSearchString + ".*?"; // accept default
           chat(Resources.getString("Editor.search_regexDefault") + noHTML(searchString)); // NON-NLS
         }
         catch (java.util.regex.PatternSyntaxException e) {
