@@ -2185,7 +2185,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
               if (searchParameters.isMatchRegex()) {
                 regexPattern = setupRegexSearch(searchParameters.getSearchString());
                 regexError = regexPattern == null;
-                chat("regexPattern=" + regexPattern.toString() + " regexError= " + regexError);
               }
               else {
                 regexPattern = null;
@@ -2193,7 +2192,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
               if (!regexError) {
                 // Compute & display hit count
                 final int matches = getNumMatches(searchParameters.getSearchString());
-                chat(matches + " " + Resources.getString("Editor.search_count") + noHTML(searchParameters.getSearchString()));
+                chat(matches + (regexPattern == null ? Resources.getString("Editor.search_count") : Resources.getString("Editor.search_countRegex")) + noHTML(searchParameters.getSearchString()));
               }
             }
 
@@ -2685,11 +2684,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         }
       }
       else {
-        // Regex check on  single string
-        // Match on pattern that has been established when search was initialized
-        final Boolean testregexPattern = regexPattern.matcher(target).matches();
-        if (testregexPattern) chat("regexPattern=" + regexPattern.toString());
-        return regexPattern.matcher(target).matches();
+        // Regular Expression check - match on pattern established in setupRegexPattern()
+        return regexPattern.matcher(target).find();
       }
     }
 
@@ -2700,41 +2696,29 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
      */
     private Pattern setupRegexSearch(String searchString) {
 
-      final String defaultRegex1;
-      String defaultRegex;
-      final String defaultRegex2;
-      String defaultRegex3;
-
-      chat("You have specified a Regular Expression search!"); // NON-NLS
-
+      final String caseModifier = (!searchParameters.isMatchCase() ? "" : "(?i)");
+      String regexSearchString = caseModifier + searchString;
 
       //  If the string contains no Regex operands, establish a useful default
-      // FIXME: this test may be insufficient - it curtails escape characters unless other Regex ops are specified.
+      // FIXME: escape characters will be interpreted as regex, bypassing the default. This may be ok anyway.
 
-      if (!searchString.matches("(?i)\\[a-z]|\\*|\\.|\\?|\\^|\\$|\\(.*\\)|\\[.*\\]|\\{.*\\}|\\|")) {
+      if (!searchString.matches("\\[a-zA-Z]|\\*|\\.|\\?|\\^|\\$|\\(.*?\\)|\\[.*?\\]|\\{.*?\\}|\\|")) {
         try {
-          Pattern.compile(".*\\b" + searchString + "?"); // test
-          chat("No Regex special characters detected; will search for phrase starting with the search string."); // NON-NLS
-          defaultRegex = ".*\\b";
-          defaultRegex3 = "?";
+          regexSearchString = ".*\\b" + searchString + "?";
+          Pattern.compile(regexSearchString); // test
+          chat(Resources.getString("Editor.search_regexDefault" + noHTML(searchString))); // NON-NLS
         }
         catch (java.util.regex.PatternSyntaxException e) {
-          defaultRegex = "";
-          defaultRegex3 =  "";
+          // tolerate the exception and carry on
+          logger.warn("Pattern Syntax Error in default Editor Search: " + noHTML(e.getMessage())); //NON-NLS
         }
       }
-      else {
-        defaultRegex = "";
-        defaultRegex3 =  "";
-      }
 
-      defaultRegex2 = defaultRegex3;
-      defaultRegex1 = defaultRegex;
       try {
-        return Pattern.compile(!searchParameters.isMatchCase() ? defaultRegex1 +  searchString + defaultRegex2 : "(?i)" + defaultRegex1 + searchString + defaultRegex2);
+        return Pattern.compile(regexSearchString);
       }
       catch (java.util.regex.PatternSyntaxException e) {
-        chat("Search string is not a valid Regular Expression: " + e.getMessage()); //NON-NLS
+        chat("Search string is not a valid Regular Expression: " + noHTML(e.getMessage())); //NON-NLS
         return null;
       }
     }
