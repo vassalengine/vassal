@@ -20,4 +20,4 @@ else
 fi
 
 # fire it up
-exec arch -$ARCH Contents/MacOS/jre/bin/java -classpath Contents/Resources/Java/Vengine.jar  -Xdock:name=VASSAL -Xdock:icon=Contents/Resources/VASSAL.icns VASSAL.launch.ModuleManager "${ARGS[@]}"
+exec arch -$ARCH Contents/MacOS/jre/bin/java -classpath Contents/Resources/Java/Vengine.jar -Xdock:name=VASSAL -Xdock:icon=Contents/Resources/VASSAL.icns VASSAL.launch.ModuleManager "${ARGS[@]}"
