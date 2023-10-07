@@ -77,6 +77,7 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
 import javax.swing.DropMode;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -2148,7 +2149,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
         // build JList model
         // searchParameters.getSearchType()
-        final JList searchTypeList = new JList(new String[]{Resources.getString("Editor.search_optNormal"),
+        final JList<DefaultListModel> searchTypeList = new JList(new String[]{Resources.getString("Editor.search_optNormal"),
                 Resources.getString("Editor.search_optWord"),
                 Resources.getString("Editor.search_optRegex")});
 
@@ -2723,10 +2724,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
      */
     private Pattern setupRegexSearch(String searchString) {
 
-      final String caseModifier = (!searchParameters.isMatchCase() ? "" : "(?i)");
+      final String caseModifier = (searchParameters.isMatchCase() ? "" : "(?i)");
 
       // regex wrap-around supplied search string
-      if (searchParameters.getSearchType() == searchParameters.TYPE_WORD) {
+      if (searchParameters.getSearchType() == SearchParameters.TYPE_WORD) {
         try {
           // matching on whatever is provided, starting on a word boundary
           return Pattern.compile(caseModifier + ".*\\b\\Q" + searchString + "\\E.*?");
