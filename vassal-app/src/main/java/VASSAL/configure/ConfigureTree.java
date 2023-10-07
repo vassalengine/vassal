@@ -2149,12 +2149,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
         // build JList model
         // searchParameters.getSearchType()
-        DefaultListModel<String> listModel = new DefaultListModel<>();
+        final DefaultListModel<String> listModel = new DefaultListModel<>();
         listModel.addElement(Resources.getString("Editor.search_optNormal"));
         listModel.addElement(Resources.getString("Editor.search_optWord"));
         listModel.addElement(Resources.getString("Editor.search_optRegex"));
 
-        JList<String> searchTypeList = new JList<>(listModel);
+        final JList<String> searchTypeList = new JList<>(listModel);
 
         final JCheckBox sensitive = new JCheckBox(Resources.getString("Editor.search_case"), searchParameters.isMatchCase());
         final JCheckBox advanced  = new JCheckBox(Resources.getString("Editor.search_advanced"), searchParameters.isMatchAdvanced());
