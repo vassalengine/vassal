@@ -68,6 +68,7 @@ mkdir -p "$LIPODIR"
 pushd "$LIPODIR"
 
 wget https://github.com/konoui/lipo/releases/download/v${LIPOVER}/lipo_linux_amd64
+chmod a+x lipo_linux_amd64
 
 popd
 
