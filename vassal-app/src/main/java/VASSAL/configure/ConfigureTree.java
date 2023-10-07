@@ -77,7 +77,6 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.DefaultListModel;
 import javax.swing.DropMode;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -86,7 +85,6 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -200,7 +198,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected JDialog searchDialog;
   protected JTextField searchField;
-  protected JList searchType;
+  protected JComboBox<String> searchTypeBox;
   protected JCheckBox searchAdvanced;
 
   private final SearchParameters searchParameters;
@@ -323,16 +321,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected void setSearchField(JTextField searchField) {
     this.searchField = searchField;
-  }
-
-  // FIXME: Remove
-  // protected void setSearchTypeList(JList searchTypeList) {
-  //  this.searchTypeList = searchTypeList;
-  //
-  //}
-
-  protected void setSearchType(JList searchType) {
-    this.searchType = searchType;
   }
 
   protected void setSearchAdvanced(JCheckBox searchAdvanced) {
@@ -1946,11 +1934,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       return searchType;
     }
 
-    public void setSearchType(int searchType) {
-      this.searchType = searchType;
-      writePrefs();
-    }
-
     public boolean isMatchCase() {
       return matchCase;
     }
@@ -2114,6 +2097,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     private final ConfigureTree configureTree;
     private final SearchParameters searchParameters;
     private Pattern regexPattern;
+    private JComboBox searchTypeBox;
 
     /**
      * Constructs a new {@link SearchAction}
@@ -2147,14 +2131,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         configureTree.setSearchField(search);
         search.selectAll();
 
-        // build JList model
-        // searchParameters.getSearchType()
-        final DefaultListModel<String> listModel = new DefaultListModel<>();
-        listModel.addElement(Resources.getString("Editor.search_optNormal"));
-        listModel.addElement(Resources.getString("Editor.search_optWord"));
-        listModel.addElement(Resources.getString("Editor.search_optRegex"));
-
-        final JList<String> searchTypeList = new JList<>(listModel);
+        // build dropdown menu
+        searchTypeBox.addItem(Resources.getString("Editor.search_optNormal"));
+        searchTypeBox.addItem(Resources.getString("Editor.search_optWord"));
+        searchTypeBox.addItem(Resources.getString("Editor.search_optRegex"));
+        searchTypeBox.setSelectedIndex(searchParameters.getSearchType());
+        // searchTypeBox.addActionListener(e -> updateValue());
 
         final JCheckBox sensitive = new JCheckBox(Resources.getString("Editor.search_case"), searchParameters.isMatchCase());
         final JCheckBox advanced  = new JCheckBox(Resources.getString("Editor.search_advanced"), searchParameters.isMatchAdvanced());
@@ -2193,7 +2175,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         final JButton find = new JButton(Resources.getString("Editor.search_next"));
         find.addActionListener(e12 -> {
           final SearchParameters parametersSetInDialog =
-            new SearchParameters(search.getText(), searchTypeList.getSelectedIndex(), sensitive.isSelected(), names.isSelected(), types.isSelected(), true, traits.isSelected(), expressions.isSelected(), properties.isSelected(), keys.isSelected(), menus.isSelected(), messages.isSelected());
+            new SearchParameters(search.getText(), searchTypeBox.getSelectedIndex(), sensitive.isSelected(), names.isSelected(), types.isSelected(), true, traits.isSelected(), expressions.isSelected(), properties.isSelected(), keys.isSelected(), menus.isSelected(), messages.isSelected());
 
           final boolean anyChanges = !searchParameters.equals(parametersSetInDialog);
 
@@ -2212,7 +2194,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             if (anyChanges) {
               boolean regexError = Boolean.FALSE;
               // Unless we're just continuing to the next match in an existing search, setup.
-              if (searchParameters.getSearchType() != searchParameters.TYPE_NORMAL) {
+              if (searchParameters.getSearchType() != SearchParameters.TYPE_NORMAL) {
                 regexPattern = setupRegexSearch(searchParameters.getSearchString());
                 regexError = regexPattern == null;
               }
@@ -2258,7 +2240,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
         // top row
         panel.add(search);
-        panel.add(searchTypeList);
+
+        // search type row (dropdown)
+        panel.add(new JLabel((Resources.getString("Editor.searchTypeLabel"))));
+        panel.add(searchTypeBox);
+
 
         // options row
         panel.add(sensitive);
