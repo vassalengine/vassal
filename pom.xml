@@ -4,7 +4,7 @@
 
     <groupId>org.vassalengine</groupId>
     <artifactId>vassal-parent</artifactId>
-    <version>3.7.2-SNAPSHOT</version>
+    <version>3.7.2</version>
     <packaging>pom</packaging>
 
     <name>Vassal Engine</name>
@@ -101,7 +101,7 @@
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>10.12.3</version>
+                            <version>10.12.4</version>
                         </dependency>
                     </dependencies>
                 </plugin>

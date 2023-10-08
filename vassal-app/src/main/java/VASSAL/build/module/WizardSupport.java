@@ -191,6 +191,7 @@ public class WizardSupport {
       if (Boolean.TRUE.equals(showWizard) && g.shutDown()) {
         System.exit(0);
       }
+      g.setGameFileMode(GameModule.GameFileMode.NEW_GAME); // reset gameFile and title
       g.getPlayerWindow().setVisible(true);
     }
   }
@@ -519,6 +520,7 @@ public class WizardSupport {
     }
 
     protected void loadSetup(PredefinedSetup setup, final WizardController controller, final Map settings) {
+      final GameModule g = GameModule.getGameModule();
       try {
         new SavedGameLoader(controller, settings, new BufferedInputStream(setup.getSavedGameContents()), POST_PLAY_OFFLINE_WIZARD, true).start();
       }
@@ -526,6 +528,8 @@ public class WizardSupport {
       catch (IOException e1) {
         controller.setProblem(Resources.getString("WizardSupport.UnableToLoad"));
       }
+      // Predefined Scenarios are files too...
+      g.setGameFile(setup.getFileName(), GameModule.GameFileMode.LOADED_GAME);
     }
   }
 
@@ -712,6 +716,7 @@ public class WizardSupport {
                   @Override
                   public void run() {
                     final GameModule g = GameModule.getGameModule();
+                    // FIXME: The following default save/load attempt does not work (on MacOS at least the default is left "unknown"; please confirm for other platforms before fixing).
                     g.getFileChooser().setSelectedFile(f); //BR// When loading a saved game from Wizard, put it appropriately into the "default" for the next save/load/etc.
                     g.setGameFile(f.getName(), GameModule.GameFileMode.LOADED_GAME); //BR// ... aaaand put it in the app window description.
                     super.run();
@@ -836,9 +841,11 @@ public class WizardSupport {
 
     @Override
     public boolean cancel(Map settings) {
-      GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
-      GameModule.getGameModule().getGameState().setup(false);
-      GameModule.getGameModule().getGameState().freshenStartupGlobalKeyCommands(GameModule.getGameModule());
+      final GameModule g = GameModule.getGameModule();
+      g.setGameFileMode(GameModule.GameFileMode.NEW_GAME);
+      g.getGameState().setup(false);
+      g.getGameState().freshenStartupGlobalKeyCommands(GameModule.getGameModule());
+
       return true;
     }
 

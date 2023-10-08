@@ -55,7 +55,9 @@ public class ParameterListConfigurer extends Configurer implements ConfigurableL
 
     final SequenceEncoder se = new SequenceEncoder(',');
     for (final Parameter param : parameters) {
-      se.append(param.encode());
+      if (param != null) {
+        se.append(param.encode());
+      }
     }
     return se.getValue();
   }

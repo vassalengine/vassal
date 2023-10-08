@@ -1,17 +1,17 @@
 {
   "headline": "The Vassal Team is happy to announce the release of Vassal {{version}}.",
   "important": [
+    "There is now a single universal app bundle for MacOS. It runs natively on both 64-bit x86 (Intel) and 64-bit ARM (Apple Silicon_) Macs.",
     "Modules saved in {{version_feature}} are not openable by earlier versions of Vassal. We recommend keeping a backup copy of any pre-{{version_feature}} modules you plan to modify in {{version_feature}} until you've verified that everything works to your satisfaction.",
     "Some code deprecated more than a year ago has been removed. Modules containing custom code using that code MUST be updated if they are to work with {{version_feature}}.",
     "Things may be broken which worked previously. If you find a new bug, please report it."
   ],
   "downloads": [
     { "display_name": "Linux", "suffix": "linux.tar.bz2" },
-    { "display_name": "MacOS (64-bit ARM)", "suffix": "macos-aarch64.dmg" },
-    { "display_name": "MacOS (64-bit x86)", "suffix": "macos-x86_64.dmg" },
-    { "display_name": "Windows (64-bit ARM)", "suffix": "windows-aarch64.exe" },
+    { "display_name": "MacOS", "suffix": "macos-universal.dmg" },
     { "display_name": "Windows (64-bit x86)", "suffix": "windows-x86_64.exe" },
     { "display_name": "Windows (32-bit x86)", "suffix": "windows-x86_32.exe" },
+    { "display_name": "Windows (64-bit ARM)", "suffix": "windows-aarch64.exe" },
     { "display_name": "Other", "suffix": "other.zip" }
   ],
   "changes": [
@@ -21,9 +21,16 @@
       "new_features": [
       ],
       "bug_fixes": [
-        { "num": 12729, "desc": "Set Global Property to again record old GP value in oldValues for reporting" }
+        { "num": 12784, "desc": "Fix rendering of external Text Label images" },
+        { "num": 12781, "desc": "Fix bad translation keys for Attachment, Deselect, Send To Location traits" },
+        { "num": 12780, "desc": "Correctly adjust Player window title to reflect actions taken in Welcome Wizard" },
+        { "num": 12769, "desc": "Fix support for expressions in Sound Clip Configurer" },
+        { "num": 12729, "desc": "Set Global Property to again record old GP value in oldValues for reporting" },
+        { "num": 12773, "desc": "Disabled Toolbar Button icons should not appear in unused images list" },
+        { "num": 12770, "desc": "Prevent NPE when escaping from GKC trait after adding 'Set Dynamic Properties' entries" }
       ],
       "other_improvements": [
+        { "num": 12896, "desc": "Build universal Mac bundle" }
       ]
    },
    {
