@@ -2097,7 +2097,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     private final ConfigureTree configureTree;
     private final SearchParameters searchParameters;
     private Pattern regexPattern;
-    private JComboBox searchTypeBox;
 
     /**
      * Constructs a new {@link SearchAction}
@@ -2132,11 +2131,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         search.selectAll();
 
         // build dropdown menu
+        final JComboBox searchTypeBox = new JComboBox();
         searchTypeBox.addItem(Resources.getString("Editor.search_optNormal"));
         searchTypeBox.addItem(Resources.getString("Editor.search_optWord"));
         searchTypeBox.addItem(Resources.getString("Editor.search_optRegex"));
         searchTypeBox.setSelectedIndex(searchParameters.getSearchType());
-        // searchTypeBox.addActionListener(e -> updateValue());
 
         final JCheckBox sensitive = new JCheckBox(Resources.getString("Editor.search_case"), searchParameters.isMatchCase());
         final JCheckBox advanced  = new JCheckBox(Resources.getString("Editor.search_advanced"), searchParameters.isMatchAdvanced());
