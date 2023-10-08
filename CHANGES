@@ -1,6 +1,7 @@
 3.7.2 - ???
 
 * 12896: Build universal Mac bundle
+* 12784: Fix rendering of external Text Label images
 * 12781: Fix bad translation keys for Attachment, Deselect, Send To Location
     traits
 * 12729: Set Global Property to again record old GP value in oldValues for
