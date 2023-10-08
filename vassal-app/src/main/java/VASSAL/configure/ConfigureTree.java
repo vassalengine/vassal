@@ -2259,6 +2259,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         panel.add(search);
 
         // type of search
+        panel.add(new JLabel((Resources.getString("Editor.searchTypeLabel"))));
         panel.add(normal);
         panel.add(word);
         panel.add(regex);
