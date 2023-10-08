@@ -619,7 +619,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       // paint the foreground
       if (fg != null) {
         // Support images pre-existing in the module
-        if (txt.contains("<img") && !txt.contains("src=\"http://") && !txt.contains("src=\"https://") && !txt.contains("src=\"file://")) { //NON-NLS
+        if (txt.contains("<img ") && !txt.contains(" src=\"http://") && !txt.contains(" src=\"https://") && !txt.contains(" src=\"file://")) { //NON-NLS
           final DataArchiveTextPane p = new DataArchiveTextPane(txt, "label", fg, font); //NON-NLS
           p.paint(g);
         }
