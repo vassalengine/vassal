@@ -4,6 +4,9 @@
 * 12784: Fix rendering of external Text Label images
 * 12781: Fix bad translation keys for Attachment, Deselect, Send To Location
     traits
+* 12780: Correctly adjust Player window title to reflect actions taken in
+    Welcome Wizard
+* 12769: Fix support for expressions in Sound Clip Configurer
 * 12729: Set Global Property to again record old GP value in oldValues for
     reporting
 * 12773: Disabled Toolbar Button icons should not appear in unused images list
