@@ -3,7 +3,6 @@
   "important": [
     "There is now a single universal app bundle for MacOS. It runs natively on both 64-bit x86 (Intel) and 64-bit ARM (Apple Silicon) Macs.",
     "Modules saved in {{version_feature}} are not openable by earlier versions of Vassal. We recommend keeping a backup copy of any pre-{{version_feature}} modules you plan to modify in {{version_feature}} until you've verified that everything works to your satisfaction.",
-    "Some code deprecated more than a year ago has been removed. Modules containing custom code using that code MUST be updated if they are to work with {{version_feature}}.",
     "Things may be broken which worked previously. If you find a new bug, please report it."
   ],
   "downloads": [
