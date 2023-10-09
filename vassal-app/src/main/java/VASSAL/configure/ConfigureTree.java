@@ -145,8 +145,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
+
+import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
 /**
  * The beating heart of the Editor, this class handles the Configuration Tree
@@ -2120,6 +2123,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     private final ConfigureTree configureTree;
     private final SearchParameters searchParameters;
     private Pattern regexPattern;
+    private int foundItems;
 
     /**
      * Constructs a new {@link SearchAction}
@@ -2211,20 +2215,15 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
           if (!searchParameters.getSearchString().isEmpty()) {
             if (anyChanges) {
-              boolean regexError = Boolean.FALSE;
               // Unless we're just continuing to the next match in an existing search, setup.
-              if (!searchParameters.isOptNormal()) {
-                regexPattern = setupRegexSearch(searchParameters.getSearchString());
-                regexError = regexPattern == null;
-              }
-              else {
-                regexPattern = null;
-              }
-              if (!regexError) {
+              foundItems = 0;
+              regexPattern = setupRegexSearch(searchParameters.getSearchString());
+
+              if (regexPattern != null) {
                 // Compute & display hit count as heading, no indent
                 final int matches = getNumMatches(searchParameters.getSearchString());
                 // FIXME: For some reason leading spaces now being stripped from Resource strings, hence added here
-                chatter.show(matches + " " + (regexPattern == null ? Resources.getString("Editor.search_count") : Resources.getString("Editor.search_countRegex")) + ": " + noHTML(regexPattern == null ? searchParameters.getSearchString() : regexPattern.toString()));
+                chatter.show(matches + " " + (searchParameters.isOptRegex() ? Resources.getString("Editor.search_count") : Resources.getString("Editor.search_countRegex")) + ": " + noHTML(searchParameters.isOptNormal()  ? searchParameters.getSearchString() : regexPattern.toString()));
               }
             }
 
@@ -2242,7 +2241,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             }
             else {
               // No need to display this on first pass, as we already said zero found.
-              if (!anyChanges) chat(regexPattern == null ? Resources.getString("Editor.search_none_found") + noHTML(searchParameters.getSearchString()) : Resources.getString("Editor.search_noRegex_match") + noHTML(regexPattern.toString()));
+              if (!anyChanges) chat(searchParameters.optNormal ? Resources.getString("Editor.search_none_found") + noHTML(searchParameters.getSearchString()) : Resources.getString("Editor.search_noRegex_match") + noHTML(regexPattern.toString()));
             }
           }
         });
@@ -2547,11 +2546,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       return false;
     }
 
-
     /**
      * Tracks how we are progressing through searching a target GamePiece or Configurable and its traits/attributes, and whether we need to display headers
      */
-    private static class TargetProgress {
+    private class TargetProgress {
       public boolean targetShown = false;
       public boolean traitShown = false;
 
@@ -2569,29 +2567,62 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       void checkShowPiece(String matchString) {
         if (!targetShown) {
           targetShown = true;
-          chat(matchString);
+          chat("<font color=blue>" + matchString + "</font>");
         }
       }
 
       /**
        * Checks and displays the piece header & trait/component headers, if needed
-       * @param matchString our match string
+       * @param matchString our matched string
+       * @param searchString the search string
+       * @param idString trait or component name
        * @param desc trait description
        */
-      void checkShowTrait(String matchString, String idString, String desc) {
+      void checkShowTrait(String matchString, String searchString, String idString, String desc) {
         checkShowPiece(matchString);
         if (!traitShown) {
           traitShown = true;
-          chat("&nbsp;&nbsp;{" + idString + "} " + ((desc != null) ? desc : "")); //NON-NLS
+          printFind(2, idString, desc, searchString);
         }
       }
     }
 
     private void hitCheck(String s, String searchString, String matchString, String item, String desc, String show, TargetProgress progress) {
       if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
-        progress.checkShowTrait(matchString, item, desc);
-        chat("&nbsp;&nbsp;&nbsp;&nbsp;{" + show + "} " + noHTML(s)); //NON-NLS
+        progress.checkShowTrait(matchString, searchString, item, desc);
+        printFind(4, show, s, searchString);
       }
+    }
+
+    /**
+     * Prints search output (found details)
+     * @param padding - left margin spaces
+     * @param id - trait or component
+     * @param str - item details
+     * @param searchString - our search string - unless superseded by regexPattern
+     */
+    private void printFind(int padding, String id, String str, String searchString) {
+
+      String printId = id;
+      String printStr = str;
+
+      if (regexPattern != null) {
+        final String htmlHighlighter = "<font bgcolor=yellow>";
+
+        Matcher matcherId = regexPattern.matcher(id);
+        while (matcherId.find()) {
+          printId = noHTML(printId).replace(noHTML(matcherId.group()), htmlHighlighter + noHTML(matcherId.group()) + "</font>");
+
+        }
+
+        if (StringUtils.isNotEmpty(str)) {
+          Matcher matcher = regexPattern.matcher(str);
+          while (matcher.find()) {
+            printStr = noHTML(printStr).replace(noHTML(matcher.group()), htmlHighlighter + noHTML(matcher.group()) + "</font>");
+          }
+        }
+      }
+      chat("&nbsp;".repeat(padding) + "{" + printId + "} " + printStr); //NON-NLS
     }
 
     private void stringListHits(Boolean flag, List<String> strings, String searchString, String matchString, String item, String desc, String show, TargetProgress progress) {
@@ -2623,7 +2654,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
       final String name = (c.getConfigureName() != null ? c.getConfigureName() : "") +
         " [" + getConfigureName(c.getClass()) + "]";
-      final String matchString = "<b><u>Matches for " + noHTML(name) + ": </u></b>"; //NON-NLS
+      final String matchString = "[" + ++foundItems + "] <b><u>Matches for " + noHTML(name) + ": </u></b>"; //NON-NLS
 
       final SearchTarget st = (SearchTarget) c;
       final String item = getConfigureName(c.getClass());
@@ -2677,7 +2708,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         " [" + getConfigureName(c.getClass()) + "]";
 
       final TargetProgress progress = new TargetProgress();
-      final String matchString = "<b><u>Matches for " + name + ": </u></b>"; //NON-NLS
+      final String matchString = "[" + ++foundItems + "] <b><u>Matches for " + noHTML(name) + ": </u></b>"; //NON-NLS
 
       stringListHits(searchParameters.isMatchNames(), Arrays.asList(c.getConfigureName()),           searchString, matchString, protoskip ? "Prototype Definition" : "Game Piece", "", "Name", progress); //NON-NLS
       stringListHits(searchParameters.isMatchTypes(), Arrays.asList(getConfigureName(c.getClass())), searchString, matchString, protoskip ? "Prototype Definition" : "Game Piece", "", "Type", progress); //NON-NLS
@@ -2702,7 +2733,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
           if (searchParameters.isMatchTraits()) {
             if ((desc != null) && checkString(desc, searchString)) {
-              progress.checkShowTrait(matchString, "Trait", desc); //NON-NLS
+              progress.checkShowTrait(matchString,  searchString, "Trait", desc); //NON-NLS
             }
           }
 
@@ -2720,22 +2751,13 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     /**
      * Checks a single string against our search parameters
      * @param target - string to check
-     * @param searchString - our search string - unless superseded by regexPattern
+     * @param searchString - our search string; superseded by setupRegexSearch()
      * @return true if this is a match based on our search type "matchCase" checkbox.
      */
     private boolean checkString(String target, String searchString) {
-      if (regexPattern == null) {
-        if (searchParameters.isMatchCase()) {
-          return target.contains(searchString);
-        }
-        else {
-          return target.toLowerCase().contains(searchString.toLowerCase());
-        }
-      }
-      else {
-        // Regular Expression check - match on pattern established in setupRegexPattern()
-        return regexPattern.matcher(target).find();
-      }
+
+      // Regular Expression check - match on pattern established in setupRegexPattern()
+      return regexPattern.matcher(target).find();
     }
 
     /**
@@ -2745,24 +2767,30 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
      */
     private Pattern setupRegexSearch(String searchString) {
 
-      final String caseModifier = (searchParameters.isMatchCase() ? "" : "(?i)");
+      int flags = searchParameters.isMatchCase() ? 0 : CASE_INSENSITIVE;
 
-      // regex wrap-around supplied search string
+      // "non-regex" search string still has a use for regex
+      if (searchParameters.isOptNormal()) {
+        // matching on whatever is provided
+        return Pattern.compile(searchString, flags + Pattern.LITERAL);
+      }
+
+      // pre-pack regex for word start search
       if (searchParameters.isOptWord()) {
         try {
-          // matching on whatever is provided, starting on a word boundary
-          return Pattern.compile(caseModifier + ".*\\b\\Q" + searchString + "\\E.*?");
+          // matching on a word boundary.
+          return Pattern.compile("\\b\\Q" + searchString + "\\E", flags);
         }
         catch (java.util.regex.PatternSyntaxException e) {
           // something went wrong
-          logger.error("Pattern Syntax Error in default Editor Search: " + noHTML(e.getMessage())); //NON-NLS
+          logger.error("Pattern Syntax Error in Editor Search word start: " + noHTML(e.getMessage())); //NON-NLS
           return null;
         }
       }
 
       // search string is full regex
       try {
-        return Pattern.compile(caseModifier + searchString);
+        return Pattern.compile(searchString, flags);
       }
       catch (java.util.regex.PatternSyntaxException e) {
         chat("Search string is not a valid Regular Expression: " + noHTML(e.getMessage())); //NON-NLS
