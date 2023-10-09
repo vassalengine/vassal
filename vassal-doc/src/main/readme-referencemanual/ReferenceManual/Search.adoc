@@ -9,7 +9,7 @@
 
 VASSAL's Module Editor has a powerful Search facility to find components and pieces in a number of different ways.
 
-The default search is to search for everything, but the Advanced Search options can be used to limit the type of search performed.
+The default search is to search for everything, but the Advanced Search options can be used to limit the type of search performed. Two special search types are offered for more flexibility.
 
 Note that a search will continue from the last item found and will wrap-around, until you modify the search criteria. This applies even across a restart of editing sessions.
 
@@ -22,7 +22,7 @@ Note that a search will continue from the last item found and will wrap-around, 
 a|
 
 ===== Search Type
-Search may be Normal, Word boundary or https://en.wikipedia.org/wiki/Regular_expression[Regular Expression]. "Word boundary" will use a pre-formatted Regex to find matches on words or phrases starting with the search string.
+Search may be Normal, start of word or https://en.wikipedia.org/wiki/Regular_expression[Regular Expression]. "Start of word" uses a pre-formatted regular expression to find matches on words or phrases starting with the search string.
 
 ===== Exact Case
 Force an Exact case search (i.e. abc is different to ABC).

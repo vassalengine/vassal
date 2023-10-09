@@ -1816,9 +1816,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
    */
   private static class SearchParameters {
     public static final String SEARCH_STRING = "searchString"; //$NON-NLS-1$//
-    public static final String SEARCH_OPTNORMAL    = "optNormal"; //$NON-NLS-1$//
-    public static final String SEARCH_OPTWORD   = "optWord"; //$NON-NLS-1$//
-    public static final String SEARCH_OPTREGEX   = "optRegex"; //$NON-NLS-1$//
+    public static final String SEARCH_NORMAL    = "optNormal"; //$NON-NLS-1$//
+    public static final String SEARCH_WORD   = "optWord"; //$NON-NLS-1$//
+    public static final String SEARCH_REGEX   = "optRegex"; //$NON-NLS-1$//
     public static final String MATCH_CASE    = "matchCase"; //$NON-NLS-1$//
     public static final String MATCH_NAMES   = "matchNames"; //$NON-NLS-1$//
     public static final String MATCH_TYPES   = "matchTypes"; //$NON-NLS-1$//
@@ -1880,9 +1880,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       prefs = GameModule.getGameModule().getPrefs();
 
       prefs.addOption(null, new StringConfigurer(SearchParameters.SEARCH_STRING, null, ""));
-      prefs.addOption(null, new BooleanConfigurer(SearchParameters.SEARCH_OPTNORMAL,   null, true));
-      prefs.addOption(null, new BooleanConfigurer(SearchParameters.SEARCH_OPTWORD,  null, false));
-      prefs.addOption(null, new BooleanConfigurer(SearchParameters.SEARCH_OPTREGEX,  null, false));
+      prefs.addOption(null, new BooleanConfigurer(SearchParameters.SEARCH_NORMAL,   null, true));
+      prefs.addOption(null, new BooleanConfigurer(SearchParameters.SEARCH_WORD,  null, false));
+      prefs.addOption(null, new BooleanConfigurer(SearchParameters.SEARCH_REGEX,  null, false));
       prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_CASE,   null, false));
       prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_NAMES,  null, true));
       prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_TYPES,  null, true));
@@ -1895,9 +1895,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_MESSAGES, null, true));
 
       searchString = (String) prefs.getValue(SearchParameters.SEARCH_STRING);
-      optNormal = (Boolean)prefs.getValue(SearchParameters.SEARCH_OPTNORMAL);
-      optWord = (Boolean)prefs.getValue(SearchParameters.SEARCH_OPTWORD);
-      optRegex = (Boolean)prefs.getValue(SearchParameters.SEARCH_OPTREGEX);
+      optNormal = (Boolean)prefs.getValue(SearchParameters.SEARCH_NORMAL);
+      optWord = (Boolean)prefs.getValue(SearchParameters.SEARCH_WORD);
+      optRegex = (Boolean)prefs.getValue(SearchParameters.SEARCH_REGEX);
       matchCase    = (Boolean)prefs.getValue(SearchParameters.MATCH_CASE);
       matchNames   = (Boolean)prefs.getValue(SearchParameters.MATCH_NAMES);
       matchTypes       = (Boolean)prefs.getValue(SearchParameters.MATCH_TYPES);
@@ -2062,9 +2062,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     public void writePrefs() {
       if (prefs != null) {
         prefs.setValue(SEARCH_STRING, searchString);
-        prefs.setValue(SEARCH_OPTNORMAL, optNormal);
-        prefs.setValue(SEARCH_OPTWORD,   optWord);
-        prefs.setValue(SEARCH_OPTREGEX, optRegex);
+        prefs.setValue(SEARCH_NORMAL, optNormal);
+        prefs.setValue(SEARCH_WORD,   optWord);
+        prefs.setValue(SEARCH_REGEX, optRegex);
         prefs.setValue(MATCH_CASE, matchCase);
         prefs.setValue(MATCH_NAMES,       matchNames);
         prefs.setValue(MATCH_TYPES, matchTypes);
