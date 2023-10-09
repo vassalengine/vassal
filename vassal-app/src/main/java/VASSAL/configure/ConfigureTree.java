@@ -77,9 +77,9 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.DropMode;
 import javax.swing.JButton;
-import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -91,9 +91,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 import javax.swing.event.PopupMenuEvent;
@@ -657,7 +659,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     a.setEnabled(true);
     return a;
   }
-
 
   protected Action buildExportTreeAction(final Configurable target) {
     Action a = null;
@@ -2262,16 +2263,19 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         // type of search
         panel.add(new JLabel((Resources.getString("Editor.search_optLabel"))));
 
-        ButtonGroup searchType = new ButtonGroup();
+        final ButtonGroup searchType = new ButtonGroup();
+
         searchType.add(normal);
         searchType.add(word);
         searchType.add(regex);
 
-        panel.add(normal);
-        panel.add(Box.createHorizontalGlue());
-        panel.add(word);
-        panel.add(Box.createHorizontalGlue());
-        panel.add(regex);
+        panel.add(normal, "gap related");
+        panel.add(word, "gap related");
+        panel.add(regex,"wrap");
+
+        final JSeparator sep = new JSeparator();
+        sep.setOrientation(SwingConstants.HORIZONTAL);
+        panel.add(sep);
 
         // optiond
         panel.add(sensitive);
