@@ -79,6 +79,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DropMode;
 import javax.swing.JButton;
+import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -2259,9 +2260,17 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         panel.add(search);
 
         // type of search
-        panel.add(new JLabel((Resources.getString("Editor.searchTypeLabel"))));
+        panel.add(new JLabel((Resources.getString("Editor.search_optLabel"))));
+
+        ButtonGroup searchType = new ButtonGroup();
+        searchType.add(normal);
+        searchType.add(word);
+        searchType.add(regex);
+
         panel.add(normal);
+        panel.add(Box.createHorizontalGlue());
         panel.add(word);
+        panel.add(Box.createHorizontalGlue());
         panel.add(regex);
 
         // optiond
