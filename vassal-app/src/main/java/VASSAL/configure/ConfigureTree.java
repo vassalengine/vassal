@@ -2569,7 +2569,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       void checkShowPiece(String matchString) {
         if (!targetShown) {
           targetShown = true;
-          chat(matchString);
+          chat("<font color=blue>" + matchString + "</font>");
         }
       }
 
@@ -2578,19 +2578,19 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
        * @param matchString our match string
        * @param desc trait description
        */
-      void checkShowTrait(String matchString, String idString, String desc) {
+      void checkShowTrait(String matchString, String searchString, String idString, String desc) {
         checkShowPiece(matchString);
         if (!traitShown) {
           traitShown = true;
-          chat("&nbsp;&nbsp;{" + idString + "} " + ((desc != null) ? desc : "")); //NON-NLS
+          chat("&nbsp;&nbsp;{" + idString + "} " + ((desc != null) ? noHTML(desc).replace(noHTML(searchString), "<font bgcolor=yellow>" + noHTML(searchString) + "</font>") : "")); //NON-NLS
         }
       }
     }
 
     private void hitCheck(String s, String searchString, String matchString, String item, String desc, String show, TargetProgress progress) {
       if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
-        progress.checkShowTrait(matchString, item, desc);
-        chat("&nbsp;&nbsp;&nbsp;&nbsp;{" + show + "} " + noHTML(s)); //NON-NLS
+        progress.checkShowTrait(matchString, searchString, item, desc);
+        chat("&nbsp;&nbsp;&nbsp;&nbsp;{" + show + "} " + noHTML(s).replace(noHTML(searchString), "<font bgcolor=yellow>" + noHTML(searchString) + "</font>")); //NON-NLS
       }
     }
 
@@ -2702,7 +2702,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
           if (searchParameters.isMatchTraits()) {
             if ((desc != null) && checkString(desc, searchString)) {
-              progress.checkShowTrait(matchString, "Trait", desc); //NON-NLS
+              progress.checkShowTrait(matchString,  searchString, "Trait", desc); //NON-NLS
             }
           }
 
