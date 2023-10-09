@@ -658,7 +658,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     return a;
   }
 
-
   protected Action buildExportTreeAction(final Configurable target) {
     Action a = null;
     if (getTreeNode(target).getParent() != null) {
@@ -2262,7 +2261,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         // type of search
         panel.add(new JLabel((Resources.getString("Editor.search_optLabel"))));
 
-        ButtonGroup searchType = new ButtonGroup();
+        final ButtonGroup searchType = new ButtonGroup();
         searchType.add(normal);
         searchType.add(word);
         searchType.add(regex);
