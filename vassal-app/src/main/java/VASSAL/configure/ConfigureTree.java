@@ -2213,7 +2213,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             if (anyChanges) {
               boolean regexError = Boolean.FALSE;
               // Unless we're just continuing to the next match in an existing search, setup.
-              if (searchParameters.isOptNormal()) {
+              if (!searchParameters.isOptNormal()) {
                 regexPattern = setupRegexSearch(searchParameters.getSearchString());
                 regexError = regexPattern == null;
               }
@@ -2264,20 +2264,21 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         panel.add(new JLabel((Resources.getString("Editor.search_optLabel"))));
 
         final ButtonGroup searchType = new ButtonGroup();
-
         searchType.add(normal);
         searchType.add(word);
         searchType.add(regex);
 
-        panel.add(normal, "gap related");
-        panel.add(word, "gap related");
-        panel.add(regex,"wrap");
+        final JPanel optPanel = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
+        optPanel.add(normal);
+        optPanel.add(word);
+        optPanel.add(regex);
+        panel.add(optPanel, "grow"); // NON-NLS
 
         final JSeparator sep = new JSeparator();
         sep.setOrientation(SwingConstants.HORIZONTAL);
         panel.add(sep);
 
-        // optiond
+        // options
         panel.add(sensitive);
         panel.add(advanced);
 

@@ -20,11 +20,12 @@ Note that a search will continue from the last item found and will wrap-around, 
 [width="100%",cols="50%a,^50%a",]
 |===
 a|
+
+===== Search Type
+Search may be Normal, Word boundary or https://en.wikipedia.org/wiki/Regular_expression[Regular Expression]. "Word boundary" will use a pre-formatted Regex to find matches on words or phrases starting with the search string.
+
 ===== Exact Case
 Force an Exact case search (i.e. abc is different to ABC).
-
-===== Regular Expression
-The specified search string is a https://en.wikipedia.org/wiki/Regular_expression[Regular Expression]. If the Search string lacks Regex special characters, a pattern of the form `.\*/b<search string>.*` will be attempted. This default will find matches on words or phrases starting with the search string.
 
 ===== Advanced Search
 Show the advanced search options. All search options are on in a simple search. The advanced options allow you to turn off options to narrow your search.
