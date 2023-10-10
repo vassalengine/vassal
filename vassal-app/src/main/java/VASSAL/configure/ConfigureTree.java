@@ -342,7 +342,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     return editorWindow;
   }
 
-
   /**
    * Create a key binding for ENTER key to do meaningful things.
    */
@@ -1897,14 +1896,18 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_MENUS, null, true));
       prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_MESSAGES, null, true));
 
-      searchString = (String) prefs.getValue(SearchParameters.SEARCH_STRING);
-      optNormal = (Boolean)prefs.getValue(SearchParameters.SEARCH_NORMAL);
+      // reset at module start
+      // searchString = (String) prefs.getValue(SearchParameters.SEARCH_STRING);
+      searchString = "";
+      // optNormal = (Boolean)prefs.getValue(SearchParameters.SEARCH_NORMAL);
+      optNormal = true;
       optWord = (Boolean)prefs.getValue(SearchParameters.SEARCH_WORD);
       optRegex = (Boolean)prefs.getValue(SearchParameters.SEARCH_REGEX);
       matchCase    = (Boolean)prefs.getValue(SearchParameters.MATCH_CASE);
       matchNames   = (Boolean)prefs.getValue(SearchParameters.MATCH_NAMES);
       matchTypes       = (Boolean)prefs.getValue(SearchParameters.MATCH_TYPES);
-      matchAdvanced    = (Boolean)prefs.getValue(SearchParameters.MATCH_ADVANCED);
+      // matchAdvanced    = (Boolean)prefs.getValue(SearchParameters.MATCH_ADVANCED);
+      matchAdvanced = false;
       matchTraits      = (Boolean)prefs.getValue(SearchParameters.MATCH_TRAITS);
       matchExpressions = (Boolean)prefs.getValue(SearchParameters.MATCH_EXPRESSIONS);
       matchProperties  = (Boolean)prefs.getValue(SearchParameters.MATCH_PROPERTIES);
@@ -2223,7 +2226,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
                 // Compute & display hit count as heading, no indent
                 final int matches = getNumMatches(regexPattern);
                 // FIXME: For some reason leading spaces now being stripped from Resource strings, hence added here
-                chatter.show(matches + " " + (searchParameters.isOptRegex() ? Resources.getString("Editor.search_count") : Resources.getString("Editor.search_countRegex")) + ": " + noHTML(searchParameters.isOptNormal()  ? searchParameters.getSearchString() : regexPattern.toString()));
+                chatter.show(matches + " " + (!searchParameters.isOptRegex() ? Resources.getString("Editor.search_count") : Resources.getString("Editor.search_countRegex")) + ": " + noHTML(searchParameters.isOptNormal() || searchParameters.isOptWord() ? searchParameters.getSearchString() :  regexPattern.toString()));
               }
             }
 
@@ -2353,6 +2356,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             .filter(i -> searchNodes.get(i) == currentNode)
             .findFirst()
             .orElse(-1);
+        if (bookmark <= 0) foundItems = 0;
       }
 
       final Predicate<DefaultMutableTreeNode> nodeMatchesSearchString = node -> checkNode(node, regexPattern);
@@ -2364,10 +2368,13 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           .filter(nodeMatchesSearchString)
           .findFirst()
           .orElse(null);
+      if (bookmark <= 0) foundItems = 0;
 
       if (foundNode != null) {
         return foundNode;
       }
+
+      foundItems = 0;
 
       return
         searchNodes
@@ -2653,7 +2660,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
       final String name = (c.getConfigureName() != null ? c.getConfigureName() : "") +
         " [" + getConfigureName(c.getClass()) + "]";
-      final String matchString = "[" + ++foundItems + "] <b><u>Matches for " + noHTML(name) + ": </u></b>"; //NON-NLS
+      final String matchString = ++foundItems + ". <b><u>Matches for " + noHTML(name) + ": </u></b>"; //NON-NLS
 
       final SearchTarget st = (SearchTarget) c;
       final String item = getConfigureName(c.getClass());
@@ -2707,7 +2714,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         " [" + getConfigureName(c.getClass()) + "]";
 
       final TargetProgress progress = new TargetProgress();
-      final String matchString = "[" + ++foundItems + "] <b><u>Matches for " + noHTML(name) + ": </u></b>"; //NON-NLS
+      final String matchString = ++foundItems + ". <b><u>Matches for " + noHTML(name) + ": </u></b>"; //NON-NLS
 
       stringListHits(searchParameters.isMatchNames(), Arrays.asList(c.getConfigureName()),           regexPattern, matchString, protoskip ? "Prototype Definition" : "Game Piece", "", "Name", progress); //NON-NLS
       stringListHits(searchParameters.isMatchTypes(), Arrays.asList(getConfigureName(c.getClass())), regexPattern, matchString, protoskip ? "Prototype Definition" : "Game Piece", "", "Type", progress); //NON-NLS
