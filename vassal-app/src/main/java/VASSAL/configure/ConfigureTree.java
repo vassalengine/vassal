@@ -2126,7 +2126,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     private Pattern regexPattern;
     private int nodeListIndex;
     private int traitIndex;
-    private ArrayList<Integer> breadCrumbs = new ArrayList<>();
+    final ArrayList<Integer> breadCrumbs = new ArrayList<>();
 
 /*    public List<String> breadCrumbs() {
       List<String> breadCrumbs = new ArrayList<String>();
