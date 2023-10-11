@@ -2126,7 +2126,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     private Pattern regexPattern;
     private int nodeListIndex;
     private int traitIndex;
-    final ArrayList<Integer> breadCrumbs = new ArrayList<>();
+    private ArrayList<Integer> breadCrumbs = new ArrayList<>();
+
+/*    public List<String> breadCrumbs() {
+      List<String> breadCrumbs = new ArrayList<String>();
+      return breadCrumbs;
+    }*/
 
     /**
      * Constructs a new {@link SearchAction}
@@ -2141,11 +2146,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
 
     class PrevAction extends AbstractAction {
-      public PrevAction(int mnemonic) {
+      private static final long serialVersionUID = 1L;
+      public PrevAction() {
         super(Resources.getString("Editor.search_prev"), null);
         putValue(Action.SHORT_DESCRIPTION, Resources.getString("Editor.search_prevTip"));
         putValue(Action.MNEMONIC_KEY, KeyEvent.VK_PAGE_UP);
       }
+
+      @Override
       public void actionPerformed(ActionEvent ePrev) {
         // Rewind to previous match, maintaining the integrity of the track-back list
         if (nodeListIndex > 1) {
@@ -2223,7 +2231,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
         // FIXME: Page Up stops working if next item button is pressed several times (possibly after pgUp has been used)
         // FIXME: Next/Find requires more work to use same hotkey method as searchParameters... won't resolve.
-        Action prevAction = new PrevAction(KeyEvent.VK_PAGE_UP);
+        final Action prevAction = new PrevAction();
 
         final JButton prev = new JButton(prevAction);
 
