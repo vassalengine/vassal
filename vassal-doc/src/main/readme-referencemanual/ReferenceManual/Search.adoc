@@ -9,7 +9,9 @@
 
 VASSAL's Module Editor has a powerful Search facility to find components and pieces in a number of different ways.
 
-The default search is to search for everything, but Advanced Search options can be used to limit the type of search performed. Two special search types offer additional flexibility. A search is initiated with the "Next" button which is then used to page through the output item by item. The "Prev" button allows you to return to the previous item.
+The default search is to search for everything, but Advanced Search options can be used to limit the type of search performed. Two special search types offer additional flexibility.
+
+Initiate a search with the "Next" button and repeat this to advance the output item by item. The "Prev" button allows you to return to the previous item.
 
 Search output indicates the number of items (traits and components) found and details each in order, positioning the editor on the found item. Traits are reported with a prefix indicating the position of the trait within the found item (Piece or Prototype). Matched strings are high-lighted.
 
@@ -48,7 +50,7 @@ Match against expressions defined in piece traits, both legacy and Beanshell.
 Match against the names of Properties provided by piece traits.
 
 ===== Match key commands
-Match against Key Commands defied in piece traits. You can search against user defined Named Key Strokes, or for the standard name of defined Key Strokes (e.g., Ctrl+C or ALT+SHIFT+C).
+Match against Key Commands defined in piece traits. You can search against user defined Named Key Strokes, or for the standard name of defined Key Strokes (e.g., Ctrl+C or Alt+Shift+C).
 
 ===== Match UI text
 

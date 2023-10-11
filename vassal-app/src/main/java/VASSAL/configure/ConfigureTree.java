@@ -787,7 +787,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
    * @param target Item we just pasted
    */
   protected void postPasteFixups(final Configurable target) {
-    // SetupStacks (and thus DrawPiles) pasted to a new map, but whose owning board setting doesnt exist for this map, are forced to "any"
+    // SetupStacks (and thus DrawPiles) pasted to a new map, but whose owning board setting doesn't exist for this map, are forced to "any"
     if (target instanceof SetupStack) {
       final SetupStack ss = (SetupStack)target;
       final String owning = ss.getOwningBoardName();
@@ -902,7 +902,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   /**
    * Some components need to be converted to a new type before insertion.
    *
-   * Currently this is used to allow cut and paste of CardSlots and PieceSlots
+   * Currently, this is used to allow cut and paste of CardSlots and PieceSlots
    * between Decks and GamePiece Palette components.
    *
    * @param parent Parent Configurable
@@ -934,7 +934,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         return child instanceof DeckGlobalKeyCommand ? child : new DeckGlobalKeyCommand((MassKeyCommand) child);
       }
       else if (isAllowedChildClass(parent, GlobalKeyCommand.class)) {
-        // Convert Mass GKC and Deck GKC to Global. Do not convert an existing Global GKC, or it subclass Startup GKC
+        // Convert Mass GKC and Deck GKC to Global. Do not convert an existing Global GKC, or its subclass Startup GKC
         return child instanceof GlobalKeyCommand ? child : new GlobalKeyCommand((MassKeyCommand) child);
       }
       else if (isAllowedChildClass(parent, MassKeyCommand.class)) {
@@ -957,7 +957,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   /**
-   * Allocate new PieceSlot Id's to any PieceSlot sub-components
+   * Allocate new PieceSlot Ids to any PieceSlot subcomponents
    *
    * @param c Configurable to update
    */
@@ -1014,8 +1014,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
     };
   }
-
-
 
   protected Action buildMassPieceLoaderAction(final Configurable target) {
     Action a = null;
@@ -1318,7 +1316,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
 
   /**
-   * Delete removes an item from the tree but ALSO traverses the tree throwing all the childrens' children manually out
+   * Delete removes an item from the tree but ALSO traverses the tree throwing all the children's children manually out
    * the airlock, one by one. Lest they return and live on as zombies...
    */
   protected boolean delete(Configurable target) {
@@ -2126,12 +2124,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     private Pattern regexPattern;
     private int nodeListIndex;
     private int traitIndex;
-    final ArrayList<Integer> breadCrumbs = new ArrayList<>();
-
-/*    public List<String> breadCrumbs() {
-      List<String> breadCrumbs = new ArrayList<String>();
-      return breadCrumbs;
-    }*/
+    protected ArrayList<Integer> breadCrumbs = new ArrayList<>();
 
     /**
      * Constructs a new {@link SearchAction}
@@ -2270,7 +2263,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             if (anyChanges) {
               // Unless we're just continuing to the next match in an existing search, reset setup.
               nodeListIndex = 0;  // counts items found from 1
-              breadCrumbs.clear();
               prev.setEnabled(false);
 
               regexPattern = setupRegexSearch(searchParameters.getSearchString());
@@ -2278,6 +2270,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
               if (regexPattern != null) {
                 // Compute & display hit count as heading, no indent
                 final int matches = getNumMatches(regexPattern);
+
+                breadCrumbs.ensureCapacity(Math.min(matches, 50)); // initialise breadcrumbs array, assume a very high search return will not be used
+                breadCrumbs.clear();
 
                 chatter.show(!searchParameters.isOptRegex() ? Resources.getString((searchParameters.isOptNormal() ? "Editor.search_count" : "Editor.search_countWord"), matches, noHTML(searchParameters.getSearchString())) :
                         Resources.getString("Editor.search_countRegex", matches, noHTML(regexPattern.toString())));
@@ -2663,7 +2658,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         checkShowPiece(matchString);
         if (!traitShown) {
           traitShown = true;
-          printFind(2, idString, desc, regexPattern);
+          printFind(4, idString, desc, regexPattern);
         }
       }
     }
@@ -2671,7 +2666,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     private void hitCheck(String s, Pattern regexPattern, String matchString, String item, String desc, String show, TargetProgress progress) {
       if (!StringUtils.isEmpty(s) && checkString(s, regexPattern)) {
         progress.checkShowTrait(matchString, regexPattern, item, desc);
-        printFind(4, show, s, regexPattern);
+        printFind(6, show, s, regexPattern);
       }
     }
 
@@ -2683,26 +2678,24 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
      */
     private void printFind(int padding, String id, String str, Pattern regexPattern) {
 
-      String printId = id;
-      String printStr = str;
+/*      String printId = id;
 
-      if (regexPattern != null) {
-        final String htmlHighlighter = "<font bgcolor=yellow>";
+      final String htmlHighlighter = "<font bgcolor=yellow>";
 
-        final Matcher matcherId = regexPattern.matcher(id);
-        while (matcherId.find()) {
-          printId = noHTML(printId).replace(noHTML(matcherId.group()), htmlHighlighter + noHTML(matcherId.group()) + "</font>");
+      final Matcher matcherId = regexPattern.matcher(id);
+      while (matcherId.find()) {
+        printId = noHTML(printId).replace(noHTML(matcherId.group()), htmlHighlighter + noHTML(matcherId.group()) + "</font>");
+      }*/
 
-        }
+      String printStr = "";
+      if (StringUtils.isNotEmpty(str)) printStr = highlightFinds(str, regexPattern);
 
-        if (StringUtils.isNotEmpty(str)) {
-          final Matcher matcher = regexPattern.matcher(str);
-          while (matcher.find()) {
-            printStr = noHTML(printStr).replace(noHTML(matcher.group()), htmlHighlighter + noHTML(matcher.group()) + "</font>");
-          }
-        }
-      }
-      chat((id.equals("Trait") ? traitIndex + "&gt; " : "&nbsp;".repeat(padding)) + "{" + printId + "} " + printStr); //NON-NLS
+      chat((id.equals("Trait") ? "&nbsp;".repeat(padding - (traitIndex < 10 ? 2 : 1)) + traitIndex + "&gt; " : "&nbsp;".repeat(padding)) + "{" + highlightFinds(id, regexPattern) + "} " + printStr); //NON-NLS
+    //          int mPtr = 0;
+    //          // to ensure case compatibility
+    //          while (matcher.find()) {
+    //            printStr = noHTML(printStr.substring(0, matcher.start() + mPtr)) +  htmlHighlighter + noHTML(printStr.substring(matcher.start() + mPtr, matcher.end() + mPtr) + "</font>" + noHTML(printStr.substring(matcher.end() + mPtr)));
+    //            mPtr = printStr.length() - str.length();
     }
 
     private void stringListHits(Boolean flag, List<String> strings, Pattern regexPattern, String matchString, String item, String desc, String show, TargetProgress progress) {
@@ -2770,11 +2763,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       boolean protoskip;
       if (c instanceof GamePiece) {
         p = (GamePiece)c;
-        protoskip = false; // This is a "real" GamePiece so we will look at the BasicPiece too
+        protoskip = false; // This is a "real" GamePiece, so we will look at the BasicPiece too
       }
       else if (c instanceof PieceSlot) {
         p = ((PieceSlot)c).getPiece();
-        protoskip = false; // This is a "real" GamePiece so we will look at the BasicPiece too
+        protoskip = false; // This is a "real" GamePiece, so we will look at the BasicPiece too
       }
       else if (c instanceof PrototypeDefinition) {
         p = ((PrototypeDefinition)c).getPiece();
@@ -2843,6 +2836,34 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
       // Regular Expression check - match on pattern established in setupRegexPattern()
       return regexPattern.matcher(target).find();
+    }
+
+    /**
+     * Checks a single string against our search parameters
+     * @param str - string to format
+     * @param regexPattern - Regex search pattern
+     * @return formattedStr - string formatted with highlighted matches
+     */
+    private String highlightFinds(String str, Pattern regexPattern) {
+
+      final String[] splitStr = str.split(regexPattern.toString());
+      final Matcher matcherStr = regexPattern.matcher(str);
+      final String htmlHighlighter = "<font bgcolor=yellow>";
+
+      StringBuilder formattedStr = new StringBuilder();
+
+      for (String s : splitStr) {
+        if (matcherStr.find()) {
+          formattedStr.append(noHTML(s)).append(htmlHighlighter).append(noHTML(matcherStr.group())).append("</font>");
+        }
+        else {
+          formattedStr.append(noHTML(s));
+        }
+      }
+
+      if (matcherStr.find()) formattedStr.append(htmlHighlighter).append(noHTML(matcherStr.group())).append("</font>");
+
+      return formattedStr.toString();
     }
 
     /**
@@ -3162,7 +3183,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
       if ((support.getDropAction() & MOVE) == MOVE) {
         if (!targetNode.isNodeAncestor(sourceNode)) {
-          // Here's we're "moving", so therefore "cutting" the source object from its original location (plain drag)
+          // Here's we're "moving", therefore "cutting" the source object from its original location (plain drag)
           final Configurable cutObj = (Configurable) sourceNode.getUserObject();
           final Configurable convertedCutObj = convertChild(target, cutObj);
 
