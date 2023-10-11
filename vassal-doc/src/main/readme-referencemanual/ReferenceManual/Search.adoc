@@ -9,9 +9,11 @@
 
 VASSAL's Module Editor has a powerful Search facility to find components and pieces in a number of different ways.
 
-The default search is to search for everything, but the Advanced Search options can be used to limit the type of search performed. Two special search types are offered for more flexibility.
+The default search is to search for everything, but Advanced Search options can be used to limit the type of search performed. Two special search types offer additional flexibility. A search is initiated with the "Next" button which is then used to page through the output item by item. The "Prev" button allows you to return to the previous item.
 
-Note that a search will continue from the last item found and will wrap-around, until you modify the search criteria. This applies even across a restart of editing sessions.
+Search output indicates the number of items (traits and components) found and details each in order, positioning the editor on the found item. Traits are reported with a prefix indicating the position of the trait within the found item (Piece or Prototype). Matched strings are high-lighted.
+
+Note that a search will continue from the last item found and will wrap-around, until you modify the search criteria or restart the editing session.
 
 '''''
 
@@ -22,7 +24,7 @@ Note that a search will continue from the last item found and will wrap-around, 
 a|
 
 ===== Search Type
-Search may be Normal, start of word or https://en.wikipedia.org/wiki/Regular_expression[Regular Expression]. "Start of word" uses a pre-formatted regular expression to find matches on words or phrases starting with the search string.
+Search may be normal, start of word or https://en.wikipedia.org/wiki/Regular_expression[Regular Expression]. "Start of word" uses a pre-formatted regular expression to find matches on words or phrases starting with the search string.
 
 ===== Exact Case
 Force an Exact case search (i.e. abc is different to ABC).
@@ -34,19 +36,19 @@ Show the advanced search options. All search options are on in a simple search. 
 Match against the names of components or pieces.
 
 ===== Match [class names]
-Match against the Java Class Name of components.
+Match against the Java Class Name of components (in the editor these are the names in square brackets).
 
 ===== Match trait descriptions
 Match against text recorded in the description fields of traits.
 
 ===== Match expressions and fields
-Match against Beanshell expressions defined in piece traits.
+Match against expressions defined in piece traits, both legacy and Beanshell.
 
 ===== Match property names
 Match against the names of Properties provided by piece traits.
 
 ===== Match key commands
-Match against Key Commands defied in piece traits. You can search against user defined Named Key Strokes, or for the standard name of defined Key Strokes (e.g., Ctrl-C).
+Match against Key Commands defied in piece traits. You can search against user defined Named Key Strokes, or for the standard name of defined Key Strokes (e.g., Ctrl+C or ALT+SHIFT+C).
 
 ===== Match UI text
 

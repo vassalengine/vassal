@@ -2045,8 +2045,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       writePrefs();
     }
 
-
-
     public void setFrom(final SearchParameters searchParameters) {
       searchString = searchParameters.getSearchString();
       optNormal = searchParameters.isOptNormal();
@@ -2126,7 +2124,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     private final ConfigureTree configureTree;
     private final SearchParameters searchParameters;
     private Pattern regexPattern;
-    private int foundItems;
+    private int nodeListIndex;
+    private int traitIndex;
+    final ArrayList<Integer> breadCrumbs = new ArrayList<>();
 
     /**
      * Constructs a new {@link SearchAction}
@@ -2140,6 +2140,29 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       this.searchParameters = searchParameters;
     }
 
+    class PrevAction extends AbstractAction {
+      public PrevAction(int mnemonic) {
+        super(Resources.getString("Editor.search_prev"), null);
+        putValue(Action.SHORT_DESCRIPTION, Resources.getString("Editor.search_prevTip"));
+        putValue(Action.MNEMONIC_KEY, KeyEvent.VK_PAGE_UP);
+      }
+      public void actionPerformed(ActionEvent ePrev) {
+        // Rewind to previous match, maintaining the integrity of the track-back list
+        if (nodeListIndex > 1) {
+          final DefaultMutableTreeNode node = setNode(breadCrumbs.get(--nodeListIndex - 1));
+          // Assuming *something* matched, scroll to it and show any "trait hits"
+          if (node != null) {
+            final TreePath path = new TreePath(node.getPath());
+            configureTree.setSelectionPath(path);
+            configureTree.scrollPathToVisible(path);
+            if (searchParameters.isMatchAdvanced()) {
+              showHitList(node, regexPattern);
+            }
+          }
+        }
+        if (nodeListIndex == 1) this.setEnabled(false);
+      }
+    }
     @Override
     public void actionPerformed(ActionEvent e) {
 
@@ -2198,10 +2221,26 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
         configureTree.setSearchAdvanced(advanced);
 
+        // FIXME: Page Up stops working if next item button is pressed several times (possibly after pgUp has been used)
+        // FIXME: Next/Find requires more work to use same hotkey method as searchParameters... won't resolve.
+        Action prevAction = new PrevAction(KeyEvent.VK_PAGE_UP);
+
+        final JButton prev = new JButton(prevAction);
+
+        prev.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, 0), "PgUp");
+
+        prev.getActionMap().put("PgUp", prevAction);
+
+        prev.setAction(prevAction);
+
+        prev.setEnabled(false);
+
         final JButton find = new JButton(Resources.getString("Editor.search_next"));
-        find.addActionListener(e12 -> {
+
+        find.addActionListener(eNext -> {
           final SearchParameters parametersSetInDialog =
-            new SearchParameters(search.getText(), normal.isSelected(), word.isSelected(), regex.isSelected(), sensitive.isSelected(), names.isSelected(), types.isSelected(), true, traits.isSelected(), expressions.isSelected(), properties.isSelected(), keys.isSelected(), menus.isSelected(), messages.isSelected());
+                  new SearchParameters(search.getText(), normal.isSelected(), word.isSelected(), regex.isSelected(), sensitive.isSelected(), names.isSelected(), types.isSelected(), true, traits.isSelected(), expressions.isSelected(), properties.isSelected(), keys.isSelected(), menus.isSelected(), messages.isSelected());
 
           final boolean anyChanges = !searchParameters.equals(parametersSetInDialog);
 
@@ -2216,17 +2255,24 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             ConfigureTree.chat(Resources.getString("Editor.search_all_off"));
           }
 
-          if (!searchParameters.getSearchString().isEmpty()) {
+          if (searchParameters.getSearchString().isEmpty()) {
+            prev.setEnabled(false);
+          }
+          else {
             if (anyChanges) {
-              // Unless we're just continuing to the next match in an existing search, setup.
-              foundItems = 0;
+              // Unless we're just continuing to the next match in an existing search, reset setup.
+              nodeListIndex = 0;  // counts items found from 1
+              breadCrumbs.clear();
+              prev.setEnabled(false);
+
               regexPattern = setupRegexSearch(searchParameters.getSearchString());
 
               if (regexPattern != null) {
                 // Compute & display hit count as heading, no indent
                 final int matches = getNumMatches(regexPattern);
-                // FIXME: For some reason leading spaces now being stripped from Resource strings, hence added here
-                chatter.show(matches + " " + (!searchParameters.isOptRegex() ? Resources.getString("Editor.search_count") : Resources.getString("Editor.search_countRegex")) + ": " + noHTML(searchParameters.isOptNormal() || searchParameters.isOptWord() ? searchParameters.getSearchString() :  regexPattern.toString()));
+
+                chatter.show(!searchParameters.isOptRegex() ? Resources.getString((searchParameters.isOptNormal() ? "Editor.search_count" : "Editor.search_countWord"), matches, noHTML(searchParameters.getSearchString())) :
+                        Resources.getString("Editor.search_countRegex", matches, noHTML(regexPattern.toString())));
               }
             }
 
@@ -2241,10 +2287,13 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
               if (searchParameters.isMatchAdvanced()) {
                 showHitList(node, regexPattern);
               }
+              prev.setEnabled(!anyChanges); // on second+ items, it's possible to traverse back the list
             }
             else {
               // No need to display this on first pass, as we already said zero found.
-              if (!anyChanges) chat(searchParameters.optNormal ? Resources.getString("Editor.search_none_found") + noHTML(searchParameters.getSearchString()) : Resources.getString("Editor.search_noRegex_match") + noHTML(regexPattern.toString()));
+              if (!anyChanges)
+                chat(Resources.getString(searchParameters.optNormal ? "Editor.search_none_found" : "Editor.search_noRegex_match",
+                        noHTML(searchParameters.optRegex ? regexPattern.toString() : searchParameters.getSearchString())));
             }
           }
         });
@@ -2299,7 +2348,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         panel.add(messages);
 
         // buttons row
-        final JPanel bPanel = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
+        final JPanel bPanel = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]rel[]push")); // NON-NLS
+        bPanel.add(prev, "tag ok,sg 1"); //$NON-NLS-1$//
         bPanel.add(find, "tag ok,sg 1"); //$NON-NLS-1$//
         bPanel.add(cancel, "tag cancel,sg 1"); //$NON-NLS-1$//
         bPanel.add(help, "tag help,sg 1"); // NON-NLS
@@ -2309,7 +2359,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
         d.getRootPane().setDefaultButton(find); // Enter key activates search
 
-        // Esc Key cancels
+         // Esc Key cancels
         final KeyStroke k = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
         d.getRootPane().registerKeyboardAction(ee -> configureTree.getSearchDialog().setVisible(false), k, JComponent.WHEN_IN_FOCUSED_WINDOW);
       }
@@ -2356,7 +2406,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             .filter(i -> searchNodes.get(i) == currentNode)
             .findFirst()
             .orElse(-1);
-        if (bookmark <= 0) foundItems = 0;
+        if (bookmark <= 0) nodeListIndex = 0;
       }
 
       final Predicate<DefaultMutableTreeNode> nodeMatchesSearchString = node -> checkNode(node, regexPattern);
@@ -2368,13 +2418,16 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           .filter(nodeMatchesSearchString)
           .findFirst()
           .orElse(null);
-      if (bookmark <= 0) foundItems = 0;
+      if (bookmark <= 0) nodeListIndex = 0;
 
       if (foundNode != null) {
+
+        if (nodeListIndex > breadCrumbs.size()) breadCrumbs.add(bookmark);
+
         return foundNode;
       }
 
-      foundItems = 0;
+      nodeListIndex = 0;
 
       return
         searchNodes
@@ -2386,8 +2439,21 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
 
     /**
-     * @return how many total nodes match the search string
+     * Position at node
+     * @param bookmark - index position
+     * @return the node we found, or null if none
      */
+    private DefaultMutableTreeNode setNode(int bookmark) {
+      final List<DefaultMutableTreeNode> searchNodes =
+              configureTree.getSearchNodes((DefaultMutableTreeNode)configureTree.getModel().getRoot());
+
+      nodeListIndex--;
+      return searchNodes.get(bookmark);
+    }
+
+    /**
+    * @return how many total nodes match the search string
+    */
     private int getNumMatches(Pattern regexPattern) {
       final List<DefaultMutableTreeNode> searchNodes = configureTree.getSearchNodes((DefaultMutableTreeNode)configureTree.getModel().getRoot());
       return (int) searchNodes.stream().filter(node -> checkNode(node, regexPattern)).count();
@@ -2628,7 +2694,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           }
         }
       }
-      chat("&nbsp;".repeat(padding) + "{" + printId + "} " + printStr); //NON-NLS
+      chat((id.equals("Trait") ? traitIndex + "&gt; " : "&nbsp;".repeat(padding)) + "{" + printId + "} " + printStr); //NON-NLS
     }
 
     private void stringListHits(Boolean flag, List<String> strings, Pattern regexPattern, String matchString, String item, String desc, String show, TargetProgress progress) {
@@ -2658,9 +2724,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         return;
       }
 
+
       final String name = (c.getConfigureName() != null ? c.getConfigureName() : "") +
         " [" + getConfigureName(c.getClass()) + "]";
-      final String matchString = ++foundItems + ". <b><u>Matches for " + noHTML(name) + ": </u></b>"; //NON-NLS
+      final String matchString = ++nodeListIndex + ". <b><u>Matches for " + noHTML(name) + ": </u></b>"; //NON-NLS
 
       final SearchTarget st = (SearchTarget) c;
       final String item = getConfigureName(c.getClass());
@@ -2714,7 +2781,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         " [" + getConfigureName(c.getClass()) + "]";
 
       final TargetProgress progress = new TargetProgress();
-      final String matchString = ++foundItems + ". <b><u>Matches for " + noHTML(name) + ": </u></b>"; //NON-NLS
+      final String matchString = ++nodeListIndex + ". <b><u>Matches for " + noHTML(name) + ": </u></b>"; //NON-NLS
+
 
       stringListHits(searchParameters.isMatchNames(), Arrays.asList(c.getConfigureName()),           regexPattern, matchString, protoskip ? "Prototype Definition" : "Game Piece", "", "Name", progress); //NON-NLS
       stringListHits(searchParameters.isMatchTypes(), Arrays.asList(getConfigureName(c.getClass())), regexPattern, matchString, protoskip ? "Prototype Definition" : "Game Piece", "", "Type", progress); //NON-NLS
@@ -2731,11 +2799,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
       Collections.reverse(pieces);
 
+      traitIndex = 0;
+
       for (final GamePiece piece : pieces) {
         if (!protoskip && (piece instanceof EditablePiece) && (piece instanceof Decorator)) { // Skip the fake "Basic Piece" on a Prototype definition
           final String desc = ((EditablePiece) piece).getDescription();
           final Decorator d = (Decorator)piece;
           progress.startNewTrait();    // A new trait, so reset our "trait progress".
+          traitIndex++;
 
           if (searchParameters.isMatchTraits()) {
             if ((desc != null) && checkString(desc, regexPattern)) {
@@ -2788,8 +2859,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           return Pattern.compile("\\b\\Q" + searchString + "\\E", flags);
         }
         catch (java.util.regex.PatternSyntaxException e) {
-          // something went wrong
-          logger.error("Pattern Syntax Error in Editor Search word start: " + noHTML(e.getMessage())); //NON-NLS
+          // something went wrong - a \E in the search input followed by invalid Regex will end up here
+          logger.error(Resources.getString("Editor.search_badWord", noHTML(e.getMessage()))); //NON-NLS
           return null;
         }
       }
@@ -2799,7 +2870,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         return Pattern.compile(searchString, flags);
       }
       catch (java.util.regex.PatternSyntaxException e) {
-        chat("Search string is not a valid Regular Expression: " + noHTML(e.getMessage())); //NON-NLS
+        chat(Resources.getString("Editor.search_badRegex", noHTML(e.getMessage()))); //NON-NLS
         return null;
       }
     }
