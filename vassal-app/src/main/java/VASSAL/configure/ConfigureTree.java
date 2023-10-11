@@ -2122,7 +2122,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     private Pattern regexPattern;
     private int nodeListIndex;
     private int traitIndex;
-    protected ArrayList<Integer> breadCrumbs = new ArrayList<>();
+    private final List<Integer> breadCrumbs = new ArrayList<>();
 
     /**
      * Constructs a new {@link SearchAction}
@@ -2148,7 +2148,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       public void actionPerformed(ActionEvent ePrev) {
         // Rewind to previous match, maintaining the integrity of the track-back list
         if (nodeListIndex > 1) {
-          final DefaultMutableTreeNode node = setNode(1); //breadCrumbs.get(--nodeListIndex - 1));
+          final DefaultMutableTreeNode node = setNode(breadCrumbs.get(--nodeListIndex - 1));
           // Assuming *something* matched, scroll to it and show any "trait hits"
           if (node != null) {
             final TreePath path = new TreePath(node.getPath());
@@ -2269,7 +2269,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
                 // Compute & display hit count as heading, no indent
                 final int matches = getNumMatches(regexPattern);
 
-                breadCrumbs.ensureCapacity(Math.min(matches, 50)); // initialise breadcrumbs array, assume a very high search return will not be used
                 breadCrumbs.clear();
 
                 chatter.show(!searchParameters.isOptRegex() ? Resources.getString((searchParameters.isOptNormal() ? "Editor.search_count" : "Editor.search_countWord"), matches, noHTML(searchParameters.getSearchString())) :
