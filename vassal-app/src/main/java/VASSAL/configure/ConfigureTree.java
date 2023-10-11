@@ -2148,7 +2148,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       public void actionPerformed(ActionEvent ePrev) {
         // Rewind to previous match, maintaining the integrity of the track-back list
         if (nodeListIndex > 1) {
-          final DefaultMutableTreeNode node = setNode(breadCrumbs.get(--nodeListIndex - 1));
+          final DefaultMutableTreeNode node = setNode(1); //breadCrumbs.get(--nodeListIndex - 1));
           // Assuming *something* matched, scroll to it and show any "trait hits"
           if (node != null) {
             final TreePath path = new TreePath(node.getPath());
