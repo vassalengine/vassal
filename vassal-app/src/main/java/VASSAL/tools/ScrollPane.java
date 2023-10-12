@@ -127,30 +127,32 @@ public class ScrollPane extends JScrollPane {
       }
     });
 
-    // adds support for horizontal mouse wheel scrolling.
-    view.addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseReleased(MouseEvent e) {
-        int scrollDirection = 0;
-        if (e.getButton() == 4) {
-          scrollDirection = -1;
+    if (view != null) {
+      // adds support for horizontal mouse wheel scrolling.
+      view.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseReleased(MouseEvent e) {
+          int scrollDirection = 0;
+          if (e.getButton() == 4) {
+            scrollDirection = -1;
+          }
+          else if (e.getButton() == 5) {
+            scrollDirection = +1;
+          }
+
+        
+          if (!horizontalScrollBar.isVisible()) return;
+
+          GameModule.getGameModule().setSuppressAutoCenterUpdate(false);
+
+          horizontalScrollBar.setValue(
+            horizontalScrollBar.getValue() +
+            scrollDirection *
+            horizontalScrollBar.getUnitIncrement()
+          );
         }
-        else if (e.getButton() == 5) {
-          scrollDirection = +1;
-        }
-
-      
-        if (!horizontalScrollBar.isVisible()) return;
-
-        GameModule.getGameModule().setSuppressAutoCenterUpdate(false);
-
-        horizontalScrollBar.setValue(
-          horizontalScrollBar.getValue() +
-          scrollDirection *
-          horizontalScrollBar.getUnitIncrement()
-        );
-      }
-    });
+      });
+    }
 
     verticalScrollBar.addMouseWheelListener(e -> {
       if (e.getScrollAmount() == 0) return;
