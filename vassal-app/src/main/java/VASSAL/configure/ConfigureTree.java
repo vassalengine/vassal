@@ -2227,8 +2227,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         final InputMap prevMap = prev.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         prevMap.put(KeyStroke.getKeyStroke("PAGE_UP"), "PgUp");
         prev.getActionMap().put("PgUp", new AbstractAction() {
+          @Override
           public void actionPerformed(ActionEvent e21) {
-            for (ActionListener a : prev.getActionListeners()) {
+            for (final ActionListener a : prev.getActionListeners()) {
               a.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
             }
           }
@@ -2288,8 +2289,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         final InputMap findMap = find.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         findMap.put(KeyStroke.getKeyStroke("PAGE_DOWN"), "PgDn");
         find.getActionMap().put("PgDn", new AbstractAction() {
+          @Override
           public void actionPerformed(ActionEvent e22) {
-            for (ActionListener a : find.getActionListeners()) {
+            for (final ActionListener a : find.getActionListeners()) {
               a.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
             }
           }
