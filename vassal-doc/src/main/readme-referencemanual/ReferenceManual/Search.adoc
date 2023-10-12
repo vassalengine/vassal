@@ -11,7 +11,7 @@ VASSAL's Module Editor has a powerful Search facility to find components and pie
 
 The default search is to search for everything, but Advanced Search options can be used to limit the type of search performed. Two special search types offer additional flexibility.
 
-Initiate a search with the "Next" button and repeat this to advance the output item by item. The "Prev" button allows you to return to the previous item.
+Initiate a search with the "Next" button [PgDn] and repeat this to advance the output item by item. The "Prev" button [PgUp] allows you to return to the previous item.
 
 Search output indicates the number of items (traits and components) found and details each in order, positioning the editor on the found item. Traits are reported with a prefix indicating the position of the trait within the found item (sample output below). Matched strings are high-lighted.
 

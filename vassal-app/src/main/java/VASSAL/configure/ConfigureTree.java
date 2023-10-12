@@ -64,9 +64,7 @@ import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.SwingUtils;
-
 import net.miginfocom.swing.MigLayout;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,6 +77,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.DropMode;
+import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -111,7 +110,6 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Frame;
@@ -302,8 +300,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
 
+
   protected static String noHTML(String text) {
-    return text.replaceAll("<", "&lt;")  //NON-NLS // This prevents any unwanted tag from functioning
+    return text.replaceAll("<", "&lt;")  //NON-NLS // This prevents any unwanted html tag from functioning
                .replaceAll(">", "&gt;"); //NON-NLS // This makes sure > doesn't break any of our legit <div> tags
   }
 
@@ -1896,8 +1895,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       // reset at module start
       // searchString = (String) prefs.getValue(SearchParameters.SEARCH_STRING);
       searchString = "";
+      prefs.setValue(SEARCH_STRING, searchString);
       // optNormal = (Boolean)prefs.getValue(SearchParameters.SEARCH_NORMAL);
       optNormal = true;
+      prefs.setValue(SEARCH_NORMAL, optNormal);
       optWord = (Boolean)prefs.getValue(SearchParameters.SEARCH_WORD);
       optRegex = (Boolean)prefs.getValue(SearchParameters.SEARCH_REGEX);
       matchCase    = (Boolean)prefs.getValue(SearchParameters.MATCH_CASE);
@@ -1905,6 +1906,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       matchTypes       = (Boolean)prefs.getValue(SearchParameters.MATCH_TYPES);
       // matchAdvanced    = (Boolean)prefs.getValue(SearchParameters.MATCH_ADVANCED);
       matchAdvanced = false;
+      prefs.setValue(MATCH_ADVANCED,    matchAdvanced);
       matchTraits      = (Boolean)prefs.getValue(SearchParameters.MATCH_TRAITS);
       matchExpressions = (Boolean)prefs.getValue(SearchParameters.MATCH_EXPRESSIONS);
       matchProperties  = (Boolean)prefs.getValue(SearchParameters.MATCH_PROPERTIES);
@@ -2117,7 +2119,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   private static class SearchAction extends AbstractAction {
 
     private static final long serialVersionUID = 1L;
-
     private final ConfigureTree configureTree;
     private final SearchParameters searchParameters;
     private Pattern regexPattern;
@@ -2141,8 +2142,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       private static final long serialVersionUID = 1L;
       public PrevAction() {
         super(Resources.getString("Editor.search_prev"), null);
-        putValue(Action.SHORT_DESCRIPTION, Resources.getString("Editor.search_prevTip"));
-        putValue(Action.MNEMONIC_KEY, KeyEvent.VK_PAGE_UP);
+  //      putValue(Action.SHORT_DESCRIPTION, Resources.getString("Editor.search_prevTip"));
+  //      putValue(Action.MNEMONIC_KEY, KeyEvent.VK_PAGE_UP);
       }
 
       @Override
@@ -2164,6 +2165,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         if (nodeListIndex <= 1) this.setEnabled(false);
       }
     }
+
     @Override
     public void actionPerformed(ActionEvent e) {
 
@@ -2185,7 +2187,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         search.selectAll();
 
         final JRadioButton normal = new JRadioButton(Resources.getString("Editor.search_optNormal"), searchParameters.isOptNormal());
-
         final JRadioButton word = new JRadioButton(Resources.getString("Editor.search_optWord"), searchParameters.isOptWord());
         final JRadioButton regex = new JRadioButton(Resources.getString("Editor.search_optRegex"), searchParameters.isOptRegex());
 
@@ -2214,31 +2215,47 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           messages.setVisible(visible);
         };
 
-
         visSetter.accept(advanced.isSelected());
 
         configureTree.setSearchAdvanced(advanced);
 
-        // FIXME: Page Up stops working if next item button is pressed several times (possibly after pgUp has been used)
-        // FIXME: Next/Find requires more work to use same hotkey method as searchParameters... won't resolve.
-        final Action prevAction = new PrevAction();
-
-        final JButton prev = new JButton(prevAction);
-
-        prev.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-                KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, 0), "PgUp");
-
-        prev.getActionMap().put("PgUp", prevAction);
-
-        prev.setAction(prevAction);
-
+        final JButton prev = new JButton(Resources.getString("Editor.search_prev"));
+        prev.setToolTipText(Resources.getString("Editor.search_prevTip"));
         prev.setEnabled(false);
 
-        // any search option changes immediately disable backtracking. A renewed search will renable it.
+        // enable Page Up to trigger the Prev button
+        final InputMap prevMap = prev.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        prevMap.put(KeyStroke.getKeyStroke("PAGE_UP"), "PgUp");
+        prev.getActionMap().put("PgUp", new AbstractAction() {
+          public void actionPerformed(ActionEvent e21) {
+            for (ActionListener a : prev.getActionListeners()) {
+              a.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
+            }
+          }
+        });
+
+        prev.addActionListener(ePrev -> {
+          // stop once we get to the first item
+          if (nodeListIndex > 1) {
+            // Rewind to previous match, and move the pointer back
+            final DefaultMutableTreeNode node = setNode(breadCrumbs.get(--nodeListIndex - 1));
+            if (node != null) {
+              final TreePath path = new TreePath(node.getPath());
+              configureTree.setSelectionPath(path);
+              configureTree.scrollPathToVisible(path);
+              if (searchParameters.isMatchAdvanced()) {
+                showHitList(node, regexPattern);
+              }
+            }
+          }
+          prev.setEnabled(nodeListIndex > 1); // disable button once at start
+        });
+
+         // Any search option changes immediately disables prev (invalidates backtracking). A renewed search will enable it.
         // Note Text field input requires that return is pressed before the event actions so is omitted. Other actions are immediate.
         final ActionListener checkChanges = e12 -> {
           final SearchParameters parametersSetInDialog =
-                  new SearchParameters(search.getText(), normal.isSelected(), word.isSelected(), regex.isSelected(), sensitive.isSelected(), names.isSelected(), types.isSelected(), true, traits.isSelected(), expressions.isSelected(), properties.isSelected(), keys.isSelected(), menus.isSelected(), messages.isSelected());
+                  new SearchParameters(search.getText(), normal.isSelected(), word.isSelected(), regex.isSelected(), sensitive.isSelected(), names.isSelected(), types.isSelected(), advanced.isSelected(), traits.isSelected(), expressions.isSelected(), properties.isSelected(), keys.isSelected(), menus.isSelected(), messages.isSelected());
           prev.setEnabled(searchParameters.equals(parametersSetInDialog));
         };
 
@@ -2264,12 +2281,23 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           SwingUtils.repack(configureTree.getSearchDialog());
         });
 
-
         final JButton find = new JButton(Resources.getString("Editor.search_next"));
+        find.setToolTipText(Resources.getString("Editor.search_nextTip"));
+
+        // enable Page Down to trigger the Find/Next button
+        final InputMap findMap = find.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        findMap.put(KeyStroke.getKeyStroke("PAGE_DOWN"), "PgDn");
+        find.getActionMap().put("PgDn", new AbstractAction() {
+          public void actionPerformed(ActionEvent e22) {
+            for (ActionListener a : find.getActionListeners()) {
+              a.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
+            }
+          }
+        });
 
         find.addActionListener(eNext -> {
           final SearchParameters parametersSetInDialog =
-                  new SearchParameters(search.getText(), normal.isSelected(), word.isSelected(), regex.isSelected(), sensitive.isSelected(), names.isSelected(), types.isSelected(), true, traits.isSelected(), expressions.isSelected(), properties.isSelected(), keys.isSelected(), menus.isSelected(), messages.isSelected());
+                  new SearchParameters(search.getText(), normal.isSelected(), word.isSelected(), regex.isSelected(), sensitive.isSelected(), names.isSelected(), types.isSelected(), advanced.isSelected(), traits.isSelected(), expressions.isSelected(), properties.isSelected(), keys.isSelected(), menus.isSelected(), messages.isSelected());
 
           final boolean anyChanges = !searchParameters.equals(parametersSetInDialog);
 
@@ -2328,6 +2356,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           }
         });
 
+
         final JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
         cancel.addActionListener(e1 -> configureTree.getSearchDialog().setVisible(false));
 
@@ -2379,15 +2408,15 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
         // buttons row
         final JPanel bPanel = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]rel[]push")); // NON-NLS
-        bPanel.add(prev, "tag ok,sg 1"); //$NON-NLS-1$//
-        bPanel.add(find, "tag ok,sg 1"); //$NON-NLS-1$//
+        bPanel.add(prev, "tag prev,sg 1"); //$NON-NLS-1$//
+        bPanel.add(find, "tag next,sg 1"); //$NON-NLS-1$//
         bPanel.add(cancel, "tag cancel,sg 1"); //$NON-NLS-1$//
         bPanel.add(help, "tag help,sg 1"); // NON-NLS
         panel.add(bPanel, "grow"); // NON-NLS
 
         d.add(panel, "grow"); // NON-NLS
 
-        d.getRootPane().setDefaultButton(find); // Enter key activates search
+        d.getRootPane().setDefaultButton(find); // Enter key activates search (see also Page_Down)
 
          // Esc Key cancels
         final KeyStroke k = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
