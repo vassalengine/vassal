@@ -2236,7 +2236,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
         // any search option changes immediately disable backtracking. A renewed search will renable it.
         // Note Text field input requires that return is pressed before the event actions. Other actions are immediate.
-        ActionListener checkChanges = e12 -> {
+        final ActionListener checkChanges = e12 -> {
           final SearchParameters parametersSetInDialog =
                   new SearchParameters(search.getText(), normal.isSelected(), word.isSelected(), regex.isSelected(), sensitive.isSelected(), names.isSelected(), types.isSelected(), true, traits.isSelected(), expressions.isSelected(), properties.isSelected(), keys.isSelected(), menus.isSelected(), messages.isSelected());
           prev.setEnabled(searchParameters.equals(parametersSetInDialog));
