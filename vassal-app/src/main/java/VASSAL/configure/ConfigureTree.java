@@ -121,6 +121,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.InvalidDnDOperationException;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -2146,6 +2147,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
       @Override
       public void actionPerformed(ActionEvent ePrev) {
+
         // Rewind to previous match, maintaining the integrity of the track-back list
         if (nodeListIndex > 1) {
           final DefaultMutableTreeNode node = setNode(breadCrumbs.get(--nodeListIndex - 1));
@@ -2159,7 +2161,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             }
           }
         }
-        if (nodeListIndex == 1) this.setEnabled(false);
+        if (nodeListIndex <= 1) this.setEnabled(false);
       }
     }
     @Override
@@ -2183,6 +2185,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         search.selectAll();
 
         final JRadioButton normal = new JRadioButton(Resources.getString("Editor.search_optNormal"), searchParameters.isOptNormal());
+
         final JRadioButton word = new JRadioButton(Resources.getString("Editor.search_optWord"), searchParameters.isOptWord());
         final JRadioButton regex = new JRadioButton(Resources.getString("Editor.search_optRegex"), searchParameters.isOptRegex());
 
@@ -2211,10 +2214,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           messages.setVisible(visible);
         };
 
-        advanced.addChangeListener(l -> {
-          visSetter.accept(advanced.isSelected());
-          SwingUtils.repack(configureTree.getSearchDialog());
-        });
 
         visSetter.accept(advanced.isSelected());
 
@@ -2234,6 +2233,37 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         prev.setAction(prevAction);
 
         prev.setEnabled(false);
+
+        // any search option changes immediately disable backtracking. A renewed search will renable it.
+        // Note Text field input requires that return is pressed before the event actions. Other actions are immediate.
+        ActionListener checkChanges = e12 -> {
+          final SearchParameters parametersSetInDialog =
+                  new SearchParameters(search.getText(), normal.isSelected(), word.isSelected(), regex.isSelected(), sensitive.isSelected(), names.isSelected(), types.isSelected(), true, traits.isSelected(), expressions.isSelected(), properties.isSelected(), keys.isSelected(), menus.isSelected(), messages.isSelected());
+          prev.setEnabled(searchParameters.equals(parametersSetInDialog));
+        };
+
+        search.addActionListener(checkChanges);
+        normal.addActionListener(checkChanges);
+        word.addActionListener(checkChanges);
+        regex.addActionListener(checkChanges);
+        sensitive.addActionListener(checkChanges);
+        advanced.addActionListener(checkChanges);
+        names.addActionListener(checkChanges);
+        types.addActionListener(checkChanges);
+        traits.addActionListener(checkChanges);
+        expressions.addActionListener(checkChanges);
+        names.addActionListener(checkChanges);
+        properties.addActionListener(checkChanges);
+        keys.addActionListener(checkChanges);
+        menus.addActionListener(checkChanges);
+        messages.addActionListener(checkChanges);
+
+        // The Advanced option...
+        advanced.addChangeListener(l -> {
+          visSetter.accept(advanced.isSelected());
+          SwingUtils.repack(configureTree.getSearchDialog());
+        });
+
 
         final JButton find = new JButton(Resources.getString("Editor.search_next"));
 
