@@ -13,7 +13,7 @@ The default search is to search for everything, but Advanced Search options can 
 
 Initiate a search with the "Next" button and repeat this to advance the output item by item. The "Prev" button allows you to return to the previous item.
 
-Search output indicates the number of items (traits and components) found and details each in order, positioning the editor on the found item. Traits are reported with a prefix indicating the position of the trait within the found item (Piece or Prototype). Matched strings are high-lighted.
+Search output indicates the number of items (traits and components) found and details each in order, positioning the editor on the found item. Traits are reported with a prefix indicating the position of the trait within the found item (sample output below). Matched strings are high-lighted.
 
 Note that a search will continue from the last item found and will wrap-around, until you modify the search criteria or restart the editing session.
 
@@ -66,5 +66,9 @@ _Basic Search._
 image:images/search_advanced.png[]
 
 _Advanced Search._
+
+image:images/search_sample.png[]
+
+_Sample Output._
 |===
 
