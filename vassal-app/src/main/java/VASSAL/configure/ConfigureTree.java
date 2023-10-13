@@ -2715,7 +2715,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         checkShowPiece(matchString);
         if (!traitShown) {
           traitShown = true;
-          printFind(4, idString, desc, regexPattern);
+          printFind(7, idString, desc, regexPattern);
         }
       }
     }
@@ -2723,7 +2723,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     private void hitCheck(String s, Pattern regexPattern, String matchString, String item, String desc, String show, TargetProgress progress) {
       if (!StringUtils.isEmpty(s) && checkString(s, regexPattern)) {
         progress.checkShowTrait(matchString, regexPattern, item, desc);
-        printFind(6, show, s, regexPattern);
+        printFind(10, show, s, regexPattern);
       }
     }
 
@@ -2877,7 +2877,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
       final String printStr = (StringUtils.isEmpty(str) ? "" : highlightFinds(str, regexPattern));
 
-      chat((id.equals("Trait") ? (traitIndex < 10 ? "&nbsp;&nbsp;" : traitIndex < 100 ? "&nbsp;" : "") + traitIndex + "&gt" + "&nbsp;".repeat(padding - 4) : "&nbsp;".repeat(padding)) + "{" + highlightFinds(id, regexPattern) + "} " + printStr); //NON-NLS
+      chat((id.equals("Trait") ? (traitIndex < 10 ? "&nbsp;&nbsp;<b>" : traitIndex < 100 ? "&nbsp;<b>" : "<b>") + traitIndex + "&gt</b>" + "&nbsp;".repeat(padding - 6) : "&nbsp;".repeat(padding)) + "{" + highlightFinds(id, regexPattern) + "} " + printStr); //NON-NLS
     }
 
     /**
@@ -2899,9 +2899,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         final int start = match.start();
         final int end = match.end();
 
-        if (start > lastEnd) fmtStr.append(noHTML(rawStr.substring(lastEnd, start)));
-
-        fmtStr.append(htmlHighlighter).append(noHTML(rawStr.substring(start, end))).append("</font>");
+        // add in next unmatched segment followed by formatted matched segment
+        if (start > lastEnd) fmtStr.append(noHTML(rawStr.substring(lastEnd, start))).append(htmlHighlighter).append(noHTML(rawStr.substring(start, end))).append("</font>");
+        else {
+          // a contiguous or overlapping matched segment; ignore the duplicate sub-segment, and insert the remainder ahead of the </font> tag
+          if (fmtStr.length() > 12) fmtStr.substring(0, fmtStr.length() - 7); // remove prior </font>, skip if this is first pass
+          else fmtStr.append(htmlHighlighter); // first pass match at start of string
+          fmtStr.append(noHTML(rawStr.substring(lastEnd, end))).append("</font>");
+        }
 
         lastEnd = end;
       }
