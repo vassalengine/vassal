@@ -1,5 +1,7 @@
 3.7.3 - ???
 
+* 12814: Updated bundled Java to 21
+
 3.7.2 - 8 October 2023
 
 * 12896: Build universal Mac bundle

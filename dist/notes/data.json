@@ -22,6 +22,7 @@
       "bug_fixes": [
       ],
       "other_improvements": [
+        { "num": 12814, "desc": "Updated bundled Java to 21" }
       ]
    },
    {
