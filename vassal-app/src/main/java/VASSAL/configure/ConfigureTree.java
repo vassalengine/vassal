@@ -2277,7 +2277,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           final SearchParameters parametersSetInDialog =
                   new SearchParameters(search.getText(), normal.isSelected(), word.isSelected(), regex.isSelected(), sensitive.isSelected(), names.isSelected(), types.isSelected(), advanced.isSelected(), traits.isSelected(), expressions.isSelected(), properties.isSelected(), keys.isSelected(), menus.isSelected(), messages.isSelected());
 
-          boolean anyChanges = !searchParameters.equals(parametersSetInDialog);
+          final boolean anyChanges = !searchParameters.equals(parametersSetInDialog);
 
           if (anyChanges) {
             searchParameters.setFrom(parametersSetInDialog);
@@ -2312,9 +2312,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
               boolean scanActive = true;
               final int cursor;
 
-              if (!anyChanges || breadCrumbs.size() == 0) {
+              if (!anyChanges || breadCrumbs.isEmpty()) {
                 cursor = -1;
-                scanActive = anyChanges || breadCrumbs.size() > 0;  // skip scan if this is a rentry after zero matches
+                scanActive = anyChanges || !breadCrumbs.isEmpty();  // skip scan if this is a rentry after zero matches
                 if (!scanActive) chat(Resources.getString(searchParameters.optNormal ? "Editor.search_none_found" : searchParameters.optWord ? "Editor.search_noWord_match" : "Editor.search_noRegex_match",
                         noHTML(!searchParameters.optRegex ? searchParameters.getSearchString() : regexPattern.toString())));
               }
@@ -2447,7 +2447,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       int bookmark = -1;
 
       // Position at the current node
-      if (breadCrumbs.size() > 0) { // currentNode != null) {
+      if (!breadCrumbs.isEmpty()) { // currentNode != null) {
         bookmark =
           IntStream
             .range(0, searchNodes.size())
