@@ -9,13 +9,13 @@
 
 VASSAL's Module Editor has a powerful Search facility to find components and pieces in a number of different ways.
 
-The default search is to search for everything, but Advanced Search options can be used to limit the type of search performed. Two special search types offer additional flexibility.
+The default search is to search for everything, but filter options can be used to limit the type of search performed. Two special search types offer additional flexibility.
 
 Initiate a search with the "Next" button [PgDn] and repeat this to advance the output item by item. The "Prev" button [PgUp] allows you to return to the previous item.
 
 Search output indicates the number of items (traits and components) found and details each in order, positioning the editor on the found item. Traits are reported with a prefix indicating the position of the trait within the found item (sample output below). Matched strings are high-lighted.
 
-Note that a search will continue from the last item found and will wrap-around, until you modify the search criteria or restart the editing session.
+Note that a search will continue from the last item found and will wrap-around, until you restart the editing session.
 
 '''''
 
@@ -31,8 +31,8 @@ Search may be normal, start of word or https://en.wikipedia.org/wiki/Regular_exp
 ===== Exact Case
 Force an Exact case search (i.e. abc is different to ABC).
 
-===== Advanced Search
-Show the advanced search options. All search options are on in a simple search. The advanced options allow you to turn off options to narrow your search.
+===== Advanced Filters
+Show the advanced filter options. All search filters are on in a simple search. The advanced options allow you to de-select various categories to narrow your search.
 
 ===== Match names
 Match against the names of components or pieces.
@@ -67,8 +67,9 @@ image:images/search_advanced.png[]
 
 _Advanced Search._
 
-image:images/search_sample.png[]
+image:images/search_output.png[]
 
 _Sample Output._
+
 |===
 
