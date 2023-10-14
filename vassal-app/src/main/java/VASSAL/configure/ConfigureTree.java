@@ -2215,7 +2215,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             final DefaultMutableTreeNode node = setNode(breadCrumbs.get(--nodeListIndex - 1));
             breadCrumbs.remove(nodeListIndex);
             if (node != null) {
-              selectPath(node, regexPattern);
+              selectPath(node);
               showHitList(node, regexPattern);
               // TODO: Remove obsolete code
 //              if (searchParameters.isMatchAdvanced()) {
@@ -2303,7 +2303,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
               final DefaultMutableTreeNode node = findNode(regexPattern);
               if (node != null) {
-                selectPath(node, regexPattern);
+                selectPath(node);
                 nodeListIndex = initSearchPosition(regexPattern);  //  maintains search index at  arbitrary start position
                 showHitList(node, regexPattern); // always show
 
@@ -2314,7 +2314,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
               }
             }
             else {
-              if (!anyChanges && breadCrumbs.size() == 0) {
+              if (!anyChanges && breadCrumbs.isEmpty()) {
                 chat(Resources.getString(searchParameters.optNormal ? "Editor.search_none_found" : searchParameters.optWord ? "Editor.search_noWord_match" : "Editor.search_noRegex_match",
                       noHTML(!searchParameters.optRegex ? searchParameters.getSearchString() : regexPattern.toString())));
               }
@@ -2322,7 +2322,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
                 // get next...
                 final DefaultMutableTreeNode node = findNode(regexPattern);
                 if (node != null) {
-                  selectPath(node, regexPattern);
+                  selectPath(node);
                   showHitList(node, regexPattern); // always show
                 }
               }
@@ -2404,10 +2404,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
     /**
      * Select path to node and display in editor
+     *
      * @param node - node to position at
-     * @param regexPattern - search pattern for output selection and formatting
      */
-    private void selectPath(DefaultMutableTreeNode node, Pattern regexPattern) {
+    private void selectPath(DefaultMutableTreeNode node) {
       final TreePath path = new TreePath(node.getPath());
       configureTree.setSelectionPath(path);
       configureTree.scrollPathToVisible(path);
