@@ -2212,7 +2212,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           // stop once we get to the first item
           if (nodeListIndex > 1) {
             // Rewind to previous match, and move the pointer back
-            final DefaultMutableTreeNode node = setNode(breadCrumbs.get(--nodeListIndex -1));
+            final DefaultMutableTreeNode node = setNode(breadCrumbs.get(--nodeListIndex - 1));
             breadCrumbs.remove(nodeListIndex);
             if (node != null) {
               selectPath(node, regexPattern);
@@ -2508,8 +2508,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
       do {
         if (checkNode(searchNodes.get(i), regexPattern)) breadCrumbs.add(i);
-      }
-      while (searchNodes.get(i++) != currentNode);
+      } while (searchNodes.get(i++) != currentNode);
 
       return  breadCrumbs.size();
     }
