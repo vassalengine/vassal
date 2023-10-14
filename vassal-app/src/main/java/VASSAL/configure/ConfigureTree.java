@@ -2212,12 +2212,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           // stop once we get to the first item
           if (nodeListIndex > 1) {
             // Rewind to previous match, and move the pointer back
-            final DefaultMutableTreeNode node = setNode(breadCrumbs.get(--nodeListIndex));
+            final DefaultMutableTreeNode node = setNode(breadCrumbs.get(--nodeListIndex -1));
             breadCrumbs.remove(nodeListIndex);
             if (node != null) {
-              final TreePath path = new TreePath(node.getPath());
-              configureTree.setSelectionPath(path);
-              configureTree.scrollPathToVisible(path);
+              selectPath(node, regexPattern);
               showHitList(node, regexPattern);
               // TODO: Remove obsolete code
 //              if (searchParameters.isMatchAdvanced()) {
@@ -2283,10 +2281,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             searchParameters.setFrom(parametersSetInDialog);
           }
 
-          // If literally no search parameters are selectable, turn at least one on (and print warning)
-          if (!searchParameters.isMatchNames() && !searchParameters.isMatchTypes() && searchParameters.isMatchAdvanced() && !searchParameters.isMatchTraits() && !searchParameters.isMatchExpressions() && !searchParameters.isMatchProperties() && !searchParameters.isMatchKeys() && !searchParameters.isMatchMenus() && !searchParameters.isMatchMessages()) {
+          // If advanced filters are set and literally no search parameters are selectable, turn at least one on (and print warning)
+          if (searchParameters.isMatchAdvanced() && !searchParameters.isMatchNames() && !searchParameters.isMatchTypes() && !searchParameters.isMatchTraits() && !searchParameters.isMatchExpressions() && !searchParameters.isMatchProperties() && !searchParameters.isMatchKeys() && !searchParameters.isMatchMenus() && !searchParameters.isMatchMessages()) {
             searchParameters.setMatchNames(true);
-            names.setSelected(true);
+            names.setSelected(false);
             ConfigureTree.chat(Resources.getString("Editor.search_all_off"));
           }
 
@@ -2294,53 +2292,38 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             prev.setEnabled(false);
           }
           else {
-            int matches = 0;
-
             if (anyChanges) {
               regexPattern = setupRegexSearch(searchParameters.getSearchString());
 
               // Compute & display hit count as heading, no indent
-              matches = (regexPattern == null ? 0 : getNumMatches(regexPattern));
+              final int matches = (regexPattern == null ? 0 : getNumMatches(regexPattern));
 
               chatter.show(!searchParameters.isOptRegex() ? Resources.getString((searchParameters.isOptNormal() ? "Editor.search_count" : "Editor.search_countWord"), matches, noHTML(searchParameters.getSearchString())) :
                       Resources.getString("Editor.search_countRegex", matches, noHTML(regexPattern.toString())));
 
+              final DefaultMutableTreeNode node = findNode(regexPattern);
+              if (node != null) {
+                selectPath(node, regexPattern);
+                nodeListIndex = initSearchPosition(regexPattern);  //  maintains search index at  arbitrary start position
+                showHitList(node, regexPattern); // always show
+
+                // TODO: Remove obsolete code - or reimplement here and in section below
+                //              if (searchParameters.isMatchAdvanced()) {
+                //                showHitList(node, regexPattern);
+                //              }
+              }
             }
-
-            if (!anyChanges || matches > 0) {
-              // to provide search index whilst preserving start position, initialise stream and work forward...
-              boolean scanActive = true;
-              final int cursor;
-
-              if (!anyChanges || breadCrumbs.isEmpty()) {
-                cursor = -1;
-                scanActive = anyChanges || !breadCrumbs.isEmpty();  // skip scan if this is a rentry after zero matches
-                if (!scanActive) chat(Resources.getString(searchParameters.optNormal ? "Editor.search_none_found" : searchParameters.optWord ? "Editor.search_noWord_match" : "Editor.search_noRegex_match",
-                        noHTML(!searchParameters.optRegex ? searchParameters.getSearchString() : regexPattern.toString())));
+            else {
+              if (!anyChanges && breadCrumbs.size() == 0) {
+                chat(Resources.getString(searchParameters.optNormal ? "Editor.search_none_found" : searchParameters.optWord ? "Editor.search_noWord_match" : "Editor.search_noRegex_match",
+                      noHTML(!searchParameters.optRegex ? searchParameters.getSearchString() : regexPattern.toString())));
               }
               else {
-                cursor = breadCrumbs.get(nodeListIndex - 1);
-                breadCrumbs.clear();
-                nodeListIndex = 0;
-              }
-
-              while (scanActive) {
+                // get next...
                 final DefaultMutableTreeNode node = findNode(regexPattern);
-
-                // exit test - one time once underway
-                scanActive = (cursor > breadCrumbs.get(nodeListIndex - 1) && node != null);
-
-                // Assuming *something* matched, scroll to it and show any "trait hits"
-                if (!scanActive && node != null) {
-                  final TreePath path = new TreePath(node.getPath());
-                  configureTree.setSelectionPath(path);
-                  configureTree.scrollPathToVisible(path);
+                if (node != null) {
+                  selectPath(node, regexPattern);
                   showHitList(node, regexPattern); // always show
-
-                  // TODO: Remove obsolete code
-//              if (searchParameters.isMatchAdvanced()) {
-//                showHitList(node, regexPattern);
-//              }
                 }
               }
             }
@@ -2348,7 +2331,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           }
 
         });
-
 
         final JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
         cancel.addActionListener(e1 -> configureTree.getSearchDialog().setVisible(false));
@@ -2420,6 +2402,17 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
     }
 
+    /**
+     * Select path to node and display in editor
+     * @param node - node to position at
+     * @param regexPattern - search pattern for output selection and formatting
+     */
+    private void selectPath(DefaultMutableTreeNode node, Pattern regexPattern) {
+      final TreePath path = new TreePath(node.getPath());
+      configureTree.setSelectionPath(path);
+      configureTree.scrollPathToVisible(path);
+    }
+
     private void showSearchHelp() {
       File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
       dir = new File(dir, "ReferenceManual"); //$NON-NLS-1$
@@ -2447,7 +2440,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       int bookmark = -1;
 
       // Position at the current node
-      if (!breadCrumbs.isEmpty()) { // currentNode != null) {
+      if (currentNode != null) {
         bookmark =
           IntStream
             .range(0, searchNodes.size())
@@ -2487,11 +2480,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           .orElse(null);
     }
 
-    /**
-     * Position at node
-     * @param bookmark - index position
-     * @return the node we found, or null if none
-     */
+
+
     private DefaultMutableTreeNode setNode(int bookmark) {
       return configureTree.getSearchNodes((DefaultMutableTreeNode)configureTree.getModel().getRoot()).get(bookmark);
     }
@@ -2502,6 +2492,26 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     private int getNumMatches(Pattern regexPattern) {
       final List<DefaultMutableTreeNode> searchNodes = configureTree.getSearchNodes((DefaultMutableTreeNode)configureTree.getModel().getRoot());
       return (int) searchNodes.stream().filter(node -> checkNode(node, regexPattern)).count();
+    }
+
+    /**
+     * Position and initialise for start of a search. Purpose is to maintain a consistent display index regardless of starting position.
+     * @param regexPattern - our regex pattern derived from the search panel
+     * @return value of nodeListIndex
+     */
+    private int initSearchPosition(Pattern regexPattern) {
+      final List<DefaultMutableTreeNode> searchNodes = configureTree.getSearchNodes((DefaultMutableTreeNode)configureTree.getModel().getRoot());
+      final DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode)configureTree.getLastSelectedPathComponent();
+
+      breadCrumbs.clear();
+      int i = 0;
+
+      do {
+        if (checkNode(searchNodes.get(i), regexPattern)) breadCrumbs.add(i);
+      }
+      while (searchNodes.get(i++) != currentNode);
+
+      return  breadCrumbs.size();
     }
 
     /**
