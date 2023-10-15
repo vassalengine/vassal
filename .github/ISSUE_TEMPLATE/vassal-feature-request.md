@@ -1,6 +1,6 @@
 ---
 name: Vassal feature request
-about: Suggest an idea to improve Vassal
+about: Suggest an idea to help improve Vassal
 title: "[Player|Module Manager|Editor|Other delete as appropriate] **summarise here**"
 labels: enhancement
 assignees: ''

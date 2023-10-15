@@ -14,7 +14,7 @@ Reproduce the bug using the latest Vassal release and enter its version number a
 A clear and concise description of what the bug is.
 
 **To Reproduce**
-Steps to reproduce the behavior. **Small test modules that explicitly demonstrate a bug help considerably!** (include a link to the module and other files where required. Small files may be attached; use .zip if necessary.):
+Steps to reproduce the behavior. **Small test modules that explicitly demonstrate a bug help considerably!** (include a link to the module and other files if required. Small files may be attached; use .zip if necessary.):
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'

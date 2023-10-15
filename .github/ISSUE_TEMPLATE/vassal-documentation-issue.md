@@ -1,6 +1,6 @@
 ---
 name: Vassal documentation issue
-about: Create a report to help us improve Vassal's documentation.
+about: Create a report to help us improve Vassal documentation.
 title: ''
 labels: documentation
 assignees: ''
