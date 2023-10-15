@@ -24,7 +24,6 @@ import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.icon.IconFamily;
 import VASSAL.tools.swing.SwingUtils;
 import net.miginfocom.swing.MigLayout;
-import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -418,33 +417,31 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
     }
 
     // Repeat the Key handling for each Key of interest on release.
-    // This has no effect on Windows, but caters for the bizarre
-    // KeyEvent sequences created on MacOS.
+    // Caters for the bizarre KeyEvent sequences created on MacOS.
+    // ALSO, it turn sout, makes alphanumeric keys record properly on Windows
     @Override
     public void keyReleased(KeyEvent e) {
       // reportKeyEvent("KEY_RELEASED", e); // NON-NLS
-      if (SystemUtils.IS_OS_MAC) {
-        switch (e.getKeyCode()) {
-        case KeyEvent.VK_DELETE:
-        case KeyEvent.VK_BACK_SPACE:
-          // Allow mapping of Delete
-          if (getValue().equals(NamedKeyStroke.NULL_KEYSTROKE) || e.isShiftDown() || e.isControlDown() || e.isMetaDown() || e.isAltDown()) {
-            setValue(NamedKeyStroke.of(SwingUtils.convertKeyEvent(e)));
-          }
-          else {
-            setValue(NamedKeyStroke.NULL_KEYSTROKE);
-          }
-          break;
-        case KeyEvent.VK_SHIFT:
-        case KeyEvent.VK_CONTROL:
-        case KeyEvent.VK_META:
-        case KeyEvent.VK_ALT:
-        case KeyEvent.VK_ALT_GRAPH:
-        case KeyEvent.VK_UNDEFINED:
-          break;
-        default:
+      switch (e.getKeyCode()) {
+      case KeyEvent.VK_DELETE:
+      case KeyEvent.VK_BACK_SPACE:
+        // Allow mapping of Delete
+        if (getValue().equals(NamedKeyStroke.NULL_KEYSTROKE) || e.isShiftDown() || e.isControlDown() || e.isMetaDown() || e.isAltDown()) {
           setValue(NamedKeyStroke.of(SwingUtils.convertKeyEvent(e)));
         }
+        else {
+          setValue(NamedKeyStroke.NULL_KEYSTROKE);
+        }
+        break;
+      case KeyEvent.VK_SHIFT:
+      case KeyEvent.VK_CONTROL:
+      case KeyEvent.VK_META:
+      case KeyEvent.VK_ALT:
+      case KeyEvent.VK_ALT_GRAPH:
+      case KeyEvent.VK_UNDEFINED:
+        break;
+      default:
+        setValue(NamedKeyStroke.of(SwingUtils.convertKeyEvent(e)));
       }
     }
   }
