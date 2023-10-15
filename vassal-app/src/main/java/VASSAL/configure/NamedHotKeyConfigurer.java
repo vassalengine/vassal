@@ -24,6 +24,7 @@ import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.icon.IconFamily;
 import VASSAL.tools.swing.SwingUtils;
 import net.miginfocom.swing.MigLayout;
+import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -425,12 +426,14 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
       switch (e.getKeyCode()) {
       case KeyEvent.VK_DELETE:
       case KeyEvent.VK_BACK_SPACE:
-        // Allow mapping of Delete
-        if (getValue().equals(NamedKeyStroke.NULL_KEYSTROKE) || e.isShiftDown() || e.isControlDown() || e.isMetaDown() || e.isAltDown()) {
-          setValue(NamedKeyStroke.of(SwingUtils.convertKeyEvent(e)));
-        }
-        else {
-          setValue(NamedKeyStroke.NULL_KEYSTROKE);
+        if (SystemUtils.IS_OS_MAC) {
+          // Allow mapping of Delete
+          if (getValue().equals(NamedKeyStroke.NULL_KEYSTROKE) || e.isShiftDown() || e.isControlDown() || e.isMetaDown() || e.isAltDown()) {
+            setValue(NamedKeyStroke.of(SwingUtils.convertKeyEvent(e)));
+          }
+          else {
+            setValue(NamedKeyStroke.NULL_KEYSTROKE);
+          }
         }
         break;
       case KeyEvent.VK_SHIFT:
