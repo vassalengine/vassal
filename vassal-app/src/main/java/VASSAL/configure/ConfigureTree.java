@@ -333,8 +333,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     this.searchAdvanced = searchAdvanced;
   }
 
-  protected JRadioButton getSearchAdvanced() {
-    return searchAdvanced;
+  // Obsolete
+  protected void setSearchAdvanced(JCheckBox searchAdvanced) {
   }
 
 
