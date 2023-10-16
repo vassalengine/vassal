@@ -1847,7 +1847,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     /** True if match class names */
     private boolean matchTypes;
 
-    /** Control of which data types get searched; advanced search true enables subsequent detailed filter items */
+    /** Control of which data types get searched; filters == true enables subsequent detailed filter items */
     private boolean matchSimple;
     private boolean matchFull;
     private boolean matchAdvanced;
@@ -2187,7 +2187,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
         final JRadioButton simple  = new JRadioButton(Resources.getString("Editor.search_simple"), searchParameters.isMatchSimple());
         final JRadioButton full  = new JRadioButton(Resources.getString("Editor.search_full"), searchParameters.isMatchFull());
-        final JRadioButton advanced  = new JRadioButton(Resources.getString("Editor.search_advanced"), searchParameters.isMatchAdvanced());
+        final JRadioButton filters  = new JRadioButton(Resources.getString("Editor.search_advanced"), searchParameters.isMatchAdvanced());
 
         final JCheckBox names = new JCheckBox(Resources.getString("Editor.search_names"), searchParameters.isMatchNames());
         final JCheckBox types = new JCheckBox(Resources.getString("Editor.search_types"), searchParameters.isMatchTypes());
@@ -2211,9 +2211,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           messages.setVisible(visible);
         };
 
-        visSetter.accept(advanced.isSelected());
+        visSetter.accept(filters.isSelected());
 
-        configureTree.setSearchAdvanced(advanced);
+        configureTree.setSearchAdvanced(filters);
 
         final JButton prev = new JButton(Resources.getString("Editor.search_prev"));
         prev.setToolTipText(Resources.getString("Editor.search_prevTip"));
@@ -2251,7 +2251,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         final ActionListener checkChanges = e12 -> {
           final SearchParameters parametersSetInDialog =
                   new SearchParameters(search.getText(), normal.isSelected(), word.isSelected(), regex.isSelected(), sensitive.isSelected(), names.isSelected(), types.isSelected(),
-                          simple.isSelected(), full.isSelected(), advanced.isSelected(),
+                          simple.isSelected(), full.isSelected(), filters.isSelected(),
                           traits.isSelected(), expressions.isSelected(), properties.isSelected(), keys.isSelected(), menus.isSelected(), messages.isSelected());
           prev.setEnabled(searchParameters.equals(parametersSetInDialog));
         };
@@ -2263,7 +2263,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         sensitive.addActionListener(checkChanges);
         simple.addActionListener(checkChanges);
         full.addActionListener(checkChanges);
-        advanced.addActionListener(checkChanges);
+        filters.addActionListener(checkChanges);
         names.addActionListener(checkChanges);
         types.addActionListener(checkChanges);
         traits.addActionListener(checkChanges);
@@ -2274,8 +2274,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         messages.addActionListener(checkChanges);
 
         // The Advanced option...
-        advanced.addChangeListener(l -> {
-          visSetter.accept(advanced.isSelected());
+        filters.addChangeListener(l -> {
+          visSetter.accept(filters.isSelected());
           SwingUtils.repack(configureTree.getSearchDialog());
         });
 
@@ -2297,7 +2297,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         find.addActionListener(eNext -> {
           final SearchParameters parametersSetInDialog =
                   new SearchParameters(search.getText(), normal.isSelected(), word.isSelected(), regex.isSelected(), sensitive.isSelected(), names.isSelected(), types.isSelected(),
-                          simple.isSelected(), full.isSelected(), advanced.isSelected(),
+                          simple.isSelected(), full.isSelected(), filters.isSelected(),
                           traits.isSelected(), expressions.isSelected(), properties.isSelected(), keys.isSelected(), menus.isSelected(), messages.isSelected());
 
           final boolean anyChanges = !searchParameters.equals(parametersSetInDialog);
@@ -2393,13 +2393,13 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         final ButtonGroup searchScope = new ButtonGroup();
         searchScope.add(simple);
         searchScope.add(full);
-        searchScope.add(advanced);
+        searchScope.add(filters);
 
         final JPanel scopePanel = new JPanel(new MigLayout(ConfigurerLayout.STANDARD_INSETS, "[]rel[]rel[]rel[]")); // NON-NLS
         scopePanel.add(new JLabel((Resources.getString("Editor.search_scopeLabel"))));
         scopePanel.add(simple);
         scopePanel.add(full);
-        scopePanel.add(advanced);
+        scopePanel.add(filters);
         panel.add(scopePanel, "grow"); // NON-NLS
 
         // Filters
