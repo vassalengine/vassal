@@ -21,11 +21,13 @@
       ],
       "bug_fixes": [
         { "num": 12817, "desc": "Fix alphanumeric key behavior in hotkey (key command) configurer in Editor (e.g., Shift+B should show up as \"Shift+B\", not \"B\")" },
-        { "num": 12810, "desc": "VASSAL.sh exits before printing relevant exit message" }
+        { "num": 12810, "desc": "VASSAL.sh exits before printing relevant exit message" },
+        { "num": 12705, "desc": "Prevent creation of duplicate Translations by Add Translation button" }
       ],
       "other_improvements": [
         { "num": 12814, "desc": "Updated bundled Java to 21" },
-        { "num": 12808, "desc": "Horizontal scrolling now supports 2-finger-trackpad and mice with additional horizontal wheels" }
+        { "num": 12808, "desc": "Horizontal scrolling now supports 2-finger-trackpad and mice with additional horizontal wheels" },
+        { "num": 12724, "desc": "Improved legibility of translation panels" }
       ]
    },
    {
