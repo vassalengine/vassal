@@ -24,7 +24,8 @@
         { "num": 12810, "desc": "VASSAL.sh exits before printing relevant exit message" }
       ],
       "other_improvements": [
-        { "num": 12814, "desc": "Updated bundled Java to 21" }
+        { "num": 12814, "desc": "Updated bundled Java to 21" },
+        { "num": 12808, "desc": "Horizontal scrolling now supports 2-finger-trackpad and mice with additional horizontal wheels" }
       ]
    },
    {

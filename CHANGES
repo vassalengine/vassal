@@ -4,6 +4,8 @@
     Editor (e.g., Shift+B should show up as "Shift+B", not "B")
 * 12814: Updated bundled Java to 21
 * 12810: VASSAL.sh exits before printing relevant exit message
+* 12808: Horizontal scrolling now supports 2-finger-trackpad and mice with
+    additional horizontal wheels
 
 3.7.2 - 8 October 2023
 
