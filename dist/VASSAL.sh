@@ -4,16 +4,16 @@
 # Execute this file to launch VASSAL on Unix
 #
 
+set -e
+
 # Get java from PATH if not set in environment
-JAVA="${JAVA:-$(which java)}"
+JAVA="${JAVA:-$(which java 2>/dev/null || : )}"
 
 # Check that java exists
 if [ ! -x "$JAVA" ]; then
   echo "Error: $JAVA cannot be run. Please ensure that Java is installed." 2>&1
   exit 1
 fi
-
-set -e
 
 # Dereference any possible symbolic link to executable script, then find
 # absolute path where VASSAL is installed 
