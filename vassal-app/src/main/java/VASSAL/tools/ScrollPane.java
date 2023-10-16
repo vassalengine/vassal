@@ -23,6 +23,8 @@ import VASSAL.tools.swing.SwingUtils;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import java.awt.Component;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
@@ -124,6 +126,33 @@ public class ScrollPane extends JScrollPane {
         );
       }
     });
+
+    if (view != null) {
+      // adds support for horizontal mouse wheel scrolling.
+      view.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseReleased(MouseEvent e) {
+          int scrollDirection = 0;
+          if (e.getButton() == 4) {
+            scrollDirection = -1;
+          }
+          else if (e.getButton() == 5) {
+            scrollDirection = +1;
+          }
+
+        
+          if (!horizontalScrollBar.isVisible()) return;
+
+          GameModule.getGameModule().setSuppressAutoCenterUpdate(false);
+
+          horizontalScrollBar.setValue(
+            horizontalScrollBar.getValue() +
+            scrollDirection *
+            horizontalScrollBar.getUnitIncrement()
+          );
+        }
+      });
+    }
 
     verticalScrollBar.addMouseWheelListener(e -> {
       if (e.getScrollAmount() == 0) return;
