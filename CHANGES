@@ -3,6 +3,7 @@
 * 12817: Fix alphanumeric key behavior in hotkey (key command) configurer in
     Editor (e.g., Shift+B should show up as "Shift+B", not "B")
 * 12814: Updated bundled Java to 21
+* 12810: VASSAL.sh exits before printing relevant exit message
 
 3.7.2 - 8 October 2023
 

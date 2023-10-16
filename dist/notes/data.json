@@ -20,7 +20,8 @@
       "new_features": [
       ],
       "bug_fixes": [
-        { "num": 12817, "desc": "Fix alphanumeric key behavior in hotkey (key command) configurer in Editor (e.g., Shift+B should show up as \"Shift+B\", not \"B\")" }
+        { "num": 12817, "desc": "Fix alphanumeric key behavior in hotkey (key command) configurer in Editor (e.g., Shift+B should show up as \"Shift+B\", not \"B\")" },
+        { "num": 12810, "desc": "VASSAL.sh exits before printing relevant exit message" }
       ],
       "other_improvements": [
         { "num": 12814, "desc": "Updated bundled Java to 21" }
