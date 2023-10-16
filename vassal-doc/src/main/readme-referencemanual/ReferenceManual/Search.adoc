@@ -65,7 +65,7 @@ _Basic Search._
 
 image:images/search_advanced.png[]
 
-_Advanced Search._
+_Advanced Filters._
 
 image:images/search_output.png[]
 

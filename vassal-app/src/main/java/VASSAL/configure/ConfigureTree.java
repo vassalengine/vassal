@@ -340,7 +340,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected void setSearchAdvanced(JCheckBox searchAdvanced) {
   }
   @Deprecated(since = "2023-10-17", forRemoval = true)
-  protected void getSearchAdvanced(JCheckBox searchAdvanced) {
+  protected JCheckBox getSearchAdvanced() {
+    return searchAdvanced;
   }
 
 
