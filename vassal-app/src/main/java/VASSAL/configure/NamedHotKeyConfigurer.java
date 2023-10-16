@@ -419,7 +419,7 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
 
     // Repeat the Key handling for each Key of interest on release.
     // Caters for the bizarre KeyEvent sequences created on MacOS.
-    // ALSO, it turn sout, makes alphanumeric keys record properly on Windows
+    // ALSO, it turns out, makes alphanumeric keys record properly on Windows
     @Override
     public void keyReleased(KeyEvent e) {
       // reportKeyEvent("KEY_RELEASED", e); // NON-NLS
