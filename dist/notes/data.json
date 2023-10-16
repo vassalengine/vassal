@@ -20,6 +20,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 12817, "desc": "Fix alphanumeric key behavior in hotkey (key command) configurer in Editor (e.g., Shift+B should show up as \"Shift+B\", not \"B\")" }
       ],
       "other_improvements": [
         { "num": 12814, "desc": "Updated bundled Java to 21" }
