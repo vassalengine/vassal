@@ -204,7 +204,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected JDialog searchDialog;
   protected JTextField searchField;
-  protected JRadioButton searchAdvanced;
+  protected JRadioButton searchFiltered;
+
+  @Deprecated(since = "2023-10-17", forRemoval = true)
+  protected JCheckBox searchAdvanced;
 
   private final SearchParameters searchParameters;
   protected static Chatter chatter;
@@ -329,12 +332,15 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     this.searchField = searchField;
   }
 
-  protected void setSearchAdvanced(JRadioButton searchAdvanced) {
-    this.searchAdvanced = searchAdvanced;
+  protected void setSearchAdvanced(JRadioButton searchFiltered) {
+    this.searchFiltered = searchFiltered;
   }
 
-  // Obsolete
+  @Deprecated(since = "2023-10-17", forRemoval = true)
   protected void setSearchAdvanced(JCheckBox searchAdvanced) {
+  }
+  @Deprecated(since = "2023-10-17", forRemoval = true)
+  protected void getSearchAdvanced(JCheckBox searchAdvanced) {
   }
 
 

@@ -9,7 +9,7 @@
 
 VASSAL's Module Editor has a powerful Search facility to find components and pieces in a number of different ways.
 
-The default search is to search for everything, but filter options can be used to limit the type of search performed. Two special search types offer additional flexibility.
+The default scope is a simple search that targets the names of components and pieces. Options can be used to search through all module data or to limit the search to data types of interest. Special search types offer additional flexibility.
 
 Initiate a search with the "Next" button [PgDn] and repeat this to advance the output item by item. The "Prev" button [PgUp] allows you to return to the previous item.
 
@@ -25,14 +25,14 @@ Note that a search will continue from the last item found and will wrap-around, 
 |===
 a|
 
-===== Search Type
+===== Type
 Search may be normal, start of word or https://en.wikipedia.org/wiki/Regular_expression[Regular Expression]. "Start of word" uses a pre-formatted regular expression to find matches on words or phrases starting with the search string.
 
 ===== Exact Case
 Force an Exact case search (i.e. abc is different to ABC).
 
-===== Advanced Filters
-Show the advanced filter options. All search filters are on in a simple search. The advanced options allow you to de-select various categories to narrow your search.
+===== Scope
+Choose from a basic search of component and piece names, a full search of all supported data or use "advanced filters" to select specific data types. Note that there are a fewc data fields that search does not check.
 
 ===== Match names
 Match against the names of components or pieces.
