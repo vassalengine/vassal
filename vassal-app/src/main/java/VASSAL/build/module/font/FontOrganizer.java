@@ -62,13 +62,11 @@ import java.util.Map;
  */
 public class FontOrganizer extends AbstractConfigurable {
 
-
-
   private static final Logger log = LoggerFactory.getLogger(FontOrganizer.class);
 
   // In-built VASSAL fonts
   public static final String VASSAL_SERIF_FONT = "VassalSerif";
-  public static final String VASSAL_SANSERIF_FONT = "VassalSan";
+  public static final String VASSAL_SANSERIF_FONT = "VassalSans";
   public static final String VASSAL_MONOSPACED_FONT = "VassalMono";
   public static final String VASSAL_CONDENSED_FONT = "VassalCondensed";
   public static final String VASSAL_EDITOR_FONT = "VassalEditor";
@@ -87,13 +85,13 @@ public class FontOrganizer extends AbstractConfigurable {
   private FontOrganizerConfigurer fontOrganizerConfigurer;
 
   /** List of the fonts loaded from Vassal */
-  private final List<VassalFont> vassalFonts = new SortedArrayList();
+  private final SortedArrayList vassalFonts = new SortedArrayList();
 
   /** Font family information loaded from font config file */
   private VassalFonts configuredFonts;
 
   /** List of the fonts loaded from the current Module */
-  private final List<VassalFont> moduleFonts = new SortedArrayList();
+  private final SortedArrayList moduleFonts = new SortedArrayList();
 
   /** Return a Configurer that displays the status of all additional fonts */
   public FontOrganizerConfigurer getFontOrganizerConfigurer() {
@@ -364,7 +362,7 @@ public class FontOrganizer extends AbstractConfigurable {
           k.getDesc(),
           k.getBasefont(),
           Resources.getString(
-            styleCount == 1 ? "Editor.FontOrganizer.vassal" : "Editor.FontOrganizer.vassal_plural",
+            styleCount == 1 ? "Editor.FontOrganizer.module" : "Editor.FontOrganizer.module_plural",
             styleCount));
         k.getFiles().forEach(font -> parentNode.add(new MyTreeNode(font.getFont())));
         rootNode.add(parentNode);
