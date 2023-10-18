@@ -37,7 +37,7 @@ import org.w3c.dom.Element;
  */
 public class FontManager extends AbstractConfigurable {
 
-  protected static FontManager instance;
+  protected static FontManager instance = new FontManager();
 
   public static FontManager getFontManager() {
     return instance;
@@ -108,7 +108,6 @@ public class FontManager extends AbstractConfigurable {
 
   @Override
   public void addTo(Buildable parent) {
-    instance = this;
   }
 
   @Override
