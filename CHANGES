@@ -1,5 +1,7 @@
 3.7.4 - ???
 
+* 12802: Prevent NPE in Named KeyStroke Configurer
+
 3.7.3 - 16 October 2023
 
 * 12817: Fix alphanumeric key behavior in hotkey (key command) configurer in
