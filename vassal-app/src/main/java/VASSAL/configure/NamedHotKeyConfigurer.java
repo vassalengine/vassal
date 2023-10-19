@@ -461,14 +461,14 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
     public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
       super.insertString(fb, offset, string, attr);
       updateValueFromKeyName();
-      keyName.setCaretPosition(offset + string.length());
+      keyName.setCaretPosition(offset + (string == null ? 0 : string.length()));
     }
 
     @Override
     public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
       super.replace(fb, offset, length, text, attrs);
       updateValueFromKeyName();
-      keyName.setCaretPosition(offset + text.length());
+      keyName.setCaretPosition(offset + (text == null ? 0 : text.length()));
     }
   }
 
