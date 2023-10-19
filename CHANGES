@@ -1,6 +1,9 @@
 3.7.4 - ???
 
 * 12829: Set Piece Property Documentation clarification
+* 12826: Fix bug where pieces sometimes teleport from deck back to different
+    map in multiplayer (Ensure map recorded in pieces matches map in parent
+    Stack/Deck)
 * 12825: Allow Unique components to be copied; change Game Piece Layers to be
     non-mandatory
 * 12802: Prevent NPE in Named KeyStroke Configurer

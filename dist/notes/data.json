@@ -20,6 +20,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 12826, "desc": "Fix bug where pieces sometimes teleport from deck back to different map in multiplayer (Ensure map recorded in pieces matches map in parent Stack/Deck)" },
         { "num": 12802, "desc": "Prevent NPE in Named KeyStroke Configurer" }
       ],
       "other_improvements": [
