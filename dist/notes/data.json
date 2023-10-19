@@ -23,7 +23,8 @@
         { "num": 12802, "desc": "Prevent NPE in Named KeyStroke Configurer" }
       ],
       "other_improvements": [
-        { "num": 12829, "desc": "Set Piece Property Documentation clarification" }
+        { "num": 12829, "desc": "Set Piece Property Documentation clarification" },
+        { "num": 12825, "desc": "Allow Unique components to be copied; change Game Piece Layers to be non-mandatory" }
       ]
     },
     {

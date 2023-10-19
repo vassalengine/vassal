@@ -1,6 +1,8 @@
 3.7.4 - ???
 
 * 12829: Set Piece Property Documentation clarification
+* 12825: Allow Unique components to be copied; change Game Piece Layers to be
+    non-mandatory
 * 12802: Prevent NPE in Named KeyStroke Configurer
 
 3.7.3 - 16 October 2023
