@@ -891,7 +891,8 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
   @Override
   public String getState() {
     final SequenceEncoder se = new SequenceEncoder(';');
-    final String mapName = getMap() == null ? "null" : getMap().getIdentifier(); // NON-NLS
+    final Map m = getMap();
+    final String mapName = m == null ? "null" : m.getIdentifier(); // NON-NLS
     se.append(mapName);
     final Point p = getPosition();
     se.append(p.x).append(p.y);
