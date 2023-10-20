@@ -54,11 +54,11 @@ public class GamePieceImageDefinitions extends AbstractConfigurable {
     super.build(e);
 
     if (colors == null) {
-      addChild(new ColorManager());
+      addChild(ColorManager.getColorManager());
       colors.build(null);
     }
     if (fonts == null) {
-      addChild(new FontManager());
+      addChild(FontManager.getFontManager());
       fonts.build(null);
     }
     if (definitions == null) addChild(new GamePieceLayoutsContainer());

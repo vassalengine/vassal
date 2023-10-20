@@ -320,11 +320,6 @@ public class LayeredPieceCollection extends AbstractConfigurable implements Comp
   }
 
   @Override
-  public boolean isMandatory() {
-    return true;
-  }
-
-  @Override
   public boolean isUnique() {
     return true;
   }
