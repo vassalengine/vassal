@@ -59,14 +59,21 @@ Match against the Menu Text provided for piece trait right-click menus.
 ===== Match message formats
 Match against the Formatted Strings defined in piece traits.
 
+
+.Basic
 |image:images/search_basic.png[]
-_Basic Search._
+
+_Basic Search_
+
+
 
 image:images/search_advanced.png[]
+
 _Advanced Filters._
 
 
 image:images/search_output.png[]
+
 _Sample Output._
 
 |===
