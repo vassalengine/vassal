@@ -32,7 +32,7 @@ public abstract class CommandFilter {
       final Command[] sub = c.getSubCommands();
       comm.stripSubCommands();
       for (final Command command : sub) {
-        comm = comm.append(apply(command));
+        comm.append(apply(command));
       }
     }
     return comm;
