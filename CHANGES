@@ -1,5 +1,6 @@
 3.7.4 - ???
 
+* 12830: Prevent Load Continuation from auto-forwarding to end of log
 * 12829: Set Piece Property Documentation clarification
 * 12826: Fix bug where pieces sometimes teleport from deck back to different
     map in multiplayer (Ensure map recorded in pieces matches map in parent
