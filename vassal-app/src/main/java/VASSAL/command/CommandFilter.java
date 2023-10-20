@@ -27,7 +27,7 @@ public abstract class CommandFilter {
    * @return the filtered command
    */
   public Command apply(Command c) {
-    Command comm = accept(c) ? c : new NullCommand();
+    final Command comm = accept(c) ? c : new NullCommand();
     if (c != null) {
       final Command[] sub = c.getSubCommands();
       comm.stripSubCommands();
