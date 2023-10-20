@@ -9,7 +9,7 @@
 
 VASSAL's Module Editor has a powerful Search facility to find components and pieces in a number of different ways.
 
-The default scope is a simple search that targets the names of components and pieces. Options can be used to search through all module data or to limit the search to data types of interest. Special search types offer additional flexibility.
+The default scope is a simple search that targets the names and descriptions of components and pieces. Options can be used to search through all module data or to limit the search to data types of interest. Special search types offer additional flexibility.
 
 Initiate a search with the "Next" button [PgDn] and repeat this to advance the output item by item. The "Prev" button [PgUp] allows you to return to the previous item.
 
@@ -32,10 +32,10 @@ Search may be normal, start of word or https://en.wikipedia.org/wiki/Regular_exp
 Force an Exact case search (i.e. abc is different to ABC).
 
 ===== Scope
-Choose from a basic search of component and piece names, a full search of all supported data or use "advanced filters" to select specific data types. Note that there are a fewc data fields that search does not check.
+Choose from a basic search of component and piece names, a full search of all supported data or use "advanced filters" to select specific data types. Note that there are a few data fields that search does not check.
 
-===== Match names
-Match against the names of components or pieces.
+===== Match names & descriptions
+Match against the names and descriptions of components or pieces. Some components use Menu name or description as their name.
 
 ===== Match [class names]
 Match against the Java Class Name of components (in the editor these are the names in square brackets).

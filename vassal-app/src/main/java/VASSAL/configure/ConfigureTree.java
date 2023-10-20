@@ -1906,20 +1906,19 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_MESSAGES, null, true));
 
       // reset at module start
-      // searchString = (String) prefs.getValue(SearchParameters.SEARCH_STRING);
       searchString = "";
-      // prefs.setValue(SEARCH_STRING, searchString);
-      // optNormal = (Boolean)prefs.getValue(SearchParameters.SEARCH_NORMAL);
       optNormal = true;
-      // prefs.setValue(SEARCH_NORMAL, optNormal);
-      optWord = (Boolean)prefs.getValue(SearchParameters.SEARCH_WORD);
-      optRegex = (Boolean)prefs.getValue(SearchParameters.SEARCH_REGEX);
-      matchCase    = (Boolean)prefs.getValue(SearchParameters.MATCH_CASE);
+      optWord = false;
+      optRegex = false;
+      matchCase    = false;
+
+      // Radio buttons; belt & bracces to ensure setup is consistent
+      matchSimple       = (Boolean)prefs.getValue(SearchParameters.MATCH_SIMPLE);
+      matchFull       = (Boolean)prefs.getValue(SearchParameters.MATCH_FULL) && !matchSimple;
+      matchAdvanced      = (Boolean)prefs.getValue(SearchParameters.MATCH_ADVANCED) && !(matchFull || matchSimple);
+
       matchNames   = (Boolean)prefs.getValue(SearchParameters.MATCH_NAMES);
       matchTypes       = (Boolean)prefs.getValue(SearchParameters.MATCH_TYPES);
-      matchSimple       = (Boolean)prefs.getValue(SearchParameters.MATCH_SIMPLE);
-      matchFull       = (Boolean)prefs.getValue(SearchParameters.MATCH_FULL);
-      matchAdvanced      = (Boolean)prefs.getValue(SearchParameters.MATCH_ADVANCED);
       matchTraits      = (Boolean)prefs.getValue(SearchParameters.MATCH_TRAITS);
       matchExpressions = (Boolean)prefs.getValue(SearchParameters.MATCH_EXPRESSIONS);
       matchProperties  = (Boolean)prefs.getValue(SearchParameters.MATCH_PROPERTIES);
@@ -2000,9 +1999,19 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     public boolean isMatchSimple() {
       return matchSimple;
     }
+    public void setMatchSimple(boolean matchSimple) {
+      this.matchFull = matchSimple;
+      writePrefs();
+    }
+
     public boolean isMatchFull() {
       return matchFull;
     }
+    public void setMatchFull(boolean matchFull) {
+      this.matchFull = matchFull;
+      writePrefs();
+    }
+
     public boolean isMatchAdvanced() {
       return matchAdvanced;
     }
@@ -2633,22 +2642,25 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
      */
     private boolean checkNode(DefaultMutableTreeNode node, Pattern regexPattern) {
       final Configurable c = (Configurable) node.getUserObject();
+      final boolean showName = (searchParameters.isMatchNames() || !searchParameters.isMatchAdvanced());  // name is default (i.e. unless filtered out)
+      final boolean showTypes = (searchParameters.isMatchTypes() || !searchParameters.isMatchAdvanced());  // type [class] is default (i.e. unless filtered out)
 
-      if (searchParameters.isMatchNames() || searchParameters.isMatchFull()) {
+      if (showName) {
         final String objectName = c.getConfigureName();
         if (objectName != null && checkString(objectName, regexPattern)) {
           return true;
         }
       }
 
-      if (searchParameters.isMatchTypes() || searchParameters.isMatchFull()) {
+      if (showTypes) {
         final String className = getConfigureName(c.getClass());
         if ((className != null) && checkString(className, regexPattern)) {
           return true;
         }
       }
 
-      if ((searchParameters.isMatchNames() && searchParameters.isMatchTypes()) || searchParameters.isMatchFull()) {
+      // Selecting names includes description in detection.
+      if (showName) {
         if (c instanceof ComponentDescription) {
           final String desc = ((ComponentDescription) c).getDescription();
           if ((desc != null) && checkString(desc, regexPattern)) {
@@ -2657,9 +2669,39 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         }
       }
 
-/*      if (!searchParameters.isMatchAdvanced()) {
+      if (searchParameters.isMatchSimple()) {
         return false;
-      }*/
+      }
+
+      // For some reason, a pdf or text component is a SearchTarget (with no returns) even though overall Help Menu is not
+      // so we test for Help Menu first, guarding againtst possibility of null node...
+      try {
+        // Force Help Menu components into special search route...
+        if (node.getParent().toString().strip().equals("[Help Menu]")) {
+          // Help - special processing to include in full search despite not being a SearchTarget
+
+          // Menu is also the Name, so only catch here if not already caught as Name
+          if (!showName && (searchParameters.isMatchFull() | searchParameters.isMatchMenus())) {
+            return checkString(c.getConfigureName(), regexPattern);
+          }
+          if (searchParameters.isMatchFull() || searchParameters.isMatchExpressions()) {
+            // content refs will be categorised as Expressions
+            final String startPage = c.getAttributeValueString("startingPage");
+            if (startPage != null) return checkString(startPage, regexPattern);
+
+            final String pdfFile = c.getAttributeValueString("pdfFile");
+            if (pdfFile != null) return checkString(pdfFile, regexPattern);
+
+            final String textFile = c.getAttributeValueString("textFile");
+            if (textFile != null) return checkString(textFile, regexPattern);
+          }
+        }
+      }
+      catch (Exception NullPointerException) {
+        // OK
+      }
+
+      if (!(c instanceof SearchTarget)) return false;
 
       // From here down we are only searching inside SearchTarget objects (Piece/Prototypes, or searchable AbstractConfigurables)
       GamePiece p;
@@ -2676,11 +2718,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         p = ((PrototypeDefinition)c).getPiece();
         protoskip = true;
       }
-      else if (c instanceof SearchTarget) {
-        return checkSearchTarget((SearchTarget) c, regexPattern);
-      }
       else {
-        return false;
+        return checkSearchTarget((SearchTarget) c, regexPattern);
       }
 
       // We're going to search Decorator from inner-to-outer (BasicPiece-on-out), so that user sees the traits hit in
@@ -2791,28 +2830,44 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       final Configurable c = (Configurable) node.getUserObject();
 
       final String item = getConfigureName(c.getClass());
-      final String name = StringUtils.defaultString(c.getConfigureName()) + " [" + item + "]";
-      final String matchString = Resources.getString("Editor.search_matches", nodeListIndex) + "<b>" + noHTML(name) + "</b>: ";
-
-      if (!(c instanceof SearchTarget)) {
-        // Last resort to provide some info on a component that the search action has failed to characterise
-        final String parent = node.getParent().toString();
-        chat("<font color=blue>" + matchString + "</font>");
-        printFind(7, item, "", regexPattern);
-        printFind(9, parent.contains("[Help Menu]") ? "Menu Command" : "Name", StringUtils.defaultString(c.getConfigureName()), regexPattern);
-        return;
-      }
-
-      final SearchTarget st = (SearchTarget) c;
-
+      final String name = StringUtils.defaultString(c.getConfigureName());
+      final String matchString = Resources.getString("Editor.search_matches", nodeListIndex) + "<b>" + noHTML(name + " [" + item + "]") + "</b>: ";
       final TargetProgress progress = new TargetProgress();
+      final boolean showName = (searchParameters.isMatchNames() || !searchParameters.isMatchAdvanced());  // name is default (i.e. unless filtered out)
+      final boolean showTypes = (searchParameters.isMatchTypes() || !searchParameters.isMatchAdvanced());  // type [class] is default (i.e. unless filtered out)
 
-      stringListHits(searchParameters.isMatchNames() || searchParameters.isMatchFull(), Arrays.asList(c.getConfigureName()), regexPattern, matchString, item, "", "Name", progress); //NON-NLS
-      stringListHits(searchParameters.isMatchTypes() || searchParameters.isMatchFull(), Arrays.asList(item),                 regexPattern, matchString, item, "", "Type", progress); //NON-NLS
+      if (showName) stringListHits(showName, Arrays.asList(c.getConfigureName()), regexPattern, matchString, item, "", "Name", progress); //NON-NLS
+      if (showTypes) stringListHits(showTypes, Arrays.asList(item),                 regexPattern, matchString, item, "", "Type", progress); //NON-NLS
 
+      // Component description is displayed in Simple mode searches or when both Name & Class (Type) are selected
       if (c instanceof ComponentDescription) {
-        stringListHits((searchParameters.isMatchNames() && searchParameters.isMatchTypes()) || searchParameters.isMatchFull(), Arrays.asList(((ComponentDescription) c).getDescription()), regexPattern, matchString, item, "", "Description", progress); //NON-NLS
+        stringListHits(showName, Arrays.asList(((ComponentDescription) c).getDescription()), regexPattern, matchString, item, "", "Description", progress); //NON-NLS
       }
+
+      if (searchParameters.isMatchSimple()) return;
+
+      // Help ?
+      if (node.getParent().toString().strip().equals("[Help Menu]")) {
+        // Help - special processing to include in full search despite not being a SearchTarget
+        // Menu is also the Name, so only display here if not already reported as Name
+        if (!showName && (searchParameters.isMatchFull() || searchParameters.isMatchMenus())) {
+          stringListHits(true, Arrays.asList(c.getConfigureName()), regexPattern, matchString, item, "", "UI Text", progress); //NON-NLS
+        }
+        if (searchParameters.isMatchFull() || searchParameters.isMatchExpressions()) {
+          // content refs will be categorised as Expressions
+          final String startPage = c.getAttributeValueString("startingPage");
+          final String pdfFile = c.getAttributeValueString("pdfFile");
+          final String textFile = c.getAttributeValueString("textFile");
+          stringListHits(true, Collections.singletonList(startPage), regexPattern, matchString, item, "", "Starting page", progress); //NON-NLS
+          stringListHits(true, Collections.singletonList(pdfFile), regexPattern, matchString, item, "", "PDF file", progress); //NON-NLS
+          stringListHits(true, Collections.singletonList(textFile), regexPattern, matchString, item, "", "Text File", progress); //NON-NLS
+        }
+      }
+
+      if (!(c instanceof SearchTarget)) return;
+
+      // Go deeper for a full or filtered search on SearchTarget data
+      final SearchTarget st = (SearchTarget) c;
 
       stringListHits(searchParameters.isMatchExpressions() || searchParameters.isMatchFull(), st.getExpressionList(),      regexPattern, matchString, item, "", "Expression",    progress); //NON-NLS
       stringListHits(searchParameters.isMatchProperties() || searchParameters.isMatchFull(),  st.getPropertyList(),        regexPattern, matchString, item, "", "Property",      progress); //NON-NLS
