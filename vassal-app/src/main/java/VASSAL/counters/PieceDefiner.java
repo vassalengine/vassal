@@ -141,7 +141,7 @@ public class PieceDefiner extends JPanel {
   private JLabel scaleLabel;
   private final Prefs prefs;
 
-  private String prototypeName; // If we're editing a prototype definition, this holds the name of it
+  private static String prototypeName; // If we're editing a prototype definition, this holds the name of it
 
   // A Configurer to hold the users preferred maximum split size
   private static final int MINIMUM_SPLIT_SIZE = LabelUtils.noImageBoxImage().getWidth();
@@ -1280,13 +1280,21 @@ public class PieceDefiner extends JPanel {
       // DO NOT pass value to super.getListCellRendererComponent()
       // It is incredibly inefficient for GamePieces and is not needed
       // since we overwrite the label text anyway.
+      String lineNumber;
+      if (PieceDefiner.prototypeName.isEmpty()) {
+        final int index1 = index + 1;
+        lineNumber = " ".repeat(index1 < 10 ? 2 : index1 < 100 ? 1 : 0) + index1 + ". ";
+      }
+      else {
+        lineNumber = (index == 0 ? "" : " ".repeat(index < 10 ? 2 : index < 100 ? 1 : 0) + index + ". ");
+      }
       super.getListCellRendererComponent(list, "", index, selected, hasFocus);
       if (value instanceof EditablePiece) {
-        setText(((EditablePiece) value).getDescription());
+        setText(lineNumber + ((EditablePiece) value).getDescription());
       }
       else {
         final String s = value.getClass().getName();
-        setText(s.substring(s.lastIndexOf('.') + 1));
+        setText(lineNumber + s.substring(s.lastIndexOf('.') + 1));
       }
       return this;
     }
