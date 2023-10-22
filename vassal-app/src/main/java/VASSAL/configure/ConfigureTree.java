@@ -1927,6 +1927,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       matchMenus       = (Boolean)prefs.getValue(SearchParameters.MATCH_MENUS);
       matchMessages    = (Boolean)prefs.getValue(SearchParameters.MATCH_MESSAGES);
 
+
     }
 
     /**
@@ -2255,12 +2256,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           // stop once we get to the first item
           if (nodeListIndex > 1) {
             // Rewind to previous match, and move the pointer back
-            final DefaultMutableTreeNode node = setNode(breadCrumbs.get(--nodeListIndex - 1));
+            final DefaultMutableTreeNode node = setNode(breadCrumbs.get(--nodeListIndex));
             breadCrumbs.remove(nodeListIndex);
             if (node != null) {
               selectPath(node);
               showHitList(node, regexPattern);
-       //       if (!searchParameters.isMatchSimple()) showHitList(node, regexPattern);
             }
           }
           prev.setEnabled(nodeListIndex > 1); // disable button once at start
@@ -2327,7 +2327,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           }
 
           // If custom filters is selected but no search parameters are selected, turn at least one on (and print warning)
-          if (searchParameters.isMatchAdvanced() && !searchParameters.isMatchNames() && !searchParameters.isMatchTypes() && !searchParameters.isMatchTraits() && !searchParameters.isMatchExpressions() && !searchParameters.isMatchProperties() && !searchParameters.isMatchKeys() && !searchParameters.isMatchMenus() && !searchParameters.isMatchMessages()) {
+          if (searchParameters.isMatchAdvanced() && !searchParameters.isMatchNames() && !searchParameters.isMatchTypes()
+                  && !searchParameters.isMatchTraits() && !searchParameters.isMatchExpressions() && !searchParameters.isMatchProperties()
+                  && !searchParameters.isMatchKeys() && !searchParameters.isMatchMenus() && !searchParameters.isMatchMessages()) {
             searchParameters.setMatchNames(true);
             names.setSelected(true);
             ConfigureTree.chat(Resources.getString("Editor.search_all_off"));
@@ -2340,6 +2342,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             if (anyChanges) {
               regexPattern = setupRegexSearch(searchParameters.getSearchString());
 
+              chatter.show(""); // line space at start of search
+
               // Compute & display hit count as heading, no indent
               final int matches = (regexPattern == null ? 0 : getNumMatches(regexPattern));
 
@@ -2351,7 +2355,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
                 selectPath(node);
                 nodeListIndex = initSearchPosition(regexPattern);  //  maintains search index at  arbitrary start position
                 showHitList(node, regexPattern);
-//                if (!searchParameters.isMatchSimple()) showHitList(node, regexPattern);
               }
             }
             else {
@@ -2524,18 +2527,21 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
 
       // no more nodes, restart to start
-      nodeListIndex = 1;
+      breadCrumbs.clear();
 
-      return
+      final DefaultMutableTreeNode firstNode =
         searchNodes
           .stream()
           .limit(bookmark + 1)
           .filter(nodeMatchesSearchString)
           .findFirst()
           .orElse(null);
+
+      breadCrumbs.add(bookmark);
+      nodeListIndex = 1;
+
+      return firstNode;
     }
-
-
 
     private DefaultMutableTreeNode setNode(int bookmark) {
       return configureTree.getSearchNodes((DefaultMutableTreeNode)configureTree.getModel().getRoot()).get(bookmark);
@@ -2564,6 +2570,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       do {
         if (checkNode(searchNodes.get(i), regexPattern)) breadCrumbs.add(i);
       } while (searchNodes.get(i++) != currentNode);
+
+
 
       return  breadCrumbs.size();
     }
@@ -2736,12 +2744,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
       for (final GamePiece piece : pieces) {
         if (!protoskip) { // Skip the fake "Basic Piece" on a Prototype definition
-          if (searchParameters.isMatchTraits()) {
-            if (piece instanceof EditablePiece && piece instanceof Decorator) {   // for consistency, the decorator check exists here as well as in the output routine
-              final String desc = ((EditablePiece) piece).getDescription();
-              if ((desc != null) && checkString(desc, regexPattern)) {
-                return true;
-              }
+          if (searchParameters.isMatchTraits() && (piece instanceof EditablePiece)) {
+            final String desc = ((EditablePiece) piece).getDescription();
+            if ((desc != null) && checkString(desc, regexPattern)) {
+              return true;
             }
           }
 
@@ -2825,14 +2831,26 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         }
       }
     }
-
+    @Deprecated (since = "2023-10-21", forRemoval = true)
     private void showConfigurableHitList(DefaultMutableTreeNode node, Pattern regexPattern) {
       final Configurable c = (Configurable) node.getUserObject();
-
       final String item = getConfigureName(c.getClass());
       final String name = StringUtils.defaultString(c.getConfigureName());
       final String matchString = Resources.getString("Editor.search_matches", nodeListIndex) + "<b>" + noHTML(name + " [" + item + "]") + "</b>: ";
       final TargetProgress progress = new TargetProgress();
+      showConfigurableHitList(node, regexPattern, matchString, progress);
+    }
+
+    /**
+     * Called from showHitList to generate detailed output for Configurables.
+     * @param node - any node of our module tree
+     * @param regexPattern - our search string
+     * @param progress - tracks whether component has matched already (ensures only first-time hit generates header output)
+     */
+    private void showConfigurableHitList(DefaultMutableTreeNode node, Pattern regexPattern, String matchString, TargetProgress progress) {
+      final Configurable c = (Configurable) node.getUserObject();
+      final String item = getConfigureName(c.getClass());
+      final String name = StringUtils.defaultString(c.getConfigureName());
       final boolean showName = (searchParameters.isMatchNames() || !searchParameters.isMatchAdvanced());  // name is default (i.e. unless filtered out)
 
       // Help ?
@@ -2859,16 +2877,21 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       final SearchTarget st = (SearchTarget) c;
 
       stringListHits(searchParameters.isMatchExpressions() || searchParameters.isMatchFull(), st.getExpressionList(),      regexPattern, matchString, item, "", "Expression",    progress); //NON-NLS
-      stringListHits(searchParameters.isMatchProperties() || searchParameters.isMatchFull(),  st.getPropertyList(),        regexPattern, matchString, item, "", "Property",      progress); //NON-NLS
+      // Avoid duplicate output when Name is also the key  value here...
+      if (!item.startsWith("Global Property") || !showName) {
+        stringListHits(searchParameters.isMatchProperties() || searchParameters.isMatchFull(), st.getPropertyList(), regexPattern, matchString, item, "", "Property", progress); //NON-NLS
+      }
       stringListHits(searchParameters.isMatchMenus() || searchParameters.isMatchFull(),       st.getMenuTextList(),        regexPattern, matchString, item, "", "UI Text",       progress); //NON-NLS
       stringListHits(searchParameters.isMatchMessages() || searchParameters.isMatchFull(),    st.getFormattedStringList(), regexPattern, matchString, item, "", "Message/Field", progress); //NON-NLS
 
       keyListHits(searchParameters.isMatchKeys() || searchParameters.isMatchFull(),           st.getNamedKeyStrokeList(),  regexPattern, matchString, item, "", "KeyCommand",    progress); //NON-NLS
     }
 
+
     /**
-     * If this node contains a Game Piece of some kind, displays a list of Trait information from the piece that
-     * matches our search parameters.
+     * Generates any common output (Names & Types) then, if this node contains a Game Piece of some kind,
+     * displays a list of Trait information from the piece that matches our search parameters.
+     * Otherwise continues via showConfigurableHitList for details of Configurables.
      * @param node - any node of our module tree
      * @param regexPattern - our search string
      */
@@ -2877,10 +2900,13 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       final Configurable c = (Configurable) node.getUserObject();
       final String item = getConfigureName(c.getClass());
       final String name = StringUtils.defaultString(c.getConfigureName());
-      final String matchString = Resources.getString("Editor.search_matches", nodeListIndex) + "<b>" + noHTML(name + " [" + item + "]") + "</b>: ";
       final TargetProgress progress = new TargetProgress();
       final boolean showName = (searchParameters.isMatchNames() || !searchParameters.isMatchAdvanced());  // name is default (i.e. unless filtered out)
       final boolean showTypes = (searchParameters.isMatchTypes() || !searchParameters.isMatchAdvanced());  // type [class] is default (i.e. unless filtered out)
+      final String matchString = Resources.getString("Editor.search_matches", nodeListIndex) + "<b>"
+              + (showName ? highlightFinds(noHTML(name), regexPattern) : noHTML(name))
+              + " [" + (showTypes ? highlightFinds(noHTML(item), regexPattern) :  noHTML(item)) + "]"
+              + "</b>: ";
 
       stringListHits(showName, Arrays.asList(c.getConfigureName()), regexPattern, matchString, item, "", "Name", progress); //NON-NLS
       stringListHits(showTypes, Arrays.asList(item),                 regexPattern, matchString, item, "", "Type", progress); //NON-NLS
@@ -2908,7 +2934,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         protoskip = true; // This is a prototype definition, so we will ignore the BasicPiece entry
       }
       else {
-        showConfigurableHitList(node, regexPattern); // If no GamePiece, try searching for regular Configurable details
+        showConfigurableHitList(node, regexPattern, matchString, progress); // If no GamePiece, try searching for regular Configurable details
         return;
       }
 
@@ -2927,26 +2953,34 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       traitIndex = 0;
 
       for (final GamePiece piece : pieces) {
-        if (!protoskip && (piece instanceof EditablePiece) && (piece instanceof Decorator)) { // Skip the fake "Basic Piece" on a Prototype definition;
-          // the Decorator constraint above prevents BasicName trait from being reported here
+        if (!protoskip && (piece instanceof EditablePiece)) { // Skip the fake "Basic Piece" on a Prototype definition;
 
           final String desc = ((EditablePiece) piece).getDescription();
           progress.startNewTrait();    // A new trait, so reset our "trait progress".
           traitIndex++;
 
-          if (searchParameters.isMatchTraits() || searchParameters.isMatchFull()) {
+          if (searchParameters.isMatchTraits() || searchParameters.isMatchFull() && ((piece instanceof Decorator) || (!searchParameters.isMatchNames() && searchParameters.isMatchAdvanced()))) {
             if ((desc != null) && checkString(desc, regexPattern)) {
               progress.checkShowTrait(matchString, regexPattern, "Trait", desc); //NON-NLS
             }
           }
 
-          final Decorator d = (Decorator) piece;
-          stringListHits(searchParameters.isMatchExpressions() || searchParameters.isMatchFull(), d.getExpressionList(), regexPattern, matchString, "Trait", desc, "Expression", progress); //NON-NLS
-          stringListHits(searchParameters.isMatchProperties() || searchParameters.isMatchFull(), d.getPropertyList(), regexPattern, matchString, "Trait", desc, "Property", progress); //NON-NLS
-          stringListHits(searchParameters.isMatchMenus() || searchParameters.isMatchFull(), d.getMenuTextList(), regexPattern, matchString, "Trait", desc, "UI Text", progress); //NON-NLS
-          stringListHits(searchParameters.isMatchMessages() || searchParameters.isMatchFull(), d.getFormattedStringList(), regexPattern, matchString, "Trait", desc, "Message/Field", progress); //NON-NLS
+          if (piece instanceof Decorator) { // Not the Basic Piece trait
 
-          keyListHits(searchParameters.isMatchKeys() || searchParameters.isMatchFull(), d.getNamedKeyStrokeList(), regexPattern, matchString, "Trait", desc, "KeyCommand", progress); //NON-NLS
+            final Decorator d = (Decorator) piece;
+            stringListHits(searchParameters.isMatchExpressions() || searchParameters.isMatchFull(), d.getExpressionList(), regexPattern, matchString, "Trait", desc, "Expression", progress); //NON-NLS
+            stringListHits(searchParameters.isMatchProperties() || searchParameters.isMatchFull(), d.getPropertyList(), regexPattern, matchString, "Trait", desc, "Property", progress); //NON-NLS
+            stringListHits(searchParameters.isMatchMenus() || searchParameters.isMatchFull(), d.getMenuTextList(), regexPattern, matchString, "Trait", desc, "UI Text", progress); //NON-NLS
+            stringListHits(searchParameters.isMatchMessages() || searchParameters.isMatchFull(), d.getFormattedStringList(), regexPattern, matchString, "Trait", desc, "Message/Field", progress); //NON-NLS
+
+            keyListHits(searchParameters.isMatchKeys() || searchParameters.isMatchFull(), d.getNamedKeyStrokeList(), regexPattern, matchString, "Trait", desc, "KeyCommand", progress); //NON-NLS
+
+          }
+          else {
+            // Basic Piece image search
+            stringListHits(searchParameters.isMatchExpressions() || searchParameters.isMatchFull(), Collections.singletonList("image"), regexPattern, matchString, "Trait", desc, "Image", progress); //NON-NLS
+          }
+
         }
         protoskip = false;
       }
