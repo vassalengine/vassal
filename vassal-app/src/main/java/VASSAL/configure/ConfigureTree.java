@@ -2850,7 +2850,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     private void showConfigurableHitList(DefaultMutableTreeNode node, Pattern regexPattern, String matchString, TargetProgress progress) {
       final Configurable c = (Configurable) node.getUserObject();
       final String item = getConfigureName(c.getClass());
-      final String name = StringUtils.defaultString(c.getConfigureName());
       final boolean showName = (searchParameters.isMatchNames() || !searchParameters.isMatchAdvanced());  // name is default (i.e. unless filtered out)
 
       // Help ?
@@ -2977,8 +2976,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
           }
           else {
-            // Basic Piece image search
-            stringListHits(searchParameters.isMatchExpressions() || searchParameters.isMatchFull(), Collections.singletonList("image"), regexPattern, matchString, "Trait", desc, "Image", progress); //NON-NLS
+            final String pType = piece.getType();
+            // piece;;;image;name
+            // FIXME: not working? anyway, needs incorporating into checkNode()
+            final String image = StringUtils.mid(pType, 8, StringUtils.lastIndexOf(";", pType));
+
+            stringListHits(searchParameters.isMatchExpressions() || searchParameters.isMatchFull(), Collections.singletonList(image), regexPattern, matchString, "Trait", desc, "Image", progress); //NON-NLS
           }
 
         }
