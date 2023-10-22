@@ -50,6 +50,7 @@ import VASSAL.counters.Decorator;
 import VASSAL.counters.EditablePiece;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.MassPieceLoader;
+import VASSAL.counters.Properties;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslateAction;
 import VASSAL.launch.EditorWindow;
@@ -2802,6 +2803,22 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           printFind(7, idString, desc, regexPattern);
         }
       }
+
+      /**
+       * Checks and displays the piece header & trait/component headers, if needed, appends additional info
+       * @param matchString our matched string
+       * @param regexPattern the search pattern
+       * @param idString trait or component name
+       * @param desc trait description
+       * param suffix raw string that is not searched and appends to the output
+       */
+      void checkShowTrait(String matchString, Pattern regexPattern, String idString, String desc, String suffix) {
+        checkShowPiece(matchString);
+        if (!traitShown) {
+          traitShown = true;
+          printFind(7, idString, desc, regexPattern, suffix);
+        }
+      }
     }
 
     private void hitCheck(String s, Pattern regexPattern, String matchString, String item, String desc, String show, TargetProgress progress) {
@@ -2960,7 +2977,18 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
           if (searchParameters.isMatchTraits() || searchParameters.isMatchFull() && ((piece instanceof Decorator) || (!searchParameters.isMatchNames() && searchParameters.isMatchAdvanced()))) {
             if ((desc != null) && checkString(desc, regexPattern)) {
-              progress.checkShowTrait(matchString, regexPattern, "Trait", desc); //NON-NLS
+
+              final String[] traitType = piece.getType().split(";", 0); // splitting the string at ";"
+
+              if (traitType[0].equals("piece")) {
+                // processing Type string piece;;;image;BasicName - assumes the extra fields don't need calls to noHTML()
+                final String pieceInfo = "image: " + traitType[3] + "&nbsp;".repeat(3) + "gpid: " + p.getProperty(Properties.PIECE_ID);
+                progress.checkShowTrait(matchString, regexPattern, "Trait", desc, pieceInfo); //NON-NLS
+              }
+              else {
+                progress.checkShowTrait(matchString, regexPattern, "Trait", desc); //NON-NLS
+              }
+
             }
           }
 
@@ -2975,15 +3003,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             keyListHits(searchParameters.isMatchKeys() || searchParameters.isMatchFull(), d.getNamedKeyStrokeList(), regexPattern, matchString, "Trait", desc, "KeyCommand", progress); //NON-NLS
 
           }
-          else {
-            final String pType = piece.getType();
-            // piece;;;image;name
-            // FIXME: not working? anyway, needs incorporating into checkNode()
-            final String image = StringUtils.mid(pType, 8, StringUtils.lastIndexOf(";", pType));
-
-            stringListHits(searchParameters.isMatchExpressions() || searchParameters.isMatchFull(), Collections.singletonList(image), regexPattern, matchString, "Trait", desc, "Image", progress); //NON-NLS
-          }
-
         }
         protoskip = false;
       }
@@ -3012,6 +3031,20 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       final String printStr = (StringUtils.isEmpty(str) ? "" : highlightFinds(str, regexPattern));
 
       chat((id.equals("Trait") ? (traitIndex < 10 ? "&nbsp;&nbsp;<b>" : traitIndex < 100 ? "&nbsp;<b>" : "<b>") + traitIndex + "&gt</b>" + "&nbsp;".repeat(padding - 6) : "&nbsp;".repeat(padding)) + "{" + highlightFinds(id, regexPattern) + "} " + printStr); //NON-NLS
+    }
+
+    /**
+     * Prints search output (found details) with additional information
+     * @param padding - left margin spaces
+     * @param id - trait or component
+     * @param str - item details
+     * @param strSuffix - appended output that bypassing highlighting, offset and in italics (not null)
+     */
+    private void printFind(int padding, String id, String str, Pattern regexPattern, String strSuffix) {
+
+      final String printStr = (StringUtils.isEmpty(str) ? "" : highlightFinds(str, regexPattern));
+
+      chat((id.equals("Trait") ? (traitIndex < 10 ? "&nbsp;&nbsp;<b>" : traitIndex < 100 ? "&nbsp;<b>" : "<b>") + traitIndex + "&gt</b>" + "&nbsp;".repeat(padding - 6) : "&nbsp;".repeat(padding)) + "{" + highlightFinds(id, regexPattern) + "} " + printStr + "&nbsp;".repeat(10) + "<i>" + strSuffix + "</i>"); //NON-NLS
     }
 
     /**
