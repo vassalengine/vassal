@@ -2988,7 +2988,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
               else {
                 progress.checkShowTrait(matchString, regexPattern, "Trait", desc); //NON-NLS
               }
-
             }
           }
 
