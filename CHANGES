@@ -1,5 +1,7 @@
 3.7.5 - ???
 
+* 12841: Ensure labels are correctly updated in Replace With Other trait
+
 3.7.4 - 20 October 2023
 
 * 12830: Prevent Load Continuation from auto-forwarding to end of log
