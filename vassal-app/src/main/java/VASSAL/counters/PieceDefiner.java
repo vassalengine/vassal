@@ -1289,8 +1289,11 @@ public class PieceDefiner extends JPanel {
         lineNumber = (index == 0 ? "" : " ".repeat(index < 10 ? 2 : index < 100 ? 1 : 0) + index + ". ");
       }
       super.getListCellRendererComponent(list, "", index, selected, hasFocus);
+
       if (value instanceof EditablePiece) {
-        setText(lineNumber + ((EditablePiece) value).getDescription());
+        final String valueType = ((EditablePiece) value).getType();
+
+        setText((valueType.startsWith("cmt;") ? "" : lineNumber) + ((EditablePiece) value).getDescription());
       }
       else {
         final String s = value.getClass().getName();
