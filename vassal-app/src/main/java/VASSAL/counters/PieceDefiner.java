@@ -185,10 +185,6 @@ public class PieceDefiner extends JPanel {
     }
   }
 
-  public String getPrototypeName() {
-    return this.prototypeName;
-  }
-
   protected int getInUseSelectedIndex() {
     return inUseList.getSelectedIndex();
   }
