@@ -23,6 +23,7 @@ import VASSAL.build.GpIdSupport;
 import VASSAL.build.module.KeyNamer;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.widget.PieceSlot;
+import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
@@ -141,7 +142,7 @@ public class PieceDefiner extends JPanel {
   private JLabel scaleLabel;
   private final Prefs prefs;
 
-  private static String prototypeName; // If we're editing a prototype definition, this holds the name of it
+  private String prototypeName; // If we're editing a prototype definition, this holds the name of it
 
   // A Configurer to hold the users preferred maximum split size
   private static final int MINIMUM_SPLIT_SIZE = LabelUtils.noImageBoxImage().getWidth();
@@ -1275,30 +1276,52 @@ public class PieceDefiner extends JPanel {
 
     @Override
     public Component getListCellRendererComponent(
-      JList list, Object value, int index, boolean selected, boolean hasFocus) {
+            JList list, Object value, int index, boolean selected, boolean hasFocus) {
 
       // DO NOT pass value to super.getListCellRendererComponent()
       // It is incredibly inefficient for GamePieces and is not needed
       // since we overwrite the label text anyway.
-      String lineNumber;
-      if (PieceDefiner.prototypeName.isEmpty()) {
-        final int index1 = index + 1;
-        lineNumber = " ".repeat(index1 < 10 ? 2 : index1 < 100 ? 1 : 0) + index1 + ". ";
-      }
-      else {
-        lineNumber = (index == 0 ? "" : " ".repeat(index < 10 ? 2 : index < 100 ? 1 : 0) + index + ". ");
-      }
       super.getListCellRendererComponent(list, "", index, selected, hasFocus);
-      if (value instanceof EditablePiece) {
-        final String valueType = ((EditablePiece) value).getType();
 
-        setText((valueType.startsWith("cmt;") ? "" : lineNumber) + ((EditablePiece) value).getDescription());
+      if (value instanceof EditablePiece) {
+        final EditablePiece editableValue = (EditablePiece) value;
+        final String type = editableValue.getType().split(";")[0];
+        final String valueStr = editableValue.toString();
+        final String name = valueStr.substring(valueStr.indexOf("[name=")).split("=")[1].split(",")[0]; // extract name
+
+        // Prototype name field is null; skip first (dummy) item to avoid outputting a blank line
+        if (!name.isEmpty() || index > 0) {
+          // Special formatting for Comments
+          if (type.startsWith("cmt")) {
+            setText(getLineNumber(index, name) + "<b>/* " + ConfigureTree.noHTML(((EditablePiece) value).getDescription()) + " */</b></html>");
+          }
+          else {
+            setText(getLineNumber(index, name) + ConfigureTree.noHTML(((EditablePiece) value).getDescription()) + "</html>");
+          }
+        }
       }
       else {
         final String s = value.getClass().getName();
-        setText(lineNumber + s.substring(s.lastIndexOf('.') + 1));
+        setText(getLineNumber(index + 1) + s.substring(s.lastIndexOf('.') + 1) + "</html>");
       }
       return this;
+    }
+
+    private static String getLineNumber(int index, String name) {
+
+      // Ensure output always starts at line 1
+      if (name.isEmpty()) {
+        // Prototype has a dummy Basic Piece name that is already skipped
+        return getLineNumber(index);
+      }
+      else {
+        // Basic Piece starts output line 1 from index = 0
+        return getLineNumber(index + 1);
+      }
+    }
+
+    private static String getLineNumber(int index) {
+      return "<html><span style=color:#A0A0A0>" + index + ".</span> ";  // prep line number for output
     }
   }
 

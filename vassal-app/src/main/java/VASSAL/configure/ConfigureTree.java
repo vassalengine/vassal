@@ -305,7 +305,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
 
 
-  protected static String noHTML(String text) {
+  public static String noHTML(String text) {
     return text.replaceAll("<", "&lt;")  //NON-NLS // This prevents any unwanted html tag from functioning
                .replaceAll(">", "&gt;"); //NON-NLS // This makes sure > doesn't break any of our legit <div> tags
   }
