@@ -20,6 +20,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 12846, "desc": "Fix missing custom colors and font styles in Game Piece Layouts" },
         { "num": 12841, "desc": "Ensure labels are correctly updated in Replace With Other trait" }
       ],
       "other_improvements": [

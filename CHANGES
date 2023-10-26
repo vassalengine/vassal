@@ -1,5 +1,6 @@
 3.7.5 - ???
 
+* 12846: Fix missing custom colors and font styles in Game Piece Layouts
 * 12841: Ensure labels are correctly updated in Replace With Other trait
 
 3.7.4 - 20 October 2023
