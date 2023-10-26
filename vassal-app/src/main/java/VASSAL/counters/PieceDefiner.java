@@ -1293,8 +1293,8 @@ public class PieceDefiner extends JPanel {
         final String valueStr = editableValue.toString();
         final String name = valueStr.substring(valueStr.indexOf("[name=")).split("=")[1].split(",")[0]; // extract name
 
-        // Prototype name field is null; skip first (dummy) item
-        if (!name.equals("") || index > 0) {
+        // Prototype name field is null; skip first (dummy) item to avoid outputting a blank line
+        if (!name.isEmpty() || index > 0) {
           // Special formatting for Comments
           if (type.startsWith("cmt")) {
             setText(getLineNumber(index, name) + "<b>/* " + ConfigureTree.noHTML(((EditablePiece) value).getDescription()) + " */</b></html>");
@@ -1313,12 +1313,13 @@ public class PieceDefiner extends JPanel {
 
     private static String getLineNumber(int index, String name) {
 
-      // Ensure output always starts at 1 and avoid generating an otherwise blank line
+      // Ensure output always starts at line 1
       if (name.isEmpty()) {
+        // Prototype has a dummy Basic Piece name that is already skipped
         return getLineNumber(index);
       }
       else {
-        // Prototype has a dummy Basic Piece name that must be skipped
+        // Basic Piece starts output line 1 from index = 0
         return getLineNumber(index + 1);
       }
     }
