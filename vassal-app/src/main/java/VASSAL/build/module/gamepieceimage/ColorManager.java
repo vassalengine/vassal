@@ -39,7 +39,7 @@ public class ColorManager extends AbstractConfigurable {
   /**
    * Statics - Standard Colors
    */
-  protected static ColorManager instance = new ColorManager();
+  protected static ColorManager instance;
 
   public static ColorManager getColorManager() {
     return instance;
@@ -190,6 +190,7 @@ public class ColorManager extends AbstractConfigurable {
 
   @Override
   public void addTo(Buildable parent) {
+    instance = this;
   }
 
   @Override
