@@ -157,7 +157,7 @@ public class PieceDefiner extends JPanel {
 
     initDefinitions();
     inUseModel = new DefaultListModel<>();
-    r = new Renderer();
+    r = new Renderer(this);
     availableRenderer = new AvailableRenderer();
     slot = new ScaleablePieceSlot();
     initComponents();
@@ -165,6 +165,10 @@ public class PieceDefiner extends JPanel {
     setChanged(false);
     gpidSupport = GameModule.getGameModule().getGpIdSupport();
     prototypeName = "";
+  }
+
+  public boolean isPrototype() {
+    return prototypeName.isEmpty();
   }
 
   public PieceDefiner(String id, GpIdSupport s) {
@@ -343,7 +347,7 @@ public class PieceDefiner extends JPanel {
 
   /**
    *
-   * Re-calculate how to layout the left hand Piece display panel.
+   * Re-calculate how to lay out the left hand Piece display panel.
    *
    * 1. Always try and show the entire image 100% scale, plus PIECE_IMAGE_BORDER pixels
    * 2. If the image can't fit in the available space, scale it until it can
@@ -426,7 +430,7 @@ public class PieceDefiner extends JPanel {
     public void keyTyped(KeyEvent e) {
       final char ch = e.getKeyChar();
 
-      // ignore searches for non alpha-numeric characters
+      // ignore searches for non-alphanumeric characters
       if (!Character.isLetterOrDigit(ch)) {
         return;
       }
@@ -531,7 +535,7 @@ public class PieceDefiner extends JPanel {
     });
 
     availableList.getInputMap(JComponent.WHEN_FOCUSED).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "AddAvailable"); //$NON-NLS-1$
+            KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "AddAvailable"); //$NON-NLS-1$
     availableList.getActionMap().put("AddAvailable", new AbstractAction() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -540,13 +544,13 @@ public class PieceDefiner extends JPanel {
     });
 
     availableList.getInputMap(JComponent.WHEN_FOCUSED).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, SwingUtils.getModifierKeyMask()), "ToInUse"); //$NON-NLS-1$
+            KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, SwingUtils.getModifierKeyMask()), "ToInUse"); //$NON-NLS-1$
     availableList.getInputMap(JComponent.WHEN_FOCUSED).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "ToInUse"); //$NON-NLS-1$
+            KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "ToInUse"); //$NON-NLS-1$
     availableList.getInputMap(JComponent.WHEN_FOCUSED).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, SwingUtils.getModifierKeyMask()), "ToInUse"); //$NON-NLS-1$
+            KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, SwingUtils.getModifierKeyMask()), "ToInUse"); //$NON-NLS-1$
     availableList.getInputMap(JComponent.WHEN_FOCUSED).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "ToInUse"); //$NON-NLS-1$
+            KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "ToInUse"); //$NON-NLS-1$
     availableList.getActionMap().put("ToInUse", new AbstractAction() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -572,7 +576,7 @@ public class PieceDefiner extends JPanel {
     importButton.setToolTipText(Resources.getString("Editor.PieceDefiner.import_tip"));
     importButton.addActionListener(evt -> {
       final String className = JOptionPane.showInputDialog(
-        this, Resources.getString("Editor.PieceDefiner.enter_class")
+              this, Resources.getString("Editor.PieceDefiner.enter_class")
       );
       importPiece(className);
     });
@@ -618,7 +622,7 @@ public class PieceDefiner extends JPanel {
 
       final int index = inUseList.getSelectedIndex();
       final boolean copyAndRemove = inUseModel.size() > 0 &&
-        (index > 0 || !(inUseModel.getElementAt(0) instanceof BasicPiece));
+              (index > 0 || !(inUseModel.getElementAt(0) instanceof BasicPiece));
       copyButton.setEnabled(copyAndRemove);
       removeButton.setEnabled(copyAndRemove);
 
@@ -642,7 +646,7 @@ public class PieceDefiner extends JPanel {
     });
 
     inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "EditInUse"); //$NON-NLS-1$
+            KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "EditInUse"); //$NON-NLS-1$
     inUseList.getActionMap().put("EditInUse", new AbstractAction() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -651,7 +655,7 @@ public class PieceDefiner extends JPanel {
     });
 
     inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "DeleteInUse"); //$NON-NLS-1$
+            KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "DeleteInUse"); //$NON-NLS-1$
     inUseList.getActionMap().put("DeleteInUse", new AbstractAction() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -660,7 +664,7 @@ public class PieceDefiner extends JPanel {
     });
 
     inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_C, SwingUtils.getModifierKeyMask()), "CopyInUse"); //$NON-NLS-1$
+            KeyStroke.getKeyStroke(KeyEvent.VK_C, SwingUtils.getModifierKeyMask()), "CopyInUse"); //$NON-NLS-1$
     inUseList.getActionMap().put("CopyInUse", new AbstractAction() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -669,7 +673,7 @@ public class PieceDefiner extends JPanel {
     });
 
     inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_V, SwingUtils.getModifierKeyMask()), "PasteInUse"); //$NON-NLS-1$
+            KeyStroke.getKeyStroke(KeyEvent.VK_V, SwingUtils.getModifierKeyMask()), "PasteInUse"); //$NON-NLS-1$
     inUseList.getActionMap().put("PasteInUse", new AbstractAction() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -678,7 +682,7 @@ public class PieceDefiner extends JPanel {
     });
 
     inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_X, SwingUtils.getModifierKeyMask()), "CutInUse"); //$NON-NLS-1$
+            KeyStroke.getKeyStroke(KeyEvent.VK_X, SwingUtils.getModifierKeyMask()), "CutInUse"); //$NON-NLS-1$
     inUseList.getActionMap().put("CutInUse", new AbstractAction() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -688,7 +692,7 @@ public class PieceDefiner extends JPanel {
     });
 
     inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_UP, SwingUtils.getModifierKeyMask()), "UpInUse"); //$NON-NLS-1$
+            KeyStroke.getKeyStroke(KeyEvent.VK_UP, SwingUtils.getModifierKeyMask()), "UpInUse"); //$NON-NLS-1$
     inUseList.getActionMap().put("UpInUse", new AbstractAction() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -697,7 +701,7 @@ public class PieceDefiner extends JPanel {
     });
 
     inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, SwingUtils.getModifierKeyMask()), "DownInUse"); //$NON-NLS-1$
+            KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, SwingUtils.getModifierKeyMask()), "DownInUse"); //$NON-NLS-1$
     inUseList.getActionMap().put("DownInUse", new AbstractAction() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -706,7 +710,7 @@ public class PieceDefiner extends JPanel {
     });
 
     inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_HOME, SwingUtils.getModifierKeyMask()), "TopInUse"); //$NON-NLS-1$
+            KeyStroke.getKeyStroke(KeyEvent.VK_HOME, SwingUtils.getModifierKeyMask()), "TopInUse"); //$NON-NLS-1$
     inUseList.getActionMap().put("TopInUse", new AbstractAction() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -715,7 +719,7 @@ public class PieceDefiner extends JPanel {
     });
 
     inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_END, SwingUtils.getModifierKeyMask()), "BottomInUse"); //$NON-NLS-1$
+            KeyStroke.getKeyStroke(KeyEvent.VK_END, SwingUtils.getModifierKeyMask()), "BottomInUse"); //$NON-NLS-1$
     inUseList.getActionMap().put("BottomInUse", new AbstractAction() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -724,13 +728,13 @@ public class PieceDefiner extends JPanel {
     });
 
     inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, SwingUtils.getModifierKeyMask()), "ToAvail"); //$NON-NLS-1$
+            KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, SwingUtils.getModifierKeyMask()), "ToAvail"); //$NON-NLS-1$
     inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "ToAvail"); //$NON-NLS-1$
+            KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "ToAvail"); //$NON-NLS-1$
     inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, SwingUtils.getModifierKeyMask()), "ToAvail"); //$NON-NLS-1$
+            KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, SwingUtils.getModifierKeyMask()), "ToAvail"); //$NON-NLS-1$
     inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "ToAvail"); //$NON-NLS-1$
+            KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "ToAvail"); //$NON-NLS-1$
     inUseList.getActionMap().put("ToAvail", new AbstractAction() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -747,7 +751,7 @@ public class PieceDefiner extends JPanel {
     inUseScroll.setBorder(BorderFactory.createTitledBorder(Resources.getString("Editor.PieceDefiner.current_traits")));
     inUsePanel.add(inUseScroll, "grow,push,wrap"); // NON-NLS
 
-    // A panel holding the cut/paste/propertiues buttons below the In Use traits
+    // A panel holding the cut/paste/properties buttons below the In Use traits
     final JPanel inUseButtonPanel = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
     copyButton = new JButton(Resources.getString("Editor.copy") + " (" + getCtrlKeyName('C') + ")");
     copyButton.addActionListener(evt -> doCopy());
@@ -836,9 +840,9 @@ public class PieceDefiner extends JPanel {
   public void initCustomControls(final JDialog d, final Configurable target) {
     final JRootPane rp = d.getRootPane();
     rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, SwingUtils.getModifierKeyMask()), "ToAvail"); //$NON-NLS-1$
+            KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, SwingUtils.getModifierKeyMask()), "ToAvail"); //$NON-NLS-1$
     rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK), "ToAvail"); //$NON-NLS-1$
+            KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK), "ToAvail"); //$NON-NLS-1$
     rp.getActionMap().put("ToAvail", new AbstractAction() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -847,9 +851,9 @@ public class PieceDefiner extends JPanel {
     });
 
     rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, SwingUtils.getModifierKeyMask()), "ToInUse"); //$NON-NLS-1$
+            KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, SwingUtils.getModifierKeyMask()), "ToInUse"); //$NON-NLS-1$
     rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK), "ToInUse"); //$NON-NLS-1$
+            KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK), "ToInUse"); //$NON-NLS-1$
     rp.getActionMap().put("ToInUse", new AbstractAction() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -1028,12 +1032,12 @@ public class PieceDefiner extends JPanel {
       return;
     }
 
-    // Remove the piece from it's current position
+    // Remove the piece from its current position
     final GamePiece piece = removeDecorator(fromIndex);
 
     // Insert it at the new position.
     // The piece has already been removed from its old location, so if we are moving down,
-    // substract one from the toIndex as the list entries below us will have shifted up.
+    // subtract one from the toIndex as the list entries below us will have shifted up.
     final int actualToIndex = toIndex > fromIndex ? toIndex - 1 : toIndex;
     insertDecorator(actualToIndex, piece);
 
@@ -1099,7 +1103,7 @@ public class PieceDefiner extends JPanel {
     Object o = null;
     try {
       o = GameModule.getGameModule().getDataArchive()
-        .loadClass(className).getConstructor().newInstance();
+              .loadClass(className).getConstructor().newInstance();
     }
     catch (Throwable t) {
       ReflectionUtils.handleImportClassFailure(t, className);
@@ -1274,6 +1278,12 @@ public class PieceDefiner extends JPanel {
   private static class Renderer extends DefaultListCellRenderer {
     private static final long serialVersionUID = 1L;
 
+    private final PieceDefiner definer;
+
+    Renderer(PieceDefiner definer) {
+      this.definer = definer;
+    }
+
     @Override
     public Component getListCellRendererComponent(
             JList list, Object value, int index, boolean selected, boolean hasFocus) {
@@ -1283,45 +1293,34 @@ public class PieceDefiner extends JPanel {
       // since we overwrite the label text anyway.
       super.getListCellRendererComponent(list, "", index, selected, hasFocus);
 
+      final int lineOffset = definer.isPrototype() ? 1 : 0;
+
       if (value instanceof EditablePiece) {
         final EditablePiece editableValue = (EditablePiece) value;
         final String type = editableValue.getType().split(";")[0];
-        final String valueStr = editableValue.toString();
-        final String name = valueStr.substring(valueStr.indexOf("[name=")).split("=")[1].split(",")[0]; // extract name
 
-        // Prototype name field is null; skip first (dummy) item to avoid outputting a blank line
-        if (!name.isEmpty() || index > 0) {
+        // Prototype? Skip first (dummy) item to avoid outputting a blank line
+        if (lineOffset == 1 || index > 0) {
+          // For Pieces, bump index to 1
           // Special formatting for Comments
           if (type.startsWith("cmt")) {
-            setText(getLineNumber(index, name) + "<b>/* " + ConfigureTree.noHTML(((EditablePiece) value).getDescription()) + " */</b></html>");
+            setText(getLineNumber(index + lineOffset) + "<b>/* " + ConfigureTree.noHTML(((EditablePiece) value).getDescription()) + " */</b></html>");
           }
           else {
-            setText(getLineNumber(index, name) + ConfigureTree.noHTML(((EditablePiece) value).getDescription()) + "</html>");
+            setText(getLineNumber(index + lineOffset) + ConfigureTree.noHTML(((EditablePiece) value).getDescription()) + "</html>");
           }
         }
       }
       else {
+        // FIXME: When does this get used ? Assumed that prototype might have to be skipped here also.
         final String s = value.getClass().getName();
-        setText(getLineNumber(index + 1) + s.substring(s.lastIndexOf('.') + 1) + "</html>");
+        setText(getLineNumber(index + lineOffset) + s.substring(s.lastIndexOf('.') + 1) + "</html>");
       }
       return this;
     }
 
-    private static String getLineNumber(int index, String name) {
-
-      // Ensure output always starts at line 1
-      if (name.isEmpty()) {
-        // Prototype has a dummy Basic Piece name that is already skipped
-        return getLineNumber(index);
-      }
-      else {
-        // Basic Piece starts output line 1 from index = 0
-        return getLineNumber(index + 1);
-      }
-    }
-
-    private static String getLineNumber(int index) {
-      return "<html><span style=color:#A0A0A0>" + index + ".</span> ";  // prep line number for output
+    private static String getLineNumber(int lineNumber) {
+      return "<html><span style=color:#A0A0A0>" + lineNumber + ".</span> ";  // prep line number for output
     }
   }
 
@@ -1333,7 +1332,7 @@ public class PieceDefiner extends JPanel {
 
     @Override
     public Component getListCellRendererComponent(
-      JList list, Object value, int index, boolean selected, boolean hasFocus) {
+            JList list, Object value, int index, boolean selected, boolean hasFocus) {
 
       // DO NOT pass value to super.getListCellRendererComponent()
       // It is incredibly inefficient for GamePieces and is not needed
@@ -1349,7 +1348,7 @@ public class PieceDefiner extends JPanel {
       return this;
     }
   }
-  
+
   /**
    * Contents of the Copy/Paste buffer for traits in the editor
    * @author rkinney
