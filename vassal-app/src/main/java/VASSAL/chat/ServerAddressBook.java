@@ -729,7 +729,7 @@ public class ServerAddressBook {
         if (configControls == null) {
           configControls = new JPanel(new MigLayout("ins 0", "[grow,fill]", "[]")); // NON-NLS
           final JPanel configPanel = new JPanel();
-          configPanel.setLayout(new MigLayout(ConfigurerLayout.STANDARD_INSERTS_GAPY, "[align right]rel[]")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+          configPanel.setLayout(new MigLayout(ConfigurerLayout.STANDARD_INSETS_GAPY, "[align right]rel[]")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
           configPanel.add(
               new JLabel(IconFactory.getIcon(entry.getIconName(), IconFamily.LARGE)),
               "span 2, align center, wrap"); //$NON-NLS-1$

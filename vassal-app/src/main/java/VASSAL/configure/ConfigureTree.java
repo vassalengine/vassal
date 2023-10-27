@@ -304,9 +304,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
 
-
-  protected static String noHTML(String text) {
-    return text.replaceAll("<", "&lt;")  //NON-NLS // This prevents any unwanted html tag from functioning
+  public static String noHTML(String text) {
+    return text.replaceAll("<", "&lt;")  //NON-NLS // This prevents any unwanted tag from functioning
                .replaceAll(">", "&gt;"); //NON-NLS // This makes sure > doesn't break any of our legit <div> tags
   }
 
@@ -782,7 +781,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           updateEditMenu();
         }
       };
-      a.setEnabled(isDeleteAllowed(target));
+      a.setEnabled(true);
     }
     return a;
   }
@@ -885,17 +884,24 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       return false;
     }
 
+    final Configurable pasteComponent = (Configurable) sourceNode.getUserObject();
+
     // Do not allow Immobile components to be moved
-    if (!((Configurable) sourceNode.getUserObject()).isMovable()) {
+    if (!pasteComponent.isMovable()) {
       return false;
+    }
+
+    // Do not allow a Unique component to be pasted into a node that already has an instance of that component
+    if (pasteComponent.isUnique() && target instanceof AbstractBuildable) {
+      if (!((AbstractBuildable) target).getComponentsOf(pasteComponent.getClass()).isEmpty()) {
+        return false;
+      }
     }
 
     // We can always be dragged/pasted onto our own parent.
     final DefaultMutableTreeNode parent = (DefaultMutableTreeNode) sourceNode.getParent();
-    if (parent != null) {
-      if (parent.getUserObject().equals(target)) {
-        return true;
-      }
+    if (parent != null && parent.getUserObject().equals(target)) {
+      return true;
     }
 
     return isValidParent(target, (Configurable) sourceNode.getUserObject());
@@ -1764,7 +1770,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected void updateEditMenu() {
     deleteAction.setEnabled(selected != null && isDeleteAllowed(selected));
     cutAction.setEnabled(selected != null && isDeleteAllowed(selected));
-    copyAction.setEnabled(selected != null && isDeleteAllowed(selected));
+    copyAction.setEnabled(selected != null);
     pasteAction.setEnabled(selected != null && isValidPasteTarget(selected));
     moveAction.setEnabled(selected != null && isMoveAllowed(selected));
     duplicateAction.setEnabled(selected != null && isDuplicateAllowed(selected));

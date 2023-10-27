@@ -123,10 +123,6 @@ public class ColorManager extends AbstractConfigurable {
   protected Map<String, ColorSwatch> userColors =
     new HashMap<>();
 
-  public ColorManager() {
-    instance = this;
-  }
-
   public ColorSwatch getColorSwatch(String name) {
     ColorSwatch c = userColors.get(name);
     if (c == null) {
@@ -194,7 +190,7 @@ public class ColorManager extends AbstractConfigurable {
 
   @Override
   public void addTo(Buildable parent) {
-
+    instance = this;
   }
 
   @Override
