@@ -1,5 +1,6 @@
 3.7.5 - ???
 
+* 12852: Prevent SumZone from generating Bad Data Errors
 * 12846: Fix missing custom colors and font styles in Game Piece Layouts
 * 12841: Ensure labels are correctly updated in Replace With Other trait
 
