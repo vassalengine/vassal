@@ -2924,12 +2924,20 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       final String item = getConfigureName(c.getClass());
       final String name = StringUtils.defaultString(c.getConfigureName());
       final TargetProgress progress = new TargetProgress();
-      final boolean showName = (searchParameters.isMatchNames() || !searchParameters.isMatchAdvanced());  // name is default (i.e. unless filtered out)
-      final boolean showTypes = (searchParameters.isMatchTypes() || !searchParameters.isMatchAdvanced());  // type [class] is default (i.e. unless filtered out)
+
+      // name & type (class) are default search categories and only excluded via Advanced Filters
+      final boolean showName = searchParameters.isMatchNames() || !searchParameters.isMatchAdvanced();
+      final boolean showTypes = searchParameters.isMatchTypes() || !searchParameters.isMatchAdvanced();
+
+/*    Highlighting matches in the headings is possible but not so useful whilst the matches are shown in the detailed output.
       final String matchString = Resources.getString("Editor.search_matches", nodeListIndex) + "<b>"
               + (showName ? highlightFinds(noHTML(name), regexPattern) : noHTML(name))
               + " [" + (showTypes ? highlightFinds(noHTML(item), regexPattern) :  noHTML(item)) + "]"
               + "</b>: ";
+      */
+      // Heading without highlighting matches
+      final String matchString = Resources.getString("Editor.search_matches", nodeListIndex)
+              + "<b>" + noHTML(name) + " [" + noHTML(item) + "]" + "</b>: ";
 
       stringListHits(showName, Arrays.asList(c.getConfigureName()), regexPattern, matchString, item, "", "Name", progress); //NON-NLS
       stringListHits(showTypes, Arrays.asList(item),                 regexPattern, matchString, item, "", "Type", progress); //NON-NLS
@@ -2985,9 +2993,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           if (searchParameters.isMatchTraits() || searchParameters.isMatchFull() && ((piece instanceof Decorator) || (!searchParameters.isMatchNames() && searchParameters.isMatchAdvanced()))) {
             if ((desc != null) && checkString(desc, regexPattern)) {
 
-              final String[] traitType = piece.getType().split(";", 0); // splitting the string at ";"
+              final String[] traitType = piece.getType().split(";"); // splitting the string at ";"
 
               if (traitType[0].equals("piece")) {
+                // Basic Piece gets bonus info that is otherwise excluded from search
                 // processing Type string piece;;;image;BasicName - assumes the extra fields don't need calls to noHTML()
                 final String pieceInfo = "image: " + traitType[3] + "&nbsp;".repeat(3) + "gpid: " + p.getProperty(Properties.PIECE_ID);
                 progress.checkShowTrait(matchString, regexPattern, "Trait", desc, pieceInfo); //NON-NLS
