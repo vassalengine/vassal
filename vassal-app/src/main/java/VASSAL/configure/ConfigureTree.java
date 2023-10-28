@@ -2727,7 +2727,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       // so we test for Help Menu first, guarding againtst possibility of null node...
       try {
         //  Special processing to include select items in full search despite not being a SearchTarget
-        if (getConfigureName((Configurable) node.getParent()).equals(Resources.getString("Editor.Documentation.component_type"))) {
+        if (getConfigureName((Configurable) node.getParent()).equals(getString("Editor.Documentation.component_type"))) {
           // [Help Menu]
           // Menu is also the Name, so only catch here if not already caught as Name
           if (!showName && (searchParameters.isMatchFull() || searchParameters.isMatchMenus())) {
@@ -2749,7 +2749,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       catch (Exception NullPointerException) {
         // FIXME: Name check is internal - comparison should ideally be on raw data, not translated
         // FIXME: How about extensions ?
-        if (getConfigureName(c.getClass()).equals(Resources.getString("Editor.GameModule.component_type"))) {
+        if (getConfigureName(c.getClass()).equals(getString("Editor.GameModule.component_type"))) {
           // [Module] - Name, Description & Additional infos fields within the Module component
           if (searchParameters.isMatchFull() || searchParameters.isMatchMenus()) {
             // check UI content
@@ -2933,7 +2933,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       // Help ?
       try {
         // FIXME: Name check is internal - comparison should ideally be on raw data, not translated
-        if (getConfigureName((Configurable) node.getParent()).equals(Resources.getString("Editor.Documentation.component_type"))) {
+        if (getConfigureName((Configurable) node.getParent()).equals(getString("Editor.Documentation.component_type"))) {
           // Help - special processing to include in full search despite not being a SearchTarget
           // Menu is also the Name, so only display here if not already reported as Name
           if (!showName && (searchParameters.isMatchFull() || searchParameters.isMatchMenus())) {
@@ -2953,7 +2953,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       catch (Exception NullPointerException) {
         // FIXME: Name check is internal - comparison should ideally be on raw data, not translated
         // FIXME: How about extensions ?
-        if (getConfigureName(c.getClass()).equals(Resources.getString("Editor.GameModule.component_type"))) {
+        if (getConfigureName(c.getClass()).equals(getString("Editor.GameModule.component_type"))) {
           // [Module] - Name, Description & Additional infos fields within the Module component
           if (searchParameters.isMatchFull() || searchParameters.isMatchMenus()) {
             // display matched UI content
@@ -2979,7 +2979,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
       stringListHits(searchParameters.isMatchExpressions() || searchParameters.isMatchFull(), st.getExpressionList(),      regexPattern, matchString, item, "", "Expression",    progress); //NON-NLS
       // Avoid duplicate output when Name is also the key  value here...
-      if (!item.equals(Resources.getString("Editor.GlobalProperty.component_type")) || !showName) {
+      if (!item.equals(getString("Editor.GlobalProperty.component_type")) || !showName) {
         stringListHits(searchParameters.isMatchProperties() || searchParameters.isMatchFull(), st.getPropertyList(), regexPattern, matchString, item, "", "Property", progress); //NON-NLS
       }
       stringListHits(searchParameters.isMatchMenus() || searchParameters.isMatchFull(),       st.getMenuTextList(),        regexPattern, matchString, item, "", "UI Text",       progress); //NON-NLS
@@ -3007,7 +3007,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       final boolean showTypes = searchParameters.isMatchTypes() || !searchParameters.isMatchAdvanced();
 
 /*    Highlighting matches in the headings is possible but not so useful whilst the matches are shown in the detailed output.
-      final String matchString = Resources.getString("Editor.search_matches", nodeListIndex) + "<b>"
+      final String matchString = getString("Editor.search_matches", nodeListIndex) + "<b>"
               + (showName ? highlightFinds(noHTML(name), regexPattern) : noHTML(name))
               + " [" + (showTypes ? highlightFinds(noHTML(item), regexPattern) :  noHTML(item)) + "]"
               + "</b>: ";
