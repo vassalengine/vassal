@@ -1297,13 +1297,13 @@ public class PieceDefiner extends JPanel {
 
       if (value instanceof EditablePiece) {
         final EditablePiece editableValue = (EditablePiece) value;
-        final String type = editableValue.getType().split(";")[0];
+        final String type = editableValue.getType().split(";")[0] + ";";
 
         // Prototype? Skip first (dummy) item to avoid outputting a blank line
         if (lineOffset == 1 || index > 0) {
           // For Pieces, bump index to 1
           // Special formatting for Comments
-          if (type.startsWith("cmt")) {
+          if (type.equals(Comment.ID)) {
             setText(getLineNumber(index + lineOffset) + "<b>/* " + ConfigureTree.noHTML(((EditablePiece) value).getDescription()) + " */</b></html>");
           }
           else {
