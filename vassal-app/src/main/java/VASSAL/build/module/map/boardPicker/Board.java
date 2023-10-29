@@ -355,7 +355,6 @@ public class Board extends AbstractConfigurable implements GridContainer {
     final int lx = (int) Math.floor(location.getX());
     final int ly = (int) Math.floor(location.getY());
 
-    zoom *= magnification;
     final Rectangle bounds = new Rectangle(
       lx,
       ly,
@@ -371,6 +370,11 @@ public class Board extends AbstractConfigurable implements GridContainer {
     final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
 
     visibleRect = visibleRect.intersection(bounds);
+
+    // location and boundaries already have magnification applied to them,
+    // so don't adjust the zoom for magnification until after we've set
+    // the bounds.
+    zoom *= magnification;
 
     ImageOp op;
     if (boardImageOp != null) {
