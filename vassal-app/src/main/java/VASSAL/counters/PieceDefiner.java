@@ -1303,10 +1303,10 @@ public class PieceDefiner extends JPanel {
           // For Pieces, bump index to 1
           // Special formatting for Comments
           if ((editableValue.getType().startsWith(Comment.ID))) {
-            setText(getLineNumber(index + lineOffset) + "<b>/* " + ConfigureTree.noHTML(((editableValue).getDescription())) + " */</b></html>");
+            setText(getLineNumber(index + lineOffset) + "<b>/* " + ConfigureTree.noHTML((editableValue.getDescription())) + " */</b></html>");
           }
           else {
-            setText(getLineNumber(index + lineOffset) + ConfigureTree.noHTML((editableValue).getDescription()) + "</html>");
+            setText(getLineNumber(index + lineOffset) + ConfigureTree.noHTML(editableValue.getDescription()) + "</html>");
           }
         }
       }
