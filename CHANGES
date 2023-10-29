@@ -1,5 +1,6 @@
 3.7.5 - ???
 
+* 12866: Fix double application of board magnification to board bounds
 * 12865: Documentation: Editor Search section - add a cross-link to main
     search details
 * 12852: Prevent SumZone from generating Bad Data Errors
