@@ -3,6 +3,7 @@
 * 12866: Fix double application of board magnification to board bounds
 * 12865: Documentation: Editor Search section - add a cross-link to main
     search details
+* 12861: Number in-use traits in Piece Definer
 * 12852: Prevent SumZone from generating Bad Data Errors
 * 12846: Fix missing custom colors and font styles in Game Piece Layouts
 * 12841: Ensure labels are correctly updated in Replace With Other trait

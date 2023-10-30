@@ -26,7 +26,8 @@
         { "num": 12841, "desc": "Ensure labels are correctly updated in Replace With Other trait" }
       ],
       "other_improvements": [
-        { "num": 12865, "desc": "Documentation: Editor Search section - add a cross-link to main search details" }
+        { "num": 12865, "desc": "Documentation: Editor Search section - add a cross-link to main search details" },
+        { "num": 12861, "desc": "Number in-use traits in Piece Definer" }
       ]
    },
    {
