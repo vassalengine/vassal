@@ -69,8 +69,8 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     BEFORE_ATTACH_NOTHING, BEFORE_ATTACH_CLEAR
   };
   protected static final String[] BEFORE_ATTACH_KEYS = {
-    Resources.getString("Editor.Attachment.leave_existing"),
-    Resources.getString("Editor.Attachment.clear_existing"),
+    "Editor.Attachment.leave_existing",
+    "Editor.Attachment.clear_existing"
   };
 
 
@@ -81,9 +81,9 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     ON_ATTACH_NOTHING, ON_ATTACH_FOLLOW_BACK, ON_ATTACH_ATTACH_ALL
   };
   protected static final String[] ON_ATTACH_KEYS = {
-    Resources.getString("Editor.Attachment.no_additional_action"),
-    Resources.getString("Editor.Attachment.follow_back"),
-    Resources.getString("Editor.Attachment.attach_to_all")
+    "Editor.Attachment.no_additional_action",
+    "Editor.Attachment.follow_back",
+    "Editor.Attachment.attach_to_all"
   };
 
 
@@ -93,8 +93,8 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     ON_DETACH_NOTHING, ON_DETACH_REMOVE
   };
   protected static final String[] ON_DETACH_KEYS = {
-    Resources.getString("Editor.Attachment.no_additional_action"),
-    Resources.getString("Editor.Attachment.remove_incoming_attachment"),
+    "Editor.Attachment.no_additional_action",
+    "Editor.Attachment.remove_incoming_attachment",
   };
 
   protected String attachName;

@@ -267,7 +267,7 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Confi
 
       controls = new JPanel(new MigLayout("hidemode 3,ins 2", "[grow,fill]", "[grow,fill]")); // NON-NLS
 
-      configControls = new JPanel(new MigLayout("hidemode 3," + ConfigurerLayout.STANDARD_INSERTS_GAPY, "[grow 1,fill]rel[grow 1,fill]rel[]rel[grow 4,fill]rel[]", "[center]")); // NON-NLS
+      configControls = new JPanel(new MigLayout("hidemode 3," + ConfigurerLayout.STANDARD_INSETS_GAPY, "[grow 1,fill]rel[grow 1,fill]rel[]rel[grow 4,fill]rel[]", "[center]")); // NON-NLS
 
       controls.add(configControls, "grow, aligny center"); // NON-NLS
       panel.add(controls, "grow"); // NON-NLS

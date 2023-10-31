@@ -1,7 +1,53 @@
-3.7.2 - ???
+3.7.6 - ???
 
+3.7.5 - 30 October 2023
+
+* 12866: Fix double application of board magnification to board bounds
+* 12865: Documentation: Editor Search section - add a cross-link to main
+    search details
+* 12861: Number in-use traits in Piece Definer
+* 12852: Prevent SumZone from generating Bad Data Errors
+* 12846: Fix missing custom colors and font styles in Game Piece Layouts
+* 12841: Ensure labels are correctly updated in Replace With Other trait
+
+3.7.4 - 20 October 2023
+
+* 12830: Prevent Load Continuation from auto-forwarding to end of log
+* 12829: Set Piece Property Documentation clarification
+* 12826: Fix bug where pieces sometimes teleport from deck back to different
+    map in multiplayer (Ensure map recorded in pieces matches map in parent
+    Stack/Deck)
+* 12825: Allow Unique components to be copied; change Game Piece Layers to be
+    non-mandatory
+* 12824: Ensure ColorManager and FontManager are created exactly once, before
+    use
+* 12802: Prevent NPE in Named KeyStroke Configurer
+
+3.7.3 - 16 October 2023
+
+* 12817: Fix alphanumeric key behavior in hotkey (key command) configurer in
+    Editor (e.g., Shift+B should show up as "Shift+B", not "B")
+* 12814: Updated bundled Java to 21
+* 12810: VASSAL.sh exits before printing relevant exit message
+* 12808: Horizontal scrolling now supports 2-finger-trackpad and mice with
+    additional horizontal wheels
+* 12724: Improved legibility of translation panels
+* 12705: Prevent creation of duplicate Translations by Add Translation button
+
+3.7.2 - 8 October 2023
+
+* 12896: Build universal Mac bundle
+* 12784: Fix rendering of external Text Label images
+* 12781: Fix bad translation keys for Attachment, Deselect, Send To Location
+    traits
+* 12780: Correctly adjust Player window title to reflect actions taken in
+    Welcome Wizard
+* 12769: Fix support for expressions in Sound Clip Configurer
 * 12729: Set Global Property to again record old GP value in oldValues for
     reporting
+* 12773: Disabled Toolbar Button icons should not appear in unused images list
+* 12770: Prevent NPE when escaping from GKC trait after adding 'Set Dynamic
+    Properties' entries
 
 3.7.1 - 20 September 2023
 

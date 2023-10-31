@@ -12,5 +12,12 @@ for ARG in "$@"; do
   fi
 done
 
+# determine the correct CPU architecture
+if sysctl machdep.cpu.brand_string | grep -q Intel ; then
+  ARCH=x86_64
+else
+  ARCH=arm64
+fi
+
 # fire it up
-exec Contents/MacOS/jre/bin/java -classpath Contents/Resources/Java/Vengine.jar  -Xdock:name=VASSAL -Xdock:icon=Contents/Resources/VASSAL.icns VASSAL.launch.ModuleManager "${ARGS[@]}"
+exec arch -$ARCH Contents/MacOS/jre/bin/java -classpath Contents/Resources/Java/Vengine.jar -Xdock:name=VASSAL -Xdock:icon=Contents/Resources/VASSAL.icns VASSAL.launch.ModuleManager "${ARGS[@]}"
