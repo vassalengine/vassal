@@ -1284,6 +1284,15 @@ public class PieceDefiner extends JPanel {
       this.definer = definer;
     }
 
+    private static String getLineNumber(int lineNumber) {
+      // prep line number for output
+      return "<span style=color:#A0A0A0>" + lineNumber + ".</span>";
+    }
+
+    private static String cellText(int lineno, String s) {
+      return "<html>" + getLineNumber(lineno) + " " + s + "</html>";
+    }
+
     @Override
     public Component getListCellRendererComponent(
       JList list, Object value, int index, boolean selected, boolean hasFocus) {
@@ -1294,33 +1303,29 @@ public class PieceDefiner extends JPanel {
       super.getListCellRendererComponent(list, "", index, selected, hasFocus);
 
       final int lineOffset = definer.isPrototype() ? 1 : 0;
+      final int lineno = index + lineOffset;
 
       if (value instanceof EditablePiece) {
         final EditablePiece editableValue = (EditablePiece) value;
-        final String type = editableValue.getType().split(";")[0] + ";";
 
         // Prototype? Skip first (dummy) item to avoid outputting a blank line
         if (lineOffset == 1 || index > 0) {
           // For Pieces, bump index to 1
           // Special formatting for Comments
-          if (type.equals(Comment.ID)) {
-            setText(getLineNumber(index + lineOffset) + "<b>/* " + ConfigureTree.noHTML(((EditablePiece) value).getDescription()) + " */</b></html>");
+          if ((editableValue.getType().startsWith(Comment.ID))) {
+            setText(cellText(lineno, "<b>/* " + ConfigureTree.noHTML((editableValue.getDescription())) + " */</b>"));
           }
           else {
-            setText(getLineNumber(index + lineOffset) + ConfigureTree.noHTML(((EditablePiece) value).getDescription()) + "</html>");
+            setText(cellText(lineno, ConfigureTree.noHTML(editableValue.getDescription())));
           }
         }
       }
       else {
         // FIXME: When does this get used ? Assumed that prototype might have to be skipped here also.
         final String s = value.getClass().getName();
-        setText(getLineNumber(index + lineOffset) + s.substring(s.lastIndexOf('.') + 1) + "</html>");
+        setText(cellText(lineno, s.substring(s.lastIndexOf('.') + 1)));
       }
       return this;
-    }
-
-    private static String getLineNumber(int lineNumber) {
-      return "<html><span style=color:#A0A0A0>" + lineNumber + ".</span> ";  // prep line number for output
     }
   }
 

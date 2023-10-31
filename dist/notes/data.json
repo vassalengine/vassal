@@ -15,18 +15,32 @@
   ],
   "changes": [
     {
+      "in": "3.7.6",
+      "since": "3.7.5",
+      "new_features": [
+      ],
+      "bug_fixes": [
+      ],
+      "other_improvements": [
+      ]
+    },
+    {
       "in": "3.7.5",
       "since": "3.7.4",
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 12866, "desc": "Fix double application of board magnification to board bounds" },
+        { "num": 12852, "desc": "Prevent SumZone from generating Bad Data Errors" },
         { "num": 12846, "desc": "Fix missing custom colors and font styles in Game Piece Layouts" },
         { "num": 12841, "desc": "Ensure labels are correctly updated in Replace With Other trait" }
       ],
       "other_improvements": [
+        { "num": 12865, "desc": "Documentation: Editor Search section - add a cross-link to main search details" },
+        { "num": 12861, "desc": "Number in-use traits in Piece Definer" }
       ]
-   },
-   {
+    },
+    {
       "in": "3.7.4",
       "since": "3.7.3",
       "new_features": [
@@ -57,8 +71,8 @@
         { "num": 12808, "desc": "Horizontal scrolling now supports 2-finger-trackpad and mice with additional horizontal wheels" },
         { "num": 12724, "desc": "Improved legibility of translation panels" }
       ]
-   },
-   {
+    },
+    {
       "in": "3.7.2",
       "since": "3.7.1",
       "new_features": [
@@ -75,8 +89,8 @@
       "other_improvements": [
         { "num": 12896, "desc": "Build universal Mac bundle" }
       ]
-   },
-   {
+    },
+    {
       "in": "3.7.1",
       "since": "3.7.0",
       "new_features": [
@@ -105,8 +119,8 @@
         { "num": 12670, "desc": "Prevent essential components being accidentally deleted" },
         { "num": 12661, "desc": "Translate side names in change sides message" }
       ]
-   },
-   {
+    },
+    {
       "in": "3.7.0",
       "since": "3.6.19",
       "new_features": [
