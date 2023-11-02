@@ -298,7 +298,8 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     a.execute();
 
     c = c.append(a);
-    gm.getServer().sendToOthers(c);
+    // how is it if we log ?  gm.getServer().sendToOthers(c);
+    gm.sendAndLog(c);
 
     newSide = getMySide();
     fireSideChange(mySide, newSide);
@@ -478,13 +479,14 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
    */
   @Override
   public void finish() {
+    final GameModule gm = GameModule.getGameModule();
     // In case we set a new password at this step, update the prefs configurer, and write module preferences.
-    GameModule.getGameModule().getPasswordConfigurer().setValue(GameModule.getUserId());
+    gm.getPasswordConfigurer().setValue(GameModule.getUserId());
     try {
-      GameModule.getGameModule().getPrefs().save();
+      gm.getPrefs().save();
     }
     catch (IOException e) {
-      GameModule.getGameModule().warn(Resources.getString("PlayerRoster.failed_pref_write", e.getLocalizedMessage()));
+      gm.warn(Resources.getString("PlayerRoster.failed_pref_write", e.getLocalizedMessage()));
     }
 
    // Drop into standard routine, starting with checking that the side is still available (race condition mitigation)
@@ -493,16 +495,18 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
     // null is a cancel op - player will not connect to the game
     if (newSide != null) {
-      if (GameModule.getGameModule().isMultiplayerConnected()) {
-        final Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.joined_side_2" : "PlayerRoster.joined_side", GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME), translateSide(newSide)));
+      if (gm.isMultiplayerConnected()) {
+        final Command c = new Chatter.DisplayText(gm.getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.joined_side_2" : "PlayerRoster.joined_side", gm.getPrefs().getValue(GameModule.REAL_NAME), translateSide(newSide)));
         c.execute();
-        GameModule.getGameModule().getServer().sendToOthers(c);
+       // trying with logging in place of gm.getServer().sendToOthers(c);
+        gm.sendAndLog(c);
 
       }
 
       final Add a = new Add(this, GameModule.getActiveUserId(), GlobalOptions.getInstance().getPlayerId(), newSide);
       a.execute();
-      GameModule.getGameModule().getServer().sendToOthers(a);
+      // trying with logging in place of gm.getServer().sendToOthers(a);
+      gm.sendAndLog(a);
 
       pickedSide = true;
     }
