@@ -1778,19 +1778,20 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       updateEditMenu();
       ((DefaultTreeModel) getModel()).nodeChanged(selectedNode);
 
-      // tree path change will affect index / back-track for an existing search
-      lastSearchNodeIndex =
+      // tree path change will affect indexing for an existing search; detect / prepare for that here
+      newNodeSelected = selectedNode != lastFoundNode;
+
+      // if node changes, we'll need the current Index.
+      if (newNodeSelected) selectedNodeIndex =
               getBookmark((List<DefaultMutableTreeNode>) getSearchNodes((DefaultMutableTreeNode)selectedNode.getRoot()),
                       selectedNode);
-
-      newNodeSelected = selectedNode != lastSearchNode;
     }
   }
 
   // tracks when search must be reset as node has changed
   protected static boolean newNodeSelected = false;
-  protected static DefaultMutableTreeNode lastSearchNode;
-  protected static int lastSearchNodeIndex;
+  protected static DefaultMutableTreeNode lastFoundNode;
+  protected static int selectedNodeIndex;
 
 
   protected void updateEditMenu() {
@@ -2287,8 +2288,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
         prev.addActionListener(ePrev -> {
           // in event of a cursor move, breadCrumbs list may need culling before backward step...
-          if (newNodeSelected && breadCrumbs.isEmpty()) {
-            while (nodeListIndex > 0 && breadCrumbs.get(nodeListIndex - 1) >= lastSearchNodeIndex) {
+          if (newNodeSelected && !breadCrumbs.isEmpty()) {
+            while (nodeListIndex > 0 && breadCrumbs.get(nodeListIndex - 1) >= selectedNodeIndex) {
               breadCrumbs.remove(--nodeListIndex);
             }
           }
@@ -2579,7 +2580,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       // find the next node
       final Predicate<DefaultMutableTreeNode> nodeMatchesSearchString = node -> checkNode(node, regexPattern);
 
-      lastSearchNode =
+      lastFoundNode =
         searchNodes
           .stream()
           .skip(bookmark + 1)
@@ -2587,8 +2588,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           .findFirst()
           .orElse(null);
 
-      if (lastSearchNode == null) {
-        lastSearchNode =
+      if (lastFoundNode == null) {
+        lastFoundNode =
                 searchNodes
                         .stream()
                         .limit(bookmark + 1)
@@ -2601,20 +2602,20 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
 
       // Determine precise bookmark for back-track record (might be a child of the node within which the search was performed)
-      if (lastSearchNode != null) bookmark = getBookmark(searchNodes, lastSearchNode);
+      if (lastFoundNode != null) bookmark = getBookmark(searchNodes, lastFoundNode);
 
       // track the node just found
-      lastSearchNodeIndex = bookmark;
+      selectedNodeIndex = bookmark;
       breadCrumbs.add(bookmark);
       ++nodeListIndex;
 
-      return lastSearchNode;
+      return lastFoundNode;
     }
 
     private DefaultMutableTreeNode setNode(int bookmark) {
-      lastSearchNodeIndex = bookmark;
-      lastSearchNode = configureTree.getSearchNodes((DefaultMutableTreeNode)configureTree.getModel().getRoot()).get(bookmark);
-      return lastSearchNode;
+      selectedNodeIndex = bookmark;
+      lastFoundNode = configureTree.getSearchNodes((DefaultMutableTreeNode)configureTree.getModel().getRoot()).get(bookmark);
+      return lastFoundNode;
     }
 
     /**
