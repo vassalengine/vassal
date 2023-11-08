@@ -1,41 +1,127 @@
 {
   "headline": "The Vassal Team is happy to announce the release of Vassal {{version}}.",
   "important": [
+    "There is now a single universal app bundle for MacOS. It runs natively on both 64-bit x86 (Intel) and 64-bit ARM (Apple Silicon) Macs.",
     "Modules saved in {{version_feature}} are not openable by earlier versions of Vassal. We recommend keeping a backup copy of any pre-{{version_feature}} modules you plan to modify in {{version_feature}} until you've verified that everything works to your satisfaction.",
-    "Some code deprecated more than a year ago has been removed. Modules containing custom code using that code MUST be updated if they are to work with {{version_feature}}.",
     "Things may be broken which worked previously. If you find a new bug, please report it."
   ],
   "downloads": [
     { "display_name": "Linux", "suffix": "linux.tar.bz2" },
-    { "display_name": "MacOS (64-bit ARM)", "suffix": "macos-aarch64.dmg" },
-    { "display_name": "MacOS (64-bit x86)", "suffix": "macos-x86_64.dmg" },
-    { "display_name": "Windows (64-bit ARM)", "suffix": "windows-aarch64.exe" },
+    { "display_name": "MacOS", "suffix": "macos-universal.dmg" },
     { "display_name": "Windows (64-bit x86)", "suffix": "windows-x86_64.exe" },
     { "display_name": "Windows (32-bit x86)", "suffix": "windows-x86_32.exe" },
+    { "display_name": "Windows (64-bit ARM)", "suffix": "windows-aarch64.exe" },
     { "display_name": "Other", "suffix": "other.zip" }
   ],
   "changes": [
-   {
+    {
+      "in": "3.7.6",
+      "since": "3.7.5",
+      "new_features": [
+      ],
+      "bug_fixes": [
+        { "num": 12881, "desc": "Prevent integer overflow when computing the size of image pixel data in bytes" }
+      ],
+      "other_improvements": [
+      ]
+    },
+    {
+      "in": "3.7.5",
+      "since": "3.7.4",
+      "new_features": [
+      ],
+      "bug_fixes": [
+        { "num": 12866, "desc": "Fix double application of board magnification to board bounds" },
+        { "num": 12852, "desc": "Prevent SumZone from generating Bad Data Errors" },
+        { "num": 12846, "desc": "Fix missing custom colors and font styles in Game Piece Layouts" },
+        { "num": 12841, "desc": "Ensure labels are correctly updated in Replace With Other trait" }
+      ],
+      "other_improvements": [
+        { "num": 12865, "desc": "Documentation: Editor Search section - add a cross-link to main search details" },
+        { "num": 12861, "desc": "Number in-use traits in Piece Definer" }
+      ]
+    },
+    {
+      "in": "3.7.4",
+      "since": "3.7.3",
+      "new_features": [
+      ],
+      "bug_fixes": [
+        { "num": 12830, "desc": "Prevent Load Continuation from auto-forwarding to end of log" },
+        { "num": 12826, "desc": "Fix bug where pieces sometimes teleport from deck back to different map in multiplayer (Ensure map recorded in pieces matches map in parent Stack/Deck)" },
+        { "num": 12824, "desc": "Ensure ColorManager and FontManager are created exactly once, before use" },
+        { "num": 12802, "desc": "Prevent NPE in Named KeyStroke Configurer" }
+      ],
+      "other_improvements": [
+        { "num": 12829, "desc": "Set Piece Property Documentation clarification" },
+        { "num": 12825, "desc": "Allow Unique components to be copied; change Game Piece Layers to be non-mandatory" }
+      ]
+    },
+    {
+      "in": "3.7.3",
+      "since": "3.7.2",
+      "new_features": [
+      ],
+      "bug_fixes": [
+        { "num": 12817, "desc": "Fix alphanumeric key behavior in hotkey (key command) configurer in Editor (e.g., Shift+B should show up as \"Shift+B\", not \"B\")" },
+        { "num": 12810, "desc": "VASSAL.sh exits before printing relevant exit message" },
+        { "num": 12705, "desc": "Prevent creation of duplicate Translations by Add Translation button" }
+      ],
+      "other_improvements": [
+        { "num": 12814, "desc": "Updated bundled Java to 21" },
+        { "num": 12808, "desc": "Horizontal scrolling now supports 2-finger-trackpad and mice with additional horizontal wheels" },
+        { "num": 12724, "desc": "Improved legibility of translation panels" }
+      ]
+    },
+    {
+      "in": "3.7.2",
+      "since": "3.7.1",
+      "new_features": [
+      ],
+      "bug_fixes": [
+        { "num": 12784, "desc": "Fix rendering of external Text Label images" },
+        { "num": 12781, "desc": "Fix bad translation keys for Attachment, Deselect, Send To Location traits" },
+        { "num": 12780, "desc": "Correctly adjust Player window title to reflect actions taken in Welcome Wizard" },
+        { "num": 12769, "desc": "Fix support for expressions in Sound Clip Configurer" },
+        { "num": 12729, "desc": "Set Global Property to again record old GP value in oldValues for reporting" },
+        { "num": 12773, "desc": "Disabled Toolbar Button icons should not appear in unused images list" },
+        { "num": 12770, "desc": "Prevent NPE when escaping from GKC trait after adding 'Set Dynamic Properties' entries" }
+      ],
+      "other_improvements": [
+        { "num": 12896, "desc": "Build universal Mac bundle" }
+      ]
+    },
+    {
       "in": "3.7.1",
       "since": "3.7.0",
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 12727, "desc": "Ensure that tiles are cobbled for fixed-size board scaling" },
+        { "num": 12708, "desc": "Prevent ArrayIndexOutOfBoundsException if side translation count does not match module" },
+        { "num": 12688, "desc": "Replace with Other should not update text of unchangeable labels" },
+        { "num": 12683, "desc": "Prevent NPE on starting game in Main Room" },
+        { "num": 12679, "desc": "Set Piece Property respects target property numeric constraints unless overridden" },
         { "num": 12676, "desc": "IncrementProperty: Corrected bad wrap-around calculation when increment is negative" },
         { "num": 12659, "desc": "Translate current side before checking for \"next side\"" },
         { "num": 12645, "desc": "Respect localization when filtering sides" },
         { "num": 12582, "desc": "Corrected divide-by-zero problem for Zones defined by zero-point polygons" },
+        { "num": 12542, "desc": "Mitigate race condition when selecting player sides" },
         { "num": 12474, "desc": "Fixed NPE when moving EditablePiece which isn't on a map" },
         { "num": 12411, "desc": "Fixed NPE when updating ConfigureTree" },
         { "num": 12324, "desc": "Fixed ClassCastException caused by reordering columns in Delayed Notes table" },
         { "num": 12307, "desc": "Prevent NPE when Return to Deck of a deleted Deck" }
       ],
       "other_improvements": [
+        { "num": 12716, "desc": "Support regular expressions in Editor search" },
+        { "num": 12715, "desc": "Enable help button for editor Search dialog" },
+        { "num": 12706, "desc": "Keep the \"retire\" button disabled unless a game is running" },
+        { "num": 12696, "desc": "Removed \"Indexing pieces\" message" },
         { "num": 12670, "desc": "Prevent essential components being accidentally deleted" },
         { "num": 12661, "desc": "Translate side names in change sides message" }
       ]
-   },
-   {
+    },
+    {
       "in": "3.7.0",
       "since": "3.6.19",
       "new_features": [

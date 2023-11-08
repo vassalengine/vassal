@@ -1,6 +1,5 @@
 /*
- *
- * Copyright (c) 2009-2010 by Joel Uckelman
+ * Copyright (c) 2007-2023 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -34,38 +33,39 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import VASSAL.tools.image.GeneralFilter;
 import VASSAL.tools.image.ImageUtils;
 
-
 /**
- * An {@link ImageOp} which scales its source and cobbles scaled tiles
- * from the tile cache.
+ * An {@link ImageOp} which scales its source.
  *
- * @since 3.2.0
+ * @since 3.1.0
  * @author Joel Uckelman
  */
-public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
-
-  public ScaleOpTiledBitmapImpl(ImageOp sop, double scale) {
-    this(sop, scale, defaultHints);
+public class FixedScaleOpTiledBitmapImpl extends FixedScaleOpBitmapImpl {
+  /**
+   * Constructs an <code>ImageOp</code> which will scale
+   * the image produced by its source <code>ImageOp</code>.
+   *
+   * @param sop the source operation
+   * @param scale the scale factor
+   */
+  public FixedScaleOpTiledBitmapImpl(ImageOp sop, double scale, int width, int height) {
+    this(sop, scale, width, height, defaultHints);
   }
 
-  public ScaleOpTiledBitmapImpl(ImageOp sop, double scale,
-                                RenderingHints hints) {
-    super(sop, scale, hints);
+  /**
+   * Constructs an <code>ImageOp</code> which will scale
+   * the image produced by its source <code>ImageOp</code>.
+   *
+   * @param sop the source operation
+   * @param scale the scale factor
+   * @param hints rendering hints
+   */
+  public FixedScaleOpTiledBitmapImpl(ImageOp sop, double scale, int width, int height, RenderingHints hints) {
+    super(sop, scale, width, height, hints);
   }
 
   @Override
   protected ImageOp createTileOp(int tileX, int tileY) {
-    final double iscale = 1.0 / scale;
-    final boolean invPow2 = Math.floor(iscale) == iscale &&
-                            (((int) iscale) & (((int) iscale) - 1)) == 0;
-
-    if (invPow2 && sop instanceof SourceOp) {
-      final String name = ((SourceOp) sop).getName();
-      return new SourceOpDiskCacheBitmapImpl(name, tileX, tileY, scale);
-    }
-    else {
-      return new TileOp(this, tileX, tileY);
-    }
+    return new TileOp(this, tileX, tileY);
   }
 
   private static class TileOp extends AbstractTileOpImpl {
@@ -88,11 +88,10 @@ public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
 
     private static final GeneralFilter.Filter downFilter =
       new GeneralFilter.Lanczos3Filter();
-
     private static final GeneralFilter.Filter upFilter =
       new GeneralFilter.MitchellFilter();
 
-    public TileOp(ScaleOpTiledBitmapImpl rop, int tileX, int tileY) {
+    public TileOp(FixedScaleOpTiledBitmapImpl rop, int tileX, int tileY) {
       if (rop == null) throw new IllegalArgumentException();
 
       if (tileX < 0 || tileX >= rop.getNumXTiles() ||
@@ -246,7 +245,6 @@ public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
     @Override
     protected void fixSize() { }
 
-    /** {@inheritDoc} */
     @Override
     public boolean equals(Object o) {
       if (this == o) return true;
@@ -254,16 +252,15 @@ public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
 
       final TileOp op = (TileOp) o;
       return dx0 == op.dx0 &&
-             dy0 == op.dy0 &&
-             dw == op.dw &&
-             dh == op.dh &&
-             tx == op.tx &&
-             ty == op.ty &&
-             scale == op.scale &&
-             Arrays.equals(sop, op.sop);
+        dy0 == op.dy0 &&
+        dw == op.dw &&
+        dh == op.dh &&
+        tx == op.tx &&
+        ty == op.ty &&
+        scale == op.scale &&
+        Arrays.equals(sop, op.sop);
     }
 
-    /** {@inheritDoc} */
     @Override
     public int hashCode() {
       return hash;

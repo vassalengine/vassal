@@ -18,7 +18,6 @@
 package VASSAL.build.module.index;
 
 import VASSAL.build.GameModule;
-import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Map;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Stack;
@@ -62,7 +61,6 @@ public class IndexManager {
    * Will usually only be called at the start of a game session after initial load of gamestate is complete.
    */
   public void rebuild() {
-    new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "Indexing pieces...").execute();
     clearAll();
     for (final GamePiece piece : GameModule.getGameModule().getGameState().getAllPieces()) {
       final Map map = piece.getMap();
@@ -123,7 +121,7 @@ public class IndexManager {
    *
    * @param piece         Piece to use as origin
    * @param range         range in units appropriate to the grid at the pieces location
-   * @param forceAsPixels Force the range check to be in pixels, over-riding any grid at the target point
+   * @param forceAsPixels Force the range check to be in pixels, overriding any grid at the target point
    * @return List of pieces (not including the souurce piece)
    */
   public List<GamePiece> getPieces(GamePiece piece, int range, boolean forceAsPixels) {
@@ -141,7 +139,7 @@ public class IndexManager {
    * @param map           Map
    * @param point         Position to search from
    * @param range         Range in units appropriate to the grid at the search point.
-   * @param forceAsPixels Force the range check to be in pixels, over-riding any grid at the target point
+   * @param forceAsPixels Force the range check to be in pixels, overriding any grid at the target point
    * @return              List of pieces
    */
   public List<GamePiece> getPieces(Map map, Point point, int range, boolean forceAsPixels) {

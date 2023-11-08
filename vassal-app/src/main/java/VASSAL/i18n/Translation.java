@@ -266,6 +266,11 @@ public class Translation extends AbstractConfigurable
   }
 
   @Override
+  public boolean equals(Object obj) {
+    return (obj instanceof Translation) && compareTo((Translation) obj) == 0;
+  }
+
+  @Override
   public int compareTo(Translation o) {
     return getDescription().compareTo(o.getDescription());
   }

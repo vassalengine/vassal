@@ -19,7 +19,10 @@ _{ "Resources" + GetProperty("Side")_ }. In this case when the property Side hol
 
 NOTE: The <<DynamicProperty.adoc#top,Dynamic Property>> trait must exist on the target pieces. This trait does not 'create' new <<DynamicProperty.adoc#top,Dynamic Properties>>.
 
-*Is numeric:*:: If true, then changes to the value of the property by this trait will be restricted to integer values.
+*Over-ride numeric constraints in target properties:*:: If left unticked, then the Set Property Piece trait will use whatever (if any) numeric constraints have been specified in the Dynamic Properties that it updates.  If ticked, then the following 4 options appear and allow you to ignore or override any numeric constraints in the target property.
+
+
+*Is numeric:*:: If true, then changes to the value of the property by this trait will be restricted to integer values. If left unticked, then the following 3 options do not appear and this trait will set exactly the value specified.
 
 *Minimum value:*::  Numeric values will be restricted to no less than this number when changed by this trait.
 
@@ -72,5 +75,8 @@ To "decrement" the value, simple increment by a negative number.
 They will be prompted for a new value using the text prompt entered in the *Prompt* field.
 * _Prompt user to select from list:_  Similar to _Prompt User_ but displays a list of items to select from in a drop-down menu.
 The items in the list can be generated dynamically by <<Expression.adoc#top,Expressions>>. If some items evaluate to a blank string, then those items are only purged from the menu if the <<GlobalOptions.adoc#purgeblanks,Purge Blanks option in Global Options>> is selected; otherwise the blank options appear.
++
+NOTE: Note that the properties named in this expression are evaluated against the properties of the target pieces, *NOT* the properties of the piece issuing the Set Piece Property +
+If you want to use a property in *this* piece in an expression here, then use $property$. All $...$ property references will be evaluated against this piece before the final expression is evaluated using properties from the target piece.  E.g., Incrementing a property using the expression `{$p1$ + p2}` will add the value of the `p1` property from this piece, plus the value of the `p2` property from the target piece.
 
 *SEE ALSO:* <<Attachment.adoc#top,Attachment>>, <<Properties.adoc#top,Properties>>, <<DynamicProperty.adoc#top,Dynamic Property>>, <<SetGlobalProperty.adoc#top, Set Global Property>>

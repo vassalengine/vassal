@@ -15,7 +15,7 @@ This trait _also_ controls how players interact with the piece when clicking on 
 Note that any selection or movement limitations do not apply when the piece is moved automatically through the operation of one of its traits (e.g.
 a <<SendToLocation.adoc#top,Send To Location>> trait).
 
-The _Does not stack_ now has an option to over-ride its primary function and allow the piece to Stack normally,
+The _Does not stack_ now has an option to override its primary function and allow the piece to Stack normally,
 giving access to the selection, movevement and Ignore Grid options for Stackable pieces.
 
 *EXAMPLE:* Use non-stacking pieces to represent playing cards in games that mix cards and counters, so that the cards can be placed on a map without interfering with stacks of counters.
@@ -53,7 +53,7 @@ Options are:
 * _never:_  The piece can never be moved manually by a player.
 
 *Piece can stack:*:: This option controls whether the piece can form Stacks with other pieces when moved. This option
-allows you to over-ride the primary _Does Not Stack_ behaviour of this trait, and apply the other options to Stacking pieces.
+allows you to override the primary _Does Not Stack_ behaviour of this trait, and apply the other options to Stacking pieces.
 +
 NOTE: Some combinations of the selection and movement options may not make much sense when used with a Stacking counter.
 +

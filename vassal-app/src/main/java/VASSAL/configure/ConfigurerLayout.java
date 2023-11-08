@@ -27,6 +27,8 @@ public class ConfigurerLayout extends MigLayout {
 
   public static final String STANDARD_INSETS = "ins 0"; // NON-NLS
   public static final String STANDARD_GAPY = "gapy 4"; // NON-NLS
+  public static final String STANDARD_INSETS_GAPY = STANDARD_INSETS + "," + STANDARD_GAPY; // NON-NLS
+  @Deprecated(since = "2023-10-16", forRemoval = true)
   public static final String STANDARD_INSERTS_GAPY = STANDARD_INSETS + "," + STANDARD_GAPY; // NON-NLS
 
   public static final String DEFAULT_CFG_LAYOUT_CONSTRAINTS = STANDARD_INSETS + ",hidemode 3"; // NON-NLS

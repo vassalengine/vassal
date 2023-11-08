@@ -322,7 +322,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     // If piece is obscured to me, then mask any properties returned by
     // traits between this one and the innermost BasicPiece. Return directly
     // any properties normally handled by Decorator.getproperty()
-    // Global Key Commands acting on Decks over-ride the masking by calling
+    // Global Key Commands acting on Decks override the masking by calling
     // setExposeMaskedProperties()
 //    else if (obscuredToMe() && ! exposeMaskedProperties) {
 //      if (Properties.KEY_COMMANDS.equals(key)) {

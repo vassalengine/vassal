@@ -665,6 +665,8 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
   @Override
   public void setParent(Stack s) {
     parent = s;
+    // When adding a piece to a Stack, make sure our map matches the parent
+    if (parent != null) setMap(parent.getMap());
   }
 
   /**
@@ -889,7 +891,8 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
   @Override
   public String getState() {
     final SequenceEncoder se = new SequenceEncoder(';');
-    final String mapName = map == null ? "null" : map.getIdentifier(); // NON-NLS
+    final Map m = getMap();
+    final String mapName = m == null ? "null" : m.getIdentifier(); // NON-NLS
     se.append(mapName);
     final Point p = getPosition();
     se.append(p.x).append(p.y);
