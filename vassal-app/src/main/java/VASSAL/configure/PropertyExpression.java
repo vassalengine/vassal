@@ -1,7 +1,9 @@
 package VASSAL.configure;
 
 import VASSAL.build.BadDataReport;
+import VASSAL.build.module.Map;
 import VASSAL.build.module.properties.PropertySource;
+import VASSAL.counters.EditablePiece;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.PieceFilter;
 import VASSAL.i18n.Resources;
@@ -15,7 +17,7 @@ import VASSAL.tools.ErrorDialog;
 
 /*
  * Class encapsulating a Property Match Expression
- * A PropertyExpression is it's own PieceFilter.
+ * A PropertyExpression is its own PieceFilter.
  */
 public class PropertyExpression implements PieceFilter {
 
@@ -120,7 +122,9 @@ public class PropertyExpression implements PieceFilter {
       result = expression.evaluate(ps, owner, audit);
     }
     catch (ExpressionException e) {
-      ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.expression_error"),
+      // suppress error report if this is an editable piece on the Piece Palette (where boolean calcs are not supported)
+      if (!(owner instanceof EditablePiece) || ((EditablePiece) owner).getMap() != null)
+        ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.expression_error"),
         "Expression=" + getExpression() + ", Error=" + e.getError(), e)); //NON-NLS
     }
     return "true".equals(result); //NON-NLS
