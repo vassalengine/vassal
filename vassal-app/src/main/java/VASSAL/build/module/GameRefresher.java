@@ -761,15 +761,20 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
           addNewDecks.setVisible(refreshDecks.isSelected());
         }
       });
+
       panel.add(refreshDecks);
 
-      deleteOldDecks = new JCheckBox(Resources.getString("GameRefresher.delete_old_decks"));
+      deleteOldDecks = new JCheckBox("<html><i>&nbsp;" + Resources.getString("GameRefresher.delete_old_decks") + "</i></html>");
       deleteOldDecks.setSelected(false);
       panel.add(deleteOldDecks);
 
-      addNewDecks = new JCheckBox(Resources.getString("GameRefresher.add_new_decks"));
+      addNewDecks = new JCheckBox("<html><i>&nbsp;" + Resources.getString("GameRefresher.add_new_decks") + "</i></html>");
       addNewDecks.setSelected(false);
       panel.add(addNewDecks);
+
+      fireHotkeys = new JCheckBox(Resources.getString("GameRefresher.fire_global_hotkeys"));
+      fireHotkeys.setSelected(false);
+      panel.add(fireHotkeys);
 
       if (refresher.isGameActive()) {
         refreshDecks.setSelected(false);
@@ -789,9 +794,6 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
       deleteOldDecks.setVisible(refreshDecks.isSelected());
       addNewDecks.setVisible(refreshDecks.isSelected());
-
-      fireHotkeys = new JCheckBox(Resources.getString("GameRefresher.fire_global_hotkeys"));
-      panel.add(fireHotkeys);
     }
 
     protected void setOptions() {
