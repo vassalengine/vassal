@@ -28,10 +28,12 @@ public abstract class CommandFilter {
    */
   public Command apply(Command c) {
     final Command comm = accept(c) ? c : new NullCommand();
-    final Command[] sub = c.getSubCommands();
-    comm.stripSubCommands();
-    for (final Command command : sub) {
-      comm.append(apply(command));
+    if (c != null) {
+      final Command[] sub = c.getSubCommands();
+      comm.stripSubCommands();
+      for (final Command command : sub) {
+        comm.append(apply(command));
+      }
     }
     return comm;
   }

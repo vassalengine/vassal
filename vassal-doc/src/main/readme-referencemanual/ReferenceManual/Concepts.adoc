@@ -250,7 +250,7 @@ There are no Zone level components.
 
 Pieces can only 'see' the Zone level properties in their current Zone, the Map level properties on their current Map and all Module level properties.
 
-These visibility rules can be over-ridden using the <<ExpressionProperty.adoc#top,GetProperty>> <<#beanshell,BeanShell>> functions.
+These visibility rules can be overridden using the <<ExpressionProperty.adoc#top,GetProperty>> <<#beanshell,BeanShell>> functions.
 
 [#Unique]
 ==== Uniquely Identifying Pieces

@@ -114,7 +114,7 @@ public abstract class ListConfigurer extends Configurer implements PropertyChang
       panel.setBorder(BorderFactory.createEtchedBorder());
       controls = new JPanel(new MigLayout("ins 2", "[grow,fill]")); // NON-NLS
 
-      configControls = new JPanel(new MigLayout(ConfigurerLayout.STANDARD_INSERTS_GAPY, "[grow]")); // NON-NLS
+      configControls = new JPanel(new MigLayout(ConfigurerLayout.STANDARD_INSETS_GAPY, "[grow]")); // NON-NLS
 
       final JButton addButton = new JButton(Resources.getString("Editor.ListConfigurer.new"));
       addButton.addActionListener(e -> {
@@ -162,7 +162,7 @@ public abstract class ListConfigurer extends Configurer implements PropertyChang
         c.setValue(value);
         c.addPropertyChangeListener(this);
         configurers.add(c);
-        final JPanel b = new JPanel(new MigLayout(ConfigurerLayout.STANDARD_INSERTS_GAPY, "[fill,grow][]")); // NON-NLS
+        final JPanel b = new JPanel(new MigLayout(ConfigurerLayout.STANDARD_INSETS_GAPY, "[fill,grow][]")); // NON-NLS
         final JButton delButton = new JButton(Resources.getString("Editor.ListConfigurer.remove"));
         delButton.addActionListener(e -> {
           getListValue().remove(c.getValue());
