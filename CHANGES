@@ -1,5 +1,8 @@
 3.7.6 - ???
 
+* 12881: Prevent integer overflow when computing the size of image pixel data
+    in bytes
+
 3.7.5 - 30 October 2023
 
 * 12866: Fix double application of board magnification to board bounds
