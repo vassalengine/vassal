@@ -2574,7 +2574,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       int bookmark = -1;
 
       // Position at the current node
-      if (currentNode != null) bookmark = getBookmark(searchNodes,currentNode);
+      if (currentNode != null) bookmark = getBookmark(searchNodes, currentNode);
 
       // find the next node
       final Predicate<DefaultMutableTreeNode> nodeMatchesSearchString = node -> checkNode(node, regexPattern);
