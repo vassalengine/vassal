@@ -2287,7 +2287,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
         prev.addActionListener(ePrev -> {
           // in event of a cursor move, breadCrumbs list may need culling before backward step...
-          if (newNodeSelected && breadCrumbs.size() > 0) {
+          if (newNodeSelected && breadCrumbs.isEmpty()) {
             while (nodeListIndex > 0 && breadCrumbs.get(nodeListIndex - 1) >= lastSearchNodeIndex) {
               breadCrumbs.remove(--nodeListIndex);
             }
