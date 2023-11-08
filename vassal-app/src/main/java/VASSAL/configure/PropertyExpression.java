@@ -1,7 +1,6 @@
 package VASSAL.configure;
 
 import VASSAL.build.BadDataReport;
-import VASSAL.build.module.Map;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.counters.EditablePiece;
 import VASSAL.counters.GamePiece;
