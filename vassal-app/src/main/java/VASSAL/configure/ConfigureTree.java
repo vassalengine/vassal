@@ -643,6 +643,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     return searchNodes;
   }
 
+  private static int getBookmark(List<DefaultMutableTreeNode> searchNodes, DefaultMutableTreeNode targetNode) {
+    return IntStream
+            .range(0, searchNodes.size())
+            .filter(i -> searchNodes.get(i) == targetNode)
+            .findFirst()
+            .orElse(-1);
+  }
+
 
   private void notifyUpdate(final Configurable target) {
     if (editorWindow != null) {
@@ -1771,16 +1779,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       ((DefaultTreeModel) getModel()).nodeChanged(selectedNode);
 
       // tree path change will affect index / back-track for an existing search
-      // Position at the current node
-      final List<DefaultMutableTreeNode> searchNodes =
-              getSearchNodes((DefaultMutableTreeNode)selectedNode.getRoot());
-
-      final int bookmark =
-              IntStream
-                      .range(0, searchNodes.size())
-                      .filter(i -> searchNodes.get(i) == selectedNode)
-                      .findFirst()
-                      .orElse(-1);
+      lastSearchNodeIndex =
+              getBookmark((List<DefaultMutableTreeNode>) getSearchNodes((DefaultMutableTreeNode)selectedNode.getRoot()),
+                      selectedNode);
 
       newNodeSelected = selectedNode != lastSearchNode;
     }
@@ -2573,14 +2574,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       int bookmark = -1;
 
       // Position at the current node
-      if (currentNode != null) {
-        bookmark =
-          IntStream
-            .range(0, searchNodes.size())
-            .filter(i -> searchNodes.get(i) == currentNode)
-            .findFirst()
-            .orElse(-1);
-      }
+      if (currentNode != null) bookmark = getBookmark(searchNodes,currentNode);
 
       // find the next node
       final Predicate<DefaultMutableTreeNode> nodeMatchesSearchString = node -> checkNode(node, regexPattern);
@@ -2607,14 +2601,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
 
       // Determine precise bookmark for back-track record (might be a child of the node within which the search was performed)
-      if (lastSearchNode != null) bookmark =
-              IntStream
-                      .range(bookmark, searchNodes.size())
-                      .filter(i -> searchNodes.get(i)  == lastSearchNode)
-                      .findFirst()
-                      .orElse(-1);
+      if (lastSearchNode != null) bookmark = getBookmark(searchNodes, lastSearchNode);
 
-        // track the node just found
+      // track the node just found
       lastSearchNodeIndex = bookmark;
       breadCrumbs.add(bookmark);
       ++nodeListIndex;
