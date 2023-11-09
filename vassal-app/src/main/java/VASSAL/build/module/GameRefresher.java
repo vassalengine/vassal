@@ -166,11 +166,11 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
   }
 
   public boolean isTestMode() {
-    return options.contains("TestMode"); //$NON-NLS-1$
+    return options.contains(TEST_MODE); //$NON-NLS-1$
   }
 
   public boolean isDeleteNoMap() {
-    return options.contains("DeleteNoMap"); //$NON-NLS-1$
+    return options.contains(DELETE_NO_MAP); //$NON-NLS-1$
   }
 
   public void start() {
@@ -376,7 +376,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     /*
      * 4/ Refresh properties of decks in the game
      */
-    if (options.contains("RefreshDecks")) { //NON-NLS
+    if (options.contains(REFRESH_DECKS)) { //NON-NLS
       if (isGameActive()) {
         // If somebody feels like packaging all these things into Commands, help yourself...
         log(Resources.getString("GameRefresher.deck_refresh_during_multiplayer"));
@@ -456,7 +456,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
           }
         }
 
-        if (options.contains("DeleteOldDecks")) { //NON-NLS
+        if (options.contains(DELETE_OLD_DECKS)) { //NON-NLS
           //log("List of Decks to remove");
           for (final Deck deck : decksToDelete) {
             log(Resources.getString("GameRefresher.deleting_old_deck", deck.getDeckName()));
@@ -515,7 +515,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
         }
 
         if (!decksToAdd.isEmpty()) {
-          if (options.contains("AddNewDecks")) { //NON-NLS
+          if (options.contains(ADD_NEW_DECKS)) { //NON-NLS
             for (final DrawPile drawPile : decksToAdd) {
               log(Resources.getString("GameRefresher.adding_new_deck", drawPile.getAttributeValueString(SetupStack.NAME)));
 
@@ -541,9 +541,8 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
         log("----------"); //$NON-NLS-1$
         log(Resources.getString("GameRefresher.refreshable_decks", refreshable));
-        log(Resources.getString(options.contains("DeleteOldDecks") ? "GameRefresher.deletable_decks" : "GameRefresher.deletable_decks_2", deletable)); //NON-NLS
-        log(Resources.getString(options.contains("AddNewDecks") ? "GameRefresher.addable_decks" : "GameRefresher.addable_decks_2", addable)); //NON-NLS
-
+        log(Resources.getString(options.contains(DELETE_OLD_DECKS) ? "GameRefresher.deletable_decks" : "GameRefresher.deletable_decks_2", deletable)); //NON-NLS
+        log(Resources.getString(options.contains(ADD_NEW_DECKS) ? "GameRefresher.addable_decks" : "GameRefresher.addable_decks_2", addable)); //NON-NLS
       }
     }
     if (options.contains(USE_HOTKEYS)) { //NON-NLS
@@ -859,7 +858,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       // Send the update to other clients (only done in Player mode)
       g.sendAndLog(command);
 
-      if (options.contains("RefreshDecks") && !refresher.isGameActive()) {
+      if (options.contains(REFRESH_DECKS) && !refresher.isGameActive()) {
         final BasicLogger log = GameModule.getGameModule().getBasicLogger();
         if (log != null) {
           log.blockUndo(1);
