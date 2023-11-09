@@ -37,6 +37,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.Frame;
@@ -109,20 +110,21 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
     nameCheck = new JCheckBox(Resources.getString("GameRefresher.use_basic_name"));
     panel.add(nameCheck);
+
     labelerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_labeler_descr"), true);
     panel.add(labelerNameCheck);
     layerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_layer_descr"), true);
     panel.add(layerNameCheck);
     rotateNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_rotate_descr"), true);
     panel.add(rotateNameCheck);
-    testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"));
+
+    testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"), false);
     panel.add(testModeOn);
-    deletePieceNoMap = new JCheckBox(Resources.getString("GameRefresher.delete_piece_no_map"));
-    deletePieceNoMap.setSelected(false);
+
+    deletePieceNoMap = new JCheckBox(Resources.getString("GameRefresher.delete_piece_no_map"), true);
     panel.add(deletePieceNoMap);
 
-    refreshDecks = new JCheckBox(Resources.getString("GameRefresher.refresh_decks"));
-    refreshDecks.setSelected(false);
+    refreshDecks = new JCheckBox(Resources.getString("GameRefresher.refresh_decks"), false);
     refreshDecks.addChangeListener(new ChangeListener() {
       @Override
       public void stateChanged(ChangeEvent e) {
@@ -132,16 +134,14 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     });
     panel.add(refreshDecks);
 
-    deleteOldDecks = new JCheckBox("<html><i>&nbsp;" + Resources.getString("GameRefresher.delete_old_decks") + "</i></html>");
-    deleteOldDecks.setSelected(false);
+    deleteOldDecks = new JCheckBox("<html><i>&nbsp;" + Resources.getString("GameRefresher.delete_old_decks") + "</i></html>", false);
     panel.add(deleteOldDecks);
 
-    addNewDecks = new JCheckBox("<html><i>&nbsp;" + Resources.getString("GameRefresher.add_new_decks") + "</i></html>");
-    addNewDecks.setSelected(false);
+    addNewDecks = new JCheckBox("<html><i>&nbsp;" + Resources.getString("GameRefresher.add_new_decks") + "</i></html>", false);
     panel.add(addNewDecks);
 
-    fireHotkeys = new JCheckBox(Resources.getString("GameRefresher.fire_global_hotkeys"));
-    fireHotkeys.setSelected(true);
+    // Hotkeys setting is on by default for Predefined Setups as this is under module editor control, harmless unless the hotkeys are defined in the module.
+    fireHotkeys = new JCheckBox(Resources.getString("GameRefresher.fire_global_hotkeys"), true);
     panel.add(fireHotkeys);
 
     panel.add(buttonsBox, "grow"); // NON-NLS
@@ -197,7 +197,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   }
 
   public boolean isTestMode() {
-    return options.contains("TestMode"); //$NON-NLS-1$
+    return options.contains(GameRefresher.TEST_MODE); //$NON-NLS-1$
   }
 
 
@@ -226,12 +226,13 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     }
     final List<PredefinedSetup>  modulePdsAndMenus = mod.getAllDescendantComponentsOf(PredefinedSetup.class);
     final List<PredefinedSetup>  modulePds = new ArrayList<>();
+    int i = 0;
     for (final PredefinedSetup pds : modulePdsAndMenus) {
       if (!pds.isMenu() && pds.isUseFile()) {
         //Exclude scenario folders (isMenu == true)
         // and exclude any "New game" entries (no predefined setup) (isUseFile == false)
         // !! Some New Game entries have UseFile = true and filename empty. Check file name too
-        if (pds.getFileName() != null && ! pds.getFileName().isBlank()) {
+        if (pds.getFileName() != null && ! pds.getFileName().isBlank() && i++ < 3) {
           Boolean isExtensionPDS = true;
           try {
             isExtensionPDS =  !dataArchive.contains(pds.getFileName());
@@ -264,8 +265,11 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
         GameModule.getGameModule().setRefreshingSemaphore(false); //BR// Make sure we definitely lower the semaphore
       }
     }
+
+    // Clean up and close the window
     GameModule.getGameModule().getGameState().setup(false); //BR// Clear out whatever data (pieces, listeners, etc) left over from final game loaded.
 
     refreshButton.setEnabled(true);
+    dispose();  // Refresh Counters just does setVisible(false) at this point. dispose() better for memory management ?
   }
 }

@@ -740,20 +740,21 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
       nameCheck = new JCheckBox(Resources.getString("GameRefresher.use_basic_name"));
       panel.add(nameCheck);
+
       labelerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_labeler_descr"), true);
       panel.add(labelerNameCheck);
       layerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_layer_descr"), true);
       panel.add(layerNameCheck);
       rotateNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_rotate_descr"), true);
       panel.add(rotateNameCheck);
-      testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"));
+
+      testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"), false);
       panel.add(testModeOn);
-      deletePieceNoMap = new JCheckBox(Resources.getString("GameRefresher.delete_piece_no_map"));
-      deletePieceNoMap.setSelected(true);
+
+      deletePieceNoMap = new JCheckBox(Resources.getString("GameRefresher.delete_piece_no_map"), true);
       panel.add(deletePieceNoMap);
 
-      refreshDecks = new JCheckBox(Resources.getString("GameRefresher.refresh_decks"));
-      refreshDecks.setSelected(false);
+      refreshDecks = new JCheckBox(Resources.getString("GameRefresher.refresh_decks"), false);
       refreshDecks.addChangeListener(new ChangeListener() {
         @Override
         public void stateChanged(ChangeEvent e) {
@@ -761,19 +762,16 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
           addNewDecks.setVisible(refreshDecks.isSelected());
         }
       });
-
       panel.add(refreshDecks);
 
-      deleteOldDecks = new JCheckBox("<html><i>&nbsp;" + Resources.getString("GameRefresher.delete_old_decks") + "</i></html>");
-      deleteOldDecks.setSelected(false);
+      deleteOldDecks = new JCheckBox("<html><i>&nbsp;" + Resources.getString("GameRefresher.delete_old_decks") + "</i></html>", false);
       panel.add(deleteOldDecks);
 
-      addNewDecks = new JCheckBox("<html><i>&nbsp;" + Resources.getString("GameRefresher.add_new_decks") + "</i></html>");
-      addNewDecks.setSelected(false);
+      addNewDecks = new JCheckBox("<html><i>&nbsp;" + Resources.getString("GameRefresher.add_new_decks") + "</i></html>", false);
       panel.add(addNewDecks);
 
-      fireHotkeys = new JCheckBox(Resources.getString("GameRefresher.fire_global_hotkeys"));
-      fireHotkeys.setSelected(false);
+      // Hotkeys setting is OFF by default for one-off runs to minimise risk of accidental use by players, should a module editor leave maintenance hotkeys available (intentionally or otherwise)
+      fireHotkeys = new JCheckBox(Resources.getString("GameRefresher.fire_global_hotkeys"), false);
       panel.add(fireHotkeys);
 
       if (refresher.isGameActive()) {
