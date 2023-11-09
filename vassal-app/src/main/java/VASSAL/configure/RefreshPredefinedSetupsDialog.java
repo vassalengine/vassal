@@ -105,6 +105,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     helpButton.addActionListener(new ShowHelpAction(hf.getContents(), null));
 
     final JButton closeButton = new JButton(Resources.getString("General.cancel"));
+
     closeButton.addActionListener(e -> dispose());
 
     buttonsBox.add(refreshButton, "tag ok,sg 1"); // NON-NLS
@@ -288,7 +289,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
       GameModule.getGameModule().getGameState().setup(false);  //BR// Ensure we clear any existing game data/listeners/objects out.
       GameModule.getGameModule().setRefreshingSemaphore(true); //BR// Raise the semaphore that suppresses GameState.setup()
 
-      // Refresher window title updated here to provide a poor man's progress bar
+      // Refresher window title updated to provide progress report
       final int pct = i++ * 100 / pdsCount;
       this.setTitle(Resources.getString("Editor.RefreshPredefinedSetupsDialog.progress", i, pdsCount, pct));
 

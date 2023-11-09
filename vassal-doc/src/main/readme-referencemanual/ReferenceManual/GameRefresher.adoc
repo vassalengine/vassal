@@ -53,13 +53,13 @@ Remove any pieces found in the game that do not exist on a Map. These pieces wou
 
 *Refresh decks' properties with latest settings from module:*::
 
-Allow <<Deck.adoc#top,Decks>> in the game to be refreshed. See the <<#DeckRefresher,Deck Refresher>> section below for full details.
+Allow <<Deck.adoc#top,Decks>> in the game to be refreshed, with the following two sub-options. See the <<#DeckRefresher,Deck Refresher>> section below for full details.
 
-*Delete decks which no longer exist in the module (any contents will be left on map in a stack):*::
+- *Delete decks which no longer exist in the module (any contents will be left on map in a stack):*::
 
 Remove Decks from the game that no longer exist in the module. See the <<#DeckRefresher,Deck Refresher>> section below for full details.
 
-*Add decks to game which have been added to the module since this game was created (empty deck will be added):*::
+- *Add decks to game which have been added to the module since this game was created (empty deck will be added):*::
 
 Add Decks to the game that have been added to the module. See the <<#DeckRefresher,Deck Refresher>> section below for full details.
 
