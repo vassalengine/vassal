@@ -62,6 +62,8 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   private JCheckBox refreshDecks;
   private JCheckBox deleteOldDecks;
   private JCheckBox addNewDecks;
+  private JCheckBox fireHotkeys;
+
   private final Set<String> options = new HashSet<>();
 
   public RefreshPredefinedSetupsDialog(Frame owner) throws HeadlessException {
@@ -130,13 +132,17 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     });
     panel.add(refreshDecks);
 
-    deleteOldDecks = new JCheckBox(Resources.getString("GameRefresher.delete_old_decks"));
+    deleteOldDecks = new JCheckBox("<html><i>&nbsp;" + Resources.getString("GameRefresher.delete_old_decks") + "</i></html>");
     deleteOldDecks.setSelected(false);
     panel.add(deleteOldDecks);
 
-    addNewDecks = new JCheckBox(Resources.getString("GameRefresher.add_new_decks"));
+    addNewDecks = new JCheckBox("<html><i>&nbsp;" + Resources.getString("GameRefresher.add_new_decks") + "</i></html>");
     addNewDecks.setSelected(false);
     panel.add(addNewDecks);
+
+    fireHotkeys = new JCheckBox(Resources.getString("GameRefresher.fire_global_hotkeys"));
+    fireHotkeys.setSelected(true);
+    panel.add(fireHotkeys);
 
     panel.add(buttonsBox, "grow"); // NON-NLS
     add(panel, "grow"); // NON-NLS
@@ -179,6 +185,9 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
       if (addNewDecks.isSelected()) {
         options.add(GameRefresher.ADD_NEW_DECKS); //NON-NLS
       }
+    }
+    if (fireHotkeys.isSelected()) {
+      options.add(GameRefresher.USE_HOTKEYS); //$NON-NLS-1$
     }
   }
 
