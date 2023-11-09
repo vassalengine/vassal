@@ -37,6 +37,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.Frame;
@@ -48,6 +49,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
+
+import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
 public class RefreshPredefinedSetupsDialog extends JDialog {
   private static final Logger logger = LoggerFactory.getLogger(RefreshPredefinedSetupsDialog.class);
@@ -62,6 +66,8 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   private JCheckBox refreshDecks;
   private JCheckBox deleteOldDecks;
   private JCheckBox addNewDecks;
+  private JTextField pdsFilterBox;
+  private String pdsFilter;
   private final Set<String> options = new HashSet<>();
 
   public RefreshPredefinedSetupsDialog(Frame owner) throws HeadlessException {
@@ -137,6 +143,12 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     addNewDecks = new JCheckBox("<html><i>&nbsp;" + Resources.getString("GameRefresher.add_new_decks") + "</i></html>", false);
     panel.add(addNewDecks);
 
+    // PDS can be set to refresh specific items only, based on a regex
+    panel.add(new FlowLabel("<html><b>" + Resources.getString("Editor.RefreshPredefinedSetups_filter_prompt") + "</b></html>"));
+    pdsFilterBox = new HintTextField(32, Resources.getString("Editor.RefreshPredefinedSetups_filter_hint"));
+    pdsFilterBox.selectAll();
+    panel.add(pdsFilterBox);
+
     panel.add(buttonsBox, "grow"); // NON-NLS
     add(panel, "grow"); // NON-NLS
 
@@ -151,6 +163,8 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   }
 
   protected void  setOptions() {
+    pdsFilter = pdsFilterBox.getText();
+
     options.clear();
     if (nameCheck.isSelected()) {
       options.add(GameRefresher.USE_NAME); //$NON-NLS-1$
@@ -179,6 +193,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
         options.add(GameRefresher.ADD_NEW_DECKS); //NON-NLS
       }
     }
+
   }
 
   public void log(String message) {
@@ -210,6 +225,22 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     Boolean isRefreshOfExtension = true;
     final GameModule mod = GameModule.getGameModule();
     final DataArchive dataArchive = mod.getDataArchive();
+
+    // pre-pack regex pattern in case filter string is not found directly
+    Pattern p = null;
+    final int flags = CASE_INSENSITIVE;
+    if (pdsFilter != null) {
+      try {
+        // matching, assuming Regex
+        p = Pattern.compile(".*" + pdsFilter + ".*", flags);
+      }
+      catch (java.util.regex.PatternSyntaxException e) {
+          // something went wrong, treat regex as embedded literal
+        p = Pattern.compile(".*\\Q" + pdsFilter + "\\T.*", flags);
+        log(Resources.getString("Editor.RefreshPredefinedSetups_filter_fallback", ConfigureTree.noHTML(e.getMessage()))); //NON-NLS
+      }
+    }
+
     final List<ModuleExtension>  moduleExtensionList = mod.getComponentsOf(ModuleExtension.class);
     if (moduleExtensionList.isEmpty()) {
       isRefreshOfExtension = false;
@@ -221,10 +252,13 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
         //Exclude scenario folders (isMenu == true)
         // and exclude any "New game" entries (no predefined setup) (isUseFile == false)
         // !! Some New Game entries have UseFile = true and filename empty. Check file name too
-        if (pds.getFileName() != null && ! pds.getFileName().isBlank()) {
+        // PDS filtering option is implemented here...
+        final String pdsName = pds.getAttributeValueString(pds.NAME);
+        final String pdsFile = pds.getFileName();
+        if (pdsFile != null && !pdsFile.isBlank() && (pdsFilter == null || pdsName.contains(pdsFilter)  || pdsFile.contains(pdsFilter) || p.matcher(pdsName).matches() || p.matcher(pdsFile).matches())) {
           Boolean isExtensionPDS = true;
           try {
-            isExtensionPDS =  !dataArchive.contains(pds.getFileName());
+            isExtensionPDS =  !dataArchive.contains(pdsFile);
           }
           catch (final IOException e) {
             ErrorDialog.bug(e);
@@ -235,14 +269,28 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
         }
       }
     }
-    log(modulePds.size() + " " + Resources.getString("GameRefresher.predefined_setups_found"));
+
+    // warn if filtering is active
+    if (pdsFilter != null) log("~" + Resources.getString("Editor.RefreshPredefinedSetups_setups_filter", ConfigureTree.noHTML(pdsFilter)));
+
+    log("`" + modulePds.size() + " " + Resources.getString(Resources.getString("GameRefresher.predefined_setups_found")));
+
     for (final PredefinedSetup pds : modulePds) {
       log(pds.getAttributeValueString(pds.NAME) + " (" + pds.getFileName() + ")");
     }
 
+    final int pdsCount = modulePds.size();
+    int i = 0;
+
+    // FIXME: It would be nice to split the refresh into two parts here, to allow cancel before the refresh commences
+
     for (final PredefinedSetup pds : modulePds) {
       GameModule.getGameModule().getGameState().setup(false);  //BR// Ensure we clear any existing game data/listeners/objects out.
       GameModule.getGameModule().setRefreshingSemaphore(true); //BR// Raise the semaphore that suppresses GameState.setup()
+
+      // Refresher window title updated here to provide a poor man's progress bar
+      final int pct = i++ * 100 / pdsCount;
+      this.setTitle(Resources.getString("Editor.RefreshPredefinedSetupsDialog.progress", i, pdsCount, pct));
 
       try {
         pds.refresh(options);
@@ -256,7 +304,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     }
 
     // Clean up and close the window
-    GameModule.getGameModule().getGameState().setup(false); //BR// Clear out whatever data (pieces, listeners, etc) left over from final game loaded.
+    GameModule.getGameModule().getGameState().setup(false); //BR// Clear out whatever data (pieces, listeners, etc.) left over from final game loaded.
 
     refreshButton.setEnabled(true);
     dispose();  // Refresh Counters just does setVisible(false) at this point. dispose() better for memory management ?
