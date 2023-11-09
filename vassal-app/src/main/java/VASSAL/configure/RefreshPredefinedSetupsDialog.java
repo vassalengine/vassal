@@ -37,7 +37,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.Frame;
@@ -226,13 +225,12 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     }
     final List<PredefinedSetup>  modulePdsAndMenus = mod.getAllDescendantComponentsOf(PredefinedSetup.class);
     final List<PredefinedSetup>  modulePds = new ArrayList<>();
-    int i = 0;
     for (final PredefinedSetup pds : modulePdsAndMenus) {
       if (!pds.isMenu() && pds.isUseFile()) {
         //Exclude scenario folders (isMenu == true)
         // and exclude any "New game" entries (no predefined setup) (isUseFile == false)
         // !! Some New Game entries have UseFile = true and filename empty. Check file name too
-        if (pds.getFileName() != null && ! pds.getFileName().isBlank() && i++ < 3) {
+        if (pds.getFileName() != null && ! pds.getFileName().isBlank()) {
           Boolean isExtensionPDS = true;
           try {
             isExtensionPDS =  !dataArchive.contains(pds.getFileName());
