@@ -342,7 +342,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       }
     }
 
-    if (options.contains("fireHotkeys")) { //NON-NLS
+    if (options.contains(USE_HOTKEYS)) { //NON-NLS
       // About to commence refreshing the game, allow a custom start.
       GameModule.getGameModule().fireKeyStroke(NamedKeyStroke.of("VassalPreRefreshGHK"));
     }
@@ -546,7 +546,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
       }
     }
-    if (options.contains("fireHotkeys")) { //NON-NLS
+    if (options.contains(USE_HOTKEYS)) { //NON-NLS
       // After all refreshing, allow a custom finish...
       GameModule.getGameModule().fireKeyStroke(NamedKeyStroke.of("VassalPostRefreshGHK"));
     }
