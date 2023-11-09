@@ -10,7 +10,7 @@ When you update the <<GamePiece.adoc#top,Game Pieces>> and <<Prototypes.adoc#top
 
 But particularly since the <<GameModule.adoc#PredefinedSetup, Predefined Setups>> for module scenarios are stored internally as saved games, it is often important to module designers to be able to update an existing game to use the latest prototypes. That way a module designer can often avoid re-doing complex setups simply because prototypes have been updated and improved.
 
-To use the refresher on the currently loaded game, go to the _Tools_ menu in your main VASSAL window and select _Refresh Counters_. You will be shown a dialog with several choices affecting the manner in which the operation is to be carried out.
+To use the refresher on the currently loaded game, go to the _Tools_ menu in your main VASSAL window and select _Refresh Counters_. You will be shown a dialog with several choices affecting the manner in which the operation is to be carried out. The screenshot below shows the default options selected and, in addition, the <<#DeckRefresher,Deck Refresher>> option is selected, revealing two sub-options.
 
 Click the _Run_ button when you are ready to perform the refresh. The chat log will show output and statistics from the operation. Once the operation is finished, pieces in the game (as well as new pieces created from <<PieceWindow.adoc#top, Game Piece Palettes>>) will make use of the most recent prototypes.
 
@@ -25,8 +25,8 @@ image:images/GameRefresher.png[]
 
 [width="100%",cols="50%a",]
 |===
-| *Use counter names to identify unknown counters:*::
-Use this option when the piece definition used to create a Game Piece no longer exists in the module. +
+| *Use counter names to identify unkown counters:*::
+Use this option when the piece defintion used to create a Game Piece no longer exists in the module. +
 +
 This option tells the Refresher to find a Piece Definition with the same Basic Name as the old definition to use for the Refresh. The first such definition found will be used.
 
@@ -53,15 +53,18 @@ Remove any pieces found in the game that do not exist on a Map. These pieces wou
 
 *Refresh decks' properties with latest settings from module:*::
 
-Allow <<Deck.adoc#top,Decks>> in the game to be refreshed. See the <<#DeckRefresher,Deck Refresher>> section below for full details.
+Allow <<Deck.adoc#top,Decks>> in the game to be refreshed, with the following two sub-options. See the <<#DeckRefresher,Deck Refresher>> section below for full details.
 
-*Delete decks which no longer exist in the module (any contents will be left on map in a stack):*::
+- *Delete decks which no longer exist in the module (any contents will be left on map in a stack):*::
 
 Remove Decks from the game that no longer exist in the module. See the <<#DeckRefresher,Deck Refresher>> section below for full details.
 
-*Add decks to game which have been added to the module since this game was created (empty deck will be added):*::
+- *Add decks to game which have been added to the module since this game was created (empty deck will be added):*::
 
 Add Decks to the game that have been added to the module. See the <<#DeckRefresher,Deck Refresher>> section below for full details.
+
+*Trigger pre and post refresh Hotkeys:*::
+A pair of specially named Global Hotkeys will be issued before and after the game is refreshed. These can be used to extend the automated functionality of the game refresher, especially when running via the _Refresh Pre-Defined Setups_ tool outlined in <<SavedGameUpdater.adoc#top,this section>>. See the <<#RefreshHotkeys, Pre & Post-Refresh Hotkeys>> section below for more details.
 
 
 |===
@@ -83,10 +86,10 @@ If you select the _Add decks_ option, then any _new_ deck found in the module de
 
 [#RefreshHotkeys]
 ==== Pre & Post-Refresh Hotkeys
-If this option is checked, the Refresher will trigger special hotkeys. _VassalPreRefreshGHK_ is triggered before refreshing and _VassalPostRefreshGHK_ after refreshing. You may use this feature to perform maintenance that you wish to carry out on Predefined Setup or game files. Potential uses include converting counters or populating a new deck.
+When this option is checked, the Refresher will trigger special hotkeys. _VassalPreRefreshGHK_ is triggered before refreshing and _VassalPostRefreshGHK_ after refreshing. You may use this feature to perform maintenance that you wish to carry out on Predefined Setup or game files. Potential uses include converting counters or populating a new deck.
 
-Design and test your maintenance actions carefully. You can use _Refresh Counters_ to do one-off tests. Also, remember that Startup GKCs are not executed during Refresh Predefined Setups.
+Design and test your maintenance actions carefully. You can use _Refresh Counters_ to do one-off tests. Also, remember that Startup GKCs are not executed during _Refresh Predefined Setups_.
 
-After a Refresh Predefined Setups, save your module as a different file name so you can do re-runs on the original if need be.
+After using _Refresh Predefined Setups_, save your module as a different file name so you can do re-runs on the original if need be.
 
 Once you are done, consider disabling or removing the maintenance components so that further refreshes don’t trigger them accidentally.
