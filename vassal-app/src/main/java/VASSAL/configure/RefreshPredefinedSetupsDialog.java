@@ -37,6 +37,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.Frame;
@@ -48,6 +49,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
+
+import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
 public class RefreshPredefinedSetupsDialog extends JDialog {
   private static final Logger logger = LoggerFactory.getLogger(RefreshPredefinedSetupsDialog.class);
@@ -62,6 +66,8 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   private JCheckBox refreshDecks;
   private JCheckBox deleteOldDecks;
   private JCheckBox addNewDecks;
+  private JTextField pdsFilterBox;
+  private String pdsFilter;
   private JCheckBox fireHotkeys;
 
   private final Set<String> options = new HashSet<>();
@@ -101,6 +107,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     helpButton.addActionListener(new ShowHelpAction(hf.getContents(), null));
 
     final JButton closeButton = new JButton(Resources.getString("General.cancel"));
+
     closeButton.addActionListener(e -> dispose());
 
     buttonsBox.add(refreshButton, "tag ok,sg 1"); // NON-NLS
@@ -109,20 +116,21 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
     nameCheck = new JCheckBox(Resources.getString("GameRefresher.use_basic_name"));
     panel.add(nameCheck);
+
     labelerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_labeler_descr"), true);
     panel.add(labelerNameCheck);
     layerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_layer_descr"), true);
     panel.add(layerNameCheck);
     rotateNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_rotate_descr"), true);
     panel.add(rotateNameCheck);
-    testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"));
+
+    testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"), false);
     panel.add(testModeOn);
-    deletePieceNoMap = new JCheckBox(Resources.getString("GameRefresher.delete_piece_no_map"));
-    deletePieceNoMap.setSelected(false);
+
+    deletePieceNoMap = new JCheckBox(Resources.getString("GameRefresher.delete_piece_no_map"), true);
     panel.add(deletePieceNoMap);
 
-    refreshDecks = new JCheckBox(Resources.getString("GameRefresher.refresh_decks"));
-    refreshDecks.setSelected(false);
+    refreshDecks = new JCheckBox(Resources.getString("GameRefresher.refresh_decks"), false);
     refreshDecks.addChangeListener(new ChangeListener() {
       @Override
       public void stateChanged(ChangeEvent e) {
@@ -132,17 +140,21 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     });
     panel.add(refreshDecks);
 
-    deleteOldDecks = new JCheckBox("<html><i>&nbsp;" + Resources.getString("GameRefresher.delete_old_decks") + "</i></html>");
-    deleteOldDecks.setSelected(false);
+    deleteOldDecks = new JCheckBox("<html><i>&nbsp;" + Resources.getString("GameRefresher.delete_old_decks") + "</i></html>", false);
     panel.add(deleteOldDecks);
 
-    addNewDecks = new JCheckBox("<html><i>&nbsp;" + Resources.getString("GameRefresher.add_new_decks") + "</i></html>");
-    addNewDecks.setSelected(false);
+    addNewDecks = new JCheckBox("<html><i>&nbsp;" + Resources.getString("GameRefresher.add_new_decks") + "</i></html>", false);
     panel.add(addNewDecks);
 
     fireHotkeys = new JCheckBox(Resources.getString("GameRefresher.fire_global_hotkeys"));
     fireHotkeys.setSelected(true);
     panel.add(fireHotkeys);
+
+    // PDS can be set to refresh specific items only, based on a regex
+    panel.add(new FlowLabel("<html><b>" + Resources.getString("Editor.RefreshPredefinedSetups_filter_prompt") + "</b></html>"));
+    pdsFilterBox = new HintTextField(32, Resources.getString("Editor.RefreshPredefinedSetups_filter_hint"));
+    pdsFilterBox.selectAll();
+    panel.add(pdsFilterBox);
 
     panel.add(buttonsBox, "grow"); // NON-NLS
     add(panel, "grow"); // NON-NLS
@@ -158,6 +170,8 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   }
 
   protected void  setOptions() {
+    pdsFilter = pdsFilterBox.getText();
+
     options.clear();
     if (nameCheck.isSelected()) {
       options.add(GameRefresher.USE_NAME); //$NON-NLS-1$
@@ -197,7 +211,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   }
 
   public boolean isTestMode() {
-    return options.contains("TestMode"); //$NON-NLS-1$
+    return options.contains(GameRefresher.TEST_MODE); //$NON-NLS-1$
   }
 
 
@@ -220,6 +234,22 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     Boolean isRefreshOfExtension = true;
     final GameModule mod = GameModule.getGameModule();
     final DataArchive dataArchive = mod.getDataArchive();
+
+    // pre-pack regex pattern in case filter string is not found directly
+    Pattern p = null;
+    final int flags = CASE_INSENSITIVE;
+    if (pdsFilter != null) {
+      try {
+        // matching, assuming Regex
+        p = Pattern.compile(".*" + pdsFilter + ".*", flags);
+      }
+      catch (java.util.regex.PatternSyntaxException e) {
+          // something went wrong, treat regex as embedded literal
+        p = Pattern.compile(".*\\Q" + pdsFilter + "\\T.*", flags);
+        log(Resources.getString("Editor.RefreshPredefinedSetups_filter_fallback", ConfigureTree.noHTML(e.getMessage()))); //NON-NLS
+      }
+    }
+
     final List<ModuleExtension>  moduleExtensionList = mod.getComponentsOf(ModuleExtension.class);
     if (moduleExtensionList.isEmpty()) {
       isRefreshOfExtension = false;
@@ -231,10 +261,15 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
         //Exclude scenario folders (isMenu == true)
         // and exclude any "New game" entries (no predefined setup) (isUseFile == false)
         // !! Some New Game entries have UseFile = true and filename empty. Check file name too
-        if (pds.getFileName() != null && ! pds.getFileName().isBlank()) {
+        // PDS filtering option is implemented here...
+        final String pdsName = pds.getAttributeValueString(pds.NAME);
+        final String pdsFile = pds.getFileName();
+        if (pdsFile != null && !pdsFile.isBlank()
+                && (pdsFilter == null || pdsName.contains(pdsFilter)  || pdsFile.contains(pdsFilter)
+                        || (p != null && (p.matcher(pdsName).matches() || p.matcher(pdsFile).matches())))) {
           Boolean isExtensionPDS = true;
           try {
-            isExtensionPDS =  !dataArchive.contains(pds.getFileName());
+            isExtensionPDS =  !dataArchive.contains(pdsFile);
           }
           catch (final IOException e) {
             ErrorDialog.bug(e);
@@ -245,14 +280,29 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
         }
       }
     }
-    log(modulePds.size() + " " + Resources.getString("GameRefresher.predefined_setups_found"));
+
+    // warn if filtering is active
+    if (pdsFilter != null) log("~" + Resources.getString("Editor.RefreshPredefinedSetups_setups_filter", ConfigureTree.noHTML(pdsFilter)));
+
+    log("`" + modulePds.size() + " " + Resources.getString(Resources.getString("GameRefresher.predefined_setups_found")));
+
     for (final PredefinedSetup pds : modulePds) {
       log(pds.getAttributeValueString(pds.NAME) + " (" + pds.getFileName() + ")");
     }
 
+    final int pdsCount = modulePds.size();
+    int i = 0;
+
+    // FIXME: It would be nice to split the refresh into two parts here, to allow cancel before the refresh commences
+    // FIXME: A functional cancel button would be useful here
+
     for (final PredefinedSetup pds : modulePds) {
       GameModule.getGameModule().getGameState().setup(false);  //BR// Ensure we clear any existing game data/listeners/objects out.
       GameModule.getGameModule().setRefreshingSemaphore(true); //BR// Raise the semaphore that suppresses GameState.setup()
+
+      // Refresher window title updated to provide progress report
+      final int pct = i++ * 100 / pdsCount;
+      this.setTitle(Resources.getString("Editor.RefreshPredefinedSetupsDialog.progress", i, pdsCount, pct));
 
       try {
         pds.refresh(options);
@@ -264,8 +314,12 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
         GameModule.getGameModule().setRefreshingSemaphore(false); //BR// Make sure we definitely lower the semaphore
       }
     }
-    GameModule.getGameModule().getGameState().setup(false); //BR// Clear out whatever data (pieces, listeners, etc) left over from final game loaded.
+
+    // Clean up and close the window
+    if (!isTestMode() && pdsCount > 0) GameModule.getGameModule().setDirty(true);  // ensure prompt to save when a refresh happenned
+    GameModule.getGameModule().getGameState().setup(false); //BR// Clear out whatever data (pieces, listeners, etc.) left over from final game loaded.
 
     refreshButton.setEnabled(true);
+    dispose(); // done with all that
   }
 }

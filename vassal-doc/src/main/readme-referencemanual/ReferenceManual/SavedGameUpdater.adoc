@@ -10,7 +10,7 @@ When you update the <<GamePiece.adoc#top,Game Pieces>> and <<Prototypes.adoc#top
 
 Since the <<GameModule.adoc#PredefinedSetup, Predefined Setups>> for module scenarios are stored internally as saved games, it is often important to module designers to be able to update an existing game to use the latest prototypes. That way a module designer can often avoid re-doing complex setups simply because prototypes have been updated and improved.
 
-Running the _Refresh Predefined Setups_ tool is equivalent to running the <<GameRefresher.adoc#top, Refresh Counters Tool>> on each of the predefined setups in a module. Please see that page for detail information on the Refresher options.
+Running the _Refresh Predefined Setups_ tool is equivalent to running the <<GameRefresher.adoc#top, Refresh Counters Tool>> on each of the predefined setups in a module. Please see that page for detail information on the Refresher options. In addition, to assist the module developer testing a module with a large number of scenarios, a filter field is provided on the Refresh Predefine Setups panel. Use this field to test refresh on specific scenarios whilst developing a module.
 
 To use the refresher on all the <<GameModule.adoc#PredefinedSetup, Predefined Setups>> in a module go to the _Editor's_ _Tools_ menu and select _Refresh Pre-Defined Setups_. You will be shown a dialog with several choices affecting the manner in which the operation is to be carried out.
 
