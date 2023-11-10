@@ -256,7 +256,9 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
         // PDS filtering option is implemented here...
         final String pdsName = pds.getAttributeValueString(pds.NAME);
         final String pdsFile = pds.getFileName();
-        if (pdsFile != null && !pdsFile.isBlank() && (pdsFilter == null || pdsName.contains(pdsFilter)  || pdsFile.contains(pdsFilter) || p.matcher(pdsName).matches() || p.matcher(pdsFile).matches())) {
+        if (pdsFile != null && !pdsFile.isBlank()
+                && (pdsFilter == null || pdsName.contains(pdsFilter)  || pdsFile.contains(pdsFilter)
+                        || (p != null && (p.matcher(pdsName).matches() || p.matcher(pdsFile).matches())))) {
           Boolean isExtensionPDS = true;
           try {
             isExtensionPDS =  !dataArchive.contains(pdsFile);
@@ -284,6 +286,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     int i = 0;
 
     // FIXME: It would be nice to split the refresh into two parts here, to allow cancel before the refresh commences
+    // FIXME: A functional cancel button would be useful here
 
     for (final PredefinedSetup pds : modulePds) {
       GameModule.getGameModule().getGameState().setup(false);  //BR// Ensure we clear any existing game data/listeners/objects out.
@@ -305,9 +308,10 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     }
 
     // Clean up and close the window
+    if (!isTestMode() && pdsCount > 0) GameModule.getGameModule().setDirty(true);  // ensure prompt to save when a refresh happenned
     GameModule.getGameModule().getGameState().setup(false); //BR// Clear out whatever data (pieces, listeners, etc.) left over from final game loaded.
 
     refreshButton.setEnabled(true);
-    dispose();  // Refresh Counters just does setVisible(false) at this point. dispose() better for memory management ?
+    dispose(); // done with all that
   }
 }
