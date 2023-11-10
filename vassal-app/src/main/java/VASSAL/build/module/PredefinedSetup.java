@@ -286,7 +286,12 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     return Resources.getString("Editor.PredefinedSetup.component_type"); //$NON-NLS-1$
   }
 
-  public int refresh(Set<String> options) throws IOException, IllegalBuildException {
+  @Deprecated(since = "2023-11-10", forRemoval = true)
+  public void refresh(Set<String> options) throws IOException, IllegalBuildException {
+    refreshWithStatus(options);
+  }
+
+  public int refreshWithStatus(Set<String> options) throws IOException, IllegalBuildException {
     if (!options.isEmpty()) {
       this.refresherOptions.addAll(options);
     }

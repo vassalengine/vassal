@@ -330,7 +330,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
       }
       else {
         try {
-          if (pds.refresh(options) > 0) flaggedFiles++;
+          if (pds.refreshWithStatus(options) > 0) flaggedFiles++;
           refreshCount++;
         }
         catch (final IOException e) {
