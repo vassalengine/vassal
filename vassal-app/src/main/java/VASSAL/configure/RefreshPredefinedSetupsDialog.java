@@ -24,6 +24,7 @@ import VASSAL.build.module.ModuleExtension;
 import VASSAL.build.module.PredefinedSetup;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.i18n.Resources;
+import VASSAL.preferences.Prefs;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.swing.FlowLabel;
@@ -36,7 +37,9 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -45,12 +48,16 @@ import java.awt.HeadlessException;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
 public class RefreshPredefinedSetupsDialog extends JDialog {
@@ -70,6 +77,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   private String pdsFilter;
   private JCheckBox fireHotkeys;
 
+  private JCheckBox alertOn;
   private final Set<String> options = new HashSet<>();
 
   public RefreshPredefinedSetupsDialog(Frame owner) throws HeadlessException {
@@ -81,7 +89,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   private void initComponents() {
     setLayout(new MigLayout("", "[fill]")); // NON-NLS
 
-    final JPanel panel = new JPanel(new MigLayout("hidemode 3,wrap 1" + "," + ConfigurerLayout.STANDARD_GAPY, "[fill]")); // NON-NLS
+    final JPanel panel = new JPanel(new MigLayout("hidemode 3,wrap 1," + ConfigurerLayout.STANDARD_GAPY, "[fill]")); // NON-NLS
     panel.setBorder(BorderFactory.createEtchedBorder());
 
     final FlowLabel header = new FlowLabel(Resources.getString("GameRefresher.predefined_header"));
@@ -124,12 +132,6 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     rotateNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_rotate_descr"), true);
     panel.add(rotateNameCheck);
 
-    testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"), false);
-    panel.add(testModeOn);
-
-    deletePieceNoMap = new JCheckBox(Resources.getString("GameRefresher.delete_piece_no_map"), true);
-    panel.add(deletePieceNoMap);
-
     refreshDecks = new JCheckBox(Resources.getString("GameRefresher.refresh_decks"), false);
     refreshDecks.addChangeListener(new ChangeListener() {
       @Override
@@ -140,21 +142,36 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     });
     panel.add(refreshDecks);
 
-    deleteOldDecks = new JCheckBox("<html><i>&nbsp;" + Resources.getString("GameRefresher.delete_old_decks") + "</i></html>", false);
-    panel.add(deleteOldDecks);
+    deleteOldDecks = new JCheckBox(Resources.getString("GameRefresher.delete_old_decks"), false);
+    panel.add(deleteOldDecks, "gapx 10");
 
-    addNewDecks = new JCheckBox("<html><i>&nbsp;" + Resources.getString("GameRefresher.add_new_decks") + "</i></html>", false);
-    panel.add(addNewDecks);
+    addNewDecks = new JCheckBox(Resources.getString("GameRefresher.add_new_decks"), false);
+    panel.add(addNewDecks, "gapx 10");
+
+    // Separate less-accessed functions
+    // FIXME: The separator disappears if the window is resized or too small when deck options are made visible.
+    final JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
+    panel.add(sep);
+
+    testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"), false);
+    panel.add(testModeOn);
+
+    deletePieceNoMap = new JCheckBox(Resources.getString("GameRefresher.delete_piece_no_map"), true);
+    panel.add(deletePieceNoMap);
+
+    alertOn = new JCheckBox(Resources.getString("Editor.RefreshPredefinedSetups.alertOn"), false);
+    panel.add(alertOn);
 
     fireHotkeys = new JCheckBox(Resources.getString("GameRefresher.fire_global_hotkeys"));
     fireHotkeys.setSelected(true);
     panel.add(fireHotkeys);
 
     // PDS can be set to refresh specific items only, based on a regex
-    panel.add(new FlowLabel("<html><b>" + Resources.getString("Editor.RefreshPredefinedSetups_filter_prompt") + "</b></html>"));
-    pdsFilterBox = new HintTextField(32, Resources.getString("Editor.RefreshPredefinedSetups_filter_hint"));
-    pdsFilterBox.selectAll();
-    panel.add(pdsFilterBox);
+    final JPanel filterPanel = new JPanel(new MigLayout(ConfigurerLayout.STANDARD_INSETS_GAPY, "[]rel[grow,fill,push]")); // NON-NLS
+    filterPanel.add(new JLabel(Resources.getString("Editor.RefreshPredefinedSetups.filter_prompt")), "");
+    pdsFilterBox = new HintTextField(32, Resources.getString("Editor.RefreshPredefinedSetups.filter_hint"));
+    filterPanel.add(pdsFilterBox, "wrap");
+    panel.add(filterPanel, "");
 
     panel.add(buttonsBox, "grow"); // NON-NLS
     add(panel, "grow"); // NON-NLS
@@ -237,25 +254,32 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
     // pre-pack regex pattern in case filter string is not found directly
     Pattern p = null;
-    final int flags = CASE_INSENSITIVE;
+
     if (pdsFilter != null) {
+      // warn that filtering is active
+      log("~" + Resources.getString("Editor.RefreshPredefinedSetups.setups_filter", ConfigureTree.noHTML(pdsFilter)));
+
       try {
         // matching, assuming Regex
-        p = Pattern.compile(".*" + pdsFilter + ".*", flags);
+        p = Pattern.compile(".*" + pdsFilter + ".*", CASE_INSENSITIVE);
       }
       catch (java.util.regex.PatternSyntaxException e) {
           // something went wrong, treat regex as embedded literal
-        p = Pattern.compile(".*\\Q" + pdsFilter + "\\T.*", flags);
-        log(Resources.getString("Editor.RefreshPredefinedSetups_filter_fallback", ConfigureTree.noHTML(e.getMessage()))); //NON-NLS
+        p = Pattern.compile(".*\\Q" + pdsFilter + "\\T.*", CASE_INSENSITIVE);
+        log(Resources.getString("Editor.RefreshPredefinedSetups.filter_fallback")); //NON-NLS
       }
+      pdsFilter = pdsFilter.toLowerCase();
     }
 
     final List<ModuleExtension>  moduleExtensionList = mod.getComponentsOf(ModuleExtension.class);
     if (moduleExtensionList.isEmpty()) {
       isRefreshOfExtension = false;
     }
+
+    // FIXME: Rather than rely on the PDS structure, consider processing all .vsav files in the module (relevant for custom scenario choosers)
     final List<PredefinedSetup>  modulePdsAndMenus = mod.getAllDescendantComponentsOf(PredefinedSetup.class);
     final List<PredefinedSetup>  modulePds = new ArrayList<>();
+
     for (final PredefinedSetup pds : modulePdsAndMenus) {
       if (!pds.isMenu() && pds.isUseFile()) {
         //Exclude scenario folders (isMenu == true)
@@ -264,62 +288,98 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
         // PDS filtering option is implemented here...
         final String pdsName = pds.getAttributeValueString(pds.NAME);
         final String pdsFile = pds.getFileName();
+
         if (pdsFile != null && !pdsFile.isBlank()
-                && (pdsFilter == null || pdsName.contains(pdsFilter)  || pdsFile.contains(pdsFilter)
-                        || (p != null && (p.matcher(pdsName).matches() || p.matcher(pdsFile).matches())))) {
+                && (pdsFilter == null
+                || (pdsName != null && (pdsName.toLowerCase().contains(pdsFilter) || (p != null && p.matcher(pdsName).matches())))
+                || (pdsFile.toLowerCase().contains(pdsFilter) || (p != null && p.matcher(pdsFile).matches())))) {
+
           Boolean isExtensionPDS = true;
+
           try {
             isExtensionPDS =  !dataArchive.contains(pdsFile);
           }
           catch (final IOException e) {
             ErrorDialog.bug(e);
           }
-          if (isExtensionPDS == isRefreshOfExtension) {
-            modulePds.add(pds);
-          }
+          if (isExtensionPDS == isRefreshOfExtension) modulePds.add(pds);
         }
       }
     }
 
-    // warn if filtering is active
-    if (pdsFilter != null) log("~" + Resources.getString("Editor.RefreshPredefinedSetups_setups_filter", ConfigureTree.noHTML(pdsFilter)));
-
+    // List out the items found
     log("`" + modulePds.size() + " " + Resources.getString(Resources.getString("GameRefresher.predefined_setups_found")));
-
-    for (final PredefinedSetup pds : modulePds) {
-      log(pds.getAttributeValueString(pds.NAME) + " (" + pds.getFileName() + ")");
-    }
+    for (final PredefinedSetup pds : modulePds) log(pds.getAttributeValueString(pds.NAME) + " (" + pds.getFileName() + ")");
 
     final int pdsCount = modulePds.size();
     int i = 0;
+    int refreshCount = 0;
+    int flaggedFiles = 0;
+    final Instant startTime = Instant.now();
+    final Long memoryInUseAtStart = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024*1024);
 
     // FIXME: It would be nice to split the refresh into two parts here, to allow cancel before the refresh commences
-    // FIXME: A functional cancel button would be useful here
+    // FIXME: A functioning cancel button would be useful here
 
+    // Process the refreshes
     for (final PredefinedSetup pds : modulePds) {
       GameModule.getGameModule().getGameState().setup(false);  //BR// Ensure we clear any existing game data/listeners/objects out.
       GameModule.getGameModule().setRefreshingSemaphore(true); //BR// Raise the semaphore that suppresses GameState.setup()
+      final String pdsFile = pds.getFileName();
 
       // Refresher window title updated to provide progress report
-      final int pct = i++ * 100 / pdsCount;
-      this.setTitle(Resources.getString("Editor.RefreshPredefinedSetupsDialog.progress", i, pdsCount, pct));
+      final int pct = i * 100 / pdsCount;
+      this.setTitle(Resources.getString("Editor.RefreshPredefinedSetupsDialog.progress", ++i, pdsCount, pct,
+              (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024*1024)));
 
-      try {
-        pds.refresh(options);
+      if (i > 1 && pdsFileProcessed(modulePds.subList(0, i - 1), pdsFile)) {
+        // Skip duplicate file (already refreshed)
+        log(Resources.getString(Resources.getString("Editor.RefreshPredefinedSetupsDialog.skip", pds.getAttributeValueString(pds.NAME), pdsFile)));
       }
-      catch (final IOException e) {
-        ErrorDialog.bug(e);
-      }
-      finally {
-        GameModule.getGameModule().setRefreshingSemaphore(false); //BR// Make sure we definitely lower the semaphore
+      else {
+        try {
+          if (pds.refreshWithStatus(options) > 0) flaggedFiles++;
+          refreshCount++;
+        }
+        catch (final IOException e) {
+          ErrorDialog.bug(e);
+        }
+        finally {
+          GameModule.getGameModule().setRefreshingSemaphore(false); //BR// Make sure we definitely lower the semaphore
+        }
       }
     }
 
     // Clean up and close the window
-    if (!isTestMode() && pdsCount > 0) GameModule.getGameModule().setDirty(true);  // ensure prompt to save when a refresh happenned
+    if (!isTestMode() && pdsCount > 0) {
+      if (alertOn.isSelected()) { // sound alert
+        final SoundConfigurer c = (SoundConfigurer) Prefs.getGlobalPrefs().getOption("wakeUpSound");
+        c.play();
+      }
+
+      GameModule.getGameModule().setDirty(true);  // ensure prompt to save when a refresh happened
+    }
+
     GameModule.getGameModule().getGameState().setup(false); //BR// Clear out whatever data (pieces, listeners, etc.) left over from final game loaded.
 
     refreshButton.setEnabled(true);
     dispose(); // done with all that
+
+    final Duration duration = Duration.between(startTime, Instant.now());
+
+    log("|<b>" + Resources.getString("Editor.RefreshPredefinedSetups.end", refreshCount, flaggedFiles));
+
+    log(Resources.getString("Editor.RefreshPredefinedSetups.stats",
+            ofPattern("HH:mm:ss").format(LocalTime.ofSecondOfDay(duration.getSeconds())),
+            memoryInUseAtStart,
+            (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024*1024)));
   }
+
+  private boolean pdsFileProcessed(List<PredefinedSetup> modulePds, String file) {
+    for (final PredefinedSetup pds : modulePds) {
+      if (pds.getFileName().equals(file)) return true;
+    }
+    return false;
+  }
+
 }
