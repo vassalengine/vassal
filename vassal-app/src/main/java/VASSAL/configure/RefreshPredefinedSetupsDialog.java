@@ -328,7 +328,6 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
               + (flaggedFiles == 0 ? "" : GameRefresher.ERROR_MESSAGE_PREFIX
               + Resources.getString("Editor.RefreshPredefinedSetupsDialog.errors", lastErrorFile, flaggedFiles)));
 
-
       if (i > 1 && pdsFileProcessed(modulePds.subList(0, i - 1), pdsFile)) {
         // Skip duplicate file (already refreshed)
         log(Resources.getString(Resources.getString("Editor.RefreshPredefinedSetupsDialog.skip", pds.getAttributeValueString(pds.NAME), pdsFile)));
@@ -337,7 +336,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
         try {
           if (pds.refreshWithStatus(options) > 0) {
             flaggedFiles++;
-            lastErrorFile = pdsFile.length() > 12 ? pdsFile.substring(0, 12) + "..." : pdsFile;
+            lastErrorFile = pdsFile.length() > 15 ? pdsFile.substring(0, 12) + "..." : pdsFile;
           }
           refreshCount++;
         }
