@@ -108,14 +108,14 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
   private GpIdChecker gpIdChecker;
   private RefreshDialog dialog;
   private int updatedCount;
-  int notFoundCount; // shared to PDS refresher
-  int noStackCount; // shared to PDS refresher
-  int noMapCount; // shared to PDS refresher
-  int notOwnedCount; // shared to PDS refresher
-  int notVisibleCount; // shared to PDS refresher
+  public int notFoundCount; // shared to PDS refresher
+  public int noStackCount; // shared to PDS refresher
+  public int noMapCount; // shared to PDS refresher
+  public int notOwnedCount; // shared to PDS refresher
+  public int notVisibleCount; // shared to PDS refresher
 
   public static final String ERROR_MESSAGE_PREFIX = "~";
-
+  public static final String SEPARATOR = "----------";
   private final GameModule theModule;
   private final Set<String> options = new HashSet<>();
 

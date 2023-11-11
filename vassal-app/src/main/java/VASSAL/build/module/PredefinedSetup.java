@@ -300,7 +300,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     final GameRefresher gameRefresher = new GameRefresher(mod);
 
     // since we're going to block the GUI, let's give some feedback
-    gameRefresher.log("----------"); //$NON-NLS-1$
+    gameRefresher.log(GameRefresher.SEPARATOR); //$NON-NLS-1$
     gameRefresher.log("Updating Predefined Setup: " + this.getAttributeValueString(this.NAME) + " (" + fileName + ")"); //$NON-NLS-1$S
 
     // get a stream to the saved game in the module file

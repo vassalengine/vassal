@@ -307,6 +307,8 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     int i = 0;
     int refreshCount = 0;
     int flaggedFiles = 0;
+    int duplicates = 0;
+    int fails = 0;
     final Instant startTime = Instant.now();
     final Long memoryInUseAtStart = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024*1024);
 
@@ -314,23 +316,24 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     // FIXME: A functioning cancel button would be useful here
 
     // Process the refreshes
+    String lastErrorFile = null;
+
     for (final PredefinedSetup pds : modulePds) {
       GameModule.getGameModule().getGameState().setup(false);  //BR// Ensure we clear any existing game data/listeners/objects out.
       GameModule.getGameModule().setRefreshingSemaphore(true); //BR// Raise the semaphore that suppresses GameState.setup()
 
       final String pdsFile = pds.getFileName();
-      String lastErrorFile = null;
 
       // Refresher window title updated to provide progress report
       final int pct = i * 100 / pdsCount;
       this.setTitle(Resources.getString("Editor.RefreshPredefinedSetupsDialog.progress", ++i, pdsCount, pct,
               (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024*1024))
-              + (flaggedFiles == 0 ? "" : GameRefresher.ERROR_MESSAGE_PREFIX
-              + Resources.getString("Editor.RefreshPredefinedSetupsDialog.errors", lastErrorFile, flaggedFiles)));
+              + (flaggedFiles + fails == 0 ? "" : "  " + Resources.getString("Editor.RefreshPredefinedSetupsDialog.errors", lastErrorFile, fails + flaggedFiles - 1)));
 
       if (i > 1 && pdsFileProcessed(modulePds.subList(0, i - 1), pdsFile)) {
         // Skip duplicate file (already refreshed)
-        log(Resources.getString(Resources.getString("Editor.RefreshPredefinedSetupsDialog.skip", pds.getAttributeValueString(pds.NAME), pdsFile)));
+        duplicates++;
+        log(GameRefresher.SEPARATOR + "\n" + Resources.getString(Resources.getString("Editor.RefreshPredefinedSetupsDialog.skip", pds.getAttributeValueString(pds.NAME), pdsFile)));
       }
       else {
         try {
@@ -342,6 +345,8 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
         }
         catch (final IOException e) {
           ErrorDialog.bug(e);
+          fails++;
+          lastErrorFile = pdsFile.length() > 15 ? pdsFile.substring(0, 12) + "..." : pdsFile;
         }
         finally {
           GameModule.getGameModule().setRefreshingSemaphore(false); //BR// Make sure we definitely lower the semaphore
@@ -367,7 +372,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     final Duration duration = Duration.between(startTime, Instant.now());
 
     log("|<b>" + Resources.getString("Editor.RefreshPredefinedSetups.end", refreshCount, flaggedFiles));
-
+    if (flaggedFiles + fails > 0) log(GameRefresher.ERROR_MESSAGE_PREFIX + Resources.getString("Editor.RefreshPredefinedSetups.endErrors", duplicates, fails));
     log(Resources.getString("Editor.RefreshPredefinedSetups.stats",
             ofPattern("HH:mm:ss").format(LocalTime.ofSecondOfDay(duration.getSeconds())),
             memoryInUseAtStart,
