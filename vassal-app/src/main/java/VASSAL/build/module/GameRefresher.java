@@ -111,6 +111,10 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
   int notFoundCount; // shared to PDS refresher
   int noStackCount; // shared to PDS refresher
   int noMapCount; // shared to PDS refresher
+  int notOwnedCount; // shared to PDS refresher
+  int notVisibleCount; // shared to PDS refresher
+
+  public static final String ERROR_MESSAGE_PREFIX = "~";
 
   private final GameModule theModule;
   private final Set<String> options = new HashSet<>();
@@ -200,8 +204,6 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     final List<Refresher> refreshables = new ArrayList<>();
     final List<MatRefresher> loadedMats = new ArrayList<>();
     int totalCount = 0;
-    int notOwnedCount = 0;
-    int notVisibleCount = 0;
 
     // Process map by map
     for (final Map map : Map.getMapList()) {
@@ -281,8 +283,8 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     log(Resources.getString("GameRefresher.get_all_pieces"));
     log(Resources.getString("GameRefresher.counters_total", totalCount));
     log(Resources.getString("GameRefresher.counters_kept", totalCount - notOwnedCount - notVisibleCount));
-    if (notOwnedCount > 0) log(Resources.getString("GameRefresher.counters_not_owned", notOwnedCount));
-    if (notVisibleCount > 0) log(Resources.getString("GameRefresher.counters_not_visible", notVisibleCount));
+    if (notOwnedCount > 0) log(ERROR_MESSAGE_PREFIX  + Resources.getString("GameRefresher.counters_not_owned", notOwnedCount));
+    if (notVisibleCount > 0) log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_not_visible", notVisibleCount));
 
     return refreshables;
   }
@@ -303,7 +305,6 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
    */
   public void execute(Set<String> options, Command command) throws IllegalBuildException {
     final List<Deck> decks = new ArrayList<>();
-    final String errorPrefix = "~";
 
     if (command == null) {
       command = new NullCommand();
@@ -360,9 +361,9 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
     log(Resources.getString("GameRefresher.run_refresh_counters_v3", theModule.getGameVersion()));
     log(Resources.getString("GameRefresher.counters_refreshed", updatedCount));
-    if (notFoundCount > 0) log(errorPrefix + Resources.getString("GameRefresher.counters_not_found", notFoundCount));
-    if (noMapCount > 0) log(errorPrefix + Resources.getString("GameRefresher.counters_no_map", noMapCount));
-    if (noStackCount > 0) log(errorPrefix + Resources.getString("GameRefresher.counters_no_stack", noStackCount));
+    if (notFoundCount > 0) log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_not_found", notFoundCount));
+    if (noMapCount > 0) log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_no_map", noMapCount));
+    if (noStackCount > 0) log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_no_stack", noStackCount));
 
     /*
      * 4/ Refresh properties of decks in the game
