@@ -257,7 +257,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
     if (pdsFilter != null) {
       // warn that filtering is active
-      log("~" + Resources.getString("Editor.RefreshPredefinedSetups.setups_filter", ConfigureTree.noHTML(pdsFilter)));
+      log(GameRefresher.ERROR_MESSAGE_PREFIX + Resources.getString("Editor.RefreshPredefinedSetups.setups_filter", ConfigureTree.noHTML(pdsFilter)));
 
       try {
         // matching, assuming Regex
@@ -325,12 +325,16 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     for (final PredefinedSetup pds : modulePds) {
       GameModule.getGameModule().getGameState().setup(false);  //BR// Ensure we clear any existing game data/listeners/objects out.
       GameModule.getGameModule().setRefreshingSemaphore(true); //BR// Raise the semaphore that suppresses GameState.setup()
+
       final String pdsFile = pds.getFileName();
+      String lastErrorFile = null;
 
       // Refresher window title updated to provide progress report
       final int pct = i * 100 / pdsCount;
       this.setTitle(Resources.getString("Editor.RefreshPredefinedSetupsDialog.progress", ++i, pdsCount, pct,
-              (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024*1024)));
+              (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024*1024))
+              + (flaggedFiles == 0 ? "" : GameRefresher.ERROR_MESSAGE_PREFIX
+              + Resources.getString("Editor.RefreshPredefinedSetupsDialog.errors", lastErrorFile, flaggedFiles)));
 
       if (i > 1 && pdsFileProcessed(modulePds.subList(0, i - 1), pdsFile)) {
         // Skip duplicate file (already refreshed)
@@ -338,7 +342,10 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
       }
       else {
         try {
-          if (pds.refreshWithStatus(options) > 0) flaggedFiles++;
+          if (pds.refreshWithStatus(options) > 0) {
+            flaggedFiles++;
+            lastErrorFile = pdsFile.length() > 15 ? pdsFile.substring(0, 12) + "..." : pdsFile;
+          }
           refreshCount++;
         }
         catch (final IOException e) {
