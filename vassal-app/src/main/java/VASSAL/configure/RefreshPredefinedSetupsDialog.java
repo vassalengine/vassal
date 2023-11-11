@@ -333,8 +333,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
       final int pct = i * 100 / pdsCount;
       this.setTitle(Resources.getString("Editor.RefreshPredefinedSetupsDialog.progress", ++i, pdsCount, pct,
               (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024*1024))
-              + (flaggedFiles == 0 ? "" : GameRefresher.ERROR_MESSAGE_PREFIX
-              + Resources.getString("Editor.RefreshPredefinedSetupsDialog.errors", lastErrorFile, flaggedFiles)));
+              + (flaggedFiles == 0 ? "" : Resources.getString("Editor.RefreshPredefinedSetupsDialog.errors", lastErrorFile, flaggedFiles - 1)));
 
       if (i > 1 && pdsFileProcessed(modulePds.subList(0, i - 1), pdsFile)) {
         // Skip duplicate file (already refreshed)
