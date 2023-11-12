@@ -345,8 +345,6 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
         }
         catch (final IOException e) {
           ErrorDialog.bug(e);
-          fails++;
-          lastErrorFile = pdsFile.length() > 15 ? pdsFile.substring(0, 12) + "..." : pdsFile;
         }
         finally {
           GameModule.getGameModule().setRefreshingSemaphore(false); //BR// Make sure we definitely lower the semaphore
