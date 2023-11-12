@@ -1947,7 +1947,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       optRegex = false;
       matchCase    = false;
 
-      // Radio buttons; belt & bracces to ensure setup is consistent
+      // Radio buttons; belt & braces to ensure setup is consistent
       matchSimple       = (Boolean)prefs.getValue(SearchParameters.MATCH_SIMPLE);
       matchFull       = (Boolean)prefs.getValue(SearchParameters.MATCH_FULL) && !matchSimple;
       matchAdvanced      = (Boolean)prefs.getValue(SearchParameters.MATCH_ADVANCED) && !(matchFull || matchSimple);
@@ -2394,7 +2394,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
                 final int matches = (regexPattern == null ? 0 : getNumMatches(regexPattern));
 
                 chatter.show(!searchParameters.isOptRegex() ? getString((searchParameters.isOptNormal() ? "Editor.search_count" : "Editor.search_countWord"), matches, noHTML(searchParameters.getSearchString())) :
-                        getString("Editor.search_countRegex", matches, noHTML(regexPattern.toString())));
+                        regexPattern == null ? "" : getString("Editor.search_countRegex", matches, noHTML(regexPattern.toString())));
 
                 resetPath();  // Search needs to start from current position
               }
@@ -2473,13 +2473,20 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         panel.add(scopePanel, "grow"); // NON-NLS
 
         // Filters
-        final JPanel filterList = new JPanel(new MigLayout("hidemode 3,wrap 1," + ConfigurerLayout.STANDARD_GAPY, "push[]")); // NON-NLS
-        filterList.add(filtersPrompt);
-        filterList.add(names);
+        // PDS can be set to refresh specific items only, based on a regex
+        final JPanel filtersTop = new JPanel(new MigLayout("hidemode 3,wrap 1," + ConfigurerLayout.STANDARD_INSETS_GAPY, "[]rel[]")); // NON-NLS
+        filtersTop.add(filtersPrompt);
+        filtersTop.add(names);
+
+        final JPanel filterList = new JPanel(new MigLayout("hidemode 3,wrap 1," + ConfigurerLayout.STANDARD_INSETS_GAPY, "push[]")); // NON-NLS
+        //filterList.add(filtersPrompt);
+        //filterList.add(names);
+        filterList.add(filtersTop);
         filterList.add(types);
         filterList.add(traits);
         filterList.add(expressions);
         filterList.add(properties);
+        filterList.add(keys);
         filterList.add(menus);
         filterList.add(messages);
         panel.add(filterList, "grow"); // NON-NLS
@@ -2750,8 +2757,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         return false;
       }
 
-      // For some reason, a pdf or text component is a SearchTarget (with no returns) even though overall Help Menu is not
-      // so we test for Help Menu first, guarding againtst possibility of null node...
+      // For some reason, a pdf or text component is a SearchTarget (with no returns) even though overall Help Menu is not,
+      // so we test for Help Menu first, guarding against possibility of null node...
       try {
         //  Special processing to include select items in full search despite not being a SearchTarget
         if (getConfigureName((Configurable) node.getParent()).equals(getString("Editor.Documentation.component_type"))) {
@@ -3018,7 +3025,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     /**
      * Generates any common output (Names & Types) then, if this node contains a Game Piece of some kind,
      * displays a list of Trait information from the piece that matches our search parameters.
-     * Otherwise continues via showConfigurableHitList for details of Configurables.
+     * Otherwise, continues via showConfigurableHitList for details of Configurables.
      * @param node - any node of our module tree
      * @param regexPattern - our search string
      */
@@ -3575,7 +3582,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
 
     /**
-     * Self-important data blurp that describes a potential drag/drop source. But there's stuff
+     * Self-important data blurb that describes a potential drag/drop source. But there's stuff
      * about flavor, and who doesn't like flavor?
      */
     public class NodesTransferable implements Transferable {
