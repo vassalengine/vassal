@@ -47,6 +47,7 @@ import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.swing.FlowLabel;
 import VASSAL.tools.swing.SwingUtils;
 import net.miginfocom.swing.MigLayout;
@@ -102,6 +103,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
   public static final String REFRESH_DECKS = "RefreshDecks";
   public static final String DELETE_OLD_DECKS = "DeleteOldDecks";
   public static final String ADD_NEW_DECKS = "AddNewDecks";
+  public static final String USE_HOTKEYS = "UseHotkeys";
 
   private Action refreshAction;
   private final GpIdSupport gpIdSupport;
@@ -342,6 +344,11 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       }
     }
 
+    if (options.contains(USE_HOTKEYS)) { //NON-NLS
+      // About to commence refreshing the game, allow a custom start.
+      GameModule.getGameModule().fireKeyStroke(NamedKeyStroke.of("VassalPreRefreshGHK"));
+    }
+
     /*
      * 2. Build a list in visual order of all stacks, decks, mats and other pieces that need refreshing
      */
@@ -534,6 +541,10 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
         log(Resources.getString(options.contains(ADD_NEW_DECKS) ? "GameRefresher.addable_decks" : "GameRefresher.addable_decks_2", addable)); //NON-NLS
       }
     }
+    if (options.contains(USE_HOTKEYS)) { //NON-NLS
+      // After all refreshing, allow a custom finish...
+      GameModule.getGameModule().fireKeyStroke(NamedKeyStroke.of("VassalPostRefreshGHK"));
+    }
   }
 
 
@@ -674,6 +685,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     private JCheckBox refreshDecks;
     private JCheckBox deleteOldDecks;
     private JCheckBox addNewDecks;
+    private JCheckBox fireHotkeys;
     private final Set<String> options = new HashSet<>();
     JButton runButton;
 
@@ -758,6 +770,10 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"), false);
       panel.add(testModeOn);
 
+      // Hotkeys setting is OFF by default for one-off runs to minimise risk of accidental use by players, should a module editor leave maintenance hotkeys available (intentionally or otherwise)
+      fireHotkeys = new JCheckBox(Resources.getString("GameRefresher.fire_global_hotkeys"), false);
+      panel.add(fireHotkeys);
+
       if (refresher.isGameActive()) {
         refreshDecks.setSelected(false);
         refreshDecks.setEnabled(false);
@@ -808,6 +824,9 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
         if (addNewDecks.isSelected()) {
           options.add(ADD_NEW_DECKS); //NON-NLS
         }
+      }
+      if (fireHotkeys.isSelected()) {
+        options.add(USE_HOTKEYS); //$NON-NLS-1$
       }
     }
 

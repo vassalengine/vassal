@@ -77,6 +77,8 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   private String pdsFilter;
   private JCheckBox alertOn;
   private static final int FILE_NAME_REPORT_LENGTH = 15;
+  private JCheckBox fireHotkeys;
+
   private final Set<String> options = new HashSet<>();
 
   public RefreshPredefinedSetupsDialog(Frame owner) throws HeadlessException {
@@ -168,6 +170,10 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     alertOn = new JCheckBox(Resources.getString("Editor.RefreshPredefinedSetups.alertOn"), false);
     panel.add(alertOn);
 
+    // Hotkeys setting is on by default for Predefined Setups as this is under module editor control, harmless unless the hotkeys are defined in the module.
+    fireHotkeys = new JCheckBox(Resources.getString("GameRefresher.fire_global_hotkeys"), true);
+    panel.add(fireHotkeys);
+
     panel.add(buttonsBox, "grow"); // NON-NLS
     add(panel, "grow"); // NON-NLS
 
@@ -211,6 +217,9 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
       if (addNewDecks.isSelected()) {
         options.add(GameRefresher.ADD_NEW_DECKS); //NON-NLS
       }
+    }
+    if (fireHotkeys.isSelected()) {
+      options.add(GameRefresher.USE_HOTKEYS); //$NON-NLS-1$
     }
   }
 
