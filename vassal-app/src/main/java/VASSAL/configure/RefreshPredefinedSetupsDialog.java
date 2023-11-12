@@ -173,6 +173,8 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     panel.add(buttonsBox, "grow"); // NON-NLS
     add(panel, "grow"); // NON-NLS
 
+    this.setSize(panel.getSize());
+
     setLocationRelativeTo(getOwner());
     SwingUtils.repack(this);
 

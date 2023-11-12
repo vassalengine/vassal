@@ -60,7 +60,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
@@ -751,11 +750,6 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       addNewDecks = new JCheckBox(Resources.getString("GameRefresher.add_new_decks"), false);
       panel.add(addNewDecks, "gapx 10");
 
-      // Separate less-accessed functions
-      // FIXME: The separator disappears if the window is resized or too small when deck options are made visible.
-      final JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
-      panel.add(sep);
-
       testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"), false);
       // Disabling user selection - due to issue https://github.com/vassalengine/vassal/issues/12695
       // panel.add(testModeOn);
@@ -774,12 +768,12 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
       add(panel, "grow"); // NON-NLS
 
+      this.setSize(panel.getSize());
+
       SwingUtils.repack(this);
 
       deleteOldDecks.setVisible(refreshDecks.isSelected());
       addNewDecks.setVisible(refreshDecks.isSelected());
-
-      this.setSize(panel.getSize());
     }
 
     protected void setOptions() {
