@@ -401,7 +401,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
   public boolean promptConfirm(String question, String title, List<PredefinedSetup> pdsList) {
 
-    final JPanel panel = new JPanel();
+    final JPanel panel = new JPanel(new MigLayout(ConfigurerLayout.STANDARD_INSETS_GAPY, "[fill]")); // NON-NLS
     final JLabel label = new JLabel(question);
     panel.add(label); //NON-NLS
 
@@ -413,12 +413,13 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
             ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     panel.add(scroll);
 
-    for (final PredefinedSetup pds : pdsList) display.append(pds.getAttributeValueString(pds.NAME) + " (" + pds.getFileName() + ")");
+    for (final PredefinedSetup pds : pdsList)
+      display.append(pds.getAttributeValueString(pds.NAME)
+              + Character.toString(9) + pds.getFileName() + System.lineSeparator());
 
     return JOptionPane.showConfirmDialog(
             GameModule.getGameModule().getPlayerWindow(),
             panel,
-            // Resources.getString(question), //$NON-NLS-1$
             Resources.getString(title),   //$NON-NLS-1$
             JOptionPane.OK_CANCEL_OPTION,
             JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION;
