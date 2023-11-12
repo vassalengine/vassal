@@ -131,6 +131,9 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     rotateNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_rotate_descr"), true);
     panel.add(rotateNameCheck);
 
+    deletePieceNoMap = new JCheckBox(Resources.getString("GameRefresher.delete_piece_no_map"), true);
+    panel.add(deletePieceNoMap);
+
     refreshDecks = new JCheckBox(Resources.getString("GameRefresher.refresh_decks"), false);
     refreshDecks.addChangeListener(new ChangeListener() {
       @Override
@@ -147,7 +150,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     addNewDecks = new JCheckBox(Resources.getString("GameRefresher.add_new_decks"), false);
     panel.add(addNewDecks, "gapx 10");
 
-    // Separate less-accessed functions
+    // Separate functions that govern the overall refresh
     // FIXME: The separator disappears if the window is resized.
     final JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
     panel.add(sep);
@@ -155,18 +158,15 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"), false);
     panel.add(testModeOn);
 
-    deletePieceNoMap = new JCheckBox(Resources.getString("GameRefresher.delete_piece_no_map"), true);
-    panel.add(deletePieceNoMap);
-
-    alertOn = new JCheckBox(Resources.getString("Editor.RefreshPredefinedSetups.alertOn"), false);
-    panel.add(alertOn);
-
     // PDS can be set to refresh specific items only, based on a regex
     final JPanel filterPanel = new JPanel(new MigLayout(ConfigurerLayout.STANDARD_INSETS_GAPY, "[]rel[grow,fill,push]")); // NON-NLS
     filterPanel.add(new JLabel(Resources.getString("Editor.RefreshPredefinedSetups.filter_prompt")), "");
     pdsFilterBox = new HintTextField(32, Resources.getString("Editor.RefreshPredefinedSetups.filter_hint"));
     filterPanel.add(pdsFilterBox, "wrap");
     panel.add(filterPanel, "");
+
+    alertOn = new JCheckBox(Resources.getString("Editor.RefreshPredefinedSetups.alertOn"), false);
+    panel.add(alertOn);
 
     panel.add(buttonsBox, "grow"); // NON-NLS
     add(panel, "grow"); // NON-NLS

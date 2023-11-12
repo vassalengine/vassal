@@ -198,7 +198,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
    * - Mat with contained Cargo
    * - Single non-Mat unstacked piece
    *
-   * @return
+   * @return refreshables List of refreshable items
    */
   public List<Refresher> getRefreshables() {
     final List<Refresher> refreshables = new ArrayList<>();
@@ -615,8 +615,8 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
    * For each *new* outermost piece that has Attachments, we look up the *old* outermost piece, and use its Unique ID plus each Attachment trait's name as a lookup hash
    * to find the old list of contents. Then since the old list of contents is references to old versions of pieces, we use the "updatedPieces" index
    * to look up the new pieces and create a new set of contents for the trait.
-   * @param piece
-   * @param command
+   * @param piece Piece to be checked and processed
+   * @param command Command under construction
    */
   public void refreshAttachment(GamePiece piece, Command command) {
     while (piece instanceof Decorator) {
@@ -731,6 +731,9 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       rotateNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_rotate_descr"), true);
       panel.add(rotateNameCheck);
 
+      deletePieceNoMap = new JCheckBox(Resources.getString("GameRefresher.delete_piece_no_map"), true);
+      panel.add(deletePieceNoMap);
+
       refreshDecks = new JCheckBox(Resources.getString("GameRefresher.refresh_decks"), false);
       refreshDecks.addChangeListener(new ChangeListener() {
         @Override
@@ -755,9 +758,6 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"), false);
       panel.add(testModeOn);
 
-      deletePieceNoMap = new JCheckBox(Resources.getString("GameRefresher.delete_piece_no_map"), true);
-      panel.add(deletePieceNoMap);
-
       if (refresher.isGameActive()) {
         refreshDecks.setSelected(false);
         refreshDecks.setEnabled(false);
@@ -776,6 +776,8 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
       deleteOldDecks.setVisible(refreshDecks.isSelected());
       addNewDecks.setVisible(refreshDecks.isSelected());
+
+      this.setSize(panel.getSize());
     }
 
     protected void setOptions() {
@@ -926,7 +928,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
      * 2. Refresh the Mat
      * 3. Refresh each Cargo and place back on the Mat
      *
-     * @param command
+     * @param command Command under construction
      */
     @Override
     public void refresh(Command command) {
