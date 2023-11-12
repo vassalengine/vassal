@@ -38,6 +38,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
@@ -173,8 +174,6 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     panel.add(buttonsBox, "grow"); // NON-NLS
     add(panel, "grow"); // NON-NLS
 
-    this.setSize(panel.getSize());
-
     setLocationRelativeTo(getOwner());
     SwingUtils.repack(this);
 
@@ -302,84 +301,86 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
       }
     }
 
+    final int pdsCount = modulePds.size();
+
     // List out the items found
-    log("`" + modulePds.size() + " " + Resources.getString(Resources.getString("GameRefresher.predefined_setups_found")));
+    log("`" + pdsCount + " " + Resources.getString(Resources.getString("GameRefresher.predefined_setups_found")));
     for (final PredefinedSetup pds : modulePds) log(pds.getAttributeValueString(pds.NAME) + " (" + pds.getFileName() + ")");
 
-    final int pdsCount = modulePds.size();
-    int i = 0;
-    int refreshCount = 0;
-    int flaggedFiles = 0;
-    int duplicates = 0;
-    int fails = 0;
-    final Instant startTime = Instant.now();
-    final Long memoryInUseAtStart = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024*1024);
+    // allow an abort here
+    if (pdsCount > 0 && promptConfirm(Resources.getString("Editor.RefreshPredefinedSetups.confirm_prompt", pdsCount),
+            Resources.getString("Editor.RefreshPredefinedSetups.confirm_title"))) {
 
-    // FIXME: It would be nice to split the refresh into two parts here, to allow cancel before the refresh commences
-    // FIXME: A functioning cancel button would be useful here
+      final Instant startTime = Instant.now();
+      final Long memoryInUseAtStart = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024*1024);
+      int i = 0;
+      int refreshCount = 0;
+      int flaggedFiles = 0;
+      int duplicates = 0;
+      int fails = 0;
+      String lastErrorFile = null;
 
-    // Process the refreshes
-    String lastErrorFile = null;
+      // Process the refreshes
+      for (final PredefinedSetup pds : modulePds) {
+        GameModule.getGameModule().getGameState().setup(false);  //BR// Ensure we clear any existing game data/listeners/objects out.
+        GameModule.getGameModule().setRefreshingSemaphore(true); //BR// Raise the semaphore that suppresses GameState.setup()
 
-    for (final PredefinedSetup pds : modulePds) {
-      GameModule.getGameModule().getGameState().setup(false);  //BR// Ensure we clear any existing game data/listeners/objects out.
-      GameModule.getGameModule().setRefreshingSemaphore(true); //BR// Raise the semaphore that suppresses GameState.setup()
+        final String pdsFile = pds.getFileName();
 
-      final String pdsFile = pds.getFileName();
+        // Refresher window title updated to provide progress report
+        final int pct = i * 100 / pdsCount;
+        this.setTitle(Resources.getString("Editor.RefreshPredefinedSetupsDialog.progress", ++i, pdsCount, pct,
+                (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024))
+                + (flaggedFiles + fails == 0 ? "" : "  " + Resources.getString("Editor.RefreshPredefinedSetupsDialog.errors", lastErrorFile, fails + flaggedFiles - 1)));
 
-      // Refresher window title updated to provide progress report
-      final int pct = i * 100 / pdsCount;
-      this.setTitle(Resources.getString("Editor.RefreshPredefinedSetupsDialog.progress", ++i, pdsCount, pct,
-              (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024*1024))
-              + (flaggedFiles + fails == 0 ? "" : "  " + Resources.getString("Editor.RefreshPredefinedSetupsDialog.errors", lastErrorFile, fails + flaggedFiles - 1)));
-
-      if (i > 1 && pdsFileProcessed(modulePds.subList(0, i - 1), pdsFile)) {
-        // Skip duplicate file (already refreshed)
-        duplicates++;
-        log(GameRefresher.SEPARATOR + "\n" + Resources.getString(Resources.getString("Editor.RefreshPredefinedSetupsDialog.skip", pds.getAttributeValueString(pds.NAME), pdsFile)));
-      }
-      else {
-        try {
-          if (pds.refreshWithStatus(options) > 0) {
-            flaggedFiles++;
+        if (i > 1 && pdsFileProcessed(modulePds.subList(0, i - 1), pdsFile)) {
+          // Skip duplicate file (already refreshed)
+          duplicates++;
+          log(GameRefresher.SEPARATOR + "\n" + Resources.getString(Resources.getString("Editor.RefreshPredefinedSetupsDialog.skip", pds.getAttributeValueString(pds.NAME), pdsFile)));
+        }
+        else {
+          try {
+            if (pds.refreshWithStatus(options) > 0) {
+              flaggedFiles++;
+              lastErrorFile = fixedLength(pdsFile, FILE_NAME_REPORT_LENGTH);
+            }
+            refreshCount++;
+          }
+          catch (final IOException e) {
+            ErrorDialog.bug(e);
+            fails++;
             lastErrorFile = fixedLength(pdsFile, FILE_NAME_REPORT_LENGTH);
           }
-          refreshCount++;
-        }
-        catch (final IOException e) {
-          ErrorDialog.bug(e);
-          fails++;
-          lastErrorFile = fixedLength(pdsFile, FILE_NAME_REPORT_LENGTH);
-        }
-        finally {
-          GameModule.getGameModule().setRefreshingSemaphore(false); //BR// Make sure we definitely lower the semaphore
+          finally {
+            GameModule.getGameModule().setRefreshingSemaphore(false); //BR// Make sure we definitely lower the semaphore
+          }
         }
       }
-    }
 
-    // Clean up and close the window
-    if (!isTestMode() && pdsCount > 0) {
-      if (alertOn.isSelected()) { // sound alert
-        final SoundConfigurer c = (SoundConfigurer) Prefs.getGlobalPrefs().getOption("wakeUpSound");
-        c.play();
+      // Clean up and close the window
+      if (!isTestMode() && pdsCount > 0) {
+        if (alertOn.isSelected()) { // sound alert
+          final SoundConfigurer c = (SoundConfigurer) Prefs.getGlobalPrefs().getOption("wakeUpSound");
+          c.play();
+        }
+        GameModule.getGameModule().setDirty(true);  // ensure prompt to save when a refresh happened
       }
 
-      GameModule.getGameModule().setDirty(true);  // ensure prompt to save when a refresh happened
+      GameModule.getGameModule().getGameState().setup(false); //BR// Clear out whatever data (pieces, listeners, etc.) left over from final game loaded.
+
+      dispose(); // done with all that
+
+      final Duration duration = Duration.between(startTime, Instant.now());
+
+      log("|<b>" + Resources.getString("Editor.RefreshPredefinedSetups.end", refreshCount, flaggedFiles));
+      if (flaggedFiles + fails > 0)
+        log(GameRefresher.ERROR_MESSAGE_PREFIX + Resources.getString("Editor.RefreshPredefinedSetups.endErrors", duplicates, fails));
+      log(Resources.getString("Editor.RefreshPredefinedSetups.stats",
+              ofPattern("HH:mm:ss").format(LocalTime.ofSecondOfDay(duration.getSeconds())),
+              memoryInUseAtStart,
+              (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024)));
     }
-
-    GameModule.getGameModule().getGameState().setup(false); //BR// Clear out whatever data (pieces, listeners, etc.) left over from final game loaded.
-
     refreshButton.setEnabled(true);
-    dispose(); // done with all that
-
-    final Duration duration = Duration.between(startTime, Instant.now());
-
-    log("|<b>" + Resources.getString("Editor.RefreshPredefinedSetups.end", refreshCount, flaggedFiles));
-    if (flaggedFiles + fails > 0) log(GameRefresher.ERROR_MESSAGE_PREFIX + Resources.getString("Editor.RefreshPredefinedSetups.endErrors", duplicates, fails));
-    log(Resources.getString("Editor.RefreshPredefinedSetups.stats",
-            ofPattern("HH:mm:ss").format(LocalTime.ofSecondOfDay(duration.getSeconds())),
-            memoryInUseAtStart,
-            (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024*1024)));
   }
 
   private boolean pdsFileProcessed(List<PredefinedSetup> modulePds, String file) {
@@ -391,5 +392,14 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
   private String fixedLength(String text, int length) {
     return text.length() > length ? text.substring(0, length - 3) + "..." : text;
+  }
+
+  public boolean promptConfirm(String question, String title) {
+    return JOptionPane.showConfirmDialog(
+            GameModule.getGameModule().getPlayerWindow(),
+            Resources.getString(question), //$NON-NLS-1$
+            Resources.getString(title),   //$NON-NLS-1$
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION;
   }
 }

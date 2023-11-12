@@ -768,7 +768,9 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
       add(panel, "grow"); // NON-NLS
 
-      this.setSize(panel.getSize());
+      // window size is determined by the hidden deck options
+      // FIXME: make window size adjust according to deck option visibility. also on RefreshPredefinedSetupsDialog
+      // maybe something like (and moving the setvisibles?? this.setSize(panel.getSize());
 
       SwingUtils.repack(this);
 
