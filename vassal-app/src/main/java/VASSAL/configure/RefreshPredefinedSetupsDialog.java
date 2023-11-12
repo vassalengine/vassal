@@ -40,8 +40,11 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.Frame;
@@ -310,7 +313,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
     // allow an abort here
     if (pdsCount > 0 && promptConfirm(Resources.getString("Editor.RefreshPredefinedSetups.confirm_prompt", pdsCount),
-            Resources.getString("Editor.RefreshPredefinedSetups.confirm_title"))) {
+            Resources.getString("Editor.RefreshPredefinedSetups.confirm_title"), modulePds)) {
 
       final Instant startTime = Instant.now();
       final Long memoryInUseAtStart = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024*1024);
@@ -337,7 +340,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
         if (i > 1 && pdsFileProcessed(modulePds.subList(0, i - 1), pdsFile)) {
           // Skip duplicate file (already refreshed)
           duplicates++;
-          log(GameRefresher.SEPARATOR + "\n" + Resources.getString(Resources.getString("Editor.RefreshPredefinedSetupsDialog.skip", pds.getAttributeValueString(pds.NAME), pdsFile)));
+          log(GameRefresher.SEPARATOR + System.lineSeparator() + Resources.getString(Resources.getString("Editor.RefreshPredefinedSetupsDialog.skip", pds.getAttributeValueString(pds.NAME), pdsFile)));
         }
         else {
           try {
@@ -396,10 +399,26 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     return text.length() > length ? text.substring(0, length - 3) + "..." : text;
   }
 
-  public boolean promptConfirm(String question, String title) {
+  public boolean promptConfirm(String question, String title, List<PredefinedSetup> pdsList) {
+
+    JPanel panel = new JPanel();
+    JLabel label = new JLabel(question);
+    panel.add(label); //NON-NLS
+
+    // create the text components
+    JTextArea display = new JTextArea(16, 58);
+    display.setEditable(false); // set textArea non-editable
+    JScrollPane scroll = new JScrollPane(display);
+    scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+    scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    panel.add(scroll);
+
+    for (final PredefinedSetup pds : pdsList) display.append(pds.getAttributeValueString(pds.NAME) + " (" + pds.getFileName() + ")");
+
     return JOptionPane.showConfirmDialog(
             GameModule.getGameModule().getPlayerWindow(),
-            Resources.getString(question), //$NON-NLS-1$
+            panel,
+            // Resources.getString(question), //$NON-NLS-1$
             Resources.getString(title),   //$NON-NLS-1$
             JOptionPane.OK_CANCEL_OPTION,
             JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION;
