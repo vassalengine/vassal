@@ -147,7 +147,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     panel.add(addNewDecks, "gapx 10");
 
     // Separate less-accessed functions
-    // FIXME: The separator disappears if the window is resized or too small when deck options are made visible.
+    // FIXME: The separator disappears if the window is resized.
     final JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
     panel.add(sep);
 
@@ -211,7 +211,6 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
         options.add(GameRefresher.ADD_NEW_DECKS); //NON-NLS
       }
     }
-
   }
 
   public void log(String message) {
@@ -345,6 +344,8 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
         }
         catch (final IOException e) {
           ErrorDialog.bug(e);
+          fails++;
+          lastErrorFile = pdsFile.length() > 15 ? pdsFile.substring(0, 12) + "..." : pdsFile;
         }
         finally {
           GameModule.getGameModule().setRefreshingSemaphore(false); //BR// Make sure we definitely lower the semaphore
