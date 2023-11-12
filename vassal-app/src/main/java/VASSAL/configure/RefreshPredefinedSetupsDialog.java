@@ -160,6 +160,10 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"), false);
     panel.add(testModeOn);
 
+    // Hotkeys setting is on by default for Predefined Setups as this is under module editor control, harmless unless the hotkeys are defined in the module.
+    fireHotkeys = new JCheckBox(Resources.getString("GameRefresher.fire_global_hotkeys"), true);
+    panel.add(fireHotkeys);
+
     // PDS can be set to refresh specific items only, based on a regex
     final JPanel filterPanel = new JPanel(new MigLayout(ConfigurerLayout.STANDARD_INSETS_GAPY, "[]rel[grow,fill,push]")); // NON-NLS
     filterPanel.add(new JLabel(Resources.getString("Editor.RefreshPredefinedSetups.filter_prompt")), "");
@@ -169,10 +173,6 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
     alertOn = new JCheckBox(Resources.getString("Editor.RefreshPredefinedSetups.alertOn"), false);
     panel.add(alertOn);
-
-    // Hotkeys setting is on by default for Predefined Setups as this is under module editor control, harmless unless the hotkeys are defined in the module.
-    fireHotkeys = new JCheckBox(Resources.getString("GameRefresher.fire_global_hotkeys"), true);
-    panel.add(fireHotkeys);
 
     panel.add(buttonsBox, "grow"); // NON-NLS
     add(panel, "grow"); // NON-NLS
