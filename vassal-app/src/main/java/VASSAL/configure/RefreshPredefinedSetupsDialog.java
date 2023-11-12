@@ -81,7 +81,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   private final Set<String> options = new HashSet<>();
 
   public RefreshPredefinedSetupsDialog(Frame owner) throws HeadlessException {
-    super(owner); // was para2 false (modal)
+    super(owner, false);
     setTitle(Resources.getString("Editor.RefreshPredefinedSetupsDialog.title"));
     setModal(true);
     initComponents();
@@ -250,20 +250,20 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     // pre-pack regex pattern in case filter string is not found directly
     Pattern p = null;
 
-    if (pdsFilter != null) {
+    if (pdsFilter != null && !pdsFilter.isBlank()) {
       // warn that filtering is active
       log(GameRefresher.ERROR_MESSAGE_PREFIX + Resources.getString("Editor.RefreshPredefinedSetups.setups_filter", ConfigureTree.noHTML(pdsFilter)));
 
       try {
-        // matching, assuming Regex
-        p = Pattern.compile(".*" + pdsFilter + ".*", CASE_INSENSITIVE);
+        // matching, assuming Regex with no escape of the end string modifier, otherwise match all to end
+        p = Pattern.compile(pdsFilter + (pdsFilter.endsWith("$") ? "" : ".*"), CASE_INSENSITIVE);
       }
       catch (java.util.regex.PatternSyntaxException e) {
           // something went wrong, treat regex as embedded literal
         p = Pattern.compile(".*\\Q" + pdsFilter + "\\T.*", CASE_INSENSITIVE);
         log(Resources.getString("Editor.RefreshPredefinedSetups.filter_fallback")); //NON-NLS
       }
-      pdsFilter = pdsFilter.toLowerCase();
+      pdsFilter = pdsFilter.toLowerCase();  // original search string will be used for case-insensitive string search
     }
 
     final List<ModuleExtension>  moduleExtensionList = mod.getComponentsOf(ModuleExtension.class);
