@@ -239,7 +239,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     }
 
     // Are we running a refresh on a main module or on an extension
-    Boolean isRefreshOfExtension = true;
+    boolean isRefreshOfExtension = true;
     final GameModule mod = GameModule.getGameModule();
     final DataArchive dataArchive = mod.getDataArchive();
 
@@ -285,7 +285,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
                 || (pdsName != null && (pdsName.toLowerCase().contains(pdsFilter) || (p != null && p.matcher(pdsName).matches())))
                 || (pdsFile.toLowerCase().contains(pdsFilter) || (p != null && p.matcher(pdsFile).matches())))) {
 
-          Boolean isExtensionPDS = true;
+          boolean isExtensionPDS = true;
 
           try {
             isExtensionPDS =  !dataArchive.contains(pdsFile);
