@@ -408,9 +408,9 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     // create the text components
     final JTextArea display = new JTextArea(16, 58);
     display.setEditable(false); // set textArea non-editable
-    final JScrollPane scroll = new JScrollPane(display);
-    scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-    scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    final JScrollPane scroll = new JScrollPane(display,
+            ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     panel.add(scroll);
 
     for (final PredefinedSetup pds : pdsList) display.append(pds.getAttributeValueString(pds.NAME) + " (" + pds.getFileName() + ")");
