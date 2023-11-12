@@ -75,8 +75,11 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   private JCheckBox addNewDecks;
   private JTextField pdsFilterBox;
   private String pdsFilter;
-  private JCheckBox alertOn;
   private JCheckBox fireHotkeys;
+  private JCheckBox alertOn;
+
+  private static final int FILE_NAME_REPORT_LENGTH = 15;
+
 
   private final Set<String> options = new HashSet<>();
 
@@ -161,6 +164,10 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
     alertOn = new JCheckBox(Resources.getString("Editor.RefreshPredefinedSetups.alertOn"), false);
     panel.add(alertOn);
+
+    fireHotkeys = new JCheckBox(Resources.getString("GameRefresher.fire_global_hotkeys"));
+    fireHotkeys.setSelected(true);
+    panel.add(fireHotkeys);
 
     // PDS can be set to refresh specific items only, based on a regex
     final JPanel filterPanel = new JPanel(new MigLayout(ConfigurerLayout.STANDARD_INSETS_GAPY, "[]rel[grow,fill,push]")); // NON-NLS
@@ -347,14 +354,14 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
         try {
           if (pds.refreshWithStatus(options) > 0) {
             flaggedFiles++;
-            lastErrorFile = pdsFile.length() > 15 ? pdsFile.substring(0, 12) + "..." : pdsFile;
+            lastErrorFile = fixedLength(pdsFile, FILE_NAME_REPORT_LENGTH);
           }
           refreshCount++;
         }
         catch (final IOException e) {
           ErrorDialog.bug(e);
           fails++;
-          lastErrorFile = pdsFile.length() > 15 ? pdsFile.substring(0, 12) + "..." : pdsFile;
+          lastErrorFile = fixedLength(pdsFile, FILE_NAME_REPORT_LENGTH);
         }
         finally {
           GameModule.getGameModule().setRefreshingSemaphore(false); //BR// Make sure we definitely lower the semaphore
@@ -392,6 +399,10 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
       if (pds.getFileName().equals(file)) return true;
     }
     return false;
+  }
+
+  private String fixedLength(String text, int length) {
+    return text.length() > length ? text.substring(0, length - 3) + "..." : text;
   }
 
 }

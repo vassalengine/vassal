@@ -8,7 +8,7 @@
 === Refresh Counters
 When you update the <<GamePiece.adoc#top,Game Pieces>>, <<Prototypes.adoc#top,Prototypes>> and <<Decks and Cards.adoc#top,Decks>> in a module, those changes will affect any *future* games started using that module but the changes will not, by default at least, affect pieces in any ongoing games that you load with the new version of the module. VASSAL saved games include the complete definition of each piece in order to maintain saved game compatibility with older versions of a module: so that replays and saves sent to you by someone with an earlier version of the module will continue to work in the same way they always did with the old version.
 
-Since <<GameModule.adoc#PredefinedSetup, Predefined Setups>> for module scenarios are stored internally as saved games, it is often important to module designers to be able to update an existing game to use the latest piece, prototype and deck definitions. That way a module designer can often avoid re-doing complex setups simply because pieces or decks have been updated and improved.
+Since the <<GameModule.adoc#PredefinedSetup, Predefined Setups>> for module scenarios are stored internally as saved games, it is often important to module designers to be able to update an existing game to use the latest prototypes. That way a module designer can often avoid re-doing complex setups simply because prototypes have been updated and improved.
 
 To use the refresher on the <<GameModule.adoc#PredefinedSetup, Predefined Setups>> in a module go to the _Editor's_ _Tools_ menu and select _Refresh Pre-Defined Setups_. You will be shown a dialog with several choices affecting the manner in which the operation is to be carried out.
 
