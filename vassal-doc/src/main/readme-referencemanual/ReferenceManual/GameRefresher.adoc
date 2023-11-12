@@ -8,7 +8,7 @@
 === Refresh Counters
 When you update the <<GamePiece.adoc#top,Game Pieces>> and <<Prototypes.adoc#top,Prototypes>> in a module, those changes will affect any *future* games started using that module, but the changes will not--by default at least--affect pieces in any ongoing games that you load with the new version of the module. VASSAL saved games include the complete definition of each piece in order to maintain saved game compatibility with older versions of a module: so that replays and saves sent to you by someone with an earlier version of the module will continue to work in the same way they always did with the old version.
 
-But particularly since the <<GameModule.adoc#PredefinedSetup, Predefined Setups>> for module scenarios are stored internally as saved games, it is often important to module designers to be able to update an existing game to use the latest prototypes. That way a module designer can often avoid re-doing complex setups simply because prototypes have been updated and improved.
+Since the <<GameModule.adoc#PredefinedSetup, Predefined Setups>> for module scenarios are stored internally as saved games, it is often important to module designers to be able to update an existing game to use the latest prototypes. That way a module designer can often avoid re-doing complex setups simply because prototypes have been updated and improved.
 
 To use the refresher on the currently loaded game, go to the _Tools_ menu in your main VASSAL window and select _Refresh Counters_. You will be shown a dialog with several choices affecting the manner in which the operation is to be carried out.
 
@@ -16,7 +16,7 @@ Click the _Run_ button when you are ready to perform the refresh. The chat log w
 
 Whenever a piece is created in a VASSAL game, the Id of the definition used to create it is saved in the Piece. This Id identifies a piece in a <<PieceWindow.adoc#top,Game Piece Palette>>, or a Piece Definition in a <<PlaceMarker.adoc#top,Place Marker>> or <<Replace.adoc#top,Replace With Other>> trait.
 
-The Game Refresher works by matching the Id in each piece in the current game to the Id's of all piece definitions in the current module to find the new definition. If a match is found, then the piece is replaced with one created from the new defintion. Then each trait in the new Piece is checked to see if there is an EXACTLY matching trait in the old definition. If an EXACT match is found, then the 'state' of the old trait is copied over (e.g. what is the current layer showing, or current rotation facing).
+The Game Refresher works by matching the Id in each piece in the current game to the Id's of all piece definitions in the current module to find the new definition. If a match is found, then the piece is replaced with one created from the new definition. Then each trait in the new Piece is checked to see if there is an EXACTLY matching trait in the old definition. If an EXACT match is found, then the 'state' of the old trait is copied over (e.g. what is the current layer showing, or current rotation facing).
 
 Problems occur when the definition used to create the piece no longer exists in the module, or if traits are modified slightly so that they no longer EXACTLY match the old piece. There are various options in the Game Refresher dialog that can be used to help match and update these pieces and traits.
 
@@ -25,8 +25,8 @@ image:images/GameRefresher.png[]
 
 [width="100%",cols="50%a",]
 |===
-| *Use counter names to identify unkown counters:*::
-Use this option when the piece defintion used to create a Game Piece no longer exists in the module. +
+| *Use counter names to identify unknown counters:*::
+Use this option when the piece definition used to create a Game Piece no longer exists in the module. +
 +
 This option tells the Refresher to find a Piece Definition with the same Basic Name as the old definition to use for the Refresh. The first such definition found will be used.
 
@@ -53,15 +53,15 @@ Remove any pieces found in the game that do not exist on a Map. These pieces wou
 
 *Refresh decks' properties with latest settings from module:*::
 
-Allow <<Deck.adoc#top,Decks>> in the game to be refreshed. See the <<#DeckRefresher,Deck Refresher>> section below for full details.
+Allow <<Deck.adoc#top,Decks>> in the game to be refreshed, with the following two sub-options. See the <<#DeckRefresher,Deck Refresher>> section below for full details.
 
-*Delete decks which no longer exist in the module (any contents will be left on map in a stack):*::
+- *Delete decks which no longer exist in the module (any contents will be left on map in a stack):*::
 
 Remove Decks from the game that no longer exist in the module. See the <<#DeckRefresher,Deck Refresher>> section below for full details.
 
-*Add decks to game which have been added to the module since this game was created (empty deck will be added):*::
+- *Add decks to game which have been added to the module since this game was created (empty deck will be added):*::
 
-Add Decks to teh game that have been added to the module. See the <<#DeckRefresher,Deck Refresher>> section below for full details.
+Add Decks to the game that have been added to the module. See the <<#DeckRefresher,Deck Refresher>> section below for full details.
 
 
 |===
