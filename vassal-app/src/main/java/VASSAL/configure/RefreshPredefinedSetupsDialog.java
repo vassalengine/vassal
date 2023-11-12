@@ -81,8 +81,9 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   private final Set<String> options = new HashSet<>();
 
   public RefreshPredefinedSetupsDialog(Frame owner) throws HeadlessException {
-    super(owner, false);
+    super(owner); // was para2 false (modal)
     setTitle(Resources.getString("Editor.RefreshPredefinedSetupsDialog.title"));
+    setModal(true);
     initComponents();
   }
 
@@ -226,15 +227,15 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     return options.contains(GameRefresher.TEST_MODE); //$NON-NLS-1$
   }
 
-  private boolean hasAlreadyRun = false;
+  //private boolean hasAlreadyRun = false;
 
   private void refreshPredefinedSetups() {
-    if (hasAlreadyRun) {
+/*    if (hasAlreadyRun) {
       return;
     }
 
-    hasAlreadyRun = true;
-    refreshButton.setEnabled(false);
+    hasAlreadyRun = true;*/
+    refreshButton.setEnabled(false); // Prevent accidental multi-runs - Button disabled until / unless run is cancelled
 
     setOptions();
     if (isTestMode()) {
@@ -340,6 +341,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
         }
         else {
           try {
+            // FIXME: At this point the Refresh Options window is not responsive to Cancel, which means that runs can only be interrupted by killing the Vassal editor process
             if (pds.refreshWithStatus(options) > 0) {
               flaggedFiles++;
               lastErrorFile = fixedLength(pdsFile, FILE_NAME_REPORT_LENGTH);
@@ -358,7 +360,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
       }
 
       // Clean up and close the window
-      if (!isTestMode() && pdsCount > 0) {
+      if (!isTestMode()) {
         if (alertOn.isSelected()) { // sound alert
           final SoundConfigurer c = (SoundConfigurer) Prefs.getGlobalPrefs().getOption("wakeUpSound");
           c.play();
@@ -368,7 +370,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
       GameModule.getGameModule().getGameState().setup(false); //BR// Clear out whatever data (pieces, listeners, etc.) left over from final game loaded.
 
-      dispose(); // done with all that
+      dispose(); // get rid of refresh options window
 
       final Duration duration = Duration.between(startTime, Instant.now());
 
@@ -380,7 +382,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
               memoryInUseAtStart,
               (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024)));
     }
-    refreshButton.setEnabled(true);
+    refreshButton.setEnabled(true); // If a run didn't happen, the Refresh Options window is available for amending now
   }
 
   private boolean pdsFileProcessed(List<PredefinedSetup> modulePds, String file) {
