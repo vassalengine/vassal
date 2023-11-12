@@ -76,6 +76,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   private JTextField pdsFilterBox;
   private String pdsFilter;
   private JCheckBox alertOn;
+  private static final int FILE_NAME_REPORT_LENGTH = 15;
   private final Set<String> options = new HashSet<>();
 
   public RefreshPredefinedSetupsDialog(Frame owner) throws HeadlessException {
@@ -239,7 +240,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     }
 
     // Are we running a refresh on a main module or on an extension
-    Boolean isRefreshOfExtension = true;
+    boolean isRefreshOfExtension = true;
     final GameModule mod = GameModule.getGameModule();
     final DataArchive dataArchive = mod.getDataArchive();
 
@@ -285,7 +286,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
                 || (pdsName != null && (pdsName.toLowerCase().contains(pdsFilter) || (p != null && p.matcher(pdsName).matches())))
                 || (pdsFile.toLowerCase().contains(pdsFilter) || (p != null && p.matcher(pdsFile).matches())))) {
 
-          Boolean isExtensionPDS = true;
+          boolean isExtensionPDS = true;
 
           try {
             isExtensionPDS =  !dataArchive.contains(pdsFile);
@@ -338,14 +339,14 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
         try {
           if (pds.refreshWithStatus(options) > 0) {
             flaggedFiles++;
-            lastErrorFile = pdsFile.length() > 15 ? pdsFile.substring(0, 12) + "..." : pdsFile;
+            lastErrorFile = fixedLength(pdsFile, FILE_NAME_REPORT_LENGTH);
           }
           refreshCount++;
         }
         catch (final IOException e) {
           ErrorDialog.bug(e);
           fails++;
-          lastErrorFile = pdsFile.length() > 15 ? pdsFile.substring(0, 12) + "..." : pdsFile;
+          lastErrorFile = fixedLength(pdsFile, FILE_NAME_REPORT_LENGTH);
         }
         finally {
           GameModule.getGameModule().setRefreshingSemaphore(false); //BR// Make sure we definitely lower the semaphore
@@ -385,4 +386,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     return false;
   }
 
+  private String fixedLength(String text, int length) {
+    return text.length() > length ? text.substring(0, length - 3) + "..." : text;
+  }
 }
