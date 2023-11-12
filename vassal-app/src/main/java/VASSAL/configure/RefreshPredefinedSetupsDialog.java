@@ -132,7 +132,8 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     panel.add(rotateNameCheck);
 
     deletePieceNoMap = new JCheckBox(Resources.getString("GameRefresher.delete_piece_no_map"), true);
-    panel.add(deletePieceNoMap);
+    // Disabling user selection - due to issue https://github.com/vassalengine/vassal/issues/12902
+    // panel.add(deletePieceNoMap);
 
     refreshDecks = new JCheckBox(Resources.getString("GameRefresher.refresh_decks"), false);
     refreshDecks.addChangeListener(new ChangeListener() {
@@ -156,7 +157,8 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     panel.add(sep);
 
     testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"), false);
-    panel.add(testModeOn);
+    // Disabling user selection - due to issue https://github.com/vassalengine/vassal/issues/12695
+    // panel.add(testModeOn);
 
     // PDS can be set to refresh specific items only, based on a regex
     final JPanel filterPanel = new JPanel(new MigLayout(ConfigurerLayout.STANDARD_INSETS_GAPY, "[]rel[grow,fill,push]")); // NON-NLS
@@ -222,7 +224,6 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   public boolean isTestMode() {
     return options.contains(GameRefresher.TEST_MODE); //$NON-NLS-1$
   }
-
 
   private boolean hasAlreadyRun = false;
 
