@@ -401,14 +401,14 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
   public boolean promptConfirm(String question, String title, List<PredefinedSetup> pdsList) {
 
-    JPanel panel = new JPanel();
-    JLabel label = new JLabel(question);
+    final JPanel panel = new JPanel();
+    final JLabel label = new JLabel(question);
     panel.add(label); //NON-NLS
 
     // create the text components
-    JTextArea display = new JTextArea(16, 58);
+    final JTextArea display = new JTextArea(16, 58);
     display.setEditable(false); // set textArea non-editable
-    JScrollPane scroll = new JScrollPane(display);
+    final JScrollPane scroll = new JScrollPane(display);
     scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
     scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     panel.add(scroll);
