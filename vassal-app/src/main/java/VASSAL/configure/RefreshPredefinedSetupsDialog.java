@@ -242,7 +242,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
   private void refreshPredefinedSetups() {
 
-    for (Component component : getComponents(this)) component.setEnabled(false);
+    for (final Component component : getComponents(this)) component.setEnabled(false);
 
 /*    refreshButton.setEnabled(false); // Prevent accidental multi-runs - Button disabled until / unless run is cancelled
     closeButton.setEnabled(false); // these buttons also won't work during a run, so let's make that clear in the UI
@@ -399,7 +399,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     }
     else {
       // If a run was cancelled or zero items found, the Refresh Options window is available for amending again
-      for (Component component : getComponents(this)) component.setEnabled(true);
+      for (final Component component : getComponents(this)) component.setEnabled(true);
 /*    refreshButton.setEnabled(true);
     closeButton.setEnabled(true);
     helpButton.setEnabled(true);*/
