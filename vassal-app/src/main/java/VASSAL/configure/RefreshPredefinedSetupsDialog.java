@@ -378,9 +378,14 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
       final Duration duration = Duration.between(startTime, Instant.now());
 
-      log("|<b>" + Resources.getString("Editor.RefreshPredefinedSetups.end", refreshCount, flaggedFiles));
+      log("|<b>" + Resources.getString("Editor.RefreshPredefinedSetups.end", refreshCount));
+
+      if (duplicates > 0)
+        log(Resources.getString("Editor.RefreshPredefinedSetups.duplicates", duplicates));
+
       if (flaggedFiles + fails > 0)
-        log(GameRefresher.ERROR_MESSAGE_PREFIX + Resources.getString("Editor.RefreshPredefinedSetups.endErrors", duplicates, fails));
+        log(GameRefresher.ERROR_MESSAGE_PREFIX + Resources.getString("Editor.RefreshPredefinedSetups.endErrors", flaggedFiles, fails));
+
       log(Resources.getString("Editor.RefreshPredefinedSetups.stats",
               ofPattern("HH:mm:ss").format(LocalTime.ofSecondOfDay(duration.getSeconds())),
               memoryInUseAtStart,
@@ -443,7 +448,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
             panel,
             Resources.getString("Editor.RefreshPredefinedSetups.confirm_title",
                     Resources.getString(isTestMode() ? "Editor.RefreshPredefinedSetups.confirm.test" : "Editor.RefreshPredefinedSetups.confirm.run"),
-                    i, isFilterMode() ? Resources.getString("Editor.RefreshPredefinedSetups.confirm.filter") : ""),   //$NON-NLS-1$
+                    i, isFilterMode() ? " " + Resources.getString("Editor.RefreshPredefinedSetups.confirm.filter") : ""),   //$NON-NLS-1$
             JOptionPane.OK_CANCEL_OPTION,
             JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION ? i : 0;
   }
