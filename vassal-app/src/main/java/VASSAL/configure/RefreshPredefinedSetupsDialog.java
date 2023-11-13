@@ -312,8 +312,8 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     for (final PredefinedSetup pds : modulePds) log(pds.getAttributeValueString(pds.NAME) + " (" + pds.getFileName() + ")");
 
     // allow an abort here
-    if (pdsCount > 0 && promptConfirm(Resources.getString("Editor.RefreshPredefinedSetups.confirm_prompt", pdsCount),
-            Resources.getString("Editor.RefreshPredefinedSetups.confirm_title"), modulePds)) {
+    if (pdsCount > 0
+            && promptConfirm(Resources.getString("Editor.RefreshPredefinedSetups.confirm_title", pdsCount), modulePds)) {
 
       final Instant startTime = Instant.now();
       final Long memoryInUseAtStart = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024*1024);
@@ -399,23 +399,23 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     return text.length() > length ? text.substring(0, length - 3) + "..." : text;
   }
 
-  public boolean promptConfirm(String question, String title, List<PredefinedSetup> pdsList) {
+  public boolean promptConfirm(String title, List<PredefinedSetup> pdsList) {
 
-    final JPanel panel = new JPanel(new MigLayout(ConfigurerLayout.STANDARD_INSETS_GAPY, "[fill]")); // NON-NLS
-    final JLabel label = new JLabel(question);
-    panel.add(label); //NON-NLS
+    final JPanel panel = new JPanel();
 
-    // create the text components
-    final JTextArea display = new JTextArea(16, 58);
+    // create the list
+    final JTextArea display = new JTextArea(16, 60);
     display.setEditable(false); // set textArea non-editable
     final JScrollPane scroll = new JScrollPane(display,
             ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
             ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     panel.add(scroll);
 
+    int i = 0;
+
     for (final PredefinedSetup pds : pdsList)
-      display.append(pds.getAttributeValueString(pds.NAME)
-              + Character.toString(9) + pds.getFileName() + System.lineSeparator());
+      display.append((i++ > 0 ? System.lineSeparator() : "") + pds.getAttributeValueString(pds.NAME)
+              + Character.toString(9) + pds.getFileName());
 
     return JOptionPane.showConfirmDialog(
             GameModule.getGameModule().getPlayerWindow(),
