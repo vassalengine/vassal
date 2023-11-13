@@ -152,10 +152,10 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     panel.add(refreshDecks);
 
     deleteOldDecks = new JCheckBox(Resources.getString("GameRefresher.delete_old_decks"), false);
-    panel.add(deleteOldDecks, "gapx 10, hidemode 3");
+    panel.add(deleteOldDecks, "gapx 10");
 
     addNewDecks = new JCheckBox(Resources.getString("GameRefresher.add_new_decks"), false);
-    panel.add(addNewDecks, "gapx 10, hidemode 3");
+    panel.add(addNewDecks, "gapx 10");
 
     // Separate functions that govern the overall refresh
     // FIXME: The separator disappears if the window is resized.
@@ -304,10 +304,6 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
     // check non-zero & allow an abort here whilst displaying refresh type & listing out found files
     if (pdsCount > 0) {
-/*            promptConfirm(Resources.getString("Editor.RefreshPredefinedSetups.confirm_title",
-            Resources.getString(isTestMode() ? "Editor.RefreshPredefinedSetups.confirm.test" : "Editor.RefreshPredefinedSetups.confirm.run"),
-            pdsCount, filterPattern == null ? "" : Resources.getString("Editor.RefreshPredefinedSetups.confirm.filter")),
-            modulePds)) {*/
 
       // log special mode warnings to chat
       if (isTestMode()) log(GameRefresher.ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.refresh_counters_test_mode"));
@@ -341,7 +337,8 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
         if (i > 1 && pdsFileProcessed(modulePds.subList(0, i - 1), pdsFile)) {
           // Skip duplicate file (already refreshed)
           duplicates++;
-          log(GameRefresher.SEPARATOR + System.lineSeparator() + Resources.getString(Resources.getString("Editor.RefreshPredefinedSetupsDialog.skip", pds.getAttributeValueString(pds.NAME), pdsFile)));
+          log(GameRefresher.SEPARATOR + System.lineSeparator()
+                  + Resources.getString(Resources.getString("Editor.RefreshPredefinedSetupsDialog.skip", pds.getAttributeValueString(pds.NAME), pdsFile)));
         }
         else {
           try {
@@ -374,7 +371,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
       GameModule.getGameModule().getGameState().setup(false); //BR// Clear out whatever data (pieces, listeners, etc.) left over from final game loaded.
 
-      dispose(); // get rid of refresh options window
+      this.dispose(); // get rid of refresh options window
 
       final Duration duration = Duration.between(startTime, Instant.now());
 

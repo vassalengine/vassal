@@ -311,6 +311,9 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     if (!options.isEmpty()) {
       this.options.addAll(options);
     }
+
+    log(Resources.getString("GameRefresher.start_refresh", theModule.getGameVersion()));
+
     notFoundCount = 0;
     updatedCount = 0;
     noMapCount = 0;
@@ -358,7 +361,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     }
     refreshAllAttachments(command);
 
-    log(Resources.getString("GameRefresher.run_refresh_counters_v3", theModule.getGameVersion()));
+    log(Resources.getString("GameRefresher.run_refresh_counters_v4"));
     log(Resources.getString("GameRefresher.counters_refreshed", updatedCount));
     if (notFoundCount > 0) log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_not_found", notFoundCount));
     if (noMapCount > 0) log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_no_map", noMapCount));
