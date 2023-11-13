@@ -68,6 +68,8 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   private static final Logger logger = LoggerFactory.getLogger(RefreshPredefinedSetupsDialog.class);
   private static final long serialVersionUID = 1L;
   private JButton refreshButton;
+  private JButton closeButton;
+  private JButton helpButton;
   private JCheckBox nameCheck;
   private JCheckBox labelerNameCheck;
   private JCheckBox layerNameCheck;
@@ -102,9 +104,10 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     final JPanel buttonsBox = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
     refreshButton = new JButton(Resources.getString("General.run"));
     refreshButton.addActionListener(e -> refreshPredefinedSetups());
-    refreshButton.setEnabled(true);
+    refreshButton.setEnabled(true); // this may be belt & braces - re-enabled anyway on a cancelled refresh (otherwise whole window is closed)
 
-    final JButton helpButton = new JButton(Resources.getString("General.help"));
+    closeButton = new JButton(Resources.getString("General.cancel"));
+    helpButton = new JButton(Resources.getString("General.help"));
 
     HelpFile hf = null;
     try {
@@ -117,8 +120,6 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     }
 
     helpButton.addActionListener(new ShowHelpAction(hf.getContents(), null));
-
-    final JButton closeButton = new JButton(Resources.getString("General.cancel"));
 
     closeButton.addActionListener(e -> dispose());
 
@@ -230,51 +231,41 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     return options.contains(GameRefresher.TEST_MODE); //$NON-NLS-1$
   }
 
-  //private boolean hasAlreadyRun = false;
-
   private void refreshPredefinedSetups() {
-/*    if (hasAlreadyRun) {
-      return;
-    }
 
-    hasAlreadyRun = true;*/
     refreshButton.setEnabled(false); // Prevent accidental multi-runs - Button disabled until / unless run is cancelled
+    closeButton.setEnabled(false); // these buttons also won't work during a run, so let's make that clear in the UI
+    helpButton.setEnabled(false);
 
     setOptions();
-    if (isTestMode()) {
-      log(Resources.getString("GameRefresher.refresh_counters_test_mode"));
-    }
 
-    // Are we running a refresh on a main module or on an extension
-    boolean isRefreshOfExtension = true;
-    final GameModule mod = GameModule.getGameModule();
-    final DataArchive dataArchive = mod.getDataArchive();
 
-    // pre-pack regex pattern in case filter string is not found directly
-    Pattern p = null;
+    // pre-pack regex pattern in case filter string is not found by direct string comparison
+    Pattern filterPattern = null;
 
     if (pdsFilter != null && !pdsFilter.isBlank()) {
-      // warn that filtering is active
-      log(GameRefresher.ERROR_MESSAGE_PREFIX + Resources.getString("Editor.RefreshPredefinedSetups.setups_filter", ConfigureTree.noHTML(pdsFilter)));
 
       try {
         // matching, assuming Regex with no escape of the end string modifier, otherwise match all to end
-        p = Pattern.compile(pdsFilter + (pdsFilter.endsWith("$") ? "" : ".*"), CASE_INSENSITIVE);
+        filterPattern = Pattern.compile(pdsFilter, CASE_INSENSITIVE);
       }
       catch (java.util.regex.PatternSyntaxException e) {
           // something went wrong, treat regex as embedded literal
-        p = Pattern.compile(".*\\Q" + pdsFilter + "\\T.*", CASE_INSENSITIVE);
+        filterPattern = Pattern.compile(".*\\Q" + pdsFilter + "\\T.*", CASE_INSENSITIVE);
         log(Resources.getString("Editor.RefreshPredefinedSetups.filter_fallback")); //NON-NLS
       }
       pdsFilter = pdsFilter.toLowerCase();  // original search string will be used for case-insensitive string search
     }
 
+    // Targeting PDS menu structure...
+    final GameModule mod = GameModule.getGameModule();
+    final DataArchive dataArchive = mod.getDataArchive();
     final List<ModuleExtension>  moduleExtensionList = mod.getComponentsOf(ModuleExtension.class);
-    if (moduleExtensionList.isEmpty()) {
-      isRefreshOfExtension = false;
-    }
 
-    // FIXME: Rather than rely on the PDS structure, consider processing all .vsav files in the module (relevant for custom scenario choosers)
+    // Are we running a refresh on a main module or on an extension ?
+    final boolean isRefreshOfExtension = !moduleExtensionList.isEmpty();
+
+    // FIXME: Rather than rely on the PDS structure, consider processing all .vsav files in the module or extension (relevant for custom scenario choosers)
     final List<PredefinedSetup>  modulePdsAndMenus = mod.getAllDescendantComponentsOf(PredefinedSetup.class);
     final List<PredefinedSetup>  modulePds = new ArrayList<>();
 
@@ -289,8 +280,8 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
         if (pdsFile != null && !pdsFile.isBlank()
                 && (pdsFilter == null
-                || (pdsName != null && (pdsName.toLowerCase().contains(pdsFilter) || (p != null && p.matcher(pdsName).matches())))
-                || (pdsFile.toLowerCase().contains(pdsFilter) || (p != null && p.matcher(pdsFile).matches())))) {
+                || (pdsName != null && (pdsName.toLowerCase().contains(pdsFilter) || (filterPattern != null && filterPattern.matcher(pdsName).matches())))
+                || (pdsFile.toLowerCase().contains(pdsFilter) || (filterPattern != null && filterPattern.matcher(pdsFile).matches())))) {
 
           boolean isExtensionPDS = true;
 
@@ -307,13 +298,17 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
     final int pdsCount = modulePds.size();
 
-    // List out the items found
-    log("`" + pdsCount + " " + Resources.getString(Resources.getString("GameRefresher.predefined_setups_found")));
-    for (final PredefinedSetup pds : modulePds) log(pds.getAttributeValueString(pds.NAME) + " (" + pds.getFileName() + ")");
+    // allow an abort here whilst displaying refresh type & listing out found files
+    if (pdsCount > 0
+            && promptConfirm(Resources.getString("Editor.RefreshPredefinedSetups.confirm_title",
+            Resources.getString(isTestMode() ? "Editor.RefreshPredefinedSetups.confirm.test" : "Editor.RefreshPredefinedSetups.confirm.run"),
+            pdsCount, filterPattern == null ? "" : Resources.getString("Editor.RefreshPredefinedSetups.confirm.filter")),
+            modulePds)) {
 
-    // allow an abort here
-    if (pdsCount > 0 && promptConfirm(Resources.getString("Editor.RefreshPredefinedSetups.confirm_prompt", pdsCount),
-            Resources.getString("Editor.RefreshPredefinedSetups.confirm_title"), modulePds)) {
+      // log special mode warnings to chat
+      if (isTestMode()) log(GameRefresher.ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.refresh_counters_test_mode"));
+      if (filterPattern == null) log(GameRefresher.ERROR_MESSAGE_PREFIX
+              + Resources.getString("Editor.RefreshPredefinedSetups.setups_filter", ConfigureTree.noHTML(pdsFilter)));
 
       final Instant startTime = Instant.now();
       final Long memoryInUseAtStart = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024*1024);
@@ -399,23 +394,23 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     return text.length() > length ? text.substring(0, length - 3) + "..." : text;
   }
 
-  public boolean promptConfirm(String question, String title, List<PredefinedSetup> pdsList) {
+  public boolean promptConfirm(String title, List<PredefinedSetup> pdsList) {
 
-    final JPanel panel = new JPanel(new MigLayout(ConfigurerLayout.STANDARD_INSETS_GAPY, "[fill]")); // NON-NLS
-    final JLabel label = new JLabel(question);
-    panel.add(label); //NON-NLS
+    final JPanel panel = new JPanel();
 
-    // create the text components
-    final JTextArea display = new JTextArea(16, 58);
+    // create the list
+    final JTextArea display = new JTextArea(16, 60);
     display.setEditable(false); // set textArea non-editable
     final JScrollPane scroll = new JScrollPane(display,
             ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
             ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     panel.add(scroll);
 
+    int i = 0;
+
     for (final PredefinedSetup pds : pdsList)
-      display.append(pds.getAttributeValueString(pds.NAME)
-              + Character.toString(9) + pds.getFileName() + System.lineSeparator());
+      display.append((i++ > 0 ? System.lineSeparator() : "") + pds.getAttributeValueString(pds.NAME)
+              + Character.toString(9) + pds.getFileName());
 
     return JOptionPane.showConfirmDialog(
             GameModule.getGameModule().getPlayerWindow(),
