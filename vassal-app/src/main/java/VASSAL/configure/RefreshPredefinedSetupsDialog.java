@@ -275,9 +275,6 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     // Are we running a refresh on a main module or on an extension ?
     final boolean isRefreshOfExtension = !moduleExtensionList.isEmpty();
 
-    log("|<b>" + Resources.getString("Editor.RefreshPredefinedSetupsDialog.start_refresh", mod.getGameVersion(),
-            isRefreshOfExtension ? " " + Resources.getString("Editor.RefreshPredefinedSetupsDialog.extension") : ""));
-
     // FIXME: Rather than rely on the PDS structure, consider processing all .vsav files in the module or extension (relevant for custom scenario choosers)
     final List<PredefinedSetup>  modulePdsAndMenus = mod.getAllDescendantComponentsOf(PredefinedSetup.class);
     final List<PredefinedSetup>  modulePds = new ArrayList<>();
@@ -319,6 +316,9 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
       if (isFilterMode()) log(GameRefresher.ERROR_MESSAGE_PREFIX
               + Resources.getString("Editor.RefreshPredefinedSetups.setups_filter", ConfigureTree.noHTML(pdsFilter)));
 
+      log("|<b>" + Resources.getString("Editor.RefreshPredefinedSetupsDialog.start_refresh", mod.getGameVersion(),
+              isRefreshOfExtension ? " " + Resources.getString("Editor.RefreshPredefinedSetupsDialog.extension") : ""));
+
       int i = 0;
       int refreshCount = 0;
       int flaggedFiles = 0;
@@ -332,16 +332,14 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
       // Process the refreshes
       for (final PredefinedSetup pds : modulePds) {
-        GameModule.getGameModule().getGameState().setup(false);  //BR// Ensure we clear any existing game data/listeners/objects out.
-        GameModule.getGameModule().setRefreshingSemaphore(true); //BR// Raise the semaphore that suppresses GameState.setup()
-
-        final String pdsFile = pds.getFileName();
 
         // Refresher window title updated to provide progress report
         final int pct = i * 100 / pdsCount;
         this.setTitle(Resources.getString("Editor.RefreshPredefinedSetupsDialog.progress", ++i, pdsCount, pct,
                 (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024))
                 + (flaggedFiles + fails == 0 ? "" : "  " + Resources.getString("Editor.RefreshPredefinedSetupsDialog.errors", lastErrorFile, fails + flaggedFiles - 1)));
+
+        final String pdsFile = pds.getFileName();
 
         if (i > 1 && pdsFileProcessed(modulePds.subList(0, i - 1), pdsFile)) {
           // Skip duplicate file (already refreshed)
@@ -350,6 +348,9 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
           log(Resources.getString(Resources.getString("Editor.RefreshPredefinedSetupsDialog.skip", pds.getAttributeValueString(pds.NAME), pdsFile)));
         }
         else {
+          GameModule.getGameModule().getGameState().setup(false);  //BR// Ensure we clear any existing game data/listeners/objects out.
+          GameModule.getGameModule().setRefreshingSemaphore(true); //BR// Raise the semaphore that suppresses GameState.setup()
+
           try {
             // FIXME: At this point the Refresh Options window is not responsive to Cancel, which means that runs can only be interrupted by killing the Vassal editor process
             if (pds.refreshWithStatus(options) > 0) {
