@@ -269,6 +269,9 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     // Are we running a refresh on a main module or on an extension ?
     final boolean isRefreshOfExtension = !moduleExtensionList.isEmpty();
 
+    log(Resources.getString("Editor.RefreshPredefinedSetupsDialog.start_refresh", mod.getGameVersion(),
+            isRefreshOfExtension ? " " + Resources.getString("Editor.RefreshPredefinedSetupsDialog.extension") : ""));
+
     // FIXME: Rather than rely on the PDS structure, consider processing all .vsav files in the module or extension (relevant for custom scenario choosers)
     final List<PredefinedSetup>  modulePdsAndMenus = mod.getAllDescendantComponentsOf(PredefinedSetup.class);
     final List<PredefinedSetup>  modulePds = new ArrayList<>();
@@ -337,8 +340,8 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
         if (i > 1 && pdsFileProcessed(modulePds.subList(0, i - 1), pdsFile)) {
           // Skip duplicate file (already refreshed)
           duplicates++;
-          log(GameRefresher.SEPARATOR + System.lineSeparator()
-                  + Resources.getString(Resources.getString("Editor.RefreshPredefinedSetupsDialog.skip", pds.getAttributeValueString(pds.NAME), pdsFile)));
+          log(GameRefresher.SEPARATOR);
+          log(Resources.getString(Resources.getString("Editor.RefreshPredefinedSetupsDialog.skip", pds.getAttributeValueString(pds.NAME), pdsFile)));
         }
         else {
           try {
@@ -371,7 +374,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
       GameModule.getGameModule().getGameState().setup(false); //BR// Clear out whatever data (pieces, listeners, etc.) left over from final game loaded.
 
-      this.dispose(); // get rid of refresh options window
+      //this.dispose(); // get rid of refresh options window
 
       final Duration duration = Duration.between(startTime, Instant.now());
 

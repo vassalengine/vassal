@@ -312,8 +312,6 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       this.options.addAll(options);
     }
 
-    log(Resources.getString("GameRefresher.start_refresh", theModule.getGameVersion()));
-
     notFoundCount = 0;
     updatedCount = 0;
     noMapCount = 0;
