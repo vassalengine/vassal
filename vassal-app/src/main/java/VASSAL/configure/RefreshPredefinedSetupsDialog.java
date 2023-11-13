@@ -275,7 +275,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     // Are we running a refresh on a main module or on an extension ?
     final boolean isRefreshOfExtension = !moduleExtensionList.isEmpty();
 
-    log(Resources.getString("Editor.RefreshPredefinedSetupsDialog.start_refresh", mod.getGameVersion(),
+    log("|<b>" + Resources.getString("Editor.RefreshPredefinedSetupsDialog.start_refresh", mod.getGameVersion(),
             isRefreshOfExtension ? " " + Resources.getString("Editor.RefreshPredefinedSetupsDialog.extension") : ""));
 
     // FIXME: Rather than rely on the PDS structure, consider processing all .vsav files in the module or extension (relevant for custom scenario choosers)
