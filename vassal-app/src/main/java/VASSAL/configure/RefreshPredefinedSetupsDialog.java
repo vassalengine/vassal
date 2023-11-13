@@ -152,10 +152,10 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     panel.add(refreshDecks);
 
     deleteOldDecks = new JCheckBox(Resources.getString("GameRefresher.delete_old_decks"), false);
-    panel.add(deleteOldDecks, "gapx 10");
+    panel.add(deleteOldDecks, "gapx 10, hidemode 3");
 
     addNewDecks = new JCheckBox(Resources.getString("GameRefresher.add_new_decks"), false);
-    panel.add(addNewDecks, "gapx 10");
+    panel.add(addNewDecks, "gapx 10, hidemode 3");
 
     // Separate functions that govern the overall refresh
     // FIXME: The separator disappears if the window is resized.
@@ -231,6 +231,10 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     return options.contains(GameRefresher.TEST_MODE); //$NON-NLS-1$
   }
 
+  public boolean isFilterMode() {
+    return pdsFilter != null && !pdsFilter.isBlank(); //$NON-NLS-1$
+  }
+
   private void refreshPredefinedSetups() {
 
     refreshButton.setEnabled(false); // Prevent accidental multi-runs - Button disabled until / unless run is cancelled
@@ -243,7 +247,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     // pre-pack regex pattern in case filter string is not found by direct string comparison
     Pattern filterPattern = null;
 
-    if (pdsFilter != null && !pdsFilter.isBlank()) {
+    if (isFilterMode()) {
 
       try {
         // matching, assuming Regex with no escape of the end string modifier, otherwise match all to end
@@ -296,28 +300,30 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
       }
     }
 
-    final int pdsCount = modulePds.size();
+    final int pdsCount = promptConfirmCount(modulePds);
 
-    // allow an abort here whilst displaying refresh type & listing out found files
-    if (pdsCount > 0
-            && promptConfirm(Resources.getString("Editor.RefreshPredefinedSetups.confirm_title",
+    // check non-zero & allow an abort here whilst displaying refresh type & listing out found files
+    if (pdsCount > 0) {
+/*            promptConfirm(Resources.getString("Editor.RefreshPredefinedSetups.confirm_title",
             Resources.getString(isTestMode() ? "Editor.RefreshPredefinedSetups.confirm.test" : "Editor.RefreshPredefinedSetups.confirm.run"),
             pdsCount, filterPattern == null ? "" : Resources.getString("Editor.RefreshPredefinedSetups.confirm.filter")),
-            modulePds)) {
+            modulePds)) {*/
 
       // log special mode warnings to chat
       if (isTestMode()) log(GameRefresher.ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.refresh_counters_test_mode"));
-      if (filterPattern == null) log(GameRefresher.ERROR_MESSAGE_PREFIX
+      if (isFilterMode()) log(GameRefresher.ERROR_MESSAGE_PREFIX
               + Resources.getString("Editor.RefreshPredefinedSetups.setups_filter", ConfigureTree.noHTML(pdsFilter)));
 
-      final Instant startTime = Instant.now();
-      final Long memoryInUseAtStart = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024*1024);
       int i = 0;
       int refreshCount = 0;
       int flaggedFiles = 0;
       int duplicates = 0;
       int fails = 0;
       String lastErrorFile = null;
+
+
+      final Instant startTime = Instant.now();
+      final Long memoryInUseAtStart = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024*1024);
 
       // Process the refreshes
       for (final PredefinedSetup pds : modulePds) {
@@ -380,7 +386,10 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
               memoryInUseAtStart,
               (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024)));
     }
-    refreshButton.setEnabled(true); // If a run didn't happen, the Refresh Options window is available for amending now
+    // If a run was cancelled or zero items found, the Refresh Options window is available for amending again
+    refreshButton.setEnabled(true);
+    closeButton.setEnabled(true);
+    helpButton.setEnabled(true);
   }
 
   private boolean pdsFileProcessed(List<PredefinedSetup> modulePds, String file) {
@@ -394,7 +403,23 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     return text.length() > length ? text.substring(0, length - 3) + "..." : text;
   }
 
-  public boolean promptConfirm(String title, List<PredefinedSetup> pdsList) {
+  /**
+   * Checks the count of Pre-Defined Setups to be processed and displays appropriate message or dialog box
+   *
+   * @return number of Pre-Defined Setups to be processed. Zero if none / cancelled
+   */
+  private int promptConfirmCount(List<PredefinedSetup> pdsList) {
+
+    if (pdsList == null || pdsList.isEmpty()) {
+
+      JOptionPane.showMessageDialog(
+              this, //GameModule.getGameModule().getPlayerWindow(),
+              Resources.getString("Editor.RefreshPredefinedSetups.none_found"),
+              Resources.getString("Editor.RefreshPredefinedSetupsDialog.title"), //$NON-NLS-1$
+              JOptionPane.ERROR_MESSAGE);
+
+      return 0;
+    }
 
     final JPanel panel = new JPanel();
 
@@ -412,11 +437,14 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
       display.append((i++ > 0 ? System.lineSeparator() : "") + pds.getAttributeValueString(pds.NAME)
               + Character.toString(9) + pds.getFileName());
 
+    // return number of PDS items or zero if refresh is cancelled
     return JOptionPane.showConfirmDialog(
-            GameModule.getGameModule().getPlayerWindow(),
+            this, //GameModule.getGameModule().getPlayerWindow(),
             panel,
-            Resources.getString(title),   //$NON-NLS-1$
+            Resources.getString("Editor.RefreshPredefinedSetups.confirm_title",
+                    Resources.getString(isTestMode() ? "Editor.RefreshPredefinedSetups.confirm.test" : "Editor.RefreshPredefinedSetups.confirm.run"),
+                    i, isFilterMode() ? Resources.getString("Editor.RefreshPredefinedSetups.confirm.filter") : ""),   //$NON-NLS-1$
             JOptionPane.OK_CANCEL_OPTION,
-            JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION;
+            JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION ? i : 0;
   }
 }
