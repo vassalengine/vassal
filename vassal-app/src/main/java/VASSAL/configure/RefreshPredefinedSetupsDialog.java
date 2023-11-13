@@ -275,7 +275,6 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     // Are we running a refresh on a main module or on an extension ?
     final boolean isRefreshOfExtension = !moduleExtensionList.isEmpty();
 
-    // FIXME: Rather than rely on the PDS structure, consider processing all .vsav files in the module or extension (relevant for custom scenario choosers)
     final List<PredefinedSetup>  modulePdsAndMenus = mod.getAllDescendantComponentsOf(PredefinedSetup.class);
     final List<PredefinedSetup>  modulePds = new ArrayList<>();
 
@@ -311,13 +310,13 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     // check non-zero & allow an abort here whilst displaying refresh type & listing out found files
     if (pdsCount > 0) {
 
+      log("|<b>" + Resources.getString("Editor.RefreshPredefinedSetupsDialog.start_refresh", mod.getGameVersion(),
+              isRefreshOfExtension ? " " + Resources.getString("Editor.RefreshPredefinedSetupsDialog.extension") : ""));
+
       // log special mode warnings to chat
       if (isTestMode()) log(GameRefresher.ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.refresh_counters_test_mode"));
       if (isFilterMode()) log(GameRefresher.ERROR_MESSAGE_PREFIX
               + Resources.getString("Editor.RefreshPredefinedSetups.setups_filter", ConfigureTree.noHTML(pdsFilter)));
-
-      log("|<b>" + Resources.getString("Editor.RefreshPredefinedSetupsDialog.start_refresh", mod.getGameVersion(),
-              isRefreshOfExtension ? " " + Resources.getString("Editor.RefreshPredefinedSetupsDialog.extension") : ""));
 
       int i = 0;
       int refreshCount = 0;
@@ -449,6 +448,8 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     int i = 0;
 
     for (final PredefinedSetup pds : pdsList)
+
+      // tab separation to make it easier to re-use the data (e.g. copy to spreadsheet)
       display.append((i++ > 0 ? System.lineSeparator() : "") + pds.getAttributeValueString(pds.NAME)
               + Character.toString(9) + pds.getFileName());
 
