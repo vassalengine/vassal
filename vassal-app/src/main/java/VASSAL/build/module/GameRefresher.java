@@ -61,7 +61,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
@@ -111,8 +110,8 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
   private RefreshDialog dialog;
   private int updatedCount;
   public int notFoundCount; // shared to PDS refresher
-  public int noStackCount; // shared to PDS refresher
-  public int noMapCount; // shared to PDS refresher
+  public int noStackCount; // shared to PDS refresher - not used!!!
+  public int noMapCount; // shared to PDS refresher - not used!!!
   public int notOwnedCount; // shared to PDS refresher
   public int notVisibleCount; // shared to PDS refresher
 
@@ -200,7 +199,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
    * - Mat with contained Cargo
    * - Single non-Mat unstacked piece
    *
-   * @return
+   * @return refreshables List of refreshable items
    */
   public List<Refresher> getRefreshables() {
     final List<Refresher> refreshables = new ArrayList<>();
@@ -314,6 +313,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     if (!options.isEmpty()) {
       this.options.addAll(options);
     }
+
     notFoundCount = 0;
     updatedCount = 0;
     noMapCount = 0;
@@ -366,7 +366,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     }
     refreshAllAttachments(command);
 
-    log(Resources.getString("GameRefresher.run_refresh_counters_v3", theModule.getGameVersion()));
+    log(Resources.getString("GameRefresher.run_refresh_counters_v4"));
     log(Resources.getString("GameRefresher.counters_refreshed", updatedCount));
     if (notFoundCount > 0) log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_not_found", notFoundCount));
     if (noMapCount > 0) log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_no_map", noMapCount));
@@ -626,8 +626,8 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
    * For each *new* outermost piece that has Attachments, we look up the *old* outermost piece, and use its Unique ID plus each Attachment trait's name as a lookup hash
    * to find the old list of contents. Then since the old list of contents is references to old versions of pieces, we use the "updatedPieces" index
    * to look up the new pieces and create a new set of contents for the trait.
-   * @param piece
-   * @param command
+   * @param piece Piece to be checked and processed
+   * @param command Command under construction
    */
   public void refreshAttachment(GamePiece piece, Command command) {
     while (piece instanceof Decorator) {
@@ -743,6 +743,10 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       rotateNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_rotate_descr"), true);
       panel.add(rotateNameCheck);
 
+      deletePieceNoMap = new JCheckBox(Resources.getString("GameRefresher.delete_piece_no_map"), true);
+      // Disabling user selection - due to issue https://github.com/vassalengine/vassal/issues/12902
+      // panel.add(deletePieceNoMap);
+
       refreshDecks = new JCheckBox(Resources.getString("GameRefresher.refresh_decks"), false);
       refreshDecks.addChangeListener(new ChangeListener() {
         @Override
@@ -759,16 +763,9 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       addNewDecks = new JCheckBox(Resources.getString("GameRefresher.add_new_decks"), false);
       panel.add(addNewDecks, "gapx 10");
 
-      // Separate less-accessed functions
-      // FIXME: The separator disappears if the window is resized or too small when deck options are made visible.
-      final JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
-      panel.add(sep);
-
       testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"), false);
-      panel.add(testModeOn);
-
-      deletePieceNoMap = new JCheckBox(Resources.getString("GameRefresher.delete_piece_no_map"), true);
-      panel.add(deletePieceNoMap);
+      // Disabling user selection - due to issue https://github.com/vassalengine/vassal/issues/12695
+      // panel.add(testModeOn);
 
       // Hotkeys setting is OFF by default for one-off runs to minimise risk of accidental use by players, should a module editor leave maintenance hotkeys available (intentionally or otherwise)
       fireHotkeys = new JCheckBox(Resources.getString("GameRefresher.fire_global_hotkeys"), false);
@@ -787,6 +784,10 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       panel.add(buttonPanel, "grow"); // NON-NLS
 
       add(panel, "grow"); // NON-NLS
+
+      // window size is determined by the hidden deck options
+      // FIXME: make window size adjust according to deck option visibility. also on RefreshPredefinedSetupsDialog
+      // maybe something like (and moving the setvisibles?? this.setSize(panel.getSize());
 
       SwingUtils.repack(this);
 
@@ -945,7 +946,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
      * 2. Refresh the Mat
      * 3. Refresh each Cargo and place back on the Mat
      *
-     * @param command
+     * @param command Command under construction
      */
     @Override
     public void refresh(Command command) {
@@ -1042,7 +1043,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
         GamePiece newPiece = gpIdChecker.createUpdatedPiece(piece);
         if (newPiece == null) {
           notFoundCount++;
-          log(Resources.getString("GameRefresher.refresh_error_nomatch_pieceslot", piece.getName(), piece.getId()));
+          log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.refresh_error_nomatch_pieceslot", piece.getName(), piece.getId()));
           // Could not create a new piece for some reason, use the old piece
           newPiece = piece;
         }
@@ -1109,7 +1110,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
             // Create a new, updated piece
             if (gpIdChecker.createUpdatedPiece(piece) == null) {
               notFoundCount++;
-              log(Resources.getString("GameRefresher.refresh_error_nomatch_pieceslot", piece.getName(), piece.getId()));
+              log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.refresh_error_nomatch_pieceslot", piece.getName(), piece.getId()));
             }
             else {
               updatedCount++;
@@ -1137,7 +1138,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
           newPiece = gpIdChecker.createUpdatedPiece(piece);
           if (newPiece == null) {
             notFoundCount++;
-            log(Resources.getString("GameRefresher.refresh_error_nomatch_pieceslot", piece.getName(), piece.getId()));
+            log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.refresh_error_nomatch_pieceslot", piece.getName(), piece.getId()));
             // Could not create a new piece for some reason, use the old piece
             newPiece = piece;
           }
@@ -1216,7 +1217,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
             // Create a new, updated piece
             if (gpIdChecker.createUpdatedPiece(piece) == null) {
               notFoundCount++;
-              log(Resources.getString("GameRefresher.refresh_error_nomatch_pieceslot", piece.getName(), piece.getId()));
+              log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.refresh_error_nomatch_pieceslot", piece.getName(), piece.getId()));
             }
             else {
               updatedCount++;
@@ -1237,7 +1238,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
           refreshedPiece = gpIdChecker.createUpdatedPiece(piece);
           if (refreshedPiece == null) {
             notFoundCount++;
-            log(Resources.getString("GameRefresher.refresh_error_nomatch_pieceslot", piece.getName(), piece.getId()));
+            log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.refresh_error_nomatch_pieceslot", piece.getName(), piece.getId()));
             // Could not create a new piece for some reason, use the old piece
             refreshedPiece = piece;
           }
