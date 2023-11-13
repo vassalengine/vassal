@@ -47,6 +47,8 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.io.File;
@@ -56,6 +58,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -67,9 +71,6 @@ import static java.util.regex.Pattern.CASE_INSENSITIVE;
 public class RefreshPredefinedSetupsDialog extends JDialog {
   private static final Logger logger = LoggerFactory.getLogger(RefreshPredefinedSetupsDialog.class);
   private static final long serialVersionUID = 1L;
-  private JButton refreshButton;
-  private JButton closeButton;
-  private JButton helpButton;
   private JCheckBox nameCheck;
   private JCheckBox labelerNameCheck;
   private JCheckBox layerNameCheck;
@@ -102,12 +103,14 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     panel.add(header);
 
     final JPanel buttonsBox = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
-    refreshButton = new JButton(Resources.getString("General.run"));
-    refreshButton.addActionListener(e -> refreshPredefinedSetups());
-    refreshButton.setEnabled(true); // this may be belt & braces - re-enabled anyway on a cancelled refresh (otherwise whole window is closed)
 
-    closeButton = new JButton(Resources.getString("General.cancel"));
-    helpButton = new JButton(Resources.getString("General.help"));
+
+    final JButton  refreshButton = new JButton(Resources.getString("General.run"));
+    refreshButton.addActionListener(e -> refreshPredefinedSetups());
+    //refreshButton.setEnabled(true); // this may be belt & braces - re-enabled anyway on a cancelled refresh (otherwise whole window is closed)
+
+    final JButton closeButton = new JButton(Resources.getString("General.cancel"));
+    final JButton helpButton = new JButton(Resources.getString("General.help"));
 
     HelpFile hf = null;
     try {
@@ -187,6 +190,8 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
     deleteOldDecks.setVisible(refreshDecks.isSelected());
     addNewDecks.setVisible(refreshDecks.isSelected());
+
+    panel.setEnabled(false);
   }
 
   protected void  setOptions() {
@@ -237,12 +242,13 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
   private void refreshPredefinedSetups() {
 
-    refreshButton.setEnabled(false); // Prevent accidental multi-runs - Button disabled until / unless run is cancelled
+    for (Component component : getComponents(this)) component.setEnabled(false);
+
+/*    refreshButton.setEnabled(false); // Prevent accidental multi-runs - Button disabled until / unless run is cancelled
     closeButton.setEnabled(false); // these buttons also won't work during a run, so let's make that clear in the UI
-    helpButton.setEnabled(false);
+    helpButton.setEnabled(false);*/
 
     setOptions();
-
 
     // pre-pack regex pattern in case filter string is not found by direct string comparison
     Pattern filterPattern = null;
@@ -374,7 +380,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
       GameModule.getGameModule().getGameState().setup(false); //BR// Clear out whatever data (pieces, listeners, etc.) left over from final game loaded.
 
-      //this.dispose(); // get rid of refresh options window
+      this.dispose(); // get rid of refresh options window
 
       final Duration duration = Duration.between(startTime, Instant.now());
 
@@ -391,10 +397,13 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
               memoryInUseAtStart,
               (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024)));
     }
-    // If a run was cancelled or zero items found, the Refresh Options window is available for amending again
-    refreshButton.setEnabled(true);
+    else {
+      // If a run was cancelled or zero items found, the Refresh Options window is available for amending again
+      for (Component component : getComponents(this)) component.setEnabled(true);
+/*    refreshButton.setEnabled(true);
     closeButton.setEnabled(true);
-    helpButton.setEnabled(true);
+    helpButton.setEnabled(true);*/
+    }
   }
 
   private boolean pdsFileProcessed(List<PredefinedSetup> modulePds, String file) {
@@ -451,5 +460,30 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
                     i, isFilterMode() ? " " + Resources.getString("Editor.RefreshPredefinedSetups.confirm.filter") : ""),   //$NON-NLS-1$
             JOptionPane.OK_CANCEL_OPTION,
             JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION ? i : 0;
+  }
+
+  /**
+   * Recursively collate all non-Container components inside a Container
+   * Ref: <a href="https://stackoverflow.com/questions/2713425/java-swing-how-to-disable-a-jpanel">...</a>
+   *
+   * @param container Container e.g. a JPanel
+   *
+   * @return Non-Container contents
+   */
+  private Component[] getComponents(Component container) {
+    ArrayList<Component> list;
+
+    try {
+      list = new ArrayList<>(Arrays.asList(
+              ((Container) container).getComponents()));
+      for (int index = 0; index < list.size(); index++) {
+        Collections.addAll(list, getComponents(list.get(index)));
+      }
+    }
+    catch (ClassCastException e) {
+      list = new ArrayList<>();
+    }
+
+    return list.toArray(new Component[0]);
   }
 }
