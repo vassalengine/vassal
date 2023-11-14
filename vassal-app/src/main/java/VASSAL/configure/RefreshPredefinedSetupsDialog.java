@@ -45,8 +45,6 @@ import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Frame;
@@ -86,7 +84,9 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   private JCheckBox alertOn;
   private boolean optionsUserMode;
   private static final int FILE_NAME_REPORT_LENGTH = 15;
-  private JCheckBox fireHotkeys;
+  private JCheckBox fireHotkey1;
+  private JCheckBox fireHotkey2;
+
 
   private final Set<String> options = new HashSet<>();
 
@@ -137,28 +137,48 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     buttonsBox.add(helpButton, "tag help,sg 1");     // NON-NLS
 
 
+    // Pre refresh hotkey setting
+    fireHotkey1 = new JCheckBox(Resources.getString("GameRefresher.fire_global_hotkey1"), false);
+    fireHotkey1.addChangeListener(e -> {
+      if (optionsUserMode) {
+        // at least one main option is required...
+        // if this option is closed, check the other, allowing for more to be added in future
+        if (!fireHotkey1.isSelected()) {
+          if (!fireHotkey2.isSelected() && !refreshPieces.isSelected()) refreshDecks.setEnabled(false);
+          if (!fireHotkey2.isSelected() && !refreshDecks.isSelected()) refreshPieces.setEnabled(false);
+          if (!refreshPieces.isSelected() && !refreshDecks.isSelected()) fireHotkey2.setEnabled(false);
+        }
+        else {
+          refreshPieces.setEnabled(true);
+          refreshDecks.setEnabled(true);
+          fireHotkey2.setEnabled(true);
+        }
+      }
+    });
+    panel.add(fireHotkey1);
+
     refreshPieces = new JCheckBox(Resources.getString("GameRefresher.refresh_pieces"), true);
 
     refreshPieces.setEnabled(false); // this is the standard default - locked as part of ensuring that at least one main option is on
-    refreshPieces.addChangeListener(new ChangeListener() {
-      @Override
-      public void stateChanged(ChangeEvent e) {
-        if (optionsUserMode) {
-          // at least one main option is required...
-          // if this option is closed, check the other, allowing for more to be added in future
-          if (!refreshPieces.isSelected()) {
-            final int countSelected = refreshDecks.isSelected() ? 1 : 0;
-            if (countSelected == 1 && refreshDecks.isSelected()) refreshDecks.setEnabled(false);
-          }
-          else {
-            refreshDecks.setEnabled(true);
-          }
-          nameCheck.setVisible(refreshPieces.isSelected());
-          labelerNameCheck.setVisible(refreshPieces.isSelected());
-          layerNameCheck.setVisible(refreshPieces.isSelected());
-          rotateNameCheck.setVisible(refreshPieces.isSelected());
-          deletePieceNoMap.setVisible(refreshPieces.isSelected());
+    refreshPieces.addChangeListener(e -> {
+      if (optionsUserMode) {
+        // at least one main option is required...
+        // if this option is closed, check the other, allowing for more to be added in future
+        if (!refreshPieces.isSelected()) {
+          if (!fireHotkey1.isSelected() && !refreshDecks.isSelected()) fireHotkey2.setEnabled(false);
+          if (!fireHotkey1.isSelected() && !fireHotkey2.isSelected()) refreshDecks.setEnabled(false);
+          if (!refreshDecks.isSelected() && !fireHotkey2.isSelected()) fireHotkey1.setEnabled(false);
         }
+        else {
+          refreshDecks.setEnabled(true);
+          fireHotkey1.setEnabled(true);
+          fireHotkey2.setEnabled(true);
+        }
+        nameCheck.setVisible(refreshPieces.isSelected());
+        labelerNameCheck.setVisible(refreshPieces.isSelected());
+        layerNameCheck.setVisible(refreshPieces.isSelected());
+        rotateNameCheck.setVisible(refreshPieces.isSelected());
+        deletePieceNoMap.setVisible(refreshPieces.isSelected());
       }
     });
     panel.add(refreshPieces);
@@ -178,22 +198,22 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     // panel.add(deletePieceNoMap);
 
     refreshDecks = new JCheckBox(Resources.getString("GameRefresher.refresh_decks"), false);
-    refreshDecks.addChangeListener(new ChangeListener() {
-      @Override
-      public void stateChanged(ChangeEvent e) {
+    refreshDecks.addChangeListener(e -> {
+      if (optionsUserMode) {
         // at least one main option is required...
         // if this option is closed, check the other, allowing for more to be added in future
-        if (optionsUserMode) {
-          if (!refreshDecks.isSelected()) {
-            final int countSelected = refreshPieces.isSelected() ? 1 : 0;
-            if (countSelected == 1 && refreshPieces.isSelected()) refreshPieces.setEnabled(false);
-          }
-          else {
-            refreshPieces.setEnabled(true);
-          }
-          deleteOldDecks.setVisible(refreshDecks.isSelected());
-          addNewDecks.setVisible(refreshDecks.isSelected());
+        if (!refreshDecks.isSelected()) {
+          if (!fireHotkey1.isSelected() && !refreshPieces.isSelected()) fireHotkey2.setEnabled(false);
+          if (!fireHotkey1.isSelected() && !fireHotkey2.isSelected()) refreshPieces.setEnabled(false);
+          if (!refreshPieces.isSelected() && !fireHotkey2.isSelected()) fireHotkey1.setEnabled(false);
         }
+        else {
+          refreshPieces.setEnabled(true);
+          fireHotkey1.setEnabled(true);
+          fireHotkey2.setEnabled(true);
+        }
+        deleteOldDecks.setVisible(refreshDecks.isSelected());
+        addNewDecks.setVisible(refreshDecks.isSelected());
       }
     });
     panel.add(refreshDecks);
@@ -204,6 +224,30 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     addNewDecks = new JCheckBox(Resources.getString("GameRefresher.add_new_decks"), false);
     panel.add(addNewDecks, "gapx 10");
 
+    testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"), false);
+    // Disabling user selection - due to issue https://github.com/vassalengine/vassal/issues/12695
+    // panel.add(testModeOn);
+
+    // Post refresh hotkey setting
+    fireHotkey2 = new JCheckBox(Resources.getString("GameRefresher.fire_global_hotkey2"), false);
+    fireHotkey2.addChangeListener(e -> {
+      // at least one main option is required...
+      // if this option is closed, check the other, allowing for more to be added in future
+      if (optionsUserMode) {
+        if (!fireHotkey2.isSelected()) {
+          if (!fireHotkey1.isSelected() && !refreshPieces.isSelected()) refreshDecks.setEnabled(false);
+          if (!fireHotkey1.isSelected() && !refreshDecks.isSelected()) refreshPieces.setEnabled(false);
+          if (!refreshPieces.isSelected() && !refreshDecks.isSelected()) fireHotkey1.setEnabled(false);
+        }
+        else {
+          refreshPieces.setEnabled(true);
+          refreshDecks.setEnabled(true);
+          fireHotkey1.setEnabled(true);
+        }
+      }
+    });
+    panel.add(fireHotkey2);
+
     // Separate functions that govern the overall refresh
     // FIXME: The separator disappears if the window is resized.
     final JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
@@ -212,10 +256,6 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"), false);
     // Disabling user selection - due to issue https://github.com/vassalengine/vassal/issues/12695
     // panel.add(testModeOn);
-
-    // Hotkeys setting is on by default for Predefined Setups as this is under module editor control, harmless unless the hotkeys are defined in the module.
-    fireHotkeys = new JCheckBox(Resources.getString("GameRefresher.fire_global_hotkeys"), true);
-    panel.add(fireHotkeys);
 
     // PDS can be set to refresh specific items only, based on a regex
     final JPanel filterPanel = new JPanel(new MigLayout(ConfigurerLayout.STANDARD_INSETS_GAPY, "[]rel[grow,fill,push]")); // NON-NLS
@@ -276,8 +316,11 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
         options.add(GameRefresher.ADD_NEW_DECKS); //NON-NLS
       }
     }
-    if (fireHotkeys.isSelected()) {
-      options.add(GameRefresher.USE_HOTKEYS); //$NON-NLS-1$
+    if (fireHotkey1.isSelected()) {
+      options.add(GameRefresher.USE_HOTKEY1); //$NON-NLS-1$
+    }
+    if (fireHotkey2.isSelected()) {
+      options.add(GameRefresher.USE_HOTKEY2); //$NON-NLS-1$
     }
   }
 

@@ -103,7 +103,8 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
   public static final String REFRESH_PIECES = "RefreshPieces";
   public static final String DELETE_OLD_DECKS = "DeleteOldDecks";
   public static final String ADD_NEW_DECKS = "AddNewDecks";
-  public static final String USE_HOTKEYS = "UseHotkeys";
+  public static final String USE_HOTKEY1 = "UseHotkey1";
+  public static final String USE_HOTKEY2 = "UseHotkey2";
 
   private Action refreshAction;
   private final GpIdSupport gpIdSupport;
@@ -345,8 +346,12 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       }
     }
 
-    if (options.contains(USE_HOTKEYS)) { //NON-NLS
+    /*
+     * 1a. Once GPID checks are passed, allow the first hotkey
+     */
+    if (options.contains(USE_HOTKEY1)) { //NON-NLS
       // About to commence refreshing the game, allow a custom start.
+      log(Resources.getString("GameRefresher.fire_GHK", "VassalPreRefreshGHK"));
       GameModule.getGameModule().fireKeyStroke(NamedKeyStroke.of("VassalPreRefreshGHK"));
     }
 
@@ -554,8 +559,9 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
         log(Resources.getString(options.contains(ADD_NEW_DECKS) ? "GameRefresher.addable_decks" : "GameRefresher.addable_decks_2", addable)); //NON-NLS
       }
     }
-    if (options.contains(USE_HOTKEYS)) { //NON-NLS
+    if (options.contains(USE_HOTKEY2)) { //NON-NLS
       // After all refreshing, allow a custom finish...
+      log(Resources.getString("GameRefresher.fire_GHK", "VassalPostRefreshGHK"));
       GameModule.getGameModule().fireKeyStroke(NamedKeyStroke.of("VassalPostRefreshGHK"));
     }
   }
@@ -699,7 +705,8 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     private JCheckBox refreshDecks;
     private JCheckBox deleteOldDecks;
     private JCheckBox addNewDecks;
-    private JCheckBox fireHotkeys;
+    private JCheckBox fireHotkey1;
+    private JCheckBox fireHotkey2;
     private final Set<String> options = new HashSet<>();
     JButton runButton;
 
@@ -747,6 +754,27 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       buttonPanel.add(exitButton, "tag cancel,sg 1"); // NON-NLS
       buttonPanel.add(helpButton, "tag help,sg 1"); // NON-NLS
 
+      // Hotkeys setting is OFF by default for one-off runs to minimise risk of accidental use by players, should a module editor leave maintenance hotkeys available (intentionally or otherwise)
+      fireHotkey1 = new JCheckBox(Resources.getString("GameRefresher.fire_global_hotkey1"), false);
+      fireHotkey1.addChangeListener(new ChangeListener() {
+        @Override
+        public void stateChanged(ChangeEvent e) {
+          // at least one main option is required...
+          // if this option is closed, check the other, allowing for more to be added in future
+          if (!fireHotkey1.isSelected()) {
+            if (!fireHotkey2.isSelected() && !refreshPieces.isSelected()) refreshDecks.setEnabled(false);
+            if (!fireHotkey2.isSelected() && !refreshDecks.isSelected()) refreshPieces.setEnabled(false);
+            if (!refreshPieces.isSelected() && !refreshDecks.isSelected()) fireHotkey2.setEnabled(false);
+          }
+          else {
+            refreshPieces.setEnabled(true);
+            refreshDecks.setEnabled(true);
+            fireHotkey2.setEnabled(true);
+          }
+        }
+      });
+      panel.add(fireHotkey1);
+
       refreshPieces = new JCheckBox(Resources.getString("GameRefresher.refresh_pieces"), true);
 
       refreshPieces.setEnabled(false); // this is the standard default - locked as part of ensuring that at least one main option is on
@@ -756,11 +784,14 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
           // at least one main option is required...
           // if this option is closed, check the other, allowing for more to be added in future
           if (!refreshPieces.isSelected()) {
-            final int countSelected = refreshDecks.isSelected() ? 1 : 0;
-            if (countSelected == 1 && refreshDecks.isSelected()) refreshDecks.setEnabled(false);
+            if (!fireHotkey1.isSelected() && !refreshDecks.isSelected()) fireHotkey2.setEnabled(false);
+            if (!fireHotkey1.isSelected() && !fireHotkey2.isSelected()) refreshDecks.setEnabled(false);
+            if (!refreshDecks.isSelected() && !fireHotkey2.isSelected()) fireHotkey1.setEnabled(false);
           }
           else {
             refreshDecks.setEnabled(true);
+            fireHotkey1.setEnabled(true);
+            fireHotkey2.setEnabled(true);
           }
           nameCheck.setVisible(refreshPieces.isSelected());
           labelerNameCheck.setVisible(refreshPieces.isSelected());
@@ -792,11 +823,14 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
           // at least one main option is required...
           // if this option is closed, check the other, allowing for more to be added in future
           if (!refreshDecks.isSelected()) {
-            final int countSelected = refreshPieces.isSelected() ? 1 : 0;
-            if (countSelected == 1 && refreshPieces.isSelected()) refreshPieces.setEnabled(false);
+            if (!fireHotkey1.isSelected() && !refreshPieces.isSelected()) fireHotkey2.setEnabled(false);
+            if (!fireHotkey1.isSelected() && !fireHotkey2.isSelected()) refreshPieces.setEnabled(false);
+            if (!refreshPieces.isSelected() && !fireHotkey2.isSelected()) fireHotkey1.setEnabled(false);
           }
           else {
             refreshPieces.setEnabled(true);
+            fireHotkey1.setEnabled(true);
+            fireHotkey2.setEnabled(true);
           }
           deleteOldDecks.setVisible(refreshDecks.isSelected());
           addNewDecks.setVisible(refreshDecks.isSelected());
@@ -810,13 +844,30 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       addNewDecks = new JCheckBox(Resources.getString("GameRefresher.add_new_decks"), false);
       panel.add(addNewDecks, "gapx 10");
 
+      // Hotkeys setting is OFF by default for one-off runs to minimise risk of accidental use by players, should a module editor leave maintenance hotkeys available (intentionally or otherwise)
+      fireHotkey2 = new JCheckBox(Resources.getString("GameRefresher.fire_global_hotkey2"), false);
+      fireHotkey2.addChangeListener(new ChangeListener() {
+        @Override
+        public void stateChanged(ChangeEvent e) {
+          // at least one main option is required...
+          // if this option is closed, check the other, allowing for more to be added in future
+          if (!fireHotkey2.isSelected()) {
+            if (!fireHotkey1.isSelected() && !refreshPieces.isSelected()) refreshDecks.setEnabled(false);
+            if (!fireHotkey1.isSelected() && !refreshDecks.isSelected()) refreshPieces.setEnabled(false);
+            if (!refreshPieces.isSelected() && !refreshDecks.isSelected()) fireHotkey1.setEnabled(false);
+          }
+          else {
+            refreshPieces.setEnabled(true);
+            refreshDecks.setEnabled(true);
+            fireHotkey1.setEnabled(true);
+          }
+        }
+      });
+      panel.add(fireHotkey2);
+
       testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"), false);
       // Disabling user selection - due to issue https://github.com/vassalengine/vassal/issues/12695
       // panel.add(testModeOn);
-
-      // Hotkeys setting is OFF by default for one-off runs to minimise risk of accidental use by players, should a module editor leave maintenance hotkeys available (intentionally or otherwise)
-      fireHotkeys = new JCheckBox(Resources.getString("GameRefresher.fire_global_hotkeys"), false);
-      panel.add(fireHotkeys);
 
       if (refresher.isGameActive()) {
         refreshDecks.setSelected(false);
@@ -874,8 +925,11 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
           options.add(ADD_NEW_DECKS); //NON-NLS
         }
       }
-      if (fireHotkeys.isSelected()) {
-        options.add(USE_HOTKEYS); //$NON-NLS-1$
+      if (fireHotkey1.isSelected()) {
+        options.add(USE_HOTKEY1); //$NON-NLS-1$
+      }
+      if (fireHotkey2.isSelected()) {
+        options.add(USE_HOTKEY2); //$NON-NLS-1$
       }
     }
 
