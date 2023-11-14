@@ -108,6 +108,10 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
   private GpIdChecker gpIdChecker;
   private RefreshDialog dialog;
   private int updatedCount;
+
+  private int totalCount;
+  private int totalDecks;
+
   public int notFoundCount; // shared to PDS refresher
   public int noStackCount; // shared to PDS refresher - not used!!!
   public int noMapCount; // shared to PDS refresher - not used!!!
@@ -203,7 +207,6 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
   public List<Refresher> getRefreshables() {
     final List<Refresher> refreshables = new ArrayList<>();
     final List<MatRefresher> loadedMats = new ArrayList<>();
-    int totalCount = 0;
 
     // Process map by map
     for (final Map map : Map.getMapList()) {
@@ -216,6 +219,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
           final Deck deck = (Deck) piece;
           totalCount += deck.getPieceCount();
           refreshables.add(new DeckRefresher(deck));
+          totalDecks++;
         }
 
         // A standard Stack
@@ -277,14 +281,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       for (final MatRefresher mr : loadedMats) {
         mr.grabMyCargo(refreshables);
       }
-
     }
-
-    log(Resources.getString("GameRefresher.get_all_pieces"));
-    log(Resources.getString("GameRefresher.counters_total", totalCount));
-    log(Resources.getString("GameRefresher.counters_kept", totalCount - notOwnedCount - notVisibleCount));
-    if (notOwnedCount > 0) log(ERROR_MESSAGE_PREFIX  + Resources.getString("GameRefresher.counters_not_owned", notOwnedCount));
-    if (notVisibleCount > 0) log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_not_visible", notVisibleCount));
 
     return refreshables;
   }
@@ -304,7 +301,8 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
    * @throws IllegalBuildException - if we get a gpIdChecker error
    */
   public void execute(Set<String> options, Command command) throws IllegalBuildException {
-  // removed as not use -  final List<Deck> decks = new ArrayList<>();
+
+    // removed as not use -  final List<Deck> decks = new ArrayList<>();
 
     if (command == null) {
       command = new NullCommand();
@@ -313,6 +311,8 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       this.options.addAll(options);
     }
 
+    totalCount = 0;
+    totalDecks = 0;
     notFoundCount = 0;
     updatedCount = 0;
     noMapCount = 0;
@@ -352,6 +352,13 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
      * And refresh them. Even if Refresh Pieces is off, still scan to make a list of the Decks in case we need to update their attributes
      */
     if (options.contains(REFRESH_PIECES)) {
+
+      log(Resources.getString("GameRefresher.run_refresh_counters_v4"));
+
+      log(Resources.getString("GameRefresher.counters_kept", totalCount - notOwnedCount - notVisibleCount));
+      if (notOwnedCount > 0) log(ERROR_MESSAGE_PREFIX  + Resources.getString("GameRefresher.counters_not_owned", notOwnedCount));
+      if (notVisibleCount > 0) log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_not_visible", notVisibleCount));
+
       indexAllAttachments();
 
       for (final Refresher refresher : refreshables) refresher.refresh(command);
@@ -363,7 +370,6 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
       refreshAllAttachments(command);
 
-      log(Resources.getString("GameRefresher.run_refresh_counters_v4"));
       log(Resources.getString("GameRefresher.counters_refreshed", updatedCount));
       if (notFoundCount > 0) log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_not_found", notFoundCount));
       if (noMapCount > 0) log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_no_map", noMapCount));
@@ -392,6 +398,8 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
         int addable = 0;
 
         log(Resources.getString("GameRefresher.refreshing_decks"));
+        log(Resources.getString("GameRefresher.decks", totalDecks));
+
         for (final Map map : Map.getMapList()) {
           for (final GamePiece pieceOrStack : map.getPieces()) {
             if (pieceOrStack instanceof Deck) {
