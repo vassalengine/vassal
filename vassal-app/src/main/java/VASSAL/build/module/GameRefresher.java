@@ -733,6 +733,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       panel.setBorder(BorderFactory.createEtchedBorder());
 
       final FlowLabel header = new FlowLabel(Resources.getString("GameRefresher.header"));
+      header.setFocusable(false);
       panel.add(header);
 
       final JPanel buttonPanel = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
