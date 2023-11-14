@@ -71,6 +71,7 @@ import static java.util.regex.Pattern.CASE_INSENSITIVE;
 public class RefreshPredefinedSetupsDialog extends JDialog {
   private static final Logger logger = LoggerFactory.getLogger(RefreshPredefinedSetupsDialog.class);
   private static final long serialVersionUID = 1L;
+  private JCheckBox refreshPieces;
   private JCheckBox nameCheck;
   private JCheckBox labelerNameCheck;
   private JCheckBox layerNameCheck;
@@ -83,6 +84,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   private JTextField pdsFilterBox;
   private String pdsFilter;
   private JCheckBox alertOn;
+  private boolean optionsUserMode;
   private static final int FILE_NAME_REPORT_LENGTH = 15;
   private final Set<String> options = new HashSet<>();
 
@@ -94,6 +96,8 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   }
 
   private void initComponents() {
+    optionsUserMode = true;   // protects against change conflicts whilst vassal controls panel settings that are subject to stateChanged event handling
+
     setLayout(new MigLayout("", "[fill]")); // NON-NLS
 
     final JPanel panel = new JPanel(new MigLayout("hidemode 3,wrap 1," + ConfigurerLayout.STANDARD_GAPY, "[fill]")); // NON-NLS
@@ -130,17 +134,44 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     buttonsBox.add(closeButton, "tag cancel,sg 1"); // NON-NLS
     buttonsBox.add(helpButton, "tag help,sg 1");     // NON-NLS
 
+
+    refreshPieces = new JCheckBox(Resources.getString("GameRefresher.refresh_pieces"), true);
+
+    refreshPieces.setEnabled(false); // this is the standard default - locked as part of ensuring that at least one main option is on
+    refreshPieces.addChangeListener(new ChangeListener() {
+      @Override
+      public void stateChanged(ChangeEvent e) {
+        if (optionsUserMode) {
+          // at least one main option is required...
+          // if this option is closed, check the other, allowing for more to be added in future
+          if (!refreshPieces.isSelected()) {
+            final int countSelected = refreshDecks.isSelected() ? 1 : 0;
+            if (countSelected == 1 && refreshDecks.isSelected()) refreshDecks.setEnabled(false);
+          }
+          else {
+            refreshDecks.setEnabled(true);
+          }
+          nameCheck.setVisible(refreshPieces.isSelected());
+          labelerNameCheck.setVisible(refreshPieces.isSelected());
+          layerNameCheck.setVisible(refreshPieces.isSelected());
+          rotateNameCheck.setVisible(refreshPieces.isSelected());
+          deletePieceNoMap.setVisible(refreshPieces.isSelected());
+        }
+      }
+    });
+    panel.add(refreshPieces);
+
     nameCheck = new JCheckBox(Resources.getString("GameRefresher.use_basic_name"));
-    panel.add(nameCheck);
+    panel.add(nameCheck, "gapx 10");
 
     labelerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_labeler_descr"), true);
-    panel.add(labelerNameCheck);
+    panel.add(labelerNameCheck, "gapx 10");
     layerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_layer_descr"), true);
-    panel.add(layerNameCheck);
+    panel.add(layerNameCheck, "gapx 10");
     rotateNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_rotate_descr"), true);
-    panel.add(rotateNameCheck);
+    panel.add(rotateNameCheck, "gapx 10");
 
-    deletePieceNoMap = new JCheckBox(Resources.getString("GameRefresher.delete_piece_no_map"), true);
+    deletePieceNoMap = new JCheckBox(Resources.getString("GameRefresher.delete_piece_no_map", "gapx 10"), true);
     // Disabling user selection - due to issue https://github.com/vassalengine/vassal/issues/12902
     // panel.add(deletePieceNoMap);
 
@@ -148,8 +179,20 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     refreshDecks.addChangeListener(new ChangeListener() {
       @Override
       public void stateChanged(ChangeEvent e) {
-        deleteOldDecks.setVisible(refreshDecks.isSelected());
-        addNewDecks.setVisible(refreshDecks.isSelected());
+        // at least one main option is required...
+        // if this option is closed, check the other, allowing for more to be added in future
+        if (optionsUserMode) {
+          final String x = e.getClass().toString();
+          if (!refreshDecks.isSelected()) {
+            final int countSelected = refreshPieces.isSelected() ? 1 : 0;
+            if (countSelected == 1 && refreshPieces.isSelected()) refreshPieces.setEnabled(false);
+          }
+          else {
+            refreshPieces.setEnabled(true);
+          }
+          deleteOldDecks.setVisible(refreshDecks.isSelected());
+          addNewDecks.setVisible(refreshDecks.isSelected());
+        }
       }
     });
     panel.add(refreshDecks);
@@ -198,23 +241,26 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     pdsFilter = pdsFilterBox.getText();
 
     options.clear();
-    if (nameCheck.isSelected()) {
-      options.add(GameRefresher.USE_NAME); //$NON-NLS-1$
-    }
-    if (labelerNameCheck.isSelected()) {
-      options.add(GameRefresher.USE_LABELER_NAME); //$NON-NLS-1$
-    }
-    if (layerNameCheck.isSelected()) {
-      options.add(GameRefresher.USE_LAYER_NAME); //$NON-NLS-1$
-    }
-    if (rotateNameCheck.isSelected()) {
-      options.add(GameRefresher.USE_ROTATE_NAME); //$NON-NLS-1$
-    }
-    if (testModeOn.isSelected()) {
-      options.add(GameRefresher.TEST_MODE); //$NON-NLS-1$
-    }
-    if (deletePieceNoMap.isSelected()) {
-      options.add(GameRefresher.DELETE_NO_MAP); //$NON-NLS-1$
+    if (refreshPieces.isSelected()) {
+      options.add(GameRefresher.REFRESH_PIECES); //$NON-NLS-1$
+      if (nameCheck.isSelected()) {
+        options.add(GameRefresher.USE_NAME); //$NON-NLS-1$
+      }
+      if (labelerNameCheck.isSelected()) {
+        options.add(GameRefresher.USE_LABELER_NAME); //$NON-NLS-1$
+      }
+      if (layerNameCheck.isSelected()) {
+        options.add(GameRefresher.USE_LAYER_NAME); //$NON-NLS-1$
+      }
+      if (rotateNameCheck.isSelected()) {
+        options.add(GameRefresher.USE_ROTATE_NAME); //$NON-NLS-1$
+      }
+      if (testModeOn.isSelected()) {
+        options.add(GameRefresher.TEST_MODE); //$NON-NLS-1$
+      }
+      if (deletePieceNoMap.isSelected()) {
+        options.add(GameRefresher.DELETE_NO_MAP); //$NON-NLS-1$
+      }
     }
     if (refreshDecks.isSelected()) {
       options.add(GameRefresher.REFRESH_DECKS); //NON-NLS
@@ -242,11 +288,9 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
   private void refreshPredefinedSetups() {
 
+    // Disable options menu whilst the refresh is assessed (this greys the menu panel out)
+    optionsUserMode = false;
     for (final Component component : getComponents(this)) component.setEnabled(false);
-
-/*    refreshButton.setEnabled(false); // Prevent accidental multi-runs - Button disabled until / unless run is cancelled
-    closeButton.setEnabled(false); // these buttons also won't work during a run, so let's make that clear in the UI
-    helpButton.setEnabled(false);*/
 
     setOptions();
 
@@ -270,9 +314,9 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     // Targeting PDS menu structure...
     final GameModule mod = GameModule.getGameModule();
     final DataArchive dataArchive = mod.getDataArchive();
-    final List<ModuleExtension>  moduleExtensionList = mod.getComponentsOf(ModuleExtension.class);
 
     // Are we running a refresh on a main module or on an extension ?
+    final List<ModuleExtension>  moduleExtensionList = mod.getComponentsOf(ModuleExtension.class);
     final boolean isRefreshOfExtension = !moduleExtensionList.isEmpty();
 
     final List<PredefinedSetup>  modulePdsAndMenus = mod.getAllDescendantComponentsOf(PredefinedSetup.class);
@@ -284,7 +328,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
         // and exclude any "New game" entries (no predefined setup) (isUseFile == false)
         // !! Some New Game entries have UseFile = true and filename empty. Check file name too
         // PDS filtering option is implemented here...
-        final String pdsName = pds.getAttributeValueString(pds.NAME);
+        final String pdsName = pds.getAttributeValueString(PredefinedSetup.NAME);
         final String pdsFile = pds.getFileName();
 
         if (pdsFile != null && !pdsFile.isBlank()
@@ -344,7 +388,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
           // Skip duplicate file (already refreshed)
           duplicates++;
           log(GameRefresher.SEPARATOR);
-          log(Resources.getString(Resources.getString("Editor.RefreshPredefinedSetupsDialog.skip", pds.getAttributeValueString(pds.NAME), pdsFile)));
+          log(Resources.getString(Resources.getString("Editor.RefreshPredefinedSetupsDialog.skip", pds.getAttributeValueString(PredefinedSetup.NAME), pdsFile)));
         }
         else {
           GameModule.getGameModule().getGameState().setup(false);  //BR// Ensure we clear any existing game data/listeners/objects out.
@@ -400,9 +444,8 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     else {
       // If a run was cancelled or zero items found, the Refresh Options window is available for amending again
       for (final Component component : getComponents(this)) component.setEnabled(true);
-/*    refreshButton.setEnabled(true);
-    closeButton.setEnabled(true);
-    helpButton.setEnabled(true);*/
+      restoreOptionSafety();
+      optionsUserMode = false;
     }
   }
 
@@ -450,7 +493,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     for (final PredefinedSetup pds : pdsList)
 
       // tab separation to make it easier to re-use the data (e.g. copy to spreadsheet)
-      display.append((i++ > 0 ? System.lineSeparator() : "") + pds.getAttributeValueString(pds.NAME)
+      display.append((i++ > 0 ? System.lineSeparator() : "") + pds.getAttributeValueString(PredefinedSetup.NAME)
               + Character.toString(9) + pds.getFileName());
 
     // return number of PDS items or zero if refresh is cancelled
@@ -488,4 +531,19 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
     return list.toArray(new Component[0]);
   }
+
+  /**
+   * Re-applies rule ensuring at least one major option is selected always
+   */
+  private void restoreOptionSafety() {
+    if (!refreshPieces.isSelected()) {
+      refreshDecks.setEnabled(false);
+    }
+    else {
+      if (!refreshDecks.isSelected()) {
+        refreshPieces.setEnabled(false);
+      }
+    }
+  }
+
 }
