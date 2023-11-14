@@ -182,7 +182,6 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
         // at least one main option is required...
         // if this option is closed, check the other, allowing for more to be added in future
         if (optionsUserMode) {
-          final String x = e.getClass().toString();
           if (!refreshDecks.isSelected()) {
             final int countSelected = refreshPieces.isSelected() ? 1 : 0;
             if (countSelected == 1 && refreshPieces.isSelected()) refreshPieces.setEnabled(false);

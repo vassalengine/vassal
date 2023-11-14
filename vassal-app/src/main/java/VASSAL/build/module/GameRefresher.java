@@ -304,7 +304,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
    * @throws IllegalBuildException - if we get a gpIdChecker error
    */
   public void execute(Set<String> options, Command command) throws IllegalBuildException {
-    final List<Deck> decks = new ArrayList<>();
+  // removed as not use -  final List<Deck> decks = new ArrayList<>();
 
     if (command == null) {
       command = new NullCommand();
@@ -351,25 +351,23 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     /*
      * And refresh them. Even if Refresh Pieces is off, still scan to make a list of the Decks in case we need to update their attributes
      */
-    if (options.contains(REFRESH_PIECES)) indexAllAttachments();
-
-    for (final Refresher refresher : refreshables) {
-      if (options.contains(REFRESH_PIECES)) refresher.refresh(command);
-      if (refresher instanceof DeckRefresher && options.contains(REFRESH_DECKS)) {
-        decks.add(((DeckRefresher) refresher).getDeck());
-      }
-    }
-
     if (options.contains(REFRESH_PIECES)) {
+      indexAllAttachments();
+
+      for (final Refresher refresher : refreshables) refresher.refresh(command);
+
+      /* removed as decks array is not used - to implement this code needs to be restored within for loop and pieces / decks refresh conditions interleaved
+        if (refresher instanceof DeckRefresher && options.contains(REFRESH_DECKS)) {
+        decks.add(((DeckRefresher) refresher).getDeck());
+      }*/
+
       refreshAllAttachments(command);
 
       log(Resources.getString("GameRefresher.run_refresh_counters_v4"));
       log(Resources.getString("GameRefresher.counters_refreshed", updatedCount));
-      if (notFoundCount > 0)
-        log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_not_found", notFoundCount));
+      if (notFoundCount > 0) log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_not_found", notFoundCount));
       if (noMapCount > 0) log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_no_map", noMapCount));
-      if (noStackCount > 0)
-        log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_no_stack", noStackCount));
+      if (noStackCount > 0) log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_no_stack", noStackCount));
     }
 
     /*
