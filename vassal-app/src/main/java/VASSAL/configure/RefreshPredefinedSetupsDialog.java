@@ -106,6 +106,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     panel.setBorder(BorderFactory.createEtchedBorder());
 
     final FlowLabel header = new FlowLabel(Resources.getString("GameRefresher.predefined_header"));
+    header.setFocusable(false);
     panel.add(header);
 
     final JPanel buttonsBox = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
