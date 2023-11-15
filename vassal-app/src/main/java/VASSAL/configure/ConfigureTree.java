@@ -3195,8 +3195,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         // add in next unmatched segment followed by formatted matched segment
         if (start > lastEnd) fmtStr.append(noHTML(rawStr.substring(lastEnd, start))).append(htmlHighlighter).append(noHTML(rawStr.substring(start, end))).append("</font>");
         else {
+          // rarely executed....
           // a contiguous or overlapping matched segment; ignore the duplicate sub-segment, and insert the remainder ahead of the </font> tag
-          if (fmtStr.length() > 12) fmtStr.substring(0, fmtStr.length() - 7); // remove prior </font>, skip if this is first pass
+          if (fmtStr.length() > 12) fmtStr.replace(fmtStr.length() - 7, fmtStr.length() - 1, ""); // remove prior </font>, skip if this is first pass
           else fmtStr.append(htmlHighlighter); // first pass match at start of string
           fmtStr.append(noHTML(rawStr.substring(lastEnd, end))).append("</font>");
         }
