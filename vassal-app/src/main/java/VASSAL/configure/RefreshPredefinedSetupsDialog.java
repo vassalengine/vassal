@@ -249,6 +249,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     });
     panel.add(fireHotkey2);
 
+
     // Separate functions that govern the overall refresh
     // FIXME: The separator disappears if the window is resized.
     final JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
