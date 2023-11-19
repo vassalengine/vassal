@@ -325,7 +325,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
 
     // return number of piece error warnings reporting in the refresh
     return gameRefresher.notFoundCount + gameRefresher.noStackCount + gameRefresher.noMapCount
-            + gameRefresher.notOwnedCount + gameRefresher.notVisibleCount;
+            + gameRefresher.notOwnedCount + gameRefresher.notVisibleCount + gameRefresher.noGpIdMatch;
   }
 
   @Override

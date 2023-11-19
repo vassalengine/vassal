@@ -71,6 +71,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   private static final long serialVersionUID = 1L;
   private JCheckBox refreshPieces;
   private JCheckBox nameCheck;
+  private JCheckBox fixGPID;
   private JCheckBox labelerNameCheck;
   private JCheckBox layerNameCheck;
   private JCheckBox rotateNameCheck;
@@ -83,10 +84,9 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   private String pdsFilter;
   private JCheckBox alertOn;
   private boolean optionsUserMode;
-  private static final int FILE_NAME_REPORT_LENGTH = 15;
+  private static final int FILE_NAME_REPORT_LENGTH = 24;
   private JCheckBox fireHotkey1;
   private JCheckBox fireHotkey2;
-
 
   private final Set<String> options = new HashSet<>();
 
@@ -182,10 +182,18 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
         deletePieceNoMap.setVisible(refreshPieces.isSelected());
       }
     });
+
     panel.add(refreshPieces);
 
     nameCheck = new JCheckBox(Resources.getString("GameRefresher.use_basic_name"));
+
     panel.add(nameCheck, "gapx 10");
+    nameCheck.addChangeListener(e -> {
+      if (optionsUserMode) fixGPID.setVisible(nameCheck.isSelected());
+    });
+
+    fixGPID = new JCheckBox(Resources.getString("GameRefresher.fix_gpid"));
+    panel.add(fixGPID, "gapx 20");
 
     labelerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_labeler_descr"), true);
     panel.add(labelerNameCheck, "gapx 10");
@@ -277,6 +285,8 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     // Default actions on Enter/ESC
     SwingUtils.setDefaultButtons(getRootPane(), refreshButton, closeButton);
 
+    fixGPID.setVisible(nameCheck.isSelected());
+
     deleteOldDecks.setVisible(refreshDecks.isSelected());
     addNewDecks.setVisible(refreshDecks.isSelected());
 
@@ -291,6 +301,9 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
       options.add(GameRefresher.REFRESH_PIECES); //$NON-NLS-1$
       if (nameCheck.isSelected()) {
         options.add(GameRefresher.USE_NAME); //$NON-NLS-1$
+        if (fixGPID.isSelected()) {
+          options.add(GameRefresher.FIX_GPID); //$NON-NLS-1$
+        }
       }
       if (labelerNameCheck.isSelected()) {
         options.add(GameRefresher.USE_LABELER_NAME); //$NON-NLS-1$
@@ -348,16 +361,19 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
     // pre-pack regex pattern in case filter string is not found by direct string comparison
     Pattern filterPattern = null;
+    Pattern filterPattern2 = null;
 
     if (isFilterMode()) {
 
       try {
         // matching, assuming Regex with no escape of the end string modifier, otherwise match all to end
         filterPattern = Pattern.compile(pdsFilter, CASE_INSENSITIVE);
+        filterPattern2 = Pattern.compile(pdsFilter + ".*", CASE_INSENSITIVE);
       }
       catch (java.util.regex.PatternSyntaxException e) {
           // something went wrong, treat regex as embedded literal
         filterPattern = Pattern.compile(".*\\Q" + pdsFilter + "\\T.*", CASE_INSENSITIVE);
+        filterPattern2 = filterPattern; // nullify the follow-up check
         log(Resources.getString("Editor.RefreshPredefinedSetups.filter_fallback")); //NON-NLS
       }
       pdsFilter = pdsFilter.toLowerCase();  // original search string will be used for case-insensitive string search
@@ -374,6 +390,11 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     final List<PredefinedSetup>  modulePdsAndMenus = mod.getAllDescendantComponentsOf(PredefinedSetup.class);
     final List<PredefinedSetup>  modulePds = new ArrayList<>();
 
+    // Error collation & reporting
+    final List<PredefinedSetup>  warningPds = new ArrayList<>();
+    final List<Integer> warningCount = new ArrayList<>();
+    final List<PredefinedSetup>  failPds = new ArrayList<>();
+
     for (final PredefinedSetup pds : modulePdsAndMenus) {
       if (!pds.isMenu() && pds.isUseFile()) {
         //Exclude scenario folders (isMenu == true)
@@ -385,8 +406,10 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
         if (pdsFile != null && !pdsFile.isBlank()
                 && (pdsFilter == null
-                || (pdsName != null && (pdsName.toLowerCase().contains(pdsFilter) || (filterPattern != null && filterPattern.matcher(pdsName).matches())))
-                || (pdsFile.toLowerCase().contains(pdsFilter) || (filterPattern != null && filterPattern.matcher(pdsFile).matches())))) {
+                || (pdsName != null && (pdsName.toLowerCase().contains(pdsFilter)
+                || (filterPattern != null && (filterPattern.matcher(pdsName).matches() || filterPattern2.matcher(pdsName).matches())))
+                || (pdsFile.toLowerCase().contains(pdsFilter)
+                || (filterPattern != null && (filterPattern.matcher(pdsFile).matches() || filterPattern2.matcher(pdsFile).matches())))))) {
 
           boolean isExtensionPDS = true;
 
@@ -416,23 +439,23 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
       int i = 0;
       int refreshCount = 0;
-      int flaggedFiles = 0;
       int duplicates = 0;
-      int fails = 0;
       String lastErrorFile = null;
 
 
       final Instant startTime = Instant.now();
       final Long memoryInUseAtStart = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024*1024);
+      long himem = 0;
 
       // Process the refreshes
+      String hifile = null;
       for (final PredefinedSetup pds : modulePds) {
 
         // Refresher window title updated to provide progress report
         final int pct = i * 100 / pdsCount;
-        this.setTitle(Resources.getString("Editor.RefreshPredefinedSetupsDialog.progress", ++i, pdsCount, pct,
-                (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024))
-                + (flaggedFiles + fails == 0 ? "" : "  " + Resources.getString("Editor.RefreshPredefinedSetupsDialog.errors", lastErrorFile, fails + flaggedFiles - 1)));
+        this.setTitle(Resources.getString("Editor.RefreshPredefinedSetupsDialog.progress", ++i, pdsCount, pct)
+                + (warningPds.isEmpty() ? "" : "  "
+                  + Resources.getString("Editor.RefreshPredefinedSetupsDialog.errors", lastErrorFile, warningPds.size() - 1)));
 
         final String pdsFile = pds.getFileName();
 
@@ -448,20 +471,26 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
           try {
             // FIXME: At this point the Refresh Options window is not responsive to Cancel, which means that runs can only be interrupted by killing the Vassal editor process
-            if (pds.refreshWithStatus(options) > 0) {
-              flaggedFiles++;
+            final int warnings = pds.refreshWithStatus(options);
+            if (warnings > 0) {
               lastErrorFile = fixedLength(pdsFile, FILE_NAME_REPORT_LENGTH);
+              warningPds.add(pds);
+              warningCount.add(warnings);
             }
             refreshCount++;
           }
           catch (final IOException e) {
             ErrorDialog.bug(e);
-            fails++;
-            lastErrorFile = fixedLength(pdsFile, FILE_NAME_REPORT_LENGTH);
+            failPds.add(pds);
           }
           finally {
             GameModule.getGameModule().setRefreshingSemaphore(false); //BR// Make sure we definitely lower the semaphore
           }
+        }
+        final long mem = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024);
+        if (mem > himem) {
+          himem = mem;
+          hifile = pdsFile;
         }
       }
 
@@ -485,13 +514,25 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
       if (duplicates > 0)
         log(Resources.getString("Editor.RefreshPredefinedSetups.duplicates", duplicates));
 
-      if (flaggedFiles + fails > 0)
-        log(GameRefresher.ERROR_MESSAGE_PREFIX + Resources.getString("Editor.RefreshPredefinedSetups.endErrors", flaggedFiles, fails));
+      if (!warningPds.isEmpty()) {
+        log(GameRefresher.ERROR_MESSAGE_PREFIX + Resources.getString("Editor.RefreshPredefinedSetups.endWarnHeading", warningPds.size()));
+        for (i = 0; i < warningPds.size(); i++)
+          log("|&nbsp; " + Resources.getString("Editor.RefreshPredefinedSetups.endWarnPds",
+                  warningPds.get(i).getAttributeValueString(PredefinedSetup.NAME),
+                  "<b>" + warningPds.get(i).getFileName() + "</b>", warningCount.get(i)));
+      }
+
+      if (!failPds.isEmpty()) {
+        log(GameRefresher.ERROR_MESSAGE_PREFIX + Resources.getString("Editor.RefreshPredefinedSetups.endFailHeading", failPds.size()));
+        for (i = 0; i < warningPds.size(); i++)
+          log("|&nbsp; " + Resources.getString("Editor.RefreshPredefinedSetups.endFailPds",
+                  failPds.get(i).getAttributeValueString(PredefinedSetup.NAME),
+                  "<b>" + failPds.get(i).getFileName()) + "</b>");
+      }
 
       log(Resources.getString("Editor.RefreshPredefinedSetups.stats",
               ofPattern("HH:mm:ss").format(LocalTime.ofSecondOfDay(duration.getSeconds())),
-              memoryInUseAtStart,
-              (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024)));
+              memoryInUseAtStart, himem, hifile));
     }
     else {
       // If a run was cancelled or zero items found, the Refresh Options window is available for amending again
