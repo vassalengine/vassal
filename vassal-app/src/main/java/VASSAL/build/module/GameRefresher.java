@@ -756,21 +756,18 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
       // Hotkeys setting is OFF by default for one-off runs to minimise risk of accidental use by players, should a module editor leave maintenance hotkeys available (intentionally or otherwise)
       fireHotkey1 = new JCheckBox(Resources.getString("GameRefresher.fire_global_hotkey1"), false);
-      fireHotkey1.addChangeListener(new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-          // at least one main option is required...
-          // if this option is closed, check the other, allowing for more to be added in future
-          if (!fireHotkey1.isSelected()) {
-            if (!fireHotkey2.isSelected() && !refreshPieces.isSelected()) refreshDecks.setEnabled(false);
-            if (!fireHotkey2.isSelected() && !refreshDecks.isSelected()) refreshPieces.setEnabled(false);
-            if (!refreshPieces.isSelected() && !refreshDecks.isSelected()) fireHotkey2.setEnabled(false);
-          }
-          else {
-            refreshPieces.setEnabled(true);
-            refreshDecks.setEnabled(true);
-            fireHotkey2.setEnabled(true);
-          }
+      fireHotkey1.addChangeListener(e -> {
+        // at least one main option is required...
+        // if this option is closed, check the other, allowing for more to be added in future
+        if (!fireHotkey1.isSelected()) {
+          if (!fireHotkey2.isSelected() && !refreshPieces.isSelected()) refreshDecks.setEnabled(false);
+          if (!fireHotkey2.isSelected() && !refreshDecks.isSelected()) refreshPieces.setEnabled(false);
+          if (!refreshPieces.isSelected() && !refreshDecks.isSelected()) fireHotkey2.setEnabled(false);
+        }
+        else {
+          refreshPieces.setEnabled(true);
+          refreshDecks.setEnabled(true);
+          fireHotkey2.setEnabled(true);
         }
       });
       panel.add(fireHotkey1);
@@ -778,27 +775,24 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       refreshPieces = new JCheckBox(Resources.getString("GameRefresher.refresh_pieces"), true);
 
       refreshPieces.setEnabled(false); // this is the standard default - locked as part of ensuring that at least one main option is on
-      refreshPieces.addChangeListener(new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-          // at least one main option is required...
-          // if this option is closed, check the other, allowing for more to be added in future
-          if (!refreshPieces.isSelected()) {
-            if (!fireHotkey1.isSelected() && !refreshDecks.isSelected()) fireHotkey2.setEnabled(false);
-            if (!fireHotkey1.isSelected() && !fireHotkey2.isSelected()) refreshDecks.setEnabled(false);
-            if (!refreshDecks.isSelected() && !fireHotkey2.isSelected()) fireHotkey1.setEnabled(false);
-          }
-          else {
-            refreshDecks.setEnabled(true);
-            fireHotkey1.setEnabled(true);
-            fireHotkey2.setEnabled(true);
-          }
-          nameCheck.setVisible(refreshPieces.isSelected());
-          labelerNameCheck.setVisible(refreshPieces.isSelected());
-          layerNameCheck.setVisible(refreshPieces.isSelected());
-          rotateNameCheck.setVisible(refreshPieces.isSelected());
-          deletePieceNoMap.setVisible(refreshPieces.isSelected());
+      refreshPieces.addChangeListener(e -> {
+        // at least one main option is required...
+        // if this option is closed, check the other, allowing for more to be added in future
+        if (!refreshPieces.isSelected()) {
+          if (!fireHotkey1.isSelected() && !refreshDecks.isSelected()) fireHotkey2.setEnabled(false);
+          if (!fireHotkey1.isSelected() && !fireHotkey2.isSelected()) refreshDecks.setEnabled(false);
+          if (!refreshDecks.isSelected() && !fireHotkey2.isSelected()) fireHotkey1.setEnabled(false);
         }
+        else {
+          refreshDecks.setEnabled(true);
+          fireHotkey1.setEnabled(true);
+          fireHotkey2.setEnabled(true);
+        }
+        nameCheck.setVisible(refreshPieces.isSelected());
+        labelerNameCheck.setVisible(refreshPieces.isSelected());
+        layerNameCheck.setVisible(refreshPieces.isSelected());
+        rotateNameCheck.setVisible(refreshPieces.isSelected());
+        deletePieceNoMap.setVisible(refreshPieces.isSelected());
       });
       panel.add(refreshPieces);
 
@@ -822,24 +816,21 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       // panel.add(deletePieceNoMap);
 
       refreshDecks = new JCheckBox(Resources.getString("GameRefresher.refresh_decks"), false);
-      refreshDecks.addChangeListener(new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-          // at least one main option is required...
-          // if this option is closed, check the other, allowing for more to be added in future
-          if (!refreshDecks.isSelected()) {
-            if (!fireHotkey1.isSelected() && !refreshPieces.isSelected()) fireHotkey2.setEnabled(false);
-            if (!fireHotkey1.isSelected() && !fireHotkey2.isSelected()) refreshPieces.setEnabled(false);
-            if (!refreshPieces.isSelected() && !fireHotkey2.isSelected()) fireHotkey1.setEnabled(false);
-          }
-          else {
-            refreshPieces.setEnabled(true);
-            fireHotkey1.setEnabled(true);
-            fireHotkey2.setEnabled(true);
-          }
-          deleteOldDecks.setVisible(refreshDecks.isSelected());
-          addNewDecks.setVisible(refreshDecks.isSelected());
+      refreshDecks.addChangeListener(e -> {
+        // at least one main option is required...
+        // if this option is closed, check the other, allowing for more to be added in future
+        if (!refreshDecks.isSelected()) {
+          if (!fireHotkey1.isSelected() && !refreshPieces.isSelected()) fireHotkey2.setEnabled(false);
+          if (!fireHotkey1.isSelected() && !fireHotkey2.isSelected()) refreshPieces.setEnabled(false);
+          if (!refreshPieces.isSelected() && !fireHotkey2.isSelected()) fireHotkey1.setEnabled(false);
         }
+        else {
+          refreshPieces.setEnabled(true);
+          fireHotkey1.setEnabled(true);
+          fireHotkey2.setEnabled(true);
+        }
+        deleteOldDecks.setVisible(refreshDecks.isSelected());
+        addNewDecks.setVisible(refreshDecks.isSelected());
       });
       panel.add(refreshDecks);
 
@@ -851,21 +842,18 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
       // Hotkeys setting is OFF by default for one-off runs to minimise risk of accidental use by players, should a module editor leave maintenance hotkeys available (intentionally or otherwise)
       fireHotkey2 = new JCheckBox(Resources.getString("GameRefresher.fire_global_hotkey2"), false);
-      fireHotkey2.addChangeListener(new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-          // at least one main option is required...
-          // if this option is closed, check the other, allowing for more to be added in future
-          if (!fireHotkey2.isSelected()) {
-            if (!fireHotkey1.isSelected() && !refreshPieces.isSelected()) refreshDecks.setEnabled(false);
-            if (!fireHotkey1.isSelected() && !refreshDecks.isSelected()) refreshPieces.setEnabled(false);
-            if (!refreshPieces.isSelected() && !refreshDecks.isSelected()) fireHotkey1.setEnabled(false);
-          }
-          else {
-            refreshPieces.setEnabled(true);
-            refreshDecks.setEnabled(true);
-            fireHotkey1.setEnabled(true);
-          }
+      fireHotkey2.addChangeListener(e -> {
+        // at least one main option is required...
+        // if this option is closed, check the other, allowing for more to be added in future
+        if (!fireHotkey2.isSelected()) {
+          if (!fireHotkey1.isSelected() && !refreshPieces.isSelected()) refreshDecks.setEnabled(false);
+          if (!fireHotkey1.isSelected() && !refreshDecks.isSelected()) refreshPieces.setEnabled(false);
+          if (!refreshPieces.isSelected() && !refreshDecks.isSelected()) fireHotkey1.setEnabled(false);
+        }
+        else {
+          refreshPieces.setEnabled(true);
+          refreshDecks.setEnabled(true);
+          fireHotkey1.setEnabled(true);
         }
       });
       panel.add(fireHotkey2);
