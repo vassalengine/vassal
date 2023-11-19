@@ -62,8 +62,6 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
@@ -93,6 +91,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
   public static final String COMMAND_PREFIX = "DECKREPOS" + DELIMITER; //$NON-NLS-1$
 
   public static final String USE_NAME = "UseName";
+  public static final String FIX_GPID = "fixGPID";
   public static final String USE_LABELER_NAME = "UseLabelerName";
   public static final String USE_LAYER_NAME = "UseLayerName";
   public static final String USE_ROTATE_NAME = "UseRotateName";
@@ -113,6 +112,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
   private int totalDecks;
 
   public int notFoundCount; // shared to PDS refresher
+  public int noGpIdMatch; // shared to PDS refresher
   public int noStackCount; // shared to PDS refresher - not used!!!
   public int noMapCount; // shared to PDS refresher - not used!!!
   public int notOwnedCount; // shared to PDS refresher
@@ -317,6 +317,8 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     updatedCount = 0;
     noMapCount = 0;
     noStackCount = 0;
+
+
     /*
      * 1. Use the GpIdChecker to build a cross-reference of all available
      * PieceSlots and PlaceMarker's in the module.
@@ -547,6 +549,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
         log(Resources.getString(options.contains(ADD_NEW_DECKS) ? "GameRefresher.addable_decks" : "GameRefresher.addable_decks_2", addable)); //NON-NLS
       }
     }
+    noGpIdMatch = gpIdChecker.noGpIdMatch; // So that GpId failures accumulator can be passed back to PreDefined Setup refresher
   }
 
 
@@ -680,6 +683,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     private JTextArea results;
     private JCheckBox refreshPieces;
     private JCheckBox nameCheck;
+    private JCheckBox fixGPID;
     private JCheckBox testModeOn;
     private JCheckBox labelerNameCheck;
     private JCheckBox layerNameCheck;
@@ -738,29 +742,31 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       refreshPieces = new JCheckBox(Resources.getString("GameRefresher.refresh_pieces"), true);
 
       refreshPieces.setEnabled(false); // this is the standard default - locked as part of ensuring that at least one main option is on
-      refreshPieces.addChangeListener(new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-          // at least one main option is required...
-          // if this option is closed, check the other, allowing for more to be added in future
-          if (!refreshPieces.isSelected()) {
-            final int countSelected = refreshDecks.isSelected() ? 1 : 0;
-            if (countSelected == 1 && refreshDecks.isSelected()) refreshDecks.setEnabled(false);
-          }
-          else {
-            refreshDecks.setEnabled(true);
-          }
-          nameCheck.setVisible(refreshPieces.isSelected());
-          labelerNameCheck.setVisible(refreshPieces.isSelected());
-          layerNameCheck.setVisible(refreshPieces.isSelected());
-          rotateNameCheck.setVisible(refreshPieces.isSelected());
-          deletePieceNoMap.setVisible(refreshPieces.isSelected());
+      refreshPieces.addChangeListener(e -> {
+        // at least one main option is required...
+        // if this option is closed, check the other, allowing for more to be added in future
+        if (!refreshPieces.isSelected()) {
+          final int countSelected = refreshDecks.isSelected() ? 1 : 0;
+          if (countSelected == 1 && refreshDecks.isSelected()) refreshDecks.setEnabled(false);
         }
+        else {
+          refreshDecks.setEnabled(true);
+        }
+        nameCheck.setVisible(refreshPieces.isSelected());
+        labelerNameCheck.setVisible(refreshPieces.isSelected());
+        layerNameCheck.setVisible(refreshPieces.isSelected());
+        rotateNameCheck.setVisible(refreshPieces.isSelected());
+        deletePieceNoMap.setVisible(refreshPieces.isSelected());
       });
       panel.add(refreshPieces);
 
       nameCheck = new JCheckBox(Resources.getString("GameRefresher.use_basic_name"));
       panel.add(nameCheck, "gapx 10");
+
+      nameCheck.addChangeListener(e -> fixGPID.setVisible(nameCheck.isSelected()));
+
+      fixGPID = new JCheckBox(Resources.getString("GameRefresher.fix_gpid"));
+      panel.add(fixGPID, "gapx 20");
 
       labelerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_labeler_descr"), true);
       panel.add(labelerNameCheck, "gapx 10");
@@ -774,21 +780,18 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       // panel.add(deletePieceNoMap);
 
       refreshDecks = new JCheckBox(Resources.getString("GameRefresher.refresh_decks"), false);
-      refreshDecks.addChangeListener(new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-          // at least one main option is required...
-          // if this option is closed, check the other, allowing for more to be added in future
-          if (!refreshDecks.isSelected()) {
-            final int countSelected = refreshPieces.isSelected() ? 1 : 0;
-            if (countSelected == 1 && refreshPieces.isSelected()) refreshPieces.setEnabled(false);
-          }
-          else {
-            refreshPieces.setEnabled(true);
-          }
-          deleteOldDecks.setVisible(refreshDecks.isSelected());
-          addNewDecks.setVisible(refreshDecks.isSelected());
+      refreshDecks.addChangeListener(e -> {
+        // at least one main option is required...
+        // if this option is closed, check the other, allowing for more to be added in future
+        if (!refreshDecks.isSelected()) {
+          final int countSelected = refreshPieces.isSelected() ? 1 : 0;
+          if (countSelected == 1 && refreshPieces.isSelected()) refreshPieces.setEnabled(false);
         }
+        else {
+          refreshPieces.setEnabled(true);
+        }
+        deleteOldDecks.setVisible(refreshDecks.isSelected());
+        addNewDecks.setVisible(refreshDecks.isSelected());
       });
       panel.add(refreshDecks);
 
@@ -822,6 +825,8 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
       SwingUtils.repack(this);
 
+      fixGPID.setVisible(nameCheck.isSelected());
+
       deleteOldDecks.setVisible(refreshDecks.isSelected());
       addNewDecks.setVisible(refreshDecks.isSelected());
     }
@@ -832,6 +837,9 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
         options.add(REFRESH_PIECES); //$NON-NLS-1$
         if (nameCheck.isSelected()) {
           options.add(USE_NAME); //$NON-NLS-1$
+          if (fixGPID.isSelected()) {
+            options.add(GameRefresher.FIX_GPID); //$NON-NLS-1$
+          }
         }
         if (labelerNameCheck.isSelected()) {
           options.add(USE_LABELER_NAME); //$NON-NLS-1$

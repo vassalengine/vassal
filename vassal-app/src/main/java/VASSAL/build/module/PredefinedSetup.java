@@ -293,6 +293,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
 
   public int refreshWithStatus(Set<String> options) throws IOException, IllegalBuildException {
     if (!options.isEmpty()) {
+      this.refresherOptions.clear();
       this.refresherOptions.addAll(options);
     }
     final GameModule mod = GameModule.getGameModule();
@@ -301,7 +302,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
 
     // since we're going to block the GUI, let's give some feedback
     gameRefresher.log(GameRefresher.SEPARATOR); //$NON-NLS-1$
-    gameRefresher.log("Updating Predefined Setup: " + this.getAttributeValueString(this.NAME) + " (" + fileName + ")"); //$NON-NLS-1$S
+    gameRefresher.log("Updating Predefined Setup: " + this.getAttributeValueString(NAME) + " (" + fileName + ")"); //$NON-NLS-1$S
 
     // get a stream to the saved game in the module file
     gs.setupRefresh();
@@ -324,7 +325,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
 
     // return number of piece error warnings reporting in the refresh
     return gameRefresher.notFoundCount + gameRefresher.noStackCount + gameRefresher.noMapCount
-            + gameRefresher.notOwnedCount + gameRefresher.notVisibleCount;
+            + gameRefresher.notOwnedCount + gameRefresher.notVisibleCount + gameRefresher.noGpIdMatch;
   }
 
   @Override
