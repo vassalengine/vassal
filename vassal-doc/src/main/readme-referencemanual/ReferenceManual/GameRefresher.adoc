@@ -37,7 +37,11 @@ Use this option when the piece definition used to create a Game Piece no longer 
 +
 This option tells the Refresher to find a Piece Definition with the same Basic Name as the old definition to use for the Refresh. The first such definition found will be used.
 
-*- Use Label descriptions to match modified Text Label traits:*::
+- *Refreshed counter will adopt matching counter's Piece Id:*::
+
+This sub-option is available when "Use counter names..." is selected. The counter will be repaired using the matching counter's Piece Id ("GPID"). ⚠️ Exercise prudence when considering this option, to be sure that the matching counter is correct.
+
+*Use Label descriptions to match modified Text Label traits:*::
 If you change any of the options in a <<Label.adoc#top,Text Label>> trait, then the new definition will not exactly match the old counter and the current setting of the *Text Label* will revert to the default recorded in the new definition. +
 +
 This option tells the Refresher to find a *Text Label* trait in the new definition that has the same *Description* as in the old definition. This allows the current value of the *Text Label* to be carried across to the piece, even if the *Text Label* trait has been modified as long as the Description field has not been changed.
