@@ -75,5 +75,8 @@ To "decrement" the value, simple increment by a negative number.
 They will be prompted for a new value using the text prompt entered in the *Prompt* field.
 * _Prompt user to select from list:_  Similar to _Prompt User_ but displays a list of items to select from in a drop-down menu.
 The items in the list can be generated dynamically by <<Expression.adoc#top,Expressions>>. If some items evaluate to a blank string, then those items are only purged from the menu if the <<GlobalOptions.adoc#purgeblanks,Purge Blanks option in Global Options>> is selected; otherwise the blank options appear.
++
+NOTE: Note that the properties named in this expression are evaluated against the properties of the target pieces, *NOT* the properties of the piece issuing the Set Piece Property +
+If you want to use a property in *this* piece in an expression here, then use $property$. All $...$ property references will be evaluated against this piece before the final expression is evaluated using properties from the target piece.  E.g., Incrementing a property using the expression `{$p1$ + p2}` will add the value of the `p1` property from this piece, plus the value of the `p2` property from the target piece.
 
 *SEE ALSO:* <<Attachment.adoc#top,Attachment>>, <<Properties.adoc#top,Properties>>, <<DynamicProperty.adoc#top,Dynamic Property>>, <<SetGlobalProperty.adoc#top, Set Global Property>>

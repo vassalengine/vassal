@@ -47,13 +47,13 @@ JDKDIR:=$(DISTDIR)/jdks
 JDOCDIR:=jdoc
 
 # numeric part of the version only
-VNUM:=3.7.2
+VNUM:=3.7.6
 # major-minor part of the version
 V_MAJ_MIN:=$(shell echo "$(VNUM)" | cut -f1,2 -d'.')
 
 MAVEN_VERSION:=$(VNUM)-SNAPSHOT
 #MAVEN_VERSION:=$(VNUM)-beta5
-3MAVEN_VERSION:=$(VNUM)
+#MAVEN_VERSION:=$(VNUM)
 
 JARNAME:=vassal-app-$(MAVEN_VERSION)
 
@@ -77,6 +77,7 @@ VERSION_50:=$(shell echo "$(VERSION)" | cut -c1-50)
 MVN:=./mvnw
 
 DMG:=$(DISTDIR)/dmg/libdmg-hfsplus/build/dmg/dmg
+LIPO:=$(DISTDIR)/lipo/lipo_linux_amd64
 
 NSIS:=makensis
 LAUNCH4J:=$(DISTDIR)/launch4j/launch4j/launch4j
@@ -144,6 +145,16 @@ $(TMPDIR)/macos-%-$(VERSION)-build/VASSAL.app: $(LIBDIR)/Vengine.jar $(TMPDIR)/m
 	cp -a $(DOCDIR) $@/Contents/Resources/doc
 	cp -a CHANGES LICENSE README.md $@/Contents/Resources/doc
 	cp -a $(LIBDIR)/Vengine.jar $@/Contents/Resources/Java
+
+$(TMPDIR)/macos-universal-$(VERSION)-build/VASSAL.app: $(TMPDIR)/macos-x86_64-$(VERSION)-build/VASSAL.app $(TMPDIR)/macos-aarch64-$(VERSION)-build/VASSAL.app
+	mkdir -p $@
+	cp -av $(TMPDIR)/macos-aarch64-$(VERSION)-build/VASSAL.app/* $@
+	find $@ -type f | while read f ; do \
+		if file "$${f/universal/aarch64}" | grep 'Mach-O.\+arm64' ; then \
+			echo "$$f" ; \
+			$(LIPO) -create -output "$$f" "$${f/universal/x86_64}" "$${f/universal/aarch64}" ; \
+		fi ; \
+	done
 
 $(TMPDIR)/macos-%-$(VERSION)-build: $(TMPDIR)/macos-%-$(VERSION)-build/VASSAL.app
 	ln -s /Applications $@/Applications
@@ -266,11 +277,9 @@ $(TMPDIR)/VASSAL-$(VERSION)-windows-noinst.zip: $(TMPDIR)/windows-noinst-$(VERSI
 
 release-linux: $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2
 
-release-macos: release-macos-x86_64 release-macos-aarch64
+release-macos: release-macos-universal
 
-release-macos-x86_64: $(TMPDIR)/VASSAL-$(VERSION)-macos-x86_64.dmg
-
-release-macos-aarch64: $(TMPDIR)/VASSAL-$(VERSION)-macos-aarch64.dmg
+release-macos-universal: $(TMPDIR)/VASSAL-$(VERSION)-macos-universal.dmg
 
 release-windows: release-windows-x86_32 release-windows-x86_64 release-windows-aarch64
 
@@ -284,7 +293,7 @@ release-windows-noinst: $(TMPDIR)/VASSAL-$(VERSION)-windows-noinst.zip
 
 release-other: $(TMPDIR)/VASSAL-$(VERSION)-other.zip
 
-$(TMPDIR)/VASSAL-$(VERSION).sha256: $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2 $(TMPDIR)/VASSAL-$(VERSION)-macos-x86_64.dmg $(TMPDIR)/VASSAL-$(VERSION)-macos-aarch64.dmg $(TMPDIR)/VASSAL-$(VERSION)-windows-x86_32.exe $(TMPDIR)/VASSAL-$(VERSION)-windows-x86_64.exe $(TMPDIR)/VASSAL-$(VERSION)-windows-aarch64.exe $(TMPDIR)/VASSAL-$(VERSION)-other.zip
+$(TMPDIR)/VASSAL-$(VERSION).sha256: $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2 $(TMPDIR)/VASSAL-$(VERSION)-macos-universal.dmg $(TMPDIR)/VASSAL-$(VERSION)-windows-x86_32.exe $(TMPDIR)/VASSAL-$(VERSION)-windows-x86_64.exe $(TMPDIR)/VASSAL-$(VERSION)-windows-aarch64.exe $(TMPDIR)/VASSAL-$(VERSION)-other.zip
 	pushd $(TMPDIR) ; sha256sum $(^F) >$(@F) ; popd
 
 release-sha256: $(TMPDIR)/VASSAL-$(VERSION).sha256
@@ -321,4 +330,4 @@ clean: clean-release
 # prevents make from trying to delete intermediate files
 .SECONDARY:
 
-.PHONY: compile test clean release release-linux release-macos release-macos-x86_64 release-macos-aarch64 release-windows release-windows-x86_32 release-windows-x86_64 release-windows-aarch64 release-other release-sha256 release-announcements clean-release post-release javadoc jar clean-javadoc version-set version-print
+.PHONY: compile test clean release release-linux release-macos release-macos-universal release-windows release-windows-x86_32 release-windows-x86_64 release-windows-aarch64 release-other release-sha256 release-announcements clean-release post-release javadoc jar clean-javadoc version-set version-print

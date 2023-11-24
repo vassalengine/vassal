@@ -37,7 +37,7 @@ instead you wanted to match pieces on the same map as the issuing piece, you cou
 *EXAMPLE 2:*
 
 [.text-center]
-image:images/CounterGlobalKeyCommand.png[]
+image:images/CounterGlobalKeyCommand2.png[]
 
 
 An Army unit that may stack with multiple generals can be given a command to "Put Senior General In Command" with the shortcut key command Alt+Ctrl+R.

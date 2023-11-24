@@ -24,8 +24,11 @@ import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.PropertiesWindow;
 import VASSAL.configure.ShowHelpAction;
+import VASSAL.tools.WarningDialog;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.swing.SwingUtils;
+
+import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -40,6 +43,7 @@ import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.EventListenerList;
@@ -56,10 +60,12 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellEditor;
 import javax.swing.tree.TreeSelectionModel;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -79,8 +85,8 @@ import java.util.List;
 public class TranslateWindow extends JDialog implements ListSelectionListener,
     TreeSelectionListener {
   private static final long serialVersionUID = 1L;
-  protected static final Color TRANSLATION_NEEDED_COLOR = Color.red;
-  protected static final Color TRANSLATION_DONE_COLOR = Color.blue;
+  protected static final Color TRANSLATION_NEEDED_COLOR = Color.black;
+  protected static final Color TRANSLATION_DONE_COLOR = Color.black;
   protected static final Color NO_TRANSLATION_NEEDED_COLOR = Color.black;
 
   protected Translatable target;
@@ -108,6 +114,14 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
   }
 
   protected void initComponents() {
+
+    // Default selection color on Mac makes Translation text unreadable. Change to same as Windows
+    // NOTE: This is interim only until 3.8 when I will implement a Vassal-wide solution.
+    if (SystemUtils.IS_OS_MAC) {
+      UIManager.put("Table.selectionBackground", new Color(184, 207, 229));
+      UIManager.put("Tree.selectionBackground", new Color(184, 207, 229));
+    }
+
     setTitle(Resources.getString("Editor.TranslateWindow.translate", ConfigureTree.getConfigureName((Configurable) target)));
     final JPanel mainPanel = new JPanel(new BorderLayout());
     /*
@@ -172,8 +186,14 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
    * @param target new Translation
    */
   protected void refreshTranslationList(Configurable target) {
+    final Translation newTranslation = (Translation) target;
+
     final List<Language> list = GameModule.getGameModule().getComponentsOf(Language.class);
     if (list != null) {
+      if (list.get(0).contains(newTranslation)) {
+        WarningDialog.show("Editor.TranslateWindow.translation_exists", newTranslation.getDescription());
+        return;
+      }
       final Language language = list.iterator().next();
       myConfigureTree.externalInsert(language, target);
     }
@@ -182,7 +202,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     for (final String lang : langs) {
       langBox.addItem(lang);
     }
-    langBox.setSelectedItem(((Translation) target).getDescription());
+    langBox.setSelectedItem(newTranslation.getDescription());
     keyTable.setEnabled(true);
     tree.repaint();
   }
@@ -712,13 +732,16 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
 
       if (originalValue == null || originalValue.length() == 0) {
         c.setForeground(NO_TRANSLATION_NEEDED_COLOR);
+        c.setFont(c.getFont().deriveFont(Font.PLAIN));
       }
       else {
         if (translation == null || translation.length() == 0) {
           c.setForeground(TRANSLATION_NEEDED_COLOR);
+          c.setFont(c.getFont().deriveFont(Font.BOLD));
         }
         else {
           c.setForeground(TRANSLATION_DONE_COLOR);
+          c.setFont(c.getFont().deriveFont(Font.PLAIN));
         }
       }
 
@@ -777,9 +800,11 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       final Translatable t = ((MyTreeNode) value).getTarget();
       if (t.getI18nData().hasUntranslatedAttributes(currentTranslation)) {
         c.setForeground(TRANSLATION_NEEDED_COLOR);
+        c.setFont(c.getFont().deriveFont(Font.BOLD));
       }
       else {
         c.setForeground(NO_TRANSLATION_NEEDED_COLOR);
+        c.setFont(c.getFont().deriveFont(Font.PLAIN));
       }
       return c;
     }

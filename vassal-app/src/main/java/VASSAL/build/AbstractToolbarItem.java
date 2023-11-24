@@ -268,7 +268,7 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
    * If this component is ALSO an {@link AbstractConfigurable}, then this list of attributes determines the appropriate
    * attribute order for {@link AbstractConfigurable#getAttributeDescriptions()} and {@link AbstractConfigurable#getAttributeTypes()}.
    *
-   * @return a list of all buildFile (XML) attribute names for this component
+   * @return an array of all buildFile (XML) attribute names for this component
    */
   @Override
   public String[] getAttributeNames() {
@@ -388,7 +388,7 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
   /**
    * Classes extending AbstractToolbarItem can call this as a super() method after checking for their own keys, to
    * avoid needing to deal with the nitty gritty of the toolbar button.
-   *
+   * <p>
    * Sets a buildFile (XML) attribute value for this component. The <code>key</code> parameter will be one of those listed in {@link #getAttributeNames}.
    * If the <code>value</code> parameter is a String, it will be the value returned by {@link #getAttributeValueString} for the same
    * <code>key</code>. If the implementing class extends {@link AbstractConfigurable}, then <code>value</code> will be an instance of
@@ -575,8 +575,13 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
   @Override
   public void addLocalImageNames(Collection<String> s) {
     final String string = launch.getAttributeValueString(launch.getIconAttribute());
-    if (string != null) { // Launch buttons sometimes have null icon attributes - yay
+    if (string != null && !string.isEmpty()) { // Launch buttons sometimes have null icon attributes - yay
       s.add(string);
     }
+    final String disabledIconName = disabledIconConfig.getValueString();
+    if (disabledIconName != null && !disabledIconName.isEmpty()) {
+      s.add(disabledIconName);
+    }
+
   }
 }
