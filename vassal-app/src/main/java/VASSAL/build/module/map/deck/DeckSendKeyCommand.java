@@ -315,6 +315,7 @@ public class DeckSendKeyCommand extends AbstractDeckKeyCommand {
   public void deregisterListeners() {
     if (sendListener != null) {
       GameModule.getGameModule().removeKeyStrokeListener(sendListener);
+      sendListener = null;
     }
   }
 
