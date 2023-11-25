@@ -1,5 +1,6 @@
 3.7.6 - ???
 
+* 12907: Deck Key Commands do not work on subsequent new games
 * 12881: Prevent integer overflow when computing the size of image pixel data
     in bytes
 

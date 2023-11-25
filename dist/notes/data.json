@@ -20,6 +20,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 12907, "desc": "Deck Key Commands do not work on subsequent new games" },
         { "num": 12881, "desc": "Prevent integer overflow when computing the size of image pixel data in bytes" }
       ],
       "other_improvements": [
