@@ -561,6 +561,16 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
         log(Resources.getString(options.contains(ADD_NEW_DECKS) ? "GameRefresher.addable_decks" : "GameRefresher.addable_decks_2", addable)); //NON-NLS
       }
     }
+    /*
+     * 5. Exit after second (final) GHK, if selected
+     */
+
+    if (options.contains(USE_HOTKEY2)) { //NON-NLS
+      // About to commence refreshing the game, allow a custom start.
+      log(Resources.getString("GameRefresher.fire_GHK", "VassalPostRefreshGHK"));
+      GameModule.getGameModule().fireKeyStroke(NamedKeyStroke.of("VassalPostRefreshGHK"));
+    }
+
     noGpIdMatch = gpIdChecker.noGpIdMatch; // So that GpId failures accumulator can be passed back to PreDefined Setup refresher
   }
 
