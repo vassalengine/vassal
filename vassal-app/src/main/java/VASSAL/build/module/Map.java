@@ -3571,6 +3571,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public static final String OLD_MAP = "previousMap"; //$NON-NLS-1$
   public static final String MAP_NAME = "mapName"; //$NON-NLS-1$
   public static final String PIECE_NAME = "pieceName"; //$NON-NLS-1$
+  public static final String PIECE_COUNT = "pieceCount"; //$NON-NLS-1$
   public static final String MESSAGE = "message"; //$NON-NLS-1$
 
   /**
@@ -3599,7 +3600,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public static class MoveWithinFormatConfig implements TranslatableConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new PlayerIdFormattedExpressionConfigurer(key, name, new String[] { PIECE_NAME, LOCATION, MAP_NAME, OLD_LOCATION });
+      return new PlayerIdFormattedExpressionConfigurer(key, name, new String[] { PIECE_NAME, PIECE_COUNT, LOCATION, MAP_NAME, OLD_LOCATION });
     }
   }
 
@@ -3610,7 +3611,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public static class MoveToFormatConfig implements TranslatableConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new PlayerIdFormattedExpressionConfigurer(key, name, new String[] { PIECE_NAME, LOCATION, OLD_MAP, MAP_NAME, OLD_LOCATION });
+      return new PlayerIdFormattedExpressionConfigurer(key, name, new String[] { PIECE_NAME, PIECE_COUNT, LOCATION, OLD_MAP, MAP_NAME, OLD_LOCATION });
     }
   }
 
@@ -3630,7 +3631,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public static class CreateFormatConfig implements TranslatableConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new PlayerIdFormattedExpressionConfigurer(key, name, new String[] { PIECE_NAME, MAP_NAME, LOCATION });
+      return new PlayerIdFormattedExpressionConfigurer(key, name, new String[] { PIECE_NAME, PIECE_COUNT, MAP_NAME, LOCATION });
     }
   }
 
