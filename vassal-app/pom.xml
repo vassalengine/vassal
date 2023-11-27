@@ -107,7 +107,7 @@
         <dependency>
             <groupId>org.codehaus.janino</groupId>
             <artifactId>janino</artifactId>
-            <version>3.1.10</version>
+            <version>3.1.11</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
