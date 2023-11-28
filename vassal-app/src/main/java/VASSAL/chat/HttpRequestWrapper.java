@@ -32,8 +32,8 @@ import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
@@ -73,7 +73,7 @@ public class HttpRequestWrapper {
     }
   }
 
-  private String errorMessage(CloseableHttpResponse response) throws IOException {
+  private String errorMessage(ClassicHttpResponse response) throws IOException {
     final String msg = response.getCode() + " " + response.getReasonPhrase();
 
     String responseText = null;
@@ -97,10 +97,8 @@ public class HttpRequestWrapper {
   public List<String> doGet(String path,
                             Properties props) throws IOException {
     final HttpGet httpGet = new HttpGet(buildGet(path, props));
-    try (CloseableHttpClient client = HttpClients.createDefault()) {
-      try (CloseableHttpResponse response = client.execute(httpGet)) {
-        return getLinesOk(response, 200);
-      }
+    try (CloseableHttpClient client = HttpClients.createMinimal()) {
+      return client.execute(httpGet, response -> getLinesOk(response, 200));
     }
     catch (final IOException e) {
       throw new IOException("Failed to " + httpGet.toString(), e);
@@ -127,13 +125,11 @@ public class HttpRequestWrapper {
                              Properties props) throws IOException {
     final HttpPost httpPost = buildPost(path, props);
     try (CloseableHttpClient client = HttpClients.createDefault()) {
-      try (CloseableHttpResponse response = client.execute(httpPost)) {
-        return getLinesOk(response, 201);
-      }
+      return client.execute(httpPost, response -> getLinesOk(response, 201));
     }
   }
 
-  private List<String> getLinesOk(CloseableHttpResponse response, int ok_code) throws IOException {
+  private List<String> getLinesOk(ClassicHttpResponse response, int ok_code) throws IOException {
     if (response.getCode() == ok_code) {
       try {
         return IOUtils.readLines(
