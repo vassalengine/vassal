@@ -37,7 +37,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.4.11</version>
+            <version>1.4.12</version>
         </dependency>
         <dependency>
             <groupId>com.miglayout</groupId>
@@ -72,7 +72,7 @@
         <dependency>
           <groupId>org.apache.httpcomponents.client5</groupId>
           <artifactId>httpclient5</artifactId>
-          <version>5.2.2</version>
+          <version>5.2.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.xmlgraphics</groupId>
@@ -107,7 +107,7 @@
         <dependency>
             <groupId>org.codehaus.janino</groupId>
             <artifactId>janino</artifactId>
-            <version>3.1.10</version>
+            <version>3.1.11</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -148,7 +148,7 @@
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
-            <version>1.16.2</version>
+            <version>1.17.1</version>
         </dependency>
 
         <!-- Test Dependencies -->
