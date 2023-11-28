@@ -1736,7 +1736,7 @@ public class GameModule extends AbstractConfigurable
    */
   public void setGameFileMode(GameFileMode mode) {
     gameFileMode = Objects.requireNonNull(mode);
-    if (mode == GameFileMode.NEW_GAME) gameFile = "";
+    if (mode == GameFileMode.NEW_GAME) gameFile = "";  // reset title bar in event of a new game
     updateTitleBar();
   }
 

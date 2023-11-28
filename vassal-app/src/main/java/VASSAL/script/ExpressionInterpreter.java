@@ -611,6 +611,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * @return            Generated filter
    */
   private PieceFilter createFilter(String expression, PropertySource ps, String comment) {
+    if (expression == null) return null;
     final String matchString = replaceDollarVariables(expression, ps);
     return matchString == null || matchString.isEmpty() ? null : new PropertyExpression(unescape(matchString)).getFilter(ps, currentOwner, AuditTrail.create(ps, expression, comment));
   }
@@ -1164,6 +1165,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
     String mapName = map == null ? "" : map.toString();
     String zoneName = zone == null ? "" : zone.toString();
+    final String expr = expression == null ? "" : expression.toString();
 
     // GamePiece versions of SumZone may not have provided a map or zone, use the ones where the source piece is.
     if (ps instanceof GamePiece && mapName.isEmpty()) {
@@ -1171,8 +1173,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       zoneName = (String) ps.getProperty(BasicPiece.CURRENT_ZONE);
     }
 
-    final PieceFilter filter = createFilter(expression, ps);
-    final Map targetMap = findVassalMap(map.toString());
+    final PieceFilter filter = createFilter(expr, ps);
+    final Map targetMap = findVassalMap(mapName);
 
     return targetMap == null ? 0 : sumZone(property.toString(), zoneName, targetMap, filter);
   }

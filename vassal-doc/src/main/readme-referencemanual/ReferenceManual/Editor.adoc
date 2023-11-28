@@ -50,8 +50,9 @@ Opens the Vassal Reference Manual page for this component.
 
 ===== Search...
 
-This option from the Edit menu lets you search for Components by name or by class name (the class name pf a Component is the "type" of Component it is, enclosed in square braces in the Editor's Configuration Window, such as a "Map Window").
-The Search will commence from this component.
+This Edit menu option lets you search for Components by name or by class name (the class name of a Component is the "type" of Component it is, enclosed in square braces in the Editor's Configuration Window, such as a "Map Window"). The search will commence from the currently selected Component.
+
+The <<Search.adoc#top,search>> panel offers options to search for most component details too.
 
 ===== Delete
 

@@ -25,7 +25,7 @@ jobs:
 
       - name: Store version
         id: version
-        run: echo "VERSION=$(make version-print)" >>$GITHUB_OUTPUT
+        run: echo "VERSION=$(make version-print)" >> $GITHUB_OUTPUT
 
       - name: Update container
         run: sudo apt update
@@ -37,7 +37,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: 20
+          java-version: 21
           java-package: jdk
 
       - name: Cache Maven packages
@@ -56,6 +56,7 @@ jobs:
             ./dist/dmg
             ./dist/jdks
             ./dist/launch4j
+            ./dist/lipo
           key: ${{ runner.os }}-bootstrap-${{ hashFiles('bootstrap.sh') }}
 
       - name: Install packaging dependencies
@@ -71,17 +72,11 @@ jobs:
           name: VASSAL-${{ steps.version.outputs.VERSION }}-linux.tar.bz2
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-linux.tar.bz2
 
-      - name: Archive MacOS x86_64
+      - name: Archive MacOS
         uses: actions/upload-artifact@v3
         with:
-          name: VASSAL-${{ steps.version.outputs.VERSION }}-macos-x86_64.dmg
-          path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-macos-x86_64.dmg
-
-      - name: Archive MacOS aarch64
-        uses: actions/upload-artifact@v3
-        with:
-          name: VASSAL-${{ steps.version.outputs.VERSION }}-macos-aarch64.dmg
-          path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-macos-aarch64.dmg
+          name: VASSAL-${{ steps.version.outputs.VERSION }}-macos-universal.dmg
+          path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-macos-universal.dmg
 
       - name: Archive other
         uses: actions/upload-artifact@v3
