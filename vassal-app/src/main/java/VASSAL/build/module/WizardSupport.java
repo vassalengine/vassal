@@ -519,19 +519,75 @@ public class WizardSupport {
       return box;
     }
 
+    // From 3.7.6, load Pre-defined setups in the Foreground, not in the Background as arrowing through the PDS drop-down can initiate
+    // multiple concurrent game loads for any but the smallest save files.
     protected void loadSetup(PredefinedSetup setup, final WizardController controller, final Map settings) {
+      controller.setProblem(Resources.getString("WizardSupport.LoadingGame"));
       final GameModule g = GameModule.getGameModule();
+
+      // First check the specified PDS actually exists in the module
+      final String fileName = setup.getFileName();
       try {
-        new SavedGameLoader(controller, settings, new BufferedInputStream(setup.getSavedGameContents()), POST_PLAY_OFFLINE_WIZARD, true).start();
+        if (!g.getDataArchive().contains(fileName)) {
+          controller.setProblem(Resources.getString("WizardSupport.UnableToLoad"));
+          return;
+        }
       }
-      // FIXME: review error message
-      catch (IOException e1) {
+      catch (Exception e) {
         controller.setProblem(Resources.getString("WizardSupport.UnableToLoad"));
+        return;
       }
-      // Predefined Scenarios are files too...
+
+      try {
+        final BufferedInputStream bis = new BufferedInputStream(setup.getSavedGameContents());
+        Command setupCommand = GameModule.getGameModule().getGameState().decodeSavedGame(bis);
+        bis.close();
+        try {
+          if (setupCommand == null) {
+            throw new IOException(Resources.getString("WizardSupport.InvalidSavefile")); //$NON-NLS-1$
+          }
+          // Strip out the setup(true) command. This will be applied when the "Finish" button is pressed
+          setupCommand = new CommandFilter() {
+            @Override
+            protected boolean accept(Command c) {
+              return !(c instanceof GameState.SetupCommand) ||
+                !((GameState.SetupCommand) c).isGameStarting();
+            }
+          }.apply(setupCommand);
+        }
+        catch (IllegalStateException e) {
+          final String msg = e.getMessage();
+          if (msg != null && msg.startsWith(Resources.getString("Decorator.no_state_for_trait"))) { //BR//
+            WarningDialog.show("GameState.probably_wrong_version"); //NON-NLS
+          }
+          else {
+            throw e;
+          }
+        }
+
+        setupCommand.execute();
+
+        GameModule.getGameModule().getGameState().freshenStartupGlobalKeyCommands(GameModule.getGameModule());
+
+        controller.setProblem(null);
+        final GameSetupPanels panels = GameSetupPanels.newInstance();
+        settings.put(POST_PLAY_OFFLINE_WIZARD, panels);
+        controller.setForwardNavigationMode(panels == null ? WizardController.MODE_CAN_FINISH : WizardController.MODE_CAN_CONTINUE);
+      }
+      catch (IOException ex) {
+        controller.setProblem(Resources.getString("WizardSupport.UnableToLoad"));
+        return;
+      }
+      finally {
+        controller.setBusy(false);
+      }
+
+      // Load successful. Clear the wizard problem and set the filename
+      controller.setProblem(null);
       g.setGameFile(setup.getFileName(), GameModule.GameFileMode.LOADED_GAME);
     }
   }
+
 
   /**
    * Branches the wizard by forwarding to the Wizard stored in the wizard settings under a specified key
