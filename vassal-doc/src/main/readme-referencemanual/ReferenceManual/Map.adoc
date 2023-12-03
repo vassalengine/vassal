@@ -26,7 +26,7 @@ module to know whether Global Hotkeys sent to that map's components will current
 They are designed for holding pieces and cards that are private to one player or side.
 
 
-[width="100%",cols="50%a,50%a",]
+[width="100%",cols="50%a,50%a",grid=cols]
 |===
 |*Map name:*::  The name of this map window.
 
@@ -67,26 +67,48 @@ NOTE: changing this option will not take effect until the module has been reload
 
 *Hotkey to hide window:*:: A <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> that hides the window.
 
-NOTE: The following reports are separate from, and in addition to, any reports the piece itself generates with <<ReportChanges.adoc#top,Report Action>> traits in response to the Key Command applied by the bottom field.
+NOTE: The following reports are separate from, and in addition to, any reports the piece itself generates with <<ReportChanges.adoc#top,Report Action>> traits in response to the Key Command applied by the <<#EndMovementKeyCommand,last field>>.
 
-*Only auto-report move "within this map" if piece's Location Name changed:*::  If selected, then movement "within this map" will only be auto-reported if the piece's LocationName property is changed by the move.
+*Only auto-report move "within this map" if piece's Location Name changed:*::  If checked, then movement "within this map" will be auto-reported only if the piece's _$location$_ property is changed by the move. Thus only displaying a message if the piece has actually changed location rather than merely being adjusted in its space.
+|image:images/Map.png[]
+image:images/Map2.png[]
 
-*Auto-report format for movement within this map:*::  A <<MessageFormat.adoc#top,Message Format>> that will be used to automatically report movement of pieces completely within this map window: _$pieceName$_ is the name of the piece being moved, _$location$_ is the location to which the piece is being moved (in the format specified below), _$previousLocation$_ is the location from which the piece is being moved.
+| *Auto-report format for movement within this map:*::  A <<MessageFormat.adoc#top,Message Format>> that will be used to automatically report movement of pieces completely within this map window. _$pieceName$_ is the name of the piece being moved, _$location$_ is the location to which the piece is being moved, _$previousLocation$_ is the location from which the piece is being moved. Refer to the <<AutoReportTable,Auto-report Table>> for a complete list of available properties.
++
+TIP: Click on the Insert drop-down menu, next to the textbox, for a list of available Properties. Selecting one of the Properties from the menu will insert it at the current cursor position. To enable the Insert drop-down, left-click in the associated textbox to set the insertion point.
 
-*Auto-report format for movement to this map:*::  A <<MessageFormat.adoc#top,Message Format>> that will be used to report movement of pieces to this map window from another map window: In addition to the properties noted for the above item, _$previousMap$_ is the name of the map from which the piece is being moved.
+*Auto-report format for movement to this map:*::  A <<MessageFormat.adoc#top,Message Format>> that will be used to report movement of pieces to this map window from another map window. Whether moving a single unit or a stack of units to this map, only one report will be generated. For a stack, the _$pieceName$_ property is a comma separated list of all the units in the stack. The _$pieceCount$_ property reports the number of units in the stack. _$previousMap$_ is the name of the map from which the piece is being moved. Refer to the <<AutoReportTable,Auto-report Table>> for a complete list of available properties.
 
-*Auto-report format for units created in this map:*::  A <<MessageFormat.adoc#top,Message Format>> that will be used to report pieces that are dragged to this map window directly from a <<PieceWindow.adoc#top,Game Piece Palette>>: The properties mentioned in the previous two items may be referenced as appropriate.
+*Auto-report format for units created in this map:*::  A <<MessageFormat.adoc#top,Message Format>> that will be used to report pieces that are dragged to this map window directly from a <<PieceWindow.adoc#top,Game Piece Palette>>. Refer to the <<AutoReportTable,Auto-report Table>> for a complete list of available properties.
 
-*Auto-report format for units modified on this map:*::  When a <<ReportChanges.adoc#top,Report Action>> trait of a Game Piece on this map is activated, this <<MessageFormat.adoc#top,Message Format>> will be used to format the message that trait requests to display.
-_$message$_ is the text message from the Report Action trait.
-It could optionally be modified to include e.g.
-the name of this Map.
+*Auto-report format for units modified on this map:*::  When a <<ReportChanges.adoc#top,Report Action>> trait of a Game Piece on this map is activated, this <<MessageFormat.adoc#top,Message Format>> will be used to format the message that that trait requests to display. _$message$_ is the text message from the Report Action trait. It could be modified, for example, to include the name of this map. Refer to the <<AutoReportTable,Auto-report Table>> for a complete list of available properties.
 
+[#EndMovementKeyCommand]
 *Key Command to apply to all units ending movement on this map:* :: The Key Command or <<NamedKeyCommand.adoc#top,Named Key Command>> to be automatically applied to each piece that ends movement on this map, whether it is moved by drag-and-drop or by a <<SendToLocation.adoc#top,Send To Location>> trait.
 +
-This Key Command can be used, for example, to trigger actions that need to be taken when a piece enters or leaves a new space (for example maintaining piece type counts in a Zone -- see Example 4 in the <<TriggerAction.adoc#top,Trigger Action>> trait), or to generate more elaborate <<ReportChanges.adoc#top,Report Action>> chat log messages than can be created with the Auto-report format (for example, ensuring that the message is only displayed if the piece has actually changed regions rather than merely being adjusted in its space). |image:images/Map.png[]
+This Key Command can be used, for example, to trigger actions that need to be taken when a piece enters or leaves a new space (for example maintaining piece type counts in a Zone -- see Example 1 in the <<TriggerAction.adoc#top,Trigger Action>> trait), or to generate more elaborate <<ReportChanges.adoc#top,Report Action>> chat log messages than can be created with the Auto-report format (for example, ensuring that the message is only displayed if the piece has actually changed regions rather than merely being adjusted in its space).
+|[#AutoReportTable]
+[caption=""]
+.Available Auto-report Properties By Report
+[cols="3a,1a,1a,1a,1a]
+!===
+!*Property* !*Movement Within Map* !*Movement To Map* !*Create Unit* !*Modify Unit*
 
-image:images/Map2.png[]
+!*PlayerName*      ! X ! X ! X ! X
+!*PlayerSide*      ! X ! X ! X ! X
+!*PlayerId*        ! X ! X ! X ! X
+!*pieceName*       ! X ! X ! X ! 
+!*oldPieceName*    !   !   !   ! X
+!*newPieceName*    !   !   !   ! X
+!*pieceCount*      ! X ! X ! X !  
+!*location*        ! X ! X ! X ! X
+!*previousLocation*! X ! X !   !  
+!*mapName*         ! X ! X ! X ! X
+!*previousMap*     ! X ! X !   !  
+!*menuCommand*     !   !   !   ! X
+!*message*         !   !   !   ! X
+!===
+Property names are case sensitive and must be entered exactly as shown.
 |===
 
 '''''
