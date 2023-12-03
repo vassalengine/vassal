@@ -349,45 +349,57 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     }
 
     /*
-     * 1a. Once GPID checks are passed, allow the first hotkey
-     */
-    if (options.contains(USE_HOTKEY1)) { //NON-NLS
-      // About to commence refreshing the game, allow a custom start.
-      log(Resources.getString("GameRefresher.fire_GHK", "VassalPreRefreshGHK"));
-      GameModule.getGameModule().fireKeyStroke(NamedKeyStroke.of("VassalPreRefreshGHK"));
-    }
-
-    /*
      * 2. Build a list in visual order of all stacks, decks, mats and other pieces that need refreshing
      */
-    final List<Refresher> refreshables = getRefreshables();
 
     /*
      * And refresh them. Even if Refresh Pieces is off, still scan to make a list of the Decks in case we need to update their attributes
      */
-    if (options.contains(REFRESH_PIECES)) {
 
-      log(Resources.getString("GameRefresher.run_refresh_counters_v4"));
+    if (options.contains(REFRESH_PIECES) || options.contains(USE_HOTKEY1) || options.contains(USE_HOTKEY2)) {
 
-      log(Resources.getString("GameRefresher.counters_kept", totalCount - notOwnedCount - notVisibleCount));
-      if (notOwnedCount > 0) log(ERROR_MESSAGE_PREFIX  + Resources.getString("GameRefresher.counters_not_owned", notOwnedCount));
-      if (notVisibleCount > 0) log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_not_visible", notVisibleCount));
+      final List<Refresher> refreshables = getRefreshables();
 
-      indexAllAttachments();
+      /*
+       * 2a. Game is now available for hotkey processing...
+       */
+      if (options.contains(USE_HOTKEY1)) { //NON-NLS
 
-      for (final Refresher refresher : refreshables) refresher.refresh(command);
+        // About to commence refreshing the game, allow a custom start.
+        log(Resources.getString("GameRefresher.fire_GHK", "VassalPreRefreshGHK"));
+        GameModule.getGameModule().fireKeyStroke(NamedKeyStroke.of("VassalPreRefreshGHK"));
+      }
+
+      if (options.contains(REFRESH_PIECES)) {
+
+        log(Resources.getString("GameRefresher.run_refresh_counters_v4"));
+
+        log(Resources.getString("GameRefresher.counters_kept", totalCount - notOwnedCount - notVisibleCount));
+        if (notOwnedCount > 0)
+          log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_not_owned", notOwnedCount));
+        if (notVisibleCount > 0)
+          log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_not_visible", notVisibleCount));
+
+        indexAllAttachments();
+
+        for (final Refresher refresher : refreshables)
+          refresher.refresh(command);
 
       /* removed as decks array is not used - to implement this code needs to be restored within for loop and pieces / decks refresh conditions interleaved
         if (refresher instanceof DeckRefresher && options.contains(REFRESH_DECKS)) {
         decks.add(((DeckRefresher) refresher).getDeck());
       }*/
 
-      refreshAllAttachments(command);
+        refreshAllAttachments(command);
 
-      log(Resources.getString("GameRefresher.counters_refreshed", updatedCount));
-      if (notFoundCount > 0) log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_not_found", notFoundCount));
-      if (noMapCount > 0) log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_no_map", noMapCount));
-      if (noStackCount > 0) log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_no_stack", noStackCount));
+        log(Resources.getString("GameRefresher.counters_refreshed", updatedCount));
+        if (notFoundCount > 0)
+          log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_not_found", notFoundCount));
+        if (noMapCount > 0)
+          log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_no_map", noMapCount));
+        if (noStackCount > 0)
+          log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_no_stack", noStackCount));
+      }
     }
 
     /*
