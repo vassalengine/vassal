@@ -20,7 +20,8 @@
       "new_features": [
       ],
       "bug_fixes": [
-        {" num": 12936, "desc": "Labels have incorrect bounds when using italics" },
+        { "num": 12958, "desc": "Store correct value in prefs for Module Manager column widths" },
+        { "num": 12936, "desc": "Labels have incorrect bounds when using italics" },
         { "num": 12907, "desc": "Deck Key Commands do not work on subsequent new games" },
         { "num": 12881, "desc": "Prevent integer overflow when computing the size of image pixel data in bytes" }
       ],

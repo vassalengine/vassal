@@ -1,5 +1,6 @@
 3.7.6 - ???
 
+* 12958: Store correct value in prefs for Module Manager column widths
 * 12936: Labels have incorrect bounds when using italics
 * 12907: Deck Key Commands do not work on subsequent new games
 * 12881: Prevent integer overflow when computing the size of image pixel data
