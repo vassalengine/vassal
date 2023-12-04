@@ -56,6 +56,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -69,6 +70,7 @@ import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -493,7 +495,11 @@ public class WizardSupport {
           if (setupSelection.getSelectedItem() instanceof PredefinedSetup) {
             final PredefinedSetup setup = (PredefinedSetup) setupSelection.getSelectedItem();
             if (setup.isUseFile() && setup.getFileName() != null) {
+              final JDialog dialog = (JDialog) SwingUtilities.getWindowAncestor(setupSelection);
+              final Cursor oldCursor = dialog.getCursor();
+              dialog.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
               loadSetup(setup, controller, settings);
+              dialog.setCursor(oldCursor);
             }
             else {
               final GameSetupPanels panels = GameSetupPanels.newInstance();
@@ -547,7 +553,7 @@ public class WizardSupport {
           return;
         }
       }
-      catch (Exception e) {
+      catch (IOException e) {
         controller.setProblem(Resources.getString("WizardSupport.UnableToLoad"));
         return;
       }
