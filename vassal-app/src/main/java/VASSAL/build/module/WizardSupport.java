@@ -63,6 +63,8 @@ import javax.swing.JRadioButton;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -481,23 +483,35 @@ public class WizardSupport {
       comboBoxModel.insertElementAt(description, 0);
       final JComboBox<Object> setupSelection = new JComboBox<>(comboBoxModel);
       setupSelection.setSelectedIndex(0);
-      setupSelection.addActionListener(e -> {
-        if (setupSelection.getSelectedItem() instanceof PredefinedSetup) {
-          final PredefinedSetup setup = (PredefinedSetup) setupSelection.getSelectedItem();
-          if (setup.isUseFile() && setup.getFileName() != null) {
-            loadSetup(setup, controller, settings);
+      setupSelection.addPopupMenuListener(new PopupMenuListener() {
+        @Override
+        public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+        }
+
+        @Override
+        public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+          if (setupSelection.getSelectedItem() instanceof PredefinedSetup) {
+            final PredefinedSetup setup = (PredefinedSetup) setupSelection.getSelectedItem();
+            if (setup.isUseFile() && setup.getFileName() != null) {
+              loadSetup(setup, controller, settings);
+            }
+            else {
+              final GameSetupPanels panels = GameSetupPanels.newInstance();
+              settings.put(POST_PLAY_OFFLINE_WIZARD, panels);
+              controller.setProblem(null);
+              controller.setForwardNavigationMode(panels == null ? WizardController.MODE_CAN_FINISH : WizardController.MODE_CAN_CONTINUE);
+            }
           }
           else {
-            final GameSetupPanels panels = GameSetupPanels.newInstance();
-            settings.put(POST_PLAY_OFFLINE_WIZARD, panels);
-            controller.setProblem(null);
-            controller.setForwardNavigationMode(panels == null ? WizardController.MODE_CAN_FINISH : WizardController.MODE_CAN_CONTINUE);
+            controller.setProblem(description);
           }
         }
-        else {
-          controller.setProblem(description);
+
+        @Override
+        public void popupMenuCanceled(PopupMenuEvent e) {
         }
       });
+
       setupSelection.setMaximumSize(new Dimension(setupSelection.getMaximumSize().width, setupSelection.getPreferredSize().height));
       setupSelection.setRenderer(new DefaultListCellRenderer() {
         private static final long serialVersionUID = 1L;
