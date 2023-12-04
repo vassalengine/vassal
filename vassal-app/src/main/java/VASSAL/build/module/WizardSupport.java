@@ -552,10 +552,8 @@ public class WizardSupport {
         return;
       }
 
-      try {
-        final BufferedInputStream bis = new BufferedInputStream(setup.getSavedGameContents());
+      try (InputStream in = setup.getSavedGameContents(); BufferedInputStream bis = new BufferedInputStream(in)) {
         Command setupCommand = GameModule.getGameModule().getGameState().decodeSavedGame(bis);
-        bis.close();
         try {
           if (setupCommand == null) {
             throw new IOException(Resources.getString("WizardSupport.InvalidSavefile")); //$NON-NLS-1$
