@@ -547,7 +547,7 @@ public class WizardSupport {
           return;
         }
       }
-      catch (Exception e) {
+      catch (IOException e) {
         controller.setProblem(Resources.getString("WizardSupport.UnableToLoad"));
         return;
       }
