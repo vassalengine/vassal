@@ -56,6 +56,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -63,10 +64,13 @@ import javax.swing.JRadioButton;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -481,23 +485,39 @@ public class WizardSupport {
       comboBoxModel.insertElementAt(description, 0);
       final JComboBox<Object> setupSelection = new JComboBox<>(comboBoxModel);
       setupSelection.setSelectedIndex(0);
-      setupSelection.addActionListener(e -> {
-        if (setupSelection.getSelectedItem() instanceof PredefinedSetup) {
-          final PredefinedSetup setup = (PredefinedSetup) setupSelection.getSelectedItem();
-          if (setup.isUseFile() && setup.getFileName() != null) {
-            loadSetup(setup, controller, settings);
+      setupSelection.addPopupMenuListener(new PopupMenuListener() {
+        @Override
+        public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+        }
+
+        @Override
+        public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+          if (setupSelection.getSelectedItem() instanceof PredefinedSetup) {
+            final PredefinedSetup setup = (PredefinedSetup) setupSelection.getSelectedItem();
+            if (setup.isUseFile() && setup.getFileName() != null) {
+              final JDialog dialog = (JDialog) SwingUtilities.getWindowAncestor(setupSelection);
+              final Cursor oldCursor = dialog.getCursor();
+              dialog.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+              loadSetup(setup, controller, settings);
+              dialog.setCursor(oldCursor);
+            }
+            else {
+              final GameSetupPanels panels = GameSetupPanels.newInstance();
+              settings.put(POST_PLAY_OFFLINE_WIZARD, panels);
+              controller.setProblem(null);
+              controller.setForwardNavigationMode(panels == null ? WizardController.MODE_CAN_FINISH : WizardController.MODE_CAN_CONTINUE);
+            }
           }
           else {
-            final GameSetupPanels panels = GameSetupPanels.newInstance();
-            settings.put(POST_PLAY_OFFLINE_WIZARD, panels);
-            controller.setProblem(null);
-            controller.setForwardNavigationMode(panels == null ? WizardController.MODE_CAN_FINISH : WizardController.MODE_CAN_CONTINUE);
+            controller.setProblem(description);
           }
         }
-        else {
-          controller.setProblem(description);
+
+        @Override
+        public void popupMenuCanceled(PopupMenuEvent e) {
         }
       });
+
       setupSelection.setMaximumSize(new Dimension(setupSelection.getMaximumSize().width, setupSelection.getPreferredSize().height));
       setupSelection.setRenderer(new DefaultListCellRenderer() {
         private static final long serialVersionUID = 1L;
@@ -519,19 +539,73 @@ public class WizardSupport {
       return box;
     }
 
+    // From 3.7.6, load Pre-defined setups in the Foreground, not in the Background as arrowing through the PDS drop-down can initiate
+    // multiple concurrent game loads for any but the smallest save files.
     protected void loadSetup(PredefinedSetup setup, final WizardController controller, final Map settings) {
+      controller.setProblem(Resources.getString("WizardSupport.LoadingGame"));
       final GameModule g = GameModule.getGameModule();
+
+      // First check the specified PDS actually exists in the module
+      final String fileName = setup.getFileName();
       try {
-        new SavedGameLoader(controller, settings, new BufferedInputStream(setup.getSavedGameContents()), POST_PLAY_OFFLINE_WIZARD, true).start();
+        if (!g.getDataArchive().contains(fileName)) {
+          controller.setProblem(Resources.getString("WizardSupport.UnableToLoad"));
+          return;
+        }
       }
-      // FIXME: review error message
-      catch (IOException e1) {
+      catch (IOException e) {
         controller.setProblem(Resources.getString("WizardSupport.UnableToLoad"));
+        return;
       }
-      // Predefined Scenarios are files too...
+
+      try (InputStream in = setup.getSavedGameContents(); BufferedInputStream bis = new BufferedInputStream(in)) {
+        Command setupCommand = GameModule.getGameModule().getGameState().decodeSavedGame(bis);
+        try {
+          if (setupCommand == null) {
+            throw new IOException(Resources.getString("WizardSupport.InvalidSavefile")); //$NON-NLS-1$
+          }
+          // Strip out the setup(true) command. This will be applied when the "Finish" button is pressed
+          setupCommand = new CommandFilter() {
+            @Override
+            protected boolean accept(Command c) {
+              return !(c instanceof GameState.SetupCommand) ||
+                !((GameState.SetupCommand) c).isGameStarting();
+            }
+          }.apply(setupCommand);
+        }
+        catch (IllegalStateException e) {
+          final String msg = e.getMessage();
+          if (msg != null && msg.startsWith(Resources.getString("Decorator.no_state_for_trait"))) { //BR//
+            WarningDialog.show("GameState.probably_wrong_version"); //NON-NLS
+          }
+          else {
+            throw e;
+          }
+        }
+
+        setupCommand.execute();
+
+        GameModule.getGameModule().getGameState().freshenStartupGlobalKeyCommands(GameModule.getGameModule());
+
+        controller.setProblem(null);
+        final GameSetupPanels panels = GameSetupPanels.newInstance();
+        settings.put(POST_PLAY_OFFLINE_WIZARD, panels);
+        controller.setForwardNavigationMode(panels == null ? WizardController.MODE_CAN_FINISH : WizardController.MODE_CAN_CONTINUE);
+      }
+      catch (IOException ex) {
+        controller.setProblem(Resources.getString("WizardSupport.UnableToLoad"));
+        return;
+      }
+      finally {
+        controller.setBusy(false);
+      }
+
+      // Load successful. Clear the wizard problem and set the filename
+      controller.setProblem(null);
       g.setGameFile(setup.getFileName(), GameModule.GameFileMode.LOADED_GAME);
     }
   }
+
 
   /**
    * Branches the wizard by forwarding to the Wizard stored in the wizard settings under a specified key
