@@ -61,6 +61,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 import java.awt.Point;
@@ -102,8 +103,8 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
   public static final String REFRESH_PIECES = "RefreshPieces";
   public static final String DELETE_OLD_DECKS = "DeleteOldDecks";
   public static final String ADD_NEW_DECKS = "AddNewDecks";
-  public static final String USE_HOTKEY1 = "UseHotkey1";
-  public static final String USE_HOTKEY2 = "UseHotkey2";
+  public static final String USE_HOTKEY = "UseHotkey";
+  public static final String SUPPRESS_INFO_REPORTS = "SuppressInfoReports";
 
   private Action refreshAction;
   private final GpIdSupport gpIdSupport;
@@ -120,6 +121,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
   public int noMapCount; // shared to PDS refresher - not used!!!
   public int notOwnedCount; // shared to PDS refresher
   public int notVisibleCount; // shared to PDS refresher
+  public int deckWarnings; // shared to PDS refresher
 
   public static final String ERROR_MESSAGE_PREFIX = "~";
   public static final String SEPARATOR = "----------";
@@ -190,7 +192,6 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
   }
 
   public void log(String message) {
-    // ex for dialog msg dialog.addMessage(Resources.getString("GameRefresher.counters_refreshed_test", updatedCount));
     // Log to chatter
     GameModule.getGameModule().warn(message);
     logger.info(message);
@@ -321,7 +322,6 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     noMapCount = 0;
     noStackCount = 0;
 
-
     /*
      * 1. Use the GpIdChecker to build a cross-reference of all available
      * PieceSlots and PlaceMarker's in the module.
@@ -348,55 +348,50 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       }
     }
 
-    /*
-     * 1a. Once GPID checks are passed, allow the first hotkey
-     */
-    if (options.contains(USE_HOTKEY1)) { //NON-NLS
-      // About to commence refreshing the game, allow a custom start.
-      log(Resources.getString("GameRefresher.fire_GHK", "VassalPreRefreshGHK"));
-      GameModule.getGameModule().fireKeyStroke(NamedKeyStroke.of("VassalPreRefreshGHK"));
-    }
-
-    /*
-     * 2. Build a list in visual order of all stacks, decks, mats and other pieces that need refreshing
-     */
+  /*
+   * 2. Build a list in visual order of all stacks, decks, mats and other pieces that need refreshing
+   */
     final List<Refresher> refreshables = getRefreshables();
 
+  /*
+   * And refresh them. Even if Refresh Pieces is off, still scan to make a list of the Decks in case we need to update their attributes
+   */
+    if (!options.contains(SUPPRESS_INFO_REPORTS)) log(Resources.getString("GameRefresher.run_refresh_counters_v4"));
+
+    if (!options.contains(SUPPRESS_INFO_REPORTS)) log(Resources.getString("GameRefresher.counters_kept", totalCount - notOwnedCount - notVisibleCount));
+
+    if (notOwnedCount > 0)
+      log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_not_owned", notOwnedCount));
+    if (notVisibleCount > 0)
+      log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_not_visible", notVisibleCount));
+
+    indexAllAttachments();
+
+    for (final Refresher refresher : refreshables)
+      refresher.refresh(command);
+
+  /* removed as decks array is not used - to implement this code needs to be restored within for loop and pieces / decks refresh conditions interleaved
+    if (refresher instanceof DeckRefresher && options.contains(REFRESH_DECKS)) {
+    decks.add(((DeckRefresher) refresher).getDeck());
+  }*/
+
+    refreshAllAttachments(command);
+
+    if (!options.contains(SUPPRESS_INFO_REPORTS)) log(Resources.getString("GameRefresher.counters_refreshed", updatedCount));
+    if (notFoundCount > 0)
+      log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_not_found", notFoundCount));
+    if (noMapCount > 0)
+      log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_no_map", noMapCount));
+    if (noStackCount > 0)
+      log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_no_stack", noStackCount));
+
     /*
-     * And refresh them. Even if Refresh Pieces is off, still scan to make a list of the Decks in case we need to update their attributes
-     */
-    if (options.contains(REFRESH_PIECES)) {
-
-      log(Resources.getString("GameRefresher.run_refresh_counters_v4"));
-
-      log(Resources.getString("GameRefresher.counters_kept", totalCount - notOwnedCount - notVisibleCount));
-      if (notOwnedCount > 0) log(ERROR_MESSAGE_PREFIX  + Resources.getString("GameRefresher.counters_not_owned", notOwnedCount));
-      if (notVisibleCount > 0) log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_not_visible", notVisibleCount));
-
-      indexAllAttachments();
-
-      for (final Refresher refresher : refreshables) refresher.refresh(command);
-
-      /* removed as decks array is not used - to implement this code needs to be restored within for loop and pieces / decks refresh conditions interleaved
-        if (refresher instanceof DeckRefresher && options.contains(REFRESH_DECKS)) {
-        decks.add(((DeckRefresher) refresher).getDeck());
-      }*/
-
-      refreshAllAttachments(command);
-
-      log(Resources.getString("GameRefresher.counters_refreshed", updatedCount));
-      if (notFoundCount > 0) log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_not_found", notFoundCount));
-      if (noMapCount > 0) log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_no_map", noMapCount));
-      if (noStackCount > 0) log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.counters_no_stack", noStackCount));
-    }
-
-    /*
-     * 4/ Refresh properties of decks in the game
+     * 3. Refresh properties of decks in the game
      */
     if (options.contains(REFRESH_DECKS)) { //NON-NLS
       if (isGameActive()) {
         // FIXME: If somebody feels like packaging all these things into Commands, help yourself...
-        log(Resources.getString("GameRefresher.deck_refresh_during_multiplayer"));
+        log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.deck_refresh_during_multiplayer"));
       }
       else {
 
@@ -411,8 +406,10 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
         int deletable = 0;
         int addable = 0;
 
-        log(Resources.getString("GameRefresher.refreshing_decks"));
-        log(Resources.getString("GameRefresher.decks", totalDecks));
+        if (!options.contains(SUPPRESS_INFO_REPORTS)) {
+          log(Resources.getString("GameRefresher.refreshing_decks"));
+          log(Resources.getString("GameRefresher.decks", totalDecks));
+        }
 
         for (final Map map : Map.getMapList()) {
           for (final GamePiece pieceOrStack : map.getPieces()) {
@@ -441,7 +438,9 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
                   foundDrawPiles.add(drawPile);
 
                   final String drawPileName = drawPile.getAttributeValueString(SetupStack.NAME);
-                  log(Resources.getString("GameRefresher.refreshing_deck", deckName, drawPileName));
+
+                  if (!options.contains(SUPPRESS_INFO_REPORTS))
+                    log(Resources.getString("GameRefresher.refreshing_deck", deckName, drawPileName));
 
                   // This refreshes the existing deck with all the up-to-date drawPile fields from the module
                   deck.removeListeners();
@@ -476,7 +475,8 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
         if (options.contains(DELETE_OLD_DECKS)) { //NON-NLS
           //log("List of Decks to remove");
           for (final Deck deck : decksToDelete) {
-            log(Resources.getString("GameRefresher.deleting_old_deck", deck.getDeckName()));
+            if (!options.contains(SUPPRESS_INFO_REPORTS))
+              log(Resources.getString("GameRefresher.deleting_old_deck", deck.getDeckName()));
 
             final Stack newStack = new Stack();
             newStack.setMap(deck.getMap());
@@ -503,7 +503,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
           }
         }
         else if (!decksToDelete.isEmpty()) {
-          log(Resources.getString("GameRefresher.deletable_with_option"));
+          log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.deletable_with_option"));
           for (final Deck deck : decksToDelete) {
             log(deck.getDeckName());
           }
@@ -534,7 +534,8 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
         if (!decksToAdd.isEmpty()) {
           if (options.contains(ADD_NEW_DECKS)) { //NON-NLS
             for (final DrawPile drawPile : decksToAdd) {
-              log(Resources.getString("GameRefresher.adding_new_deck", drawPile.getAttributeValueString(SetupStack.NAME)));
+              if (!options.contains(SUPPRESS_INFO_REPORTS))
+                log(Resources.getString("GameRefresher.adding_new_deck", drawPile.getAttributeValueString(SetupStack.NAME)));
 
               final Deck newDeck = drawPile.makeDeck();
               final Map newMap = drawPile.getMap();
@@ -549,25 +550,57 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
             }
           }
           else {
-            log(Resources.getString("GameRefresher.addable_with_option"));
+            log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.addable_with_option"));
             for (final DrawPile drawPile : decksToAdd) {
               log(drawPile.getAttributeValueString(SetupStack.NAME));
             }
           }
         }
 
-        log(Resources.getString("GameRefresher.refreshable_decks", refreshable));
-        log(Resources.getString(options.contains(DELETE_OLD_DECKS) ? "GameRefresher.deletable_decks" : "GameRefresher.deletable_decks_2", deletable)); //NON-NLS
-        log(Resources.getString(options.contains(ADD_NEW_DECKS) ? "GameRefresher.addable_decks" : "GameRefresher.addable_decks_2", addable)); //NON-NLS
+        // Deck reporting - anomalies & deck removes/adds are always reported
+        if (!options.contains(SUPPRESS_INFO_REPORTS))
+          log(Resources.getString("GameRefresher.refreshable_decks", refreshable));
+
+        if (options.contains(DELETE_OLD_DECKS)) {
+          // Expecting at least 1 deletable deck and let's know how many
+          if (deletable == 0) {
+            deckWarnings++;
+            log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.deletable_decks", 0));
+          }
+          else log(Resources.getString("GameRefresher.deletable_decks", deletable));
+        }
+        else {
+          // Expecting no deletable decks, no need to report if none found
+          if (deletable > 0) {
+            deckWarnings++;
+            log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.deletable_decks", deletable));
+          }
+        }
+
+        if (options.contains(ADD_NEW_DECKS)) {
+          // Expecting at least 1 addable deck and let's know how many
+          if (addable == 0) {
+            deckWarnings++;
+            log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.addable_decks", 0));
+          }
+          else log(Resources.getString("GameRefresher.addable_decks", addable));
+        }
+        else {
+          // Expecting no addable decks, no need to report if none found
+          if (addable > 0) {
+            deckWarnings++;
+            log(ERROR_MESSAGE_PREFIX + Resources.getString("GameRefresher.addable_decks", addable));
+          }
+        }
       }
     }
+
     /*
      * 5. Exit after second (final) GHK, if selected
      */
-
-    if (options.contains(USE_HOTKEY2)) { //NON-NLS
+    if (options.contains(USE_HOTKEY)) { //NON-NLS
       // Custom finish
-      log(Resources.getString("GameRefresher.fire_GHK", "VassalPostRefreshGHK"));
+      if (!options.contains(SUPPRESS_INFO_REPORTS)) log(Resources.getString("GameRefresher.fire_GHK", "VassalPostRefreshGHK"));
       GameModule.getGameModule().fireKeyStroke(NamedKeyStroke.of("VassalPostRefreshGHK"));
     }
 
@@ -714,8 +747,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     private JCheckBox refreshDecks;
     private JCheckBox deleteOldDecks;
     private JCheckBox addNewDecks;
-    private JCheckBox fireHotkey1;
-    private JCheckBox fireHotkey2;
+    private JCheckBox fireHotkey;
     private final Set<String> options = new HashSet<>();
     JButton runButton;
 
@@ -737,7 +769,6 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       });
       setLayout(new MigLayout("wrap 1", "[fill]")); //NON-NLS
 
-
       final JPanel panel = new JPanel(new MigLayout("hidemode 3,wrap 1" + "," + ConfigurerLayout.STANDARD_GAPY, "[fill]")); // NON-NLS
       panel.setBorder(BorderFactory.createEtchedBorder());
 
@@ -745,8 +776,11 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       header.setFocusable(false);
       panel.add(header);
 
-      final JPanel buttonPanel = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
+      // FIXME: The separator disappears if the window is resized.
+      final JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
+      panel.add(sep);
 
+      final JPanel buttonPanel = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
 
       runButton = new JButton(Resources.getString("General.run"));
       runButton.addActionListener(e -> run());
@@ -764,46 +798,8 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       buttonPanel.add(exitButton, "tag cancel,sg 1"); // NON-NLS
       buttonPanel.add(helpButton, "tag help,sg 1"); // NON-NLS
 
-      // Hotkeys setting is OFF by default for one-off runs to minimise risk of accidental use by players, should a module editor leave maintenance hotkeys available (intentionally or otherwise)
-      fireHotkey1 = new JCheckBox(Resources.getString("GameRefresher.fire_global_hotkey1"), false);
-      fireHotkey1.addChangeListener(e -> {
-        // at least one main option is required...
-        // if this option is closed, check the other, allowing for more to be added in future
-        if (!fireHotkey1.isSelected()) {
-          if (!fireHotkey2.isSelected() && !refreshPieces.isSelected()) refreshDecks.setEnabled(false);
-          if (!fireHotkey2.isSelected() && !refreshDecks.isSelected()) refreshPieces.setEnabled(false);
-          if (!refreshPieces.isSelected() && !refreshDecks.isSelected()) fireHotkey2.setEnabled(false);
-        }
-        else {
-          refreshPieces.setEnabled(true);
-          refreshDecks.setEnabled(true);
-          fireHotkey2.setEnabled(true);
-        }
-      });
-      panel.add(fireHotkey1);
-
       refreshPieces = new JCheckBox(Resources.getString("GameRefresher.refresh_pieces"), true);
-
       refreshPieces.setEnabled(false); // this is the standard default - locked as part of ensuring that at least one main option is on
-      refreshPieces.addChangeListener(e -> {
-        // at least one main option is required...
-        // if this option is closed, check the other, allowing for more to be added in future
-        if (!refreshPieces.isSelected()) {
-          if (!fireHotkey1.isSelected() && !refreshDecks.isSelected()) fireHotkey2.setEnabled(false);
-          if (!fireHotkey1.isSelected() && !fireHotkey2.isSelected()) refreshDecks.setEnabled(false);
-          if (!refreshDecks.isSelected() && !fireHotkey2.isSelected()) fireHotkey1.setEnabled(false);
-        }
-        else {
-          refreshDecks.setEnabled(true);
-          fireHotkey1.setEnabled(true);
-          fireHotkey2.setEnabled(true);
-        }
-        nameCheck.setVisible(refreshPieces.isSelected());
-        labelerNameCheck.setVisible(refreshPieces.isSelected());
-        layerNameCheck.setVisible(refreshPieces.isSelected());
-        rotateNameCheck.setVisible(refreshPieces.isSelected());
-        deletePieceNoMap.setVisible(refreshPieces.isSelected());
-      });
       panel.add(refreshPieces);
 
       nameCheck = new JCheckBox(Resources.getString("GameRefresher.use_basic_name"));
@@ -827,18 +823,6 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
       refreshDecks = new JCheckBox(Resources.getString("GameRefresher.refresh_decks"), false);
       refreshDecks.addChangeListener(e -> {
-        // at least one main option is required...
-        // if this option is closed, check the other, allowing for more to be added in future
-        if (!refreshDecks.isSelected()) {
-          if (!fireHotkey1.isSelected() && !refreshPieces.isSelected()) fireHotkey2.setEnabled(false);
-          if (!fireHotkey1.isSelected() && !fireHotkey2.isSelected()) refreshPieces.setEnabled(false);
-          if (!refreshPieces.isSelected() && !fireHotkey2.isSelected()) fireHotkey1.setEnabled(false);
-        }
-        else {
-          refreshPieces.setEnabled(true);
-          fireHotkey1.setEnabled(true);
-          fireHotkey2.setEnabled(true);
-        }
         deleteOldDecks.setVisible(refreshDecks.isSelected());
         addNewDecks.setVisible(refreshDecks.isSelected());
       });
@@ -850,23 +834,9 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       addNewDecks = new JCheckBox(Resources.getString("GameRefresher.add_new_decks"), false);
       panel.add(addNewDecks, "gapx 10");
 
-      // Hotkeys setting is OFF by default for one-off runs to minimise risk of accidental use by players, should a module editor leave maintenance hotkeys available (intentionally or otherwise)
-      fireHotkey2 = new JCheckBox(Resources.getString("GameRefresher.fire_global_hotkey2"), false);
-      fireHotkey2.addChangeListener(e -> {
-        // at least one main option is required...
-        // if this option is closed, check the other, allowing for more to be added in future
-        if (!fireHotkey2.isSelected()) {
-          if (!fireHotkey1.isSelected() && !refreshPieces.isSelected()) refreshDecks.setEnabled(false);
-          if (!fireHotkey1.isSelected() && !refreshDecks.isSelected()) refreshPieces.setEnabled(false);
-          if (!refreshPieces.isSelected() && !refreshDecks.isSelected()) fireHotkey1.setEnabled(false);
-        }
-        else {
-          refreshPieces.setEnabled(true);
-          refreshDecks.setEnabled(true);
-          fireHotkey1.setEnabled(true);
-        }
-      });
-      panel.add(fireHotkey2);
+      // Hotkeys setting is OFF by default to minimise risk of accidental use
+      fireHotkey = new JCheckBox(Resources.getString("GameRefresher.fire_global_hotkey"), false);
+      panel.add(fireHotkey);
 
       testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"), false);
       // Disabling user selection - due to issue https://github.com/vassalengine/vassal/issues/12695
@@ -886,10 +856,6 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
       add(panel, "grow"); // NON-NLS
 
-      // window size is determined by the hidden deck options
-      // FIXME: make window size adjust according to deck option visibility. also on RefreshPredefinedSetupsDialog
-      // maybe something like (and moving the setvisibles?? this.setSize(panel.getSize());
-
       SwingUtils.repack(this);
 
       fixGPID.setVisible(nameCheck.isSelected());
@@ -905,7 +871,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
         if (nameCheck.isSelected()) {
           options.add(USE_NAME); //$NON-NLS-1$
           if (fixGPID.isSelected()) {
-            options.add(GameRefresher.FIX_GPID); //$NON-NLS-1$
+            options.add(FIX_GPID); //$NON-NLS-1$
           }
         }
         if (labelerNameCheck.isSelected()) {
@@ -933,11 +899,8 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
           options.add(ADD_NEW_DECKS); //NON-NLS
         }
       }
-      if (fireHotkey1.isSelected()) {
-        options.add(USE_HOTKEY1); //$NON-NLS-1$
-      }
-      if (fireHotkey2.isSelected()) {
-        options.add(USE_HOTKEY2); //$NON-NLS-1$
+      if (fireHotkey.isSelected()) {
+        options.add(USE_HOTKEY); //$NON-NLS-1$
       }
     }
 
