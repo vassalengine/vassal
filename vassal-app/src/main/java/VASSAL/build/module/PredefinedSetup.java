@@ -323,9 +323,10 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     aw.addFile(tmpZip.getFile().getPath(), fileName);
     gs.closeGame();
 
-    // return number of piece error warnings reporting in the refresh
+    // return number of refresh anomaly warnings reported
     return gameRefresher.notFoundCount + gameRefresher.noStackCount + gameRefresher.noMapCount
-            + gameRefresher.notOwnedCount + gameRefresher.notVisibleCount + gameRefresher.noGpIdMatch;
+            + gameRefresher.notOwnedCount + gameRefresher.notVisibleCount + gameRefresher.noGpIdMatch
+            + gameRefresher.deckWarnings;
   }
 
   @Override
