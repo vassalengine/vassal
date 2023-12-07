@@ -113,7 +113,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       e -> launch()
     ));
 
-    getLaunchButton().setEnabled(false); // not usuable without a game
+    getLaunchButton().setEnabled(false); // not usable without a game
     retireButton = getLaunchButton(); // for compatibility
 
     setShowDisabledOptions(false); //AbstractToolbarItem
@@ -325,7 +325,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     return GameModule.getGameModule().getPlayerRoster();
   }
 
-  /** Return my Untranslatted side */
+  /** Return my Untranslated side */
   public static String getMySide() {
     return getMySide(false);
   }
@@ -814,7 +814,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       }
     }
 
-    while (newSide != null) { // Loops until a valid side is found or op is canceled (repeats side check to minimuse race condition window)
+    while (newSide != null) { // Loops until a valid side is found or op is canceled (repeats side check to minimise race condition window)
       // Refresh from current game state
       for (final PlayerInfo p : players) {
         alreadyTaken.add(p.getLocalizedSide());
@@ -841,7 +841,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
       // When player is already connected, offer a hot-seat...
       // If a "real" player side is available, we want to offer "the next one" as the default, rather than observer.
-      // Thus hotseat players can easily cycle through the player positions as they will appear successively as the default.
+      // Thus, hotseat players can easily cycle through the player positions as they will appear successively as the default.
       // Common names for Solitaire players (Solitaire, Solo, Referee) do not count as "real" player sides, and will be skipped.
       // If we have no "next" side available to offer, we stay with the observer side as our default offering.
       if (alreadyConnected) {
