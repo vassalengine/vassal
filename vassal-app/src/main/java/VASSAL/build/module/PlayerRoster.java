@@ -113,7 +113,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       e -> launch()
     ));
 
-    getLaunchButton().setEnabled(false); // not usuable without a game
+    getLaunchButton().setEnabled(false); // not usable without a game
     retireButton = getLaunchButton(); // for compatibility
 
     setShowDisabledOptions(false); //AbstractToolbarItem
@@ -298,7 +298,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     a.execute();
 
     c = c.append(a);
-    gm.getServer().sendToOthers(c);
+    gm.sendAndLog(c);
 
     newSide = getMySide();
     fireSideChange(mySide, newSide);
@@ -324,7 +324,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     return GameModule.getGameModule().getPlayerRoster();
   }
 
-  /** Return my Untranslatted side */
+  /** Return my Untranslated side */
   public static String getMySide() {
     return getMySide(false);
   }
@@ -478,13 +478,14 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
    */
   @Override
   public void finish() {
+    final GameModule gm = GameModule.getGameModule();
     // In case we set a new password at this step, update the prefs configurer, and write module preferences.
-    GameModule.getGameModule().getPasswordConfigurer().setValue(GameModule.getUserId());
+    gm.getPasswordConfigurer().setValue(GameModule.getUserId());
     try {
-      GameModule.getGameModule().getPrefs().save();
+      gm.getPrefs().save();
     }
     catch (IOException e) {
-      GameModule.getGameModule().warn(Resources.getString("PlayerRoster.failed_pref_write", e.getLocalizedMessage()));
+      gm.warn(Resources.getString("PlayerRoster.failed_pref_write", e.getLocalizedMessage()));
     }
 
    // Drop into standard routine, starting with checking that the side is still available (race condition mitigation)
@@ -493,14 +494,16 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
     // null is a cancel op - player will not connect to the game
     if (newSide != null) {
-      if (GameModule.getGameModule().isMultiplayerConnected()) {
-        final Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.joined_side_2" : "PlayerRoster.joined_side", GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME), translateSide(newSide)));
+      if (gm.isMultiplayerConnected()) {
+        final Command c = new Chatter.DisplayText(gm.getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.joined_side_2" : "PlayerRoster.joined_side", gm.getPrefs().getValue(GameModule.REAL_NAME), translateSide(newSide)));
         c.execute();
+        gm.sendAndLog(c);
+
       }
 
       final Add a = new Add(this, GameModule.getActiveUserId(), GlobalOptions.getInstance().getPlayerId(), newSide);
       a.execute();
-      GameModule.getGameModule().getServer().sendToOthers(a);
+      gm.sendAndLog(a);
 
       pickedSide = true;
     }
@@ -808,7 +811,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       }
     }
 
-    while (newSide != null) { // Loops until a valid side is found or op is canceled (repeats side check to minimuse race condition window)
+    while (newSide != null) { // Loops until a valid side is found or op is canceled (repeats side check to minimise race condition window)
       // Refresh from current game state
       for (final PlayerInfo p : players) {
         alreadyTaken.add(p.getLocalizedSide());
@@ -835,7 +838,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
       // When player is already connected, offer a hot-seat...
       // If a "real" player side is available, we want to offer "the next one" as the default, rather than observer.
-      // Thus hotseat players can easily cycle through the player positions as they will appear successively as the default.
+      // Thus, hotseat players can easily cycle through the player positions as they will appear successively as the default.
       // Common names for Solitaire players (Solitaire, Solo, Referee) do not count as "real" player sides, and will be skipped.
       // If we have no "next" side available to offer, we stay with the observer side as our default offering.
       if (alreadyConnected) {
