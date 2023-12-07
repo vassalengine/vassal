@@ -604,7 +604,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       GameModule.getGameModule().fireKeyStroke(NamedKeyStroke.of("VassalPostRefreshGHK"));
     }
 
-    noGpIdMatch = gpIdChecker.getnoGpIdMatch(); // So that GpId failures accumulator can be passed back to PreDefined Setup refresher
+    noGpIdMatch = gpIdChecker.getNoGpIdMatch(); // So that GpId failures accumulator can be passed back to PreDefined Setup refresher
 
   }
 

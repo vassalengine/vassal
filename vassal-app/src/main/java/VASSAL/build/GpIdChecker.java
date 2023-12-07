@@ -76,7 +76,7 @@ public class GpIdChecker {
     }
   }
 
-  public int getnoGpIdMatch() {
+  public int getNoGpIdMatch() {
     return noGpIdMatch;
   }
 
