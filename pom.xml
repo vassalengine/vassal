@@ -119,12 +119,12 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.6.2</version>
+                    <version>3.6.3</version>
                 </plugin>
                 <plugin>
                     <groupId>com.github.spotbugs</groupId>
                     <artifactId>spotbugs-maven-plugin</artifactId>
-                    <version>4.8.1.0</version>
+                    <version>4.8.2.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.asciidoctor</groupId>
