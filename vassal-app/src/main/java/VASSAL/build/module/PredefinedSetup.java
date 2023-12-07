@@ -90,15 +90,6 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     showUseFile = () -> !isMenu;
   }
 
- /*  protected void  setRefresherOptions() {
-   if (nameCheck.isSelected()) {
-      refresherOptions.add("useName");
-    }
-    if (labelerNameCheck.isSelected()) {
-      refresherOptions.add("useLabelerName");
-    }
-  }*/
-
   @Override
   public String[] getAttributeDescriptions() {
     return new String[]{

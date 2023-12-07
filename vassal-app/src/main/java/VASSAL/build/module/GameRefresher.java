@@ -115,13 +115,13 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
   private int totalCount;
   private int totalDecks;
 
-  public int notFoundCount; // shared to PDS refresher
-  public int noGpIdMatch; // shared to PDS refresher
-  public int noStackCount; // shared to PDS refresher - not used!!!
-  public int noMapCount; // shared to PDS refresher - not used!!!
-  public int notOwnedCount; // shared to PDS refresher
-  public int notVisibleCount; // shared to PDS refresher
-  public int deckWarnings; // shared to PDS refresher
+  int notFoundCount; // shared to PDS refresher
+  int noGpIdMatch; // shared to PDS refresher
+  int noStackCount; // shared to PDS refresher - not used!!!
+  int noMapCount; // shared to PDS refresher - not used!!!
+  int notOwnedCount; // shared to PDS refresher
+  int notVisibleCount; // shared to PDS refresher
+  int deckWarnings; // shared to PDS refresher
 
   public static final String ERROR_MESSAGE_PREFIX = "~";
   public static final String SEPARATOR = "----------";
@@ -243,14 +243,14 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
               }
             }
           }
-          if (((Stack) piece).getMap() != null) {
+          if (piece.getMap() != null) {
             refreshables.add(new StackRefresher((Stack) piece));
           }
         }
 
         // An Unstacked piece
         else {
-          final GamePiece p = (GamePiece) piece;
+          final GamePiece p = piece;
 
           // Only visible, unobscured pieces are refreshable
           if (!Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))
@@ -604,7 +604,8 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       GameModule.getGameModule().fireKeyStroke(NamedKeyStroke.of("VassalPostRefreshGHK"));
     }
 
-    noGpIdMatch = gpIdChecker.noGpIdMatch; // So that GpId failures accumulator can be passed back to PreDefined Setup refresher
+    noGpIdMatch = gpIdChecker.getnoGpIdMatch(); // So that GpId failures accumulator can be passed back to PreDefined Setup refresher
+
   }
 
 

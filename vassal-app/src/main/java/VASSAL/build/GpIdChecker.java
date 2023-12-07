@@ -51,7 +51,7 @@ public class GpIdChecker {
 
   protected GpIdSupport gpIdSupport;
   protected int maxId;
-  public int noGpIdMatch = 0; // shared to GameRefresher
+  protected int noGpIdMatch = 0; // shared to GameRefresher
   protected boolean extensionsLoaded = false;
   final Map<String, SlotElement> goodSlots = new HashMap<>();
   final List<SlotElement> errorSlots = new ArrayList<>();
@@ -74,6 +74,10 @@ public class GpIdChecker {
     if (!options.isEmpty()) {
       this.refresherOptions.addAll(options);
     }
+  }
+
+  public int getnoGpIdMatch() {
+    return noGpIdMatch;
   }
 
   public boolean useLabelerName() {
@@ -263,7 +267,9 @@ public class GpIdChecker {
         if (oldPieceName.equals(gpName)) {
           newPiece = element.createPiece(oldPiece, this);
           copyState(oldPiece, newPiece);
-          if (fixGPID()) newPiece.setProperty(Properties.PIECE_ID, slotPiece.getProperty(Properties.PIECE_ID));
+          if (fixGPID()) {
+            newPiece.setProperty(Properties.PIECE_ID, slotPiece.getProperty(Properties.PIECE_ID));
+          }
           chat("!" + Resources.getString("GpIdChecker.refreshByName", oldPieceName, gpid, slotPiece.getProperty(Properties.PIECE_ID))
             + (fixGPID() ? " <b>" + Resources.getString("GpIdChecker.fixGPID") + "</b>" : ""));
           return newPiece;
