@@ -147,6 +147,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import java.util.stream.IntStream;
 
 import static VASSAL.build.GameModule.MODULE_NAME_PROPERTY;
@@ -2757,16 +2758,45 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         return false;
       }
 
-      // For some reason, a pdf or text component is a SearchTarget (with no returns) even though overall Help Menu is not,
-      // so we test for Help Menu first, guarding against possibility of null node...
-      try {
-        //  Special processing to include select items in full search despite not being a SearchTarget
-        if (getConfigureName((Configurable) node.getParent()).equals(getString("Editor.Documentation.component_type"))) {
+      //  Special processing to include select items in full search despite not being a SearchTarget
+
+        // FIXME: Name check is internal - comparison should ideally be on raw data, not translated
+        // FIXME: How about extensions ?
+      // Is module descriptor ?
+      if (getConfigureName(c.getClass()).equals(getString("Editor.GameModule.component_type"))) {
+        // [Module] - Name, Description & Additional infos fields within the Module component
+        if (searchParameters.isMatchFull() || searchParameters.isMatchMenus()) {
+          // check UI content
+
+          if (!showName) {       // not if already captured by name
+            final String objectName = c.getConfigureName();
+            if (objectName != null && checkString(objectName, regexPattern))
+              return true;
+          }
+
+          final String desc = c.getAttributeValueString(MODULE_DESCRIPTION_PROPERTY);
+          if (desc != null && checkString(desc, regexPattern))
+            return true;
+
+          final String moduleOther1 = c.getAttributeValueString(MODULE_OTHER1_PROPERTY);
+          if (moduleOther1 != null && checkString(moduleOther1, regexPattern))
+            return true;
+
+          final String moduleOther2 = c.getAttributeValueString(MODULE_OTHER2_PROPERTY);
+          if (moduleOther2 != null)
+            return checkString(moduleOther2, regexPattern);
+        }
+      }
+      else {
+        if (getConfigureName(c.getClass()).equals(getString("Editor.Documentation.component_type"))) {
           // [Help Menu]
           // Menu is also the Name, so only catch here if not already caught as Name
+
+          // FIXME: This next section needs to read through the buildComponents. At present this code can't find anything.
           if (!showName && (searchParameters.isMatchFull() || searchParameters.isMatchMenus())) {
             return checkString(c.getConfigureName(), regexPattern);
           }
+
           if (searchParameters.isMatchFull() || searchParameters.isMatchExpressions()) {
             // content will be categorised as Expressions... each is a separate component
             final String startPage = c.getAttributeValueString("startingPage");
@@ -2777,30 +2807,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
             final String textFile = c.getAttributeValueString("textFile");
             if (textFile != null) return checkString(textFile, regexPattern);
-          }
-        }
-      }
-      catch (Exception NullPointerException) {
-        // FIXME: Name check is internal - comparison should ideally be on raw data, not translated
-        // FIXME: How about extensions ?
-        if (getConfigureName(c.getClass()).equals(getString("Editor.GameModule.component_type"))) {
-          // [Module] - Name, Description & Additional infos fields within the Module component
-          if (searchParameters.isMatchFull() || searchParameters.isMatchMenus()) {
-            // check UI content
-
-            if (!showName) {       // not if already captured by name
-              final String objectName = c.getConfigureName();
-              if (objectName != null && checkString(objectName, regexPattern)) return true;
-            }
-
-            final String desc = c.getAttributeValueString(MODULE_DESCRIPTION_PROPERTY);
-            if (desc != null && checkString(desc, regexPattern)) return true;
-
-            final String moduleOther1 = c.getAttributeValueString(MODULE_OTHER1_PROPERTY);
-            if (moduleOther1 != null && checkString(moduleOther1, regexPattern)) return true;
-
-            final String moduleOther2 = c.getAttributeValueString(MODULE_OTHER2_PROPERTY);
-            if (moduleOther2 != null) return checkString(moduleOther2, regexPattern);
           }
         }
       }
@@ -2964,12 +2970,33 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       final String item = getConfigureName(c.getClass());
       final boolean showName = (searchParameters.isMatchNames() || !searchParameters.isMatchAdvanced());  // name is default (i.e. unless filtered out)
 
-      // Help ?
-      try {
+      // FIXME: Name check is internal - comparison should ideally be on raw data, not translated
+      // FIXME: How about extensions ?
+      if (getConfigureName(c.getClass()).equals(getString("Editor.GameModule.component_type"))) {
+        // [Module] - Name, Description & Additional infos fields within the Module component
+        if (searchParameters.isMatchFull() || searchParameters.isMatchMenus()) {
+          // display matched UI content
+
+          if (!showName) {       // not if already captured by name
+            stringListHits(true, Collections.singletonList(c.getConfigureName()), regexPattern, matchString, item, "", MODULE_NAME_PROPERTY, progress); //NON-NLS
+          }
+
+          final String desc = c.getAttributeValueString(MODULE_DESCRIPTION_PROPERTY);
+          final String moduleOther1 = c.getAttributeValueString(MODULE_OTHER1_PROPERTY);
+          final String moduleOther2 = c.getAttributeValueString(MODULE_OTHER2_PROPERTY);
+          stringListHits(true, Collections.singletonList(desc), regexPattern, matchString, item, "", MODULE_DESCRIPTION_PROPERTY, progress); //NON-NLS
+          stringListHits(true, Collections.singletonList(moduleOther1), regexPattern, matchString, item, "", MODULE_OTHER1_PROPERTY, progress); //NON-NLS
+          stringListHits(true, Collections.singletonList(moduleOther2), regexPattern, matchString, item, "", MODULE_OTHER2_PROPERTY, progress); //NON-NLS
+        }
+      }
+      else {
+        // Help ?
         // FIXME: Name check is internal - comparison should ideally be on raw data, not translated
-        if (getConfigureName((Configurable) node.getParent()).equals(getString("Editor.Documentation.component_type"))) {
+        if (getConfigureName(c.getClass()).equals(getString("Editor.Documentation.component_type"))) {
           // Help - special processing to include in full search despite not being a SearchTarget
           // Menu is also the Name, so only display here if not already reported as Name
+
+          // FIXME: see earlier comment re matching on buildComponents  - applies here for output
           if (!showName && (searchParameters.isMatchFull() || searchParameters.isMatchMenus())) {
             stringListHits(true, Arrays.asList(c.getConfigureName()), regexPattern, matchString, item, "", "UI Text", progress); //NON-NLS
           }
@@ -2981,27 +3008,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             stringListHits(true, Collections.singletonList(startPage), regexPattern, matchString, item, "", "Starting page", progress); //NON-NLS
             stringListHits(true, Collections.singletonList(pdfFile), regexPattern, matchString, item, "", "PDF file", progress); //NON-NLS
             stringListHits(true, Collections.singletonList(textFile), regexPattern, matchString, item, "", "Text File", progress); //NON-NLS
-          }
-        }
-      }
-      catch (Exception NullPointerException) {
-        // FIXME: Name check is internal - comparison should ideally be on raw data, not translated
-        // FIXME: How about extensions ?
-        if (getConfigureName(c.getClass()).equals(getString("Editor.GameModule.component_type"))) {
-          // [Module] - Name, Description & Additional infos fields within the Module component
-          if (searchParameters.isMatchFull() || searchParameters.isMatchMenus()) {
-            // display matched UI content
-
-            if (!showName) {       // not if already captured by name
-              stringListHits(true, Collections.singletonList(c.getConfigureName()), regexPattern, matchString, item, "", MODULE_NAME_PROPERTY, progress); //NON-NLS
-            }
-
-            final String desc = c.getAttributeValueString(MODULE_DESCRIPTION_PROPERTY);
-            final String moduleOther1 = c.getAttributeValueString(MODULE_OTHER1_PROPERTY);
-            final String moduleOther2 = c.getAttributeValueString(MODULE_OTHER2_PROPERTY);
-            stringListHits(true, Collections.singletonList(desc), regexPattern, matchString, item, "", MODULE_DESCRIPTION_PROPERTY, progress); //NON-NLS
-            stringListHits(true, Collections.singletonList(moduleOther1), regexPattern, matchString, item, "", MODULE_OTHER1_PROPERTY, progress); //NON-NLS
-            stringListHits(true, Collections.singletonList(moduleOther2), regexPattern, matchString, item, "", MODULE_OTHER2_PROPERTY, progress); //NON-NLS
           }
         }
       }
@@ -3232,7 +3238,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           // matching on a word boundary.
           return Pattern.compile("\\b\\Q" + searchString + "\\E", flags);
         }
-        catch (java.util.regex.PatternSyntaxException e) {
+        catch (PatternSyntaxException e) {
           // something went wrong - a \E in the search input followed by invalid Regex will end up here
           logger.error(getString("Editor.search_badWord", noHTML(e.getMessage()))); //NON-NLS
           return null;
