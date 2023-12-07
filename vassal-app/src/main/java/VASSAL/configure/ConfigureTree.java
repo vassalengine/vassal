@@ -3249,7 +3249,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       try {
         return Pattern.compile(searchString, flags);
       }
-      catch (java.util.regex.PatternSyntaxException e) {
+      catch (PatternSyntaxException e) {
         chat(getString("Editor.search_badRegex", noHTML(e.getMessage()))); //NON-NLS
         return null;
       }
