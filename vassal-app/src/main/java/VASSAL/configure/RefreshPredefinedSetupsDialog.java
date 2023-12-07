@@ -63,6 +63,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
@@ -307,7 +308,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
         filterPattern = Pattern.compile(pdsFilter, CASE_INSENSITIVE);
         filterPattern2 = Pattern.compile(pdsFilter + ".*", CASE_INSENSITIVE);
       }
-      catch (java.util.regex.PatternSyntaxException e) {
+      catch (PatternSyntaxException e) {
           // something went wrong, treat regex as embedded literal
         filterPattern = Pattern.compile(".*\\Q" + pdsFilter + "\\T.*", CASE_INSENSITIVE);
         filterPattern2 = filterPattern; // nullify the follow-up check
