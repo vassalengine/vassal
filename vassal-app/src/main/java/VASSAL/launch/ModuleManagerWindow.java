@@ -796,7 +796,7 @@ public class ModuleManagerWindow extends JFrame {
     for (int i = 0; i < model.getColumnCount(); i++) {
       se.append(model.getColumn(i).getWidth());
     }
-    Prefs.getGlobalPrefs().setValue(COLUMN_WIDTHS_KEY, se.toString());
+    Prefs.getGlobalPrefs().setValue(COLUMN_WIDTHS_KEY, se.getValue());
   }
 
   public void updateRequest(File f) {
