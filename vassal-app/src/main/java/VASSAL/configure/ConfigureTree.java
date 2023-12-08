@@ -2998,7 +2998,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             stringListHits(true, Collections.singletonList(getConfigureName(c)), regexPattern, matchString, item, "", MODULE_NAME_PROPERTY, progress); //NON-NLS
           }
 
-          final String desc = c.getAttributeValueString(GameModule.DESCRIPTION);
+          final String desc = c.getAttributeValueString(DESCRIPTION);
           final String moduleOther1 = c.getAttributeValueString(MODULE_OTHER1_PROPERTY);
           final String moduleOther2 = c.getAttributeValueString(MODULE_OTHER2_PROPERTY);
           stringListHits(true, Collections.singletonList(desc), regexPattern, matchString, item, "", MODULE_DESCRIPTION_PROPERTY, progress); //NON-NLS
