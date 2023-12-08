@@ -369,6 +369,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     if (!isReplaying()) {
       queryNewLogFile(false);
     }
+    GameModule.getGameModule().refreshVisibleMaps(); // Refresh all visible maps as counter labels may have changed
   }
 
   /**
