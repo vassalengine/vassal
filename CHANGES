@@ -5,6 +5,7 @@
 * 12912: Prevent Welcome Wizard from loading multiple pre-defined setups
     concurrently
 * 12907: Deck Key Commands do not work on subsequent new games
+* 12886: Suppress unhelpful bad data error reports from the Piece Palette
 * 12881: Prevent integer overflow when computing the size of image pixel data
     in bytes
 
