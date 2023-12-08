@@ -65,6 +65,7 @@ import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.SwingUtils;
+
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -923,7 +924,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     return isValidParent(target, (Configurable) sourceNode.getUserObject());
   }
 
-
   protected boolean isValidPasteTarget(Configurable target) {
     return isValidPasteTarget(target, cutData) || isValidPasteTarget(target, copyData);
   }
@@ -1343,7 +1343,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     return canContainPiece;
   }
 
-
   /**
    * Delete removes an item from the tree but ALSO traverses the tree throwing all the children's children manually out
    * the airlock, one by one. Lest they return and live on as zombies...
@@ -1362,7 +1361,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
     return result;
   }
-
 
   protected boolean remove(Configurable parent, Configurable child) {
     try {
@@ -1796,7 +1794,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected static DefaultMutableTreeNode lastFoundNode;
   protected static int selectedNodeIndex;
 
-
   protected void updateEditMenu() {
     deleteAction.setEnabled(selected != null && isDeleteAllowed(selected));
     cutAction.setEnabled(selected != null && isDeleteAllowed(selected));
@@ -1963,8 +1960,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       matchKeys        = (Boolean)prefs.getValue(SearchParameters.MATCH_KEYS);
       matchMenus       = (Boolean)prefs.getValue(SearchParameters.MATCH_MENUS);
       matchMessages    = (Boolean)prefs.getValue(SearchParameters.MATCH_MESSAGES);
-
-
     }
 
     /**
@@ -2001,9 +1996,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     public boolean isOptNormal() {
       return optNormal;
     }
+
     public boolean isOptWord() {
       return optWord;
     }
+
     public boolean isOptRegex() {
       return optRegex;
     }
@@ -2959,6 +2956,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       if (!flag || (keys == null)) {
         return;
       }
+
       for (final NamedKeyStroke k : keys) {
         if (k != null) {
           final String s = k.isNamed() ? k.getName() : KeyNamer.getKeyString(k.getStroke());
@@ -2966,6 +2964,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         }
       }
     }
+
     @Deprecated (since = "2023-10-21", forRemoval = true)
     private void showConfigurableHitList(DefaultMutableTreeNode node, Pattern regexPattern) {
       final Configurable c = (Configurable) node.getUserObject();
@@ -3055,7 +3054,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
      * @param regexPattern - our search string
      */
     private void showHitList(DefaultMutableTreeNode node, Pattern regexPattern) {
-
       final Configurable c = (Configurable) node.getUserObject();
       final String item = getConfigureName(c.getClass());
       final String name = StringUtils.defaultString(getConfigureName(c));
@@ -3064,7 +3062,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       // name & type (class) are default search categories and only excluded via Advanced Filters
       final boolean showName = searchParameters.isMatchNames() || !searchParameters.isMatchAdvanced();
       final boolean showTypes = searchParameters.isMatchTypes() || !searchParameters.isMatchAdvanced();
-      
+
       // Heading without highlighting matches
       final String matchString = Resources.getString("Editor.search_matches", nodeListIndex)
               + "<b>" + noHTML(name) + " [" + noHTML(item) + "]" + "</b>: ";
@@ -3309,6 +3307,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             description += " - " + desc;
           }
         }
+
         if (c instanceof GlobalTranslatableMessage) {
           final String desc = ((GlobalTranslatableMessage)c).getDescription();
           if (!desc.isEmpty()) {
@@ -3595,7 +3594,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       return true;
     }
 
-
     @Override
     public String toString() {
       return getClass().getName();
@@ -3643,5 +3641,4 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected void postRemoveProcessing(Configurable parent, Configurable child) {
 
   }
-
 }
