@@ -28,6 +28,7 @@
         { "num": 12881, "desc": "Prevent integer overflow when computing the size of image pixel data in bytes" }
       ],
       "other_improvements": [
+        { "num": 12798, "desc": "Editor search revamp: more options and enhanced navigation" }
       ]
     },
     {

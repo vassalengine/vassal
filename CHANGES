@@ -8,6 +8,7 @@
 * 12886: Suppress unhelpful bad data error reports from the Piece Palette
 * 12881: Prevent integer overflow when computing the size of image pixel data
     in bytes
+* 12798: Editor search revamp: more options and enhanced navigation
 
 3.7.5 - 30 October 2023
 
