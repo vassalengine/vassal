@@ -578,6 +578,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     undo.execute();
     GameModule.getGameModule().getServer().sendToOthers(undo);
     logOutput.add(undo);
+    GameModule.getGameModule().refreshVisibleMaps();
   }
 
   public boolean isUndoInProgress() {
