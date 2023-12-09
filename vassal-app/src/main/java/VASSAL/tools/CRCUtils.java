@@ -17,6 +17,8 @@
  */
 package VASSAL.tools;
 
+import org.slf4j.Logger;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,11 +46,17 @@ public class CRCUtils {
    * @return CRC
    * @throws IOException oops
    */
-  public static long getCRC(List<File> files) throws IOException {
+  public static long getCRC(List<File> files, Logger log) {
     final CRC32 crc = new CRC32();
     final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
     for (final File file : files) {
-      buildCRC(file, crc, buffer);
+      try {
+        buildCRC(file, crc, buffer);
+      }
+      catch (IOException e) {
+        log.error("Error reading file " + file.getAbsolutePath() + " to generate CRC: " + e.getMessage()); // NON-NLS
+        return 0L;
+      }
     }
     return crc.getValue();
   }
