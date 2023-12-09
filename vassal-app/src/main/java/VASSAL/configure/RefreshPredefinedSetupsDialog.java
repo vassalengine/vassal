@@ -20,6 +20,7 @@ package VASSAL.configure;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Documentation;
 import VASSAL.build.module.GameRefresher;
+import VASSAL.build.module.GameState;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.build.module.PredefinedSetup;
 import VASSAL.build.module.documentation.HelpFile;
@@ -319,6 +320,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
     // Targeting PDS menu structure...
     final GameModule mod = GameModule.getGameModule();
+    final GameState gs = mod.getGameState();
     final DataArchive dataArchive = mod.getDataArchive();
 
     // Are we running a refresh on a main module or on an extension ?
@@ -410,8 +412,8 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
           }
         }
         else {
-          GameModule.getGameModule().getGameState().setup(false);  //BR// Ensure we clear any existing game data/listeners/objects out.
-          GameModule.getGameModule().setRefreshingSemaphore(true); //BR// Raise the semaphore that suppresses GameState.setup()
+          gs.setup(false);  //BR// Ensure we clear any existing game data/listeners/objects out.
+          mod.setRefreshingSemaphore(true); //BR// Raise the semaphore that suppresses GameState.setup()
 
           try {
             // FIXME: At this point the Refresh Options window is not responsive to Cancel, which means that runs can only be interrupted by killing the Vassal editor process
@@ -428,8 +430,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
             failPds.add(pds);
           }
           finally {
-            GameModule.getGameModule().setRefreshingSemaphore(false); //BR// Make sure we definitely lower the semaphore
-            this.setCursor(waitCursor);
+            mod.setRefreshingSemaphore(false); //BR// Make sure we definitely lower the semaphore
           }
         }
         final long mem = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024);
@@ -445,10 +446,10 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
           final SoundConfigurer c = (SoundConfigurer) Prefs.getGlobalPrefs().getOption("wakeUpSound");
           c.play();
         }
-        GameModule.getGameModule().setDirty(true);  // ensure prompt to save when a refresh happened
+        mod.setDirty(true);  // ensure prompt to save when a refresh happened
       }
 
-      GameModule.getGameModule().getGameState().setup(false); //BR// Clear out whatever data (pieces, listeners, etc.) left over from final game loaded.
+      gs.setup(false); //BR// Clear out whatever data (pieces, listeners, etc.) left over from final game loaded.
 
       final Duration duration = Duration.between(startTime, Instant.now());
 
@@ -478,6 +479,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
               memoryInUseAtStart, himem, hifile));
 
       this.setCursor(oldCursor);
+      mod.getPlayerWindow().setCursor(oldCursor);
     }
 
     // Exit - close window or reset for adjustments
@@ -513,7 +515,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     if (pdsList == null || pdsList.isEmpty()) {
 
       JOptionPane.showMessageDialog(
-              this, //GameModule.getGameModule().getPlayerWindow(),
+              this,
               Resources.getString("Editor.RefreshPredefinedSetups.none_found"),
               Resources.getString("Editor.RefreshPredefinedSetupsDialog.title"), //$NON-NLS-1$
               JOptionPane.ERROR_MESSAGE);
@@ -541,7 +543,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
     // return number of PDS items or zero if refresh is cancelled
     return JOptionPane.showConfirmDialog(
-            this, //GameModule.getGameModule().getPlayerWindow(),
+            this,
             panel,
             Resources.getString("Editor.RefreshPredefinedSetups.confirm_title",
                     Resources.getString(isTestMode() ? "Editor.RefreshPredefinedSetups.confirm.test" : "Editor.RefreshPredefinedSetups.confirm.run"),
