@@ -2466,9 +2466,9 @@ public class GameModule extends AbstractConfigurable
       }
     }
 
-    crc = CRCUtils.getCRC(List.of(files.get(0)), log);
+    crc = CRCUtils.getCRC(List.of(files.get(0)));
     // CombinedCrc includes extensions as well
-    combinedCrc = CRCUtils.getCRC(files, log);
+    combinedCrc = CRCUtils.getCRC(files);
   }
 
   /**
