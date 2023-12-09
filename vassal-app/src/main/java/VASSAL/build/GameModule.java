@@ -2310,7 +2310,9 @@ public class GameModule extends AbstractConfigurable
    *  - Any right-click menu option on a piece
    *  - Any Toolbar button action
    *  - Each Step replay from a log file
+   *  - Each time a counter or stack id drag'n'dropped
    *  - Each message received during on-line play
+   *  - A click on an Action Button
    *  These four actions can cause changes that result in text displaying Calculated properties and Beanshell expressions
    *  to change in places unrelated to where the action occurred, leaving these counters out of sync until a later click
    *  in their general area.
