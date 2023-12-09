@@ -369,7 +369,8 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     if (pdsCount > 0) {
 
       final Cursor oldCursor = this.getCursor();
-      this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+      final Cursor waitCursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
+      this.setCursor(waitCursor);
 
       log("|<b>" + Resources.getString("Editor.RefreshPredefinedSetupsDialog.start_refresh", mod.getGameVersion(),
               isRefreshOfExtension ? " " + Resources.getString("Editor.RefreshPredefinedSetupsDialog.extension") : ""));
@@ -397,6 +398,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
         this.setTitle(Resources.getString("Editor.RefreshPredefinedSetupsDialog.progress", ++i, pdsCount, pct)
                 + (warningPds.isEmpty() ? "" : "  "
                   + Resources.getString("Editor.RefreshPredefinedSetupsDialog.errors", lastErrorFile, warningPds.size() - 1)));
+        this.setCursor(waitCursor); // setTitle will have restored the normal cursor
 
         final String pdsFile = pds.getFileName();
 
