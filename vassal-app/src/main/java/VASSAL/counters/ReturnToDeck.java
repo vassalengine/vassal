@@ -151,6 +151,9 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
 
       if (deckSelect) {
         pile = promptForDrawPile();
+        if (pile != null) {
+          return null;  // No Deck selected
+        }
       }
       else {
         final AuditTrail audit = AuditTrail.create(this, deckExpression, Resources.getString("Editor.ReturnToDeck.deck_name"));
