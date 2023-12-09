@@ -128,8 +128,8 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     HelpFile hf = null;
     try {
       hf = new HelpFile(null, new File(
-        new File(Documentation.getDocumentationBaseDir(), "ReferenceManual"),
-        "SavedGameUpdater.html"));
+              new File(Documentation.getDocumentationBaseDir(), "ReferenceManual"),
+              "SavedGameUpdater.html"));
     }
     catch (MalformedURLException ex) {
       ErrorDialog.bug(ex);
@@ -194,7 +194,6 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
     reportOff = new JCheckBox(Resources.getString("Editor.RefreshPredefinedSetups.reportOff"), false);
     panel.add(reportOff, "gapx 10");
-
 
     // Separate functions that govern the overall refresh
     panel.add(sep);
@@ -310,7 +309,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
         filterPattern2 = Pattern.compile(pdsFilter + ".*", CASE_INSENSITIVE);
       }
       catch (PatternSyntaxException e) {
-          // something went wrong, treat regex as embedded literal
+        // something went wrong, treat regex as embedded literal
         filterPattern = Pattern.compile(".*\\Q" + pdsFilter + "\\T.*", CASE_INSENSITIVE);
         filterPattern2 = filterPattern; // nullify the follow-up check
         log(Resources.getString("Editor.RefreshPredefinedSetups.filter_fallback")); //NON-NLS
@@ -397,7 +396,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
         final int pct = i * 100 / pdsCount;
         this.setTitle(Resources.getString("Editor.RefreshPredefinedSetupsDialog.progress", ++i, pdsCount, pct)
                 + (warningPds.isEmpty() ? "" : "  "
-                  + Resources.getString("Editor.RefreshPredefinedSetupsDialog.errors", lastErrorFile, warningPds.size() - 1)));
+                + Resources.getString("Editor.RefreshPredefinedSetupsDialog.errors", lastErrorFile, warningPds.size() - 1)));
         this.setCursor(waitCursor); // setTitle will have restored the normal cursor
 
         final String pdsFile = pds.getFileName();
