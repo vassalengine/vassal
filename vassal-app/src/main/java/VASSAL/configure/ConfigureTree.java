@@ -2434,7 +2434,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
                 if (node != null) {
                   selectPath(node);
                   showHitList(node, regexPattern);
-//                  if (!searchParameters.isMatchSimple()) showHitList(node, regexPattern);
                 }
               }
             }
@@ -2743,10 +2742,25 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       final boolean showName = (searchParameters.isMatchNames() || !searchParameters.isMatchAdvanced());  // name is default (i.e. unless filtered out)
       final boolean showTypes = (searchParameters.isMatchTypes() || !searchParameters.isMatchAdvanced());  // type [class] is default (i.e. unless filtered out)
 
+      // If we're editing an extension, only extension components will be searched by default
+      if (configureTree instanceof ExtensionTree) {
+        final ExtensionTree xTree = (ExtensionTree) configureTree;
+        if (!xTree.isEditable(node)) {
+          return false;
+        }
+      }
+
       if (showName) {
         final String objectName = c.getConfigureName();
         if (objectName != null && checkString(objectName, regexPattern)) {
           return true;
+        }
+        if (c instanceof ComponentDescription) {
+          // Selecting names includes description in detection.
+          final String desc = ((ComponentDescription) c).getDescription();
+          if ((desc != null) && checkString(desc, regexPattern)) {
+            return true;
+          }
         }
       }
 
@@ -2757,23 +2771,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         }
       }
 
-      // Selecting names includes description in detection.
-      if (showName) {
-        if (c instanceof ComponentDescription) {
-          final String desc = ((ComponentDescription) c).getDescription();
-          if ((desc != null) && checkString(desc, regexPattern)) {
-            return true;
-          }
-        }
-      }
-
       if (searchParameters.isMatchSimple()) {
         return false;
       }
 
       //  Special processing to include select items in full search despite not being a SearchTarget
-
-      // FIXME: How about extensions ?
       // Is module descriptor ?
       if (getConfigureName(c.getClass()).equals(CLASS_MODULE)) {
         // [Module] - Name, Description & Additional infos fields within the Module component
@@ -2986,11 +2988,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       final String item = getConfigureName(c.getClass());
       final boolean showName = (searchParameters.isMatchNames() || !searchParameters.isMatchAdvanced());  // name is default (i.e. unless filtered out)
 
-      // FIXME: Name check is internal - comparison should ideally be on raw data, not translated
-      // FIXME: How about extensions ?
 
       if (getConfigureName(c.getClass()).equals(CLASS_MODULE)) {
-        // [Module] - Name, Description & Additional infos fields within the Module component
+        // [Module] - Name, Description & Additional info fields within the Module component
         if (searchParameters.isMatchFull() || searchParameters.isMatchMenus()) {
           // display matched UI content
 
