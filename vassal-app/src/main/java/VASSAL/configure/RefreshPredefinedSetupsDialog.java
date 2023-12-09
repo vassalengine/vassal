@@ -397,7 +397,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
         this.setTitle(Resources.getString("Editor.RefreshPredefinedSetupsDialog.progress", ++i, pdsCount, pct)
                 + (warningPds.isEmpty() ? "" : "  "
                 + Resources.getString("Editor.RefreshPredefinedSetupsDialog.errors", lastErrorFile, warningPds.size() - 1)));
-        this.setCursor(waitCursor); // setTitle will have restored the normal cursor
+        this.setCursor(waitCursor);
 
         final String pdsFile = pds.getFileName();
 
@@ -429,6 +429,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
           }
           finally {
             GameModule.getGameModule().setRefreshingSemaphore(false); //BR// Make sure we definitely lower the semaphore
+            this.setCursor(waitCursor);
           }
         }
         final long mem = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024);

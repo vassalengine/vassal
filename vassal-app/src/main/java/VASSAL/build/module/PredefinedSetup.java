@@ -38,6 +38,7 @@ import VASSAL.tools.menu.ParentProxy;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
@@ -298,6 +299,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     // get a stream to the saved game in the module file
     gs.setupRefresh();
     gs.loadGameInForeground(fileName, getSavedGameContents());
+    mod.getPlayerWindow().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
     // call the gameRefresher
     gameRefresher.execute(refresherOptions, null);
@@ -313,6 +315,8 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     aw.removeFile(fileName);
     aw.addFile(tmpZip.getFile().getPath(), fileName);
     gs.closeGame();
+
+    mod.getPlayerWindow().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
     // return number of refresh anomaly warnings reported
     return gameRefresher.notFoundCount + gameRefresher.noStackCount + gameRefresher.noMapCount
