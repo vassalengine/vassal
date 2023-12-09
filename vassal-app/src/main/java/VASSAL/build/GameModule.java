@@ -2475,7 +2475,7 @@ public class GameModule extends AbstractConfigurable
     }
     catch (IOException e) {
       log.error("Error generating CRC: " + e.getMessage(), e); //NON-NLS
-      crc = 0L;
+      crc = crc == null ? 0L : crc;
       combinedCrc = 0L;
     }
   }
