@@ -24,9 +24,12 @@
         { "num": 12936, "desc": "Labels have incorrect bounds when using italics" },
         { "num": 12912, "desc": "Prevent Welcome Wizard from loading multiple pre-defined setups concurrently" },
         { "num": 12907, "desc": "Deck Key Commands do not work on subsequent new games" },
+        { "num": 12886, "desc": "Suppress unhelpful bad data error reports from the Piece Palette" },
         { "num": 12881, "desc": "Prevent integer overflow when computing the size of image pixel data in bytes" }
       ],
       "other_improvements": [
+        { "num": 12970, "desc": "Upgrade bundled Java to 21.0.1+12" },
+        { "num": 12798, "desc": "Editor search revamp: more options and enhanced navigation" }
       ]
     },
     {
