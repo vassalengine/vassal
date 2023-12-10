@@ -45,7 +45,6 @@ public class CRCUtils {
    *
    * @param files List of files
    * @return CRC
-   * @throws IOException oops
    */
   public static long getCRC(List<File> files) {
     final CRC32 crc = new CRC32();
