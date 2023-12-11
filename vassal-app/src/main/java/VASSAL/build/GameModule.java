@@ -2324,7 +2324,7 @@ public class GameModule extends AbstractConfigurable
     for (final Map map : Map.getMapList()) {
       final JComponent view = map.getView();
       if (view.isShowing()) {
-        final Rectangle v = view.getRootPane().getVisibleRect();
+        final Rectangle v = view.getVisibleRect();
         view.repaint(v.x, v.y, v.width, v.height);
       }
     }
