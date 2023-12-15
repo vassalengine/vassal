@@ -2,28 +2,42 @@
   <conversionRule conversionWord="pid"
                   converterClass="VASSAL.tools.logging.ProcessIDConverter" />
 
-  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-    <if condition='property("os.name").toLowerCase().startsWith("windows")'>
-      <then>
+  <if condition='property("os.name").toLowerCase().startsWith("windows")'>
+    <then>
+      <appender name="FILE" class="ch.qos.logback.core.FileAppender">
         <file>${APPDATA}/VASSAL/vassal-test.log</file>
-      </then>
-      <else>
-        <if condition='property("os.name").toLowerCase().startsWith("mac")'>
-          <then>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+          <charset>UTF-8</charset>
+          <pattern>%date [%pid-%thread] %-5level %logger - %msg%n</pattern>
+        </encoder>
+        <prudent>true</prudent>
+      </appender>
+    </then>
+    <else>
+      <if condition='property("os.name").toLowerCase().startsWith("mac")'>
+        <then>
+          <appender name="FILE" class="ch.qos.logback.core.FileAppender">
             <file>${user.home}/Library/Application Support/VASSAL/vassal-test.log</file>
-          </then>
-          <else>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+              <charset>UTF-8</charset>
+              <pattern>%date [%pid-%thread] %-5level %logger - %msg%n</pattern>
+            </encoder>
+            <prudent>true</prudent>
+          </appender>
+        </then>
+        <else>
+          <appender name="FILE" class="ch.qos.logback.core.FileAppender">
             <file>${user.home}/.VASSAL/vassal-test.log</file>
-          </else>
-        </if>
-      </else>
-    </if>
-    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-      <charset>UTF-8</charset>
-      <pattern>%date [%pid-%thread] %-5level %logger - %msg%n</pattern>
-    </encoder>
-    <prudent>true</prudent>
-  </appender>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+              <charset>UTF-8</charset>
+              <pattern>%date [%pid-%thread] %-5level %logger - %msg%n</pattern>
+            </encoder>
+            <prudent>true</prudent>
+          </appender>
+        </else>
+      </if>
+    </else>
+  </if>
 
   <root level="info">
     <appender-ref ref="FILE" />
