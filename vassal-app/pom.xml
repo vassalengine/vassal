@@ -277,7 +277,6 @@
                 <configuration>
                     <configLocation>src/test/resources/checkstyle-checks.xml</configLocation>
                     <suppressionsLocation>src/test/resources/checkstyle-suppressions.xml</suppressionsLocation>
-                    <encoding>${project.build.sourceEncoding}</encoding>
                     <logViolationsToConsole>true</logViolationsToConsole>
                     <!-- consoleOutput=true prints warnings in addition to errors -->
                     <consoleOutput>true</consoleOutput>
