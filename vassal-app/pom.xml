@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.vassalengine</groupId>
         <artifactId>vassal-parent</artifactId>
-        <version>3.7.6-SNAPSHOT</version>
+        <version>3.7.7-SNAPSHOT</version>
     </parent>
 
     <artifactId>vassal-app</artifactId>
@@ -42,7 +42,7 @@
         <dependency>
             <groupId>com.miglayout</groupId>
             <artifactId>miglayout-swing</artifactId>
-            <version>11.2</version>
+            <version>11.3</version>
         </dependency>
         <dependency>
             <groupId>javazoom</groupId>
@@ -210,7 +210,7 @@
         <dependency>
             <groupId>com.github.spotbugs</groupId>
             <artifactId>spotbugs-annotations</artifactId>
-            <version>4.8.2</version>
+            <version>4.8.3</version>
             <optional>true</optional>
         </dependency>
     </dependencies>
@@ -277,7 +277,6 @@
                 <configuration>
                     <configLocation>src/test/resources/checkstyle-checks.xml</configLocation>
                     <suppressionsLocation>src/test/resources/checkstyle-suppressions.xml</suppressionsLocation>
-                    <encoding>${project.build.sourceEncoding}</encoding>
                     <logViolationsToConsole>true</logViolationsToConsole>
                     <!-- consoleOutput=true prints warnings in addition to errors -->
                     <consoleOutput>true</consoleOutput>
