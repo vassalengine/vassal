@@ -1285,10 +1285,10 @@ public class PieceDefiner extends JPanel {
     }
 
     // This can be used from cellTextHTML() to format the line numbers - stopped using at Vassal v3.7.5 as performance was poor for very large trait lists
-    private static String getLineNumber(int lineNumber) {
-      // prep line number for output
-      return "<span style=color:#A0A0A0>" + lineNumber + ".</span>";
-    }
+//    private static String getLineNumber(int lineNumber) {
+//      // prep line number for output
+//      return "<span style=color:#A0A0A0>" + lineNumber + ".</span>";
+//    }
 
     private static String cellTextHTML(int lineno, String s) {
       return "<html>" + lineno + ". " + s + "</html>";
