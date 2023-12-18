@@ -1284,13 +1284,18 @@ public class PieceDefiner extends JPanel {
       this.definer = definer;
     }
 
+    // This can be used from cellTextHTML() to format the line numbers - stopped using at Vassal v3.7.5 as performance was poor for very large trait lists
     private static String getLineNumber(int lineNumber) {
       // prep line number for output
       return "<span style=color:#A0A0A0>" + lineNumber + ".</span>";
     }
 
+    private static String cellTextHTML(int lineno, String s) {
+      return "<html>" + lineno + ". " + s + "</html>";
+    }
+
     private static String cellText(int lineno, String s) {
-      return "<html>" + getLineNumber(lineno) + " " + s + "</html>";
+      return lineno + ". " + s;
     }
 
     @Override
@@ -1313,10 +1318,10 @@ public class PieceDefiner extends JPanel {
           // For Pieces, bump index to 1
           // Special formatting for Comments
           if ((editableValue.getType().startsWith(Comment.ID))) {
-            setText(cellText(lineno, "<b>/* " + ConfigureTree.noHTML((editableValue.getDescription())) + " */</b>"));
+            setText(cellTextHTML(lineno, "<b>/* " + ConfigureTree.noHTML((editableValue.getDescription())) + " */</b>"));
           }
           else {
-            setText(cellText(lineno, ConfigureTree.noHTML(editableValue.getDescription())));
+            setText(cellText(lineno, editableValue.getDescription())); // removed ConfigureTree.noHTML() wrap for performance
           }
         }
       }
