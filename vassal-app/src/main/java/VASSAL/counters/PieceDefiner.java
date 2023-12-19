@@ -1284,49 +1284,40 @@ public class PieceDefiner extends JPanel {
       this.definer = definer;
     }
 
-    // This can be used from cellTextHTML() to format the line numbers - stopped using at Vassal v3.7.5 as performance was poor for very large trait lists
-//    private static String getLineNumber(int lineNumber) {
-//      // prep line number for output
-//      return "<span style=color:#A0A0A0>" + lineNumber + ".</span>";
-//    }
-
-    private static String cellTextHTML(int lineno, String s) {
-      return "<html>" + lineno + ". " + s + "</html>";
+    private static String getLineNumber(int lineNumber) {
+      // prep line number for output
+      return "<span style=color:#A0A0A0>" + lineNumber + ".</span>";
     }
 
     private static String cellText(int lineno, String s) {
-      return lineno + ". " + s;
+      return "<html>" + getLineNumber(lineno) + " " + s + "</html>";
     }
 
     @Override
     public Component getListCellRendererComponent(
-      JList list, Object value, int index, boolean selected, boolean hasFocus) {
+            JList list, Object value, int index, boolean selected, boolean hasFocus) {
 
       // DO NOT pass value to super.getListCellRendererComponent()
       // It is incredibly inefficient for GamePieces and is not needed
       // since we overwrite the label text anyway.
       super.getListCellRendererComponent(list, "", index, selected, hasFocus);
 
-      final int lineOffset = definer.isPrototype() ? 1 : 0;
-      final int lineno = index + lineOffset;
+      // For Pieces, bump index to 1
+      final int lineno = definer.isPrototype() ? index + 1 : index;
 
       if (value instanceof EditablePiece) {
-        final EditablePiece editableValue = (EditablePiece) value;
 
-        // Prototype? Skip first (dummy) item to avoid outputting a blank line
-        if (lineOffset == 1 || index > 0) {
-          // For Pieces, bump index to 1
-          // Special formatting for Comments
-          if ((editableValue.getType().startsWith(Comment.ID))) {
-            setText(cellTextHTML(lineno, "<b>/* " + ConfigureTree.noHTML((editableValue.getDescription())) + " */</b>"));
-          }
-          else {
-            setText(cellText(lineno, editableValue.getDescription())); // removed ConfigureTree.noHTML() wrap for performance
-          }
+        if (value instanceof Decorator && ((Decorator) value).myGetType().startsWith(Comment.ID)) {
+          setText(cellText(lineno, "<b>/* " + ConfigureTree.noHTML(((EditablePiece) value).getDescription() + " */")));
         }
+        else if (lineno > 0) {
+          // Prototype? Skip first (dummy) item
+          setText(cellText(lineno, ConfigureTree.noHTML(((EditablePiece) value).getDescription())));
+        }
+
       }
       else {
-        // FIXME: When does this get used ? Assumed that prototype might have to be skipped here also.
+        // Redundant ?
         final String s = value.getClass().getName();
         setText(cellText(lineno, s.substring(s.lastIndexOf('.') + 1)));
       }
