@@ -106,7 +106,7 @@ public class PieceDefiner extends JPanel {
   // A reduced inset size for the icon buttons gives a better look
   private static final Insets buttonInsets = new Insets(1, 2, 1, 2);
 
-  // Some empty space around the rendered Piece Image so it doesn't look to crammed
+  // Some empty space around the rendered Piece Image, so it doesn't look too crammed
   private static final int PIECE_IMAGE_INSET = 10;
 
   protected static DefaultListModel<GamePiece> availableModel;
@@ -168,7 +168,7 @@ public class PieceDefiner extends JPanel {
   }
 
   public boolean isPrototype() {
-    return prototypeName.isEmpty();
+    return !prototypeName.isEmpty();
   }
 
   public PieceDefiner(String id, GpIdSupport s) {
@@ -264,7 +264,7 @@ public class PieceDefiner extends JPanel {
   }
 
   /**
-   * Add an additional definition to the list of available traits.
+   * Add another definition to the list of available traits.
    * Add to the bottom of the classic list
    * Regenerate the Alpha list
    * reset the model depending on the sort setting
@@ -487,7 +487,7 @@ public class PieceDefiner extends JPanel {
     splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, slotPanel, controls);
     splitPane.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, e -> splitChanged());
 
-    // Set a MouseListener on the Divider so we can distinguish manual drags from auto-resizes
+    // Set a MouseListener on the Divider, so we can distinguish manual drags from auto-resizes
     final SplitPaneUI spui = splitPane.getUI();
     if (spui instanceof BasicSplitPaneUI) {
       ((BasicSplitPaneUI) spui).getDivider().addMouseListener(new MouseAdapter() {
@@ -1303,23 +1303,32 @@ public class PieceDefiner extends JPanel {
       super.getListCellRendererComponent(list, "", index, selected, hasFocus);
 
       // For Pieces, bump index to 1
-      final int lineno = definer.isPrototype() ? index + 1 : index;
+      final int lineno = definer.isPrototype() ? index : index + 1;
 
-      if (value instanceof EditablePiece) {
+      // Prototype will be zero for first item and will be skipped (not a real trait)
+      if (lineno > 0) {
+        if (value instanceof EditablePiece) {     // Safety first
 
-        if (value instanceof Decorator && ((Decorator) value).myGetType().startsWith(Comment.ID)) {
-          setText(cellText(lineno, "<b>/* " + ConfigureTree.noHTML(((EditablePiece) value).getDescription() + " */")));
+          final String s = ((EditablePiece) value).getDescription();
+
+          if (lineno == 1 && s.isEmpty()) {
+            // Patch the first line of Mass Piece Loader Template
+            setText(cellText(lineno, "Basic Piece"));
+          }
+          else {
+            if (value instanceof Comment) {
+              setText(cellText(lineno, "<b>/* " + ConfigureTree.noHTML((s) + " */")));
+            }
+            else {
+              setText(cellText(lineno, ConfigureTree.noHTML(s)));
+            }
+          }
         }
-        else if (lineno > 0) {
-          // Prototype? Skip first (dummy) item
-          setText(cellText(lineno, ConfigureTree.noHTML(((EditablePiece) value).getDescription())));
+        else {
+          // Safety net for non-EditablePiece (probably redundant) - item will use last element of class name
+          final String s = value.getClass().getName();
+          setText(cellText(lineno, s.substring(s.lastIndexOf('.') + 1)));
         }
-
-      }
-      else {
-        // Redundant ?
-        final String s = value.getClass().getName();
-        setText(cellText(lineno, s.substring(s.lastIndexOf('.') + 1)));
       }
       return this;
     }
