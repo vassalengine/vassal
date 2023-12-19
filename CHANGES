@@ -1,5 +1,7 @@
 3.7.7 - ???
 
+* 12981: Fixed IndexOutOfBoundsException in empty chat room
+
 3.7.6 - 15 December 2023
 
 * 12970: Upgrade bundled Java to 21.0.1+12
