@@ -151,8 +151,8 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
 
       if (deckSelect) {
         pile = promptForDrawPile();
-        if (pile != null) {
-          return null;  // No Deck selected
+        if (pile == null) {
+          return null;  // No Deck selected, just do nothing
         }
       }
       else {
