@@ -1305,24 +1305,19 @@ public class PieceDefiner extends JPanel {
       // For Pieces, bump index to 1
       final int lineno = definer.isPrototype() ? index : index + 1;
 
-      // Prototype will be zero for first item and will be skipped (not a real trait)
+      // Prototype or MPL Template will be zero for first item and will be skipped (not a real trait)
       if (lineno > 0) {
         if (value instanceof EditablePiece) {     // Safety first
 
-          final String s = ((EditablePiece) value).getDescription();
+          final String s = ConfigureTree.noHTML(((EditablePiece) value).getDescription());
 
-          if (lineno == 1 && s.isEmpty()) {
-            // Patch the first line of Mass Piece Loader Template
-            setText(cellText(lineno, "Basic Piece"));
+          if (value instanceof Comment) {
+            setText(cellText(lineno, "<b>/* " + s + " */"));
           }
           else {
-            if (value instanceof Comment) {
-              setText(cellText(lineno, "<b>/* " + ConfigureTree.noHTML((s) + " */")));
-            }
-            else {
-              setText(cellText(lineno, ConfigureTree.noHTML(s)));
-            }
+            setText(cellText(lineno, s));
           }
+
         }
         else {
           // Safety net for non-EditablePiece (probably redundant) - item will use last element of class name
