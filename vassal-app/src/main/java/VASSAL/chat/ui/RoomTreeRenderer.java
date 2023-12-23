@@ -84,7 +84,7 @@ public class RoomTreeRenderer extends DefaultTreeCellRenderer {
       final SimpleRoom room = (SimpleRoom) item;
 
       if (!room.getName().equals(ChatServerConnection.DEFAULT_ROOM_NAME)) {
-        if (room.getPlayerList().get(0).getStatus() instanceof SimpleStatus) {
+        if (!room.getPlayerList().isEmpty() && room.getPlayerList().get(0).getStatus() instanceof SimpleStatus) {
           final SimpleStatus status = (SimpleStatus) room.getPlayerList().get(0).getStatus();
           version = VersionUtils.truncateToIncrementalVersion(status.getClient()) + '/' + NodeClient.cleanVersion(status.getModuleVersion());
         }
