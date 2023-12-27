@@ -250,8 +250,17 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   }
 
   public boolean contains(String fileName) throws IOException {
+    return contains(fileName, false);
+  }
+
+  public boolean contains(String fileName, boolean checkExtensions) throws IOException {
     if (archive == null) return false;
-    return archive.contains(fileName);
+    if (archive.contains(fileName)) return true;
+    if (!checkExtensions) return false;
+    for (final DataArchive ext : extensions) {
+      if (ext.getArchive() != null && ext.getArchive().contains(fileName)) return true;
+    }
+    return false;
   }
 
   @Override
