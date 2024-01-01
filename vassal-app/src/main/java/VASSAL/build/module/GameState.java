@@ -51,6 +51,7 @@ import VASSAL.tools.WarningDialog;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.LogAndSaveFileFilter;
+import VASSAL.tools.filechooser.LogFileFilter;
 import VASSAL.tools.io.DeobfuscatingInputStream;
 import VASSAL.tools.io.ObfuscatingOutputStream;
 import VASSAL.tools.io.ZipArchive;
@@ -69,7 +70,6 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import java.awt.Cursor;
-import java.awt.Frame;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -89,6 +89,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -100,6 +101,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -928,21 +931,28 @@ public class GameState implements CommandEncoder {
     final Boolean oldStartNewLogfileSetting = (Boolean) GameModule.getGameModule().getPrefs().getValue(BasicLogger.PROMPT_NEW_LOG_END);
     GameModule.getGameModule().getPrefs().setValue(BasicLogger.PROMPT_NEW_LOG_END, Boolean.FALSE);
     try {
-      loadFastForward(false);
-
-      final VASSAL.build.module.Map map = this.getAllPieces().iterator().next().getMap();
       final FileChooser fc = GameModule.getGameModule().getDirectoryChooser();
-      final Frame frame = (Frame) SwingUtilities.getAncestorOfClass(Frame.class, map.getView());
-      if (fc.showSaveDialog(frame) != FileChooser.APPROVE_OPTION) return;
+      if (fc.showSaveDialog(GameModule.getGameModule().getPlayerWindow()) != FileChooser.APPROVE_OPTION) return;
       System.out.println(fc.getCurrentDirectory().getAbsolutePath());
       System.out.println(fc.getSelectedFile().getAbsolutePath());
+
+      final List<File> logFiles = Stream.of(fc.getSelectedFile().listFiles(new LogFileFilter()))
+        .sorted(Comparator.naturalOrder())
+        .collect(Collectors.toList())
+      ;
       
-      final String path = fc.getSelectedFile().getAbsolutePath() + 
-        GameModule.getGameModule().getLocalizedGameName() + 
-        "/Map1.png";
-      System.out.println(path);
-      final File mapPictureFile = new File(path);
-      new ImageSaver(map).writeMapAsImage(mapPictureFile);
+      for (final File logFile : logFiles) {
+        System.out.println("Processing logfile " + logFile.getName());
+        loadFastForward(false, () -> loadGame(logFile, false, true));
+
+        final String path = Paths.get(fc.getSelectedFile().getAbsolutePath(), logFile.getName() + ".png").toString();
+
+        System.out.println("Saving image to " + path);
+        final File mapPictureFile = new File(path);
+        final VASSAL.build.module.Map map = this.getAllPieces().iterator().next().getMap();
+        new ImageSaver(map).writeMapAsImage(mapPictureFile);
+      }
+      
     }
     finally {
       GameModule.getGameModule().getPrefs().setValue(BasicLogger.PROMPT_NEW_LOG_END, oldStartNewLogfileSetting);
@@ -950,15 +960,19 @@ public class GameState implements CommandEncoder {
 
   }
 
+  private void loadFastForward(boolean append) {
+    loadFastForward(append, () -> loadGame(false, true));
+  }
+
   /**
    * Load a VLOG, and starts a new VLOG from the same *initial* state, fast forward to the end of the log (while retaining
    * same initial state and likewise retaining the existing commands in the log), and thus any new commands added are essentially
    * appended to the existing log rather than starting from some later state.
    */
-  private void loadFastForward(boolean append) {
+  private void loadFastForward(boolean append, Runnable gameLoader) {
     fastForwarding = true;
 
-    loadGame(false, true); // First load the old game or log, forcing it to all happen foreground
+    gameLoader.run(); // First load the old game or log, forcing it to all happen foreground
 
     final GameModule g = GameModule.getGameModule();
     final BasicLogger bl = g.getBasicLogger();
