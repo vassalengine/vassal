@@ -924,10 +924,18 @@ public class GameState implements CommandEncoder {
    * Those screenshots can then be made into an animation at the end
    */
   private void createGameAnimation() {
-    loadFastForward(false);
-    System.out.println("Now screenshot");
-    final VASSAL.build.module.Map map = this.getAllPieces().iterator().next().getMap();
-    new ImageSaver(map).writeMapAsImage();
+    final Boolean oldStartNewLogfileSetting = (Boolean) GameModule.getGameModule().getPrefs().getValue(BasicLogger.PROMPT_NEW_LOG_END);
+    GameModule.getGameModule().getPrefs().setValue(BasicLogger.PROMPT_NEW_LOG_END, Boolean.FALSE);
+    try {
+      loadFastForward(false);
+      System.out.println("Now screenshot");
+      final VASSAL.build.module.Map map = this.getAllPieces().iterator().next().getMap();
+      new ImageSaver(map).writeMapAsImage();
+    }
+    finally {
+      GameModule.getGameModule().getPrefs().setValue(BasicLogger.PROMPT_NEW_LOG_END, oldStartNewLogfileSetting);
+    }
+
   }
 
   /**
