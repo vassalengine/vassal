@@ -20,6 +20,7 @@ import VASSAL.Info;
 import VASSAL.build.AbstractBuildable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
+import VASSAL.build.module.map.ImageSaver;
 import VASSAL.build.module.metadata.AbstractMetaData;
 import VASSAL.build.module.metadata.MetaDataFactory;
 import VASSAL.build.module.metadata.SaveMetaData;
@@ -234,6 +235,15 @@ public class GameState implements CommandEncoder {
       }
     };
 
+    final Action createMapAnimationOfGame = new AbstractAction("Load series of files and create map animation") {
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        createGameAnimation();
+      }
+
+    };
+
     saveGame = new AbstractAction(Resources.getString("GameState.save_game")) {
       private static final long serialVersionUID = 1L;
 
@@ -304,6 +314,7 @@ public class GameState implements CommandEncoder {
     mm.addAction("GameState.close_game", closeGame);
     mm.addAction("GameState.load_and_fast_forward", loadAndFastForward);
     mm.addAction("GameState.load_and_append", loadAndAppend);
+    mm.addAction("GameState.create_game_animation", createMapAnimationOfGame);
 
     saveGame.setEnabled(gameStarting);
     saveGameAs.setEnabled(gameStarting);
@@ -906,6 +917,17 @@ public class GameState implements CommandEncoder {
     final int max = 24;
     final int end = rgs.size();
     recentGamesConf.setValue(rgs.subList(Math.max(0, end - max), end).toArray(new String[0]));
+  }
+
+  /**
+   * Loads a series of game files in a folder and makes a screenshot at the end of each. 
+   * Those screenshots can then be made into an animation at the end
+   */
+  private void createGameAnimation() {
+    loadFastForward(false);
+    System.out.println("Now screenshot");
+    final VASSAL.build.module.Map map = this.getAllPieces().iterator().next().getMap();
+    new ImageSaver(map).writeMapAsImage();
   }
 
   /**
