@@ -931,6 +931,7 @@ public class GameState implements CommandEncoder {
     final Boolean oldStartNewLogfileSetting = (Boolean) GameModule.getGameModule().getPrefs().getValue(BasicLogger.PROMPT_NEW_LOG_END);
     GameModule.getGameModule().getPrefs().setValue(BasicLogger.PROMPT_NEW_LOG_END, Boolean.FALSE);
     try {
+      // TODO: how to get rid of "want to overwrite this folder" message? We're not overwriting content!
       final FileChooser fc = GameModule.getGameModule().getDirectoryChooser();
       if (fc.showSaveDialog(GameModule.getGameModule().getPlayerWindow()) != FileChooser.APPROVE_OPTION) return;
       System.out.println(fc.getCurrentDirectory().getAbsolutePath());
@@ -943,7 +944,7 @@ public class GameState implements CommandEncoder {
       
       for (final File logFile : logFiles) {
         System.out.println("Processing logfile " + logFile.getName());
-        loadFastForward(false, () -> loadGame(logFile, false, true));
+        loadFastForward(false, () -> loadGame(logFile, true, true));
 
         final String path = Paths.get(fc.getSelectedFile().getAbsolutePath(), logFile.getName() + ".png").toString();
 
