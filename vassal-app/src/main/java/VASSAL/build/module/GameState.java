@@ -947,7 +947,7 @@ public class GameState implements CommandEncoder {
     try {
       // TODO: how to get rid of "want to overwrite this folder" message? We're not overwriting content!
       final FileChooser fc = GameModule.getGameModule().getDirectoryChooser();
-      if (fc.showSaveDialog(GameModule.getGameModule().getPlayerWindow()) != FileChooser.APPROVE_OPTION) return;
+      if (fc.showOpenDialog(GameModule.getGameModule().getPlayerWindow()) != FileChooser.APPROVE_OPTION) return;
       System.out.println(fc.getCurrentDirectory().getAbsolutePath());
       System.out.println(fc.getSelectedFile().getAbsolutePath());
 
