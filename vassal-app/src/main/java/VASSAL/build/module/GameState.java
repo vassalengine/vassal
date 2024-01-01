@@ -69,6 +69,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import java.awt.Cursor;
+import java.awt.Frame;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -928,9 +929,20 @@ public class GameState implements CommandEncoder {
     GameModule.getGameModule().getPrefs().setValue(BasicLogger.PROMPT_NEW_LOG_END, Boolean.FALSE);
     try {
       loadFastForward(false);
-      System.out.println("Now screenshot");
+
       final VASSAL.build.module.Map map = this.getAllPieces().iterator().next().getMap();
-      new ImageSaver(map).writeMapAsImage();
+      final FileChooser fc = GameModule.getGameModule().getDirectoryChooser();
+      final Frame frame = (Frame) SwingUtilities.getAncestorOfClass(Frame.class, map.getView());
+      if (fc.showSaveDialog(frame) != FileChooser.APPROVE_OPTION) return;
+      System.out.println(fc.getCurrentDirectory().getAbsolutePath());
+      System.out.println(fc.getSelectedFile().getAbsolutePath());
+      
+      final String path = fc.getSelectedFile().getAbsolutePath() + 
+        GameModule.getGameModule().getLocalizedGameName() + 
+        "/Map1.png";
+      System.out.println(path);
+      final File mapPictureFile = new File(path);
+      new ImageSaver(map).writeMapAsImage(mapPictureFile);
     }
     finally {
       GameModule.getGameModule().getPrefs().setValue(BasicLogger.PROMPT_NEW_LOG_END, oldStartNewLogfileSetting);
