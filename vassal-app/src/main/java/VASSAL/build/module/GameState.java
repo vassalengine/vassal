@@ -926,6 +926,20 @@ public class GameState implements CommandEncoder {
   /**
    * Loads a series of game files in a folder and makes a screenshot at the end of each. 
    * Those screenshots can then be made into an animation at the end
+   * 
+   * (optional) Add filename watermark to top right of the image:
+   mogrify -format 'png' -font Liberation-Sans -fill white -undercolor '#00000080' -pointsize 26 -gravity NorthEast -annotate +10+10 %t *.png
+   * make images into a webm video
+   ffmpeg -f image2 -framerate 1 -pattern_type glob -i "*.png" output.webm
+   * 
+   * Video creation with watermark in one step didn't get it to run yet)
+   ffmpeg \
+    -f image2 \
+    -pattern_type glob \
+    -export_path_metadata 1 \
+    -i '*.png' \
+    -vf "drawtext=text='%{metadata\:lavf.image2dec.source_basename\:NA}'" \
+    -y ./output.webm
    */
   private void createGameAnimation() {
     final Boolean oldStartNewLogfileSetting = (Boolean) GameModule.getGameModule().getPrefs().getValue(BasicLogger.PROMPT_NEW_LOG_END);
