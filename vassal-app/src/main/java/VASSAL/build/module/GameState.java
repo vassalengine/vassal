@@ -928,9 +928,9 @@ public class GameState implements CommandEncoder {
    * Those screenshots can then be made into an animation at the end
    * 
    * (optional) Add filename watermark to top right of the image:
-   mogrify -format 'png' -font Liberation-Sans -fill white -undercolor '#00000080' -pointsize 26 -gravity NorthEast -annotate +10+10 %t *.png
+   mogrify -format 'png' -font Liberation-Sans -fill white -undercolor '#00000080' -pointsize 26 -gravity NorthEast -annotate +10+10 %t *-Map0.png
    * make images into a webm video
-   ffmpeg -f image2 -framerate 1 -pattern_type glob -i "*.png" output.webm
+   ffmpeg -f image2 -framerate 1 -pattern_type glob -i "*-Map0.png" output.webm
    * 
    * Video creation with watermark in one step didn't get it to run yet)
    ffmpeg \
@@ -945,7 +945,6 @@ public class GameState implements CommandEncoder {
     final Boolean oldStartNewLogfileSetting = (Boolean) GameModule.getGameModule().getPrefs().getValue(BasicLogger.PROMPT_NEW_LOG_END);
     GameModule.getGameModule().getPrefs().setValue(BasicLogger.PROMPT_NEW_LOG_END, Boolean.FALSE);
     try {
-      // TODO: how to get rid of "want to overwrite this folder" message? We're not overwriting content!
       final FileChooser fc = GameModule.getGameModule().getDirectoryChooser();
       if (fc.showOpenDialog(GameModule.getGameModule().getPlayerWindow()) != FileChooser.APPROVE_OPTION) return;
       System.out.println(fc.getCurrentDirectory().getAbsolutePath());
@@ -960,12 +959,15 @@ public class GameState implements CommandEncoder {
         System.out.println("Processing logfile " + logFile.getName());
         loadFastForward(false, () -> loadGame(logFile, true, true));
 
-        final String path = Paths.get(fc.getSelectedFile().getAbsolutePath(), logFile.getName() + ".png").toString();
-
-        System.out.println("Saving image to " + path);
-        final File mapPictureFile = new File(path);
-        final VASSAL.build.module.Map map = this.getAllPieces().iterator().next().getMap();
-        new ImageSaver(map).writeMapAsImage(mapPictureFile);
+        for (final VASSAL.build.module.Map map : VASSAL.build.module.Map.getMapList()) {
+          final String path = Paths.get(
+            fc.getSelectedFile().getAbsolutePath(), 
+            logFile.getName() + "-" + map.mapID + ".png"
+          ).toString();
+          System.out.println("Saving image to " + path);
+          final File mapPictureFile = new File(path);
+          new ImageSaver(map).writeMapAsImage(mapPictureFile);
+        }        
       }
       
     }
