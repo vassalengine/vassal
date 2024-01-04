@@ -923,14 +923,17 @@ public class GameState implements CommandEncoder {
     recentGamesConf.setValue(rgs.subList(Math.max(0, end - max), end).toArray(new String[0]));
   }
 
+  // TODO: hacky workaround
+  private int i = 0;
+
   /**
    * Loads a series of game files in a folder and makes a screenshot at the end of each. 
    * Those screenshots can then be made into an animation at the end
    * 
    * (optional) Add filename watermark to top right of the image:
-   mogrify -format 'png' -font Liberation-Sans -fill white -undercolor '#00000080' -pointsize 26 -gravity NorthEast -annotate +10+10 %t *-Map0.png
+   mogrify -format 'png' -font Liberation-Sans -fill white -undercolor '#00000080' -pointsize 26 -gravity NorthEast -annotate +10+10 %t *-Map0-*.png
    * make images into a webm video
-   ffmpeg -f image2 -framerate 1 -pattern_type glob -i "*-Map0.png" output.webm
+   ffmpeg -f image2 -framerate 1 -pattern_type glob -i "*-Map0-*.png" output.webm
    * 
    * Video creation with watermark in one step didn't get it to run yet)
    ffmpeg \
@@ -957,17 +960,20 @@ public class GameState implements CommandEncoder {
       
       for (final File logFile : logFiles) {
         System.out.println("Processing logfile " + logFile.getName());
-        loadFastForward(false, () -> loadGame(logFile, true, true));
 
-        for (final VASSAL.build.module.Map map : VASSAL.build.module.Map.getMapList()) {
-          final String path = Paths.get(
-            fc.getSelectedFile().getAbsolutePath(), 
-            logFile.getName() + "-" + map.mapID + ".png"
-          ).toString();
-          System.out.println("Saving image to " + path);
-          final File mapPictureFile = new File(path);
-          new ImageSaver(map).writeMapAsImage(mapPictureFile);
-        }        
+        loadFastForward(false, () -> loadGame(logFile, true, true), () -> {
+          i = i + 1;
+          for (final VASSAL.build.module.Map map : VASSAL.build.module.Map.getMapList()) {
+            final String path = Paths.get(
+              fc.getSelectedFile().getAbsolutePath(), 
+              logFile.getName() + "-" + map.mapID + "-" + i + ".png"
+            ).toString();
+            System.out.println("Saving image to " + path);
+            final File mapPictureFile = new File(path);
+            new ImageSaver(map).writeMapAsImage(mapPictureFile);
+          }   
+        });
+        this.i = 0;
       }
       
     }
@@ -978,7 +984,7 @@ public class GameState implements CommandEncoder {
   }
 
   private void loadFastForward(boolean append) {
-    loadFastForward(append, () -> loadGame(false, true));
+    loadFastForward(append, () -> loadGame(false, true), () -> {});
   }
 
   /**
@@ -986,7 +992,7 @@ public class GameState implements CommandEncoder {
    * same initial state and likewise retaining the existing commands in the log), and thus any new commands added are essentially
    * appended to the existing log rather than starting from some later state.
    */
-  private void loadFastForward(boolean append, Runnable gameLoader) {
+  private void loadFastForward(boolean append, Runnable gameLoader, Runnable afterEachReplay) {
     fastForwarding = true;
 
     gameLoader.run(); // First load the old game or log, forcing it to all happen foreground
@@ -1003,6 +1009,7 @@ public class GameState implements CommandEncoder {
         final Command c = bl.logInput.get(bl.nextInput++);
         c.execute();
         g.sendAndLog(c);
+        afterEachReplay.run();
       }
       bl.stepAction.setEnabled(false);
 
