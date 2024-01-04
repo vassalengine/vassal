@@ -926,6 +926,9 @@ public class GameState implements CommandEncoder {
   // TODO: hacky workaround
   private int i = 0;
 
+  // Only make screenshots for the following map ID
+  private String RELEVANT_MAP_ID = "Map0";
+
   /**
    * Loads a series of game files in a folder and makes a screenshot at the end of each. 
    * Those screenshots can then be made into an animation at the end
@@ -964,9 +967,12 @@ public class GameState implements CommandEncoder {
         loadFastForward(false, () -> loadGame(logFile, true, true), () -> {
           i = i + 1;
           for (final VASSAL.build.module.Map map : VASSAL.build.module.Map.getMapList()) {
+            if (!map.mapID.equals(RELEVANT_MAP_ID)) {
+              continue;
+            }
             final String path = Paths.get(
               fc.getSelectedFile().getAbsolutePath(), 
-              logFile.getName() + "-" + map.mapID + "-" + i + ".png"
+              logFile.getName() + "-" + i + "-" + map.mapID + ".png"
             ).toString();
             System.out.println("Saving image to " + path);
             final File mapPictureFile = new File(path);
