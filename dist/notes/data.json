@@ -20,7 +20,8 @@
       "new_features": [
       ],
       "bug_fixes": [
-        { "num": 12981, "desc": "Fixed IndexOutOfBoundsException in empty chat room" }
+        { "num": 12981, "desc": "Fixed IndexOutOfBoundsException in empty chat room" },
+        { "num": 12765, "desc": "Cancelling Return To Deck no longer causes crash" }
       ],
       "other_improvements": [
       ]

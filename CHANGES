@@ -1,6 +1,7 @@
 3.7.7 - ???
 
 * 12981: Fixed IndexOutOfBoundsException in empty chat room
+* 12765: Cancelling Return To Deck no longer causes crash
 
 3.7.6 - 15 December 2023
 
