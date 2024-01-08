@@ -23,6 +23,7 @@
         { "num": 13021, "desc": "Allow wizard to load setups from extensions" },
         { "num": 13011, "desc": "Spelling correction on Global Options panel" },
         { "num": 12981, "desc": "Fixed IndexOutOfBoundsException in empty chat room" },
+        { "num": 12894, "desc": "Prevent crash if I/O Exception during CRC calculation" },
         { "num": 12765, "desc": "Cancelling Return To Deck no longer causes crash" }
       ],
       "other_improvements": [
