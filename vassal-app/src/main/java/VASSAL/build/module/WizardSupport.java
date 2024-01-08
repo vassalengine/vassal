@@ -548,7 +548,7 @@ public class WizardSupport {
       // First check the specified PDS actually exists in the module
       final String fileName = setup.getFileName();
       try {
-        if (!g.getDataArchive().contains(fileName)) {
+        if (!g.getDataArchive().contains(fileName, true)) {
           controller.setProblem(Resources.getString("WizardSupport.UnableToLoad"));
           return;
         }
