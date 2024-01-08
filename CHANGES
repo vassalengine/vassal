@@ -2,6 +2,8 @@
 
 * 13021: Allow wizard to load setups from extensions
 * 13011: Spelling correction on Global Options panel
+* 13003: Do not record Map Id's in saved Deck files so they will load on any
+    Map
 * 12981: Fixed IndexOutOfBoundsException in empty chat room
 * 12765: Cancelling Return To Deck no longer causes crash
 

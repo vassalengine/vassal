@@ -26,6 +26,7 @@
         { "num": 12765, "desc": "Cancelling Return To Deck no longer causes crash" }
       ],
       "other_improvements": [
+        { "num": 13003, "desc": "Do not record Map Id's in saved Deck files so they will load on any Map" }
       ]
     },
     {
