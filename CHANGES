@@ -1,5 +1,6 @@
 3.7.7 - ???
 
+* 13011: Spelling correction on Global Options panel
 * 12981: Fixed IndexOutOfBoundsException in empty chat room
 * 12765: Cancelling Return To Deck no longer causes crash
 
