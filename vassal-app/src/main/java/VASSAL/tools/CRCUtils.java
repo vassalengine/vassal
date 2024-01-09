@@ -17,6 +17,8 @@
  */
 package VASSAL.tools;
 
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,6 +35,7 @@ import java.util.zip.CRC32;
 public class CRCUtils {
 
   public static final int DEFAULT_BUFFER_SIZE = 8192;
+  private static final org.slf4j.Logger log = LoggerFactory.getLogger(CRCUtils.class);
 
   /**
    * Calculate a cumulative CRC over a series of files
@@ -42,13 +45,18 @@ public class CRCUtils {
    *
    * @param files List of files
    * @return CRC
-   * @throws IOException oops
    */
-  public static long getCRC(List<File> files) throws IOException {
+  public static long getCRC(List<File> files) {
     final CRC32 crc = new CRC32();
     final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
     for (final File file : files) {
-      buildCRC(file, crc, buffer);
+      try {
+        buildCRC(file, crc, buffer);
+      }
+      catch (IOException e) {
+        log.error("Error reading file " + file.getAbsolutePath() + " to generate CRC: " + e.getMessage()); // NON-NLS
+        return 0L;
+      }
     }
     return crc.getValue();
   }

@@ -15,6 +15,25 @@
   ],
   "changes": [
     {
+      "in": "3.7.7",
+      "since": "3.7.6",
+      "new_features": [
+      ],
+      "bug_fixes": [
+        { "num": 13021, "desc": "Allow wizard to load setups from extensions" },
+        { "num": 13011, "desc": "Spelling correction on Global Options panel" },
+        { "num": 13001, "desc": "Fix poor performance of Piece Definer; remove spurious blank line from Mass Piece Loader" },
+        { "num": 12981, "desc": "Fixed IndexOutOfBoundsException in empty chat room" },
+        { "num": 12931, "desc": "Prevent zero length string error on Deck refresh" },
+        { "num": 12894, "desc": "Prevent crash if I/O Exception during CRC calculation" },
+        { "num": 12765, "desc": "Cancelling Return To Deck no longer causes crash" }
+      ],
+      "other_improvements": [
+        { "num": 13003, "desc": "Do not record Map Id's in saved Deck files so they will load on any Map" },
+        { "num": 12768, "desc": "\"Player joins as side\" message now broadcast to all players" }
+      ]
+    },
+    {
       "in": "3.7.6",
       "since": "3.7.5",
       "new_features": [
@@ -46,207 +65,6 @@
       "other_improvements": [
         { "num": 12865, "desc": "Documentation: Editor Search section - add a cross-link to main search details" },
         { "num": 12861, "desc": "Number in-use traits in Piece Definer" }
-      ]
-    },
-    {
-      "in": "3.7.4",
-      "since": "3.7.3",
-      "new_features": [
-      ],
-      "bug_fixes": [
-        { "num": 12830, "desc": "Prevent Load Continuation from auto-forwarding to end of log" },
-        { "num": 12826, "desc": "Fix bug where pieces sometimes teleport from deck back to different map in multiplayer (Ensure map recorded in pieces matches map in parent Stack/Deck)" },
-        { "num": 12824, "desc": "Ensure ColorManager and FontManager are created exactly once, before use" },
-        { "num": 12802, "desc": "Prevent NPE in Named KeyStroke Configurer" }
-      ],
-      "other_improvements": [
-        { "num": 12829, "desc": "Set Piece Property Documentation clarification" },
-        { "num": 12825, "desc": "Allow Unique components to be copied; change Game Piece Layers to be non-mandatory" }
-      ]
-    },
-    {
-      "in": "3.7.3",
-      "since": "3.7.2",
-      "new_features": [
-      ],
-      "bug_fixes": [
-        { "num": 12817, "desc": "Fix alphanumeric key behavior in hotkey (key command) configurer in Editor (e.g., Shift+B should show up as \"Shift+B\", not \"B\")" },
-        { "num": 12810, "desc": "VASSAL.sh exits before printing relevant exit message" },
-        { "num": 12705, "desc": "Prevent creation of duplicate Translations by Add Translation button" }
-      ],
-      "other_improvements": [
-        { "num": 12814, "desc": "Updated bundled Java to 21" },
-        { "num": 12808, "desc": "Horizontal scrolling now supports 2-finger-trackpad and mice with additional horizontal wheels" },
-        { "num": 12724, "desc": "Improved legibility of translation panels" }
-      ]
-    },
-    {
-      "in": "3.7.2",
-      "since": "3.7.1",
-      "new_features": [
-      ],
-      "bug_fixes": [
-        { "num": 12784, "desc": "Fix rendering of external Text Label images" },
-        { "num": 12781, "desc": "Fix bad translation keys for Attachment, Deselect, Send To Location traits" },
-        { "num": 12780, "desc": "Correctly adjust Player window title to reflect actions taken in Welcome Wizard" },
-        { "num": 12769, "desc": "Fix support for expressions in Sound Clip Configurer" },
-        { "num": 12729, "desc": "Set Global Property to again record old GP value in oldValues for reporting" },
-        { "num": 12773, "desc": "Disabled Toolbar Button icons should not appear in unused images list" },
-        { "num": 12770, "desc": "Prevent NPE when escaping from GKC trait after adding 'Set Dynamic Properties' entries" }
-      ],
-      "other_improvements": [
-        { "num": 12896, "desc": "Build universal Mac bundle" }
-      ]
-    },
-    {
-      "in": "3.7.1",
-      "since": "3.7.0",
-      "new_features": [
-      ],
-      "bug_fixes": [
-        { "num": 12727, "desc": "Ensure that tiles are cobbled for fixed-size board scaling" },
-        { "num": 12708, "desc": "Prevent ArrayIndexOutOfBoundsException if side translation count does not match module" },
-        { "num": 12688, "desc": "Replace with Other should not update text of unchangeable labels" },
-        { "num": 12683, "desc": "Prevent NPE on starting game in Main Room" },
-        { "num": 12679, "desc": "Set Piece Property respects target property numeric constraints unless overridden" },
-        { "num": 12676, "desc": "IncrementProperty: Corrected bad wrap-around calculation when increment is negative" },
-        { "num": 12659, "desc": "Translate current side before checking for \"next side\"" },
-        { "num": 12645, "desc": "Respect localization when filtering sides" },
-        { "num": 12582, "desc": "Corrected divide-by-zero problem for Zones defined by zero-point polygons" },
-        { "num": 12542, "desc": "Mitigate race condition when selecting player sides" },
-        { "num": 12474, "desc": "Fixed NPE when moving EditablePiece which isn't on a map" },
-        { "num": 12411, "desc": "Fixed NPE when updating ConfigureTree" },
-        { "num": 12324, "desc": "Fixed ClassCastException caused by reordering columns in Delayed Notes table" },
-        { "num": 12307, "desc": "Prevent NPE when Return to Deck of a deleted Deck" }
-      ],
-      "other_improvements": [
-        { "num": 12716, "desc": "Support regular expressions in Editor search" },
-        { "num": 12715, "desc": "Enable help button for editor Search dialog" },
-        { "num": 12706, "desc": "Keep the \"retire\" button disabled unless a game is running" },
-        { "num": 12696, "desc": "Removed \"Indexing pieces\" message" },
-        { "num": 12670, "desc": "Prevent essential components being accidentally deleted" },
-        { "num": 12661, "desc": "Translate side names in change sides message" }
-      ]
-    },
-    {
-      "in": "3.7.0",
-      "since": "3.6.19",
-      "new_features": [
-        { "num": 12566, "desc": "Add Beanshell function to add Sleep/Delay processing" },
-        { "num": 12536, "desc": "GKC and Place/Replace parameters" },
-        { "num": 12492, "desc": "Add Comment trait" },
-        { "num": 12454, "desc": "BeanShell Editor improvements: larger, multi-line, more properties" },
-        { "num": 12445, "desc": "Add Ranged Sum/Count Functions; updated Function Builder and documentation; updated Property documentation" },
-        { "num": 12444, "desc": "Implement real Unique Piece Id property UniqueID that does not change during refresh" },
-        { "num": 12323, "desc": "Add Beanshell Range functions" },
-        { "num": 12284, "desc": "Add Danish localization" },
-        { "num": 12251, "desc": "New Set Piece Property trait" },
-        { "num": 12243, "desc": "Startup Global Key Commands can also send a Global Hotkey" },
-        { "num": 12222, "desc": "Multi-Location Commands: One trait may create actions corresponding to several map locations" },
-        { "num": 12192, "desc": "New Attachment trait" },
-        { "num": 12184, "desc": "Pivot can have two key commands/angles" },
-        { "num": 12153, "desc": "Layer traits allow a show-only-if-this-property-true filter" },
-        { "num": 12149, "desc": "BorderOutline trait now accepts two fields" },
-        { "num": 12129, "desc": "PlaceMarker and ReplaceWithOther can use expression for X/Y offset" },
-        { "num": 12100, "desc": "Text Labels support <img> tags" },
-
-        { "num": 12067, "desc": "Import/export of groups of items from Editor as XML files (e.g., to transfer between modules)" },
-        { "num": 12060, "desc": "Editor allows Deck files to be imported into a deck to become permanent part of module" },
-        { "num": 12035, "desc": "Mouse-over Stack Viewers allow configuring thickness of outer border, and more padding/stretching options" },
-        { "num": 12032, "desc": "Mark-When-Moved trait can be configured to only flag when piece changes LocationName or Mat. Similarly Map auto-report can be configured to ignore same-location movements." },
-        { "num": 12003, "desc": "OldDeckName now supported as a piece property" },
-        { "num": 12001, "desc": "count_ supported for counting properties in Inventory windows" },
-        { "num": 11969, "desc": "New Border Outline trait" },
-        { "num": 11964, "desc": "Mouse-over Stack Viewers can display an image of underlying terrain" },
-        { "num": 11937, "desc": "SumMat and CountMat functions for Beanshell expression" },
-        { "num": 11932, "desc": "Support for setting Scenario Options" },
-        { "num": 11918, "desc": "Startup GKC that fires when player joins or changes sides" },
-        { "num": 11917, "desc": "Create Non-Rectangular mask directly from SVG outline" },
-        { "num": 11530, "desc": "Add new StackPos and StackSize properties to Basic Piece" },
-        { "num": 11523, "desc": "Area of Effect improvements: Active property, local/global visibility, separate on/off Key Commands" },
-        { "num": 11178, "desc": "Global Option added to omit empty lines in property setting prompts" },
-        { "num": 11100, "desc": "Allow begin-logfile and end-logfile to have configurable hotkeys in Global Options" },
-        { "num": 10822, "desc": "Sounds can be suppressed during GKC processing" },
-        { "num": 10821, "desc": "Symbolic Dice buttons how have full Action Button capabilities (sounds, hotkeys, etc.)" },
-        { "num": 10820, "desc": "Make Action Button available on all windows where other similar buttons (e.g., GKC, Multi-Action, etc) are available" },
-        { "num": 4454, "desc": "Save chat text to file" },
-        { "num": 4446, "desc": "Dynamic button labels (can use expressions and $...$ in certain toolbar buttons)" }
-      ],
-      "bug_fixes": [
-        { "num": 12644, "desc": "Prevent NPE when Editing Deck count expressions" },
-        { "num": 12627, "desc": "Fix chat non-scrolling caused by setting preferred size for the Chatter contents pane" },
-        { "num": 12620, "desc": "Ensure that HTML attribute values are quoted" },
-        { "num": 12595, "desc": "Fix Search UnsupportedOperationException" },
-        { "num": 12578, "desc": "Process Set Piece Property expressions correctly" },
-        { "num": 12568, "desc": "Center of map view during zoom used incorrect coordinate space" },
-        { "num": 12561, "desc": "Handle Beanshell functions correctly in expressions" },
-        { "num": 12547, "desc": "CountLocation function with 3 parameters does not work" },
-        { "num": 12529, "desc": "Allow Piece UIDs to be compared properly in expressions" },
-        { "num": 12528, "desc": "Close InputStreams opened for reading SVG" },
-        { "num": 12482, "desc": "Map Shader now able to add button to Map Toolbar" },
-        { "num": 12470, "desc": "Place Marker X Offset should default to 0, not null" },
-        { "num": 12439, "desc": "Uniformly handle addition of standard and imported Configurables" },
-        { "num": 12434, "desc": "FastMatch by Location now respects Deck limits" },
-        { "num": 12433, "desc": "Attachment Fastmatch: match each piece at most once, limit checking by name" },
-        { "num": 12420, "desc": "Set Piece Property does not work" },
-        { "num": 12403, "desc": "Extension Editing fixes: Cut & Paste now deletes cut element, Drag & Drop between folders in Extension are saved, stopped UnsupportedOperationException during search" },
-        { "num": 12401, "desc": "Allow Ctrl-V to be entered as a Key Command" },
-        { "num": 12396, "desc": "Add missing Global Option message" },
-        { "num": 12393, "desc": "Fix Auto-attach breaking on Undo" },
-        { "num": 12392, "desc": "Replace With Other incorrectly retains existing Marker values when Match Current State is checked" },
-        { "num": 12382, "desc": "Prevent NPE in Beanshell execution during module initialisation" },
-        { "num": 12363, "desc": "Initialise Global Option preferences that have no Tab name" },
-        { "num": 12347, "desc": "Refresh Dynamic Properties correctly when they have no value" },
-        { "num": 12342, "desc": "Fixed bad link in Reference Manual" },
-        { "num": 12340, "desc": "Fix inaccurate Hex Grid location reports" },
-        { "num": 12322, "desc": "Scale summed board locations instead of summing scaled board locations to reduce rounding error" },
-        { "num": 12315, "desc": "Prevent NPE in MouseOverStackViewer trying to show top piece of empty stack" },
-        { "num": 12303, "desc": "Dynamic button text was resolved too soon" },
-        { "num": 12302, "desc": "Description field now properly appears with Startup GKC set to send Global Hotkey" },
-        { "num": 12261, "desc": "Report error if more than one grid added to a Zone" },
-        { "num": 12220, "desc": "Add BorderOutline's property names to the searchable target list" },
-        { "num": 12215, "desc": "New MarkMoved commands shouldn't default to being displayed if no key commands entered" },
-        { "num": 12205, "desc": "Area of Effect trait was eating other traits' visibility info in some cases" },
-        { "num": 12203, "desc": "Properly extract outlines from SVG for NonRectangular" },
-        { "num": 12175, "desc": "Fix stretchy images in chat" },
-        { "num": 12159, "desc": "Correctly handle install paths containing spaces in VASSAL.sh" },
-        { "num": 12158, "desc": "List Key Commands tool can be re-opened after closing with X button" },
-        { "num": 12152, "desc": "Work around Java bug which prevents displaying Windows file dialog" },
-        { "num": 11913, "desc": "Numeric global properties with increments other than 1 and -1 now wrap around correctly" }
-      ],
-      "other_improvements": [
-        { "num": 12626, "desc": "Hide caret in chat pane" },
-        { "num": 12573, "desc": "Updated bundled Java to 20.0.2" },
-        { "num": 12556, "desc": "Map Shaders on different maps can now have same name" },
-        { "num": 12549, "desc": "Simplify Trait edit window title" },
-        { "num": 12538, "desc": "Scenario Options - Allow Observers to Lock option tabs if no Sides taken" },
-        { "num": 12509, "desc": "Allow and empty Deck or At-start Stack to be repositioned" },
-        { "num": 12504, "desc": "Updated documentation for 3.7" },
-        { "num": 12501, "desc": "Merge Set Attachment property into Set Piece Property" },
-        { "num": 12495, "desc": "Mouse-over Stack Viewer 'Show move limited pieces' option no longer dependent on 'Show non-stacking' option" },
-        { "num": 12443, "desc": "Clarified MouseOverViewer documentation" },
-        { "num": 12432, "desc": "Add missing Sum & Count expressions" },
-        { "num": 12427, "desc": "Fixed bad links in Reference Manual" },
-        { "num": 12362, "desc": "Rollover component help button goes to MouseOver.html instead of Map.html" },
-        { "num": 12341, "desc": "Expression documentation improvements" },
-        { "num": 12287, "desc": "Enable text field DnD" },
-        { "num": 12279, "desc": "Default heap raised to 1024MB" },
-        { "num": 12270, "desc": "Scenario Options tweaks" },
-        { "num": 12267, "desc": "Optimize Ranged GKC's and remaining Location based fastmatch option" },
-        { "num": 12235, "desc": "HTML Help file starting page can now be an expression" },
-        { "num": 12187, "desc": "Improved Rectangular Grid range metric names and made them translatable" },
-        { "num": 12177, "desc": "Change-property buttons don't generate completely empty chat lines" },
-        { "num": 12176, "desc": "Add preference to not display Mark Moved status of pieces" },
-        { "num": 12172, "desc": "Metadata now contains the 'extra' fields, and Module Manager displays them if numeric" },
-        { "num": 12138, "desc": "Better editor descriptions of Global Hotkey traits" },
-        { "num": 12137, "desc": "Editor shows better descriptions for Dynamic Property and Set Global Property traits" },
-        { "num": 12136, "desc": "Change Property Buttons now have a description field, which is displayed in the editor if filled in" },
-        { "num": 12133, "desc": "Rollovers automatically shrink scale if the pieces are too wide to fit the screen width" },
-        { "num": 12084, "desc": "Help menu shows module-specific help items before generic Vassal ones" },
-        { "num": 12080, "desc": "Zooming in and out no longer loses track of player's preferred center point for map" },
-        { "num": 11919, "desc": "Allow DEL/BACKSPACE to be mapped as a hotkey" },
-        { "num": 11506, "desc": "Predefined Setup \"menus\" with blank names will not be shown" },
-        { "num": 11104, "desc": "Refresh Can Rotate trait by Rotator Name match option for Game Refreshers" }
       ]
     }
   ]

@@ -137,7 +137,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -152,6 +151,7 @@ import java.util.regex.PatternSyntaxException;
 import java.util.stream.IntStream;
 
 import static VASSAL.build.GameModule.MODULE_NAME_PROPERTY;
+import static VASSAL.build.GameModule.DESCRIPTION;
 import static VASSAL.build.GameModule.MODULE_DESCRIPTION_PROPERTY;
 import static VASSAL.build.GameModule.MODULE_OTHER1_PROPERTY;
 import static VASSAL.build.GameModule.MODULE_OTHER2_PROPERTY;
@@ -163,7 +163,6 @@ import static java.util.regex.Pattern.CASE_INSENSITIVE;
  * that appears in the Configuration window when editing a VASSAL module. Each
  * node in the tree structure is a {@link VASSAL.build.Configurable} object,
  * whose child nodes are obtained via {@link VASSAL.build.Configurable#getConfigureComponents}.
- *
  * When we're running as the Extension Editor, this is subclassed by {@link ExtensionTree}, which
  * overrides some methods to handle extension-specific differences.
  */
@@ -223,6 +222,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   @Deprecated(since = "2022-08-08", forRemoval = true)
   public static final Font POPUP_MENU_FONT = new Font(Font.DIALOG, Font.PLAIN, 11);
   protected static final List<AdditionalComponent> additionalComponents = new ArrayList<>();
+
+  // Internal names of module classes; used where system literals are required rather than translate codes (shown in comment)
+  private static final String CLASS_MODULE = "Module";        // Editor.GameModule.component_type
+  private static final String CLASS_HELP_MENU = "Help Menu";  // Editor.Documentation.component_type
 
   /**
    * Creates new ConfigureTree
@@ -556,7 +559,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       GameModule.getGameModule().getPlayerWindow(),
       (DirectoryConfigurer) Prefs.getGlobalPrefs()
         .getOption(Prefs.MODULES_DIR_KEY));
-    if (fc.showSaveDialog() != FileChooser.APPROVE_OPTION) return false;
+    if (fc.showSaveDialog() != FileChooser.APPROVE_OPTION) {
+      return false;
+    }
     String filename = fc.getSelectedFile().getPath();
 
     if (!StringUtils.isEmpty(defaultExportExtension) && (filename.lastIndexOf('.') < 0)) {
@@ -580,7 +585,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected boolean importTreeBranch(Configurable target) {
 
     final FileChooser fc = GameModule.getGameModule().getFileChooser();
-    if (fc.showOpenDialog() != FileChooser.APPROVE_OPTION) return false;
+    if (fc.showOpenDialog() != FileChooser.APPROVE_OPTION) {
+      return false;
+    }
 
     String filename = fc.getSelectedFile().getPath();
 
@@ -1507,7 +1514,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       getTopLevelAncestor(),
       Resources.getString("Editor.ConfigureTree.java_name"));
 
-    if (className == null) return null;
+    if (className == null) {
+      return null;
+    }
 
     Object o = null;
     try {
@@ -1518,9 +1527,13 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       ReflectionUtils.handleImportClassFailure(t, className);
     }
 
-    if (o == null) return null;
+    if (o == null) {
+      return null;
+    }
 
-    if (o instanceof Configurable) return (Configurable) o;
+    if (o instanceof Configurable) {
+      return (Configurable) o;
+    }
 
     ErrorDialog.show("Error.not_a_configurable", className); //$NON-NLS-1$//
     return null;
@@ -1780,9 +1793,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       newNodeSelected = selectedNode != lastFoundNode;
 
       // if node changes, we'll need the current Index.
-      if (newNodeSelected) selectedNodeIndex =
-              getBookmark((List<DefaultMutableTreeNode>) getSearchNodes((DefaultMutableTreeNode)selectedNode.getRoot()),
-                      selectedNode);
+      if (newNodeSelected) {
+        selectedNodeIndex = getBookmark(
+          (List<DefaultMutableTreeNode>) getSearchNodes(
+            (DefaultMutableTreeNode) selectedNode.getRoot()
+          ),
+          selectedNode
+        );
+      }
     }
   }
 
@@ -2284,26 +2302,40 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         });
 
         prev.addActionListener(ePrev -> {
-          // in event of a cursor move, breadCrumbs list may need culling before backward step...
-          if (newNodeSelected && !breadCrumbs.isEmpty()) {
-            while (nodeListIndex > 0 && breadCrumbs.get(nodeListIndex - 1) >= selectedNodeIndex) {
-              breadCrumbs.remove(--nodeListIndex);
-            }
+          final SearchParameters parametersSetInDialog =
+                  new SearchParameters(search.getText(), normal.isSelected(), word.isSelected(), regex.isSelected(), sensitive.isSelected(), names.isSelected(), types.isSelected(),
+                          simple.isSelected(), full.isSelected(), filters.isSelected(),
+                          traits.isSelected(), expressions.isSelected(), properties.isSelected(), keys.isSelected(), menus.isSelected(), messages.isSelected());
+
+          if (!searchParameters.equals(parametersSetInDialog)) {
+            // previous relies on a prior forward search - search setting changes will block the Prev button but this is to catch the search string itself
+            prev.setEnabled(false);
+            chat("~" + Resources.getString("Editor.search_prev_invalid"));
           }
           else {
-            if (nodeListIndex > 0) breadCrumbs.remove(--nodeListIndex);
-          }
-
-          // stop once we get to the first item
-          if (nodeListIndex > 0) {
-            // Rewind to previous match, and move the pointer back
-            final DefaultMutableTreeNode node = setNode(breadCrumbs.get(nodeListIndex - 1));
-            if (node != null) {
-              selectPath(node);
-              showHitList(node, regexPattern);
+            // in event of a cursor move, breadCrumbs list may need culling before backward step...
+            if (newNodeSelected && !breadCrumbs.isEmpty()) {
+              while (nodeListIndex > 0 && breadCrumbs.get(nodeListIndex - 1) >= selectedNodeIndex) {
+                breadCrumbs.remove(--nodeListIndex);
+              }
             }
+            else {
+              if (nodeListIndex > 0) {
+                breadCrumbs.remove(--nodeListIndex);
+              }
+            }
+
+            // stop once we get to the first item
+            if (nodeListIndex > 0) {
+              // Rewind to previous match, and move the pointer back
+              final DefaultMutableTreeNode node = setNode(breadCrumbs.get(nodeListIndex - 1));
+              if (node != null) {
+                selectPath(node);
+                showHitList(node, regexPattern);
+              }
+            }
+            prev.setEnabled(nodeListIndex > 1); // disable button once at start
           }
-          prev.setEnabled(nodeListIndex > 1); // disable button once at start
         });
 
          // Any search option changes immediately disables prev (invalidates backtracking). A renewed search will enable it.
@@ -2393,7 +2425,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
                 chatter.show(!searchParameters.isOptRegex() ? Resources.getString((searchParameters.isOptNormal() ? "Editor.search_count" : "Editor.search_countWord"), matches, noHTML(searchParameters.getSearchString())) :
                         regexPattern == null ? "" : Resources.getString("Editor.search_countRegex", matches, noHTML(regexPattern.toString())));
 
-                resetPath();  // Search needs to start from current position
+                if (matches > 0) {
+                  resetPath();  // Search needs to start from current position; if nothing found, cursor stays where it was
+                }
+
               }
 
               final DefaultMutableTreeNode node = findNode(regexPattern);
@@ -2476,8 +2511,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         filtersTop.add(names);
 
         final JPanel filterList = new JPanel(new MigLayout("hidemode 3,wrap 1," + ConfigurerLayout.STANDARD_INSETS_GAPY, "push[]")); // NON-NLS
-        //filterList.add(filtersPrompt);
-        //filterList.add(names);
         filterList.add(filtersTop);
         filterList.add(types);
         filterList.add(traits);
@@ -2546,7 +2579,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
 
       // take a step back
-      if (--bookmark < 0) bookmark = searchNodes.size() - 1;
+      if (--bookmark < 0) {
+        bookmark = searchNodes.size() - 1;
+      }
       final TreePath path = new TreePath(setNode(bookmark).getPath());
       configureTree.setSelectionPath(path);
     }
@@ -2579,7 +2614,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       int bookmark = -1;
 
       // Position at the current node
-      if (currentNode != null) bookmark = getBookmark(searchNodes, currentNode);
+      if (currentNode != null) {
+        bookmark = getBookmark(searchNodes, currentNode);
+      }
 
       // find the next node
       final Predicate<DefaultMutableTreeNode> nodeMatchesSearchString = node -> checkNode(node, regexPattern);
@@ -2606,7 +2643,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
 
       // Determine precise bookmark for back-track record (might be a child of the node within which the search was performed)
-      if (lastFoundNode != null) bookmark = getBookmark(searchNodes, lastFoundNode);
+      if (lastFoundNode != null) {
+        bookmark = getBookmark(searchNodes, lastFoundNode);
+      }
 
       // track the node just found
       selectedNodeIndex = bookmark;
@@ -2643,7 +2682,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       int i = 0;
 
       do {
-        if (checkNode(searchNodes.get(i), regexPattern)) breadCrumbs.add(i);
+        if (checkNode(searchNodes.get(i), regexPattern)) {
+          breadCrumbs.add(i);
+        }
       } while (searchNodes.get(i++) != currentNode);
 
       return  breadCrumbs.size();
@@ -2756,58 +2797,71 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
       //  Special processing to include select items in full search despite not being a SearchTarget
 
-        // FIXME: Name check is internal - comparison should ideally be on raw data, not translated
-        // FIXME: How about extensions ?
+      // FIXME: How about extensions ?
       // Is module descriptor ?
-      if (getConfigureName(c.getClass()).equals(Resources.getString("Editor.GameModule.component_type"))) {
+      if (getConfigureName(c.getClass()).equals(CLASS_MODULE)) {
         // [Module] - Name, Description & Additional infos fields within the Module component
         if (searchParameters.isMatchFull() || searchParameters.isMatchMenus()) {
           // check UI content
 
           if (!showName) {       // not if already captured by name
             final String objectName = c.getConfigureName();
-            if (objectName != null && checkString(objectName, regexPattern))
+            if (objectName != null && checkString(objectName, regexPattern)) {
               return true;
+            }
           }
 
-          final String desc = c.getAttributeValueString(MODULE_DESCRIPTION_PROPERTY);
-          if (desc != null && checkString(desc, regexPattern))
+          final String desc = c.getAttributeValueString(DESCRIPTION);
+          if (desc != null && checkString(desc, regexPattern)) {
             return true;
+          }
 
           final String moduleOther1 = c.getAttributeValueString(MODULE_OTHER1_PROPERTY);
-          if (moduleOther1 != null && checkString(moduleOther1, regexPattern))
+          if (moduleOther1 != null && checkString(moduleOther1, regexPattern)) {
             return true;
+          }
 
           final String moduleOther2 = c.getAttributeValueString(MODULE_OTHER2_PROPERTY);
-          if (moduleOther2 != null)
+          if (moduleOther2 != null) {
             return checkString(moduleOther2, regexPattern);
+          }
         }
       }
       else {
-        if (getConfigureName(c.getClass()).equals(Resources.getString("Editor.Documentation.component_type"))) {
+        final DefaultMutableTreeNode pNode = (DefaultMutableTreeNode) node.getParent();
+        final Configurable p = (Configurable) pNode.getUserObject();
+
+        if (getConfigureName(p.getClass()).equals(CLASS_HELP_MENU)) {
           // [Help Menu]
           // Menu is also the Name, so only catch here if not already caught as Name
 
-          // FIXME: This next section needs to read through the buildComponents. At present this code can't find anything.
           if (!showName && (searchParameters.isMatchFull() || searchParameters.isMatchMenus())) {
-            return checkString(c.getConfigureName(), regexPattern);
+            return checkString(getConfigureName(c), regexPattern);
           }
 
           if (searchParameters.isMatchFull() || searchParameters.isMatchExpressions()) {
             // content will be categorised as Expressions... each is a separate component
             final String startPage = c.getAttributeValueString("startingPage");
-            if (startPage != null) return checkString(startPage, regexPattern);
+            if (startPage != null) {
+              return checkString(startPage, regexPattern);
+            }
 
             final String pdfFile = c.getAttributeValueString("pdfFile");
-            if (pdfFile != null) return checkString(pdfFile, regexPattern);
+            if (pdfFile != null) {
+              return checkString(pdfFile, regexPattern);
+            }
 
             final String textFile = c.getAttributeValueString("textFile");
-            if (textFile != null) return checkString(textFile, regexPattern);
+            if (textFile != null) {
+              return checkString(textFile, regexPattern);
+            }
           }
         }
       }
 
-      if (!(c instanceof SearchTarget)) return false;
+      if (!(c instanceof SearchTarget)) {
+        return false;
+      }
 
       // From here down we are only searching inside SearchTarget objects (Piece/Prototypes, or searchable AbstractConfigurables)
       GamePiece p;
@@ -2970,16 +3024,17 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
       // FIXME: Name check is internal - comparison should ideally be on raw data, not translated
       // FIXME: How about extensions ?
-      if (getConfigureName(c.getClass()).equals(Resources.getString("Editor.GameModule.component_type"))) {
+
+      if (getConfigureName(c.getClass()).equals(CLASS_MODULE)) {
         // [Module] - Name, Description & Additional infos fields within the Module component
         if (searchParameters.isMatchFull() || searchParameters.isMatchMenus()) {
           // display matched UI content
 
           if (!showName) {       // not if already captured by name
-            stringListHits(true, Collections.singletonList(c.getConfigureName()), regexPattern, matchString, item, "", MODULE_NAME_PROPERTY, progress); //NON-NLS
+            stringListHits(true, Collections.singletonList(getConfigureName(c)), regexPattern, matchString, item, "", MODULE_NAME_PROPERTY, progress); //NON-NLS
           }
 
-          final String desc = c.getAttributeValueString(MODULE_DESCRIPTION_PROPERTY);
+          final String desc = c.getAttributeValueString(DESCRIPTION);
           final String moduleOther1 = c.getAttributeValueString(MODULE_OTHER1_PROPERTY);
           final String moduleOther2 = c.getAttributeValueString(MODULE_OTHER2_PROPERTY);
           stringListHits(true, Collections.singletonList(desc), regexPattern, matchString, item, "", MODULE_DESCRIPTION_PROPERTY, progress); //NON-NLS
@@ -2989,14 +3044,15 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
       else {
         // Help ?
-        // FIXME: Name check is internal - comparison should ideally be on raw data, not translated
-        if (getConfigureName(c.getClass()).equals(Resources.getString("Editor.Documentation.component_type"))) {
+        final DefaultMutableTreeNode pNode = (DefaultMutableTreeNode) node.getParent();
+        final Configurable p = (Configurable) pNode.getUserObject();
+
+        if (getConfigureName(p.getClass()).equals(CLASS_HELP_MENU)) {
           // Help - special processing to include in full search despite not being a SearchTarget
           // Menu is also the Name, so only display here if not already reported as Name
 
-          // FIXME: see earlier comment re matching on buildComponents  - applies here for output
           if (!showName && (searchParameters.isMatchFull() || searchParameters.isMatchMenus())) {
-            stringListHits(true, Arrays.asList(c.getConfigureName()), regexPattern, matchString, item, "", "UI Text", progress); //NON-NLS
+            stringListHits(true, Collections.singletonList(getConfigureName(c)), regexPattern, matchString, item, "", "UI Text", progress); //NON-NLS
           }
           if (searchParameters.isMatchFull() || searchParameters.isMatchExpressions()) {
             // content refs will be categorised as Expressions
@@ -3010,7 +3066,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         }
       }
 
-      if (!(c instanceof SearchTarget)) return;
+      if (!(c instanceof SearchTarget)) {
+        return;
+      }
 
       // Go deeper for a full or filtered search on SearchTarget data
       final SearchTarget st = (SearchTarget) c;
@@ -3036,32 +3094,28 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     private void showHitList(DefaultMutableTreeNode node, Pattern regexPattern) {
       final Configurable c = (Configurable) node.getUserObject();
       final String item = getConfigureName(c.getClass());
-      final String name = StringUtils.defaultString(c.getConfigureName());
+      final String name = StringUtils.defaultString(getConfigureName(c));
       final TargetProgress progress = new TargetProgress();
 
       // name & type (class) are default search categories and only excluded via Advanced Filters
       final boolean showName = searchParameters.isMatchNames() || !searchParameters.isMatchAdvanced();
       final boolean showTypes = searchParameters.isMatchTypes() || !searchParameters.isMatchAdvanced();
 
-/*    Highlighting matches in the headings is possible but not so useful whilst the matches are shown in the detailed output.
-      final String matchString = Resources.getString("Editor.search_matches", nodeListIndex) + "<b>"
-              + (showName ? highlightFinds(noHTML(name), regexPattern) : noHTML(name))
-              + " [" + (showTypes ? highlightFinds(noHTML(item), regexPattern) :  noHTML(item)) + "]"
-              + "</b>: ";
-      */
       // Heading without highlighting matches
       final String matchString = Resources.getString("Editor.search_matches", nodeListIndex)
               + "<b>" + noHTML(name) + " [" + noHTML(item) + "]" + "</b>: ";
 
-      stringListHits(showName, Arrays.asList(c.getConfigureName()), regexPattern, matchString, item, "", "Name", progress); //NON-NLS
-      stringListHits(showTypes, Arrays.asList(item),                 regexPattern, matchString, item, "", "Type", progress); //NON-NLS
+      stringListHits(showName, Collections.singletonList(getConfigureName(c)), regexPattern, matchString, item, "", "Name", progress); //NON-NLS
+      stringListHits(showTypes, List.of(item),                 regexPattern, matchString, item, "", "Type", progress); //NON-NLS
 
       // Component description is displayed in Simple mode searches or when Name is selected
       if (c instanceof ComponentDescription) {
-        stringListHits(showName, Arrays.asList(((ComponentDescription) c).getDescription()), regexPattern, matchString, item, "", "Description", progress); //NON-NLS
+        stringListHits(showName, Collections.singletonList(((ComponentDescription) c).getDescription()), regexPattern, matchString, item, "", "Description", progress); //NON-NLS
       }
 
-      if (searchParameters.isMatchSimple()) return;
+      if (searchParameters.isMatchSimple()) {
+        return;
+      }
 
       // Details...
       GamePiece p;
@@ -3196,12 +3250,18 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         final int end = match.end();
 
         // add in next unmatched segment followed by formatted matched segment
-        if (start > lastEnd) fmtStr.append(noHTML(rawStr.substring(lastEnd, start))).append(htmlHighlighter).append(noHTML(rawStr.substring(start, end))).append("</font>");
+        if (start > lastEnd) {
+          fmtStr.append(noHTML(rawStr.substring(lastEnd, start))).append(htmlHighlighter).append(noHTML(rawStr.substring(start, end))).append("</font>");
+        }
         else {
           // rarely executed....
           // a contiguous or overlapping matched segment; ignore the duplicate sub-segment, and insert the remainder ahead of the </font> tag
-          if (fmtStr.length() > 12) fmtStr.replace(fmtStr.length() - 7, fmtStr.length() - 1, ""); // remove prior </font>, skip if this is first pass
-          else fmtStr.append(htmlHighlighter); // first pass match at start of string
+          if (fmtStr.length() > 12) {
+            fmtStr.replace(fmtStr.length() - 7, fmtStr.length() - 1, ""); // remove prior </font>, skip if this is first pass
+          }
+          else {
+            fmtStr.append(htmlHighlighter); // first pass match at start of string
+          }
           fmtStr.append(noHTML(rawStr.substring(lastEnd, end))).append("</font>");
         }
 
@@ -3209,7 +3269,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
 
       // final unmatched string, if any
-      if (rawStr.length() > lastEnd) fmtStr.append(noHTML(rawStr.substring(lastEnd)));
+      if (rawStr.length() > lastEnd) {
+        fmtStr.append(noHTML(rawStr.substring(lastEnd)));
+      }
 
       return fmtStr.toString();
     }
@@ -3408,7 +3470,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       final JTree tree = (JTree)support.getComponent();
       final int dropRow = tree.getRowForPath(dl.getPath());
       final int[] selRows = tree.getSelectionRows();
-      if (selRows == null) return false;
+      if (selRows == null) {
+        return false;
+      }
       for (final int selRow : selRows) {
         if (selRow == dropRow) {
           return false;

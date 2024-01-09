@@ -2466,16 +2466,9 @@ public class GameModule extends AbstractConfigurable
       }
     }
 
-    try {
-      // Base CRC is of module file only
-      crc = CRCUtils.getCRC(List.of(files.get(0)));
-      // CombinedCrc includeds extensions as well
-      combinedCrc = CRCUtils.getCRC(files);
-    }
-    catch (IOException e) {
-      log.error("Error generating CRC", e); //NON-NLS
-      return;
-    }
+    crc = CRCUtils.getCRC(List.of(files.get(0)));
+    // CombinedCrc includes extensions as well
+    combinedCrc = CRCUtils.getCRC(files);
   }
 
   /**
