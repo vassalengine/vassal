@@ -7,6 +7,7 @@
 * 13001: Fix poor performance of Piece Definer; remove spurious blank line
     from Mass Piece Loader
 * 12981: Fixed IndexOutOfBoundsException in empty chat room
+* 12931: Prevent zero length string error on Deck refresh
 * 12894: Prevent crash if I/O Exception during CRC calculation
 * 12765: Cancelling Return To Deck no longer causes crash
 
