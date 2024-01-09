@@ -235,6 +235,11 @@ public class FreeRotatorTest extends DecoratorTest {
             return input.getArgument(0);
           });
 
+      // Mock a component for the mouse events.
+      final Point origin = new Point(0,0);
+      final Component comp = mock(Component.class);
+      when(comp.getLocationOnScreen()).thenReturn(origin);
+
       // Setup for FreeRotation with initialized command keys.
       fr.mySetType("rotate;1;49,130;Rotate;50,130;Random;FreeRotator;;51,130;Direct;0;true");
       fr.setMap(map);
@@ -242,9 +247,6 @@ public class FreeRotatorTest extends DecoratorTest {
       if (path.length > 0) {
         long when = 1L;
         int index = 0;
-
-        // Dummy component for the mouse events.
-        final Component comp = new Label();
 
         final MouseEvent press = new MouseEvent(comp, MouseEvent.MOUSE_PRESSED, when++, 0,
             path[index].x, path[index].y, 1, false, MouseEvent.BUTTON1);
