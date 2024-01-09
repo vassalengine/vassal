@@ -34,6 +34,8 @@ Force an Exact case search (i.e. abc is different to ABC).
 ===== Scope
 Choose from a basic search of component and piece names, a full search of all supported data or use "advanced filters" to select specific data types. Note that there are a few data fields that search does not check.
 
+When editing an <<Concepts.adoc#extension,Extension>>, default search scope is limited to Extension contents. A scope option appears that allows module contents to be included.
+
 ===== Match component names & descriptions
 Match against the names and descriptions of components and pieces.
 
