@@ -226,13 +226,14 @@ public class FreeRotator extends Decorator
   }
 
   public void setAngle(double angle) {
+    // We (stupidly) store allowed angles in descending order from 0.
+    // Normalize the angle to be in (-360, 0] to match that.
+    angle = ((angle % 360) - 360) % 360;
+
     if (isFreeRotation()) {
-      validAngles[angleIndex] = ((angle % 360) - 360) % 360;
+      validAngles[angleIndex] = angle;
     }
     else {
-      // We (stupidly) store allowed angles in descending order from 0.
-      // Normalize the angle to be in (-360, 0] to match that.
-      angle = ((angle % 360) - 360) % 360;
       // ex is the expected index of the angle in angles array
       final double ex = (-angle / 360) * validAngles.length;
       angleIndex = ((int) Math.round(ex)) % validAngles.length;
