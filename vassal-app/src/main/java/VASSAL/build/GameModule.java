@@ -845,7 +845,10 @@ public class GameModule extends AbstractConfigurable
 
         @Override
         public void actionPerformed(ActionEvent e) {
-          getGameState().loadGame(new File(rg), false);
+          final GameState gs = getGameState();
+          if (gs.isNewGameAllowed()) {
+            gs.loadGame(new File(rg), false);
+          }
         }
       });
 
