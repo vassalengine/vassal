@@ -20,6 +20,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 13022, "desc": "Prevent room non-owners starting new games" },
         { "num": 13021, "desc": "Allow wizard to load setups from extensions" },
         { "num": 13011, "desc": "Spelling correction on Global Options panel" },
         { "num": 13001, "desc": "Fix poor performance of Piece Definer; remove spurious blank line from Mass Piece Loader" },

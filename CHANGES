@@ -1,6 +1,7 @@
 3.7.7 - ???
 
 * 13037: Make Zoom component a default component of all maps
+* 13022: Prevent room non-owners starting new games
 * 13021: Allow wizard to load setups from extensions
 * 13011: Spelling correction on Global Options panel
 * 13003: Do not record Map Id's in saved Deck files so they will load on any
