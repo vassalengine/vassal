@@ -1,5 +1,6 @@
 3.7.7 - ???
 
+* 13037: Make Zoom component a default component of all maps
 * 13021: Allow wizard to load setups from extensions
 * 13011: Spelling correction on Global Options panel
 * 13003: Do not record Map Id's in saved Deck files so they will load on any
@@ -7,6 +8,7 @@
 * 13001: Fix poor performance of Piece Definer; remove spurious blank line
     from Mass Piece Loader
 * 12981: Fixed IndexOutOfBoundsException in empty chat room
+* 12976: Search: Add option to exclude module elements when editing extension
 * 12931: Prevent zero length string error on Deck refresh
 * 12894: Prevent crash if I/O Exception during CRC calculation
 * 12768: "Player joins as side" message now broadcast to all players

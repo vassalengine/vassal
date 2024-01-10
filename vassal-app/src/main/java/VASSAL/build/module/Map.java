@@ -760,6 +760,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       addChild(new ImageSaver());
       addChild(new CounterDetailViewer());
       addChild(new Flare());
+      addChild(new Zoomer());
       setMapName(Resources.getString("Map.main_map"));
     }
 

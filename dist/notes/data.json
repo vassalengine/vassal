@@ -29,7 +29,9 @@
         { "num": 12765, "desc": "Cancelling Return To Deck no longer causes crash" }
       ],
       "other_improvements": [
+        { "num": 13037, "desc": "Make Zoom component a default component of all maps" },
         { "num": 13003, "desc": "Do not record Map Id's in saved Deck files so they will load on any Map" },
+        { "num": 12976, "desc": "Search: Add option to exclude module elements when editing extension" },
         { "num": 12768, "desc": "\"Player joins as side\" message now broadcast to all players" }
       ]
     },
