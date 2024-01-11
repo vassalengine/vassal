@@ -10,6 +10,7 @@
     from Mass Piece Loader
 * 12981: Fixed IndexOutOfBoundsException in empty chat room
 * 12976: Search: Add option to exclude module elements when editing extension
+* 12971: Refresh visible portions of Maps after each UI, log, or network action
 * 12931: Prevent zero length string error on Deck refresh
 * 12894: Prevent crash if I/O Exception during CRC calculation
 * 12768: "Player joins as side" message now broadcast to all players

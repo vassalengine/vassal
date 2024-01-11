@@ -25,6 +25,7 @@
         { "num": 13011, "desc": "Spelling correction on Global Options panel" },
         { "num": 13001, "desc": "Fix poor performance of Piece Definer; remove spurious blank line from Mass Piece Loader" },
         { "num": 12981, "desc": "Fixed IndexOutOfBoundsException in empty chat room" },
+        { "num": 12971, "desc": "Refresh visible portions of Maps after each UI, log, or network action" },
         { "num": 12931, "desc": "Prevent zero length string error on Deck refresh" },
         { "num": 12894, "desc": "Prevent crash if I/O Exception during CRC calculation" },
         { "num": 12765, "desc": "Cancelling Return To Deck no longer causes crash" }
