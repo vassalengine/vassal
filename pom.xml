@@ -4,7 +4,7 @@
 
     <groupId>org.vassalengine</groupId>
     <artifactId>vassal-parent</artifactId>
-    <version>3.7.7-SNAPSHOT</version>
+    <version>3.7.7</version>
     <packaging>pom</packaging>
 
     <name>Vassal Engine</name>
@@ -76,7 +76,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.2.3</version>
+                    <version>3.2.5</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-resources-plugin</artifactId>
