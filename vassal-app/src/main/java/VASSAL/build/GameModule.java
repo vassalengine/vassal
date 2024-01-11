@@ -2307,6 +2307,28 @@ public class GameModule extends AbstractConfigurable
     return s == null ? null : s.getPropertyValue();
   }
 
+  /**
+   * Refresh the visible portions of all currently showing maps.
+   * This is called in when the following are completed:
+   *  - Any right-click menu option on a piece
+   *  - Any Toolbar button action
+   *  - Any Toolbar Menu item selection
+   *  - Each Step replay from a log file
+   *  - Each Undo
+   *  - Each time a counter or stack is drag'n'dropped
+   *  - Each message received during on-line play
+   *  - Any click on an Action Button
+   *
+   *  These eight actions can cause changes that result in text displaying Calculated properties and Beanshell expressions
+   *  to change in places unrelated to where the action occurred, leaving these counters out of sync until a later click
+   *  in their general area.
+   */
+  public final void refreshVisibleMaps() {
+    for (final Map map : Map.getMapList()) {
+      map.repaint();
+    }
+  }
+
   @Override
   public List<String> getPropertyNames() {
     final List<String> l = new ArrayList<>();
