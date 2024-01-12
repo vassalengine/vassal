@@ -607,6 +607,9 @@ public class WizardDisplayerImpl extends WizardDisplayer
      * true to indicate we should not try to close the parent window.
      */ 
     boolean cancel() {
+        // Reset the PlayerRoster so that it knows the wizard has been cancelled.
+        // See the PlayerRoster code for details
+        GameModule.getGameModule().getPlayerRoster().reset();
         boolean result = receiver != null;
         if (result) {
             receiver.cancelled(settings);
