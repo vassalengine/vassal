@@ -87,7 +87,7 @@ public class FreeRotatorTest extends DecoratorTest {
 
       // Repeat key stroke for a full 360 rotation.
       fr.mySetState("9");
-      for (int i=0;i<10;i++) {
+      for (int i = 0; i < 10; i++) {
         fr.myKeyEvent(onKey.getKeyStroke());
         assertEquals(-36 * i, fr.getAngle());
       }
@@ -109,7 +109,7 @@ public class FreeRotatorTest extends DecoratorTest {
       fr.myGetKeyCommands();
 
       fr.mySetState("0");
-      for (int i=0;i<10;i++) {
+      for (int i = 0; i < 10; i++) {
         fr.myKeyEvent(onKey.getKeyStroke());
         assertEquals((36 * (i+1)) -360, fr.getAngle());
       }
