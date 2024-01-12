@@ -64,22 +64,6 @@
         { "num": 12970, "desc": "Upgrade bundled Java to 21.0.1+12" },
         { "num": 12798, "desc": "Editor search revamp: more options and enhanced navigation" }
       ]
-    },
-    {
-      "in": "3.7.5",
-      "since": "3.7.4",
-      "new_features": [
-      ],
-      "bug_fixes": [
-        { "num": 12866, "desc": "Fix double application of board magnification to board bounds" },
-        { "num": 12852, "desc": "Prevent SumZone from generating Bad Data Errors" },
-        { "num": 12846, "desc": "Fix missing custom colors and font styles in Game Piece Layouts" },
-        { "num": 12841, "desc": "Ensure labels are correctly updated in Replace With Other trait" }
-      ],
-      "other_improvements": [
-        { "num": 12865, "desc": "Documentation: Editor Search section - add a cross-link to main search details" },
-        { "num": 12861, "desc": "Number in-use traits in Piece Definer" }
-      ]
     }
   ]
 }
