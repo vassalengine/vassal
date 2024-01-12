@@ -198,6 +198,8 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
 
   public void launch() {
     final GameModule g = GameModule.getGameModule();
+    if (!g.getGameState().isNewGameAllowed()) return;
+
     if (useFile && fileName != null) {
       try {
         g.getGameState().loadGameInBackground(fileName, getSavedGameContents(), true);

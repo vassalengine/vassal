@@ -18,6 +18,7 @@
 package VASSAL.build.module.map;
 
 import VASSAL.build.Buildable;
+import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.counters.ActionButton;
 import VASSAL.counters.Deck;
@@ -114,8 +115,11 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
     if (!NamedKeyManager.isNamed(keyCommand.getKeyStroke())) { // If the KeyStroke is named, then there is no accelerator
       item.setAccelerator(keyCommand.getKeyStroke());
     }
-
+    // Action Listeners are triggered in the reverse order they are added. We want the action to be performed first,
+    // then do a refresh so any labels remote from the source counter are updated
+    item.addActionListener(e -> GameModule.getGameModule().refreshVisibleMaps());
     item.addActionListener(keyCommand);
+
     item.setEnabled(keyCommand.isEnabled());
 
     return item;
