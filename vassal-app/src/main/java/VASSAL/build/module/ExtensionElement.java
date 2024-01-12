@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.search.ImageSearchTarget;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -27,12 +28,16 @@ import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.tools.ComponentPathBuilder;
 
+import java.util.Collection;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 /**
  * An element of a {@link ModuleExtension} that extends an
  * individual {@link VASSAL.build.Buildable} component of the
  * {@link VASSAL.build.GameModule}.
  */
-public class ExtensionElement implements Buildable {
+public class ExtensionElement implements Buildable, ImageSearchTarget {
   /**
    * An identifier for the component to be extended
    */
@@ -95,5 +100,37 @@ public class ExtensionElement implements Buildable {
       GameModule.getGameModule() : targetPath[targetPath.length - 1];
     extension.addTo(target);
     target.add(extension);
+  }
+
+  @Override
+  public SortedSet<String> getAllImageNames() {
+    final TreeSet<String> s = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    if (extension instanceof ImageSearchTarget) {
+      ((ImageSearchTarget) extension).addImageNamesRecursively(s);
+    }
+    return s;
+  }
+
+  @Override
+  public void addImageNamesRecursively(Collection<String> s) {
+    if (extension instanceof ImageSearchTarget) {
+      ((ImageSearchTarget) extension).addImageNamesRecursively(s);
+    }
+  }
+
+  @Override
+  public SortedSet<String> getLocalImageNames() {
+    final TreeSet<String> s = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    if (extension instanceof ImageSearchTarget) {
+      ((ImageSearchTarget) extension).addLocalImageNames(s);
+    }
+    return s;
+  }
+
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    if (extension instanceof ImageSearchTarget) {
+      ((ImageSearchTarget) extension).addLocalImageNames(s);
+    }
   }
 }
