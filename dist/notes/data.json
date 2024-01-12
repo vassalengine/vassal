@@ -20,7 +20,8 @@
       "new_features": [
       ],
       "bug_fixes": [
-        { "num": 13049, "desc": "Compute correct _Degrees property for free rotations" }
+        { "num": 13049, "desc": "Compute correct _Degrees property for free rotations" },
+        { "num": 13040, "desc": "Show correct sides in Wizard after using Prev button" }
       ],
       "other_improvements": [
       ]
