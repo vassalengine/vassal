@@ -15,6 +15,16 @@
   ],
   "changes": [
     {
+      "in": "3.7.8",
+      "since": "3.7.7",
+      "new_features": [
+      ],
+      "bug_fixes": [
+      ],
+      "other_improvements": [
+      ]
+    },
+    {
       "in": "3.7.7",
       "since": "3.7.6",
       "new_features": [
