@@ -109,19 +109,18 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
   private Action refreshAction;
   private final GpIdSupport gpIdSupport;
   private GpIdChecker gpIdChecker;
-  private RefreshDialog dialog;
-  private int updatedCount;
 
+  private int updatedCount;
   private int totalCount;
   private int totalDecks;
 
-  int notFoundCount; // shared to PDS refresher
-  int noGpIdMatch; // shared to PDS refresher
-  int noStackCount; // shared to PDS refresher - not used!!!
-  int noMapCount; // shared to PDS refresher - not used!!!
-  int notOwnedCount; // shared to PDS refresher
-  int notVisibleCount; // shared to PDS refresher
-  int deckWarnings; // shared to PDS refresher
+  private int notFoundCount; // shared to PDS refresher
+  private int noGpIdMatch; // shared to PDS refresher
+  private int noStackCount; // shared to PDS refresher - not used!!!
+  private int noMapCount; // shared to PDS refresher - not used!!!
+  private int notOwnedCount; // shared to PDS refresher
+  private int notVisibleCount; // shared to PDS refresher
+  private int deckWarnings; // shared to PDS refresher
 
   public static final String ERROR_MESSAGE_PREFIX = "~";
   public static final String SEPARATOR = "----------";
@@ -139,6 +138,11 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
   public GameRefresher(GpIdSupport gpIdSupport) {
     this.gpIdSupport = gpIdSupport;
     theModule = GameModule.getGameModule();
+  }
+
+  public int warnings() {
+    // Make count of all data warnings available to PreDefinedSetup too
+    return notFoundCount + noStackCount + noMapCount + notOwnedCount + notVisibleCount + noGpIdMatch + deckWarnings;
   }
 
   @Override
@@ -186,9 +190,8 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
   }
 
   public void start() {
-    dialog = new RefreshDialog(this);
+    RefreshDialog dialog = new RefreshDialog(this);
     dialog.setVisible(true);
-    dialog = null;
   }
 
   public void log(String message) {

@@ -321,9 +321,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     mod.getPlayerWindow().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
     // return number of refresh anomaly warnings reported
-    return gameRefresher.notFoundCount + gameRefresher.noStackCount + gameRefresher.noMapCount
-            + gameRefresher.notOwnedCount + gameRefresher.notVisibleCount + gameRefresher.noGpIdMatch
-            + gameRefresher.deckWarnings;
+    return gameRefresher.warnings();
   }
 
   @Override
