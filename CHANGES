@@ -2,6 +2,11 @@
 
 * 13049: Compute correct _Degrees property for free rotations
 * 13040: Show correct sides in Wizard after using Prev button
+* 12898: Improved "Refresh Predefined Setups": Expanded "orphan counter"
+    functionality - reporting / ability to repair (sub-option); ability to do
+    additional processing via a special post-refresh Global Hotkey, optionally
+    without routine refresh reporting; new filter field and associated
+    functionality for Predefined Setup Refresh; other UI improvements
 
 3.7.7 - 11 January 2024
 
