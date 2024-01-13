@@ -38,6 +38,7 @@ import VASSAL.tools.menu.ParentProxy;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
@@ -89,16 +90,6 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
 
     showUseFile = () -> !isMenu;
   }
-
- /*  protected void  setRefresherOptions() {
-   if (nameCheck.isSelected()) {
-      refresherOptions.add("useName");
-    }
-    if (labelerNameCheck.isSelected()) {
-      refresherOptions.add("useLabelerName");
-    }
-  }*/
-
 
   @Override
   public String[] getAttributeDescriptions() {
@@ -289,8 +280,14 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     return Resources.getString("Editor.PredefinedSetup.component_type"); //$NON-NLS-1$
   }
 
+  @Deprecated(since = "2023-11-10", forRemoval = true)
   public void refresh(Set<String> options) throws IOException, IllegalBuildException {
+    refreshWithStatus(options);
+  }
+
+  public int refreshWithStatus(Set<String> options) throws IOException, IllegalBuildException {
     if (!options.isEmpty()) {
+      this.refresherOptions.clear();
       this.refresherOptions.addAll(options);
     }
     final GameModule mod = GameModule.getGameModule();
@@ -298,12 +295,13 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     final GameRefresher gameRefresher = new GameRefresher(mod);
 
     // since we're going to block the GUI, let's give some feedback
-    gameRefresher.log("----------"); //$NON-NLS-1$
-    gameRefresher.log("Updating Predefined Setup: " + this.getAttributeValueString(this.NAME) + " ( " + fileName + ")"); //$NON-NLS-1$S
+    gameRefresher.log(GameRefresher.SEPARATOR); //$NON-NLS-1$
+    gameRefresher.log("Updating Predefined Setup: " + this.getAttributeValueString(NAME) + " (" + fileName + ")"); //$NON-NLS-1$S
 
     // get a stream to the saved game in the module file
     gs.setupRefresh();
     gs.loadGameInForeground(fileName, getSavedGameContents());
+    mod.getPlayerWindow().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
     // call the gameRefresher
     gameRefresher.execute(refresherOptions, null);
@@ -319,8 +317,12 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     aw.removeFile(fileName);
     aw.addFile(tmpZip.getFile().getPath(), fileName);
     gs.closeGame();
-  }
 
+    mod.getPlayerWindow().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+    // return number of refresh anomaly warnings reported
+    return gameRefresher.warnings();
+  }
 
   @Override
   public HelpFile getHelpFile() {
