@@ -190,7 +190,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
   }
 
   public void start() {
-    RefreshDialog dialog = new RefreshDialog(this);
+    final RefreshDialog dialog = new RefreshDialog(this);
     dialog.setVisible(true);
   }
 
