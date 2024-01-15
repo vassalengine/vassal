@@ -927,14 +927,17 @@ public class GameState implements CommandEncoder {
   private int i = 0;
 
   // Only make screenshots for the following map ID
-  private String RELEVANT_MAP_ID = "Map0";
+  private static final String RELEVANT_MAP_ID = "Map0";
 
   /**
    * Loads a series of game files in a folder and makes a screenshot at the end of each. 
    * Those screenshots can then be made into an animation at the end
    * 
+   * (optional) Cut playarea from complete map pictures (when only part of the map is used)
+   mogrify -format 'png' -crop 2173x1005+3543+938 +repage *-Map0.png
+   mogrify -format 'png' +repage *-Map0.png
    * (optional) Add filename watermark to top right of the image:
-   mogrify -format 'png' -font Liberation-Sans -fill white -undercolor '#00000080' -pointsize 26 -gravity NorthEast -annotate +10+10 %t *-Map0-*.png
+   mogrify -format 'png' -font Liberation-Sans -fill white -undercolor '#00000080' -pointsize 26 -gravity NorthEast -annotate +10+10 %t *-Map0.png
    * make images into a webm video
    ffmpeg -f image2 -framerate 1 -pattern_type glob -i "*-Map0-*.png" output.webm
    * 
@@ -964,15 +967,18 @@ public class GameState implements CommandEncoder {
       for (final File logFile : logFiles) {
         System.out.println("Processing logfile " + logFile.getName());
 
+        // TODO: can we somehow skip non-movement commands?
         loadFastForward(false, () -> loadGame(logFile, true, true), () -> {
           i = i + 1;
           for (final VASSAL.build.module.Map map : VASSAL.build.module.Map.getMapList()) {
             if (!map.mapID.equals(RELEVANT_MAP_ID)) {
               continue;
             }
+
             final String path = Paths.get(
               fc.getSelectedFile().getAbsolutePath(), 
-              logFile.getName() + "-" + i + "-" + map.mapID + ".png"
+              // make i zero padded!
+              logFile.getName() + "-" + String.format("%03d", i) + "-" + map.mapID + ".png"
             ).toString();
             System.out.println("Saving image to " + path);
             final File mapPictureFile = new File(path);
