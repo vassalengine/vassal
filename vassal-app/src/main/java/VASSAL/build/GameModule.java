@@ -218,10 +218,8 @@ public class GameModule extends AbstractConfigurable
   public static final String MODULE_OTHER2_PROPERTY = "ModuleOther2"; //NON-NLS
   public static final String MODULE_VASSAL_VERSION_CREATED_PROPERTY = "VassalVersionCreated"; //NON-NLS
   public static final String MODULE_VASSAL_VERSION_RUNNING_PROPERTY = "VassalVersionRunning"; //NON-NLS
-
   public static final String MODULE_CURRENT_LOCALE = "CurrentLanguage"; //NON-NLS
   public static final String MODULE_CURRENT_LOCALE_NAME = "CurrentLanguageName"; //NON-NLS
-
   public static final String DRAWING_MOUSEOVER_PROPERTY = "DrawingMouseover"; //NON-NLS
   public static final String DRAWING_MOUSEOVER_INDEX_PROPERTY = "DrawingMouseoverIndex"; //NON-NLS
 
@@ -230,6 +228,7 @@ public class GameModule extends AbstractConfigurable
   private static final char COMMAND_SEPARATOR = KeyEvent.VK_ESCAPE;
 
   public static final String RECENT_GAMES = "RecentGames"; //NON-NLS
+  private static final String GAME_FILE_PROPERTY = "VassalGameFileName"; //NON-NLS
 
   private final List<MenuItemProxy> openRecentItems = new ArrayList<>();
 
@@ -2281,6 +2280,9 @@ public class GameModule extends AbstractConfigurable
     else if (GameModule.MODULE_CURRENT_LOCALE_NAME.equals(key)) {
       return Resources.getLocale().getDisplayName();
     }
+    else if (GAME_FILE_PROPERTY.equals(key)) {
+      return gameFile;
+    }
     else if (DRAWING_MOUSEOVER_PROPERTY.equals(key)) {
       return CounterDetailViewer.isDrawingMouseOver();
     }
@@ -2344,6 +2346,7 @@ public class GameModule extends AbstractConfigurable
     l.add(MODULE_CURRENT_LOCALE_NAME);
     l.add(MODULE_VASSAL_VERSION_CREATED_PROPERTY);
     l.add(MODULE_VASSAL_VERSION_RUNNING_PROPERTY);
+    l.add(GAME_FILE_PROPERTY);
 
     return l;
   }

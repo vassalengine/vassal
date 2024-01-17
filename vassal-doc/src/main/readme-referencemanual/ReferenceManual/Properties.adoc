@@ -210,7 +210,8 @@ A string that uniquely identifies an individual piece and is guaranteed to never
 |*PlayerName* |<<GameModule.adoc#top,Game Module>>| Module| The Player Name of the current player
 |*PlayerSide* |<<GameModule.adoc#top,Game Module>>| Module| The Side taken by the current player if Sides have been defined in the module
 |*VassalVersionCreated* |<<GameModule.adoc#top,Game Module>>| Module| The version number of Vassal that was used to create the current module.
-|*VassalVersionRuning* |<<GameModule.adoc#top,Game Module>>| Module| The version number of Vassal that is currently running.
+|*VassalVersionRunning* |<<GameModule.adoc#top,Game Module>>| Module| The version number of Vassal that is currently running.
+|*VassalGameFileName* |<<GameModule.adoc#top,Game Module>>| Module| The last game file opened by the current player.
 |===
 
 ===== Property names provided by VASSAL Components that can be accessed by traits, but are dependent on the module
