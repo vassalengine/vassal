@@ -1,6 +1,7 @@
 3.8.0-beta1 - ???
 
 * 12944: Add pieceCount to the map auto reporter
+* 12763: Added VassalGameFileName property
 
 3.7.8 - ???
 

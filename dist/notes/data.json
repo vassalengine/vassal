@@ -18,7 +18,8 @@
       "in": "3.8.0-beta1",
       "since": "3.7.8",
       "new_features": [
-        { "num": 12944, "desc": "Add pieceCount to the map auto reporter" }
+        { "num": 12944, "desc": "Add pieceCount to the map auto reporter" },
+        { "num": 12763, "desc": "Added VassalGameFileName property" }
       ],
       "bug_fixes": [
       ],
