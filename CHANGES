@@ -1,3 +1,7 @@
+3.8.0-beta1 - ???
+
+* 12944: Add pieceCount to the map auto reporter
+
 3.7.8 - ???
 
 * 13057: Remove Unused Images does not find any images in use in an Extension
