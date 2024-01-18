@@ -228,7 +228,7 @@ public class GameModule extends AbstractConfigurable
   private static final char COMMAND_SEPARATOR = KeyEvent.VK_ESCAPE;
 
   public static final String RECENT_GAMES = "RecentGames"; //NON-NLS
-  private static final String GAME_FILE_PROPERTY = "VassalGameFileName"; //NON-NLS
+  private static final String GAME_FILENAME_PROPERTY = "ModuleGameFileName"; //NON-NLS
 
   private final List<MenuItemProxy> openRecentItems = new ArrayList<>();
 
@@ -260,7 +260,7 @@ public class GameModule extends AbstractConfigurable
 
   private static GameModule theModule;
 
-  private static String DEFAULT_MODULE_VERSION = "0.0"; //$NON-NLS-1$
+  private static final String DEFAULT_MODULE_VERSION = "0.0"; //$NON-NLS-1$
 
   private String moduleVersion = DEFAULT_MODULE_VERSION;
   private String vassalVersionCreated = "0.0";  //$NON-NLS-1$
@@ -767,7 +767,7 @@ public class GameModule extends AbstractConfigurable
      */
     if (e != null) {
       gameName = e.getAttribute(MODULE_NAME).strip();
-      if (e.getAttribute(VASSAL_VERSION_CREATED).length() > 0) {
+      if (!e.getAttribute(VASSAL_VERSION_CREATED).isEmpty()) {
         vassalVersionCreated = e.getAttribute(VASSAL_VERSION_CREATED);
       }
     }
@@ -1124,7 +1124,7 @@ public class GameModule extends AbstractConfigurable
    * Lists all the buildFile (XML) attribute names for this component.
    * If this component is ALSO an {@link AbstractConfigurable}, then this list of attributes determines the appropriate
    * attribute order for {@link AbstractConfigurable#getAttributeDescriptions()} and {@link AbstractConfigurable#getAttributeTypes()}.
-   * @return a list of all buildFile (XML) attribute names for this component
+   * @return an array of all buildFile (XML) attribute names for this component
    * @see AbstractBuildable
    */
   @Override
@@ -1179,7 +1179,7 @@ public class GameModule extends AbstractConfigurable
   /**
    * List of subcomponents which can be added to a GameModule.
    *
-   * @return a list of valid sub-component Classes.  If a Class
+   * @return an array of valid subcomponent Classes.  If a Class
    * appears in this list, then instances of that class may be added
    * to this component from the Editor's {@link ConfigureTree} window by
    * right-clicking on the component and selecting the appropriate "Add"
@@ -2277,7 +2277,7 @@ public class GameModule extends AbstractConfigurable
     else if (GameModule.MODULE_CURRENT_LOCALE_NAME.equals(key)) {
       return Resources.getLocale().getDisplayName();
     }
-    else if (GAME_FILE_PROPERTY.equals(key)) {
+    else if (GAME_FILENAME_PROPERTY.equals(key)) {
       return gameFile;
     }
     else if (DRAWING_MOUSEOVER_PROPERTY.equals(key)) {
@@ -2321,7 +2321,7 @@ public class GameModule extends AbstractConfigurable
     l.add(MODULE_CURRENT_LOCALE_NAME);
     l.add(MODULE_VASSAL_VERSION_CREATED_PROPERTY);
     l.add(MODULE_VASSAL_VERSION_RUNNING_PROPERTY);
-    l.add(GAME_FILE_PROPERTY);
+    l.add(GAME_FILENAME_PROPERTY);
 
     return l;
   }
@@ -2472,7 +2472,7 @@ public class GameModule extends AbstractConfigurable
     try {
       // Base CRC is of module file only
       crc = CRCUtils.getCRC(List.of(files.get(0)));
-      // CombinedCrc includeds extensions as well
+      // CombinedCrc includes extensions as well
       combinedCrc = CRCUtils.getCRC(files);
     }
     catch (IOException e) {
