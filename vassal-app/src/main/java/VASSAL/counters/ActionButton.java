@@ -710,6 +710,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
         finally {
           RecursionLimiter.endExecution();
         }
+        GameModule.getGameModule().refreshVisibleMaps(); // Redisplay any visible remote labels
       }
     }
 

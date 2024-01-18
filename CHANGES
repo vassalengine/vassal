@@ -1,8 +1,49 @@
-3.7.6 - ???
+3.8.0-beta1 - ???
 
+* 12944: Add pieceCount to the map auto reporter
+* 12763: Added VassalGameFileName property
+
+3.7.8 - ???
+
+* 13057: Remove Unused Images does not find any images in use in an Extension
+* 13049: Compute correct _Degrees property for free rotations
+* 13040: Show correct sides in Wizard after using Prev button
+* 12898: Improved "Refresh Predefined Setups": Expanded "orphan counter"
+    functionality - reporting / ability to repair (sub-option); ability to do
+    additional processing via a special post-refresh Global Hotkey, optionally
+    without routine refresh reporting; new filter field and associated
+    functionality for Predefined Setup Refresh; other UI improvements
+
+3.7.7 - 11 January 2024
+
+* 13037: Make Zoom component a default component of all maps
+* 13022: Prevent room non-owners starting new games
+* 13021: Allow wizard to load setups from extensions
+* 13011: Spelling correction on Global Options panel
+* 13003: Do not record Map Id's in saved Deck files so they will load on any
+    Map
+* 13001: Fix poor performance of Piece Definer; remove spurious blank line
+    from Mass Piece Loader
+* 12981: Fixed IndexOutOfBoundsException in empty chat room
+* 12976: Search: Add option to exclude module elements when editing extension
+* 12971: Refresh visible portions of Maps after each UI, log, or network action
+* 12931: Prevent zero length string error on Deck refresh
+* 12894: Prevent crash if I/O Exception during CRC calculation
+* 12768: "Player joins as side" message now broadcast to all players
+* 12765: Cancelling Return To Deck no longer causes crash
+
+3.7.6 - 15 December 2023
+
+* 12970: Upgrade bundled Java to 21.0.1+12
+* 12958: Store correct value in prefs for Module Manager column widths
+* 12936: Labels have incorrect bounds when using italics
+* 12912: Prevent Welcome Wizard from loading multiple pre-defined setups
+    concurrently
 * 12907: Deck Key Commands do not work on subsequent new games
+* 12886: Suppress unhelpful bad data error reports from the Piece Palette
 * 12881: Prevent integer overflow when computing the size of image pixel data
     in bytes
+* 12798: Editor search revamp: more options and enhanced navigation
 
 3.7.5 - 30 October 2023
 

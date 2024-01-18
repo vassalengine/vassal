@@ -123,7 +123,6 @@
   <rule ref="category/java/errorprone.xml/EmptyCatchBlock" />
 -->
   <rule ref="category/java/errorprone.xml/EmptyFinalizer" />
-  <rule ref="category/java/errorprone.xml/EmptyStatementNotInLoop" />
   <rule ref="category/java/errorprone.xml/EqualsNull" />
   <rule ref="category/java/errorprone.xml/FinalizeDoesNotCallSuperFinalize" />
   <rule ref="category/java/errorprone.xml/FinalizeOnlyCallsSuperFinalize" />
@@ -176,7 +175,6 @@
 -->
   <rule ref="category/java/performance.xml/StringInstantiation" />
   <rule ref="category/java/performance.xml/StringToString" />
-  <rule ref="category/java/performance.xml/UnnecessaryWrapperObjectCreation" />
   <rule ref="category/java/performance.xml/UseArraysAsList" />
   <rule ref="category/java/performance.xml/UseIndexOfChar" />
   <rule ref="category/java/performance.xml/UselessStringValueOf" />

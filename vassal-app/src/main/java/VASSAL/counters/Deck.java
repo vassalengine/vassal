@@ -405,7 +405,13 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       if ("true".equals(evaluated) || (!"false".equals(evaluated) && PropertiesPieceFilter.parse(evaluated).accept(p))) { //NON-NLS
         final String mapProperty = prop.getPropertyValue();
         if (mapProperty != null) {
-          int newValue = Integer.decode(mapProperty);
+          int newValue;
+          try {
+            newValue = Integer.decode(mapProperty);
+          }
+          catch (NumberFormatException ignored) {
+            newValue = 0;
+          }
           if (increase) {
             newValue++;
           }
