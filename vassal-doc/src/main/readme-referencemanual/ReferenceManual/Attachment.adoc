@@ -29,7 +29,7 @@ This <<GamePiece.adoc#Traits,Trait>> adds an action that creates a lasting "atta
 * Two pieces, each with an Attachment trait sharing the same _Attachment Name_ can form a mutual attachment
 * Pieces which are deleted from the game are automatically removed as attachments.
 * The _GetAttachProperty_ function can be used in expressions to read the values of Dynamic Properties on attached pieces. See the section on the <<ExpressionProperty.adoc#Attachment,GetProperty>> functions for more information.
-* A <<SetAttachmentProperty.adoc#top,Set Attachment Property>> trait can be used to change the values of Dynamic Properties on attached pieces.
+* A <<SetPieceProperty.adoc#top,Set Piece Property>> trait can be used to change the values of Dynamic Properties on attached pieces.
 
 [width="100%",cols="50%a,^50%a",]
 |===
