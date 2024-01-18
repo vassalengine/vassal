@@ -52,8 +52,8 @@ import VASSAL.command.CommandEncoder;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.PropertiesEncoder;
 import VASSAL.tools.SequenceEncoder;
-
 import VASSAL.tools.version.VersionUtils;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
@@ -263,6 +263,26 @@ public class NodeClient implements LockableChatServerConnection,
       send(Protocol.encodeStatsCommand(new PropertiesEncoder(me.toProperties())
           .getStringValue()));
     }
+  }
+
+  /** Return true if
+   *  1. The current room is the default room
+   *  OR
+   *  2. The current player is the Owner of the current room
+   *
+   * @return true if this player owns the current room
+   */
+  public boolean isOwner() {
+    final Room room = getRoom();
+    if (!isDefaultRoom(room)) {
+      if (room instanceof NodeRoom) {
+        final String owner = ((NodeRoom) room).getOwner();
+        if (owner == null || !owner.equals(getUserInfo().getId())) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
   @Override

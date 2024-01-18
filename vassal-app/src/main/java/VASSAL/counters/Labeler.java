@@ -66,8 +66,10 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -547,12 +549,19 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       return im;
     }
 
+    // Use TextLayout instead of getFontMetrics because of the italics problem.
     protected Dimension buildDimensions() {
       final Graphics2D g = ImageUtils.NULL_IMAGE.createGraphics();
-      final FontMetrics fm = g.getFontMetrics(font);
-      final Dimension s = new Dimension(fm.stringWidth(txt), fm.getHeight());
+      final TextLayout layout = new TextLayout(txt, font, g.getFontRenderContext());
+      final Rectangle2D lBounds = new Rectangle2D.Float(
+        0f,
+        -layout.getAscent() - layout.getLeading(),
+        layout.getAdvance(),
+        layout.getAscent() + layout.getDescent() + 2f * layout.getLeading()
+      );
+      final Rectangle2D bounds = lBounds.createUnion(layout.getBounds());
       g.dispose();
-      return s;
+      return bounds.getBounds().getSize();
     }
 
     @Override
@@ -618,7 +627,8 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
 
       // paint the foreground
       if (fg != null) {
-        if (txt.contains("<img")) { //NON-NLS
+        // Support images pre-existing in the module
+        if (txt.contains("<img ") && !txt.contains(" src=\"http://") && !txt.contains(" src=\"https://") && !txt.contains(" src=\"file://")) { //NON-NLS
           final DataArchiveTextPane p = new DataArchiveTextPane(txt, "label", fg, font); //NON-NLS
           p.paint(g);
         }

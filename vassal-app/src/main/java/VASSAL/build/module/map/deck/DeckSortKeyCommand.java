@@ -121,6 +121,7 @@ public class DeckSortKeyCommand extends AbstractDeckKeyCommand {
   public void deregisterListeners() {
     if (sortListener != null) {
       GameModule.getGameModule().removeKeyStrokeListener(sortListener);
+      sortListener = null;
     }
   }
 

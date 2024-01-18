@@ -771,6 +771,10 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
   @Override
   public void setMap(Map map) {
     this.map = map;
+    // And so do all our children
+    for (int i = 0; i < getPieceCount(); i++) {
+      contents[i].setMap(map);
+    }
   }
 
   /**

@@ -23,6 +23,7 @@ import VASSAL.build.GpIdSupport;
 import VASSAL.build.module.KeyNamer;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.widget.PieceSlot;
+import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
@@ -105,7 +106,7 @@ public class PieceDefiner extends JPanel {
   // A reduced inset size for the icon buttons gives a better look
   private static final Insets buttonInsets = new Insets(1, 2, 1, 2);
 
-  // Some empty space around the rendered Piece Image so it doesn't look to crammed
+  // Some empty space around the rendered Piece Image, so it doesn't look too crammed
   private static final int PIECE_IMAGE_INSET = 10;
 
   protected static DefaultListModel<GamePiece> availableModel;
@@ -156,7 +157,7 @@ public class PieceDefiner extends JPanel {
 
     initDefinitions();
     inUseModel = new DefaultListModel<>();
-    r = new Renderer();
+    r = new Renderer(this);
     availableRenderer = new AvailableRenderer();
     slot = new ScaleablePieceSlot();
     initComponents();
@@ -164,6 +165,10 @@ public class PieceDefiner extends JPanel {
     setChanged(false);
     gpidSupport = GameModule.getGameModule().getGpIdSupport();
     prototypeName = "";
+  }
+
+  public boolean isPrototype() {
+    return !prototypeName.isEmpty();
   }
 
   public PieceDefiner(String id, GpIdSupport s) {
@@ -259,7 +264,7 @@ public class PieceDefiner extends JPanel {
   }
 
   /**
-   * Add an additional definition to the list of available traits.
+   * Add another definition to the list of available traits.
    * Add to the bottom of the classic list
    * Regenerate the Alpha list
    * reset the model depending on the sort setting
@@ -342,7 +347,7 @@ public class PieceDefiner extends JPanel {
 
   /**
    *
-   * Re-calculate how to layout the left hand Piece display panel.
+   * Re-calculate how to lay out the left hand Piece display panel.
    *
    * 1. Always try and show the entire image 100% scale, plus PIECE_IMAGE_BORDER pixels
    * 2. If the image can't fit in the available space, scale it until it can
@@ -425,7 +430,7 @@ public class PieceDefiner extends JPanel {
     public void keyTyped(KeyEvent e) {
       final char ch = e.getKeyChar();
 
-      // ignore searches for non alpha-numeric characters
+      // ignore searches for non-alphanumeric characters
       if (!Character.isLetterOrDigit(ch)) {
         return;
       }
@@ -482,7 +487,7 @@ public class PieceDefiner extends JPanel {
     splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, slotPanel, controls);
     splitPane.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, e -> splitChanged());
 
-    // Set a MouseListener on the Divider so we can distinguish manual drags from auto-resizes
+    // Set a MouseListener on the Divider, so we can distinguish manual drags from auto-resizes
     final SplitPaneUI spui = splitPane.getUI();
     if (spui instanceof BasicSplitPaneUI) {
       ((BasicSplitPaneUI) spui).getDivider().addMouseListener(new MouseAdapter() {
@@ -746,7 +751,7 @@ public class PieceDefiner extends JPanel {
     inUseScroll.setBorder(BorderFactory.createTitledBorder(Resources.getString("Editor.PieceDefiner.current_traits")));
     inUsePanel.add(inUseScroll, "grow,push,wrap"); // NON-NLS
 
-    // A panel holding the cut/paste/propertiues buttons below the In Use traits
+    // A panel holding the cut/paste/properties buttons below the In Use traits
     final JPanel inUseButtonPanel = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
     copyButton = new JButton(Resources.getString("Editor.copy") + " (" + getCtrlKeyName('C') + ")");
     copyButton.addActionListener(evt -> doCopy());
@@ -1027,12 +1032,12 @@ public class PieceDefiner extends JPanel {
       return;
     }
 
-    // Remove the piece from it's current position
+    // Remove the piece from its current position
     final GamePiece piece = removeDecorator(fromIndex);
 
     // Insert it at the new position.
     // The piece has already been removed from its old location, so if we are moving down,
-    // substract one from the toIndex as the list entries below us will have shifted up.
+    // subtract one from the toIndex as the list entries below us will have shifted up.
     final int actualToIndex = toIndex > fromIndex ? toIndex - 1 : toIndex;
     insertDecorator(actualToIndex, piece);
 
@@ -1273,20 +1278,52 @@ public class PieceDefiner extends JPanel {
   private static class Renderer extends DefaultListCellRenderer {
     private static final long serialVersionUID = 1L;
 
+    private final PieceDefiner definer;
+
+    Renderer(PieceDefiner definer) {
+      this.definer = definer;
+    }
+
+    private static String getLineNumber(int lineNumber) {
+      // prep line number for output
+      return "<span style=color:#A0A0A0>" + lineNumber + ".</span>";
+    }
+
+    private static String cellText(int lineno, String s) {
+      return "<html>" + getLineNumber(lineno) + " " + s + "</html>";
+    }
+
     @Override
     public Component getListCellRendererComponent(
-      JList list, Object value, int index, boolean selected, boolean hasFocus) {
+            JList list, Object value, int index, boolean selected, boolean hasFocus) {
 
       // DO NOT pass value to super.getListCellRendererComponent()
       // It is incredibly inefficient for GamePieces and is not needed
       // since we overwrite the label text anyway.
       super.getListCellRendererComponent(list, "", index, selected, hasFocus);
-      if (value instanceof EditablePiece) {
-        setText(((EditablePiece) value).getDescription());
-      }
-      else {
-        final String s = value.getClass().getName();
-        setText(s.substring(s.lastIndexOf('.') + 1));
+
+      // For Pieces, bump index to 1
+      final int lineno = definer.isPrototype() ? index : index + 1;
+
+      // Prototype or MPL Template will be zero for first item and will be skipped (not a real trait)
+      if (lineno > 0) {
+        if (value instanceof EditablePiece) {     // Safety first
+
+          final String s = ConfigureTree.noHTML(((EditablePiece) value).getDescription());
+
+          if (value instanceof Comment) {
+            setText(cellText(lineno, "<b>/* " + s + " */"));
+          }
+          else {
+            setText(cellText(lineno, s));
+          }
+
+        }
+        else {
+          // Safety net for non-EditablePiece (probably redundant) - item will use last element of class name
+          final String s = value.getClass().getName();
+          setText(cellText(lineno, s.substring(s.lastIndexOf('.') + 1)));
+        }
       }
       return this;
     }

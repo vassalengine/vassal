@@ -110,6 +110,9 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
   protected String description;
 
+  /** Controls how the pick side drop-down interacts with the Startup Wizard. See below for full details */
+  protected boolean freshStart = true;
+
   public PlayerRoster() {
     setButtonTextKey(BUTTON_TEXT);
     setTooltipKey(TOOL_TIP);
@@ -312,7 +315,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     a.execute();
 
     c = c.append(a);
-    gm.getServer().sendToOthers(c);
+    gm.sendAndLog(c);
 
     newSide = getMySide();
     fireSideChange(mySide, newSide);
@@ -511,15 +514,25 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       if (gm.isMultiplayerConnected()) {
         final Command c = new Chatter.DisplayText(gm.getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.joined_side_2" : "PlayerRoster.joined_side", gm.getPrefs().getValue(GameModule.REAL_NAME), translateSide(newSide)));
         c.execute();
-        gm.getServer().sendToOthers(c);
+        gm.sendAndLog(c);
+
       }
 
       final Add a = new Add(this, GameModule.getActiveUserId(), GlobalOptions.getInstance().getPlayerId(), newSide);
       a.execute();
-      gm.getServer().sendToOthers(a);
+      gm.sendAndLog(a);
 
       pickedSide = true;
     }
+    freshStart = true;
+  }
+
+  /***
+   * Called when a Game Start wizard has been cancelled.
+   * Record that the next call from the Wizard will be from a completelty new Wizard
+   */
+  public void reset() {
+    freshStart = true;
   }
 
   @Override
@@ -558,15 +571,48 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     }
 
     availableSides.add(0, translatedObserver);
-    sideConfig = new StringEnumConfigurer(null,
-      Resources.getString("PlayerRoster.join_game_as"), //$NON-NLS-1$
-      availableSides.toArray(new String[0]));
+    //
+    // *** WARNING*** Major Fudge Alert
+    // The following code is completely ridiculous, but necessary as we have no access to the inner workings of
+    // the Wizard.
+    //
+    // PlayerRoster.getControls() is called each time a PDS is selected, either from a PDS menu option
+    // OR each time a PDS is selected from the wizard drop-down menu.
+    //
+    // There is a bug in the Wizard (or we are not using it properly) so that if the 'Prev' button is pressed
+    // to return from the side selection page to the Scenario selection page, then a new Scenario is selected,
+    // then 'Next' is pressed, then the previously generated Side selection page is used EVEN THOUGH the wizard
+    // has just called here to create a new set of controls. This new set of controls is added to a page that
+    // is never shown, the user is shown the old out-of-date drop-down for the previous scenario selected
+    //
+    // The work-around is to
+    // a) reuse sideConfig rather than regenerate it, so the existing Wizard page sees the changes
+    // and
+    // b) return a set of dummy controls that get attached to the page that is never seen. If we return the
+    //    sideConfig controls again, they get removed from the existing page, since a Swing component can only
+    //    be attached to one parent.
+    //
+    // If the Wizard fully completes (PlayerRoster.finish() is called) OR is cancelled (PlayerRoster.reset() is called)
+    // then we do want to return the real sideConfig controls for the next full Wizard. The freshStart variable tracks this.
+    //
+    final Component controls;
+    if (sideConfig == null || freshStart) {
+      sideConfig = new StringEnumConfigurer(null,
+        Resources.getString("PlayerRoster.join_game_as"), //$NON-NLS-1$
+        availableSides.toArray(new String[0]));
+      controls = sideConfig.getControls();
+      freshStart = false;
+    }
+    else {
+      sideConfig.setValidValues(availableSides.toArray(new String[0]));
+      controls = new JPanel();
+    }
     sideConfig.setValue(translatedObserver);
 
     // If they have a non-blank password already, then we just return the side-picking controls
     final String pwd = (String) gm.getPrefs().getValue(GameModule.SECRET_NAME);
     if (!forcePwd || ((pwd != null) && !pwd.isEmpty())) {
-      return sideConfig.getControls();
+      return controls;
     }
 
     // Or, if they haven't set a password yet, we plead with them to set one.

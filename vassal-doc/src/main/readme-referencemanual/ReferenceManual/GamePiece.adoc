@@ -221,7 +221,7 @@ Note, however, that Sub-Menu traits must always go *_below_* the traits that it 
 
 |<<Attachment.adoc#top,Attachment>>| Create groups of 'Attached' counters that can easily interact with each other.
 
-| <<BasicName.adoc#top,Basic Name>> | Specify a primary name for a piece that over-rides the Basic Piece name.
+| <<BasicName.adoc#top,Basic Name>> | Specify a primary name for a piece that overrides the Basic Piece name.
 
 | <<BasicPiece.adoc#top,Basic Piece>> | Set the Base name and image for a piece.
 

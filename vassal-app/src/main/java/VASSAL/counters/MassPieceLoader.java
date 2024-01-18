@@ -823,6 +823,11 @@ public class MassPieceLoader {
       refresh();
     }
 
+    @Override
+    public boolean isPrototype() {
+      return true;
+    }
+
   }
 
   /**

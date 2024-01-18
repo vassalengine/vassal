@@ -612,7 +612,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 
   /**
    * @return a String representation of the XML buildFile attribute with the given name. When initializing a module,
-   * this String value will loaded from the XML and passed to {@link #setAttribute}. It is also frequently used for
+   * this String value is loaded from the XML and passed to {@link #setAttribute}. It is also frequently used for
    * checking the current value of an attribute.
    *
    * @param key the name of the attribute. Will be one of those listed in {@link #getAttributeNames}
@@ -760,6 +760,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       addChild(new ImageSaver());
       addChild(new CounterDetailViewer());
       addChild(new Flare());
+      addChild(new Zoomer());
       setMapName(Resources.getString("Map.main_map"));
     }
 
@@ -1282,7 +1283,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     snap.translate(r.x, r.y);
 
     //CC bugfix13409
-    // If we snapped to a point outside the board b, call sanpTo again with the board we landed into
+    // If we snapped to a point outside the board b, call snapTo again with the board we landed into
     final Board bSnappedTo = findBoard(snap);
     if (bSnappedTo != null && !b.equals(bSnappedTo)) {
       final Rectangle rSnappedTo = bSnappedTo.bounds();
@@ -2089,7 +2090,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 
 
   /**
-   * Handles scrolling when dragging an gamepiece to the edge of the window
+   * Handles scrolling when dragging a game piece to the edge of the window
    * @param dtde DropTargetDragEvent
    */
   @Override
@@ -2116,7 +2117,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 
   /*
    * Cancel final scroll and repaint map
-   * @param dtde DropTargetDragEvent
+   * @param dte DropTargetEvent
    */
   @Override
   public void dragExit(DropTargetEvent dte) {
@@ -2126,7 +2127,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 
   /**
    * We put the "drop" in drag-n-drop!
-   * @param dtde DropTargetDragEvent
+   * @param dtde DropTargetDropEvent
    */
   @Override
   public void drop(DropTargetDropEvent dtde) {
@@ -3280,7 +3281,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   /**
    * Accepts the current actual center of the map as the new "preferred center" (e.g. if we scroll)
    * Just not if suppressed after a zoom level change (we don't want zoom level changes to cause us to
-   * lose track of the user's preferred ceter point)
+   * lose track of the user's preferred center point)
    */
   public void updateCenter() {
     if (!GameModule.getGameModule().isSuppressAutoCenterUpdate()) {
@@ -3489,7 +3490,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * Lists all the buildFile (XML) attribute names for this component.
    * If this component is ALSO an {@link AbstractConfigurable}, then this list of attributes determines the appropriate
    * attribute order for {@link AbstractConfigurable#getAttributeDescriptions()} and {@link AbstractConfigurable#getAttributeTypes()}.
-   * @return a list of all buildFile (XML) attribute names for this component
+   * @return an array of all the buildFile (XML) attribute names for this component
    * @see AbstractBuildable
    */
   @Override
@@ -3571,6 +3572,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public static final String OLD_MAP = "previousMap"; //$NON-NLS-1$
   public static final String MAP_NAME = "mapName"; //$NON-NLS-1$
   public static final String PIECE_NAME = "pieceName"; //$NON-NLS-1$
+  public static final String PIECE_COUNT = "pieceCount"; //$NON-NLS-1$
   public static final String MESSAGE = "message"; //$NON-NLS-1$
 
   /**
@@ -3599,7 +3601,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public static class MoveWithinFormatConfig implements TranslatableConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new PlayerIdFormattedExpressionConfigurer(key, name, new String[] { PIECE_NAME, LOCATION, MAP_NAME, OLD_LOCATION });
+      return new PlayerIdFormattedExpressionConfigurer(key, name, new String[] { PIECE_NAME, PIECE_COUNT, LOCATION, MAP_NAME, OLD_LOCATION });
     }
   }
 
@@ -3610,7 +3612,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public static class MoveToFormatConfig implements TranslatableConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new PlayerIdFormattedExpressionConfigurer(key, name, new String[] { PIECE_NAME, LOCATION, OLD_MAP, MAP_NAME, OLD_LOCATION });
+      return new PlayerIdFormattedExpressionConfigurer(key, name, new String[] { PIECE_NAME, PIECE_COUNT, LOCATION, OLD_MAP, MAP_NAME, OLD_LOCATION });
     }
   }
 
@@ -3630,7 +3632,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public static class CreateFormatConfig implements TranslatableConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new PlayerIdFormattedExpressionConfigurer(key, name, new String[] { PIECE_NAME, MAP_NAME, LOCATION });
+      return new PlayerIdFormattedExpressionConfigurer(key, name, new String[] { PIECE_NAME, PIECE_COUNT, MAP_NAME, LOCATION });
     }
   }
 
@@ -3725,7 +3727,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   /**
    * List of subcomponents which can be added to a Map.
    *
-   * @return a list of valid sub-component Classes.  If a Class
+   * @return an array of valid sub-component Classes.  If a Class
    * appears in this list, then instances of that class may be added
    * to this component from the Editor's {@link ConfigureTree} window by
    * right-clicking on the component and selecting the appropriate "Add"
@@ -4009,7 +4011,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     }
 
     /**
-     * @return a command to form a new stack with a piece found at the our location, provided all of the conditions to form a
+     * @return a command to form a new stack with a piece found at our location, provided all the conditions to form a
      * stack are met. Returns null if the necessary conditions aren't met.
      * @param piece piece to consider forming a new stack with.
      */
