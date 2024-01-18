@@ -39,35 +39,6 @@ in cases like these as this will generate an error if the property does not have
 * The <<Label.adoc#top,Text Label>> trait substitutes properties when setting the text of the label.
 * A <<ZonedGrid.adoc#Zone,Zone>> uses properties to specify a <<ZonedGrid.adoc#ZoneHighlighter,Zone Highlighter>>.
 
-*Properties defined by Game Pieces*
-
-* The <<AreaOfEffect.adoc#top,Area of Effect>> defines a property that returns the current visibity (on or off) of the highlight.
-
-* The <<BasicPiece.adoc#top,Basic Piece>> defines properties related to a piece's name, location, side, and whether it's selected.
-
-* The <<Clone.adoc#top,Clone>> trait sets a property in all pieces Cloned from the same piece that links them together.
-
-* The <<DynamicProperty.adoc#top,Dynamic Property>> trait allows you to define your own changeable properties.
-
-* The <<Hideable.adoc#top,Invisible>> trait sets a property when the piece is invisible.
-
-* The <<Layer.adoc#Properties,Layer>> trait defines properties related to the state of that Layer.
-
-* The <<PropertyMarker.adoc#top,Marker>> trait allows you to define your own static properties.
-
-* The <<MarkMoved.adoc#top,Mark When Moved>> trait sets a property when a piece has moved.
-
-* The <<Mask.adoc#Properties,Mask>> trait sets a property when the piece is masked.
-
-* The <<Marker.adoc#Properties,Place Marker>> trait sets a property in the created marker piece that links back to the piece that created it.
-
-* The <<PropertySheet.adoc#top,Property Sheet>> trait exposes a set of user-editable properties.
-
-* The <<Rotate.adoc#top,Rotate>> trait defines properties related to the current facing of the piece.
-
-* The <<Label.adoc#top,Text Label>> trait returns the value of the label as a property.
-
-
 *Properties defined by other components*
 
 * The <<GlobalProperties.adoc#top,Global Property>> component defines properties for a <<ZonedGrid.adoc#Zone,Zone>>, <<Map.adoc#top,Map>> or the <<GameModule.adoc#top,module>>.
@@ -76,7 +47,7 @@ in cases like these as this will generate an error if the property does not have
 * A <<Deck.adoc#top,Deck>> component exposes the number of cards remaining as a Map-level property.
 
 [#combined]
-==== Handy Combined List of VASSAL-defined Properties for Game Pieces
+==== Handy Combined List of VASSAL Properties defined by Game Pieces
 
 ===== Fixed Property Names
 [width="100%",cols="33%a,33%a,33%a",]
