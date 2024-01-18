@@ -256,6 +256,7 @@ public class ToolbarMenu extends AbstractToolbarItem
         else {
           final JMenuItem mi = new JMenuItem(b.getText(), b.getIcon());
           mi.setEnabled(b.isEnabled());
+          mi.addActionListener(e -> GameModule.getGameModule().refreshVisibleMaps());
           mi.addActionListener(e -> b.doClick());
           buttonsToMenuMap.put(b, mi);
           menu.add(mi);

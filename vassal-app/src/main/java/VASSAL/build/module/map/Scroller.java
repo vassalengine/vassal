@@ -196,4 +196,14 @@ public class Scroller extends AbstractBuildable implements KeyListener {
       noEcho = 0;
     }
   }
+
+  @Override
+  public boolean isMandatory() {
+    return true;
+  }
+
+  @Override
+  public boolean isUnique() {
+    return true;
+  }
 }

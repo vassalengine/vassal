@@ -665,6 +665,8 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
   @Override
   public void setParent(Stack s) {
     parent = s;
+    // When adding a piece to a Stack, make sure our map matches the parent
+    if (parent != null) setMap(parent.getMap());
   }
 
   /**

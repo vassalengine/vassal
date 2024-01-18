@@ -55,7 +55,9 @@ public class ParameterListConfigurer extends Configurer implements ConfigurableL
 
     final SequenceEncoder se = new SequenceEncoder(',');
     for (final Parameter param : parameters) {
-      se.append(param.encode());
+      if (param != null) {
+        se.append(param.encode());
+      }
     }
     return se.getValue();
   }
@@ -297,7 +299,7 @@ public class ParameterListConfigurer extends Configurer implements ConfigurableL
 
       controls = new JPanel(new MigLayout("hidemode 3,ins 2", "[grow,fill]", "[grow,fill]")); // NON-NLS
 
-      configControls = new JPanel(new MigLayout("hidemode 3,wrap 3," + ConfigurerLayout.STANDARD_INSERTS_GAPY, "[fill]rel[grow,fill]rel[grow 0]", "[center]")); // NON-NLS
+      configControls = new JPanel(new MigLayout("hidemode 3,wrap 3," + ConfigurerLayout.STANDARD_INSETS_GAPY, "[fill]rel[grow,fill]rel[grow 0]", "[center]")); // NON-NLS
 
       controls.add(configControls, "grow, aligny center"); // NON-NLS
       panel.add(controls, "grow"); // NON-NLS

@@ -427,9 +427,8 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       if (selectedRow < 0) {
         return;
       }
-      final String selectedName = (String) table.getValueAt(selectedRow, COL_NAME);
-      SecretNote note = getNoteForName(selectedName);
 
+      SecretNote note = notes.get(table.convertRowIndexToModel(selectedRow));
       if (note.getOwner().equals(GameModule.getActiveUserId())) {
         note = new SecretNote(note.getName(), note.getOwner(), note.getText(), false, note.getDate(), note.getHandle());
         if (note != null) {
@@ -521,9 +520,8 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       if (selectedRow < 0) {
         return;
       }
-      final String selectedName = (String) table.getValueAt(selectedRow, COL_NAME);
-      final SecretNote note = getNoteForName(selectedName);
 
+      final SecretNote note = notes.get(table.convertRowIndexToModel(selectedRow));
       if (note != null) {
         if (note.getOwner().equals(GameModule.getActiveUserId())) {
           text.setText(note.getText());

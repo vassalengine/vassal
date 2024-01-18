@@ -32,7 +32,6 @@ import VASSAL.counters.PieceCloner;
 import VASSAL.counters.PlaceMarker;
 import VASSAL.counters.Properties;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.NamedKeyStroke;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,6 +51,7 @@ public class GpIdChecker {
 
   protected GpIdSupport gpIdSupport;
   protected int maxId;
+  protected int noGpIdMatch = 0; // shared to GameRefresher
   protected boolean extensionsLoaded = false;
   final Map<String, SlotElement> goodSlots = new HashMap<>();
   final List<SlotElement> errorSlots = new ArrayList<>();
@@ -76,6 +76,10 @@ public class GpIdChecker {
     }
   }
 
+  public int getNoGpIdMatch() {
+    return noGpIdMatch;
+  }
+
   public boolean useLabelerName() {
     return refresherOptions.contains(GameRefresher.USE_LABELER_NAME); //$NON-NLS-1$
   }
@@ -87,6 +91,9 @@ public class GpIdChecker {
   }
   public boolean useName() {
     return refresherOptions.contains(GameRefresher.USE_NAME); //$NON-NLS-1$
+  }
+  public boolean fixGPID() {
+    return refresherOptions.contains(GameRefresher.FIX_GPID); //$NON-NLS-1$
   }
 
   /**
@@ -161,7 +168,7 @@ public class GpIdChecker {
      *  If this has been called from a ModuleExtension, the GpId is prefixed with
      *  the Extension Id. Remove the Extension Id and just process the numeric part.
      *
-     *  NOTE: If GpIdChecker is being used by the GameRefesher, then there may be
+     *  NOTE: If GpIdChecker is being used by the GameRefresher, then there may be
      *  extensions loaded, so retain the extension prefix to ensure a correct
      *  unique slot id check.
      */
@@ -250,7 +257,8 @@ public class GpIdChecker {
       }
     }
 
-    // Failed to find a slot by gpid, try by matching piece name if option selected
+    // Failed to find a slot by gpid, try by matching piece name if option selected; always report in summaries
+    noGpIdMatch++;
     if (useName()) {
       final String oldPieceName = Decorator.getInnermost(oldPiece).getName();
       for (final SlotElement element : goodSlots.values()) {
@@ -259,11 +267,19 @@ public class GpIdChecker {
         if (oldPieceName.equals(gpName)) {
           newPiece = element.createPiece(oldPiece, this);
           copyState(oldPiece, newPiece);
+          if (fixGPID()) {
+            newPiece.setProperty(Properties.PIECE_ID, slotPiece.getProperty(Properties.PIECE_ID));
+          }
+          chat("!" + Resources.getString("GpIdChecker.refreshByName", oldPieceName, gpid, slotPiece.getProperty(Properties.PIECE_ID))
+            + (fixGPID() ? " <b>" + Resources.getString("GpIdChecker.fixGPID") + "</b>" : ""));
           return newPiece;
         }
       }
+      chat(GameRefresher.ERROR_MESSAGE_PREFIX + Resources.getString("GpIdChecker.refreshByNameFail", oldPieceName, gpid == null ? "" : gpid));
     }
-
+    else {
+      chat(GameRefresher.ERROR_MESSAGE_PREFIX + Resources.getString("GpIdChecker.SlotNotFound", Decorator.getInnermost(oldPiece).getName(), gpid == null ? "" : gpid));
+    }
     return oldPiece;
   }
 
@@ -288,7 +304,7 @@ public class GpIdChecker {
         // Do not copy the state of Marker traits, we want to see the new value from the new definition
         if (newState != null && !(decoratorNew instanceof Marker)) {
           // Do not copy Labeler (Text Label) label state UNLESS this Text Label has the capacity to be manually updated
-          if (!(decoratorNew instanceof Labeler) || ((((Labeler)decoratorNew).getLabelKey() != null) && !NamedKeyStroke.NULL_KEYSTROKE.equals(((Labeler)decoratorNew).getLabelKey()))) {
+          if (!(decoratorNew instanceof Labeler) || ((Labeler) decoratorNew).canChange()) {
             decoratorNew.mySetState(newState);
           }
         }

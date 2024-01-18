@@ -44,8 +44,6 @@ import java.awt.Component;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -251,12 +249,6 @@ public class SetGlobalProperty extends DynamicProperty {
       }
     }
     return comm;
-  }
-
-  @Override
-  public List<String> getPropertyNames() {
-    // This is not a real Property source, so don't return the property name
-    return Collections.emptyList();
   }
 
   @Override

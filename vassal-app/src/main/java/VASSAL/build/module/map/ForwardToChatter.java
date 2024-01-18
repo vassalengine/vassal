@@ -73,4 +73,14 @@ public class ForwardToChatter implements Buildable, KeyListener {
       GameModule.getGameModule().getChatter().keyCommand(SwingUtils.getKeyStrokeForEvent(e));
     }
   }
+
+  @Override
+  public boolean isMandatory() {
+    return true;
+  }
+
+  @Override
+  public boolean isUnique() {
+    return true;
+  }
 }

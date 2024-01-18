@@ -40,7 +40,7 @@ The default value of _$gridLocation$_ is the automatically generated name as dra
 +
 You can add additional information to the generated grid reference, such as a board prefix.
 +
-You can also over-ride the automatically generated reference format and use your own. The values _$row$_ and _$column$_ are provided to help with this.
+You can also override the automatically generated reference format and use your own. The values _$row$_ and _$column$_ are provided to help with this.
 
 *Draw numbering:*::  If checked, the generated grid references will be drawn on top of the board image.
 

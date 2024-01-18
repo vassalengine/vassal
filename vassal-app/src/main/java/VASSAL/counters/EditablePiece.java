@@ -163,7 +163,7 @@ public interface EditablePiece extends GamePiece {
     // Apply "afterburner" apply-on-move key command
     if (afterburner) {
       final Map map = outer.getMap();
-      if (map.getMoveKey() != null) {
+      if (map != null && map.getMoveKey() != null) {
         c = c.append(outer.keyEvent(map.getMoveKey()));
       }
     }

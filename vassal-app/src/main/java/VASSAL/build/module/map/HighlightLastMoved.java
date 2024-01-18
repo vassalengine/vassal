@@ -233,4 +233,14 @@ public class HighlightLastMoved extends AbstractConfigurable implements Drawable
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }
+
+  @Override
+  public boolean isMandatory() {
+    return true;
+  }
+
+  @Override
+  public boolean isUnique() {
+    return true;
+  }
 }

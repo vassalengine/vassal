@@ -25,3 +25,6 @@ out/
 target/
 releases/
 snapshots/
+
+# MacOS
+.DS_Store

@@ -82,7 +82,11 @@ public class IncrementProperty implements PropertyChanger {
       else if (constraints.isWrap()) {
         final int min = constraints.getMinimumValue();
         final int max = constraints.getMaximumValue();
-        value = min + ((value - min + incr) % (max - min + incr));
+        final int range = max - min + 1;
+        // NB: value - min + incr could be < 0 (but > -range), which is
+        // why we add range and mod a second time to ensure that the
+        // result is in [0,range).
+        value = min + ((value - min + incr) % range + range) % range;
       }
       else {
         value += incr;

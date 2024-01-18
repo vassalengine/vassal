@@ -56,7 +56,7 @@ The *buildfile* is normally maintained for you by the VASSAL Module Editor, but 
 == Extension
 An <<Extension.adoc#top,*Extension*>> is a fragment of a *Module* that can be used to add additional functionality to an existing *Module* without modifying that *Module* directly.
 
-A typical use for an<<Extension.adoc#top,*Extension*>>  is to add additional scenarios to a module and some additional units that are needed to play those scenarios.
+A typical use for an <<Extension.adoc#top,*Extension*>>  is to add additional scenarios to a module and some additional units that are needed to play those scenarios.
 
 [#componentsandpieces]
 == Components and Pieces
@@ -250,7 +250,7 @@ There are no Zone level components.
 
 Pieces can only 'see' the Zone level properties in their current Zone, the Map level properties on their current Map and all Module level properties.
 
-These visibility rules can be over-ridden using the <<ExpressionProperty.adoc#top,GetProperty>> <<#beanshell,BeanShell>> functions.
+These visibility rules can be overridden using the <<ExpressionProperty.adoc#top,GetProperty>> <<#beanshell,BeanShell>> functions.
 
 [#Unique]
 ==== Uniquely Identifying Pieces

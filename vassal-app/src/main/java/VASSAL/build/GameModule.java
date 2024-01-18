@@ -53,10 +53,7 @@ import VASSAL.build.module.ToolbarMenu;
 import VASSAL.build.module.WizardSupport;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.folder.ModuleSubFolder;
-import VASSAL.build.module.gamepieceimage.ColorManager;
-import VASSAL.build.module.gamepieceimage.FontManager;
 import VASSAL.build.module.gamepieceimage.GamePieceImageDefinitions;
-import VASSAL.build.module.gamepieceimage.GamePieceLayoutsContainer;
 import VASSAL.build.module.index.IndexManager;
 import VASSAL.build.module.map.CounterDetailViewer;
 import VASSAL.build.module.metadata.AbstractMetaData;
@@ -89,7 +86,7 @@ import VASSAL.configure.AutoConfigurer;
 import VASSAL.configure.CompoundValidityChecker;
 import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.MandatoryComponent;
-import VASSAL.configure.SingleChildInstance;
+import VASSAL.configure.RecursiveSingleChildInstance;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.TextConfigurer;
@@ -106,7 +103,6 @@ import VASSAL.i18n.Resources;
 import VASSAL.launch.PlayerWindow;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
-import VASSAL.script.ScriptContainer;
 import VASSAL.script.expression.Expression;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.CRCUtils;
@@ -130,6 +126,7 @@ import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.version.VersionUtils;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -221,10 +218,8 @@ public class GameModule extends AbstractConfigurable
   public static final String MODULE_OTHER2_PROPERTY = "ModuleOther2"; //NON-NLS
   public static final String MODULE_VASSAL_VERSION_CREATED_PROPERTY = "VassalVersionCreated"; //NON-NLS
   public static final String MODULE_VASSAL_VERSION_RUNNING_PROPERTY = "VassalVersionRunning"; //NON-NLS
-
   public static final String MODULE_CURRENT_LOCALE = "CurrentLanguage"; //NON-NLS
   public static final String MODULE_CURRENT_LOCALE_NAME = "CurrentLanguageName"; //NON-NLS
-
   public static final String DRAWING_MOUSEOVER_PROPERTY = "DrawingMouseover"; //NON-NLS
   public static final String DRAWING_MOUSEOVER_INDEX_PROPERTY = "DrawingMouseoverIndex"; //NON-NLS
 
@@ -233,6 +228,7 @@ public class GameModule extends AbstractConfigurable
   private static final char COMMAND_SEPARATOR = KeyEvent.VK_ESCAPE;
 
   public static final String RECENT_GAMES = "RecentGames"; //NON-NLS
+  private static final String GAME_FILE_PROPERTY = "VassalGameFileName"; //NON-NLS
 
   private final List<MenuItemProxy> openRecentItems = new ArrayList<>();
 
@@ -411,7 +407,7 @@ public class GameModule extends AbstractConfigurable
    * Our finder of the resources, for translation of images.
    */
   private final ResourcePathFinder resourceFinder;
-  
+
   /**
    * The user preferences
    */
@@ -680,23 +676,7 @@ public class GameModule extends AbstractConfigurable
     validator = new CompoundValidityChecker(
       new MandatoryComponent(this, Documentation.class),
       new MandatoryComponent(this, GlobalOptions.class))
-      .append(new SingleChildInstance(this, ChessClockControl.class))
-      .append(new SingleChildInstance(this, Documentation.class))
-      .append(new SingleChildInstance(this, GlobalOptions.class))
-      .append(new SingleChildInstance(this, PrototypesContainer.class))
-      .append(new SingleChildInstance(this, ColorManager.class))
-      .append(new SingleChildInstance(this, FontManager.class))
-      .append(new SingleChildInstance(this, GamePieceImageDefinitions.class))
-      .append(new SingleChildInstance(this, GamePieceLayoutsContainer.class))
-      .append(new SingleChildInstance(this, ScriptContainer.class))
-      .append(new SingleChildInstance(this, GlobalTranslatableMessages.class))
-      .append(new SingleChildInstance(this, GlobalProperties.class))
-      .append(new SingleChildInstance(this, Language.class))
-      .append(new SingleChildInstance(this, Documentation.class))
-      .append(new SingleChildInstance(this, PlayerRoster.class))
-      .append(new SingleChildInstance(this, Chatter.class))
-      .append(new SingleChildInstance(this, KeyNamer.class))
-      .append(new SingleChildInstance(this, Localization.class));
+      .append(new RecursiveSingleChildInstance());
 
     addCommandEncoder(new ChangePropertyCommandEncoder(propsContainer));
   }
@@ -864,7 +844,10 @@ public class GameModule extends AbstractConfigurable
 
         @Override
         public void actionPerformed(ActionEvent e) {
-          getGameState().loadGame(new File(rg), false);
+          final GameState gs = getGameState();
+          if (gs.isNewGameAllowed()) {
+            gs.loadGame(new File(rg), false);
+          }
         }
       });
 
@@ -1756,6 +1739,7 @@ public class GameModule extends AbstractConfigurable
    */
   public void setGameFileMode(GameFileMode mode) {
     gameFileMode = Objects.requireNonNull(mode);
+    if (mode == GameFileMode.NEW_GAME) gameFile = "";  // reset title bar in event of a new game
     updateTitleBar();
   }
 
@@ -2296,6 +2280,9 @@ public class GameModule extends AbstractConfigurable
     else if (GameModule.MODULE_CURRENT_LOCALE_NAME.equals(key)) {
       return Resources.getLocale().getDisplayName();
     }
+    else if (GAME_FILE_PROPERTY.equals(key)) {
+      return gameFile;
+    }
     else if (DRAWING_MOUSEOVER_PROPERTY.equals(key)) {
       return CounterDetailViewer.isDrawingMouseOver();
     }
@@ -2322,6 +2309,28 @@ public class GameModule extends AbstractConfigurable
     return s == null ? null : s.getPropertyValue();
   }
 
+  /**
+   * Refresh the visible portions of all currently showing maps.
+   * This is called in when the following are completed:
+   *  - Any right-click menu option on a piece
+   *  - Any Toolbar button action
+   *  - Any Toolbar Menu item selection
+   *  - Each Step replay from a log file
+   *  - Each Undo
+   *  - Each time a counter or stack is drag'n'dropped
+   *  - Each message received during on-line play
+   *  - Any click on an Action Button
+   *
+   *  These eight actions can cause changes that result in text displaying Calculated properties and Beanshell expressions
+   *  to change in places unrelated to where the action occurred, leaving these counters out of sync until a later click
+   *  in their general area.
+   */
+  public final void refreshVisibleMaps() {
+    for (final Map map : Map.getMapList()) {
+      map.repaint();
+    }
+  }
+
   @Override
   public List<String> getPropertyNames() {
     final List<String> l = new ArrayList<>();
@@ -2337,6 +2346,7 @@ public class GameModule extends AbstractConfigurable
     l.add(MODULE_CURRENT_LOCALE_NAME);
     l.add(MODULE_VASSAL_VERSION_CREATED_PROPERTY);
     l.add(MODULE_VASSAL_VERSION_RUNNING_PROPERTY);
+    l.add(GAME_FILE_PROPERTY);
 
     return l;
   }
@@ -2484,16 +2494,9 @@ public class GameModule extends AbstractConfigurable
       }
     }
 
-    try {
-      // Base CRC is of module file only
-      crc = CRCUtils.getCRC(List.of(files.get(0)));
-      // CombinedCrc includeds extensions as well
-      combinedCrc = CRCUtils.getCRC(files);
-    }
-    catch (IOException e) {
-      log.error("Error generating CRC", e); //NON-NLS
-      return;
-    }
+    crc = CRCUtils.getCRC(List.of(files.get(0)));
+    // CombinedCrc includes extensions as well
+    combinedCrc = CRCUtils.getCRC(files);
   }
 
   /**

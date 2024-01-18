@@ -151,18 +151,20 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
 
       if (deckSelect) {
         pile = promptForDrawPile();
+        if (pile == null) {
+          return null;  // No Deck selected, just do nothing
+        }
       }
       else {
         final AuditTrail audit = AuditTrail.create(this, deckExpression, Resources.getString("Editor.ReturnToDeck.deck_name"));
         final String evalName = deckExpression.getText(Decorator.getOutermost(this), this, audit);
         pile = DrawPile.findDrawPile(evalName);
-        if (pile == null) {
-          reportDataError(this, "Deck Not Found for Return-to-Deck trait: " + evalName, deckExpression.getFormat(), new AuditableException(this, audit));
-        }
-      }
 
-      if (pile == null) {
-        return null;
+        // Can only return if we can find the Deck and it's on a map
+        if (pile == null || pile.getMap() == null) {
+          reportDataError(this, "Deck Not Found for Return-to-Deck trait: " + evalName, deckExpression.getFormat(), new AuditableException(this, audit));
+          return null;
+        }
       }
 
       final Map preMap = getMap();

@@ -57,7 +57,7 @@ This makes it easier to simply copy the value of  <<DynamicProperty.adoc#top,Dyn
 
 
 *Set Dynamic Properties in marker:*::
-Allows you to set the values of the named <<DynamicProperty.adoc#top,Dynamic Properties>> in the created marker. +
+Allows you to set the values of the named <<DynamicProperty.adoc#top,Dynamic Properties>> that exist in the created marker. +
  +
 Properties used in the expression reference values in the newly created marker. +
  +

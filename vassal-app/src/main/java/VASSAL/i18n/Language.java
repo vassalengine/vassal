@@ -25,6 +25,14 @@ import VASSAL.build.module.documentation.HelpFile;
  * Container for definitions of Translations.
  */
 public class Language extends AbstractConfigurable {
+
+  public boolean contains(Translation newTranslation) {
+    for (final Translation t : getAllDescendantComponentsOf(Translation.class)) {
+      if (t.equals(newTranslation)) return true;
+    }
+    return false;
+  }
+
   @Override
   public String[] getAttributeDescriptions() {
     return new String[0];
@@ -73,5 +81,15 @@ public class Language extends AbstractConfigurable {
 
   @Override
   public void removeFrom(Buildable parent) {
+  }
+
+  @Override
+  public boolean isMandatory() {
+    return true;
+  }
+
+  @Override
+  public boolean isUnique() {
+    return true;
   }
 }
