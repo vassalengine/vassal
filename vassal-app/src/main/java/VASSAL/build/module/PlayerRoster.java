@@ -724,13 +724,6 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
             side.startsWith(REFEREE);
   }
 
-  public static boolean isSoloSide(String side) {
-    return SOLITAIRE.equals(side) ||
-      SOLO.equals(side) ||
-      MODERATOR.equals(side) ||
-      REFEREE.equals(side);
-  }
-
   /**
    * @return True if this is currently a multiPlayer game (either connected to a server, or more than one player side allocated)
    */
