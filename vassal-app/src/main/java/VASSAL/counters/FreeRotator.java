@@ -226,13 +226,14 @@ public class FreeRotator extends Decorator
   }
 
   public void setAngle(double angle) {
+    // We (stupidly) store allowed angles in descending order from 0.
+    // Normalize the angle to be in (-360, 0] to match that.
+    angle = ((angle % 360) - 360) % 360;
+
     if (isFreeRotation()) {
       validAngles[angleIndex] = angle;
     }
     else {
-      // We (stupidly) store allowed angles in descending order from 0.
-      // Normalize the angle to be in (-360, 0] to match that.
-      angle = ((angle % 360) - 360) % 360;
       // ex is the expected index of the angle in angles array
       final double ex = (-angle / 360) * validAngles.length;
       angleIndex = ((int) Math.round(ex)) % validAngles.length;
@@ -769,7 +770,7 @@ public class FreeRotator extends Decorator
       return String.valueOf(angleIndex + 1);
     }
     else if ((name + DEGREES).equals(key)) {
-      return String.valueOf((int) (Math.abs(validAngles[angleIndex])));
+      return String.valueOf((int) Math.round(Math.abs(validAngles[angleIndex])) % 360);
     }
     else {
       return super.getProperty(key);
@@ -791,7 +792,12 @@ public class FreeRotator extends Decorator
   private double getRelativeAngle(Point p, Point origin) {
     double myAngle;
     if (p.y == origin.y) {
-      myAngle = p.x < origin.x ? -Math.PI / 2.0 : Math.PI / 2.0;
+      if (p.x == origin.x) {
+        myAngle = 0.0;
+      }
+      else {
+        myAngle = p.x < origin.x ? -Math.PI / 2.0 : Math.PI / 2.0;
+      }
     }
     else {
       myAngle = Math.atan((double)(p.x - origin.x) / (origin.y - p.y));

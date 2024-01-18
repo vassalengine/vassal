@@ -184,7 +184,7 @@ public class Replace extends PlaceMarker {
               }
             }
             // Labels are only state matched if they are adjustable. Note this matches the behaviour of the Game Refresher
-            else if (currentMarker instanceof Labeler) {
+            else if (currentMarker instanceof Labeler && candidate.myGetType().equals(currentMarker.myGetType())) {
               if (((Labeler) currentMarker).canChange()) {
                 currentMarker.mySetState(candidate.myGetState());
                 candidate = null;

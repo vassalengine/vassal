@@ -7,7 +7,7 @@
 set -e
 
 # Get java from PATH if not set in environment
-JAVA="${JAVA:-$(which java)}"
+JAVA="${JAVA:-$(which java 2>/dev/null || : )}"
 
 # Check that java exists
 if [ ! -x "$JAVA" ]; then

@@ -290,7 +290,7 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
     }
 
     // Move Fixed Distance trait (Translate) has been substantially re-written.
-    // Use new version by default. User may over-ride to use old buggy behaviour.
+    // Use new version by default. User may override to use old buggy behaviour.
     final BooleanConfigurer classicMfd = new BooleanConfigurer(
       CLASSIC_MFD,
       Resources.getString("GlobalOptions.classic_mfd"),

@@ -1372,6 +1372,7 @@ public class PieceMover extends AbstractBuildable
     GameModule.getGameModule().sendAndLog(move); // Sends the command over the wire (and/or into the logfile)
     if (move != null) {
       DragBuffer.getBuffer().clear(); // If we did anything, clear the drag buffer, as the DnD operation is complete.
+      GameModule.getGameModule().refreshVisibleMaps(); // Force any changed labels to redisplay on visible maps.
     }
   }
 

@@ -23,6 +23,9 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.metadata.AbstractMetaData;
 import VASSAL.build.module.metadata.MetaDataFactory;
 import VASSAL.build.module.metadata.SaveMetaData;
+import VASSAL.chat.ChatServerConnection;
+import VASSAL.chat.HybridClient;
+import VASSAL.chat.node.NodeClient;
 import VASSAL.command.AddPiece;
 import VASSAL.command.AlertCommand;
 import VASSAL.command.Command;
@@ -167,7 +170,9 @@ public class GameState implements CommandEncoder {
 
       @Override
       public void actionPerformed(ActionEvent e) {
-        loadGame(false);
+        if (isNewGameAllowed()) {
+          loadGame(false);
+        }
       }
     };
     // FIXME: setting mnemonic from first letter could cause collisions in
@@ -197,7 +202,9 @@ public class GameState implements CommandEncoder {
 
       @Override
       public void actionPerformed(ActionEvent e) {
-        loadGame(true);
+        if (isNewGameAllowed()) {
+          loadGame(true);
+        }
       }
     };
     loadContinuation.setEnabled(false);
@@ -207,7 +214,9 @@ public class GameState implements CommandEncoder {
 
       @Override
       public void actionPerformed(ActionEvent e) {
-        loadFastForward(false);
+        if (isNewGameAllowed()) {
+          loadFastForward(false);
+        }
       }
     };
 
@@ -216,7 +225,9 @@ public class GameState implements CommandEncoder {
 
       @Override
       public void actionPerformed(ActionEvent e) {
-        loadFastForward(true);
+        if (isNewGameAllowed()) {
+          loadFastForward(true);
+        }
       }
     };
 
@@ -249,6 +260,8 @@ public class GameState implements CommandEncoder {
 
       @Override
       public void actionPerformed(ActionEvent e) {
+        if (!isNewGameAllowed()) return;
+
         GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
         setup(false);
 
@@ -599,6 +612,40 @@ public class GameState implements CommandEncoder {
     return gameStarted;
   }
 
+  /** Return true if starting new games is currently disabled
+   * New games are disabled if you are in a multi-player room and are not the owner
+   * */
+
+  public boolean isNewGameAllowed() {
+    final GameModule g = GameModule.getGameModule();
+    final ServerConnection server = g.getServer();
+    if (server.isConnected()) {
+      ChatServerConnection connection = null;
+      if (server instanceof HybridClient) {
+        connection = ((HybridClient) server).getDelegate();
+      }
+      else if (server instanceof ChatServerConnection) {
+        connection = (ChatServerConnection) server;
+      }
+      if (connection != null) {
+        if (connection instanceof NodeClient) {
+          final NodeClient client = (NodeClient) connection;
+          if (!client.isOwner()) {
+            ProblemDialog.show(
+              JOptionPane.INFORMATION_MESSAGE,
+              GameModule.getGameModule().getPlayerWindow(),
+              null,
+              Resources.getString("GameState.new_game_not_allowed_title"),
+              Resources.getString("GameState.new_game_not_allowed_heading"),
+              Resources.getString("GameState.new_game_not_allowed_warning")
+            );
+            return false;
+          }
+        }
+      }
+    }
+    return true;
+  }
   /**
    * @param file to validate as a legitimate save file
    * @return true if metadata is valid (or explicitly cleared-for-crash by user) and clear to proceed

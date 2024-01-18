@@ -42,5 +42,7 @@ com/DTDs/PropertyList-1.0.dtd">
       <string>Editor</string>
     </dict>
   </array>
+  <key>LSRequiresNativeExecution</key>
+  <true/>
 </dict>
 </plist>

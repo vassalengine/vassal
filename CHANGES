@@ -1,5 +1,103 @@
-3.7.1 - ???
+3.8.0-beta1 - ???
 
+* 12944: Add pieceCount to the map auto reporter
+* 12763: Added VassalGameFileName property
+
+3.7.8 - ???
+
+* 13057: Remove Unused Images does not find any images in use in an Extension
+* 13049: Compute correct _Degrees property for free rotations
+* 13040: Show correct sides in Wizard after using Prev button
+* 12898: Improved "Refresh Predefined Setups": Expanded "orphan counter"
+    functionality - reporting / ability to repair (sub-option); ability to do
+    additional processing via a special post-refresh Global Hotkey, optionally
+    without routine refresh reporting; new filter field and associated
+    functionality for Predefined Setup Refresh; other UI improvements
+
+3.7.7 - 11 January 2024
+
+* 13037: Make Zoom component a default component of all maps
+* 13022: Prevent room non-owners starting new games
+* 13021: Allow wizard to load setups from extensions
+* 13011: Spelling correction on Global Options panel
+* 13003: Do not record Map Id's in saved Deck files so they will load on any
+    Map
+* 13001: Fix poor performance of Piece Definer; remove spurious blank line
+    from Mass Piece Loader
+* 12981: Fixed IndexOutOfBoundsException in empty chat room
+* 12976: Search: Add option to exclude module elements when editing extension
+* 12971: Refresh visible portions of Maps after each UI, log, or network action
+* 12931: Prevent zero length string error on Deck refresh
+* 12894: Prevent crash if I/O Exception during CRC calculation
+* 12768: "Player joins as side" message now broadcast to all players
+* 12765: Cancelling Return To Deck no longer causes crash
+
+3.7.6 - 15 December 2023
+
+* 12970: Upgrade bundled Java to 21.0.1+12
+* 12958: Store correct value in prefs for Module Manager column widths
+* 12936: Labels have incorrect bounds when using italics
+* 12912: Prevent Welcome Wizard from loading multiple pre-defined setups
+    concurrently
+* 12907: Deck Key Commands do not work on subsequent new games
+* 12886: Suppress unhelpful bad data error reports from the Piece Palette
+* 12881: Prevent integer overflow when computing the size of image pixel data
+    in bytes
+* 12798: Editor search revamp: more options and enhanced navigation
+
+3.7.5 - 30 October 2023
+
+* 12866: Fix double application of board magnification to board bounds
+* 12865: Documentation: Editor Search section - add a cross-link to main
+    search details
+* 12861: Number in-use traits in Piece Definer
+* 12852: Prevent SumZone from generating Bad Data Errors
+* 12846: Fix missing custom colors and font styles in Game Piece Layouts
+* 12841: Ensure labels are correctly updated in Replace With Other trait
+
+3.7.4 - 20 October 2023
+
+* 12830: Prevent Load Continuation from auto-forwarding to end of log
+* 12829: Set Piece Property Documentation clarification
+* 12826: Fix bug where pieces sometimes teleport from deck back to different
+    map in multiplayer (Ensure map recorded in pieces matches map in parent
+    Stack/Deck)
+* 12825: Allow Unique components to be copied; change Game Piece Layers to be
+    non-mandatory
+* 12824: Ensure ColorManager and FontManager are created exactly once, before
+    use
+* 12802: Prevent NPE in Named KeyStroke Configurer
+
+3.7.3 - 16 October 2023
+
+* 12817: Fix alphanumeric key behavior in hotkey (key command) configurer in
+    Editor (e.g., Shift+B should show up as "Shift+B", not "B")
+* 12814: Updated bundled Java to 21
+* 12810: VASSAL.sh exits before printing relevant exit message
+* 12808: Horizontal scrolling now supports 2-finger-trackpad and mice with
+    additional horizontal wheels
+* 12724: Improved legibility of translation panels
+* 12705: Prevent creation of duplicate Translations by Add Translation button
+
+3.7.2 - 8 October 2023
+
+* 12896: Build universal Mac bundle
+* 12784: Fix rendering of external Text Label images
+* 12781: Fix bad translation keys for Attachment, Deselect, Send To Location
+    traits
+* 12780: Correctly adjust Player window title to reflect actions taken in
+    Welcome Wizard
+* 12769: Fix support for expressions in Sound Clip Configurer
+* 12729: Set Global Property to again record old GP value in oldValues for
+    reporting
+* 12773: Disabled Toolbar Button icons should not appear in unused images list
+* 12770: Prevent NPE when escaping from GKC trait after adding 'Set Dynamic
+    Properties' entries
+
+3.7.1 - 20 September 2023
+
+* 12727: Ensure that tiles are cobbled for fixed-size board scaling
+* 12716: Support regular expressions in Editor search
 * 12715: Enable help button for editor Search dialog
 * 12708: Prevent ArrayIndexOutOfBoundsException if side translation count does
     not match module
@@ -7,6 +105,8 @@
 * 12696: Removed "Indexing pieces" message
 * 12688: Replace with Other should not update text of unchangeable labels
 * 12683: Prevent NPE on starting game in Main Room
+* 12679: Set Piece Property respects target property numeric constraints
+    unless overridden
 * 12676: IncrementProperty: Corrected bad wrap-around calculation when
     increment is negative
 * 12670: Prevent essential components being accidentally deleted
@@ -15,6 +115,7 @@
 * 12645: Respect localization when filtering sides
 * 12582: Corrected divide-by-zero problem for Zones defined by zero-point
     polygons
+* 12542: Mitigate race condition when selecting player sides
 * 12474: Fixed NPE when moving EditablePiece which isn't on a map
 * 12411: Fixed NPE when updating ConfigureTree
 * 12324: Fixed ClassCastException caused by reordering columns in Delayed

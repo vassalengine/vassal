@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module.properties;
 
+import VASSAL.build.GameModule;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.script.expression.AuditTrail;
 import VASSAL.script.expression.Auditable;
@@ -61,7 +62,7 @@ public class EnumeratedPropertyPrompt extends PropertyPrompt {
       try {
         final AuditTrail audit = AuditTrail.create(constraints == null ? null : constraints.getPropertySource(), valueExpressions[i].getExpression());
         if (constraints == null) {
-          value = valueExpressions[i].evaluate(constraints.getPropertySource(), audit);
+          value = valueExpressions[i].evaluate(GameModule.getGameModule(), null, audit);
         }
         else {
           value = valueExpressions[i].evaluate(constraints.getPropertySource(), constraints.getPropertySource(), audit);

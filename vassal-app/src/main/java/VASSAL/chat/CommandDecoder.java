@@ -39,6 +39,7 @@ public class CommandDecoder implements PropertyChangeListener {
       SwingUtilities.invokeLater(() -> {
         c.execute();
         GameModule.getGameModule().getLogger().log(c);
+        GameModule.getGameModule().refreshVisibleMaps(); // Refresh all visible maps as counter labels may have changed
       });
     }
   }

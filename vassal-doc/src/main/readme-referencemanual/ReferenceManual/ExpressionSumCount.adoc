@@ -464,7 +464,7 @@ Count the number of pieces on the same Map as the current piece.
 
 |CountMap(prop)
 
-#[ Trait Only ]#| Count pieces with ion the same Map as the current piece AND that have a non-blank value for the named property. +
+#[ Trait Only ]#| Count pieces within the same Map as the current piece AND that have a non-blank value for the named property. +
 
 [example]
 CountMap("Strength") +
