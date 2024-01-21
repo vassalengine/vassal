@@ -244,6 +244,31 @@ Range functions calculate the range in pixels, or in grid units (hexes, squares)
 If a message needs to be shown to _all_ players, the recommended method is to send something to the Chat Log, e.g.,
 with a <<ReportChanges.adoc#top,Report Action>> trait or other <<MessageFormat.adoc#top,Message Format>> field.
 
+|*Sleep* | Sleep(ms)|{Sleep(500)} + |*Sleep* causes the screen to refresh and then pauses all screen updates for the number of milliseconds specifed. The example will 'sleep' for a 1/2 second.
+
+|*Audit*
+| Audit(text) +
+Audit(text, options) +
+Audit(text, expression) +
+Audit(text, expression, options)
+|
+{Audit("In Trigger 1"} +
+{Audit("Text to Chat only", "CS")} +
+{Audit("Oops", "{Turn == \"X1\"}") +
+{Audit("Oops", "{Turn == \"X1\"}", "C")
+
+|*Audit* writes a message (text) to the errorlog and or the Chat Window. +
+
+*text* is the message to write.
+
+*expression* is a fully quoted beanshell expression (with double quotes escaped) that must be true for the text to be written or displayed.
+
+*options* can be any combination of the following: +
+
+* F - Include full audit of the current expression  +
+* C - Display text in Chat Window +
+* S - Suppress logging to errorLog
+
 |===
 
 [#simple]
