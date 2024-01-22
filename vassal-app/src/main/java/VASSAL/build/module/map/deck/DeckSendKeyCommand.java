@@ -146,7 +146,6 @@ public class DeckSendKeyCommand extends AbstractDeckKeyCommand {
       Resources.getString("Editor.DeckSendKeyCommand.stop"),
       Resources.getString("Editor.DeckSendKeyCommand.stop_expression"),
       Resources.getString("Editor.DeckSendKeyCommand.stop_include"),
-      Resources.getString("Editor.DeckSendKeyCommand.order"),
       Resources.getString("Editor.DeckSendKeyCommand.apply_on_move")
     );
   }
