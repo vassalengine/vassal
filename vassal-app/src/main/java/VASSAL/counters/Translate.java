@@ -320,13 +320,13 @@ public class Translate extends Decorator implements TranslatablePiece {
     }
 
     // Prepare the piece for move, writing "old location" properties, marking moved, and unlinking from any deck
-    Command c = prepareMove(new NullCommand(), true);
+    Command c = gp.prepareMove(new NullCommand(), true);
 
     // Move the piece
-    c = c.append(map.placeOrMerge(Decorator.getOutermost(this), dest));
+    c = c.append(map.placeOrMerge(Decorator.getOutermost(gp), dest));
 
     // Post move actions -- find a new mat if needed, and apply any afterburner apply-on-move key
-    c = finishMove(c, true, true, true);
+    c = gp.finishMove(c, true, true, true);
 
     return c;
   }
