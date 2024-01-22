@@ -97,12 +97,9 @@ public class AttachmentManager {
   }
 
   public void pieceRemoved(GamePiece piece) {
-    if (piece instanceof Stack) {
-      for (final GamePiece p : ((Stack) piece).asList()) {
-        removePiece(p);
-      }
-    }
-    else {
+    // Ignore Stacks, Stacks can be removed from the GameState leaving their pieces behind.
+    // So do NOT clean up the attachments of the Stack contents. Wait until pieceRemoved is explicitly called with the Stacks children
+    if (!(piece instanceof Stack)) {
       removePiece(piece);
     }
   }
