@@ -29,13 +29,13 @@ public class DialogCloser implements Runnable {
 
   public DialogCloser(JDialog dialog, int ms) {
     this.dialog = dialog;
-    this.ms = ms;
+    this.ms = (ms < 0 ? 500 : ms);
   }
 
   @Override
   public void run() {
     try {
-      Thread.sleep(2000);
+      Thread.sleep(ms);
     }
     catch (InterruptedException e) {
       throw new RuntimeException(e);
