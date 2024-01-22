@@ -33,6 +33,7 @@
         { "num": 12898, "desc": "Improved \"Refresh Predefined Setups\": Expanded \"orphan counter\" functionality - reporting / ability to repair (sub-option); ability to do additional processing via a special post-refresh Global Hotkey, optionallywi ithout routine refresh reporting; new filter field and associated functionality for Predefined Setup Refresh; other UI improvements" }
       ],
       "bug_fixes": [
+        { "num": 13083, "desc": "Show Piece Property menu on Expression Builder trait fields" },
         { "num": 13057, "desc": "Remove Unused Images does not find any images in use in an Extension" },
         { "num": 13049, "desc": "Compute correct _Degrees property for free rotations" },
         { "num": 13040, "desc": "Show correct sides in Wizard after using Prev button" }
