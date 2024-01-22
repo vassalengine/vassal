@@ -1,5 +1,6 @@
 3.7.8 - ???
 
+* 13083: Show Piece Property menu on Expression Builder trait fields
 * 13057: Remove Unused Images does not find any images in use in an Extension
 * 13049: Compute correct _Degrees property for free rotations
 * 13040: Show correct sides in Wizard after using Prev button
