@@ -375,7 +375,8 @@ public abstract class Configurer {
   }
 
   public boolean isPieceContext() {
-    return ContextLevel.PIECE == contextLevel;
+    // If the ContextLevel has not been set specifically, then it will be Piece Level
+    return contextLevel == null || ContextLevel.PIECE == contextLevel;
   }
 
   public void setContextLevel(ContextLevel contextLevel) {
