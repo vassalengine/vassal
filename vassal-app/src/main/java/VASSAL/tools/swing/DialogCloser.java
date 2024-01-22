@@ -29,7 +29,7 @@ public class DialogCloser implements Runnable {
 
   public DialogCloser(JDialog dialog, int ms) {
     this.dialog = dialog;
-    this.ms = (ms < 0 ? 500 : ms);
+    this.ms = ms < 0 ? 500 : ms;
   }
 
   @Override
