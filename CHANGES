@@ -4,6 +4,7 @@
 * 13083: Show Piece Property menu on Expression Builder trait fields
 * 13081: Sleep function now sleeps correct number of milliseconds instead of
     2000
+* 13073: Attachments are lost after Undo
 * 13057: Remove Unused Images does not find any images in use in an Extension
 * 13049: Compute correct _Degrees property for free rotations
 * 13040: Show correct sides in Wizard after using Prev button
