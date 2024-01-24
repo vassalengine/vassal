@@ -274,6 +274,7 @@ public class WizardSupport {
     protected void recycleExistingPanel(String id, WizardController controller, Map wizardData, JComponent panel) {
       super.recycleExistingPanel(id, controller, wizardData, panel);
       if (NAME_STEP.equals(id)) {
+        // User has re-entered the Name/Pw panel after using Prev/Next. Make sure the Finish and Next buttons are sett correctly for the game type.
         if (wizardData.get(ACTION_KEY).equals(PLAY_ONLINE_ACTION)) {
           controller.setForwardNavigationMode(WizardController.MODE_CAN_FINISH);
         }
@@ -288,7 +289,7 @@ public class WizardSupport {
       final JComponent c;
       if (NAME_STEP.equals(id)) {
         c = getNameControls(controller, settings);
-
+        // Creating Name/Pw panel for the first time. Make sure the Finish and Next buttons are sett correctly for the game type.
         if (settings.get(ACTION_KEY).equals(PLAY_ONLINE_ACTION)) {
           controller.setForwardNavigationMode(WizardController.MODE_CAN_FINISH);
         }
