@@ -39,7 +39,8 @@
         { "num": 13073, "desc": "Attachments are lost after Undo" },
         { "num": 13057, "desc": "Remove Unused Images does not find any images in use in an Extension" },
         { "num": 13049, "desc": "Compute correct _Degrees property for free rotations" },
-        { "num": 13040, "desc": "Show correct sides in Wizard after using Prev button" }
+        { "num": 13040, "desc": "Show correct sides in Wizard after using Prev button" },
+        { "num": 5813, "desc": "Prevent Wizard crashing when using Prev/Next when no Password exist" }
       ],
       "other_improvements": [
       ]
