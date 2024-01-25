@@ -120,7 +120,10 @@ public class DeckGlobalKeyCommand extends MassKeyCommand implements RecursionLim
     if (parent instanceof PropertySource) {
       propertySource = (PropertySource) parent;
     }
-    ((DrawPile) parent).addGlobalKeyCommand(this);
+    if (parent != null) {
+      // Parent may be null when Copy/Pasting. The DrawPile will be updated later
+      ((DrawPile) parent).addGlobalKeyCommand(this);
+    }
     globalCommand.setPropertySource(propertySource);
   }
 
