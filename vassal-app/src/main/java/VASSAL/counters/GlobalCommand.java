@@ -631,7 +631,7 @@ public class GlobalCommand implements Auditable {
 
       // if Current Location has been specified (Counter GKC), we can go find the pieces directly from the Qtree index
       else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.CURLOC && curPiece != null && curPiece.getMap() != null && curPiece.getPosition() != null && usePieceIndexing) {
-        for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(curPiece.getMap(), curPiece.getPosition())) {
+        for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(curPiece.getMap(), BasicPiece.LOCATION_NAME, (String) curPiece.getProperty(BasicPiece.LOCATION_NAME))) {
 
           // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
           if (!passesPropertyFastMatch(piece)) continue;

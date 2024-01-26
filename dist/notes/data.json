@@ -33,6 +33,7 @@
         { "num": 12898, "desc": "Improved \"Refresh Predefined Setups\": Expanded \"orphan counter\" functionality - reporting / ability to repair (sub-option); ability to do additional processing via a special post-refresh Global Hotkey, optionallywi ithout routine refresh reporting; new filter field and associated functionality for Predefined Setup Refresh; other UI improvements" }
       ],
       "bug_fixes": [
+        { "num": 13102, "desc": "Current Location Fast Match was not recognizing pieces in same location but not same X, Y position" },
         { "num": 13087, "desc": "Fix 'Apply on Move' description in Deck Send Key Command" },
         { "num": 13083, "desc": "Show Piece Property menu on Expression Builder trait fields" },
         { "num": 13081, "desc": "Sleep function now sleeps correct number of milliseconds instead of 2000" },
@@ -43,6 +44,7 @@
         { "num": 5813, "desc": "Prevent Wizard crashing when using Prev/Next when no Password exist" }
       ],
       "other_improvements": [
+        { "num": 13101, "desc": "Added Return to Deck to trait list in Reference Manual" }
       ]
     },
     {
