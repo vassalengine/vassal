@@ -31,6 +31,7 @@
         { "num": 5813, "desc": "Prevent Wizard crashing when using Prev/Next when no Password exist" }
       ],
       "other_improvements": [
+        { "num": 13101, "desc": "Added Return to Deck to trait list in Reference Manual" }
       ]
     },
     {

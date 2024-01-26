@@ -1,5 +1,6 @@
 3.7.8 - ???
 
+* 13101: Added Return to Deck to trait list in Reference Manual
 * 13087: Fix 'Apply on Move' description in Deck Send Key Command
 * 13083: Show Piece Property menu on Expression Builder trait fields
 * 13081: Sleep function now sleeps correct number of milliseconds instead of
