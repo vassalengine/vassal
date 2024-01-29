@@ -1,5 +1,6 @@
 3.7.8 - ???
 
+* 13119: Upgrade bundled Java to 21.0.2
 * 13102: Current Location Fast Match was not recognizing pieces in same
     location but not same X, Y position
 * 13101: Added Return to Deck to trait list in Reference Manual
