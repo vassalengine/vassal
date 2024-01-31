@@ -22,6 +22,8 @@
       ],
       "bug_fixes": [
         { "num": 13102, "desc": "Current Location Fast Match was not recognizing pieces in same location but not same X, Y position" },
+        { "num": 13097, "desc": "CountMap() by Property gives Bad Data error" },
+
         { "num": 13087, "desc": "Fix 'Apply on Move' description in Deck Send Key Command" },
         { "num": 13083, "desc": "Show Piece Property menu on Expression Builder trait fields" },
         { "num": 13081, "desc": "Sleep function now sleeps correct number of milliseconds instead of 2000" },
