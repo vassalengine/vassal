@@ -9,11 +9,13 @@
 * 13102: Current Location Fast Match was not recognizing pieces in same
     location but not same X, Y position
 * 13101: Added Return to Deck to trait list in Reference Manual
+* 13097: CountMap() by Property gives Bad Data error
 * 13087: Fix 'Apply on Move' description in Deck Send Key Command
 * 13083: Show Piece Property menu on Expression Builder trait fields
 * 13081: Sleep function now sleeps correct number of milliseconds instead of
     2000
 * 13073: Attachments are lost after Undo
+* 13072: Cargo now correctly follows Mat after Moved Fixed Distance
 * 13057: Remove Unused Images does not find any images in use in an Extension
 * 13049: Compute correct _Degrees property for free rotations
 * 13040: Show correct sides in Wizard after using Prev button

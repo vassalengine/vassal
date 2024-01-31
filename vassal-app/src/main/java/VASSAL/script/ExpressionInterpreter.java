@@ -621,7 +621,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   private PieceFilter createFilter(Object expression, PropertySource ps, String comment) {
-    return createFilter(expression.toString(), ps, comment);
+    return createFilter(expression == null ? "" : expression.toString(), ps, comment);
   }
 
   private PieceFilter createFilter(Object expression, PropertySource ps) {
