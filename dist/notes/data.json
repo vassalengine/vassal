@@ -18,7 +18,7 @@
       "in": "3.7.8",
       "since": "3.7.7",
       "new_features": [
-        { "num": 12898, "desc": "Improved \"Refresh Predefined Setups\": Expanded \"orphan counter\" functionality - reporting / ability to repair (sub-option); ability to do additional processing via a special post-refresh Global Hotkey, optionallywi ithout routine refresh reporting; new filter field and associated functionality for Predefined Setup Refresh; other UI improvements" }
+        { "num": 12898, "desc": "Improved \"Refresh Predefined Setups\": Expanded \"orphan counter\" functionality - reporting / ability to repair (sub-option); ability to do additional processing via a special post-refresh Global Hotkey, optionally without routine refresh reporting; new filter field and associated functionality for Predefined Setup Refresh; other UI improvements" }
       ],
       "bug_fixes": [
         { "num": 13102, "desc": "Current Location Fast Match was not recognizing pieces in same location but not same X, Y position" },
