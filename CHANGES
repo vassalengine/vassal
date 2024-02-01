@@ -5,6 +5,7 @@
     location but not same X, Y position
 * 13101: Added Return to Deck to trait list in Reference Manual
 * 13097: CountMap() by Property gives Bad Data error
+* 13092: Assorted documentation updates
 * 13087: Fix 'Apply on Move' description in Deck Send Key Command
 * 13083: Show Piece Property menu on Expression Builder trait fields
 * 13081: Sleep function now sleeps correct number of milliseconds instead of

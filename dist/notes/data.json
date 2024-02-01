@@ -36,7 +36,8 @@
       ],
       "other_improvements": [
         { "num": 13119, "desc": "Upgrade bundled Java to 21.0.2" },
-        { "num": 13101, "desc": "Added Return to Deck to trait list in Reference Manual" }
+        { "num": 13101, "desc": "Added Return to Deck to trait list in Reference Manual" },
+        { "num": 13092, "desc": "Assorted documentation updates" }
       ]
     },
     {
