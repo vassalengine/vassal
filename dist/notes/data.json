@@ -42,7 +42,7 @@
         { "num": 13057, "desc": "Remove Unused Images does not find any images in use in an Extension" },
         { "num": 13049, "desc": "Compute correct _Degrees property for free rotations" },
         { "num": 13040, "desc": "Show correct sides in Wizard after using Prev button" },
-        { "num": 5813, "desc": "Prevent Wizard crashing when using Prev/Next when no Password exist" }
+        { "num": 5813, "desc": "Prevent Wizard crashing when using Prev/Next when no Password exists" }
       ],
       "other_improvements": [
         { "num": 13119, "desc": "Upgrade bundled Java to 21.0.2" },
