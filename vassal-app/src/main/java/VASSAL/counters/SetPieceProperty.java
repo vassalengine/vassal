@@ -282,7 +282,7 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
 
           final ChangeTracker ct = new ChangeTracker(currentDP);
 
-          currentDP.value = newValue;
+          currentDP.setValue(newValue);
 
           comm = comm.append(ct.getChangeCommand());
           break;  // No need to search further, any deeper DP's of the same name are shadowed by this one.
