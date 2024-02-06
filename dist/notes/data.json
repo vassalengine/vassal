@@ -20,6 +20,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 13115, "desc": "Update Game Piece Layers updated correctly by Set Piece Property" }
       ],
       "other_improvements": [
       ]
