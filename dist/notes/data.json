@@ -20,6 +20,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 13126, "desc": "SumRange function missing options in Expression Builder" },
         { "num": 13115, "desc": "Update Game Piece Layers updated correctly by Set Piece Property" }
       ],
       "other_improvements": [
