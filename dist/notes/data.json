@@ -20,6 +20,8 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 13146, "desc": "Game Piece Layer controls cannot be disabled by a property" },
+        { "num": 13132, "desc": "Remove counters from Zone Count correctly when moving to Stack on another Map" },
         { "num": 13126, "desc": "SumRange function missing options in Expression Builder" },
         { "num": 13115, "desc": "Update Game Piece Layers updated correctly by Set Piece Property" }
       ],
