@@ -74,6 +74,7 @@ public class LayerControl extends AbstractToolbarItem implements ComponentDescri
       e -> launch()
     ));
     launch = getLaunchButton(); // for compatibility
+    setShowDisabledOptions(true);
   }
 
   public void launch() {
@@ -237,7 +238,7 @@ public class LayerControl extends AbstractToolbarItem implements ComponentDescri
       return () -> Stream.of(CMD_ENABLE, CMD_DISABLE, CMD_TOGGLE).anyMatch(s -> command.equals(s));
     }
     else {
-      return null;
+      return super.getAttributeVisibility(name);
     }
   }
 
