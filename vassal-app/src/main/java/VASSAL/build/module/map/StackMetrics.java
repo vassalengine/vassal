@@ -668,8 +668,13 @@ public class StackMetrics extends AbstractConfigurable {
           if (moving.getParent() == fixedParent && fixedParent != null && fixedParent.indexOf(moving) < index) {
             index--;
           }
+          if (moving.getMap() != null && moving.getMap() != map) {
+            moving.getMap().removePiece(moving);
+          }
           fixedParent.insert(moving, index);
+
           comm = comm.append(tracker.getMoveCommand());
+
         }
       }
     }
