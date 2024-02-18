@@ -1163,6 +1163,9 @@ public class PieceMover extends AbstractBuildable
       comm = comm.append(report);
     }
 
+    // Clear optional counting properties before applying the after-move key
+    comm = comm.append(GameModule.getGameModule().getStartPlayerCommand());
+
     // Applies any apply-on-move keystroke (from the "Key command to apply to all units ending movement on this map" field of the Map) to each piece
     if (map.getMoveKey() != null) {
       comm = comm.append(applyKeyAfterMove(allDraggedPieces, map.getMoveKey()));

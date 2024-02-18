@@ -94,6 +94,7 @@ import VASSAL.configure.ValidationReport;
 import VASSAL.configure.password.ToggleablePasswordConfigurer;
 import VASSAL.counters.DeckManager;
 import VASSAL.counters.GamePiece;
+import VASSAL.counters.KeyBuffer;
 import VASSAL.counters.KeyCommand;
 import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.I18nResourcePathFinder;
@@ -126,7 +127,6 @@ import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.version.VersionUtils;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -1831,6 +1831,29 @@ public class GameModule extends AbstractConfigurable
 
     return !cancelled;
   }
+
+  /**
+   * Called whenever the player initiates a new command on a map, via either drag-move (PieceMover), right-click menu (MenuDisplayer), or key press (ForwardToKeyBuffer)
+   *
+   * Used to clear specific Global Properties if they exist, to allow module logic that limits the number of units in a stack or selection that accept a command
+   */
+  public Command getStartPlayerCommand() {
+    Command comm = null;
+
+    final MutableProperty.Impl existingValue = (MutableProperty.Impl) getMutableProperty("ClearedOncePerPlayerCommand");
+    if (existingValue != null) {
+      comm = existingValue.setPropertyValue("0");
+    }
+
+    final MutableProperty.Impl existingValue2 = (MutableProperty.Impl) getMutableProperty("PiecesReceivingPlayerCommand");
+    if (comm != null && existingValue2 != null) {
+      final int size = KeyBuffer.getBuffer().asList().size();
+      comm = comm.append(existingValue2.setPropertyValue(Integer.toString(size)));
+    }
+
+    return comm;
+  }
+
 
 /*
   private void dumpCommand(Command c, int indent) {
