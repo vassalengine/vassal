@@ -114,6 +114,18 @@ public class MultiLocationCommand extends Decorator implements TranslatablePiece
     private final String yName;
     private final String sortKey;
 
+    // For backwards compatibility
+    public MultiLocationKeyCommand(String name, NamedKeyStroke key, GamePiece target, TranslatablePiece i18nPiece, String locationName, String zoneName, String boardName, String mapName) {
+      super(name, key, target, i18nPiece);
+      this.locationName = locationName;
+      this.zoneName = zoneName;
+      this.boardName = boardName;
+      this.mapName = mapName;
+      xName = "";
+      yName = "";
+      sortKey = "";
+    }
+
     public MultiLocationKeyCommand(String name, NamedKeyStroke key, GamePiece target, TranslatablePiece i18nPiece, String locationName, String zoneName, String boardName, String mapName, String xName, String yName, String sortKey) {
       super(name, key, target, i18nPiece);
       this.locationName = locationName;
