@@ -96,8 +96,8 @@ public class MultiLocationCommand extends Decorator implements TranslatablePiece
   private String evalZone = "";
   private String evalBoard = "";
   private String evalMap = "";
-  private String evalX ="";
-  private String evalY ="";
+  private String evalX = "";
+  private String evalY = "";
   private boolean everBuilt = false;
 
   /**
