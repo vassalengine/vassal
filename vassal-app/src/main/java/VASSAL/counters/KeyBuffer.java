@@ -17,7 +17,6 @@
  */
 package VASSAL.counters;
 
-import VASSAL.build.GameModule;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
@@ -240,15 +239,9 @@ public class KeyBuffer {
       }
     }
 
-    boolean first = true;
     for (final GamePiece p : targets) {
       bounds.addPiece(p);
       p.setProperty(Properties.SNAPSHOT, ((PropertyExporter) p).getProperties()); // save state prior to command
-
-      if (first) {
-        comm = comm.append(GameModule.getGameModule().getStartPlayerCommand());
-        first = false;
-      }
 
       // Send most recent click point location
       if (p instanceof PersistentPropertyContainer) {
