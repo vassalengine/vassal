@@ -67,6 +67,7 @@ import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.SwingUtils;
 
 import net.miginfocom.swing.MigLayout;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -624,7 +625,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         return false;
       }
     }
-    catch (ParserConfigurationException | SAXException e) {
+    catch (IllegalBuildException | SAXException e) {
+      GameModule.getGameModule().warn(Resources.getString("Editor.ConfigureTree.import_failed_message", filename, target.getConfigureName()));
+      ErrorDialog.show("Editor.ConfigureTree.import_failed", filename, target.getConfigureName());
+      return false;
+    }
+    catch (ParserConfigurationException e) {
       ErrorDialog.bug(e);
       return false;
     }
@@ -633,6 +639,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       return false;
     }
 
+    GameModule.getGameModule().warn(Resources.getString("Editor.ConfigureTree.import_successful"));
     return true;
   }
 
