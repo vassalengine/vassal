@@ -120,6 +120,9 @@ public class Builder {
       //BR// We do an early & extra set of the ancestor during build so that if, during the addTo() sequence,
       //BR// an item in an AbstractFolder needs to know its "first non-folder ancestor", it can walk up the
       //BR// tree as necessary.
+      //BE// NOTE: Since we haven't actually checked if the child is an allowed component of the parent, it's
+      //BE// possible the parent may be a completely invalid ancestor. This can cause an IllegalBuildException
+      //BE// before we check for child legitimacy. This is caught at the lev el above.
       if (b instanceof AbstractBuildable) {
         ((AbstractBuildable)b).setAncestor(parent);
       }
