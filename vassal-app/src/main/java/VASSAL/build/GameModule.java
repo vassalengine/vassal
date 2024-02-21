@@ -2329,6 +2329,50 @@ public class GameModule extends AbstractConfigurable
     }
   }
 
+  /**
+   * The count of pieces that are currently being acted on as part of a UI gesture instigated by this client.
+   * Will be 0 if a multi-piece UI gesture is not underway
+   *   - Right-click menu option on a counter(s)
+   *   - Key-pressed while piece(s) are selected
+   *   - Apply after Move Key being applied after a Drag'n'Drop move
+   */
+  private int uiPieceCount;
+
+  /**
+   * The index (starting at 1) of the piece currently being processed as part of a multi-piece UI gesture
+   */
+  private int uiPieceIndex;
+
+  /** Return number of pieces to be processed by the current multi-piece UI gesture */
+  public int getUiPieceCount() {
+    return uiPieceCount;
+  }
+
+  /** Return the index of the current piece being processed by the current multi-piece UI gesture */
+  public int getUiPieceIndex() {
+    return uiPieceIndex;
+  }
+
+  /**
+   * A multi-piece UI gesture is starting. Record the number of pieces to be processed and reset the counter.
+   * @param pieceCount  Number of pieces to be processed
+   */
+  public final void initializeUiPieceProcessing(int pieceCount) {
+    uiPieceCount = pieceCount;
+    uiPieceIndex = 0;
+  }
+
+  /** The next piece in a multi-piece UI gesture is about to be processed. */
+  public final void processNextUiPiece() {
+    uiPieceIndex++;
+  }
+
+  /** Record the end of a multi-piece UI gesture */
+  public final void finalizeUiPieceProcessing() {
+    uiPieceCount = 0;
+    uiPieceIndex = 0;
+  }
+
   @Override
   public List<String> getPropertyNames() {
     final List<String> l = new ArrayList<>();
