@@ -2,6 +2,7 @@
 
 * 13166: Improved error catching and reporting when importing XML files into
     Editor
+* 13152: Prevent NPE when cut/paste List Scenario Property
 * 13146: Game Piece Layer controls cannot be disabled by a property
 * 13132: Remove counters from Zone Count correctly when moving to Stack on
     another Map
