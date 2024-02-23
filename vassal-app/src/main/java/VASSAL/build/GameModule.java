@@ -227,6 +227,9 @@ public class GameModule extends AbstractConfigurable
 
   public static final String IS_VISIBLE = "_isVisible"; //NON-NLS
 
+  public static final String UI_PIECE_COUNT = "UiPieceCount";
+  public static final String UI_PIECE_INDEX = "UiPieceIndex";
+
   private static final char COMMAND_SEPARATOR = KeyEvent.VK_ESCAPE;
 
   public static final String RECENT_GAMES = "RecentGames"; //NON-NLS
@@ -2287,6 +2290,12 @@ public class GameModule extends AbstractConfigurable
     else if (DRAWING_MOUSEOVER_INDEX_PROPERTY.equals(key)) {
       return CounterDetailViewer.isDrawingMouseOver() ? "2" : "1";
     }
+    else if (UI_PIECE_COUNT.equals(key)) {
+      return String.valueOf(getUiPieceCount());
+    }
+    else if (UI_PIECE_INDEX.equals(key)) {
+      return String.valueOf(getUiPieceIndex());
+    }
 
     //BR// MapName_isVisible property for each map window
     if (((String)key).endsWith(IS_VISIBLE)) {
@@ -2388,6 +2397,8 @@ public class GameModule extends AbstractConfigurable
     l.add(MODULE_CURRENT_LOCALE_NAME);
     l.add(MODULE_VASSAL_VERSION_CREATED_PROPERTY);
     l.add(MODULE_VASSAL_VERSION_RUNNING_PROPERTY);
+    l.add(UI_PIECE_COUNT);
+    l.add(UI_PIECE_INDEX);
 
     return l;
   }
