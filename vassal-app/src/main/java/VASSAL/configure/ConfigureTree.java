@@ -3202,7 +3202,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
               if ((traitType[0] + ";").equals(BasicPiece.ID)) {
                 // Basic Piece gets bonus info that is otherwise excluded from search
                 // processing Type string piece;;;image;BasicName - assumes the extra fields don't need calls to noHTML()
-                final String pieceInfo = "image: " + traitType[3] + "&nbsp;".repeat(3) + "gpid: " + p.getProperty(Properties.PIECE_ID);
+                final String pieceInfo = "image: " + (traitType.length < 4 ? "" : traitType[3]) + "&nbsp;".repeat(3) + "gpid: " + p.getProperty(Properties.PIECE_ID);
                 progress.checkShowTrait(matchString, regexPattern, "Trait", desc, pieceInfo); //NON-NLS
               }
               else {
