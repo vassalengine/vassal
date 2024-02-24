@@ -191,6 +191,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
   public void mySetState(String newState) {
     if (!alwaysActive) {
       active = "true".equals(newState); // NON-NLS
+      locallyActive = active; // Force local visibility to follow global visibility
     }
   }
 
