@@ -21,6 +21,7 @@
       ],
       "bug_fixes": [
         { "num": 13166, "desc": "Improved error catching and reporting when importing XML files into Editor" },
+        { "num": 13161, "desc": "Prevent ArrayIndexOutOfBounds during search",
         { "num": 13152, "desc": "Prevent NPE when cut/paste List Scenario Property" },
         { "num": 13146, "desc": "Game Piece Layer controls cannot be disabled by a property" },
         { "num": 13132, "desc": "Remove counters from Zone Count correctly when moving to Stack on another Map" },
