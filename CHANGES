@@ -7,6 +7,8 @@
 * 13146: Game Piece Layer controls cannot be disabled by a property
 * 13132: Remove counters from Zone Count correctly when moving to Stack on
     another Map
+* 13130: Send to Location option should not appear in Preferences > General
+    section of Reference Manual
 * 13126: SumRange function missing options in Expression Builder
 * 13115: Update Game Piece Layers updated correctly by Set Piece Property
 
