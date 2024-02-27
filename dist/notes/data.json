@@ -37,6 +37,7 @@
         { "num": 13152, "desc": "Prevent NPE when cut/paste List Scenario Property" },
         { "num": 13146, "desc": "Game Piece Layer controls cannot be disabled by a property" },
         { "num": 13132, "desc": "Remove counters from Zone Count correctly when moving to Stack on another Map" },
+        { "num": 13130, "desc": "Send to Location option should not appear in Preferences > General section of Reference Manual" },
         { "num": 13126, "desc": "SumRange function missing options in Expression Builder" },
         { "num": 13115, "desc": "Update Game Piece Layers updated correctly by Set Piece Property" }
       ],
