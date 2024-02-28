@@ -5,6 +5,7 @@
 
 3.7.9 - ???
 
+* 13176: Mouse-over viewer to respect Show Unrotated for Cargo on rotated Mats
 * 13166: Improved error catching and reporting when importing XML files into
     Editor
 * 13161: Prevent ArrayIndexOutOfBounds during search
