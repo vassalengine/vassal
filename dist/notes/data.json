@@ -20,6 +20,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 13176, "desc": "Mouse-over viewer to respect Show Unrotated for Cargo on rotated Mats" },
         { "num": 13166, "desc": "Improved error catching and reporting when importing XML files into Editor" },
         { "num": 13161, "desc": "Prevent ArrayIndexOutOfBounds during search",
         { "num": 13152, "desc": "Prevent NPE when cut/paste List Scenario Property" },
