@@ -107,6 +107,8 @@ public class MatCargo extends Decorator implements TranslatablePiece {
 
   protected GamePiece mat; // Mat piece we are assigned to, or null
 
+  protected boolean useUnrotatedShape;
+
   public MatCargo() {
     this(ID + ";true", null); //NON-NLS
   }
@@ -436,7 +438,7 @@ public class MatCargo extends Decorator implements TranslatablePiece {
   @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     final double angle = getMatAngle();
-    if (angle == 0.0) {
+    if (angle == 0.0 || useUnrotatedShape) {
       piece.draw(g, x, y, obs, zoom);
       return;
     }
@@ -601,6 +603,14 @@ public class MatCargo extends Decorator implements TranslatablePiece {
       return getProperty(key);
     }
     return super.getLocalizedProperty(key);
+  }
+
+  @Override
+  public void setProperty(Object key, Object val) {
+    if (Properties.USE_UNROTATED_SHAPE.equals(key)) {
+      useUnrotatedShape = Boolean.TRUE.equals(val);
+    }
+    super.setProperty(key, val);
   }
 
   @Override
