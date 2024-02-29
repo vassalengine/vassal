@@ -5,6 +5,7 @@
     "Modules saved in {{version_feature}} are not openable by earlier versions of Vassal. We recommend keeping a backup copy of any pre-{{version_feature}} modules you plan to modify in {{version_feature}} until you've verified that everything works to your satisfaction.",
     "Things may be broken which worked previously. If you find a new bug, please report it."
   ],
+  "release_notes_url": "https://forum.vassalengine.org/t/vassal-3-7-release-notes/78948",
   "downloads": [
     { "display_name": "Linux", "suffix": "linux.tar.bz2" },
     { "display_name": "MacOS", "suffix": "macos-universal.dmg" },
