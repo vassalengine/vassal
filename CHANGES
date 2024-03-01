@@ -3,7 +3,9 @@
 * 12944: Add pieceCount to the map auto reporter
 * 12763: Added ModuleGameFileName property
 
-3.7.9 - ???
+3.7.10 - ???
+
+3.7.9 - 29 February 2024
 
 * 13176: Mouse-over viewer to respect Show Unrotated for Cargo on rotated Mats
 * 13166: Improved error catching and reporting when importing XML files into
