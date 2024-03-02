@@ -29,6 +29,7 @@ import VASSAL.counters.KeyBuffer;
 import VASSAL.tools.BugUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.codehaus.plexus.util.StringUtils;
 import org.slf4j.LoggerFactory;
 
 import java.awt.Desktop;
@@ -376,6 +377,74 @@ public class Console {
     return true;
   }
 
+  private boolean doSides() {
+    final String first = nextString("");
+    final String option;
+
+    if (first.toLowerCase().startsWith("lis")) { //NON-NLS
+      option = nextString("");
+    }
+    else {
+      option = first;
+    }
+
+    if (matches("?", option) || matches("help", option)) { //NON-NLS
+      show("Usage:"); //NON-NLS
+      show("  /sides [list]       - list status of sides in the game"); //NON-NLS
+    }
+    else if (option.isEmpty() || matches("list", option)) { //NON-NLS
+      String status = "";
+      final GameModule gm = GameModule.getGameModule();
+
+      // get local sides list
+      final PlayerRoster pr = new PlayerRoster();
+
+      final ArrayList<String> sides = new ArrayList<>(pr.getSides());
+
+      if (sides.isEmpty()) {
+        show("No sides defined.");
+      }
+      else {
+        // List the sides, checking each
+        for (final String s : sides) { // search of
+          show("checking " + s); //DEBUG
+          // Is side allocated to a player? Which one ?
+          for (final PlayerRoster.PlayerInfo p : pr.players) {
+            show("...check player " + p.playerName); //DEBUG
+            if (s.equals(p.getLocalizedSide())) {
+              // password checks
+              String pwStatus = "";
+              if (StringUtils.isEmpty(p.playerId)) {
+                pwStatus = " Warning: Blank password"; // NON-NLS
+              }
+              else {
+                show("..CHECKING PASSWORDS "); //DEBUG
+                for (final PlayerRoster.PlayerInfo p2 : pr.players) {
+                  if (p.playerId.equals(p2.playerId) && !s.equals(p2.getLocalizedSide())) {
+                    pwStatus = " Warning: Password identical to that of " + p2.playerName; // NON-NLS
+                    break;
+                  }
+                }
+              }
+              status = "Occupied (" + p.playerName + ")" + pwStatus;  //NON-NLS
+              break;
+            }
+          }
+          if (status.isEmpty()) {
+            // No matching player, so side is either locked (by module) or available...
+            if (Boolean.parseBoolean((String) gm.getProperty("VassalHideSide_" + pr.untranslateSide(s)))) {
+              status = "Locked by module";
+            }
+            else {
+              status = "Available";
+            }
+          }
+          show(s + " " + status);
+        }
+      }
+    }
+    return true;
+  }
 
   private boolean doHelp() {
     final String topic = nextString("");
@@ -385,7 +454,8 @@ public class Console {
       show("  /errorlog    - commands for opening/clearing/altering errorlog"); //NON-NLS
       show("  /help        - shows list of commands"); //NON-NLS
       show("  /property    - commands for reading/writing global properties"); //NON-NLS
-      show("  /attachments - commands to display current attachments");
+      show("  /attachments - commands to display current attachments"); //NON-NLS
+      show("  /sides       - shows list of sides and status"); //NON-NLS
     }
     else {
       tok = Pattern.compile(" +").splitAsStream("help").iterator(); //NON-NLS // Fake up a help subcommand
@@ -397,6 +467,9 @@ public class Console {
       }
       else if (matches("attachments", topic)) {
         return doAttachments();
+      }
+      else if (matches("sides", topic)) {
+        return doSides();
       }
 
       show("Unknown help topic"); //NON-NLS
@@ -468,6 +541,11 @@ public class Console {
 
     if (matches("errorlog", command)) { //NON-NLS
       return doErrorLog();
+    }
+
+    // sides can be listed regardless of game state
+    if (matches("sides", command)) { //NON-NLS
+      return doSides();
     }
 
     // If this has EVER been a multiplayer game (has ever been connected to Server, or has ever had two player slots filled simultaneously), then
