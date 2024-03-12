@@ -238,6 +238,7 @@ public class KeyBuffer {
         }
       }
     }
+
     for (final GamePiece p : targets) {
       bounds.addPiece(p);
       p.setProperty(Properties.SNAPSHOT, ((PropertyExporter) p).getProperties()); // save state prior to command
