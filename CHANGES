@@ -5,6 +5,8 @@
 
 3.7.10 - ???
 
+* 13153: Prevent Area of Effect getting stuck ON when migrating to 3.7
+
 3.7.9 - 29 February 2024
 
 * 13176: Mouse-over viewer to respect Show Unrotated for Cargo on rotated Mats
