@@ -17,6 +17,7 @@
  */
 package VASSAL.counters;
 
+import VASSAL.build.GameModule;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
@@ -39,7 +40,6 @@ import java.util.List;
 public class KeyBuffer {
   private static KeyBuffer theBuffer;    // Our singleton buffer instance
   private final List<GamePiece> pieces;  // Our list of currently selected pieces
-  private final BoundsTracker bounds;    // Visual boundaries tracker
   private final Comparator<GamePiece> pieceSorter = new PieceSorter(); // Used to sort pieces in visual order
   private final Point clickPoint;        // Most recent click point on the map (used to make this information
                                          // available to traits of pieces)
@@ -52,7 +52,6 @@ public class KeyBuffer {
 
   private KeyBuffer() {
     pieces = new ArrayList<>();
-    bounds = new BoundsTracker();
     clickPoint = new Point();
 
     slots  = new ArrayList<>();
@@ -223,8 +222,6 @@ public class KeyBuffer {
     sort(pieceSorter);
     Command comm = new NullCommand();
 
-    bounds.clear();
-
     // Copy contents into new list, because contents may change
     // as a result of key commands
     final ArrayList<GamePiece> targets = new ArrayList<>(pieces);
@@ -238,8 +235,14 @@ public class KeyBuffer {
         }
       }
     }
+
+    final GameModule gm = GameModule.getGameModule();
+    // Multi-piece processing starting
+    gm.initializeUiPieceProcessing(targets.size());
+
     for (final GamePiece p : targets) {
-      bounds.addPiece(p);
+      // Record next piece under way.
+      gm.processNextUiPiece();
       p.setProperty(Properties.SNAPSHOT, ((PropertyExporter) p).getProperties()); // save state prior to command
 
       // Send most recent click point location
@@ -249,7 +252,12 @@ public class KeyBuffer {
       }
       comm = comm.append(p.keyEvent(stroke));
     }
-    bounds.repaint();
+
+    // Multi-piece processing finished
+    gm.finalizeUiPieceProcessing();
+    // Refresh all visible Maps. Changes made to the pieces we affected may cause remote visual changes
+    gm.refreshVisibleMaps();
+
     return comm;
   }
 

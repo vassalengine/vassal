@@ -441,7 +441,7 @@ public class PieceMover extends AbstractBuildable
     /**
      * Only interested in stacking with another Stack if it has at least one piece
      * and the pieces are on this mat
-     * @param piece Potential target piece on the map.
+     * @param s Potential target piece on the map.
      */
     @Override
     public Object visitStack(Stack s) {
@@ -1225,13 +1225,26 @@ public class PieceMover extends AbstractBuildable
    * @return Command that encapsulates the effects of the key command applied.
    */
   protected Command applyKeyAfterMove(List<GamePiece> pieces, KeyStroke key) {
+
+    final GameModule gm = GameModule.getGameModule();
+    // Multi-piece processing starting
+    gm.initializeUiPieceProcessing(pieces.size());
+
     Command comm = new NullCommand();
     for (final GamePiece piece : pieces) {
+
+      // Record next piece under way.
+      gm.processNextUiPiece();
+
       if (piece.getProperty(Properties.SNAPSHOT) == null) {
         piece.setProperty(Properties.SNAPSHOT, ((PropertyExporter) piece).getProperties());
       }
       comm = comm.append(piece.keyEvent(key));
     }
+
+    // Multi-piece processing finished
+    gm.finalizeUiPieceProcessing();
+
     return comm;
   }
 
