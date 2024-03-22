@@ -939,7 +939,7 @@ public class GameState implements CommandEncoder {
    * (optional) Add filename watermark to top right of the image:
    mogrify -format 'png' -font Liberation-Sans -fill white -undercolor '#00000080' -pointsize 26 -gravity NorthEast -annotate +10+10 %t *-Map0.png
    * make images into a webm video
-   ffmpeg -f image2 -framerate 1 -pattern_type glob -i "*-Map0-*.png" output.webm
+   ffmpeg -f image2 -framerate 1 -pattern_type glob -i "*-Map0.png" output.webm
    * 
    * Video creation with watermark in one step didn't get it to run yet)
    ffmpeg \
