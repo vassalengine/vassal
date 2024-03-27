@@ -73,7 +73,7 @@ jobs:
           java-version: 21
           java-package: jdk
 
-      - name: Build Windows 32-bit package
+      - name: Build Windows x86_32
         run: make release-windows-x86_32
 
       - name: Build SHA256 hashes
