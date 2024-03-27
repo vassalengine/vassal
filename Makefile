@@ -306,7 +306,7 @@ $(TMPDIR)/NOTES-%: $(DISTDIR)/notes/NOTES-%.jinja $(TMPDIR)/notes.json | $(TMPDI
 
 release-announcements: $(TMPDIR)/NOTES-bgg $(TMPDIR)/NOTES-csw $(TMPDIR)/NOTES-news $(TMPDIR)/NOTES-fb $(TMPDIR)/NOTES-gh
 
-release: clean release-other release-linux release-windows release-macos release-sha256
+release: clean release-other release-linux release-windows release-macos
 
 clean-release:
 	$(RM) -r $(TMPDIR)/* $(LIBDIR)/Vengine.jar

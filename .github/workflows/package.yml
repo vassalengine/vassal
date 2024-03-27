@@ -76,6 +76,9 @@ jobs:
       - name: Build Windows 32-bit package
         run: make release-windows-x86_32
 
+      - name: Build SHA256 hashes
+        run: make release-sha256
+
       - name: Archive Linux
         uses: actions/upload-artifact@v4
         with:
