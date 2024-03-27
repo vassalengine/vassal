@@ -281,7 +281,7 @@ release-macos: release-macos-universal
 
 release-macos-universal: $(TMPDIR)/VASSAL-$(VERSION)-macos-universal.dmg
 
-release-windows: release-windows-x86_32 release-windows-x86_64 release-windows-aarch64
+release-windows: release-windows-x86_64 release-windows-aarch64
 
 release-windows-x86_32: $(TMPDIR)/VASSAL-$(VERSION)-windows-x86_32.exe
 
