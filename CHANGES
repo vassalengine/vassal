@@ -1,5 +1,6 @@
 3.7.10 - ???
 
+* 13243: Corrected spelling of Editor.BeanShell.regex key
 * 13238: Upgrade bundled Java to Java 22 (except for Windows x86_32, which
     stays at Java 21)
 * 13153: Prevent Area of Effect getting stuck ON when migrating to 3.7

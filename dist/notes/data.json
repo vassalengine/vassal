@@ -21,6 +21,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 13243, "desc": "Corrected spelling of Editor.BeanShell.regex key" },
         { "num": 13153, "desc": "Prevent Area of Effect getting stuck ON when migrating to 3.7" }
       ],
       "other_improvements": [
