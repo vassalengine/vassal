@@ -282,6 +282,10 @@ public class WizardSupport {
           controller.setForwardNavigationMode(WizardController.MODE_CAN_CONTINUE);
         }
       }
+      else if (ACTION_KEY.equals(id)) {
+        // The First step has been re-entered, reset the PlayerRoster to make sure the new branch selects sides correctly
+        GameModule.getGameModule().getPlayerRoster().reset();
+      }
     }
 
     @Override
