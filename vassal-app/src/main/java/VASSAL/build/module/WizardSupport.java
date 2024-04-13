@@ -282,10 +282,6 @@ public class WizardSupport {
           controller.setForwardNavigationMode(WizardController.MODE_CAN_CONTINUE);
         }
       }
-      else if (ACTION_KEY.equals(id)) {
-        // The First step has been re-entered, reset the PlayerRoster to make sure the new branch selects sides correctly
-        GameModule.getGameModule().getPlayerRoster().reset();
-      }
     }
 
     @Override
@@ -355,6 +351,7 @@ public class WizardSupport {
     private JRadioButton createTutorialButton(final WizardController controller, final Map<String, Object> settings) {
       final JRadioButton b = new JRadioButton(Resources.getString("WizardSupport.LoadTutorial")); //$NON-NLS-1$
       b.addActionListener(e -> {
+        GameModule.getGameModule().getPlayerRoster().reset();
         controller.setProblem(Resources.getString("WizardSupport.LoadingTutorial")); //$NON-NLS-1$
         try {
           new TutorialLoader(controller, settings, new BufferedInputStream(tutorial.getTutorialContents()), POST_INITIAL_STEPS_WIZARD, tutorial).start();
@@ -370,6 +367,7 @@ public class WizardSupport {
     private JRadioButton createLoadSavedGameButton(final WizardController controller, final Map<String, Object> settings) {
       final JRadioButton b = new JRadioButton(Resources.getString("WizardSupport.LoadSavedGame")); //$NON-NLS-1$
       b.addActionListener(e -> {
+        GameModule.getGameModule().getPlayerRoster().reset();
         settings.put(WizardSupport.ACTION_KEY, LOAD_GAME_ACTION);
         final Wizard wiz = new BranchingWizard(new LoadSavedGamePanels(), POST_LOAD_GAME_WIZARD).createWizard();
         settings.put(POST_INITIAL_STEPS_WIZARD, wiz);
@@ -393,6 +391,7 @@ public class WizardSupport {
     private JRadioButton createPlayOfflineButton(final WizardController controller, final Map<String, Object> settings) {
       final JRadioButton b = new JRadioButton(Resources.getString("WizardSupport.PlayOffline")); //$NON-NLS-1$
       b.addActionListener(e -> {
+        GameModule.getGameModule().getPlayerRoster().reset();
         GameModule.getGameModule().getGameState().setup(false);
         GameModule.getGameModule().getGameState().freshenStartupGlobalKeyCommands(GameModule.getGameModule());
         GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode. NEW_GAME);
