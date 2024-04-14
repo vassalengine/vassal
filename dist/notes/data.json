@@ -17,11 +17,15 @@
   "changes": [
     {
       "in": "3.7.10",
-      "since": "3.7.r98",
+      "since": "3.7.9",
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 13268, "desc": "Prevent crash after saving blank parameter list in GKC" },
         { "num": 13243, "desc": "Corrected spelling of Editor.BeanShell.regex key" },
+        { "num": 13203, "desc": "Don't fail when replaying older log from module version with more Special Dice defined" },
+        { "num": 13174, "desc": "Update Labels on remote maps after Drag and Drop" },
+        { "num": 13167, "desc": "Ensure side selection always appears in Wizard" },
         { "num": 13153, "desc": "Prevent Area of Effect getting stuck ON when migrating to 3.7" }
       ],
       "other_improvements": [
