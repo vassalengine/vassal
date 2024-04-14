@@ -219,7 +219,7 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
   protected void setFormat(int[] results) {
     format.setProperty(NAME, getLocalizedConfigureName());
     int total = 0;
-    for (int i = 0; i < dice.size(); ++i) {
+    for (int i = 0; i < dice.size() && i < results.length; ++i) {
       final SpecialDie die = dice.get(i);
       format.setProperty("result" + (i + 1), die.getTextValue(results[i])); //$NON-NLS-1$
       total += die.getIntValue(results[i]);
