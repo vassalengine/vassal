@@ -293,8 +293,8 @@ release-windows-noinst: $(TMPDIR)/VASSAL-$(VERSION)-windows-noinst.zip
 
 release-other: $(TMPDIR)/VASSAL-$(VERSION)-other.zip
 
-$(TMPDIR)/VASSAL-$(VERSION).sha256: $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2 $(TMPDIR)/VASSAL-$(VERSION)-macos-universal.dmg $(TMPDIR)/VASSAL-$(VERSION)-windows-x86_32.exe $(TMPDIR)/VASSAL-$(VERSION)-windows-x86_64.exe $(TMPDIR)/VASSAL-$(VERSION)-windows-aarch64.exe $(TMPDIR)/VASSAL-$(VERSION)-other.zip
-	pushd $(TMPDIR) ; sha256sum $(^F) >$(@F) ; popd
+$(TMPDIR)/VASSAL-$(VERSION).sha256:
+	pushd $(TMPDIR) ; sha256sum VASSAL-$(VERSION)-linux.tar.bz2 VASSAL-$(VERSION)-macos-universal.dmg VASSAL-$(VERSION)-windows-x86_32.exe VASSAL-$(VERSION)-windows-x86_64.exe VASSAL-$(VERSION)-windows-aarch64.exe VASSAL-$(VERSION)-other.zip >$(@F) ; popd
 
 release-sha256: $(TMPDIR)/VASSAL-$(VERSION).sha256
 

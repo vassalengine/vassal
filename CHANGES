@@ -3,11 +3,18 @@
 * 12944: Add pieceCount to the map auto reporter
 * 12763: Added ModuleGameFileName property
 
-3.7.10 - ???
+3.7.11 - ???
 
+3.7.10 - 14 April 2024
+
+* 13268: Prevent crash after saving blank parameter list in GKC
 * 13243: Corrected spelling of Editor.BeanShell.regex key
 * 13238: Upgrade bundled Java to Java 22 (except for Windows x86_32, which
     stays at Java 21)
+* 13203: Don't fail when replaying older log from module version with more
+    Special Dice defined
+* 13174: Update Labels on remote maps after Drag and Drop
+* 13167: Ensure side selection always appears in Wizard
 * 13153: Prevent Area of Effect getting stuck ON when migrating to 3.7
 
 3.7.9 - 29 February 2024

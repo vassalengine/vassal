@@ -105,6 +105,9 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Get tags
+        run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+
       - name: Set branch
         if: github.ref != 'refs/heads/master' && github.ref != 'refs/heads/release-3.7'
         # Checking out a detached head for PR means we have to set the branch
