@@ -242,7 +242,7 @@ public class ParameterListConfigurer extends Configurer implements ConfigurableL
 
   @Override
   public int getSelectedEntryIndex() {
-    return selectedEntryIndex;
+    return Math.min(selectedEntryIndex, getListValue() == null ? -1 : getListValue().size() - 1);
   }
 
   @Override
