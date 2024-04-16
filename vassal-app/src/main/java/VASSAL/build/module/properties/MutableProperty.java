@@ -134,7 +134,7 @@ public interface MutableProperty {
       propSupport.removePropertyChangeListener(l);
     }
 
-    protected Command getChangeCommand(String oldValue, String newValue) {
+    public Command getChangeCommand(String oldValue, String newValue) {
       return new ChangePropertyCommand(this, propertyName, oldValue, newValue);
     }
 
