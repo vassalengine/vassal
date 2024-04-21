@@ -380,6 +380,7 @@ public class WizardSupport {
     private JRadioButton createPlayOnlineButton(final WizardController controller, final Map<String, Object> settings) {
       final JRadioButton b = new JRadioButton(Resources.getString("WizardSupport.PlayOnline")); //$NON-NLS-1$
       b.addActionListener(e -> {
+        GameModule.getGameModule().getPlayerRoster().reset();
         settings.put(WizardSupport.ACTION_KEY, PLAY_ONLINE_ACTION);
         settings.put(POST_INITIAL_STEPS_WIZARD, null);
         controller.setForwardNavigationMode(GameModule.getGameModule().isRealName() ? WizardController.MODE_CAN_FINISH : WizardController.MODE_CAN_CONTINUE);
