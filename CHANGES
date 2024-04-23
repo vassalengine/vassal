@@ -1,5 +1,7 @@
 3.7.11 - ???
 
+* 13167: Fix missing Player list after online game request
+
 3.7.10 - 14 April 2024
 
 * 13268: Prevent crash after saving blank parameter list in GKC
