@@ -23,6 +23,7 @@
         { "num": 12763, "desc": "Added ModuleGameFileName property" }
       ],
       "bug_fixes": [
+        { "num": 13167, "desc": "Fix missing Player list after online game request" }
       ],
       "other_improvements": [
       ]
