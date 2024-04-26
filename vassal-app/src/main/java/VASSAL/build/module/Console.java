@@ -219,8 +219,8 @@ public class Console {
       sb.append("All Attachments");
     }
     else {
-      sb.append("Attachment ");
-      sb.append(compareName);
+      sb.append("Attachment ")
+        .append(compareName);
     }
     sb.append(useSelected ? ", Selected units only" : ", All units")
       .append(activeOnly ? ", Active only" : "")

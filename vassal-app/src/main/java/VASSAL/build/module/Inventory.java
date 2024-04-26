@@ -1403,12 +1403,8 @@ public class Inventory extends AbstractToolbarItem
     public String toResultString() {
       final StringBuilder name = new StringBuilder();
 
-      name.append(separator());
-
-      if (counter != null)
-        name.append(counter);
-      else
-        name.append(getEntry());
+      name.append(separator())
+          .append(counter != null ? counter : getEntry());
 
       for (final CounterNode child : children) {
         name.append(child.toResultString());

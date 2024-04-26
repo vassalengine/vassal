@@ -444,11 +444,11 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
       final StringBuilder s = new StringBuilder("");
       if (polygon != null) {
         for (int p = 0; p < polygon.npoints; p++) {
-          s.append('(');
-          s.append(polygon.xpoints[p] - offsetView.x);
-          s.append(',');
-          s.append(polygon.ypoints[p] - offsetView.y);
-          s.append(") ");
+          s.append('(')
+            .append(polygon.xpoints[p] - offsetView.x)
+            .append(',')
+            .append(polygon.ypoints[p] - offsetView.y)
+            .append(") ");
         }
         coordsLabel.setText(s.toString());
       }

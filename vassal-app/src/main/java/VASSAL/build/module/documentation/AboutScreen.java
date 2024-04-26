@@ -81,13 +81,13 @@ public class AboutScreen extends AbstractConfigurable {
 
     final String o1 = g.getModuleOther1();
     if ((o1 != null) && !o1.isEmpty()) {
-      sb.append(" - ");
-      sb.append(o1);
+      sb.append(" - ")
+        .append(o1);
     }
     final String o2 = g.getModuleOther2();
     if ((o2 != null) && !o2.isEmpty()) {
-      sb.append(" - ");
-      sb.append(o2);
+      sb.append(" - ")
+        .append(o2);
     }
 
     for (final ModuleExtension ext : g.getComponentsOf(ModuleExtension.class)) {

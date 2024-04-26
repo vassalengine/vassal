@@ -456,11 +456,11 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       if (sb.length() > 0) {
         sb.append(" - ");
       }
-      sb.append('(');
-      sb.append(pos.x);
-      sb.append(',');
-      sb.append(pos.y);
-      sb.append(')');
+      sb.append('(')
+        .append(pos.x)
+        .append(',')
+        .append(pos.y)
+        .append(')');
     }
     return sb.toString();
   }

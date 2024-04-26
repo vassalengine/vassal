@@ -1016,12 +1016,12 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
   protected String buildDescription(String i18nKey, String value, String description) {
     final StringBuilder desc = new StringBuilder(buildDescription(i18nKey));
     if (value != null && ! value.isBlank()) {
-      desc.append(" - ");
-      desc.append(value);
+      desc.append(" - ")
+          .append(value);
     }
     if (description != null && ! description.isBlank()) {
-      desc.append(" - ");
-      desc.append(description);
+      desc.append(" - ")
+          .append(description);
     }
     return desc.toString();
   }
