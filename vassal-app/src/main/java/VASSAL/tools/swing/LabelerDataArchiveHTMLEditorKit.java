@@ -66,7 +66,7 @@ public class LabelerDataArchiveHTMLEditorKit extends DataArchiveHTMLEditorKit {
     @Override
     public float getAlignment(int axis) {
       switch (axis) {
-      case View.Y_AXIS:
+      case Y_AXIS:
         return valign;
       default:
         return super.getAlignment(axis);
@@ -86,7 +86,7 @@ public class LabelerDataArchiveHTMLEditorKit extends DataArchiveHTMLEditorKit {
     @Override
     public float getAlignment(int axis) {
       switch (axis) {
-      case View.Y_AXIS:
+      case Y_AXIS:
         return valign;
       default:
         return super.getAlignment(axis);

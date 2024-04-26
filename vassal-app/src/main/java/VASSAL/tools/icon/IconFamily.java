@@ -465,11 +465,11 @@ public class IconFamily extends AbstractConfigurable {
       mig.add(new JLabel(Resources.getString("Editor.IconFamily.scalable_icon_label"))); //$NON-NLS-1$
       mig.add(scalableConfig.getControls(), "wrap"); //$NON-NLS-1$
 
-      final IconImageConfigurer[] sizeConfig = new IconImageConfigurer[IconFamily.SIZE_COUNT];
-      for (int size = 0; size < IconFamily.SIZE_COUNT; size++) {
+      final IconImageConfigurer[] sizeConfig = new IconImageConfigurer[SIZE_COUNT];
+      for (int size = 0; size < SIZE_COUNT; size++) {
         sizeConfig[size] = new IconImageConfigurer(family, size);
-        final String px = String.valueOf(IconFamily.SIZES[size]);
-        mig.add(new JLabel(Resources.getString("Editor.IconFamily.icon_label", IconFamily.getIconSizeNames()[size], px))); //$NON-NLS-1$
+        final String px = String.valueOf(SIZES[size]);
+        mig.add(new JLabel(Resources.getString("Editor.IconFamily.icon_label", getIconSizeNames()[size], px))); //$NON-NLS-1$
         mig.add(sizeConfig[size].getControls(), "wrap"); //$NON-NLS-1$
       }
 
@@ -509,10 +509,10 @@ public class IconFamily extends AbstractConfigurable {
       this.size = size;
       this.family = family;
       if (size < 0) {
-        px = IconFamily.SIZES[IconFamily.LARGE];
+        px = SIZES[LARGE];
       }
       else {
-        px = IconFamily.SIZES[size];
+        px = SIZES[size];
       }
     }
 
@@ -607,8 +607,8 @@ public class IconFamily extends AbstractConfigurable {
     protected void checkIconSize() {
       final Icon check = family.getRawIcon(size);
       if (check != null) {
-        if (check.getIconHeight() != IconFamily.SIZES[size]) {
-          setWarning(Resources.getString("Editor.IconFamily.size_warning", IconFamily.SIZES[size], check.getIconHeight())); //$NON-NLS-1$
+        if (check.getIconHeight() != SIZES[size]) {
+          setWarning(Resources.getString("Editor.IconFamily.size_warning", SIZES[size], check.getIconHeight())); //$NON-NLS-1$
         }
       }
     }
@@ -619,10 +619,10 @@ public class IconFamily extends AbstractConfigurable {
       }
 
       if (size < 0) {
-        return ArchiveWriter.ICON_DIR + IconFamily.SCALABLE_DIR + s; //$NON-NLS-1$
+        return ArchiveWriter.ICON_DIR + SCALABLE_DIR + s; //$NON-NLS-1$
       }
       else {
-        return ArchiveWriter.ICON_DIR + IconFamily.SIZE_DIRS[size] + s; //$NON-NLS-1$
+        return ArchiveWriter.ICON_DIR + SIZE_DIRS[size] + s; //$NON-NLS-1$
       }
     }
 

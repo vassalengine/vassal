@@ -809,16 +809,16 @@ public class GameModule extends AbstractConfigurable
    */
   private void initIdentityPreferences() {
     idChangeSupport = new PropertyChangeSupport(this);
-    final StringConfigurer fullName = new StringConfigurer(GameModule.REAL_NAME, Resources.getString("Prefs.name_label"), Resources.getString("Prefs.newbie"));   //$NON-NLS-1$ //$NON-NLS-2$
+    final StringConfigurer fullName = new StringConfigurer(REAL_NAME, Resources.getString("Prefs.name_label"), Resources.getString("Prefs.newbie"));   //$NON-NLS-1$ //$NON-NLS-2$
     fullName.addPropertyChangeListener(evt -> idChangeSupport.firePropertyChange(evt));
-    final TextConfigurer profile = new TextConfigurer(GameModule.PERSONAL_INFO, Resources.getString("Prefs.personal_info"), "");   //$NON-NLS-1$ //$NON-NLS-2$
+    final TextConfigurer profile = new TextConfigurer(PERSONAL_INFO, Resources.getString("Prefs.personal_info"), "");   //$NON-NLS-1$ //$NON-NLS-2$
     profile.addPropertyChangeListener(evt -> idChangeSupport.firePropertyChange(evt));
-    passwordConfigurer = new ToggleablePasswordConfigurer(GameModule.SECRET_NAME, Resources.getString("Prefs.password_label"), ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-    passwordConfigurer.addPropertyChangeListener(evt -> GameModule.setUserId((String) evt.getNewValue()));
+    passwordConfigurer = new ToggleablePasswordConfigurer(SECRET_NAME, Resources.getString("Prefs.password_label"), ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    passwordConfigurer.addPropertyChangeListener(evt -> setUserId((String) evt.getNewValue()));
     getPrefs().addOption(Resources.getString("Prefs.personal_tab"), fullName);   //$NON-NLS-1$ //$NON-NLS-2$
     getPrefs().addOption(Resources.getString("Prefs.personal_tab"), passwordConfigurer);   //$NON-NLS-1$ //$NON-NLS-2$
     getPrefs().addOption(Resources.getString("Prefs.personal_tab"), profile);  //$NON-NLS-1$
-    GameModule.setUserId(passwordConfigurer.getValueString());
+    setUserId(passwordConfigurer.getValueString());
   }
 
   private void initRecentGamesMenu() {
@@ -2222,7 +2222,7 @@ public class GameModule extends AbstractConfigurable
    * @return <code>true</code> if user supplied a real name
    */
   public boolean isRealName() {
-    final String name = (String)getPrefs().getValue(GameModule.REAL_NAME);
+    final String name = (String)getPrefs().getValue(REAL_NAME);
     return name != null && !name.isEmpty() && !name.equals(Resources.getString("Prefs.newbie"));
   }
 
@@ -2234,7 +2234,7 @@ public class GameModule extends AbstractConfigurable
    * @return <code>true</code> if user supplied a real password
    */
   public boolean isNonBlankPassword() {
-    final String pwd = (String)getPrefs().getValue(GameModule.SECRET_NAME);
+    final String pwd = (String)getPrefs().getValue(SECRET_NAME);
     return (pwd != null) && !pwd.isEmpty();
   }
 
@@ -2252,7 +2252,7 @@ public class GameModule extends AbstractConfigurable
       return mySide == null ? "" : mySide;  //$NON-NLS-1$
     }
     else if (GlobalOptions.PLAYER_NAME.equals(key) || GlobalOptions.PLAYER_NAME_ALT.equals(key)) {
-      return getPrefs().getValue(GameModule.REAL_NAME);
+      return getPrefs().getValue(REAL_NAME);
     }
     else if (GlobalOptions.PLAYER_ID.equals(key) || GlobalOptions.PLAYER_ID_ALT.equals(key)) {
       return GlobalOptions.getInstance().getPlayerId();
@@ -2278,10 +2278,10 @@ public class GameModule extends AbstractConfigurable
     else if (MODULE_OTHER2_PROPERTY.equals(key)) {
       return moduleOther2;
     }
-    else if (GameModule.MODULE_CURRENT_LOCALE.equals(key)) {
+    else if (MODULE_CURRENT_LOCALE.equals(key)) {
       return Resources.getLocale().getLanguage();
     }
-    else if (GameModule.MODULE_CURRENT_LOCALE_NAME.equals(key)) {
+    else if (MODULE_CURRENT_LOCALE_NAME.equals(key)) {
       return Resources.getLocale().getDisplayName();
     }
     else if (DRAWING_MOUSEOVER_PROPERTY.equals(key)) {

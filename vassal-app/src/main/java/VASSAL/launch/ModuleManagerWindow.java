@@ -2187,10 +2187,10 @@ public class ModuleManagerWindow extends JFrame {
       d.add(new JScrollPane(lp), "grow, push, w 500, h 600"); //NON-NLS
 
       d.setLocationRelativeTo(frame);
-      d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+      d.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
       final Action copyAction = new DefaultEditorKit.CopyAction();
-      copyAction.putValue(Action.NAME, Resources.getString("Errorlog.copy_selection"));
+      copyAction.putValue(NAME, Resources.getString("Errorlog.copy_selection"));
 
       final Action copyAllAction = new AbstractAction() {
         @Override
@@ -2199,7 +2199,7 @@ public class ModuleManagerWindow extends JFrame {
           copyAction.actionPerformed(e);
         }
       };
-      copyAllAction.putValue(Action.NAME, Resources.getString("Errorlog.copy_all"));
+      copyAllAction.putValue(NAME, Resources.getString("Errorlog.copy_all"));
 
       final JPopupMenu pm = new JPopupMenu();
       pm.add(copyAllAction);

@@ -50,11 +50,11 @@ public class Hex {
   };
 
   public static Hex direction(int direction) {
-    return Hex.directions.get(direction);
+    return directions.get(direction);
   }
 
   public Hex neighbor(int direction) {
-    return add(Hex.direction(direction));
+    return add(direction(direction));
   }
 
   public static final List<Hex> diagonals = new ArrayList<Hex>() {
@@ -69,7 +69,7 @@ public class Hex {
   };
 
   public Hex diagonalNeighbor(int direction) {
-    return add(Hex.diagonals.get(direction));
+    return add(diagonals.get(direction));
   }
 
   public int length() {

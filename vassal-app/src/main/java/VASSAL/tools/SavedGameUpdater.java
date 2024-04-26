@@ -138,7 +138,7 @@ public class SavedGameUpdater {
     private final GamePiece replacement;
 
     public ReplaceTrait(GamePiece original, GamePiece replacement) {
-      super(Replace.ID + "Replace;R;dummy;;0;0;true", original); //NON-NLS
+      super(ID + "Replace;R;dummy;;0;0;true", original); //NON-NLS
       setProperty(VASSAL.counters.Properties.OUTER, original);
       original.setProperty(VASSAL.counters.Properties.OUTER, null);
       this.replacement = replacement;

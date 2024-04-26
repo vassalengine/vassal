@@ -61,7 +61,7 @@ public class PlayerWindow extends JFrame {
   public PlayerWindow() {
     setTitle(Resources.getString("General.VASSAL"));
     setLayout(new BorderLayout());
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
 
     ApplicationIcons.setFor(this);
 

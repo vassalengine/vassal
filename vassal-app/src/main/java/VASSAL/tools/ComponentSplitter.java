@@ -489,7 +489,7 @@ public class ComponentSplitter {
         double div = 0.0;
         int w = 0, h = 0;
         switch (getOrientation()) {
-        case JSplitPane.HORIZONTAL_SPLIT:
+        case HORIZONTAL_SPLIT:
           w = Math.min(
             ancestorSize.width + prefHSize.width,
             screenBounds.width - ancestorPos.x
@@ -497,7 +497,7 @@ public class ComponentSplitter {
           h = ancestorSize.height;
           div = prefBSize.width / (double)(prefBSize.width + prefHSize.width);
           break;
-        case JSplitPane.VERTICAL_SPLIT:
+        case VERTICAL_SPLIT:
           w = ancestorSize.width;
           h = Math.min(
             ancestorSize.height + prefHSize.height,
@@ -624,9 +624,9 @@ public class ComponentSplitter {
     final JTextField input = new JTextField(60);
     input.setMaximumSize(new Dimension(input.getMaximumSize().width, input.getPreferredSize().height));
     text.add(input);
-    final SplitPane splitRight = ComponentSplitter.split(main, smallRight, SplitPane.HIDE_RIGHT, false);
-    final SplitPane splitLeft = ComponentSplitter.split(main, smallLeft, SplitPane.HIDE_LEFT, false);
-    final SplitPane splitBottom = ComponentSplitter.split(ComponentSplitter.splitAncestorOf(main, -1), new ScrollPane(large), SplitPane.HIDE_BOTTOM, true);
+    final SplitPane splitRight = split(main, smallRight, SplitPane.HIDE_RIGHT, false);
+    final SplitPane splitLeft = split(main, smallLeft, SplitPane.HIDE_LEFT, false);
+    final SplitPane splitBottom = split(splitAncestorOf(main, -1), new ScrollPane(large), SplitPane.HIDE_BOTTOM, true);
     splitBottom.setResizeWeight(0.0);
     main.add(text, BorderLayout.CENTER);
     toolbar.add(new AbstractAction("Left") {  //NON-NLS
