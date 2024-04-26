@@ -434,7 +434,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
    * @return an array of the names of all boards from which the user may choose
    */
   public String[] getAllowableBoardNames() {
-    final ArrayList<String> s = new ArrayList<>(possibleBoards.size());
+    final List<String> s = new ArrayList<>(possibleBoards.size());
     for (final Board b : possibleBoards) {
       s.add(b.getName());
     }
@@ -442,7 +442,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
   }
 
   public String[] getAllowableLocalizedBoardNames() {
-    final ArrayList<String> s = new ArrayList<>(possibleBoards.size());
+    final List<String> s = new ArrayList<>(possibleBoards.size());
     for (final Board b : possibleBoards) {
       s.add(b.getLocalizedName());
     }
@@ -576,7 +576,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
    * @return List of Boards
    */
   public List<Board> getBoardsFromControls() {
-    final ArrayList<Board> boardList = new ArrayList<>();
+    final List<Board> boardList = new ArrayList<>();
     if (toolbar != null) {
       // Adjust the bounds of each board according to its relative position
       for (int i = 0; i < nx; ++i) {

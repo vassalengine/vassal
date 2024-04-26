@@ -567,7 +567,7 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
       return EMPTY;
     }
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     while (st.hasMoreTokens()) {
       l.add(st.nextToken());
     }

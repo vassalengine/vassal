@@ -334,7 +334,7 @@ public class GlobalCommandTarget implements ConfigurerFactory, SearchTarget {
    */
   @Override
   public List<String> getPropertyList() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     if (fastMatchProperty) {
       l.add(targetProperty.getExpression());
     }

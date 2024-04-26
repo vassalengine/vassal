@@ -230,7 +230,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     }
 
     public List<Double> getLevels() {
-      final ArrayList<Double> l = new ArrayList<>(levels.length);
+      final List<Double> l = new ArrayList<>(levels.length);
       for (final double d : levels) l.add(d);
       return l;
     }

@@ -693,7 +693,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
    * @return List of Turn levels
    */
   protected List<TurnLevel> getActiveChildLevels() {
-    final ArrayList<TurnLevel> levels = new ArrayList<>();
+    final List<TurnLevel> levels = new ArrayList<>();
     final TurnLevel level = getTurnLevel(currentLevel);
     if (level != null) {
       levels.add(level);

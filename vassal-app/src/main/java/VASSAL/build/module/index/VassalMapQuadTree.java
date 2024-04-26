@@ -176,7 +176,7 @@ public class VassalMapQuadTree extends QuadTree {
    * @return List of pieces
    */
   public List<GamePiece> getPiecesInRange(Point pos, int range) {
-    final ArrayList<GamePiece> pieces = new ArrayList<>();
+    final List<GamePiece> pieces = new ArrayList<>();
 
     for (final QPoint q : searchWithin(pos.x - range, pos.y - range, pos.x + range, pos.y + range)) {
       pieces.addAll((Set<GamePiece>) q.getValue());

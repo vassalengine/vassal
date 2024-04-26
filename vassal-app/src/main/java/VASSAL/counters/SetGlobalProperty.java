@@ -44,6 +44,7 @@ import java.awt.Component;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -199,7 +200,7 @@ public class SetGlobalProperty extends DynamicProperty {
       if (keyCommand.matches(stroke)) {
         final String propertyName = (new FormattedString(key)).getText(Decorator.getOutermost(this), this, "Editor.DynamicProperty.property_name");
 
-        final ArrayList<MutablePropertiesContainer> propertyContainers =
+        final List<MutablePropertiesContainer> propertyContainers =
           new ArrayList<>();
         propertyContainers.add(0, GameModule.getGameModule());
         Map map = getMap();

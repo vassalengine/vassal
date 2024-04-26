@@ -614,14 +614,14 @@ public class ModuleManagerWindow extends JFrame {
         moduleNode.add(extensionNode);
       }
 
-      final ArrayList<File> missingFolders = new ArrayList<>();
+      final List<File> missingFolders = new ArrayList<>();
 
       for (final File f : moduleInfo.getFolders()) {
         if (f.exists() && f.isDirectory()) {
           final GameFolderInfo folderInfo = new GameFolderInfo(f, moduleInfo);
           final MyTreeNode folderNode = new MyTreeNode(folderInfo);
           moduleNode.add(folderNode);
-          final ArrayList<File> l = new ArrayList<>();
+          final List<File> l = new ArrayList<>();
 
           final File[] files = f.listFiles();
           if (files == null) continue;

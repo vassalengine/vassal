@@ -493,7 +493,7 @@ public class Immobilized extends Decorator implements EditablePiece {
    */
   @Override
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     l.add(Properties.TERRAIN);
     l.add(Properties.IGNORE_GRID);
     l.add(Properties.NON_MOVABLE);

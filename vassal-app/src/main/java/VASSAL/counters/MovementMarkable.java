@@ -419,7 +419,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     l.add(Properties.MOVED);
     return l;
   }

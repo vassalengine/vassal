@@ -277,7 +277,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
      */
     @Override
     public String[] getValidValues(AutoConfigurable target) {
-      final ArrayList<String> l = new ArrayList<>();
+      final List<String> l = new ArrayList<>();
       l.add(NONE);
       for (final GameComponent g :
            GameModule.getGameModule().getGameState().getGameComponents()) {

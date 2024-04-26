@@ -28,6 +28,7 @@ import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.w3c.dom.Element;
@@ -154,7 +155,7 @@ public class FontManager extends AbstractConfigurable {
   }
 
   public String[] getFontNames() {
-    final ArrayList<String> names = new ArrayList<>(fontStyles.size());
+    final List<String> names = new ArrayList<>(fontStyles.size());
     for (final FontStyle fs : fontStyles.values()) {
       names.add(fs.getConfigureName());
     }

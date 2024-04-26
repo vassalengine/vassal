@@ -953,7 +953,7 @@ public class PieceMover extends AbstractBuildable
        * a stack, the "stack" item itself will end up being emptied
        * and cleared in the coming merge process.
        */
-      final ArrayList<GamePiece> draggedPieces = new ArrayList<>(0);
+      final List<GamePiece> draggedPieces = new ArrayList<>(0);
       if (dragging instanceof Stack) {
         draggedPieces.addAll(((Stack) dragging).asList());
       }
@@ -1074,7 +1074,7 @@ public class PieceMover extends AbstractBuildable
         // NB. Pieces that have been dragged from a face-down Deck will be be Obscured to us, but will be Obscured
         // by the dummy user Deck.NO_USER
         if (mergeWith instanceof Deck) {
-          final ArrayList<GamePiece> newList = new ArrayList<>(0);
+          final List<GamePiece> newList = new ArrayList<>(0);
           for (final GamePiece piece : draggedPieces) {
             if (((Deck) mergeWith).mayContain(piece) && ((Deck) mergeWith).isAccessible()) {
               final boolean isObscuredToMe = Boolean.TRUE.equals(piece.getProperty(Properties.OBSCURED_TO_ME));
@@ -1684,7 +1684,7 @@ public class PieceMover extends AbstractBuildable
       // boundingBox and relativePositions are constructed in map
       // coordinates in this function
 
-      final ArrayList<Point> relativePositions = new ArrayList<>();
+      final List<Point> relativePositions = new ArrayList<>();
       final PieceIterator dragContents = DragBuffer.getBuffer().getIterator();
       final GamePiece firstPiece = dragContents.nextPiece();
       GamePiece lastPiece = firstPiece;

@@ -523,8 +523,8 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
   @Override
   public Component getControls() {
-    final ArrayList<String> availableSides = new ArrayList<>(sides);
-    final ArrayList<String> alreadyTaken = new ArrayList<>();
+    final List<String> availableSides = new ArrayList<>(sides);
+    final List<String> alreadyTaken = new ArrayList<>();
 
     for (final PlayerInfo p : players) {
       alreadyTaken.add(p.getLocalizedSide());
@@ -822,8 +822,8 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   }
 
   public List<String> getAvailableSides() {
-    final ArrayList<String> availableSides = new ArrayList<>(sides);
-    final ArrayList<String> alreadyTaken = new ArrayList<>();
+    final List<String> availableSides = new ArrayList<>(sides);
+    final List<String> alreadyTaken = new ArrayList<>();
 
     for (final PlayerInfo p : players) {
       alreadyTaken.add(p.getLocalizedSide());
@@ -839,8 +839,8 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
   protected String promptForSide(String newSide) {
     // availableSides and alreadyTaken are translated side names
-    final ArrayList<String> availableSides = new ArrayList<>(getSides());
-    final ArrayList<String> alreadyTaken = new ArrayList<>();
+    final List<String> availableSides = new ArrayList<>(getSides());
+    final List<String> alreadyTaken = new ArrayList<>();
     boolean alreadyConnected;
     final GameModule g = GameModule.getGameModule();
 

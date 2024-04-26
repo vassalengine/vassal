@@ -63,7 +63,7 @@ public class Marker extends Decorator implements EditablePiece {
   public void mySetType(String s) {
     s = s.substring(ID.length());
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     while (st.hasMoreTokens()) {
       l.add(st.nextToken());
     }
@@ -198,7 +198,7 @@ public class Marker extends Decorator implements EditablePiece {
    */
   @Override
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     Collections.addAll(l, keys);
     return l;
   }

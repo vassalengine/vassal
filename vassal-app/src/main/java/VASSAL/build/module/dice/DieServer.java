@@ -18,6 +18,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 
@@ -219,7 +220,7 @@ public abstract class DieServer implements Auditable {
 
   public void doIRoll(RollSet toss) throws IOException {
     final String[] rollString = buildInternetRollString(toss);
-    final ArrayList<String> returnString = new ArrayList<>();
+    final List<String> returnString = new ArrayList<>();
     //            rollString[0] =
     //                "number1=2&type1=6&number2=2&type2=30&number3=2&type3=30"
     //                    + "&number4=0&type4=2&number5=0&type5=2&number6=0&type6=2&number7=0&type7=2"

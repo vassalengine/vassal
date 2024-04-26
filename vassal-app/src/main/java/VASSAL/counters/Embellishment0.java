@@ -254,7 +254,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
     xOff = st.nextInt(0);
     yOff = st.nextInt(0);
 
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     while (st.hasMoreTokens()) {
       l.add(st.nextToken());
     }
@@ -411,7 +411,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
   @Override
   public KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
-      final ArrayList<KeyCommand> l = new ArrayList<>();
+      final List<KeyCommand> l = new ArrayList<>();
       final GamePiece outer = Decorator.getOutermost(this);
       if (activateCommand.length() > 0 && activateKey.length() > 0) {
         final KeyCommand k = new KeyCommand(activateCommand,
@@ -1017,8 +1017,8 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
     @Override
     public String getType() {
       final SequenceEncoder se = new SequenceEncoder(';');
-      final ArrayList<String> imageNames = new ArrayList<>();
-      final ArrayList<String> commonNames = new ArrayList<>();
+      final List<String> imageNames = new ArrayList<>();
+      final List<String> commonNames = new ArrayList<>();
       int i = 0;
       for (final String n : images.getImageNameList()) {
         imageNames.add(n);

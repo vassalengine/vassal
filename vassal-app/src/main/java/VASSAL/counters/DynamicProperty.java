@@ -415,7 +415,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
    */
   @Override
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     l.add(key);
     return l;
   }

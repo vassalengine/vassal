@@ -540,7 +540,7 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
 
   @Override
   public List<String> getPropertyList() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
 
     if (!isShowDisabledOptions() || !canDisable) {
       return l;

@@ -890,7 +890,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
   @Override
   public PieceI18nData getI18nData() {
-    final ArrayList<String> items = new ArrayList<>();
+    final List<String> items = new ArrayList<>();
     final SequenceEncoder.Decoder defDecoder =
       new SequenceEncoder.Decoder(m_definition, DEF_DELIMITOR);
     while (defDecoder.hasMoreTokens()) {

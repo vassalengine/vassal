@@ -199,7 +199,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     if (command == null) {
       sendCommand = new KeyCommand(commandName, key, Decorator.getOutermost(this), this);
       backCommand = new KeyCommand(backCommandName, backKey, Decorator.getOutermost(this), this);
-      final ArrayList<KeyCommand> l = new ArrayList<>();
+      final List<KeyCommand> l = new ArrayList<>();
       if (commandName.length() > 0 && key != null && !key.isNull()) {
         l.add(sendCommand);
       }
@@ -993,7 +993,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getExpressionList() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
 
     if (destination.equals(DEST_COUNTER.substring(0, 1)) || destination.equals(DEST_COUNTER_CYCLE.substring(0, 1)) || destination.equals(DEST_COUNTER_NEAREST.substring(0, 1))) {
       l.add(propertyFilter.getExpression());

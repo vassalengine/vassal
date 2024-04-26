@@ -718,7 +718,7 @@ public class DiceButton extends AbstractToolbarItem {
    */
   @Override
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     l.add(property.getName());
     l.add(totalProp.getName());
     l.add(keepProp.getName());

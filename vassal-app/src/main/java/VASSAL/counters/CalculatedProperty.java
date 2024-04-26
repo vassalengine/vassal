@@ -286,7 +286,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
    */
   @Override
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     l.add(name);
     return l;
   }

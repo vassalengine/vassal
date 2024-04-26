@@ -29,6 +29,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -145,7 +146,7 @@ public class MultiRoll extends JDialog implements ActionListener {
   }
 
   public RollSet getRollSet() {
-    final ArrayList<DieRoll> l = new ArrayList<>();
+    final List<DieRoll> l = new ArrayList<>();
     for (int i = 0; i < MAX_ROLLS; ++i) {
       if (useDie[i]) {
         l.add(rolls[i]);

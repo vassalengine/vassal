@@ -615,7 +615,7 @@ public class MassPieceLoader {
 
       // Build the piece from the template
       GamePiece template = definer.getPiece();
-      final ArrayList<Decorator> traits = new ArrayList<>();
+      final List<Decorator> traits = new ArrayList<>();
 
       // Reverse the order of the traits to innermost out
       while (template instanceof Decorator) {
@@ -1407,7 +1407,7 @@ public class MassPieceLoader {
     @Override
     public List<String> getImageNameList() {
       final int size = imageListElements.size();
-      final ArrayList<String> names = new ArrayList<>(size);
+      final List<String> names = new ArrayList<>(size);
       for (int i = 0; i < size; ++i) {
         names.add((multiPanel.getComponent(i).toString()));
       }

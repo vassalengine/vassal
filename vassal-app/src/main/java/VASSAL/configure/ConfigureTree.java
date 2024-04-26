@@ -1088,7 +1088,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
 
   protected List<Action> buildAddActionsFor(final Configurable target, List<Action> peerInserts) {
-    final ArrayList<Action> l = new ArrayList<>();
+    final List<Action> l = new ArrayList<>();
 
     if (target instanceof AbstractConfigurable) {
       final DefaultMutableTreeNode targetNode = getTreeNode(target);
@@ -1397,7 +1397,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     final DefaultMutableTreeNode childNode = buildTreeNode(theChild);
     final DefaultMutableTreeNode parentNode = getTreeNode(parent);
     final Configurable[] oldContents = parent.getConfigureComponents();
-    final ArrayList<Configurable> moveToBack = new ArrayList<>();
+    final List<Configurable> moveToBack = new ArrayList<>();
     for (int i = index; i < oldContents.length; ++i) {
       try {
         parent.remove(oldContents[i]);

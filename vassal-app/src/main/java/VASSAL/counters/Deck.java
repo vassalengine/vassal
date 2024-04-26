@@ -1226,10 +1226,10 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
     else {
       int count = Math.max(dragCount, Math.min(1, getPieceCount()));
-      final ArrayList<GamePiece> pieces = new ArrayList<>();
+      final List<GamePiece> pieces = new ArrayList<>();
       if (ALWAYS.equals(shuffleOption)) {
         // Instead of shuffling the entire deck, just pick <b>count</b> random elements
-        final ArrayList<Integer> indices = new ArrayList<>();
+        final List<Integer> indices = new ArrayList<>();
         for (int i = 0; i < getPieceCount(); ++i) {
           indices.add(i);
         }
@@ -1323,7 +1323,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
 
     faceDown = "true".equals(st.nextToken()); //$NON-NLS-1$
-    final ArrayList<GamePiece> l = new ArrayList<>();
+    final List<GamePiece> l = new ArrayList<>();
     if (st.hasMoreTokens()) {
       final SequenceEncoder.Decoder st2 =
         new SequenceEncoder.Decoder(st.nextToken(), ',');
@@ -1356,7 +1356,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   /** Reverse the order of the contents of the Deck */
   public Command reverse() {
-    final ArrayList<GamePiece> list = new ArrayList<>();
+    final List<GamePiece> list = new ArrayList<>();
     for (final Iterator<GamePiece> i = getPiecesReverseIterator(); i.hasNext(); ) {
       list.add(i.next());
     }
@@ -1535,7 +1535,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   protected KeyCommand[] getKeyCommands() {
     if (commands == null) {
-      final ArrayList<KeyCommand> l = new ArrayList<>();
+      final List<KeyCommand> l = new ArrayList<>();
       KeyCommand c;
       if (USE_MENU.equals(shuffleOption)) {
         c = new KeyCommand(shuffleCommand, getShuffleKey(), this) {

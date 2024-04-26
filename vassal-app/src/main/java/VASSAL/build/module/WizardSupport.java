@@ -896,8 +896,8 @@ public class WizardSupport {
 
     public static GameSetupPanels newInstance(boolean forcePwd) {
       GameSetupPanels panels = null;
-      final ArrayList<SetupStepPage> pages = new ArrayList<>();
-      final ArrayList<GameSetupStep> setupSteps = new ArrayList<>();
+      final List<SetupStepPage> pages = new ArrayList<>();
+      final List<GameSetupStep> setupSteps = new ArrayList<>();
       final PlayerRoster pr = GameModule.getGameModule().getPlayerRoster();
       if (pr != null) {
         pr.setForcePwd(forcePwd);

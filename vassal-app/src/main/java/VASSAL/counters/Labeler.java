@@ -846,7 +846,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
    */
   @Override
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     if (propertyName.length() > 0) {
       l.add(propertyName);
     }

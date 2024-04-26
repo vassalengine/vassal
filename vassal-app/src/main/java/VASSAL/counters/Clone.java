@@ -219,7 +219,7 @@ public class Clone extends Decorator implements TranslatablePiece {
 
   @Override
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     l.add(CLONE_ID);
     return l;
   }

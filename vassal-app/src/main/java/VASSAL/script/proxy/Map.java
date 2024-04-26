@@ -51,7 +51,7 @@ public class Map {
 
   public List<GamePiece> getPieces() {
     final VASSAL.counters.GamePiece[] vPieces = vassalMap.getPieces();
-    final ArrayList<GamePiece> pieces = new ArrayList<>(vPieces.length);
+    final List<GamePiece> pieces = new ArrayList<>(vPieces.length);
     for (final VASSAL.counters.GamePiece vPiece : vPieces) {
       pieces.add(new GamePiece(vPiece));
     }

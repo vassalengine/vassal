@@ -577,7 +577,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   }
 
   public List<String> getValidOwningBoards() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     final Map m = getMap();
     if (m != null) {
       l.addAll(Arrays.asList(m.getBoardPicker().getAllowableBoardNames()));
@@ -608,7 +608,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     public String[] getValidValues(AutoConfigurable target) {
       final String[] values;
       if (target instanceof SetupStack) {
-        final ArrayList<String> l = new ArrayList<>();
+        final List<String> l = new ArrayList<>();
         l.add(ANY);
         l.addAll(((SetupStack) target).getValidOwningBoards());
 
@@ -632,8 +632,8 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     public String[] getI18nKeys(AutoConfigurable target) {
       final String[] values;
       if (target instanceof SetupStack) {
-        final ArrayList<String> l = new ArrayList<>();
-        final ArrayList<String> lkey = new ArrayList<>();
+        final List<String> l = new ArrayList<>();
+        final List<String> lkey = new ArrayList<>();
         l.add(ANY_NAME);
         lkey.add(ANY);
         final Map m = ((SetupStack) target).getMap();

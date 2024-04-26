@@ -43,7 +43,7 @@ public class SavedGameUpdater {
    */
   public Properties getPieceSlotsMap() {
     final Properties p = new Properties();
-    final ArrayList<Configurable> l = new ArrayList<>();
+    final List<Configurable> l = new ArrayList<>();
     findPieceSlots(l, p);
     return p;
   }

@@ -464,7 +464,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
 
   @Override
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     l.add(PARENT_ID);
     return l;
   }

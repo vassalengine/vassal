@@ -579,7 +579,7 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
    */
   protected KeyCommand[] getKeyCommands() {
     if (commands == null) {
-      final ArrayList<KeyCommand> l = new ArrayList<>();
+      final List<KeyCommand> l = new ArrayList<>();
       final GamePiece target = Decorator.getOutermost(this);
       if (cloneKey > 0) {
         l.add(new KeyCommand(Resources.getString("Editor.Clone.clone"), KeyStroke.getKeyStroke(cloneKey, InputEvent.CTRL_DOWN_MASK), target));
@@ -1219,7 +1219,7 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
    */
   @Override
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     l.add(BASIC_NAME);
     l.add(CLICKED_X);
     l.add(CLICKED_Y);

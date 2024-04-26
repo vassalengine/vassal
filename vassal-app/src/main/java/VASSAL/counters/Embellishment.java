@@ -353,7 +353,7 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
     xOff = st.nextInt(0);
     yOff = st.nextInt(0);
 
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     while (st.hasMoreTokens()) {
       l.add(st.nextToken());
     }
@@ -618,7 +618,7 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
   @Override
   public KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
-      final ArrayList<KeyCommand> l = new ArrayList<>();
+      final List<KeyCommand> l = new ArrayList<>();
       final GamePiece outer = Decorator.getOutermost(this);
 
       if (activateCommand != null && activateCommand.length() > 0 &&
@@ -1008,7 +1008,7 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
 
   @Override
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     l.add(name + IMAGE);
     l.add(name + LEVEL);
     l.add(name + ACTIVE);
@@ -1018,7 +1018,7 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
 
   @Override
   public List<String> getPropertyList() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     if (followProperty) {
       l.add(onlyPropertyName);
     }
@@ -1552,8 +1552,8 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
     @Override
     public String getType() {
       final SequenceEncoder se = new SequenceEncoder(';');
-      final ArrayList<String> imageNames = new ArrayList<>();
-      final ArrayList<String> commonNames = new ArrayList<>();
+      final List<String> imageNames = new ArrayList<>();
+      final List<String> commonNames = new ArrayList<>();
       int i = 0;
       for (final String n : images.getImageNameList()) {
         imageNames.add(n);

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -51,7 +52,7 @@ public class ServerNode extends Node {
     while (st.hasMoreTokens()) {
       String childId = st.nextToken();
       if ("*".equals(childId)) { //$NON-NLS-1$
-        final ArrayList<Node> l = new ArrayList<>();
+        final List<Node> l = new ArrayList<>();
         for (final Node node : target) {
           l.addAll(Arrays.asList(node.getChildren()));
         }
@@ -59,7 +60,7 @@ public class ServerNode extends Node {
       }
       else if (childId.startsWith("~")) { //$NON-NLS-1$
         childId = childId.substring(1);
-        final ArrayList<Node> l = new ArrayList<>();
+        final List<Node> l = new ArrayList<>();
         for (final Node node : target) {
           for (final Node child : node.getChildren()) {
             if (!childId.equals(child.getId())) {

@@ -438,7 +438,7 @@ public class FreeRotator extends Decorator
   @Override
   public KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
-      final ArrayList<KeyCommand> l = new ArrayList<>();
+      final List<KeyCommand> l = new ArrayList<>();
       final GamePiece outer = Decorator.getOutermost(this);
       setAngleCommand = new KeyCommand(setAngleText, setAngleKey, outer, this);
       rotateCWCommand = new KeyCommand(rotateCWText, rotateCWKey, outer, this);
@@ -865,7 +865,7 @@ public class FreeRotator extends Decorator
    */
   @Override
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     l.add(name + FACING);
     l.add(name + DEGREES);
     return l;
