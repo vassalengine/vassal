@@ -237,7 +237,7 @@ public class Translate extends Decorator implements TranslatablePiece {
     if (GameModule.getGameModule().isMatSupport() && !(target instanceof Stack)) {
       final String matName = (String)outer.getProperty(Mat.MAT_NAME);
       if (matName != null && !"".equals(matName)) {
-        mat = (Mat) Decorator.getDecorator(outer, Mat.class);
+        mat = (Mat) getDecorator(outer, Mat.class);
         if (mat != null) {
           contents = mat.getContents();
           offsets  = mat.getOffsets(p.x, p.y);
@@ -286,7 +286,7 @@ public class Translate extends Decorator implements TranslatablePiece {
         if (ourMap != null) {
           for (int i = 0; i < contents.size(); i++) {
             final GamePiece piece = contents.get(i);
-            final MatCargo cargo = (MatCargo) Decorator.getDecorator(piece, MatCargo.class);
+            final MatCargo cargo = (MatCargo) getDecorator(piece, MatCargo.class);
             if (cargo != null) {
               // Get Cargo's pre-move offset from the Mat
               final Point pt = new Point(p);

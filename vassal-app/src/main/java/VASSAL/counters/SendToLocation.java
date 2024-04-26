@@ -507,7 +507,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     if (GameModule.getGameModule().isMatSupport()) {
       final String matName = (String)outer.getProperty(Mat.MAT_NAME);
       if (matName != null && !"".equals(matName)) {
-        mat = (Mat) Decorator.getDecorator(outer, Mat.class);
+        mat = (Mat) getDecorator(outer, Mat.class);
         if (mat != null) {
           final Point basePt = outer.getPosition();
           contents = mat.getContents();
@@ -577,7 +577,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       if ((offsets != null) && dest != null) {
         for (int i = 0; i < contents.size(); i++) {
           final GamePiece piece = contents.get(i);
-          final MatCargo cargo = (MatCargo) Decorator.getDecorator(piece, MatCargo.class);
+          final MatCargo cargo = (MatCargo) getDecorator(piece, MatCargo.class);
           if (cargo != null) {
 
             // Get Cargo's pre-move offset from the Mat

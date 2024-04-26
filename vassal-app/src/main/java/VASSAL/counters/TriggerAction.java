@@ -112,8 +112,9 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
   @Override
   protected KeyCommand[] myGetKeyCommands() {
     if (command.length() > 0 && key != null) {
-      final KeyCommand c =  new KeyCommand(command, key, Decorator
-          .getOutermost(this), this, matchesFilter());
+      final KeyCommand c =  new KeyCommand(
+        command, key, getOutermost(this), this, matchesFilter()
+      );
       if (getMap() == null) {
         c.setEnabled(false);
       }

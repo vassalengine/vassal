@@ -71,7 +71,6 @@ import javax.swing.Action;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
@@ -219,7 +218,7 @@ public class ModuleManagerWindow extends JFrame {
     };
     shutDownAction.putValue(Action.NAME, Resources.getString(Resources.QUIT));
 
-    setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {
       @Override
        public void windowClosing(WindowEvent e) {
@@ -758,7 +757,7 @@ public class ModuleManagerWindow extends JFrame {
     model.getColumn(SAVED_COLUMN).setCellRenderer(centerRenderer);
     model.getColumn(VASSAL_COLUMN).setCellRenderer(centerRenderer);
 
-    tree.getTableHeader().setAlignmentX(JComponent.CENTER_ALIGNMENT);
+    tree.getTableHeader().setAlignmentX(CENTER_ALIGNMENT);
 
     // Save the columns so they can be removed/restored as needed
     for (int i = 0; i < COLUMNS; i++) {
@@ -966,7 +965,7 @@ public class ModuleManagerWindow extends JFrame {
     }
 
     public void activateOrExpandNode(TreePath path) {
-      final ModuleManagerWindow mmw = ModuleManagerWindow.getInstance();
+      final ModuleManagerWindow mmw = getInstance();
       mmw.selectedNode = (MyTreeNode) path.getLastPathComponent();
 
       final AbstractInfo target =
@@ -1003,13 +1002,13 @@ public class ModuleManagerWindow extends JFrame {
     }
 
     private void createKeyBindings(JTable table) {
-      table.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Enter");
+      table.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Enter");
       table.getActionMap().put("Enter", new AbstractAction() {
         @Override
         public void actionPerformed(ActionEvent ae) {
           //do something meaningful on JTable enter pressed
 
-          final MyTree tree = ModuleManagerWindow.getInstance().tree;
+          final MyTree tree = getInstance().tree;
           final int row = tree.getSelectedRow();
 
           final TreePath path = tree.getPathForRow(row);

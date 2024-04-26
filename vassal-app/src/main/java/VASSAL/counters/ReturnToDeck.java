@@ -100,7 +100,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     }
 
     // Disable Return To Deck on Mats carrying cargo
-    final Mat mat = (Mat) Decorator.getDecorator(getOutermost(this), Mat.class);
+    final Mat mat = (Mat) getDecorator(getOutermost(this), Mat.class);
     myCommand.setEnabled(mat == null || mat.getCargoCount() == 0);
 
     return commands;
