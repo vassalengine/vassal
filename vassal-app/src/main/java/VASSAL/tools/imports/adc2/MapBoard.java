@@ -43,7 +43,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -2177,7 +2176,7 @@ public class MapBoard extends Importer {
       f = new Font(fontName, fontStyle, size);
       if (isUnderline) {
         // TODO: why doesn't underlining doesn't work? Why why why?
-        final Hashtable<TextAttribute, Object> hash = new Hashtable<>();
+        final java.util.Map<TextAttribute, Object> hash = new HashMap<>();
         hash.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
         f = f.deriveFont(hash);
       }
