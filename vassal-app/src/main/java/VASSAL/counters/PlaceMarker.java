@@ -330,7 +330,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     }
 
     // Set any Parameters in the new piece
-    c = c.append(Decorator.setDynamicProperties(
+    c = c.append(setDynamicProperties(
       parameterList,
       marker,
       getOutermost(this),
