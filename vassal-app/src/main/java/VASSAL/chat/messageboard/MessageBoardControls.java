@@ -194,7 +194,7 @@ public class MessageBoardControls {
     private Comp() {
       super(Resources.getString("Chat.message_composer"));  //$NON-NLS-1$
       setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-      setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+      setDefaultCloseOperation(HIDE_ON_CLOSE);
       setJMenuBar(MenuManager.getInstance().getMenuBarFor(this));
 
       final JTextArea msgArea = new JTextArea(15, 60);

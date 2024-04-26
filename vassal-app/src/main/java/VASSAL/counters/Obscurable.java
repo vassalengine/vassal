@@ -338,7 +338,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
 //        return myGetState();
 //      }
 //      else {
-//        return ((BasicPiece) Decorator.getInnermost(this)).getPublicProperty(key);
+//        return ((BasicPiece) getInnermost(this)).getPublicProperty(key);
 //      }
 //    }
     else {
@@ -349,7 +349,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   @Override
   public Object getLocalizedProperty(Object key) {
     if (obscuredToMe()) {
-      return ((BasicPiece) Decorator.getInnermost(this)).getLocalizedPublicProperty(key);
+      return ((BasicPiece) getInnermost(this)).getLocalizedPublicProperty(key);
     }
     else if (Properties.OBSCURED_TO_ME.equals(key)) {
       return obscuredToMe();
@@ -481,7 +481,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     if (obscuredToMe()) {
       final KeyCommand[] myC = myGetKeyCommands();
       final KeyCommand[] c = (KeyCommand[])
-        Decorator.getInnermost(this).getProperty(Properties.KEY_COMMANDS);
+        getInnermost(this).getProperty(Properties.KEY_COMMANDS);
 
       if (c == null) return myC;
       else return ArrayUtils.addAll(myC, c);

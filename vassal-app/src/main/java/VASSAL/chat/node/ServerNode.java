@@ -115,7 +115,7 @@ public class ServerNode extends Node {
   }
 
   public synchronized void registerNode(String parentPath, Node newNode) {
-    final Node newParent = Node.build(this, parentPath);
+    final Node newParent = build(this, parentPath);
     newParent.add(newNode);
     final Node module = getModule(newParent);
     if (module != null) {
@@ -133,7 +133,7 @@ public class ServerNode extends Node {
 
   public synchronized void move(Node target, String newParentPath) {
     final Node oldMod = getModule(target);
-    final Node newParent = Node.build(this, newParentPath);
+    final Node newParent = build(this, newParentPath);
     newParent.add(target);
     final Node mod = getModule(newParent);
     if (mod != null) {

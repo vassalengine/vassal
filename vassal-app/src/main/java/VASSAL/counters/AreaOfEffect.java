@@ -707,7 +707,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       se.append(offKeyConfig.getValueString());
       se.append(globallyVisibleConfig.getValueString());
 
-      return AreaOfEffect.ID + se.getValue();
+      return ID + se.getValue();
     }
   }
 

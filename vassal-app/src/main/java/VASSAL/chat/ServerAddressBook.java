@@ -385,7 +385,7 @@ public class ServerAddressBook {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      ServerAddressBook.getInstance().setCurrentServer(entry);
+      getInstance().setCurrentServer(entry);
     }
   }
 

@@ -508,7 +508,7 @@ public class MassPieceLoader {
       public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         final JLabel renderedLabel = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         final BasicNode node = (BasicNode) tree.getPathForRow(row).getLastPathComponent();
-        renderedLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        renderedLabel.setHorizontalAlignment(CENTER);
         renderedLabel.setEnabled(!node.isSkip());
         renderedLabel.setForeground(EDITABLE_COLOR);
         return renderedLabel;

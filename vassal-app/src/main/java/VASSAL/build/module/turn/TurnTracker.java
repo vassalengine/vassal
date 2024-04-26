@@ -960,12 +960,12 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
 
         nextButton = new IconButton(IconButton.PLUS_ICON, (plusButtonWidth > 0) ? plusButtonWidth : DEFAULT_SIZE);
         setNextStroke(nextListener.getNamedKeyStroke());
-        nextButton.setAlignmentY(Component.TOP_ALIGNMENT);
+        nextButton.setAlignmentY(TOP_ALIGNMENT);
         nextButton.addActionListener(e -> doNext());
 
         prevButton = new IconButton(IconButton.MINUS_ICON, (plusButtonWidth > 0) ? plusButtonWidth : DEFAULT_SIZE);
         setPrevStroke(prevListener.getNamedKeyStroke());
-        prevButton.setAlignmentY(Component.TOP_ALIGNMENT);
+        prevButton.setAlignmentY(TOP_ALIGNMENT);
         prevButton.addActionListener(e -> doPrev());
         if (fwdOnly) {
           prevButton.setEnabled(false);

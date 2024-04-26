@@ -121,7 +121,7 @@ public class Immobilized extends Decorator implements EditablePiece {
   protected static final EventFilter NEVER = evt -> true;
 
   public Immobilized() {
-    this(Immobilized.ID, null);
+    this(ID, null);
   }
 
   /** @deprecated Use {@link #Immobilized(String, GamePiece)} instead. */

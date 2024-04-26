@@ -248,7 +248,7 @@ public class Marker extends Decorator implements EditablePiece {
 
     @Override
     public String getType() {
-      return Marker.ID + propName.getValueString();
+      return ID + propName.getValueString();
     }
   }
 

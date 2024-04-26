@@ -456,7 +456,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   public Command makeAddTargetCommand(GamePiece p) {
     Command c = new NullCommand();
 
-    if (!allowSelfAttach && getOutermost(this).equals(Decorator.getOutermost(p))) {
+    if (!allowSelfAttach && getOutermost(this).equals(getOutermost(p))) {
       return c;
     }
 

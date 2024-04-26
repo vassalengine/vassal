@@ -320,7 +320,7 @@ public class MatCargo extends Decorator implements TranslatablePiece {
   public static Command findNewMat(Command c, GamePiece gp) {
     if (GameModule.getGameModule().isMatSupport()) {
       // If a cargo piece has been "sent", find it a new Mat if needed.
-      if (Boolean.TRUE.equals(gp.getProperty(MatCargo.IS_CARGO))) { //NON-NLS
+      if (Boolean.TRUE.equals(gp.getProperty(IS_CARGO))) { //NON-NLS
         final MatCargo cargo = (MatCargo) getDecorator(gp, MatCargo.class);
         if (cargo != null) {
           c = c.append(cargo.findNewMat());
@@ -524,10 +524,10 @@ public class MatCargo extends Decorator implements TranslatablePiece {
         return getOutermost(mat).getPosition().y;
       }
       else if (CURRENT_MAT_OFFSET_X.equals(key)) {
-        return getOutermost(mat).getPosition().x - Decorator.getOutermost(this).getPosition().x;
+        return getOutermost(mat).getPosition().x - getOutermost(this).getPosition().x;
       }
       else if (CURRENT_MAT_OFFSET_Y.equals(key)) {
-        return getOutermost(mat).getPosition().y - Decorator.getOutermost(this).getPosition().y;
+        return getOutermost(mat).getPosition().y - getOutermost(this).getPosition().y;
       }
       else if (CURRENT_MAT_BASIC_NAME.equals(key)) {
         return getOutermost(mat).getProperty(BASIC_NAME);

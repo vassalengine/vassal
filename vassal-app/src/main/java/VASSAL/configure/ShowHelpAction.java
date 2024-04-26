@@ -23,7 +23,6 @@ import java.awt.event.ActionEvent;
 import java.net.URL;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.ImageIcon;
 
 import VASSAL.build.module.documentation.HelpFile;
@@ -46,7 +45,7 @@ public class ShowHelpAction extends AbstractAction {
 
   public ShowHelpAction(String key, URL contents, URL iconURL) {
     this(contents, iconURL);
-    putValue(Action.NAME, Resources.getString(key));
+    putValue(NAME, Resources.getString(key));
   }
 
   public ShowHelpAction(HelpWindow helpWindow, HelpFile contents, URL iconURL) {
@@ -58,10 +57,10 @@ public class ShowHelpAction extends AbstractAction {
     this.helpWindow = helpWindow;
     this.contents = contents;
     if (iconURL != null) {
-      putValue(Action.SMALL_ICON, new ImageIcon(iconURL));
+      putValue(SMALL_ICON, new ImageIcon(iconURL));
     }
 
-    putValue(Action.NAME, Resources.getString(Resources.HELP));
+    putValue(NAME, Resources.getString(Resources.HELP));
   }
 
   @Override
