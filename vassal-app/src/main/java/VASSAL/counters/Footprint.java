@@ -122,7 +122,7 @@ public class Footprint extends MovementMarkable {
 
 
   public Footprint() {
-    super(Footprint.ID, null);
+    super(ID, null);
   }
 
   public Footprint(String type, GamePiece p) {
