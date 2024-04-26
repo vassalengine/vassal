@@ -573,7 +573,7 @@ public class HexGrid extends AbstractConfigurable
   }
 
   public void rotate(Point p) {
-    HexGrid.rotatePoint(p);
+    rotatePoint(p);
   }
 
   public void rotateIfSideways(Point p) {
@@ -834,7 +834,7 @@ public class HexGrid extends AbstractConfigurable
     ////////////////////////////////////////////////////////////////////////////
 
     // Always pass 'false' for 'sideways', since the input point has already been rotated by callers of 'hexPoint'.
-    final Area firstHex = HexGrid.getSingleHexShape(xLoc, yLoc, false, false, dx, dy);
+    final Area firstHex = getSingleHexShape(xLoc, yLoc, false, false, dx, dy);
 
     // In case the first candidate hex apparently does not contain the
     // point (apart possibly from floating-point rounding issues).
@@ -852,7 +852,7 @@ public class HexGrid extends AbstractConfigurable
       for (final var offset : hexPointRawIndexOffsets) {
 
         final Point c = hexPointCenterFromRawIndex(nx + offset.x, ny + offset.y);
-        final Area candidateHex = HexGrid.getSingleHexShape(c.x, c.y, false, false, dx, dy);
+        final Area candidateHex = getSingleHexShape(c.x, c.y, false, false, dx, dy);
 
         if (candidateHex.contains(x, y)) {
 

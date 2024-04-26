@@ -732,7 +732,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     if (board == null && map != null) {
       if (checkSelectedBoards) {
         // During configuration with no live player window, if we're drawing multiple stacks, force ghost stacks to prefer to match the active stack's board pick
-        final String wildcard = SetupStack.getUsedBoardWildcard();
+        final String wildcard = getUsedBoardWildcard();
         if (!wildcard.isEmpty()) {
           // We can't use map.getBoardByName() because Player window might not be live (in which case it will just return null)
           if (map.getBoardPicker() != null) {
@@ -861,7 +861,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 
       final Box displayPanel = Box.createHorizontalBox();
       displayPanel.add(Box.createRigidArea(new Dimension(10, 10)));
-      shouldShowOthers = new JCheckBox(Resources.getString("Editor.SetupStack.show_others"), SetupStack.isShowOthers());
+      shouldShowOthers = new JCheckBox(Resources.getString("Editor.SetupStack.show_others"), isShowOthers());
       displayPanel.add(shouldShowOthers);
       shouldShowOthers.addItemListener(e -> {
         SetupStack.setShowOthers(shouldShowOthers.isSelected());
@@ -919,7 +919,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     }
 
     public void setShowOthers(boolean show) {
-      SetupStack.showOthers = show;
+      showOthers = show;
     }
 
     public void updateCoords(String text) {
@@ -1203,12 +1203,12 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     }
 
     private void prepareOtherConfigurers() {
-      SetupStack.setUsedBoardWildcard(myBoard.getName()); //This will make "any board" stacks match our selected board
-      SetupStack.setCachedBoard(myBoard.getName());
+      setUsedBoardWildcard(myBoard.getName()); //This will make "any board" stacks match our selected board
+      setCachedBoard(myBoard.getName());
       for (final SetupStack s : otherStacks) {
         s.prepareConfigurer(myBoard);
       }
-      SetupStack.setUsedBoardWildcard("");
+      setUsedBoardWildcard("");
     }
 
     private void findOtherStacks() {

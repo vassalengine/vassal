@@ -1506,11 +1506,10 @@ public class PieceMover extends AbstractBuildable
      */
     public static DropTarget makeDropTarget(Component theComponent, int dndContants, DropTargetListener dropTargetListener) {
       if (dropTargetListener != null) {
-        DragHandler.getTheDragHandler()
+        getTheDragHandler()
                    .dropTargetListeners.put(theComponent, dropTargetListener);
       }
-      return new DropTarget(theComponent, dndContants,
-                            DragHandler.getTheDragHandler());
+      return new DropTarget(theComponent, dndContants, getTheDragHandler());
     }
 
     /**
@@ -1518,7 +1517,7 @@ public class PieceMover extends AbstractBuildable
      * @param theComponent component to remove
      */
     public static void removeDropTarget(Component theComponent) {
-      DragHandler.getTheDragHandler().dropTargetListeners.remove(theComponent);
+      getTheDragHandler().dropTargetListeners.remove(theComponent);
     }
 
     private static StackMetrics getStackMetrics(GamePiece piece) {
