@@ -393,18 +393,17 @@ public class ZipArchive implements FileArchive {
   public void close() throws IOException {
     w.lock();
     try {
-      if (closed) {
-        return;
-      }
-      else if (modified) {
-        writeToDisk();
-      }
-      else if (zipFile != null) {
-        zipFile.close();
-        zipFile = null;
+      if (!closed) {
+        if (modified) {
+          writeToDisk();
+        }
+        else if (zipFile != null) {
+          zipFile.close();
+          zipFile = null;
 
-        closed = true;
-        entries.clear();
+          closed = true;
+          entries.clear();
+        }
       }
     }
     finally {

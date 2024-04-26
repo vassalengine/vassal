@@ -984,7 +984,6 @@ public class ModuleManagerWindow extends JFrame {
             modInfo.getVassalVersion(),
             Info.getVersion()
           );
-          return;
         }
         else {
           ((ModuleInfo) target).play();
