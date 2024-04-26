@@ -409,7 +409,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
   @Override
   public Area getArea(MapShader shader) {
     Area a = null;
-    final MapShader.ShadedPiece shaded = (MapShader.ShadedPiece) Decorator.getDecorator(piece, MapShader.ShadedPiece.class);
+    final MapShader.ShadedPiece shaded = (MapShader.ShadedPiece) getDecorator(piece, MapShader.ShadedPiece.class);
     if (shaded != null) {
       a = shaded.getArea(shader);
     }

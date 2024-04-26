@@ -882,7 +882,7 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
 
       if (GameModule.getGameModule().isMatSupport()) {
         if (Boolean.TRUE.equals(p.getProperty(MatCargo.IS_CARGO))) {
-          final MatCargo cargo = (MatCargo) Decorator.getDecorator(getOutermost(p), MatCargo.class);
+          final MatCargo cargo = (MatCargo) getDecorator(getOutermost(p), MatCargo.class);
           if (cargo != null) {
             final GamePiece mat = cargo.getMat();
             if (mat != null) {

@@ -735,7 +735,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
    * return that Layer
    */
   public static Embellishment getLayerWithMatchingActivateCommand(GamePiece piece, KeyStroke stroke, boolean active) {
-    for (Embellishment layer = (Embellishment) Decorator.getDecorator(piece, Embellishment.class); layer != null; layer = (Embellishment) Decorator
+    for (Embellishment layer = (Embellishment) getDecorator(piece, Embellishment.class); layer != null; layer = (Embellishment) Decorator
       .getDecorator(layer.piece, Embellishment.class)) {
       for (int i = 0; i < layer.activateKey.length(); ++i) {
         if (stroke.equals(KeyStroke.getKeyStroke(layer.activateKey.charAt(i), layer.activateModifiers))) {

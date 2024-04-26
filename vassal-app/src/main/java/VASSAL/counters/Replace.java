@@ -64,7 +64,7 @@ public class Replace extends PlaceMarker {
 
         // If a cargo piece has been deleted remove it from any mat
         if (Boolean.TRUE.equals(outer.getProperty(MatCargo.IS_CARGO))) { //NON-NLS
-          final MatCargo cargo = (MatCargo) Decorator.getDecorator(outer, MatCargo.class);
+          final MatCargo cargo = (MatCargo) getDecorator(outer, MatCargo.class);
           if (cargo != null) {
             c = c.append(cargo.makeClearMatCommand());
           }
@@ -73,7 +73,7 @@ public class Replace extends PlaceMarker {
         // If a mat has been deleted remove any cargo from it
         final String matName = (String)outer.getProperty(Mat.MAT_NAME);
         if (matName != null && !"".equals(matName)) {
-          final Mat mat = (Mat) Decorator.getDecorator(outer, Mat.class);
+          final Mat mat = (Mat) getDecorator(outer, Mat.class);
           if (mat != null) {
             c = c.append(mat.makeRemoveAllCargoCommand());
           }
@@ -173,7 +173,7 @@ public class Replace extends PlaceMarker {
         while (candidate != null) {
 
           // Find the next trait of the same type as the Replacement trait we are working on
-          candidate = (Decorator) Decorator.getDecorator(candidate, currentMarker.getClass());
+          candidate = (Decorator) getDecorator(candidate, currentMarker.getClass());
           if (candidate != null) {
 
             // Match DP's on property name only if Copy by name option is selected

@@ -208,7 +208,7 @@ public class FreeRotator extends Decorator
   public double getCumulativeAngle() {
     double angle = getAngle();
     // Add cumulative angle of any other FreeRotator trait in this piece
-    final FreeRotator nextRotation = (FreeRotator) Decorator.getDecorator(getInner(), FreeRotator.class);
+    final FreeRotator nextRotation = (FreeRotator) getDecorator(getInner(), FreeRotator.class);
     if (nextRotation != null) {
       angle += nextRotation.getCumulativeAngle();
     }
@@ -531,7 +531,7 @@ public class FreeRotator extends Decorator
       return command;
     }
 
-    final Mat mat = (Mat) Decorator.getDecorator(outer, Mat.class);
+    final Mat mat = (Mat) getDecorator(outer, Mat.class);
     if (mat == null) {
       return command;
     }
@@ -540,7 +540,7 @@ public class FreeRotator extends Decorator
 
     // If a Mat has been rotated, make the contents orbit the center point
     for (final GamePiece piece : mat.getContents()) {
-      final MatCargo cargo = (MatCargo) Decorator.getDecorator(piece, MatCargo.class);
+      final MatCargo cargo = (MatCargo) getDecorator(piece, MatCargo.class);
       if (cargo != null) {
         // Rotate Cargo's current position to its destination
         final Point dst = new Point();

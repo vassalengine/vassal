@@ -167,7 +167,7 @@ public class Mat extends Decorator implements TranslatablePiece {
 
     contents.add(p);
 
-    final MatCargo cargo = (MatCargo)Decorator.getDecorator(getOutermost(p), MatCargo.class);
+    final MatCargo cargo = (MatCargo)getDecorator(getOutermost(p), MatCargo.class);
     if (cargo != null) {
       final GamePiece outer = getOutermost(this);
       if (cargo.getMat() != this) {
@@ -188,13 +188,13 @@ public class Mat extends Decorator implements TranslatablePiece {
     ChangeTracker ct3 = null;
 
     if ((p instanceof Decorator) && !hasCargo(p)) {
-      final GamePiece cargo = Decorator.getDecorator(getOutermost(p), MatCargo.class);
+      final GamePiece cargo = getDecorator(getOutermost(p), MatCargo.class);
       if (cargo != null) {
         final GamePiece mt = ((MatCargo)cargo).getMat();
         if ((mt != null) && (mt != getOutermost(this))) {
           ct3 = new ChangeTracker(mt);
 
-          final Mat mat = (Mat)Decorator.getDecorator(mt, Mat.class);
+          final Mat mat = (Mat)getDecorator(mt, Mat.class);
           mat.removeCargo(p);
         }
       }

@@ -139,7 +139,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
       else {
         commands = KeyCommand.NONE;
       }
-      rotator = (FreeRotator) Decorator.getDecorator(this, FreeRotator.class);
+      rotator = (FreeRotator) getDecorator(this, FreeRotator.class);
       pivotCommand.setEnabled(rotator != null);
       pivot2Command.setEnabled(rotator != null);
     }

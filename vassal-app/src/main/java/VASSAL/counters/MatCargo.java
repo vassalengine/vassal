@@ -177,7 +177,7 @@ public class MatCargo extends Decorator implements TranslatablePiece {
     }
 
     ChangeTracker ctMat = null;
-    final Mat actualMat = (Mat)Decorator.getDecorator(getOutermost(mat), Mat.class);
+    final Mat actualMat = (Mat)getDecorator(getOutermost(mat), Mat.class);
     if (actualMat != null) {
       ctMat = new ChangeTracker(actualMat);
       actualMat.removeCargo(getOutermost(this));
@@ -202,7 +202,7 @@ public class MatCargo extends Decorator implements TranslatablePiece {
   public void setMat(GamePiece mat) {
     this.mat = mat;
     if (mat != null) {
-      final GamePiece actualMat = Decorator.getDecorator(getOutermost(mat), Mat.class);
+      final GamePiece actualMat = getDecorator(getOutermost(mat), Mat.class);
       if (actualMat != null) {
         if (!((Mat)actualMat).hasCargo(getOutermost(this))) {
           ((Mat) actualMat).addCargo(getOutermost(this));
@@ -225,7 +225,7 @@ public class MatCargo extends Decorator implements TranslatablePiece {
       return makeClearMatCommand();
     }
 
-    final Mat actualMat = (Mat)Decorator.getDecorator(getOutermost(newMat), Mat.class);
+    final Mat actualMat = (Mat)getDecorator(getOutermost(newMat), Mat.class);
     if (actualMat == null) {
       return makeClearMatCommand();
     }
@@ -246,7 +246,7 @@ public class MatCargo extends Decorator implements TranslatablePiece {
       final GamePiece newMat = locateNewMat(map, pt);
 
       if (newMat != null) {
-        final Mat mat = (Mat) Decorator.getDecorator(newMat, Mat.class);
+        final Mat mat = (Mat) getDecorator(newMat, Mat.class);
         if (mat != null) {
           comm = comm.append(mat.makeAddCargoCommand(getOutermost(this)));
         }
@@ -321,7 +321,7 @@ public class MatCargo extends Decorator implements TranslatablePiece {
     if (GameModule.getGameModule().isMatSupport()) {
       // If a cargo piece has been "sent", find it a new Mat if needed.
       if (Boolean.TRUE.equals(gp.getProperty(MatCargo.IS_CARGO))) { //NON-NLS
-        final MatCargo cargo = (MatCargo) Decorator.getDecorator(gp, MatCargo.class);
+        final MatCargo cargo = (MatCargo) getDecorator(gp, MatCargo.class);
         if (cargo != null) {
           c = c.append(cargo.findNewMat());
         }
@@ -424,7 +424,7 @@ public class MatCargo extends Decorator implements TranslatablePiece {
       return 0.0;
     }
 
-    final FreeRotator mrot = (FreeRotator) Decorator.getDecorator(getOutermost(mat), FreeRotator.class);
+    final FreeRotator mrot = (FreeRotator) getDecorator(getOutermost(mat), FreeRotator.class);
     return mrot == null ? 0.0 : mrot.getAngle();
   }
 

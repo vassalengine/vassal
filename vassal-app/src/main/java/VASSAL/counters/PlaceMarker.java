@@ -218,9 +218,9 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     p.translate(xOffset, -yOffset);
     if (matchRotation) {
       final FreeRotator myRotation =
-        (FreeRotator) Decorator.getDecorator(outer, FreeRotator.class);
+        (FreeRotator) getDecorator(outer, FreeRotator.class);
       final FreeRotator markerRotation =
-        (FreeRotator) Decorator.getDecorator(marker, FreeRotator.class);
+        (FreeRotator) getDecorator(marker, FreeRotator.class);
       if (myRotation != null && markerRotation != null) {
         markerRotation.setAngle(myRotation.getAngle());
         final Point2D myPosition = getPosition().getLocation();
@@ -306,7 +306,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     if ((c != null) && GameModule.getGameModule().isMatSupport()) {
       // If a cargo piece has been placed, find it a Mat if eligible, and select it if the Mat is selected
       if (Boolean.TRUE.equals(marker.getProperty(MatCargo.IS_CARGO))) { //NON-NLS
-        final MatCargo cargo = (MatCargo) Decorator.getDecorator(marker, MatCargo.class);
+        final MatCargo cargo = (MatCargo) getDecorator(marker, MatCargo.class);
         if (cargo != null) {
           c = c.append(cargo.findNewMat());
           final GamePiece mat = cargo.getMat();
