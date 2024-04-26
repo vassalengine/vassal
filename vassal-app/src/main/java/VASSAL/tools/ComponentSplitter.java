@@ -523,7 +523,7 @@ public class ComponentSplitter {
 
         final SplitPane split = getTransverseSplit();
         if (split != null) {
-          split.showTransverseComponent(ComponentSplitter.SplitPane.this);
+          split.showTransverseComponent(this);
         }
       }
     }
