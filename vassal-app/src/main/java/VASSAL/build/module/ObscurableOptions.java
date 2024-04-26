@@ -70,17 +70,17 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
     GameModule.getGameModule().getPrefs().addOption(c);
     c.addPropertyChangeListener(evt -> {
       if (Boolean.TRUE.equals(evt.getNewValue())) {
-        ObscurableOptions.getInstance().allow(GameModule.getActiveUserId());
+        getInstance().allow(GameModule.getActiveUserId());
         final String side = PlayerRoster.getMySide();
         if (side != null) {
-          ObscurableOptions.getInstance().allow(side);
+          getInstance().allow(side);
         }
       }
       else {
-        ObscurableOptions.getInstance().disallow(GameModule.getActiveUserId());
+        getInstance().disallow(GameModule.getActiveUserId());
         final String side = PlayerRoster.getMySide();
         if (side != null) {
-          ObscurableOptions.getInstance().disallow(side);
+          getInstance().disallow(side);
         }
       }
       GameModule.getGameModule()
@@ -230,8 +230,8 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
 
     @Override
     protected void executeCommand() {
-      ObscurableOptions.getInstance().override = null;
-      ObscurableOptions.getInstance().allowed = this.allowed;
+      getInstance().override = null;
+      getInstance().allowed = this.allowed;
     }
 
     @Override

@@ -33,7 +33,6 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
-import javax.swing.SwingConstants;
 
 import VASSAL.tools.image.ImageUtils;
 
@@ -123,8 +122,8 @@ public class SymbolConfigurer extends StringEnumConfigurer {
 
         setIcon(new ImageIcon(img));
         setText(symbolMap.get(value));
-        this.setHorizontalTextPosition(SwingConstants.LEFT);
-        this.setHorizontalAlignment(SwingConstants.RIGHT);
+        this.setHorizontalTextPosition(LEFT);
+        this.setHorizontalAlignment(RIGHT);
         setFont(list.getFont());
 
         return this;

@@ -385,7 +385,7 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable implement
      */
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new IconConfigurer(key, name, ((AbstractToolbarItem) c).getLaunchButton().getAttributeValueString(AbstractToolbarItem.ICON));
+      return new IconConfigurer(key, name, ((AbstractToolbarItem) c).getLaunchButton().getAttributeValueString(ICON));
     }
   }
 

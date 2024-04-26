@@ -191,7 +191,7 @@ public class WizardSupport {
       }
     }
     else {
-      final Boolean showWizard = (Boolean) Prefs.getGlobalPrefs().getValue(WizardSupport.WELCOME_WIZARD_KEY);
+      final Boolean showWizard = (Boolean) Prefs.getGlobalPrefs().getValue(WELCOME_WIZARD_KEY);
       if (Boolean.TRUE.equals(showWizard) && g.shutDown()) {
         System.exit(0);
       }
@@ -368,7 +368,7 @@ public class WizardSupport {
       final JRadioButton b = new JRadioButton(Resources.getString("WizardSupport.LoadSavedGame")); //$NON-NLS-1$
       b.addActionListener(e -> {
         GameModule.getGameModule().getPlayerRoster().reset();
-        settings.put(WizardSupport.ACTION_KEY, LOAD_GAME_ACTION);
+        settings.put(ACTION_KEY, LOAD_GAME_ACTION);
         final Wizard wiz = new BranchingWizard(new LoadSavedGamePanels(), POST_LOAD_GAME_WIZARD).createWizard();
         settings.put(POST_INITIAL_STEPS_WIZARD, wiz);
         controller.setForwardNavigationMode(WizardController.MODE_CAN_CONTINUE);
@@ -381,7 +381,7 @@ public class WizardSupport {
       final JRadioButton b = new JRadioButton(Resources.getString("WizardSupport.PlayOnline")); //$NON-NLS-1$
       b.addActionListener(e -> {
         GameModule.getGameModule().getPlayerRoster().reset();
-        settings.put(WizardSupport.ACTION_KEY, PLAY_ONLINE_ACTION);
+        settings.put(ACTION_KEY, PLAY_ONLINE_ACTION);
         settings.put(POST_INITIAL_STEPS_WIZARD, null);
         controller.setForwardNavigationMode(GameModule.getGameModule().isRealName() ? WizardController.MODE_CAN_FINISH : WizardController.MODE_CAN_CONTINUE);
         controller.setProblem(null);
@@ -396,7 +396,7 @@ public class WizardSupport {
         GameModule.getGameModule().getGameState().setup(false);
         GameModule.getGameModule().getGameState().freshenStartupGlobalKeyCommands(GameModule.getGameModule());
         GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode. NEW_GAME);
-        settings.put(WizardSupport.ACTION_KEY, PLAY_OFFLINE_ACTION);
+        settings.put(ACTION_KEY, PLAY_OFFLINE_ACTION);
         final WizardPanelProvider panels = createPlayOfflinePanels();
         if (panels == null) {
           controller.setForwardNavigationMode(WizardController.MODE_CAN_FINISH);

@@ -512,7 +512,7 @@ public class MultiRoll extends JDialog implements ActionListener {
 
     StateButton(String s, boolean b) {
       super(s);
-      setHorizontalAlignment(JButton.CENTER);
+      setHorizontalAlignment(CENTER);
       setState(b);
 
     }

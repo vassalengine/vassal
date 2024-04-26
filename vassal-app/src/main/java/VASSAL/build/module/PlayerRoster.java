@@ -1180,7 +1180,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         final PlayerRoster pr = (PlayerRoster) target;
         for (final String language : Localization.getInstance().getTranslationList()) {
           final Translation translation = Localization.getInstance().getTranslation(language);
-          final String translatedSides = translation.translate(pr.getI18nData().getPrefix() + PlayerRoster.SIDES);
+          final String translatedSides = translation.translate(pr.getI18nData().getPrefix() + SIDES);
           if (translatedSides != null && !translatedSides.isEmpty()) {
             final int translatedSideCount = translatedSides.split(",").length;
             final int untranslatedSideCount = pr.sides.size();

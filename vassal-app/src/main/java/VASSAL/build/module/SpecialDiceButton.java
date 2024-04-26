@@ -318,7 +318,7 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
     else if (WINDOW_TITLE_RESULT_FORMAT.equals(name)) {
       return () -> reportResultInWindow;
     }
-    else if (DoActionButton.REPORT_FORMAT.equals(name) || DoActionButton.DO_REPORT.equals(name)) {
+    else if (REPORT_FORMAT.equals(name) || DO_REPORT.equals(name)) {
       return () -> false;
     }
     else
@@ -479,7 +479,7 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
     else if (DESCRIPTION.equals(key)) {
       description = (String)o;
     }
-    else if (DoActionButton.DO_REPORT.equals(key)) {
+    else if (DO_REPORT.equals(key)) {
       doReport = false; // Always false
     }
     else {
@@ -519,7 +519,7 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
     else if (DESCRIPTION.equals(key)) {
       return description;
     }
-    else if (DoActionButton.DO_REPORT.equals(key)) {
+    else if (DO_REPORT.equals(key)) {
       return String.valueOf(false); // Always false
     }
     else {

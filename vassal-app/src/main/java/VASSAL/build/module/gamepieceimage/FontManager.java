@@ -19,7 +19,6 @@ package VASSAL.build.module.gamepieceimage;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
-import VASSAL.build.Configurable;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.i18n.Resources;
@@ -128,7 +127,7 @@ public class FontManager extends AbstractConfigurable {
       final FontStyle def = (FontStyle) b;
       fontStyles.put(def.getConfigureName(), def);
       def.addPropertyChangeListener(evt -> {
-        if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
+        if (NAME_PROPERTY.equals(evt.getPropertyName())) {
           fontStyles.remove(evt.getOldValue());
           fontStyles.put((String) evt.getNewValue(),
                          (FontStyle) evt.getSource());

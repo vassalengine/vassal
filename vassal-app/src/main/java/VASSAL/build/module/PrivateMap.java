@@ -112,7 +112,7 @@ public class PrivateMap extends Map {
         surrogate = null;
       }
       else {
-        for (final Map m : Map.getMapList()) {
+        for (final Map m : getMapList()) {
           if (m.getMapName().equals(value)) {
             surrogate = m;
             break;

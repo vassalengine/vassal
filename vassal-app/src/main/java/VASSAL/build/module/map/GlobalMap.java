@@ -403,8 +403,8 @@ public class GlobalMap implements AutoConfigurable,
     private static final long serialVersionUID = 1L;
 
     public GlobalMapScrollPane(Component view) {
-      super(view, ScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                  ScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+      super(view, VERTICAL_SCROLLBAR_AS_NEEDED,
+                  HORIZONTAL_SCROLLBAR_AS_NEEDED);
     }
 
     /**
