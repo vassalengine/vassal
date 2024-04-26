@@ -476,7 +476,7 @@ public abstract class EditorWindow extends JFrame {
   protected void saver(final Runnable save) {
     final ValidationReport report = new ValidationReport();
     GameModule.getGameModule().validate(GameModule.getGameModule(), report);
-    if (report.getWarnings().size() == 0) {
+    if (report.getWarnings().isEmpty()) {
       save.run();
     }
     else {

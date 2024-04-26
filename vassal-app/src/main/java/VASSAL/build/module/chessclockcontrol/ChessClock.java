@@ -990,7 +990,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     public String[] getValidValues(AutoConfigurable target) {
       final PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
       final List<String> sides = new ArrayList<>(r.getSides());
-      if (r.getSides().size() == 0) {
+      if (r.getSides().isEmpty()) {
         sides.add(GENERIC);
       }
       return sides.toArray(new String[0]);
@@ -1003,7 +1003,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
       for (final String s : r.getSides()) {
         sides.add(r.translateSide(s));
       }
-      if (r.getSides().size() == 0) {
+      if (r.getSides().isEmpty()) {
         sides.add(GENERIC);
       }
       return sides.toArray(new String[0]);
