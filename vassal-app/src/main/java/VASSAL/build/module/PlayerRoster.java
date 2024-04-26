@@ -668,12 +668,8 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     );
 
     final int i = players.indexOf(newPlayerInfo);
-    if (i != -1) {
-      return !OBSERVER.equals(players.get(i).getSide());
-    }
-
-    // Step is not finished
-    return false;
+    // true if step is finished
+    return i != -1 && !OBSERVER.equals(players.get(i).getSide());
   }
 
   /**

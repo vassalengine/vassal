@@ -1343,15 +1343,9 @@ public class Inventory extends AbstractToolbarItem
       if (piece.getMap() == null)
         return false;
 
-      // Check for marker
-      if (filter != null) {
-        return filter.accept(piece);
-      }
-
-      // Default Accept piece
-      return true;
+      // Accept on no filter or check for marker
+      return filter == null || filter.accept(piece);
     }
-
   }
 
   /**

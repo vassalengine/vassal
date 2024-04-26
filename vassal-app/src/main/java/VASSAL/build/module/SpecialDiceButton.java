@@ -412,11 +412,9 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
     if (o instanceof Boolean) {
       return (Boolean) o;
     }
-    else if (o instanceof String) {
-      return "true".equals(o); //$NON-NLS-1$
+    else {
+      return o instanceof String && "true".equals(o); //$NON-NLS-1$
     }
-    else
-      return false;
   }
 
   @Override
