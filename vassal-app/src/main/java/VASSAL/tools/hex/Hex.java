@@ -38,7 +38,7 @@ public class Hex {
     return new Hex(-r, -s, -q);
   }
 
-  public static final List<Hex> directions = new ArrayList<Hex>() {
+  public static final List<Hex> directions = new ArrayList<>() {
     {
       add(new Hex(1, 0, -1));
       add(new Hex(1, -1, 0));
@@ -57,7 +57,7 @@ public class Hex {
     return add(direction(direction));
   }
 
-  public static final List<Hex> diagonals = new ArrayList<Hex>() {
+  public static final List<Hex> diagonals = new ArrayList<>() {
     {
       add(new Hex(2, -1, -1));
       add(new Hex(1, -2, 1));

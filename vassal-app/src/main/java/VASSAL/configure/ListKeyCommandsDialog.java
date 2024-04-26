@@ -168,7 +168,7 @@ public class ListKeyCommandsDialog extends JDialog {
       }
     });
 
-    final TableRowSorter trs = new TableRowSorter(tmod);
+    final TableRowSorter trs = new TableRowSorter<>(tmod);
     table.setRowSorter(trs);
     trs.setSortsOnUpdates(true);
 
