@@ -141,9 +141,9 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
       final List<KeyStroke> strokes = new ArrayList<>();
 
       // Maps instances of KeyCommandSubMenu to corresponding JMenu
-      final HashMap<KeyCommandSubMenu, JMenu> subMenus = new HashMap<>();
+      final java.util.Map<KeyCommandSubMenu, JMenu> subMenus = new HashMap<>();
       // Maps name to a list of commands with that name
-      final HashMap<String, ArrayList<JMenuItem>> commandNames = new HashMap<>();
+      final java.util.Map<String, List<JMenuItem>> commandNames = new HashMap<>();
 
       // If a deck has only one menu item, and it's one of the ones that just fires off a choose-from-here dialog, then skip directly to the dialog
       if (target instanceof Deck) {

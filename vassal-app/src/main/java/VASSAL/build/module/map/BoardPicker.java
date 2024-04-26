@@ -71,6 +71,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -247,7 +248,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
     if (possibleBoards.isEmpty()) {
       report.addWarning(Resources.getString("BoardPicker.must_define", ConfigureTree.getConfigureName(map), Resources.getString("Editor.Map.component_type"))); //$NON-NLS-1$
     }
-    final HashSet<String> names = new HashSet<>();
+    final Set<String> names = new HashSet<>();
     for (final Board b : possibleBoards) {
       if (names.contains(b.getName())) {
         report.addWarning(Resources.getString("BoardPicker.more_than_one", b.getName(), ConfigureTree.getConfigureName(map))); //$NON-NLS-1$
