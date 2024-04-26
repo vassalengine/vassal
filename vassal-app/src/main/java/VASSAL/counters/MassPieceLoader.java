@@ -1350,8 +1350,8 @@ public class MassPieceLoader {
             newLength++;
           }
         }
-        String[] imageNameTmp = new String[newLength];
-        String[] commonNameTmp = new String[newLength];
+        final String[] imageNameTmp = new String[newLength];
+        final String[] commonNameTmp = new String[newLength];
         for (int i = 0; i < imageName.length; i++) {
           if (imageName[i] != null) {
             imageNameTmp[j] = imageName[i];
