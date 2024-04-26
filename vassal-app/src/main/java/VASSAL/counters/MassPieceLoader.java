@@ -1178,7 +1178,7 @@ public class MassPieceLoader {
    *
    */
   private static class LevelNode extends BasicNode {
-    int levelNumber;
+    final int levelNumber;
 
     public LevelNode(String name, String imageName, int level) {
       super(name, imageName);

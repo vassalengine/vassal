@@ -62,8 +62,8 @@ public class ZipArchive implements FileArchive {
   private boolean closed = true;
 
   private static class Entry {
-    public ZipEntry ze;
-    public File file;
+    public final ZipEntry ze;
+    public final File file;
 
     public Entry(ZipEntry ze, File file) {
       this.ze = ze;

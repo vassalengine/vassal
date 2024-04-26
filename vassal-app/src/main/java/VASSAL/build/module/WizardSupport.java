@@ -789,7 +789,7 @@ public class WizardSupport {
         fileConfig = new FileConfigurer(null,
           Resources.getString("WizardSupport.SavedGame"), GameModule.getGameModule().getGameState().getSavedGameDirectoryPreference()); //$NON-NLS-1$
         fileConfig.addPropertyChangeListener(new PropertyChangeListener() {
-          private Set<File> processing = new HashSet<>();
+          private final Set<File> processing = new HashSet<>();
 
           @Override
           public void propertyChange(PropertyChangeEvent evt) {

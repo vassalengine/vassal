@@ -463,9 +463,9 @@ public class MapBoard extends Importer {
    * the default order of line definitions for hex sides and hex lines.
    */
   private static class Hex {
-    List<Line> hexLines = new ArrayList<>();
+    final List<Line> hexLines = new ArrayList<>();
 
-    List<Line> hexSides = new ArrayList<>();
+    final List<Line> hexSides = new ArrayList<>();
   }
 
   /**

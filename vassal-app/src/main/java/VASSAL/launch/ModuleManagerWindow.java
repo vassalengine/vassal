@@ -1863,8 +1863,8 @@ public class ModuleManagerWindow extends JFrame {
    */
   private class GameFolderInfo extends AbstractInfo {
     protected String comment;
-    protected ModuleInfo moduleInfo;
-    protected long dtm;
+    protected final ModuleInfo moduleInfo;
+    protected final long dtm;
 
     public GameFolderInfo(File f, ModuleInfo m) {
       super(f, openGameFolderIcon, closedGameFolderIcon);
@@ -1978,7 +1978,7 @@ public class ModuleManagerWindow extends JFrame {
    */
   private class SaveFileInfo extends AbstractInfo {
 
-    protected GameFolderInfo folderInfo;  // Owning Folder
+    protected final GameFolderInfo folderInfo;  // Owning Folder
     protected SaveMetaData metadata;      // Save file metadata
 
     public SaveFileInfo(File f, GameFolderInfo folder) {
