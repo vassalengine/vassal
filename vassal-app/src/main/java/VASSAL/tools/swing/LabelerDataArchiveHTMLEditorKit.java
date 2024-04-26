@@ -75,7 +75,7 @@ public class LabelerDataArchiveHTMLEditorKit extends DataArchiveHTMLEditorKit {
   }
 
   private class LabelerDataArchiveImageView extends DataArchiveImageView {
-    protected float valign;
+    protected final float valign;
 
     public LabelerDataArchiveImageView(Element e) {
       super(e);

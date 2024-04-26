@@ -706,7 +706,7 @@ public class ServerAddressBook {
 
     private class ServerConfig {
       protected JComponent configControls;
-      protected JTextField description = new JTextField();
+      protected final JTextField description = new JTextField();
       protected AddressBookEntry entry;
       boolean enabled;
 

@@ -323,7 +323,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   }
 
   private static class MultiplayerStateCommand extends Command {
-    boolean state;
+    final boolean state;
 
     MultiplayerStateCommand(boolean state) {
       this.state = state;
