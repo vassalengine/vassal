@@ -2436,7 +2436,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
                     && !searchParameters.isMatchKeys() && !searchParameters.isMatchMenus() && !searchParameters.isMatchMessages()) {
               searchParameters.setMatchNames(true);
               names.setSelected(true);
-              ConfigureTree.chat(Resources.getString("Editor.search_all_off"));
+              chat(Resources.getString("Editor.search_all_off"));
             }
           }
 

@@ -1504,7 +1504,7 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
       menuLabel.setVisible(labelsVisible);
       keyLabel.setVisible(labelsVisible);
 
-      Decorator.repack(controls);
+      repack(controls);
     }
 
     private void updateLevelName() {

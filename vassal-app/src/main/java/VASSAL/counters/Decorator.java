@@ -371,7 +371,7 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
     }
 
     Command c = new NullCommand();
-    for (final GamePiece p : Decorator.getDecorators(piece, DynamicProperty.class)) {
+    for (final GamePiece p : getDecorators(piece, DynamicProperty.class)) {
       // Exclude subclasses of DynamicProperty
       if (p.getClass().equals(DynamicProperty.class)) {
         final DynamicProperty dp = (DynamicProperty) p;
