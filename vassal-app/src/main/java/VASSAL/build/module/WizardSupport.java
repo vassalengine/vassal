@@ -35,6 +35,7 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.SplashScreen;
 import VASSAL.tools.WarningDialog;
 import VASSAL.tools.image.ImageUtils;
+
 import net.miginfocom.swing.MigLayout;
 import org.netbeans.api.wizard.WizardDisplayer;
 import org.netbeans.spi.wizard.Wizard;
@@ -155,7 +156,7 @@ public class WizardSupport {
     final GameModule g = GameModule.getGameModule();
     final WizardBranchController c = createWelcomeWizard();
     final Wizard welcomeWizard = c.createWizard();
-    final HashMap<String, Wizard> props = new HashMap<>();
+    final Map<String, Wizard> props = new HashMap<>();
     props.put(WELCOME_WIZARD_KEY, welcomeWizard);
 
     Action help = null;

@@ -194,7 +194,7 @@ public class ServerNode extends Node {
 
     @Override
     public void run() {
-      final HashSet<Node> s = new HashSet<>();
+      final Set<Node> s = new HashSet<>();
       synchronized (modules) {
         s.addAll(modules);
       }

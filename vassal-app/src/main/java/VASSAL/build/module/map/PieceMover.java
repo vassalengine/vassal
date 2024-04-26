@@ -884,7 +884,7 @@ public class PieceMover extends AbstractBuildable
     // location. There is potentially a piece (stack) for each Game Piece Layer,
     // since stacks are only formed from pieces at the same visual Layer. See
     // LayeredPieceCollection for further details on visual layers.
-    final HashMap<Point, List<GamePiece>> mergeTargets = new HashMap<>();
+    final java.util.Map<Point, List<GamePiece>> mergeTargets = new HashMap<>();
 
     // Split the pieces in the DragBuffer into types
     final List<GamePiece> otherPieces = new ArrayList<>();

@@ -561,7 +561,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
    * @return Non-Container contents
    */
   private Component[] getComponents(Component container) {
-    ArrayList<Component> list;
+    List<Component> list;
 
     try {
       list = new ArrayList<>(Arrays.asList(
