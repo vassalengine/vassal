@@ -196,10 +196,11 @@ public class Hideable extends Decorator implements TranslatablePiece {
 
   @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
-    if (invisibleToMe()) {
+    if (!invisibleToMe()) {
       return;
     }
-    else if (invisibleToOthers()) {
+
+    if (invisibleToOthers()) {
       final Graphics2D g2d = (Graphics2D) g;
 
       if (bgColor != null) {
