@@ -60,7 +60,7 @@ public class Replace extends PlaceMarker {
     }
     else {
       if (GameModule.getGameModule().isMatSupport()) {
-        final GamePiece outer = Decorator.getOutermost(this);
+        final GamePiece outer = getOutermost(this);
 
         // If a cargo piece has been deleted remove it from any mat
         if (Boolean.TRUE.equals(outer.getProperty(MatCargo.IS_CARGO))) { //NON-NLS
@@ -81,7 +81,7 @@ public class Replace extends PlaceMarker {
       }
 
       Command remove = GameModule.getGameModule().getGameState().getAttachmentManager().removeAttachments(this);
-      remove = remove.append(new RemovePiece(Decorator.getOutermost(this)));
+      remove = remove.append(new RemovePiece(getOutermost(this)));
       remove.execute();
       c.append(remove);
     }
@@ -140,7 +140,7 @@ public class Replace extends PlaceMarker {
         matchTraits(this, marker);
       }
       else {
-        matchTraits(Decorator.getOutermost(this), marker);
+        matchTraits(getOutermost(this), marker);
       }
     }
     return marker;

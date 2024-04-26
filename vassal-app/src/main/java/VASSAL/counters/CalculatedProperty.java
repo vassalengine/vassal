@@ -215,7 +215,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
    * @return value
    */
   protected String evaluate() {
-    return expression.tryEvaluate(Decorator.getOutermost(this), this, "Editor.CalculatedProperty.expression");
+    return expression.tryEvaluate(getOutermost(this), this, "Editor.CalculatedProperty.expression");
   }
 
 
@@ -255,7 +255,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
       nameConfig = new StringConfigurer(piece.name);
       box.add("Editor.CalculatedProperty.property_name", nameConfig);
 
-      expressionConfig = new BeanShellExpressionConfigurer(piece.getExpression(), Decorator.getOutermost(piece));
+      expressionConfig = new BeanShellExpressionConfigurer(piece.getExpression(), getOutermost(piece));
       expressionConfig.setContext((AbstractBuildable) null);
       box.add("Editor.CalculatedProperty.expression", expressionConfig);
 

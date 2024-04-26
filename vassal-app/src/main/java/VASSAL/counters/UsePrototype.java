@@ -153,7 +153,7 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
 
           prototype = PieceCloner.getInstance().clonePiece(expandedPrototype);
           final Decorator outer = (Decorator)
-            Decorator.getInnermost(prototype).getProperty(Properties.OUTER);
+            getInnermost(prototype).getProperty(Properties.OUTER);
           if (outer != null) { // Will be null for an empty prototype
             outer.setInner(piece);
             prototype.setProperty(Properties.OUTER, this);

@@ -162,7 +162,7 @@ public class BorderOutline extends Decorator implements TranslatablePiece {
 
   protected boolean checkProperty(String name) {
     if ((name != null) && !name.isEmpty()) {
-      final Object propValue = Decorator.getOutermost(this).getProperty(name);
+      final Object propValue = getOutermost(this).getProperty(name);
       if (propValue == null) {
         return false;
       }

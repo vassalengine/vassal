@@ -81,7 +81,7 @@ public class Delete extends Decorator implements TranslatablePiece {
   @Override
   protected KeyCommand[] myGetKeyCommands() {
     if (keyCommands == null) {
-      deleteCommand = new KeyCommand(commandName, key, Decorator.getOutermost(this), this);
+      deleteCommand = new KeyCommand(commandName, key, getOutermost(this), this);
       if (commandName.length() > 0 && key != null && ! key.isNull()) {
         keyCommands = new KeyCommand[]{deleteCommand};
       }
@@ -104,7 +104,7 @@ public class Delete extends Decorator implements TranslatablePiece {
     Command c1 = null;
     myGetKeyCommands();
     if (deleteCommand.matches(stroke)) {
-      final GamePiece outer = Decorator.getOutermost(this);
+      final GamePiece outer = getOutermost(this);
       if (getParent() != null) {
         GamePiece next = getParent().getPieceBeneath(outer);
         if (next == null)
@@ -140,7 +140,7 @@ public class Delete extends Decorator implements TranslatablePiece {
         }
       }
 
-      c = putOldProperties(Decorator.getOutermost(this));
+      c = putOldProperties(getOutermost(this));
       c = c.append(GameModule.getGameModule().getGameState().getAttachmentManager().removeAttachments(outer));
       c = c.append(new RemovePiece(outer));
 

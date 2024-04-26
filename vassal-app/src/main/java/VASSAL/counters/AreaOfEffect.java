@@ -160,7 +160,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     locallyActive = alwaysActive;
     activateCommand = st.nextToken(Resources.getString("Editor.AreaOfEffect.show_area"));
     activateKey = st.nextNamedKeyStroke(null);
-    keyCommand = new KeyCommand(activateCommand, activateKey, Decorator.getOutermost(this), this);
+    keyCommand = new KeyCommand(activateCommand, activateKey, getOutermost(this), this);
     mapShaderName = st.nextToken("");
     if (mapShaderName.length() == 0) {
       mapShaderName = null;
@@ -171,10 +171,10 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     name = st.nextToken("");
     onMenuText = st.nextToken("");
     onKey = st.nextNamedKeyStroke(null);
-    onKeyCommand = new KeyCommand(onMenuText, onKey, Decorator.getOutermost(this), this);
+    onKeyCommand = new KeyCommand(onMenuText, onKey, getOutermost(this), this);
     offMenuText = st.nextToken("");
     offKey = st.nextNamedKeyStroke(null);
-    offKeyCommand = new KeyCommand(offMenuText, offKey, Decorator.getOutermost(this), this);
+    offKeyCommand = new KeyCommand(offMenuText, offKey, getOutermost(this), this);
     globallyVisible = st.nextBoolean(true);
     shader = null;
     commands = null;
@@ -332,7 +332,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     }
     else {
       final String r =
-        (String) Decorator.getOutermost(this).getProperty(radiusMarker);
+        (String) getOutermost(this).getProperty(radiusMarker);
       try {
         return Integer.parseInt(r);
       }

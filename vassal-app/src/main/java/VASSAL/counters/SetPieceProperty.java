@@ -269,7 +269,7 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
         if (propName.equals(currentDP.getKey())) {
           if ((newValue == null) || !(changer instanceof PropertyPrompt)) {
             currentDPTarget = currentDP;
-            final String userValue = changer.getNewValue(currentDP, this, Decorator.getOutermost(this));
+            final String userValue = changer.getNewValue(currentDP, this, getOutermost(this));
 
             // A changer only returns null if the user pressed cancel in a Prompt or List dialog.
             // This is callback, so just record that cancel has been pressed and get out of here.
@@ -302,14 +302,14 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
    */
   @Override
   public Command myKeyEvent(KeyStroke stroke) {
-    final GamePiece outer = Decorator.getOutermost(this);
+    final GamePiece outer = getOutermost(this);
     globalSetter.setPropertySource(outer); // Doing this here ensures trait is linked into GamePiece before finding source
 
     Command comm = new NullCommand();
     for (final DynamicKeyCommand keyCommand : keyCommands) {
       if (keyCommand.matches(stroke)) {
         // Evaluate the property name expression & initialize the context information for makeSetTargetCommand
-        propName = (new FormattedString(key)).getText(Decorator.getOutermost(this), this, "Editor.SetPieceProperty.property_name");
+        propName = (new FormattedString(key)).getText(getOutermost(this), this, "Editor.SetPieceProperty.property_name");
         changer  = createRemotePropertyChanger(keyCommand.propChanger);
         newValue = null;
         cancelled = false;
@@ -322,7 +322,7 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
         if (restrictRange) {
           int r = range;
           if (!fixedRange) {
-            final String rangeValue = (String) Decorator.getOutermost(this).getProperty(rangeProperty);
+            final String rangeValue = (String) getOutermost(this).getProperty(rangeProperty);
             try {
               r = Integer.parseInt(rangeValue);
             }

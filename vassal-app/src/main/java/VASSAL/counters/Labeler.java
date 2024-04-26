@@ -253,7 +253,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       }
       try {
         RecursionLimiter.startExecution(this);
-        result = nameFormat.getText(Decorator.getOutermost(this), this, "Editor.TextLabel.name_format");
+        result = nameFormat.getText(getOutermost(this), this, "Editor.TextLabel.name_format");
       }
       catch (RecursionLimitException e) {
         RecursionLimiter.infiniteLoop(e);
@@ -275,7 +275,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
         new FormattedString(getTranslation(nameFormat.getFormat()));
       f.setProperty(PIECE_NAME, piece.getLocalizedName());
       f.setProperty(LABEL, getLocalizedLabel());
-      return f.getLocalizedText(Decorator.getOutermost(this), this, "Editor.TextLabel.name_format");
+      return f.getLocalizedText(getOutermost(this), this, "Editor.TextLabel.name_format");
     }
   }
 
@@ -658,13 +658,13 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   }
 
   public String getLabel() {
-    return labelFormat.getText(Decorator.getOutermost(this), this, "Editor.TextLabel.label_text");
+    return labelFormat.getText(getOutermost(this), this, "Editor.TextLabel.label_text");
   }
 
   public String getLocalizedLabel() {
     final FormattedString f =
       new FormattedString(getTranslation(labelFormat.getFormat()));
-    return f.getLocalizedText(Decorator.getOutermost(this), this, "Editor.TextLabel.label_text");
+    return f.getLocalizedText(getOutermost(this), this, "Editor.TextLabel.label_text");
   }
 
   @Override
@@ -745,7 +745,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   @Override
   public KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
-      menuKeyCommand = new KeyCommand(menuCommand, labelKey, Decorator.getOutermost(this), this);
+      menuKeyCommand = new KeyCommand(menuCommand, labelKey, getOutermost(this), this);
       if (labelKey == null
         || labelKey.isNull()
         || menuCommand == null

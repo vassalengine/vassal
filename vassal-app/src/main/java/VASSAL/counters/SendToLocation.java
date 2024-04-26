@@ -197,8 +197,8 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
   @Override
   protected KeyCommand[] myGetKeyCommands() {
     if (command == null) {
-      sendCommand = new KeyCommand(commandName, key, Decorator.getOutermost(this), this);
-      backCommand = new KeyCommand(backCommandName, backKey, Decorator.getOutermost(this), this);
+      sendCommand = new KeyCommand(commandName, key, getOutermost(this), this);
+      backCommand = new KeyCommand(backCommandName, backKey, getOutermost(this), this);
       final List<KeyCommand> l = new ArrayList<>();
       if (commandName.length() > 0 && key != null && !key.isNull()) {
         l.add(sendCommand);
@@ -468,7 +468,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
 
 
   private Point getSendLocation() {
-    final GamePiece outer = Decorator.getOutermost(this);
+    final GamePiece outer = getOutermost(this);
 
     // Do pre-evaluation of $...$ expressions for source/target matching
     final FormattedStringExpression props = new FormattedStringExpression(propertyFilter.getExpression());
@@ -495,7 +495,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       return null;
     }
 
-    final GamePiece outer = Decorator.getOutermost(this);
+    final GamePiece outer = getOutermost(this);
     final Mat mat;
     List<GamePiece> contents = null;
     List<Point> offsets = null;

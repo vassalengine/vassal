@@ -208,7 +208,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     // No need to re-insert pieces in Decks, it causes problems if they are NO_STACK
     if (map != null && ! (getParent() instanceof Deck)) {
 
-      final GamePiece outer = Decorator.getOutermost(this);
+      final GamePiece outer = getOutermost(this);
       if (parent == null) {
         final Point pos = getPosition();
         map.removePiece(outer);
@@ -241,7 +241,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
 
   private String formatValue(String value) {
     format.setFormat(value);
-    return format.getText(Decorator.getOutermost(this), this, "Editor.value");
+    return format.getText(getOutermost(this), this, "Editor.value");
   }
 
   @Override
@@ -422,7 +422,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
 
   @Override
   public PropertySource getPropertySource() {
-    return Decorator.getOutermost(this);
+    return getOutermost(this);
   }
 
   @Override
@@ -587,7 +587,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
         new DynamicKeyCommand(
           Resources.getString("Editor.DynamicProperty.change_value"),
           NamedKeyStroke.of('V', InputEvent.CTRL_DOWN_MASK),
-          Decorator.getOutermost(target),
+          getOutermost(target),
           target,
           new PropertyPrompt(target, Resources.getString("Editor.DynamicProperty.change_value_of", target.getKey()))));
 

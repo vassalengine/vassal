@@ -393,7 +393,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
   protected void checkPropertyLevel() {
     if (!followProperty || propertyName.length() == 0) return;
 
-    final Object propertyValue = Decorator.getOutermost(this).getProperty(propertyName);
+    final Object propertyValue = getOutermost(this).getProperty(propertyName);
     final String val = propertyValue == null ? String.valueOf(firstLevelValue) : String.valueOf(propertyValue);
 
     try {
@@ -412,7 +412,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
   public KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
       final List<KeyCommand> l = new ArrayList<>();
-      final GamePiece outer = Decorator.getOutermost(this);
+      final GamePiece outer = getOutermost(this);
       if (activateCommand.length() > 0 && activateKey.length() > 0) {
         final KeyCommand k = new KeyCommand(activateCommand,
           KeyStroke.getKeyStroke(activateKey.charAt(0), activateModifiers),
@@ -508,7 +508,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
         if (tracker == null) {
           tracker = new ChangeTracker(this);
         }
-        final GamePiece outer = Decorator.getOutermost(this);
+        final GamePiece outer = getOutermost(this);
         final String levelText = resetLevel.getText(outer, this, "Editor.Embellishment.reset_to_level");
         try {
           final int level = Integer.parseInt(levelText);

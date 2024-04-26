@@ -198,14 +198,14 @@ public class SetGlobalProperty extends DynamicProperty {
     Command comm = new NullCommand();
     for (final DynamicKeyCommand keyCommand : keyCommands) {
       if (keyCommand.matches(stroke)) {
-        final String propertyName = (new FormattedString(key)).getText(Decorator.getOutermost(this), this, "Editor.DynamicProperty.property_name");
+        final String propertyName = (new FormattedString(key)).getText(getOutermost(this), this, "Editor.DynamicProperty.property_name");
 
         final List<MutablePropertiesContainer> propertyContainers =
           new ArrayList<>();
         propertyContainers.add(0, GameModule.getGameModule());
         Map map = getMap();
         if (NAMED_MAP.equals(propertyLevel)) {
-          final String mapName = (new FormattedString(searchName)).getText(Decorator.getOutermost(this), this, "Editor.SetGlobalProperty.name_of_map");
+          final String mapName = (new FormattedString(searchName)).getText(getOutermost(this), this, "Editor.SetGlobalProperty.name_of_map");
           map = Map.getMapById(mapName);
         }
         if (map != null) {
@@ -216,7 +216,7 @@ public class SetGlobalProperty extends DynamicProperty {
           z = getMap().findZone(getPosition());
         }
         else if (NAMED_ZONE.equals(propertyLevel) && getMap() != null) {
-          final String zoneName = (new FormattedString(searchName)).getText(Decorator.getOutermost(this), this, "Editor.SetGlobalProperty.name_of_zone");
+          final String zoneName = (new FormattedString(searchName)).getText(getOutermost(this), this, "Editor.SetGlobalProperty.name_of_zone");
           z = getMap().findZone(zoneName);
         }
         if (z != null) {
@@ -242,7 +242,7 @@ public class SetGlobalProperty extends DynamicProperty {
             // The PropertyChanger has already evaluated any Beanshell, only need to handle any remaining $$variables.
             if (newValue.indexOf('$') >= 0) {
               format.setFormat(newValue);
-              newValue = format.getText(Decorator.getOutermost(this), this, "Editor.PropertyChangeConfigurer.new_value");
+              newValue = format.getText(getOutermost(this), this, "Editor.PropertyChangeConfigurer.new_value");
             }
             comm = comm.append(prop.setPropertyValue(newValue));
           }

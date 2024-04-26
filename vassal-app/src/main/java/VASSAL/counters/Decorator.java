@@ -553,7 +553,7 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
    */
   protected void addMenuCommand(List<KeyCommand> list, String menuText, NamedKeyStroke keyStroke) {
     if (!isMenuCommand(menuText, keyStroke)) return;
-    list.add(new KeyCommand(menuText, keyStroke, Decorator.getOutermost(this), (TranslatablePiece)this));
+    list.add(new KeyCommand(menuText, keyStroke, getOutermost(this), (TranslatablePiece)this));
   }
 
   /**
@@ -882,7 +882,7 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
 
       if (GameModule.getGameModule().isMatSupport()) {
         if (Boolean.TRUE.equals(p.getProperty(MatCargo.IS_CARGO))) {
-          final MatCargo cargo = (MatCargo) Decorator.getDecorator(Decorator.getOutermost(p), MatCargo.class);
+          final MatCargo cargo = (MatCargo) Decorator.getDecorator(getOutermost(p), MatCargo.class);
           if (cargo != null) {
             final GamePiece mat = cargo.getMat();
             if (mat != null) {

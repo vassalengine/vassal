@@ -269,7 +269,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
   @Override
   protected KeyCommand[] myGetKeyCommands() {
-    launch = new KeyCommand(menuName, launchKeyStroke, Decorator.getOutermost(this), this);
+    launch = new KeyCommand(menuName, launchKeyStroke, getOutermost(this), this);
     return new KeyCommand[]{launch};
   }
 
@@ -316,7 +316,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     if (encoder.getValue() != null && !encoder.getValue().equals(state)) {
       mySetState(encoder.getValue());
 
-      final GamePiece outer = Decorator.getOutermost(this);
+      final GamePiece outer = getOutermost(this);
       if (outer.getId() != null) {
         GameModule.getGameModule().sendAndLog(
           new ChangePiece(outer.getId(), oldState, outer.getState()));
@@ -599,7 +599,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
     // Name window and make it visible
     frame.setTitle(getLocalizedName());
-    oldState = Decorator.getOutermost(this).getState();
+    oldState = getOutermost(this).getState();
     frame.setVisible(true);
     return null;
   }

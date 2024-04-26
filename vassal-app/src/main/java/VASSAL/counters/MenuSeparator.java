@@ -74,7 +74,7 @@ public class MenuSeparator extends Decorator implements TranslatablePiece {
   @Override
   protected KeyCommand[] myGetKeyCommands() {
     if (command == null) {
-      separatorCommand = new KeyCommand(SEPARATOR_NAME, key, Decorator.getOutermost(this), this);
+      separatorCommand = new KeyCommand(SEPARATOR_NAME, key, getOutermost(this), this);
       command = new KeyCommand[]{separatorCommand};
     }
     if (command.length > 0) {

@@ -164,7 +164,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
   @Override
   protected KeyCommand[] myGetKeyCommands() {
     if (launch == null) {
-      launch = new KeyCommand(command, launchKey, Decorator.getOutermost(this), this);
+      launch = new KeyCommand(command, launchKey, getOutermost(this), this);
     }
     return new KeyCommand[]{launch};
   }
@@ -205,7 +205,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
             table.getCellEditor().stopCellEditing();
           }
 
-          final GamePiece outer = Decorator.getOutermost(TableInfo.this);
+          final GamePiece outer = getOutermost(TableInfo.this);
           if (outer.getId() != null) {
             GameModule.getGameModule().sendAndLog(new ChangePiece(outer.getId(), oldState, outer.getState()));
           }
@@ -214,7 +214,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
       frame.pack();
     }
     frame.setTitle(getName());
-    oldState = Decorator.getOutermost(this).getState();
+    oldState = getOutermost(this).getState();
     frame.setVisible(true);
 
     return null;

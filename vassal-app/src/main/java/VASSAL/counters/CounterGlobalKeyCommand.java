@@ -146,7 +146,7 @@ public class CounterGlobalKeyCommand extends Decorator
   @Override
   protected KeyCommand[] myGetKeyCommands() {
     if (command == null) {
-      myCommand = new KeyCommand(commandName, key, Decorator.getOutermost(this), this);
+      myCommand = new KeyCommand(commandName, key, getOutermost(this), this);
       if (commandName.length() > 0 && key != null && !key.isNull()) {
         command = new KeyCommand[] {myCommand};
       }
@@ -287,7 +287,7 @@ public class CounterGlobalKeyCommand extends Decorator
   }
 
   public Command apply() {
-    final GamePiece outer = Decorator.getOutermost(this);
+    final GamePiece outer = getOutermost(this);
     globalCommand.setPropertySource(outer); // Doing this here ensures trait is linked into GamePiece before finding source
     final AuditTrail audit = AuditTrail.create(this, propertiesFilter.getExpression(), Resources.getString("Editor.GlobalKeyCommand.matching_properties"));
 
@@ -298,7 +298,7 @@ public class CounterGlobalKeyCommand extends Decorator
     if (restrictRange) {
       int r = range;
       if (!fixedRange) {
-        final String rangeValue = (String) Decorator.getOutermost(this).getProperty(rangeProperty);
+        final String rangeValue = (String) getOutermost(this).getProperty(rangeProperty);
         try {
           r = Integer.parseInt(rangeValue);
         }

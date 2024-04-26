@@ -193,7 +193,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     }
 
     // 3. Initialise
-    outer = Decorator.getOutermost(this);
+    outer = getOutermost(this);
     Command c = new NullCommand();
 
     // 4. Handle non-looping case
@@ -354,7 +354,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
 
   protected boolean matchesFilter() {
     return propertyMatch.isNull() ||
-           propertyMatch.accept(Decorator.getOutermost(this), this, "Editor.TriggerAction.trigger_when_properties");
+           propertyMatch.accept(getOutermost(this), this, "Editor.TriggerAction.trigger_when_properties");
   }
 
   @Override

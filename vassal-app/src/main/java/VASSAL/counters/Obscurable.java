@@ -494,7 +494,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   @Override
   public KeyCommand[] myGetKeyCommands() {
     final List<KeyCommand> l = new ArrayList<>();
-    final GamePiece outer = Decorator.getOutermost(this);
+    final GamePiece outer = getOutermost(this);
 
     // Hide Command
     if (keyCommand == null) { // Backwards compatibility with VASL classes
@@ -629,7 +629,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     if (retVal != null && PEEK == displayStyle &&
         peekKey == null && obscuredToOthers()) {
       // FIXME: This probably causes a race condition. Can we do this directly?
-      final Runnable runnable = () -> KeyBuffer.getBuffer().remove(Decorator.getOutermost(this));
+      final Runnable runnable = () -> KeyBuffer.getBuffer().remove(getOutermost(this));
       SwingUtilities.invokeLater(runnable);
     }
     return retVal;
@@ -765,7 +765,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       dealKeyInput = new NamedHotKeyConfigurer(p.dealKey);
       controls.add("Editor.Obscurable.deal_key", dealKeyInput);
 
-      dealExpressionInput = new FormattedExpressionConfigurer(p.dealExpression, Decorator.getOutermost(p));
+      dealExpressionInput = new FormattedExpressionConfigurer(p.dealExpression, getOutermost(p));
       controls.add("Editor.Obscurable.deal_expression", dealExpressionInput);
 
       picker = new ImageSelector(p.imageName, 512, 512);

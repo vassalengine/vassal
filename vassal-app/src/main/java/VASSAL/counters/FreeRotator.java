@@ -439,7 +439,7 @@ public class FreeRotator extends Decorator
   public KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
       final List<KeyCommand> l = new ArrayList<>();
-      final GamePiece outer = Decorator.getOutermost(this);
+      final GamePiece outer = getOutermost(this);
       setAngleCommand = new KeyCommand(setAngleText, setAngleKey, outer, this);
       rotateCWCommand = new KeyCommand(rotateCWText, rotateCWKey, outer, this);
       rotateCCWCommand = new KeyCommand(rotateCCWText, rotateCCWKey, outer, this);
@@ -511,7 +511,7 @@ public class FreeRotator extends Decorator
     Command c = prepareMove(new NullCommand(), true);
 
     // Move the piece
-    c = c.append(map.placeOrMerge(Decorator.getOutermost(gp), dest));
+    c = c.append(map.placeOrMerge(getOutermost(gp), dest));
 
     // Post move actions -- find a new mat if needed, and apply any afterburner apply-on-move key
     c = finishMove(c, true, !cargoFollowup, true);
@@ -598,7 +598,7 @@ public class FreeRotator extends Decorator
 
       final AuditTrail audit = AuditTrail.create(this, directExpression, Resources.getString("Editor.FreeRotator.rotate_direct"));
       final String targetAngleText = directExpression.getText(
-        Decorator.getOutermost(this),
+        getOutermost(this),
         Resources.getString("Editor.FreeRotator.rotate_direct"),
         this,
         audit
@@ -1002,7 +1002,7 @@ public class FreeRotator extends Decorator
       panel.add(directKeyConfig.getControls(), "wrap");
 
       panel.add(new JLabel(Resources.getString("Editor.FreeRotator.rotate_direct")));
-      directTargetConfig = new FormattedExpressionConfigurer(p.directExpression.getFormat(), Decorator.getOutermost(p));
+      directTargetConfig = new FormattedExpressionConfigurer(p.directExpression.getFormat(), getOutermost(p));
       panel.add(directTargetConfig.getControls());
       final JPanel facingPanel = new JPanel(new MigLayout("ins 0", "[fill,grow,sg 1]0[fill,grow,sg 1]"));
       facingPanel.add(directTypeLabel, "grow");

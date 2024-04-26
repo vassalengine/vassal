@@ -293,7 +293,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
 
     public void show(ActionButton piece, Polygon poly, Ed pieceEditor) {
       this.polygon = poly;
-      outer = (Decorator)Decorator.getOutermost(piece);
+      outer = (Decorator)getOutermost(piece);
 
       final Rectangle bounds = outer.boundingBox();
 

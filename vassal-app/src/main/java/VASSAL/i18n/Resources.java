@@ -129,7 +129,7 @@ public class Resources {
 
     setInstanceLocale(myLocale);
     final StringEnumConfigurer localeConfig = new StringEnumConfigurer(
-        Resources.LOCALE_PREF_KEY,
+        LOCALE_PREF_KEY,
         getInstanceString("Prefs.language"),
         languages.toArray(new String[0])) {
       @Override
