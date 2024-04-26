@@ -928,11 +928,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
     // We can always be dragged/pasted onto our own parent.
     final DefaultMutableTreeNode parent = (DefaultMutableTreeNode) sourceNode.getParent();
-    if (parent != null && parent.getUserObject().equals(target)) {
-      return true;
-    }
-
-    return isValidParent(target, (Configurable) sourceNode.getUserObject());
+    return (parent != null && parent.getUserObject().equals(target)) ||
+      isValidParent(target, (Configurable) sourceNode.getUserObject());
   }
 
   protected boolean isValidPasteTarget(Configurable target) {

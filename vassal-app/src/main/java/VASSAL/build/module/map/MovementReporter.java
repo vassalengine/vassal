@@ -331,12 +331,9 @@ public class MovementReporter {
       if (!newPosition.equals(moveSummary.newPosition)) return false;
       if (!newMapId.equals(moveSummary.newMapId)) return false;
       if (!Objects.equals(oldMapId, moveSummary.oldMapId)) return false;
-      if (oldMapId != null) {
-        // If there is no old map, then ignore the old position for equals() purposes.
-        return Objects.equals(oldPosition, moveSummary.oldPosition);
-      }
-
-      return true;
+      // If there is no old map, then ignore the old position for equals() purposes.
+      return oldMapId == null ||
+        Objects.equals(oldPosition, moveSummary.oldPosition);
     }
 
     @Override
