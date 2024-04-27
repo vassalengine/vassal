@@ -363,7 +363,7 @@ public class GameState implements CommandEncoder {
    * yet finished
    */
   public Iterator<GameSetupStep> getUnfinishedSetupSteps() {
-    final ArrayList<GameSetupStep> l = new ArrayList<>();
+    final List<GameSetupStep> l = new ArrayList<>();
     for (final GameSetupStep step : setupSteps) {
       if (!step.isFinished()) {
         l.add(step);

@@ -486,7 +486,7 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
    */
   @Override
   public String[] getAttributeNames() {
-    final ArrayList<String> attributes = new ArrayList<>(
+    final List<String> attributes = new ArrayList<>(
       Arrays.asList(
         DESCRIPTION,
         NON_OWNER_UNMASKABLE,
@@ -895,7 +895,7 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
    */
   @Override
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     for (final Buildable b : getBuildables()) {
       if (b instanceof BasicPreference) {
         l.add(((BasicPreference) b).getVariableName());

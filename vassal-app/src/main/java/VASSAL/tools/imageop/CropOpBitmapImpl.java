@@ -94,8 +94,7 @@ public class CropOpBitmapImpl extends AbstractTiledOpImpl
     final Point[] tiles =
       sop.getTileIndices(new Rectangle(x0, y0, x1 - x0, y1 - y0));
 
-    final ArrayList<VASSAL.tools.opcache.Op<?>> ops =
-      new ArrayList<>(tiles.length);
+    final List<VASSAL.tools.opcache.Op<?>> ops = new ArrayList<>(tiles.length);
 
     for (final Point tile : tiles) ops.add(sop.getTileOp(tile));
 

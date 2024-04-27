@@ -224,7 +224,7 @@ public class KeyBuffer {
 
     // Copy contents into new list, because contents may change
     // as a result of key commands
-    final ArrayList<GamePiece> targets = new ArrayList<>(pieces);
+    final List<GamePiece> targets = new ArrayList<>(pieces);
     // Reverse the order if this is a "Move Up" or "Move to Bottom" keystroke
     if (!targets.isEmpty()) {
       final GamePiece top = targets.get(0);

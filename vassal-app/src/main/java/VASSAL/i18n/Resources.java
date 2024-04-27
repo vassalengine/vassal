@@ -111,7 +111,7 @@ public class Resources {
       addLocale(myLocale);
     }
 
-    final ArrayList<String> languages = new ArrayList<>();
+    final List<String> languages = new ArrayList<>();
     for (final Locale l : supportedLocales) {
       languages.add(l.getLanguage());
     }
@@ -129,7 +129,7 @@ public class Resources {
 
     setInstanceLocale(myLocale);
     final StringEnumConfigurer localeConfig = new StringEnumConfigurer(
-        Resources.LOCALE_PREF_KEY,
+        LOCALE_PREF_KEY,
         getInstanceString("Prefs.language"),
         languages.toArray(new String[0])) {
       @Override
@@ -186,7 +186,7 @@ public class Resources {
       final StringEnumConfigurer config = (StringEnumConfigurer) Prefs
           .getGlobalPrefs().getOption(LOCALE_PREF_KEY);
       if (config != null) {
-        final ArrayList<String> valid = new ArrayList<>(Arrays
+        final List<String> valid = new ArrayList<>(Arrays
           .asList(config.getValidValues()));
         valid.add(0, l.getLanguage());
         config.setValidValues(valid.toArray(new String[0]));

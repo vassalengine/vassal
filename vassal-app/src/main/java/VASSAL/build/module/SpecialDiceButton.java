@@ -318,7 +318,7 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
     else if (WINDOW_TITLE_RESULT_FORMAT.equals(name)) {
       return () -> reportResultInWindow;
     }
-    else if (DoActionButton.REPORT_FORMAT.equals(name) || DoActionButton.DO_REPORT.equals(name)) {
+    else if (REPORT_FORMAT.equals(name) || DO_REPORT.equals(name)) {
       return () -> false;
     }
     else
@@ -412,11 +412,9 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
     if (o instanceof Boolean) {
       return (Boolean) o;
     }
-    else if (o instanceof String) {
-      return "true".equals(o); //$NON-NLS-1$
+    else {
+      return o instanceof String && "true".equals(o); //$NON-NLS-1$
     }
-    else
-      return false;
   }
 
   @Override
@@ -479,7 +477,7 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
     else if (DESCRIPTION.equals(key)) {
       description = (String)o;
     }
-    else if (DoActionButton.DO_REPORT.equals(key)) {
+    else if (DO_REPORT.equals(key)) {
       doReport = false; // Always false
     }
     else {
@@ -519,7 +517,7 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
     else if (DESCRIPTION.equals(key)) {
       return description;
     }
-    else if (DoActionButton.DO_REPORT.equals(key)) {
+    else if (DO_REPORT.equals(key)) {
       return String.valueOf(false); // Always false
     }
     else {
@@ -567,7 +565,7 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
       return EMPTY;
     }
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     while (st.hasMoreTokens()) {
       l.add(st.nextToken());
     }

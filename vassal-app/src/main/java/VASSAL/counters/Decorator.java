@@ -371,7 +371,7 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
     }
 
     Command c = new NullCommand();
-    for (final GamePiece p : Decorator.getDecorators(piece, DynamicProperty.class)) {
+    for (final GamePiece p : getDecorators(piece, DynamicProperty.class)) {
       // Exclude subclasses of DynamicProperty
       if (p.getClass().equals(DynamicProperty.class)) {
         final DynamicProperty dp = (DynamicProperty) p;
@@ -553,7 +553,7 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
    */
   protected void addMenuCommand(List<KeyCommand> list, String menuText, NamedKeyStroke keyStroke) {
     if (!isMenuCommand(menuText, keyStroke)) return;
-    list.add(new KeyCommand(menuText, keyStroke, Decorator.getOutermost(this), (TranslatablePiece)this));
+    list.add(new KeyCommand(menuText, keyStroke, getOutermost(this), (TranslatablePiece)this));
   }
 
   /**
@@ -678,7 +678,7 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
    * that is an instance of the given Class.
    */
   public static List<GamePiece> getDecorators(GamePiece p, Class<?> type) {
-    final ArrayList<GamePiece> list = new ArrayList<>();
+    final List<GamePiece> list = new ArrayList<>();
     GamePiece piece = p;
     while (piece instanceof Decorator) {
       if (type.isInstance(piece)) {
@@ -882,7 +882,7 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
 
       if (GameModule.getGameModule().isMatSupport()) {
         if (Boolean.TRUE.equals(p.getProperty(MatCargo.IS_CARGO))) {
-          final MatCargo cargo = (MatCargo) Decorator.getDecorator(Decorator.getOutermost(p), MatCargo.class);
+          final MatCargo cargo = (MatCargo) getDecorator(getOutermost(p), MatCargo.class);
           if (cargo != null) {
             final GamePiece mat = cargo.getMat();
             if (mat != null) {
@@ -1016,12 +1016,12 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
   protected String buildDescription(String i18nKey, String value, String description) {
     final StringBuilder desc = new StringBuilder(buildDescription(i18nKey));
     if (value != null && ! value.isBlank()) {
-      desc.append(" - ");
-      desc.append(value);
+      desc.append(" - ")
+          .append(value);
     }
     if (description != null && ! description.isBlank()) {
-      desc.append(" - ");
-      desc.append(description);
+      desc.append(" - ")
+          .append(description);
     }
     return desc.toString();
   }

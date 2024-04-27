@@ -74,7 +74,7 @@ public class MenuSeparator extends Decorator implements TranslatablePiece {
   @Override
   protected KeyCommand[] myGetKeyCommands() {
     if (command == null) {
-      separatorCommand = new KeyCommand(SEPARATOR_NAME, key, Decorator.getOutermost(this), this);
+      separatorCommand = new KeyCommand(SEPARATOR_NAME, key, getOutermost(this), this);
       command = new KeyCommand[]{separatorCommand};
     }
     if (command.length > 0) {
@@ -138,6 +138,7 @@ public class MenuSeparator extends Decorator implements TranslatablePiece {
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof MenuSeparator)) return false;
     final MenuSeparator c = (MenuSeparator) o;

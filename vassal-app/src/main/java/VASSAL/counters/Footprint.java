@@ -122,7 +122,7 @@ public class Footprint extends MovementMarkable {
 
 
   public Footprint() {
-    super(Footprint.ID, null);
+    super(ID, null);
   }
 
   public Footprint(String type, GamePiece p) {
@@ -406,7 +406,7 @@ public class Footprint extends MovementMarkable {
     }
 
     final boolean selected = Boolean.TRUE.equals(
-      Decorator.getOutermost(this).getProperty(Properties.SELECTED));
+      getOutermost(this).getProperty(Properties.SELECTED));
     final int transparencyPercent = Math.max(0, Math.min(100,
       selected ? selectedTransparency : unSelectedTransparency));
     final float transparency = transparencyPercent / 100.0f;
@@ -665,18 +665,18 @@ public class Footprint extends MovementMarkable {
   public KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
       if (trailKey != null && ! trailKey.isNull()) {
-        showTrailCommand = new KeyCommand(menuCommand, trailKey, Decorator.getOutermost(this), this);
+        showTrailCommand = new KeyCommand(menuCommand, trailKey, getOutermost(this), this);
       }
 
       // Key commands to force trails to specific states
       if (trailKeyOn != null && !trailKeyOn.isNull()) {
-        showTrailCommandOn = new KeyCommand("", trailKeyOn, Decorator.getOutermost(this), this);
+        showTrailCommandOn = new KeyCommand("", trailKeyOn, getOutermost(this), this);
       }
       if (trailKeyOff != null && !trailKeyOff.isNull()) {
-        showTrailCommandOff = new KeyCommand("", trailKeyOff, Decorator.getOutermost(this), this);
+        showTrailCommandOff = new KeyCommand("", trailKeyOff, getOutermost(this), this);
       }
       if (trailKeyClear != null && !trailKeyClear.isNull()) {
-        showTrailCommandClear = new KeyCommand("", trailKeyClear, Decorator.getOutermost(this), this);
+        showTrailCommandClear = new KeyCommand("", trailKeyClear, getOutermost(this), this);
       }
 
       if (showTrailCommand != null
@@ -784,6 +784,7 @@ public class Footprint extends MovementMarkable {
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof Footprint)) return false;
     final Footprint c = (Footprint) o;

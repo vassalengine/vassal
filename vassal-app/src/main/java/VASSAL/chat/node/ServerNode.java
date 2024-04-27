@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -51,7 +52,7 @@ public class ServerNode extends Node {
     while (st.hasMoreTokens()) {
       String childId = st.nextToken();
       if ("*".equals(childId)) { //$NON-NLS-1$
-        final ArrayList<Node> l = new ArrayList<>();
+        final List<Node> l = new ArrayList<>();
         for (final Node node : target) {
           l.addAll(Arrays.asList(node.getChildren()));
         }
@@ -59,7 +60,7 @@ public class ServerNode extends Node {
       }
       else if (childId.startsWith("~")) { //$NON-NLS-1$
         childId = childId.substring(1);
-        final ArrayList<Node> l = new ArrayList<>();
+        final List<Node> l = new ArrayList<>();
         for (final Node node : target) {
           for (final Node child : node.getChildren()) {
             if (!childId.equals(child.getId())) {
@@ -114,7 +115,7 @@ public class ServerNode extends Node {
   }
 
   public synchronized void registerNode(String parentPath, Node newNode) {
-    final Node newParent = Node.build(this, parentPath);
+    final Node newParent = build(this, parentPath);
     newParent.add(newNode);
     final Node module = getModule(newParent);
     if (module != null) {
@@ -132,7 +133,7 @@ public class ServerNode extends Node {
 
   public synchronized void move(Node target, String newParentPath) {
     final Node oldMod = getModule(target);
-    final Node newParent = Node.build(this, newParentPath);
+    final Node newParent = build(this, newParentPath);
     newParent.add(target);
     final Node mod = getModule(newParent);
     if (mod != null) {
@@ -193,7 +194,7 @@ public class ServerNode extends Node {
 
     @Override
     public void run() {
-      final HashSet<Node> s = new HashSet<>();
+      final Set<Node> s = new HashSet<>();
       synchronized (modules) {
         s.addAll(modules);
       }

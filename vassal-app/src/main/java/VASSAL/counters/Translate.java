@@ -123,7 +123,7 @@ public class Translate extends Decorator implements TranslatablePiece {
   @Override
   protected KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
-      moveCommand = new KeyCommand(commandName, keyCommand, Decorator.getOutermost(this), this);
+      moveCommand = new KeyCommand(commandName, keyCommand, getOutermost(this), this);
       if (commandName.length() > 0 && keyCommand != null && !keyCommand.isNull()) {
         commands = new KeyCommand[]{moveCommand};
       }
@@ -237,7 +237,7 @@ public class Translate extends Decorator implements TranslatablePiece {
     if (GameModule.getGameModule().isMatSupport() && !(target instanceof Stack)) {
       final String matName = (String)outer.getProperty(Mat.MAT_NAME);
       if (matName != null && !"".equals(matName)) {
-        mat = (Mat) Decorator.getDecorator(outer, Mat.class);
+        mat = (Mat) getDecorator(outer, Mat.class);
         if (mat != null) {
           contents = mat.getContents();
           offsets  = mat.getOffsets(p.x, p.y);
@@ -262,7 +262,7 @@ public class Translate extends Decorator implements TranslatablePiece {
     }
 
     // And snap to the grid if required.
-    if (!Boolean.TRUE.equals(Decorator.getOutermost(this).getProperty(Properties.IGNORE_GRID))) {
+    if (!Boolean.TRUE.equals(getOutermost(this).getProperty(Properties.IGNORE_GRID))) {
       p = getMap().snapTo(p);
     }
 
@@ -286,7 +286,7 @@ public class Translate extends Decorator implements TranslatablePiece {
         if (ourMap != null) {
           for (int i = 0; i < contents.size(); i++) {
             final GamePiece piece = contents.get(i);
-            final MatCargo cargo = (MatCargo) Decorator.getDecorator(piece, MatCargo.class);
+            final MatCargo cargo = (MatCargo) getDecorator(piece, MatCargo.class);
             if (cargo != null) {
               // Get Cargo's pre-move offset from the Mat
               final Point pt = new Point(p);
@@ -323,7 +323,7 @@ public class Translate extends Decorator implements TranslatablePiece {
     Command c = gp.prepareMove(new NullCommand(), true);
 
     // Move the piece
-    c = c.append(map.placeOrMerge(Decorator.getOutermost(gp), dest));
+    c = c.append(map.placeOrMerge(getOutermost(gp), dest));
 
     // Post move actions -- find a new mat if needed, and apply any afterburner apply-on-move key
     c = gp.finishMove(c, true, true, true);
@@ -387,7 +387,7 @@ public class Translate extends Decorator implements TranslatablePiece {
     }
 
     // And snap to the grid if required.
-    if (!Boolean.TRUE.equals(Decorator.getOutermost(this).getProperty(Properties.IGNORE_GRID))) {
+    if (!Boolean.TRUE.equals(getOutermost(this).getProperty(Properties.IGNORE_GRID))) {
       p = getMap().snapTo(p);
     }
 
@@ -399,7 +399,7 @@ public class Translate extends Decorator implements TranslatablePiece {
   protected void translate(Point p) {
     int x;
     int y;
-    final GamePiece outer = Decorator.getOutermost(this);
+    final GamePiece outer = getOutermost(this);
     final Board b = outer.getMap().findBoard(p);
 
     final int Xdist = xDist.getTextAsInt(outer, Resources.getString("Editor.MoveFixedDistance.distance_to_the_right"), this); // NON-NLS
@@ -424,7 +424,7 @@ public class Translate extends Decorator implements TranslatablePiece {
   }
 
   protected GamePiece findTarget(KeyStroke stroke) {
-    final GamePiece outer = Decorator.getOutermost(this);
+    final GamePiece outer = getOutermost(this);
     GamePiece target = outer;
     if (moveStack
         && outer.getParent() != null
@@ -482,6 +482,7 @@ public class Translate extends Decorator implements TranslatablePiece {
 
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof Translate)) return false;
     final Translate c = (Translate) o;
@@ -649,7 +650,7 @@ public class Translate extends Decorator implements TranslatablePiece {
           c = move.map.placeAt(move.piece, move.pos);
           // Apply Auto-move key
           if (move.map.getMoveKey() != null) {
-            c.append(Decorator.getOutermost(move.piece)
+            c.append(getOutermost(move.piece)
                               .keyEvent(move.map.getMoveKey()));
           }
         }

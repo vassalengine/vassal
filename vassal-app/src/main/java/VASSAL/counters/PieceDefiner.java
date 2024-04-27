@@ -534,7 +534,7 @@ public class PieceDefiner extends JPanel {
       }
     });
 
-    availableList.getInputMap(JComponent.WHEN_FOCUSED).put(
+    availableList.getInputMap(WHEN_FOCUSED).put(
       KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "AddAvailable"); //$NON-NLS-1$
     availableList.getActionMap().put("AddAvailable", new AbstractAction() {
       @Override
@@ -543,13 +543,13 @@ public class PieceDefiner extends JPanel {
       }
     });
 
-    availableList.getInputMap(JComponent.WHEN_FOCUSED).put(
+    availableList.getInputMap(WHEN_FOCUSED).put(
       KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, SwingUtils.getModifierKeyMask()), "ToInUse"); //$NON-NLS-1$
-    availableList.getInputMap(JComponent.WHEN_FOCUSED).put(
+    availableList.getInputMap(WHEN_FOCUSED).put(
       KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "ToInUse"); //$NON-NLS-1$
-    availableList.getInputMap(JComponent.WHEN_FOCUSED).put(
+    availableList.getInputMap(WHEN_FOCUSED).put(
       KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, SwingUtils.getModifierKeyMask()), "ToInUse"); //$NON-NLS-1$
-    availableList.getInputMap(JComponent.WHEN_FOCUSED).put(
+    availableList.getInputMap(WHEN_FOCUSED).put(
       KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "ToInUse"); //$NON-NLS-1$
     availableList.getActionMap().put("ToInUse", new AbstractAction() {
       @Override
@@ -645,7 +645,7 @@ public class PieceDefiner extends JPanel {
       }
     });
 
-    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+    inUseList.getInputMap(WHEN_FOCUSED).put(
       KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "EditInUse"); //$NON-NLS-1$
     inUseList.getActionMap().put("EditInUse", new AbstractAction() {
       @Override
@@ -654,7 +654,7 @@ public class PieceDefiner extends JPanel {
       }
     });
 
-    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+    inUseList.getInputMap(WHEN_FOCUSED).put(
       KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "DeleteInUse"); //$NON-NLS-1$
     inUseList.getActionMap().put("DeleteInUse", new AbstractAction() {
       @Override
@@ -663,7 +663,7 @@ public class PieceDefiner extends JPanel {
       }
     });
 
-    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+    inUseList.getInputMap(WHEN_FOCUSED).put(
       KeyStroke.getKeyStroke(KeyEvent.VK_C, SwingUtils.getModifierKeyMask()), "CopyInUse"); //$NON-NLS-1$
     inUseList.getActionMap().put("CopyInUse", new AbstractAction() {
       @Override
@@ -672,7 +672,7 @@ public class PieceDefiner extends JPanel {
       }
     });
 
-    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+    inUseList.getInputMap(WHEN_FOCUSED).put(
       KeyStroke.getKeyStroke(KeyEvent.VK_V, SwingUtils.getModifierKeyMask()), "PasteInUse"); //$NON-NLS-1$
     inUseList.getActionMap().put("PasteInUse", new AbstractAction() {
       @Override
@@ -681,7 +681,7 @@ public class PieceDefiner extends JPanel {
       }
     });
 
-    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+    inUseList.getInputMap(WHEN_FOCUSED).put(
       KeyStroke.getKeyStroke(KeyEvent.VK_X, SwingUtils.getModifierKeyMask()), "CutInUse"); //$NON-NLS-1$
     inUseList.getActionMap().put("CutInUse", new AbstractAction() {
       @Override
@@ -691,7 +691,7 @@ public class PieceDefiner extends JPanel {
       }
     });
 
-    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+    inUseList.getInputMap(WHEN_FOCUSED).put(
       KeyStroke.getKeyStroke(KeyEvent.VK_UP, SwingUtils.getModifierKeyMask()), "UpInUse"); //$NON-NLS-1$
     inUseList.getActionMap().put("UpInUse", new AbstractAction() {
       @Override
@@ -700,7 +700,7 @@ public class PieceDefiner extends JPanel {
       }
     });
 
-    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+    inUseList.getInputMap(WHEN_FOCUSED).put(
       KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, SwingUtils.getModifierKeyMask()), "DownInUse"); //$NON-NLS-1$
     inUseList.getActionMap().put("DownInUse", new AbstractAction() {
       @Override
@@ -709,7 +709,7 @@ public class PieceDefiner extends JPanel {
       }
     });
 
-    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+    inUseList.getInputMap(WHEN_FOCUSED).put(
       KeyStroke.getKeyStroke(KeyEvent.VK_HOME, SwingUtils.getModifierKeyMask()), "TopInUse"); //$NON-NLS-1$
     inUseList.getActionMap().put("TopInUse", new AbstractAction() {
       @Override
@@ -718,7 +718,7 @@ public class PieceDefiner extends JPanel {
       }
     });
 
-    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+    inUseList.getInputMap(WHEN_FOCUSED).put(
       KeyStroke.getKeyStroke(KeyEvent.VK_END, SwingUtils.getModifierKeyMask()), "BottomInUse"); //$NON-NLS-1$
     inUseList.getActionMap().put("BottomInUse", new AbstractAction() {
       @Override
@@ -727,13 +727,13 @@ public class PieceDefiner extends JPanel {
       }
     });
 
-    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+    inUseList.getInputMap(WHEN_FOCUSED).put(
       KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, SwingUtils.getModifierKeyMask()), "ToAvail"); //$NON-NLS-1$
-    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+    inUseList.getInputMap(WHEN_FOCUSED).put(
       KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "ToAvail"); //$NON-NLS-1$
-    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+    inUseList.getInputMap(WHEN_FOCUSED).put(
       KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, SwingUtils.getModifierKeyMask()), "ToAvail"); //$NON-NLS-1$
-    inUseList.getInputMap(JComponent.WHEN_FOCUSED).put(
+    inUseList.getInputMap(WHEN_FOCUSED).put(
       KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "ToAvail"); //$NON-NLS-1$
     inUseList.getActionMap().put("ToAvail", new AbstractAction() {
       @Override
@@ -839,9 +839,9 @@ public class PieceDefiner extends JPanel {
 
   public void initCustomControls(final JDialog d, final Configurable target) {
     final JRootPane rp = d.getRootPane();
-    rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+    rp.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(
       KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, SwingUtils.getModifierKeyMask()), "ToAvail"); //$NON-NLS-1$
-    rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+    rp.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(
       KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK), "ToAvail"); //$NON-NLS-1$
     rp.getActionMap().put("ToAvail", new AbstractAction() {
       @Override
@@ -850,9 +850,9 @@ public class PieceDefiner extends JPanel {
       }
     });
 
-    rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+    rp.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(
       KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, SwingUtils.getModifierKeyMask()), "ToInUse"); //$NON-NLS-1$
-    rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+    rp.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(
       KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK), "ToInUse"); //$NON-NLS-1$
     rp.getActionMap().put("ToInUse", new AbstractAction() {
       @Override
@@ -1472,10 +1472,10 @@ public class PieceDefiner extends JPanel {
 
       // Dragging fails if nothing selected in source, should never happen
       if (getFromIndex() < 0) {
-        return TransferHandler.NONE;
+        return NONE;
       }
 
-      return TransferHandler.MOVE;
+      return MOVE;
     }
 
     /**

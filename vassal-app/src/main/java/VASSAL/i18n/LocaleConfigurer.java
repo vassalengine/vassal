@@ -24,6 +24,7 @@ import VASSAL.tools.SequenceEncoder;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -134,7 +135,7 @@ public class LocaleConfigurer extends Configurer {
   protected String[] getLanguageList() {
     if (languageList == null) {
       final String[] langs = Locale.getISOLanguages();
-      final ArrayList<String> sortedLangs = new ArrayList<>();
+      final List<String> sortedLangs = new ArrayList<>();
       for (final String s : langs) {
         final String lang = (new Locale(s)).getDisplayLanguage(Locale.getDefault());
         languages.put(lang, s);
@@ -149,7 +150,7 @@ public class LocaleConfigurer extends Configurer {
   protected String[] getCountryList() {
     if (countryList == null) {
       final String[] c = Locale.getISOCountries();
-      final ArrayList<String> sortedCountries = new ArrayList<>();
+      final List<String> sortedCountries = new ArrayList<>();
       for (final String s : c) {
         final String country =
                 (new Locale("en", s)).getDisplayCountry(Locale.getDefault()); //NON-NLS

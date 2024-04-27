@@ -288,12 +288,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   }
 
   private final VisibilityCondition borderCond = () -> {
-    if (getLayout() == null) {
-      return false;
-    }
-    else {
-      return getLayout().isColoredBorder();
-    }
+    return getLayout() != null && getLayout().isColoredBorder();
   };
 
   @Override
@@ -464,7 +459,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
    * Reconcile our current elements with the elements in the owning scheme.
    */
   protected void rebuildInstances() {
-    final ArrayList<ItemInstance> newInstances = new ArrayList<>();
+    final List<ItemInstance> newInstances = new ArrayList<>();
 
     if (layout != null) {
       for (final ItemInstance prop : instances) {

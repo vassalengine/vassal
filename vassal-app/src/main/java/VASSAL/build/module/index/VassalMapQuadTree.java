@@ -69,7 +69,7 @@ public class VassalMapQuadTree extends QuadTree {
     minY -= (d.height + 100);
     maxY += (d.height + 100);
 
-    setRootNode(new QNode(minX, minY, maxX - minX, maxY - minY, null));
+    setRootNode(new QNode<>(minX, minY, maxX - minX, maxY - minY, null));
 
     bounds = new Rectangle(minX, minY, maxX - minX, maxY - minY);
   }
@@ -85,7 +85,7 @@ public class VassalMapQuadTree extends QuadTree {
   public VassalMapQuadTree(VassalMapQuadTree qtree, int x1, int y1, int x2, int y2) {
     super();
 
-    setRootNode(new QNode(x1, y1, x2 - x1, y2 - y1, null));
+    setRootNode(new QNode<>(x1, y1, x2 - x1, y2 - y1, null));
 
     bounds = new Rectangle(x1, y1, x2 - x1, y2 - y1);
 
@@ -176,7 +176,7 @@ public class VassalMapQuadTree extends QuadTree {
    * @return List of pieces
    */
   public List<GamePiece> getPiecesInRange(Point pos, int range) {
-    final ArrayList<GamePiece> pieces = new ArrayList<>();
+    final List<GamePiece> pieces = new ArrayList<>();
 
     for (final QPoint q : searchWithin(pos.x - range, pos.y - range, pos.x + range, pos.y + range)) {
       pieces.addAll((Set<GamePiece>) q.getValue());

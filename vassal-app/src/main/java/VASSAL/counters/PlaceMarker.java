@@ -218,9 +218,9 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     p.translate(xOffset, -yOffset);
     if (matchRotation) {
       final FreeRotator myRotation =
-        (FreeRotator) Decorator.getDecorator(outer, FreeRotator.class);
+        (FreeRotator) getDecorator(outer, FreeRotator.class);
       final FreeRotator markerRotation =
-        (FreeRotator) Decorator.getDecorator(marker, FreeRotator.class);
+        (FreeRotator) getDecorator(marker, FreeRotator.class);
       if (myRotation != null && markerRotation != null) {
         markerRotation.setAngle(myRotation.getAngle());
         final Point2D myPosition = getPosition().getLocation();
@@ -306,7 +306,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     if ((c != null) && GameModule.getGameModule().isMatSupport()) {
       // If a cargo piece has been placed, find it a Mat if eligible, and select it if the Mat is selected
       if (Boolean.TRUE.equals(marker.getProperty(MatCargo.IS_CARGO))) { //NON-NLS
-        final MatCargo cargo = (MatCargo) Decorator.getDecorator(marker, MatCargo.class);
+        final MatCargo cargo = (MatCargo) getDecorator(marker, MatCargo.class);
         if (cargo != null) {
           c = c.append(cargo.findNewMat());
           final GamePiece mat = cargo.getMat();
@@ -330,10 +330,10 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     }
 
     // Set any Parameters in the new piece
-    c = c.append(Decorator.setDynamicProperties(
+    c = c.append(setDynamicProperties(
       parameterList,
       marker,
-      Decorator.getOutermost(this),
+      getOutermost(this),
       this));
 
     if ((c != null) && (afterBurnerKey != null) && !afterBurnerKey.isNull()) {
@@ -464,7 +464,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
 
   @Override
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     l.add(PARENT_ID);
     return l;
   }
@@ -574,6 +574,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof PlaceMarker)) return false;
     final PlaceMarker c = (PlaceMarker) o;
@@ -670,10 +671,10 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       b.add(selectButton);
       p.add("Editor.Placemarker.marker_definition", b);
 
-      xOffsetConfigEXP = new FormattedExpressionConfigurer(piece.xOffsetExpression.getExpression(), Decorator.getOutermost(piece));
+      xOffsetConfigEXP = new FormattedExpressionConfigurer(piece.xOffsetExpression.getExpression(), getOutermost(piece));
       p.add("Editor.PlaceMarker.horizontal_offset", xOffsetConfigEXP);
 
-      yOffsetConfigEXP = new FormattedExpressionConfigurer(piece.yOffsetExpression.getExpression(), Decorator.getOutermost(piece));
+      yOffsetConfigEXP = new FormattedExpressionConfigurer(piece.yOffsetExpression.getExpression(), getOutermost(piece));
       p.add("Editor.PlaceMarker.vertical_offset", yOffsetConfigEXP);
 
       matchRotationConfig = createMatchRotationConfig();

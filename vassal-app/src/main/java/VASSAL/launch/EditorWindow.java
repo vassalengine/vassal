@@ -104,7 +104,7 @@ public abstract class EditorWindow extends JFrame {
 
     ApplicationIcons.setFor(this);
 
-    setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent e) {
@@ -476,7 +476,7 @@ public abstract class EditorWindow extends JFrame {
   protected void saver(final Runnable save) {
     final ValidationReport report = new ValidationReport();
     GameModule.getGameModule().validate(GameModule.getGameModule(), report);
-    if (report.getWarnings().size() == 0) {
+    if (report.getWarnings().isEmpty()) {
       save.run();
     }
     else {

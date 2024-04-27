@@ -89,7 +89,7 @@ public class ProgressDialog extends JDialog {
     }
     else {
       cancel = null;
-      setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+      setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     }
 
     // create the layout
