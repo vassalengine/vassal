@@ -1883,18 +1883,6 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     return null;
   }
 
-  /**
-   * Utility function to replace $xxx$ variables with values from a GamePiece
-   *
-   * @param expression Expression possibly containing $$ variables
-   * @param src A GamePiece to use as a source for the $$ variable values
-   *
-   * @return Updated expression
-   */
-  private String replaceDollarVariables(String expression, GamePiece src) {
-    return replaceDollarVariables(expression, (PropertySource) src);
-  }
-
   private String replaceDollarVariables(String expression, PropertySource src) {
     if (expression == null || !expression.contains("$")) {
       return expression;
