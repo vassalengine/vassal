@@ -1054,7 +1054,7 @@ public class GlobalCommand implements Auditable {
   protected class IndexedFastmatchDeckPolicyManager {
 
     /** Acceptance count limit for the GKC in progress */
-    private final int useFromDeck;
+    private final int useFromDeck; // NOPMD
     /** Map of DeckInfo objects, one for each Deck seen so far. */
     private final java.util.Map<Deck, DeckInfo> applyCounts = new HashMap<>();
 
