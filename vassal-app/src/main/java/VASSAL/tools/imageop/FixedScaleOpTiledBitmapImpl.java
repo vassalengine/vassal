@@ -82,7 +82,7 @@ public class FixedScaleOpTiledBitmapImpl extends FixedScaleOpBitmapImpl {
     private final int tx;
     private final int ty;
 
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "PMD.LooseCoupling"})
     private final RenderingHints hints;
 
     private final int hash;
