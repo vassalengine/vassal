@@ -878,7 +878,7 @@ public class WizardSupport {
   public static class GameSetupPanels extends WizardPanelProvider implements WizardResultProducer {
     private final WizardPage[] pages;
     private final List<GameSetupStep> setupSteps;
-    private boolean forcePwd;
+    private boolean forcePwd;  // NOPMD
 
     private GameSetupPanels(String[] steps, String[] descriptions, WizardPage[] pages, List<GameSetupStep> setupSteps) {
       super(steps, descriptions);
