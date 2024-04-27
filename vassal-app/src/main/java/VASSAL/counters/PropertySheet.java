@@ -942,7 +942,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       AddCreateRow(dataModel);
       propertyTable = m_panel.addTableCtrl(Resources.getString("Editor.PropertySheet.properties"), dataModel, DEFAULT_ROW);
 
-      final DefaultCellEditor typePicklist = new DefaultCellEditor(new JComboBox(TYPE_VALUES));
+      final DefaultCellEditor typePicklist = new DefaultCellEditor(new JComboBox<>(TYPE_VALUES));
       propertyTable.getColumnModel().getColumn(1).setCellEditor(typePicklist);
     }
 
