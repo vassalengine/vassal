@@ -258,6 +258,7 @@ public class SetGlobalProperty extends DynamicProperty {
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof SetGlobalProperty)) return false;
     final SetGlobalProperty c = (SetGlobalProperty) o;

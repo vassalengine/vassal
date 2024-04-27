@@ -204,6 +204,7 @@ public class Marker extends Decorator implements EditablePiece {
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof Marker)) return false;
     final Marker c = (Marker) o;

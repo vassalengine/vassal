@@ -683,6 +683,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof Obscurable)) return false;
     final Obscurable c = (Obscurable) o;

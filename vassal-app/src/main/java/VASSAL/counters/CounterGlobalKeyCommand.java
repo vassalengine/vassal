@@ -331,6 +331,7 @@ public class CounterGlobalKeyCommand extends Decorator
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (!(o instanceof CounterGlobalKeyCommand))
       return false;

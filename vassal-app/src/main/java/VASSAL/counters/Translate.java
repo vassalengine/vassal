@@ -482,6 +482,7 @@ public class Translate extends Decorator implements TranslatablePiece {
 
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof Translate)) return false;
     final Translate c = (Translate) o;

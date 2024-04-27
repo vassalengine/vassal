@@ -1025,6 +1025,7 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof Embellishment)) return false;
     final Embellishment c = (Embellishment) o;

@@ -155,11 +155,12 @@ public class RestrictCommands extends Decorator implements EditablePiece {
   }
 
   protected boolean matchesFilter() {
-    final GamePiece outer = getOutermost(this);
-    if (!propertyMatch.isNull()) {
-      return propertyMatch.accept(outer, this, "Editor.RestrictCommands.restrict_when_properties_match");
-    }
-    return true;
+    return propertyMatch.isNull() ||
+      propertyMatch.accept(
+        getOutermost(this),
+        this,
+        "Editor.RestrictCommands.restrict_when_properties_match"
+      );
   }
 
   @Override
@@ -215,8 +216,8 @@ public class RestrictCommands extends Decorator implements EditablePiece {
     return new Ed(this);
   }
 
-
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof RestrictCommands)) return false;
     final RestrictCommands c = (RestrictCommands) o;

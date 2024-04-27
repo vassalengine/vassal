@@ -133,6 +133,7 @@ public class MovementReporter {
     return c;
   }
 
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   protected boolean shouldMarkMoved(MoveSummary summary) {
     final Map mappy = Map.getMapById(summary.getNewMapId());
     String option = (mappy == null) ? null : mappy.getAttributeValueString(Map.MARK_MOVED);

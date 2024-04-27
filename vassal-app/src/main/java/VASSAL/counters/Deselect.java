@@ -226,6 +226,7 @@ public class Deselect extends Decorator implements TranslatablePiece {
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof Deselect)) return false;
     final Deselect c = (Deselect) o;

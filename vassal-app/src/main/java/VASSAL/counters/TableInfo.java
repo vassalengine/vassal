@@ -251,6 +251,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof TableInfo)) return false;
     final TableInfo c = (TableInfo) o;

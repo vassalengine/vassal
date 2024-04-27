@@ -302,6 +302,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof Pivot)) return false;
     final Pivot c = (Pivot) o;

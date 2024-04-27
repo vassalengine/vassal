@@ -173,9 +173,8 @@ public class TranslatableMessage extends Decorator implements TranslatablePiece 
     return List.of(key);
   }
 
-
-
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof TranslatableMessage)) return false;
     final TranslatableMessage c = (TranslatableMessage) o;

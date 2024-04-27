@@ -325,6 +325,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof Hideable)) return false;
     final Hideable c = (Hideable) o;
@@ -336,7 +337,6 @@ public class Hideable extends Decorator implements TranslatablePiece {
     if (! Objects.equals(transparency, c.transparency)) return false;
     if (! Objects.equals(bgColor, c.bgColor)) return false;
     if (! Objects.equals(disableAutoReportMove, c.disableAutoReportMove)) return false;
-
 
     return Objects.equals(hiddenBy, c.hiddenBy);
   }

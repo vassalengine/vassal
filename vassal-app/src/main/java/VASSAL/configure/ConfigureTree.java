@@ -3531,12 +3531,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
 
       final int action = support.getDropAction();
-      if (action == MOVE) {
-        // Don't allow move (cut) to our own descendant
-        return !targetNode.isNodeAncestor(firstNode);
-      }
-
-      return true;
+      // Don't allow move (cut) to our own descendant
+      return action != MOVE || !targetNode.isNodeAncestor(firstNode);
     }
 
     /**

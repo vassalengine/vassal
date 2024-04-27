@@ -490,6 +490,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof TriggerAction)) return false;
     final TriggerAction c = (TriggerAction) o;

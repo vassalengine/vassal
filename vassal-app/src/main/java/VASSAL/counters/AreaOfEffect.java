@@ -466,6 +466,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof AreaOfEffect)) return false;
     final AreaOfEffect c = (AreaOfEffect) o;
@@ -490,7 +491,6 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     if (! Objects.equals(offKey, c.offKey)) return false;
 
     return Objects.equals(description, c.description);
-
   }
 
   protected static class TraitEditor implements PieceEditor {

@@ -738,6 +738,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof Attachment)) return false;
     final Attachment c = (Attachment) o;

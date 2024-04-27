@@ -814,6 +814,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
 
     // Check Class

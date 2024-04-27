@@ -397,6 +397,7 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof SetPieceProperty)) return false;
     final SetPieceProperty c = (SetPieceProperty) o;

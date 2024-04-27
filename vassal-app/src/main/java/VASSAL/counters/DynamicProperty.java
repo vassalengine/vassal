@@ -444,6 +444,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof DynamicProperty)) return false;
     final DynamicProperty c = (DynamicProperty) o;

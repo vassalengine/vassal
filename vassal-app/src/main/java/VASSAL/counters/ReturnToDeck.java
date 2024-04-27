@@ -319,6 +319,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof ReturnToDeck)) return false;
     final ReturnToDeck c = (ReturnToDeck) o;

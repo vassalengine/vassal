@@ -403,6 +403,7 @@ public class MultiLocationCommand extends Decorator implements TranslatablePiece
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof MultiLocationCommand)) return false;
     final MultiLocationCommand c = (MultiLocationCommand) o;

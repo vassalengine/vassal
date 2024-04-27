@@ -1756,6 +1756,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       }
 
       @Override
+      @SuppressWarnings("PMD.SimplifyBooleanReturns")
       public boolean equals(Object o) {
         if (! (o instanceof AvailablePiece)) return false;
         return ((AvailablePiece)o).piece.equals(piece);

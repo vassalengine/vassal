@@ -347,6 +347,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof ReportState)) return false;
     final ReportState c = (ReportState) o;

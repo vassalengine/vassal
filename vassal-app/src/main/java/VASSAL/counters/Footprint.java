@@ -784,6 +784,7 @@ public class Footprint extends MovementMarkable {
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof Footprint)) return false;
     final Footprint c = (Footprint) o;

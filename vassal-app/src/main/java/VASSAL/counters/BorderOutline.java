@@ -242,6 +242,7 @@ public class BorderOutline extends Decorator implements TranslatablePiece {
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof BorderOutline)) return false;
     final BorderOutline c = (BorderOutline) o;

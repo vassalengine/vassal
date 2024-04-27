@@ -502,6 +502,7 @@ public class Immobilized extends Decorator implements EditablePiece {
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof Immobilized)) return false;
     final Immobilized c = (Immobilized) o;

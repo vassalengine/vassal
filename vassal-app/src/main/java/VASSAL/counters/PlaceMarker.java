@@ -574,6 +574,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof PlaceMarker)) return false;
     final PlaceMarker c = (PlaceMarker) o;

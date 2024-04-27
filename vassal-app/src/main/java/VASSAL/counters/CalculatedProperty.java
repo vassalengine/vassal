@@ -220,6 +220,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
 
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof CalculatedProperty)) return false;
     final CalculatedProperty c = (CalculatedProperty) o;

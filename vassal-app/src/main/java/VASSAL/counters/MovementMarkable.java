@@ -303,6 +303,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof MovementMarkable)) return false;
     final MovementMarkable c = (MovementMarkable) o;
