@@ -1651,7 +1651,7 @@ public class PieceMover extends AbstractBuildable
       boundingBox.x *= zoom;
       boundingBox.y *= zoom;
 
-      for (Point p: relativePositions) {
+      for (final Point p: relativePositions) {
         p.x *= zoom;
         p.y *= zoom;
       }
