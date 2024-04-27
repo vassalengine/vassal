@@ -47,6 +47,7 @@ public class GridOp extends AbstractTiledOpImpl {
 
   protected final int hash;
 
+  @SuppressWarnings("PMD.LooseCoupling")
   public GridOp(ImageOp sop, MapGrid grid, double scale, boolean reversed, RenderingHints hints) {
     this.sop = sop;
     this.grid = grid;
