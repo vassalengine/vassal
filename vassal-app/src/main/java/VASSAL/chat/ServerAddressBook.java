@@ -76,7 +76,9 @@ public class ServerAddressBook {
 
   protected static final String TYPE_KEY = ChatServerFactory.TYPE_KEY;
   protected static final String DESCRIPTION_KEY = "description"; //$NON-NLS-1$
+  @SuppressWarnings("PMD.FinalFieldCouldBeStatic")
   protected final int LEAF_ICON_SIZE = IconFamily.SMALL;
+  @SuppressWarnings("PMD.FinalFieldCouldBeStatic")
   protected final int CONTROLS_ICON_SIZE = IconFamily.XSMALL;
 
   private boolean frozen;
