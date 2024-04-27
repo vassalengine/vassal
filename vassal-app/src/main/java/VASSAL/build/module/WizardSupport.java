@@ -812,7 +812,7 @@ public class WizardSupport {
                     // FIXME: The following default save/load attempt does not work (on MacOS at least the default is left "unknown"; please confirm for other platforms before fixing).
                     g.getFileChooser().setSelectedFile(f); //BR// When loading a saved game from Wizard, put it appropriately into the "default" for the next save/load/etc.
                     g.setGameFile(f.getName(), GameModule.GameFileMode.LOADED_GAME); //BR// ... aaaand put it in the app window description.
-                    super.run();
+                    super.run(); // NOPMD
 
                     g.getGameState().setLastSaveFile(
                       ((BasicLogger) g.getLogger()).isReplaying() ? null : f
