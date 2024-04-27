@@ -28,6 +28,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Area;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -1179,8 +1180,6 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
 
   @Override
   public void addLocalImageNames(Collection<String> s) {
-    for (final String iname : imageName) {
-      s.add(iname);
-    }
+    s.addAll(Arrays.asList(imageName));
   }
 }

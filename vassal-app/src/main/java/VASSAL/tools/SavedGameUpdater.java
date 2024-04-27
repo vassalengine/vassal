@@ -127,7 +127,7 @@ public class SavedGameUpdater {
     else {
       final Configurable[] children = last.getConfigureComponents();
       for (final Configurable child : children) {
-        l.add(child);
+        l.add(child); // NOPMD
         findPieceSlots(l, p);
         l.remove(child);
       }
