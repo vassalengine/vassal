@@ -684,11 +684,11 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
       stOld.nextToken();
       merge.append(stNew.nextToken());
       stOld.nextToken();
-      final ArrayList<String> newContents = new ArrayList<>();
+      final List<String> newContents = new ArrayList<>();
       while (stNew.hasMoreTokens()) {
         newContents.add(stNew.nextToken());
       }
-      final ArrayList<String> oldContents = new ArrayList<>();
+      final List<String> oldContents = new ArrayList<>();
       while (stOld.hasMoreTokens()) {
         oldContents.add(stOld.nextToken());
       }

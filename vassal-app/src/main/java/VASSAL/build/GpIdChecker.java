@@ -383,7 +383,7 @@ public class GpIdChecker {
     private String id;
     private PrototypeDefinition prototype;
     private GamePiece expandedPrototype;
-    private GpIdChecker gpIdChecker;
+    private GpIdChecker gpIdChecker;  // NOPMD
 
     public SlotElement() {
       slot = null;

@@ -105,7 +105,7 @@ public class BonesDiceServer extends DieServer {
   @Override
   public void doIRoll(RollSet toss) throws IOException {
     final String[] rollString = buildInternetRollString(toss);
-    final Vector<String> returnString = new Vector<>();
+    final Vector<String> returnString = new Vector<>(); // NOPMD
 
     final URL url = new URL(rollString[0]);
     final HttpURLConnection connection =

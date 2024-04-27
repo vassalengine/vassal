@@ -112,8 +112,9 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
   @Override
   protected KeyCommand[] myGetKeyCommands() {
     if (command.length() > 0 && key != null) {
-      final KeyCommand c =  new KeyCommand(command, key, Decorator
-          .getOutermost(this), this, matchesFilter());
+      final KeyCommand c =  new KeyCommand(
+        command, key, getOutermost(this), this, matchesFilter()
+      );
       if (getMap() == null) {
         c.setEnabled(false);
       }
@@ -193,7 +194,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     }
 
     // 3. Initialise
-    outer = Decorator.getOutermost(this);
+    outer = getOutermost(this);
     Command c = new NullCommand();
 
     // 4. Handle non-looping case
@@ -354,7 +355,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
 
   protected boolean matchesFilter() {
     return propertyMatch.isNull() ||
-           propertyMatch.accept(Decorator.getOutermost(this), this, "Editor.TriggerAction.trigger_when_properties");
+           propertyMatch.accept(getOutermost(this), this, "Editor.TriggerAction.trigger_when_properties");
   }
 
   @Override
@@ -456,7 +457,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
   @Override
   public List<String> getPropertyNames() {
     if (isIndex()) {
-      final ArrayList<String> l = new ArrayList<>();
+      final List<String> l = new ArrayList<>();
       l.add(indexProperty);
       return l;
     }
@@ -489,6 +490,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof TriggerAction)) return false;
     final TriggerAction c = (TriggerAction) o;

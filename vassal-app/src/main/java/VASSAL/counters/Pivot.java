@@ -122,8 +122,8 @@ public class Pivot extends Decorator implements TranslatablePiece {
   @Override
   protected KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
-      pivotCommand = new KeyCommand(command, key, Decorator.getOutermost(this), this);
-      pivot2Command = new KeyCommand(command2, key2, Decorator.getOutermost(this), this);
+      pivotCommand = new KeyCommand(command, key, getOutermost(this), this);
+      pivot2Command = new KeyCommand(command2, key2, getOutermost(this), this);
 
       if (command.length() > 0 && key != null && !key.isNull()) {
         if (command2.length() > 0 && key2 != null && !key2.isNull()) {
@@ -139,7 +139,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
       else {
         commands = KeyCommand.NONE;
       }
-      rotator = (FreeRotator) Decorator.getDecorator(this, FreeRotator.class);
+      rotator = (FreeRotator) getDecorator(this, FreeRotator.class);
       pivotCommand.setEnabled(rotator != null);
       pivot2Command.setEnabled(rotator != null);
     }
@@ -246,7 +246,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
 
     // Apply map auto-move key
     if (c != null && getMap() != null && getMap().getMoveKey() != null) {
-      c = c.append(Decorator.getOutermost(this).keyEvent(getMap().getMoveKey()));
+      c = c.append(getOutermost(this).keyEvent(getMap().getMoveKey()));
     }
     return c;
   }
@@ -302,6 +302,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof Pivot)) return false;
     final Pivot c = (Pivot) o;

@@ -32,6 +32,7 @@ import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
 import org.apache.batik.bridge.BridgeContext;
@@ -290,7 +291,7 @@ public class SVGImageUtils {
    */
   public static List<String> getExternalReferences(String path)
                                                            throws IOException {
-    final ArrayList<String> reflist = new ArrayList<>();
+    final List<String> reflist = new ArrayList<>();
     reflist.add(path);
     return getExternalReferences(path, reflist);
   }
@@ -318,7 +319,7 @@ public class SVGImageUtils {
       throw new IOException(e);
     }
 
-    final HashSet<String> follow = new HashSet<>();
+    final Set<String> follow = new HashSet<>();
     final NodeList usenodes = doc.getElementsByTagName("use"); //NON-NLS
     for (int i = 0; i < usenodes.getLength(); ++i) {
       final Element e = (Element) usenodes.item(i);

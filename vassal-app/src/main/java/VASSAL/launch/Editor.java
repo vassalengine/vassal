@@ -23,7 +23,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URLConnection;
 
-import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 
@@ -206,7 +205,7 @@ public class Editor extends Launcher {
         }
 
         if (data instanceof ModuleMetaData) {
-          if (!Launcher.checkModuleLoadable((ModuleMetaData)data)) {
+          if (!checkModuleLoadable((ModuleMetaData)data)) {
             return;
           }
         }
@@ -273,7 +272,7 @@ public class Editor extends Launcher {
 
     public PromptLaunchAction(ModuleManagerWindow mm) {
       super(mm, null);
-      putValue(Action.NAME, Resources.getString("Main.edit_module"));
+      putValue(NAME, Resources.getString("Main.edit_module"));
     }
 
     @Override

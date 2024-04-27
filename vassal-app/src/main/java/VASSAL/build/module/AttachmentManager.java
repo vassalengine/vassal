@@ -35,7 +35,7 @@ public class AttachmentManager {
   /**
    * A Map of the set of Attachment traits that are using the same Attachment name
    */
-  private final java.util.Map<String, HashSet<Attachment>> attachments;
+  private final java.util.Map<String, Set<Attachment>> attachments;
 
   public AttachmentManager() {
     attachments = new HashMap<>();
@@ -74,7 +74,7 @@ public class AttachmentManager {
       final String attachName = attach.getAttachName();
 
       // Find all Attachment traits (not pieces) that use that attachment name and loop through them
-      final HashSet<Attachment> currentAttachments = attachments.computeIfAbsent(attachName, k -> new HashSet<>());
+      final Set<Attachment> currentAttachments = attachments.computeIfAbsent(attachName, k -> new HashSet<>());
       for (final Attachment targetAttachment : currentAttachments) {
 
         if (targetAttachment.equals(attach)) {
@@ -115,7 +115,7 @@ public class AttachmentManager {
       final String attachName = attach.getAttachName();
 
       // Find all attachments using this Attach name and process each one
-      final HashSet<Attachment> currentAttachments = attachments.computeIfAbsent(attachName, k -> new HashSet<>());
+      final Set<Attachment> currentAttachments = attachments.computeIfAbsent(attachName, k -> new HashSet<>());
 
       for (final Attachment attachment : currentAttachments) {
         if (attachment.isAutoAttach()) {
@@ -147,7 +147,7 @@ public class AttachmentManager {
         final String attachName = attach.getAttachName();
 
         // Find all attachments using this Attach name and process each one
-        final HashSet<Attachment> currentAttachments = attachments.computeIfAbsent(attachName, k -> new HashSet<>());
+        final Set<Attachment> currentAttachments = attachments.computeIfAbsent(attachName, k -> new HashSet<>());
 
         for (final Attachment targetAttachment : currentAttachments) {
           // If the target attachment is not auto-attachable, remove any attachment back to us

@@ -139,7 +139,7 @@ public class SortParameterArrayConfigurer extends Configurer implements Configur
       return null;
     }
 
-    final ArrayList<SortParameter> l = new ArrayList<>();
+    final List<SortParameter> l = new ArrayList<>();
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
     while (st.hasMoreTokens()) {
       final String token = st.nextToken();

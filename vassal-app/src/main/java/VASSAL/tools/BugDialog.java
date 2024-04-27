@@ -117,7 +117,7 @@ public class BugDialog extends JDialog {
     //
     setTitle(Resources.getString(key + ".title")); //NON-NLS
     setLocationRelativeTo(owner);
-    setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setResizable(true);
 
     addWindowListener(new WindowAdapter() {

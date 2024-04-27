@@ -43,7 +43,7 @@ public class SavedGameUpdater {
    */
   public Properties getPieceSlotsMap() {
     final Properties p = new Properties();
-    final ArrayList<Configurable> l = new ArrayList<>();
+    final List<Configurable> l = new ArrayList<>();
     findPieceSlots(l, p);
     return p;
   }
@@ -127,7 +127,7 @@ public class SavedGameUpdater {
     else {
       final Configurable[] children = last.getConfigureComponents();
       for (final Configurable child : children) {
-        l.add(child);
+        l.add(child); // NOPMD
         findPieceSlots(l, p);
         l.remove(child);
       }
@@ -138,7 +138,7 @@ public class SavedGameUpdater {
     private final GamePiece replacement;
 
     public ReplaceTrait(GamePiece original, GamePiece replacement) {
-      super(Replace.ID + "Replace;R;dummy;;0;0;true", original); //NON-NLS
+      super(ID + "Replace;R;dummy;;0;0;true", original); //NON-NLS
       setProperty(VASSAL.counters.Properties.OUTER, original);
       original.setProperty(VASSAL.counters.Properties.OUTER, null);
       this.replacement = replacement;

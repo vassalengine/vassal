@@ -249,16 +249,20 @@ public class RemoveUnusedImagesDialog extends JDialog {
   private static class Entry {
     private final String fileName;
     private final String displayName;
-    private long size;
+    private final long size;
+
+    private static long extractSize(String fileName, DataArchive archive) {
+      try {
+        return archive.getArchive().getCompressedSize(DataArchive.IMAGE_DIR + fileName);
+      }
+      catch (IOException ignored) {
+        return -1;
+      }
+    }
 
     public Entry(String fileName, DataArchive archive) {
       this.fileName = fileName;
-      try {
-        size = archive.getArchive().getCompressedSize(DataArchive.IMAGE_DIR + fileName);
-      }
-      catch (IOException ignored) {
-        size = -1;
-      }
+      size = extractSize(fileName, archive);
       displayName = fileName + " (" + FileUtils.byteCountToDisplaySize(size) + ")";
     }
 

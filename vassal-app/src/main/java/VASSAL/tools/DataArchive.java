@@ -281,7 +281,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   }
 
   public SortedSet<String> getImageNameSet(boolean localized, boolean fullPath) {
-    final TreeSet<String> s = new TreeSet<>();
+    final SortedSet<String> s = new TreeSet<>();
     getImageNamesRecursively(s, localized, fullPath);
     return s;
   }
@@ -372,10 +372,10 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   }
 
   protected SortedSet<String> getAllLocalImageNames(boolean localized, boolean fullPath) {
-    final TreeSet<String> s = new TreeSet<>();
+    final SortedSet<String> s = new TreeSet<>();
 
     if (archive != null) {
-      final ArrayList<String> directories = new ArrayList<>();
+      final List<String> directories = new ArrayList<>();
       directories.add(imageDir);
       if (localized) {
         buildLocalizedDirectoryList(directories);

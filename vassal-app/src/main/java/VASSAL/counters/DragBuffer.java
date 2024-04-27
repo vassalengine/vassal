@@ -208,8 +208,8 @@ public class DragBuffer {
         System.err.println("Enter at " + evt.getPoint()); //$NON-NLS-1$//
       }
     };
-    DragBuffer.getBuffer().addDragSource(f1);
-    DragBuffer.getBuffer().addDropTarget(f2, l);
+    getBuffer().addDragSource(f1);
+    getBuffer().addDropTarget(f2, l);
   }
 
   public Cursor createDragCursor(@SuppressWarnings("unused") Component comp) {

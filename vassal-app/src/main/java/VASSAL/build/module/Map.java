@@ -1966,7 +1966,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       boolean dirty = false;
 
       final KeyBuffer kbuf = KeyBuffer.getBuffer();
-      final ArrayList<GamePiece> l = new ArrayList<>(kbuf.asList());
+      final List<GamePiece> l = new ArrayList<>(kbuf.asList());
 
       for (final GamePiece p : l) {
         if (p.getMap() == activeMap) {

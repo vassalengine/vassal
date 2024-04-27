@@ -215,11 +215,12 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
    * @return value
    */
   protected String evaluate() {
-    return expression.tryEvaluate(Decorator.getOutermost(this), this, "Editor.CalculatedProperty.expression");
+    return expression.tryEvaluate(getOutermost(this), this, "Editor.CalculatedProperty.expression");
   }
 
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof CalculatedProperty)) return false;
     final CalculatedProperty c = (CalculatedProperty) o;
@@ -255,7 +256,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
       nameConfig = new StringConfigurer(piece.name);
       box.add("Editor.CalculatedProperty.property_name", nameConfig);
 
-      expressionConfig = new BeanShellExpressionConfigurer(piece.getExpression(), Decorator.getOutermost(piece));
+      expressionConfig = new BeanShellExpressionConfigurer(piece.getExpression(), getOutermost(piece));
       expressionConfig.setContext((AbstractBuildable) null);
       box.add("Editor.CalculatedProperty.expression", expressionConfig);
 
@@ -286,7 +287,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
    */
   @Override
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     l.add(name);
     return l;
   }

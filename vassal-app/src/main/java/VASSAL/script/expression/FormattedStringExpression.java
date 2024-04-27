@@ -128,9 +128,9 @@ public class FormattedStringExpression extends Expression {
           buffer.append(BeanShellExpression.convertProperty(token));
         }
         else {
-          buffer.append('\"');
-          buffer.append(token);
-          buffer.append('\"');
+          buffer.append('\"')
+                .append(token)
+                .append('\"');
         }
         first = false;
       }

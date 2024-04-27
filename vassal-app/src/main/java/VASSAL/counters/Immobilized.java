@@ -121,7 +121,7 @@ public class Immobilized extends Decorator implements EditablePiece {
   protected static final EventFilter NEVER = evt -> true;
 
   public Immobilized() {
-    this(Immobilized.ID, null);
+    this(ID, null);
   }
 
   /** @deprecated Use {@link #Immobilized(String, GamePiece)} instead. */
@@ -493,7 +493,7 @@ public class Immobilized extends Decorator implements EditablePiece {
    */
   @Override
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     l.add(Properties.TERRAIN);
     l.add(Properties.IGNORE_GRID);
     l.add(Properties.NON_MOVABLE);
@@ -502,6 +502,7 @@ public class Immobilized extends Decorator implements EditablePiece {
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof Immobilized)) return false;
     final Immobilized c = (Immobilized) o;

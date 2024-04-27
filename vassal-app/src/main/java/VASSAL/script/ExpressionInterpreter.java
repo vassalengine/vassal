@@ -1883,18 +1883,6 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     return null;
   }
 
-  /**
-   * Utility function to replace $xxx$ variables with values from a GamePiece
-   *
-   * @param expression Expression possibly containing $$ variables
-   * @param src A GamePiece to use as a source for the $$ variable values
-   *
-   * @return Updated expression
-   */
-  private String replaceDollarVariables(String expression, GamePiece src) {
-    return replaceDollarVariables(expression, (PropertySource) src);
-  }
-
   private String replaceDollarVariables(String expression, PropertySource src) {
     if (expression == null || !expression.contains("$")) {
       return expression;
@@ -1931,8 +1919,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
           if (propertyValue == null) {
             // Not a property value. Add the initial '$' plus the assembled text to the output and start
             // looking for a new property name from the end '$' sign.
-            buffer.append('$');
-            buffer.append(propertyName);
+            buffer.append('$').append(propertyName);
             propertyName.setLength(0);
             state = 1;
           }
@@ -1952,8 +1939,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     // End of String reached. If we are still in state 1, then the we need to copy over
     // the token in progress plus its initiating '$' sign
     if (state == 1) {
-      buffer.append('$');
-      buffer.append(propertyName);
+      buffer.append('$').append(propertyName);
     }
 
     return buffer.toString();

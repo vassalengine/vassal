@@ -155,7 +155,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
    * @return               List of attached pieces
    */
   public static List<GamePiece> getAttachList(GamePiece piece, String attachmentName) {
-    GamePiece p = Decorator.getOutermost(piece);
+    GamePiece p = getOutermost(piece);
     while (p instanceof Decorator) {
       if (p instanceof Attachment) {
         final Attachment a = (Attachment) p;
@@ -237,9 +237,9 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     }
 
     if (command == null) {
-      myAttachCommand = new KeyCommand(attachCommandName, attachKey, Decorator.getOutermost(this), this);
-      myClearAllCommand  = new KeyCommand(clearAllCommandName, clearAllKey, Decorator.getOutermost(this), this);
-      myClearMatchingCommand = new KeyCommand(clearMatchingCommandName, clearMatchingKey, Decorator.getOutermost(this), this);
+      myAttachCommand = new KeyCommand(attachCommandName, attachKey, getOutermost(this), this);
+      myClearAllCommand  = new KeyCommand(clearAllCommandName, clearAllKey, getOutermost(this), this);
+      myClearMatchingCommand = new KeyCommand(clearMatchingCommandName, clearMatchingKey, getOutermost(this), this);
 
       final boolean doAttach = (attachCommandName.length() > 0) && attachKey != null && !attachKey.isNull();
       final boolean doClearAll = (clearAllCommandName.length() > 0) && clearAllKey != null && !clearAllKey.isNull();
@@ -307,7 +307,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       c = c.append(clearAll());
     }
 
-    final GamePiece outer = Decorator.getOutermost(this);
+    final GamePiece outer = getOutermost(this);
     globalAttach.setPropertySource(outer); // Doing this here ensures trait is linked into GamePiece before finding source
 
     // Make piece properties filter
@@ -318,7 +318,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     if (restrictRange) {
       int r = range;
       if (!fixedRange) {
-        final String rangeValue = (String) Decorator.getOutermost(this).getProperty(rangeProperty);
+        final String rangeValue = (String) getOutermost(this).getProperty(rangeProperty);
         try {
           r = Integer.parseInt(rangeValue);
         }
@@ -366,7 +366,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   }
 
   public Command clearMatching() {
-    final GamePiece outer = Decorator.getOutermost(this);
+    final GamePiece outer = getOutermost(this);
 
     clearTarget.fastMatchLocation = true;
     clearTarget.fastMatchProperty = false;
@@ -433,7 +433,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
    */
   public void autoAttach(Attachment attach) {
     if (isAutoAttach() && attach.getAttachName().equals(getAttachName())) {
-      final GamePiece piece = Decorator.getOutermost(attach);
+      final GamePiece piece = getOutermost(attach);
       if (! hasTarget(piece)) {
         contents.add(piece);
       }
@@ -456,7 +456,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   public Command makeAddTargetCommand(GamePiece p) {
     Command c = new NullCommand();
 
-    if (!allowSelfAttach && Decorator.getOutermost(this).equals(Decorator.getOutermost(p))) {
+    if (!allowSelfAttach && getOutermost(this).equals(getOutermost(p))) {
       return c;
     }
 
@@ -467,7 +467,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       c = c.append(ct.getChangeCommand());
 
       // If our target has "on attach" conditions in an equivalently named Attachment, process them
-      GamePiece target = Decorator.getOutermost(p);
+      GamePiece target = getOutermost(p);
       while (target instanceof Decorator) {
         if (target instanceof Attachment) {
           final Attachment targetAttach = (Attachment) target;
@@ -475,12 +475,12 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
             // Found an attachment w/ the same name
             if (autoAttach || !targetAttach.onAttach.equals(ON_ATTACH_NOTHING)) {
               // They're either ON_ATTACH_FOLLOW_BACK or ON_ATTACH_ATTACH_ALL, so we probably want at last at an attach-back command
-              c = c.append(targetAttach.makeAddTargetCommand(Decorator.getOutermost(this)));
+              c = c.append(targetAttach.makeAddTargetCommand(getOutermost(this)));
 
               // If they're ON_ATTACH_ATTACH_ALL then they attach to ALL of our previously attached pieces
               if (autoAttach || targetAttach.onAttach.equals(ON_ATTACH_ATTACH_ALL)) {
                 for (final GamePiece other : getAttachList()) {
-                  c = c.append(targetAttach.makeAddTargetCommand(Decorator.getOutermost(other)));
+                  c = c.append(targetAttach.makeAddTargetCommand(getOutermost(other)));
                 }
               }
             }
@@ -518,12 +518,12 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
 
       // If our detach condition is ON_DETACH_REMOVE, then remove incoming attachment at the same time
       if (onDetach.equals(ON_DETACH_REMOVE)) {
-        GamePiece target = Decorator.getOutermost(p);
+        GamePiece target = getOutermost(p);
         while (target instanceof Decorator) {
           if (target instanceof Attachment) {
             final Attachment targetAttach = (Attachment) target;
             if (attachName.equals(targetAttach.attachName)) {
-              c = c.append(targetAttach.makeRemoveTargetCommand(Decorator.getOutermost(this)));
+              c = c.append(targetAttach.makeRemoveTargetCommand(getOutermost(this)));
             }
           }
           target = ((Decorator) target).getInner();
@@ -738,6 +738,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof Attachment)) return false;
     final Attachment c = (Attachment) o;

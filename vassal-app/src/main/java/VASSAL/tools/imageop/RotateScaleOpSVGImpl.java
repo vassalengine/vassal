@@ -54,6 +54,7 @@ public class RotateScaleOpSVGImpl extends AbstractTileOpImpl
   private final SVGOp sop;
   private final double scale;
   private final double angle;
+  @SuppressWarnings("PMD.LooseCoupling")
   private final RenderingHints hints;
   private final int hash;
 
@@ -79,6 +80,7 @@ public class RotateScaleOpSVGImpl extends AbstractTileOpImpl
    * @param hints rendering hints
    * @throws IllegalArgumentException if <code>sop == null</code>.
    */
+  @SuppressWarnings("PMD.LooseCoupling")
   public RotateScaleOpSVGImpl(SVGOp sop, double angle, double scale,
                                  RenderingHints hints) {
     if (sop == null) throw new IllegalArgumentException();

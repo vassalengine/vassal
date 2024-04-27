@@ -197,9 +197,9 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
   @Override
   protected KeyCommand[] myGetKeyCommands() {
     if (command == null) {
-      sendCommand = new KeyCommand(commandName, key, Decorator.getOutermost(this), this);
-      backCommand = new KeyCommand(backCommandName, backKey, Decorator.getOutermost(this), this);
-      final ArrayList<KeyCommand> l = new ArrayList<>();
+      sendCommand = new KeyCommand(commandName, key, getOutermost(this), this);
+      backCommand = new KeyCommand(backCommandName, backKey, getOutermost(this), this);
+      final List<KeyCommand> l = new ArrayList<>();
       if (commandName.length() > 0 && key != null && !key.isNull()) {
         l.add(sendCommand);
       }
@@ -468,7 +468,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
 
 
   private Point getSendLocation() {
-    final GamePiece outer = Decorator.getOutermost(this);
+    final GamePiece outer = getOutermost(this);
 
     // Do pre-evaluation of $...$ expressions for source/target matching
     final FormattedStringExpression props = new FormattedStringExpression(propertyFilter.getExpression());
@@ -495,7 +495,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       return null;
     }
 
-    final GamePiece outer = Decorator.getOutermost(this);
+    final GamePiece outer = getOutermost(this);
     final Mat mat;
     List<GamePiece> contents = null;
     List<Point> offsets = null;
@@ -507,7 +507,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     if (GameModule.getGameModule().isMatSupport()) {
       final String matName = (String)outer.getProperty(Mat.MAT_NAME);
       if (matName != null && !"".equals(matName)) {
-        mat = (Mat) Decorator.getDecorator(outer, Mat.class);
+        mat = (Mat) getDecorator(outer, Mat.class);
         if (mat != null) {
           final Point basePt = outer.getPosition();
           contents = mat.getContents();
@@ -577,7 +577,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       if ((offsets != null) && dest != null) {
         for (int i = 0; i < contents.size(); i++) {
           final GamePiece piece = contents.get(i);
-          final MatCargo cargo = (MatCargo) Decorator.getDecorator(piece, MatCargo.class);
+          final MatCargo cargo = (MatCargo) getDecorator(piece, MatCargo.class);
           if (cargo != null) {
 
             // Get Cargo's pre-move offset from the Mat
@@ -993,7 +993,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getExpressionList() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
 
     if (destination.equals(DEST_COUNTER.substring(0, 1)) || destination.equals(DEST_COUNTER_CYCLE.substring(0, 1)) || destination.equals(DEST_COUNTER_NEAREST.substring(0, 1))) {
       l.add(propertyFilter.getExpression());

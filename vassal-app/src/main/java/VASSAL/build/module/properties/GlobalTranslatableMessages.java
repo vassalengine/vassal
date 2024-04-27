@@ -167,7 +167,7 @@ public class GlobalTranslatableMessages extends AbstractConfigurable implements 
 
   @Override
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     for (final GlobalTranslatableMessage prop : getComponentsOf(GlobalTranslatableMessage.class)) {
       l.add(prop.getConfigureName());
     }

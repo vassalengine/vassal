@@ -79,7 +79,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
   @Override
   public Object getLocalizedProperty(Object key) {
     if (invisibleToMe()) {
-      return ((BasicPiece) Decorator.getInnermost(this)).getLocalizedPublicProperty(key);
+      return ((BasicPiece) getInnermost(this)).getLocalizedPublicProperty(key);
     }
     else if (HIDDEN_BY.equals(key)) {
       return hiddenBy;
@@ -196,10 +196,11 @@ public class Hideable extends Decorator implements TranslatablePiece {
 
   @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
-    if (invisibleToMe()) {
+    if (!invisibleToMe()) {
       return;
     }
-    else if (invisibleToOthers()) {
+
+    if (invisibleToOthers()) {
       final Graphics2D g2d = (Graphics2D) g;
 
       if (bgColor != null) {
@@ -237,7 +238,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
   @Override
   public KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
-      hideCommand = new KeyCommand(command, hideKey, Decorator.getOutermost(this), this);
+      hideCommand = new KeyCommand(command, hideKey, getOutermost(this), this);
       if (command.length() > 0 && hideKey != null && ! hideKey.isNull()) {
         commands = new KeyCommand[] {hideCommand};
       }
@@ -317,13 +318,14 @@ public class Hideable extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     l.add(Properties.INVISIBLE_TO_ME);
     l.add(Properties.INVISIBLE_TO_OTHERS);
     return l;
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof Hideable)) return false;
     final Hideable c = (Hideable) o;
@@ -335,7 +337,6 @@ public class Hideable extends Decorator implements TranslatablePiece {
     if (! Objects.equals(transparency, c.transparency)) return false;
     if (! Objects.equals(bgColor, c.bgColor)) return false;
     if (! Objects.equals(disableAutoReportMove, c.disableAutoReportMove)) return false;
-
 
     return Objects.equals(hiddenBy, c.hiddenBy);
   }

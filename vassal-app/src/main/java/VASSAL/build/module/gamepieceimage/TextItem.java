@@ -302,7 +302,7 @@ public class TextItem extends Item {
   @Override
   public String encode() {
 
-    final SequenceEncoder se1 = new SequenceEncoder(TextItem.TYPE, ';');
+    final SequenceEncoder se1 = new SequenceEncoder(TYPE, ';');
 
     se1.append(fontStyleName == null ? "" : fontStyleName); //$NON-NLS-1$
     se1.append(textSource);

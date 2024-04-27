@@ -177,10 +177,10 @@ public class MatCargo extends Decorator implements TranslatablePiece {
     }
 
     ChangeTracker ctMat = null;
-    final Mat actualMat = (Mat)Decorator.getDecorator(Decorator.getOutermost(mat), Mat.class);
+    final Mat actualMat = (Mat)getDecorator(getOutermost(mat), Mat.class);
     if (actualMat != null) {
       ctMat = new ChangeTracker(actualMat);
-      actualMat.removeCargo(Decorator.getOutermost(this));
+      actualMat.removeCargo(getOutermost(this));
     }
 
     final ChangeTracker ct = new ChangeTracker(this);
@@ -202,10 +202,10 @@ public class MatCargo extends Decorator implements TranslatablePiece {
   public void setMat(GamePiece mat) {
     this.mat = mat;
     if (mat != null) {
-      final GamePiece actualMat = Decorator.getDecorator(Decorator.getOutermost(mat), Mat.class);
+      final GamePiece actualMat = getDecorator(getOutermost(mat), Mat.class);
       if (actualMat != null) {
-        if (!((Mat)actualMat).hasCargo(Decorator.getOutermost(this))) {
-          ((Mat) actualMat).addCargo(Decorator.getOutermost(this));
+        if (!((Mat)actualMat).hasCargo(getOutermost(this))) {
+          ((Mat) actualMat).addCargo(getOutermost(this));
         }
       }
     }
@@ -225,7 +225,7 @@ public class MatCargo extends Decorator implements TranslatablePiece {
       return makeClearMatCommand();
     }
 
-    final Mat actualMat = (Mat)Decorator.getDecorator(Decorator.getOutermost(newMat), Mat.class);
+    final Mat actualMat = (Mat)getDecorator(getOutermost(newMat), Mat.class);
     if (actualMat == null) {
       return makeClearMatCommand();
     }
@@ -246,7 +246,7 @@ public class MatCargo extends Decorator implements TranslatablePiece {
       final GamePiece newMat = locateNewMat(map, pt);
 
       if (newMat != null) {
-        final Mat mat = (Mat) Decorator.getDecorator(newMat, Mat.class);
+        final Mat mat = (Mat) getDecorator(newMat, Mat.class);
         if (mat != null) {
           comm = comm.append(mat.makeAddCargoCommand(getOutermost(this)));
         }
@@ -320,8 +320,8 @@ public class MatCargo extends Decorator implements TranslatablePiece {
   public static Command findNewMat(Command c, GamePiece gp) {
     if (GameModule.getGameModule().isMatSupport()) {
       // If a cargo piece has been "sent", find it a new Mat if needed.
-      if (Boolean.TRUE.equals(gp.getProperty(MatCargo.IS_CARGO))) { //NON-NLS
-        final MatCargo cargo = (MatCargo) Decorator.getDecorator(gp, MatCargo.class);
+      if (Boolean.TRUE.equals(gp.getProperty(IS_CARGO))) { //NON-NLS
+        final MatCargo cargo = (MatCargo) getDecorator(gp, MatCargo.class);
         if (cargo != null) {
           c = c.append(cargo.findNewMat());
         }
@@ -354,10 +354,10 @@ public class MatCargo extends Decorator implements TranslatablePiece {
   public Command myKeyEvent(KeyStroke stroke) {
     if (!keyCommandsSet) {
       if (matFindKey != null && !matFindKey.isNull()) {
-        matFindKeyCommand = new KeyCommand("", matFindKey, Decorator.getOutermost(this), this);
+        matFindKeyCommand = new KeyCommand("", matFindKey, getOutermost(this), this);
       }
       if (matDetachKey != null && !matDetachKey.isNull()) {
-        matDetachKeyCommand = new KeyCommand("", matDetachKey, Decorator.getOutermost(this), this);
+        matDetachKeyCommand = new KeyCommand("", matDetachKey, getOutermost(this), this);
       }
       keyCommandsSet = true;
     }
@@ -424,7 +424,7 @@ public class MatCargo extends Decorator implements TranslatablePiece {
       return 0.0;
     }
 
-    final FreeRotator mrot = (FreeRotator) Decorator.getDecorator(getOutermost(mat), FreeRotator.class);
+    final FreeRotator mrot = (FreeRotator) getDecorator(getOutermost(mat), FreeRotator.class);
     return mrot == null ? 0.0 : mrot.getAngle();
   }
 
@@ -518,38 +518,38 @@ public class MatCargo extends Decorator implements TranslatablePiece {
         return mat.getProperty(Mat.MAT_ID);
       }
       else if (CURRENT_MAT_X.equals(key)) {
-        return Decorator.getOutermost(mat).getPosition().x;
+        return getOutermost(mat).getPosition().x;
       }
       else if (CURRENT_MAT_Y.equals(key)) {
-        return Decorator.getOutermost(mat).getPosition().y;
+        return getOutermost(mat).getPosition().y;
       }
       else if (CURRENT_MAT_OFFSET_X.equals(key)) {
-        return Decorator.getOutermost(mat).getPosition().x - Decorator.getOutermost(this).getPosition().x;
+        return getOutermost(mat).getPosition().x - getOutermost(this).getPosition().x;
       }
       else if (CURRENT_MAT_OFFSET_Y.equals(key)) {
-        return Decorator.getOutermost(mat).getPosition().y - Decorator.getOutermost(this).getPosition().y;
+        return getOutermost(mat).getPosition().y - getOutermost(this).getPosition().y;
       }
       else if (CURRENT_MAT_BASIC_NAME.equals(key)) {
-        return Decorator.getOutermost(mat).getProperty(BASIC_NAME);
+        return getOutermost(mat).getProperty(BASIC_NAME);
       }
       else if (CURRENT_MAT_PIECE_NAME.equals(key)) {
-        return Decorator.getOutermost(mat).getProperty(PIECE_NAME);
+        return getOutermost(mat).getProperty(PIECE_NAME);
       }
       else if (CURRENT_MAT_LOCATION_NAME.equals(key)) {
-        return Decorator.getOutermost(mat).getProperty(LOCATION_NAME);
+        return getOutermost(mat).getProperty(LOCATION_NAME);
       }
       else if (CURRENT_MAT_ZONE.equals(key)) {
-        return Decorator.getOutermost(mat).getProperty(CURRENT_ZONE);
+        return getOutermost(mat).getProperty(CURRENT_ZONE);
       }
       else if (CURRENT_MAT_BOARD.equals(key)) {
-        return Decorator.getOutermost(mat).getProperty(CURRENT_BOARD);
+        return getOutermost(mat).getProperty(CURRENT_BOARD);
       }
       else if (CURRENT_MAT_MAP.equals(key)) {
-        return Decorator.getOutermost(mat).getProperty(CURRENT_MAP);
+        return getOutermost(mat).getProperty(CURRENT_MAP);
       }
       else if (List.of(CURRENT_MAT_PROP0, CURRENT_MAT_PROP1, CURRENT_MAT_PROP2, CURRENT_MAT_PROP3, CURRENT_MAT_PROP4, CURRENT_MAT_PROP5, CURRENT_MAT_PROP6, CURRENT_MAT_PROP7, CURRENT_MAT_PROP8, CURRENT_MAT_PROP9
       ).contains(key)) {
-        return Decorator.getOutermost(mat).getProperty(key);
+        return getOutermost(mat).getProperty(key);
       }
     }
 
@@ -569,26 +569,26 @@ public class MatCargo extends Decorator implements TranslatablePiece {
         return true;
       }
       else if (CURRENT_MAT_BASIC_NAME.equals(key)) {
-        return Decorator.getOutermost(mat).getLocalizedProperty(BASIC_NAME);
+        return getOutermost(mat).getLocalizedProperty(BASIC_NAME);
       }
       else if (CURRENT_MAT_PIECE_NAME.equals(key)) {
-        return Decorator.getOutermost(mat).getLocalizedProperty(PIECE_NAME);
+        return getOutermost(mat).getLocalizedProperty(PIECE_NAME);
       }
       else if (CURRENT_MAT_LOCATION_NAME.equals(key)) {
-        return Decorator.getOutermost(mat).getLocalizedProperty(LOCATION_NAME);
+        return getOutermost(mat).getLocalizedProperty(LOCATION_NAME);
       }
       else if (CURRENT_MAT_ZONE.equals(key)) {
-        return Decorator.getOutermost(mat).getLocalizedProperty(CURRENT_ZONE);
+        return getOutermost(mat).getLocalizedProperty(CURRENT_ZONE);
       }
       else if (CURRENT_MAT_BOARD.equals(key)) {
-        return Decorator.getOutermost(mat).getLocalizedProperty(CURRENT_BOARD);
+        return getOutermost(mat).getLocalizedProperty(CURRENT_BOARD);
       }
       else if (CURRENT_MAT_MAP.equals(key)) {
-        return Decorator.getOutermost(mat).getLocalizedProperty(CURRENT_MAP);
+        return getOutermost(mat).getLocalizedProperty(CURRENT_MAP);
       }
       else if (List.of(CURRENT_MAT_PROP0, CURRENT_MAT_PROP1, CURRENT_MAT_PROP2, CURRENT_MAT_PROP3, CURRENT_MAT_PROP4, CURRENT_MAT_PROP5, CURRENT_MAT_PROP6, CURRENT_MAT_PROP7, CURRENT_MAT_PROP8, CURRENT_MAT_PROP9
       ).contains(key)) {
-        return Decorator.getOutermost(mat).getLocalizedProperty(key);
+        return getOutermost(mat).getLocalizedProperty(key);
       }
     }
 

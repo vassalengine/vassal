@@ -146,7 +146,7 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer implements Configu
   }
 
   public NamedKeyStroke[] getKeyStrokes() {
-    final ArrayList<NamedKeyStroke> l = new ArrayList<>();
+    final List<NamedKeyStroke> l = new ArrayList<>();
     for (final NKSAEntry entry : entries) {
       final NamedKeyStroke value = (NamedKeyStroke)  entry.getConfigurer().getValue();
       if (value != null) {
@@ -160,7 +160,7 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer implements Configu
     if (s == null) {
       return null;
     }
-    final ArrayList<NamedKeyStroke> l = new ArrayList<>();
+    final List<NamedKeyStroke> l = new ArrayList<>();
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
     while (st.hasMoreTokens()) {
       final String token = st.nextToken();
