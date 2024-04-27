@@ -52,6 +52,7 @@ import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.LogAndSaveFileFilter;
 import VASSAL.tools.filechooser.LogFileFilter;
+import VASSAL.tools.filechooser.SaveFileFilter;
 import VASSAL.tools.io.DeobfuscatingInputStream;
 import VASSAL.tools.io.ObfuscatingOutputStream;
 import VASSAL.tools.io.ZipArchive;
@@ -239,7 +240,16 @@ public class GameState implements CommandEncoder {
       }
     };
 
-    final Action createMapAnimationOfGame = new AbstractAction("Load series of files and create map animation") {
+    final Action createScreenshotsOfSaves = new AbstractAction("Load folder of VSAV files and create screenshots of initial state for each file") {
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        createVSAVScreenshots();
+      }
+
+    };
+
+    final Action createMapAnimationOfGame = new AbstractAction("Load folder of VLOG files and create screenshots for each move in each file") {
 
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -319,6 +329,7 @@ public class GameState implements CommandEncoder {
     mm.addAction("GameState.load_and_fast_forward", loadAndFastForward);
     mm.addAction("GameState.load_and_append", loadAndAppend);
     mm.addAction("GameState.create_game_animation", createMapAnimationOfGame);
+    mm.addAction("GameState.create_save_screenshots", createScreenshotsOfSaves);
 
     saveGame.setEnabled(gameStarting);
     saveGameAs.setEnabled(gameStarting);
@@ -930,7 +941,51 @@ public class GameState implements CommandEncoder {
   private static final String RELEVANT_MAP_ID = "Map0";
 
   /**
-   * Loads a series of game files in a folder and makes a screenshot at the end of each. 
+   * Loads a set of VSAV files in a folder and makes a screenshot of the initial state of each. 
+   */
+  private void createVSAVScreenshots() {
+    final FileChooser fc = GameModule.getGameModule().getDirectoryChooser();
+    if (fc.showOpenDialog(GameModule.getGameModule().getPlayerWindow()) != FileChooser.APPROVE_OPTION) return;
+    System.out.println(fc.getCurrentDirectory().getAbsolutePath());
+    System.out.println(fc.getSelectedFile().getAbsolutePath());
+
+    final List<File> saveFiles = Stream.of(fc.getSelectedFile().listFiles(new SaveFileFilter()))
+      .sorted(Comparator.naturalOrder())
+      .collect(Collectors.toList())
+    ;
+
+    final Boolean oldStartNewLogfileSetting = (Boolean) GameModule.getGameModule().getPrefs().getValue(BasicLogger.PROMPT_NEW_LOG_START);
+    GameModule.getGameModule().getPrefs().setValue(BasicLogger.PROMPT_NEW_LOG_START, Boolean.FALSE);
+
+    try {
+      for (final File saveFile : saveFiles) {
+        System.out.println("Processing savefile " + saveFile.getName());
+
+        loadGame(saveFile, false, true);
+        for (final VASSAL.build.module.Map map : VASSAL.build.module.Map.getMapList()) {
+          if (!map.mapID.equals(RELEVANT_MAP_ID)) {
+            continue;
+          }
+
+          final String path = Paths.get(
+            fc.getSelectedFile().getAbsolutePath(), 
+            saveFile.getName() + "-" + map.mapID + ".png"
+          ).toString();
+          System.out.println("Saving image to " + path);
+          final File mapPictureFile = new File(path);
+          new ImageSaver(map).writeMapAsImage(mapPictureFile);
+        }
+        // closeGame();
+      }
+    }
+    finally {
+      GameModule.getGameModule().getPrefs().setValue(BasicLogger.PROMPT_NEW_LOG_START, oldStartNewLogfileSetting);
+      System.out.println("Done");
+    }
+  }
+
+  /**
+   * Loads a series of game files in a folder and makes a screenshot for each move in each file. 
    * Those screenshots can then be made into an animation at the end
    * 
    * (optional) Cut playarea from complete map pictures (when only part of the map is used)
