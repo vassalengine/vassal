@@ -151,6 +151,7 @@ public class PlayerWindow extends JFrame {
     toolsMenu.add(mm.addKey("GameState.load_and_append"));
 
     toolsMenu.add(mm.addKey("GameState.create_game_animation"));
+    toolsMenu.add(mm.addKey("GameState.create_save_screenshots"));
 
     toolsMenu.addSeparator();
     
