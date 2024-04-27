@@ -42,6 +42,7 @@ public class GridOp extends AbstractTiledOpImpl {
   protected final MapGrid grid;
   protected final double scale;
   protected final boolean reversed;
+  @SuppressWarnings("PMD.LooseCoupling")
   protected final RenderingHints hints;
 
   protected final int hash;
@@ -69,6 +70,7 @@ public class GridOp extends AbstractTiledOpImpl {
     return reversed;
   }
 
+  @SuppressWarnings("PMD.LooseCoupling")
   public RenderingHints getHints() {
     return hints;
   }
@@ -84,6 +86,7 @@ public class GridOp extends AbstractTiledOpImpl {
     return draw(0, 0, size.width, size.height, sop, grid, bounds, scale, reversed, hints);
   }
 
+  @SuppressWarnings("PMD.LooseCoupling")
   private static BufferedImage draw(int x0, int y0, int w, int h, ImageOp sop, MapGrid grid, Rectangle bounds, double scale, boolean reversed, RenderingHints hints) throws ExecutionException, InterruptedException {
     if (w < 1 || h < 1) {
       return ImageUtils.NULL_IMAGE;
@@ -142,6 +145,7 @@ public class GridOp extends AbstractTiledOpImpl {
     private final MapGrid grid;
     private final double scale;
     private final boolean reversed;
+    @SuppressWarnings("PMD.LooseCoupling")
     private final RenderingHints hints;
 
     private final int hash;

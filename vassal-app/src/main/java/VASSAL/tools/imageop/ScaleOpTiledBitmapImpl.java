@@ -48,6 +48,7 @@ public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
     this(sop, scale, defaultHints);
   }
 
+  @SuppressWarnings("PMD.LooseCoupling")
   public ScaleOpTiledBitmapImpl(ImageOp sop, double scale,
                                 RenderingHints hints) {
     super(sop, scale, hints);
@@ -81,7 +82,7 @@ public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
     private final int tx;
     private final int ty;
 
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "PMD.LooseCoupling"})
     private final RenderingHints hints;
 
     private final int hash;

@@ -59,6 +59,7 @@ public class FixedScaleOpTiledBitmapImpl extends FixedScaleOpBitmapImpl {
    * @param scale the scale factor
    * @param hints rendering hints
    */
+  @SuppressWarnings("PMD.LooseCoupling")
   public FixedScaleOpTiledBitmapImpl(ImageOp sop, double scale, int width, int height, RenderingHints hints) {
     super(sop, scale, width, height, hints);
   }
