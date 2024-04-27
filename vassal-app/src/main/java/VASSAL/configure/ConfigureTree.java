@@ -1501,7 +1501,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       ErrorDialog.bug(e);
     }
 
-    return c.getName().substring(c.getName().lastIndexOf(".") + 1);
+    return c.getName().substring(c.getName().lastIndexOf('.') + 1);
   }
 
   public static String getConfigureName(Configurable c) {
