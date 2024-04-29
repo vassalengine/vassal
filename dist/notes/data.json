@@ -26,6 +26,7 @@
         { "num": 13167, "desc": "Fix missing Player list after online game request" }
       ],
       "other_improvements": [
+        { "num": 13302, "desc": "Upgrade bundled Java to 21.0.3 (32-bit Windows), 22.0.1 (everything else)" }
       ]
     },
     {
