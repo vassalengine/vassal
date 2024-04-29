@@ -1,5 +1,7 @@
 3.7.11 - ???
 
+* 13302: Upgrade bundled Java to 21.0.3 (32-bit Windows), 22.0.1 (everything
+  else)
 * 13167: Fix missing Player list after online game request
 
 3.7.10 - 14 April 2024
