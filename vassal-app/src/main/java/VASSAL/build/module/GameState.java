@@ -70,7 +70,10 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+
+import java.awt.AWTException;
 import java.awt.Cursor;
+import java.awt.Robot;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -78,6 +81,7 @@ import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.InvalidDnDOperationException;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -102,6 +106,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
@@ -940,8 +947,11 @@ public class GameState implements CommandEncoder {
   // Only make screenshots for the following map ID
   private static final String RELEVANT_MAP_ID = "Map0";
 
+  private static final ScheduledExecutorService pool = Executors.newScheduledThreadPool(1);
   /**
    * Loads a set of VSAV files in a folder and makes a screenshot of the initial state of each. 
+   * @throws AWTException 
+   * @throws InterruptedException 
    */
   private void createVSAVScreenshots() {
     final FileChooser fc = GameModule.getGameModule().getDirectoryChooser();
@@ -961,7 +971,20 @@ public class GameState implements CommandEncoder {
       for (final File saveFile : saveFiles) {
         System.out.println("Processing savefile " + saveFile.getName());
 
+        pool.schedule(() -> {
+          System.out.println("waited a two seconds");
+          try {
+            Robot rob = new Robot();
+            rob.keyPress(KeyEvent.VK_ENTER);
+            rob.keyRelease(KeyEvent.VK_ENTER);
+            System.out.println("enter pressed");
+          } catch (AWTException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+        }, 2000, TimeUnit.MILLISECONDS);
         loadGame(saveFile, false, true);
+        System.out.println("file loaded");
         for (final VASSAL.build.module.Map map : VASSAL.build.module.Map.getMapList()) {
           if (!map.mapID.equals(RELEVANT_MAP_ID)) {
             continue;
