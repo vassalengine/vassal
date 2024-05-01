@@ -982,7 +982,7 @@ public class GameState implements CommandEncoder {
             // TODO Auto-generated catch block
             e.printStackTrace();
           }
-        }, 2000, TimeUnit.MILLISECONDS);
+        }, 3000, TimeUnit.MILLISECONDS);
         loadGame(saveFile, false, true);
         System.out.println("file loaded");
         for (final VASSAL.build.module.Map map : VASSAL.build.module.Map.getMapList()) {
