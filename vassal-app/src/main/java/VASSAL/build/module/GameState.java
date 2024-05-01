@@ -972,14 +972,14 @@ public class GameState implements CommandEncoder {
         System.out.println("Processing savefile " + saveFile.getName());
 
         pool.schedule(() -> {
-          System.out.println("waited a two seconds");
+          System.out.println("waited three seconds");
           try {
             Robot rob = new Robot();
             rob.keyPress(KeyEvent.VK_ENTER);
             rob.keyRelease(KeyEvent.VK_ENTER);
             System.out.println("enter pressed");
-          } catch (AWTException e) {
-            // TODO Auto-generated catch block
+          }
+          catch (AWTException e) {
             e.printStackTrace();
           }
         }, 3000, TimeUnit.MILLISECONDS);
