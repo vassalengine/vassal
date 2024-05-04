@@ -16,6 +16,16 @@
   ],
   "changes": [
     {
+      "in": "3.7.13",
+      "since": "3.7.12",
+      "new_features": [
+      ],
+      "bug_fixes": [
+      ],
+      "other_improvements": [
+      ]
+    },
+    {
       "in": "3.7.12",
       "since": "3.7.11",
       "new_features": [
