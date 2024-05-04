@@ -1,4 +1,6 @@
-3.7.12 - ???
+3.7.12 - 4 May 2024
+
+* 13316: Fix typoed condition in Hideable introduced during PMD updates
 
 3.7.11 - 3 May 2024
 
