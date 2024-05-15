@@ -5,6 +5,8 @@
 
 3.7.13 - ???
 
+* 13324: Fixed bad link to GamePiece page in Reference Manual
+
 3.7.12 - 4 May 2024
 
 * 13316: Fix typoed condition in Hideable introduced during PMD updates

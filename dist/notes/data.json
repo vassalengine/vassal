@@ -31,6 +31,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 13324, "desc": "Fixed bad link to GamePiece page in Reference Manual" }
       ],
       "other_improvements": [
       ]
