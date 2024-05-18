@@ -241,9 +241,9 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       myClearAllCommand  = new KeyCommand(clearAllCommandName, clearAllKey, getOutermost(this), this);
       myClearMatchingCommand = new KeyCommand(clearMatchingCommandName, clearMatchingKey, getOutermost(this), this);
 
-      final boolean doAttach = (attachCommandName.length() > 0) && attachKey != null && !attachKey.isNull();
-      final boolean doClearAll = (clearAllCommandName.length() > 0) && clearAllKey != null && !clearAllKey.isNull();
-      final boolean doClearMatching = (clearMatchingCommandName.length() > 0) && clearMatchingKey != null && !clearMatchingKey.isNull();
+      final boolean doAttach = (!attachCommandName.isEmpty()) && attachKey != null && !attachKey.isNull();
+      final boolean doClearAll = (!clearAllCommandName.isEmpty()) && clearAllKey != null && !clearAllKey.isNull();
+      final boolean doClearMatching = (!clearMatchingCommandName.isEmpty()) && clearMatchingKey != null && !clearMatchingKey.isNull();
 
       if (doAttach) {
         if (doClearAll) {
@@ -426,7 +426,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
 
   /**
    * Auto-attach to a piece
-   * 1. We must be in auto-attah mode
+   * 1. We must be in auto-attach mode
    * 2. Must not already be attached to the piece.
    * NOTE: Auto-attach is handled locally by each client, no Commands are generated
    * @param attach Attachment trait within the target piece
@@ -441,7 +441,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   }
 
   /**
-   * @param p a particular gamepiece
+   * @param p a particular game piece
    * @return true if the given piece is on our list of targets
    */
   public boolean hasTarget(GamePiece p) {
@@ -569,7 +569,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       d += " " + Resources.getString("Editor.Attachment.auto");
     }
 
-    if (desc.length() > 0) {
+    if (!desc.isEmpty()) {
       d += " - " + desc;
     }
 
