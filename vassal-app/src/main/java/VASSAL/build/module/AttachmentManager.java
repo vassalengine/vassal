@@ -63,7 +63,7 @@ public class AttachmentManager {
    * A piece has been added to the game.
    * 1. If it has as Auto-attach, attach all other Attachments with same name to it.
    * 2. Tell all other Auto-attach traits with same name to attach to it.
-   *
+   * <p>
    * Create the self attachment if required
    * @param piece Piece moved or added
    */
@@ -75,16 +75,15 @@ public class AttachmentManager {
 
       // Find all Attachment traits (not pieces) that use that attachment name and loop through them
       final Set<Attachment> currentAttachments = attachments.computeIfAbsent(attachName, k -> new HashSet<>());
-      for (final Attachment targetAttachment : currentAttachments) {
 
-        if (targetAttachment.equals(attach)) {
-          if (attach.isAllowSelfAttach()) {
-            // Self attach
-            attach.autoAttach(targetAttachment);
-          }
-        }
-        else {
-          // Auto-attach the traits to each other. The traits will do nothing if they are not auto-attach, and will prevent double attachs.
+      if (attach.isAllowSelfAttach()) {
+        // Self attach
+        attach.autoAttach(attach);
+      }
+
+      for (final Attachment targetAttachment : currentAttachments) {
+        // Auto-attach the traits to each other. The traits will do nothing if they are not auto-attach, and will prevent double attaches.
+        if (!targetAttachment.equals(attach)) {
           attach.autoAttach(targetAttachment);
           targetAttachment.autoAttach(attach);
         }
