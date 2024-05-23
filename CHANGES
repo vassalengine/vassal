@@ -5,6 +5,7 @@
 
 3.7.13 - ???
 
+* 13336: Auto-attach does not attach to self when piece is added to a stack
 * 13324: Fixed bad link to GamePiece page in Reference Manual
 
 3.7.12 - 4 May 2024
