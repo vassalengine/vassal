@@ -31,6 +31,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 13395, "desc": "Fix Invisibility documentation" },
         { "num": 13336, "desc": "Auto-attach does not attach to self when piece is added to a stack" },
         { "num": 13324, "desc": "Fixed bad link to GamePiece page in Reference Manual" }
       ],
