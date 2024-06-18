@@ -1,5 +1,6 @@
 3.7.13 - ???
 
+* 13395: Fix Invisibility documentation
 * 13336: Auto-attach does not attach to self when piece is added to a stack
 * 13324: Fixed bad link to GamePiece page in Reference Manual
 
