@@ -15,8 +15,6 @@ To other players it will not appear at all.
 
 This piece sets the <<Properties.adoc#top,Property>> _InvisibleToOthers=true_ when invisible.
 
-NOTE:  _This trait actually only hides those traits which appear *before* it in the list of traits, so it should generally be the <<GamePiece.adoc#TraitOrder,last trait>> of a Game Piece._
-
 
 [width="100%",cols="50%a,^50%a",]
 |===
