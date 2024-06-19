@@ -23,6 +23,8 @@ import VASSAL.script.expression.AuditTrail;
 import VASSAL.script.expression.Auditable;
 
 import javax.swing.KeyStroke;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * When processing a GlobalCommand (either a Global Key Command or an Attachment command), this applies the
@@ -38,6 +40,9 @@ public class GlobalCommandVisitor implements DeckVisitor {
   protected final AuditTrail auditSoFar;
   private int selectFromDeck;
   private GlobalCommand globalCommand;
+
+  // Keep track of the ID's of all pieces processed by this GKC.
+  private final Map<String, GamePiece> seen = new HashMap<>();
 
 
   public GlobalCommandVisitor(Command command, PieceFilter filter, KeyStroke stroke) {
@@ -122,6 +127,19 @@ public class GlobalCommandVisitor implements DeckVisitor {
   }
 
   protected void apply(GamePiece p, boolean visitingDeck) {
+
+    /*
+      Pieces can change Stacks as a result of the GKC being executed and due to the way GlobalCommand
+      has been coded, this can result in a piece being sent the GKC a second time. Rather than hack into
+      GlobalCommand code and potentially change the order that things are being executed, just maintain a
+      Map of the piece IDs that have been sent the GKC so far and prevent duplicates. This will have the
+      minimal impact possible on existing functionality.
+     */
+    final String uid = (String) p.getProperty(BasicPiece.PIECE_UID);
+    if (seen.containsKey(uid)) {
+      return;
+    }
+    seen.put(uid, null);  // No need to store the actual piece
 
     /*
       If an AuditTrail has been supplied for the evaulation history of the filter up to this point,
