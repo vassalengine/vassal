@@ -811,7 +811,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       myStack = stack;
       mySlot = stack.getTopPiece();
       if (mySlot != null) {
-        myPiece = mySlot.getPiece();
+        myPiece = PieceCloner.getInstance().clonePiece(mySlot.getPiece());
       }
 
       myStack.updatePosition();

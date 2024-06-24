@@ -241,6 +241,11 @@ public final class Primitive implements ParserConstants, java.io.Serializable
     static Object binaryOperationImpl( Object lhs, Object rhs, int kind )
         throws UtilEvalError
 	{
+        /*
+         * VASSAL - Coerce Regular Expression Match/Not Match arguments to be Strings
+         */
+        if(kind == MATCH || kind == NMATCH)
+            return stringBinaryOperation(lhs.toString(), rhs.toString(), kind);
         if(lhs instanceof Boolean)
             return booleanBinaryOperation((Boolean)lhs, (Boolean)rhs, kind);
         else if(lhs instanceof Integer)
