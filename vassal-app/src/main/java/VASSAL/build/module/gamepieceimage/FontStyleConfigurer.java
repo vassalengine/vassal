@@ -33,7 +33,7 @@ public class FontStyleConfigurer extends Configurer {
 
   protected JPanel p;
   protected JPanel fontPanel;
-  protected JComboBox fonts;
+  protected JComboBox<String> fonts;
 
   public FontStyleConfigurer(String key, String name) {
     super(key, name);
@@ -89,7 +89,7 @@ public class FontStyleConfigurer extends Configurer {
       fontPanel.remove(fonts);
     }
 
-    fonts = new JComboBox<>();
+    JComboBox<String> fonts = new JComboBox<>();
     final String[] s = FontManager.getFontManager().getFontNames();
     for (final String item : s) {
       fonts.addItem(item);
