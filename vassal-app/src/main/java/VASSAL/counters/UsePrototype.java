@@ -343,22 +343,22 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
 
     private static class Validator extends JLabel {
 
-      protected static final int INVALID = 0;
-      protected static final int VALID = 1;
-      protected static final int UNKNOWN = 2;
+      private static final int INVALID = 0;
+      private static final int VALID = 1;
+      private static final int UNKNOWN = 2;
 
-      protected final Icon tick;
-      protected final Icon cross;
-      protected final ImageIcon none;
-      protected int status = UNKNOWN;
-      protected boolean validating = false;
-      protected boolean dirty = false;
-      protected final ValidationThread validationThread = new ValidationThread();
-      protected final Editor editor;
+      private final Icon tick;
+      private final Icon cross;
+      private final ImageIcon none;
+      private int status = UNKNOWN;
+      private boolean validating = false;
+      private boolean dirty = false;
+      private final ValidationThread validationThread = new ValidationThread();
+      private final Editor editor;
 
       private static final long serialVersionUID = 1L;
 
-      public Validator(Editor editor) {
+      private Validator(Editor editor) {
         this.editor = editor;
         cross = IconFactory.getIcon("no", IconFamily.XSMALL);  //NON-NLS
         tick = IconFactory.getIcon("yes", IconFamily.XSMALL); //NON-NLS
@@ -369,7 +369,7 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
         setStatus(UNKNOWN);
       }
 
-      public void setStatus(int status) {
+      private void setStatus(int status) {
         if (status == VALID) {
           setIcon(tick);
         }
@@ -399,7 +399,7 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
         }
       }
 
-      class ValidationThread implements Runnable {
+      private class ValidationThread implements Runnable {
 
         @Override
         public void run() {
