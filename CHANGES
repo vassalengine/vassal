@@ -3,6 +3,7 @@
 * 13405: At-Start Stack positioning tool now expands prototypes before
     displaying piece
 * 13402: Add a visual validator for Prototype name in Prototype trait
+* 13398: Ensure a GKC is never applied to same piece twice if it moves
 * 13395: Fix Invisibility documentation
 * 13360: Coerce Regular Expression operator arguments to be strings to prevent
     Bad Data errors

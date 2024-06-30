@@ -22,6 +22,7 @@
       ],
       "bug_fixes": [
         { "num": 13405, "desc": "At-Start Stack positioning tool now expands prototypes before displaying piece" },
+        { "num": 13398, "desc": "Ensure a GKC is never applied to same piece twice if it moves" },
         { "num": 13395, "desc": "Fix Invisibility documentation" },
         { "num": 13360, "desc": "Coerce Regular Expression operator arguments to be strings to prevent Bad Data errors" },
         { "num": 13336, "desc": "Auto-attach does not attach to self when piece is added to a stack" },
