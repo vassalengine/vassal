@@ -28,6 +28,7 @@
         { "num": 13324, "desc": "Fixed bad link to GamePiece page in Reference Manual" }
       ],
       "other_improvements": [
+        { "num": 13402, "desc": "Add a visual validator for Prototype name in Prototype trait" }
       ]
     },
     {
