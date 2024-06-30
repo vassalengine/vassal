@@ -350,7 +350,6 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
       private final Icon tick;
       private final Icon cross;
       private final ImageIcon none;
-      private int status = UNKNOWN;
       private boolean validating = false;
       private boolean dirty = false;
       private final ValidationThread validationThread = new ValidationThread();
@@ -379,7 +378,6 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
         else {
           setIcon(none);
         }
-        this.status = status;
         repaint();
       }
 
