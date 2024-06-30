@@ -258,7 +258,7 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
   public static class Editor implements PieceEditor {
     private final TraitConfigPanel controls;
     private final StringConfigurer nameConfig;
-    private final Validator validator = new Validator();
+    private final Validator validator = new Validator(this);
 
     public Editor(UsePrototype up) {
       controls = new TraitConfigPanel(new TraitLayout(false, TraitLayout.STANDARD_INSETS + "," +  TraitLayout.STANDARD_GAPY + ",hidemode 3,wrap 4", "[]rel[fill]2[]2[]"));
@@ -341,7 +341,7 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
       return nameConfig.getValueString();
     }
 
-    private class Validator extends JLabel {
+    private static class Validator extends JLabel {
 
       protected static final int INVALID = 0;
       protected static final int VALID = 1;
@@ -354,10 +354,12 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
       protected boolean validating = false;
       protected boolean dirty = false;
       protected final ValidationThread validationThread = new ValidationThread();
+      protected final Editor editor;
 
       private static final long serialVersionUID = 1L;
 
-      public Validator() {
+      public Validator(Editor editor) {
+        this.editor = editor;
         cross = IconFactory.getIcon("no", IconFamily.XSMALL);  //NON-NLS
         tick = IconFactory.getIcon("yes", IconFamily.XSMALL); //NON-NLS
 
@@ -392,7 +394,7 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
         }
         else {
           validating = true;
-          validator.setStatus(UNKNOWN);
+          setStatus(UNKNOWN);
           SwingUtilities.invokeLater(validationThread);
         }
       }
@@ -401,12 +403,12 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
 
         @Override
         public void run() {
-          if (getValueString().isEmpty()) {
-            validator.setStatus(UNKNOWN);
+          if (editor.getValueString().isEmpty()) {
+            setStatus(UNKNOWN);
           }
           else {
-            final PrototypeDefinition p = PrototypesContainer.getPrototype(getValueString());
-            validator.setStatus(p == null ? INVALID : VALID);
+            final PrototypeDefinition p = PrototypesContainer.getPrototype(editor.getValueString());
+            setStatus(p == null ? INVALID : VALID);
           }
           validating = false;
           if (dirty) {
