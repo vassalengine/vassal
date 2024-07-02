@@ -5,6 +5,7 @@
 
 3.7.13 - ???
 
+* 13440: Improve Save and Load times by ignoring empty Stacks
 * 13405: At-Start Stack positioning tool now expands prototypes before
     displaying piece
 * 13402: Add a visual validator for Prototype name in Prototype trait

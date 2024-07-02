@@ -39,6 +39,7 @@
         { "num": 13324, "desc": "Fixed bad link to GamePiece page in Reference Manual" }
       ],
       "other_improvements": [
+        { "num": 13440, "desc": "Improve Save and Load times by ignoring empty Stacks" },
         { "num": 13402, "desc": "Add a visual validator for Prototype name in Prototype trait" }
       ]
     },
