@@ -1567,7 +1567,7 @@ public class GameState implements CommandEncoder {
   public Command getRestorePiecesCommand() {
     final List<GamePiece> pieceList = new ArrayList<>();
 
-    // Remove empty Stacjs
+    // Remove empty Stacks
     for (final GamePiece piece : pieces.values()) {
       // Ignore empty Stacks
       if (piece instanceof Deck || !(piece instanceof Stack) || !(((Stack) piece).isEmpty())) {
