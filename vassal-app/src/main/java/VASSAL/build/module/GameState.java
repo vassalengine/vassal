@@ -36,7 +36,9 @@ import VASSAL.command.Logger;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
+import VASSAL.counters.Deck;
 import VASSAL.counters.GamePiece;
+import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.ModuleManagerUpdateHelper;
 import VASSAL.preferences.Prefs;
@@ -1563,8 +1565,15 @@ public class GameState implements CommandEncoder {
    * within a map by visual layer.
    */
   public Command getRestorePiecesCommand() {
-    // TODO remove stacks that were empty when the game was loaded and are still empty now
-    final List<GamePiece> pieceList = new ArrayList<>(pieces.values());
+    final List<GamePiece> pieceList = new ArrayList<>();
+
+    // Remove empty Stacks
+    for (final GamePiece piece : pieces.values()) {
+      // Ignore empty Stacks
+      if (piece instanceof Deck || !(piece instanceof Stack) || !(((Stack) piece).isEmpty())) {
+        pieceList.add(piece);
+      }
+    }
     pieceList.sort(new Comparator<>() {
       private final Map<GamePiece, Integer> indices = new HashMap<>();
 
