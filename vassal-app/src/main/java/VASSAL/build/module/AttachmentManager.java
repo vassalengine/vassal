@@ -22,9 +22,12 @@ import VASSAL.counters.Attachment;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Stack;
+import VASSAL.tools.lang.Pair;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -37,8 +40,14 @@ public class AttachmentManager {
    */
   private final java.util.Map<String, Set<Attachment>> attachments;
 
+  /**
+   * A List of attachments that could not be finalised during game load due to pieces not being loaded yet
+   */
+  private final List<Pair<Attachment, String>> pendingAttachments;
+
   public AttachmentManager() {
     attachments = new HashMap<>();
+    pendingAttachments = new ArrayList<>();
   }
 
   /**
@@ -46,6 +55,7 @@ public class AttachmentManager {
    */
   public void clearAll() {
     attachments.clear();
+    pendingAttachments.clear();
   }
 
   public void pieceAdded(GamePiece piece) {
@@ -173,5 +183,25 @@ public class AttachmentManager {
 
   public Set<Attachment> getAttachmentList(String attachName) {
     return attachments.get(attachName);
+  }
+
+  /**
+   * Record an Attachment that must be resolved later, the target piece has not been loaded yet.
+   * @param attachnent  Attachment Trait
+   * @param target      Id of target piece
+   */
+  public void addPendingAttachment(Attachment attachnent, String target) {
+    pendingAttachments.add(new Pair<>(attachnent, target));
+  }
+
+  /**
+   * Callback from AttachmentManager aftet end of game load to add Attachments to pieces
+   * that had not yet been loaded.
+   */
+  public void resolvePendingAttachments() {
+    for (final Pair<Attachment, String> p : pendingAttachments) {
+      p.first.resolvePendingAtttachment(p.second);
+    }
+    pendingAttachments.clear();
   }
 }
