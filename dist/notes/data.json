@@ -36,7 +36,8 @@
         { "num": 13395, "desc": "Fix Invisibility documentation" },
         { "num": 13360, "desc": "Coerce Regular Expression operator arguments to be strings to prevent Bad Data errors" },
         { "num": 13336, "desc": "Auto-attach does not attach to self when piece is added to a stack" },
-        { "num": 13324, "desc": "Fixed bad link to GamePiece page in Reference Manual" }
+        { "num": 13324, "desc": "Fixed bad link to GamePiece page in Reference Manual" },
+        { "num": 13315, "desc": "Preserve all attachments across save/load" }
       ],
       "other_improvements": [
         { "num": 13440, "desc": "Improve Save and Load times by ignoring empty Stacks" },

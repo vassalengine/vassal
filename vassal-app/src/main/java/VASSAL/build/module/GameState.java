@@ -577,12 +577,20 @@ public class GameState implements CommandEncoder {
 
         // Things that we invokeLater
         SwingUtilities.invokeLater(fastForwarding ? () -> {
+
+          // Resolve any Pending Attachments
+          getAttachmentManager().resolvePendingAttachments();
+
           // Ask the IndexManager to rebuild all indexes so at-start stack pieces are all included
           // This is required for any SGKC's to work
           GameModule.getGameModule().getIndexManager().rebuild();
+
           // Apply all of the startup global key commands, in order
           doStartupGlobalKeyCommands(false);
         } : () -> {
+          // Resolve any Pending Attachments
+          getAttachmentManager().resolvePendingAttachments();
+
           // Ask the IndexManager to rebuild all indexes so at-start stack pieces are all included
           // This is required for any SGKC's to work
           GameModule.getGameModule().getIndexManager().rebuild();

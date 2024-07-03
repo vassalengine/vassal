@@ -17,6 +17,7 @@
 package VASSAL.counters;
 
 import VASSAL.build.GameModule;
+import VASSAL.build.module.AttachmentManager;
 import VASSAL.build.module.GameState;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
@@ -415,10 +416,18 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(newState, ';');
     final int num = st.nextInt(0);
     final GameState gs = GameModule.getGameModule().getGameState();
+    final AttachmentManager am = gs.getAttachmentManager();
     for (int i = 0; i < num; i++) {
-      final GamePiece piece = gs.getPieceForId(st.nextToken());
-      //BR// getPieceForId can return null, and WILL during load-game if target piece hasn't loaded yet.
-      if (piece != null) {
+      final String id = st.nextToken("");
+      final GamePiece piece = gs.getPieceForId(id);
+
+      if (piece == null) {
+        // If the piece can't be found, then we are loading a save file and the piece hasn't been loaded yet.
+        // Pass it to the AttachmentManager to handle when the save has finished loading by calling back to
+        // our resolvePendingAttachment() method.
+        am.addPendingAttachment(this, id);
+      }
+      else {
         contents.add(piece);
       }
     }
@@ -437,6 +446,20 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       if (! hasTarget(piece)) {
         contents.add(piece);
       }
+    }
+  }
+
+  /**
+   * An attachment could not be satisfied during game load. Game Load is now finished
+   * and the Attachment Manager is calling us to retry that attachment.
+   * This does not need to generate any Commands.
+   *
+   * @param target Id of target piece
+   */
+  public void resolvePendingAtttachment(String target) {
+    final GamePiece piece = GameModule.getGameModule().getGameState().getPieceForId(target);
+    if (piece != null && ! hasTarget(piece)) {
+      contents.add(piece);
     }
   }
 
