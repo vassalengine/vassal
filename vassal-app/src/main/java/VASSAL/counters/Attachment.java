@@ -17,6 +17,7 @@
 package VASSAL.counters;
 
 import VASSAL.build.GameModule;
+import VASSAL.build.module.AttachmentManager;
 import VASSAL.build.module.GameState;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
@@ -415,6 +416,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(newState, ';');
     final int num = st.nextInt(0);
     final GameState gs = GameModule.getGameModule().getGameState();
+    final AttachmentManager am = gs.getAttachmentManager();
     for (int i = 0; i < num; i++) {
       final String id = st.nextToken("");
       final GamePiece piece = gs.getPieceForId(id);
@@ -423,7 +425,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
         // If the piece can't be found, then we are loading a save file and the piece hasn't been loaded yet.
         // Pass it to the AttachmentManager to handle when the save has finished loading by calling back to
         // our resolvePendingAttachment() method.
-        GameModule.getGameModule().getGameState().getAttachmentManager().addPendingAttachment(this, id);
+        am.addPendingAttachment(this, id);
       }
       else {
         contents.add(piece);

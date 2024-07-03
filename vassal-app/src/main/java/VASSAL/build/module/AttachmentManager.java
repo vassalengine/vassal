@@ -191,7 +191,7 @@ public class AttachmentManager {
    * @param target      Id of target piece
    */
   public void addPendingAttachment(Attachment attachnent, String target) {
-    pendingAttachments.add(new Pair<>(attachnent, target));
+    pendingAttachments.add(Pair.of(attachnent, target));
   }
 
   /**
