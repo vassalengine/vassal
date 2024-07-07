@@ -196,7 +196,7 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
 
   @Override
   public HelpFile getHelpFile() {
-    return null;
+    return HelpFile.getReferenceManualPage("ScenarioProperties.html"); //NON-NLS
   }
 
   @Override

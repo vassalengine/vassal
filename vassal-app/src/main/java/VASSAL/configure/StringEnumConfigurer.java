@@ -16,10 +16,13 @@
  */
 package VASSAL.configure;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Graphics;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
 
 /**
@@ -49,6 +52,14 @@ public class StringEnumConfigurer extends Configurer {
       panel = new ConfigurerPanel(getName(), "[]", "[]rel[]"); // NON-NLS
 
       box = new JComboBox<>(validValues);
+      // Ensure the text stays visible when the combobox is disabled
+      box.setRenderer(new DefaultListCellRenderer() {
+        @Override
+        public void paint(Graphics g) {
+          setForeground(Color.BLACK);
+          super.paint(g);
+        }
+      });
       box.setMaximumSize(new Dimension(box.getMaximumSize().width, box.getPreferredSize().height));
       if (isValidValue(getValue())) {
         box.setSelectedItem(getValue());

@@ -21,6 +21,7 @@ import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.GameState;
+import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
@@ -131,6 +132,11 @@ public abstract class AbstractScenarioProperty extends GlobalProperty {
 
   // Return a Configurer to add to the Scenario options tab
   public abstract Configurer getOptionConfigurer();
+
+  @Override
+  public HelpFile getHelpFile() {
+    return HelpFile.getReferenceManualPage("ScenarioProperties.html"); //NON-NLS
+  }
 
   public void processOptionChange(Object newValue) {
 
