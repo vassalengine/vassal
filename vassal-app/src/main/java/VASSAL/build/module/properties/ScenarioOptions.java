@@ -159,7 +159,7 @@ public class ScenarioOptions implements GameComponent {
 
       final JPanel scrollPanel = new JPanel(new BorderLayout());
       scrollPanel.add(scrollPane, BorderLayout.CENTER);
-      dialog.add(scrollPanel, "grow, wrap");
+      dialog.add(scrollPanel, "grow, push, wrap");
 
       final JPanel buttonPanel = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
       buttonPanel.add(ok, "tag ok, sg 1"); //NON-NLS
