@@ -31,6 +31,7 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.NotNullConfigureName;
 import VASSAL.configure.PlayerIdFormattedExpressionConfigurer;
+import VASSAL.configure.TextConfigurer;
 import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
@@ -68,7 +69,7 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
 
   public static final String HEADING = "heading"; // NON-NLS
   public static final String LEFT_COLUMN_ALIGNMENT = "leftAlign"; // NON-NLS
-  public static final String RIGHT_COLUMN_ALIGNMENT = "rightAlign"; // NON-NLS
+
   public static final String LEFT = "left"; // NON-NLS
   public static final String CENTER = "center"; // NON-NLS
   public static final String RIGHT = "right"; // NON-NLS
@@ -82,7 +83,7 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
   protected String description = "";
   protected String heading = "";
   protected String leftColumnAlignment = "";
-  protected String rightColumnAlignment = "";
+
   protected MutablePropertiesContainer parentContainer;
   protected Buildable parent; // Since we delegate all the action up to the ScenarioOptions component
   protected FormattedString reportFormat = new FormattedString(Resources.getString("ScenarioOptions.default_report"));
@@ -124,7 +125,7 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
 
   @Override
   public String[] getAttributeNames() {
-    return new String[]{NAME, DESCRIPTION, REPORT, HEADING, LEFT_COLUMN_ALIGNMENT, RIGHT_COLUMN_ALIGNMENT};
+    return new String[]{NAME, DESCRIPTION, REPORT, HEADING, LEFT_COLUMN_ALIGNMENT};
   }
 
   @Override
@@ -139,10 +140,7 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
       heading = (String) value;
     }
     else if (LEFT_COLUMN_ALIGNMENT.equals(key)) {
-      leftColumnAlignment = (String) value;
-    }
-    else if (RIGHT_COLUMN_ALIGNMENT.equals(key)) {
-      rightColumnAlignment = (String) value;
+      setLeftColumnAlignment((String) value);
     }
     else if (REPORT.equals(key)) {
       reportFormat.setFormat((String) value);
@@ -153,8 +151,9 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
       if (value instanceof String) {
         value = Boolean.valueOf((String) value);
       }
-      leftColumnAlignment = ((Boolean) value) ? RIGHT : LEFT;
-      rightColumnAlignment = LEFT;
+      if (getLeftColumnAlignment().isEmpty()) {
+        setLeftColumnAlignment(((Boolean) value) ? RIGHT : LEFT);
+      }
     }
   }
 
@@ -172,9 +171,6 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
     else if (LEFT_COLUMN_ALIGNMENT.equals(key)) {
       return getLeftColumnAlignment();
     }
-    else if (RIGHT_COLUMN_ALIGNMENT.equals(key)) {
-      return getRightColumnAlignment();
-    }
     else if (REPORT.equals(key)) {
       return reportFormat.getFormat();
     }
@@ -189,13 +185,12 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
       Resources.getString(Resources.REPORT_FORMAT_LABEL),
       Resources.getString("Editor.ScenarioProperties.heading"),
       Resources.getString("Editor.ScenarioProperties.left_column_alignment"),
-      Resources.getString("Editor.ScenarioProperties.right_column_alignment"),
     };
   }
 
   @Override
   public Class<?>[] getAttributeTypes() {
-    return new Class[]{String.class, String.class, ChangeOptionConfig.class, String.class, AlignConfig.class, AlignConfig.class};
+    return new Class[]{String.class, String.class, ChangeOptionConfig.class, TextConfig.class, AlignConfig.class};
   }
 
   @Override
@@ -257,11 +252,12 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
   }
 
   public String getLeftColumnAlignment() {
-    return leftColumnAlignment.isEmpty() ? LEFT : leftColumnAlignment;
+    return leftColumnAlignment.isEmpty() ? RIGHT : leftColumnAlignment;
   }
 
-  public String getRightColumnAlignment() {
-    return rightColumnAlignment.isEmpty() ? LEFT : rightColumnAlignment;
+
+  public void setLeftColumnAlignment(String leftColumnAlignment) {
+    this.leftColumnAlignment = leftColumnAlignment;
   }
 
   @Override
@@ -350,11 +346,11 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
       if (entry.getProperty().isSwitchPosition()) {
         // Reverse left/right if Option asks to
         uiPanel.add(entry.getConfigurer().getControls(), getLeftColumnAlignment());
-        uiPanel.add(new JLabel(entry.getDescription()), getRightColumnAlignment() + ", grow"); // NON-NLS
+        uiPanel.add(new JLabel(entry.getDescription())); // NON-NLS
       }
       else {
         uiPanel.add(new JLabel(entry.getDescription()), getLeftColumnAlignment());
-        uiPanel.add(entry.getConfigurer().getControls(), getRightColumnAlignment());
+        uiPanel.add(entry.getConfigurer().getControls());
       }
 
     }
@@ -701,6 +697,15 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
       return new TranslatingStringEnumConfigurer(key, name,
         new String[] {LEFT, CENTER, RIGHT},
         new String[] {"Editor.left", "Editor.center", "Editor.right"});
+    }
+  }
+
+  public static class TextConfig implements ConfigurerFactory {
+    @Override
+    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+      final TextConfigurer t = new TextConfigurer(key, name);
+      t.setWordWrap(true);
+      return t;
     }
   }
 }
