@@ -301,6 +301,10 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     // get a stream to the saved game in the module file
     gs.setupRefresh();
     gs.loadGameInForeground(fileName, getSavedGameContents());
+
+    // Resolve any Pending Attachments
+    gs.getAttachmentManager().resolvePendingAttachments();
+
     mod.getPlayerWindow().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
     // call the gameRefresher
