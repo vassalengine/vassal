@@ -117,4 +117,21 @@ public class PiecePropertyIndex {
     return results == null ? new HashSet<>() : results;
   }
 
+  public String getIndexForPiece(GamePiece piece) {
+    final String id = piece.getId();
+    final String xrefValue = values.get(id);
+    String value = "";
+
+    for (final String index : pieces.keySet()) {
+      if (pieces.get(index).contains(piece)) {
+        value = index;
+      }
+    }
+
+    if (value.equals(xrefValue)) {
+      return value;
+    }
+
+    return ("Value=" + value + ", xrefvalue=" + xrefValue);
+  }
 }

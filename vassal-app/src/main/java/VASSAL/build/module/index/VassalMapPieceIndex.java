@@ -175,5 +175,16 @@ public class VassalMapPieceIndex {
       return new HashSet<>();
     }
   }
+
+  public String getIndexForPiece(String propertyName, GamePiece piece) {
+    if (BasicPiece.CURRENT_ZONE.equals(propertyName)) {
+      return zoneIndex.getIndexForPiece(piece);
+    }
+    else if (BasicPiece.LOCATION_NAME.equals(propertyName)) {
+      return locationIndex.getIndexForPiece(piece);
+    }
+    else
+      return "";
+  }
 }
 

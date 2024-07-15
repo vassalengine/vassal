@@ -372,6 +372,12 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
     if (BASIC_NAME.equals(key)) {
       return getRealLocalizedName();
     }
+    else if ("IndexedZone".equals(key)) {
+      return GameModule.getGameModule().getIndexManager().getIndexForPiece(map, CURRENT_ZONE, Decorator.getOutermost(this));
+    }
+    else if ("IndexedLocation".equals(key)) {
+      return GameModule.getGameModule().getIndexManager().getIndexForPiece(map, LOCATION_NAME, Decorator.getOutermost(this));
+    }
     else {
       return getLocalizedPublicProperty(key);
     }

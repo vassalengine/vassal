@@ -56,6 +56,7 @@ public class IndexManager {
     return indexes.computeIfAbsent(map, m -> new VassalMapPieceIndex(m));
   }
 
+
   /**
    * Clear and rebuild all indexes using pieces currently existing on boards.
    * Will usually only be called at the start of a game session after initial load of gamestate is complete.
@@ -175,5 +176,10 @@ public class IndexManager {
 
     // Convert the Set result or null to an ArrayList for call consistency
     return new ArrayList<>(index.getPieces(propertyName, propertyValue));
+  }
+
+  public String getIndexForPiece(Map map, String propertyName, GamePiece piece) {
+    final VassalMapPieceIndex index = getIndex(map);
+    return index.getIndexForPiece(propertyName, piece);
   }
 }
