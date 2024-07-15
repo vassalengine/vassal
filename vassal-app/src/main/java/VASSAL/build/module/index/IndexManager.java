@@ -179,7 +179,12 @@ public class IndexManager {
   }
 
   public String getIndexForPiece(Map map, String propertyName, GamePiece piece) {
-    final VassalMapPieceIndex index = getIndex(map);
-    return index.getIndexForPiece(propertyName, piece);
+    if (map != null) {
+      final VassalMapPieceIndex index = getIndex(map);
+      if (index != null) {
+        return index.getIndexForPiece(propertyName, piece);
+      }
+    }
+    return "";
   }
 }
