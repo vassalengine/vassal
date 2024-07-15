@@ -423,7 +423,7 @@ public abstract class EditorWindow extends JFrame {
   boolean isTempFile(String name) {
     return name == null ||
       name.isEmpty() ||
-      ("tmp".equals(name.substring(0, 3)) && name.contains(".zip"));  //NON-NLS
+      (name.length() >= 3 && "tmp".equals(name.substring(0, 3)) && name.contains(".zip"));  //NON-NLS
   }
 
   void setModuleName(String name) {
