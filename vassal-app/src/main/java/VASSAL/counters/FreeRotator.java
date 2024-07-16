@@ -433,6 +433,10 @@ public class FreeRotator extends Decorator
         reportDataError(this, Resources.getString("Error.non_number_error"), "Fixed Angle Index=" + state, e); // NON-NLS
       }
     }
+    // Has the piece been refreshed and now has fewer facings?
+    if (angleIndex > (validAngles.length - 1)) {
+      angleIndex = validAngles.length - 1;
+    }
   }
 
   @Override
