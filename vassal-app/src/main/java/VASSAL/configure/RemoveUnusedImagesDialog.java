@@ -63,7 +63,7 @@ public class RemoveUnusedImagesDialog extends JDialog {
     final FlowLabel text =
       new FlowLabel(Resources.getString("Editor.UnusedImages.unused_1"));
 
-    AbstractBuildable parent;
+    final AbstractBuildable parent;
     if (owner instanceof ExtensionEditorWindow) {
       parent = ((ExtensionEditorWindow) owner).getExtension();
       archive = ((ExtensionEditorWindow) owner).getExtension().getDataArchive().getWriter();
