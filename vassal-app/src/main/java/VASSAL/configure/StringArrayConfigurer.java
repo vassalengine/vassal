@@ -314,9 +314,9 @@ public class StringArrayConfigurer extends Configurer implements ConfigurableLis
 
   @Override
   public void addEntry() {
-    int newEntry;
     final int pos = getSelectedEntryIndex();
 
+    final int newEntry;
     // Insert the new entry into the list at the appropriate place
     if (entries.isEmpty() || pos < 0 || pos > getStringArray().length - 1) {
       setValue(ArrayUtils.add(getStringArray(), ""));
