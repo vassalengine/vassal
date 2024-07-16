@@ -9,6 +9,7 @@
 * 13400: Prevent crashes when refreshing counters with fewer Can Rotate facings
 * 13398: Ensure a GKC is never applied to same piece twice if it moves
 * 13395: Fix Invisibility documentation
+* 13384: Prevent crash in Does Not Stack during Edit Contained Pieces
 * 13365: Fix NPE When editing Game Piece Images
 * 13360: Coerce Regular Expression operator arguments to be strings to prevent
     Bad Data errors
