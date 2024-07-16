@@ -300,6 +300,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
 
     // get a stream to the saved game in the module file
     gs.setupRefresh();
+
     try {
       gs.loadGameInForeground(fileName, getSavedGameContents());
     }
@@ -309,6 +310,10 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
       gameRefresher.log(Resources.getString("Editor.PredefinedSetup.io_error", e.getMessage()));
       return 0;
     }
+    
+    // Resolve any Pending Attachments
+    gs.getAttachmentManager().resolvePendingAttachments();
+
     mod.getPlayerWindow().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
     // call the gameRefresher
