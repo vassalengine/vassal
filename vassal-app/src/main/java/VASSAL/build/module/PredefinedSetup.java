@@ -296,11 +296,19 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
 
     // since we're going to block the GUI, let's give some feedback
     gameRefresher.log(GameRefresher.SEPARATOR); //$NON-NLS-1$
-    gameRefresher.log("Updating Predefined Setup: " + this.getAttributeValueString(NAME) + " (" + fileName + ")"); //$NON-NLS-1$S
+    gameRefresher.log(Resources.getString("Editor.PredefinedSetup.updating", this.getAttributeValueString(NAME), fileName));
 
     // get a stream to the saved game in the module file
     gs.setupRefresh();
-    gs.loadGameInForeground(fileName, getSavedGameContents());
+    try {
+      gs.loadGameInForeground(fileName, getSavedGameContents());
+    }
+    catch (IOException e) {
+      // It's possible to get I/O errors trying to load the setup out of the module.
+      // Report these in the GameRefresher log rather than throwing a Vassal bug dialog.
+      gameRefresher.log(Resources.getString("Editor.PredefinedSetup.io_error", e.getMessage()));
+      return 0;
+    }
     mod.getPlayerWindow().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
     // call the gameRefresher
