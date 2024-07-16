@@ -100,7 +100,7 @@ public class GridOp extends AbstractTiledOpImpl {
     final int tw = sop.getTileWidth();
     final int th = sop.getTileHeight();
 
-    BufferedImage dst;
+    final BufferedImage dst;
     try {
       // match the transparency of the first tile
       dst = ImageUtils.createCompatibleImage(
