@@ -235,7 +235,7 @@ public class Immobilized extends Decorator implements EditablePiece {
       bandselectFilter = null;
     }
 
-    if (stackingOptions.charAt(0) == STACK_NORMAL) {
+    if (!stackingOptions.isEmpty() && stackingOptions.charAt(0) == STACK_NORMAL) {
       canStack = true;
     }
 
