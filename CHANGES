@@ -8,6 +8,8 @@
 * 13395: Fix Invisibility documentation
 * 13360: Coerce Regular Expression operator arguments to be strings to prevent
     Bad Data errors
+* 13359: eport I/O Errors during Predefined Setup refresh in Refresher log,
+    not as a Vassal bug
 * 13336: Auto-attach does not attach to self when piece is added to a stack
 * 13324: Fixed bad link to GamePiece page in Reference Manual
 * 13315: Preserve all attachments across save/load
