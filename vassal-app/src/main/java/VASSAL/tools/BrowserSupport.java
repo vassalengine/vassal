@@ -59,7 +59,7 @@ public class BrowserSupport {
     // Try start, open, or xdg-open in case nothing else works
     final String uristr = uri.toString();
 
-    String launcher;
+    final String launcher;
     if (SystemUtils.IS_OS_WINDOWS) {
       launcher = "start";  //NON-NLS
     }
@@ -81,7 +81,7 @@ public class BrowserSupport {
   }
 
   public static void openURL(URL url) {
-    URI uri;
+    final URI uri;
     try {
       try {
         uri = url.toURI();
@@ -99,7 +99,7 @@ public class BrowserSupport {
   }
 
   public static void openURL(String url) {
-    URI uri;
+    final URI uri;
     try {
       try {
         uri = new URI(url);
