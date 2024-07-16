@@ -11,11 +11,15 @@
 * 13402: Add a visual validator for Prototype name in Prototype trait
 * 13398: Ensure a GKC is never applied to same piece twice if it moves
 * 13395: Fix Invisibility documentation
+* 13365: Fix NPE When editing Game Piece Images
 * 13360: Coerce Regular Expression operator arguments to be strings to prevent
     Bad Data errors
+* 13359: eport I/O Errors during Predefined Setup refresh in Refresher log,
+    not as a Vassal bug
 * 13336: Auto-attach does not attach to self when piece is added to a stack
 * 13324: Fixed bad link to GamePiece page in Reference Manual
 * 13315: Preserve all attachments across save/load
+* 11884: Ensure OldMat is set when a piece leaves a Mat
 
 3.7.12 - 4 May 2024
 

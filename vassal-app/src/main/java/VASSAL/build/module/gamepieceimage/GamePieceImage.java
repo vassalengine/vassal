@@ -578,7 +578,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
     }
 
     private String clean(String string) {
-      return string.replaceAll("[^\\w.-]", "");
+      return string == null ? "" : string.replaceAll("[^\\w.-]", "");
     }
 
     /** Don't let any of the '.png' at the end of the string be removed and clean unwanted characters */

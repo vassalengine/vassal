@@ -881,17 +881,18 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
       locationName = m.locationName(pos);
 
       if (GameModule.getGameModule().isMatSupport()) {
-        if (Boolean.TRUE.equals(p.getProperty(MatCargo.IS_CARGO))) {
-          final MatCargo cargo = (MatCargo) getDecorator(getOutermost(p), MatCargo.class);
+        final GamePiece outer = getOutermost(p);
+        if (Boolean.TRUE.equals(outer.getProperty(MatCargo.IS_CARGO))) {
+          final MatCargo cargo = (MatCargo) getDecorator(outer, MatCargo.class);
           if (cargo != null) {
             final GamePiece mat = cargo.getMat();
             if (mat != null) {
               matName = (String)mat.getProperty(MAT_NAME);
               matID   = (String)mat.getProperty(MAT_ID);
 
-              final GamePiece outer = getOutermost(mat);
-              matPieceName = (String)outer.getProperty(PIECE_NAME);
-              matBasicName = (String)outer.getProperty(BASIC_NAME);
+              final GamePiece matOuter = getOutermost(mat);
+              matPieceName = (String)matOuter.getProperty(PIECE_NAME);
+              matBasicName = (String)matOuter.getProperty(BASIC_NAME);
               matOldOffsetX = String.valueOf(cargo.getProperty(MatCargo.CURRENT_MAT_OFFSET_X));
               matOldOffsetY = String.valueOf(cargo.getProperty(MatCargo.CURRENT_MAT_OFFSET_Y));
             }
