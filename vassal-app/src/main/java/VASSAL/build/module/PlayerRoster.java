@@ -834,12 +834,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   }
 
   protected String promptForSide(String newSide) {
-    // availableSides and alreadyTaken are translated side names
-    final List<String> availableSides = new ArrayList<>(getSides());
-    final List<String> alreadyTaken = new ArrayList<>();
-    boolean alreadyConnected;
-    final GameModule g = GameModule.getGameModule();
-
+    final boolean alreadyConnected;
     if (newSide != null && newSide.isEmpty()) {
       alreadyConnected = true;
     }
@@ -851,6 +846,11 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         alreadyConnected = false;
       }
     }
+
+    // availableSides and alreadyTaken are translated side names
+    final List<String> availableSides = new ArrayList<>(getSides());
+    final List<String> alreadyTaken = new ArrayList<>();
+    final GameModule g = GameModule.getGameModule();
 
     while (newSide != null) { // Loops until a valid side is found or op is canceled (repeats side check to minimise race condition window)
       // Refresh from current game state
