@@ -30,6 +30,7 @@
         { "num": 13315, "desc": "Preserve all attachments across save/load" }
       ],
       "other_improvements": [
+        { "num": 13359, "desc": "Report I/O Errors during Predefined Setup refresh in Refresher log, not as a Vassal bug" },
         { "num": 13440, "desc": "Improve Save and Load times by ignoring empty Stacks" },
         { "num": 13402, "desc": "Add a visual validator for Prototype name in Prototype trait" }
       ]
