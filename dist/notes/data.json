@@ -28,7 +28,8 @@
         { "num": 13360, "desc": "Coerce Regular Expression operator arguments to be strings to prevent Bad Data errors" },
         { "num": 13336, "desc": "Auto-attach does not attach to self when piece is added to a stack" },
         { "num": 13324, "desc": "Fixed bad link to GamePiece page in Reference Manual" },
-        { "num": 13315, "desc": "Preserve all attachments across save/load" }
+        { "num": 13315, "desc": "Preserve all attachments across save/load" },
+        { "num": 11884, "desc": "Ensure OldMat is set when a piece leaves a Mat" }
       ],
       "other_improvements": [
         { "num": 13359, "desc": "Report I/O Errors during Predefined Setup refresh in Refresher log, not as a Vassal bug" },
