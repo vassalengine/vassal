@@ -421,9 +421,7 @@ public abstract class EditorWindow extends JFrame {
    * @return true if this is a "temporary file" (according to the temp-file-making scheme of {@link VASSAL.tools.io.ZipArchive})
    */
   boolean isTempFile(String name) {
-    return name == null ||
-      name.isEmpty() ||
-      ("tmp".equals(name.substring(0, 3)) && name.contains(".zip"));  //NON-NLS
+    return name == null || name.isEmpty() || (name.startsWith("tmp") && name.contains(".zip"));  //NON-NLS
   }
 
   void setModuleName(String name) {
