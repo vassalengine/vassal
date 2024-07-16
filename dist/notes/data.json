@@ -22,6 +22,7 @@
       ],
       "bug_fixes": [
         { "num": 13447, "desc": "Maintain all attachments when refreshing Pre-defined scenarios" },
+        { "num": 13429, "desc": "Prevent crash when editing module with name shorter than 3 characters" },
         { "num": 13405, "desc": "At-Start Stack positioning tool now expands prototypes before displaying piece" },
         { "num": 13398, "desc": "Ensure a GKC is never applied to same piece twice if it moves" },
         { "num": 13395, "desc": "Fix Invisibility documentation" },
