@@ -30,6 +30,7 @@
         { "num": 13384, "desc": "Prevent crash in Does Not Stack during Edit Contained Pieces" },
         { "num": 13365, "desc": "Fix NPE When editing Game Piece Images" },
         { "num": 13360, "desc": "Coerce Regular Expression operator arguments to be strings to prevent Bad Data errors" },
+        { "num": 13339, "desc": "Prevent NPE during game load" },
         { "num": 13336, "desc": "Auto-attach does not attach to self when piece is added to a stack" },
         { "num": 13324, "desc": "Fixed bad link to GamePiece page in Reference Manual" },
         { "num": 13315, "desc": "Preserve all attachments across save/load" },
