@@ -307,7 +307,9 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
       // It's possible to get I/O errors trying to load the setup out of the module.
       // Report these in the GameRefresher log rather than throwing a Vassal bug dialog.
       gameRefresher.log(Resources.getString("Editor.PredefinedSetup.io_error", e.getMessage()));
-      return 0;
+
+      // Let the Refresh Dialog know there was an error so it can handle top-level reporting correctly.
+      throw e;
     }
     mod.getPlayerWindow().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
