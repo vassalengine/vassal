@@ -426,7 +426,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
             refreshCount++;
           }
           catch (final IOException e) {
-            ErrorDialog.bug(e);
+            // Ignore the Exception, it has already been reported into the refresher log by pds.refreshWithStatus().
             failPds.add(pds);
           }
           finally {
