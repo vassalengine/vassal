@@ -140,16 +140,14 @@ public class ServerAddressBook {
   }
 
   private static String discoverMyIpAddressFromRemote() throws IOException {
-    String theIp;
     final HttpRequestWrapper r = new HttpRequestWrapper("https://vassalengine.org/util/getMyAddress"); //$NON-NLS-1$
     final List<String> l = r.doGet(null);
     if (!l.isEmpty()) {
-      theIp = l.get(0);
+      return l.get(0);
     }
     else {
       throw new IOException(Resources.getString("Server.empty_response")); //$NON-NLS-1$
     }
-    return theIp;
   }
 
   /**

@@ -356,7 +356,7 @@ public class PieceDefiner extends JPanel {
    */
   private void resizeSlotPanel() {
 
-    Dimension newSlotSize;
+    final Dimension newSlotSize;
 
     // Find the size of the piece rendered at 100% in the PieceSlot.
     // If the PieceSlot has not been rendered yet, use the bounding box

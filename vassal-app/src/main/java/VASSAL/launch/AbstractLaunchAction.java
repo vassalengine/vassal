@@ -202,7 +202,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
   protected boolean checkRemovedAndDeprecated(File f) throws IOException {
     // Check for usage of removed and deprecated classes, methods, fields
     final RemovalAndDeprecationChecker rdc = new RemovalAndDeprecationChecker();
-    Pair<Map<String, Map<String, String>>, Map<String, Map<String, String>>> rd;
+    final Pair<Map<String, Map<String, String>>, Map<String, Map<String, String>>> rd;
     try (ZipFile zf = new ZipFile(f.getAbsolutePath())) {
       rd = rdc.check(zf);
     }

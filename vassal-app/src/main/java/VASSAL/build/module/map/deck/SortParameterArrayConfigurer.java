@@ -91,7 +91,7 @@ public class SortParameterArrayConfigurer extends Configurer implements Configur
     final int pos = getSelectedEntryIndex();
     final List<SortParameter> params = getValue() == null ? new ArrayList<>() : getSortParameterListValue();
 
-    int newEntry;
+    final int newEntry;
     // Insert the new entry into the list at the appropriate place
     if (entries.isEmpty() || getSelectedEntryIndex() < 0) {
       params.add(new SortParameter());
@@ -103,6 +103,7 @@ public class SortParameterArrayConfigurer extends Configurer implements Configur
       params.add(pos, new SortParameter());
       setValue(params);
     }
+
     setSelectedEntryIndex(newEntry);
     rebuildControls(newEntry);
   }

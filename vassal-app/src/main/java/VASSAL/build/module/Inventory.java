@@ -600,16 +600,13 @@ public class Inventory extends AbstractToolbarItem
 
   protected int getTotalValue(GamePiece p) {
     final String s = (String) p.getProperty(nonLeafFormat);
-    int count;
     try {
-      count = Integer.parseInt(s);
+      return Integer.parseInt(s);
     }
     catch (NumberFormatException e) {
       // Count each piece as 1 if the property isn't a number
-      count = 1;
+      return 1;
     }
-
-    return count;
   }
 
   @Override

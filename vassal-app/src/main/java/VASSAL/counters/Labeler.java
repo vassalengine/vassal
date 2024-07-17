@@ -676,7 +676,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       baseOp != null ? baseOp.getSize() : new Dimension()
     );
 
-    Rectangle labelBounds;
+    final Rectangle labelBounds;
     if (rotateDegrees != 0) {
       final AffineTransform tx = AffineTransform.getRotateInstance(
         Math.toRadians(rotateDegrees)
@@ -716,8 +716,8 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       baseOp != null ? baseOp.getSize() : new Dimension()
     );
 
-    Shape labelShape;
-    Rectangle labelBounds;
+    final Shape labelShape;
+    final Rectangle labelBounds;
 
     if (rotateDegrees != 0) {
       final AffineTransform tx = AffineTransform.getRotateInstance(

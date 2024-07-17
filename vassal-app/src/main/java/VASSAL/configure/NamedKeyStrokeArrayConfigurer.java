@@ -228,7 +228,7 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer implements Configu
     final int pos = getSelectedEntryIndex();
     final NamedKeyStroke[] keys = getValue() == null ? new NamedKeyStroke[0] : getNameKeyStrokeArrayValue();
 
-    int newEntry;
+    final int newEntry;
     // Insert the new entry into the list at the appropriate place
     if (entries.isEmpty() || getSelectedEntryIndex() < 0) {
       setValue(ArrayUtils.add(keys, NamedKeyStroke.NULL_KEYSTROKE));

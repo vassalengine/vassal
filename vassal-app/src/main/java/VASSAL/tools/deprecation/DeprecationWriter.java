@@ -28,8 +28,8 @@ public class DeprecationWriter {
       throw new IllegalArgumentException();
     }
 
-    String infile;
-    String outfile;
+    final String infile;
+    final String outfile;
 
     if ("-o".equals(args[0])) {
       outfile = args[1];
