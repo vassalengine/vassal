@@ -37,6 +37,7 @@
         { "num": 11884, "desc": "Ensure OldMat is set when a piece leaves a Mat" }
       ],
       "other_improvements": [
+        { "num": 13496, "desc": "Remove workaround for Windows file dialog bug (12152)" },
         { "num": 13495, "desc": "Upgrade bundled Java to 22.0.2, 21.0.4 (32-bit Windows)" },
         { "num": 13359, "desc": "Report I/O Errors during Predefined Setup refresh in Refresher log, not as a Vassal bug" },
         { "num": 13440, "desc": "Improve Save and Load times by ignoring empty Stacks" },
