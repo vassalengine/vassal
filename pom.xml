@@ -19,7 +19,6 @@
     </licenses>
 
     <modules>
-        <module>vassal-agent</module>
         <module>vassal-app</module>
         <module>vassal-deprecation</module>
         <module>vassal-doc</module>
