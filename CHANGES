@@ -1,5 +1,6 @@
 3.7.13 - ???
 
+* 13495: Upgrade bundled Java to 22.0.2, 21.0.4 (32-bit Windows)
 * 13447: Maintain all attachments when refreshing Pre-defined scenarios
 * 13440: Improve Save and Load times by ignoring empty Stacks
 * 13429: Prevent crash when editing module with name shorter than 3 characters
