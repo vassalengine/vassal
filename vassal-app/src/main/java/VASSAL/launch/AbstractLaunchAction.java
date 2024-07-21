@@ -550,15 +550,6 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       result.add("");   // reserved for initial heap
       result.add("");   // reserved for maximum heap
 
-      if (SystemUtils.IS_OS_WINDOWS) {
-        final String noAgent = System.getProperty("VASSAL.noagent");
-        if (noAgent == null) {
-          result.add("-javaagent:lib\\vassal-agent.jar");
-          result.add("--add-opens");
-          result.add("java.desktop/sun.awt.shell=ALL-UNNAMED");
-        }
-      }
-
       result.addAll(new CustomVmOptions().getCustomVmOptions());
 
       // pass on the user's home, if it's set
