@@ -63,10 +63,10 @@ public class StringEnumConfigurer extends Configurer {
       box.setRenderer(new DefaultListCellRenderer() {
         @Override
         public void paint(Graphics g) {
-         if (!box.isEnabled()) {
-           setForeground(enabledColor);
-         }
-         super.paint(g);
+          if (!box.isEnabled()) {
+            setForeground(enabledColor);
+          }
+          super.paint(g);
         }
       });
       box.setMaximumSize(new Dimension(box.getMaximumSize().width, box.getPreferredSize().height));
