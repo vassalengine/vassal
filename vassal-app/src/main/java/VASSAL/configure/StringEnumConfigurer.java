@@ -24,6 +24,7 @@ import java.awt.Graphics;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
+import javax.swing.UIManager;
 
 /**
  * A Configurer that returns a String from among a list of possible values
@@ -49,15 +50,23 @@ public class StringEnumConfigurer extends Configurer {
   @Override
   public Component getControls() {
     if (panel == null) {
+
       panel = new ConfigurerPanel(getName(), "[]", "[]rel[]"); // NON-NLS
 
       box = new JComboBox<>(validValues);
+
       // Ensure the text stays visible when the combobox is disabled
+      // If the Combobox is Disabled, then use the Enabled Color to display the text instead.
+      // The default disabled color is nearly invisible (on windows).
+      // There are other visual cues (frame changes color) to indicate the field can't be used.
+      final Color enabledColor = UIManager.getColor("Combobox.foreground");
       box.setRenderer(new DefaultListCellRenderer() {
         @Override
         public void paint(Graphics g) {
-          setForeground(Color.BLACK);
-          super.paint(g);
+         if (!box.isEnabled()) {
+           setForeground(enabledColor);
+         }
+         super.paint(g);
         }
       });
       box.setMaximumSize(new Dimension(box.getMaximumSize().width, box.getPreferredSize().height));

@@ -225,7 +225,7 @@ public class StringConfigurer extends Configurer {
 
   @Override
   public void setEnabled(boolean enabled) {
-    // The default disabled state of a testfield makes the text almost invisible. Just make the field non-editable instead.
+    // The default disabled state of a textfield makes the text almost invisible. Just make the field non-editable instead.
     nameField.setEditable(enabled);
   }
 }
