@@ -794,7 +794,6 @@ public class PieceMover extends AbstractBuildable
     return comm;
   }
 
-
   public Command markMoved(GamePiece p, boolean hasMoved) {
     return markMoved(p, hasMoved, true);
   }
