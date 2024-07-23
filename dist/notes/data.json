@@ -43,6 +43,7 @@
         { "num": 13450, "desc": "Make Locked Scenario Options more legible" },
         { "num": 13440, "desc": "Improve Save and Load times by ignoring empty Stacks" },
         { "num": 13402, "desc": "Add a visual validator for Prototype name in Prototype trait" },
+        { "num": 13393, "desc": "Prevent slowdown when editing multiple Prototypes in sequence" },
         { "num": 13359, "desc": "Report I/O Errors during Predefined Setup refresh in Refresher log, not as a Vassal bug" }
       ]
     },
