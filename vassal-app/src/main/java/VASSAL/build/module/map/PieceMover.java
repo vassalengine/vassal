@@ -608,7 +608,6 @@ public class PieceMover extends AbstractBuildable
     };
   }
 
-
   /**
    * Detects when a game is starting, for purposes of managing the mark-unmoved button.
    * @param gameStarting if true, a game is starting.  If false, then a game is ending
