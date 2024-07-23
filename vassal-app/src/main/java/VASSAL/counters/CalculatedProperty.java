@@ -172,31 +172,27 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
   public Object getProperty(Object key) {
     Object result = "";
     if (name.length() > 0 && name.equals(key)) {
-      // Do not attempt to evaluate a Calculated Property if this piece is not on a map
-      if (getMap() == null) {
-        return "";
+
+      // Don't potentially create more infinite loops while already reporting one
+      if (RecursionLimiter.isReportingInfiniteLoop()) {
+        return getExpression();
       }
-      else {
-        // Don't potentially create more infinite loops while already reporting one
-        if (RecursionLimiter.isReportingInfiniteLoop()) {
-          return getExpression();
-        }
 
-        try {
-          RecursionLimiter.startExecution(this);
+      try {
+        RecursionLimiter.startExecution(this);
 
-          result = evaluate();
-        }
-        catch (RecursionLimitException e) {
-          RecursionLimiter.infiniteLoop(e);
-        }
-        finally {
-          RecursionLimiter.endExecution();
-        }
-
-        return result;
+        result = evaluate();
       }
+      catch (RecursionLimitException e) {
+        RecursionLimiter.infiniteLoop(e);
+      }
+      finally {
+        RecursionLimiter.endExecution();
+      }
+
+      return result;
     }
+
     return super.getProperty(key);
   }
 
@@ -215,7 +211,10 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
    * @return value
    */
   protected String evaluate() {
-    return expression.tryEvaluate(getOutermost(this), this, "Editor.CalculatedProperty.expression");
+    // Suppress any generated error messages if the piece is not on a map.
+    return getMap() == null ?
+      expression.quietEvaluate(getOutermost(this), this, "Editor.CalculatedProperty.expression") :
+      expression.tryEvaluate(getOutermost(this), this, "Editor.CalculatedProperty.expression");
   }
 
 
