@@ -658,13 +658,15 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   }
 
   public String getLabel() {
-    return labelFormat.getText(getOutermost(this), this, "Editor.TextLabel.label_text");
+    // Suppress all error reporting within the label evaluation if the piece is not on a Map.
+    return labelFormat.getText(getOutermost(this), this, "Editor.TextLabel.label_text", getMap() == null);
   }
 
   public String getLocalizedLabel() {
     final FormattedString f =
       new FormattedString(getTranslation(labelFormat.getFormat()));
-    return f.getLocalizedText(getOutermost(this), this, "Editor.TextLabel.label_text");
+    // Suppress all error reporting within the label evaluation if the piece is not on a Map.
+    return f.getLocalizedText(getOutermost(this), this, "Editor.TextLabel.label_text", getMap() == null);
   }
 
   @Override
