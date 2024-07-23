@@ -106,7 +106,6 @@ public class PrototypesContainer extends AbstractConfigurable {
     def.addPropertyChangeListener(evt -> {
       if (NAME_PROPERTY.equals(evt.getPropertyName())) {
         // When a prototype is renamed we need to rebuild the prototype map, so that if there was a duplicate of the same name it will re-establish its presence
-        definitions.clear();
         rebuildPrototypeMap();
       }
     });
