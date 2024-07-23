@@ -37,11 +37,18 @@ import java.util.List;
 public abstract class AbstractScenarioProperty extends GlobalProperty {
 
   public static final String HOTKEY = "hotkey"; // NON-NLS
+  public static final String SWITCH = "switch";
 
   /** The Tab to which this Scenario Property belongs **/
   protected ScenarioPropertiesOptionTab tab;
 
   protected NamedKeyStroke hotkey = NamedKeyStroke.NULL_KEYSTROKE;
+
+  protected boolean switchPosition = false;
+
+  public boolean isSwitchPosition() {
+    return switchPosition;
+  }
 
   @Override
   public void addTo(Buildable parent) {
@@ -85,6 +92,7 @@ public abstract class AbstractScenarioProperty extends GlobalProperty {
       Resources.getString("Editor.GlobalProperty.initial_value"),
       Resources.getString("Editor.ScenarioProperties.prompt"),
       Resources.getString("Editor.ScenarioProperties.hotkey_on_change"),
+      Resources.getString("Editor.BooleanScenarioProperty.property_right"),
     };
   }
 
@@ -95,6 +103,7 @@ public abstract class AbstractScenarioProperty extends GlobalProperty {
       getInitialValueClass(),
       String.class,
       NamedKeyStroke.class,
+      Boolean.class
     };
   }
 
@@ -102,7 +111,7 @@ public abstract class AbstractScenarioProperty extends GlobalProperty {
 
   @Override
   public String[] getAttributeNames() {
-    return new String[]{NAME, INITIAL_VALUE, DESCRIPTION, HOTKEY};
+    return new String[]{NAME, INITIAL_VALUE, DESCRIPTION, HOTKEY, SWITCH};
   }
 
   @Override
@@ -117,6 +126,9 @@ public abstract class AbstractScenarioProperty extends GlobalProperty {
       }
       hotkey = (NamedKeyStroke) value;
     }
+    else if (SWITCH.equals(key)) {
+      switchPosition = Boolean.TRUE.equals(value) || "true".equals(value); //NON-NLS
+    }
     else {
       super.setAttribute(key, value);
     }
@@ -126,6 +138,9 @@ public abstract class AbstractScenarioProperty extends GlobalProperty {
   public String getAttributeValueString(String key) {
     if (HOTKEY.equals(key)) {
       return NamedHotKeyConfigurer.encode(hotkey);
+    }
+    else if (SWITCH.equals(key)) {
+      return String.valueOf(switchPosition);
     }
     return super.getAttributeValueString(key);
   }

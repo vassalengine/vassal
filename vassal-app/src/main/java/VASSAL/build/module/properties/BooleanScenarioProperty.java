@@ -1,5 +1,6 @@
 package VASSAL.build.module.properties;
 
+import VASSAL.build.Buildable;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.i18n.Resources;
@@ -8,6 +9,13 @@ public class BooleanScenarioProperty extends AbstractScenarioProperty {
 
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.BooleanScenarioProperty.component_type"); //$NON-NLS-1$
+  }
+
+
+  @Override
+  public void addTo(Buildable parent) {
+    super.addTo(parent);
+    switchPosition = true;
   }
 
   @Override
