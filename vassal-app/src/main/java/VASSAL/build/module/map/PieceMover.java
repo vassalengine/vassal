@@ -60,6 +60,7 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.swing.SwingUtils;
+
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.ImageIcon;

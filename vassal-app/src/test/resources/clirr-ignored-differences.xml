@@ -22,6 +22,25 @@
         <method>*</method>
     </difference>
 
-    <!-- 3.7.1 -->
-
+    <!-- 3.7.13 -->
+    <difference>
+        <className>VASSAL/build/module/properties/ScenarioPropertiesOptionTab</className>
+        <differenceType>6001</differenceType>
+        <field>alignLabelsRight</field>
+        <justification>Field is obsolete and no code will have sub-classed this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/properties/ScenarioPropertiesOptionTab</className>
+        <differenceType>6004</differenceType>
+        <field>uiPanel</field>
+        <from>VASSAL.configure.ComponentConfigPanel</from>
+        <to>javax.swing.JPanel</to>
+        <justification>No code will have sub-classed this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/properties/ScenarioPropertiesOptionTab</className>
+        <differenceType>6006</differenceType>
+        <field>uiPanel</field>
+        <justification>No code will have sub-classed this class</justification>
+    </difference>
 </differences>

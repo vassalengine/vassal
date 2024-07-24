@@ -9,6 +9,7 @@
 * 13495: Upgrade bundled Java to 22.0.2, 21.0.4 (32-bit Windows)
 * 13490: Suppress error messages from expressions in text Labels during module
     load, or in Game Piece Palettes
+* 13452: Scenario option improvements
 * 13450: Make Locked Scenario Options more legible
 * 13447: Maintain all attachments when refreshing Pre-defined scenarios
 * 13440: Improve Save and Load times by ignoring empty Stacks
@@ -19,6 +20,7 @@
 * 13400: Prevent crashes when refreshing counters with fewer Can Rotate facings
 * 13398: Ensure a GKC is never applied to same piece twice if it moves
 * 13395: Fix Invisibility documentation
+* 13393: Prevent slowdown when editing multiple Prototypes in sequence
 * 13384: Prevent crash in Does Not Stack during Edit Contained Pieces
 * 13365: Fix NPE When editing Game Piece Images
 * 13360: Coerce Regular Expression operator arguments to be strings to prevent
