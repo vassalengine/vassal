@@ -58,67 +58,6 @@
         { "num": 13393, "desc": "Prevent slowdown when editing multiple Prototypes in sequence" },
         { "num": 13359, "desc": "Report I/O Errors during Predefined Setup refresh in Refresher log, not as a Vassal bug" }
       ]
-    },
-    {
-      "in": "3.7.12",
-      "since": "3.7.11",
-      "new_features": [
-      ],
-      "bug_fixes": [
-        { "num": 13316, "desc": "Fix typoed condition in Hideable introduced during PMD updates" }
-      ],
-      "other_improvements": [
-      ]
-    },
-    {
-      "in": "3.7.11",
-      "since": "3.7.10",
-      "new_features": [
-        { "num": 12944, "desc": "Add pieceCount to the map auto reporter" },
-        { "num": 12763, "desc": "Added ModuleGameFileName property" }
-      ],
-      "bug_fixes": [
-        { "num": 13167, "desc": "Fix missing Player list after online game request" }
-      ],
-      "other_improvements": [
-        { "num": 13302, "desc": "Upgrade bundled Java to 21.0.3 (32-bit Windows), 22.0.1 (everything else)" }
-      ]
-    },
-    {
-      "in": "3.7.10",
-      "since": "3.7.9",
-      "new_features": [
-      ],
-      "bug_fixes": [
-        { "num": 13268, "desc": "Prevent crash after saving blank parameter list in GKC" },
-        { "num": 13243, "desc": "Corrected spelling of Editor.BeanShell.regex key" },
-        { "num": 13203, "desc": "Don't fail when replaying older log from module version with more Special Dice defined" },
-        { "num": 13174, "desc": "Update Labels on remote maps after Drag and Drop" },
-        { "num": 13167, "desc": "Ensure side selection always appears in Wizard" },
-        { "num": 13153, "desc": "Prevent Area of Effect getting stuck ON when migrating to 3.7" }
-      ],
-      "other_improvements": [
-        { "num": 13238, "desc": "Upgrade bundled Java to Java 22 (except for Windows x86_32, which stays at Java 21)" }
-      ]
-    },
-    {
-      "in": "3.7.9",
-      "since": "3.7.8",
-      "new_features": [
-      ],
-      "bug_fixes": [
-        { "num": 13176, "desc": "Mouse-over viewer to respect Show Unrotated for Cargo on rotated Mats" },
-        { "num": 13166, "desc": "Improved error catching and reporting when importing XML files into Editor" },
-        { "num": 13161, "desc": "Prevent ArrayIndexOutOfBounds during search" },
-        { "num": 13152, "desc": "Prevent NPE when cut/paste List Scenario Property" },
-        { "num": 13146, "desc": "Game Piece Layer controls cannot be disabled by a property" },
-        { "num": 13132, "desc": "Remove counters from Zone Count correctly when moving to Stack on another Map" },
-        { "num": 13130, "desc": "Send to Location option should not appear in Preferences > General section of Reference Manual" },
-        { "num": 13126, "desc": "SumRange function missing options in Expression Builder" },
-        { "num": 13115, "desc": "Update Game Piece Layers updated correctly by Set Piece Property" }
-      ],
-      "other_improvements": [
-      ]
     }
   ]
 }
