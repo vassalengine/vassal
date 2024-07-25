@@ -3211,6 +3211,16 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @see StackMetrics#merge
    */
   public Command placeOrMerge(final GamePiece p, final Point pt) {
+    // Make a list of all pieces being merged, the Dispatch/Visit process may move pieces out of
+    // this stack if Layers have changed
+    final List<GamePiece> pieces = new ArrayList<>();
+    if (p instanceof Stack) {
+      pieces.addAll(((Stack) p).asList());
+    }
+    else {
+      pieces.add(p);
+    }
+
     Command c = apply(new DeckVisitorDispatcher(new Merger(this, pt, p)));
     if (c == null || c.isNull()) {
       c = placeAt(p, pt);
@@ -3224,6 +3234,10 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
         }
       }
     }
+
+    // Make sure all pieces get re-indexed
+    pieces.forEach(piece -> GameModule.getGameModule().getIndexManager().pieceMoved(piece, this));
+
     return c;
   }
 
