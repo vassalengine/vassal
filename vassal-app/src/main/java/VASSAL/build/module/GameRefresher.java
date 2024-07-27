@@ -609,10 +609,11 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     DrawPile first = null;
     DrawPile matching = null;
     final String deckName = deck.getDeckName();
+
     for (final DrawPile pile : getModuleDrawPiles()) {
       if (deckName.equals(pile.getAttributeValueString(SetupStack.NAME))) {
 
-        // If drawPile is owned by a specific board, then we can only match it if that board is active in this game
+        // If the drawPile is owned by a specific board, then we can only match it if that board is active in this game
         final String pileBoardName = pile.getOwningBoardName();
         if (pileBoardName != null) {
           if (deck.getMap().getBoardByName(pileBoardName) == null) {
@@ -625,16 +626,22 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
             continue;
           }
         }
+        // At this point, we have found an Active DrawPile with the same name as our Deck.
 
+        // Finish searching immediately if they are both on the same Map
+        if (deck.getMap().equals(pile.getMap())) {
+          matching = pile;
+          break;
+        }
+
+        // Otherwise, record the first matching Deck
         if (first == null) {
           first = pile;
-          if (deck.getMap().equals(pile.getMap())) {
-            matching = pile;
-            break;
-          }
         }
       }
     }
+
+    // Report a DrawPile on the same Map as our Deck in preference to one that is not.
     return matching != null ? matching : first;
   }
 
