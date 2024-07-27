@@ -87,7 +87,18 @@ public class HtmlChart extends Widget implements MouseListener {
   }
 
   private void setFile(String fname) {
-    setText(getFile(fname));
+    try {
+      setText(getFile(fname));
+    }
+    catch (RuntimeException e) {
+      // Bad CSS or HTML
+      ErrorDialog.dataWarning(
+        new BadDataReport(
+        this, Resources.getString("Editor.HTMLChart.html_failed_to_load", fname, getConfigureName(), e.getMessage()),
+          fname,
+          e,
+          false));
+    }
   }
 
   private String getFile(final String fname) {
