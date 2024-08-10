@@ -1,5 +1,7 @@
 3.7.14 - ???
 
+* 13497: Report HTML load errors as Bad Module Data, not Vassal bugs
+
 3.7.13 - 25 July 2024
 
 * 13496: Remove workaround for Windows file dialog bug (12152)
