@@ -23,6 +23,7 @@
       "bug_fixes": [
       ],
       "other_improvements": [
+        { "num": 13497, "desc": "Report HTML load errors as Bad Module Data, not Vassal bugs" }
       ]
     },
     {
