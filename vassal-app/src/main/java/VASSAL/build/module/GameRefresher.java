@@ -35,15 +35,7 @@ import VASSAL.command.CommandEncoder;
 import VASSAL.command.NullCommand;
 import VASSAL.command.RemovePiece;
 import VASSAL.configure.ConfigurerLayout;
-import VASSAL.counters.Attachment;
-import VASSAL.counters.Deck;
-import VASSAL.counters.Decorator;
-import VASSAL.counters.GamePiece;
-import VASSAL.counters.Mat;
-import VASSAL.counters.MatCargo;
-import VASSAL.counters.MatHolder;
-import VASSAL.counters.Properties;
-import VASSAL.counters.Stack;
+import VASSAL.counters.*;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.ErrorDialog;
@@ -96,6 +88,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
   public static final String USE_LABELER_NAME = "UseLabelerName";
   public static final String USE_LAYER_NAME = "UseLayerName";
   public static final String USE_ROTATE_NAME = "UseRotateName";
+  public static final String USE_DYNAMICPROPERTY_NAME = "UseDynamicPropertyName";
   public static final String TEST_MODE = "TestMode";
   public static final String DELETE_NO_MAP = "DeleteNoMap";
   public static final String REFRESH_DECKS = "RefreshDecks";
@@ -746,6 +739,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     private JCheckBox labelerNameCheck;
     private JCheckBox layerNameCheck;
     private JCheckBox rotateNameCheck;
+    private JCheckBox dynamicPropertyNameCheck;
     private JCheckBox deletePieceNoMap;
     private JCheckBox refreshDecks;
     private JCheckBox deleteOldDecks;
@@ -813,6 +807,8 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       fixGPID = new JCheckBox(Resources.getString("GameRefresher.fix_gpid"));
       panel.add(fixGPID, "gapx 20");
 
+      dynamicPropertyNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_dynamicProperty_descr"), true);
+      panel.add(dynamicPropertyNameCheck, "gapx 10");
       labelerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_labeler_descr"), true);
       panel.add(labelerNameCheck, "gapx 10");
       layerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_layer_descr"), true);
@@ -885,6 +881,9 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
         }
         if (rotateNameCheck.isSelected()) {
           options.add(USE_ROTATE_NAME); //$NON-NLS-1$
+        }
+        if (dynamicPropertyNameCheck.isSelected()) {
+          options.add(USE_DYNAMICPROPERTY_NAME); //$NON-NLS-1$
         }
         if (testModeOn.isSelected()) {
           options.add(TEST_MODE); //$NON-NLS-1$
