@@ -21,7 +21,17 @@ import VASSAL.build.module.Chatter;
 import VASSAL.build.module.GameRefresher;
 import VASSAL.build.module.PrototypeDefinition;
 import VASSAL.build.widget.PieceSlot;
-import VASSAL.counters.*;
+import VASSAL.counters.BasicPiece;
+import VASSAL.counters.Decorator;
+import VASSAL.counters.DynamicProperty;
+import VASSAL.counters.Embellishment;
+import VASSAL.counters.FreeRotator;
+import VASSAL.counters.GamePiece;
+import VASSAL.counters.Labeler;
+import VASSAL.counters.Marker;
+import VASSAL.counters.PieceCloner;
+import VASSAL.counters.PlaceMarker;
+import VASSAL.counters.Properties;
 import VASSAL.i18n.Resources;
 
 import java.util.ArrayList;
