@@ -21,6 +21,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 13530, "desc": "Add saved games to Open Recent list on save" }
       ],
       "other_improvements": [
         { "num": 13497, "desc": "Report HTML load errors as Bad Module Data, not Vassal bugs" }

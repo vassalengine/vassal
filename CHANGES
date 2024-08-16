@@ -5,6 +5,7 @@
 
 3.7.14 - ???
 
+* 13530: Add saved games to Open Recent list on save
 * 13497: Report HTML load errors as Bad Module Data, not Vassal bugs
 
 3.7.13 - 25 July 2024
