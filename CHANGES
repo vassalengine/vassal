@@ -3,9 +3,12 @@
 * 12944: Add pieceCount to the map auto reporter
 * 12763: Added ModuleGameFileName property
 
-3.7.14 - ???
+3.7.15 - ???
+
+3.7.14 - 18 August 2024
 
 * 13530: Add saved games to Open Recent list on save
+* 13509: Prevent NoSuchMethod exception when opening Scenario Options in Editor
 * 13497: Report HTML load errors as Bad Module Data, not Vassal bugs
 
 3.7.13 - 25 July 2024
