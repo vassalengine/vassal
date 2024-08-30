@@ -23,6 +23,7 @@
       "bug_fixes": [
       ],
       "other_improvements": [
+        { "num": 13558, "desc": "Update logback configuration to prevent messages to console" }
       ]
     },
     {

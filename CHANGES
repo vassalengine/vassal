@@ -1,5 +1,7 @@
 3.7.15 - ???
 
+* 13558: Update logback configuration to prevent messages to console
+
 3.7.14 - 18 August 2024
 
 * 13530: Add saved games to Open Recent list on save
