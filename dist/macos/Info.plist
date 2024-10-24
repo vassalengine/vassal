@@ -8,7 +8,7 @@ com/DTDs/PropertyList-1.0.dtd">
   <key>CFBundleDisplayName</key>
   <string>VASSAL</string>
   <key>CFBundleIdentifier</key>
-  <string>org.vassalengine.VASSAL</string>
+  <string>org.vassalengine.vassal</string>
   <key>CFBundleVersion</key>
   <string>%NUMVERSION%</string>
   <key>CFBundleShortVersionString</key>
@@ -43,6 +43,10 @@ com/DTDs/PropertyList-1.0.dtd">
     </dict>
   </array>
   <key>LSRequiresNativeExecution</key>
+  <key>LSArchitecturePriority</key>
+  <array>
+    <string>arm64</string>
+  </array>
   <true/>
 </dict>
 </plist>
