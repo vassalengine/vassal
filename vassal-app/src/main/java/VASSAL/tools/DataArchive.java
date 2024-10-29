@@ -322,7 +322,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
 
   /* Localized directories always take the form images_XX with XX being a i18n code */
   protected void buildLocalizedDirectoryList(List<String> list) {
-    List<String> files;
+    final List<String> files;
     try {
       files = archive.getFiles("");
     }
