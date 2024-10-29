@@ -1116,7 +1116,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     final PieceFilter filter = createFilter(expression, ps);
     final Map targetMap = findVassalMap(mapName.toString());
 
-    String propValue;
+    final String propValue;
     if (property == null || property.toString().isEmpty()) {
       propValue = null;
     }
@@ -1251,7 +1251,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     final PieceFilter filter = createFilter(expression, ps);
     final Map targetMap = findVassalMap(mapName.toString());
 
-    String propValue;
+    final String propValue;
     if (property == null || property.toString().isEmpty()) {
       propValue = null;
     }
