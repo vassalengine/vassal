@@ -5,6 +5,7 @@
 
 3.7.15 - ???
 
+* 13664: Upgraded bundled Java to 21.0.5 (32-bit Windows), 23.0.1 (all others)
 * 13558: Update logback configuration to prevent messages to console
 
 3.7.14 - 18 August 2024

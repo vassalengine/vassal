@@ -25,6 +25,7 @@
       "bug_fixes": [
       ],
       "other_improvements": [
+        { "num": 13664, "desc": "Upgraded bundled Java to 21.0.5 (32-bit Windows), 23.0.1 (all others)" },
         { "num": 13558, "desc": "Update logback configuration to prevent messages to console" }
       ]
     }
