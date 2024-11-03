@@ -47,6 +47,7 @@ com/DTDs/PropertyList-1.0.dtd">
   <key>LSArchitecturePriority</key>
   <array>
     <string>arm64</string>
+    <string>x86_64</string>
   </array>
   <true/>
 </dict>
