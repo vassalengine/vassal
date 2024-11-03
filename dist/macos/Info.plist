@@ -43,6 +43,7 @@ com/DTDs/PropertyList-1.0.dtd">
     </dict>
   </array>
   <key>LSRequiresNativeExecution</key>
+  <true/>
   <key>LSArchitecturePriority</key>
   <array>
     <string>arm64</string>
