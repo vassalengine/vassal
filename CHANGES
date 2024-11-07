@@ -5,8 +5,31 @@
 
 3.7.15 - 7 November 2024
 
+* 13678: Upgraded byte-buddy to 1.15.10
+* 13677: Upgraded maven-javadoc-plugin to 3.11.1
+* 13676: Upgraded manen-surfire-plugin to 3.5.2
+* 13669: Upgraded asciidoctor-maven-plugin to 3.1.0
+* 13668: Upgraded checkstyle to 10.20.0
 * 13664: Upgraded bundled Java to 21.0.5 (32-bit Windows), 23.0.1 (all others)
+* 13660: Upgraded maven-pmd-plugin to 3.26.0
+* 13659: Upgraded httpclient5 to 5.4.1
+* 13655: Upgraded maven-dependency-plugin to 3.8.1
+* 13654: Upgraded maven-checkstyle-plugin to 3.6.0
+* 13653: Upgraded logback-classic to 1.5.12
+* 13647: Upgraded maven-site-plugin to 3.21.0
+* 13646: Upgraded exec-maven-plugin to 3.5.0
+* 13645: Upgraded spotbugs-maven-plugin to 4.8.6.5
+* 13642: Upgraded junit-bom to 5.11.3
+* 13641: Upgraded asciidoctorj-pdf to 2.3.19
+* 13620: Upgraded batik to 1.18
+* 13614: Upgraded asm to 9.7.1
+* 13591: Upgraded commons-io to 2.17.0
+* 13573: Upgraded commons-lang3 to 3.17.0
+* 13572: Upgraded miglayout-swing to 11.4.2
 * 13558: Update logback configuration to prevent messages to console
+* 13548: Upgraded maven-deploy-plugin to 3.1.3
+* 13542: Upgraded maven-install-plugin to 3.1.3
+* 13540: Upgraded maven-artifact to 3.9.9
 
 3.7.14 - 18 August 2024
 
