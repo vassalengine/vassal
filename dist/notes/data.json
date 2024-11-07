@@ -26,11 +26,11 @@
         { "num": 13558, "desc": "Update logback configuration to prevent messages to console" }
       ],
       "other_improvements": [
+        { "num": 13681, "desc": "Upgraded checkstyle to 10.20.1" },
         { "num": 13678, "desc": "Upgraded byte-buddy to 1.15.10" },
         { "num": 13677, "desc": "Upgraded maven-javadoc-plugin to 3.11.1" },
         { "num": 13676, "desc": "Upgraded manen-surfire-plugin to 3.5.2" },
         { "num": 13669, "desc": "Upgraded asciidoctor-maven-plugin to 3.1.0" },
-        { "num": 13668, "desc": "Upgraded checkstyle to 10.20.0" },
         { "num": 13664, "desc": "Upgraded bundled Java to 21.0.5 (32-bit Windows), 23.0.1 (all others)" },
         { "num": 13660, "desc": "Upgraded maven-pmd-plugin to 3.26.0" },
         { "num": 13659, "desc": "Upgraded httpclient5 to 5.4.1" },
