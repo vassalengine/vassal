@@ -1,10 +1,10 @@
 3.7.15 - 7 November 2024
 
+* 13681: Upgraded checkstyle to 10.20.1
 * 13678: Upgraded byte-buddy to 1.15.10
 * 13677: Upgraded maven-javadoc-plugin to 3.11.1
 * 13676: Upgraded manen-surfire-plugin to 3.5.2
 * 13669: Upgraded asciidoctor-maven-plugin to 3.1.0
-* 13668: Upgraded checkstyle to 10.20.0
 * 13664: Upgraded bundled Java to 21.0.5 (32-bit Windows), 23.0.1 (all others)
 * 13660: Upgraded maven-pmd-plugin to 3.26.0
 * 13659: Upgraded httpclient5 to 5.4.1
