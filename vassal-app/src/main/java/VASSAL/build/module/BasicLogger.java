@@ -62,6 +62,9 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * BasicLogger deals with VLOG Vassal Log files (i.e. NOT the errorLog--see below):
@@ -105,6 +108,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   private NamedHotKeyConfigurer endLogKeyConfig;
 
   private boolean undoInProgress = false;
+  private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
   public BasicLogger() {
     super();
@@ -114,6 +118,22 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     newLogAction.setEnabled(false);
     logInput = new ArrayList<>();
     logOutput = new ArrayList<>();
+    startAutosave();
+  }
+
+  private void startAutosave() {
+    scheduler.scheduleAtFixedRate(this::autosave, 5, 5, TimeUnit.SECONDS);
+  }
+
+  private void autosave() {
+    if (isLogging() && !isReplaying()) {
+      File autosaveFile = new File(outputFile.getParent(), "autosave_" + outputFile.getName());  //$NON-NLS-1$
+      try {
+        write(autosaveFile);
+      } catch (IOException e) {
+        GameModule.getGameModule().warn("Failed to autosave log file: " + e.getMessage());
+      }
+    }
   }
 
   /** Presently no XML attributes or subcomponents to be built */
@@ -435,28 +455,28 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
    * Write the logfile to a file. The filename will have been selected when the logfile was begun.
    */
   public void write() throws IOException {
+    write(outputFile);
+  }
+
+  /**
+   * Write the logfile to a specified file. This is used by the autosave feature.
+   */
+  private void write(File file) throws IOException {
     if (!logOutput.isEmpty()) {
+      GameModule.getGameModule().warn(Resources.getString("BasicLogger.logging_autosaving"));  //$NON-NLS-1$
       final Command log = beginningState;
       for (final Command c : logOutput) {
         log.append(new LogCommand(c, logInput, stepAction));
       }
-
-// FIXME: Extremely inefficient! Make encode write to an OutputStream
       final String logString = GameModule.getGameModule().encode(log);
 
-      try (ZipWriter zw = new ZipWriter(outputFile)) {
+      try (ZipWriter zw = new ZipWriter(file)) {
         try (OutputStream out = new ObfuscatingOutputStream(new BufferedOutputStream(zw.write(GameState.SAVEFILE_ZIP_ENTRY)))) {
           out.write(logString.getBytes(StandardCharsets.UTF_8));
         }
         metadata.save(zw);
       }
-
-      GameModule.getGameModule().getGameState().setModified(false);
-      undoAction.setEnabled(false);
-      ModuleManagerUpdateHelper.sendGameUpdate(outputFile);
     }
-
-    endLogAction.setEnabled(false);
   }
 
   private File getSaveFile() {
