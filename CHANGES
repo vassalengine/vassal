@@ -3,7 +3,7 @@
 * 12944: Add pieceCount to the map auto reporter
 * 12763: Added ModuleGameFileName property
 
-3.7.15 - ???
+3.7.15 - 7 November 2024
 
 * 13664: Upgraded bundled Java to 21.0.5 (32-bit Windows), 23.0.1 (all others)
 * 13558: Update logback configuration to prevent messages to console
