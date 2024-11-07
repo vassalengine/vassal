@@ -130,8 +130,8 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       File autosaveFile = new File(outputFile.getParent(), "autosave_" + outputFile.getName());  //$NON-NLS-1$
       try {
         write(autosaveFile);
-      } catch (IOException e)
-      {
+      }
+      catch (IOException e) {
         GameModule.getGameModule().warn("Failed to autosave log file: " + e.getMessage());
       }
     }
