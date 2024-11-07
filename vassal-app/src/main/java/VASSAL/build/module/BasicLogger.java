@@ -122,7 +122,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   }
 
   private void startAutosave() {
-    scheduler.scheduleAtFixedRate(this::autosave, 5, 5, TimeUnit.SECONDS);
+    scheduler.scheduleAtFixedRate(this::autosave, 1, 5, TimeUnit.MINUTES);
   }
 
   private void autosave() {
@@ -455,7 +455,28 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
    * Write the logfile to a file. The filename will have been selected when the logfile was begun.
    */
   public void write() throws IOException {
-    write(outputFile);
+    if (!logOutput.isEmpty()) {
+      final Command log = beginningState;
+      for (final Command c : logOutput) {
+        log.append(new LogCommand(c, logInput, stepAction));
+      }
+
+// FIXME: Extremely inefficient! Make encode write to an OutputStream
+      final String logString = GameModule.getGameModule().encode(log);
+
+      try (ZipWriter zw = new ZipWriter(outputFile)) {
+        try (OutputStream out = new ObfuscatingOutputStream(new BufferedOutputStream(zw.write(GameState.SAVEFILE_ZIP_ENTRY)))) {
+          out.write(logString.getBytes(StandardCharsets.UTF_8));
+        }
+        metadata.save(zw);
+      }
+
+      GameModule.getGameModule().getGameState().setModified(false);
+      undoAction.setEnabled(false);
+      ModuleManagerUpdateHelper.sendGameUpdate(outputFile);
+    }
+
+    endLogAction.setEnabled(false);
   }
 
   /**
