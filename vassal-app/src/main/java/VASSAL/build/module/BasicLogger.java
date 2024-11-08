@@ -127,7 +127,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
 
   private void autosave() {
     if (isLogging() && !isReplaying()) {
-      File autosaveFile = new File(outputFile.getParent(), "autosave_" + outputFile.getName());  //$NON-NLS-1$
+      final File autosaveFile = new File(outputFile.getParent(), "autosave_" + outputFile.getName());  //$NON-NLS-1$
       try {
         write(autosaveFile);
       }
