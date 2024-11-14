@@ -25,6 +25,8 @@
       "bug_fixes": [
       ],
       "other_improvements": [
+        { "num": 13693, "desc": "Upgraded asciidoctor-maven-plugin to 3.1.1" },
+        { "num": 13688, "desc": "Upgraded spotbugs-maven-plugin to 4.8.6.6" }
       ]
     }
   ]
