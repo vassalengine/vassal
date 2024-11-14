@@ -1043,7 +1043,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
         if (i > 0) {
           buf.append(STATE_DELIMITOR);
         }
-        String value = (String) propertyTable.getValueAt(i, 2);
+        final String value = (String) propertyTable.getValueAt(i, 2);
         if (value == null || value.isEmpty()) {
           continue;
         }
