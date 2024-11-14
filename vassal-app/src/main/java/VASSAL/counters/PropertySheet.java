@@ -965,7 +965,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
       for (int iRow = 0; decoder.hasMoreTokens() && iRow < numRows; ++iRow) {
         final String token = decoder.nextToken();
-        final String stateToken= stateDecoder.nextToken();
+        final String stateToken = stateDecoder.nextToken();
         rows[iRow][0] = token.substring(1);
         rows[iRow][1] = TYPE_VALUES[token.charAt(0) - '0'];
         rows[iRow][2] = stateToken;
