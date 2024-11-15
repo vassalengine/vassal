@@ -35,27 +35,21 @@ import VASSAL.tools.NamedKeyManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.swing.Action;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
-import java.awt.Font;
-import java.awt.Point;
-import java.awt.Shape;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class MenuDisplayer extends MouseAdapter implements Buildable {
   @Deprecated(since = "2022-08-08", forRemoval = true)
   public static final Font POPUP_MENU_FONT = new Font(Font.DIALOG, Font.PLAIN, 10);
+  private static final java.util.Map<String, Boolean> keyCommandVisibilityMap = new ConcurrentHashMap<>();
 
   protected Map map;
   protected PieceFinder targetSelector;
@@ -111,7 +105,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
   // This both eliminates duplicate code AND makes this critical menu-building functionality able to "play well with others".
   // Menu text & behavior can now be custom-classed without needing to override the monster that is MenuDisplayer#createPopup.
   protected static JMenuItem makeMenuItem(KeyCommand keyCommand) {
-    final JMenuItem item = new JMenuItem(keyCommand.isMenuSeparator() ? MenuSeparator.SEPARATOR_NAME : getMenuText(keyCommand));
+    final CustomMenuItem item = new CustomMenuItem(keyCommand.isMenuSeparator() ? MenuSeparator.SEPARATOR_NAME : getMenuText(keyCommand), keyCommand);
     if (!NamedKeyManager.isNamed(keyCommand.getKeyStroke())) { // If the KeyStroke is named, then there is no accelerator
       item.setAccelerator(keyCommand.getKeyStroke());
     }
@@ -122,118 +116,144 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
     return item;
   }
 
-  public static JPopupMenu createPopup(GamePiece target) {
-    return createPopup(target, false);
+  protected static class CustomMenuItem extends JMenuItem {
+    private final KeyCommand keyCommand;
+
+    public CustomMenuItem(String text, KeyCommand keyCommand) {
+      super(text);
+      this.keyCommand = keyCommand;
+    }
+
+    @Override
+    protected void processMouseEvent(MouseEvent e) {
+      if (e.getID() == MouseEvent.MOUSE_PRESSED && SwingUtilities.isRightMouseButton(e)) {
+        String commandId = keyCommand.getName();
+        boolean currentVisibility = keyCommandVisibilityMap.getOrDefault(commandId, true);
+        keyCommandVisibilityMap.put(commandId, !currentVisibility);
+
+        // Get the current popup menu and its invoker
+        JPopupMenu popupMenu = (JPopupMenu) this.getParent();
+        Component invoker = popupMenu.getInvoker();
+        if (invoker instanceof JComponent) {
+          // Find the "Unwanted" submenu in the current popup menu
+          JMenu unwantedMenu = null;
+          for (Component component : popupMenu.getComponents()) {
+            if (component instanceof JMenu && "Unwanted".equals(((JMenu) component).getText())) {
+              unwantedMenu = (JMenu) component;
+              break;
+            }
+          }
+
+          // check what the parent to this component is and print it to console
+          popupMenu.remove(this);
+          unwantedMenu.add(this);
+
+          popupMenu.revalidate();
+          popupMenu.repaint();
+
+          // Hide and show the popup menu to force it to resize
+          popupMenu.setVisible(false);
+          popupMenu.setVisible(true);
+        }
+      } else {
+        super.processMouseEvent(e);
+      }
+    }
   }
 
-  /**
-   *
-   * @param target
-   * @param global If true, then apply the KeyCommands globally,
-   * i.e. to all selected pieces
-   * @return
-   */
-  public static JPopupMenu createPopup(GamePiece target, boolean global) {
-    final JPopupMenu popup = new JPopupMenu();
-    final KeyCommand[] c = (KeyCommand[]) target.getProperty(Properties.KEY_COMMANDS);
-    if (c != null) {
-      final List<JMenuItem> commands = new ArrayList<>();
-      final List<KeyStroke> strokes = new ArrayList<>();
+  public static JPopupMenu createPopup(GamePiece target) {
+      return createPopup(target, false);
+    }
 
-      // Maps instances of KeyCommandSubMenu to corresponding JMenu
-      final java.util.Map<KeyCommandSubMenu, JMenu> subMenus = new HashMap<>();
-      // Maps name to a list of commands with that name
-      final java.util.Map<String, List<JMenuItem>> commandNames = new HashMap<>();
 
-      // If a deck has only one menu item, and it's one of the ones that just fires off a choose-from-here dialog, then skip directly to the dialog
-      if (target instanceof Deck) {
-        if (c.length == 1) {
-          final String menu_item = c[0].getName();
-          if ((menu_item != null) && (menu_item.equals(((Deck)target).getDrawMultipleMessage()) || menu_item.equals(((Deck)target).getDrawSpecificMessage()))) {
-            c[0].actionPerformed(new ActionEvent(popup, 0, ""));
-            return null;
+
+    /**
+     * @param target
+     * @param global If true, then apply the KeyCommands globally,
+     *               i.e. to all selected pieces
+     * @return
+     */
+    public static JPopupMenu createPopup(GamePiece target, boolean global) {
+      final JPopupMenu popup = new JPopupMenu();
+      popup.putClientProperty("gamePiece", target);
+      final KeyCommand[] c = (KeyCommand[]) target.getProperty(Properties.KEY_COMMANDS);
+      if (c != null) {
+        final List<JMenuItem> commands = new ArrayList<>();
+        final List<KeyStroke> strokes = new ArrayList<>();
+        final java.util.Map<KeyCommandSubMenu, JMenu> subMenus = new java.util.HashMap<>();
+        final java.util.Map<String, List<JMenuItem>> commandNames = new java.util.HashMap<>();
+        final JMenu unwantedMenu = new JMenu("Unwanted");
+        boolean hasUnwantedCommands = true;
+
+        for (final KeyCommand keyCommand : c) {
+          keyCommand.setGlobal(global);
+          JMenuItem item = null;
+
+          if (keyCommandVisibilityMap.getOrDefault(keyCommand.getName(), true)) {
+            if (keyCommand instanceof KeyCommandSubMenu) {
+              final JMenu subMenu = new JMenu(getMenuText(keyCommand));
+              subMenus.put((KeyCommandSubMenu) keyCommand, subMenu);
+              item = subMenu;
+              commands.add(item);
+              strokes.add(KeyStroke.getKeyStroke('\0'));
+            } else {
+              final KeyStroke stroke = keyCommand.getKeyStroke();
+              if (strokes.contains(stroke) && !keyCommand.isMenuSeparator() && !(keyCommand instanceof MultiLocationCommand.MultiLocationKeyCommand)) {
+                final JMenuItem command = commands.get(strokes.indexOf(stroke));
+                final Action action = command.getAction();
+                if (action != null) {
+                  final String commandName = (String) command.getAction().getValue(Action.NAME);
+                  if (commandName == null || commandName.length() < keyCommand.getName().length()) {
+                    item = makeMenuItem(keyCommand);
+                    commands.set(strokes.indexOf(stroke), item);
+                  }
+                }
+              } else {
+                strokes.add((stroke != null && !keyCommand.isMenuSeparator()) ? stroke : KeyStroke.getKeyStroke('\0'));
+                item = makeMenuItem(keyCommand);
+                commands.add(item);
+              }
+            }
+          } else {
+            unwantedMenu.add(makeMenuItem(keyCommand));
+            hasUnwantedCommands = true;
+          }
+
+          if (keyCommand.getName() != null && keyCommand.getName().length() > 0 && item != null) {
+            final List<JMenuItem> l = commandNames.computeIfAbsent(keyCommand.getName(), k -> new ArrayList<>());
+            l.add(item);
           }
         }
-      }
 
-      for (final KeyCommand keyCommand : c) {
-        keyCommand.setGlobal(global);
-        final KeyStroke stroke = keyCommand.getKeyStroke();
-        JMenuItem item = null;
-        if (keyCommand instanceof KeyCommandSubMenu) {
-          final JMenu subMenu = new JMenu(getMenuText(keyCommand));
-          subMenus.put((KeyCommandSubMenu) keyCommand, subMenu);
-          item = subMenu;
-          commands.add(item);
-          strokes.add(KeyStroke.getKeyStroke('\0'));
-        }
-        else {
-          if (strokes.contains(stroke) && !keyCommand.isMenuSeparator() && !(keyCommand instanceof MultiLocationCommand.MultiLocationKeyCommand)) {
-            final JMenuItem command = commands.get(strokes.indexOf(stroke));
-            final Action action = command.getAction();
-            if (action != null) {
-              final String commandName =
-                (String) command.getAction().getValue(Action.NAME);
-              if (commandName == null ||
-                      commandName.length() < keyCommand.getName().length()) {
-                item = makeMenuItem(keyCommand);
-                commands.set(strokes.indexOf(stroke), item);
+        for (final java.util.Map.Entry<KeyCommandSubMenu, JMenu> e : subMenus.entrySet()) {
+          final KeyCommandSubMenu menuCommand = e.getKey();
+          final JMenu subMenu = e.getValue();
+
+          for (final Iterator<String> it2 = menuCommand.getCommands(); it2.hasNext(); ) {
+            final List<JMenuItem> matchingCommands = commandNames.get(it2.next());
+            if (matchingCommands != null) {
+              for (final JMenuItem item : matchingCommands) {
+                subMenu.add(item);
+                commands.remove(item);
               }
             }
           }
-          else {
-            strokes.add((stroke != null && !keyCommand.isMenuSeparator()) ? stroke : KeyStroke.getKeyStroke('\0'));
-            item = makeMenuItem(keyCommand);
-            commands.add(item);
+        }
+
+        for (final JMenuItem item : commands) {
+          final String text = item.getText();
+          if (MenuSeparator.SEPARATOR_NAME.equals(text)) {
+            popup.addSeparator();
+          } else if (text != null && !text.isBlank()) {
+            popup.add(item);
           }
         }
-        if (keyCommand.getName() != null &&
-            keyCommand.getName().length() > 0 &&
-            item != null) {
-          final List<JMenuItem> l = commandNames.computeIfAbsent(keyCommand.getName(), k -> new ArrayList<>());
-          l.add(item);
-        }
-      }
 
-      // Move commands from main menu into submenus
-      for (final java.util.Map.Entry<KeyCommandSubMenu, JMenu> e :
-                                                        subMenus.entrySet()) {
-        final KeyCommandSubMenu menuCommand = e.getKey();
-        final JMenu subMenu = e.getValue();
-
-        for (final Iterator<String> it2 = menuCommand.getCommands(); it2.hasNext();) {
-          final List<JMenuItem> matchingCommands =
-            commandNames.get(it2.next());
-          if (matchingCommands != null) {
-            for (final JMenuItem item : matchingCommands) {
-              subMenu.add(item);
-              commands.remove(item);
-            }
-          }
-        }
-      }
-
-      // Promote contents of a single submenu [Removed as per Bug 4775]
-      // if (commands.size() == 1) {
-      //   if (commands.get(0) instanceof JMenu) {
-      //     JMenu submenu = (JMenu) commands.get(0);
-      //     commands.remove(submenu);
-      //     for (int i = 0; i < submenu.getItemCount(); i++) {
-      //       commands.add(submenu.getItem(i));
-      //     }
-      //   }
-      // }
-
-      for (final JMenuItem item : commands) {
-        final String text = item.getText();
-        if (MenuSeparator.SEPARATOR_NAME.equals(text)) {
+        if (hasUnwantedCommands) {
           popup.addSeparator();
-        } 
-        else if (text != null && !text.isBlank()) {
-          popup.add(item);
+          popup.add(unwantedMenu);
         }
       }
-    }
 
     return popup;
   }
