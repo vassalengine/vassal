@@ -34,11 +34,12 @@ public class DialogCloser implements Runnable {
 
   @Override
   public void run() {
-    try {
-      Thread.sleep(ms);
-    }
-    catch (InterruptedException e) {
-      throw new RuntimeException(e);
+    if (ms > 1) { // Zero means no sleep - refresh only
+      try {
+        Thread.sleep(ms);
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
     }
     dialog.setVisible(false);
     dialog.dispose();
