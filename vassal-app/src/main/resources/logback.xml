@@ -26,7 +26,7 @@
   </if>
 
   <conversionRule conversionWord="pid"
-                  converterClass="VASSAL.tools.logging.ProcessIDConverter" />
+                  class="VASSAL.tools.logging.ProcessIDConverter" />
 
   <appender name="FILE" class="ch.qos.logback.core.FileAppender">
     <file>${CONF_DIR}/${LOG_FILE}</file>

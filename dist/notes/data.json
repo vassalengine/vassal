@@ -17,47 +17,16 @@
   "changes": [
     {
       "in": "3.8.0-beta1",
-      "since": "3.7.12",
+      "since": "3.7.15",
       "new_features": [
+        { "num": 12944, "desc": "Add pieceCount to the map auto reporter" },
+        { "num": 12763, "desc": "Added ModuleGameFileName property" }
       ],
       "bug_fixes": [
       ],
       "other_improvements": [
-        { "num": 13497, "desc": "Report HTML load errors as Bad Module Data, not Vassal bugs" }
-      ]
-    },
-    {
-      "in": "3.7.13",
-      "since": "3.7.12",
-      "new_features": [
-      ],
-      "bug_fixes": [
-        { "num": 13447, "desc": "Maintain all attachments when refreshing Pre-defined scenarios" },
-        { "num": 13429, "desc": "Prevent crash when editing module with name shorter than 3 characters" },
-        { "num": 13408, "desc": "Ensure pieces are indexed after Layer Change" },
-        { "num": 13405, "desc": "At-Start Stack positioning tool now expands prototypes before displaying piece" },
-        { "num": 13400, "desc": "Prevent crashes when refreshing counters with fewer Can Rotate facing" },
-        { "num": 13398, "desc": "Ensure a GKC is never applied to same piece twice if it moves" },
-        { "num": 13395, "desc": "Fix Invisibility documentation" },
-        { "num": 13384, "desc": "Prevent crash in Does Not Stack during Edit Contained Pieces" },
-        { "num": 13365, "desc": "Fix NPE When editing Game Piece Images" },
-        { "num": 13360, "desc": "Coerce Regular Expression operator arguments to be strings to prevent Bad Data errors" },
-        { "num": 13339, "desc": "Prevent NPE during game load" },
-        { "num": 13336, "desc": "Auto-attach does not attach to self when piece is added to a stack" },
-        { "num": 13324, "desc": "Fixed bad link to GamePiece page in Reference Manual" },
-        { "num": 13315, "desc": "Preserve all attachments across save/load" },
-        { "num": 11884, "desc": "Ensure OldMat is set when a piece leaves a Mat" }
-      ],
-      "other_improvements": [
-        { "num": 13496, "desc": "Remove workaround for Windows file dialog bug (12152)" },
-        { "num": 13495, "desc": "Upgrade bundled Java to 22.0.2, 21.0.4 (32-bit Windows)" },
-        { "num": 13490, "desc": "Suppress error messages from expressions in text Labels during module load, or in Game Piece Palettes" },
-        { "num": 13452, "desc": "Scenario option improvements" },
-        { "num": 13450, "desc": "Make Locked Scenario Options more legible" },
-        { "num": 13440, "desc": "Improve Save and Load times by ignoring empty Stacks" },
-        { "num": 13402, "desc": "Add a visual validator for Prototype name in Prototype trait" },
-        { "num": 13393, "desc": "Prevent slowdown when editing multiple Prototypes in sequence" },
-        { "num": 13359, "desc": "Report I/O Errors during Predefined Setup refresh in Refresher log, not as a Vassal bug" }
+        { "num": 13693, "desc": "Upgraded asciidoctor-maven-plugin to 3.1.1" },
+        { "num": 13688, "desc": "Upgraded spotbugs-maven-plugin to 4.8.6.6" }
       ]
     }
   ]

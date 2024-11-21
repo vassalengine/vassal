@@ -1406,6 +1406,7 @@ public class GameState implements CommandEncoder {
     }
     GameModule.getGameModule().warn(msg);
     ModuleManagerUpdateHelper.sendGameUpdate(f);
+    updateRecentGames(f);
   }
 
   public void loadGameInForeground(final File f) {
