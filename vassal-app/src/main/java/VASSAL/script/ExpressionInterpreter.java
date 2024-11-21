@@ -2010,7 +2010,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * Refresh the screen, then delay for the specified number of milliseconds
    *
    * This is not pretty, but is the only way I have found to force a proper UI refresh
-   * - Open a modal dialog box way offscreen. This forces an actual real Swing UI refresh, then hangs the UI
+   * - Open a modal dialog box way off-screen. This forces an actual real Swing UI refresh, then hangs the UI
    * - Start a new thread that closes the dialog box after a specified delay
    *
    * @param ms  Milliseconds to delay
@@ -2021,10 +2021,9 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
     final int milliSeconds = IntPropValue(ms);
     final JDialog dialog = new JDialog(GameModule.getGameModule().getPlayerWindow(), true);
-
-    dialog.setLocation(-5000, -5000); // Like as not, the OS will put the window in top leftmost position
+// dialog.setLocation(-5000, -5000); // Like as not, the OS will put the window in top leftmost position
+    dialog.setUndecorated(true); // keeps the dialog box invisible by virtue of zero content, making relocation redundant (?)
     SwingUtilities.invokeLater(new DialogCloser(dialog, milliSeconds));
-    dialog.setUndecorated(true); // keeps the dialog box invisible by virtue of zero content.
     dialog.setVisible(true);
     return "";
   }
