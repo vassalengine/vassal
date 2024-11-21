@@ -1047,7 +1047,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    *
    * @param property      Property Name to sum
    * @param locationName  Location Name to match
-   * @param mapName       Map to check
+   * @param map       Map to check
    * @param filter        Optional PieceFilter to check expression match
    * @return
    */
@@ -1131,7 +1131,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * Lowest-level CountLocation function called by all other versions
    * @param locationName Location Name to search for
    * @param map          Map to search on
-   * @param propValue    null if no property was supplied, or property name if supplied
+   * @param property     null if no property was supplied, or property name if supplied
    * @param filter       Option filter implementing Property Match Expression
    * @return             Count of pieces
    */
@@ -1183,8 +1183,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * Lowest-level SumZone function called by all other versions
    *
    * @param property      Property Name to sum
-   * @param zone          Zone Name to match
-   * @param mapName       Map to check
+   * @param zoneName      Zone Name to match
+   * @param map           Map to check
    * @param filter        Optional PieceFilter to check expression match
    * @return
    */
@@ -1267,7 +1267,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * Lowest-level CountZone function called by all other versions
    * @param zoneName     Zone Name to search for
    * @param map          Map to search on
-   * @param propValue    null if no property was supplied, or value of supplied property
+   * @param property     null if no property was supplied, or value of supplied property
    * @param filter       Option filter implementing Property Match Expression
    * @return             Count of pieces
    */
@@ -1326,7 +1326,6 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * Lowest-level SumMap function called by all other versions
    * @param propertyName Property to sum
    * @param map          Map to search on
-   * @param propValue    null if no property was supplied, or value of supplied property
    * @param filter       Option filter implementing Property Match Expression
    * @return             Count of pieces
    */
@@ -1419,9 +1418,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
   /**
    * Lowest-level CountMap function called by all other versions
-   * @param propertyName Property to sum
-   * @param map          Map to search on
-   * @param propValue    null if no property was supplied, or value of supplied property
+    * @param map          Map to search on
+   * @param propertyName    null if no property was supplied, or value of supplied property
    * @param filter       Option filter implementing Property Match Expression
    * @return             Count of pieces
    */
@@ -2012,7 +2010,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * Refresh the screen, then delay for the specified number of milliseconds
    *
    * This is not pretty, but is the only way I have found to force a proper UI refresh
-   * - Open a modal dialog box way offscreen. This forces a an actual real Swing UI refresh, then hangs the UI
+   * - Open a modal dialog box way offscreen. This forces an actual real Swing UI refresh, then hangs the UI
    * - Start a new thread that closes the dialog box after a specified delay
    *
    * @param ms  Milliseconds to delay
@@ -2023,13 +2021,13 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
     final int milliSeconds = IntPropValue(ms);
     final JDialog dialog = new JDialog(GameModule.getGameModule().getPlayerWindow(), true);
-    dialog.setLocation(-5000, -5000);
-    SwingUtilities.invokeLater(new DialogCloser(dialog, milliSeconds));
 
+    dialog.setLocation(-5000, -5000); // Like as not, the OS will put the window in top leftmost position
+    SwingUtilities.invokeLater(new DialogCloser(dialog, milliSeconds));
+    dialog.setUndecorated(true); // keeps the dialog box invisible by virtue of zero content.
     dialog.setVisible(true);
     return "";
   }
-
 
 }
 
