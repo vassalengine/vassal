@@ -237,7 +237,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       p = getMap().snapTo(p);
     }
 
-      if ( xOffset == 0 && yOffset == 0 && m.getStackMetrics().isStackingEnabled() &&
+    if (xOffset == 0 && yOffset == 0 && m.getStackMetrics().isStackingEnabled() &&
               !Boolean.TRUE.equals(marker.getProperty(Properties.NO_STACK)) &&
               !Boolean.TRUE.equals(outer.getProperty(Properties.NO_STACK)) &&
               m.getPieceCollection().canMerge(outer, marker)) {
