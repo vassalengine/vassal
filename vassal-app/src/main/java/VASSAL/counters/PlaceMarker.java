@@ -237,10 +237,10 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       p = getMap().snapTo(p);
     }
 
-    if (m.getStackMetrics().isStackingEnabled() &&
-        !Boolean.TRUE.equals(marker.getProperty(Properties.NO_STACK)) &&
-        !Boolean.TRUE.equals(outer.getProperty(Properties.NO_STACK)) &&
-        m.getPieceCollection().canMerge(outer, marker)) {
+    if (xOffset == 0 && yOffset == 0 && m.getStackMetrics().isStackingEnabled() &&
+              !Boolean.TRUE.equals(marker.getProperty(Properties.NO_STACK)) &&
+              !Boolean.TRUE.equals(outer.getProperty(Properties.NO_STACK)) &&
+              m.getPieceCollection().canMerge(outer, marker)) {
       GamePiece target = outer;
       int index = -1;
       Stack parent = getParent();
@@ -282,7 +282,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
 
       m.repaint();
     }
-    else if (m.getStackMetrics().isStackingEnabled() && !Boolean.TRUE.equals(marker.getProperty(Properties.NO_STACK))) {
+    else if (xOffset == 0 && yOffset == 0 && m.getStackMetrics().isStackingEnabled() && !Boolean.TRUE.equals(marker.getProperty(Properties.NO_STACK))) {
       c = m.placeOrMerge(marker, p);
       final Stack parent = marker.getParent();
       if ((parent != null) && (parent.pieceCount > 1)) {
