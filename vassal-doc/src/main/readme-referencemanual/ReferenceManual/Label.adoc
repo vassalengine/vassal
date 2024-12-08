@@ -23,7 +23,7 @@ The text of the label can be fixed or specifiable by a player at game time.
 . If no check is true the entered string is displayed.
 
 ****
-**Note!** _Label Text_ will be reevaluated every time a piece bearing the Text Label trait is  drawn, which will occur frequently in a typical module whenever such a piece is displayed. Therefore, longer, more convoluted Beanshell expressions (e.g., comparisons, arithmetic, Count/Sums etc.) may affect performance, especially with widespread use.
+**Note!** _Label Text_ will be reevaluated every time a piece bearing the Text Label trait is  drawn, which will occur frequently in a typical module whenever such a piece is on display. Therefore, longer, more convoluted Beanshell expressions (e.g., comparisons, arithmetic, Count/Sums etc.) may affect performance, especially with widespread use.
 ****
 
 A known limitation of the evaluation order above is that if you enter a sequence of digits starting with 0s, these will be removed when the string is evaluated as integer.
