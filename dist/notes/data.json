@@ -25,6 +25,11 @@
       "bug_fixes": [
       ],
       "other_improvements": [
+        { "num": 13762, "desc": "Upgraded checkstyle to 10.21.1" },
+        { "num": 13740, "desc": "Upgraded maven-javadoc-plugin to 3.11.2" },
+        { "num": 13727, "desc": "Upgraded jsoup to 1.18.3" },
+        { "num": 13712, "desc": "Upgraded license-maven-plugin to 2.5.0" },
+        { "num": 13705, "desc": "Upgraded commons-io to 2.18.0" },
         { "num": 13693, "desc": "Upgraded asciidoctor-maven-plugin to 3.1.1" },
         { "num": 13688, "desc": "Upgraded spotbugs-maven-plugin to 4.8.6.6" }
       ]
