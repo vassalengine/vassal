@@ -1,5 +1,10 @@
 3.7.16 - ???
 
+* 13762: Upgraded checkstyle to 10.21.1
+* 13740: Upgraded maven-javadoc-plugin to 3.11.2
+* 13727: Upgraded jsoup to 1.18.3
+* 13712: Upgraded license-maven-plugin to 2.5.0
+* 13705: Upgraded commons-io to 2.18.0
 * 13693: Upgraded asciidoctor-maven-plugin to 3.1.1
 * 13688: Upgraded spotbugs-maven-plugin to 4.8.6.6
 
