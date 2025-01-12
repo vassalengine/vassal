@@ -42,6 +42,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -210,14 +211,41 @@ public class Hideable extends Decorator implements TranslatablePiece {
         g2d.fill(t.createTransformedShape(piece.getShape()));
       }
 
-      final Composite oldComposite = g2d.getComposite();
-      g2d.setComposite(
-        AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparency)
-      );
-      piece.draw(g, x, y, obs, zoom);
-      g2d.setComposite(oldComposite);
+      // 1) Determine piece bounds at current zoom
+      final Rectangle bounds = piece.getShape().getBounds();
+      final int w = (int) Math.ceil(bounds.width * zoom);
+      final int h = (int) Math.ceil(bounds.height * zoom);
+
+      // If there's nothing visible at this zoom, skip
+      if (w <= 0 || h <= 0) {
+        return;
+      }
+
+      // 2) Create offscreen image and draw piece fully opaque
+      final BufferedImage offscreen = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+      final Graphics2D offG = offscreen.createGraphics();
+      try {
+        offG.scale(zoom, zoom);
+        offG.translate(-bounds.x, -bounds.y);
+
+        piece.draw(offG, 0, 0, obs, 1.0); // Fully opaque
+      }
+      finally {
+        offG.dispose();
+      }
+
+      // 3) Draw offscreen image with overall transparency
+      final Composite oldComp = g2d.getComposite();
+      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparency));
+
+      final int drawX = x + (int) Math.round(bounds.x * zoom);
+      final int drawY = y + (int) Math.round(bounds.y * zoom);
+      g2d.drawImage(offscreen, drawX, drawY, obs);
+
+      g2d.setComposite(oldComp);
     }
     else {
+      // Normal draw at the end
       piece.draw(g, x, y, obs, zoom);
     }
   }
