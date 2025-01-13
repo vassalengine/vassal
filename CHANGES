@@ -1,5 +1,9 @@
 3.7.16 - ???
 
+* 13772: Upgraded commons-io to 1.17.2
+* 13771: Upgraded logback-classic to 1.5.16
+* 13770: Upgraded byte-buddy to 1.15.11
+* 13769: Upgraded juint-bom to 5.11.4
 * 13762: Upgraded checkstyle to 10.21.1
 * 13740: Upgraded maven-javadoc-plugin to 3.11.2
 * 13727: Upgraded jsoup to 1.18.3
