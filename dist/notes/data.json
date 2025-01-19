@@ -25,6 +25,7 @@
       "bug_fixes": [
       ],
       "other_improvements": [
+        { "num": 13778, "desc": "Upgraded spotbugs-annotations to 4.9.0" },
         { "num": 13772, "desc": "Upgraded commons-io to 1.17.2" },
         { "num": 13771, "desc": "Upgraded logback-classic to 1.5.16" },
         { "num": 13770, "desc": "Upgraded byte-buddy to 1.15.11" },
