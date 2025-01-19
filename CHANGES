@@ -1,5 +1,6 @@
 3.7.16 - ???
 
+* 13778: Upgraded spotbugs-annotations to 4.9.0
 * 13772: Upgraded commons-io to 1.17.2
 * 13771: Upgraded logback-classic to 1.5.16
 * 13770: Upgraded byte-buddy to 1.15.11
