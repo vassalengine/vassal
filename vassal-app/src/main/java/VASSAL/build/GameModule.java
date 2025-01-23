@@ -1594,6 +1594,11 @@ public class GameModule extends AbstractConfigurable
     return s;
   }
 
+  public FileChooser getDirectoryChooser() {
+    return FileChooser.createFileChooser(getPlayerWindow(),
+        getGameState().getSavedGameDirectoryPreference(), FileChooser.DIRECTORIES_ONLY);
+  }
+
   /**
    * @return a common FileChooser so that recent file locations
    * can be remembered
