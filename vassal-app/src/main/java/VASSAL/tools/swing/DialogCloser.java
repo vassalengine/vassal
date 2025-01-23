@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2008-2023 by The VASSAL Development Team
+ * Copyright (c) 2008-2024 by The VASSAL Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -29,16 +29,18 @@ public class DialogCloser implements Runnable {
 
   public DialogCloser(JDialog dialog, int ms) {
     this.dialog = dialog;
-    this.ms = ms < 0 ? 500 : ms;
+    this.ms = ms;
   }
 
   @Override
   public void run() {
-    try {
-      Thread.sleep(ms);
-    }
-    catch (InterruptedException e) {
-      throw new RuntimeException(e);
+    if (ms > 0) {
+      try {
+        Thread.sleep(ms);
+      }
+      catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
     }
     dialog.setVisible(false);
     dialog.dispose();
