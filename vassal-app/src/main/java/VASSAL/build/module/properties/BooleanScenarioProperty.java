@@ -15,7 +15,6 @@ public class BooleanScenarioProperty extends AbstractScenarioProperty {
   @Override
   public void addTo(Buildable parent) {
     super.addTo(parent);
-    switchPosition = true;
   }
 
   @Override
