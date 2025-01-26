@@ -240,8 +240,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     if (!m.getStackMetrics().isStackingEnabled() || Boolean.TRUE.equals(marker.getProperty(Properties.NO_STACK))) {
       c = m.placeAt(marker, p);
     }
-    else
-    {
+    else {
       final Point oldP = outer.getPosition();
       final boolean canMerge = clearParentId && !Boolean.TRUE.equals(marker.getProperty(Properties.NO_STACK)) &&
               m.getPieceCollection().canMerge(outer, marker);
