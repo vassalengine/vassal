@@ -237,13 +237,22 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       p = getMap().snapTo(p);
     }
 
-    if (xOffset == 0 && yOffset == 0 && m.getStackMetrics().isStackingEnabled() &&
-              !Boolean.TRUE.equals(marker.getProperty(Properties.NO_STACK)) &&
-              !Boolean.TRUE.equals(outer.getProperty(Properties.NO_STACK)) &&
-              m.getPieceCollection().canMerge(outer, marker)) {
+    if (!m.getStackMetrics().isStackingEnabled() || Boolean.TRUE.equals(marker.getProperty(Properties.NO_STACK))) {
+      c = m.placeAt(marker, p);
+    }
+    else
+    {
+      final Point oldP = outer.getPosition();
+      final boolean canMerge = clearParentId && !Boolean.TRUE.equals(marker.getProperty(Properties.NO_STACK)) &&
+              m.getPieceCollection().canMerge(outer, marker);
+
+      c = m.placeOrMerge(marker, p);
+
+      //
       GamePiece target = outer;
       int index = -1;
-      Stack parent = getParent();
+
+      Stack parent = marker.getParent();
 
       if (parent == null) {
         // we're not in a stack now, but we will be _after_ the merge
@@ -254,20 +263,20 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       else {
         // we're in a stack already
         switch (placement) {
-        case STACK_TOP:
-          target = parent;
-          break;
-        case STACK_BOTTOM:
-          index = 0;
-          break;
-        case ABOVE:
-          break;
-        case BELOW:
-          index = parent.indexOf(outer);
+          case STACK_TOP:
+            target = parent;
+            break;
+          case STACK_BOTTOM:
+            index = 0;
+            break;
+          case ABOVE:
+            break;
+          case BELOW:
+            index = (oldP == p && canMerge) ? parent.indexOf(outer) : 0;
         }
       }
 
-      c = m.getStackMetrics().merge(target, marker);
+      c = m.getStackMetrics().merge(parent, marker);
 
       if (index >= 0) {
         // we need to adjust the marker's position in the Stack
@@ -281,20 +290,6 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       }
 
       m.repaint();
-    }
-    else if (xOffset == 0 && yOffset == 0 && m.getStackMetrics().isStackingEnabled() && !Boolean.TRUE.equals(marker.getProperty(Properties.NO_STACK))) {
-      c = m.placeOrMerge(marker, p);
-      final Stack parent = marker.getParent();
-      if ((parent != null) && (parent.pieceCount > 1)) {
-        if ((placement == STACK_BOTTOM) || (placement == BELOW)) {
-          final ChangeTracker ct = new ChangeTracker(parent);
-          parent.insert(marker, 0);
-          c = c.append(ct.getChangeCommand());
-        }
-      }
-    }
-    else {
-      c = m.placeAt(marker, p);
     }
 
     // Set Our ParentID into the markers parent UniqueID. May have been called by Replace, in which case we do not set a parent Id as the parent will be deleted
