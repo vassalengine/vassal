@@ -257,16 +257,16 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       else {
         // we're in a stack already
         switch (placement) {
-          case STACK_TOP:
-            target = parent;
-            break;
-          case STACK_BOTTOM:
-            index = 0;
-            break;
-          case ABOVE:
-            break;
-          case BELOW:
-            index = parent.indexOf(outer);
+        case STACK_TOP:
+          target = parent;
+          break;
+        case STACK_BOTTOM:
+          index = 0;
+          break;
+        case ABOVE:
+          break;
+        case BELOW:
+          index = parent.indexOf(outer);
         }
       }
 
