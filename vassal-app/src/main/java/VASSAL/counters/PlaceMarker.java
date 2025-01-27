@@ -91,7 +91,8 @@ import static VASSAL.counters.MatCargo.CURRENT_MAT_OFFSET_X;
 import static VASSAL.counters.MatCargo.CURRENT_MAT_OFFSET_Y;
 
 /**
- * This Decorator defines a key command to places another counter on top of this one.
+ * This Decorator defines a key command to places another counter on the same map as this one, normally on top
+ * but stack adjustment and offsets may be specified too.
  */
 public class PlaceMarker extends Decorator implements TranslatablePiece, RecursionLimiter.Loopable {
   public static final String ID = "placemark;"; // NON-NLS
@@ -241,6 +242,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
             !Boolean.TRUE.equals(marker.getProperty(Properties.NO_STACK)) &&
             !Boolean.TRUE.equals(outer.getProperty(Properties.NO_STACK)) &&
             m.getPieceCollection().canMerge(outer, marker)) {
+      // The new piece will remain in the same stack as the parent piece
       GamePiece target = outer;
       int index = -1;
       Stack parent = getParent();
@@ -283,6 +285,8 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       m.repaint();
     }
     else if (m.getStackMetrics().isStackingEnabled() && !Boolean.TRUE.equals(marker.getProperty(Properties.NO_STACK))) {
+      // The new piece is stackable, albeit not on the parent piece or at an offset from that piece.
+      // The Above and Below options will fallback to Top and Bottom respectively.
       c = m.placeOrMerge(marker, p);
       final Stack parent = marker.getParent();
       if ((parent != null) && (parent.pieceCount > 1)) {
@@ -294,6 +298,8 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       }
     }
     else {
+      // The new piece is not Stackable.
+      // The Above and Below options will have no effect.
       c = m.placeAt(marker, p);
     }
 
