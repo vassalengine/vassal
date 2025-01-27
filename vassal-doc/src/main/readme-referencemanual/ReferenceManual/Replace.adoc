@@ -32,8 +32,10 @@ Click the *_Select_* button to use the definition from an existing piece in the 
 This acts as a pointer to an existing definition: if the original piece is changed, the piece created by the _Replace with Other_ trait will also change.
 
 *Horizontal offset:*::  The center of the replacement piece will be placed this many pixels to the right of the center of the original piece.
+A non-zero value will remove, at least temporarily, the piece from its parent stack and restrict the placement options to the Top or Bottom of a Stack, if joined (see below).
 
 *Vertical offset:*::  The center of the replacement piece will be placed this many pixels above the center of the original piece.
+A non-zero value will remove, at least temporarily, the piece from its parent stack and restrict the placement options to the Top or Bottom of a Stack, if joined (see below).
 
 *Match current state:*::  If selected, VASSAL will attempt to put the replacement piece in the same state as the original piece.
 Layers will be set to the same level, labels will be given the same value, rotation angles will match, etc.
@@ -52,8 +54,7 @@ Selecting this option causes the match process to just compare the name of the D
 +
 This makes it easier to simply copy the value of  <<DynamicProperty.adoc#top,Dynamic Properties>> into the matching properties replacement piece where you may need to define them differently in the replacement piece.
 
-
-*Place marker:*::  Choose whether the new piece should be placed on the top of this piece's stack, on the bottom of the stack, or directly above/below the triggering piece.
+*Place marker:*::  Choose whether the new piece should be placed on the top of this piece's stack, on the bottom, or directly above/below (i.e. replacing) the triggering piece. If an offset has been specified, the above/below options are interpreted as top and bottom respectively.
 
 
 *Set Dynamic Properties in marker:*::

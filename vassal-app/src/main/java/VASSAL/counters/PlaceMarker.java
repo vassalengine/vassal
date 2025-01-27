@@ -237,13 +237,10 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       p = getMap().snapTo(p);
     }
 
-    if (!m.getStackMetrics().isStackingEnabled() || Boolean.TRUE.equals(marker.getProperty(Properties.NO_STACK))) {
-      c = m.placeAt(marker, p);
-    }
-    else if (xOffset == 0 && yOffset == 0 && m.getStackMetrics().isStackingEnabled() &&
-              !Boolean.TRUE.equals(marker.getProperty(Properties.NO_STACK)) &&
-              !Boolean.TRUE.equals(outer.getProperty(Properties.NO_STACK)) &&
-              m.getPieceCollection().canMerge(outer, marker)) {
+    if (xOffset == 0 && yOffset == 0 && m.getStackMetrics().isStackingEnabled() &&
+            !Boolean.TRUE.equals(marker.getProperty(Properties.NO_STACK)) &&
+            !Boolean.TRUE.equals(outer.getProperty(Properties.NO_STACK)) &&
+            m.getPieceCollection().canMerge(outer, marker)) {
       GamePiece target = outer;
       int index = -1;
       Stack parent = getParent();
@@ -285,7 +282,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
 
       m.repaint();
     }
-    else {
+    else if (m.getStackMetrics().isStackingEnabled() && !Boolean.TRUE.equals(marker.getProperty(Properties.NO_STACK))) {
       c = m.placeOrMerge(marker, p);
       final Stack parent = marker.getParent();
       if ((parent != null) && (parent.pieceCount > 1)) {
@@ -295,6 +292,9 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
           c = c.append(ct.getChangeCommand());
         }
       }
+    }
+    else {
+      c = m.placeAt(marker, p);
     }
 
     // Set Our ParentID into the markers parent UniqueID. May have been called by Replace, in which case we do not set a parent Id as the parent will be deleted
