@@ -269,6 +269,9 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
           index = 0;
           break;
         case ABOVE:
+          if (oldP == p && canMerge) {
+            index = parent.indexOf(outer) - 1;
+          }
           break;
         case BELOW:
           index = (oldP == p && canMerge) ? parent.indexOf(outer) : 0;
