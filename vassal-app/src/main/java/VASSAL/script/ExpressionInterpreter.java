@@ -305,8 +305,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         // the leading zeros are preserved. It is up to the Designer to convert this to an integer later
         // using Integer.parseInt(x) if they need to do arithmetic on it.
         else if (GlobalOptions.getInstance() != null && GlobalOptions.getInstance().isStoreLeadingZeroIntegersAsStrings()
-          && value.length() > 1 && value.startsWith("0")
-          && StringUtils.containsOnly(value, "0123456789")) {
+                && value.length() > 1 && value.startsWith("0")
+                && StringUtils.containsOnly(value, "0123456789")) {
           setVar(var, value);
         }
         else {
@@ -1047,7 +1047,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    *
    * @param property      Property Name to sum
    * @param locationName  Location Name to match
-   * @param mapName       Map to check
+   * @param map       Map to check
    * @param filter        Optional PieceFilter to check expression match
    * @return
    */
@@ -1131,7 +1131,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * Lowest-level CountLocation function called by all other versions
    * @param locationName Location Name to search for
    * @param map          Map to search on
-   * @param propValue    null if no property was supplied, or property name if supplied
+   * @param property     null if no property was supplied, or property name if supplied
    * @param filter       Option filter implementing Property Match Expression
    * @return             Count of pieces
    */
@@ -1183,8 +1183,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * Lowest-level SumZone function called by all other versions
    *
    * @param property      Property Name to sum
-   * @param zone          Zone Name to match
-   * @param mapName       Map to check
+   * @param zoneName      Zone Name to match
+   * @param map           Map to check
    * @param filter        Optional PieceFilter to check expression match
    * @return
    */
@@ -1267,7 +1267,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * Lowest-level CountZone function called by all other versions
    * @param zoneName     Zone Name to search for
    * @param map          Map to search on
-   * @param propValue    null if no property was supplied, or value of supplied property
+   * @param property     null if no property was supplied, or value of supplied property
    * @param filter       Option filter implementing Property Match Expression
    * @return             Count of pieces
    */
@@ -1326,7 +1326,6 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * Lowest-level SumMap function called by all other versions
    * @param propertyName Property to sum
    * @param map          Map to search on
-   * @param propValue    null if no property was supplied, or value of supplied property
    * @param filter       Option filter implementing Property Match Expression
    * @return             Count of pieces
    */
@@ -1419,9 +1418,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
   /**
    * Lowest-level CountMap function called by all other versions
-   * @param propertyName Property to sum
    * @param map          Map to search on
-   * @param propValue    null if no property was supplied, or value of supplied property
+   * @param propertyName    null if no property was supplied, or value of supplied property
    * @param filter       Option filter implementing Property Match Expression
    * @return             Count of pieces
    */
@@ -1896,43 +1894,43 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       final char c = expression.charAt(i);
 
       switch (state) {
-      //
-      // State 0 - Looking for a $ sign that may be the start of a $$ property expression
-      //
-      case 0:
-        if (c == '$') {
-          // Seen a '$', start collecting a property name
-          state = 1;
-          propertyName.setLength(0);
-        }
-        else {
-          buffer.append(c);
-        }
-        break;
-      // State 1 - Assembling a possible property name token
-      case 1:
-        if (c == '$') {
-          // Closing '$' seen, is this a property with a value?
-          final String propName = propertyName.toString();
-          final Object prop = src == null ? null : src.getLocalizedProperty(propName);
-          final String propertyValue = prop == null ? null : prop.toString();
-          if (propertyValue == null) {
-            // Not a property value. Add the initial '$' plus the assembled text to the output and start
-            // looking for a new property name from the end '$' sign.
-            buffer.append('$').append(propertyName);
-            propertyName.setLength(0);
+        //
+        // State 0 - Looking for a $ sign that may be the start of a $$ property expression
+        //
+        case 0:
+          if (c == '$') {
+            // Seen a '$', start collecting a property name
             state = 1;
+            propertyName.setLength(0);
           }
           else {
-            // This is a valid property value, add it to the output string and start looking for next property.
-            buffer.append(propertyValue);
-            state = 0;
+            buffer.append(c);
           }
-        }
-        else {
-          propertyName.append(c);
-        }
-        break;
+          break;
+        // State 1 - Assembling a possible property name token
+        case 1:
+          if (c == '$') {
+            // Closing '$' seen, is this a property with a value?
+            final String propName = propertyName.toString();
+            final Object prop = src == null ? null : src.getLocalizedProperty(propName);
+            final String propertyValue = prop == null ? null : prop.toString();
+            if (propertyValue == null) {
+              // Not a property value. Add the initial '$' plus the assembled text to the output and start
+              // looking for a new property name from the end '$' sign.
+              buffer.append('$').append(propertyName);
+              propertyName.setLength(0);
+              state = 1;
+            }
+            else {
+              // This is a valid property value, add it to the output string and start looking for next property.
+              buffer.append(propertyValue);
+              state = 0;
+            }
+          }
+          else {
+            propertyName.append(c);
+          }
+          break;
       }
     }
 
@@ -2012,7 +2010,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * Refresh the screen, then delay for the specified number of milliseconds
    *
    * This is not pretty, but is the only way I have found to force a proper UI refresh
-   * - Open a modal dialog box way offscreen. This forces a an actual real Swing UI refresh, then hangs the UI
+   * - Open a modal dialog box way off-screen. This forces an actual real Swing UI refresh, then hangs the UI
    * - Start a new thread that closes the dialog box after a specified delay
    *
    * @param ms  Milliseconds to delay
@@ -2023,13 +2021,11 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
     final int milliSeconds = IntPropValue(ms);
     final JDialog dialog = new JDialog(GameModule.getGameModule().getPlayerWindow(), true);
-    dialog.setLocation(-5000, -5000);
+// dialog.setLocation(-5000, -5000); // MacOS does not put the window "off-screen" but in top leftmost virtual position
+    dialog.setUndecorated(true); // keeps the dialog box invisible by virtue of zero content, making relocation redundant (?)
     SwingUtilities.invokeLater(new DialogCloser(dialog, milliSeconds));
-
     dialog.setVisible(true);
     return "";
   }
 
-
 }
-
