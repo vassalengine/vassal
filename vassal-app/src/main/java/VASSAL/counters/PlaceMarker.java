@@ -97,6 +97,7 @@ import static VASSAL.counters.MatCargo.CURRENT_MAT_OFFSET_Y;
 public class PlaceMarker extends Decorator implements TranslatablePiece, RecursionLimiter.Loopable {
   public static final String ID = "placemark;"; // NON-NLS
   public static final String PARENT_ID = "ParentID";
+  public static final int PLACEMARKER_VERSION = 1;
 
   protected KeyCommand command;
   protected NamedKeyStroke key;
@@ -119,6 +120,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
   protected static final int BELOW = 3;
   protected int placement = STACK_TOP;
   protected boolean above;
+  protected int version;
 
   protected String descString;
   protected boolean copyDPsByName;
@@ -176,7 +178,8 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       .append(placement)
       .append(above)
       .append(copyDPsByName)
-      .append(ParameterListConfigurer.encode(parameterList));
+      .append(ParameterListConfigurer.encode(parameterList))
+      .append(PLACEMARKER_VERSION);
     return ID + se.getValue();
   }
 
@@ -238,7 +241,8 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       p = getMap().snapTo(p);
     }
 
-    if (xOffset == 0 && yOffset == 0 && m.getStackMetrics().isStackingEnabled() &&
+    if ((version == 0 || (xOffset == 0 && yOffset == 0)) // Offset negation fix is backward compatible.
+            && m.getStackMetrics().isStackingEnabled() &&
             !Boolean.TRUE.equals(marker.getProperty(Properties.NO_STACK)) &&
             !Boolean.TRUE.equals(outer.getProperty(Properties.NO_STACK)) &&
             m.getPieceCollection().canMerge(outer, marker)) {
@@ -550,6 +554,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     copyDPsByName = st.nextBoolean(false);
     gpidSupport = GameModule.getGameModule().getGpIdSupport();
     parameterList = ParameterListConfigurer.decode(st.nextToken(""));
+    version = st.nextInt(0);
   }
 
   @Override
@@ -791,8 +796,8 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     @Override
     public String getType() {
       final SequenceEncoder se = new SequenceEncoder(';');
-      se.append(commandInput.getValueString());
-      se.append(keyInput.getValueString());
+      se.append(commandInput.getValueString())
+      .append(keyInput.getValueString());
       if (pieceInput.getPiece() == null) {
         se.append("null"); // NON-NLS
       }
@@ -803,18 +808,19 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
         final String spec = GameModule.getGameModule().encode(new AddPiece(pieceInput.getPiece()));
         se.append(spec);
       }
-      se.append("null"); // Older versions specified a text message to echo. Now performed by the ReportState trait, // NON-NLS
+      se.append("null") // Older versions specified a text message to echo. Now performed by the ReportState trait, // NON-NLS
                           // but we remain backward-compatible.
-      se.append(xOffsetConfigEXP.getValueString());
-      se.append(yOffsetConfigEXP.getValueString());
-      se.append(matchRotationConfig.getValueString());
-      se.append(afterBurner.getValueString());
-      se.append(descConfig.getValueString());
-      se.append(slotId);
-      se.append(placementConfig.getSelectedIndex());
-      se.append(aboveConfig == null ? "false" : aboveConfig.getValueString()); // NON-NLS
-      se.append(copyConfig == null ? "false" : copyConfig.getValueString()); // NON-NLS
-      se.append(parameterListConfig.getValueString());
+      .append(xOffsetConfigEXP.getValueString())
+      .append(yOffsetConfigEXP.getValueString())
+      .append(matchRotationConfig.getValueString())
+      .append(afterBurner.getValueString())
+      .append(descConfig.getValueString())
+      .append(slotId)
+      .append(placementConfig.getSelectedIndex())
+      .append(aboveConfig == null ? "false" : aboveConfig.getValueString()) // NON-NLS
+      .append(copyConfig == null ? "false" : copyConfig.getValueString()) // NON-NLS
+      .append(parameterListConfig.getValueString())
+      .append(PLACEMARKER_VERSION);
       return ID + se.getValue();
     }
     public static class ChoosePieceDialog extends ChooseComponentPathDialog {
