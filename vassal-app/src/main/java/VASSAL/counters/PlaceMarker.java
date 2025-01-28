@@ -797,7 +797,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     public String getType() {
       final SequenceEncoder se = new SequenceEncoder(';');
       se.append(commandInput.getValueString())
-      .append(keyInput.getValueString());
+        .append(keyInput.getValueString());
       if (pieceInput.getPiece() == null) {
         se.append("null"); // NON-NLS
       }
@@ -820,7 +820,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       .append(aboveConfig == null ? "false" : aboveConfig.getValueString()) // NON-NLS
       .append(copyConfig == null ? "false" : copyConfig.getValueString()) // NON-NLS
       .append(parameterListConfig.getValueString())
-      .append(PLACEMARKER_VERSION);
+        .append(PLACEMARKER_VERSION);
       return ID + se.getValue();
     }
     public static class ChoosePieceDialog extends ChooseComponentPathDialog {
