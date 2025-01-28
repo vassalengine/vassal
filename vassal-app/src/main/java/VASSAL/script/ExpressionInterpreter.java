@@ -2021,7 +2021,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
     final int milliSeconds = IntPropValue(ms);
     final JDialog dialog = new JDialog(GameModule.getGameModule().getPlayerWindow(), true);
-// dialog.setLocation(-5000, -5000); // Like as not, the OS will put the window in top leftmost position
+// dialog.setLocation(-5000, -5000); // MacOS does not put the window "off-screen" but in top leftmost virtual position
     dialog.setUndecorated(true); // keeps the dialog box invisible by virtue of zero content, making relocation redundant (?)
     SwingUtilities.invokeLater(new DialogCloser(dialog, milliSeconds));
     dialog.setVisible(true);
@@ -2029,4 +2029,3 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
 }
-
