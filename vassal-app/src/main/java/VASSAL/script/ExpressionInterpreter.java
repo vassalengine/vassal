@@ -1897,40 +1897,40 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         //
         // State 0 - Looking for a $ sign that may be the start of a $$ property expression
         //
-        case 0:
-          if (c == '$') {
-            // Seen a '$', start collecting a property name
-            state = 1;
+      case 0:
+        if (c == '$') {
+          // Seen a '$', start collecting a property name
+          state = 1;
+          propertyName.setLength(0);
+        }
+        else {
+          buffer.append(c);
+        }
+        break;
+      // State 1 - Assembling a possible property name token
+      case 1:
+        if (c == '$') {
+          // Closing '$' seen, is this a property with a value?
+          final String propName = propertyName.toString();
+          final Object prop = src == null ? null : src.getLocalizedProperty(propName);
+          final String propertyValue = prop == null ? null : prop.toString();
+          if (propertyValue == null) {
+            // Not a property value. Add the initial '$' plus the assembled text to the output and start
+            // looking for a new property name from the end '$' sign.
+            buffer.append('$').append(propertyName);
             propertyName.setLength(0);
+            state = 1;
           }
           else {
-            buffer.append(c);
+            // This is a valid property value, add it to the output string and start looking for next property.
+            buffer.append(propertyValue);
+            state = 0;
           }
-          break;
-        // State 1 - Assembling a possible property name token
-        case 1:
-          if (c == '$') {
-            // Closing '$' seen, is this a property with a value?
-            final String propName = propertyName.toString();
-            final Object prop = src == null ? null : src.getLocalizedProperty(propName);
-            final String propertyValue = prop == null ? null : prop.toString();
-            if (propertyValue == null) {
-              // Not a property value. Add the initial '$' plus the assembled text to the output and start
-              // looking for a new property name from the end '$' sign.
-              buffer.append('$').append(propertyName);
-              propertyName.setLength(0);
-              state = 1;
-            }
-            else {
-              // This is a valid property value, add it to the output string and start looking for next property.
-              buffer.append(propertyValue);
-              state = 0;
-            }
-          }
-          else {
-            propertyName.append(c);
-          }
-          break;
+        }
+        else {
+          propertyName.append(c);
+        }
+        break;
       }
     }
 
