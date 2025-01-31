@@ -81,9 +81,9 @@ public class FontConfigurer extends Configurer {
 
       final JPanel familyPanel = new JPanel(new MigLayout("ins 0")); // NON-NLS
       family = new JComboBox<>();
-      //String[] s = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-      for (int i = 0; i < FontManager.ALLOWABLE_FONTS.length; ++i) {
-        family.addItem(FontManager.ALLOWABLE_FONTS[i]);
+
+      for (int i = 0; i < FontManager.getAllowableFonts().length; ++i) {
+        family.addItem(FontManager.getAllowableFonts()[i]);
       }
       family.setSelectedItem(value == null ? FontManager.SANS_SERIF : (getFontValue().getFamily()));
       familyPanel.add(family);
