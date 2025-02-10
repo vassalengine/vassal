@@ -204,7 +204,7 @@ public class GameState implements CommandEncoder {
 
       @Override
       public void actionPerformed(ActionEvent e) {
-        if (isNewGameAllowed()) {
+        if (loadContinuation.isEnabled() || isNewGameAllowed()) {
           loadGame(true);
         }
       }
