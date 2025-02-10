@@ -27,6 +27,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -323,6 +324,7 @@ public abstract class FileChooser {
     }
 
     protected FileDialog awt_file_dialog_init(Component parent) {
+
       final FileDialog fd;
 
       if (parent == null) {
@@ -369,6 +371,7 @@ public abstract class FileChooser {
 
     @Override
     public int showOpenDialog(Component parent) {
+      GameModule.getGameModule().getToolBar().setEnabled(false);
       final FileDialog fd = awt_file_dialog_init(parent);
       fd.setMode(FileDialog.LOAD);
       fd.setVisible(true);
@@ -382,11 +385,13 @@ public abstract class FileChooser {
         value = CANCEL_OPTION;
       }
       updateDirectoryPreference();
+      GameModule.getGameModule().getToolBar().setEnabled(true);
       return value;
     }
 
     @Override
     public int showSaveDialog(Component parent) {
+      GameModule.getGameModule().getToolBar().setEnabled(false);
       final FileDialog fd = awt_file_dialog_init(parent);
       fd.setMode(FileDialog.SAVE);
       fd.setVisible(true);
@@ -400,6 +405,7 @@ public abstract class FileChooser {
         value = CANCEL_OPTION;
       }
       updateDirectoryPreference();
+      GameModule.getGameModule().getToolBar().setEnabled(true);
       return value;
     }
 
