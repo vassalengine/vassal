@@ -480,7 +480,7 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
       Resources.getString("Editor.GlobalOption.leading_zero_integer_strings"),
       Resources.getString("Editor.GlobalOption.purge_blank_property_prompts"),
       Resources.getString("Editor.GlobalOption.disable_use_location_indexes"),
-      Resources.getString("Editor.GlobalOption.min_maximum_heap"),
+      Resources.getString("Editor.GlobalOption.min_maximum_heap")
     };
   }
 
@@ -529,7 +529,8 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
       PromptOnOff.class,
       Boolean.class,
       Boolean.class,
-      Boolean.class
+      Boolean.class,
+      Integer.class
     };
   }
 

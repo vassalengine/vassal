@@ -372,7 +372,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
           moduleName = ((ModuleMetaData) data).getName();
 
           // log the module name
-          logger.info("Loading module {}", moduleName); //NON-NLS
+          logger.info("Loading module {}", moduleName + " test:" + GlobalOptions.getInstance().getMinMaximumHeap()); //NON-NLS
 
           // read module prefs
           final ReadOnlyPrefs p = new ReadOnlyPrefs(moduleName);
