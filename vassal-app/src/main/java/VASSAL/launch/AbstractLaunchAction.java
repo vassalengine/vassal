@@ -232,7 +232,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
                            lr.mode == LaunchRequest.Mode.EDIT_EXT;
       final LocalDate sixMonthsFromNow = LocalDate.now().plusMonths(6);
 
-      // convert deprecation date to date elgible for removal (+1 year)
+      // convert deprecation date to date eligible for removal (+1 year)
       final DateTimeFormatter fmt = DateTimeFormatter.ISO_LOCAL_DATE;
       for (final Map.Entry<String, Map<String, String>> e1: deprecated.entrySet()) {
         for (final Map.Entry<String, String> e2: e1.getValue().entrySet()) {
@@ -352,7 +352,9 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 // end FIXME
 
       // set default heap size
-      int maximumHeap = DEFAULT_MAXIMUM_HEAP;
+      int maximumHeap = Math.max(DEFAULT_MAXIMUM_HEAP, GlobalOptions.getInstance().getMinMaximumHeap());
+      logger.info("maximumHeap: {}", maximumHeap); //NON-NLS
+
 
       String moduleName = null;
 
@@ -372,16 +374,17 @@ public abstract class AbstractLaunchAction extends AbstractAction {
           moduleName = ((ModuleMetaData) data).getName();
 
           // log the module name
-          logger.info("Loading module {}", moduleName + " test:" + GlobalOptions.getInstance().getMinMaximumHeap()); //NON-NLS
+          logger.info("Loading module {}", moduleName); //NON-NLS
 
           // read module prefs
           final ReadOnlyPrefs p = new ReadOnlyPrefs(moduleName);
 
-          // Check for a module minimum maximum heap size from module custom prefs (blank tab)
+          // Check for a module minimum maximum heap size
           // never less than Vassal's default
+
           // read maximum heap size from module prefs
           maximumHeap = getHeapSize(
-            p, GlobalOptions.MAXIMUM_HEAP, Math.max(DEFAULT_MAXIMUM_HEAP, GlobalOptions.getInstance().getMinMaximumHeap())
+            p, GlobalOptions.MAXIMUM_HEAP, maximumHeap
           );
         }
       }
