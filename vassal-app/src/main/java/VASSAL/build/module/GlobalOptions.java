@@ -154,7 +154,7 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
   private boolean storeLeadingZeroIntegersAsStrings = false; // Store integers with leading zeroes as String internally
   private boolean purgeBlankPropertyPrompts = true; // Purge blank property prompts
   private boolean disableUsePieceIndexes = false; // Should FastMatch use piece Indexes?
-  private int minMaxHeap = 1024; // Modulle designer's specified minimum for the Max Heap preference
+  private int minMaxHeap = 1024; // Module designer's specified minimum for the Max Heap preference
 
   // Configurable prompt string for unmask-my-pieces
   private String promptString = Resources.getString("GlobalOptions.opponents_can_unmask_my_pieces");
@@ -231,7 +231,7 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
     final IntConfigurer maxHeapConf = new IntConfigurer(
       MAXIMUM_HEAP,
       Resources.getString("GlobalOptions.maximum_heap"),  //$NON-NLS-1$
-      AbstractLaunchAction.DEFAULT_MAXIMUM_HEAP
+      Math.max(AbstractLaunchAction.DEFAULT_MAXIMUM_HEAP, minMaxHeap)
     );
     prefs.addOption(maxHeapConf);
 
@@ -768,14 +768,29 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
       if (value instanceof Boolean) {
         disableUsePieceIndexes = (Boolean) value;
       }
-    }
-    else if (MIN_MAXIMUM_HEAP.equals(key)) {
-        if (value instanceof Integer) {
-          minMaxHeap = (Integer) value;
-        }
       else if (value instanceof String) {
         disableUsePieceIndexes = "true".equals(value); //NON-NLS
       }
+    }
+    else if (MIN_MAXIMUM_HEAP.equals(key)) {
+      if (value instanceof String) {
+        Integer i;
+        try {
+          i = Integer.parseInt((String) value);
+        }
+        catch (NumberFormatException e) {
+          // invalid input leaves the setting unchanged but remains on the UI until a module restart
+          i = null;
+        }
+        if (i != null) {
+          minMaxHeap = i;
+        }
+      }
+      else if (value instanceof Integer) {
+        minMaxHeap = (int) value;
+      }
+      // Vassal's default minimum is applied here
+      minMaxHeap = Math.max(AbstractLaunchAction.DEFAULT_MAXIMUM_HEAP, minMaxHeap);
     }
     else if (INVENTORY_VISIBLE_TO_ALL.equals(key)) {
       inventoryVisibleToAll = (String) value;
