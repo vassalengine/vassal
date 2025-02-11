@@ -98,6 +98,7 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
   public static final String STORE_LEADING_ZERO_INTEGERS_AS_STRINGS = "storeLeadingZeroIntegersAsStrings"; //NON-NLS
   public static final String PURGE_BLANK_PROPERTY_PROMPTS = "purgeBlankPropertyPrompts"; //NON-NLS
   public static final String DISABLE_PIECE_INDEXING = "disablePieceIndexing";
+  public static final String MIN_MAXIMUM_HEAP = "minMaxHeap";
 
   // Hybrid preference settings
   public static final String ALWAYS = "Always"; //$NON-NLS-1$
@@ -153,6 +154,7 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
   private boolean storeLeadingZeroIntegersAsStrings = false; // Store integers with leading zeroes as String internally
   private boolean purgeBlankPropertyPrompts = true; // Purge blank property prompts
   private boolean disableUsePieceIndexes = false; // Should FastMatch use piece Indexes?
+  private int minMaxHeap = 1024; // Modulle designer's specified minimum for the Max Heap preference
 
   // Configurable prompt string for unmask-my-pieces
   private String promptString = Resources.getString("GlobalOptions.opponents_can_unmask_my_pieces");
@@ -477,7 +479,8 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
       Resources.getString("Editor.GlobalOption.send_to_location_movement_trails"),
       Resources.getString("Editor.GlobalOption.leading_zero_integer_strings"),
       Resources.getString("Editor.GlobalOption.purge_blank_property_prompts"),
-      Resources.getString("Editor.GlobalOption.disable_use_location_indexes")
+      Resources.getString("Editor.GlobalOption.disable_use_location_indexes"),
+      Resources.getString("Editor.GlobalOption.min_maximum_heap"),
     };
   }
 
@@ -499,7 +502,8 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
         SEND_TO_LOCATION_MOVE_TRAILS,
         STORE_LEADING_ZERO_INTEGERS_AS_STRINGS,
         PURGE_BLANK_PROPERTY_PROMPTS,
-        DISABLE_PIECE_INDEXING
+        DISABLE_PIECE_INDEXING,
+        MIN_MAXIMUM_HEAP
       )
     );
 
@@ -662,6 +666,9 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
     else if (DISABLE_PIECE_INDEXING.equals(key)) {
       return String.valueOf(disableUsePieceIndexes);
     }
+    else if (MIN_MAXIMUM_HEAP.equals(key)) {
+      return Integer.toString(minMaxHeap);
+    }
     else if (INVENTORY_VISIBLE_TO_ALL.equals(key)) {
       return inventoryVisibleToAll;
     }
@@ -760,6 +767,11 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
       if (value instanceof Boolean) {
         disableUsePieceIndexes = (Boolean) value;
       }
+    }
+    else if (MIN_MAXIMUM_HEAP.equals(key)) {
+        if (value instanceof Integer) {
+          minMaxHeap = (Integer) value;
+        }
       else if (value instanceof String) {
         disableUsePieceIndexes = "true".equals(value); //NON-NLS
       }
@@ -874,6 +886,11 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
 
   public boolean isDisableUsePieceIndexes() {
     return disableUsePieceIndexes;
+  }
+
+  /** @return minimum Max Heap - will override user preference if set > Vassal minimum */
+  public int getMinMaximumHeap() {
+    return minMaxHeap;
   }
 
   /** @return whether specific hybrid preference is enabled (could be designer-forced setting, could be player preference) */
