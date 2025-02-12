@@ -386,7 +386,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
             p, GlobalOptions.MAXIMUM_HEAP, Math.max(maximumHeap, minMaximumHeap)
           );
 
-          logger.info("test {}", maximumHeap); //NON-NLS
+          logger.info("test {}", minMaximumHeap); //NON-NLS
 
           if (minMaximumHeap > DEFAULT_MAXIMUM_HEAP && minMaximumHeap == maximumHeap) {
             logger.info("JVM maximum heap set to module minimum ({} MB)", maximumHeap); //NON-NLS
