@@ -379,7 +379,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
           // Check for a module minimum maximum heap size
           // never less than Vassal's default
-          int minMaximumHeap = GlobalOptions.getInstance().getMinMaximumHeap();
+          final int minMaximumHeap = GlobalOptions.getInstance().getMinMaximumHeap();
 
           // read maximum heap size from module prefs
           maximumHeap = getHeapSize(
