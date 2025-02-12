@@ -112,7 +112,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
   }
 
   /**
-   * @return <code>true</code> iff any files are in use
+   * @return <code>true</code> if any files are in use
    */
   public static boolean anyInUse() {
     return useTracker.anyInUse();
@@ -120,7 +120,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
   /**
    * @param file the file to check
-   * @return <code>true</code> iff the file is in use
+   * @return <code>true</code> if the file is in use
    */
   public static boolean isInUse(File file) {
     return useTracker.isInUse(file);
@@ -128,7 +128,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
   /**
    * @param file the file to check
-   * @return <code>true</code> iff the file is being edited
+   * @return <code>true</code> if the file is being edited
    */
   public static boolean isEditing(File file) {
     return useTracker.isEditing(file);
@@ -353,8 +353,6 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
       // set default heap size
       int maximumHeap = Math.max(DEFAULT_MAXIMUM_HEAP, GlobalOptions.getInstance().getMinMaximumHeap());
-      logger.info("maximumHeap: {}", maximumHeap); //NON-NLS
-
 
       String moduleName = null;
 

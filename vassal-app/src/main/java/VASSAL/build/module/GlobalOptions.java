@@ -904,7 +904,7 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
     return disableUsePieceIndexes;
   }
 
-  /** @return minimum Max Heap - will override user preference if set > Vassal minimum */
+  /** @return minimum Max Heap - will override user preference if that is set lower */
   public int getMinMaximumHeap() {
     return minMaxHeap;
   }
