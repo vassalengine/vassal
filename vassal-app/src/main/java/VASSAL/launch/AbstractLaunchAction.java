@@ -352,7 +352,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 // end FIXME
 
       // set default heap size
-      int maximumHeap = Math.max(DEFAULT_MAXIMUM_HEAP, GlobalOptions.getInstance().getMinMaximumHeap());
+      int maximumHeap = DEFAULT_MAXIMUM_HEAP;
 
       String moduleName = null;
 
@@ -379,11 +379,16 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
           // Check for a module minimum maximum heap size
           // never less than Vassal's default
+          int minMaximumHeap = GlobalOptions.getInstance().getMinMaximumHeap();
 
           // read maximum heap size from module prefs
           maximumHeap = getHeapSize(
-            p, GlobalOptions.MAXIMUM_HEAP, maximumHeap
+            p, GlobalOptions.MAXIMUM_HEAP, Math.max(maximumHeap, minMaximumHeap)
           );
+
+          if (minMaximumHeap > DEFAULT_MAXIMUM_HEAP && minMaximumHeap == maximumHeap) {
+            logger.info("JVM maximum heap set to module minimum ({} MB)", maximumHeap); //NON-NLS
+          }
         }
       }
       else if (lr.importFile != null) {
