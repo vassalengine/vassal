@@ -235,6 +235,12 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
     );
     prefs.addOption(maxHeapConf);
 
+    // Startup - Special handling for max heap - override general preference with a module default, if higher
+    if (minMaxHeap > (Integer.parseInt(((prefs.getValue(MAXIMUM_HEAP)).toString())))) {
+      prefs.setValue(MAXIMUM_HEAP, minMaxHeap);
+      gm.warn(Resources.getString("GlobalOptions.module_minimum_heap", minMaxHeap));
+    }
+
     //BR// Drag Threshold - # pixels mouse must move to distinguish drag from click
     final IntConfigurer dragThresholdConf = new IntConfigurer(
       DRAG_THRESHOLD,
@@ -777,13 +783,6 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
         Integer i;
         try {
           i = Integer.parseInt((String) value);
-          // Update the module's user preference
-          final Prefs prefs = GameModule.getGameModule().getPrefs();
-          final int genMaxHeap = Math.max(Integer.parseInt((String) prefs.getValue(MAXIMUM_HEAP)),
-                  AbstractLaunchAction.DEFAULT_MAXIMUM_HEAP);
-          if (minMaxHeap > genMaxHeap) {
-            prefs.setValue(MAXIMUM_HEAP, minMaxHeap);
-          }
         }
         catch (NumberFormatException e) {
           // invalid input leaves the setting unchanged but remains on the UI until a module restart

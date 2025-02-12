@@ -381,6 +381,10 @@ public abstract class AbstractLaunchAction extends AbstractAction {
           maximumHeap = getHeapSize(
             p, GlobalOptions.MAXIMUM_HEAP, DEFAULT_MAXIMUM_HEAP
           );
+
+          // log the JVM maximum heap
+          logger.info("JVM maximum heap size: {}", maximumHeap); //NON-NLS
+
         }
       }
       else if (lr.importFile != null) {
