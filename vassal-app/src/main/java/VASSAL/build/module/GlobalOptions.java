@@ -777,6 +777,13 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
         Integer i;
         try {
           i = Integer.parseInt((String) value);
+          // Update the module's user preference
+          Prefs prefs = GameModule.getGameModule().getPrefs();
+          int genMaxHeap = Math.max(Integer.parseInt((String) prefs.getValue(MAXIMUM_HEAP)),
+                  AbstractLaunchAction.DEFAULT_MAXIMUM_HEAP);
+          if (minMaxHeap > genMaxHeap) {
+            prefs.setValue(MAXIMUM_HEAP, minMaxHeap);
+          }
         }
         catch (NumberFormatException e) {
           // invalid input leaves the setting unchanged but remains on the UI until a module restart
@@ -789,8 +796,6 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
       else if (value instanceof Integer) {
         minMaxHeap = (int) value;
       }
-      // Vassal's default minimum is applied here
-      minMaxHeap = Math.max(AbstractLaunchAction.DEFAULT_MAXIMUM_HEAP, minMaxHeap);
     }
     else if (INVENTORY_VISIBLE_TO_ALL.equals(key)) {
       inventoryVisibleToAll = (String) value;

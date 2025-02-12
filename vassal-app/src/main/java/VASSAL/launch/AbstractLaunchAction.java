@@ -377,20 +377,10 @@ public abstract class AbstractLaunchAction extends AbstractAction {
           // read module prefs
           final ReadOnlyPrefs p = new ReadOnlyPrefs(moduleName);
 
-          // Check for a module minimum maximum heap size
-          // never less than Vassal's default
-          final int minMaximumHeap = GlobalOptions.getInstance().getMinMaximumHeap();
-
           // read maximum heap size from module prefs
           maximumHeap = getHeapSize(
-            p, GlobalOptions.MAXIMUM_HEAP, Math.max(maximumHeap, minMaximumHeap)
+            p, GlobalOptions.MAXIMUM_HEAP, DEFAULT_MAXIMUM_HEAP
           );
-
-          logger.info("test {}", minMaximumHeap); //NON-NLS
-
-          if (minMaximumHeap > DEFAULT_MAXIMUM_HEAP && minMaximumHeap == maximumHeap) {
-            logger.info("JVM maximum heap set to module minimum ({} MB)", maximumHeap); //NON-NLS
-          }
         }
       }
       else if (lr.importFile != null) {
