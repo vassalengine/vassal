@@ -778,8 +778,8 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
         try {
           i = Integer.parseInt((String) value);
           // Update the module's user preference
-          Prefs prefs = GameModule.getGameModule().getPrefs();
-          int genMaxHeap = Math.max(Integer.parseInt((String) prefs.getValue(MAXIMUM_HEAP)),
+          final Prefs prefs = GameModule.getGameModule().getPrefs();
+          final int genMaxHeap = Math.max(Integer.parseInt((String) prefs.getValue(MAXIMUM_HEAP)),
                   AbstractLaunchAction.DEFAULT_MAXIMUM_HEAP);
           if (minMaxHeap > genMaxHeap) {
             prefs.setValue(MAXIMUM_HEAP, minMaxHeap);
