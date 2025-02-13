@@ -7,6 +7,7 @@
 * 13769: Upgraded juint-bom to 5.11.4
 * 13762: Upgraded checkstyle to 10.21.1
 * 13740: Upgraded maven-javadoc-plugin to 3.11.2
+* 13737: Add Beanshell performance health warning to Text Label trait docs
 * 13727: Upgraded jsoup to 1.18.3
 * 13712: Upgraded license-maven-plugin to 2.5.0
 * 13705: Upgraded commons-io to 2.18.0
