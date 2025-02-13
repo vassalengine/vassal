@@ -154,7 +154,7 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
   private boolean storeLeadingZeroIntegersAsStrings = false; // Store integers with leading zeroes as String internally
   private boolean purgeBlankPropertyPrompts = true; // Purge blank property prompts
   private boolean disableUsePieceIndexes = false; // Should FastMatch use piece Indexes?
-  private int minMaxHeap = 1024; // Module designer's specified minimum for the Max Heap preference
+  private int minMaxHeap = 0; // Module designer's specified minimum for the Max Heap preference
 
   // Configurable prompt string for unmask-my-pieces
   private String promptString = Resources.getString("GlobalOptions.opponents_can_unmask_my_pieces");
