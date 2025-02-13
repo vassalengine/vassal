@@ -238,7 +238,8 @@ public class GlobalOptions extends AbstractConfigurable implements ComponentDesc
     // Startup - Special handling for max heap - override general preference with a module default, if higher
     if (minMaxHeap > (Integer.parseInt(((prefs.getValue(MAXIMUM_HEAP)).toString())))) {
       prefs.setValue(MAXIMUM_HEAP, minMaxHeap);
-      gm.warn(Resources.getString("GlobalOptions.module_minimum_heap", minMaxHeap));
+      gm.warn("~" + Resources.getString("GlobalOptions.module_minimum_heap", minMaxHeap));
+
     }
 
     //BR// Drag Threshold - # pixels mouse must move to distinguish drag from click

@@ -383,7 +383,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
           );
 
           // log the JVM maximum heap
-          logger.info("JVM maximum heap size: {}", maximumHeap); //NON-NLS
+          logger.info("JVM maximum heap size: {} MB", maximumHeap); //NON-NLS
 
         }
       }
