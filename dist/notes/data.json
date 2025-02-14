@@ -25,9 +25,9 @@
       "bug_fixes": [
       ],
       "other_improvements": [
-        { "num": 13843, "desc": "Upgraded spotbugs-annotations to 4.9.1" },
+        { "num": 13841, "desc": "Upgraded byte-buddy to 1.17.1" },
+        { "num": 13834, "desc": "Upgraded spotbugs-annotations to 4.9.1" },
         { "num": 13814, "desc": "Upgraded httpclient5 5.4.2" },
-        { "num": 13805, "desc": "Upgraded byte-buddy to 1.17.0" },
         { "num": 13798, "desc": "Upgraded checkstyle to 10.21.2" },
         { "num": 13797, "desc": "Upgraded commons-codec to 1.18.0" },
         { "num": 13771, "desc": "Upgraded logback-classic to 1.5.16" },

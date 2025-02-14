@@ -5,9 +5,9 @@
 
 3.7.16 - ???
 
-* 13843: Upgraded spotbugs-annotations to 4.9.1
+* 13841: Upgraded byte-buddy to 1.17.1
+* 13834: Upgraded spotbugs-annotations to 4.9.1
 * 13814: Upgraded httpclient5 to 5.4.2
-* 13805: Upgraded byte-buddy to 1.17.0
 * 13798: Upgraded checkstyle to 10.21.2
 * 13797: Upgraded commons-codec to 1.18.0
 * 13771: Upgraded logback-classic to 1.5.16
