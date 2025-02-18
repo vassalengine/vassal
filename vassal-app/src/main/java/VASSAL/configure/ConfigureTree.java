@@ -346,15 +346,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     this.searchFiltered = searchFiltered;
   }
 
-  @Deprecated(since = "2023-10-17", forRemoval = true)
-  protected void setSearchAdvanced(JCheckBox searchAdvanced) {
-  }
-  @Deprecated(since = "2023-10-17", forRemoval = true)
-  protected JCheckBox getSearchAdvanced() {
-    return searchAdvanced;
-  }
-
-
   public JFrame getFrame() {
     return editorWindow;
   }
@@ -2446,18 +2437,23 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
               if (anyChanges) {
                 regexPattern = setupRegexSearch(searchParameters.getSearchString());
 
-                chatter.show(""); // line space at start of search
+                if (regexPattern != null) {
 
-                // Compute & display hit count as heading, no indent
-                final int matches = (regexPattern == null ? 0 : getNumMatches(regexPattern));
+                  chatter.show(""); // line space at start of search
 
-                chatter.show(!searchParameters.isOptRegex() ? Resources.getString((searchParameters.isOptNormal() ? "Editor.search_count" : "Editor.search_countWord"), matches, noHTML(searchParameters.getSearchString())) :
-                        regexPattern == null ? "" : Resources.getString("Editor.search_countRegex", matches, noHTML(regexPattern.toString())));
+                  // Compute & display hit count as heading, no indent
+                  final int matches = (regexPattern == null ? 0 : getNumMatches(regexPattern));
 
-                if (matches > 0) {
-                  resetPath();  // Search needs to start from current position; if nothing found, cursor stays where it was
+                  chatter.show(!searchParameters.isOptRegex() ? Resources.getString((searchParameters.isOptNormal() ? "Editor.search_count" : "Editor.search_countWord"), matches, noHTML(searchParameters.getSearchString())) :
+                          regexPattern == null ? "" : Resources.getString("Editor.search_countRegex", matches, noHTML(regexPattern.toString())));
+
+                  if (matches > 0) {
+                    resetPath();  // Search needs to start from current position; if nothing found, cursor stays where it was
+                  }
                 }
-
+                else {
+                  return; // setupRegexSearch has failed and will have output an error message to chat
+                }
               }
 
               final DefaultMutableTreeNode node = findNode(regexPattern);
