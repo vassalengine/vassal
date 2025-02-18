@@ -214,7 +214,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected JTextField searchField;
   protected JRadioButton searchFiltered;
 
-  @Deprecated(since = "2023-10-17", forRemoval = true)
   protected JCheckBox searchAdvanced;
 
   private final SearchParameters searchParameters;
@@ -345,6 +344,15 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected void setSearchAdvanced(JRadioButton searchFiltered) {
     this.searchFiltered = searchFiltered;
   }
+
+  // FIXME: Attempting to remove these now unused items yields build errors.
+  protected void setSearchAdvanced(JCheckBox searchAdvanced) {
+  }
+
+  protected JCheckBox getSearchAdvanced() {
+    return searchAdvanced;
+  }
+
 
   public JFrame getFrame() {
     return editorWindow;
@@ -2442,10 +2450,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
                   chatter.show(""); // line space at start of search
 
                   // Compute & display hit count as heading, no indent
-                  final int matches = (regexPattern == null ? 0 : getNumMatches(regexPattern));
+                  final int matches = getNumMatches(regexPattern);
 
                   chatter.show(!searchParameters.isOptRegex() ? Resources.getString((searchParameters.isOptNormal() ? "Editor.search_count" : "Editor.search_countWord"), matches, noHTML(searchParameters.getSearchString())) :
-                          regexPattern == null ? "" : Resources.getString("Editor.search_countRegex", matches, noHTML(regexPattern.toString())));
+                          Resources.getString("Editor.search_countRegex", matches, noHTML(regexPattern.toString())));
 
                   if (matches > 0) {
                     resetPath();  // Search needs to start from current position; if nothing found, cursor stays where it was
@@ -2635,6 +2643,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
      * @return the node we found, or null if none
      */
     private DefaultMutableTreeNode findNode(Pattern regexPattern) {
+
+      if (regexPattern == null) {
+        return null;
+      }
+
       final List<DefaultMutableTreeNode> searchNodes =
         configureTree.getSearchNodes((DefaultMutableTreeNode)configureTree.getModel().getRoot());
       final DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode)configureTree.getLastSelectedPathComponent();
@@ -3328,7 +3341,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         }
         catch (PatternSyntaxException e) {
           // something went wrong - a \E in the search input followed by invalid Regex will end up here
-          logger.error(Resources.getString("Editor.search_badWord", noHTML(e.getMessage()))); //NON-NLS
+          logger.error("~" + Resources.getString("Editor.search_badWord", noHTML(e.getMessage()))); //NON-NLS
           return null;
         }
       }
@@ -3338,7 +3351,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         return Pattern.compile(searchString, flags);
       }
       catch (PatternSyntaxException e) {
-        chat(Resources.getString("Editor.search_badRegex", noHTML(e.getMessage()))); //NON-NLS
+        chat("~" + Resources.getString("Editor.search_badRegex", noHTML(e.getMessage()))); //NON-NLS
         return null;
       }
     }
