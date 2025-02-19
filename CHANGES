@@ -1,5 +1,6 @@
 3.7.16 - ???
 
+* 13731: Bring Reference Manual section on Extensions up to date
 * 13849: Upgraded spotbugs-maven-plugin to 4.9.1.0
 * 13845: Sleep() improvements - Remove artifacts on Macs amd improve
     performance when Sleep(0) used to refresh UI
