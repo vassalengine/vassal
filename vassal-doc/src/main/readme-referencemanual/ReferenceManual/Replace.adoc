@@ -31,9 +31,11 @@ If left blank, no context menu item will appear, but the trait can still be acti
 Click the *_Select_* button to use the definition from an existing piece in the module.
 This acts as a pointer to an existing definition: if the original piece is changed, the piece created by the _Replace with Other_ trait will also change.
 
-*Horizontal offset:*::  The center of the replacement piece will be placed this many pixels to the right of the center of the original piece.
+*Horizontal offset:*::  The new piece will be placed this many pixels to the right of the original piece.
 
-*Vertical offset:*::  The center of the replacement piece will be placed this many pixels above the center of the original piece.
+*Vertical offset:*::  The new piece will be placed this many pixels above the original piece.
+
+NOTE: A non-zero value in either Offset field will remove the piece from its parent stack and restrict the placement options to the Top or Bottom of a Stack, if joined (see below).
 
 *Match current state:*::  If selected, VASSAL will attempt to put the replacement piece in the same state as the original piece.
 Layers will be set to the same level, labels will be given the same value, rotation angles will match, etc.
@@ -45,16 +47,14 @@ NOTE: _Markers_ are never state matched. A _Marker_ defined in the replacement p
 *Only match states above this trait:*::  If selected, VASSAL will only replace states in traits that appear above this one in the list of traits in the <<GamePiece.adoc#top,game piece editor>>. For example, the state of a _Layer_ that's above this one _will_ change if the state in the new game piece changes.
 If it's below, then it _will not_ change if the new game piece has the same _Layer_ property.
 
-*Copy Dynamic Property values whre Property name matches:*::
+*Copy Dynamic Property values where Property name matches:*::
 The default option for <<DynamicProperty.adoc#top,Dynamic Properties>> is that the trait must be defined exactly in the replacement as it is in the original (including description, minimum and maximum values and Key Commands).
 +
 Selecting this option causes the match process to just compare the name of the Dynamic Property between the original and the replacement, regardless of the other settings.
 +
 This makes it easier to simply copy the value of  <<DynamicProperty.adoc#top,Dynamic Properties>> into the matching properties replacement piece where you may need to define them differently in the replacement piece.
 
-
-*Place marker:*::  Choose whether the new piece should be placed on the top of this piece's stack, on the bottom of the stack, or directly above/below the triggering piece.
-
+*Place marker:*::  Choose whether the new piece should be placed on the top of this piece's stack, on the bottom, or directly above/below (i.e. replacing) this piece. If the new piece is to join a different stack, the above/below options are interpreted as top/bottom respectively. No effect if the new piece is not stackable.
 
 *Set Dynamic Properties in marker:*::
 Allows you to set the values of the named <<DynamicProperty.adoc#top,Dynamic Properties>> that exist in the created marker. +
@@ -63,7 +63,7 @@ Properties used in the expression reference values in the newly created marker. 
  +
 The expression used to set the value can reference existing property values in both the piece creating the marker (Using $$ variables) and in the newly created marker. +
  +
-The values are set into the new marker after any propert values are copied based on State matching, but before the Keystroke after placement is applied. +
+The values are set into the new marker after any property values are copied based on State matching, but before the Keystroke after placement is applied. +
 +
 See <<PassingValues.adoc#marker,Passing values to pieces>> for more detailed information on using this feature.
 
