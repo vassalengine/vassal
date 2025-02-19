@@ -25,6 +25,9 @@
       "bug_fixes": [
       ],
       "other_improvements": [
+        { "num": 13791, "desc": "Prevent Checkbox Scenario Option switch description side option being forced on" },
+        { "num": 13845, "desc": "Sleep() improvements - Remove artifacts on Macs amd improve performance when Sleep(0) used to refresh UI" },
+        { "num": 13833, "desc": "Do not subject 'Load Continuation' to online restrictions" },
         { "num": 13841, "desc": "Upgraded byte-buddy to 1.17.1" },
         { "num": 13834, "desc": "Upgraded spotbugs-annotations to 4.9.1" },
         { "num": 13814, "desc": "Upgraded httpclient5 5.4.2" },

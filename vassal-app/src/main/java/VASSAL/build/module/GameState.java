@@ -204,7 +204,8 @@ public class GameState implements CommandEncoder {
 
       @Override
       public void actionPerformed(ActionEvent e) {
-        if (isNewGameAllowed()) {
+        //  Load Continuation is excused the restrictions that apply to new games & log files in online rooms
+        if (loadContinuation.isEnabled() || isNewGameAllowed()) {
           loadGame(true);
         }
       }
