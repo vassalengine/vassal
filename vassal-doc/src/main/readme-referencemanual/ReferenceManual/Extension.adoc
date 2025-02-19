@@ -21,5 +21,3 @@ In order to create a new extension, right-click on the module and select "New Ex
 Editing a Module Extension is done exactly like editing a Module, by adding and modifying components in the Configuration Window.
 The only difference is that you cannot delete or modify components of the main Module while editing an extension.
 Any components in an extension will always be added after those related components in the main Module.
-
-
