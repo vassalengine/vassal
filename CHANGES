@@ -1,12 +1,19 @@
 3.7.16 - ???
 
-* 13778: Upgraded spotbugs-annotations to 4.9.0
-* 13772: Upgraded commons-io to 1.17.2
+* 13791: Prevent Checkbox Scenario Option switch description side option 
+    being forced on.
+* 13845: Sleep() improvements - Remove artifacts on Macs amd improve 
+    performance when Sleep(0) used to refresh UI.
+* 13833: Do not subject 'Load Continuation' to online restrictions.
+* 13841: Upgraded byte-buddy to 1.17.1
+* 13834: Upgraded spotbugs-annotations to 4.9.1
+* 13814: Upgraded httpclient5 to 5.4.2
+* 13798: Upgraded checkstyle to 10.21.2
+* 13797: Upgraded commons-codec to 1.18.0
 * 13771: Upgraded logback-classic to 1.5.16
-* 13770: Upgraded byte-buddy to 1.15.11
 * 13769: Upgraded juint-bom to 5.11.4
-* 13762: Upgraded checkstyle to 10.21.1
 * 13740: Upgraded maven-javadoc-plugin to 3.11.2
+* 13737: Add Beanshell performance health warning to Text Label trait docs
 * 13727: Upgraded jsoup to 1.18.3
 * 13712: Upgraded license-maven-plugin to 2.5.0
 * 13705: Upgraded commons-io to 2.18.0

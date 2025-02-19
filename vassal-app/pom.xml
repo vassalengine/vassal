@@ -52,7 +52,7 @@
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-            <version>1.17.2</version>
+            <version>1.18.0</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -72,7 +72,7 @@
         <dependency>
           <groupId>org.apache.httpcomponents.client5</groupId>
           <artifactId>httpclient5</artifactId>
-          <version>5.4.1</version>
+          <version>5.4.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.xmlgraphics</groupId>
@@ -192,7 +192,7 @@
         <dependency>
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy</artifactId>
-            <version>1.15.11</version>
+            <version>1.17.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -210,7 +210,7 @@
         <dependency>
             <groupId>com.github.spotbugs</groupId>
             <artifactId>spotbugs-annotations</artifactId>
-            <version>4.9.0</version>
+            <version>4.9.1</version>
             <optional>true</optional>
         </dependency>
     </dependencies>
