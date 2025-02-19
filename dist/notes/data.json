@@ -23,6 +23,7 @@
       "bug_fixes": [
       ],
       "other_improvements": [
+        { "num": 13853, "desc": "Upgraded maven-clean-plugin to 3.4.1" },
         { "num": 13849, "desc": "Upgraded spotbugs-maven-plugin to 4.9.1.0" },
         { "num": 13845, "desc": "Sleep() improvements - Remove artifacts on Macs amd improve performance when Sleep(0) used to refresh UI" },
         { "num": 13833, "desc": "Do not subject 'Load Continuation' to online restrictions" },
@@ -36,7 +37,9 @@
         { "num": 13769, "desc": "Upgraded juint-bom to 5.11.4" },
         { "num": 13740, "desc": "Upgraded maven-javadoc-plugin to 3.11.2" },
         { "num": 13737, "desc": "Add Beanshell performance health warning to Text Label trait docs" },
+        { "num": 13731, "desc": "Bring Reference Manual section on Extensions up to date" },
         { "num": 13727, "desc": "Upgraded jsoup to 1.18.3" },
+        { "num": 13719, "desc": "Place Marker no longer ignores Offsets for stackable pieces" },
         { "num": 13712, "desc": "Upgraded license-maven-plugin to 2.5.0" },
         { "num": 13705, "desc": "Upgraded commons-io to 2.18.0" },
         { "num": 13693, "desc": "Upgraded asciidoctor-maven-plugin to 3.1.1" }
