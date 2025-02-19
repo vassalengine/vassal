@@ -1038,7 +1038,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
         setZoomFactor(vd.getWidth() / md.getWidth());
       }
       else if (FIT_HEIGHT.equals(cmd)) {
-        // A single pass (see WIDTH above) results in a poor fit for HEIGHT (ref issue #13635)
+        // A single pass (see WIDTH above) results in a poor fit for HEIGHT (issue #13635)
         // Repeating the sequence corrects the issue. FIXME: This is a workaround
         Dimension vd = map.getView().getVisibleRect().getSize();
         Dimension md = map.mapSize();
