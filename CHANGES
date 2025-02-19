@@ -1,7 +1,9 @@
 3.7.16 - ???
 
-* 13845: Sleep() improvements - Remove artifacts on Macs amd improve performance 
-    when Sleep(0) used to refresh UI
+* 13791: Prevent Checkbox Scenario Option switch description side option 
+    being forced on.
+* 13845: Sleep() improvements - Remove artifacts on Macs amd improve 
+    performance when Sleep(0) used to refresh UI.
 * 13833: Do not subject 'Load Continuation' to online restrictions.
 * 13841: Upgraded byte-buddy to 1.17.1
 * 13834: Upgraded spotbugs-annotations to 4.9.1
