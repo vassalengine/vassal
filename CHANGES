@@ -5,8 +5,7 @@
 
 3.7.16 - ???
 
-* 13791: Prevent Checkbox Scenario Option switch description side option
-    being forced on
+* 13849: Upgraded spotbugs-maven-plugin to 4.9.1.0
 * 13845: Sleep() improvements - Remove artifacts on Macs amd improve
     performance when Sleep(0) used to refresh UI
 * 13833: Do not subject 'Load Continuation' to online restrictions
@@ -15,6 +14,8 @@
 * 13814: Upgraded httpclient5 to 5.4.2
 * 13798: Upgraded checkstyle to 10.21.2
 * 13797: Upgraded commons-codec to 1.18.0
+* 13791: Prevent Checkbox Scenario Option switch description side option
+    being forced on
 * 13771: Upgraded logback-classic to 1.5.16
 * 13769: Upgraded juint-bom to 5.11.4
 * 13740: Upgraded maven-javadoc-plugin to 3.11.2
@@ -23,7 +24,6 @@
 * 13712: Upgraded license-maven-plugin to 2.5.0
 * 13705: Upgraded commons-io to 2.18.0
 * 13693: Upgraded asciidoctor-maven-plugin to 3.1.1
-* 13688: Upgraded spotbugs-maven-plugin to 4.8.6.6
 
 3.7.15 - 7 November 2024
 
