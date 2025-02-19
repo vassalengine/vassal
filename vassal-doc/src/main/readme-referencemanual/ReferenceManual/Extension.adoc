@@ -8,16 +8,16 @@
 === Module Extension
 
 A Module Extension defines optional additional components to a Module.
-Each extension is defined in its own file separate from the main Module file.
-When playing, an extension is automatically loaded when its file is placed in the proper folder.
-However, when editing, only the extension being edited is loaded.
-In order to create a new extension or load an existing one for further editing, fist click "Load Module" in the "Extensions" section of the VASSAL start screen.
-Select and open your .mod file.
-For editing an existing extension file, click "Edit" in the "Extensions" section of the VASSAL start screen and select and open your extension .mdx file.
-For creating an extension click "New" instead and save your work with a .mdx file ending.
+Each extension is defined in its own file separate from the main Module file. Extensions are managed from the Module Library window. When the module is loaded to play a game, all its active extensions will be loaded as well.
+
+To install an extension, right-click (Mac users: Command-click) on the module in the Module Library window, choose 'Add Extension' and select the downloaded extension. The extension is automatically activated.
+
+If a module has already been configured with one or more extensions, the Module Library will show a twisty (">") in the left margin next to the module name.  The extension may be Deactivated or re-Activated by opening the twisty, right-clicking on the extension file name (.vmdx) and selecting the appropriate option.
+
+When a module is edited, only the module  is loaded. To edit an extension, open the twisty and right-click on the extension file name (.vmdx) and select "Edit extension".
+
+In order to create a new extension, right-click on the module and select "New Extension".
 
 Editing a Module Extension is done exactly like editing a Module, by adding and modifying components in the Configuration Window.
 The only difference is that you cannot delete or modify components of the main Module while editing an extension.
-Any components in an extension will always be added after those in the main Module.
-See the User's Guide "Installation" page on loading extension files for play.
-
+Any components in an extension will always be added after those related components in the main Module.
