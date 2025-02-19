@@ -23,7 +23,7 @@
       "bug_fixes": [
       ],
       "other_improvements": [
-        { "num": 13791, "desc": "Prevent Checkbox Scenario Option switch description side option being forced on" },
+        { "num": 13849, "desc": "Upgraded spotbugs-maven-plugin to 4.9.1.0" },
         { "num": 13845, "desc": "Sleep() improvements - Remove artifacts on Macs amd improve performance when Sleep(0) used to refresh UI" },
         { "num": 13833, "desc": "Do not subject 'Load Continuation' to online restrictions" },
         { "num": 13841, "desc": "Upgraded byte-buddy to 1.17.1" },
@@ -31,6 +31,7 @@
         { "num": 13814, "desc": "Upgraded httpclient5 5.4.2" },
         { "num": 13798, "desc": "Upgraded checkstyle to 10.21.2" },
         { "num": 13797, "desc": "Upgraded commons-codec to 1.18.0" },
+        { "num": 13791, "desc": "Prevent Checkbox Scenario Option switch description side option being forced on" },
         { "num": 13771, "desc": "Upgraded logback-classic to 1.5.16" },
         { "num": 13769, "desc": "Upgraded juint-bom to 5.11.4" },
         { "num": 13740, "desc": "Upgraded maven-javadoc-plugin to 3.11.2" },
@@ -38,8 +39,7 @@
         { "num": 13727, "desc": "Upgraded jsoup to 1.18.3" },
         { "num": 13712, "desc": "Upgraded license-maven-plugin to 2.5.0" },
         { "num": 13705, "desc": "Upgraded commons-io to 2.18.0" },
-        { "num": 13693, "desc": "Upgraded asciidoctor-maven-plugin to 3.1.1" },
-        { "num": 13688, "desc": "Upgraded spotbugs-maven-plugin to 4.8.6.6" }
+        { "num": 13693, "desc": "Upgraded asciidoctor-maven-plugin to 3.1.1" }
       ]
     },
     {
