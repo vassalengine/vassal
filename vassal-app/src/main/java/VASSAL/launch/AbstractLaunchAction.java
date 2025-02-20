@@ -112,7 +112,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
   }
 
   /**
-   * @return <code>true</code> iff any files are in use
+   * @return <code>true</code> if any files are in use
    */
   public static boolean anyInUse() {
     return useTracker.anyInUse();
@@ -120,7 +120,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
   /**
    * @param file the file to check
-   * @return <code>true</code> iff the file is in use
+   * @return <code>true</code> if the file is in use
    */
   public static boolean isInUse(File file) {
     return useTracker.isInUse(file);
@@ -128,7 +128,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
   /**
    * @param file the file to check
-   * @return <code>true</code> iff the file is being edited
+   * @return <code>true</code> if the file is being edited
    */
   public static boolean isEditing(File file) {
     return useTracker.isEditing(file);
@@ -232,7 +232,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
                            lr.mode == LaunchRequest.Mode.EDIT_EXT;
       final LocalDate sixMonthsFromNow = LocalDate.now().plusMonths(6);
 
-      // convert deprecation date to date elgible for removal (+1 year)
+      // convert deprecation date to date eligible for removal (+1 year)
       final DateTimeFormatter fmt = DateTimeFormatter.ISO_LOCAL_DATE;
       for (final Map.Entry<String, Map<String, String>> e1: deprecated.entrySet()) {
         for (final Map.Entry<String, String> e2: e1.getValue().entrySet()) {
@@ -381,6 +381,10 @@ public abstract class AbstractLaunchAction extends AbstractAction {
           maximumHeap = getHeapSize(
             p, GlobalOptions.MAXIMUM_HEAP, DEFAULT_MAXIMUM_HEAP
           );
+
+          // log the JVM maximum heap
+          logger.info("JVM maximum heap size: {} MB", maximumHeap); //NON-NLS
+
         }
       }
       else if (lr.importFile != null) {
