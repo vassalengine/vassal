@@ -269,7 +269,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
   @Override
   protected KeyCommand[] myGetKeyCommands() {
-    launch = new KeyCommand(menuName, launchKeyStroke, Decorator.getOutermost(this), this);
+    launch = new KeyCommand(menuName, launchKeyStroke, getOutermost(this), this);
     return new KeyCommand[]{launch};
   }
 
@@ -316,7 +316,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     if (encoder.getValue() != null && !encoder.getValue().equals(state)) {
       mySetState(encoder.getValue());
 
-      final GamePiece outer = Decorator.getOutermost(this);
+      final GamePiece outer = getOutermost(this);
       if (outer.getId() != null) {
         GameModule.getGameModule().sendAndLog(
           new ChangePiece(outer.getId(), oldState, outer.getState()));
@@ -599,7 +599,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
     // Name window and make it visible
     frame.setTitle(getLocalizedName());
-    oldState = Decorator.getOutermost(this).getState();
+    oldState = getOutermost(this).getState();
     frame.setVisible(true);
     return null;
   }
@@ -890,7 +890,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
   @Override
   public PieceI18nData getI18nData() {
-    final ArrayList<String> items = new ArrayList<>();
+    final List<String> items = new ArrayList<>();
     final SequenceEncoder.Decoder defDecoder =
       new SequenceEncoder.Decoder(m_definition, DEF_DELIMITOR);
     while (defDecoder.hasMoreTokens()) {
@@ -942,7 +942,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       AddCreateRow(dataModel);
       propertyTable = m_panel.addTableCtrl(Resources.getString("Editor.PropertySheet.properties"), dataModel, DEFAULT_ROW);
 
-      final DefaultCellEditor typePicklist = new DefaultCellEditor(new JComboBox(TYPE_VALUES));
+      final DefaultCellEditor typePicklist = new DefaultCellEditor(new JComboBox<>(TYPE_VALUES));
       propertyTable.getColumnModel().getColumn(1).setCellEditor(typePicklist);
     }
 

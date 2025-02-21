@@ -755,11 +755,11 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       final StringBuilder s = new StringBuilder("");
       if (polygon != null) {
         for (int p = 0; p < polygon.npoints; p++) {
-          s.append('(');
-          s.append(polygon.xpoints[p]);
-          s.append(',');
-          s.append(polygon.ypoints[p]);
-          s.append(") ");
+          s.append('(')
+            .append(polygon.xpoints[p])
+            .append(',')
+            .append(polygon.ypoints[p])
+            .append(") ");
         }
       }
       coordsLabel.setText(s.toString());

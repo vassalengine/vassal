@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.vassalengine</groupId>
         <artifactId>vassal-parent</artifactId>
-        <version>3.7.9-SNAPSHOT</version>
+        <version>3.8.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>release-prepare</artifactId>
@@ -18,11 +18,6 @@
     </properties>
 
     <dependencies>
-         <dependency>
-            <groupId>org.vassalengine</groupId>
-            <artifactId>vassal-agent</artifactId>
-            <version>${project.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.vassalengine</groupId>
             <artifactId>vassal-app</artifactId>

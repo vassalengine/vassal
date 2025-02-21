@@ -281,7 +281,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   }
 
   public SortedSet<String> getImageNameSet(boolean localized, boolean fullPath) {
-    final TreeSet<String> s = new TreeSet<>();
+    final SortedSet<String> s = new TreeSet<>();
     getImageNamesRecursively(s, localized, fullPath);
     return s;
   }
@@ -322,7 +322,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
 
   /* Localized directories always take the form images_XX with XX being a i18n code */
   protected void buildLocalizedDirectoryList(List<String> list) {
-    List<String> files;
+    final List<String> files;
     try {
       files = archive.getFiles("");
     }
@@ -372,10 +372,10 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   }
 
   protected SortedSet<String> getAllLocalImageNames(boolean localized, boolean fullPath) {
-    final TreeSet<String> s = new TreeSet<>();
+    final SortedSet<String> s = new TreeSet<>();
 
     if (archive != null) {
-      final ArrayList<String> directories = new ArrayList<>();
+      final List<String> directories = new ArrayList<>();
       directories.add(imageDir);
       if (localized) {
         buildLocalizedDirectoryList(directories);

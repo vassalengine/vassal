@@ -306,6 +306,7 @@ public class NonRectangular extends Decorator implements EditablePiece {
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof NonRectangular)) return false;
     final NonRectangular c = (NonRectangular) o;

@@ -152,10 +152,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     }
 
     final Polygon poly = zone.getPolygon();
-    if (poly == null) {
-      return false;
-    }
-    return !poly.contains(pt);
+    return poly != null && !poly.contains(pt);
   }
 
   @Override

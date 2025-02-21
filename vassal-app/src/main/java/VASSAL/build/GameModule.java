@@ -224,6 +224,9 @@ public class GameModule extends AbstractConfigurable
 
   public static final String IS_VISIBLE = "_isVisible"; //NON-NLS
 
+  public static final String UI_PIECE_COUNT = "UiPieceCount";
+  public static final String UI_PIECE_INDEX = "UiPieceIndex";
+
   private static final char COMMAND_SEPARATOR = KeyEvent.VK_ESCAPE;
 
   public static final String RECENT_GAMES = "RecentGames"; //NON-NLS
@@ -804,16 +807,16 @@ public class GameModule extends AbstractConfigurable
    */
   private void initIdentityPreferences() {
     idChangeSupport = new PropertyChangeSupport(this);
-    final StringConfigurer fullName = new StringConfigurer(GameModule.REAL_NAME, Resources.getString("Prefs.name_label"), Resources.getString("Prefs.newbie"));   //$NON-NLS-1$ //$NON-NLS-2$
+    final StringConfigurer fullName = new StringConfigurer(REAL_NAME, Resources.getString("Prefs.name_label"), Resources.getString("Prefs.newbie"));   //$NON-NLS-1$ //$NON-NLS-2$
     fullName.addPropertyChangeListener(evt -> idChangeSupport.firePropertyChange(evt));
-    final TextConfigurer profile = new TextConfigurer(GameModule.PERSONAL_INFO, Resources.getString("Prefs.personal_info"), "");   //$NON-NLS-1$ //$NON-NLS-2$
+    final TextConfigurer profile = new TextConfigurer(PERSONAL_INFO, Resources.getString("Prefs.personal_info"), "");   //$NON-NLS-1$ //$NON-NLS-2$
     profile.addPropertyChangeListener(evt -> idChangeSupport.firePropertyChange(evt));
-    passwordConfigurer = new ToggleablePasswordConfigurer(GameModule.SECRET_NAME, Resources.getString("Prefs.password_label"), ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-    passwordConfigurer.addPropertyChangeListener(evt -> GameModule.setUserId((String) evt.getNewValue()));
+    passwordConfigurer = new ToggleablePasswordConfigurer(SECRET_NAME, Resources.getString("Prefs.password_label"), ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    passwordConfigurer.addPropertyChangeListener(evt -> setUserId((String) evt.getNewValue()));
     getPrefs().addOption(Resources.getString("Prefs.personal_tab"), fullName);   //$NON-NLS-1$ //$NON-NLS-2$
     getPrefs().addOption(Resources.getString("Prefs.personal_tab"), passwordConfigurer);   //$NON-NLS-1$ //$NON-NLS-2$
     getPrefs().addOption(Resources.getString("Prefs.personal_tab"), profile);  //$NON-NLS-1$
-    GameModule.setUserId(passwordConfigurer.getValueString());
+    setUserId(passwordConfigurer.getValueString());
   }
 
   private void initRecentGamesMenu() {
@@ -2217,7 +2220,7 @@ public class GameModule extends AbstractConfigurable
    * @return <code>true</code> if user supplied a real name
    */
   public boolean isRealName() {
-    final String name = (String)getPrefs().getValue(GameModule.REAL_NAME);
+    final String name = (String)getPrefs().getValue(REAL_NAME);
     return name != null && !name.isEmpty() && !name.equals(Resources.getString("Prefs.newbie"));
   }
 
@@ -2229,7 +2232,7 @@ public class GameModule extends AbstractConfigurable
    * @return <code>true</code> if user supplied a real password
    */
   public boolean isNonBlankPassword() {
-    final String pwd = (String)getPrefs().getValue(GameModule.SECRET_NAME);
+    final String pwd = (String)getPrefs().getValue(SECRET_NAME);
     return (pwd != null) && !pwd.isEmpty();
   }
 
@@ -2247,7 +2250,7 @@ public class GameModule extends AbstractConfigurable
       return mySide == null ? "" : mySide;  //$NON-NLS-1$
     }
     else if (GlobalOptions.PLAYER_NAME.equals(key) || GlobalOptions.PLAYER_NAME_ALT.equals(key)) {
-      return getPrefs().getValue(GameModule.REAL_NAME);
+      return getPrefs().getValue(REAL_NAME);
     }
     else if (GlobalOptions.PLAYER_ID.equals(key) || GlobalOptions.PLAYER_ID_ALT.equals(key)) {
       return GlobalOptions.getInstance().getPlayerId();
@@ -2273,10 +2276,10 @@ public class GameModule extends AbstractConfigurable
     else if (MODULE_OTHER2_PROPERTY.equals(key)) {
       return moduleOther2;
     }
-    else if (GameModule.MODULE_CURRENT_LOCALE.equals(key)) {
+    else if (MODULE_CURRENT_LOCALE.equals(key)) {
       return Resources.getLocale().getLanguage();
     }
-    else if (GameModule.MODULE_CURRENT_LOCALE_NAME.equals(key)) {
+    else if (MODULE_CURRENT_LOCALE_NAME.equals(key)) {
       return Resources.getLocale().getDisplayName();
     }
     else if (GAME_FILENAME_PROPERTY.equals(key)) {
@@ -2287,6 +2290,12 @@ public class GameModule extends AbstractConfigurable
     }
     else if (DRAWING_MOUSEOVER_INDEX_PROPERTY.equals(key)) {
       return CounterDetailViewer.isDrawingMouseOver() ? "2" : "1";
+    }
+    else if (UI_PIECE_COUNT.equals(key)) {
+      return String.valueOf(getUiPieceCount());
+    }
+    else if (UI_PIECE_INDEX.equals(key)) {
+      return String.valueOf(getUiPieceIndex());
     }
 
     //BR// MapName_isVisible property for each map window
@@ -2330,6 +2339,50 @@ public class GameModule extends AbstractConfigurable
     }
   }
 
+  /**
+   * The count of pieces that are currently being acted on as part of a UI gesture instigated by this client.
+   * Will be 0 if a multi-piece UI gesture is not underway
+   *   - Right-click menu option on a counter(s)
+   *   - Key-pressed while piece(s) are selected
+   *   - Apply after Move Key being applied after a Drag'n'Drop move
+   */
+  private int uiPieceCount;
+
+  /**
+   * The index (starting at 1) of the piece currently being processed as part of a multi-piece UI gesture
+   */
+  private int uiPieceIndex;
+
+  /** Return number of pieces to be processed by the current multi-piece UI gesture */
+  public int getUiPieceCount() {
+    return uiPieceCount;
+  }
+
+  /** Return the index of the current piece being processed by the current multi-piece UI gesture */
+  public int getUiPieceIndex() {
+    return uiPieceIndex;
+  }
+
+  /**
+   * A multi-piece UI gesture is starting. Record the number of pieces to be processed and reset the counter.
+   * @param pieceCount  Number of pieces to be processed
+   */
+  public final void initializeUiPieceProcessing(int pieceCount) {
+    uiPieceCount = pieceCount;
+    uiPieceIndex = 0;
+  }
+
+  /** The next piece in a multi-piece UI gesture is about to be processed. */
+  public final void processNextUiPiece() {
+    uiPieceIndex++;
+  }
+
+  /** Record the end of a multi-piece UI gesture */
+  public final void finalizeUiPieceProcessing() {
+    uiPieceCount = 0;
+    uiPieceIndex = 0;
+  }
+
   @Override
   public List<String> getPropertyNames() {
     final List<String> l = new ArrayList<>();
@@ -2346,6 +2399,8 @@ public class GameModule extends AbstractConfigurable
     l.add(MODULE_VASSAL_VERSION_CREATED_PROPERTY);
     l.add(MODULE_VASSAL_VERSION_RUNNING_PROPERTY);
     l.add(GAME_FILENAME_PROPERTY);
+    l.add(UI_PIECE_COUNT);
+    l.add(UI_PIECE_INDEX);
 
     return l;
   }

@@ -208,7 +208,7 @@ public class FreeRotator extends Decorator
   public double getCumulativeAngle() {
     double angle = getAngle();
     // Add cumulative angle of any other FreeRotator trait in this piece
-    final FreeRotator nextRotation = (FreeRotator) Decorator.getDecorator(getInner(), FreeRotator.class);
+    final FreeRotator nextRotation = (FreeRotator) getDecorator(getInner(), FreeRotator.class);
     if (nextRotation != null) {
       angle += nextRotation.getCumulativeAngle();
     }
@@ -433,13 +433,17 @@ public class FreeRotator extends Decorator
         reportDataError(this, Resources.getString("Error.non_number_error"), "Fixed Angle Index=" + state, e); // NON-NLS
       }
     }
+    // Has the piece been refreshed and now has fewer facings?
+    if (angleIndex > (validAngles.length - 1)) {
+      angleIndex = validAngles.length - 1;
+    }
   }
 
   @Override
   public KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
-      final ArrayList<KeyCommand> l = new ArrayList<>();
-      final GamePiece outer = Decorator.getOutermost(this);
+      final List<KeyCommand> l = new ArrayList<>();
+      final GamePiece outer = getOutermost(this);
       setAngleCommand = new KeyCommand(setAngleText, setAngleKey, outer, this);
       rotateCWCommand = new KeyCommand(rotateCWText, rotateCWKey, outer, this);
       rotateCCWCommand = new KeyCommand(rotateCCWText, rotateCCWKey, outer, this);
@@ -511,7 +515,7 @@ public class FreeRotator extends Decorator
     Command c = prepareMove(new NullCommand(), true);
 
     // Move the piece
-    c = c.append(map.placeOrMerge(Decorator.getOutermost(gp), dest));
+    c = c.append(map.placeOrMerge(getOutermost(gp), dest));
 
     // Post move actions -- find a new mat if needed, and apply any afterburner apply-on-move key
     c = finishMove(c, true, !cargoFollowup, true);
@@ -531,7 +535,7 @@ public class FreeRotator extends Decorator
       return command;
     }
 
-    final Mat mat = (Mat) Decorator.getDecorator(outer, Mat.class);
+    final Mat mat = (Mat) getDecorator(outer, Mat.class);
     if (mat == null) {
       return command;
     }
@@ -540,7 +544,7 @@ public class FreeRotator extends Decorator
 
     // If a Mat has been rotated, make the contents orbit the center point
     for (final GamePiece piece : mat.getContents()) {
-      final MatCargo cargo = (MatCargo) Decorator.getDecorator(piece, MatCargo.class);
+      final MatCargo cargo = (MatCargo) getDecorator(piece, MatCargo.class);
       if (cargo != null) {
         // Rotate Cargo's current position to its destination
         final Point dst = new Point();
@@ -598,7 +602,7 @@ public class FreeRotator extends Decorator
 
       final AuditTrail audit = AuditTrail.create(this, directExpression, Resources.getString("Editor.FreeRotator.rotate_direct"));
       final String targetAngleText = directExpression.getText(
-        Decorator.getOutermost(this),
+        getOutermost(this),
         Resources.getString("Editor.FreeRotator.rotate_direct"),
         this,
         audit
@@ -865,7 +869,7 @@ public class FreeRotator extends Decorator
    */
   @Override
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     l.add(name + FACING);
     l.add(name + DEGREES);
     return l;
@@ -1002,7 +1006,7 @@ public class FreeRotator extends Decorator
       panel.add(directKeyConfig.getControls(), "wrap");
 
       panel.add(new JLabel(Resources.getString("Editor.FreeRotator.rotate_direct")));
-      directTargetConfig = new FormattedExpressionConfigurer(p.directExpression.getFormat(), Decorator.getOutermost(p));
+      directTargetConfig = new FormattedExpressionConfigurer(p.directExpression.getFormat(), getOutermost(p));
       panel.add(directTargetConfig.getControls());
       final JPanel facingPanel = new JPanel(new MigLayout("ins 0", "[fill,grow,sg 1]0[fill,grow,sg 1]"));
       facingPanel.add(directTypeLabel, "grow");

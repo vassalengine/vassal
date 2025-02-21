@@ -45,6 +45,7 @@ public class BadDataReport {
   private boolean reportable = true;
   private AuditTrail auditTrail;
   private Auditable owner;  /** Owning component or trait that generated the error */
+  private boolean additionalInfo = false; /** Does having Auditing turned on supply any additional information? */
 
   public BadDataReport() {
   }
@@ -164,8 +165,23 @@ public class BadDataReport {
    * @param cause Throwable that generated error
    */
   public BadDataReport(AbstractConfigurable c, String message, String data, Throwable cause) {
+    this(c, message, data, cause, false);
+  }
+
+  /**
+   * Expanded Bad Data Report for AbstractConfigurables.
+   * Display the name and type of the Configurable
+   *
+   * @param c AbstractConfigurable that generated the error
+   * @param message Resource message key to display
+   * @param data Data causing error
+   * @param cause Throwable that generated error
+   * @param additionalInfo true if additional information is provided if auditing turned on.
+   */
+  public BadDataReport(AbstractConfigurable c, String message, String data, Throwable cause, boolean additionalInfo) {
     this.message = c.getConfigureName() + "[" + ConfigureTree.getConfigureName(c.getClass()) + "]: " + message + " " + getAuditMessage();
     this.data = data;
+    this.additionalInfo = additionalInfo;
     setCause(cause);
   }
 
@@ -173,8 +189,9 @@ public class BadDataReport {
     this(c, messageKey, data, null);
   }
 
+  /** Return a message indicating there may be additional information in the errorlog, if applicable */
   private String getAuditMessage() {
-    return Resources.getString(AuditTrail.isEnabled() ? "BadDataReport.see_errorlog" : "BadDataReport.enable_pref");
+    return additionalInfo ? Resources.getString(AuditTrail.isEnabled() ? "BadDataReport.see_errorlog" : "BadDataReport.enable_pref") : "";
   }
   /**
    * Expanded Bad Data Report for PieceSlot

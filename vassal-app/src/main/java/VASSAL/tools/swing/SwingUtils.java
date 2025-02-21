@@ -612,7 +612,7 @@ public class SwingUtils {
       w.setMinimumSize(min);
       w.pack();
       w.setMinimumSize(new Dimension(0, 0));
-      SwingUtils.ensureOnScreen(w);
+      ensureOnScreen(w);
     }
   }
 
@@ -649,7 +649,7 @@ public class SwingUtils {
     final UndoManager um = new UndoManager();
     field.getDocument().addUndoableEditListener(um);
     field.getInputMap(JComponent.WHEN_FOCUSED).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_Z, SwingUtils.getModifierKeyMask()), "Undo"); //$NON-NLS-1$
+      KeyStroke.getKeyStroke(KeyEvent.VK_Z, getModifierKeyMask()), "Undo"); //$NON-NLS-1$
     field.getActionMap().put("Undo", new AbstractAction() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -661,7 +661,7 @@ public class SwingUtils {
 
     // Ctrl+Shift+Z/Cmd+Shift+Z performs undo
     field.getInputMap(JComponent.WHEN_FOCUSED).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_Z, SwingUtils.getModifierKeyMask() + KeyEvent.SHIFT_DOWN_MASK), "Redo"); //$NON-NLS-1$
+      KeyStroke.getKeyStroke(KeyEvent.VK_Z, getModifierKeyMask() + KeyEvent.SHIFT_DOWN_MASK), "Redo"); //$NON-NLS-1$
     field.getActionMap().put("Redo", new AbstractAction() {
       @Override
       public void actionPerformed(ActionEvent e) {

@@ -299,7 +299,7 @@ public class TranslatingStringEnumConfigurer extends Configurer {
    */
   @Override
   public void setEnabled(boolean enabled) {
-    box.setEnabled(enabled);
+    setEditable(enabled);
   }
 
   /**

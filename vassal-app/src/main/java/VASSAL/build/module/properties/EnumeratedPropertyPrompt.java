@@ -78,8 +78,9 @@ public class EnumeratedPropertyPrompt extends PropertyPrompt {
 
     final List<String> nonBlankValues = new ArrayList<>();
     for (final String value : finalValues) {
-      if (purgeBlanks && value.isEmpty()) continue;
-      nonBlankValues.add(value);
+      if (!purgeBlanks || !value.isEmpty()) {
+        nonBlankValues.add(value);
+      }
     }
 
     if (nonBlankValues.isEmpty()) {

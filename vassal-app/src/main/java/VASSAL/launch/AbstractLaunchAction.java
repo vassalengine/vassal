@@ -202,7 +202,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
   protected boolean checkRemovedAndDeprecated(File f) throws IOException {
     // Check for usage of removed and deprecated classes, methods, fields
     final RemovalAndDeprecationChecker rdc = new RemovalAndDeprecationChecker();
-    Pair<Map<String, Map<String, String>>, Map<String, Map<String, String>>> rd;
+    final Pair<Map<String, Map<String, String>>, Map<String, Map<String, String>>> rd;
     try (ZipFile zf = new ZipFile(f.getAbsolutePath())) {
       rd = rdc.check(zf);
     }
@@ -549,15 +549,6 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       result.add(Info.getJavaBinPath().getAbsolutePath());
       result.add("");   // reserved for initial heap
       result.add("");   // reserved for maximum heap
-
-      if (SystemUtils.IS_OS_WINDOWS) {
-        final String noAgent = System.getProperty("VASSAL.noagent");
-        if (noAgent == null) {
-          result.add("-javaagent:lib\\vassal-agent.jar");
-          result.add("--add-opens");
-          result.add("java.desktop/sun.awt.shell=ALL-UNNAMED");
-        }
-      }
 
       result.addAll(new CustomVmOptions().getCustomVmOptions());
 

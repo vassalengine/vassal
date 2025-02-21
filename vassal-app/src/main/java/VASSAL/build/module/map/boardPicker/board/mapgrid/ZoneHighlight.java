@@ -32,6 +32,7 @@ import java.awt.TexturePaint;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 
 import javax.swing.Icon;
 import javax.swing.JLabel;
@@ -382,7 +383,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
 
       final JSlider slider = new JSlider(JSlider.HORIZONTAL, 0, 100, opacity);
 
-      final HashMap<Integer, JLabel> labelTable = new HashMap<>();
+      final Map<Integer, JLabel> labelTable = new HashMap<>();
       labelTable.put(0, new JLabel(Resources.getString("Editor.ZoneHighlight.transparent")));
       labelTable.put(100, new JLabel(Resources.getString("Editor.ZoneHighlight.opaque")));
 

@@ -29,6 +29,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -145,7 +146,7 @@ public class MultiRoll extends JDialog implements ActionListener {
   }
 
   public RollSet getRollSet() {
-    final ArrayList<DieRoll> l = new ArrayList<>();
+    final List<DieRoll> l = new ArrayList<>();
     for (int i = 0; i < MAX_ROLLS; ++i) {
       if (useDie[i]) {
         l.add(rolls[i]);
@@ -436,7 +437,7 @@ public class MultiRoll extends JDialog implements ActionListener {
         if (nd == allowableDice[i])
           defaultNDIdx = i;
       }
-      col4 = new JComboBox(diceData);
+      col4 = new JComboBox<>(diceData);
       col4.setSelectedIndex(defaultNDIdx);
       col4.setPreferredSize(new Dimension(COL4_WIDTH, ROW_HEIGHT));
       col4.addActionListener(e -> {
@@ -454,7 +455,7 @@ public class MultiRoll extends JDialog implements ActionListener {
         if (ns == allowableSides[i])
           defaultNSIdx = i;
       }
-      col5 = new JComboBox(sideData);
+      col5 = new JComboBox<>(sideData);
       col5.setSelectedIndex(defaultNSIdx);
       col5.setPreferredSize(new Dimension(COL5_WIDTH, ROW_HEIGHT));
       col5.addActionListener(e -> {
@@ -511,7 +512,7 @@ public class MultiRoll extends JDialog implements ActionListener {
 
     StateButton(String s, boolean b) {
       super(s);
-      setHorizontalAlignment(JButton.CENTER);
+      setHorizontalAlignment(CENTER);
       setState(b);
 
     }

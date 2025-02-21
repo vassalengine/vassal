@@ -160,7 +160,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     locallyActive = alwaysActive;
     activateCommand = st.nextToken(Resources.getString("Editor.AreaOfEffect.show_area"));
     activateKey = st.nextNamedKeyStroke(null);
-    keyCommand = new KeyCommand(activateCommand, activateKey, Decorator.getOutermost(this), this);
+    keyCommand = new KeyCommand(activateCommand, activateKey, getOutermost(this), this);
     mapShaderName = st.nextToken("");
     if (mapShaderName.length() == 0) {
       mapShaderName = null;
@@ -171,10 +171,10 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     name = st.nextToken("");
     onMenuText = st.nextToken("");
     onKey = st.nextNamedKeyStroke(null);
-    onKeyCommand = new KeyCommand(onMenuText, onKey, Decorator.getOutermost(this), this);
+    onKeyCommand = new KeyCommand(onMenuText, onKey, getOutermost(this), this);
     offMenuText = st.nextToken("");
     offKey = st.nextNamedKeyStroke(null);
-    offKeyCommand = new KeyCommand(offMenuText, offKey, Decorator.getOutermost(this), this);
+    offKeyCommand = new KeyCommand(offMenuText, offKey, getOutermost(this), this);
     globallyVisible = st.nextBoolean(true);
     shader = null;
     commands = null;
@@ -191,6 +191,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
   public void mySetState(String newState) {
     if (!alwaysActive) {
       active = "true".equals(newState); // NON-NLS
+      locallyActive = active; // Force local visibility to follow global visibility
     }
   }
 
@@ -331,7 +332,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     }
     else {
       final String r =
-        (String) Decorator.getOutermost(this).getProperty(radiusMarker);
+        (String) getOutermost(this).getProperty(radiusMarker);
       try {
         return Integer.parseInt(r);
       }
@@ -408,7 +409,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
   @Override
   public Area getArea(MapShader shader) {
     Area a = null;
-    final MapShader.ShadedPiece shaded = (MapShader.ShadedPiece) Decorator.getDecorator(piece, MapShader.ShadedPiece.class);
+    final MapShader.ShadedPiece shaded = (MapShader.ShadedPiece) getDecorator(piece, MapShader.ShadedPiece.class);
     if (shaded != null) {
       a = shaded.getArea(shader);
     }
@@ -465,6 +466,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof AreaOfEffect)) return false;
     final AreaOfEffect c = (AreaOfEffect) o;
@@ -489,7 +491,6 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     if (! Objects.equals(offKey, c.offKey)) return false;
 
     return Objects.equals(description, c.description);
-
   }
 
   protected static class TraitEditor implements PieceEditor {
@@ -706,7 +707,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       se.append(offKeyConfig.getValueString());
       se.append(globallyVisibleConfig.getValueString());
 
-      return AreaOfEffect.ID + se.getValue();
+      return ID + se.getValue();
     }
   }
 

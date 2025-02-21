@@ -294,21 +294,16 @@ public class ExtensionTree extends ConfigureTree {
     return a;
   }
 
-
   @Override
   protected boolean isValidPasteTarget(Configurable target) {
     return isValidPasteTarget(target, cutData) || isValidPasteTarget(target, copyData);
   }
 
-
   @Override
   protected boolean isValidPasteTarget(Configurable target, DefaultMutableTreeNode sourceNode) {
-    if (sourceNode == null) {
-      return false;
-    }
-    return super.isValidParent(target, (Configurable) sourceNode.getUserObject());
+    return sourceNode != null &&
+      super.isValidParent(target, (Configurable) sourceNode.getUserObject());
   }
-
 
   /**
    * Allocate new PieceSlot Id's to any PieceSlot sub-components

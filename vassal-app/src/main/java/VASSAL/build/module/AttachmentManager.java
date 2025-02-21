@@ -22,9 +22,12 @@ import VASSAL.counters.Attachment;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Stack;
+import VASSAL.tools.lang.Pair;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -35,10 +38,16 @@ public class AttachmentManager {
   /**
    * A Map of the set of Attachment traits that are using the same Attachment name
    */
-  private final java.util.Map<String, HashSet<Attachment>> attachments;
+  private final java.util.Map<String, Set<Attachment>> attachments;
+
+  /**
+   * A List of attachments that could not be finalised during game load due to pieces not being loaded yet
+   */
+  private final List<Pair<Attachment, String>> pendingAttachments;
 
   public AttachmentManager() {
     attachments = new HashMap<>();
+    pendingAttachments = new ArrayList<>();
   }
 
   /**
@@ -46,6 +55,7 @@ public class AttachmentManager {
    */
   public void clearAll() {
     attachments.clear();
+    pendingAttachments.clear();
   }
 
   public void pieceAdded(GamePiece piece) {
@@ -63,7 +73,7 @@ public class AttachmentManager {
    * A piece has been added to the game.
    * 1. If it has as Auto-attach, attach all other Attachments with same name to it.
    * 2. Tell all other Auto-attach traits with same name to attach to it.
-   *
+   * <p>
    * Create the self attachment if required
    * @param piece Piece moved or added
    */
@@ -74,17 +84,16 @@ public class AttachmentManager {
       final String attachName = attach.getAttachName();
 
       // Find all Attachment traits (not pieces) that use that attachment name and loop through them
-      final HashSet<Attachment> currentAttachments = attachments.computeIfAbsent(attachName, k -> new HashSet<>());
-      for (final Attachment targetAttachment : currentAttachments) {
+      final Set<Attachment> currentAttachments = attachments.computeIfAbsent(attachName, k -> new HashSet<>());
 
-        if (targetAttachment.equals(attach)) {
-          if (attach.isAllowSelfAttach()) {
-            // Self attach
-            attach.autoAttach(targetAttachment);
-          }
-        }
-        else {
-          // Auto-attach the traits to each other. The traits will do nothing if they are not auto-attach, and will prevent double attachs.
+      if (attach.isAllowSelfAttach()) {
+        // Self attach
+        attach.autoAttach(attach);
+      }
+
+      for (final Attachment targetAttachment : currentAttachments) {
+        // Auto-attach the traits to each other. The traits will do nothing if they are not auto-attach, and will prevent double attaches.
+        if (!targetAttachment.equals(attach)) {
           attach.autoAttach(targetAttachment);
           targetAttachment.autoAttach(attach);
         }
@@ -115,7 +124,7 @@ public class AttachmentManager {
       final String attachName = attach.getAttachName();
 
       // Find all attachments using this Attach name and process each one
-      final HashSet<Attachment> currentAttachments = attachments.computeIfAbsent(attachName, k -> new HashSet<>());
+      final Set<Attachment> currentAttachments = attachments.computeIfAbsent(attachName, k -> new HashSet<>());
 
       for (final Attachment attachment : currentAttachments) {
         if (attachment.isAutoAttach()) {
@@ -147,7 +156,7 @@ public class AttachmentManager {
         final String attachName = attach.getAttachName();
 
         // Find all attachments using this Attach name and process each one
-        final HashSet<Attachment> currentAttachments = attachments.computeIfAbsent(attachName, k -> new HashSet<>());
+        final Set<Attachment> currentAttachments = attachments.computeIfAbsent(attachName, k -> new HashSet<>());
 
         for (final Attachment targetAttachment : currentAttachments) {
           // If the target attachment is not auto-attachable, remove any attachment back to us
@@ -174,5 +183,25 @@ public class AttachmentManager {
 
   public Set<Attachment> getAttachmentList(String attachName) {
     return attachments.get(attachName);
+  }
+
+  /**
+   * Record an Attachment that must be resolved later, the target piece has not been loaded yet.
+   * @param attachnent  Attachment Trait
+   * @param target      Id of target piece
+   */
+  public void addPendingAttachment(Attachment attachnent, String target) {
+    pendingAttachments.add(Pair.of(attachnent, target));
+  }
+
+  /**
+   * Callback from AttachmentManager aftet end of game load to add Attachments to pieces
+   * that had not yet been loaded.
+   */
+  public void resolvePendingAttachments() {
+    for (final Pair<Attachment, String> p : pendingAttachments) {
+      p.first.resolvePendingAtttachment(p.second);
+    }
+    pendingAttachments.clear();
   }
 }

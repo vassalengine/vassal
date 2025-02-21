@@ -103,6 +103,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -562,7 +563,7 @@ public class Inventory extends AbstractToolbarItem
       m.getPieces();
     }
 
-    final ArrayList<String> path = new ArrayList<>();
+    final List<String> path = new ArrayList<>();
     Collections.addAll(path, groupBy);
     results = new CounterInventory(
       new Counter(this.getConfigureName()), path, sortPieces);
@@ -573,7 +574,7 @@ public class Inventory extends AbstractToolbarItem
     );
 
     while (pi.hasMoreElements()) {
-      final ArrayList<String> groups = new ArrayList<>();
+      final List<String> groups = new ArrayList<>();
       final GamePiece p = pi.nextPiece();
 
       if (p instanceof Decorator || p instanceof BasicPiece) {
@@ -599,16 +600,13 @@ public class Inventory extends AbstractToolbarItem
 
   protected int getTotalValue(GamePiece p) {
     final String s = (String) p.getProperty(nonLeafFormat);
-    int count;
     try {
-      count = Integer.parseInt(s);
+      return Integer.parseInt(s);
     }
     catch (NumberFormatException e) {
       // Count each piece as 1 if the property isn't a number
-      count = 1;
+      return 1;
     }
-
-    return count;
   }
 
   @Override
@@ -1021,7 +1019,7 @@ public class Inventory extends AbstractToolbarItem
     }
 
     // set to not get duplicates
-    final HashSet<GamePiece> pieces = new HashSet<>();
+    final Set<GamePiece> pieces = new HashSet<>();
     for (final TreePath treePath : tp) {
       final CounterNode node = (CounterNode) treePath.getLastPathComponent();
       if (node.isLeaf()) {
@@ -1048,7 +1046,7 @@ public class Inventory extends AbstractToolbarItem
 
   private void refresh() {
     // Make an attempt to keep the same nodes expanded
-    final HashSet<String> expanded = new HashSet<>();
+    final Set<String> expanded = new HashSet<>();
     final int n = tree.getRowCount();
     for (int i = 0; i < n; ++i) {
       if (tree.isExpanded(i)) {
@@ -1342,15 +1340,9 @@ public class Inventory extends AbstractToolbarItem
       if (piece.getMap() == null)
         return false;
 
-      // Check for marker
-      if (filter != null) {
-        return filter.accept(piece);
-      }
-
-      // Default Accept piece
-      return true;
+      // Accept on no filter or check for marker
+      return filter == null || filter.accept(piece);
     }
-
   }
 
   /**
@@ -1408,12 +1400,8 @@ public class Inventory extends AbstractToolbarItem
     public String toResultString() {
       final StringBuilder name = new StringBuilder();
 
-      name.append(separator());
-
-      if (counter != null)
-        name.append(counter);
-      else
-        name.append(getEntry());
+      name.append(separator())
+          .append(counter != null ? counter : getEntry());
 
       for (final CounterNode child : children) {
         name.append(child.toResultString());
@@ -1512,7 +1500,7 @@ public class Inventory extends AbstractToolbarItem
     }
 
     public void cutLeaves() {
-      final ArrayList<CounterNode> toBeRemoved = new ArrayList<>();
+      final List<CounterNode> toBeRemoved = new ArrayList<>();
       for (final CounterNode child : children) {
         if (child.isLeaf())
           toBeRemoved.add(child);

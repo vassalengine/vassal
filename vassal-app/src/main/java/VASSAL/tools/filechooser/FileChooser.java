@@ -376,10 +376,10 @@ public abstract class FileChooser {
       final int value;
       if (fd.getFile() != null) {
         cur = new File(fd.getDirectory(), fd.getFile());
-        value = FileChooser.APPROVE_OPTION;
+        value = APPROVE_OPTION;
       }
       else {
-        value = FileChooser.CANCEL_OPTION;
+        value = CANCEL_OPTION;
       }
       updateDirectoryPreference();
       return value;
@@ -394,10 +394,10 @@ public abstract class FileChooser {
       final int value;
       if (fd.getFile() != null) {
         cur = new File(fd.getDirectory(), fd.getFile());
-        value = FileChooser.APPROVE_OPTION;
+        value = APPROVE_OPTION;
       }
       else {
-        value = FileChooser.CANCEL_OPTION;
+        value = CANCEL_OPTION;
       }
       updateDirectoryPreference();
       return value;

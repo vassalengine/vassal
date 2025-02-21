@@ -76,7 +76,9 @@ public class ServerAddressBook {
 
   protected static final String TYPE_KEY = ChatServerFactory.TYPE_KEY;
   protected static final String DESCRIPTION_KEY = "description"; //$NON-NLS-1$
+  @SuppressWarnings("PMD.FinalFieldCouldBeStatic")
   protected final int LEAF_ICON_SIZE = IconFamily.SMALL;
+  @SuppressWarnings("PMD.FinalFieldCouldBeStatic")
   protected final int CONTROLS_ICON_SIZE = IconFamily.XSMALL;
 
   private boolean frozen;
@@ -138,16 +140,14 @@ public class ServerAddressBook {
   }
 
   private static String discoverMyIpAddressFromRemote() throws IOException {
-    String theIp;
     final HttpRequestWrapper r = new HttpRequestWrapper("https://vassalengine.org/util/getMyAddress"); //$NON-NLS-1$
     final List<String> l = r.doGet(null);
     if (!l.isEmpty()) {
-      theIp = l.get(0);
+      return l.get(0);
     }
     else {
       throw new IOException(Resources.getString("Server.empty_response")); //$NON-NLS-1$
     }
-    return theIp;
   }
 
   /**
@@ -385,7 +385,7 @@ public class ServerAddressBook {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      ServerAddressBook.getInstance().setCurrentServer(entry);
+      getInstance().setCurrentServer(entry);
     }
   }
 
@@ -706,7 +706,7 @@ public class ServerAddressBook {
 
     private class ServerConfig {
       protected JComponent configControls;
-      protected JTextField description = new JTextField();
+      protected final JTextField description = new JTextField();
       protected AddressBookEntry entry;
       boolean enabled;
 

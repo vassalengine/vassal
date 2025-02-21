@@ -97,6 +97,6 @@ public class PieceIterator {
 
   @Deprecated(since = "2021-12-01", forRemoval = true)
   public static <T extends GamePiece> PieceIterator visible(Enumeration<T> e) {
-    return PieceIterator.visible(e.asIterator());
+    return visible(e.asIterator());
   }
 }

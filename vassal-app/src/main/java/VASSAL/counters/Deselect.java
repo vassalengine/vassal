@@ -110,7 +110,7 @@ public class Deselect extends Decorator implements TranslatablePiece {
   @Override
   protected KeyCommand[] myGetKeyCommands() {
     if (command == null) {
-      deselectCommand = new KeyCommand(commandName, key, Decorator.getOutermost(this), this);
+      deselectCommand = new KeyCommand(commandName, key, getOutermost(this), this);
       if (commandName.length() > 0 && key != null && !key.isNull()) {
         command =
           new KeyCommand[]{deselectCommand};
@@ -135,7 +135,7 @@ public class Deselect extends Decorator implements TranslatablePiece {
     Command c = null;
     myGetKeyCommands();
     if (deselectCommand.matches(stroke)) {
-      final GamePiece outer = Decorator.getOutermost(this);
+      final GamePiece outer = getOutermost(this);
       final Map m = getMap();
 
       if (DESELECT_ALL.equals(deselectType)) {
@@ -226,6 +226,7 @@ public class Deselect extends Decorator implements TranslatablePiece {
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof Deselect)) return false;
     final Deselect c = (Deselect) o;

@@ -43,9 +43,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 
@@ -462,9 +462,9 @@ public class MapBoard extends Importer {
    * the default order of line definitions for hex sides and hex lines.
    */
   private static class Hex {
-    List<Line> hexLines = new ArrayList<>();
+    final List<Line> hexLines = new ArrayList<>();
 
-    List<Line> hexSides = new ArrayList<>();
+    final List<Line> hexSides = new ArrayList<>();
   }
 
   /**
@@ -1016,7 +1016,7 @@ public class MapBoard extends Importer {
     }
 
     void drawLines(Graphics2D g, int cap) {
-      final ArrayList<LineDefinition> lds =
+      final List<LineDefinition> lds =
         new ArrayList<>(Arrays.asList(lineDefinitions));
 
       // find the next line in priority
@@ -1201,7 +1201,7 @@ public class MapBoard extends Importer {
       }
 
       // both A and B are open
-      final ArrayList<Point2D.Float> newLine = new ArrayList<>(2);
+      final List<Point2D.Float> newLine = new ArrayList<>(2);
       newLine.add(a);
       newLine.add(b);
       points.add(newLine);
@@ -2176,7 +2176,7 @@ public class MapBoard extends Importer {
       f = new Font(fontName, fontStyle, size);
       if (isUnderline) {
         // TODO: why doesn't underlining doesn't work? Why why why?
-        final Hashtable<TextAttribute, Object> hash = new Hashtable<>();
+        final java.util.Map<TextAttribute, Object> hash = new HashMap<>();
         hash.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
         f = f.deriveFont(hash);
       }
@@ -2320,7 +2320,7 @@ public class MapBoard extends Importer {
     // obviously, element types can't be sorted before we do this.
     // TODO: check this! If they're turned off in the map, can they be turned on
     // again in the player?
-    final ArrayList<MapLayer> elements = new ArrayList<>(mapElements);
+    final List<MapLayer> elements = new ArrayList<>(mapElements);
     if (in.readByte() == 0)
       mapElements.remove(elements.get(drawingPriorities[0]));
     if (in.readByte() == 0)
@@ -2548,7 +2548,7 @@ public class MapBoard extends Importer {
 
     final byte[] priority = new byte[10];
     in.readFully(priority);
-    final ArrayList<MapLayer> items = new ArrayList<>(mapElements.size());
+    final List<MapLayer> items = new ArrayList<>(mapElements.size());
     for (int i = 0; i < mapElements.size(); ++i) {
 
       // invalid index: abort reordering and switch back to default
@@ -2993,7 +2993,7 @@ public class MapBoard extends Importer {
     // write place names as pieces with no image.
     getMainMap();
     final Point offset = getCenterOffset();
-    final HashSet<String> set = new HashSet<>();
+    final Set<String> set = new HashSet<>();
     final Board board = getBoard();
 
     for (final PlaceName pn : placeNames) {

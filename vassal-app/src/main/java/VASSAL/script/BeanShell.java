@@ -127,10 +127,10 @@ public class BeanShell {
     if (value == null) {
       return "";
     }
-    else if (BeanShell.TRUE.equals(value)) {
+    else if (TRUE.equals(value)) {
       return Boolean.TRUE;
     }
-    else if (BeanShell.FALSE.equals(value)) {
+    else if (FALSE.equals(value)) {
       return Boolean.FALSE;
     }
     else {

@@ -21,7 +21,6 @@ import VASSAL.build.AbstractBuildable;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AbstractFolder;
 import VASSAL.build.Buildable;
-import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.folder.PrototypeFolder;
@@ -96,26 +95,18 @@ public class PrototypesContainer extends AbstractConfigurable {
     return Resources.getString("Editor.PrototypesContainer.component_type"); //$NON-NLS-1$
   }
 
-
-  private void rebuildPrototypeMap(AbstractBuildable target) {
-    for (final Buildable b : target.getBuildables()) {
-      if (b instanceof PrototypeDefinition) {
-        addDefinition((PrototypeDefinition)b);
-      }
-      else if (b instanceof AbstractBuildable) {
-        rebuildPrototypeMap((AbstractBuildable)b);
-      }
-    }
+  // Rebuild prototype cross-reference
+  private void rebuildPrototypeMap() {
+    definitions.clear();
+    GameModule.getGameModule().getAllDescendantComponentsOf(PrototypeDefinition.class).forEach((def) -> definitions.put(def.getConfigureName(), def));
   }
-
 
   public void addDefinition(PrototypeDefinition def) {
     definitions.put(def.getConfigureName(), def);
     def.addPropertyChangeListener(evt -> {
-      if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
+      if (NAME_PROPERTY.equals(evt.getPropertyName())) {
         // When a prototype is renamed we need to rebuild the prototype map, so that if there was a duplicate of the same name it will re-establish its presence
-        definitions.clear();
-        rebuildPrototypeMap(GameModule.getGameModule());
+        rebuildPrototypeMap();
       }
     });
   }

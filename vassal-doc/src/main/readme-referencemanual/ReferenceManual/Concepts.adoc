@@ -106,7 +106,7 @@ Some important traits used in many pieces are:
 * <<SendToLocation.adoc#top,Send To Location>> and <<Translate.adoc#top,Move Fixed Distance>> allow pieces to be moved on Command.
 * <<GlobalKeyCommand.adoc#top,Global Key Commands>> allow <<#keycommands,Key Commands>> to be sent to other pieces.
 
-See the <<GamePiece<<#keycommands,Game Piece>> for full details of all available traits.
+See the <<GamePiece.adoc#top,Game Piece>> for full details of all available traits.
 
 [#stackLayers]
 ==== Stacking and Game Piece Layers

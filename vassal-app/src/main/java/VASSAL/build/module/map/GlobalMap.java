@@ -403,8 +403,8 @@ public class GlobalMap implements AutoConfigurable,
     private static final long serialVersionUID = 1L;
 
     public GlobalMapScrollPane(Component view) {
-      super(view, ScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                  ScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+      super(view, VERTICAL_SCROLLBAR_AS_NEEDED,
+                  HORIZONTAL_SCROLLBAR_AS_NEEDED);
     }
 
     /**
@@ -632,8 +632,7 @@ public class GlobalMap implements AutoConfigurable,
    */
   @Override
   public SortedSet<String> getAllImageNames() {
-    final TreeSet<String> s =
-      new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    final SortedSet<String> s = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
 
     addImageNamesRecursively(s);
     return s;
@@ -653,8 +652,7 @@ public class GlobalMap implements AutoConfigurable,
    */
   @Override
   public SortedSet<String> getLocalImageNames() {
-    final TreeSet<String> s =
-      new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    final SortedSet<String> s = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     addLocalImageNames(s);
     return s;
   }

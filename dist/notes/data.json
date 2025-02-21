@@ -1,10 +1,11 @@
 {
   "headline": "The Vassal Team is happy to announce the release of Vassal {{version}}.",
   "important": [
-    "There is now a single universal app bundle for MacOS. It runs natively on both 64-bit x86 (Intel) and 64-bit ARM (Apple Silicon) Macs.",
+    "If you are using MacOS 14, please ensure you are using 14.4 or later, to avoid a bug in MacOS which prevents Vassal from starting.",
     "Modules saved in {{version_feature}} are not openable by earlier versions of Vassal. We recommend keeping a backup copy of any pre-{{version_feature}} modules you plan to modify in {{version_feature}} until you've verified that everything works to your satisfaction.",
     "Things may be broken which worked previously. If you find a new bug, please report it."
   ],
+  "release_notes_url": "https://forum.vassalengine.org/t/vassal-3-7-release-notes/78948",
   "downloads": [
     { "display_name": "Linux", "suffix": "linux.tar.bz2" },
     { "display_name": "MacOS", "suffix": "macos-universal.dmg" },
@@ -16,7 +17,7 @@
   "changes": [
     {
       "in": "3.8.0-beta1",
-      "since": "3.7.9",
+      "since": "3.7.15",
       "new_features": [
         { "num": 12944, "desc": "Add pieceCount to the map auto reporter" },
         { "num": 12763, "desc": "Added ModuleGameFileName property" }
@@ -24,69 +25,26 @@
       "bug_fixes": [
       ],
       "other_improvements": [
-      ]
-    },
-    {
-      "in": "3.7.9",
-      "since": "3.7.8",
-      "new_features": [
-      ],
-      "bug_fixes": [
-        { "num": 13146, "desc": "Game Piece Layer controls cannot be disabled by a property" },
-        { "num": 13132, "desc": "Remove counters from Zone Count correctly when moving to Stack on another Map" },
-        { "num": 13126, "desc": "SumRange function missing options in Expression Builder" },
-        { "num": 13115, "desc": "Update Game Piece Layers updated correctly by Set Piece Property" }
-      ],
-      "other_improvements": [
-      ]
-    },
-    {
-      "in": "3.7.8",
-      "since": "3.7.7",
-      "new_features": [
-        { "num": 12898, "desc": "Improved \"Refresh Predefined Setups\": Expanded \"orphan counter\" functionality - reporting / ability to repair (sub-option); ability to do additional processing via a special post-refresh Global Hotkey, optionally without routine refresh reporting; new filter field and associated functionality for Predefined Setup Refresh; other UI improvements" }
-      ],
-      "bug_fixes": [
-        { "num": 13102, "desc": "Current Location Fast Match was not recognizing pieces in same location but not same X, Y position" },
-        { "num": 13097, "desc": "CountMap() by Property gives Bad Data error" },
-
-        { "num": 13087, "desc": "Fix 'Apply on Move' description in Deck Send Key Command" },
-        { "num": 13083, "desc": "Show Piece Property menu on Expression Builder trait fields" },
-        { "num": 13081, "desc": "Sleep function now sleeps correct number of milliseconds instead of 2000" },
-        { "num": 13073, "desc": "Attachments are lost after Undo" },
-        { "num": 13072, "desc": "Cargo now correctly follows Mat after Moved Fixed Distance" },
-        { "num": 13057, "desc": "Remove Unused Images does not find any images in use in an Extension" },
-        { "num": 13049, "desc": "Compute correct _Degrees property for free rotations" },
-        { "num": 13040, "desc": "Show correct sides in Wizard after using Prev button" },
-        { "num": 5813, "desc": "Prevent Wizard crashing when using Prev/Next when no Password exists" }
-      ],
-      "other_improvements": [
-        { "num": 13119, "desc": "Upgrade bundled Java to 21.0.2" },
-        { "num": 13101, "desc": "Added Return to Deck to trait list in Reference Manual" },
-        { "num": 13092, "desc": "Assorted documentation updates" }
-      ]
-    },
-    {
-      "in": "3.7.7",
-      "since": "3.7.6",
-      "new_features": [
-      ],
-      "bug_fixes": [
-        { "num": 13022, "desc": "Prevent room non-owners starting new games" },
-        { "num": 13021, "desc": "Allow wizard to load setups from extensions" },
-        { "num": 13011, "desc": "Spelling correction on Global Options panel" },
-        { "num": 13001, "desc": "Fix poor performance of Piece Definer; remove spurious blank line from Mass Piece Loader" },
-        { "num": 12981, "desc": "Fixed IndexOutOfBoundsException in empty chat room" },
-        { "num": 12971, "desc": "Refresh visible portions of Maps after each UI, log, or network action" },
-        { "num": 12931, "desc": "Prevent zero length string error on Deck refresh" },
-        { "num": 12894, "desc": "Prevent crash if I/O Exception during CRC calculation" },
-        { "num": 12765, "desc": "Cancelling Return To Deck no longer causes crash" }
-      ],
-      "other_improvements": [
-        { "num": 13037, "desc": "Make Zoom component a default component of all maps" },
-        { "num": 13003, "desc": "Do not record Map Id's in saved Deck files so they will load on any Map" },
-        { "num": 12976, "desc": "Search: Add option to exclude module elements when editing extension" },
-        { "num": 12768, "desc": "\"Player joins as side\" message now broadcast to all players" }
+        { "num": 13853, "desc": "Upgraded maven-clean-plugin to 3.4.1" },
+        { "num": 13849, "desc": "Upgraded spotbugs-maven-plugin to 4.9.1.0" },
+        { "num": 13845, "desc": "Sleep() improvements - Remove artifacts on Macs amd improve performance when Sleep(0) used to refresh UI" },
+        { "num": 13833, "desc": "Do not subject 'Load Continuation' to online restrictions" },
+        { "num": 13841, "desc": "Upgraded byte-buddy to 1.17.1" },
+        { "num": 13834, "desc": "Upgraded spotbugs-annotations to 4.9.1" },
+        { "num": 13814, "desc": "Upgraded httpclient5 5.4.2" },
+        { "num": 13798, "desc": "Upgraded checkstyle to 10.21.2" },
+        { "num": 13797, "desc": "Upgraded commons-codec to 1.18.0" },
+        { "num": 13791, "desc": "Prevent Checkbox Scenario Option switch description side option being forced on" },
+        { "num": 13771, "desc": "Upgraded logback-classic to 1.5.16" },
+        { "num": 13769, "desc": "Upgraded juint-bom to 5.11.4" },
+        { "num": 13740, "desc": "Upgraded maven-javadoc-plugin to 3.11.2" },
+        { "num": 13737, "desc": "Add Beanshell performance health warning to Text Label trait docs" },
+        { "num": 13731, "desc": "Bring Reference Manual section on Extensions up to date" },
+        { "num": 13727, "desc": "Upgraded jsoup to 1.18.3" },
+        { "num": 13719, "desc": "Place Marker no longer ignores Offsets for stackable pieces" },
+        { "num": 13712, "desc": "Upgraded license-maven-plugin to 2.5.0" },
+        { "num": 13705, "desc": "Upgraded commons-io to 2.18.0" },
+        { "num": 13693, "desc": "Upgraded asciidoctor-maven-plugin to 3.1.1" }
       ]
     }
   ]
