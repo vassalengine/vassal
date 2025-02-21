@@ -82,6 +82,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Controls the zooming in/out of a {@link Map} window.
@@ -230,7 +231,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     }
 
     public List<Double> getLevels() {
-      final ArrayList<Double> l = new ArrayList<>(levels.length);
+      final List<Double> l = new ArrayList<>(levels.length);
       for (final double d : levels) l.add(d);
       return l;
     }
@@ -786,7 +787,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
       if (val != null) {
         // dump into a set to remove duplicates
-        final HashSet<Double> levels = new HashSet<>();
+        final Set<Double> levels = new HashSet<>();
         for (final String s : (String[]) val) {
           levels.add(Double.valueOf(s));
         }

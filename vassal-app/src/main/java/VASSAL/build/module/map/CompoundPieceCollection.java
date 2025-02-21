@@ -24,6 +24,7 @@ import VASSAL.counters.Stack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -126,7 +127,7 @@ public abstract class CompoundPieceCollection implements PieceCollection {
    * @return A list of all pieces in this overall collection, or all that are in "enabled" layers, depending on the parameter
    */
   protected GamePiece[] getPieces(boolean includeDisabled) {
-    final ArrayList<GamePiece> l = new ArrayList<>();
+    final List<GamePiece> l = new ArrayList<>();
     int layer = bottomLayer;
     for (int i = 0; i < layers.length; ++i) {
       if (includeDisabled || (!includeDisabled && enabled[layer])) {

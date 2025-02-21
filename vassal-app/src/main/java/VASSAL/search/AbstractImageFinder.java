@@ -31,9 +31,7 @@ public abstract class AbstractImageFinder implements ImageSearchTarget {
    */
   @Override
   public SortedSet<String> getAllImageNames() {
-    final TreeSet<String> s =
-      new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-
+    final SortedSet<String> s = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     addImageNamesRecursively(s);
     return s;
   }
@@ -52,7 +50,7 @@ public abstract class AbstractImageFinder implements ImageSearchTarget {
    */
   @Override
   public SortedSet<String> getLocalImageNames() {
-    final TreeSet<String> s = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    final SortedSet<String> s = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     addLocalImageNames(s);
     return s;
   }

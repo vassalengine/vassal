@@ -168,10 +168,10 @@ public abstract class Launcher {
 
 
   private static class LoadConstraint {
-    public String moduleName;
-    public String minVassalVersion;
-    public String minModuleVersion;
-    public String newVersionLink;
+    public final String moduleName;
+    public final String minVassalVersion;
+    public final String minModuleVersion;
+    public final String newVersionLink;
 
     public LoadConstraint(String moduleName, String minVassalVersion, String minModuleVersion, String newVersionLink) {
       this.moduleName = moduleName;

@@ -338,7 +338,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
 //        return myGetState();
 //      }
 //      else {
-//        return ((BasicPiece) Decorator.getInnermost(this)).getPublicProperty(key);
+//        return ((BasicPiece) getInnermost(this)).getPublicProperty(key);
 //      }
 //    }
     else {
@@ -349,7 +349,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   @Override
   public Object getLocalizedProperty(Object key) {
     if (obscuredToMe()) {
-      return ((BasicPiece) Decorator.getInnermost(this)).getLocalizedPublicProperty(key);
+      return ((BasicPiece) getInnermost(this)).getLocalizedPublicProperty(key);
     }
     else if (Properties.OBSCURED_TO_ME.equals(key)) {
       return obscuredToMe();
@@ -481,7 +481,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     if (obscuredToMe()) {
       final KeyCommand[] myC = myGetKeyCommands();
       final KeyCommand[] c = (KeyCommand[])
-        Decorator.getInnermost(this).getProperty(Properties.KEY_COMMANDS);
+        getInnermost(this).getProperty(Properties.KEY_COMMANDS);
 
       if (c == null) return myC;
       else return ArrayUtils.addAll(myC, c);
@@ -493,8 +493,8 @@ public class Obscurable extends Decorator implements TranslatablePiece {
 
   @Override
   public KeyCommand[] myGetKeyCommands() {
-    final ArrayList<KeyCommand> l = new ArrayList<>();
-    final GamePiece outer = Decorator.getOutermost(this);
+    final List<KeyCommand> l = new ArrayList<>();
+    final GamePiece outer = getOutermost(this);
 
     // Hide Command
     if (keyCommand == null) { // Backwards compatibility with VASL classes
@@ -629,7 +629,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     if (retVal != null && PEEK == displayStyle &&
         peekKey == null && obscuredToOthers()) {
       // FIXME: This probably causes a race condition. Can we do this directly?
-      final Runnable runnable = () -> KeyBuffer.getBuffer().remove(Decorator.getOutermost(this));
+      final Runnable runnable = () -> KeyBuffer.getBuffer().remove(getOutermost(this));
       SwingUtilities.invokeLater(runnable);
     }
     return retVal;
@@ -676,13 +676,14 @@ public class Obscurable extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     l.add(Properties.OBSCURED_TO_OTHERS);
     l.add(Properties.OBSCURED_TO_ME);
     return l;
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof Obscurable)) return false;
     final Obscurable c = (Obscurable) o;
@@ -765,7 +766,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       dealKeyInput = new NamedHotKeyConfigurer(p.dealKey);
       controls.add("Editor.Obscurable.deal_key", dealKeyInput);
 
-      dealExpressionInput = new FormattedExpressionConfigurer(p.dealExpression, Decorator.getOutermost(p));
+      dealExpressionInput = new FormattedExpressionConfigurer(p.dealExpression, getOutermost(p));
       controls.add("Editor.Obscurable.deal_expression", dealExpressionInput);
 
       picker = new ImageSelector(p.imageName, 512, 512);

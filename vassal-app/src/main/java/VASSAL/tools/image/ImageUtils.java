@@ -60,6 +60,7 @@ public class ImageUtils {
     RenderingHints.VALUE_ANTIALIAS_ON
   );
 
+  @SuppressWarnings("PMD.LooseCoupling")
   public static RenderingHints getDefaultHints() {
     return new RenderingHints(defaultHints);
   }
@@ -78,6 +79,7 @@ public class ImageUtils {
     return transform(src, scale, angle, getDefaultHints());
   }
 
+  @SuppressWarnings("PMD.LooseCoupling")
   public static BufferedImage transform(BufferedImage src,
                                         double scale,
                                         double angle,
@@ -176,6 +178,7 @@ public class ImageUtils {
     }
   }
 
+  @SuppressWarnings("PMD.LooseCoupling")
   public static BufferedImage transform(BufferedImage src,
                                         int sw,
                                         int sh,

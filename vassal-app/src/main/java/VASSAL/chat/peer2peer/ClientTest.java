@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
-import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.Player;
 import VASSAL.chat.SimpleRoom;
 import VASSAL.chat.WelcomeMessageServer;
@@ -25,7 +24,7 @@ public class ClientTest extends P2PClient implements Runnable, PropertyChangeLis
     this.changeRoom = changeRoom;
     this.numRooms = numRooms;
     this.log = log;
-    addPropertyChangeListener(ChatServerConnection.AVAILABLE_ROOMS, this);
+    addPropertyChangeListener(AVAILABLE_ROOMS, this);
     setConnected(true);
     new Thread(this).start();
   }

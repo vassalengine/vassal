@@ -71,7 +71,6 @@ import javax.swing.Action;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
@@ -219,7 +218,7 @@ public class ModuleManagerWindow extends JFrame {
     };
     shutDownAction.putValue(Action.NAME, Resources.getString(Resources.QUIT));
 
-    setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {
       @Override
        public void windowClosing(WindowEvent e) {
@@ -614,14 +613,14 @@ public class ModuleManagerWindow extends JFrame {
         moduleNode.add(extensionNode);
       }
 
-      final ArrayList<File> missingFolders = new ArrayList<>();
+      final List<File> missingFolders = new ArrayList<>();
 
       for (final File f : moduleInfo.getFolders()) {
         if (f.exists() && f.isDirectory()) {
           final GameFolderInfo folderInfo = new GameFolderInfo(f, moduleInfo);
           final MyTreeNode folderNode = new MyTreeNode(folderInfo);
           moduleNode.add(folderNode);
-          final ArrayList<File> l = new ArrayList<>();
+          final List<File> l = new ArrayList<>();
 
           final File[] files = f.listFiles();
           if (files == null) continue;
@@ -758,7 +757,7 @@ public class ModuleManagerWindow extends JFrame {
     model.getColumn(SAVED_COLUMN).setCellRenderer(centerRenderer);
     model.getColumn(VASSAL_COLUMN).setCellRenderer(centerRenderer);
 
-    tree.getTableHeader().setAlignmentX(JComponent.CENTER_ALIGNMENT);
+    tree.getTableHeader().setAlignmentX(CENTER_ALIGNMENT);
 
     // Save the columns so they can be removed/restored as needed
     for (int i = 0; i < COLUMNS; i++) {
@@ -966,7 +965,7 @@ public class ModuleManagerWindow extends JFrame {
     }
 
     public void activateOrExpandNode(TreePath path) {
-      final ModuleManagerWindow mmw = ModuleManagerWindow.getInstance();
+      final ModuleManagerWindow mmw = getInstance();
       mmw.selectedNode = (MyTreeNode) path.getLastPathComponent();
 
       final AbstractInfo target =
@@ -985,7 +984,6 @@ public class ModuleManagerWindow extends JFrame {
             modInfo.getVassalVersion(),
             Info.getVersion()
           );
-          return;
         }
         else {
           ((ModuleInfo) target).play();
@@ -1003,13 +1001,13 @@ public class ModuleManagerWindow extends JFrame {
     }
 
     private void createKeyBindings(JTable table) {
-      table.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Enter");
+      table.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Enter");
       table.getActionMap().put("Enter", new AbstractAction() {
         @Override
         public void actionPerformed(ActionEvent ae) {
           //do something meaningful on JTable enter pressed
 
-          final MyTree tree = ModuleManagerWindow.getInstance().tree;
+          final MyTree tree = getInstance().tree;
           final int row = tree.getSelectedRow();
 
           final TreePath path = tree.getPathForRow(row);
@@ -1864,8 +1862,8 @@ public class ModuleManagerWindow extends JFrame {
    */
   private class GameFolderInfo extends AbstractInfo {
     protected String comment;
-    protected ModuleInfo moduleInfo;
-    protected long dtm;
+    protected final ModuleInfo moduleInfo;
+    protected final long dtm;
 
     public GameFolderInfo(File f, ModuleInfo m) {
       super(f, openGameFolderIcon, closedGameFolderIcon);
@@ -1979,7 +1977,7 @@ public class ModuleManagerWindow extends JFrame {
    */
   private class SaveFileInfo extends AbstractInfo {
 
-    protected GameFolderInfo folderInfo;  // Owning Folder
+    protected final GameFolderInfo folderInfo;  // Owning Folder
     protected SaveMetaData metadata;      // Save file metadata
 
     public SaveFileInfo(File f, GameFolderInfo folder) {
@@ -2187,10 +2185,10 @@ public class ModuleManagerWindow extends JFrame {
       d.add(new JScrollPane(lp), "grow, push, w 500, h 600"); //NON-NLS
 
       d.setLocationRelativeTo(frame);
-      d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+      d.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
       final Action copyAction = new DefaultEditorKit.CopyAction();
-      copyAction.putValue(Action.NAME, Resources.getString("Errorlog.copy_selection"));
+      copyAction.putValue(NAME, Resources.getString("Errorlog.copy_selection"));
 
       final Action copyAllAction = new AbstractAction() {
         @Override
@@ -2199,7 +2197,7 @@ public class ModuleManagerWindow extends JFrame {
           copyAction.actionPerformed(e);
         }
       };
-      copyAllAction.putValue(Action.NAME, Resources.getString("Errorlog.copy_all"));
+      copyAllAction.putValue(NAME, Resources.getString("Errorlog.copy_all"));
 
       final JPopupMenu pm = new JPopupMenu();
       pm.add(copyAllAction);

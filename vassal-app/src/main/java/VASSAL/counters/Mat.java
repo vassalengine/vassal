@@ -167,9 +167,9 @@ public class Mat extends Decorator implements TranslatablePiece {
 
     contents.add(p);
 
-    final MatCargo cargo = (MatCargo)Decorator.getDecorator(Decorator.getOutermost(p), MatCargo.class);
+    final MatCargo cargo = (MatCargo)getDecorator(getOutermost(p), MatCargo.class);
     if (cargo != null) {
-      final GamePiece outer = Decorator.getOutermost(this);
+      final GamePiece outer = getOutermost(this);
       if (cargo.getMat() != this) {
         cargo.setMat(outer);
       }
@@ -188,13 +188,13 @@ public class Mat extends Decorator implements TranslatablePiece {
     ChangeTracker ct3 = null;
 
     if ((p instanceof Decorator) && !hasCargo(p)) {
-      final GamePiece cargo = Decorator.getDecorator(Decorator.getOutermost(p), MatCargo.class);
+      final GamePiece cargo = getDecorator(getOutermost(p), MatCargo.class);
       if (cargo != null) {
         final GamePiece mt = ((MatCargo)cargo).getMat();
-        if ((mt != null) && (mt != Decorator.getOutermost(this))) {
+        if ((mt != null) && (mt != getOutermost(this))) {
           ct3 = new ChangeTracker(mt);
 
-          final Mat mat = (Mat)Decorator.getDecorator(mt, Mat.class);
+          final Mat mat = (Mat)getDecorator(mt, Mat.class);
           mat.removeCargo(p);
         }
       }
@@ -352,6 +352,7 @@ public class Mat extends Decorator implements TranslatablePiece {
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof Mat)) return false;
     final Mat c = (Mat) o;

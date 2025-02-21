@@ -36,7 +36,9 @@ import VASSAL.command.Logger;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
+import VASSAL.counters.Deck;
 import VASSAL.counters.GamePiece;
+import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.ModuleManagerUpdateHelper;
 import VASSAL.preferences.Prefs;
@@ -202,7 +204,8 @@ public class GameState implements CommandEncoder {
 
       @Override
       public void actionPerformed(ActionEvent e) {
-        if (isNewGameAllowed()) {
+        //  Load Continuation is excused the restrictions that apply to new games & log files in online rooms
+        if (loadContinuation.isEnabled() || isNewGameAllowed()) {
           loadGame(true);
         }
       }
@@ -363,7 +366,7 @@ public class GameState implements CommandEncoder {
    * yet finished
    */
   public Iterator<GameSetupStep> getUnfinishedSetupSteps() {
-    final ArrayList<GameSetupStep> l = new ArrayList<>();
+    final List<GameSetupStep> l = new ArrayList<>();
     for (final GameSetupStep step : setupSteps) {
       if (!step.isFinished()) {
         l.add(step);
@@ -575,12 +578,20 @@ public class GameState implements CommandEncoder {
 
         // Things that we invokeLater
         SwingUtilities.invokeLater(fastForwarding ? () -> {
+
+          // Resolve any Pending Attachments
+          getAttachmentManager().resolvePendingAttachments();
+
           // Ask the IndexManager to rebuild all indexes so at-start stack pieces are all included
           // This is required for any SGKC's to work
           GameModule.getGameModule().getIndexManager().rebuild();
+
           // Apply all of the startup global key commands, in order
           doStartupGlobalKeyCommands(false);
         } : () -> {
+          // Resolve any Pending Attachments
+          getAttachmentManager().resolvePendingAttachments();
+
           // Ask the IndexManager to rebuild all indexes so at-start stack pieces are all included
           // This is required for any SGKC's to work
           GameModule.getGameModule().getIndexManager().rebuild();
@@ -1396,6 +1407,7 @@ public class GameState implements CommandEncoder {
     }
     GameModule.getGameModule().warn(msg);
     ModuleManagerUpdateHelper.sendGameUpdate(f);
+    updateRecentGames(f);
   }
 
   public void loadGameInForeground(final File f) {
@@ -1563,8 +1575,15 @@ public class GameState implements CommandEncoder {
    * within a map by visual layer.
    */
   public Command getRestorePiecesCommand() {
-    // TODO remove stacks that were empty when the game was loaded and are still empty now
-    final List<GamePiece> pieceList = new ArrayList<>(pieces.values());
+    final List<GamePiece> pieceList = new ArrayList<>();
+
+    // Remove empty Stacks
+    for (final GamePiece piece : pieces.values()) {
+      // Ignore empty Stacks
+      if (piece instanceof Deck || !(piece instanceof Stack) || !(((Stack) piece).isEmpty())) {
+        pieceList.add(piece);
+      }
+    }
     pieceList.sort(new Comparator<>() {
       private final Map<GamePiece, Integer> indices = new HashMap<>();
 
@@ -1579,7 +1598,9 @@ public class GameState implements CommandEncoder {
 
       @Override
       public int compare(GamePiece a, GamePiece b) {
-        final VASSAL.build.module.Map amap = a.getMap(), bmap = b.getMap();
+
+        final VASSAL.build.module.Map amap = a == null ? null : a.getMap();
+        final VASSAL.build.module.Map bmap = b == null ? null : b.getMap();
 
         if (amap == null) {
           return bmap == null ?

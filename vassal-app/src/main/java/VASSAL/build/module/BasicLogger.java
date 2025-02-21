@@ -323,7 +323,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   }
 
   private static class MultiplayerStateCommand extends Command {
-    boolean state;
+    final boolean state;
 
     MultiplayerStateCommand(boolean state) {
       this.state = state;
@@ -734,10 +734,10 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     public StepAction() {
       final URL iconURL = getClass().getResource(STEP_ICON);
       if (iconURL != null) {
-        putValue(Action.SMALL_ICON, new ImageIcon(iconURL));
+        putValue(SMALL_ICON, new ImageIcon(iconURL));
       }
       else {
-        putValue(Action.NAME, Resources.getString("BasicLogger.step"));  //$NON-NLS-1$
+        putValue(NAME, Resources.getString("BasicLogger.step"));  //$NON-NLS-1$
       }
     }
 
@@ -752,10 +752,10 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     public UndoAction() {
       final URL iconURL = getClass().getResource(UNDO_ICON);
       if (iconURL != null) {
-        putValue(Action.SMALL_ICON, new ImageIcon(iconURL));
+        putValue(SMALL_ICON, new ImageIcon(iconURL));
       }
       else {
-        putValue(Action.NAME, Resources.getString("BasicLogger.undo"));  //$NON-NLS-1$
+        putValue(NAME, Resources.getString("BasicLogger.undo"));  //$NON-NLS-1$
       }
     }
 

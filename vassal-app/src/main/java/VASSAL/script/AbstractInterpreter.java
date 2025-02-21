@@ -204,12 +204,7 @@ public abstract class AbstractInterpreter extends Interpreter {
   protected boolean isAccessible(Map m) {
     if (m instanceof PrivateMap) {
       final String mySide = PlayerRoster.getMySide();
-      if (mySide == null) {
-        return true;
-      }
-      else {
-        return ((PrivateMap) m).isAccessibleTo(mySide);
-      }
+      return mySide == null || ((PrivateMap) m).isAccessibleTo(mySide);
     }
     else {
       return true;

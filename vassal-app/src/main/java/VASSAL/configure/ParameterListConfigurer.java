@@ -242,7 +242,7 @@ public class ParameterListConfigurer extends Configurer implements ConfigurableL
 
   @Override
   public int getSelectedEntryIndex() {
-    return selectedEntryIndex;
+    return Math.min(selectedEntryIndex, getListValue() == null ? -1 : getListValue().size() - 1);
   }
 
   @Override
@@ -434,7 +434,7 @@ public class ParameterListConfigurer extends Configurer implements ConfigurableL
     }
 
     public ParameterEntry(ParameterListConfigurer listConfig, Object value) {
-      this(listConfig, value, ConfigurableList.DEFAULT_ICON_SIZE);
+      this(listConfig, value, DEFAULT_ICON_SIZE);
     }
 
     public ParameterEntry(ParameterListConfigurer listConfig, Object value, int iconSize) {

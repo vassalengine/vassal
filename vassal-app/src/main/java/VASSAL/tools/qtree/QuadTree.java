@@ -101,7 +101,7 @@ public class QuadTree<T> implements Cloneable {
     if (x < root.getX() || y < root.getY() || x > root.getX() + root.getW() || y > root.getY() + root.getH()) {
       throw new QuadTreeException("Out of bounds : (" + x + ", " + y + ")");
     }
-    if (this.insert(root, new QPoint<T>(x, y, value))) {
+    if (this.insert(root, new QPoint<>(x, y, value))) {
       this.count_++;
     }
   }
@@ -189,7 +189,7 @@ public class QuadTree<T> implements Cloneable {
    */
   public QPoint<T>[] getKeys() {
     final List<QPoint<T>> arr = new ArrayList<>();
-    this.traverse(this.root_, new QFunc<T>() {
+    this.traverse(this.root_, new QFunc<>() {
       @Override
       public void call(QuadTree<T> quadTree, QNode<T> node) {
         arr.add(node.getPoint());
@@ -204,7 +204,7 @@ public class QuadTree<T> implements Cloneable {
    */
   public List<T> getValues() {
     final List<T> arr = new ArrayList<>();
-    this.traverse(this.root_, new QFunc<T>() {
+    this.traverse(this.root_, new QFunc<>() {
       @Override
       public void call(QuadTree<T> quadTree, QNode<T> node) {
         arr.add(node.getPoint().getValue());
@@ -216,7 +216,7 @@ public class QuadTree<T> implements Cloneable {
 
   public QPoint<T>[] searchIntersect(final double xmin, final double ymin, final double xmax, final double ymax) {
     final List<QPoint<T>> arr = new ArrayList<>();
-    this.navigate(this.root_, new QFunc<T>() {
+    this.navigate(this.root_, new QFunc<>() {
       @Override
       public void call(QuadTree<T> quadTree, QNode<T> node) {
         final QPoint<T> pt = node.getPoint();
@@ -231,7 +231,7 @@ public class QuadTree<T> implements Cloneable {
 
   public QPoint<T>[] searchWithin(final double xmin, final double ymin, final double xmax, final double ymax) {
     final List<QPoint<T>> arr = new ArrayList<>();
-    this.navigate(this.root_, new QFunc<T>() {
+    this.navigate(this.root_, new QFunc<>() {
       @Override
       public void call(QuadTree<T> quadTree, QNode<T> node) {
         final QPoint<T> pt = node.getPoint();
@@ -282,7 +282,7 @@ public class QuadTree<T> implements Cloneable {
     // This is inefficient as the clone needs to recalculate the structure of the
     // tree, even though we know it already.  But this is easier and can be
     // optimized when/if needed.
-    this.traverse(this.root_, new QFunc<T>() {
+    this.traverse(this.root_, new QFunc<>() {
       @Override
       public void call(QuadTree<T> quadTree, QNode<T> node) {
         clone.set(node.getPoint().getX(), node.getPoint().getY(), node.getPoint().getValue());
@@ -403,10 +403,10 @@ public class QuadTree<T> implements Cloneable {
     final double hw = node.getW() / 2;
     final double hh = node.getH() / 2;
 
-    node.setNw(new QNode<T>(x, y, hw, hh, node));
-    node.setNe(new QNode<T>(x + hw, y, hw, hh, node));
-    node.setSw(new QNode<T>(x, y + hh, hw, hh, node));
-    node.setSe(new QNode<T>(x + hw, y + hh, hw, hh, node));
+    node.setNw(new QNode<>(x, y, hw, hh, node));
+    node.setNe(new QNode<>(x + hw, y, hw, hh, node));
+    node.setSw(new QNode<>(x, y + hh, hw, hh, node));
+    node.setSe(new QNode<>(x + hw, y + hh, hw, hh, node));
 
     this.insert(node, oldPoint);
   }

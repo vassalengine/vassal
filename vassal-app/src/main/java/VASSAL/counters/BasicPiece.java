@@ -313,7 +313,7 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
       return getId();
     }
     else if (UNIQUE_ID.equals(key)) {
-      return (String) getPersistentProps().get(BasicPiece.UNIQUE_ID);
+      return (String) getPersistentProps().get(UNIQUE_ID);
     }
     else if (STACK_POS.equals(key)) {
       final Stack parent = getParent();
@@ -579,7 +579,7 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
    */
   protected KeyCommand[] getKeyCommands() {
     if (commands == null) {
-      final ArrayList<KeyCommand> l = new ArrayList<>();
+      final List<KeyCommand> l = new ArrayList<>();
       final GamePiece target = Decorator.getOutermost(this);
       if (cloneKey > 0) {
         l.add(new KeyCommand(Resources.getString("Editor.Clone.clone"), KeyStroke.getKeyStroke(cloneKey, InputEvent.CTRL_DOWN_MASK), target));
@@ -724,7 +724,7 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
    * it all the way to this innermost piece.
    */
   public String getRealLocalizedName() {
-    final String key = TranslatablePiece.PREFIX + getName();
+    final String key = PREFIX + getName();
     return Localization.getInstance().translate(key, getName());
   }
 
@@ -1191,7 +1191,7 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
     public String getType() {
       final SequenceEncoder se = new SequenceEncoder(cloneKeyInput.getKey(), ';');
       final String type = se.append(deleteKeyInput.getKey()).append(picker.getValueString()).append(pieceName.getValueString()).getValue();
-      return BasicPiece.ID + type;
+      return ID + type;
     }
   }
 
@@ -1219,7 +1219,7 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
    */
   @Override
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     l.add(BASIC_NAME);
     l.add(CLICKED_X);
     l.add(CLICKED_Y);

@@ -52,7 +52,7 @@ public class UsernameAndPasswordDialog extends JDialog {
   public UsernameAndPasswordDialog(Frame parent) {
     super(parent, Resources.getString("Editor.UsernameAndPasswordDialog.choose_your_weapons"), true);
     setLocationRelativeTo(parent);
-    setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
     setLayout(new MigLayout("ins panel,gapy 4,wrap 2", "[right]rel[fill,grow]")); // NON-NLS
 

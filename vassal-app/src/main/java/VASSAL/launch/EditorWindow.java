@@ -104,7 +104,7 @@ public abstract class EditorWindow extends JFrame {
 
     ApplicationIcons.setFor(this);
 
-    setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent e) {
@@ -421,9 +421,7 @@ public abstract class EditorWindow extends JFrame {
    * @return true if this is a "temporary file" (according to the temp-file-making scheme of {@link VASSAL.tools.io.ZipArchive})
    */
   boolean isTempFile(String name) {
-    return name == null ||
-      name.isEmpty() ||
-      ("tmp".equals(name.substring(0, 3)) && name.contains(".zip"));  //NON-NLS
+    return name == null || name.isEmpty() || (name.startsWith("tmp") && name.contains(".zip"));  //NON-NLS
   }
 
   void setModuleName(String name) {
@@ -476,7 +474,7 @@ public abstract class EditorWindow extends JFrame {
   protected void saver(final Runnable save) {
     final ValidationReport report = new ValidationReport();
     GameModule.getGameModule().validate(GameModule.getGameModule(), report);
-    if (report.getWarnings().size() == 0) {
+    if (report.getWarnings().isEmpty()) {
       save.run();
     }
     else {

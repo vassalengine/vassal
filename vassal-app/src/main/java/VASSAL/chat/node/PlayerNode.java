@@ -83,8 +83,8 @@ public class PlayerNode extends Node implements SocketWatcher {
   @Override
   public void handleMessage(String line) {
     String[] info;
-    Properties p;
-    String cmd;
+    final Properties p;
+    final String cmd;
     if ((info = Protocol.decodeRegisterCommand(line)) != null) {
       id = info[0];
       this.info = info[2];

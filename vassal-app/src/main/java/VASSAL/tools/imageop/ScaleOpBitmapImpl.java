@@ -41,6 +41,7 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
                                implements ScaleOp {
   protected final ImageOp sop;
   protected final double scale;
+  @SuppressWarnings("PMD.LooseCoupling")
   protected final RenderingHints hints;
   protected final int hash;
 
@@ -48,6 +49,7 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
   // used in our equals() and RenderingHints.equals() is ridiculously slow
   // if a full comparison is made. This way hints == defaultHints, usually,
   // and so a quick equality comparison succeeds.
+  @SuppressWarnings("PMD.LooseCoupling")
   protected static final RenderingHints defaultHints =
     ImageUtils.getDefaultHints();
 
@@ -70,6 +72,7 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
    * @param scale the scale factor
    * @param hints rendering hints
    */
+  @SuppressWarnings("PMD.LooseCoupling")
   public ScaleOpBitmapImpl(ImageOp sop, double scale, RenderingHints hints) {
     if (sop == null)
       throw new IllegalArgumentException("Attempt to scale null image");
@@ -126,7 +129,7 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
     private final ImageOp sop;
     private final int dx0, dy0, dw, dh;
     private final double scale;
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "PMD.LooseCoupling"})
     private final RenderingHints hints;
     private final int hash;
 

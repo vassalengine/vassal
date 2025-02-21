@@ -171,7 +171,7 @@ public abstract class Importer {
    * Return a null-terminated string from an input stream.
    */
   public static String readNullTerminatedString(InputStream in) throws IOException {
-    return Importer.readNullTerminatedString(in, 0);
+    return readNullTerminatedString(in, 0);
   }
 
   /**
@@ -230,7 +230,7 @@ public abstract class Importer {
   public static String forceExtension(String s, String ext) {
     if (s.equals(".") || s.equals(".."))
       return s;
-    return Importer.stripExtension(s) + '.' + ext;
+    return stripExtension(s) + '.' + ext;
   }
 
   /**

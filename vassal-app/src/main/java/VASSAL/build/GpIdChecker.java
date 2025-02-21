@@ -246,12 +246,11 @@ public class GpIdChecker {
    */
   public GamePiece createUpdatedPiece(GamePiece oldPiece) {
     final String gpid = (String) oldPiece.getProperty(Properties.PIECE_ID);
-    GamePiece newPiece;
     // Find a slot with a matching gpid
     if (gpid != null && !gpid.isEmpty()) {
       final SlotElement element = goodSlots.get(gpid);
       if (element != null) {
-        newPiece =  element.createPiece(oldPiece, this);
+        final GamePiece newPiece = element.createPiece(oldPiece, this);
         copyState(oldPiece, newPiece);
         return newPiece;
       }
@@ -265,7 +264,7 @@ public class GpIdChecker {
         final GamePiece slotPiece = element.getPiece();
         final String gpName = Decorator.getInnermost(slotPiece).getName();
         if (oldPieceName.equals(gpName)) {
-          newPiece = element.createPiece(oldPiece, this);
+          final GamePiece newPiece = element.createPiece(oldPiece, this);
           copyState(oldPiece, newPiece);
           if (fixGPID()) {
             newPiece.setProperty(Properties.PIECE_ID, slotPiece.getProperty(Properties.PIECE_ID));
@@ -383,7 +382,7 @@ public class GpIdChecker {
     private String id;
     private PrototypeDefinition prototype;
     private GamePiece expandedPrototype;
-    private GpIdChecker gpIdChecker;
+    private GpIdChecker gpIdChecker;  // NOPMD
 
     public SlotElement() {
       slot = null;

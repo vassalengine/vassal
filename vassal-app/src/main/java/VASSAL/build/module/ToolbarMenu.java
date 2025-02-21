@@ -204,7 +204,7 @@ public class ToolbarMenu extends AbstractToolbarItem
     }
     buttonsToMenuMap.clear();
     menu.removeAll();
-    final HashMap<String, JButton> nameToButton = new HashMap<>();
+    final Map<String, JButton> nameToButton = new HashMap<>();
     if (toolbar != null) {
       final int n = toolbar.getComponentCount();
       for (int i = 0; i < n; ++i) {

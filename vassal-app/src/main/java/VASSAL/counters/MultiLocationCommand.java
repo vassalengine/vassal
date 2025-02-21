@@ -175,7 +175,7 @@ public class MultiLocationCommand extends Decorator implements TranslatablePiece
         return evalY;
       }
       else {
-        return Decorator.getOutermost(piece).getProperty(key);
+        return getOutermost(piece).getProperty(key);
       }
     }
 
@@ -281,7 +281,6 @@ public class MultiLocationCommand extends Decorator implements TranslatablePiece
     if (propertiesFilter.getExpression().isBlank() || propertiesFilter.isTrue(locPS)) {
       final AuditTrail audit = AuditTrail.create(locPS, menuText.getFormat(), Resources.getString("Editor.MultiLocationCommand.evaluate_menu_text"));
       final String myMenuText = menuText.getLocalizedText(locPS, this, audit);
-
       final AuditTrail audit2 = AuditTrail.create(locPS, menuSort.getFormat(), Resources.getString("Editor.MultiLocationCommand.evaluate_sort_string"));
       final String myMenuSort = menuSort.getLocalizedText(locPS, this, audit2);
 
@@ -460,6 +459,7 @@ public class MultiLocationCommand extends Decorator implements TranslatablePiece
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof MultiLocationCommand)) return false;
     final MultiLocationCommand c = (MultiLocationCommand) o;

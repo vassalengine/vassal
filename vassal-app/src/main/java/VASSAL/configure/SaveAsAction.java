@@ -20,7 +20,6 @@ package VASSAL.configure;
 import java.net.URL;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.ImageIcon;
 
 import VASSAL.i18n.Resources;
@@ -36,11 +35,11 @@ public abstract class SaveAsAction extends AbstractAction {
   public SaveAsAction() {
     final URL iconURL = getClass().getResource("/images/SaveAs16.gif"); //NON-NLS
     if (iconURL != null) {
-      putValue(Action.SMALL_ICON, new ImageIcon(iconURL));
+      putValue(SMALL_ICON, new ImageIcon(iconURL));
     }
 
-    putValue(Action.NAME, Resources.getString("Editor.save_as", parentType));
-    putValue(Action.SHORT_DESCRIPTION, Resources.getString("Editor.save_as", parentType));
+    putValue(NAME, Resources.getString("Editor.save_as", parentType));
+    putValue(SHORT_DESCRIPTION, Resources.getString("Editor.save_as", parentType));
   }
 
   public void setParent(String p) {
