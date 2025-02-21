@@ -285,7 +285,7 @@ public class MultiLocationCommand extends Decorator implements TranslatablePiece
       final AuditTrail audit2 = AuditTrail.create(locPS, menuSort.getFormat(), Resources.getString("Editor.MultiLocationCommand.evaluate_sort_string"));
       final String myMenuSort = menuSort.getLocalizedText(locPS, this, audit2);
 
-      keyCommands.add(new MultiLocationKeyCommand(myMenuText, key, Decorator.getOutermost(this), this, evalLocation, evalZone, evalBoard, evalMap, evalX, evalY, myMenuSort));
+      keyCommands.add(new MultiLocationKeyCommand(myMenuText, key, getOutermost(this), this, evalLocation, evalZone, evalBoard, evalMap, evalX, evalY, myMenuSort));
     }
   }
 
