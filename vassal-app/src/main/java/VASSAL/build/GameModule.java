@@ -225,6 +225,8 @@ public class GameModule extends AbstractConfigurable
   public static final String DRAWING_MOUSEOVER_PROPERTY = "DrawingMouseover"; //NON-NLS
   public static final String DRAWING_MOUSEOVER_INDEX_PROPERTY = "DrawingMouseoverIndex"; //NON-NLS
 
+  private static final String GAME_FILENAME_PROPERTY = "ModuleGameFileName"; //NON-NLS
+
   public static final String IS_VISIBLE = "_isVisible"; //NON-NLS
 
   public static final String UI_PIECE_COUNT = "UiPieceCount";
@@ -264,7 +266,7 @@ public class GameModule extends AbstractConfigurable
 
   private static GameModule theModule;
 
-  private static String DEFAULT_MODULE_VERSION = "0.0"; //$NON-NLS-1$
+  private static final String DEFAULT_MODULE_VERSION = "0.0"; //$NON-NLS-1$
 
   private String moduleVersion = DEFAULT_MODULE_VERSION;
   private String vassalVersionCreated = "0.0";  //$NON-NLS-1$
@@ -771,7 +773,7 @@ public class GameModule extends AbstractConfigurable
      */
     if (e != null) {
       gameName = e.getAttribute(MODULE_NAME).strip();
-      if (e.getAttribute(VASSAL_VERSION_CREATED).length() > 0) {
+      if (e.getAttribute(VASSAL_VERSION_CREATED).isEmpty()) {
         vassalVersionCreated = e.getAttribute(VASSAL_VERSION_CREATED);
       }
     }
@@ -2290,6 +2292,9 @@ public class GameModule extends AbstractConfigurable
     else if (DRAWING_MOUSEOVER_INDEX_PROPERTY.equals(key)) {
       return CounterDetailViewer.isDrawingMouseOver() ? "2" : "1";
     }
+    else if (GAME_FILENAME_PROPERTY.equals(key)) {
+      return gameFile;
+    }
     else if (UI_PIECE_COUNT.equals(key)) {
       return String.valueOf(getUiPieceCount());
     }
@@ -2397,6 +2402,7 @@ public class GameModule extends AbstractConfigurable
     l.add(MODULE_CURRENT_LOCALE_NAME);
     l.add(MODULE_VASSAL_VERSION_CREATED_PROPERTY);
     l.add(MODULE_VASSAL_VERSION_RUNNING_PROPERTY);
+    l.add(GAME_FILENAME_PROPERTY);
     l.add(UI_PIECE_COUNT);
     l.add(UI_PIECE_INDEX);
 
