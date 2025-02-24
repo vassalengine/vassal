@@ -91,7 +91,7 @@ public class HelpFile extends AbstractConfigurable {
 
   public HelpFile(String title, File contents, String ref)
                                 throws MalformedURLException {
-    this(title, new URL(URLUtils.toURL(contents), ref));
+    this(title, new URL(URLUtils.toURL(contents + ref), ref));
   }
 
   public HelpFile(String title, File contents) throws MalformedURLException {
