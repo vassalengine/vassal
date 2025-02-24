@@ -32,17 +32,18 @@ import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.URLUtils;
 import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import java.awt.Dialog;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 
 /**
  * Places an entry in the <code>Help</code> menu.  Selecting the entry
@@ -91,7 +92,7 @@ public class HelpFile extends AbstractConfigurable {
 
   public HelpFile(String title, File contents, String ref)
                                 throws MalformedURLException {
-    this(title, new URL(URLUtils.toURL(contents + ref),""));
+    this(title, new URL(URLUtils.toURL(contents), ref));
   }
 
   public HelpFile(String title, File contents) throws MalformedURLException {
@@ -318,7 +319,7 @@ public class HelpFile extends AbstractConfigurable {
     dir = new File(dir, "ReferenceManual"); //$NON-NLS-1$
     try {
       return anchor == null ? new HelpFile(null, new File(dir, page)) :
-                              new HelpFile(null, new File(dir, page), anchor);
+                              new HelpFile(null, new File(dir, page), URLEncoder.encode(anchor, StandardCharsets.UTF_8));
     }
     catch (MalformedURLException ex) {
       ErrorDialog.bug(ex);
