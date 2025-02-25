@@ -38,8 +38,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 import javax.swing.AbstractAction;
@@ -319,7 +317,7 @@ public class HelpFile extends AbstractConfigurable {
     dir = new File(dir, "ReferenceManual"); //$NON-NLS-1$
     try {
       return anchor == null ? new HelpFile(null, new File(dir, page)) :
-                              new HelpFile(null, new File(dir, page), URLEncoder.encode(anchor, StandardCharsets.UTF_8));
+                              new HelpFile(null, new File(dir, page), anchor);
     }
     catch (MalformedURLException ex) {
       ErrorDialog.bug(ex);
