@@ -1,5 +1,6 @@
 3.7.16 - ???
 
+* 13865: Fix a bad reference manual link for GKCs.
 * 11559: MacOS: Editor's shortcut for deleting components modified to 
    Command+Delete on Mac, to prevent inadvertent use when a FileDialog 
    is showing
