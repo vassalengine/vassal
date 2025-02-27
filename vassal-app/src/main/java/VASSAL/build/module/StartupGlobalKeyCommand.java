@@ -161,7 +161,7 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.html", "StartupGlobalKeyCommand"); //NON-NLS
+    return HelpFile.getReferenceManualPage("GlobalKeyCommands.html", "startup"); //NON-NLS
   }
 
   @SuppressWarnings("removal")

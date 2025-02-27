@@ -268,7 +268,7 @@ Startup GKCs are run automatically when a game is started or loaded. They can be
 
 Otherwise, it works as a standard Global Key Command, but has no associated toolbar, unless the Global Hotkey mode is enabled.
 
-Unlike other Global Key Commands, a Startup HKC can be confuigured to send a Global Hotkey (to affect toolbar buttons and Decks) rather than a Global Key Command (which affects pieces). See the second example below.
+Unlike other Global Key Commands, a Startup GKC can be configured to send a Global Hotkey (to affect toolbar buttons and Decks) rather than a Global Key Command (which affects pieces). See the second example below.
 
 NOTE: Any Startup GKCs configured are guaranteed to run in the order they are defined in the module.
 
