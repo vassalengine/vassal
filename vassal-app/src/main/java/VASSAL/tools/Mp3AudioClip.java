@@ -75,7 +75,6 @@ public class Mp3AudioClip implements AudioClip {
       player = new Player(stream);
     }
     catch (JavaLayerException e) {
-
       log.error("Error establishing audio stream", e); //NON-NLS
     }
     finally {
