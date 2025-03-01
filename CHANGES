@@ -1,5 +1,6 @@
 3.7.16 - ???
 
+* 13871: Show layers in hidden pieces to owner correctly.
 * 13601: Handle Exceptions cleanly in Module Search.
 * 13635: Improve fit of 'Fit to Height' zoom option on Macs.
 * 13865: Fix a bad reference manual link for GKCs.
