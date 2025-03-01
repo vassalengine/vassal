@@ -31,6 +31,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.image.ImageUtils;
 
 import javax.swing.KeyStroke;
 import java.awt.AlphaComposite;
@@ -42,6 +43,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -65,6 +67,11 @@ public class Hideable extends Decorator implements TranslatablePiece {
   protected KeyCommand[] commands;
   protected KeyCommand hideCommand;
   protected String description = "";
+
+  // Cache the Hidden image that is shown to the owner. Only re-generate when Zoom or piece state changes.
+  protected BufferedImage cachedImage;
+  protected double cachedZoom = -1d;
+  protected String cachedState = "";
 
   @Override
   public void setProperty(Object key, Object val) {
@@ -210,14 +217,48 @@ public class Hideable extends Decorator implements TranslatablePiece {
         g2d.fill(t.createTransformedShape(piece.getShape()));
       }
 
-      final Composite oldComposite = g2d.getComposite();
-      g2d.setComposite(
-        AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparency)
-      );
-      piece.draw(g, x, y, obs, zoom);
-      g2d.setComposite(oldComposite);
+      // Determine piece bounds at current zoom
+      final Rectangle bounds = piece.getShape().getBounds();
+      final int w = (int) Math.ceil(bounds.width * zoom);
+      final int h = (int) Math.ceil(bounds.height * zoom);
+
+      // If there's nothing visible at this zoom, skip
+      if (w <= 0 || h <= 0) {
+        return;
+      }
+
+      final String visibleState = (String) piece.getProperty(Properties.VISIBLE_STATE);
+      if (cachedImage == null || zoom != cachedZoom || ! cachedState.equals(visibleState)) {
+
+        // Create an in-memory cached image and draw piece fully opaque
+        cachedImage = ImageUtils.createCompatibleTranslucentImage(w, h);
+        cachedZoom = zoom;
+        cachedState = visibleState;
+
+        final Graphics2D cg = cachedImage.createGraphics();
+        try {
+          cg.scale(zoom, zoom);
+          cg.translate(-bounds.x, -bounds.y);
+
+          piece.draw(cg, 0, 0, obs, 1.0); // Fully opaque
+        }
+        finally {
+          cg.dispose();
+        }
+      }
+
+      // Apply the appropriate transparency to the overall image
+      final Composite oldComp = g2d.getComposite();
+      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparency));
+
+      final int drawX = x + (int) Math.round(bounds.x * zoom);
+      final int drawY = y + (int) Math.round(bounds.y * zoom);
+      g2d.drawImage(cachedImage, drawX, drawY, obs);
+
+      g2d.setComposite(oldComp);
     }
     else {
+      // Normal draw at the end
       piece.draw(g, x, y, obs, zoom);
     }
   }
