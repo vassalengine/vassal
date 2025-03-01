@@ -270,9 +270,10 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
         return;
       }
 
-      // workaround for https://github.com/vassalengine/vassal/issues/12033
-      if (!map.equals(p.getMap())) { // Piece is not actually on this map, do nothing
-        return;
+      // FIXME: workaround for https://github.com/vassalengine/vassal/issues/12033
+      // Undo sometimes corrupts a pieces Map.
+      if (!map.equals(p.getMap())) {
+        p.setMap(map);
       }
 
       final Point epos = e.getPoint();
