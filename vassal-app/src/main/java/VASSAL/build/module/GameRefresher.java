@@ -452,7 +452,6 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
                 }
 
                 refreshable++;
-                break;
               }
             }
           }
