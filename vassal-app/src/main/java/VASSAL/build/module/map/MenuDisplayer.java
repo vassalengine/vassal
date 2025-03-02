@@ -188,7 +188,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
           }
         }
         if (keyCommand.getName() != null &&
-            keyCommand.getName().length() > 0 &&
+                !keyCommand.getName().isEmpty() &&
             item != null) {
           final List<JMenuItem> l = commandNames.computeIfAbsent(keyCommand.getName(), k -> new ArrayList<>());
           l.add(item);
@@ -268,6 +268,12 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
       }
       if (map.getKeyBufferer().isLasso()) { // If we dragged a selection box
         return;
+      }
+
+      // FIXME: workaround for https://github.com/vassalengine/vassal/issues/12033
+      // Undo sometimes corrupts a pieces Map.
+      if (!map.equals(p.getMap())) {
+        p.setMap(map);
       }
 
       final Point epos = e.getPoint();
