@@ -44,7 +44,9 @@ NOTE: If you later need to do arithimetic on this value in a Beanshell expressio
 [#disableindex]
 *Disable use of location indexes to speed up Global Key Command?*:: A new feature was added to Vassal 3.7 to speed up the execution of all varieties of Global Key Commands (GKCs) where a <<FastMatch.adoc#top,Fast-Match>> 'by location' has been specified. It also speeds up all Ranged GKCs. The use of these indexes can cause the GKCs to be applied to matching pieces in a different order than previously. Modules should not make any assumptions about the order that GKCs are applied to matching pieces. This option turns off the use of location indexes to speed up GKCs and reverts to the slower pre 3.7 behaviour.
 
-*Icons and hotkeys:*:: You can specify your own button icons and keyboard shortcuts for the logfile step/undo buttons, the button that shows/hides the server controls, a button to display the Debug Window and a button to show the <<ScenarioProperties.adoc#top,Scenario Properties>> windows if you have defined any.
+*Icons and hotkeys:*:: You can specify your own button icons and keyboard shortcuts for the logfile step/undo buttons, a checkpoint hotkey, the button that shows/hides the server controls, a button to display the Debug Window and a button to show the <<ScenarioProperties.adoc#top,Scenario Properties>> windows if you have defined any.
+
+NOTE: A *Checkpoint Hotkey*, if set, allows the module designer to prevent undo following a key action, such as after a card draw. This is achieved by issuing the specified hotkey as the _very last end_ action in the sequence. If this is done correctly, the Undo button will grey out immediately. To prevent accidental player use, use a Named Command, not Keystroke.
 
 |image:images/GlobalOptions.png[]
 |===
