@@ -242,7 +242,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     });
     undoKeyConfig.fireUpdate();
 
-    // Feature to allow module to set a checkpoint to prevent destructive undo's (e.g. beyond a card draw).
+    // Feature to allow module to set a checkpoint to prevent a destructive undo (e.g. beyond a card draw).
     checkpointKeyConfig = new NamedHotKeyConfigurer("checkpointHotKey", Resources.getString("BasicLogger.checkpoint_hotkey"), checkpointKeyListener.getNamedKeyStroke()); //$NON-NLS-1$ //$NON-NLS-2$
     checkpointKeyConfig.addPropertyChangeListener(evt -> checkpointKeyListener.setKeyStroke(checkpointKeyConfig.getValueNamedKeyStroke()));
     GlobalOptions.getInstance().addOption(checkpointKeyConfig);
@@ -786,10 +786,13 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     @Override
     public void actionPerformed(ActionEvent e) {
       final Logger l = GameModule.getGameModule().getLogger();
+      System.out.println("checkpoint action");
       if (l instanceof BasicLogger) {
         final BasicLogger log = GameModule.getGameModule().getBasicLogger();
+        System.out.println("logged obtained");
         if (log != null) {
-          log.blockUndo(0);
+          System.out.println("undo blocked");
+          log.blockUndo(2);
         }
       }
     }
