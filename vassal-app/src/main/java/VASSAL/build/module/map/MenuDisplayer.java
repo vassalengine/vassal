@@ -173,7 +173,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
             final Action action = command.getAction();
             if (action != null) {
               final String commandName =
-                (String) command.getAction().getValue(Action.NAME);
+                      (String) command.getAction().getValue(Action.NAME);
               if (commandName == null ||
                       commandName.length() < keyCommand.getName().length()) {
                 item = makeMenuItem(keyCommand);
@@ -188,8 +188,8 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
           }
         }
         if (keyCommand.getName() != null &&
-            keyCommand.getName().length() > 0 &&
-            item != null) {
+                !keyCommand.getName().isEmpty() &&
+                item != null) {
           final List<JMenuItem> l = commandNames.computeIfAbsent(keyCommand.getName(), k -> new ArrayList<>());
           l.add(item);
         }
@@ -197,13 +197,13 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
 
       // Move commands from main menu into submenus
       for (final java.util.Map.Entry<KeyCommandSubMenu, JMenu> e :
-                                                        subMenus.entrySet()) {
+              subMenus.entrySet()) {
         final KeyCommandSubMenu menuCommand = e.getKey();
         final JMenu subMenu = e.getValue();
 
         for (final Iterator<String> it2 = menuCommand.getCommands(); it2.hasNext();) {
           final List<JMenuItem> matchingCommands =
-            commandNames.get(it2.next());
+                  commandNames.get(it2.next());
           if (matchingCommands != null) {
             for (final JMenuItem item : matchingCommands) {
               subMenu.add(item);
@@ -228,7 +228,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
         final String text = item.getText();
         if (MenuSeparator.SEPARATOR_NAME.equals(text)) {
           popup.addSeparator();
-        } 
+        }
         else if (text != null && !text.isBlank()) {
           popup.add(item);
         }
@@ -268,6 +268,12 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
       }
       if (map.getKeyBufferer().isLasso()) { // If we dragged a selection box
         return;
+      }
+
+      // FIXME: workaround for https://github.com/vassalengine/vassal/issues/12033
+      // Undo sometimes corrupts a pieces Map.
+      if (!map.equals(p.getMap())) {
+        p.setMap(map);
       }
 
       final Point epos = e.getPoint();
