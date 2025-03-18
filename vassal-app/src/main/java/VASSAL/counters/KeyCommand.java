@@ -18,9 +18,11 @@
 package VASSAL.counters;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-import javax.swing.AbstractAction;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 
 import VASSAL.build.GameModule;
 import VASSAL.command.Command;
@@ -29,6 +31,7 @@ import VASSAL.tools.NamedKeyStroke;
 
 public class KeyCommand extends AbstractAction {
   private static final long serialVersionUID = 1L;
+  private boolean visible; // Add a visibility flag
 
   public static final KeyCommand[] NONE = new KeyCommand[0];
 
