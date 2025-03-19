@@ -287,7 +287,14 @@ public class NodeClient implements LockableChatServerConnection,
 
   @Override
   public void sendToOthers(Command c) {
-    sendToOthers(encoder.encode(c));
+    if (sender == null) {
+      // tolerate https://github.com/vassalengine/vassal/issues/13666
+      propSupport.firePropertyChange(STATUS, null, Resources.getString(
+              "Chat.disconnected")); //$NON-NLS-1$
+    }
+    else {
+      sendToOthers(encoder.encode(c));
+    }
   }
 
   public void sendToAll(String msg) {
@@ -298,7 +305,7 @@ public class NodeClient implements LockableChatServerConnection,
     }
   }
 
-  public void forward(String receipientPath, String msg) {
+  public void forward(String recipientPath, String msg) {
     if (isConnected() && currentRoom != null && msg != null) {
       msg = checker.filter(msg, defaultRoomName, currentRoom.getName());
       if (msg.length() > compressionLimit) {
@@ -312,7 +319,7 @@ public class NodeClient implements LockableChatServerConnection,
           e.printStackTrace();
         }
       }
-      send(Protocol.encodeForwardCommand(receipientPath, msg));
+      send(Protocol.encodeForwardCommand(recipientPath, msg));
     }
   }
 
