@@ -54,6 +54,7 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
   public static final String APPLY_EVERY_LAUNCH_OF_SESSION   = "everyLaunchOfSession"; //NON-NLS
   public static final String APPLY_START_OF_GAME_ONLY        = "startOfGameOnly";      //NON-NLS
   public static final String APPLY_START_GAME_OR_SIDE_CHANGE = "sideChange";           //NON-NLS
+  public static final String APPLY_SIDE_CHANGE               = "onlySideChange";       //NON-NLS
   public static final String GLOBAL_HOTKEY                   = "globalHotkey";         //NON-NLS
   public static final String HOTKEY_OR_KEY_COMMAND           = "hotkeyOrKeyCommand";   //NON-NLS
 
@@ -80,7 +81,8 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
   public static class Prompt extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
-      return new String[]{ APPLY_FIRST_LAUNCH_OF_SESSION, APPLY_EVERY_LAUNCH_OF_SESSION, APPLY_START_OF_GAME_ONLY, APPLY_START_GAME_OR_SIDE_CHANGE };
+      return new String[]{ APPLY_FIRST_LAUNCH_OF_SESSION, APPLY_EVERY_LAUNCH_OF_SESSION, APPLY_START_OF_GAME_ONLY, APPLY_START_GAME_OR_SIDE_CHANGE,
+                           APPLY_SIDE_CHANGE};
     }
 
     @Override
@@ -89,7 +91,8 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
         "Editor.StartupGlobalKeyCommand.first_launch_of_session",
         "Editor.StartupGlobalKeyCommand.every_launch_of_session",
         "Editor.StartupGlobalKeyCommand.start_of_game_only",
-        "Editor.StartupGlobalKeyCommand.start_or_side_change"
+        "Editor.StartupGlobalKeyCommand.start_or_side_change",
+        "Editor.StartupGlobalKeyCommand.only_side_change"
       };
     }
   }
@@ -279,7 +282,6 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
         return false;
       }
     }
-
     hasEverApplied = true;     // This one will be false again next time anything calls GameState.setup(true)
     hasAppliedThisGame = true; // This one will be remembered as part of the game state (i.e. even after loading a game)
     apply();
@@ -291,7 +293,7 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
    * @return true if command was applied
    */
   public boolean applyPlayerChange() {
-    if (!APPLY_START_GAME_OR_SIDE_CHANGE.equals(whenToApply)) {
+    if (!APPLY_START_GAME_OR_SIDE_CHANGE.equals(whenToApply) && !APPLY_SIDE_CHANGE.equals(whenToApply)) {
       return false;
     }
     hasEverApplied     = true;
