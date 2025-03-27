@@ -303,7 +303,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   private boolean anyMouseoverDrawn = false;
 
   public static String getClickMap() {
-   return clickMap; }
+    return clickMap; }
 
   public static String getClickZone() {
     return clickZone; }
