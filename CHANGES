@@ -1,5 +1,6 @@
 3.7.16 - ???
 
+* 13650: Set the Mac bundle to prefer arm64
 * 13880: Spanish translation update.
 *  9012: Global Option to allow module developer to set the minimum JVM 
     heap size when using the module.
