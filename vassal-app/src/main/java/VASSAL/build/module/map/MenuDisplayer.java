@@ -71,7 +71,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
    * Return a {@link PieceFinder} instance that will select a
    * {@link GamePiece} whose menu will be displayed when the
    * user clicks on the map
-   * @return
+   * @return Position of Piece or null (not found)
    */
   protected PieceFinder createTargetSelector() {
     return new PieceFinder.PieceInStack() {
@@ -128,10 +128,10 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
 
   /**
    *
-   * @param target
+   * @param target Piece for which Menu is to be displayed
    * @param global If true, then apply the KeyCommands globally,
    * i.e. to all selected pieces
-   * @return
+   * @return Menu
    */
   public static JPopupMenu createPopup(GamePiece target, boolean global) {
     final JPopupMenu popup = new JPopupMenu();
@@ -173,7 +173,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
             final Action action = command.getAction();
             if (action != null) {
               final String commandName =
-                (String) command.getAction().getValue(Action.NAME);
+                      (String) command.getAction().getValue(Action.NAME);
               if (commandName == null ||
                       commandName.length() < keyCommand.getName().length()) {
                 item = makeMenuItem(keyCommand);
@@ -189,21 +189,21 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
         }
         if (keyCommand.getName() != null &&
                 !keyCommand.getName().isEmpty() &&
-            item != null) {
+                item != null) {
           final List<JMenuItem> l = commandNames.computeIfAbsent(keyCommand.getName(), k -> new ArrayList<>());
           l.add(item);
         }
       }
 
-      // Move commands from main menu into submenus
+// Move commands from main menu into submenus
       for (final java.util.Map.Entry<KeyCommandSubMenu, JMenu> e :
-                                                        subMenus.entrySet()) {
+              subMenus.entrySet()) {
         final KeyCommandSubMenu menuCommand = e.getKey();
         final JMenu subMenu = e.getValue();
 
         for (final Iterator<String> it2 = menuCommand.getCommands(); it2.hasNext();) {
           final List<JMenuItem> matchingCommands =
-            commandNames.get(it2.next());
+                  commandNames.get(it2.next());
           if (matchingCommands != null) {
             for (final JMenuItem item : matchingCommands) {
               subMenu.add(item);
@@ -211,24 +211,20 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
             }
           }
         }
-      }
 
-      // Promote contents of a single submenu [Removed as per Bug 4775]
-      // if (commands.size() == 1) {
-      //   if (commands.get(0) instanceof JMenu) {
-      //     JMenu submenu = (JMenu) commands.get(0);
-      //     commands.remove(submenu);
-      //     for (int i = 0; i < submenu.getItemCount(); i++) {
-      //       commands.add(submenu.getItem(i));
-      //     }
-      //   }
-      // }
+        // After populating the submenu, check if it's empty (any and all items hidden)
+        // Allow disabled items because this may be conveying intentional information.
+        if (subMenu.getItemCount() == 0) {
+          subMenu.setEnabled(false);
+          subMenu.setVisible(true); // Without this, the disabled item is not visible
+        }
+      }
 
       for (final JMenuItem item : commands) {
         final String text = item.getText();
         if (MenuSeparator.SEPARATOR_NAME.equals(text)) {
           popup.addSeparator();
-        } 
+        }
         else if (text != null && !text.isBlank()) {
           popup.add(item);
         }
@@ -268,12 +264,6 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
       }
       if (map.getKeyBufferer().isLasso()) { // If we dragged a selection box
         return;
-      }
-
-      // FIXME: workaround for https://github.com/vassalengine/vassal/issues/12033
-      // Undo sometimes corrupts a pieces Map.
-      if (!map.equals(p.getMap())) {
-        p.setMap(map);
       }
 
       final Point epos = e.getPoint();
