@@ -266,6 +266,12 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
         return;
       }
 
+      // FIXME: workaround for https://github.com/vassalengine/vassal/issues/12033
+      // Undo sometimes corrupts a pieces Map.
+      if (!map.equals(p.getMap())) {
+        p.setMap(map);
+      }
+
       final Point epos = e.getPoint();
       final Point rel = map.positionOf(p);
       epos.translate(-rel.x, -rel.y);
