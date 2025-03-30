@@ -5,13 +5,20 @@
 
 3.7.16 - ???
 
+* 13650: Set the Mac bundle to prefer arm64
+
+* 13880: Spanish translation update
+* 13882: Reset map on a piece that has lost its map during undo
 * 13871: Show layers in hidden pieces to owner correctly
 * 13865: Fix a bad reference manual link for GKCs
+* 13863: Add Property ModuleGameFileName holding last opened game file name
+* 13862: Don't crash if client disconnects just before trying to send a message
 * 13853: Upgraded maven-clean-plugin to 3.4.1
 * 13849: Upgraded spotbugs-maven-plugin to 4.9.1.0
 * 13845: Sleep() improvements - Remove artifacts on Macs amd improve
     performance when Sleep(0) used to refresh UI
 * 13833: Do not subject 'Load Continuation' to online restrictions
+* 13830: Suppress exceptions when establishing an MP3 audio stream
 * 13841: Upgraded byte-buddy to 1.17.1
 * 13834: Upgraded spotbugs-annotations to 4.9.1
 * 13814: Upgraded httpclient5 to 5.4.2
@@ -33,8 +40,10 @@
 * 13601: Handle Exceptions cleanly in Module Search
 * 12480: Prevent pieces from dropping through to window beneath
 * 11559: MacOS: Editor's shortcut for deleting components modified to
-   Command+Delete on Mac, to prevent inadvertent use when a FileDialog
-   is showing
+    Command+Delete on Mac, to prevent inadvertent use when a FileDialog
+    is showing
+*  9012: Added Global Option to allow module developer to set the minimum JVM
+    heap size when using the module
 
 3.7.15 - 7 November 2024
 
