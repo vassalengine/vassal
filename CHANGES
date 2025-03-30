@@ -5,14 +5,17 @@
 
 3.7.16 - ???
 
-* 13650: Set the Mac bundle to prefer arm64
-
+* 13902: Upgraded logback-classic to 1.5.18
+* 13896: Upgraded junit-bom to 5.12.1
+* 13888: Upgraded checkstyle to 10.21.3
 * 13880: Spanish translation update
 * 13882: Reset map on a piece that has lost its map during undo
 * 13871: Show layers in hidden pieces to owner correctly
+* 13868: Upgraded slf4j-app to 2.0.17
 * 13865: Fix a bad reference manual link for GKCs
 * 13863: Add Property ModuleGameFileName holding last opened game file name
 * 13862: Don't crash if client disconnects just before trying to send a message
+* 13859; Upgraded maven-compiler-plugin to 3.14.0
 * 13853: Upgraded maven-clean-plugin to 3.4.1
 * 13849: Upgraded spotbugs-maven-plugin to 4.9.1.0
 * 13845: Sleep() improvements - Remove artifacts on Macs amd improve
@@ -22,11 +25,9 @@
 * 13841: Upgraded byte-buddy to 1.17.1
 * 13834: Upgraded spotbugs-annotations to 4.9.1
 * 13814: Upgraded httpclient5 to 5.4.2
-* 13798: Upgraded checkstyle to 10.21.2
 * 13797: Upgraded commons-codec to 1.18.0
 * 13791: Prevent Checkbox Scenario Option switch description side option
     being forced on
-* 13771: Upgraded logback-classic to 1.5.16
 * 13769: Upgraded juint-bom to 5.11.4
 * 13740: Upgraded maven-javadoc-plugin to 3.11.2
 * 13737: Add Beanshell performance health warning to Text Label trait docs
@@ -36,6 +37,7 @@
 * 13712: Upgraded license-maven-plugin to 2.5.0
 * 13705: Upgraded commons-io to 2.18.0
 * 13693: Upgraded asciidoctor-maven-plugin to 3.1.1
+* 13650: Set the Mac bundle to prefer arm64
 * 13635: Improve fit of 'Fit to Height' zoom option on Macs
 * 13601: Handle Exceptions cleanly in Module Search
 * 12480: Prevent pieces from dropping through to window beneath
