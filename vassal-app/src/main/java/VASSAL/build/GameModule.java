@@ -223,8 +223,6 @@ public class GameModule extends AbstractConfigurable
   public static final String DRAWING_MOUSEOVER_PROPERTY = "DrawingMouseover"; //NON-NLS
   public static final String DRAWING_MOUSEOVER_INDEX_PROPERTY = "DrawingMouseoverIndex"; //NON-NLS
 
-  private static final String GAME_FILENAME_PROPERTY = "ModuleGameFileName"; //NON-NLS
-
   public static final String IS_VISIBLE = "_isVisible"; //NON-NLS
 
   public static final String UI_PIECE_COUNT = "UiPieceCount";
