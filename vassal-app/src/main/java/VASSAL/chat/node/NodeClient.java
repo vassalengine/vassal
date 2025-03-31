@@ -278,7 +278,7 @@ public class NodeClient implements LockableChatServerConnection,
     if (!isDefaultRoom(room)) {
       if (room instanceof NodeRoom) {
         final String owner = ((NodeRoom) room).getOwner();
-          return owner != null && owner.equals(getUserInfo().getId());
+        return owner != null && owner.equals(getUserInfo().getId());
       }
     }
     return true;
@@ -286,7 +286,7 @@ public class NodeClient implements LockableChatServerConnection,
 
   @Override
   public void sendToOthers(Command c) {
-     sendToOthers(encoder.encode(c));
+    sendToOthers(encoder.encode(c));
   }
 
   public void sendToAll(String msg) {
@@ -346,7 +346,7 @@ public class NodeClient implements LockableChatServerConnection,
           if (((NodeRoom) room).contains(kickee)) {
             final String owner = ((NodeRoom) room).getOwner();
             // Do I own this room and the target is not me?
-              return owner != null && owner.equals(getUserInfo().getId())
+            return owner != null && owner.equals(getUserInfo().getId())
                       && !owner.equals(kickee.getId());
           }
         }
@@ -364,7 +364,7 @@ public class NodeClient implements LockableChatServerConnection,
         if (!((NodeRoom) room).contains(invitee)) {
           final String owner = ((NodeRoom) room).getOwner();
           // Do I own this room and the target is not me?
-            return owner != null && owner.equals(getUserInfo().getId())
+          return owner != null && owner.equals(getUserInfo().getId())
                     && !owner.equals(invitee.getId());
         }
       }
