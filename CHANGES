@@ -32,6 +32,7 @@
 * 13712: Upgraded license-maven-plugin to 2.5.0
 * 13705: Upgraded commons-io to 2.18.0
 * 13693: Upgraded asciidoctor-maven-plugin to 3.1.1
+* 13687: Prevent build failing if branch name contains slashes
 * 13650: Set the Mac bundle to prefer arm64
 * 13635: Improve fit of 'Fit to Height' zoom option on Macs
 * 13601: Handle Exceptions cleanly in Module Search
