@@ -57,7 +57,8 @@ MAVEN_VERSION:=$(VNUM)-SNAPSHOT
 
 JARNAME:=vassal-app-$(MAVEN_VERSION)
 
-GITBRANCH:=$(shell git rev-parse --abbrev-ref HEAD)
+#Slashes are substituted so as not to create subdirectories
+GITBRANCH := $(subst /,_,$(shell git rev-parse --abbrev-ref HEAD))
 GITCOMMIT:=$(shell git rev-parse --short HEAD)
 
 ifeq ($(shell git describe --tags), $(MAVEN_VERSION))
