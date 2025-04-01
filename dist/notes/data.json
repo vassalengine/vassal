@@ -37,6 +37,7 @@
         { "num": 13888, "desc": "Upgraded checkstyle to 10.21.3" },
         { "num": 13880, "desc": "Spanish translation update" },
         { "num": 13868, "desc": "Upgraded slf4j-api to 2.0.17" },
+        { "num": 13867, "desc": "Prevent build failing if branch name contains slashes" },
         { "num": 13865, "desc": "Fix a bad reference manual link for GKCs" },
         { "num": 13859, "desc": "Upgraded maven-compiler-plugin to 3.14.0" },
         { "num": 13853, "desc": "Upgraded maven-clean-plugin to 3.4.1" },
