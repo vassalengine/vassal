@@ -240,7 +240,7 @@ public class NodeClient implements LockableChatServerConnection,
 
   public void send(String command) {
     synchronized (this) {
-      // avoid https://github.com/vassalengine/vassal/issues/13666
+      // avoid https://github.com/vassalengine/vassal/issues/13666 (another thread presumed to have closed the connection)
       if (sender != null) sender.writeLine(command);
     }
   }
