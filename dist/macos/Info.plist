@@ -49,6 +49,5 @@ com/DTDs/PropertyList-1.0.dtd">
     <string>arm64</string>
     <string>x86_64</string>
   </array>
-  <true/>
 </dict>
 </plist>
