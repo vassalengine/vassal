@@ -27,13 +27,8 @@ import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OwningOpMultiResolutionImage;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import java.awt.Component;
-import java.awt.Dimension;
+import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 
 public class IconConfigurer extends Configurer {
@@ -109,6 +104,12 @@ public class IconConfigurer extends Configurer {
       }
     }
     return controls;
+  }
+
+  public void setToolTipText(String toolTipText) {
+    if (holdingPanel != null) {
+      holdingPanel.setToolTipText(toolTipText);
+    }
   }
 
   private static final int MAX_ICON_DISPLAY_SIZE = 128;
