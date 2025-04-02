@@ -1,8 +1,12 @@
 3.7.16 - ???
 
+* 13954: Upgraded checkstyle to 10.21.4
+* 13937: Upgraded maven-deploy-plugin to 3.1.4
+* 13935: Upgraded httpclient5 to 5.4.3
+* 13934: Upgraded maven-install-plugin to 3.1.4
+* 13933: Upgraded asciidoctor-maven-plugin to 3.2.0
 * 13902: Upgraded logback-classic to 1.5.18
 * 13896: Upgraded junit-bom to 5.12.1
-* 13888: Upgraded checkstyle to 10.21.3
 * 13880: Spanish translation update
 * 13882: Reset map on a piece that has lost its map during undo
 * 13871: Show layers in hidden pieces to owner correctly
@@ -19,7 +23,6 @@
 * 13830: Suppress exceptions when establishing an MP3 audio stream
 * 13841: Upgraded byte-buddy to 1.17.1
 * 13834: Upgraded spotbugs-annotations to 4.9.1
-* 13814: Upgraded httpclient5 to 5.4.2
 * 13797: Upgraded commons-codec to 1.18.0
 * 13791: Prevent Checkbox Scenario Option switch description side option
     being forced on
@@ -31,7 +34,6 @@
 * 13719: Place Marker no longer ignores Offsets for stackable pieces
 * 13712: Upgraded license-maven-plugin to 2.5.0
 * 13705: Upgraded commons-io to 2.18.0
-* 13693: Upgraded asciidoctor-maven-plugin to 3.1.1
 * 13687: Prevent build failing if branch name contains slashes
 * 13650: Set the Mac bundle to prefer arm64
 * 13635: Improve fit of 'Fit to Height' zoom option on Macs

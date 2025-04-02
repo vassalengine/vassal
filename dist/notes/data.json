@@ -32,9 +32,13 @@
         { "num": 12480, "desc": "Prevent pieces from dropping through to window beneath" }
       ],
       "other_improvements": [
+        { "num": 13954, "desc": "Upgraded checkstyle to 10.21.4" },
+        { "num": 13937, "desc": "Upgraded maven-deploy-plugin to 3.1.4" },
+        { "num": 13935, "desc": "Upgraded httpclient5 to 5.4.3" },
+        { "num": 13934, "desc": "Upgraded maven-install-plugin to 3.1.4" },
+        { "num": 13933, "desc": "Upgraded asciidoctor-maven-plugin to 3.2.0" },
         { "num": 13902, "desc": "Upgraded logback-classic to 1.5.18" },
         { "num": 13896, "desc": "Upgraded junit-bom to 5.12.1" },
-        { "num": 13888, "desc": "Upgraded checkstyle to 10.21.3" },
         { "num": 13880, "desc": "Spanish translation update" },
         { "num": 13868, "desc": "Upgraded slf4j-api to 2.0.17" },
         { "num": 13867, "desc": "Prevent build failing if branch name contains slashes" },
@@ -46,7 +50,6 @@
         { "num": 13833, "desc": "Do not subject 'Load Continuation' to online restrictions" },
         { "num": 13841, "desc": "Upgraded byte-buddy to 1.17.1" },
         { "num": 13834, "desc": "Upgraded spotbugs-annotations to 4.9.1" },
-        { "num": 13814, "desc": "Upgraded httpclient5 5.4.2" },
         { "num": 13797, "desc": "Upgraded commons-codec to 1.18.0" },
         { "num": 13791, "desc": "Prevent Checkbox Scenario Option switch description side option being forced on" },
         { "num": 13769, "desc": "Upgraded juint-bom to 5.11.4" },
@@ -57,7 +60,6 @@
         { "num": 13719, "desc": "Place Marker no longer ignores Offsets for stackable pieces" },
         { "num": 13712, "desc": "Upgraded license-maven-plugin to 2.5.0" },
         { "num": 13705, "desc": "Upgraded commons-io to 2.18.0" },
-        { "num": 13693, "desc": "Upgraded asciidoctor-maven-plugin to 3.1.1" },
         { "num": 13650, "desc": "Set the Mac bundle to prefer arm64" },
         { "num": 13635, "desc": "Improve fit of 'Fit to Height' zoom option on Macs" },
         { "num": 11559, "desc": "MacOS: Editor's shortcut for deleting components modified to Command+Delete on Mac, to prevent inadvertent use when a FileDialog is showing" }
