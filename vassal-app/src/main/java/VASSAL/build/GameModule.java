@@ -233,7 +233,6 @@ public class GameModule extends AbstractConfigurable
   private static final char COMMAND_SEPARATOR = KeyEvent.VK_ESCAPE;
 
   public static final String RECENT_GAMES = "RecentGames"; //NON-NLS
-  private static final String GAME_FILENAME_PROPERTY = "ModuleGameFileName"; //NON-NLS
 
   private final List<MenuItemProxy> openRecentItems = new ArrayList<>();
 
