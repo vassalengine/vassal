@@ -20,16 +20,16 @@ package VASSAL.configure;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
+import VASSAL.configure.button.ToolTipConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.script.expression.FormattedStringExpression;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ReflectionUtils;
 import VASSAL.tools.swing.SwingUtils;
+import net.miginfocom.swing.MigLayout;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Image;
-import java.awt.Window;
+import javax.swing.*;
+import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -37,14 +37,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.Icon;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
-
-import net.miginfocom.swing.MigLayout;
 
 /**
  * A Configurer for configuring Configurable components
@@ -108,6 +100,7 @@ public class AutoConfigurer extends Configurer
         final JLabel label = new JLabel(prompt[i]);
         label.setLabelFor(config.getControls());
         labels.put(name[i], label);
+        ToolTipConfigurer.addToolTipToButtonIcon(prompt[i], config);
         p.add(label);
         p.add(config.getControls(), "wrap,grow"); // NON-NLS
         configurers.add(config);
