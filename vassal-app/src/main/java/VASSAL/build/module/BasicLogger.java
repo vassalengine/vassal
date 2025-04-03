@@ -673,7 +673,9 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      beginOutput();
+      if (isEnabled()) {
+        beginOutput();
+      }
     }
   };
 
