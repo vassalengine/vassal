@@ -326,20 +326,21 @@ public class DiceButton extends AbstractToolbarItem {
     int currentResult = -1;
     int count = 0;
 
-      for (int result : keepDice) {
-          if (result == currentResult) {
-              count++;
-          } else {
-              if (currentResult != -1) {
-                  if (summaryVal.length() > 0) {
-                      summaryVal.append(", ");
-                  }
-                  summaryVal.append(currentResult).append(" x").append(count);
-              }
-              currentResult = result;
-              count = 1;
-          }
+    for (int result : keepDice) {
+      if (result == currentResult) {
+        count++;
       }
+      else {
+        if (currentResult != -1) {
+          if (summaryVal.length() > 0) {
+            summaryVal.append(", ");
+          }
+          summaryVal.append(currentResult).append(" x").append(count);
+        }
+        currentResult = result;
+        count = 1;
+      }
+    }
 
     // Add the last result
     if (currentResult != -1) {

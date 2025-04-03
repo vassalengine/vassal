@@ -127,7 +127,8 @@ public class RandomTextButton extends DiceButton {
       if (isNumeric) {
         try {
           faceValue = String.valueOf(Integer.parseInt(faceValue) + plus);
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
           ErrorDialog.dataWarning(new BadDataReport(
                   Resources.getString("Dice.random_text_non_numeric", name),
                   faceValue));
