@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
@@ -39,12 +41,10 @@ import VASSAL.tools.ErrorDialog;
 
 /**
  * @author Michael Blumoehr
- *
  * This component places a button into the controls window toolbar.
  * Pressing the button generates random numbers or strings and displays the
  * result in the Chatter
  */
-// TODO Expose result as a property
 public class RandomTextButton extends DiceButton {
   protected String[] m_faces;               // array with dice faces
   protected boolean isNumeric;
@@ -62,7 +62,7 @@ public class RandomTextButton extends DiceButton {
         final AutoConfigurer ac = (AutoConfigurer) getConfigurer();
         final ConfigurerWindow w = new ConfigurerWindow(ac, true);
         final List<String> hideAttributes =
-          Arrays.asList(NAME, BUTTON_TEXT, TOOLTIP, ICON, HOTKEY, PROMPT_ALWAYS, REPORT_FORMAT, REPORT_TOTAL, FACES, NUMERIC);
+                Arrays.asList(NAME, BUTTON_TEXT, TOOLTIP, ICON, HOTKEY, PROMPT_ALWAYS, REPORT_FORMAT, REPORT_TOTAL, FACES, NUMERIC);
 
         for (final String attr : hideAttributes) {
           ac.getConfigurer(attr).getControls().setVisible(false);
@@ -100,65 +100,89 @@ public class RandomTextButton extends DiceButton {
    * prefix+[comma-separated roll list]+suffix */
   @Override
   protected void DR() {
-
     rawRolls = new int[nDice];
     rawCounts = new int[nSides];
     counts = new int[nSides];
 
     final StringBuilder result = new StringBuilder();
+    final StringBuilder summaryResult = new StringBuilder();
     int total = addToTotal;
-    for (int i = 0; i < nDice; ++i) {
-      int roll = ran.nextInt(nSides) + 1;
 
+    final Map<String, Integer> resultCounts = new HashMap<>();
+    final String[] results = new String[nDice]; // Array to store results
+
+    // Generate all rolls
+    for (int i = 0; i < nDice; ++i) {
+      final int roll = ran.nextInt(nSides) + 1;
       rawRolls[i] = roll;
       rawCounts[roll - 1] += 1;
       counts[roll - 1] += 1;
 
-      // take the face value from user defined faces
+      // Get face value
+      String faceValue = (m_faces != null && roll <= m_faces.length)
+              ? m_faces[roll - 1]
+              : "0";
+
+      // Apply plus modifier if numeric
       if (isNumeric) {
         try {
-          if (roll <= m_faces.length) {
-            roll = Integer.parseInt(m_faces[roll - 1]) + plus;
-          }
-          else {
-            ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Dice.random_text_too_few_faces", name), String.valueOf(roll)));
-            roll = plus;
-          }
+          faceValue = String.valueOf(Integer.parseInt(faceValue) + plus);
         }
-        catch (NumberFormatException ex) {
-          ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Dice.random_text_non_numeric", name), m_faces[roll - 1]));
-          roll = 1;
+        catch (NumberFormatException e) {
+          ErrorDialog.dataWarning(new BadDataReport(
+                  Resources.getString("Dice.random_text_non_numeric", name),
+                  faceValue));
+          faceValue = "0";
         }
       }
 
-      // no totals if text output
+      results[i] = faceValue;
+      resultCounts.merge(faceValue, 1, Integer::sum);
+
       if (reportTotal && isNumeric) {
-        total += roll;
-      }
-      else {
-        if (!isNumeric)
-          if (m_faces != null && roll <= m_faces.length) {
-            result.append(m_faces[roll - 1]);
-          }
-          else {
-            ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Dice.random_text_too_few_faces", name), String.valueOf(roll)));
-            result.append('0');
-          }
-        else
-          result.append(roll);
-        if (i < nDice - 1)
-          result.append(',');
+        total += Integer.parseInt(faceValue);
       }
     }
 
-    // totals only if no text output
-    if (reportTotal && isNumeric)
-      result.append(total);
+    // Sort if requested (works for both numbers and text)
+    if (sortDice) {
+      Arrays.sort(results);
+    }
 
-    final String report = formatResult(result.toString());
-    final Command c = report.length() == 0 ? new NullCommand() : new Chatter.DisplayText(GameModule.getGameModule().getChatter(), report);
+    // Build result string
+    if (!reportTotal || !isNumeric) {
+      for (int i = 0; i < results.length; i++) {
+        if (i > 0) result.append(',');
+        result.append(results[i]);
+      }
+    }
+
+    // Build sorted summary
+    final String[] summaryKeys = resultCounts.keySet().toArray(new String[0]);
+    if (sortDice) {
+      Arrays.sort(summaryKeys);
+    }
+
+    for (int i = 0; i < summaryKeys.length; i++) {
+      if (i > 0) summaryResult.append(", ");
+      summaryResult.append(summaryKeys[i])
+              .append(" x")
+              .append(resultCounts.get(summaryKeys[i]));
+    }
+
+    if (reportTotal && isNumeric) {
+      result.append(total);
+    }
+
+    // Send results
+    final String report = formatResult(result.toString(), summaryResult.toString());
+    final Command c = report.isEmpty()
+            ? new NullCommand()
+            : new Chatter.DisplayText(GameModule.getGameModule().getChatter(), report);
     c.execute();
-    c.append(property.setPropertyValue(result.toString()));
+    c.append(property.setPropertyValue(result.toString()))
+            .append(totalProp.setPropertyValue(String.valueOf(total)))
+            .append(summaryProp.setPropertyValue(summaryResult.toString()));
     GameModule.getGameModule().sendAndLog(c);
   }
 
@@ -172,20 +196,10 @@ public class RandomTextButton extends DiceButton {
     }
   }
 
-
-  /**
-   * The additional Attributes of a RandomTextButton are:
-   *
-   * <code>FACES</code> Text of the dice faces
-   *                    must be integer if USE_FACES=NUMERIC
-
-   * <code>NUMERIC</code>   If true, then face text must be an integer,
-   *  and reportTotal is enabled
-   */
   @Override
   public String[] getAttributeNames() {
     final List<String> l =
-      new ArrayList<>(Arrays.asList(super.getAttributeNames()));
+            new ArrayList<>(Arrays.asList(super.getAttributeNames()));
     l.remove(N_SIDES);
     l.add(FACES);
     l.add(NUMERIC);
@@ -195,9 +209,9 @@ public class RandomTextButton extends DiceButton {
   @Override
   public String[] getAttributeDescriptions() {
     final List<String> l =
-      new ArrayList<>(Arrays.asList(super.getAttributeDescriptions()));
+            new ArrayList<>(Arrays.asList(super.getAttributeDescriptions()));
     final List<String> names =
-      new ArrayList<>(Arrays.asList(super.getAttributeNames()));
+            new ArrayList<>(Arrays.asList(super.getAttributeNames()));
     l.remove(names.indexOf(N_SIDES));
     l.add(Resources.getString("Editor.RandomTextButton.faces")); //$NON-NLS-1$
     l.add(Resources.getString("Editor.RandomTextButton.faces_numeric")); //$NON-NLS-1$
@@ -207,9 +221,9 @@ public class RandomTextButton extends DiceButton {
   @Override
   public Class<?>[] getAttributeTypes() {
     final List<Class<?>> l =
-      new ArrayList<>(Arrays.asList(super.getAttributeTypes()));
+            new ArrayList<>(Arrays.asList(super.getAttributeTypes()));
     final List<String> names =
-      new ArrayList<>(Arrays.asList(super.getAttributeNames()));
+            new ArrayList<>(Arrays.asList(super.getAttributeNames()));
     l.remove(names.indexOf(N_SIDES));
     l.add(String[].class);
     l.add(Boolean.class);
