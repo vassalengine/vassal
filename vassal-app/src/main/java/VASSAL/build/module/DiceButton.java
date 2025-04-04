@@ -13,7 +13,7 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, copies are available
- * at http://www.opensource.org/licenses/lgpl.html
+ * at http://www.opensource.org.
  */
 package VASSAL.build.module;
 
@@ -62,7 +62,7 @@ public class DiceButton extends AbstractToolbarItem {
   protected boolean reportTotal = false;
   protected boolean promptAlways = false;
   protected boolean sortDice = false;
-  protected final FormattedString reportFormat = new FormattedString("** $" + REPORT_NAME + "$ = $" + RESULT + "$ *** <$" + GlobalOptions.PLAYER_NAME + "$>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+  protected final FormattedString reportFormat = new FormattedString("** $" + REPORT_NAME + "$ = $" + RESULT + "$ *** &lt;$" + GlobalOptions.PLAYER_NAME + "$&gt;"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
   /** Locking of options for roll prompts */
   protected boolean lockSides = false;
@@ -408,6 +408,12 @@ public class DiceButton extends AbstractToolbarItem {
       report = text.startsWith("*") ? "*" + text : "* " + text; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
     return report;
+  }
+
+  // Backward compatibility
+  @Deprecated
+  protected String formatResult(String result) {
+    return formatResult(result, ""); // Forward to new version
   }
 
   @Override
