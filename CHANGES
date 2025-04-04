@@ -1,5 +1,10 @@
 3.7.16 - ???
 
+* 13962: Upgraded maven-surefire-plugin to 3.5.3
+* 13961: Upgraded jsoup to 1.19.1
+* 13960: Upgraded spotbugs-annotations to 4.9.3
+* 13959: Upgraded asm to 9.8
+* 13958: Upgraded byte-buddy to 1.17.5
 * 13957: Add dice & random text button summary output property
 * 13954: Upgraded checkstyle to 10.21.4
 * 13937: Upgraded maven-deploy-plugin to 3.1.4
@@ -22,8 +27,6 @@
     performance when Sleep(0) used to refresh UI
 * 13833: Do not subject 'Load Continuation' to online restrictions
 * 13830: Suppress exceptions when establishing an MP3 audio stream
-* 13841: Upgraded byte-buddy to 1.17.1
-* 13834: Upgraded spotbugs-annotations to 4.9.1
 * 13797: Upgraded commons-codec to 1.18.0
 * 13791: Prevent Checkbox Scenario Option switch description side option
     being forced on
@@ -31,7 +34,6 @@
 * 13740: Upgraded maven-javadoc-plugin to 3.11.2
 * 13737: Add Beanshell performance health warning to Text Label trait docs
 * 13731: Bring Reference Manual section on Extensions up to date
-* 13727: Upgraded jsoup to 1.18.3
 * 13719: Place Marker no longer ignores Offsets for stackable pieces
 * 13712: Upgraded license-maven-plugin to 2.5.0
 * 13705: Upgraded commons-io to 2.18.0
