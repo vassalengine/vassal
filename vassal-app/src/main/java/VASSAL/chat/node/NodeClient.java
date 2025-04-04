@@ -240,7 +240,8 @@ public class NodeClient implements LockableChatServerConnection,
 
   public void send(String command) {
     synchronized (this) {
-      sender.writeLine(command);
+      // avoid https://github.com/vassalengine/vassal/issues/13666 (another thread presumed to have closed the connection)
+      if (sender != null) sender.writeLine(command);
     }
   }
 
@@ -277,9 +278,7 @@ public class NodeClient implements LockableChatServerConnection,
     if (!isDefaultRoom(room)) {
       if (room instanceof NodeRoom) {
         final String owner = ((NodeRoom) room).getOwner();
-        if (owner == null || !owner.equals(getUserInfo().getId())) {
-          return false;
-        }
+        return owner != null && owner.equals(getUserInfo().getId());
       }
     }
     return true;
@@ -287,14 +286,7 @@ public class NodeClient implements LockableChatServerConnection,
 
   @Override
   public void sendToOthers(Command c) {
-    if (sender == null) {
-      // tolerate https://github.com/vassalengine/vassal/issues/13666
-      propSupport.firePropertyChange(STATUS, null, Resources.getString(
-              "Chat.disconnected")); //$NON-NLS-1$
-    }
-    else {
-      sendToOthers(encoder.encode(c));
-    }
+    sendToOthers(encoder.encode(c));
   }
 
   public void sendToAll(String msg) {
@@ -354,10 +346,8 @@ public class NodeClient implements LockableChatServerConnection,
           if (((NodeRoom) room).contains(kickee)) {
             final String owner = ((NodeRoom) room).getOwner();
             // Do I own this room and the target is not me?
-            if (owner != null && owner.equals(getUserInfo().getId())
-                && !owner.equals(kickee.getId())) {
-              return true;
-            }
+            return owner != null && owner.equals(getUserInfo().getId())
+                      && !owner.equals(kickee.getId());
           }
         }
       }
@@ -374,10 +364,8 @@ public class NodeClient implements LockableChatServerConnection,
         if (!((NodeRoom) room).contains(invitee)) {
           final String owner = ((NodeRoom) room).getOwner();
           // Do I own this room and the target is not me?
-          if (owner != null && owner.equals(getUserInfo().getId())
-              && !owner.equals(invitee.getId())) {
-            return true;
-          }
+          return owner != null && owner.equals(getUserInfo().getId())
+                    && !owner.equals(invitee.getId());
         }
       }
     }
@@ -554,7 +542,7 @@ public class NodeClient implements LockableChatServerConnection,
     else if ((p = Protocol.decodeRoomsInfo(msg)) != null) {
       for (final NodeRoom aRoom : allRooms) {
         final String infoString = p.getProperty(aRoom.getName());
-        if (infoString != null && infoString.length() > 0) {
+        if (infoString != null && !infoString.isEmpty()) {
           try {
             final Properties info = new PropertiesEncoder(infoString).getProperties();
             aRoom.setInfo(info);
@@ -771,8 +759,8 @@ public class NodeClient implements LockableChatServerConnection,
 
   /**
    * Clean off an ' (Editing)' suffix added to the module version number
-   * @param version
-   * @return
+   * @param version raw string
+   * @return clean version string
    */
   public static String cleanVersion(String version) {
     final String editingString = " " + Resources.getString("Editor.NodeClient.editing");
