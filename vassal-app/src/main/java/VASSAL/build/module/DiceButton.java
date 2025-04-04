@@ -326,7 +326,7 @@ public class DiceButton extends AbstractToolbarItem {
     int currentResult = -1;
     int count = 0;
 
-    for (final int result : keepDice) {
+    for (int result : keepDice) {
       if (result == currentResult) {
         count++;
       }

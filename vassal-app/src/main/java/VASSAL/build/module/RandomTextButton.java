@@ -113,7 +113,7 @@ public class RandomTextButton extends DiceButton {
 
     // Generate all rolls
     for (int i = 0; i < nDice; ++i) {
-      final int roll = ran.nextInt(nSides) + 1;
+      int roll = ran.nextInt(nSides) + 1;
       rawRolls[i] = roll;
       rawCounts[roll - 1] += 1;
       counts[roll - 1] += 1;
@@ -158,7 +158,7 @@ public class RandomTextButton extends DiceButton {
     }
 
     // Build sorted summary
-    final String[] summaryKeys = resultCounts.keySet().toArray(new String[0]);
+    String[] summaryKeys = resultCounts.keySet().toArray(new String[0]);
     if (sortDice) {
       Arrays.sort(summaryKeys);
     }
