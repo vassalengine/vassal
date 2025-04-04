@@ -19,6 +19,7 @@
       "in": "3.7.16",
       "since": "3.7.15",
       "new_features": [
+        { "num": 13957, "desc": "Add dice & random text button summary output property" },
         { "num": 13863, "desc": "Add Property ModuleGameFileName holding last opened game file name" },
         { "num": 9012, "desc": "Added Global Option to allow module developer to set the minimum JVM heap size when using the module" }
       ],

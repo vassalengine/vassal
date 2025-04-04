@@ -1,5 +1,6 @@
 3.7.16 - ???
 
+* 13957: Add dice & random text button summary output property
 * 13954: Upgraded checkstyle to 10.21.4
 * 13937: Upgraded maven-deploy-plugin to 3.1.4
 * 13935: Upgraded httpclient5 to 5.4.3
