@@ -9,13 +9,13 @@
   <rule ref="category/java/bestpractices.xml/AccessorClassGeneration" />
   <rule ref="category/java/bestpractices.xml/AccessorMethodGeneration" />
   <rule ref="category/java/bestpractices.xml/AvoidMessageDigestField" />
-  <rule ref="category/java/bestpractices.xml/DefaultLabelNotLastInSwitchStmt" />
+  <rule ref="category/java/bestpractices.xml/DefaultLabelNotLastInSwitch" />
 <!--
   <rule ref="category/java/bestpractices.xml/ForLoopCanBeForeach" />
 -->
   <rule ref="category/java/bestpractices.xml/JUnit4SuitesShouldUseSuiteAnnotation" />
-  <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseAfterAnnotation" />
-  <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseBeforeAnnotation" />
+  <rule ref="category/java/bestpractices.xml/UnitTestShouldUseAfterAnnotation" />
+  <rule ref="category/java/bestpractices.xml/UnitTestShouldUseBeforeAnnotation" />
   <rule ref="category/java/bestpractices.xml/JUnitUseExpected" />
   <rule ref="category/java/bestpractices.xml/LooseCoupling" />
 <!--
@@ -138,7 +138,7 @@
 <!--
   <rule ref="category/java/errorprone.xml/MoreThanOneLogger" />
 -->
-  <rule ref="category/java/errorprone.xml/NonCaseLabelInSwitchStatement" />
+  <rule ref="category/java/errorprone.xml/NonCaseLabelInSwitch" />
   <rule ref="category/java/errorprone.xml/NonStaticInitializer" />
 <!--
   <rule ref="category/java/errorprone.xml/OverrideBothEqualsAndHashcode" />
