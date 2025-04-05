@@ -79,6 +79,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.DoubleConsumer;
 
+import static VASSAL.tools.image.LabelUtils.findHtmlStyle;
+import static VASSAL.tools.image.LabelUtils.getPreferredSize;
+
 /**
  * d/b/a "Text Label"
  *
@@ -647,7 +650,31 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       final JLabel l = new JLabel(txt);
       l.setForeground(fg);
       l.setFont(font);
-      l.setSize(l.getPreferredSize());
+
+      // Search for css styling defining any dimensions.
+      int maxWidth = 0;
+      int height = 0;
+      try {
+        String result = findHtmlStyle(txt, "max-width");
+        if (!result.isEmpty()) {
+          maxWidth = Integer.parseUnsignedInt(result);
+        }
+        result = findHtmlStyle(txt, "height");
+        if (!result.isEmpty()) {
+          height = Integer.parseUnsignedInt(result);
+        }
+      }
+      catch (NumberFormatException ex) {
+        maxWidth = 0;
+        height = 0;
+      }
+
+      if (maxWidth > 0 || height > 0) {
+        l.setSize(getPreferredSize(l, maxWidth, height));
+      }
+      else {
+        l.setSize(l.getPreferredSize());
+      }
       return l;
     }
 

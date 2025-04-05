@@ -21,6 +21,7 @@ import VASSAL.tools.QuickColors;
 import VASSAL.tools.swing.SwingUtils;
 
 import javax.swing.JLabel;
+import javax.swing.text.View;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -29,6 +30,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class LabelUtils {
   private LabelUtils() {
@@ -213,12 +216,35 @@ public class LabelUtils {
     // HTML Niceties - Rather than make the user type a bunch of repetitive stuff, by default we wrap these up nicely.
     final String htmlString = (addTags ? "<html>" + (!style.isEmpty() ? "<div class=\"" + style + "\">" : "<div>") + "&nbsp;" : "") + baseString + (addTags ? "&nbsp;</div></html>" : ""); //NON-NLS
 
-    // Chapter 3, in which Winnie the Pooh kidnaps a JLabel and makes it rob banks...
+    // Search for css styling defining any dimensions.
+    int maxWidth = 0;
+    int height = 0;
+    try {
+      String result = findHtmlStyle(htmlString, "max-width");
+      if (!result.isEmpty()) {
+        maxWidth = Integer.parseUnsignedInt(result);
+      }
+      result = findHtmlStyle(htmlString, "height");
+      if (!result.isEmpty()) {
+        height = Integer.parseUnsignedInt(result);
+      }
+    }
+    catch (NumberFormatException ex) {
+      maxWidth = 0;
+      height = 0;
+    }
+
     final JLabel j = new JLabel(allowHTML ? htmlString : " " + baseString + " ");
     j.setForeground(fgColor);
     j.setFont(f);
 
-    final Dimension size = j.getPreferredSize();
+    final Dimension size;
+    if (maxWidth > 0 || height > 0) {
+      size = getPreferredSize(j, maxWidth, height);
+    }
+    else {
+      size = j.getPreferredSize();
+    }
     if (size.width <= 0 || size.height <= 0) {
       // If the label renders to nothing, bail out early.
       return;
@@ -355,6 +381,61 @@ public class LabelUtils {
 
     gTemp2.drawImage(im, textPad + extraBorder, textPad, null);
     g.drawImage(im2, x0, y0, comp);
+    gTemp2.dispose();
+  }
+
+  private static final String HTML_TAG_REGEX = "<[^/]\\w?.*?>";  //$NON-NLS-1$
+
+  /**
+   * A basic html/css style parser using regex.
+   * Search for and extract the value of a css style declaration from the html string.
+   * @param html The HTML string to scan.
+   * @param css The css declaration search string.
+   * @return If the named style is found, returns the associated value. If not found
+   * returns an empty string.
+   */
+  public static String findHtmlStyle(String html, String css) {
+
+    // Regex for html tags.
+    final Pattern htmlTagsPattern = Pattern.compile(HTML_TAG_REGEX, Pattern.CASE_INSENSITIVE);
+    // Regex for a css declaration within a 'style' string.
+    // For a string such as style="max-width:123;" the first capturing group is 123.
+    final Pattern stylePattern = Pattern.compile("style\\s*?=\\s*?\".*?"
+            + css + "\\s*?:\\s*?(\\d+)", Pattern.CASE_INSENSITIVE); //$NON-NLS-1$
+    final Matcher tags = htmlTagsPattern.matcher(html);
+    // Iterate over all the html start tags.
+    while (tags.find()) {
+      final Matcher cssMatcher = stylePattern.matcher(tags.group());
+      if (cssMatcher.find()) {
+        // Found a match, return the value.
+        return cssMatcher.group(1);
+      }
+    }
+    return "";
+  }
+
+  /**
+   * Compute the dimensions of the rectangular area required to fit its contents
+   * given one fixed dimension. Set either width or height to the fixed dimension.
+   * On input the variable dimension is set to zero. If both width and height are
+   * non-zero, width takes precedence and height is computed.
+   * @param resizer The label to size.
+   * @param width Set non-zero to fix the width dimension in units of pixels.
+   * @param height Set non-zero to fix the height dimension in units of pixels.
+   *               If width is non-zero, this parameter is ignored.
+   * @return Returns the dimensions required to fit the supplied text.
+   */
+  public static Dimension getPreferredSize(JLabel resizer, int width, int height) {
+
+    final View view = (View) resizer.getClientProperty(
+            javax.swing.plaf.basic.BasicHTML.propertyKey);
+
+    view.setSize(Math.max(0, width), width > 0 ? 0 : height);
+
+    final float w = view.getPreferredSpan(View.X_AXIS);
+    final float h = view.getPreferredSpan(View.Y_AXIS);
+
+    return new Dimension((int) Math.ceil(w), (int) Math.ceil(h));
   }
 
   public static int labelWidth(Font font, String s) {
