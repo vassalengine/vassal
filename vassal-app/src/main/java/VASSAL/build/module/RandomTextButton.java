@@ -43,7 +43,7 @@ import VASSAL.tools.ErrorDialog;
  * @author Michael Blumoehr
  * This component places a button into the controls window toolbar.
  * Pressing the button generates random numbers or strings and displays the
- * result in the Chatter
+ * result in the Chatter.REbiu
  */
 public class RandomTextButton extends DiceButton {
   protected String[] m_faces;               // array with dice faces
