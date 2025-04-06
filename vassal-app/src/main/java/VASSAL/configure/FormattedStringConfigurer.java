@@ -130,7 +130,8 @@ public class FormattedStringConfigurer
           setValue(newText);
           noUpdate = false;
         }
-      } finally {
+      }
+      finally {
         processingSelection = false;
         dropList.setSelectedIndex(0);
       }
