@@ -14,6 +14,11 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
+/*
+ * FormattedStringConfigurer.
+ * Extended version of StringConfigure that provides a drop down list of options that can
+ * be inserted into the string
+ */
 package VASSAL.configure;
 
 import VASSAL.i18n.Resources;
