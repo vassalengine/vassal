@@ -50,7 +50,10 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 
 /**
  * This component places a button into the controls window toolbar.
@@ -265,7 +268,7 @@ public class DiceButton extends AbstractToolbarItem {
         }
       }
 
-      keepCount += 1;
+      keepCount++;
       keepDice[keepCount - 1] = roll;
       numericTotal += roll;
       counts[rawRoll - 1] += 1;
@@ -320,40 +323,26 @@ public class DiceButton extends AbstractToolbarItem {
       }
     }
 
-    // Build the summary string (result x n, ...)
-    final StringBuilder summaryVal = new StringBuilder();
-    if (!sortDice) Arrays.sort(keepDice); // Sort ALL raw rolls to easily count duplicates (if not already done)
-    int currentResult = -1;
-    int count = 0;
-
+    // === NEW: Simplified summary construction using a Map ===
+    final Map<Integer, Integer> resultCounts = new HashMap<>();
     for (final int result : keepDice) {
-      if (result == currentResult) {
-        count++;
-      }
-      else {
-        if (currentResult != -1) {
-          if (summaryVal.length() > 0) {
-            summaryVal.append(Resources.getString("Dice.summary_separator"));
-          }
-          summaryVal.append(currentResult)
-                  .append(Resources.getString("Dice.summary_times"))
-                  .append(count);
-        }
-        currentResult = result;
-        count = 1;
-      }
+      resultCounts.merge(result, 1, Integer::sum);
     }
 
-    // Add the last result
-    if (currentResult != -1) {
-      if (summaryVal.length() > 0) {
+    final StringBuilder summaryVal = new StringBuilder();
+    final Integer[] sortedKeys = resultCounts.keySet().toArray(new Integer[0]);
+    Arrays.sort(sortedKeys); // Sort keys numerically
+
+    for (int i = 0; i < sortedKeys.length; i++) {
+      if (i > 0) {
         summaryVal.append(Resources.getString("Dice.summary_separator"));
       }
-      summaryVal.append(currentResult)
+      summaryVal.append(sortedKeys[i])
               .append(Resources.getString("Dice.summary_times"))
-              .append(count);
+              .append(resultCounts.get(sortedKeys[i]));
     }
 
+    // Send results
     final String report = formatResult(val.toString(), summaryVal.toString());
     Command c = report.isEmpty() ? new NullCommand() : new Chatter.DisplayText(GameModule.getGameModule().getChatter(), report);
     c.execute();
