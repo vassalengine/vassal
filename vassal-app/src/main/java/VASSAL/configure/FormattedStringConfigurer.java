@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2000-2009 by Rodney Kinney & Brent Easton
  *
  * This library is free software; you can redistribute it and/or
@@ -15,11 +14,6 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-/*
- * FormattedStringConfigurer.
- * Extended version of StringConfigure that provides a drop down list of options that can
- * be inserted into the string
- */
 package VASSAL.configure;
 
 import VASSAL.i18n.Resources;
@@ -32,13 +26,15 @@ import java.awt.event.FocusListener;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.text.JTextComponent;
 
 public class FormattedStringConfigurer
-    extends StringConfigurer
-    implements ActionListener, FocusListener {
+        extends StringConfigurer
+        implements ActionListener, FocusListener {
 
   private final DefaultComboBoxModel<String> optionsModel;
   private JComboBox<String> dropList;
+  private boolean processingSelection = false;
 
   public FormattedStringConfigurer(String key, String name) {
     this(key, name, new String[0]);
@@ -48,10 +44,7 @@ public class FormattedStringConfigurer
     this(null, "", options);
   }
 
-  public FormattedStringConfigurer(
-      String key,
-      String name,
-      String[] options) {
+  public FormattedStringConfigurer(String key, String name, String[] options) {
     super(key, name);
     optionsModel = new DefaultComboBoxModel<>();
     setOptions(options);
@@ -80,14 +73,21 @@ public class FormattedStringConfigurer
       super.getControls();
 
       nameField.addFocusListener(this);
-      dropList = new JComboBox<>(optionsModel);
+
+      dropList = new JComboBox<>(optionsModel) {
+        @Override
+        public void setPopupVisible(boolean visible) {
+          if (!processingSelection) {
+            super.setPopupVisible(visible);
+          }
+        }
+      };
       dropList.setSelectedIndex(0);
       dropList.setEnabled(false);
       dropList.addActionListener(this);
 
       setListVisibility();
       p.add(dropList, "grow 0,right"); // NON-NLS
-
     }
     return p;
   }
@@ -98,58 +98,56 @@ public class FormattedStringConfigurer
     }
   }
 
-  /*
-   * Drop-down list has been clicked, insert selected option onto string
-   */
   @Override
-  public void actionPerformed(ActionEvent arg0) {
-    final String item;
+  public void actionPerformed(ActionEvent e) {
+    if (dropList.isPopupVisible()) {
+      processingSelection = true;
+      try {
+        final int selectedIndex = dropList.getSelectedIndex();
+        if (selectedIndex > 0) {
+          String item = "$" + optionsModel.getElementAt(selectedIndex) + "$";
 
-    final int selectedIndex = dropList.getSelectedIndex();
+          // Get current selection/caret info before any focus changes
+          JTextComponent textComp = nameField;
+          int start = textComp.getSelectionStart();
+          int end = textComp.getSelectionEnd();
+          String text = textComp.getText();
 
-    if (selectedIndex > 0) {
-      item = "$" + optionsModel.getElementAt(selectedIndex) + "$";
-      String work = nameField.getText();
+          // Insert the new text
+          String newText = text.substring(0, start) + item + text.substring(end);
+          textComp.setText(newText);
 
-      int pos = nameField.getCaretPosition();
-      // Cut out any selected text
-      if (nameField.getSelectedText() != null) {
-        final int start = nameField.getSelectionStart();
-        final int end = nameField.getSelectionEnd();
-        work = work.substring(0, start) + work.substring(end);
-        pos = start;
+          // Position caret after inserted text
+          textComp.setCaretPosition(start + item.length());
+
+          // Update value without triggering recursive updates
+          noUpdate = true;
+          setValue(newText);
+          noUpdate = false;
+        }
+      } finally {
+        processingSelection = false;
+        dropList.setSelectedIndex(0);
       }
 
-      final String news = work.substring(0, pos) + item + work.substring(pos);
-      nameField.setText(news);
-      nameField.setCaretPosition(pos + item.length());
-
-      // Update the text field and repaint it
-      noUpdate = true;
-      setValue(nameField.getText());
-      noUpdate = false;
-      nameField.repaint();
+      // Return focus without triggering full selection
+      nameField.requestFocusInWindow();
+      nameField.setCaretPosition(nameField.getCaretPosition());
     }
-    // Send focus back to text field
-    nameField.requestFocusInWindow();
   }
 
-  /*
-   * Focus gained on text field, so enable insert drop-down
-   * and make sure it says 'Insert'
-   */
   @Override
-  public void focusGained(FocusEvent arg0) {
-    dropList.setSelectedIndex(0);
-    dropList.setEnabled(true);
-    dropList.repaint();
+  public void focusGained(FocusEvent e) {
+    if (dropList != null) {
+      dropList.setSelectedIndex(0);
+      dropList.setEnabled(true);
+    }
   }
 
-  /*
-   * Focus lost on text field, so disable insert drop-down
-   */
   @Override
-  public void focusLost(FocusEvent arg0) {
-    dropList.setEnabled(false);
+  public void focusLost(FocusEvent e) {
+    if (dropList != null && !dropList.isFocusOwner() && !processingSelection) {
+      dropList.setEnabled(false);
+    }
   }
 }
