@@ -110,16 +110,16 @@ public class FormattedStringConfigurer
       try {
         final int selectedIndex = dropList.getSelectedIndex();
         if (selectedIndex > 0) {
-          String item = "$" + optionsModel.getElementAt(selectedIndex) + "$";
+          final String item = "$" + optionsModel.getElementAt(selectedIndex) + "$";
 
           // Get current selection/caret info before any focus changes
-          JTextComponent textComp = nameField;
-          int start = textComp.getSelectionStart();
-          int end = textComp.getSelectionEnd();
-          String text = textComp.getText();
+          final JTextComponent textComp = nameField;
+          final int start = textComp.getSelectionStart();
+          final int end = textComp.getSelectionEnd();
+          final String text = textComp.getText();
 
           // Insert the new text
-          String newText = text.substring(0, start) + item + text.substring(end);
+          final String newText = text.substring(0, start) + item + text.substring(end);
           textComp.setText(newText);
 
           // Position caret after inserted text
