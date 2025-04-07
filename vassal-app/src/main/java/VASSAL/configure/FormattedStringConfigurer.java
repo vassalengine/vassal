@@ -88,15 +88,18 @@ public class FormattedStringConfigurer extends StringConfigurer implements Actio
       dropList = new JComboBox<>(optionsModel) {
           @Override
           public void setPopupVisible(boolean visible) {
-              if (!processingSelection && nameField != null) {
-                  try {
-                      JTextComponent tc = nameField;
-                      tc.setCaretPosition(Math.min(tc.getCaretPosition(), tc.getText().length()));
-                  } catch (IllegalArgumentException e) {
-                      // Ignore position errors
-                  }
-                  super.setPopupVisible(visible);
+            if (!processingSelection && nameField != null) {
+              try {
+                JTextComponent tc = nameField;
+                tc.setCaretPosition(
+                        Math.min(tc.getCaretPosition(), tc.getText().length())
+                );
               }
+              catch (IllegalArgumentException e) {
+                // Ignore position errors
+              }
+              super.setPopupVisible(visible);
+            }
           }
       };
 
