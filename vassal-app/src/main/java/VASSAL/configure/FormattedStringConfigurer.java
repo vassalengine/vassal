@@ -20,11 +20,13 @@
  * Extended version of StringConfigure that provides a drop down list of options that can
  * be inserted into the string
  */
+
 package VASSAL.configure;
 
 import VASSAL.i18n.Resources;
 
 import java.awt.Component;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -39,6 +41,7 @@ public class FormattedStringConfigurer
 
   private final DefaultComboBoxModel<String> optionsModel;
   private JComboBox<String> dropList;
+  private Component cachedControls = null; // Caching the controls
 
   public FormattedStringConfigurer(String key, String name) {
     this(key, name, new String[0]);
@@ -48,6 +51,7 @@ public class FormattedStringConfigurer
     this(null, "", options);
   }
 
+  @SuppressWarnings("checkstyle:MissingJavadocMethod")
   public FormattedStringConfigurer(
       String key,
       String name,
@@ -76,20 +80,24 @@ public class FormattedStringConfigurer
 
   @Override
   public Component getControls() {
-    if (p == null) {
-      super.getControls();
-
-      nameField.addFocusListener(this);
-      dropList = new JComboBox<>(optionsModel);
-      dropList.setSelectedIndex(0);
-      dropList.setEnabled(false);
-      dropList.addActionListener(this);
-
-      setListVisibility();
-      p.add(dropList, "grow 0,right"); // NON-NLS
-
+    if (cachedControls == null) {
+      if (p == null) {
+        super.getControls();
+        nameField.addFocusListener(this);
+        dropList = new JComboBox<>(optionsModel);
+        dropList.setSelectedIndex(0);
+        dropList.setEnabled(false);
+        dropList.addActionListener(this);
+        setListVisibility();
+        p.add(dropList, "grow 0,right");
+        cachedControls = p;
+      }
+      System.out.println("getControls: Controls created and cached.");
     }
-    return p;
+    else {
+      System.out.println("getControls: Controls retrieved from cache.");
+    }
+    return cachedControls;
   }
 
   private void setListVisibility() {
@@ -106,6 +114,10 @@ public class FormattedStringConfigurer
     final String item;
 
     final int selectedIndex = dropList.getSelectedIndex();
+
+    System.out.println("actionPerformed: Thread=" + Thread.currentThread().getId() + ", event=" + arg0);
+    System.out.println("actionPerformed: nameField.hasFocus()=" + nameField.hasFocus());
+    System.out.println("actionPerformed: dropList.isEnabled()=" + dropList.isEnabled());
 
     if (selectedIndex > 0) {
       item = "$" + optionsModel.getElementAt(selectedIndex) + "$";
@@ -140,16 +152,19 @@ public class FormattedStringConfigurer
    */
   @Override
   public void focusGained(FocusEvent arg0) {
+    System.out.println("focusGained: Thread=" + Thread.currentThread().getId());
     dropList.setSelectedIndex(0);
     dropList.setEnabled(true);
+    System.out.println("focusGained: dropList.isEnabled()=" + dropList.isEnabled());
+    System.out.println("focusGained: focus owner = " + KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner());
     dropList.repaint();
   }
 
-  /*
-   * Focus lost on text field, so disable insert drop-down
-   */
   @Override
   public void focusLost(FocusEvent arg0) {
+    System.out.println("focusLost: Thread=" + Thread.currentThread().getId());
     dropList.setEnabled(false);
+    System.out.println("focusLost: dropList.isEnabled()=" + dropList.isEnabled());
+    System.out.println("focusLost: focus owner = " + KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner());
   }
 }
