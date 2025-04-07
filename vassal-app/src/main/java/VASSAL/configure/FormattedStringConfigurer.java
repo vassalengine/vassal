@@ -14,7 +14,6 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-
 /*
  * FormattedStringConfigurer.
  * Extended version of StringConfigure that provides a drop down list of options that can
@@ -22,9 +21,9 @@
  */
 // @generated-by: DeepSeek Chat (2024-06-20)
 // @change-notes:
-// - Stable dropdown behavior with skipFocusLoss
-// - Proper finally block in action handler
-// - Preserved all original functionality
+// - Fixed Checkstyle indentation
+// - Stable dropdown behavior
+// - Proper finally block
 package VASSAL.configure;
 
 import VASSAL.i18n.Resources;
