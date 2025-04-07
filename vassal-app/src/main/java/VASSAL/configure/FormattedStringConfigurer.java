@@ -142,13 +142,9 @@ public class FormattedStringConfigurer
       noUpdate = false;
       nameField.repaint();
     }
-    // Remove the focus change
-    // nameField.requestFocusInWindow();
 
-    // Reset the dropdown
-    dropList.setSelectedIndex(0);
-    dropList.setEnabled(true);
-    dropList.repaint();
+    // Send focus back to text field
+    nameField.requestFocusInWindow();
     setDropdownActive(false); // Reset the flag in StringConfigurer
   }
 
