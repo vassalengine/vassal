@@ -79,8 +79,10 @@ public class FormattedStringConfigurer extends StringConfigurer implements Actio
     return s;
   }
 
-  @Override
   // @deepseek-modified: Added popup visibility control
+  private boolean skipTextSelect = false;
+
+  @Override
   public Component getControls() {
     if (p == null) {
       super.getControls();
@@ -88,28 +90,30 @@ public class FormattedStringConfigurer extends StringConfigurer implements Actio
       dropList = new JComboBox<>(optionsModel) {
           @Override
           public void setPopupVisible(boolean visible) {
-            if (!processingSelection && nameField != null) {
-              try {
-                final JTextComponent tc = nameField;
-                tc.setCaretPosition(
-                        Math.min(tc.getCaretPosition(), tc.getText().length())
-                );
-              }
-              catch (IllegalArgumentException e) {
-                // Ignore position errors
+              skipTextSelect = visible; // Flag when dropdown is active
+              if (visible && nameField != null) {
+                  // Save caret position without selecting text
+                  final int pos = nameField.getCaretPosition();
+                  SwingUtilities.invokeLater(() -> nameField.setCaretPosition(pos));
               }
               super.setPopupVisible(visible);
-            }
           }
       };
+
+      // Add caret position preservation
+      nameField.addCaretListener(e -> {
+        if (skipTextSelect) {
+          nameField.setSelectionStart(e.getDot());
+          nameField.setSelectionEnd(e.getDot());
+        }
+      });
 
       dropList.setSelectedIndex(0);
       dropList.setEnabled(false);
       dropList.addActionListener(this);
-
       nameField.addFocusListener(this);
       setListVisibility();
-      p.add(dropList, "grow 0,right"); // NON-NLS
+      p.add(dropList, "grow 0,right");
     }
     return p;
   }
