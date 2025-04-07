@@ -14,6 +14,7 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
+
 /*
  * FormattedStringConfigurer.
  * Extended version of StringConfigure that provides a drop down list of options that can
@@ -23,6 +24,7 @@
 // @change-notes:
 // - Added JComboBox.setPopupVisible override
 // - Changed to use replaceSelection()
+// - Added caret position preservation
 // - Maintained all original functionality
 package VASSAL.configure;
 
@@ -39,8 +41,9 @@ import javax.swing.text.JTextComponent;
 
 public class FormattedStringConfigurer extends StringConfigurer implements ActionListener, FocusListener {
   private final DefaultComboBoxModel<String> optionsModel = new DefaultComboBoxModel<>();
-  private boolean processingSelection = false;
   private JComboBox<String> dropList;
+  private boolean processingSelection = false;
+  private boolean skipTextSelect = false;
 
   public FormattedStringConfigurer(String key, String name) {
     this(key, name, new String[0]);
@@ -72,15 +75,12 @@ public class FormattedStringConfigurer extends StringConfigurer implements Actio
    * @return the current list of options (excluding the initial "insert" prompt)
    */
   public String[] getOptions() {
-    final String[] s = new String[optionsModel.getSize()];
-    for (int i = 0; i < s.length; ++i) {
-      s[i] = optionsModel.getElementAt(i);
+    final String[] s = new String[optionsModel.getSize() - 1];
+    for (int i = 1; i < optionsModel.getSize(); ++i) {
+      s[i - 1] = optionsModel.getElementAt(i);
     }
     return s;
   }
-
-  // @deepseek-modified: Added popup visibility control
-  private boolean skipTextSelect = false;
 
   @Override
   public Component getControls() {
@@ -88,19 +88,24 @@ public class FormattedStringConfigurer extends StringConfigurer implements Actio
       super.getControls();
 
       dropList = new JComboBox<>(optionsModel) {
-          @Override
-          public void setPopupVisible(boolean visible) {
-              skipTextSelect = visible; // Flag when dropdown is active
-              if (visible && nameField != null) {
-                  // Save caret position without selecting text
-                  final int pos = nameField.getCaretPosition();
-                  SwingUtilities.invokeLater(() -> nameField.setCaretPosition(pos));
-              }
-              super.setPopupVisible(visible);
+        @Override
+        public void setPopupVisible(boolean visible) {
+          skipTextSelect = visible;
+          if (!processingSelection && nameField != null) {
+            final JTextComponent tc = nameField;
+            final int pos = tc.getCaretPosition();
+            SwingUtilities.invokeLater(() -> tc.setCaretPosition(
+                    Math.min(pos, tc.getText().length())
+            ));
           }
+          super.setPopupVisible(visible);
+        }
       };
 
-      // Add caret position preservation
+      dropList.setSelectedIndex(0);
+      dropList.setEnabled(false);
+      dropList.addActionListener(this);
+
       nameField.addCaretListener(e -> {
         if (skipTextSelect) {
           nameField.setSelectionStart(e.getDot());
@@ -108,12 +113,9 @@ public class FormattedStringConfigurer extends StringConfigurer implements Actio
         }
       });
 
-      dropList.setSelectedIndex(0);
-      dropList.setEnabled(false);
-      dropList.addActionListener(this);
       nameField.addFocusListener(this);
       setListVisibility();
-      p.add(dropList, "grow 0,right");
+      p.add(dropList, "grow 0,right"); // NON-NLS
     }
     return p;
   }
@@ -125,7 +127,6 @@ public class FormattedStringConfigurer extends StringConfigurer implements Actio
   }
 
   @Override
-  // @deepseek-optimized: Improved text insertion
   public void actionPerformed(ActionEvent e) {
     if (processingSelection || dropList == null || nameField == null) {
       return;
@@ -137,13 +138,11 @@ public class FormattedStringConfigurer extends StringConfigurer implements Actio
       if (selectedIndex > 0) {
         final String item = "$" + optionsModel.getElementAt(selectedIndex) + "$";
         final JTextComponent textComp = nameField;
-
-        // Insert the new text and set caret safely
+        final int pos = textComp.getCaretPosition();
         textComp.replaceSelection(item);
-        textComp.setCaretPosition(Math.min(
-                textComp.getCaretPosition() + item.length(),
-                textComp.getText().length()
-        ));
+        textComp.setCaretPosition(
+                Math.min(pos + item.length(), textComp.getText().length())
+        );
       }
     }
     finally {
@@ -154,10 +153,6 @@ public class FormattedStringConfigurer extends StringConfigurer implements Actio
     }
   }
 
-  /*
-   * Focus gained on text field, so enable insert drop-down
-   * and make sure it says 'Insert'
-   */
   @Override
   public void focusGained(FocusEvent e) {
     if (dropList != null) {
@@ -166,9 +161,6 @@ public class FormattedStringConfigurer extends StringConfigurer implements Actio
     }
   }
 
-  /*
-   * Focus lost on text field, so disable insert drop-down
-   */
   @Override
   public void focusLost(FocusEvent e) {
     if (dropList != null) {
