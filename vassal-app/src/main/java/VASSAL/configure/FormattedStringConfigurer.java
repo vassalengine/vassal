@@ -90,7 +90,7 @@ public class FormattedStringConfigurer extends StringConfigurer implements Actio
           public void setPopupVisible(boolean visible) {
             if (!processingSelection && nameField != null) {
               try {
-                JTextComponent tc = nameField;
+                final JTextComponent tc = nameField;
                 tc.setCaretPosition(
                         Math.min(tc.getCaretPosition(), tc.getText().length())
                 );
