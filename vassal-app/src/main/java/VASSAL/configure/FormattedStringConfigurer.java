@@ -137,7 +137,8 @@ public class FormattedStringConfigurer extends StringConfigurer implements Actio
         textComp.replaceSelection(item);
         textComp.setCaretPosition(Math.min(pos + item.length(), textComp.getText().length()));
       }
-    } finally {
+    }
+    finally {
       SwingUtilities.invokeLater(() -> {
         dropList.setSelectedIndex(0);
         processingSelection = false;
