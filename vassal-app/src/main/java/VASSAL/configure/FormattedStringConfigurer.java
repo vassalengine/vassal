@@ -94,8 +94,8 @@ public class FormattedStringConfigurer extends StringConfigurer implements Actio
           // @deepseek-modified: Override popup visibility handling
           @Override
           public void setPopupVisible(boolean visible) {
-              skipFocusLoss = visible;
-              super.setPopupVisible(visible);
+            skipFocusLoss = visible;
+            super.setPopupVisible(visible);
           }
       };
       dropList.setSelectedIndex(0);
