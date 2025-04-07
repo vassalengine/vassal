@@ -112,8 +112,8 @@ public class FormattedStringConfigurer
   @Override
   public void actionPerformed(ActionEvent arg0) {
     final String item;
-
     final int selectedIndex = dropList.getSelectedIndex();
+    setDropdownActive(true); // Lock text selection out in StringConfigurer
 
     System.out.println("actionPerformed: Thread=" + Thread.currentThread().getId() + ", event=" + arg0);
     System.out.println("actionPerformed: nameField.hasFocus()=" + nameField.hasFocus());
@@ -142,8 +142,14 @@ public class FormattedStringConfigurer
       noUpdate = false;
       nameField.repaint();
     }
-    // Send focus back to text field
-    nameField.requestFocusInWindow();
+    // Remove the focus change
+    // nameField.requestFocusInWindow();
+
+    // Reset the dropdown
+    dropList.setSelectedIndex(0);
+    dropList.setEnabled(true);
+    dropList.repaint();
+    setDropdownActive(false); // Reset the flag in StringConfigurer
   }
 
   /*

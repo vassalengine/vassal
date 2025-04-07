@@ -48,6 +48,16 @@ public class StringConfigurer extends Configurer {
   @Deprecated(since = "2021-12-04", forRemoval = true)
   protected static final int DEFAULT_LENGHTH = 16;
 
+  private boolean dropdownActive = false;
+
+  public void setDropdownActive(boolean active) {
+    this.dropdownActive = active;
+  }
+
+  public boolean isDropdownActive() {
+    return dropdownActive;
+  }
+
   /**
    * Base Constructor for StringConfigurer
    *
@@ -121,9 +131,9 @@ public class StringConfigurer extends Configurer {
       nameField.addFocusListener(new java.awt.event.FocusAdapter() {
         @Override
         public void focusGained(java.awt.event.FocusEvent evt) {
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
+          SwingUtilities.invokeLater(() -> {
+            // Check the dropdownActive flag within StringConfigurer
+            if (!isDropdownActive()) {
               nameField.selectAll();
             }
           });
@@ -214,7 +224,7 @@ public class StringConfigurer extends Configurer {
     @Override
     public void paint(Graphics g, JComponent c) {
       super.paint(g, c);
-      final Component cc = ((JLayer) c).getView();
+      final Component cc = ((JLayer<?>) c).getView();
       if (parent.isHighlighted()) {
         final Dimension d = cc.getSize();
         g.setColor(Color.red);
