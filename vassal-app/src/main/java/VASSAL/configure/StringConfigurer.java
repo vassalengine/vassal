@@ -132,8 +132,15 @@ public class StringConfigurer extends Configurer {
         @Override
         public void focusGained(java.awt.event.FocusEvent evt) {
           SwingUtilities.invokeLater(() -> {
-            // Check the dropdownActive flag within StringConfigurer
-            if (!isDropdownActive()) {
+            // Check if the current instance is FormattedStringConfigurer
+            if (StringConfigurer.this instanceof FormattedStringConfigurer) {
+              // Check the dropdownActive flag
+              if (!isDropdownActive()) {
+                nameField.selectAll();
+              }
+            }
+            else {
+              // Execute selectAll() for other StringConfigurer instances
               nameField.selectAll();
             }
           });
