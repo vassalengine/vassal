@@ -157,16 +157,16 @@ public class RandomTextButton extends DiceButton {
       }
     }
 
-    // Build sorted summary
+// Build sorted summary
     final String[] summaryKeys = resultCounts.keySet().toArray(new String[0]);
     if (sortDice) {
       Arrays.sort(summaryKeys);
     }
 
     for (int i = 0; i < summaryKeys.length; i++) {
-      if (i > 0) summaryResult.append(", ");
+      if (i > 0) summaryResult.append(Resources.getString("Dice.summary_separator"));
       summaryResult.append(summaryKeys[i])
-              .append(" x")
+              .append(Resources.getString("Dice.summary_times"))
               .append(resultCounts.get(summaryKeys[i]));
     }
 

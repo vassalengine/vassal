@@ -148,11 +148,15 @@ image:_images/image204.png[image,width=310,height=277]
 * *Number of Dice:* Number of dice rolled.
 * *Hotkey:* Keyboard shortcut for rolling the dice.
 * *Prompt for Values when Button Clicked:* If selected, the player is prompted to enter the number, sides, and adds for the dice rolled after clicking the button. (If selected, you will not need to specify Number, Sides, and Adds as above.)
-* *Report Format:* The Report Format specifies the
-
-Message Format for reporting the results: name is the name of the button as specified above, result is the
-
-result of the roll, nDice is the number of dice, nSides is the number of dice, plus is the modifier to each die, and addToTotal is the value added to the total.
+* *Report Format:* The Report Format specifies the <<MessageFormat.adoc#top,Message Format>> for reporting the results, which may include the following report variables:
++
+_$name$_::: Name of the button. +
+_$result$_::: The result of the roll, either a list of the rolls, or the total of all rolls if the _Report Total_ option is checked. +
+_$nDice$_::: The number of dice rolled. +
+_$nSides$_::: The number of sides on each die. +
+_$plus$_::: The modifier added to each die. +
+_$addToTotal$_::: The modifier added to the total. +
+_$summary$_::: A summary of the roll results in the format `<value> x<count>[, <value> x<count>...]` (null where a roll generates no results). +
 
 * *Sort Dice Results:* Sorts the dice results.
 * *Faces:* Specify the possible faces (results) for each die.
@@ -201,4 +205,12 @@ Global
 a|
 Value is the latest result of the Random Text button. Example: a Random Text button
 named Events would include a Property named Events_result.
+a|
+<name>_summary_
+
+a|
+Global
+
+a|
+A summary of the most recent set of results (see Report Format, $summary$ variable)
 |==================================================================================
