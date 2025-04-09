@@ -357,7 +357,7 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
     @Override
     public void paint(Graphics g, JComponent c) {
       super.paint(g, c);
-      final Component cc = ((JLayer) c).getView();
+      final Component cc = ((JLayer<?>) c).getView();
       if (parent.isHighlighted()) {
         final Dimension d = cc.getSize();
         g.setColor(Color.red);
