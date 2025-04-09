@@ -62,7 +62,6 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
 
   /**
    * enum describing any special processing that needs to be done for particular expression types
-   *
    * NONE = No special handling
    *  PME = Property Match Expression handling.
    */
@@ -466,7 +465,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
 
       @Override
       public void run() {
-        if (getValueString().length() == 0) {
+        if (getValueString().isEmpty()) {
           validator.setStatus(UNKNOWN);
           setDetails();
         }
