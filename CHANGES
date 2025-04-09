@@ -1,4 +1,4 @@
-3.7.16 - 5 April 2025
+3.7.16 - 9 April 2025
 
 * 13970: Replaced deprecated PMD rules
 * 13969: Upgraded spotbugs-maven-plugin to 4.9.3.0
