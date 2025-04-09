@@ -23,8 +23,6 @@ import javax.swing.JComponent;
 import javax.swing.JLayer;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.plaf.LayerUI;
 import java.awt.Color;
@@ -112,23 +110,10 @@ public class StringConfigurer extends Configurer {
 
       nameField = buildTextField();
       nameField.setMaximumSize(new Dimension(
-        nameField.getMaximumSize().width,
-        nameField.getPreferredSize().height
+              nameField.getMaximumSize().width,
+              nameField.getPreferredSize().height
       ));
       nameField.setText(getValueString());
-
-      // Edit box selects all text when first focused
-      nameField.addFocusListener(new java.awt.event.FocusAdapter() {
-        @Override
-        public void focusGained(java.awt.event.FocusEvent evt) {
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              nameField.selectAll();
-            }
-          });
-        }
-      });
 
       SwingUtils.allowUndo(nameField);
       if (!GraphicsEnvironment.isHeadless()) {
@@ -214,7 +199,7 @@ public class StringConfigurer extends Configurer {
     @Override
     public void paint(Graphics g, JComponent c) {
       super.paint(g, c);
-      final Component cc = ((JLayer) c).getView();
+      final Component cc = ((JLayer<?>) c).getView();
       if (parent.isHighlighted()) {
         final Dimension d = cc.getSize();
         g.setColor(Color.red);

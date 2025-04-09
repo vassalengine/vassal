@@ -27,8 +27,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.Component;
 import java.io.File;
@@ -134,20 +132,6 @@ public class FileConfigurer extends Configurer {
 
       tf = new JTextField(getValueString());
       tf.setEditable(editable);
-      if (editable) {
-        // Edit box selects all text when first focused
-        tf.addFocusListener(new java.awt.event.FocusAdapter() {
-          @Override
-          public void focusGained(java.awt.event.FocusEvent evt) {
-            SwingUtilities.invokeLater(new Runnable() {
-              @Override
-              public void run() {
-                tf.selectAll();
-              }
-            });
-          }
-        });
-      }
       tf.setMaximumSize(new java.awt.Dimension(tf.getMaximumSize().width,
                                                tf.getPreferredSize().height));
       tf.getDocument().addDocumentListener(new DocumentListener() {
@@ -168,7 +152,7 @@ public class FileConfigurer extends Configurer {
 
         public void update() {
           final String text = tf.getText();
-          final File f = text != null && text.length() > 0 && !"null".equals(text) ? new File(text) : null; // NON-NLS
+          final File f = text != null && !text.isEmpty() && !"null".equals(text) ? new File(text) : null; // NON-NLS
           noUpdate = true;
           setValue(f);
           noUpdate = false;

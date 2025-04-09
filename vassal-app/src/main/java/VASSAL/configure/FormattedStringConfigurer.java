@@ -29,13 +29,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyListener;
+import java.awt.event.KeyEvent;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 
 public class FormattedStringConfigurer
-    extends StringConfigurer
-    implements ActionListener, FocusListener {
+        extends StringConfigurer
+        implements ActionListener, FocusListener {
 
   private final DefaultComboBoxModel<String> optionsModel;
   private JComboBox<String> dropList;
@@ -49,9 +51,9 @@ public class FormattedStringConfigurer
   }
 
   public FormattedStringConfigurer(
-      String key,
-      String name,
-      String[] options) {
+          String key,
+          String name,
+          String[] options) {
     super(key, name);
     optionsModel = new DefaultComboBoxModel<>();
     setOptions(options);
@@ -79,8 +81,50 @@ public class FormattedStringConfigurer
     if (p == null) {
       super.getControls();
 
-      nameField.addFocusListener(this);
+      // Focus gained/lost on text field,
+      // so enable/disable insert drop-down
+      nameField.addFocusListener(new FocusListener() {
+        @Override
+        public void focusGained(FocusEvent event) {
+          if (dropList != null) {
+            dropList.setSelectedIndex(0);
+            dropList.setEnabled(true);
+          }
+        }
+
+        @Override
+        public void focusLost(FocusEvent event) {
+          if (dropList != null) {
+            dropList.setPopupVisible(false);
+            dropList.setEnabled(false);
+          }
+        }
+      });
+
+      // The insert key expands the insert drop-down.
+      nameField.addKeyListener(new KeyListener() {
+        @Override
+        public void keyTyped(KeyEvent e) {
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+          final int code = e.getKeyCode();
+          if (code == KeyEvent.VK_INSERT && dropList != null) {
+            dropList.setPopupVisible(true);
+          }
+        }
+      });
+
       dropList = new JComboBox<>(optionsModel);
+
+      // Make dropdown not focusable to remove it from the tab control list.
+      // This allows focus to move to the next control.
+      dropList.setFocusable(false);
       dropList.setSelectedIndex(0);
       dropList.setEnabled(false);
       dropList.addActionListener(this);
@@ -102,54 +146,28 @@ public class FormattedStringConfigurer
    * Drop-down list has been clicked, insert selected option onto string
    */
   @Override
-  public void actionPerformed(ActionEvent arg0) {
-    final String item;
-
+  public void actionPerformed(ActionEvent e) {
     final int selectedIndex = dropList.getSelectedIndex();
-
     if (selectedIndex > 0) {
-      item = "$" + optionsModel.getElementAt(selectedIndex) + "$";
-      String work = nameField.getText();
+      final String item = "$" + optionsModel.getElementAt(selectedIndex) + "$";
+      final int start = nameField.getSelectionStart();
+      final int end = nameField.getSelectionEnd();
+      final String text = nameField.getText();
 
-      int pos = nameField.getCaretPosition();
-      // Cut out any selected text
-      if (nameField.getSelectedText() != null) {
-        final int start = nameField.getSelectionStart();
-        final int end = nameField.getSelectionEnd();
-        work = work.substring(0, start) + work.substring(end);
-        pos = start;
-      }
-
-      final String news = work.substring(0, pos) + item + work.substring(pos);
-      nameField.setText(news);
-      nameField.setCaretPosition(pos + item.length());
-
-      // Update the text field and repaint it
-      noUpdate = true;
-      setValue(nameField.getText());
-      noUpdate = false;
-      nameField.repaint();
+      nameField.setText(text.substring(0, start) + item + text.substring(end));
+      nameField.setCaretPosition(start + item.length());
     }
-    // Send focus back to text field
+    dropList.setSelectedIndex(0);
     nameField.requestFocusInWindow();
   }
 
-  /*
-   * Focus gained on text field, so enable insert drop-down
-   * and make sure it says 'Insert'
-   */
   @Override
   public void focusGained(FocusEvent arg0) {
-    dropList.setSelectedIndex(0);
-    dropList.setEnabled(true);
-    dropList.repaint();
+    // nothing to do, handled by addKeyListener
   }
 
-  /*
-   * Focus lost on text field, so disable insert drop-down
-   */
   @Override
   public void focusLost(FocusEvent arg0) {
-    dropList.setEnabled(false);
+    // nothing to do, handled by addKeyListener
   }
 }

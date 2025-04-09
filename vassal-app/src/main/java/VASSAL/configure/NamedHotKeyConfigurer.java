@@ -33,8 +33,6 @@ import javax.swing.JLayer;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-import javax.swing.plaf.LayerUI;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -51,10 +49,8 @@ import java.awt.event.KeyEvent;
 /**
  * A configurer for Configuring Key Strokes. It allows the entry of either
  * a standard keystroke, or a Named command.
- *
  * It contains two separate Text fields, one for the Name and one for the keystroke.
  * A user can fill in one or the other. Filling in one, clears the other.
- *
  * This Configurer has a limited undo function. Whenever one of the two fields gains focus,
  * the current state of the Configurer is saved and the Undo button enabled.
  * The undo button will return to the state when that field gained focus.
@@ -87,7 +83,7 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
 
   public static String getFancyString(NamedKeyStroke k) {
     String s = getString(k);
-    if (s.length() > 0) {
+    if (!s.isEmpty()) {
       s = "[" + s + "]";
     }
     return s;
@@ -219,19 +215,6 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
       keyName.setText(getValueNamedKeyStroke() == null ? null : getValueNamedKeyStroke().getName());
       ((AbstractDocument) keyName.getDocument()).setDocumentFilter(new KeyNameFilter());
       keyName.addFocusListener(this);
-
-      // Edit box selects all text when first focused
-      keyName.addFocusListener(new java.awt.event.FocusAdapter() {
-        @Override
-        public void focusGained(FocusEvent evt) {
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              keyName.selectAll();
-            }
-          });
-        }
-      });
 
       final JPanel panel = new JPanel(new MigLayout("ins 0", "[fill,grow]0[]0[fill,grow]0[]")); // NON-NLS
 
