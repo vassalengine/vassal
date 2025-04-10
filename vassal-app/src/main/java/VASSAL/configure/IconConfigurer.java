@@ -111,6 +111,12 @@ public class IconConfigurer extends Configurer {
     return controls;
   }
 
+  public void setToolTipText(String toolTipText) {
+    if (holdingPanel != null) {
+      holdingPanel.setToolTipText(toolTipText);
+    }
+  }
+
   private static final int MAX_ICON_DISPLAY_SIZE = 128;
 
   private void setSize() {
