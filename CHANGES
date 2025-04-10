@@ -3,8 +3,11 @@
 * 12944: Add pieceCount to the map auto reporter
 * 12763: Added ModuleGameFileName property
 
-3.7.16 - ???
+3.7.17 - ???
 
+3.7.16 - 9 April 2025
+
+* 13970: Replaced deprecated PMD rules
 * 13969: Upgraded spotbugs-maven-plugin to 4.9.3.0
 * 13962: Upgraded maven-surefire-plugin to 3.5.3
 * 13961: Upgraded jsoup to 1.19.1
