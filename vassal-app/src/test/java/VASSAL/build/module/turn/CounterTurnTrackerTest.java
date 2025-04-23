@@ -15,11 +15,6 @@ public class CounterTurnTrackerTest {
   // A helper class to access protected functions.
   static class TurnTrackerAccessor extends TurnTracker {
 
-    public TurnTrackerAccessor() {
-      super();
-      turnWindow = new TurnWindow();
-    }
-
     public void next() {
       super.next();
     }
@@ -30,6 +25,10 @@ public class CounterTurnTrackerTest {
 
     public String getTurnString() {
       return super.getTurnString().trim();
+    }
+
+    public void SetTurnWindow(TurnWindow tw) {
+      turnWindow = tw;
     }
   }
 
@@ -47,6 +46,13 @@ public class CounterTurnTrackerTest {
       when(gm.getPrefs()).thenReturn(prefs);
 
       TurnTrackerAccessor tracker = new TurnTrackerAccessor();
+
+      final TurnTracker.TurnWindow tw = mock(TurnTracker.TurnWindow.class);
+      tracker.SetTurnWindow(tw);
+
+      doNothing().when(tw).pack();
+      doNothing().when(tw).setFocusable(isA(boolean.class));
+      doNothing().when(tw).requestFocus();
 
       // Top level counter wraps with sequence 10, 30, 50.
       CounterTurnLevel level1 = new CounterTurnLevel();
