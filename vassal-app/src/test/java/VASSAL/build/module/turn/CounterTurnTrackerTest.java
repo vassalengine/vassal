@@ -15,6 +15,11 @@ public class CounterTurnTrackerTest {
   // A helper class to access protected functions.
   static class TurnTrackerAccessor extends TurnTracker {
 
+    public TurnTrackerAccessor() {
+      super();
+      turnWindow = tw;
+    }
+
     public void next() {
       super.next();
     }
@@ -26,33 +31,21 @@ public class CounterTurnTrackerTest {
     public String getTurnString() {
       return super.getTurnString().trim();
     }
-
-    public void SetTurnWindow(TurnWindow tw) {
-      turnWindow = tw;
-    }
   }
 
-  // Mocked GameModule members required by the TurnTracker
-  final Prefs prefs = new Prefs(new PrefsEditor(), "");
+  // Mocked members of GameModule and TurnTracker
+  static final Prefs prefs = new Prefs(new PrefsEditor(), "");
+  static final TurnTracker.TurnWindow tw = mock(TurnTracker.TurnWindow.class);
 
+  // Test the wrapping of two CounterTurnTrackers with a parent-child relationship.
   @Test
   public void nestedCounterTurnTracker() {
-    // Test the wrapping of two CounterTurnTrackers where one
-    // is a sibling of the other.
-    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+     try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
       final GameModule gm = mock(GameModule.class);
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
-
       when(gm.getPrefs()).thenReturn(prefs);
 
-      TurnTrackerAccessor tracker = new TurnTrackerAccessor();
-
-      final TurnTracker.TurnWindow tw = mock(TurnTracker.TurnWindow.class);
-      tracker.SetTurnWindow(tw);
-
-      doNothing().when(tw).pack();
-      doNothing().when(tw).setFocusable(isA(boolean.class));
-      doNothing().when(tw).requestFocus();
+      final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
 
       // Top level counter wraps with sequence 10, 30, 50.
       CounterTurnLevel level1 = new CounterTurnLevel();

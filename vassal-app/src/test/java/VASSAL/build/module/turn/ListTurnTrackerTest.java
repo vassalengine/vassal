@@ -1,15 +1,11 @@
 package VASSAL.build.module.turn;
 
 import VASSAL.build.GameModule;
-import VASSAL.build.module.GameState;
 import VASSAL.preferences.Prefs;
 import VASSAL.preferences.PrefsEditor;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-
-import javax.swing.JToolBar;
-import java.awt.Component;
 
 import java.util.Iterator;
 import java.util.List;
@@ -40,6 +36,12 @@ public class ListTurnTrackerTest {
 
   // A helper class to access protected functions.
   static class TurnTrackerAccessor extends TurnTracker {
+
+    public TurnTrackerAccessor() {
+      super();
+      turnWindow = tw;
+    }
+
     public void next() {
       super.next();
     }
@@ -48,39 +50,31 @@ public class ListTurnTrackerTest {
       super.prev();
     }
 
+    public void reset() { super.reset(); }
+
     public String getTurnString() {
       return super.getTurnString().trim();
     }
   }
 
-  // Mocked GameModule members required by the TurnTracker constructor.
-  final JToolBar toolbar = mock(JToolBar.class);
-  final GameState gameState = new GameState();
-  final Prefs prefs = new Prefs(new PrefsEditor(), "");
-
-  private void testSetup(GameModule gm) {
-    when(gm.getPrefs()).thenReturn(prefs);
-    when(gm.getGameState()).thenReturn(gameState);
-    when(gm.getToolBar()).thenReturn(toolbar);
-    when(toolbar.add(any(Component.class))).thenReturn(null);
-  }
+  // Mocked members of GameModule and TurnTracker
+  static final Prefs prefs = new Prefs(new PrefsEditor(), "");
+  static final TurnTracker.TurnWindow tw = mock(TurnTracker.TurnWindow.class);
 
   @Test
   public void turnTrackerNext() {
     try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
       final GameModule gm = mock(GameModule.class);
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
-
-      testSetup(gm);
+      when(gm.getPrefs()).thenReturn(prefs);
 
       final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
-      tracker.addTo(gm);
 
       final String turnNames = String.join(",", turnList);
       final ListTurnLevel level = new ListTurnLevel();
       level.setAttribute("list", turnNames);
       level.addTo(tracker);
-      tracker.setup(false);
+      tracker.reset();
 
       // Check initial conditions, check advance to next, and one wrap around.
       for (int i = 0; i <= turnList.size(); ++i) {
@@ -95,17 +89,15 @@ public class ListTurnTrackerTest {
     try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
       final GameModule gm = mock(GameModule.class);
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
-
-      testSetup(gm);
+      when(gm.getPrefs()).thenReturn(prefs);
 
       final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
-      tracker.addTo(gm);
 
       final String turnNames = String.join(",", turnList);
       final ListTurnLevel level = new ListTurnLevel();
       level.setAttribute("list", turnNames);
       level.addTo(tracker);
-      tracker.setup(false);
+      tracker.reset();
 
       // Check initial conditions, wrap backwards and check backwards movement through the list.
       for (int i = turnList.size(); i >= 0; --i) {
@@ -121,11 +113,9 @@ public class ListTurnTrackerTest {
     try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
       final GameModule gm = mock(GameModule.class);
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
-
-      testSetup(gm);
+      when(gm.getPrefs()).thenReturn(prefs);
 
       final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
-      tracker.addTo(gm);
 
       final String turnNames = String.join(",", turnList);
       final ListTurnLevel level = new ListTurnLevel();
@@ -137,7 +127,7 @@ public class ListTurnTrackerTest {
       other.setAttribute("list", dayNames);
       other.addTo(tracker);
 
-      tracker.setup(false); // alpha
+      tracker.reset(); // alpha
       tracker.next(); // beta
       tracker.next(); // gamma
       assertEquals("gamma", tracker.getTurnString());
@@ -163,11 +153,9 @@ public class ListTurnTrackerTest {
     try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
       final GameModule gm = mock(GameModule.class);
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
-
-      testSetup(gm);
+      when(gm.getPrefs()).thenReturn(prefs);
 
       final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
-      tracker.addTo(gm);
 
       final String turnNames = String.join(",", turnList);
       final ListTurnLevel level = new ListTurnLevel();
@@ -217,11 +205,9 @@ public class ListTurnTrackerTest {
     try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
       final GameModule gm = mock(GameModule.class);
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
-
-      testSetup(gm);
+      when(gm.getPrefs()).thenReturn(prefs);
 
       final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
-      tracker.addTo(gm);
 
       final String turnNames = String.join(",", turnList);
       final ListTurnLevel level = new ListTurnLevel();
@@ -267,17 +253,15 @@ public class ListTurnTrackerTest {
     }
   }
 
-  // Test for inactive element at the start of a level.
+  // Test for inactive element in the first position of a level.
   @Test
   public void turnTrackerNextFirstInactive() {
     try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
       final GameModule gm = mock(GameModule.class);
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
-
-      testSetup(gm);
+      when(gm.getPrefs()).thenReturn(prefs);
 
       final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
-      tracker.addTo(gm);
 
       final String turnNames = String.join(",", turnList);
       final ListTurnLevel level = new ListTurnLevel();
@@ -304,11 +288,9 @@ public class ListTurnTrackerTest {
     try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
       final GameModule gm = mock(GameModule.class);
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
-
-      testSetup(gm);
+      when(gm.getPrefs()).thenReturn(prefs);
 
       final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
-      tracker.addTo(gm);
 
       final String turnNames = String.join(",", turnList);
       final ListTurnLevel level = new ListTurnLevel();
@@ -330,11 +312,9 @@ public class ListTurnTrackerTest {
     try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
       final GameModule gm = mock(GameModule.class);
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
-
-      testSetup(gm);
+      when(gm.getPrefs()).thenReturn(prefs);
 
       final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
-      tracker.addTo(gm);
 
       final String turnNames = String.join(",", turnList);
       final ListTurnLevel level = new ListTurnLevel();
@@ -346,7 +326,7 @@ public class ListTurnTrackerTest {
       level2.setAttribute("list", numberNames);
       level.addLevel(level2);
 
-      tracker.setup(false);
+      tracker.reset();
 
       for (int i = 0; i < turnList.size(); ++i) {
         for (int j = 0; j < numbersList.size(); ++j) {
@@ -365,11 +345,9 @@ public class ListTurnTrackerTest {
     try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
       final GameModule gm = mock(GameModule.class);
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
-
-      testSetup(gm);
+      when(gm.getPrefs()).thenReturn(prefs);
 
       final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
-      tracker.addTo(gm);
 
       final String turnNames = String.join(",", turnList);
       final ListTurnLevel level = new ListTurnLevel();
@@ -405,11 +383,9 @@ public class ListTurnTrackerTest {
     try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
       final GameModule gm = mock(GameModule.class);
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
-
-      testSetup(gm);
+      when(gm.getPrefs()).thenReturn(prefs);
 
       final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
-      tracker.addTo(gm);
 
       final String turnNames = String.join(",", turnList);
       final ListTurnLevel level = new ListTurnLevel();
@@ -460,11 +436,9 @@ public class ListTurnTrackerTest {
     try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
       final GameModule gm = mock(GameModule.class);
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
-
-      testSetup(gm);
+      when(gm.getPrefs()).thenReturn(prefs);
 
       final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
-      tracker.addTo(gm);
 
       final String turnNames = String.join(",", turnList);
       final ListTurnLevel level = new ListTurnLevel();
@@ -512,11 +486,9 @@ public class ListTurnTrackerTest {
     try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
       final GameModule gm = mock(GameModule.class);
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
-
-      testSetup(gm);
+      when(gm.getPrefs()).thenReturn(prefs);
 
       final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
-      tracker.addTo(gm);
 
       final ListTurnLevel level = new ListTurnLevel();
       level.setAttribute("list", "alpha,bravo");
