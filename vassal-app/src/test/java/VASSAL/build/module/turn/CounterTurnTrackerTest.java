@@ -32,8 +32,8 @@ public class CounterTurnTrackerTest {
   }
 
   // Mocked GameModule members required by the TurnTracker constructor.
+  final JToolBar toolbar = mock(JToolBar.class);
   final GameState gameState = new GameState();
-  final JToolBar toolbar = new JToolBar();
   final Prefs prefs = new Prefs(new PrefsEditor(), "");
 
   private void testSetup() {
