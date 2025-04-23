@@ -10,7 +10,10 @@ import org.mockito.Mockito;
 
 import javax.swing.JToolBar;
 
+import java.awt.Component;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -36,10 +39,11 @@ public class CounterTurnTrackerTest {
   final GameState gameState = new GameState();
   final Prefs prefs = new Prefs(new PrefsEditor(), "");
 
-  private void testSetup() {
-    when(GameModule.getGameModule().getPrefs()).thenReturn(prefs);
-    when(GameModule.getGameModule().getToolBar()).thenReturn(toolbar);
-    when(GameModule.getGameModule().getGameState()).thenReturn(gameState);
+  private void testSetup(GameModule gm) {
+    when(gm.getPrefs()).thenReturn(prefs);
+    when(gm.getGameState()).thenReturn(gameState);
+    when(gm.getToolBar()).thenReturn(toolbar);
+    when(toolbar.add(any(Component.class))).thenReturn(null);
   }
 
   @Test
@@ -50,7 +54,7 @@ public class CounterTurnTrackerTest {
       final GameModule gm = mock(GameModule.class);
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
 
-      testSetup();
+      testSetup(gm);
 
       TurnTrackerAccessor tracker = new TurnTrackerAccessor();
       tracker.addTo(gm);

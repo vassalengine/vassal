@@ -9,6 +9,8 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 import javax.swing.JToolBar;
+import java.awt.Component;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -56,10 +58,11 @@ public class ListTurnTrackerTest {
   final GameState gameState = new GameState();
   final Prefs prefs = new Prefs(new PrefsEditor(), "");
 
-  private void testSetup() {
-    when(GameModule.getGameModule().getPrefs()).thenReturn(prefs);
-    when(GameModule.getGameModule().getToolBar()).thenReturn(toolbar);
-    when(GameModule.getGameModule().getGameState()).thenReturn(gameState);
+  private void testSetup(GameModule gm) {
+    when(gm.getPrefs()).thenReturn(prefs);
+    when(gm.getGameState()).thenReturn(gameState);
+    when(gm.getToolBar()).thenReturn(toolbar);
+    when(toolbar.add(any(Component.class))).thenReturn(null);
   }
 
   @Test
@@ -68,7 +71,7 @@ public class ListTurnTrackerTest {
       final GameModule gm = mock(GameModule.class);
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
 
-      testSetup();
+      testSetup(gm);
 
       final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
       tracker.addTo(gm);
@@ -93,7 +96,7 @@ public class ListTurnTrackerTest {
       final GameModule gm = mock(GameModule.class);
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
 
-      testSetup();
+      testSetup(gm);
 
       final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
       tracker.addTo(gm);
@@ -119,7 +122,7 @@ public class ListTurnTrackerTest {
       final GameModule gm = mock(GameModule.class);
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
 
-      testSetup();
+      testSetup(gm);
 
       final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
       tracker.addTo(gm);
@@ -161,7 +164,7 @@ public class ListTurnTrackerTest {
       final GameModule gm = mock(GameModule.class);
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
 
-      testSetup();
+      testSetup(gm);
 
       final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
       tracker.addTo(gm);
@@ -215,7 +218,7 @@ public class ListTurnTrackerTest {
       final GameModule gm = mock(GameModule.class);
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
 
-      testSetup();
+      testSetup(gm);
 
       final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
       tracker.addTo(gm);
@@ -271,7 +274,7 @@ public class ListTurnTrackerTest {
       final GameModule gm = mock(GameModule.class);
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
 
-      testSetup();
+      testSetup(gm);
 
       final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
       tracker.addTo(gm);
@@ -302,7 +305,7 @@ public class ListTurnTrackerTest {
       final GameModule gm = mock(GameModule.class);
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
 
-      testSetup();
+      testSetup(gm);
 
       final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
       tracker.addTo(gm);
@@ -328,7 +331,7 @@ public class ListTurnTrackerTest {
       final GameModule gm = mock(GameModule.class);
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
 
-      testSetup();
+      testSetup(gm);
 
       final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
       tracker.addTo(gm);
@@ -363,7 +366,7 @@ public class ListTurnTrackerTest {
       final GameModule gm = mock(GameModule.class);
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
 
-      testSetup();
+      testSetup(gm);
 
       final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
       tracker.addTo(gm);
@@ -403,7 +406,7 @@ public class ListTurnTrackerTest {
       final GameModule gm = mock(GameModule.class);
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
 
-      testSetup();
+      testSetup(gm);
 
       final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
       tracker.addTo(gm);
@@ -458,7 +461,7 @@ public class ListTurnTrackerTest {
       final GameModule gm = mock(GameModule.class);
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
 
-      testSetup();
+      testSetup(gm);
 
       final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
       tracker.addTo(gm);
@@ -510,7 +513,7 @@ public class ListTurnTrackerTest {
       final GameModule gm = mock(GameModule.class);
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
 
-      testSetup();
+      testSetup(gm);
 
       final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
       tracker.addTo(gm);
