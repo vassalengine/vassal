@@ -1,26 +1,25 @@
 package VASSAL.build.module.turn;
 
 import VASSAL.build.GameModule;
-import VASSAL.build.module.GameState;
 import VASSAL.preferences.Prefs;
 import VASSAL.preferences.PrefsEditor;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
-import javax.swing.JToolBar;
-
-import java.awt.Component;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class CounterTurnTrackerTest {
 
   // A helper class to access protected functions.
   static class TurnTrackerAccessor extends TurnTracker {
+
+    public TurnTrackerAccessor() {
+      super();
+      turnWindow = new TurnWindow();
+    }
+
     public void next() {
       super.next();
     }
@@ -34,17 +33,8 @@ public class CounterTurnTrackerTest {
     }
   }
 
-  // Mocked GameModule members required by the TurnTracker constructor.
-  final JToolBar toolbar = mock(JToolBar.class);
-  final GameState gameState = new GameState();
+  // Mocked GameModule members required by the TurnTracker
   final Prefs prefs = new Prefs(new PrefsEditor(), "");
-
-  private void testSetup(GameModule gm) {
-    when(gm.getPrefs()).thenReturn(prefs);
-    when(gm.getGameState()).thenReturn(gameState);
-    when(gm.getToolBar()).thenReturn(toolbar);
-    when(toolbar.add(any(Component.class))).thenReturn(null);
-  }
 
   @Test
   public void nestedCounterTurnTracker() {
@@ -54,10 +44,9 @@ public class CounterTurnTrackerTest {
       final GameModule gm = mock(GameModule.class);
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
 
-      testSetup(gm);
+      when(gm.getPrefs()).thenReturn(prefs);
 
       TurnTrackerAccessor tracker = new TurnTrackerAccessor();
-      tracker.addTo(gm);
 
       // Top level counter wraps with sequence 10, 30, 50.
       CounterTurnLevel level1 = new CounterTurnLevel();
