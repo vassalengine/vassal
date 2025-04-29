@@ -5,6 +5,7 @@
 
 3.7.17 - ???
 
+* 14026: Upgraded jsoup to 1.20.1
 * 14023: Upgraded checkstyle to 10.23.1
 * 14017: Upgraded httpclient5 to 5.4.4
 * 13995: Upgraded commons-io to 2.19.0

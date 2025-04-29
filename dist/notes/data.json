@@ -37,6 +37,7 @@
       "improvements": [
       ],
       "other": [
+        { "num": 14026, "desc": "Upgraded jsoup to 1.20.1" },
         { "num": 14023, "desc": "Upgraded checkstyle to 10.23.1" },
         { "num": 14017, "desc": "Upgraded httpclient5 to 5.4.4" },
         { "num": 13995, "desc": "Upgraded commons-io to 2.19.0" },
