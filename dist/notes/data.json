@@ -17,16 +17,30 @@
   "changes": [
     {
       "in": "3.8.0-beta1",
-      "since": "3.7.16",
+      "since": "3.7.17",
       "new_features": [
         { "num": 12944, "desc": "Add pieceCount to the map auto reporter" },
         { "num": 12763, "desc": "Added ModuleGameFileName property" }
+      ],
+      "improvements": [
+      ],
+      "other": [
+      ]
+    },
+    {
+      "in": "3.7.17",
+      "since": "3.7.16",
+      "new_features": [
       ],
       "bug_fixes": [
       ],
       "improvements": [
       ],
       "other": [
+        { "num": 14023, "desc": "Upgraded checkstyle to 10.23.1" },
+        { "num": 14017, "desc": "Upgraded httpclient5 to 5.4.4" },
+        { "num": 13995, "desc": "Upgraded commons-io to 2.19.0" },
+        { "num": 13989, "desc": "Upgraded junit-bom to 5.12.2" }
       ]
     }
   ]
