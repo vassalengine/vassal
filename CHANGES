@@ -1,5 +1,7 @@
 3.7.17 - ???
 
+* 14027: Upgraded bundled Mac, x86_64 Windows Java to 23.0.2+7; x86 Windows
+    Java to 21.0.7+9; aarch64 Windows Java to 23.0.2+9
 * 14026: Upgraded jsoup to 1.20.1
 * 14023: Upgraded checkstyle to 10.23.1
 * 14017: Upgraded httpclient5 to 5.4.4
