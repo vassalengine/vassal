@@ -1,5 +1,10 @@
 3.7.17 - ???
 
+* 14023: Upgraded checkstyle to 10.23.1
+* 14017: Upgraded httpclient5 to 5.4.4
+* 13995: Upgraded commons-io to 2.19.0
+* 13989: Upgraded junit-bom to 5.12.2
+
 3.7.16 - 9 April 2025
 
 * 13970: Replaced deprecated PMD rules
