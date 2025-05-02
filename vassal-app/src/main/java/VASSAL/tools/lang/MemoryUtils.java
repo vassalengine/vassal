@@ -21,11 +21,16 @@ import java.lang.management.ManagementFactory;
 
 import com.sun.management.OperatingSystemMXBean;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A utility class for getting information about system memory.
  */
 public class MemoryUtils {
   protected MemoryUtils() {}
+
+  private static final Logger logger = LoggerFactory.getLogger(MemoryUtils.class);
 
   /**
    * Gets the amount of physical memory (RAM) in this machine, in bytes.
@@ -34,11 +39,18 @@ public class MemoryUtils {
    * cannot be queried.
    */
   public static long getPhysicalMemory() {
-    final Object o = ManagementFactory.getOperatingSystemMXBean();
-    if (o instanceof OperatingSystemMXBean) {
-      final OperatingSystemMXBean osb = (OperatingSystemMXBean) o;
-      return osb.getTotalPhysicalMemorySize();
+    try {
+      final Object o = ManagementFactory.getOperatingSystemMXBean();
+      if (o instanceof OperatingSystemMXBean) {
+        final OperatingSystemMXBean osb = (OperatingSystemMXBean) o;
+        return osb.getTotalPhysicalMemorySize();
+      }
     }
+    catch (Exception e) {
+      // There can be unchecked exceptions due to bugs in Java, argh.
+      logger.error("Failed to get amount of physical RAM", e);
+    }
+
     // We didn't get a com.sun.management.OperatingSystemMXBean.
     return -1;
   }
