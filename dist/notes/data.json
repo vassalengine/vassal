@@ -33,6 +33,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 14031, "desc": "Prevent NPEs when checking for amount of physical memory" }
       ],
       "improvements": [
       ],
