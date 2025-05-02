@@ -1,5 +1,6 @@
 3.7.17 - ???
 
+* 14031: Prevent NPEs when checking for amount of physical memory
 * 14027: Upgraded bundled Mac, x86_64 Windows Java to 23.0.2+7; x86 Windows
     Java to 21.0.7+9; aarch64 Windows Java to 23.0.2+9
 * 14026: Upgraded jsoup to 1.20.1
