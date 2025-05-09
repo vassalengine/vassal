@@ -156,7 +156,9 @@ replace +
 trim +
 toLowerCase +
 toUpperCase +
-toString
+toString +
+toInteger + 
+toFloat
 
 |{ LocationName.length() } +
 { States.contains("Arkansas") } +
