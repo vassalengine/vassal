@@ -37,6 +37,8 @@ So the first character in a string is always character 0, not character 1
 | <<#toUpperCase,toUpperCase>> | Convert lowercase characters in a string to uppercase
 | <<#toLowerCase,toLowerCase>> | Convert uppercase characters in a string to lowercase
 | <<#toString,toString>> | Convert a non-string to a String
+| <<#toInteger,toInteger>> | Convert a non-string to a String
+| <<#toFloat,toFloat>> | Convert a non-string to a String
 |===
 
 ==== Functions
@@ -243,5 +245,19 @@ Return the string equivalent of the number in proprety _ANumber_.
 
  If x = 2, x.toString() = "2"
  if x = false, x.toString = "false"
+
+|toInteger(string) |
+[#toInteger]
+Converts a string to an integer number or returns zero if conversion is impossible. +
+
+[example]
+toInteger("123") +
+
+|toFloat(string) |
+[#toFloat]
+Converts a string to a float number or returns zero if conversion is impossible. +
+
+[example]
+toFloat("123.45") +
 
 |===
