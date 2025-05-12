@@ -79,15 +79,24 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
   @Override
   protected void setLow() {
     current = first;
+    rolledOver = false;
+    if (current < active.length && !active[current]) {
+      // first is not active. Find the next active index.
+      advance();
+    }
     super.setLow();
   }
 
   @Override
   protected void setHigh() {
+    rolledOver = false;
     current = first;
     current--;
     if (current < 0) {
       current = list.length - 1;
+    }
+    if (current < active.length && !active[current]) {
+      retreat();
     }
     super.setHigh();
   }
