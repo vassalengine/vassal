@@ -37,8 +37,8 @@ So the first character in a string is always character 0, not character 1
 | <<#toUpperCase,toUpperCase>> | Convert lowercase characters in a string to uppercase
 | <<#toLowerCase,toLowerCase>> | Convert uppercase characters in a string to lowercase
 | <<#toString,toString>> | Convert a non-string to a String
-| <<#toInteger,toInteger>> | Convert a non-string to a String
-| <<#toFloat,toFloat>> | Convert a non-string to a String
+| <<#toInteger,toInteger>> | Convert a string to an integer number
+| <<#toFloat,toFloat>> | Convert a string to a float number
 |===
 
 ==== Functions
