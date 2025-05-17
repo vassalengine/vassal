@@ -975,7 +975,7 @@ public class GameState implements CommandEncoder {
         pool.schedule(() -> {
           System.out.println("waited three seconds");
           try {
-            Robot rob = new Robot();
+            final Robot rob = new Robot();
             rob.keyPress(KeyEvent.VK_ENTER);
             rob.keyRelease(KeyEvent.VK_ENTER);
             System.out.println("enter pressed");
