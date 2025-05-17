@@ -20,6 +20,7 @@ import VASSAL.Info;
 import VASSAL.build.AbstractBuildable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
+import VASSAL.build.module.Chatter.DisplayText;
 import VASSAL.build.module.map.ImageSaver;
 import VASSAL.build.module.metadata.AbstractMetaData;
 import VASSAL.build.module.metadata.MetaDataFactory;
@@ -1099,6 +1100,11 @@ public class GameState implements CommandEncoder {
         final Command c = bl.logInput.get(bl.nextInput++);
         c.execute();
         g.sendAndLog(c);
+        // System.out.println("Command type: " + c.getClass().getName());
+        if (c instanceof DisplayText || c instanceof NullCommand) {
+          System.out.println("Skipping non-screenshot-worthy command " + c.getClass().getName());
+          continue;
+        }
         afterEachReplay.run();
       }
       bl.stepAction.setEnabled(false);
