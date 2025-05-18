@@ -20,6 +20,8 @@ import VASSAL.Info;
 import VASSAL.build.AbstractBuildable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
+import VASSAL.build.module.Chatter.DisplayText;
+import VASSAL.build.module.map.ImageSaver;
 import VASSAL.build.module.metadata.AbstractMetaData;
 import VASSAL.build.module.metadata.MetaDataFactory;
 import VASSAL.build.module.metadata.SaveMetaData;
@@ -50,6 +52,8 @@ import VASSAL.tools.WarningDialog;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.LogAndSaveFileFilter;
+import VASSAL.tools.filechooser.LogFileFilter;
+import VASSAL.tools.filechooser.SaveFileFilter;
 import VASSAL.tools.io.DeobfuscatingInputStream;
 import VASSAL.tools.io.ObfuscatingOutputStream;
 import VASSAL.tools.io.ZipArchive;
@@ -67,7 +71,10 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+
+import java.awt.AWTException;
 import java.awt.Cursor;
+import java.awt.Robot;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -75,6 +82,7 @@ import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.InvalidDnDOperationException;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -87,6 +95,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -98,6 +107,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -234,6 +248,24 @@ public class GameState implements CommandEncoder {
       }
     };
 
+    final Action createScreenshotsOfSaves = new AbstractAction("Load folder of VSAV files and create screenshots of initial state for each file") {
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        createVSAVScreenshots();
+      }
+
+    };
+
+    final Action createMapAnimationOfGame = new AbstractAction("Load folder of VLOG files and create screenshots for each move in each file") {
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        createGameAnimation();
+      }
+
+    };
+
     saveGame = new AbstractAction(Resources.getString("GameState.save_game")) {
       private static final long serialVersionUID = 1L;
 
@@ -304,6 +336,8 @@ public class GameState implements CommandEncoder {
     mm.addAction("GameState.close_game", closeGame);
     mm.addAction("GameState.load_and_fast_forward", loadAndFastForward);
     mm.addAction("GameState.load_and_append", loadAndAppend);
+    mm.addAction("GameState.create_game_animation", createMapAnimationOfGame);
+    mm.addAction("GameState.create_save_screenshots", createScreenshotsOfSaves);
 
     saveGame.setEnabled(gameStarting);
     saveGameAs.setEnabled(gameStarting);
@@ -908,15 +942,153 @@ public class GameState implements CommandEncoder {
     recentGamesConf.setValue(rgs.subList(Math.max(0, end - max), end).toArray(new String[0]));
   }
 
+  // TODO: hacky workaround
+  private int i = 0;
+
+  // Only make screenshots for the following map ID
+  private static final String RELEVANT_MAP_ID = "Map0";
+
+  private static final ScheduledExecutorService pool = Executors.newScheduledThreadPool(1);
+  /**
+   * Loads a set of VSAV files in a folder and makes a screenshot of the initial state of each. 
+   * @throws AWTException 
+   * @throws InterruptedException 
+   */
+  private void createVSAVScreenshots() {
+    final FileChooser fc = GameModule.getGameModule().getDirectoryChooser();
+    if (fc.showOpenDialog(GameModule.getGameModule().getPlayerWindow()) != FileChooser.APPROVE_OPTION) return;
+    System.out.println(fc.getCurrentDirectory().getAbsolutePath());
+    System.out.println(fc.getSelectedFile().getAbsolutePath());
+
+    final List<File> saveFiles = Stream.of(fc.getSelectedFile().listFiles(new SaveFileFilter()))
+      .sorted(Comparator.naturalOrder())
+      .collect(Collectors.toList())
+    ;
+
+    final Boolean oldStartNewLogfileSetting = (Boolean) GameModule.getGameModule().getPrefs().getValue(BasicLogger.PROMPT_NEW_LOG_START);
+    GameModule.getGameModule().getPrefs().setValue(BasicLogger.PROMPT_NEW_LOG_START, Boolean.FALSE);
+
+    try {
+      for (final File saveFile : saveFiles) {
+        System.out.println("Processing savefile " + saveFile.getName());
+
+        pool.schedule(() -> {
+          System.out.println("waited three seconds");
+          try {
+            final Robot rob = new Robot();
+            rob.keyPress(KeyEvent.VK_ENTER);
+            rob.keyRelease(KeyEvent.VK_ENTER);
+            System.out.println("enter pressed");
+          }
+          catch (AWTException e) {
+            e.printStackTrace();
+          }
+        }, 3000, TimeUnit.MILLISECONDS);
+        loadGame(saveFile, false, true);
+        System.out.println("file loaded");
+        for (final VASSAL.build.module.Map map : VASSAL.build.module.Map.getMapList()) {
+          if (!map.mapID.equals(RELEVANT_MAP_ID)) {
+            continue;
+          }
+
+          final String path = Paths.get(
+            fc.getSelectedFile().getAbsolutePath(), 
+            saveFile.getName() + "-" + map.mapID + ".png"
+          ).toString();
+          System.out.println("Saving image to " + path);
+          final File mapPictureFile = new File(path);
+          new ImageSaver(map).writeMapAsImage(mapPictureFile);
+        }
+        // closeGame();
+      }
+    }
+    finally {
+      GameModule.getGameModule().getPrefs().setValue(BasicLogger.PROMPT_NEW_LOG_START, oldStartNewLogfileSetting);
+      System.out.println("Done");
+    }
+  }
+
+  /**
+   * Loads a series of game files in a folder and makes a screenshot for each move in each file. 
+   * Those screenshots can then be made into an animation at the end
+   * 
+   * Make sure to set the zoom level (in vassal) to your desired setting before starting the screen shot generation
+   * 
+   * (optional) Cut playarea from complete map pictures (when only part of the map is used)
+   mogrify -format 'png' -crop 5587x3698+5846+3734 +repage -verbose *-Map0.png
+   mogrify -format 'png' +repage *-Map0.png
+   * (optional) Add filename watermark to top right of the image:
+   mogrify -format 'png' -font Liberation-Sans -fill white -undercolor '#00000080' -pointsize 26 -gravity NorthEast -annotate +10+10 %t *-Map0.png
+   * make images into a webm video
+   ffmpeg -f image2 -framerate 1 -pattern_type glob -i "*-Map0.png" output.webm
+   * 
+   * Video creation with watermark in one step didn't get it to run yet)
+   ffmpeg \
+    -f image2 \
+    -pattern_type glob \
+    -export_path_metadata 1 \
+    -i '*.png' \
+    -vf "drawtext=text='%{metadata\:lavf.image2dec.source_basename\:NA}'" \
+    -y ./output.webm
+   */
+  private void createGameAnimation() {
+    final Boolean oldStartNewLogfileSetting = (Boolean) GameModule.getGameModule().getPrefs().getValue(BasicLogger.PROMPT_NEW_LOG_END);
+    GameModule.getGameModule().getPrefs().setValue(BasicLogger.PROMPT_NEW_LOG_END, Boolean.FALSE);
+    try {
+      final FileChooser fc = GameModule.getGameModule().getDirectoryChooser();
+      if (fc.showOpenDialog(GameModule.getGameModule().getPlayerWindow()) != FileChooser.APPROVE_OPTION) return;
+      System.out.println(fc.getCurrentDirectory().getAbsolutePath());
+      System.out.println(fc.getSelectedFile().getAbsolutePath());
+
+      final List<File> logFiles = Stream.of(fc.getSelectedFile().listFiles(new LogFileFilter()))
+        .sorted(Comparator.naturalOrder())
+        .collect(Collectors.toList())
+      ;
+      
+      for (final File logFile : logFiles) {
+        System.out.println("Processing logfile " + logFile.getName());
+
+        // TODO: can we somehow skip non-movement commands?
+        loadFastForward(false, () -> loadGame(logFile, true, true), () -> {
+          i = i + 1;
+          for (final VASSAL.build.module.Map map : VASSAL.build.module.Map.getMapList()) {
+            if (!map.mapID.equals(RELEVANT_MAP_ID)) {
+              continue;
+            }
+
+            final String path = Paths.get(
+              fc.getSelectedFile().getAbsolutePath(), 
+              // make i zero padded!
+              logFile.getName() + "-" + String.format("%03d", i) + "-" + map.mapID + ".png"
+            ).toString();
+            System.out.println("Saving image to " + path);
+            final File mapPictureFile = new File(path);
+            new ImageSaver(map).writeMapAsImage(mapPictureFile);
+          }   
+        });
+        this.i = 0;
+      }
+      
+    }
+    finally {
+      GameModule.getGameModule().getPrefs().setValue(BasicLogger.PROMPT_NEW_LOG_END, oldStartNewLogfileSetting);
+    }
+
+  }
+
+  private void loadFastForward(boolean append) {
+    loadFastForward(append, () -> loadGame(false, true), () -> {});
+  }
+
   /**
    * Load a VLOG, and starts a new VLOG from the same *initial* state, fast forward to the end of the log (while retaining
    * same initial state and likewise retaining the existing commands in the log), and thus any new commands added are essentially
    * appended to the existing log rather than starting from some later state.
    */
-  private void loadFastForward(boolean append) {
+  private void loadFastForward(boolean append, Runnable gameLoader, Runnable afterEachReplay) {
     fastForwarding = true;
 
-    loadGame(false, true); // First load the old game or log, forcing it to all happen foreground
+    gameLoader.run(); // First load the old game or log, forcing it to all happen foreground
 
     final GameModule g = GameModule.getGameModule();
     final BasicLogger bl = g.getBasicLogger();
@@ -930,6 +1102,12 @@ public class GameState implements CommandEncoder {
         final Command c = bl.logInput.get(bl.nextInput++);
         c.execute();
         g.sendAndLog(c);
+        // System.out.println("Command type: " + c.getClass().getName());
+        if (c instanceof DisplayText || c instanceof NullCommand) {
+          System.out.println("Skipping non-screenshot-worthy command " + c.getClass().getName());
+          continue;
+        }
+        afterEachReplay.run();
       }
       bl.stepAction.setEnabled(false);
 
