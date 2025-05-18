@@ -1012,8 +1012,10 @@ public class GameState implements CommandEncoder {
    * Loads a series of game files in a folder and makes a screenshot for each move in each file. 
    * Those screenshots can then be made into an animation at the end
    * 
+   * Make sure to set the zoom level (in vassal) to your desired setting before starting the screen shot generation
+   * 
    * (optional) Cut playarea from complete map pictures (when only part of the map is used)
-   mogrify -format 'png' -crop 2173x1005+3543+938 +repage *-Map0.png
+   mogrify -format 'png' -crop 5587x3698+5846+3734 +repage -verbose *-Map0.png
    mogrify -format 'png' +repage *-Map0.png
    * (optional) Add filename watermark to top right of the image:
    mogrify -format 'png' -font Liberation-Sans -fill white -undercolor '#00000080' -pointsize 26 -gravity NorthEast -annotate +10+10 %t *-Map0.png
