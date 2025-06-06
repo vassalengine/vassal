@@ -125,11 +125,6 @@
             <version>1.0</version>
         </dependency>
         <dependency>
-            <groupId>org.netbeans</groupId>
-            <artifactId>wizard</artifactId>
-            <version>0.998.1</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-artifact</artifactId>
             <version>3.9.9</version>
@@ -378,6 +373,7 @@
                 </executions>
             </plugin>
             <plugin>
+              <!-- This does not work with Java 25 -->
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
                 <configuration>
