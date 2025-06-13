@@ -1,5 +1,6 @@
 3.7.17 - ???
 
+* 14111: Fixed bad link to Global Properties docs page
 * 14096: Fixed typos in regex examples
 * 14055: Upgraded bundled Mac, x86_64 Windows Java to 24.0.1+9; aarch64
     Windows Java to 24.0.1+11
