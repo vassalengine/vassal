@@ -249,6 +249,10 @@ public class LaunchButton extends JButton implements Auditable {
         text += "[" + NamedHotKeyConfigurer.getString(keyListener.getKeyStroke()) + "]"; //$NON-NLS-1$ //$NON-NLS-2$
       }
     }
+    // Don't show empty tooltips
+    if (text != null && text.trim().isEmpty()) {
+      text = null;
+    }
     super.setToolTipText(text);
   }
 
