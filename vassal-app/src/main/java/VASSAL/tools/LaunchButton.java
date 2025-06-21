@@ -26,6 +26,7 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.script.expression.Auditable;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.Icon;
 import javax.swing.JButton;
@@ -250,7 +251,7 @@ public class LaunchButton extends JButton implements Auditable {
       }
     }
     // Don't show empty tooltips
-    if (text != null && text.trim().isEmpty()) {
+    if (StringUtils.isBlank(text)) {
       text = null;
     }
     super.setToolTipText(text);
