@@ -156,9 +156,7 @@ replace +
 trim +
 toLowerCase +
 toUpperCase +
-toString +
-toInteger + 
-toFloat
+toString
 
 |{ LocationName.length() } +
 { States.contains("Arkansas") } +
@@ -178,6 +176,11 @@ toFloat
 
 |See the <<ExpressionString.adoc#top,String Function>> page for examples and more information about String Functions.
 
+|*Number* |
+ToInteger + 
+ToFloat| {ToInteger("123")}
+{ToFloat("123.7")}
+| Number functions convert a string to an integer or to a float number.
 |*Sum and Count* |SumStack +
 CountStack +
 
