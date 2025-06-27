@@ -1700,27 +1700,11 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       result = Integer.parseInt(value.toString());
     }
     catch (Exception e) {
-      reportIllegalNumber(src, function, value, e);
+      final String message = "Illegal number in call to Beanshell function " + function + ". " + ((src instanceof Decorator) ? "Piece= [" + ((Decorator) src).getProperty(BasicPiece.BASIC_NAME) + "]. " : ""); //NON-NLS
+      final String data = "Data=[" + value.toString() + "]."; //NON-NLS
+      ErrorDialog.dataWarning(new BadDataReport(message, data, e));
     }
     return result;
-  }
-
-  private float parseFloat(Object src, String function, Object value, float dflt) {
-    float result = dflt;
-    try {
-      result = NumberUtils.toFloat(value.toString(), 0f);
-    }
-    catch (Exception e) {
-      reportIllegalNumber(src, function, value, e);
-    }
-    return result;
-  }
-
-  private static void reportIllegalNumber(final Object src, final String function, final Object value, final Exception e) {
-    final String message = "Illegal number in call to Beanshell function " +
-            function + ". " + ((src instanceof Decorator) ? "Piece= [" + ((Decorator) src).getProperty(BasicPiece.BASIC_NAME) + "]. " : ""); //NON-NLS
-    final String data = "Data=[" + value.toString() + "]."; //NON-NLS
-    ErrorDialog.dataWarning(new BadDataReport(message, data, e));
   }
 
   /*
@@ -1731,11 +1715,11 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    */
 
   public Object toInteger(Object src, Object stringToConvert) {
-    return parseInt(src, "toInteger", stringToConvert, 0);
+    return stringToConvert != null ? NumberUtils.toInt(stringToConvert.toString()) : 0;
   }
 
   public Object toFloat(Object src, Object stringToConvert) {
-    return parseFloat(src, "toFloat", stringToConvert, 0f);
+    return stringToConvert != null ? NumberUtils.toFloat(stringToConvert.toString()) : 0;
   }
 
   /*
