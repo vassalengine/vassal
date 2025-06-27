@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -376,4 +377,43 @@ public class ExpressionInterpreterTest {
     }
   }
 
+  @Test
+  void givenWholeNumberAsString_whenToInteger_thenReturnInt() throws ExpressionException {
+    assertEquals(123, new ExpressionInterpreter("ToInteger(\"123\") + 7").toInteger(null, "123"));
+  }
+
+  @Test
+  void givenFloatingPointNumberAsString_whenToInteger_thenReturnZero() throws ExpressionException {
+    assertEquals(0, new ExpressionInterpreter("ToInteger(\"123\") + 7").toInteger(null, "123.7"));
+  }
+
+  @Test
+  void givenWord_whenToInteger_thenReturnZero() throws ExpressionException {
+    assertEquals(0, new ExpressionInterpreter("ToInteger(\"123\") + 7").toInteger(null, "something"));
+  }
+
+  @Test
+  void givenEmpty_whenToInteger_thenReturnZero() throws ExpressionException {
+    assertEquals(0, new ExpressionInterpreter("ToInteger(\"123\") + 7").toInteger(null, ""));
+  }
+
+  @Test
+  void givenFloatingPointNumberAsString_whenToFloat_thenReturnFloat() throws ExpressionException {
+    assertEquals(123.7f, new ExpressionInterpreter("{ToFloat(\"123.7\") + 7.1}").toFloat(null, "123.7"));
+  }
+
+  @Test
+  void givenIntegerNumberAsString_whenToFloat_thenReturnFloat() throws ExpressionException {
+    assertEquals(123f, new ExpressionInterpreter("{ToFloat(\"123.7\") + 7.1}").toFloat(null, "123"));
+  }
+
+  @Test
+  void givenWord_whenToFloat_thenReturnZero() throws ExpressionException {
+    assertEquals(0f, new ExpressionInterpreter("{ToFloat(\"123.7\") + 7.1}").toFloat(null, "something"));
+  }
+
+  @Test
+  void givenEmpty_whenToFloat_thenReturnZero() throws ExpressionException {
+    assertEquals(0f, new ExpressionInterpreter("{ToFloat(\"123.7\") + 7.1}").toFloat(null, ""));
+  }
 }
