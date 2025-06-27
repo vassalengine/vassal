@@ -207,8 +207,10 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     addFunction(stringMenu, ".toUpperCase", Resources.getString("Editor.BeanShell.StoUpperCase"), new String[] {Resources.getString("Editor.BeanShell.target_string")}, "()"); //NON-NLS
     addFunction(stringMenu, ".toLowerCase", Resources.getString("Editor.BeanShell.StoLowerCase"), new String[] {Resources.getString("Editor.BeanShell.target_string")}, "()"); //NON-NLS
     addFunction(stringMenu, ".toString", Resources.getString("Editor.BeanShell.Stostring"), new String[] { Resources.getString("Editor.BeanShell.target_string") }, "()"); //NON-NLS
-    addFunction(stringMenu, "toInteger", Resources.getString("Editor.BeanShell.Stointeger"), new String[] { Resources.getString("Editor.BeanShell.target_string") }, "(string)"); //NON-NLS
-    addFunction(stringMenu, "toFloat", Resources.getString("Editor.BeanShell.Stofloat"), new String[] { Resources.getString("Editor.BeanShell.target_string") }, "(string)"); //NON-NLS
+
+    final JMenu numberMenu = new JMenu(Resources.getString("Editor.BeanShell.number"));
+    addFunction(numberMenu, "ToInteger", Resources.getString("Editor.BeanShell.Stointeger"), new String[] { Resources.getString("Editor.BeanShell.target_string") }, "(string)"); //NON-NLS
+    addFunction(numberMenu, "ToFloat", Resources.getString("Editor.BeanShell.Stofloat"), new String[] { Resources.getString("Editor.BeanShell.target_string") }, "(string)"); //NON-NLS
 
     final JMenu randomMenu = new JMenu(Resources.getString("Editor.BeanShell.random"));
     addFunction(randomMenu, "Random", Resources.getString("Editor.BeanShell.random1"), new String[] { Resources.getString("Editor.BeanShell.randomhi") }, "(x)"); //NON-NLS
@@ -373,6 +375,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     functionMenu.add(propMenu);
     functionMenu.add(randomMenu);
     functionMenu.add(stringMenu);
+    functionMenu.add(numberMenu);
     functionMenu.add(countMenu);
     functionMenu.add(rangeMenu);
 
