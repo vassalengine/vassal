@@ -8,7 +8,7 @@
 === Number Functions
 
 ==== Overview
-Vassal provides a set of functions to convert a string to a number.
+Vassal provides a function to convert a string to a number.
 
 If there are any errors during conversion, then a number of 0 will be reported.
 
@@ -21,19 +21,14 @@ If there are any errors during conversion, then a number of 0 will be reported.
 |===
 |*Number* |Convert a string to a number. +
 
-|ToInteger(string) |
+|ToNumber(string) |
 [#ToInteger]
-Converts a string to an integer number or returns zero if conversion is impossible. +
+Converts a string to a number or returns zero if conversion is impossible. +
 
 [example]
-ToInteger("123") +
+ToNumber("123") +
+ToNumber("123.45") +
 
-|ToFloat(string) |
-[#ToFloat]
-Converts a string to a float number or returns zero if conversion is impossible. +
-
-[example]
-ToFloat("123.45") +
 
 |===
 
