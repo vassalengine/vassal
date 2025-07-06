@@ -1700,11 +1700,15 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       result = Integer.parseInt(value.toString());
     }
     catch (Exception e) {
-      final String message = "Illegal number in call to Beanshell function " + function + ". " + ((src instanceof Decorator) ? "Piece= [" + ((Decorator) src).getProperty(BasicPiece.BASIC_NAME) + "]. " : ""); //NON-NLS
-      final String data = "Data=[" + value.toString() + "]."; //NON-NLS
-      ErrorDialog.dataWarning(new BadDataReport(message, data, e));
+      reportIllegalNumber(src, function, value, e);
     }
     return result;
+  }
+
+  private void reportIllegalNumber(final Object src, final String function, final Object value, final Exception e) {
+    final String message = "Illegal number in call to Beanshell function " + function + ". " + ((src instanceof Decorator) ? "Piece= [" + ((Decorator) src).getProperty(BasicPiece.BASIC_NAME) + "]. " : ""); //NON-NLS
+    final String data = "Data=[" + value.toString() + "]."; //NON-NLS
+    ErrorDialog.dataWarning(new BadDataReport(message, data, e));
   }
 
   /*
@@ -1714,12 +1718,14 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * toFloat(stringToConvert)     - convert given String to float or to zero if conversion is impossible
    */
 
-  public Object toInteger(Object src, Object stringToConvert) {
-    return stringToConvert != null ? NumberUtils.toInt(stringToConvert.toString()) : 0;
-  }
-
-  public Object toFloat(Object src, Object stringToConvert) {
-    return stringToConvert != null ? NumberUtils.toFloat(stringToConvert.toString()) : 0;
+  public Object toNumber(Object src, Object stringToConvert) {
+    try {
+      return NumberUtils.createNumber((String) stringToConvert);
+    }
+    catch (NumberFormatException e) {
+      reportIllegalNumber(src, "ToNumber", stringToConvert, e);
+    }
+    return 0;
   }
 
   /*
