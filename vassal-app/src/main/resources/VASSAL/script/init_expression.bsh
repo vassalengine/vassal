@@ -811,14 +811,8 @@ Sleep(Object ms) {
  * Callbacks to Vassal to convert Strings to Integers or Floats
  */
 
-ToInteger(Object stringToConvert) {
+ToNumber(Object stringToConvert) {
   _interp = this.caller.namespace.getVariable("_interp");
   _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.toInteger(_source, stringToConvert));
-}
-
-ToFloat(Object stringToConvert) {
-  _interp = this.caller.namespace.getVariable("_interp");
-  _source = this.caller.namespace.getVariable("_source");
-  return unwrap(_interp.toFloat(_source, stringToConvert));
+  return unwrap(_interp.toNumber(_source, stringToConvert));
 }
