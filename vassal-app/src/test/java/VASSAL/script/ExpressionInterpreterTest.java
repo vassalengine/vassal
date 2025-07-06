@@ -291,6 +291,10 @@ public class ExpressionInterpreterTest {
       result = interpreter.evaluate();
       assertThat(result, is(greaterThanOrEqualTo("-1")));
       assertThat(result, is(lessThanOrEqualTo("1")));
+
+      interpreter = new ExpressionInterpreter("Random(\"NaN\")");
+      result = interpreter.evaluate();
+      assertEquals("1", result);
     }
   }
 
@@ -376,60 +380,44 @@ public class ExpressionInterpreterTest {
       assertThat("Count on named map", result, is(equalTo("2")));
     }
   }
+  
+  private String evaluate(String expression) throws ExpressionException{
+    ExpressionInterpreter interpreter = new ExpressionInterpreter(expression);
+    return interpreter.evaluate();
+  }
 
   @Test
   void givenWholeNumberAsString_whenToInteger_thenReturnInt() throws ExpressionException {
-    ExpressionInterpreter interpreter = new ExpressionInterpreter("ToInteger(\"123\") + 7");
-    String result = interpreter.evaluate();
-    assertEquals("130", result);
+    assertEquals("130", evaluate("ToNumber(\"123\") + 7"));
   }
 
   @Test
   void givenFloatingPointNumberAsString_whenToInteger_thenReturnZero() throws ExpressionException {
-    ExpressionInterpreter interpreter = new ExpressionInterpreter("ToInteger(\"123.7\")");
-    String result = interpreter.evaluate();
-    assertEquals("0", result);
+    assertEquals("123.7", evaluate("ToNumber(\"123.7\")"));
+  }
+
+  @Test
+  void givenFloatingPointNumberAsStringWithQualifier_whenToInteger_thenReturnZero() throws ExpressionException {
+    assertEquals("123.7", evaluate("ToNumber(\"123.7f\")"));
+  }
+
+  @Test
+  void givenOctalPointNumberAsStringWithQualifier_whenToInteger_thenReturnZero() throws ExpressionException {
+    assertEquals("452", evaluate("ToNumber(\"0704\")"));
+  }
+
+  @Test
+  void givenHexadecimalPointNumberAsStringWithQualifier_whenToInteger_thenReturnZero() throws ExpressionException {
+    assertEquals("452", evaluate("ToNumber(\"0x1C4\")"));
   }
 
   @Test
   void givenWord_whenToInteger_thenReturnZero() throws ExpressionException {
-    ExpressionInterpreter interpreter = new ExpressionInterpreter("ToInteger(\"something\")");
-    String result = interpreter.evaluate();
-    assertEquals("0", result);
+    assertEquals("0", evaluate("ToNumber(\"NaN\")"));
   }
 
   @Test
   void givenEmpty_whenToInteger_thenReturnZero() throws ExpressionException {
-    ExpressionInterpreter interpreter = new ExpressionInterpreter("ToInteger(\"\")");
-    String result = interpreter.evaluate();
-    assertEquals("0", result);
-  }
-
-  @Test
-  void givenFloatingPointNumberAsString_whenToFloat_thenReturnFloat() throws ExpressionException {
-    ExpressionInterpreter interpreter = new ExpressionInterpreter("ToFloat(\"123.7\")");
-    String result = interpreter.evaluate();
-    assertEquals("123.7", result);
-  }
-
-  @Test
-  void givenIntegerNumberAsString_whenToFloat_thenReturnFloat() throws ExpressionException {
-    ExpressionInterpreter interpreter = new ExpressionInterpreter("ToFloat(\"123\")");
-    String result = interpreter.evaluate();
-    assertEquals("123.0", result);
-  }
-
-  @Test
-  void givenWord_whenToFloat_thenReturnZero() throws ExpressionException {
-    ExpressionInterpreter interpreter = new ExpressionInterpreter("ToFloat(\"something\")");
-    String result = interpreter.evaluate();
-    assertEquals("0.0", result);
-  }
-
-  @Test
-  void givenEmpty_whenToFloat_thenReturnZero() throws ExpressionException {
-    ExpressionInterpreter interpreter = new ExpressionInterpreter("ToFloat(\"\")");
-    String result = interpreter.evaluate();
-    assertEquals("0.0", result);
+    assertEquals("0", evaluate("ToNumber(\"\")"));
   }
 }
