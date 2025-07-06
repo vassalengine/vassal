@@ -209,8 +209,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     addFunction(stringMenu, ".toString", Resources.getString("Editor.BeanShell.Stostring"), new String[] { Resources.getString("Editor.BeanShell.target_string") }, "()"); //NON-NLS
 
     final JMenu numberMenu = new JMenu(Resources.getString("Editor.BeanShell.number"));
-    addFunction(numberMenu, "ToInteger", Resources.getString("Editor.BeanShell.Stointeger"), new String[] { Resources.getString("Editor.BeanShell.target_string") }, "(string)"); //NON-NLS
-    addFunction(numberMenu, "ToFloat", Resources.getString("Editor.BeanShell.Stofloat"), new String[] { Resources.getString("Editor.BeanShell.target_string") }, "(string)"); //NON-NLS
+    addFunction(numberMenu, "ToNumber", Resources.getString("Editor.BeanShell.Stonumber"), new String[] { Resources.getString("Editor.BeanShell.target_string") }, "(string)"); //NON-NLS
 
     final JMenu randomMenu = new JMenu(Resources.getString("Editor.BeanShell.random"));
     addFunction(randomMenu, "Random", Resources.getString("Editor.BeanShell.random1"), new String[] { Resources.getString("Editor.BeanShell.randomhi") }, "(x)"); //NON-NLS
