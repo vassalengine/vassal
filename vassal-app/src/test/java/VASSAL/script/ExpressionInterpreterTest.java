@@ -379,41 +379,57 @@ public class ExpressionInterpreterTest {
 
   @Test
   void givenWholeNumberAsString_whenToInteger_thenReturnInt() throws ExpressionException {
-    assertEquals(123, new ExpressionInterpreter("ToInteger(\"123\") + 7").toInteger(null, "123"));
+    ExpressionInterpreter interpreter = new ExpressionInterpreter("ToInteger(\"123\") + 7");
+    String result = interpreter.evaluate();
+    assertEquals("130", result);
   }
 
   @Test
   void givenFloatingPointNumberAsString_whenToInteger_thenReturnZero() throws ExpressionException {
-    assertEquals(0, new ExpressionInterpreter("ToInteger(\"123\") + 7").toInteger(null, "123.7"));
+    ExpressionInterpreter interpreter = new ExpressionInterpreter("ToInteger(\"123.7\")");
+    String result = interpreter.evaluate();
+    assertEquals("0", result);
   }
 
   @Test
   void givenWord_whenToInteger_thenReturnZero() throws ExpressionException {
-    assertEquals(0, new ExpressionInterpreter("ToInteger(\"123\") + 7").toInteger(null, "something"));
+    ExpressionInterpreter interpreter = new ExpressionInterpreter("ToInteger(\"something\")");
+    String result = interpreter.evaluate();
+    assertEquals("0", result);
   }
 
   @Test
   void givenEmpty_whenToInteger_thenReturnZero() throws ExpressionException {
-    assertEquals(0, new ExpressionInterpreter("ToInteger(\"123\") + 7").toInteger(null, ""));
+    ExpressionInterpreter interpreter = new ExpressionInterpreter("ToInteger(\"\")");
+    String result = interpreter.evaluate();
+    assertEquals("0", result);
   }
 
   @Test
   void givenFloatingPointNumberAsString_whenToFloat_thenReturnFloat() throws ExpressionException {
-    assertEquals(123.7f, new ExpressionInterpreter("{ToFloat(\"123.7\") + 7.1}").toFloat(null, "123.7"));
+    ExpressionInterpreter interpreter = new ExpressionInterpreter("ToFloat(\"123.7\")");
+    String result = interpreter.evaluate();
+    assertEquals("123.7", result);
   }
 
   @Test
   void givenIntegerNumberAsString_whenToFloat_thenReturnFloat() throws ExpressionException {
-    assertEquals(123f, new ExpressionInterpreter("{ToFloat(\"123.7\") + 7.1}").toFloat(null, "123"));
+    ExpressionInterpreter interpreter = new ExpressionInterpreter("ToFloat(\"123\")");
+    String result = interpreter.evaluate();
+    assertEquals("123.0", result);
   }
 
   @Test
   void givenWord_whenToFloat_thenReturnZero() throws ExpressionException {
-    assertEquals(0f, new ExpressionInterpreter("{ToFloat(\"123.7\") + 7.1}").toFloat(null, "something"));
+    ExpressionInterpreter interpreter = new ExpressionInterpreter("ToFloat(\"something\")");
+    String result = interpreter.evaluate();
+    assertEquals("0.0", result);
   }
 
   @Test
   void givenEmpty_whenToFloat_thenReturnZero() throws ExpressionException {
-    assertEquals(0f, new ExpressionInterpreter("{ToFloat(\"123.7\") + 7.1}").toFloat(null, ""));
+    ExpressionInterpreter interpreter = new ExpressionInterpreter("ToFloat(\"\")");
+    String result = interpreter.evaluate();
+    assertEquals("0.0", result);
   }
 }
