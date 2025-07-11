@@ -387,42 +387,42 @@ public class ExpressionInterpreterTest {
   }
 
   @Test
-  void givenWholeNumberAsString_whenToInteger_thenReturnInt() throws ExpressionException {
+  void givenWholeNumberAsString_whenToNumber_thenReturnInt() throws ExpressionException {
     assertEquals("130", evaluate("ToNumber(\"123\") + 7"));
   }
 
   @Test
-  void givenFloatingPointNumberAsString_whenToInteger_thenReturnZero() throws ExpressionException {
+  void givenFloatingPointNumberAsString_whenToNumber_thenReturnNumber() throws ExpressionException {
     assertEquals("123.7", evaluate("ToNumber(\"123.7\")"));
   }
 
   @Test
-  void givenFloatingPointNumberAsStringWithQualifier_whenToInteger_thenReturnZero() throws ExpressionException {
+  void givenFloatingPointNumberAsStringWithQualifier_whenToNumber_thenReturnNumber() throws ExpressionException {
     assertEquals("123.7", evaluate("ToNumber(\"123.7f\")"));
   }
 
   @Test
-  void givenOctalPointNumberAsStringWithQualifier_whenToInteger_thenReturnZero() throws ExpressionException {
+  void givenOctalPointNumberAsStringWithQualifier_whenToNumber_thenReturnAsDecimal() throws ExpressionException {
     assertEquals("704", evaluate("ToNumber(\"0704\")"));
   }
 
   @Test
-  void givenHexadecimalPointNumberAsStringWithQualifier_whenToInteger_thenReturnZero() throws ExpressionException {
+  void givenHexadecimalPointNumberAsStringWithQualifier_whenToNumber_thenReturnNumber() throws ExpressionException {
     assertEquals("452", evaluate("ToNumber(\"0x1C4\")"));
   }
 
   @Test
-  void givenWord_whenToInteger_thenReturnZero() throws ExpressionException {
+  void givenWord_whenToNumber_thenReturnZero() throws ExpressionException {
     assertEquals("0", evaluate("ToNumber(\"NaN\")"));
   }
 
   @Test
-  void givenEmpty_whenToInteger_thenReturnZero() throws ExpressionException {
+  void givenEmpty_whenToNumber_thenReturnZero() throws ExpressionException {
     assertEquals("0", evaluate("ToNumber(\"\")"));
   }
 
   @Test
-  void givenNull_whenToInteger_thenReturnZero() throws ExpressionException {
+  void givenNull_whenToNumber_thenReturnZero() throws ExpressionException {
     assertEquals("0", evaluate("ToNumber(null);"));
   }
 }
