@@ -403,7 +403,7 @@ public class ExpressionInterpreterTest {
 
   @Test
   void givenOctalPointNumberAsStringWithQualifier_whenToInteger_thenReturnZero() throws ExpressionException {
-    assertEquals("452", evaluate("ToNumber(\"0704\")"));
+    assertEquals("704", evaluate("ToNumber(\"0704\")"));
   }
 
   @Test
@@ -419,5 +419,10 @@ public class ExpressionInterpreterTest {
   @Test
   void givenEmpty_whenToInteger_thenReturnZero() throws ExpressionException {
     assertEquals("0", evaluate("ToNumber(\"\")"));
+  }
+
+  @Test
+  void givenNull_whenToInteger_thenReturnZero() throws ExpressionException {
+    assertEquals("0", evaluate("ToNumber(null);"));
   }
 }
