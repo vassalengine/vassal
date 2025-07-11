@@ -1707,7 +1707,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
   private void reportIllegalNumber(final Object src, final String function, final Object value, final Exception e) {
     final String message = "Illegal number in call to Beanshell function " + function + ". " + ((src instanceof Decorator) ? "Piece= [" + ((Decorator) src).getProperty(BasicPiece.BASIC_NAME) + "]. " : ""); //NON-NLS
-    final String data = "Data=[" + value.toString() + "]."; //NON-NLS
+    String reportedValue = value != null ? value.toString() : "null";
+    final String data = "Data=[" + reportedValue + "]."; //NON-NLS
     ErrorDialog.dataWarning(new BadDataReport(message, data, e));
   }
 
@@ -1720,7 +1721,11 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
   public Object toNumber(Object src, Object stringToConvert) {
     try {
-      return NumberUtils.createNumber((String) stringToConvert);
+      String toConvert = StringUtils.startsWith((String) stringToConvert, "0x") 
+              ? (String) stringToConvert
+              : StringUtils.stripStart((String) stringToConvert, "0");
+      if (toConvert == null) toConvert = "null";
+      return NumberUtils.createNumber(toConvert);
     }
     catch (NumberFormatException e) {
       reportIllegalNumber(src, "ToNumber", stringToConvert, e);
