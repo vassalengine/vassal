@@ -208,6 +208,9 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     addFunction(stringMenu, ".toLowerCase", Resources.getString("Editor.BeanShell.StoLowerCase"), new String[] {Resources.getString("Editor.BeanShell.target_string")}, "()"); //NON-NLS
     addFunction(stringMenu, ".toString", Resources.getString("Editor.BeanShell.Stostring"), new String[] { Resources.getString("Editor.BeanShell.target_string") }, "()"); //NON-NLS
 
+    final JMenu numberMenu = new JMenu(Resources.getString("Editor.BeanShell.number"));
+    addFunction(numberMenu, "ToNumber", Resources.getString("Editor.BeanShell.Stonumber"), new String[] { Resources.getString("Editor.BeanShell.target_string") }, "(string)"); //NON-NLS
+
     final JMenu randomMenu = new JMenu(Resources.getString("Editor.BeanShell.random"));
     addFunction(randomMenu, "Random", Resources.getString("Editor.BeanShell.random1"), new String[] { Resources.getString("Editor.BeanShell.randomhi") }, "(x)"); //NON-NLS
     addFunction(randomMenu, "Random", Resources.getString("Editor.BeanShell.random2"), new String[] { Resources.getString("Editor.BeanShell.randomlo"), Resources.getString("Editor.BeanShell.randomhi") }, "(x, y)"); //NON-NLS
@@ -371,6 +374,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     functionMenu.add(propMenu);
     functionMenu.add(randomMenu);
     functionMenu.add(stringMenu);
+    functionMenu.add(numberMenu);
     functionMenu.add(countMenu);
     functionMenu.add(rangeMenu);
 
@@ -712,7 +716,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
    * a) An EditablePiece has been supplied as the target
    * OR
    * b) The calling BeanShellExpressionConfigurer is for a Property Match Expression (since PME get executed on Pieces)
-   * 
+   *
    * @return true if we show piece specific functions
    */
   protected boolean isPieceContext() {

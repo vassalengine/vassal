@@ -1700,11 +1700,41 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       result = Integer.parseInt(value.toString());
     }
     catch (Exception e) {
-      final String message = "Illegal number in call to Beanshell function " + function + ". " + ((src instanceof Decorator) ? "Piece= [" + ((Decorator) src).getProperty(BasicPiece.BASIC_NAME) + "]. " : ""); //NON-NLS
-      final String data = "Data=[" + value.toString() + "]."; //NON-NLS
-      ErrorDialog.dataWarning(new BadDataReport(message, data, e));
+      reportIllegalNumber(src, function, value, e);
     }
     return result;
+  }
+
+  private void reportIllegalNumber(final Object src, final String function, final Object value, final Exception e) {
+    final String message = "Illegal number in call to Beanshell function " + function + ". " + ((src instanceof Decorator) ? "Piece= [" + ((Decorator) src).getProperty(BasicPiece.BASIC_NAME) + "]. " : ""); //NON-NLS
+    String reportedValue = value != null ? value.toString() : "null";
+    final String data = "Data=[" + reportedValue + "]."; //NON-NLS
+    ErrorDialog.dataWarning(new BadDataReport(message, data, e));
+  }
+
+  /*
+   * toInteger & toFloat
+   *
+   * toInteger(stringToConvert)   - convert given String to integer or to zero if conversion is impossible
+   * toFloat(stringToConvert)     - convert given String to float or to zero if conversion is impossible
+   */
+
+  public Object toNumber(Object src, Object stringToConvert) {
+    try {
+      String toConvert = convertOctalToDecimal((String) stringToConvert);
+      if (toConvert == null) toConvert = "null";
+      return NumberUtils.createNumber(toConvert);
+    }
+    catch (NumberFormatException e) {
+      reportIllegalNumber(src, "ToNumber", stringToConvert, e);
+    }
+    return 0;
+  }
+
+  private static String convertOctalToDecimal(final String stringToConvert) {
+    return StringUtils.startsWith(stringToConvert, "0x")
+            ? stringToConvert
+            : StringUtils.stripStart(stringToConvert, "0");
   }
 
   /*

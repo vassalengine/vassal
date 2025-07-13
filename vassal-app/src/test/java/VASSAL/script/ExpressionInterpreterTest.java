@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -290,6 +291,10 @@ public class ExpressionInterpreterTest {
       result = interpreter.evaluate();
       assertThat(result, is(greaterThanOrEqualTo("-1")));
       assertThat(result, is(lessThanOrEqualTo("1")));
+
+      interpreter = new ExpressionInterpreter("Random(\"NaN\")");
+      result = interpreter.evaluate();
+      assertEquals("1", result);
     }
   }
 
@@ -375,5 +380,49 @@ public class ExpressionInterpreterTest {
       assertThat("Count on named map", result, is(equalTo("2")));
     }
   }
+  
+  private String evaluate(String expression) throws ExpressionException{
+    ExpressionInterpreter interpreter = new ExpressionInterpreter(expression);
+    return interpreter.evaluate();
+  }
 
+  @Test
+  void givenWholeNumberAsString_whenToNumber_thenReturnInt() throws ExpressionException {
+    assertEquals("130", evaluate("ToNumber(\"123\") + 7"));
+  }
+
+  @Test
+  void givenFloatingPointNumberAsString_whenToNumber_thenReturnNumber() throws ExpressionException {
+    assertEquals("123.7", evaluate("ToNumber(\"123.7\")"));
+  }
+
+  @Test
+  void givenFloatingPointNumberAsStringWithQualifier_whenToNumber_thenReturnNumber() throws ExpressionException {
+    assertEquals("123.7", evaluate("ToNumber(\"123.7f\")"));
+  }
+
+  @Test
+  void givenOctalPointNumberAsStringWithQualifier_whenToNumber_thenReturnAsDecimal() throws ExpressionException {
+    assertEquals("704", evaluate("ToNumber(\"0704\")"));
+  }
+
+  @Test
+  void givenHexadecimalPointNumberAsStringWithQualifier_whenToNumber_thenReturnNumber() throws ExpressionException {
+    assertEquals("452", evaluate("ToNumber(\"0x1C4\")"));
+  }
+
+  @Test
+  void givenWord_whenToNumber_thenReturnZero() throws ExpressionException {
+    assertEquals("0", evaluate("ToNumber(\"NaN\")"));
+  }
+
+  @Test
+  void givenEmpty_whenToNumber_thenReturnZero() throws ExpressionException {
+    assertEquals("0", evaluate("ToNumber(\"\")"));
+  }
+
+  @Test
+  void givenNull_whenToNumber_thenReturnZero() throws ExpressionException {
+    assertEquals("0", evaluate("ToNumber(null);"));
+  }
 }
