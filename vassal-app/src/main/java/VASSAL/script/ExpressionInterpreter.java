@@ -1721,9 +1721,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
   public Object toNumber(Object src, Object stringToConvert) {
     try {
-      String toConvert = StringUtils.startsWith((String) stringToConvert, "0x") 
-              ? (String) stringToConvert
-              : StringUtils.stripStart((String) stringToConvert, "0");
+      String toConvert = convertOctalToDecimal((String) stringToConvert);
       if (toConvert == null) toConvert = "null";
       return NumberUtils.createNumber(toConvert);
     }
@@ -1731,6 +1729,12 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       reportIllegalNumber(src, "ToNumber", stringToConvert, e);
     }
     return 0;
+  }
+
+  private static String convertOctalToDecimal(final String stringToConvert) {
+    return StringUtils.startsWith(stringToConvert, "0x")
+            ? stringToConvert
+            : StringUtils.stripStart(stringToConvert, "0");
   }
 
   /*
