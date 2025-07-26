@@ -50,10 +50,9 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * This component places a button into the controls window toolbar.
@@ -323,25 +322,22 @@ public class DiceButton extends AbstractToolbarItem {
       }
     }
 
-    // === NEW: Simplified summary construction using a Map ===
-    final Map<Integer, Integer> resultCounts = new HashMap<>();
+    final SortedMap<Integer, Integer> resultCounts = new TreeMap<>();
     for (final int result : keepDice) {
       resultCounts.merge(result, 1, Integer::sum);
     }
 
     final StringBuilder summaryVal = new StringBuilder();
-    final Integer[] sortedKeys = resultCounts.keySet().toArray(new Integer[0]);
-    Arrays.sort(sortedKeys); // Sort keys numerically
 
-    for (int i = 0; i < sortedKeys.length; i++) {
-      if (i > 0) {
+    for (final int key : resultCounts.keySet()) {
+      if (key != resultCounts.firstKey()) {
         summaryVal.append(Resources.getString("Dice.summary_separator"))
                 .append(' ');
       }
-      summaryVal.append(sortedKeys[i])
+      summaryVal.append(key)
               .append(' ')
               .append(Resources.getString("Dice.summary_times"))
-              .append(resultCounts.get(sortedKeys[i]));
+              .append(resultCounts.get(key));
     }
 
     // Send results
