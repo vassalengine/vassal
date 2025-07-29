@@ -1,16 +1,19 @@
 3.7.17 - ???
 
+* 14168: Upgraded junit-bom to 5.13.4
+* 14150: Upgraded commons-lang3 3.18.0
 * 14111: Fixed bad link to Global Properties docs page
 * 14096: Fixed typos in regex examples
+* 14079: Upgraded exec-maven-plugin to 3.5.1
+* 14069: Upgraded httpclient5 to 5.5
 * 14055: Upgraded bundled Mac, x86_64 Windows Java to 24.0.1+9; aarch64
     Windows Java to 24.0.1+11
+* 14041: Upgraded batik to 1.19
 * 14031: Prevent NPEs when checking for amount of physical memory
 * 14027: Upgraded bundled x86 Windows Java to 21.0.7+9
 * 14026: Upgraded jsoup to 1.20.1
 * 14023: Upgraded checkstyle to 10.23.1
-* 14017: Upgraded httpclient5 to 5.4.4
 * 13995: Upgraded commons-io to 2.19.0
-* 13989: Upgraded junit-bom to 5.12.2
 
 3.7.16 - 9 April 2025
 
