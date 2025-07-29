@@ -6,6 +6,7 @@
 3.7.17 - ???
 
 * 14168: Upgraded junit-bom to 5.13.4
+* 14134: Upgraded checkstyle to 10.26.1
 * 14150: Upgraded commons-lang3 3.18.0
 * 14111: Fixed bad link to Global Properties docs page
 * 14096: Fixed typos in regex examples
