@@ -30,6 +30,7 @@
       "other": [
         { "num": 14168, "desc": "Upgraded junit-bom to 5.13.4" },
         { "num": 14150, "desc": "Upgraded commons-lang3 to 3.18.0" },
+        { "num": 14134, "desc": "Upgraded checkstyle to 10.26.1" },
         { "num": 14079, "desc": "Upgraded exec-maven-plugin to 3.5.1" },
         { "num": 14069, "desc": "Upgraded httpclient5 to 5.5" },
         { "num": 14055, "desc": "Upgraded bundled Mac, x86_64 Windows Java to 24.0.1+9; aarch64 Windows Java to 24.0.1+11" },
