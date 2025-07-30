@@ -22,8 +22,8 @@ pushd "$JDKDIR"
 ZULU_URL='https://cdn.azul.com/zulu/bin'
 
 TEMURIN_URL='https://github.com/adoptium/temurin24-binaries/releases/download'
-TEMURIN_VERSION=jdk-24.0.1+9
-TEMURIN_FILENAME_VERSION=24.0.1_9
+TEMURIN_VERSION=jdk-24.0.2+12
+TEMURIN_FILENAME_VERSION=24.0.2_12
 
 BELLSOFT_URL='https://download.bell-sw.com/java/24.0.2%2B12'
 BELLSOFT_VERSION=24.0.2+12
@@ -40,10 +40,11 @@ unzip $filename
 mv $BELLSOFT_WIN32_DIR windows-x86_32
 
 # Windows x86_64
-filename="OpenJDK24U-jdk_x64_windows_hotspot_$TEMURIN_FILENAME_VERSION.zip"
+filename="OpenJDK24U-jmods_x64_windows_hotspot_$TEMURIN_FILENAME_VERSION.zip"
 curl -L -O "$TEMURIN_URL/$TEMURIN_VERSION/$filename"
 unzip $filename
-mv $TEMURIN_VERSION windows-x86_64
+mkdir windows-x86_64
+mv $TEMURIN_VERSION-jmods windows-x86_64/jmods
 
 # Windows aarch64
 filename="bellsoft-jdk$BELLSOFT_VERSION-windows-aarch64.zip"
@@ -52,16 +53,16 @@ unzip $filename
 mv $BELLSOFT_DIR windows-aarch64
 
 # MacOS x86_64
-filename="OpenJDK24U-jdk_x64_mac_hotspot_$TEMURIN_FILENAME_VERSION.tar.gz"
+filename="OpenJDK24U-jmods_x64_mac_hotspot_$TEMURIN_FILENAME_VERSION.tar.gz"
 curl -L -O "$TEMURIN_URL/$TEMURIN_VERSION/$filename"
-mkdir macos-x86_64
-tar -C macos-x86_64 --strip-components=1 -xvf $filename
+mkdir -p macos-x86_64/Contents/Home/jmods
+tar -C macos-x86_64/Contents/Home/jmods --strip-components=1 -xvf $filename
 
 # MacOS aarch64
-filename="OpenJDK24U-jdk_aarch64_mac_hotspot_$TEMURIN_FILENAME_VERSION.tar.gz"
+filename="OpenJDK24U-jmods_aarch64_mac_hotspot_$TEMURIN_FILENAME_VERSION.tar.gz"
 curl -L -O "$TEMURIN_URL/$TEMURIN_VERSION/$filename"
-mkdir macos-aarch64
-tar -C macos-aarch64 --strip-components=1 -xvf $filename
+mkdir -p macos-aarch64/Contents/Home/jmods
+tar -C macos-aarch64/Contents/Home/jmods --strip-components=1 -xvf $filename
 
 popd
 
