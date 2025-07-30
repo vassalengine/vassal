@@ -25,13 +25,13 @@ TEMURIN_URL='https://github.com/adoptium/temurin24-binaries/releases/download'
 TEMURIN_VERSION=jdk-24.0.1+9
 TEMURIN_FILENAME_VERSION=24.0.1_9
 
-BELLSOFT_URL='https://download.bell-sw.com/java/24.0.1%2B11'
-BELLSOFT_VERSION=24.0.1+11
-BELLSOFT_DIR=jdk-24.0.1
+BELLSOFT_URL='https://download.bell-sw.com/java/24.0.2%2B12'
+BELLSOFT_VERSION=24.0.2+12
+BELLSOFT_DIR=jdk-24.0.2
 
-BELLSOFT_WIN32_URL='https://download.bell-sw.com/java/21.0.7%2B9'
-BELLSOFT_WIN32_VERSION=21.0.7+9
-BELLSOFT_WIN32_DIR=jdk-21.0.7
+BELLSOFT_WIN32_URL='https://download.bell-sw.com/java/21.0.8%2B12'
+BELLSOFT_WIN32_VERSION=21.0.8+12
+BELLSOFT_WIN32_DIR=jdk-21.0.8
 
 # Windows x86_32
 filename="bellsoft-jdk$BELLSOFT_WIN32_VERSION-windows-i586.zip"
