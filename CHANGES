@@ -9,6 +9,7 @@
     21.0.8+12 (Windws x86_32)
 * 14182: Upgraded maven-clean-plugin to 3.5.0
 * 14181: Upgraded license-maven-plugin to 2.6.0
+* 14180: Upgraded maven-pmd-plugin to 3.27.0
 * 14179: Upgraded maven-artifact to 3.9.9
 * 14178: Upgraded maven-enforcer-plugin to 3.6.1
 * 14168: Upgraded junit-bom to 5.13.4
