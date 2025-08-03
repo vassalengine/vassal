@@ -28,12 +28,12 @@
         { "num": 14096, "desc": "Fixed typos in regex examples" }
       ],
       "other": [
+        { "num": 14183, "desc": "Upgraded bundled Java to 24.0.2+12 (Windows x86_64, aarch64; Mac), 21.0.8+12 (Windws x86_32)" },
         { "num": 14168, "desc": "Upgraded junit-bom to 5.13.4" },
         { "num": 14150, "desc": "Upgraded commons-lang3 to 3.18.0" },
         { "num": 14134, "desc": "Upgraded checkstyle to 10.26.1" },
         { "num": 14079, "desc": "Upgraded exec-maven-plugin to 3.5.1" },
         { "num": 14069, "desc": "Upgraded httpclient5 to 5.5" },
-        { "num": 14055, "desc": "Upgraded bundled Mac, x86_64 Windows Java to 24.0.1+9; aarch64 Windows Java to 24.0.1+11" },
         { "num": 14041, "desc": "Upgraded batik to 1.19" },
         { "num": 14027, "desc": "Upgraded bundled x86 Windows Java to 21.0.7+9" },
         { "num": 14026, "desc": "Upgraded jsoup to 1.20.1" },

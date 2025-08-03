@@ -1,5 +1,7 @@
 3.7.17 - ???
 
+* 14183: Upgraded bundled Java to 24.0.2+12 (Windows x86_64, aarch64; Mac),
+    21.0.8+12 (Windws x86_32)
 * 14168: Upgraded junit-bom to 5.13.4
 * 14134: Upgraded checkstyle to 10.26.1
 * 14150: Upgraded commons-lang3 3.18.0
@@ -7,8 +9,6 @@
 * 14096: Fixed typos in regex examples
 * 14079: Upgraded exec-maven-plugin to 3.5.1
 * 14069: Upgraded httpclient5 to 5.5
-* 14055: Upgraded bundled Mac, x86_64 Windows Java to 24.0.1+9; aarch64
-    Windows Java to 24.0.1+11
 * 14041: Upgraded batik to 1.19
 * 14031: Prevent NPEs when checking for amount of physical memory
 * 14027: Upgraded bundled x86 Windows Java to 21.0.7+9
