@@ -29,6 +29,10 @@
       ],
       "other": [
         { "num": 14183, "desc": "Upgraded bundled Java to 24.0.2+12 (Windows x86_64, aarch64; Mac), 21.0.8+12 (Windws x86_32)" },
+        { "num": 14182, "desc": "Upgraded maven-clean-plugin to 3.5.0" },
+        { "num": 14181, "desc": "Upgraded license-maven-plugin to 2.6.0" },
+        { "num": 14179, "desc": "Upgraded maven-artifact to 3.9.9" },
+        { "num": 14178, "desc": "Upgraded maven-enforcer-plugin to 3.6.1" },
         { "num": 14168, "desc": "Upgraded junit-bom to 5.13.4" },
         { "num": 14150, "desc": "Upgraded commons-lang3 to 3.18.0" },
         { "num": 14134, "desc": "Upgraded checkstyle to 10.26.1" },
