@@ -731,15 +731,15 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     private final StringConfigurer peekCommandInput;
     private final BooleanConfigurer autoPeekInput;
     private final TraitConfigPanel controls = new TraitConfigPanel();
-    private final String[] optionNames = {"B", "P", "I", "2", "U"}; // NON-NLS
-    private final String[] optionKeys = {
+    private static final String[] optionNames = {"B", "P", "I", "2", "U"}; // NON-NLS
+    private static final String[] optionKeys = {
       "Editor.Obscurable.background",
       "Editor.Obscurable.plain",
       "Editor.Obscurable.inset",
       "Editor.Obscurable.inset2",
       "Editor.Obscurable.use_image"
     };
-    private final char[] optionChars = {BACKGROUND, PEEK, INSET, INSET2, IMAGE};
+    private static final char[] optionChars = {BACKGROUND, PEEK, INSET, INSET2, IMAGE};
     private final ImageSelector imagePicker;
     private final PieceAccessConfigurer accessConfig;
     private final JPanel showDisplayOption;
