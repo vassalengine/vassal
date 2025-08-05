@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
@@ -23,7 +24,11 @@ import VASSAL.script.expression.ExpressionException;
 
 import java.security.SecureRandom;
 import java.util.List;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
@@ -276,7 +281,6 @@ public class ExpressionInterpreterTest {
   @Test
   public void random() throws ExpressionException {
 
-    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
       GameModule gm = mock(GameModule.class);
       when(gm.getRNG()).thenReturn(new SecureRandom());
 
@@ -295,12 +299,10 @@ public class ExpressionInterpreterTest {
       interpreter = new ExpressionInterpreter("Random(\"NaN\")");
       result = interpreter.evaluate();
       assertEquals("1", result);
-    }
   }
 
   @Test
   public void isRandom() throws ExpressionException {
-    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
       GameModule gm = mock(GameModule.class);
       when(gm.getRNG()).thenReturn(new SecureRandom());
 
@@ -316,7 +318,6 @@ public class ExpressionInterpreterTest {
       interpreter = new ExpressionInterpreter("IsRandom(100)");
       result = interpreter.evaluate();
       assertThat(result, is(equalTo("true")));
-    }
   }
 
   private static final String MATCH_PROP = "match";
@@ -387,42 +388,78 @@ public class ExpressionInterpreterTest {
   }
 
   @Test
-  void givenWholeNumberAsString_whenToNumber_thenReturnInt() throws ExpressionException {
-    assertEquals("130", evaluate("ToNumber(\"123\") + 7"));
+  void givenWholeNumberAsString_whenToNumber_thenReturnInt() throws ExpressionException {    
+    verifyEvaluatedWithWarning("ToNumber(\"123\") + 7", "130", 0);
   }
 
   @Test
   void givenFloatingPointNumberAsString_whenToNumber_thenReturnNumber() throws ExpressionException {
-    assertEquals("123.7", evaluate("ToNumber(\"123.7\")"));
+    verifyEvaluatedWithWarning("ToNumber(\"123.7\")", "123.7", 0);
   }
 
   @Test
   void givenFloatingPointNumberAsStringWithQualifier_whenToNumber_thenReturnNumber() throws ExpressionException {
-    assertEquals("123.7", evaluate("ToNumber(\"123.7f\")"));
+    verifyEvaluatedWithWarning("ToNumber(\"123.7f\")", "123.7", 0);
   }
 
   @Test
-  void givenOctalPointNumberAsStringWithQualifier_whenToNumber_thenReturnAsDecimal() throws ExpressionException {
-    assertEquals("704", evaluate("ToNumber(\"0704\")"));
+  void givenOctalPointNumberAsStringWithQualifier_whenToNumber_thenReturnAsDecimal() throws ExpressionException {   
+    verifyEvaluatedWithWarning("ToNumber(\"0704\")", "704", 0);
   }
 
   @Test
   void givenHexadecimalPointNumberAsStringWithQualifier_whenToNumber_thenReturnNumber() throws ExpressionException {
-    assertEquals("452", evaluate("ToNumber(\"0x1C4\")"));
+    verifyEvaluatedWithWarning("ToNumber(\"0x1C4\")", "0", 1);
   }
 
+  MockedStatic<GameModule> staticGm;
+  GameModule gm;
+  
+  @BeforeEach
+  void setUp() {
+    staticGm  = Mockito.mockStatic(GameModule.class);
+    gm = getGameModule(staticGm);
+  }
+  
+  @AfterEach
+  void tearDown() {
+    staticGm.close();
+    gm = null;
+  }
+  
   @Test
   void givenWord_whenToNumber_thenReturnZero() throws ExpressionException {
-    assertEquals("0", evaluate("ToNumber(\"NaN\")"));
+    verifyEvaluatedWithWarning("ToNumber(\"NaN\")", "0", 1);
   }
 
   @Test
   void givenEmpty_whenToNumber_thenReturnZero() throws ExpressionException {
-    assertEquals("0", evaluate("ToNumber(\"\")"));
+    verifyEvaluatedWithWarning("ToNumber(\"\")", "0", 1);
   }
 
   @Test
   void givenNull_whenToNumber_thenReturnZero() throws ExpressionException {
-    assertEquals("0", evaluate("ToNumber(null);"));
+    verifyEvaluatedWithWarning("ToNumber(null);", "0", 1);
+  }
+
+  @Test
+  void givenZero_whenToNumber_thenReturnZero() throws ExpressionException {
+    verifyEvaluatedWithWarning("ToNumber(\"0\");", "0", 0);
+  }
+
+  private static GameModule getGameModule(final MockedStatic<GameModule> staticGm) {
+    GameModule gm = mock(GameModule.class);
+    staticGm.when(GameModule::getGameModule).thenReturn(gm);
+    return gm;
+  }
+
+  private static void verifyEvaluatedWithWarning(final String expression, final String expected, final int warningsExpected) throws ExpressionException {
+    try (MockedConstruction<BadDataReport> report = Mockito.mockConstruction(BadDataReport.class)) {
+      ExpressionInterpreter interpreter = new ExpressionInterpreter(expression);
+      final String result = interpreter.evaluate();
+      // Exactly one warning
+      assertEquals(warningsExpected,report.constructed().size());
+      assertEquals(expected, result);
+    }
   }
 }
