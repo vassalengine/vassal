@@ -712,14 +712,23 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       return;
     }
 
-    final TurnLevel level = getTurnLevel(currentLevel);
+    TurnLevel level = getTurnLevel(currentLevel);
+    final int initialLevel = currentLevel;
     level.advance();
-    if (level.hasRolledOver()) {
+    while (level.hasRolledOver()) {
       currentLevel++;
       if (currentLevel >= getTurnLevelCount()) {
         currentLevel = 0;
       }
-      getTurnLevel(currentLevel).setLow();
+      level = getTurnLevel(currentLevel);
+
+      if (initialLevel != currentLevel) {
+        level.setLow();
+      }
+      else {
+        // Prevent an infinite loop if all are inactive.
+        break;
+      }
     }
 
     updateTurnDisplay(NEXT);
@@ -732,14 +741,24 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       return;
     }
 
-    final TurnLevel level = getTurnLevel(currentLevel);
+    TurnLevel level = getTurnLevel(currentLevel);
+    final int initialLevel = currentLevel;
     level.retreat();
-    if (level.hasRolledOver()) {
+    while (level.hasRolledOver()) {
       currentLevel--;
       if (currentLevel < 0) {
         currentLevel = getTurnLevelCount() - 1;
       }
-      getTurnLevel(currentLevel).setHigh();
+
+      level = getTurnLevel(currentLevel);
+
+      if (initialLevel != currentLevel) {
+        level.setHigh();
+      }
+      else {
+        // Prevent an infinite loop if all are inactive.
+        break;
+      }
     }
 
     updateTurnDisplay(PREV);
