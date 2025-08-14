@@ -1,5 +1,8 @@
 3.7.17 - ???
 
+* 14192: Upgraded byte-buddy to 1.17.6
+* 14191: Upgraded jsoup to 1.21.1
+* 14190: Upgraded spotbugs-maven-plugin 4.9.3.2
 * 14183: Upgraded bundled Java to 24.0.2+12 (Windows x86_64, aarch64; Mac),
     21.0.8+12 (Windws x86_32)
 * 14182: Upgraded maven-clean-plugin to 3.5.0
@@ -17,7 +20,6 @@
 * 14041: Upgraded batik to 1.19
 * 14031: Prevent NPEs when checking for amount of physical memory
 * 14027: Upgraded bundled x86 Windows Java to 21.0.7+9
-* 14026: Upgraded jsoup to 1.20.1
 * 14023: Upgraded checkstyle to 10.23.1
 * 13995: Upgraded commons-io to 2.19.0
 
