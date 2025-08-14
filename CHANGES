@@ -8,6 +8,8 @@
 * 14192: Upgraded byte-buddy to 1.17.6
 * 14191: Upgraded jsoup to 1.21.1
 * 14190: Upgraded spotbugs-maven-plugin 4.9.3.2
+* 14189: Upgraded commons-codec to 1.19.0
+* 14188: Upgraded commons-io to 2.20.0
 * 14183: Upgraded bundled Java to 24.0.2+12 (Windows x86_64, aarch64; Mac),
     21.0.8+12 (Windws x86_32)
 * 14182: Upgraded maven-clean-plugin to 3.5.0
