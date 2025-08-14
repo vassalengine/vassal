@@ -37,6 +37,12 @@
                             <outputDirectory>${project.build.outputDirectory}</outputDirectory>
                             <backend>html</backend>
                             <preserveDirectories>true</preserveDirectories>
+                            <attributes>
+                              <!-- Disable due to bug in Ruby with
+                                   Java 17 and up - see
+                                   https://github.com/asciidoctor/asciidoctorj-pdf/issues/108 -->
+                              <optimize>false</optimize>
+                            </attributes>
                         </configuration>
                     </execution>
                     <execution>
@@ -51,6 +57,10 @@
                             <backend>pdf</backend>
                             <attributes>
                                 <project-version>${project.version}</project-version>
+                                <!-- Disable due to bug in Ruby with
+                                     Java 17 and up - see
+                                     https://github.com/asciidoctor/asciidoctorj-pdf/issues/108 -->
+                                <optimize>false</optimize>
                             </attributes>
                         </configuration>
                     </execution>
