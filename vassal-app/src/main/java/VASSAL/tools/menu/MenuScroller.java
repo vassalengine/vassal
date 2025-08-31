@@ -546,7 +546,7 @@ public class MenuScroller {
     UP(9, 1, 9),
     DOWN(1, 9, 1);
 
-    final int[] xPoints = {1, 5, 9};
+    static final int[] xPoints = {1, 5, 9};
     final int[] yPoints;
 
     MenuIcon(int... yPoints) {

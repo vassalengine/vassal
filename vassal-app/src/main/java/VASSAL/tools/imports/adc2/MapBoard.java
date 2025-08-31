@@ -2251,7 +2251,7 @@ public class MapBoard extends Importer {
   // The VASSAL BoardPicker object which is the tree parent of Board.
   private BoardPicker boardPicker;
 
-  private final byte[] drawingPriorities = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+  private static final byte[] drawingPriorities = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
   // initialize the drawing elements which must all be ArrayList<>'s.
   public MapBoard() {
