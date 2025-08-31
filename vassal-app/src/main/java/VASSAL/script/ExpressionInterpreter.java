@@ -1735,10 +1735,9 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   /*
-   * toInteger & toFloat
+   * toNumber
    *
-   * toInteger(stringToConvert)   - convert given String to integer or to zero if conversion is impossible
-   * toFloat(stringToConvert)     - convert given String to float or to zero if conversion is impossible
+   * toNumber(stringToConvert)   - convert given String to a number or to zero if conversion is impossible
    */
 
   public Object toNumber(Object src, Object stringToConvert) {
