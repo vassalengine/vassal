@@ -63,10 +63,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
+
+import static VASSAL.configure.BeanShellFunctionMenu.TO_NUMBER;
 
 /**
  *
@@ -95,6 +99,24 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   protected static final String MAGIC2 = "_plugh"; // NON-NLS
   protected static final String MAGIC3 = "_plover"; // NON-NLS
   protected static final String ERROR_PREFIX = " inline evaluation of: ``_xyzzy=_plugh();''";
+
+
+  private static final List<Function<String, Object>> toNumberConverters = new ArrayList<>();
+  static {
+    toNumberConverters.add(Integer::parseInt);
+    toNumberConverters.add(BigInteger::new);
+    toNumberConverters.add(getDoubleConverter());
+  }
+
+  private static Function<String, Object> getDoubleConverter() {
+    return value -> {
+      double result = Double.parseDouble(value);
+      if (Double.isNaN(result)) {
+        throw new RuntimeException("NaN");
+      }
+      return result;
+    };
+  }
 
   // Top-level static NameSpace shared between all ExpressionInterpreters
   // Loaded with utility methods available to all interpreters
@@ -1707,7 +1729,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
   private void reportIllegalNumber(final Object src, final String function, final Object value, final Exception e) {
     final String message = "Illegal number in call to Beanshell function " + function + ". " + ((src instanceof Decorator) ? "Piece= [" + ((Decorator) src).getProperty(BasicPiece.BASIC_NAME) + "]. " : ""); //NON-NLS
-    String reportedValue = value != null ? value.toString() : "null";
+    final String reportedValue = value != null ? value.toString() : "null";
     final String data = "Data=[" + reportedValue + "]."; //NON-NLS
     ErrorDialog.dataWarning(new BadDataReport(message, data, e));
   }
@@ -1720,21 +1742,17 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    */
 
   public Object toNumber(Object src, Object stringToConvert) {
-    try {
-      String toConvert = convertOctalToDecimal((String) stringToConvert);
-      if (toConvert == null) toConvert = "null";
-      return NumberUtils.createNumber(toConvert);
+    Exception lastException = null;
+    for (Function<String, Object> converter : toNumberConverters) {
+      try {
+        return converter.apply(stringToConvert.toString());
+      }
+      catch (Exception e) {
+        lastException = e;
+      }
     }
-    catch (NumberFormatException e) {
-      reportIllegalNumber(src, "ToNumber", stringToConvert, e);
-    }
+    reportIllegalNumber(src, TO_NUMBER, stringToConvert, lastException);
     return 0;
-  }
-
-  private static String convertOctalToDecimal(final String stringToConvert) {
-    return StringUtils.startsWith(stringToConvert, "0x")
-            ? stringToConvert
-            : StringUtils.stripStart(stringToConvert, "0");
   }
 
   /*

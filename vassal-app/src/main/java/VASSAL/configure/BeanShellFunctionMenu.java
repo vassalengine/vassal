@@ -82,6 +82,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     Resources.getString("Editor.BeanShell.warning2"),
     Resources.getString("Editor.BeanShell.warning3")
   };
+  public static final String TO_NUMBER = "ToNumber";
   protected static int maxScrollItems = 0;
   protected BeanShellExpressionConfigurer configurer;
   protected EditablePiece target;
@@ -209,7 +210,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     addFunction(stringMenu, ".toString", Resources.getString("Editor.BeanShell.Stostring"), new String[] { Resources.getString("Editor.BeanShell.target_string") }, "()"); //NON-NLS
 
     final JMenu numberMenu = new JMenu(Resources.getString("Editor.BeanShell.number"));
-    addFunction(numberMenu, "ToNumber", Resources.getString("Editor.BeanShell.Stonumber"), new String[] { Resources.getString("Editor.BeanShell.target_string") }, "(string)"); //NON-NLS
+    addFunction(numberMenu, TO_NUMBER, Resources.getString("Editor.BeanShell.Stonumber"), new String[] { Resources.getString("Editor.BeanShell.target_string") }, "(string)"); //NON-NLS
 
     final JMenu randomMenu = new JMenu(Resources.getString("Editor.BeanShell.random"));
     addFunction(randomMenu, "Random", Resources.getString("Editor.BeanShell.random1"), new String[] { Resources.getString("Editor.BeanShell.randomhi") }, "(x)"); //NON-NLS
