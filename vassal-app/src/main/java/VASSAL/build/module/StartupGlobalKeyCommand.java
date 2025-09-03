@@ -32,6 +32,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.UniqueIdManager;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,7 +49,9 @@ import java.util.List;
  * @author Pieter Geerkens, Brian Reynolds
  *
  */
-public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameComponent, CommandEncoder, UniqueIdManager.Identifyable {
+public class StartupGlobalKeyCommand extends GlobalKeyCommand
+        implements GameComponent,
+        CommandEncoder, UniqueIdManager.Identifyable, PlayerRoster.SideChangeListener {
   public static final String WHEN_TO_APPLY                   = "whenToApply";          //NON-NLS
   public static final String APPLY_FIRST_LAUNCH_OF_SESSION   = "firstLaunchOfSession"; //NON-NLS
   public static final String APPLY_EVERY_LAUNCH_OF_SESSION   = "everyLaunchOfSession"; //NON-NLS
@@ -77,6 +80,7 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
 
   private boolean hasEverApplied     = false;  // Has ever been applied during this session   (NOT saved with game state)
   private boolean hasAppliedThisGame = false;  // Has ever been applied during this *game*    (Saved with game state)
+  private String sideChangedSummary;
 
   public static class Prompt extends TranslatableStringEnum {
     @Override
@@ -149,6 +153,10 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
     super.addTo(parent);
     GameModule.getGameModule().getGameState().addGameComponent(this);
     GameModule.getGameModule().addCommandEncoder(this);
+    // Attach the listener only for the side change startup GKC.
+    if (APPLY_SIDE_CHANGE.equals(whenToApply)) {
+      GameModule.getGameModule().addSideChangeListenerToPlayerRoster(this);
+    }
   }
 
   @Override
@@ -266,6 +274,13 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
     }
   }
 
+  /**
+   * Listen for player side changes.
+   */
+  @Override
+  public void sideChanged(String oldSide, String newSide) {
+    sideChangedSummary = newSide;
+  }
 
   /**
    * Apply the command, but only if it hasn't been marked as already-applied (by whatever its when-to-apply parameters are)
@@ -282,6 +297,16 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
         return false;
       }
     }
+    else if (APPLY_SIDE_CHANGE.equals(whenToApply)) {
+      if (StringUtils.isEmpty(sideChangedSummary)) {
+        return false;
+      }
+      else {
+        sideChangedSummary = null;
+        apply();
+        return true;
+      }
+    }
     hasEverApplied = true;     // This one will be false again next time anything calls GameState.setup(true)
     hasAppliedThisGame = true; // This one will be remembered as part of the game state (i.e. even after loading a game)
     apply();
@@ -296,8 +321,13 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
     if (!APPLY_START_GAME_OR_SIDE_CHANGE.equals(whenToApply) && !APPLY_SIDE_CHANGE.equals(whenToApply)) {
       return false;
     }
-    hasEverApplied     = true;
-    hasAppliedThisGame = true;
+    if (APPLY_SIDE_CHANGE.equals(whenToApply)) {
+      sideChangedSummary = null;
+    }
+    else {
+      hasEverApplied = true;
+      hasAppliedThisGame = true;
+    }
     apply();
     return true;
   }
