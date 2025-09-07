@@ -22,7 +22,9 @@
 * 14178: Upgraded maven-enforcer-plugin to 3.6.1
 * 14168: Upgraded junit-bom to 5.13.4
 * 14150: Upgraded commons-lang3 3.18.0
+* 14115: Do not display blank or empty tooltips
 * 14111: Fixed bad link to Global Properties docs page
+* 14100: Embed the org.netbeans.*.wizard package fully
 * 14096: Fixed typos in regex examples
 * 14079: Upgraded exec-maven-plugin to 3.5.1
 * 14069: Upgraded httpclient5 to 5.5

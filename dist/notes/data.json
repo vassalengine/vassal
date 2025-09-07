@@ -36,6 +36,7 @@
         { "num": 14031, "desc": "Prevent NPEs when checking for amount of physical memory" }
       ],
       "improvements": [
+        { "num": 14115, "desc": "Do not display blank or empty tooltips" },
         { "num": 14111, "desc": "Fixed bad link to Global Properties docs page" },
         { "num": 14096, "desc": "Fixed typos in regex examples" }
       ],
@@ -56,6 +57,7 @@
         { "num": 14178, "desc": "Upgraded maven-enforcer-plugin to 3.6.1" },
         { "num": 14168, "desc": "Upgraded junit-bom to 5.13.4" },
         { "num": 14150, "desc": "Upgraded commons-lang3 to 3.18.0" },
+        { "num": 14100, "desc": "Embed the org.netbeans.*.wizard package fully" },
         { "num": 14079, "desc": "Upgraded exec-maven-plugin to 3.5.1" },
         { "num": 14069, "desc": "Upgraded httpclient5 to 5.5" },
         { "num": 14041, "desc": "Upgraded batik to 1.19" },
