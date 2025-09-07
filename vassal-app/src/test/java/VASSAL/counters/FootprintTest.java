@@ -42,7 +42,7 @@ public class FootprintTest extends DecoratorTest {
     trait.menuCommand = "xyzzy"; // NON-NLS
     trait.initiallyVisible = true;
     trait.globallyVisible = true;
-    trait.keepLastPosition = true;
+    trait.keepLastPositionOnly = true;
     trait.circleRadius = 10;
     trait.fillColor = Color.blue;
     trait.lineColor = Color.cyan;
