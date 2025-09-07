@@ -24,6 +24,7 @@
         { "num": 14031, "desc": "Prevent NPEs when checking for amount of physical memory" }
       ],
       "improvements": [
+        { "num": 14115, "desc": "Do not display blank or empty tooltips" },
         { "num": 14111, "desc": "Fixed bad link to Global Properties docs page" },
         { "num": 14096, "desc": "Fixed typos in regex examples" }
       ],
