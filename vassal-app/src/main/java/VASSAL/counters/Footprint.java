@@ -66,6 +66,7 @@ import java.util.Objects;
 public class Footprint extends MovementMarkable {
 
   public static final String ID = "footprint;"; //$NON-NLS-1$//
+  public static final String DROP_TARGET = "dropTarget";
   private KeyCommand[] commands;
 
   // State Variables (Saved in logfile/sent to opponent)
@@ -345,19 +346,38 @@ public class Footprint extends MovementMarkable {
   protected void addPoint(Point p) {
     if (keepLastPosition) {
       removeLastPositionIfLocationNameNotChanged(p);
+    } 
+    else {
+      pointList.add(p);
     }
-    pointList.add(p);
     myBoundingBox = null;
   }
 
-  private void removeLastPositionIfLocationNameNotChanged(final Point p) {
+  private void removeLastPositionIfLocationNameNotChanged(final Point actualPoint) {
+    Object dropTarget = this.getProperty(DROP_TARGET);
+    Map map = getMap();
+    if (dropTarget instanceof Point && map != null
+            && pointList != null && !pointList.isEmpty()
+            && Strings.CS.equals(map.locationName((Point) dropTarget), map.locationName(actualPoint))) {
+      return;
+    }
+    boolean addPoint = true;
     if (pointList != null && !pointList.isEmpty()) {
       Point previousPoint = pointList.get(pointList.size() - 1);
-      Map map = getMap();
+      
       if (previousPoint != null && map != null 
-              && Strings.CS.equals(map.locationName(previousPoint), map.locationName(p))) {
-        pointList.remove(previousPoint);
+              && Strings.CS.equals(map.locationName(previousPoint), map.locationName(actualPoint))
+      ) {
+        if (pointList.size() != 1) {
+          pointList.remove(previousPoint);
+        } 
+        else  {
+          addPoint = false;
+        }
       }
+    }
+    if (addPoint && pointList != null) {
+      pointList.add(actualPoint);
     }
   }
 
