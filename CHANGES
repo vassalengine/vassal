@@ -1,8 +1,11 @@
 3.7.17 - ???
 
-* 14192: Upgraded byte-buddy to 1.17.6
+* 14229: Upgraded checkstyle to 11.0.1
+* 14228: Upgraded spotbugs-maven-plugin 4.9.4.1
+* 14212: Upgraded maven-javadoc-plugin to 3.11.3
+* 14211: Upgraded byte-buddy to 1.17.7
+* 14204: Upgraded spotbugs-annotations to 4.9.4
 * 14191: Upgraded jsoup to 1.21.1
-* 14190: Upgraded spotbugs-maven-plugin 4.9.3.2
 * 14189: Upgraded commons-codec to 1.19.0
 * 14188: Upgraded commons-io to 2.20.0
 * 14183: Upgraded bundled Java to 24.0.2+12 (Windows x86_64, aarch64; Mac),
@@ -13,7 +16,6 @@
 * 14179: Upgraded maven-artifact to 3.9.9
 * 14178: Upgraded maven-enforcer-plugin to 3.6.1
 * 14168: Upgraded junit-bom to 5.13.4
-* 14134: Upgraded checkstyle to 10.26.1
 * 14150: Upgraded commons-lang3 3.18.0
 * 14111: Fixed bad link to Global Properties docs page
 * 14096: Fixed typos in regex examples

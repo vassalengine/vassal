@@ -28,9 +28,12 @@
         { "num": 14096, "desc": "Fixed typos in regex examples" }
       ],
       "other": [
-        { "num": 14192, "desc": "Upgraded byte-buddy to 1.17.6" },
+        { "num": 14229, "desc": "Upgraded checkstyle to 11.0.1" },
+        { "num": 14228, "desc": "Upgraded spotbugs-maven-plugin 4.9.4.1" },
+        { "num": 14212, "desc": "Upgraded maven-javadoc-plugin to 3.11.3" },
+        { "num": 14211, "desc": "Upgraded byte-buddy to 1.17.7" },
+        { "num": 14204, "desc": "Upgraded spotbugs-annotations to 4.9.4" },
         { "num": 14191, "desc": "Upgraded jsoup to 1.21.1" },
-        { "num": 14190, "desc": "Upgraded spotbugs-maven-plugin 4.9.3.2" },
         { "num": 14189, "desc": "Upgraded commons-codec to 1.19.0" },
         { "num": 14188, "desc": "Upgraded commons-io to 2.20.0" },
         { "num": 14183, "desc": "Upgraded bundled Java to 24.0.2+12 (Windows x86_64, aarch64; Mac), 21.0.8+12 (Windws x86_32)" },
@@ -41,7 +44,6 @@
         { "num": 14178, "desc": "Upgraded maven-enforcer-plugin to 3.6.1" },
         { "num": 14168, "desc": "Upgraded junit-bom to 5.13.4" },
         { "num": 14150, "desc": "Upgraded commons-lang3 to 3.18.0" },
-        { "num": 14134, "desc": "Upgraded checkstyle to 10.26.1" },
         { "num": 14079, "desc": "Upgraded exec-maven-plugin to 3.5.1" },
         { "num": 14069, "desc": "Upgraded httpclient5 to 5.5" },
         { "num": 14041, "desc": "Upgraded batik to 1.19" },
