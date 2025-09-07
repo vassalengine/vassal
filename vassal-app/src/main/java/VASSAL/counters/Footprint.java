@@ -91,7 +91,7 @@ public class Footprint extends MovementMarkable {
   protected int edgePointBuffer;               // How far Off-map to draw trail points (pixels)?
   protected int edgeDisplayBuffer;             // How far Off-map to draw trail lines (pixels)?
   protected String description;                // Description for this movement trail
-  protected boolean keepLastPosition = false;   // Only keep last position if location name does not change
+  protected boolean keepLastPositionOnly = false;   // Only keep last position if location name does not change
 
   // Defaults for Type variables
   protected static final char DEFAULT_TRAIL_KEY = 'T';
@@ -197,7 +197,7 @@ public class Footprint extends MovementMarkable {
     trailKeyOff = st.nextNamedKeyStroke(null);
     trailKeyClear = st.nextNamedKeyStroke(null);
     description = st.nextToken("");
-    keepLastPosition = st.nextBoolean(DEFAULT_KEEP_LAST_POSITION);
+    keepLastPositionOnly = st.nextBoolean(DEFAULT_KEEP_LAST_POSITION);
     commands = null;
     showTrailCommand = null;
     showTrailCommandOn = null;
@@ -227,7 +227,7 @@ public class Footprint extends MovementMarkable {
       .append(trailKeyOff)
       .append(trailKeyClear)
       .append(description)
-      .append(keepLastPosition)
+      .append(keepLastPositionOnly)
     ;
     return ID + se.getValue();
   }
@@ -344,7 +344,7 @@ public class Footprint extends MovementMarkable {
    * trail.
    */
   protected void addPoint(Point p) {
-    if (keepLastPosition) {
+    if (keepLastPositionOnly) {
       removeLastPositionIfLocationNameNotChanged(p);
     } 
     else {
@@ -845,7 +845,7 @@ public class Footprint extends MovementMarkable {
     if (! Objects.equals(trailKeyOff, c.trailKeyOff)) return false;
     if (! Objects.equals(trailKeyClear, c.trailKeyClear)) return false;
     if (! Objects.equals(description, c.description)) return false;
-    if (! Objects.equals(keepLastPosition, c.keepLastPosition)) return false;
+    if (! Objects.equals(keepLastPositionOnly, c.keepLastPositionOnly)) return false;
 
     if (! Objects.equals(globalVisibility, c.globalVisibility)) return false;
     if (! Objects.equals(startMapId, c.startMapId)) return false;
@@ -905,7 +905,7 @@ public class Footprint extends MovementMarkable {
       globallyVisibleConfig = new BooleanConfigurer(p.globallyVisible);
       controls.add("Editor.Footprint.trails_are_visible_to_all_players", globallyVisibleConfig);
 
-      keepLastPositionConfig = new BooleanConfigurer(p.keepLastPosition);
+      keepLastPositionConfig = new BooleanConfigurer(p.keepLastPositionOnly);
       controls.add("Editor.Footprint.keep_last_position_only", keepLastPositionConfig);
 
       circleRadiusConfig = new IntConfigurer(p.circleRadius);
