@@ -21,7 +21,8 @@
       "new_features": [
       ],
       "bug_fixes": [
-        { "num": 14031, "desc": "Prevent NPEs when checking for amount of physical memory" }
+        { "num": 14031, "desc": "Prevent NPEs when checking for amount of physical memory" },
+        { "num": 13682, "desc": "Prevent Hotkey from restarting an open log file" }
       ],
       "improvements": [
         { "num": 14115, "desc": "Do not display blank or empty tooltips" },

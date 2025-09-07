@@ -28,6 +28,7 @@
 * 14027: Upgraded bundled x86 Windows Java to 21.0.7+9
 * 14023: Upgraded checkstyle to 10.23.1
 * 13995: Upgraded commons-io to 2.19.0
+* 13682: Prevent Hotkey from restarting an open log file
 
 3.7.16 - 9 April 2025
 
