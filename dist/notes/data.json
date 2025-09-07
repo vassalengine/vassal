@@ -39,7 +39,8 @@
       "improvements": [
         { "num": 14115, "desc": "Do not display blank or empty tooltips" },
         { "num": 14111, "desc": "Fixed bad link to Global Properties docs page" },
-        { "num": 14096, "desc": "Fixed typos in regex examples" }
+        { "num": 14096, "desc": "Fixed typos in regex examples" },
+        { "num": 13036, "desc": "Add tooltip showing image file name for button icons in editor" }
       ],
       "other": [
         { "num": 14229, "desc": "Upgraded checkstyle to 11.0.1" },
