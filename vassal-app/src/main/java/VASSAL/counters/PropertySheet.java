@@ -927,11 +927,13 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     private final JButton colorCtrl;
     private final JTable propertyTable;
     private final JComboBox commitCtrl;
+    private final String previousState;
 
-    static final String[] COLUMN_NAMES = {Resources.getString("Editor.PropertySheet.name"), Resources.getString("Editor.PropertySheet.type")};
+    static final String[] COLUMN_NAMES = {Resources.getString("Editor.PropertySheet.name"), Resources.getString("Editor.PropertySheet.type"), Resources.getString("Editor.PropertySheet.state")};
     static final String[] DEFAULT_ROW = {Resources.getString("Editor.PropertySheet.new_property"), Resources.getString("Editor.PropertySheet.text")};
 
     public Ed(PropertySheet propertySheet) {
+      previousState = propertySheet.state;
       m_panel = new PropertyPanel();
       descCtrl = m_panel.addStringCtrl(Resources.getString("Editor.description_label"), propertySheet.description, "Editor.description_hint");
       menuNameCtrl = m_panel.addStringCtrl(Resources.getString("Editor.menu_command"), propertySheet.menuName, "Editor.menu_command_hint");
@@ -952,18 +954,21 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
     protected String[][] getTableData(String definition) {
       final SequenceEncoder.Decoder decoder = new SequenceEncoder.Decoder(definition, DEF_DELIMITOR);
+      final SequenceEncoder.Decoder stateDecoder = new SequenceEncoder.Decoder(previousState, STATE_DELIMITOR);
 
       int numRows = !definition.equals("") && decoder.hasMoreTokens() ? 1 : 0;
       for (int iDef = -1; (iDef = definition.indexOf(DEF_DELIMITOR, iDef + 1)) >= 0;) {
         ++numRows;
       }
 
-      final String[][] rows = new String[numRows][2];
+      final String[][] rows = new String[numRows][3];
 
       for (int iRow = 0; decoder.hasMoreTokens() && iRow < numRows; ++iRow) {
         final String token = decoder.nextToken();
+        final String stateToken = stateDecoder.nextToken();
         rows[iRow][0] = token.substring(1);
         rows[iRow][1] = TYPE_VALUES[token.charAt(0) - '0'];
+        rows[iRow][2] = stateToken;
       }
 
       return rows;
@@ -1030,13 +1035,20 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       return ID + typeEncoder.getValue();
     }
 
-    /** returns a default value-string for the given definition */
+    /** Returns the current state */
     @Override
     public String getState() {
       final StringBuilder buf = new StringBuilder();
-      buf.append(
-        String.valueOf(STATE_DELIMITOR).repeat(Math.max(0, propertyTable.getRowCount())));
-
+      for (int i = 0; i < propertyTable.getRowCount(); i++) {
+        if (i > 0) {
+          buf.append(STATE_DELIMITOR);
+        }
+        final String value = (String) propertyTable.getValueAt(i, 2);
+        if (value == null || value.isEmpty()) {
+          continue;
+        }
+        buf.append(value);
+      }
       return buf.toString();
     }
   }
