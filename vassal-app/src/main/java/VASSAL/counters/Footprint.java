@@ -354,8 +354,8 @@ public class Footprint extends MovementMarkable {
   }
 
   private void removeLastPositionIfLocationNameNotChanged(final Point actualPoint) {
-    Object dropTarget = this.getProperty(DROP_TARGET);
-    Map map = getMap();
+    final Object dropTarget = this.getProperty(DROP_TARGET);
+    final Map map = getMap();
     if (dropTarget instanceof Point && map != null
             && pointList != null && !pointList.isEmpty()
             && Strings.CS.equals(map.locationName((Point) dropTarget), map.locationName(actualPoint))) {
@@ -363,7 +363,7 @@ public class Footprint extends MovementMarkable {
     }
     boolean addPoint = true;
     if (pointList != null && !pointList.isEmpty()) {
-      Point previousPoint = pointList.get(pointList.size() - 1);
+      final Point previousPoint = pointList.get(pointList.size() - 1);
       
       if (previousPoint != null && map != null 
               && Strings.CS.equals(map.locationName(previousPoint), map.locationName(actualPoint))
