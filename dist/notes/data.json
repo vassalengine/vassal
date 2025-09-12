@@ -43,12 +43,12 @@
         { "num": 13036, "desc": "Add tooltip showing image file name for button icons in editor" }
       ],
       "other": [
+        { "num": 14234, "desc": "Upgraded jsoup to 1.21.2" },
+        { "num": 14233, "desc": "Upgraded spotbugs-maven-plugin 4.9.4.2" },
         { "num": 14229, "desc": "Upgraded checkstyle to 11.0.1" },
-        { "num": 14228, "desc": "Upgraded spotbugs-maven-plugin 4.9.4.1" },
         { "num": 14212, "desc": "Upgraded maven-javadoc-plugin to 3.11.3" },
         { "num": 14211, "desc": "Upgraded byte-buddy to 1.17.7" },
         { "num": 14204, "desc": "Upgraded spotbugs-annotations to 4.9.4" },
-        { "num": 14191, "desc": "Upgraded jsoup to 1.21.1" },
         { "num": 14189, "desc": "Upgraded commons-codec to 1.19.0" },
         { "num": 14188, "desc": "Upgraded commons-io to 2.20.0" },
         { "num": 14183, "desc": "Upgraded bundled Java to 24.0.2+12 (Windows x86_64, aarch64; Mac), 21.0.8+12 (Windws x86_32)" },
