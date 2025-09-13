@@ -1,5 +1,13 @@
 3.7.17 - ???
 
+* 14234: Upgraded jsoup to 1.21.2
+* 14233: Upgraded spotbugs-maven-plugin 4.9.4.2
+* 14229: Upgraded checkstyle to 11.0.1
+* 14212: Upgraded maven-javadoc-plugin to 3.11.3
+* 14211: Upgraded byte-buddy to 1.17.7
+* 14204: Upgraded spotbugs-annotations to 4.9.4
+* 14189: Upgraded commons-codec to 1.19.0
+* 14188: Upgraded commons-io to 2.20.0
 * 14183: Upgraded bundled Java to 24.0.2+12 (Windows x86_64, aarch64; Mac),
     21.0.8+12 (Windws x86_32)
 * 14182: Upgraded maven-clean-plugin to 3.5.0
@@ -8,18 +16,20 @@
 * 14179: Upgraded maven-artifact to 3.9.9
 * 14178: Upgraded maven-enforcer-plugin to 3.6.1
 * 14168: Upgraded junit-bom to 5.13.4
-* 14134: Upgraded checkstyle to 10.26.1
 * 14150: Upgraded commons-lang3 3.18.0
+* 14115: Do not display blank or empty tooltips
 * 14111: Fixed bad link to Global Properties docs page
+* 14100: Embed the org.netbeans.*.wizard package fully
 * 14096: Fixed typos in regex examples
 * 14079: Upgraded exec-maven-plugin to 3.5.1
 * 14069: Upgraded httpclient5 to 5.5
 * 14041: Upgraded batik to 1.19
 * 14031: Prevent NPEs when checking for amount of physical memory
 * 14027: Upgraded bundled x86 Windows Java to 21.0.7+9
-* 14026: Upgraded jsoup to 1.20.1
 * 14023: Upgraded checkstyle to 10.23.1
 * 13995: Upgraded commons-io to 2.19.0
+* 13682: Prevent Hotkey from restarting an open log file
+* 13036: Add tooltip showing image file name for button icons in editor
 
 3.7.16 - 9 April 2025
 
