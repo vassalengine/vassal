@@ -421,10 +421,25 @@ public class ExpressionInterpreterTest {
     staticGm.close();
     gm = null;
   }
-  
+
   @Test
   void givenWord_whenToNumber_thenReturnZero() throws ExpressionException {
-    verifyEvaluatedWithWarning("ToNumber(\"NaN\")", "0", 1);
+    verifyEvaluatedWithWarning("ToNumber(\"someword\")", "0", 1);
+  }
+  
+  @Test
+  void givenNaN_whenToNumber_thenReturnNaN() throws ExpressionException {
+    verifyEvaluatedWithWarning("ToNumber(\"NaN\")", "NaN", 0);
+  }
+
+  @Test
+  void givenBigInteger_whenToNumber_thenReturnNumber() throws ExpressionException {
+    verifyEvaluatedWithWarning("ToNumber(\"9223372036854775808 \")", "9.223372036854776E18", 0);
+  }
+
+  @Test
+  void givenBigDecimal_whenToNumber_thenReturnNumber() throws ExpressionException {
+    verifyEvaluatedWithWarning("ToNumber(\"1.86E+6\")", "1860000.0", 0);
   }
 
   @Test
