@@ -22,7 +22,7 @@ If there are any errors during conversion, then a number of 0 will be reported.
 |*Number* |Convert a string to a number. +
 
 |ToNumber(string) |
-[#ToInteger]
+[#ToNumber]
 Converts a string to a number or returns zero if conversion is impossible. +
 
 [example]

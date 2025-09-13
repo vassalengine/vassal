@@ -381,11 +381,6 @@ public class ExpressionInterpreterTest {
       assertThat("Count on named map", result, is(equalTo("2")));
     }
   }
-  
-  private String evaluate(String expression) throws ExpressionException{
-    ExpressionInterpreter interpreter = new ExpressionInterpreter(expression);
-    return interpreter.evaluate();
-  }
 
   @Test
   void givenWholeNumberAsString_whenToNumber_thenReturnInt() throws ExpressionException {    
@@ -408,7 +403,7 @@ public class ExpressionInterpreterTest {
   }
 
   @Test
-  void givenHexadecimalPointNumberAsStringWithQualifier_whenToNumber_thenReturnNumber() throws ExpressionException {
+  void givenHexadecimalPointNumberAsStringWithQualifier_whenToNumber_thenReturnZero() throws ExpressionException {
     verifyEvaluatedWithWarning("ToNumber(\"0x1C4\")", "0", 1);
   }
 

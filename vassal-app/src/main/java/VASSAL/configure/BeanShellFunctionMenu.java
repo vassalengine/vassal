@@ -40,6 +40,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
   private static final long serialVersionUID = 1L;
 
   public static final String COMMENT = "Comment";
+  public static final String TO_NUMBER = "ToNumber";
 
   protected static final String[] NO_HINTS = new String[0];
 
@@ -82,12 +83,11 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     Resources.getString("Editor.BeanShell.warning2"),
     Resources.getString("Editor.BeanShell.warning3")
   };
-  public static final String TO_NUMBER = "ToNumber";
   protected static int maxScrollItems = 0;
   protected BeanShellExpressionConfigurer configurer;
   protected EditablePiece target;
 
-  enum PropertyType { PIECE, GLOBAL, VASSAL, ALL };
+  enum PropertyType { PIECE, GLOBAL, VASSAL, ALL }
 
   public BeanShellFunctionMenu(EditablePiece target, BeanShellExpressionConfigurer configurer) {
     super();
