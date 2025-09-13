@@ -105,17 +105,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   static {
     toNumberConverters.add(Integer::parseInt);
     toNumberConverters.add(BigInteger::new);
-    toNumberConverters.add(getDoubleConverter());
-  }
-
-  private static Function<String, Object> getDoubleConverter() {
-    return value -> {
-      double result = Double.parseDouble(value);
-      if (Double.isNaN(result)) {
-        throw new RuntimeException("NaN");
-      }
-      return result;
-    };
+    toNumberConverters.add(Double::parseDouble);
   }
 
   // Top-level static NameSpace shared between all ExpressionInterpreters
@@ -1742,7 +1732,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
   public Object toNumber(Object src, Object stringToConvert) {
     Exception lastException = null;
-    for (Function<String, Object> converter : toNumberConverters) {
+    for (final Function<String, Object> converter : toNumberConverters) {
       try {
         return converter.apply(stringToConvert.toString());
       }
