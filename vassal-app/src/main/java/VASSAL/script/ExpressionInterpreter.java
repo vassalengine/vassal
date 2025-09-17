@@ -1729,12 +1729,11 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    *
    * toNumber(stringToConvert)   - convert given String to a number or to zero if conversion is impossible
    */
-
   public Object toNumber(Object src, Object stringToConvert) {
     Exception lastException = null;
     for (final Function<String, Object> converter : toNumberConverters) {
       try {
-        return converter.apply(stringToConvert.toString());
+        return converter.apply(StringUtils.trimToEmpty(stringToConvert.toString()));
       }
       catch (Exception e) {
         lastException = e;

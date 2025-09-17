@@ -388,6 +388,11 @@ public class ExpressionInterpreterTest {
   }
 
   @Test
+  void givenWholeNumberAsStringWithLeadingAndTrailingSpace_whenToNumber_thenReturnInt() throws ExpressionException {
+    verifyEvaluatedWithWarning("ToNumber(\" 123 \") + 7", "130", 0);
+  }
+
+  @Test
   void givenFloatingPointNumberAsString_whenToNumber_thenReturnNumber() throws ExpressionException {
     verifyEvaluatedWithWarning("ToNumber(\"123.7\")", "123.7", 0);
   }
@@ -433,8 +438,18 @@ public class ExpressionInterpreterTest {
   }
 
   @Test
+  void givenBigIntegerWithTrailingSpace_whenToNumber_thenReturnNumber() throws ExpressionException {
+    verifyEvaluatedWithWarning("ToNumber(\"9223372036854775808 \")", "9223372036854775808", 0);
+  }
+
+  @Test
+  void givenBigIntegerWithLeadingSpace_whenToNumber_thenReturnNumber() throws ExpressionException {
+    verifyEvaluatedWithWarning("ToNumber(\" 9223372036854775808\")", "9223372036854775808", 0);
+  }
+
+  @Test
   void givenBigInteger_whenToNumber_thenReturnNumber() throws ExpressionException {
-    verifyEvaluatedWithWarning("ToNumber(\"9223372036854775808 \")", "9.223372036854776E18", 0);
+    verifyEvaluatedWithWarning("ToNumber(\"9223372036854775808\")", "9223372036854775808", 0);
   }
 
   @Test
