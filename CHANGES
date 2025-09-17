@@ -5,12 +5,13 @@
 
 3.7.17 - ???
 
+* 14240: Upgraded spotbugs-annotations to 4.9.5
+* 14239: Upgraded spotbugs-maven-plugin 4.9.4.2
+* 14238: Upgraded maven-surefire-plugin to 3.5.4
 * 14234: Upgraded jsoup to 1.21.2
-* 14233: Upgraded spotbugs-maven-plugin 4.9.4.2
 * 14229: Upgraded checkstyle to 11.0.1
 * 14212: Upgraded maven-javadoc-plugin to 3.11.3
 * 14211: Upgraded byte-buddy to 1.17.7
-* 14204: Upgraded spotbugs-annotations to 4.9.4
 * 14189: Upgraded commons-codec to 1.19.0
 * 14188: Upgraded commons-io to 2.20.0
 * 14183: Upgraded bundled Java to 24.0.2+12 (Windows x86_64, aarch64; Mac),
