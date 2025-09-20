@@ -335,9 +335,11 @@ public class DiceButton extends AbstractToolbarItem {
 
     for (int i = 0; i < sortedKeys.length; i++) {
       if (i > 0) {
-        summaryVal.append(Resources.getString("Dice.summary_separator"));
+        summaryVal.append(Resources.getString("Dice.summary_separator"))
+                .append(' ');
       }
       summaryVal.append(sortedKeys[i])
+              .append(' ')
               .append(Resources.getString("Dice.summary_times"))
               .append(resultCounts.get(sortedKeys[i]));
     }
