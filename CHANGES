@@ -7,6 +7,7 @@
     strings
 * 14013: Fix Turn Counter displaying hidden list items
 * 13584: Decks sometimes show the wrong card underneath the top one
+* 12924: Report format insert feature selects all text causing overwrite
 
 3.7.17 - 17 September 2025
 
