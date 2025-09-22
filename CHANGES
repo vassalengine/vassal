@@ -10,6 +10,7 @@
 * 14241: Upgraded spotbugs-maven-plugin 4.9.6.0
 * 14065: Remove whitespace characters from internationalized Dice Summary
     strings
+* 14013: Fix Turn Counter displaying hidden list items
 * 13584: Decks sometimes show the wrong card underneath the top one
 
 3.7.17 - 17 September 2025
