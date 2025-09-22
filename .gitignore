@@ -9,6 +9,7 @@ dist/launch4j/
 # generated files
 jdoc/
 tmp/
+git.properties
 
 # IntelliJ
 *.iml
@@ -28,3 +29,22 @@ snapshots/
 
 # MacOS
 .DS_Store
+
+# Documentation
+userguide.pdf
+developerguide.pdf
+designerguide.pdf
+*.html
+
+# Debian
+.compile
+.doc
+.jar
+.manifest
+.stage
+debian/.debhelper
+debian/debhelper-build-stamp
+debian/files
+debian/vassal.substvars
+debian/vassal
+deprecated

@@ -17,7 +17,7 @@ jobs:
           fetch-depth: 1
 
       - name: Set branch
-        if: github.ref != 'refs/heads/master' && github.ref != 'refs/heads/release-3.7'
+        if: github.ref != 'refs/heads/master' && github.ref != 'refs/heads/release-3.7' 
         # Checking out a detached head for PR means we have to set the branch
         # name for it to show up later; shallow checkout means the branch
         # won't exist yet so there's no conflict.
@@ -109,7 +109,7 @@ jobs:
         run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
 
       - name: Set branch
-        if: github.ref != 'refs/heads/master' && github.ref != 'refs/heads/release-3.7'
+        if: github.ref != 'refs/heads/master' && github.ref != 'refs/heads/release-3.7' 
         # Checking out a detached head for PR means we have to set the branch
         # name for it to show up later; shallow checkout means the branch
         # won't exist yet so there's no conflict.
@@ -163,3 +163,107 @@ jobs:
         with:
           name: VASSAL-${{ steps.version.outputs.VERSION }}-windows-x86_32.exe
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-windows-x86_32.exe
+
+  package_debian:
+    name: Debian package 
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+
+      - name: Store DEB variables
+        id: deb_vars
+        run: |
+          version=$(dpkg-parsechangelog --show-field Version)
+          upstream=$(echo $version | sed 's/-[0-9][0-9.]*\(nmu[0-9]*\|\)$//')
+          arch=$(dpkg-architecture -q DEB_BUILD_ARCH)
+          echo "DEB_VERSION=$version" >> $GITHUB_OUTPUT
+          echo "DEB_UPSTREAM=$upstream" >> $GITHUB_OUTPUT
+          echo "DEB_ARCH=$arch" >> $GITHUB_OUTPUT
+
+      - name: Update container
+        run: sudo apt update
+
+      - name: Install DEB build-dependencies
+        run: |
+          dep=$(cat debian/control | \
+            sed -E ':a ; $!N ; s/\n\s+/ /; ta P ; D' | \
+            sed -n -e 's/Build-Depends\(-Indep\|\): //p' | \
+            sed -e '1{N;s/\n/ /;}' -e 's/ *([^)]*)//g' -e 's/,//g' )
+          sudo apt install -y build-essential devscripts fakeroot ${dep}
+
+      - name: Make orig archive
+        run: |
+          package=$(dpkg-parsechangelog --show-field Source)
+          upstream=${{ steps.deb_vars.outputs.DEB_UPSTREAM }}
+          orig=${package}_${upstream}.orig.tar.gz
+          prefix=${package}-${{ steps.deb_vars.outputs.DEB_UPSTREAM }}
+          git archive --prefix=${prefix}/ --output=../${orig} HEAD
+
+      - name: Build DEB package
+        run: debuild -us -uc -rfakeroot
+
+      - name: Move DEB package
+        run: |
+          mkdir -p public
+          ls ..
+          mv \
+            ../vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_all.deb \
+            ../vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.build \
+            ../vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.buildinfo \
+            ../vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.changes	\
+            ../vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}.dsc \
+            ../vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}.debian.tar.xz \
+            ../vassal_${{ steps.deb_vars.outputs.DEB_UPSTREAM }}.orig.tar.gz \
+            public/
+            
+      - name: Archive DEB package
+        uses: actions/upload-artifact@v4
+        with:
+          name: vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_all.deb
+          path: public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_all.deb
+
+      - name: Archive DEB package build
+        uses: actions/upload-artifact@v4
+        with:
+          name: vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.build
+          path: public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.build
+
+      - name: Archive DEB package build information
+        uses: actions/upload-artifact@v4
+        with:
+          name: vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.buildinfo
+          path: public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.buildinfo
+          
+      - name: Archive DEB package changes
+        uses: actions/upload-artifact@v4
+        with:
+          name: vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.changes
+          path: public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.changes
+
+      - name: Archive DEB package changes
+        uses: actions/upload-artifact@v4
+        with:
+          name: vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}.dsc
+          path: public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}.dsc
+
+      - name: Archive DEB package debian archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}.debian.tar.xz
+          path: public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}.debian.tar.xz
+
+      - name: Archive DEB package original archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: vassal_${{ steps.deb_vars.outputs.DEB_UPSTREAM }}.orig.tar.gz
+          path: public/vassal_${{ steps.deb_vars.outputs.DEB_UPSTREAM }}.orig.tar.gz
+      # Alternative way to publish artefacts on tags.
+      # 
+      # - name: Publish DEB package
+      #   uses: softprops/action-gh-release@v2
+      #   if: github.ref_type == 'tag'
+      #   with:
+      #     files: public/*
