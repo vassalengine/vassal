@@ -37,7 +37,8 @@
       "new_features": [
       ],
       "bug_fixes": [
-        { "num": 14243, "desc": "Add missing default Wizard sidebar image" }
+        { "num": 14243, "desc": "Add missing default Wizard sidebar image" },
+        { "num": 14065, "desc": "Remove whitespace characters from internationalized Dice Summary strings" }
       ],
       "improvements": [
       ],
