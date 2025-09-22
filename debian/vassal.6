@@ -78,11 +78,11 @@ Edit the module in the file \fImodule\fP (typically ending in
 \fB.vmod\fP). 
 .TP
 .BI \-\-edit\-extension \ extension
-Edit the extension \fIextension\fP (typically ending in \fB.vmdx\fP or
-\fB.vext\fP).  Note that the corresponding module (typically ending in
-\fB.vmod\fP) \fImust\fP be known to Vassal.  That is, you \fImust\fP
-have the module in your module library by opening the module at least
-once, before opening its extension.
+Edit the extension \fIextension\fP (typically ending in \fB.vmdx\fP).
+Note that the corresponding module (typically ending in \fB.vmod\fP)
+\fImust\fP be known to Vassal.  That is, you \fImust\fP have the
+module in your module library by opening the module at least once,
+before opening its extension.
 .TP
 .BI \-i,\-\-import \ adc2\-gamebox
 Imports the \fIAide de Champ\fP (version 2) gamebox
@@ -155,9 +155,6 @@ exchange in the PBEM play-mode.
 A module extension.  Module extensions are similar to modules, but
 augment a module with more elements, such as new counters, boards,
 cards, and so on.
-.TP
-.IB extension .vext
-Same as \fIextension\fB.vmdx\fP above.
 .PP
 All of these file types are really \fIZip\fP (\fBzip\fP(1)) archives.
 Modules and extensions contain an XML file that describes the content
