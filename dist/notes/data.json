@@ -25,6 +25,8 @@
       "improvements": [
       ],
       "other": [
+        { "num": 14242, "desc": "Upgraded spotbugs-annotations to 4.9.6" },
+        { "num": 14241, "desc": "Upgraded spotbugs-maven-plugin 4.9.6.0" }
       ]
     },
     {
