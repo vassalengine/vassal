@@ -164,8 +164,12 @@ public class RandomTextButton extends DiceButton {
     }
 
     for (int i = 0; i < summaryKeys.length; i++) {
-      if (i > 0) summaryResult.append(Resources.getString("Dice.summary_separator"));
+      if (i > 0) {
+        summaryResult.append(Resources.getString("Dice.summary_separator"))
+                .append(' ');
+      }
       summaryResult.append(summaryKeys[i])
+              .append(' ')
               .append(Resources.getString("Dice.summary_times"))
               .append(resultCounts.get(summaryKeys[i]));
     }
