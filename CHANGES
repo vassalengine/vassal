@@ -5,6 +5,9 @@
 
 3.7.18 - ???
 
+* 14242: Upgraded spotbugs-annotations to 4.9.6
+* 14241: Upgraded spotbugs-maven-plugin 4.9.6.0
+
 3.7.17 - 17 September 2025
 
 * 14240: Upgraded spotbugs-annotations to 4.9.5
