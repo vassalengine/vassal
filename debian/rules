@@ -1,0 +1,233 @@
+#!/usr/bin/make -f
+#
+# This is a hand-written recipe because the upstream sources are not
+# really well suited for a Debian package.
+OUT_DIR		:= out
+PKG_TAG		:= $(shell dpkg-parsechangelog --show-field Version | \
+		     sed 's/\([0-9][0-9.]*\)-\([0-9][0-9]*\)-*\([0-9a-z]*\).*/\1/')
+#PKG_TAG		:= $(shell git describe --tags --abbrev=4)
+
+JAVAC		:= javac
+JAVAC_FLAGS	:= -g --release 11 -d $(OUT_DIR) 
+JAVA		:= java
+JAR		:= jar
+
+ADOC		:= asciidoctor
+ADOC_PDF	:= debian/asciidoctor-pdf
+ADOC_FLAGS	:= -a project-version=$(PKG_TAG) -a webfonts!
+
+
+TEST_SRCDIR	:= vassal-app/src/test
+APP_SRCDIR	:= vassal-app/src/main
+APP_JSRCDIR	:= $(APP_SRCDIR)/java
+APP_SRC	    	:= $(shell find $(APP_JSRCDIR)/bsh          -name "*.java") \
+	           $(shell find $(APP_JSRCDIR)/org/netbeans -name "*.java") \
+		   $(shell find $(APP_JSRCDIR)/org/litesoft -name "*.java") \
+		   $(shell find $(APP_JSRCDIR)/VASSAL       -name "*.java")
+APP_IMG		:= $(APP_SRCDIR)/resources/images
+APP_ICON	:= $(APP_SRCDIR)/resources/icons
+APP_HELP	:= $(APP_SRCDIR)/resources/help
+APP_I18N	:= $(shell find $(APP_SRCDIR)/resources/VASSAL/i18n/ \
+		     	-name "*.properties")
+APP_BSH		:= $(shell find $(APP_SRCDIR)/resources/VASSAL/script/\
+			-name "*.bsh")
+APP_MISC	:= $(APP_SRCDIR)/resources/grayscale.icc	\
+		   $(APP_SRCDIR)/resources/logback.xml		\
+		   $(APP_SRCDIR)/resources/removed		\
+		   $(APP_SRCDIR)/resources/vassal.vmoptions
+APP_SPLASH	:= $(APP_JSRCDIR)/org/netbeans/modules/wizard/defaultWizard.png
+
+APP_JARS	:= /usr/share/java/asm.jar			\
+		   /usr/share/java/batik-anim.jar		\
+		   /usr/share/java/batik-awt-util.jar		\
+		   /usr/share/java/batik-bridge.jar		\
+		   /usr/share/java/batik-codec.jar		\
+		   /usr/share/java/batik-constants.jar		\
+		   /usr/share/java/batik-css.jar		\
+		   /usr/share/java/batik-dom.jar		\
+		   /usr/share/java/batik-ext.jar		\
+		   /usr/share/java/batik-extension.jar		\
+		   /usr/share/java/batik-gui-util.jar		\
+		   /usr/share/java/batik-gvt.jar		\
+		   /usr/share/java/batik-i18n.jar		\
+		   /usr/share/java/batik-parser.jar		\
+		   /usr/share/java/batik-script.jar		\
+		   /usr/share/java/batik-shared-resources.jar	\
+		   /usr/share/java/batik-svg-dom.jar		\
+		   /usr/share/java/batik-svggen.jar		\
+		   /usr/share/java/batik-swing.jar		\
+		   /usr/share/java/batik-transcoder.jar		\
+		   /usr/share/java/batik-util.jar		\
+		   /usr/share/java/batik-xml.jar		\
+		   /usr/share/java/commons-codec.jar		\
+		   /usr/share/java/commons-compiler.jar		\
+		   /usr/share/java/commons-io.jar		\
+		   /usr/share/java/commons-lang3.jar		\
+		   /usr/share/java/commons-logging.jar		\
+		   /usr/share/java/httpclient5.jar		\
+		   /usr/share/java/httpcore5.jar		\
+		   /usr/share/java/httpcore5-h2.jar		\
+		   /usr/share/java/janino.jar			\
+		   /usr/share/java/gnu-getopt.jar		\
+		   /usr/share/java/findbugs.jar			\
+		   /usr/share/java/jl.jar			\
+		   /usr/share/java/jsoup.jar			\
+		   /usr/share/java/logback-classic.jar		\
+		   /usr/share/java/logback-core.jar		\
+		   /usr/share/java/maven-artifact-3.x.jar	\
+		   /usr/share/java/miglayout-core.jar		\
+		   /usr/share/java/miglayout-swing.jar		\
+		   /usr/share/java/plexus-utils.jar		\
+		   /usr/share/java/slf4j-api.jar		\
+		   /usr/share/java/swingx.jar			\
+		   /usr/share/java/TimingFramework.jar		\
+		   /usr/share/java/xml-apis-ext.jar		\
+		   /usr/share/java/xmlgraphics-commons.jar
+
+
+DOC_SRCDIR	:= vassal-doc/src/main
+DOC_USER	:= $(DOC_SRCDIR)/userguide/userguide.adoc
+DOC_DESIGN	:= $(DOC_SRCDIR)/designerguide/designerguide.adoc
+DOC_README	:= $(DOC_SRCDIR)/readme-referencemanual/README.adoc
+DOC_HISTORY	:= $(DOC_SRCDIR)/readme-referencemanual/versionHistory.adoc
+DOC_REF		:= $(shell find \
+			$(DOC_SRCDIR)/readme-referencemanual/ReferenceManual \
+			-name "*.adoc")
+
+DOC_TARGETS	:= $(DOC_USER:%.adoc=%.pdf)		\
+		   $(DOC_DESIGN:%.adoc=%.pdf)		\
+		   $(DOC_README:%.adoc=%.html)		\
+		   $(DOC_HISTORY:%.adoc=%.html)		\
+		   $(DOC_REF:%.adoc=%.html)
+
+
+CLASS_PATH	:= $(shell echo "$(foreach j,$(APP_JARS),$(strip :$(j)))" |\
+			tr -d ' ')
+MANIFEST_CP	:= $(foreach e, $(APP_JARS), $(notdir $(e)))
+
+INST_DIR	:= /usr/share/vassal
+STAGE_DIR	:= debian/tmp$(INST_DIR)
+
+.compile:$(APP_SRC)
+	$(JAVAC) $(JAVAC_FLAGS) -classpath $(CLASS_PATH) $^
+	touch $@
+
+.manifest:
+	cat dist/Vengine.mf > $@
+	echo "Class-Path: " >> $@
+	for e in $(MANIFEST_CP); do echo "  $${e}" >> $@ ; done 
+
+git.properties:	vassal-app/src/main/resources-filtered/git.properties
+	sed "s/\$${gitVersion}/$(PKG_TAG)/" < $< > $@
+
+deprecated: .compile
+	$(JAVA) --class-path $(OUT_DIR)$(CLASS_PATH) \
+		VASSAL.tools.deprecation.DeprecationWriter $(OUT_DIR) > $@
+
+.jar:.compile .manifest git.properties deprecated
+	cp -a $(APP_I18N)                        $(OUT_DIR)/VASSAL/i18n/
+	cp -a $(APP_BSH)                         $(OUT_DIR)/VASSAL/script/
+	cp -a $(APP_IMG)                         $(OUT_DIR)/
+	cp -a $(APP_ICON)                        $(OUT_DIR)/
+	cp -a $(APP_HELP)                        $(OUT_DIR)/
+	cp -a $(APP_MISC)			 $(OUT_DIR)/
+	cp -a git.properties                     $(OUT_DIR)/
+	cp -a deprecated			 $(OUT_DIR)/
+	cp -a $(APP_SPLASH)                      $(OUT_DIR)$(subst $(APP_JSRCDIR),,$(APP_SPLASH))
+	rm -f $(OUT_DIR)/Vengine.jar
+
+	(cd $(OUT_DIR) && \
+		$(JAR) 	--create					\
+			--file Vengine.jar				\
+			-m ../.manifest					\
+			.)
+	touch $@
+
+
+
+.doc:	$(DOC_TARGETS)
+	touch $@
+
+%.pdf:%.adoc
+	$(ADOC_PDF) $(ADOC_FLAGS) -R $(dir $<) $<
+
+%.html:%.adoc
+	$(ADOC) $(ADOC_FLAGS) -R $(dir $<) $<
+
+.stage:	.jar .doc
+	mkdir -p $(STAGE_DIR)
+	mkdir -p $(STAGE_DIR)/lib
+
+	cp $(OUT_DIR)/Vengine.jar $(STAGE_DIR)/lib/
+	(cd $(STAGE_DIR)/lib/ && for e in $(APP_JARS) ; do \
+		rm -f `basename $$e`; ln -fs $$e . ; done)
+
+	mkdir -p $(STAGE_DIR)/doc
+	for f in $(DOC_TARGETS) ; do \
+		d=$$(dirname $$f | sed 's,$(DOC_SRCDIR)/,,') ; \
+		case x$$d in \
+		xreadme-referencemanual/*) d=`basename $$d` ;; \
+		xreadme-referencemanual) d="" ;; esac ; \
+		mkdir -p $(STAGE_DIR)/doc/$$d ; \
+		cp $$f $(STAGE_DIR)/doc/$$d/`basename $$f` ; done
+
+	cp -a $(DOC_SRCDIR)/readme-referencemanual/images $(STAGE_DIR)/doc/
+	cp -a $(DOC_SRCDIR)/readme-referencemanual/ReferenceManual/images \
+		$(STAGE_DIR)/doc/ReferenceManual/
+	cp -a $(DOC_SRCDIR)/resources/tour.mod $(STAGE_DIR)/doc/
+	cp -a $(DOC_SRCDIR)/resources/tour.log $(STAGE_DIR)/doc/
+
+	cp -a 	CHANGES 				\
+		LICENSE 				\
+		README.md 				\
+		$(OUT_DIR)/icons/scalable/VASSAL.svg 	\
+		debian/VASSAL.sh			\
+		$(STAGE_DIR)
+	chmod a+x $(STAGE_DIR)/VASSAL.sh
+
+	mkdir -p debian/tmp/usr/bin
+	rm -f debian/tmp/usr/bin/vassal
+	(cd debian/tmp/usr/bin && \
+		ln -fs ../share/vassal/VASSAL.sh vassal)
+
+	mkdir -p debian/tmp/usr/share/java
+	rm -f debian/tmp/usr/share/java/Vengine.jar
+	(cd debian/tmp/usr/share/java && \
+		ln -fs ../vassal/lib/Vengine.jar Vengine.jar)
+
+	mkdir -p debian/tmp/usr/share/doc/vassal
+	rm -rf debian/tmp/usr/share/doc/vassal/*
+	(cd debian/tmp/usr/share/doc/vassal && \
+		ln -fs ../../vassal/doc/designerguide/designerguide.pdf . && \
+		ln -fs ../../vassal/doc/userguide/userguide.pdf . && \
+		ln -fs ../../vassal/doc/ReferenceManual reference)
+
+	mkdir -p debian/tmp/usr/share/applications
+	cp debian/vassal.desktop \
+		debian/tmp/usr/share/applications/application-x-vassal.desktop
+
+	mkdir -p debian/tmp/usr/share/icons/hicolor/scalable/mimetypes
+	cp $(STAGE_DIR)/VASSAL.svg \
+		debian/tmp/usr/share/icons/hicolor/scalable/mimetypes/application-x-vassal.svg
+
+	touch .stage 
+
+.clean:
+	rm -rf debian/tmp
+	rm -rf debian/stage
+	rm -rf $(OUT_DIR)
+	rm -rf $(DOC_TARGETS)
+	rm -rf git.properties
+	rm -rf .manifest vassal.vmoptions deprecated
+	rm -f  .jar .stage .compile .doc
+	rm -f  debhelper-build-stamp
+	rm -rf snapshots
+
+override_dh_auto_build:.stage
+override_dh_auto_test:
+override_dh_auto_install:
+override_dh_auto_clean:.clean
+override_dh_prep:
+
+%:
+	dh $@

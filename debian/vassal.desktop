@@ -1,0 +1,16 @@
+[Desktop Entry]
+Type=Application
+MimeType=application/x-vassal-module;application/x-vassal-log;application/x-vassal-save;application/x-vassal-extension
+Name=VASSAL
+Exec=vassal %f
+Icon=application-x-vassal
+Actions=Run;Edit;
+Categories=Game
+
+[Desktop Action Run]
+Name=Run
+Exec=vassal -l %f
+
+[Desktop Action Edit]
+Name=Edit
+Exec=vassal -e %f

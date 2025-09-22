@@ -1,0 +1,21 @@
+vassal (3.7.18-1) UNRELEASED; urgency=medium
+
+  * New upstream release
+
+ -- Christian Holm Christensen <cholmcc@gmail.com>  Mon, 22 Sep 2025 19:15:09 +0200
+
+vassal (3.7.17-2) UNRELEASED; urgency=medium
+
+  * Associate with .vext file extension - thanks @reg at Vassal
+  * In app version number set to upstream version, not Debian version
+  * Updates to man page - to be consistent
+
+ -- Christian Holm Christensen <cholmccc@gmail.com>  Sat, 20 Sep 2025 08:33:15 +0200
+
+vassal (3.7.17-1) UNRELEASED; urgency=medium
+
+  * Initial release
+  * Switch to build from master
+  * Synced to upstream release
+
+ -- Christian Holm Christensen <cholmcc@gmail.com>  Thu, 18 Sep 2025 08:54:27 +0200
