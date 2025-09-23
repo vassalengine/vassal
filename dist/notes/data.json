@@ -15,6 +15,18 @@
     { "display_name": "Other", "suffix": "other.zip" }
   ],
   "changes": [
+   {
+      "in": "3.7.19",
+      "since": "3.7.18",
+      "new_features": [
+      ],
+      "bug_fixes": [
+      ],
+      "improvements": [
+      ],
+      "other": [
+      ]
+    },
     {
       "in": "3.8.0-beta1",
       "since": "3.7.17",
@@ -35,6 +47,7 @@
       "in": "3.7.18",
       "since": "3.7.17",
       "new_features": [
+        { "num": 14244, "desc": "Build a Debian package" }
       ],
       "bug_fixes": [
         { "num": 14243, "desc": "Add missing default Wizard sidebar image" },
