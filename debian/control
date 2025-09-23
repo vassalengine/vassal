@@ -1,0 +1,76 @@
+Source: vassal
+Section: java
+Priority: optional
+Maintainer: Debian Java Maintainers <pkg-java-maintainers@lists.alioth.debian.org>
+Uploaders: Christian Holm Christensen <cholmcc@gmail.com>
+Build-Depends:
+	debhelper-compat (= 13),
+        default-jdk,
+        asciidoctor,
+        ruby-asciidoctor-pdf
+Build-Depends-Indep:
+        libasm-java (>= 9.2),
+	libbatik-java (>= 1.14),
+	libcommons-codec-java (>= 1.15),
+	libcommons-io-java (>= 2.11.0),
+	libcommons-lang3-java (>= 3.11),
+	libcommons-logging-java (>= 1.0.4),
+        libfindbugs-java,
+	libgetopt-java (>= 1.0.1),
+	libhttpclient5-java (>= 5.1.0),
+	libjanino-java (>= 2.7.0),
+	libjlayer-java (>= 1.0.1),
+	libjsoup-java (>= 1.14.0),
+	liblogback-java (>= 1.2.11),
+	libmaven3-core-java (>= 3.6.0),
+	libmiglayout-java,
+        libplexus-utils2-java,
+	libslf4j-java (>= 1.7.32),
+	libswingx-java (>= 1.6.2),
+        libtimingframework-java (>= 1.0),
+	libxml-commons-external-java,
+	libxmlgraphics-commons-java
+Standards-Version: 4.5.1
+Vcs-Git: https://salsa.debian.org/java-team/vassal.git
+Vcs-Browser: https://salsa.debian.org/java-team/vassal
+Homepage: https://vassalengine.org
+
+Package: vassal
+Architecture: all
+Depends:
+        bash (>= 5.0.0),
+        default-jre,
+        libasm-java (>= 9.2),
+	libbatik-java (>= 1.14),
+	libcommons-codec-java (>= 1.15),
+	libcommons-io-java (>= 2.11.0),
+	libcommons-lang3-java (>= 3.11),
+	libcommons-logging-java (>= 1.0.4),
+        libfindbugs-java,
+	libgetopt-java (>= 1.0.1),
+	libhttpclient5-java (>= 5.1.0),
+	libjanino-java (>= 2.7.0),
+	libjlayer-java (>= 1.0.1),
+	libjsoup-java (>= 1.14.0),
+	liblogback-java (>= 1.2.11),
+	libmaven3-core-java (>= 3.6.0),
+	libmiglayout-java,
+        libplexus-utils2-java,
+	libslf4j-java (>= 1.7.32),
+	libswingx-java (>= 1.6.2),
+        libtimingframework-java (>= 1.0),
+	libxml-commons-external-java,
+	libxmlgraphics-commons-java,
+        ${misc:Depends}
+Description: Application to play board and card games
+ Vassal - the open-source boardgame engine - is a tool to play various
+ board and card games on the computer, both locally, over a network,
+ or as Play-by-Email.
+ .
+ Games are provided as modules that can be downloaded from
+ .
+ https://vassalengine.org
+ .
+ The application also contains an editor to create new or modify
+ existing modules.
+
