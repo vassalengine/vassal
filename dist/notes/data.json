@@ -19,6 +19,7 @@
       "in": "3.7.18",
       "since": "3.7.17",
       "new_features": [
+        { "num": 14244, "desc": "Build a Debian package" }
       ],
       "bug_fixes": [
         { "num": 14243, "desc": "Add missing default Wizard sidebar image" },
