@@ -5,6 +5,9 @@
 
 3.7.18 - ???
 
+* 14247: Upgraded license-maven-plugin to 2.7.0
+* 14246: Upgraded maven-compiler-plugin to 3.14.1
+* 14245: Upgraded maven-javadoc-plugin to 3.12.0
 * 14243: Add missing default Wizard sidebar image
 * 14242: Upgraded spotbugs-annotations to 4.9.6
 * 14241: Upgraded spotbugs-maven-plugin 4.9.6.0

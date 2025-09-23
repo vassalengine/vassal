@@ -46,6 +46,9 @@
       "improvements": [
       ],
       "other": [
+        { "num": 14247, "desc": "Upgraded license-maven-plugin to 2.7.0" },
+        { "num": 14246, "desc": "Upgraded maven-compiler-plugin to 3.14.1" },
+        { "num": 14245, "desc": "Upgraded maven-javadoc-plugin to 3.12.0" },
         { "num": 14242, "desc": "Upgraded spotbugs-annotations to 4.9.6" },
         { "num": 14241, "desc": "Upgraded spotbugs-maven-plugin 4.9.6.0" }
       ]
