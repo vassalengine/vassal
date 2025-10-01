@@ -144,11 +144,11 @@ public class PlayerWindow extends JFrame {
     toolsMenu.setMnemonic(Resources.getString("General.tools.shortcut").charAt(0));
 
     toolsMenu.add(mm.addKey("GameRefresher.refresh_counters"));
-    toolsMenu.add(mm.addKey("GameState.load_continuation"));
 
     toolsMenu.addSeparator();
     toolsMenu.add(mm.addKey("GameState.load_and_fast_forward"));
     toolsMenu.add(mm.addKey("GameState.load_and_append"));
+    toolsMenu.add(mm.addKey("GameState.load_continuation"));
 
     toolsMenu.addSeparator();
     
