@@ -1,5 +1,7 @@
 3.7.19 - ???
 
+* 14265: Upgraded maven-enforcer-plugin to 3.6.2
+* 14264: Upgraded maven-dependency-plugin to 3.9.0
 * 14257: Upgraded junit-bom to 6.0.0
 * 14256: Upgraded exec-maven-plugin to 3.6.0
 * 14255: Upgraded logback-classic to 1.5.19
