@@ -181,24 +181,6 @@ public class GameState implements CommandEncoder {
     // some languages
     loadGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.load_game.shortcut").charAt(0));
 
-    // TODO: remove Load Continuation from File menu as of 3.6
-    loadGameOld = new AbstractAction(Resources.getString("GameState.load_continuation")) {
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        ProblemDialog.show(
-          JOptionPane.INFORMATION_MESSAGE,
-          GameModule.getGameModule().getPlayerWindow(),
-          null,
-          Resources.getString("GameState.old_continuation_title"),
-          Resources.getString("GameState.old_continuation_heading"),
-          Resources.getString("GameState.old_continuation_warning")
-        );
-      }
-    };
-    loadGameOld.setEnabled(false);
-
     loadContinuation = new AbstractAction(Resources.getString("GameState.load_game_old")) {
       private static final long serialVersionUID = 1L;
 

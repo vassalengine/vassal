@@ -86,7 +86,6 @@ public class PlayerWindow extends JFrame {
 
     fileMenu.add(mm.addKey("GameState.new_game"));
     fileMenu.add(mm.addKey("GameState.load_game_new"));
-    fileMenu.add(mm.addKey("GameState.load_game_old"));
 
     final MenuProxy openRecent = new MenuProxy(Resources.getString("GameState.open_recent"));
     fileMenu.add(openRecent);
@@ -143,8 +142,6 @@ public class PlayerWindow extends JFrame {
       new MenuProxy(Resources.getString("General.tools"));
     toolsMenu.setMnemonic(Resources.getString("General.tools.shortcut").charAt(0));
 
-    toolsMenu.add(mm.addKey("GameRefresher.refresh_counters"));
-
     toolsMenu.addSeparator();
     toolsMenu.add(mm.addKey("GameState.load_and_fast_forward"));
     toolsMenu.add(mm.addKey("GameState.load_and_append"));
@@ -152,6 +149,8 @@ public class PlayerWindow extends JFrame {
     toolsMenu.add(mm.addKey("GameState.load_continuation"));
 
     toolsMenu.addSeparator();
+
+    toolsMenu.add(mm.addKey("GameRefresher.refresh_counters"));
     
     final CheckBoxMenuItemProxy debugCheckbox = new CheckBoxMenuItemProxy(new AbstractAction(
       Resources.getString("Debug.show_debug_window")) {
