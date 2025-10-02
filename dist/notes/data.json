@@ -25,6 +25,8 @@
       "improvements": [
       ],
       "other": [
+        { "num": 14265, "desc": "Upgraded maven-enforcer-plugin to 3.6.2" },
+        { "num": 14264, "desc": "Upgraded maven-dependency-plugin to 3.9.0" },
         { "num": 14257, "desc": "Upgraded junit-bom to 6.0.0" },
         { "num": 14256, "desc": "Upgraded exec-maven-plugin to 3.6.0" },
         { "num": 14255, "desc": "Upgraded logback-classic to 1.5.19" },
