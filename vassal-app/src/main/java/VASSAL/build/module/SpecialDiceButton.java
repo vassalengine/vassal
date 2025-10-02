@@ -74,7 +74,7 @@ import java.util.List;
  */
 public class SpecialDiceButton extends DoActionButton implements CommandEncoder, UniqueIdManager.Identifyable, ComponentDescription {
   private static final Logger logger =
-    LoggerFactory.getLogger(SpecialDiceButton.class);
+          LoggerFactory.getLogger(SpecialDiceButton.class);
 
   protected static final UniqueIdManager idMgr = new UniqueIdManager("SpecialDiceButton"); //$NON-NLS-1$
   public static final String SHOW_RESULTS_COMMAND = "SHOW_RESULTS\t"; //$NON-NLS-1$
@@ -115,8 +115,8 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
   @Deprecated(since = "2020-10-21", forRemoval = true) public static final String BUTTON_TEXT = "text"; //$NON-NLS-1$
   @Deprecated(since = "2020-10-21", forRemoval = true) public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
   @Deprecated(since = "2020-10-21", forRemoval = true) public static final String NAME = "name"; //$NON-NLS-1$
-  @Deprecated(since = "2020-10-21", forRemoval = true) public static final String ICON = "icon"; //$NON-NLS-1$
   @Deprecated(since = "2020-10-21", forRemoval = true) public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
+  @Deprecated(since = "2020-10-21", forRemoval = true) public static final String ICON = "icon"; //$NON-NLS-1$
 
   public SpecialDiceButton() {
     super(false); // Make a DoActionButton, but don't call its normal constructor
@@ -126,7 +126,16 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
     dialogLabel = new JLabel();
     dialogLabel.setIcon(resultsIcon);
     dialog.add(dialogLabel);
-    final ActionListener rollAction = e -> DR();
+
+    // ACTION LISTENER: Reverts to calling DR() and letting DR() handle logging/execution.
+    final ActionListener rollAction = e -> {
+      try {
+        DR();
+      }
+      catch (RecursionLimitException ex) {
+        RecursionLimiter.infiniteLoop(ex);
+      }
+    };
 
     final String desc = Resources.getString("Editor.SpecialDiceButton.symbols"); //$NON-NLS-1$
     setLaunchButton(makeLaunchButton(desc, desc, "/images/die.gif", rollAction)); //NON-NLS
@@ -150,33 +159,68 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
     return " *** " + getConfigureName() + " = "; //$NON-NLS-1$ //$NON-NLS-2$
   }
 
+
   /**
    * Forwards the result of the roll to the {@link Chatter#send} method of the {@link Chatter} of the {@link GameModule}.
    * Format is prefix+[comma-separated roll list]+suffix additionally a command for every die is generated
+   *
+   * **REVISED:** Executes the local display commands for immediate sync, then logs the
+   * full atomic command for network and undo.
    */
-  protected void DR() {
+  protected void DR() throws RecursionLimitException {
+    // 1. Roll the dice
     final int[] results = new int[dice.size()];
     int i = 0;
     for (final SpecialDie sd : dice) {
       final int faceCount = sd.getFaceCount();
+      // NOTE: dice roll happens here, it must only happen once.
       results[i++] = faceCount == 0 ? 0 : ran.nextInt(sd.getFaceCount());
     }
     setFormat(results);
-    Command c = reportResults(results);
+
+    // masterCommand will ONLY hold base actions (Hotkeys, DoReport, DoSound).
+    Command masterCommand = new NullCommand();
+
+    // 2. Collect Hotkey, DoReport, DoSound commands from base class.
+    // executeActions() is a VOID method that mutates masterCommand (the fix for compilation error).
+    executeActions(masterCommand);
+
+    // finalCommand starts with the collected base actions.
+    Command finalCommand = masterCommand;
+
+    // 3. Create the chat/property command chain
+    Command chatAndPropertyCommand = new NullCommand();
     if (reportResultAsText) {
-      c = c.append(reportTextResults(results));
+      // reportTextResults returns Chatter.DisplayText command
+      chatAndPropertyCommand = chatAndPropertyCommand.append(reportTextResults(results));
     }
+    // Property update command is appended (updates property to the total)
+    chatAndPropertyCommand = chatAndPropertyCommand.append(property.setPropertyValue(String.valueOf(getTotal(results))));
 
-    try {
-      doActions();
-    }
-    catch (RecursionLimitException ex) {
-      RecursionLimiter.infiniteLoop(ex);
-    }
+    // 4. Create the GUI update command
+    Command showResultsCommand = new ShowResults(this, results);
 
-    GameModule.getGameModule().sendAndLog(c);
+
+    // 5. *** CRITICAL FIX/SYNCHRONIZATION STEP ***
+    // Combine ALL commands into the final chain for atomic undo/redo/network.
+    // Removed the explicit showResultsCommand.execute() to let sendAndLog handle it atomically.
+    finalCommand = finalCommand.append(chatAndPropertyCommand).append(showResultsCommand);
+
+    // 6. Send the single, combined command chain to the log for distribution/undo.
+    // This executes the whole chain locally and logs it for network/undo.
+    GameModule.getGameModule().sendAndLog(finalCommand);
   }
 
+  // Helper method to get total, simplified logic
+  private int getTotal(int[] results) {
+    int total = 0;
+    for (int i = 0; i < dice.size() && i < results.length; ++i) {
+      total += dice.get(i).getIntValue(results[i]);
+    }
+    return total;
+  }
+
+  // This method now only handles local GUI updates (window/button repaint) and returns NullCommand.
   private Command reportResults(int[] results) {
     resultsIcon.setResults(results);
     if (reportResultInWindow) {
@@ -191,18 +235,15 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
     if (reportResultInButton) {
       getLaunchButton().repaint();
     }
-    return new ShowResults(this, results);
+    // Returns NullCommand to satisfy Command return type and prevent unexpected behavior
+    return new NullCommand();
   }
 
+  // This method now only creates the Chatter.DisplayText command and returns it.
   private Command reportTextResults(int[] results) {
-    int total = 0;
-    for (int i = 0; i < dice.size(); ++i) {
-      final SpecialDie die = dice.get(i);
-      total += die.getIntValue(results[i]);
-    }
     format.setFormat(chatResultFormat);
     String msg = format.getLocalizedText(this, "Editor.report_format");
-    if (msg.length() > 0) {
+    if (!msg.isEmpty()) {
       if (msg.startsWith("*")) { //$NON-NLS-1$
         msg = "*" + msg; //$NON-NLS-1$
       }
@@ -210,10 +251,8 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
         msg = "* " + msg; //$NON-NLS-1$
       }
     }
-    final Command c = msg.length() == 0 ? new NullCommand() : new Chatter.DisplayText(GameModule.getGameModule().getChatter(), msg);
-    c.execute();
-    c.append(property.setPropertyValue(String.valueOf(total)));
-    return c;
+    // Returns the chat command, the property update is handled in DR().
+    return msg.isEmpty() ? new NullCommand() : new Chatter.DisplayText(GameModule.getGameModule().getChatter(), msg);
   }
 
   protected void setFormat(int[] results) {
@@ -230,7 +269,6 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
 
   /**
    * The Attributes of a DiceButton are:
-   *
    * <code>BUTTON_TEXT</code> the label of the button in the toolbar <code>ICON</code> the icon of the button in the
    * toolbar <code>HOTKEY</code> the hotkey equivalent of the button <code>DICE_SET</code> list of dice sets, an
    * entry can be: [number]name of die[+|-modifier] "name of die" must be SpecialDie "modifier" is added/subtracted
@@ -245,48 +283,48 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
   @Override
   public String[] getAttributeNames() {
     return ArrayUtils.addAll(
-      super.getAttributeNames(),
-      DESCRIPTION,
-      RESULT_CHATTER,
-      CHAT_RESULT_FORMAT,
-      RESULT_WINDOW,
-      WINDOW_TITLE_RESULT_FORMAT,
-      RESULT_BUTTON,
-      WINDOW_X,
-      WINDOW_Y,
-      BACKGROUND_COLOR
+            super.getAttributeNames(),
+            DESCRIPTION,
+            RESULT_CHATTER,
+            CHAT_RESULT_FORMAT,
+            RESULT_WINDOW,
+            WINDOW_TITLE_RESULT_FORMAT,
+            RESULT_BUTTON,
+            WINDOW_X,
+            WINDOW_Y,
+            BACKGROUND_COLOR
     );
   }
 
   @Override
   public String[] getAttributeDescriptions() {
     return ArrayUtils.addAll(
-      super.getAttributeDescriptions(),
-      Resources.getString(Resources.DESCRIPTION),
-      Resources.getString("Editor.SpecialDiceButton.report_results_text"), //$NON-NLS-1$
-      Resources.getString("Editor.report_format"), //$NON-NLS-1$
-      Resources.getString("Editor.SpecialDiceButton.result_window"), //$NON-NLS-1$
-      Resources.getString("Editor.SpecialDiceButton.window_title"), //$NON-NLS-1$
-      Resources.getString("Editor.SpecialDiceButton.result_button"), //$NON-NLS-1$
-      Resources.getString("Editor.width"), //$NON-NLS-1$
-      Resources.getString("Editor.height"), //$NON-NLS-1$
-      Resources.getString("Editor.background_color") //$NON-NLS-1$
+            super.getAttributeDescriptions(),
+            Resources.getString(Resources.DESCRIPTION),
+            Resources.getString("Editor.SpecialDiceButton.report_results_text"), //$NON-NLS-1$
+            Resources.getString("Editor.report_format"), //$NON-NLS-1$
+            Resources.getString("Editor.SpecialDiceButton.result_window"), //$NON-NLS-1$
+            Resources.getString("Editor.SpecialDiceButton.window_title"), //$NON-NLS-1$
+            Resources.getString("Editor.SpecialDiceButton.result_button"), //$NON-NLS-1$
+            Resources.getString("Editor.width"), //$NON-NLS-1$
+            Resources.getString("Editor.height"), //$NON-NLS-1$
+            Resources.getString("Editor.background_color") //$NON-NLS-1$
     );
   }
 
   @Override
   public Class<?>[] getAttributeTypes() {
     return ArrayUtils.addAll(
-      super.getAttributeTypes(),
-      String.class,
-      Boolean.class,
-      ReportFormatConfig.class,
-      Boolean.class,
-      ReportFormatConfig.class,
-      Boolean.class,
-      Integer.class,
-      Integer.class,
-      Color.class
+            super.getAttributeTypes(),
+            String.class,
+            Boolean.class,
+            ReportFormatConfig.class,
+            Boolean.class,
+            ReportFormatConfig.class,
+            Boolean.class,
+            Integer.class,
+            Integer.class,
+            Color.class
     );
   }
 
@@ -512,7 +550,7 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
       return ColorConfigurer.colorToString(bgColor);
     }
     else if (TOOLTIP.equals(key)) {
-      return tooltip.length() == 0 ? getLaunchButton().getAttributeValueString(BUTTON_TEXT) : tooltip;
+      return tooltip.isEmpty() ? getLaunchButton().getAttributeValueString(BUTTON_TEXT) : tooltip;
     }
     else if (DESCRIPTION.equals(key)) {
       return description;
@@ -539,7 +577,7 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
    * create String from int array
    *
    * @param ia
-   *          int-array
+   * int-array
    * @return encoded String
    */
   public static String intArrayToString(int[] ia) {
@@ -557,11 +595,11 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
    * get int array from string
    *
    * @param s
-   *          string with encoded int array
+   * string with encoded int array
    * @return int array
    */
   public static int[] stringToIntArray(String s) {
-    if (s == null || s.length() == 0) {
+    if (s == null || s.isEmpty()) {
       return EMPTY;
     }
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
@@ -627,6 +665,8 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
   }
   /**
    * Command for displaying the results of a roll of the dice
+   * * **MODIFIED:** Now returns a NullCommand for undo to ensure VASSAL doesn't skip
+   * this command's children (which include the Hotkey actions).
    */
   public static class ShowResults extends Command {
     private final SpecialDiceButton target;
@@ -639,13 +679,17 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
 
     @Override
     protected void executeCommand() {
+      // This is executed for local display and by remote clients/undo
       target.setFormat(rolls);
       target.reportResults(rolls);
     }
 
     @Override
     protected Command myUndoCommand() {
-      return null;
+      // Returns a NullCommand to allow VASSAL to correctly process the subsequent
+      // commands appended to this chain (the chat, property, and hotkey actions)
+      // in reverse order when Undo is triggered.
+      return new NullCommand();
     }
   }
 
@@ -664,16 +708,16 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
       icons = new Icon[results.length];
       if (results.length > dice.size()) {
         logger.warn(
-          "Special Die Button (" + getConfigureName() + //NON-NLS
-          "): more results (" + results.length + ") requested than dice (" + //NON-NLS
-          dice.size() + ")" //NON-NLS
+                "Special Die Button (" + getConfigureName() + //NON-NLS
+                        "): more results (" + results.length + ") requested than dice (" + //NON-NLS
+                        dice.size() + ")" //NON-NLS
         );
       }
       for (int i = 0; i < results.length; ++i) {
         if (i >= dice.size()) break;
         final String imageName = dice.get(i).getImageName(results[i]);
 
-        if (imageName.length() > 0) {
+        if (!imageName.isEmpty()) {
           final ImageOp sop = Op.load(imageName);
           if (sop.getImage() != null) {
             icons[i] = new ImageIcon(new OwningOpMultiResolutionImage(sop));
