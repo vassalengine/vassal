@@ -119,7 +119,7 @@ public class GameState implements CommandEncoder {
   protected Map<String, GamePiece> pieces = new HashMap<>();
   protected List<GameComponent> gameComponents = new ArrayList<>();
   protected List<GameSetupStep> setupSteps = new ArrayList<>();
-  protected Action loadGame, loadGameOld, saveGame, saveGameAs, newGame, closeGame, loadContinuation, loadAndFastForward, loadAndAppend;
+  protected Action loadGame, saveGame, saveGameAs, newGame, closeGame, loadContinuation, loadAndFastForward, loadAndAppend;
   protected String lastSave;
   protected File lastSaveFile = null;
   protected DirectoryConfigurer savedGameDirectoryPreference;
@@ -279,7 +279,6 @@ public class GameState implements CommandEncoder {
     final MenuManager mm = MenuManager.getInstance();
     mm.addAction("GameState.new_game", newGame);
     mm.addAction("GameState.load_game_new", loadGame);
-    mm.addAction("GameState.load_game_old", loadGameOld);
     mm.addAction("GameState.load_continuation", loadContinuation);
     mm.addAction("GameState.save_game", saveGame);
     mm.addAction("GameState.save_game_as", saveGameAs);
@@ -290,7 +289,6 @@ public class GameState implements CommandEncoder {
     saveGame.setEnabled(gameStarting);
     saveGameAs.setEnabled(gameStarting);
     closeGame.setEnabled(gameStarting);
-    loadGameOld.setEnabled(gameStarting);
     loadContinuation.setEnabled(gameStarting);
   }
 
@@ -541,7 +539,6 @@ public class GameState implements CommandEncoder {
       g.getWizardSupport().showGameSetupWizard();
     }
 
-    loadGameOld.setEnabled(gameStarting);
     loadContinuation.setEnabled(gameStarting);
 
     gameStarted &= this.gameStarting;
