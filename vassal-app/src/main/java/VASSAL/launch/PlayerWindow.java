@@ -142,7 +142,6 @@ public class PlayerWindow extends JFrame {
       new MenuProxy(Resources.getString("General.tools"));
     toolsMenu.setMnemonic(Resources.getString("General.tools.shortcut").charAt(0));
 
-    toolsMenu.addSeparator();
     toolsMenu.add(mm.addKey("GameState.load_and_fast_forward"));
     toolsMenu.add(mm.addKey("GameState.load_and_append"));
 
