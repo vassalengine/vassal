@@ -5,7 +5,11 @@
 
 3.7.19 - ???
 
-* 14248: Upgraded commons-lang3 3.19.0
+* 14257: Upgraded junit-bom to 6.0.0
+* 14256: Upgraded exec-maven-plugin to 3.6.0
+* 14255: Upgraded logback-classic to 1.5.19
+* 14252: Upgraded httpclient5 to 5.5.1
+* 14248: Upgraded commons-lang3 to 3.19.0
 
 3.7.18 - 23 September 2025
 
