@@ -64,7 +64,7 @@ import java.util.List;
  * This component places a button into the controls window toolbar.
  * Pressing the button displays a message, plays a sound and/or sends hotkeys */
 public class DoActionButton extends AbstractToolbarItem
-                            implements RecursionLimiter.Loopable {
+        implements RecursionLimiter.Loopable {
 
   public static final String DO_REPORT = "doReport"; //$NON-NLS-1$
   public static final String REPORT_FORMAT = "reportFormat"; //$NON-NLS-1$
@@ -97,7 +97,7 @@ public class DoActionButton extends AbstractToolbarItem
 
   protected boolean doReport = false;
   protected FormattedString reportFormat =
-    new FormattedString(GameModule.getGameModule());
+          new FormattedString(GameModule.getGameModule());
   protected boolean doSound = false;
   protected String soundClip = ""; //$NON-NLS-1$
   protected boolean doHotkey = false;
@@ -129,17 +129,17 @@ public class DoActionButton extends AbstractToolbarItem
     };
 
     setLaunchButton(makeLaunchButton(
-      getConfigureTypeName(),
-      getConfigureTypeName(),
-      "",
-      rollAction
+            getConfigureTypeName(),
+            getConfigureTypeName(),
+            "",
+            rollAction
     ));
     launch = getLaunchButton(); // for compatibility
   }
 
   // This only exists so SpecialDiceButton can avoid calling the other constructor
   @SuppressWarnings("PMD.UnusedFormalParameter")
-  protected DoActionButton(boolean dummy) { 
+  protected DoActionButton(boolean dummy) {
 
   }
 
@@ -150,46 +150,46 @@ public class DoActionButton extends AbstractToolbarItem
   @Override
   public String[] getAttributeNames() {
     return ArrayUtils.addAll(super.getAttributeNames(),
-      DO_REPORT,
-      REPORT_FORMAT,
-      DO_SOUND,
-      SOUND_CLIP,
-      DO_HOTKEY,
-      HOTKEYS,
-      DO_LOOP,
-      LOOP_TYPE,
-      LOOP_COUNT,
-      WHILE_EXPRESSION,
-      UNTIL_EXPRESSION,
-      PRE_LOOP_HOTKEY,
-      POST_LOOP_HOTKEY,
-      INDEX,
-      INDEX_PROPERTY,
-      INDEX_START,
-      INDEX_STEP
+            DO_REPORT,
+            REPORT_FORMAT,
+            DO_SOUND,
+            SOUND_CLIP,
+            DO_HOTKEY,
+            HOTKEYS,
+            DO_LOOP,
+            LOOP_TYPE,
+            LOOP_COUNT,
+            WHILE_EXPRESSION,
+            UNTIL_EXPRESSION,
+            PRE_LOOP_HOTKEY,
+            POST_LOOP_HOTKEY,
+            INDEX,
+            INDEX_PROPERTY,
+            INDEX_START,
+            INDEX_STEP
     );
   }
 
   @Override
   public String[] getAttributeDescriptions() {
     return ArrayUtils.addAll(super.getAttributeDescriptions(),
-      Resources.getString("Editor.DoAction.display_message"), //$NON-NLS-1$
-      Resources.getString("Editor.report_format"), //$NON-NLS-1$
-      Resources.getString("Editor.DoAction.play_sound"), //$NON-NLS-1$
-      Resources.getString("Editor.DoAction.sound_clip"), //$NON-NLS-1$
-      Resources.getString("Editor.DoAction.send_hotkeys"), //$NON-NLS-1$
-      Resources.getString("Editor.DoAction.hotkeys"), //$NON-NLS-1$
-      Resources.getString("Editor.DoAction.repeat_actions"), //$NON-NLS-1$
-      Resources.getString("Editor.LoopControl.type_of_loop"), //$NON-NLS-1$
-      Resources.getString("Editor.LoopControl.loop_how_many"), //$NON-NLS-1$
-      Resources.getString("Editor.LoopControl.looping_continues"), //$NON-NLS-1$
-      Resources.getString("Editor.LoopControl.looping_ends"), //$NON-NLS-1$
-      Resources.getString("Editor.DoAction.perform_before"), //$NON-NLS-1$
-      Resources.getString("Editor.DoAction.perform_after"), //$NON-NLS-1$
-      Resources.getString("Editor.LoopControl.loop_index"), //$NON-NLS-1$
-      Resources.getString("Editor.LoopControl.index_name"), //$NON-NLS-1$
-      Resources.getString("Editor.LoopControl.index_start"), //$NON-NLS-1$
-      Resources.getString("Editor.LoopControl.index_step") //$NON-NLS-1$
+            Resources.getString("Editor.DoAction.display_message"), //$NON-NLS-1$
+            Resources.getString("Editor.report_format"), //$NON-NLS-1$
+            Resources.getString("Editor.DoAction.play_sound"), //$NON-NLS-1$
+            Resources.getString("Editor.DoAction.sound_clip"), //$NON-NLS-1$
+            Resources.getString("Editor.DoAction.send_hotkeys"), //$NON-NLS-1$
+            Resources.getString("Editor.DoAction.hotkeys"), //$NON-NLS-1$
+            Resources.getString("Editor.DoAction.repeat_actions"), //$NON-NLS-1$
+            Resources.getString("Editor.LoopControl.type_of_loop"), //$NON-NLS-1$
+            Resources.getString("Editor.LoopControl.loop_how_many"), //$NON-NLS-1$
+            Resources.getString("Editor.LoopControl.looping_continues"), //$NON-NLS-1$
+            Resources.getString("Editor.LoopControl.looping_ends"), //$NON-NLS-1$
+            Resources.getString("Editor.DoAction.perform_before"), //$NON-NLS-1$
+            Resources.getString("Editor.DoAction.perform_after"), //$NON-NLS-1$
+            Resources.getString("Editor.LoopControl.loop_index"), //$NON-NLS-1$
+            Resources.getString("Editor.LoopControl.index_name"), //$NON-NLS-1$
+            Resources.getString("Editor.LoopControl.index_start"), //$NON-NLS-1$
+            Resources.getString("Editor.LoopControl.index_step") //$NON-NLS-1$
     );
   }
 
@@ -197,23 +197,23 @@ public class DoActionButton extends AbstractToolbarItem
   @SuppressWarnings("unchecked")
   public Class<?>[] getAttributeTypes() {
     return ArrayUtils.addAll(super.getAttributeTypes(),
-      Boolean.class,
-      ReportFormatConfig.class,
-      Boolean.class,
-      SoundConfig.class,
-      Boolean.class,
-      HotkeyConfig.class,
-      Boolean.class,
-      LoopConfig.class,
-      LoopCountConfig.class,
-      PropertyExpression.class,
-      PropertyExpression.class,
-      NamedKeyStroke.class,
-      NamedKeyStroke.class,
-      Boolean.class,
-      String.class,
-      Integer.class,
-      Integer.class
+            Boolean.class,
+            ReportFormatConfig.class,
+            Boolean.class,
+            SoundConfig.class,
+            Boolean.class,
+            HotkeyConfig.class,
+            Boolean.class,
+            LoopConfig.class,
+            LoopCountConfig.class,
+            PropertyExpression.class,
+            PropertyExpression.class,
+            NamedKeyStroke.class,
+            NamedKeyStroke.class,
+            Boolean.class,
+            String.class,
+            Integer.class,
+            Integer.class
     );
   }
 
