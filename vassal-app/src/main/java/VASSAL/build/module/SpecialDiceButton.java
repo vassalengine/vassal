@@ -257,7 +257,13 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
     return new NullCommand();
   }
 
-  final private Command reportTextResults(int[] results) {
+  /**
+   * Report the results of the roll as text to the chat window.
+   *
+   * @param results the results of the roll (unused in body, but needed for consistent method signature)
+   */
+  @SuppressWarnings({"PMD.UnusedFormalParameter"}) // Suppress warning as 'results' is indirectly used by being passed to this method for compatibility/call sequencing.
+  private Command reportTextResults(int[] results) {
     format.setFormat(chatResultFormat);
     String msg = format.getLocalizedText(this, "Editor.report_format");
     if (!msg.isEmpty()) {
