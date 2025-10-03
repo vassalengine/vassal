@@ -181,24 +181,6 @@ public class GameState implements CommandEncoder {
     // some languages
     loadGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.load_game.shortcut").charAt(0));
 
-    // TODO: remove Load Continuation from File menu as of 3.6
-    loadGameOld = new AbstractAction(Resources.getString("GameState.load_continuation")) {
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        ProblemDialog.show(
-          JOptionPane.INFORMATION_MESSAGE,
-          GameModule.getGameModule().getPlayerWindow(),
-          null,
-          Resources.getString("GameState.old_continuation_title"),
-          Resources.getString("GameState.old_continuation_heading"),
-          Resources.getString("GameState.old_continuation_warning")
-        );
-      }
-    };
-    loadGameOld.setEnabled(false);
-
     loadContinuation = new AbstractAction(Resources.getString("GameState.load_game_old")) {
       private static final long serialVersionUID = 1L;
 
@@ -297,7 +279,6 @@ public class GameState implements CommandEncoder {
     final MenuManager mm = MenuManager.getInstance();
     mm.addAction("GameState.new_game", newGame);
     mm.addAction("GameState.load_game_new", loadGame);
-    mm.addAction("GameState.load_game_old", loadGameOld);
     mm.addAction("GameState.load_continuation", loadContinuation);
     mm.addAction("GameState.save_game", saveGame);
     mm.addAction("GameState.save_game_as", saveGameAs);
@@ -308,7 +289,6 @@ public class GameState implements CommandEncoder {
     saveGame.setEnabled(gameStarting);
     saveGameAs.setEnabled(gameStarting);
     closeGame.setEnabled(gameStarting);
-    loadGameOld.setEnabled(gameStarting);
     loadContinuation.setEnabled(gameStarting);
   }
 
@@ -559,7 +539,6 @@ public class GameState implements CommandEncoder {
       g.getWizardSupport().showGameSetupWizard();
     }
 
-    loadGameOld.setEnabled(gameStarting);
     loadContinuation.setEnabled(gameStarting);
 
     gameStarted &= this.gameStarting;
