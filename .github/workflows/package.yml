@@ -173,6 +173,26 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Update container 
+        run: |
+          sudo apt update -y
+          sudo apt install -y devscripts
+          
+      - name: Store claimed version
+        id: deb_up_vers
+        run: |
+          ver=$(make version-print 2>/dev/null | tr '_' '-')
+          echo "UPSTREAM_VERSION=$ver" >> $GITHUB_OUTPUT
+          echo "Claimed upstream version: $ver"
+          
+      - name: Make DEB changelog not release
+        id: deb_ch_other
+        if: ${{ contains(steps.deb_up_vers.outputs.UPSTREAM_VERSION,'snapshot') }}
+        run: |
+          eml="${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
+          ver=$(make version-print 2>/dev/null | tr '_' '-')
+          echo "Setting non-release Debian version to ${ver}-1"
+          EMAIL="${eml}" dch --release-heuristic log -v ${ver}-1 "Snapshot build"
       - name: Store DEB variables
         id: deb_vars
         run: |
@@ -182,9 +202,6 @@ jobs:
           echo "DEB_VERSION=$version" >> $GITHUB_OUTPUT
           echo "DEB_UPSTREAM=$upstream" >> $GITHUB_OUTPUT
           echo "DEB_ARCH=$arch" >> $GITHUB_OUTPUT
-
-      - name: Update container
-        run: sudo apt update
 
       - name: Install DEB build-dependencies
         run: |

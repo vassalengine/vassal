@@ -43,7 +43,7 @@ mv $BELLSOFT_WIN32_DIR windows-x86_32
 filename="OpenJDK24U-jmods_x64_windows_hotspot_$TEMURIN_FILENAME_VERSION.zip"
 curl -L -O "$TEMURIN_URL/$TEMURIN_VERSION/$filename"
 unzip $filename
-mkdir windows-x86_64
+mkdir -p windows-x86_64
 mv $TEMURIN_VERSION-jmods windows-x86_64/jmods
 
 # Windows aarch64
