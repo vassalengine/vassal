@@ -4,7 +4,7 @@
 
 <h3><a href="{{release_notes_url}}">Release notes</a></h3>
 
-{% for v in changes -%}
+{% for v in changes[:1] -%}
 <h3>Changes since {{ v['since'] }}</h3>
 
 {% if v['new_features'] -%}
