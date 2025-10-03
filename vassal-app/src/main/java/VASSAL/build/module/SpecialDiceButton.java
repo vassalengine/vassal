@@ -73,8 +73,7 @@ import java.util.List;
  * ...
  */
 public class SpecialDiceButton extends DoActionButton implements CommandEncoder, UniqueIdManager.Identifyable, ComponentDescription {
-  private static final Logger logger =
-          LoggerFactory.getLogger(SpecialDiceButton.class);
+  private static final Logger logger = LoggerFactory.getLogger(SpecialDiceButton.class);
 
   protected static final UniqueIdManager idMgr = new UniqueIdManager("SpecialDiceButton"); //$NON-NLS-1$
   public static final String SHOW_RESULTS_COMMAND = "SHOW_RESULTS\t"; //$NON-NLS-1$
@@ -118,8 +117,8 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
   @Deprecated(since = "2020-10-21", forRemoval = true) public static final String BUTTON_TEXT = "text"; //$NON-NLS-1$
   @Deprecated(since = "2020-10-21", forRemoval = true) public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
   @Deprecated(since = "2020-10-21", forRemoval = true) public static final String NAME = "name"; //$NON-NLS-1$
-  @Deprecated(since = "2020-10-21", forRemoval = true) public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
   @Deprecated(since = "2020-10-21", forRemoval = true) public static final String ICON = "icon"; //$NON-NLS-1$
+  @Deprecated(since = "2020-10-21", forRemoval = true) public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
 
   public SpecialDiceButton() {
     super(false); // Make a DoActionButton, but don't call its normal constructor
