@@ -189,7 +189,7 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
       chatAndPropertyCommand = chatAndPropertyCommand.append(reportTextResults(newRollResults));
     }
     // This command is the one that's reversed to undo the property change
-    Command propertyUpdateCommand = property.setPropertyValue(String.valueOf(getTotal(newRollResults)));
+    final Command propertyUpdateCommand = property.setPropertyValue(String.valueOf(getTotal(newRollResults)));
     chatAndPropertyCommand = chatAndPropertyCommand.append(propertyUpdateCommand);
 
     resultsIcon.setResults(newRollResults);
@@ -214,16 +214,16 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
     // *************************************************************************
 
     // 5. LOGGING STEP: Collect all other actions (Hotkeys, Sound, DoActionButton-Report)
-    Command baseActionsCommand = new NullCommand();
+    final Command baseActionsCommand = new NullCommand();
     executeActions(baseActionsCommand);
 
     // 6. Create the GUI update command (ShowResults)
     // Pass the new results AND the previous results for undo.
-    Command showResultsCommand = new ShowResults(this, newRollResults, previousRollResults);
+    final Command showResultsCommand = new ShowResults(this, newRollResults, previousRollResults);
 
     // 7. Combine and send the final command chain.
     // The previous structure worked for the single undo: [Chat/Prop] -> [Base] -> [ShowResults]
-    Command finalCommand = chatAndPropertyCommand.append(baseActionsCommand).append(showResultsCommand);
+    final Command finalCommand = chatAndPropertyCommand.append(baseActionsCommand).append(showResultsCommand);
     GameModule.getGameModule().sendAndLog(finalCommand);
   }
 
@@ -257,7 +257,7 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
     return new NullCommand();
   }
 
-  private Command reportTextResults(int[] results) {
+  final private Command reportTextResults(int[] results) {
     format.setFormat(chatResultFormat);
     String msg = format.getLocalizedText(this, "Editor.report_format");
     if (!msg.isEmpty()) {
