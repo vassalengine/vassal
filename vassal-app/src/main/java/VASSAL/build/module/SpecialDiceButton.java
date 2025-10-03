@@ -201,13 +201,20 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
     Command showResultsCommand = new ShowResults(this, results);
 
 
-    // 5. *** CRITICAL FIX/SYNCHRONIZATION STEP ***
+    // 5. *** MANUAL LOCAL EXECUTION FOR SYNCHRONIZATION ***
+    // Execute chat and property updates locally NOW to ensure the chat appears immediately
+    // and the property value is updated before the GUI reads it.
+    chatAndPropertyCommand.execute();
+
+    // 6. *** LOGGING STEP ***
     // Combine ALL commands into the final chain for atomic undo/redo/network.
-    // Removed the explicit showResultsCommand.execute() to let sendAndLog handle it atomically.
+    // We append the already executed chat/property commands so they are logged
+    // and correctly handled for undo/redo/remote play.
     finalCommand = finalCommand.append(chatAndPropertyCommand).append(showResultsCommand);
 
-    // 6. Send the single, combined command chain to the log for distribution/undo.
-    // This executes the whole chain locally and logs it for network/undo.
+    // 7. Send the single, combined command chain to the log for distribution/undo.
+    // This executes the remaining un-executed commands (base actions/showResults) locally
+    // and sends the full log entry.
     GameModule.getGameModule().sendAndLog(finalCommand);
   }
 
