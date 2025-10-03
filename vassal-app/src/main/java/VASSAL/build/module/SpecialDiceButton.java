@@ -165,7 +165,6 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
   /**
    * Forwards the result of the roll to the {@link Chatter#send} method of the {@link Chatter} of the {@link GameModule}.
    * Format is prefix+[comma-separated roll list]+suffix additionally a command for every die is generated
-   *
    * **REVISION**: Logs the old results to enable single-step undo for the visual state.
    */
   protected void DR() throws RecursionLimitException {
@@ -289,53 +288,63 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
   }
 
   /**
-   * The Attributes of a DiceButton are:
+  * The Attributes of a DiceButton are:
+   * <code>BUTTON_TEXT</code> the label of the button in the toolbar <code>ICON</code> the icon of the button in the
+   * toolbar <code>HOTKEY</code> the hotkey equivalent of the button <code>DICE_SET</code> list of dice sets, an
+   * entry can be: [number]name of die[+|-modifier] "name of die" must be SpecialDie "modifier" is added/subtracted
+   * to/from total of dice [number]Dnumber of sides (e.g. 2D6) <code>NUMERIC</code> result of all dice is numeric
+   * <code>REPORT_TOTAL</code> If numeric and true, add the results of the dice together and report the total.
+   * Otherwise, report the individual results <code>SORT</code> if true sort results per die by numeric value
+   * <code>RESULT_CHATTER</code> if true report results in chatter <code>RESULT_WINDOW</code> if true show result
+   * graphical in extra window <code>WINDOW_X</code> width of window or button <code>WINDOW_Y</code> height of
+   * window or button <code>RESULT_MAP</code> :TODO: if true show result in special area in map <code>MAP_NAME</code>
+   * :TODO: name of map <code>RESULT_BUTTON</code> if true show result graphical in button
    */
   @Override
   public String[] getAttributeNames() {
     return ArrayUtils.addAll(
-            super.getAttributeNames(),
-            DESCRIPTION,
-            RESULT_CHATTER,
-            CHAT_RESULT_FORMAT,
-            RESULT_WINDOW,
-            WINDOW_TITLE_RESULT_FORMAT,
-            RESULT_BUTTON,
-            WINDOW_X,
-            WINDOW_Y,
-            BACKGROUND_COLOR
+      super.getAttributeNames(),
+      DESCRIPTION,
+      RESULT_CHATTER,
+      CHAT_RESULT_FORMAT,
+      RESULT_WINDOW,
+      WINDOW_TITLE_RESULT_FORMAT,
+      RESULT_BUTTON,
+      WINDOW_X,
+      WINDOW_Y,
+      BACKGROUND_COLOR
     );
   }
 
   @Override
   public String[] getAttributeDescriptions() {
     return ArrayUtils.addAll(
-            super.getAttributeDescriptions(),
-            Resources.getString(Resources.DESCRIPTION),
-            Resources.getString("Editor.SpecialDiceButton.report_results_text"), //$NON-NLS-1$
-            Resources.getString("Editor.report_format"), //$NON-NLS-1$
-            Resources.getString("Editor.SpecialDiceButton.result_window"), //$NON-NLS-1$
-            Resources.getString("Editor.SpecialDiceButton.window_title"), //$NON-NLS-1$
-            Resources.getString("Editor.SpecialDiceButton.result_button"), //$NON-NLS-1$
-            Resources.getString("Editor.width"), //$NON-NLS-1$
-            Resources.getString("Editor.height"), //$NON-NLS-1$
-            Resources.getString("Editor.background_color") //$NON-NLS-1$
+      super.getAttributeDescriptions(),
+      Resources.getString(Resources.DESCRIPTION),
+      Resources.getString("Editor.SpecialDiceButton.report_results_text"), //$NON-NLS-1$
+      Resources.getString("Editor.report_format"), //$NON-NLS-1$
+      Resources.getString("Editor.SpecialDiceButton.result_window"), //$NON-NLS-1$
+      Resources.getString("Editor.SpecialDiceButton.window_title"), //$NON-NLS-1$
+      Resources.getString("Editor.SpecialDiceButton.result_button"), //$NON-NLS-1$
+      Resources.getString("Editor.width"), //$NON-NLS-1$
+      Resources.getString("Editor.height"), //$NON-NLS-1$
+      Resources.getString("Editor.background_color") //$NON-NLS-1$
     );
   }
 
   @Override
   public Class<?>[] getAttributeTypes() {
     return ArrayUtils.addAll(
-            super.getAttributeTypes(),
-            String.class,
-            Boolean.class,
-            ReportFormatConfig.class,
-            Boolean.class,
-            ReportFormatConfig.class,
-            Boolean.class,
-            Integer.class,
-            Integer.class,
-            Color.class
+      super.getAttributeTypes(),
+      String.class,
+      Boolean.class,
+      ReportFormatConfig.class,
+      Boolean.class,
+      ReportFormatConfig.class,
+      Boolean.class,
+      Integer.class,
+      Integer.class,
+      Color.class
     );
   }
 
