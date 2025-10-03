@@ -164,7 +164,7 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
    * Forwards the result of the roll to the {@link Chatter#send} method of the {@link Chatter} of the {@link GameModule}.
    * Format is prefix+[comma-separated roll list]+suffix additionally a command for every die is generated
    *
-   * **REVISED:** Force property update locally, then enforce command order in the log.
+   * **REVISED:** Enforce chat and property update to be the very first commands logged and ensure button text update.
    */
   protected void DR() throws RecursionLimitException {
     // 1. Roll the dice
@@ -177,7 +177,7 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
     }
     setFormat(results); // Sets up format properties with the new roll results
 
-    // 2. Create the chat/property command chain
+    // 2. Create the chat and property update commands.
     Command chatAndPropertyCommand = new NullCommand();
     if (reportResultAsText) {
       // reportTextResults returns Chatter.DisplayText command
@@ -187,36 +187,38 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
     Command propertyUpdateCommand = property.setPropertyValue(String.valueOf(getTotal(results)));
     chatAndPropertyCommand = chatAndPropertyCommand.append(propertyUpdateCommand);
 
-    // 3. *** CRITICAL FIX: IMMEDIATE LOCAL PROPERTY UPDATE ***
-    // Execute the property update LOCALLY and IMMEDIATELY. This is the last resort
-    // to fix the one-roll lag on the button text property read.
-    propertyUpdateCommand.execute();
+    // 3. *** IMMEDIATE LOCAL PROPERTY UPDATE & CHAT REPORT EXECUTION ***
+    // Execute the chat and property commands LOCALLY and IMMEDIATELY.
+    chatAndPropertyCommand.execute();
 
-    // masterCommand will ONLY hold base actions (Hotkeys, DoReport, DoSound).
+    // *** NEW FIX: Explicitly repaint the launch button AFTER the property has been set locally.
+    // This forces the button to re-read the now-updated property for its text, fixing the lag.
+    if (getLaunchButton() != null) {
+      getLaunchButton().repaint();
+    }
+    // *************************************************************************
+
+    // masterCommand will hold base actions (Hotkeys, DoReport, DoSound).
     Command masterCommand = new NullCommand();
 
     // 4. Collect Hotkey, DoReport, DoSound commands from base class.
-    // executeActions() is a VOID method that mutates masterCommand (the fix for compilation error).
+    // executeActions() is a VOID method that mutates masterCommand.
     executeActions(masterCommand);
 
     // 5. Create the GUI update command
     Command showResultsCommand = new ShowResults(this, results);
 
-
     // 6. *** LOGGING STEP: ENFORCE CHAT/PROPERTY ORDER ***
-    // Start the final chain with the chat/property commands to ensure they are
-    // executed and logged *before* the base actions.
+    // The final command chain must start with the chat/property commands.
     Command finalCommand = chatAndPropertyCommand;
 
-    // Append the base actions
+    // Append the base actions (from step 4)
     finalCommand = finalCommand.append(masterCommand);
 
     // Append the GUI update command (ShowResults)
     finalCommand = finalCommand.append(showResultsCommand);
 
     // 7. Send the single, combined command chain to the log for distribution/undo.
-    // This executes the full command chain on all peers/log (Chat, Property, Base Actions, GUI).
-    // The immediate local property update (step 3) should have already fixed the GUI read lag.
     GameModule.getGameModule().sendAndLog(finalCommand);
   }
 
