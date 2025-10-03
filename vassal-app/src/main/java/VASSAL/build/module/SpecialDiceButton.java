@@ -182,10 +182,7 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
       newRollResults[i++] = faceCount == 0 ? 0 : ran.nextInt(sd.getFaceCount());
     }
 
-    // 3. Cache the *new* roll results for the *next* roll's undo
-    // lastRollResults = newRollResults; // <-- REMOVED: This update now happens in ShowResults.executeCommand()
-
-    // 4. Set format, properties, and execute local updates for the *new* roll
+    // 3. Set format, properties, and execute local updates for the *new* roll
     setFormat(newRollResults);
     Command chatAndPropertyCommand = new NullCommand();
     if (reportResultAsText) {
@@ -678,17 +675,30 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
       results[i++] = Integer.parseInt(n);
     }
     // When decoding for remote clients/redo, we don't have the previous results, so we pass EMPTY.
+    // The three-argument constructor will be used, and EMPTY will be stored for previousRolls.
     return new ShowResults(this, results, EMPTY);
   }
   /**
    * Command for displaying the results of a roll of the dice
    * **REVISION**: `executeCommand()` now correctly updates the button's internal `lastRollResults`
    * state, fixing the chain-of-undo bug.
+   * **COMPATIBILITY FIX**: Added back the old two-argument constructor.
    */
   public static class ShowResults extends Command {
     private final SpecialDiceButton target;
     private final int[] rolls;           // State to apply on execute/redo
     private final int[] previousRolls;   // State to apply on undo
+
+    /**
+     * **BINARY COMPATIBILITY CONSTRUCTOR**
+     * This is the old constructor signature that must be preserved.
+     * It defaults the previous roll to an empty array.
+     */
+    @Deprecated
+    public ShowResults(SpecialDiceButton oTarget, int[] rollsToApply) {
+      this(oTarget, rollsToApply, EMPTY);
+    }
+
 
     public ShowResults(SpecialDiceButton oTarget, int[] rollsToApply, int[] previousRollsToRestore) {
       target = oTarget;
