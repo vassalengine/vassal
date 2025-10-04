@@ -19,6 +19,7 @@ package VASSAL.build.module;
 
 import VASSAL.build.AbstractFolder;
 import VASSAL.build.AutoConfigurable;
+import VASSAL.build.module.properties.PropertySource;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
@@ -38,13 +39,7 @@ import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.search.HTMLImageFinder;
-import VASSAL.tools.FormattedString;
-import VASSAL.tools.KeyStrokeListener;
-import VASSAL.tools.LaunchButton;
-import VASSAL.tools.RecursionLimitException;
-import VASSAL.tools.RecursionLimiter;
-import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.UniqueIdManager;
+import VASSAL.tools.*;
 import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OwningOpMultiResolutionImage;
@@ -176,7 +171,6 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
     int i = 0;
     for (final SpecialDie sd : dice) {
       final int faceCount = sd.getFaceCount();
-      // NOTE: dice roll happens here, it must only happen once.
       newRollResults[i++] = faceCount == 0 ? 0 : ran.nextInt(sd.getFaceCount());
     }
 
@@ -187,7 +181,7 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
       chatAndPropertyCommand = chatAndPropertyCommand.append(reportTextResults(newRollResults));
     }
     // This command is the one that's reversed to undo the property change
-    final Command propertyUpdateCommand = property.setPropertyValue(String.valueOf(getTotal(newRollResults)));
+    Command propertyUpdateCommand = property.setPropertyValue(String.valueOf(getTotal(newRollResults)));
     chatAndPropertyCommand = chatAndPropertyCommand.append(propertyUpdateCommand);
 
     resultsIcon.setResults(newRollResults);
@@ -211,18 +205,99 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
     }
     // *************************************************************************
 
-    // 5. LOGGING STEP: Collect all other actions (Hotkeys, Sound, DoActionButton-Report)
-    final Command baseActionsCommand = new NullCommand();
-    executeActions(baseActionsCommand);
+    // FIX: Integration of Looping and Hotkey execution from DoActionButton.doActions()
 
-    // 6. Create the GUI update command (ShowResults)
-    // Pass the new results AND the previous results for undo.
-    final Command showResultsCommand = new ShowResults(this, newRollResults, previousRollResults);
+    final Command c = chatAndPropertyCommand; // Start with the dice roll/prop update command
+    final GameModule mod = GameModule.getGameModule();
 
-    // 7. Combine and send the final command chain.
-    // The previous structure worked for the single undo: [Chat/Prop] -> [Base] -> [ShowResults]
-    final Command finalCommand = chatAndPropertyCommand.append(baseActionsCommand).append(showResultsCommand);
-    GameModule.getGameModule().sendAndLog(finalCommand);
+    // Check for looping, as defined in DoActionButton.doActions()
+    if (!doLoop) {
+      // Non looping case: Execute the base actions and log the whole chain
+      executeActions(c); // Adds sound/hotkeys/report to c
+      Command showResultsCommand = new ShowResults(this, newRollResults, previousRollResults);
+      mod.sendAndLog(c.append(showResultsCommand));
+      return;
+    }
+
+    // Looping case (restored from DoActionButton.doActions())
+    // Note: We use the index/loop variables from the superclass (this)
+
+    // Set up Index Property
+    indexValue = indexStart;
+    setIndexPropertyValue();
+
+    // Issue the Pre-loop key
+    doHotKey(c, preLoopKey);
+
+    // Set up counters for a counted loop
+    int loopCounter = 0;
+    int loopCountLimit = 1;
+    final PropertySource ps = (PropertySource) GameModule.getGameModule(); // Simplified PropertySource lookup
+
+    if (LoopControl.LOOP_COUNTED.equals(loopType)) {
+      loopCountLimit = loopCount.getTextAsInt(ps, Resources.getString("Editor.LoopControl.loop_count"), this);
+    }
+
+    RecursionLimitException loopException = null;
+
+    if (loopCountLimit > 0) {
+      for (;;) {
+
+        // While loop - test condition is still true before actions
+        if (LoopControl.LOOP_WHILE.equals(loopType)) {
+          if (!whileExpression.isTrue(ps)) {
+            break;
+          }
+        }
+
+        // Execute the base actions and catch looping.
+        try {
+          executeActions(c); // Adds sound/hotkeys/report to c
+        }
+        catch (RecursionLimitException ex) {
+          loopException = ex;
+          break;
+        }
+
+        // Until loop - test condition is not false after loop
+        if (LoopControl.LOOP_UNTIL.equals(loopType)) {
+          if (untilExpression.isTrue(ps)) {
+            break;
+          }
+        }
+
+        // Counted loop - Check if looped enough times
+        loopCounter++;
+        if (LoopControl.LOOP_COUNTED.equals(loopType)) {
+          if (loopCounter >= loopCountLimit) {
+            break;
+          }
+        }
+        // Otherwise check for too much looping.
+        else {
+          if (loopCounter >= LoopControl.LOOP_LIMIT) {
+            loopException = new RecursionLimitException(this);
+            break;
+          }
+        }
+
+        // Increment the Index Variable
+        indexValue += indexStep;
+        setIndexPropertyValue();
+      }
+    }
+
+    // Issue the Post-loop key
+    doHotKey(c, postLoopKey);
+
+    // Now that the full action chain (c) is built, append the visual update (undo fix) and log the whole thing.
+    Command showResultsCommand = new ShowResults(this, newRollResults, previousRollResults);
+    mod.sendAndLog(c.append(showResultsCommand));
+
+    // If the loop ended due to excessive looping, throw the Exception out to the caller.
+    if (loopException != null) {
+      throw loopException;
+    }
   }
 
   // Helper method to get total, simplified logic
