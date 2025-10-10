@@ -38,22 +38,6 @@
       ]
     },
     {
-      "in": "3.8.0-beta1",
-      "since": "3.7.17",
-      "new_features": [
-        { "num": 12944, "desc": "Add pieceCount to the map auto reporter" },
-        { "num": 12763, "desc": "Added ModuleGameFileName property" }
-      ],
-      "bug_fixes": [
-      ],
-      "improvements": [
-      ],
-      "other": [
-        { "num": 14242, "desc": "Upgraded spotbugs-annotations to 4.9.6" },
-        { "num": 14241, "desc": "Upgraded spotbugs-maven-plugin 4.9.6.0" }
-      ]
-    },
-    {
       "in": "3.7.18",
       "since": "3.7.17",
       "new_features": [
