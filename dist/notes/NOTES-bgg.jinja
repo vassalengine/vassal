@@ -8,7 +8,7 @@
 
 [size=16][b]Download[/b][/size]
 {% for item in downloads -%}
-[url=https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-{{item.suffix}}]{{item.display_name}}[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/{{version}}/{{ item.prefix | default('VASSAL-') }}{{version}}-{{item.suffix}}]{{item.display_name}}[/url]
 {% endfor %}
 
 {% for v in changes -%}

@@ -8,6 +8,7 @@
   "release_notes_url": "https://forum.vassalengine.org/t/vassal-3-7-release-notes/78948",
   "downloads": [
     { "display_name": "Linux", "suffix": "linux.tar.bz2" },
+    { "display_name": "Linux (Debian)", "suffix": "1_all.deb", "prefix": "vassal_"}, 
     { "display_name": "MacOS", "suffix": "macos-universal.dmg" },
     { "display_name": "Windows (64-bit x86)", "suffix": "windows-x86_64.exe" },
     { "display_name": "Windows (32-bit x86)", "suffix": "windows-x86_32.exe" },
@@ -30,6 +31,7 @@
         { "num": 14257, "desc": "Upgraded junit-bom to 6.0.0" },
         { "num": 14256, "desc": "Upgraded exec-maven-plugin to 3.6.0" },
         { "num": 14255, "desc": "Upgraded logback-classic to 1.5.19" },
+        { "num": 14254, "desc": "Build release on tag" },
         { "num": 14253, "desc": "Upgraded checkstyle to 11.1.0" },
         { "num": 14252, "desc": "Upgraded httpclient5 to 5.5.1" },
         { "num": 14248, "desc": "Upgraded commons-lang3 to 3.19.0" }
