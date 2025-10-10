@@ -1,12 +1,15 @@
 3.7.19 - ???
 
+* 14280: Upgraded checkstyle to 12.0.0
+* 14279: Upgraded byte-buddy to 1.17.8
+* 14274: Upgraded asm to 9.9
+* 14273: Upgraded exec-maven-plugin to 3.6.1
+* 14267: Upgraded asciidoctorj-pdf to 2.3.20
 * 14265: Upgraded maven-enforcer-plugin to 3.6.2
 * 14264: Upgraded maven-dependency-plugin to 3.9.0
 * 14257: Upgraded junit-bom to 6.0.0
-* 14256: Upgraded exec-maven-plugin to 3.6.0
 * 14255: Upgraded logback-classic to 1.5.19
 * 14254: Set-up release-on-tag workflow
-* 14253: Upgraded checkstyle to 11.1.0
 * 14252: Upgraded httpclient5 to 5.5.1
 * 14248: Upgraded commons-lang3 to 3.19.0
 

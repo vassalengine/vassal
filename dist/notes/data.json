@@ -26,13 +26,16 @@
       "improvements": [
       ],
       "other": [
+        { "num": 14280, "desc": "Upgraded checkstyle to 12.1.0" },
+        { "num": 14279, "desc": "Upgraded byte-buddy to 1.17.8" },
+        { "num": 14274, "desc": "Upgraded asm to 9.9" },
+        { "num": 14273, "desc": "Upgraded exec-maven-plugin to 3.6.1" },
+        { "num": 14267, "desc": "Upgraded asciidoctorj-pdf to 2.3.20" },
         { "num": 14265, "desc": "Upgraded maven-enforcer-plugin to 3.6.2" },
         { "num": 14264, "desc": "Upgraded maven-dependency-plugin to 3.9.0" },
         { "num": 14257, "desc": "Upgraded junit-bom to 6.0.0" },
-        { "num": 14256, "desc": "Upgraded exec-maven-plugin to 3.6.0" },
         { "num": 14255, "desc": "Upgraded logback-classic to 1.5.19" },
         { "num": 14254, "desc": "Build release on tag" },
-        { "num": 14253, "desc": "Upgraded checkstyle to 11.1.0" },
         { "num": 14252, "desc": "Upgraded httpclient5 to 5.5.1" },
         { "num": 14248, "desc": "Upgraded commons-lang3 to 3.19.0" }
       ]
