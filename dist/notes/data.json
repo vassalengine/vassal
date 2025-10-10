@@ -16,27 +16,6 @@
     { "display_name": "Other", "suffix": "other.zip" }
   ],
   "changes": [
-   {
-      "in": "3.7.19",
-      "since": "3.7.18",
-      "new_features": [
-      ],
-      "bug_fixes": [
-      ],
-      "improvements": [
-      ],
-      "other": [
-        { "num": 14265, "desc": "Upgraded maven-enforcer-plugin to 3.6.2" },
-        { "num": 14264, "desc": "Upgraded maven-dependency-plugin to 3.9.0" },
-        { "num": 14257, "desc": "Upgraded junit-bom to 6.0.0" },
-        { "num": 14256, "desc": "Upgraded exec-maven-plugin to 3.6.0" },
-        { "num": 14255, "desc": "Upgraded logback-classic to 1.5.19" },
-        { "num": 14254, "desc": "Build release on tag" },
-        { "num": 14253, "desc": "Upgraded checkstyle to 11.1.0" },
-        { "num": 14252, "desc": "Upgraded httpclient5 to 5.5.1" },
-        { "num": 14248, "desc": "Upgraded commons-lang3 to 3.19.0" }
-      ]
-    },
     {
       "in": "3.8.0-beta1",
       "since": "3.7.17",
@@ -51,6 +30,27 @@
       "other": [
         { "num": 14242, "desc": "Upgraded spotbugs-annotations to 4.9.6" },
         { "num": 14241, "desc": "Upgraded spotbugs-maven-plugin 4.9.6.0" }
+      ]
+    },
+    {
+      "in": "3.7.19",
+      "since": "3.7.18",
+      "new_features": [
+      ],
+      "bug_fixes": [
+      ],
+      "improvements": [
+      ],
+      "other": [
+        { "num": 14265, "desc": "Upgraded maven-enforcer-plugin to 3.6.2" },
+        { "num": 14264, "desc": "Upgraded maven-dependency-plugin to 3.9.0" },
+        { "num": 14257, "desc": "Upgraded junit-bom to 6.0.0" },
+        { "num": 14256, "desc": "Upgraded exec-maven-plugin to 3.6.0" },
+        { "num": 14255, "desc": "Upgraded logback-classic to 1.5.19" },
+        { "num": 14254, "desc": "Set-up release-on-tag workflow" },
+        { "num": 14253, "desc": "Upgraded checkstyle to 11.1.0" },
+        { "num": 14252, "desc": "Upgraded httpclient5 to 5.5.1" },
+        { "num": 14248, "desc": "Upgraded commons-lang3 to 3.19.0" }
       ]
     },
     {
