@@ -177,8 +177,7 @@ public class GameState implements CommandEncoder {
         }
       }
     };
-    // FIXME: setting mnemonic from first letter could cause collisions in
-    // some languages
+
     loadGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.load_game.shortcut").charAt(0));
 
     loadContinuation = new AbstractAction(Resources.getString("GameState.load_game_old")) {
@@ -224,8 +223,7 @@ public class GameState implements CommandEncoder {
         saveGame();
       }
     };
-    // FIXME: setting mnemonic from first letter could cause collisions in
-    // some languages
+
     saveGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.save_game.shortcut").charAt(0));
 
     saveGameAs = new AbstractAction(Resources.getString("GameState.save_game_as")) {
@@ -236,8 +234,7 @@ public class GameState implements CommandEncoder {
         saveGameAs();
       }
     };
-    // FIXME: setting mnemonic from first letter could cause collisions in
-    // some languages
+
     saveGameAs.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.save_game_as.shortcut").charAt(0));
 
     newGame = new AbstractAction(Resources.getString("GameState.new_game")) {
@@ -259,8 +256,7 @@ public class GameState implements CommandEncoder {
         GameModule.getGameModule().getGameState().freshenStartupGlobalKeyCommands(GameModule.getGameModule());
       }
     };
-    // FIXME: setting mnemonic from first letter could cause collisions in
-    // some languages
+
     newGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.new_game.shortcut").charAt(0));
 
     closeGame = new AbstractAction(
@@ -272,8 +268,7 @@ public class GameState implements CommandEncoder {
         closeGame();
       }
     };
-    // FIXME: setting mnemonic from first letter could cause collisions in
-    // some languages
+
     closeGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.close_game.shortcut").charAt(0));
 
     final MenuManager mm = MenuManager.getInstance();

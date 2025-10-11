@@ -120,7 +120,6 @@ public class PlayerWindow extends JFrame {
     final MenuProxy helpMenu =
       new MenuProxy(Resources.getString("General.help"));
 
-    // FIXME: setting mnemonic from first letter could cause collisions in some languages
     helpMenu.setMnemonic(Resources.getString("General.help.shortcut").charAt(0));
 
     helpMenu.add(mm.addMarker("Documentation.Module.start"));  //NON-NLS
