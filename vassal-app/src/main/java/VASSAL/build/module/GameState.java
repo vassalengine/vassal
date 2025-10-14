@@ -192,7 +192,6 @@ public class GameState implements CommandEncoder {
         }
       }
     };
-    loadContinuation.setEnabled(false);
 
     loadAndFastForward = new AbstractAction(Resources.getString("GameState.load_and_fast_forward")) {
       private static final long serialVersionUID = 1L;
