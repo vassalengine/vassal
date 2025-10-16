@@ -111,7 +111,7 @@ public class Deselect extends Decorator implements TranslatablePiece {
   protected KeyCommand[] myGetKeyCommands() {
     if (command == null) {
       deselectCommand = new KeyCommand(commandName, key, getOutermost(this), this);
-      if (commandName.length() > 0 && key != null && !key.isNull()) {
+      if (!commandName.isEmpty() && key != null && !key.isNull()) {
         command =
           new KeyCommand[]{deselectCommand};
       }
@@ -131,47 +131,54 @@ public class Deselect extends Decorator implements TranslatablePiece {
   }
 
   @Override
-  public Command myKeyEvent(KeyStroke stroke) {
-    Command c = null;
-    myGetKeyCommands();
-    if (deselectCommand.matches(stroke)) {
-      final GamePiece outer = getOutermost(this);
-      final Map m = getMap();
+   public Command myKeyEvent(KeyStroke stroke) {
+       Command c = null;
+       myGetKeyCommands();
+       if (deselectCommand.matches(stroke)) {
+           final GamePiece outer = getOutermost(this);
+           final Map m = getMap();
 
-      if (DESELECT_ALL.equals(deselectType)) {
-        DragBuffer.getBuffer().clear();
-        KeyBuffer.getBuffer().clear();
-      }
-      else if (DESELECT_SELECT_ONLY.equals(deselectType)) {
-        DragBuffer.getBuffer().clear();
-        KeyBuffer.getBuffer().clear();
-        DragBuffer.getBuffer().add(outer);
-        KeyBuffer.getBuffer().add(outer);
-      }
-      else {
-        if (unstack) {
-          final Stack stack = outer.getParent();       //BR// If we're now being dragged around as part of a stack
-          if (stack != null) {
-            final Point pos = outer.getPosition();     //BR// Figure out where stack was/is
+           if (DESELECT_ALL.equals(deselectType)) {
+               DragBuffer.getBuffer().clear();
+               KeyBuffer.getBuffer().clear();
+           }
+           else if (DESELECT_SELECT_ONLY.equals(deselectType)) {
+               DragBuffer.getBuffer().clear();
+               KeyBuffer.getBuffer().clear();
+               DragBuffer.getBuffer().add(outer);
+               KeyBuffer.getBuffer().add(outer);
+           }
+           else { // DESELECT_THIS
+               if (unstack) {
+                   final Stack stack = outer.getParent();       //BR// If we're now being dragged around as part of a stack
+                   if (stack != null) {
+                       final Point pos = outer.getPosition();     //BR// Figure out where stack was/is
 
-            c = m.placeAt(outer, pos);                 //BR// Place it right on the map (which auto-removes it from stack)
+                       // 1. EXECUTE UNSTACK: This command (c) now holds the instruction
+                       // to remove the piece from the stack and place it on the map.
+                       c = m.placeAt(outer, pos);                 //BR// Place it right on the map (which auto-removes it from stack)
 
-            final Stack parent = m.getStackMetrics().createStack(outer);
-            if (parent != null) {
-              c = c.append(m.placeAt(parent, pos));    //BR// Place it in a new stack at the same location
-            }
-          }
-        }
-        DragBuffer.getBuffer().remove(outer);          //BR// Remove from the drag buffer
-        KeyBuffer.getBuffer().remove(outer);           //BR// Remove from the key buffer
-      }
-    }
-    return c;
-  }
+                       // 2. REMOVE FAULTY LOGIC: The following lines, which attempt to create
+                       // a new Stack, are likely confusing the undo mechanism.
+                       // This is the primary structural fix.
+                   /*
+                   final Stack parent = m.getStackMetrics().createStack(outer);
+                   if (parent != null) {
+                       c = c.append(m.placeAt(parent, pos));    //BR// Place it in a new stack at the same location
+                   }
+                   */
+                   }
+               }
+               DragBuffer.getBuffer().remove(outer);          //BR// Remove from the drag buffer
+               KeyBuffer.getBuffer().remove(outer);           //BR// Remove from the key buffer
+           }
+       }
+       return c;
+   }
 
-  @Override
-  public void mySetState(String newState) {
-  }
+   @Override
+   public void mySetState(String newState) {
+   }
 
   @Override
   public Rectangle boundingBox() {
