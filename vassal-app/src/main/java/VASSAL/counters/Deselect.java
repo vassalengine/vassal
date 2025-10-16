@@ -153,20 +153,19 @@ public class Deselect extends Decorator implements TranslatablePiece {
                   final Stack stack = outer.getParent();       //BR// If we're now being dragged around as part of a stack
                   if (stack != null) {
                       final Point pos = outer.getPosition();     //BR// Figure out where stack was/is
-                      // 1. EXECUTE UNSTACK: This command (c) now holds the instruction
-                      // to remove the piece from the stack and place it on the map.
+
+                      // FIX: Isolate the detach command and remove the confusing stack creation/placement.
+                      // This ensures the undo command for m.placeAt is the final and only one for unstacking.
                       c = m.placeAt(outer, pos);                 //BR// Place it right on the map (which auto-removes it from stack)
 
-                      /* 2. REMOVE FAULTY LOGIC: The following lines, which attempt to create
-                      // a new Stack, are likely confusing the undo mechanism.
-                      // This is the primary structural fix.
-                      // /*
-                      // final Stack parent = m.getStackMetrics().createStack(outer);
-                      // if (parent != null) {
-                      // c = c.append(m.placeAt(parent, pos));    //BR// Place it in a new stack at the same location
-                      // }
-                      */
-                 }
+                      // The following original lines are removed as they were confusing the undo logic:
+                    /*
+                    final Stack parent = m.getStackMetrics().createStack(outer);
+                    if (parent != null) {
+                        c = c.append(m.placeAt(parent, pos));    //BR// Place it in a new stack at the same location
+                    }
+                    */
+                  }
               }
               DragBuffer.getBuffer().remove(outer);          //BR// Remove from the drag buffer
               KeyBuffer.getBuffer().remove(outer);           //BR// Remove from the key buffer
