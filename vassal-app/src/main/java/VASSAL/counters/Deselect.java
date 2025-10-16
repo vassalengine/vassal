@@ -130,53 +130,45 @@ public class Deselect extends Decorator implements TranslatablePiece {
     return "";
   }
 
-    @Override
-    public Command myKeyEvent(KeyStroke stroke) {
-        Command c = null;
-        myGetKeyCommands();
-        if (deselectCommand.matches(stroke)) {
-            final GamePiece outer = getOutermost(this);
-            final Map m = getMap();
+  @Override
+  public Command myKeyEvent(KeyStroke stroke) {
+      Command c = null;
+      myGetKeyCommands();
+      if (deselectCommand.matches(stroke)) {
+          final GamePiece outer = getOutermost(this);
+          final Map m = getMap();
 
-            if (DESELECT_ALL.equals(deselectType)) {
-                DragBuffer.getBuffer().clear();
-                KeyBuffer.getBuffer().clear();
-            }
-            else if (DESELECT_SELECT_ONLY.equals(deselectType)) {
-                DragBuffer.getBuffer().clear();
-                KeyBuffer.getBuffer().clear();
-                DragBuffer.getBuffer().add(outer);
-                KeyBuffer.getBuffer().add(outer);
-            }
-            else { // DESELECT_THIS
-                if (unstack) {
-                    final Stack stack = outer.getParent();       //BR// If we're now being dragged around as part of a stack
-                    if (stack != null) {
-                        final Point pos = outer.getPosition();     //BR// Figure out where stack was/is
-
-                        // FIX: Isolate the detach command and remove the confusing stack creation/placement.
-                        // This ensures the undo command for m.placeAt is the final and only one for unstacking.
-                        c = m.placeAt(outer, pos);                 //BR// Place it right on the map (which auto-removes it from stack)
-
-                        // The following original lines are removed as they were confusing the undo logic:
-          /*
-          final Stack parent = m.getStackMetrics().createStack(outer);
-          if (parent != null) {
-            c = c.append(m.placeAt(parent, pos));    //BR// Place it in a new stack at the same location
+          if (DESELECT_ALL.equals(deselectType)) {
+              DragBuffer.getBuffer().clear();
+              KeyBuffer.getBuffer().clear();
           }
-          */
-                    }
-                }
-                DragBuffer.getBuffer().remove(outer);          //BR// Remove from the drag buffer
-                KeyBuffer.getBuffer().remove(outer);           //BR// Remove from the key buffer
-            }
-        }
-        return c;
-    }
+          else if (DESELECT_SELECT_ONLY.equals(deselectType)) {
+              DragBuffer.getBuffer().clear();
+              KeyBuffer.getBuffer().clear();
+              DragBuffer.getBuffer().add(outer);
+              KeyBuffer.getBuffer().add(outer);
+          }
+          else { // DESELECT_THIS
+              if (unstack) {
+                  final Stack stack = outer.getParent();       //BR// If we're now being dragged around as part of a stack
+                  if (stack != null) {
+                      final Point pos = outer.getPosition();     //BR// Figure out where stack was/is
+
+                      // FIX: Isolate the detach command and remove the confusing stack creation/placement.
+                      c = m.placeAt(outer, pos);                 //BR// Place it right on the map (which auto-removes it from stack)
+
+                      // Original lines removed.
+                  }
+              }
+              DragBuffer.getBuffer().remove(outer);          //BR// Remove from the drag buffer
+              KeyBuffer.getBuffer().remove(outer);           //BR// Remove from the key buffer
+          }
+      }
+      return c;
+  }
 
   @Override
   public void mySetState(String newState) {
-
   }
 
   @Override
