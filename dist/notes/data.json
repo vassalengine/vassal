@@ -42,7 +42,10 @@
       "improvements": [
       ],
       "other": [
-        { "num": 14280, "desc": "Upgraded checkstyle to 12.1.0" },
+        { "num": 14294, "desc": "Upgraded spotbugs-annotations to 4.9.7" },
+        { "num": 14293, "desc": "Upgraded spotbugs-maven-plugin to 4.9.7.0" },
+        { "num": 14286, "desc": "Upgraded checkstyle to 12.0.1" },
+        { "num": 14281, "desc": "Upgraded maven-pmd-plugin to 3.28.0" },
         { "num": 14279, "desc": "Upgraded byte-buddy to 1.17.8" },
         { "num": 14274, "desc": "Upgraded asm to 9.9" },
         { "num": 14273, "desc": "Upgraded exec-maven-plugin to 3.6.1" },

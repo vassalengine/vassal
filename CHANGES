@@ -5,7 +5,10 @@
 
 3.7.19 - ???
 
-* 14280: Upgraded checkstyle to 12.0.0
+* 14294: Upgraded spotbugs-annotations to 4.9.7
+* 14293: Upgraded spotbugs-maven-plugin to 4.9.7.0
+* 14286: Upgraded checkstyle to 12.0.1
+* 14281: Upgraded maven-pmd-plugin to 3.28.0
 * 14279: Upgraded byte-buddy to 1.17.8
 * 14274: Upgraded asm to 9.9
 * 14273: Upgraded exec-maven-plugin to 3.6.1
