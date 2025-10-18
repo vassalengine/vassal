@@ -5,6 +5,8 @@
 
 3.7.19 - ???
 
+* 14301: Upgraded bundled Java to 25+36 (Windows x86_64, Mac), 25+37 (Windows
+    aarch64)
 * 14294: Upgraded spotbugs-annotations to 4.9.7
 * 14293: Upgraded spotbugs-maven-plugin to 4.9.7.0
 * 14286: Upgraded checkstyle to 12.0.1

@@ -42,6 +42,7 @@
       "improvements": [
       ],
       "other": [
+        { "num": 14301, "desc": "Upgraded bundled Java to 25+36 (Windows x86_64, Mac), 25+37 (Windows aarch64)" },
         { "num": 14294, "desc": "Upgraded spotbugs-annotations to 4.9.7" },
         { "num": 14293, "desc": "Upgraded spotbugs-maven-plugin to 4.9.7.0" },
         { "num": 14286, "desc": "Upgraded checkstyle to 12.0.1" },
