@@ -23,15 +23,14 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import VASSAL.i18n.Resources;
 
-public class ObliqueHexGridNumbering extends HexGridNumbering
-{
+public class ObliqueHexGridNumbering extends HexGridNumbering {
   public boolean direction = true;
   public static final String DIRECTION = "direction"; //NON-NLS
 
   @Override
   public String[] getAttributeDescriptions() {
     return ArrayUtils.add(super.getAttributeDescriptions(),
-                          Resources.getString("Editor.ObliqueHexGridNumbering.direction"));//"Slanted right"
+                          Resources.getString("Editor.ObliqueHexGridNumbering.direction"));
   }
 
   @Override
@@ -56,8 +55,7 @@ public class ObliqueHexGridNumbering extends HexGridNumbering
   }
 
   @Override
-  public String getAttributeValueString(String key)
-  {
+  public String getAttributeValueString(String key) {
     if (DIRECTION.equals(key)) 
       return String.valueOf(direction);
     else 
@@ -66,11 +64,10 @@ public class ObliqueHexGridNumbering extends HexGridNumbering
 
   @Override
   public int getRow(Point p) {
-    return slantRow(super.getRow(p),super.getColumn(p));
+    return slantRow(super.getRow(p), super.getColumn(p));
   }
-  public int slantRow(int row, int column)
-  {
-    return direction ? (int)Math.floor(column/2) + row : row - (int)Math.floor(column/2)+1;
+  public int slantRow(int row, int column) {
+    return direction ? (int)Math.floor(column/2) + row : row - (int)Math.floor(column/2) + 1;
   }
 
   public static String getConfigureTypeName() {

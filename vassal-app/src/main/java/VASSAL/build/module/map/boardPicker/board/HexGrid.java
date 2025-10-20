@@ -432,7 +432,7 @@ public class HexGrid extends AbstractConfigurable
 
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class<?>[]{HexGridNumbering.class,ObliqueHexGridNumbering.class};
+    return new Class<?>[]{HexGridNumbering.class, ObliqueHexGridNumbering.class};
   }
 
   @Override
