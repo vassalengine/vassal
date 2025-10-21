@@ -5,20 +5,21 @@
 
 3.7.19 - ???
 
+* 14311: Upgraded logback-classic to 1.5.20
+* 14310: Upgraded asciidoctorj-pdf to 2.3.21
+* 14309: Upgraded spotbugs-maven-plugin to 4.9.8.1
+* 14308: Upgraded checkstyle to 12.1.0
+* 14307: Upgraded exec-maven-plugin to 3.6.2
 * 14301: Upgraded bundled Java to 25+36 (Windows x86_64, Mac), 25+37 (Windows
     aarch64)
 * 14294: Upgraded spotbugs-annotations to 4.9.7
-* 14293: Upgraded spotbugs-maven-plugin to 4.9.7.0
-* 14286: Upgraded checkstyle to 12.0.1
 * 14281: Upgraded maven-pmd-plugin to 3.28.0
 * 14279: Upgraded byte-buddy to 1.17.8
 * 14274: Upgraded asm to 9.9
 * 14273: Upgraded exec-maven-plugin to 3.6.1
-* 14267: Upgraded asciidoctorj-pdf to 2.3.20
 * 14265: Upgraded maven-enforcer-plugin to 3.6.2
 * 14264: Upgraded maven-dependency-plugin to 3.9.0
 * 14257: Upgraded junit-bom to 6.0.0
-* 14255: Upgraded logback-classic to 1.5.19
 * 14254: Set-up release-on-tag workflow
 * 14252: Upgraded httpclient5 to 5.5.1
 * 14248: Upgraded commons-lang3 to 3.19.0
