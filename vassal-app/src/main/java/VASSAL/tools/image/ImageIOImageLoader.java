@@ -124,7 +124,7 @@ public class ImageIOImageLoader implements ImageLoader {
   // further calls to ProfileDeferralMgr.activateProfiles(), which is where
   // the race happens.
   static {
-    ICC_Profile.getInstance(ColorSpace.CS_sRGB).getPCSType();
+    ICC_Profile.getInstance(ColorSpace.CS_sRGB).getPCSType(); // NOPMD
   }
 
   /**
