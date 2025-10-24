@@ -67,31 +67,31 @@ jobs:
         run: make release
 
       - name: Archive Linux
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: VASSAL-${{ steps.version.outputs.VERSION }}-linux.tar.bz2
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-linux.tar.bz2
 
       - name: Archive MacOS
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: VASSAL-${{ steps.version.outputs.VERSION }}-macos-universal.dmg
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-macos-universal.dmg
 
       - name: Archive other
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: VASSAL-${{ steps.version.outputs.VERSION }}-other.zip
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-other.zip
 
       - name: Archive Windows x86_64
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: VASSAL-${{ steps.version.outputs.VERSION }}-windows-x86_64.exe
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-windows-x86_64.exe
 
       - name: Archive Windows aarch64
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: VASSAL-${{ steps.version.outputs.VERSION }}-windows-aarch64.exe
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-windows-aarch64.exe
@@ -159,7 +159,7 @@ jobs:
         run: make release-windows-x86_32
 
       - name: Archive Windows x86_32
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: VASSAL-${{ steps.version.outputs.VERSION }}-windows-x86_32.exe
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-windows-x86_32.exe
@@ -237,43 +237,43 @@ jobs:
             public/
             
       - name: Archive DEB package
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_all.deb
           path: public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_all.deb
 
       - name: Archive DEB package build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.build
           path: public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.build
 
       - name: Archive DEB package build information
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.buildinfo
           path: public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.buildinfo
           
       - name: Archive DEB package changes
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.changes
           path: public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.changes
 
       - name: Archive DEB package changes
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}.dsc
           path: public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}.dsc
 
       - name: Archive DEB package debian archive
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}.debian.tar.xz
           path: public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}.debian.tar.xz
 
       - name: Archive DEB package original archive
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: vassal_${{ steps.deb_vars.outputs.DEB_UPSTREAM }}.orig.tar.gz
           path: public/vassal_${{ steps.deb_vars.outputs.DEB_UPSTREAM }}.orig.tar.gz
