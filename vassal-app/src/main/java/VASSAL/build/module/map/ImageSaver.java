@@ -128,9 +128,6 @@ public class ImageSaver extends AbstractToolbarItem {
     }
   }
 
-  /**
-   * Write a PNG-encoded snapshot of the map.
-   */
   public void writeMapAsImage() {
     // prompt user for image filename
     final FileChooser fc = GameModule.getGameModule().getFileChooser();
@@ -145,7 +142,15 @@ public class ImageSaver extends AbstractToolbarItem {
 
     if (fc.showSaveDialog(frame) != FileChooser.APPROVE_OPTION) return;
 
-    final File file = fc.getSelectedFile();
+    writeMapAsImage(fc.getSelectedFile());
+  }
+
+  /**
+   * Write a PNG-encoded snapshot of the map.
+   */
+  public void writeMapAsImage(File file) {
+    final Frame frame =
+      (Frame) SwingUtilities.getAncestorOfClass(Frame.class, map.getView());
 
     dialog = new ProgressDialog(frame, Resources.getString("Editor.ImageSaver.saving_map_image_title"),
                                        Resources.getString("Editor.ImageSaver.saving_map_image_text"));
