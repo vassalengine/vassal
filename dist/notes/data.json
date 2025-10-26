@@ -38,6 +38,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 14323, "desc": "Sanitize extracted image filenames for HTML viewer" }
       ],
       "improvements": [
       ],
