@@ -94,7 +94,7 @@ public class StartUp {
     // is a rare, but perplexing error for the user so we give some specific
     // advice about how to deal with it in the error message.
     try {
-      Toolkit.getDefaultToolkit();
+      Toolkit.getDefaultToolkit(); // NOPMD
     }
     catch (AWTError e) {
       ErrorDialog.show(

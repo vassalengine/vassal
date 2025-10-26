@@ -51,7 +51,6 @@
   <rule ref="category/java/codestyle.xml/UnnecessaryConstructor" />
   <rule ref="category/java/codestyle.xml/UnnecessaryFullyQualifiedName" />
   <rule ref="category/java/codestyle.xml/UnnecessaryImport" />
-  <rule ref="category/java/codestyle.xml/UnnecessaryLocalBeforeReturn" />
   <rule ref="category/java/codestyle.xml/UnnecessaryModifier" />
   <rule ref="category/java/codestyle.xml/UnnecessaryReturn" />
   <rule ref="category/java/codestyle.xml/UseDiamondOperator" />
@@ -60,6 +59,7 @@
 -->
   <rule ref="category/java/codestyle.xml/UselessQualifiedThis" />
   <rule ref="category/java/codestyle.xml/UseShortArrayInitializer" />
+  <rule ref="category/java/codestyle.xml/VariableCanBeInlined" />
 
 <!--
   <rule ref="category/java/design.xml/AvoidRethrowingException" />
@@ -156,7 +156,7 @@
   <rule ref="category/java/errorprone.xml/UnnecessaryConversionTemporary" />
   <rule ref="category/java/errorprone.xml/UnusedNullCheckInEquals" />
   <rule ref="category/java/errorprone.xml/UseEqualsToCompareStrings" />
-  <rule ref="category/java/errorprone.xml/UselessOperationOnImmutable" />
+  <rule ref="category/java/errorprone.xml/UselessPureMethodCall" />
 
   <rule ref="category/java/multithreading.xml/AvoidThreadGroup" />
   <rule ref="category/java/multithreading.xml/DontCallThreadRun" />
