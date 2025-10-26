@@ -1,5 +1,6 @@
 3.7.19 - ???
 
+* 14323: Sanitize extracted image filenames for HTML viewer
 * 14318: Upgraded spotbugs-annotations to 4.9.8
 * 14311: Upgraded logback-classic to 1.5.20
 * 14310: Upgraded asciidoctorj-pdf to 2.3.21
