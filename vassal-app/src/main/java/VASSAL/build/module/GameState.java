@@ -119,6 +119,7 @@ public class GameState implements CommandEncoder {
   protected Map<String, GamePiece> pieces = new HashMap<>();
   protected List<GameComponent> gameComponents = new ArrayList<>();
   protected List<GameSetupStep> setupSteps = new ArrayList<>();
+  // FIXME loadGameOld retained for build process backward compliance. Can be removed at a major Vassal version (at time of writing, 3.8)
   protected Action loadGame, loadGameOld, saveGame, saveGameAs, newGame, closeGame, loadContinuation, loadAndFastForward, loadAndAppend;
   protected String lastSave;
   protected File lastSaveFile = null;
@@ -177,27 +178,8 @@ public class GameState implements CommandEncoder {
         }
       }
     };
-    // FIXME: setting mnemonic from first letter could cause collisions in
-    // some languages
+
     loadGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.load_game.shortcut").charAt(0));
-
-    // TODO: remove Load Continuation from File menu as of 3.6
-    loadGameOld = new AbstractAction(Resources.getString("GameState.load_continuation")) {
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        ProblemDialog.show(
-          JOptionPane.INFORMATION_MESSAGE,
-          GameModule.getGameModule().getPlayerWindow(),
-          null,
-          Resources.getString("GameState.old_continuation_title"),
-          Resources.getString("GameState.old_continuation_heading"),
-          Resources.getString("GameState.old_continuation_warning")
-        );
-      }
-    };
-    loadGameOld.setEnabled(false);
 
     loadContinuation = new AbstractAction(Resources.getString("GameState.load_game_old")) {
       private static final long serialVersionUID = 1L;
@@ -210,7 +192,6 @@ public class GameState implements CommandEncoder {
         }
       }
     };
-    loadContinuation.setEnabled(false);
 
     loadAndFastForward = new AbstractAction(Resources.getString("GameState.load_and_fast_forward")) {
       private static final long serialVersionUID = 1L;
@@ -242,8 +223,7 @@ public class GameState implements CommandEncoder {
         saveGame();
       }
     };
-    // FIXME: setting mnemonic from first letter could cause collisions in
-    // some languages
+
     saveGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.save_game.shortcut").charAt(0));
 
     saveGameAs = new AbstractAction(Resources.getString("GameState.save_game_as")) {
@@ -254,8 +234,7 @@ public class GameState implements CommandEncoder {
         saveGameAs();
       }
     };
-    // FIXME: setting mnemonic from first letter could cause collisions in
-    // some languages
+
     saveGameAs.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.save_game_as.shortcut").charAt(0));
 
     newGame = new AbstractAction(Resources.getString("GameState.new_game")) {
@@ -277,8 +256,7 @@ public class GameState implements CommandEncoder {
         GameModule.getGameModule().getGameState().freshenStartupGlobalKeyCommands(GameModule.getGameModule());
       }
     };
-    // FIXME: setting mnemonic from first letter could cause collisions in
-    // some languages
+
     newGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.new_game.shortcut").charAt(0));
 
     closeGame = new AbstractAction(
@@ -290,14 +268,12 @@ public class GameState implements CommandEncoder {
         closeGame();
       }
     };
-    // FIXME: setting mnemonic from first letter could cause collisions in
-    // some languages
+
     closeGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.close_game.shortcut").charAt(0));
 
     final MenuManager mm = MenuManager.getInstance();
     mm.addAction("GameState.new_game", newGame);
     mm.addAction("GameState.load_game_new", loadGame);
-    mm.addAction("GameState.load_game_old", loadGameOld);
     mm.addAction("GameState.load_continuation", loadContinuation);
     mm.addAction("GameState.save_game", saveGame);
     mm.addAction("GameState.save_game_as", saveGameAs);
@@ -308,7 +284,6 @@ public class GameState implements CommandEncoder {
     saveGame.setEnabled(gameStarting);
     saveGameAs.setEnabled(gameStarting);
     closeGame.setEnabled(gameStarting);
-    loadGameOld.setEnabled(gameStarting);
     loadContinuation.setEnabled(gameStarting);
   }
 
@@ -559,7 +534,6 @@ public class GameState implements CommandEncoder {
       g.getWizardSupport().showGameSetupWizard();
     }
 
-    loadGameOld.setEnabled(gameStarting);
     loadContinuation.setEnabled(gameStarting);
 
     gameStarted &= this.gameStarting;
