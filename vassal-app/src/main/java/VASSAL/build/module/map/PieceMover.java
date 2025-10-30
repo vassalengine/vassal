@@ -61,6 +61,7 @@ import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.swing.SwingUtils;
 
+import org.apache.commons.lang3.Strings;
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.ImageIcon;
@@ -766,7 +767,28 @@ public class PieceMover extends AbstractBuildable
     Command c = new NullCommand();
     c = c.append(setOldLocations(p));
     if (!loc.equals(p.getPosition())) {
-      c = c.append(markMoved(p, true, false));
+      boolean locDefinitelyChanged = false;
+      final Map map = p.getMap();
+      if (map != null) {
+        final Board board = map.findBoard(loc);
+        if (board == null) {
+          // Off board moves are always recorded by movement trails.
+          locDefinitelyChanged = true;
+        }
+        else {
+          // Compare location names
+          final String previousLocation = map.locationName(p.getPosition());
+          locDefinitelyChanged = !Strings.CS.equals(previousLocation, map.locationName(loc));
+          if (!locDefinitelyChanged && GameModule.getGameModule().isMatSupport()) {
+            final String mat = (String) p.getProperty(MatCargo.CURRENT_MAT_ID);
+            final String oldMat = (String) p.getProperty(BasicPiece.OLD_MAT_ID);
+            if (mat != null && !mat.equals(oldMat)) {
+              locDefinitelyChanged = true;
+            }
+          }
+        }
+      }
+      c = c.append(markMoved(p, true, locDefinitelyChanged));
     }
     if (p.getParent() != null) {
       final Command removedCommand = p.getParent().pieceRemoved(p);
