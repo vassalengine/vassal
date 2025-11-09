@@ -61,7 +61,6 @@ import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.swing.SwingUtils;
 
-import org.apache.commons.lang3.Strings;
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.ImageIcon;
@@ -778,7 +777,7 @@ public class PieceMover extends AbstractBuildable
         else {
           // Compare location names
           final String previousLocation = map.locationName(p.getPosition());
-          locDefinitelyChanged = !Strings.CS.equals(previousLocation, map.locationName(loc));
+          locDefinitelyChanged = (previousLocation == null) || !(previousLocation.equals(map.locationName(loc)));
           if (!locDefinitelyChanged && GameModule.getGameModule().isMatSupport()) {
             final String mat = (String) p.getProperty(MatCargo.CURRENT_MAT_ID);
             final String oldMat = (String) p.getProperty(BasicPiece.OLD_MAT_ID);
