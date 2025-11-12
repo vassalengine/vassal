@@ -1,0 +1,387 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Builder",
+            "request": "launch",
+            "mainClass": "VASSAL.build.Builder",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "Chatter",
+            "request": "launch",
+            "mainClass": "VASSAL.build.module.Chatter",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "StringEnumConfigurer",
+            "request": "launch",
+            "mainClass": "VASSAL.build.module.gamepieceimage.StringEnumConfigurer",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "PolygonEditor",
+            "request": "launch",
+            "mainClass": "VASSAL.build.module.map.boardPicker.board.mapgrid.PolygonEditor",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "ServerConfigurer",
+            "request": "launch",
+            "mainClass": "VASSAL.chat.ServerConfigurer",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "Server",
+            "request": "launch",
+            "mainClass": "VASSAL.chat.node.Server",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "IpWatch",
+            "request": "launch",
+            "mainClass": "VASSAL.chat.peer2peer.IpWatch",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "UnitTest",
+            "request": "launch",
+            "mainClass": "VASSAL.chat.peer2peer.UnitTest",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "FileConfigurer",
+            "request": "launch",
+            "mainClass": "VASSAL.configure.FileConfigurer",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "FontConfigurer",
+            "request": "launch",
+            "mainClass": "VASSAL.configure.FontConfigurer",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "DragBuffer",
+            "request": "launch",
+            "mainClass": "VASSAL.counters.DragBuffer",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "TranslateVassalWindow",
+            "request": "launch",
+            "mainClass": "VASSAL.i18n.TranslateVassalWindow",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "Editor",
+            "request": "launch",
+            "mainClass": "VASSAL.launch.Editor",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "JavaVersionChecker",
+            "request": "launch",
+            "mainClass": "VASSAL.launch.JavaVersionChecker",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "ModuleManager",
+            "request": "launch",
+            "mainClass": "VASSAL.launch.ModuleManager",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "Player",
+            "request": "launch",
+            "mainClass": "VASSAL.launch.Player",
+            "projectName": "vassal-app",
+            "args": ["/home/simon/vassal-modules/BCS-01-v517.vmod"]
+        },
+        {
+            "type": "java",
+            "name": "AllTests",
+            "request": "launch",
+            "mainClass": "VASSAL.test.AllTests",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "BugDialog",
+            "request": "launch",
+            "mainClass": "VASSAL.tools.BugDialog",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "ComponentSplitter",
+            "request": "launch",
+            "mainClass": "VASSAL.tools.ComponentSplitter",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "ErrorDialog",
+            "request": "launch",
+            "mainClass": "VASSAL.tools.ErrorDialog",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "HeapFinderDummy",
+            "request": "launch",
+            "mainClass": "VASSAL.tools.HeapFinderDummy",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "SequenceEncoder",
+            "request": "launch",
+            "mainClass": "VASSAL.tools.SequenceEncoder",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "DependencyChecker",
+            "request": "launch",
+            "mainClass": "VASSAL.tools.deprecation.DependencyChecker",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "DependencyWriter",
+            "request": "launch",
+            "mainClass": "VASSAL.tools.deprecation.DependencyWriter",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "DeprecationWriter",
+            "request": "launch",
+            "mainClass": "VASSAL.tools.deprecation.DeprecationWriter",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "GeneralFilterTest",
+            "request": "launch",
+            "mainClass": "VASSAL.tools.image.GeneralFilterTest",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "JPEGDecoder",
+            "request": "launch",
+            "mainClass": "VASSAL.tools.image.JPEGDecoder",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "ImageToTiles",
+            "request": "launch",
+            "mainClass": "VASSAL.tools.image.tilecache.ImageToTiles",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "TileToImage",
+            "request": "launch",
+            "mainClass": "VASSAL.tools.image.tilecache.TileToImage",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "TilesToImage",
+            "request": "launch",
+            "mainClass": "VASSAL.tools.image.tilecache.TilesToImage",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "ZipFileImageTiler",
+            "request": "launch",
+            "mainClass": "VASSAL.tools.image.tilecache.ZipFileImageTiler",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "DeobfuscatingInputStream",
+            "request": "launch",
+            "mainClass": "VASSAL.tools.io.DeobfuscatingInputStream",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "ObfuscatingOutputStream",
+            "request": "launch",
+            "mainClass": "VASSAL.tools.io.ObfuscatingOutputStream",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "ProcessCallableTestBlocker",
+            "request": "launch",
+            "mainClass": "VASSAL.tools.io.ProcessCallableTestBlocker",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "ProcessCallableTestEchoer",
+            "request": "launch",
+            "mainClass": "VASSAL.tools.io.ProcessCallableTestEchoer",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "Tailer",
+            "request": "launch",
+            "mainClass": "VASSAL.tools.io.Tailer",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "MemoryUtils",
+            "request": "launch",
+            "mainClass": "VASSAL.tools.lang.MemoryUtils",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "DetailsButton",
+            "request": "launch",
+            "mainClass": "VASSAL.tools.swing.DetailsButton",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "DetailsDialog",
+            "request": "launch",
+            "mainClass": "VASSAL.tools.swing.DetailsDialog",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "Dialogs",
+            "request": "launch",
+            "mainClass": "VASSAL.tools.swing.Dialogs",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "FlowLabel",
+            "request": "launch",
+            "mainClass": "VASSAL.tools.swing.FlowLabel",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "SplitPane",
+            "request": "launch",
+            "mainClass": "VASSAL.tools.swing.SplitPane",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "CommandLineReader",
+            "request": "launch",
+            "mainClass": "bsh.CommandLineReader",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "Console",
+            "request": "launch",
+            "mainClass": "bsh.Console",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "Interpreter",
+            "request": "launch",
+            "mainClass": "bsh.Interpreter",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "Parser",
+            "request": "launch",
+            "mainClass": "bsh.Parser",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "Remote",
+            "request": "launch",
+            "mainClass": "bsh.Remote",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "BshClassPath",
+            "request": "launch",
+            "mainClass": "bsh.classpath.BshClassPath",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "AWTConsole",
+            "request": "launch",
+            "mainClass": "bsh.util.AWTConsole",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "ClassBrowser",
+            "request": "launch",
+            "mainClass": "bsh.util.ClassBrowser",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "Httpd",
+            "request": "launch",
+            "mainClass": "bsh.util.Httpd",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "P2PChatAWT",
+            "request": "launch",
+            "mainClass": "org.litesoft.p2pchat.P2PChatAWT",
+            "projectName": "vassal-app"
+        },
+        {
+            "type": "java",
+            "name": "P2PChatConsole",
+            "request": "launch",
+            "mainClass": "org.litesoft.p2pchat.P2PChatConsole",
+            "projectName": "vassal-app"
+        }
+    ]
+}
