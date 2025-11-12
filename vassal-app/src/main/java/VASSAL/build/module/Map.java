@@ -35,6 +35,7 @@ import VASSAL.build.module.map.Drawable;
 import VASSAL.build.module.map.Flare;
 import VASSAL.build.module.map.ForwardToChatter;
 import VASSAL.build.module.map.ForwardToKeyBuffer;
+import VASSAL.build.module.map.FrontPolygon;
 import VASSAL.build.module.map.GlobalMap;
 import VASSAL.build.module.map.HidePiecesButton;
 import VASSAL.build.module.map.HighlightLastMoved;
@@ -3752,7 +3753,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[]{ MapSubFolder.class, GlobalMap.class, LOS_Thread.class, ToolbarMenu.class, MultiActionButton.class, DoActionButton.class, HidePiecesButton.class, Zoomer.class,
       CounterDetailViewer.class, HighlightLastMoved.class, LayeredPieceCollection.class, ImageSaver.class, TextSaver.class, DrawPile.class, SetupStack.class,
-      MassKeyCommand.class, MapShader.class, PieceRecenterer.class, Flare.class, MoveCameraButton.class };
+      MassKeyCommand.class, MapShader.class, PieceRecenterer.class, Flare.class, MoveCameraButton.class, FrontPolygon.class };
   }
 
   /**
