@@ -19,6 +19,7 @@ package VASSAL.build.module;
 
 import VASSAL.Info;
 import VASSAL.build.GameModule;
+import VASSAL.build.module.map.FrontPolygon;
 import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.command.Logger;
 import VASSAL.counters.Attachment;
@@ -38,6 +39,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 /**
@@ -482,6 +484,17 @@ public class Console {
 
     if (matches("attachments", command)) {
       return doAttachments();
+    }
+
+    if (matches("poly", command)) {
+      final Optional<Boolean> toggled = FrontPolygon.toggleAllInstances();
+      if (toggled.isPresent()) {
+        show(toggled.get() ? "|Front line overlay shown." : "|Front line overlay hidden."); //NON-NLS
+      }
+      else {
+        show("|No maps available for front line overlay."); //NON-NLS
+      }
+      return true;
     }
 
     if (matches("property", command)) { //NON-NLS

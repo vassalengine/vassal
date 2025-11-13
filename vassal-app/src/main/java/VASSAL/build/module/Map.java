@@ -281,6 +281,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   protected PropertyChangeListener repaintOnPropertyChange = evt -> repaint();
   protected PieceMover pieceMover;
   protected KeyBufferer keyBufferer;
+  protected FrontPolygon frontPolygon;
   protected KeyListener[] saveKeyListeners = null;
 
   protected NamedKeyStrokeListener showKeyListener;
@@ -1003,6 +1004,10 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
         new KeyStrokeSource(theMap, JComponent.WHEN_IN_FOCUSED_WINDOW));
     }
 
+    if (frontPolygon == null) {
+      frontPolygon = new FrontPolygon(this);
+    }
+
     // Fix for bug 1630993: toolbar buttons not appearing
     toolBar.addHierarchyListener(new HierarchyListener() {
       @Override
@@ -1100,6 +1105,12 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   @Override
   public void removeFrom(Buildable b) {
     final GameModule g = GameModule.getGameModule();
+
+    if (frontPolygon != null) {
+      frontPolygon.dispose();
+      frontPolygon = null;
+    }
+
     g.getGameState().removeGameComponent(this);
 
     g.getToolBar().remove(getLaunchButton());
@@ -3753,7 +3764,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[]{ MapSubFolder.class, GlobalMap.class, LOS_Thread.class, ToolbarMenu.class, MultiActionButton.class, DoActionButton.class, HidePiecesButton.class, Zoomer.class,
       CounterDetailViewer.class, HighlightLastMoved.class, LayeredPieceCollection.class, ImageSaver.class, TextSaver.class, DrawPile.class, SetupStack.class,
-      MassKeyCommand.class, MapShader.class, PieceRecenterer.class, Flare.class, MoveCameraButton.class, FrontPolygon.class };
+      MassKeyCommand.class, MapShader.class, PieceRecenterer.class, Flare.class, MoveCameraButton.class };
   }
 
   /**
@@ -4202,4 +4213,3 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     }
   }
 }
-
