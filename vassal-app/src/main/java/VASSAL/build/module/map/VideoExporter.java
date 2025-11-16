@@ -8,9 +8,6 @@ import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.i18n.Resources;
 import VASSAL.build.module.map.Zoomer;
-import VASSAL.tools.filechooser.FileChooser;
-import VASSAL.tools.filechooser.LogFileFilter;
-
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import java.awt.Rectangle;
@@ -19,6 +16,8 @@ import java.awt.image.DataBufferByte;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.Comparator;
 
 /**
  * Prototype toolbar item that renders a vlog replay directly into an ffmpeg process.
@@ -64,18 +63,27 @@ public class VideoExporter extends AbstractToolbarItem {
   public void startExport() {
     final GameModule gm = GameModule.getGameModule();
     final double originalZoom = maximizeZoom(map);
-    final FileChooser logChooser = gm.getFileChooser();
-    logChooser.addChoosableFileFilter(new LogFileFilter());
-    if (logChooser.showOpenDialog(map.getView()) != FileChooser.APPROVE_OPTION) {
+    final JFileChooser dirChooser = new JFileChooser();
+    dirChooser.setDialogTitle(Resources.getString("VideoExporter.folder_dialog"));
+    dirChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+    if (dirChooser.showOpenDialog(map.getView()) != JFileChooser.APPROVE_OPTION) {
       return;
     }
-    final File logFile = logChooser.getSelectedFile();
-    if (logFile == null || !logFile.exists()) {
+    final File directory = dirChooser.getSelectedFile();
+    if (directory == null || !directory.isDirectory()) {
       gm.warn(Resources.getString("VideoExporter.missing_log"));
       return;
     }
 
-    final JFileChooser videoChooser = new JFileChooser(logFile.getParentFile());
+    final File[] logFiles = directory.listFiles((dir, name) -> name.toLowerCase().endsWith(".vlog"));
+    if (logFiles == null || logFiles.length == 0) {
+      gm.warn(Resources.getString("VideoExporter.no_logs"));
+      return;
+    }
+    Arrays.sort(logFiles, Comparator.comparing(File::getName));
+    final File logFile = logFiles[0];
+
+    final JFileChooser videoChooser = new JFileChooser(directory);
     videoChooser.setDialogTitle(Resources.getString("VideoExporter.output_dialog"));
     videoChooser.setSelectedFile(new File(logFile.getParentFile(), logFile.getName().replaceAll("\\.vlog$", "") + ".mp4"));
     if (videoChooser.showSaveDialog(map.getView()) != JFileChooser.APPROVE_OPTION) {
