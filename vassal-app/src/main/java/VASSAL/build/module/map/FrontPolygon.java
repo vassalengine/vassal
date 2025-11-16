@@ -34,7 +34,12 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -42,14 +47,16 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.HashSet;
-import java.util.Comparator;
 
 /**
  * Simple runtime-only polygon overlay that can be toggled via a toolbar button or console command.
  */
 public class FrontPolygon implements GameComponent, Drawable {
   private static final float LINE_WIDTH = 3f;
-  private static final int MIN_MARKER_RADIUS = 8;
+  private static final double MIN_MARKER_RADIUS = 8;
+  private static final double ISLAND_RADIUS = 35;
+  private static final double BOUNDS_PADDING = 250;
+  private static final double EPSILON = 1e-6;
   private static final String LAYER_PREFIX = "Layer - ";
 
   private static final Set<FrontPolygon> INSTANCES = ConcurrentHashMap.newKeySet();
@@ -163,16 +170,28 @@ public class FrontPolygon implements GameComponent, Drawable {
       return;
     }
 
+    final EnumMap<Side, List<Point>> sidePoints = collectSidePoints();
+    if (sidePoints.values().stream().allMatch(List::isEmpty)) {
+      return;
+    }
+
+    final Rectangle2D bounds = computeBounds(sidePoints);
+    if (bounds == null) {
+      return;
+    }
+
     final Graphics2D g2 = (Graphics2D) g.create();
     try {
       g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
       final double osScale = g2.getDeviceConfiguration().getDefaultTransform().getScaleX();
-      final EnumMap<Side, List<Point>> sidePoints = collectSidePoints();
+      final double scale = this.map.getZoom() * osScale;
+      final AffineTransform transform = AffineTransform.getScaleInstance(scale, scale);
+      final Area alliedArea = buildTerritoryArea(sidePoints.get(Side.ALLIES), sidePoints.get(Side.GERMANS), bounds);
+      final Area germanArea = buildTerritoryArea(sidePoints.get(Side.GERMANS), sidePoints.get(Side.ALLIES), bounds);
 
-      for (final Side side : Side.values()) {
-        drawSide(g2, osScale, sidePoints.get(side), side);
-      }
+      drawSideArea(g2, transform, alliedArea, Side.ALLIES);
+      drawSideArea(g2, transform, germanArea, Side.GERMANS);
     }
     finally {
       g2.dispose();
@@ -208,6 +227,38 @@ public class FrontPolygon implements GameComponent, Drawable {
     }
 
     return positions;
+  }
+
+  private Rectangle2D computeBounds(EnumMap<Side, List<Point>> positions) {
+    double minX = Double.POSITIVE_INFINITY;
+    double minY = Double.POSITIVE_INFINITY;
+    double maxX = Double.NEGATIVE_INFINITY;
+    double maxY = Double.NEGATIVE_INFINITY;
+    boolean hasPoints = false;
+
+    for (final List<Point> points : positions.values()) {
+      for (final Point point : points) {
+        hasPoints = true;
+        minX = Math.min(minX, point.getX());
+        minY = Math.min(minY, point.getY());
+        maxX = Math.max(maxX, point.getX());
+        maxY = Math.max(maxY, point.getY());
+      }
+    }
+
+    if (!hasPoints) {
+      return null;
+    }
+
+    final double width = Math.max(10, maxX - minX);
+    final double height = Math.max(10, maxY - minY);
+
+    return new Rectangle2D.Double(
+      minX - BOUNDS_PADDING,
+      minY - BOUNDS_PADDING,
+      width + (BOUNDS_PADDING * 2),
+      height + (BOUNDS_PADDING * 2)
+    );
   }
 
   private void collectFromPiece(GamePiece piece, java.util.Map<Side, List<Point>> positions, java.util.Map<Side, Set<Long>> seenLocations) {
@@ -258,118 +309,160 @@ public class FrontPolygon implements GameComponent, Drawable {
     return false;
   }
 
-  private void drawSide(Graphics2D g2, double osScale, List<Point> rawPoints, Side side) {
-    if (rawPoints == null || rawPoints.isEmpty()) {
+  private Area buildTerritoryArea(List<Point> ownPoints, List<Point> opponentPoints, Rectangle2D bounds) {
+    if (ownPoints == null || ownPoints.isEmpty()) {
+      return new Area();
+    }
+
+    if (opponentPoints == null || opponentPoints.isEmpty()) {
+      return buildStandaloneArea(ownPoints);
+    }
+
+    final List<Point2D.Double> boundingPolygon = rectangleToPolygon(bounds);
+    final Area territory = new Area();
+
+    for (final Point own : ownPoints) {
+      List<Point2D.Double> cell = new ArrayList<>(boundingPolygon);
+      for (final Point opponent : opponentPoints) {
+        cell = clipCellToOpponent(cell, own, opponent);
+        if (cell.isEmpty()) {
+          break;
+        }
+      }
+
+      if (cell.size() >= 3) {
+        territory.add(areaFromPolygon(cell));
+      }
+      else if (!cell.isEmpty()) {
+        territory.add(circleArea(centroid(cell), MIN_MARKER_RADIUS));
+      }
+    }
+
+    return territory;
+  }
+
+  private void drawSideArea(Graphics2D g2, AffineTransform transform, Area area, Side side) {
+    if (area == null || area.isEmpty()) {
       return;
     }
 
-    final List<Point> points = new ArrayList<>(rawPoints);
-
-    if (points.size() >= 3) {
-      final List<Point> hull = computeConvexHull(points);
-      if (hull.size() >= 3) {
-        drawPolygon(g2, osScale, hull, side);
-        return;
-      }
-      else if (hull.size() == 2) {
-        drawLine(g2, osScale, hull.get(0), hull.get(1), side);
-        return;
-      }
-      else if (hull.size() == 1) {
-        drawMarker(g2, osScale, hull.get(0), side);
-        return;
-      }
-    }
-
-    if (points.size() == 2) {
-      drawLine(g2, osScale, points.get(0), points.get(1), side);
-    }
-    else {
-      drawMarker(g2, osScale, points.get(0), side);
-    }
-  }
-
-  private void drawPolygon(Graphics2D g2, double osScale, List<Point> hull, Side side) {
-    final Path2D path = buildPath(hull, osScale);
+    final Area drawingArea = area.createTransformedArea(transform);
     g2.setColor(side.fillColor);
-    g2.fill(path);
+    g2.fill(drawingArea);
     g2.setColor(side.outlineColor);
     g2.setStroke(OUTLINE_STROKE);
-    g2.draw(path);
+    g2.draw(drawingArea);
   }
 
-  private void drawLine(Graphics2D g2, double osScale, Point start, Point end, Side side) {
-    final Point p1 = map.mapToDrawing(start, osScale);
-    final Point p2 = map.mapToDrawing(end, osScale);
-    g2.setColor(side.outlineColor);
-    g2.setStroke(OUTLINE_STROKE);
-    g2.drawLine(p1.x, p1.y, p2.x, p2.y);
+  private List<Point2D.Double> rectangleToPolygon(Rectangle2D bounds) {
+    final List<Point2D.Double> polygon = new ArrayList<>(4);
+    polygon.add(new Point2D.Double(bounds.getMinX(), bounds.getMinY()));
+    polygon.add(new Point2D.Double(bounds.getMaxX(), bounds.getMinY()));
+    polygon.add(new Point2D.Double(bounds.getMaxX(), bounds.getMaxY()));
+    polygon.add(new Point2D.Double(bounds.getMinX(), bounds.getMaxY()));
+    return polygon;
   }
 
-  private void drawMarker(Graphics2D g2, double osScale, Point position, Side side) {
-    final Point drawPoint = map.mapToDrawing(position, osScale);
-    final int radius = Math.max(1, (int) Math.round(MIN_MARKER_RADIUS * osScale));
-    final int diameter = radius * 2;
-    g2.setColor(side.fillColor);
-    g2.fillOval(drawPoint.x - radius, drawPoint.y - radius, diameter, diameter);
-    g2.setColor(side.outlineColor);
-    g2.setStroke(OUTLINE_STROKE);
-    g2.drawOval(drawPoint.x - radius, drawPoint.y - radius, diameter, diameter);
-  }
+  private List<Point2D.Double> clipCellToOpponent(List<Point2D.Double> polygon, Point own, Point opponent) {
+    if (polygon.isEmpty()) {
+      return polygon;
+    }
 
-  private Path2D buildPath(List<Point> hull, double osScale) {
-    final Path2D path = new Path2D.Double();
-    for (int i = 0; i < hull.size(); i++) {
-      final Point drawPoint = map.mapToDrawing(hull.get(i), osScale);
-      if (i == 0) {
-        path.moveTo(drawPoint.x, drawPoint.y);
+    final double dx = opponent.getX() - own.getX();
+    final double dy = opponent.getY() - own.getY();
+    final double c = 0.5 * ((opponent.getX() * opponent.getX()) + (opponent.getY() * opponent.getY())
+      - (own.getX() * own.getX()) - (own.getY() * own.getY()));
+
+    final List<Point2D.Double> result = new ArrayList<>();
+    Point2D.Double previous = polygon.get(polygon.size() - 1);
+    boolean previousInside = isInsideHalfPlane(previous, dx, dy, c);
+
+    for (final Point2D.Double current : polygon) {
+      final boolean currentInside = isInsideHalfPlane(current, dx, dy, c);
+
+      if (currentInside != previousInside) {
+        final Point2D.Double intersection = findIntersection(previous, current, dx, dy, c);
+        if (intersection != null) {
+          result.add(intersection);
+        }
       }
-      else {
-        path.lineTo(drawPoint.x, drawPoint.y);
+
+      if (currentInside) {
+        result.add(current);
       }
+
+      previous = current;
+      previousInside = currentInside;
+    }
+
+    return result;
+  }
+
+  private boolean isInsideHalfPlane(Point2D.Double point, double dx, double dy, double c) {
+    return (dx * point.getX()) + (dy * point.getY()) <= c + EPSILON;
+  }
+
+  private Point2D.Double findIntersection(Point2D.Double start, Point2D.Double end, double dx, double dy, double c) {
+    final double sx = start.getX();
+    final double sy = start.getY();
+    final double ex = end.getX();
+    final double ey = end.getY();
+
+    final double vx = ex - sx;
+    final double vy = ey - sy;
+    final double denominator = (dx * vx) + (dy * vy);
+
+    if (Math.abs(denominator) < EPSILON) {
+      return null;
+    }
+
+    final double t = (c - (dx * sx) - (dy * sy)) / denominator;
+    if (t < -EPSILON || t > 1 + EPSILON) {
+      return null;
+    }
+
+    return new Point2D.Double(sx + (vx * t), sy + (vy * t));
+  }
+
+  private Area areaFromPolygon(List<Point2D.Double> points) {
+    final Path2D.Double path = new Path2D.Double();
+    final Point2D.Double first = points.get(0);
+    path.moveTo(first.getX(), first.getY());
+    for (int i = 1; i < points.size(); i++) {
+      final Point2D.Double point = points.get(i);
+      path.lineTo(point.getX(), point.getY());
     }
     path.closePath();
-    return path;
+    return new Area(path);
   }
 
-  private List<Point> computeConvexHull(List<Point> sourcePoints) {
-    final List<Point> points = new ArrayList<>(sourcePoints);
-    points.sort(Comparator.comparingInt((Point p) -> p.x).thenComparingInt(p -> p.y));
+  private Area circleArea(Point2D center, double radius) {
+    final Ellipse2D ellipse = new Ellipse2D.Double(
+      center.getX() - radius,
+      center.getY() - radius,
+      radius * 2,
+      radius * 2
+    );
+    return new Area(ellipse);
+  }
 
-    final List<Point> lower = new ArrayList<>();
+  private Area buildStandaloneArea(List<Point> points) {
+    final Area area = new Area();
     for (final Point point : points) {
-      while (lower.size() >= 2 && cross(lower.get(lower.size() - 2), lower.get(lower.size() - 1), point) <= 0) {
-        lower.remove(lower.size() - 1);
-      }
-      lower.add(point);
+      area.add(circleArea(new Point2D.Double(point.getX(), point.getY()), ISLAND_RADIUS));
     }
-
-    final List<Point> upper = new ArrayList<>();
-    for (int i = points.size() - 1; i >= 0; --i) {
-      final Point point = points.get(i);
-      while (upper.size() >= 2 && cross(upper.get(upper.size() - 2), upper.get(upper.size() - 1), point) <= 0) {
-        upper.remove(upper.size() - 1);
-      }
-      upper.add(point);
-    }
-
-    if (!lower.isEmpty()) {
-      lower.remove(lower.size() - 1);
-    }
-    if (!upper.isEmpty()) {
-      upper.remove(upper.size() - 1);
-    }
-
-    lower.addAll(upper);
-    return lower;
+    return area;
   }
 
-  private long cross(Point o, Point a, Point b) {
-    final long x1 = a.x - o.x;
-    final long y1 = a.y - o.y;
-    final long x2 = b.x - o.x;
-    final long y2 = b.y - o.y;
-    return x1 * y2 - y1 * x2;
+  private Point2D.Double centroid(List<Point2D.Double> points) {
+    double sumX = 0;
+    double sumY = 0;
+    for (final Point2D.Double point : points) {
+      sumX += point.getX();
+      sumY += point.getY();
+    }
+    final double size = points.size();
+    return new Point2D.Double(sumX / size, sumY / size);
   }
 
   private static String normalizeLayerDescription(String description) {
