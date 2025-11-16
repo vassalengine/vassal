@@ -20,6 +20,7 @@ package VASSAL.launch;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Documentation;
+import VASSAL.build.module.map.VideoExporter;
 import VASSAL.configure.ShowHelpAction;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ApplicationIcons;
@@ -151,7 +152,9 @@ public class PlayerWindow extends JFrame {
     toolsMenu.add(mm.addKey("GameState.load_and_append"));
 
     toolsMenu.addSeparator();
-    
+    toolsMenu.add(mm.addKey("VideoExporter.menu"));
+    toolsMenu.addSeparator();
+
     final CheckBoxMenuItemProxy debugCheckbox = new CheckBoxMenuItemProxy(new AbstractAction(
       Resources.getString("Debug.show_debug_window")) {
       private static final long serialVersionUID = 1L;
@@ -177,6 +180,13 @@ public class PlayerWindow extends JFrame {
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
     }
+
+    mm.addAction("VideoExporter.menu", new AbstractAction(Resources.getString("VideoExporter.menu")) {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        VideoExporter.startGlobalExport();
+      }
+    });
 
     mm.addAction("AboutScreen.about_vassal", new AboutVASSALAction(this));
 

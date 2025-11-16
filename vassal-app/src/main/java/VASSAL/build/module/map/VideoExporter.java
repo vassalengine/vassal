@@ -7,6 +7,7 @@ import VASSAL.build.module.BasicLogger;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.i18n.Resources;
+import VASSAL.build.module.map.Zoomer;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.LogFileFilter;
 
@@ -34,7 +35,7 @@ public class VideoExporter extends AbstractToolbarItem {
       Resources.getString("VideoExporter.button"),
       "",
       DEFAULT_ICON,
-      e -> SwingUtilities.invokeLater(this::promptAndStart)
+      e -> SwingUtilities.invokeLater(this::startExport)
     ));
   }
 
@@ -60,8 +61,9 @@ public class VideoExporter extends AbstractToolbarItem {
     map.getToolBar().revalidate();
   }
 
-  private void promptAndStart() {
+  public void startExport() {
     final GameModule gm = GameModule.getGameModule();
+    final double originalZoom = maximizeZoom(map);
     final FileChooser logChooser = gm.getFileChooser();
     logChooser.addChoosableFileFilter(new LogFileFilter());
     if (logChooser.showOpenDialog(map.getView()) != FileChooser.APPROVE_OPTION) {
@@ -89,7 +91,15 @@ public class VideoExporter extends AbstractToolbarItem {
 
     final int fps = 5;
     final File finalVideo = videoFile;
-    new Thread(() -> renderLog(logFile, finalVideo, fps), "VideoExporter").start();
+    final double restoreZoom = originalZoom;
+    new Thread(() -> {
+      try {
+        renderLog(logFile, finalVideo, fps);
+      }
+      finally {
+        SwingUtilities.invokeLater(() -> restoreZoom(map, restoreZoom));
+      }
+    }, "VideoExporter").start();
   }
 
   private void renderLog(File logFile, File videoFile, int fps) {
@@ -149,6 +159,55 @@ public class VideoExporter extends AbstractToolbarItem {
     finally {
       logger.setSuppressReplayPrompts(false);
     }
+  }
+
+  public static void startGlobalExport() {
+    final GameModule gm = GameModule.getGameModule();
+    final java.util.List<Map> maps = Map.getMapList();
+    if (maps.isEmpty()) {
+      gm.warn(Resources.getString("VideoExporter.no_map"));
+      return;
+    }
+    final Map target = maps.get(0);
+    VideoExporter exporter = null;
+    for (final VideoExporter ve : target.getComponentsOf(VideoExporter.class)) {
+      exporter = ve;
+      break;
+    }
+    if (exporter == null) {
+      exporter = new VideoExporter();
+      exporter.addTo(target);
+    }
+    exporter.startExport();
+  }
+
+  private double maximizeZoom(Map targetMap) {
+    if (targetMap == null) {
+      return 1.0;
+    }
+    final double original = targetMap.getZoom();
+    final Zoomer zoomer = targetMap.getZoomer();
+    if (zoomer == null) {
+      return original;
+    }
+    double before;
+    do {
+      before = targetMap.getZoom();
+      zoomer.zoomIn();
+    }
+    while (targetMap.getZoom() > before + 1e-6);
+    return original;
+  }
+
+  private void restoreZoom(Map targetMap, double zoomFactor) {
+    if (targetMap == null) {
+      return;
+    }
+    final Zoomer zoomer = targetMap.getZoomer();
+    if (zoomer == null) {
+      return;
+    }
+    zoomer.setZoomFactor(zoomFactor);
   }
 
   private void captureFrame(BufferedImage frame, Rectangle drawingRect) {
