@@ -100,7 +100,8 @@
             "name": "Editor",
             "request": "launch",
             "mainClass": "VASSAL.launch.Editor",
-            "projectName": "vassal-app"
+            "projectName": "vassal-app",
+            "args": ["--edit", "/home/simon/vassal-modules/BCS-01-v517.vmod"]
         },
         {
             "type": "java",
