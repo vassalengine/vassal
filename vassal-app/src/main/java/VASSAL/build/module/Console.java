@@ -489,10 +489,10 @@ public class Console {
     if (matches("poly", command)) {
       final Optional<Boolean> toggled = FrontPolygon.toggleAllInstances();
       if (toggled.isPresent()) {
-        show(toggled.get() ? "|Front line overlay shown." : "|Front line overlay hidden."); //NON-NLS
+        show(toggled.get() ? "|Front line overlays shown." : "|Front line overlays hidden."); //NON-NLS
       }
       else {
-        show("|No maps available for front line overlay."); //NON-NLS
+        show("|No maps available for front line overlays."); //NON-NLS
       }
       return true;
     }
