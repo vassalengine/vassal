@@ -101,7 +101,8 @@
             "request": "launch",
             "mainClass": "VASSAL.launch.Editor",
             "projectName": "vassal-app",
-            "args": ["--edit", "/home/simon/vassal-modules/BCS-01-v517.vmod"]
+            "args": ["--edit", "/home/simon/vassal-modules/BCS Inflection Point-1.0.2.vmod"]
+            //BCS-01-v517.vmod
         },
         {
             "type": "java",
@@ -123,7 +124,8 @@
             "request": "launch",
             "mainClass": "VASSAL.launch.Player",
             "projectName": "vassal-app",
-            "args": ["/home/simon/vassal-modules/BCS-01-v517.vmod"]
+            //"args": ["/home/simon/vassal-modules/BCS-01-v517.vmod"]
+            "args": ["/home/simon/vassal-modules/BCS Inflection Point-1.0.2.vmod"]
         },
         {
             "type": "java",

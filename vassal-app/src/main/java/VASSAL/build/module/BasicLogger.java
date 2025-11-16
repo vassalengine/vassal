@@ -105,6 +105,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   private NamedHotKeyConfigurer endLogKeyConfig;
 
   private boolean undoInProgress = false;
+  private boolean suppressReplayPrompts = false;
 
   public BasicLogger() {
     super();
@@ -373,6 +374,18 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   }
 
   /**
+   * Step forward programmatically through the currently replaying vlog logfile.
+   * @return true if a command was executed
+   */
+  public boolean stepForward() {
+    if (!isReplaying()) {
+      return false;
+    }
+    step();
+    return true;
+  }
+
+  /**
    * Check if user would like to create a new logfile (only prompts if the appropriate preference is on)
    * @param atStart true if prompting because we're just starting a session; false if prompting because we just finished replaying a logfile.
    */
@@ -386,6 +399,10 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
    * @param fastForwarded true if we have fast forwarded
    */
   public void queryNewLogFile(boolean atStart, boolean fastForwarded) {
+    if (suppressReplayPrompts) {
+      return;
+    }
+
     final GameModule g = GameModule.getGameModule();
 
     if (isLogging() || !g.getGameState().isSaveEnabled()) {
@@ -587,6 +604,10 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
 
   public void setUndoInProgress(boolean undoInProgress) {
     this.undoInProgress = undoInProgress;
+  }
+
+  public void setSuppressReplayPrompts(boolean suppress) {
+    suppressReplayPrompts = suppress;
   }
 
   /**
