@@ -6,9 +6,11 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.BasicLogger;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.GameState;
+import VASSAL.build.module.Chatter;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.i18n.Resources;
 import VASSAL.build.module.map.Zoomer;
+import VASSAL.command.Command;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import java.awt.Rectangle;
@@ -163,13 +165,17 @@ public class VideoExporter extends AbstractToolbarItem {
           writer.writeFrame(frame);
 
           while (true) {
+            final Command nextCommand = logger.peekNextCommand();
+            final boolean captureAfterStep = commandLikelyChangesMap(nextCommand);
             final boolean[] stepped = new boolean[1];
             SwingUtilities.invokeAndWait(() -> stepped[0] = logger.stepForward());
             if (!stepped[0]) {
               break;
             }
-            captureFrame(frame, drawingRect);
-            writer.writeFrame(frame);
+            if (captureAfterStep) {
+              captureFrame(frame, drawingRect);
+              writer.writeFrame(frame);
+            }
           }
         }
         if (writer != null) {
@@ -258,6 +264,16 @@ public class VideoExporter extends AbstractToolbarItem {
     catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private boolean commandLikelyChangesMap(Command command) {
+    if (command == null) {
+      return true;
+    }
+    if (command.isNull() || command.isNullOrContainsOnly(Chatter.DisplayText.class)) {
+      return false;
+    }
+    return true;
   }
 
   private static class FfmpegWriter implements AutoCloseable {

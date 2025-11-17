@@ -386,6 +386,17 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   }
 
   /**
+   * Peek at the next command to be replayed without advancing.
+   * @return the next queued Command, or null if none remain
+   */
+  public Command peekNextCommand() {
+    if (!isReplaying() || logInput == null || nextInput >= logInput.size()) {
+      return null;
+    }
+    return logInput.get(nextInput);
+  }
+
+  /**
    * Check if user would like to create a new logfile (only prompts if the appropriate preference is on)
    * @param atStart true if prompting because we're just starting a session; false if prompting because we just finished replaying a logfile.
    */
