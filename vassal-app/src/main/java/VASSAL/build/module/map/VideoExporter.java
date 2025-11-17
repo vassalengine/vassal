@@ -81,11 +81,12 @@ public class VideoExporter extends AbstractToolbarItem {
       return;
     }
     Arrays.sort(logFiles, Comparator.comparing(File::getName));
-    final File logFile = logFiles[0];
+    final File firstLog = logFiles[0];
 
     final JFileChooser videoChooser = new JFileChooser(directory);
     videoChooser.setDialogTitle(Resources.getString("VideoExporter.output_dialog"));
-    videoChooser.setSelectedFile(new File(logFile.getParentFile(), logFile.getName().replaceAll("\\.vlog$", "") + ".mp4"));
+    videoChooser.setSelectedFile(new File(directory,
+      directory.getName() + ".mp4"));
     if (videoChooser.showSaveDialog(map.getView()) != JFileChooser.APPROVE_OPTION) {
       return;
     }
@@ -99,10 +100,11 @@ public class VideoExporter extends AbstractToolbarItem {
 
     final int fps = 5;
     final File finalVideo = videoFile;
+    final File logToRender = firstLog;
     final double restoreZoom = originalZoom;
     new Thread(() -> {
       try {
-        renderLog(logFile, finalVideo, fps);
+        renderLog(logToRender, finalVideo, fps);
       }
       finally {
         SwingUtilities.invokeLater(() -> restoreZoom(map, restoreZoom));
