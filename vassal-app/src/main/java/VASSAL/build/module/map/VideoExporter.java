@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * Prototype toolbar item that renders a vlog replay directly into an ffmpeg process.
@@ -81,7 +82,7 @@ public class VideoExporter extends AbstractToolbarItem {
       return;
     }
     Arrays.sort(logFiles, Comparator.comparing(File::getName));
-    final File firstLog = logFiles[0];
+    final List<File> orderedLogs = Arrays.asList(logFiles);
 
     final JFileChooser videoChooser = new JFileChooser(directory);
     videoChooser.setDialogTitle(Resources.getString("VideoExporter.output_dialog"));
@@ -100,11 +101,10 @@ public class VideoExporter extends AbstractToolbarItem {
 
     final int fps = 5;
     final File finalVideo = videoFile;
-    final File logToRender = firstLog;
     final double restoreZoom = originalZoom;
     new Thread(() -> {
       try {
-        renderLog(logToRender, finalVideo, fps);
+        renderLogs(orderedLogs, finalVideo, fps);
       }
       finally {
         SwingUtilities.invokeLater(() -> restoreZoom(map, restoreZoom));
@@ -112,56 +112,76 @@ public class VideoExporter extends AbstractToolbarItem {
     }, "VideoExporter").start();
   }
 
-  private void renderLog(File logFile, File videoFile, int fps) {
+  private void renderLogs(List<File> logFiles, File videoFile, int fps) {
     final GameModule gm = GameModule.getGameModule();
     final BasicLogger logger = gm.getBasicLogger();
 
     try {
-      final boolean[] loaded = new boolean[1];
-      SwingUtilities.invokeAndWait(() -> loaded[0] = gm.getGameState().loadGame(logFile, false, true));
-      if (!loaded[0]) {
-        gm.warn(Resources.getString("VideoExporter.load_failed"));
-        return;
-      }
-
-      final Rectangle[] captureRectHolder = new Rectangle[1];
-      final int[] dimensions = new int[2];
-      SwingUtilities.invokeAndWait(() -> {
-        final Rectangle mapRect = new Rectangle(0, 0, map.mapSize().width, map.mapSize().height);
-        final Rectangle drawing = map.mapToDrawing(mapRect, 1.0);
-        captureRectHolder[0] = drawing;
-        dimensions[0] = Math.max(1, drawing.width);
-        dimensions[1] = Math.max(1, drawing.height);
-      });
-
-      if (captureRectHolder[0].width <= 0 || captureRectHolder[0].height <= 0) {
-        gm.warn(Resources.getString("VideoExporter.no_view"));
-        return;
-      }
-
-      final Rectangle drawingRect = new Rectangle(captureRectHolder[0]);
-      final int width = dimensions[0];
-      final int height = dimensions[1];
-      final int videoWidth = (width % 2 == 0) ? width : width + 1;
-      final int videoHeight = (height % 2 == 0) ? height : height + 1;
-      final BufferedImage frame = new BufferedImage(videoWidth, videoHeight, BufferedImage.TYPE_3BYTE_BGR);
-
       logger.setSuppressReplayPrompts(true);
-      try (FfmpegWriter writer = new FfmpegWriter(videoWidth, videoHeight, fps, videoFile)) {
-        captureFrame(frame, drawingRect);
-        writer.writeFrame(frame);
-
-        while (true) {
-          final boolean[] stepped = new boolean[1];
-          SwingUtilities.invokeAndWait(() -> stepped[0] = logger.stepForward());
-          if (!stepped[0]) {
-            break;
+      BufferedImage frame = null;
+      Rectangle drawingRect = null;
+      FfmpegWriter writer = null;
+      try {
+        for (final File logFile : logFiles) {
+          final boolean[] loaded = new boolean[1];
+          SwingUtilities.invokeAndWait(() -> loaded[0] = gm.getGameState().loadGame(logFile, false, true));
+          if (!loaded[0]) {
+            gm.warn(Resources.getString("VideoExporter.load_failed"));
+            continue;
           }
+
+          if (writer == null) {
+            final Rectangle[] captureRectHolder = new Rectangle[1];
+            final int[] dimensions = new int[2];
+            SwingUtilities.invokeAndWait(() -> {
+              final Rectangle mapRect = new Rectangle(0, 0, map.mapSize().width, map.mapSize().height);
+              final Rectangle drawing = map.mapToDrawing(mapRect, 1.0);
+              captureRectHolder[0] = drawing;
+              dimensions[0] = Math.max(1, drawing.width);
+              dimensions[1] = Math.max(1, drawing.height);
+            });
+
+            if (captureRectHolder[0].width <= 0 || captureRectHolder[0].height <= 0) {
+              gm.warn(Resources.getString("VideoExporter.no_view"));
+              return;
+            }
+
+            drawingRect = new Rectangle(captureRectHolder[0]);
+            final int width = dimensions[0];
+            final int height = dimensions[1];
+            final int videoWidth = (width % 2 == 0) ? width : width + 1;
+            final int videoHeight = (height % 2 == 0) ? height : height + 1;
+            frame = new BufferedImage(videoWidth, videoHeight, BufferedImage.TYPE_3BYTE_BGR);
+            writer = new FfmpegWriter(videoWidth, videoHeight, fps, videoFile);
+          }
+
           captureFrame(frame, drawingRect);
           writer.writeFrame(frame);
+
+          while (true) {
+            final boolean[] stepped = new boolean[1];
+            SwingUtilities.invokeAndWait(() -> stepped[0] = logger.stepForward());
+            if (!stepped[0]) {
+              break;
+            }
+            captureFrame(frame, drawingRect);
+            writer.writeFrame(frame);
+          }
+        }
+        if (writer != null) {
+          gm.warn(Resources.getString("VideoExporter.finished", videoFile.getAbsolutePath()));
         }
       }
-      gm.warn(Resources.getString("VideoExporter.finished", videoFile.getAbsolutePath()));
+      finally {
+        if (writer != null) {
+          try {
+            writer.close();
+          }
+          catch (IOException e) {
+            gm.warn(Resources.getString("VideoExporter.failed", e.getMessage()));
+          }
+        }
+      }
     }
     catch (Exception ex) {
       gm.warn(Resources.getString("VideoExporter.failed", ex.getMessage()));
