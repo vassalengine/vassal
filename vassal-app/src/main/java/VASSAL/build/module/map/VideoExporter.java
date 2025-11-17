@@ -5,6 +5,7 @@ import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.BasicLogger;
 import VASSAL.build.module.Map;
+import VASSAL.build.module.GameState;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.i18n.Resources;
 import VASSAL.build.module.map.Zoomer;
@@ -115,6 +116,9 @@ public class VideoExporter extends AbstractToolbarItem {
   private void renderLogs(List<File> logFiles, File videoFile, int fps) {
     final GameModule gm = GameModule.getGameModule();
     final BasicLogger logger = gm.getBasicLogger();
+    final GameState gameState = gm.getGameState();
+    final boolean wasSavePromptSuppressed = gameState.isSavePromptSuppressed();
+    gameState.setSuppressSavePrompt(true);
 
     try {
       logger.setSuppressReplayPrompts(true);
@@ -124,7 +128,7 @@ public class VideoExporter extends AbstractToolbarItem {
       try {
         for (final File logFile : logFiles) {
           final boolean[] loaded = new boolean[1];
-          SwingUtilities.invokeAndWait(() -> loaded[0] = gm.getGameState().loadGame(logFile, false, true));
+          SwingUtilities.invokeAndWait(() -> loaded[0] = gameState.loadGame(logFile, false, true));
           if (!loaded[0]) {
             gm.warn(Resources.getString("VideoExporter.load_failed"));
             continue;
@@ -187,6 +191,7 @@ public class VideoExporter extends AbstractToolbarItem {
       gm.warn(Resources.getString("VideoExporter.failed", ex.getMessage()));
     }
     finally {
+      gameState.setSuppressSavePrompt(wasSavePromptSuppressed);
       logger.setSuppressReplayPrompts(false);
     }
   }

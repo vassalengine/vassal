@@ -379,6 +379,7 @@ public class GameState implements CommandEncoder {
      middle of a startup. */
   private boolean gameStarting = false;
   private boolean gameStarted = false;
+  private boolean suppressSavePrompt = false;
 
   //
   // FIXME: This will become unnecessary when we do model-view separation.
@@ -497,10 +498,25 @@ public class GameState implements CommandEncoder {
   public static final int NO_NEED_TO_SAVE = (~JOptionPane.NO_OPTION & 0x01) | (~JOptionPane.YES_OPTION & 0x02) | (~JOptionPane.CANCEL_OPTION & 0x04) | (~JOptionPane.CLOSED_OPTION & 0x08);
 
   /**
+   * Suppress save-game prompts for automated workflows (e.g. video export)
+   */
+  public void setSuppressSavePrompt(boolean suppress) {
+    suppressSavePrompt = suppress;
+  }
+
+  public boolean isSavePromptSuppressed() {
+    return suppressSavePrompt;
+  }
+
+  /**
    * Offers player the chance to save the game if an unsaved one is active and modified
    * @return Whether Yes, No, or Cancel was selected (if Yes was selected, game is saved before returning result). Or NO_NEED_TO_SAVE if game wasn't in a state needing to be saved.
    */
   public int maybeSaveGame() {
+    if (suppressSavePrompt) {
+      return NO_NEED_TO_SAVE;
+    }
+
     if (!gameStarted || !isModified() || !saveGame.isEnabled()) {
       return NO_NEED_TO_SAVE;
     }
