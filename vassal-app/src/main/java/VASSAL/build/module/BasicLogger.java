@@ -589,21 +589,40 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       return; //BR// Throw away extra keys-held-down when nothing left to do
     }
 
-    final Command lastOutput = logOutput.get(nextUndo);
+    Command lastOutput = logOutput.get(nextUndo);
     final Command lastInput = (nextInput > logInput.size() || nextInput < 1) ?
       null : logInput.get(nextInput - 1);
     if (lastInput == lastOutput) {
-      while (nextInput-- > dontUndoPast) {
-        stepAction.setEnabled(true);
-        if (logInput.get(nextInput).getUndoCommand() != null) {
-          break;
-        }
-      }
+      nextInput--;
+      stepAction.setEnabled(isReplaying());
     }
 
+    // Skip already executed undo commands. There should be a one-to-one
+    // correspondence of commands to undos. Find the command to undo
+    // skipping over command/undo pairs. undoLevel counts unmatched pairs.
+    int undoLevel = 0;
+    final Boolean isLastInputUndoCommand = lastInput instanceof UndoCommand;
     while (nextUndo-- > dontUndoPast) {
-      if (logOutput.get(nextUndo).getUndoCommand() != null) {
+      if (lastInput == lastOutput && (isLastInputUndoCommand || undoLevel > 0)) {
+        if (isLastInputUndoCommand && undoLevel > 0) {
+          nextInput--;
+        }
+        // Don't skip undo commands in log files.
         break;
+      }
+      if (lastOutput instanceof UndoCommand) {
+        // For each undo command, skip an actual command
+        // since each undo should match a command.
+        undoLevel++;
+      }
+      else if (undoLevel-- <= 0) {
+        // Breakout, we found the command to undo.
+        break;
+      }
+      lastOutput = logOutput.get(nextUndo);
+      if (undoLevel == 0 && lastInput == lastOutput) {
+        // This is an undo of a command from a log file.
+        nextInput--;
       }
     }
 
@@ -612,6 +631,17 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     undo.execute();
     GameModule.getGameModule().getServer().sendToOthers(undo);
     logOutput.add(undo);
+    if (nextUndo < dontUndoPast) {
+      if (lastInput != lastOutput) {
+        // Prevent a re-undo of already undone commands, but not during log file playback.
+        // Includes preventing the just added undo command.
+        dontUndoPast = logOutput.size();
+      }
+      else if (nextInput == 0) {
+        dontUndoPast = logOutput.size();
+        undoAction.setEnabled(nextUndo >= dontUndoPast);
+      }
+    }
     GameModule.getGameModule().refreshVisibleMaps();
   }
 
