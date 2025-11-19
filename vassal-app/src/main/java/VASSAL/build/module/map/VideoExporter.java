@@ -127,10 +127,18 @@ public class VideoExporter extends AbstractToolbarItem {
       BufferedImage frame = null;
       Rectangle drawingRect = null;
       FfmpegWriter writer = null;
+      long captureNanos = 0;
+      long writeNanos = 0;
+      long stepNanos = 0;
+      long loadNanos = 0;
+      long totalFrames = 0;
+      long totalCommands = 0;
       try {
         for (final File logFile : logFiles) {
           final boolean[] loaded = new boolean[1];
+          final long loadStart = System.nanoTime();
           SwingUtilities.invokeAndWait(() -> loaded[0] = gameState.loadGame(logFile, false, true));
+          loadNanos += System.nanoTime() - loadStart;
           if (!loaded[0]) {
             gm.warn(Resources.getString("VideoExporter.load_failed"));
             continue;
@@ -161,25 +169,49 @@ public class VideoExporter extends AbstractToolbarItem {
             writer = new FfmpegWriter(videoWidth, videoHeight, fps, videoFile);
           }
 
+          final long captureStart = System.nanoTime();
           captureFrame(frame, drawingRect);
+          captureNanos += System.nanoTime() - captureStart;
+          final long writeStart = System.nanoTime();
           writer.writeFrame(frame);
+          writeNanos += System.nanoTime() - writeStart;
+          totalFrames++;
+          gm.warn(String.format("VideoExporter frame %d captured (load %.1f ms, capture %.1f ms, write %.1f ms)",
+            totalFrames, loadNanos / 1_000_000.0, captureNanos / 1_000_000.0, writeNanos / 1_000_000.0));
 
           while (true) {
             final Command nextCommand = logger.peekNextCommand();
             final boolean captureAfterStep = commandLikelyChangesMap(nextCommand);
             final boolean[] stepped = new boolean[1];
+            final long stepStart = System.nanoTime();
             SwingUtilities.invokeAndWait(() -> stepped[0] = logger.stepForward());
+            stepNanos += System.nanoTime() - stepStart;
             if (!stepped[0]) {
               break;
             }
             if (captureAfterStep) {
+              final long captureStartStep = System.nanoTime();
               captureFrame(frame, drawingRect);
+              captureNanos += System.nanoTime() - captureStartStep;
+              final long writeStartStep = System.nanoTime();
               writer.writeFrame(frame);
+              writeNanos += System.nanoTime() - writeStartStep;
+              totalFrames++;
+              gm.warn(String.format("VideoExporter frame %d captured (load %.1f ms, capture %.1f ms, write %.1f ms)",
+                totalFrames, loadNanos / 1_000_000.0, captureNanos / 1_000_000.0, writeNanos / 1_000_000.0));
             }
+            totalCommands++;
           }
         }
         if (writer != null) {
           gm.warn(Resources.getString("VideoExporter.finished", videoFile.getAbsolutePath()));
+          final double captureMs = captureNanos / 1_000_000.0;
+          final double writeMs = writeNanos / 1_000_000.0;
+          final double stepMs = stepNanos / 1_000_000.0;
+          final double loadMs = loadNanos / 1_000_000.0;
+          gm.warn(String.format(
+            "VideoExporter profile: capture %.1f ms, write %.1f ms, step %.1f ms, load %.1f ms, frames %d, commands %d",
+            captureMs, writeMs, stepMs, loadMs, totalFrames, totalCommands));
         }
       }
       finally {
