@@ -117,7 +117,7 @@ public class PositionOption extends VASSAL.configure.Configurer
   private static Rectangle getVirtualDesktopBounds() {
     final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
     Rectangle virtual = null;
-    for (GraphicsDevice gd : ge.getScreenDevices()) {
+    for (final GraphicsDevice gd : ge.getScreenDevices()) {
       final Rectangle b = gd.getDefaultConfiguration().getBounds();
       if (virtual == null) {
         virtual = new Rectangle(b);
