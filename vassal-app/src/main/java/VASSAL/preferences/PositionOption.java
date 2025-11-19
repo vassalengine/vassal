@@ -19,6 +19,7 @@ package VASSAL.preferences;
 
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -109,6 +110,30 @@ public class PositionOption extends VASSAL.configure.Configurer
     }
   }
 
+  /**
+   * Returns the union of the bounds of all available screens (aka the virtual desktop bounds).
+   * This is used for validating and clamping window locations/sizes in multi-monitor setups.
+   */
+  private static Rectangle getVirtualDesktopBounds() {
+    final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+    Rectangle virtual = null;
+    for (GraphicsDevice gd : ge.getScreenDevices()) {
+      final Rectangle b = gd.getDefaultConfiguration().getBounds();
+      if (virtual == null) {
+        virtual = new Rectangle(b);
+      }
+      else {
+        virtual = virtual.union(b);
+      }
+    }
+    // Fallback (shouldn't happen) to primary screen size
+    if (virtual == null) {
+      final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+      virtual = new Rectangle(0, 0, d.width, d.height);
+    }
+    return virtual;
+  }
+
   @Override
   public String getValueString() {
     return bounds.x + "," + bounds.y + "," +
@@ -116,9 +141,7 @@ public class PositionOption extends VASSAL.configure.Configurer
   }
 
   private boolean isOnScreen(Point p) {
-    return
-      p.x < Toolkit.getDefaultToolkit().getScreenSize().width &&
-      p.y < Toolkit.getDefaultToolkit().getScreenSize().height;
+    return getVirtualDesktopBounds().contains(p);
   }
 
   @Override
@@ -158,7 +181,8 @@ public class PositionOption extends VASSAL.configure.Configurer
   }
 
   protected void setFrameBounds() {
-    final Rectangle desktopBounds = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+    // Use the union of all screen bounds so we don't force windows onto the primary monitor
+    final Rectangle desktopBounds = getVirtualDesktopBounds();
 
     // Respect any existing bounds
     if (bounds.width != 0 && bounds.height != 0) {
