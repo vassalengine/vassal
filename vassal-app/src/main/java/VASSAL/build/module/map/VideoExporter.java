@@ -22,12 +22,15 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Prototype toolbar item that renders a vlog replay directly into an ffmpeg process.
  */
 public class VideoExporter extends AbstractToolbarItem {
   private static final String DEFAULT_ICON = "/images/camera.gif";
+  private static final int MAX_VIDEO_WIDTH = Integer.getInteger("VideoExporter.maxWidth", 3840);
+  private static final int MAX_VIDEO_HEIGHT = Integer.getInteger("VideoExporter.maxHeight", 2160);
 
   private Map map;
 
@@ -67,6 +70,7 @@ public class VideoExporter extends AbstractToolbarItem {
   public void startExport() {
     final GameModule gm = GameModule.getGameModule();
     final double originalZoom = maximizeZoom(map);
+    limitZoomToFit(map, MAX_VIDEO_WIDTH, MAX_VIDEO_HEIGHT);
     final JFileChooser dirChooser = new JFileChooser();
     dirChooser.setDialogTitle(Resources.getString("VideoExporter.folder_dialog"));
     dirChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -133,6 +137,8 @@ public class VideoExporter extends AbstractToolbarItem {
       long loadNanos = 0;
       long totalFrames = 0;
       long totalCommands = 0;
+      final long frameIntervalNanos = fps > 0 ? 1_000_000_000L / fps : 0;
+      long nextFrameDeadline = 0;
       try {
         for (final File logFile : logFiles) {
           final boolean[] loaded = new boolean[1];
@@ -143,6 +149,7 @@ public class VideoExporter extends AbstractToolbarItem {
             gm.warn(Resources.getString("VideoExporter.load_failed"));
             continue;
           }
+          SwingUtilities.invokeAndWait(() -> limitZoomToFit(map, MAX_VIDEO_WIDTH, MAX_VIDEO_HEIGHT));
 
           if (writer == null) {
             final Rectangle[] captureRectHolder = new Rectangle[1];
@@ -176,6 +183,7 @@ public class VideoExporter extends AbstractToolbarItem {
           writer.writeFrame(frame);
           writeNanos += System.nanoTime() - writeStart;
           totalFrames++;
+          nextFrameDeadline = throttleFrameRate(frameIntervalNanos, nextFrameDeadline);
           gm.warn(String.format("VideoExporter frame %d captured (load %.1f ms, capture %.1f ms, write %.1f ms)",
             totalFrames, loadNanos / 1_000_000.0, captureNanos / 1_000_000.0, writeNanos / 1_000_000.0));
 
@@ -197,6 +205,7 @@ public class VideoExporter extends AbstractToolbarItem {
               writer.writeFrame(frame);
               writeNanos += System.nanoTime() - writeStartStep;
               totalFrames++;
+              nextFrameDeadline = throttleFrameRate(frameIntervalNanos, nextFrameDeadline);
               gm.warn(String.format("VideoExporter frame %d captured (load %.1f ms, capture %.1f ms, write %.1f ms)",
                 totalFrames, loadNanos / 1_000_000.0, captureNanos / 1_000_000.0, writeNanos / 1_000_000.0));
             }
@@ -283,6 +292,28 @@ public class VideoExporter extends AbstractToolbarItem {
     zoomer.setZoomFactor(zoomFactor);
   }
 
+  private void limitZoomToFit(Map targetMap, int maxWidth, int maxHeight) {
+    if (targetMap == null || maxWidth <= 0 || maxHeight <= 0) {
+      return;
+    }
+    final Zoomer zoomer = targetMap.getZoomer();
+    if (zoomer == null) {
+      return;
+    }
+    final Rectangle mapRect = new Rectangle(0, 0, targetMap.mapSize().width, targetMap.mapSize().height);
+    final Rectangle drawing = targetMap.mapToDrawing(mapRect, 1.0);
+    final int width = Math.max(1, drawing.width);
+    final int height = Math.max(1, drawing.height);
+    if (width <= maxWidth && height <= maxHeight) {
+      return;
+    }
+    final double currentZoom = targetMap.getZoom();
+    final double scale = Math.min((double) maxWidth / width, (double) maxHeight / height);
+    if (scale < 1.0) {
+      zoomer.setZoomFactor(currentZoom * scale);
+    }
+  }
+
   private void captureFrame(BufferedImage frame, Rectangle drawingRect) {
     try {
       SwingUtilities.invokeAndWait(() -> {
@@ -308,6 +339,23 @@ public class VideoExporter extends AbstractToolbarItem {
     return true;
   }
 
+  private long throttleFrameRate(long frameIntervalNanos, long nextFrameDeadline) {
+    if (frameIntervalNanos <= 0) {
+      return nextFrameDeadline;
+    }
+    long target = nextFrameDeadline == 0 ? System.nanoTime() + frameIntervalNanos : nextFrameDeadline;
+    final long sleepNanos = target - System.nanoTime();
+    if (sleepNanos > 0) {
+      try {
+        TimeUnit.NANOSECONDS.sleep(sleepNanos);
+      }
+      catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+      }
+    }
+    return target + frameIntervalNanos;
+  }
+
   private static class FfmpegWriter implements AutoCloseable {
     private final Process process;
     private final OutputStream output;
@@ -317,6 +365,7 @@ public class VideoExporter extends AbstractToolbarItem {
         "ffmpeg",
         "-y",
         "-f", "rawvideo",
+        "-v", "debug",
         "-pix_fmt", "bgr24",
         "-s", width + "x" + height,
         "-r", Integer.toString(fps),
