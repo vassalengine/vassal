@@ -31,6 +31,7 @@ public class VideoExporter extends AbstractToolbarItem {
   private static final String DEFAULT_ICON = "/images/camera.gif";
   private static final int MAX_VIDEO_WIDTH = Integer.getInteger("VideoExporter.maxWidth", 3840);
   private static final int MAX_VIDEO_HEIGHT = Integer.getInteger("VideoExporter.maxHeight", 2160);
+  private static final Rectangle HARD_CODED_CROP = new Rectangle(1000, 1000, 1000, 500);
 
   private Map map;
 
@@ -70,7 +71,7 @@ public class VideoExporter extends AbstractToolbarItem {
   public void startExport() {
     final GameModule gm = GameModule.getGameModule();
     final double originalZoom = maximizeZoom(map);
-    limitZoomToFit(map, MAX_VIDEO_WIDTH, MAX_VIDEO_HEIGHT);
+    limitZoomToFit(map, fullMapRect(map), MAX_VIDEO_WIDTH, MAX_VIDEO_HEIGHT);
     final JFileChooser dirChooser = new JFileChooser();
     dirChooser.setDialogTitle(Resources.getString("VideoExporter.folder_dialog"));
     dirChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -149,13 +150,14 @@ public class VideoExporter extends AbstractToolbarItem {
             gm.warn(Resources.getString("VideoExporter.load_failed"));
             continue;
           }
-          SwingUtilities.invokeAndWait(() -> limitZoomToFit(map, MAX_VIDEO_WIDTH, MAX_VIDEO_HEIGHT));
+          final Rectangle cropArea = new Rectangle(HARD_CODED_CROP);
+          SwingUtilities.invokeAndWait(() -> limitZoomToFit(map, cropArea, MAX_VIDEO_WIDTH, MAX_VIDEO_HEIGHT));
 
           if (writer == null) {
             final Rectangle[] captureRectHolder = new Rectangle[1];
             final int[] dimensions = new int[2];
             SwingUtilities.invokeAndWait(() -> {
-              final Rectangle mapRect = new Rectangle(0, 0, map.mapSize().width, map.mapSize().height);
+              final Rectangle mapRect = new Rectangle(HARD_CODED_CROP);
               final Rectangle drawing = map.mapToDrawing(mapRect, 1.0);
               captureRectHolder[0] = drawing;
               dimensions[0] = Math.max(1, drawing.width);
@@ -292,7 +294,7 @@ public class VideoExporter extends AbstractToolbarItem {
     zoomer.setZoomFactor(zoomFactor);
   }
 
-  private void limitZoomToFit(Map targetMap, int maxWidth, int maxHeight) {
+  private void limitZoomToFit(Map targetMap, Rectangle cropArea, int maxWidth, int maxHeight) {
     if (targetMap == null || maxWidth <= 0 || maxHeight <= 0) {
       return;
     }
@@ -300,7 +302,9 @@ public class VideoExporter extends AbstractToolbarItem {
     if (zoomer == null) {
       return;
     }
-    final Rectangle mapRect = new Rectangle(0, 0, targetMap.mapSize().width, targetMap.mapSize().height);
+    final Rectangle mapRect = cropArea != null
+      ? new Rectangle(cropArea)
+      : new Rectangle(0, 0, targetMap.mapSize().width, targetMap.mapSize().height);
     final Rectangle drawing = targetMap.mapToDrawing(mapRect, 1.0);
     final int width = Math.max(1, drawing.width);
     final int height = Math.max(1, drawing.height);
@@ -314,12 +318,17 @@ public class VideoExporter extends AbstractToolbarItem {
     }
   }
 
+  private Rectangle fullMapRect(Map targetMap) {
+    return new Rectangle(0, 0, targetMap.mapSize().width, targetMap.mapSize().height);
+  }
+
   private void captureFrame(BufferedImage frame, Rectangle drawingRect) {
     try {
       SwingUtilities.invokeAndWait(() -> {
         final var g2 = frame.createGraphics();
         g2.setColor(map.getView().getBackground());
         g2.fillRect(0, 0, frame.getWidth(), frame.getHeight());
+        g2.translate(-drawingRect.x, -drawingRect.y);
         map.paintRegion(g2, drawingRect, map.getView());
         g2.dispose();
       });
