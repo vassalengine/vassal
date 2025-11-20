@@ -1,11 +1,14 @@
 3.7.19 - ???
 
+* 14341: Upgraded commons-io to 2.21.0
+* 14338: Upgraded commons-codec to 1.20.0
+* 14330: Upgraded junit-bom to 6.0.1
+* 14327: Upgraded asciidoctorj-pdf to 2.3.23
+* 14326: Upgraded checkstyle to 12.1.1
 * 14323: Sanitize extracted image filenames for HTML viewer
 * 14318: Upgraded spotbugs-annotations to 4.9.8
 * 14311: Upgraded logback-classic to 1.5.20
-* 14310: Upgraded asciidoctorj-pdf to 2.3.21
 * 14309: Upgraded spotbugs-maven-plugin to 4.9.8.1
-* 14308: Upgraded checkstyle to 12.1.0
 * 14307: Upgraded exec-maven-plugin to 3.6.2
 * 14301: Upgraded bundled Java to 25+36 (Windows x86_64, Mac), 25+37 (Windows
     aarch64)
@@ -15,7 +18,6 @@
 * 14273: Upgraded exec-maven-plugin to 3.6.1
 * 14265: Upgraded maven-enforcer-plugin to 3.6.2
 * 14264: Upgraded maven-dependency-plugin to 3.9.0
-* 14257: Upgraded junit-bom to 6.0.0
 * 14254: Set-up release-on-tag workflow
 * 14252: Upgraded httpclient5 to 5.5.1
 * 14248: Upgraded commons-lang3 to 3.19.0
