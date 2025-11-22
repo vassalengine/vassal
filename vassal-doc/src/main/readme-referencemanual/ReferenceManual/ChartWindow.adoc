@@ -47,11 +47,23 @@ image:images/ChartWindow.png[] +
 
 Each chart is a GIF/JPEG/PNG image that you must create beforehand with an external program.
 
+If the specified image is larger than 300x300 pixels, then scroll bars will automatically be added if the window is too small to show the entire image.  If the option *Enable zoom* is also true, then the chart is zoomable using either the mouse scroll wheel together with `Control` held down, or using the configured hotkeys.   If zoom is enabled, then scroll bars will automatically be added _irrespective_ of the image size. 
+
 [width="100%",cols="50%a,50%a",]
 |===
 |*Name:*:: The name of the Chart.
 
 *Image:*:: The image to be displayed in the Chart. Click _Select_ to select an image and load it into the module.
+
+*Enable zoom:*:: Enable zooming on the chart using either the mouse wheel with `Control` held down, or the configured hotkeys.
+
+*Least zoom factor:*:: The least zoom factor (as a fraction) to zoom to. The default, `0.3`, corresponds to 30% magnification.
+
+*Largest zoom factor:*:: The largest zoom factor (as a fraction) to zoom to. The default, `3`, corresponds to 300% magnification.
+
+*Zoom in hotkey:*:: The key to use to zoom in on the chart.  Defaults to `+`.
+
+*Zoom out hotkey:*:: The key to use to zoom in on the chart. Defaults to `Shift-=` or `-`. 
 
 |image:images/Chart.png[] +
 |===
