@@ -107,6 +107,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static VASSAL.build.module.Map.MAP_NAME;
+import static VASSAL.counters.Footprint.DROP_TARGET;
 
 /**
  * PieceMover handles the "Drag and Drop" of pieces and stacks, onto or within a Map window. It implements
@@ -766,7 +767,7 @@ public class PieceMover extends AbstractBuildable
     Command c = new NullCommand();
     c = c.append(setOldLocations(p));
     if (!loc.equals(p.getPosition())) {
-      c = c.append(markMoved(p, true, false));
+      c = c.append(markMoved(p, true, false, loc));
     }
     if (p.getParent() != null) {
       final Command removedCommand = p.getParent().pieceRemoved(p);
@@ -798,15 +799,20 @@ public class PieceMover extends AbstractBuildable
     return markMoved(p, hasMoved, true);
   }
 
+  public Command markMoved(GamePiece p, boolean hasMoved, boolean locDefinitelyChanged) {
+    return markMoved(p, hasMoved, locDefinitelyChanged, null);
+  }
+  
   /**
    * Handles marking pieces as "moved" or "not moved", based on Global Options settings. Updates the
    * "moved" property of the pieces, if they have one.
    * @param p Piece (could be a Stack)
    * @param hasMoved True if piece has just moved, false if it is to be reset to not-moved status
    * @param locDefinitelyChanged true if piece definitely changed locations or mats (for possibly ignoring small moves)
+   * @param dropTarget Point where the piece is dragged to
    * @return Command encapsulating any changes made, for replay in log file or on other clients
    */
-  public Command markMoved(GamePiece p, boolean hasMoved, boolean locDefinitelyChanged) {
+  public Command markMoved(GamePiece p, boolean hasMoved, boolean locDefinitelyChanged, Point dropTarget) {
     if (GlobalOptions.NEVER.equals(getMarkOption())) {
       hasMoved = false;
     }
@@ -821,6 +827,7 @@ public class PieceMover extends AbstractBuildable
       else if (p.getProperty(Properties.MOVED) != null) {
         if (p.getId() != null) {
           final ChangeTracker comm = new ChangeTracker(p);
+          p.setProperty(DROP_TARGET, dropTarget);
           p.setProperty((!hasMoved || locDefinitelyChanged) ? Properties.MOVED : Properties.MAYBE_MOVED,
                         hasMoved ? Boolean.TRUE : Boolean.FALSE);
           c = c.append(comm.getChangeCommand());

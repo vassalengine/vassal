@@ -36,6 +36,7 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.image.LabelUtils;
+import org.apache.commons.lang3.Strings;
 
 import javax.swing.KeyStroke;
 import java.awt.AlphaComposite;
@@ -65,6 +66,7 @@ import java.util.Objects;
 public class Footprint extends MovementMarkable {
 
   public static final String ID = "footprint;"; //$NON-NLS-1$//
+  public static final String DROP_TARGET = "dropTarget";
   private KeyCommand[] commands;
 
   // State Variables (Saved in logfile/sent to opponent)
@@ -89,12 +91,14 @@ public class Footprint extends MovementMarkable {
   protected int edgePointBuffer;               // How far Off-map to draw trail points (pixels)?
   protected int edgeDisplayBuffer;             // How far Off-map to draw trail lines (pixels)?
   protected String description;                // Description for this movement trail
+  protected boolean keepLastPositionOnly = false;   // Only keep last position if location name does not change
 
   // Defaults for Type variables
   protected static final char DEFAULT_TRAIL_KEY = 'T';
   protected static final String DEFAULT_MENU_COMMAND = Resources.getString("Editor.Footprint.movement_trail");
   protected static final Boolean DEFAULT_INITIALLY_VISIBLE = Boolean.FALSE;
   protected static final Boolean DEFAULT_GLOBALLY_VISIBLE = Boolean.FALSE;
+  protected static final Boolean DEFAULT_KEEP_LAST_POSITION = Boolean.FALSE;
   protected static final int DEFAULT_CIRCLE_RADIUS = 10;
   protected static final Color DEFAULT_FILL_COLOR = Color.WHITE;
   protected static final Color DEFAULT_LINE_COLOR = Color.BLACK;
@@ -193,6 +197,7 @@ public class Footprint extends MovementMarkable {
     trailKeyOff = st.nextNamedKeyStroke(null);
     trailKeyClear = st.nextNamedKeyStroke(null);
     description = st.nextToken("");
+    keepLastPositionOnly = st.nextBoolean(DEFAULT_KEEP_LAST_POSITION);
     commands = null;
     showTrailCommand = null;
     showTrailCommandOn = null;
@@ -221,7 +226,9 @@ public class Footprint extends MovementMarkable {
       .append(trailKeyOn)
       .append(trailKeyOff)
       .append(trailKeyClear)
-      .append(description);
+      .append(description)
+      .append(keepLastPositionOnly)
+    ;
     return ID + se.getValue();
   }
 
@@ -337,8 +344,41 @@ public class Footprint extends MovementMarkable {
    * trail.
    */
   protected void addPoint(Point p) {
-    pointList.add(p);
+    if (keepLastPositionOnly) {
+      removeLastPositionIfLocationNameNotChanged(p);
+    } 
+    else {
+      pointList.add(p);
+    }
     myBoundingBox = null;
+  }
+
+  private void removeLastPositionIfLocationNameNotChanged(final Point actualPoint) {
+    final Object dropTarget = this.getProperty(DROP_TARGET);
+    final Map map = getMap();
+    if (dropTarget instanceof Point && map != null
+            && pointList != null && !pointList.isEmpty()
+            && Strings.CS.equals(map.locationName((Point) dropTarget), map.locationName(actualPoint))) {
+      return;
+    }
+    boolean addPoint = true;
+    if (pointList != null && !pointList.isEmpty()) {
+      final Point previousPoint = pointList.get(pointList.size() - 1);
+      
+      if (previousPoint != null && map != null 
+              && Strings.CS.equals(map.locationName(previousPoint), map.locationName(actualPoint))
+      ) {
+        if (pointList.size() != 1) {
+          pointList.remove(previousPoint);
+        } 
+        else  {
+          addPoint = false;
+        }
+      }
+    }
+    if (addPoint && pointList != null) {
+      pointList.add(actualPoint);
+    }
   }
 
   public void redraw() {
@@ -805,6 +845,7 @@ public class Footprint extends MovementMarkable {
     if (! Objects.equals(trailKeyOff, c.trailKeyOff)) return false;
     if (! Objects.equals(trailKeyClear, c.trailKeyClear)) return false;
     if (! Objects.equals(description, c.description)) return false;
+    if (! Objects.equals(keepLastPositionOnly, c.keepLastPositionOnly)) return false;
 
     if (! Objects.equals(globalVisibility, c.globalVisibility)) return false;
     if (! Objects.equals(startMapId, c.startMapId)) return false;
@@ -826,6 +867,7 @@ public class Footprint extends MovementMarkable {
     private final StringConfigurer menuCommandConfig;
     private final BooleanConfigurer initiallyVisibleConfig;
     private final BooleanConfigurer globallyVisibleConfig;
+    private final BooleanConfigurer keepLastPositionConfig;
     private final IntConfigurer circleRadiusConfig;
     private final ColorConfigurer fillColorConfig;
     private final ColorConfigurer lineColorConfig;
@@ -862,6 +904,9 @@ public class Footprint extends MovementMarkable {
 
       globallyVisibleConfig = new BooleanConfigurer(p.globallyVisible);
       controls.add("Editor.Footprint.trails_are_visible_to_all_players", globallyVisibleConfig);
+
+      keepLastPositionConfig = new BooleanConfigurer(p.keepLastPositionOnly);
+      controls.add("Editor.Footprint.keep_last_position_only", keepLastPositionConfig);
 
       circleRadiusConfig = new IntConfigurer(p.circleRadius);
       controls.add("Editor.Footprint.circle_radius", circleRadiusConfig);
@@ -911,7 +956,8 @@ public class Footprint extends MovementMarkable {
         .append(trailKeyOn.getValueString())
         .append(trailKeyOff.getValueString())
         .append(trailKeyClear.getValueString())
-        .append(desc.getValueString());
+        .append(desc.getValueString())
+        .append(keepLastPositionConfig.getValueString());
       return ID + se.getValue();
     }
 
