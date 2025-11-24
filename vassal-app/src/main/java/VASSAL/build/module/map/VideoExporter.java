@@ -4,31 +4,15 @@ import VASSAL.build.AbstractToolbarItem;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.BasicLogger;
-import VASSAL.build.module.Map;
-import VASSAL.build.module.GameState;
 import VASSAL.build.module.Chatter;
+import VASSAL.build.module.GameState;
+import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.i18n.Resources;
-import VASSAL.build.module.map.Zoomer;
 import VASSAL.command.Command;
-import javax.swing.JFileChooser;
-import javax.swing.JComponent;
-import javax.swing.RootPaneContainer;
-import javax.swing.SwingUtilities;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
+import VASSAL.build.module.map.CropSelector;
+
 import java.awt.Rectangle;
-import java.awt.Window;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.File;
@@ -37,8 +21,10 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+
+import javax.swing.JFileChooser;
+import javax.swing.SwingUtilities;
 
 /**
  * Prototype toolbar item that renders a vlog replay directly into an ffmpeg process.
@@ -305,7 +291,7 @@ public class VideoExporter extends AbstractToolbarItem {
     final GameModule gm = GameModule.getGameModule();
     gm.warn("Draw the crop box on the map, then press Enter to confirm or Esc to cancel.");
     new Thread(() -> {
-      final Rectangle selected = promptCropSelection();
+      final Rectangle selected = CropSelector.select(map, cropSelection);
       if (selected != null) {
         cropSelection = selected;
         gm.warn("Crop area set to " + selected);
@@ -371,133 +357,6 @@ public class VideoExporter extends AbstractToolbarItem {
 
   private Rectangle fullMapRect(Map targetMap) {
     return new Rectangle(0, 0, targetMap.mapSize().width, targetMap.mapSize().height);
-  }
-
-  private Rectangle promptCropSelection() {
-    final Window window = SwingUtilities.getWindowAncestor(map.getView());
-    if (!(window instanceof RootPaneContainer)) {
-      return null;
-    }
-    final RootPaneContainer rpc = (RootPaneContainer) window;
-    final Component oldGlass = rpc.getGlassPane();
-    final boolean oldVisible = oldGlass.isVisible();
-    final CountDownLatch latch = new CountDownLatch(1);
-    final Rectangle[] result = new Rectangle[1];
-
-    final class Overlay extends JComponent {
-      Point anchorMap;
-      Rectangle selectionMap;
-
-      Overlay() {
-        setOpaque(false);
-        setFocusable(true);
-      }
-
-      @Override
-      protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        if (selectionMap != null) {
-          Rectangle compRect = map.mapToComponent(selectionMap);
-          Rectangle overlayRect = SwingUtilities.convertRectangle(map.getView(), compRect, this);
-          final Graphics2D g2 = (Graphics2D) g.create();
-          g2.setColor(new Color(0, 120, 215, 60));
-          g2.fill(overlayRect);
-          g2.setColor(new Color(0, 120, 215, 160));
-          g2.setStroke(new BasicStroke(2f));
-          g2.draw(overlayRect);
-          g2.dispose();
-        }
-      }
-
-      private Rectangle clamp(Rectangle r) {
-        Rectangle clamped = new Rectangle(r);
-        clamped.x = Math.max(0, clamped.x);
-        clamped.y = Math.max(0, clamped.y);
-        clamped.width = Math.min(clamped.width, map.mapSize().width - clamped.x);
-        clamped.height = Math.min(clamped.height, map.mapSize().height - clamped.y);
-        if (clamped.width < 1) clamped.width = 1;
-        if (clamped.height < 1) clamped.height = 1;
-        return clamped;
-      }
-    }
-
-    final Overlay overlay = new Overlay();
-
-    final Runnable finalizeSelection = () -> {
-      if (overlay.selectionMap != null && overlay.selectionMap.width > 0 && overlay.selectionMap.height > 0) {
-        result[0] = new Rectangle(overlay.selectionMap);
-      }
-      latch.countDown();
-    };
-
-    overlay.addMouseListener(new MouseAdapter() {
-      @Override
-      public void mousePressed(MouseEvent e) {
-        Point compPt = SwingUtilities.convertPoint(overlay, e.getPoint(), map.getView());
-        overlay.anchorMap = map.componentToMap(compPt);
-        overlay.selectionMap = new Rectangle(overlay.anchorMap);
-      }
-
-      @Override
-      public void mouseReleased(MouseEvent e) {
-        overlay.anchorMap = null;
-      }
-    });
-
-    overlay.addMouseMotionListener(new MouseAdapter() {
-      @Override
-      public void mouseDragged(MouseEvent e) {
-        if (overlay.anchorMap == null) {
-          return;
-        }
-        Point compPt = SwingUtilities.convertPoint(overlay, e.getPoint(), map.getView());
-        Point mapPt = map.componentToMap(compPt);
-        Rectangle r = new Rectangle(
-          Math.min(overlay.anchorMap.x, mapPt.x),
-          Math.min(overlay.anchorMap.y, mapPt.y),
-          Math.abs(overlay.anchorMap.x - mapPt.x),
-          Math.abs(overlay.anchorMap.y - mapPt.y)
-        );
-        overlay.selectionMap = overlay.clamp(r);
-        overlay.repaint();
-      }
-    });
-
-    overlay.addMouseWheelListener(new MouseWheelListener() {
-      @Override
-      public void mouseWheelMoved(MouseWheelEvent e) {
-        map.getView().dispatchEvent(SwingUtilities.convertMouseEvent(overlay, e, map.getView()));
-        overlay.repaint();
-      }
-    });
-
-    overlay.addKeyListener(new KeyAdapter() {
-      @Override
-      public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-          finalizeSelection.run();
-        }
-        else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-          latch.countDown();
-        }
-      }
-    });
-
-    rpc.setGlassPane(overlay);
-    overlay.setVisible(true);
-    overlay.requestFocusInWindow();
-
-    try {
-      latch.await();
-    }
-    catch (InterruptedException ie) {
-      Thread.currentThread().interrupt();
-    }
-
-    rpc.setGlassPane(oldGlass);
-    oldGlass.setVisible(oldVisible);
-
-    return result[0];
   }
 
   private void captureFrame(BufferedImage frame, Rectangle drawingRect) {
