@@ -188,8 +188,10 @@ public class VideoExporter extends AbstractToolbarItem {
           writeNanos += System.nanoTime() - writeStart;
           totalFrames++;
           nextFrameDeadline = throttleFrameRate(frameIntervalNanos, nextFrameDeadline);
-          gm.warn(String.format("VideoExporter frame %d captured (load %.1f ms, capture %.1f ms, write %.1f ms)",
-            totalFrames, loadNanos / 1_000_000.0, captureNanos / 1_000_000.0, writeNanos / 1_000_000.0));
+          gm.warn(String.format("VideoExporter frame %d captured (crop %s, load %.1f ms, capture %.1f ms, write %.1f ms)",
+            totalFrames,
+            cropSelection != null ? rectSummary(cropSelection) : "full-map",
+            loadNanos / 1_000_000.0, captureNanos / 1_000_000.0, writeNanos / 1_000_000.0));
 
           while (true) {
             final Command nextCommand = logger.peekNextCommand();
@@ -210,14 +212,17 @@ public class VideoExporter extends AbstractToolbarItem {
               writeNanos += System.nanoTime() - writeStartStep;
               totalFrames++;
               nextFrameDeadline = throttleFrameRate(frameIntervalNanos, nextFrameDeadline);
-              gm.warn(String.format("VideoExporter frame %d captured (load %.1f ms, capture %.1f ms, write %.1f ms)",
-                totalFrames, loadNanos / 1_000_000.0, captureNanos / 1_000_000.0, writeNanos / 1_000_000.0));
+              gm.warn(String.format("VideoExporter frame %d captured (crop %s, load %.1f ms, capture %.1f ms, write %.1f ms)",
+                totalFrames,
+                cropSelection != null ? rectSummary(cropSelection) : "full-map",
+                loadNanos / 1_000_000.0, captureNanos / 1_000_000.0, writeNanos / 1_000_000.0));
             }
             totalCommands++;
           }
         }
         if (writer != null) {
-          gm.warn(Resources.getString("VideoExporter.finished", videoFile.getAbsolutePath()));
+          gm.warn(Resources.getString("VideoExporter.finished", videoFile.getAbsolutePath())
+            + (cropSelection != null ? " (crop " + rectSummary(cropSelection) + ")" : " (full-map)"));
           final double captureMs = captureNanos / 1_000_000.0;
           final double writeMs = writeNanos / 1_000_000.0;
           final double stepMs = stepNanos / 1_000_000.0;
@@ -357,6 +362,10 @@ public class VideoExporter extends AbstractToolbarItem {
 
   private Rectangle fullMapRect(Map targetMap) {
     return new Rectangle(0, 0, targetMap.mapSize().width, targetMap.mapSize().height);
+  }
+
+  private String rectSummary(Rectangle r) {
+    return "x=" + r.x + ",y=" + r.y + ",w=" + r.width + ",h=" + r.height;
   }
 
   private void captureFrame(BufferedImage frame, Rectangle drawingRect) {
