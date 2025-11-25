@@ -13,6 +13,9 @@ import VASSAL.command.Command;
 import VASSAL.build.module.map.CropSelector;
 
 import java.awt.Rectangle;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.File;
@@ -22,8 +25,15 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 /**
@@ -71,55 +81,163 @@ public class VideoExporter extends AbstractToolbarItem {
   }
 
   public void startExport() {
+    SwingUtilities.invokeLater(this::showExportDialog);
+  }
+
+  private void showExportDialog() {
     final GameModule gm = GameModule.getGameModule();
-    final double originalZoom = maximizeZoom(map);
-    limitZoomToFit(map, fullMapRect(map), MAX_VIDEO_WIDTH, MAX_VIDEO_HEIGHT);
-    final JFileChooser dirChooser = new JFileChooser();
-    dirChooser.setDialogTitle(Resources.getString("VideoExporter.folder_dialog"));
-    dirChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-    if (dirChooser.showOpenDialog(map.getView()) != JFileChooser.APPROVE_OPTION) {
-      return;
-    }
-    final File directory = dirChooser.getSelectedFile();
-    if (directory == null || !directory.isDirectory()) {
-      gm.warn(Resources.getString("VideoExporter.missing_log"));
-      return;
-    }
+    final JFrame frame = new JFrame(Resources.getString("VideoExporter.button"));
+    frame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
-    final File[] logFiles = directory.listFiles((dir, name) -> name.toLowerCase().endsWith(".vlog"));
-    if (logFiles == null || logFiles.length == 0) {
-      gm.warn(Resources.getString("VideoExporter.no_logs"));
-      return;
-    }
-    Arrays.sort(logFiles, Comparator.comparing(File::getName));
-    final List<File> orderedLogs = Arrays.asList(logFiles);
+    final JTextField logField = new JTextField();
+    logField.setEditable(false);
+    final JButton browseLogs = new JButton("Select Log Folder");
+    final JTextField outField = new JTextField();
+    outField.setEditable(false);
+    final JButton browseOut = new JButton("Select Output");
+    final JButton cropButton = new JButton("Select Crop Area");
+    cropButton.setEnabled(false);
+    final JButton startButton = new JButton("Start Rendering");
+    startButton.setEnabled(false);
 
-    final JFileChooser videoChooser = new JFileChooser(directory);
-    videoChooser.setDialogTitle(Resources.getString("VideoExporter.output_dialog"));
-    videoChooser.setSelectedFile(new File(directory,
-      directory.getName() + ".mp4"));
-    if (videoChooser.showSaveDialog(map.getView()) != JFileChooser.APPROVE_OPTION) {
-      return;
-    }
-    File videoFile = videoChooser.getSelectedFile();
-    if (videoFile == null) {
-      return;
-    }
-    if (!videoFile.getName().toLowerCase().endsWith(".mp4")) {
-      videoFile = new File(videoFile.getParentFile(), videoFile.getName() + ".mp4");
-    }
+    final JPanel content = new JPanel();
+    content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
+
+    final JPanel logsPanel = new JPanel(new BorderLayout(5, 5));
+    logsPanel.add(new JLabel("Log folder:"), BorderLayout.WEST);
+    logsPanel.add(logField, BorderLayout.CENTER);
+    logsPanel.add(browseLogs, BorderLayout.EAST);
+
+    final JPanel outPanel = new JPanel(new BorderLayout(5, 5));
+    outPanel.add(new JLabel("Output file:"), BorderLayout.WEST);
+    outPanel.add(outField, BorderLayout.CENTER);
+    outPanel.add(browseOut, BorderLayout.EAST);
+
+    final JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+    buttons.add(cropButton);
+    buttons.add(startButton);
+
+    content.add(logsPanel);
+    content.add(Box.createVerticalStrut(8));
+    content.add(outPanel);
+    content.add(Box.createVerticalStrut(8));
+    content.add(buttons);
+
+    frame.getContentPane().add(content);
+    frame.pack();
+    frame.setLocationRelativeTo(map.getView());
+    frame.setVisible(true);
 
     final int fps = 5;
-    final File finalVideo = videoFile;
-    final double restoreZoom = originalZoom;
-    new Thread(() -> {
-      try {
-        renderLogs(orderedLogs, finalVideo, fps);
+    final double originalZoom = maximizeZoom(map);
+    limitZoomToFit(map, fullMapRect(map), MAX_VIDEO_WIDTH, MAX_VIDEO_HEIGHT);
+
+    final File[] selectedLogFolder = new File[1];
+    final List<File>[] orderedLogsRef = new List[1];
+    final File[] outputFileRef = new File[1];
+    final boolean[] firstLogLoaded = new boolean[1];
+
+    browseLogs.addActionListener(e -> {
+      final JFileChooser dirChooser = new JFileChooser();
+      dirChooser.setDialogTitle(Resources.getString("VideoExporter.folder_dialog"));
+      dirChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+      if (dirChooser.showOpenDialog(frame) != JFileChooser.APPROVE_OPTION) {
+        return;
       }
-      finally {
-        SwingUtilities.invokeLater(() -> restoreZoom(map, restoreZoom));
+      final File directory = dirChooser.getSelectedFile();
+      if (directory == null || !directory.isDirectory()) {
+        gm.warn(Resources.getString("VideoExporter.missing_log"));
+        return;
       }
-    }, "VideoExporter").start();
+      final File[] logFiles = directory.listFiles((dir, name) -> name.toLowerCase().endsWith(".vlog"));
+      if (logFiles == null || logFiles.length == 0) {
+        gm.warn(Resources.getString("VideoExporter.no_logs"));
+        return;
+      }
+      Arrays.sort(logFiles, Comparator.comparing(File::getName));
+      orderedLogsRef[0] = Arrays.asList(logFiles);
+      selectedLogFolder[0] = directory;
+      logField.setText(directory.getAbsolutePath());
+      final File defaultOut = new File(directory, directory.getName() + ".mp4");
+      outField.setText(defaultOut.getAbsolutePath());
+      outputFileRef[0] = defaultOut;
+      startButton.setEnabled(true);
+      // Load first log in background so crop can work.
+      new Thread(() -> {
+        try {
+          SwingUtilities.invokeAndWait(() -> gm.getGameState().loadGame(logFiles[0], false, true));
+          firstLogLoaded[0] = true;
+          SwingUtilities.invokeLater(() -> cropButton.setEnabled(true));
+        }
+        catch (Exception ex) {
+          gm.warn(Resources.getString("VideoExporter.load_failed"));
+        }
+      }, "VideoExporter-Preload").start();
+    });
+
+    browseOut.addActionListener(e -> {
+      final JFileChooser outChooser = new JFileChooser();
+      outChooser.setDialogTitle(Resources.getString("VideoExporter.output_dialog"));
+      if (selectedLogFolder[0] != null) {
+        outChooser.setCurrentDirectory(selectedLogFolder[0]);
+      }
+      if (outChooser.showSaveDialog(frame) != JFileChooser.APPROVE_OPTION) {
+        return;
+      }
+      File f = outChooser.getSelectedFile();
+      if (f == null) {
+        return;
+      }
+      if (!f.getName().toLowerCase().endsWith(".mp4")) {
+        f = new File(f.getParentFile(), f.getName() + ".mp4");
+      }
+      outputFileRef[0] = f;
+      outField.setText(f.getAbsolutePath());
+      startButton.setEnabled(orderedLogsRef[0] != null);
+    });
+
+    cropButton.addActionListener(e -> {
+      if (orderedLogsRef[0] == null || orderedLogsRef[0].isEmpty()) {
+        return;
+      }
+      new Thread(() -> {
+        // Ensure first log loaded (if preload failed)
+        if (!firstLogLoaded[0]) {
+          try {
+            SwingUtilities.invokeAndWait(() -> gm.getGameState().loadGame(orderedLogsRef[0].get(0), false, true));
+            firstLogLoaded[0] = true;
+          }
+          catch (Exception ex) {
+            gm.warn(Resources.getString("VideoExporter.load_failed"));
+            return;
+          }
+        }
+        final Rectangle selected = CropSelector.select(map, cropSelection);
+        if (selected != null) {
+          cropSelection = selected;
+          gm.warn("Crop area set to " + rectSummary(selected));
+        }
+      }, "VideoExporter-Crop").start();
+    });
+
+    startButton.addActionListener(e -> {
+      if (orderedLogsRef[0] == null || outputFileRef[0] == null) {
+        gm.warn("Please select logs and output file first.");
+        return;
+      }
+      frame.dispose();
+      final List<File> logs = orderedLogsRef[0];
+      final File finalVideo = outputFileRef[0];
+      final double restoreZoom = originalZoom;
+      new Thread(() -> {
+        try {
+          renderLogs(logs, finalVideo, fps);
+        }
+        finally {
+          SwingUtilities.invokeLater(() -> restoreZoom(map, restoreZoom));
+        }
+      }, "VideoExporter").start();
+    });
   }
 
   private void renderLogs(List<File> logFiles, File videoFile, int fps) {
