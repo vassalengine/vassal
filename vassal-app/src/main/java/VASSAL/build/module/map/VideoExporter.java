@@ -121,6 +121,14 @@ public class VideoExporter extends AbstractToolbarItem {
     buttons.add(cropButton);
     buttons.add(startButton);
 
+    final JLabel heading = new JLabel("Render Logs to Video");
+    heading.setAlignmentX(Component.LEFT_ALIGNMENT);
+    final JLabel subText = new JLabel("Select a log folder, optional crop area, and output mp4.");
+    subText.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+    content.add(heading);
+    content.add(subText);
+    content.add(Box.createVerticalStrut(8));
     content.add(logsPanel);
     content.add(Box.createVerticalStrut(8));
     content.add(outPanel);
