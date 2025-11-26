@@ -116,6 +116,9 @@ public class ProgressDialog extends JDialog {
 
     // pack again to ensure that we respect the minimum size
     pack();
+
+    // Ensure the dialog opens fully visible on the same screen as its parent
+    SwingUtils.ensureOnScreen(this);
   }
 
   /**

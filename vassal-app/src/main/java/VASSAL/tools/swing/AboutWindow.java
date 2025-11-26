@@ -19,8 +19,6 @@
 package VASSAL.tools.swing;
 
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -56,10 +54,8 @@ public class AboutWindow extends JWindow {
     add(l2);
 
     pack();
-
-    final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-    setLocation(d.width / 2 - getWidth() / 2,
-                d.height / 2 - getHeight() / 2);
+    // Center over owner (or on screen) then clamp within screen bounds
+    SwingUtils.applyInitialPlacement(this, SwingUtils.PreferredWindowPlacement.CENTER_OVER_OWNER);
 
     addMouseListener(new MouseAdapter() {
       @Override

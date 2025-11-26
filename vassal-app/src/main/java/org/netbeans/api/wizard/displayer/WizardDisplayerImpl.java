@@ -16,22 +16,7 @@ package org.netbeans.api.wizard.displayer;
 
 import VASSAL.build.GameModule;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.ComponentOrientation;
-import java.awt.Container;
-import java.awt.Cursor;
-import java.awt.Dialog;
-import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.Font;
-import java.awt.Frame;
-import java.awt.GraphicsConfiguration;
-import java.awt.Insets;
-import java.awt.KeyboardFocusManager;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
-import java.awt.Window;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
@@ -49,6 +34,7 @@ import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
+import VASSAL.tools.swing.SwingUtils;
 
 import org.netbeans.api.wizard.WizardDisplayer;
 import org.netbeans.api.wizard.WizardResultReceiver;
@@ -306,15 +292,46 @@ public class WizardDisplayerImpl extends WizardDisplayer
         }
         else
         {
+            // No explicit bounds: size to preferred and compute placement relative to the
+            // intended owner (module window). Avoid relying solely on owner's GraphicsConfiguration
+            // because it may still point to the default screen if the owner is not yet shown.
             dlg.pack();
-            Rectangle screenBounds = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
-            GraphicsConfiguration config = dlg.getGraphicsConfiguration();
-            Insets insets = Toolkit.getDefaultToolkit().getScreenInsets(config);
-            screenBounds.translate(insets.left, insets.top);
-            screenBounds.setSize(screenBounds.width - insets.left - insets.right, screenBounds.height - insets.top - insets.bottom);
-            if (dlg.getWidth() > screenBounds.width) {
-              dlg.setSize(screenBounds.width, dlg.getHeight());
+
+            Rectangle targetScreen = null;
+            final Window owner = dlg.getOwner();
+            if (owner != null)
+            {
+                // Use the owner's intended on-screen location, even if not visible yet
+                Point ownerPt;
+                try {
+                    ownerPt = owner.isShowing() ? owner.getLocationOnScreen() : owner.getLocation();
+                } catch (IllegalComponentStateException ex) {
+                    // Fallback if getLocationOnScreen() fails
+                    ownerPt = owner.getLocation();
+                }
+
+                // Choose the physical screen which contains the owner's top-left point
+                targetScreen = findScreenForPoint(ownerPt);
             }
+
+            if (targetScreen == null)
+            {
+                // Fallback to SwingUtils (will derive from focused window or primary screen)
+                targetScreen = SwingUtils.getScreenBounds(dlg);
+            }
+
+            // If dialog is larger than the target screen, shrink to fit
+            if (dlg.getWidth() > targetScreen.width || dlg.getHeight() > targetScreen.height)
+            {
+                final int newW = Math.min(dlg.getWidth(), targetScreen.width);
+                final int newH = Math.min(dlg.getHeight(), targetScreen.height);
+                dlg.setSize(newW, newH);
+            }
+
+            // Center within the chosen screen
+            final int cx = targetScreen.x + Math.max(0, (targetScreen.width - dlg.getWidth()) / 2);
+            final int cy = targetScreen.y + Math.max(0, (targetScreen.height - dlg.getHeight()) / 2);
+            dlg.setLocation(cx, cy);
         }
         dlg.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         dlg.addWindowListener(new WindowAdapter()
@@ -337,7 +354,6 @@ public class WizardDisplayerImpl extends WizardDisplayer
                         else if (deferredResult != null && !deferredResult.canAbort())
                         {
                             dontClose = true;
-                            return;
                         }
                     }
                     finally
@@ -352,17 +368,48 @@ public class WizardDisplayerImpl extends WizardDisplayer
             }
         });
 
-        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-        // XXX get screen insets?
-        int x = (d.width - dlg.getWidth()) / 2;
-        int y = (d.height - dlg.getHeight()) / 2;
-        dlg.setLocation(x, y);
+        // Safety net: ensure the dialog is fully visible on the chosen screen
+        SwingUtils.ensureOnScreen(dlg);
 
         dlg.setModal(true);
         dlg.getRootPane().setDefaultButton(buttonManager.getNext());
         dlg.setVisible(true);
 
         return wizardResult;
+    }
+
+    /**
+     * Find the physical screen rectangle which contains the given point. If none
+     * contains it (e.g., off-screen coordinates), return the screen whose bounds are
+     * nearest to the point by center distance.
+     */
+    private static Rectangle findScreenForPoint(Point pt)
+    {
+        final java.awt.GraphicsEnvironment ge = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment();
+        final java.awt.GraphicsDevice[] devices = ge.getScreenDevices();
+        if (devices.length == 0) {
+            final java.awt.Dimension d = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+            return new Rectangle(0, 0, d.width, d.height);
+        }
+
+        Rectangle best = null;
+        double bestDist = Double.MAX_VALUE;
+        for (java.awt.GraphicsDevice gd : devices)
+        {
+            final Rectangle b = new Rectangle(gd.getDefaultConfiguration().getBounds());
+            if (b.contains(pt)) {
+                return b;
+            }
+            // distance from point to the rectangle (0 if inside)
+            final double dx = (pt.x < b.x) ? (b.x - pt.x) : (pt.x > b.x + b.width ? pt.x - (b.x + b.width) : 0);
+            final double dy = (pt.y < b.y) ? (b.y - pt.y) : (pt.y > b.y + b.height ? pt.y - (b.y + b.height) : 0);
+            final double dist2 = dx*dx + dy*dy;
+            if (dist2 < bestDist) {
+                bestDist = dist2;
+                best = b;
+            }
+        }
+        return best != null ? best : new Rectangle(devices[0].getDefaultConfiguration().getBounds());
     }
 
     private Window findLikelyOwnerWindow()

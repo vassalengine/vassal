@@ -471,16 +471,100 @@ public class SwingUtils {
   }
 
   /**
-   * @return size of screen accounting for the screen insets (e.g., Windows
-   * taskbar)
+   * Calculate the usable bounds of the screen which contains the provided component,
+   * accounting for screen insets (e.g., taskbar/dock/menu bar).
+   *
+   * If the component is a Window and has an owner, the owner's GraphicsConfiguration
+   * is preferred to determine the target screen. This ensures child dialogs are
+   * positioned relative to the same monitor as their parent window.
+   *
+   * Fallbacks:
+   * - If no GraphicsConfiguration is available, use the primary screen size.
+   *
+   * @return the usable screen bounds for the most appropriate monitor.
    */
   public static Rectangle getScreenBounds(Component c) {
-    final Rectangle bounds = new Rectangle(getScreenSize());
-    final Insets insets = getScreenInsets(c);
-    bounds.translate(insets.left, insets.top);
-    bounds.setSize(bounds.width - insets.left - insets.right,
-      bounds.height - insets.top - insets.bottom);
-    return bounds;
+    // Prefer the owner's graphics configuration for windows, so child dialogs stick to the parent's screen
+    if (c instanceof Window) {
+      final Window w = (Window) c;
+      if (w.getOwner() != null) {
+        c = w.getOwner();
+      }
+      else {
+        // If no explicit owner, try to use the currently focused window as a hint
+        final Window focused = java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusedWindow();
+        if (focused != null && focused.getGraphicsConfiguration() != null) {
+          c = focused;
+        }
+      }
+    }
+
+    Rectangle screen;
+    if (c != null && c.getGraphicsConfiguration() != null) {
+      // Use the bounds of the physical screen which contains the component
+      final Rectangle raw = new Rectangle(c.getGraphicsConfiguration().getBounds());
+      final Insets insets = Toolkit.getDefaultToolkit().getScreenInsets(c.getGraphicsConfiguration());
+      // Apply insets to get the usable area
+      raw.translate(insets.left, insets.top);
+      raw.setSize(
+        Math.max(0, raw.width - insets.left - insets.right),
+        Math.max(0, raw.height - insets.top - insets.bottom)
+      );
+      screen = raw;
+    }
+    else {
+      // Primary screen fallback (headless handled in getScreenSize/getScreenInsets)
+      final Rectangle bounds = new Rectangle(getScreenSize());
+      final Insets insets = getScreenInsets(c);
+      bounds.translate(insets.left, insets.top);
+      bounds.setSize(bounds.width - insets.left - insets.right,
+        bounds.height - insets.top - insets.bottom);
+      screen = bounds;
+    }
+
+    return screen;
+  }
+
+  /** Preferred initial placement presets for windows without saved bounds. */
+  public enum PreferredWindowPlacement {
+    /** Center relative to the owner window if present; otherwise center on screen. */
+    CENTER_OVER_OWNER,
+    /** Center within the current screen bounds (owner-aware screen selection). */
+    CENTER_ON_SCREEN
+  }
+
+  /**
+   * Apply a preferred initial placement to a window and then clamp within the usable screen.
+   *
+   * This is intended for windows/dialogs which do not have saved bounds. It centers the
+   * window according to the chosen preset and finally calls ensureOnScreen to respect
+   * insets and monitor boundaries. The window should be packed/sized before calling this.
+   */
+  public static void applyInitialPlacement(Window window, PreferredWindowPlacement placement) {
+    if (window == null || placement == null) return;
+
+    switch (placement) {
+    case CENTER_OVER_OWNER:
+      final Window owner = window.getOwner();
+      if (owner != null) {
+        // Centers over the owner using platform heuristics
+        window.setLocationRelativeTo(owner);
+        break;
+      }
+      // fall through to center on screen if no owner
+    case CENTER_ON_SCREEN:
+      final Rectangle sb = getScreenBounds(window);
+      final int x = sb.x + Math.max(0, (sb.width - window.getWidth()) / 2);
+      final int y = sb.y + Math.max(0, (sb.height - window.getHeight()) / 2);
+      window.setLocation(x, y);
+      break;
+    default:
+      // No-op for unknown placements
+      break;
+    }
+
+    // Final clamp in case computed center overlaps taskbar/dock or exceeds bounds
+    ensureOnScreen(window);
   }
 
   public static int getIndexInParent(Component child, Container parent) {
@@ -527,7 +611,18 @@ public class SwingUtils {
       return new Insets(0, 0, 0, 0);
     }
     else {
-      return Toolkit.getDefaultToolkit().getScreenInsets(c.getGraphicsConfiguration());
+      java.awt.GraphicsConfiguration gc = null;
+      if (c != null) {
+        gc = c.getGraphicsConfiguration();
+      }
+      if (gc == null) {
+        final java.awt.GraphicsDevice def = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        if (def != null) {
+          gc = def.getDefaultConfiguration();
+        }
+      }
+      // As a final fallback, if gc is still null, return zero insets to avoid NPE
+      return (gc != null) ? Toolkit.getDefaultToolkit().getScreenInsets(gc) : new Insets(0, 0, 0, 0);
     }
   }
 
@@ -544,7 +639,72 @@ public class SwingUtils {
     if (window == null) {
       return;
     }
-    final Rectangle screenBounds = getScreenBounds(window);
+    // Choose the target screen based on the window's current bounds, not only the owner's
+    // GraphicsConfiguration. This avoids forcing the window back to the primary screen when
+    // the owner is not yet showing or reports a default GC.
+    final Rectangle windowRect = new Rectangle(window.getX(), window.getY(), window.getWidth(), window.getHeight());
+
+    Rectangle screenBounds = null;
+    java.awt.GraphicsConfiguration screenGC = null;
+
+    try {
+      final java.awt.GraphicsEnvironment ge = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment();
+      final java.awt.GraphicsDevice[] devices = ge.getScreenDevices();
+      if (devices != null && devices.length > 0) {
+        // Pick the screen with the largest intersection with the window rect; if none, the nearest by center.
+        long bestArea = -1;
+        double bestDist2 = Double.MAX_VALUE;
+        java.awt.GraphicsDevice bestDev = devices[0];
+        Rectangle bestBounds = new Rectangle(bestDev.getDefaultConfiguration().getBounds());
+
+        final double cx = windowRect.getCenterX();
+        final double cy = windowRect.getCenterY();
+
+        for (java.awt.GraphicsDevice gd : devices) {
+          final Rectangle b = new Rectangle(gd.getDefaultConfiguration().getBounds());
+          final Rectangle inter = b.intersection(windowRect);
+          final long area = (long) Math.max(0, inter.width) * Math.max(0, inter.height);
+          if (area > bestArea) {
+            bestArea = area;
+            bestDev = gd;
+            bestBounds = b;
+            // Reset distance tracker when we find a better area
+            bestDist2 = Double.MAX_VALUE;
+          } else if (area == 0 && bestArea <= 0) {
+            // No overlap candidates yet: track nearest by center distance
+            final double sx = Math.max(b.getMinX(), Math.min(cx, b.getMaxX()));
+            final double sy = Math.max(b.getMinY(), Math.min(cy, b.getMaxY()));
+            final double dx = cx - sx;
+            final double dy = cy - sy;
+            final double dist2 = dx * dx + dy * dy;
+            if (dist2 < bestDist2) {
+              bestDist2 = dist2;
+              bestDev = gd;
+              bestBounds = b;
+            }
+          }
+        }
+
+        screenGC = bestDev.getDefaultConfiguration();
+        // Apply insets to compute usable area on the chosen screen
+        final Insets insets = Toolkit.getDefaultToolkit().getScreenInsets(screenGC);
+        bestBounds = new Rectangle(bestBounds);
+        bestBounds.translate(insets.left, insets.top);
+        bestBounds.setSize(
+          Math.max(0, bestBounds.width - insets.left - insets.right),
+          Math.max(0, bestBounds.height - insets.top - insets.bottom)
+        );
+        screenBounds = bestBounds;
+      }
+    } catch (Throwable t) {
+      // Fall back silently to previous behavior if anything goes wrong
+    }
+
+    if (screenBounds == null) {
+      // Fallback to the previous owner-aware logic
+      screenBounds = getScreenBounds(window);
+    }
+
     window.setMaximumSize(new Dimension(screenBounds.width, screenBounds.height));
     final Dimension windowSize = window.getSize();
 
