@@ -14,6 +14,7 @@ import VASSAL.build.module.map.CropSelector;
 
 import java.awt.Rectangle;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -113,6 +114,9 @@ public class VideoExporter extends AbstractToolbarItem {
     outPanel.add(outField, BorderLayout.CENTER);
     outPanel.add(browseOut, BorderLayout.EAST);
 
+    final JLabel cropStatus = new JLabel("Crop: full-map");
+    cropStatus.setAlignmentX(Component.LEFT_ALIGNMENT);
+
     final JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     buttons.add(cropButton);
     buttons.add(startButton);
@@ -120,6 +124,10 @@ public class VideoExporter extends AbstractToolbarItem {
     content.add(logsPanel);
     content.add(Box.createVerticalStrut(8));
     content.add(outPanel);
+    content.add(Box.createVerticalStrut(8));
+    final JPanel cropStatusPanel = new JPanel(new BorderLayout());
+    cropStatusPanel.add(cropStatus, BorderLayout.CENTER);
+    content.add(cropStatusPanel);
     content.add(Box.createVerticalStrut(8));
     content.add(buttons);
 
@@ -200,6 +208,8 @@ public class VideoExporter extends AbstractToolbarItem {
       if (orderedLogsRef[0] == null || orderedLogsRef[0].isEmpty()) {
         return;
       }
+      cropButton.setText("Selecting... draw rectangle, press Enter");
+      cropButton.setEnabled(false);
       new Thread(() -> {
         // Ensure first log loaded (if preload failed)
         if (!firstLogLoaded[0]) {
@@ -209,6 +219,10 @@ public class VideoExporter extends AbstractToolbarItem {
           }
           catch (Exception ex) {
             gm.warn(Resources.getString("VideoExporter.load_failed"));
+            SwingUtilities.invokeLater(() -> {
+              cropButton.setText("Select Crop Area");
+              cropButton.setEnabled(true);
+            });
             return;
           }
         }
@@ -216,7 +230,15 @@ public class VideoExporter extends AbstractToolbarItem {
         if (selected != null) {
           cropSelection = selected;
           gm.warn("Crop area set to " + rectSummary(selected));
+          SwingUtilities.invokeLater(() -> cropStatus.setText("Crop: " + rectSummary(selected)));
         }
+        else {
+          gm.warn("Crop selection cancelled; existing crop unchanged.");
+        }
+        SwingUtilities.invokeLater(() -> {
+          cropButton.setText("Select Crop Area");
+          cropButton.setEnabled(true);
+        });
       }, "VideoExporter-Crop").start();
     });
 
