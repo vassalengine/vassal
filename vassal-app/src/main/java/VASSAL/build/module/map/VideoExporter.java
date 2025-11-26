@@ -12,7 +12,6 @@ import VASSAL.i18n.Resources;
 import VASSAL.command.Command;
 import VASSAL.build.module.map.CropSelector;
 
-import java.awt.Rectangle;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
@@ -98,6 +97,8 @@ public class VideoExporter extends AbstractToolbarItem {
     final JButton browseOut = new JButton("Select Output");
     final JButton cropButton = new JButton("Select Crop Area");
     cropButton.setEnabled(false);
+    final JButton fullMapButton = new JButton("Use Full Map");
+    fullMapButton.setEnabled(false);
     final JButton startButton = new JButton("Start Rendering");
     startButton.setEnabled(false);
 
@@ -119,6 +120,7 @@ public class VideoExporter extends AbstractToolbarItem {
 
     final JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     buttons.add(cropButton);
+    buttons.add(fullMapButton);
     buttons.add(startButton);
 
     final JLabel heading = new JLabel("Render Logs to Video");
@@ -152,6 +154,18 @@ public class VideoExporter extends AbstractToolbarItem {
     final List<File>[] orderedLogsRef = new List[1];
     final File[] outputFileRef = new File[1];
     final boolean[] firstLogLoaded = new boolean[1];
+    final boolean[] cropSelecting = new boolean[1];
+
+    final Runnable updateControlStates = () -> {
+      final boolean hasLogs = orderedLogsRef[0] != null && !orderedLogsRef[0].isEmpty();
+      final boolean hasOutput = outputFileRef[0] != null;
+      final boolean cropReady = hasLogs && firstLogLoaded[0];
+      browseLogs.setEnabled(!cropSelecting[0]);
+      browseOut.setEnabled(!cropSelecting[0]);
+      cropButton.setEnabled(cropReady && !cropSelecting[0]);
+      fullMapButton.setEnabled(hasLogs && !cropSelecting[0]);
+      startButton.setEnabled(hasLogs && hasOutput && !cropSelecting[0]);
+    };
 
     browseLogs.addActionListener(e -> {
       final JFileChooser dirChooser = new JFileChooser();
@@ -177,13 +191,13 @@ public class VideoExporter extends AbstractToolbarItem {
       final File defaultOut = new File(directory, directory.getName() + ".mp4");
       outField.setText(defaultOut.getAbsolutePath());
       outputFileRef[0] = defaultOut;
-      startButton.setEnabled(true);
+      updateControlStates.run();
       // Load first log in background so crop can work.
       new Thread(() -> {
         try {
           SwingUtilities.invokeAndWait(() -> gm.getGameState().loadGame(logFiles[0], false, true));
           firstLogLoaded[0] = true;
-          SwingUtilities.invokeLater(() -> cropButton.setEnabled(true));
+          SwingUtilities.invokeLater(updateControlStates);
         }
         catch (Exception ex) {
           gm.warn(Resources.getString("VideoExporter.load_failed"));
@@ -209,15 +223,16 @@ public class VideoExporter extends AbstractToolbarItem {
       }
       outputFileRef[0] = f;
       outField.setText(f.getAbsolutePath());
-      startButton.setEnabled(orderedLogsRef[0] != null);
+      updateControlStates.run();
     });
 
     cropButton.addActionListener(e -> {
       if (orderedLogsRef[0] == null || orderedLogsRef[0].isEmpty()) {
         return;
       }
-      cropButton.setText("Selecting... draw rectangle, press Enter");
-      cropButton.setEnabled(false);
+      cropButton.setText("Selecting... draw rectangle, Enter to confirm, Esc to cancel");
+      cropSelecting[0] = true;
+      updateControlStates.run();
       new Thread(() -> {
         // Ensure first log loaded (if preload failed)
         if (!firstLogLoaded[0]) {
@@ -229,7 +244,8 @@ public class VideoExporter extends AbstractToolbarItem {
             gm.warn(Resources.getString("VideoExporter.load_failed"));
             SwingUtilities.invokeLater(() -> {
               cropButton.setText("Select Crop Area");
-              cropButton.setEnabled(true);
+              cropSelecting[0] = false;
+              updateControlStates.run();
             });
             return;
           }
@@ -245,9 +261,16 @@ public class VideoExporter extends AbstractToolbarItem {
         }
         SwingUtilities.invokeLater(() -> {
           cropButton.setText("Select Crop Area");
-          cropButton.setEnabled(true);
+          cropSelecting[0] = false;
+          updateControlStates.run();
         });
       }, "VideoExporter-Crop").start();
+    });
+
+    fullMapButton.addActionListener(e -> {
+      cropSelection = null;
+      cropStatus.setText("Crop: full-map");
+      gm.warn("Crop selection cleared; using full map.");
     });
 
     startButton.addActionListener(e -> {
