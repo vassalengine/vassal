@@ -86,6 +86,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
   protected int thickness = 3;                  // Thickness for drawing band select
   protected GamePiece bandSelectPiece = null;   // If a band-select started within the boundaries of a piece, this is the piece
   private GamePiece maybeClickPiece = null;     // Piece left-clicked on and no band-select started
+  private boolean enabled = true;               // Allows temporarily disabling band-select handling
 
   protected boolean isLasso = false;            // True if our most recent map mouse event was a lasso
 
@@ -136,6 +137,20 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
    */
   public boolean isLasso() {
     return isLasso;
+  }
+
+  /**
+   * Enable/disable handling of mouse events (used by tools like the crop selector).
+   */
+  public void setEnabled(boolean enabled) {
+    this.enabled = enabled;
+    if (!enabled) {
+      selection = null;
+      anchor = null;
+      bandSelectPiece = null;
+      maybeClickPiece = null;
+      isLasso = false;
+    }
   }
 
 
@@ -196,7 +211,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
    */
   @Override
   public void mousePressed(MouseEvent e) {
-    if (e.isConsumed()) {
+    if (!enabled || e.isConsumed()) {
       return;
     }
 
@@ -381,6 +396,9 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
    */
   @Override
   public void mouseReleased(MouseEvent e) {
+    if (!enabled || e.isConsumed()) {
+      return;
+    }
     // If selection is null, no band-select is happening, so nothing to do here -- we already did everything on the initial click
     if (selection == null) {
 
@@ -613,6 +631,9 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
    */
   @Override
   public void mouseDragged(MouseEvent e) {
+    if (!enabled || e.isConsumed()) {
+      return;
+    }
     // If no band-select is marked ongoing, OR if somehow the main mouse button is no longer pressed, nothing to do here.
     if (selection == null || !SwingUtils.isMainMouseButtonDown(e)) {
       return;
@@ -644,6 +665,9 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
 
   @Override
   public void mouseMoved(MouseEvent e) {
+    if (!enabled || e.isConsumed()) {
+      return;
+    }
   }
 
   /**
@@ -653,7 +677,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
    */
   @Override
   public void draw(Graphics g, Map map) {
-    if ((selection == null) || !isLasso()) {
+    if (!enabled || (selection == null) || !isLasso()) {
       return;
     }
 
