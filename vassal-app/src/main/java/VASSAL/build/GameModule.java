@@ -943,17 +943,17 @@ public class GameModule extends AbstractConfigurable
     if (GlobalOptions.getInstance().isUseSingleWindow()) {
       final Prefs p = Prefs.getGlobalPrefs();
 
-      // If we are not remembering the window size, reset preferences to force defaults
+      // If not "remembering" window size, nuke the pref
       if (Boolean.FALSE.equals(p.getOption(MAIN_WINDOW_REMEMBER).getValue())) {
         p.getOption(MAIN_WINDOW_WIDTH).setValue(-1);
         p.getOption(MAIN_WINDOW_HEIGHT).setValue(-1);
       }
 
-      // Read size preferences
+      // Read window size prefs
       final int ph = (Integer) p.getOption(MAIN_WINDOW_HEIGHT).getValue();
       final int pw = (Integer) p.getOption(MAIN_WINDOW_WIDTH).getValue();
 
-      // Use the preferences if valid; otherwise the current screen size
+      // Use pref if valid, otherwise screen dimensions
       final int h = (ph > 0) ? ph : screen.height;
       final int w = (pw > 0) ? pw : screen.width;
 
