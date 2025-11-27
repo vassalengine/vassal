@@ -147,8 +147,6 @@ public class VideoExporter extends AbstractToolbarItem {
     frame.setVisible(true);
 
     final int fps = 5;
-    final double originalZoom = maximizeZoom(map);
-    limitZoomToFit(map, fullMapRect(map), MAX_VIDEO_WIDTH, MAX_VIDEO_HEIGHT);
 
     final File[] selectedLogFolder = new File[1];
     final List<File>[] orderedLogsRef = new List[1];
@@ -281,7 +279,7 @@ public class VideoExporter extends AbstractToolbarItem {
       frame.dispose();
       final List<File> logs = orderedLogsRef[0];
       final File finalVideo = outputFileRef[0];
-      final double restoreZoom = originalZoom;
+      final double restoreZoom = map.getZoom();
       new Thread(() -> {
         try {
           renderLogs(logs, finalVideo, fps);
@@ -324,7 +322,7 @@ public class VideoExporter extends AbstractToolbarItem {
             continue;
           }
           final Rectangle cropArea = cropSelection != null ? new Rectangle(cropSelection) : fullMapRect(map);
-          SwingUtilities.invokeAndWait(() -> limitZoomToFit(map, cropArea, MAX_VIDEO_WIDTH, MAX_VIDEO_HEIGHT));
+          SwingUtilities.invokeAndWait(() -> limitZoomToFit(map, cropArea, MAX_VIDEO_WIDTH, MAX_VIDEO_HEIGHT, true));
 
           if (writer == null) {
             final Rectangle[] captureRectHolder = new Rectangle[1];
@@ -478,24 +476,6 @@ public class VideoExporter extends AbstractToolbarItem {
     }, "CropSelection").start();
   }
 
-  private double maximizeZoom(Map targetMap) {
-    if (targetMap == null) {
-      return 1.0;
-    }
-    final double original = targetMap.getZoom();
-    final Zoomer zoomer = targetMap.getZoomer();
-    if (zoomer == null) {
-      return original;
-    }
-    double before;
-    do {
-      before = targetMap.getZoom();
-      zoomer.zoomIn();
-    }
-    while (targetMap.getZoom() > before + 1e-6);
-    return original;
-  }
-
   private void restoreZoom(Map targetMap, double zoomFactor) {
     if (targetMap == null) {
       return;
@@ -507,7 +487,7 @@ public class VideoExporter extends AbstractToolbarItem {
     zoomer.setZoomFactor(zoomFactor);
   }
 
-  private void limitZoomToFit(Map targetMap, Rectangle cropArea, int maxWidth, int maxHeight) {
+  private void limitZoomToFit(Map targetMap, Rectangle cropArea, int maxWidth, int maxHeight, boolean allowZoomIn) {
     if (targetMap == null || maxWidth <= 0 || maxHeight <= 0) {
       return;
     }
@@ -518,16 +498,21 @@ public class VideoExporter extends AbstractToolbarItem {
     final Rectangle mapRect = cropArea != null
       ? new Rectangle(cropArea)
       : new Rectangle(0, 0, targetMap.mapSize().width, targetMap.mapSize().height);
-    final Rectangle drawing = targetMap.mapToDrawing(mapRect, 1.0);
-    final int width = Math.max(1, drawing.width);
-    final int height = Math.max(1, drawing.height);
-    if (width <= maxWidth && height <= maxHeight) {
+    final int width = mapRect.width;
+    final int height = mapRect.height;
+    if (width <= 0 || height <= 0) {
       return;
     }
-    final double currentZoom = targetMap.getZoom();
-    final double scale = Math.min((double) maxWidth / width, (double) maxHeight / height);
-    if (scale < 1.0) {
-      zoomer.setZoomFactor(currentZoom * scale);
+    double targetZoom = Math.min((double) maxWidth / width, (double) maxHeight / height);
+    if (!allowZoomIn && targetZoom > 1.0) {
+      targetZoom = 1.0;
+    }
+    if (!Double.isFinite(targetZoom) || targetZoom <= 0) {
+      return;
+    }
+    // Set absolute zoom so the selected area uses the largest resolution within limits.
+    if (Math.abs(targetMap.getZoom() - targetZoom) > 1e-6) {
+      zoomer.setZoomFactor(targetZoom);
     }
   }
 
