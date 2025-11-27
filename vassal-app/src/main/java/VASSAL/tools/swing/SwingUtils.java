@@ -670,7 +670,8 @@ public class SwingUtils {
             bestBounds = b;
             // Reset distance tracker when we find a better area
             bestDist2 = Double.MAX_VALUE;
-          } else if (area == 0 && bestArea <= 0) {
+          }
+          else if (area == 0 && bestArea <= 0) {
             // No overlap candidates yet: track nearest by center distance
             final double sx = Math.max(b.getMinX(), Math.min(cx, b.getMaxX()));
             final double sy = Math.max(b.getMinY(), Math.min(cy, b.getMaxY()));
@@ -696,7 +697,8 @@ public class SwingUtils {
         );
         screenBounds = bestBounds;
       }
-    } catch (Throwable t) {
+    }
+    catch (Throwable t) {
       // Fall back silently to previous behavior if anything goes wrong
     }
 
