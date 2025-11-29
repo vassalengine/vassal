@@ -392,32 +392,6 @@ public class VideoExporter {
     new VideoExporter(target).startExport();
   }
 
-  public static void startCropSelectionCommand() {
-    final GameModule gm = GameModule.getGameModule();
-    final java.util.List<Map> maps = Map.getMapList();
-    if (maps.isEmpty()) {
-      gm.warn(Resources.getString("VideoExporter.no_map"));
-      return;
-    }
-    final Map target = maps.get(0);
-    new VideoExporter(target).beginCropSelection();
-  }
-
-  void beginCropSelection() {
-    final GameModule gm = GameModule.getGameModule();
-    gm.warn("Draw the crop box on the map, then press Enter to confirm or Esc to cancel.");
-    new Thread(() -> {
-      final Rectangle selected = RectangularSelector.select(map, cropSelection);
-      if (selected != null) {
-        cropSelection = selected;
-        gm.warn("Crop area set to " + selected);
-      }
-      else {
-        gm.warn("Crop selection cancelled; existing crop unchanged.");
-      }
-    }, "CropSelection").start();
-  }
-
   private void restoreZoom(Map targetMap, double zoomFactor) {
     if (targetMap == null) {
       return;

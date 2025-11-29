@@ -20,7 +20,6 @@ package VASSAL.build.module;
 import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.map.FrontPolygon;
-import VASSAL.build.module.videoexport.VideoExporter;
 import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.command.Logger;
 import VASSAL.counters.Attachment;
@@ -495,11 +494,6 @@ public class Console {
       else {
         show("|No maps available for front line overlays."); //NON-NLS
       }
-      return true;
-    }
-
-    if (matches("croparea", command)) {
-      VideoExporter.startCropSelectionCommand();
       return true;
     }
 
