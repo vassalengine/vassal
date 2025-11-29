@@ -40,7 +40,7 @@ public class VideoExporter extends AbstractToolbarItem {
   private static final String DEFAULT_ICON = "/images/camera.gif";
   private static final int MAX_VIDEO_WIDTH = Integer.getInteger("VideoExporter.maxWidth", 3840);
   private static final int MAX_VIDEO_HEIGHT = Integer.getInteger("VideoExporter.maxHeight", 2160);
-  private static final int FPS = 5;
+  private static final int FPS = Integer.getInteger("VideoExporter.fps", 10);
 
   private Map map;
   private Rectangle cropSelection;
