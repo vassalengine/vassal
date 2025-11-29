@@ -284,7 +284,7 @@ public class VideoExporter {
             continue;
           }
           final Rectangle cropArea = cropSelection != null ? new Rectangle(cropSelection) : fullMapRect(map);
-          SwingUtilities.invokeAndWait(() -> limitZoomToFit(map, cropArea, MAX_VIDEO_WIDTH, MAX_VIDEO_HEIGHT, true));
+          SwingUtilities.invokeAndWait(() -> limitZoomToFit(map, cropArea, MAX_VIDEO_WIDTH, MAX_VIDEO_HEIGHT));
 
           if (writer == null) {
             final Rectangle[] captureRectHolder = new Rectangle[1];
@@ -429,7 +429,15 @@ public class VideoExporter {
     zoomer.setZoomFactor(zoomFactor);
   }
 
-  private void limitZoomToFit(Map targetMap, Rectangle cropArea, int maxWidth, int maxHeight, boolean allowZoomIn) {
+  /**
+   * Adjusts the map's zoom so the given rectangle fits within the specified max output dimensions.
+   * Small crop areas will zoom in (up to the max bounds), large ones will zoom out.
+   * @param targetMap map to zoom
+   * @param cropArea area in map coordinates to fit (or full map if null)
+   * @param maxWidth maximum capture width (pixels)
+   * @param maxHeight maximum capture height (pixels)
+   */
+  private void limitZoomToFit(Map targetMap, Rectangle cropArea, int maxWidth, int maxHeight) {
     if (targetMap == null || maxWidth <= 0 || maxHeight <= 0) {
       return;
     }
@@ -437,24 +445,21 @@ public class VideoExporter {
     if (zoomer == null) {
       return;
     }
-    final Rectangle mapRect = cropArea != null
+    final Rectangle targetRect = cropArea != null
       ? new Rectangle(cropArea)
       : new Rectangle(0, 0, targetMap.mapSize().width, targetMap.mapSize().height);
-    final int width = mapRect.width;
-    final int height = mapRect.height;
-    if (width <= 0 || height <= 0) {
+    final int targetWidth = targetRect.width;
+    final int targetHeight = targetRect.height;
+    if (targetWidth <= 0 || targetHeight <= 0) {
       return;
     }
-    double targetZoom = Math.min((double) maxWidth / width, (double) maxHeight / height);
-    if (!allowZoomIn && targetZoom > 1.0) {
-      targetZoom = 1.0;
-    }
-    if (!Double.isFinite(targetZoom) || targetZoom <= 0) {
+    double fitZoom = Math.min((double) maxWidth / targetWidth, (double) maxHeight / targetHeight);
+    if (!Double.isFinite(fitZoom) || fitZoom <= 0) {
       return;
     }
     // Set absolute zoom so the selected area uses the largest resolution within limits.
-    if (Math.abs(targetMap.getZoom() - targetZoom) > 1e-6) {
-      zoomer.setZoomFactor(targetZoom);
+    if (Math.abs(targetMap.getZoom() - fitZoom) > 1e-6) {
+      zoomer.setZoomFactor(fitZoom);
     }
   }
 
