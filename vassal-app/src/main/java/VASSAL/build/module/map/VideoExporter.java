@@ -16,10 +16,8 @@ import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -566,42 +564,4 @@ public class VideoExporter extends AbstractToolbarItem {
     return target + frameIntervalNanos;
   }
 
-  private static class FfmpegWriter implements AutoCloseable {
-    private final Process process;
-    private final OutputStream output;
-
-    FfmpegWriter(int width, int height, int fps, File outputFile) throws IOException {
-      process = new ProcessBuilder(
-        "ffmpeg",
-        "-y",
-        "-f", "rawvideo",
-        "-v", "debug",
-        "-pix_fmt", "bgr24",
-        "-s", width + "x" + height,
-        "-r", Integer.toString(fps),
-        "-i", "-",
-        "-an",
-        "-c:v", "libx264",
-        "-pix_fmt", "yuv420p",
-        outputFile.getAbsolutePath()
-      ).redirectError(ProcessBuilder.Redirect.INHERIT).start();
-      output = process.getOutputStream();
-    }
-
-    void writeFrame(BufferedImage frame) throws IOException {
-      final byte[] data = ((DataBufferByte) frame.getRaster().getDataBuffer()).getData();
-      output.write(data);
-    }
-
-    @Override
-    public void close() throws IOException {
-      try {
-        output.close();
-        process.waitFor();
-      }
-      catch (InterruptedException e) {
-        Thread.currentThread().interrupt();
-      }
-    }
-  }
 }
