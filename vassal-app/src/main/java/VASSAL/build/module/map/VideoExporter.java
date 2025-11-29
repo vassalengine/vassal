@@ -10,7 +10,6 @@ import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.i18n.Resources;
 import VASSAL.command.Command;
-import VASSAL.build.module.map.CropSelector;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -248,7 +247,7 @@ public class VideoExporter extends AbstractToolbarItem {
             return;
           }
         }
-        final Rectangle selected = CropSelector.select(map, cropSelection);
+        final Rectangle selected = RectangularSelector.select(map, cropSelection);
         if (selected != null) {
           cropSelection = selected;
           gm.warn("Crop area set to " + rectSummary(selected));
@@ -465,7 +464,7 @@ public class VideoExporter extends AbstractToolbarItem {
     final GameModule gm = GameModule.getGameModule();
     gm.warn("Draw the crop box on the map, then press Enter to confirm or Esc to cancel.");
     new Thread(() -> {
-      final Rectangle selected = CropSelector.select(map, cropSelection);
+      final Rectangle selected = RectangularSelector.select(map, cropSelection);
       if (selected != null) {
         cropSelection = selected;
         gm.warn("Crop area set to " + selected);

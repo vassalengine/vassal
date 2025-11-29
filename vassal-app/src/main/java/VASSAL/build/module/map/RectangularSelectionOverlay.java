@@ -17,9 +17,15 @@ import java.awt.event.MouseWheelListener;
 import java.util.concurrent.CountDownLatch;
 
 /**
- * Drawable crop rectangle that lives in map coordinates and listens directly on the map view.
+ * Low-level interaction handler for drawing and adjusting a rectangle on a map view.
+ * Attaches mouse/key listeners to the map view, draws the translucent rectangle,
+ * and resolves when the user presses Enter (accept) or Esc (cancel).
+ * <p>
+ * This class owns no lifecycle beyond its own listeners; a higher-level helper
+ * (see {@link RectangularSelector}) is expected to add/remove the overlay and
+ * handle concerns like disabling the key buffer.
  */
-class CropOverlay extends MouseAdapter implements MouseWheelListener, Drawable {
+class RectangularSelectionOverlay extends MouseAdapter implements MouseWheelListener, Drawable {
   private final Map map;
   private final CountDownLatch latch = new CountDownLatch(1);
   private Rectangle selection;
@@ -54,7 +60,7 @@ class CropOverlay extends MouseAdapter implements MouseWheelListener, Drawable {
     }
   }
 
-  CropOverlay(Map map, Rectangle initial) {
+  RectangularSelectionOverlay(Map map, Rectangle initial) {
     this.map = map;
     this.selection = initial != null ? new Rectangle(initial) : null;
   }
