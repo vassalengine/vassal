@@ -40,6 +40,7 @@ public class VideoExporter extends AbstractToolbarItem {
   private static final String DEFAULT_ICON = "/images/camera.gif";
   private static final int MAX_VIDEO_WIDTH = Integer.getInteger("VideoExporter.maxWidth", 3840);
   private static final int MAX_VIDEO_HEIGHT = Integer.getInteger("VideoExporter.maxHeight", 2160);
+  private static final int FPS = 5;
 
   private Map map;
   private Rectangle cropSelection;
@@ -279,7 +280,7 @@ public class VideoExporter extends AbstractToolbarItem {
       final double restoreZoom = map.getZoom();
       new Thread(() -> {
         try {
-          renderLogs(logs, finalVideo, fps);
+          renderLogs(logs, finalVideo);
         }
         finally {
           SwingUtilities.invokeLater(() -> restoreZoom(map, restoreZoom));
@@ -288,7 +289,7 @@ public class VideoExporter extends AbstractToolbarItem {
     });
   }
 
-  private void renderLogs(List<File> logFiles, File videoFile, int fps) {
+  private void renderLogs(List<File> logFiles, File videoFile) {
     final GameModule gm = GameModule.getGameModule();
     final BasicLogger logger = gm.getBasicLogger();
     final GameState gameState = gm.getGameState();
@@ -306,8 +307,6 @@ public class VideoExporter extends AbstractToolbarItem {
       long loadNanos = 0;
       long totalFrames = 0;
       long totalCommands = 0;
-      final long frameIntervalNanos = fps > 0 ? 1_000_000_000L / fps : 0;
-      long nextFrameDeadline = 0;
       try {
         for (final File logFile : logFiles) {
           final boolean[] loaded = new boolean[1];
@@ -343,7 +342,7 @@ public class VideoExporter extends AbstractToolbarItem {
             final int videoWidth = (width % 2 == 0) ? width : width + 1;
             final int videoHeight = (height % 2 == 0) ? height : height + 1;
             frame = new BufferedImage(videoWidth, videoHeight, BufferedImage.TYPE_3BYTE_BGR);
-            writer = new FfmpegWriter(videoWidth, videoHeight, fps, videoFile);
+            writer = new FfmpegWriter(videoWidth, videoHeight, FPS, videoFile);
           }
 
           final long captureStart = System.nanoTime();
@@ -353,7 +352,6 @@ public class VideoExporter extends AbstractToolbarItem {
           writer.writeFrame(frame);
           writeNanos += System.nanoTime() - writeStart;
           totalFrames++;
-          nextFrameDeadline = throttleFrameRate(frameIntervalNanos, nextFrameDeadline);
           gm.warn(String.format("VideoExporter frame %d captured (crop %s, load %.1f ms, capture %.1f ms, write %.1f ms)",
             totalFrames,
             cropSelection != null ? rectSummary(cropSelection) : "full-map",
@@ -377,7 +375,6 @@ public class VideoExporter extends AbstractToolbarItem {
               writer.writeFrame(frame);
               writeNanos += System.nanoTime() - writeStartStep;
               totalFrames++;
-              nextFrameDeadline = throttleFrameRate(frameIntervalNanos, nextFrameDeadline);
               gm.warn(String.format("VideoExporter frame %d captured (crop %s, load %.1f ms, capture %.1f ms, write %.1f ms)",
                 totalFrames,
                 cropSelection != null ? rectSummary(cropSelection) : "full-map",
@@ -545,23 +542,6 @@ public class VideoExporter extends AbstractToolbarItem {
       return false;
     }
     return true;
-  }
-
-  private long throttleFrameRate(long frameIntervalNanos, long nextFrameDeadline) {
-    if (frameIntervalNanos <= 0) {
-      return nextFrameDeadline;
-    }
-    long target = nextFrameDeadline == 0 ? System.nanoTime() + frameIntervalNanos : nextFrameDeadline;
-    final long sleepNanos = target - System.nanoTime();
-    if (sleepNanos > 0) {
-      try {
-        TimeUnit.NANOSECONDS.sleep(sleepNanos);
-      }
-      catch (InterruptedException e) {
-        Thread.currentThread().interrupt();
-      }
-    }
-    return target + frameIntervalNanos;
   }
 
 }
