@@ -19,10 +19,15 @@ import java.util.EnumMap;
 import java.util.List;
 
 /**
- * Renders ownership coloring per hex.
+ * Paints per-hex ownership by finding the nearest side marker to each hex center
+ * on every hex grid board, then filling the hex area in that side's color
+ * (respecting board transforms, magnification, sideways grids, and clip bounds).
  */
 class HexFrontRenderer {
 
+  /**
+   * Colors every visible hex cell according to its nearest side marker.
+   */
   void render(Graphics g, Map map, EnumMap<FrontPolygonSide, List<Point>> sidePoints) {
     final Graphics2D g2 = (Graphics2D) g.create();
     try {

@@ -17,7 +17,9 @@ import java.util.EnumMap;
 import java.util.List;
 
 /**
- * Renders side territories using a Voronoi-like partition of piece locations.
+ * Fills the map with side territories using a Voronoi-style partition:
+ * each point in the map is colored for the closest side marker, yielding
+ * a pair of colored regions with outlined borders at the current zoom level.
  */
 class SideFrontRenderer {
   private static final float LINE_WIDTH = 3f;
@@ -31,6 +33,9 @@ class SideFrontRenderer {
     BasicStroke.JOIN_ROUND
   );
 
+  /**
+   * Builds Voronoi cells for each side's markers and paints the resulting territories.
+   */
   void render(Graphics g, Map map, EnumMap<FrontPolygonSide, List<Point>> sidePoints) {
     final Rectangle2D bounds = computeBounds(sidePoints);
     if (bounds == null) {
