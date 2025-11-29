@@ -51,11 +51,21 @@ public class FrontPolygon implements GameComponent, Drawable {
   }
 
   private void toggleHex() {
-    setHexVisible(!hexVisible);
+    final boolean newState = !hexVisible;
+    if (newState) {
+      // Only one renderer can be active at a time.
+      sideVisible = false;
+    }
+    setHexVisible(newState);
   }
 
   private void toggleSide() {
-    setSideVisible(!sideVisible);
+    final boolean newState = !sideVisible;
+    if (newState) {
+      // Only one renderer can be active at a time.
+      hexVisible = false;
+    }
+    setSideVisible(newState);
   }
 
   private void setHexVisible(boolean show) {
@@ -108,7 +118,7 @@ public class FrontPolygon implements GameComponent, Drawable {
 
   private void setBothVisible(boolean visible) {
     hexVisible = visible;
-    sideVisible = visible;
+    sideVisible = false;
     updateButtonText();
     map.repaint();
   }
