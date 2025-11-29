@@ -20,7 +20,7 @@ import javax.swing.SwingUtilities;
 public class VideoExporter {
   private static final int MAX_VIDEO_WIDTH = Integer.getInteger("VideoExporter.maxWidth", 3840);
   private static final int MAX_VIDEO_HEIGHT = Integer.getInteger("VideoExporter.maxHeight", 2160);
-  private static final int FPS = Integer.getInteger("VideoExporter.fps", 10);
+  private static final int DEFAULT_FPS = Integer.getInteger("VideoExporter.fps", 10);
 
   private final Map map;
   private final VideoRenderService renderService;
@@ -28,7 +28,7 @@ public class VideoExporter {
 
   public VideoExporter(Map map) {
     this.map = map;
-    this.renderService = new VideoRenderService(MAX_VIDEO_WIDTH, MAX_VIDEO_HEIGHT, FPS);
+    this.renderService = new VideoRenderService(MAX_VIDEO_WIDTH, MAX_VIDEO_HEIGHT);
   }
 
   public void startExport() {
@@ -43,7 +43,8 @@ public class VideoExporter {
     final boolean[] firstLogLoaded = new boolean[1];
     final boolean[] cropSelecting = new boolean[1];
 
-    final VideoExportDialog dialog = new VideoExportDialog(map);
+    final VideoExportDialog dialog = new VideoExportDialog();
+    dialog.setFps(DEFAULT_FPS);
 
     final Runnable updateControls = () -> {
       final boolean hasLogs = orderedLogsRef[0] != null && !orderedLogsRef[0].isEmpty();
@@ -150,13 +151,25 @@ public class VideoExporter {
         gm.warn("Please select logs and output file first.");
         return;
       }
+      int fps = DEFAULT_FPS;
+      try {
+        fps = Integer.parseInt(dialog.getFpsText().trim());
+        if (fps <= 0) {
+          throw new NumberFormatException("fps must be positive");
+        }
+      }
+      catch (NumberFormatException ex) {
+        gm.warn("Please enter a positive FPS value.");
+        return;
+      }
+      final int fpsToUse = fps;
       dialog.dispose();
       final List<File> logs = orderedLogsRef[0];
       final File finalVideo = outputFileRef[0];
       final double restoreZoom = map.getZoom();
       new Thread(() -> {
         try {
-          renderService.render(map, cropSelection, logs, finalVideo);
+          renderService.render(map, cropSelection, logs, finalVideo, fpsToUse);
         }
         finally {
           SwingUtilities.invokeLater(() -> restoreZoom(map, restoreZoom));

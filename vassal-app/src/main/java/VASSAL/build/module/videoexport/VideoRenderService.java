@@ -22,15 +22,13 @@ import java.util.List;
 class VideoRenderService {
   private final int maxWidth;
   private final int maxHeight;
-  private final int fps;
 
-  VideoRenderService(int maxWidth, int maxHeight, int fps) {
+  VideoRenderService(int maxWidth, int maxHeight) {
     this.maxWidth = maxWidth;
     this.maxHeight = maxHeight;
-    this.fps = fps;
   }
 
-  void render(Map map, Rectangle cropSelection, List<File> logFiles, File videoFile) {
+  void render(Map map, Rectangle cropSelection, List<File> logFiles, File videoFile, int fps) {
     final GameModule gm = GameModule.getGameModule();
     final BasicLogger logger = gm.getBasicLogger();
     final GameState gameState = gm.getGameState();

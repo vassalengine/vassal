@@ -29,10 +29,9 @@ class VideoExportDialog {
   private final JButton fullMapButton;
   private final JButton startButton;
   private final JLabel cropStatus;
-  private final Map map;
+  private final JTextField fpsField;
 
-  VideoExportDialog(Map map) {
-    this.map = map;
+  VideoExportDialog() {
     frame = new JFrame(Resources.getString("VideoExporter.button"));
     frame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
@@ -50,6 +49,7 @@ class VideoExportDialog {
     startButton.setEnabled(false);
     cropStatus = new JLabel("Crop: full-map");
     cropStatus.setAlignmentX(Component.LEFT_ALIGNMENT);
+    fpsField = new JTextField("10");
 
     final JPanel content = new JPanel();
     content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
@@ -63,6 +63,10 @@ class VideoExportDialog {
     outPanel.add(new JLabel("Output file:"), BorderLayout.WEST);
     outPanel.add(outField, BorderLayout.CENTER);
     outPanel.add(browseOut, BorderLayout.EAST);
+
+    final JPanel fpsPanel = new JPanel(new BorderLayout(5, 5));
+    fpsPanel.add(new JLabel("FPS:"), BorderLayout.WEST);
+    fpsPanel.add(fpsField, BorderLayout.CENTER);
 
     final JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     buttons.add(cropButton);
@@ -81,6 +85,8 @@ class VideoExportDialog {
     content.add(Box.createVerticalStrut(8));
     content.add(outPanel);
     content.add(Box.createVerticalStrut(8));
+    content.add(fpsPanel);
+    content.add(Box.createVerticalStrut(8));
     final JPanel cropStatusPanel = new JPanel(new BorderLayout());
     cropStatusPanel.add(cropStatus, BorderLayout.CENTER);
     content.add(cropStatusPanel);
@@ -89,7 +95,6 @@ class VideoExportDialog {
 
     frame.getContentPane().add(content);
     frame.pack();
-    frame.setLocationRelativeTo(map.getView());
   }
 
   void show() {
@@ -132,6 +137,7 @@ class VideoExportDialog {
   void setEnabledStates(boolean browsingEnabled, boolean cropEnabled, boolean fullMapEnabled, boolean startEnabled) {
     browseLogs.setEnabled(browsingEnabled);
     browseOut.setEnabled(browsingEnabled);
+    fpsField.setEnabled(browsingEnabled);
     cropButton.setEnabled(cropEnabled);
     fullMapButton.setEnabled(fullMapEnabled);
     startButton.setEnabled(startEnabled);
@@ -155,6 +161,14 @@ class VideoExportDialog {
 
   JButton getStartButton() {
     return startButton;
+  }
+
+  void setFps(int fps) {
+    fpsField.setText(Integer.toString(fps));
+  }
+
+  String getFpsText() {
+    return fpsField.getText();
   }
 
   JFrame getFrame() {
