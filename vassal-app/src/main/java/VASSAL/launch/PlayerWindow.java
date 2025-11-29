@@ -20,7 +20,7 @@ package VASSAL.launch;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Documentation;
-import VASSAL.build.module.map.VideoExporter;
+import VASSAL.build.module.map.VideoExportAction;
 import VASSAL.configure.ShowHelpAction;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ApplicationIcons;
@@ -181,12 +181,7 @@ public class PlayerWindow extends JFrame {
       ErrorDialog.bug(e);
     }
 
-    mm.addAction("VideoExporter.menu", new AbstractAction(Resources.getString("VideoExporter.menu")) {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        VideoExporter.startGlobalExport();
-      }
-    });
+    mm.addAction("VideoExporter.menu", new VideoExportAction());
 
     mm.addAction("AboutScreen.about_vassal", new AboutVASSALAction(this));
 
