@@ -7,12 +7,9 @@ import VASSAL.build.module.GameState;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.map.RectangularSelector;
 import VASSAL.build.module.map.Zoomer;
-import VASSAL.i18n.Resources;
 import VASSAL.command.Command;
+import VASSAL.i18n.Resources;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -20,15 +17,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 /**
@@ -52,88 +41,24 @@ public class VideoExporter {
 
   private void showExportDialog() {
     final GameModule gm = GameModule.getGameModule();
-    final JFrame frame = new JFrame(Resources.getString("VideoExporter.button"));
-    frame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-
-    final JTextField logField = new JTextField();
-    logField.setEditable(false);
-    final JButton browseLogs = new JButton("Select Log Folder");
-    final JTextField outField = new JTextField();
-    outField.setEditable(false);
-    final JButton browseOut = new JButton("Select Output");
-    final JButton cropButton = new JButton("Select Crop Area");
-    cropButton.setEnabled(false);
-    final JButton fullMapButton = new JButton("Use Full Map");
-    fullMapButton.setEnabled(false);
-    final JButton startButton = new JButton("Start Rendering");
-    startButton.setEnabled(false);
-
-    final JPanel content = new JPanel();
-    content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
-
-    final JPanel logsPanel = new JPanel(new BorderLayout(5, 5));
-    logsPanel.add(new JLabel("Log folder:"), BorderLayout.WEST);
-    logsPanel.add(logField, BorderLayout.CENTER);
-    logsPanel.add(browseLogs, BorderLayout.EAST);
-
-    final JPanel outPanel = new JPanel(new BorderLayout(5, 5));
-    outPanel.add(new JLabel("Output file:"), BorderLayout.WEST);
-    outPanel.add(outField, BorderLayout.CENTER);
-    outPanel.add(browseOut, BorderLayout.EAST);
-
-    final JLabel cropStatus = new JLabel("Crop: full-map");
-    cropStatus.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-    final JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-    buttons.add(cropButton);
-    buttons.add(fullMapButton);
-    buttons.add(startButton);
-
-    final JLabel heading = new JLabel("Render Logs to Video");
-    heading.setAlignmentX(Component.LEFT_ALIGNMENT);
-    final JLabel subText = new JLabel("Select a log folder, optional crop area, and output mp4.");
-    subText.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-    content.add(heading);
-    content.add(subText);
-    content.add(Box.createVerticalStrut(8));
-    content.add(logsPanel);
-    content.add(Box.createVerticalStrut(8));
-    content.add(outPanel);
-    content.add(Box.createVerticalStrut(8));
-    final JPanel cropStatusPanel = new JPanel(new BorderLayout());
-    cropStatusPanel.add(cropStatus, BorderLayout.CENTER);
-    content.add(cropStatusPanel);
-    content.add(Box.createVerticalStrut(8));
-    content.add(buttons);
-
-    frame.getContentPane().add(content);
-    frame.pack();
-    frame.setLocationRelativeTo(map.getView());
-    frame.setVisible(true);
-
     final File[] selectedLogFolder = new File[1];
     final List<File>[] orderedLogsRef = new List[1];
     final File[] outputFileRef = new File[1];
     final boolean[] firstLogLoaded = new boolean[1];
     final boolean[] cropSelecting = new boolean[1];
 
-    final Runnable updateControlStates = () -> {
+    final VideoExportDialog dialog = new VideoExportDialog(map);
+
+    final Runnable updateControls = () -> {
       final boolean hasLogs = orderedLogsRef[0] != null && !orderedLogsRef[0].isEmpty();
       final boolean hasOutput = outputFileRef[0] != null;
       final boolean cropReady = hasLogs && firstLogLoaded[0];
-      browseLogs.setEnabled(!cropSelecting[0]);
-      browseOut.setEnabled(!cropSelecting[0]);
-      cropButton.setEnabled(cropReady && !cropSelecting[0]);
-      fullMapButton.setEnabled(hasLogs && !cropSelecting[0]);
-      startButton.setEnabled(hasLogs && hasOutput && !cropSelecting[0]);
+      dialog.setEnabledStates(!cropSelecting[0], cropReady && !cropSelecting[0], hasLogs && !cropSelecting[0], hasLogs && hasOutput && !cropSelecting[0]);
     };
 
-    browseLogs.addActionListener(e -> {
-      final JFileChooser dirChooser = new JFileChooser();
-      dirChooser.setDialogTitle(Resources.getString("VideoExporter.folder_dialog"));
-      dirChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-      if (dirChooser.showOpenDialog(frame) != JFileChooser.APPROVE_OPTION) {
+    dialog.getBrowseLogs().addActionListener(e -> {
+      final JFileChooser dirChooser = dialog.newLogChooser();
+      if (dirChooser.showOpenDialog(dialog.getFrame()) != JFileChooser.APPROVE_OPTION) {
         return;
       }
       final File directory = dirChooser.getSelectedFile();
@@ -149,17 +74,17 @@ public class VideoExporter {
       Arrays.sort(logFiles, Comparator.comparing(File::getName));
       orderedLogsRef[0] = Arrays.asList(logFiles);
       selectedLogFolder[0] = directory;
-      logField.setText(directory.getAbsolutePath());
+      dialog.setLogPath(directory.getAbsolutePath());
       final File defaultOut = new File(directory, directory.getName() + ".mp4");
-      outField.setText(defaultOut.getAbsolutePath());
+      dialog.setOutputPath(defaultOut.getAbsolutePath());
       outputFileRef[0] = defaultOut;
-      updateControlStates.run();
-      // Load first log in background so crop can work.
+      updateControls.run();
+      // preload first log so cropping works
       new Thread(() -> {
         try {
           SwingUtilities.invokeAndWait(() -> gm.getGameState().loadGame(logFiles[0], false, true));
           firstLogLoaded[0] = true;
-          SwingUtilities.invokeLater(updateControlStates);
+          SwingUtilities.invokeLater(updateControls);
         }
         catch (Exception ex) {
           gm.warn(Resources.getString("VideoExporter.load_failed"));
@@ -167,13 +92,12 @@ public class VideoExporter {
       }, "VideoExporter-Preload").start();
     });
 
-    browseOut.addActionListener(e -> {
-      final JFileChooser outChooser = new JFileChooser();
-      outChooser.setDialogTitle(Resources.getString("VideoExporter.output_dialog"));
+    dialog.getBrowseOut().addActionListener(e -> {
+      final JFileChooser outChooser = dialog.newOutputChooser();
       if (selectedLogFolder[0] != null) {
         outChooser.setCurrentDirectory(selectedLogFolder[0]);
       }
-      if (outChooser.showSaveDialog(frame) != JFileChooser.APPROVE_OPTION) {
+      if (outChooser.showSaveDialog(dialog.getFrame()) != JFileChooser.APPROVE_OPTION) {
         return;
       }
       File f = outChooser.getSelectedFile();
@@ -184,11 +108,11 @@ public class VideoExporter {
         f = new File(f.getParentFile(), f.getName() + ".mp4");
       }
       outputFileRef[0] = f;
-      outField.setText(f.getAbsolutePath());
-      updateControlStates.run();
+      dialog.setOutputPath(f.getAbsolutePath());
+      updateControls.run();
     });
 
-    cropButton.addActionListener(e -> {
+    dialog.getCropButton().addActionListener(e -> {
       if (orderedLogsRef[0] == null || orderedLogsRef[0].isEmpty()) {
         gm.warn(Resources.getString("VideoExporter.no_logs"));
         return;
@@ -197,39 +121,40 @@ public class VideoExporter {
         gm.warn(Resources.getString("VideoExporter.load_failed"));
         return;
       }
-      cropButton.setText("Selecting... draw rectangle, Enter to confirm, Esc to cancel");
+      dialog.setCropButtonText("Selecting... draw rectangle, Enter to confirm, Esc to cancel");
       cropSelecting[0] = true;
-      updateControlStates.run();
+      updateControls.run();
       new Thread(() -> {
         final Rectangle selected = RectangularSelector.select(map, cropSelection);
         if (selected != null) {
           cropSelection = selected;
           gm.warn("Crop area set to " + rectSummary(selected));
-          SwingUtilities.invokeLater(() -> cropStatus.setText("Crop: " + rectSummary(selected)));
+          SwingUtilities.invokeLater(() -> dialog.setCropStatus("Crop: " + rectSummary(selected)));
         }
         else {
           gm.warn("Crop selection cancelled; existing crop unchanged.");
         }
         SwingUtilities.invokeLater(() -> {
-          cropButton.setText("Select Crop Area");
+          dialog.setCropButtonText("Select Crop Area");
           cropSelecting[0] = false;
-          updateControlStates.run();
+          updateControls.run();
         });
       }, "VideoExporter-Crop").start();
     });
 
-    fullMapButton.addActionListener(e -> {
+    dialog.getFullMapButton().addActionListener(e -> {
       cropSelection = null;
-      cropStatus.setText("Crop: full-map");
+      dialog.setCropStatus("Crop: full-map");
       gm.warn("Crop selection cleared; using full map.");
+      updateControls.run();
     });
 
-    startButton.addActionListener(e -> {
+    dialog.getStartButton().addActionListener(e -> {
       if (orderedLogsRef[0] == null || outputFileRef[0] == null) {
         gm.warn("Please select logs and output file first.");
         return;
       }
-      frame.dispose();
+      dialog.dispose();
       final List<File> logs = orderedLogsRef[0];
       final File finalVideo = outputFileRef[0];
       final double restoreZoom = map.getZoom();
@@ -242,6 +167,9 @@ public class VideoExporter {
         }
       }, "VideoExporter").start();
     });
+
+    updateControls.run();
+    dialog.show();
   }
 
   private void renderLogs(List<File> logFiles, File videoFile) {
@@ -395,10 +323,6 @@ public class VideoExporter {
   /**
    * Adjusts the map's zoom so the given rectangle fits within the specified max output dimensions.
    * Small crop areas will zoom in (up to the max bounds), large ones will zoom out.
-   * @param targetMap map to zoom
-   * @param cropArea area in map coordinates to fit (or full map if null)
-   * @param maxWidth maximum capture width (pixels)
-   * @param maxHeight maximum capture height (pixels)
    */
   private void limitZoomToFit(Map targetMap, Rectangle cropArea, int maxWidth, int maxHeight) {
     if (targetMap == null || maxWidth <= 0 || maxHeight <= 0) {
@@ -420,7 +344,6 @@ public class VideoExporter {
     if (!Double.isFinite(fitZoom) || fitZoom <= 0) {
       return;
     }
-    // Set absolute zoom so the selected area uses the largest resolution within limits.
     if (Math.abs(targetMap.getZoom() - fitZoom) > 1e-6) {
       zoomer.setZoomFactor(fitZoom);
     }
