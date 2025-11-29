@@ -24,7 +24,8 @@ public class FrontPolygon implements GameComponent, Drawable {
   private final JButton hexButton;
   private final JButton sideButton;
   private final FrontPolygonCollector collector = new FrontPolygonCollector();
-  private final FrontPolygonRenderer renderer = new FrontPolygonRenderer();
+  private final HexFrontRenderer hexRenderer = new HexFrontRenderer();
+  private final SideFrontRenderer sideRenderer = new SideFrontRenderer();
 
   private boolean hexVisible;
   private boolean sideVisible;
@@ -118,7 +119,12 @@ public class FrontPolygon implements GameComponent, Drawable {
       return;
     }
     final EnumMap<FrontPolygonSide, List<Point>> sidePoints = collector.collect(this.map);
-    renderer.render(g, this.map, hexVisible, sideVisible, sidePoints);
+    if (hexVisible) {
+      hexRenderer.render(g, this.map, sidePoints);
+    }
+    else if (sideVisible) {
+      sideRenderer.render(g, this.map, sidePoints);
+    }
   }
 
   @Override
