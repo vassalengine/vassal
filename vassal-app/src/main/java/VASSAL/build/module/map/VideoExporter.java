@@ -110,8 +110,6 @@ public class VideoExporter {
     frame.setLocationRelativeTo(map.getView());
     frame.setVisible(true);
 
-    final int fps = 5;
-
     final File[] selectedLogFolder = new File[1];
     final List<File>[] orderedLogsRef = new List[1];
     final File[] outputFileRef = new File[1];
