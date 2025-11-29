@@ -35,7 +35,7 @@ import VASSAL.build.module.map.Drawable;
 import VASSAL.build.module.map.Flare;
 import VASSAL.build.module.map.ForwardToChatter;
 import VASSAL.build.module.map.ForwardToKeyBuffer;
-import VASSAL.build.module.map.FrontPolygon;
+import VASSAL.build.module.frontpolygon.FrontPolygon;
 import VASSAL.build.module.map.GlobalMap;
 import VASSAL.build.module.map.HidePiecesButton;
 import VASSAL.build.module.map.HighlightLastMoved;

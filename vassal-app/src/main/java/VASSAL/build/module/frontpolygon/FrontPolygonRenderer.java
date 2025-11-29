@@ -1,40 +1,13 @@
-/*
- *
- * Copyright (c) 2000-2024.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License (LGPL) as published by the Free Software Foundation.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available
- * at http://www.opensource.org.
- */
-package VASSAL.build.module.map;
+package VASSAL.build.module.frontpolygon;
 
-import VASSAL.build.GameModule;
-import VASSAL.build.module.GameComponent;
 import VASSAL.build.module.Map;
-import VASSAL.command.Command;
-import VASSAL.counters.Decorator;
-import VASSAL.counters.Deck;
-import VASSAL.counters.Embellishment;
-import VASSAL.counters.GamePiece;
-import VASSAL.counters.Stack;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.HexGrid;
 import VASSAL.build.module.map.boardPicker.board.MapGrid;
 import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 
-import javax.swing.JButton;
 import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -49,159 +22,32 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.HashSet;
 
 /**
- * Simple runtime-only polygon overlay that can be toggled via a toolbar button or console command.
+ * Renders the front-line overlays for both hex ownership and Voronoi areas.
  */
-public class FrontPolygon implements GameComponent, Drawable {
+class FrontPolygonRenderer {
   private static final float LINE_WIDTH = 3f;
   private static final double MIN_MARKER_RADIUS = 8;
   private static final double ISLAND_RADIUS = 35;
   private static final double BOUNDS_PADDING = 250;
   private static final double EPSILON = 1e-6;
-  private static final String LAYER_PREFIX = "Layer - ";
-
-  private static final Set<FrontPolygon> INSTANCES = ConcurrentHashMap.newKeySet();
-
-  private enum Side {
-    ALLIES(
-      new Color(39, 110, 241, 70),
-      new Color(39, 110, 241),
-      List.of("Show All US")
-    ),
-    GERMANS(
-      new Color(214, 68, 68, 70),
-      new Color(214, 68, 68),
-      List.of("Show All Ger", "Show All German")
-    );
-
-    private final Color fillColor;
-    private final Color outlineColor;
-    private final List<String> layerNames;
-
-    Side(Color fillColor, Color outlineColor, List<String> layerNames) {
-      this.fillColor = fillColor;
-      this.outlineColor = outlineColor;
-      this.layerNames = layerNames;
-    }
-
-    boolean matchesLayer(String description) {
-      if (description == null) {
-        return false;
-      }
-      final String normalized = normalizeLayerDescription(description);
-      for (final String candidate : layerNames) {
-        if (candidate.equalsIgnoreCase(normalized)) {
-          return true;
-        }
-      }
-      return false;
-    }
-  }
-
   private static final BasicStroke OUTLINE_STROKE = new BasicStroke(
     LINE_WIDTH,
     BasicStroke.CAP_ROUND,
     BasicStroke.JOIN_ROUND
   );
 
-  private final Map map;
-  private final JButton hexButton;
-  private final JButton sideButton;
-
-  private boolean hexVisible;
-  private boolean sideVisible;
-
-  public FrontPolygon(Map map) {
-    this.map = map;
-
-    hexButton = new JButton("Hex Front");
-    hexButton.setFocusable(false);
-    hexButton.addActionListener(e -> toggleHex());
-
-    sideButton = new JButton("Side Front");
-    sideButton.setFocusable(false);
-    sideButton.addActionListener(e -> toggleSide());
-
-    map.getToolBar().add(hexButton);
-    map.getToolBar().add(sideButton);
-    map.getToolBar().revalidate();
-    map.addDrawComponent(this);
-    GameModule.getGameModule().getGameState().addGameComponent(this);
-    INSTANCES.add(this);
-    updateButtonText();
-  }
-
-  private void toggleHex() {
-    setHexVisible(!hexVisible);
-  }
-
-  private void toggleSide() {
-    setSideVisible(!sideVisible);
-  }
-
-  private void setHexVisible(boolean show) {
-    if (hexVisible == show) {
-      return;
-    }
-    hexVisible = show;
-    updateButtonText();
-    map.repaint();
-  }
-
-  private void setSideVisible(boolean show) {
-    if (sideVisible == show) {
-      return;
-    }
-    sideVisible = show;
-    updateButtonText();
-    map.repaint();
-  }
-
-  private void updateButtonText() {
-    hexButton.setText(hexVisible ? "Hide Hex Front" : "Show Hex Front");
-    sideButton.setText(sideVisible ? "Hide Side Front" : "Show Side Front");
-  }
-
-  public void dispose() {
-    INSTANCES.remove(this);
-    GameModule.getGameModule().getGameState().removeGameComponent(this);
-    map.removeDrawComponent(this);
-    map.getToolBar().remove(hexButton);
-    map.getToolBar().remove(sideButton);
-    map.getToolBar().revalidate();
-    map.getToolBar().repaint();
-  }
-
-  public static Optional<Boolean> toggleAllInstances() {
-    if (INSTANCES.isEmpty()) {
-      return Optional.empty();
-    }
-
-    final boolean anyVisible = INSTANCES.stream().anyMatch(FrontPolygon::isAnyVisible);
-    final boolean newState = !anyVisible;
-    INSTANCES.forEach(instance -> instance.setBothVisible(newState));
-    return Optional.of(newState);
-  }
-
-  private boolean isAnyVisible() {
-    return hexVisible || sideVisible;
-  }
-
-  private void setBothVisible(boolean visible) {
-    hexVisible = visible;
-    sideVisible = visible;
-    updateButtonText();
-    map.repaint();
-  }
-
-  @Override
-  public void draw(Graphics g, Map map) {
+  void render(Graphics g,
+              Map map,
+              boolean hexVisible,
+              boolean sideVisible,
+              EnumMap<FrontPolygonSide, List<Point>> sidePoints) {
     if (!hexVisible && !sideVisible) {
+      return;
+    }
+
+    if (sidePoints.values().stream().allMatch(List::isEmpty)) {
       return;
     }
 
@@ -209,18 +55,13 @@ public class FrontPolygon implements GameComponent, Drawable {
     try {
       g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-      final EnumMap<Side, List<Point>> sidePoints = collectSidePoints();
-      if (sidePoints.values().stream().allMatch(List::isEmpty)) {
-        return;
-      }
-
       final double osScale = g2.getDeviceConfiguration().getDefaultTransform().getScaleX();
       boolean drewSomething = false;
       if (hexVisible) {
-        drewSomething = drawHexOwnership(g2, osScale, sidePoints);
+        drewSomething = drawHexOwnership(g2, osScale, sidePoints, map);
       }
       if (sideVisible && !drewSomething) {
-        drawVoronoiAreas(g2, osScale, sidePoints);
+        drawVoronoiAreas(g2, osScale, sidePoints, map);
       }
     }
     finally {
@@ -228,7 +69,7 @@ public class FrontPolygon implements GameComponent, Drawable {
     }
   }
 
-  private void drawVoronoiAreas(Graphics2D g2, double osScale, EnumMap<Side, List<Point>> sidePoints) {
+  private void drawVoronoiAreas(Graphics2D g2, double osScale, EnumMap<FrontPolygonSide, List<Point>> sidePoints, Map map) {
     final Rectangle2D bounds = computeBounds(sidePoints);
     if (bounds == null) {
       return;
@@ -236,14 +77,17 @@ public class FrontPolygon implements GameComponent, Drawable {
 
     final double scale = map.getZoom() * osScale;
     final AffineTransform transform = AffineTransform.getScaleInstance(scale, scale);
-    final Area alliedArea = buildTerritoryArea(sidePoints.get(Side.ALLIES), sidePoints.get(Side.GERMANS), bounds);
-    final Area germanArea = buildTerritoryArea(sidePoints.get(Side.GERMANS), sidePoints.get(Side.ALLIES), bounds);
+    final Area alliedArea = buildTerritoryArea(sidePoints.get(FrontPolygonSide.ALLIES), sidePoints.get(FrontPolygonSide.GERMANS), bounds);
+    final Area germanArea = buildTerritoryArea(sidePoints.get(FrontPolygonSide.GERMANS), sidePoints.get(FrontPolygonSide.ALLIES), bounds);
 
-    drawSideArea(g2, transform, alliedArea, Side.ALLIES);
-    drawSideArea(g2, transform, germanArea, Side.GERMANS);
+    drawSideArea(g2, transform, alliedArea, FrontPolygonSide.ALLIES);
+    drawSideArea(g2, transform, germanArea, FrontPolygonSide.GERMANS);
   }
 
-  private boolean drawHexOwnership(Graphics2D g2, double osScale, EnumMap<Side, List<Point>> sidePoints) {
+  private boolean drawHexOwnership(Graphics2D g2,
+                                   double osScale,
+                                   EnumMap<FrontPolygonSide, List<Point>> sidePoints,
+                                   Map map) {
     boolean hasHexGrid = false;
     final Rectangle clipBounds = g2.getClipBounds();
     final Rectangle mapClip = clipBounds == null ? null : map.drawingToMap(new Rectangle(clipBounds), osScale);
@@ -284,7 +128,7 @@ public class FrontPolygon implements GameComponent, Drawable {
   private void colorizeBoardHexes(Graphics2D g2,
                                   Board board,
                                   HexGrid grid,
-                                  EnumMap<Side, List<Point>> sidePoints,
+                                  EnumMap<FrontPolygonSide, List<Point>> sidePoints,
                                   Rectangle mapClip,
                                   double drawingScale) {
     final Rectangle boardBounds = board.bounds();
@@ -336,7 +180,7 @@ public class FrontPolygon implements GameComponent, Drawable {
 
   private void processHexCenter(Graphics2D g2,
                                 HexGrid grid,
-                                EnumMap<Side, List<Point>> sidePoints,
+                                EnumMap<FrontPolygonSide, List<Point>> sidePoints,
                                 AffineTransform boardTransform,
                                 Area boardArea,
                                 Rectangle mapClip,
@@ -363,7 +207,7 @@ public class FrontPolygon implements GameComponent, Drawable {
 
     final Point2D.Double mapCenter = new Point2D.Double(center.x, center.y);
     boardTransform.transform(mapCenter, mapCenter);
-    final Side owner = findNearestSide(mapCenter, sidePoints);
+    final FrontPolygonSide owner = findNearestSide(mapCenter, sidePoints);
     if (owner == null) {
       return;
     }
@@ -388,10 +232,10 @@ public class FrontPolygon implements GameComponent, Drawable {
     return tx;
   }
 
-  private Side findNearestSide(Point2D point, EnumMap<Side, List<Point>> sidePoints) {
-    Side closest = null;
+  private FrontPolygonSide findNearestSide(Point2D point, EnumMap<FrontPolygonSide, List<Point>> sidePoints) {
+    FrontPolygonSide closest = null;
     double closestDistance = Double.POSITIVE_INFINITY;
-    for (final Side side : Side.values()) {
+    for (final FrontPolygonSide side : FrontPolygonSide.values()) {
       final List<Point> candidates = sidePoints.get(side);
       if (candidates == null || candidates.isEmpty()) {
         continue;
@@ -418,38 +262,7 @@ public class FrontPolygon implements GameComponent, Drawable {
     return best;
   }
 
-  @Override
-  public boolean drawAboveCounters() {
-    return true;
-  }
-
-  @Override
-  public void setup(boolean gameStarting) {
-    // Reset to hidden whenever a game starts/stops.
-    setBothVisible(false);
-  }
-
-  @Override
-  public Command getRestoreCommand() {
-    return null;
-  }
-
-  private EnumMap<Side, List<Point>> collectSidePoints() {
-    final EnumMap<Side, List<Point>> positions = new EnumMap<>(Side.class);
-    final EnumMap<Side, Set<Long>> seenLocations = new EnumMap<>(Side.class);
-    for (final Side side : Side.values()) {
-      positions.put(side, new ArrayList<>());
-      seenLocations.put(side, new HashSet<>());
-    }
-
-    for (final GamePiece pieceOnMap : map.getAllPieces()) {
-      collectFromPiece(pieceOnMap, positions, seenLocations);
-    }
-
-    return positions;
-  }
-
-  private Rectangle2D computeBounds(EnumMap<Side, List<Point>> positions) {
+  private Rectangle2D computeBounds(EnumMap<FrontPolygonSide, List<Point>> positions) {
     double minX = Double.POSITIVE_INFINITY;
     double minY = Double.POSITIVE_INFINITY;
     double maxX = Double.NEGATIVE_INFINITY;
@@ -479,54 +292,6 @@ public class FrontPolygon implements GameComponent, Drawable {
       width + (BOUNDS_PADDING * 2),
       height + (BOUNDS_PADDING * 2)
     );
-  }
-
-  private void collectFromPiece(GamePiece piece, java.util.Map<Side, List<Point>> positions, java.util.Map<Side, Set<Long>> seenLocations) {
-    if (piece == null || piece.getMap() != map) {
-      return;
-    }
-
-    if (piece instanceof Deck) {
-      return;
-    }
-
-    if (piece instanceof Stack) {
-      for (final GamePiece inner : ((Stack) piece).asList()) {
-        collectFromPiece(inner, positions, seenLocations);
-      }
-      return;
-    }
-
-    final Side side = determineSide(piece);
-    if (side == null) {
-      return;
-    }
-
-    final Point location = new Point(piece.getPosition());
-    final long key = positionKey(location);
-    if (seenLocations.get(side).add(key)) {
-      positions.get(side).add(location);
-    }
-  }
-
-  private Side determineSide(GamePiece piece) {
-    for (final Side side : Side.values()) {
-      if (hasLayer(piece, side)) {
-        return side;
-      }
-    }
-    return null;
-  }
-
-  private boolean hasLayer(GamePiece piece, Side side) {
-    final List<GamePiece> decorations = Decorator.getDecorators(piece, Embellishment.class);
-    for (final GamePiece decoration : decorations) {
-      final Embellishment layer = (Embellishment) decoration;
-      if (side.matchesLayer(layer.getDescription())) {
-        return true;
-      }
-    }
-    return false;
   }
 
   private Area buildTerritoryArea(List<Point> ownPoints, List<Point> opponentPoints, Rectangle2D bounds) {
@@ -561,7 +326,7 @@ public class FrontPolygon implements GameComponent, Drawable {
     return territory;
   }
 
-  private void drawSideArea(Graphics2D g2, AffineTransform transform, Area area, Side side) {
+  private void drawSideArea(Graphics2D g2, AffineTransform transform, Area area, FrontPolygonSide side) {
     if (area == null || area.isEmpty()) {
       return;
     }
@@ -683,17 +448,5 @@ public class FrontPolygon implements GameComponent, Drawable {
     }
     final double size = points.size();
     return new Point2D.Double(sumX / size, sumY / size);
-  }
-
-  private static String normalizeLayerDescription(String description) {
-    final String trimmed = description.trim();
-    if (trimmed.regionMatches(true, 0, LAYER_PREFIX, 0, LAYER_PREFIX.length())) {
-      return trimmed.substring(LAYER_PREFIX.length()).trim();
-    }
-    return trimmed;
-  }
-
-  private long positionKey(Point point) {
-    return (((long) point.x) << 32) ^ (point.y & 0xffffffffL);
   }
 }
