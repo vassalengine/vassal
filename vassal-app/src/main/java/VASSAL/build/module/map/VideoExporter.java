@@ -1,13 +1,10 @@
 package VASSAL.build.module.map;
 
-import VASSAL.build.AbstractToolbarItem;
-import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.BasicLogger;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.GameState;
 import VASSAL.build.module.Map;
-import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.i18n.Resources;
 import VASSAL.command.Command;
 
@@ -21,7 +18,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -34,48 +30,18 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 /**
- * Prototype toolbar item that renders a vlog replay directly into an ffmpeg process.
+ * Menu-triggered video export utility.
  */
-public class VideoExporter extends AbstractToolbarItem {
-  private static final String DEFAULT_ICON = "/images/camera.gif";
+public class VideoExporter {
   private static final int MAX_VIDEO_WIDTH = Integer.getInteger("VideoExporter.maxWidth", 3840);
   private static final int MAX_VIDEO_HEIGHT = Integer.getInteger("VideoExporter.maxHeight", 2160);
   private static final int FPS = Integer.getInteger("VideoExporter.fps", 10);
 
-  private Map map;
+  private final Map map;
   private Rectangle cropSelection;
 
-  public VideoExporter() {
-    setNameKey("");
-    setButtonTextKey("VideoExporter.button");
-    setLaunchButton(makeLaunchButton(
-      Resources.getString("VideoExporter.button"),
-      "",
-      DEFAULT_ICON,
-      e -> SwingUtilities.invokeLater(this::startExport)
-    ));
-  }
-
-  @Override
-  public Class<?>[] getAllowableConfigureComponents() {
-    return new Class<?>[0];
-  }
-
-  @Override
-  public HelpFile getHelpFile() {
-    return null;
-  }
-
-  @Override
-  public void addTo(Buildable parent) {
-    map = (Map) parent;
-    map.getToolBar().add(getLaunchButton());
-  }
-
-  @Override
-  public void removeFrom(Buildable parent) {
-    map.getToolBar().remove(getLaunchButton());
-    map.getToolBar().revalidate();
+  public VideoExporter(Map map) {
+    this.map = map;
   }
 
   public void startExport() {
@@ -423,16 +389,7 @@ public class VideoExporter extends AbstractToolbarItem {
       return;
     }
     final Map target = maps.get(0);
-    VideoExporter exporter = null;
-    for (final VideoExporter ve : target.getComponentsOf(VideoExporter.class)) {
-      exporter = ve;
-      break;
-    }
-    if (exporter == null) {
-      exporter = new VideoExporter();
-      exporter.addTo(target);
-    }
-    exporter.startExport();
+    new VideoExporter(target).startExport();
   }
 
   public static void startCropSelectionCommand() {
@@ -443,16 +400,7 @@ public class VideoExporter extends AbstractToolbarItem {
       return;
     }
     final Map target = maps.get(0);
-    VideoExporter exporter = null;
-    for (final VideoExporter ve : target.getComponentsOf(VideoExporter.class)) {
-      exporter = ve;
-      break;
-    }
-    if (exporter == null) {
-      exporter = new VideoExporter();
-      exporter.addTo(target);
-    }
-    exporter.beginCropSelection();
+    new VideoExporter(target).beginCropSelection();
   }
 
   private void beginCropSelection() {
