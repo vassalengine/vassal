@@ -190,28 +190,17 @@ public class VideoExporter {
 
     cropButton.addActionListener(e -> {
       if (orderedLogsRef[0] == null || orderedLogsRef[0].isEmpty()) {
+        gm.warn(Resources.getString("VideoExporter.no_logs"));
+        return;
+      }
+      if (!firstLogLoaded[0]) {
+        gm.warn(Resources.getString("VideoExporter.load_failed"));
         return;
       }
       cropButton.setText("Selecting... draw rectangle, Enter to confirm, Esc to cancel");
       cropSelecting[0] = true;
       updateControlStates.run();
       new Thread(() -> {
-        // Ensure first log loaded (if preload failed)
-        if (!firstLogLoaded[0]) {
-          try {
-            SwingUtilities.invokeAndWait(() -> gm.getGameState().loadGame(orderedLogsRef[0].get(0), false, true));
-            firstLogLoaded[0] = true;
-          }
-          catch (Exception ex) {
-            gm.warn(Resources.getString("VideoExporter.load_failed"));
-            SwingUtilities.invokeLater(() -> {
-              cropButton.setText("Select Crop Area");
-              cropSelecting[0] = false;
-              updateControlStates.run();
-            });
-            return;
-          }
-        }
         final Rectangle selected = RectangularSelector.select(map, cropSelection);
         if (selected != null) {
           cropSelection = selected;
