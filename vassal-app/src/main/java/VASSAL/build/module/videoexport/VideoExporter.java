@@ -18,9 +18,9 @@ import javax.swing.SwingUtilities;
  * Menu-triggered video export utility.
  */
 public class VideoExporter {
-  private static final int MAX_VIDEO_WIDTH = Integer.getInteger("VideoExporter.maxWidth", 3840);
-  private static final int MAX_VIDEO_HEIGHT = Integer.getInteger("VideoExporter.maxHeight", 2160);
-  private static final int DEFAULT_FPS = Integer.getInteger("VideoExporter.fps", 10);
+  private static final int DEFAULT_MAX_VIDEO_WIDTH = 3840;
+  private static final int DEFAULT_MAX_VIDEO_HEIGHT = 2160;
+  private static final int DEFAULT_FPS = 10;
 
   private final Map map;
   private final VideoRenderService renderService;
@@ -28,7 +28,7 @@ public class VideoExporter {
 
   public VideoExporter(Map map) {
     this.map = map;
-    this.renderService = new VideoRenderService(MAX_VIDEO_WIDTH, MAX_VIDEO_HEIGHT);
+    this.renderService = new VideoRenderService();
   }
 
   public void startExport() {
@@ -45,6 +45,7 @@ public class VideoExporter {
 
     final VideoExportDialog dialog = new VideoExportDialog();
     dialog.setFps(DEFAULT_FPS);
+    dialog.setResolution(DEFAULT_MAX_VIDEO_WIDTH, DEFAULT_MAX_VIDEO_HEIGHT);
 
     final Runnable updateControls = () -> {
       final boolean hasLogs = orderedLogsRef[0] != null && !orderedLogsRef[0].isEmpty();
@@ -151,7 +152,7 @@ public class VideoExporter {
         gm.warn("Please select logs and output file first.");
         return;
       }
-      int fps = DEFAULT_FPS;
+      int fps;
       try {
         fps = Integer.parseInt(dialog.getFpsText().trim());
         if (fps <= 0) {
@@ -162,14 +163,29 @@ public class VideoExporter {
         gm.warn("Please enter a positive FPS value.");
         return;
       }
+      int maxWidth;
+      int maxHeight;
+      try {
+        maxWidth = Integer.parseInt(dialog.getWidthText().trim());
+        maxHeight = Integer.parseInt(dialog.getHeightText().trim());
+        if (maxWidth <= 0 || maxHeight <= 0) {
+          throw new NumberFormatException("dimensions must be positive");
+        }
+      }
+      catch (NumberFormatException ex) {
+        gm.warn("Please enter a positive width and height.");
+        return;
+      }
       final int fpsToUse = fps;
+      final int maxWidthToUse = maxWidth;
+      final int maxHeightToUse = maxHeight;
       dialog.dispose();
       final List<File> logs = orderedLogsRef[0];
       final File finalVideo = outputFileRef[0];
       final double restoreZoom = map.getZoom();
       new Thread(() -> {
         try {
-          renderService.render(map, cropSelection, logs, finalVideo, fpsToUse);
+          renderService.render(map, cropSelection, logs, finalVideo, fpsToUse, maxWidthToUse, maxHeightToUse);
         }
         finally {
           SwingUtilities.invokeLater(() -> restoreZoom(map, restoreZoom));

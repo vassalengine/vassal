@@ -20,15 +20,8 @@ import java.util.List;
  * Encapsulates the rendering loop: replay logs, capture frames, and stream to ffmpeg.
  */
 class VideoRenderService {
-  private final int maxWidth;
-  private final int maxHeight;
 
-  VideoRenderService(int maxWidth, int maxHeight) {
-    this.maxWidth = maxWidth;
-    this.maxHeight = maxHeight;
-  }
-
-  void render(Map map, Rectangle cropSelection, List<File> logFiles, File videoFile, int fps) {
+  void render(Map map, Rectangle cropSelection, List<File> logFiles, File videoFile, int fps, int maxWidth, int maxHeight) {
     final GameModule gm = GameModule.getGameModule();
     final BasicLogger logger = gm.getBasicLogger();
     final GameState gameState = gm.getGameState();
@@ -57,7 +50,7 @@ class VideoRenderService {
             continue;
           }
           final Rectangle cropArea = cropSelection != null ? new Rectangle(cropSelection) : fullMapRect(map);
-          SwingUtilities.invokeAndWait(() -> limitZoomToFit(map, cropArea));
+          SwingUtilities.invokeAndWait(() -> limitZoomToFit(map, cropArea, maxWidth, maxHeight));
 
           if (writer == null) {
             final Rectangle[] captureRectHolder = new Rectangle[1];
@@ -170,7 +163,7 @@ class VideoRenderService {
     }
   }
 
-  private void limitZoomToFit(Map targetMap, Rectangle cropArea) {
+  private void limitZoomToFit(Map targetMap, Rectangle cropArea, int maxWidth, int maxHeight) {
     if (targetMap == null || maxWidth <= 0 || maxHeight <= 0) {
       return;
     }

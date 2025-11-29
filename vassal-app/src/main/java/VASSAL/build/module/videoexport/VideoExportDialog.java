@@ -1,6 +1,5 @@
 package VASSAL.build.module.videoexport;
 
-import VASSAL.build.module.Map;
 import VASSAL.i18n.Resources;
 
 import javax.swing.Box;
@@ -30,6 +29,8 @@ class VideoExportDialog {
   private final JButton startButton;
   private final JLabel cropStatus;
   private final JTextField fpsField;
+  private final JTextField widthField;
+  private final JTextField heightField;
 
   VideoExportDialog() {
     frame = new JFrame(Resources.getString("VideoExporter.button"));
@@ -49,7 +50,9 @@ class VideoExportDialog {
     startButton.setEnabled(false);
     cropStatus = new JLabel("Crop: full-map");
     cropStatus.setAlignmentX(Component.LEFT_ALIGNMENT);
-    fpsField = new JTextField("10");
+    fpsField = new JTextField();
+    widthField = new JTextField();
+    heightField = new JTextField();
 
     final JPanel content = new JPanel();
     content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
@@ -67,6 +70,14 @@ class VideoExportDialog {
     final JPanel fpsPanel = new JPanel(new BorderLayout(5, 5));
     fpsPanel.add(new JLabel("FPS:"), BorderLayout.WEST);
     fpsPanel.add(fpsField, BorderLayout.CENTER);
+
+    final JPanel resPanel = new JPanel(new BorderLayout(5, 5));
+    resPanel.add(new JLabel("Max resolution (W x H):"), BorderLayout.WEST);
+    final JPanel resFields = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+    resFields.add(widthField);
+    resFields.add(new JLabel("x"));
+    resFields.add(heightField);
+    resPanel.add(resFields, BorderLayout.CENTER);
 
     final JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     buttons.add(cropButton);
@@ -86,6 +97,8 @@ class VideoExportDialog {
     content.add(outPanel);
     content.add(Box.createVerticalStrut(8));
     content.add(fpsPanel);
+    content.add(Box.createVerticalStrut(8));
+    content.add(resPanel);
     content.add(Box.createVerticalStrut(8));
     final JPanel cropStatusPanel = new JPanel(new BorderLayout());
     cropStatusPanel.add(cropStatus, BorderLayout.CENTER);
@@ -138,6 +151,8 @@ class VideoExportDialog {
     browseLogs.setEnabled(browsingEnabled);
     browseOut.setEnabled(browsingEnabled);
     fpsField.setEnabled(browsingEnabled);
+    widthField.setEnabled(browsingEnabled);
+    heightField.setEnabled(browsingEnabled);
     cropButton.setEnabled(cropEnabled);
     fullMapButton.setEnabled(fullMapEnabled);
     startButton.setEnabled(startEnabled);
@@ -169,6 +184,19 @@ class VideoExportDialog {
 
   String getFpsText() {
     return fpsField.getText();
+  }
+
+  void setResolution(int width, int height) {
+    widthField.setText(Integer.toString(width));
+    heightField.setText(Integer.toString(height));
+  }
+
+  String getWidthText() {
+    return widthField.getText();
+  }
+
+  String getHeightText() {
+    return heightField.getText();
   }
 
   JFrame getFrame() {
