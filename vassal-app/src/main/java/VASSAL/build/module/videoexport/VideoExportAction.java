@@ -1,4 +1,4 @@
-package VASSAL.build.module.map;
+package VASSAL.build.module.videoexport;
 
 import VASSAL.i18n.Resources;
 

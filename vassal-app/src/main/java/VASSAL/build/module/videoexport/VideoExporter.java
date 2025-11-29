@@ -1,10 +1,12 @@
-package VASSAL.build.module.map;
+package VASSAL.build.module.videoexport;
 
 import VASSAL.build.GameModule;
 import VASSAL.build.module.BasicLogger;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.GameState;
 import VASSAL.build.module.Map;
+import VASSAL.build.module.map.RectangularSelector;
+import VASSAL.build.module.map.Zoomer;
 import VASSAL.i18n.Resources;
 import VASSAL.command.Command;
 
@@ -401,7 +403,7 @@ public class VideoExporter {
     new VideoExporter(target).beginCropSelection();
   }
 
-  private void beginCropSelection() {
+  void beginCropSelection() {
     final GameModule gm = GameModule.getGameModule();
     gm.warn("Draw the crop box on the map, then press Enter to confirm or Esc to cancel.");
     new Thread(() -> {
@@ -489,5 +491,4 @@ public class VideoExporter {
     }
     return true;
   }
-
 }

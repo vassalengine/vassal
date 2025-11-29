@@ -20,7 +20,7 @@ package VASSAL.launch;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Documentation;
-import VASSAL.build.module.map.VideoExportAction;
+import VASSAL.build.module.videoexport.VideoExportAction;
 import VASSAL.configure.ShowHelpAction;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ApplicationIcons;

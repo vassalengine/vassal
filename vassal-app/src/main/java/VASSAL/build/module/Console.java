@@ -20,7 +20,7 @@ package VASSAL.build.module;
 import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.map.FrontPolygon;
-import VASSAL.build.module.map.VideoExporter;
+import VASSAL.build.module.videoexport.VideoExporter;
 import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.command.Logger;
 import VASSAL.counters.Attachment;

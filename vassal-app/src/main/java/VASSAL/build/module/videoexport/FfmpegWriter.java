@@ -1,4 +1,4 @@
-package VASSAL.build.module.map;
+package VASSAL.build.module.videoexport;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;

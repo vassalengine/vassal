@@ -57,7 +57,6 @@ import VASSAL.build.module.map.SetupStack;
 import VASSAL.build.module.map.StackExpander;
 import VASSAL.build.module.map.StackMetrics;
 import VASSAL.build.module.map.TextSaver;
-import VASSAL.build.module.map.VideoExporter;
 import VASSAL.build.module.map.Zoomer;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.HexGrid;
@@ -761,7 +760,6 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       addChild(new PieceMover());
       addChild(new KeyBufferer());
       addChild(new ImageSaver());
-      addChild(new VideoExporter());
       addChild(new CounterDetailViewer());
       addChild(new Flare());
       addChild(new Zoomer());
@@ -782,10 +780,6 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 
     if (getComponentsOf(Flare.class).isEmpty()) {
       addChild(new Flare());
-    }
-
-    if (getComponentsOf(VideoExporter.class).isEmpty()) {
-      addChild(new VideoExporter());
     }
 
     setup(false);
