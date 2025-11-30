@@ -33,10 +33,11 @@ class VideoRenderService {
       BufferedImage frame = null;
       Rectangle drawingRect = null;
       FfmpegWriter writer = null;
-      long captureNanos = 0;
-      long writeNanos = 0;
-      long stepNanos = 0;
+      long paintNanos = 0;
+      long encodeNanos = 0;
+      long advanceNanos = 0;
       long loadNanos = 0;
+      long logsProcessed = 0;
       long totalFrames = 0;
       long totalCommands = 0;
       try {
@@ -49,6 +50,7 @@ class VideoRenderService {
             gm.warn(Resources.getString("VideoExporter.load_failed"));
             continue;
           }
+          logsProcessed++;
           final Rectangle cropArea = cropSelection != null ? new Rectangle(cropSelection) : fullMapRect(map);
           SwingUtilities.invokeAndWait(() -> limitZoomToFit(map, cropArea, maxWidth, maxHeight));
 
@@ -77,17 +79,20 @@ class VideoRenderService {
             writer = new FfmpegWriter(videoWidth, videoHeight, fps, videoFile);
           }
 
-          final long captureStart = System.nanoTime();
+          final long paintStart = System.nanoTime();
           captureFrame(map, frame, drawingRect);
-          captureNanos += System.nanoTime() - captureStart;
-          final long writeStart = System.nanoTime();
+          final long paintDelta = System.nanoTime() - paintStart;
+          paintNanos += paintDelta;
+          final long encodeStart = System.nanoTime();
           writer.writeFrame(frame);
-          writeNanos += System.nanoTime() - writeStart;
+          final long encodeDelta = System.nanoTime() - encodeStart;
+          encodeNanos += encodeDelta;
           totalFrames++;
-          gm.warn(String.format("VideoExporter frame %d captured (crop %s, load %.1f ms, capture %.1f ms, write %.1f ms)",
+          gm.warn(String.format("VideoExporter frame %d (crop %s | loadLogsTotal %.1f ms, advanceTotal %.1f ms, paint to image buffer total %.1f ms, encodeTotal %.1f ms; last paint %.1f ms, last encode %.1f ms)",
             totalFrames,
             cropSelection != null ? rectSummary(cropSelection) : "full-map",
-            loadNanos / 1_000_000.0, captureNanos / 1_000_000.0, writeNanos / 1_000_000.0));
+            loadNanos / 1_000_000.0, advanceNanos / 1_000_000.0, paintNanos / 1_000_000.0, encodeNanos / 1_000_000.0,
+            paintDelta / 1_000_000.0, encodeDelta / 1_000_000.0));
 
           while (true) {
             final Command nextCommand = logger.peekNextCommand();
@@ -95,22 +100,25 @@ class VideoRenderService {
             final boolean[] stepped = new boolean[1];
             final long stepStart = System.nanoTime();
             SwingUtilities.invokeAndWait(() -> stepped[0] = logger.stepForward());
-            stepNanos += System.nanoTime() - stepStart;
+            advanceNanos += System.nanoTime() - stepStart;
             if (!stepped[0]) {
               break;
             }
             if (captureAfterStep) {
-              final long captureStartStep = System.nanoTime();
+              final long paintStartStep = System.nanoTime();
               captureFrame(map, frame, drawingRect);
-              captureNanos += System.nanoTime() - captureStartStep;
-              final long writeStartStep = System.nanoTime();
+              final long paintDeltaStep = System.nanoTime() - paintStartStep;
+              paintNanos += paintDeltaStep;
+              final long encodeStartStep = System.nanoTime();
               writer.writeFrame(frame);
-              writeNanos += System.nanoTime() - writeStartStep;
+              final long encodeDeltaStep = System.nanoTime() - encodeStartStep;
+              encodeNanos += encodeDeltaStep;
               totalFrames++;
-              gm.warn(String.format("VideoExporter frame %d captured (crop %s, load %.1f ms, capture %.1f ms, write %.1f ms)",
+              gm.warn(String.format("VideoExporter frame %d (crop %s | loadLogsTotal %.1f ms, advanceTotal %.1f ms, paint to image buffer total %.1f ms, encodeTotal %.1f ms; last paint %.1f ms, last encode %.1f ms)",
                 totalFrames,
                 cropSelection != null ? rectSummary(cropSelection) : "full-map",
-                loadNanos / 1_000_000.0, captureNanos / 1_000_000.0, writeNanos / 1_000_000.0));
+                loadNanos / 1_000_000.0, advanceNanos / 1_000_000.0, paintNanos / 1_000_000.0, encodeNanos / 1_000_000.0,
+                paintDeltaStep / 1_000_000.0, encodeDeltaStep / 1_000_000.0));
             }
             totalCommands++;
           }
@@ -118,13 +126,13 @@ class VideoRenderService {
         if (writer != null) {
           gm.warn(Resources.getString("VideoExporter.finished", videoFile.getAbsolutePath())
             + (cropSelection != null ? " (crop " + rectSummary(cropSelection) + ")" : " (full-map)"));
-          final double captureMs = captureNanos / 1_000_000.0;
-          final double writeMs = writeNanos / 1_000_000.0;
-          final double stepMs = stepNanos / 1_000_000.0;
+          final double paintMs = paintNanos / 1_000_000.0;
+          final double encodeMs = encodeNanos / 1_000_000.0;
+          final double stepMs = advanceNanos / 1_000_000.0;
           final double loadMs = loadNanos / 1_000_000.0;
           gm.warn(String.format(
-            "VideoExporter profile: capture %.1f ms, write %.1f ms, step %.1f ms, load %.1f ms, frames %d, commands %d",
-            captureMs, writeMs, stepMs, loadMs, totalFrames, totalCommands));
+            "VideoExporter profile: paint to image buffer %.1f ms, encode %.1f ms, replay-step %.1f ms, load logs %.1f ms, frames %d, commands %d, logs %d",
+            paintMs, encodeMs, stepMs, loadMs, totalFrames, totalCommands, logsProcessed));
         }
       }
       finally {
