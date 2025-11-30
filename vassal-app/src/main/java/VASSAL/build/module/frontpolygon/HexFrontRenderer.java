@@ -1,5 +1,6 @@
 package VASSAL.build.module.frontpolygon;
 
+import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.HexGrid;
@@ -29,6 +30,7 @@ class HexFrontRenderer {
    * Colors every visible hex cell according to its nearest side marker.
    */
   void render(Graphics g, Map map, EnumMap<FrontPolygonSide, List<Point>> sidePoints) {
+    final long start = System.nanoTime();
     final Graphics2D g2 = (Graphics2D) g.create();
     try {
       final Rectangle clipBounds = g2.getClipBounds();
@@ -46,6 +48,8 @@ class HexFrontRenderer {
     }
     finally {
       g2.dispose();
+      final double ms = (System.nanoTime() - start) / 1_000_000.0;
+      GameModule.getGameModule().warn(String.format("FrontPolygon hex render took %.2f ms", ms));
     }
   }
 

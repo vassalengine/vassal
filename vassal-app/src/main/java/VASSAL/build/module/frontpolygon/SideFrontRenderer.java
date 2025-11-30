@@ -1,5 +1,6 @@
 package VASSAL.build.module.frontpolygon;
 
+import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 
 import java.awt.BasicStroke;
@@ -37,6 +38,7 @@ class SideFrontRenderer {
    * Builds Voronoi cells for each side's markers and paints the resulting territories.
    */
   void render(Graphics g, Map map, EnumMap<FrontPolygonSide, List<Point>> sidePoints) {
+    final long start = System.nanoTime();
     final Rectangle2D bounds = computeBounds(sidePoints);
     if (bounds == null) {
       return;
@@ -55,6 +57,8 @@ class SideFrontRenderer {
     }
     finally {
       g2.dispose();
+      final double ms = (System.nanoTime() - start) / 1_000_000.0;
+      GameModule.getGameModule().warn(String.format("FrontPolygon side render took %.2f ms", ms));
     }
   }
 
