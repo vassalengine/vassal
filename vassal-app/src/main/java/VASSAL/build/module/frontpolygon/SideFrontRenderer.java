@@ -39,7 +39,7 @@ class SideFrontRenderer {
    */
   void render(Graphics g, Map map, EnumMap<FrontPolygonSide, List<Point>> sidePoints) {
     final long start = System.nanoTime();
-    final Rectangle2D bounds = computeBounds(sidePoints);
+    final Rectangle2D bounds = computeBounds(map);
     if (bounds == null) {
       return;
     }
@@ -62,33 +62,19 @@ class SideFrontRenderer {
     }
   }
 
-  private Rectangle2D computeBounds(EnumMap<FrontPolygonSide, List<Point>> positions) {
-    double minX = Double.POSITIVE_INFINITY;
-    double minY = Double.POSITIVE_INFINITY;
-    double maxX = Double.NEGATIVE_INFINITY;
-    double maxY = Double.NEGATIVE_INFINITY;
-    boolean hasPoints = false;
-
-    for (final List<Point> points : positions.values()) {
-      for (final Point point : points) {
-        hasPoints = true;
-        minX = Math.min(minX, point.getX());
-        minY = Math.min(minY, point.getY());
-        maxX = Math.max(maxX, point.getX());
-        maxY = Math.max(maxY, point.getY());
-      }
-    }
-
-    if (!hasPoints) {
+  private Rectangle2D computeBounds(Map map) {
+    if (map == null || map.mapSize() == null) {
       return null;
     }
-
-    final double width = Math.max(10, maxX - minX);
-    final double height = Math.max(10, maxY - minY);
-
+    final double width = map.mapSize().getWidth();
+    final double height = map.mapSize().getHeight();
+    if (width <= 0 || height <= 0) {
+      return null;
+    }
+    // Use full map bounds (plus padding) so territories cover the whole board, even where no units sit.
     return new Rectangle2D.Double(
-      minX - BOUNDS_PADDING,
-      minY - BOUNDS_PADDING,
+      -BOUNDS_PADDING,
+      -BOUNDS_PADDING,
       width + (BOUNDS_PADDING * 2),
       height + (BOUNDS_PADDING * 2)
     );
