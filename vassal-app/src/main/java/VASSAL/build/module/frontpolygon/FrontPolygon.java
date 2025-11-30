@@ -143,10 +143,7 @@ public class FrontPolygon implements GameComponent, Drawable {
   }
 
   @Override
-  public void setup(boolean gameStarting) {
-    // Reset to hidden whenever a game starts/stops.
-    setBothVisible(false);
-  }
+  public void setup(boolean gameStarting) { }
 
   @Override
   public VASSAL.command.Command getRestoreCommand() {
