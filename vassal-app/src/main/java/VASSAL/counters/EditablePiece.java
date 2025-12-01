@@ -112,7 +112,7 @@ public interface EditablePiece extends GamePiece {
 
     if ((loc == null) || loc.equals(oldLoc)) {
       if (GameModule.getGameModule().isMatSupport()) {
-        final String mat = (String) getProperty(Mat.MAT_ID);
+        final String mat = (String) getProperty(MatCargo.CURRENT_MAT_ID);
         final String oldMat = (String) getProperty(BasicPiece.OLD_MAT_ID);
         if ((mat == null) || mat.equals(oldMat)) {
           return null;
