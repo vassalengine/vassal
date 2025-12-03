@@ -30,7 +30,10 @@ import javax.swing.undo.UndoManager;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.KeyboardFocusManager;
 import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
@@ -492,14 +495,14 @@ public class SwingUtils {
       }
       else {
         // If no explicit owner, try to use the currently focused window as a hint
-        final Window focused = java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusedWindow();
+        final Window focused = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusedWindow();
         if (focused != null && focused.getGraphicsConfiguration() != null) {
           c = focused;
         }
       }
     }
 
-    Rectangle screen;
+    final Rectangle screen;
     if (c != null && c.getGraphicsConfiguration() != null) {
       // Use the bounds of the physical screen which contains the component
       final Rectangle raw = new Rectangle(c.getGraphicsConfiguration().getBounds());
@@ -611,12 +614,12 @@ public class SwingUtils {
       return new Insets(0, 0, 0, 0);
     }
     else {
-      java.awt.GraphicsConfiguration gc = null;
+      GraphicsConfiguration gc = null;
       if (c != null) {
         gc = c.getGraphicsConfiguration();
       }
       if (gc == null) {
-        final java.awt.GraphicsDevice def = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        final GraphicsDevice def = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         if (def != null) {
           gc = def.getDefaultConfiguration();
         }
@@ -645,22 +648,22 @@ public class SwingUtils {
     final Rectangle windowRect = new Rectangle(window.getX(), window.getY(), window.getWidth(), window.getHeight());
 
     Rectangle screenBounds = null;
-    java.awt.GraphicsConfiguration screenGC = null;
+    GraphicsConfiguration screenGC = null;
 
     try {
-      final java.awt.GraphicsEnvironment ge = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment();
-      final java.awt.GraphicsDevice[] devices = ge.getScreenDevices();
+      final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+      final GraphicsDevice[] devices = ge.getScreenDevices();
       if (devices != null && devices.length > 0) {
         // Pick the screen with the largest intersection with the window rect; if none, the nearest by center.
         long bestArea = -1;
         double bestDist2 = Double.MAX_VALUE;
-        java.awt.GraphicsDevice bestDev = devices[0];
+        GraphicsDevice bestDev = devices[0];
         Rectangle bestBounds = new Rectangle(bestDev.getDefaultConfiguration().getBounds());
 
         final double cx = windowRect.getCenterX();
         final double cy = windowRect.getCenterY();
 
-        for (java.awt.GraphicsDevice gd : devices) {
+        for (final GraphicsDevice gd : devices) {
           final Rectangle b = new Rectangle(gd.getDefaultConfiguration().getBounds());
           final Rectangle inter = b.intersection(windowRect);
           final long area = (long) Math.max(0, inter.width) * Math.max(0, inter.height);
