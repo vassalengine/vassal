@@ -1,4 +1,4 @@
-<img src="vassal-app/src/main/resources/icons/scalable/VASSAL.svg" width="100px" align="right" />
+<img src="vassal-app/src/main/resources/icons/scalable/VASSAL.svg" width="100px" align="right"  alt="Vassal Icon"/>
 
 # VASSAL
 > The open-source boardgame engine
@@ -16,7 +16,10 @@ VASSAL 3.7 requires Java 11 or later.
 
 The Windows and Mac packages have an appropriate version of Java bundled with
 them, so there is no need to install Java separately on those operating
-systems. On Linux, use your package manager to install Java 11 or later.
+systems. Mac users on Catalina (macOS 10.13) or earlier, see
+[here](https://forum.vassalengine.org/t/84048).
+On Linux, use your package manager to install Java 11 or later.
+
 
 ### Releases
 
