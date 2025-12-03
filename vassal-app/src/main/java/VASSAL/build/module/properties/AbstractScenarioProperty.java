@@ -169,7 +169,9 @@ public abstract class AbstractScenarioProperty extends GlobalProperty {
         reportFormat.setProperty(ScenarioPropertiesOptionTab.REPORT_OLD_VALUE, oldValue);
         reportFormat.setProperty(ScenarioPropertiesOptionTab.REPORT_NEW_VALUE, newValue.toString());
         final String report = reportFormat.getLocalizedText(this, "Editor.ScenarioOption.report_format");
-        c = c.append(new Chatter.DisplayText(gm.getChatter(), "* " + report));
+        if (!report.isEmpty()) {
+          c = c.append(new Chatter.DisplayText(gm.getChatter(), "* " + report));
+        }
       }
 
       // Perform the property change and report on our client and save the command
