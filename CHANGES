@@ -5,10 +5,13 @@
 
 3.7.19 - ???
 
-* 14363: Upgraded checkstyle to 12.1.2
+* 14379: Upgraded maven-resoures-plugin 3.4.0
+* 14378: Upgraded checkstyle to 12.2.0
+* 14377: Upgraded maven-source-plugin to 3.4.0
+* 14373: Upgraded byte-buddy to 1.18.2
+* 14369: Upgraded spotbugs-maven-plugin to 4.9.8.2
 * 14362: Upgraded logback-classic to 1.5.21
 * 14361: Upgraded commons-lang3 to 3.20.0
-* 14360: Upgraded byte-buddy to 1.18.1
 * 14359: Upgraded maven-jar-plugin to 3.5.0
 * 14341: Upgraded commons-io to 2.21.0
 * 14338: Upgraded commons-codec to 1.20.0
@@ -16,7 +19,6 @@
 * 14327: Upgraded asciidoctorj-pdf to 2.3.23
 * 14323: Sanitize extracted image filenames for HTML viewer
 * 14318: Upgraded spotbugs-annotations to 4.9.8
-* 14309: Upgraded spotbugs-maven-plugin to 4.9.8.1
 * 14307: Upgraded exec-maven-plugin to 3.6.2
 * 14301: Upgraded bundled Java to 25+36 (Windows x86_64, Mac), 25+37 (Windows
     aarch64)
