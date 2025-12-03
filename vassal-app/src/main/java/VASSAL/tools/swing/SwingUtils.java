@@ -738,7 +738,7 @@ public class SwingUtils {
       bounds.x = screenBounds.x;
     }
 
-    // Extends off right of visible screen? Slight left.
+    // Extends off right of visible screen? Slide left.
     if (bounds.x + bounds.width > screenBounds.x + screenBounds.width) {
       bounds.x = screenBounds.x + screenBounds.width - bounds.width;
     }
