@@ -24,6 +24,7 @@
 * 14264: Upgraded maven-dependency-plugin to 3.9.0
 * 14254: Set-up release-on-tag workflow
 * 14252: Upgraded httpclient5 to 5.5.1
+* 14250: Don't report changes to scenario options when report text is empty
 
 3.7.18 - 23 September 2025
 
