@@ -194,7 +194,7 @@ jobs:
         run: debuild -us -uc -rfakeroot
 
       - name: Create pull-request on debian/changelog
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           body: |
             Update the debian/changelog from release build
