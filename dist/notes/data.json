@@ -46,6 +46,7 @@
         { "num": 14318, "desc": "Upgraded spotbugs-annotations to 4.9.8" },
         { "num": 14307, "desc": "Upgraded exec-maven-plugin to 3.6.2" },
         { "num": 14301, "desc": "Upgraded bundled Java to 25+36 (Windows x86_64, Mac), 25+37 (Windows aarch64)" },
+        { "num": 14291, "desc": "Update info to guide users of unsupported macOS versions" },
         { "num": 14281, "desc": "Upgraded maven-pmd-plugin to 3.28.0" },
         { "num": 14274, "desc": "Upgraded asm to 9.9" },
         { "num": 14265, "desc": "Upgraded maven-enforcer-plugin to 3.6.2" },
