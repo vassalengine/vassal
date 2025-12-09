@@ -38,6 +38,7 @@
         { "num": 14362, "desc": "Upgraded logback-classic to 1.5.21" },
         { "num": 14361, "desc": "Upgraded commons-lang3 to 3.20.0" },
         { "num": 14359, "desc": "Upgraded maven-jar-plugin to 3.5.0" },
+        { "num": 14347, "desc": "Log more info for the piece not on map exception" },
         { "num": 14341, "desc": "Upgraded commons-io to 2.21.0" },
         { "num": 14338, "desc": "Upgraded commons-codec to 1.20.0" },
         { "num": 14330, "desc": "Upgraded junit-bom to 6.0.1" },

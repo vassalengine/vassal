@@ -8,6 +8,7 @@
 * 14362: Upgraded logback-classic to 1.5.21
 * 14361: Upgraded commons-lang3 to 3.20.0
 * 14359: Upgraded maven-jar-plugin to 3.5.0
+* 14347: Log more info for the piece not on map exception
 * 14341: Upgraded commons-io to 2.21.0
 * 14338: Upgraded commons-codec to 1.20.0
 * 14335: Mark as moved when moving a piece between mats within the same
