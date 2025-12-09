@@ -38,6 +38,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 14335, "desc": "Mark as moved when moving a piece between mats within the same location" },
         { "num": 14323, "desc": "Sanitize extracted image filenames for HTML viewer" },
         { "num": 14250, "desc": "Don't report changes to scenario options when report text is empty" }
       ],
@@ -53,6 +54,7 @@
         { "num": 14362, "desc": "Upgraded logback-classic to 1.5.21" },
         { "num": 14361, "desc": "Upgraded commons-lang3 to 3.20.0" },
         { "num": 14359, "desc": "Upgraded maven-jar-plugin to 3.5.0" },
+        { "num": 14347, "desc": "Log more info for the piece not on map exception" },
         { "num": 14341, "desc": "Upgraded commons-io to 2.21.0" },
         { "num": 14338, "desc": "Upgraded commons-codec to 1.20.0" },
         { "num": 14330, "desc": "Upgraded junit-bom to 6.0.1" },
@@ -60,6 +62,7 @@
         { "num": 14318, "desc": "Upgraded spotbugs-annotations to 4.9.8" },
         { "num": 14307, "desc": "Upgraded exec-maven-plugin to 3.6.2" },
         { "num": 14301, "desc": "Upgraded bundled Java to 25+36 (Windows x86_64, Mac), 25+37 (Windows aarch64)" },
+        { "num": 14291, "desc": "Update info to guide users of unsupported macOS versions" },
         { "num": 14281, "desc": "Upgraded maven-pmd-plugin to 3.28.0" },
         { "num": 14274, "desc": "Upgraded asm to 9.9" },
         { "num": 14265, "desc": "Upgraded maven-enforcer-plugin to 3.6.2" },
