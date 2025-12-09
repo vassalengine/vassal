@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 14335, "desc": "Mark as moved when moving a piece between mats within the same location" },
         { "num": 14323, "desc": "Sanitize extracted image filenames for HTML viewer" },
         { "num": 14250, "desc": "Don't report changes to scenario options when report text is empty" }
       ],

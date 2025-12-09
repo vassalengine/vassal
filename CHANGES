@@ -10,6 +10,8 @@
 * 14359: Upgraded maven-jar-plugin to 3.5.0
 * 14341: Upgraded commons-io to 2.21.0
 * 14338: Upgraded commons-codec to 1.20.0
+* 14335: Mark as moved when moving a piece between mats within the same
+    location
 * 14330: Upgraded junit-bom to 6.0.1
 * 14327: Upgraded asciidoctorj-pdf to 2.3.23
 * 14323: Sanitize extracted image filenames for HTML viewer
