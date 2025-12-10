@@ -1860,7 +1860,9 @@ public class GameModule extends AbstractConfigurable
     if (c != null && !c.isNull()) {
       synchronized (loggingLock) {
         if (loggingPaused) {
-          pausedCommands.getFirst().append(c);
+          Command topCmd = pausedCommands.pop();
+          topCmd = topCmd.append(c);
+          pausedCommands.push(topCmd);
         }
         else {
           getServer().sendToOthers(c);
