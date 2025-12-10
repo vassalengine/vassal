@@ -45,7 +45,6 @@
       "improvements": [
       ],
       "other": [
-
         { "num": 14379, "desc": "Upgraded maven-resoures-plugin 3.4.0" },
         { "num": 14378, "desc": "Upgraded checkstyle to 12.2.0" },
         { "num": 14377, "desc": "Upgraded maven-source-plugin to 3.4.0" },
@@ -67,6 +66,7 @@
         { "num": 14274, "desc": "Upgraded asm to 9.9" },
         { "num": 14265, "desc": "Upgraded maven-enforcer-plugin to 3.6.2" },
         { "num": 14264, "desc": "Upgraded maven-dependency-plugin to 3.9.0" },
+        { "num": 14260, "desc": "Reorder items on Player Tools menu to put all Loads together" },
         { "num": 14254, "desc": "Build release on tag" },
         { "num": 14252, "desc": "Upgraded httpclient5 to 5.5.1" }
       ]

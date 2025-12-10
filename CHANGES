@@ -31,6 +31,7 @@
 * 14273: Upgraded exec-maven-plugin to 3.6.1
 * 14265: Upgraded maven-enforcer-plugin to 3.6.2
 * 14264: Upgraded maven-dependency-plugin to 3.9.0
+* 14260: Reorder items on Player Tools menu to put all Loads together
 * 14254: Set-up release-on-tag workflow
 * 14252: Upgraded httpclient5 to 5.5.1
 * 14250: Don't report changes to scenario options when report text is empty
