@@ -41,7 +41,7 @@ jobs:
           java-package: jdk
 
       - name: Cache Maven packages
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: cache-maven
         with:
           path: ~/.m2/repository
@@ -50,7 +50,7 @@ jobs:
 
       - name: Cache packaging dependencies
         id: cache-bootstrap
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ./dist/dmg
@@ -133,7 +133,7 @@ jobs:
           java-package: jdk
 
       - name: Cache Maven packages
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: cache-maven
         with:
           path: ~/.m2/repository
@@ -142,7 +142,7 @@ jobs:
 
       - name: Cache packaging dependencies
         id: cache-bootstrap
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ./dist/dmg
