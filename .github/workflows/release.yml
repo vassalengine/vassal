@@ -31,14 +31,14 @@ jobs:
           java-package: jdk
 
       - name: Maven cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-mavin-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-maven-
 
       - name: Cache bootstrap 
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ./dist/dmg
@@ -107,14 +107,14 @@ jobs:
           java-package: jdk
 
       - name: Maven cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-mavin-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-maven-
 
       - name: Cache bootstrap 
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ./dist/dmg
