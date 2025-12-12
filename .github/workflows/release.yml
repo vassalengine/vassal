@@ -60,14 +60,14 @@ jobs:
           ls jdoc/
 
       - name: Archive release notes
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: NOTES
           path: |
             tmp/NOTES-*
             
       - name: Archive Java API documentation
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: JavaDoc
           path: |
@@ -217,7 +217,7 @@ jobs:
             public/
 
       - name: Archive Debian source package
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: debian-source
           path: |
