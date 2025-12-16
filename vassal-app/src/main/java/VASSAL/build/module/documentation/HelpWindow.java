@@ -40,11 +40,13 @@ public class HelpWindow extends JFrame implements HyperlinkListener {
     super(title);
     setDefaultCloseOperation(HIDE_ON_CLOSE);
     setJMenuBar(MenuManager.getInstance().getMenuBarFor(this));
-    helper.setup(this, contents);
 
     // Persist and restore window bounds using the common layout engine
     final PositionOption option = new PositionOption(PositionOption.key + "HelpWindow", this); //NON-NLS
     Prefs.getGlobalPrefs().addOption(option);
+
+    helper.setup(this, contents);
+
   }
 
   @Deprecated(since = "2021-12-01", forRemoval = true)
