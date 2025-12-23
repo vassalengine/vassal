@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>org.vassalengine.vassal</id>
+
+  <metadata_license>MIT</metadata_license>
+  <project_license>LGPL-2.1-or-later</project_license>
+
+  <name>Vassal</name>
+  <summary>Play boardgames, virtually</summary>
+
+  <developer id="io.github.vassalengine">
+    <name>The Vassal Team</name>
+  </developer>
+
+  <description>
+    <p>
+      Vassal is a game engine for building and playing online adaptations of board games and card games.
+      You can use Vassal to play in real time over the Internet or by email.
+      Vassal runs on all platforms and is free, open-source software.
+    </p>
+  </description>
+
+  <launchable type="desktop-id">org.vassalengine.vassal.desktop</launchable>
+
+  <content_rating type="oars-1.1">
+    <content_attribute id="violence-fantasy">moderate</content_attribute>
+    <content_attribute id="social-chat">intense</content_attribute>
+  </content_rating>
+
+  <url type="bugtracker">https://github.com/vassalengine/vassal/issues</url>
+  <url type="homepage">https://vassalengine.org/</url>
+  <url type="vcs-browser">https://github.com/vassalengine/vassal</url>
+
+  <screenshots>
+    <screenshot type="default">
+      <image>https://vassalengine.org/images/screenshots/screenshot2-1224.jpg</image>
+    </screenshot>
+    <screenshot>
+      <image>https://vassalengine.org/images/screenshots/screenshot3-1224.jpg</image>
+    </screenshot>
+    <screenshot>
+      <image>https://vassalengine.org/images/screenshots/screenshot4-1224.jpg</image>
+    </screenshot>
+    <screenshot>
+      <image>https://vassalengine.org/images/screenshots/screenshot5-1224.jpg</image>
+    </screenshot>
+  </screenshots>
+
+  <releases>
+    <release version="3.7.18" date="2025-09-24">
+      <url type="details">https://github.com/vassalengine/vassal/releases/tag/3.7.18</url>
+    </release>
+    <release version="3.7.17" date="2025-09-17">
+      <url type="details">https://github.com/vassalengine/vassal/releases/tag/3.7.17</url>
+    </release>
+  </releases>
+</component>
