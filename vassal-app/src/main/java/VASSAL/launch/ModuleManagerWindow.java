@@ -90,6 +90,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeWillExpandListener;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.text.DefaultEditorKit;
@@ -1018,6 +1019,30 @@ public class ModuleManagerWindow extends JFrame {
       });
     }
 
+    /**
+     * Set the foreground color of all table cells in the row.
+     * @param renderer  the <code>TableCellRenderer</code> to prepare
+     * @param row       the row of the cell to render, where 0 is the first row
+     * @param column    the column of the cell to render,
+     *                  where 0 is the first column
+     */
+    @Override
+    public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+      final Component component = super.prepareRenderer(renderer, row, column);
+
+      final MyTree tree = getInstance().tree;
+      final TreePath path = tree.getPathForRow(row);
+      if (path != null) {
+        final MyTreeNode node = (MyTreeNode) path.getLastPathComponent();
+        final AbstractInfo info = node.getNodeInfo();
+        final Color c = info.getTreeCellFgColor();
+        if (c != null) {
+          component.setForeground(c);
+        }
+      }
+      return component;
+    }
+
 // FIXME: Where's the rest of the comment???
     /**
      * There appears to be a bug/strange interaction between JXTreetable and the ComponentSplitter
@@ -1324,7 +1349,7 @@ public class ModuleManagerWindow extends JFrame {
      *  @return cell text color
      */
     public Color getTreeCellFgColor() {
-      return Color.black;
+      return null;
     }
 
     /**
@@ -1695,7 +1720,10 @@ public class ModuleManagerWindow extends JFrame {
 
     @Override
     public Color getTreeCellFgColor() {
-      return Info.isModuleTooNew(getVassalVersion()) ? Color.GRAY : Color.BLACK;
+      if (Info.isModuleTooNew(getVassalVersion())) {
+        return UIManager.getColor("TextPane.inactiveForeground"); // Color.GRAY
+      }
+      return null;
     }
   }
 
@@ -1807,13 +1835,20 @@ public class ModuleManagerWindow extends JFrame {
 
     @Override
     public Color getTreeCellFgColor() {
-      // FIXME: should get colors from LAF
       if (isActive()) {
-        return metadata == null ? Color.red : Color.black;
+        if (metadata == null) {
+          return UIManager.getColor("Objects.RedStatus"); // Color.red
+        }
       }
       else {
-        return metadata == null ? Color.pink : Color.gray;
+        if (metadata == null) {
+          return UIManager.getColor("Objects.Pink"); // Color.pink
+        }
+        else {
+          return UIManager.getColor("TextPane.inactiveForeground"); // Color.gray
+        }
       }
+      return null;
     }
 
     @Override
@@ -2051,8 +2086,12 @@ public class ModuleManagerWindow extends JFrame {
 
     @Override
     public Color getTreeCellFgColor() {
-      // FIXME: should get colors from LAF
-      return belongsToModule() ? Color.black : Color.gray;
+      if (!belongsToModule()) {
+        return UIManager.getColor("TextPane.inactiveForeground"); //Color.gray;
+      }
+      else {
+        return null;
+      }
     }
 
     @Override

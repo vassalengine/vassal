@@ -115,28 +115,54 @@ public class StartUp {
           );
         }
 
-        if (!SystemUtils.IS_OS_WINDOWS) {
-          // use native LookAndFeel
-          // NB: This must be after Mac-specific properties
-          try {
-            UIManager.setLookAndFeel(
-              UIManager.getSystemLookAndFeelClassName()
-            );
+        String laf = Prefs.getGlobalPrefs().getStoredValue(Prefs.LOOK_AND_FEEL);
+
+        // set LookAndFeel
+        // NB: This must be after Mac-specific properties
+        try {
+          // From https://www.javacodegeeks.com/2025/07/modern-look-and-feel-in-java-swing-flatlaf-deep-dive.html#google_vignette
+          if ("Dark".equals(laf)) {
+            UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatDarkLaf());
           }
-          catch (ClassNotFoundException | UnsupportedLookAndFeelException
-            | InstantiationException | IllegalAccessException e) {
+          else if ("Light".equals(laf)) {
+            UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
+          }
+          else if ("IntelliJ".equals(laf)) {
+            UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatIntelliJLaf());
+          }
+          else if ("Darcula".equals(laf)) {
+            UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatDarculaLaf());
+          }
+        }
+        catch (UnsupportedLookAndFeelException e) {
+          if (!SystemUtils.IS_OS_WINDOWS) {
+            // Fall back to the system look and feel.
+            laf = null;
+          }
+          else {
             ErrorDialog.bug(e);
           }
+        }
 
-          // The GTK LaF has a color picker which lacks the ability to
-          // select transparency. We can override that and it doesn't
-          // look too goofy.
-          if ("com.sun.java.swing.plaf.gtk.GTKLookAndFeel".equals(//NON-NLS
-            UIManager.getLookAndFeel().getClass().getName())) {
-            UIManager.put(
-              "ColorChooserUI",
-              "javax.swing.plaf.basic.BasicColorChooserUI"
-            );
+        if (!SystemUtils.IS_OS_WINDOWS) {
+          if (laf == null || "System".equals(laf)) {
+            try {
+              UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            }
+            catch (ClassNotFoundException | UnsupportedLookAndFeelException
+                     | InstantiationException | IllegalAccessException e) {
+              ErrorDialog.bug(e);
+            }
+            // The GTK LaF has a color picker which lacks the ability to
+            // select transparency. We can override that and it doesn't
+            // look too goofy.
+            if ("com.sun.java.swing.plaf.gtk.GTKLookAndFeel".equals(//NON-NLS
+                    UIManager.getLookAndFeel().getClass().getName())) {
+              UIManager.put(
+                      "ColorChooserUI",
+                      "javax.swing.plaf.basic.BasicColorChooserUI"
+              );
+            }
           }
         }
 
