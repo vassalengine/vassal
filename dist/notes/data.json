@@ -45,12 +45,15 @@
       "improvements": [
       ],
       "other": [
+        { "num": 14406, "desc": "Upgraded httpclient5 to 5.5.2" },
+        { "num": 14404, "desc": "Upgraded maven-artifact to 3.9.12" },
+        { "num": 14402, "desc": "Upgraded asm to 9.9.1" },
+        { "num": 14401, "desc": "Upgraded checkstyle to 12.3.0" },
+        { "num": 14395, "desc": "Upgraded logback-classic to 1.5.22" },
         { "num": 14379, "desc": "Upgraded maven-resoures-plugin 3.4.0" },
-        { "num": 14378, "desc": "Upgraded checkstyle to 12.2.0" },
         { "num": 14377, "desc": "Upgraded maven-source-plugin to 3.4.0" },
         { "num": 14373, "desc": "Upgraded byte-buddy to 1.18.2" },
         { "num": 14369, "desc": "Upgraded spotbugs-maven-plugin to 4.9.8.2" },
-        { "num": 14362, "desc": "Upgraded logback-classic to 1.5.21" },
         { "num": 14361, "desc": "Upgraded commons-lang3 to 3.20.0" },
         { "num": 14359, "desc": "Upgraded maven-jar-plugin to 3.5.0" },
         { "num": 14347, "desc": "Log more info for the piece not on map exception" },
@@ -67,8 +70,7 @@
         { "num": 14265, "desc": "Upgraded maven-enforcer-plugin to 3.6.2" },
         { "num": 14264, "desc": "Upgraded maven-dependency-plugin to 3.9.0" },
         { "num": 14260, "desc": "Reorder items on Player Tools menu to put all Loads together" },
-        { "num": 14254, "desc": "Build release on tag" },
-        { "num": 14252, "desc": "Upgraded httpclient5 to 5.5.1" }
+        { "num": 14254, "desc": "Build release on tag" }
       ]
     },
     {
