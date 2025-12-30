@@ -3,7 +3,7 @@
 * 12944: Add pieceCount to the map auto reporter
 * 12763: Added ModuleGameFileName property
 
-3.7.19 - ???
+3.7.19 - 30 December 2025
 
 * 14406: Upgraded httpclient5 to 5.5.2
 * 14404: Upgraded maven-artifact to 3.9.12

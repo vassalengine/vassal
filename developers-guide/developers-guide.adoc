@@ -240,6 +240,7 @@ include::{rootdir}Makefile[lines=258]
 
 * [ ] Update the release announcement data `dist/notes/data.json` and Jinja templates in `dist/notes` with the changes for the new release.
 * [ ] Fill in the release date in `CHANGES`.
+* [ ] Add the new release to `dist/linux/org.vassalengine.vassal.metainfo.xml`.
 * [ ] Set `MAVEN_VERSION` to `$(VNUM)` in the `Makefile`.
 * [ ] `make clean`
 * [ ] `make` (This will update various `pom.xml` with the new version number.)
@@ -257,13 +258,14 @@ include::{rootdir}Makefile[lines=258]
 * [ ] Update the release branch in `.github/workflows/package.yml`.
 * [ ] Update the release notes in our wiki: https://vassalengine.org/wiki/VASSAL_3.5_Release_Notes
 * [ ] Post release announcements (see `tmp/notes-*`):
-** Our forum: https://forum.vassalengine.org/c/news/17 (Pin the new post, unpin the one for the previous release.)
+** Our forum: https://forum.vassalengine.org/c/news/17 (Pin the new post, unpin the one for the previousth release.)
 ** BGG Computer Based Board Gaming forum: https://www.boardgamegeek.com/forum/28/bgg/computer-based-board-gaming
 ** BGG Press Releases forum: https://www.boardgamegeek.com/forum/31/bgg/press-releases
 ** Our forum at ConsimWorld: http://talk.consimworld.com/WebX/.ee6f15c/10067
 ** VASL forum at GameSquad: http://www.gamesquad.com/forums/index.php?forums/vasl.103/
 ** Facebook: Vassal Wargamers Americas: https://www.facebook.com/groups/vassalwargamers/
 ** Facebook: Vassal Wargamers Europe: https://www.facebook.com/groups/VassalWargamersEurope
+* [ ] Update the `sources` section in `org.vassalengine.vassal/org.vassalengine.vassal.yml` in the https://github.com/flathub/org.vassalengine.vassal repository.
 * [ ] Relax.
 
 == Running Vassal
