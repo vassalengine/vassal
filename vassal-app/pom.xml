@@ -37,7 +37,7 @@
         <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf</artifactId>
-            <version>3.5</version>
+            <version>3.7</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>

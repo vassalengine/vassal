@@ -64,6 +64,7 @@ APP_JARS	:= /usr/share/java/asm.jar			\
 		   /usr/share/java/commons-io.jar		\
 		   /usr/share/java/commons-lang3.jar		\
 		   /usr/share/java/commons-logging.jar		\
+		   /usr/share/java/flatlaf.jar		\
 		   /usr/share/java/httpclient5.jar		\
 		   /usr/share/java/httpcore5.jar		\
 		   /usr/share/java/httpcore5-h2.jar		\
