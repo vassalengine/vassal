@@ -26,6 +26,10 @@
       "improvements": [
       ],
       "other": [
+        { "num": 14417, "desc": "Upgraded logback-classic to 1.5.23" },
+        { "num": 14416, "desc": "Upgraded byte-buddy to 1.18.3" },
+        { "num": 14415, "desc": "Upgraded httpclient5 5.6" },
+        { "num": 14414, "desc": "Upgraded exec-maven-plugin to 3.6.3" }
       ]
     },
     {
