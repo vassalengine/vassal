@@ -33,6 +33,7 @@ import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.ShowHelpAction;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
@@ -253,6 +254,15 @@ public class ModuleManagerWindow extends JFrame {
 
     // Initialize Global Preferences
     Prefs.getGlobalPrefs().getEditor().initDialog(this);
+
+    final TranslatingStringEnumConfigurer lafConfig =
+            new TranslatingStringEnumConfigurer(Prefs.LOOK_AND_FEEL,
+                    Resources.getString("GlobalOptions.look_and_feel"),
+                    Prefs.SUPPORTED_LAF,
+                    new String[] {"LaF.System", "LaF.Light", "LaF.IntelliJ", "LaF.Dark", "LaF.Darcula"});
+
+    Prefs.getGlobalPrefs().addOption(Resources.getString("Prefs.general_tab"), lafConfig);
+
     Prefs.initSharedGlobalPrefs();
 
     final BooleanConfigurer serverStatusConfig =
@@ -1721,7 +1731,7 @@ public class ModuleManagerWindow extends JFrame {
     @Override
     public Color getTreeCellFgColor() {
       if (Info.isModuleTooNew(getVassalVersion())) {
-        return UIManager.getColor("TextPane.inactiveForeground"); // Color.GRAY
+        return UIManager.getColor("TextPane.inactiveForeground"); // Color.gray
       }
       return null;
     }
@@ -2087,7 +2097,7 @@ public class ModuleManagerWindow extends JFrame {
     @Override
     public Color getTreeCellFgColor() {
       if (!belongsToModule()) {
-        return UIManager.getColor("TextPane.inactiveForeground"); //Color.gray;
+        return UIManager.getColor("TextPane.inactiveForeground"); // Color.gray;
       }
       else {
         return null;

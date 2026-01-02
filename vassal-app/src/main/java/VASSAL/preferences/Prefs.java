@@ -23,7 +23,6 @@ import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.configure.IntConfigurer;
-import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ReadErrorDialog;
 
@@ -68,7 +67,7 @@ public class Prefs implements Closeable {
 
   public static final String TRANSLATABLE_SUPPORT = "translatableSupport"; //NON-NLS
 
-  public static final String LOOK_AND_FEEL = "LookAndFeel"; //$NON-NLS
+  public static final String LOOK_AND_FEEL = "LookAndFeel"; //NON-NLS
   public static final String[] SUPPORTED_LAF = {"System", "Light", "IntelliJ", "Dark",  "Darcula"}; //NON-NLS
 
   private static Prefs globalPrefs; // A Global Preferences object
@@ -281,14 +280,6 @@ public class Prefs implements Closeable {
       new DirectoryConfigurer(MODULES_DIR_KEY, null);
     c.setValue(new File(System.getProperty("user.home")));
     globalPrefs.addOption(null, c);
-
-    final TranslatingStringEnumConfigurer lafConfig =
-            new TranslatingStringEnumConfigurer(LOOK_AND_FEEL,
-                    Resources.getString("GlobalOptions.look_and_feel"), //NON-NLS
-                    SUPPORTED_LAF,
-                    new String[] {"LaF.System", "LaF.Light", "LaF.IntelliJ", "LaF.Dark", "LaF.Darcula"}); //NON-NLS
-
-    globalPrefs.addOption(Resources.getString("Prefs.general_tab"), lafConfig); //$NON-NLS
 
     final IntConfigurer overrideDefaultFontSize = new IntConfigurer(
         OVERRIDE_DEFAULT_FONT_SIZE,
