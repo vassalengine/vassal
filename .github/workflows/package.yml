@@ -211,6 +211,10 @@ jobs:
             sed -e '1{N;s/\n/ /;}' -e 's/ *([^)]*)//g' -e 's/,//g' )
           sudo apt install -y build-essential devscripts fakeroot ${dep}
 
+      - name: Install flatlaf
+        run: |
+          wget -O /usr/share/java/flatlaf.jar https://repo1.maven.org/maven2/com/formdev/flatlaf/3.7/flatlaf-3.7.jar
+
       - name: Make orig archive
         run: |
           package=$(dpkg-parsechangelog --show-field Source)
