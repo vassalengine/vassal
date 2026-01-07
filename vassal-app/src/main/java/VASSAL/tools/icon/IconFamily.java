@@ -650,7 +650,7 @@ public class IconFamily extends AbstractConfigurable {
       }
       else {
         final File f = fc.getSelectedFile();
-        if (f != null && f.exists()) {
+        if (f != null && !f.getPath().isEmpty() && f.exists()) {
           final String name = f.getName();
           if (name.split("\\.").length != 2) { //$NON-NLS-1$
             showError(Resources.getString("Editor.IconFamily.illegal_icon_name")); //$NON-NLS-1$

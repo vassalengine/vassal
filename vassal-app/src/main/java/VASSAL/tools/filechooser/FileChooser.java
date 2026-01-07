@@ -221,6 +221,7 @@ public abstract class FileChooser {
     public int showSaveDialog(Component parent) {
       int value = fc.showSaveDialog(parent);
       if (value == APPROVE_OPTION
+          && !getSelectedFile().getPath().isEmpty()
           && getSelectedFile().exists()
           && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(parent,
                                                                     Resources.getString("Editor.FileChooser.overwrite", getSelectedFile().getName()),
@@ -356,7 +357,7 @@ public abstract class FileChooser {
 
       fd.setModal(true);
       fd.setFilenameFilter(filter);
-      if (cur != null) {
+      if (cur != null && !cur.getPath().isEmpty()) {
         if (cur.isDirectory())
           fd.setDirectory(cur.getPath());
         else {

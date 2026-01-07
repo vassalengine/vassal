@@ -801,6 +801,7 @@ public class GameState implements CommandEncoder {
     final GameModule g = GameModule.getGameModule();
 
     try {
+      if (f.getPath().isEmpty()) throw new FileNotFoundException("No save specified");
       if (!f.exists()) throw new FileNotFoundException("Unable to locate " + f.getPath());
 
       // Check the Save game for validity
@@ -1016,7 +1017,7 @@ public class GameState implements CommandEncoder {
   }
 
   protected boolean checkForOldSaveFile(File f) {
-    if (f.exists()) {
+    if (!f.getPath().isEmpty() && f.exists()) {
       // warn user if overwriting a save from an old version
       final AbstractMetaData md = MetaDataFactory.buildMetaData(f);
       if (md instanceof SaveMetaData) {

@@ -252,7 +252,7 @@ public class ImageSaver extends AbstractToolbarItem {
       files.add(f);
 
       // make sure that we can write the file before proceeding
-      if (f.exists()) {
+      if (!f.getPath().isEmpty() && f.exists()) {
         if (!f.canWrite()) {
           throw new IOException(
             "Cannot write to the file \"" + f.getAbsolutePath() + "\""

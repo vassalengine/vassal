@@ -171,7 +171,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
     if (fc.showOpenDialog() == FileChooser.APPROVE_OPTION) {
       lr.module = fc.getSelectedFile();
       if (lr.module != null) {
-        if (lr.module.exists()) {
+        if (!lr.module.getPath().isEmpty() && lr.module.exists()) {
           final AbstractMetaData metadata =
             MetaDataFactory.buildMetaData(lr.module);
           if (!(metadata instanceof ModuleMetaData)) {

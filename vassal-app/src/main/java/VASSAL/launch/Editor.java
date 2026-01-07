@@ -155,7 +155,7 @@ public class Editor extends Launcher {
         lr.importFile = fc.getSelectedFile();
 
         if (lr.importFile != null) {
-          if (lr.importFile.exists()) {
+          if (!lr.importFile.getPath().isEmpty() && lr.importFile.exists()) {
             final AbstractMetaData metadata =
               MetaDataFactory.buildMetaData(lr.importFile);
             if (!(metadata instanceof ImportMetaData)) {

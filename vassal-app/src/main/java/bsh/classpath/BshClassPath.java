@@ -361,6 +361,11 @@ public class BshClassPath
 		throws IOException 
 	{ 
 		String name = url.getFile();
+                if ( name.isEmpty()) {
+			String s = "Empty a classpath component";
+			errorWhileMapping( s );
+		}
+
 		File f = new File( name );
 
 		if ( f.isDirectory() ) {
@@ -719,6 +724,9 @@ public class BshClassPath
 
 		public static byte [] readBytesFromFile( File base, String className ) 
 		{
+                        if (className.isEmpty())
+                                return null;
+                        
 			String n = className.replace( '.', File.separatorChar ) + ".class";
 			File file = new File( base, n );
 

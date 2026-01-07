@@ -148,7 +148,7 @@ public class IconConfigurer extends Configurer {
     }
     else {
       final File f = fc.getSelectedFile();
-      if (f != null && f.exists()) {
+      if (f != null && !f.getPath().isEmpty() && f.exists()) {
         GameModule.getGameModule().getArchiveWriter()
                                   .addImage(f.getPath(), f.getName());
         setValue(f.getName());

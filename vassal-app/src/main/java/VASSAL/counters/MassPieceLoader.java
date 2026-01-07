@@ -558,7 +558,7 @@ public class MassPieceLoader {
      */
     protected void loadImageNames(File dir) {
       imageNames.clear();
-      if (dir != null && dir.isDirectory()) {
+      if (dir != null && !dir.getPath().isEmpty() && dir.isDirectory()) {
         final File[] files = dir.listFiles();
         if (files != null) {
           Arrays.sort(files);

@@ -168,6 +168,7 @@ public class ImagePicker extends JPanel
     fc.setFileFilter(new ImageFileFilter());
 
     if (fc.showOpenDialog(this) == FileChooser.APPROVE_OPTION
+         && !fc.getSelectedFile().getPath().isEmpty()
          && fc.getSelectedFile().exists()) {
       final String name = fc.getSelectedFile().getName();
       gm.getArchiveWriter().addImage(fc.getSelectedFile().getPath(), name);
