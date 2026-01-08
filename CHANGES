@@ -5,10 +5,11 @@
 
 3.7.20 - ???
 
+* 14432: Upgraded logback-classic to 1.5.24
+* 14430: Upgraded junit-bom to 6.0.2
 * 14425: Upgraded checkstyle to 13.0.0
 * 14424: Upgraded license-maven-plugin to 2.7.1
 * 14421: Upgraded jsoup to 1.22.1
-* 14417: Upgraded logback-classic to 1.5.23
 * 14416: Upgraded byte-buddy to 1.18.3
 * 14415: Upgraded httpclient5 5.6
 * 14414: Upgraded exec-maven-plugin to 3.6.3
