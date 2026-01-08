@@ -126,7 +126,6 @@ import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.version.VersionUtils;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
