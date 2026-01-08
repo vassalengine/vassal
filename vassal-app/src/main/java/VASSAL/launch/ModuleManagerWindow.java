@@ -566,7 +566,7 @@ public class ModuleManagerWindow extends JFrame {
       Arrays.stream(moduleConfig.getStringArray())
     ).sorted().distinct().forEach(s -> {
       final ModuleInfo module = new ModuleInfo(s);
-      if (module.getFile().exists() && module.isValid()) {
+      if (!module.getFile().getPath().isEmpty() && module.getFile().exists() && module.isValid()) {
         moduleList.add(module);
       }
       else {
@@ -616,7 +616,7 @@ public class ModuleManagerWindow extends JFrame {
       final List<File> missingFolders = new ArrayList<>();
 
       for (final File f : moduleInfo.getFolders()) {
-        if (f.exists() && f.isDirectory()) {
+        if (!f.getPath().isEmpty() && f.exists() && f.isDirectory()) {
           final GameFolderInfo folderInfo = new GameFolderInfo(f, moduleInfo);
           final MyTreeNode folderNode = new MyTreeNode(folderInfo);
           moduleNode.add(folderNode);

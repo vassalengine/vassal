@@ -47,7 +47,7 @@ public class ExtensionFileFilter extends FileFilter {
    */
   @Override
   public boolean accept(File f) {
-    if (f.isDirectory()) return true;
+    if (!f.getPath().isEmpty() && f.isDirectory()) return true;
     final String name = f.getName().toLowerCase();
     for (final String type : types) {
       if (name.endsWith(type)) return true;

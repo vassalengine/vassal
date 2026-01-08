@@ -101,6 +101,10 @@ public class Tailer {
     // NB: This method is synchronized to ensure that there is never more
     // than one tailer thread at at time.
     if (!tailing) {
+      if (file.getPath().isEmpty()) {
+        throw new IOException("Empty file name");
+      }
+      
       if (!file.exists()) {
         throw new IOException(file.getAbsolutePath() + " does not exist");
       }

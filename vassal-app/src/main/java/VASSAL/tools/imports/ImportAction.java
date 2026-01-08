@@ -149,7 +149,7 @@ public final class ImportAction extends EditModuleAction {
 
     if (fc.showOpenDialog() == FileChooser.APPROVE_OPTION) {
       final File f = fc.getSelectedFile();
-      if (f != null && f.exists()) {
+      if (f != null && !f.getPath().isEmpty() && f.exists()) {
         loadModule(f);
         actionCancelled = false;
       }
@@ -264,7 +264,7 @@ public final class ImportAction extends EditModuleAction {
   public File getCaseInsensitiveFile(File f, File base,
       boolean queryIfNotFound, FileFilter filter) {
     // Easy case
-    if (f.exists())
+    if (!f.getPath().isEmpty() && f.exists())
       return f;
 
     final String name = Importer.getFileName(f.getName());
@@ -308,7 +308,7 @@ public final class ImportAction extends EditModuleAction {
 
       if (fc.showOpenDialog() == FileChooser.APPROVE_OPTION) {
         final File p = fc.getSelectedFile();
-        if (p.exists()) return p;
+        if (!p.getPath().isEmpty() && p.exists()) return p;
       }
     }
 

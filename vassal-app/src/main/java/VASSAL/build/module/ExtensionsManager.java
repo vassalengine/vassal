@@ -51,7 +51,7 @@ public class ExtensionsManager {
    */
   private final FilenameFilter filter = (dir, name) -> {
     final File fileCandidate = new File(dir, name);
-    return !fileCandidate.isHidden() && !fileCandidate.isDirectory();
+    return !fileCandidate.getPath().isEmpty() && !fileCandidate.isHidden() && !fileCandidate.isDirectory();
   };
 
   public ExtensionsManager(File moduleFile) {

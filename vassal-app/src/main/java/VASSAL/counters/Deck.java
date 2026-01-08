@@ -2002,6 +2002,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
     File outputFile = fc.getSelectedFile();
     if (outputFile != null &&
+        !outputFile.getPath().isEmpty() &&
         outputFile.exists() &&
         shouldConfirmOverwrite() &&
         JOptionPane.NO_OPTION ==

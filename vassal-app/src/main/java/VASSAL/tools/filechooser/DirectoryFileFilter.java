@@ -29,7 +29,7 @@ import java.io.File;
 public class DirectoryFileFilter extends FileFilter {
   @Override
   public boolean accept(File f) {
-    return f.isDirectory();
+    return !f.getPath().isEmpty() && f.isDirectory();
   }
 
   @Override
