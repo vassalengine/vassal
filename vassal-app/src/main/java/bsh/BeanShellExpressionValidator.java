@@ -19,42 +19,45 @@ package bsh;
 
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
- * Validate a single line BeanShell expression. 
- * Build a list of variable references in the expression.
- * 
- * This Class must be defined in package bsh to allow access to 
- * package visible elements in the bsh library.
+ * Validates BeanShell expressions and extracts variable and method references.
  *
+ * <p>This validator parses single-line BeanShell expressions to:
+ * <ul>
+ * <li>Check syntax validity</li>
+ * <li>Extract variable references</li>
+ * <li>Identify string variables used with method calls</li>
+ * <li>Collect method references</li>
+ * </ul>
+ *
+ * <p>This class must be in package {@code bsh} to access package-visible elements
+ * in the BeanShell library.
+ *
+ * @author Brent Easton
+ * @since 2008
  */
 public class BeanShellExpressionValidator {
-  
+
   protected String expression;
   protected List<String> variables = new ArrayList<>();
   protected List<String> stringVariables = new ArrayList<>();
   protected List<String> methods = new ArrayList<>();
-  protected String error;
+  protected String error = "";
   protected boolean valid;
 
   /**
-   * List of all Java 15 String functions that can be applied to property names directly within Beanshell.
-   * (i.e. those with return values and argument types that Vassal supports).
+   * Java String methods supported for direct use with property names in BeanShell.
    *
-   * This list is used to recognize and evaluate constructs of the form
-   *
-   *    stringVariable.function()
-   *
-   * And allow stringVariable to be used directly within beanshell with Java syntax,
-   * rather than having to resort to
-   *
-   *    GetProperty("stringVariable").function()
-   *
+   * <p>These methods have return values and argument types that VASSAL supports,
+   * allowing constructs like {@code stringVariable.function()} instead of
+   * {@code GetProperty("stringVariable").function()}.
    */
-  private static final Set<String> supportedStringFunctions = Set.of (
+  private static final Set<String> SUPPORTED_STRING_FUNCTIONS = Set.of(
     ".compareTo",
     ".compareToIgnoreCase",
     ".contains",
@@ -87,178 +90,228 @@ public class BeanShellExpressionValidator {
 
 
   /**
-   * Build a new Validator and validate the expression
-   * @param expression Expression to validate
+   * Creates a new validator and validates the given expression.
+   *
+   * @param expression the BeanShell expression to validate
+   * @throws IllegalArgumentException if expression is null
    */
   public BeanShellExpressionValidator(String expression) {
-    this.expression = expression; 
-    valid = validate();
+    this.expression = Objects.requireNonNull(expression, "Expression cannot be null");
+    this.valid = validate();
   }
-  
+
   /**
-   * Is the expression valid?
-   * @return valid
+   * Checks if the expression is syntactically valid.
+   *
+   * @return {@code true} if the expression is valid, {@code false} otherwise
    */
   public boolean isValid() {
     return valid;
   }
-  
+
   protected void setValid(boolean b) {
     valid = b;
   }
 
   /**
-   * Return a list of Variable references in the expression that we know must be Strings
-   * @return List of variables
+   * Returns variable references that are used as strings (with string method calls).
+   *
+   * @return a list of string variable names
    */
   public List<String> getStringVariables() {
     return stringVariables;
   }
 
   /**
-   * Return a list of Variable references in the expression
-   * @return List of variables
+   * Returns all variable references in the expression.
+   *
+   * @return a list of variable names
    */
   public List<String> getVariables() {
     return variables;
   }
 
+  /**
+   * Returns all variable references (both regular and string variables).
+   *
+   * @return a list containing all variable names
+   */
   public List<String> getAllVariables() {
-    final List<String> l = new ArrayList<>(getVariables());
-    l.addAll(getStringVariables());
-    return l;
+    final Set<String> allVars = new LinkedHashSet<>(variables);
+    allVars.addAll(stringVariables);
+    return new ArrayList<>(allVars);
   }
   /**
-   * Return a list of Methods called by the expression
-   * @return List of Methods
+   * Returns method calls found in the expression.
+   *
+   * @return a list of method names
    */
   public List<String> getMethods() {
     return methods;
   }
-  
+
   /**
-   * Return an Error Message if no valid
-   * @return Error message
+   * Returns the error message if validation failed.
+   *
+   * @return the error message, or empty string if no error
    */
   public String getError() {
     return error;
   }
-  
-  protected void setError(String s) {
-    error = s;
+
+  protected void setError(String errorMessage) {
+    this.error = Objects.requireNonNullElse(errorMessage, "");
   }
-  
+
   /**
-   * Validate the expression
-   * 
-   * @return Expression validity
+   * Validates the expression using BeanShell parser.
+   *
+   * @return {@code true} if expression is valid, {@code false} otherwise
    */
   protected boolean validate() {
+    if (expression.trim().isEmpty()) {
+      setError("Expression cannot be empty");
+      return false;
+    }
+
     final String expr = stripBraces(expression);
-    
     setError("");
+
     try {
-      Parser p = new Parser(new StringReader(expr + ";"));
-      for (;;) {
-        if (p.Line()) {
+      final Parser parser = new Parser(new StringReader(expr + ";"));
+      while (true) {
+        if (parser.Line()) {
           return true;
-        } 
-        else {
-          final SimpleNode node = p.popNode();
-          if (! processNode(node)) {
+        } else {
+          final SimpleNode node = parser.popNode();
+          if (!processNode(node)) {
             return false;
           }
         }
       }
-    }
-    catch (ParseException e) {
-      setError(e.getMessage());
+    } catch (ParseException e) {
+      setError("Parse error: " + e.getMessage());
       return false;
-    }
-    catch (TokenMgrError e) {
-      setError(e.getMessage());
+    } catch (TokenMgrError e) {
+      setError("Token error: " + e.getMessage());
+      return false;
+    } catch (Exception e) {
+      setError("Unexpected error: " + e.getMessage());
       return false;
     }
   }
-  
+
   /**
-   * If the expression is surrounded by Vassal expression braces {}
-   * replace them with spaces so that it will validate and report errors
-   * in the correct location
-   * 
-   * @param s Expression
-   * @return stripped expression
+   * Strips VASSAL expression braces {@code {}} from the expression.
+   *
+   * <p>If the expression is surrounded by braces, they are replaced with spaces
+   * to maintain correct error location reporting during validation.
+   *
+   * @param expression the expression to process
+   * @return the expression with braces replaced by spaces
+   * @throws IllegalArgumentException if expression is null
    */
-  public static String stripBraces(String s) {
-    String expr = s;
-    if (s.trim().startsWith("{") && s.trim().endsWith("}")) {
-      final int start = s.indexOf("{");
-      final int end = s.lastIndexOf("}");
-      StringBuilder buffer = new StringBuilder(s.length());
-      for (int i = 0; i < s.length(); i++) {
-        if (i == start || i == end) {
-          buffer.append(' ');
-        }
-        else {
-          buffer.append(s.charAt(i));        
-        }
+  public static String stripBraces(String expression) {
+    Objects.requireNonNull(expression, "Expression cannot be null");
+
+    final String trimmed = expression.trim();
+    if (!trimmed.startsWith("{") || !trimmed.endsWith("}")) {
+      return expression;
+    }
+
+    final int startBrace = expression.indexOf('{');
+    final int endBrace = expression.lastIndexOf('}');
+
+    final StringBuilder result = new StringBuilder(expression.length());
+    for (int i = 0; i < expression.length(); i++) {
+      if (i == startBrace || i == endBrace) {
+        result.append(' ');
+      } else {
+        result.append(expression.charAt(i));
       }
-      expr = buffer.toString();
     }
-    return expr;
+
+    return result.toString();
   }
-  
+
   /**
-   * Process a Parser Node and extract any Variable and Method references.
-   * Assignments are not allowed in an expression, so flag as an error
-   * @param node Parser Node
+   * Processes a parser node to extract variable and method references.
+   *
+   * <p>Assignments are not allowed in expressions and will cause validation to fail.
+   *
+   * @param node the parser node to process
+   * @return {@code true} if processing succeeded, {@code false} if an error occurred
    */
-  protected boolean processNode (SimpleNode node) {
+  protected boolean processNode(SimpleNode node) {
     if (node == null) {
       return true;
     }
-    
+
     if (node instanceof BSHAmbiguousName) {
-      final String name = node.getText().trim();
-      if ((node.parent instanceof BSHMethodInvocation)) {
-        if (! methods.contains(name)) {
-          // Check for x.y() where y is a String method. x will be a property name we need to report
-          // node.getText() returns the unknown method name with parts split by spaces. Break this into an array of tokens
-          String[] tokens = name.split(" ");
-          // Only 1 Token, it's a straight method, we're not interested.
-          if (tokens.length == 1) {
-            if (! methods.contains(name)) {
-              methods.add(name);
-            }
-          }
-          else {
-            // If Token 2 is one of the String methods, then token 1 is a property name we need to report as a String variable
-            if (supportedStringFunctions.contains(tokens[1])) {
-              if (! stringVariables.contains(tokens[0])) {
-                stringVariables.add(tokens[0]);
-              }
-            }
-          }
-        }
-      }
-      else if (! variables.contains(name)) {
+      return processAmbiguousName(node);
+    } else if (node instanceof BSHAssignment) {
+      setError("Assignments (=) are not allowed in expressions. See Help.");
+      return false;
+    } else {
+      return processChildNodes(node);
+    }
+  }
+
+  /**
+   * Processes ambiguous name nodes to identify variables and method calls.
+   */
+  private boolean processAmbiguousName(SimpleNode node) {
+    final String name = node.getText().trim();
+
+    if (node.parent instanceof BSHMethodInvocation) {
+      processMethodInvocation(name);
+    } else {
+      if (!variables.contains(name)) {
         variables.add(name);
       }
     }
-    else if (node instanceof BSHAssignment) {
-      setError("Assignments (=) not allowed in Expressions. See Help");
-      return false;
+
+    return true;
+  }
+
+  /**
+   * Processes method invocation to identify string variables and methods.
+   */
+  private void processMethodInvocation(String name) {
+    // Parse method calls like "variable.method()" where method is a String function
+    final String[] tokens = name.split(" ");
+
+    if (tokens.length == 1) {
+      // Simple method call
+      if (!methods.contains(name)) {
+        methods.add(name);
+      }
+    } else if (tokens.length >= 2) {
+      // Check if second token is a supported String method
+      if (SUPPORTED_STRING_FUNCTIONS.contains(tokens[1])) {
+        if (!stringVariables.contains(tokens[0])) {
+          stringVariables.add(tokens[0]);
+        }
+      } else {
+        if (!methods.contains(name)) {
+          methods.add(name);
+        }
+      }
     }
-    else {
-      if (node.children != null) {
-        for (int i = 0; i < node.children.length; i++) {
-          if (! processNode(node.getChild(i))) {
-            return false;
-          }
+  }
+
+  /**
+   * Recursively processes child nodes.
+   */
+  private boolean processChildNodes(SimpleNode node) {
+    if (node.children != null) {
+      for (Node child : node.children) {
+        if (!processNode((SimpleNode) child)) {
+          return false;
         }
       }
     }
     return true;
-  }  
-  
+  }
+
 }
