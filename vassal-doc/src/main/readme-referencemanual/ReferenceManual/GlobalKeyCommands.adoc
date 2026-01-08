@@ -297,6 +297,9 @@ NOTE: A new game started from a <<GameModule.adoc#PredefinedSetup, Pre-defined S
 | At Start of Fresh Game or Player Join/Side-Change
 | Run only when a _new game_ is starting _OR_ a new player joins or a player changes sides.
 
+| When a Player joins, retires or changes sides
+| Run whenever a player joins, retires, or changes sides. This includes joining as a non-player type such as an observer.
+
 |===
 
 *Startup GKC example 2:*

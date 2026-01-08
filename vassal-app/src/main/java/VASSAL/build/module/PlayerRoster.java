@@ -506,6 +506,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
       final Add a = new Add(this, GameModule.getActiveUserId(), GlobalOptions.getInstance().getPlayerId(), newSide);
       a.execute();
+      fireSideChange(null, newSide);
       gm.sendAndLog(a);
 
       pickedSide = true;
