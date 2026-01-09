@@ -5,6 +5,7 @@ import VASSAL.build.module.BasicLogger;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.GameState;
 import VASSAL.build.module.Map;
+import VASSAL.build.module.PlayerRoster;
 import VASSAL.build.module.map.Zoomer;
 import VASSAL.command.Command;
 import VASSAL.i18n.Resources;
@@ -26,7 +27,13 @@ class VideoRenderService {
     final BasicLogger logger = gm.getBasicLogger();
     final GameState gameState = gm.getGameState();
     final boolean wasSavePromptSuppressed = gameState.isSavePromptSuppressed();
+    final boolean wasMismatchPromptSuppressed = GameState.isSuppressModuleMismatchPrompt();
+    final boolean wasAutoObserver = PlayerRoster.isAutoObserverSelection();
+    final boolean wasWizardSuppressed = GameState.isSuppressSetupWizard();
     gameState.setSuppressSavePrompt(true);
+    GameState.setSuppressModuleMismatchPrompt(true);
+    GameState.setSuppressSetupWizard(true);
+    PlayerRoster.setAutoObserverSelection(true);
 
     try {
       logger.setSuppressReplayPrompts(true);
@@ -151,6 +158,9 @@ class VideoRenderService {
     }
     finally {
       gameState.setSuppressSavePrompt(wasSavePromptSuppressed);
+      GameState.setSuppressModuleMismatchPrompt(wasMismatchPromptSuppressed);
+      GameState.setSuppressSetupWizard(wasWizardSuppressed);
+      PlayerRoster.setAutoObserverSelection(wasAutoObserver);
       logger.setSuppressReplayPrompts(false);
     }
   }

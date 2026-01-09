@@ -84,6 +84,8 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   public static final String SOLO      = "Solo";      // NON-NLS
   public static final String MODERATOR = "Moderator"; // NON-NLS
 
+  private static volatile boolean autoObserverSelection = false;
+
   protected List<PlayerInfo> players = new ArrayList<>();
   protected List<String> sides = new ArrayList<>();
   protected String[] untranslatedSides;
@@ -317,6 +319,14 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
   public static boolean isActive() {
     return GameModule.getGameModule().getPlayerRoster() != null;
+  }
+
+  public static void setAutoObserverSelection(boolean enabled) {
+    autoObserverSelection = enabled;
+  }
+
+  public static boolean isAutoObserverSelection() {
+    return autoObserverSelection;
   }
 
   /**
@@ -737,6 +747,9 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
    * Claims the appropriate occupied side, if any, for the current player. If more than one is available, prompts.
    */
   protected void claimOccupiedSide() {
+    if (autoObserverSelection) {
+      return;
+    }
     final List<Integer> indices = new ArrayList<>();
     final List<String> availableNames = new ArrayList<>();
     final PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
@@ -834,6 +847,9 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   }
 
   protected String promptForSide(String newSide) {
+    if (autoObserverSelection) {
+      return OBSERVER;
+    }
     final boolean alreadyConnected;
     if (newSide != null && newSide.isEmpty()) {
       alreadyConnected = true;

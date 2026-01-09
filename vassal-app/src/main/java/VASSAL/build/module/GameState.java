@@ -380,6 +380,24 @@ public class GameState implements CommandEncoder {
   private boolean gameStarting = false;
   private boolean gameStarted = false;
   private boolean suppressSavePrompt = false;
+  private static volatile boolean suppressModuleMismatchPrompt = false;
+  private static volatile boolean suppressSetupWizard = false;
+
+  public static void setSuppressModuleMismatchPrompt(boolean suppress) {
+    suppressModuleMismatchPrompt = suppress;
+  }
+
+  public static boolean isSuppressModuleMismatchPrompt() {
+    return suppressModuleMismatchPrompt;
+  }
+
+  public static void setSuppressSetupWizard(boolean suppress) {
+    suppressSetupWizard = suppress;
+  }
+
+  public static boolean isSuppressSetupWizard() {
+    return suppressSetupWizard;
+  }
 
   //
   // FIXME: This will become unnecessary when we do model-view separation.
@@ -572,7 +590,15 @@ public class GameState implements CommandEncoder {
     g.resetSourcesAndListeners();
 
     if (gameStarting) {
-      g.getWizardSupport().showGameSetupWizard();
+      if (!suppressSetupWizard) {
+        g.getWizardSupport().showGameSetupWizard();
+      }
+      else {
+        final PlayerRoster pr = g.getPlayerRoster();
+        if (pr != null && !pr.isFinished()) {
+          pr.finish();
+        }
+      }
     }
 
     loadGameOld.setEnabled(gameStarting);
@@ -718,13 +744,15 @@ public class GameState implements CommandEncoder {
           .append(Resources.getString("GameState.load_mismatch_trailer"))
           .append('\n');
 
-        if (JOptionPane.showConfirmDialog(
-          null,
-          message.toString(),
-          Resources.getString("GameState.load_mismatch"),
-          JOptionPane.YES_NO_OPTION,
-          JOptionPane.QUESTION_MESSAGE) != JOptionPane.YES_OPTION) {
-          return false;
+        if (!suppressModuleMismatchPrompt) {
+          if (JOptionPane.showConfirmDialog(
+            null,
+            message.toString(),
+            Resources.getString("GameState.load_mismatch"),
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE) != JOptionPane.YES_OPTION) {
+            return false;
+          }
         }
       }
 
