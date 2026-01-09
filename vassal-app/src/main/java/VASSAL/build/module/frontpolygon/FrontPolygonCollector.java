@@ -1,13 +1,18 @@
 package VASSAL.build.module.frontpolygon;
 
+import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.Deck;
 import VASSAL.counters.Embellishment;
 import VASSAL.counters.GamePiece;
+import VASSAL.counters.Obscurable;
+import VASSAL.counters.PieceAccess;
+import VASSAL.counters.SpecifiedSideAccess;
 import VASSAL.counters.Stack;
 
 import java.awt.Point;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashSet;
@@ -27,11 +32,57 @@ class FrontPolygonCollector {
       seenLocations.put(side, new HashSet<>());
     }
 
-    for (final GamePiece pieceOnMap : map.getAllPieces()) {
+    final GamePiece[] pieces = map.getAllPieces();
+    for (final GamePiece pieceOnMap : pieces) {
+      logPieceDetails(pieceOnMap);
       collectFromPiece(pieceOnMap, map, positions, seenLocations);
     }
 
+    // Debug logging to help diagnose why nothing was collected.
+    if (positions.values().stream().allMatch(List::isEmpty)) {
+      final Set<String> encounteredMaskOwners = new HashSet<>();
+      for (final GamePiece piece : pieces) {
+        final Object maskOwner = piece.getProperty(VASSAL.counters.Obscurable.ID);
+        if (maskOwner != null) {
+          encounteredMaskOwners.add(String.valueOf(maskOwner));
+        }
+      }
+      final StringBuilder sb = new StringBuilder("FrontPolygon debug: no pieces matched. ");
+      sb.append("Configured layers: Allies=").append(FrontPolygonSide.ALLIES.getLayerNames())
+        .append(", Axis=").append(FrontPolygonSide.GERMANS.getLayerNames()).append(". ");
+      sb.append("Configured mask owners: Allies=").append(FrontPolygonSide.ALLIES.getMaskOwners())
+        .append(", Axis=").append(FrontPolygonSide.GERMANS.getMaskOwners()).append(". ");
+      if (!encounteredMaskOwners.isEmpty()) {
+        sb.append("Encountered mask owners=").append(encounteredMaskOwners).append(". ");
+      }
+      sb.append("Total pieces inspected=").append(pieces.length);
+      VASSAL.build.GameModule.getGameModule().warn(sb.toString());
+    }
+
     return positions;
+  }
+
+  private void logPieceDetails(GamePiece piece) {
+    if (piece == null) {
+      return;
+    }
+    final StringBuilder sb = new StringBuilder("FrontPolygon inspect: ");
+    sb.append("name=").append(piece.getName());
+    sb.append(", pos=").append(piece.getPosition());
+
+    final Object maskOwner = piece.getProperty(VASSAL.counters.Obscurable.ID);
+    sb.append(", maskOwner=").append(maskOwner);
+
+    final StringBuilder matches = new StringBuilder();
+    for (final FrontPolygonSide side : FrontPolygonSide.values()) {
+      final boolean layerMatch = hasLayer(piece, side);
+      final boolean maskAccessMatch = hasMaskAccess(piece, side);
+      matches.append(side.name()).append("{layer=").append(layerMatch)
+        .append(", maskAccess=").append(maskAccessMatch).append("} ");
+    }
+    sb.append(", matches=").append(matches);
+
+    GameModule.getGameModule().warn(sb.toString());
   }
 
   private void collectFromPiece(GamePiece piece,
@@ -68,10 +119,20 @@ class FrontPolygonCollector {
   private FrontPolygonSide determineSide(GamePiece piece) {
     for (final FrontPolygonSide side : FrontPolygonSide.values()) {
       if (hasLayer(piece, side)) {
+        logMatch(piece, side, "layer");
+        return side;
+      }
+      if (hasMaskAccess(piece, side)) {
+        logMatch(piece, side, "maskAccess");
         return side;
       }
     }
     return null;
+  }
+
+  private void logMatch(GamePiece piece, FrontPolygonSide side, String reason) {
+    GameModule.getGameModule().warn("FrontPolygon matched piece '" + piece.getName()
+      + "' at " + piece.getPosition() + " to side " + side.name() + " via " + reason);
   }
 
   private boolean hasLayer(GamePiece piece, FrontPolygonSide side) {
@@ -83,6 +144,42 @@ class FrontPolygonCollector {
       }
     }
     return false;
+  }
+
+  private boolean hasMaskAccess(GamePiece piece, FrontPolygonSide side) {
+    if (side.getMaskOwners().isEmpty()) {
+      return false;
+    }
+    final List<GamePiece> obscurables = Decorator.getDecorators(piece, Obscurable.class);
+    if (obscurables == null || obscurables.isEmpty()) {
+      return false;
+    }
+    for (final GamePiece deco : obscurables) {
+      final PieceAccess access = extractAccess((Obscurable) deco);
+      if (access instanceof SpecifiedSideAccess) {
+        for (final String allowed : ((SpecifiedSideAccess) access).getSides()) {
+          if (side.matchesMaskOwner(allowed)) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  private PieceAccess extractAccess(Obscurable obscurable) {
+    try {
+      final Field f = Obscurable.class.getDeclaredField("access");
+      f.setAccessible(true);
+      final Object value = f.get(obscurable);
+      if (value instanceof PieceAccess) {
+        return (PieceAccess) value;
+      }
+    }
+    catch (Exception ignored) {
+      // best-effort; return null
+    }
+    return null;
   }
 
   private long positionKey(Point point) {
