@@ -116,18 +116,21 @@ public class StartUp {
         }
 
         if (!SystemUtils.IS_OS_WINDOWS) {
-          // use native LookAndFeel
-          // NB: This must be after Mac-specific properties
-          try {
-            UIManager.setLookAndFeel(
-              UIManager.getSystemLookAndFeelClassName()
-            );
+          // Check if Look and Feel is specified, otherwise default to system look and feel.
+          final String defaultLaf = System.getProperty("swing.defaultlaf");
+          if (defaultLaf == null) {
+            // use native LookAndFeel
+            // NB: This must be after Mac-specific properties
+            try {
+              UIManager.setLookAndFeel(
+                      UIManager.getSystemLookAndFeelClassName()
+              );
+            }
+            catch (ClassNotFoundException | UnsupportedLookAndFeelException
+                     | InstantiationException | IllegalAccessException e) {
+              ErrorDialog.bug(e);
+            }
           }
-          catch (ClassNotFoundException | UnsupportedLookAndFeelException
-            | InstantiationException | IllegalAccessException e) {
-            ErrorDialog.bug(e);
-          }
-
           // The GTK LaF has a color picker which lacks the ability to
           // select transparency. We can override that and it doesn't
           // look too goofy.
