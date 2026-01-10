@@ -23,6 +23,7 @@ import java.util.Set;
  * Collects per-side piece positions from the map.
  */
 class FrontPolygonCollector {
+  private static final boolean DEBUG_PIECES = Boolean.getBoolean("FrontPolygon.debugPieces");
 
   EnumMap<FrontPolygonSide, List<Point>> collect(Map map) {
     final EnumMap<FrontPolygonSide, List<Point>> positions = new EnumMap<>(FrontPolygonSide.class);
@@ -34,7 +35,9 @@ class FrontPolygonCollector {
 
     final GamePiece[] pieces = map.getAllPieces();
     for (final GamePiece pieceOnMap : pieces) {
-      logPieceDetails(pieceOnMap);
+      if (DEBUG_PIECES) {
+        logPieceDetails(pieceOnMap);
+      }
       collectFromPiece(pieceOnMap, map, positions, seenLocations);
     }
 
@@ -131,6 +134,9 @@ class FrontPolygonCollector {
   }
 
   private void logMatch(GamePiece piece, FrontPolygonSide side, String reason) {
+    if (!DEBUG_PIECES) {
+      return;
+    }
     GameModule.getGameModule().warn("FrontPolygon matched piece '" + piece.getName()
       + "' at " + piece.getPosition() + " to side " + side.name() + " via " + reason);
   }
