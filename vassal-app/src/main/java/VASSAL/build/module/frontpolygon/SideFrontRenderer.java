@@ -57,7 +57,9 @@ class SideFrontRenderer {
     }
     finally {
       g2.dispose();
-      final double ms = (System.nanoTime() - start) / 1_000_000.0;
+      final long nanos = System.nanoTime() - start;
+      FrontPolygon.addSideRenderNanos(nanos);
+      final double ms = nanos / 1_000_000.0;
       GameModule.getGameModule().warn(String.format("FrontPolygon side render took %.2f ms", ms));
     }
   }

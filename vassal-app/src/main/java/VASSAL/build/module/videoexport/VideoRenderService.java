@@ -7,6 +7,7 @@ import VASSAL.build.module.GameState;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.PlayerRoster;
 import VASSAL.build.module.map.Zoomer;
+import VASSAL.build.module.frontpolygon.FrontPolygon;
 import VASSAL.command.Command;
 import VASSAL.i18n.Resources;
 
@@ -30,10 +31,13 @@ class VideoRenderService {
     final boolean wasMismatchPromptSuppressed = GameState.isSuppressModuleMismatchPrompt();
     final boolean wasAutoObserver = PlayerRoster.isAutoObserverSelection();
     final boolean wasWizardSuppressed = GameState.isSuppressSetupWizard();
+    final boolean wasCaptureOnly = FrontPolygon.isRenderDuringCaptureOnly();
     gameState.setSuppressSavePrompt(true);
     GameState.setSuppressModuleMismatchPrompt(true);
     GameState.setSuppressSetupWizard(true);
     PlayerRoster.setAutoObserverSelection(true);
+    FrontPolygon.setRenderDuringCaptureOnly(true);
+    FrontPolygon.resetRenderNanos();
 
     try {
       logger.setSuppressReplayPrompts(true);
@@ -137,9 +141,12 @@ class VideoRenderService {
           final double encodeMs = encodeNanos / 1_000_000.0;
           final double stepMs = advanceNanos / 1_000_000.0;
           final double loadMs = loadNanos / 1_000_000.0;
+          final double hexMs = FrontPolygon.getHexRenderNanos() / 1_000_000.0;
+          final double sideMs = FrontPolygon.getSideRenderNanos() / 1_000_000.0;
+          final double totalMs = paintMs + encodeMs + stepMs + loadMs;
           gm.warn(String.format(
-            "VideoExporter profile: paint to image buffer %.1f ms, encode %.1f ms, replay-step %.1f ms, load logs %.1f ms, frames %d, commands %d, logs %d",
-            paintMs, encodeMs, stepMs, loadMs, totalFrames, totalCommands, logsProcessed));
+            "VideoExporter profile: paint to image buffer %.1f ms (from that front hex %.1f ms, front side %.1f ms), encode %.1f ms, replay-step %.1f ms, load logs %.1f ms, total %.1f ms, frames %d, commands %d, logs %d",
+            paintMs, hexMs, sideMs, encodeMs, stepMs, loadMs, totalMs, totalFrames, totalCommands, logsProcessed));
         }
       }
       finally {
@@ -161,6 +168,7 @@ class VideoRenderService {
       GameState.setSuppressModuleMismatchPrompt(wasMismatchPromptSuppressed);
       GameState.setSuppressSetupWizard(wasWizardSuppressed);
       PlayerRoster.setAutoObserverSelection(wasAutoObserver);
+      FrontPolygon.setRenderDuringCaptureOnly(wasCaptureOnly);
       logger.setSuppressReplayPrompts(false);
     }
   }
@@ -168,12 +176,18 @@ class VideoRenderService {
   private void captureFrame(Map map, BufferedImage frame, Rectangle drawingRect) {
     try {
       SwingUtilities.invokeAndWait(() -> {
+        FrontPolygon.beginCapture();
         final var g2 = frame.createGraphics();
-        g2.setColor(map.getView().getBackground());
-        g2.fillRect(0, 0, frame.getWidth(), frame.getHeight());
-        g2.translate(-drawingRect.x, -drawingRect.y);
-        map.paintRegion(g2, drawingRect, map.getView());
-        g2.dispose();
+        try {
+          g2.setColor(map.getView().getBackground());
+          g2.fillRect(0, 0, frame.getWidth(), frame.getHeight());
+          g2.translate(-drawingRect.x, -drawingRect.y);
+          map.paintRegion(g2, drawingRect, map.getView());
+        }
+        finally {
+          g2.dispose();
+          FrontPolygon.endCapture();
+        }
       });
     }
     catch (Exception e) {

@@ -13,12 +13,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Runtime-only front-line overlay with toolbar toggles.
  */
 public class FrontPolygon implements GameComponent, Drawable {
   private static final Set<FrontPolygon> INSTANCES = ConcurrentHashMap.newKeySet();
+  private static final ThreadLocal<Boolean> CAPTURE_ACTIVE = ThreadLocal.withInitial(() -> Boolean.FALSE);
+  private static volatile boolean renderDuringCaptureOnly = false; // If this is set to true from the outside, then we do not render the polygon twice in each step during logrendering (once of the visible UI and once for the headless paint that goes to ffmpeg)
+  private static final AtomicLong HEX_RENDER_NANOS = new AtomicLong();
+  private static final AtomicLong SIDE_RENDER_NANOS = new AtomicLong();
 
   private final Map map;
   private final JButton hexButton;
@@ -125,6 +130,9 @@ public class FrontPolygon implements GameComponent, Drawable {
 
   @Override
   public void draw(Graphics g, Map map) {
+    if (renderDuringCaptureOnly && !Boolean.TRUE.equals(CAPTURE_ACTIVE.get())) {
+      return;
+    }
     if (!hexVisible && !sideVisible) {
       return;
     }
@@ -135,6 +143,43 @@ public class FrontPolygon implements GameComponent, Drawable {
     else if (sideVisible) {
       sideRenderer.render(g, this.map, sidePoints);
     }
+  }
+
+  public static void setRenderDuringCaptureOnly(boolean enabled) {
+    renderDuringCaptureOnly = enabled;
+  }
+
+  public static boolean isRenderDuringCaptureOnly() {
+    return renderDuringCaptureOnly;
+  }
+
+  public static void beginCapture() {
+    CAPTURE_ACTIVE.set(Boolean.TRUE);
+  }
+
+  public static void endCapture() {
+    CAPTURE_ACTIVE.set(Boolean.FALSE);
+  }
+
+  public static void addHexRenderNanos(long nanos) {
+    HEX_RENDER_NANOS.addAndGet(nanos);
+  }
+
+  public static void addSideRenderNanos(long nanos) {
+    SIDE_RENDER_NANOS.addAndGet(nanos);
+  }
+
+  public static long getHexRenderNanos() {
+    return HEX_RENDER_NANOS.get();
+  }
+
+  public static long getSideRenderNanos() {
+    return SIDE_RENDER_NANOS.get();
+  }
+
+  public static void resetRenderNanos() {
+    HEX_RENDER_NANOS.set(0);
+    SIDE_RENDER_NANOS.set(0);
   }
 
   @Override
