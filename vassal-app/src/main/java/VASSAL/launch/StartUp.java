@@ -22,10 +22,12 @@ import java.awt.AWTError;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.lang.reflect.InvocationTargetException;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.SwingUtilities;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
 import VASSAL.preferences.ReadOnlyPrefs;
 import org.apache.commons.lang3.SystemUtils;
@@ -115,9 +117,24 @@ public class StartUp {
           );
         }
 
+        String reportClassNotFound = null;
+        String defaultLaf = System.getProperty("swing.defaultlaf");
+        if (defaultLaf != null) {
+          try {
+            // Check that the look and feel is in the class path.
+            Class.forName(defaultLaf, false, getClass().getClassLoader());
+          }
+          catch (ClassNotFoundException e) {
+            // The desired Look and Feel is not available.
+            // Record the error and report it later once the UIManager is up.
+            defaultLaf = null;
+            System.clearProperty("swing.defaultlaf");
+
+            reportClassNotFound = Resources.getString("Startup.laf_not_found", e.getMessage());
+          }
+        }
+
         if (!SystemUtils.IS_OS_WINDOWS) {
-          // Check if Look and Feel is specified, otherwise default to system look and feel.
-          final String defaultLaf = System.getProperty("swing.defaultlaf");
           if (defaultLaf == null) {
             // use native LookAndFeel
             // NB: This must be after Mac-specific properties
@@ -161,6 +178,13 @@ public class StartUp {
         }
         catch (NumberFormatException e) {
           // No action, keep default system/java/whatever fonts.
+        }
+        // Report any Look and Feel load errors.
+        if (reportClassNotFound != null) {
+          JOptionPane.showMessageDialog(null,
+                  reportClassNotFound,
+                  Resources.getString("Startup.laf_default"),
+                  JOptionPane.WARNING_MESSAGE);
         }
       });
     }
