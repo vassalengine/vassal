@@ -577,12 +577,17 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       // Specify the look and feel.
       String defaultLaf = System.getProperty("swing.defaultlaf");
       if (defaultLaf == null) {
-        // On Windows the defaultlaf property is typically null.
+        // On Windows the defaultlaf property is typically null for jre provided LaF.
         // Get the current look and feel from the UIManager.
         defaultLaf = UIManager.getLookAndFeel().getClass().getName();
       }
       if (!StringUtils.isBlank(defaultLaf)) {
         result.add("-Dswing.defaultlaf=" + defaultLaf); //NON-NLS
+      }
+
+      final String lafFilePath = System.getProperty("look.feel");
+      if (!StringUtils.isBlank(lafFilePath)) {
+        result.add("-Dlook.feel=" + lafFilePath); //NON-NLS
       }
 
       if (SystemUtils.IS_OS_MAC) {
