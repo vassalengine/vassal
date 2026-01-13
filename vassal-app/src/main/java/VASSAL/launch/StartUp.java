@@ -22,14 +22,22 @@ import java.awt.AWTError;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.lang.reflect.InvocationTargetException;
-import javax.swing.JOptionPane;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import javax.swing.UIManager;
 import javax.swing.SwingUtilities;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.JOptionPane;
+import javax.swing.LookAndFeel;
 
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
 import VASSAL.preferences.ReadOnlyPrefs;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 import org.slf4j.Logger;
@@ -85,6 +93,22 @@ public class StartUp {
     }
   }
 
+  /**
+   * Helper object to store Look and Feel loader errors.
+   * Resource string lookup is not possible until the UIManager loads.
+   * The object stores a resource ID and the associated exception
+   * for display after the UI is functional.
+   */
+  protected static class LafLoadError {
+    protected String id;
+    protected Exception exception;
+
+    public LafLoadError(String id, Exception e) {
+      this.id = id;
+      exception = e;
+    }
+  }
+
   protected void initUIProperties() {
     System.setProperty("swing.aatext", "true"); //$NON-NLS-1$ //$NON-NLS-2$
     System.setProperty("swing.boldMetal", "false"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -117,23 +141,31 @@ public class StartUp {
           );
         }
 
-        String reportClassNotFound = null;
-        String defaultLaf = System.getProperty("swing.defaultlaf");
+        LafLoadError lafClassLoadError = null;
+        String defaultLaf = System.getProperty("swing.defaultlaf"); // NON-NLS
         if (defaultLaf != null) {
           try {
             // Check that the look and feel is in the class path.
             Class.forName(defaultLaf, false, getClass().getClassLoader());
           }
           catch (ClassNotFoundException e) {
-            // The desired Look and Feel is not available.
-            // Record the error and report it later once the UIManager is up.
-            defaultLaf = null;
-            System.clearProperty("swing.defaultlaf");
+            // Attempt to dynamically load the look and feel class.
+            final String lookAndFeelPath = System.getProperty("look.feel"); // NON-NLS
+            if (!StringUtils.isBlank(lookAndFeelPath)) {
+              lafClassLoadError = installLookAndFeel(defaultLaf, lookAndFeelPath);
+            }
+            else {
+              // The desired Look and Feel is not available.
+              // Record the error and report it later once the UIManager is up.
 
-            reportClassNotFound = Resources.getString("Startup.laf_not_found", e.getMessage());
+              lafClassLoadError = new LafLoadError("Startup.laf_no_path", e);  // NON-NLS
+            }
+            if (lafClassLoadError != null) {
+              defaultLaf = null;
+              System.clearProperty("swing.defaultlaf"); // NON-NLS
+            }
           }
         }
-
         if (!SystemUtils.IS_OS_WINDOWS) {
           if (defaultLaf == null) {
             // use native LookAndFeel
@@ -180,9 +212,9 @@ public class StartUp {
           // No action, keep default system/java/whatever fonts.
         }
         // Report any Look and Feel load errors.
-        if (reportClassNotFound != null) {
+        if (lafClassLoadError != null) {
           JOptionPane.showMessageDialog(null,
-                  reportClassNotFound,
+                  Resources.getString(lafClassLoadError.id, lafClassLoadError.exception.getMessage()),
                   Resources.getString("Startup.laf_default"),
                   JOptionPane.WARNING_MESSAGE);
         }
@@ -191,6 +223,46 @@ public class StartUp {
     catch (InterruptedException | InvocationTargetException e) {
       ErrorDialog.bug(e);
     }
+  }
+
+  /**
+   * Install and set the look and feel.
+   * @param defaultLaf The name of the class that implements this look and feel.
+   * @param lookAndFeelPath The name of the (jar) file containing the look and feel class.
+   *                        This can be absolute or relative path.
+   * @return Return null on success otherwise returns an error object.
+   */
+  protected LafLoadError installLookAndFeel(String defaultLaf, String lookAndFeelPath) {
+    LafLoadError loadError = null;
+    Path filePath = Paths.get(lookAndFeelPath);
+    if (filePath.getRoot() == null) {
+      // Not an absolute path. Prepend the user dir.
+      final Path root = Paths.get(String.valueOf(Info.getBaseDir()));
+      filePath = root.resolve(filePath);
+    }
+    final URI u = filePath.toUri();
+
+    try {
+      // Create an instance of URLClassloader using the URL.
+      final ClassLoader loader = URLClassLoader.newInstance(new URL[]{u.toURL()}, getClass().getClassLoader());
+      final Class<?> lookAndFeelClass = Class.forName(defaultLaf, true, loader);
+      final LookAndFeel lookAndFeel = (LookAndFeel) lookAndFeelClass.getConstructors()[0].newInstance();
+
+      UIManager.setLookAndFeel(lookAndFeel);
+      UIManager.installLookAndFeel(lookAndFeel.getName(), lookAndFeelClass.getName());
+      return null; // Success
+
+    }
+    catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException ex) {
+      loadError = new LafLoadError("Startup.laf_not_found", ex);
+    }
+    catch (UnsupportedLookAndFeelException ex) {
+      loadError = new LafLoadError("Startup.laf_unsupported", ex);
+    }
+    catch (MalformedURLException ex) {
+      loadError = new LafLoadError("Startup.laf_malformed", ex);
+    }
+    return loadError;
   }
 
   protected void initSystemSpecificProperties() {}
