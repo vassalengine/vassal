@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+ <mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
+   <mime-type type="application/x-vassal-module">
+     <comment>VASSAL module file</comment>
+     <glob pattern="*.vmod"/>
+     <generic-icon name="application-x-vassal"/>
+     <sub-class-of type="application/zip"/>
+    </mime-type>
+   <mime-type type="application/x-vassal-log">
+     <comment>VASSAL log file</comment>
+     <glob pattern="*.vlog"/>
+     <generic-icon name="application-x-vassal"/>
+     <sub-class-of type="application/zip"/>
+   </mime-type>
+   <mime-type type="application/x-vassal-save">
+     <comment>VASSAL save file</comment>
+     <glob pattern="*.vsav"/>
+     <generic-icon name="application-x-vassal"/>
+     <sub-class-of type="application/zip"/>
+   </mime-type>
+   <mime-type type="application/x-vassal-extension">
+     <comment>VASSAL module extension</comment>
+     <glob pattern="*.vmdx"/>
+     <generic-icon name="application-x-vassal"/>
+     <sub-class-of type="application/zip"/>
+   </mime-type>
+ </mime-info>

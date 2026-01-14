@@ -1,0 +1,10 @@
+Document: vassal-userguide
+Title: VASSAL User's guide
+Author: VASSAL Team
+Abstract: User manual for VASSAL
+ documenting how to use VASSAL for playing card and board games locally,
+ online, or via Play-by-EMail.
+Section: Games/Board
+
+Format: PDF
+Files: /usr/share/doc/vassal/userguide.pdf

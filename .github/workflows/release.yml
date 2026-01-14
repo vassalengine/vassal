@@ -1,0 +1,260 @@
+# Workflow for creating releases from tags
+name: Release
+
+# Only run when making a tag 
+on:
+  push:
+    tags: '*'
+
+jobs:
+  # Regular packages.  Note, we take the version number from the tag. 
+  package:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with: 
+          fetch-depth: 1
+
+      - name: Update container 
+        run: |
+          sudo apt update -y
+          sudo apt install -y dos2unix genisoimage ghostscript nsis
+          sudo pip install jinja2-cli  --break-system-packages
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with: 
+          distribution: 'temurin'
+          java-version: 25
+          java-package: jdk
+
+      - name: Maven cache
+        uses: actions/cache@v5
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-mavin-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
+
+      - name: Cache bootstrap 
+        uses: actions/cache@v5
+        with:
+          path: |
+            ./dist/dmg
+            ./dist/jdks
+            ./dist/launch4
+            ./dist/lipo
+          key: ${{ runner.os }}-bootstrap-${{ hashFiles('bootstrap.sh') }}
+
+      - name: Bootstrap
+        if: steps.cache-bootstrap.outputs.cache-hit != 'true'
+        run: ./bootstrap.sh
+          
+      - name: Make release packages 
+        run: |
+          make release MAVEN_VERSION=${{ github.ref_name }}
+          make javadoc  MAVEN_VERSION=${{ github.ref_name }}
+          make release-announcements  MAVEN_VERSION=${{ github.ref_name }}
+          ls tmp/
+          ls jdoc/
+
+      - name: Archive release notes
+        uses: actions/upload-artifact@v6
+        with:
+          name: NOTES
+          path: |
+            tmp/NOTES-*
+            
+      - name: Archive Java API documentation
+        uses: actions/upload-artifact@v6
+        with:
+          name: JavaDoc
+          path: |
+            jdoc
+          
+      - name: Post artefacts to release
+        uses: softprops/action-gh-release@v2
+        with: 
+          body_path: tmp/NOTES-gh
+          files:  |
+            tmp/VASSAL-${{ github.ref_name }}-linux.tar.bz2
+            tmp/VASSAL-${{ github.ref_name }}-macos-universal.dmg
+            tmp/VASSAL-${{ github.ref_name }}-other.zip
+            tmp/VASSAL-${{ github.ref_name }}-windows-x86_64.exe
+            tmp/VASSAL-${{ github.ref_name }}-windows-aarch64.exe
+                
+  # Regular packages.  Note, we take the version number from the tag. 
+  package_win32:
+    name: Release Windows 32-bit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with: 
+          fetch-depth: 1
+
+      - name: Update container 
+        run: |
+          sudo apt update -y
+          sudo apt install -y dos2unix genisoimage ghostscript nsis
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with: 
+          distribution: 'temurin'
+          java-version: 21
+          java-package: jdk
+
+      - name: Maven cache
+        uses: actions/cache@v5
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-mavin-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
+
+      - name: Cache bootstrap 
+        uses: actions/cache@v5
+        with:
+          path: |
+            ./dist/dmg
+            ./dist/jdks
+            ./dist/launch4
+            ./dist/lipo
+          key: ${{ runner.os }}-bootstrap-${{ hashFiles('bootstrap.sh') }}
+
+      - name: Bootstrap
+        if: steps.cache-bootstrap.outputs.cache-hit != 'true'
+        run: ./bootstrap.sh
+          
+      - name: Make release packages 
+        run: |
+          make release-windows-x86_32 MAVEN_VERSION=${{ github.ref_name }}
+
+      - name: Post artefacts to release
+        uses: softprops/action-gh-release@v2
+        with: 
+          files:  |
+            tmp/VASSAL-${{ github.ref_name }}-windows-x86_32.exe
+                
+   
+  package_debian:
+    # Debian package build.  Creates new changelog entry from tag, and
+    # makes a pull-request. 
+    name: Release Debian
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 
+        uses: actions/checkout@v6
+        with: 
+          fetch-depth: 1
+
+      - name: Update container 
+        run: |
+          sudo apt update -y
+          sudo apt install -y devscripts
+          
+      - name: Make changelog entry 
+        run: |
+          eml="${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
+          EMAIL="${eml}" dch --release-heuristic log -v "${{ github.ref_name }}-1" "New upstream release"
+          cat debian/changelog
+
+      - name: Set Debian variables 
+        id: deb_vars
+        run: |
+          cat debian/changelog
+          version=$(dpkg-parsechangelog --show-field Version)
+          echo "Version is ${version}"
+          upstream=$(echo $version | sed 's/-[0-9][0-9.]*\(nmu[0-9]*\|\)$//')
+          echo "Upstream version is ${upstream}"
+          arch=$(dpkg-architecture -q DEB_BUILD_ARCH)
+          echo "Build architecture is ${arch}"
+          echo "DEB_VERSION=$version" >> $GITHUB_OUTPUT
+          echo "DEB_UPSTREAM=$upstream" >> $GITHUB_OUTPUT
+          echo "DEB_ARCH=$arch" >> $GITHUB_OUTPUT
+
+      - name: Install build dependencies
+        run: |
+          dep=$(cat debian/control | \
+            sed -E ':a ; $!N ; s/\n\s+/ /; ta P ; D' | \
+            sed -n -e 's/Build-Depends\(-Indep\|\): //p' | \
+            sed -e '1{N;s/\n/ /;}' -e 's/ *([^)]*)//g' -e 's/,//g' )
+          sudo apt install -y build-essential devscripts fakeroot ${dep}
+
+      - name: Build original tar-ball
+        run: |
+          package=$(dpkg-parsechangelog --show-field Source)
+          upstream=${{ steps.deb_vars.outputs.DEB_UPSTREAM }}
+          orig=${package}_${upstream}.orig.tar.gz
+          prefix=${package}-${{ steps.deb_vars.outputs.DEB_UPSTREAM }}
+          git archive --prefix=${prefix}/ --output=../${orig} HEAD
+
+      - name: Build Debian package
+        run: debuild -us -uc -rfakeroot
+
+      - name: Create pull-request on debian/changelog
+        uses: peter-evans/create-pull-request@v8
+        with:
+          body: |
+            Update the debian/changelog from release build
+          add-paths: debian/changelog
+          draft: false
+          base: master
+
+      - name: Move artefacts
+        run: |
+          mkdir -p public
+          ls ..
+          mv \
+            ../vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_all.deb \
+            ../vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.build \
+            ../vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.buildinfo \
+            ../vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.changes	\
+            ../vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}.dsc \
+            ../vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}.debian.tar.xz \
+            ../vassal_${{ steps.deb_vars.outputs.DEB_UPSTREAM }}.orig.tar.gz \
+            public/
+
+      - name: Archive Debian source package
+        uses: actions/upload-artifact@v6
+        with:
+          name: debian-source
+          path: |
+            public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.build 
+            public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.buildinfo 
+            public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.changes	
+            public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}.dsc 
+            public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}.debian.tar.xz 
+            public/vassal_${{ steps.deb_vars.outputs.DEB_UPSTREAM }}.orig.tar.gz 
+            
+      - name: Add artefacts to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_all.deb
+
+  package_digest:
+    name: Sha256 digest of packages
+    runs-on: ubuntu-latest
+    needs:
+      - package
+      - package_win32
+      - package_debian
+    steps:
+      - name: Update container 
+        run: |
+          sudo apt update -y
+          sudo apt install -y jq
+
+      - name: Get digests
+        run: |
+          curl ${{ github.api_url }}/repos/${{ github.repository }}/releases/tags/${{ github.ref_name }} 2>/dev/null | jq '.assets.[] | .digest+"  "+.name | ltrimstr("sha256:") ' | tr -d '"' > VASSAL-${{ github.ref_name }}.sha256
+
+      - name: Add artefacts to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: VASSAL-${{ github.ref_name }}.sha256
+    
+#
+# EOF
+#
