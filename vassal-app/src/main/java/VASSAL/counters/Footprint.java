@@ -345,8 +345,8 @@ public class Footprint extends MovementMarkable {
    */
   protected void addPoint(Point p) {
     if (keepLastPositionOnly) {
-        LastPositionRemover.removeLastPositionIfLocationNameNotChanged(
-                p, this.getProperty(DROP_TARGET), pointList, getMap());
+      LastPositionRemover.removeLastPositionIfLocationNameNotChanged(
+         p, this.getProperty(DROP_TARGET), pointList, getMap());
     } 
     else {
       pointList.add(p);
