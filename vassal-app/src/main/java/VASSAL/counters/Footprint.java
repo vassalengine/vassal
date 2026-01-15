@@ -29,6 +29,7 @@ import VASSAL.configure.DoubleConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.counters.footprint.LastPositionRemover;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
@@ -36,7 +37,6 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.image.LabelUtils;
-import org.apache.commons.lang3.Strings;
 
 import javax.swing.KeyStroke;
 import java.awt.AlphaComposite;
@@ -345,40 +345,13 @@ public class Footprint extends MovementMarkable {
    */
   protected void addPoint(Point p) {
     if (keepLastPositionOnly) {
-      removeLastPositionIfLocationNameNotChanged(p);
+        LastPositionRemover.removeLastPositionIfLocationNameNotChanged(
+                p, this.getProperty(DROP_TARGET), pointList, getMap());
     } 
     else {
       pointList.add(p);
     }
     myBoundingBox = null;
-  }
-
-  private void removeLastPositionIfLocationNameNotChanged(final Point actualPoint) {
-    final Object dropTarget = this.getProperty(DROP_TARGET);
-    final Map map = getMap();
-    if (dropTarget instanceof Point && map != null
-            && pointList != null && !pointList.isEmpty()
-            && Strings.CS.equals(map.locationName((Point) dropTarget), map.locationName(actualPoint))) {
-      return;
-    }
-    boolean addPoint = true;
-    if (pointList != null && !pointList.isEmpty()) {
-      final Point previousPoint = pointList.get(pointList.size() - 1);
-      
-      if (previousPoint != null && map != null 
-              && Strings.CS.equals(map.locationName(previousPoint), map.locationName(actualPoint))
-      ) {
-        if (pointList.size() != 1) {
-          pointList.remove(previousPoint);
-        } 
-        else  {
-          addPoint = false;
-        }
-      }
-    }
-    if (addPoint && pointList != null) {
-      pointList.add(actualPoint);
-    }
   }
 
   public void redraw() {
