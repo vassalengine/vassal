@@ -566,7 +566,7 @@ public class ModuleManagerWindow extends JFrame {
       Arrays.stream(moduleConfig.getStringArray())
     ).sorted().distinct().forEach(s -> {
       final ModuleInfo module = new ModuleInfo(s);
-      if (module.getFile().exists() && module.isValid()) {
+      if (module.getFile().isFile() && module.isValid()) {
         moduleList.add(module);
       }
       else {

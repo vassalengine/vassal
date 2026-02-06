@@ -170,28 +170,17 @@ public abstract class AbstractLaunchAction extends AbstractAction {
     // loop until cancellation or we get an existing file
     if (fc.showOpenDialog() == FileChooser.APPROVE_OPTION) {
       lr.module = fc.getSelectedFile();
-      if (lr.module != null) {
-        if (lr.module.exists()) {
-          final AbstractMetaData metadata =
-            MetaDataFactory.buildMetaData(lr.module);
-          if (!(metadata instanceof ModuleMetaData)) {
-            ErrorDialog.show(
-              "Error.invalid_vassal_module", lr.module.getAbsolutePath()); //NON-NLS
-            logger.error(
-              "-- Load of {} failed: Not a Vassal module", //NON-NLS
-              lr.module.getAbsolutePath()
-            );
-            lr.module = null;
-          }
-        }
-        else {
-          lr.module = null;
-        }
-// FIXME: do something to warn about nonexistent file
-//        FileNotFoundDialog.warning(window, lr.module);
+      final AbstractMetaData metadata =
+        MetaDataFactory.buildMetaData(lr.module);
+      if (!(metadata instanceof ModuleMetaData)) {
+        ErrorDialog.show(
+          "Error.invalid_vassal_module", lr.module.getAbsolutePath()); //NON-NLS
+        logger.error(
+          "-- Load of {} failed: Not a Vassal module", //NON-NLS
+          lr.module.getAbsolutePath());
+        lr.module = null;
       }
     }
-
     return lr.module;
   }
 

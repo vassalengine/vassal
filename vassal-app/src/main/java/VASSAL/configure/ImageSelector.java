@@ -191,7 +191,7 @@ public class ImageSelector extends Configurer implements ItemListener {
     final FileChooser fc = gm.getEditorImageChooser();
     fc.setFileFilter(new ImageFileFilter());
 
-    if (fc.showOpenDialog(gm.getPlayerWindow()) == FileChooser.APPROVE_OPTION && fc.getSelectedFile().exists()) {
+    if (fc.showOpenDialog(gm.getPlayerWindow()) == FileChooser.APPROVE_OPTION) {
       final String name = fc.getSelectedFile().getName();
       gm.getArchiveWriter().addImage(fc.getSelectedFile().getPath(), name);
       select.setModel(new DefaultComboBoxModel<>(ArrayUtils.addFirst(gm.getDataArchive().getImageNames(), NO_IMAGE)));

@@ -71,6 +71,7 @@ public class Tailer {
    */
   public Tailer(File file, long poll_interval) {
     if (file == null) throw new IllegalArgumentException("file == null");
+    if (file.getPath().isEmpty()) throw new IllegalArgumentException("Empty file name");
 
     this.file = file;
     this.poll_interval = poll_interval;
