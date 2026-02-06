@@ -212,7 +212,15 @@ public abstract class FileChooser {
 
     @Override
     public int showOpenDialog(Component parent) {
-      final int value = fc.showOpenDialog(parent);
+      int value = fc.showOpenDialog(parent);
+      final int mode = fc.getFileSelectionMode();
+      final File selected = getSelectedFile();
+      if (value == APPROVE_OPTION &&
+          ((mode == DIRECTORIES_ONLY && !selected.isDirectory()) ||
+           (mode == FILES_ONLY       && !selected.isFile()))) {
+        value = ERROR_OPTION;
+        fc.setSelectedFile(null);
+      }
       updateDirectoryPreference();
       return value;
     }
@@ -356,7 +364,7 @@ public abstract class FileChooser {
 
       fd.setModal(true);
       fd.setFilenameFilter(filter);
-      if (cur != null) {
+      if (cur != null && !cur.getPath().isEmpty()) {
         if (cur.isDirectory())
           fd.setDirectory(cur.getPath());
         else {
@@ -376,10 +384,20 @@ public abstract class FileChooser {
       final int value;
       if (fd.getFile() != null) {
         cur = new File(fd.getDirectory(), fd.getFile());
-        value = APPROVE_OPTION;
+        if (cur.isFile() && mode == FILES_ONLY) {
+          value = APPROVE_OPTION;
+        }
+        else if (cur.isDirectory() && mode == DIRECTORIES_ONLY) {
+          value = APPROVE_OPTION;
+        }
+        else {
+          value = ERROR_OPTION;
+          cur = null;
+        }
       }
       else {
         value = CANCEL_OPTION;
+        cur = null;
       }
       updateDirectoryPreference();
       return value;
