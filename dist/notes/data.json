@@ -27,10 +27,12 @@
       "improvements": [
       ],
       "other": [
-        { "num": 14448, "desc": "Upgraded logback-classic to 1.5.25" },
+        { "num": 14478, "desc": "Upgraded checkstyle to 13.2.0" },
+        { "num": 14475, "desc": "Upgraded maven-compiler-plugin to 3.15.0" },
+        { "num": 14365, "desc": "Upgraded commons-codec to 1.21.0" },
+        { "num": 14464, "desc": "Upgraded logback-classic to 1.5.27" },
         { "num": 14445, "desc": "Upgraded byte-buddy to 1.18.4" },
         { "num": 14430, "desc": "Upgraded junit-bom 6.0.2" },
-        { "num": 14425, "desc": "Upgraded checkstyle to 13.0.0" },
         { "num": 14424, "desc": "Upgraded license-maven-plugin to 2.7.1" },
         { "num": 14421, "desc": "Upgraded jsoup to 1.22.1" },
         { "num": 14415, "desc": "Upgraded httpclient5 5.6" },

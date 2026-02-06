@@ -1,10 +1,12 @@
 3.7.20 - ???
 
-* 14448: Upgraded logback-classic to 1.5.25
+* 14478: Upgraded checkstyle to 13.2.0
+* 14475: Upgraded maven-compiler-plugin to 3.15.0
+* 14465: Upgraded commons-codec to 1.21.0
+* 14464: Upgraded logback-classic to 1.5.27
 * 14445: Upgraded byte-buddy to 1.18.4
 * 14433: Work around change in java.io.File API in Java 25
 * 14430: Upgraded junit-bom to 6.0.2
-* 14425: Upgraded checkstyle to 13.0.0
 * 14424: Upgraded license-maven-plugin to 2.7.1
 * 14421: Upgraded jsoup to 1.22.1
 * 14415: Upgraded httpclient5 5.6
