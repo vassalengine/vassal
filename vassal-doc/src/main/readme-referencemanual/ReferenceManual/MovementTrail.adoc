@@ -50,6 +50,8 @@ This erases any existing trails, but leaves the trail's _showing_ or _hidden_ st
 *Trails visibility synchronized for all players:*::  If selected, then toggling the visibility of the trail will affect all players' views and will be saved along with the game.
 Otherwise, each player controls the visibility of trails on that player's view.
 
+*Only keep last position if location name does not change:*:: If selected and the location name has not changed, the last point will not be added to the trail. This way the movement trail would always show just a single stop in each area, regardless of how often the piece may have been moved within any of the areas that it moved through. Useful for area impulse games.
+
 *Circle radius:*:: The radius in pixels of the circle representing each location in the trail.
 
 *Circle fill color:*:: The color of the location circles.
@@ -68,5 +70,5 @@ Otherwise, each player controls the visibility of trails on that player's view.
 
 *Display trails off-map (pixels):*  If the map has buffer space surrounding the boards, the trail lines will be drawn within this distance from the board edges.
 
-|image:images/MovementTrail.png[]
+|image:images/MovementTrail20250907.png[]
 |===

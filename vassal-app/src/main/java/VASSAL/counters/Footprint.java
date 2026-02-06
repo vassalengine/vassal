@@ -29,6 +29,7 @@ import VASSAL.configure.DoubleConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.counters.footprint.LastPositionRemover;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
@@ -65,6 +66,7 @@ import java.util.Objects;
 public class Footprint extends MovementMarkable {
 
   public static final String ID = "footprint;"; //$NON-NLS-1$//
+  public static final String DROP_TARGET = "dropTarget";
   private KeyCommand[] commands;
 
   // State Variables (Saved in logfile/sent to opponent)
@@ -89,12 +91,14 @@ public class Footprint extends MovementMarkable {
   protected int edgePointBuffer;               // How far Off-map to draw trail points (pixels)?
   protected int edgeDisplayBuffer;             // How far Off-map to draw trail lines (pixels)?
   protected String description;                // Description for this movement trail
+  protected boolean keepLastPositionOnly = false;   // Only keep last position if location name does not change
 
   // Defaults for Type variables
   protected static final char DEFAULT_TRAIL_KEY = 'T';
   protected static final String DEFAULT_MENU_COMMAND = Resources.getString("Editor.Footprint.movement_trail");
   protected static final Boolean DEFAULT_INITIALLY_VISIBLE = Boolean.FALSE;
   protected static final Boolean DEFAULT_GLOBALLY_VISIBLE = Boolean.FALSE;
+  protected static final Boolean DEFAULT_KEEP_LAST_POSITION = Boolean.FALSE;
   protected static final int DEFAULT_CIRCLE_RADIUS = 10;
   protected static final Color DEFAULT_FILL_COLOR = Color.WHITE;
   protected static final Color DEFAULT_LINE_COLOR = Color.BLACK;
@@ -193,6 +197,7 @@ public class Footprint extends MovementMarkable {
     trailKeyOff = st.nextNamedKeyStroke(null);
     trailKeyClear = st.nextNamedKeyStroke(null);
     description = st.nextToken("");
+    keepLastPositionOnly = st.nextBoolean(DEFAULT_KEEP_LAST_POSITION);
     commands = null;
     showTrailCommand = null;
     showTrailCommandOn = null;
@@ -221,7 +226,9 @@ public class Footprint extends MovementMarkable {
       .append(trailKeyOn)
       .append(trailKeyOff)
       .append(trailKeyClear)
-      .append(description);
+      .append(description)
+      .append(keepLastPositionOnly)
+    ;
     return ID + se.getValue();
   }
 
@@ -337,7 +344,13 @@ public class Footprint extends MovementMarkable {
    * trail.
    */
   protected void addPoint(Point p) {
-    pointList.add(p);
+    if (keepLastPositionOnly) {
+      LastPositionRemover.removeLastPositionIfLocationNameNotChanged(
+         p, this.getProperty(DROP_TARGET), pointList, getMap());
+    } 
+    else {
+      pointList.add(p);
+    }
     myBoundingBox = null;
   }
 
@@ -805,6 +818,7 @@ public class Footprint extends MovementMarkable {
     if (! Objects.equals(trailKeyOff, c.trailKeyOff)) return false;
     if (! Objects.equals(trailKeyClear, c.trailKeyClear)) return false;
     if (! Objects.equals(description, c.description)) return false;
+    if (! Objects.equals(keepLastPositionOnly, c.keepLastPositionOnly)) return false;
 
     if (! Objects.equals(globalVisibility, c.globalVisibility)) return false;
     if (! Objects.equals(startMapId, c.startMapId)) return false;
@@ -826,6 +840,7 @@ public class Footprint extends MovementMarkable {
     private final StringConfigurer menuCommandConfig;
     private final BooleanConfigurer initiallyVisibleConfig;
     private final BooleanConfigurer globallyVisibleConfig;
+    private final BooleanConfigurer keepLastPositionConfig;
     private final IntConfigurer circleRadiusConfig;
     private final ColorConfigurer fillColorConfig;
     private final ColorConfigurer lineColorConfig;
@@ -862,6 +877,9 @@ public class Footprint extends MovementMarkable {
 
       globallyVisibleConfig = new BooleanConfigurer(p.globallyVisible);
       controls.add("Editor.Footprint.trails_are_visible_to_all_players", globallyVisibleConfig);
+
+      keepLastPositionConfig = new BooleanConfigurer(p.keepLastPositionOnly);
+      controls.add("Editor.Footprint.keep_last_position_only", keepLastPositionConfig);
 
       circleRadiusConfig = new IntConfigurer(p.circleRadius);
       controls.add("Editor.Footprint.circle_radius", circleRadiusConfig);
@@ -911,7 +929,8 @@ public class Footprint extends MovementMarkable {
         .append(trailKeyOn.getValueString())
         .append(trailKeyOff.getValueString())
         .append(trailKeyClear.getValueString())
-        .append(desc.getValueString());
+        .append(desc.getValueString())
+        .append(keepLastPositionConfig.getValueString());
       return ID + se.getValue();
     }
 
