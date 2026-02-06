@@ -350,14 +350,14 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       }
     }
 
-  /*
-   * 2. Build a list in visual order of all stacks, decks, mats and other pieces that need refreshing
-   */
+    /*
+     * 2. Build a list in visual order of all stacks, decks, mats and other pieces that need refreshing
+     */
     final List<Refresher> refreshables = getRefreshables();
 
-  /*
-   * And refresh them. Even if Refresh Pieces is off, still scan to make a list of the Decks in case we need to update their attributes
-   */
+    /*
+     * And refresh them. Even if Refresh Pieces is off, still scan to make a list of the Decks in case we need to update their attributes
+     */
     if (!options.contains(SUPPRESS_INFO_REPORTS)) log(Resources.getString("GameRefresher.run_refresh_counters_v4"));
 
     if (!options.contains(SUPPRESS_INFO_REPORTS)) log(Resources.getString("GameRefresher.counters_kept", totalCount - notOwnedCount - notVisibleCount));
@@ -417,58 +417,41 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
           for (final GamePiece pieceOrStack : map.getPieces()) {
             if (pieceOrStack instanceof Deck) {
               final Deck deck = (Deck) pieceOrStack;
-              // Match with a DrawPile if possible
-              boolean deckFound = false;
-              for (final DrawPile drawPile : drawPiles) {
-                final String deckName = deck.getDeckName();
-                if (deckName.equals(drawPile.getAttributeValueString(SetupStack.NAME))) {
+              final String deckName = deck.getDeckName();
 
-                  // If drawPile is owned by a specific board, then we can only match it if that board is active in this game
-                  if (drawPile.getOwningBoardName() != null) {
-                    if (map.getBoardByName(drawPile.getOwningBoardName()) == null) {
-                      continue;
-                    }
-
-                    // If the drawPile is on a map that doesn't have its current owning board active, then we
-                    // cannot match that drawPile.
-                    if (drawPile.getMap().getBoardByName(drawPile.getOwningBoardName()) == null) {
-                      continue;
-                    }
-                  }
-
-                  deckFound = true;
-                  foundDrawPiles.add(drawPile);
-
-                  final String drawPileName = drawPile.getAttributeValueString(SetupStack.NAME);
-
-                  if (!options.contains(SUPPRESS_INFO_REPORTS))
-                    log(Resources.getString("GameRefresher.refreshing_deck", deckName, drawPileName));
-
-                  // This refreshes the existing deck with all the up-to-date drawPile fields from the module
-                  deck.removeListeners();
-                  deck.myRefreshType(drawPile.getDeckType());
-                  deck.addListeners();
-
-                  // Make sure the deck is in the right place
-                  final Point pt = drawPile.getPosition();
-                  final Map newMap = drawPile.getMap();
-                  if (newMap != map) {
-                    map.removePiece(deck);
-                    newMap.addPiece(deck);
-                  }
-                  deck.setPosition(pt);
-                  for (final GamePiece piece : deck.asList()) {
-                    piece.setMap(newMap);
-                    piece.setPosition(pt);
-                  }
-
-                  refreshable++;
-                  break;
-                }
-              }
-              if (!deckFound) {
+              // Match with a DrawPile if possible. Take into account duplicate Deck names and moved
+              final DrawPile drawPile = findDrawPile(deck);
+              if (drawPile == null) {
                 deletable++;
                 decksToDelete.add(deck);
+              }
+              else {
+                foundDrawPiles.add(drawPile);
+
+                final String drawPileName = drawPile.getAttributeValueString(SetupStack.NAME);
+
+                if (!options.contains(SUPPRESS_INFO_REPORTS))
+                  log(Resources.getString("GameRefresher.refreshing_deck", deckName, drawPileName));
+
+                // This refreshes the existing deck with all the up-to-date drawPile fields from the module
+                deck.removeListeners();
+                deck.myRefreshType(drawPile.getDeckType());
+                deck.addListeners();
+
+                // Make sure the deck is in the right place
+                final Point pt = drawPile.getPosition();
+                final Map newMap = drawPile.getMap();
+                if (newMap != map) {
+                  map.removePiece(deck);
+                  newMap.addPiece(deck);
+                }
+                deck.setPosition(pt);
+                for (final GamePiece piece : deck.asList()) {
+                  piece.setMap(newMap);
+                  piece.setPosition(pt);
+                }
+
+                refreshable++;
               }
             }
           }
@@ -610,6 +593,56 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
   }
 
+
+  /**
+   * Find the Vassal DrawPile that matches a given Deck.
+   * Deck Names may have been repeated (ill-advised). DrawPiles may have been added to or removed from the module
+   * or may exist on Boards that are not active in the current game
+   * If a DrawPile exists with a matching Deck Name on the same Map, return it.
+   * Otherwise, return the first DrawPile found with a matching name
+   *
+   * @param deck Deck to search for
+   * @return     Matching DrawPile
+   */
+  private DrawPile findDrawPile(Deck deck) {
+    DrawPile first = null;
+    DrawPile matching = null;
+    final String deckName = deck.getDeckName();
+
+    for (final DrawPile pile : getModuleDrawPiles()) {
+      if (deckName.equals(pile.getAttributeValueString(SetupStack.NAME))) {
+
+        // If the drawPile is owned by a specific board, then we can only match it if that board is active in this game
+        final String pileBoardName = pile.getOwningBoardName();
+        if (pileBoardName != null) {
+          if (deck.getMap().getBoardByName(pileBoardName) == null) {
+            continue;
+          }
+
+          // If the drawPile is on a map that doesn't have its current owning board active, then we
+          // cannot match that drawPile.
+          if (pile.getMap().getBoardByName(pile.getOwningBoardName()) == null) {
+            continue;
+          }
+        }
+        // At this point, we have found an Active DrawPile with the same name as our Deck.
+
+        // Finish searching immediately if they are both on the same Map
+        if (deck.getMap().equals(pile.getMap())) {
+          matching = pile;
+          break;
+        }
+
+        // Otherwise, record the first matching Deck
+        if (first == null) {
+          first = pile;
+        }
+      }
+    }
+
+    // Report a DrawPile on the same Map as our Deck in preference to one that is not.
+    return matching != null ? matching : first;
+  }
 
   /**
    * Before refreshing, we need to go through every piece and commemorate all the Attachment trait relationships, since they contain direct references to other GamePieces, and all the references are
@@ -1031,7 +1064,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       // Remove any existing cargo
       command = command.append(getMat().makeRemoveAllCargoCommand());
 
-  // Refresh the Mat piece
+      // Refresh the Mat piece
       final PieceRefresher pr = new PieceRefresher(getMatPiece(), true);
       pr.refresh(command);
       final GamePiece newMatPiece = pr.getRefreshedPieces().get(0);
