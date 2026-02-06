@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 14433, "desc": "Work around change in java.io.File API in Java 25" }
       ],
       "improvements": [
       ],
