@@ -145,15 +145,12 @@ public class IconConfigurer extends Configurer {
     if (fc.showOpenDialog(getControls()) != FileChooser.APPROVE_OPTION) {
       setValue(null);
       setToolTipText(null);
+      return;
     }
-    else {
-      final File f = fc.getSelectedFile();
-      if (f != null && f.exists()) {
-        GameModule.getGameModule().getArchiveWriter()
-                                  .addImage(f.getPath(), f.getName());
-        setValue(f.getName());
-        setToolTipText(f.getPath());
-      }
-    }
+    final File f = fc.getSelectedFile();
+    GameModule.getGameModule().getArchiveWriter()
+        .addImage(f.getPath(), f.getName());
+    setValue(f.getName());
+    setToolTipText(f.getPath());
   }
 }

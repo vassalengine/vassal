@@ -154,19 +154,12 @@ public class Editor extends Launcher {
       if (fc.showOpenDialog() == FileChooser.APPROVE_OPTION) {
         lr.importFile = fc.getSelectedFile();
 
-        if (lr.importFile != null) {
-          if (lr.importFile.exists()) {
-            final AbstractMetaData metadata =
-              MetaDataFactory.buildMetaData(lr.importFile);
-            if (!(metadata instanceof ImportMetaData)) {
-              ErrorDialog.show("Error.invalid_import_file", lr.importFile.getAbsolutePath());  //NON-NLS
-              logger.error("Import of " + lr.importFile.getAbsolutePath() + " failed: unrecognized import type");  //NON-NLS
-              lr.importFile = null;
-            }
-          }
-          else {
-            lr.importFile = null;
-          }
+        final AbstractMetaData metadata =
+          MetaDataFactory.buildMetaData(lr.importFile);
+        if (!(metadata instanceof ImportMetaData)) {
+          ErrorDialog.show("Error.invalid_import_file", lr.importFile.getAbsolutePath());  //NON-NLS
+          logger.error("Import of " + lr.importFile.getAbsolutePath() + " failed: unrecognized import type");  //NON-NLS
+          lr.importFile = null;
         }
       }
 

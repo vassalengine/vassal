@@ -699,7 +699,7 @@ public class GameModule extends AbstractConfigurable
     final DataArchive darch = getDataArchive();
 
     final File f = new File(darch.getName());
-    if (!f.exists() || f.length() == 0) {
+    if (!f.isFile() || f.length() == 0) {
       // new module, no buildFile
       build(null);
     }
