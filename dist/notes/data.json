@@ -31,6 +31,18 @@
       ]
     },
     {
+      "in": "3.7.21",
+      "since": "3.7.20",
+      "new_features": [ 
+      ],
+      "bug_fixes": [
+      ],
+      "improvements": [
+      ],
+      "other": [
+      ]
+    },
+    {
       "in": "3.7.20",
       "since": "3.7.19",
       "new_features": [
@@ -92,29 +104,6 @@
         { "num": 14264, "desc": "Upgraded maven-dependency-plugin to 3.9.0" },
         { "num": 14260, "desc": "Reorder items on Player Tools menu to put all Loads together" },
         { "num": 14254, "desc": "Build release on tag" }
-      ]
-    },
-    {
-      "in": "3.7.18",
-      "since": "3.7.17",
-      "new_features": [
-        { "num": 14244, "desc": "Build a Debian package" }
-      ],
-      "bug_fixes": [
-        { "num": 14243, "desc": "Add missing default Wizard sidebar image" },
-        { "num": 14065, "desc": "Remove whitespace characters from internationalized Dice Summary strings" },
-        { "num": 14013, "desc": "Fix Turn Counter displaying hidden list items" },
-        { "num": 13584, "desc": "Decks sometimes show the wrong card underneath the top one" },
-        { "num": 12924, "desc": "Report format insert feature selects all text causing overwrite" }
-      ],
-      "improvements": [
-      ],
-      "other": [
-        { "num": 14247, "desc": "Upgraded license-maven-plugin to 2.7.0" },
-        { "num": 14246, "desc": "Upgraded maven-compiler-plugin to 3.14.1" },
-        { "num": 14245, "desc": "Upgraded maven-javadoc-plugin to 3.12.0" },
-        { "num": 14242, "desc": "Upgraded spotbugs-annotations to 4.9.6" },
-        { "num": 14241, "desc": "Upgraded spotbugs-maven-plugin 4.9.6.0" }
       ]
     }
   ]
