@@ -72,6 +72,7 @@ public class Footprint extends MovementMarkable {
   protected String startMapId = "";            // Map Id trail started on
                                                // List of points
   protected List<Point> pointList = new ArrayList<>();
+  private int lastPointListSize = 0;           // Index of the last removed point from pointList
 
   // Type Variables (Configured in Ed)
   protected NamedKeyStroke trailKey;           // Control Key to invoke
@@ -89,12 +90,14 @@ public class Footprint extends MovementMarkable {
   protected int edgePointBuffer;               // How far Off-map to draw trail points (pixels)?
   protected int edgeDisplayBuffer;             // How far Off-map to draw trail lines (pixels)?
   protected String description;                // Description for this movement trail
+  protected boolean ignoreSameLocation = false; // Only keep last position if location name does not change
 
   // Defaults for Type variables
   protected static final char DEFAULT_TRAIL_KEY = 'T';
   protected static final String DEFAULT_MENU_COMMAND = Resources.getString("Editor.Footprint.movement_trail");
   protected static final Boolean DEFAULT_INITIALLY_VISIBLE = Boolean.FALSE;
   protected static final Boolean DEFAULT_GLOBALLY_VISIBLE = Boolean.FALSE;
+  protected static final Boolean DEFAULT_IGNORE_SAME_LOCATION = Boolean.FALSE;
   protected static final int DEFAULT_CIRCLE_RADIUS = 10;
   protected static final Color DEFAULT_FILL_COLOR = Color.WHITE;
   protected static final Color DEFAULT_LINE_COLOR = Color.BLACK;
@@ -133,6 +136,7 @@ public class Footprint extends MovementMarkable {
   @Override
   public void mySetState(String newState) {
     pointList.clear();
+    lastPointListSize = 0;
     final SequenceEncoder.Decoder ss =
       new SequenceEncoder.Decoder(newState, ';');
     globalVisibility = ss.nextBoolean(initiallyVisible);
@@ -150,7 +154,12 @@ public class Footprint extends MovementMarkable {
       }
     }
     everInitialized = ss.nextBoolean(false);
+    lastPointListSize = ss.nextInt(items);
     requireNoOuterRotate();
+    if (ignoreSameLocation) {
+      GameModule.getGameModule().setTrueMovedSupport(true);
+    }
+
   }
 
   @Override
@@ -165,6 +174,7 @@ public class Footprint extends MovementMarkable {
     }
 
     se.append(everInitialized);
+    se.append(lastPointListSize);
 
     return se.getValue();
   }
@@ -193,6 +203,7 @@ public class Footprint extends MovementMarkable {
     trailKeyOff = st.nextNamedKeyStroke(null);
     trailKeyClear = st.nextNamedKeyStroke(null);
     description = st.nextToken("");
+    ignoreSameLocation = st.nextBoolean(DEFAULT_IGNORE_SAME_LOCATION);
     commands = null;
     showTrailCommand = null;
     showTrailCommandOn = null;
@@ -221,7 +232,9 @@ public class Footprint extends MovementMarkable {
       .append(trailKeyOn)
       .append(trailKeyOff)
       .append(trailKeyClear)
-      .append(description);
+      .append(description)
+      .append(ignoreSameLocation)
+    ;
     return ID + se.getValue();
   }
 
@@ -243,7 +256,16 @@ public class Footprint extends MovementMarkable {
 
   @Override
   public void setProperty(Object key, Object val) {
-    if (Properties.MOVED.equals(key) || Properties.MAYBE_MOVED.equals(key)) {
+    if (ignoreSameLocation && Properties.MAYBE_MOVED.equals(key)) {
+      // Ignore moves within the same named location or mat.
+      if (pointList.size() > lastPointListSize) {
+        pointList.remove(pointList.size() - 1);
+        lastPointListSize = pointList.size();
+      }
+      piece.setProperty(key, val);
+      myBoundingBox = null;
+    }
+    else if (Properties.MOVED.equals(key) || Properties.MAYBE_MOVED.equals(key)) {
       setMoved(Boolean.TRUE.equals(val));
       piece.setProperty(key, val); // Pass on to MovementMarkable
       myBoundingBox = null;
@@ -316,6 +338,7 @@ public class Footprint extends MovementMarkable {
   protected void clearTrail() {
     myBoundingBox = null;
     pointList.clear();
+    lastPointListSize = 0;
     addPoint(getPosition());
     if (!initialized) {       //BR// Bug 12980 - prevent multiple re-initializations
       localVisibility = initiallyVisible;
@@ -805,6 +828,7 @@ public class Footprint extends MovementMarkable {
     if (! Objects.equals(trailKeyOff, c.trailKeyOff)) return false;
     if (! Objects.equals(trailKeyClear, c.trailKeyClear)) return false;
     if (! Objects.equals(description, c.description)) return false;
+    if (! Objects.equals(ignoreSameLocation, c.ignoreSameLocation)) return false;
 
     if (! Objects.equals(globalVisibility, c.globalVisibility)) return false;
     if (! Objects.equals(startMapId, c.startMapId)) return false;
@@ -826,6 +850,7 @@ public class Footprint extends MovementMarkable {
     private final StringConfigurer menuCommandConfig;
     private final BooleanConfigurer initiallyVisibleConfig;
     private final BooleanConfigurer globallyVisibleConfig;
+    private final BooleanConfigurer sameLocationConfig;
     private final IntConfigurer circleRadiusConfig;
     private final ColorConfigurer fillColorConfig;
     private final ColorConfigurer lineColorConfig;
@@ -862,6 +887,9 @@ public class Footprint extends MovementMarkable {
 
       globallyVisibleConfig = new BooleanConfigurer(p.globallyVisible);
       controls.add("Editor.Footprint.trails_are_visible_to_all_players", globallyVisibleConfig);
+
+      sameLocationConfig = new BooleanConfigurer(p.ignoreSameLocation);
+      controls.add("Editor.MovementMarkable.ignore_same_location", sameLocationConfig);
 
       circleRadiusConfig = new IntConfigurer(p.circleRadius);
       controls.add("Editor.Footprint.circle_radius", circleRadiusConfig);
@@ -911,7 +939,8 @@ public class Footprint extends MovementMarkable {
         .append(trailKeyOn.getValueString())
         .append(trailKeyOff.getValueString())
         .append(trailKeyClear.getValueString())
-        .append(desc.getValueString());
+        .append(desc.getValueString())
+        .append(sameLocationConfig.getValueString());
       return ID + se.getValue();
     }
 
