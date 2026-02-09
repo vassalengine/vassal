@@ -18,6 +18,7 @@
 package VASSAL.build;
 
 import VASSAL.Info;
+import VASSAL.build.module.AnimatedDiceButton;
 import VASSAL.build.module.BasicCommandEncoder;
 import VASSAL.build.module.BasicLogger;
 import VASSAL.build.module.ChartWindow;
@@ -1209,6 +1210,7 @@ public class GameModule extends AbstractConfigurable
 //                  InternetDiceButton.class,   // Disable internet dice button until Bones server can prevent email spamming
       RandomTextButton.class,
       SpecialDiceButton.class,
+      AnimatedDiceButton.class,
       PredefinedSetup.class,
       ChartWindow.class,
       PrivateMap.class,
