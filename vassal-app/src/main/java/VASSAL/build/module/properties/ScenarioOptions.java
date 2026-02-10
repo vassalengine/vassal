@@ -176,6 +176,7 @@ public class ScenarioOptions implements GameComponent {
         }
       };
 
+      openAction.putValue(Action.MNEMONIC_KEY, (int) Resources.getString("ScenarioOptions.menu_text.shortcut").charAt(0)); //NON-NLS
       MenuManager.getInstance().addAction("ScenarioOptions.menu_text", getOpenAction());
       getOpenAction().setEnabled(false);
 

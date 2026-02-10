@@ -33,6 +33,7 @@ public class ShutDownAction extends AbstractAction {
 
   public ShutDownAction() {
     super(Resources.getString(Resources.QUIT));
+    putValue(MNEMONIC_KEY, (int) Resources.getString("General.quit.shortcut").charAt(0)); //NON-NLS
   }
 
   @Override
