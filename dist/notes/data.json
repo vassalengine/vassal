@@ -26,6 +26,8 @@
       "improvements": [
       ],
       "other": [
+        { "num": 14486, "desc": "Upgraded logback-classic to 1.5.29" },
+        { "num": 14485, "desc": "Upgraded maven-dependency-plugin to 3.10.0" }
       ]
     },
     {
