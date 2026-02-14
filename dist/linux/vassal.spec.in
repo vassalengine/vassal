@@ -1,0 +1,66 @@
+%undefine       _disable_source_fetch
+%define         SHA256SUM0 @SHA256SUM@
+
+Name:		vassal
+Summary:	A game engine for building and playing board games and card games
+Version:	@RELEASE@
+Release:	1
+Source0:	https://github.com/@REPOSITORY@/releases/download/%{version}/VASSAL-%{version}-linux.tar.bz2
+Source1:        https://raw.githubusercontent.com/@REPOSITORY@/refs/heads/master/debian/vassal.6
+Source2:	https://raw.githubusercontent.com/@REPOSITORY@/refs/heads/master/debian/vassal.desktop
+Source3:	https://raw.githubusercontent.com/@REPOSITORY@/refs/heads/master/debian/vassal.sharedmimeinfo
+URL:		https://vassalengine.org/
+BuildArch:	noarch
+Requires:	java
+License:	LGPL-2.0+ AND Apache-2.0 AND BSD-3-Clause AND CPL-1.0 AND MIT AND EPL-1.0
+
+%description
+Vassal is a game engine for building and playing online adaptations of board
+games and card games. Play live on the Internet or by email. Vassal runs on
+all platforms, and is free, open-source software.
+
+%prep
+echo "%{SHA256SUM0}	%{SOURCE0}" | sha256sum -c -
+
+%setup -q -n VASSAL-%{version}
+ls
+echo "%{SOURCE1} %{SOURCE2} %{SOURCE3}"
+
+%build
+
+%install
+#make some install dirs
+install -d -m755 %{buildroot}%{_bindir}
+install -d -m755 %{buildroot}%{_datadir}/%{name}
+install -d -m755 %{buildroot}%{_mandir}/man6
+install -d -m755 %{buildroot}%{_datadir}/applications
+install -d -m755 %{buildroot}%{_datadir}/mime/packages
+install -d -m755 %{buildroot}%{_datadir}/icons/hicolor/scalable/mimetypes
+
+#install package
+cp -a *  %{buildroot}%{_datadir}/%{name}/
+(cd %{buildroot}%{_bindir} && ln -s ../share/%{name}/VASSAL.sh vassal)
+(cd %{buildroot}%{_datadir}/icons/hicolor/scalable/mimetypes && cp ../../../../%{name}/VASSAL.svg application-x-%{name}.svg)
+
+cp -av %{SOURCE1} %{buildroot}%{_mandir}/man6
+cp -av %{SOURCE2} %{buildroot}%{_datadir}/applications/application-x-%{name}.desktop 
+cp -av %{SOURCE3} %{buildroot}%{_datadir}/mime/packages/%{name}.xml
+
+%files
+%{_bindir}/*
+%{_datadir}/%{name}
+%{_datadir}/applications/application-x-%{name}.desktop
+%{_datadir}/mime/packages/%{name}.xml
+%{_datadir}/icons/hicolor/scalable/mimetypes/application-x-%{name}.svg
+%{_mandir}/man6/vassal.6.gz
+
+%post
+update-mime-database /usr/share/mime &> /dev/null || :
+update-desktop-database &> /dev/null || :
+gtk-update-icon-cache /usr/share/icons/hicolor &> /dev/null || :
+
+%postun
+update-mime-database /usr/share/mime &> /dev/null || :
+update-desktop-database &> /dev/null || :
+gtk-update-icon-cache /usr/share/icons/hicolor &> /dev/null || :
+

@@ -9,6 +9,7 @@
   "downloads": [
     { "display_name": "Linux", "suffix": "linux.tar.bz2" },
     { "display_name": "Linux (Debian)", "suffix": "1_all.deb", "prefix": "vassal_"}, 
+    { "display_name": "Linux (RPM)", "suffix": "1.noarch.rpm", "prefix": "vassal-"}, 
     { "display_name": "MacOS", "suffix": "macos-universal.dmg" },
     { "display_name": "Windows (64-bit x86)", "suffix": "windows-x86_64.exe" },
     { "display_name": "Windows (32-bit x86)", "suffix": "windows-x86_32.exe" },
