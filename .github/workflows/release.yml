@@ -136,8 +136,42 @@ jobs:
         with: 
           files:  |
             tmp/VASSAL-${{ github.ref_name }}-windows-x86_32.exe
-                
-   
+
+  package_rpm:
+    name: Release RPM
+    runs-on: ubuntu-latest
+    needs:
+      - package
+    steps:
+      - name: Update container
+        run: |
+          sudo apt update -y
+          sudo apt install -y jq rpm
+      - name: Build package
+        run: |
+          mkdir -p rpmbuild/{BUILD,BUILDROOT,RPMS/noarch,SOURCES,SRPMS}
+          sha=$(curl ${{ github.api_url }}/repos/${{ github.repository }}/releases/tags/${{ github.ref_name }} 2>/dev/null | jq '.assets.[] | .digest+"  "+.name | ltrimstr("sha256:") ' | grep -- -linux | tr -d '"' | cut -f1 -d' ')
+          wget "https://raw.githubusercontent.com/${{ github.repository }}/refs/tags/${{ github.ref_name }}/dist/linux/vassal.spec.in" -O vassal.spec.in
+          sed -e "s/@RELEASE@/${{ github.ref_name }}/" -e "s/@SHA256SUM@/${sha}/" -e "s,@REPOSITORY@,${{ github.repository }}," < vassal.spec.in > vassal.spec
+          rpmbuild --define "_topdir `pwd`/rpmbuild"  -ba vassal.spec
+      - name: Move artefacts
+        run: |
+          mkdir -p public
+          mv rpmbuild/RPMS/noarch/vassal-${{ github.ref_name }}-1.noarch.rpm \
+             rpmbuild/SRPMS/vassal-${{ github.ref_name }}-1.src.rpm \
+             public/
+          ls public/
+      - name: Archive RPM source package
+        uses: actions/upload-artifact@v6
+        with:
+          name: rpm-source
+          path: |
+            public/vassal-${{ github.ref_name }}-1.src.rpm
+      - name: Add artefacts to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: public/vassal-${{ github.ref_name }}-1.noarch.rpm
+
   package_debian:
     # Debian package build.  Creates new changelog entry from tag, and
     # makes a pull-request. 
@@ -233,6 +267,32 @@ jobs:
         with:
           files: public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_all.deb
 
+  package_flatpak:
+    name: Release FlatPak recipe
+    runs-on: ubuntu-latest
+    needs:
+      - package
+    steps:
+      - name: Update container
+        run: |
+          sudo apt update -y
+          sudo apt install -y jq
+      - name: Build package
+        run: |
+          sha=`curl ${{ github.api_url }}/repos/${{ github.repository }}/releases/tags/${{ github.ref_name }} 2>/dev/null | jq '.assets.[] | .digest+"  "+.name | ltrimstr("sha256:") ' | grep -- -linux | tr -d '"' | cut -f1 -d' '`
+          date=`date +%Y-%m-%d`
+          wget "https://raw.githubusercontent.com/${{ github.repository }}/refs/tags/${{ github.ref_name }}/dist/linux/org.vassalengine.vassal.yaml.in" -O org.vassalengine.vassal.yaml.in
+          sed -e "s/@ID@/org.vassalengine.vassal/g" -e "s/@JDK@/25/g" -e "s/@RELEASE@/${{ github.ref_name }}/g" -e "s/@SHA256@/${sha}/" -e "s,@REPOSITORY@,${{ github.repository }},g" -e "s/@DATE@/${date}/" < org.vassalengine.vassal.yaml.in > org.vassalengine.vassal.yaml
+      - name: Move artefacts
+        run: |
+          mkdir -p public
+          mv org.vassalengine.vassal.yaml public/VASSAL-${{ github.ref_name }}-flatpak.yaml
+          ls public/
+      - name: Add artefacts to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: public/VASSAL-${{ github.ref_name }}-flatpak.yaml
+    
   package_digest:
     name: Sha256 digest of packages
     runs-on: ubuntu-latest
@@ -240,6 +300,8 @@ jobs:
       - package
       - package_win32
       - package_debian
+      - package_rpm
+      - package_flatpak
     steps:
       - name: Update container 
         run: |

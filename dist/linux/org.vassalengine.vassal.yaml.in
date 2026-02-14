@@ -1,0 +1,145 @@
+id: @ID@
+runtime: org.freedesktop.Platform
+runtime-version: '25.08'
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.openjdk@JDK@
+command: VASSAL.sh
+
+finish-args:
+  - --share=ipc
+  - --env=PATH=/app/jre/bin:/app/bin:/usr/bin
+  - --env=JAVA_HOME=/app/jre
+  - --socket=x11
+  - --filesystem=host
+  - --filesystem=/tmp
+
+modules:
+  - name: openjdk
+    buildsystem: simple
+    build-commands:
+      - /usr/lib/sdk/openjdk@JDK@/install.sh
+
+  - name: vassal
+    buildsystem: simple
+    build-options:
+      env:
+        PATH: /app/bin:/usr/bin:/usr/lib/sdk/openjdk@JDK@/bin
+        JAVA_HOME: /usr/lib/sdk/openjdk@JDK@/jvm/openjdk-@JDK@
+    build-commands:
+      - ls
+      - mkdir -p ${FLATPAK_DEST}/bin
+      - mkdir -p ${FLATPAK_DEST}/share/icons/hicolor/scalable/apps
+      - mkdir -p ${FLATPAK_DEST}/share/mime/packages
+      - mkdir -p ${FLATPAK_DEST}/share/applications
+      - mkdir -p ${FLATPAK_DEST}/share/metainfo
+      - mv VASSAL-@RELEASE@ ${FLATPAK_DEST}/
+      - cd ${FLATPAK_DEST}/bin && ln -s ../VASSAL-@RELEASE@/VASSAL.sh .
+      - cd ${FLATPAK_DEST}/bin && ln -s VASSAL.sh vassal
+      - cp ${FLATPAK_DEST}/VASSAL-@RELEASE@/VASSAL.svg ${FLATPAK_DEST}/share/icons/hicolor/scalable/${FLATPAK_ID}.svg
+      - cp ${FLATPAK_DEST}/VASSAL-@RELEASE@/VASSAL.svg ${FLATPAK_DEST}/share/icons/hicolor/scalable/apps/${FLATPAK_ID}.svg
+      - tail -n +2 ${FLATPAK_ID}-mime.xml > ${FLATPAK_DEST}/share/mime/packages/${FLATPAK_ID}-mime.xml
+      - tail -n +2 ${FLATPAK_ID}.desktop  > ${FLATPAK_DEST}/share/applications/${FLATPAK_ID}.desktop
+      - tail -n +2 ${FLATPAK_ID}.metainfo.xml  > ${FLATPAK_DEST}/share/metainfo/${FLATPAK_ID}.metainfo.xml 
+    sources:
+      - type: archive
+        url: https://github.com/@REPOSITORY@/releases/download/@RELEASE@/VASSAL-@RELEASE@-linux.tar.bz2
+        sha256: @SHA256@
+        strip-components: 0
+      - type: script
+        dest-filename: @ID@.desktop
+        commands:
+          - "[Desktop Entry]"
+          - Type=Application
+          - MimeType=application/x-vassal-module;application/x-vassal-log;application/x-vassal-save;application/x-vassal-extension
+          - Name=VASSAL
+          - Exec=VASSAL.sh %f
+          - Icon=@ID@
+          - Actions=Run;Edit;
+          - Categories=Game
+          - 
+          - "[Desktop Action Run]"
+          - Name=Run
+          - Exec=VASSAL.sh -l %f
+          - 
+          - "[Desktop Action Edit]"
+          - Name=Edit
+          - Exec=VASSAL.sh -e %f
+      - type: script
+        dest-filename: @ID@-mime.xml
+        commands:
+          - <?xml version="1.0"?>
+          -  <mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
+          -    <mime-type type="application/x-vassal-module">
+          -      <comment>VASSAL module file</comment>
+          -      <glob pattern="*.vmod"/>
+          -      <generic-icon name="@ID@"/>
+          -      <sub-class-of type="application/zip"/>
+          -     </mime-type>
+          -    <mime-type type="application/x-vassal-log">
+          -      <comment>VASSAL log file</comment>
+          -      <glob pattern="*.vlog"/>
+          -      <generic-icon name="@ID@"/>
+          -      <sub-class-of type="application/zip"/>
+          -    </mime-type>
+          -    <mime-type type="application/x-vassal-save">
+          -      <comment>VASSAL save file</comment>
+          -      <glob pattern="*.vsav"/>
+          -      <generic-icon name="@ID@"/>
+          -      <sub-class-of type="application/zip"/>
+          -    </mime-type>
+          -    <mime-type type="application/x-vassal-extension">
+          -      <comment>VASSAL module extension</comment>
+          -      <glob pattern="*.vmdx"/>
+          -      <generic-icon name="@ID@"/>
+          -      <sub-class-of type="application/zip"/>
+          -    </mime-type>
+          -  </mime-info>
+      - type: script
+        dest-filename: @ID@.metainfo.xml
+        commands:
+          - <?xml version="1.0" encoding="UTF-8"?>
+          - <component type="desktop-application">
+          -   <id>@ID@</id>
+          -   <metadata_license>MIT</metadata_license>
+          -   <project_license>LGPL-2.1-or-later</project_license>
+          -   <name>Vassal</name>
+          -   <summary>Play boardgames, virtually</summary>
+          -   <developer id="io.github.vassalengine">
+          -     <name>The Vassal Team</name>
+          -   </developer>
+          -   <description>
+          -     <p>
+          -       Vassal is a game engine for building and playing online adaptations of board games and card games.
+          -       You can use Vassal to play in real time over the Internet or by email.
+          -       Vassal runs on all platforms and is free, open-source software.
+          -     </p>
+          -   </description>
+          -   <launchable type="desktop-id">@ID@.desktop</launchable>
+          -   <content_rating type="oars-1.1">
+          -     <content_attribute id="violence-fantasy">moderate</content_attribute>
+          -     <content_attribute id="social-chat">intense</content_attribute>
+          -   </content_rating>
+          -   <url type="bugtracker">https://github.com/vassalengine/vassal/issues</url>
+          -   <url type="homepage">https://vassalengine.org/</url>
+          -   <url type="vcs-browser">https://github.com/vassalengine/vassal</url>
+          -   <screenshots>
+          -     <screenshot type="default">
+          -       <image>https://vassalengine.org/images/screenshots/screenshot2-1224.jpg</image>
+          -     </screenshot>
+          -     <screenshot>
+          -       <image>https://vassalengine.org/images/screenshots/screenshot3-1224.jpg</image>
+          -     </screenshot>
+          -     <screenshot>
+          -       <image>https://vassalengine.org/images/screenshots/screenshot4-1224.jpg</image>
+          -     </screenshot>
+          -     <screenshot>
+          -       <image>https://vassalengine.org/images/screenshots/screenshot5-1224.jpg</image>
+          -     </screenshot>
+          -   </screenshots>
+          -   <releases>
+          -     <release version="@RELEASE@" date="@DATE@">
+          -       <url type="details">https://github.com/@REPOSITORY@/releases/tag/@RELEASE@</url>
+          -     </release>
+          -   </releases>
+          - </component>
