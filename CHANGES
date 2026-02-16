@@ -1,5 +1,6 @@
 3.7.21 - ???
 
+* 14488: Build an RPM package
 * 14486: Upgraded logback-classic to 1.5.29
 * 14485: Upgraded maven-dependency-plugin to 3.10.0
 
