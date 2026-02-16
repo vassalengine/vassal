@@ -80,8 +80,10 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
   protected void setLow() {
     current = first;
     rolledOver = false;
-    if (current < active.length && !active[current]) {
-      // first is not active. Find the next active index.
+    if ((current < active.length && !active[current])
+            || (list.length == 0 && getTurnLevelCount() == 0)) {
+      // Either not active or the item is an empty leaf node.
+      // Advance to the next active index.
       advance();
     }
     super.setLow();
@@ -91,11 +93,17 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
   protected void setHigh() {
     rolledOver = false;
     current = first;
-    current--;
-    if (current < 0) {
-      current = list.length - 1;
+    int highIndex = current - 1;
+    if (highIndex < 0) {
+      // wrap to the end of the list.
+      highIndex = list.length - 1;
     }
-    if (current < active.length && !active[current]) {
+    if (highIndex >= 0) {
+      current = highIndex;
+    }
+    if ((current < active.length && !active[current])
+            || (highIndex < 0 && getTurnLevelCount() == 0)) {
+      // The current item is not active or the item is an empty leaf node.
       retreat();
     }
     super.setHigh();
@@ -214,6 +222,9 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
           current = list.length - 1;
         }
         done = active[current];
+      }
+      if (! done) {
+        rolledOver = true;
       }
     }
     myValue.setPropertyValue(getValueString());
