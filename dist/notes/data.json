@@ -39,6 +39,7 @@
       "bug_fixes": [
       ],
       "improvements": [
+        { "num": 14129, "desc": "Added Simplified Chinese translation for Editor" }
       ],
       "other": [
         { "num": 14488, "desc": "Build an RPM package" },
