@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/bash -x
 
 #
 # Execute this file to launch VASSAL on Unix
@@ -21,10 +21,11 @@ EXEC_PATH=$(realpath "$0")
 INSTALL_DIR=$(dirname "${EXEC_PATH}")
 
 # Check that java is new enough
-if ! "$JAVA" -classpath "$INSTALL_DIR"/lib/Vengine.jar VASSAL.launch.JavaVersionChecker 2>/dev/null ; then
-  echo "Error: $JAVA is too old to run this version of Vassal. Please use Java 11 or later." 2>&1
-  exit 1
-fi
+#if ! "$JAVA" -classpath "$INSTALL_DIR"/lib/Vengine.jar VASSAL.launch.JavaVersionChecker 2>/dev/null ; then
+#  echo "Error: $JAVA is too old to run this version of Vassal. Please use Java 11 or later." 2>&1
+#  exit 1
+#fi
 
+JAVA=/home/bruce/.sdkman/candidates/java/current/bin/java
 # Launch VASSSAL
 "$JAVA" -Duser.dir="$INSTALL_DIR" -classpath "$INSTALL_DIR"/lib/Vengine.jar VASSAL.launch.ModuleManager "$@"

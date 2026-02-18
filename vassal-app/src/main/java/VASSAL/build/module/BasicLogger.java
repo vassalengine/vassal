@@ -698,7 +698,8 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       final int dotIndex = outputName.lastIndexOf('.');
       if (dotIndex > 0) {
         outputName = outputName.substring(0, dotIndex) + "_cleaned" + outputName.substring(dotIndex);
-      } else {
+      }
+      else {
         outputName = outputName + "_cleaned";
       }
       fc.setSelectedFile(new File(inputFile.getParent(), outputName));

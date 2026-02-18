@@ -55,13 +55,13 @@ public class LogCleaner {
    */
   public static void cleanLogFile(File inputFile, File outputFile) throws IOException {
     // Load the log file
-    Command logCommand = loadLogFile(inputFile);
+    final Command logCommand = loadLogFile(inputFile);
     
     // Extract metadata - cast to SaveMetaData as that's what .vlog files use
-    SaveMetaData metadata = (SaveMetaData) MetaDataFactory.buildMetaData(inputFile);
+    final SaveMetaData metadata = (SaveMetaData) MetaDataFactory.buildMetaData(inputFile);
     
     // Clean the log
-    Command cleanedCommand = cleanLog(logCommand);
+    final Command cleanedCommand = cleanLog(logCommand);
     
     // Save the cleaned log
     saveCleanedLog(cleanedCommand, metadata, outputFile);
@@ -81,7 +81,7 @@ public class LogCleaner {
            entry = zipInput.getNextEntry()) {
         if (GameState.SAVEFILE_ZIP_ENTRY.equals(entry.getName())) {
           try (InputStream din = new DeobfuscatingInputStream(zipInput)) {
-            String commandString = IOUtils.toString(din, StandardCharsets.UTF_8);
+            final String commandString = IOUtils.toString(din, StandardCharsets.UTF_8);
             return GameModule.getGameModule().decode(commandString);
           }
         }
@@ -106,18 +106,18 @@ public class LogCleaner {
    */
   private static Command cleanLog(Command logCommand) {
     // Get the direct subcommands (which should be LogCommand objects and UndoCommand markers)
-    Command[] subCommands = logCommand.getSubCommands();
+    final Command[] subCommands = logCommand.getSubCommands();
     
     // Track which commands to remove
-    boolean[] toRemove = new boolean[subCommands.length];
+    final boolean[] toRemove = new boolean[subCommands.length];
     
     // Find and mark undo operations
     for (int i = 0; i < subCommands.length; i++) {
-      Command cmd = subCommands[i];
+      final Command cmd = subCommands[i];
       
       // Check if this is an UndoCommand(true) - start of undo
       if (cmd instanceof BasicLogger.UndoCommand) {
-        BasicLogger.UndoCommand undoCmd = (BasicLogger.UndoCommand) cmd;
+        final BasicLogger.UndoCommand undoCmd = (BasicLogger.UndoCommand) cmd;
         if (undoCmd.isInProgress()) {
           // Found start of undo - mark it for removal
           toRemove[i] = true;
@@ -125,9 +125,9 @@ public class LogCleaner {
           // Find the matching UndoCommand(false)
           int undoEnd = -1;
           for (int j = i + 1; j < subCommands.length; j++) {
-            Command endCmd = subCommands[j];
+            final Command endCmd = subCommands[j];
             if (endCmd instanceof BasicLogger.UndoCommand) {
-              BasicLogger.UndoCommand endUndoCmd = (BasicLogger.UndoCommand) endCmd;
+              final BasicLogger.UndoCommand endUndoCmd = (BasicLogger.UndoCommand) endCmd;
               if (!endUndoCmd.isInProgress()) {
                 undoEnd = j;
                 break;
@@ -185,7 +185,7 @@ public class LogCleaner {
    * @throws IOException If an I/O error occurs during saving
    */
   private static void saveCleanedLog(Command cleanedCommand, SaveMetaData metadata, File outputFile) throws IOException {
-    String logString = GameModule.getGameModule().encode(cleanedCommand);
+    final String logString = GameModule.getGameModule().encode(cleanedCommand);
     
     try (ZipWriter zw = new ZipWriter(outputFile)) {
       try (OutputStream out = new ObfuscatingOutputStream(
