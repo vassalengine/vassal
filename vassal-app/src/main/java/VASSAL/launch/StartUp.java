@@ -21,11 +21,14 @@ package VASSAL.launch;
 import java.awt.AWTError;
 import java.awt.Font;
 import java.awt.Toolkit;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.swing.UIManager;
@@ -215,7 +218,7 @@ public class StartUp {
         if (lafClassLoadError != null) {
           JOptionPane.showMessageDialog(null,
                   Resources.getString(lafClassLoadError.id, lafClassLoadError.exception.getMessage()),
-                  Resources.getString("Startup.laf_default"),
+                  Resources.getString("Startup.laf_default"),  // NON-NLS
                   JOptionPane.WARNING_MESSAGE);
         }
       });
@@ -234,33 +237,61 @@ public class StartUp {
    */
   protected LafLoadError installLookAndFeel(String defaultLaf, String lookAndFeelPath) {
     LafLoadError loadError = null;
-    Path filePath = Paths.get(lookAndFeelPath);
-    if (filePath.getRoot() == null) {
-      // Not an absolute path. Prepend the user dir.
-      final Path root = Paths.get(String.valueOf(Info.getBaseDir()));
-      filePath = root.resolve(filePath);
-    }
-    final URI u = filePath.toUri();
-
+    final String separator = SystemUtils.IS_OS_WINDOWS ? ";" : ":";  // NON-NLS
+    final String[] lafPaths = lookAndFeelPath.split(separator);
+    final URL[] urls = new URL[lafPaths.length];
+    final Path root = Paths.get(String.valueOf(Info.getBaseDir()));
     try {
+      int index = 0;
+      for (final String lafPath : lafPaths) {
+        Path filePath = Paths.get(lafPath);
+        if (filePath.getRoot() == null) {
+          // Not an absolute path. Prepend the user dir.
+          filePath = root.resolve(filePath);
+        }
+        final URI u = filePath.toUri();
+        urls[index++] = u.toURL();
+      }
       // Create an instance of URLClassloader using the URL.
-      final ClassLoader loader = URLClassLoader.newInstance(new URL[]{u.toURL()}, getClass().getClassLoader());
-      final Class<?> lookAndFeelClass = Class.forName(defaultLaf, true, loader);
-      final LookAndFeel lookAndFeel = (LookAndFeel) lookAndFeelClass.getConstructors()[0].newInstance();
+      final ClassLoader loader = URLClassLoader.newInstance(urls, getClass().getClassLoader());
+      if (defaultLaf.endsWith(".theme.json")) { // NON-NLS
+        Path filePath = Paths.get(defaultLaf);
+        if (filePath.getRoot() == null) {
+          // Convert to an absolute path.
+          filePath = root.resolve(filePath);
+        }
 
-      UIManager.setLookAndFeel(lookAndFeel);
-      UIManager.installLookAndFeel(lookAndFeel.getName(), lookAndFeelClass.getName());
+        final InputStream inputStream = Files.newInputStream(filePath);
+        final Class<?> IntelliJThemeLoader = Class.forName("com.formdev.flatlaf.IntelliJTheme", true, loader); // NON-NLS
+        IntelliJThemeLoader.getMethod("setup", InputStream.class).invoke(null, inputStream); // NON-NLS
+      }
+      else {
+        final Class<?> lookAndFeelClass = Class.forName(defaultLaf, true, loader);
+        final LookAndFeel lookAndFeel = (LookAndFeel) lookAndFeelClass.getConstructors()[0].newInstance();
+
+        UIManager.setLookAndFeel(lookAndFeel);
+        UIManager.installLookAndFeel(lookAndFeel.getName(), lookAndFeelClass.getName());
+      }
       return null; // Success
-
     }
     catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException ex) {
-      loadError = new LafLoadError("Startup.laf_not_found", ex);
+      // ClassNotFound source: Class.forName()
+      // Instantiation source: newInstance()
+      // IllegalAccess or InvocationTarget sources: invoke() or newInstance()
+      loadError = new LafLoadError("Startup.laf_not_found", ex); // NON-NLS
     }
     catch (UnsupportedLookAndFeelException ex) {
-      loadError = new LafLoadError("Startup.laf_unsupported", ex);
+      // Source: setLookAndFeel()
+      loadError = new LafLoadError("Startup.laf_unsupported", ex); // NON-NLS
     }
-    catch (MalformedURLException ex) {
-      loadError = new LafLoadError("Startup.laf_malformed", ex);
+    catch (MalformedURLException | NoSuchMethodException ex) {
+      // NoSuchMethod source: getMethod()
+      // MalformedURL source: Files.newInputStream() or toURL()
+      loadError = new LafLoadError("Startup.laf_malformed", ex); // NON-NLS
+    }
+    catch (IOException ex) {
+      // Source: Files.newInputStream()
+      loadError = new LafLoadError("Error.file_read_error_message", ex); // NON-NLS
     }
     return loadError;
   }
