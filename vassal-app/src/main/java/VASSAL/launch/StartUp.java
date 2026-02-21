@@ -21,13 +21,26 @@ package VASSAL.launch;
 import java.awt.AWTError;
 import java.awt.Font;
 import java.awt.Toolkit;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import javax.swing.UIManager;
 import javax.swing.SwingUtilities;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.JOptionPane;
+import javax.swing.LookAndFeel;
 
+import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
 import VASSAL.preferences.ReadOnlyPrefs;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 import org.slf4j.Logger;
@@ -83,6 +96,22 @@ public class StartUp {
     }
   }
 
+  /**
+   * Helper object to store Look and Feel loader errors.
+   * Resource string lookup is not possible until the UIManager loads.
+   * The object stores a resource ID and the associated exception
+   * for display after the UI is functional.
+   */
+  protected static class LafLoadError {
+    protected String id;
+    protected Exception exception;
+
+    public LafLoadError(String id, Exception e) {
+      this.id = id;
+      exception = e;
+    }
+  }
+
   protected void initUIProperties() {
     System.setProperty("swing.aatext", "true"); //$NON-NLS-1$ //$NON-NLS-2$
     System.setProperty("swing.boldMetal", "false"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -115,19 +144,45 @@ public class StartUp {
           );
         }
 
-        if (!SystemUtils.IS_OS_WINDOWS) {
-          // use native LookAndFeel
-          // NB: This must be after Mac-specific properties
+        LafLoadError lafClassLoadError = null;
+        String defaultLaf = System.getProperty("swing.defaultlaf"); // NON-NLS
+        if (defaultLaf != null) {
           try {
-            UIManager.setLookAndFeel(
-              UIManager.getSystemLookAndFeelClassName()
-            );
+            // Check that the look and feel is in the class path.
+            Class.forName(defaultLaf, false, getClass().getClassLoader());
           }
-          catch (ClassNotFoundException | UnsupportedLookAndFeelException
-            | InstantiationException | IllegalAccessException e) {
-            ErrorDialog.bug(e);
-          }
+          catch (ClassNotFoundException e) {
+            // Attempt to dynamically load the look and feel class.
+            final String lookAndFeelPath = System.getProperty("look.feel"); // NON-NLS
+            if (!StringUtils.isBlank(lookAndFeelPath)) {
+              lafClassLoadError = installLookAndFeel(defaultLaf, lookAndFeelPath);
+            }
+            else {
+              // The desired Look and Feel is not available.
+              // Record the error and report it later once the UIManager is up.
 
+              lafClassLoadError = new LafLoadError("Startup.laf_no_path", e);  // NON-NLS
+            }
+            if (lafClassLoadError != null) {
+              defaultLaf = null;
+              System.clearProperty("swing.defaultlaf"); // NON-NLS
+            }
+          }
+        }
+        if (!SystemUtils.IS_OS_WINDOWS) {
+          if (defaultLaf == null) {
+            // use native LookAndFeel
+            // NB: This must be after Mac-specific properties
+            try {
+              UIManager.setLookAndFeel(
+                      UIManager.getSystemLookAndFeelClassName()
+              );
+            }
+            catch (ClassNotFoundException | UnsupportedLookAndFeelException
+                     | InstantiationException | IllegalAccessException e) {
+              ErrorDialog.bug(e);
+            }
+          }
           // The GTK LaF has a color picker which lacks the ability to
           // select transparency. We can override that and it doesn't
           // look too goofy.
@@ -159,11 +214,86 @@ public class StartUp {
         catch (NumberFormatException e) {
           // No action, keep default system/java/whatever fonts.
         }
+        // Report any Look and Feel load errors.
+        if (lafClassLoadError != null) {
+          JOptionPane.showMessageDialog(null,
+                  Resources.getString(lafClassLoadError.id, lafClassLoadError.exception.getMessage()),
+                  Resources.getString("Startup.laf_default"),  // NON-NLS
+                  JOptionPane.WARNING_MESSAGE);
+        }
       });
     }
     catch (InterruptedException | InvocationTargetException e) {
       ErrorDialog.bug(e);
     }
+  }
+
+  /**
+   * Install and set the look and feel.
+   * @param defaultLaf The name of the class that implements this look and feel.
+   * @param lookAndFeelPath The name of the (jar) file containing the look and feel class.
+   *                        This can be absolute or relative path.
+   * @return Return null on success otherwise returns an error object.
+   */
+  protected LafLoadError installLookAndFeel(String defaultLaf, String lookAndFeelPath) {
+    LafLoadError loadError = null;
+    final String separator = SystemUtils.IS_OS_WINDOWS ? ";" : ":";  // NON-NLS
+    final String[] lafPaths = lookAndFeelPath.split(separator);
+    final URL[] urls = new URL[lafPaths.length];
+    final Path root = Paths.get(String.valueOf(Info.getBaseDir()));
+    try {
+      int index = 0;
+      for (final String lafPath : lafPaths) {
+        Path filePath = Paths.get(lafPath);
+        if (filePath.getRoot() == null) {
+          // Not an absolute path. Prepend the user dir.
+          filePath = root.resolve(filePath);
+        }
+        final URI u = filePath.toUri();
+        urls[index++] = u.toURL();
+      }
+      // Create an instance of URLClassloader using the URL.
+      final ClassLoader loader = URLClassLoader.newInstance(urls, getClass().getClassLoader());
+      if (defaultLaf.endsWith(".theme.json")) { // NON-NLS
+        Path filePath = Paths.get(defaultLaf);
+        if (filePath.getRoot() == null) {
+          // Convert to an absolute path.
+          filePath = root.resolve(filePath);
+        }
+
+        final InputStream inputStream = Files.newInputStream(filePath);
+        final Class<?> IntelliJThemeLoader = Class.forName("com.formdev.flatlaf.IntelliJTheme", true, loader); // NON-NLS
+        IntelliJThemeLoader.getMethod("setup", InputStream.class).invoke(null, inputStream); // NON-NLS
+      }
+      else {
+        final Class<?> lookAndFeelClass = Class.forName(defaultLaf, true, loader);
+        final LookAndFeel lookAndFeel = (LookAndFeel) lookAndFeelClass.getConstructors()[0].newInstance();
+
+        UIManager.setLookAndFeel(lookAndFeel);
+        UIManager.installLookAndFeel(lookAndFeel.getName(), lookAndFeelClass.getName());
+      }
+      return null; // Success
+    }
+    catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException ex) {
+      // ClassNotFound source: Class.forName()
+      // Instantiation source: newInstance()
+      // IllegalAccess or InvocationTarget sources: invoke() or newInstance()
+      loadError = new LafLoadError("Startup.laf_not_found", ex); // NON-NLS
+    }
+    catch (UnsupportedLookAndFeelException ex) {
+      // Source: setLookAndFeel()
+      loadError = new LafLoadError("Startup.laf_unsupported", ex); // NON-NLS
+    }
+    catch (MalformedURLException | NoSuchMethodException ex) {
+      // NoSuchMethod source: getMethod()
+      // MalformedURL source: Files.newInputStream() or toURL()
+      loadError = new LafLoadError("Startup.laf_malformed", ex); // NON-NLS
+    }
+    catch (IOException ex) {
+      // Source: Files.newInputStream()
+      loadError = new LafLoadError("Error.file_read_error_message", ex); // NON-NLS
+    }
+    return loadError;
   }
 
   protected void initSystemSpecificProperties() {}
