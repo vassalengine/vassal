@@ -14,9 +14,10 @@
 
   <description>
     <p>
-      Vassal is a game engine for building and playing online adaptations of board games and card games.
-      You can use Vassal to play in real time over the Internet or by email.
-      Vassal runs on all platforms and is free, open-source software.
+      Vassal is a game engine for building and playing virtual
+      adaptations of board and card games.  You can use Vassal to play
+      locally, in real time over the Internet or by email.  Vassal
+      runs on all platforms and is free, open-source software.
     </p>
   </description>
 
