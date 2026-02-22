@@ -3,7 +3,7 @@ Type=Application
 MimeType=application/x-vassal-module;application/x-vassal-log;application/x-vassal-save;application/x-vassal-extension
 Name=VASSAL
 Exec=vassal %f
-Icon=application-x-vassal
+Icon=org.vassalengine.vassal
 Actions=Run;Edit;
 Categories=Game
 
