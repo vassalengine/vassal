@@ -181,7 +181,7 @@ public class GameState implements CommandEncoder {
 
     loadGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.load_game.shortcut").charAt(0));
 
-    loadContinuation = new AbstractAction(Resources.getString("GameState.load_game_old")) {
+    loadContinuation = new AbstractAction(Resources.getString("GameState.load_continuation")) {
       private static final long serialVersionUID = 1L;
 
       @Override
