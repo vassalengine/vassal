@@ -113,7 +113,7 @@ public class Resources {
 
     final List<String> languages = new ArrayList<>();
     for (final Locale l : supportedLocales) {
-      languages.add(l.getLanguage());
+      languages.add(l.toLanguageTag());
     }
 
     final Prefs p = Prefs.getGlobalPrefs();
@@ -132,6 +132,8 @@ public class Resources {
         LOCALE_PREF_KEY,
         getInstanceString("Prefs.language"),
         languages.toArray(new String[0])) {
+      Locale current = null;
+
       @Override
       public Component getControls() {
         if (getBox() == null) {
@@ -142,7 +144,11 @@ public class Resources {
             @Override
             public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
               final JLabel l = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-              l.setText(new Locale((String) value).getDisplayLanguage());
+              if (current == null) {
+                current = new Locale(getValueString());
+              }
+              final Locale locale = new Locale((String)value);
+              l.setText((locale.getDisplayLanguage(current)) + " (" + locale.getDisplayLanguage(locale) + ")"); //NON-NLS
               return l;
             }
           });
