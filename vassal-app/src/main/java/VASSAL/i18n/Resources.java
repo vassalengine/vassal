@@ -132,6 +132,8 @@ public class Resources {
         LOCALE_PREF_KEY,
         getInstanceString("Prefs.language"),
         languages.toArray(new String[0])) {
+      Locale current = null;
+
       @Override
       public Component getControls() {
         if (getBox() == null) {
@@ -142,7 +144,9 @@ public class Resources {
             @Override
             public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
               final JLabel l = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-              final Locale current = new Locale(getValueString());
+              if (current == null) {
+                current = new Locale(getValueString());
+              }
               final Locale locale = new Locale((String)value);
               l.setText((locale.getDisplayLanguage(current)) + " (" + locale.getDisplayLanguage(locale) + ")"); //NON-NLS
               return l;
