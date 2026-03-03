@@ -368,8 +368,10 @@ public class Resources {
     editorBundle = null;
     vassalBundle = null;
     UIManager.put("OptionPane.yesButtonText", getInstanceString(YES)); //$NON-NLS-1$
+    UIManager.put("OptionPane.yesButtonMnemonic", Integer.toString(getInstanceString(YES).charAt(0))); //$NON-NLS-1$
     UIManager.put("OptionPane.cancelButtonText", getInstanceString(CANCEL)); //$NON-NLS-1$
     UIManager.put("OptionPane.noButtonText", getInstanceString(NO)); //$NON-NLS-1$
+    UIManager.put("OptionPane.noButtonMnemonic", Integer.toString(getInstanceString(NO).charAt(0))); //$NON-NLS-1$
     UIManager.put("OptionPane.okButtonText", getInstanceString(OK)); //$NON-NLS-1$
   }
 
