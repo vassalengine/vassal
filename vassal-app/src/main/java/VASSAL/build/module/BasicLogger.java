@@ -50,8 +50,12 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.Dimension;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.BufferedOutputStream;
@@ -405,29 +409,54 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     }
 
     if (Boolean.TRUE.equals(g.getPrefs().getValue(prefName)) || (atStart && fastForwarded)) {
-      final Object[] options = {
-        Resources.getString(Resources.YES),
-        Resources.getString(Resources.NO),
-        Resources.getString("BasicLogger.dont_prompt_again")  //$NON-NLS-1$
-      };
-
-      final int result = JOptionPane.showOptionDialog(
-        g.getPlayerWindow(),
-        Resources.getString("BasicLogger.start_new_log_file", prompt), //$NON-NLS-1$
-        "",  //$NON-NLS-1$
-        JOptionPane.YES_NO_CANCEL_OPTION,
-        JOptionPane.QUESTION_MESSAGE,
-        null,
-        options,
-        options[0]
-      );
-
-      if (result == JOptionPane.YES_OPTION) {
-        beginOutput();
+      final JButton yes = new JButton((String) UIManager.get("OptionPane.yesButtonText"));
+      final JButton no = new JButton((String) UIManager.get("OptionPane.noButtonText"));
+      final JButton cancel = new JButton(Resources.getString("BasicLogger.dont_prompt_again"));
+      try {
+        yes.setMnemonic(Integer.parseInt((String) UIManager.get("OptionPane.yesButtonMnemonic")));
+        no.setMnemonic(Integer.parseInt((String) UIManager.get("OptionPane.noButtonMnemonic")));
       }
-      else if (result == 2) { // Turn Preference Off
-        g.getPrefs().setValue(prefName, Boolean.FALSE);
+      catch (NumberFormatException ex) {
+        // Do nothing. Allow dialog to show without mnemonics.
       }
+
+      final JOptionPane pane = new JOptionPane(
+              Resources.getString("BasicLogger.start_new_log_file", prompt), //$NON-NLS-1$
+              JOptionPane.QUESTION_MESSAGE,
+              JOptionPane.YES_NO_CANCEL_OPTION,
+              null,
+              new Object[] {yes, no, cancel},
+              yes);
+
+      yes.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent event) {
+          pane.setValue(JOptionPane.YES_OPTION);
+          javax.swing.SwingUtilities.invokeLater(() -> {
+            beginOutput();
+          });
+        }
+      });
+      no.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent event) {
+          pane.setValue(JOptionPane.NO_OPTION);
+        }
+      });
+      cancel.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent event) {
+          pane.setValue(JOptionPane.CANCEL_OPTION);
+          g.getPrefs().setValue(prefName, Boolean.FALSE);
+        }
+      });
+
+      yes.setPreferredSize(new Dimension(100, yes.getPreferredSize().height));
+      no.setPreferredSize(new Dimension(100, no.getPreferredSize().height));
+
+      final JDialog dialog = pane.createDialog(g.getPlayerWindow(), "");
+      dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+      dialog.setVisible(true);
     }
   }
 
