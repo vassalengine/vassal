@@ -3,19 +3,17 @@
  * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General
- * Public License (LGPL) as published by the Free Software
- * Foundation.
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
  *
- * This library is distributed in the hope that it will be
- * useful, but WITHOUT ANY WARRANTY; without even the
- * implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE.  See the GNU Library General Public
- * License for more details.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
  *
- * You should have received a copy of the GNU Library
- * General Public License along with this library; if not,
- * copies are available at http://www.opensource.org.
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
  */
 
 package VASSAL.build.module;
@@ -96,19 +94,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   protected int nextUndo = -1;
   protected int dontUndoPast = 0;
   protected Command beginningState;
-
-  /**
-   * The file selected when beginning a log. NOTE: we intentionally do not write anything
-   * to disk until {@link #write()} is called (typically from the End Log action).
-   */
   protected File outputFile;
-
-  /**
-   * True once a log file has been selected and we are buffering commands for it.
-   * This decouples "we are logging" from "a file exists on disk".
-   */
-  private boolean loggingActive = false;
-
   protected Action stepAction = new StepAction();
   protected SaveMetaData metadata;
   private boolean multiPlayer = false;
@@ -278,7 +264,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   public boolean isMultiPlayer() {
     return multiPlayer;
   }
-
+  
   /**
    * Our setup method is called by GameState whenever a game starts or ends.
    * @param startingGame True if a new game starting, false if a game is ending/closing
@@ -294,8 +280,6 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       nextUndo = -1;
       dontUndoPast = 0;
       beginningState = null; // Will create one when we actually start a log
-      loggingActive = false;
-      outputFile = null;
     }
     else {
       // When ending/closing a game
@@ -321,13 +305,12 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       endLogAction.setEnabled(false);
       stepAction.setEnabled(false);
       outputFile = null;
-      loggingActive = false;
     }
   }
 
-  /** @return true if we're currently logging the game to a VLOG file (buffering in memory; not writing to disk until End Log). */
+  /** @return true if we're currently logging the game to a VLOG file */
   public boolean isLogging() {
-    return loggingActive;
+    return outputFile != null;
   }
 
   /** @return true if we're currently replaying a VLOG file, that has unexecuted "step forwards" remaining */
@@ -453,11 +436,6 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
    * Write the logfile to a file. The filename will have been selected when the logfile was begun.
    */
   public void write() throws IOException {
-    if (!loggingActive || outputFile == null) {
-      endLogAction.setEnabled(false);
-      return;
-    }
-
     if (!logOutput.isEmpty()) {
       final Command log = beginningState;
       for (final Command c : logOutput) {
@@ -544,18 +522,13 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
 
     final GameModule gm = GameModule.getGameModule();
 
-    // We buffer everything in memory; do not touch disk until write().
     logOutput.clear();
     beginningState = gm.getGameState().getRestoreCommand();
     if (beginningState == null) {
-      outputFile = null;
-      loggingActive = false;
       return;
     }
 
-    loggingActive = true;
-
-    dontUndoPast = 0;
+    dontUndoPast = 0; 
 
     undoAction.setEnabled(false);
     endLogAction.setEnabled(true);
@@ -623,10 +596,6 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
    */
   @Override
   public void log(Command c) {
-    if (!loggingActive) {
-      return;
-    }
-
     if (c != null && c.isLoggable()) {
       logOutput.add(c);
       if (c.getUndoCommand() != null && !c.getUndoCommand().isNull()) {
@@ -693,7 +662,6 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
         newLogAction.setEnabled(true);
         outputFile = null;
         beginningState = null;
-        loggingActive = false;
       }
       catch (IOException ex) {
         WriteErrorDialog.error(ex, outputFile);
