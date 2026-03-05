@@ -290,7 +290,7 @@ public abstract class FileChooser {
 
     @Override
     public File getCurrentDirectory() {
-      return cur == null ? null : cur.getParentFile();
+      return cur == null ? null : cur.isDirectory() ? cur : cur.getParentFile();
     }
 
     @Override
