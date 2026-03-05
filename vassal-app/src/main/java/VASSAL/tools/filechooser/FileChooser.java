@@ -394,12 +394,11 @@ public abstract class FileChooser {
           value = ERROR_OPTION;
           cur = null;
         }
+        updateDirectoryPreference();
       }
       else {
         value = CANCEL_OPTION;
-        cur = null;
       }
-      updateDirectoryPreference();
       return value;
     }
 
