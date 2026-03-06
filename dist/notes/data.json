@@ -28,9 +28,13 @@
         { "num": 14129, "desc": "Added Simplified Chinese translation for Editor" }
       ],
       "other": [
+        { "num": 14541, "desc": "Upgraded maven-resoures-plugin 3.5.0" },
+        { "num": 14528, "desc": "Upgraded checkstyle to 13.3.0" },
+        { "num": 14527, "desc": "Upgraded byte-buddy to 1.18.7" },
+        { "num": 14518, "desc": "Upgraded miglayout-swing to 11.4.3" },
+        { "num": 14517, "desc": "Upgraded maven-surefire-plugin to 3.5.5" },
         { "num": 14503, "desc": "Upgraded junit-bom to 6.0.3" },
         { "num": 14502, "desc": "Upgraded logback-classic to 1.5.32" },
-        { "num": 14501, "desc": "Upgraded byte-buddy to 1.18.5" },
         { "num": 14488, "desc": "Build an RPM package" },
         { "num": 14485, "desc": "Upgraded maven-dependency-plugin to 3.10.0" }
       ]

@@ -1,8 +1,12 @@
 3.7.21 - ???
 
+* 14541: Upgraded maven-resoures-plugin 3.5.0
+* 14528: Upgraded checkstyle to 13.3.0
+* 14527: Upgraded byte-buddy to 1.18.7
+* 14518: Upgraded miglayout-swing to 11.4.3
+* 14517: Upgraded maven-surefire-plugin to 3.5.5
 * 14503: Upgraded junit-bom to 6.0.3
 * 14502: Upgraded logback-classic to 1.5.32
-* 14501: Upgraded byte-buddy to 1.18.5
 * 14488: Build an RPM package
 * 14485: Upgraded maven-dependency-plugin to 3.10.0
 * 14129: Added Simplified Chinese translation for Editor
