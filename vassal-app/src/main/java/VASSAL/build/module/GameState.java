@@ -480,17 +480,11 @@ public class GameState implements CommandEncoder {
       return NO_NEED_TO_SAVE;
     }
 
-    final int result = JOptionPane.showConfirmDialog(
+    return JOptionPane.showConfirmDialog(
       GameModule.getGameModule().getPlayerWindow(),
       Resources.getString("GameState.save_game_query"), //$NON-NLS-1$
       Resources.getString("GameState.game_modified"),   //$NON-NLS-1$
       JOptionPane.YES_NO_CANCEL_OPTION);
-
-    if (result == JOptionPane.YES_OPTION) {
-      saveGame();
-    }
-
-    return result;
   }
 
   /**
@@ -816,7 +810,10 @@ public class GameState implements CommandEncoder {
         int optionToSave = NO_NEED_TO_SAVE;
         if (gameStarted) {
           optionToSave = maybeSaveGame();
-          if (optionToSave == JOptionPane.CANCEL_OPTION) {
+          if (optionToSave == JOptionPane.YES_OPTION) {
+            saveGame();
+          }
+          else if (optionToSave == JOptionPane.CANCEL_OPTION) {
             return false;
           }
         }
@@ -952,7 +949,11 @@ public class GameState implements CommandEncoder {
           final URL url = new URL(text);
           final URLConnection uc = url.openConnection();
 
-          if (maybeSaveGame() != JOptionPane.CANCEL_OPTION) {
+          final int optionToSave = maybeSaveGame();
+          if (optionToSave == JOptionPane.YES_OPTION) {
+            saveGame();
+          }
+          if (optionToSave != JOptionPane.CANCEL_OPTION) {
 
             try (InputStream is = uc.getInputStream(); BufferedInputStream bis = new BufferedInputStream(is)) {
               if (gameStarted) {
