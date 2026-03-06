@@ -290,7 +290,7 @@ public abstract class FileChooser {
 
     @Override
     public File getCurrentDirectory() {
-      return cur == null ? null : cur.getParentFile();
+      return cur == null ? null : cur.isDirectory() ? cur : cur.getParentFile();
     }
 
     @Override
@@ -394,12 +394,11 @@ public abstract class FileChooser {
           value = ERROR_OPTION;
           cur = null;
         }
+        updateDirectoryPreference();
       }
       else {
         value = CANCEL_OPTION;
-        cur = null;
       }
-      updateDirectoryPreference();
       return value;
     }
 
