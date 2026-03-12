@@ -468,7 +468,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
       if (!failPds.isEmpty()) {
         log(GameRefresher.ERROR_MESSAGE_PREFIX + Resources.getString("Editor.RefreshPredefinedSetups.endFailHeading", failPds.size()));
-        for (i = 0; i < warningPds.size(); i++)
+        for (i = 0; i < failPds.size(); i++)
           log("|&nbsp; " + Resources.getString("Editor.RefreshPredefinedSetups.endFailPds",
                   failPds.get(i).getAttributeValueString(PredefinedSetup.NAME),
                   "<b>" + failPds.get(i).getFileName()) + "</b>");
