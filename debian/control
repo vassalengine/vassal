@@ -63,9 +63,10 @@ Depends:
 	libxmlgraphics-commons-java,
         ${misc:Depends}
 Description: Application to play board and card games
- Vassal - the open-source boardgame engine - is a tool to play various
- board and card games on the computer, both locally, over a network,
- or as Play-by-Email.
+ Vassal is a game engine for building and playing virtual adaptations
+ of board and card games.  You can use Vassal to play locally, in real
+ time over the Internet or by email.  Vassal runs on all platforms and
+ is free, open-source software.
  .
  Games are provided as modules that can be downloaded from
  .
