@@ -76,6 +76,7 @@ public class MultiLocationCommand extends Decorator implements TranslatablePiece
 
   // Type variables (configured in Ed)
   protected String desc;
+  protected String subMenu;
   protected String locType;
   protected Boolean curMapOnly = true;
   protected PropertyExpression propertiesFilter = new PropertyExpression("");
@@ -101,13 +102,28 @@ public class MultiLocationCommand extends Decorator implements TranslatablePiece
     private final String zoneName;
     private final String boardName;
     private final String mapName;
+    private final String subMenu;
 
     public MultiLocationKeyCommand(String name, NamedKeyStroke key, GamePiece target, TranslatablePiece i18nPiece, String locationName, String zoneName, String boardName, String mapName) {
+      this("", name, key, target, i18nPiece, locationName, zoneName, boardName, mapName);
+    }
+
+    public MultiLocationKeyCommand(String subMenu, String name, NamedKeyStroke key, GamePiece target, TranslatablePiece i18nPiece, String locationName, String zoneName, String boardName, String mapName) {
       super(name, key, target, i18nPiece);
       this.locationName = locationName;
       this.zoneName = zoneName;
       this.boardName = boardName;
       this.mapName = mapName;
+      this.subMenu = subMenu;
+    }
+
+    /**
+     * @return If defined, returns a name common across commands for sub-menu matching,
+     * otherwise returns the name of the KeyCommand.
+     */
+    @Override
+    public String getTagName() {
+      return subMenu == null || subMenu.isEmpty() ? super.getTagName() : subMenu;
     }
 
     public String getLocationName() {
@@ -173,6 +189,7 @@ public class MultiLocationCommand extends Decorator implements TranslatablePiece
     menuText.setFormat(st.nextToken(Resources.getString("Editor.MultiLocationCommand.loc_default_command")));
     key = st.nextNamedKeyStroke();
     curMapOnly = st.nextBoolean(true);
+    subMenu = st.nextToken("");
   }
 
   @Override
@@ -183,7 +200,8 @@ public class MultiLocationCommand extends Decorator implements TranslatablePiece
       .append(propertiesFilter.getExpression())
       .append(menuText.getFormat())
       .append(key)
-      .append(curMapOnly);
+      .append(curMapOnly)
+      .append(subMenu);
     return ID + se.getValue();
   }
 
@@ -242,7 +260,7 @@ public class MultiLocationCommand extends Decorator implements TranslatablePiece
     if (propertiesFilter.getExpression().isBlank() || propertiesFilter.isTrue(locPS)) {
       final AuditTrail audit = AuditTrail.create(locPS, menuText.getFormat(), Resources.getString("Editor.MultiLocationCommand.evaluate_menu_text"));
       final String myMenuText = menuText.getLocalizedText(locPS, this, audit);
-      keyCommands.add(new MultiLocationKeyCommand(myMenuText, key, getOutermost(this), this, evalLocation, evalZone, evalBoard, evalMap));
+      keyCommands.add(new MultiLocationKeyCommand(subMenu, myMenuText, key, getOutermost(this), this, evalLocation, evalZone, evalBoard, evalMap));
     }
   }
 
@@ -408,6 +426,7 @@ public class MultiLocationCommand extends Decorator implements TranslatablePiece
     if (! (o instanceof MultiLocationCommand)) return false;
     final MultiLocationCommand c = (MultiLocationCommand) o;
     if (!Objects.equals(desc, c.desc)) return false;
+    if (!Objects.equals(subMenu, c.subMenu)) return false;
     if (!Objects.equals(locType, c.locType)) return false;
     if (!Objects.equals(propertiesFilter.getExpression(), c.propertiesFilter.getExpression())) return false;
     if (!Objects.equals(menuText.getFormat(), c.menuText.getFormat())) return false;
@@ -430,6 +449,7 @@ public class MultiLocationCommand extends Decorator implements TranslatablePiece
 
   public static class Ed implements PieceEditor {
     private final StringConfigurer descInput;
+    private final StringConfigurer subMenuInput;
     private final TranslatingStringEnumConfigurer locTypeInput;
     private final BooleanConfigurer curMapOnlyInput;
     private final PropertyExpressionConfigurer propertyMatchInput;
@@ -444,6 +464,10 @@ public class MultiLocationCommand extends Decorator implements TranslatablePiece
       descInput = new StringConfigurer(p.desc);
       descInput.setHintKey("Editor.description_hint");
       controls.add("Editor.description_label", descInput);
+
+      subMenuInput = new StringConfigurer(p.subMenu);
+      subMenuInput.setHintKey("Editor.MultiLocationCommand.submenu_hint");
+      controls.add("Editor.MultiLocationCommand.submenu", subMenuInput);
 
       locTypeInput = new TranslatingStringEnumConfigurer(LOC_OPTIONS, LOC_KEYS);
       locTypeInput.setValue(LOC_REGIONS);
@@ -481,7 +505,8 @@ public class MultiLocationCommand extends Decorator implements TranslatablePiece
         .append(propertyMatchInput.getValueString())
         .append(menuTextInput.getValueString())
         .append(keyInput.getValueString())
-        .append(curMapOnlyInput.getValueString());
+        .append(curMapOnlyInput.getValueString())
+        .append(subMenuInput.getValueString());
 
       return ID + se.getValue();
     }
