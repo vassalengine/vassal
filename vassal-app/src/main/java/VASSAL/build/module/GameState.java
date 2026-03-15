@@ -762,7 +762,8 @@ public class GameState implements CommandEncoder {
           options,
           options[0]
         );
-        if (result == JOptionPane.NO_OPTION) { // Note - this is actually the "Cancel" option.
+        if (result == JOptionPane.NO_OPTION || // Note - this is actually the "Cancel" option.
+            result == JOptionPane.CLOSED_OPTION) {
           return;
         }
         else if (result == JOptionPane.CANCEL_OPTION) { // "Don't Prompt Again" option.
