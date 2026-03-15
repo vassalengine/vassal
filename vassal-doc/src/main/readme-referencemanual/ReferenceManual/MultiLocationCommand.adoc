@@ -20,6 +20,8 @@ Whenever the player selects _any_ of the menu items associated with a Multi-Loca
 |
 *Description:*:: Description of the trait - displayed only in the Editor, in the piece definer dialog.
 
+*Sub-menu Reference:*:: A text reference to link these commands to a sub-menu. This field is optional and only required to place these commands under a sub-menu. Add this same text to the sub-menu's list of sub-commands.
+
 *Type of Location:*:: The type of location that will be scanned (_Regions_ or _Zones_)
 
 *Search current map only:*:: If selected, then only locations on the same map as the piece will be searched; otherwise all maps will be searched.
