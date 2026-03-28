@@ -380,7 +380,6 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
    */
   @Override
   public List<String> getExpressionList() {
-    return List.of(name);
+    return name != null ? List.of(name) : List.of();
   }
 }
-  
