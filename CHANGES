@@ -1,5 +1,6 @@
 3.7.21 - ???
 
+* 14572: Fix NPE when searching in the editor
 * 14553: Upgraded maven-artifact to 3.9.14
 * 14549: Fix IndexOutOfBounds when reporting pre-defined scenario errors
 * 14541: Upgraded maven-resoures-plugin 3.5.0

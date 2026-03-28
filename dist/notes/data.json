@@ -23,6 +23,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 14572, "desc": "Fix NPE when searching in the editor" },
         { "num": 14549, "desc": "Fix IndexOutOfBounds when reporting pre-defined scenario errors" },
         { "num": 14539, "desc": "Escape key should cancel Load Continuation" }
       ],
