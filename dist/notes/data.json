@@ -37,6 +37,8 @@
       "new_features": [ 
       ],
       "bug_fixes": [
+        { "num": 14549, "desc": "Fix IndexOutOfBounds when reporting pre-defined scenario errors" },
+        { "num": 14539, "desc": "Escape key should cancel Load Continuation" }
       ],
       "improvements": [
         { "num": 14129, "desc": "Added Simplified Chinese translation for Editor" }
