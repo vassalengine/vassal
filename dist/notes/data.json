@@ -23,6 +23,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 14539, "desc": "Escape key should cancel Load Continuation" }
       ],
       "improvements": [
         { "num": 14129, "desc": "Added Simplified Chinese translation for Editor" }

@@ -1,6 +1,7 @@
 3.7.21 - ???
 
 * 14541: Upgraded maven-resoures-plugin 3.5.0
+* 14539: Escape key should cancel Load Continuation
 * 14528: Upgraded checkstyle to 13.3.0
 * 14527: Upgraded byte-buddy to 1.18.7
 * 14518: Upgraded miglayout-swing to 11.4.3
