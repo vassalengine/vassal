@@ -125,6 +125,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.SortedSet;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.TreeSet;
 import java.util.stream.Stream;
 
@@ -282,6 +284,7 @@ public class ModuleManagerWindow extends JFrame {
 
     toolsMenu.add(mm.addKey("Main.import_module"));
 
+    toolsMenu.addSeparator();
     final ClearTileCacheAction ctca = new ClearTileCacheAction();
     AbstractLaunchAction.getUseTracker().addPropertyChangeListener(e -> {
       if ("open".equals(e.getPropertyName())) {
@@ -289,7 +292,27 @@ public class ModuleManagerWindow extends JFrame {
       }
     });
     toolsMenu.add(new MenuItemProxy(ctca));
+    
+    final CleanupTileCacheAction utca = new CleanupTileCacheAction();
+    toolsMenu.add(new MenuItemProxy(utca));
 
+    toolsMenu.addSeparator();
+    toolsMenu.add(new MenuItemProxy(new AbstractAction(Resources.getString("ModuleManager.refresh_modules")) {
+        private static final long serialVersionUID = 1L;
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          refreshModuleList();
+        }
+      }));
+
+    toolsMenu.add(new MenuItemProxy(new AbstractAction(Resources.getString("ModuleManager.clean_modules")) {
+        private static final long serialVersionUID = 1L;
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          refreshModuleList(true);
+        }
+      }));
+    
     // help menu
     final MenuProxy helpMenu =
       new MenuProxy(Resources.getString("General.help"));
@@ -519,6 +542,81 @@ public class ModuleManagerWindow extends JFrame {
       pd.setVisible(true);
     }
   }
+  
+  private class CleanupTileCacheAction extends AbstractAction {
+    private static final long serialVersionUID = 1L;
+
+    public CleanupTileCacheAction() {
+      super(Resources.getString("ModuleManager.cleanup_tilecache"));
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent evt) {
+      final int dialogResult = Dialogs.showConfirmDialog(
+        ModuleManagerWindow.this,
+        Resources.getString("ModuleManager.cleanup_tilecache_title"),
+        Resources.getString("ModuleManager.cleanup_tilecache_heading"),
+        Resources.getString("ModuleManager.cleanup_tilecache_message"),
+        JOptionPane.WARNING_MESSAGE,
+        JOptionPane.OK_CANCEL_OPTION
+      );
+
+      if (dialogResult != JOptionPane.OK_OPTION) {
+        return;
+      }
+
+      final ProgressDialog pd = new ProgressDialog(
+        ModuleManagerWindow.this,
+        Resources.getString("ModuleManager.clean_tilecache_progress_title"),
+        Resources.getString("ModuleManager.clean_tilecache_progress_text"),
+        false
+      );
+
+      pd.setIndeterminate(true);
+      pd.setStringPainted(false);
+      pd.setLocationRelativeTo(ModuleManagerWindow.this);
+
+      final SwingWorker task = new SwingWorker<Void, Void>() {
+        @Override
+        public Void doInBackground() throws InterruptedException, IOException {
+          final Set<String> known = getModuleTileCacheNames();
+          
+          // clear tiles in both old (conf) and new (cache) locations
+          for (final File d : List.of(Info.getCacheDir(), Info.getConfDir())) {
+            final Path tdir = d.toPath().resolve("tiles");
+            if (Files.exists(tdir) && tdir.toFile().isDirectory()) {
+
+              for (final File s : tdir.toFile().listFiles()) {
+                final Path sdir = s.toPath();
+                if (!Files.isDirectory(sdir) ||
+                    known.contains(s.getName())) {
+                  continue;
+                }
+                
+                try {
+                  Files.walkFileTree(sdir, new DirectoryTreeDeleter());
+                }
+                catch (IOException e) {
+                  WriteErrorDialog.error(e, sdir.toFile());
+                }
+              }
+            }
+          }
+
+          return null;
+        }
+
+        @Override
+        protected void done() {
+          pd.setVisible(false);
+          pd.dispose();
+        }
+      };
+
+      task.execute();
+      pd.setVisible(true);
+    }
+  }
 
   // Show/Hide the two 'developer' columns depending on the pref value
   private void updateColumnDisplay() {
@@ -550,7 +648,6 @@ public class ModuleManagerWindow extends JFrame {
 
   protected void buildTree() {
     final List<ModuleInfo> moduleList = new ArrayList<>();
-    final List<String> missingModules = new ArrayList<>();
 
     // RecentModules key was used through 3.5.1, but 3.2 can't read the
     // buildFile.xml for 3.5+ modules. Hence we've switched to the Modules
@@ -566,25 +663,8 @@ public class ModuleManagerWindow extends JFrame {
       Arrays.stream(moduleConfig.getStringArray())
     ).sorted().distinct().forEach(s -> {
       final ModuleInfo module = new ModuleInfo(s);
-      if (module.getFile().isFile() && module.isValid()) {
-        moduleList.add(module);
-      }
-      else {
-        missingModules.add(s);
-      }
+      moduleList.add(module);
     });
-
-    for (final String s : missingModules) {
-      logger.info(Resources.getString("ModuleManager.removing_module", s));
-      final ModuleInfo toRemove = moduleList
-        .stream()
-        .filter(moduleInfo -> moduleInfo.getModuleName().equals(s))
-        .findFirst()
-        .orElse(null);
-      moduleList.remove(toRemove);
-      recentModuleConfig.removeValue(s);
-      moduleConfig.removeValue(s);
-    }
 
     moduleList.sort((a, b) -> {
       // sort module names in ascending order
@@ -907,6 +987,45 @@ public class ModuleManagerWindow extends JFrame {
     return null;
   }
 
+  public void refreshModuleList() {
+    refreshModuleList(false);
+  }
+
+  public Set<String> getModuleTileCacheNames() {
+    final Set<String> ret = new HashSet<>();
+    for (int i = 0; i < rootNode.getChildCount(); i++) {
+      final ModuleInfo module =
+        (ModuleInfo) (rootNode.getChild(i)).getNodeInfo();
+      final String cacheName = module.getTileCacheName();
+      
+      if (cacheName == null)
+        continue;
+          
+      ret.add(cacheName);
+    }
+    
+    return ret;        
+  }
+  
+  public void refreshModuleList(boolean clean) {
+    final List<String>     l = new ArrayList<>();
+    final List<ModuleInfo> r = new ArrayList<>();
+    for (int i = 0; i < rootNode.getChildCount(); i++) {
+      final ModuleInfo module =
+        (ModuleInfo) (rootNode.getChild(i)).getNodeInfo();
+      module.refresh();
+      if (clean && !module.isAccessible())
+        r.add(module);
+      else
+        l.add(module.encode());
+    }
+    for (final ModuleInfo module : r) {
+      removeModule(module.getFile());
+    }
+    modulePanelLayout.show(
+      moduleView, getModuleCount() == 0 ? "quickStart" : "modules");
+  }    
+    
   private void updateModuleList() {
     final List<String> l = new ArrayList<>();
     for (int i = 0; i < rootNode.getChildCount(); i++) {
@@ -1431,18 +1550,31 @@ public class ModuleManagerWindow extends JFrame {
       }
     }
 
+    protected void setInvalid() {
+      setValid(false);
+      metadata = null;
+    }
+    
     protected boolean isModuleTooNew() {
       return metadata != null && Info.isModuleTooNew(metadata.getVassalVersion());
+    }
+    public boolean isAccessible() {
+      return getFile().isFile();
+    }
+
+    public boolean isLaunchable() {
+      if (isAccessible() && !isValid()) loadMetaData();
+      return isAccessible() && isValid() && !isModuleTooNew();
     }
 
     @Override
     public String getVassalVersion() {
-      return metadata == null ? "" : metadata.getVassalVersion();
+      return !isValid() ? "" : metadata.getVassalVersion();
     }
 
     @Override
     public String getLastSaved() {
-      return metadata == null ? "" : metadata.formatLastSaved();
+      return !isValid() ? "" : metadata.formatLastSaved();
     }
 
     /**
@@ -1583,22 +1715,25 @@ public class ModuleManagerWindow extends JFrame {
     }
 
     public void play() {
+      if (!isLaunchable())
+          return;
+      
       new Player.LaunchAction(
           ModuleManagerWindow.this, file).actionPerformed(null);
     }
 
     @Override
     public JPopupMenu buildPopup(int row) {
-      final boolean tooNew = Info.isModuleTooNew(metadata.getVassalVersion());
+      final boolean launch = isLaunchable();
 
       final JPopupMenu m = new JPopupMenu();
 
       final Action playAction = new Player.LaunchAction(ModuleManagerWindow.this, file);
-      playAction.setEnabled(playAction.isEnabled() && !tooNew);
+      playAction.setEnabled(playAction.isEnabled() && launch);
       m.add(playAction);
 
       final Action editAction = new Editor.ListLaunchAction(ModuleManagerWindow.this, file);
-      editAction.setEnabled(editAction.isEnabled() && !tooNew);
+      editAction.setEnabled(editAction.isEnabled() && launch);
       m.add(editAction);
 
       m.add(new AbstractAction(Resources.getString("General.remove")) {
@@ -1613,26 +1748,55 @@ public class ModuleManagerWindow extends JFrame {
         }
       });
 
+      m.add(new AbstractAction(Resources.getString("General.refresh")) {
+          private static final long serialVersionUID = 1L;
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            refresh();
+          }
+        });
+      
       m.addSeparator();
 
       m.add(addFolderAction);
-      addFolderAction.setEnabled(!tooNew);
+      addFolderAction.setEnabled(launch);
 
       m.addSeparator();
 
       m.add(newExtensionAction);
-      newExtensionAction.setEnabled(!tooNew);
+      newExtensionAction.setEnabled(launch);
 
       m.add(addExtensionAction);
-      addExtensionAction.setEnabled(!tooNew);
+      addExtensionAction.setEnabled(launch);
 
+      final AbstractAction clearTiles =
+        new AbstractAction(Resources.getString("ModuleManager.clear_tilecache")) {
+          private static final long serialVersionUID = 1L;
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            cleanupTileCache();
+          }
+        };
+      clearTiles.setEnabled(launch);
+      m.add(clearTiles);
+        
       return m;
     }
 
+    public String getTileCacheName() {
+      if (isAccessible() && !isValid()) loadMetaData();
+
+      if (metadata == null)
+        return null;
+
+      return DigestUtils.sha1Hex(metadata.getName() + "_"
+                                 + metadata.getVersion());
+    }
+      
     public void cleanupTileCache() {
-      final String hstr = DigestUtils.sha1Hex(
-        metadata.getName() + "_" + metadata.getVersion()
-      );
+      final String hstr = getTileCacheName();
+      if (hstr == null)
+        return;
 
       final Path tdir = Info.getCacheDir().toPath().resolve("tiles/" + hstr);
       if (Files.exists(tdir)) {
@@ -1655,6 +1819,12 @@ public class ModuleManagerWindow extends JFrame {
 
     @Override
     public String getVersion() {
+      if (!isAccessible()) setInvalid();
+      if (isAccessible() && !isValid()) loadMetaData();
+      
+      if (metadata == null)
+        return "?";
+          
       final String version = metadata.getVersion();
       final String extra1 = metadata.getExtra1();
       final String extra2 = metadata.getExtra2();
@@ -1670,16 +1840,28 @@ public class ModuleManagerWindow extends JFrame {
     }
 
     public String getLocalizedDescription() {
+      if (!isAccessible()) setInvalid();
+      if (isAccessible() && !isValid()) loadMetaData();
+      
+      if (metadata == null)
+        return "";
+      
       return metadata.getLocalizedDescription();
     }
 
     public String getModuleName() {
-      return metadata.getName();
+      if (!isAccessible()) setInvalid();
+      if (isAccessible() && !isValid()) loadMetaData();
+      
+      return metadata == null ? getFile().getName() : metadata.getName();
     }
 
     @Override
     public String toString() {
-      return metadata.getLocalizedName();
+      if (!isAccessible()) setInvalid();
+      if (isAccessible() && !isValid()) loadMetaData();
+      
+      return metadata == null ? getModuleName() : metadata.getLocalizedName();
     }
 
     @Override
@@ -1690,12 +1872,12 @@ public class ModuleManagerWindow extends JFrame {
 
     @Override
     public String getSortKey() {
-      return metadata == null ? "" : metadata.getLocalizedName();
+      return toString();
     }
 
     @Override
     public Color getTreeCellFgColor() {
-      return Info.isModuleTooNew(getVassalVersion()) ? Color.GRAY : Color.BLACK;
+      return !isLaunchable() ? Color.GRAY : Color.BLACK;
     }
   }
 
@@ -1809,10 +1991,10 @@ public class ModuleManagerWindow extends JFrame {
     public Color getTreeCellFgColor() {
       // FIXME: should get colors from LAF
       if (isActive()) {
-        return metadata == null ? Color.red : Color.black;
+        return metadata == null || !moduleInfo.isValid() ? Color.red : Color.black;
       }
       else {
-        return metadata == null ? Color.pink : Color.gray;
+        return metadata == null || !moduleInfo.isValid() ? Color.pink : Color.gray;
       }
     }
 
@@ -2052,7 +2234,7 @@ public class ModuleManagerWindow extends JFrame {
     @Override
     public Color getTreeCellFgColor() {
       // FIXME: should get colors from LAF
-      return belongsToModule() ? Color.black : Color.gray;
+      return belongsToModule() && folderInfo.getModuleInfo().isValid() ? Color.black : Color.gray;
     }
 
     @Override
