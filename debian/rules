@@ -84,6 +84,7 @@ APP_JARS	:= /usr/share/java/asm.jar			\
 		   /usr/share/java/xml-apis-ext.jar		\
 		   /usr/share/java/xmlgraphics-commons.jar
 
+APP_NAME	:= org.vassalengine.vassal
 
 DOC_SRCDIR	:= vassal-doc/src/main
 DOC_USER	:= $(DOC_SRCDIR)/userguide/userguide.adoc
@@ -181,7 +182,7 @@ deprecated: .compile
 		LICENSE 				\
 		README.md 				\
 		$(OUT_DIR)/icons/scalable/VASSAL.svg 	\
-		debian/VASSAL.sh			\
+		dist/linux/VASSAL.sh			\
 		$(STAGE_DIR)
 	chmod a+x $(STAGE_DIR)/VASSAL.sh
 
@@ -203,18 +204,33 @@ deprecated: .compile
 		ln -fs ../../vassal/doc/ReferenceManual reference)
 
 	mkdir -p debian/tmp/usr/share/applications
-	cp debian/vassal.desktop \
-		debian/tmp/usr/share/applications/application-x-vassal.desktop
+	cp dist/linux/$(APP_NAME).desktop \
+		debian/tmp/usr/share/applications/$(APP_NAME).desktop
 
 	mkdir -p debian/tmp/usr/share/icons/hicolor/scalable/mimetypes
+	mkdir -p debian/tmp/usr/share/icons/hicolor/scalable/apps
 	cp $(STAGE_DIR)/VASSAL.svg \
-		debian/tmp/usr/share/icons/hicolor/scalable/mimetypes/application-x-vassal.svg
+		debian/tmp/usr/share/icons/hicolor/scalable/mimetypes/$(APP_NAME).svg
+
+	mkdir -p debian/tmp/usr/share/mime/packages
+	cp dist/linux/$(APP_NAME).mime.xml \
+		debian/tmp/usr/share/mime/packages/$(APP_NAME).xml
+
+	mkdir -p debian/tmp/usr/share/metainfo
+	cp dist/linux/$(APP_NAME).metainfo.xml \
+		debian/tmp/usr/share/metainfo/$(APP_NAME).metainfo.xml
+
+	cp $(STAGE_DIR)/VASSAL.svg \
+		debian/tmp/usr/share/icons/hicolor/scalable/apps/$(APP_NAME).svg
+
+	#cp dist/linux/vassal.sharedmimeinfo debian/vassal.sharedmimeinfo
 
 	touch .stage 
 
 .clean:
 	rm -rf debian/tmp
 	rm -rf debian/stage
+	rm -rf debian/vassal.sharedmimeinfo
 	rm -rf $(OUT_DIR)
 	rm -rf $(DOC_TARGETS)
 	rm -rf git.properties
