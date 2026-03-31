@@ -384,17 +384,15 @@ public abstract class FileChooser {
       final int value;
       if (fd.getFile() != null) {
         cur = new File(fd.getDirectory(), fd.getFile());
-        if (cur.isFile() && mode == FILES_ONLY) {
+        if ((cur.isFile() && mode == FILES_ONLY)) ||
+            ((cur.isDirectory() && mode == DIRECTORIES_ONLY)) {
           value = APPROVE_OPTION;
-        }
-        else if (cur.isDirectory() && mode == DIRECTORIES_ONLY) {
-          value = APPROVE_OPTION;
+          updateDirectoryPreference();
         }
         else {
           value = ERROR_OPTION;
           cur = null;
         }
-        updateDirectoryPreference();
       }
       else {
         value = CANCEL_OPTION;
