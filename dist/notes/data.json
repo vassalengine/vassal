@@ -31,6 +31,7 @@
         { "num": 14129, "desc": "Added Simplified Chinese translation for Editor" }
       ],
       "other": [
+        { "num": 14593, "desc": "Upgraded bundled Java to (Windows x86_64, MacOS), 25.0.2+10 (Windows aarch64), 21.0.10+10 (Windows x86)" },
         { "num": 14590, "desc": "Upgraded spotbugs-maven-plugin to 4.9.8.3" },
         { "num": 14553, "desc": "Upgraded maven-artifact to 3.9.14" },
         { "num": 14541, "desc": "Upgraded maven-resoures-plugin 3.5.0" },
