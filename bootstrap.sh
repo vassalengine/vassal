@@ -22,16 +22,16 @@ pushd "$JDKDIR"
 ZULU_URL='https://cdn.azul.com/zulu/bin'
 
 TEMURIN_URL='https://github.com/adoptium/temurin25-binaries/releases/download'
-TEMURIN_VERSION=jdk-25+36
-TEMURIN_FILENAME_VERSION=25_36
+TEMURIN_VERSION=jdk-25.0.2+10
+TEMURIN_FILENAME_VERSION=25.0.2_10
 
-BELLSOFT_URL='https://download.bell-sw.com/java/25%2B37'
-BELLSOFT_VERSION=25+37
-BELLSOFT_DIR=jdk-25
+BELLSOFT_URL='https://download.bell-sw.com/java/25.0.2%2B12'
+BELLSOFT_VERSION=25.0.2+12
+BELLSOFT_DIR=jdk-25.0.2
 
-BELLSOFT_WIN32_URL='https://download.bell-sw.com/java/21.0.8%2B12'
-BELLSOFT_WIN32_VERSION=21.0.8+12
-BELLSOFT_WIN32_DIR=jdk-21.0.8
+BELLSOFT_WIN32_URL='https://download.bell-sw.com/java/21.0.10%2B10'
+BELLSOFT_WIN32_VERSION=21.0.10+10
+BELLSOFT_WIN32_DIR=jdk-21.0.10
 
 # TODO check for downloads
 
