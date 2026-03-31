@@ -290,7 +290,7 @@ public abstract class FileChooser {
 
     @Override
     public File getCurrentDirectory() {
-      return cur == null ? null : cur.getParentFile();
+      return cur == null ? null : cur.isDirectory() ? cur : cur.getParentFile();
     }
 
     @Override
@@ -384,11 +384,10 @@ public abstract class FileChooser {
       final int value;
       if (fd.getFile() != null) {
         cur = new File(fd.getDirectory(), fd.getFile());
-        if (cur.isFile() && mode == FILES_ONLY) {
+        if ((mode == FILES_ONLY && cur.isFile()) ||
+            (mode == DIRECTORIES_ONLY && cur.isDirectory()) {
           value = APPROVE_OPTION;
-        }
-        else if (cur.isDirectory() && mode == DIRECTORIES_ONLY) {
-          value = APPROVE_OPTION;
+          updateDirectoryPreference();
         }
         else {
           value = ERROR_OPTION;
@@ -397,9 +396,7 @@ public abstract class FileChooser {
       }
       else {
         value = CANCEL_OPTION;
-        cur = null;
       }
-      updateDirectoryPreference();
       return value;
     }
 

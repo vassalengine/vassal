@@ -39,12 +39,14 @@
       "bug_fixes": [
         { "num": 14572, "desc": "Fix NPE when searching in the editor" },
         { "num": 14549, "desc": "Fix IndexOutOfBounds when reporting pre-defined scenario errors" },
-        { "num": 14539, "desc": "Escape key should cancel Load Continuation" }
+        { "num": 14539, "desc": "Escape key should cancel Load Continuation" },
+        { "num": 14538, "desc": "Preserve the user directory preference after canceling from a file load or save dialog" }
       ],
       "improvements": [
         { "num": 14129, "desc": "Added Simplified Chinese translation for Editor" }
       ],
       "other": [
+        { "num": 14593, "desc": "Upgraded bundled Java to (Windows x86_64, MacOS), 25.0.2+10 (Windows aarch64), 21.0.10+10 (Windows x86)" },
         { "num": 14590, "desc": "Upgraded spotbugs-maven-plugin to 4.9.8.3" },
         { "num": 14553, "desc": "Upgraded maven-artifact to 3.9.14" },
         { "num": 14541, "desc": "Upgraded maven-resoures-plugin 3.5.0" },
