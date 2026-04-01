@@ -267,6 +267,45 @@ jobs:
         with:
           files: public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_all.deb
 
+  package_flatpak:
+    name: Flatpak recipe 
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 
+        uses: actions/checkout@v6
+        with: 
+          fetch-depth: 1
+          
+      - name: Update container 
+        run: |
+          sudo apt update -y
+          
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with: 
+          distribution: 'temurin'
+          java-version: 25
+          java-package: jdk
+          
+      - name: Make recipe
+        run: |
+          mkdir -p flatpak
+          sed -e "s,@REPOSITORY@,${{ github.repository }}," -e "s,@RELEASE@,${{ github.ref_name }}," -e "s,@COMMIT@,${{ github.sha }}," -e "s,@JDK@,25," < dist/linux/org.vassalengine.vassal.yml.in > flatpak/org.vassalengine.vassal.yml
+          cat flatpak/org.vassalengine.vassal.yml
+          
+      - name: Make Maven dependencies
+        run: |
+          java -version
+          ./dist/linux/fetch-maven-deps-for-flatpak.sh
+          
+      - name: Archive Flatpak files
+        uses: actions/upload-artifact@v7
+        with:
+          name: flatpak-recipe
+          path: |
+            flatpak/org.vassalengine.vassal.yml
+            flatpak/maven-dependencies.yml
+          
   package_digest:
     name: Sha256 digest of packages
     runs-on: ubuntu-latest
