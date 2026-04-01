@@ -5,6 +5,7 @@
 * 14591: Upgraded checkstyle to 13.4.0
 * 14590: Upgraded spotbugs-maven-plugin to 4.9.8.3
 * 14572: Fix NPE when searching in the editor
+* 14557: Check and report over-sized image dimensions
 * 14553: Upgraded maven-artifact to 3.9.14
 * 14549: Fix IndexOutOfBounds when reporting pre-defined scenario errors
 * 14542: Don't re-prompt for save file after canceling the FileChooser dialog
