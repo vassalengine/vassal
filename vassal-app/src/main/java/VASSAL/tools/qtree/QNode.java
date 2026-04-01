@@ -60,11 +60,11 @@ public class QNode<T> {
   /**
    * Constructs a new quad tree node.
    *
-   * @param {double} x X-coordiate of node.
-   * @param {double} y Y-coordinate of node.
-   * @param {double} w Width of node.
-   * @param {double} h Height of node.
-   * @param {Node}   opt_parent Optional parent node.
+   * @param x X-coordiate of node.
+   * @param y Y-coordinate of node.
+   * @param w Width of node.
+   * @param h Height of node.
+   * @param opt_parent Optional parent node.
    * @constructor
    */
   public QNode(double x, double y, double w, double h, QNode<T> opt_parent) {

@@ -52,9 +52,9 @@ public class QPoint<T> implements Comparable<QPoint<T>> {
   /**
    * Creates a new point object.
    *
-   * @param {double} x The x-coordinate of the point.
-   * @param {double} y The y-coordinate of the point.
-   * @param {T} opt_value Optional value associated with the point.
+   * @param x The x-coordinate of the point.
+   * @param y The y-coordinate of the point.
+   * @param opt_value Optional value associated with the point.
    */
   public QPoint(double x, double y, T opt_value) {
     this.x = x;
