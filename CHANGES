@@ -7,6 +7,7 @@
 * 14572: Fix NPE when searching in the editor
 * 14553: Upgraded maven-artifact to 3.9.14
 * 14549: Fix IndexOutOfBounds when reporting pre-defined scenario errors
+* 14542: Don't re-prompt for save file after canceling the FileChooser dialog
 * 14541: Upgraded maven-resoures-plugin 3.5.0
 * 14539: Escape key should cancel Load Continuation
 * 14538: Preserve the user directory preference after canceling from a file
