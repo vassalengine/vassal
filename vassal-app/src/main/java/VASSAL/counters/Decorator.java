@@ -65,7 +65,7 @@ import static VASSAL.counters.Mat.MAT_ID;
 import static VASSAL.counters.Mat.MAT_NAME;
 
 /**
- * The abstract class describing a generic 'Trait' of a full GamePiece. Follows the <a href="https://en.wikipedia.org/wiki/Decorator_pattern"></a>Decorator design pattern</a>
+ * The abstract class describing a generic 'Trait' of a full GamePiece. Follows the <a href="https://en.wikipedia.org/wiki/Decorator_pattern">Decorator design pattern</a>
  * of wrapping around another instance of GamePiece (the 'inner' piece) and delegating some of the GamePiece methods to it. The
  * "innermost" piece of a Trait/Decorator stack will be a BasicPiece -- but note that although BasicPiece does implement GamePiece, it is NOT
  * a Decorator like traits are, and must be handled differently. Since Traits (Decorators) implement the {@link GamePiece} interface, they are
@@ -110,7 +110,7 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
 
   /**
    * @return the next member "inward" (toward the BasicPiece) of the full GamePiece.
-   * Follows the <a href="https://en.wikipedia.org/wiki/Decorator_pattern"></a>Decorator design pattern</a>
+   * Follows the <a href="https://en.wikipedia.org/wiki/Decorator_pattern">Decorator design pattern</a>
    * of wrapping around another instance of GamePiece (the 'inner' piece) and delegating some of the GamePiece methods to it. The
    * "innermost" piece of a Trait/Decorator stack will be a BasicPiece. Since Traits (Decorators) implement the {@link GamePiece} interface,
    * they are "given a look at" any method call to GamePiece, and may act on it and/or pass it "inward" toward the next Decorator in the stack,

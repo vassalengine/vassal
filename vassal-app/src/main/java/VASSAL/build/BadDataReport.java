@@ -34,7 +34,7 @@ import VASSAL.script.expression.ExpressionException;
  *
  * This is for recoverable errors that occur during game play, as opposed to {@link IllegalBuildException},
  * which covers errors when building a module
- * @see ErrorDialog.dataWarning()
+ * @see ErrorDialog.dataWarning
  * @author rodneykinney
  *
  */
