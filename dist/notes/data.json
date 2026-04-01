@@ -39,10 +39,13 @@
       "bug_fixes": [
         { "num": 14572, "desc": "Fix NPE when searching in the editor" },
         { "num": 14549, "desc": "Fix IndexOutOfBounds when reporting pre-defined scenario errors" },
+        { "num": 14542, "desc": "Don't re-prompt for save file after canceling the FileChooser dialog" },
         { "num": 14539, "desc": "Escape key should cancel Load Continuation" },
         { "num": 14538, "desc": "Preserve the user directory preference after canceling from a file load or save dialog" }
       ],
       "improvements": [
+        { "num": 14557, "desc": "Check and report over-sized image dimensions" }
+,
         { "num": 14129, "desc": "Added Simplified Chinese translation for Editor" }
       ],
       "other": [
