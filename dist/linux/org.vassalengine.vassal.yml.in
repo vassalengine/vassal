@@ -1,0 +1,53 @@
+id: org.vassalengine.vassal
+runtime: org.freedesktop.Platform
+runtime-version: '25.08'
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.openjdk@JDK@
+command: vassal
+
+finish-args:
+  - --share=ipc
+  - --socket=x11
+  - --socket=pulseaudio
+  - --device=dri
+  - --share=network
+  - --filesystem=home
+  - --filesystem=/tmp
+  - --env=PATH=/app/jre/bin:/app/bin:/usr/bin
+
+modules:
+  - name: openjdk
+    buildsystem: simple
+    build-commands:
+      - /usr/lib/sdk/openjdk@JDK@/install.sh
+
+  - name: vassal
+    buildsystem: simple
+    build-options:
+      append-path: /usr/lib/sdk/openjdk@JDK@/bin
+      env:
+        MAVEN_OPTS: -Dmaven.repo.local=.m2/repository
+    build-commands:
+      - make jar SKIPS="-Dasciidoctor.skip=true -Dspotbugs.skip=true -Dlicense.skipDownloadLicenses -Dclirr.skip=true -Dmaven.javadoc.skip=true -Dpmd.skip=true -Dmaven.test.skip=true" MVN="mvn -Dmaven.repo.local=.m2/repository" MAVEN_VERSION=@RELEASE@ 
+      - mv release-prepare/target/lib ${FLATPAK_DEST}
+      - mv release-prepare/target/doc ${FLATPAK_DEST}
+      - install -Dm644 vassal-app/src/main/resources/icons/scalable/VASSAL.svg ${FLATPAK_DEST}/share/icons/hicolor/scalable/apps/${FLATPAK_ID}.svg
+      - install -Dm644 vassal-app/src/main/resources/icons/scalable/VASSAL.svg ${FLATPAK_DEST}/share/icons/hicolor/scalable/mimetypes/${FLATPAK_ID}.svg
+      - install -Dm755 dist/linux/VASSAL.sh ${FLATPAK_DEST}/VASSAL.sh
+      - install -Dm644 dist/linux/${FLATPAK_ID}.desktop ${FLATPAK_DEST}/share/applications/${FLATPAK_ID}.desktop 
+      - install -Dm644 dist/linux/${FLATPAK_ID}.metainfo.xml ${FLATPAK_DEST}/share/metainfo/${FLATPAK_ID}.metainfo.xml
+      - install -Dm644 dist/linux/${FLATPAK_ID}.mime.xml ${FLATPAK_DEST}/share/mime/packages/${FLATPAK_ID}.xml
+      - install -Dm644 dist/linux/vassal.6 ${FLATPAK_DEST}/share/man/man6/vassal.6
+      - install -d -Dm755 ${FLATPAK_DEST}/bin
+      - (cd ${FLATPAK_DEST}/bin && ln -s ../VASSAL.sh vassal)
+    sources:
+      - type: git
+        url: https://github.com/@REPOSITORY@.git
+        commit: @COMMIT@
+        tag: @RELEASE@
+        x-checker-data:
+          type: json
+          url: https://api.github.com/repos/@REPOSITORY@/releases/latest
+          tag-query: .tag_name
+      - maven-dependencies.yml

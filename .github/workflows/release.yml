@@ -296,7 +296,7 @@ jobs:
       - name: Make Maven dependencies
         run: |
           java -version
-          ./dist/linux/fetch-maven-deps-for-flatpak.sh
+          ./dist/linux/fetch-maven-deps-for-flatpak.sh 
           
       - name: Archive Flatpak files
         uses: actions/upload-artifact@v7
