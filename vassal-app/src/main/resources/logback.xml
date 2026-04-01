@@ -2,17 +2,28 @@
   <property resource="git.properties" />
   <property name="LOG_FILE" value="errorLog-${git.version}" />
 
-  <if condition='isDefined("VASSAL.conf")'>
+  <condition class="ch.qos.logback.core.boolex.IsPropertyDefinedCondition">
+    <key>VASSAL.conf</key>
+  </condition>
+  <if>
     <then>
       <property name="CONF_DIR" value="${VASSAL.conf}" />
     </then>
     <else>
-      <if condition='property("os.name").toLowerCase().startsWith("windows")'>
+      <condition class="VASSAL.tools.logging.PropertyNoCaseStartsWithCondition">
+        <key>os.name</key>
+        <value>windows</value>
+      </condition>
+      <if>
         <then>
           <property name="CONF_DIR" value="${APPDATA}/VASSAL" />
         </then>
         <else>
-          <if condition='property("os.name").toLowerCase().startsWith("mac")'>
+          <condition class="VASSAL.tools.logging.PropertyNoCaseStartsWithCondition">
+            <key>os.name</key>
+            <value>mac</value>
+          </condition>
+          <if>
             <then>
               <property name="CONF_DIR" value="${user.home}/Library/Application Support/VASSAL" />
             </then>

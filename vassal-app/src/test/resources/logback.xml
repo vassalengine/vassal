@@ -2,7 +2,11 @@
   <conversionRule conversionWord="pid"
                   converterClass="VASSAL.tools.logging.ProcessIDConverter" />
 
-  <if condition='property("os.name").toLowerCase().startsWith("windows")'>
+  <condition class="VASSAL.tools.logging.PropertyNoCaseStartsWithCondition">
+    <key>os.name</key>
+    <value>windows</value>
+  </condition>
+  <if>
     <then>
       <appender name="FILE" class="ch.qos.logback.core.FileAppender">
         <file>${APPDATA}/VASSAL/vassal-test.log</file>
@@ -14,7 +18,11 @@
       </appender>
     </then>
     <else>
-      <if condition='property("os.name").toLowerCase().startsWith("mac")'>
+      <condition class="VASSAL.tools.logging.PropertyNoCaseStartsWithCondition">
+        <key>os.name</key>
+        <value>mac</value>
+      </condition>
+      <if>
         <then>
           <appender name="FILE" class="ch.qos.logback.core.FileAppender">
             <file>${user.home}/Library/Application Support/VASSAL/vassal-test.log</file>
