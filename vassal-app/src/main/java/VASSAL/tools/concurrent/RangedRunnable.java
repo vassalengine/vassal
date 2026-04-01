@@ -47,7 +47,7 @@ public abstract class RangedRunnable<T> implements Runnable {
   /**
    * {@inheritDoc}
    *
-   * <p>Flushes the range and calls {@see #run(Pair<T,T>)}.</p>
+   * <p>Flushes the range and calls {@see #run(Pair)}.</p>
    */
   @Override
   public final void run() {
