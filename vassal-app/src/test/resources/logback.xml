@@ -1,6 +1,5 @@
 <configuration>
-  <conversionRule conversionWord="pid"
-                  converterClass="VASSAL.tools.logging.ProcessIDConverter" />
+  <conversionRule conversionWord="pid" class="VASSAL.tools.logging.ProcessIDConverter" />
 
   <condition class="VASSAL.tools.logging.PropertyNoCaseStartsWithCondition">
     <key>os.name</key>
