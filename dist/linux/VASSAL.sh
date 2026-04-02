@@ -9,7 +9,7 @@ path=$(realpath "$0")
 path=$(dirname "$path")
 
 # Set default definitions and arguments 
-defs=("-Duser.home=$HOME" "-Duser.dir=$path")
+defs=("-Duser.home=$HOME" "-Duser.dir=$path" "-DVASSAL.conf=$HOME/.VASSAL")
 args=()
 
 # --- Find Java and debugger -----------------------------------------
