@@ -21,13 +21,13 @@ pushd "$JDKDIR"
 
 ZULU_URL='https://cdn.azul.com/zulu/bin'
 
-TEMURIN_URL='https://github.com/adoptium/temurin25-binaries/releases/download'
-TEMURIN_VERSION=jdk-25.0.2+10
-TEMURIN_FILENAME_VERSION=25.0.2_10
+TEMURIN_URL='https://github.com/adoptium/temurin26-binaries/releases/download'
+TEMURIN_VERSION=jdk-26+35
+TEMURIN_FILENAME_VERSION=26+35
 
-BELLSOFT_URL='https://download.bell-sw.com/java/25.0.2%2B12'
-BELLSOFT_VERSION=25.0.2+12
-BELLSOFT_DIR=jdk-25.0.2
+BELLSOFT_URL='https://download.bell-sw.com/java/26%2B37'
+BELLSOFT_VERSION=26+37
+BELLSOFT_DIR=jdk-26
 
 BELLSOFT_WIN32_URL='https://download.bell-sw.com/java/21.0.10%2B10'
 BELLSOFT_WIN32_VERSION=21.0.10+10
@@ -46,7 +46,7 @@ if [ ! -d windows-x86_32 ] ; then
 fi
 
 # Windows x86_64
-filename="OpenJDK25U-jmods_x64_windows_hotspot_$TEMURIN_FILENAME_VERSION.zip"
+filename="OpenJDK26U-jmods_x64_windows_hotspot_$TEMURIN_FILENAME_VERSION.zip"
 if [ ! -f "$filename" ] ; then
   curl -L -O "$TEMURIN_URL/$TEMURIN_VERSION/$filename"
 fi
@@ -67,7 +67,7 @@ if [ ! -d windows-aarch64 ] ; then
 fi
 
 # MacOS x86_64
-filename="OpenJDK25U-jmods_x64_mac_hotspot_$TEMURIN_FILENAME_VERSION.tar.gz"
+filename="OpenJDK26U-jmods_x64_mac_hotspot_$TEMURIN_FILENAME_VERSION.tar.gz"
 if [ ! -f "$filename" ] ; then
   curl -L -O "$TEMURIN_URL/$TEMURIN_VERSION/$filename"
 fi
@@ -77,7 +77,7 @@ if [ ! -d macos-x86_64 ] ; then
 fi
 
 # MacOS aarch64
-filename="OpenJDK25U-jmods_aarch64_mac_hotspot_$TEMURIN_FILENAME_VERSION.tar.gz"
+filename="OpenJDK26U-jmods_aarch64_mac_hotspot_$TEMURIN_FILENAME_VERSION.tar.gz"
 if [ ! -f "$filename" ] ; then
   curl -L -O "$TEMURIN_URL/$TEMURIN_VERSION/$filename"
 fi
