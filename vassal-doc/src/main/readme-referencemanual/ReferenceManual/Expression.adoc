@@ -176,6 +176,10 @@ toString
 
 |See the <<ExpressionString.adoc#top,String Function>> page for examples and more information about String Functions.
 
+|*Number* |
+ToNumber| {ToNumber("123")}
+{ToNumber("123.7")}
+| Converts a string to a number.
 |*Sum and Count* |SumStack +
 CountStack +
 
