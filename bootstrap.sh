@@ -23,7 +23,7 @@ ZULU_URL='https://cdn.azul.com/zulu/bin'
 
 TEMURIN_URL='https://github.com/adoptium/temurin26-binaries/releases/download'
 TEMURIN_VERSION=jdk-26+35
-TEMURIN_FILENAME_VERSION=26+35
+TEMURIN_FILENAME_VERSION=26_35
 
 BELLSOFT_URL='https://download.bell-sw.com/java/26%2B37'
 BELLSOFT_VERSION=26+37
