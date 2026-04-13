@@ -131,7 +131,7 @@ deprecated: .compile
 	cp -a $(APP_ICON)                        $(OUT_DIR)/
 	cp -a $(APP_HELP)                        $(OUT_DIR)/
 	cp -a $(APP_MISC)			 $(OUT_DIR)/
-	cp -a debian/logback.xml $(OUT_DIR)/
+	cp -a dist/logback-1.2.xml $(OUT_DIR)/logback.xml
 	cp -a git.properties                     $(OUT_DIR)/
 	cp -a deprecated			 $(OUT_DIR)/
 	cp -a $(APP_SPLASH)                      $(OUT_DIR)$(subst $(APP_JSRCDIR),,$(APP_SPLASH))
