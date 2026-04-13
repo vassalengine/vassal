@@ -49,7 +49,7 @@ import java.util.concurrent.ExecutionException;
  * @since 3.1.0
  */
 public abstract class Launcher {
-  private static final Logger logger = LoggerFactory.getLogger(Launcher.class);
+  private static Logger logger = null;
 
   protected final LaunchRequest lr;
 
@@ -62,6 +62,8 @@ public abstract class Launcher {
   protected Launcher(String[] args) {
     if (instance != null) throw new IllegalStateException();
     instance = this;
+
+    if (logger == null) logger = LoggerFactory.getLogger(Launcher.class);
 
     LaunchRequest lreq = null;
     try {

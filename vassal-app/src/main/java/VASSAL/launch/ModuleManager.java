@@ -63,8 +63,7 @@ import VASSAL.tools.menu.MacOSXMenuManager;
  * @since 3.1.0
  */
 public class ModuleManager {
-  private static final Logger logger =
-    LoggerFactory.getLogger(ModuleManager.class);
+  private static Logger logger = null;
 
   private static final String NEXT_VERSION_CHECK = "nextVersionCheck"; //NON-NLS
   private static final String AUTO_VERSION_CHECK = "autoVersionCheck"; //NON-NLS
@@ -109,7 +108,9 @@ public class ModuleManager {
       e.printStackTrace();
       System.exit(1);
     }
-
+    // Initialize logger after standard configuration
+    logger = LoggerFactory.getLogger(ModuleManager.class);
+    
 // FIXME: We need to catch more exceptions in main() and then exit in
 // order to avoid situations where the main thread ends due to an uncaught
 // exception, but there are other threads still running, and so VASSAL

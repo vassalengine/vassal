@@ -32,7 +32,6 @@ APP_I18N	:= $(shell find $(APP_SRCDIR)/resources/VASSAL/i18n/ \
 APP_BSH		:= $(shell find $(APP_SRCDIR)/resources/VASSAL/script/\
 			-name "*.bsh")
 APP_MISC	:= $(APP_SRCDIR)/resources/grayscale.icc	\
-		   $(APP_SRCDIR)/resources/logback.xml		\
 		   $(APP_SRCDIR)/resources/removed		\
 		   $(APP_SRCDIR)/resources/vassal.vmoptions
 APP_SPLASH	:= $(APP_JSRCDIR)/org/netbeans/modules/wizard/defaultWizard.png
@@ -132,6 +131,8 @@ deprecated: .compile
 	cp -a $(APP_ICON)                        $(OUT_DIR)/
 	cp -a $(APP_HELP)                        $(OUT_DIR)/
 	cp -a $(APP_MISC)			 $(OUT_DIR)/
+	cp -a $(APP_SRCDIR)/resources/logback-1.2.xml		\
+		   				 $(OUT_DIR)/logback.xml
 	cp -a git.properties                     $(OUT_DIR)/
 	cp -a deprecated			 $(OUT_DIR)/
 	cp -a $(APP_SPLASH)                      $(OUT_DIR)$(subst $(APP_JSRCDIR),,$(APP_SPLASH))

@@ -1,44 +1,16 @@
 <configuration>
   <conversionRule conversionWord="pid"
-                  converterClass="VASSAL.tools.logging.ProcessIDConverter" />
+                  class="VASSAL.tools.logging.ProcessIDConverter" />
 
-  <if condition='property("os.name").toLowerCase().startsWith("windows")'>
-    <then>
-      <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <file>${APPDATA}/VASSAL/vassal-test.log</file>
-        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-          <charset>UTF-8</charset>
-          <pattern>%date [%pid-%thread] %-5level %logger - %msg%n</pattern>
-        </encoder>
-        <prudent>true</prudent>
-      </appender>
-    </then>
-    <else>
-      <if condition='property("os.name").toLowerCase().startsWith("mac")'>
-        <then>
-          <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-            <file>${user.home}/Library/Application Support/VASSAL/vassal-test.log</file>
-            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-              <charset>UTF-8</charset>
-              <pattern>%date [%pid-%thread] %-5level %logger - %msg%n</pattern>
-            </encoder>
-            <prudent>true</prudent>
-          </appender>
-        </then>
-        <else>
-          <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-            <file>${user.home}/.VASSAL/vassal-test.log</file>
-            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-              <charset>UTF-8</charset>
-              <pattern>%date [%pid-%thread] %-5level %logger - %msg%n</pattern>
-            </encoder>
-            <prudent>true</prudent>
-          </appender>
-        </else>
-      </if>
-    </else>
-  </if>
-
+  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <file>vassal-test.log</file>
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <charset>UTF-8</charset>
+      <pattern>%date [%pid-%thread] %-5level %logger - %msg%n</pattern>
+    </encoder>
+    <prudent>true</prudent>
+  </appender>
+  
   <root level="info">
     <appender-ref ref="FILE" />
   </root>

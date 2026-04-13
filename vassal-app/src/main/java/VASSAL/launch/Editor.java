@@ -50,10 +50,11 @@ import VASSAL.tools.version.VersionUtils;
 public class Editor extends Launcher {
   public static void main(String[] args) throws IOException {
     Info.setConfig(new StandardConfig());
+    logger = LoggerFactory.getLogger(Editor.class);
     new Editor(args);
   }
 
-  private static final Logger logger = LoggerFactory.getLogger(Editor.class);
+  private static Logger logger = null;
 
   protected Editor(String[] args) {
     // the ctor is protected to enforce that it's called via main()
