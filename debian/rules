@@ -23,7 +23,7 @@ APP_JSRCDIR	:= $(APP_SRCDIR)/java
 APP_SRC	    	:= $(shell find $(APP_JSRCDIR)/bsh          -name "*.java") \
 	           $(shell find $(APP_JSRCDIR)/org/netbeans -name "*.java") \
 		   $(shell find $(APP_JSRCDIR)/org/litesoft -name "*.java") \
-		   $(shell find $(APP_JSRCDIR)/VASSAL       -name "*.java")
+		   $(shell find $(APP_JSRCDIR)/VASSAL       -name "*.java" | grep -v vassal-app/src/main/java/VASSAL/tools/logging/PropertyNoCaseStartsWithCondition.java)
 APP_IMG		:= $(APP_SRCDIR)/resources/images
 APP_ICON	:= $(APP_SRCDIR)/resources/icons
 APP_HELP	:= $(APP_SRCDIR)/resources/help
