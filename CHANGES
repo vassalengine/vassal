@@ -6,6 +6,7 @@
 3.7.21 - ???
 
 * 14600: Upgraded byte-buddy to 1.18.8
+* 14599: Fix use of deprecated logback attributes
 * 14598: Create Flatpak recipe on release
 * 14593: Upgraded bundled Java to (Windows x86_64, MacOS), 25.0.2+10 (Windows
     aarch64), 21.0.10+10 (Windows x86)

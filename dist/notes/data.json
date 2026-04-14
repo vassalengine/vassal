@@ -44,6 +44,7 @@
         { "num": 14538, "desc": "Preserve the user directory preference after canceling from a file load or save dialog" }
       ],
       "improvements": [
+        { "num": 14599, "desc": "Fix use of deprecated logback attributes" },
         { "num": 14557, "desc": "Check and report over-sized image dimensions" }
 ,
         { "num": 14129, "desc": "Added Simplified Chinese translation for Editor" }
