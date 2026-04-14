@@ -1,4 +1,4 @@
-3.7.21 - ???
+3.7.21 - 14 April 2026
 
 * 14600: Upgraded byte-buddy to 1.18.8
 * 14599: Fix use of deprecated logback attributes
