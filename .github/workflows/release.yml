@@ -78,7 +78,7 @@ jobs:
             jdoc
           
       - name: Post artefacts to release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with: 
           body_path: tmp/NOTES-gh
           files:  |
@@ -189,8 +189,8 @@ jobs:
         run: |
           make release-windows-x86_32 MAVEN_VERSION=${{ github.ref_name }}
 
-      - name: Post Windows x86_32 artefact to release
-        uses: softprops/action-gh-release@v2
+      - name: Post artefacts to release
+        uses: softprops/action-gh-release@v3
         with: 
           files:  |
             tmp/VASSAL-${{ github.ref_name }}-windows-x86_32.exe
@@ -226,7 +226,7 @@ jobs:
           path: |
             public/vassal-${{ github.ref_name }}-1.src.rpm
       - name: Add artefacts to release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: public/vassal-${{ github.ref_name }}-1.noarch.rpm
 
@@ -321,7 +321,7 @@ jobs:
             public/vassal_${{ steps.deb_vars.outputs.DEB_UPSTREAM }}.orig.tar.gz 
             
       - name: Add artefacts to release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_all.deb
 
@@ -384,7 +384,7 @@ jobs:
           curl ${{ github.api_url }}/repos/${{ github.repository }}/releases/tags/${{ github.ref_name }} 2>/dev/null | jq '.assets.[] | .digest+"  "+.name | ltrimstr("sha256:") ' | tr -d '"' > VASSAL-${{ github.ref_name }}.sha256
 
       - name: Add artefacts to release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: VASSAL-${{ github.ref_name }}.sha256
     

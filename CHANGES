@@ -1,6 +1,14 @@
-3.7.21 - ???
+3.7.22 - ???
+
+* 14647: Upgraded maven-artifact to 3.9.15
+* 14660: Fix for showing obscured, rotated peek in mouse-over
+* 14578: Stop removing unavailable modules from the Module Manager; provide
+    manual cleanup option
+
+3.7.21 - 14 April 2026
 
 * 14600: Upgraded byte-buddy to 1.18.8
+* 14599: Fix use of deprecated logback attributes
 * 14598: Create Flatpak recipe on release
 * 14593: Upgraded bundled Java to (Windows x86_64, MacOS), 25.0.2+10 (Windows
     aarch64), 21.0.10+10 (Windows x86)
