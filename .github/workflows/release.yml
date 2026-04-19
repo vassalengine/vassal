@@ -6,6 +6,9 @@ on:
   push:
     tags: '*'
 
+env:
+  JDK_API: 26
+    
 jobs:
   # Regular packages.  Note, we take the version number from the tag. 
   package:
@@ -23,11 +26,12 @@ jobs:
           sudo apt install -y dos2unix genisoimage ghostscript nsis
           sudo pip install jinja2-cli  --break-system-packages
 
-      - name: Setup Java
+      - name: Setup Java - Temurin
         uses: actions/setup-java@v5
+        id: setup-java
         with: 
           distribution: 'temurin'
-          java-version: 25
+          java-version: ${{ env.JDK_API }}
           java-package: jdk
 
       - name: Maven cache
@@ -49,7 +53,7 @@ jobs:
 
       - name: Bootstrap
         if: steps.cache-bootstrap.outputs.cache-hit != 'true'
-        run: ./bootstrap.sh
+        run: ./bootstrap.sh -j ${{ steps.setup-java.outputs.version }} windows-x86_64 macos-x86_64 macos-aarch64
           
       - name: Make release packages 
         run: |
@@ -82,8 +86,61 @@ jobs:
             tmp/VASSAL-${{ github.ref_name }}-macos-universal.dmg
             tmp/VASSAL-${{ github.ref_name }}-other.zip
             tmp/VASSAL-${{ github.ref_name }}-windows-x86_64.exe
+
+  # Regular packages.  Note, we take the version number from the tag. 
+  package_aarch64:
+    name: Release Windows ARM
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with: 
+          fetch-depth: 1
+
+      - name: Update container 
+        run: |
+          sudo apt update -y
+          sudo apt install -y dos2unix genisoimage ghostscript nsis
+
+      - name: Setup Java - liberica
+        uses: actions/setup-java@v5
+        id: setup-java
+        with: 
+          distribution: 'liberica'
+          java-version: ${{ env.JDK_API }}
+          java-package: jdk
+
+      - name: Maven cache
+        uses: actions/cache@v5
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-mavin-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
+
+      - name: Cache bootstrap 
+        uses: actions/cache@v5
+        with:
+          path: |
+            ./dist/dmg
+            ./dist/jdks
+            ./dist/launch4
+            ./dist/lipo
+          key: ${{ runner.os }}-bootstrap-${{ hashFiles('bootstrap.sh') }}
+
+      - name: Bootstrap Windows aarch64
+        if: steps.cache-bootstrap.outputs.cache-hit != 'true'
+        run: ./bootstrap.sh -j ${{ steps.setup-java.outputs.version }} windows-aarch64
+          
+      - name: Make Windows aarch64 release package
+        run: |
+          make release-windows-aarch64 MAVEN_VERSION=${{ github.ref_name }}
+
+      - name: Post Windows aarch64 artefact to release
+        uses: softprops/action-gh-release@v2
+        with: 
+          files:  |
             tmp/VASSAL-${{ github.ref_name }}-windows-aarch64.exe
-                
+            
   # Regular packages.  Note, we take the version number from the tag. 
   package_win32:
     name: Release Windows 32-bit
@@ -99,10 +156,11 @@ jobs:
           sudo apt update -y
           sudo apt install -y dos2unix genisoimage ghostscript nsis
 
-      - name: Setup Java
+      - name: Setup Java - liberica 21
         uses: actions/setup-java@v5
+        id: setup-java
         with: 
-          distribution: 'temurin'
+          distribution: 'liberica'
           java-version: 21
           java-package: jdk
 
@@ -123,15 +181,15 @@ jobs:
             ./dist/lipo
           key: ${{ runner.os }}-bootstrap-${{ hashFiles('bootstrap.sh') }}
 
-      - name: Bootstrap
+      - name: Bootstrap Windows x86_32
         if: steps.cache-bootstrap.outputs.cache-hit != 'true'
-        run: ./bootstrap.sh
+        run: ./bootstrap.sh -j ${{ steps.setup-java.outputs.version }} windows-x86_32
           
-      - name: Make release packages 
+      - name: Make Windows x86_32 release package
         run: |
           make release-windows-x86_32 MAVEN_VERSION=${{ github.ref_name }}
 
-      - name: Post artefacts to release
+      - name: Post Windows x86_32 artefact to release
         uses: softprops/action-gh-release@v2
         with: 
           files:  |
@@ -284,13 +342,13 @@ jobs:
         uses: actions/setup-java@v5
         with: 
           distribution: 'temurin'
-          java-version: 25
+          java-version: ${{ env.JDK_API }}
           java-package: jdk
           
       - name: Make recipe
         run: |
           mkdir -p flatpak
-          sed -e "s,@REPOSITORY@,${{ github.repository }}," -e "s,@RELEASE@,${{ github.ref_name }}," -e "s,@COMMIT@,${{ github.sha }}," -e "s,@JDK@,25," < dist/linux/org.vassalengine.vassal.yml.in > flatpak/org.vassalengine.vassal.yml
+          sed -e "s,@REPOSITORY@,${{ github.repository }}," -e "s,@RELEASE@,${{ github.ref_name }}," -e "s,@COMMIT@,${{ github.sha }}," -e "s,@JDK@,${{ env.JDK_API }}," < dist/linux/org.vassalengine.vassal.yml.in > flatpak/org.vassalengine.vassal.yml
           cat flatpak/org.vassalengine.vassal.yml
           
       - name: Make Maven dependencies
@@ -312,6 +370,7 @@ jobs:
     needs:
       - package
       - package_win32
+      - package_aarch64
       - package_debian
       - package_rpm
     steps:
