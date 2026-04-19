@@ -41,6 +41,7 @@
       "improvements": [
       ],
       "other": [
+        { "num": 14647, "desc": "Upgraded maven-artifact to 3.9.15" }
       ]
     }
   ]
