@@ -1,6 +1,8 @@
 3.7.22 - ???
 
 * 14647: Upgraded maven-artifact to 3.9.15
+* 14578: Stop removing unavailable modules from the Module Manager; provide
+    manual cleanup option
 
 3.7.21 - 14 April 2026
 

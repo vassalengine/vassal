@@ -25,6 +25,7 @@
       "bug_fixes": [
       ],
       "improvements": [
+        { "num": 14578, "desc": "Stop removing unavailable modules from the Module Manager; provide manual cleanup option" }
       ],
       "other": [
         { "num": 14647, "desc": "Upgraded maven-artifact to 3.9.15" }
