@@ -23,6 +23,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 14660, "desc": "Fix for showing obscured, rotated peek in mouse-over" }
       ],
       "improvements": [
         { "num": 14578, "desc": "Stop removing unavailable modules from the Module Manager; provide manual cleanup option" }
