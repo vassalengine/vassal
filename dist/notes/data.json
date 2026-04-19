@@ -23,7 +23,7 @@
       "new_features": [
         { "num": 12944, "desc": "Add pieceCount to the map auto reporter" },
         { "num": 12763, "desc": "Added ModuleGameFileName property" }
-      ],
+      },
       "bug_fixes": [
       ],
       "improvements": [
@@ -32,101 +32,15 @@
       ]
     },
     {
-      "in": "3.7.21",
-      "since": "3.7.20",
-      "new_features": [ 
-      ],
-      "bug_fixes": [
-        { "num": 14572, "desc": "Fix NPE when searching in the editor" },
-        { "num": 14549, "desc": "Fix IndexOutOfBounds when reporting pre-defined scenario errors" },
-        { "num": 14542, "desc": "Don't re-prompt for save file after canceling the FileChooser dialog" },
-        { "num": 14539, "desc": "Escape key should cancel Load Continuation" },
-        { "num": 14538, "desc": "Preserve the user directory preference after canceling from a file load or save dialog" }
-      ],
-      "improvements": [
-        { "num": 14599, "desc": "Fix use of deprecated logback attributes" },
-        { "num": 14557, "desc": "Check and report over-sized image dimensions" }
-,
-        { "num": 14129, "desc": "Added Simplified Chinese translation for Editor" }
-      ],
-      "other": [
-        { "num": 14600, "desc": "Upgraded byte-buddy to 1.18.8" },
-        { "num": 14598, "desc": "Create Flatpak recipe on release" },
-        { "num": 14593, "desc": "Upgraded bundled Java to (Windows x86_64, MacOS), 25.0.2+10 (Windows aarch64), 21.0.10+10 (Windows x86)" },
-        { "num": 14591, "desc": "Upgraded checkstyle to 13.4.0" },
-        { "num": 14590, "desc": "Upgraded spotbugs-maven-plugin to 4.9.8.3" },
-        { "num": 14553, "desc": "Upgraded maven-artifact to 3.9.14" },
-        { "num": 14541, "desc": "Upgraded maven-resoures-plugin 3.5.0" },
-        { "num": 14518, "desc": "Upgraded miglayout-swing to 11.4.3" },
-        { "num": 14517, "desc": "Upgraded maven-surefire-plugin to 3.5.5" },
-        { "num": 14503, "desc": "Upgraded junit-bom to 6.0.3" },
-        { "num": 14502, "desc": "Upgraded logback-classic to 1.5.32" },
-        { "num": 14488, "desc": "Build an RPM package" },
-        { "num": 14485, "desc": "Upgraded maven-dependency-plugin to 3.10.0" }
-      ]
-    },
-    {
-      "in": "3.7.20",
-      "since": "3.7.19",
+      "in": "3.7.22",
+      "since": "3.7.21",
       "new_features": [
       ],
       "bug_fixes": [
-        { "num": 14433, "desc": "Work around change in java.io.File API in Java 25" }
       ],
       "improvements": [
       ],
       "other": [
-        { "num": 14478, "desc": "Upgraded checkstyle to 13.2.0" },
-        { "num": 14475, "desc": "Upgraded maven-compiler-plugin to 3.15.0" },
-        { "num": 14365, "desc": "Upgraded commons-codec to 1.21.0" },
-        { "num": 14464, "desc": "Upgraded logback-classic to 1.5.27" },
-        { "num": 14445, "desc": "Upgraded byte-buddy to 1.18.4" },
-        { "num": 14430, "desc": "Upgraded junit-bom 6.0.2" },
-        { "num": 14424, "desc": "Upgraded license-maven-plugin to 2.7.1" },
-        { "num": 14421, "desc": "Upgraded jsoup to 1.22.1" },
-        { "num": 14415, "desc": "Upgraded httpclient5 5.6" },
-        { "num": 14414, "desc": "Upgraded exec-maven-plugin to 3.6.3" }
-      ]
-    },
-    {
-      "in": "3.7.19",
-      "since": "3.7.18",
-      "new_features": [
-      ],
-      "bug_fixes": [
-        { "num": 14335, "desc": "Mark as moved when moving a piece between mats within the same location" },
-        { "num": 14323, "desc": "Sanitize extracted image filenames for HTML viewer" },
-        { "num": 14250, "desc": "Don't report changes to scenario options when report text is empty" }
-      ],
-      "improvements": [
-      ],
-      "other": [
-        { "num": 14406, "desc": "Upgraded httpclient5 to 5.5.2" },
-        { "num": 14404, "desc": "Upgraded maven-artifact to 3.9.12" },
-        { "num": 14402, "desc": "Upgraded asm to 9.9.1" },
-        { "num": 14401, "desc": "Upgraded checkstyle to 12.3.0" },
-        { "num": 14395, "desc": "Upgraded logback-classic to 1.5.22" },
-        { "num": 14379, "desc": "Upgraded maven-resoures-plugin 3.4.0" },
-        { "num": 14377, "desc": "Upgraded maven-source-plugin to 3.4.0" },
-        { "num": 14373, "desc": "Upgraded byte-buddy to 1.18.2" },
-        { "num": 14369, "desc": "Upgraded spotbugs-maven-plugin to 4.9.8.2" },
-        { "num": 14361, "desc": "Upgraded commons-lang3 to 3.20.0" },
-        { "num": 14359, "desc": "Upgraded maven-jar-plugin to 3.5.0" },
-        { "num": 14347, "desc": "Log more info for the piece not on map exception" },
-        { "num": 14341, "desc": "Upgraded commons-io to 2.21.0" },
-        { "num": 14338, "desc": "Upgraded commons-codec to 1.20.0" },
-        { "num": 14330, "desc": "Upgraded junit-bom to 6.0.1" },
-        { "num": 14327, "desc": "Upgraded asciidoctorj-pdf to 2.3.22" },
-        { "num": 14318, "desc": "Upgraded spotbugs-annotations to 4.9.8" },
-        { "num": 14307, "desc": "Upgraded exec-maven-plugin to 3.6.2" },
-        { "num": 14301, "desc": "Upgraded bundled Java to 25+36 (Windows x86_64, Mac), 25+37 (Windows aarch64)" },
-        { "num": 14291, "desc": "Update info to guide users of unsupported macOS versions" },
-        { "num": 14281, "desc": "Upgraded maven-pmd-plugin to 3.28.0" },
-        { "num": 14274, "desc": "Upgraded asm to 9.9" },
-        { "num": 14265, "desc": "Upgraded maven-enforcer-plugin to 3.6.2" },
-        { "num": 14264, "desc": "Upgraded maven-dependency-plugin to 3.9.0" },
-        { "num": 14260, "desc": "Reorder items on Player Tools menu to put all Loads together" },
-        { "num": 14254, "desc": "Build release on tag" }
       ]
     }
   ]

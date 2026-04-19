@@ -3,6 +3,8 @@
 * 12944: Add pieceCount to the map auto reporter
 * 12763: Added ModuleGameFileName property
 
+3.7.22 - ???
+
 3.7.21 - 14 April 2026
 
 * 14600: Upgraded byte-buddy to 1.18.8
