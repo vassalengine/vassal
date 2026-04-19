@@ -1,5 +1,7 @@
 3.7.22 - ???
 
+* 14647: Upgraded maven-artifact to 3.9.15
+
 3.7.21 - 14 April 2026
 
 * 14600: Upgraded byte-buddy to 1.18.8
