@@ -21,7 +21,6 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.ObscurableOptions;
 import VASSAL.build.module.PlayerRoster;
 import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.map.CounterDetailViewer;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
@@ -221,7 +220,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   }
 
   public boolean isAutoPeeking() {
-    return autoPeekRollover && CounterDetailViewer.isDrawingMouseOver() && obscuredToOthers() && !obscuredToMe();
+    return autoPeekRollover && (getMap() != null && getMap().isDrawingMouseOver()) && obscuredToOthers() && !obscuredToMe();
   }
 
   @Override
@@ -316,7 +315,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       return obscuredBy;
     }
     else if (Properties.VISIBLE_STATE.equals(key)) {
-      return myGetState() + isPeeking() + getProperty(Properties.SELECTED) + obscuredToMe() + piece.getProperty(key);
+      return myGetState() + isPeeking() + isAutoPeeking() + getProperty(Properties.SELECTED) + obscuredToMe() + piece.getProperty(key);
     }
     // FIXME: Access to Obscured properties
     // If piece is obscured to me, then mask any properties returned by
