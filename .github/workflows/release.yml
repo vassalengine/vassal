@@ -56,7 +56,16 @@ jobs:
           make release MAVEN_VERSION=${{ github.ref_name }}
           make javadoc  MAVEN_VERSION=${{ github.ref_name }}
           make release-announcements  MAVEN_VERSION=${{ github.ref_name }}
+          ls
+          ls releases
 
+      - name: Archive Maven repository entries
+        uses: actions/upload-artifact@v7
+        with:
+          name: MavenReleases
+          path: |
+            releases
+            
       - name: Archive release notes
         uses: actions/upload-artifact@v7
         with:
