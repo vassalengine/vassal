@@ -212,7 +212,11 @@ $(TMPDIR)/linux-$(VERSION)-build/VASSAL-$(VERSION): $(LIBDIR)/Vengine.jar
 	chmod 755 $@/VASSAL.sh
 
 $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2: $(TMPDIR)/linux-$(VERSION)-build/VASSAL-$(VERSION)
-	tar cjvf $@ -C $(TMPDIR)/linux-$(VERSION)-build VASSAL-$(VERSION)
+	#tar cjvf $@ -C $(TMPDIR)/linux-$(VERSION)-build VASSAL-$(VERSION)
+	if [ -d linux-release ]; then rm -r linux-release; fi
+	mv $(TMPDIR)/linux-$(VERSION)-build/VASSAL-$(VERSION) linux-release
+
+
 
 #
 # Windows
