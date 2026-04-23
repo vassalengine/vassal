@@ -260,8 +260,7 @@ public class PrefsEditor {
           dialog.setVisible(true);
         }
       };
-      // FIXME: setting mnemonic from first letter could cause collisions in some languages
-      editAction.putValue(Action.MNEMONIC_KEY, (int) Resources.getString("Prefs.edit_preferences").charAt(0));
+      editAction.putValue(Action.MNEMONIC_KEY, (int) Resources.getString("Prefs.edit_preferences.shortcut").charAt(0));
     }
     return editAction;
   }

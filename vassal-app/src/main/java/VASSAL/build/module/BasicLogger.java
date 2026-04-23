@@ -185,6 +185,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     newLogKeyConfig = new NamedHotKeyConfigurer("newHotKey", Resources.getString("BasicLogger.newlog_hotkey"), newLogKeyListener.getNamedKeyStroke()); //NON-NLS
     newLogKeyConfig.addPropertyChangeListener(evt -> {
       newLogKeyListener.setKeyStroke(newLogKeyConfig.getValueNamedKeyStroke());
+      newLogAction.putValue(Action.ACCELERATOR_KEY, newLogKeyListener.getKeyStroke());
     });
     GlobalOptions.getInstance().addOption(newLogKeyConfig);
     newLogKeyConfig.fireUpdate();
@@ -192,6 +193,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     endLogKeyConfig = new NamedHotKeyConfigurer("endHotKey", Resources.getString("BasicLogger.endlog_hotkey"), endLogKeyListener.getNamedKeyStroke());  //$NON-NLS-1$ //$NON-NLS-2$
     endLogKeyConfig.addPropertyChangeListener(evt -> {
       endLogKeyListener.setKeyStroke(endLogKeyConfig.getValueNamedKeyStroke());
+      endLogAction.putValue(Action.ACCELERATOR_KEY, endLogKeyListener.getKeyStroke());
     });
     GlobalOptions.getInstance().addOption(endLogKeyConfig);
     endLogKeyConfig.fireUpdate();
