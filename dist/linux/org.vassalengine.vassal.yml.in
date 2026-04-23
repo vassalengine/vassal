@@ -13,7 +13,6 @@ finish-args:
   - --device=dri
   - --share=network
   - --filesystem=home
-  - --filesystem=/tmp
   - --env=PATH=/app/jre/bin:/app/bin:/usr/bin
 
 modules:
