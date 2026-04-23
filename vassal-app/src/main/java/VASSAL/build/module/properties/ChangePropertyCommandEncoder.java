@@ -62,7 +62,14 @@ public class ChangePropertyCommandEncoder implements CommandEncoder {
       return null;
     }
 
-    final MutableProperty p = container.getMutableProperty(key);
+    MutableProperty p = container.getMutableProperty(key);
+    if (p == null) {
+      // If this is not an explicit global property
+      // then search for implicit module properties such as Special Dice properties.
+      if (container instanceof GlobalProperties) {
+        p = ((GlobalProperties) container).getParent().getMutableProperty(key);
+      }
+    }
     if (p == null) {
       return null;
     }
