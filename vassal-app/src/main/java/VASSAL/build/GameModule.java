@@ -211,6 +211,11 @@ public class GameModule extends AbstractConfigurable
   /** The {@link Prefs} key for the user's personal info */
   public static final String PERSONAL_INFO = "Profile"; //$NON-NLS-1$
 
+  public static final String MAP_CLICKED = "VassalClickMap";  //$NON-NLS-1$
+  public static final String MAP_CLICKED_X = "VassalClickMapX"; // NON-NLS
+  public static final String MAP_CLICKED_Y = "VassalClickMapY"; // NON-NLS
+  public static final String MAP_CLICKED_ZONE = "VassalClickZone";  //$NON-NLS-1$
+
   public static final String MODULE_NAME_PROPERTY = "ModuleName"; //NON-NLS
   public static final String MODULE_VERSION_PROPERTY = "ModuleVersion"; //NON-NLS
   public static final String MODULE_DESCRIPTION_PROPERTY = "ModuleDescription"; //NON-NLS
@@ -2259,6 +2264,18 @@ public class GameModule extends AbstractConfigurable
     else if (GlobalOptions.PLAYER_ID.equals(key) || GlobalOptions.PLAYER_ID_ALT.equals(key)) {
       return GlobalOptions.getInstance().getPlayerId();
     }
+    else if (MAP_CLICKED.equals(key)) {
+      return Map.getClickMap();
+    }
+    else if (MAP_CLICKED_X.equals(key)) {
+      return Map.getClickMapX();
+    }
+    else if (MAP_CLICKED_Y.equals(key)) {
+      return Map.getClickMapY();
+    }
+    else if (MAP_CLICKED_ZONE.equals(key)) {
+      return Map.getClickZone();
+    }
     else if (MODULE_NAME_PROPERTY.equals(key)) {
       return gameName;
     }
@@ -2393,6 +2410,7 @@ public class GameModule extends AbstractConfigurable
     l.add(GlobalOptions.PLAYER_SIDE);
     l.add(GlobalOptions.PLAYER_NAME);
     l.add(GlobalOptions.PLAYER_ID);
+    l.add(MAP_CLICKED);
     l.add(MODULE_NAME_PROPERTY);
     l.add(MODULE_VERSION_PROPERTY);
     l.add(MODULE_DESCRIPTION_PROPERTY);
