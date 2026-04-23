@@ -56,9 +56,16 @@ jobs:
           make release MAVEN_VERSION=${{ github.ref_name }}
           make javadoc  MAVEN_VERSION=${{ github.ref_name }}
           make release-announcements  MAVEN_VERSION=${{ github.ref_name }}
-          ls tmp/
-          ls jdoc/
+          ls
+          ls releases
 
+      - name: Archive Maven repository entries
+        uses: actions/upload-artifact@v7
+        with:
+          name: MavenReleases
+          path: |
+            releases
+            
       - name: Archive release notes
         uses: actions/upload-artifact@v7
         with:
@@ -72,7 +79,14 @@ jobs:
           name: JavaDoc
           path: |
             jdoc
-          
+
+      - name: Archive Reference Manual
+        uses: actions/upload-artifact@v7
+        with:
+          name: ReferenceManual
+          path: |
+            vassal-doc/target/classes/ReferenceManual
+            
       - name: Post artefacts to release
         uses: softprops/action-gh-release@v3
         with: 
