@@ -5,6 +5,7 @@
 
 3.7.22 - ???
 
+* 14675: Upgraded commons-io to 2.22.0
 * 14671: Upgraded httpclient5 to 5.6.1
 * 14670: Upgraded jsoup to 1.22.2
 * 14647: Upgraded maven-artifact to 3.9.15
