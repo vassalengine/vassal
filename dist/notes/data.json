@@ -40,7 +40,8 @@
         { "num": 14660, "desc": "Fix for showing obscured, rotated peek in mouse-over" }
       ],
       "improvements": [
-        { "num": 14578, "desc": "Stop removing unavailable modules from the Module Manager; provide manual cleanup option" }
+        { "num": 14578, "desc": "Stop removing unavailable modules from the Module Manager; provide manual cleanup option" },
+        { "num": 14391, "desc": "Reduce NullCommand nesting on the pausedCommands deque" }
       ],
       "other": [
         { "num": 14675, "desc": "Upgraded commons-io to 2.22.0" },
