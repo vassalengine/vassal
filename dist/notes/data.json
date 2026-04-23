@@ -29,6 +29,7 @@
         { "num": 14578, "desc": "Stop removing unavailable modules from the Module Manager; provide manual cleanup option" }
       ],
       "other": [
+        { "num": 14675, "desc": "Upgraded commons-io to 2.22.0" },
         { "num": 14671, "desc": "Upgraded httpclient5 to 5.6.1" },
         { "num": 14670, "desc": "Upgraded jsoup to 1.22.2" },
         { "num": 14647, "desc": "Upgraded maven-artifact to 3.9.15" }
