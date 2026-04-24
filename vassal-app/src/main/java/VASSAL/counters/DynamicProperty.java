@@ -201,7 +201,10 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     final Stack parent = getParent();
     final Map map = getMap();
 
-    value = formatValue(value);
+    // Don't compute the initial value in the editor.
+    if (!GameModule.getGameModule().isEditorOpen()) {
+      value = formatValue(value);
+    }
 
     // If the property has changed the layer to which this piece belongs,
     // re-insert it into the map.
