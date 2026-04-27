@@ -267,6 +267,6 @@ public class Marker extends Decorator implements EditablePiece {
    */
   @Override
   public List<String> getPropertyList() {
-    return Arrays.asList(values);
+    return Arrays.asList(keys);
   }
 }
