@@ -30,6 +30,8 @@
         { "num": 14391, "desc": "Reduce NullCommand nesting on the pausedCommands deque" }
       ],
       "other": [
+        { "num": 14682, "desc": "Upgraded checkstyle 13.4.1" },
+        { "num": 14681, "desc": "Upgraded commons-codec to 1.22.0" },
         { "num": 14675, "desc": "Upgraded commons-io to 2.22.0" },
         { "num": 14671, "desc": "Upgraded httpclient5 to 5.6.1" },
         { "num": 14670, "desc": "Upgraded jsoup to 1.22.2" },
