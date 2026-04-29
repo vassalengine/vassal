@@ -67,6 +67,7 @@ if [ "x$BUILD" != "x" ] ; then
 fi
 
 # --- Sanitise the JRE version we get in GitHub actions --------------
+FULL_JRE=$(echo "$JRE_API" | sed 's/\([0-9][0-9.]*\).*/\1/')
 JRE_API=$(echo "$JRE_API" | sed 's/\([0-9][0-9]*\)\..*/\1/')
 
 # --- Default architectures ------------------------------------------
@@ -88,9 +89,9 @@ TEMURIN_FILENAME_VERSION=${JRE_API}_${TEMURIN_BUILD}
 TEMURIN_URL="https://github.com/adoptium/temurin${JRE_API}-binaries/releases/download/${TEMURIN_VERSION}"
 TEMURIN_FILENAME_BASE="OpenJDK${JRE_API}U-jmods"
 
-BELLSOFT_VERSION=${JRE_API}+${BELLSOFT_BUILD}
+BELLSOFT_VERSION=${FULL_JRE}+${BELLSOFT_BUILD}
 BELLSOFT_URL="https://download.bell-sw.com/java/${BELLSOFT_VERSION}"
-BELLSOFT_DIR=jdk-${JRE_API}
+BELLSOFT_DIR=jdk-${FULL_JRE}
 
 BELLSOFT_WIN32_API=21.0.10
 BELLSOFT_WIN32_BUILD=10
