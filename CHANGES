@@ -7,6 +7,8 @@
 * 14670: Upgraded jsoup to 1.22.2
 * 14647: Upgraded maven-artifact to 3.9.15
 * 14660: Fix for showing obscured, rotated peek in mouse-over
+* 14612: Upgraded bundled Java to 26+35 (Windows x86_64, MacOS),
+    26+37 (Windows aarch64)
 * 14578: Stop removing unavailable modules from the Module Manager; provide
     manual cleanup option
 * 14391: Reduce NullCommand nesting on the pausedCommands deque
@@ -16,8 +18,8 @@
 * 14600: Upgraded byte-buddy to 1.18.8
 * 14599: Fix use of deprecated logback attributes
 * 14598: Create Flatpak recipe on release
-* 14593: Upgraded bundled Java to (Windows x86_64, MacOS), 25.0.2+10 (Windows
-    aarch64), 21.0.10+10 (Windows x86)
+* 14593: Upgraded bundled Java to 25.0.2+10 (Windows x86_64, MacOS),
+    25.0.2+12 (Windows aarch64), 21.0.10+10 (Windows x86)
 * 14591: Upgraded checkstyle to 13.4.0
 * 14590: Upgraded spotbugs-maven-plugin to 4.9.8.3
 * 14572: Fix NPE when searching in the editor
