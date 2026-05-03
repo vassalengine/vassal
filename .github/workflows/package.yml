@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ master, release-3.7 ]
 
+env:
+  JDK_API: 26
+  
 jobs:
   package:
     name: Test & Package
@@ -17,7 +20,7 @@ jobs:
           fetch-depth: 1
 
       - name: Set branch
-        if: github.ref != 'refs/heads/master' && github.ref != 'refs/heads/release-3.7' 
+        if: github.ref != 'refs/heads/master' && github.ref != 'refs/heads/release-3.7'
         # Checking out a detached head for PR means we have to set the branch
         # name for it to show up later; shallow checkout means the branch
         # won't exist yet so there's no conflict.
@@ -35,9 +38,10 @@ jobs:
 
       - name: Install Java
         uses: actions/setup-java@v5
+        id: setup-java
         with:
           distribution: 'temurin'
-          java-version: 25
+          java-version: ${{ env.JDK_API }}
           java-package: jdk
 
       - name: Cache Maven packages
@@ -54,14 +58,16 @@ jobs:
         with:
           path: |
             ./dist/dmg
-            ./dist/jdks
+            ./dist/jdks/windows-x86_64
+            ./dist/jdks/macos-x86_64
+            ./dist/jdks/macos-aarch64
             ./dist/launch4j
             ./dist/lipo
           key: ${{ runner.os }}-bootstrap-${{ hashFiles('bootstrap.sh') }}
 
       - name: Install packaging dependencies
         if: steps.cache-bootstrap.outputs.cache-hit != 'true'
-        run: ./bootstrap.sh
+        run: ./bootstrap.sh -j ${{ steps.setup-java.outputs.version }} windows-x86_64 macos-x86_64 macos-aarch64
 
       - name: Build packages
         run: make release
@@ -90,14 +96,8 @@ jobs:
           name: VASSAL-${{ steps.version.outputs.VERSION }}-windows-x86_64.exe
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-windows-x86_64.exe
 
-      - name: Archive Windows aarch64
-        uses: actions/upload-artifact@v7
-        with:
-          name: VASSAL-${{ steps.version.outputs.VERSION }}-windows-aarch64.exe
-          path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-windows-aarch64.exe
-
-  package_win_x86_32:
-    name: Test & Package Windows x86_32
+  package_win_aarch64:
+    name: Test & Package Windows aarch64
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout repo
@@ -105,11 +105,8 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Get tags
-        run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-
       - name: Set branch
-        if: github.ref != 'refs/heads/master' && github.ref != 'refs/heads/release-3.7' 
+        if: github.ref != 'refs/heads/master' && github.ref != 'refs/heads/release-3.7'
         # Checking out a detached head for PR means we have to set the branch
         # name for it to show up later; shallow checkout means the branch
         # won't exist yet so there's no conflict.
@@ -127,8 +124,78 @@ jobs:
 
       - name: Install Java
         uses: actions/setup-java@v5
+        id: setup-java
         with:
-          distribution: 'temurin'
+          distribution: 'liberica'
+          java-version: ${{ env.JDK_API }}
+          java-package: jdk
+
+      - name: Cache Maven packages
+        uses: actions/cache@v5
+        id: cache-maven
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
+
+      - name: Cache packaging dependencies
+        id: cache-bootstrap
+        uses: actions/cache@v5
+        with:
+          path: |
+            ./dist/dmg
+            ./dist/jdks/windows-aarch64
+            ./dist/launch4j
+            ./dist/lipo
+          key: ${{ runner.os }}-bootstrap-${{ hashFiles('bootstrap.sh') }}
+
+      - name: Install packaging dependencies
+        if: steps.cache-bootstrap.outputs.cache-hit != 'true'
+        run: ./bootstrap.sh -j ${{ steps.setup-java.outputs.version }} windows-aarch64
+
+      - name: Build Windows aarch64
+        run: make release-windows-aarch64
+
+      - name: Archive Windows aarch64
+        uses: actions/upload-artifact@v7
+        with:
+          name: VASSAL-${{ steps.version.outputs.VERSION }}-windows-aarch64.exe
+          path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-windows-aarch64.exe
+          
+  package_win_x86_32:
+    name: Test & Package Windows x86_32
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Get tags
+        run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+
+      - name: Set branch
+        if: github.ref != 'refs/heads/master' && github.ref != 'refs/heads/release-3.7'
+        # Checking out a detached head for PR means we have to set the branch
+        # name for it to show up later; shallow checkout means the branch
+        # won't exist yet so there's no conflict.
+        run: git checkout -b ${GITHUB_HEAD_REF}
+
+      - name: Store version
+        id: version
+        run: echo "VERSION=$(make version-print)" >> $GITHUB_OUTPUT
+
+      - name: Update container
+        run: sudo apt update
+
+      - name: Install dependencies
+        run: sudo apt-get install dos2unix genisoimage ghostscript nsis
+
+      - name: Install Java
+        uses: actions/setup-java@v5
+        id: setup-java
+        with:
+          distribution: 'liberica'
           java-version: 21
           java-package: jdk
 
@@ -146,14 +213,14 @@ jobs:
         with:
           path: |
             ./dist/dmg
-            ./dist/jdks
+            ./dist/jdks/windows-x86_32
             ./dist/launch4j
             ./dist/lipo
           key: ${{ runner.os }}-bootstrap-${{ hashFiles('bootstrap.sh') }}
 
       - name: Install packaging dependencies
         if: steps.cache-bootstrap.outputs.cache-hit != 'true'
-        run: ./bootstrap.sh
+        run: ./bootstrap.sh -j ${{ steps.setup-java.outputs.version }} windows-x86_32
 
       - name: Build Windows x86_32
         run: make release-windows-x86_32
@@ -277,10 +344,3 @@ jobs:
         with:
           name: vassal_${{ steps.deb_vars.outputs.DEB_UPSTREAM }}.orig.tar.gz
           path: public/vassal_${{ steps.deb_vars.outputs.DEB_UPSTREAM }}.orig.tar.gz
-      # Alternative way to publish artefacts on tags.
-      # 
-      # - name: Publish DEB package
-      #   uses: softprops/action-gh-release@v2
-      #   if: github.ref_type == 'tag'
-      #   with:
-      #     files: public/*

@@ -1,7 +1,3 @@
-
-Refer also to the Wiki for developer documentation:
-link:https://vassalengine.org/wiki/Main_Page#Engine_Development[]
-
 = Developer's guide
 :toc: left
 :toclevels: 4
@@ -175,33 +171,23 @@ Each build step can be skipped by passing certain parameters.
 
 ====== Examples
 * Compile only, build jar in `vassal-app/target`, skip tests, checkstyle, spotbugs, javadoc, asciidoctor, clirr:
-[source]
-----
-mvn clean package -DskipTests=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Dmaven.javadoc.skip=true -Dasciidoctor.skip=true -Dclirr.skip=true
-----
+
+ $ mvn clean package -DskipTests=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Dmaven.javadoc.skip=true -Dasciidoctor.skip=true -Dclirr.skip=true
 
 * Run AsciiDoctor only:
-[source]
-----
-mvn clean compile -Dmaven.main.skip=true -DskipTests=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Dmaven.javadoc.skip=true -Dclirr.skip=true
-----
+
+ $ mvn clean compile -Dmaven.main.skip=true -DskipTests=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Dmaven.javadoc.skip=true -Dclirr.skip=true
+
 
 ==== Regular TODOs
 
 ===== Check for new dependency versions
 
-[source]
-----
-mvn versions:display-dependency-updates
-----
+ $ mvn versions:display-dependency-updates
 
 ===== Check for maven plugin updates
 
-[source]
-----
-mvn versions:display-plugin-updates
-----
-
+ $ mvn versions:display-plugin-updates
 
 ==== Configuration of dependent projects
 
@@ -216,7 +202,7 @@ The project's public maven repository can be found at https://vassalengine.org/m
       <groupId>org.vassalengine</groupId>
       <artifactId>vassal-app</artifactId>
       <version>3.4.1</version> <!--1-->
-      </dependency>
+    </dependency>
   </dependencies>
   <repositories>
     <repository>
@@ -228,57 +214,140 @@ The project's public maven repository can be found at https://vassalengine.org/m
 ----
 <1> Use desired Vassal version here
 
+==== Update release number in `pom.xml`
+
+[source]
+----
+mvn version:set -DnewVersion=RELEASE -DgenerateBackupPoms=false
+----
+where RELEASE is the version to set.
+
 === make
 
 .List of available make targets:
 [source,makefile]
 ----
-include::{rootdir}Makefile[lines=258]
+include::{rootdir}Makefile[lines=337]
 ----
 
 == Release checklist
 
+Steps to release version `x.y.z`
+
 * [ ] Update the release announcement data `dist/notes/data.json` and Jinja templates in `dist/notes` with the changes for the new release.
 * [ ] Fill in the release date in `CHANGES`.
 * [ ] Add the new release to `dist/linux/org.vassalengine.vassal.metainfo.xml`.
-* [ ] Set `MAVEN_VERSION` to `$(VNUM)` in the `Makefile`.
-* [ ] `make clean`
-* [ ] `make` (This will update various `pom.xml` with the new version number.)
-* [ ] Commit the changes.
-* [ ] `git tag -s -m 'The x.y.z release.' x.y.z`
-* [ ] `git push --tags`
-* [ ] `make release`
-* [ ] `make release-announcements`
-* [ ] Add a new release at GitHub. Upload the release pacakges. Paste in the change log.
-* [ ] Update `util/current-release` and `util/current-beta` with release version number and add release packages to `releases/` in `site` repo and push to GitHub.
-* [ ] Pull `site` repo (in `/var/www/html/site` on vassalengine.org).
-* [ ] Upload maven artifacts to our repo: `rsync -avP releases/ vassal.org:/var/www/html/site/maven`
-* [ ] From `/var/www/html/site/javadoc/` on vassalengine.org: `mkdir x.y.z && cd x.y.z && unzip ../../maven/org/vassalengine/vassal-app/x.y.z/vassal-app-x.y.z-javadoc.jar`
-* [ ] Upload Reference Manual to site and set `latest` symlink.
-* [ ] Update the release branch in `.github/workflows/package.yml`.
-* [ ] Update the release notes in our wiki: https://vassalengine.org/wiki/VASSAL_3.5_Release_Notes
-* [ ] Post release announcements (see `tmp/notes-*`):
-** Our forum: https://forum.vassalengine.org/c/news/17 (Pin the new post, unpin the one for the previousth release.)
-** BGG Computer Based Board Gaming forum: https://www.boardgamegeek.com/forum/28/bgg/computer-based-board-gaming
-** BGG Press Releases forum: https://www.boardgamegeek.com/forum/31/bgg/press-releases
-** Our forum at ConsimWorld: http://talk.consimworld.com/WebX/.ee6f15c/10067
-** VASL forum at GameSquad: http://www.gamesquad.com/forums/index.php?forums/vasl.103/
-** Facebook: Vassal Wargamers Americas: https://www.facebook.com/groups/vassalwargamers/
-** Facebook: Vassal Wargamers Europe: https://www.facebook.com/groups/VassalWargamersEurope
-* [ ] Update the `sources` section in `org.vassalengine.vassal/org.vassalengine.vassal.yml` in the https://github.com/flathub/org.vassalengine.vassal repository.
+* [ ] Clean clone
+
+ $ make clean
+ 
+* [ ] Propagate new version to `pom.xml` files:
+
+ $ make version-set MAVEN_VERSION=x.y.z
+ 
+* [ ] Commit the changes:
+
+ $ git commit . -m "The x.y.z release"
+ 
+* [ ] Tag current state as a release:
+
+ $ git tag -s -m 'The x.y.z release.' x.y.z
+ 
+* [ ] Push tag to origin and generate the release on GitHub
+
+  $ git push --atomic origin HEAD x.y.z
+  
+* [ ] Update web-page 
+** Update `util/current-release` and `util/current-beta` with release version number in `site` (`https://github.com/vassalengine/vassal-site`) repo and push to GitHub.
+      (Note, this could be handled by an automatic PR from the GitHub release action).
+** On `vassalengine.org`, pull `site-src` (`git@github.com:vassalengine/vassal-site-src.git`) repo
+
+ $ cd ~/vassal-site-src
+ $ git pull
+ 
+** On `vassalengine.org`, pull `site` (`git@github.com:vassalengine/vassal-site.git`) repo
+
+ $ cd /var/www/html/site
+ $ git pull 
+
+** Run script to update files in `releases`, Java documentation in `javadoc`, reference manual in `doc`, and Maven releases in `maven`.  Below, `TOKEN` can be either a GitHub personal access token or a file that contains such a token 
+
+ $ ~/vassal-site-src/utils/update_from_release.sh --release x.y.z --token TOKEN Files JavaDoc ReferenceManual MavenReleases
+
+* [ ] Update the release branch in `.github/workflows/package.yml`, if needed.
+* [ ] Post release announcements 
+** Download the **NOTES** artefact from the GitHub action of the release, and unpack:
+
+ $ action_id=$(curl -L https://api.github.com/repos/vassalengine/vassal/actions/workflows/release.yml/runs | jq  '.workflow_runs[] | select(.head_branch=="x.y.z") | .id')
+ $ url=$(curl -L https://api.github.com/repos/vassalengine/vassal/actions/runs/${action_id}/artifacts | jq -r '.artifacts[] | select(.name=="NOTES") | .archive_download_url')
+ $ curl -L -H "Authorization: token ${token}" "${url}" -o NOTES.zip
+ $ unzip NOTES.zip
+
+** Alternatively, from a clone of the `site-src` repo, run (Below, `TOKEN` can be either a GitHub personal access token or a file that contains such a token)
+
+ $ ~/vassal-site-src/utils/update_from_release.sh --release x.y.z --token TOKEN Notes
+ 
+** Update the release notes in our forum: https://forum.vassalengine.org/t/vassal-X-Y-release-notes (Append content: `NOTES-news`)
+** Our forum: https://forum.vassalengine.org/c/news/17 (Content: `NOTES-news`) Pin the new post, unpin the one for the previous release.
+** BGG Computer Based Board Gaming forum: https://www.boardgamegeek.com/forum/28/bgg/computer-based-board-gaming (Content: `NOTES-bgg`)
+** BGG Press Releases forum: https://www.boardgamegeek.com/forum/31/bgg/press-releases (Content: `NOTES-bgg`)
+** Our forum at ConsimWorld: http://talk.consimworld.com/WebX/.ee6f15c/10067 (Content: `NOTES-csw`)
+** VASL forum at GameSquad: http://www.gamesquad.com/forums/index.php?forums/vasl.103/ (Content: `NOTES-gh`)
+** Facebook: Vassal Wargamers Americas: https://www.facebook.com/groups/vassalwargamers/ (Content: `NOTES-fb`)
+** Facebook: Vassal Wargamers Europe: https://www.facebook.com/groups/VassalWargamersEurope (Content: `NOTES-fb`)
+* [ ] Update FlatPak recipe 
+** Clone
+
+ $ git clone  git@github.com:flathub/org.vassalengine.vassal.git
+
+** Alternatively, clone a fork of the above.
+** Create a new branch
+
+ $ cd org.vassalengine.vassal
+ $ git checkout -b release-x.y.z
+ 
+** Run script to update the recipe.  Below, `TOKEN` can be either a GitHub personal access token or a file that contains such a token 
+
+ $ ./update_from_release.sh --release x.y.z --token TOKEN
+
+** Commit changes
+
+ $ git add org.vassalengine.vassal.yml maven-dependencies.yml
+ $ git commit -m "Update for release x.y.z"
+
+** Push commit to origin
+
+ $ git push
+
+** Create a pull request
+* [ ] Merge pull request from GitHub release action named `Changes by create-pull-request action` to update `debian/changelog` and keep track of the release history. 
 * [ ] Relax.
+
+=== About release tags and workflows
+
+When a tag is pushed to GitHub, the `release.yml` workflow will _automatically_ generate a release, and create a number artefacts for use in the release procedure.
+
+* **JavaDoc** contains the Java API documentation
+* **ReferenceManual** contains the Reference Manual
+* **MavenReleases** contains the Maven repository entries
+* **NOTES** contains the various release notes for different platforms
+* **flatpak-recipe** contains updated reciepes for FlatHub
+* **debian-source** contains the Debian source package files
+* **rpm-source** contains the RPM source package
+
+As part of the release workflow, the `debian/changelog` file is updated with the new release number and an appropriate message.  A pull request is automatically made against `master`.  This merge request should be merged to keep track of the release history in the `debian/changelog` file. 
 
 == Running Vassal
 
 === Player
 
 Main class: `VASSAL.launch.Player` +
-VM arguments: `/path/to/module/VassalModule.vmod`
+VM arguments: `/path/to/module/VassalModule.vmod` or `VassalModule.vmod` if in current directory.
 
 === Editor
 
 Main class: `VASSAL.launch.Editor` +
-VM arguments: `--edit /path/to/module/VassalModule.vmod`
+VM arguments: `--edit /path/to/module/VassalModule.vmod` or `VassalModule.vmod` if in current directory.
 
 === Additional parameters
 
