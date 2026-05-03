@@ -46,7 +46,9 @@ jobs:
         with:
           path: |
             ./dist/dmg
-            ./dist/jdks
+            ./dist/jdks/windows-x86_64
+            ./dist/jdks/macos-x86_64
+            ./dist/jdks/macos-aarch64
             ./dist/launch4
             ./dist/lipo
           key: ${{ runner.os }}-bootstrap-${{ hashFiles('bootstrap.sh') }}
@@ -136,7 +138,7 @@ jobs:
         with:
           path: |
             ./dist/dmg
-            ./dist/jdks
+            ./dist/jdks/windows-aarch64
             ./dist/launch4
             ./dist/lipo
           key: ${{ runner.os }}-bootstrap-${{ hashFiles('bootstrap.sh') }}
@@ -190,7 +192,7 @@ jobs:
         with:
           path: |
             ./dist/dmg
-            ./dist/jdks
+            ./dist/jdks/windows-x86_32
             ./dist/launch4
             ./dist/lipo
           key: ${{ runner.os }}-bootstrap-${{ hashFiles('bootstrap.sh') }}
