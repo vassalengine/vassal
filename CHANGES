@@ -1,3 +1,7 @@
+3.7.23 - ???
+
+* 14709: Remove explicit Java API version from flatpak skeleton
+
 3.7.22 - 3 May 2026
 
 * 14682: Upgraded checkstyle 13.4.1
