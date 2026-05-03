@@ -364,7 +364,7 @@ jobs:
       - name: Make recipe
         run: |
           mkdir -p flatpak
-          sed -e "s,@REPOSITORY@,${{ github.repository }}," -e "s,@RELEASE@,${{ github.ref_name }}," -e "s,@COMMIT@,${{ github.sha }}," -e "s,@JDK@,${{ env.JDK_API }}," < dist/linux/org.vassalengine.vassal.yml.in > flatpak/org.vassalengine.vassal.yml
+          sed -e "s,@REPOSITORY@,${{ github.repository }}," -e "s,@RELEASE@,${{ github.ref_name }}," -e "s,@COMMIT@,${{ github.sha }},"  < dist/linux/org.vassalengine.vassal.yml.in > flatpak/org.vassalengine.vassal.yml
           cat flatpak/org.vassalengine.vassal.yml
           
       - name: Make Maven dependencies

@@ -32,25 +32,16 @@
       ]
     },
     {
-      "in": "3.7.22",
-      "since": "3.7.21",
+      "in": "3.7.23",
+      "since": "3.7.22",
       "new_features": [
       ],
       "bug_fixes": [
-        { "num": 14660, "desc": "Fix for showing obscured, rotated peek in mouse-over" }
       ],
       "improvements": [
-        { "num": 14578, "desc": "Stop removing unavailable modules from the Module Manager; provide manual cleanup option" },
-        { "num": 14391, "desc": "Reduce NullCommand nesting on the pausedCommands deque" }
       ],
       "other": [
-        { "num": 14682, "desc": "Upgraded checkstyle 13.4.1" },
-        { "num": 14681, "desc": "Upgraded commons-codec to 1.22.0" },
-        { "num": 14675, "desc": "Upgraded commons-io to 2.22.0" },
-        { "num": 14671, "desc": "Upgraded httpclient5 to 5.6.1" },
-        { "num": 14670, "desc": "Upgraded jsoup to 1.22.2" },
-        { "num": 14647, "desc": "Upgraded maven-artifact to 3.9.15" },
-        { "num": 14612, "desc": "Upgraded bundled Java to 26+35 (Windows x86_64, MacOS), 26.0.1+10 (Windows aarch64)" }
+        { "num": 14709, "desc": "Remove explicit Java API version from flatpak skeleton" }
       ]
     }
   ]

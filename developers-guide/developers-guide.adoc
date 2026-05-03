@@ -222,14 +222,6 @@ mvn version:set -DnewVersion=RELEASE -DgenerateBackupPoms=false
 ----
 where RELEASE is the version to set.
 
-=== make
-
-.List of available make targets:
-[source,makefile]
-----
-include::{rootdir}Makefile[lines=337]
-----
-
 == Release checklist
 
 Steps to release version `x.y.z`
