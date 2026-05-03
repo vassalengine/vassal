@@ -3,7 +3,7 @@ runtime: org.freedesktop.Platform
 runtime-version: '25.08'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
-  - org.freedesktop.Sdk.Extension.openjdk@JDK@
+  - org.freedesktop.Sdk.Extension.openjdk
 command: vassal
 
 finish-args:
@@ -19,12 +19,12 @@ modules:
   - name: openjdk
     buildsystem: simple
     build-commands:
-      - /usr/lib/sdk/openjdk@JDK@/install.sh
+      - /usr/lib/sdk/openjdk/install.sh
 
   - name: vassal
     buildsystem: simple
     build-options:
-      append-path: /usr/lib/sdk/openjdk@JDK@/bin
+      append-path: /usr/lib/sdk/openjdk/bin
       env:
         MAVEN_OPTS: -Dmaven.repo.local=.m2/repository
     build-commands:
