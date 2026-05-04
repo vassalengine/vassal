@@ -521,4 +521,114 @@ public class ListTurnTrackerTest {
       assertEquals("golf", level4.getTurnString());
     }
   }
+
+  @Test
+  public void turnTrackerEmptyList() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      when(gm.getPrefs()).thenReturn(prefs);
+
+      final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
+
+      final ListTurnLevel level = new ListTurnLevel();
+      level.addTo(tracker);
+      tracker.reset();
+
+      assertEquals("", tracker.getTurnString());
+      tracker.next();
+      assertEquals("", tracker.getTurnString());
+      tracker.prev();
+      assertEquals("", tracker.getTurnString());
+    }
+  }
+
+  // Forward and backward on a turn track with two lists that are siblings.
+  // First list has elements; the second one is empty.
+  @Test
+  public void emptySiblingList() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      when(gm.getPrefs()).thenReturn(prefs);
+
+      final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
+
+      final ListTurnLevel level = new ListTurnLevel();
+      level.setAttribute("list", "alpha,beta");
+      level.addTo(tracker);
+
+      final ListTurnLevel other = new ListTurnLevel();
+      other.addTo(tracker);
+      tracker.reset();
+
+      // Forward direction
+      assertEquals("alpha", tracker.getTurnString());
+      tracker.next();
+      assertEquals("beta", tracker.getTurnString());
+      // Move forward skipping over the empty list
+      tracker.next();
+      assertEquals("alpha", tracker.getTurnString());
+      tracker.next();
+      assertEquals("beta", tracker.getTurnString());
+
+      // Reverse direction
+      tracker.prev();
+      assertEquals("alpha", tracker.getTurnString());
+      tracker.prev();
+      assertEquals("beta", tracker.getTurnString());
+      tracker.prev();
+      assertEquals("alpha", tracker.getTurnString());
+      tracker.prev();
+      assertEquals("beta", tracker.getTurnString());
+    }
+  }
+
+  // Forward and backward on a turn track with two lists that are siblings.
+  // First list has elements; the second one is empty but with a populated child list.
+  @Test
+  public void emptySiblingWithChildList() {
+      try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+        final GameModule gm = mock(GameModule.class);
+        staticGm.when(GameModule::getGameModule).thenReturn(gm);
+        when(gm.getPrefs()).thenReturn(prefs);
+
+        final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
+
+        final ListTurnLevel level = new ListTurnLevel();
+        level.setAttribute("list", "alpha,beta");
+        level.setAttribute("name", "alphabet");
+        level.addTo(tracker);
+
+        // Empty list with a populated sub-level.
+        final ListTurnLevel other = new ListTurnLevel();
+        other.setAttribute("name", "other_name");
+        other.addTo(tracker);
+        final ListTurnLevel child = new ListTurnLevel();
+        child.setAttribute("list", "first,second");
+        child.setAttribute("name", "child_name");
+        other.addLevel(child);
+        tracker.reset();
+
+        // Verify initial conditions
+        assertEquals("alpha", tracker.getTurnString());
+        tracker.next();
+        tracker.next();
+        assertEquals("first", tracker.getTurnString());
+        tracker.next();
+        tracker.next();
+        assertEquals("alpha", tracker.getTurnString());
+        tracker.next();
+        assertEquals("beta", tracker.getTurnString());
+
+        // Backward stepping
+        tracker.prev();
+        tracker.prev();
+        assertEquals("second", tracker.getTurnString());
+        tracker.prev();
+        assertEquals("first", tracker.getTurnString());
+        tracker.prev();
+        assertEquals("beta", tracker.getTurnString());
+    }
+  }
 }
