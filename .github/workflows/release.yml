@@ -86,13 +86,6 @@ jobs:
           path: |
             jdoc
 
-      - name: Archive Reference Manual
-        uses: actions/upload-artifact@v7
-        with:
-          name: ReferenceManual
-          path: |
-            vassal-doc/target/classes/ReferenceManual
-            
       - name: Post artefacts to release
         uses: softprops/action-gh-release@v3
         with: 

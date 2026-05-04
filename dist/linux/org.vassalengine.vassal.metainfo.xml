@@ -125,19 +125,19 @@
     <release type="stable" version="3.7.0" date="2023-09-07">
       <url type="details">https://github.com/vassalengine/vassal/releases/tag/3.7.0</url>
     </release>
-    <release type="development" version="3.7.0-beta5" date="2023-08-15">
+    <release type="development" version="3.7.0~beta5" date="2023-08-15">
       <url type="details">https://github.com/vassalengine/vassal/releases/tag/3.7.0-beta5</url>
     </release>
-    <release type="development" version="3.7.0-beta4" date="2023-06-18">
+    <release type="development" version="3.7.0~beta4" date="2023-06-18">
       <url type="details">https://github.com/vassalengine/vassal/releases/tag/3.7.0-beta4</url>
     </release>
-    <release type="development" version="3.7.0-beta3" date="2023-06-06">
+    <release type="development" version="3.7.0~beta3" date="2023-06-06">
       <url type="details">https://github.com/vassalengine/vassal/releases/tag/3.7.0-beta3</url>
     </release>
-    <release type="development" version="3.7.0-beta2" date="2023-03-30">
+    <release type="development" version="3.7.0~beta2" date="2023-03-30">
       <url type="details">https://github.com/vassalengine/vassal/releases/tag/3.7.0-beta2</url>
     </release>
-    <release type="development" version="3.7.0-beta1" date="2023-03-11">
+    <release type="development" version="3.7.0~beta1" date="2023-03-11">
       <url type="details">https://github.com/vassalengine/vassal/releases/tag/3.7.0-beta1</url>
     </release>
     <release type="stable" version="3.6.19" date="2023-05-18">
@@ -200,25 +200,25 @@
     <release type="stable" version="3.6.0" date="2021-12-01">
       <url type="details">https://github.com/vassalengine/vassal/releases/tag/3.6.0</url>
     </release>
-    <release type="development" version="3.6.0-beta7" date="2021-11-23">
+    <release type="development" version="3.6.0~beta7" date="2021-11-23">
       <url type="details">https://github.com/vassalengine/vassal/releases/tag/3.6.0-beta7</url>
     </release>
-    <release type="development" version="3.6.0-beta6" date="2021-11-12">
+    <release type="development" version="3.6.0~beta6" date="2021-11-12">
       <url type="details">https://github.com/vassalengine/vassal/releases/tag/3.6.0-beta6</url>
     </release>
-    <release type="development" version="3.6.0-beta5" date="2021-10-25">
+    <release type="development" version="3.6.0~beta5" date="2021-10-25">
       <url type="details">https://github.com/vassalengine/vassal/releases/tag/3.6.0-beta5</url>
     </release>
-    <release type="development" version="3.6.0-beta4" date="2021-10-24">
+    <release type="development" version="3.6.0~beta4" date="2021-10-24">
       <url type="details">https://github.com/vassalengine/vassal/releases/tag/3.6.0-beta4</url>
     </release>
-    <release type="development" version="3.6.0-beta3" date="2021-10-05">
+    <release type="development" version="3.6.0~beta3" date="2021-10-05">
       <url type="details">https://github.com/vassalengine/vassal/releases/tag/3.6.0-beta3</url>
     </release>
-    <release type="development" version="3.6.0-beta2" date="2021-09-07">
+    <release type="development" version="3.6.0~beta2" date="2021-09-07">
       <url type="details">https://github.com/vassalengine/vassal/releases/tag/3.6.0-beta2</url>
     </release>
-    <release type="development" version="3.6.0-beta1" date="2021-08-21">
+    <release type="development" version="3.6.0~beta1" date="2021-08-21">
       <url type="details">https://github.com/vassalengine/vassal/releases/tag/3.6.0-beta1</url>
     </release>
     <release type="stable" version="3.5.8" date="2021-06-29">
@@ -248,13 +248,13 @@
     <release type="stable" version="3.5.0" date="2021-01-31">
       <url type="details">https://github.com/vassalengine/vassal/releases/tag/3.5.0</url>
     </release>
-    <release type="development" version="3.5.0-beta3" date="2021-01-21">
+    <release type="development" version="3.5.0~beta3" date="2021-01-21">
       <url type="details">https://github.com/vassalengine/vassal/releases/tag/3.5.0-beta3</url>
     </release>
-    <release type="development" version="3.5.0-beta2" date="2021-01-04">
+    <release type="development" version="3.5.0~beta2" date="2021-01-04">
       <url type="details">https://github.com/vassalengine/vassal/releases/tag/3.5.0-beta2</url>
     </release>
-    <release type="development" version="3.5.0-beta1" date="2020-11-27">
+    <release type="development" version="3.5.0~beta1" date="2020-11-27">
       <url type="details">https://github.com/vassalengine/vassal/releases/tag/3.5.0-beta1</url>
     </release>
     <release type="stable" version="3.4.13" date="2021-01-22">
@@ -299,10 +299,10 @@
     <release type="stable" version="3.4.0" date="2020-09-04">
       <url type="details">https://github.com/vassalengine/vassal/releases/tag/3.4.0</url>
     </release>
-    <release type="development" version="3.4.0-beta1" date="2020-08-26">
+    <release type="development" version="3.4.0~beta1" date="2020-08-26">
       <url type="details">https://github.com/vassalengine/vassal/releases/tag/3.4.0-beta1</url>
     </release>
-    <release type="development" version="3.3.3-beta1" date="2020-08-13">
+    <release type="development" version="3.3.3~beta1" date="2020-08-13">
       <url type="details">https://github.com/vassalengine/vassal/releases/tag/3.3.3-beta1</url>
     </release>
     <release type="stable" version="3.3.2" date="2020-07-16">
@@ -314,16 +314,16 @@
     <release type="stable" version="3.3.0" date="2020-06-16">
       <url type="details">https://github.com/vassalengine/vassal/releases/tag/3.3.0</url>
     </release>
-    <release type="development" version="3.3.0-beta4" date="2020-06-08">
+    <release type="development" version="3.3.0~beta4" date="2020-06-08">
       <url type="details">https://github.com/vassalengine/vassal/releases/tag/3.3.0-beta4</url>
     </release>
-    <release type="development" version="3.3.0-beta3" date="2020-05-12">
+    <release type="development" version="3.3.0~beta3" date="2020-05-12">
       <url type="details">https://github.com/vassalengine/vassal/releases/tag/3.3.0-beta3</url>
     </release>
-    <release type="development" version="3.3.0-beta2" date="2020-04-29">
+    <release type="development" version="3.3.0~beta2" date="2020-04-29">
       <url type="details">https://github.com/vassalengine/vassal/releases/tag/3.3.0-beta2</url>
     </release>
-    <release type="development" version="3.3.0-beta1" date="2020-04-27">
+    <release type="development" version="3.3.0~beta1" date="2020-04-27">
       <url type="details">https://github.com/vassalengine/vassal/releases/tag/3.3.0-beta1</url>
     </release>
     <release type="stable" version="3.2.17" date="2016-12-31">
@@ -346,10 +346,10 @@
     <release type="stable" version="3.2.2" date="2012-12-12" />
     <release type="stable" version="3.2.1" date="2012-12-11" />
     <release type="stable" version="3.2.0" date="2012-12-03" />
-    <release type="development" version="3.2.0-beta4" date="2012-10-10" />
-    <release type="development" version="3.2.0-beta3" date="2012-09-28" />
-    <release type="development" version="3.2.0-beta2" date="2012-09-15" />
-    <release type="development" version="3.2.0-beta1" date="2012-06-01" />
+    <release type="development" version="3.2.0~beta4" date="2012-10-10" />
+    <release type="development" version="3.2.0~beta3" date="2012-09-28" />
+    <release type="development" version="3.2.0~beta2" date="2012-09-15" />
+    <release type="development" version="3.2.0~beta1" date="2012-06-01" />
     <release type="stable" version="3.1.20" date="2012-09-02" />
     <release type="stable" version="3.1.19" date="2012-05-09" />
     <release type="stable" version="3.1.18" date="2011-12-19" />
@@ -371,14 +371,14 @@
     <release type="stable" version="3.1.2" date="2009-03-18" />
     <release type="stable" version="3.1.1" date="2009-03-17" />
     <release type="stable" version="3.1.0" date="2009-02-28" />
-    <release type="development" version="3.1.0-beta8" date="2011-09-17" />
-    <release type="development" version="3.1.0-beta7" date="2011-09-17" />
-    <release type="development" version="3.1.0-beta6" date="2011-09-17" />
-    <release type="development" version="3.1.0-beta5" date="2011-09-17" />
-    <release type="development" version="3.1.0-beta4" date="2011-09-17" />
-    <release type="development" version="3.1.0-beta3" date="2011-09-17" />
-    <release type="development" version="3.1.0-beta2" date="2011-09-17" />
-    <release type="development" version="3.1.0-beta1" date="2011-09-17" />
+    <release type="development" version="3.1.0~beta8" date="2011-09-17" />
+    <release type="development" version="3.1.0~beta7" date="2011-09-17" />
+    <release type="development" version="3.1.0~beta6" date="2011-09-17" />
+    <release type="development" version="3.1.0~beta5" date="2011-09-17" />
+    <release type="development" version="3.1.0~beta4" date="2011-09-17" />
+    <release type="development" version="3.1.0~beta3" date="2011-09-17" />
+    <release type="development" version="3.1.0~beta2" date="2011-09-17" />
+    <release type="development" version="3.1.0~beta1" date="2011-09-17" />
     <release type="stable" version="3.0.18" date="2008-02-03" />
     <release type="stable" version="3.0.17" date="2007-12-30" />
     <release type="stable" version="3.0.16" date="2007-12-27" />
