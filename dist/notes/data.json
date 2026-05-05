@@ -23,6 +23,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 14710, "desc": "Fix prerlease version numbers in org.vassalengine.vassal.metainfo.xml" }
       ],
       "improvements": [
       ],
