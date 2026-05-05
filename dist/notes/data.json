@@ -41,6 +41,7 @@
       "improvements": [
       ],
       "other": [
+        { "num": 14712, "desc": "Upgraded checkstyle to 13.4.2" },
         { "num": 14709, "desc": "Remove explicit Java API version from flatpak skeleton" }
       ]
     }
