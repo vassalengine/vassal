@@ -152,7 +152,7 @@ jobs:
           make release-windows-aarch64 MAVEN_VERSION=${{ github.ref_name }}
 
       - name: Post Windows aarch64 artefact to release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with: 
           files:  |
             tmp/VASSAL-${{ github.ref_name }}-windows-aarch64.exe
