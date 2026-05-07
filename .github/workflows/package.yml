@@ -7,7 +7,7 @@ on:
     branches: [ master, release-3.7 ]
 
 env:
-  JDK_API: 26
+  JDK_API: 26+35
   
 jobs:
   package:
