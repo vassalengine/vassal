@@ -7,8 +7,9 @@ on:
     tags: '*'
 
 env:
-  JDK_API: 26
-    
+  TEMURIN_VERSION: 26.0.0+35
+  LIBERICA_VERSION: 26.0.1+10
+
 jobs:
   # Regular packages.  Note, we take the version number from the tag. 
   package:
@@ -31,7 +32,7 @@ jobs:
         id: setup-java
         with: 
           distribution: 'temurin'
-          java-version: ${{ env.JDK_API }}
+          java-version: ${{ env.TEMURIN_VERSION }}
           java-package: jdk
 
       - name: Maven cache
@@ -123,7 +124,7 @@ jobs:
         id: setup-java
         with: 
           distribution: 'liberica'
-          java-version: ${{ env.JDK_API }}
+          java-version: ${{ env.LIBERICA_API }}
           java-package: jdk
 
       - name: Maven cache

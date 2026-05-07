@@ -7,7 +7,8 @@ on:
     branches: [ master, release-3.7 ]
 
 env:
-  JDK_API: 26
+  TEMURIN_VERSION: 26.0.0+35
+  LIBERICA_VERSION: 26.0.1+10
   
 jobs:
   package:
@@ -41,7 +42,7 @@ jobs:
         id: setup-java
         with:
           distribution: 'temurin'
-          java-version: ${{ env.JDK_API }}
+          java-version: ${{ env.TEMURIN_VERSION }}
           java-package: jdk
 
       - name: Cache Maven packages
@@ -127,7 +128,7 @@ jobs:
         id: setup-java
         with:
           distribution: 'liberica'
-          java-version: ${{ env.JDK_API }}
+          java-version: ${{ env.LIBERICA_VERSION }}
           java-package: jdk
 
       - name: Cache Maven packages
