@@ -37,10 +37,12 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 14710, "desc": "Fix prerlease version numbers in org.vassalengine.vassal.metainfo.xml" }
       ],
       "improvements": [
       ],
       "other": [
+        { "num": 14719, "desc": "Upgraded bundled Java to 26.0.1+10 (Windows aarch64)" },
         { "num": 14712, "desc": "Upgraded checkstyle to 13.4.2" },
         { "num": 14709, "desc": "Remove explicit Java API version from flatpak skeleton" }
       ]
