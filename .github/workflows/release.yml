@@ -117,7 +117,7 @@ jobs:
         id: setup-java
         with: 
           distribution: 'liberica'
-          java-version: ${{ env.LIBERICA_API }}
+          java-version: ${{ env.LIBERICA_VERSION }}
           java-package: jdk
 
       - name: Maven cache
@@ -352,7 +352,7 @@ jobs:
         uses: actions/setup-java@v5
         with: 
           distribution: 'temurin'
-          java-version: ${{ env.JDK_API }}
+          java-version: ${{ env.TEMURIN_VERSION }}
           java-package: jdk
           
       - name: Make recipe
