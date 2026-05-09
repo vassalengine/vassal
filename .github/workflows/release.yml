@@ -215,18 +215,28 @@ jobs:
         run: |
           sudo apt update -y
           sudo apt install -y jq rpm
+      - name: Set RPM variables 
+        id: rpm_vars
+        run: |
+          sha=$(curl ${{ github.api_url }}/repos/${{ github.repository }}/releases/tags/${{ github.ref_name }} 2>/dev/null | jq '.assets.[] | .digest+"  "+.name | ltrimstr("sha256:") ' | grep -- -linux | tr -d '"' | cut -f1 -d' ')
+          rpmvers=$(echo "${{ github.ref_name }}" | tr '-' '~')
+          echo "RPM_VERSION=$rpmvers" >> $GITHUB_OUTPUT
+          echo "RPM_SHA=$sha" >> $GITHUB_OUTPUT
+          cat $GITHUB_OUTPUT
       - name: Build package
         run: |
           mkdir -p rpmbuild/{BUILD,BUILDROOT,RPMS/noarch,SOURCES,SRPMS}
-          sha=$(curl ${{ github.api_url }}/repos/${{ github.repository }}/releases/tags/${{ github.ref_name }} 2>/dev/null | jq '.assets.[] | .digest+"  "+.name | ltrimstr("sha256:") ' | grep -- -linux | tr -d '"' | cut -f1 -d' ')
           wget "https://raw.githubusercontent.com/${{ github.repository }}/refs/tags/${{ github.ref_name }}/dist/linux/vassal.spec.in" -O vassal.spec.in
-          sed -e "s/@RELEASE@/${{ github.ref_name }}/" -e "s/@SHA256SUM@/${sha}/" -e "s,@REPOSITORY@,${{ github.repository }}," < vassal.spec.in > vassal.spec
+          sed -e "s/@RELEASE@/${{ github.ref_name }}/g" -e "s/@RPM_RELEASE@/${{ steps.rpm_vars.outputs.RPM_VERSION }}/" -e "s/@SHA256SUM@/${{ steps.rpm_vars.outputs.RPM_SHA }}/" -e "s,@REPOSITORY@,${{ github.repository }}," < vassal.spec.in > vassal.spec
+          cat vassal.spec
           rpmbuild --define "_topdir `pwd`/rpmbuild"  -ba vassal.spec
       - name: Move artefacts
         run: |
           mkdir -p public
-          mv rpmbuild/RPMS/noarch/vassal-${{ github.ref_name }}-1.noarch.rpm \
-             rpmbuild/SRPMS/vassal-${{ github.ref_name }}-1.src.rpm \
+          ls rpmbuild/RPMS/noarch/
+          ls rpmbuild/SRPMS/
+          mv rpmbuild/RPMS/noarch/vassal-${{ steps.rpm_vars.outputs.RPM_VERSION }}-1.noarch.rpm \
+             rpmbuild/SRPMS/vassal-${{ steps.rpm_vars.outputs.RPM_VERSION }}-1.src.rpm \
              public/
           ls public/
       - name: Archive RPM source package
@@ -234,11 +244,11 @@ jobs:
         with:
           name: rpm-source
           path: |
-            public/vassal-${{ github.ref_name }}-1.src.rpm
+            public/vassal-${{ steps.rpm_vars.outputs.RPM_VERSION }}-1.src.rpm
       - name: Add artefacts to release
         uses: softprops/action-gh-release@v3
         with:
-          files: public/vassal-${{ github.ref_name }}-1.noarch.rpm
+          files: public/vassal-${{ steps.rpm_vars.outputs.RPM_VERSION }}-1.noarch.rpm
 
   package_debian:
     # Debian package build.  Creates new changelog entry from tag, and
