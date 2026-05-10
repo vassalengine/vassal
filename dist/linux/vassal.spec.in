@@ -4,9 +4,9 @@
 
 Name:		vassal
 Summary:	A game engine for building and playing board games and card games
-Version:	@RELEASE@
+Version:	@RPM_RELEASE@
 Release:	1
-Source0:	https://github.com/@REPOSITORY@/releases/download/%{version}/VASSAL-%{version}-linux.tar.bz2
+Source0:	https://github.com/@REPOSITORY@/releases/download/@RELEASE@/VASSAL-@RELEASE@-linux.tar.bz2
 URL:		https://vassalengine.org/
 BuildArch:	noarch
 Requires:	java
@@ -21,7 +21,7 @@ runs on all platforms and is free, open-source software.
 %prep
 echo "%{SHA256SUM0}	%{SOURCE0}" | sha256sum -c -
 
-%setup -q -n VASSAL-%{version}
+%setup -q -n VASSAL-@RELEASE@
 
 %build
 
