@@ -4,7 +4,7 @@
     forward
 * 14719: Upgraded bundled Java to 26.0.1+10 (Windows aarch64)
 * 14712: Upgraded checkstyle to 13.4.2
-* 14710: Fix prerlease version numbers in org.vassalengine.vassal.metainfo.xml
+* 14710: Fix prerelease version numbers in org.vassalengine.vassal.metainfo.xml
 * 14709: Remove explicit Java API version from flatpak skeleton
 * 14381: Update dice properties when replaying a log file
 
