@@ -59,9 +59,14 @@ By default, text is center-justified at the top of the cell.
 *Odd-numbered rows numbered higher:*::  For hex grids only.
 If checked, then the first number of staggered columns on the grid will be one greater than non-staggered columns.
 
+*Slanted right:*:: For oblique hex grids only.
+If checked then, the row numbering will be slanted to the right.  If unchecked, then the row numbering slants left.
+
 |image:images/GridNumbering2.png[]
 
 image:images/GridNumbering.png[]
+
+image:images/GridNumberingOblique.png[]
 
 |===
 

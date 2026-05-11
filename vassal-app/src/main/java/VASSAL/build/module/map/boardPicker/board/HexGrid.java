@@ -23,6 +23,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.GridContainer;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.GridNumbering;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.HexGridNumbering;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.ObliqueHexGridNumbering;
 import VASSAL.configure.AutoConfigurer;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.Configurer;
@@ -431,7 +432,7 @@ public class HexGrid extends AbstractConfigurable
 
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class<?>[]{HexGridNumbering.class};
+    return new Class<?>[]{HexGridNumbering.class, ObliqueHexGridNumbering.class};
   }
 
   @Override
