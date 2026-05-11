@@ -737,7 +737,10 @@ public class GameState implements CommandEncoder {
    */
   public void loadGame(boolean continuation, boolean forceForeground) {
     final GameModule g = GameModule.getGameModule();
+    loadGame(g, continuation, forceForeground);
+  }
 
+  private boolean loadGame(GameModule g, boolean continuation, boolean forceForeground) {
     if (gameStarted && continuation) {
       if (GlobalOptions.getInstance().isWarnOldContinuation()) {
         final Object[] options = {
@@ -758,7 +761,7 @@ public class GameState implements CommandEncoder {
         );
         if (result == JOptionPane.NO_OPTION || // Note - this is actually the "Cancel" option.
             result == JOptionPane.CLOSED_OPTION) {
-          return;
+          return false;
         }
         else if (result == JOptionPane.CANCEL_OPTION) { // "Don't Prompt Again" option.
           g.getPrefs().setValue(GlobalOptions.OLD_CONTINUATION, Boolean.FALSE);
@@ -770,10 +773,10 @@ public class GameState implements CommandEncoder {
     final FileChooser fc = g.getFileChooser();
     fc.addChoosableFileFilter(new LogAndSaveFileFilter());
 
-    if (fc.showOpenDialog() != FileChooser.APPROVE_OPTION) return;
+    if (fc.showOpenDialog() != FileChooser.APPROVE_OPTION) return false;
 
     final File f = fc.getSelectedFile();
-    loadGame(f, continuation, forceForeground);
+    return loadGame(f, continuation, forceForeground);
   }
 
   /**
@@ -887,49 +890,50 @@ public class GameState implements CommandEncoder {
    */
   private void loadFastForward(boolean append) {
     fastForwarding = true;
-
-    loadGame(false, true); // First load the old game or log, forcing it to all happen foreground
-
     final GameModule g = GameModule.getGameModule();
-    final BasicLogger bl = g.getBasicLogger();
-    if (bl.isReplaying()) {
-      if (!bl.isLogging() && append) {
-        bl.queryNewLogFile(true, true); // We begin logging a new file immediately w/ the starting state of the old log
-      }
 
-      // Replay all of the commands in the game -- since we're logging they will be picked up in the new log
-      while (bl.isReplaying()) {
-        final Command c = bl.logInput.get(bl.nextInput++);
-        c.execute();
-        g.sendAndLog(c);
-      }
-      bl.stepAction.setEnabled(false);
+    final boolean success = loadGame(g, false, true); // First load the old game or log, forcing it to all happen foreground
 
-      if (append) {
-        if (!bl.isLogging()) {
-          g.warn(Resources.getString("GameState.fast_forward_only"));
+    if (success) {
+      final BasicLogger bl = g.getBasicLogger();
+      if (bl.isReplaying()) {
+        if (!bl.isLogging() && append) {
+          bl.queryNewLogFile(true, true); // We begin logging a new file immediately w/ the starting state of the old log
+        }
+
+        // Replay all the commands in the game -- since we're logging they will be picked up in the new log
+        while (bl.isReplaying()) {
+          final Command c = bl.logInput.get(bl.nextInput++);
+          c.execute();
+          g.sendAndLog(c);
+        }
+        bl.stepAction.setEnabled(false);
+
+        if (append) {
+          if (!bl.isLogging()) {
+            g.warn(Resources.getString("GameState.fast_forward_only"));
+          }
+          else {
+            g.warn(Resources.getString("GameState.fast_forward_and_append"));
+          }
         }
         else {
-          g.warn(Resources.getString("GameState.fast_forward_and_append"));
+          if (!bl.isLogging()) {
+            bl.queryNewLogFile(false, true);
+          }
+
+          if (!bl.isLogging()) {
+            g.warn(Resources.getString("GameState.fast_forward"));
+          }
+          else {
+            g.warn(Resources.getString("GameState.fast_forward_new_log"));
+          }
         }
       }
       else {
-        if (!bl.isLogging()) {
-          bl.queryNewLogFile(false, true);
-        }
-
-        if (!bl.isLogging()) {
-          g.warn(Resources.getString("GameState.fast_forward"));
-        }
-        else {
-          g.warn(Resources.getString("GameState.fast_forward_new_log"));
-        }
+        g.warn(Resources.getString("GameState.simple_save_append"));
       }
     }
-    else {
-      g.warn(Resources.getString("GameState.simple_save_append"));
-    }
-
     fastForwarding = false;
   }
 
