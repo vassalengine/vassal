@@ -1,5 +1,6 @@
 3.8.0-beta1 - ???
 
+* 14582: Add oblique hex grid numbering
 * 12944: Add pieceCount to the map auto reporter
 * 12763: Added ModuleGameFileName property
 

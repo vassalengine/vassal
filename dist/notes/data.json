@@ -19,8 +19,9 @@
   "changes": [
     {
       "in": "3.8.0-beta1",
-      "since": "3.7.17",
+      "since": "3.7.23",
       "new_features": [
+        { "num": 14582, "desc": "Add oblique hex grid numbering" },
         { "num": 12944, "desc": "Add pieceCount to the map auto reporter" },
         { "num": 12763, "desc": "Added ModuleGameFileName property" }
       },
