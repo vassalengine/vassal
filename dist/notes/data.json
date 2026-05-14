@@ -45,6 +45,7 @@
       "improvements": [
       ],
       "other": [
+        { "num": 14740, "desc": "Upgraded asm to 9.10" },
         { "num": 14736, "desc": "Upgraded slf4j-api to 2.0.18" },
         { "num": 14719, "desc": "Upgraded bundled Java to 26.0.1+10 (Windows aarch64)" },
         { "num": 14712, "desc": "Upgraded checkstyle to 13.4.2" },
