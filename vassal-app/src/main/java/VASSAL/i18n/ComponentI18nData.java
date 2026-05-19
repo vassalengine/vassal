@@ -28,11 +28,13 @@ import java.util.TreeMap;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AbstractFolder;
 import VASSAL.build.AutoConfigurable;
+import VASSAL.build.BadDataReport;
 import VASSAL.build.Configurable;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.PlaceMarker;
+import VASSAL.tools.ErrorDialog;
 
 /**
  * Object encapsulating the internationalization information for a component.
@@ -106,11 +108,24 @@ public class ComponentI18nData {
     setPrefix(pfx);
     myComponent = c;
     children.addAll(Arrays.asList(myComponent.getConfigureComponents()));
-    for (int i = 0; i < translatable.length; i++) {
-      final Property p = new Property(names[i], descriptions[i]);
-      allProperties.put(names[i], p);
-      if (translatable[i]) {
-        translatableProperties.put(names[i], p);
+    try {
+      for (int i = 0; i < translatable.length; i++) {
+        final Property p = new Property(names[i], descriptions[i]);
+        allProperties.put(names[i], p);
+        if (translatable[i]) {
+          translatableProperties.put(names[i], p);
+        }
+      }
+    }
+    catch (IndexOutOfBoundsException ex) {
+      final String message = String.format(Resources.getString("Error.i18n_array_length_mismatch"), //NON-NLS
+              names.length, descriptions.length, translatable.length);
+      final String data = c.getClass().getName();
+      if (c instanceof AbstractConfigurable) {
+        ErrorDialog.dataWarning(new BadDataReport((AbstractConfigurable) c, message, data, ex));
+      }
+      else {
+        ErrorDialog.dataWarning(new BadDataReport(message, data, ex));
       }
     }
   }
