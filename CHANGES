@@ -1,5 +1,6 @@
 3.7.23 - ???
 
+* 14780: Fix Linux VASSAL.sh in case of spaces in path
 * 14740: Upgraded asm to 9.10
 * 14736: Upgraded slf4j-api to 2.0.18
 * 14729: Cancelling Load and Fast Forward cancels both the load and the fast
