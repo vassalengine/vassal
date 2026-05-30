@@ -48,7 +48,7 @@ if test ! -x "$java" ; then
 fi
 
 # --- Check for Java version -----------------------------------------
-if ! "$java" -cp $jar $ver_entry 2>/dev/null ; then
+if ! "$java" -cp "$jar" $ver_entry 2>/dev/null ; then
     cat <<-EOF
 	$0: Java installation too old to run VASSAL.  Please upgrade it
         with for example
