@@ -1,7 +1,11 @@
 3.7.23 - ???
 
 * 14780: Fix Linux VASSAL.sh in case of spaces in path
-* 14740: Upgraded asm to 9.10
+* 14772: Upgraded maven-site-plugin to 3.22.0
+* 14771: Upgraded asm to 9.10.1
+* 14753: Upgraded junit-bom to 6.1.0
+* 14752: Upgraded maven-artifact to 3.9.16
+* 14751: Upgraded maven-enforcer-plugin to 3.6.3
 * 14736: Upgraded slf4j-api to 2.0.18
 * 14729: Cancelling Load and Fast Forward cancels both the load and the fast
     forward
