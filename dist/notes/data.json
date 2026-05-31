@@ -38,6 +38,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 14780, "desc": "Fix Linux VASSAL.sh in case of spaces in path" },
         { "num": 14729, "desc": "Cancelling Load and Fast Forward cancels both the load and the fast forward" },
         { "num": 14710, "desc": "Fix prerelease version numbers in org.vassalengine.vassal.metainfo.xml" },
         { "num": 14381, "desc": "Update dice properties when replaying a log file" }
@@ -45,7 +46,11 @@
       "improvements": [
       ],
       "other": [
-        { "num": 14740, "desc": "Upgraded asm to 9.10" },
+        { "num": 14772, "desc": "Upgraded maven-site-plugin to 3.22.0" },
+        { "num": 14771, "desc": "Upgraded asm to 9.10.1" },
+        { "num": 14753, "desc": "Upgraded junit-bom to 6.1.0" },
+        { "num": 14752, "desc": "Upgraded maven-artifact to 3.9.16" },
+        { "num": 14751, "desc": "Upgraded maven-enforcer-plugin to 3.6.3" },
         { "num": 14736, "desc": "Upgraded slf4j-api to 2.0.18" },
         { "num": 14719, "desc": "Upgraded bundled Java to 26.0.1+10 (Windows aarch64)" },
         { "num": 14712, "desc": "Upgraded checkstyle to 13.4.2" },
