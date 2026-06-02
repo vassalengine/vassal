@@ -24,6 +24,7 @@
       ],
       "bug_fixes": [
         { "num": 14780, "desc": "Fix Linux VASSAL.sh in case of spaces in path" },
+        { "num": 14733, "desc": "Default all of ListTurnTracker's items to the enabled state" },
         { "num": 14729, "desc": "Cancelling Load and Fast Forward cancels both the load and the fast forward" },
         { "num": 14710, "desc": "Fix prerelease version numbers in org.vassalengine.vassal.metainfo.xml" },
         { "num": 14381, "desc": "Update dice properties when replaying a log file" }
