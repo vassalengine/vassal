@@ -146,6 +146,32 @@ public class ListTurnTrackerTest {
     }
   }
 
+  // List Turn items remain active when the assigned state is invalid.
+  @Test
+  public void invalidStateLeavesListActive() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      when(gm.getPrefs()).thenReturn(prefs);
+
+      final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
+
+      final String turnNames = String.join(",", numbersList);
+      final ListTurnLevel level = new ListTurnLevel();
+      level.setAttribute("list", turnNames);
+      level.addTo(tracker);
+
+      // Setting invalid state (missing fields).
+      // There is sufficient state to set current index to zero.
+      tracker.setState("0|0");
+
+      // Step through the remainder of the list.
+      tracker.next(); // two
+      tracker.next(); // three
+      assertEquals("three", tracker.getTurnString());
+    }
+  }
+
   // Move forward on a turn tracker with two lists that are siblings.
   // First and last elements are not active.
   @Test
