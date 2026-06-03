@@ -13,6 +13,7 @@
 * 14753: Upgraded junit-bom to 6.1.0
 * 14752: Upgraded maven-artifact to 3.9.16
 * 14751: Upgraded maven-enforcer-plugin to 3.6.3
+* 14744: Fix null check for i18n applyTranslation
 * 14736: Upgraded slf4j-api to 2.0.18
 * 14733: Default all of ListTurnTracker's items to the enabled state
 * 14729: Cancelling Load and Fast Forward cancels both the load and the fast
