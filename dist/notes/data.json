@@ -30,6 +30,7 @@
         { "num": 14381, "desc": "Update dice properties when replaying a log file" }
       ],
       "improvements": [
+        { "num": 14526, "desc": "Locale Configurer displays dropdown with names of both current and native locales" }
       ],
       "other": [
         { "num": 14794, "desc": "Upgraded bundled Java to 26.0.1+8 (Windows x86_64, MacOS), 21.0.11+11 (Windows x86_32)" },

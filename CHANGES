@@ -21,6 +21,8 @@
 * 14712: Upgraded checkstyle to 13.4.2
 * 14710: Fix prerelease version numbers in org.vassalengine.vassal.metainfo.xml
 * 14709: Remove explicit Java API version from flatpak skeleton
+* 14526: Locale Configurer displays dropdown with names of both current and
+    native locales
 * 14381: Update dice properties when replaying a log file
 
 3.7.22 - 3 May 2026
