@@ -7,7 +7,7 @@ on:
     tags: '*'
 
 env:
-  TEMURIN_VERSION: 26.0.0+35
+  TEMURIN_VERSION: 26.0.1+8
   LIBERICA_VERSION: 26.0.1+10
 
 jobs:

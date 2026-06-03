@@ -6,7 +6,7 @@
 #
 L4J_VERSION=3.50
 LIPO_VERSION=0.8.4
-TEMURIN_RELEASE=26+35
+TEMURIN_RELEASE=26.0.1+8
 LIBERICA_RELEASE=26.0.1+10
 
 # --- Variables used below -------------------------------------------
@@ -276,7 +276,7 @@ for arch in $ARCHS ; do
     case $arch in
         windows-x86_32|win32)
             get_liberica_jdk 			\
-                "21.0.10+10" 			\
+                "21.0.11+11" 			\
                 windows 			\
                 x86 				\
                 32 				\
