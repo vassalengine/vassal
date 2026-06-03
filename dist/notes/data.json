@@ -32,6 +32,7 @@
       "improvements": [
       ],
       "other": [
+        { "num": 14794, "desc": "Upgraded bundled Java to 26.0.1+8 (Windows x86_64, MacOS), 21.0.11+11 (Windows x86_32)" },
         { "num": 14791, "desc": "Upgraded logback-classic to 1.5.34" },
         { "num": 14790, "desc": "Upgraded byte-buddy to 1.18.9" },
         { "num": 14789, "desc": "Upgraded checkstyle to 13.5.0" },
