@@ -30,6 +30,7 @@
         { "num": 14381, "desc": "Update dice properties when replaying a log file" }
       ],
       "improvements": [
+        { "num": 14650, "desc": "Don't compute the initial value of dynamic properties in the editor" },
         { "num": 14526, "desc": "Locale Configurer displays dropdown with names of both current and native locales" }
       ],
       "other": [
