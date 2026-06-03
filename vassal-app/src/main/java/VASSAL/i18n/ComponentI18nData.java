@@ -288,7 +288,7 @@ public class ComponentI18nData {
    */
   public void applyTranslation(String attr, String value) {
     final Property p = translatableProperties.get(attr);
-    if (attr != null) {
+    if (p != null) {
       p.setUntranslatedValue(myComponent.getAttributeValueString(attr));
       myComponent.setAttribute(attr, value);
     }
