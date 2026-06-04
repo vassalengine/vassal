@@ -6,10 +6,12 @@
 
 3.7.23 - ???
 
+* 14796: Upgraded byte-buddy to 1.18.10
 * 14794: Upgraded bundled Java to 26.0.1+8 (Windows x86_64, MacOS),
     21.0.11+11 (Windows x86_32)
+* 14792: Only descend to Turn List sub-levels when the current list item is
+    active
 * 14791: Upgraded logback-classic to 1.5.34
-* 14790: Upgraded byte-buddy to 1.18.9
 * 14789: Upgraded checkstyle to 13.5.0
 * 14788: Upgraded maven-dependency-plugin to 3.11.0
 * 14787: Upgraded maven-surefire-plugin to 3.5.5
