@@ -179,9 +179,17 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
    */
   @Override
   protected void advance() {
-    super.advance();
-
-    if (getTurnLevelCount() == 0 || (getTurnLevelCount() > 0 && hasSubLevelRolledOver())) {
+    final boolean isCurrentInactive = current < active.length && !active[current];
+    if (isCurrentInactive) {
+      final TurnLevel subLevel = getTurnLevel(currentSubLevel);
+      if (subLevel != null) {
+        subLevel.reset();
+      }
+    }
+    else {
+      super.advance();
+    }
+    if (getTurnLevelCount() == 0 || isCurrentInactive || hasSubLevelRolledOver()) {
       boolean done = false;
       for (int i = 0; i < list.length && !done; i++) {
         current++;
@@ -202,9 +210,18 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
 
   @Override
   protected void retreat() {
-    super.retreat();
+    final boolean isCurrentInactive = current < active.length && !active[current];
+    if (isCurrentInactive) {
+      final TurnLevel subLevel = getTurnLevel(currentSubLevel);
+      if (subLevel != null) {
+        subLevel.setHigh();
+      }
+    }
+    else {
+      super.retreat();
+    }
 
-    if (getTurnLevelCount() == 0 || (getTurnLevelCount() > 0 && hasSubLevelRolledOver())) {
+    if (getTurnLevelCount() == 0 || isCurrentInactive || hasSubLevelRolledOver()) {
       boolean done = false;
       for (int i = 0; i < list.length && !done; i++) {
         if (current == first) {
@@ -215,6 +232,9 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
           current = list.length - 1;
         }
         done = active[current];
+      }
+      if (! done) {
+        rolledOver = true;
       }
     }
     myValue.setPropertyValue(getValueString());
