@@ -23,6 +23,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 14792, "desc": "Only descend to Turn List sub-levels when the current list item is active" },
         { "num": 14780, "desc": "Fix Linux VASSAL.sh in case of spaces in path" },
         { "num": 14744, "desc": "Fix null check for i18n applyTranslation" },
         { "num": 14733, "desc": "Default all of ListTurnTracker's items to the enabled state" },
