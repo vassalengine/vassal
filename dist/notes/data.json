@@ -17,7 +17,19 @@
     { "display_name": "Other", "suffix": "other.zip" }
   ],
   "changes": [
-   {
+    {
+      "in": "3.7.24",
+      "since": "3.7.23",
+      "new_features": [
+      ],
+      "bug_fixes": [
+      ],
+      "improvements": [
+      ],
+      "other": [
+      ]
+    },
+    {
       "in": "3.7.23",
       "since": "3.7.22",
       "new_features": [
