@@ -1,4 +1,4 @@
-3.7.23 - ???
+3.7.23 - 8 June 2026
 
 * 14796: Upgraded byte-buddy to 1.18.10
 * 14794: Upgraded bundled Java to 26.0.1+8 (Windows x86_64, MacOS),
