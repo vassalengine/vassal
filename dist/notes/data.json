@@ -86,63 +86,6 @@
         { "num": 14647, "desc": "Upgraded maven-artifact to 3.9.15" },
         { "num": 14612, "desc": "Upgraded bundled Java to 26+35 (Windows x86_64, MacOS), 26.0.1+10 (Windows aarch64)" }
       ]
-    },
-    {
-      "in": "3.7.21",
-      "since": "3.7.20",
-      "new_features": [
-      ],
-      "bug_fixes": [
-        { "num": 14572, "desc": "Fix NPE when searching in the editor" },
-        { "num": 14549, "desc": "Fix IndexOutOfBounds when reporting pre-defined scenario errors" },
-        { "num": 14542, "desc": "Don't re-prompt for save file after canceling the FileChooser dialog" },
-        { "num": 14539, "desc": "Escape key should cancel Load Continuation" },
-        { "num": 14538, "desc": "Preserve the user directory preference after canceling from a file load or save dialog" }
-      ],
-      "improvements": [
-        { "num": 14599, "desc": "Fix use of deprecated logback attributes" },
-        { "num": 14557, "desc": "Check and report over-sized image dimensions" }
-,
-        { "num": 14129, "desc": "Added Simplified Chinese translation for Editor" }
-      ],
-      "other": [
-        { "num": 14600, "desc": "Upgraded byte-buddy to 1.18.8" },
-        { "num": 14598, "desc": "Create Flatpak recipe on release" },
-        { "num": 14593, "desc": "Upgraded bundled Java to 25.0.2+10 (Windows x86_64, MacOS), 25.0.2+12 (Windows aarch64), 21.0.10+10 (Windows x86)" },
-        { "num": 14591, "desc": "Upgraded checkstyle to 13.4.0" },
-        { "num": 14590, "desc": "Upgraded spotbugs-maven-plugin to 4.9.8.3" },
-        { "num": 14553, "desc": "Upgraded maven-artifact to 3.9.14" },
-        { "num": 14541, "desc": "Upgraded maven-resoures-plugin 3.5.0" },
-        { "num": 14518, "desc": "Upgraded miglayout-swing to 11.4.3" },
-        { "num": 14517, "desc": "Upgraded maven-surefire-plugin to 3.5.5" },
-        { "num": 14503, "desc": "Upgraded junit-bom to 6.0.3" },
-        { "num": 14502, "desc": "Upgraded logback-classic to 1.5.32" },
-        { "num": 14488, "desc": "Build an RPM package" },
-        { "num": 14485, "desc": "Upgraded maven-dependency-plugin to 3.10.0" }
-      ]
-    },
-    {
-      "in": "3.7.20",
-      "since": "3.7.19",
-      "new_features": [
-      ],
-      "bug_fixes": [
-        { "num": 14433, "desc": "Work around change in java.io.File API in Java 25" }
-      ],
-      "improvements": [
-      ],
-      "other": [
-        { "num": 14478, "desc": "Upgraded checkstyle to 13.2.0" },
-        { "num": 14475, "desc": "Upgraded maven-compiler-plugin to 3.15.0" },
-        { "num": 14365, "desc": "Upgraded commons-codec to 1.21.0" },
-        { "num": 14464, "desc": "Upgraded logback-classic to 1.5.27" },
-        { "num": 14445, "desc": "Upgraded byte-buddy to 1.18.4" },
-        { "num": 14430, "desc": "Upgraded junit-bom 6.0.2" },
-        { "num": 14424, "desc": "Upgraded license-maven-plugin to 2.7.1" },
-        { "num": 14421, "desc": "Upgraded jsoup to 1.22.1" },
-        { "num": 14415, "desc": "Upgraded httpclient5 5.6" },
-        { "num": 14414, "desc": "Upgraded exec-maven-plugin to 3.6.3" }
-      ]
     }
   ]
 }
