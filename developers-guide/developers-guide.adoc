@@ -247,7 +247,7 @@ Steps to release version `x.y.z`
  
 * [ ] Push tag to origin and generate the release on GitHub
 
-  $ git push --atomic origin HEAD x.y.z
+  $ git push --tags
   
 * [ ] Update web-page 
 ** Update `util/current-release` and `util/current-beta` with release version number in `site` (`https://github.com/vassalengine/vassal-site`) repo and push to GitHub.
@@ -264,7 +264,7 @@ Steps to release version `x.y.z`
 
 ** Run script to update files in `releases`, Java documentation in `javadoc`, reference manual in `doc`, and Maven releases in `maven`.  Below, `TOKEN` can be either a GitHub personal access token or a file that contains such a token 
 
- $ ~/vassal-site-src/utils/update_from_release.sh --release x.y.z --token TOKEN Files JavaDoc ReferenceManual MavenReleases
+ $ ~/vassal-site-src/utils/update_from_release.sh --release x.y.z --token TOKEN Files JavaDoc MavenReleases
 
 * [ ] Update the release branch in `.github/workflows/package.yml`, if needed.
 * [ ] Post release announcements 
@@ -320,7 +320,6 @@ Steps to release version `x.y.z`
 When a tag is pushed to GitHub, the `release.yml` workflow will _automatically_ generate a release, and create a number artefacts for use in the release procedure.
 
 * **JavaDoc** contains the Java API documentation
-* **ReferenceManual** contains the Reference Manual
 * **MavenReleases** contains the Maven repository entries
 * **NOTES** contains the various release notes for different platforms
 * **flatpak-recipe** contains updated reciepes for FlatHub
