@@ -7,6 +7,7 @@
 3.7.24 - ???
 
 * 14807: Upgraded spotbugs-annotations to 4.10.1
+* 14483: Skip empty Turn Lists in the Turn Counter
 
 3.7.23 - 8 June 2026
 

@@ -38,6 +38,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 14483, "desc": "Skip empty Turn Lists in the Turn Counter" }
       ],
       "improvements": [
       ],
