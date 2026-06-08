@@ -42,6 +42,7 @@
       "improvements": [
       ],
       "other": [
+        { "num": 14807, "desc": "Upgraded spotbugs-annotations to 4.10.1" }
       ]
     }
   ]
