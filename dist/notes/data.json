@@ -19,7 +19,7 @@
   "changes": [
     {
       "in": "3.8.0-beta1",
-      "since": "3.7.23",
+      "since": "3.7.24",
       "new_features": [
         { "num": 14582, "desc": "Add oblique hex grid numbering" },
         { "num": 12944, "desc": "Add pieceCount to the map auto reporter" },
@@ -42,42 +42,6 @@
       "improvements": [
       ],
       "other": [
-      ]
-    },
-    {
-      "in": "3.7.23",
-      "since": "3.7.22",
-      "new_features": [
-      ],
-      "bug_fixes": [
-        { "num": 14792, "desc": "Only descend to Turn List sub-levels when the current list item is active" },
-        { "num": 14780, "desc": "Fix Linux VASSAL.sh in case of spaces in path" },
-        { "num": 14744, "desc": "Fix null check for i18n applyTranslation" },
-        { "num": 14733, "desc": "Default all of ListTurnTracker's items to the enabled state" },
-        { "num": 14729, "desc": "Cancelling Load and Fast Forward cancels both the load and the fast forward" },
-        { "num": 14710, "desc": "Fix prerelease version numbers in org.vassalengine.vassal.metainfo.xml" },
-        { "num": 14381, "desc": "Update dice properties when replaying a log file" }
-      ],
-      "improvements": [
-        { "num": 14650, "desc": "Don't compute the initial value of dynamic properties in the editor" },
-        { "num": 14526, "desc": "Locale Configurer displays dropdown with names of both current and native locales" }
-      ],
-      "other": [
-        { "num": 14796, "desc": "Upgraded byte-buddy to 1.18.10" },
-        { "num": 14794, "desc": "Upgraded bundled Java to 26.0.1+8 (Windows x86_64, MacOS), 21.0.11+11 (Windows x86_32)" },
-        { "num": 14791, "desc": "Upgraded logback-classic to 1.5.34" },
-        { "num": 14789, "desc": "Upgraded checkstyle to 13.5.0" },
-        { "num": 14788, "desc": "Upgraded maven-dependency-plugin to 3.11.0" },
-        { "num": 14787, "desc": "Upgraded maven-surefire-plugin to 3.5.5" },
-        { "num": 14772, "desc": "Upgraded maven-site-plugin to 3.22.0" },
-        { "num": 14771, "desc": "Upgraded asm to 9.10.1" },
-        { "num": 14753, "desc": "Upgraded junit-bom to 6.1.0" },
-        { "num": 14752, "desc": "Upgraded maven-artifact to 3.9.16" },
-        { "num": 14751, "desc": "Upgraded maven-enforcer-plugin to 3.6.3" },
-        { "num": 14736, "desc": "Upgraded slf4j-api to 2.0.18" },
-        { "num": 14719, "desc": "Upgraded bundled Java to 26.0.1+10 (Windows aarch64)" },
-        { "num": 14712, "desc": "Upgraded checkstyle to 13.4.2" },
-        { "num": 14709, "desc": "Remove explicit Java API version from flatpak skeleton" }
       ]
     }
   ]
