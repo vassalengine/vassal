@@ -45,7 +45,8 @@
         { "num": 14750, "desc": "Report Internationalization setup inconsistencies as Bad Data" }
       ],
       "other": [
-        { "num": 14807, "desc": "Upgraded spotbugs-annotations to 4.10.1" }
+        { "num": 14809, "desc": "Upgraded spotbugs-maven-plugin to 4.9.8.5" },
+        { "num": 14808, "desc": "Upgraded spotbugs-annotations to 4.10.2" }
       ]
     }
   ]
