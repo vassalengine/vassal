@@ -42,6 +42,7 @@
         { "num": 14483, "desc": "Skip empty Turn Lists in the Turn Counter" }
       ],
       "improvements": [
+        { "num": 14750, "desc": "Report Internationalization setup inconsistencies as Bad Data" }
       ],
       "other": [
         { "num": 14807, "desc": "Upgraded spotbugs-annotations to 4.10.1" }
