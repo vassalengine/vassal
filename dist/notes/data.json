@@ -23,6 +23,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 14737, "desc": "Send back cargo with the mat when moving between maps" },
         { "num": 14483, "desc": "Skip empty Turn Lists in the Turn Counter" }
       ],
       "improvements": [
