@@ -263,10 +263,12 @@ public class Marker extends Decorator implements EditablePiece {
   }
 
   /**
+   * This implementation differs from the typical as the Marker's property names
+   * are the list of {@link #keys}.
    * @return a list of any Property Names referenced in the Decorator, if any (for search)
    */
   @Override
   public List<String> getPropertyList() {
-    return Arrays.asList(values);
+    return Arrays.asList(keys);
   }
 }
