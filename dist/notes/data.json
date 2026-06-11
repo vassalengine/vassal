@@ -31,7 +31,7 @@
         { "num": 14656, "desc": "Editor search matches Marker names as Property names" }
       ],
       "other": [
-        { "num": 14809, "desc": "Upgraded spotbugs-maven-plugin to 4.9.8.5" },
+        { "num": 14810, "desc": "Upgraded spotbugs-maven-plugin to 4.10.2.0" },
         { "num": 14808, "desc": "Upgraded spotbugs-annotations to 4.10.2" }
       ]
     },
