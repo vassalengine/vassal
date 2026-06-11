@@ -6,10 +6,11 @@
 
 3.7.24 - ???
 
-* 14809: Upgraded spotbugs-maven-plugin to 4.9.8.5
+* 14810: Upgraded spotbugs-maven-plugin to 4.10.2.0
 * 14808: Upgraded spotbugs-annotations to 4.10.2
 * 14750: Report Internationalization setup inconsistencies as Bad Data
 * 14737: Send back cargo with the mat when moving between maps
+* 14656: Editor search matches Marker names as Property names
 * 14483: Skip empty Turn Lists in the Turn Counter
 
 3.7.23 - 8 June 2026
