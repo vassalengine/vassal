@@ -42,7 +42,8 @@ public class BugUtils {
     // send the POST
     try (CloseableHttpClient client = HttpClients.createDefault()) {
       try (CloseableHttpResponse response = client.execute(httpPost)) {
-        if (response.getCode() != 201) {
+        final responseCode = response.getCode();
+        if (responseCode != 200 && responseCode != 201) {
           final String msg = "Bug report failed: " + response.getCode();
 
           String responseText = null;
