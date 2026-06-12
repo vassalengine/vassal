@@ -713,20 +713,20 @@ Section "-Application" Application
   WriteRegStr HKLM "${AROOT}\.vmod" "" "VASSALModule"
 ;  WriteRegStr HKLM ".vmod" "Content Type" "application/vnd.vassal.module"
   WriteRegStr HKLM "${AROOT}\VASSALModule" "" "VASSAL Module"
-  WriteRegStr HKLM "${AROOT}\VASSALModule\DefualtIcon" "" ""
+  WriteRegStr HKLM "${AROOT}\VASSALModule\DefaultIcon" "" ""
   WriteRegStr HKLM "${AROOT}\VASSALModule\shell\open\command" "" '$INSTDIR\VASSAL.exe --load "%1"'
   WriteRegStr HKLM "${AROOT}\VASSALModule\shell\edit\command" "" '$INSTDIR\VASSAL.exe --edit "%1"'
 
   WriteRegStr HKLM "${AROOT}\.vlog" "" "VASSALGameLog"
 ;  WriteRegStr HKLM ".vmod" "Content Type" "application/vnd.vassal.log"
   WriteRegStr HKLM "${AROOT}\VASSALGameLog" "" "VASSAL Game Log"
-  WriteRegStr HKLM "${AROOT}\VASSALGameLog\DefualtIcon" "" ""
+  WriteRegStr HKLM "${AROOT}\VASSALGameLog\DefaultIcon" "" ""
   WriteRegStr HKLM "${AROOT}\VASSALGameLog\shell\open\command" "" '$INSTDIR\VASSAL.exe --load "%1"'
 
   WriteRegStr HKLM "${AROOT}\.vsav" "" "VASSALSavedGame"
 ;  WriteRegStr HKLM ".vsav" "Content Type" "application/vnd.vassal.save"
   WriteRegStr HKLM "${AROOT}\VASSALSavedGame" "" "VASSAL Saved Game"
-  WriteRegStr HKLM "${AROOT}\VASSALSavedGame\DefualtIcon" "" ""
+  WriteRegStr HKLM "${AROOT}\VASSALSavedGame\DefaultIcon" "" ""
   WriteRegStr HKLM "${AROOT}\VASSALSavedGame\shell\open\command" "" '$INSTDIR\VASSAL.exe --load "%1"'
 
   ; notify Windows that file associations have changed
