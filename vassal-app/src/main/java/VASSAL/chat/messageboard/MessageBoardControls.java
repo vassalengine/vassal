@@ -177,7 +177,8 @@ public class MessageBoardControls {
     }
 
     msgFrame.pack();
-    msgFrame.setLocation(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width / 2 - msgFrame.getSize().width / 2, 0);
+    // Ensure the message board frame opens fully visible on the active/parent screen
+    SwingUtils.ensureOnScreen(msgFrame);
   }
 
   public Action getCheckMessagesAction() {
@@ -239,7 +240,8 @@ public class MessageBoardControls {
       SwingUtils.setDefaultButtons(getRootPane(), okButton, cancelButton);
 
       pack();
-      setLocation(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width / 2 - getSize().width / 2, 0);
+      // Ensure the composer window is fully visible on the same screen as its owner/focused window
+      SwingUtils.ensureOnScreen(this);
     }
   }
 }
