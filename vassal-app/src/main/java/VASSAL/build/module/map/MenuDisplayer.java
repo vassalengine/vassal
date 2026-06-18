@@ -190,7 +190,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
         if (keyCommand.getName() != null &&
                 !keyCommand.getName().isEmpty() &&
                 item != null) {
-          final List<JMenuItem> l = commandNames.computeIfAbsent(keyCommand.getName(), k -> new ArrayList<>());
+          final List<JMenuItem> l = commandNames.computeIfAbsent(keyCommand.getTagName(), k -> new ArrayList<>());
           l.add(item);
         }
       }

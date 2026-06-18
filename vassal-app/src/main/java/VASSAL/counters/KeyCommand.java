@@ -90,6 +90,10 @@ public class KeyCommand extends AbstractAction {
     return name;
   }
 
+  public String getTagName() {
+    return name;
+  }
+
   public boolean matches(KeyStroke key) {
     return isEnabled() && key != null && key.equals(stroke);
   }
