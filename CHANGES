@@ -11,6 +11,8 @@
 
 * 14821: Upgraded checkstyle to 13.6.0
 * 14816: Fix DefaultIcon registry key name in the Windows installer
+* 14815: Fixed NoClassDefFoundError from bug reporter dialog by switching to
+    newer, maintained swingx library
 * 14814: Accept HTTP 200 as a response for GitHub issue creation
 * 14810: Upgraded spotbugs-maven-plugin to 4.10.2.0
 * 14808: Upgraded spotbugs-annotations to 4.10.2
