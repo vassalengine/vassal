@@ -22,6 +22,7 @@
       "since": "3.7.24",
       "new_features": [
         { "num": 14582, "desc": "Add oblique hex grid numbering" },
+        { "num": 13168, "desc": "Multi-Location Command includes the option to sort the order of the commands generated" },
         { "num": 12944, "desc": "Add pieceCount to the map auto reporter" },
         { "num": 12763, "desc": "Added ModuleGameFileName property" }
       },

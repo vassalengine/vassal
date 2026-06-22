@@ -1,6 +1,8 @@
 3.8.0-beta1 - ???
 
 * 14582: Add oblique hex grid numbering
+* 13168: Multi-Location Command includes the option to sort the order of the
+    commands generated
 * 12944: Add pieceCount to the map auto reporter
 * 12763: Added ModuleGameFileName property
 
