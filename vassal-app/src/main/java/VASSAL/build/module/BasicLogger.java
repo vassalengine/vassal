@@ -53,9 +53,9 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.Dimension;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.BufferedOutputStream;
@@ -451,8 +451,15 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
         }
       });
 
-      yes.setPreferredSize(new Dimension(100, yes.getPreferredSize().height));
-      no.setPreferredSize(new Dimension(100, no.getPreferredSize().height));
+      // Increase the width of the yes/no buttons.
+      Insets insets = yes.getMargin();
+      insets.left *= 2;
+      insets.right *= 2;
+      yes.setMargin(insets);
+      insets = no.getMargin();
+      insets.left *= 2;
+      insets.right *= 2;
+      no.setMargin(insets);
 
       final JDialog dialog = pane.createDialog(g.getPlayerWindow(), "");
       dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
