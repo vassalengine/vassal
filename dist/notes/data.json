@@ -24,6 +24,7 @@
       ],
       "bug_fixes": [
         { "num": 14816, "desc": "Fix DefaultIcon registry key name in the Windows installer" },
+        { "num": 14815, "desc": "Fixed NoClassDefFoundError from bug reporter dialog by switching to newer, maintained swingx library" },
         { "num": 14814, "desc": "Accept HTTP 200 as a response for GitHub issue creation" },
         { "num": 14737, "desc": "Send back cargo with the mat when moving between maps" },
         { "num": 14483, "desc": "Skip empty Turn Lists in the Turn Counter" }
