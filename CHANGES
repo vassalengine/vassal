@@ -1,6 +1,7 @@
 3.8.0-beta1 - ???
 
 * 14582: Add oblique hex grid numbering
+* 14342: Add Movement Trail option to keep only last position per location
 * 13168: Multi-Location Command includes the option to sort the order of the
     commands generated
 * 12944: Add pieceCount to the map auto reporter
