@@ -34,6 +34,7 @@
         { "num": 14656, "desc": "Editor search matches Marker names as Property names" }
       ],
       "other": [
+        { "num": 14835, "desc": "Upgraded logback-classic to 1.5.35" },
         { "num": 14821, "desc": "Upgraded checkstyle to 13.6.0" },
         { "num": 14810, "desc": "Upgraded spotbugs-maven-plugin to 4.10.2.0" },
         { "num": 14808, "desc": "Upgraded spotbugs-annotations to 4.10.2" }
