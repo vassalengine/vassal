@@ -1,6 +1,6 @@
 3.7.24 - ???
 
-* 14835: Upgraded logback-classic to 1.5.35
+* 14837: Upgraded logback-classic to 1.5.3r65
 * 14821: Upgraded checkstyle to 13.6.0
 * 14816: Fix DefaultIcon registry key name in the Windows installer
 * 14815: Fixed NoClassDefFoundError from bug reporter dialog by switching to
