@@ -9,6 +9,8 @@
 
 3.7.25 - ???
 
+* 14840: Upgraded logback-classic to 1.5.37
+
 3.7.24 - 26 June 2026
 
 * 14837: Upgraded logback-classic to 1.5.36
