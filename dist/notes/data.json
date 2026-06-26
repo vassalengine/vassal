@@ -26,7 +26,7 @@
         { "num": 13168, "desc": "Multi-Location Command includes the option to sort the order of the commands generated" },
         { "num": 12944, "desc": "Add pieceCount to the map auto reporter" },
         { "num": 12763, "desc": "Added ModuleGameFileName property" }
-      },
+      ],
       "bug_fixes": [
       ],
       "improvements": [
