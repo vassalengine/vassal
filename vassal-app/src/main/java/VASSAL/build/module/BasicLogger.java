@@ -160,6 +160,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     mm.addAction("BasicLogger.begin_logfile", newLogAction); //NON-NLS
     endLogAction.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("BasicLogger.end_logfile.shortcut").charAt(0)); // Separate shortcut key thus possible for each language
     mm.addAction("BasicLogger.end_logfile", endLogAction); //NON-NLS
+    mm.addAction("BasicLogger.clean_logfile", cleanLogFileAction); //NON-NLS
 
     JButton button = mod.getToolBar().add(undoAction);
     button.setFocusable(false); //BR// Since for some reason we're manually making a raw "JButton" here, need to make it not focusable (so it won't start stealing keystrokes from the main window)
@@ -675,6 +676,53 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     public void actionPerformed(ActionEvent e) {
       if (isEnabled()) {
         beginOutput();
+      }
+    }
+  };
+
+  protected Action cleanLogFileAction = new AbstractAction(Resources.getString("BasicLogger.clean_logfile")) {  //$NON-NLS-1$
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      final GameModule g = GameModule.getGameModule();
+      final FileChooser fc = g.getFileChooser();
+      fc.addChoosableFileFilter(new LogFileFilter());
+
+      // Prompt for input file
+      if (fc.showOpenDialog() != FileChooser.APPROVE_OPTION) return;
+      final File inputFile = fc.getSelectedFile();
+
+      // Suggest output filename with "_cleaned" suffix
+      String outputName = inputFile.getName();
+      final int dotIndex = outputName.lastIndexOf('.');
+      if (dotIndex > 0) {
+        outputName = outputName.substring(0, dotIndex) + "_cleaned" + outputName.substring(dotIndex);
+      }
+      else {
+        outputName = outputName + "_cleaned";
+      }
+      fc.setSelectedFile(new File(inputFile.getParent(), outputName));
+
+      // Prompt for output file
+      if (fc.showSaveDialog() != FileChooser.APPROVE_OPTION) return;
+      File outputFile = fc.getSelectedFile();
+
+      // Ensure .vlog extension
+      if (!outputFile.getName().endsWith(".vlog")) { //NON-NLS
+        outputFile = new File(outputFile.getParent(), outputFile.getName() + ".vlog"); //NON-NLS
+      }
+
+      // Clean the log file
+      try {
+        LogCleaner.cleanLogFile(inputFile, outputFile);
+        GameModule.getGameModule().warn(
+          Resources.getString("BasicLogger.clean_logfile_success", outputFile.getName()));  //$NON-NLS-1$
+      }
+      catch (IOException ex) {
+        WriteErrorDialog.error(ex, outputFile);
+        GameModule.getGameModule().warn(
+          Resources.getString("BasicLogger.clean_logfile_failed", ex.getMessage()));  //$NON-NLS-1$
       }
     }
   };
