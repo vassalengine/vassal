@@ -202,7 +202,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     final Map map = getMap();
 
     // Don't compute the initial value in the editor.
-    if (!GameModule.getGameModule().isEditorOpen()) {
+    if (GameModule.getGameModule() == null || !GameModule.getGameModule().isEditorOpen()) {
       value = formatValue(value);
     }
 
