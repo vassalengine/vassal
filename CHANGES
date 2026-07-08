@@ -1,5 +1,6 @@
 3.7.25 - ???
 
+* 14875: Mock GameModule for DynamicPropertyTest
 * 14868: Upgraded byte-buddy to 1.18.11
 * 14856: Upgraded junit-bom to 6.1.1
 * 14855: Upgraded checkstyle to 13.7.0

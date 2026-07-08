@@ -23,6 +23,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 14875, "desc": "Mock GameModule for DynamicPropertyTest" },
         { "num": 13505, "desc": "Better handling of duplicate Deck names by Game Refresher" }
       ],
       "improvements": [
