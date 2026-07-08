@@ -28,10 +28,15 @@
         { "num": 12763, "desc": "Added ModuleGameFileName property" }
       ],
       "bug_fixes": [
+        { "num": 13505, "desc": "Better handling of duplicate Deck names by Game Refresher" }
       ],
       "improvements": [
       ],
       "other": [
+        { "num": 14868, "desc": "Upgraded byte-buddy to 1.18.11" },
+        { "num": 14856, "desc": "Upgraded junit-bom to 6.1.1" },
+        { "num": 14855, "desc": "Upgraded checkstyle to 13.7.0" },
+        { "num": 14854, "desc": "Upgraded httpclient5 to 5.6.2" },
         { "num": 14840, "desc": "Upgraded logback-classic to 1.5.37" }
       ]
     },
