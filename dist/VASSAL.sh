@@ -22,7 +22,7 @@ INSTALL_DIR=$(dirname "${EXEC_PATH}")
 
 # Check that java is new enough
 if ! "$JAVA" -classpath "$INSTALL_DIR"/lib/Vengine.jar VASSAL.launch.JavaVersionChecker 2>/dev/null ; then
-  echo "Error: $JAVA is too old to run this version of Vassal. Please use Java 11 or later." 2>&1
+  echo "Error: $JAVA is too old to run this version of Vassal. Please use Java 17 or later." 2>&1
   exit 1
 fi
 
