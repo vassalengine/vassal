@@ -32,6 +32,7 @@
         { "num": 13505, "desc": "Better handling of duplicate Deck names by Game Refresher" }
       ],
       "improvements": [
+        { "num": 14872: "Complete Chinese translation for VASSAL_zh.properties" }
       ],
       "other": [
         { "num": 14882, "desc": "Upgraded logback-classic to 1.5.38" },
