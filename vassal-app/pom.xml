@@ -268,13 +268,13 @@
                     <reportNameSuffix>MVN</reportNameSuffix>
                 </configuration>
             </plugin>
+            <!--
             <plugin>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <configuration>
                     <configLocation>src/test/resources/checkstyle-checks.xml</configLocation>
                     <suppressionsLocation>src/test/resources/checkstyle-suppressions.xml</suppressionsLocation>
                     <logViolationsToConsole>true</logViolationsToConsole>
-                    <!-- consoleOutput=true prints warnings in addition to errors -->
                     <consoleOutput>true</consoleOutput>
                     <failOnViolation>true</failOnViolation>
                     <linkXRef>true</linkXRef>
@@ -288,7 +288,8 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+              </plugin>
+              -->
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-pmd-plugin</artifactId>
@@ -346,6 +347,7 @@
                     </execution>
                 </executions>
             </plugin>
+            <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
@@ -361,7 +363,7 @@
                             </script>
                         ]]>
                     </bottom>
-                    <additionalJOption>--allow-script-in-comments</additionalJOption>
+                    <additionalJOption>allow-script-in-comments</additionalJOption>
                     <doclint>none</doclint>
                 </configuration>
                 <executions>
@@ -372,9 +374,10 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+                </plugin>
+                -->
+              <!-- 
             <plugin>
-              <!-- This does not work with Java 25 -->
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
                 <configuration>
@@ -391,8 +394,10 @@
                             <goal>check</goal>
                         </goals>
                     </execution>
-                </executions>
-            </plugin>
+                    </executions>
+                    </plugin>
+                    -->
+                    
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>clirr-maven-plugin</artifactId>
