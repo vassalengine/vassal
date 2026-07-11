@@ -5,7 +5,7 @@ Maintainer: Debian Java Maintainers <pkg-java-maintainers@lists.alioth.debian.or
 Uploaders: Christian Holm Christensen <cholmcc@gmail.com>
 Build-Depends:
 	debhelper-compat (= 13),
-        java-sdk (>= 17),
+        openjdk-25-jdk | openjdk-21-jdk | openjdk-17-jdk | java-sdk (>= 17),
         asciidoctor,
         ruby-asciidoctor-pdf
 Build-Depends-Indep:
@@ -39,7 +39,7 @@ Package: vassal
 Architecture: all
 Depends:
         bash (>= 5.0.0),
-        java-runtime (>= 17),
+        openjdk-25-jre | openjdk-21-jre | openjdk-17-jre | java-runtime (>= 17),
         libasm-java (>= 9.2),
 	libbatik-java (>= 1.14),
 	libcommons-codec-java (>= 1.15),
