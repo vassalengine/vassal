@@ -9,7 +9,7 @@ Release:	1
 Source0:	https://github.com/@REPOSITORY@/releases/download/@RELEASE@/VASSAL-@RELEASE@-linux.tar.bz2
 URL:		https://vassalengine.org/
 BuildArch:	noarch
-Requires:	java
+Requires:	java-17 OR java-18 OR java-19 OR java-20 OR java-21 OR java-22 OR java-23 OR java-24 OR java-25 OR java-26 OR java-27
 License:	LGPL-2.0+ AND Apache-2.0 AND BSD-3-Clause AND CPL-1.0 AND MIT AND EPL-1.0
 
 %description
