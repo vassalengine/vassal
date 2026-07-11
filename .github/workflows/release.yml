@@ -14,7 +14,7 @@ jobs:
   # Regular packages.  Note, we take the version number from the tag. 
   package:
     name: Release
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -100,7 +100,7 @@ jobs:
   # Regular packages.  Note, we take the version number from the tag. 
   package_aarch64:
     name: Release Windows ARM
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -154,7 +154,7 @@ jobs:
   # Regular packages.  Note, we take the version number from the tag. 
   package_win32:
     name: Release Windows 32-bit
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -207,7 +207,7 @@ jobs:
 
   package_rpm:
     name: Release RPM
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs:
       - package
     steps:
@@ -254,7 +254,7 @@ jobs:
     # Debian package build.  Creates new changelog entry from tag, and
     # makes a pull-request. 
     name: Release Debian
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout 
         uses: actions/checkout@v7
@@ -347,7 +347,7 @@ jobs:
 
   package_flatpak:
     name: Flatpak recipe 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout 
         uses: actions/checkout@v7
@@ -386,7 +386,7 @@ jobs:
           
   package_digest:
     name: Sha256 digest of packages
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs:
       - package
       - package_win32
