@@ -289,7 +289,7 @@ jobs:
       - name: Install build dependencies
         run: |
           dep=$(cat debian/control | \
-            sed -E ':a ; $!N ; s/\n\s+/ /; ta P ; D' | \
+            sed -E ':a ; $!N ; s/\|[^,]*|\n\s+/ /; ta P ; D' | \
             sed -n -e 's/Build-Depends\(-Indep\|\): //p' | \
             sed -e '1{N;s/\n/ /;}' -e 's/ *([^)]*)//g' -e 's/,//g' )
           sudo apt install -y build-essential devscripts fakeroot ${dep}
