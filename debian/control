@@ -5,7 +5,7 @@ Maintainer: Debian Java Maintainers <pkg-java-maintainers@lists.alioth.debian.or
 Uploaders: Christian Holm Christensen <cholmcc@gmail.com>
 Build-Depends:
 	debhelper-compat (= 13),
-        openjdk-25-jdk | openjdk-21-jdk | openjdk-17-jdk | java-sdk (>= 17),
+        default-jdk,
         asciidoctor,
         ruby-asciidoctor-pdf
 Build-Depends-Indep:
