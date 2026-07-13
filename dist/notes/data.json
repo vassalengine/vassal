@@ -27,7 +27,7 @@
         { "num": 13505, "desc": "Better handling of duplicate Deck names by Game Refresher" }
       ],
       "improvements": [
-        { "num": 14872: "Complete Chinese translation for VASSAL_zh.properties" }
+        { "num": 14872, "desc": "Complete Chinese translation for VASSAL_zh.properties" }
       ],
       "other": [
         { "num": 14895, "desc": "Upgraded junit-bom to 6.1.2" },
