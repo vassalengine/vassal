@@ -13,10 +13,12 @@
 * 14894: Upgraded spotbugs-maven-plugin to 4.10.3.0
 * 14893: Upgraded checkstyle to 13.8.0
 * 14892: Upgraded spotbugs-annotations to 4.10.3
+* 14886: Compile targeting Java 17
 * 14882: Upgraded logback-classic to 1.5.38
 * 14875: Mock GameModule for DynamicPropertyTest
 * 14872: Complete Chinese translation for VASSAL_zh.properties
 * 14868: Upgraded byte-buddy to 1.18.11
+* 14858: Make button tooltips available on buttons in toolbar menus
 * 14854: Upgraded httpclient5 to 5.6.2
 * 13505: Better handling of duplicate Deck names by Game Refresher
 
