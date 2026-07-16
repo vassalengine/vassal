@@ -29,6 +29,7 @@
       ],
       "improvements": [
         { "num": 14886, "desc": "Compile targeting Java 17" },
+        { "num": 14858, "desc": "Make button tooltips available on buttons in toolbar menus" },
         { "num": 14872, "desc": "Complete Chinese translation for VASSAL_zh.properties" }
       ],
       "other": [
