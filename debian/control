@@ -39,7 +39,7 @@ Package: vassal
 Architecture: all
 Depends:
         bash (>= 5.0.0),
-        default-jre,
+        default-jre (>= 2:1.17) | java-runtime (>= 17),
         libasm-java (>= 9.2),
 	libbatik-java (>= 1.14),
 	libcommons-codec-java (>= 1.15),

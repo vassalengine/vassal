@@ -8,7 +8,7 @@ PKG_TAG		:= $(shell dpkg-parsechangelog --show-field Version | \
 #PKG_TAG		:= $(shell git describe --tags --abbrev=4)
 
 JAVAC		:= javac
-JAVAC_FLAGS	:= -g --release 11 -d $(OUT_DIR) 
+JAVAC_FLAGS	:= -g --release 17 -d $(OUT_DIR)
 JAVA		:= java
 JAR		:= jar
 
