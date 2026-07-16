@@ -28,6 +28,7 @@
         { "num": 13505, "desc": "Better handling of duplicate Deck names by Game Refresher" }
       ],
       "improvements": [
+        { "num": 14886, "desc": "Compile targeting Java 17" },
         { "num": 14872, "desc": "Complete Chinese translation for VASSAL_zh.properties" }
       ],
       "other": [
