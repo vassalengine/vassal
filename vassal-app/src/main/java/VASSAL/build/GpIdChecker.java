@@ -23,6 +23,7 @@ import VASSAL.build.module.PrototypeDefinition;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.Decorator;
+import VASSAL.counters.DynamicProperty;
 import VASSAL.counters.Embellishment;
 import VASSAL.counters.FreeRotator;
 import VASSAL.counters.GamePiece;
@@ -89,6 +90,11 @@ public class GpIdChecker {
   public boolean useRotateName() {
     return refresherOptions.contains(GameRefresher.USE_ROTATE_NAME); //$NON-NLS-1$
   }
+
+  public boolean useDynamicPropertyName() {
+    return refresherOptions.contains(GameRefresher.USE_DYNAMICPROPERTY_NAME); //$NON-NLS-1$
+  }
+
   public boolean useName() {
     return refresherOptions.contains(GameRefresher.USE_NAME); //$NON-NLS-1$
   }
@@ -352,6 +358,14 @@ public class GpIdChecker {
             if (useRotateName()) {
               final String nameToFind = ((FreeRotator)decoratorNewPc).getRotateName();
               if (((FreeRotator) d).getRotateName().equals(nameToFind)) {
+                return d.myGetState();
+              }
+            }
+          }
+          else if (d instanceof DynamicProperty) {
+            if (useDynamicPropertyName()) {
+              final String nameToFind = ((DynamicProperty)decoratorNewPc).getDynamicPropertyName();
+              if (((DynamicProperty) d).getDynamicPropertyName().equals(nameToFind)) {
                 return d.myGetState();
               }
             }
