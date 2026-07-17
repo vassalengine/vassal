@@ -181,7 +181,7 @@ public class GameState implements CommandEncoder {
 
     loadGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.load_game.shortcut").charAt(0));
 
-    loadContinuation = new AbstractAction(Resources.getString("GameState.load_game_old")) {
+    loadContinuation = new AbstractAction(Resources.getString("GameState.load_continuation")) {
       private static final long serialVersionUID = 1L;
 
       @Override
@@ -285,6 +285,13 @@ public class GameState implements CommandEncoder {
     saveGameAs.setEnabled(gameStarting);
     closeGame.setEnabled(gameStarting);
     loadContinuation.setEnabled(gameStarting);
+
+    loadAndFastForward.putValue(Action.MNEMONIC_KEY,
+            (int) Resources.getString("GameState.load_and_fast_forward.shortcut").charAt(0)); //NON-NLS
+    loadAndAppend.putValue(Action.MNEMONIC_KEY,
+            (int) Resources.getString("GameState.load_and_append.shortcut").charAt(0)); //NON-NLS
+    loadContinuation.putValue(Action.MNEMONIC_KEY,
+            (int) Resources.getString("GameState.load_continuation.shortcut").charAt(0)); //NON-NLS
   }
 
   /**
