@@ -78,7 +78,7 @@ public class ChangePropertyCommandEncoder implements CommandEncoder {
       }
     }
     if (p == null) {
-        return null;
+      return null;
     }
 
     return new ChangePropertyCommand(p, key, oldValue, newValue);
