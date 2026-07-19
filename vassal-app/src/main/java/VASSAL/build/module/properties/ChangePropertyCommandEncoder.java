@@ -69,10 +69,8 @@ public class ChangePropertyCommandEncoder implements CommandEncoder {
       if (container instanceof GlobalProperties) {
         final MutableProperty implicitP = ((GlobalProperties) container).getParent().getMutableProperty(key);
 
-        // Filter out any property that is registered as a local user preference option
-        final boolean isPreference = VASSAL.build.GameModule.getGameModule().getPrefs().getOption(key) != null;
-
-        if (implicitP != null && !isPreference) {
+        // Additional conditional will filter out any property that is registered as a local user preference option
+        if (implicitP != null && VASSAL.build.GameModule.getGameModule().getPrefs().getOption(key) == null) {
           p = implicitP;
         }
       }
