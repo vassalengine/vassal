@@ -58,7 +58,7 @@ public class ChangePropertyCommandEncoder implements CommandEncoder {
      * NB. If there is no containerID in the command, then it is a pre-bug fix command. Legacy
      * behaviour is to execute the change on the first matching property found in any container
      */
-    if (containerId.length() != 0 && !containerId.equals(container.getMutablePropertiesContainerId())) {
+    if (!containerId.isEmpty() && !containerId.equals(container.getMutablePropertiesContainerId())) {
       return null;
     }
 
@@ -67,7 +67,12 @@ public class ChangePropertyCommandEncoder implements CommandEncoder {
       // If this is not an explicit global property
       // then search for implicit module properties such as Special Dice properties.
       if (container instanceof GlobalProperties) {
-        p = ((GlobalProperties) container).getParent().getMutableProperty(key);
+        final MutableProperty implicitP = ((GlobalProperties) container).getParent().getMutableProperty(key);
+
+        // Additional condition will filter out any property that is registered as a local user preference option
+        if (implicitP != null && VASSAL.build.GameModule.getGameModule().getPrefs().getOption(key) == null) {
+          p = implicitP;
+        }
       }
     }
     if (p == null) {
