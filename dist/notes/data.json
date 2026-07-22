@@ -29,6 +29,7 @@
         { "num": 12763, "desc": "Added ModuleGameFileName property" }
       ],
       "bug_fixes": [
+        { "num": 14902, "desc": "Fix regression leaking Global Option properties over network" },
         { "num": 14875, "desc": "Mock GameModule for DynamicPropertyTest" },
         { "num": 13505, "desc": "Better handling of duplicate Deck names by Game Refresher" }
       ],
