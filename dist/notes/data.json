@@ -34,6 +34,7 @@
         { "num": 14872, "desc": "Complete Chinese translation for VASSAL_zh.properties" }
       ],
       "other": [
+        { "num": 14909, "desc": "Upgraded maven-jar-plugin to 3.5.1" },
         { "num": 14895, "desc": "Upgraded junit-bom to 6.1.2" },
         { "num": 14894, "desc": "Upgraded spotbugs-maven-plugin to 4.10.3.0" },
         { "num": 14893, "desc": "Upgraded checkstyle to 13.8.0" },
