@@ -364,6 +364,7 @@ jobs:
           distribution: 'temurin'
           java-version: ${{ env.TEMURIN_VERSION }}
           java-package: jdk
+          show-download-progress: true
           
       - name: Make recipe
         run: |
@@ -373,7 +374,6 @@ jobs:
           
       - name: Make Maven dependencies
         run: |
-          java -version
           ./dist/linux/fetch-maven-deps-for-flatpak.sh 
           
       - name: Archive Flatpak files
