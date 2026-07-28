@@ -19,6 +19,18 @@
   ],
   "changes": [
     {
+      "in": "3.7.26",
+      "since": "3.7.25",
+      "new_features": [
+      ],
+      "bug_fixes": [
+      ],
+      "improvements": [
+      ],
+      "other": [
+      ]
+    },
+    {
       "in": "3.7.25",
       "since": "3.7.24",
       "new_features": [
