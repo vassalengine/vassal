@@ -365,6 +365,7 @@ jobs:
           distribution: 'temurin'
           java-version: ${{ env.TEMURIN_VERSION }}
           java-package: jdk
+          show-download-progress: true
 
       - name: Make recipe
         run: |
