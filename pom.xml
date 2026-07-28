@@ -4,7 +4,7 @@
 
     <groupId>org.vassalengine</groupId>
     <artifactId>vassal-parent</artifactId>
-    <version>x.y.z</version>
+    <version>3.7.26-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Vassal Engine</name>
