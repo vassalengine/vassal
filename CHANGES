@@ -1,11 +1,11 @@
 3.7.25 - 24 July 2026 
 
+* 14922: Upgraded checkstyle to 13.9.0
 * 14911: Upgraded logback-classic to 1.6.0
 * 14909: Upgraded maven-jar-plugin to 3.5.1
 * 14902: Fix regression leaking Global Option properties over network
 * 14895: Upgraded junit-bom to 6.1.2
 * 14894: Upgraded spotbugs-maven-plugin to 4.10.3.0
-* 14893: Upgraded checkstyle to 13.8.0
 * 14892: Upgraded spotbugs-annotations to 4.10.3
 * 14886: Compile targeting Java 17
 * 14875: Mock GameModule for DynamicPropertyTest
