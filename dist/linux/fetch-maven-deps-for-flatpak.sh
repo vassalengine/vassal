@@ -1,4 +1,6 @@
 #!/bin/bash
+# SPDX-FileCopyrightText: 2025 Lenucksi
+# SPDX-License-Identifier: LGPL-3.0-or-later
 #
 # This script is a modified version of
 #
@@ -50,7 +52,7 @@ cleanup_old_fetch_dirs() {
   for dir in mvn-dep-fetch-* mvn-download-*.log; do
     if [ -e "$dir" ]; then
       echo "  Removing: $dir"
-      rm -rf "$dir" || true
+      rm -rf "$dir"
       ((count++))
     fi
   done
@@ -58,7 +60,7 @@ cleanup_old_fetch_dirs() {
   # Also remove old test/ directory if it exists
   if [ -d "test" ]; then
     echo "  Removing: test/"
-    rm -rf test || true
+    rm -rf test
     ((count++))
   fi
 
@@ -73,25 +75,41 @@ run_maven_fetch() {
   local temp_dir="$1"
   local temp_log="$2"
 
+  mvn=mvn
+  
   echo ""
   echo -e "${BLUE}Fetching Maven dependencies...${NC}"
   echo "  Maven repo: ${temp_dir}"
   echo "  Download log: ${temp_log}"
   echo ""
+  echo "  Maven version:"
+  ${mvn} --version 2>&1 | head -2 | sed 's/^/    /'
+  echo ""
 
   # Run Maven and capture full output to a temp file
   local maven_output="${temp_log}.full"
-
-  make jar MVN="mvn -B -Dmaven.repo.local=${temp_dir} -DskipTests" 2>/dev/stdout | tee ${maven_output}
+  local maven_opts="-U -B --color=never -Dmaven.repo.local=${temp_dir} -DskipTests -Dasciidoctor.attributes=optimize -Dasciidoctor.skip=true -Dspotbugs.skip=true -Dlicense.skipDownloadLicenses"
+  echo "  Options for Maven: ${maven_opts}"
+  echo "${BLUE}  Make maven (${mvn}) go offline ...${NC}"
+  ${mvn} ${maven_opts} clean dependency:go-offline 2>/dev/stdout | tee -a ${maven_output}
   ret1=$?
-  echo "  Make return: $ret1"
-
+  echo "  Offline return $ret1"
+  echo ""
   if test $ret1 -eq 0; then
+    # Resolve all dependencies to ensure complete download log
+    echo -e "  ${BLUE}Resolving all dependencies...${NC}"
+    if mvn ${maven_opts}  dependency:resolve 2>/dev/stdout | tee -a "${maven_output}" ; then
+      echo -e "  ${GREEN}  Dependency resolution complete${NC}"
+    else
+      echo -e "  ${YELLOW}  WARNING: dependency:resolve reported issues${NC}"
+    fi
+
     # Maven succeeded, extract download lines
     grep "Downloaded" "${maven_output}" > "${temp_log}" || true
 
     local download_count
     download_count=$(wc -l < "${temp_log}" 2>/dev/null || echo "0")
+    echo ""
     echo -e "${GREEN}  Maven build successful${NC}"
     echo "  Downloaded: ${download_count} artifacts"
 
@@ -101,7 +119,7 @@ run_maven_fetch() {
     tail -5 "${maven_output}"
 
     # Clean up full output
-    rm -f "${maven_output}"
+    # rm -f "${maven_output}"
     return 0
   else
     echo -e "${RED}  ERROR: Maven build failed${NC}"
@@ -134,6 +152,8 @@ generate_yaml() {
     echo "  Temporary files preserved for debugging:"
     echo "    - ${temp_dir}"
     echo "    - ${temp_log}"
+    echo "  Content of local repo"
+    find "${temp_dir}" -type f | sed 's/^/- /'
     return 1
   fi
 }
@@ -260,7 +280,6 @@ trap_error() {
     echo ""
     echo "Temporary files may have been preserved for debugging."
     echo "Check for directories matching: mvn-dep-fetch-*"
-    echo ""
   fi
 }
 

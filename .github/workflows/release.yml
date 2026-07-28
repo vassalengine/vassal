@@ -1,7 +1,7 @@
 # Workflow for creating releases from tags
 name: Release
 
-# Only run when making a tag 
+# Only run when making a tag
 on:
   push:
     tags: '*'
@@ -11,17 +11,17 @@ env:
   LIBERICA_VERSION: 26.0.1+10
 
 jobs:
-  # Regular packages.  Note, we take the version number from the tag. 
+  # Regular packages.  Note, we take the version number from the tag.
   package:
     name: Release
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v7
-        with: 
+        with:
           fetch-depth: 1
 
-      - name: Update container 
+      - name: Update container
         run: |
           sudo apt update -y
           sudo apt install -y dos2unix genisoimage ghostscript nsis
@@ -30,7 +30,7 @@ jobs:
       - name: Setup Java - Temurin
         uses: actions/setup-java@v5
         id: setup-java
-        with: 
+        with:
           distribution: 'temurin'
           java-version: ${{ env.TEMURIN_VERSION }}
           java-package: jdk
@@ -39,7 +39,7 @@ jobs:
         uses: actions/cache@v6
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-mavin-${{ hashFiles('**/pom.xml') }}
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-maven-
 
       - name: Cache bootstrap 
@@ -57,8 +57,8 @@ jobs:
       - name: Bootstrap
         if: steps.cache-bootstrap.outputs.cache-hit != 'true'
         run: ./bootstrap.sh -j ${{ steps.setup-java.outputs.version }} windows-x86_64 macos-x86_64 macos-aarch64
-          
-      - name: Make release packages 
+
+      - name: Make release packages
         run: |
           make release MAVEN_VERSION=${{ github.ref_name }}
           make javadoc  MAVEN_VERSION=${{ github.ref_name }}
@@ -72,14 +72,14 @@ jobs:
           name: MavenReleases
           path: |
             releases
-            
+
       - name: Archive release notes
         uses: actions/upload-artifact@v7
         with:
           name: NOTES
           path: |
             tmp/NOTES-*
-            
+
       - name: Archive Java API documentation
         uses: actions/upload-artifact@v7
         with:
@@ -89,7 +89,7 @@ jobs:
 
       - name: Post artefacts to release
         uses: softprops/action-gh-release@v3
-        with: 
+        with:
           body_path: tmp/NOTES-gh
           files:  |
             tmp/VASSAL-${{ github.ref_name }}-linux.tar.bz2
@@ -97,17 +97,17 @@ jobs:
             tmp/VASSAL-${{ github.ref_name }}-other.zip
             tmp/VASSAL-${{ github.ref_name }}-windows-x86_64.exe
 
-  # Regular packages.  Note, we take the version number from the tag. 
+  # Regular packages.  Note, we take the version number from the tag.
   package_aarch64:
     name: Release Windows ARM
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v7
-        with: 
+        with:
           fetch-depth: 1
 
-      - name: Update container 
+      - name: Update container
         run: |
           sudo apt update -y
           sudo apt install -y dos2unix genisoimage ghostscript nsis
@@ -115,7 +115,7 @@ jobs:
       - name: Setup Java - liberica
         uses: actions/setup-java@v5
         id: setup-java
-        with: 
+        with:
           distribution: 'liberica'
           java-version: ${{ env.LIBERICA_VERSION }}
           java-package: jdk
@@ -124,7 +124,7 @@ jobs:
         uses: actions/cache@v6
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-mavin-${{ hashFiles('**/pom.xml') }}
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-maven-
 
       - name: Cache bootstrap 
@@ -140,28 +140,28 @@ jobs:
       - name: Bootstrap Windows aarch64
         if: steps.cache-bootstrap.outputs.cache-hit != 'true'
         run: ./bootstrap.sh -j ${{ steps.setup-java.outputs.version }} windows-aarch64
-          
+
       - name: Make Windows aarch64 release package
         run: |
           make release-windows-aarch64 MAVEN_VERSION=${{ github.ref_name }}
 
       - name: Post Windows aarch64 artefact to release
         uses: softprops/action-gh-release@v3
-        with: 
+        with:
           files:  |
             tmp/VASSAL-${{ github.ref_name }}-windows-aarch64.exe
-            
-  # Regular packages.  Note, we take the version number from the tag. 
+
+  # Regular packages.  Note, we take the version number from the tag.
   package_win32:
     name: Release Windows 32-bit
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v7
-        with: 
+        with:
           fetch-depth: 1
 
-      - name: Update container 
+      - name: Update container
         run: |
           sudo apt update -y
           sudo apt install -y dos2unix genisoimage ghostscript nsis
@@ -169,7 +169,7 @@ jobs:
       - name: Setup Java - liberica 21
         uses: actions/setup-java@v5
         id: setup-java
-        with: 
+        with:
           distribution: 'liberica'
           java-version: 21
           java-package: jdk
@@ -178,7 +178,7 @@ jobs:
         uses: actions/cache@v6
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-mavin-${{ hashFiles('**/pom.xml') }}
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-maven-
 
       - name: Cache bootstrap 
@@ -194,14 +194,14 @@ jobs:
       - name: Bootstrap Windows x86_32
         if: steps.cache-bootstrap.outputs.cache-hit != 'true'
         run: ./bootstrap.sh -j ${{ steps.setup-java.outputs.version }} windows-x86_32
-          
+
       - name: Make Windows x86_32 release package
         run: |
           make release-windows-x86_32 MAVEN_VERSION=${{ github.ref_name }}
 
       - name: Post artefacts to release
         uses: softprops/action-gh-release@v3
-        with: 
+        with:
           files:  |
             tmp/VASSAL-${{ github.ref_name }}-windows-x86_32.exe
 
@@ -215,7 +215,7 @@ jobs:
         run: |
           sudo apt update -y
           sudo apt install -y jq rpm
-      - name: Set RPM variables 
+      - name: Set RPM variables
         id: rpm_vars
         run: |
           sha=$(curl ${{ github.api_url }}/repos/${{ github.repository }}/releases/tags/${{ github.ref_name }} 2>/dev/null | jq '.assets.[] | .digest+"  "+.name | ltrimstr("sha256:") ' | grep -- -linux | tr -d '"' | cut -f1 -d' ')
@@ -252,27 +252,27 @@ jobs:
 
   package_debian:
     # Debian package build.  Creates new changelog entry from tag, and
-    # makes a pull-request. 
+    # makes a pull-request.
     name: Release Debian
     runs-on: ubuntu-24.04
     steps:
-      - name: Checkout 
+      - name: Checkout
         uses: actions/checkout@v7
-        with: 
+        with:
           fetch-depth: 1
 
-      - name: Update container 
+      - name: Update container
         run: |
           sudo apt update -y
           sudo apt install -y devscripts
-          
-      - name: Make changelog entry 
+
+      - name: Make changelog entry
         run: |
           eml="${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
           EMAIL="${eml}" dch --release-heuristic log -v "${{ github.ref_name }}-1" "New upstream release"
           cat debian/changelog
 
-      - name: Set Debian variables 
+      - name: Set Debian variables
         id: deb_vars
         run: |
           cat debian/changelog
@@ -333,49 +333,49 @@ jobs:
         with:
           name: debian-source
           path: |
-            public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.build 
-            public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.buildinfo 
+            public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.build
+            public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.buildinfo
             public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.changes	
-            public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}.dsc 
-            public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}.debian.tar.xz 
-            public/vassal_${{ steps.deb_vars.outputs.DEB_UPSTREAM }}.orig.tar.gz 
-            
+            public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}.dsc
+            public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}.debian.tar.xz
+            public/vassal_${{ steps.deb_vars.outputs.DEB_UPSTREAM }}.orig.tar.gz
+
       - name: Add artefacts to release
         uses: softprops/action-gh-release@v3
         with:
           files: public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_all.deb
 
   package_flatpak:
-    name: Flatpak recipe 
+    name: Flatpak recipe
     runs-on: ubuntu-24.04
     steps:
-      - name: Checkout 
+      - name: Checkout
         uses: actions/checkout@v7
-        with: 
+        with:
           fetch-depth: 1
-          
-      - name: Update container 
+
+      - name: Update container
         run: |
           sudo apt update -y
-          
+
       - name: Setup Java
         uses: actions/setup-java@v5
-        with: 
+        with:
           distribution: 'temurin'
           java-version: ${{ env.TEMURIN_VERSION }}
           java-package: jdk
-          
+          show-download-progress: true
+
       - name: Make recipe
         run: |
           mkdir -p flatpak
           sed -e "s,@REPOSITORY@,${{ github.repository }}," -e "s,@RELEASE@,${{ github.ref_name }}," -e "s,@COMMIT@,${{ github.sha }},"  < dist/linux/org.vassalengine.vassal.yml.in > flatpak/org.vassalengine.vassal.yml
           cat flatpak/org.vassalengine.vassal.yml
-          
+
       - name: Make Maven dependencies
         run: |
-          java -version
-          ./dist/linux/fetch-maven-deps-for-flatpak.sh 
-          
+          ./dist/linux/fetch-maven-deps-for-flatpak.sh
+
       - name: Archive Flatpak files
         uses: actions/upload-artifact@v7
         with:
@@ -383,7 +383,7 @@ jobs:
           path: |
             flatpak/org.vassalengine.vassal.yml
             flatpak/maven-dependencies.yml
-          
+
   package_digest:
     name: Sha256 digest of packages
     runs-on: ubuntu-24.04
@@ -394,7 +394,7 @@ jobs:
       - package_debian
       - package_rpm
     steps:
-      - name: Update container 
+      - name: Update container
         run: |
           sudo apt update -y
           sudo apt install -y jq
@@ -407,7 +407,7 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           files: VASSAL-${{ github.ref_name }}.sha256
-    
+
 #
 # EOF
 #

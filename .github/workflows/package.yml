@@ -9,7 +9,7 @@ on:
 env:
   TEMURIN_VERSION: 26.0.1+8
   LIBERICA_VERSION: 26.0.1+10
-  
+
 jobs:
   package:
     name: Test & Package
@@ -162,7 +162,7 @@ jobs:
         with:
           name: VASSAL-${{ steps.version.outputs.VERSION }}-windows-aarch64.exe
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-windows-aarch64.exe
-          
+
   package_win_x86_32:
     name: Test & Package Windows x86_32
     runs-on: ubuntu-24.04
@@ -233,7 +233,7 @@ jobs:
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-windows-x86_32.exe
 
   package_debian:
-    name: Debian package 
+    name: Debian package
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repo
@@ -241,18 +241,18 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Update container 
+      - name: Update container
         run: |
           sudo apt update -y
           sudo apt install -y devscripts
-          
+
       - name: Store claimed version
         id: deb_up_vers
         run: |
           ver=$(make version-print 2>/dev/null | tr '_' '-')
           echo "UPSTREAM_VERSION=$ver" >> $GITHUB_OUTPUT
           echo "Claimed upstream version: $ver"
-          
+
       - name: Make DEB changelog not release
         id: deb_ch_other
         if: ${{ contains(steps.deb_up_vers.outputs.UPSTREAM_VERSION,'snapshot') }}
@@ -303,7 +303,7 @@ jobs:
             ../vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}.debian.tar.xz \
             ../vassal_${{ steps.deb_vars.outputs.DEB_UPSTREAM }}.orig.tar.gz \
             public/
-            
+
       - name: Archive DEB package
         uses: actions/upload-artifact@v7
         with:
@@ -321,7 +321,7 @@ jobs:
         with:
           name: vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.buildinfo
           path: public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.buildinfo
-          
+
       - name: Archive DEB package changes
         uses: actions/upload-artifact@v7
         with:
@@ -345,3 +345,47 @@ jobs:
         with:
           name: vassal_${{ steps.deb_vars.outputs.DEB_UPSTREAM }}.orig.tar.gz
           path: public/vassal_${{ steps.deb_vars.outputs.DEB_UPSTREAM }}.orig.tar.gz
+
+  package_flatpak:
+    name: Flatpak recipe
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+
+      - name: Update container
+        run: |
+          sudo apt update -y
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.TEMURIN_VERSION }}
+          java-package: jdk
+          show-download-progress: true
+
+      - name: Make recipe
+        run: |
+          mkdir -p flatpak
+          sed -e "s,@REPOSITORY@,${{ github.repository }}," -e "s,@RELEASE@,${{ github.ref_name }}," -e "s,@COMMIT@,${{ github.sha }},"  < dist/linux/org.vassalengine.vassal.yml.in > flatpak/org.vassalengine.vassal.yml
+          cat flatpak/org.vassalengine.vassal.yml
+
+      - name: Make Maven dependencies
+        run: |
+          java -version
+          ./dist/linux/fetch-maven-deps-for-flatpak.sh
+
+      - name: Archive Flatpak files
+        uses: actions/upload-artifact@v7
+        with:
+          name: flatpak-recipe
+          path: |
+            flatpak/org.vassalengine.vassal.yml
+            flatpak/maven-dependencies.yml
+
+#
+# EOF
+#

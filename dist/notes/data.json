@@ -20,7 +20,7 @@
   "changes": [
     {
       "in": "3.8.0-beta1",
-      "since": "3.7.24",
+      "since": "3.7.26",
       "new_features": [
         { "num": 14582, "desc": "Add oblique hex grid numbering" },
         { "num": 14342, "desc": "Add Movement Trail option to keep only last position per location" },
@@ -39,37 +39,26 @@
         { "num": 14872, "desc": "Complete Chinese translation for VASSAL_zh.properties" }
       ],
       "other": [
+        { "num": 14922, "desc": "Upgraded checkstyle to 13.9.0" },
         { "num": 14911, "desc": "Upgraded logback-classic to 1.6.0" },
         { "num": 14909, "desc": "Upgraded maven-jar-plugin to 3.5.1" },
         { "num": 14895, "desc": "Upgraded junit-bom to 6.1.2" },
         { "num": 14894, "desc": "Upgraded spotbugs-maven-plugin to 4.10.3.0" },
-        { "num": 14893, "desc": "Upgraded checkstyle to 13.8.0" },
         { "num": 14892, "desc": "Upgraded spotbugs-annotations to 4.10.3" },
         { "num": 14868, "desc": "Upgraded byte-buddy to 1.18.11" },
         { "num": 14854, "desc": "Upgraded httpclient5 to 5.6.2" }
       ]
     },
     {
-      "in": "3.7.24",
-      "since": "3.7.23",
+      "in": "3.7.26",
+      "since": "3.7.25",
       "new_features": [
       ],
       "bug_fixes": [
-        { "num": 14816, "desc": "Fix DefaultIcon registry key name in the Windows installer" },
-        { "num": 14815, "desc": "Fixed NoClassDefFoundError from bug reporter dialog by switching to newer, maintained swingx library" },
-        { "num": 14814, "desc": "Accept HTTP 200 as a response for GitHub issue creation" },
-        { "num": 14737, "desc": "Send back cargo with the mat when moving between maps" },
-        { "num": 14483, "desc": "Skip empty Turn Lists in the Turn Counter" }
       ],
       "improvements": [
-        { "num": 14750, "desc": "Report Internationalization setup inconsistencies as Bad Data" },
-        { "num": 14656, "desc": "Editor search matches Marker names as Property names" }
       ],
       "other": [
-        { "num": 14837, "desc": "Upgraded logback-classic to 1.5.36" },
-        { "num": 14821, "desc": "Upgraded checkstyle to 13.6.0" },
-        { "num": 14810, "desc": "Upgraded spotbugs-maven-plugin to 4.10.2.0" },
-        { "num": 14808, "desc": "Upgraded spotbugs-annotations to 4.10.2" }
       ]
     }
   ]

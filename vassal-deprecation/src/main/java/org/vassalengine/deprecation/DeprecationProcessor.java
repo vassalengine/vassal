@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @SupportedAnnotationTypes(value = "java.lang.Deprecated")
-@SupportedSourceVersion(SourceVersion.RELEASE_11)
+@SupportedSourceVersion(SourceVersion.RELEASE_17)
 public final class DeprecationProcessor extends AbstractProcessor {
 
   @Override
