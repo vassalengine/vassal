@@ -28,6 +28,7 @@
       "improvements": [
       ],
       "other": [
+        { "num": 14926, "desc": "Upgraded logback-classic to 1.6.1" }
       ]
     },
     {
