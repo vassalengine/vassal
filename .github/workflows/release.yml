@@ -42,7 +42,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-maven-
 
-      - name: Cache bootstrap 
+      - name: Cache bootstrap
         uses: actions/cache@v6
         with:
           path: |
@@ -127,7 +127,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-maven-
 
-      - name: Cache bootstrap 
+      - name: Cache bootstrap
         uses: actions/cache@v6
         with:
           path: |
@@ -181,7 +181,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-maven-
 
-      - name: Cache bootstrap 
+      - name: Cache bootstrap
         uses: actions/cache@v6
         with:
           path: |
