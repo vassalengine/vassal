@@ -3,7 +3,7 @@
 # This script is a modified version of the script found at
 #
 # https://github.com/lenucksi/SieveEditor/blob/master/scripts/generate_flatpak_maven_sources.py
-# 
+#
 """
 Generate Flatpak Maven sources YAML from Maven download log.
 
@@ -105,7 +105,7 @@ def parse_download_log(log_file: Path) -> Dict[str, str]:
                 # Change name from maven-metadata.xml to maven-metadata-central.xml
                 rp = Path(relative_path)
                 if rp.name == 'maven-metadata.xml':
-                    rp = rp.parent / 'maven-metadata-central.xml' 
+                    rp = rp.parent / 'maven-metadata-central.xml'
                 url_map[str(rp)] = url
 
     return url_map
@@ -176,11 +176,11 @@ def generate_yaml_entry(dest_path: str, url: str, sha256: str) -> str:
     Returns:
         Formatted YAML block
     """
-    # If it's metadata, change the name 
+    # If it's metadata, change the name
     destname = ''
     if url.endswith('metadata.xml'):
         destname = '\n  dest-filename: maven-metadata-central.xml'
-        
+
     return f"""- type: file
   dest: .m2/repository/{dest_path}{destname}
   url: {url}
