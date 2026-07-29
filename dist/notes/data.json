@@ -24,6 +24,8 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 14929, "desc": "Correct Flatpak Maven dependency generation" },
+        { "num": 14928, "desc": "Fix Requires in RPM spec file, which prevents installation" }
       ],
       "improvements": [
       ],
