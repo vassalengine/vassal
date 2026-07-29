@@ -7,7 +7,9 @@
 * 12944: Add pieceCount to the map auto reporter
 * 12763: Added ModuleGameFileName property
 
-3.7.26 - ???
+3.7.27 - ???
+
+3.7.26 - 29 July 2026 
 
 * 14929: Correct Flatpak Maven dependency generation
 * 14928: Fix Requires in RPM spec file, which prevents installation

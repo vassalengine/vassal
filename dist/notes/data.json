@@ -20,7 +20,7 @@
   "changes": [
     {
       "in": "3.8.0-beta1",
-      "since": "3.7.26",
+      "since": "3.7.27",
       "new_features": [
         { "num": 14582, "desc": "Add oblique hex grid numbering" },
         { "num": 14342, "desc": "Add Movement Trail option to keep only last position per location" },
@@ -36,16 +36,15 @@
       ]
     },
     {
-      "in": "3.7.26",
-      "since": "3.7.25",
+      "in": "3.7.27",
+      "since": "3.7.26",
+      "new_features": [
+      ],
       "bug_fixes": [
-        { "num": 14929, "desc": "Correct Flatpak Maven dependency generation" },
-        { "num": 14928, "desc": "Fix Requires in RPM spec file, which prevents installation" }
       ],
       "improvements": [
       ],
       "other": [
-        { "num": 14926, "desc": "Upgraded logback-classic to 1.6.1" }
       ]
     }
   ]
