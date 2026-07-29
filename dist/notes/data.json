@@ -29,30 +29,18 @@
         { "num": 12763, "desc": "Added ModuleGameFileName property" }
       ],
       "bug_fixes": [
-        { "num": 14902, "desc": "Fix regression leaking Global Option properties over network" },
-        { "num": 14875, "desc": "Mock GameModule for DynamicPropertyTest" },
-        { "num": 13505, "desc": "Better handling of duplicate Deck names by Game Refresher" }
       ],
       "improvements": [
-        { "num": 14886, "desc": "Compile targeting Java 17" },
-        { "num": 14858, "desc": "Make button tooltips available on buttons in toolbar menus" },
-        { "num": 14872, "desc": "Complete Chinese translation for VASSAL_zh.properties" }
       ],
       "other": [
-        { "num": 14922, "desc": "Upgraded checkstyle to 13.9.0" },
-        { "num": 14911, "desc": "Upgraded logback-classic to 1.6.0" },
-        { "num": 14909, "desc": "Upgraded maven-jar-plugin to 3.5.1" },
-        { "num": 14895, "desc": "Upgraded junit-bom to 6.1.2" },
-        { "num": 14894, "desc": "Upgraded spotbugs-maven-plugin to 4.10.3.0" },
-        { "num": 14892, "desc": "Upgraded spotbugs-annotations to 4.10.3" },
-        { "num": 14868, "desc": "Upgraded byte-buddy to 1.18.11" },
-        { "num": 14854, "desc": "Upgraded httpclient5 to 5.6.2" }
       ]
     },
     {
       "in": "3.7.26",
       "since": "3.7.25",
       "bug_fixes": [
+        { "num": 14929, "desc": "Correct Flatpak Maven dependency generation" },
+        { "num": 14928, "desc": "Fix Requires in RPM spec file, which prevents installation" }
       ],
       "improvements": [
       ],

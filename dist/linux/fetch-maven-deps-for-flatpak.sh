@@ -88,12 +88,12 @@ run_maven_fetch() {
 
   # Run Maven and capture full output to a temp file
   local maven_output="${temp_log}.full"
-  local maven_opts="-U -B --color=never -Dmaven.repo.local=${temp_dir} -DskipTests -Dasciidoctor.attributes=optimize -Dasciidoctor.skip=true -Dspotbugs.skip=true -Dlicense.skipDownloadLicenses"
+  local maven_opts="-U -B --color=never -Dmaven.repo.local=${temp_dir} -DskipTests"
   echo "  Options for Maven: ${maven_opts}"
   echo "${BLUE}  Make maven (${mvn}) go offline ...${NC}"
-  ${mvn} ${maven_opts} clean dependency:go-offline 2>/dev/stdout | tee -a ${maven_output}
+  make jar MVN="mvn ${maven_opts}" 2>/dev/stdout | tee ${maven_output}
   ret1=$?
-  echo "  Offline return $ret1"
+  echo "  Make return $ret1"
   echo ""
   if test $ret1 -eq 0; then
     # Resolve all dependencies to ensure complete download log
