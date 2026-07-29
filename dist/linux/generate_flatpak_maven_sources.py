@@ -84,7 +84,8 @@ def parse_download_log(log_file: Path) -> Dict[str, str]:
             url = match.group(1)
 
             # Only process .jar and .pom files
-            if not url.endswith(('.jar', '.pom')):
+            # Also needs metadata.xml from some repos
+            if not url.endswith(('.jar', '.pom', 'metadata.xml')):
                 continue
 
             # Extract relative path
@@ -101,7 +102,11 @@ def parse_download_log(log_file: Path) -> Dict[str, str]:
                 print(f"  Second: {url}")
                 print(f"  Using the first URL.")
             else:
-                url_map[relative_path] = url
+                # Change name from maven-metadata.xml to maven-metadata-central.xml
+                rp = Path(relative_path)
+                if rp.name == 'maven-metadata.xml':
+                    rp = rp.parent / 'maven-metadata-central.xml' 
+                url_map[str(rp)] = url
 
     return url_map
 
@@ -171,8 +176,13 @@ def generate_yaml_entry(dest_path: str, url: str, sha256: str) -> str:
     Returns:
         Formatted YAML block
     """
+    # If it's metadata, change the name 
+    destname = ''
+    if url.endswith('metadata.xml'):
+        destname = '\n  dest-filename: maven-metadata-central.xml'
+        
     return f"""- type: file
-  dest: .m2/repository/{dest_path}
+  dest: .m2/repository/{dest_path}{destname}
   url: {url}
   sha256: {sha256}"""
 
