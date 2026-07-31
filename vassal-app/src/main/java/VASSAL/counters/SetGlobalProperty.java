@@ -27,6 +27,7 @@ import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.Configurer;
 import VASSAL.configure.DynamicKeyCommandListConfigurer;
 import VASSAL.configure.FormattedExpressionConfigurer;
 import VASSAL.configure.IntConfigurer;
@@ -237,7 +238,7 @@ public class SetGlobalProperty extends DynamicProperty {
         else {
           final String oldValue = prop.getPropertyValue();
           String newValue = keyCommand.propChanger.getNewValue(oldValue);
-          // Null indicates user cancelled a prompt dialog during chamnge
+          // Null indicates user cancelled a prompt dialog during change
           if (newValue != null) {
             // The PropertyChanger has already evaluated any Beanshell, only need to handle any remaining $$variables.
             if (newValue.indexOf('$') >= 0) {
@@ -245,6 +246,13 @@ public class SetGlobalProperty extends DynamicProperty {
               newValue = format.getText(getOutermost(this), this, "Editor.PropertyChangeConfigurer.new_value");
             }
             comm = comm.append(prop.setPropertyValue(newValue));
+
+            // If this is a Global Options custom preference then update the Preferences window.
+            final Configurer configurer = GameModule.getGameModule().getPrefs().getOption(propertyName);
+            if (configurer != null) {
+              configurer.setValue(newValue);
+              configurer.fireUpdate();
+            }
           }
         }
       }
