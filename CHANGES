@@ -1,5 +1,6 @@
 3.7.27 - ???
 
+* 14994: Upgraded maven to 3.9.16
 * 14990: Upgraded swingx-all to 2.2
 * 14989: Upgraded checkstyle to 13.10.0
 * 14986: Upgraded junit-bom to 6.1.3
