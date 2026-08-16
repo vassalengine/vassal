@@ -45,6 +45,8 @@
       "improvements": [
       ],
       "other": [
+        { "num": 14995, "desc": "Upgraded logback-classic to 1.6.2" },
+        { "num": 14994, "desc": "Upgraded maven to 3.9.16" },
         { "num": 14990, "desc": "Upgraded swingx-all to 2.2" },
         { "num": 14989, "desc": "Upgraded checkstyle to 13.10.0" },
         { "num": 14986, "desc": "Upgraded junit-bom to 6.1.3" },
