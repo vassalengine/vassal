@@ -9,7 +9,7 @@
 
 3.7.27 - ???
 
-* 14995: Upgraded logback-classic to 1.6.2
+* 14998: Upgraded logback-classic to 1.6.3
 * 14994: Upgraded maven to 3.9.16
 * 14990: Upgraded swingx-all to 2.2
 * 14989: Upgraded checkstyle to 13.10.0
