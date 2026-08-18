@@ -19,6 +19,18 @@
   "changes": [
     {
       "in": "3.8.0-beta1",
+      "since": "3..8.0-beta2",
+      "new_features": [
+      ],
+      "bug_fixes": [
+      ],
+      "improvements": [
+      ],
+      "other": [
+      ]
+    },
+    {
+      "in": "3.8.0-beta1",
       "since": "3.7.26",
       "new_features": [
         { "num": 14582, "desc": "Add oblique hex grid numbering" },
