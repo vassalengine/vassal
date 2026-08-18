@@ -239,7 +239,7 @@ Steps to release version `x.y.z`
  
 * [ ] Commit the changes:
 
- $ git commit . -m "The x.y.z release"
+ $ git commit . -m 'The x.y.z release.'
  
 * [ ] Tag current state as a release:
 
