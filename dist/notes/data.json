@@ -1,5 +1,5 @@
 {
-  "headline": "The Vassal Team is happy to announce the release of Vassal {{version}}.",
+  "headline": "The VASSAL Team is happy to announce VASSAL {{version}}, which is a preview release.",
   "important": [
     "Starting with 3.7.25, Vassal requires Java 17 or newer. If you are using one of the MacOS or Windows packages, Java is bundled with Vassal and this will not affect you. If you are using Linux or another OS, please upgrade Java to at least Java 17.",
     "If you are using MacOS 14, please ensure you are using 14.4 or later, to avoid a bug in MacOS which prevents Vassal from starting.",
