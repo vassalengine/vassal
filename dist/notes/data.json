@@ -19,25 +19,13 @@
   "changes": [
     {
       "in": "3.8.0-beta1",
-      "since": "3.7.27",
+      "since": "3.7.26",
       "new_features": [
         { "num": 14582, "desc": "Add oblique hex grid numbering" },
         { "num": 14342, "desc": "Add Movement Trail option to keep only last position per location" },
         { "num": 13168, "desc": "Multi-Location Command includes the option to sort the order of the commands generated" },
         { "num": 12944, "desc": "Add pieceCount to the map auto reporter" },
         { "num": 12763, "desc": "Added ModuleGameFileName property" }
-      ],
-      "bug_fixes": [
-      ],
-      "improvements": [
-      ],
-      "other": [
-      ]
-    },
-    {
-      "in": "3.7.27",
-      "since": "3.7.26",
-      "new_features": [
       ],
       "bug_fixes": [
       ],
