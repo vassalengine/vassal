@@ -74,12 +74,16 @@ import java.util.List;
  */
 public class DeckGlobalKeyCommand extends MassKeyCommand implements RecursionLimiter.Loopable {
 
+  public static final String RESTRICT_RANGE = "restrictRange"; //$NON-NLS-1$
+  protected boolean restrictRange = true;
+
   public DeckGlobalKeyCommand() {
     globalCommand = new DeckGlobalCommand(this);
     globalCommand.setReportSingle(true);
     globalCommand.setSuppressSounds(false);
     setConfigureName("");
     setShowDisabledOptions(false);
+    restrictRange = true;
   }
 
   public DeckGlobalKeyCommand(String code) {
@@ -177,7 +181,8 @@ public class DeckGlobalKeyCommand extends MassKeyCommand implements RecursionLim
       .append(getAttributeValueString(TARGET))
       .append(getAttributeValueString(REPORT_SINGLE))
       .append(getAttributeValueString(SUPPRESS_SOUNDS))
-      .append(getAttributeValueString(PARAMETERS));
+      .append(getAttributeValueString(PARAMETERS))
+      .append(getAttributeValueString(RESTRICT_RANGE));
 
     return se.getValue();
   }
@@ -194,6 +199,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand implements RecursionLim
     setAttribute(REPORT_SINGLE, sd.nextBoolean(true));
     setAttribute(SUPPRESS_SOUNDS, sd.nextBoolean(false));
     setAttribute(PARAMETERS, sd.nextToken(""));
+    setAttribute(RESTRICT_RANGE, sd.nextBoolean(true));
   }
 
   @Override
@@ -209,7 +215,8 @@ public class DeckGlobalKeyCommand extends MassKeyCommand implements RecursionLim
       Resources.getString("Editor.report_format"), //$NON-NLS-1$
       Resources.getString("Editor.MassKey.suppress"),
       Resources.getString("Editor.MassKey.suppress_sounds"),
-      Resources.getString("Editor.MassKey.set_properties")
+      Resources.getString("Editor.MassKey.set_properties"),
+      Resources.getString("Editor.DeckGlobalKeyCommand.restrict_range") //$NON-NLS-1$
     };
   }
 
@@ -226,7 +233,8 @@ public class DeckGlobalKeyCommand extends MassKeyCommand implements RecursionLim
       REPORT_FORMAT,
       REPORT_SINGLE,
       SUPPRESS_SOUNDS,
-      PARAMETERS
+      PARAMETERS,
+      RESTRICT_RANGE
     };
   }
 
@@ -244,7 +252,8 @@ public class DeckGlobalKeyCommand extends MassKeyCommand implements RecursionLim
       ReportFormatConfig.class,
       Boolean.class,
       Boolean.class,
-      ParameterListConfig.class
+      ParameterListConfig.class,
+      Boolean.class
     };
   }
 
@@ -254,6 +263,37 @@ public class DeckGlobalKeyCommand extends MassKeyCommand implements RecursionLim
       return () -> false; // No fast match for Deck Global Key Commands
     }
     return () -> true;
+  }
+
+  @Override
+  public void setAttribute(String key, Object value) {
+    if (RESTRICT_RANGE.equals(key)) {
+      if (value instanceof String) {
+        value = Boolean.valueOf((String) value);
+      }
+      restrictRange = (Boolean) value;
+    }
+    else {
+      super.setAttribute(key, value);
+    }
+  }
+
+  @Override
+  public String getAttributeValueString(String key) {
+    if (RESTRICT_RANGE.equals(key)) {
+      return String.valueOf(restrictRange);
+    }
+    else {
+      return super.getAttributeValueString(key);
+    }
+  }
+
+  public boolean isRestrictRange() {
+    return restrictRange;
+  }
+
+  public void setRestrictRange(boolean restrictRange) {
+    this.restrictRange = restrictRange;
   }
 
   public static class DeckPolicyConfig2 extends DeckPolicyConfig {
@@ -278,6 +318,20 @@ public class DeckGlobalKeyCommand extends MassKeyCommand implements RecursionLim
     }
 
     public Command apply(Deck d, PieceFilter filter) {
+      final DeckGlobalKeyCommand dgkc = (DeckGlobalKeyCommand) owner;
+
+      // If restrict range is false, apply to all pieces on the map
+      if (!dgkc.isRestrictRange()) {
+        final Map map = d.getMap();
+        if (map != null) {
+          return apply(new Map[]{map}, filter, null);
+        }
+        else {
+          return new NullCommand();
+        }
+      }
+
+      // Otherwise, apply only to pieces in the deck (original behavior)
       // Determine how many pieces we select from decks
       final String howManyFromDeck = getSelectFromDeckExpression();
       // Shortcut -1 for "all"
