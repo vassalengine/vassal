@@ -23,8 +23,10 @@ mod_entry=VASSAL.launch.ModuleManager
 ply_entry=VASSAL.launch.Player
 edt_entry=VASSAL.launch.Editor
 trl_entry=VASSAL.i18n.TranslateVassalWindow
+srv_entry=VASSAL.chat.node.Server
 entry=$mod_entry
 jar="$path/lib/Vengine.jar"
+srv_url=null
 
 # --- Some modus operandi --------------------------------------------
 # Do we do direct execution?, i.e., by-pass the module manager. Are we
@@ -117,13 +119,16 @@ while test $# -gt 0 ; do
             if test $drt -gt 0 ; then
                 entry=$edt_entry
             fi
-                        ;;
+            ;;
+        x--server)
+            entry=$srv_entry
+            ;;
         *)
             # If argument is a file ... 
-            if test -f $1 ; then
+            if test -f "$1" ; then
                 # ... then store full path name since VASSAL changes
                 # the current directory before opening target files.
-                f=$(realpath $1)
+                f=$(realpath "$1")
                 args+=("$f")
             else
                 args+=("$1")
@@ -136,6 +141,11 @@ done
 # --- Set source path ------------------------------------------------
 if test "x$cmd" == "x$jdb" ; then
     defs+=("-sourcepath" "$src")
+fi
+
+# --- Check server ---------------------------------------------------
+if test "x$entry" == "x$srv_entry" ; then
+    args+=("-URL" "$srv_url")
 fi
 
 # --- Run java with defines, entry point, and other arguments --------
