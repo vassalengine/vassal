@@ -27,6 +27,8 @@
       "improvements": [
       ],
       "other": [
+        { "num": 15006, "desc": "Upgraded checkstyle to 14.0.0" },
+        { "num": 15003, "desc": "Upgraded byte-buddy to 1.18.12" }
       ]
     },
     {
@@ -44,8 +46,6 @@
       "improvements": [
       ],
       "other": [
-        { "num": 15006, "desc": "Upgraded checkstyle to 14.0.0" },
-        { "num": 15003, "desc": "Upgraded byte-buddy to 1.18.12" },
         { "num": 14998, "desc": "Upgraded logback-classic to 1.6.3" },
         { "num": 14994, "desc": "Upgraded maven to 3.9.16" },
         { "num": 14990, "desc": "Upgraded swingx-all to 2.2" },

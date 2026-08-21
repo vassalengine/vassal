@@ -1,9 +1,10 @@
 3.8.0-beta2 - ???
 
-3.8.0-beta1 - 18 August 2026
-
 * 15006: Upgraded checkstyle to 14.0.0
 * 15003: Upgraded byte-buddy to 1.18.12
+
+3.8.0-beta1 - 18 August 2026
+
 * 14998: Upgraded logback-classic to 1.6.3
 * 14994: Upgraded maven to 3.9.16
 * 14990: Upgraded swingx-all to 2.2
