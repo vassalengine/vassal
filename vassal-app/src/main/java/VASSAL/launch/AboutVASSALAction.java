@@ -42,6 +42,7 @@ public class AboutVASSALAction extends AbstractAction {
 
   public AboutVASSALAction(Window w) {
     super(Resources.getString("AboutScreen.about_vassal"));
+    putValue(MNEMONIC_KEY, (int) Resources.getString("AboutScreen.about_vassal.shortcut").charAt(0)); //NON-NLS
     window = w;
   }
 

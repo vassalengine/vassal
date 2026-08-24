@@ -33,6 +33,7 @@ import VASSAL.tools.menu.MenuProxy;
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
@@ -88,6 +89,7 @@ public class PlayerWindow extends JFrame {
     fileMenu.add(mm.addKey("GameState.load_game_new"));
 
     final MenuProxy openRecent = new MenuProxy(Resources.getString("GameState.open_recent"));
+    openRecent.setMnemonic(Resources.getString("GameState.open_recent.shortcut").charAt(0));
     fileMenu.add(openRecent);
 
     openRecent.add(mm.addMarker("OpenRecent.start"));  //NON-NLS
@@ -149,8 +151,8 @@ public class PlayerWindow extends JFrame {
     toolsMenu.addSeparator();
 
     toolsMenu.add(mm.addKey("GameRefresher.refresh_counters"));
-    
-    final CheckBoxMenuItemProxy debugCheckbox = new CheckBoxMenuItemProxy(new AbstractAction(
+
+    final AbstractAction debugAction = new AbstractAction(
       Resources.getString("Debug.show_debug_window")) {
       private static final long serialVersionUID = 1L;
 
@@ -161,7 +163,10 @@ public class PlayerWindow extends JFrame {
           dc.toggleVisible();
         }
       }
-    }, false);
+    };
+    debugAction.putValue(Action.MNEMONIC_KEY,
+            (int) Resources.getString("Debug.show_debug_window.shortcut").charAt(0)); //NON-NLS
+    final CheckBoxMenuItemProxy debugCheckbox = new CheckBoxMenuItemProxy(debugAction, false);
 
     toolsMenu.add(debugCheckbox);
     DebugControls.setCheckBox(debugCheckbox);
