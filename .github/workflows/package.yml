@@ -260,7 +260,7 @@ jobs:
           eml="${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
           ver=$(make version-print 2>/dev/null | tr '_' '-')
           echo "Setting non-release Debian version to ${ver}-1"
-          EMAIL="${eml}" dch --release-heuristic log -v ${ver}-1 "Snapshot build"
+          EMAIL="${eml}" dch --release-heuristic log --force-bad-version -v ${ver}-1 "Snapshot build"
       - name: Store DEB variables
         id: deb_vars
         run: |
