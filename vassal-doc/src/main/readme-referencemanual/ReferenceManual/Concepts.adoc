@@ -27,8 +27,8 @@ A brief overwiew of some of the main concepts you need to know to get started cr
 ** <<#propertyVisibility,Property Visibility>> +
 ** <<#Unique, Uniquely Identifying Pieces>> +
 * <<#expressions,Expressions>> +
-** <<#oldStyle,Old-Style Expressions>> +
 ** <<#beanshell,BeanShell Expressions>> +
+** <<#oldStyle,Old-Style Expressions>> +
 ** <<#PME,Property Match Expressions>> +
 * <<#parameters,Passing values to pieces>> +
 
@@ -277,15 +277,20 @@ If a new version of a Cloned piece is pulled from a Piece Paletter and Cloned, i
 
 [#expressions]
 == Expressions
+Module components typically use <<Expression.adoc#top,Expressions>> to determine the conditions under which
+the effects of the component should apply. There are several kinds of expressions, including:
+
+[#beanshell]
+=== BeanShell Expressions
+Modern module components usually use the <<Expression.adoc#beanshell,BeanShell Expression>> syntax to define a value calculated from an arbitrarily complex combination of <<#properties,Properties>> and other values defined within the module.
 
 [#oldStyle]
 === Old-Style Expressions
-
-=== BeanShell Expressions
-[#beanshell]
+Also known as <<Expression.adoc#simple,Simple Expressions>>, this is the expression syntax that was originally used in early versions of Vassal. While still supported, this syntax is now consdered obsolete so it is recommended that BeanShell expressions be used when creating or modifying module components.
 
 [#PME]
 === Property Match Expressions
+<<PropertyMatchExpression.adoc#top,Property Match Expressions>> select which pieces to operate on by checking properties, e.g., in a <<GlobalKeyCommand.adoc#top,Global Key Command>>.
 
 [#parameters]
 == Passing values to pieces
