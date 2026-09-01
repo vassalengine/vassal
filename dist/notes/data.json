@@ -27,6 +27,7 @@
         { "num": 15035, "desc": "Fixed typo in ExpressionRange.adoc" }
       ],
       "improvements": [
+        { "num": 15038, "desc": "Added server options to Linux launch script" },
         { "num": 15036, "desc": "Added explanation of expressions to Concepts.ado" },
         { "num": 15032, "desc": "Use maximum compression for saves and logs" }
       ],
