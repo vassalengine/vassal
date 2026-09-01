@@ -120,10 +120,10 @@ while test $# -gt 0 ; do
                         ;;
         *)
             # If argument is a file ... 
-            if test -f $1 ; then
+            if test -f "$1" ; then
                 # ... then store full path name since VASSAL changes
                 # the current directory before opening target files.
-                f=$(realpath $1)
+                f=$(realpath "$1")
                 args+=("$f")
             else
                 args+=("$1")
