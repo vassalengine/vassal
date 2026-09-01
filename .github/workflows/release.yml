@@ -7,8 +7,9 @@ on:
     tags: '*'
 
 env:
-  TEMURIN_VERSION: 26.0.1+8
-  LIBERICA_VERSION: 26.0.1+10
+  TEMURIN_SEMVER_VERSION: 26.0.2+101
+  TEMURIN_REAL_VERSION: 26.0.2.1+1
+  LIBERICA_VERSION: 26.0.2+13
 
 jobs:
   # Regular packages.  Note, we take the version number from the tag.
@@ -32,7 +33,7 @@ jobs:
         id: setup-java
         with:
           distribution: 'temurin'
-          java-version: ${{ env.TEMURIN_VERSION }}
+          java-version: ${{ env.TEMURIN_SEMVER_VERSION }}
           java-package: jdk
 
       - name: Maven cache
@@ -56,13 +57,13 @@ jobs:
 
       - name: Bootstrap
         if: steps.cache-bootstrap.outputs.cache-hit != 'true'
-        run: ./bootstrap.sh -j ${{ steps.setup-java.outputs.version }} windows-x86_64 macos-x86_64 macos-aarch64
+        run: ./bootstrap.sh -j ${{ env.TEMURIN_REAL_VERSION }} windows-x86_64 macos-x86_64 macos-aarch64
 
       - name: Make release packages
         run: |
           make release MAVEN_VERSION=${{ github.ref_name }}
-          make javadoc  MAVEN_VERSION=${{ github.ref_name }}
-          make release-announcements  MAVEN_VERSION=${{ github.ref_name }}
+          make javadoc MAVEN_VERSION=${{ github.ref_name }}
+          make release-announcements MAVEN_VERSION=${{ github.ref_name }}
           ls
           ls releases
 
@@ -362,7 +363,7 @@ jobs:
         uses: actions/setup-java@v6.0.0
         with:
           distribution: 'temurin'
-          java-version: ${{ env.TEMURIN_VERSION }}
+          java-version: ${{ env.TEMURIN_SEMVER_VERSION }}
           java-package: jdk
           show-download-progress: true
 
