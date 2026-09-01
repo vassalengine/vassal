@@ -12,6 +12,7 @@
 * 15016: Upgraded spotbugs-annotations to 4.10.4
 * 15006: Upgraded checkstyle to 14.0.0
 * 15003: Upgraded byte-buddy to 1.18.12
+* 14583: MoveCameraButton now uses preferred center instead of viewport center
 
 3.8.0-beta1 - 18 August 2026
 

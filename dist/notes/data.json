@@ -30,7 +30,8 @@
         { "num": 15041, "desc": "Updated bundled Java to 26.0.2.1+1 (Windows x86_64, MacOS), 26.0.2+13 (Windows aarch64), 21.0.12.1+1 (Windows x86_32)" },
         { "num": 15038, "desc": "Added server options to Linux launch script" },
         { "num": 15036, "desc": "Added explanation of expressions to Concepts.ado" },
-        { "num": 15032, "desc": "Use maximum compression for saves and logs" }
+        { "num": 15032, "desc": "Use maximum compression for saves and logs" },
+        { "num": 14583, "desc": "MoveCameraButton now uses preferred center instead of viewport center" }
       ],
       "other": [
         { "num": 15031, "desc": "Upgraded jsoup to 1.23.2" },
