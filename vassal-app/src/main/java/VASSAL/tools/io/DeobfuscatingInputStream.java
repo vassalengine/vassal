@@ -24,10 +24,13 @@ import java.io.PushbackInputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.zip.InflaterInputStream;
 
 /**
  * A {@link FilterInputStream} which converts a file created with
- * {@link ObfuscatingOutputStream} back into plain text.
+ * {@link ObfuscatingOutputStream} back into plain text. Both the deflated
+ * format ({@link ObfuscatingOutputStream#DEFLATED_HEADER}) and the older
+ * undeflated format ({@link ObfuscatingOutputStream#HEADER}) are read.
  * Additionally, plain text will be passed through unchanged.
  *
  * @author Joel Uckelman
@@ -44,8 +47,12 @@ public class DeobfuscatingInputStream extends FilterInputStream {
 
     final byte[] header = new byte[ObfuscatingOutputStream.HEADER.length()];
     readFully(in, header, header.length);
-    if (new String(header, StandardCharsets.UTF_8).equals(ObfuscatingOutputStream.HEADER)) {
+    final String headerStr = new String(header, StandardCharsets.UTF_8);
+    if (headerStr.equals(ObfuscatingOutputStream.HEADER)) {
       this.in = new DeobfuscatingInputStreamImpl(in);
+    }
+    else if (headerStr.equals(ObfuscatingOutputStream.DEFLATED_HEADER)) {
+      this.in = new InflaterInputStream(new DeobfuscatingInputStreamImpl(in));
     }
     else {
       final PushbackInputStream pin =
