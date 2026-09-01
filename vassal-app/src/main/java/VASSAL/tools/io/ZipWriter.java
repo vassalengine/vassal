@@ -30,6 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Objects;
+import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -60,6 +61,7 @@ public class ZipWriter implements Closeable {
 
     lock = fc.lock();
     zout = new ZipOutputStream(new BufferedOutputStream(Channels.newOutputStream(fc)));
+    zout.setLevel(Deflater.BEST_COMPRESSION);
   }
 
   public void write(File src, String dst) throws IOException {
