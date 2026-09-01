@@ -8,7 +8,7 @@
 === Range Functions
 
 ==== Overview
-Vassal provides a set of functions to calculate the range between 2 different locatons on a map. The range can be calulcated either in pixels, or in the native cell size of the map for Hex and Square grids.
+Vassal provides a set of functions to calculate the range between 2 different locations on a map. The range can be calulcated either in pixels, or in the native cell size of the map for Hex and Square grids.
 
 If you ask for a range in Cells on a map that does not support it, then the range will be provided in pixels. The 'Cell' size will be based on the grid that applies at the *From* point.
 
