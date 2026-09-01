@@ -7,7 +7,7 @@ on:
     branches: [ master, release-3.7 ]
 
 env:
-  TEMURIN_VERSION: 26.0.2+1
+  TEMURIN_VERSION: 26.0.2+101
   LIBERICA_VERSION: 26.0.2+13
 
 jobs:
