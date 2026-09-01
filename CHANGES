@@ -1,5 +1,7 @@
 3.8.0-beta2 - ???
 
+* 15037: Fixed VASSAL.sh script to quote file name
+* 15036: Added explanation of expressions to Concepts.adoc
 * 15035: Fixed typo in ExpressionRange.adoc
 * 15032: Use maximum compression for saves and logs
 * 15031: Upgraded jsoup to 1.23.2
