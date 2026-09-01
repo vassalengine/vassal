@@ -23,6 +23,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 15037, "desc": "Fixed VASSAL.sh script to quote file name" },
         { "num": 15035, "desc": "Fixed typo in ExpressionRange.adoc" }
       ],
       "improvements": [
