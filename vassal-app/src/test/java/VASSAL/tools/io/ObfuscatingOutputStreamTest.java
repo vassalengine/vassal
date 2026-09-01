@@ -17,6 +17,7 @@
  */
 package VASSAL.tools.io;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
@@ -27,21 +28,41 @@ public class ObfuscatingOutputStreamTest {
   // A popular pangram.
   private final String plain = "All jackdaws love my great sphinx of quartz.";
 
-  // The same pangram, obfuscated.
-  private final String obfus = "!VCSK581934347832393b333c392f2b7834372e3d783521783f2a3d392c782b283031362078373e78292d392a2c2276";
-
   // The key used for the obfuscated text.
   private final byte key = (byte) 0x58;
 
   @Test
-  public void testObfuscatedOutput() throws IOException {
-    final byte[] expected = obfus.getBytes("UTF-8");
+  public void testObfuscatedOutputFormat() throws IOException {
     final ByteArrayOutputStream bout = new ByteArrayOutputStream();
 
     final ObfuscatingOutputStream out = new ObfuscatingOutputStream(bout, key);
     out.write(plain.getBytes("UTF-8"));
     out.close();
 
-    assertArrayEquals(expected, bout.toByteArray());
+    final String result = new String(bout.toByteArray(), "UTF-8");
+
+    // header, then the key in hex
+    assertTrue(result.startsWith(ObfuscatingOutputStream.DEFLATED_HEADER + "58"));
+
+    // everything after the header is lowercase hex
+    final String body = result.substring(ObfuscatingOutputStream.DEFLATED_HEADER.length());
+    assertTrue(body.matches("[0-9a-f]+"));
+  }
+
+  @Test
+  public void testRoundTrip() throws IOException {
+    final byte[] expected = plain.getBytes("UTF-8");
+    final ByteArrayOutputStream bout = new ByteArrayOutputStream();
+
+    final ObfuscatingOutputStream out = new ObfuscatingOutputStream(bout, key);
+    out.write(expected);
+    out.close();
+
+    final DeobfuscatingInputStream in = new DeobfuscatingInputStream(
+      new ByteArrayInputStream(bout.toByteArray()));
+    final byte[] result = in.readAllBytes();
+    in.close();
+
+    assertArrayEquals(expected, result);
   }
 }
