@@ -1,5 +1,6 @@
 3.7.27 - ???
 
+* 15035: Fixed typo in ExpressionRange.adoc
 * 15017: Upgraded spotbugs-maven-plugin to 4.10.4.0
 * 15016: Upgraded spotbugs-annotations to 4.10.4
 * 15006: Upgraded checkstyle to 14.0.0
