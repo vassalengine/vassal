@@ -1,5 +1,6 @@
 3.7.27 - ???
 
+* 15037: Fixed VASSAL.sh script to quote file name
 * 15036: Added explanation of expressions to Concepts.adoc
 * 15035: Fixed typo in ExpressionRange.adoc
 * 15032: Use maximum compression for saves and logs
