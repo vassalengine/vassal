@@ -34,6 +34,7 @@ import java.util.ResourceBundle;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 import VASSAL.Info;
@@ -377,6 +378,7 @@ public class Resources {
     UIManager.put("OptionPane.cancelButtonText", getInstanceString(CANCEL)); //$NON-NLS-1$
     UIManager.put("OptionPane.noButtonText", getInstanceString(NO)); //$NON-NLS-1$
     UIManager.put("OptionPane.okButtonText", getInstanceString(OK)); //$NON-NLS-1$
+    JOptionPane.setDefaultLocale(locale);
   }
 
   public static Locale getLocale() {
