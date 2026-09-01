@@ -7,8 +7,8 @@ on:
     tags: '*'
 
 env:
-  TEMURIN_VERSION: 26.0.1+8
-  LIBERICA_VERSION: 26.0.1+10
+  TEMURIN_VERSION: 26.0.2.1+1
+  LIBERICA_VERSION: 26.0.2+13
 
 jobs:
   # Regular packages.  Note, we take the version number from the tag.
