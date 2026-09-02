@@ -72,7 +72,7 @@ public final class GameLibrary {
   private final String apiBase;
 
   public GameLibrary(String apiBase) {
-    this.apiBase = (apiBase == null || apiBase.trim().isEmpty()
+    this.apiBase = (apiBase == null || apiBase.isBlank()
       ? DEFAULT_API : apiBase.trim()).replaceAll("/+$", "");
   }
 

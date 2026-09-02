@@ -107,7 +107,7 @@ public final class DownloadModuleDialog {
       + "If you do not know the module's URL, you can find it with the search<br>" //NON-NLS
       + "dialog on <tt>https://vassalengine.org/library/projects</tt></html>", //NON-NLS
       "Download Module from Library", JOptionPane.QUESTION_MESSAGE, null, null, ""); //NON-NLS
-    if (input == null || input.trim().isEmpty()) {
+    if (input == null || input.isBlank()) {
       return null;
     }
 
@@ -274,7 +274,7 @@ public final class DownloadModuleDialog {
     final StringBuilder ask = new StringBuilder("<html>Download into <tt>") //NON-NLS
       .append(escape(dir.getAbsolutePath())).append("</tt>:<br><br><b>") //NON-NLS
       .append(escape(module.filename)).append("</b> (") //NON-NLS
-      .append(mb(module.size)).append(")");
+      .append(mb(module.size)).append(')');
     if (!extensions.isEmpty()) {
       long total = 0;
       for (final GameLibrary.RemoteFile f : extensions) {
