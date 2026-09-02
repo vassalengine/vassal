@@ -19,7 +19,7 @@
   "changes": [
     {
       "in": "3.8.0-beta1",
-      "since": "3..8.0-beta2",
+      "since": "3.8.0-beta2",
       "new_features": [
       ],
       "bug_fixes": [
@@ -34,11 +34,39 @@
         { "num": 14583, "desc": "MoveCameraButton now uses preferred center instead of viewport center" }
       ],
       "other": [
+        { "num": 14583, "desc": "MoveCameraButton now uses preferred center instead of viewport center" }
+      ],
+      "other": [
+      ]
+    },
+    {
+      "in": "3.2.27",
+      "since": "3.2.26",
+      "new_features": [
+      ],
+      "bug_fixes": [
+        { "num": 15038, "desc": "Added server options to Linux launch script" },
+        { "num": 15037, "desc": "Fixed VASSAL.sh script to quote file name" }
+      ],
+      "improvements": [
+        { "num": 15036, "desc": "Added explanation of expressions to Concepts.ado" },
+        { "num": 15035, "desc": "Fixed typo in ExpressionRange.adoc" },
+        { "num": 15032, "desc": "Use maximum compression for saves and logs" },
+        { "num": 14533, "desc": "Configure mnemonics for non-English yes/no buttons" }
+      ],
+      "other": [
+        { "num": 15041, "desc": "Updated bundled Java to 26.0.2.1+1 (Windows x86_64, MacOS), 26.0.2+13 (Windows aarch64), 21.0.12.1+1 (Windows x86_32)" },
         { "num": 15031, "desc": "Upgraded jsoup to 1.23.2" },
         { "num": 15017, "desc": "Upgraded spotbugs-maven-plugin to 4.10.4.0" },
         { "num": 15016, "desc": "Upgraded spotbugs-annotations to 4.10.4" },
         { "num": 15006, "desc": "Upgraded checkstyle to 14.0.0" },
-        { "num": 15003, "desc": "Upgraded byte-buddy to 1.18.12" }
+        { "num": 15003, "desc": "Upgraded byte-buddy to 1.18.12" },
+        { "num": 14998, "desc": "Upgraded logback-classic to 1.6.3" },
+        { "num": 14994, "desc": "Upgraded maven to 3.9.16" },
+        { "num": 14990, "desc": "Upgraded swingx-all to 2.2" },
+        { "num": 14986, "desc": "Upgraded junit-bom to 6.1.3" },
+        { "num": 14985, "desc": "Upgraded httpclient5 to 5.6.4" },
+        { "num": 14936, "desc": "Upgraded commons-codec to 1.22.1" }
       ]
     },
     {
