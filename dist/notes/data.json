@@ -28,7 +28,6 @@
         { "num": 15035, "desc": "Fixed typo in ExpressionRange.adoc" }
       ],
       "improvements": [
-        { "num": 15041, "desc": "Updated bundled Java to 26.0.2.1+1 (Windows x86_64, MacOS), 26.0.2+13 (Windows aarch64), 21.0.12.1+1 (Windows x86_32)" },
         { "num": 15038, "desc": "Added server options to Linux launch script" },
         { "num": 15036, "desc": "Added explanation of expressions to Concepts.ado" },
         { "num": 15032, "desc": "Use maximum compression for saves and logs" },
@@ -36,7 +35,8 @@
       ],
       "other": [
         { "num": 15046, "desc": "Upgraded checkstyle to 14.1.0" },
-        { "num": 15045, "desc": "Upgraded maven-compiler-plugini to 3.16.0" },
+        { "num": 15045, "desc": "Upgraded maven-compiler-plugin to 3.16.0" },
+        { "num": 15041, "desc": "Updated bundled Java to 26.0.2.1+1 (Windows x86_64, MacOS), 26.0.2+13 (Windows aarch64), 21.0.12.1+1 (Windows x86_32)" },
         { "num": 15031, "desc": "Upgraded jsoup to 1.23.2" },
         { "num": 15017, "desc": "Upgraded spotbugs-maven-plugin to 4.10.4.0" },
         { "num": 15016, "desc": "Upgraded spotbugs-annotations to 4.10.4" },
