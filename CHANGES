@@ -1,5 +1,7 @@
 3.7.27 - ???
 
+* 15046: Upgraded checkstyle to 14.1.0
+* 15045: Upgraded maven-compiler-plugin to 3.16.0
 * 15041: Updated bundled Java to 26.0.2.1+1 (Windows x86_64, MacOS),
     26.0.2+13 (Windows aarch64), 21.0.12.1+1 (Windows x86_32)
 * 15038: Added server options to Linux launch script
@@ -10,7 +12,6 @@
 * 15031: Upgraded jsoup to 1.23.2
 * 15017: Upgraded spotbugs-maven-plugin to 4.10.4.0
 * 15016: Upgraded spotbugs-annotations to 4.10.4
-* 15006: Upgraded checkstyle to 14.0.0
 * 15003: Upgraded byte-buddy to 1.18.12
 * 14998: Upgraded logback-classic to 1.6.3
 * 14994: Upgraded maven to 3.9.16

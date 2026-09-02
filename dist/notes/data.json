@@ -35,10 +35,11 @@
         { "num": 14533, "desc": "Configure mnemonics for non-English yes/no buttons" }
       ],
       "other": [
+        { "num": 15046, "desc": "Upgraded checkstyle to 14.1.0" },
+        { "num": 15045, "desc": "Upgraded checkstyle to 3.16.0" },
         { "num": 15031, "desc": "Upgraded jsoup to 1.23.2" },
         { "num": 15017, "desc": "Upgraded spotbugs-maven-plugin to 4.10.4.0" },
         { "num": 15016, "desc": "Upgraded spotbugs-annotations to 4.10.4" },
-        { "num": 15006, "desc": "Upgraded checkstyle to 14.0.0" },
         { "num": 15003, "desc": "Upgraded byte-buddy to 1.18.12" },
         { "num": 14998, "desc": "Upgraded logback-classic to 1.6.3" },
         { "num": 14994, "desc": "Upgraded maven to 3.9.16" },
