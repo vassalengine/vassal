@@ -33,7 +33,7 @@ modules:
       - mv release-prepare/target/doc ${FLATPAK_DEST}
       - install -Dm644 vassal-app/src/main/resources/icons/scalable/VASSAL.svg ${FLATPAK_DEST}/share/icons/hicolor/scalable/apps/${FLATPAK_ID}.svg
       - install -Dm644 vassal-app/src/main/resources/icons/scalable/VASSAL.svg ${FLATPAK_DEST}/share/icons/hicolor/scalable/mimetypes/${FLATPAK_ID}.svg
-      - install -Dm755 dist/linux/VASSAL.sh ${FLATPAK_DEST}/VASSAL.sh
+      - install -Dm755 dist/VASSAL.sh ${FLATPAK_DEST}/VASSAL.sh
       - install -Dm644 dist/linux/${FLATPAK_ID}.desktop ${FLATPAK_DEST}/share/applications/${FLATPAK_ID}.desktop 
       - install -Dm644 dist/linux/${FLATPAK_ID}.metainfo.xml ${FLATPAK_DEST}/share/metainfo/${FLATPAK_ID}.metainfo.xml
       - install -Dm644 dist/linux/${FLATPAK_ID}.mime.xml ${FLATPAK_DEST}/share/mime/packages/${FLATPAK_ID}.xml

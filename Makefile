@@ -138,7 +138,7 @@ $(TMPDIR)/macos-%-$(VERSION)-build/VASSAL.app: $(LIBDIR)/Vengine.jar $(TMPDIR)/m
 	cp $(DISTDIR)/macos/{PkgInfo,Info.plist} $@/Contents
 	sed -i -e 's/%NUMVERSION%/$(VNUM)/g' \
          -e 's/%YEAR%/$(YEAR)/g' $@/Contents/Info.plist
-	cp $(DISTDIR)/macos/VASSAL.sh $@/Contents/MacOS
+	cp $(DISTDIR)/VASSAL.sh $@/Contents/MacOS
 	jlink --module-path $(JDKDIR)/macos-$(*)/Contents/Home/jmods --no-header-files --no-man-pages --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/Contents/MacOS/jre
 	cp $(DISTDIR)/macos/VASSAL.icns $@/Contents/Resources
 	cp -a $(LIBDIR) $@/Contents/Resources/Java
@@ -200,7 +200,7 @@ $(TMPDIR)/linux-$(VERSION)-build/VASSAL-$(VERSION): $(LIBDIR)/Vengine.jar
 	cp -a $(DOCDIR) $@/doc
 	cp -a CHANGES LICENSE README.md $@
 	cp -a $(LIBDIR) $@/lib
-	cp dist/linux/VASSAL.sh $@
+	cp dist/VASSAL.sh $@
 	cp dist/linux/org.vassalengine.vassal.desktop $@
 	cp dist/linux/org.vassalengine.vassal.metainfo.xml $@
 	cp dist/linux/org.vassalengine.vassal.mime.xml $@
