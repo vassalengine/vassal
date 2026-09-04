@@ -182,7 +182,7 @@ deprecated: .compile
 		LICENSE 				\
 		README.md 				\
 		$(OUT_DIR)/icons/scalable/VASSAL.svg 	\
-		dist/linux/VASSAL.sh			\
+		dist/VASSAL.sh				\
 		$(STAGE_DIR)
 	chmod a+x $(STAGE_DIR)/VASSAL.sh
 
@@ -222,8 +222,6 @@ deprecated: .compile
 
 	cp $(STAGE_DIR)/VASSAL.svg \
 		debian/tmp/usr/share/icons/hicolor/scalable/apps/$(APP_NAME).svg
-
-	#cp dist/linux/vassal.sharedmimeinfo debian/vassal.sharedmimeinfo
 
 	touch .stage 
 
