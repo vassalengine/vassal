@@ -44,6 +44,7 @@ import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.ModuleExtensionFileFilter;
 import VASSAL.tools.io.DirectoryTreeDeleter;
+import VASSAL.tools.library.DownloadModuleDialog;
 import VASSAL.tools.logging.LogPane;
 import VASSAL.tools.menu.CheckBoxMenuItemProxy;
 import VASSAL.tools.menu.MenuBarProxy;
@@ -240,6 +241,7 @@ public class ModuleManagerWindow extends JFrame {
     fileMenu.add(mm.addKey("Main.play_module"));
     fileMenu.add(mm.addKey("Main.edit_module"));
     fileMenu.add(mm.addKey("Main.new_module"));
+    fileMenu.add(mm.addKey("Main.download_module"));
     fileMenu.addSeparator();
 
     if (!SystemUtils.IS_OS_MAC) {
@@ -340,6 +342,19 @@ public class ModuleManagerWindow extends JFrame {
     mm.addAction("Main.new_module", new Editor.NewModuleLaunchAction(this));
     mm.addAction("Main.import_module",
       new Editor.PromptImportLaunchAction(this));
+    mm.addAction("Main.download_module", new AbstractAction(
+        Resources.getString("Main.download_module")) {
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        final String summary = new DownloadModuleDialog(
+          ModuleManagerWindow.this).run(Info.getHomeDir());
+        if (summary != null) {
+          logger.info(summary);
+        }
+      }
+    });
     mm.addAction("Prefs.edit_preferences",
       Prefs.getGlobalPrefs().getEditor().getEditAction());
     mm.addAction("General.quit", shutDownAction);
