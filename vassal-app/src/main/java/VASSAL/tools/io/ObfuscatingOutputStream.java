@@ -47,7 +47,7 @@ public class ObfuscatingOutputStream extends FilterOutputStream {
   public static final String HEADER = "!VCSK"; //NON-NLS
 
   /** The header marking obfuscated output. */
-  public static final byte[] HEADER_BYTES = { 'V', 'O', 'B', 'S' };
+  public static final byte[] HEADER_BYTES = { '!', 'V', 'O', 'B', 'S' };
 
   private static final Random rand = new Random();
 
