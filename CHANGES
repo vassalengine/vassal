@@ -5,6 +5,7 @@
 * 14978: Allow cannotMove to be set as a DynamicProperty
 * 14583: MoveCameraButton now uses preferred center instead of viewport
     center
+* 14556: Support Multi-Location commands within Sub-Menus
 
 3.7.28 - ???
 

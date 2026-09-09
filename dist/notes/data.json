@@ -21,7 +21,8 @@
       "in": "3.8.0-beta1",
       "since": "3.8.0-beta2",
       "new_features": [
-        { "num": 14978, "desc": "Allow cannotMove to be set as a DynamicProperty" }
+        { "num": 14978, "desc": "Allow cannotMove to be set as a DynamicProperty" },
+        { "num": 14556, "desc": "Support Multi-Location commands within Sub-Menus" }
       ],
       "bug_fixes": [
         { "num": 15049, "desc": "Make Zone use full qualified path for property container" }
