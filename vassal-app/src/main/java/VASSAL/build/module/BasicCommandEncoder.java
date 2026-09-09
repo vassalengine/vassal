@@ -238,7 +238,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
    * @param type the type of the Decorator ("Trait") to be created. Once created, the Decorator should
    *             return this value from its {@link Decorator#myGetType} method.
    * @param inner the inner trait/piece of the Decorator (the "innermost" member of a game piece will be a {@link BasicPiece}; each
-   *              successive Trait in the trait list presented in a piece's {@link PieceDefiner} dialog represents a sep "outward").
+   *              successive Trait in the trait list presented in a piece's {@link VASSAL.counters.PieceDefiner} dialog represents a sep "outward").
    */
   public Decorator createDecorator(String type, GamePiece inner) {
     return decoratorFactories.getOrDefault(
