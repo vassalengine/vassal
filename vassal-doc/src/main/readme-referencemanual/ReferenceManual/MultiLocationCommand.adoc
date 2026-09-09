@@ -11,7 +11,7 @@ Sometimes it is useful for a piece to have context menu items representing actio
 
 Multi-Location Commands solve this problem by allowing a single trait to generate multiple menu items, filtering locations through a property expression. Each location that matches the property expression will be given its own menu item, with the text of the menu item being generated on the fly using the specified report format.
 
-Whenever the player selects _any_ of the menu items associated with a Multi-Location Command trait, the trait's single _key command_ will be generated, and can be intercepted by other traits (e.g., Trigger Action, Send to Location). To identify which map location was associated with the menu item picked by the player, these other traits can use the properties _LocationOfCommand_, _ZoneOfCommand_, _BoardOfCommand_, and _MapOfCommand_.
+Whenever the player selects _any_ of the menu items associated with a Multi-Location Command trait, the trait's single _key command_ will be generated, and can be intercepted by other traits (e.g., Trigger Action, Send to Location). To identify which map location was associated with the menu item picked by the player, these other traits can use the properties _LocationOfCommand_, _ZoneOfCommand_, _BoardOfCommand_, and _MapOfCommand_. Trait order is important. Any trait using these parameters must be above the Multi-Location trait.
 
 **NOTE:** It is recommended that Named Key Commands (rather than actual keystrokes) be used for Multi-Location Commands. If an actual keystroke is used and the user manually types the key command, the trait properties (e.g., _LocationOfCommand_) will be set to the first location found.
 
@@ -19,6 +19,8 @@ Whenever the player selects _any_ of the menu items associated with a Multi-Loca
 |===
 |
 *Description:*:: Description of the trait - displayed only in the Editor, in the piece definer dialog.
+
+*Sub-menu Reference:*:: When combining the Multi-Location command with other menu items a pop-up menu can get unwieldly. Moving the Multi-Location command to a Sub-menu can logically separate location commands from other menu items. This Reference field links the Multi-Location command to any Sub-menu containing the same Sub-command string. This field is optional and only required when placing the Multi-Location command(s) within a Sub-menu.
 
 *Type of Location:*:: The type of location that will be scanned (_Regions_ or _Zones_)
 
@@ -28,7 +30,7 @@ Whenever the player selects _any_ of the menu items associated with a Multi-Loca
 
 *Menu item format:*:: The format for constructing menu items from the locations. The trait's properties (e.g., _LocationOfCommand_, etc) can be used with $..$ to make string substitutions.
 
-*Sort menu items by this keystring:*:: This field lets you provide a keystring to control the order that the generated commands will appear in the context menu. For example ``$LocationOfCommand$`` would sort based on the location name, or ``$YOfCommand`` would order the list based on the Y position (i.e. from north to south).
+*Sort menu items by this keystring:*:: This field lets you provide a keystring to control the order that the generated commands will appear in the context menu. For example ``$LocationOfCommand$`` would sort based on the location name, or ``$YOfCommand$`` would order the list based on the Y position (i.e. from north to south).
 
 *Ascending sort:*:: Controls whether an ascending or descending sort is used.
 
@@ -43,6 +45,8 @@ image:images/MultiLocationCommand2.png[]
 image:images/MultiLocationCommand3.png[]
 
 image:images/MultiLocationCommand4.png[]
+
+image:images/MultiLocationCommand_submenu.png[]
 
 |===
 
