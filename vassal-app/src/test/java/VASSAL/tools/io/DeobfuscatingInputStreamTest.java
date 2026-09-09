@@ -70,7 +70,7 @@ public class DeobfuscatingInputStreamTest {
   /** Test plain text input which is exactly as long as the header. */
   @Test
   public void testHeaderLengthPlainInput() throws IOException {
-    final byte[] expected = "abcd".getBytes(StandardCharsets.UTF_8);
+    final byte[] expected = "abcde".getBytes(StandardCharsets.UTF_8);
     assertEquals(ObfuscatingOutputStream.HEADER_BYTES.length, expected.length);
     assertArrayEquals(expected, deobfuscate(expected));
   }

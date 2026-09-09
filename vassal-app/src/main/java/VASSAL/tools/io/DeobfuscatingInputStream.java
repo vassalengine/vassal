@@ -46,57 +46,23 @@ public class DeobfuscatingInputStream extends FilterInputStream {
   public DeobfuscatingInputStream(InputStream in) throws IOException {
     super(null);
 
-    final byte[] header = ObfuscatingOutputStream.HEADER_BYTES;
+    final byte[] buf = in.readNBytes(5);
 
-    // The legacy header is the longer of the two
-    final byte[] buf = new byte[LEGACY_HEADER.length];
-
-    int n = readFully(in, buf, header.length);
-
-    if (n == header.length) {
-      if (Arrays.equals(buf, 0, n, header, 0, n)) {
-        this.in = new DeobfuscatingInputStreamImpl(in);
-        return;
-      }
-
-      // Read the byte by which the legacy header is longer
-      final int b = in.read();
-      if (b >= 0) {
-        buf[n++] = (byte) b;
-
-        if (Arrays.equals(buf, LEGACY_HEADER)) {
-          this.in = new LegacyDeobfuscatingInputStreamImpl(in);
-          return;
-        }
-      }
+    if (Arrays.equals(buf, ObfuscatingOutputStream.HEADER_BYTES)) {
+      this.in = new DeobfuscatingInputStreamImpl(in);
     }
-
-    // Not obfuscated; pass the whole stream through unchanged
-    final PushbackInputStream pin = new PushbackInputStream(in, buf.length);
-    pin.unread(buf, 0, n);
-    this.in = pin;
-  }
-
-  /**
-   * Reads up to the given number of bytes.
-   *
-   * @param in the source
-   * @param bytes the destination
-   * @param len the number of bytes to read
-   * @return the number of bytes read
-   * @throws IOException if an I/O error occurs
-   */
-  private static int readFully(InputStream in, byte[] bytes, int len)
-                                                           throws IOException {
-    int count;
-    int n = 0;
-    while (n < len) {
-      count = in.read(bytes, n, len - n);
-      if (count < 0) break;
-      n += count;
+    else if (Arrays.equals(buf, LEGACY_HEADER)) {
+      this.in = new LegacyDeobfuscatingInputStreamImpl(in);
     }
-
-    return n;
+    else if (buf.length == 0) {
+      this.in = in;
+    }
+    else {
+      // Not obfuscated; pass the whole stream through unchanged
+      final PushbackInputStream pin = new PushbackInputStream(in, buf.length);
+      pin.unread(buf);
+      this.in = pin;
+    }
   }
 
   /**
@@ -138,12 +104,12 @@ public class DeobfuscatingInputStream extends FilterInputStream {
    */
   private static class LegacyDeobfuscatingInputStreamImpl extends FilterInputStream {
     private final byte key;
-    private final byte[] pair = new byte[2];
+    private final byte[] pair;
 
     public LegacyDeobfuscatingInputStreamImpl(InputStream in) throws IOException {
       super(in);
 
-      readFully(in, pair, 2);
+      pair = in.readNBytes(2);
       key = (byte) ((unhex(pair[0]) << 4) | unhex(pair[1]));
     }
 
@@ -157,7 +123,7 @@ public class DeobfuscatingInputStream extends FilterInputStream {
 
     @Override
     public int read() throws IOException {
-      switch (readFully(in, pair, 2)) {
+      switch (in.readNBytes(pair, 0, 2)) {
       case  0:
         return -1;
       case  2:
