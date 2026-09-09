@@ -212,10 +212,10 @@ public class MultiLocationCommand extends Decorator implements TranslatablePiece
     menuText.setFormat(st.nextToken(Resources.getString("Editor.MultiLocationCommand.loc_default_command")));
     key = st.nextNamedKeyStroke();
     curMapOnly = st.nextBoolean(true);
-    subMenu = st.nextToken("");
     menuSort.setFormat(st.nextToken(""));
     ascending = st.nextBoolean(true);
     numeric = st.nextBoolean(false);
+    subMenu = st.nextToken("");
   }
 
   @Override
@@ -227,10 +227,10 @@ public class MultiLocationCommand extends Decorator implements TranslatablePiece
       .append(menuText.getFormat())
       .append(key)
       .append(curMapOnly)
-      .append(subMenu)
       .append(menuSort.getFormat())
       .append(ascending)
-      .append(numeric);
+      .append(numeric)
+      .append(subMenu);
     return ID + se.getValue();
   }
 
@@ -567,10 +567,10 @@ public class MultiLocationCommand extends Decorator implements TranslatablePiece
         .append(menuTextInput.getValueString())
         .append(keyInput.getValueString())
         .append(curMapOnlyInput.getValueString())
-        .append(subMenuInput.getValueString())
         .append(menuSortInput.getValueString())
         .append(ascendingInput.getValueString())
-        .append(numericInput.getValueString());
+        .append(numericInput.getValueString())
+        .append(subMenuInput.getValueString());
 
       return ID + se.getValue();
     }
