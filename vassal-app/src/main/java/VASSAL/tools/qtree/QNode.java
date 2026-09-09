@@ -65,7 +65,6 @@ public class QNode<T> {
    * @param w Width of node.
    * @param h Height of node.
    * @param opt_parent Optional parent node.
-   * @constructor
    */
   public QNode(double x, double y, double w, double h, QNode<T> opt_parent) {
     this.x = x;

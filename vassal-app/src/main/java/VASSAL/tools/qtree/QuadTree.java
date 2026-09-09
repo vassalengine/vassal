@@ -298,10 +298,9 @@ public class QuadTree<T> implements Cloneable {
    * order (NE, SE, SW, NW).  The provided function will be called for each
    * leaf node that is encountered.
    * @param node The current node.
-   * @param fn The function to call
+   * @param func The function to call
    *     for each leaf node. This function takes the node as an argument, and its
    *     return value is irrelevant.
-   * @private
    */
   public void traverse(QNode<T> node, QFunc<T> func) {
     switch (node.getNodeType()) {
@@ -326,7 +325,6 @@ public class QuadTree<T> implements Cloneable {
    * @param y The y-coordinate of the point to search for.
    * @return {QuadTree.Node} The leaf node that matches the target,
    *     or null if it doesn't exist.
-   * @private
    */
   public QNode<T> find(QNode<T> node, double x, double y) {
     QNode<T> resposne = null;
