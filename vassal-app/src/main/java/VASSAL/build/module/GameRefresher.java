@@ -173,6 +173,8 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     };
     GameModule.getGameModule().getGameState().addGameComponent(this);
     GameModule.getGameModule().addCommandEncoder(this);
+    refreshAction.putValue(Action.MNEMONIC_KEY,
+            (int) Resources.getString("GameRefresher.refresh_counters.shortcut").charAt(0)); //NON-NLS
     refreshAction.setEnabled(false);
   }
 
