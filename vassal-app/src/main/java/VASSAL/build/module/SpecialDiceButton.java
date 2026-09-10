@@ -41,6 +41,8 @@ import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.RecursionLimitException;
+import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.imageop.ImageOp;
@@ -157,8 +159,18 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
     return " *** " + getConfigureName() + " = "; //$NON-NLS-1$ //$NON-NLS-2$
   }
 
+  /**
+   * Forwards the result of the roll to the {@link Chatter#send} method of the {@link Chatter} of the {@link GameModule}.
+   * Format is prefix+[comma-separated roll list]+suffix additionally a command for every die is generated
+   */
   @Deprecated(since = "2025-12-04", forRemoval = true)
   protected void DR() {
+    try {
+      doActions();
+    }
+    catch (RecursionLimitException ex) {
+      RecursionLimiter.infiniteLoop(ex);
+    }
   }
 
   /**
