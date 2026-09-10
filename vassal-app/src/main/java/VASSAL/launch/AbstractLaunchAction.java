@@ -39,6 +39,7 @@ import VASSAL.tools.io.ProcessLauncher;
 import VASSAL.tools.io.ProcessWrapper;
 import VASSAL.tools.lang.MemoryUtils;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -47,6 +48,7 @@ import org.slf4j.LoggerFactory;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
+import javax.swing.UIManager;
 import java.awt.Dimension;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -557,6 +559,17 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       final String vConf = System.getProperty("VASSAL.conf");
       if (vConf != null) result.add("-DVASSAL.conf=" + vConf); //NON-NLS
 
+      // pass on Swing look'n'feel
+      String laf = System.getProperty("swing.defaultlaf");
+      if (laf == null) {
+        // Get the current l'n'f name from the UIManager
+        laf = UIManager.getLookAndFeel().getClass().getName();
+      }
+      if (!StringUtils.isBlank(laf)) {
+        // Pass on the property to child process
+        result.add("-Dswing.defaultlaf=" + laf);
+      }
+      
       // set the classpath
       result.add("-cp"); //NON-NLS
       result.add(System.getProperty("java.class.path"));
