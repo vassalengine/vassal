@@ -137,8 +137,7 @@ public class DoActionButton extends AbstractToolbarItem
     launch = getLaunchButton(); // for compatibility
   }
 
-  // This only exists so SpecialDiceButton can avoid calling the other constructor
-  @SuppressWarnings("PMD.UnusedFormalParameter")
+  @Deprecated(since = "2025-12-04", forRemoval = true)
   protected DoActionButton(boolean dummy) { 
 
   }
@@ -532,8 +531,20 @@ public class DoActionButton extends AbstractToolbarItem
     loopIndexProperty.setPropertyValue(String.valueOf(indexValue));
   }
 
+  /**
+   * Invoked prior to executing doActions(). It can be overridden to preconfigure
+   * a Command and/or for some other initialization.
+   * @return A Command to which doAcions() can append. Return null to cancel doActions().
+   */
+  protected Command prepareActionsCommand() {
+    return new NullCommand();
+  }
+
   protected void doActions() throws RecursionLimitException {
-    final Command c = new NullCommand();
+    final Command c = prepareActionsCommand();
+    if (c == null) {
+      return;
+    }
     final GameModule mod = GameModule.getGameModule();
     final PropertySource ps;
 
