@@ -55,8 +55,7 @@ public class FontManager extends AbstractConfigurable {
   public static final OutlineFont DEFAULT_FONT = new OutlineFont(DIALOG, Font.PLAIN, 12, false);
   public static final FontStyle DEFAULT_STYLE = new FontStyle();
 
-//  public static final String[] ALLOWABLE_FONTS = new String[] { DIALOG, DIALOG_INPUT, MONOSPACED, SANS_SERIF, SERIF };
-  public static final String[] ALLOWABLE_FONTS = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+  public static String[] ALLOWABLE_FONTS; // Keep for possible sub-classing issues
 
   @Override
   public void build(Element e) {
@@ -169,5 +168,11 @@ public class FontManager extends AbstractConfigurable {
   @Override
   public boolean isMandatory() {
     return true;
+  }
+
+  public static String[] getAllowableFonts() {
+    // Do not cache the Allowable fonts, new ones may be added to the module
+    ALLOWABLE_FONTS = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+    return ALLOWABLE_FONTS;
   }
 }

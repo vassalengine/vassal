@@ -65,6 +65,9 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   public static final String SOUND_DIR = "sounds/"; //NON-NLS
   protected String soundDir = SOUND_DIR;
 
+  public static final String FONT_DIR = "fonts/"; //NON-NLS
+  protected String fontDir = FONT_DIR;
+
   public static final String ICON_DIR = "icons/"; //NON-NLS
 
   protected DataArchive() {
