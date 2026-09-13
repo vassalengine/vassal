@@ -1,21 +1,18 @@
-3.8.0-beta2 - ???
-
-* 15060: Stop writing obfuscated data in hex
-* 15049: Make Zone use full qualified path for property container
-* 14978: Allow cannotMove to be set as a DynamicProperty
-* 14583: MoveCameraButton now uses preferred center instead of viewport
-    center
-* 14556: Support Multi-Location commands within Sub-Menus
-
-3.7.28 - ???
+3.8.0-beta2 - 13 September 2026
 
 * 15068: Upgrded spotbugs-maven-plugin to 4.10.4.1
 * 15065: Switched from obsolote mockito-inline to mockito-core
 * 15063: Upgraded slf4j-api to 2.0.19
 * 15062: Upgraded byte-buddy to 1.18.13
+* 15060: Stop writing obfuscated data in hex
 * 15054: Fix Truncated text label on hidden pieces
 * 15050: Upgraded maven-surefire-plugin to 3.6.0
+* 15049: Make Zone use full qualified path for property container
 * 15042: Update MacOS launch script to allow more options
+* 14978: Allow cannotMove to be set as a DynamicProperty
+* 14583: MoveCameraButton now uses preferred center instead of viewport
+    center
+* 14556: Support Multi-Location commands within Sub-Menus
 
 3.7.27 - 6 September 2026
 
