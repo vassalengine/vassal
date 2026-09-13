@@ -2,7 +2,7 @@
 
 3.8.0-beta2 - 13 September 2026
 
-* 15068: Upgrded spotbugs-maven-plugin to 4.10.4.1
+* 15068: Upgraded spotbugs-maven-plugin to 4.10.4.1
 * 15065: Switched from obsolote mockito-inline to mockito-core
 * 15063: Upgraded slf4j-api to 2.0.19
 * 15062: Upgraded byte-buddy to 1.18.13
