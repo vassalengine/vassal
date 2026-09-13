@@ -30,7 +30,7 @@
         { "num": 15042, "desc": "Update MacOS launch script to allow more options" }
       ],
       "other": [
-        { "num": 15068, "desc": "Upgrded spotbugs-maven-plugin to 4.10.4.1" },
+        { "num": 15068, "desc": "Upgraded spotbugs-maven-plugin to 4.10.4.1" },
         { "num": 15065, "desc": "Switched from obsolote mockito-inline to mockito-core" },
         { "num": 15063, "desc": "Upgraded slf4j-api to 2.0.19" },
         { "num": 15062, "desc": "Upgraded byte-buddy to 1.18.13" },
