@@ -56,8 +56,14 @@
   </screenshots>
 
   <releases>
+    <release type="stable" version="3.8.0~beta2" date="2026-09-13">
+      <url type="details">https://github.com/vassalengine/vassal/releases/tag/3.8.0-beta2</url>
+    </release>
     <release type="stable" version="3.7.27" date="2026-08-06">
       <url type="details">https://github.com/vassalengine/vassal/releases/tag/3.7.27</url>
+    </release>
+    <release type="stable" version="3.8.0~beta1" date="2026-08-18">
+      <url type="details">https://github.com/vassalengine/vassal/releases/tag/3.8.0-beta1</url>
     </release>
     <release type="stable" version="3.7.26" date="2026-07-29">
       <url type="details">https://github.com/vassalengine/vassal/releases/tag/3.7.26</url>
