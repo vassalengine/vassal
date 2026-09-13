@@ -18,28 +18,15 @@
   ],
   "changes": [
     {
-      "in": "3.8.0-beta2",
-      "since": "3.8.0-beta1 and 3.7.27",
+      "in": "3.8.0-beta3",
+      "since": "3.8.0-beta2 and 3.7.27",
       "new_features": [
-        { "num": 14978, "desc": "Allow cannotMove to be set as a DynamicProperty" },
-        { "num": 14556, "desc": "Support Multi-Location commands within Sub-Menus" }
       ],
       "bug_fixes": [
-        { "num": 15054, "desc": "Fix Truncated text label on hidden pieces" },
-
-        { "num": 15049, "desc": "Make Zone use full qualified path for property container" }
       ],
       "improvements": [
-        { "num": 15060, "desc": "Stop writing obfuscated data in hex" },
-        { "num": 15042, "desc": "Update MacOS launch script to allow more options" },
-        { "num": 14583, "desc": "MoveCameraButton now uses preferred center instead of viewport center" }
       ],
       "other": [
-        { "num": 15068, "desc": "Upgrded spotbugs-maven-plugin to 4.10.4.1" },
-        { "num": 15065, "desc": "Switched from obsolote mockito-inline to mockito-core" },
-        { "num": 15063, "desc": "Upgraded slf4j-api to 2.0.19" },
-        { "num": 15062, "desc": "Upgraded byte-buddy to 1.18.13" },
-        { "num": 15050, "desc": "Upgraded maven-surefire-plugin to 3.6.0" }
       ]
     }
   ]
