@@ -27,7 +27,6 @@ Build-Depends-Indep:
         libplexus-utils2-java,
 	libslf4j-java (>= 1.7.32),
 	libswingx-java (>= 1.6.2),
-        libtimingframework-java (>= 1.0),
 	libxml-commons-external-java,
 	libxmlgraphics-commons-java
 Standards-Version: 4.5.1
@@ -58,7 +57,6 @@ Depends:
         libplexus-utils2-java,
 	libslf4j-java (>= 1.7.32),
 	libswingx-java (>= 1.6.2),
-        libtimingframework-java (>= 1.0),
 	libxml-commons-external-java,
 	libxmlgraphics-commons-java,
         ${misc:Depends}

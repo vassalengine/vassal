@@ -79,7 +79,6 @@ APP_JARS	:= /usr/share/java/asm.jar			\
 		   /usr/share/java/plexus-utils.jar		\
 		   /usr/share/java/slf4j-api.jar		\
 		   /usr/share/java/swingx.jar			\
-		   /usr/share/java/TimingFramework.jar		\
 		   /usr/share/java/xml-apis-ext.jar		\
 		   /usr/share/java/xmlgraphics-commons.jar
 
