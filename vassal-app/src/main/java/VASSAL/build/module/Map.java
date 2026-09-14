@@ -222,11 +222,19 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   protected static boolean changeReportingEnabled = true;
   protected String mapID = ""; //$NON-NLS-1$
   protected String mapName = ""; //$NON-NLS-1$
+
   protected static final UniqueIdManager idMgr = new UniqueIdManager("Map"); //$NON-NLS-1$
   protected JPanel theMap;  // Our main visual interface component
   protected ArrayList<Drawable> drawComponents = new ArrayList<>(); //NOPMD
   protected JLayeredPane layeredPane = new JLayeredPane();
   protected JScrollPane scroll;
+
+  protected static String clickMap; //$NON-NLS-1$
+  protected static int clickMapX; //$NON-NLS-1$
+  protected static int clickMapY; //$NON-NLS-1$
+  protected static String clickZone; //$NON-NLS-1$
+  public static final String MAP_CLICKED_GHK = "VassalClickGHK"; // NON-NLS
+
 
   @SuppressWarnings("removal")
   @Deprecated(since = "2020-11-05", forRemoval = true)
@@ -293,6 +301,18 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   private DoubleConfigurer preferredScrollRateConfig;
 
   private boolean anyMouseoverDrawn = false;
+
+  public static String getClickMap() {
+    return clickMap; }
+
+  public static String getClickZone() {
+    return clickZone; }
+
+  public static int getClickMapX() {
+    return clickMapX; }
+
+  public static int getClickMapY() {
+    return clickMapY; }
 
   public boolean isAnyMouseoverDrawn() {
     return anyMouseoverDrawn;
@@ -2021,6 +2041,24 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     clearFirst = true;
     theMap.repaint();
     activeMap = this;
+
+    // Look for VassalActiveMapGHK in zone or otherwise in map / module
+    // FIXME - incorrect zone found at some points (non-rectangular shape?). Also, why not finding some zones.
+
+    final Point mp = scale(p, 1 / activeMap.getZoom());
+    final Zone z = findZone(mp);
+    final String activeMapGHK = (z != null ? String.valueOf(z.getProperty(MAP_CLICKED_GHK)) : String.valueOf(activeMap.getProperty(MAP_CLICKED_GHK)));
+
+    // TODO VassalClickLocationName property ?
+    if (activeMapGHK != null && !activeMapGHK.equals("null")) { //NON-NLS
+      clickMapX = mp.x;
+      clickMapY = mp.y;
+      clickMap = activeMap.getConfigureName();
+      clickZone = (z == null ? "" : z.getConfigureName());
+      System.out.println("map=" + clickMap + " @" + clickMapX + ":" + clickMapY + " z=" + clickZone + " GHK=" + activeMapGHK);
+      GameModule.getGameModule().fireKeyStroke(NamedKeyStroke.of(activeMapGHK));
+    }
+
   }
 
   /**
