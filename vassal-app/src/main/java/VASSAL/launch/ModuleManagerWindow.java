@@ -218,6 +218,7 @@ public class ModuleManagerWindow extends JFrame {
         System.exit(0);
       }
     };
+    shutDownAction.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("General.quit.shortcut").charAt(0)); //NON-NLS
     shutDownAction.putValue(Action.NAME, Resources.getString(Resources.QUIT));
 
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -251,6 +252,7 @@ public class ModuleManagerWindow extends JFrame {
     // tools menu
     final MenuProxy toolsMenu =
       new MenuProxy(Resources.getString("General.tools"));
+    toolsMenu.setMnemonic(Resources.getString("General.tools.shortcut").charAt(0)); //NON-NLS
 
     // Initialize Global Preferences
     Prefs.getGlobalPrefs().getEditor().initDialog(this);
@@ -267,8 +269,7 @@ public class ModuleManagerWindow extends JFrame {
     Prefs.getGlobalPrefs().addOption(Resources.getString("Prefs.general_tab"), developerInfoConfig);
     developerInfoConfig.addPropertyChangeListener(e1 -> updateColumnDisplay());
 
-    toolsMenu.add(new CheckBoxMenuItemProxy(new AbstractAction(
-                   Resources.getString("Chat.server_status")) {
+    final AbstractAction chatServerAction = new AbstractAction(Resources.getString("Chat.server_status")) { //NON-NLS
       private static final long serialVersionUID = 1L;
 
       @Override
@@ -280,7 +281,9 @@ public class ModuleManagerWindow extends JFrame {
           splitPane.setDividerLocation(getPreferredDividerLocation());
         }
       }
-    }, serverStatusConfig.booleanValue()));
+    };
+    chatServerAction.putValue(Action.MNEMONIC_KEY, (int) Resources.getString("Chat.server_status.shortcut").charAt(0)); //NON-NLS
+    toolsMenu.add(new CheckBoxMenuItemProxy(chatServerAction, serverStatusConfig.booleanValue()));
 
     toolsMenu.add(mm.addKey("Main.import_module"));
 
@@ -291,6 +294,7 @@ public class ModuleManagerWindow extends JFrame {
         ctca.setEnabled(Boolean.TRUE.equals(e.getNewValue()));
       }
     });
+    ctca.putValue(Action.MNEMONIC_KEY, (int) Resources.getString("ModuleManager.clear_tilecache.shortcut").charAt(0)); //NON-NLS
     toolsMenu.add(new MenuItemProxy(ctca));
     
     final CleanupTileCacheAction utca = new CleanupTileCacheAction();
