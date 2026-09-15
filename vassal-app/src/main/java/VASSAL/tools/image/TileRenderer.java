@@ -17,6 +17,7 @@
 
 package VASSAL.tools.image;
 
+import VASSAL.build.GameModule;
 import VASSAL.build.module.map.boardPicker.board.GridOp;
 import VASSAL.build.module.map.boardPicker.board.MapGrid;
 import VASSAL.build.module.map.boardPicker.board.SolidColorOp;
@@ -66,6 +67,25 @@ public class TileRenderer {
     if (t1.y > t2.y) return 1;
     return t1.x - t2.x;
   };
+
+  public SourceOp loadImage(String imageFile) {
+    if (imageFile == null || imageFile.isBlank()) {
+      return null;
+    }
+
+    final ImageTileSource ts =
+      GameModule.getGameModule().getImageTileSource();
+
+    boolean tiled = false;
+    try {
+      tiled = ts.tileExists("images/" + imageFile, 0, 0, 1.0);
+    }
+    catch (final ImageIOException e) {
+      // ignore, not tiled
+    }
+
+    return tiled ? Op.loadLarge(imageFile) : Op.load(imageFile);
+  }
 
   public void drawTile(Graphics g, Future<BufferedImage> fim,
                           int tx, int ty, Component obs) {
@@ -298,4 +318,4 @@ public class TileRenderer {
 
     return scaledImageOp;
   }
-} 
+}

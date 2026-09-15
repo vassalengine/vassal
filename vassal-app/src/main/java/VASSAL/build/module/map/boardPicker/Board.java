@@ -19,7 +19,6 @@ package VASSAL.build.module.map.boardPicker;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
-import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.boardPicker.board.HexGrid;
@@ -32,10 +31,7 @@ import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.SingleChildInstance;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.image.ImageIOException;
-import VASSAL.tools.image.ImageTileSource;
 import VASSAL.tools.image.TileRenderer;
-import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.ScaleOp;
 import VASSAL.tools.imageop.SourceOp;
 
@@ -212,29 +208,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
         val = ((File) val).getName();
       }
       imageFile = (String) val;
-
-      if (imageFile == null || imageFile.isBlank()) {
-        boardImageOp = null;
-      }
-      else {
-        final ImageTileSource ts =
-          GameModule.getGameModule().getImageTileSource();
-
-        boolean tiled = false;
-        try {
-          tiled = ts.tileExists("images/" + imageFile, 0, 0, 1.0);  //NON-NLS
-        }
-        catch (final ImageIOException e) {
-          // ignore, not tiled
-        }
-
-        if (tiled) {
-          boardImageOp = Op.loadLarge(imageFile);
-        }
-        else {
-          boardImageOp = Op.load(imageFile);
-        }
-      }
+      boardImageOp = renderer.loadImage(imageFile);
     }
     else if (WIDTH.equals(key)) {
       if (val instanceof String) {

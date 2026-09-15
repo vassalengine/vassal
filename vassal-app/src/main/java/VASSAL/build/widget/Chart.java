@@ -39,7 +39,6 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.image.TileRenderer;
-import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.ScaleOp;
 import VASSAL.tools.imageop.SourceOp;
 import VASSAL.tools.swing.SwingUtils;
@@ -78,6 +77,10 @@ public class Chart extends Widget {
 
     @Override
     public Dimension getPreferredSize() {
+      if (srcOp == null) {
+        return new Dimension(0, 0);
+      }
+
       final Dimension size = srcOp.getSize();
       size.width *= zoom;
       size.height *= zoom;
@@ -146,13 +149,12 @@ public class Chart extends Widget {
   public Component getComponent() {
     if (chart == null) {
       view = new View();
-      srcOp = (fileName == null || fileName.isBlank()) ? null : Op.load(fileName);
-      boundaries.setSize(srcOp.getSize());
+      boundaries.setSize(srcOp != null ? srcOp.getSize() : new Dimension(0, 0));
 
-      final Dimension d = view.getPreferredSize();
-      if (d.width > 300 || d.height > 300) {
+      final Dimension vpref = view.getPreferredSize();
+      if (vpref.width > 300 || vpref.height > 300) {
         final JScrollPane scroll = new AdjustableSpeedScrollPane(view);
-        scroll.getViewport().setPreferredSize(view.getPreferredSize());
+        scroll.getViewport().setPreferredSize(vpref);
         scroll.getViewport().setAlignmentY(0.0F);
         chart = scroll;
       }
@@ -190,15 +192,14 @@ public class Chart extends Widget {
         val = ((File) val).getName();
       }
       fileName = (String) val;
+      srcOp = renderer.loadImage(fileName);
+
       if (view != null) {
-        srcOp = (fileName == null || fileName.isBlank()) ? null : Op.load(fileName);
-        if (srcOp != null) {
-          view.revalidate();
-        }
+        view.revalidate();
       }
     }
     else if (DESCRIPTION.equals(key)) {
-      description = (String)val;
+      description = (String) val;
     }
   }
 
