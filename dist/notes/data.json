@@ -27,6 +27,7 @@
         { "num": 15054, "desc": "Fix Truncated text label on hidden pieces" }
       ],
       "improvements": [
+        { "num": 15083, "desc": "Tile large Charts" },
         { "num": 15042, "desc": "Update MacOS launch script to allow more options" }
       ],
       "other": [
