@@ -30,6 +30,8 @@
         { "num": 15042, "desc": "Update MacOS launch script to allow more options" }
       ],
       "other": [
+        { "num": 15085, "desc": "Upgraded maven-deploy-plugin to 3.2.0" },
+        { "num": 15084, "desc": "Upgraded maven-install-plugin to 3.2.0" },
         { "num": 15080, "desc": "Upgraded clirr-maven-plugin to 2.9" },
         { "num": 15079, "desc": "Upgraded exec-maven-plugin to 3.6.4" },
         { "num": 15068, "desc": "Upgraded spotbugs-maven-plugin to 4.10.4.1" },
