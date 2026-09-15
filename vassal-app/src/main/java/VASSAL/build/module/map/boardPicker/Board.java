@@ -318,7 +318,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
       reversed,
       cacheGrid,
       grid,
-      map,
+      map.getView(),
       obs
     );
   }

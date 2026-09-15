@@ -17,7 +17,6 @@
 
 package VASSAL.tools.image;
 
-import VASSAL.build.module.Map;
 import VASSAL.build.module.map.boardPicker.board.GridOp;
 import VASSAL.build.module.map.boardPicker.board.MapGrid;
 import VASSAL.build.module.map.boardPicker.board.SolidColorOp;
@@ -99,7 +98,7 @@ public class TileRenderer {
     boolean reversed,
     boolean cacheGrid,
     final MapGrid grid,
-    final Map map,
+    final Component view,
     final Component obs
   ) {
 
@@ -196,7 +195,7 @@ public class TileRenderer {
 // avoid mixing requests (and fade-in) between maps and their overview
 // maps. This is a kludge which should be fixed when model-view
 // separation happens.
-            if (map != null && obs == map.getView()) {
+            if (obs == view) {
               if (requested.containsKey(tile)) {
                 requested.remove(tile);
                 final Point t = tile;
@@ -240,7 +239,7 @@ public class TileRenderer {
             }
           }
           else {
-            if (map != null && obs == map.getView()) {
+            if (obs == view) {
               requested.putIfAbsent(tile, fim);
             }
             else {
@@ -258,7 +257,7 @@ public class TileRenderer {
       }
     }
 
-    if (map != null && obs == map.getView()) {
+    if (obs == view) {
       for (final Point tile : requested.keySet().toArray(new Point[0])) {
         if (Arrays.binarySearch(tiles, tile, tileOrdering) < 0) {
           requested.remove(tile);
