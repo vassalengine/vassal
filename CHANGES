@@ -4,8 +4,9 @@
 
 3.8.0-beta2 - 13 September 2026
 
-* 15085; Upgraded maven-deploy-plugin to 3.2.0
+* 15085: Upgraded maven-deploy-plugin to 3.2.0
 * 15084: Upgraded maven-install-plugin to 3.2.0
+* 15083: Tile large Charts
 * 15080: Upgraded clirr-maven-plugin to 2.9
 * 15079: Upgraded exec-maven-plugin to 3.6.4
 * 15068: Upgraded spotbugs-maven-plugin to 4.10.4.1
