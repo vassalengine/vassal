@@ -68,12 +68,6 @@ public class TileRenderer {
     return t1.x - t2.x;
   };
 
-  private ScaleOp scaledImageOp = null;
-
-  public void regenerateScaledImageOp() {
-    scaledImageOp = null;
-  }
-
   public void drawTile(Graphics g, Future<BufferedImage> fim,
                           int tx, int ty, Component obs) {
     try {
@@ -92,7 +86,7 @@ public class TileRenderer {
     }
   }
 
-  public void renderRegion(
+  public ScaleOp renderRegion(
     final Graphics g,
     final Point2D location,
     Rectangle visibleRect,
@@ -100,6 +94,7 @@ public class TileRenderer {
     final Rectangle boundaries,
     double magnification,
     final SourceOp boardImageOp,
+    ScaleOp scaledImageOp,
     final Color color,
     boolean reversed,
     boolean cacheGrid,
@@ -119,7 +114,7 @@ public class TileRenderer {
     );
 
     if (!visibleRect.intersects(bounds)) {
-      return;
+      return scaledImageOp;
     }
 
     final Graphics2D g2d = (Graphics2D) g;
@@ -301,5 +296,7 @@ public class TileRenderer {
     if (!cacheGrid && grid != null) {
       grid.draw(g, bounds, visibleRect, zoom, reversed);
     }
+
+    return scaledImageOp;
   }
 } 

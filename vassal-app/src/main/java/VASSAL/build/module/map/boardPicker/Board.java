@@ -305,7 +305,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
                            Rectangle visibleRect,
                            double zoom,
                            final Component obs) {
-    renderer.renderRegion(
+    scaledImageOp = renderer.renderRegion(
       g,
       location,
       visibleRect,
@@ -313,6 +313,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
       boundaries,
       magnification,
       boardImageOp,
+      scaledImageOp,
       color,
       reversed,
       cacheGrid,
@@ -327,7 +328,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
       if (reversed != val) {
         reversed = val;
         // get a new rendered version on next paint
-        renderer.regenerateScaledImageOp();
+        scaledImageOp = null;
       }
     }
   }
