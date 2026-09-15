@@ -23,6 +23,7 @@ import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.configure.IntConfigurer;
+import VASSAL.configure.LookAndFeelConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ReadErrorDialog;
 
@@ -66,7 +67,8 @@ public class Prefs implements Closeable {
   public static final String OVERRIDE_DEFAULT_FONT_SIZE = "overrideDefaultFontSize"; //NON-NLS
 
   public static final String TRANSLATABLE_SUPPORT = "translatableSupport"; //NON-NLS
-
+  public static final String LOOK_AND_FEEL = "lookAndFeel"; //NON-NLS
+  
   private static Prefs globalPrefs; // A Global Preferences object
 
   private final Map<String, Configurer> options = new HashMap<>();
@@ -343,6 +345,12 @@ public class Prefs implements Closeable {
     );
 
     globalPrefs.addOption(Resources.getString("Prefs.general_tab"), auditConf);
+
+    final LookAndFeelConfigurer laf =
+      new LookAndFeelConfigurer(LOOK_AND_FEEL,
+                                Resources.getString("General.lookAndFeel"));
+    globalPrefs.addOption(Resources.getString("Prefs.general_tab"), laf);
+
   }
 
   public static String sanitize(String str) {
