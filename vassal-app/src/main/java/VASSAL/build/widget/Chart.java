@@ -128,7 +128,7 @@ public class Chart extends Widget {
         false,
         false,
         null,
-        null, // FIXME: map
+        this,
         this
       );
 
