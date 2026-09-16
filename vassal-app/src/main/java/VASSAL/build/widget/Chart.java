@@ -152,15 +152,11 @@ public class Chart extends Widget {
       boundaries.setSize(srcOp != null ? srcOp.getSize() : new Dimension(0, 0));
 
       final Dimension vpref = view.getPreferredSize();
-      if (vpref.width > 300 || vpref.height > 300) {
-        final JScrollPane scroll = new AdjustableSpeedScrollPane(view);
-        scroll.getViewport().setPreferredSize(vpref);
-        scroll.getViewport().setAlignmentY(0.0F);
-        chart = scroll;
-      }
-      else {
-        chart = view;
-      }
+
+      final JScrollPane scroll = new AdjustableSpeedScrollPane(view);
+      scroll.getViewport().setPreferredSize(vpref);
+      scroll.getViewport().setAlignmentY(0.0F);
+      chart = scroll;
     }
     return chart;
   }
