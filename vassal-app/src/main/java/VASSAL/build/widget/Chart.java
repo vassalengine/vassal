@@ -52,7 +52,7 @@ import VASSAL.tools.swing.SwingUtils;
 public class Chart extends Widget {
   public static final String NAME = "chartName"; //NON-NLS
   public static final String FILE = "fileName"; //NON-NLS
-  private Component chart;
+  private JScrollPane scroll;
   private String fileName;
   private SourceOp srcOp;
   private ScaleOp scaleOp;
@@ -147,18 +147,17 @@ public class Chart extends Widget {
 
   @Override
   public Component getComponent() {
-    if (chart == null) {
+    if (scroll == null) {
       view = new View();
       boundaries.setSize(srcOp != null ? srcOp.getSize() : new Dimension(0, 0));
 
       final Dimension vpref = view.getPreferredSize();
 
-      final JScrollPane scroll = new AdjustableSpeedScrollPane(view);
+      scroll = new AdjustableSpeedScrollPane(view);
       scroll.getViewport().setPreferredSize(vpref);
       scroll.getViewport().setAlignmentY(0.0F);
-      chart = scroll;
     }
-    return chart;
+    return scroll;
   }
 
   public String getFileName() {
