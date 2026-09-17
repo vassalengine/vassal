@@ -23,6 +23,7 @@ import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.configure.IntConfigurer;
+import VASSAL.configure.LookAndFeelConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ReadErrorDialog;
 
@@ -66,7 +67,9 @@ public class Prefs implements Closeable {
   public static final String OVERRIDE_DEFAULT_FONT_SIZE = "overrideDefaultFontSize"; //NON-NLS
 
   public static final String TRANSLATABLE_SUPPORT = "translatableSupport"; //NON-NLS
-
+  public static final String LOOK_AND_FEEL = "lookAndFeel"; //NON-NLS
+  public static final String LOOK_AND_FEEL_JAR_CLASSES = "lookAndFeelJarClasses"; //NON-NLS
+  
   private static Prefs globalPrefs; // A Global Preferences object
 
   private final Map<String, Configurer> options = new HashMap<>();
@@ -343,8 +346,19 @@ public class Prefs implements Closeable {
     );
 
     globalPrefs.addOption(Resources.getString("Prefs.general_tab"), auditConf);
-  }
 
+    final LookAndFeelConfigurer lafConf = new LookAndFeelConfigurer(
+      Resources.getString("Prefs.look_and_feel"),
+      LOOK_AND_FEEL, LOOK_AND_FEEL_JAR_CLASSES,
+      Resources.getString("Prefs.look_and_feel_current"),
+      Resources.getString("Prefs.look_and_feel_jar_classes"));
+    globalPrefs.addOption(null,
+                          lafConf.getJarClassesConfigurer());
+    globalPrefs.addOption(null,
+                          lafConf.getCurrentConfigurer());
+    globalPrefs.getEditor().addOption(Resources.getString("Prefs.look_and_feel_tab"),
+                                      lafConf, null);
+  }
   public static String sanitize(String str) {
     /*
       Java gives us no way of checking whether a string is a valid
