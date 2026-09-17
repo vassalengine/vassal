@@ -37,6 +37,7 @@ drt=0
 dbg=0
 src=
 hlp=0
+ecl=
 
 # --- Check for Java -------------------------------------------------
 if test ! -x "$java" ; then
@@ -123,6 +124,10 @@ while test $# -gt 0 ; do
         x--server)
             entry=$srv_entry
             ;;
+        x--extra-class-path|x-L)
+            ecl="$2:${ecl}"
+            shift
+            ;;
         *)
             # If argument is a file ... 
             if test -f "$1" ; then
@@ -150,7 +155,7 @@ fi
 
 
 # --- Run java with defines, entry point, and other arguments --------
-"${cmd}" "${defs[@]}" -classpath "${jar}" "$entry" "${args[@]}"
+"${cmd}" "${defs[@]}" -classpath "${ecl}${jar}" "$entry" "${args[@]}"
 
 # --- Extra help -----------------------------------------------------
 if test $hlp -gt 0 ; then
@@ -159,12 +164,14 @@ if test $hlp -gt 0 ; then
 	this wrapper script allows for a number of additional options.
 
 	Options:
-	  -g, --debug		  Run the VASSAL process in a debugger
-	  -s, --source directory  Set VASSAL source directory for debugger
-	  -Dvariable=value	  Set Java variable to value
-	  --direct		  By-pass the module manager and run
-	                          player, editor, ..., directly
-	                          (useful when debugging)
+	  -g, --debug		     Run the VASSAL process in a debugger
+	  -s, --source directory     Set VASSAL source directory for debugger
+	  -Dvariable=value	     Set Java variable to value
+	  --direct		     By-pass the module manager and run
+	                             player, editor, ..., directly
+	                             (useful when debugging)
+	  --extra-class-path,-L JAR  Specify extra JAR to load, for example
+	                             to load custom Look'n'Feel
 	EOF
 fi
 # /opt/vassal/current/VASSAL.sh "$@"

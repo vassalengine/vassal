@@ -40,6 +40,7 @@ srv_url=null
 drt=0
 src=
 hlp=0
+ecl=
 
 # --- Parse command line ---------------------------------------------
 while test $# -gt 0 ; do
@@ -89,7 +90,11 @@ while test $# -gt 0 ; do
             if test $drt -gt 0 ; then
                 entry=$edt_entry
             fi
-                        ;;
+            ;;
+        x--extra-class-path|x-L)
+            ecl="$2:${ecl}"
+            shift
+            ;;
         x--server)
             entry=$srv_entry
             ;;
@@ -126,10 +131,12 @@ if test $hlp -gt 0 ; then
 	this wrapper script allows for a number of additional options.
 
 	Options:
-	  -Dvariable=value	  Set Java variable to value
-	  --direct		  By-pass the module manager and run
-	                          player, editor, ..., directly.
-	  --server                Start local Vassal server
+	  -Dvariable=value	     Set Java variable to value
+	  --direct		     By-pass the module manager and run
+	                             player, editor, ..., directly.
+	  --server                   Start local Vassal server
+	  --extra-class-path,-L JAR  Specify extra JAR to load, for example
+	                             to load custom Look'n'Feel
 	EOF
 fi
 #
