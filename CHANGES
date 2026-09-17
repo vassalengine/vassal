@@ -1,5 +1,6 @@
 3.7.28 - ???
 
+* 15094: Upgraded asciidoctorj-pdf to 2.3.27
 * 15085: Upgraded maven-deploy-plugin to 3.2.0
 * 15084: Upgraded maven-install-plugin to 3.2.0
 * 15083: Tile large Charts

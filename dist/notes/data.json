@@ -31,6 +31,7 @@
         { "num": 15042, "desc": "Update MacOS launch script to allow more options" }
       ],
       "other": [
+        { "num": 15094, "desc": "Upgraded asciidoctorj-pdf to 2.3.27" },
         { "num": 15085, "desc": "Upgraded maven-deploy-plugin to 3.2.0" },
         { "num": 15084, "desc": "Upgraded maven-install-plugin to 3.2.0" },
         { "num": 15080, "desc": "Upgraded clirr-maven-plugin to 2.9" },
