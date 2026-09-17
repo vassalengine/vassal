@@ -4,6 +4,7 @@
 
 3.8.0-beta2 - 13 September 2026
 
+* 15094: Upgraded asciidoctorj-pdf to 2.3.27
 * 15085: Upgraded maven-deploy-plugin to 3.2.0
 * 15084: Upgraded maven-install-plugin to 3.2.0
 * 15083: Tile large Charts
