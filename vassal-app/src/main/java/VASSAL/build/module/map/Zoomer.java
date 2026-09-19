@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2000-2008 by Rodney Kinney, Joel Uckelman
+ * Copyright (c) 2000-2026 by Rodney Kinney, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -28,6 +28,7 @@ import VASSAL.command.Command;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
+import VASSAL.configure.Levels;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.i18n.Resources;
@@ -132,7 +133,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
    * @author Joel Uckelman
    * @since 3.1.0
    */
-  protected static class State {
+  protected static class State implements Levels {
     private double custom;
     private final double[] levels;
     private int cur;
@@ -200,10 +201,12 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       custom = -1;
     }
 
+    @Override
     public int getInitialLevel() {
       return initial;
     }
 
+    @Override
     public int getLevelCount() {
       return levels.length;
     }
@@ -230,10 +233,15 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       return custom < 0 ? cur < levels.length - 1 : cur < levels.length;
     }
 
+    @Override
     public List<Double> getLevels() {
       final List<Double> l = new ArrayList<>(levels.length);
       for (final double d : levels) l.add(d);
       return l;
+    }
+
+    @Override
+    public void reset(List<Double> l, int i) {
     }
   }
 
