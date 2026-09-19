@@ -87,28 +87,40 @@ public class Chart extends Widget {
 
   private static final Point2D ORIGIN = new Point2D.Double(0.0, 0.0);
 
-  private static final double e_n01 = Math.exp(-0.1);
-  private static final double e_p01 = Math.exp(0.1);
+/*
+  // zoom levels produced by this:
+
+  private static final double[] defaultZoomLevels = IntStream.range(-8, 12)
+    .mapToDouble(i -> Math.round(Math.exp(i / 10.0) * 100) / 100.0)
+    .toArray();
+
+  // except that e^0.7 and e^1.1 are rounded to 2.0 and 3.0, respectively
+*/
 
   private static final double[] defaultZoomLevels = {
-    e_n01 * e_n01 * e_n01 * e_n01 * e_n01,
-    e_n01 * e_n01 * e_n01 * e_n01,
-    e_n01 * e_n01 * e_n01,
-    e_n01 * e_n01,
-    e_n01,
+    0.45,
+    0.5,
+    0.55,
+    0.61,
+    0.67,
+    0.74,
+    0.82,
+    0.9,
     1.0,
-    e_p01,
-    e_p01 * e_p01,
-    e_p01 * e_p01 * e_p01,
-    e_p01 * e_p01 * e_p01 * e_p01,
-    e_p01 * e_p01 * e_p01 * e_p01 * e_p01,
-    e_p01 * e_p01 * e_p01 * e_p01 * e_p01 * e_p01,
-    e_p01 * e_p01 * e_p01 * e_p01 * e_p01 * e_p01 * e_p01,
-    e_p01 * e_p01 * e_p01 * e_p01 * e_p01 * e_p01 * e_p01 * e_p01,
-    e_p01 * e_p01 * e_p01 * e_p01 * e_p01 * e_p01 * e_p01 * e_p01 * e_p01,
+    1.11,
+    1.22,
+    1.35,
+    1.49,
+    1.65,
+    1.82,
+    2.0,
+    2.23,
+    2.46,
+    2.72,
+    3.0
   };
 
-  protected static final int defaultInitialZoomLevel = 5;
+  protected static final int defaultInitialZoomLevel = 8;
 
   private static class State implements Levels {
     private double[] levels;
