@@ -31,6 +31,7 @@
         { "num": 15042, "desc": "Update MacOS launch script to allow more options" }
       ],
       "other": [
+        { "num": 15096, "desc": "Upgraded byte-buddy to 1.18.14" },
         { "num": 15094, "desc": "Upgraded asciidoctorj-pdf to 2.3.27" },
         { "num": 15085, "desc": "Upgraded maven-deploy-plugin to 3.2.0" },
         { "num": 15084, "desc": "Upgraded maven-install-plugin to 3.2.0" },
@@ -39,7 +40,6 @@
         { "num": 15068, "desc": "Upgraded spotbugs-maven-plugin to 4.10.4.1" },
         { "num": 15065, "desc": "Switched from obsolote mockito-inline to mockito-core" },
         { "num": 15063, "desc": "Upgraded slf4j-api to 2.0.19" },
-        { "num": 15062, "desc": "Upgraded byte-buddy to 1.18.13" },
         { "num": 15050, "desc": "Upgraded maven-surefire-plugin to 3.6.0" }
       ]
     },

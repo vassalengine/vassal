@@ -1,5 +1,6 @@
 3.7.28 - ???
 
+* 15096: Upgraded byte-buddy to 1.18.14
 * 15094: Upgraded asciidoctorj-pdf to 2.3.27
 * 15085: Upgraded maven-deploy-plugin to 3.2.0
 * 15084: Upgraded maven-install-plugin to 3.2.0
@@ -9,7 +10,6 @@
 * 15068: Upgraded spotbugs-maven-plugin to 4.10.4.1
 * 15065: Switched from obsolote mockito-inline to mockito-core
 * 15063: Upgraded slf4j-api to 2.0.19
-* 15062: Upgraded byte-buddy to 1.18.13
 * 15054: Fix Truncated text label on hidden pieces
 * 15050: Upgraded maven-surefire-plugin to 3.6.0
 * 15042: Update MacOS launch script to allow more options
