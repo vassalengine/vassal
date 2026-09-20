@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2000-2008 by Rodney Kinney, Joel Uckelman
+ * Copyright (c) 2000-2026 by Rodney Kinney, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -28,15 +28,14 @@ import VASSAL.command.Command;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
+import VASSAL.configure.Levels;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.swing.SwingUtils;
 
-import javax.swing.AbstractListModel;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -44,25 +43,16 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
-import javax.swing.JSplitPane;
-import javax.swing.JTextField;
-import javax.swing.ListModel;
-import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -132,11 +122,12 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
    * @author Joel Uckelman
    * @since 3.1.0
    */
-  protected static class State {
+  protected static class State implements Levels {
     private double custom;
-    private final double[] levels;
+    private double[] levels;
     private int cur;
-    private final int initial;
+    private int initial;
+    private Zoomer zoomer;
 
     public State(double[] levels, int initial) {
       this.levels = levels;
@@ -200,10 +191,12 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       custom = -1;
     }
 
+    @Override
     public int getInitialLevel() {
       return initial;
     }
 
+    @Override
     public int getLevelCount() {
       return levels.length;
     }
@@ -230,10 +223,24 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       return custom < 0 ? cur < levels.length - 1 : cur < levels.length;
     }
 
+    @Override
     public List<Double> getLevels() {
       final List<Double> l = new ArrayList<>(levels.length);
       for (final double d : levels) l.add(d);
       return l;
+    }
+
+    @Override
+    public void reset(List<Double> l, int i) {
+      levels = l.stream().mapToDouble(d -> d).toArray();
+      Arrays.sort(levels);
+      cur = initial = i;
+      custom = -1;
+      zoomer.init();
+    }
+
+    public void setZoomer(Zoomer z) {
+      zoomer = z;
     }
   }
 
@@ -245,6 +252,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
   public Zoomer() {
     state = new State(defaultZoomLevels, defaultInitialZoomLevel);
+    state.setZoomer(this);
 
     final ActionListener zoomIn = e -> {
       if (fromThisWindow(e)) {
@@ -388,274 +396,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     @Override
     public Configurer getConfigurer(AutoConfigurable c,
                                     String key, String name) {
-      return new LevelConfigurer((Zoomer) c, key, name);
-    }
-  }
-
-  /**
-   * The {@link Configurer} for {@link #ZOOM_LEVELS} and {@link #ZOOM_START}.
-   *
-   * @author Joel Uckelman
-   * @since 3.1.0
-   */
-  protected static class LevelConfigurer extends Configurer {
-    private final Zoomer z;
-
-    private final JPanel panel;
-    private final LevelModel model;
-    private final JList<String> levelList;
-    private final JButton addButton;
-    private final JButton removeButton;
-    private final JButton initialButton;
-    private final JTextField levelField;
-
-    public LevelConfigurer(final Zoomer z, String key, String name) {
-      super(key, name);
-      this.z = z;
-
-      panel = new JPanel();
-      panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-
-      final Box leftBox = Box.createVerticalBox();
-      final Box addBox = Box.createHorizontalBox();
-
-      // Add button
-      addButton = new JButton(Resources.getString(Resources.ADD));
-      addButton.addActionListener(e -> addLevel());
-
-      addButton.setEnabled(false);
-      addBox.add(addButton);
-
-      levelField = new JTextField(8);
-      levelField.setMaximumSize(new Dimension(
-        Integer.MAX_VALUE, levelField.getPreferredSize().height));
-
-      // Edit box selects all text when first focused
-      levelField.addFocusListener(new java.awt.event.FocusAdapter() {
-        @Override
-        public void focusGained(java.awt.event.FocusEvent evt) {
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              levelField.selectAll();
-            }
-          });
-        }
-      });
-
-      // validator for the level entry field
-      levelField.getDocument().addDocumentListener(new DocumentListener() {
-        @Override
-        public void changedUpdate(DocumentEvent e) { }
-
-        @Override
-        public void insertUpdate(DocumentEvent e) {
-          validate();
-        }
-
-        @Override
-        public void removeUpdate(DocumentEvent e) {
-          validate();
-        }
-
-        private static final String PATTERN =
-          "^(\\d*[1-9]\\d*(/\\d*[1-9]\\d*|\\.\\d*)?|0*\\.\\d*[1-9]\\d*)$"; //$NON-NLS-1$
-
-        private void validate() {
-          // valid entries match the pattern and aren't already in the list
-          final String text = levelField.getText();
-          addButton.setEnabled(text.matches(PATTERN) &&
-            !z.state.getLevels().contains(parseLevel(text)));
-        }
-      });
-
-      // rely on addButton to do the validation
-      levelField.addActionListener(e -> {
-        if (addButton.isEnabled()) addLevel();
-      });
-
-      addBox.add(levelField);
-
-      leftBox.add(addBox);
-
-      final Box buttonBox = Box.createHorizontalBox();
-
-      // Remove button
-      removeButton = new JButton(Resources.getString(Resources.REMOVE));
-      removeButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          // get the zoom level index to be removed
-          final int rm_level = levelList.getSelectedIndex();
-          final List<Double> l = z.state.getLevels();
-
-          final int new_init;
-          if (rm_level == z.state.getInitialLevel()) {
-            // we're deleting the initial level; keep it the same position
-            new_init = Math.min(rm_level, z.state.getLevelCount() - 2);
-            l.remove(rm_level);
-          }
-          else {
-            // find the new index of the old initial level
-            final Double old_init_val = l.get(z.state.getInitialLevel());
-            l.remove(rm_level);
-            new_init = l.indexOf(old_init_val);
-          }
-
-          // adjust the state
-          z.state = new State(l, new_init);
-          z.init();
-          model.updateModel();
-
-          // adjust the selection
-          levelList.setSelectedIndex(
-            Math.max(Math.min(rm_level, l.size() - 1), 0));
-          updateButtons();
-        }
-      });
-
-      buttonBox.add(removeButton);
-
-      // Set Initial button
-      initialButton = new JButton(Resources.getString("Editor.zoom.set_initial")); //$NON-NLS-1$
-      initialButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          // set the new initial scale level
-          final int i = levelList.getSelectedIndex();
-          z.state = new State(z.state.getLevels(), i);
-          z.init();
-          model.updateModel();
-          updateButtons();
-        }
-      });
-
-      buttonBox.add(initialButton);
-
-      leftBox.add(buttonBox);
-
-      final JLabel explanation =
-        new JLabel(Resources.getString("Editor.zoom.initial_zoom")); //$NON-NLS-1$
-      explanation.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-
-      leftBox.add(
-        Box.createVerticalStrut(explanation.getPreferredSize().height));
-      leftBox.add(explanation);
-      leftBox.add(
-        Box.createVerticalStrut(explanation.getPreferredSize().height));
-
-      // level list
-      model = new LevelModel();
-      levelList = new JList<>(model);
-      levelList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-      levelList.setSelectedIndex(0);
-
-      levelList.addListSelectionListener(e -> updateButtons());
-
-      final JSplitPane pane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-      pane.setLeftComponent(leftBox);
-      pane.setRightComponent(new JScrollPane(levelList));
-
-      panel.add(pane);
-      panel.setBorder(new TitledBorder(name));
-      updateButtons();
-    }
-
-    /**
-     * Parse a <code>String</code> to a <code>double</code>.
-     * Accepts fractions as "n/d".
-     */
-    protected double parseLevel(String text) {
-      final String[] s = text.split("/"); //$NON-NLS-1$
-      try {
-        return s.length > 1 ?
-          Double.parseDouble(s[0]) / Double.parseDouble(s[1]) :
-          Double.parseDouble(s[0]);
-      }
-      catch (final NumberFormatException ex) {
-        // should not happen, text already validated
-        ErrorDialog.bug(ex);
-      }
-      return 0.0;
-    }
-
-    /**
-     * Add a level to the level list. This method expects that the
-     * input has already been validated.
-     */
-    protected void addLevel() {
-      // get the initial scale level
-      final List<Double> l = z.state.getLevels();
-      final Double old_init_val = l.get(z.state.getInitialLevel());
-
-      // add the new scale level
-      final double new_level_val = parseLevel(levelField.getText());
-      l.add(new_level_val);
-      Collections.sort(l);
-
-      // find the initial scale index
-      final int new_init = l.indexOf(old_init_val);
-
-      // adjust the state
-      z.state = new State(l, new_init);
-      z.init();
-      model.updateModel();
-
-      // adjust the selection
-      final int new_level = l.indexOf(new_level_val);
-      levelList.setSelectedIndex(new_level);
-
-      levelField.setText("");
-      updateButtons();
-    }
-
-    /**
-     * Ensures that the buttons are properly en- or disabled.
-     */
-    protected void updateButtons() {
-      removeButton.setEnabled(z.state.getLevelCount() > 1);
-      initialButton.setEnabled(
-        levelList.getSelectedIndex() != z.state.getInitialLevel());
-    }
-
-    /**
-     * A {@link ListModel} built on the {@link State}.
-     */
-    protected class LevelModel extends AbstractListModel<String> {
-      private static final long serialVersionUID = 1L;
-
-      public void updateModel() {
-        fireContentsChanged(this, 0, z.state.getLevelCount() - 1);
-      }
-
-      @Override
-      public String getElementAt(int i) {
-        return z.state.getLevels().get(i) +
-          (z.state.getInitialLevel() == i ? " *" : ""); //$NON-NLS-1$ //$NON-NLS-2$
-      }
-
-      @Override
-      public int getSize() {
-        return z.state.getLevelCount();
-      }
-    }
-
-    @Override
-    public Component getControls() {
-      return panel;
-    }
-
-    @Override
-    public void setValue(Object o) {
-    }
-
-    @Override
-    public void setValue(String s) {
-    }
-
-    @Override
-    public String getValueString() {
-      return null;
+      return new VASSAL.configure.LevelConfigurer(((Zoomer) c).state, key, name);
     }
   }
 
@@ -714,7 +455,6 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     map.getComponent().addMouseWheelListener(listener);
   }
 
-
   @Override
   public String getAttributeValueString(String key) {
     if (ZOOM_START.equals(key)) {
@@ -770,6 +510,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
           Math.max(0, Math.min(levels.size() - 1, levels.size() - (Integer) val));
 
         state = new State(levels, initial);
+        state.setZoomer(this);
 
         if (deprecatedFactor > 0 && deprecatedMax > 0) {
           // zero these to prevent further adjustments due to old properties
@@ -794,6 +535,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
         state = new State(levels,
           Math.min(state.getInitialLevel(), levels.size() - 1));
+        state.setZoomer(this);
         init();
       }
     }
@@ -845,6 +587,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       levels[i] = Math.pow(deprecatedFactor, -(i - 1));
     final int initial = Math.min(state.getInitialLevel(), levels.length - 1);
     state = new State(levels, initial);
+    state.setZoomer(this);
     init();
   }
   // end deprecated keys
@@ -1356,9 +1099,13 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
    */
   @Override
   public List<String> getMenuTextList() {
-    return Arrays.asList(getAttributeValueString(IN_BUTTON_TEXT), getAttributeValueString(IN_TOOLTIP),
-                         getAttributeValueString(OUT_BUTTON_TEXT), getAttributeValueString(OUT_TOOLTIP),
-                         getAttributeValueString(PICK_BUTTON_TEXT), getAttributeValueString(PICK_TOOLTIP));
+    return Arrays.asList(
+      getAttributeValueString(IN_BUTTON_TEXT),
+      getAttributeValueString(IN_TOOLTIP),
+      getAttributeValueString(OUT_BUTTON_TEXT),
+      getAttributeValueString(OUT_TOOLTIP),
+      getAttributeValueString(PICK_BUTTON_TEXT),
+      getAttributeValueString(PICK_TOOLTIP));
   }
 
   /**
@@ -1367,9 +1114,10 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(ZOOM_IN)),
-                         NamedHotKeyConfigurer.decode(getAttributeValueString(ZOOM_OUT)),
-                         NamedHotKeyConfigurer.decode(getAttributeValueString(ZOOM_PICK)));
+    return Arrays.asList(
+      NamedHotKeyConfigurer.decode(getAttributeValueString(ZOOM_IN)),
+      NamedHotKeyConfigurer.decode(getAttributeValueString(ZOOM_OUT)),
+      NamedHotKeyConfigurer.decode(getAttributeValueString(ZOOM_PICK)));
   }
 
   /**
@@ -1395,5 +1143,16 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
   @Override
   public boolean isUnique() {
     return true;
+  }
+
+  @Deprecated
+  protected static class LevelConfigurer extends VASSAL.configure.LevelConfigurer {
+    public LevelConfigurer(final Zoomer z, String key, String name) {
+      super(z.state, key, name);
+    }
+
+    protected class LevelModel extends VASSAL.configure.LevelConfigurer.LevelModel {
+      private static final long serialVersionUID = 1L;
+    }
   }
 }

@@ -53,6 +53,14 @@ Each chart is a GIF/JPEG/PNG image that you must create beforehand with an exter
 
 *Image:*:: The image to be displayed in the Chart. Click _Select_ to select an image and load it into the module.
 
+*Preset Zoom Levels:*:: Configures a series of fractional scale factors for display of the Chart. See <<Map.adoc#top,Zoom>> for further details.
+
+*Zoom in hotkey:*:: The key to use to zoom in on the chart.  Defaults to `Ctrl++`.
+
+*Zoom out hotkey:*:: The key to use to zoom in on the chart. Defaults to `Ctrl+-`.
+
+*Zoom initial hotkey:*:: The key to use to return to the initial zoom value. Defaults to `Ctrl+0`.
+
 |image:images/Chart.png[] +
 |===
 
