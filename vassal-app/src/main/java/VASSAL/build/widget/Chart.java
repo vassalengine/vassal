@@ -77,6 +77,7 @@ public class Chart extends Widget {
   public static final String ZOOM_LEVELS = "zoomLevels"; //$NON-NLS-1$
   public static final String ZOOM_IN_KEY = "zoomInKey"; //NON-NLS
   public static final String ZOOM_OUT_KEY = "zoomOutKey"; //NON-NLS
+  public static final String ZOOM_START_KEY = "zoomStartKey"; //NON-NLS
 
   private JScrollPane scroll;
   private String fileName;
@@ -176,6 +177,10 @@ public class Chart extends Widget {
       cur = Math.min(cur + 1, levels.length - 1);
     }
 
+    public void initialLevel() {
+      cur = initial;
+    }
+
     public double getZoom() {
       return levels[cur];
     }
@@ -185,11 +190,21 @@ public class Chart extends Widget {
 
   private final TileRenderer renderer = new TileRenderer();
 
+  // nobody wants to hit shift to get plus
   private NamedKeyStroke zoomInKey = NamedKeyStroke.of(
     KeyEvent.VK_EQUALS,
-    InputEvent.SHIFT_DOWN_MASK
+    InputEvent.CTRL_DOWN_MASK
   );
-  private NamedKeyStroke zoomOutKey = NamedKeyStroke.of(KeyEvent.VK_MINUS, 0);
+
+  private NamedKeyStroke zoomOutKey = NamedKeyStroke.of(
+    KeyEvent.VK_MINUS,
+    InputEvent.CTRL_DOWN_MASK
+  );
+
+  private NamedKeyStroke zoomStartKey = NamedKeyStroke.of(
+    KeyEvent.VK_0,
+    InputEvent.CTRL_DOWN_MASK
+  );
 
   private class View extends JPanel {
     private static final long serialVersionUID = 1L;
@@ -279,24 +294,30 @@ public class Chart extends Widget {
       // Note, we filter on whether the event originated in this
       // window (actually it's parent).
       final NamedKeyStrokeListener zoomIn  = new NamedKeyStrokeListener(e -> {
-        if (!fromThisWindow(e)) {
-          return;
+        if (fromThisWindow(e)) {
+          zoom(1);
         }
-        zoom(+1);
       });
 
       final NamedKeyStrokeListener zoomOut = new NamedKeyStrokeListener(e -> {
-        if (!fromThisWindow(e)) {
-          return;
+        if (fromThisWindow(e)) {
+          zoom(-1);
         }
-        zoom(-1);
+      });
+
+      final NamedKeyStrokeListener zoomStart = new NamedKeyStrokeListener(e -> {
+        if (fromThisWindow(e)) {
+          zoom(0);
+        }
       });
 
       zoomIn.setKeyStroke(zoomInKey);
       zoomOut.setKeyStroke(zoomOutKey);
+      zoomStart.setKeyStroke(zoomStartKey);
 
-      GameModule.getGameModule().addKeyStrokeListener(zoomOut);
       GameModule.getGameModule().addKeyStrokeListener(zoomIn);
+      GameModule.getGameModule().addKeyStrokeListener(zoomOut);
+      GameModule.getGameModule().addKeyStrokeListener(zoomStart);
 
       view.addMouseWheelListener(new MouseWheelListener() {
         @Override
@@ -325,10 +346,7 @@ public class Chart extends Widget {
   }
 
   private void zoom(int direction) {
-    if (direction == 0) {
-      return;
-    }
-
+    // ensure that we maintain the center of the view, if possible
     Rectangle vr = view.getVisibleRect();
     double cx = vr.getCenterX();
     double cy = vr.getCenterY();
@@ -341,8 +359,11 @@ public class Chart extends Widget {
     if (direction > 0) {
       state.higherLevel();
     }
-    else {
+    else if (direction < 0) {
       state.lowerLevel();
+    }
+    else {
+      state.initialLevel();
     }
 
     zoom = state.getZoom();
@@ -459,13 +480,19 @@ public class Chart extends Widget {
       if (val instanceof String) {
         val = NamedHotKeyConfigurer.decode((String) val);
       }
-      zoomInKey = (NamedKeyStroke)val;
+      zoomInKey = (NamedKeyStroke) val;
     }
     else if (ZOOM_OUT_KEY.equals(key)) {
       if (val instanceof String) {
         val = NamedHotKeyConfigurer.decode((String) val);
       }
-      zoomOutKey = (NamedKeyStroke)val;
+      zoomOutKey = (NamedKeyStroke) val;
+    }
+    else if (ZOOM_START_KEY.equals(key)) {
+      if (val instanceof String) {
+        val = NamedHotKeyConfigurer.decode((String) val);
+      }
+      zoomStartKey = (NamedKeyStroke) val;
     }
   }
 
@@ -502,6 +529,11 @@ public class Chart extends Widget {
    * ZOOM_OUT_KEY
    * </code>
    * for zoom out hotkey
+   * <code>
+   * ZOOM_START_KEY
+   * </code>
+   * for zoom start hotkey
+
    * </pre>
    */
   @Override
@@ -513,7 +545,8 @@ public class Chart extends Widget {
       ZOOM_START,
       ZOOM_LEVELS,
       ZOOM_IN_KEY,
-      ZOOM_OUT_KEY
+      ZOOM_OUT_KEY,
+      ZOOM_START_KEY
     };
   }
 
@@ -526,7 +559,8 @@ public class Chart extends Widget {
       "",
       Resources.getString("Editor.Zoom.preset"),
       Resources.getString("Editor.Zoom.in_key"),
-      Resources.getString("Editor.Zoom.out_key")
+      Resources.getString("Editor.Zoom.out_key"),
+      Resources.getString("Editor.Zoom.start_key")
     };
   }
 
@@ -538,6 +572,7 @@ public class Chart extends Widget {
       Image.class,
       null,   // ZOOM_START is handled by the LevelConfigurer
       LevelConfig.class,
+      NamedKeyStroke.class,
       NamedKeyStroke.class,
       NamedKeyStroke.class
     };
@@ -579,6 +614,9 @@ public class Chart extends Widget {
     }
     else if (ZOOM_OUT_KEY.equals(name)) {
       return  NamedHotKeyConfigurer.encode(zoomOutKey);
+    }
+    else if (ZOOM_START_KEY.equals(name)) {
+      return  NamedHotKeyConfigurer.encode(zoomStartKey);
     }
 
     return null;
