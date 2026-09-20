@@ -166,7 +166,7 @@ public class Chart extends Widget {
     public void reset(List<Double> l, int i) {
       levels = l.stream().mapToDouble(d -> d).toArray();
       Arrays.sort(levels);
-      initial = i;
+      cur = initial = i;
     }
 
     public void lowerLevel() {
