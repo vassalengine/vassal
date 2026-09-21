@@ -29,6 +29,7 @@
       "improvements": [
       ],
       "other": [
+        { "num": 15099, "desc": "Removed the deprecated loadGameOld Action" }
       ]
     }
   ]

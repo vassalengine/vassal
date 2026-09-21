@@ -1,5 +1,6 @@
 3.8.0-beta3 - ???
 
+* 15099: Removed the deprecated loadGameOld Action
 * 15097: Make Charts zoomable
 * 14581: Added animated symbolic dice button
 
