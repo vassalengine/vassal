@@ -55,14 +55,17 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Collection;
 import java.util.List;
 
+import javax.swing.Timer;
+
 import org.apache.commons.lang3.SystemUtils;
-import org.jdesktop.animation.timing.Animator;
-import org.jdesktop.animation.timing.TimingTargetAdapter;
+
 
 /**
  * Allows a player to ping a location ("send up a flare") by clicking on a map with the correct modifier key
@@ -422,37 +425,59 @@ public class Flare extends AbstractConfigurable
     ));
   }
 
+  
   /**
-   * Animator to loop the Flare animation. Use the LOOP behavior so that it's always shrinking bullseye rings.
+   * Timer to fire off every 20 ms (resolution used by
+   * org.jdesktop.timing.Animator).
    */
-  private final Animator animator = new Animator(0, 1, Animator.RepeatBehavior.LOOP, new TimingTargetAdapter() {
-    @Override
-    public void begin() {
-      active = true;
-      animfrac = 0.0f;
-      repaintArea();
-    }
+  protected Timer timer;
 
+  /**
+   * Handle timer events
+   */
+  protected class Animator implements ActionListener {
+    /** Number of pulses to generate */
+    public int pulses;
+    /** Current pulse number */
+    public int pulse;
+    /** Elapsed miliseconds */
+    public int elapsed;
+    /** Pulse duration in miliseconds */
+    public int duration;
     /**
-     * Animator tells us when to update the image.
-     * @param fraction Animator lets us know how far we are through our cycle
+     * @param np  Number of pulses
+     * @param dur Duration of a single pulse
+     */
+    Animator(int np, int dur) {
+      pulses   = np;
+      pulse    = 0;
+      elapsed  = 0;
+      duration = dur;
+      animfrac = 0;
+      active   = true;
+    }
+    /**
+     * Executed on each timing event
      */
     @Override
-    public void timingEvent(float fraction) {
-      animfrac = fraction;
+    public void actionPerformed(ActionEvent e) {
+      elapsed += timer.getDelay();
+      pulse   =  elapsed / duration + 1;
+      animfrac = (float)(elapsed % duration) / duration;
+
+      if (pulse > pulses) {
+        repaintArea();
+        animfrac = 1;
+        active   = false;
+
+        timer.stop();
+        return;
+      }
+
       repaintArea();
     }
-
-    /**
-     * Animator tells us we're done.
-     */
-    @Override
-    public void end() {
-      active = false;
-      repaintArea();
-    }
-  });
-
+  }
+  
   /**
    * Start the Flare animation.
    * @param isLocal - true if this Flare was launched on this client (i.e. by this player). Otherwise, center on
@@ -469,11 +494,14 @@ public class Flare extends AbstractConfigurable
       }
     }
 
-    animator.stop();
     animate = Boolean.FALSE.equals(GameModule.getGameModule().getPrefs().getValue(NO_ANIMATION));
-    animator.setRepeatCount(Math.max(pulses, 1));
-    animator.setDuration(1000 / Math.max(pulsesPerSec, 1));
-    animator.start();
+    if (timer != null) {
+      timer.stop();
+    }
+    
+    timer = new Timer(20, new Animator(Math.max(pulses, 1),
+                                       1000 / Math.max(pulsesPerSec, 1)));
+    timer.start();
   }
 
   /**
