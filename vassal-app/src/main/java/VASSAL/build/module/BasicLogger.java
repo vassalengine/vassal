@@ -267,7 +267,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   public boolean isMultiPlayer() {
     return multiPlayer;
   }
-  
+
   /**
    * Our setup method is called by GameState whenever a game starts or ends.
    * @param startingGame True if a new game starting, false if a game is ending/closing
@@ -563,7 +563,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       return;
     }
 
-    dontUndoPast = 0; 
+    dontUndoPast = 0;
 
     undoAction.setEnabled(false);
     endLogAction.setEnabled(true);

@@ -34,12 +34,12 @@ public interface WizardResultReceiver {
      * Called when the wizard has been completed, providing whatever object
      * the wizard created as its result.
      * @param wizardResult The object created by Wizard.finish()
-     */ 
+     */
     void finished (Object wizardResult);
     /**
      * Called when the wizard has been cancelled.
      * @param settings The settings that were gathered thus far in the
      *  wizard
-     */ 
+     */
     void cancelled (Map settings);
 }

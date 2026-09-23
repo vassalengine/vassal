@@ -86,7 +86,7 @@ public class SynchAction extends AbstractAction {
         client.sendTo(p, new SynchCommand(client.getUserInfo(), client));
         lastSync = now;
 
-        GameModule.getGameModule().warn(Resources.getString("Chat.sent_sync_request"));  
+        GameModule.getGameModule().warn(Resources.getString("Chat.sent_sync_request"));
       }
       else {
         GameModule.getGameModule().warn(Resources.getString("Chat.sync_too_soon"));

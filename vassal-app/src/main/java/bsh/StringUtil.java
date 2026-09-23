@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -87,7 +87,7 @@ public class StringUtil {
         for( int i=0; i<types.length; i++ )
         {
             Class c = types[i];
-            sb.append( ( (c == null) ? "null" : c.getName() ) 
+            sb.append( ( (c == null) ? "null" : c.getName() )
 				+ ( i < (types.length-1) ? ", " : " " ) );
         }
         sb.append(")");
@@ -97,8 +97,8 @@ public class StringUtil {
 	/**
 		Split a filename into dirName, baseName
 		@return String [] { dirName, baseName }
-    public String [] splitFileName( String fileName ) 
-	{ 
+    public String [] splitFileName( String fileName )
+	{
 		String dirName, baseName;
 		int i = fileName.lastIndexOf( File.separator );
 		if ( i != -1 ) {

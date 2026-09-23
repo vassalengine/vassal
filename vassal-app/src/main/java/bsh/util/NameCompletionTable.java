@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -38,9 +38,9 @@ import bsh.StringUtil;
 import bsh.NameSource;
 
 /**
-	NameCompletionTable is a utility that implements simple name completion for 
+	NameCompletionTable is a utility that implements simple name completion for
 	a collection of names, NameSources, and other NameCompletionTables.
-	This implementation uses a trivial linear search and comparison...  
+	This implementation uses a trivial linear search and comparison...
 */
 public class NameCompletionTable extends ArrayList
 	implements NameCompletion
@@ -86,7 +86,7 @@ public class NameCompletionTable extends ArrayList
 	/**
 		Add any matching names to list (including any from other tables)
 	*/
-	protected void getMatchingNames( String part, List found ) 
+	protected void getMatchingNames( String part, List found )
 	{
 		// check our table
 		for( int i=0; i< size(); i++ ) {
@@ -103,7 +103,7 @@ public class NameCompletionTable extends ArrayList
 		// Check other sources
 		// note should add caching in source adapters
 		if ( sources != null )
-			for( int i=0; i< sources.size(); i++ ) 
+			for( int i=0; i< sources.size(); i++ )
 			{
 				NameSource src = (NameSource)sources.get(i);
 				String [] names = src.getAllNames();
@@ -114,7 +114,7 @@ public class NameCompletionTable extends ArrayList
 			}
 	}
 
-	public String [] completeName( String part ) 
+	public String [] completeName( String part )
 	{
 		List found = new ArrayList();
 		getMatchingNames( part, found );
@@ -125,7 +125,7 @@ public class NameCompletionTable extends ArrayList
 		// Find the max common prefix
 		String maxCommon = (String)found.get(0);
 		for(int i=1; i<found.size() && maxCommon.length() > 0; i++) {
-			maxCommon = StringUtil.maxCommonPrefix( 
+			maxCommon = StringUtil.maxCommonPrefix(
 				maxCommon, (String)found.get(i) );
 
 			// if maxCommon gets as small as part, stop trying
@@ -147,7 +147,7 @@ public class NameCompletionTable extends ArrayList
 		SourceMonitor( NameSource src ) {
 			this.src = src;
 		}
-		public void nameSourceChanged( NameSource src ) { 
+		public void nameSourceChanged( NameSource src ) {
 		}
 	}
 	*/

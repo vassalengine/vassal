@@ -18,7 +18,7 @@ public class PropertyNoCaseStartsWithCondition extends PropertyConditionBase {
       super.start();
     }
   }
-  
+
   public void setKey(String key) {
     this.key = key;
   }

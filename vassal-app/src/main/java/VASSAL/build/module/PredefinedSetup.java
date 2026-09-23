@@ -312,7 +312,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
       // Let the Refresh Dialog know there was an error so it can handle top-level reporting correctly.
       throw e;
     }
-    
+
     // Resolve any Pending Attachments
     gs.getAttachmentManager().resolvePendingAttachments();
 

@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -82,15 +82,15 @@ public class Remote
 		}
 	}
 
-	static String doBsh( String url, String text ) 
-	{ 
+	static String doBsh( String url, String text )
+	{
 	    OutputStream out;
 	    InputStream in;
 	    String host = "";
 	    String port = "";
 	    String returnValue = "-1";
 		String orgURL = url;
-	    
+	
 		// Need some format checking here
 	    try {
 			url = url.substring(6); // remove the bsh://
@@ -104,7 +104,7 @@ public class Remote
 	    }
 
 	    try {
-			System.out.println("Connecting to host : " 
+			System.out.println("Connecting to host : "
 				+ host + " at port : " + port);
 			Socket s = new Socket(host, Integer.parseInt(port) + 1);
 			
@@ -113,7 +113,7 @@ public class Remote
 			
 			sendLine( text, out );
 
-			BufferedReader bin = new BufferedReader( 
+			BufferedReader bin = new BufferedReader(
 				new InputStreamReader(in));
 			  String line;
 			  while ( (line=bin.readLine()) != null )
