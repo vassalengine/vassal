@@ -158,7 +158,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.NoSuchFileException;
-import java.security.SecureRandom;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -440,7 +439,7 @@ public class GameModule extends AbstractConfigurable
   /**
    * Random number generator
    */
-  private final Random RNG = new SecureRandom();
+  private final VASSAL.build.Random RNG = new VASSAL.build.Random();
 
   /**
    * Server object for online games
@@ -683,6 +682,7 @@ public class GameModule extends AbstractConfigurable
       .append(new RecursiveSingleChildInstance());
 
     addCommandEncoder(new ChangePropertyCommandEncoder(propsContainer));
+    addCommandEncoder(RNG);
   }
 
   /**
@@ -912,6 +912,7 @@ public class GameModule extends AbstractConfigurable
     theState = new GameState();
     theState.addTo(this);
     addCommandEncoder(theState);
+    theState.addGameComponent(RNG);
   }
 
   /**
