@@ -1410,7 +1410,7 @@ public class GameState implements CommandEncoder {
     // from visibly closing-then-eventually-re-opening in a Series Of Messy Steps
     final Chatter ch = g.getChatter();
     ch.paintImmediately(0, 0, ch.getWidth(), ch.getHeight());
-    
+
     final Command loadCommand = decodeSavedGame(in);
     if (loadCommand != null) {
       try {

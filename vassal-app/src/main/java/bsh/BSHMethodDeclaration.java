@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -59,7 +59,7 @@ class BSHMethodDeclaration extends SimpleNode
 		Set the returnTypeNode, paramsNode, and blockNode based on child
 		node structure.  No evaluation is done here.
 	*/
-	synchronized void insureNodesParsed() 
+	synchronized void insureNodesParsed()
 	{
 		if ( paramsNode != null ) // there is always a paramsNode
 			return;
@@ -91,18 +91,18 @@ class BSHMethodDeclaration extends SimpleNode
 		insureNodesParsed();
 		if ( returnTypeNode != null )
 			return returnTypeNode.evalReturnType( callstack, interpreter );
-		else 
+		else
 			return null;
 	}
 
-	String getReturnTypeDescriptor( 
+	String getReturnTypeDescriptor(
 		CallStack callstack, Interpreter interpreter, String defaultPackage )
 	{
 		insureNodesParsed();
 		if ( returnTypeNode == null )
 			return null;
 		else
-			return returnTypeNode.getTypeDescriptor( 
+			return returnTypeNode.getTypeDescriptor(
 				callstack, interpreter, defaultPackage );
 	}
 
@@ -122,7 +122,7 @@ class BSHMethodDeclaration extends SimpleNode
 		evalNodes( callstack, interpreter );
 
 		// Install an *instance* of this method in the namespace.
-		// See notes in BshMethod 
+		// See notes in BshMethod
 
 // This is not good...
 // need a way to update eval without re-installing...
@@ -140,14 +140,14 @@ class BSHMethodDeclaration extends SimpleNode
 		return Primitive.VOID;
 	}
 
-	private void evalNodes( CallStack callstack, Interpreter interpreter ) 
+	private void evalNodes( CallStack callstack, Interpreter interpreter )
 		throws EvalError
 	{
 		insureNodesParsed();
 		
 		// validate that the throws names are class names
 		for(int i=firstThrowsClause; i<numThrows+firstThrowsClause; i++)
-			((BSHAmbiguousName)jjtGetChild(i)).toClass( 
+			((BSHAmbiguousName)jjtGetChild(i)).toClass(
 				callstack, interpreter );
 
 		paramsNode.eval( callstack, interpreter );
@@ -161,7 +161,7 @@ class BSHMethodDeclaration extends SimpleNode
 					// a stack trace to indicate how we sourced the method.
 					throw new EvalError(
 				"(Strict Java Mode) Undeclared argument type, parameter: " +
-					paramsNode.getParamNames()[i] + " in method: " 
+					paramsNode.getParamNames()[i] + " in method: "
 					+ name, this, null );
 
 			if ( returnType == null )

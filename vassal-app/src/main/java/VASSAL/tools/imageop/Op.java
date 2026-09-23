@@ -46,7 +46,7 @@ public class Op {
       return new SourceOpBitmapImpl(name);
     }
   }
-  
+
   public static SourceOp load(BufferedImage image) {
     return new ImageSourceOpBitmapImpl(image);
   }
@@ -64,7 +64,7 @@ public class Op {
       return new SourceOpTiledBitmapImpl(name);
     }
   }
-  
+
   public static ScaleOp scale(ImageOp sop, double scale) {
     if (sop instanceof RotateScaleOpSVGImpl) {
       final RotateScaleOpSVGImpl rsop = (RotateScaleOpSVGImpl) sop;

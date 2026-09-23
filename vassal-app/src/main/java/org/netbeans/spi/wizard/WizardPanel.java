@@ -14,17 +14,17 @@ import java.util.Map;
 /**
  * This is an optional interface for panels that want to be notified when
  * the next and back buttons are pressed.
- * 
+ *
  * The WizardPanelProvider is NOT required to create panels that implement
  * this interface.
- * 
+ *
  * Each of these methods returns a WizardPanelNavResult that can be used to
  * indicate PROCEED or REMAIN_ON_PAGE.
- * 
+ *
  * The result can also be an instance of a subclass of WizardPanelNavResult
  * that implements the <code>start</code> method to use a background thread
- * to determine if the next page can be shown.  
- * 
+ * to determine if the next page can be shown.
+ *
  * @author stanley@stanleyknutson.com
  */
 public interface WizardPanel
@@ -32,10 +32,10 @@ public interface WizardPanel
     /**
      * This method is invoked when the "next" button has been pushed,
      * to do a final validation of input (such as doing a database login).
-     * 
-     * If this method return false, then the "next" button will not change the 
+     *
+     * If this method return false, then the "next" button will not change the
      * displayed panel.  Presumably some error will have been shown to the user.
-     * 
+     *
      * @param stepName
      * @param settings
      * @param wizard
@@ -52,10 +52,10 @@ public interface WizardPanel
      * to discard any data from the setings that will not been needed and for which the
      * normal "just hide that data" is not the desired behavior.
      * (See MergeMap for discussion of the "hide the data" behavior)
-     * 
-     * If this method return false, then the "next" button will not change the 
+     *
+     * If this method return false, then the "next" button will not change the
      * displayed panel.  Presumably some error will have been shown to the user.
-     * 
+     *
      * @param stepName
      * @param settings
      * @param wizard
@@ -70,10 +70,10 @@ public interface WizardPanel
     /**
      * This method is invoked when the "finish" button has been pushed,
      * to allow veto of the finish action BEFORE the wizard finish method is invoked.
-     * 
-     * If this method return false, then the "finish" button will have no effect. 
+     *
+     * If this method return false, then the "finish" button will have no effect.
      * Presumably some error will have been shown to the user.
-     * 
+     *
      * @param stepName
      * @param settings
      * @param wizard

@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -81,7 +81,7 @@ import bsh.*;
 	that we can redirect stdout to our console... I don't see a way around
 	this.  Also we have to use getPeer() for the big hack above.
 */
-public class AWTConsole extends TextArea 
+public class AWTConsole extends TextArea
 	implements ConsoleInterface, Runnable, KeyListener {
 
 	private OutputStream outPipe;
@@ -154,7 +154,7 @@ public class AWTConsole extends TextArea
 					replaceRange( "", textLength-len, textLength );
 					line.setLength( 0 );
 					histLine = 0;
-					textLength = getText().length(); 
+					textLength = getText().length();
 				} else
 					doChar( ch );
 				break;
@@ -213,7 +213,7 @@ public class AWTConsole extends TextArea
 		setCaretPosition( textLength );
 	}
 
-	/* 
+	/*
 		Here's the really disguisting hack.
 		We have to get to the peer because TextComponent will refuse to
 		let us set us set a caret position greater than the text length.
@@ -228,7 +228,7 @@ public class AWTConsole extends TextArea
 		This is part of a hack to fix the setCaretPosition() bug
 		Count the newlines in the text
 	*/
-	private int countNLs() { 
+	private int countNLs() {
 		String s = getText();
 		int c = 0;
 		for(int i=0; i< s.length(); i++)
@@ -248,7 +248,7 @@ public class AWTConsole extends TextArea
 		}
 	}
 	private void historyDown() {
-		if ( histLine == 0 ) 
+		if ( histLine == 0 )
 			return;
 
 		histLine--;

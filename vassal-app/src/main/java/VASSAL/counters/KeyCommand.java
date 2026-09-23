@@ -152,7 +152,7 @@ public class KeyCommand extends AbstractAction {
       }
     }
   }
-  
+
   // Returns true if this command exists simply to produce a menu separator
   public boolean isMenuSeparator() {
     return MenuSeparator.SEPARATOR_NAME.equals(name);

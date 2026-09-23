@@ -158,7 +158,7 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
       GameModule.getGameModule().warn(Resources.getString("Chat.creating_room", controls.getNewRoom().getText()));
       GameModule.getGameModule().warn(Resources.getString("Chat.explain_created_room"));
 
-      controls.getNewRoom().setText(""); 
+      controls.getNewRoom().setText("");
     };
     controls.getNewRoom().addActionListener(roomCreator);
     controls.getNewRoomButton().addActionListener(roomCreator);

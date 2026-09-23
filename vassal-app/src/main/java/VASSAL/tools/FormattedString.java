@@ -137,7 +137,7 @@ public class FormattedString implements Loopable {
   /**
    * Evaulate a formatted String and return unlocalized text
    * Use the default property source to find property values
-   * 
+   *
    * @deprecated Use {@link #getText(Auditable, String)}
    * @return evaluated formatted String
    */
@@ -150,8 +150,8 @@ public class FormattedString implements Loopable {
    * Evaulate a formatted String and return unlocalized text
    * Use the default property source to find property values
    * Create an AuditTrail object if expression auditing enabled
-   * 
-   * @param owner Owning component of this formatted string. 
+   *
+   * @param owner Owning component of this formatted string.
    * @param fieldKey Message key describing the editor field holding this formmated string
    * @return evaluated formatted String
    */
@@ -160,9 +160,9 @@ public class FormattedString implements Loopable {
   }
 
   /**
-   * Evaluate a Formatted String and return localized text   
+   * Evaluate a Formatted String and return localized text
    * Use the default property source to find property values
-   * 
+   *
    * @deprecated Use {@link #getLocalizedText(Auditable, String)}
    * @return localized text
    */
@@ -176,7 +176,7 @@ public class FormattedString implements Loopable {
    * Use the default property source to find property values
    * Create an AuditTrail object if expression auditing enabled
    *
-   * @param owner Owning component of this formatted string. 
+   * @param owner Owning component of this formatted string.
    * @param fieldKey Message key describing the editor field holding this formmated string
    * @return evaluated formatted String
    */
@@ -258,7 +258,7 @@ public class FormattedString implements Loopable {
    * @param ps Property source
    * @param def the default if the result is otherwise empty
    * @return Return the resulting string after substituting properties
-   * @deprecated Use {@link #getText(PropertySource, String, Auditable, String)} 
+   * @deprecated Use {@link #getText(PropertySource, String, Auditable, String)}
    */
   @Deprecated(since = "2021-12-01")
   public String getText(PropertySource ps, String def) {
@@ -338,16 +338,16 @@ public class FormattedString implements Loopable {
   public String getLocalizedText(PropertySource ps) {
     return getLocalizedText(ps, null, (AuditTrail) null);
   }
-  
+
   /**
    * Evaluate the supplied Formmatted String, using the supplied property source to replace any property references.
    * NOTE that evaluation is handled by the Beanshell Interpreter, so full Beanshell is supported in Formatted Strings (yikes!)
    * Use the supplied owner and audit trail for error reporting purposes.
-   * 
+   *
    * @param ps Property source to use to supply property values
    * @param localized true if getLocalizedProperty() calls should be used to evaluate property values
    * @param owner Auditable owner of this Formmatted String for reporting purposes
-   * @param audit Audit Trail for Expression evaluation error reporting (may be null) 
+   * @param audit Audit Trail for Expression evaluation error reporting (may be null)
    * @return Evaluated formatted string
    */
   public String getText(PropertySource ps, boolean localized, Auditable owner, AuditTrail audit) {

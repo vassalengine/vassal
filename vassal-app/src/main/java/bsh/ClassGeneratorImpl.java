@@ -11,10 +11,10 @@ import java.lang.reflect.Method;
 */
 public class ClassGeneratorImpl extends ClassGenerator
 {
-	public Class generateClass( 
-		String name, Modifiers modifiers, 
-		Class [] interfaces, Class superClass, BSHBlock block, 
-		boolean isInterface, CallStack callstack, Interpreter interpreter 
+	public Class generateClass(
+		String name, Modifiers modifiers,
+		Class [] interfaces, Class superClass, BSHBlock block,
+		boolean isInterface, CallStack callstack, Interpreter interpreter
 	)
 		throws EvalError
 	{
@@ -38,10 +38,10 @@ public class ClassGeneratorImpl extends ClassGenerator
 		Note: This method will likely be removed in the future.
 	*/
 	// This could be static
-	public void setInstanceNameSpaceParent( 
+	public void setInstanceNameSpaceParent(
 		Object instance, String className, NameSpace parent )
 	{
-		This ithis = 
+		This ithis =
 			ClassGeneratorUtil.getClassInstanceThis( instance, className );
 		ithis.getNameSpace().setParent( parent );
 	}
@@ -50,10 +50,10 @@ public class ClassGeneratorImpl extends ClassGenerator
 		Parse the BSHBlock for for the class definition and generate the class
 		using ClassGenerator.
 	*/
-	public static Class generateClassImpl( 
-		String name, Modifiers modifiers, 
-		Class [] interfaces, Class superClass, BSHBlock block, 
-		boolean isInterface, CallStack callstack, Interpreter interpreter 
+	public static Class generateClassImpl(
+		String name, Modifiers modifiers,
+		Class [] interfaces, Class superClass, BSHBlock block,
+		boolean isInterface, CallStack callstack, Interpreter interpreter
 	)
 		throws EvalError
 	{
@@ -63,16 +63,16 @@ public class ClassGeneratorImpl extends ClassGenerator
 			Capabilities.setAccessibility( true );
 		} catch ( Capabilities.Unavailable e )
 		{
-			throw new EvalError( 
+			throw new EvalError(
 				"Defining classes currently requires reflective Accessibility.",
 				block, callstack );
 		}
 
 		NameSpace enclosingNameSpace = callstack.top();
 		String packageName = enclosingNameSpace.getPackage();
-		String className =  enclosingNameSpace.isClass ?  
+		String className =  enclosingNameSpace.isClass ?
 			( enclosingNameSpace.getName()+"$"+name ) : name;
-		String fqClassName = 
+		String fqClassName =
 			packageName == null ? className : packageName + "." + className;
 
 		BshClassManager bcm = interpreter.getClassManager();
@@ -80,26 +80,26 @@ public class ClassGeneratorImpl extends ClassGenerator
 		bcm.definingClass( fqClassName );
 
 		// Create the class static namespace
-		NameSpace classStaticNameSpace = 
+		NameSpace classStaticNameSpace =
 			new NameSpace( enclosingNameSpace, className);
 		classStaticNameSpace.isClass = true;
 
 		callstack.push( classStaticNameSpace );
 
-		// Evaluate any inner class class definitions in the block 
+		// Evaluate any inner class class definitions in the block
 		// effectively recursively call this method for contained classes first
-		block.evalBlock( 
-			callstack, interpreter, true/*override*/, 
+		block.evalBlock(
+			callstack, interpreter, true/*override*/,
 			ClassNodeFilter.CLASSCLASSES );
 
 		// Generate the type for our class
-		Variable [] variables = 
+		Variable [] variables =
 			getDeclaredVariables( block, callstack, interpreter, packageName );
 		DelayedEvalBshMethod [] methods =
 			getDeclaredMethods( block, callstack, interpreter, packageName );
 
-		ClassGeneratorUtil classGenerator = new ClassGeneratorUtil( 
-			modifiers, className, packageName, superClass, interfaces, 
+		ClassGeneratorUtil classGenerator = new ClassGeneratorUtil(
+			modifiers, className, packageName, superClass, interfaces,
 			variables, methods, classStaticNameSpace, isInterface );
 		byte [] code = classGenerator.generateClass();
 
@@ -107,7 +107,7 @@ public class ClassGeneratorImpl extends ClassGenerator
 		String dir = System.getProperty("debugClasses");
 		if ( dir != null )
 		try {
-			FileOutputStream out= 
+			FileOutputStream out=
 				new FileOutputStream( dir+"/"+className+".class" );
 			out.write(code);
 			out.close();
@@ -120,7 +120,7 @@ public class ClassGeneratorImpl extends ClassGenerator
 		enclosingNameSpace.importClass( fqClassName.replace('$','.') );
 
 		try {
-			classStaticNameSpace.setLocalVariable( 
+			classStaticNameSpace.setLocalVariable(
 				ClassGeneratorUtil.BSHINIT, block, false/*strictJava*/ );
 		} catch ( UtilEvalError e ) {
 			throw new InterpreterError("unable to init static: "+e );
@@ -131,19 +131,19 @@ public class ClassGeneratorImpl extends ClassGenerator
 		classStaticNameSpace.setClassStatic( genClass );
 
 		// evaluate the static portion of the block in the static space
-		block.evalBlock( 
-			callstack, interpreter, true/*override*/, 
+		block.evalBlock(
+			callstack, interpreter, true/*override*/,
 			ClassNodeFilter.CLASSSTATIC );
 
 		callstack.pop();
 
 		if ( !genClass.isInterface() )
 		{
-		// Set the static bsh This callback 
+		// Set the static bsh This callback
 		String bshStaticFieldName = ClassGeneratorUtil.BSHSTATIC+className;
 		try {
 			LHS lhs = Reflect.getLHSStaticField( genClass, bshStaticFieldName );
-			lhs.assign( 
+			lhs.assign(
 				classStaticNameSpace.getThis( interpreter ), false/*strict*/ );
 		} catch ( Exception e ) {
 			throw new InterpreterError("Error in class gen setup: "+e );
@@ -154,10 +154,10 @@ public class ClassGeneratorImpl extends ClassGenerator
 		return genClass;
 	}
 
-	static Variable [] getDeclaredVariables( 
-		BSHBlock body, CallStack callstack, Interpreter interpreter, 
-		String defaultPackage 
-	) 
+	static Variable [] getDeclaredVariables(
+		BSHBlock body, CallStack callstack, Interpreter interpreter,
+		String defaultPackage
+	)
 	{
 		List vars = new ArrayList();
 		for( int child=0; child<body.jjtGetNumChildren(); child++ )
@@ -165,11 +165,11 @@ public class ClassGeneratorImpl extends ClassGenerator
 			SimpleNode node = (SimpleNode)body.jjtGetChild(child);
 			if ( node instanceof BSHTypedVariableDeclaration )
 			{
-				BSHTypedVariableDeclaration tvd = 
+				BSHTypedVariableDeclaration tvd =
 					(BSHTypedVariableDeclaration)node;
 				Modifiers modifiers = tvd.modifiers;
 
-				String type = tvd.getTypeDescriptor( 
+				String type = tvd.getTypeDescriptor(
 					callstack, interpreter, defaultPackage );
 
 				BSHVariableDeclarator [] vardec = tvd.getDeclarators();
@@ -177,7 +177,7 @@ public class ClassGeneratorImpl extends ClassGenerator
 				{
 					String name = vardec[i].name;
 					try {
-						Variable var = new Variable( 
+						Variable var = new Variable(
 							name, type, null/*value*/, modifiers );
 						vars.add( var );
 					} catch ( UtilEvalError e ) {
@@ -190,9 +190,9 @@ public class ClassGeneratorImpl extends ClassGenerator
 		return (Variable [])vars.toArray( new Variable[0] );
 	}
 
-	static DelayedEvalBshMethod [] getDeclaredMethods( 
+	static DelayedEvalBshMethod [] getDeclaredMethods(
 		BSHBlock body, CallStack callstack, Interpreter interpreter,
-		String defaultPackage 
+		String defaultPackage
 	)
 		throws EvalError
 	{
@@ -206,51 +206,51 @@ public class ClassGeneratorImpl extends ClassGenerator
 				md.insureNodesParsed();
 				Modifiers modifiers = md.modifiers;
 				String name = md.name;
-				String returnType = md.getReturnTypeDescriptor( 
+				String returnType = md.getReturnTypeDescriptor(
 					callstack, interpreter, defaultPackage );
 				BSHReturnType returnTypeNode = md.getReturnTypeNode();
 				BSHFormalParameters paramTypesNode = md.paramsNode;
-				String [] paramTypes = paramTypesNode.getTypeDescriptors( 
+				String [] paramTypes = paramTypesNode.getTypeDescriptors(
 					callstack, interpreter, defaultPackage );
 
-				DelayedEvalBshMethod bm = new DelayedEvalBshMethod( 
-					name, 
+				DelayedEvalBshMethod bm = new DelayedEvalBshMethod(
+					name,
 					returnType, returnTypeNode,
-					md.paramsNode.getParamNames(), 
+					md.paramsNode.getParamNames(),
 					paramTypes, paramTypesNode,
 					md.blockNode, null/*declaringNameSpace*/,
-					modifiers, callstack, interpreter 
+					modifiers, callstack, interpreter
 				);
 
 				methods.add( bm );
 			}
 		}
 
-		return (DelayedEvalBshMethod [])methods.toArray( 
+		return (DelayedEvalBshMethod [])methods.toArray(
 			new DelayedEvalBshMethod[0] );
 	}
 
 	/**
-		A node filter that filters nodes for either a class body static 
-		initializer or instance initializer.  In the static case only static 
-		members are passed, etc.  
+		A node filter that filters nodes for either a class body static
+		initializer or instance initializer.  In the static case only static
+		members are passed, etc.
 	*/
 	static class ClassNodeFilter implements BSHBlock.NodeFilter
 	{
 		public static final int STATIC=0, INSTANCE=1, CLASSES=2;
 
-		public static ClassNodeFilter CLASSSTATIC = 
+		public static ClassNodeFilter CLASSSTATIC =
 			new ClassNodeFilter( STATIC );
-		public static ClassNodeFilter CLASSINSTANCE = 
+		public static ClassNodeFilter CLASSINSTANCE =
 			new ClassNodeFilter( INSTANCE );
-		public static ClassNodeFilter CLASSCLASSES = 
+		public static ClassNodeFilter CLASSCLASSES =
 			new ClassNodeFilter( CLASSES );
 
 		int context;
 
 		private ClassNodeFilter( int context ) { this.context = context; }
 
-		public boolean isVisible( SimpleNode node ) 
+		public boolean isVisible( SimpleNode node )
 		{
 			if ( context == CLASSES )
 				return node instanceof BSHClassDeclaration;
@@ -269,7 +269,7 @@ public class ClassGeneratorImpl extends ClassGenerator
 			return true;
 		}
 
-		boolean isStatic( SimpleNode node ) 
+		boolean isStatic( SimpleNode node )
 		{
 			if ( node instanceof BSHTypedVariableDeclaration )
 				return ((BSHTypedVariableDeclaration)node).modifiers != null
@@ -308,7 +308,7 @@ public class ClassGeneratorImpl extends ClassGenerator
 		// could be a superfluous "super." which is legal.
 		Class superClass = clas.getSuperclass();
 		superMethod = Reflect.resolveExpectedJavaMethod(
-			bcm, superClass, instance, methodName, args, 
+			bcm, superClass, instance, methodName, args,
 			false/*onlyStatic*/ );
 		return Reflect.invokeMethod( superMethod, instance, args );
 	}

@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -42,7 +42,7 @@ class BSHImportDeclaration extends SimpleNode
 
 	BSHImportDeclaration(int id) { super(id); }
 
-	public Object eval( CallStack callstack, Interpreter interpreter) 
+	public Object eval( CallStack callstack, Interpreter interpreter)
 		throws EvalError
 	{
 		NameSpace namespace = callstack.top();
@@ -52,20 +52,20 @@ class BSHImportDeclaration extends SimpleNode
 			} catch ( UtilEvalError e ) {
 				throw e.toEvalError( this, callstack  );
 			}
-		else 
+		else
 		{
 			if ( staticImport )
 			{
 				if ( importPackage )
 				{
-					Class clas = ((BSHAmbiguousName)jjtGetChild(0)).toClass( 
+					Class clas = ((BSHAmbiguousName)jjtGetChild(0)).toClass(
 						callstack, interpreter );
 					namespace.importStatic( clas );
 				} else
-					throw new EvalError( 
-						"static field imports not supported yet", 
+					throw new EvalError(
+						"static field imports not supported yet",
 						this, callstack );
-			} else 
+			} else
 			{
 				String name = ((BSHAmbiguousName)jjtGetChild(0)).text;
 				if ( importPackage )

@@ -28,7 +28,7 @@ import org.netbeans.spi.wizard.Wizard;
  * container.  Usage:
  * <pre>
  * Wizard wizard = WizardPage.createWizard (new Class[] {WizardPageSubclass1.class,
- *     WizardPageSubclass2.class, WizardPageSubclass3.class}, 
+ *     WizardPageSubclass2.class, WizardPageSubclass3.class},
  *     new MyWizardResultProducer();
  * WizardDisplayer.showWizard (wizard);
  * </pre>
@@ -45,7 +45,7 @@ import org.netbeans.spi.wizard.Wizard;
  * The image on the left panel of the default implementation can be customized
  * in the following ways:
  * <ul>
- * <li>Put an instance of <code>java.awt.image.BufferedImage</code> into 
+ * <li>Put an instance of <code>java.awt.image.BufferedImage</code> into
  * UIManager with the key <code>wizard.sidebar.image</code>, i.e.
  * <pre>
  *    BufferedImage img = ImageIO.read (getClass().getResource ("MySideImage.png");
@@ -61,7 +61,7 @@ import org.netbeans.spi.wizard.Wizard;
  * </pre>
  * </li>
  * </ul>
- * 
+ *
  * <h2>Providing a custom WizardDisplayer:</h2>
  * The implementation of <code>WizardDisplayer</code> is pluggable.  While the
  * default implementation should be adequate for most cases, it is possible
@@ -81,14 +81,14 @@ import org.netbeans.spi.wizard.Wizard;
  *     by the above methods, the default implementation contained in this
  *     library will be used.</li>
  * </ul>
- * 
+ *
  * @author Tim Boudreau
  */
 public abstract class WizardDisplayer {
     protected WizardDisplayer() {
     }
     private static final String SYSPROP_KEY = "WizardDisplayer.default";
-    
+
     /**
      * Display a wizard in a dialog, using the default implementation of
      * WizardDisplayer.
@@ -104,17 +104,17 @@ public abstract class WizardDisplayer {
         nonBuggyWizard (wizard);
 
         WizardDisplayer defaultInstance = getDefault();
-        
+
         return defaultInstance.show (wizard, rect, help, initialProperties);
     }
-    
+
     private static WizardDisplayer getDefault() {
         WizardDisplayer factory = NbBridge.getFactoryViaLookup();
         if (factory == null) {
             String wdProp = System.getProperty (SYSPROP_KEY);
             if (wdProp != null) {
                 try {
-                    factory = (WizardDisplayer) 
+                    factory = (WizardDisplayer)
                             Class.forName (wdProp).newInstance();
                 } catch (Exception e) {
                     System.err.println("Could not instantiate " + wdProp);
@@ -123,19 +123,19 @@ public abstract class WizardDisplayer {
                 }
             }
         }
-        
+
         if (factory == null) {
             factory = // new DefaultWizardDisplayer();
                 new WizardDisplayerImpl();
         }
         return factory;
     }
-    
+
     /** Show a wizard with default window placement and no Help button */
     public static Object showWizard (Wizard wizard) {
         return showWizard (wizard, null, null, null);
     }
-    
+
     /** Show a wizard with default window placement, showing the help button,
      * which will invoke the passed action.
      * @param wizard The wizard to show
@@ -145,8 +145,8 @@ public abstract class WizardDisplayer {
     public static Object showWizard (Wizard wizard, Action help) {
         return showWizard (wizard, null, help, null);
     }
-    
-    /** Show a wizard in the passed location on screen with no help button 
+
+    /** Show a wizard in the passed location on screen with no help button
      * @param wizard The wizard to show
      * @param r The rectangle on screen for the wizard
      * @return The result of Wizard.finish()
@@ -154,7 +154,7 @@ public abstract class WizardDisplayer {
     public static Object showWizard (Wizard wizard, Rectangle r) {
         return showWizard (wizard, r, null, null);
     }
-    
+
     /**
      * Show a wizard.
      * @param wizard the Wizard to show
@@ -166,7 +166,7 @@ public abstract class WizardDisplayer {
      *  method, if the Wizard was completed by the user.
      */
     protected abstract Object show (Wizard wizard, Rectangle r, Action help, Map initialProperties);
-    
+
     /**
      * Install a panel representing a Wizard in a user-supplied container
      * with a user-supplied layout constraint.
@@ -178,27 +178,27 @@ public abstract class WizardDisplayer {
      *   is clicked (if null, no help button will be displayed)
      * @param initialProperties A set of properties that should be pre-set upon
      *   entering the wizard.  May be null.
-     * @param receiver An object which will be called when the Finish or 
+     * @param receiver An object which will be called when the Finish or
      *   Cancel buttons are pressed.  May not be null.
-     */ 
+     */
     public static WizardDisplayer installInContainer (Container c,
-	    Object layoutConstraint, 
+	    Object layoutConstraint,
             Wizard awizard,
-            Action helpAction, Map initialProperties, 
+            Action helpAction, Map initialProperties,
             WizardResultReceiver receiver) {
 	final WizardDisplayer displayer = getDefault();
-        displayer.install (c, layoutConstraint, awizard, helpAction, 
+        displayer.install (c, layoutConstraint, awizard, helpAction,
                 initialProperties, receiver);
 	return displayer;
     }
-    
+
     /**
      * Instance implementation of installInContainer().
-     */ 
+     */
     protected abstract void install (Container c, Object layoutConstraint,
-            Wizard awizard, Action helpAction, Map initialProperties,  
+            Wizard awizard, Action helpAction, Map initialProperties,
             WizardResultReceiver receiver);
-    
+
     /**
      * Assigns a handler used to close the wizard.
      * @param l ActionListener to be invoked when the wizard is to be closed.
@@ -207,8 +207,8 @@ public abstract class WizardDisplayer {
      * @return the handler replaced by this method invocation
      */
     // public abstract ActionListener setCloseHandler(ActionListener l);
-        
-    
+
+
 
     private static boolean nonBuggyWizard (Wizard wizard) {
         String[] s = wizard.getAllSteps();
@@ -233,5 +233,5 @@ public abstract class WizardDisplayer {
         return true;
     }
 
-    
+
 }

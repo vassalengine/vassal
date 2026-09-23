@@ -28,10 +28,10 @@ import javax.swing.UIManager;
 
 /**
  * Object which may be returned from <code>WizardPage.WizardResultProducer.finish()</code>
- * or <code>WizardPanelProvider.finish()</code>, or passed to 
- * <code>DeferredWizardResult.ResultProgressHandle.finish()</code>.  If an 
- * instance of <code>Summary</code> is used, then the UI should, rather 
- * than disappearing, show the component provided by the <code>Summary</code> 
+ * or <code>WizardPanelProvider.finish()</code>, or passed to
+ * <code>DeferredWizardResult.ResultProgressHandle.finish()</code>.  If an
+ * instance of <code>Summary</code> is used, then the UI should, rather
+ * than disappearing, show the component provided by the <code>Summary</code>
  * object.  Convenience constructors are provided for plain text and list style
  * views.
  *
@@ -40,10 +40,10 @@ import javax.swing.UIManager;
 public class Summary {
     private final Component comp;
     private Object result;
-    
+
     //constructors package private - only unit tests should be able to subclass
     //Summary
-    
+
     Summary(String text, Object result) {
         //XXX this is creating components off the AWT thread - needs to change
         //to use invokeAndWait where appropriate
@@ -68,7 +68,7 @@ public class Summary {
         }
         comp = new JScrollPane (jta);
     }
-    
+
     Summary(String[] items, Object result) {
         if (items == null) {
             throw new NullPointerException ("Items array null"); //NOI18N
@@ -80,7 +80,7 @@ public class Summary {
         JList list = new JList(items);
         comp = new JScrollPane (list);
     }
-    
+
     Summary(Component comp, Object result) {
         this.result = result;
         this.comp = comp;
@@ -88,61 +88,61 @@ public class Summary {
             throw new NullPointerException ("Null component"); //NOI18N
         }
     }
-    
+
     /**
-     * Create a <code>Summary</code> object that will display the passed 
+     * Create a <code>Summary</code> object that will display the passed
      * <code>String</code>s in a <code>JList</code> or similar.
      * @param items A non-null list of one or more Strings to be displayed
-     * @param result The result that should be returned when the Wizard is 
+     * @param result The result that should be returned when the Wizard is
      *  closed
      * @return the requested <code>Summary</code> object
-     */ 
+     */
     public static Summary create (String[] items, Object result) {
         return new Summary (items, result);
     }
-    
+
     /**
      * Create a <code>Summary</code> object that will display the passed component.
      * @param comp A custom component to show on the summary page after the
      *  Wizard has been completed
-     * @param result The result that should be returned when the <code>Wizard</code> is 
+     * @param result The result that should be returned when the <code>Wizard</code> is
      *  closed
      * @return the requested <code>Summary</code> object
-     */ 
+     */
     public static Summary create (Component comp, Object result) {
         return new Summary (comp, result);
     }
-    
+
     /**
-     * Create a <code>Summary</code> object which will display the 
+     * Create a <code>Summary</code> object which will display the
      * passed <code>String</code> in a text component of some sort.
      * @param text The text to display - must be non-null, greater than zero
      *  length and not completely whitespace
-     * @param result The result that should be returned when the Wizard is 
+     * @param result The result that should be returned when the Wizard is
      *  closed
      * @return the requested <code>Summary</code> object
-     */ 
+     */
     public static Summary create (String text, Object result) {
         return new Summary (text, result);
     }
-    
+
     /**
      * Get the component that will display the summary information.
      * @return an appropriate component, the type of which may differ depending
      *  on the factory method used to create this component
-     */ 
+     */
     public Component getSummaryComponent() {
         return comp;
     }
-    
+
     /**
      * Get the object that represents the actual result of whatever the <code>Wizard</code>
      * that created this <code>Summary</code> object computes.  Note this method may not
-     * return another instance of <code>Summary</code> or an instance of 
+     * return another instance of <code>Summary</code> or an instance of
      * <code>DeferredWizardResult</code>.
-     * @return the object passed to the factory method that created this 
+     * @return the object passed to the factory method that created this
      *  Summary object, or null.
-     */ 
+     */
     public Object getResult() {
         return result;
     }

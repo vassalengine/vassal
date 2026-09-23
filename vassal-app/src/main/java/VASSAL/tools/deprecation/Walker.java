@@ -21,11 +21,11 @@ import java.io.InputStream;
 import java.io.IOException;
 
 public interface Walker {
-  void setInput(byte[] classFile); 
+  void setInput(byte[] classFile);
 
-  void setInput(InputStream in) throws IOException; 
+  void setInput(InputStream in) throws IOException;
 
-  void setInput(String className) throws IOException; 
+  void setInput(String className) throws IOException;
 
-  void walk(); 
+  void walk();
 }

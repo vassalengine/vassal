@@ -17,7 +17,7 @@ import java.util.Set;
  */
 final class Util {
     private Util(){}
-    
+
     /**
      * Get an array of step ids from an array of WizardPages
      */
@@ -28,7 +28,7 @@ final class Util {
         for (int i = 0; i < pages.length; i++) {
             result[i] = pages[i].id();
             if (result[i] == null || uniqueNames.contains(result[i])) {
-                result[i] = uniquify (getIDFromStaticMethod(pages[i].getClass()), 
+                result[i] = uniquify (getIDFromStaticMethod(pages[i].getClass()),
                         uniqueNames);
                 pages[i].id = result[i];
             }
@@ -36,7 +36,7 @@ final class Util {
         }
         return result;
     }
-    
+
     static String uniquify (String s, Set /* <String> */ used) {
         String test = s;
         if (test != null) {

@@ -105,11 +105,11 @@ public class ActivePeer extends Thread {
     IllegalArgument.ifNull("Message", pMessage);
     send(formatCHAT(pMessage));
   }
-  
+
   public void finish() {
     send(DONE);
   }
-  
+
   public void run() {
     send(formatHELO());
 
@@ -119,7 +119,7 @@ public class ActivePeer extends Thread {
         break;
       }
     }
-    
+
     close();
     zActivePeersSupport.removeActivePeer(this);
     zUserDialog.showDisconnect(zPeerInfo);
