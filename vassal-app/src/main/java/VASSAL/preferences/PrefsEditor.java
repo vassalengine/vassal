@@ -39,9 +39,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -153,11 +151,8 @@ public class PrefsEditor {
       SwingUtils.setDefaultButtons(setupDialog.getRootPane(), okButton, okButton); // okButton for both
 
       setupDialog.pack();
-      final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-      setupDialog.setLocation(
-        d.width / 2 - setupDialog.getSize().width / 2,
-        d.height / 2 - setupDialog.getSize().height / 2
-      );
+      // Center over owner (or screen) as preferred initial placement, then clamp
+      SwingUtils.applyInitialPlacement(setupDialog, SwingUtils.PreferredWindowPlacement.CENTER_OVER_OWNER);
       setupDialog.setVisible(true);
       setupDialog.removeAll();
     }
@@ -254,9 +249,8 @@ public class PrefsEditor {
           }
           storeValues();
           dialog.pack();
-          final Dimension d = SwingUtils.getScreenSize();
-          dialog.setLocation(d.width / 2 - dialog.getWidth() / 2, 0);
-          SwingUtils.ensureOnScreen(dialog);
+          // Center over owner (Preferences dialog) and clamp within screen bounds
+          SwingUtils.applyInitialPlacement(dialog, SwingUtils.PreferredWindowPlacement.CENTER_OVER_OWNER);
           dialog.setVisible(true);
         }
       };
