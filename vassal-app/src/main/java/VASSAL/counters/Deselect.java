@@ -111,7 +111,7 @@ public class Deselect extends Decorator implements TranslatablePiece {
   protected KeyCommand[] myGetKeyCommands() {
     if (command == null) {
       deselectCommand = new KeyCommand(commandName, key, getOutermost(this), this);
-      if (commandName.length() > 0 && key != null && !key.isNull()) {
+      if (!commandName.isEmpty() && key != null && !key.isNull()) {
         command =
           new KeyCommand[]{deselectCommand};
       }
@@ -156,10 +156,13 @@ public class Deselect extends Decorator implements TranslatablePiece {
 
             c = m.placeAt(outer, pos);                 //BR// Place it right on the map (which auto-removes it from stack)
 
+            // The following original lines are removed as they were confusing the undo logic:
+            /*
             final Stack parent = m.getStackMetrics().createStack(outer);
             if (parent != null) {
               c = c.append(m.placeAt(parent, pos));    //BR// Place it in a new stack at the same location
             }
+            */
           }
         }
         DragBuffer.getBuffer().remove(outer);          //BR// Remove from the drag buffer
