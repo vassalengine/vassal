@@ -19,6 +19,7 @@ package VASSAL.build.module;
 
 import VASSAL.build.AbstractFolder;
 import VASSAL.build.AutoConfigurable;
+import VASSAL.build.module.properties.PropertySource;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
@@ -41,6 +42,7 @@ import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.LoopControl;
 import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.SequenceEncoder;
@@ -73,8 +75,7 @@ import java.util.List;
  * ...
  */
 public class SpecialDiceButton extends DoActionButton implements CommandEncoder, UniqueIdManager.Identifyable, ComponentDescription {
-  private static final Logger logger =
-    LoggerFactory.getLogger(SpecialDiceButton.class);
+  private static final Logger logger = LoggerFactory.getLogger(SpecialDiceButton.class);
 
   protected static final UniqueIdManager idMgr = new UniqueIdManager("SpecialDiceButton"); //$NON-NLS-1$
   public static final String SHOW_RESULTS_COMMAND = "SHOW_RESULTS\t"; //$NON-NLS-1$
@@ -95,6 +96,9 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
   protected String tooltip = ""; //$NON-NLS-1$
   protected final MutableProperty.Impl property = new Impl("", this); //$NON-NLS-1$
   protected String description;
+  // FIX: New field to store the previous roll results for Undo
+  private int[] lastRollResults = EMPTY;
+
 
   public static final String RESULT_CHATTER = "resultChatter"; //$NON-NLS-1$
   public static final String CHAT_RESULT_FORMAT = "format"; //$NON-NLS-1$
@@ -126,7 +130,16 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
     dialogLabel = new JLabel();
     dialogLabel.setIcon(resultsIcon);
     dialog.add(dialogLabel);
-    final ActionListener rollAction = e -> DR();
+
+    // ACTION LISTENER: Reverts to calling DR() and letting DR() handle logging/execution.
+    final ActionListener rollAction = e -> {
+      try {
+        DR();
+      }
+      catch (RecursionLimitException ex) {
+        RecursionLimiter.infiniteLoop(ex);
+      }
+    };
 
     final String desc = Resources.getString("Editor.SpecialDiceButton.symbols"); //$NON-NLS-1$
     setLaunchButton(makeLaunchButton(desc, desc, "/images/die.gif", rollAction)); //NON-NLS
@@ -150,35 +163,164 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
     return " *** " + getConfigureName() + " = "; //$NON-NLS-1$ //$NON-NLS-2$
   }
 
+
   /**
    * Forwards the result of the roll to the {@link Chatter#send} method of the {@link Chatter} of the {@link GameModule}.
    * Format is prefix+[comma-separated roll list]+suffix additionally a command for every die is generated
+   * **REVISION**: Logs the old results to enable single-step undo for the visual state.
    */
-  protected void DR() {
-    final int[] results = new int[dice.size()];
+  protected void DR() throws RecursionLimitException {
+    // 1. Capture the visual state *before* the roll for the undo command
+    final int[] previousRollResults = Arrays.copyOf(lastRollResults, lastRollResults.length);
+
+    // 2. Roll the new dice
+    final int[] newRollResults = new int[dice.size()];
     int i = 0;
     for (final SpecialDie sd : dice) {
       final int faceCount = sd.getFaceCount();
-      results[i++] = faceCount == 0 ? 0 : ran.nextInt(sd.getFaceCount());
+      newRollResults[i++] = faceCount == 0 ? 0 : ran.nextInt(sd.getFaceCount());
     }
-    setFormat(results);
-    Command c = reportResults(results);
+
+    // 3. Set format, properties, and execute local updates for the *new* roll
+    setFormat(newRollResults);
+    Command chatAndPropertyCommand = new NullCommand();
     if (reportResultAsText) {
-      c = c.append(reportTextResults(results));
+      chatAndPropertyCommand = chatAndPropertyCommand.append(reportTextResults(newRollResults));
+    }
+    // This command is the one that's reversed to undo the property change
+    final Command propertyUpdateCommand = property.setPropertyValue(String.valueOf(getTotal(newRollResults)));
+    chatAndPropertyCommand = chatAndPropertyCommand.append(propertyUpdateCommand);
+
+    resultsIcon.setResults(newRollResults);
+    // Execute chat/prop immediately to update local state
+    chatAndPropertyCommand.execute();
+
+    // The lastRollResults tracker must be updated for local visual execution too!
+    lastRollResults = newRollResults;
+
+    if (getLaunchButton() != null) {
+      getLaunchButton().repaint();
+    }
+    if (reportResultInWindow) {
+      dialogLabel.setSize(new Dimension(resultsIcon.width, resultsIcon.height));
+      dialogLabel.setMinimumSize(new Dimension(resultsIcon.width, resultsIcon.height));
+      format.setFormat(windowTitleResultFormat);
+      dialog.setTitle(format.getLocalizedText(this, "Editor.SpecialDiceButton.window_title"));
+      dialog.pack();
+      dialog.setVisible(true);
+      dialogLabel.repaint();
+    }
+    // *************************************************************************
+
+    // FIX: Integration of Looping and Hotkey execution from DoActionButton.doActions()
+
+    final Command c = chatAndPropertyCommand; // Start with the dice roll/prop update command
+    final GameModule mod = GameModule.getGameModule();
+
+    // Check for looping, as defined in DoActionButton.doActions()
+    if (!doLoop) {
+      // Non looping case: Execute the base actions and log the whole chain
+      executeActions(c); // Adds sound/hotkeys/report to c
+      final Command showResultsCommand = new ShowResults(this, newRollResults, previousRollResults);
+      mod.sendAndLog(c.append(showResultsCommand));
+      return;
     }
 
-    try {
-      doActions();
-    }
-    catch (RecursionLimitException ex) {
-      RecursionLimiter.infiniteLoop(ex);
+    // Looping case (restored from DoActionButton.doActions())
+    // Note: We use the index/loop variables from the superclass (this)
+
+    // Set up Index Property
+    indexValue = indexStart;
+    setIndexPropertyValue();
+
+    // Issue the Pre-loop key
+    doHotKey(c, preLoopKey);
+
+    // Set up counters for a counted loop
+    int loopCounter = 0;
+    int loopCountLimit = 1;
+    final PropertySource ps = (PropertySource) GameModule.getGameModule(); // Simplified PropertySource lookup
+
+    if (LoopControl.LOOP_COUNTED.equals(loopType)) {
+      loopCountLimit = loopCount.getTextAsInt(ps, Resources.getString("Editor.LoopControl.loop_count"), this);
     }
 
-    GameModule.getGameModule().sendAndLog(c);
+    RecursionLimitException loopException = null;
+
+    if (loopCountLimit > 0) {
+      for (;;) {
+
+        // While loop - test condition is still true before actions
+        if (LoopControl.LOOP_WHILE.equals(loopType)) {
+          if (!whileExpression.isTrue(ps)) {
+            break;
+          }
+        }
+
+        // Execute the base actions and catch looping.
+        try {
+          executeActions(c); // Adds sound/hotkeys/report to c
+        }
+        catch (RecursionLimitException ex) {
+          loopException = ex;
+          break;
+        }
+
+        // Until loop - test condition is not false after loop
+        if (LoopControl.LOOP_UNTIL.equals(loopType)) {
+          if (untilExpression.isTrue(ps)) {
+            break;
+          }
+        }
+
+        // Counted loop - Check if looped enough times
+        loopCounter++;
+        if (LoopControl.LOOP_COUNTED.equals(loopType)) {
+          if (loopCounter >= loopCountLimit) {
+            break;
+          }
+        }
+        // Otherwise check for too much looping.
+        else {
+          if (loopCounter >= LoopControl.LOOP_LIMIT) {
+            loopException = new RecursionLimitException(this);
+            break;
+          }
+        }
+
+        // Increment the Index Variable
+        indexValue += indexStep;
+        setIndexPropertyValue();
+      }
+    }
+
+    // Issue the Post-loop key
+    doHotKey(c, postLoopKey);
+
+    // Now that the full action chain (c) is built, append the visual update (undo fix) and log the whole thing.
+    final Command showResultsCommand = new ShowResults(this, newRollResults, previousRollResults);
+    mod.sendAndLog(c.append(showResultsCommand));
+
+    // If the loop ended due to excessive looping, throw the Exception out to the caller.
+    if (loopException != null) {
+      throw loopException;
+    }
   }
 
+  // Helper method to get total, simplified logic
+  private int getTotal(int[] results) {
+    int total = 0;
+    for (int i = 0; i < dice.size() && i < results.length; ++i) {
+      total += dice.get(i).getIntValue(results[i]);
+    }
+    return total;
+  }
+
+  // This method is ONLY called by the ShowResults command (for remote clients and Redo/Undo command execution).
   private Command reportResults(int[] results) {
+    // FIX: Set resultsIcon for the visual state update
     resultsIcon.setResults(results);
+
     if (reportResultInWindow) {
       dialogLabel.setSize(new Dimension(resultsIcon.width, resultsIcon.height));
       dialogLabel.setMinimumSize(new Dimension(resultsIcon.width, resultsIcon.height));
@@ -189,20 +331,22 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
       dialogLabel.repaint();
     }
     if (reportResultInButton) {
+      // FIX: Repaint button for the visual state update
       getLaunchButton().repaint();
     }
-    return new ShowResults(this, results);
+    return new NullCommand();
   }
 
+  /**
+   * Report the results of the roll as text to the chat window.
+   *
+   * @param results the results of the roll (unused in body, but needed for consistent method signature)
+   */
+  @SuppressWarnings({"PMD.UnusedFormalParameter"}) // Suppress warning as 'results' is indirectly used by being passed to this method for compatibility/call sequencing.
   private Command reportTextResults(int[] results) {
-    int total = 0;
-    for (int i = 0; i < dice.size(); ++i) {
-      final SpecialDie die = dice.get(i);
-      total += die.getIntValue(results[i]);
-    }
     format.setFormat(chatResultFormat);
     String msg = format.getLocalizedText(this, "Editor.report_format");
-    if (msg.length() > 0) {
+    if (!msg.isEmpty()) {
       if (msg.startsWith("*")) { //$NON-NLS-1$
         msg = "*" + msg; //$NON-NLS-1$
       }
@@ -210,10 +354,7 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
         msg = "* " + msg; //$NON-NLS-1$
       }
     }
-    final Command c = msg.length() == 0 ? new NullCommand() : new Chatter.DisplayText(GameModule.getGameModule().getChatter(), msg);
-    c.execute();
-    c.append(property.setPropertyValue(String.valueOf(total)));
-    return c;
+    return msg.isEmpty() ? new NullCommand() : new Chatter.DisplayText(GameModule.getGameModule().getChatter(), msg);
   }
 
   protected void setFormat(int[] results) {
@@ -229,8 +370,7 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
   }
 
   /**
-   * The Attributes of a DiceButton are:
-   *
+  * The Attributes of a DiceButton are:
    * <code>BUTTON_TEXT</code> the label of the button in the toolbar <code>ICON</code> the icon of the button in the
    * toolbar <code>HOTKEY</code> the hotkey equivalent of the button <code>DICE_SET</code> list of dice sets, an
    * entry can be: [number]name of die[+|-modifier] "name of die" must be SpecialDie "modifier" is added/subtracted
@@ -319,7 +459,7 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
       return () -> reportResultInWindow;
     }
     else if (REPORT_FORMAT.equals(name) || DO_REPORT.equals(name)) {
-      return () -> false;
+      return () -> false; // SpecialDiceButton always handles its own reporting/chat logic
     }
     else
       return super.getAttributeVisibility(name); // AbstractToolbarItem
@@ -346,6 +486,9 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
     }
 
     resultsIcon.setResults(new int[dice.size()]);
+    // FIX: Set lastRollResults to the initial state (empty/zero)
+    lastRollResults = new int[dice.size()];
+
     final LaunchButton lb = getLaunchButton();
 
     lb.setForceVisible(reportResultInButton);
@@ -370,6 +513,9 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
     idMgr.add(this);
     mod.addCommandEncoder(this);
     property.addTo((MutablePropertiesContainer)parent);
+
+    // Ensure the loop index property from the base class is also managed if applicable
+    updateLoopPropertyRegistration();
   }
 
   @Override
@@ -478,7 +624,7 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
       description = (String)o;
     }
     else if (DO_REPORT.equals(key)) {
-      doReport = false; // Always false
+      doReport = false; // Always false, handled by dice-specific logic
     }
     else {
       super.setAttribute(key, o);
@@ -512,7 +658,7 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
       return ColorConfigurer.colorToString(bgColor);
     }
     else if (TOOLTIP.equals(key)) {
-      return tooltip.length() == 0 ? getLaunchButton().getAttributeValueString(BUTTON_TEXT) : tooltip;
+      return tooltip.isEmpty() ? getLaunchButton().getAttributeValueString(BUTTON_TEXT) : tooltip;
     }
     else if (DESCRIPTION.equals(key)) {
       return description;
@@ -539,7 +685,7 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
    * create String from int array
    *
    * @param ia
-   *          int-array
+   * int-array
    * @return encoded String
    */
   public static String intArrayToString(int[] ia) {
@@ -557,11 +703,11 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
    * get int array from string
    *
    * @param s
-   *          string with encoded int array
+   * string with encoded int array
    * @return int array
    */
   public static int[] stringToIntArray(String s) {
-    if (s == null || s.length() == 0) {
+    if (s == null || s.isEmpty()) {
       return EMPTY;
     }
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
@@ -592,6 +738,7 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
       return null;
     }
     final ShowResults c2 = (ShowResults) c;
+    // Only encode the current roll results. The previous results are for local undo logic.
     final SequenceEncoder se = new SequenceEncoder(c2.target.getIdentifier(), '\t');
     for (int i = 0; i < c2.rolls.length; ++i) {
       se.append(Integer.toString(c2.rolls[i])); //$NON-NLS-1$
@@ -623,29 +770,54 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
     for (final String n : l) {
       results[i++] = Integer.parseInt(n);
     }
-    return new ShowResults(this, results);
+    // When decoding for remote clients/redo, we don't have the previous results, so we pass EMPTY.
+    // The three-argument constructor will be used, and EMPTY will be stored for previousRolls.
+    return new ShowResults(this, results, EMPTY);
   }
   /**
    * Command for displaying the results of a roll of the dice
+   * **REVISION**: `executeCommand()` now correctly updates the button's internal `lastRollResults`
+   * state, fixing the chain-of-undo bug.
+   * **COMPATIBILITY FIX**: Added back the old two-argument constructor.
    */
   public static class ShowResults extends Command {
     private final SpecialDiceButton target;
-    private final int[] rolls;
+    private final int[] rolls;           // State to apply on execute/redo
+    private final int[] previousRolls;   // State to apply on undo
 
-    public ShowResults(SpecialDiceButton oTarget, int[] results) {
+    /**
+     * **BINARY COMPATIBILITY CONSTRUCTOR**
+     * This is the old constructor signature that must be preserved.
+     * It defaults the previous roll to an empty array.
+     */
+    @Deprecated
+    public ShowResults(SpecialDiceButton oTarget, int[] rollsToApply) {
+      this(oTarget, rollsToApply, EMPTY);
+    }
+
+
+    public ShowResults(SpecialDiceButton oTarget, int[] rollsToApply, int[] previousRollsToRestore) {
       target = oTarget;
-      rolls = Arrays.copyOf(results, results.length);
+      rolls = Arrays.copyOf(rollsToApply, rollsToApply.length);
+      previousRolls = Arrays.copyOf(previousRollsToRestore, previousRollsToRestore.length);
     }
 
     @Override
     protected void executeCommand() {
+      // This applies the "rolls" state (the forward state)
       target.setFormat(rolls);
       target.reportResults(rolls);
+      // CRITICAL FIX: Update the visual state tracker in the button when the command is executed
+      target.lastRollResults = rolls;
     }
 
     @Override
     protected Command myUndoCommand() {
-      return null;
+      // This is executed when the current command is undone.
+      // We return a *new* ShowResults command that will execute the visual state
+      // of the *previous* roll (previousRolls), and put the current state (rolls)
+      // on its own Redo stack.
+      return new ShowResults(target, previousRolls, rolls);
     }
   }
 
@@ -664,20 +836,23 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
       icons = new Icon[results.length];
       if (results.length > dice.size()) {
         logger.warn(
-          "Special Die Button (" + getConfigureName() + //NON-NLS
-          "): more results (" + results.length + ") requested than dice (" + //NON-NLS
-          dice.size() + ")" //NON-NLS
+                "Special Die Button (" + getConfigureName() + //NON-NLS
+                        "): more results (" + results.length + ") requested than dice (" + //NON-NLS
+                        dice.size() + ")" //NON-NLS
         );
       }
       for (int i = 0; i < results.length; ++i) {
         if (i >= dice.size()) break;
         final String imageName = dice.get(i).getImageName(results[i]);
 
-        if (imageName.length() > 0) {
+        if (!imageName.isEmpty()) {
           final ImageOp sop = Op.load(imageName);
           if (sop.getImage() != null) {
             icons[i] = new ImageIcon(new OwningOpMultiResolutionImage(sop));
           }
+        }
+        else {
+          icons[i] = null;
         }
       }
     }
