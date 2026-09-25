@@ -87,6 +87,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeWillExpandListener;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -1159,6 +1161,8 @@ public class ModuleManagerWindow extends JFrame {
   private static class MyTreeCellRenderer extends DefaultTreeCellRenderer {
     private static final long serialVersionUID = 1L;
 
+    private static final Border NO_BORDER = new EmptyBorder(1, 1, 1, 1);
+        
     @Override
     public Component getTreeCellRendererComponent(
         JTree tree, Object value, boolean selected, boolean expanded,
@@ -1169,7 +1173,11 @@ public class ModuleManagerWindow extends JFrame {
       setText(info.toString());
       setToolTipText(info.getToolTipText());
       setIcon(info.getIcon(expanded));
-      setForeground(info.getTreeCellFgColor());
+      final Color color = info.getTreeCellFgColor();
+      if (color != null) 
+        setForeground(color);
+      setBorder(NO_BORDER);
+
       return this;
     }
   }
@@ -1443,7 +1451,8 @@ public class ModuleManagerWindow extends JFrame {
      *  @return cell text color
      */
     public Color getTreeCellFgColor() {
-      return Color.black;
+      // TextPane.foreground
+      return UIManager.getColor("TextPane.foreground");
     }
 
     /**
@@ -1877,7 +1886,7 @@ public class ModuleManagerWindow extends JFrame {
 
     @Override
     public Color getTreeCellFgColor() {
-      return !isLaunchable() ? Color.GRAY : Color.BLACK;
+      return !isLaunchable() ? UIManager.getColor("TextPane.inactiveForeground")  : super.getTreeCellFgColor();
     }
   }
 
@@ -1991,10 +2000,10 @@ public class ModuleManagerWindow extends JFrame {
     public Color getTreeCellFgColor() {
       // FIXME: should get colors from LAF
       if (isActive()) {
-        return metadata == null || !moduleInfo.isValid() ? Color.red : Color.black;
+        return metadata == null || !moduleInfo.isValid() ? Color.red : super.getTreeCellFgColor();
       }
       else {
-        return metadata == null || !moduleInfo.isValid() ? Color.pink : Color.gray;
+        return metadata == null || !moduleInfo.isValid() ? Color.pink : UIManager.getColor("TextPane.inactiveForeground");
       }
     }
 
@@ -2234,7 +2243,7 @@ public class ModuleManagerWindow extends JFrame {
     @Override
     public Color getTreeCellFgColor() {
       // FIXME: should get colors from LAF
-      return belongsToModule() && folderInfo.getModuleInfo().isValid() ? Color.black : Color.gray;
+      return belongsToModule() && folderInfo.getModuleInfo().isValid() ? super.getTreeCellFgColor() : UIManager.getColor("TextPane.inactiveForeground");
     }
 
     @Override
