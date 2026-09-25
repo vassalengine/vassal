@@ -22,6 +22,16 @@
         <method>*</method>
     </difference>
 
+    <!-- 3.8.0 -->
+    <difference>
+        <className>VASSAL/build/module/Map</className>
+        <differenceType>6004</differenceType>
+        <field>scroller</field>
+        <from>org.jdesktop.animation.timing.Animator</from>
+        <to>javax.swing.Timer</to>
+        <justification>Simplification and future proof</justification>
+    </difference>
+    
     <!-- 3.7.13 -->
     <difference>
         <className>VASSAL/build/module/properties/ScenarioPropertiesOptionTab</className>
