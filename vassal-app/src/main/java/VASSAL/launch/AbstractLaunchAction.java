@@ -39,6 +39,7 @@ import VASSAL.tools.io.ProcessLauncher;
 import VASSAL.tools.io.ProcessWrapper;
 import VASSAL.tools.lang.MemoryUtils;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -47,6 +48,7 @@ import org.slf4j.LoggerFactory;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
+import javax.swing.UIManager;
 import java.awt.Dimension;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -560,6 +562,22 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       // set the classpath
       result.add("-cp"); //NON-NLS
       result.add(System.getProperty("java.class.path"));
+
+      // Specify the look and feel.
+      String defaultLaf = System.getProperty("swing.defaultlaf");
+      if (defaultLaf == null) {
+        // On Windows the defaultlaf property is typically null for jre provided LaF.
+        // Get the current look and feel from the UIManager.
+        defaultLaf = UIManager.getLookAndFeel().getClass().getName();
+      }
+      if (!StringUtils.isBlank(defaultLaf)) {
+        result.add("-Dswing.defaultlaf=" + defaultLaf); //NON-NLS
+      }
+
+      final String lafFilePath = System.getProperty("look.feel");
+      if (!StringUtils.isBlank(lafFilePath)) {
+        result.add("-Dlook.feel=" + lafFilePath); //NON-NLS
+      }
 
       if (SystemUtils.IS_OS_MAC) {
         // set the MacOS dock parameters
