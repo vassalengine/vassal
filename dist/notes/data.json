@@ -24,6 +24,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 15111, "desc": "Fixed typos in menu item text" },
         { "num": 15054, "desc": "Fix Truncated text label on hidden pieces" }
       ],
       "improvements": [

@@ -1,5 +1,6 @@
 3.7.28 - ???
 
+* 15111: Fixed typos in menu item text
 * 15106: Upgraded slf4j-api to 2.0.20
 * 15096: Upgraded byte-buddy to 1.18.14
 * 15094: Upgraded asciidoctorj-pdf to 2.3.27
