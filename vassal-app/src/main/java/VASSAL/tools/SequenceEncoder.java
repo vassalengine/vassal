@@ -55,6 +55,8 @@ import VASSAL.configure.StringArrayConfigurer;
  * String B = BC.nextToken();
  * String C = BC.nextToken();
  * </pre>
+ *
+ * The characters in -.0123456789EINaefilnrstuy MUST NOT be used as delimiters.
  */
 public class SequenceEncoder {
   private StringBuilder buffer;
@@ -63,18 +65,17 @@ public class SequenceEncoder {
   // Ugly delimiters: The characters in UGLY can occur in what's returned
   // by String.valueOf() for boolean, int, long, and double---that is,
   // anything which looks like a number (possibly in scientific notation,
-  // e.g., 1E-6) but also true, false, Infinity, and NaN. When the delimiter
-  // is none of these characters, we can hand these primitive types directly
-  // to the StringBuilder without doing any escaping.
+  // e.g., 1E-6) but also true, false, Infinity, and NaN.
   //
   // These characters are all terrible choices for delimiters anyway, so
   // hopefully no one uses them, but we have to check just in case.
   private static final String UGLY = "-.0123456789EINaefilnrstuy"; //NON-NLS
-  private final boolean uglyDelim;
 
   public SequenceEncoder(char delimiter) {
+    if (UGLY.indexOf(delimiter) != -1) {
+      throw new IllegalArgumentException("Illegal delimiter " + delimiter);
+    }
     delim = delimiter;
-    uglyDelim = UGLY.indexOf(delim) != -1;
   }
 
   public SequenceEncoder(String val, char delimiter) {
@@ -136,36 +137,24 @@ public class SequenceEncoder {
   }
 
   public SequenceEncoder append(int i) {
-    if (uglyDelim) {
-      return append(String.valueOf(i));
-    }
     startBufferOrAddDelimiter();
     buffer.append(i);
     return this;
   }
 
   public SequenceEncoder append(long l) {
-    if (uglyDelim) {
-      return append(String.valueOf(l));
-    }
     startBufferOrAddDelimiter();
     buffer.append(l);
     return this;
   }
 
   public SequenceEncoder append(double d) {
-    if (uglyDelim) {
-      return append(String.valueOf(d));
-    }
     startBufferOrAddDelimiter();
     buffer.append(d);
     return this;
   }
 
   public SequenceEncoder append(boolean b) {
-    if (uglyDelim) {
-      return append(String.valueOf(b));
-    }
     startBufferOrAddDelimiter();
     buffer.append(b);
     return this;
