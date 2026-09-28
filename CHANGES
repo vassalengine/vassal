@@ -1,5 +1,6 @@
 3.7.28 - ???
 
+* 15114: Upgraded logback-classic to 1.6.4
 * 15111: Fixed typos in menu item text
 * 15106: Upgraded slf4j-api to 2.0.20
 * 15096: Upgraded byte-buddy to 1.18.14

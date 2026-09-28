@@ -32,6 +32,7 @@
         { "num": 15042, "desc": "Update MacOS launch script to allow more options" }
       ],
       "other": [
+        { "num": 15114, "desc": "Upgraded logback-classic to 1.6.4" },
         { "num": 15106, "desc": "Upgraded slf4j-api to 2.0.20" },
         { "num": 15096, "desc": "Upgraded byte-buddy to 1.18.14" },
         { "num": 15094, "desc": "Upgraded asciidoctorj-pdf to 2.3.27" },
