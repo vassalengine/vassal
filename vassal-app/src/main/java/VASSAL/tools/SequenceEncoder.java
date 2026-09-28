@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2000-2009 by Rodney Kinney, Joel Uckelman
+ * Copyright (c) 2000-2026 by Rodney Kinney, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -100,14 +100,21 @@ public class SequenceEncoder {
       return this;
     }
 
-    if (s.charAt(0) == '\\' ||
-        (s.charAt(0) == '\'' && s.charAt(s.length() - 1) == '\'')) {
-      buffer.append('\'');
-      appendEscapedString(s);
-      buffer.append('\'');
+    if (s.indexOf(delim) != -1 || s.indexOf('\u001E') != -1) {
+      buffer
+        .append('\u001E')
+        .append(s.length())
+        .append('\u001E')
+        .append(s);
+    }
+    else if (s.charAt(0) == '\'' && s.charAt(s.length() - 1) == '\'') {
+      buffer
+        .append('\'')
+        .append(s)
+        .append('\'');
     }
     else {
-      appendEscapedString(s);
+      buffer.append(s);
     }
 
     return this;
@@ -184,19 +191,6 @@ public class SequenceEncoder {
     return buffer != null ? buffer.toString() : null;
   }
 
-  private void appendEscapedString(String s) {
-    int begin = 0;
-    int end = s.indexOf(delim);
-
-    while (begin <= end) {
-      buffer.append(s, begin, end).append('\\');
-      begin = end;
-      end = s.indexOf(delim, end + 1);
-    }
-
-    buffer.append(s, begin, s.length());
-  }
-
   public static class Decoder implements Iterator<String> {
     private String val;
     private final char delim;
@@ -242,52 +236,78 @@ public class SequenceEncoder {
         return "";
       }
 
-      if (buf != null) {
-        buf.setLength(0);
-      }
-
-      String tok = null;
-      int i = start;
-      for ( ; i < stop; ++i) {
-        if (val.charAt(i) == delim) {
-          if (i > 0 && val.charAt(i - 1) == '\\') {
-            // escaped delimiter; piece together the token
-            if (buf == null) {
-              buf = new StringBuilder();
-            }
-            buf.append(val, start, i - 1);
-            start = i;
-          }
-          else {
-            // real delimiter
-            if (buf == null || buf.length() == 0) {
-              // no escapes; take the token whole
-              tok = val.substring(start, i);
-            }
-            else {
-              // had an earlier escape; cobble on the end
-              buf.append(val, start, i);
-            }
-            start = i + 1;
-            break;
-          }
+      if (val.charAt(start) == '\u001E') {
+        // parse the length of the token
+        final int lend = val.indexOf('\u001E', start + 2);
+        if (lend == -1) {
+          throw new IllegalStateException();
         }
-      }
 
-      if (start < i) {
-        // i == stop; we reached the end without a delimiter
-        if (buf == null || buf.length() == 0) {
-          // no escapes; take the token whole
-          tok = val.substring(start);
+        final int len = Integer.parseInt(val.substring(start + 1, lend));
+
+        // get the token
+        final String tok = val.substring(lend + 1, lend + 1 + len);
+        System.err.println("nt: '" + tok + "'");
+
+        // go past the next delimiter
+        start = Math.min(lend + 1 + len + 1, stop);
+        if (start == stop) {
+          val = null;
         }
         else {
-          // had an earlier escape; cobble on the end
-          buf.append(val, start, stop);
+          System.err.println("v: '" + val.substring(start) + "'");
         }
-        val = null;
-      }
 
-      return unquote(tok != null ? tok : buf).intern();
+        return tok.intern();
+      }
+      else {
+        if (buf != null) {
+          buf.setLength(0);
+        }
+
+        String tok = null;
+        int i = start;
+        for ( ; i < stop; ++i) {
+          if (val.charAt(i) == delim) {
+            if (i > 0 && val.charAt(i - 1) == '\\') {
+              // escaped delimiter; piece together the token
+              if (buf == null) {
+                buf = new StringBuilder();
+              }
+              buf.append(val, start, i - 1);
+              start = i;
+            }
+            else {
+              // real delimiter
+              if (buf == null || buf.length() == 0) {
+                // no escapes; take the token whole
+                tok = val.substring(start, i);
+              }
+              else {
+                // had an earlier escape; cobble on the end
+                buf.append(val, start, i);
+              }
+              start = i + 1;
+              break;
+            }
+          }
+        }
+
+        if (start < i) {
+          // i == stop; we reached the end without a delimiter
+          if (buf == null || buf.length() == 0) {
+            // no escapes; take the token whole
+            tok = val.substring(start);
+          }
+          else {
+            // had an earlier escape; cobble on the end
+            buf.append(val, start, stop);
+          }
+          val = null;
+        }
+
+        return unquote(tok != null ? tok : buf).intern();
+      }
     }
 
     private String unquote(CharSequence cs) {
