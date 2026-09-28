@@ -53,8 +53,5 @@ public class TriggerActionSerializeTest extends DecoratorTest {
     trait.indexStep.setFormat("8");
 
     serializeTest("Complex trait", trait); // NON-NLS
-
-
-
   }
 }
