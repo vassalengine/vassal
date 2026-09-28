@@ -58,6 +58,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static VASSAL.counters.BasicPiece.BASIC_NAME;
 import static VASSAL.counters.BasicPiece.PIECE_NAME;
@@ -435,14 +436,12 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
    */
   @Override
   public void setState(String newState) {
-    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(newState, '\t');
-    mySetState(st.nextToken());
-    try {
-      piece.setState(st.nextToken());
-    }
-    catch (NoSuchElementException e) {
+    final String[] parts = splitChain(newState);
+    mySetState(parts[0]);
+    if (parts[1] == null) {
       throw new IllegalStateException(Resources.getString("Decorator.no_state_for_trait") + myGetType());
     }
+    piece.setState(parts[1]);
   }
 
   /**
@@ -459,20 +458,19 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
    */
   @Override
   public void mergeState(String newState, String oldState) {
-    final SequenceEncoder.Decoder stNew = new SequenceEncoder.Decoder(newState, '\t');
-    final String myNewState = stNew.nextToken();
-    final String innerNewState = stNew.nextToken();
-    final SequenceEncoder.Decoder stOld = new SequenceEncoder.Decoder(oldState, '\t');
-    final String myOldState = stOld.nextToken();
-    final String innerOldState = stOld.nextToken();
-    if (!myOldState.equals(myNewState)) {
-      mySetState(myNewState);
+    final String[] partsNew = splitChain(newState);
+    final String[] partsOld = splitChain(oldState);
+    if (partsNew[1] == null || partsOld[1] == null) {
+      throw new NoSuchElementException();
+    }
+    if (!partsOld[0].equals(partsNew[0])) {
+      mySetState(partsNew[0]);
     }
     if (piece instanceof StateMergeable) {
-      ((StateMergeable)piece).mergeState(innerNewState, innerOldState);
+      ((StateMergeable)piece).mergeState(partsNew[1], partsOld[1]);
     }
     else {
-      piece.setState(innerNewState);
+      piece.setState(partsNew[1]);
     }
   }
 
@@ -495,9 +493,7 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
    */
   @Override
   public String getState() {
-    final SequenceEncoder se = new SequenceEncoder(myGetState(), '\t');
-    se.append(piece.getState());
-    return se.getValue();
+    return joinChain(myGetState(), piece.getState());
   }
 
   /**
@@ -524,9 +520,139 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
    */
   @Override
   public String getType() {
-    final SequenceEncoder se = new SequenceEncoder(myGetType(), '\t');
-    se.append(piece.getType());
+    return joinChain(myGetType(), piece.getType());
+  }
+
+  /*
+   * Trait-chain framing
+   * ===================
+   *
+   * A piece's type (and likewise its state) is the sequence of its traits'
+   * myGetType() (myGetState()) strings, outermost first, ending with the
+   * innermost non-Decorator piece (normally a BasicPiece), joined with tabs.
+   * Two framings of that sequence exist and both are read by splitChain()
+   * and BasicCommandEncoder.createPiece():
+   *
+   *   Nested (VASSAL 3.7 and earlier, still written for legacy traits):
+   *     escape(A) TAB escape( escape(B) TAB escape( escape(C) TAB escape(basic) ) )
+   *   Each trait escaped the *whole* string of everything inside it, so the
+   *   innermost tab of an N-trait piece carried N backslashes and the
+   *   backslashes in a piece grew as O(N^2). With prototypes expanded into
+   *   pieces of 200+ traits, more than half of a large saved game was
+   *   backslashes.
+   *
+   *   Flat (written since 3.8):
+   *     escape(A) TAB escape(B) TAB escape(C) TAB escape(basic)
+   *   Each segment is escaped exactly once, whatever its depth, so the size
+   *   is linear in the number of traits. The escaping of each segment is
+   *   unchanged: it is still SequenceEncoder with a tab delimiter, and
+   *   nothing about myGetType()/myGetState() or any trait's own encoding
+   *   (';', ',' ...) is affected.
+   *
+   * The two are told apart by counting top-level (unescaped) tabs after the
+   * first segment: the nested framing always has exactly one top-level tab
+   * (the rest of the chain is a single escaped token), the flat framing has
+   * one per remaining segment. A single trait over a basic piece is
+   * identical in both. A chain may mix the two: a trait that overrides
+   * getType()/getState()/setState()/mergeState() itself (a custom trait
+   * from module code) is assumed to expect the nested framing on both
+   * sides of it, and its neighbours frame that link the old way.
+   */
+
+  /**
+   * Cache of whether a Decorator class inherits all four chain-framing
+   * methods from Decorator, and so speaks the flat framing.
+   */
+  private static final java.util.Map<Class<?>, Boolean> INHERITS_FRAMING = new ConcurrentHashMap<>();
+
+  /**
+   * @return true if the given class leaves the framing of the trait chain
+   * to {@link Decorator}, i.e. it overrides none of {@link #getType()},
+   * {@link #getState()}, {@link #setState(String)} and
+   * {@link #mergeState(String, String)}. A class that overrides any of
+   * them may encode or decode the chain the old nested way, so its
+   * neighbours in the chain frame their link to it that way too.
+   */
+  private static boolean inheritsFraming(Class<?> c) {
+    return INHERITS_FRAMING.computeIfAbsent(c, k -> {
+      try {
+        return k.getMethod("getType").getDeclaringClass() == Decorator.class //NON-NLS
+          && k.getMethod("getState").getDeclaringClass() == Decorator.class //NON-NLS
+          && k.getMethod("setState", String.class).getDeclaringClass() == Decorator.class //NON-NLS
+          && k.getMethod("mergeState", String.class, String.class).getDeclaringClass() == Decorator.class; //NON-NLS
+      }
+      catch (NoSuchMethodException e) {
+        return false;
+      }
+    });
+  }
+
+  /**
+   * Frames this trait's own segment and the inner piece's chain as one
+   * chain string (see the framing notes above).
+   *
+   * @param mine this trait's own segment ({@link #myGetType()} or {@link #myGetState()})
+   * @param innerChain the inner piece's whole chain ({@link GamePiece#getType()} or {@link GamePiece#getState()})
+   * @return the chain string for this trait and everything inside it
+   */
+  private String joinChain(String mine, String innerChain) {
+    final SequenceEncoder se = new SequenceEncoder(mine, '\t');
+    if (piece instanceof Decorator && inheritsFraming(getClass()) && inheritsFraming(piece.getClass())) {
+      // Flat framing: the inner chain is already a sequence of singly
+      // escaped segments, so it is appended as it is.
+      return se.getValue() + '\t' + (innerChain == null ? "" : innerChain);
+    }
+    // Nested framing: the inner piece is a basic piece (a single segment),
+    // or a trait that frames the chain itself; escape its whole string as
+    // one token, as VASSAL always did.
+    se.append(innerChain);
     return se.getValue();
+  }
+
+  /**
+   * Splits a chain string into this trait's own segment and the inner
+   * piece's chain, whichever framing it is in (see the framing notes above).
+   *
+   * @param chain the chain string for this trait and everything inside it
+   * @return a two-element array: the decoded own segment, and the inner
+   * chain as it should be handed to {@link GamePiece#setState(String)}, or
+   * null in the second element if the chain has no inner part at all
+   */
+  static String[] splitChain(String chain) {
+    final int cut = indexOfUnescaped(chain, '\t', 0);
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(chain, '\t');
+    final String mine = st.nextToken();
+    if (cut < 0) {
+      return new String[] { mine, null };
+    }
+    final String inner;
+    if (indexOfUnescaped(chain, '\t', cut + 1) >= 0) {
+      // Flat framing: the rest of the string is the inner chain as it is.
+      inner = chain.substring(cut + 1);
+    }
+    else {
+      // Nested framing: the rest is the inner chain escaped as one token.
+      inner = st.nextToken();
+    }
+    return new String[] { mine, inner };
+  }
+
+  /**
+   * @return the index of the first occurrence of {@code delim} in
+   * {@code s} at or after {@code from} that is not escaped (not preceded
+   * by a backslash, the rule {@link SequenceEncoder.Decoder} applies), or
+   * -1 if there is none
+   */
+  private static int indexOfUnescaped(String s, char delim, int from) {
+    if (s == null) {
+      return -1;
+    }
+    for (int i = s.indexOf(delim, from); i >= 0; i = s.indexOf(delim, i + 1)) {
+      if (i == 0 || s.charAt(i - 1) != '\\') {
+        return i;
+      }
+    }
+    return -1;
   }
 
   /**
