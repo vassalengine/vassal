@@ -61,6 +61,12 @@
             <version>2.22.0</version>
         </dependency>
         <dependency>
+            <!-- XZ for Java: pure-Java LZMA2, for the saved-game command log; see ObfuscatingOutputStream -->
+            <groupId>org.tukaani</groupId>
+            <artifactId>xz</artifactId>
+            <version>1.12</version>
+        </dependency>
+        <dependency>
             <groupId>gnu.getopt</groupId>
             <artifactId>java-getopt</artifactId>
             <version>1.0.13</version>

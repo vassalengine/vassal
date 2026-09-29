@@ -25,6 +25,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 
+import org.tukaani.xz.XZInputStream;
+
 /**
  * A {@link FilterInputStream} which converts a file created with
  * {@link ObfuscatingOutputStream} back into plain text.
@@ -48,7 +50,11 @@ public class DeobfuscatingInputStream extends FilterInputStream {
 
     final byte[] buf = in.readNBytes(5);
 
-    if (Arrays.equals(buf, ObfuscatingOutputStream.HEADER_BYTES)) {
+    if (Arrays.equals(buf, ObfuscatingOutputStream.XZ_HEADER_BYTES)) {
+      // The key, then XZ-compressed data XORed with it.
+      this.in = new XZInputStream(new DeobfuscatingInputStreamImpl(in));
+    }
+    else if (Arrays.equals(buf, ObfuscatingOutputStream.HEADER_BYTES)) {
       this.in = new DeobfuscatingInputStreamImpl(in);
     }
     else if (Arrays.equals(buf, LEGACY_HEADER)) {
@@ -66,8 +72,9 @@ public class DeobfuscatingInputStream extends FilterInputStream {
   }
 
   /**
-   * Deobfuscates the format written by {@link ObfuscatingOutputStream}:
-   * a one-byte key, followed by the data XORed with the key.
+   * Undoes the XOR of the formats written by {@link ObfuscatingOutputStream}
+   * since VASSAL 3.8: a one-byte key, followed by the data XORed with the key.
+   * For the XZ format the data is then decompressed.
    */
   private static class DeobfuscatingInputStreamImpl extends FilterInputStream {
     private final byte key;

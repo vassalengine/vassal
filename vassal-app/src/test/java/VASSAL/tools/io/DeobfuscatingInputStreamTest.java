@@ -115,6 +115,30 @@ public class DeobfuscatingInputStreamTest {
     assertArrayEquals(expected, bout.toByteArray());
   }
 
+  /** The uncompressed format VASSAL 3.8 wrote before the command log was compressed is still read. */
+  @Test
+  public void testUncompressedObfuscatedInput() throws IOException {
+    final byte[] expected = plain.getBytes(StandardCharsets.UTF_8);
+    final byte key = (byte) 0x58;
+    final byte[] header = ObfuscatingOutputStream.HEADER_BYTES;
+    final byte[] b = new byte[header.length + 1 + expected.length];
+    System.arraycopy(header, 0, b, 0, header.length);
+    b[header.length] = key;
+    for (int i = 0; i < expected.length; ++i) {
+      b[header.length + 1 + i] = (byte) (expected[i] ^ key);
+    }
+    assertArrayEquals(expected, deobfuscate(b));
+  }
+
+  /** The compressed stream is marked with its own header. */
+  @Test
+  public void testObfuscatedOutputHasXzHeader() throws IOException {
+    final byte[] b = obfuscate(plain.getBytes(StandardCharsets.UTF_8));
+    final byte[] header = new byte[ObfuscatingOutputStream.XZ_HEADER_BYTES.length];
+    System.arraycopy(b, 0, header, 0, header.length);
+    assertArrayEquals(ObfuscatingOutputStream.XZ_HEADER_BYTES, header);
+  }
+
   /** An obfuscated stream lacking a key is malformed. */
   @Test
   public void testMissingKey() {

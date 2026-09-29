@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import org.junit.jupiter.api.Test;
+import org.tukaani.xz.LZMA2Options;
+import org.tukaani.xz.XZOutputStream;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ObfuscatingOutputStreamTest {
@@ -34,15 +36,24 @@ public class ObfuscatingOutputStreamTest {
   // A key with the high bit set, to catch sign-extension errors.
   private final byte highKey = (byte) 0x80;
 
-  private byte[] obfuscated(byte key) {
-    final byte[] plainBytes = plain.getBytes(StandardCharsets.UTF_8);
-    final byte[] header = ObfuscatingOutputStream.HEADER_BYTES;
+  /** The expected output: the XZ header, the key, then the XZ-compressed text XORed with the key. */
+  private byte[] obfuscated(byte key) throws IOException {
+    return obfuscated(plain.getBytes(StandardCharsets.UTF_8), key);
+  }
 
-    final byte[] expected = new byte[header.length + 1 + plainBytes.length];
+  private static byte[] obfuscated(byte[] plainBytes, byte key) throws IOException {
+    final ByteArrayOutputStream xz = new ByteArrayOutputStream();
+    try (XZOutputStream out = new XZOutputStream(xz, new LZMA2Options(ObfuscatingOutputStream.PRESET))) {
+      out.write(plainBytes);
+    }
+    final byte[] compressed = xz.toByteArray();
+    final byte[] header = ObfuscatingOutputStream.XZ_HEADER_BYTES;
+
+    final byte[] expected = new byte[header.length + 1 + compressed.length];
     System.arraycopy(header, 0, expected, 0, header.length);
     expected[header.length] = key;
-    for (int i = 0; i < plainBytes.length; ++i) {
-      expected[header.length + 1 + i] = (byte) (plainBytes[i] ^ key);
+    for (int i = 0; i < compressed.length; ++i) {
+      expected[header.length + 1 + i] = (byte) (compressed[i] ^ key);
     }
 
     return expected;
@@ -117,27 +128,34 @@ public class ObfuscatingOutputStreamTest {
     for (int i = 0; i < bytes.length; ++i) {
       bytes[i] = (byte) i;
     }
-
     final ByteArrayOutputStream bout = new ByteArrayOutputStream();
-
     try (ObfuscatingOutputStream out =
            new ObfuscatingOutputStream(bout, key)) {
       out.write(bytes);
     }
+    assertArrayEquals(obfuscated(bytes, key), bout.toByteArray());
+  }
 
-    final byte[] result = bout.toByteArray();
-    final int off = ObfuscatingOutputStream.HEADER_BYTES.length + 1;
-
-    assertEquals(off + bytes.length, result.length);
-    for (int i = 0; i < bytes.length; ++i) {
-      assertEquals((byte) (bytes[i] ^ key), result[off + i]);
+  /** Repetitive text, as a saved game is, must come out far smaller than it went in. */
+  @Test
+  public void testRepetitiveInputIsCompressed() throws IOException {
+    final StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < 2000; ++i) {
+      sb.append(plain).append(' ').append(i % 7).append('\n');
     }
+    final byte[] bytes = sb.toString().getBytes(StandardCharsets.UTF_8);
+    final ByteArrayOutputStream bout = new ByteArrayOutputStream();
+    try (ObfuscatingOutputStream out =
+           new ObfuscatingOutputStream(bout, key)) {
+      out.write(bytes);
+    }
+    assertTrue(bout.size() < bytes.length / 20, "compressed " + bytes.length + " to " + bout.size());
   }
 
   /** The key is never zero, as XORing with zero obfuscates nothing. */
   @Test
   public void testKeyIsNeverZero() throws IOException {
-    final int off = ObfuscatingOutputStream.HEADER_BYTES.length;
+    final int off = ObfuscatingOutputStream.XZ_HEADER_BYTES.length;
 
     for (int i = 0; i < 10000; ++i) {
       final ByteArrayOutputStream bout = new ByteArrayOutputStream();
