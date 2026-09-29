@@ -79,7 +79,11 @@ public class ObfuscatingOutputStream extends FilterOutputStream {
   /** {@inheritDoc} */
   @Override
   public void write(byte[] bytes, int off, int len) throws IOException {
-    for (int i = 0; i < len; ++i) write(bytes[off + i]);
+    final byte[] buf = new byte[len];
+    for (int i = 0; i < len; ++i) {
+      buf[i] = (byte) (bytes[off + i] ^ key);
+    }
+    out.write(buf, 0, len);
   }
 
   /** {@inheritDoc} */
