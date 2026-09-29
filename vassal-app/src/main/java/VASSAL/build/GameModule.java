@@ -941,8 +941,6 @@ public class GameModule extends AbstractConfigurable
     final Rectangle screen = SwingUtils.getScreenBounds(frame);
 
     if (GlobalOptions.getInstance().isUseSingleWindow()) {
-      frame.setLocation(screen.getLocation());
-
       final Prefs p = Prefs.getGlobalPrefs();
 
       // If not "remembering" window size, nuke the pref
@@ -959,8 +957,12 @@ public class GameModule extends AbstractConfigurable
       final int h = (ph > 0) ? ph : screen.height;
       final int w = (pw > 0) ? pw : screen.width;
 
-      // Before we have a map, we use 1/3 of height
-      frame.setSize(w, h / 3);
+      // Before a map exists, use 1/3 of the height as the default
+      final Rectangle r = new Rectangle(screen.x, screen.y, w, h / 3);
+
+      // Delegate restoring/saving of position and monitor clamping to PositionOption
+      final String key = "BoundsOfGameModule"; //$NON-NLS-1$
+      getPrefs().addOption(new PositionOption(key, frame, r));
     }
     else {
       final String key = "BoundsOfGameModule"; //$NON-NLS-1$
