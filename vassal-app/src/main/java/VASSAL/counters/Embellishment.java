@@ -206,6 +206,98 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
       originalSetType(s);
     }
     else {
+      // The parsed type is shared by every Layer built from the same type string.
+      final TypeData d = TraitTypeCache.get(TypeData.class, s, TypeData::new);
+      activateCommand = d.activateCommand;
+      activateModifiers = d.activateModifiers;
+      activateKey = d.activateKey;
+      upCommand = d.upCommand;
+      upModifiers = d.upModifiers;
+      upKey = d.upKey;
+      downCommand = d.downCommand;
+      downModifiers = d.downModifiers;
+      downKey = d.downKey;
+      resetCommand = d.resetCommand;
+      resetKey = d.resetKey;
+      resetLevel = d.resetLevel;
+      drawUnderneathWhenSelected = d.drawUnderneathWhenSelected;
+      xOff = d.xOff;
+      yOff = d.yOff;
+      imageName = d.imageName;
+      commonName = d.commonName;
+      loopLevels = d.loopLevels;
+      name = d.name;
+      rndKey = d.rndKey;
+      rndText = d.rndText;
+      followProperty = d.followProperty;
+      propertyName = d.propertyName;
+      firstLevelValue = d.firstLevelValue;
+      version = d.version;
+      alwaysActive = d.alwaysActive;
+      activateKeyStroke = d.activateKeyStroke;
+      increaseKeyStroke = d.increaseKeyStroke;
+      decreaseKeyStroke = d.decreaseKeyStroke;
+      description = d.description;
+      scale = d.scale;
+      onlyPropertyName = d.onlyPropertyName;
+      onlyPropertyState = d.onlyPropertyState;
+
+      value = canBeActivated() ? -1 : 1;
+      nValues = imageName.length;
+      size = d.size;
+      imagePainter = d.imagePainter;
+    }
+
+    commands = null;
+  }
+
+  /**
+   * The immutable part of a Layer's type, parsed once per distinct type
+   * string and shared by every instance (see {@link TraitTypeCache}): the
+   * image names, key strokes and commands, the reset-level format (only
+   * ever evaluated), and the per-level painters and bounds, which depend on
+   * the image alone. The current level and the key commands stay per piece.
+   */
+  private static final class TypeData {
+    final String activateKey;
+    final String upKey;
+    final String downKey;
+    final int activateModifiers;
+    final int upModifiers;
+    final int downModifiers;
+    final String upCommand;
+    final String downCommand;
+    final String activateCommand;
+    final String resetCommand;
+    final FormattedString resetLevel;
+    final boolean loopLevels;
+    final NamedKeyStroke resetKey;
+    final boolean followProperty;
+    final String propertyName;
+    final int firstLevelValue;
+    final String onlyPropertyName;
+    final String onlyPropertyState;
+    final NamedKeyStroke rndKey;
+    final String rndText;
+    final int xOff;
+    final int yOff;
+    final String[] imageName;
+    final String[] commonName;
+    final boolean drawUnderneathWhenSelected;
+    final String name;
+    int version;
+    boolean alwaysActive;
+    NamedKeyStroke activateKeyStroke;
+    NamedKeyStroke increaseKeyStroke;
+    NamedKeyStroke decreaseKeyStroke;
+    final String description;
+    final double scale;
+    /** Bounds per level, computed lazily from the image and identical for every sharer. */
+    final Rectangle[] size;
+    /** Painters per level; they hold only the image op and a scale cache, nothing per piece. */
+    final ScaledImagePainter[] imagePainter;
+
+    TypeData(String s) {
       s = s.substring(ID.length());
 
       final boolean brandNew = Resources.getString("Editor.Embellishment.activate").equals(s);
@@ -281,18 +373,14 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
         }
       }
 
-      value = canBeActivated() ? -1 : 1;
-      nValues = imageName.length;
+
       size = new Rectangle[imageName.length];
       imagePainter = new ScaledImagePainter[imageName.length];
-
       for (int i = 0; i < imageName.length; ++i) {
         imagePainter[i] = new ScaledImagePainter();
         imagePainter[i].setImageName(imageName[i]);
       }
     }
-
-    commands = null;
   }
 
   /**

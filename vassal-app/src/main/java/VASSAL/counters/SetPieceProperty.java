@@ -126,8 +126,7 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
     sd.nextToken(); // Skip over command prefix
     key = sd.nextToken("name");
     decodeConstraints(sd.nextToken(""));
-    keyCommandListConfig.setValue(sd.nextToken(""));
-    keyCommands = keyCommandListConfig.getListValue().toArray(new DynamicKeyCommand[0]);
+    keyCommands = decodeKeyCommands(sd.nextToken(""), this);
 
     menuCommands = Arrays.stream(keyCommands).filter(
       kc -> !StringUtils.isEmpty(kc.getName())
@@ -153,7 +152,7 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(key);
     se.append(encodeConstraints());
-    se.append(keyCommandListConfig.getValueString());
+    se.append(encodeKeyCommands(keyCommands));
     se.append(description);
     se.append(target.encode());
     se.append(propertiesFilter);
@@ -404,7 +403,7 @@ public class SetPieceProperty extends DynamicProperty implements RecursionLimite
 
     if (! Objects.equals(key, c.key)) return false;
     if (! Objects.equals(encodeConstraints(), c.encodeConstraints())) return false;
-    if (! Objects.equals(keyCommandListConfig.getValueString(), c.keyCommandListConfig.getValueString())) return false;
+    if (! Objects.equals(encodeKeyCommands(keyCommands), encodeKeyCommands(c.keyCommands))) return false;
     if (! Objects.equals(description, c.description)) return false;
     if (! Objects.equals(target, c.target)) return false;
     if (! Objects.equals(propertiesFilter, c.propertiesFilter)) return false;

@@ -193,20 +193,37 @@ public class RestrictCommands extends Decorator implements EditablePiece {
 
   @Override
   public void mySetType(String type) {
-    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
-    st.nextToken();
-    name = st.nextToken("");
-    action = st.nextToken(HIDE);
-    propertyMatch.setExpression(st.nextToken(""));
+    // The parsed type is shared by every Restrict Commands trait built from the same type string.
+    final TypeData d = TraitTypeCache.get(TypeData.class, type, TypeData::new);
+    name = d.name;
+    action = d.action;
+    propertyMatch = d.propertyMatch;
+    watchKeys = d.watchKeys;
+  }
 
-    final String keys = st.nextToken("");
-    if (keys.indexOf(',') > 0) {
-      watchKeys = NamedKeyStrokeArrayConfigurer.decode(keys);
-    }
-    else {
-      watchKeys = new NamedKeyStroke[keys.length()];
-      for (int i = 0; i < watchKeys.length; i++) {
-        watchKeys[i] = NamedKeyStroke.of(keys.charAt(i), InputEvent.CTRL_DOWN_MASK);
+  /** The immutable part of the type, parsed once per distinct type string (see {@link TraitTypeCache}). */
+  private static final class TypeData {
+    final String name;
+    final String action;
+    final PropertyExpression propertyMatch;
+    final NamedKeyStroke[] watchKeys;
+
+    TypeData(String type) {
+      final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
+      st.nextToken();
+      name = st.nextToken("");
+      action = st.nextToken(HIDE);
+      propertyMatch = new PropertyExpression(st.nextToken(""));
+
+      final String keys = st.nextToken("");
+      if (keys.indexOf(',') > 0) {
+        watchKeys = NamedKeyStrokeArrayConfigurer.decode(keys);
+      }
+      else {
+        watchKeys = new NamedKeyStroke[keys.length()];
+        for (int i = 0; i < watchKeys.length; i++) {
+          watchKeys[i] = NamedKeyStroke.of(keys.charAt(i), InputEvent.CTRL_DOWN_MASK);
+        }
       }
     }
   }

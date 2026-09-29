@@ -61,15 +61,21 @@ public class Marker extends Decorator implements EditablePiece {
 
   @Override
   public void mySetType(String s) {
+    // The key names are shared by every Marker built from the same type string
+    // (they are never altered in place); the values are this instance's state.
+    keys = TraitTypeCache.get(String[].class, s, Marker::decodeKeys);
+    values = new String[keys.length];
+    Arrays.fill(values, "");
+  }
+
+  private static String[] decodeKeys(String s) {
     s = s.substring(ID.length());
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
     final List<String> l = new ArrayList<>();
     while (st.hasMoreTokens()) {
       l.add(st.nextToken());
     }
-    keys = l.toArray(new String[0]);
-    values = new String[keys.length];
-    Arrays.fill(values, "");
+    return l.toArray(new String[0]);
   }
 
   @Override
