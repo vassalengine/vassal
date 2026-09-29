@@ -104,10 +104,18 @@ public class TraitChainFramingTest extends MockModuleTest {
     assertEquals(0, backslashes(type));
     assertEquals(0, backslashes(state));
 
-    // The nested framing escaped every inner level again: the tab after
-    // the i-th trait carried i-1 backslashes, n(n-1)/2 in all.
-    assertEquals((long) n * (n - 1) / 2, backslashes(nestedType(p)));
-    assertEquals((long) n * (n - 1) / 2, backslashes(nestedState(p)));
+    // The nested framing encoded every inner level again, so it is longer
+    // however SequenceEncoder marks a delimiter inside a token. With the
+    // backslash escaping, the tab after the i-th trait carried i-1
+    // backslashes, n(n-1)/2 in all.
+    final String nestedType = nestedType(p);
+    final String nestedState = nestedState(p);
+    assertTrue(nestedType.length() > type.length());
+    assertTrue(nestedState.length() > state.length());
+    if (backslashes(nestedType) > 0) {
+      assertEquals((long) n * (n - 1) / 2, backslashes(nestedType));
+      assertEquals((long) n * (n - 1) / 2, backslashes(nestedState));
+    }
   }
 
   @Test

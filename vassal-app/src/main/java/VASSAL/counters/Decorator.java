@@ -612,6 +612,9 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
   /**
    * Splits a chain string into this trait's own segment and the inner
    * piece's chain, whichever framing it is in (see the framing notes above).
+   * It uses only {@link SequenceEncoder.Decoder} to find token boundaries,
+   * so it does not depend on how the encoder marks a delimiter inside a
+   * token.
    *
    * @param chain the chain string for this trait and everything inside it
    * @return a two-element array: the decoded own segment, and the inner
@@ -619,40 +622,18 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
    * null in the second element if the chain has no inner part at all
    */
   static String[] splitChain(String chain) {
-    final int cut = indexOfUnescaped(chain, '\t', 0);
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(chain, '\t');
     final String mine = st.nextToken();
-    if (cut < 0) {
+    if (!st.hasMoreTokens()) {
       return new String[] { mine, null };
     }
-    final String inner;
-    if (indexOfUnescaped(chain, '\t', cut + 1) >= 0) {
-      // Flat framing: the rest of the string is the inner chain as it is.
-      inner = chain.substring(cut + 1);
-    }
-    else {
-      // Nested framing: the rest is the inner chain escaped as one token.
-      inner = st.nextToken();
-    }
-    return new String[] { mine, inner };
-  }
-
-  /**
-   * @return the index of the first occurrence of {@code delim} in
-   * {@code s} at or after {@code from} that is not escaped (not preceded
-   * by a backslash, the rule {@link SequenceEncoder.Decoder} applies), or
-   * -1 if there is none
-   */
-  private static int indexOfUnescaped(String s, char delim, int from) {
-    if (s == null) {
-      return -1;
-    }
-    for (int i = s.indexOf(delim, from); i >= 0; i = s.indexOf(delim, i + 1)) {
-      if (i == 0 || s.charAt(i - 1) != '\\') {
-        return i;
-      }
-    }
-    return -1;
+    final String rest = st.getRemaining();
+    final SequenceEncoder.Decoder inner = new SequenceEncoder.Decoder(rest, '\t');
+    final String second = inner.nextToken();
+    // Flat framing has further top-level tokens after the second: the rest
+    // of the string is the inner chain as it is. Nested framing has none:
+    // the second token, decoded, is the inner chain.
+    return new String[] { mine, inner.hasMoreTokens() ? rest : second };
   }
 
   /**
