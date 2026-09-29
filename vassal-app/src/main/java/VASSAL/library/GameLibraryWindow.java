@@ -23,6 +23,7 @@ import org.apache.commons.lang3.SystemUtils;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -37,12 +38,14 @@ import java.nio.file.Paths;
 // For future upgrade
 // import java.text.ParseException;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Stream;
@@ -139,11 +142,11 @@ public class GameLibraryWindow extends JFrame {
 
   private static final String[] COLUMN_NAMES = {
     "<html>&#10003;</html>",      //NON-NLS
-    Resources.getString("LibraryBrowser.name"),  //NON-NLS
-    Resources.getString("LibraryBrowser.type"),  //NON-NLS
+    Resources.getString("LibraryBrowser.title"),        //NON-NLS
+    Resources.getString("LibraryBrowser.type"),         //NON-NLS
     Resources.getString("LibraryBrowser.last_update"),  //NON-NLS
-    Resources.getString("LibraryBrowser.size"),  //NON-NLS
-    Resources.getString("LibraryBrowser.url") }; //NON-NLS
+    Resources.getString("LibraryBrowser.size"),         //NON-NLS
+    Resources.getString("LibraryBrowser.url") };        //NON-NLS
 
   public static final int CHECK_COLUMN = 0;
   public static final int NAME_COLUMN  = 1;
@@ -152,19 +155,6 @@ public class GameLibraryWindow extends JFrame {
   public static final int SIZE_COLUMN  = 4;
   public static final int URL_COLUMN   = 5;
   
-  protected static String formatSize(long size) {
-    if (size < 0) // When not loaded yet, we get negative value
-      return "?"; //NON-NLS
-    if (size == 0) // Uh?!
-      return ""; //NON-NLS
-    
-    final String[] units  = { "B", "kB", "MB", "GB", "TB", "PB", "EB" }; //NON-NLS
-    final int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
-    
-    return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, //NON-NLS
-                                                             digitGroups))
-      + " " + units[digitGroups]; //NON-NLS
-  }
     
   public GameLibraryWindow() throws IOException {
     super("Game Library"); //NON-NLS
@@ -229,6 +219,33 @@ public class GameLibraryWindow extends JFrame {
     loadProjects();
   }
 
+  /**
+   * A file size column value
+   */
+  static class FileSize {
+    protected final long size;
+    public FileSize(long size) {
+      this.size = size;
+    }
+    public long asLong() {
+      return size;
+    }
+    @Override
+    public String toString() {
+      if (size < 0) // When not loaded yet, we get negative value
+        return "?"; //NON-NLS
+      if (size == 0) // Uh?!
+        return ""; //NON-NLS
+    
+      final String[] units  = {
+        "B", "kB", "MB", "GB", "TB", "PB", "EB" }; //NON-NLS
+      final int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
+      
+      return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, //NON-NLS
+                                                               digitGroups))
+        + " " + units[digitGroups]; //NON-NLS
+    }
+  }
   /**
    * A Boolean (CheckBox) renderer that may show nothing (tri-state)
    */
@@ -314,13 +331,35 @@ public class GameLibraryWindow extends JFrame {
       return url;
     }
   }
+  /**
+   * How to render dates - horizontally centred
+   */
+  static class URLRenderer extends DefaultTableCellRenderer.UIResource {
+    private static final long serialVersionUID = 1L;
+    private static Cursor cursor = new Cursor(Cursor.HAND_CURSOR);
+    /**
+     * Should return a hand curser when hovering over the cell
+     */
+    @Override
+    public Cursor getCursor() {
+      return cursor;
+    }
+    /**
+     * Tool-tip when hovering over the cell
+     */
+    @Override
+    public String getToolTipText() {
+      return Resources.getString("LibraryBrwoser.open_project_page"); //NON-NLS
+    }
+  }
 
   /**
    * How to render dates - horizontally centred
    */
   static class DateRenderer extends DefaultTableCellRenderer.UIResource {
     private static final long serialVersionUID = 1L;
-    private DateFormat formatter;
+    private static DateFormat formatter =
+      new SimpleDateFormat("dd-MMM-yy", Locale.getDefault()); //NON-NLS
     public DateRenderer() {
       super();
       setHorizontalAlignment(CENTER);
@@ -335,7 +374,17 @@ public class GameLibraryWindow extends JFrame {
         setText((value == null) ? "" : formatter.format(value));
     }
   }
-
+  /**
+   * How to render dates - horizontally centred
+   */
+  static class FileSizeRenderer extends DefaultTableCellRenderer.UIResource {
+    private static final long serialVersionUID = 1L;
+    public FileSizeRenderer() {
+      super();
+      setHorizontalAlignment(RIGHT);
+    }
+  }
+  
   /**
    * Create the main user interface
    */
@@ -366,6 +415,8 @@ public class GameLibraryWindow extends JFrame {
     treeTable.setShowsRootHandles(true);
     treeTable.setDefaultRenderer(Boolean.class, new BooleanRenderer());
     treeTable.setDefaultRenderer(Date.class, new DateRenderer());
+    treeTable.setDefaultRenderer(FileSize.class, new FileSizeRenderer());
+    treeTable.setDefaultRenderer(URL.class, new URLRenderer());
     treeTable.setDefaultEditor(URL.class, new URLEditor());
 
     // Add tree expansion listener for lazy loading child items
@@ -515,13 +566,14 @@ public class GameLibraryWindow extends JFrame {
     for (final Entry<Pair<String, Boolean>,
            GameLibrary.AbstractProjectsComparator> sort
            : sorts.entrySet()) {
-      final String title = Resources.getString("LibraryBrowser." + //NON-NLS
-                                               sort.getKey().first) +
-        " (" + //NON-NLS
-        Resources.getString("LibraryBrowser." + //NON-NLS
+      final String title =
+        "<html>" + //NON-NLS
+        Resources.getString("LibraryBrowser." + sort.getKey().first) + //NON-NLS
+        " " + //NON-NLS
+        Resources.getString("LibraryBrowser." +          //NON-NLS
                             (sort.getKey().second ?
-                             "ascending" : //NON-NLS
-                             "descending")) + ")"; //NON-NLS
+                             "ascending" :               //NON-NLS
+                             "descending")) + "</html>"; //NON-NLS
 
       sortMenu.add(new RadioButtonMenuItemProxy(new AbstractAction(title) {
           private static final long serialVersionUID = 1L;
@@ -752,14 +804,16 @@ public class GameLibraryWindow extends JFrame {
             long total = 0;
             for (final LibraryFile file : selectedFiles) 
               total += file.getSize();
+            final FileSize tsize = new FileSize(total);
 
             long current = 0;
             for (final LibraryFile file : selectedFiles) {
               current += file.getSize();
+              final FileSize csize = new FileSize(current);
               publish(Resources.getString("LibraryBrowser.download", //NON-NLS
                                           file.getFileName(),
                                           count + 1, selectedFiles.size(),
-                                          formatSize(current), formatSize(total)));
+                                          csize.toString(), tsize.toString()));
                   
               // Assumed downloading method
               final File target = library.downloadFile(file, targetDirectory);
@@ -829,7 +883,7 @@ public class GameLibraryWindow extends JFrame {
     List<?>  getChildren();
     boolean  isLeaf();
     Boolean  isSelected();
-    long     getSize();
+    FileSize getSize();
     Date     getDate();
     void     setSelected(boolean selected);
     void     collectSelectedFiles(List<LibraryFile> list);
@@ -885,8 +939,8 @@ public class GameLibraryWindow extends JFrame {
      * Get size - 0 by default
      */
     @Override
-    public long getSize() {
-      return 0;
+    public FileSize getSize() {
+      return new FileSize(0);
     }
     /**
      * Mark this node
@@ -920,7 +974,7 @@ public class GameLibraryWindow extends JFrame {
     public Object getValueAt(int column) {
       switch (column) {
       case CHECK_COLUMN: return isSelected();
-      case SIZE_COLUMN:  return formatSize(getSize());
+      case SIZE_COLUMN:  return getSize();
       case TYPE_COLUMN:  return getType();
       case DATE_COLUMN:  return getDate(); 
       case URL_COLUMN:   return null;
@@ -1176,14 +1230,14 @@ public class GameLibraryWindow extends JFrame {
      * Sum sizes of children
      */
     @Override
-    public long getSize() {
+    public FileSize getSize() {
       long ret = -1;
       for (final Object child : getChildren()) {
         if (child instanceof TreeNode) {
-          ret += ((TreeNode) child).getSize();
+          ret += ((TreeNode) child).getSize().asLong();
         }
       }
-      return ret;
+      return new FileSize(ret);
     }
     
     @Override
@@ -1254,8 +1308,8 @@ public class GameLibraryWindow extends JFrame {
      * Sum sizes of children
      */
     @Override
-    public long getSize() {
-      return file.getSize();
+    public FileSize getSize() {
+      return new FileSize(file.getSize());
     }
 
     /**
@@ -1360,6 +1414,8 @@ public class GameLibraryWindow extends JFrame {
         return Boolean.class;
       case DATE_COLUMN:
         return Date.class;
+      case SIZE_COLUMN:
+        return FileSize.class;
       case URL_COLUMN:
         return URL.class;
       default:
