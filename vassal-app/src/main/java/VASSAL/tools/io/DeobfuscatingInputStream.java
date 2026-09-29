@@ -54,9 +54,6 @@ public class DeobfuscatingInputStream extends FilterInputStream {
       // The key, then XZ-compressed data XORed with it.
       this.in = new XZInputStream(new DeobfuscatingInputStreamImpl(in));
     }
-    else if (Arrays.equals(buf, ObfuscatingOutputStream.HEADER_BYTES)) {
-      this.in = new DeobfuscatingInputStreamImpl(in);
-    }
     else if (Arrays.equals(buf, LEGACY_HEADER)) {
       this.in = new LegacyDeobfuscatingInputStreamImpl(in);
     }
@@ -72,9 +69,9 @@ public class DeobfuscatingInputStream extends FilterInputStream {
   }
 
   /**
-   * Undoes the XOR of the formats written by {@link ObfuscatingOutputStream}
-   * since VASSAL 3.8: a one-byte key, followed by the data XORed with the key.
-   * For the XZ format the data is then decompressed.
+   * Undoes the XOR of the format written by {@link ObfuscatingOutputStream}:
+   * a one-byte key, followed by the data XORed with the key. The data is
+   * then decompressed by the {@link XZInputStream} above.
    */
   private static class DeobfuscatingInputStreamImpl extends FilterInputStream {
     private final byte key;

@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2008-2026 by Joel Uckelman
+ * Copyright (c) 2000-2009 by Rodney Kinney, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -30,9 +30,9 @@ import org.tukaani.xz.LZMA2Options;
 import org.tukaani.xz.XZOutputStream;
 
 /**
- * Obfuscates a stream of bytes: a header naming the format, a one-byte key,
- * then the data XORed with the key. Since VASSAL 3.8 the data is compressed
- * with XZ (LZMA2) before it is XORed, and the header is {@link #XZ_HEADER_BYTES}.
+ * Obfuscates a stream of bytes: the header {@link #XZ_HEADER_BYTES}, a
+ * one-byte key, then the data compressed with XZ (LZMA2) and XORed with the
+ * key.
  *
  * <p>The obfuscation is a deterrent to casual editing of saved games, not
  * security. The compression is what a saved game's command log needs: it
@@ -55,13 +55,6 @@ public class ObfuscatingOutputStream extends FilterOutputStream {
    */
   @Deprecated(since = "2026-09-08", forRemoval = true)
   public static final String HEADER = "!VCSK"; //NON-NLS
-
-  /**
-   * The header of the uncompressed format written by VASSAL 3.8 before the
-   * command log was compressed: the key, then the data XORed with it.
-   * It is still read, no longer written.
-   */
-  public static final byte[] HEADER_BYTES = { '!', 'V', 'O', 'B', 'S' };
 
   /** The header marking obfuscated output: the key, then XZ-compressed data XORed with it. */
   public static final byte[] XZ_HEADER_BYTES = { '!', 'V', 'O', 'X', 'Z' };
@@ -112,22 +105,31 @@ public class ObfuscatingOutputStream extends FilterOutputStream {
     out.write(b);
   }
 
-  /** XORs every byte with the key on its way out. */
-  static final class XorOutputStream extends FilterOutputStream {
+  /**
+   * XORs every byte with the key on its way out. The XZ encoder above it
+   * writes one compressed chunk at a time, a few kilobytes to 64 KB; each is
+   * XORed through one reused buffer.
+   */
+  private static final class XorOutputStream extends FilterOutputStream {
     private final byte key;
+    private final byte[] buf = new byte[8192];
 
-    XorOutputStream(OutputStream out, byte key) {
+    public XorOutputStream(OutputStream out, byte key) {
       super(out);
       this.key = key;
     }
 
     @Override
     public void write(byte[] bytes, int off, int len) throws IOException {
-      final byte[] buf = new byte[len];
-      for (int i = 0; i < len; ++i) {
-        buf[i] = (byte) (bytes[off + i] ^ key);
+      while (len > 0) {
+        final int n = Math.min(len, buf.length);
+        for (int i = 0; i < n; ++i) {
+          buf[i] = (byte) (bytes[off + i] ^ key);
+        }
+        out.write(buf, 0, n);
+        off += n;
+        len -= n;
       }
-      out.write(buf, 0, len);
     }
 
     @Override
