@@ -1048,7 +1048,9 @@ public class GameState implements CommandEncoder {
     if (c == null) {
       return null;
     }
-    final MessageDigest digest = newSaveDigest();
+    final MessageDigest digest = saveDigester();
+    // The encoder produces text; the writer turns it into the UTF-8 bytes the file holds,
+    // and it is those bytes that are digested and compared.
     try (Writer out = new OutputStreamWriter(new DigestOutputStream(OutputStream.nullOutputStream(), digest), StandardCharsets.UTF_8)) {
       GameModule.getGameModule().encode(c, out);
     }
@@ -1059,14 +1061,26 @@ public class GameState implements CommandEncoder {
     return digest.digest();
   }
 
-  private static MessageDigest newSaveDigest() {
-    try {
-      return MessageDigest.getInstance("SHA-256"); //NON-NLS
+  /**
+   * The one digest used for every save and every {@link #isModified()} check. A MessageDigest is
+   * not thread-safe, which is what PMD objects to in a field; both users of this one run on the EDT.
+   */
+  @SuppressWarnings("PMD.AvoidMessageDigestField")
+  private MessageDigest saveDigester;
+
+  /** @return the digest, reset and ready for a new computation */
+  private MessageDigest saveDigester() {
+    if (saveDigester == null) {
+      try {
+        saveDigester = MessageDigest.getInstance("SHA-256"); //NON-NLS
+      }
+      catch (NoSuchAlgorithmException e) {
+        // Every Java platform is required to provide SHA-256.
+        throw new IllegalStateException(e);
+      }
     }
-    catch (NoSuchAlgorithmException e) {
-      // Every Java platform is required to provide SHA-256.
-      throw new IllegalStateException(e);
-    }
+    saveDigester.reset();
+    return saveDigester;
   }
 
   /**
@@ -1081,11 +1095,13 @@ public class GameState implements CommandEncoder {
    * @param metaData the metadata to store with it
    * @return the SHA-256 digest of the command log as written, which {@link #isModified()} compares against
    */
-  public static byte[] writeGameFile(File f, Command c, SaveMetaData metaData) throws IOException {
+  public byte[] writeGameFile(File f, Command c, SaveMetaData metaData) throws IOException {
     final Path target = f.getAbsoluteFile().toPath();
-    final Path tmp = target.resolveSibling(target.getFileName() + "." + Long.toHexString(System.nanoTime()) + ".tmp"); //NON-NLS
+    // Beside the target rather than in the temp dir, so that the move into place is a rename
+    // on the same filesystem, which is what makes it atomic.
+    final Path tmp = Files.createTempFile(target.getParent(), target.getFileName().toString(), ".tmp"); //NON-NLS
     try {
-      final MessageDigest digest = newSaveDigest();
+      final MessageDigest digest = saveDigester();
       try (ZipWriter zw = new ZipWriter(tmp)) {
         try (Writer out = new OutputStreamWriter(
                new DigestOutputStream(
@@ -1104,6 +1120,8 @@ public class GameState implements CommandEncoder {
       return digest.digest();
     }
     finally {
+      // Whatever happened above: after a successful move this is a no-op, after a failure it
+      // removes the partial file.
       Files.deleteIfExists(tmp);
     }
   }

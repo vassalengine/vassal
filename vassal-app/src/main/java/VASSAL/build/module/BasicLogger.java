@@ -473,7 +473,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       }
 
       // Encoded straight into the file, never as a String; the log begins with the whole game state.
-      GameState.writeGameFile(outputFile, log, metadata);
+      GameModule.getGameModule().getGameState().writeGameFile(outputFile, log, metadata);
 
       GameModule.getGameModule().getGameState().setModified(false);
       undoAction.setEnabled(false);
