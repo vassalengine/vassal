@@ -295,4 +295,18 @@ public class SequenceEncoderTest {
     assertFalse(sd1.hasNext());
     assertFalse(sd2.hasNext());
   }
+
+  @Test
+  public void testDecoderEmptyTokenTrailingLength() {
+    final char delim = ',';
+
+    final SequenceEncoder se = new SequenceEncoder(delim);
+    se.append("a,b").append("");
+
+    final SequenceEncoder.Decoder sd =
+      new SequenceEncoder.Decoder(se.getValue(), delim);
+
+    assertEquals("a,b", sd.nextToken());
+    assertEquals("", sd.nextToken());
+  }
 }
