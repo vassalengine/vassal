@@ -297,7 +297,7 @@ public class SequenceEncoderTest {
   }
 
   @Test
-  public void testDecoderEmptyTokenTrailingLength() {
+  public void testDecoderEmptyTokenTrailing() {
     final char delim = ',';
 
     final SequenceEncoder se = new SequenceEncoder(delim);
