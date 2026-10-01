@@ -1,5 +1,7 @@
 3.7.28 - ???
 
+* 15131: Upgraded maven-artifact 3.10.0
+* 15130: Upgraded apache-maven 3.10.0
 * 15123: Upgraded checkstyle to 14.3.0
 * 15122: Upgraded commons-lang3 to 3.21.0
 * 15114: Upgraded logback-classic to 1.6.4

@@ -33,6 +33,8 @@
         { "num": 14547, "desc": "Optimize sum and count expressions" }
       ],
       "other": [
+        { "num": 15131, "desc": "Upgraded maven-artifact 3.10.0" },
+        { "num": 15130, "desc": "Upgraded apache-maven 3.10.0" },
         { "num": 15123, "desc": "Upgraded checkstyle to 14.3.0" },
         { "num": 15122, "desc": "Upgraded commons-lang3 to 3.21.0" },
         { "num": 15114, "desc": "Upgraded logback-classic to 1.6.4" },
