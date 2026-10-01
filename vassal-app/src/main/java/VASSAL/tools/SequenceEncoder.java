@@ -247,15 +247,11 @@ public class SequenceEncoder {
 
         // get the token
         final String tok = val.substring(lend + 1, lend + 1 + len);
-        System.err.println("nt: '" + tok + "'");
 
         // go past the next delimiter
         start = Math.min(lend + 1 + len + 1, stop);
         if (start == stop) {
           val = null;
-        }
-        else {
-          System.err.println("v: '" + val.substring(start) + "'");
         }
 
         return tok.intern();
