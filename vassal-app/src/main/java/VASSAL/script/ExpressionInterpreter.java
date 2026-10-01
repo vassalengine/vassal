@@ -1400,12 +1400,9 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
     if (map != null) {
       for (final GamePiece piece : map.getAllPieces()) {
-        if (piece instanceof Stack) {
-          result += countOf(((Stack) piece).asList(), propertyName, filter);
-        }
-        else {
-          result += countOf(piece, propertyName, filter);
-        }
+        result += piece instanceof Stack ?
+          countOf(((Stack) piece).asList(), propertyName, filter) :
+          countOf(piece, propertyName, filter);
       }
     }
 
