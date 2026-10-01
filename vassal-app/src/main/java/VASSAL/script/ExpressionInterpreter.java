@@ -66,6 +66,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -1589,15 +1590,20 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     return result;
   }
 
-  private int countOf(Iterable<GamePiece> pieces, String propertyName, PieceFilter filter) {
+  private int countOf(Collection<GamePiece> pieces, String propertyName, PieceFilter filter) {
     // Counting - Add 1 if the property name was not supplied, or the value
     // of the property is non-blank.
 
     int count = 0;
     if (propertyName == null || propertyName.isEmpty()) {
-      for (final GamePiece piece : pieces) {
-        if (filter == null || filter.accept(piece)) {
-          ++count;
+      if (filter == null) {
+        count = pieces.size();
+      }
+      else {
+        for (final GamePiece piece : pieces) {
+          if (filter.accept(piece)) {
+            ++count;
+          }
         }
       }
     }
