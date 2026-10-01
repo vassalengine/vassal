@@ -579,7 +579,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * @param prop  Property value
    * @return      converted integer value
    */
-  private static int IntPropValue(Object prop) {
+  private static int intPropValue(Object prop) {
     if (prop != null) {
       if (prop instanceof Integer) {
         return (Integer) prop;
@@ -733,7 +733,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         if (a.getAttachName().equals(attachment)) {
           for (final GamePiece target : a.getAttachList()) {
             final Object prop = target.getProperty(property);
-            final int value = IntPropValue(prop);
+            final int value = intPropValue(prop);
             if (value > result) {
               result = value;
             }
@@ -767,7 +767,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         if (a.getAttachName().equals(attachment)) {
           for (final GamePiece target : a.getAttachList()) {
             final Object prop = target.getProperty(property);
-            final int value = IntPropValue(prop);
+            final int value = intPropValue(prop);
             if (value < result) {
               result = value;
             }
@@ -1497,7 +1497,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     if (ps instanceof GamePiece) {
       final Map map = ((GamePiece) ps).getMap();
       final Point from = ((GamePiece) ps).getPosition();
-      return range(from, new Point(IntPropValue(x), IntPropValue(y)), map, asPixels);
+      return range(from, new Point(intPropValue(x), intPropValue(y)), map, asPixels);
     }
     return 0;
   }
@@ -1519,8 +1519,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   private Object rangeMap(Object x1, Object y1, Object x2, Object y2, Object mapName, boolean asPixels) {
-    final Point from = new Point(IntPropValue(x1), IntPropValue(y1));
-    final Point to = new Point(IntPropValue(x2), IntPropValue(y2));
+    final Point from = new Point(intPropValue(x1), intPropValue(y1));
+    final Point to = new Point(intPropValue(x2), intPropValue(y2));
     final Map map = Map.getMapById(mapName.toString());
     return range(from, to, map, asPixels);
   }
@@ -1605,9 +1605,9 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       return result;
     }
 
-    int min = IntPropValue(minRange);
+    int min = intPropValue(minRange);
     if (min < 0) min = 0;
-    int max = IntPropValue(maxRange);
+    int max = intPropValue(maxRange);
     if (max < min) max = min;
 
 
@@ -1642,7 +1642,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   private int updateSum(int currentTotal, GamePiece piece, String propertyName, PieceFilter filter) {
-    final int count = IntPropValue(StringUtils.defaultString((String)piece.getProperty(propertyName)));
+    final int count = intPropValue(StringUtils.defaultString((String)piece.getProperty(propertyName)));
     if (count != 0 && (filter == null || filter.accept(piece))) {
       return currentTotal + count;
     }
@@ -2032,7 +2032,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    */
   public Object sleep(Object ms, PropertySource ps) {
 
-    final int milliSeconds = IntPropValue(ms);
+    final int milliSeconds = intPropValue(ms);
     final JDialog dialog = new JDialog(GameModule.getGameModule().getPlayerWindow(), true);
     dialog.setLocation(-5000, -5000); // but, note! OS can't be relied on to put the window "off-screen". e.g. MacOS does 0,0
     dialog.setUndecorated(true); // keeps the dialog box invisible by virtue of zero content, perhaps making relocation redundant.
@@ -2041,7 +2041,4 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     dialog.setVisible(true);
     return "";
   }
-
-
 }
-
