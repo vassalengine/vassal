@@ -32,6 +32,8 @@
         { "num": 15042, "desc": "Update MacOS launch script to allow more options" }
       ],
       "other": [
+        { "num": 15123, "desc": "Upgraded checkstyle to 14.3.0" },
+        { "num": 15122, "desc": "Upgraded commons-lang3 to 3.21.0" },
         { "num": 15114, "desc": "Upgraded logback-classic to 1.6.4" },
         { "num": 15106, "desc": "Upgraded slf4j-api to 2.0.20" },
         { "num": 15096, "desc": "Upgraded byte-buddy to 1.18.14" },
