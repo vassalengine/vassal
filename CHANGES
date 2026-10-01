@@ -17,6 +17,7 @@
 * 15054: Fix Truncated text label on hidden pieces
 * 15050: Upgraded maven-surefire-plugin to 3.6.0
 * 15042: Update MacOS launch script to allow more options
+* 14547: Optimize sum and count expressions
 
 3.7.27 - 6 September 2026
 

@@ -29,7 +29,8 @@
       ],
       "improvements": [
         { "num": 15083, "desc": "Tile large Charts" },
-        { "num": 15042, "desc": "Update MacOS launch script to allow more options" }
+        { "num": 15042, "desc": "Update MacOS launch script to allow more options" },
+        { "num": 14547, "desc": "Optimize sum and count expressions" }
       ],
       "other": [
         { "num": 15123, "desc": "Upgraded checkstyle to 14.3.0" },
