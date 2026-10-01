@@ -248,9 +248,13 @@ public class SequenceEncoder {
         // get the token
         final String tok = val.substring(lend + 1, lend + 1 + len);
 
-        // go past the next delimiter
-        start = Math.min(lend + 1 + len + 1, stop);
-        if (start == stop) {
+        // advance
+        start = lend + 1 + len + 1;
+
+        if (start > stop) {
+          // we've consumed the whole length; when start == stop, there
+          // is an empty token after the length-encoded one still to read
+          start = stop;
           val = null;
         }
 
