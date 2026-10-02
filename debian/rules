@@ -85,7 +85,8 @@ APP_JARS	:= /usr/share/java/asm.jar			\
 		   /usr/share/java/swingx.jar			\
 		   /usr/share/java/TimingFramework.jar		\
 		   /usr/share/java/xml-apis-ext.jar		\
-		   /usr/share/java/xmlgraphics-commons.jar
+		   /usr/share/java/xmlgraphics-commons.jar	\
+		   /usr/share/java/xz.jar
 
 APP_NAME	:= org.vassalengine.vassal
 
