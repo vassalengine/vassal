@@ -56,7 +56,7 @@
   </screenshots>
 
   <releases>
-    <release type="stable" version="3.7.28" date="2026-09-02">
+    <release type="stable" version="3.7.28" date="2026-10-02">
       <url type="details">https://github.com/vassalengine/vassal/releases/tag/3.7.28</url>
     </release>
     <release type="stable" version="3.7.27" date="2026-08-06">
