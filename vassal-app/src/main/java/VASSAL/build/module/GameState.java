@@ -56,7 +56,6 @@ import VASSAL.tools.io.ZipWriter;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.Dialogs;
 import VASSAL.tools.version.VersionUtils;
-import org.apache.commons.io.IOUtils;
 import org.tukaani.xz.LZMA2Options;
 import org.tukaani.xz.XZOutputStream;
 import org.apache.commons.lang3.StringUtils;
@@ -1089,7 +1088,7 @@ public class GameState implements CommandEncoder {
   }
 
   /**
-   * Writes a command tree as a saved game or log file: the obfuscated UTF-8 command log as the
+   * Writes a command tree as a saved game or log file: the compressed UTF-8 command log as the
    * {@link #SAVEFILE_ZIP_ENTRY} entry, and the metadata beside it. The tree is encoded straight into the
    * file and never assembled as a String. The file is written under a temporary name in the same directory
    * and replaces {@code f} only once it is complete, so a failure part way through leaves an existing file
@@ -1109,7 +1108,7 @@ public class GameState implements CommandEncoder {
     try (ZipWriter zw = new ZipWriter(tmp)) {
       try (OutputStream zout = zw.write(SAVEFILE_ZIP_ENTRY);
            BufferedOutputStream bout = new BufferedOutputStream(zout);
-           ObfuscatingOutputStream oout = new ObfuscatingOutputStream(bout);
+           OutputStream oout = compressSavedGame(bout);
            DigestOutputStream dout = new DigestOutputStream(oout, digest);
            Writer out = new OutputStreamWriter(dout, StandardCharsets.UTF_8)) {
         GameModule.getGameModule().encode(c, out);
@@ -1469,7 +1468,7 @@ public class GameState implements CommandEncoder {
 
     try (OutputStream zout = archive.getOutputStream(SAVEFILE_ZIP_ENTRY);
          BufferedOutputStream bout = new BufferedOutputStream(zout);
-         ObfuscatingOutputStream oout = new ObfuscatingOutputStream(bout);
+         OutputStream oout = compressSavedGame(bout);
          Writer out = new OutputStreamWriter(oout, StandardCharsets.UTF_8)) {
       mod.encode(getRestoreCommand(), out);
     }
