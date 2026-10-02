@@ -61,6 +61,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jdesktop.swingx.JXTreeTable;
+
 import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 import org.slf4j.Logger;
@@ -1147,6 +1148,18 @@ public class ModuleManagerWindow extends JFrame {
       if (getComponentAt(event.getPoint().x, event.getPoint().y) == null) return null;
       return super.getToolTipText(event);
     }
+
+    /**
+     * Update UI on Look'n'Feel change
+     */
+    @Override
+    public void updateUI() {
+      super.updateUI();
+      // Unconditionally turn off grid rendering.  All views should
+      // have no grid, whether the look'n'feel normally would do it,
+      // or because of a mistake in the back-end rendering.
+      setShowGrid(false);
+    }
   }
 
   /**
@@ -1169,7 +1182,11 @@ public class ModuleManagerWindow extends JFrame {
       setText(info.toString());
       setToolTipText(info.getToolTipText());
       setIcon(info.getIcon(expanded));
-      setForeground(info.getTreeCellFgColor());
+
+      final Color fg = info.getTreeCellFgColor(selected);
+      if (fg != null) 
+        setForeground(fg);
+      
       return this;
     }
   }
@@ -1178,18 +1195,12 @@ public class ModuleManagerWindow extends JFrame {
    * Custom cell render for Version column
    *   - Center data
    */
-  private static class CenteringCellRenderer extends DefaultTableCellRenderer {
+  private static class CenteringCellRenderer extends DefaultTableCellRenderer.UIResource {
     private static final long serialVersionUID = 1L;
 
     public CenteringCellRenderer() {
       super();
       this.setHorizontalAlignment(CENTER);
-    }
-
-    @Override
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-      super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-      return this;
     }
   }
 
@@ -1440,10 +1451,23 @@ public class ModuleManagerWindow extends JFrame {
      * Return the color of the text used to display the name in column 1.
      * Over-ride this to change color depending on item state.
      *
+     * @param selected Whether the item is selected or not
+     * @return cell text color
+     */
+    public Color getTreeCellFgColor(boolean selected) {
+      return (selected ?
+              null : // Let Look'n'Feel decide
+              UIManager.getColor("Table.foreground"));
+    }
+    
+    /**
+     * Return the color of the text used to display the name in column 1.
+     * Over-ride this to change color depending on item state.
+     *
      *  @return cell text color
      */
     public Color getTreeCellFgColor() {
-      return Color.black;
+      return getTreeCellFgColor(false);
     }
 
     /**
@@ -1876,8 +1900,10 @@ public class ModuleManagerWindow extends JFrame {
     }
 
     @Override
-    public Color getTreeCellFgColor() {
-      return !isLaunchable() ? Color.GRAY : Color.BLACK;
+    public Color getTreeCellFgColor(boolean selected) {
+      return (!isLaunchable() ?
+              UIManager.getColor("TextPane.inactiveForeground")  :
+              super.getTreeCellFgColor(selected));
     }
   }
 
@@ -1988,13 +2014,16 @@ public class ModuleManagerWindow extends JFrame {
     }
 
     @Override
-    public Color getTreeCellFgColor() {
-      // FIXME: should get colors from LAF
+    public Color getTreeCellFgColor(boolean selected) {
       if (isActive()) {
-        return metadata == null || !moduleInfo.isValid() ? Color.red : Color.black;
+        return (metadata == null || !moduleInfo.isValid() ?
+                UIManager.getColor("ToolBar.dockingForeground") :
+                super.getTreeCellFgColor(selected));
       }
       else {
-        return metadata == null || !moduleInfo.isValid() ? Color.pink : Color.gray;
+        return (metadata == null || !moduleInfo.isValid() ?
+                UIManager.getColor("ToolBar.floatingForeground") :
+                UIManager.getColor("TextPane.inactiveForeground"));
       }
     }
 
@@ -2232,9 +2261,10 @@ public class ModuleManagerWindow extends JFrame {
     }
 
     @Override
-    public Color getTreeCellFgColor() {
-      // FIXME: should get colors from LAF
-      return belongsToModule() && folderInfo.getModuleInfo().isValid() ? Color.black : Color.gray;
+    public Color getTreeCellFgColor(boolean selected) {
+      return (belongsToModule() && folderInfo.getModuleInfo().isValid() ?
+              super.getTreeCellFgColor(selected) :
+              UIManager.getColor("TextPane.inactiveForeground"));
     }
 
     @Override
