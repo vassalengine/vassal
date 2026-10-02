@@ -69,7 +69,7 @@ final class BranchingWizard implements WizardImplementation {
 
         WizardImplementation newSecondary = createSecondary(wizardData);
 
-        /* 
+        /*
          * johnflournoy 7/20/07
          * check for secondary should be adding the secondary to the activeWizard
          * not the initial wizard.  Adding it to the initial wizard was breaking
@@ -82,28 +82,28 @@ final class BranchingWizard implements WizardImplementation {
            this.setSecondary(newSecondary);
         }
     }
-    
+
     /**
-     * Set the secondary for this <code>BranchingWizard</code>.  
+     * Set the secondary for this <code>BranchingWizard</code>.
      * @param newSecondary is a WizardImplementation.
      */
     private void setSecondary(WizardImplementation newSecondary) {
         /* johnflournoy added additional condition: secondary != this */
-        if ((((subsequentSteps == null) != (newSecondary == null)) 
+        if ((((subsequentSteps == null) != (newSecondary == null))
             || (subsequentSteps != null && !subsequentSteps.equals(newSecondary)))
             && !this.equals(newSecondary)) {
-        
-             /* 
-              * johnflournoy: only set the subsequent steps if it 
+
+             /*
+              * johnflournoy: only set the subsequent steps if it
               * this wizard owns the current step.
-              */    
+              */
              if (Arrays.asList(initialSteps.getAllSteps()).contains(currStep)) {
                 subsequentSteps = newSecondary;
                 fireStepsChanged();
             }
         }
     }
-    
+
 
     public int getForwardNavigationMode() {
         return activeWizard.getForwardNavigationMode();
@@ -232,7 +232,7 @@ final class BranchingWizard implements WizardImplementation {
         }
         return w.getStepDescription(id);
     }
-    
+
     public final String getLongDescription(String id) {
         WizardImplementation w = ownerOf(id);
         if (w == null) {
@@ -250,10 +250,10 @@ final class BranchingWizard implements WizardImplementation {
             return initialSteps;
         } else {
             /*
-             * johnflournoy 
+             * johnflournoy
              * need to check an existing subsequentsteps to see if
              * we can find the owner of "id", otherwise we were losing
-             * a wizard if we had multiple branches and we backed up to an 
+             * a wizard if we had multiple branches and we backed up to an
              * earlier wizard and then went down the same path again.
              */
             if (subsequentSteps != null) {
@@ -263,7 +263,7 @@ final class BranchingWizard implements WizardImplementation {
             } else {
                 checkForSecondary();
             }
-            
+
             return subsequentSteps;
         }
     }
@@ -298,7 +298,7 @@ final class BranchingWizard implements WizardImplementation {
     }
 
     private void fireStepsChanged() {
-        WizardObserver[] listeners = (WizardObserver[]) 
+        WizardObserver[] listeners = (WizardObserver[])
                 listenerList.toArray (new WizardObserver[0]);
 
         for (int i = listeners.length - 1; i >= 0; i --) {
@@ -310,7 +310,7 @@ final class BranchingWizard implements WizardImplementation {
     private void fireNavigabilityChanged() {
         checkForSecondary();
 
-        WizardObserver[] listeners = (WizardObserver[]) 
+        WizardObserver[] listeners = (WizardObserver[])
                 listenerList.toArray (new WizardObserver[0]);
 
         for (int i = listeners.length - 1; i >= 0; i --) {
@@ -320,7 +320,7 @@ final class BranchingWizard implements WizardImplementation {
     }
 
     private void fireSelectionChanged() {
-        WizardObserver[] listeners = (WizardObserver[]) 
+        WizardObserver[] listeners = (WizardObserver[])
                 listenerList.toArray (new WizardObserver[0]);
 
         for (int i = listeners.length - 1; i >= 0; i --) {

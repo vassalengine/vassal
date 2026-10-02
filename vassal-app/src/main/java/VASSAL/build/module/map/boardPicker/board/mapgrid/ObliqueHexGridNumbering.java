@@ -49,4 +49,3 @@ public class ObliqueHexGridNumbering extends HexGridNumbering {
     return Resources.getString("Editor.ObliqueHexGridNumbering.component_type"); //$NON-NLS-1$
   }
 }
-// EOF

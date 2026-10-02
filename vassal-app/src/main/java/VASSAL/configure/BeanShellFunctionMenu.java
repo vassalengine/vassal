@@ -712,7 +712,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
    * a) An EditablePiece has been supplied as the target
    * OR
    * b) The calling BeanShellExpressionConfigurer is for a Property Match Expression (since PME get executed on Pieces)
-   * 
+   *
    * @return true if we show piece specific functions
    */
   protected boolean isPieceContext() {

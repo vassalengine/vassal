@@ -135,11 +135,11 @@ public class WizardPage extends JPanel implements WizardPanel {
     /**
      * Create a WizardPage with the passed description and auto-listening
      * behavior.
-     * 
+     *
      * @param stepDescription the localized description of this step
      * @param autoListen      if true, components added will automatically be
      *                        listened to for user input
-     */ 
+     */
     public WizardPage(String stepDescription, boolean autoListen) {
         this (null, stepDescription, autoListen);
     }
@@ -159,7 +159,7 @@ public class WizardPage extends JPanel implements WizardPanel {
         id = stepId == null ? getClass().getName() : stepId;
         this.autoListen = autoListen;
         description = stepDescription;
-        
+
     }
 
     private boolean listening;
@@ -183,11 +183,11 @@ public class WizardPage extends JPanel implements WizardPanel {
 //        }
         setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); //XXX
     }
-    
+
     /**
      * Create an auto-listening WizardPage with the passed description
      * @param stepDescription the localized description of this step
-     */ 
+     */
     public WizardPage (String stepDescription) {
         this (null, stepDescription);
     }
@@ -197,8 +197,8 @@ public class WizardPage extends JPanel implements WizardPanel {
      * @param stepId The unique id for the step.  If null, an id will be
      *               generated
      * @param stepDescription the localized description of this step
-     * 
-     */ 
+     *
+     */
     public WizardPage(String stepId, String stepDescription) {
         this(stepId, stepDescription, true);
     }
@@ -217,27 +217,27 @@ public class WizardPage extends JPanel implements WizardPanel {
     protected WizardPage() {
         this(true);
     }
-    
+
     /**
-     * If you are using custom Swing or AWT components which the 
+     * If you are using custom Swing or AWT components which the
      * WizardPage will not know how to automatically listen to, you
      * may want to override this method, implement CustomComponentListener
-     * and return an instance of it.  
+     * and return an instance of it.
      * @return A CustomComponentListener implementation, or null (the default).
-     */ 
+     */
     protected CustomComponentListener createCustomComponentListener() {
         return null;
     }
-    
+
     /**
      * Implement this class if you are using custom Swing or AWT components,
-     * and return an instance of it from 
+     * and return an instance of it from
      * <code>WizardPage.createCustomComponentListener()</code>.
-     */ 
+     */
     public static abstract class CustomComponentListener {
         /**
          * Indicates that this CustomComponentListener will take responsibility
-         * for noticing events from the passed component, and that the 
+         * for noticing events from the passed component, and that the
          * WizardPage should not try to automatically listen on it (which it
          * can only do for standard Swing components and their children).
          * <p>
@@ -247,12 +247,12 @@ public class WizardPage extends JPanel implements WizardPanel {
          * <b>Important:</b> The return value from this method should always
          * be the same for any given component, for the lifetime of the
          * WizardPage.
-         * 
+         *
          * @param c A component
          * @return Whether or not this CustomComponentListener will listen
          *   on the passed component.  If true, the component will later be
          *   passed to <code>startListeningTo()</code>
-         */ 
+         */
         public abstract boolean accept (Component c);
         /**
          * Begin listening for events on the component.  When an event occurs,
@@ -261,26 +261,26 @@ public class WizardPage extends JPanel implements WizardPanel {
          * @param c The component to start listening to
          * @param n An object that can be called to update the settings map
          *        when an interesting event occurs on the component
-         */ 
+         */
         public abstract void startListeningTo (Component c, CustomComponentNotifier n);
         /**
          * Stop listening for events on a component.
          * @param c The component to stop listening to
-         */ 
+         */
         public abstract void stopListeningTo (Component c);
         /**
          * Determine if the passed component is a container whose children
          * may need to be listened on.  Returns false by default.
-         * 
+         *
          * @param c A component which might be a container
-         */ 
+         */
         public boolean isContainer(Component c) {
             return false;
         }
         /**
          * Get the map key for this component's value.  By default, returns
          * the component's name.  Will only
-         * be passed components which the <code>accept()</code> method 
+         * be passed components which the <code>accept()</code> method
          * returned true for.
          * <p>
          * <b>Important:</b> The return value from this method should always
@@ -290,46 +290,46 @@ public class WizardPage extends JPanel implements WizardPanel {
          *   true for
          * @return A string key that should be used in the Wizard's settings
          *   map for the name of this component's value
-         */ 
+         */
         public String keyFor (Component c) {
             return c.getName();
         }
         /**
          * Get the value currently set on the passed component.  Will only
-         * be passed components which the <code>accept()</code> method 
+         * be passed components which the <code>accept()</code> method
          * returned true for, and which <code>keyFor()</code> returned non-null.
          * @param c the component
          * @return An object representing the current value of this component.
          *   For example, if it were a <code>JTextComponent</code>, the value would likely
          *   be the return value of <code>JTextComponent.getText()</code>
-         */ 
+         */
         public abstract Object valueFor (Component c);
     }
-    
+
     /**
      * Object which is passed to <code>CustomComponentListener.startListeningTo()</code>,
      * which can be called when an event has occurred on a custom component the
      * <code>CustomComponentListener</code> has claimed (by returning <code>true</code>
      * from its <code>accept()</code> method).
-     */ 
+     */
     public static abstract class CustomComponentNotifier {
         private CustomComponentNotifier() {}
         /**
          * Method which may be called when an event occurred on a custom component.
          * @param c the component
          * @param eventObject the event object from the component, or null (with
-         *   the exception of <code>javax.swing.text.DocumentEvent</code>, it 
+         *   the exception of <code>javax.swing.text.DocumentEvent</code>, it
          *   will likely be a subclass of <code>java.util.EventObject</code>).
-         */ 
+         */
         public abstract void userInputReceived (Component c, Object eventObject);
     }
-    
+
     private static final class CustomComponentNotifierImpl extends CustomComponentNotifier {
         private final WizardPage page;
         private CustomComponentNotifierImpl (WizardPage page) {
             this.page = page; //Slightly smaller footprint a nested, not inner class
         }
-        
+
         public void userInputReceived(Component c, Object event) {
             if (!page.ccl.accept(c)) {
                 return;
@@ -337,11 +337,11 @@ public class WizardPage extends JPanel implements WizardPanel {
             page.userInputReceived (c, event);
         }
     }
-    
+
     String id() {
         return getID();
     }
-    
+
     String description() {
         return getDescription();
     }
@@ -440,7 +440,7 @@ public class WizardPage extends JPanel implements WizardPanel {
      * unique subclass of WizardPage.
      */
     public static Wizard createWizard(String title, Class[] wizardPageClasses) {
-        return new CWPP(title, wizardPageClasses, 
+        return new CWPP(title, wizardPageClasses,
                 WizardResultProducer.NO_OP).createWizard();
     }
     /**
@@ -705,7 +705,7 @@ public class WizardPage extends JPanel implements WizardPanel {
     }
 
     /**
-     * Given an ad-hoc swing component, set the value as the property 
+     * Given an ad-hoc swing component, set the value as the property
      * from the settings.  The default implementation handles most common swing components.
      * If you are using custom components and have assigned them names, override
      * this method to handle getting an appropriate value out of your
@@ -717,7 +717,7 @@ public class WizardPage extends JPanel implements WizardPanel {
         if (comp instanceof JRadioButton || comp instanceof JCheckBox || comp instanceof JToggleButton) {
             if (value instanceof Boolean)
             {
-                ((AbstractButton) comp).getModel().setSelected(((Boolean) value).booleanValue());   
+                ((AbstractButton) comp).getModel().setSelected(((Boolean) value).booleanValue());
             }
 // TOFIX: JTree
         } else if (comp instanceof JFormattedTextField) {
@@ -833,13 +833,13 @@ public class WizardPage extends JPanel implements WizardPanel {
         }
         return wizardData;
     }
-    
+
     private String longDescription;
     /**
      * Set the long description of this page.  This method may be called
      * only once and should be called from within the constructor.
      * @param desc The long description for this step
-     */ 
+     */
     protected void setLongDescription(String desc) {
         if (!Beans.isDesignTime() && this.longDescription != null) {
             throw new IllegalStateException ("Long description already set to" +
@@ -847,14 +847,14 @@ public class WizardPage extends JPanel implements WizardPanel {
         }
         this.longDescription = desc;
     }
-    
+
     /**
      * Get the long description of this page, which should be used in the title
      * area of the wizard's UI if non-null.  To use, call setLongDescription()
      * in your WizardPage's constructor.  It may be set only once.
-     * 
+     *
      * @return the description
-     */ 
+     */
     public final String getLongDescription() {
         return longDescription;
     }
@@ -891,7 +891,7 @@ public class WizardPage extends JPanel implements WizardPanel {
             {
                 throw new RuntimeException ("finish must not be null");
             }
-            
+
             this.pages = pages;
             this.finish = finish;
         }
@@ -958,7 +958,7 @@ public class WizardPage extends JPanel implements WizardPanel {
         public boolean cancel(Map settings) {
             return finish.cancel (settings);
         }
-    
+
         public String getLongDescription(String stepId) {
             for (int i = 0; i < pages.length; i++) {
                 WizardPage wizardPage = pages[i];
@@ -985,7 +985,7 @@ public class WizardPage extends JPanel implements WizardPanel {
 //            assert new HashSet(Arrays.asList(classes)).size() == classes.length :
 //                    "Duplicate entries in class array";
 //            assert finish != null : "WizardResultProducer may not be null";
-            
+
             _validateArgs (classes, finish);
             this.finish = finish;
             this.classes = classes;
@@ -1012,7 +1012,7 @@ public class WizardPage extends JPanel implements WizardPanel {
                 throw new RuntimeException ("WizardResultProducer may not be null");
             }
         }
-        
+
         CWPP(Class[] classes, WizardResultProducer finish) {
             super(Util.getSteps(classes), Util.getDescriptions(classes));
 
@@ -1028,7 +1028,7 @@ public class WizardPage extends JPanel implements WizardPanel {
             this.finish = finish;
         }
 
-        
+
         protected JComponent createPanel(WizardController controller, String id, Map wizardData) {
             int idx = indexOfStep(id);
 
@@ -1040,7 +1040,7 @@ public class WizardPage extends JPanel implements WizardPanel {
             try {
                 WizardPage result = (WizardPage) classes[idx].newInstance();
                 longDescriptions[idx] = result.getLongDescription();
-                
+
                 result.setController(controller);
                 result.setWizardDataMap(wizardData);
 
@@ -1056,15 +1056,15 @@ public class WizardPage extends JPanel implements WizardPanel {
         protected Object finish(Map settings) throws WizardException {
             return finish.finish(settings);
         }
-        
+
         public boolean cancel(Map settings) {
             return finish.cancel(settings);
         }
-        
+
         public String toString() {
             return super.toString() + " for " + finish;
         }
-    
+
         public String getLongDescription(String stepId) {
             int idx = indexOfStep (stepId);
             if (idx != -1) {
@@ -1141,13 +1141,13 @@ public class WizardPage extends JPanel implements WizardPanel {
          * except the Close/Cancel button.
          * <p>
          * If an instance of <code>DeferredWizardResult</code> is returned from this
-         * method, the UI shall display some sort of progress bar while the result 
+         * method, the UI shall display some sort of progress bar while the result
          * is computed in the background.  If that <code>DeferredWizardResult</code>
          * produces a <code>Summary</code> object, that summary shall be displayed
          * as described above.
          * @param wizardData the map with key-value pairs which has been
          *  populated by the UI as the user progressed through the wizard
-         * @return an object composed based on what the user entered in the wizard - 
+         * @return an object composed based on what the user entered in the wizard -
          *  somethingmeaningful to whatever code invoked the wizard, or null.  Note
          *  special handling if an instance of <code>DeferredWizardResult</code>
          *  or <code>Summary</code> is returned from this method.
@@ -1171,7 +1171,7 @@ public class WizardPage extends JPanel implements WizardPanel {
             public boolean cancel (Map settings) {
                 return true;
             }
-            
+
             public String toString() {
                 return "NO_OP WizardResultProducer";
             }

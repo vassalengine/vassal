@@ -129,7 +129,7 @@ public class ScenarioOptions implements GameComponent {
   /**
    * Create the top-level dialog, but don't populate any tabs or options yet, this is done just before
    * display in case we are Editing and making changes, and to allow for roll-back management if user clicks cancel
-   * 
+   *
    * @return generated dialog
    */
   public JDialog getDialog() {
@@ -224,10 +224,10 @@ public class ScenarioOptions implements GameComponent {
 
   }
 
-  /** 
+  /**
    * Close button clicked. No change to underlying properties yet, so just close the dialog,
    * it will be rebuilt showing the old values when next opened.
-   */ 
+   */
   protected void cancel() {
     getDialog().setVisible(false);
   }
@@ -254,8 +254,8 @@ public class ScenarioOptions implements GameComponent {
   }
 
   /**
-   * Return true if there is at least one ScenarioOption defined 
-   */  
+   * Return true if there is at least one ScenarioOption defined
+   */
   protected boolean hasScenarioOptions() {
     return ! globalProperties.getAllDescendantComponentsOf(AbstractScenarioProperty.class).isEmpty();
   }

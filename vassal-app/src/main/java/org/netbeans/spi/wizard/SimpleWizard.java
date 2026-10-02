@@ -24,7 +24,7 @@ import java.util.Map;
 import javax.swing.JComponent;
 
 /**
- * A simple implementation of Wizard for use in wizards which have a 
+ * A simple implementation of Wizard for use in wizards which have a
  * straightforward set of steps with no branching.  To use, implement the
  * simplified interface SimpleWizard.Info and pass that to the constructor.
  *
@@ -32,7 +32,7 @@ import javax.swing.JComponent;
  * @author Tim Boudreau
  */
 final class SimpleWizard implements WizardImplementation {
-    private final List listenerList = 
+    private final List listenerList =
             Collections.synchronizedList (new LinkedList());
     private final Map ids2panels = new HashMap();
 
@@ -40,32 +40,32 @@ final class SimpleWizard implements WizardImplementation {
 
     private String currID = null;
     private boolean subwizard;
-    
+
     public SimpleWizard (WizardPanelProvider prov) {
         this (new SimpleWizardInfo (prov), false);
     }
-        
+
     /** Creates a new instance of SimpleWizard */
     public SimpleWizard(SimpleWizardInfo info) {
         this.info = info;
         info.setWizard (this);
     }
-    
+
     /** Creates a new instance of SimpleWizard */
     public SimpleWizard(SimpleWizardInfo info, boolean subwizard) {
         this.info = info;
         this.subwizard = subwizard;
         info.setWizard (this);
-    }    
+    }
 
     public void addWizardObserver (WizardObserver observer) {
         listenerList.add(observer);
     }
-    
+
     public void removeWizardObserver (WizardObserver observer) {
         listenerList.remove(observer);
-    }    
-    
+    }
+
     public int getForwardNavigationMode() {
         int result = info.getFwdNavMode();
         if (!subwizard && ((result & WizardController.MODE_CAN_CONTINUE) != 0) && isLastStep()) {
@@ -73,7 +73,7 @@ final class SimpleWizard implements WizardImplementation {
         }
         return result;
     }
-    
+
     boolean isLastStep() {
         String[] steps = info.getSteps();
         return currID != null && steps.length > 0 && currID.equals(steps[steps.length-1]);
@@ -94,11 +94,11 @@ final class SimpleWizard implements WizardImplementation {
         }
         return info.getDescriptions()[idx];
     }
-    
+
     public String getLongDescription(String id) {
         return info.getLongDescription (id);
     }
-    
+
     public JComponent navigatingTo(String id, Map settings) {
 //        assert SwingUtilities.isEventDispatchThread();
 
@@ -144,7 +144,7 @@ final class SimpleWizard implements WizardImplementation {
             return null;
         }
     }
-    
+
     int currentStepIndex() {
         int idx = 0;
         if (currID != null) {
@@ -154,7 +154,7 @@ final class SimpleWizard implements WizardImplementation {
     }
 
     void fireNavigability() {
-        WizardObserver[] listeners = (WizardObserver[]) 
+        WizardObserver[] listeners = (WizardObserver[])
                 listenerList.toArray (new WizardObserver[0]);
 
         for (int i = listeners.length - 1; i >= 0; i --) {
@@ -164,7 +164,7 @@ final class SimpleWizard implements WizardImplementation {
     }
 
     private void fireSelectionChanged() {
-        WizardObserver[] listeners = (WizardObserver[]) 
+        WizardObserver[] listeners = (WizardObserver[])
                 listenerList.toArray (new WizardObserver[0]);
 
         for (int i = listeners.length - 1; i >= 0; i --) {
@@ -180,23 +180,23 @@ final class SimpleWizard implements WizardImplementation {
     public boolean cancel(Map settings) {
         return info.cancel(settings);
     }
-    
+
     public String getTitle() {
         return info.getTitle();
     }
-    
+
     public String getProblem() {
         return info.getProblem();
     }
-    
+
     public boolean isBusy() {
         return info.isBusy();
     }
-    
+
     public int hashCode() {
         return info.hashCode() ^ 17;
     }
-    
+
     public boolean equals (Object o) {
         if (o instanceof SimpleWizard) {
             return ((SimpleWizard) o).info.equals (info);
@@ -204,7 +204,7 @@ final class SimpleWizard implements WizardImplementation {
             return false;
         }
     }
-    
+
     public String toString() {
         return "SimpleWizard for " + info;
     }

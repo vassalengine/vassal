@@ -149,7 +149,7 @@ public class PlayerWindow extends JFrame {
     toolsMenu.addSeparator();
 
     toolsMenu.add(mm.addKey("GameRefresher.refresh_counters"));
-    
+
     final CheckBoxMenuItemProxy debugCheckbox = new CheckBoxMenuItemProxy(new AbstractAction(
       Resources.getString("Debug.show_debug_window")) {
       private static final long serialVersionUID = 1L;

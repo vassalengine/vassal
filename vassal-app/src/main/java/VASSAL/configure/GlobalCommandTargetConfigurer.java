@@ -66,7 +66,7 @@ public class GlobalCommandTargetConfigurer extends Configurer {
 
   private FormattedExpressionConfigurer targetAttachmentIdConfig;
   private JLabel targetAttachmentIdLabel;
-  
+
   // A local copy of the target used for configuring
   private final GlobalCommandTarget target;
 
@@ -261,7 +261,7 @@ public class GlobalCommandTargetConfigurer extends Configurer {
       targetAttachmentIdLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.attachment_id"));
       controls.add(targetAttachmentIdLabel, "span 2"); // NON-NLS
       controls.add(targetAttachmentIdConfig.getControls(), "growx, wrap"); // NON-NLS
-      
+
       fastMatchPropertyConfig = new BooleanConfigurer(target.isFastMatchProperty());
       fastMatchPropertyConfig.addPropertyChangeListener(evt -> update());
       controls.add(fastMatchPropertyConfig.getControls());

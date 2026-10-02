@@ -18,23 +18,23 @@ package org.netbeans.spi.wizard;
 import java.util.Map;
 
 /**
- * Extend this class to create wizards which have branch points in them - 
+ * Extend this class to create wizards which have branch points in them -
  * either override <code>getWizardForStep</code> to return one or another a wizard which
- * represents the subsequent steps after a decision point, or override 
+ * represents the subsequent steps after a decision point, or override
  * <code>getPanelProviderForStep</code> to provide instances of <code>WizardPanelProvider</code>
- * if there are no subsequent branch points and the continuation is a 
+ * if there are no subsequent branch points and the continuation is a
  * simple wizard.
  * <p>
  * The basic idea is to supply a base wizard for the initial steps, stopping
  * at the branch point.  The panel for the branch point should put enough
- * information into the settings map that the WizardBranchController can 
+ * information into the settings map that the WizardBranchController can
  * decide what to return as the remaining steps of the wizard.
  * <p>
- * The result is a <code>Wizard</code> which embeds sub-wizards; when the 
+ * The result is a <code>Wizard</code> which embeds sub-wizards; when the
  * <code>PanelProvider</code> passed to the constructor runs out of steps,
  * the master <code>Wizard</code> will try to find a sub-<code>Wizard</code>
  * by calling <code>getWizardForStep</code>.  If non-null, the user seamlessly
- * continues in the returned wizard.  To create <code>Wizard</code>s with 
+ * continues in the returned wizard.  To create <code>Wizard</code>s with
  * multiple branches, simply override <code>getWizardForStep</code> to create
  * another <code>WizardBranchController</code> and return the result of its
  * <code>createWizard</code> method.
@@ -43,7 +43,7 @@ import java.util.Map;
  * or <code>Wizard</code> which are returned here - this class's methods may
  * be called frequently to determine if the sequence of steps (the next wizard)
  * have changed.
- * 
+ *
  * @author Tim Boudreau
  */
 public abstract class WizardBranchController {
@@ -66,7 +66,7 @@ public abstract class WizardBranchController {
      * Create a new WizardBranchController using the passed WizardPage
      * instances as the initial pages of the wizard.
      * @param pages An array of WizardPage instances
-     */ 
+     */
     protected WizardBranchController (WizardPage[] pages) {
         this (WizardPage.createWizardPanelProvider(pages));
     }
@@ -76,10 +76,10 @@ public abstract class WizardBranchController {
      * as the initial page of the wizard.  The initial page should
      * determine the subsequent steps of the wizard.
      * @param onlyPage An instance of WizardPage
-     */ 
+     */
     protected WizardBranchController (WizardPage onlyPage) {
         this (WizardPage.createWizardPanelProvider(onlyPage));
-    }    
+    }
     /**
      * Create a new WizardBranchController, using the passed <code>SimpleWizardInfo</code>
      * for the initial panes of the wizard.
@@ -88,7 +88,7 @@ public abstract class WizardBranchController {
         if (base == null) throw new NullPointerException ("No base");
         this.base = base;
     }
-    
+
     /**
      * Get the wizard which represents the subsequent panes after this step.
      * The UI for the current step should have put sufficient data into the
@@ -96,17 +96,17 @@ public abstract class WizardBranchController {
      * <p>
      * The default implementation delegates to <code>getPanelProviderForStep()</code>
      * and returns a <code>Wizard</code> representing the result of that
-     * call.  
+     * call.
      * <p>
      * <b>Note:</b>  This method can be called very frequently, to determine
-     * if the sequence of steps has changed - so it needs to run fast.  
-     * Returning the same instance every time the same arguments are passed 
+     * if the sequence of steps has changed - so it needs to run fast.
+     * Returning the same instance every time the same arguments are passed
      * is highly recommended.  It will typically be called whenever a change
      * is fired by the base wizard (i.e. every call <code>setProblem()</code>
      * should generate a check to see if the navigation has changed).
      * <p>
      * Note that the wizard for the subsequent steps will be instantiated
-     * as soon as it is known what the user's choice is, so the list of 
+     * as soon as it is known what the user's choice is, so the list of
      * pending steps can be updated (this does not mean that all subsequent
      * panel UI components of the wizard will be instantiated, just the
      * Wizard object itself, which will create panels on demand if they
@@ -122,18 +122,18 @@ public abstract class WizardBranchController {
     }
 
     /**
-     * Override this method to return a <code>WizardPanelProvider</code> representing the 
+     * Override this method to return a <code>WizardPanelProvider</code> representing the
      * steps from here to the final step of the wizard, varying the returned
      * object based on the contents of the map and the step in question.
-     * The default implementation of this method throws an <code>Error</code> - 
+     * The default implementation of this method throws an <code>Error</code> -
      * either override this method, or override <code>getWizardForStep()</code>
      * (in which case this method will not be called).
      * <p>
      * <b>Note:</b>  This method can be called very frequently, to determine
-     * if the sequence of steps has changed - so it needs to run fast.  
+     * if the sequence of steps has changed - so it needs to run fast.
      * Returning the same instance every time called with equivalent arguments
      * is highly recommended.
-     * 
+     *
      * @param step The string ID of the current step
      * @param settings The settings map, which previous panes of the wizard
      *   will have written content into
@@ -142,7 +142,7 @@ public abstract class WizardBranchController {
         throw new Error ("Override either createInfoForStep or " +
                 "createWizardForStep");
     }
-    
+
     SimpleWizardInfo getBase() {
         return base;
     }

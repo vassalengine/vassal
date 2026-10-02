@@ -96,7 +96,7 @@ public class VassalMapQuadTree extends QuadTree {
       }
     });
   }
-  
+
   /**
    * Return the bounds of the current Quadtree
    * @return bounds

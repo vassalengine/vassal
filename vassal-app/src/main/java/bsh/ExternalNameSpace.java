@@ -6,7 +6,7 @@ import java.util.*;
 	A namespace which maintains an external map of values held in variables in
 	its scope.  This mechanism provides a standard collections based interface
 	to the namespace as well as a convenient way to export and view values of
-	the namespace without the ordinary BeanShell wrappers.   
+	the namespace without the ordinary BeanShell wrappers.
 	</p>
 
 	Variables are maintained internally in the normal fashion to support
@@ -14,7 +14,7 @@ import java.util.*;
 	exported and imported in a synchronized way.  Variables are exported each
 	time they are written by BeanShell.  Imported variables from the map appear
 	in the BeanShell namespace as untyped variables with no modifiers and
-	shadow any previously defined variables in the scope. 
+	shadow any previously defined variables in the scope.
 	<p/>
 
 	Note: this class is inherentely dependent on Java 1.2, however it is not
@@ -31,14 +31,14 @@ public class ExternalNameSpace extends NameSpace
 {
 	private Map externalMap;
 
-    public ExternalNameSpace() 
+    public ExternalNameSpace()
 	{
 		this( null, "External Map Namespace", null );
 	}
 
 	/**
 	*/
-    public ExternalNameSpace( NameSpace parent, String name, Map externalMap ) 
+    public ExternalNameSpace( NameSpace parent, String name, Map externalMap )
 	{
 		super( parent, name );
 
@@ -60,20 +60,20 @@ public class ExternalNameSpace extends NameSpace
 		map values are retained in the external map, but are removed from the
 		BeanShell namespace.
 	*/
-	public void setMap( Map map ) 
-	{ 
+	public void setMap( Map map )
+	{
 		// Detach any existing namespace to preserve it, then clear this
 		// namespace and set the new one
-		this.externalMap = null; 
+		this.externalMap = null;
 		clear();
-		this.externalMap = map ; 
+		this.externalMap = map ;
 	}
 
 	/**
 	*/
-    void setVariable( 
-		String name, Object value, boolean strictJava, boolean recurse ) 
-		throws UtilEvalError 
+    void setVariable(
+		String name, Object value, boolean strictJava, boolean recurse )
+		throws UtilEvalError
 	{
 		super.setVariable( name, value, strictJava, recurse );
 		putExternalMap( name, value );
@@ -89,7 +89,7 @@ public class ExternalNameSpace extends NameSpace
 
 	/**
 	*/
-	public String [] getVariableNames() 
+	public String [] getVariableNames()
 	{
 		// union of the names in the internal namespace and external map
 		Set nameSet = new HashSet();
@@ -109,19 +109,19 @@ public class ExternalNameSpace extends NameSpace
 		3) var not in map but in local scope - var was removed via map
 		4) var not in map and not in local scope - non-existent var
 	*/
-    protected Variable getVariableImpl( String name, boolean recurse ) 
+    protected Variable getVariableImpl( String name, boolean recurse )
 		throws UtilEvalError
 	{
 		// check the external map for the variable name
 		Object value = externalMap.get( name );
 
 		Variable var;
-		if ( value == null ) 
+		if ( value == null )
 		{
 			// The var is not in external map and it should therefore not be
-			// found in local scope (it may have been removed via the map).  
+			// found in local scope (it may have been removed via the map).
 			// Clear it prophalactically.
-			super.unsetVariable( name ); 
+			super.unsetVariable( name );
 
 			// Search parent for var if applicable.
 			var = super.getVariableImpl( name, recurse );
@@ -134,7 +134,7 @@ public class ExternalNameSpace extends NameSpace
 			// If not in local scope then it was added via the external map,
 			// we'll wrap it and pass it along.  Else we'll use the local
 			// version.
-			if ( localVar == null ) 
+			if ( localVar == null )
 				var = new Variable( name, (Class)null, value, (Modifiers)null );
 			else
 				var = localVar;
@@ -151,7 +151,7 @@ public class ExternalNameSpace extends NameSpace
 		untyped variables should not be inclueded.  Therefore we do not
 		currently have to add the external names here.
 	*/
-	public Variable [] getDeclaredVariables() 
+	public Variable [] getDeclaredVariables()
 	{
 		return super.getDeclaredVariables();
 	}
@@ -160,7 +160,7 @@ public class ExternalNameSpace extends NameSpace
     */
     public void	setTypedVariable(
 		String	name, Class type, Object value,	Modifiers modifiers )
-		throws UtilEvalError 
+		throws UtilEvalError
 	{
 		super.setTypedVariable( name, type, value, modifiers );
 		putExternalMap( name, value );
@@ -180,8 +180,8 @@ public class ExternalNameSpace extends NameSpace
 		Note: kind of far-fetched, but... we could override this method to
 		allow bsh methods to be inserted into this namespace via the map.
 	*/
-    public BshMethod getMethod( 
-		String name, Class [] sig, boolean declaredOnly ) 
+    public BshMethod getMethod(
+		String name, Class [] sig, boolean declaredOnly )
 		throws UtilEvalError
 	{
 		return super.getMethod( name, sig, declaredOnly );
@@ -192,7 +192,7 @@ public class ExternalNameSpace extends NameSpace
 		Note: this method should be overridden to add the names from the
 		external map, as is done in getVariableNames();
 	*/
-	protected void getAllNamesAux( Vector vec ) 
+	protected void getAllNamesAux( Vector vec )
 	{
 		super.getAllNamesAux( vec );
 	}
@@ -201,7 +201,7 @@ public class ExternalNameSpace extends NameSpace
 		Clear all variables, methods, and imports from this namespace and clear
 		all values from the external map (via Map clear()).
 	*/
-	public void clear() 
+	public void clear()
 	{
 		super.clear();
 		externalMap.clear();
@@ -213,7 +213,7 @@ public class ExternalNameSpace extends NameSpace
 		it is not possible to differentiate between wrapper types and primitive
 		types via the external Map.
 	*/
-	protected void putExternalMap( String name, Object value ) 
+	protected void putExternalMap( String name, Object value )
 	{
 		if ( value instanceof Variable )
 			try {

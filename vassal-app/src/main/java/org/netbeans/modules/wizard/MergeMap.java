@@ -28,15 +28,15 @@ import java.util.Set;
 import java.util.Stack;
 
 /**
- * A map which proxies a collection of sub-maps each of which has a 
+ * A map which proxies a collection of sub-maps each of which has a
  * unique id.  Submaps can be added or removed en banc.  Values from
  * removed maps are retained;  if push ("someKnownId") happens, the
  * values previously added to the map while that ID was active reappear.
  * <p>
  * This allows us to implement backward/forward semantics for wizards,
  * in which each pane (identified with a unique ID) can add its own
- * settings to the settings map, but if the user presses the Back 
- * button, the settings from the formerly active pane can disappear - 
+ * settings to the settings map, but if the user presses the Back
+ * button, the settings from the formerly active pane can disappear -
  * but if the user moves forward again, they are not lost.
  * <p>
  * Calling remove("someKeyBelongingToAnEarlierId") will completely
@@ -46,19 +46,19 @@ import java.util.Stack;
  * <b><i><font color="red">This class is NOT AN API CLASS.  There is no
  * commitment that it will remain backward compatible or even exist in the
  * future.  The API of this library is in the packages <code>org.netbeans.api.wizard</code>
- * and <code>org.netbeans.spi.wizard</code></font></i></b>. 
+ * and <code>org.netbeans.spi.wizard</code></font></i></b>.
  *
  * @author Tim Boudreau
  */
 public class MergeMap implements Map {
     private Stack order = new Stack();
     private Map id2map = new HashMap();
-    
+
     /** Creates a new instance of MergeMap */
     public MergeMap(String currID) {
         push (currID);
     }
-    
+
     private static final String BASE = "__BASE"; //NOI18N
     /**
      * Creates a MergeMap with a set of key/value pairs that are
@@ -72,7 +72,7 @@ public class MergeMap implements Map {
         id2map.put (BASE, everpresent);
         push (currId);
     }
-    
+
     /**
      * Move to a different ID (meaning add a new named map to proxy which can be
      * calved off if necessary).
@@ -94,14 +94,14 @@ public class MergeMap implements Map {
         order.push (id);
         return result;
     }
-    
+
     /**
      * Get the ID of the current sub-map being written into.
      */
     public String currID() {
         return (String) order.peek();
     }
-    
+
     /**
      * Remove the current sub-map.  Removes all of its settings from the
      * MergedMap, but if push() is called with the returned value, the
@@ -116,14 +116,14 @@ public class MergeMap implements Map {
         String result = (String) order.peek();
         Map curr = (Map) id2map.get (result);
         order.pop();
-        
+
         //Though unlikely, it is possible that a later step in a wizard
         //overwrote a key/value pair from a previous step of the wizard.
         //We do not want to revert that write, so iterate all the keys
-        //we're removing, and if any of them are in steps lower on the 
+        //we're removing, and if any of them are in steps lower on the
         //stack, change those lower steps values to whatever was written
         //into the map we're calving off
-        
+
         Set keysForCurr = curr.keySet();
         for (Iterator i=orderIterator(); i.hasNext();) {
             Map other = (Map) id2map.get(i.next());
@@ -219,7 +219,7 @@ public class MergeMap implements Map {
         }
         return result;
     }
-    
+
     public Object remove(Object obj) {
         //Ensure we remove any duplicates in upper arrays
         Object result = get(obj);
@@ -242,11 +242,11 @@ public class MergeMap implements Map {
         }
         return result;
     }
-    
+
     private Iterator orderIterator() {
         return new ReverseIterator(order);
     }
-    
+
     private static final class ReverseIterator implements Iterator {
         private int pos;
         private List l;
@@ -254,11 +254,11 @@ public class MergeMap implements Map {
             pos = s.size()-1;
             l = new ArrayList(s);
         }
-        
+
         public boolean hasNext() {
             return pos != -1;
         }
-        
+
         public Object next() {
             if (pos < 0) {
                 throw new NoSuchElementException();
@@ -266,8 +266,8 @@ public class MergeMap implements Map {
             Object result = l.get(pos);
             pos--;
             return result;
-        } 
-        
+        }
+
         public void remove() {
             throw new UnsupportedOperationException();
         }
@@ -286,5 +286,5 @@ public class MergeMap implements Map {
         }
         return sb.toString();
     }
-    
+
 }

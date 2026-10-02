@@ -532,7 +532,7 @@ public class Chart extends Widget {
    * <code>
    * ZOOM_START_KEY
    * </code>
-   * for zoom start hotkey
+   * for zoom initial hotkey
 
    * </pre>
    */
@@ -560,7 +560,7 @@ public class Chart extends Widget {
       Resources.getString("Editor.Zoom.preset"),
       Resources.getString("Editor.Zoom.in_key"),
       Resources.getString("Editor.Zoom.out_key"),
-      Resources.getString("Editor.Zoom.start_key")
+      Resources.getString("Editor.Zoom.initial_key")
     };
   }
 

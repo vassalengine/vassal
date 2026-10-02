@@ -1353,7 +1353,7 @@ public class PieceDefiner extends JPanel {
       return this;
     }
   }
-  
+
   /**
    * Contents of the Copy/Paste buffer for traits in the editor
    * @author rkinney

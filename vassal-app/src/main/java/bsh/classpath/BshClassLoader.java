@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -43,12 +43,12 @@ import bsh.BshClassManager;
 	URLClassLoader that prevents us from specifying individual classes
 	via URLs.
 */
-public class BshClassLoader extends URLClassLoader 
+public class BshClassLoader extends URLClassLoader
 {
 	BshClassManager classManager;
 
 	/**
-		@param bases URLs JARClassLoader seems to require absolute paths 
+		@param bases URLs JARClassLoader seems to require absolute paths
 	*/
 	public BshClassLoader( BshClassManager classManager, URL [] bases ) {
 		super( bases );
@@ -56,7 +56,7 @@ public class BshClassLoader extends URLClassLoader
 	}
 
 	/**
-		@param bases URLs JARClassLoader seems to require absolute paths 
+		@param bases URLs JARClassLoader seems to require absolute paths
 	*/
 	public BshClassLoader( BshClassManager classManager, BshClassPath bcp ) {
 		this( classManager, bcp.getPathComponents() );
@@ -64,9 +64,9 @@ public class BshClassLoader extends URLClassLoader
 
 	/**
 		For use by children
-		@param bases URLs JARClassLoader seems to require absolute paths 
+		@param bases URLs JARClassLoader seems to require absolute paths
 	*/
-	protected BshClassLoader( BshClassManager classManager ) { 
+	protected BshClassLoader( BshClassManager classManager ) {
 		this( classManager, new URL [] { } );
 	}
 
@@ -76,7 +76,7 @@ public class BshClassLoader extends URLClassLoader
 	}
 
 	/**
-		This modification allows us to reload classes which are in the 
+		This modification allows us to reload classes which are in the
 		Java VM user classpath.  We search first rather than delegate to
 		the parent classloader (or bootstrap path) first.
 
@@ -129,10 +129,10 @@ public class BshClassLoader extends URLClassLoader
 		Try system ???
 	*/
 	// add some caching for not found classes?
-	protected Class findClass( String name ) 
-		throws ClassNotFoundException 
+	protected Class findClass( String name )
+		throws ClassNotFoundException
 	{
-		// Deal with this cast somehow... maybe have this class use 
+		// Deal with this cast somehow... maybe have this class use
 		// ClassManagerImpl type directly.
 		// Don't add the method to BshClassManager... it's really an impl thing
 		ClassManagerImpl bcm = (ClassManagerImpl)getClassManager();
@@ -140,7 +140,7 @@ public class BshClassLoader extends URLClassLoader
 		// Should we try to load the class ourselves or delegate?
 		// look for overlay loader
 
-		// Deal with this cast somehow... maybe have this class use 
+		// Deal with this cast somehow... maybe have this class use
 		// ClassManagerImpl type directly.
 		// Don't add the method to BshClassManager... it's really an impl thing
 		ClassLoader cl = bcm.getLoaderForClass( name );
@@ -160,7 +160,7 @@ public class BshClassLoader extends URLClassLoader
 		if ( getURLs().length > 0 )
 			try {
 				return super.findClass(name);
-			} catch ( ClassNotFoundException e ) { 
+			} catch ( ClassNotFoundException e ) {
 				//System.out.println(
 				//	"base loader here caught class not found: "+name );
 			}
@@ -188,7 +188,7 @@ public class BshClassLoader extends URLClassLoader
                     c = parent.loadClass(name, false);
                 else
                     c = findBootstrapClass(name);
-            catch ClassNotFoundException 
+            catch ClassNotFoundException
                 c = findClass(name);
 	*/
 

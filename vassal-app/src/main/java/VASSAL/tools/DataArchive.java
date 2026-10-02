@@ -379,7 +379,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
       directories.add(imageDir);
       if (localized) {
         buildLocalizedDirectoryList(directories);
-      }      
+      }
       for (final String directory : directories) {
         getAllLocalImageNamesForDirectory(s, directory, fullPath);
       }

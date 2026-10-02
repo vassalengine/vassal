@@ -73,7 +73,7 @@ public class PendingPeerLinkedList {
     return retval;
   }
 
-  public synchronized void add(Socket pSocket, PeerInfo pInfo) {    
+  public synchronized void add(Socket pSocket, PeerInfo pInfo) {
     IllegalArgument.ifNull("Info", pInfo);
     add(new PendingPeerNode(pSocket, pInfo));
   }
@@ -85,6 +85,6 @@ public class PendingPeerLinkedList {
       zTail = zTail.appendNode(pPendingPeerNode);
     notifyAll();
   }
-  
+
 
 }

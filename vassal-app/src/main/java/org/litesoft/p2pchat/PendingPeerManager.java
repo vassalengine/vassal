@@ -104,12 +104,12 @@ public class PendingPeerManager extends Thread implements NewPeersSupport {
       new Thread(runnable).start();
     }
   }
-  
+
   public void finish() {
     finish = true;
     interrupt();
   }
-  
+
   private void handleNewPeerClient(PendingPeerNode pPendingPeerNode) {
     PeerInfo peerInfo = pPendingPeerNode.getPeerInfo();
     if (zPendingPeersSupport.isAlreadyConnected(peerInfo)) {

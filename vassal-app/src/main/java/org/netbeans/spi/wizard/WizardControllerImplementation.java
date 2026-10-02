@@ -34,11 +34,11 @@ interface WizardControllerImplementation {
      * be displayed in the UI.
      */
     void setProblem (String value);
-    
+
     /**
-     * Set the forward navigation mode.  This method determines whether 
+     * Set the forward navigation mode.  This method determines whether
      * the Next button, the Finish button or both should be enabled if the
-     * problem string is set to null.  
+     * problem string is set to null.
      * <p>
      * On panels where, based on the UI state, the only reasonable next
      * step is to finish the wizard (even though there may be more panels
@@ -51,14 +51,14 @@ interface WizardControllerImplementation {
      * MODE_CAN_CONTINUE_OR_FINISH.
      * <p>
      * If the finish button should not be enabled, set the navigation mode
-     * to MODE_CAN_CONTINUE.  This is the default on any panel if no 
+     * to MODE_CAN_CONTINUE.  This is the default on any panel if no
      * explicit call to <code>setForwardNavigationMode()</code> has been made.
-     * 
-     * @param navigationMode Legal values are MODE_CAN_CONTINUE, 
+     *
+     * @param navigationMode Legal values are MODE_CAN_CONTINUE,
      *  MODE_CAN_FINISH or MODE_CAN_CONTINUE_OR_FINISH
      */
     void setForwardNavigationMode (int navigationMode);
-    
+
     /**
      * Indicate that some sort of background process is happening (presumably
      * a progress bar is being shown to the user) which cannot be interrupted.

@@ -169,7 +169,7 @@ public class SolidColorOp extends AbstractTiledOpImpl {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || o.getClass() != this.getClass()) return false;
- 
+
     final SolidColorOp op = (SolidColorOp) o;
     return color.equals(op.color) &&
            size.equals(op.size);

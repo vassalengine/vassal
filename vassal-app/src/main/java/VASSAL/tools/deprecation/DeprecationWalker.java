@@ -51,7 +51,7 @@ public class DeprecationWalker implements Walker {
   public void setInput(byte[] classFile) {
     reader = new ClassReader(classFile);
   }
- 
+
   @Override
   public void setInput(InputStream in) throws IOException {
     reader = new ClassReader(in);
@@ -76,7 +76,7 @@ public class DeprecationWalker implements Walker {
 
     @Override
     public void visit(
-      int version, 
+      int version,
       int access,
       String name,
       String signature,
@@ -86,10 +86,10 @@ public class DeprecationWalker implements Walker {
       path.clear();
       path.add(classString(name));
     }
-   
+
     @Override
     public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-      return DEPRECATED.equals(descString(desc)) ? 
+      return DEPRECATED.equals(descString(desc)) ?
         new AnnotationDependencyVisitor() : null;
     }
 
@@ -98,7 +98,7 @@ public class DeprecationWalker implements Walker {
       int access,
       String name,
       String desc,
-      String signature, 
+      String signature,
       Object value) {
 
       path.add(name);
@@ -114,7 +114,7 @@ public class DeprecationWalker implements Walker {
       String[] exceptions) {
 
       path.add(methodString(name, desc));
-      return new MethodDependencyVisitor(); 
+      return new MethodDependencyVisitor();
     }
   }
 
@@ -124,7 +124,7 @@ public class DeprecationWalker implements Walker {
     }
 
     private String since = null;
-    private boolean forRemoval = false; 
+    private boolean forRemoval = false;
 
     @Override
     public void visit(String name, Object value) {
@@ -149,7 +149,7 @@ public class DeprecationWalker implements Walker {
 
     @Override
     public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-      return DEPRECATED.equals(descString(desc)) ? 
+      return DEPRECATED.equals(descString(desc)) ?
         new AnnotationDependencyVisitor() : null;
     }
 
@@ -166,7 +166,7 @@ public class DeprecationWalker implements Walker {
 
     @Override
     public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-      return DEPRECATED.equals(descString(desc)) ? 
+      return DEPRECATED.equals(descString(desc)) ?
         new AnnotationDependencyVisitor() : null;
     }
 
@@ -195,7 +195,7 @@ public class DeprecationWalker implements Walker {
     case Type.DOUBLE:
       return "double";
     case Type.ARRAY:
-      return typeString(t.getElementType()) + "[]".repeat(t.getDimensions()); 
+      return typeString(t.getElementType()) + "[]".repeat(t.getDimensions());
     case Type.OBJECT:
       return t.getInternalName();
     default:
@@ -218,5 +218,5 @@ public class DeprecationWalker implements Walker {
     }
 
     return (name + "(" + String.join(", ", args) + ")").replace('/', '.');
-  } 
+  }
 }

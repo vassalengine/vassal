@@ -1901,10 +1901,10 @@ private int jjMoveNfa_0(int startState, int curPos)
    }
 }
 static final int[] jjnextStates = {
-   66, 67, 69, 46, 47, 52, 53, 56, 57, 15, 65, 70, 82, 17, 19, 61, 
-   63, 9, 26, 27, 29, 2, 3, 5, 11, 12, 15, 26, 27, 31, 29, 35, 
-   38, 39, 35, 40, 38, 48, 49, 15, 56, 57, 15, 72, 73, 75, 78, 79, 
-   81, 13, 14, 20, 21, 23, 28, 30, 32, 50, 51, 54, 55, 58, 59, 
+   66, 67, 69, 46, 47, 52, 53, 56, 57, 15, 65, 70, 82, 17, 19, 61,
+   63, 9, 26, 27, 29, 2, 3, 5, 11, 12, 15, 26, 27, 31, 29, 35,
+   38, 39, 35, 40, 38, 48, 49, 15, 56, 57, 15, 72, 73, 75, 78, 79,
+   81, 13, 14, 20, 21, 23, 28, 30, 32, 50, 51, 54, 55, 58, 59,
 };
 private static final boolean jjCanMove_0(int hiByte, int i1, int i2, long l1, long l2)
 {
@@ -1987,13 +1987,13 @@ public static final String[] lexStateNames = {
    "DEFAULT",
 };
 static final long[] jjtoToken = {
-   0x1ffffffffffffc01L, 0xfffffffffffffe7dL, 0x1ffL, 
+   0x1ffffffffffffc01L, 0xfffffffffffffe7dL, 0x1ffL,
 };
 static final long[] jjtoSkip = {
-   0x3feL, 0x0L, 0x0L, 
+   0x3feL, 0x0L, 0x0L,
 };
 static final long[] jjtoSpecial = {
-   0x380L, 0x0L, 0x0L, 
+   0x380L, 0x0L, 0x0L,
 };
 protected JavaCharStream input_stream;
 private final int[] jjrounds = new int[83];

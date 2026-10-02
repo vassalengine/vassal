@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -45,10 +45,10 @@ import java.util.Vector;
 	Note: This class is messy.  The method and field resolution need to be
 	rewritten.  Various methods in here catch NoSuchMethod or NoSuchField
 	exceptions during their searches.  These should be rewritten to avoid
-	having to catch the exceptions.  Method lookups are now cached at a high 
+	having to catch the exceptions.  Method lookups are now cached at a high
 	level so they are less important, however the logic is messy.
 */
-class Reflect 
+class Reflect
 {
     /**
 		Invoke method on arbitrary object instance.
@@ -57,13 +57,13 @@ class Reflect
 	 	@return the result of the method call
 	*/
     public static Object invokeObjectMethod(
-		Object object, String methodName, Object[] args, 
-		Interpreter interpreter, CallStack callstack, SimpleNode callerInfo ) 
+		Object object, String methodName, Object[] args,
+		Interpreter interpreter, CallStack callstack, SimpleNode callerInfo )
 		throws ReflectError, EvalError, InvocationTargetException
 	{
 		// Bsh scripted object
 		if ( object instanceof This && !This.isExposedThisMethod(methodName) )
-			return ((This)object).invokeMethod( 
+			return ((This)object).invokeMethod(
 				methodName, args, interpreter, callstack, callerInfo,
 				false/*delcaredOnly*/
 			);
@@ -83,9 +83,9 @@ class Reflect
 		}
     }
 
-    /** 
+    /**
 		Invoke a method known to be static.
-		No object instance is needed and there is no possibility of the 
+		No object instance is needed and there is no possibility of the
 		method being a bsh scripted method.
 	*/
     public static Object invokeStaticMethod(
@@ -93,7 +93,7 @@ class Reflect
         throws ReflectError, UtilEvalError, InvocationTargetException
     {
         Interpreter.debug("invoke static Method");
-        Method method = resolveExpectedJavaMethod( 
+        Method method = resolveExpectedJavaMethod(
 			bcm, clas, null, methodName, args, true );
 		return invokeMethod( method, null, args );
     }
@@ -104,7 +104,7 @@ class Reflect
 		@param args may be null
 	*/
 	static Object invokeMethod(
-		Method method, Object object, Object[] args ) 
+		Method method, Object object, Object[] args )
 		throws ReflectError, InvocationTargetException
 	{
 		if ( args == null )
@@ -138,9 +138,9 @@ class Reflect
 
 			return Primitive.wrap( returnValue, returnType );
 		} catch( IllegalAccessException e ) {
-			throw new ReflectError( "Cannot access method " 
+			throw new ReflectError( "Cannot access method "
 				+ StringUtil.methodString(
-					method.getName(), method.getParameterTypes() ) 
+					method.getName(), method.getParameterTypes() )
 				+ " in '" + method.getDeclaringClass() + "' :" + e );
 		}
 	}
@@ -148,7 +148,7 @@ class Reflect
 	public static Object getIndex(Object array, int index)
         throws ReflectError, UtilTargetError
     {
-		if ( Interpreter.DEBUG ) 
+		if ( Interpreter.DEBUG )
 			Interpreter.debug("getIndex: "+array+", index="+index);
         try {
             Object val = Array.get(array, index);
@@ -171,7 +171,7 @@ class Reflect
         catch( ArrayStoreException e2 ) {
 			throw new UtilTargetError( e2 );
         } catch( IllegalArgumentException e1 ) {
-			throw new UtilTargetError( 
+			throw new UtilTargetError(
 				new ArrayStoreException( e1.toString() ) );
         } catch(Exception e) {
             throw new ReflectError("Array access:" + e);
@@ -209,7 +209,7 @@ class Reflect
     static LHS getLHSStaticField(Class clas, String fieldName)
         throws UtilEvalError, ReflectError
     {
-        Field f = resolveExpectedJavaField( 
+        Field f = resolveExpectedJavaField(
 			clas, fieldName, true/*onlystatic*/);
         return new LHS(f);
     }
@@ -227,15 +227,15 @@ class Reflect
 		{
 			// I guess this is when we pass it as an argument?
 			// Setting locally
-			boolean recurse = false; 
+			boolean recurse = false;
 			return new LHS( ((This)object).namespace, fieldName, recurse );
 		}
 
 		try {
-			Field f = resolveExpectedJavaField( 
+			Field f = resolveExpectedJavaField(
 				object.getClass(), fieldName, false/*staticOnly*/ );
 			return new LHS(object, f);
-		} catch ( ReflectError e ) 
+		} catch ( ReflectError e )
 		{
 			// not a field, try property access
 			if ( hasObjectPropertySetter( object.getClass(), fieldName ) )
@@ -270,13 +270,13 @@ class Reflect
 		unecessarily.  This is just a temporary impl.
 		@return the field or null if not found
 	*/
-    protected static Field resolveJavaField( 
+    protected static Field resolveJavaField(
 		Class clas, String fieldName, boolean staticOnly )
         throws UtilEvalError
     {
 		try {
 			return resolveExpectedJavaField( clas, fieldName, staticOnly );
-		} catch ( ReflectError e ) { 
+		} catch ( ReflectError e ) {
 			return null;
 		}
 	}
@@ -288,7 +288,7 @@ class Reflect
 		Note: this should really just throw NoSuchFieldException... need
 		to change related signatures and code.
 	*/
-    protected static Field resolveExpectedJavaField( 
+    protected static Field resolveExpectedJavaField(
 		Class clas, String fieldName, boolean staticOnly
 	)
         throws UtilEvalError, ReflectError
@@ -304,7 +304,7 @@ class Reflect
         catch( NoSuchFieldException e) {
             throw new ReflectError("No such field: " + fieldName );
 		} catch ( SecurityException e ) {
-			throw new UtilTargetError( 
+			throw new UtilTargetError(
 			"Security Exception while searching fields of: "+clas,
 			e );
 		}
@@ -319,13 +319,13 @@ class Reflect
 
 	/**
 		Used when accessibility capability is available to locate an occurrance
-		of the field in the most derived class or superclass and set its 
+		of the field in the most derived class or superclass and set its
 		accessibility flag.
 		Note that this method is not needed in the simple non accessible
 		case because we don't have to hunt for fields.
-		Note that classes may declare overlapping private fields, so the 
+		Note that classes may declare overlapping private fields, so the
 		distinction about the most derived is important.  Java doesn't normally
-		allow this kind of access (super won't show private variables) so 
+		allow this kind of access (super won't show private variables) so
 		there is no real syntax for specifying which class scope to use...
 
 		@return the Field or throws NoSuchFieldException
@@ -335,7 +335,7 @@ class Reflect
 		This method should be rewritten to use getFields() and avoid catching
 		exceptions during the search.
 	*/
-	private static Field findAccessibleField( Class clas, String fieldName ) 
+	private static Field findAccessibleField( Class clas, String fieldName )
 		throws UtilEvalError, NoSuchFieldException
 	{
 		Field field;
@@ -369,7 +369,7 @@ class Reflect
 	 	result. If the method is not found it throws a descriptive ReflectError.
 	*/
     protected static Method resolveExpectedJavaMethod(
-		BshClassManager bcm, Class clas, Object object, 
+		BshClassManager bcm, Class clas, Object object,
 		String name, Object[] args, boolean staticOnly )
         throws ReflectError, UtilEvalError
     {
@@ -405,11 +405,11 @@ class Reflect
 	 	flag on the method as necessary.
 	 	<p/>
 
-		If, when directed to find a static method, this method locates a more 
-		specific matching instance method it will throw a descriptive exception 
+		If, when directed to find a static method, this method locates a more
+		specific matching instance method it will throw a descriptive exception
 		analogous to the error that the Java compiler would produce.
 		Note: as of 2.0.x this is a problem because there is no way to work
-		around this with a cast. 
+		around this with a cast.
 		<p/>
 
 		@param staticOnly
@@ -417,7 +417,7 @@ class Reflect
 		@return the method or null if no matching method was found.
 	*/
     protected static Method resolveJavaMethod(
-		BshClassManager bcm, Class clas, String name, 
+		BshClassManager bcm, Class clas, String name,
 		Class [] types, boolean staticOnly )
 		throws UtilEvalError
     {
@@ -426,7 +426,7 @@ class Reflect
 
 		// Lookup previously cached method
 		Method method = null;
-		if ( bcm == null ) 
+		if ( bcm == null )
 			Interpreter.debug("resolveJavaMethod UNOPTIMIZED lookup");
 		else
 			method = bcm.getResolvedMethod( clas, name, types, staticOnly );
@@ -438,7 +438,7 @@ class Reflect
 			try {
 				method = findOverloadedMethod( clas, name, types, publicOnly );
 			} catch ( SecurityException e ) {
-				throw new UtilTargetError( 
+				throw new UtilTargetError(
 				"Security Exception while searching methods of: "+clas,
 				e );
 			}
@@ -912,7 +912,7 @@ class Reflect
 		}
 	}
 
-	private static void logInvokeMethod( 
+	private static void logInvokeMethod(
 		String msg, Method method, Object[] args )
 	{
 		if ( Interpreter.DEBUG )

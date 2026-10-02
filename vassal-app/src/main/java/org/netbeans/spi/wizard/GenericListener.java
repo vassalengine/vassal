@@ -74,11 +74,11 @@ import javax.swing.tree.TreeSelectionModel;
  *
  * If you use subclasses of the swing components, you will also need to subclass
  * this listener and override at least the methods isProbablyContainer, attachTo and detachFrom.
- * 
+ *
  * Rodney Kinney:  Don't rely on Class.getPackage(), which returns null for some ClassLoaders
  *
  * @author Tim Boudreau
- * @author Rodney Kinney 
+ * @author Rodney Kinney
  */
 @SuppressWarnings("unchecked")
 final class GenericListener
@@ -115,7 +115,7 @@ final class GenericListener
         this.wizardPage = wizardPage;
         wizardPage.addContainerListener(this);
     }
-    
+
     public GenericListener (WizardPage page) {
         this (page, null, null);
     }
@@ -123,7 +123,7 @@ final class GenericListener
     /**
      * Return true if the given component is likely to be a container such the each
      * component within the container should be be considered as a user input.
-     * 
+     *
      * @param c
      * @return true if the component children should have this listener added.
      */
@@ -144,10 +144,10 @@ final class GenericListener
         }
         return result;
     }
-    
+
     /**
      * Return true if the given component is likely to be a swing primitive or a subclass.
-     * The default implmentation here just checks for the package of the component to be "javax.swing" 
+     * The default implmentation here just checks for the package of the component to be "javax.swing"
      * If you use subclasses of swing components, you will need to override this method
      * to get proper behavior.
      *
@@ -286,7 +286,7 @@ final class GenericListener
         if (!(jc instanceof JComponent)) {
             return false;
         }
-        return isProbablyAContainer (jc) || 
+        return isProbablyAContainer (jc) ||
                 jc instanceof JList ||
                 jc instanceof JComboBox ||
                 jc instanceof JTree ||

@@ -140,7 +140,7 @@ public class ScrollPane extends JScrollPane {
             scrollDirection = +1;
           }
 
-        
+
           if (!horizontalScrollBar.isVisible()) return;
 
           GameModule.getGameModule().setSuppressAutoCenterUpdate(false);

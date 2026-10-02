@@ -30,7 +30,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 /**
- * Provides information about a simple wizard.  Wraps a 
+ * Provides information about a simple wizard.  Wraps a
  * WizardPanelProvider and provides a connection to the instance of
  * SimpleWizard created for it, acting as the WizardController for
  * calls to WizardPanelProvider.createPanel().
@@ -48,7 +48,7 @@ final class SimpleWizardInfo implements WizardControllerImplementation {
     SimpleWizardInfo (WizardPanelProvider provider) {
         this (provider.title, provider.steps, provider.descriptions, provider);
     }
-    
+
     /**
      * Create an instance of Info, which will provide panels for a simple,
      * non-branching wizard, passing a localized title, a list of steps
@@ -87,21 +87,21 @@ final class SimpleWizardInfo implements WizardControllerImplementation {
     final SimpleWizard getWizard() {
         return wizard != null ? (SimpleWizard) wizard.get() : null;
     }
-    
+
     final SimpleWizard createWizard() {
         return new SimpleWizard(this);
     }
-   
+
     //pkg private for unit tests
     final WizardController controller = new WizardController(this);
     /**
      * Create a panel that represents a named step in the wizard.
-     * This method will be called exactly <i>once</i> in the life of 
+     * This method will be called exactly <i>once</i> in the life of
      * a wizard.  The panel should retain the passed settings Map, and
      * add/remove values from it as the user enters information, calling
      * <code>setProblem()</code> and <code>setCanFinish()</code> as
      * appropriate in response to user input.
-     * 
+     *
      * @param id The name of the step, as supplied in the constructor
      * @param settings A Map containing settings from earlier steps in
      *   the wizard
@@ -134,7 +134,7 @@ final class SimpleWizardInfo implements WizardControllerImplementation {
     protected Object finish (Map settings) throws WizardException {
         //XXX fixme
 //        assert canFinish();
-        
+
         // SKNUTSON: the "canFinish" behavior is not working
         // instead, panels must implement the WizardPanel interface
         // and have allowFinish return false
@@ -144,27 +144,27 @@ final class SimpleWizardInfo implements WizardControllerImplementation {
 //        }
         return provider.finish (settings);
     }
-    
+
     public String getLongDescription (String id) {
         return provider.getLongDescription (id);
     }
 
     /**
      * The method provides a chance to call setProblem() or setCanFinish() when
-     * the user re-navigates to a panel they've already seen - in the case 
+     * the user re-navigates to a panel they've already seen - in the case
      * that the user pressed the Previous button and then the Next button.
      * <p>
-     * The default implementation does nothing, which is sufficient for 
+     * The default implementation does nothing, which is sufficient for
      * most implementations.  If whether this panel is valid or not could
      * have changed because of changed data from a previous panel,
      * you may want to override this method to ensure validity and currNavMode
      * are set correctly.
      * <p>
-     * This method will <i>not</i> be called when a panel is first instantiated - 
+     * This method will <i>not</i> be called when a panel is first instantiated -
      * <code>createPanel()</code> is expected to set validity and currNavMode
      * appropriately.
      * <p>
-     * The settings Map passed to this method will always be the same 
+     * The settings Map passed to this method will always be the same
      * Settings map instance that was passed to <code>createPanel()</code>
      * when the panel was created.
      */
@@ -187,7 +187,7 @@ final class SimpleWizardInfo implements WizardControllerImplementation {
             fire();
         }
     }
-    
+
     /**
      * Set whether or not the contents of this panel are valid.  When
      * user-entered information in a panel changes, call this method as
@@ -203,19 +203,19 @@ final class SimpleWizardInfo implements WizardControllerImplementation {
     private int currNavMode = WizardController.MODE_CAN_CONTINUE;
 
     /**
-     * Set whether or not the Finish button should be enabled.  Neither 
-     * the Finish nor Next buttons will be enabled if setProblem has 
+     * Set whether or not the Finish button should be enabled.  Neither
+     * the Finish nor Next buttons will be enabled if setProblem has
      * been called with non-null.
      * <p>
      * Legal values are: WizardController.MODE_CAN_CONTINUE,
-     * WizardController.MODE_CAN_FINISH or 
+     * WizardController.MODE_CAN_FINISH or
      * WizardController.MODE_CAN_CONTINUE_OR_FINISH.
      * <p>
      * This method is used to set what means of forward navigation should
      * be available if the current panel is in a valid state (problem is
-     * null).  It is <i>not</i> a way to disable both the next button 
+     * null).  It is <i>not</i> a way to disable both the next button
      * and the finish button, only a way to choose either or both.
-     * 
+     *
      * @param value The forward navigation mode
      * @see setProblem
      */
@@ -234,7 +234,7 @@ final class SimpleWizardInfo implements WizardControllerImplementation {
         }
         navModeByPanel[index()] = value;
     }
-    
+
     public final int getFwdNavMode() {
         return currNavMode;
     }
@@ -252,7 +252,7 @@ final class SimpleWizardInfo implements WizardControllerImplementation {
             fire();
         }
     }
-    
+
     final void fire() {
         WizardImplementation wiz = getWizard();
         if (wiz != null) {
@@ -265,12 +265,12 @@ final class SimpleWizardInfo implements WizardControllerImplementation {
     }
 
     final boolean canFinish() {
-        return isValid() && (currNavMode != -1 && (currNavMode & 
+        return isValid() && (currNavMode != -1 && (currNavMode &
                 WizardController.MODE_CAN_FINISH) != 0);
     }
-    
+
     final boolean canContinue() {
-        return isValid() && (currNavMode == -1 || (currNavMode & 
+        return isValid() && (currNavMode == -1 || (currNavMode &
                 WizardController.MODE_CAN_CONTINUE) != 0);
     }
 
@@ -281,7 +281,7 @@ final class SimpleWizardInfo implements WizardControllerImplementation {
     String[] getSteps() {
         return steps;
     }
-    
+
     // lookup the step by name
     boolean containsStep (String name)
     {
@@ -299,15 +299,15 @@ final class SimpleWizardInfo implements WizardControllerImplementation {
     final String getProblem() {
         return problem;
     }
-    
+
     boolean isBusy() {
         return busy;
     }
-    
+
     public boolean equals (Object o) {
         if (o != null && o.getClass() == getClass()) {
             SimpleWizardInfo info = (SimpleWizardInfo) o;
-            
+
             // assert info.descriptions != null : "Info.descriptions == null";
             // assert info.steps != null : "Info.steps == null";
             if (info.descriptions == null || info.steps == null)
@@ -322,19 +322,19 @@ final class SimpleWizardInfo implements WizardControllerImplementation {
             return false;
         }
     }
-    
+
     public int hashCode() {
         int result = 0;
         for (int i=0; i < steps.length; i++) {
             result += (steps[i].hashCode() * (i+1)) ^ 31;
         }
         return result + (title == null ? 0 : title.hashCode());
-    }    
+    }
 
     boolean cancel(Map settings) {
         return provider.cancel(settings);
     }
-    
+
     public String toString() {
         return "SimpleWizardInfo@" + System.identityHashCode(this) + " for " +
                 provider;

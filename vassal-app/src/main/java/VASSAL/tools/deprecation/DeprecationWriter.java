@@ -47,4 +47,4 @@ public class DeprecationWriter {
       Processor.process(d, infile);
     }
   }
-} 
+}

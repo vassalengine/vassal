@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -36,7 +36,7 @@ package bsh;
 
 import java.lang.reflect.Array;
 
-class BSHType extends SimpleNode 
+class BSHType extends SimpleNode
 	implements BshClassManager.Listener
 {
 	/**
@@ -45,29 +45,29 @@ class BSHType extends SimpleNode
 		In the case where we are not an array this will be the same as type.
 	*/
 	private Class baseType;
-	/** 
-		If we are an array type this will be non zero and indicate the 
+	/**
+		If we are an array type this will be non zero and indicate the
 		dimensionality of the array.  e.g. 2 for String[][];
 	*/
     private int arrayDims;
 
-	/** 
+	/**
 		Internal cache of the type.  Cleared on classloader change.
 	*/
     private Class type;
 
 	String descriptor;
 
-    BSHType(int id) { 
-		super(id); 
+    BSHType(int id) {
+		super(id);
 	}
 
 	/**
-		Used by the grammar to indicate dimensions of array types 
+		Used by the grammar to indicate dimensions of array types
 		during parsing.
 	*/
-    public void addArrayDimension() { 
-		arrayDims++; 
+    public void addArrayDimension() {
+		arrayDims++;
 	}
 
 	SimpleNode getTypeNode() {
@@ -76,13 +76,13 @@ class BSHType extends SimpleNode
 
     /**
 		 Returns a class descriptor for this type.
-		 If the type is an ambiguous name (object type) evaluation is 
+		 If the type is an ambiguous name (object type) evaluation is
 		 attempted through the namespace in order to resolve imports.
 		 If it is not found and the name is non-compound we assume the default
 		 package for the name.
 	*/
-    public String getTypeDescriptor( 
-		CallStack callstack, Interpreter interpreter, String defaultPackage ) 
+    public String getTypeDescriptor(
+		CallStack callstack, Interpreter interpreter, String defaultPackage )
     {
         // return cached type if available
 		if ( descriptor != null )
@@ -93,7 +93,7 @@ class BSHType extends SimpleNode
         SimpleNode node = getTypeNode();
         if ( node instanceof BSHPrimitiveType )
             descriptor = getTypeDescriptor( ((BSHPrimitiveType)node).type );
-        else 
+        else
 		{
             String clasName = ((BSHAmbiguousName)node).text;
 			BshClassManager bcm = interpreter.getClassManager();
@@ -107,7 +107,7 @@ class BSHType extends SimpleNode
 			if ( definingClass == null )
 			{
 				try {
-					clas = ((BSHAmbiguousName)node).toClass( 
+					clas = ((BSHAmbiguousName)node).toClass(
 						callstack, interpreter );
 				} catch ( EvalError e ) {
 					//throw new InterpreterError("unable to resolve type: "+e);
@@ -126,7 +126,7 @@ class BSHType extends SimpleNode
 				if ( defaultPackage == null || Name.isCompound( clasName ) )
             		descriptor = "L" + clasName.replace('.','/') + ";";
 				else
-            		descriptor = 
+            		descriptor =
 						"L"+defaultPackage.replace('.','/')+"/"+clasName + ";";
 			}
 		}
@@ -139,7 +139,7 @@ class BSHType extends SimpleNode
         return descriptor;
     }
 
-    public Class getType( CallStack callstack, Interpreter interpreter ) 
+    public Class getType( CallStack callstack, Interpreter interpreter )
 		throws EvalError
     {
         // return cached type if available
@@ -150,8 +150,8 @@ class BSHType extends SimpleNode
         SimpleNode node = getTypeNode();
         if ( node instanceof BSHPrimitiveType )
             baseType = ((BSHPrimitiveType)node).getType();
-        else 
-            baseType = ((BSHAmbiguousName)node).toClass( 
+        else
+            baseType = ((BSHAmbiguousName)node).toClass(
 				callstack, interpreter );
 
         if ( arrayDims > 0 ) {
@@ -160,9 +160,9 @@ class BSHType extends SimpleNode
 				// arbitrary (zero) length in each dimension.
                 int[] dims = new int[arrayDims]; // int array default zeros
                 Object obj = Array.newInstance(baseType, dims);
-                type = obj.getClass(); 
+                type = obj.getClass();
             } catch(Exception e) {
-                throw new EvalError("Couldn't construct array type", 
+                throw new EvalError("Couldn't construct array type",
 					this, callstack );
             }
         } else
@@ -183,8 +183,8 @@ class BSHType extends SimpleNode
 	public Class getBaseType() {
 		return baseType;
 	}
-	/** 
-		If we are an array type this will be non zero and indicate the 
+	/**
+		If we are an array type this will be non zero and indicate the
 		dimensionality of the array.  e.g. 2 for String[][];
 	*/
 	public int getArrayDims() {
@@ -196,10 +196,10 @@ class BSHType extends SimpleNode
 		baseType = null;
 	}
 
-	public static String getTypeDescriptor( Class clas ) 
+	public static String getTypeDescriptor( Class clas )
 	{
 		if ( clas == Boolean.TYPE ) return "Z";
-		if ( clas == Character.TYPE ) return "C"; 
+		if ( clas == Character.TYPE ) return "C";
 		if ( clas == Byte.TYPE ) return "B";
 		if ( clas == Short.TYPE ) return "S";
 		if ( clas == Integer.TYPE ) return "I";

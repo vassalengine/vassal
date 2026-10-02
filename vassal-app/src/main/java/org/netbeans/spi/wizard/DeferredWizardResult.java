@@ -24,7 +24,7 @@ import java.util.Map;
 
 
 /**
- * Object which can be returned from 
+ * Object which can be returned from
  * <code>WizardPage.WizardResultProducer.finish()</code>
  * or <code>WizardPanelProvider.finish()</code>.  A DeferredWizardResult does
  * not immediately calculate its result;  it is used for cases where some
@@ -38,27 +38,27 @@ import java.util.Map;
 public abstract class DeferredWizardResult {
     private final boolean canAbort;
     private final boolean disableUIWhileBusy;
-    /** 
-     * Creates a new instance of DeferredWizardResult which cannot be 
+    /**
+     * Creates a new instance of DeferredWizardResult which cannot be
      * aborted and shows a progress bar.
      */
     public DeferredWizardResult() {
         this(false, false);
     }
-    
+
     /** Creates a new instance of DeferredWizardResult which may or may not
-     * be able to be aborted. 
+     * be able to be aborted.
      * @param canAbort determine if background computation can be aborted by
      * calling the <code>abort()</code> method
      */
     public DeferredWizardResult (boolean canAbort) {
         this(canAbort, false);
     }
-    
+
     /** Creates a new instance of DeferredWizardResult which may or may not
      * be able to be aborted, and which may simply disable the wizard's UI
      * instead of showing a progress bar while the background work runs.
-     * 
+     *
      * @param canAbort
      * @param disableUIWhileBusy
      */
@@ -66,31 +66,31 @@ public abstract class DeferredWizardResult {
         this.canAbort = canAbort;
         this.disableUIWhileBusy = disableUIWhileBusy;
     }
-    
-    
-    /** 
+
+
+    /**
      * Begin computing the result.  This method is called on a background
      * thread, not the AWT event thread, and computation can immediately begin.
-     * Use the progress handle to set progress as the work progresses. 
-     * 
+     * Use the progress handle to set progress as the work progresses.
+     *
      * IMPORTANT: This method MUST call either progress.finished with the result,
      * or progress.failed with an error message.  If this method returns without
      * calling either of those methods, it will be assumed to have failed.
-     * 
+     *
      * @param settings The settings gathered over the course of the wizard
      * @param progress A handle which can be used to affect the progress bar.
      */
     public abstract void start (Map settings, ResultProgressHandle progress);
-    
+
     /**
-     * If true, the background thread can be aborted.  If it is possible to 
+     * If true, the background thread can be aborted.  If it is possible to
      * abort, then the UI may allow the dialog to be closed while the result
      * is being computed.
-     */ 
+     */
     public final boolean canAbort() {
         return canAbort;
     }
-    
+
     /**
      * Abort computation of the result.  This method will usually be called on
      * the event thread, after <code>start()<code> has been called, and before
@@ -102,7 +102,7 @@ public abstract class DeferredWizardResult {
      * <b>This method does <i>nothing</i> by default</b> - it is left empty so
      * that people who do not want to support aborting background work do not
      * have to override it.  It is up to the implementor
-     * to set a flag or otherwise notify the background thread to halt 
+     * to set a flag or otherwise notify the background thread to halt
      * computation.  A simple method for doing so is as follows:
      * <pre>
      * volatile Thread thread;
@@ -111,8 +111,8 @@ public abstract class DeferredWizardResult {
      *  synchronized (this) {
      *     thread = Thread.currentThread();
      *  }
-     *  
-     *  //do the background computation, update progress.  Every so often, 
+     *
+     *  //do the background computation, update progress.  Every so often,
      *  //check Thread.interrupted() and exit if true
      * } finally {
      *    synchronized (this) {
@@ -120,15 +120,15 @@ public abstract class DeferredWizardResult {
      *    }
      *  }
      * }
-     * 
+     *
      * public synchronized void abort() {
      *  if (thread != null) thread.interrupt();
      * }
      * </pre>
      * or you can use a <code>volatile boolean</code> flag that you set in
      * <code>abort()</code> and periodically check in the body of <code>start()</code>.
-     * 
-     */ 
+     *
+     */
     public void abort() {
         //do nothing
     }
@@ -139,7 +139,7 @@ public abstract class DeferredWizardResult {
      * navigation disabled [note on some window managers, the user will still
      * be able to click the dialog's window drag-bar close button, so you still
      * should override abort() to stop computation if possible]).
-     * 
+     *
      * @return true if no progress bar should be displayed and the UI should
      * just disable itself
      */

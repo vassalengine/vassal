@@ -7,10 +7,10 @@ public abstract class ClassGenerator
 {
 	private static ClassGenerator cg;
 
-	public static ClassGenerator getClassGenerator() 
+	public static ClassGenerator getClassGenerator()
 		throws UtilEvalError
 	{
-		if ( cg == null ) 
+		if ( cg == null )
 		{
 			try {
 				Class clas = Class.forName( "bsh.ClassGeneratorImpl" );
@@ -26,10 +26,10 @@ public abstract class ClassGenerator
 	/**
 		Parse the BSHBlock for the class definition and generate the class.
 	*/
-	public abstract Class generateClass( 
-		String name, Modifiers modifiers, 
-		Class [] interfaces, Class superClass, BSHBlock block, 
-		boolean isInterface, CallStack callstack, Interpreter interpreter 
+	public abstract Class generateClass(
+		String name, Modifiers modifiers,
+		Class [] interfaces, Class superClass, BSHBlock block,
+		boolean isInterface, CallStack callstack, Interpreter interpreter
 	)
 		throws EvalError;
 
@@ -48,7 +48,7 @@ public abstract class ClassGenerator
 		This is currently used for inner class support.
 		Note: This method will likely be removed in the future.
 	*/
-	public abstract void setInstanceNameSpaceParent( 
+	public abstract void setInstanceNameSpaceParent(
 		Object instance, String className, NameSpace parent );
 
 }

@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -49,7 +49,7 @@ class BSHMethodInvocation extends SimpleNode
 	}
 
 	/**
-		Evaluate the method invocation with the specified callstack and 
+		Evaluate the method invocation with the specified callstack and
 		interpreter
 	*/
 	public Object eval( CallStack callstack, Interpreter interpreter )
@@ -64,7 +64,7 @@ class BSHMethodInvocation extends SimpleNode
 			&& ( nameNode.text.equals("super") || nameNode.text.equals("this") )
 		)
 			return Primitive.VOID;
- 
+
 		Name name = nameNode.getName(namespace);
 		Object[] args = getArgsNode().getArguments(callstack, interpreter);
 
@@ -75,9 +75,9 @@ class BSHMethodInvocation extends SimpleNode
 			return name.invokeMethod( interpreter, args, callstack, this);
 		} catch ( ReflectError e ) {
 			throw new EvalError(
-				"Error in method invocation: " + e.getMessage(), 
+				"Error in method invocation: " + e.getMessage(),
 				this, callstack );
-		} catch ( InvocationTargetException e ) 
+		} catch ( InvocationTargetException e )
 		{
 			String msg = "Method Invocation "+name;
 			Throwable te = e.getTargetException();
@@ -88,7 +88,7 @@ class BSHMethodInvocation extends SimpleNode
 				(e.g. eval() or source()
 			*/
 			boolean isNative = true;
-			if ( te instanceof EvalError ) 
+			if ( te instanceof EvalError )
 				if ( te instanceof TargetError )
 					isNative = ((TargetError)te).inNativeCode();
 				else

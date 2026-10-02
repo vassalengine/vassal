@@ -29,6 +29,7 @@ Build-Depends-Indep:
 	libswingx-java (>= 1.6.2),
         libtimingframework-java (>= 1.0),
 	libxml-commons-external-java,
+	libxz-java (>= 1.9),
 	libxmlgraphics-commons-java
 Standards-Version: 4.5.1
 Vcs-Git: https://salsa.debian.org/java-team/vassal.git
@@ -60,6 +61,7 @@ Depends:
 	libswingx-java (>= 1.6.2),
         libtimingframework-java (>= 1.0),
 	libxml-commons-external-java,
+	libxz-java (>= 1.9),
 	libxmlgraphics-commons-java,
         ${misc:Depends}
 Description: Application to play board and card games

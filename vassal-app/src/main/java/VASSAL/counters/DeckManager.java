@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 by Brian Reynolds, Joel Uckelman 
+ * Copyright (c) 2023 by Brian Reynolds, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DeckManager {
-  
+
   protected List<Deck> deckEmptiedKeyQueue = new ArrayList<>();
 
   /**

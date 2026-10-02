@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -52,7 +52,7 @@ class BSHForStatement extends SimpleNode implements ParserConstants
 
     BSHForStatement(int id) { super(id); }
 
-    public Object eval(CallStack callstack , Interpreter interpreter)  
+    public Object eval(CallStack callstack , Interpreter interpreter)
 		throws EvalError
     {
         int i = 0;
@@ -71,15 +71,15 @@ class BSHForStatement extends SimpleNode implements ParserConstants
 		/*
 			Note: some interesting things are going on here.
 
-			1) We swap instead of push...  The primary mode of operation 
-			acts like we are in the enclosing namespace...  (super must be 
+			1) We swap instead of push...  The primary mode of operation
+			acts like we are in the enclosing namespace...  (super must be
 			preserved, etc.)
 
-			2) We do *not* call the body block eval with the namespace 
-			override.  Instead we allow it to create a second subordinate 
-			BlockNameSpace child of the forNameSpace.  Variable propogation 
-			still works through the chain, but the block's child cleans the 
-			state between iteration.  
+			2) We do *not* call the body block eval with the namespace
+			override.  Instead we allow it to create a second subordinate
+			BlockNameSpace child of the forNameSpace.  Variable propogation
+			still works through the chain, but the block's child cleans the
+			state between iteration.
 			(which is correct Java behavior... see forscope4.bsh)
 		*/
 
@@ -89,18 +89,18 @@ class BSHForStatement extends SimpleNode implements ParserConstants
 		callstack.swap( forNameSpace );
 
         // Do the for init
-        if ( hasForInit ) 
+        if ( hasForInit )
             forInit.eval( callstack, interpreter );
 
 		Object returnControl = Primitive.VOID;
         while(true)
         {
-            if ( hasExpression ) 
+            if ( hasExpression )
 			{
 				boolean cond = BSHIfStatement.evaluateCondition(
 					expression, callstack, interpreter );
 
-				if ( !cond ) 
+				if ( !cond )
 					break;
 			}
 

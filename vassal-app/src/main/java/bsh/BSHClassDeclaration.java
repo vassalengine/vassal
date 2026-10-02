@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -39,9 +39,9 @@ class BSHClassDeclaration extends SimpleNode
 {
 	/**
 		The class instance initializer method name.
-		A BshMethod by this name is installed by the class delcaration into 
-		the static class body namespace.  
-		It is called once to initialize the static members of the class space 
+		A BshMethod by this name is installed by the class delcaration into
+		the static class body namespace.
+		It is called once to initialize the static members of the class space
 		and each time an instances is created to initialize the instance
 		members.
 	*/
@@ -64,7 +64,7 @@ class BSHClassDeclaration extends SimpleNode
 
 		// resolve superclass if any
 		Class superClass = null;
-		if ( extend ) 
+		if ( extend )
 		{
 			BSHAmbiguousName superNode = (BSHAmbiguousName)jjtGetChild(child++);
 			superClass = superNode.toClass( callstack, interpreter );
@@ -77,7 +77,7 @@ class BSHClassDeclaration extends SimpleNode
 			interfaces[i] = node.toClass(callstack, interpreter);
 			if ( !interfaces[i].isInterface() )
 				throw new EvalError(
-					"Type: "+node.text+" is not an interface!", 
+					"Type: "+node.text+" is not an interface!",
 					this, callstack );
 		}
 
@@ -89,7 +89,7 @@ class BSHClassDeclaration extends SimpleNode
 			block = new BSHBlock( ParserTreeConstants.JJTBLOCK );
 
 		try {
-			return ClassGenerator.getClassGenerator().generateClass( 
+			return ClassGenerator.getClassGenerator().generateClass(
 				name, modifiers, interfaces, superClass, block, isInterface,
 				callstack, interpreter );
 		} catch ( UtilEvalError e ) {

@@ -23,9 +23,9 @@ public interface WizardObserver {
      * @param wizard The wizard whose steps have changed
      */
     public void stepsChanged(Wizard wizard);
-    
+
     /**
-     * Called when the enablement of the next/previous/finish buttons 
+     * Called when the enablement of the next/previous/finish buttons
      * change, or the problem text changes.
      * @param wizard The wizard whose navigability has changed
      */

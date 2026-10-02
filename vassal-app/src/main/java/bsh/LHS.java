@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -38,14 +38,14 @@ import java.lang.reflect.Field;
 import java.util.Hashtable;
 
 /**
-	An LHS is a wrapper for an variable, field, or property.  It ordinarily 
-	holds the "left hand side" of an assignment and may be either resolved to 
+	An LHS is a wrapper for an variable, field, or property.  It ordinarily
+	holds the "left hand side" of an assignment and may be either resolved to
 	a value or assigned a value.
 	<p>
 	
 	There is one special case here termed METHOD_EVAL where the LHS is used
 	in an intermediate evaluation of a chain of suffixes and wraps a method
-	invocation.  In this case it may only be resolved to a value and cannot be 
+	invocation.  In this case it may only be resolved to a value and cannot be
 	assigned.  (You can't assign a value to the result of a method call e.g.
 	"foo() = 5;").
 	<p>
@@ -187,7 +187,7 @@ throw new Error("namespace lhs");
 	/**
 		Assign a value to the LHS.
 	*/
-	public Object assign( Object val, boolean strictJava ) 
+	public Object assign( Object val, boolean strictJava )
 		throws UtilEvalError
 	{
 		if ( type == VARIABLE )
@@ -197,11 +197,11 @@ throw new Error("namespace lhs");
 				nameSpace.setLocalVariable( varName, val, strictJava );
 			else
 				nameSpace.setVariable( varName, val, strictJava );
-		} else 
+		} else
 		if ( type == FIELD )
 		{
 			try {
-				Object fieldVal = val instanceof Primitive ?  
+				Object fieldVal = val instanceof Primitive ?
 					((Primitive)val).getValue() : val;
 
 				// This should probably be in Reflect.java
@@ -209,15 +209,15 @@ throw new Error("namespace lhs");
 				field.set( object, fieldVal );
 				return val;
 			}
-			catch( NullPointerException e) {   
+			catch( NullPointerException e) {
     			throw new UtilEvalError(
 					"LHS ("+field.getName()+") not a static field.");
-			}     
-   			catch( IllegalAccessException e2) {   
+			}
+   			catch( IllegalAccessException e2) {
 				throw new UtilEvalError(
 					"LHS ("+field.getName()+") can't access field: "+e2);
-			}     
-			catch( IllegalArgumentException e3) 
+			}
+			catch( IllegalArgumentException e3)
 			{
 				String type = val instanceof Primitive ?
 					((Primitive)val).getType().getName()
@@ -227,7 +227,7 @@ throw new Error("namespace lhs");
 					+ " not assignable to field "+field.getName());
 			}
 		}
-		else 
+		else
 		if ( type == PROPERTY )
 		{
 			/*
@@ -245,7 +245,7 @@ throw new Error("namespace lhs");
 					Interpreter.debug("Assignment: " + e.getMessage());
 					throw new UtilEvalError("No such property: " + propName);
 				}
-		} else 
+		} else
 		if ( type == INDEX )
 			try {
 				Reflect.setIndex(object, index, val);
@@ -260,7 +260,7 @@ throw new Error("namespace lhs");
 		return val;
 	}
 
-	public String toString() { 
+	public String toString() {
 		return "LHS: "
 			+((field!=null)? "field = "+field.toString():"")
 			+(varName!=null ? " varName = "+varName: "")

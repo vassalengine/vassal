@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -41,22 +41,22 @@ import java.io.*;
 import java.beans.*;
 
 /**
-	JThis is a dynamically loaded extension which extends This and adds 
-	explicit support for AWT and JFC events, etc.  This is a backwards 
-	compatability measure for JDK 1.2.  With 1.3+ there is a general 
-	reflection proxy mechanism that allows the base This to implement 
+	JThis is a dynamically loaded extension which extends This and adds
+	explicit support for AWT and JFC events, etc.  This is a backwards
+	compatability measure for JDK 1.2.  With 1.3+ there is a general
+	reflection proxy mechanism that allows the base This to implement
 	arbitrary interfaces.
 
-	The NameSpace getThis() method will produce instances of JThis if 
+	The NameSpace getThis() method will produce instances of JThis if
 	the java version is prior to 1.3 and swing is available...  (e.g. 1.2
-	or 1.1 + swing installed)  
+	or 1.1 + swing installed)
 
 	Users of 1.1 without swing will have minimal interface support (just run()).
 	
-	Bsh doesn't run on 1.02 and below because there is no reflection! 
+	Bsh doesn't run on 1.02 and below because there is no reflection!
 
 	Note: This module relies on features of Swing and will only compile
-	with JDK1.2 or JDK1.1 + the swing package.  For other environments simply 
+	with JDK1.2 or JDK1.1 + the swing package.  For other environments simply
 	do not compile this class.
 */
 class JThis extends This implements
@@ -64,18 +64,18 @@ class JThis extends This implements
 	ActionListener, AdjustmentListener, ComponentListener,
 	ContainerListener, FocusListener, ItemListener, KeyListener,
 	MouseListener, MouseMotionListener, TextListener, WindowListener,
-	PropertyChangeListener, 
+	PropertyChangeListener,
 	// All listeners in javax.swing.event as of Swing 1.1
 	AncestorListener, CaretListener, CellEditorListener, ChangeListener,
-	DocumentListener, HyperlinkListener, 
-	InternalFrameListener, ListDataListener, ListSelectionListener, 
-	MenuDragMouseListener, MenuKeyListener, MenuListener, MouseInputListener, 
-	PopupMenuListener, TableColumnModelListener, TableModelListener, 
-	TreeExpansionListener, TreeModelListener, TreeSelectionListener, 
+	DocumentListener, HyperlinkListener,
+	InternalFrameListener, ListDataListener, ListSelectionListener,
+	MenuDragMouseListener, MenuKeyListener, MenuListener, MouseInputListener,
+	PopupMenuListener, TableColumnModelListener, TableModelListener,
+	TreeExpansionListener, TreeModelListener, TreeSelectionListener,
 	TreeWillExpandListener, UndoableEditListener
 {
 
-	JThis( NameSpace namespace, Interpreter declaringInterp ) { 
+	JThis( NameSpace namespace, Interpreter declaringInterp ) {
 		super( namespace, declaringInterp );
 	}
 
@@ -90,13 +90,13 @@ class JThis extends This implements
 
 		// handleEvent gets all events
 		try {
-			method = namespace.getMethod( 
+			method = namespace.getMethod(
 				"handleEvent", new Class [] { null } );
 		} catch ( UtilEvalError e ) {/*squeltch*/  }
 
 		if (method != null)
 			try {
-				method.invoke( 
+				method.invoke(
 					new Object[] { event }, declaringInterpreter, callstack, null );
 			} catch(EvalError e) {
 				declaringInterpreter.error(
@@ -109,7 +109,7 @@ class JThis extends This implements
 		} catch ( UtilEvalError e ) { /*squeltch*/ }
 		if (method != null)
 			try {
-				method.invoke( 
+				method.invoke(
 					new Object[] { event }, declaringInterpreter, callstack, null );
 			} catch(EvalError e) {
 				declaringInterpreter.error(
@@ -202,7 +202,7 @@ class JThis extends This implements
 	public void windowActivated(WindowEvent e) { event("windowActivated", e); }
 	public void windowDeactivated(WindowEvent e) { event("windowDeactivated", e); }
 
-	public void propertyChange(PropertyChangeEvent e) { 
+	public void propertyChange(PropertyChangeEvent e) {
 		event("propertyChange", e ); }
     public void vetoableChange(PropertyChangeEvent e) {
 		event("vetoableChange", e ); }
@@ -219,11 +219,11 @@ class JThis extends This implements
 		if(method != null)
 			try {
 				CallStack callstack = new CallStack( namespace );
-				method.invoke( 
-					new Object[] { 
-						img, new Primitive(infoflags), new Primitive(x), 
-						new Primitive(y), new Primitive(width), 
-						new Primitive(height) }, 
+				method.invoke(
+					new Object[] {
+						img, new Primitive(infoflags), new Primitive(x),
+						new Primitive(y), new Primitive(width),
+						new Primitive(height) },
 					declaringInterpreter, callstack, null
 				);
 			} catch(EvalError e) {

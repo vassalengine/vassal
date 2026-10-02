@@ -20,7 +20,7 @@ import org.netbeans.spi.wizard.Summary;
 
 /**
  * Show progress bar for deferred results, with a label showing percent done and progress bar.
- * 
+ *
  * <p>
  * <b><i><font color="red">This class is NOT AN API CLASS.  There is no
  * commitment that it will remain backward compatible or even exist in the
@@ -36,7 +36,7 @@ public class NavProgress implements ResultProgressHandle
     private static final Icon busyIcon =  new ImageIcon(NavProgress.class.getResource("busy.gif"));
     private static final String MESSAGE_SPACE = // 64 underscores
         "________________________________________________________________";
-    
+
     private final JPanel panel = new JPanel();
     private final JProgressBar progressBar = new JProgressBar();
     private final JLabel messageLabel = new JLabel(MESSAGE_SPACE);
@@ -45,10 +45,10 @@ public class NavProgress implements ResultProgressHandle
     private final WizardDisplayerImpl parent;
 
     private final boolean disableUIWhileBusy;
-    
+
     /** isRunning is true until finished or failed is called */
     private boolean isRunning = true;
-    
+
     NavProgress(final WizardDisplayerImpl impl, final boolean disableUIWhileBusy) {
         this.parent = impl;
         this.disableUIWhileBusy = disableUIWhileBusy;
@@ -62,7 +62,7 @@ public class NavProgress implements ResultProgressHandle
         }
         setBusy();
     }
-    
+
     public void addProgressComponents(final Container container) {
         container.add(panel);
         container.invalidate();
@@ -118,7 +118,7 @@ public class NavProgress implements ResultProgressHandle
             }
         });
     }
-    
+
     public void setBusy (final String description) {
         invoke(new Runnable() {
             public void run() {
@@ -127,7 +127,7 @@ public class NavProgress implements ResultProgressHandle
             }
         });
     }
-        
+
     private void invoke(Runnable r)
     {
         if (EventQueue.isDispatchThread())

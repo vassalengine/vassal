@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -40,8 +40,8 @@ import java.io.PrintStream;
 
 /**
 	TargetError is an EvalError that wraps an exception thrown by the script	
-	(or by code called from the script).  TargetErrors indicate exceptions 
-	which can be caught within the script itself, whereas a general EvalError 
+	(or by code called from the script).  TargetErrors indicate exceptions
+	which can be caught within the script itself, whereas a general EvalError
 	indicates that the script cannot be evaluated further for some reason.
 	
 	If the exception is caught within the script it is automatically unwrapped,
@@ -49,13 +49,13 @@ import java.io.PrintStream;
 	from the eval() or interpreter.eval() method it may be caught and unwrapped
 	to determine what exception was thrown.
 */
-public class TargetError extends EvalError 
+public class TargetError extends EvalError
 {
 	Throwable target;
 	boolean inNativeCode;
 
 	public TargetError(
-		String msg, Throwable t, SimpleNode node, CallStack callstack, 
+		String msg, Throwable t, SimpleNode node, CallStack callstack,
 		boolean inNativeCode )
 	{
 		super( msg, node, callstack );
@@ -77,18 +77,18 @@ public class TargetError extends EvalError
 			return target;
 	}
 
-	public String toString() 
+	public String toString()
 	{
-		return super.toString() 
-			+ "\nTarget exception: " + 
+		return super.toString()
+			+ "\nTarget exception: " +
 			printTargetError( target );
 	}
 
-    public void printStackTrace() { 
+    public void printStackTrace() {
 		printStackTrace( false, System.err );
 	}
 
-    public void printStackTrace( PrintStream out ) { 
+    public void printStackTrace( PrintStream out ) {
 		printStackTrace( false, out );
 	}
 
@@ -105,7 +105,7 @@ public class TargetError extends EvalError
 		If the proxy mechanism is available, allow the extended print to
 		check for UndeclaredThrowableException and print that embedded error.
 	*/
-	public String printTargetError( Throwable t ) 
+	public String printTargetError( Throwable t )
 	{
 		String s = target.toString();
 
@@ -117,14 +117,14 @@ public class TargetError extends EvalError
 
 	/**
 		Extended form of print target error.
-		This indirection is used to print UndeclaredThrowableExceptions 
+		This indirection is used to print UndeclaredThrowableExceptions
 		which are possible when the proxy mechanism is available.
 
 		We are shielded from compile problems by using a bsh script.
 		This is acceptable here because we're not in a critical path...
 		Otherwise we'd need yet another dynamically loaded module just for this.
 	*/
-	public String xPrintTargetError( Throwable t ) 
+	public String xPrintTargetError( Throwable t )
 	{
 		String getTarget =
 			"import java.lang.reflect.UndeclaredThrowableException;"+
@@ -152,8 +152,8 @@ public class TargetError extends EvalError
 		explicitly threw an exception... (the stack trace would simply point
 		to the bsh internals which generated the exception).
 	*/
-	public boolean inNativeCode() { 
-		return inNativeCode; 
+	public boolean inNativeCode() {
+		return inNativeCode;
 	}
 }
 
