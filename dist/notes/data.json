@@ -19,7 +19,7 @@
   "changes": [
     {
       "in": "3.8.0-beta3",
-      "since": "3.8.0-beta2 and 3.7.27",
+      "since": "3.8.0-beta2 and 3.7.28",
       "new_features": [
         { "num": 15097, "desc": "Make Charts zoomable" },
         { "num": 14581, "desc": "Added animated symbolic dice button" }
@@ -27,6 +27,7 @@
       "bug_fixes": [
       ],
       "improvements": [
+        { "num": 15121, "desc": "Compress the saved-game command log with XZ " }
       ],
       "other": [
         { "num": 15099, "desc": "Removed the deprecated loadGameOld Action" }
