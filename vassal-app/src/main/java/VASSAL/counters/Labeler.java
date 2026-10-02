@@ -160,7 +160,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     final String fontFamily = st.nextToken(Font.DIALOG);
     final int fontStyle = st.nextInt(Font.PLAIN);
     // A Font is immutable; every label with the same family, style and size shares one.
-    font = TraitTypeCache.get(Font.class, fontFamily + ';' + fontStyle + ';' + fontSize,
+    font = TraitTypeCache.lookup(Font.class, fontFamily + ';' + fontStyle + ';' + fontSize,
       k -> new Font(fontFamily, fontStyle, fontSize));
     rotateDegrees = st.nextInt(0);
     propertyName = st.nextToken("TextLabel"); // NON-NLS

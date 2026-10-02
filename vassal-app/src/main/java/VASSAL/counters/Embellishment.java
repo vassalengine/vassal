@@ -207,7 +207,7 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
     }
     else {
       // The parsed type is shared by every Layer built from the same type string.
-      final TypeData d = TraitTypeCache.get(TypeData.class, s, TypeData::new);
+      final TypeData d = TraitTypeCache.lookup(TypeData.class, s, TypeData::new);
       activateCommand = d.activateCommand;
       activateModifiers = d.activateModifiers;
       activateKey = d.activateKey;

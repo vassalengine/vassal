@@ -412,7 +412,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
   public void mySetType(String type) {
     // The parsed type is shared by every Trigger Action built from the same
     // type string; only the fields below are per instance.
-    final TypeData d = TraitTypeCache.get(TypeData.class, type, TypeData::new);
+    final TypeData d = TraitTypeCache.lookup(TypeData.class, type, TypeData::new);
     name = d.name;
     command = d.command;
     key = d.key;

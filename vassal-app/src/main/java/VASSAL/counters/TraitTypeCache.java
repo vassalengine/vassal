@@ -22,6 +22,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 
+import VASSAL.build.GameModule;
+
 /**
  * Shares the parsed, immutable part of a trait's type between every
  * instance of that trait built from the same type string.
@@ -47,12 +49,12 @@ import java.util.function.Function;
  *
  * <p>Strings are not the point of this cache: {@link VASSAL.tools.SequenceEncoder.Decoder}
  * has interned every token since 2021. It is the objects built from them.</p>
+ *
+ * <p>The cache belongs to the {@link GameModule} ({@link GameModule#getTraitTypeCache()});
+ * traits reach it through {@link #lookup}.</p>
  */
 public final class TraitTypeCache {
-  private static final Map<Class<?>, ConcurrentMap<String, Object>> CACHES = new ConcurrentHashMap<>();
-
-  private TraitTypeCache() {
-  }
+  private final Map<Class<?>, ConcurrentMap<String, Object>> caches = new ConcurrentHashMap<>();
 
   /**
    * Returns the parsed data for a type string, parsing it with {@code parser}
@@ -67,19 +69,33 @@ public final class TraitTypeCache {
    * @param <T> the parsed data type
    * @return the shared parsed data
    */
-  public static <T> T get(Class<T> dataClass, String type, Function<String, T> parser) {
-    final ConcurrentMap<String, Object> cache = CACHES.computeIfAbsent(dataClass, k -> new ConcurrentHashMap<>());
+  public <T> T get(Class<T> dataClass, String type, Function<String, T> parser) {
+    final ConcurrentMap<String, Object> cache = caches.computeIfAbsent(dataClass, k -> new ConcurrentHashMap<>());
     return dataClass.cast(cache.computeIfAbsent(type, parser));
   }
 
   /** Forgets everything cached; the next request for each type parses again. */
-  public static void clear() {
-    CACHES.clear();
+  public void clear() {
+    caches.clear();
   }
 
   /** @return the number of distinct type strings cached for {@code dataClass} */
-  public static int size(Class<?> dataClass) {
-    final ConcurrentMap<String, Object> cache = CACHES.get(dataClass);
+  public int size(Class<?> dataClass) {
+    final ConcurrentMap<String, Object> cache = caches.get(dataClass);
     return cache == null ? 0 : cache.size();
+  }
+
+  /**
+   * Looks a type up in the current module's cache
+   * ({@link GameModule#getTraitTypeCache()}). With no module, or a module
+   * without a cache (a mocked one, in tests), the type is simply parsed, so
+   * a trait built outside a game is correct but shares nothing.
+   *
+   * @see #get(Class, String, Function)
+   */
+  public static <T> T lookup(Class<T> dataClass, String type, Function<String, T> parser) {
+    final GameModule g = GameModule.getGameModule();
+    final TraitTypeCache cache = g == null ? null : g.getTraitTypeCache();
+    return cache == null ? parser.apply(type) : cache.get(dataClass, type, parser);
   }
 }

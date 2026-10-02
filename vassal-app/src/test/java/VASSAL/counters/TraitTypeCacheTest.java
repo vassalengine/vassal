@@ -20,11 +20,14 @@ package VASSAL.counters;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.when;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.awt.event.InputEvent;
 
+import VASSAL.build.GameModule;
 import VASSAL.build.MockModuleTest;
 import VASSAL.build.module.properties.EnumeratedPropertyPrompt;
 import VASSAL.build.module.properties.IncrementProperty;
@@ -41,6 +44,14 @@ import VASSAL.tools.SequenceEncoder;
  * their state stays their own; and what they write back is unchanged.
  */
 public class TraitTypeCacheTest extends MockModuleTest {
+  private TraitTypeCache cache;
+
+  /** The mocked module hands out this test's own cache, as a real module hands out its own. */
+  @BeforeEach
+  public void giveTheModuleACache() {
+    cache = new TraitTypeCache();
+    when(GameModule.getGameModule().getTraitTypeCache()).thenReturn(cache);
+  }
 
   private static final String MARKER = "mark;Nation,Type,Size"; // NON-NLS
 
@@ -186,13 +197,21 @@ public class TraitTypeCacheTest extends MockModuleTest {
 
   @Test
   public void cacheIsPerDataClassAndClearable() {
-    TraitTypeCache.clear();
-    assertEquals(0, TraitTypeCache.size(String[].class));
+    assertEquals(0, cache.size(String[].class));
     new Marker(MARKER, new BasicPiece());
     new Marker(MARKER, new BasicPiece());
     new Marker("mark;Other", new BasicPiece()); // NON-NLS
-    assertEquals(2, TraitTypeCache.size(String[].class));
-    TraitTypeCache.clear();
-    assertEquals(0, TraitTypeCache.size(String[].class));
+    assertEquals(2, cache.size(String[].class));
+    cache.clear();
+    assertEquals(0, cache.size(String[].class));
+  }
+
+  @Test
+  public void withoutAModuleCacheTraitsStillParse() {
+    when(GameModule.getGameModule().getTraitTypeCache()).thenReturn(null);
+    final Marker a = new Marker(MARKER, new BasicPiece());
+    final Marker b = new Marker(MARKER, new BasicPiece());
+    assertEquals(MARKER, a.myGetType());
+    assertNotSame(a.keys, b.keys);
   }
 }

@@ -194,7 +194,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
   @Override
   public void mySetType(String type) {
     // The parsed type is shared by every Restrict Commands trait built from the same type string.
-    final TypeData d = TraitTypeCache.get(TypeData.class, type, TypeData::new);
+    final TypeData d = TraitTypeCache.lookup(TypeData.class, type, TypeData::new);
     name = d.name;
     action = d.action;
     propertyMatch = d.propertyMatch;
