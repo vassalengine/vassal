@@ -46,7 +46,7 @@
         { "num": 15080, "desc": "Upgraded clirr-maven-plugin to 2.9" },
         { "num": 15079, "desc": "Upgraded exec-maven-plugin to 3.6.4" },
         { "num": 15068, "desc": "Upgraded spotbugs-maven-plugin to 4.10.4.1" },
-        { "num": 15065, "desc": "Switched from obsolote mockito-inline to mockito-core" },
+        { "num": 15065, "desc": "Switched from obsolete mockito-inline to mockito-core" },
         { "num": 15050, "desc": "Upgraded maven-surefire-plugin to 3.6.0" }
       ]
     },
