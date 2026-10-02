@@ -92,6 +92,8 @@ public class SequenceEncoder {
     }
   }
 
+  private static final char LEN_DELIM = '\uE000';
+
   @SuppressWarnings("PMD.ConsecutiveLiteralAppends")
   public SequenceEncoder append(String s) {
     startBufferOrAddDelimiter();
@@ -99,12 +101,11 @@ public class SequenceEncoder {
     if (s == null || s.isEmpty()) {
       return this;
     }
-
-    if (s.indexOf(delim) != -1 || s.indexOf('\u001E') != -1) {
+    else if (s.indexOf(delim) != -1 || s.indexOf(LEN_DELIM) != -1) {
       buffer
-        .append('\u001E')
+        .append(LEN_DELIM)
         .append(s.length())
-        .append('\u001E')
+        .append(LEN_DELIM)
         .append(s);
     }
     else if (s.charAt(0) == '\'' && s.charAt(s.length() - 1) == '\'') {
@@ -236,9 +237,9 @@ public class SequenceEncoder {
         return "";
       }
 
-      if (val.charAt(start) == '\u001E') {
+      if (val.charAt(start) == LEN_DELIM) {
         // parse the length of the token
-        final int lend = val.indexOf('\u001E', start + 2);
+        final int lend = val.indexOf(LEN_DELIM, start + 2);
         if (lend == -1) {
           throw new IllegalStateException();
         }
