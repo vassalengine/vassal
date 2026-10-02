@@ -23,6 +23,7 @@ import org.apache.commons.lang3.SystemUtils;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -314,18 +315,19 @@ public class GameLibraryWindow extends JFrame {
                                                  boolean isSelected,
                                                  int     row,
                                                  int     column) {
-      if (comp == null)
-        comp = new JLabel();
+      if (comp == null) {
+        comp = new JLabel("<html><body>" +  //NON-NLS
+                          Resources.getString("LibraryBrowser.open_project_opening") +  //NON-NLS
+                          "</body></html>");  //NON-NLS
+      }
       
       url = value.toString();
-      comp.setText(url);
       
       BrowserSupport.openURL(url);
       stopCellEditing();
 
       return comp;
     }
-    
     @Override
     public Object getCellEditorValue() {
       return url;
@@ -337,6 +339,9 @@ public class GameLibraryWindow extends JFrame {
   static class URLRenderer extends DefaultTableCellRenderer.UIResource {
     private static final long serialVersionUID = 1L;
     private static Cursor cursor = new Cursor(Cursor.HAND_CURSOR);
+    public URLRenderer() throws IOException {
+      super();
+    }
     /**
      * Should return a hand curser when hovering over the cell
      */
@@ -349,7 +354,46 @@ public class GameLibraryWindow extends JFrame {
      */
     @Override
     public String getToolTipText() {
-      return Resources.getString("LibraryBrwoser.open_project_page"); //NON-NLS
+      return Resources.getString("LibraryBrowser.open_project_tooltip"); //NON-NLS
+    }
+    @Override
+    public Component getTableCellRendererComponent(JTable table,
+                                                   Object value,
+                                                   boolean isSelected,
+                                                   boolean hasFocus,
+                                                   int row,
+                                                   int column) {
+      // System.out.println("Get cell renderer for URLs");
+      super.getTableCellRendererComponent(table,
+                                          value,
+                                          isSelected,
+                                          hasFocus,
+                                          row,
+                                          column);
+      if (value == null)
+        return this;
+
+      final Color fg = (isSelected ?
+                        table.getSelectionForeground() :
+                        table.getForeground());
+      final String sfg = String.format("#%02x%02x%02x", //NON-NLS
+                                       fg.getRed(),
+                                       fg.getGreen(),
+                                       fg.getBlue());
+      setText("<html>\n" +                      //NON-NLS 
+              "  <style>\n" +                   //NON-NLS 
+              "    .selected {\n" +             //NON-NLS
+              "       color: " + sfg + "}\n" +  //NON-NLS
+              "  </style>\n" +                  //NON-NLS
+              "  <body>\n" +                    //NON-NLS
+              "    <a class=\"" + (isSelected ? "selected" : "") + //NON-NLS
+              "\" href=\"" + value + "\">&#128279; &nbsp;" +       //NON-NLS
+              Resources.getString("LibraryBrowser.open_project_text") + //NON-NLS
+                 "</a>\n" +                     //NON-NLS
+              "  </body>\n" +                   //NON-NLS
+              "</html>"                         //NON-NLS
+              );
+      return this;
     }
   }
 
@@ -402,7 +446,7 @@ public class GameLibraryWindow extends JFrame {
     );
     
     // --- UI Setup ---
-    setSize(1200, 600);
+    setSize(800, 600);
     setLocationRelativeTo(null);
     setLayout(new BorderLayout());
 
@@ -416,8 +460,15 @@ public class GameLibraryWindow extends JFrame {
     treeTable.setDefaultRenderer(Boolean.class, new BooleanRenderer());
     treeTable.setDefaultRenderer(Date.class, new DateRenderer());
     treeTable.setDefaultRenderer(FileSize.class, new FileSizeRenderer());
-    treeTable.setDefaultRenderer(URL.class, new URLRenderer());
     treeTable.setDefaultEditor(URL.class, new URLEditor());
+    try {
+      treeTable.setDefaultRenderer(URL.class, new URLRenderer());
+    }
+    catch (IOException ignored) {
+      System.out.println(ignored);
+      ignored.printStackTrace(System.out);
+    }
+      
 
     // Add tree expansion listener for lazy loading child items
     treeTable.addTreeWillExpandListener(new TreeWillExpandListener() {
@@ -442,20 +493,14 @@ public class GameLibraryWindow extends JFrame {
       });
 
     final TableColumnModel colModel = treeTable.getColumnModel();
-    // System.out.println(colModel.getColumn(CHECK_COLUMN).getWidth() + " " +
-    //                    colModel.getColumn(NAME_COLUMN).getWidth() + " " +
-    //                    colModel.getColumn(TYPE_COLUMN).getWidth() + " " +
-    //                    colModel.getColumn(SIZE_COLUMN).getWidth() + " " +
-    //                    colModel.getColumn(URL_COLUMN).getWidth());
-    //
     // We set up a listener on the column model so that we can react
     // when the columns are changed.  That happens when the table is
     // resorted or loaded - i.e., any time the root node is changed.
     //
     // In this listener we change the column widths to preset values. 
     colModel.addColumnModelListener(new TableColumnModelListener() {
-      private final int[]     preferred = { 25, 400, 75, 100, 100, 500}; 
-      private final int[]     min       = { 25, 100, 75, 100, 75,  100};
+      private final int[]     preferred = { 25, 400, 75, 100, 100, 200}; 
+      private final int[]     min       = { 25, 100, 75, 100, 75,   75};
       @Override
       public void columnAdded(TableColumnModelEvent e) {
         final int         i = e.getToIndex();
@@ -480,7 +525,7 @@ public class GameLibraryWindow extends JFrame {
     });
 
     final JScrollPane scroll = new JScrollPane(treeTable);
-    scroll.setPreferredSize(new Dimension(1200, 600));
+    scroll.setPreferredSize(new Dimension(900, 600));
     add(scroll, BorderLayout.CENTER);
     
 
@@ -1346,7 +1391,7 @@ public class GameLibraryWindow extends JFrame {
           return Resources.getString("LibraryBrowser.select_file"); //NON-NLS
         }
         else {
-          return Resources.getString("LibraryBrwoser.has_file"); //NON-NLS
+          return Resources.getString("LibraryBrowser.has_file"); //NON-NLS
         }
       }
       return null;
