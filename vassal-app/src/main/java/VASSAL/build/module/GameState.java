@@ -51,12 +51,14 @@ import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.LogAndSaveFileFilter;
 import VASSAL.tools.io.DeobfuscatingInputStream;
-import VASSAL.tools.io.ObfuscatingOutputStream;
 import VASSAL.tools.io.ZipArchive;
 import VASSAL.tools.io.ZipWriter;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.Dialogs;
 import VASSAL.tools.version.VersionUtils;
+import org.apache.commons.io.IOUtils;
+import org.tukaani.xz.LZMA2Options;
+import org.tukaani.xz.XZOutputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 
@@ -1421,6 +1423,33 @@ public class GameState implements CommandEncoder {
     }
 
     return null;
+  }
+
+  /**
+   * The LZMA2 preset the command log is compressed with: a 4 MB dictionary,
+   * which spans the repeated text of many pieces, with the fast match finder.
+   * The higher presets gain a further 20-30% for ten times the compression
+   * time.
+   */
+  public static final int SAVED_GAME_COMPRESSION_PRESET = 3;
+
+  /**
+   * Wraps a stream so that what is written to it is stored XZ-compressed, as
+   * the {@link #SAVEFILE_ZIP_ENTRY} entry of a saved game or log is. A
+   * saved game's command log consists of thousands of pieces whose text
+   * repeats the same prototype traits, but each piece is longer than the
+   * 32 KB window of the ZIP's own deflate, so deflate stores the repeat every
+   * time; LZMA2 with a 4 MB dictionary stores it once, and on a large game
+   * the entry is twenty times smaller. It is also no longer plain text, which
+   * is all the XOR obfuscation this replaces was ever for.
+   * {@link DeobfuscatingInputStream} reads it back.
+   *
+   * @param out the destination
+   * @return the stream to write the command log to; closing it finishes the
+   * compressed stream and closes {@code out}
+   */
+  public static OutputStream compressSavedGame(OutputStream out) throws IOException {
+    return new XZOutputStream(out, new LZMA2Options(SAVED_GAME_COMPRESSION_PRESET));
   }
 
   public static final String BEGIN_SAVE = "begin_save";  //$NON-NLS-1$

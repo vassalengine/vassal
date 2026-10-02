@@ -27,6 +27,7 @@
       "bug_fixes": [
       ],
       "improvements": [
+        { "num": 15121, "desc": "Compress the saved-game command log with XZ " }
       ],
       "other": [
         { "num": 15099, "desc": "Removed the deprecated loadGameOld Action" }
