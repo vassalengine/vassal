@@ -645,6 +645,10 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   private Object sumStack(String property, PieceFilter filter, PropertySource ps) {
+    if (property == null || property.isEmpty()) {
+      return 0;
+    }
+
     ps = translatePiece(ps);
     if (ps instanceof GamePiece) {
       final GamePiece piece = (GamePiece) ps;
@@ -1034,14 +1038,20 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * @return
    */
   private Object sumLocation(String property, String locationName, Map map, PieceFilter filter) {
-    // Ask IndexManager for list of pieces on that map at that location. Stacks are not returned by the IM.
-    return sumOf(
-      GameModule.getGameModule().getIndexManager().getPieces(
-        map, BasicPiece.LOCATION_NAME, locationName
-      ),
-      property,
-      filter
-    );
+    if (property == null || property.isEmpty()) {
+      return 0;
+    }
+    else {
+      // Ask IndexManager for list of pieces on that map at that location.
+      // Stacks are not returned by the IM.
+      return sumOf(
+        GameModule.getGameModule().getIndexManager().getPieces(
+          map, BasicPiece.LOCATION_NAME, locationName
+        ),
+        property,
+        filter
+      );
+    }
   }
 
   /**
@@ -1169,14 +1179,20 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * @return
    */
   private Object sumZone(String property, String zoneName, Map map, PieceFilter filter) {
-    // Ask IndexManager for list of pieces on that map at that zone. Stacks are not returned by the IM.
-    return sumOf(
-      GameModule.getGameModule().getIndexManager().getPieces(
-        map, BasicPiece.CURRENT_ZONE, zoneName
-      ),
-      property,
-      filter
-    );
+    if (property == null || property.isEmpty()) {
+      return 0;
+    }
+    else {
+      // Ask IndexManager for list of pieces on that map at that zone.
+      // Stacks are not returned by the IM.
+      return sumOf(
+        GameModule.getGameModule().getIndexManager().getPieces(
+          map, BasicPiece.CURRENT_ZONE, zoneName
+        ),
+        property,
+        filter
+      );
+    }
   }
 
   /**
