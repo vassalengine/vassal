@@ -1051,7 +1051,8 @@ public class GameState implements CommandEncoder {
     final MessageDigest digest = saveDigester();
     // The encoder produces text; the writer turns it into the UTF-8 bytes the file holds,
     // and it is those bytes that are digested and compared.
-    try (Writer out = new OutputStreamWriter(new DigestOutputStream(OutputStream.nullOutputStream(), digest), StandardCharsets.UTF_8)) {
+    try (DigestOutputStream dout = new DigestOutputStream(OutputStream.nullOutputStream(), digest);
+         Writer out = new OutputStreamWriter(dout, StandardCharsets.UTF_8)) {
       GameModule.getGameModule().encode(c, out);
     }
     catch (IOException e) {
@@ -1079,7 +1080,9 @@ public class GameState implements CommandEncoder {
         throw new IllegalStateException(e);
       }
     }
-    saveDigester.reset();
+    else {
+      saveDigester.reset();
+    }
     return saveDigester;
   }
 
@@ -1088,7 +1091,7 @@ public class GameState implements CommandEncoder {
    * {@link #SAVEFILE_ZIP_ENTRY} entry, and the metadata beside it. The tree is encoded straight into the
    * file and never assembled as a String. The file is written under a temporary name in the same directory
    * and replaces {@code f} only once it is complete, so a failure part way through leaves an existing file
-   * as it was.
+   * as it was; the temporary file is then left where it is, as evidence of what happened.
    *
    * @param f the file to write
    * @param c the command tree
@@ -1100,30 +1103,25 @@ public class GameState implements CommandEncoder {
     // Beside the target rather than in the temp dir, so that the move into place is a rename
     // on the same filesystem, which is what makes it atomic.
     final Path tmp = Files.createTempFile(target.getParent(), target.getFileName().toString(), ".tmp"); //NON-NLS
+    final MessageDigest digest = saveDigester();
+    try (ZipWriter zw = new ZipWriter(tmp)) {
+      try (OutputStream zout = zw.write(SAVEFILE_ZIP_ENTRY);
+           BufferedOutputStream bout = new BufferedOutputStream(zout);
+           ObfuscatingOutputStream oout = new ObfuscatingOutputStream(bout);
+           DigestOutputStream dout = new DigestOutputStream(oout, digest);
+           Writer out = new OutputStreamWriter(dout, StandardCharsets.UTF_8)) {
+        GameModule.getGameModule().encode(c, out);
+      }
+      metaData.save(zw);
+    }
+    // Only a complete file gets here; a failure above leaves the temporary file for inspection.
     try {
-      final MessageDigest digest = saveDigester();
-      try (ZipWriter zw = new ZipWriter(tmp)) {
-        try (Writer out = new OutputStreamWriter(
-               new DigestOutputStream(
-                 new ObfuscatingOutputStream(new BufferedOutputStream(zw.write(SAVEFILE_ZIP_ENTRY))), digest),
-               StandardCharsets.UTF_8)) {
-          GameModule.getGameModule().encode(c, out);
-        }
-        metaData.save(zw);
-      }
-      try {
-        Files.move(tmp, target, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
-      }
-      catch (AtomicMoveNotSupportedException e) {
-        Files.move(tmp, target, StandardCopyOption.REPLACE_EXISTING);
-      }
-      return digest.digest();
+      Files.move(tmp, target, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
     }
-    finally {
-      // Whatever happened above: after a successful move this is a no-op, after a failure it
-      // removes the partial file.
-      Files.deleteIfExists(tmp);
+    catch (AtomicMoveNotSupportedException e) {
+      Files.move(tmp, target, StandardCopyOption.REPLACE_EXISTING);
     }
+    return digest.digest();
   }
 
   protected boolean checkForOldSaveFile(File f) {
@@ -1442,7 +1440,8 @@ public class GameState implements CommandEncoder {
 
     try (OutputStream zout = archive.getOutputStream(SAVEFILE_ZIP_ENTRY);
          BufferedOutputStream bout = new BufferedOutputStream(zout);
-         Writer out = new OutputStreamWriter(new ObfuscatingOutputStream(bout), StandardCharsets.UTF_8)) {
+         ObfuscatingOutputStream oout = new ObfuscatingOutputStream(bout);
+         Writer out = new OutputStreamWriter(oout, StandardCharsets.UTF_8)) {
       mod.encode(getRestoreCommand(), out);
     }
     archive.close();
@@ -1720,7 +1719,8 @@ public class GameState implements CommandEncoder {
            entry = zipInput.getNextEntry()) {
         if (SAVEFILE_ZIP_ENTRY.equals(entry.getName())) {
           try (InputStream din = new DeobfuscatingInputStream(zipInput);
-               Reader in2 = new BufferedReader(new InputStreamReader(din, StandardCharsets.UTF_8), 1 << 16)) {
+               Reader rin = new InputStreamReader(din, StandardCharsets.UTF_8);
+               Reader in2 = new BufferedReader(rin, 1 << 16)) {
             // Decoded straight from the stream: the command log is never held whole.
             return GameModule.getGameModule().decode(in2);
           }
