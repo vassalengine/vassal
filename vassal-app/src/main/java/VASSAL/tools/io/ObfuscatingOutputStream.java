@@ -24,73 +24,43 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Random;
 
-import org.tukaani.xz.LZMA2Options;
-import org.tukaani.xz.XZOutputStream;
+import VASSAL.build.module.GameState;
 
 /**
- * Obfuscates a stream of bytes: the header {@link #XZ_HEADER_BYTES}, a
- * one-byte key, then the data compressed with XZ (LZMA2) and XORed with the
- * key.
+ * Formerly obfuscated a saved game's command log by XORing it with a key,
+ * so that it was not plain text inside the ZIP. The log is now compressed
+ * with XZ instead, which is not plain text either, and this class only
+ * delegates to that.
  *
- * <p>The obfuscation is a deterrent to casual editing of saved games, not
- * security. The compression is what a saved game's command log needs: it
- * consists of thousands of pieces whose text repeats the same prototype
- * traits, but each piece is longer than the 32 KB window of the ZIP's own
- * deflate, so deflate stores the repeat every time. LZMA2 with a 4 MB
- * dictionary ({@link #PRESET}) sees dozens of pieces at once and stores it
- * once; on a large game the stored entry is twenty times smaller, and the
- * compression is faster than deflate at level 9.</p>
- *
- * <p>{@link DeobfuscatingInputStream} reads this format and every earlier
- * one.</p>
+ * @deprecated Use {@link GameState#compressSavedGame(OutputStream)}.
+ * {@link DeobfuscatingInputStream} still reads the formats this class wrote.
  */
+@Deprecated(since = "2026-10-02", forRemoval = true)
 public class ObfuscatingOutputStream extends FilterOutputStream {
   /**
    * The header of the hex-encoded format written before VASSAL 3.8.
    *
    * @deprecated The hex-encoded format is no longer written, only read.
-   * Obfuscated output is now marked with {@link #XZ_HEADER_BYTES}.
    */
   @Deprecated(since = "2026-09-08", forRemoval = true)
   public static final String HEADER = "!VCSK"; //NON-NLS
-
-  /** The header marking obfuscated output: the key, then XZ-compressed data XORed with it. */
-  public static final byte[] XZ_HEADER_BYTES = { '!', 'V', 'O', 'X', 'Z' };
-
-  /**
-   * The LZMA2 preset: a 4 MB dictionary, which spans the repeated text of
-   * many pieces, with the fast match finder. The higher presets gain a
-   * further 20-30% for ten times the compression time.
-   */
-  public static final int PRESET = 3;
-
-  private static final Random rand = new Random();
 
   /**
    * @param out the stream to wrap
    * @throws IOException oops
    */
   public ObfuscatingOutputStream(OutputStream out) throws IOException {
-    // Keys are in 1-255; XORing with 0 would leave the data in plain text.
-    this(out, (byte) (rand.nextInt(255) + 1));
+    super(GameState.compressSavedGame(out));
   }
 
   /**
    * @param out the stream to wrap
-   * @param key the byte to use as the key
+   * @param key ignored; nothing is XORed any more
    * @throws IOException oops
    */
-  public ObfuscatingOutputStream(OutputStream out, byte key)
-                                                          throws IOException {
-    super(null);
-
-    out.write(XZ_HEADER_BYTES);
-    out.write(key);
-
-    // Everything written from here on is compressed, then XORed.
-    this.out = new XZOutputStream(new XorOutputStream(out, key), new LZMA2Options(PRESET));
+  public ObfuscatingOutputStream(OutputStream out, byte key) throws IOException {
+    this(out);
   }
 
   /** {@inheritDoc} */
@@ -99,48 +69,9 @@ public class ObfuscatingOutputStream extends FilterOutputStream {
     out.write(bytes, off, len);
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public void write(int b) throws IOException {
-    out.write(b);
-  }
-
-  /**
-   * XORs every byte with the key on its way out. The XZ encoder above it
-   * writes one compressed chunk at a time, a few kilobytes to 64 KB; each is
-   * XORed through one reused buffer.
-   */
-  private static final class XorOutputStream extends FilterOutputStream {
-    private final byte key;
-    private final byte[] buf = new byte[8192];
-
-    public XorOutputStream(OutputStream out, byte key) {
-      super(out);
-      this.key = key;
-    }
-
-    @Override
-    public void write(byte[] bytes, int off, int len) throws IOException {
-      while (len > 0) {
-        final int n = Math.min(len, buf.length);
-        for (int i = 0; i < n; ++i) {
-          buf[i] = (byte) (bytes[off + i] ^ key);
-        }
-        out.write(buf, 0, n);
-        off += n;
-        len -= n;
-      }
-    }
-
-    @Override
-    public void write(int b) throws IOException {
-      out.write(b ^ key);
-    }
-  }
-
   public static void main(String[] args) throws IOException {
     try (InputStream in = args.length > 0 ? Files.newInputStream(Path.of(args[0])) : System.in;
-         OutputStream out = new ObfuscatingOutputStream(new BufferedOutputStream(System.out))) {
+         OutputStream out = GameState.compressSavedGame(new BufferedOutputStream(System.out))) {
       in.transferTo(out);
     }
 

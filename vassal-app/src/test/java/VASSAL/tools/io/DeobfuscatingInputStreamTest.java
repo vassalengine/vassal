@@ -20,7 +20,13 @@ package VASSAL.tools.io;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+
+import org.tukaani.xz.XZInputStream;
+
+import VASSAL.build.module.GameState;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -39,9 +45,10 @@ public class DeobfuscatingInputStreamTest {
     }
   }
 
+  /** Compresses as a saved game is written. */
   private static byte[] obfuscate(byte[] b) throws IOException {
     final ByteArrayOutputStream bout = new ByteArrayOutputStream();
-    try (ObfuscatingOutputStream out = new ObfuscatingOutputStream(bout)) {
+    try (OutputStream out = GameState.compressSavedGame(bout)) {
       out.write(b);
     }
     return bout.toByteArray();
@@ -67,11 +74,17 @@ public class DeobfuscatingInputStreamTest {
     assertArrayEquals(new byte[0], deobfuscate(new byte[0]));
   }
 
-  /** Test plain text input which is exactly as long as the header. */
+  /** Test plain text input which is exactly as long as the XZ magic. */
   @Test
   public void testHeaderLengthPlainInput() throws IOException {
+    final byte[] expected = "abcdef".getBytes(StandardCharsets.UTF_8);
+    assertArrayEquals(expected, deobfuscate(expected));
+  }
+
+  /** Test plain text input which is exactly as long as the legacy header. */
+  @Test
+  public void testLegacyHeaderLengthPlainInput() throws IOException {
     final byte[] expected = "abcde".getBytes(StandardCharsets.UTF_8);
-    assertEquals(ObfuscatingOutputStream.XZ_HEADER_BYTES.length, expected.length);
     assertArrayEquals(expected, deobfuscate(expected));
   }
 
@@ -115,20 +128,47 @@ public class DeobfuscatingInputStreamTest {
     assertArrayEquals(expected, bout.toByteArray());
   }
 
-  /** The compressed stream is marked with its own header. */
+  /** What is written is an XZ stream, and nothing else: it begins with the XZ magic. */
   @Test
-  public void testObfuscatedOutputHasXzHeader() throws IOException {
+  public void testOutputIsXz() throws IOException {
     final byte[] b = obfuscate(plain.getBytes(StandardCharsets.UTF_8));
-    final byte[] header = new byte[ObfuscatingOutputStream.XZ_HEADER_BYTES.length];
-    System.arraycopy(b, 0, header, 0, header.length);
-    assertArrayEquals(ObfuscatingOutputStream.XZ_HEADER_BYTES, header);
+    assertArrayEquals(new byte[] {(byte) 0xFD, '7', 'z', 'X', 'Z', 0}, Arrays.copyOf(b, 6));
+    try (XZInputStream in = new XZInputStream(new ByteArrayInputStream(b))) {
+      assertArrayEquals(plain.getBytes(StandardCharsets.UTF_8), in.readAllBytes());
+    }
   }
 
-  /** An obfuscated stream lacking a key is malformed. */
+  /** Repetitive text, as a saved game is, must come out far smaller than it went in. */
   @Test
-  public void testMissingKey() {
-    final byte[] b = ObfuscatingOutputStream.XZ_HEADER_BYTES.clone();
-    assertThrows(IOException.class, () -> deobfuscate(b));
+  public void testRepetitiveInputIsCompressed() throws IOException {
+    final StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < 2000; ++i) {
+      sb.append(plain).append(' ').append(i % 7).append('\n');
+    }
+    final byte[] bytes = sb.toString().getBytes(StandardCharsets.UTF_8);
+    final byte[] b = obfuscate(bytes);
+    assertTrue(b.length < bytes.length / 20, "compressed " + bytes.length + " to " + b.length);
+    assertArrayEquals(bytes, deobfuscate(b));
+  }
+
+  /** A truncated XZ stream is malformed. */
+  @Test
+  public void testTruncatedXz() throws IOException {
+    final byte[] b = obfuscate(plain.getBytes(StandardCharsets.UTF_8));
+    assertThrows(IOException.class, () -> deobfuscate(Arrays.copyOf(b, b.length / 2)));
+  }
+
+  /** The deprecated ObfuscatingOutputStream now writes the same compressed form. */
+  @SuppressWarnings("removal")
+  @Test
+  public void testDeprecatedObfuscatingOutputStreamWritesXz() throws IOException {
+    final byte[] expected = plain.getBytes(StandardCharsets.UTF_8);
+    final ByteArrayOutputStream bout = new ByteArrayOutputStream();
+    try (ObfuscatingOutputStream out = new ObfuscatingOutputStream(bout, (byte) 0x58)) {
+      out.write(expected);
+    }
+    assertArrayEquals(obfuscate(expected), bout.toByteArray());
+    assertArrayEquals(expected, deobfuscate(bout.toByteArray()));
   }
 
   /** Test legacy obfuscated input with lowercase hex digits. */
