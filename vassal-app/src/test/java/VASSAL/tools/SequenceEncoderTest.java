@@ -297,7 +297,7 @@ public class SequenceEncoderTest {
   }
 
   @Test
-  public void testDecoderEmptyTokenTrailing() {
+  public void testEncodeDecodeEmptyTokenTrailing() {
     final char delim = ',';
 
     final SequenceEncoder se = new SequenceEncoder(delim);
@@ -308,5 +308,31 @@ public class SequenceEncoderTest {
 
     assertEquals("a,b", sd.nextToken());
     assertEquals("", sd.nextToken());
+  }
+
+  @Test
+  public void testEncodeDecodeContainingDelim() {
+    final char delim = ',';
+
+    final SequenceEncoder se = new SequenceEncoder(delim);
+    se.append("a,b");
+
+    final SequenceEncoder.Decoder sd =
+      new SequenceEncoder.Decoder(se.getValue(), delim);
+
+    assertEquals("a,b", sd.nextToken());
+  }
+
+  @Test
+  public void testEncodeDecoderContainingStringLengthMarker() {
+    final char delim = ',';
+
+    final SequenceEncoder se = new SequenceEncoder(delim);
+    se.append("a\uE000b");
+
+    final SequenceEncoder.Decoder sd =
+      new SequenceEncoder.Decoder(se.getValue(), delim);
+
+    assertEquals("a\uE000b", sd.nextToken());
   }
 }
