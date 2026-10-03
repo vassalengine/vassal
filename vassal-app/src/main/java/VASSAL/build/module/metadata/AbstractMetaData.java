@@ -204,6 +204,8 @@ public abstract class AbstractMetaData {
                                   .newDocumentBuilder()
                                   .newDocument();
 
+      doc.setXmlVersion("1.1");
+
       final Element root = doc.createElement(ROOT_ELEMENT);
       root.setAttribute(VERSION_ATTR, getMetaDataVersion());
       doc.appendChild(root);

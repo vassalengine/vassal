@@ -186,9 +186,13 @@ public class Builder {
    */
   public static Document createNewDocument() {
     try {
-      return DocumentBuilderFactory.newInstance()
-                                   .newDocumentBuilder()
-                                   .newDocument();
+      final Document doc = DocumentBuilderFactory
+        .newInstance()
+        .newDocumentBuilder()
+        .newDocument();
+
+      doc.setXmlVersion("1.1");
+      return doc;
     }
     catch (ParserConfigurationException e) {
       ErrorDialog.bug(e);
