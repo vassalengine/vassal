@@ -58,7 +58,8 @@ public class LaunchRequest implements Serializable {
     TRANSLATE("translate"), //NON-NLS
     UPDATE_MOD("update-module"), //NON-NLS
     UPDATE_EXT("update-extension"), //NON-NLS
-    UPDATE_GAME("update-game"); //NON-NLS
+    UPDATE_GAME("update-game"), //NON-NLS
+    LIBRARY_BROWSER("library-browser"); //NON-NLS
 
     private final String prettyName;
 
@@ -208,6 +209,7 @@ public class LaunchRequest implements Serializable {
       "  --auto-extensions   TODO\n" + //NON-NLS
       "  --edit-extension    " + Resources.getString("LaunchRequest.extension") + "\n" + //NON-NLS
       "  --new-extension     " + Resources.getString("LaunchRequest.new_extension") + "\n" + //NON-NLS
+      "  --library-browser   " + Resources.getString("LaunchRequest.library_browser") + "\n" + //NON-NLS
       "  --version           " + Resources.getString("LaunchRequest.version") + "\n" + //NON-NLS
       "  --                  " + Resources.getString("LaunchRequest.terminate") + "\n" + //NON-NLS
       "\n" +
@@ -236,7 +238,8 @@ public class LaunchRequest implements Serializable {
     final int UPDATE_EXT = 9;
     final int UPDATE_GAME = 10;
     final int STANDALONE = 11;
-    final int ENCARGS = 12;
+    final int LIBRARY_BROWSER = 12;
+    final int ENCARGS = 13;
 
     final LongOpt[] longOpts = {
       new LongOpt("auto",       LongOpt.NO_ARGUMENT, null, 'a'), //NON-NLS
@@ -257,6 +260,7 @@ public class LaunchRequest implements Serializable {
       new LongOpt("update-extension", LongOpt.NO_ARGUMENT, null, UPDATE_EXT), //NON-NLS
       new LongOpt("update-game", LongOpt.NO_ARGUMENT, null, UPDATE_GAME), //NON-NLS
       new LongOpt("standalone", LongOpt.NO_ARGUMENT, null, STANDALONE), //NON-NLS
+      new LongOpt("library-browser", LongOpt.NO_ARGUMENT, null, LIBRARY_BROWSER), //NON-NLS
       new LongOpt("encoded-args", LongOpt.NO_ARGUMENT, null, ENCARGS) //NON-NLS
     };
 
@@ -298,6 +302,9 @@ public class LaunchRequest implements Serializable {
         break;
       case UPDATE_GAME:
         setMode(lr, Mode.UPDATE_GAME);
+        break;
+      case LIBRARY_BROWSER:
+        setMode(lr, Mode.LIBRARY_BROWSER);
         break;
       case STANDALONE:
         // obsolete, does nothing
@@ -463,6 +470,8 @@ public class LaunchRequest implements Serializable {
       else {
         die("LaunchRequest.missing_module");
       }
+      break;
+    case LIBRARY_BROWSER:
       break;
     }
 

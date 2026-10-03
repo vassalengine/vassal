@@ -95,6 +95,9 @@ public final class LaunchRequestHandler implements Runnable {
     case NEW:
       new Editor.NewModuleLaunchAction(window).actionPerformed(null);
       break;
+    case LIBRARY_BROWSER:
+      new LibraryBrowser.LaunchAction(window).actionPerformed(null);
+      break;
     case EDIT_EXT:
       return "not yet implemented";   // FIXME
     case NEW_EXT:
