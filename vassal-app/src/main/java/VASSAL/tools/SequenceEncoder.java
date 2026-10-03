@@ -101,7 +101,7 @@ public class SequenceEncoder {
     if (s == null || s.isEmpty()) {
       return this;
     }
-    else if (s.indexOf(delim) != -1 || s.indexOf(LEN_DELIM) != -1) {
+    else if (s.charAt(0) == LEN_DELIM || s.indexOf(delim) != -1) {
       buffer
         .append(LEN_DELIM)
         .append(s.length())
