@@ -335,4 +335,28 @@ public class SequenceEncoderTest {
 
     assertEquals("a\uE000b", sd.nextToken());
   }
+
+  @Test
+  public void testDecodeLegacyNestedEscapedStrings() {
+    final String enc = "\\,a,b\\,c\\,d\\\\,e";
+
+    final char delim = ',';
+
+    final SequenceEncoder.Decoder sd1 = new SequenceEncoder.Decoder(enc, delim);
+
+    assertEquals(",a", sd1.nextToken());
+    final String n1 = sd1.nextToken();
+    assertEquals("b,c,d\\,e", n1);
+
+    final SequenceEncoder.Decoder sd2 = new SequenceEncoder.Decoder(n1, delim);
+    assertEquals("b", sd2.nextToken());
+    assertEquals("c", sd2.nextToken());
+
+    final String n2 = sd2.nextToken();
+    assertEquals("d,e", n2);
+
+    final SequenceEncoder.Decoder sd3 = new SequenceEncoder.Decoder(n2, delim);
+    assertEquals("d", sd3.nextToken());
+    assertEquals("e", sd3.nextToken());
+  }
 }
