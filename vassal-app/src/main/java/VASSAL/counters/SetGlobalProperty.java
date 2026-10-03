@@ -95,8 +95,7 @@ public class SetGlobalProperty extends DynamicProperty {
     sd.nextToken(); // Skip over command prefix
     key = sd.nextToken("name");
     decodeConstraints(sd.nextToken(""));
-    keyCommandListConfig.setValue(sd.nextToken(""));
-    keyCommands = keyCommandListConfig.getListValue().toArray(new DynamicKeyCommand[0]);
+    keyCommands = decodeKeyCommands(sd.nextToken(""), this);
 
     menuCommands = Arrays.stream(keyCommands).filter(
       kc -> !StringUtils.isEmpty(kc.getName())
@@ -112,7 +111,7 @@ public class SetGlobalProperty extends DynamicProperty {
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(key);
     se.append(encodeConstraints());
-    se.append(keyCommandListConfig.getValueString());
+    se.append(encodeKeyCommands(keyCommands));
     se.append(description);
     se.append(propertyLevel);
     se.append(searchName);
@@ -265,7 +264,7 @@ public class SetGlobalProperty extends DynamicProperty {
 
     if (! Objects.equals(key, c.key)) return false;
     if (! Objects.equals(encodeConstraints(), c.encodeConstraints())) return false;
-    if (! Objects.equals(keyCommandListConfig.getValueString(), c.keyCommandListConfig.getValueString())) return false;
+    if (! Objects.equals(encodeKeyCommands(keyCommands), encodeKeyCommands(c.keyCommands))) return false;
     if (! Objects.equals(description, c.description)) return false;
     if (! Objects.equals(propertyLevel, c.propertyLevel)) return false;
     return Objects.equals(searchName, c.searchName);
