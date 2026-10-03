@@ -56,7 +56,6 @@ import VASSAL.tools.io.ZipWriter;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.Dialogs;
 import VASSAL.tools.version.VersionUtils;
-import org.apache.commons.io.IOUtils;
 import org.tukaani.xz.LZMA2Options;
 import org.tukaani.xz.XZOutputStream;
 import org.apache.commons.lang3.StringUtils;
@@ -78,18 +77,30 @@ import java.awt.dnd.InvalidDnDOperationException;
 import java.awt.event.ActionEvent;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.UncheckedIOException;
+import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.AtomicMoveNotSupportedException;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.security.DigestOutputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -121,7 +132,15 @@ public class GameState implements CommandEncoder {
   protected List<GameComponent> gameComponents = new ArrayList<>();
   protected List<GameSetupStep> setupSteps = new ArrayList<>();
   protected Action loadGame, saveGame, saveGameAs, newGame, closeGame, loadContinuation, loadAndFastForward, loadAndAppend;
+  /**
+   * @deprecated The saved state is no longer kept as a String, which for a large game held hundreds of
+   * megabytes for the whole session. {@link #isModified()} now compares a digest of the encoded state.
+   * This field is no longer written and is always null.
+   */
+  @Deprecated(since = "2026-09-29", forRemoval = true)
   protected String lastSave;
+  /** SHA-256 of the UTF-8 encoded state as of the last save, or null if there is no saved state to compare with. */
+  private byte[] lastSaveDigest;
   protected File lastSaveFile = null;
   protected DirectoryConfigurer savedGameDirectoryPreference;
   protected DirectoryConfigurer editorImageDirectoryPreference;
@@ -291,8 +310,8 @@ public class GameState implements CommandEncoder {
    * @return true if the game state is different from when it was last saved
    */
   public boolean isModified() {
-    final String s = saveString();
-    return s != null && !s.equals(lastSave);
+    final byte[] d = saveDigest();
+    return d != null && !Arrays.equals(d, lastSaveDigest);
   }
 
   /**
@@ -538,7 +557,7 @@ public class GameState implements CommandEncoder {
     }
 
     gameStarted |= this.gameStarting;
-    lastSave = gameStarting ? saveString() : null;
+    lastSaveDigest = gameStarting ? saveDigest() : null;
     lastSaveFile = null;
 
     if (gameStarted) {
@@ -1021,6 +1040,91 @@ public class GameState implements CommandEncoder {
     return GameModule.getGameModule().encode(getRestoreCommand());
   }
 
+  /**
+   * @return the SHA-256 digest of the UTF-8 text form of {@link #getRestoreCommand()}, computed by streaming
+   * the encoding through the digest rather than building it, or null if there is nothing to save
+   */
+  protected byte[] saveDigest() {
+    final Command c = getRestoreCommand();
+    if (c == null) {
+      return null;
+    }
+    final MessageDigest digest = saveDigester();
+    // The encoder produces text; the writer turns it into the UTF-8 bytes the file holds,
+    // and it is those bytes that are digested and compared.
+    try (DigestOutputStream dout = new DigestOutputStream(OutputStream.nullOutputStream(), digest);
+         Writer out = new OutputStreamWriter(dout, StandardCharsets.UTF_8)) {
+      GameModule.getGameModule().encode(c, out);
+    }
+    catch (IOException e) {
+      // A null sink cannot fail.
+      throw new UncheckedIOException(e);
+    }
+    return digest.digest();
+  }
+
+  /**
+   * The one digest used for every save and every {@link #isModified()} check. A MessageDigest is
+   * not thread-safe, which is what PMD objects to in a field; both users of this one run on the EDT.
+   */
+  @SuppressWarnings("PMD.AvoidMessageDigestField")
+  private MessageDigest saveDigester;
+
+  /** @return the digest, reset and ready for a new computation */
+  private MessageDigest saveDigester() {
+    if (saveDigester == null) {
+      try {
+        saveDigester = MessageDigest.getInstance("SHA-256"); //NON-NLS
+      }
+      catch (NoSuchAlgorithmException e) {
+        // Every Java platform is required to provide SHA-256.
+        throw new IllegalStateException(e);
+      }
+    }
+    else {
+      saveDigester.reset();
+    }
+    return saveDigester;
+  }
+
+  /**
+   * Writes a command tree as a saved game or log file: the compressed UTF-8 command log as the
+   * {@link #SAVEFILE_ZIP_ENTRY} entry, and the metadata beside it. The tree is encoded straight into the
+   * file and never assembled as a String. The file is written under a temporary name in the same directory
+   * and replaces {@code f} only once it is complete, so a failure part way through leaves an existing file
+   * as it was; the temporary file is then left where it is, as evidence of what happened.
+   *
+   * @param f the file to write
+   * @param c the command tree
+   * @param metaData the metadata to store with it
+   * @return the SHA-256 digest of the command log as written, which {@link #isModified()} compares against
+   */
+  public byte[] writeGameFile(File f, Command c, SaveMetaData metaData) throws IOException {
+    final Path target = f.getAbsoluteFile().toPath();
+    // Beside the target rather than in the temp dir, so that the move into place is a rename
+    // on the same filesystem, which is what makes it atomic.
+    final Path tmp = Files.createTempFile(target.getParent(), target.getFileName().toString(), ".tmp"); //NON-NLS
+    final MessageDigest digest = saveDigester();
+    try (ZipWriter zw = new ZipWriter(tmp)) {
+      try (OutputStream zout = zw.write(SAVEFILE_ZIP_ENTRY);
+           BufferedOutputStream bout = new BufferedOutputStream(zout);
+           OutputStream oout = compressSavedGame(bout);
+           DigestOutputStream dout = new DigestOutputStream(oout, digest);
+           Writer out = new OutputStreamWriter(dout, StandardCharsets.UTF_8)) {
+        GameModule.getGameModule().encode(c, out);
+      }
+      metaData.save(zw);
+    }
+    // Only a complete file gets here; a failure above leaves the temporary file for inspection.
+    try {
+      Files.move(tmp, target, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+    }
+    catch (AtomicMoveNotSupportedException e) {
+      Files.move(tmp, target, StandardCopyOption.REPLACE_EXISTING);
+    }
+    return digest.digest();
+  }
+
   protected boolean checkForOldSaveFile(File f) {
     if (f.isFile()) {
       // warn user if overwriting a save from an old version
@@ -1105,12 +1209,7 @@ public class GameState implements CommandEncoder {
   }
 
   public void setModified(boolean modified) {
-    if (modified) {
-      lastSave = null;
-    }
-    else {
-      lastSave = saveString();
-    }
+    lastSaveDigest = modified ? null : saveDigest();
   }
 
   private File getSaveFile() {
@@ -1357,8 +1456,6 @@ public class GameState implements CommandEncoder {
 
   public void saveGameRefresh(ZipArchive archive) throws IOException {
     final SaveMetaData metaData;
-    // FIXME: It is extremely inefficient to produce the save string. It would
-    // be faster to write directly to the output stream instead.
 
     // store the prompt pref
     final GameModule mod = GameModule.getGameModule();
@@ -1369,11 +1466,11 @@ public class GameState implements CommandEncoder {
     myPrefs.setValue(SaveMetaData.PROMPT_LOG_COMMENT, false);
     metaData = new SaveMetaData(); // this also potentially prompts for save file comments, so do *before* possibly long save file write
 
-    final String save = saveString();
     try (OutputStream zout = archive.getOutputStream(SAVEFILE_ZIP_ENTRY);
          BufferedOutputStream bout = new BufferedOutputStream(zout);
-         OutputStream out = compressSavedGame(bout)) {
-      out.write(save.getBytes(StandardCharsets.UTF_8));
+         OutputStream oout = compressSavedGame(bout);
+         Writer out = new OutputStreamWriter(oout, StandardCharsets.UTF_8)) {
+      mod.encode(getRestoreCommand(), out);
     }
     archive.close();
 
@@ -1385,25 +1482,18 @@ public class GameState implements CommandEncoder {
   public void saveGame(File f) throws IOException {
     final SaveMetaData metaData;
     GameModule.getGameModule().warn(Resources.getString("GameState.saving_game") + ": " + f.getName());  //$NON-NLS-1$
-    // FIXME: It is extremely inefficient to produce the save string. It would
-    // be faster to write directly to the output stream instead.
     metaData = new SaveMetaData(); // this also potentially prompts for save file comments, so do *before* possibly long save file write
 
-    final String save = saveString();
+    final Command restore = getRestoreCommand();
 
     // Can be null if we get in here during odd asynchronous crud (save game is disabled, so getRestoreCommand will return null)
-    if (save == null) {
-      GameModule.getGameModule().warn("~" + Resources.getString("GameState.save_disabled"));
+    if (restore == null) {
+      final String msg = Resources.getString("GameState.save_disabled");
+      GameModule.getGameModule().warn("~" + msg);
+      throw new IOException(msg);
     }
 
-    try (ZipWriter zw = new ZipWriter(f)) {
-      try (OutputStream out = compressSavedGame(new BufferedOutputStream(zw.write(SAVEFILE_ZIP_ENTRY)))) {
-        out.write(save.getBytes(StandardCharsets.UTF_8));
-      }
-      metaData.save(zw);
-    }
-
-    lastSave = save;
+    lastSaveDigest = writeGameFile(f, restore, metaData);
     final String msg;
     final String saveComments = metaData.getLocalizedDescription();
     if (!StringUtils.isEmpty(saveComments)) {
@@ -1656,11 +1746,11 @@ public class GameState implements CommandEncoder {
       for (ZipEntry entry = zipInput.getNextEntry(); entry != null;
            entry = zipInput.getNextEntry()) {
         if (SAVEFILE_ZIP_ENTRY.equals(entry.getName())) {
-          try (InputStream din = new DeobfuscatingInputStream(zipInput)) {
-            // FIXME: toString() is very inefficient, make decode() use the stream directly
-            return GameModule.getGameModule().decode(
-              IOUtils.toString(din, StandardCharsets.UTF_8)
-            );
+          try (InputStream din = new DeobfuscatingInputStream(zipInput);
+               Reader rin = new InputStreamReader(din, StandardCharsets.UTF_8);
+               Reader in2 = new BufferedReader(rin, 1 << 16)) {
+            // Decoded straight from the stream: the command log is never held whole.
+            return GameModule.getGameModule().decode(in2);
           }
         }
       }
