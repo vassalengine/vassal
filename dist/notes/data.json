@@ -24,6 +24,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 15141, "desc": "Fix NPE when rendering boards to non-map contexts" }
       ],
       "improvements": [
       ],

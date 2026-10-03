@@ -1,4 +1,6 @@
-3.7.29 - ???
+3.7.29 - 3 October 2026
+
+* 15141: Fix NPE when rendering boards to non-map contexts
 
 3.7.28 - 2 October 2026
 
