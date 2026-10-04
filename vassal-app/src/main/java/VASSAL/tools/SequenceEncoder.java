@@ -101,7 +101,14 @@ public class SequenceEncoder {
     if (s == null || s.isEmpty()) {
       return this;
     }
-    else if (s.charAt(0) == LEN_MARKER || s.indexOf(delim) != -1) {
+    else if (s.charAt(0) == LEN_MARKER || s.indexOf(delim) != -1 || s.charAt(s.length() - 1) == '\\') {
+      // We length-prefix this string because:
+      //  * it already starts with the length marker, so not doing so would
+      //    be ambiguous, or
+      //  * it contains the sequence delimiter, which we would have needed
+      //    to escape under the legacy encoding, or
+      //  * it ends with a slash, which was incorrectly dropped by the legacy
+      //    decoder
       buffer
         .append(LEN_MARKER)
         .append(s.length())
@@ -117,6 +124,7 @@ public class SequenceEncoder {
         .append('\'');
     }
     else {
+      // Yay, we can write this string unmodified.
       buffer.append(s);
     }
 

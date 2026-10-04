@@ -389,4 +389,18 @@ public class SequenceEncoderTest {
     assertEquals("d", sd3.nextToken());
     assertEquals("e", sd3.nextToken());
   }
+
+  @Test
+  public void testEncodeDecodeTralingBackslash() {
+    final char delim = ',';
+
+    final SequenceEncoder se = new SequenceEncoder(delim);
+    se.append("ab\\").append("c");
+
+    final SequenceEncoder.Decoder sd =
+      new SequenceEncoder.Decoder(se.getValue(), delim);
+
+    assertEquals("ab\\", sd.nextToken());
+    assertEquals("c", sd.nextToken());
+  }
 }
