@@ -841,6 +841,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
     return result;
   }
+
   /**
    * SumMat(property) function
    * Total the value of the named property in all counters
@@ -905,6 +906,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     }
     return result;
   }
+
   /**
    * CountMat(property) function
    * Return the total number of counters with a non-blank value for the specified property
@@ -1360,11 +1362,11 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     return result;
   }
 
-
   // 0 Arg version of CountMap
   public Object countMap(PropertySource ps) {
     return countMap("", "", "", ps);
   }
+
   // 1 Arg version of CountMap
   public Object countMap(Object propertyOrExpressionOrMap, PropertySource ps) {
     if (propertyOrExpressionOrMap != null && propertyOrExpressionOrMap.toString().trim().startsWith("{")) {

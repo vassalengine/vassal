@@ -405,6 +405,7 @@ public class ComponentI18nData {
      */
     return false;
   }
+
   /** An attribute of a Configurable component that can be translated into another language */
   public static class Property {
     private final String name;

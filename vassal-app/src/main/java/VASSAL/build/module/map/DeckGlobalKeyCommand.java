@@ -139,10 +139,12 @@ public class DeckGlobalKeyCommand extends MassKeyCommand implements RecursionLim
   class DeckKeyCommand extends KeyCommand {
     private static final long serialVersionUID = 1L;
     protected Deck deck;
+
     public DeckKeyCommand(String name, KeyStroke key, Deck deck) {
       super(name, key, deck);
       this.deck = deck;
     }
+
     @Override
     public void actionPerformed(ActionEvent e) {
       apply(deck);

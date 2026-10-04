@@ -226,7 +226,9 @@ public abstract class Item extends AbstractConfigurable {
    * Implemented by subclass to draw itself.
    */
   public abstract void draw(Graphics g, GamePieceImage defn);
+
   public abstract String getType();
+
   public abstract Dimension getSize();
 
   public String getDisplayName() {
