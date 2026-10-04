@@ -216,11 +216,13 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       myTarget = target;
       owningWindow = tw;
     }
+
     @Override
     public void save() {
       super.save();
       owningWindow.refreshTranslationList(myTarget);
     }
+
     @Override
     public void cancel() {
       dispose();

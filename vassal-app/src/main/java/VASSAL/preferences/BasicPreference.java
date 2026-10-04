@@ -87,9 +87,11 @@ public abstract class BasicPreference extends AbstractConfigurable {
         public String getValueString() {
           return null;
         }
+
         @Override
         public void setValue(String s) {
         }
+
         @Override
         public Component getControls() {
           return new JLabel(Resources.getString("Editor.BasicPreference.note"));

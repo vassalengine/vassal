@@ -339,6 +339,7 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
     }
     return c;
   }
+
   /**
    * Find a Dynamic Property in the supplied GamePiece named propertyName and generate a
    * Command to set it to the specified value
