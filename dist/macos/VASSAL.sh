@@ -116,7 +116,7 @@ while test $# -gt 0 ; do
 done
 
 # --- Go to application directory ------------------------------------
-cd $path
+cd "$path"
 
 # --- Check server ---------------------------------------------------
 if test "x$entry" == "x$srv_entry" ; then

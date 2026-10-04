@@ -1498,6 +1498,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       }
     }
   }
+
   /**
    * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
    */

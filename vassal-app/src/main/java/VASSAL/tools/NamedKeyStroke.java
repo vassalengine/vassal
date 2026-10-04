@@ -165,6 +165,7 @@ public class NamedKeyStroke {
   public static NamedKeyStroke getNamedKeyStroke(char c) {
     return of(c);
   }
+
   @Deprecated(since = "2021-12-01", forRemoval = true)
   public static NamedKeyStroke getNamedKeyStroke(char c, int mod) {
     return of(c, mod);

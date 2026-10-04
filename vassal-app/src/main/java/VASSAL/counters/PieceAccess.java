@@ -27,6 +27,7 @@ public interface PieceAccess {
    * Return a String identifying the current player
    */
   String getCurrentPlayerId();
+
   /**
    * Return true if the current player can access this piece,
    * given that the piece is owned by the player with the given id
@@ -49,9 +50,11 @@ public interface PieceAccess {
     public static void hideAll() {
       allHidden = true;
     }
+
     public static void revertAll() {
       allHidden = false;
     }
+
     public static boolean isHideAll() {
       return allHidden;
     }

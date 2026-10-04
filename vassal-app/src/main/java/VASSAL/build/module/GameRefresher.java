@@ -1002,7 +1002,9 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
   private interface Refresher {
     void refresh(Command command);
+
     List<GamePiece> getPieces();
+
     List<GamePiece> getRefreshedPieces();
   }
 
