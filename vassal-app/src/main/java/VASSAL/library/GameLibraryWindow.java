@@ -18,6 +18,8 @@ package VASSAL.library;
 
 import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
+import org.jdesktop.swingx.table.ColumnFactory;
+import org.jdesktop.swingx.table.TableColumnExt;
 
 import org.apache.commons.lang3.SystemUtils;
 
@@ -55,6 +57,7 @@ import javax.swing.AbstractCellEditor;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
@@ -69,16 +72,10 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.Timer;
 import javax.swing.UIManager;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.TableColumnModelEvent;
-import javax.swing.event.TableColumnModelListener;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeWillExpandListener;
 import javax.swing.plaf.UIResource;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.tree.ExpandVetoException;
@@ -155,6 +152,7 @@ public class GameLibraryWindow extends JFrame {
   public static final int DATE_COLUMN  = 3;
   public static final int SIZE_COLUMN  = 4;
   public static final int URL_COLUMN   = 5;
+  public static final int CHECK_WIDTH  = 40;
   
     
   public GameLibraryWindow() throws IOException {
@@ -248,6 +246,32 @@ public class GameLibraryWindow extends JFrame {
     }
   }
   /**
+   * Editor for boolean cells
+   */
+  static class BooleanEditor extends DefaultCellEditor {
+    private static final long serialVersionUID = 1L;
+    public BooleanEditor() {
+      super(new JCheckBox());
+      final JCheckBox checkBox = (JCheckBox)getComponent();
+      checkBox.setHorizontalAlignment(JCheckBox.CENTER);
+    }
+    @Override
+    public Component getTableCellEditorComponent(JTable  table,
+                                                 Object  value,
+                                                 boolean isSelected,
+                                                 int     row,
+                                                 int     column) {
+      if (value == null)
+        return null;
+      
+      return super.getTableCellEditorComponent(table,
+                                               value,
+                                               isSelected,
+                                               row,
+                                               column);
+    }
+  }  
+  /**
    * A Boolean (CheckBox) renderer that may show nothing (tri-state)
    */
   static class BooleanRenderer extends JCheckBox
@@ -263,6 +287,7 @@ public class GameLibraryWindow extends JFrame {
       setHorizontalAlignment(CENTER);
       setBorderPainted(true);
       setOpaque(true);
+      setSelected(false);
     }
 
     @Override
@@ -275,9 +300,8 @@ public class GameLibraryWindow extends JFrame {
       // We may get called with something other than boolean. If so,
       // take it to mean no defined value (tri-state: true, false,
       // unknown).
-      final Component ret = (!(value instanceof Boolean)) ?
-        nullComponent : this;
-
+      final Component ret = (value instanceof Boolean ? this : nullComponent);
+      
       if (isSelected) {
         ret.setForeground(table.getSelectionForeground());
         ret.setBackground(table.getSelectionBackground());
@@ -286,10 +310,10 @@ public class GameLibraryWindow extends JFrame {
         ret.setForeground(table.getForeground());
         ret.setBackground(table.getBackground());
       }
-      if (ret == this) 
-        this.setSelected(value != null && ((Boolean)value).booleanValue());
-
-      ret.repaint();
+      if (value instanceof Boolean) 
+        this.setSelected(((Boolean)value).booleanValue());
+      else
+        this.setSelected(false);
       
       return ret;
     }
@@ -363,14 +387,13 @@ public class GameLibraryWindow extends JFrame {
                                                    boolean hasFocus,
                                                    int row,
                                                    int column) {
-      // System.out.println("Get cell renderer for URLs");
       super.getTableCellRendererComponent(table,
                                           value,
                                           isSelected,
                                           hasFocus,
                                           row,
                                           column);
-      if (value == null)
+      if (value == null || value.toString().isBlank())
         return this;
 
       final Color fg = (isSelected ?
@@ -380,6 +403,14 @@ public class GameLibraryWindow extends JFrame {
                                        fg.getRed(),
                                        fg.getGreen(),
                                        fg.getBlue());
+      final int    slash = value.toString().lastIndexOf('/');
+      if (slash < 0) {
+        setText("");
+        return this;
+      }
+        
+      final String fn = value.toString().substring(slash + 1);
+      
       setText("<html>\n" +                      //NON-NLS 
               "  <style>\n" +                   //NON-NLS 
               "    .selected {\n" +             //NON-NLS
@@ -387,12 +418,15 @@ public class GameLibraryWindow extends JFrame {
               "  </style>\n" +                  //NON-NLS
               "  <body>\n" +                    //NON-NLS
               "    <a class=\"" + (isSelected ? "selected" : "") + //NON-NLS
-              "\" href=\"" + value + "\">&#128279; &nbsp;" +       //NON-NLS
-              Resources.getString("LibraryBrowser.open_project_text") + //NON-NLS
-                 "</a>\n" +                     //NON-NLS
+              "\" href=\"" + value + "\">" +
+              // "&#128279; &nbsp;" +       //NON-NLS
+              fn + 
+              // Resources.getString("LibraryBrowser.open_project_text") + //NON-NLS
+              "</a>\n" +                     //NON-NLS
               "  </body>\n" +                   //NON-NLS
               "</html>"                         //NON-NLS
               );
+      
       return this;
     }
   }
@@ -456,15 +490,38 @@ public class GameLibraryWindow extends JFrame {
     treeTable = new JXTreeTable(model);
     treeTable.setRootVisible(false);
     treeTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+    // treeTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
     treeTable.setShowsRootHandles(true);
+    treeTable.setColumnFactory(new ColumnFactory() {
+        private final int[]     preferred = { CHECK_WIDTH, 400, 75, 100, 75, 200}; 
+        private final int[]     min       = { CHECK_WIDTH, 300, 75, 100, 75,  75};
+        @Override
+        public TableColumnExt createTableColumn(int index) {
+          final TableColumnExt columnExt = super.createTableColumn(index);
+
+          // Using `setWidth` on _any_ column messes up the click to CheckBox. 
+          if (index == CHECK_COLUMN) {
+            columnExt.setMinWidth(min[index]);
+            columnExt.setMaxWidth(min[index]);
+          }
+          else {
+            columnExt.setMinWidth(min[index]);
+            columnExt.setPreferredWidth(preferred[index]);
+          }
+          return columnExt;
+        }
+      });
+    
     treeTable.setDefaultRenderer(Boolean.class, new BooleanRenderer());
     treeTable.setDefaultRenderer(Date.class, new DateRenderer());
     treeTable.setDefaultRenderer(FileSize.class, new FileSizeRenderer());
     treeTable.setDefaultEditor(URL.class, new URLEditor());
+    treeTable.setDefaultEditor(Boolean.class, new BooleanEditor());
     try {
       treeTable.setDefaultRenderer(URL.class, new URLRenderer());
     }
     catch (IOException ignored) {
+      // This should not happen - URLs are valid
       System.out.println(ignored);
       ignored.printStackTrace(System.out);
     }
@@ -472,62 +529,29 @@ public class GameLibraryWindow extends JFrame {
 
     // Add tree expansion listener for lazy loading child items
     treeTable.addTreeWillExpandListener(new TreeWillExpandListener() {
-        @Override
-        public void treeWillExpand(TreeExpansionEvent event)
-          throws ExpandVetoException {
-          final TreePath path              = event.getPath();
-          final Object   lastPathComponent = path.getLastPathComponent();
+      @Override
+      public void treeWillExpand(TreeExpansionEvent event)
+        throws ExpandVetoException {
+        final TreePath path              = event.getPath();
+        final Object   lastPathComponent = path.getLastPathComponent();
 
-          if (lastPathComponent instanceof ProjectNode) {
-            final ProjectNode pNode = (ProjectNode) lastPathComponent;
-            if (!pNode.isLoaded() && !pNode.isLoading()) {
-              loadProjectDetails(pNode);
-            }
+        if (lastPathComponent instanceof ProjectNode) {
+          final ProjectNode pNode = (ProjectNode) lastPathComponent;
+          if (!pNode.isLoaded() && !pNode.isLoading()) {
+            loadProjectDetails(pNode);
           }
         }
+      }
 
-        @Override
-        public void treeWillCollapse(TreeExpansionEvent event) {
-          // No action needed on collapse
-        }
+      @Override
+      public void treeWillCollapse(TreeExpansionEvent event) {
+        // No action needed on collapse
+      }
       });
 
-    final TableColumnModel colModel = treeTable.getColumnModel();
-    // We set up a listener on the column model so that we can react
-    // when the columns are changed.  That happens when the table is
-    // resorted or loaded - i.e., any time the root node is changed.
-    //
-    // In this listener we change the column widths to preset values. 
-    colModel.addColumnModelListener(new TableColumnModelListener() {
-      private final int[]     preferred = { 25, 400, 75, 100, 100, 200}; 
-      private final int[]     min       = { 25, 100, 75, 100, 75,   75};
-      @Override
-      public void columnAdded(TableColumnModelEvent e) {
-        final int         i = e.getToIndex();
-        final TableColumn c = colModel.getColumn(i);
-        c.setPreferredWidth(preferred[i]);
-        c.setWidth(preferred[i]);
-        c.setMinWidth(min[i]);
-        if (i == CHECK_COLUMN) c.setMaxWidth(min[i]);
-      }
-      @Override
-      public void columnMarginChanged(ChangeEvent e) {
-      }
-      @Override
-      public void columnMoved(TableColumnModelEvent e) {
-      }
-      @Override
-      public void columnRemoved(TableColumnModelEvent e) {
-      }
-      @Override
-      public void columnSelectionChanged(ListSelectionEvent e) {
-      }
-    });
-
     final JScrollPane scroll = new JScrollPane(treeTable);
-    scroll.setPreferredSize(new Dimension(900, 600));
+    scroll.setPreferredSize(new Dimension(1100, 600));
     add(scroll, BorderLayout.CENTER);
-    
 
     // --- Setup Bottom Control & Progress Bar Panel ---
     final JPanel bottomPanel = new JPanel(new BorderLayout(5, 5));
@@ -783,13 +807,9 @@ public class GameLibraryWindow extends JFrame {
         try {
           get();
           node.setLoaded(true);
-          // model.modelChanged();
           model.nodeStructureChanged(node);
         }
         catch (Exception e) {
-          System.out.println("In swing worker: " + e);
-          e.printStackTrace(System.out);
-          System.out.println(Resources.getString("LibraryBrowser.failed_load_project_message", node.getProject().getTitle()));
           ErrorDialog.show(e, "LibraryBrowser.failed_load_project",
                            node.getProject().getTitle()); //NON-NLS
         }
@@ -803,8 +823,8 @@ public class GameLibraryWindow extends JFrame {
       worker.execute();
     }
     catch (Exception e) {
-      System.out.println("Wrap around getting project details: " + e);
-      e.printStackTrace(System.out);
+      // This should not happen
+      ErrorDialog.bug(e);
     }
   }
 
@@ -912,8 +932,10 @@ public class GameLibraryWindow extends JFrame {
       worker.execute();
     }
     catch (Exception e) {
-      System.out.println("While downloading files: " + e);
-      e.printStackTrace(System.out);
+      // This should hopefully not happen
+      System.out.println(e);
+      e.printStackTrace();
+      ErrorDialog.bug(e);
     }
   }
 
@@ -922,17 +944,17 @@ public class GameLibraryWindow extends JFrame {
    */
   interface TreeNode {
     TreeNode getParent();
-    Object   getValueAt(int column);
     String   getType();
-    void     setValueAt(Object value, int column);
+    Object   getValueAt(int column);
     List<?>  getChildren();
     boolean  isLeaf();
     Boolean  isSelected();
     FileSize getSize();
     Date     getDate();
-    void     setSelected(boolean selected);
     void     collectSelectedFiles(List<LibraryFile> list);
     String   getToolTip(int column);
+    void     setValueAt(Object value, int column);
+    void     setSelected(boolean v);
     boolean  canEdit(int column);
   }
 
@@ -940,7 +962,6 @@ public class GameLibraryWindow extends JFrame {
    * Implement most things for common node interface
    */
   public abstract static class AbstractNode implements TreeNode {
-    protected Boolean selected = null;
     protected TreeNode parent = null;
     protected static boolean allowUpdate = false;
     /**
@@ -977,7 +998,7 @@ public class GameLibraryWindow extends JFrame {
      */
     @Override
     public Boolean isSelected() {
-      return selected;
+      return null;
     }
 
     /**
@@ -992,7 +1013,6 @@ public class GameLibraryWindow extends JFrame {
      */
     @Override
     public void setSelected(boolean selected) {
-      this.selected = selected;
       // Cascade selection down to children
       for (final Object child : getChildren()) {
         if (child instanceof TreeNode) {
@@ -1007,7 +1027,7 @@ public class GameLibraryWindow extends JFrame {
     @Override
     public void setValueAt(Object value, int column) {
       if (column == CHECK_COLUMN && value instanceof Boolean) {
-        setSelected((Boolean) value);
+        setSelected(Boolean.TRUE.equals(value));
       }
     }
 
@@ -1243,6 +1263,7 @@ public class GameLibraryWindow extends JFrame {
    * A node corresponding to a release
    */
   public static class ReleaseNode extends AbstractNode {
+    private       Boolean selected;
     private final Release release;
     private final List<FileNode> children = new ArrayList<>();
 
@@ -1252,6 +1273,20 @@ public class GameLibraryWindow extends JFrame {
       selected = Boolean.FALSE;
     }
 
+    @Override
+    public void setSelected(boolean selected) {
+      this.selected = selected;
+      super.setSelected(selected);
+    }
+    
+    /**
+     * Has the user selected this node?
+     */
+    @Override
+    public Boolean isSelected() {
+      return this.selected;
+    }
+    
     @Override
     public Object getValueAt(int column) {
       switch (column) {
@@ -1311,6 +1346,7 @@ public class GameLibraryWindow extends JFrame {
    * A node (leaf) corresponding to a file
    */
   public static class FileNode extends AbstractNode {
+    private       Boolean selected;
     private final LibraryFile file;
     
     public FileNode(TreeNode parent, LibraryFile f) {
@@ -1322,17 +1358,31 @@ public class GameLibraryWindow extends JFrame {
     public LibraryFile getFile() {
       return file;
     }
-
+    
     @Override
     public Object getValueAt(int column) {
       switch (column) {
-      case CHECK_COLUMN: return !canDownload() || isSelected(); 
-      case NAME_COLUMN: return file.getFileName();
-        // case URL_COLUMN:  return file.getURL();
+      case CHECK_COLUMN:
+        return Boolean.valueOf(isSelected() || !canDownload());
+      case NAME_COLUMN:
+        return file.getFileName();
       default: return super.getValueAt(column);
       }
     }
 
+    @Override
+    public void setSelected(boolean selected) {
+      this.selected = Boolean.valueOf(selected);
+    }
+    
+    /**
+     * Has the user selected this node?
+     */
+    @Override
+    public Boolean isSelected() {
+      return this.selected;
+    }
+    
     @Override
     public List<?> getChildren() {
       return Collections.emptyList();
@@ -1402,7 +1452,7 @@ public class GameLibraryWindow extends JFrame {
      */
     @Override
     public boolean canEdit(int column) {
-      return column == CHECK_COLUMN && canDownload();
+      return column == CHECK_COLUMN; // && canDownload();
     }
     
     public boolean canDownload() {
@@ -1575,10 +1625,10 @@ public class GameLibraryWindow extends JFrame {
      * When a new root is made (happens once!) after loading 
      */
     public void modelChanged() {
-      final Object[] path = getPathToRoot((TreeNode)getRoot());
-      modelSupport.firePathChanged(new TreePath(path));      
-      modelSupport.fireTreeStructureChanged(new TreePath(path));
-      // modelSupport.fireNewRoot();
+      // final Object[] path = getPathToRoot((TreeNode)getRoot());
+      // modelSupport.firePathChanged(new TreePath(path));      
+      // modelSupport.fireTreeStructureChanged(new TreePath(path));
+      modelSupport.fireNewRoot();
     }
 
     /**

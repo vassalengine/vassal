@@ -114,6 +114,17 @@ public class GameLibrary {
   }
 
   /**
+   * For files - may contain spaces etc.
+   */
+  protected URL encodeURL(URL url)
+    throws URISyntaxException, MalformedURLException {
+    return new URL(new URI(url.getProtocol(),
+                           url.getHost(),
+                           url.getPath(),
+                           null).toASCIIString());
+  }
+  
+  /**
    * Append a query to a URL. The query is assumed to be encoded
    *
    * @param url The URL
@@ -520,7 +531,8 @@ public class GameLibrary {
                                               fn + ".part"); //NON-NLS
 
     try {
-      getFile(file.getURL(), tmp, file.getChecksum(), file.getSize());
+      final URL url = encodeURL(file.getURL());
+      getFile(url, tmp, file.getChecksum(), file.getSize());
 
       try {
         Files.move(tmp.toPath(), target.toPath(),
