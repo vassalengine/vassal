@@ -46,6 +46,7 @@ import VASSAL.search.SearchTarget;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.lang.Pair;
 import VASSAL.tools.swing.SwingUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -436,12 +437,12 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
    */
   @Override
   public void setState(String newState) {
-    final String[] parts = splitChain(newState);
-    mySetState(parts[0]);
-    if (parts[1] == null) {
+    final Pair<String, String> parts = splitChain(newState);
+    mySetState(parts.first);
+    if (parts.second == null) {
       throw new IllegalStateException(Resources.getString("Decorator.no_state_for_trait") + myGetType());
     }
-    piece.setState(parts[1]);
+    piece.setState(parts.second);
   }
 
   /**
@@ -458,19 +459,19 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
    */
   @Override
   public void mergeState(String newState, String oldState) {
-    final String[] partsNew = splitChain(newState);
-    final String[] partsOld = splitChain(oldState);
-    if (partsNew[1] == null || partsOld[1] == null) {
+    final Pair<String, String> partsNew = splitChain(newState);
+    final Pair<String, String> partsOld = splitChain(oldState);
+    if (partsNew.second == null || partsOld.second == null) {
       throw new NoSuchElementException();
     }
-    if (!partsOld[0].equals(partsNew[0])) {
-      mySetState(partsNew[0]);
+    if (!partsOld.first.equals(partsNew.first)) {
+      mySetState(partsNew.first);
     }
     if (piece instanceof StateMergeable) {
-      ((StateMergeable)piece).mergeState(partsNew[1], partsOld[1]);
+      ((StateMergeable)piece).mergeState(partsNew.second, partsOld.second);
     }
     else {
-      piece.setState(partsNew[1]);
+      piece.setState(partsNew.second);
     }
   }
 
@@ -617,15 +618,15 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
    * token.
    *
    * @param chain the chain string for this trait and everything inside it
-   * @return a two-element array: the decoded own segment, and the inner
-   * chain as it should be handed to {@link GamePiece#setState(String)}, or
-   * null in the second element if the chain has no inner part at all
+   * @return the decoded own segment, and the inner chain as it should be
+   * handed to {@link GamePiece#setState(String)}, or null as the second
+   * element if the chain has no inner part at all
    */
-  static String[] splitChain(String chain) {
+  static Pair<String, String> splitChain(String chain) {
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(chain, '\t');
     final String mine = st.nextToken();
     if (!st.hasMoreTokens()) {
-      return new String[] { mine, null };
+      return Pair.of(mine, null);
     }
     final String rest = st.getRemaining();
     final SequenceEncoder.Decoder inner = new SequenceEncoder.Decoder(rest, '\t');
@@ -633,7 +634,7 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
     // Flat framing has further top-level tokens after the second: the rest
     // of the string is the inner chain as it is. Nested framing has none:
     // the second token, decoded, is the inner chain.
-    return new String[] { mine, inner.hasMoreTokens() ? rest : second };
+    return Pair.of(mine, inner.hasMoreTokens() ? rest : second);
   }
 
   /**

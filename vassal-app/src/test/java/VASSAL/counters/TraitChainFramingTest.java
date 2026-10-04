@@ -17,7 +17,6 @@
  */
 package VASSAL.counters;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -30,6 +29,7 @@ import org.junit.jupiter.api.Test;
 import VASSAL.build.MockModuleTest;
 import VASSAL.build.module.BasicCommandEncoder;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.lang.Pair;
 
 /**
  * Tests of the framing of a piece's trait chain: the flat framing written
@@ -317,20 +317,20 @@ public class TraitChainFramingTest extends MockModuleTest {
 
   @Test
   public void splitChainTellsTheFramingsApart() {
-    assertArrayEquals(new String[] {"a", null}, Decorator.splitChain("a"));
-    assertArrayEquals(new String[] {"a", "b"}, Decorator.splitChain("a\tb"));
-    assertArrayEquals(new String[] {"a", ""}, Decorator.splitChain("a\t"));
-    assertArrayEquals(new String[] {"", "b"}, Decorator.splitChain("\tb"));
+    assertEquals(Pair.of("a", null), Decorator.splitChain("a"));
+    assertEquals(Pair.of("a", "b"), Decorator.splitChain("a\tb"));
+    assertEquals(Pair.of("a", ""), Decorator.splitChain("a\t"));
+    assertEquals(Pair.of("", "b"), Decorator.splitChain("\tb"));
     // nested: the rest is one escaped token
-    assertArrayEquals(new String[] {"a", "b\tc"}, Decorator.splitChain("a\tb\\\tc"));
-    assertArrayEquals(new String[] {"a", "b\tc\\\td"}, Decorator.splitChain("a\tb\\\tc\\\\\td"));
+    assertEquals(Pair.of("a", "b\tc"), Decorator.splitChain("a\tb\\\tc"));
+    assertEquals(Pair.of("a", "b\tc\\\td"), Decorator.splitChain("a\tb\\\tc\\\\\td"));
     // flat: the rest is handed on as it is
-    assertArrayEquals(new String[] {"a", "b\tc"}, Decorator.splitChain("a\tb\tc"));
-    assertArrayEquals(new String[] {"a", "b\tc\\\td"}, Decorator.splitChain("a\tb\tc\\\td"));
+    assertEquals(Pair.of("a", "b\tc"), Decorator.splitChain("a\tb\tc"));
+    assertEquals(Pair.of("a", "b\tc\\\td"), Decorator.splitChain("a\tb\tc\\\td"));
     // own segment escaping is honoured
-    assertArrayEquals(new String[] {"a\tb", "c\td"}, Decorator.splitChain("a\\\tb\tc\td"));
-    assertArrayEquals(new String[] {"\\x", "c"}, Decorator.splitChain("'\\x'\tc"));
-    assertNull(Decorator.splitChain("a")[1]);
-    assertTrue(Decorator.splitChain("a\tb\tc")[1].contains("\t"));
+    assertEquals(Pair.of("a\tb", "c\td"), Decorator.splitChain("a\\\tb\tc\td"));
+    assertEquals(Pair.of("\\x", "c"), Decorator.splitChain("'\\x'\tc"));
+    assertNull(Decorator.splitChain("a").second);
+    assertTrue(Decorator.splitChain("a\tb\tc").second.contains("\t"));
   }
 }
