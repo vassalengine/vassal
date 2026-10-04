@@ -787,6 +787,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       }
     }
   }
+
   /**
    * Custom tree cell renderer - Change color of component names based on
    * translation status of children
