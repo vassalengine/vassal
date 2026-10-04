@@ -221,8 +221,6 @@ public class SequenceEncoderTest {
 
   @Test
   public void testSingleQuoteBug2481() {
-    // NB: This input can only be produced by hand-editing,
-    // not by SequenceEncoder.
     final String bad = "stuff,'";
 
     final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(bad, ',');
