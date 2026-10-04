@@ -56,7 +56,8 @@ import VASSAL.configure.StringArrayConfigurer;
  * String C = BC.nextToken();
  * </pre>
  *
- * The characters in -.0123456789EINaefilnrstuy MUST NOT be used as delimiters.
+ * The characters in -.0123456789EINaefilnrstuy and U+E000 MUST NOT be used
+ * as delimiters.
  */
 public class SequenceEncoder {
   private StringBuilder buffer;
@@ -67,9 +68,9 @@ public class SequenceEncoder {
   // anything which looks like a number (possibly in scientific notation,
   // e.g., 1E-6) but also true, false, Infinity, and NaN.
   //
-  // These characters are all terrible choices for delimiters anyway, so
-  // hopefully no one uses them, but we have to check just in case.
-  private static final String UGLY = "-.0123456789EINaefilnrstuy"; //NON-NLS
+  // We also exclude U+E000, which is used as our marker for length-prefixed
+  // strings.
+  private static final String UGLY = "-.0123456789EINaefilnrstuy\uE000";
 
   public SequenceEncoder(char delimiter) {
     if (UGLY.indexOf(delimiter) != -1) {
@@ -92,7 +93,7 @@ public class SequenceEncoder {
     }
   }
 
-  private static final char LEN_DELIM = '\uE000';
+  private static final char LEN_MARKER = '\uE000';
 
   @SuppressWarnings("PMD.ConsecutiveLiteralAppends")
   public SequenceEncoder append(String s) {
@@ -101,11 +102,11 @@ public class SequenceEncoder {
     if (s == null || s.isEmpty()) {
       return this;
     }
-    else if (s.charAt(0) == LEN_DELIM || s.indexOf(delim) != -1) {
+    else if (s.charAt(0) == LEN_MARKER || s.indexOf(delim) != -1) {
       buffer
-        .append(LEN_DELIM)
+        .append(LEN_MARKER)
         .append(s.length())
-        .append(LEN_DELIM)
+        .append(delim)
         .append(s);
     }
     else if (s.charAt(0) == '\'' && s.charAt(s.length() - 1) == '\'') {
@@ -237,9 +238,9 @@ public class SequenceEncoder {
         return "";
       }
 
-      if (val.charAt(start) == LEN_DELIM) {
+      if (val.charAt(start) == LEN_MARKER) {
         // parse the length of the token
-        final int lend = val.indexOf(LEN_DELIM, start + 2);
+        final int lend = val.indexOf(delim, start + 2);
         if (lend == -1) {
           throw new IllegalStateException();
         }
