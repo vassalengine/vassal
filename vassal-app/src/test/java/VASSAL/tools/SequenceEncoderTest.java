@@ -324,7 +324,7 @@ public class SequenceEncoderTest {
   }
 
   @Test
-  public void testEncodeDecoderContainingStringLengthMarker() {
+  public void testEncodeDecodeContainingStringLengthMarker() {
     final char delim = ',';
 
     final SequenceEncoder se = new SequenceEncoder(delim);
