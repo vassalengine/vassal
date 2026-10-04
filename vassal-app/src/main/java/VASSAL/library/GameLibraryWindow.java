@@ -310,10 +310,8 @@ public class GameLibraryWindow extends JFrame {
         ret.setForeground(table.getForeground());
         ret.setBackground(table.getBackground());
       }
-      if (value instanceof Boolean) 
-        this.setSelected(((Boolean)value).booleanValue());
-      else
-        this.setSelected(false);
+      this.setSelected(value instanceof Boolean &&
+                       ((Boolean)value).booleanValue()); 
       
       return ret;
     }
@@ -520,10 +518,9 @@ public class GameLibraryWindow extends JFrame {
     try {
       treeTable.setDefaultRenderer(URL.class, new URLRenderer());
     }
-    catch (IOException ignored) {
+    catch (IOException e) {
       // This should not happen - URLs are valid
-      System.out.println(ignored);
-      ignored.printStackTrace(System.out);
+      ErrorDialog.bug(e);
     }
       
 
@@ -933,8 +930,6 @@ public class GameLibraryWindow extends JFrame {
     }
     catch (Exception e) {
       // This should hopefully not happen
-      System.out.println(e);
-      e.printStackTrace();
       ErrorDialog.bug(e);
     }
   }
