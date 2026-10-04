@@ -219,7 +219,7 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
       downKey = d.downKey;
       resetCommand = d.resetCommand;
       resetKey = d.resetKey;
-      resetLevel = d.resetLevel;
+      resetLevel = new FormattedString(d.resetLevel); // mutable, so each instance has its own
       drawUnderneathWhenSelected = d.drawUnderneathWhenSelected;
       xOff = d.xOff;
       yOff = d.yOff;
@@ -261,9 +261,9 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
   /**
    * The immutable part of a Layer's type, parsed once per distinct type
    * string and shared by every instance (see {@link TraitTypeCache}): the
-   * image names, key strokes and commands, the reset-level format (only
-   * ever evaluated), and the per-level painters, which depend on the image
-   * alone. The current level, the key commands and the image bounds stay
+   * image names, key strokes and commands, the reset-level format (as text:
+   * {@link FormattedString} is mutable, so each instance builds its own), and
+   * the per-level painters, which depend on the image alone. The current level, the key commands and the image bounds stay
    * per piece, and so do the arrays behind the protected fields: an
    * instance receives copies, since a subclass may write into them.
    */
@@ -278,7 +278,7 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
     final String downCommand;
     final String activateCommand;
     final String resetCommand;
-    final FormattedString resetLevel;
+    final String resetLevel;
     final boolean loopLevels;
     final NamedKeyStroke resetKey;
     final boolean followProperty;
@@ -321,7 +321,7 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
       downKey = st.nextToken("");
       resetCommand = st.nextToken("");
       resetKey = st.nextNamedKeyStroke();
-      resetLevel = new FormattedString(st.nextToken("1"));
+      resetLevel = st.nextToken("1");
       drawUnderneathWhenSelected = st.nextBoolean(false);
       xOff = st.nextInt(0);
       yOff = st.nextInt(0);

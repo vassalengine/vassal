@@ -197,7 +197,9 @@ public class RestrictCommands extends Decorator implements EditablePiece {
     final TypeData d = TraitTypeCache.lookup(TypeData.class, type, TypeData::new);
     name = d.name;
     action = d.action;
-    propertyMatch = d.propertyMatch;
+    // PropertyExpression has public mutators, so each instance gets its own,
+    // built from the shared source text.
+    propertyMatch = new PropertyExpression(d.propertyMatch);
     // A copy of the shared array: it is a protected field a subclass may
     // write into, and that must not reach the other sharers.
     watchKeys = d.watchKeys.clone();
@@ -207,7 +209,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
   private static final class TypeData {
     final String name;
     final String action;
-    final PropertyExpression propertyMatch;
+    final String propertyMatch;
     final NamedKeyStroke[] watchKeys;
 
     TypeData(String type) {
@@ -215,7 +217,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
       st.nextToken();
       name = st.nextToken("");
       action = st.nextToken(HIDE);
-      propertyMatch = new PropertyExpression(st.nextToken(""));
+      propertyMatch = st.nextToken("");
 
       final String keys = st.nextToken("");
       if (keys.indexOf(',') > 0) {

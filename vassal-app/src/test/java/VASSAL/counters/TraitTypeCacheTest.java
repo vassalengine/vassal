@@ -31,6 +31,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.MockModuleTest;
 import VASSAL.build.module.properties.EnumeratedPropertyPrompt;
 import VASSAL.build.module.properties.IncrementProperty;
+import VASSAL.build.module.properties.PropertyChangerConfigurer;
 import VASSAL.build.module.properties.PropertyPrompt;
 import VASSAL.build.module.properties.PropertySetter;
 import VASSAL.configure.DynamicKeyCommandListConfigurer;
@@ -108,6 +109,54 @@ public class TraitTypeCacheTest extends MockModuleTest {
     }
   }
 
+  /** A mutable handle (FormattedString, PropertyExpression) is per instance, with the same text. */
+  private static void assertOwnCopy(FormattedString a, FormattedString b) {
+    assertNotSame(a, b);
+    assertEquals(a.getFormat(), b.getFormat());
+  }
+
+  private static void assertOwnCopy(PropertyExpression a, PropertyExpression b) {
+    assertNotSame(a, b);
+    assertEquals(a.getExpression(), b.getExpression());
+  }
+
+  /**
+   * The configurer-free key-command codec must read and write exactly what the editor's
+   * DynamicKeyCommandListConfigurer does, for every kind of property changer.
+   */
+  @Test
+  public void keyCommandCodecMatchesTheConfigurer() {
+    final String commands = String.join(",",
+      "Set:65,130:P,7",                            // set directly       // NON-NLS
+      "Up:66,130:I,1",                             // increment          // NON-NLS
+      "Ask:67,130:R,Enter a value",                // prompt             // NON-NLS
+      "Pick:68,130:E,Choose,Red\\,Green\\,Blue",   // prompt from a list // NON-NLS
+      "Named:NamedKey:P,$Ammo$ + 1",               // named key stroke   // NON-NLS
+      "Nothing::");                                // no key, default changer // NON-NLS
+    final DynamicProperty dp = new DynamicProperty(
+      DynamicProperty.ID + "Ammo;true,0,100,false;" + commands + ";desc", new BasicPiece()); // NON-NLS
+
+    // The trait reads and writes the list as the configurer does.
+    final DynamicKeyCommandListConfigurer config = new DynamicKeyCommandListConfigurer("kc", "", dp); // NON-NLS
+    config.setValue(commands);
+    final String viaConfigurer = config.getValueString();
+    final String viaTrait = DynamicProperty.encodeKeyCommands(DynamicProperty.decodeKeyCommands(commands, dp));
+    assertEquals(viaConfigurer, viaTrait);
+    assertEquals(viaTrait, DynamicProperty.encodeKeyCommands(dp.keyCommands));
+
+    // ... and decodes the configurer's output to the same commands, entry by entry.
+    final DynamicProperty.DynamicKeyCommand[] fromTrait = DynamicProperty.decodeKeyCommands(viaConfigurer, dp);
+    final java.util.List<Object> fromConfigurer = config.getListValue();
+    assertEquals(fromConfigurer.size(), fromTrait.length);
+    for (int i = 0; i < fromTrait.length; i++) {
+      final DynamicProperty.DynamicKeyCommand c = (DynamicProperty.DynamicKeyCommand) fromConfigurer.get(i);
+      assertEquals(c.getName(), fromTrait[i].getName());
+      assertEquals(c.getNamedKeyStroke(), fromTrait[i].getNamedKeyStroke());
+      assertEquals(c.getPropChanger().getClass(), fromTrait[i].getPropChanger().getClass());
+      assertEquals(PropertyChangerConfigurer.encode(c.getPropChanger()), PropertyChangerConfigurer.encode(fromTrait[i].getPropChanger()));
+    }
+  }
+
   @Test
   public void triggerActionsOfOneTypeShareTheirParsedType() {
     final String TRIGGER = triggerType("Fire"); // NON-NLS
@@ -115,10 +164,11 @@ public class TraitTypeCacheTest extends MockModuleTest {
     final TriggerAction b = new TriggerAction(TRIGGER, new BasicPiece());
     assertSharedElements(a.watchKeys, b.watchKeys);
     assertSharedElements(a.actionKeys, b.actionKeys);
-    assertSame(a.propertyMatch, b.propertyMatch);
-    assertSame(a.whileExpression, b.whileExpression);
-    assertSame(a.loopCount, b.loopCount);
-    assertSame(a.indexStep, b.indexStep);
+    // Expressions and formatted strings are mutable, so each instance has its own, with the same text.
+    assertOwnCopy(a.propertyMatch, b.propertyMatch);
+    assertOwnCopy(a.whileExpression, b.whileExpression);
+    assertOwnCopy(a.loopCount, b.loopCount);
+    assertOwnCopy(a.indexStep, b.indexStep);
     assertEquals(TRIGGER, a.myGetType());
     assertEquals(TRIGGER, b.myGetType());
     assertNotSame(a.myGetKeyCommands(), b.myGetKeyCommands());
@@ -138,7 +188,7 @@ public class TraitTypeCacheTest extends MockModuleTest {
     final RestrictCommands a = new RestrictCommands(RESTRICT, new BasicPiece());
     final RestrictCommands b = new RestrictCommands(RESTRICT, new BasicPiece());
     assertSharedElements(a.watchKeys, b.watchKeys);
-    assertSame(a.propertyMatch, b.propertyMatch);
+    assertOwnCopy(a.propertyMatch, b.propertyMatch);
     assertEquals(RESTRICT, b.myGetType());
   }
 
@@ -167,7 +217,7 @@ public class TraitTypeCacheTest extends MockModuleTest {
     assertSharedElements(a.commonName, b.commonName);
     assertSharedElements(a.imagePainter, b.imagePainter);
     assertNotSame(a.size, b.size); // bounds are handed out to callers, so each instance has its own
-    assertSame(a.resetLevel, b.resetLevel);
+    assertOwnCopy(a.resetLevel, b.resetLevel);
     assertEquals(LAYER, a.myGetType());
     a.mySetState("2"); // NON-NLS
     b.mySetState("1"); // NON-NLS

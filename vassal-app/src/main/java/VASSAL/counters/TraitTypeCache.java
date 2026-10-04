@@ -48,7 +48,11 @@ import VASSAL.build.GameModule;
  * is open to a subclass, which may write into it, and such a write must
  * reach that instance alone. The trait assigns a {@code clone()} of the
  * shared array instead, which costs an array header per instance while the
- * elements stay shared.</p>
+ * elements stay shared. Nor are {@link VASSAL.tools.FormattedString} and
+ * {@link VASSAL.configure.PropertyExpression} immutable: both have public
+ * setters, so a trait keeps their source text in its shared data and builds
+ * its own instance of each. That costs little, since a FormattedString is a
+ * small handle on a parsed expression that its own cache already shares.</p>
  *
  * <p>Strings are not the point of this cache: {@link VASSAL.tools.SequenceEncoder.Decoder}
  * has interned every token since 2021. It is the objects built from them.</p>

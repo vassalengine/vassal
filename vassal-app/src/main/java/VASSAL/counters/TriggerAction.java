@@ -416,7 +416,10 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     name = d.name;
     command = d.command;
     key = d.key;
-    propertyMatch = d.propertyMatch;
+    // FormattedString and PropertyExpression have public mutators, so each
+    // instance gets its own, built from the shared source text; the parsed
+    // Expression behind a FormattedString is already shared by its own cache.
+    propertyMatch = new PropertyExpression(d.propertyMatch);
     // Copies of the shared arrays: they are protected fields a subclass may
     // write into, and that must not reach the other sharers.
     watchKeys = d.watchKeys.clone();
@@ -425,39 +428,40 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     preLoopKey = d.preLoopKey;
     postLoopKey = d.postLoopKey;
     loopType = d.loopType;
-    whileExpression = d.whileExpression;
-    untilExpression = d.untilExpression;
-    loopCount = d.loopCount;
+    whileExpression = new PropertyExpression(d.whileExpression);
+    untilExpression = new PropertyExpression(d.untilExpression);
+    loopCount = new FormattedString(d.loopCount);
     index = d.index;
     indexProperty = d.indexProperty;
-    indexStart = d.indexStart;
-    indexStep = d.indexStep;
+    indexStart = new FormattedString(d.indexStart);
+    indexStep = new FormattedString(d.indexStep);
   }
 
   /**
    * The immutable part of a Trigger Action's type, parsed once per distinct
    * type string and shared by every instance (see {@link TraitTypeCache}).
-   * The expressions and formatted strings here are only ever evaluated,
-   * never given per-call properties, so they can be shared.
+   * The expressions and formatted strings are held as their source text:
+   * {@link PropertyExpression} and {@link FormattedString} are mutable, so
+   * each instance builds its own.
    */
   private static final class TypeData {
     final String name;
     final String command;
     final NamedKeyStroke key;
-    final PropertyExpression propertyMatch;
+    final String propertyMatch;
     final NamedKeyStroke[] watchKeys;
     final NamedKeyStroke[] actionKeys;
     final boolean loop;
     final NamedKeyStroke preLoopKey;
     final NamedKeyStroke postLoopKey;
     final String loopType;
-    final PropertyExpression whileExpression;
-    final PropertyExpression untilExpression;
-    final FormattedString loopCount;
+    final String whileExpression;
+    final String untilExpression;
+    final String loopCount;
     final boolean index;
     final String indexProperty;
-    final FormattedString indexStart;
-    final FormattedString indexStep;
+    final String indexStart;
+    final String indexStep;
 
     TypeData(String type) {
       final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
@@ -465,20 +469,20 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
       name = st.nextToken(""); //$NON-NLS-1$
       command = st.nextToken("Trigger"); //$NON-NLS-1$
       key = st.nextNamedKeyStroke('T');
-      propertyMatch = new PropertyExpression(st.nextToken("")); //$NON-NLS-1$
+      propertyMatch = st.nextToken(""); //$NON-NLS-1$
       watchKeys = decodeKeys(st.nextToken("")); //$NON-NLS-1$
       actionKeys = decodeKeys(st.nextToken("")); //$NON-NLS-1$
       loop = st.nextBoolean(false);
       preLoopKey = st.nextNamedKeyStroke();
       postLoopKey = st.nextNamedKeyStroke();
       loopType = st.nextToken(LoopControl.LOOP_COUNTED);
-      whileExpression = new PropertyExpression(st.nextToken("")); //$NON-NLS-1$
-      untilExpression = new PropertyExpression(st.nextToken("")); //$NON-NLS-1$
-      loopCount = new FormattedString(st.nextToken("")); //$NON-NLS-1$
+      whileExpression = st.nextToken(""); //$NON-NLS-1$
+      untilExpression = st.nextToken(""); //$NON-NLS-1$
+      loopCount = st.nextToken(""); //$NON-NLS-1$
       index = st.nextBoolean(false);
       indexProperty = st.nextToken(""); //$NON-NLS-1$
-      indexStart = new FormattedString(st.nextToken("1"));
-      indexStep = new FormattedString(st.nextToken("1"));
+      indexStart = st.nextToken("1");
+      indexStep = st.nextToken("1");
     }
 
     private static NamedKeyStroke[] decodeKeys(String keys) {
