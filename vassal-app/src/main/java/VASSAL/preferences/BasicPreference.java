@@ -137,8 +137,11 @@ public abstract class BasicPreference extends AbstractConfigurable {
   }
 
   public abstract Class<?> getDefaultClass();
+
   public abstract String getDefaultValue();
+
   public abstract void setDefaultValue(Object value);
+
   public abstract Configurer getPreferenceConfigurer();
 
   @Override

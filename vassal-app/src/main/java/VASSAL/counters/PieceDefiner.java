@@ -1467,6 +1467,7 @@ public class PieceDefiner extends JPanel {
       setDragImage(img);
       setDragImageOffset(new Point(0, h));
     }
+
     /**
      * Move Only
      */
