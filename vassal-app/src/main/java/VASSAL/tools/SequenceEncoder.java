@@ -110,6 +110,8 @@ public class SequenceEncoder {
         .append(s);
     }
     else if (s.charAt(0) == '\'' && s.charAt(s.length() - 1) == '\'') {
+      // Stupid legacy case: Old input will have been quoted, so we must
+      // quote single quotes to prevent them from being stripped when decoding.
       buffer
         .append('\'')
         .append(s)
