@@ -1806,7 +1806,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       // if node changes, we'll need the current Index.
       if (newNodeSelected) {
         selectedNodeIndex = getBookmark(
-          (List<DefaultMutableTreeNode>) getSearchNodes(
+          getSearchNodes(
             (DefaultMutableTreeNode) selectedNode.getRoot()
           ),
           selectedNode
