@@ -223,12 +223,22 @@ public class GameLibraryWindow extends JFrame {
    */
   static class FileSize {
     protected final long size;
+
+    /** CTOR */
     public FileSize(long size) {
       this.size = size;
     }
+
+    /**
+     * File size in bytes
+     */
     public long asLong() {
       return size;
     }
+
+    /**
+     * File size as a string
+     */
     @Override
     public String toString() {
       if (size < 0) // When not loaded yet, we get negative value
@@ -245,16 +255,23 @@ public class GameLibraryWindow extends JFrame {
         + " " + units[digitGroups]; //NON-NLS
     }
   }
+  
   /**
    * Editor for boolean cells
    */
   static class BooleanEditor extends DefaultCellEditor {
     private static final long serialVersionUID = 1L;
+
+    /** Constructor */
     public BooleanEditor() {
       super(new JCheckBox());
       final JCheckBox checkBox = (JCheckBox)getComponent();
       checkBox.setHorizontalAlignment(JCheckBox.CENTER);
     }
+
+    /**
+     * Get compoent to edit cell
+     */
     @Override
     public Component getTableCellEditorComponent(JTable  table,
                                                  Object  value,
@@ -270,7 +287,8 @@ public class GameLibraryWindow extends JFrame {
                                                row,
                                                column);
     }
-  }  
+  }
+  
   /**
    * A Boolean (CheckBox) renderer that may show nothing (tri-state)
    */
@@ -290,6 +308,9 @@ public class GameLibraryWindow extends JFrame {
       setSelected(false);
     }
 
+    /**
+     * Get component to render cell
+     */
     @Override
     public Component getTableCellRendererComponent(JTable table,
                                                    Object value,
@@ -315,6 +336,10 @@ public class GameLibraryWindow extends JFrame {
       
       return ret;
     }
+
+    /**
+     * Refresh on UI change
+     */
     @Override
     public void updateUI() {
       super.updateUI();
@@ -322,6 +347,7 @@ public class GameLibraryWindow extends JFrame {
         nullComponent.updateUI();
     }
   }
+  
   /**
    * "Edit" a URL - open URL in web-browser 
    */
@@ -331,6 +357,9 @@ public class GameLibraryWindow extends JFrame {
     private String url;
     private JLabel comp;
 
+    /**
+     * Get component to edit cell
+     */
     @Override
     public Component getTableCellEditorComponent(JTable  table,
                                                  Object  value,
@@ -350,11 +379,16 @@ public class GameLibraryWindow extends JFrame {
 
       return comp;
     }
+
+    /**
+     * Get the result of the edit
+     */
     @Override
     public Object getCellEditorValue() {
       return url;
     }
   }
+  
   /**
    * How to render dates - horizontally centred
    */
@@ -364,6 +398,7 @@ public class GameLibraryWindow extends JFrame {
     public URLRenderer() throws IOException {
       super();
     }
+    
     /**
      * Should return a hand curser when hovering over the cell
      */
@@ -371,6 +406,7 @@ public class GameLibraryWindow extends JFrame {
     public Cursor getCursor() {
       return cursor;
     }
+    
     /**
      * Tool-tip when hovering over the cell
      */
@@ -378,6 +414,10 @@ public class GameLibraryWindow extends JFrame {
     public String getToolTipText() {
       return Resources.getString("LibraryBrowser.open_project_tooltip"); //NON-NLS
     }
+
+    /**
+     * Get component to render value
+     */
     @Override
     public Component getTableCellRendererComponent(JTable table,
                                                    Object value,
@@ -450,6 +490,7 @@ public class GameLibraryWindow extends JFrame {
         setText((value == null) ? "" : formatter.format(value));
     }
   }
+  
   /**
    * How to render dates - horizontally centred
    */
@@ -939,17 +980,41 @@ public class GameLibraryWindow extends JFrame {
    */
   interface TreeNode {
     TreeNode getParent();
+
+    /** Get type */
     String   getType();
+
+    /** Get value in column */
     Object   getValueAt(int column);
+
+    /** Get list of children */
     List<?>  getChildren();
+
+    /** Is this a leaf node? */
     boolean  isLeaf();
+
+    /** Is this selected? */
     Boolean  isSelected();
+
+    /** Get the file size or sum of sizes */
     FileSize getSize();
+
+    /** Get date */
     Date     getDate();
+
+    /** Add selected files to collection */
     void     collectSelectedFiles(List<LibraryFile> list);
+
+    /** Get the tool-tip */
     String   getToolTip(int column);
+
+    /** Set value in column */
     void     setValueAt(Object value, int column);
+
+    /** Select or deselect cell */
     void     setSelected(boolean v);
+
+    /** Whether column can be editted */
     boolean  canEdit(int column);
   }
 
@@ -1003,6 +1068,7 @@ public class GameLibraryWindow extends JFrame {
     public FileSize getSize() {
       return new FileSize(0);
     }
+    
     /**
      * Mark this node
      */
@@ -1107,6 +1173,7 @@ public class GameLibraryWindow extends JFrame {
     public String getType() {
       return "Root"; //NON-NLS
     }
+    
     @Override
     public Object getValueAt(int column) {
       return "Root"; //NON-NLS
@@ -1144,18 +1211,23 @@ public class GameLibraryWindow extends JFrame {
     public String  getSlug() {
       return slug;
     }
+    
     public Project getProject() {
       return project;
     }
+    
     public boolean isLoaded() {
       return loaded;
     }
+    
     public void    setLoaded(boolean done) {
       loaded = done;
     }
+    
     public boolean isLoading() {
       return loading;
     }
+    
     public void    setLoading(boolean going) {
       loading = going;
     }
@@ -1394,6 +1466,7 @@ public class GameLibraryWindow extends JFrame {
         list.add(file);
       }
     }
+    
     /**
      * Sum sizes of children
      */
