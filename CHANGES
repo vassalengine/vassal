@@ -1,5 +1,7 @@
 3.7.30 - ???
 
+* 15151: Quote path variable in MacOS launch script
+
 3.7.29 - 3 October 2026
 
 * 15141: Fix NPE when rendering boards to non-map contexts

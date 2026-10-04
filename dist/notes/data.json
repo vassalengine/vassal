@@ -24,6 +24,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 15151, "desc": "Quote path variable in MacOS launch script" }
       ],
       "improvements": [
       ],
