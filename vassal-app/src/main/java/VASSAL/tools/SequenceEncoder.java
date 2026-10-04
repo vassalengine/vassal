@@ -124,26 +124,12 @@ public class SequenceEncoder {
     return this;
   }
 
-  private void appendEscapedChar(char c) {
+  public SequenceEncoder append(char c) {
+    startBufferOrAddDelimiter();
     if (c == delim) {
       buffer.append('\\');
     }
     buffer.append(c);
-  }
-
-  @SuppressWarnings("PMD.ConsecutiveLiteralAppends")
-  public SequenceEncoder append(char c) {
-    startBufferOrAddDelimiter();
-
-    if (c == '\'') {
-      buffer.append('\'');
-      appendEscapedChar(c);
-      buffer.append('\'');
-    }
-    else {
-      appendEscapedChar(c);
-    }
-
     return this;
   }
 
