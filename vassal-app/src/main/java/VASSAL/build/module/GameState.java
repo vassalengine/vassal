@@ -77,7 +77,6 @@ import java.awt.dnd.InvalidDnDOperationException;
 import java.awt.event.ActionEvent;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -1747,10 +1746,10 @@ public class GameState implements CommandEncoder {
            entry = zipInput.getNextEntry()) {
         if (SAVEFILE_ZIP_ENTRY.equals(entry.getName())) {
           try (InputStream din = new DeobfuscatingInputStream(zipInput);
-               Reader rin = new InputStreamReader(din, StandardCharsets.UTF_8);
-               Reader in2 = new BufferedReader(rin, 1 << 16)) {
-            // Decoded straight from the stream: the command log is never held whole.
-            return GameModule.getGameModule().decode(in2);
+               Reader rin = new InputStreamReader(din, StandardCharsets.UTF_8)) {
+            // Decoded straight from the stream: the command log is never held
+            // whole. The serializer reads the Reader in blocks of its own.
+            return GameModule.getGameModule().decode(rin);
           }
         }
       }
