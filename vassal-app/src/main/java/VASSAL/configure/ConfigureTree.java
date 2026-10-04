@@ -2050,6 +2050,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       this.matchCase = matchCase;
       writePrefs();
     }
+
     public boolean isMatchModule() {
       return matchModule;
     }
@@ -2080,6 +2081,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     public boolean isMatchSimple() {
       return matchSimple;
     }
+
     public void setMatchSimple(boolean matchSimple) {
       this.matchFull = matchSimple;
       writePrefs();
@@ -2088,6 +2090,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     public boolean isMatchFull() {
       return matchFull;
     }
+
     public void setMatchFull(boolean matchFull) {
       this.matchFull = matchFull;
       writePrefs();

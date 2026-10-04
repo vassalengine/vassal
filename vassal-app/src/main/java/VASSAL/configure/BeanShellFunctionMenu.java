@@ -558,6 +558,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
 
     return propName;
   }
+
   /**
    * Added the property names from an Editable Piece into their
    * own menu

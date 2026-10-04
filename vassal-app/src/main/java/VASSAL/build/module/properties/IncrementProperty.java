@@ -112,9 +112,13 @@ public class IncrementProperty implements PropertyChanger {
 
   public interface Constraints extends PropertySource {
     int getMinimumValue();
+
     int getMaximumValue();
+
     boolean isNumeric();
+
     boolean isWrap();
+
     PropertySource getPropertySource();
   }
 }
