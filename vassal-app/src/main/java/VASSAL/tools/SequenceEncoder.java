@@ -95,7 +95,6 @@ public class SequenceEncoder {
 
   private static final char LEN_MARKER = '\uE000';
 
-  @SuppressWarnings("PMD.ConsecutiveLiteralAppends")
   public SequenceEncoder append(String s) {
     startBufferOrAddDelimiter();
 
