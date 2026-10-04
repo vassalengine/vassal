@@ -558,11 +558,14 @@ public class GameLibrary {
   public abstract static class AbstractProjectsComparator
     implements Comparator<Entry<String, Project>> {
 
+    /** Compare left and right */
     @Override
     public int compare(Entry<String, Project> lhs,
                        Entry<String, Project> rhs) {
       return compareTo(lhs.getValue(), rhs.getValue());
     }
+
+    /** Compare left and right */
     protected abstract int compareTo(Project lhs, Project rhs);
   }
   
@@ -572,13 +575,16 @@ public class GameLibrary {
    */
   public static AbstractProjectsComparator getSlugComparator(boolean asc) {
     return new AbstractProjectsComparator() {
+      /** Compare left and right */
       @Override
       public int compare(Entry<String, Project> lhs,
-                            Entry<String, Project> rhs) {
+                         Entry<String, Project> rhs) {
         if (asc) 
           return lhs.getKey().compareTo(rhs.getKey());
         return rhs.getKey().compareTo(lhs.getKey());
       }
+
+      /** Compare left and right */
       @Override
       protected int compareTo(Project lhs, Project rhs) {
         return 0;
@@ -592,6 +598,7 @@ public class GameLibrary {
    */
   public static AbstractProjectsComparator getTitleComparator(boolean asc) {
     return new AbstractProjectsComparator() {
+      /** Compare left and right */
       @Override
       protected int compareTo(Project lhs, Project rhs) {
         if (asc)
@@ -607,6 +614,7 @@ public class GameLibrary {
    */
   public static AbstractProjectsComparator getDateComparator(boolean asc) {
     return new AbstractProjectsComparator() {
+      /** Compare left and right */
       @Override
       protected int compareTo(Project lhs, Project rhs) {
         if (asc)
