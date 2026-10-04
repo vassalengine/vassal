@@ -99,13 +99,22 @@ public class TraitTypeCacheTest extends MockModuleTest {
     return DynamicProperty.ID + new SequenceEncoder(';').append("Strength").append("true,0,10,false").append(list).append("Strength of the unit").getValue(); // NON-NLS
   }
 
+  /** The arrays are each instance's own (a subclass may write into them); their elements are shared. */
+  private static void assertSharedElements(Object[] a, Object[] b) {
+    assertNotSame(a, b);
+    assertEquals(a.length, b.length);
+    for (int i = 0; i < a.length; i++) {
+      assertSame(a[i], b[i]);
+    }
+  }
+
   @Test
   public void triggerActionsOfOneTypeShareTheirParsedType() {
     final String TRIGGER = triggerType("Fire"); // NON-NLS
     final TriggerAction a = new TriggerAction(TRIGGER, new BasicPiece());
     final TriggerAction b = new TriggerAction(TRIGGER, new BasicPiece());
-    assertSame(a.watchKeys, b.watchKeys);
-    assertSame(a.actionKeys, b.actionKeys);
+    assertSharedElements(a.watchKeys, b.watchKeys);
+    assertSharedElements(a.actionKeys, b.actionKeys);
     assertSame(a.propertyMatch, b.propertyMatch);
     assertSame(a.whileExpression, b.whileExpression);
     assertSame(a.loopCount, b.loopCount);
@@ -128,7 +137,7 @@ public class TraitTypeCacheTest extends MockModuleTest {
     final String RESTRICT = restrictType();
     final RestrictCommands a = new RestrictCommands(RESTRICT, new BasicPiece());
     final RestrictCommands b = new RestrictCommands(RESTRICT, new BasicPiece());
-    assertSame(a.watchKeys, b.watchKeys);
+    assertSharedElements(a.watchKeys, b.watchKeys);
     assertSame(a.propertyMatch, b.propertyMatch);
     assertEquals(RESTRICT, b.myGetType());
   }
@@ -154,10 +163,10 @@ public class TraitTypeCacheTest extends MockModuleTest {
     final String LAYER = layerType();
     final Embellishment a = new Embellishment(LAYER, new BasicPiece());
     final Embellishment b = new Embellishment(LAYER, new BasicPiece());
-    assertSame(a.imageName, b.imageName);
-    assertSame(a.commonName, b.commonName);
-    assertSame(a.imagePainter, b.imagePainter);
-    assertSame(a.size, b.size);
+    assertSharedElements(a.imageName, b.imageName);
+    assertSharedElements(a.commonName, b.commonName);
+    assertSharedElements(a.imagePainter, b.imagePainter);
+    assertNotSame(a.size, b.size); // bounds are handed out to callers, so each instance has its own
     assertSame(a.resetLevel, b.resetLevel);
     assertEquals(LAYER, a.myGetType());
     a.mySetState("2"); // NON-NLS

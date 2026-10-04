@@ -417,8 +417,10 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     command = d.command;
     key = d.key;
     propertyMatch = d.propertyMatch;
-    watchKeys = d.watchKeys;
-    actionKeys = d.actionKeys;
+    // Copies of the shared arrays: they are protected fields a subclass may
+    // write into, and that must not reach the other sharers.
+    watchKeys = d.watchKeys.clone();
+    actionKeys = d.actionKeys.clone();
     loop = d.loop;
     preLoopKey = d.preLoopKey;
     postLoopKey = d.postLoopKey;

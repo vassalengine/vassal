@@ -223,8 +223,12 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
       drawUnderneathWhenSelected = d.drawUnderneathWhenSelected;
       xOff = d.xOff;
       yOff = d.yOff;
-      imageName = d.imageName;
-      commonName = d.commonName;
+      // The arrays themselves are this instance's own: they are protected
+      // fields, and a subclass (MassPieceLoader's, for one) may write into
+      // them, which must not reach the other sharers. Their elements are
+      // shared.
+      imageName = d.imageName.clone();
+      commonName = d.commonName.clone();
       loopLevels = d.loopLevels;
       name = d.name;
       rndKey = d.rndKey;
@@ -244,8 +248,11 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
 
       value = canBeActivated() ? -1 : 1;
       nValues = imageName.length;
-      size = d.size;
-      imagePainter = d.imagePainter;
+      // Bounds are returned to callers by getCurrentImageBounds(), so each
+      // instance computes its own; the painters, which hold only the image
+      // op and its scale cache, are shared, in an array of this instance's own.
+      size = new Rectangle[imageName.length];
+      imagePainter = d.imagePainter.clone();
     }
 
     commands = null;
@@ -255,8 +262,10 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
    * The immutable part of a Layer's type, parsed once per distinct type
    * string and shared by every instance (see {@link TraitTypeCache}): the
    * image names, key strokes and commands, the reset-level format (only
-   * ever evaluated), and the per-level painters and bounds, which depend on
-   * the image alone. The current level and the key commands stay per piece.
+   * ever evaluated), and the per-level painters, which depend on the image
+   * alone. The current level, the key commands and the image bounds stay
+   * per piece, and so do the arrays behind the protected fields: an
+   * instance receives copies, since a subclass may write into them.
    */
   private static final class TypeData {
     final String activateKey;
@@ -292,8 +301,6 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
     NamedKeyStroke decreaseKeyStroke;
     final String description;
     final double scale;
-    /** Bounds per level, computed lazily from the image and identical for every sharer. */
-    final Rectangle[] size;
     /** Painters per level; they hold only the image op and a scale cache, nothing per piece. */
     final ScaledImagePainter[] imagePainter;
 
@@ -374,7 +381,6 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
       }
 
 
-      size = new Rectangle[imageName.length];
       imagePainter = new ScaledImagePainter[imageName.length];
       for (int i = 0; i < imageName.length; ++i) {
         imagePainter[i] = new ScaledImagePainter();

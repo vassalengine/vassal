@@ -40,12 +40,15 @@ import VASSAL.build.GameModule;
  * keeping only its state (the values that {@code mySetState} sets) per
  * instance.</p>
  *
- * <p>What is shared must be immutable, or mutated only in ways every
- * sharer would perform identically (a lazily computed, deterministic cache
- * such as a layer's image bounds). Anything holding a reference to the
+ * <p>What is shared must be immutable. Anything holding a reference to the
  * piece, such as a {@link KeyCommand}, or used as per-call scratch space,
  * such as a {@link VASSAL.tools.FormattedString} whose properties are set
- * before each evaluation, stays per instance.</p>
+ * before each evaluation, stays per instance. An array is not immutable, so
+ * a trait never hands a shared array to one of its fields: a protected field
+ * is open to a subclass, which may write into it, and such a write must
+ * reach that instance alone. The trait assigns a {@code clone()} of the
+ * shared array instead, which costs an array header per instance while the
+ * elements stay shared.</p>
  *
  * <p>Strings are not the point of this cache: {@link VASSAL.tools.SequenceEncoder.Decoder}
  * has interned every token since 2021. It is the objects built from them.</p>

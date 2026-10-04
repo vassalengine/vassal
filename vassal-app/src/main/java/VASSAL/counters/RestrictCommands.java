@@ -198,7 +198,9 @@ public class RestrictCommands extends Decorator implements EditablePiece {
     name = d.name;
     action = d.action;
     propertyMatch = d.propertyMatch;
-    watchKeys = d.watchKeys;
+    // A copy of the shared array: it is a protected field a subclass may
+    // write into, and that must not reach the other sharers.
+    watchKeys = d.watchKeys.clone();
   }
 
   /** The immutable part of the type, parsed once per distinct type string (see {@link TraitTypeCache}). */
