@@ -784,6 +784,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       step();
     }
   }
+
   public class UndoAction extends AbstractAction {
     private static final long serialVersionUID = 1L;
 
