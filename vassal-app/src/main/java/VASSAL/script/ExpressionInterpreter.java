@@ -579,7 +579,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * @param prop  Property value
    * @return      converted integer value
    */
-  private static int IntPropValue(Object prop) {
+  private static int intPropValue(Object prop) {
     if (prop != null) {
       if (prop instanceof Integer) {
         return (Integer) prop;
@@ -646,16 +646,18 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   private Object sumStack(String property, PieceFilter filter, PropertySource ps) {
     int result = 0;
 
-    ps = translatePiece(ps);
-    if (ps instanceof GamePiece) {
-      final GamePiece piece = (GamePiece) ps;
-      final Stack s = ((GamePiece) ps).getParent();
-      if (s == null) {
-        result = updateTotal(result, piece, property, filter, true);
-      }
-      else {
-        for (final GamePiece gamePiece : s.asList()) {
-          result = updateTotal(result, gamePiece, property, filter, true);
+    if (property != null && !property.isEmpty()) {
+      ps = translatePiece(ps);
+      if (ps instanceof GamePiece) {
+        final GamePiece piece = (GamePiece) ps;
+        final Stack s = ((GamePiece) ps).getParent();
+        if (s == null) {
+          result = updateSum(result, piece, property, filter);
+        }
+        else {
+          for (final GamePiece gamePiece : s.asList()) {
+            result = updateSum(result, gamePiece, property, filter);
+          }
         }
       }
     }
@@ -694,7 +696,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       final GamePiece piece = (GamePiece) ps;
       final Stack s = ((GamePiece) ps).getParent();
       if (s == null) {
-        result = updateTotal(result, piece, property, filter, false);
+        result = updateCount(result, piece, property, filter);
       }
       else {
         if (filter == null && (property == null || property.isEmpty())) {
@@ -702,7 +704,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         }
         else {
           for (final GamePiece gamePiece: s.asList()) {
-            result = updateTotal(result, gamePiece, property, filter, false);
+            result = updateCount(result, gamePiece, property, filter);
           }
         }
       }
@@ -731,7 +733,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         if (a.getAttachName().equals(attachment)) {
           for (final GamePiece target : a.getAttachList()) {
             final Object prop = target.getProperty(property);
-            final int value = IntPropValue(prop);
+            final int value = intPropValue(prop);
             if (value > result) {
               result = value;
             }
@@ -765,7 +767,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         if (a.getAttachName().equals(attachment)) {
           for (final GamePiece target : a.getAttachList()) {
             final Object prop = target.getProperty(property);
-            final int value = IntPropValue(prop);
+            final int value = intPropValue(prop);
             if (value < result) {
               result = value;
             }
@@ -792,15 +794,17 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   private Object sumAttachment(String attachment, String property, PieceFilter filter, PropertySource ps) {
     int result = 0;
 
-    ps = translatePiece(ps);
+    if (property != null && !property.isEmpty()) {
+      ps = translatePiece(ps);
 
-    if (ps instanceof GamePiece) {
-      final GamePiece p = Decorator.getOutermost((Decorator)ps);
-      for (final GamePiece decorator : Decorator.getDecorators(p, Attachment.class)) {
-        final Attachment a = (Attachment) decorator;
-        if (a.getAttachName().equals(attachment)) {
-          for (final GamePiece target : a.getAttachList()) {
-            result = updateTotal(result, target, property, filter, true);
+      if (ps instanceof GamePiece) {
+        final GamePiece p = Decorator.getOutermost((Decorator)ps);
+        for (final GamePiece decorator : Decorator.getDecorators(p, Attachment.class)) {
+          final Attachment a = (Attachment) decorator;
+          if (a.getAttachName().equals(attachment)) {
+            for (final GamePiece target : a.getAttachList()) {
+              result = updateSum(result, target, property, filter);
+            }
           }
         }
       }
@@ -831,7 +835,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
     if (ps instanceof GamePiece) {
       for (final GamePiece target : Attachment.getAttachList((GamePiece) ps, attachment)) {
-        result = updateTotal(result, target, property, filter, false);
+        result = updateCount(result, target, property, filter);
       }
     }
 
@@ -864,37 +868,39 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   private Object sumMat(String property, PieceFilter filter, PropertySource ps) {
     int result = 0;
 
-    ps = translatePiece(ps);
+    if (property != null && !property.isEmpty()) {
+      ps = translatePiece(ps);
 
-    if (ps instanceof GamePiece) {
-      GamePiece gp = (GamePiece) ps;
-      GamePiece mat;
-      if (gp instanceof Decorator) {
-        gp  = Decorator.getOutermost(gp);
-        mat = Decorator.getDecorator(gp, Mat.class);
+      if (ps instanceof GamePiece) {
+        GamePiece gp = (GamePiece) ps;
+        GamePiece mat;
+        if (gp instanceof Decorator) {
+          gp = Decorator.getOutermost(gp);
+          mat = Decorator.getDecorator(gp, Mat.class);
 
-        if (mat == null) {
-          final MatCargo cargo = (MatCargo) Decorator.getDecorator(gp, MatCargo.class);
-          if (cargo != null) {
-            mat = cargo.getMat();
+          if (mat == null) {
+            final MatCargo cargo = (MatCargo) Decorator.getDecorator(gp, MatCargo.class);
+            if (cargo != null) {
+              mat = cargo.getMat();
+            }
           }
         }
-      }
-      else {
-        mat = null;
-      }
-
-      if (mat != null) {
-        mat = Decorator.getOutermost(mat);
-        final Mat actualMat = (Mat) Decorator.getDecorator(mat, Mat.class);
-        result = updateTotal(result, actualMat, property, filter, true);
-
-        for (final GamePiece cargo : actualMat.getContents()) {
-          result = updateTotal(result, cargo, property, filter, true);
+        else {
+          mat = null;
         }
-      }
-      else {
-        result = updateTotal(result, (GamePiece) ps, property, filter, true);
+
+        if (mat != null) {
+          mat = Decorator.getOutermost(mat);
+          final Mat actualMat = (Mat) Decorator.getDecorator(mat, Mat.class);
+          result = updateSum(result, actualMat, property, filter);
+
+          for (final GamePiece cargo : actualMat.getContents()) {
+            result = updateSum(result, cargo, property, filter);
+          }
+        }
+        else {
+          result = updateSum(result, (GamePiece) ps, property, filter);
+        }
       }
     }
     return result;
@@ -952,15 +958,15 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       if (mat != null) {
         mat = Decorator.getOutermost(mat);
         final Mat actualMat = (Mat) Decorator.getDecorator(mat, Mat.class);
-        result = updateTotal(result, actualMat, property, filter, false);
+        result = updateCount(result, actualMat, property, filter);
 
 
         for (final GamePiece cargo : actualMat.getContents()) {
-          result = updateTotal(result, cargo, property, filter, false);
+          result = updateCount(result, cargo, property, filter);
         }
       }
       else {
-        result = updateTotal(result, (GamePiece) ps, property, filter, false);
+        result = updateCount(result, (GamePiece) ps, property, filter);
       }
     }
 
@@ -1054,9 +1060,11 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   private Object sumLocation(String property, String locationName, Map map, PieceFilter filter) {
     int result = 0;
 
-    // Ask IndexManager for list of pieces on that map at that location. Stacks are not returned by the IM.
-    for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(map, BasicPiece.LOCATION_NAME, locationName)) {
-      result = updateTotal(result, piece, property, filter, true);
+    if (property != null && !property.isEmpty()) {
+      // Ask IndexManager for list of pieces on that map at that location. Stacks are not returned by the IM.
+      for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(map, BasicPiece.LOCATION_NAME, locationName)) {
+        result = updateSum(result, piece, property, filter);
+      }
     }
     return result;
   }
@@ -1140,7 +1148,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
     // Ask IndexManager for list of pieces on that map at that location. Stacks are not returned by the IM.
     for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(map, BasicPiece.LOCATION_NAME, locationName.toString())) {
-      result = updateTotal(result, piece, property, filter, false);
+      result = updateCount(result, piece, property, filter);
     }
 
     return result;
@@ -1191,9 +1199,11 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   private Object sumZone(String property, String zoneName, Map map, PieceFilter filter) {
     int result = 0;
 
-    // Ask IndexManager for list of pieces on that map at that zone. Stacks are not returned by the IM.
-    for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(map, BasicPiece.CURRENT_ZONE, zoneName)) {
-      result = updateTotal(result, piece, property, filter, true);
+    if (property != null && !property.isEmpty()) {
+      // Ask IndexManager for list of pieces on that map at that zone. Stacks are not returned by the IM.
+      for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(map, BasicPiece.CURRENT_ZONE, zoneName)) {
+        result = updateSum(result, piece, property, filter);
+      }
     }
     return result;
   }
@@ -1276,7 +1286,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
     // Ask IndexManager for list of pieces on that map at that location. Stacks are not returned by the IM.
     for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(map, BasicPiece.CURRENT_ZONE, zoneName)) {
-      result = updateTotal(result, piece, property, filter, false);
+      result = updateCount(result, piece, property, filter);
     }
 
     return result;
@@ -1333,19 +1343,20 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   private Object sumMap(String propertyName, Map map, PieceFilter filter) {
     int result = 0;
 
-    if (map != null) {
-      for (final GamePiece piece : map.getAllPieces()) {
-        if (piece instanceof Stack) {
-          for (final GamePiece p : ((Stack) piece).asList()) {
-            result = updateTotal(result, p, propertyName, filter, true);
+    if (propertyName != null && !propertyName.isEmpty()) {
+      if (map != null) {
+        for (final GamePiece piece : map.getAllPieces()) {
+          if (piece instanceof Stack) {
+            for (final GamePiece p : ((Stack) piece).asList()) {
+              result = updateSum(result, p, propertyName, filter);
+            }
           }
-        }
-        else {
-          result = updateTotal(result, piece, propertyName, filter, true);
+          else {
+            result = updateSum(result, piece, propertyName, filter);
+          }
         }
       }
     }
-
     return result;
   }
 
@@ -1431,11 +1442,11 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       for (final GamePiece piece : map.getAllPieces()) {
         if (piece instanceof Stack) {
           for (final GamePiece p : ((Stack) piece).asList()) {
-            result = updateTotal(result, p, propertyName, filter, false);
+            result = updateCount(result, p, propertyName, filter);
           }
         }
         else {
-          result = updateTotal(result, piece, propertyName, filter, false);
+          result = updateCount(result, piece, propertyName, filter);
         }
       }
     }
@@ -1486,7 +1497,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     if (ps instanceof GamePiece) {
       final Map map = ((GamePiece) ps).getMap();
       final Point from = ((GamePiece) ps).getPosition();
-      return range(from, new Point(IntPropValue(x), IntPropValue(y)), map, asPixels);
+      return range(from, new Point(intPropValue(x), intPropValue(y)), map, asPixels);
     }
     return 0;
   }
@@ -1508,8 +1519,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   private Object rangeMap(Object x1, Object y1, Object x2, Object y2, Object mapName, boolean asPixels) {
-    final Point from = new Point(IntPropValue(x1), IntPropValue(y1));
-    final Point to = new Point(IntPropValue(x2), IntPropValue(y2));
+    final Point from = new Point(intPropValue(x1), intPropValue(y1));
+    final Point to = new Point(intPropValue(x2), intPropValue(y2));
     final Map map = Map.getMapById(mapName.toString());
     return range(from, to, map, asPixels);
   }
@@ -1594,9 +1605,9 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       return result;
     }
 
-    int min = IntPropValue(minRange);
+    int min = intPropValue(minRange);
     if (min < 0) min = 0;
-    int max = IntPropValue(maxRange);
+    int max = intPropValue(maxRange);
     if (max < min) max = min;
 
 
@@ -1613,12 +1624,29 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       result = updateTotal(result, piece, propertyName, filter, doSum);
     }
 
-    // If the range is 0, check our sourcepiece as well.
+    // If the range is 0, check our source piece as well.
     if (min == 0) {
       result = updateTotal(result, sourcePiece, propertyName, filter, doSum);
     }
 
     return result;
+  }
+
+  private int updateCount(int currentTotal, GamePiece piece, String propertyName, PieceFilter filter) {
+    if (propertyName == null || propertyName.isEmpty() || !StringUtils.isEmpty((String)piece.getProperty(propertyName))) {
+      if (filter == null || filter.accept(piece)) {
+        return currentTotal + 1;
+      }
+    }
+    return currentTotal;
+  }
+
+  private int updateSum(int currentTotal, GamePiece piece, String propertyName, PieceFilter filter) {
+    final int count = intPropValue(StringUtils.defaultString((String)piece.getProperty(propertyName)));
+    if (count != 0 && (filter == null || filter.accept(piece))) {
+      return currentTotal + count;
+    }
+    return currentTotal;
   }
 
   /**
@@ -1633,33 +1661,17 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * @return              Updated total
    */
   private int updateTotal(int currentTotal, GamePiece piece, String propertyName, PieceFilter filter, boolean doSum) {
-    int newTotal = currentTotal;
-
-    // Check if this piece fails the filter. Null filter means no filter expression specified and we accept the piece.
-    if (filter != null && !filter.accept(piece)) {
-      // Failed, return the current total
-      return newTotal;
-    }
-
-    // Find the value of the specified property in the piece being tested
-    String value = "";
-    if (propertyName != null && !propertyName.isEmpty()) {
-      value = (String) piece.getProperty(propertyName);
-      if (value == null) value = "";
-    }
-
     if (doSum) {
-      // Summing - add the integer value of the property value, which will add 0 if not integer value found for the property
-      newTotal += IntPropValue(value);
-    }
-    else {
-      // Counting - Add 1 if the property name was not supplied, or the value of the property is non-blank.
-      if (propertyName == null || propertyName.isEmpty() || !value.isEmpty()) {
-        newTotal++;
+      if (propertyName != null && !propertyName.isEmpty()) {
+        return updateSum(currentTotal, piece, propertyName, filter);
+      }
+      else {
+        return 0;
       }
     }
-
-    return newTotal;
+    else {
+      return updateCount(currentTotal, piece, propertyName, filter);
+    }
   }
 
   /*
@@ -2020,7 +2032,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    */
   public Object sleep(Object ms, PropertySource ps) {
 
-    final int milliSeconds = IntPropValue(ms);
+    final int milliSeconds = intPropValue(ms);
     final JDialog dialog = new JDialog(GameModule.getGameModule().getPlayerWindow(), true);
     dialog.setLocation(-5000, -5000); // but, note! OS can't be relied on to put the window "off-screen". e.g. MacOS does 0,0
     dialog.setUndecorated(true); // keeps the dialog box invisible by virtue of zero content, perhaps making relocation redundant.
@@ -2029,7 +2041,4 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     dialog.setVisible(true);
     return "";
   }
-
-
 }
-

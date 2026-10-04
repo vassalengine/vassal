@@ -1,8 +1,36 @@
 3.8.0-beta3 - ???
 
+* 15121: Compress the saved-game command log with XZ
 * 15099: Removed the deprecated loadGameOld Action
 * 15097: Make Charts zoomable
 * 14581: Added animated symbolic dice button
+
+3.7.29 - 3 October 2026
+
+* 15141: Fix NPE when rendering boards to non-map contexts
+
+3.7.28 - 2 October 2026
+
+* 15131: Upgraded maven-artifact 3.10.0
+* 15130: Upgraded apache-maven 3.10.0
+* 15123: Upgraded checkstyle to 14.3.0
+* 15122: Upgraded commons-lang3 to 3.21.0
+* 15114: Upgraded logback-classic to 1.6.4
+* 15111: Fixed typos in menu item text
+* 15106: Upgraded slf4j-api to 2.0.20
+* 15096: Upgraded byte-buddy to 1.18.14
+* 15094: Upgraded asciidoctorj-pdf to 2.3.27
+* 15085: Upgraded maven-deploy-plugin to 3.2.0
+* 15084: Upgraded maven-install-plugin to 3.2.0
+* 15083: Tile large Charts
+* 15080: Upgraded clirr-maven-plugin to 2.9
+* 15079: Upgraded exec-maven-plugin to 3.6.4
+* 15068: Upgraded spotbugs-maven-plugin to 4.10.4.1
+* 15065: Switched from obsolete mockito-inline to mockito-core
+* 15054: Fix Truncated text label on hidden pieces
+* 15050: Upgraded maven-surefire-plugin to 3.6.0
+* 15042: Update MacOS launch script to allow more options
+* 14547: Optimize sum and count expressions
 
 3.8.0-beta2 - 13 September 2026
 
