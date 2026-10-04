@@ -135,7 +135,7 @@ public class SequenceEncoder {
   public SequenceEncoder append(char c) {
     startBufferOrAddDelimiter();
 
-    if (c == '\\' || c == '\'') {
+    if (c == '\'') {
       buffer.append('\'');
       appendEscapedChar(c);
       buffer.append('\'');
