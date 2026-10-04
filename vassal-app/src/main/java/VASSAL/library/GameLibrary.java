@@ -374,6 +374,7 @@ public class GameLibrary {
            ParseException {
     return getProjects(-1);
   }
+  
   /**
    * Get the list of projects.  This retrieves up to a maximum of
    * projects as fast as possible (100 at a time).
@@ -564,6 +565,7 @@ public class GameLibrary {
     }
     protected abstract int compareTo(Project lhs, Project rhs);
   }
+  
   // -------------------------------------------------------------------
   /**
    * Compare projects based on the slug
@@ -583,6 +585,7 @@ public class GameLibrary {
       }
     };
   }
+  
   // -------------------------------------------------------------------
   /**
    * Compare projects based on the game title
@@ -597,6 +600,7 @@ public class GameLibrary {
       }
     };
   }
+  
   // -------------------------------------------------------------------
   /**
    * Compare projects based on the last modified date
@@ -611,6 +615,7 @@ public class GameLibrary {
       }
     };
   }
+  
   // -------------------------------------------------------------------
   public static Map<String, Project> sortProjects(Map<String, Project> map,
                                                   AbstractProjectsComparator comparator) {
@@ -625,6 +630,7 @@ public class GameLibrary {
 
     return sorted;
   }
+  
   // _________________________________________________________________
   /**
    * Test program
