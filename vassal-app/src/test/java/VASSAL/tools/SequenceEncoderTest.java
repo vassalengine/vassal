@@ -91,6 +91,38 @@ public class SequenceEncoderTest {
   }
 
   @Test
+  public void testEncodeDecodeChar() {
+    final char VALUE = 'x';
+    final SequenceEncoder se = new SequenceEncoder(',').append(VALUE);
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(se.getValue(), ',');
+    assertEquals(VALUE, sd.nextChar('\0'));
+  }
+
+  @Test
+  public void testEncodeDecodeCharQuote() {
+    final char VALUE = '\'';
+    final SequenceEncoder se = new SequenceEncoder(',').append(VALUE);
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(se.getValue(), ',');
+    assertEquals(VALUE, sd.nextChar('\0'));
+  }
+
+  @Test
+  public void testEncodeDecodeCharBackslash() {
+    final char VALUE = '\\';
+    final SequenceEncoder se = new SequenceEncoder(',').append(VALUE);
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(se.getValue(), ',');
+    assertEquals(VALUE, sd.nextChar('\0'));
+  }
+
+  @Test
+  public void testEncodeDecodeCharDelim() {
+    final char VALUE = ',';
+    final SequenceEncoder se = new SequenceEncoder(VALUE).append(VALUE);
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(se.getValue(), ',');
+    assertEquals(VALUE, sd.nextChar('\0'));
+  }
+
+  @Test
   public void testEncodeDecodeColor() {
     final Color VALUE = new Color(32, 145, 212);
     final SequenceEncoder se = new SequenceEncoder(',').append(VALUE);
@@ -221,8 +253,6 @@ public class SequenceEncoderTest {
 
   @Test
   public void testSingleQuoteBug2481() {
-    // NB: This input can only be produced by hand-editing,
-    // not by SequenceEncoder.
     final String bad = "stuff,'";
 
     final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(bad, ',');

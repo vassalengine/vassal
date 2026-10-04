@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2000-2009 by Rodney Kinney, Joel Uckelman
+ * Copyright (c) 2000-2026 by Rodney Kinney, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -55,6 +55,9 @@ import VASSAL.configure.StringArrayConfigurer;
  * String B = BC.nextToken();
  * String C = BC.nextToken();
  * </pre>
+ *
+ * The characters in -.0123456789EINaefilnrstuy and U+E000 MUST NOT be used
+ * as delimiters.
  */
 public class SequenceEncoder {
   private StringBuilder buffer;
@@ -63,18 +66,17 @@ public class SequenceEncoder {
   // Ugly delimiters: The characters in UGLY can occur in what's returned
   // by String.valueOf() for boolean, int, long, and double---that is,
   // anything which looks like a number (possibly in scientific notation,
-  // e.g., 1E-6) but also true, false, Infinity, and NaN. When the delimiter
-  // is none of these characters, we can hand these primitive types directly
-  // to the StringBuilder without doing any escaping.
+  // e.g., 1E-6) but also true, false, Infinity, and NaN.
   //
-  // These characters are all terrible choices for delimiters anyway, so
-  // hopefully no one uses them, but we have to check just in case.
-  private static final String UGLY = "-.0123456789EINaefilnrstuy"; //NON-NLS
-  private final boolean uglyDelim;
+  // We also exclude U+E000, which is used as our marker for length-prefixed
+  // strings.
+  private static final String UGLY = "-.0123456789EINaefilnrstuy\uE000";
 
   public SequenceEncoder(char delimiter) {
+    if (UGLY.indexOf(delimiter) != -1) {
+      throw new IllegalArgumentException("Illegal delimiter " + delimiter);
+    }
     delim = delimiter;
-    uglyDelim = UGLY.indexOf(delim) != -1;
   }
 
   public SequenceEncoder(String val, char delimiter) {
@@ -91,81 +93,64 @@ public class SequenceEncoder {
     }
   }
 
-  @SuppressWarnings("PMD.ConsecutiveLiteralAppends")
+  private static final char LEN_MARKER = '\uE000';
+
   public SequenceEncoder append(String s) {
     startBufferOrAddDelimiter();
 
     if (s == null || s.isEmpty()) {
       return this;
     }
-
-    if (s.charAt(0) == '\\' ||
-        (s.charAt(0) == '\'' && s.charAt(s.length() - 1) == '\'')) {
-      buffer.append('\'');
-      appendEscapedString(s);
-      buffer.append('\'');
+    else if (s.charAt(0) == LEN_MARKER || s.indexOf(delim) != -1) {
+      buffer
+        .append(LEN_MARKER)
+        .append(s.length())
+        .append(delim)
+        .append(s);
+    }
+    else if (s.charAt(0) == '\'' && s.charAt(s.length() - 1) == '\'') {
+      // Stupid legacy case: Old input will have been quoted, so we must
+      // quote single quotes to prevent them from being stripped when decoding.
+      buffer
+        .append('\'')
+        .append(s)
+        .append('\'');
     }
     else {
-      appendEscapedString(s);
+      buffer.append(s);
     }
 
     return this;
   }
 
-  private void appendEscapedChar(char c) {
+  public SequenceEncoder append(char c) {
+    startBufferOrAddDelimiter();
     if (c == delim) {
       buffer.append('\\');
     }
     buffer.append(c);
-  }
-
-  @SuppressWarnings("PMD.ConsecutiveLiteralAppends")
-  public SequenceEncoder append(char c) {
-    startBufferOrAddDelimiter();
-
-    if (c == '\\' || c == '\'') {
-      buffer.append('\'');
-      appendEscapedChar(c);
-      buffer.append('\'');
-    }
-    else {
-      appendEscapedChar(c);
-    }
-
     return this;
   }
 
   public SequenceEncoder append(int i) {
-    if (uglyDelim) {
-      return append(String.valueOf(i));
-    }
     startBufferOrAddDelimiter();
     buffer.append(i);
     return this;
   }
 
   public SequenceEncoder append(long l) {
-    if (uglyDelim) {
-      return append(String.valueOf(l));
-    }
     startBufferOrAddDelimiter();
     buffer.append(l);
     return this;
   }
 
   public SequenceEncoder append(double d) {
-    if (uglyDelim) {
-      return append(String.valueOf(d));
-    }
     startBufferOrAddDelimiter();
     buffer.append(d);
     return this;
   }
 
   public SequenceEncoder append(boolean b) {
-    if (uglyDelim) {
-      return append(String.valueOf(b));
-    }
     startBufferOrAddDelimiter();
     buffer.append(b);
     return this;
@@ -193,19 +178,6 @@ public class SequenceEncoder {
 
   public String getValue() {
     return buffer != null ? buffer.toString() : null;
-  }
-
-  private void appendEscapedString(String s) {
-    int begin = 0;
-    int end = s.indexOf(delim);
-
-    while (begin <= end) {
-      buffer.append(s, begin, end).append('\\');
-      begin = end;
-      end = s.indexOf(delim, end + 1);
-    }
-
-    buffer.append(s, begin, s.length());
   }
 
   public static class Decoder implements Iterator<String> {
@@ -253,52 +225,78 @@ public class SequenceEncoder {
         return "";
       }
 
-      if (buf != null) {
-        buf.setLength(0);
-      }
+      if (val.charAt(start) == LEN_MARKER) {
+        // parse the length of the token
+        final int lend = val.indexOf(delim, start + 2);
+        if (lend == -1) {
+          throw new IllegalStateException();
+        }
 
-      String tok = null;
-      int i = start;
-      for ( ; i < stop; ++i) {
-        if (val.charAt(i) == delim) {
-          if (i > 0 && val.charAt(i - 1) == '\\') {
-            // escaped delimiter; piece together the token
-            if (buf == null) {
-              buf = new StringBuilder();
-            }
-            buf.append(val, start, i - 1);
-            start = i;
-          }
-          else {
-            // real delimiter
-            if (buf == null || buf.length() == 0) {
-              // no escapes; take the token whole
-              tok = val.substring(start, i);
+        final int len = Integer.parseInt(val.substring(start + 1, lend));
+
+        // get the token
+        final String tok = val.substring(lend + 1, lend + 1 + len);
+
+        // advance
+        start = lend + 1 + len + 1;
+
+        if (start > stop) {
+          // we've consumed the whole length; when start == stop, there
+          // is an empty token after the length-encoded one still to read
+          start = stop;
+          val = null;
+        }
+
+        return tok.intern();
+      }
+      else {
+        if (buf != null) {
+          buf.setLength(0);
+        }
+
+        String tok = null;
+        int i = start;
+        for ( ; i < stop; ++i) {
+          if (val.charAt(i) == delim) {
+            if (i > 0 && val.charAt(i - 1) == '\\') {
+              // escaped delimiter; piece together the token
+              if (buf == null) {
+                buf = new StringBuilder();
+              }
+              buf.append(val, start, i - 1);
+              start = i;
             }
             else {
-              // had an earlier escape; cobble on the end
-              buf.append(val, start, i);
+              // real delimiter
+              if (buf == null || buf.length() == 0) {
+                // no escapes; take the token whole
+                tok = val.substring(start, i);
+              }
+              else {
+                // had an earlier escape; cobble on the end
+                buf.append(val, start, i);
+              }
+              start = i + 1;
+              break;
             }
-            start = i + 1;
-            break;
           }
         }
-      }
 
-      if (start < i) {
-        // i == stop; we reached the end without a delimiter
-        if (buf == null || buf.length() == 0) {
-          // no escapes; take the token whole
-          tok = val.substring(start);
+        if (start < i) {
+          // i == stop; we reached the end without a delimiter
+          if (buf == null || buf.length() == 0) {
+            // no escapes; take the token whole
+            tok = val.substring(start);
+          }
+          else {
+            // had an earlier escape; cobble on the end
+            buf.append(val, start, stop);
+          }
+          val = null;
         }
-        else {
-          // had an earlier escape; cobble on the end
-          buf.append(val, start, stop);
-        }
-        val = null;
-      }
 
-      return unquote(tok != null ? tok : buf).intern();
+        return unquote(tok != null ? tok : buf).intern();
+      }
     }
 
     private String unquote(CharSequence cs) {
