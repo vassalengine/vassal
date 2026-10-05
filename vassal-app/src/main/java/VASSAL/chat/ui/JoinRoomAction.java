@@ -25,11 +25,11 @@ import VASSAL.chat.node.NodeRoom;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.swing.Dialogs;
 
+import javax.swing.AbstractAction;
+import javax.swing.JOptionPane;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.AbstractAction;
-import javax.swing.JOptionPane;
 
 /**
  * When invoked, will join a game room on the server
@@ -68,6 +68,7 @@ public class JoinRoomAction extends AbstractAction {
           Resources.getString("Chat.vassal_configuration_error"),
           sb.toString(),
           JOptionPane.INFORMATION_MESSAGE);
+        return; // No game for you! Come back when you've updated...
       }
     }
 
