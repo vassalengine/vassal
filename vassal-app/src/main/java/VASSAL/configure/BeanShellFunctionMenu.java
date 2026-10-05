@@ -40,6 +40,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
   private static final long serialVersionUID = 1L;
 
   public static final String COMMENT = "Comment";
+  public static final String TO_NUMBER = "ToNumber";
 
   protected static final String[] NO_HINTS = new String[0];
 
@@ -208,6 +209,9 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     addFunction(stringMenu, ".toLowerCase", Resources.getString("Editor.BeanShell.StoLowerCase"), new String[] {Resources.getString("Editor.BeanShell.target_string")}, "()"); //NON-NLS
     addFunction(stringMenu, ".toString", Resources.getString("Editor.BeanShell.Stostring"), new String[] { Resources.getString("Editor.BeanShell.target_string") }, "()"); //NON-NLS
 
+    final JMenu numberMenu = new JMenu(Resources.getString("Editor.BeanShell.number"));
+    addFunction(numberMenu, TO_NUMBER, Resources.getString("Editor.BeanShell.Stonumber"), new String[] { Resources.getString("Editor.BeanShell.target_string") }, "(string)"); //NON-NLS
+
     final JMenu randomMenu = new JMenu(Resources.getString("Editor.BeanShell.random"));
     addFunction(randomMenu, "Random", Resources.getString("Editor.BeanShell.random1"), new String[] { Resources.getString("Editor.BeanShell.randomhi") }, "(x)"); //NON-NLS
     addFunction(randomMenu, "Random", Resources.getString("Editor.BeanShell.random2"), new String[] { Resources.getString("Editor.BeanShell.randomlo"), Resources.getString("Editor.BeanShell.randomhi") }, "(x, y)"); //NON-NLS
@@ -371,6 +375,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     functionMenu.add(propMenu);
     functionMenu.add(randomMenu);
     functionMenu.add(stringMenu);
+    functionMenu.add(numberMenu);
     functionMenu.add(countMenu);
     functionMenu.add(rangeMenu);
 
