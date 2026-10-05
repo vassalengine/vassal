@@ -267,6 +267,8 @@ public class GameLibraryWindow extends JFrame {
       super(new JCheckBox());
       final JCheckBox checkBox = (JCheckBox)getComponent();
       checkBox.setHorizontalAlignment(JCheckBox.CENTER);
+      checkBox.setOpaque(true);
+      checkBox.setBorder(null);
     }
 
     /**
@@ -281,11 +283,22 @@ public class GameLibraryWindow extends JFrame {
       if (value == null)
         return null;
       
-      return super.getTableCellEditorComponent(table,
-                                               value,
-                                               isSelected,
-                                               row,
-                                               column);
+      final Component ret = super.getTableCellEditorComponent(table,
+                                                              value,
+                                                              isSelected,
+                                                              row,
+                                                              column);
+
+      if (isSelected || shouldSelectCell(null)) {
+        ret.setForeground(table.getSelectionForeground());
+        ret.setBackground(table.getSelectionBackground());
+      }
+      else {
+        ret.setForeground(table.getForeground());
+        ret.setBackground(table.getBackground());
+      }
+
+      return ret;
     }
   }
   
@@ -303,9 +316,9 @@ public class GameLibraryWindow extends JFrame {
       nullComponent = new JLabel();
       nullComponent.setOpaque(true);
       setHorizontalAlignment(CENTER);
-      setBorderPainted(true);
       setOpaque(true);
       setSelected(false);
+      setBorder(null);
     }
 
     /**
@@ -322,7 +335,7 @@ public class GameLibraryWindow extends JFrame {
       // take it to mean no defined value (tri-state: true, false,
       // unknown).
       final Component ret = (value instanceof Boolean ? this : nullComponent);
-      
+
       if (isSelected) {
         ret.setForeground(table.getSelectionForeground());
         ret.setBackground(table.getSelectionBackground());
@@ -1014,6 +1027,9 @@ public class GameLibraryWindow extends JFrame {
     /** Select or deselect cell */
     void     setSelected(boolean v);
 
+    /** Possibly deselect self as parent, and propate to own parents */
+    void setSelectedParent(boolean selected);
+
     /** Whether column can be editted */
     boolean  canEdit(int column);
   }
@@ -1068,18 +1084,28 @@ public class GameLibraryWindow extends JFrame {
     public FileSize getSize() {
       return new FileSize(0);
     }
-    
+
     /**
      * Mark this node
      */
     @Override
     public void setSelected(boolean selected) {
       // Cascade selection down to children
+      setSelectedParent(selected);
       for (final Object child : getChildren()) {
         if (child instanceof TreeNode) {
           ((TreeNode) child).setSelected(selected);
         }
       }
+    }
+
+    /**
+     * Mark this node as parent and mark parent to this
+     */
+    @Override
+    public void setSelectedParent(boolean selected) {
+      if (parent != null)
+        parent.setSelectedParent(selected);
     }
 
     /**
@@ -1345,6 +1371,13 @@ public class GameLibraryWindow extends JFrame {
       this.selected = selected;
       super.setSelected(selected);
     }
+
+    @Override
+    public void setSelectedParent(boolean selected) {
+      if (!selected)
+        this.selected = selected;
+      super.setSelectedParent(selected);
+    }
     
     /**
      * Has the user selected this node?
@@ -1440,6 +1473,7 @@ public class GameLibraryWindow extends JFrame {
     @Override
     public void setSelected(boolean selected) {
       this.selected = Boolean.valueOf(selected);
+      super.setSelected(selected);
     }
     
     /**
