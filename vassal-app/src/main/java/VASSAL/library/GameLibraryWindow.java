@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.Future;
 import java.util.stream.Stream;
 import javax.swing.AbstractAction;
 import javax.swing.AbstractCellEditor;
@@ -95,6 +96,7 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.lang.Pair;
+import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.menu.CheckBoxMenuItemProxy;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
@@ -154,7 +156,319 @@ public class GameLibraryWindow extends JFrame {
   public static final int URL_COLUMN   = 5;
   public static final int CHECK_WIDTH  = 40;
   
+  // _________________________________________________________________
+  public class InfoDialog {
+    private InfoDialog() {}
+
+    public static Future<?> show(String messageKey, Object... args) {
+      return ProblemDialog.show(JOptionPane.INFORMATION_MESSAGE,
+                          messageKey, args);
+    }
+
+    public static Future<?> showDisableable(String key,
+                                            String messageKey,
+                                            Object... args) {
+      return ProblemDialog.showDisableable(JOptionPane.INFORMATION_MESSAGE,
+                                           key, messageKey, args);
+    }
+  }
+  
+  // _________________________________________________________________
+  /**
+   * A file size column value
+   */
+  static class FileSize {
+    protected final long size;
+
+    /** CTOR */
+    public FileSize(long size) {
+      this.size = size;
+    }
+
+    /**
+     * File size in bytes
+     */
+    public long asLong() {
+      return size;
+    }
+
+    /**
+     * File size as a string
+     */
+    @Override
+    public String toString() {
+      if (size < 0) // When not loaded yet, we get negative value
+        return "?"; //NON-NLS
+      if (size == 0) // Uh?!
+        return ""; //NON-NLS
     
+      final String[] units  = {
+        "B", "kB", "MB", "GB", "TB", "PB", "EB" }; //NON-NLS
+      final int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
+      
+      return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, //NON-NLS
+                                                               digitGroups))
+        + " " + units[digitGroups]; //NON-NLS
+    }
+  }
+  
+  // _________________________________________________________________
+  /**
+   * Editor for boolean cells
+   */
+  static class BooleanEditor extends DefaultCellEditor {
+    private static final long serialVersionUID = 1L;
+
+    /** Constructor */
+    public BooleanEditor() {
+      super(new JCheckBox());
+      final JCheckBox checkBox = (JCheckBox)getComponent();
+      checkBox.setHorizontalAlignment(JCheckBox.CENTER);
+    }
+
+    /**
+     * Get compoent to edit cell
+     */
+    @Override
+    public Component getTableCellEditorComponent(JTable  table,
+                                                 Object  value,
+                                                 boolean isSelected,
+                                                 int     row,
+                                                 int     column) {
+      if (value == null)
+        return null;
+      
+      final Component ret = super.getTableCellEditorComponent(table,
+                                                              value,
+                                                              isSelected,
+                                                              row,
+                                                              column);
+
+      if (isSelected || shouldSelectCell(null)) {
+        ret.setForeground(table.getSelectionForeground());
+        ret.setBackground(table.getSelectionBackground());
+      }
+      else {
+        ret.setForeground(table.getForeground());
+        ret.setBackground(table.getBackground());
+      }
+
+      return ret;
+    }
+  }
+  
+  // -----------------------------------------------------------------
+  /**
+   * A Boolean (CheckBox) renderer that may show nothing (tri-state)
+   */
+  static class BooleanRenderer extends JCheckBox
+    implements TableCellRenderer, UIResource {
+    
+    private static final long serialVersionUID = 1L;
+    protected JLabel nullComponent;
+    
+    public BooleanRenderer() {
+      super();
+      nullComponent = new JLabel();
+      nullComponent.setOpaque(true);
+      setHorizontalAlignment(CENTER);
+      setOpaque(true);
+      setSelected(false);
+    }
+
+    /**
+     * Get component to render cell
+     */
+    @Override
+    public Component getTableCellRendererComponent(JTable table,
+                                                   Object value,
+                                                   boolean isSelected,
+                                                   boolean hasFocus,
+                                                   int row,
+                                                   int column) {
+      // We may get called with something other than boolean. If so,
+      // take it to mean no defined value (tri-state: true, false,
+      // unknown).
+      final Component ret = (value instanceof Boolean ? this : nullComponent);
+
+      if (isSelected) {
+        ret.setForeground(table.getSelectionForeground());
+        ret.setBackground(table.getSelectionBackground());
+      }
+      else {
+        ret.setForeground(table.getForeground());
+        ret.setBackground(table.getBackground());
+      }
+      this.setSelected(value instanceof Boolean &&
+                       ((Boolean)value).booleanValue()); 
+      
+      return ret;
+    }
+
+    /**
+     * Refresh on UI change
+     */
+    @Override
+    public void updateUI() {
+      super.updateUI();
+      if (nullComponent != null)
+        nullComponent.updateUI();
+    }
+  }
+  
+  // -----------------------------------------------------------------
+  /**
+   * "Edit" a URL - open URL in web-browser 
+   */
+  private static class URLEditor extends AbstractCellEditor
+    implements TableCellEditor {
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Get component to edit cell
+     */
+    @Override
+    public Component getTableCellEditorComponent(JTable  table,
+                                                 Object  value,
+                                                 boolean isSelected,
+                                                 int     row,
+                                                 int     column) {
+      BrowserSupport.openURL(value.toString());
+
+      InfoDialog.showDisableable("LibraryBrowser.open_project", //NON-NLS
+                                 "LibraryBrowser.open_project", //NON-NLS
+                                 value.toString());
+                                 
+      return null; 
+    }
+
+    /**
+     * Get the result of the edit
+     */
+    @Override
+    public Object getCellEditorValue() {
+      return null; 
+    }
+  }
+  
+  // -----------------------------------------------------------------
+  /**
+   * How to render dates - horizontally centred
+   */
+  static class URLRenderer extends DefaultTableCellRenderer.UIResource {
+    private static final long serialVersionUID = 1L;
+    private static Cursor cursor = new Cursor(Cursor.HAND_CURSOR);
+    public URLRenderer() throws IOException {
+      super();
+    }
+    
+    /**
+     * Should return a hand curser when hovering over the cell
+     */
+    @Override
+    public Cursor getCursor() {
+      return cursor;
+    }
+    
+    /**
+     * Tool-tip when hovering over the cell
+     */
+    @Override
+    public String getToolTipText() {
+      return Resources.getString("LibraryBrowser.open_project_tooltip"); //NON-NLS
+    }
+
+  // -----------------------------------------------------------------
+    /**
+     * Get component to render value
+     */
+    @Override
+    public Component getTableCellRendererComponent(JTable table,
+                                                   Object value,
+                                                   boolean isSelected,
+                                                   boolean hasFocus,
+                                                   int row,
+                                                   int column) {
+      super.getTableCellRendererComponent(table,
+                                          value,
+                                          isSelected,
+                                          hasFocus,
+                                          row,
+                                          column);
+      if (value == null || value.toString().isBlank())
+        return this;
+
+      final Color fg = (isSelected ?
+                        table.getSelectionForeground() :
+                        table.getForeground());
+      final String sfg = String.format("#%02x%02x%02x", //NON-NLS
+                                       fg.getRed(),
+                                       fg.getGreen(),
+                                       fg.getBlue());
+      final int    slash = value.toString().lastIndexOf('/');
+      if (slash < 0) {
+        setText("");
+        return this;
+      }
+        
+      final String fn = value.toString().substring(slash + 1);
+      
+      setText("<html>\n" +                      //NON-NLS 
+              "  <style>\n" +                   //NON-NLS 
+              "    .selected {\n" +             //NON-NLS
+              "       color: " + sfg + "}\n" +  //NON-NLS
+              "  </style>\n" +                  //NON-NLS
+              "  <body>\n" +                    //NON-NLS
+              "    <a class=\"" + (isSelected ? "selected" : "") + //NON-NLS
+              "\" href=\"" + value + "\">" +
+              // "&#128279; &nbsp;" +       //NON-NLS
+              fn + 
+              // Resources.getString("LibraryBrowser.open_project_text") + //NON-NLS
+              "</a>\n" +                     //NON-NLS
+              "  </body>\n" +                   //NON-NLS
+              "</html>"                         //NON-NLS
+              );
+      
+      return this;
+    }
+  }
+
+  // -----------------------------------------------------------------
+  /**
+   * How to render dates - horizontally centred
+   */
+  static class DateRenderer extends DefaultTableCellRenderer.UIResource {
+    private static final long serialVersionUID = 1L;
+    private static DateFormat formatter =
+      new SimpleDateFormat("dd-MMM-yy", Locale.getDefault()); //NON-NLS
+    public DateRenderer() {
+      super();
+      setHorizontalAlignment(CENTER);
+    }
+
+    @Override
+    public void setValue(Object value) {
+      if (formatter == null) {
+        formatter = DateFormat.getDateInstance();
+      }
+      if (value instanceof Date)
+        setText((value == null) ? "" : formatter.format(value));
+    }
+  }
+  
+  // -----------------------------------------------------------------
+  /**
+   * How to render dates - horizontally centred
+   */
+  static class FileSizeRenderer extends DefaultTableCellRenderer.UIResource {
+    private static final long serialVersionUID = 1L;
+    public FileSizeRenderer() {
+      super();
+      setHorizontalAlignment(RIGHT);
+    }
+  }
+
+  // _________________________________________________________________
   public GameLibraryWindow() throws IOException {
     super("Game Library"); //NON-NLS
     
@@ -218,303 +532,7 @@ public class GameLibraryWindow extends JFrame {
     loadProjects();
   }
 
-  /**
-   * A file size column value
-   */
-  static class FileSize {
-    protected final long size;
-
-    /** CTOR */
-    public FileSize(long size) {
-      this.size = size;
-    }
-
-    /**
-     * File size in bytes
-     */
-    public long asLong() {
-      return size;
-    }
-
-    /**
-     * File size as a string
-     */
-    @Override
-    public String toString() {
-      if (size < 0) // When not loaded yet, we get negative value
-        return "?"; //NON-NLS
-      if (size == 0) // Uh?!
-        return ""; //NON-NLS
-    
-      final String[] units  = {
-        "B", "kB", "MB", "GB", "TB", "PB", "EB" }; //NON-NLS
-      final int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
-      
-      return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, //NON-NLS
-                                                               digitGroups))
-        + " " + units[digitGroups]; //NON-NLS
-    }
-  }
-  
-  /**
-   * Editor for boolean cells
-   */
-  static class BooleanEditor extends DefaultCellEditor {
-    private static final long serialVersionUID = 1L;
-
-    /** Constructor */
-    public BooleanEditor() {
-      super(new JCheckBox());
-      final JCheckBox checkBox = (JCheckBox)getComponent();
-      checkBox.setHorizontalAlignment(JCheckBox.CENTER);
-      checkBox.setOpaque(true);
-      checkBox.setBorder(null);
-    }
-
-    /**
-     * Get compoent to edit cell
-     */
-    @Override
-    public Component getTableCellEditorComponent(JTable  table,
-                                                 Object  value,
-                                                 boolean isSelected,
-                                                 int     row,
-                                                 int     column) {
-      if (value == null)
-        return null;
-      
-      final Component ret = super.getTableCellEditorComponent(table,
-                                                              value,
-                                                              isSelected,
-                                                              row,
-                                                              column);
-
-      if (isSelected || shouldSelectCell(null)) {
-        ret.setForeground(table.getSelectionForeground());
-        ret.setBackground(table.getSelectionBackground());
-      }
-      else {
-        ret.setForeground(table.getForeground());
-        ret.setBackground(table.getBackground());
-      }
-
-      return ret;
-    }
-  }
-  
-  /**
-   * A Boolean (CheckBox) renderer that may show nothing (tri-state)
-   */
-  static class BooleanRenderer extends JCheckBox
-    implements TableCellRenderer, UIResource {
-    
-    private static final long serialVersionUID = 1L;
-    protected JLabel nullComponent;
-    
-    public BooleanRenderer() {
-      super();
-      nullComponent = new JLabel();
-      nullComponent.setOpaque(true);
-      setHorizontalAlignment(CENTER);
-      setOpaque(true);
-      setSelected(false);
-      setBorder(null);
-    }
-
-    /**
-     * Get component to render cell
-     */
-    @Override
-    public Component getTableCellRendererComponent(JTable table,
-                                                   Object value,
-                                                   boolean isSelected,
-                                                   boolean hasFocus,
-                                                   int row,
-                                                   int column) {
-      // We may get called with something other than boolean. If so,
-      // take it to mean no defined value (tri-state: true, false,
-      // unknown).
-      final Component ret = (value instanceof Boolean ? this : nullComponent);
-
-      if (isSelected) {
-        ret.setForeground(table.getSelectionForeground());
-        ret.setBackground(table.getSelectionBackground());
-      }
-      else {
-        ret.setForeground(table.getForeground());
-        ret.setBackground(table.getBackground());
-      }
-      this.setSelected(value instanceof Boolean &&
-                       ((Boolean)value).booleanValue()); 
-      
-      return ret;
-    }
-
-    /**
-     * Refresh on UI change
-     */
-    @Override
-    public void updateUI() {
-      super.updateUI();
-      if (nullComponent != null)
-        nullComponent.updateUI();
-    }
-  }
-  
-  /**
-   * "Edit" a URL - open URL in web-browser 
-   */
-  private static class URLEditor extends AbstractCellEditor
-    implements TableCellEditor {
-    private static final long serialVersionUID = 1L;
-    private String url;
-    private JLabel comp;
-
-    /**
-     * Get component to edit cell
-     */
-    @Override
-    public Component getTableCellEditorComponent(JTable  table,
-                                                 Object  value,
-                                                 boolean isSelected,
-                                                 int     row,
-                                                 int     column) {
-      if (comp == null) {
-        comp = new JLabel("<html><body>" +  //NON-NLS
-                          Resources.getString("LibraryBrowser.open_project_opening") +  //NON-NLS
-                          "</body></html>");  //NON-NLS
-      }
-      
-      url = value.toString();
-      
-      BrowserSupport.openURL(url);
-      stopCellEditing();
-
-      return comp;
-    }
-
-    /**
-     * Get the result of the edit
-     */
-    @Override
-    public Object getCellEditorValue() {
-      return url;
-    }
-  }
-  
-  /**
-   * How to render dates - horizontally centred
-   */
-  static class URLRenderer extends DefaultTableCellRenderer.UIResource {
-    private static final long serialVersionUID = 1L;
-    private static Cursor cursor = new Cursor(Cursor.HAND_CURSOR);
-    public URLRenderer() throws IOException {
-      super();
-    }
-    
-    /**
-     * Should return a hand curser when hovering over the cell
-     */
-    @Override
-    public Cursor getCursor() {
-      return cursor;
-    }
-    
-    /**
-     * Tool-tip when hovering over the cell
-     */
-    @Override
-    public String getToolTipText() {
-      return Resources.getString("LibraryBrowser.open_project_tooltip"); //NON-NLS
-    }
-
-    /**
-     * Get component to render value
-     */
-    @Override
-    public Component getTableCellRendererComponent(JTable table,
-                                                   Object value,
-                                                   boolean isSelected,
-                                                   boolean hasFocus,
-                                                   int row,
-                                                   int column) {
-      super.getTableCellRendererComponent(table,
-                                          value,
-                                          isSelected,
-                                          hasFocus,
-                                          row,
-                                          column);
-      if (value == null || value.toString().isBlank())
-        return this;
-
-      final Color fg = (isSelected ?
-                        table.getSelectionForeground() :
-                        table.getForeground());
-      final String sfg = String.format("#%02x%02x%02x", //NON-NLS
-                                       fg.getRed(),
-                                       fg.getGreen(),
-                                       fg.getBlue());
-      final int    slash = value.toString().lastIndexOf('/');
-      if (slash < 0) {
-        setText("");
-        return this;
-      }
-        
-      final String fn = value.toString().substring(slash + 1);
-      
-      setText("<html>\n" +                      //NON-NLS 
-              "  <style>\n" +                   //NON-NLS 
-              "    .selected {\n" +             //NON-NLS
-              "       color: " + sfg + "}\n" +  //NON-NLS
-              "  </style>\n" +                  //NON-NLS
-              "  <body>\n" +                    //NON-NLS
-              "    <a class=\"" + (isSelected ? "selected" : "") + //NON-NLS
-              "\" href=\"" + value + "\">" +
-              // "&#128279; &nbsp;" +       //NON-NLS
-              fn + 
-              // Resources.getString("LibraryBrowser.open_project_text") + //NON-NLS
-              "</a>\n" +                     //NON-NLS
-              "  </body>\n" +                   //NON-NLS
-              "</html>"                         //NON-NLS
-              );
-      
-      return this;
-    }
-  }
-
-  /**
-   * How to render dates - horizontally centred
-   */
-  static class DateRenderer extends DefaultTableCellRenderer.UIResource {
-    private static final long serialVersionUID = 1L;
-    private static DateFormat formatter =
-      new SimpleDateFormat("dd-MMM-yy", Locale.getDefault()); //NON-NLS
-    public DateRenderer() {
-      super();
-      setHorizontalAlignment(CENTER);
-    }
-
-    @Override
-    public void setValue(Object value) {
-      if (formatter == null) {
-        formatter = DateFormat.getDateInstance();
-      }
-      if (value instanceof Date)
-        setText((value == null) ? "" : formatter.format(value));
-    }
-  }
-  
-  /**
-   * How to render dates - horizontally centred
-   */
-  static class FileSizeRenderer extends DefaultTableCellRenderer.UIResource {
-    private static final long serialVersionUID = 1L;
-    public FileSizeRenderer() {
-      super();
-      setHorizontalAlignment(RIGHT);
-    }
-  }
-  
+  // -----------------------------------------------------------------
   /**
    * Create the main user interface
    */
@@ -623,6 +641,7 @@ public class GameLibraryWindow extends JFrame {
     add(bottomPanel, BorderLayout.SOUTH);
   }
 
+  // -----------------------------------------------------------------
   /**
    * Create the menus
    */
@@ -745,6 +764,7 @@ public class GameLibraryWindow extends JFrame {
     setJMenuBar(mm.getMenuBarFor(this));    
   }
 
+  // -----------------------------------------------------------------
   /**
    * Read in modules already known to the module manager, so we can
    * flag them as already downloaded.
@@ -764,6 +784,7 @@ public class GameLibraryWindow extends JFrame {
     });
   }
   
+  // -----------------------------------------------------------------
   /**
    * Update the display of the projects
    */
@@ -789,6 +810,7 @@ public class GameLibraryWindow extends JFrame {
     model.modelChanged();
   }
   
+  // -----------------------------------------------------------------
   /**
    * Downloads initial Project list with progress updates.
    */
@@ -829,6 +851,7 @@ public class GameLibraryWindow extends JFrame {
     worker.execute();
   }
 
+  // -----------------------------------------------------------------
   /**
    * Lazy-loads project details (Packages, Releases, Files) when expanded.
    */
@@ -879,6 +902,7 @@ public class GameLibraryWindow extends JFrame {
     }
   }
 
+  // -----------------------------------------------------------------
   /**
    * Downloads the files in the selected LibraryFile items, as chosen
    * by the user.
@@ -957,11 +981,11 @@ public class GameLibraryWindow extends JFrame {
           protected void done() {
             try {
               get();
-              JOptionPane.showMessageDialog(GameLibraryWindow.this,
-                                            Resources.getString("LibraryBrowser.downloaded", //NON-NLS
-                                                                selectedFiles.size()),
-                                            Resources.getString("LibraryBrowser.download_complete"),
-                                            JOptionPane.INFORMATION_MESSAGE);
+              InfoDialog.show("LibraryBrowser.downloaded", //NON-NLS
+                              selectedFiles.size(),
+                              targetDirectory.getAbsolutePath());
+              
+                              
             }
             catch (Exception e) {
               ErrorDialog.show(e, "LibraryBrowser.error_downloading"); //NON-NLS
@@ -988,6 +1012,7 @@ public class GameLibraryWindow extends JFrame {
     }
   }
 
+  // _________________________________________________________________
   /**
    * Common interface assumed for all nodes
    */
@@ -1034,6 +1059,7 @@ public class GameLibraryWindow extends JFrame {
     boolean  canEdit(int column);
   }
 
+  // -----------------------------------------------------------------
   /**
    * Implement most things for common node interface
    */
@@ -1090,8 +1116,9 @@ public class GameLibraryWindow extends JFrame {
      */
     @Override
     public void setSelected(boolean selected) {
+      // Possibly deselect parent
+      // setSelectedParent(selected);
       // Cascade selection down to children
-      setSelectedParent(selected);
       for (final Object child : getChildren()) {
         if (child instanceof TreeNode) {
           ((TreeNode) child).setSelected(selected);
@@ -1104,8 +1131,6 @@ public class GameLibraryWindow extends JFrame {
      */
     @Override
     public void setSelectedParent(boolean selected) {
-      if (parent != null)
-        parent.setSelectedParent(selected);
     }
 
     /**
@@ -1175,6 +1200,7 @@ public class GameLibraryWindow extends JFrame {
     
   }
 
+  // -----------------------------------------------------------------
   /**
    * The root of the hierarchy
    */
@@ -1216,6 +1242,7 @@ public class GameLibraryWindow extends JFrame {
     }
   }
 
+  // -----------------------------------------------------------------
   /**
    * A node corresponding to a project.  Note, we do lazy loading of
    * the details of a project.
@@ -1310,6 +1337,7 @@ public class GameLibraryWindow extends JFrame {
     }
   }
 
+  // -----------------------------------------------------------------
   /**
    * A node corresponding to a package
    */
@@ -1352,6 +1380,7 @@ public class GameLibraryWindow extends JFrame {
     }
   }
 
+  // -----------------------------------------------------------------
   /**
    * A node corresponding to a release
    */
@@ -1372,11 +1401,13 @@ public class GameLibraryWindow extends JFrame {
       super.setSelected(selected);
     }
 
+    /**
+     * Mark this node as parent and mark parent to this
+     */
     @Override
     public void setSelectedParent(boolean selected) {
       if (!selected)
         this.selected = selected;
-      super.setSelectedParent(selected);
     }
     
     /**
@@ -1442,6 +1473,7 @@ public class GameLibraryWindow extends JFrame {
     }
   }
 
+  // -----------------------------------------------------------------
   /**
    * A node (leaf) corresponding to a file
    */
@@ -1474,6 +1506,8 @@ public class GameLibraryWindow extends JFrame {
     public void setSelected(boolean selected) {
       this.selected = Boolean.valueOf(selected);
       super.setSelected(selected);
+      if (parent != null)
+        parent.setSelectedParent(selected);
     }
     
     /**
@@ -1566,6 +1600,7 @@ public class GameLibraryWindow extends JFrame {
     }
   }
 
+  // _________________________________________________________________
   /**
    * Model used by the tree table.  Note, the column names are defined
    * at the top.
@@ -1657,7 +1692,7 @@ public class GameLibraryWindow extends JFrame {
       if (node instanceof TreeNode) {
         final TreeNode wrap = ((TreeNode) node);
         wrap.setValueAt(value, column);
-        nodeStructureChanged(wrap);
+        // nodeStructureChanged(wrap);
       }
     }
     
@@ -1727,9 +1762,6 @@ public class GameLibraryWindow extends JFrame {
      * When a new root is made (happens once!) after loading 
      */
     public void modelChanged() {
-      // final Object[] path = getPathToRoot((TreeNode)getRoot());
-      // modelSupport.firePathChanged(new TreePath(path));      
-      // modelSupport.fireTreeStructureChanged(new TreePath(path));
       modelSupport.fireNewRoot();
     }
 
@@ -1745,6 +1777,7 @@ public class GameLibraryWindow extends JFrame {
     }
   }
 
+  // _________________________________________________________________
   /**
    * Test of this
    */
