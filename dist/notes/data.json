@@ -27,6 +27,7 @@
         { "num": 15151, "desc": "Quote path variable in MacOS launch script" }
       ],
       "improvements": [
+        { "num": 15129, "desc": "Further optimize sum and count expressions" }
       ],
       "other": [
         { "num": 15154, "desc": "Upgraed logback-classic to 1.6.5" }
