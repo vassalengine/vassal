@@ -200,6 +200,7 @@ public class Region extends AbstractConfigurable {
   public Board getBoard() {
     return myGrid.getBoard();
   }
+
   /*
    * Move the region. Ensure the selectable region remains within
    * its container

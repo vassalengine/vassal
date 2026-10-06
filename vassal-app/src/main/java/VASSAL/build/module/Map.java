@@ -1873,6 +1873,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       popMouseListener();
     }
   }
+
   /**
    * @param e MouseEvent
    */
@@ -1886,7 +1887,6 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   @Override
   public void mouseExited(MouseEvent e) {
   }
-
 
   /**
    * Because MouseEvents are received in Component coordinates, it is
