@@ -126,6 +126,7 @@ public class AuditTrail {
   public static AuditTrail create(Auditable source, FormattedString originalExpression) {
     return create(source, originalExpression.getFormat(), "");
   }
+
   /**
    * Factory method to create a new AuditTrail only if auditing is enabled
    *

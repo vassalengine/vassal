@@ -5,6 +5,16 @@
 * 15097: Make Charts zoomable
 * 14581: Added animated symbolic dice button
 
+3.7.30 - ???
+
+* 15154: Upgraed logback-classic to 1.6.5
+* 15151: Quote path variable in MacOS launch script
+* 15129: Further optimize sum and count expressions
+
+3.7.29 - 3 October 2026
+
+* 15141: Fix NPE when rendering boards to non-map contexts
+
 3.7.28 - 2 October 2026
 
 * 15131: Upgraded maven-artifact 3.10.0

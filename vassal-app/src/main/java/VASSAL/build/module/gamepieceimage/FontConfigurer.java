@@ -62,6 +62,7 @@ public class FontConfigurer extends Configurer {
     setValue(f.font);
     setName(f.getConfigureName());
   }
+
   @Override
   public String getValueString() {
     return encode((OutlineFont) value);
