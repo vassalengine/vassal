@@ -9,6 +9,7 @@
 
 * 15154: Upgraed logback-classic to 1.6.5
 * 15151: Quote path variable in MacOS launch script
+* 15129: Further optimize sum and count expressions
 
 3.7.29 - 3 October 2026
 
