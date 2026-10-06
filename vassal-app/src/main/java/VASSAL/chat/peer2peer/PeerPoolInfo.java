@@ -5,5 +5,6 @@ package VASSAL.chat.peer2peer;
  */
 public interface PeerPoolInfo {
   String getModuleName();
+
   String getUserName();
 }
