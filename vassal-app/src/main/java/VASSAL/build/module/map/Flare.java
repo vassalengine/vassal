@@ -456,6 +456,7 @@ public class Flare extends AbstractConfigurable
       animfrac = 0;
       active   = true;
     }
+    
     /**
      * Executed on each timing event
      */
