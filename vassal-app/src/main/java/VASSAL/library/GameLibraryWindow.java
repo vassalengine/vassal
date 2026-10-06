@@ -132,7 +132,7 @@ public class GameLibraryWindow extends JFrame {
   protected       JProgressBar          progressBar;
   protected       JButton               downloadButton;
   protected       Map<String, Project>  projectsMap;
-  protected       GameLibrary.AbstractProjectsComparator comparator = GameLibrary.getTitleComparator(true);
+  protected       GameLibrary.AbstractProjectsComparator comparator = GameLibrary.getSortComparator(true);
 
   // For future upgrade
   // public static SemVer              vassalVersion;
@@ -358,7 +358,7 @@ public class GameLibraryWindow extends JFrame {
   static class URLRenderer extends DefaultTableCellRenderer.UIResource {
     private static final long serialVersionUID = 1L;
     private static Cursor cursor = new Cursor(Cursor.HAND_CURSOR);
-    public URLRenderer() throws IOException {
+    public URLRenderer()  {
       super();
     }
     
@@ -587,13 +587,7 @@ public class GameLibraryWindow extends JFrame {
     treeTable.setDefaultRenderer(FileSize.class, new FileSizeRenderer());
     treeTable.setDefaultEditor(URL.class, new URLEditor());
     treeTable.setDefaultEditor(Boolean.class, new BooleanEditor());
-    try {
-      treeTable.setDefaultRenderer(URL.class, new URLRenderer());
-    }
-    catch (IOException e) {
-      // This should not happen - URLs are valid
-      ErrorDialog.bug(e);
-    }
+    treeTable.setDefaultRenderer(URL.class, new URLRenderer());
       
 
     // Add tree expansion listener for lazy loading child items
@@ -692,8 +686,12 @@ public class GameLibraryWindow extends JFrame {
     /* sorts.put(Pair.of("slug", true), comparator);     //NON-NLS
        sorts.put(Pair.of("slug", false),                //NON-NLS
                  GameLibrary.getSlugComparator(false)); */
+    sorts.put(Pair.of("sort", true),                //NON-NLS
+              comparator); // GameLibrary.getTitleComparator(true); 
+    sorts.put(Pair.of("sort", false),               //NON-NLS
+              GameLibrary.getSortComparator(false));
     sorts.put(Pair.of("title", true),                //NON-NLS
-              comparator /*GameLibrary.getTitleComparator(true) */); 
+              GameLibrary.getTitleComparator(true)); 
     sorts.put(Pair.of("title", false),               //NON-NLS
               GameLibrary.getTitleComparator(false));
     sorts.put(Pair.of("last_update", true),          //NON-NLS

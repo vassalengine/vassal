@@ -25,15 +25,30 @@ import java.util.Date;
  * A whole project.
  */
 public class Project {
+  /** Name of the project */
   protected final String name;
+  /** Title of the game, articles in normal place */
   protected final String title;
+  /** Sort title, articles at the end */
+  protected final String sort;
+  /** Modification date */
   protected final Date   date;
+  /** Packages in project */
   protected final List<Package> packages = new ArrayList<>();
-  
-  Project(String n, String t, Date d) {
+
+  /**
+   * Constructor
+   *
+   * @param n Project name
+   * @param t Game title
+   * @param s Sort game title
+   * @param d Date
+   */
+  Project(String n, String t, String s, Date d) {
     name  = n;
     title = t;
     date  = d;
+    sort  = s;
   }
 
   public String getName() {
@@ -42,6 +57,10 @@ public class Project {
   
   public String getTitle() {
     return title;
+  }
+
+  public String getSort() {
+    return sort;
   }
 
   public Date getDate() {

@@ -310,14 +310,16 @@ public class GameLibrary {
     final ArrayNode    array   = (ArrayNode)data;
 
     for (final JsonNode project : array) {
-      final JsonNode slug    = project.get("slug");        //NON-NLS
-      final JsonNode name    = project.get("name");        //NON-NLS
-      final JsonNode date    = project.get("modified_at"); //NON-NLS
-      final JsonNode title   = project.get("title");       //NON-NLS
+      final JsonNode slug    = project.get("slug");         //NON-NLS
+      final JsonNode name    = project.get("name");         //NON-NLS
+      final JsonNode date    = project.get("modified_at");  //NON-NLS
+      final JsonNode title   = project.get("title");        //NON-NLS
+      final JsonNode sort    = project.get("sort");         //NON-NLS
       final Date     pdate   = parseDate(date.asText());
 
       ret.put(slug.asText(), new Project(name.asText().strip(),
                                          title.asText().strip(),
+                                         sort.asText().strip(),
                                          pdate));
       if (pdate.after(last))
         last = pdate;
@@ -350,8 +352,9 @@ public class GameLibrary {
       final Project     project = ret.get(slug);
       final ObjectNode  object  = mapper.createObjectNode();
       object.put("slug", slug);
-      object.put("name", project.getName());
+      object.put("name",  project.getName());
       object.put("title", project.getTitle());
+      object.put("sort",  project.getSort());
       object.put("modified_at", formatDate(project.getDate()));
       data.add(object);
     }
@@ -435,6 +438,7 @@ public class GameLibrary {
         final JsonNode date    = project.get("modified_at");      //NON-NLS
         final JsonNode game    = project.get("game");             //NON-NLS
         final JsonNode title   = game.get("title");               //NON-NLS
+        final JsonNode sort    = game.get("title_sort_key");      //NON-NLS
         final Date     pdate   = parseDate(date.asText());
         fetched++;
         
@@ -445,6 +449,7 @@ public class GameLibrary {
 
         ret.put(slug.asText(), new Project(name.asText().strip(),
                                            title.asText().strip(),
+                                           sort.asText().strip(),
                                            pdate));
         
         if (fetched >= total) 
@@ -588,6 +593,22 @@ public class GameLibrary {
       @Override
       protected int compareTo(Project lhs, Project rhs) {
         return 0;
+      }
+    };
+  }
+  
+  // -------------------------------------------------------------------
+  /**
+   * Compare projects based on the game sort
+   */
+  public static AbstractProjectsComparator getSortComparator(boolean asc) {
+    return new AbstractProjectsComparator() {
+      /** Compare left and right */
+      @Override
+      protected int compareTo(Project lhs, Project rhs) {
+        if (asc)
+          return lhs.getSort().compareTo(rhs.getSort());
+        return rhs.getSort().compareTo(lhs.getSort());
       }
     };
   }
