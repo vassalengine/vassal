@@ -625,6 +625,7 @@ public class GameState implements CommandEncoder {
     }
     return true;
   }
+
   /**
    * @param file to validate as a legitimate save file
    * @return true if metadata is valid (or explicitly cleared-for-crash by user) and clear to proceed

@@ -1311,6 +1311,7 @@ public class ModuleManagerWindow extends JFrame {
       setFile(f);
       setIcon(open, closed);
     }
+
     public AbstractInfo(File f, Icon i) {
       this (f, i, i);
     }
@@ -1558,6 +1559,7 @@ public class ModuleManagerWindow extends JFrame {
     protected boolean isModuleTooNew() {
       return metadata != null && Info.isModuleTooNew(metadata.getVassalVersion());
     }
+
     public boolean isAccessible() {
       return getFile().isFile();
     }
