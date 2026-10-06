@@ -450,6 +450,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     }
     return super.getLocalizedProperty(key);
   }
+
   @Override
   // Properties exposed by this trait
   public List<String> getPropertyNames() {
