@@ -359,6 +359,7 @@ public class Prefs implements Closeable {
     globalPrefs.getEditor().addOption(Resources.getString("Prefs.look_and_feel_tab"),
                                       lafConf, null);
   }
+  
   public static String sanitize(String str) {
     /*
       Java gives us no way of checking whether a string is a valid

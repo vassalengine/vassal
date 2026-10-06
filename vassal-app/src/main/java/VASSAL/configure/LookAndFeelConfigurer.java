@@ -123,6 +123,7 @@ public class LookAndFeelConfigurer extends Configurer {
         }
       }
     }
+    
     /**
      * @return "Custom"
      */
@@ -131,86 +132,101 @@ public class LookAndFeelConfigurer extends Configurer {
       return "Custom"; //NON-NLS
     }
 
+    /**
+     * Get color corresponding to name
+     */
     protected ColorUIResource getColor(String name) {
       return mapping.get(name);
     }
+    
     /**
      * @return the primary 1 color
      */
     @Override
     protected ColorUIResource getPrimary1() {
-      return getColor("primary1");
+      return getColor("primary1");  //NON=NLS
     }
+    
     /**
      * @return the primary 2 color
      */
     @Override
     protected ColorUIResource getPrimary2() {
-      return getColor("primary2");
+      return getColor("primary2"); //NON=NLS
     }
+    
     /**
      * @return the primary 1 color
      */
     @Override
     protected ColorUIResource getPrimary3() {
-      return getColor("primary3");
+      return getColor("primary3"); //NON=NLS
     }
+    
     /**
      * @return the secondary 3 color
      */
     @Override
     protected ColorUIResource getSecondary1() {
-      return getColor("secondary1");
+      return getColor("secondary1"); //NON=NLS
     }
+    
     /**
      * @return the secondary 2 color
      */
     @Override
     protected ColorUIResource getSecondary2() {
-      return getColor("secondary2");
+      return getColor("secondary2"); //NON=NLS
     }
+    
     /**
      * @return the secondary 3 color
      */
     @Override
     protected ColorUIResource getSecondary3() {
-      return getColor("secondary3");
+      return getColor("secondary3"); //NON=NLS
     }
+    
     /**
      * @return text on controls
      */
     @Override
     public ColorUIResource getControlTextColor() {
-      return getColor("text");
+      return getColor("text"); //NON=NLS
     }
+    
     /**
      * @return system text
      */
     @Override
     public ColorUIResource getSystemTextColor() {
-      return getColor("text");
+      return getColor("text"); //NON=NLS
     }
+    
     /**
      * @return menu text
      */
     @Override
     public ColorUIResource getMenuForeground() {
-      return getColor("text");
+      return getColor("text"); //NON=NLS
     }
+    
     /**
      * @return Overall background
      */
     @Override
     public ColorUIResource getWindowBackground() {
-      return getColor("background");
+      return getColor("background"); //NON=NLS
     }
+    
     /**
      * @return User input text
      */
     @Override
     public ColorUIResource getUserTextColor() {
-      return getColor("text");
+      return getColor("text"); //NON=NLS
     }
+    
     /**
      * @return the control shadow color
      */
@@ -218,6 +234,7 @@ public class LookAndFeelConfigurer extends Configurer {
     public ColorUIResource getControlShadow() {
       return getSecondary3();
     }
+    
     /**
      * @return the control dark shadow color
      */
@@ -225,13 +242,15 @@ public class LookAndFeelConfigurer extends Configurer {
     public ColorUIResource getControlDarkShadow() {
       return getSecondary2();
     }
+    
     /**
      * @return the control info color
      */
     @Override
     public ColorUIResource getControlInfo() {
-      return getColor("text");
+      return getColor("text"); //NON=NLS
     }
+    
     /**
      * @return the control highlight color
      */
@@ -239,13 +258,15 @@ public class LookAndFeelConfigurer extends Configurer {
     public ColorUIResource getControlHighlight() {
       return getPrimary1();
     }
+    
     /**
      * @return the control disabled color
      */
     @Override
     public ColorUIResource getControlDisabled() {
-      return getColor("text");
+      return getColor("text"); //NON=NLS
     }
+    
     /**
      * @return the primary control color
      */
@@ -253,6 +274,7 @@ public class LookAndFeelConfigurer extends Configurer {
     public ColorUIResource getPrimaryControl() {
       return getPrimary3();
     }
+    
     /**
      * @return the primary control shadow color
      */
@@ -260,6 +282,7 @@ public class LookAndFeelConfigurer extends Configurer {
     public ColorUIResource getPrimaryControlShadow() {
       return getPrimary1();
     }
+    
     /**
      * @return the primary control dark shadow color
      */
@@ -267,13 +290,15 @@ public class LookAndFeelConfigurer extends Configurer {
     public ColorUIResource getPrimaryControlDarkShadow() {
       return getPrimary2();
     }
+    
     /**
      * @return the primary control info color
      */
     @Override
     public ColorUIResource getPrimaryControlInfo() {
-      return getColor("text");
+      return getColor("text"); //NON=NLS
     }
+    
     /**
      * @return the primary control info color
      */
@@ -281,14 +306,17 @@ public class LookAndFeelConfigurer extends Configurer {
     public ColorUIResource getFocusColor() {
       return getPrimary3();
     }
+
     @Override
     public ColorUIResource getMenuSelectedForeground() {
-      return getColor("text");
+      return getColor("text"); //NON=NLS
     }
+
     @Override
     public ColorUIResource getInactiveSystemTextColor() {
       return getPrimary3();
     }
+    
     /**
      * @return the inactive control text color
      */
@@ -310,6 +338,7 @@ public class LookAndFeelConfigurer extends Configurer {
     LafClassLoader() {
       super(new URL[]{});
     }
+    
     /**
      * This exposes the addUrl method which is normally is protected
      */
@@ -351,6 +380,10 @@ public class LookAndFeelConfigurer extends Configurer {
       lafClassNames.clear();
       lafClassNames.addAll(Arrays.asList(p[1].split("&")));
     }
+
+    /**
+     * Set the value
+     */
     public void setValue(String filename, List<String> classNames) {
       jarFileName = filename != null ? filename : "";
       lafClassNames.clear();
@@ -496,15 +529,18 @@ public class LookAndFeelConfigurer extends Configurer {
       public JarFileConfigurer(String key, String name) {
         super(key, name);
       }
+      
       @Override
       protected FileChooser initFileChooser() {
         final FileChooser fc = super.initFileChooser();
         fc.setFileFilter(new FileFilter() {
+            
             @Override
             public boolean accept(File file) {
               return (file.getName().endsWith(".jar") ||
                       file.getName().endsWith(".class"));
             }
+            
             @Override
             public String getDescription() {
               return "JAR or class files";
@@ -853,6 +889,7 @@ public class LookAndFeelConfigurer extends Configurer {
       return getName() + "," + getClassName();
     }
   }
+  
   /**
    * Holds information about a look'n'feel - Metal version
    * loader
@@ -994,7 +1031,10 @@ public class LookAndFeelConfigurer extends Configurer {
 
       updating = false;
     }
-  
+
+    /**
+     * Get current LaF information
+     */
     protected LafInfo getInfo() {
       return (LafInfo)value;
     }
@@ -1048,6 +1088,7 @@ public class LookAndFeelConfigurer extends Configurer {
       // }
       super.setValue(o);
     }
+    
     /**
      * Get the UI controls
      */
@@ -1076,6 +1117,7 @@ public class LookAndFeelConfigurer extends Configurer {
 
   protected JPanel            panel;
   protected LafJarsConfigurer lafJarsConfigurer;
+  
   /**
    * Main interface of this configurer
    */
@@ -1087,9 +1129,16 @@ public class LookAndFeelConfigurer extends Configurer {
     lafConfigurer     = new LafConfigurer(lafKey,    lafName);
   }
 
+  /**
+   * JAR configurerer
+   */
   public Configurer getJarClassesConfigurer() {
     return lafJarsConfigurer;
   }
+
+  /**
+   * Current LaF configurerer
+   */
   public Configurer getCurrentConfigurer() {
     return lafConfigurer;
   }
