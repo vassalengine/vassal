@@ -16,7 +16,9 @@
  */
 package VASSAL.library;
 
+import org.jdesktop.swingx.JXFindBar;
 import org.jdesktop.swingx.JXTreeTable;
+import org.jdesktop.swingx.search.SearchFactory;
 import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
 import org.jdesktop.swingx.table.ColumnFactory;
 import org.jdesktop.swingx.table.TableColumnExt;
@@ -28,7 +30,9 @@ import java.awt.Component;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -620,11 +624,33 @@ public class GameLibraryWindow extends JFrame {
     final JPanel bottomPanel = new JPanel(new BorderLayout(5, 5));
     bottomPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
+    // Create a findbar using SearchFactory
+    final JXFindBar findBar = SearchFactory.getInstance().createFindBar();
+
+    // Localize search buttons 
+    final Action next = findBar.getActionMap().get(JXFindBar.FIND_NEXT_ACTION_COMMAND);
+    final Action prev = findBar.getActionMap().get(JXFindBar.FIND_PREVIOUS_ACTION_COMMAND);
+    next.putValue(Action.NAME, Resources.getString("General.find_next")); //NON-NLS
+    prev.putValue(Action.NAME, Resources.getString("General.find_previous")); //NON-NLS
+            
+    // Ask the find bar to search the tree.  This will search through
+    // visible cells
+    findBar.setSearchable(treeTable.getSearchable());
+    
     downloadButton = new JButton(Resources.getString("LibraryBrowser.download_selected")); //NON-NLS
     downloadButton.addActionListener(e -> downloadFiles());
 
-    final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-    buttonPanel.add(downloadButton);
+    final JPanel buttonPanel = new JPanel(new GridBagLayout());
+
+    final Insets insets = new Insets(1, 1, 1, 1);
+    buttonPanel.add(findBar, new GridBagConstraints(0, 0, 1, 1, 1., 0.,
+                                                    GridBagConstraints.FIRST_LINE_START,
+                                                    GridBagConstraints.HORIZONTAL,
+                                                    insets, 0, 0));
+    buttonPanel.add(downloadButton, new GridBagConstraints(1, 0, 1, 1, .5, 0.,
+                                                           GridBagConstraints.FIRST_LINE_END,
+                                                           GridBagConstraints.NONE,
+                                                           insets, 0, 0));
 
     progressBar = new JProgressBar();
     progressBar.setStringPainted(true);
