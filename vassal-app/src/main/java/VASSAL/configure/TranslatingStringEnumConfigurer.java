@@ -80,10 +80,11 @@ public class TranslatingStringEnumConfigurer extends Configurer {
    * @param isDisplayNames True if we have already been given full translated strings; false if they are "keys" for Resources.getString()
    */
   public TranslatingStringEnumConfigurer(String key, String name, String[] validValues, String[] i18nKeys, boolean isDisplayNames) {
-    super(key, name, validValues);
+    super(key, name);
     this.validValues = validValues;
     this.i18nKeys = i18nKeys;
     this.isDisplayNames = isDisplayNames;
+    setValue(validValues[0]);
   }
 
   /**

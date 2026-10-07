@@ -1,0 +1,77 @@
+%YAML 1.2
+---
+
+# A list of Font files present as Vassal resources. Simplifies Font discovery by FontOrganizer
+# NOTE: If JetBrainsMono is removed, then FontOrganizer.VASSAL_EDITOR_FONT must be changed to a new supplied font
+logicalFonts:
+  # [VassalEditor]
+  - name: VassalEditor
+    desc: Easy to read monospaced font for editing
+    basefont: JetBrains Mono
+    files:
+      - file: VassalEditor-Regular.ttf
+        style: Regular
+      - file: VassalEditor-Bold.ttf
+        style: Bold
+      - file: VassalEditor-Italic.ttf
+        style: Italic
+      - file: VassalEditor-BoldItalic.ttf
+        style: Bold Italic
+
+  # [VassalSans]
+  - name: VassalSans
+    desc: Sans Serif font similar to Arial
+    basefont: Roboto Regular
+    files:
+      - file: VassalSans-Regular.ttf
+        style: Regular
+      - file: VassalSans-Bold.ttf
+        style: Bold
+      - file: VassalSans-Italic.ttf
+        style: Italic
+      - file: VassalSans-BoldItalic.ttf
+        style: Bold Italic
+
+  # [VassalCondensed]
+  - name: VassalCondensed
+    desc: Narrow version of the VassalSans font
+    basefont: Roboto Condensed
+    files:
+      - file: VassalCondensed-Regular.ttf
+        style: Regular
+      - file: VassalCondensed-Bold.ttf
+        style: Bold
+      - file: VassalCondensed-Italic.ttf
+        style: Italic
+      - file: VassalCondensed-BoldItalic.ttf
+        style: Bold Italic
+
+  # [VassalSerif]
+  - name: VassalSerif
+    desc: Serif font similar to Times New Roman
+    basefont: Roboto Serif
+    files:
+      - file: VassalSerif-Regular.ttf
+        style: Regular
+      - file: VassalSerif-Bold.ttf
+        style: Bold
+      - file: VassalSerif-Italic.ttf
+        style: Italic
+      - file: VassalSerif-BoldItalic.ttf
+        style: Bold Italic
+
+  # [VassalMono]
+  - name: VassalMono
+    desc: Basic Monospaced font
+    basefont: Roboto Mono
+    files:
+      - file: VassalMono-Regular.ttf
+        style: Regular
+      - file: VassalMono-Bold.ttf
+        style: Bold
+      - file: VassalMono-Italic.ttf
+        style: Italic
+      - file: VassalMono-BoldItalic.ttf
+        style: Bold Italic
+
+

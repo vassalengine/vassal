@@ -222,6 +222,12 @@ public abstract class AbstractBuildable extends AbstractImageFinder implements B
     }
   }
 
+  public void add(Buildable b, int index) {
+    buildComponents.add(index, b);
+    if (b instanceof AbstractBuildable) {
+      ((AbstractBuildable)b).setAncestor(this);
+    }
+  }
   /**
    * @return an enumeration of Buildable objects which are the direct children
    * of this object in the Buildable containment hierarchy. The
