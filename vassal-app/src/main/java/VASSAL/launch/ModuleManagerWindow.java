@@ -409,14 +409,16 @@ public class ModuleManagerWindow extends JFrame {
                       "      color: #" + String.format("%02x%02x%02x", fg.getRed(), fg.getGreen(), fg.getBlue()) + ";\n" +
                       "      background: #" + String.format("%02x%02x%02x", bg.getRed(), bg.getGreen(), bg.getBlue()) + ";\n" +
                       "      font: " + font.getFamily() + " " + font.getSize() + "pt;\n" +
-                      "      margin: 0;\n" +
-                      "      padding: 0;\n" +
+                      "      margin: 0px;\n" +
+                      "      padding: 0px;\n" +
                       "    }\n" + 
                       "  </style>\n" + 
                       "  <body>\n" + 
                       Resources.getString("ModuleManager.quickstart") + 
                       "  </body>\n" +
                       "</html>");
+    l.setCaretPosition(0);
+    l.getCaret().setVisible(false);
     l.setEditable(false);
     l.setBackground(bg);
     l.setBorder(null);
@@ -426,8 +428,10 @@ public class ModuleManagerWindow extends JFrame {
     // this is necessary to get proper vertical alignment
     final JPanel p = new JPanel(new GridBagLayout());
     final GridBagConstraints c = new GridBagConstraints();
-    c.fill = GridBagConstraints.HORIZONTAL;
+    c.fill   = GridBagConstraints.HORIZONTAL;
     c.anchor = GridBagConstraints.CENTER;
+    c.ipadx  = 0;
+    c.ipady  = 0;
     p.add(l, c);
 
     moduleView.add(p, "quickStart"); //NON-NLS
