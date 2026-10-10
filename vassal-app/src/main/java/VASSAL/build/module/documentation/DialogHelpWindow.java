@@ -24,6 +24,8 @@ import javax.swing.JDialog;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
+import VASSAL.preferences.PositionOption;
+import VASSAL.preferences.Prefs;
 import VASSAL.tools.swing.HTMLWindowHelper;
 
 /**
@@ -39,7 +41,12 @@ public class DialogHelpWindow extends JDialog implements HyperlinkListener {
     setTitle(title);
     setDefaultCloseOperation(HIDE_ON_CLOSE);
 
+    // Persist and restore window bounds using the common layout engine
+    final PositionOption option = new PositionOption(PositionOption.key + "DialogHelpWindow", this);
+    Prefs.getGlobalPrefs().addOption(option);
+
     helper.setup(this, contents);
+
   }
 
   @Deprecated(since = "2021-12-01", forRemoval = true)
