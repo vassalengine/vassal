@@ -24,7 +24,10 @@ package VASSAL.chat;
  */
 public interface LockableRoom {
   boolean isLocked();
+
   boolean isOwner(String jid);
+
   Player getOwningPlayer();
+
   String getName();
 }

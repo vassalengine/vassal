@@ -75,7 +75,7 @@ public class SwingUtils {
     );
   }
 
-  public static final Map<?, ?> FONT_HINTS = (GraphicsEnvironment.isHeadless() || (Toolkit.getDefaultToolkit().getDesktopProperty("awt.font.desktophints") == null)) ? 
+  public static final Map<?, ?> FONT_HINTS = (GraphicsEnvironment.isHeadless() || (Toolkit.getDefaultToolkit().getDesktopProperty("awt.font.desktophints") == null)) ?
                                               Collections.emptyMap() : (Map<?, ?>) Toolkit.getDefaultToolkit().getDesktopProperty("awt.font.desktophints");
 
   private interface InputClassifier {

@@ -47,7 +47,7 @@ JDKDIR:=$(DISTDIR)/jdks
 JDOCDIR:=jdoc
 
 # numeric part of the version only
-VNUM:=3.7.16
+VNUM:=3.7.30
 # major-minor part of the version
 V_MAJ_MIN:=$(shell echo "$(VNUM)" | cut -f1,2 -d'.')
 
@@ -113,7 +113,7 @@ $(LIBDIR)/Vengine.jar: version-set
 
 $(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar | $(TMPDIR)
 	echo -n jdk.crypto.ec, >$@
-	jdeps --ignore-missing-deps --print-module-deps --multi-release 11 $(LIBDIR)/*.jar | tr -d '\n' >>$@
+	jdeps --ignore-missing-deps --print-module-deps --multi-release 17 $(LIBDIR)/*.jar | tr -d '\n' >>$@
 
 #$(DISTDIR)/windows/VASSAL.ico:
 #	convert -bordercolor Transparent -border 1x1 src/icons/22x22/VASSAL.png $(TMPDIR)/VASSAL-24.png
@@ -199,7 +199,12 @@ $(TMPDIR)/linux-$(VERSION)-build/VASSAL-$(VERSION): $(LIBDIR)/Vengine.jar
 	cp -a $(DOCDIR) $@/doc
 	cp -a CHANGES LICENSE README.md $@
 	cp -a $(LIBDIR) $@/lib
-	cp $(DISTDIR)/VASSAL.sh $@
+	cp dist/linux/VASSAL.sh $@
+	cp dist/linux/org.vassalengine.vassal.desktop $@
+	cp dist/linux/org.vassalengine.vassal.metainfo.xml $@
+	cp dist/linux/org.vassalengine.vassal.mime.xml $@
+	cp dist/linux/vassal.6 $@
+	cp dist/linux/integration.sh $@
 	cp vassal-app/src/main/resources/icons/scalable/VASSAL.svg $@
 	find $@ -type f -exec chmod 644 \{\} \+
 	find $@ -type d -exec chmod 755 \{\} \+
@@ -280,7 +285,7 @@ release-macos: release-macos-universal
 
 release-macos-universal: $(TMPDIR)/VASSAL-$(VERSION)-macos-universal.dmg
 
-release-windows: release-windows-x86_64 release-windows-aarch64
+release-windows: release-windows-x86_64 
 
 release-windows-x86_32: $(TMPDIR)/VASSAL-$(VERSION)-windows-x86_32.exe
 

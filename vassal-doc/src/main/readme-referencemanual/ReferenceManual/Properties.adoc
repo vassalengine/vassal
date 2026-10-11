@@ -172,6 +172,7 @@ A string that uniquely identifies an individual piece and is guaranteed to never
 |*CurrentLanguage* |<<GameModule.adoc#top,Game Module>>| Module| The 2 letter language code for the language selected by the current player.
 |*CurrentLanguageName* |<<GameModule.adoc#top,Game Module>>| Module| The name of the language seleted by the current player.
 |*ModuleDescription* |<<GameModule.adoc#top,Game Module>>| Module| The Module description text from the main <<GameModule.adoc#top, Game Module>> component.
+|*ModuleGameFileName* |<<GameModule.adoc#top,Game Module>>| Module| The last game file opened by the current player.
 |*ModuleName* |<<GameModule.adoc#top,Game Module>>| Module| The Module name text from the main <<GameModule.adoc#top, Game Module>> component.
 |*ModuleOther1* |<<GameModule.adoc#top,Game Module>>| Module| The Additional Module Info 1 text from the main <<GameModule.adoc#top, Game Module>> component.
 |*ModuleOther2* |<<GameModule.adoc#top,Game Module>>| Module| The Additional Module Info 2 text from the main <<GameModule.adoc#top, Game Module>> component.

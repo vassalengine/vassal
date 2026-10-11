@@ -543,6 +543,7 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
     }
     return persistentProps;
   }
+
   /**
    * @param s Name of a module preference to be read
    * @return Value of the preference

@@ -412,7 +412,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     }
     return name;
   }
-  
+
   protected void write(boolean saveAs) throws IOException {
     vassalVersionCreated = Info.getVersion();
     if (archive instanceof ArchiveWriter) {

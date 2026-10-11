@@ -146,6 +146,7 @@ public class BeanShellExpression extends Expression {
     }
 
   }
+
   /**
    * Convert a Property name to its BeanShell equivalent.
    *

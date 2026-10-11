@@ -66,12 +66,12 @@ import org.netbeans.spi.wizard.WizardPanel;
  * <b><i><font color="red">This class is NOT AN API CLASS.  There is no
  * commitment that it will remain backward compatible or even exist in the
  * future.  The API of this library is in the packages <code>org.netbeans.api.wizard</code>
- * and <code>org.netbeans.spi.wizard</code></font></i></b>.  <p>Use 
+ * and <code>org.netbeans.spi.wizard</code></font></i></b>.  <p>Use
  * <code>WizardDisplayer.showWizard()</code> or its other static methods to
  * display wizards in a way which will continue to work over time.
  * @author stanley@StanleyKnutson.com
  * @author Tim Boudreau
- * 
+ *
  * Minor modifications:
  *  Place the instructions panel and page controls within a Split Pane
  *  Constrain the size of the dialog to fit within the screen boundaries
@@ -79,7 +79,7 @@ import org.netbeans.spi.wizard.WizardPanel;
  *
  * NOTE:
  * This class now references back to Vassal to find a default Dialog owner (GameModule.getPlayerWindow() in case the Wizard
- * code can't find a suitable one. 
+ * code can't find a suitable one.
  */
 public class WizardDisplayerImpl extends WizardDisplayer
 {
@@ -106,7 +106,7 @@ public class WizardDisplayerImpl extends WizardDisplayer
     JLabel                    problem        = null;
 
     Object                    wizardResult   = null;
-    
+
     WizardResultReceiver      receiver       = null;
 
     /**
@@ -126,7 +126,7 @@ public class WizardDisplayerImpl extends WizardDisplayer
     public WizardDisplayerImpl()
     {
     }
-    
+
     protected void buildStepTitle()
     {
         ttlLabel = new JLabel(wizard.getStepDescription(wizard.getAllSteps()[0]));
@@ -170,9 +170,9 @@ public class WizardDisplayerImpl extends WizardDisplayer
 
     /**
      * Show a wizard
-     * 
+     *
      * @param awizard is the wizard to be displayed
-     * @param bounds for display, may be null for default of 0,0,400,600. 
+     * @param bounds for display, may be null for default of 0,0,400,600.
      * @param helpAction
      * @param initialProperties - initial values for the map
      * @return value of the 'finish' processing
@@ -185,7 +185,7 @@ public class WizardDisplayerImpl extends WizardDisplayer
         this.wizard = awizard;
 
         outerPanel = new JPanel();
-        
+
         // apply default size
         // we don't enforce any maximum size
         if (bounds == null)
@@ -250,9 +250,9 @@ public class WizardDisplayerImpl extends WizardDisplayer
         buttonManager.initializeNavigation();
         return outerPanel;
     }
-    
+
     public void install (Container c, Object layoutConstraint, Wizard awizard,
-            Action helpAction, Map initialProperties, WizardResultReceiver receiver) {        
+            Action helpAction, Map initialProperties, WizardResultReceiver receiver) {
         JPanel pnl = createOuterPanel (awizard, new Rectangle(), helpAction, initialProperties);
         if (layoutConstraint != null) {
             c.add (pnl, layoutConstraint);
@@ -261,7 +261,7 @@ public class WizardDisplayerImpl extends WizardDisplayer
         }
         this.receiver = receiver;
     }
-    
+
     public Object show(final Wizard awizard, Rectangle bounds, Action helpAction,
                           Map initialProperties) {
         createOuterPanel (awizard, bounds, helpAction, initialProperties);
@@ -373,7 +373,7 @@ public class WizardDisplayerImpl extends WizardDisplayer
     /**
      * Return the current wizard panel, or null if the currently displayed page
      * is not a WizardPanel.
-     * 
+     *
      * @return
      */
     public WizardPanel getCurrentWizardPanel()
@@ -409,16 +409,16 @@ public class WizardDisplayerImpl extends WizardDisplayer
     /*
      * private static final class LDlg extends JDialog { public LDlg() {
      *  } public LDlg (Frame frame) { super (frame); }
-     * 
+     *
      * public LDlg (Dialog dlg) { super (dlg); }
-     * 
+     *
      * public void setVisible (boolean val) { if (!val) { Thread.dumpStack(); }
      * super.setVisible (val); } }
      */
 
-    /** 
+    /**
      * Set the currently displayed panel.
-     * @parm comp is can be anything - it is not required to be a WizardPage or WizardPanel 
+     * @parm comp is can be anything - it is not required to be a WizardPage or WizardPanel
      * */
     public void setCurrentWizardPanel(JComponent comp)
     {
@@ -451,14 +451,14 @@ public class WizardDisplayerImpl extends WizardDisplayer
                                             WizardDisplayerImpl.class, "Summary")); // NOI18N
         getButtonManager().setSummaryShowingMode();
         summaryComp.requestFocus();
-        
+
     }
 
     ResultProgressHandle createProgressDisplay (boolean isUseBusy)
     {
         return new NavProgress(this, isUseBusy);
     }
-    
+
     void handleDeferredWizardResult(final DeferredWizardResult r)
     {
         deferredResult = r;
@@ -600,12 +600,12 @@ public class WizardDisplayerImpl extends WizardDisplayer
     {
         this.deferredResult = deferredResult;
     }
-    
+
     /**
      * Will only be called if there is a WizardResultReceiver - i.e. if the
      * wizard is being displayed in some kind of custom container.  Return
      * true to indicate we should not try to close the parent window.
-     */ 
+     */
     boolean cancel() {
         // Reset the PlayerRoster so that it knows the wizard has been cancelled.
         // See the PlayerRoster code for details

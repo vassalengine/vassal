@@ -823,6 +823,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
               .append(PLACEMARKER_VERSION);
       return ID + se.getValue();
     }
+
     public static class ChoosePieceDialog extends ChooseComponentPathDialog {
       private static final long serialVersionUID = 1L;
 

@@ -1,6 +1,7 @@
 {
   "headline": "The Vassal Team is happy to announce the release of Vassal {{version}}.",
   "important": [
+    "Starting with 3.7.25, Vassal requires Java 17 or newer. If you are using one of the MacOS or Windows packages, Java is bundled with Vassal and this will not affect you. If you are using Linux or another OS, please upgrade Java to at least Java 17.",
     "If you are using MacOS 14, please ensure you are using 14.4 or later, to avoid a bug in MacOS which prevents Vassal from starting.",
     "Modules saved in {{version_feature}} are not openable by earlier versions of Vassal. We recommend keeping a backup copy of any pre-{{version_feature}} modules you plan to modify in {{version_feature}} until you've verified that everything works to your satisfaction.",
     "Things may be broken which worked previously. If you find a new bug, please report it."
@@ -8,6 +9,8 @@
   "release_notes_url": "https://forum.vassalengine.org/t/vassal-3-7-release-notes/78948",
   "downloads": [
     { "display_name": "Linux", "suffix": "linux.tar.bz2" },
+    { "display_name": "Linux (Debian)", "suffix": "1_all.deb", "prefix": "vassal_"}, 
+    { "display_name": "Linux (RPM)", "suffix": "1.noarch.rpm", "prefix": "vassal-"}, 
     { "display_name": "MacOS", "suffix": "macos-universal.dmg" },
     { "display_name": "Windows (64-bit x86)", "suffix": "windows-x86_64.exe" },
     { "display_name": "Windows (32-bit x86)", "suffix": "windows-x86_32.exe" },
@@ -16,68 +19,94 @@
   ],
   "changes": [
     {
-      "in": "3.7.16",
-      "since": "3.7.15",
+      "in": "3.7.30",
+      "since": "3.7.29",
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 15151, "desc": "Quote path variable in MacOS launch script" }
       ],
-      "other_improvements": [
-        { "num": 13853, "desc": "Upgraded maven-clean-plugin to 3.4.1" },
-        { "num": 13849, "desc": "Upgraded spotbugs-maven-plugin to 4.9.1.0" },
-        { "num": 13845, "desc": "Sleep() improvements - Remove artifacts on Macs amd improve performance when Sleep(0) used to refresh UI" },
-        { "num": 13833, "desc": "Do not subject 'Load Continuation' to online restrictions" },
-        { "num": 13841, "desc": "Upgraded byte-buddy to 1.17.1" },
-        { "num": 13834, "desc": "Upgraded spotbugs-annotations to 4.9.1" },
-        { "num": 13814, "desc": "Upgraded httpclient5 5.4.2" },
-        { "num": 13798, "desc": "Upgraded checkstyle to 10.21.2" },
-        { "num": 13797, "desc": "Upgraded commons-codec to 1.18.0" },
-        { "num": 13791, "desc": "Prevent Checkbox Scenario Option switch description side option being forced on" },
-        { "num": 13771, "desc": "Upgraded logback-classic to 1.5.16" },
-        { "num": 13769, "desc": "Upgraded juint-bom to 5.11.4" },
-        { "num": 13740, "desc": "Upgraded maven-javadoc-plugin to 3.11.2" },
-        { "num": 13737, "desc": "Add Beanshell performance health warning to Text Label trait docs" },
-        { "num": 13731, "desc": "Bring Reference Manual section on Extensions up to date" },
-        { "num": 13727, "desc": "Upgraded jsoup to 1.18.3" },
-        { "num": 13719, "desc": "Place Marker no longer ignores Offsets for stackable pieces" },
-        { "num": 13712, "desc": "Upgraded license-maven-plugin to 2.5.0" },
-        { "num": 13705, "desc": "Upgraded commons-io to 2.18.0" },
-        { "num": 13693, "desc": "Upgraded asciidoctor-maven-plugin to 3.1.1" }
+      "improvements": [
+        { "num": 15129, "desc": "Further optimize sum and count expressions" }
+      ],
+      "other": [
+        { "num": 15154, "desc": "Upgraed logback-classic to 1.6.5" }
       ]
     },
     {
-      "in": "3.7.15",
-      "since": "3.7.14",
+      "in": "3.7.29",
+      "since": "3.7.28",
       "new_features": [
       ],
       "bug_fixes": [
-        { "num": 13558, "desc": "Update logback configuration to prevent messages to console" }
+        { "num": 15141, "desc": "Fix NPE when rendering boards to non-map contexts" }
       ],
-      "other_improvements": [
-        { "num": 13681, "desc": "Upgraded checkstyle to 10.20.1" },
-        { "num": 13678, "desc": "Upgraded byte-buddy to 1.15.10" },
-        { "num": 13677, "desc": "Upgraded maven-javadoc-plugin to 3.11.1" },
-        { "num": 13676, "desc": "Upgraded manen-surfire-plugin to 3.5.2" },
-        { "num": 13669, "desc": "Upgraded asciidoctor-maven-plugin to 3.1.0" },
-        { "num": 13664, "desc": "Upgraded bundled Java to 21.0.5 (32-bit Windows), 23.0.1 (all others)" },
-        { "num": 13660, "desc": "Upgraded maven-pmd-plugin to 3.26.0" },
-        { "num": 13659, "desc": "Upgraded httpclient5 to 5.4.1" },
-        { "num": 13655, "desc": "Upgraded maven-dependency-plugin to 3.8.1" },
-        { "num": 13654, "desc": "Upgraded maven-checkstyle-plugin to 3.6.0" },
-        { "num": 13653, "desc": "Upgraded logback-classic to 1.5.12" },
-        { "num": 13647, "desc": "Upgraded maven-site-plugin to 3.21.0" },
-        { "num": 13646, "desc": "Upgraded exec-maven-plugin to 3.5.0" },
-        { "num": 13645, "desc": "Upgraded spotbugs-maven-plugin to 4.8.6.5" },
-        { "num": 13642, "desc": "Upgraded junit-bom to 5.11.3" },
-        { "num": 13641, "desc": "Upgraded asciidoctorj-pdf to 2.3.19" },
-        { "num": 13620, "desc": "Upgraded batik to 1.18" },
-        { "num": 13614, "desc": "Upgraded asm to 9.7.1" },
-        { "num": 13591, "desc": "Upgraded commons-io to 2.17.0" },
-        { "num": 13573, "desc": "Upgraded commons-lang3 to 3.17.0" },
-        { "num": 13572, "desc": "Upgraded miglayout-swing to 11.4.2" },
-        { "num": 13548, "desc": "Upgraded maven-deploy-plugin to 3.1.3" },
-        { "num": 13542, "desc": "Upgraded maven-install-plugin to 3.1.3" },
-        { "num": 13540, "desc": "Upgraded maven-artifact to 3.9.9" }
+      "improvements": [
+      ],
+      "other": [
+      ]
+    },
+    {
+      "in": "3.7.28",
+      "since": "3.7.27",
+      "new_features": [
+      ],
+      "bug_fixes": [
+        { "num": 15111, "desc": "Fixed typos in menu item text" },
+        { "num": 15054, "desc": "Fix Truncated text label on hidden pieces" }
+      ],
+      "improvements": [
+        { "num": 15083, "desc": "Tile large Charts" },
+        { "num": 15042, "desc": "Update MacOS launch script to allow more options" },
+        { "num": 14547, "desc": "Optimize sum and count expressions" }
+      ],
+      "other": [
+        { "num": 15131, "desc": "Upgraded maven-artifact 3.10.0" },
+        { "num": 15130, "desc": "Upgraded apache-maven 3.10.0" },
+        { "num": 15123, "desc": "Upgraded checkstyle to 14.3.0" },
+        { "num": 15122, "desc": "Upgraded commons-lang3 to 3.21.0" },
+        { "num": 15114, "desc": "Upgraded logback-classic to 1.6.4" },
+        { "num": 15106, "desc": "Upgraded slf4j-api to 2.0.20" },
+        { "num": 15096, "desc": "Upgraded byte-buddy to 1.18.14" },
+        { "num": 15094, "desc": "Upgraded asciidoctorj-pdf to 2.3.27" },
+        { "num": 15085, "desc": "Upgraded maven-deploy-plugin to 3.2.0" },
+        { "num": 15084, "desc": "Upgraded maven-install-plugin to 3.2.0" },
+        { "num": 15080, "desc": "Upgraded clirr-maven-plugin to 2.9" },
+        { "num": 15079, "desc": "Upgraded exec-maven-plugin to 3.6.4" },
+        { "num": 15068, "desc": "Upgraded spotbugs-maven-plugin to 4.10.4.1" },
+        { "num": 15065, "desc": "Switched from obsolete mockito-inline to mockito-core" },
+        { "num": 15050, "desc": "Upgraded maven-surefire-plugin to 3.6.0" }
+      ]
+    },
+    {
+      "in": "3.7.27",
+      "since": "3.7.26",
+      "new_features": [
+      ],
+      "bug_fixes": [
+        { "num": 15037, "desc": "Fixed VASSAL.sh script to quote file name" },
+        { "num": 15035, "desc": "Fixed typo in ExpressionRange.adoc" }
+      ],
+      "improvements": [
+        { "num": 15038, "desc": "Added server options to Linux launch script" },
+        { "num": 15036, "desc": "Added explanation of expressions to Concepts.ado" },
+        { "num": 15032, "desc": "Use maximum compression for saves and logs" },
+        { "num": 14533, "desc": "Configure mnemonics for non-English yes/no buttons" }
+      ],
+      "other": [
+        { "num": 15046, "desc": "Upgraded checkstyle to 14.1.0" },
+        { "num": 15045, "desc": "Upgraded maven-compiler-plugin to 3.16.0" },
+        { "num": 15041, "desc": "Updated bundled Java to 26.0.2.1+1 (Windows x86_64, MacOS), 26.0.2+13 (Windows aarch64), 21.0.12.1+1 (Windows x86_32)" },
+        { "num": 15031, "desc": "Upgraded jsoup to 1.23.2" },
+        { "num": 15017, "desc": "Upgraded spotbugs-maven-plugin to 4.10.4.0" },
+        { "num": 15016, "desc": "Upgraded spotbugs-annotations to 4.10.4" },
+        { "num": 15003, "desc": "Upgraded byte-buddy to 1.18.12" },
+        { "num": 14998, "desc": "Upgraded logback-classic to 1.6.3" },
+        { "num": 14994, "desc": "Upgraded maven to 3.9.16" },
+        { "num": 14990, "desc": "Upgraded swingx-all to 2.2" },
+        { "num": 14986, "desc": "Upgraded junit-bom to 6.1.3" },
+        { "num": 14985, "desc": "Upgraded httpclient5 to 5.6.4" },
+        { "num": 14936, "desc": "Upgraded commons-codec to 1.22.1" }
       ]
     }
   ]

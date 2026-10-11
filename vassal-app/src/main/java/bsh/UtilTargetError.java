@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -35,8 +35,8 @@
 package bsh;
 
 /**
-	UtilTargetError is an error corresponding to a TargetError but thrown by a 
-	utility or other class that does not have the caller context (Node) 
+	UtilTargetError is an error corresponding to a TargetError but thrown by a
+	utility or other class that does not have the caller context (Node)
 	available to it.  See UtilEvalError for an explanation of the difference
 	between UtilEvalError and EvalError.
 	<p>
@@ -59,8 +59,8 @@ public class UtilTargetError extends UtilEvalError
 	/**
 		Override toEvalError to throw TargetError type.
 	*/
-	public EvalError toEvalError( 
-		String msg, SimpleNode node, CallStack callstack  ) 
+	public EvalError toEvalError(
+		String msg, SimpleNode node, CallStack callstack  )
 	{
 		if ( msg == null )
 			msg = getMessage();

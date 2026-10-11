@@ -698,6 +698,7 @@ public class Translate extends Decorator implements TranslatablePiece {
     public Command getAdditionalCommand() {
       return additionalCommand;
     }
+
     /**
      * Return the updated position of a piece that has a move
      * calculation recorded

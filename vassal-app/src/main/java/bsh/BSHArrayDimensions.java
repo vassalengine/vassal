@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -38,28 +38,28 @@ import java.lang.reflect.Array;
 
 /**
 	The name of this class is somewhat misleading.  This covers both the case
-	where there is an array initializer and 
+	where there is an array initializer and
 */
 class BSHArrayDimensions extends SimpleNode
 {
 	public Class baseType;
     public int numDefinedDims;
     public int numUndefinedDims;
-	/** 
-		The Length in each defined dimension.  This value set by the eval() 
+	/**
+		The Length in each defined dimension.  This value set by the eval()
 		Since the values can come from Expressions we should be re-eval()d each
 		time.
 	*/
-	public int [] definedDimensions;  
+	public int [] definedDimensions;
 
     BSHArrayDimensions(int id) { super(id); }
 
     public void addDefinedDimension() { numDefinedDims++; }
     public void addUndefinedDimension() { numUndefinedDims++; }
 
-    public Object eval( 
-			Class type, CallStack callstack, Interpreter interpreter ) 
-		throws EvalError 
+    public Object eval(
+			Class type, CallStack callstack, Interpreter interpreter )
+		throws EvalError
 	{
 		if ( Interpreter.DEBUG ) Interpreter.debug("array base type = "+type);
 		baseType = type;
@@ -73,28 +73,28 @@ class BSHArrayDimensions extends SimpleNode
 			the fully constructed array object, also record the dimensions
 			of that array
 			
-			b) evaluate and record the lengths in each dimension and 
+			b) evaluate and record the lengths in each dimension and
 			return void.
 
 		The structure of the array dims is maintained in dimensions.
 	*/
-    public Object eval( CallStack callstack, Interpreter interpreter )  
+    public Object eval( CallStack callstack, Interpreter interpreter )
 		throws EvalError
     {
 		SimpleNode child = (SimpleNode)jjtGetChild(0);
 
 		/*
-			Child is array initializer.  Evaluate it and fill in the 
+			Child is array initializer.  Evaluate it and fill in the
 			dimensions it returns.  Initialized arrays are always fully defined
-			(no undefined dimensions to worry about).  
+			(no undefined dimensions to worry about).
 			The syntax uses the undefinedDimension count.
 			e.g. int [][] { 1, 2 };
 		*/
 		if (child instanceof BSHArrayInitializer)
 		{
 			if ( baseType == null )
-				throw new EvalError( 
-					"Internal Array Eval err:  unknown base type", 
+				throw new EvalError(
+					"Internal Array Eval err:  unknown base type",
 					this, callstack );
 
 			Object initValue = ((BSHArrayInitializer)child).eval(
@@ -108,7 +108,7 @@ class BSHArrayDimensions extends SimpleNode
 			// number specified (syntax uses the undefined ones here)
 			if ( definedDimensions.length != numUndefinedDims )
 				throw new EvalError(
-				"Incompatible initializer. Allocation calls for a " + 
+				"Incompatible initializer. Allocation calls for a " +
 				numUndefinedDims+ " dimensional array, but initializer is a " +
 					actualDimensions + " dimensional array", this, callstack );
 
@@ -122,7 +122,7 @@ class BSHArrayDimensions extends SimpleNode
 
 			return initValue;
 		}
-		else 
+		else
 		// Evaluate the defined dimensions of the array
 		{
 			definedDimensions = new int[ numDefinedDims ];
@@ -137,7 +137,7 @@ class BSHArrayDimensions extends SimpleNode
 				catch(Exception e)
 				{
 					throw new EvalError(
-						"Array index: " + i + 
+						"Array index: " + i +
 						" does not evaluate to an integer", this, callstack );
 				}
 			}

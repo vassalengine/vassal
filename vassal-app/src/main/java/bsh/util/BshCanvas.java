@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -41,10 +41,10 @@ import bsh.*;
 	Scriptable Canvas with buffered graphics.
 
 	Provides a Component that:
-	1) delegates calls to paint() to a bsh method called paint() 
+	1) delegates calls to paint() to a bsh method called paint()
 		in a specific NameSpace.
-	2) provides a simple buffered image maintained by built in paint() that 
-		is useful for simple immediate procedural rendering from scripts...  
+	2) provides a simple buffered image maintained by built in paint() that
+		is useful for simple immediate procedural rendering from scripts...
 
 */
 public class BshCanvas extends JComponent {

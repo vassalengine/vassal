@@ -120,15 +120,23 @@ public abstract class TurnLevel extends TurnComponent {
     rolledOver = false;
     subLevelRolledOver = false;
     if (getTurnLevelCount() > 0) {
-      final TurnLevel subLevel = getTurnLevel(currentSubLevel);
+      final int initialLevel = currentSubLevel;
+      TurnLevel subLevel = getTurnLevel(currentSubLevel);
       subLevel.advance();
-      if (subLevel.hasRolledOver()) {
+      while (subLevel.hasRolledOver()) {
         currentSubLevel++;
         if (currentSubLevel >= getTurnLevelCount()) {
           currentSubLevel = 0;
           subLevelRolledOver = true;
         }
-        getTurnLevel(currentSubLevel).setLow();
+        subLevel = getTurnLevel(currentSubLevel);
+        if (initialLevel != currentSubLevel) {
+          subLevel.setLow();
+        }
+        else {
+          // Prevent an infinite loop if all are inactive.
+          break;
+        }
       }
     }
   }
@@ -137,15 +145,23 @@ public abstract class TurnLevel extends TurnComponent {
     rolledOver = false;
     subLevelRolledOver = false;
     if (getTurnLevelCount() > 0) {
-      final TurnLevel subLevel = getTurnLevel(currentSubLevel);
+      final int initialLevel = currentSubLevel;
+      TurnLevel subLevel = getTurnLevel(currentSubLevel);
       subLevel.retreat();
-      if (subLevel.hasRolledOver()) {
+      while (subLevel.hasRolledOver()) {
         currentSubLevel--;
         if (currentSubLevel < 0) {
           currentSubLevel = getTurnLevelCount() - 1;
           subLevelRolledOver = true;
         }
-        getTurnLevel(currentSubLevel).setHigh();
+        subLevel = getTurnLevel(currentSubLevel);
+        if (initialLevel != currentSubLevel) {
+          subLevel.setHigh();
+        }
+        else {
+          // Prevent an infinite loop if all are inactive.
+          break;
+        }
       }
     }
   }

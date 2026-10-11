@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -41,7 +41,7 @@ class BSHUnaryExpression extends SimpleNode implements ParserConstants
 
     BSHUnaryExpression(int id) { super(id); }
 
-    public Object eval( CallStack callstack, Interpreter interpreter)  
+    public Object eval( CallStack callstack, Interpreter interpreter)
 		throws EvalError
     {
         SimpleNode node = (SimpleNode)jjtGetChild(0);
@@ -51,18 +51,18 @@ class BSHUnaryExpression extends SimpleNode implements ParserConstants
 		// just do the unary operation for the value.
 		try {
 			if ( kind == INCR || kind == DECR ) {
-				LHS lhs = ((BSHPrimaryExpression)node).toLHS( 
+				LHS lhs = ((BSHPrimaryExpression)node).toLHS(
 					callstack, interpreter );
 				return lhsUnaryOperation( lhs, interpreter.getStrictJava() );
 			} else
-				return 
+				return
 					unaryOperation( node.eval(callstack, interpreter), kind );
 		} catch ( UtilEvalError e ) {
 			throw e.toEvalError( this, callstack );
 		}
     }
 
-    private Object lhsUnaryOperation( LHS lhs, boolean strictJava ) 
+    private Object lhsUnaryOperation( LHS lhs, boolean strictJava )
 		throws UtilEvalError
     {
         if ( Interpreter.DEBUG ) Interpreter.debug("lhsUnaryOperation");
@@ -82,7 +82,7 @@ class BSHUnaryExpression extends SimpleNode implements ParserConstants
 
     private Object unaryOperation( Object op, int kind ) throws UtilEvalError
     {
-        if (op instanceof Boolean || op instanceof Character 
+        if (op instanceof Boolean || op instanceof Character
 			|| op instanceof Number)
             return primitiveWrapperUnaryOperation( op, kind );
 
@@ -103,7 +103,7 @@ class BSHUnaryExpression extends SimpleNode implements ParserConstants
         if ( operand instanceof Boolean )
 			return Boolean.valueOf(
 				Primitive.booleanUnaryOperation((Boolean)operand, kind));
-        else 
+        else
 		if ( operand instanceof Integer )
         {
             int result = Primitive.intUnaryOperation((Integer)operand, kind);

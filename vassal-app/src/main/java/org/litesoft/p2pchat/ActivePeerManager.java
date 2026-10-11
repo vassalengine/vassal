@@ -128,7 +128,7 @@ public class ActivePeerManager
 
     return false;
   }
-  
+
   public synchronized void addActivePeer(PeerInfo pPeerInfo, InputStream pInputStream, OutputStream pOutputStream) {
     IllegalArgument.ifNull("PeerInfo", pPeerInfo);
     IllegalArgument.ifNull("InputStream", pInputStream);

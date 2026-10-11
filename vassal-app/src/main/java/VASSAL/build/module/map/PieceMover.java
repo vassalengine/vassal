@@ -1298,7 +1298,7 @@ public class PieceMover extends AbstractBuildable
     return !e.isConsumed() &&
       !e.isShiftDown() &&
       !SwingUtils.isSelectionToggle(e) &&
-      e.getClickCount() < 2 &&
+      e.getClickCount() == 1 &&                   // Previously also allowed a clickCount of zero here, causing https://github.com/vassalengine/vassal/issues/12480
       (e.getButton() == MouseEvent.NOBUTTON ||
         SwingUtils.isMainMouseButtonDown(e));
   }

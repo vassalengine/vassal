@@ -241,6 +241,7 @@ public class ToolbarMenu extends AbstractToolbarItem
               new JMenuItem(otherItem.getText(), otherItem.getIcon());
             myItem.addActionListener(e -> otherItem.doClick());
             myItem.setEnabled(otherItem.isEnabled());
+            myItem.setToolTipText(otherItem.getToolTipText());
             subMenu.add(myItem);
             buttonsToMenuMap.put(otherItem, myItem);
           }
@@ -258,6 +259,7 @@ public class ToolbarMenu extends AbstractToolbarItem
           mi.setEnabled(b.isEnabled());
           mi.addActionListener(e -> GameModule.getGameModule().refreshVisibleMaps());
           mi.addActionListener(e -> b.doClick());
+          mi.setToolTipText(b.getToolTipText());
           buttonsToMenuMap.put(b, mi);
           menu.add(mi);
         }

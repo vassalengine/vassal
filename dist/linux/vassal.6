@@ -1,0 +1,203 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" (C) Copyright 2025 cholmcc <cholmcc@gmail.com>,
+.\"
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.TH VASSAL 6 2025-06-06
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.SH NAME
+vassal \- play board and card games
+.SH SYNOPSIS
+.B vassal
+.RI [ options ] 
+.SH DESCRIPTION
+This manual page documents briefly the \fBvassal\fP command.
+.PP
+.\" TeX users may be more comfortable with the \fB<whatever>\fP and
+.\" \fI<whatever>\fP escape sequences to invode bold face and italics,
+.\" respectively.
+\fBVassal\fP is a program that allows you to play various board and
+card games on the computer, both locally (\fIhot seat\fP), live via
+the net (\fIon-line\fP), or as Play-by-EMail (\fIPBEM\fP).
+.PP
+Games are available as \fImodules\fP which can be downloaded from the
+VASSAL library at
+.RS
+.sp 1
+.UR
+https://vassalengine.org
+.UE .
+.RE
+.PP
+There are a variety of games available ranging from classic games like
+Chess, over Euro-style games, to Wargames (the latter is clearly the
+dominant category).
+.PP
+Downloaded modules are registered in a local library that allows users
+to quickly access previously played games. 
+.PP
+\fBVassal\fP also has a mode to create new or edit existing modules
+(options \fB\-\-new\fP and \fB\-\-edit\fP, respectively).
+.PP
+\fBVassal\fP allows for module to be \fIscripted\fP through an
+internal \fIBeanShell\fP (\fBbsh\fP(1)) interpreter.  Some modules
+have almost no scripting and only provide the playing components as
+virtual elements, while other modules use fairly complicated scripting
+to automatise many aspects or enforce rules of a game.
+.PP
+\fBVassal\fP also allows module designers to include custom Java
+classes to implement new features in a module which are not easily
+encoded into \fIBeanShell\fP scripts.  
+.PP
+\fBVassal\fP \fIdoes not\fP have facilities for computer opponents
+(artificial intelligence, or automatised opponents), and will never be
+able to accommodate that.
+.SH OPTIONS
+A summary of options is included below.
+.TP
+.B \-h,\-\-help
+Show summary of options.
+.TP
+.B \-c,\-\-chatlog
+Echo error log to chat log.
+.TP
+.BI \-e,\-\-edit \ module
+Edit the module in the file \fImodule\fP (typically ending in
+\fB.vmod\fP). 
+.TP
+.BI \-\-edit\-extension \ extension
+Edit the extension \fIextension\fP (typically ending in \fB.vmdx\fP).
+Note that the corresponding module (typically ending in \fB.vmod\fP)
+\fImust\fP be known to Vassal.  That is, you \fImust\fP have the
+module in your module library by opening the module at least once,
+before opening its extension.
+.TP
+.BI \-i,\-\-import \ adc2\-gamebox
+Imports the \fIAide de Champ\fP (version 2) gamebox
+\fIadc2-gamebox\fP, and opens the editor or the newly created Vassal
+module.
+.TP
+.BI \-l,\-\-load \ module
+.TQ
+.BI \-l,\-\-load \ save
+.TQ
+.BI \-l,\-\-load \ log
+Open the module \fImodule\fP, game save \fIsave\fP, or play log
+\fIlog\fP in the Vassal player.
+.sp 1
+Note, when loading a game save (typically ending in \fB.vsav\fP) or
+play log (typically ending in \fB.vlog\fP), then the corresponding
+module (typically ending in \fB.vmod\fP) \fImust\fP be known to
+Vassal.  That is, you \fImust\fP have the module in your module
+library by opening the module at least once, before opening the save
+or log.
+.TP
+.B \-m,\-\-manage
+Opens up the module manager (default if no other option is specified).
+.TP
+.B \-n,\-\-new
+Create a new module. 
+.TP
+.BI \-\-new\-extension \ module
+Create a new module extension to \fImodule\fP. 
+.TP
+.B \-\-version
+Report the version of Vassal to standard output and exit.
+.PP
+Below are some options that are \fIspecific\fP to the Debian
+installation.
+.TP
+.BI \-D variable=value
+Pass the assignment of \fIvariable\fP to \fIvalue\fP to the underlying
+Java process.  See \fIjava\fP(1) for more.
+.TP
+.B \-g,\-\-debug
+Run the Vassal process in a debugger \fBjdb\fP(1). 
+.TP
+.BI \-s,\-\-source \ directory
+Set Vassal source directory for debugger.  This option can be
+specified multiple times, or \fIdirectory\fP can be a colon \fB:\fP
+separated list of directories.
+.TP
+.B \-\-direct
+By-pass the module manager and run player, editor, ..., directly
+(useful when debugging)
+.SH FILE TYPES
+.TP
+.IB module .vmod
+A module file.  These files contains the definition of a module, such
+as the board, pieces, cards, and so on.  The can also contained
+predefined scenarios, tutorials, and additional information.
+.TP
+.IB save .vsav
+Save of a game state.  These are snapshots of the game state at the
+time of the save.  These are useful for saving a game to resume from
+at a later time, or as definitions of scenarios.
+.TP
+.IB log .vlog
+Play log.  These contain the \fIfull\fP log (since the time of
+recording) of a play of a module.  This is typically what one would
+exchange in the PBEM play-mode.
+.TP
+.IB extension .vmdx
+A module extension.  Module extensions are similar to modules, but
+augment a module with more elements, such as new counters, boards,
+cards, and so on.
+.PP
+All of these file types are really \fIZip\fP (\fBzip\fP(1)) archives.
+Modules and extensions contain an XML file that describes the content
+of the module, along with data files such as images, documentation,
+and so on.  Save and log archive files contain an obfuscated,
+custom-format, binary file that contains the game state and, in case
+of log files, history.
+.SH INSTALLATION
+On Debian, the \fBVassal\fP Java JAR file is installed in 
+.RS
+.sp 1
+\fI/usr/share/vassal/lib/Vengine.jar\fP
+.sp 1
+.RE
+with a symbolic link in
+.RS
+.sp 1
+\fI/usr/share/java/Vengine.jar\fP
+.sp 1
+.RE
+in case you are developing custom code.
+.PP
+The upstream execution script is available in
+.RS
+.sp 1
+\fI/usr/share/vassal/VASSAL.sh\fP
+.sp 1
+.RE
+if that is needed. 
+.SH SEE ALSO
+The program is documented fully at
+.RS
+.UR
+.sp 1
+https://vassalengine.org
+.UE
+.sp 1
+.RE
+and through the in-application \fBHelp\fP menu.  The user and module
+designer guides, as well as a reference manual for module designers
+can be found in
+.RS
+.sp 1
+\fI/usr/share/doc/vassal\fP
+.RE
+

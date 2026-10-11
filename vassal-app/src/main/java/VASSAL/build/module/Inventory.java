@@ -1211,6 +1211,7 @@ public class Inventory extends AbstractToolbarItem
     public String toString() {
       return format.getLocalizedText(this, this, "Editor.Inventory.label_pieces");
     }
+
     public String toSortKey() {
       return sortingFormat.getLocalizedText(this, this, "Editor.Inventory.label_sort");
     }

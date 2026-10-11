@@ -478,6 +478,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
       return null;
     }
   }
+
   public static class ContentsConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
@@ -491,6 +492,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
       };
     }
   }
+
   /**
    * Handles the packaging of the target directory into the module file after the user saves the properties in the
    * editor

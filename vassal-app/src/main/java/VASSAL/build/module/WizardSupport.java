@@ -482,6 +482,7 @@ public class WizardSupport {
       this.tutorial = tutorial;
     }
   }
+
   /**
    * Wizard pages for starting a new game offline
    *
@@ -795,7 +796,7 @@ public class WizardSupport {
           @Override
           public void propertyChange(PropertyChangeEvent evt) {
             final File f = (File) evt.getNewValue();
-            if (f == null || !f.exists()) {
+            if (f == null || !f.isFile()) {
               controller.setProblem(Resources.getString("WizardSupport.NoSuchFile")); //$NON-NLS-1$
             }
             else if (f.isDirectory()) {

@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -33,9 +33,9 @@
 
 package bsh;
 
-class BSHSwitchStatement 
-	extends SimpleNode 
-	implements ParserConstants 
+class BSHSwitchStatement
+	extends SimpleNode
+	implements ParserConstants
 {
 
 	public BSHSwitchStatement(int id) { super(id); }
@@ -63,24 +63,24 @@ class BSHSwitchStatement
 		label = ((BSHSwitchLabel)jjtGetChild(child++));
 
 		// while more labels or blocks and haven't hit return control
-		while ( child < numchild && returnControl == null ) 
+		while ( child < numchild && returnControl == null )
 		{
 			// if label is default or equals switchVal
-			if ( label.isDefault 
-				|| primitiveEquals( 
-					switchVal, label.eval( callstack, interpreter ), 
+			if ( label.isDefault
+				|| primitiveEquals(
+					switchVal, label.eval( callstack, interpreter ),
 					callstack, switchExp )
 				)
 			{
 				// execute nodes, skipping labels, until a break or return
-				while ( child < numchild ) 
+				while ( child < numchild )
 				{
 					node = jjtGetChild(child++);
 					if ( node instanceof BSHSwitchLabel )
 						continue;
 					// eval it
-					Object value = 
-						((SimpleNode)node).eval( callstack, interpreter ); 
+					Object value =
+						((SimpleNode)node).eval( callstack, interpreter );
 
 					// should check to disallow continue here?
 					if ( value instanceof ReturnControl ) {
@@ -88,10 +88,10 @@ class BSHSwitchStatement
 						break;
 					}
 				}
-			} else 
+			} else
 			{
 				// skip nodes until next label
-				while ( child < numchild ) 
+				while ( child < numchild )
 				{
 					node = jjtGetChild(child++);
 					if ( node instanceof BSHSwitchLabel ) {
@@ -112,21 +112,21 @@ class BSHSwitchStatement
 		Helper method for testing equals on two primitive or boxable objects.
 		yuck: factor this out into Primitive.java
 	*/
-	private boolean primitiveEquals( 
-		Object switchVal, Object targetVal, 
-		CallStack callstack, SimpleNode switchExp  ) 
+	private boolean primitiveEquals(
+		Object switchVal, Object targetVal,
+		CallStack callstack, SimpleNode switchExp  )
 		throws EvalError
 	{
 		if ( switchVal instanceof Primitive || targetVal instanceof Primitive )
 			try {
-				// binaryOperation can return Primitive or wrapper type 
-				Object result = Primitive.binaryOperation( 
+				// binaryOperation can return Primitive or wrapper type
+				Object result = Primitive.binaryOperation(
 					switchVal, targetVal, ParserConstants.EQ );
-				result = Primitive.unwrap( result ); 
-				return result.equals( Boolean.TRUE ); 
+				result = Primitive.unwrap( result );
+				return result.equals( Boolean.TRUE );
 			} catch ( UtilEvalError e ) {
 				throw e.toEvalError(
-					"Switch value: "+switchExp.getText()+": ", 
+					"Switch value: "+switchExp.getText()+": ",
 					this, callstack );
 			}
 		else

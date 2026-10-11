@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -35,12 +35,12 @@
 package bsh;
 /*
 	Note: great care (and lots of typing) were taken to insure that the
-	namespace and interpreter references are passed on the stack and not 
+	namespace and interpreter references are passed on the stack and not
 	(as they were erroneously before) installed in instance variables...
-	Each of these node objects must be re-entrable to allow for recursive 
+	Each of these node objects must be re-entrable to allow for recursive
 	situations.
 
-	The only data which should really be stored in instance vars here should 
+	The only data which should really be stored in instance vars here should
 	be parse tree data... features of the node which should never change (e.g.
 	the number of arguments, etc.)
 	
@@ -49,7 +49,7 @@ package bsh;
 	try to remember to mark these as transient to highlight them.
 
 */
-class SimpleNode implements Node 
+class SimpleNode implements Node
 {
 	public static SimpleNode JAVACODE =
 		new SimpleNode( -1 ) {
@@ -100,8 +100,8 @@ class SimpleNode implements Node
 		children[i] = n;
 	}
 
-	public Node jjtGetChild(int i) { 
-		return children[i]; 
+	public Node jjtGetChild(int i) {
+		return children[i];
 	}
 	public SimpleNode getChild( int i ) {
 		return (SimpleNode)jjtGetChild(i);
@@ -155,7 +155,7 @@ class SimpleNode implements Node
 	/**
 		This is the general signature for evaluation of a node.
 	*/
-	public Object eval( CallStack callstack, Interpreter interpreter ) 
+	public Object eval( CallStack callstack, Interpreter interpreter )
 		throws EvalError
 	{
 		throw new InterpreterError(
@@ -204,7 +204,7 @@ class SimpleNode implements Node
 	/**
 		Get the text of the tokens comprising this node.
 	*/
-	public String getText() 
+	public String getText()
 	{
 		StringBuffer text = new StringBuffer();
 		Token t = firstToken;

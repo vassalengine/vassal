@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -53,12 +53,12 @@ class BSHPrimarySuffix extends SimpleNode
 	BSHPrimarySuffix(int id) { super(id); }
 
 	/*
-		Perform a suffix operation on the given object and return the 
+		Perform a suffix operation on the given object and return the
 		new value.
 		<p>
 
 		obj will be a Node when suffix evaluation begins, allowing us to
-		interpret it contextually. (e.g. for .class) Thereafter it will be 
+		interpret it contextually. (e.g. for .class) Thereafter it will be
 		an value object or LHS (as determined by toLHS).
 		<p>
 		
@@ -66,8 +66,8 @@ class BSHPrimarySuffix extends SimpleNode
 		<p>
 	*/
 	public Object doSuffix(
-		Object obj, boolean toLHS, 
-		CallStack callstack, Interpreter interpreter) 
+		Object obj, boolean toLHS,
+		CallStack callstack, Interpreter interpreter)
 		throws EvalError
 	{
 		// Handle ".class" suffix operation
@@ -75,25 +75,25 @@ class BSHPrimarySuffix extends SimpleNode
 		if ( operation == CLASS )
 			if ( obj instanceof BSHType ) {
 				if ( toLHS )
-					throw new EvalError("Can't assign .class", 
+					throw new EvalError("Can't assign .class",
 						this, callstack );
 				NameSpace namespace = callstack.top();
 				return ((BSHType)obj).getType( callstack, interpreter );
 			} else
 				throw new EvalError(
-					"Attempt to use .class suffix on non class.", 
+					"Attempt to use .class suffix on non class.",
 					this, callstack );
 
 		/*
 			Evaluate our prefix if it needs evaluating first.
-			If this is the first evaluation our prefix mayb be a Node 
-			(directly from the PrimaryPrefix) - eval() it to an object.  
+			If this is the first evaluation our prefix mayb be a Node
+			(directly from the PrimaryPrefix) - eval() it to an object.
 			If it's an LHS, resolve to a value.
 
-			Note: The ambiguous name construct is now necessary where the node 
-			may be an ambiguous name.  If this becomes common we might want to 
-			make a static method nodeToObject() or something.  The point is 
-			that we can't just eval() - we need to direct the evaluation to 
+			Note: The ambiguous name construct is now necessary where the node
+			may be an ambiguous name.  If this becomes common we might want to
+			make a static method nodeToObject() or something.  The point is
+			that we can't just eval() - we need to direct the evaluation to
 			the context sensitive type of result; namely object, class, etc.
 		*/
 		if ( obj instanceof SimpleNode )
@@ -124,7 +124,7 @@ class BSHPrimarySuffix extends SimpleNode
 
 				default:
 					throw new InterpreterError( "Unknown suffix type" );
-			} 
+			}
 		}
 		catch(ReflectError e)
 		{
@@ -132,7 +132,7 @@ class BSHPrimarySuffix extends SimpleNode
 		}
 		catch(InvocationTargetException e)
 		{
-			throw new TargetError( "target exception", e.getTargetException(), 
+			throw new TargetError( "target exception", e.getTargetException(),
 				this, callstack, true);
 		}
 	}
@@ -142,8 +142,8 @@ class BSHPrimarySuffix extends SimpleNode
 		Must handle toLHS case for each.
 	*/
 	private Object doName(
-		Object obj, boolean toLHS, 
-		CallStack callstack, Interpreter interpreter) 
+		Object obj, boolean toLHS,
+		CallStack callstack, Interpreter interpreter)
 		throws EvalError, ReflectError, InvocationTargetException
 	{
 		try {
@@ -156,7 +156,7 @@ class BSHPrimarySuffix extends SimpleNode
 					return new Primitive(Array.getLength(obj));
 			
 			// field access
-			if ( jjtGetNumChildren() == 0 ) 
+			if ( jjtGetNumChildren() == 0 )
 				if ( toLHS )
 					return Reflect.getLHSObjectField(obj, field);
 				else
@@ -173,13 +173,13 @@ class BSHPrimarySuffix extends SimpleNode
 		// we handle all cases ... (e.g. property style access, etc.)
 		// maybe move this to Reflect ?
 			try {
-				return Reflect.invokeObjectMethod( 
+				return Reflect.invokeObjectMethod(
 					obj, field, oa, interpreter, callstack, this );
 			} catch ( ReflectError e ) {
 				throw new EvalError(
-					"Error in method invocation: " + e.getMessage(), 
+					"Error in method invocation: " + e.getMessage(),
 					this, callstack );
-			} catch ( InvocationTargetException e ) 
+			} catch ( InvocationTargetException e )
 			{
 				String msg = "Method Invocation "+field;
 				Throwable te = e.getTargetException();
@@ -190,14 +190,14 @@ class BSHPrimarySuffix extends SimpleNode
 					(e.g. eval() or source()
 				*/
 				boolean isNative = true;
-				if ( te instanceof EvalError ) 
+				if ( te instanceof EvalError )
 					if ( te instanceof TargetError )
 						isNative = ((TargetError)te).inNativeCode();
 					else
 						isNative = false;
 				
 				throw new TargetError( msg, te, this, callstack, isNative );
-			} 
+			}
 
 		} catch ( UtilEvalError e ) {
 			throw e.toEvalError( this, callstack );
@@ -207,8 +207,8 @@ class BSHPrimarySuffix extends SimpleNode
 	/**
 	*/
 	static int getIndexAux(
-		Object obj, CallStack callstack, Interpreter interpreter, 
-		SimpleNode callerInfo ) 
+		Object obj, CallStack callstack, Interpreter interpreter,
+		SimpleNode callerInfo )
 		throws EvalError
 	{
 		if ( !obj.getClass().isArray() )
@@ -216,8 +216,8 @@ class BSHPrimarySuffix extends SimpleNode
 
 		int index;
 		try {
-			Object indexVal = 
-				((SimpleNode)callerInfo.jjtGetChild(0)).eval( 
+			Object indexVal =
+				((SimpleNode)callerInfo.jjtGetChild(0)).eval(
 					callstack, interpreter );
 			if ( !(indexVal instanceof Primitive) )
 				indexVal = Types.castObject(
@@ -225,8 +225,8 @@ class BSHPrimarySuffix extends SimpleNode
 			index = ((Primitive)indexVal).intValue();
 		} catch( UtilEvalError e ) {
 			Interpreter.debug("doIndex: "+e);
-			throw e.toEvalError( 
-				"Arrays may only be indexed by integer types.", 
+			throw e.toEvalError(
+				"Arrays may only be indexed by integer types.",
 				callerInfo, callstack );
 		}
 
@@ -237,9 +237,9 @@ class BSHPrimarySuffix extends SimpleNode
 		array index.
 		Must handle toLHS case.
 	*/
-	private Object doIndex( 
-		Object obj, boolean toLHS, 
-		CallStack callstack, Interpreter interpreter ) 
+	private Object doIndex(
+		Object obj, boolean toLHS,
+		CallStack callstack, Interpreter interpreter )
 		throws EvalError, ReflectError
 	{
 		int index = getIndexAux( obj, callstack, interpreter, this );
@@ -258,16 +258,16 @@ class BSHPrimarySuffix extends SimpleNode
 		Must handle toLHS case.
 	*/
 	private Object doProperty( boolean toLHS,
-		Object obj, CallStack callstack, Interpreter interpreter ) 
+		Object obj, CallStack callstack, Interpreter interpreter )
 		throws EvalError
 	{
 		if(obj == Primitive.VOID)
-			throw new EvalError( 
-			"Attempt to access property on undefined variable or class name", 
+			throw new EvalError(
+			"Attempt to access property on undefined variable or class name",
 				this, callstack );
 
 		if ( obj instanceof Primitive )
-			throw new EvalError("Attempt to access property on a primitive", 
+			throw new EvalError("Attempt to access property on a primitive",
 				this, callstack );
 
 		Object value = ((SimpleNode)jjtGetChild(0)).eval(
@@ -275,7 +275,7 @@ class BSHPrimarySuffix extends SimpleNode
 
 		if ( !( value instanceof String ) )
 			throw new EvalError(
-				"Property expression must be a String or identifier.", 
+				"Property expression must be a String or identifier.",
 				this, callstack );
 
 		if ( toLHS )
@@ -292,11 +292,11 @@ class BSHPrimarySuffix extends SimpleNode
 		try {
 			return Reflect.getObjectProperty( obj, (String)value );
 		}
-		catch ( UtilEvalError e)  
+		catch ( UtilEvalError e)
 		{
 			throw e.toEvalError( "Property: "+value, this, callstack );
 		}
-		catch (ReflectError e) 
+		catch (ReflectError e)
 		{
 			throw new EvalError("No such property: " + value, this, callstack );
 		}

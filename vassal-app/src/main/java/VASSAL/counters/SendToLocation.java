@@ -552,9 +552,10 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       final ChangeTracker tracker = new ChangeTracker(this);
       setProperty(BACK_MAP, null);
       setProperty(BACK_POINT, null);
-      c = tracker.getChangeCommand();
 
       if (backMap != null && backPoint != null) {
+        c = tracker.getChangeCommand();
+
         // Prepare piece for move, setting "old location" properties. Mark moved and generate movement trail if global options setting is on
         c = prepareMove(c, GlobalOptions.getInstance().isSendToLocationMoveTrails());
 
@@ -568,6 +569,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
           oldMap.repaint();
         }
         backMap.repaint();
+        map = backMap;
       }
     }
 
@@ -589,13 +591,6 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
 
             // Prepare piece for move, setting "old location" properties. Mark moved and generate movement trail if global options setting is on
             c = piece.prepareMove(c, GlobalOptions.getInstance().isSendToLocationMoveTrails());
-
-            //BR// I sort of think cargo shouldn't snap when moving in lockstep with its mat.
-            //BR// This may lead to the eventual conclusion that cargo pieces shouldn't snap
-            //BR// even when dragged, IF they land on an eligible Mat.
-            //if (!Boolean.TRUE.equals(piece.getProperty(Properties.IGNORE_GRID))) {
-            //  dest = map.snapTo(dest);
-            //}
 
             c = c.append(map.placeOrMerge(piece, pt));
 

@@ -43,4 +43,27 @@
         <field>uiPanel</field>
         <justification>No code will have sub-classed this class</justification>
     </difference>
+
+    <!-- 3.7.21 -->
+    <difference>
+        <className>bsh/util/AWTDemoApplet</className>
+        <differenceType>8001</differenceType>
+        <justification>java.applet.Applet no longer exists</justification>
+    </difference>
+    <difference>
+        <className>bsh/util/AWTRemoteApplet</className>
+        <differenceType>8001</differenceType>
+        <justification>java.applet.Applet no longer exists</justification>
+    </difference>
+    <difference>
+        <className>bsh/util/JDemoApplet</className>
+        <differenceType>8001</differenceType>
+        <justification>javax.swing.JApplet no longer exists</justification>
+    </difference>
+    <difference>
+        <className>bsh/util/JRemoteApplet</className>
+        <differenceType>8001</differenceType>
+        <justification>javax.swing.JApplet no longer exists</justification>
+    </difference>
+
 </differences>

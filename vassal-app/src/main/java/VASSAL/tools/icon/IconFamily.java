@@ -644,34 +644,28 @@ public class IconFamily extends AbstractConfigurable {
       final FileChooser fc = GameModule.getGameModule().getEditorImageChooser();
       fc.setFileFilter(new FamilyImageFilter(family.getName()));
       fc.setSelectedFile(new File(family.getName() + ".*")); //$NON-NLS-1$
-      if (fc.showOpenDialog(getControls()) != FileChooser.APPROVE_OPTION) {
-        setWarning(""); //$NON-NLS-1$
-        setValue(null);
-      }
-      else {
+      if (fc.showOpenDialog(getControls()) == FileChooser.APPROVE_OPTION) {
         final File f = fc.getSelectedFile();
-        if (f != null && f.exists()) {
-          final String name = f.getName();
-          if (name.split("\\.").length != 2) { //$NON-NLS-1$
-            showError(Resources.getString("Editor.IconFamily.illegal_icon_name")); //$NON-NLS-1$
-          }
-          else if (!name.startsWith(family.getName())) {
-            showError(Resources.getString("Editor.IconFamily.bad_icon_name", family.getName())); //$NON-NLS-1$
-          }
-          else if (!ImageUtils.hasImageSuffix(name)) {
-            showError(Resources.getString("Editor.IconFamily.bad_icon_file")); //$NON-NLS-1$
-          }
-          else {
-            GameModule.getGameModule().getArchiveWriter().addImage(f.getPath(),
-                buildPath(f.getName()));
-            setWarning(""); //$NON-NLS-1$
-            setValue(name);
-          }
+        final String name = f.getName();
+        if (name.split("\\.").length != 2) { //$NON-NLS-1$
+          showError(Resources.getString("Editor.IconFamily.illegal_icon_name")); //$NON-NLS-1$
+        }
+        else if (!name.startsWith(family.getName())) {
+          showError(Resources.getString("Editor.IconFamily.bad_icon_name", family.getName())); //$NON-NLS-1$
+        }
+        else if (!ImageUtils.hasImageSuffix(name)) {
+          showError(Resources.getString("Editor.IconFamily.bad_icon_file")); //$NON-NLS-1$
         }
         else {
+          GameModule.getGameModule().getArchiveWriter().addImage(f.getPath(),
+              buildPath(f.getName()));
           setWarning(""); //$NON-NLS-1$
-          setValue(null);
+          setValue(name);
         }
+      }
+      else {
+        setWarning(""); //$NON-NLS-1$
+        setValue(null);
       }
     }
 

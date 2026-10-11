@@ -290,7 +290,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       }
       map.placeAt(s, p);
 
-      // Tell any *stacked* pieces what map they are on. 
+      // Tell any *stacked* pieces what map they are on.
       for (final GamePiece piece : s.asList()) {
         piece.setMap(map);
       }
@@ -1228,7 +1228,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
             }
 
             if (!s.owningBoardName.equals(myStack.owningBoardName)) {
-              return false; 
+              return false;
             }
           }
 
@@ -1296,7 +1296,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         r.width *= os_scale;
         r.height *= os_scale;
 
-        for (final SetupStack s : otherStacks) { 
+        for (final SetupStack s : otherStacks) {
           drawOtherStack(s, g2d, r, os_scale);
         }
       }

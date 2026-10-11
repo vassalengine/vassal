@@ -1,0 +1,10 @@
+Document: vassal-designerguide
+Title: VASSAL Designer's guide
+Author: VASSAL Team
+Abstract: Module designer's manual for VASSAL,
+ with guidelines on how to make, edit, and modify game modules
+ and extensions.
+Section: Games/Board
+
+Format: PDF
+Files: /usr/share/doc/vassal/designerguide.pdf

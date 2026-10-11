@@ -379,6 +379,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     }
     return untranslatedSides;
   }
+
   /**
    * Adds a player to the list of active players occupying sides
    * @param playerId player unique id (password)

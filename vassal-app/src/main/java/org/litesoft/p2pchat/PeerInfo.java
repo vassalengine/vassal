@@ -53,7 +53,7 @@ public class PeerInfo {
   private String zChatName;
   private String zAddresses;
   private Integer zPort = null;
-  private String[] zOldChatNames = null;  
+  private String[] zOldChatNames = null;
   private static final String NO_CHATNAME = "(?)";
   private int failureCount = 0;
   private String zNetworkPw = "";
@@ -66,7 +66,7 @@ public class PeerInfo {
     this(pChatName, pAddresses);
     zPort = pPort;
   }
-  
+
   public PeerInfo(String pChatName, String pAddresses, int pPort, String pNetworkPw) {
     this (pChatName, pAddresses, pPort);
     zNetworkPw = pNetworkPw;
@@ -95,7 +95,7 @@ public class PeerInfo {
       chatName = pFormatted.substring(spaceAt + 1);
     }
     String addresses = pFormatted.substring(0, colonAt);
-    
+
 //    int port = 0;
 //    try {
 //      port = Integer.parseInt(pFormatted.substring(colonAt + 1, spaceAt));
@@ -104,7 +104,7 @@ public class PeerInfo {
 //      return null;
 //    }
 //    return new PeerInfo(chatName, addresses, port);
-    
+
     final String rest = pFormatted.substring(colonAt+1, spaceAt);
     final int slashAt = rest.indexOf('/');
     String portStr, networkPw;
@@ -116,7 +116,7 @@ public class PeerInfo {
       portStr = rest.substring(0, slashAt);
       networkPw = rest.substring(slashAt+1);
     }
-    
+
     int port = 0;
     try {
       port = Integer.parseInt(portStr);
@@ -125,7 +125,7 @@ public class PeerInfo {
       return null;
     }
     return new PeerInfo(chatName, addresses, port, networkPw);
-    
+
   }
 
   public boolean isAddressable() {
@@ -187,11 +187,11 @@ public class PeerInfo {
   public String format() {
     return zAddresses + ":" + zPort + "/" + zNetworkPw + " " + zChatName;
   }
-  
+
   public void setNetworkPw(String pw) {
     zNetworkPw = pw;
   }
-  
+
   public String getNetworkPw () {
     return zNetworkPw;
   }
