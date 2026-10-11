@@ -28,8 +28,8 @@ import VASSAL.counters.GamePiece;
 import VASSAL.counters.KeyBuffer;
 import VASSAL.tools.BugUtils;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.codehaus.plexus.util.StringUtils;
 import org.slf4j.LoggerFactory;
 
 import java.awt.Desktop;
@@ -393,24 +393,21 @@ public class Console {
       show("  /sides [list]       - list status of sides in the game"); //NON-NLS
     }
     else if (option.isEmpty() || matches("list", option)) { //NON-NLS
-      String status = "";
       final GameModule gm = GameModule.getGameModule();
 
-      // get local sides list
-      final PlayerRoster pr = new PlayerRoster();
-
-      final List<String> sides = new ArrayList<>(pr.getSides());
+      // the module's roster holds the defined sides and current players
+      final PlayerRoster pr = gm.getPlayerRoster();
+      final List<String> sides = (pr == null) ? List.of() : pr.getSides();
 
       if (sides.isEmpty()) {
-        show("No sides defined.");
+        show("No sides defined."); //NON-NLS
       }
       else {
         // List the sides, checking each
-        for (final String s : sides) { // search of
-          show("checking " + s); //DEBUG
+        for (final String s : sides) {
+          String status = "";
           // Is side allocated to a player? Which one ?
           for (final PlayerRoster.PlayerInfo p : pr.players) {
-            show("...check player " + p.playerName); //DEBUG
             if (s.equals(p.getLocalizedSide())) {
               // password checks
               String pwStatus = "";
@@ -418,7 +415,6 @@ public class Console {
                 pwStatus = " Warning: Blank password"; // NON-NLS
               }
               else {
-                show("..CHECKING PASSWORDS "); //DEBUG
                 for (final PlayerRoster.PlayerInfo p2 : pr.players) {
                   if (p.playerId.equals(p2.playerId) && !s.equals(p2.getLocalizedSide())) {
                     pwStatus = " Warning: Password identical to that of " + p2.playerName; // NON-NLS
@@ -432,14 +428,14 @@ public class Console {
           }
           if (status.isEmpty()) {
             // No matching player, so side is either locked (by module) or available...
-            if (Boolean.parseBoolean((String) gm.getProperty("VassalHideSide_" + pr.untranslateSide(s)))) {
-              status = "Locked by module";
+            if (Boolean.parseBoolean((String) gm.getProperty(PlayerRoster.VassalHideSide + pr.untranslateSide(s)))) {
+              status = "Locked by module"; //NON-NLS
             }
             else {
-              status = "Available";
+              status = "Available"; //NON-NLS
             }
           }
-          show(s + " " + status);
+          show(s + " " + status); //NON-NLS
         }
       }
     }
