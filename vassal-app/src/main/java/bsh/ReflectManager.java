@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -39,7 +39,7 @@ import bsh.Capabilities.Unavailable;
 	ReflectManager is a dynamically loaded extension that supports extended
 	reflection features supported by JDK1.2 and greater.
 
-	In particular it currently supports accessible method and field access 
+	In particular it currently supports accessible method and field access
 	supported by JDK1.2 and greater.
 */
 public abstract class ReflectManager
@@ -50,10 +50,10 @@ public abstract class ReflectManager
 		Return the singleton bsh ReflectManager.
 		@throws Unavailable
 	*/
-	public static ReflectManager getReflectManager() 
+	public static ReflectManager getReflectManager()
 		throws Unavailable
 	{
-		if ( rfm == null ) 
+		if ( rfm == null )
 		{
 			Class clas;
 			try {
@@ -72,7 +72,7 @@ public abstract class ReflectManager
 		Convenience method to invoke the reflect manager.
 		@throws Unavailable
 	*/
-	public static boolean RMSetAccessible( Object obj ) 
+	public static boolean RMSetAccessible( Object obj )
 		throws Unavailable
 	{
 		return getReflectManager().setAccessible( obj );

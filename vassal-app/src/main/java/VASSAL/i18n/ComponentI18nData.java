@@ -28,11 +28,13 @@ import java.util.TreeMap;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AbstractFolder;
 import VASSAL.build.AutoConfigurable;
+import VASSAL.build.BadDataReport;
 import VASSAL.build.Configurable;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.PlaceMarker;
+import VASSAL.tools.ErrorDialog;
 
 /**
  * Object encapsulating the internationalization information for a component.
@@ -68,6 +70,7 @@ public class ComponentI18nData {
     init(c, prefix, c.getAttributeNames(), c.getAttributeTypes(), c.getAttributeDescriptions());
   }
 
+  @SuppressWarnings("PMD.LooseCoupling")
   @Deprecated(since = "2020-10-26", forRemoval = true)
   public ComponentI18nData(AbstractConfigurable c, String prefix, ArrayList<String> names, ArrayList<Class<?>> types, ArrayList<String> descriptions) { //NOPMD
     init(c, prefix, names.toArray(new String[0]), types.toArray(new Class<?>[0]), descriptions.toArray(new String[0]));
@@ -106,11 +109,24 @@ public class ComponentI18nData {
     setPrefix(pfx);
     myComponent = c;
     children.addAll(Arrays.asList(myComponent.getConfigureComponents()));
-    for (int i = 0; i < translatable.length; i++) {
-      final Property p = new Property(names[i], descriptions[i]);
-      allProperties.put(names[i], p);
-      if (translatable[i]) {
-        translatableProperties.put(names[i], p);
+    try {
+      for (int i = 0; i < translatable.length; i++) {
+        final Property p = new Property(names[i], descriptions[i]);
+        allProperties.put(names[i], p);
+        if (translatable[i]) {
+          translatableProperties.put(names[i], p);
+        }
+      }
+    }
+    catch (IndexOutOfBoundsException ex) {
+      final String message = String.format(Resources.getString("Error.i18n_array_length_mismatch"), //NON-NLS
+              names.length, descriptions.length, translatable.length);
+      final String data = c.getClass().getName();
+      if (c instanceof AbstractConfigurable) {
+        ErrorDialog.dataWarning(new BadDataReport((AbstractConfigurable) c, message, data, ex));
+      }
+      else {
+        ErrorDialog.dataWarning(new BadDataReport(message, data, ex));
       }
     }
   }
@@ -288,7 +304,7 @@ public class ComponentI18nData {
    */
   public void applyTranslation(String attr, String value) {
     final Property p = translatableProperties.get(attr);
-    if (attr != null) {
+    if (p != null) {
       p.setUntranslatedValue(myComponent.getAttributeValueString(attr));
       myComponent.setAttribute(attr, value);
     }
@@ -389,6 +405,7 @@ public class ComponentI18nData {
      */
     return false;
   }
+
   /** An attribute of a Configurable component that can be translated into another language */
   public static class Property {
     private final String name;

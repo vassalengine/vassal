@@ -480,6 +480,7 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
 
     return message;
   }
+
   /**
    * Is the current user allowed to change the locked state of a Scenario Option tab
    *  - A Locked tab can only be unlocked by the user who locked it.
@@ -691,7 +692,7 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
     }
   }
 
-  private static class AlignConfig implements ConfigurerFactory {
+  public static class AlignConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new TranslatingStringEnumConfigurer(key, name,
@@ -700,7 +701,7 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
     }
   }
 
-  private static class TextConfig implements ConfigurerFactory {
+  public static class TextConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       final TextConfigurer t = new TextConfigurer(key, name);

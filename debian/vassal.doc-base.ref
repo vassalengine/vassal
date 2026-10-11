@@ -1,0 +1,9 @@
+Document: vassal-referencemanual
+Title: VASSAL Reference manual
+Author: VASSAL Team
+Abstract: Reference manual of VASSAL elements
+ mainly for use when editting modules and extensions.
+Section: Games/Board
+
+Format: PDF
+Files: /usr/share/doc/vassal/reference/index.html

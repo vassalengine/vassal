@@ -4,6 +4,7 @@ import VASSAL.Info;
 import VASSAL.tools.DataArchive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import javax.swing.text.AttributeSet;
 import javax.swing.text.Element;
@@ -49,7 +50,7 @@ public class DataArchiveHTMLEditorKit extends HTMLEditorKit {
       final String src = (String) getElement().getAttributes().getAttribute(HTML.Attribute.SRC);
 
       URL url = null;
-      final Path out = Info.getTempDir().toPath().resolve(src);
+      final Path out = Info.getTempDir().toPath().resolve(DigestUtils.sha1Hex(src));
 
       try {
         if (!Files.exists(out)) {

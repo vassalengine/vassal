@@ -75,7 +75,13 @@ public class Mp3AudioClip implements AudioClip {
       player = new Player(stream);
     }
     catch (JavaLayerException e) {
-      ErrorDialog.bug(e);
+      // FIXME: This might be a local issue, better suiting a new ErrorDialog class
+      ErrorDialog.dataWarning(new BadDataReport(
+              Resources.getString(
+                      "Error.player_setup_failed", name != null ? name : url.toString()
+              ),
+              "", e
+      )); //NON-NLS
     }
     finally {
       if (player == null) {

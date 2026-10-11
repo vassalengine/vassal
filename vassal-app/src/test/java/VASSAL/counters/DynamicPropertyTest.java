@@ -18,8 +18,7 @@
 
 package VASSAL.counters;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import VASSAL.build.GameModule;
 import VASSAL.build.module.properties.PropertyChanger;
 import VASSAL.build.module.properties.PropertyChangerConfigurer;
 import VASSAL.build.module.properties.PropertySetter;
@@ -31,6 +30,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 public class DynamicPropertyTest extends DecoratorTest {
@@ -117,38 +122,73 @@ public class DynamicPropertyTest extends DecoratorTest {
 
   @Test
   public void testFormatInitialValueRFE3472() {
-    // Initial value of DynamicProperty was not getting evaluated
-    final String pieceName = "Test Piece";
-    final BasicPiece piece = new BasicPiece(BasicPiece.ID + ";;;" + pieceName + ";");
-    final DynamicProperty dp = new DynamicProperty(DynamicProperty.ID, piece);
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
 
-    dp.mySetState("$" + BasicPiece.PIECE_NAME + "$");
+      // Initial value of DynamicProperty was not getting evaluated
+      final String pieceName = "Test Piece";
+      final BasicPiece piece = new BasicPiece(BasicPiece.ID + ";;;" + pieceName + ";");
+      final DynamicProperty dp = new DynamicProperty(DynamicProperty.ID, piece);
 
-    assertEquals(pieceName, dp.getValue());
+      dp.mySetState("$" + BasicPiece.PIECE_NAME + "$");
+
+      assertEquals(pieceName, dp.getValue());
+    }
   }
 
   @Test
   public void testNonStringSetPropertyBug3479() {
-    // If a dynamic property has a name of "Moved" then setProperty can be
-    // called with a Boolean
-    final String propName = "Moved";
-    final BasicPiece piece = new BasicPiece(BasicPiece.ID + ";;;");
-    final DynamicProperty dp = new DynamicProperty(DynamicProperty.ID + propName, piece);
+    // setProperty accesses the GameModule.
+    // Create a mock to ensure that it is instantiated.
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
 
-    dp.setProperty(propName, Boolean.TRUE);
+      // If a dynamic property has a name of "Moved" then setProperty can be
+      // called with a Boolean
+      final String propName = "Moved";
+      final BasicPiece piece = new BasicPiece(BasicPiece.ID + ";;;");
+      final DynamicProperty dp = new DynamicProperty(DynamicProperty.ID + propName, piece);
 
-    assertEquals(Boolean.TRUE.toString(), dp.getProperty(propName));
+      dp.setProperty(propName, Boolean.TRUE);
+
+      assertEquals(Boolean.TRUE.toString(), dp.getProperty(propName));
+    }
   }
 
   @Test
   public void testNullSetProperty() {
-    // setProperty of null should result in getProperty of empty string
-    final String propName = "Name";
-    final BasicPiece piece = new BasicPiece(BasicPiece.ID + ";;;");
-    final DynamicProperty dp = new DynamicProperty(DynamicProperty.ID + propName, piece);
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
 
-    dp.setProperty(propName, null);
+      // setProperty of null should result in getProperty of empty string
+      final String propName = "Name";
+      final BasicPiece piece = new BasicPiece(BasicPiece.ID + ";;;");
+      final DynamicProperty dp = new DynamicProperty(DynamicProperty.ID + propName, piece);
 
-    assertEquals("", dp.getProperty(propName));
+      dp.setProperty(propName, null);
+
+      assertEquals("", dp.getProperty(propName));
+    }
+  }
+
+  @Test
+  public void testEditorMode() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      when(gm.isEditorOpen()).thenReturn(true);
+
+      // When in the Editor, setValue should not evaluate BeanShell expressions
+      final String propName = "Name";
+      final BasicPiece piece = new BasicPiece(BasicPiece.ID + ";;;");
+      final DynamicProperty dp = new DynamicProperty(DynamicProperty.ID + propName, piece);
+      final String beanShell = "{}";
+      dp.setValue(beanShell);
+
+      assertEquals("{}", dp.getValue());
+    }
   }
 }

@@ -47,8 +47,10 @@ This erases any existing trails, but leaves the trail's _showing_ or _hidden_ st
 
 *Trails start visible:*::  If checked, the piece will begin the game displaying movement trails.
 
-*Trails visibility synchronized for all players:*::  If selected, then toggling the visibility of the trail will affect all players' views and will be saved along with the game.
+*Trails visibility synchronized for all players:*::  If checked, then toggling the visibility of the trail will affect all players' views and will be saved along with the game.
 Otherwise, each player controls the visibility of trails on that player's view.
+
+*Ignore moves which don’t change either Location Name or Mat:*:: If checked then only a single point is recorded within each area traversed. The final position within the previous location is added to the movement trail when a piece leaves that location. In area movement games, this can be used to disregard inconsequential movement.
 
 *Circle radius:*:: The radius in pixels of the circle representing each location in the trail.
 

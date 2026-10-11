@@ -80,8 +80,8 @@ Parentheses can be used to organize operations and/or override the ordinary orde
 {breadth \<= maxbreadth} +
 {Nation == "Germany"} +
 {Army != "Allied"} +
-{Type =~ "A\|B\|C} +
-{Type !~ "A\|B\|C}|Comparison operators come in handy for <<PropertyMatchExpression.adoc#top,Property Match Expressions>> and also with the ? (ternary) operator.
+{Type =~ "A\|B\|C"} +
+{Type !~ "A\|B\|C"}|Comparison operators come in handy for <<PropertyMatchExpression.adoc#top,Property Match Expressions>> and also with the ? (ternary) operator.
 
 Parentheses can be used to organize operations and/or override the ordinary order of operations.
 

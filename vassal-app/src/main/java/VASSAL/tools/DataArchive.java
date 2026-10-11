@@ -322,7 +322,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
 
   /* Localized directories always take the form images_XX with XX being a i18n code */
   protected void buildLocalizedDirectoryList(List<String> list) {
-    List<String> files;
+    final List<String> files;
     try {
       files = archive.getFiles("");
     }
@@ -379,7 +379,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
       directories.add(imageDir);
       if (localized) {
         buildLocalizedDirectoryList(directories);
-      }      
+      }
       for (final String directory : directories) {
         getAllLocalImageNamesForDirectory(s, directory, fullPath);
       }
@@ -466,7 +466,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     final int minor = (data[4] << 8) | data[5];
     final int major = (data[6] << 8) | data[7];
 
-    if (major > 55 || (major == 55 && minor != 0)) {
+    if (major > 61 || (major == 61 && minor != 0)) {
       ProblemDialog.showDisableable(
         JOptionPane.WARNING_MESSAGE,
         null,

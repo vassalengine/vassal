@@ -1,0 +1,737 @@
+package VASSAL.build.module.turn;
+
+import VASSAL.build.GameModule;
+import VASSAL.preferences.Prefs;
+import VASSAL.preferences.PrefsEditor;
+import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+
+import java.util.Iterator;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
+
+public class ListTurnTrackerTest {
+
+  private final List<String> turnList = List.of(
+          "alpha",
+          "beta",
+          "gamma"
+  );
+
+  // A subset of days.
+  private final List<String> dayList = List.of(
+          "Monday",
+          "Tuesday",
+          "Wednesday"
+  );
+
+  private final List<String> numbersList = List.of(
+          "one",
+          "two",
+          "three"
+  );
+
+  // A helper class to access protected functions.
+  static class TurnTrackerAccessor extends TurnTracker {
+
+    public TurnTrackerAccessor() {
+      super();
+      turnWindow = tw;
+    }
+
+    public void next() {
+      super.next();
+    }
+
+    public void prev() {
+      super.prev();
+    }
+
+    public void reset() { super.reset(); }
+
+    public String getTurnString() {
+      return super.getTurnString().trim();
+    }
+  }
+
+  // Mocked members of GameModule and TurnTracker
+  static final Prefs prefs = new Prefs(new PrefsEditor(), "");
+  static final TurnTracker.TurnWindow tw = mock(TurnTracker.TurnWindow.class);
+
+  @Test
+  public void turnTrackerNext() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      when(gm.getPrefs()).thenReturn(prefs);
+
+      final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
+
+      final String turnNames = String.join(",", turnList);
+      final ListTurnLevel level = new ListTurnLevel();
+      level.setAttribute("list", turnNames);
+      level.addTo(tracker);
+      tracker.reset();
+
+      // Check initial conditions, check advance to next, and one wrap around.
+      for (int i = 0; i <= turnList.size(); ++i) {
+        assertEquals(turnList.get(i % turnList.size()), level.getTurnString());
+        tracker.next();
+      }
+    }
+  }
+
+  @Test
+  public void turnTrackerPrev() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      when(gm.getPrefs()).thenReturn(prefs);
+
+      final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
+
+      final String turnNames = String.join(",", turnList);
+      final ListTurnLevel level = new ListTurnLevel();
+      level.setAttribute("list", turnNames);
+      level.addTo(tracker);
+      tracker.reset();
+
+      // Check initial conditions, wrap backwards and check backwards movement through the list.
+      for (int i = turnList.size(); i >= 0; --i) {
+        assertEquals(turnList.get(i % turnList.size()), level.getTurnString());
+        tracker.prev();
+      }
+    }
+  }
+
+  // Move forward on a turn tracker with two lists that are siblings.
+  @Test
+  public void siblingListTurnTrackerNext() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      when(gm.getPrefs()).thenReturn(prefs);
+
+      final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
+
+      final String turnNames = String.join(",", turnList);
+      final ListTurnLevel level = new ListTurnLevel();
+      level.setAttribute("list", turnNames);
+      level.addTo(tracker);
+
+      final String dayNames = String.join(",", dayList);
+      final ListTurnLevel other = new ListTurnLevel();
+      other.setAttribute("list", dayNames);
+      other.addTo(tracker);
+
+      tracker.reset(); // alpha
+      tracker.next(); // beta
+      tracker.next(); // gamma
+      assertEquals("gamma", tracker.getTurnString());
+      tracker.next(); // Monday
+      tracker.next(); // Tuesday
+      Iterator<TurnLevel> levels = tracker.getTurnLevels();
+      assertEquals("alpha", levels.next().getTurnString());
+      assertEquals("Tuesday", levels.next().getTurnString());
+      assertEquals("Tuesday", tracker.getTurnString());
+      tracker.next(); // Wednesday
+      tracker.next(); // wrap
+      levels = tracker.getTurnLevels();
+      assertEquals("alpha", levels.next().getTurnString());
+      assertEquals("Monday", levels.next().getTurnString());
+      assertEquals("alpha", tracker.getTurnString());
+    }
+  }
+
+  // List Turn items remain active when the assigned state is invalid.
+  @Test
+  public void invalidStateLeavesListActive() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      when(gm.getPrefs()).thenReturn(prefs);
+
+      final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
+
+      final String turnNames = String.join(",", numbersList);
+      final ListTurnLevel level = new ListTurnLevel();
+      level.setAttribute("list", turnNames);
+      level.addTo(tracker);
+
+      // Setting invalid state (missing fields).
+      // There is sufficient state to set current index to zero.
+      tracker.setState("0|0");
+
+      // Step through the remainder of the list.
+      tracker.next(); // two
+      tracker.next(); // three
+      assertEquals("three", tracker.getTurnString());
+    }
+  }
+
+  // Move forward on a turn tracker with two lists that are siblings.
+  // First and last elements are not active.
+  @Test
+  public void siblingListInactiveElements() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      when(gm.getPrefs()).thenReturn(prefs);
+
+      final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
+
+      final String turnNames = String.join(",", turnList);
+      final ListTurnLevel level = new ListTurnLevel();
+      level.setAttribute("list", turnNames);
+      level.addTo(tracker);
+
+      final String dayNames = String.join(",", dayList);
+      final ListTurnLevel other = new ListTurnLevel();
+      other.setAttribute("list", dayNames);
+      other.addTo(tracker);
+
+      // Active elements are:
+      // beta -> gamma -> Monday -> Tuesday
+      tracker.setState("0|0;0;0;false,true,true|0;1;0;true,true,false");
+
+      tracker.next(); // beta
+      tracker.next(); // gamma
+      assertEquals("gamma", tracker.getTurnString());
+      tracker.next(); // Monday
+      tracker.next(); // Tuesday
+      Iterator<TurnLevel> levels = tracker.getTurnLevels();
+      assertEquals("beta", levels.next().getTurnString());
+      assertEquals("Tuesday", levels.next().getTurnString());
+      assertEquals("Tuesday", tracker.getTurnString());
+      tracker.next(); // wrap
+      levels = tracker.getTurnLevels();
+      assertEquals("beta", levels.next().getTurnString());
+      assertEquals("Monday", levels.next().getTurnString());
+      assertEquals("beta", tracker.getTurnString());
+      tracker.prev(); // wrap backwards
+      levels = tracker.getTurnLevels();
+      assertEquals("gamma", levels.next().getTurnString());
+      assertEquals("Tuesday", levels.next().getTurnString());
+      assertEquals("Tuesday", tracker.getTurnString());
+      tracker.prev();
+      assertEquals("Monday", tracker.getTurnString());
+      tracker.prev();
+      assertEquals("gamma", tracker.getTurnString());
+    }
+  }
+
+  // Move forward on a turn track with two lists that are siblings.
+  // Part 1: All elements in the second list are inactive.
+  // Part 2: All elements of both lists are inactive.
+  @Test
+  public void siblingListInactiveList() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      when(gm.getPrefs()).thenReturn(prefs);
+
+      final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
+
+      final String turnNames = String.join(",", turnList);
+      final ListTurnLevel level = new ListTurnLevel();
+      level.setAttribute("list", turnNames);
+      level.addTo(tracker);
+
+      final ListTurnLevel other = new ListTurnLevel();
+      other.setAttribute("list", "1,2,3");
+      other.addTo(tracker);
+
+      tracker.setState("0|0;0;0;true,true,true|0;1;0;false,false,false");
+
+      // Forward direction
+      for (int i = 0; i < turnList.size() * 2; ++i) {
+        assertEquals(turnList.get(i % turnList.size()), tracker.getTurnString());
+        tracker.next();
+      }
+
+      // The previous advance skips 1,2,3 and wraps to alpha.
+      assertEquals(turnList.get(0), tracker.getTurnString());
+
+      // Reverse direction
+      for (int i = turnList.size()-1; i >= 0; --i) {
+        tracker.prev();
+        assertEquals(turnList.get(i), tracker.getTurnString());
+      }
+
+      // Part 2
+      // Beta is current, all inactive.
+      tracker.setState("0|1;0;0;false,false,false|0;1;0;false,false,false");
+
+      // Forward
+      for (int i = 0; i < turnList.size() ; ++i) {
+        assertEquals(turnList.get(1), tracker.getTurnString());
+        tracker.next();
+      }
+
+      // Reverse
+      for (int i = 0; i < turnList.size() ; ++i) {
+        assertEquals(turnList.get(1), tracker.getTurnString());
+        tracker.prev();
+      }
+    }
+  }
+
+  // Test for inactive element in the first position of a level.
+  @Test
+  public void turnTrackerNextFirstInactive() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      when(gm.getPrefs()).thenReturn(prefs);
+
+      final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
+
+      final String turnNames = String.join(",", turnList);
+      final ListTurnLevel level = new ListTurnLevel();
+      level.setAttribute("list", turnNames);
+      level.addTo(tracker);
+
+      // The first element is not active.
+      tracker.setState("0|0;0;0;false,true,true");
+
+      // setState can select inactive levels.
+      assertEquals("alpha", level.getTurnString());
+      tracker.next(); // beta
+      assertEquals("beta", level.getTurnString());
+      tracker.prev(); // wrap around backwards skipping alpha
+      assertEquals("gamma", level.getTurnString());
+      tracker.next(); // beta
+      assertEquals("beta", level.getTurnString());
+    }
+  }
+
+  // Test for inactive element at the end of a level.
+  @Test
+  public void turnTrackerPrevLastInactive() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      when(gm.getPrefs()).thenReturn(prefs);
+
+      final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
+
+      final String turnNames = String.join(",", turnList);
+      final ListTurnLevel level = new ListTurnLevel();
+      level.setAttribute("list", turnNames);
+      level.addTo(tracker);
+      tracker.setState("0|0;0;0;true,true,false");
+
+      assertEquals("alpha", level.getTurnString());
+      tracker.prev(); // wrap around backwards to beta
+      assertEquals("beta", level.getTurnString());
+      tracker.next(); // skips gamma
+      assertEquals("alpha", level.getTurnString());
+
+    }
+  }
+
+  @Test
+  public void turnTrackerNextNestedLists() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      when(gm.getPrefs()).thenReturn(prefs);
+
+      final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
+
+      final String turnNames = String.join(",", turnList);
+      final ListTurnLevel level = new ListTurnLevel();
+      level.setAttribute("list", turnNames);
+      level.addTo(tracker);
+
+      final String numberNames = String.join(",", numbersList);
+      final ListTurnLevel level2 = new ListTurnLevel();
+      level2.setAttribute("list", numberNames);
+      level.addLevel(level2);
+
+      tracker.reset();
+
+      for (int i = 0; i < turnList.size(); ++i) {
+        for (int j = 0; j < numbersList.size(); ++j) {
+          assertEquals(turnList.get(i), level.getTurnString());
+          assertEquals(numbersList.get(j), level2.getTurnString());
+          tracker.next();
+        }
+      }
+      assertEquals("alpha", level.getTurnString());
+      assertEquals("one", level2.getTurnString());
+    }
+  }
+
+  // Advance to the next element when the current one is inactive while its sub-levels are active.
+  // This turn tracker has two sub-levels to verify sub-level reset recurses to the lowest level.
+  @Test
+  public void turnTrackerSkipInactiveNodeWithNestedList() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      when(gm.getPrefs()).thenReturn(prefs);
+
+      final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
+
+      final String turnNames = String.join(",", turnList);
+      final ListTurnLevel level = new ListTurnLevel();
+      level.setAttribute("list", turnNames);
+      level.addTo(tracker);
+
+      final String numberNames = String.join(",", numbersList);
+      final ListTurnLevel level2 = new ListTurnLevel();
+      level2.setAttribute("list", numberNames);
+      level.addLevel(level2);
+
+      final String dayNames = String.join(",", dayList);
+      final ListTurnLevel level3 = new ListTurnLevel();
+      level3.setAttribute("list", dayNames);
+      level2.addLevel(level3);
+
+      // Set turn tracker initial conditions to: alpha two Tuesday
+      // alpha is inactive
+      tracker.setState("0|0;0;0;false,true,true;1\\;0\\;0\\;true,true,true\\;1\\\\;0\\\\;0\\\\;true,true,true");
+
+      tracker.next();
+
+      // Verify top level advances to the next active element and sub-levels reset.
+      assertEquals("beta", level.getTurnString());
+      assertEquals("one", level2.getTurnString());
+      assertEquals("Monday", level3.getTurnString());
+    }
+  }
+
+  // Backwards to the previous element when the current one is inactive while its sub-levels are active.
+  // This turn tracker has two sub-levels to verify sub-level set-high recurses to the lowest level.
+  @Test
+  public void turnTrackerSkipPrevInactiveNodeWithNestedList() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      when(gm.getPrefs()).thenReturn(prefs);
+
+      final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
+
+      final String turnNames = String.join(",", turnList);
+      final ListTurnLevel level = new ListTurnLevel();
+      level.setAttribute("list", turnNames);
+      level.addTo(tracker);
+
+      final String numberNames = String.join(",", numbersList);
+      final ListTurnLevel level2 = new ListTurnLevel();
+      level2.setAttribute("list", numberNames);
+      level.addLevel(level2);
+
+      final String dayNames = String.join(",", dayList);
+      final ListTurnLevel level3 = new ListTurnLevel();
+      level3.setAttribute("list", dayNames);
+      level2.addLevel(level3);
+
+      // Set turn tracker initial conditions to: gamma two Tuesday
+      // gamma is inactive
+      tracker.setState("0|2;0;0;true,true,false;1\\;0\\;0\\;true,true,true\\;1\\\\;0\\\\;0\\\\;true,true,true");
+
+      tracker.prev();
+
+      assertEquals("beta", level.getTurnString());
+      assertEquals("three", level2.getTurnString());
+      assertEquals("Wednesday", level3.getTurnString());
+    }
+  }
+
+  @Test
+  public void nestedListInactiveElement() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      when(gm.getPrefs()).thenReturn(prefs);
+
+      final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
+
+      final String turnNames = String.join(",", turnList);
+      final ListTurnLevel level = new ListTurnLevel();
+      level.setAttribute("list", turnNames);
+      level.addTo(tracker);
+
+      final String numberNames = String.join(",", numbersList);
+      final ListTurnLevel level2 = new ListTurnLevel();
+      level2.setAttribute("list", numberNames);
+      level.addLevel(level2);
+
+      // First element of the child list is inactive.
+      tracker.setState("0|0;0;0;true,true,true;0\\;0\\;0\\;false,true,true");
+
+      assertEquals("alpha", level.getTurnString());
+      assertEquals("one", level2.getTurnString());
+      tracker.next();
+
+      for (int i = 0; i < turnList.size(); ++i) {
+        for (int j = 1; j < numbersList.size(); ++j) {
+          assertEquals(turnList.get(i), level.getTurnString());
+          assertEquals(numbersList.get(j), level2.getTurnString());
+          tracker.next();
+        }
+      }
+      assertEquals("alpha", level.getTurnString());
+      assertEquals("two", level2.getTurnString());
+    }
+  }
+
+  @Test
+  public void twoNestedListsOneInactive() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      when(gm.getPrefs()).thenReturn(prefs);
+
+      final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
+
+      final String turnNames = String.join(",", turnList);
+      final ListTurnLevel level = new ListTurnLevel();
+      level.setAttribute("list", turnNames);
+      level.addTo(tracker);
+
+      final ListTurnLevel inactiveList = new ListTurnLevel();
+      inactiveList.setAttribute("list", "odd_ball");
+      level.addLevel(inactiveList);
+
+      final String numberNames = String.join(",", numbersList);
+      final ListTurnLevel level2 = new ListTurnLevel();
+      level2.setAttribute("list", numberNames);
+      level.addLevel(level2);
+
+      // The top level list starts at beta and first is beta.
+      // The first and only element of the first child list is inactive.
+      tracker.setState("0|1;0;1;true,true,true;0\\;0\\;0\\;false;0\\;1\\;0\\;true,true,true");
+
+      assertEquals("beta", level.getTurnString());
+      assertEquals("odd_ball", inactiveList.getTurnString());
+      assertEquals("one", level2.getTurnString());
+      assertEquals("beta odd_ball", tracker.getTurnString());
+
+      // Forward
+      for (int i = 0; i < turnList.size(); ++i) {
+        for (String s : numbersList) {
+          tracker.next();
+          final String expected = turnList.get((i + 1) % turnList.size()) + " " + s;
+          assertEquals(expected, tracker.getTurnString());
+        }
+      }
+
+      // Reverse
+      for (int i = turnList.size(); i > 0; --i) {
+        for (int j = numbersList.size() - 1; j >= 0; --j) {
+          final String expected = turnList.get(i % turnList.size()) + " " + numbersList.get(j);
+          assertEquals(expected, tracker.getTurnString());
+          tracker.prev();
+        }
+      }
+    }
+  }
+
+  // Multiple sub-lists with all inactive.
+  @Test
+  public void allNestedListsInactive() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      when(gm.getPrefs()).thenReturn(prefs);
+
+      final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
+
+      final String turnNames = String.join(",", turnList);
+      final ListTurnLevel level = new ListTurnLevel();
+      level.setAttribute("list", turnNames);
+      level.addTo(tracker);
+
+      final ListTurnLevel inactiveList = new ListTurnLevel();
+      inactiveList.setAttribute("list", "odd_ball");
+      level.addLevel(inactiveList);
+
+      final String numberNames = String.join(",", numbersList);
+      final ListTurnLevel level2 = new ListTurnLevel();
+      level2.setAttribute("list", numberNames);
+      level.addLevel(level2);
+
+      // The top level list starts at gamma and first is beta.
+      // The first and only element of the first child list is inactive.
+      tracker.setState("0|2;0;1;true,true,true;0\\;0\\;0\\;false;0\\;1\\;0\\;false,false,false");
+
+      assertEquals("gamma", level.getTurnString());
+      assertEquals("odd_ball", inactiveList.getTurnString());
+      assertEquals("one", level2.getTurnString());
+      assertEquals("gamma odd_ball", tracker.getTurnString());
+
+      // Forward
+      for (int i = 0; i < turnList.size(); ++i) {
+        tracker.next();
+        final String expected = turnList.get(i) + " odd_ball";
+        assertEquals(expected, tracker.getTurnString());
+      }
+
+      // Reverse
+      for (int i = turnList.size()-1; i >= 0; --i) {
+        final String expected = turnList.get(i % turnList.size()) + " odd_ball";
+        assertEquals(expected, tracker.getTurnString());
+        tracker.prev();
+      }
+    }
+  }
+
+  // A four levels deep turn list with all levels set to the last value.
+  // Test that the next advance resets all levels.
+  @Test
+  public void turnTrackerNextWrapAll() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      when(gm.getPrefs()).thenReturn(prefs);
+
+      final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
+
+      final ListTurnLevel level = new ListTurnLevel();
+      level.setAttribute("list", "alpha,bravo");
+      level.addTo(tracker);
+
+      final ListTurnLevel level2 = new ListTurnLevel();
+      level2.setAttribute("list", "charlie,delta");
+      level.addLevel(level2);
+
+      final ListTurnLevel level3 = new ListTurnLevel();
+      level3.setAttribute("list", "echo,foxtrot");
+      level2.addLevel(level3);
+
+      final ListTurnLevel level4 = new ListTurnLevel();
+      level4.setAttribute("list", "golf,hotel");
+      level3.addLevel(level4);
+
+      tracker.setState("0|1;0;0;true,true;1\\;0\\;0\\;true,true\\;1\\\\;0\\\\;0\\\\;true,true\\\\;1\\\\\\;0\\\\\\;0\\\\\\;true,true");
+
+      assertEquals("bravo", level.getTurnString());
+      assertEquals("delta", level2.getTurnString());
+      assertEquals("foxtrot", level3.getTurnString());
+      assertEquals("hotel", level4.getTurnString());
+
+      tracker.next();
+
+      assertEquals("alpha", level.getTurnString());
+      assertEquals("charlie", level2.getTurnString());
+      assertEquals("echo", level3.getTurnString());
+      assertEquals("golf", level4.getTurnString());
+    }
+  }
+
+  @Test
+  public void turnTrackerEmptyList() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      when(gm.getPrefs()).thenReturn(prefs);
+
+      final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
+
+      final ListTurnLevel level = new ListTurnLevel();
+      level.addTo(tracker);
+      tracker.reset();
+
+      assertEquals("", tracker.getTurnString());
+      tracker.next();
+      assertEquals("", tracker.getTurnString());
+      tracker.prev();
+      assertEquals("", tracker.getTurnString());
+    }
+  }
+
+  // Forward and backward on a turn track with two lists that are siblings.
+  // First list has elements; the second one is empty.
+  @Test
+  public void emptySiblingList() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      when(gm.getPrefs()).thenReturn(prefs);
+
+      final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
+
+      final ListTurnLevel level = new ListTurnLevel();
+      level.setAttribute("list", "alpha,beta");
+      level.addTo(tracker);
+
+      final ListTurnLevel other = new ListTurnLevel();
+      other.addTo(tracker);
+      tracker.reset();
+
+      // Forward direction
+      assertEquals("alpha", tracker.getTurnString());
+      tracker.next();
+      assertEquals("beta", tracker.getTurnString());
+      // Move forward skipping over the empty list
+      tracker.next();
+      assertEquals("alpha", tracker.getTurnString());
+      tracker.next();
+      assertEquals("beta", tracker.getTurnString());
+
+      // Reverse direction
+      tracker.prev();
+      assertEquals("alpha", tracker.getTurnString());
+      tracker.prev();
+      assertEquals("beta", tracker.getTurnString());
+      tracker.prev();
+      assertEquals("alpha", tracker.getTurnString());
+      tracker.prev();
+      assertEquals("beta", tracker.getTurnString());
+    }
+  }
+
+  // Forward and backward on a turn track with two lists that are siblings.
+  // First list has elements; the second one is empty but with a populated child list.
+  @Test
+  public void emptySiblingWithChildList() {
+      try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+        final GameModule gm = mock(GameModule.class);
+        staticGm.when(GameModule::getGameModule).thenReturn(gm);
+        when(gm.getPrefs()).thenReturn(prefs);
+
+        final TurnTrackerAccessor tracker = new TurnTrackerAccessor();
+
+        final ListTurnLevel level = new ListTurnLevel();
+        level.setAttribute("list", "alpha,beta");
+        level.setAttribute("name", "alphabet");
+        level.addTo(tracker);
+
+        // Empty list with a populated sub-level.
+        final ListTurnLevel other = new ListTurnLevel();
+        other.setAttribute("name", "other_name");
+        other.addTo(tracker);
+        final ListTurnLevel child = new ListTurnLevel();
+        child.setAttribute("list", "first,second");
+        child.setAttribute("name", "child_name");
+        other.addLevel(child);
+        tracker.reset();
+
+        // Verify initial conditions
+        assertEquals("alpha", tracker.getTurnString());
+        tracker.next();
+        tracker.next();
+        assertEquals("first", tracker.getTurnString());
+        tracker.next();
+        tracker.next();
+        assertEquals("alpha", tracker.getTurnString());
+        tracker.next();
+        assertEquals("beta", tracker.getTurnString());
+
+        // Backward stepping
+        tracker.prev();
+        tracker.prev();
+        assertEquals("second", tracker.getTurnString());
+        tracker.prev();
+        assertEquals("first", tracker.getTurnString());
+        tracker.prev();
+        assertEquals("beta", tracker.getTurnString());
+    }
+  }
+}

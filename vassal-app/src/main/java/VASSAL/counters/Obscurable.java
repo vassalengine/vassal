@@ -21,7 +21,6 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.ObscurableOptions;
 import VASSAL.build.module.PlayerRoster;
 import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.map.CounterDetailViewer;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
@@ -221,7 +220,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   }
 
   public boolean isAutoPeeking() {
-    return autoPeekRollover && CounterDetailViewer.isDrawingMouseOver() && obscuredToOthers() && !obscuredToMe();
+    return autoPeekRollover && getMap() != null && getMap().isDrawingMouseOver() && obscuredToOthers() && !obscuredToMe();
   }
 
   @Override
@@ -316,7 +315,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       return obscuredBy;
     }
     else if (Properties.VISIBLE_STATE.equals(key)) {
-      return myGetState() + isPeeking() + getProperty(Properties.SELECTED) + obscuredToMe() + piece.getProperty(key);
+      return myGetState() + isPeeking() + isAutoPeeking() + getProperty(Properties.SELECTED) + obscuredToMe() + piece.getProperty(key);
     }
     // FIXME: Access to Obscured properties
     // If piece is obscured to me, then mask any properties returned by
@@ -409,7 +408,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       final Rectangle bounds2 = piece.getShape().getBounds();
       final Rectangle obsBounds2 = obscuredToMeView.getShape().getBounds();
       piece.draw(g, x - (int) (0.4 * zoom * (obsBounds2.width - bounds2.width)),
-                    y - (int) (0.4 * zoom * (obsBounds2.height - bounds2.height)), 
+                    y - (int) (0.4 * zoom * (obsBounds2.height - bounds2.height)),
         obs, zoom * 0.8);
       break;
     case PEEK:
@@ -731,15 +730,15 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     private final StringConfigurer peekCommandInput;
     private final BooleanConfigurer autoPeekInput;
     private final TraitConfigPanel controls = new TraitConfigPanel();
-    private final String[] optionNames = {"B", "P", "I", "2", "U"}; // NON-NLS
-    private final String[] optionKeys = {
+    private static final String[] optionNames = {"B", "P", "I", "2", "U"}; // NON-NLS
+    private static final String[] optionKeys = {
       "Editor.Obscurable.background",
       "Editor.Obscurable.plain",
       "Editor.Obscurable.inset",
       "Editor.Obscurable.inset2",
       "Editor.Obscurable.use_image"
     };
-    private final char[] optionChars = {BACKGROUND, PEEK, INSET, INSET2, IMAGE};
+    private static final char[] optionChars = {BACKGROUND, PEEK, INSET, INSET2, IMAGE};
     private final ImageSelector imagePicker;
     private final PieceAccessConfigurer accessConfig;
     private final JPanel showDisplayOption;

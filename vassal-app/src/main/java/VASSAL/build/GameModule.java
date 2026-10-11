@@ -18,6 +18,7 @@
 package VASSAL.build;
 
 import VASSAL.Info;
+import VASSAL.build.module.AnimatedDiceButton;
 import VASSAL.build.module.BasicCommandEncoder;
 import VASSAL.build.module.BasicLogger;
 import VASSAL.build.module.ChartWindow;
@@ -126,7 +127,6 @@ import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.version.VersionUtils;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -223,6 +223,8 @@ public class GameModule extends AbstractConfigurable
   public static final String DRAWING_MOUSEOVER_PROPERTY = "DrawingMouseover"; //NON-NLS
   public static final String DRAWING_MOUSEOVER_INDEX_PROPERTY = "DrawingMouseoverIndex"; //NON-NLS
 
+  private static final String GAME_FILENAME_PROPERTY = "ModuleGameFileName"; //NON-NLS
+
   public static final String IS_VISIBLE = "_isVisible"; //NON-NLS
 
   public static final String UI_PIECE_COUNT = "UiPieceCount";
@@ -231,7 +233,6 @@ public class GameModule extends AbstractConfigurable
   private static final char COMMAND_SEPARATOR = KeyEvent.VK_ESCAPE;
 
   public static final String RECENT_GAMES = "RecentGames"; //NON-NLS
-  private static final String GAME_FILENAME_PROPERTY = "ModuleGameFileName"; //NON-NLS
 
   private final List<MenuItemProxy> openRecentItems = new ArrayList<>();
 
@@ -696,7 +697,7 @@ public class GameModule extends AbstractConfigurable
     final DataArchive darch = getDataArchive();
 
     final File f = new File(darch.getName());
-    if (!f.exists() || f.length() == 0) {
+    if (!f.isFile() || f.length() == 0) {
       // new module, no buildFile
       build(null);
     }
@@ -1208,6 +1209,7 @@ public class GameModule extends AbstractConfigurable
 //                  InternetDiceButton.class,   // Disable internet dice button until Bones server can prevent email spamming
       RandomTextButton.class,
       SpecialDiceButton.class,
+      AnimatedDiceButton.class,
       PredefinedSetup.class,
       ChartWindow.class,
       PrivateMap.class,
@@ -1857,7 +1859,9 @@ public class GameModule extends AbstractConfigurable
     if (c != null && !c.isNull()) {
       synchronized (loggingLock) {
         if (loggingPaused) {
-          pausedCommands.getFirst().append(c);
+          Command topCmd = pausedCommands.pop();
+          topCmd = topCmd.append(c);
+          pausedCommands.push(topCmd);
         }
         else {
           getServer().sendToOthers(c);
@@ -2291,6 +2295,9 @@ public class GameModule extends AbstractConfigurable
     }
     else if (DRAWING_MOUSEOVER_INDEX_PROPERTY.equals(key)) {
       return CounterDetailViewer.isDrawingMouseOver() ? "2" : "1";
+    }
+    else if (GAME_FILENAME_PROPERTY.equals(key)) {
+      return gameFile;
     }
     else if (UI_PIECE_COUNT.equals(key)) {
       return String.valueOf(getUiPieceCount());

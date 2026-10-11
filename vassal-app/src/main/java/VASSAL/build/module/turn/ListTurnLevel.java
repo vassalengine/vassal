@@ -79,15 +79,32 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
   @Override
   protected void setLow() {
     current = first;
+    rolledOver = false;
+    if ((current < active.length && !active[current])
+            || (list.length == 0 && getTurnLevelCount() == 0)) {
+      // Either not active or the item is an empty leaf node.
+      // Advance to the next active index.
+      advance();
+    }
     super.setLow();
   }
 
   @Override
   protected void setHigh() {
+    rolledOver = false;
     current = first;
-    current--;
-    if (current < 0) {
-      current = list.length - 1;
+    int highIndex = current - 1;
+    if (highIndex < 0) {
+      // wrap to the end of the list.
+      highIndex = list.length - 1;
+    }
+    if (highIndex >= 0) {
+      current = highIndex;
+    }
+    if ((current < active.length && !active[current])
+            || (highIndex < 0 && getTurnLevelCount() == 0)) {
+      // The current item is not active or the item is an empty leaf node.
+      retreat();
     }
     super.setHigh();
   }
@@ -124,6 +141,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
 
     final String[] s = sd.nextStringArray(0);
     active = new boolean[list.length];
+    Arrays.fill(active, true);
     final int l = Math.min(s.length, active.length);
     for (int i = 0; i < l; i++) {
       active[i] = s[i].equals("true"); //$NON-NLS-1$
@@ -169,9 +187,17 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
    */
   @Override
   protected void advance() {
-    super.advance();
-
-    if (getTurnLevelCount() == 0 || (getTurnLevelCount() > 0 && hasSubLevelRolledOver())) {
+    final boolean isCurrentInactive = current < active.length && !active[current];
+    if (isCurrentInactive) {
+      final TurnLevel subLevel = getTurnLevel(currentSubLevel);
+      if (subLevel != null) {
+        subLevel.reset();
+      }
+    }
+    else {
+      super.advance();
+    }
+    if (getTurnLevelCount() == 0 || isCurrentInactive || hasSubLevelRolledOver()) {
       boolean done = false;
       for (int i = 0; i < list.length && !done; i++) {
         current++;
@@ -192,9 +218,18 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
 
   @Override
   protected void retreat() {
-    super.retreat();
+    final boolean isCurrentInactive = current < active.length && !active[current];
+    if (isCurrentInactive) {
+      final TurnLevel subLevel = getTurnLevel(currentSubLevel);
+      if (subLevel != null) {
+        subLevel.setHigh();
+      }
+    }
+    else {
+      super.retreat();
+    }
 
-    if (getTurnLevelCount() == 0 || (getTurnLevelCount() > 0 && hasSubLevelRolledOver())) {
+    if (getTurnLevelCount() == 0 || isCurrentInactive || hasSubLevelRolledOver()) {
       boolean done = false;
       for (int i = 0; i < list.length && !done; i++) {
         if (current == first) {
@@ -205,6 +240,9 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
           current = list.length - 1;
         }
         done = active[current];
+      }
+      if (! done) {
+        rolledOver = true;
       }
     }
     myValue.setPropertyValue(getValueString());

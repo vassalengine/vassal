@@ -51,13 +51,14 @@ import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.LogAndSaveFileFilter;
 import VASSAL.tools.io.DeobfuscatingInputStream;
-import VASSAL.tools.io.ObfuscatingOutputStream;
 import VASSAL.tools.io.ZipArchive;
 import VASSAL.tools.io.ZipWriter;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.Dialogs;
 import VASSAL.tools.version.VersionUtils;
 import org.apache.commons.io.IOUtils;
+import org.tukaani.xz.LZMA2Options;
+import org.tukaani.xz.XZOutputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 
@@ -119,7 +120,7 @@ public class GameState implements CommandEncoder {
   protected Map<String, GamePiece> pieces = new HashMap<>();
   protected List<GameComponent> gameComponents = new ArrayList<>();
   protected List<GameSetupStep> setupSteps = new ArrayList<>();
-  protected Action loadGame, loadGameOld, saveGame, saveGameAs, newGame, closeGame, loadContinuation, loadAndFastForward, loadAndAppend;
+  protected Action loadGame, saveGame, saveGameAs, newGame, closeGame, loadContinuation, loadAndFastForward, loadAndAppend;
   protected String lastSave;
   protected File lastSaveFile = null;
   protected DirectoryConfigurer savedGameDirectoryPreference;
@@ -177,39 +178,20 @@ public class GameState implements CommandEncoder {
         }
       }
     };
-    // FIXME: setting mnemonic from first letter could cause collisions in
-    // some languages
+
     loadGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.load_game.shortcut").charAt(0));
-
-    // TODO: remove Load Continuation from File menu as of 3.6
-    loadGameOld = new AbstractAction(Resources.getString("GameState.load_continuation")) {
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        ProblemDialog.show(
-          JOptionPane.INFORMATION_MESSAGE,
-          GameModule.getGameModule().getPlayerWindow(),
-          null,
-          Resources.getString("GameState.old_continuation_title"),
-          Resources.getString("GameState.old_continuation_heading"),
-          Resources.getString("GameState.old_continuation_warning")
-        );
-      }
-    };
-    loadGameOld.setEnabled(false);
 
     loadContinuation = new AbstractAction(Resources.getString("GameState.load_game_old")) {
       private static final long serialVersionUID = 1L;
 
       @Override
       public void actionPerformed(ActionEvent e) {
-        if (isNewGameAllowed()) {
+        //  Load Continuation is excused the restrictions that apply to new games & log files in online rooms
+        if (loadContinuation.isEnabled() || isNewGameAllowed()) {
           loadGame(true);
         }
       }
     };
-    loadContinuation.setEnabled(false);
 
     loadAndFastForward = new AbstractAction(Resources.getString("GameState.load_and_fast_forward")) {
       private static final long serialVersionUID = 1L;
@@ -241,8 +223,7 @@ public class GameState implements CommandEncoder {
         saveGame();
       }
     };
-    // FIXME: setting mnemonic from first letter could cause collisions in
-    // some languages
+
     saveGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.save_game.shortcut").charAt(0));
 
     saveGameAs = new AbstractAction(Resources.getString("GameState.save_game_as")) {
@@ -253,8 +234,7 @@ public class GameState implements CommandEncoder {
         saveGameAs();
       }
     };
-    // FIXME: setting mnemonic from first letter could cause collisions in
-    // some languages
+
     saveGameAs.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.save_game_as.shortcut").charAt(0));
 
     newGame = new AbstractAction(Resources.getString("GameState.new_game")) {
@@ -276,8 +256,7 @@ public class GameState implements CommandEncoder {
         GameModule.getGameModule().getGameState().freshenStartupGlobalKeyCommands(GameModule.getGameModule());
       }
     };
-    // FIXME: setting mnemonic from first letter could cause collisions in
-    // some languages
+
     newGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.new_game.shortcut").charAt(0));
 
     closeGame = new AbstractAction(
@@ -289,14 +268,12 @@ public class GameState implements CommandEncoder {
         closeGame();
       }
     };
-    // FIXME: setting mnemonic from first letter could cause collisions in
-    // some languages
+
     closeGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.close_game.shortcut").charAt(0));
 
     final MenuManager mm = MenuManager.getInstance();
     mm.addAction("GameState.new_game", newGame);
     mm.addAction("GameState.load_game_new", loadGame);
-    mm.addAction("GameState.load_game_old", loadGameOld);
     mm.addAction("GameState.load_continuation", loadContinuation);
     mm.addAction("GameState.save_game", saveGame);
     mm.addAction("GameState.save_game_as", saveGameAs);
@@ -307,7 +284,6 @@ public class GameState implements CommandEncoder {
     saveGame.setEnabled(gameStarting);
     saveGameAs.setEnabled(gameStarting);
     closeGame.setEnabled(gameStarting);
-    loadGameOld.setEnabled(gameStarting);
     loadContinuation.setEnabled(gameStarting);
   }
 
@@ -504,17 +480,11 @@ public class GameState implements CommandEncoder {
       return NO_NEED_TO_SAVE;
     }
 
-    final int result = JOptionPane.showConfirmDialog(
+    return JOptionPane.showConfirmDialog(
       GameModule.getGameModule().getPlayerWindow(),
       Resources.getString("GameState.save_game_query"), //$NON-NLS-1$
       Resources.getString("GameState.game_modified"),   //$NON-NLS-1$
       JOptionPane.YES_NO_CANCEL_OPTION);
-
-    if (result == JOptionPane.YES_OPTION) {
-      saveGame();
-    }
-
-    return result;
   }
 
   /**
@@ -558,7 +528,6 @@ public class GameState implements CommandEncoder {
       g.getWizardSupport().showGameSetupWizard();
     }
 
-    loadGameOld.setEnabled(gameStarting);
     loadContinuation.setEnabled(gameStarting);
 
     gameStarted &= this.gameStarting;
@@ -656,6 +625,7 @@ public class GameState implements CommandEncoder {
     }
     return true;
   }
+
   /**
    * @param file to validate as a legitimate save file
    * @return true if metadata is valid (or explicitly cleared-for-crash by user) and clear to proceed
@@ -768,7 +738,10 @@ public class GameState implements CommandEncoder {
    */
   public void loadGame(boolean continuation, boolean forceForeground) {
     final GameModule g = GameModule.getGameModule();
+    loadGame(g, continuation, forceForeground);
+  }
 
+  private boolean loadGame(GameModule g, boolean continuation, boolean forceForeground) {
     if (gameStarted && continuation) {
       if (GlobalOptions.getInstance().isWarnOldContinuation()) {
         final Object[] options = {
@@ -787,8 +760,9 @@ public class GameState implements CommandEncoder {
           options,
           options[0]
         );
-        if (result == JOptionPane.NO_OPTION) { // Note - this is actually the "Cancel" option.
-          return;
+        if (result == JOptionPane.NO_OPTION || // Note - this is actually the "Cancel" option.
+            result == JOptionPane.CLOSED_OPTION) {
+          return false;
         }
         else if (result == JOptionPane.CANCEL_OPTION) { // "Don't Prompt Again" option.
           g.getPrefs().setValue(GlobalOptions.OLD_CONTINUATION, Boolean.FALSE);
@@ -800,10 +774,10 @@ public class GameState implements CommandEncoder {
     final FileChooser fc = g.getFileChooser();
     fc.addChoosableFileFilter(new LogAndSaveFileFilter());
 
-    if (fc.showOpenDialog() != FileChooser.APPROVE_OPTION) return;
+    if (fc.showOpenDialog() != FileChooser.APPROVE_OPTION) return false;
 
     final File f = fc.getSelectedFile();
-    loadGame(f, continuation, forceForeground);
+    return loadGame(f, continuation, forceForeground);
   }
 
   /**
@@ -826,7 +800,7 @@ public class GameState implements CommandEncoder {
     final GameModule g = GameModule.getGameModule();
 
     try {
-      if (!f.exists()) throw new FileNotFoundException("Unable to locate " + f.getPath());
+      if (!f.isFile()) throw new FileNotFoundException("Unable to locate \"" + f.getAbsolutePath() + "\"");
 
       // Check the Save game for validity
       if (!isSaveMetaDataValid(f)) {
@@ -841,7 +815,10 @@ public class GameState implements CommandEncoder {
         int optionToSave = NO_NEED_TO_SAVE;
         if (gameStarted) {
           optionToSave = maybeSaveGame();
-          if (optionToSave == JOptionPane.CANCEL_OPTION) {
+          if (optionToSave == JOptionPane.YES_OPTION) {
+            saveGame();
+          }
+          else if (optionToSave == JOptionPane.CANCEL_OPTION) {
             return false;
           }
         }
@@ -914,49 +891,50 @@ public class GameState implements CommandEncoder {
    */
   private void loadFastForward(boolean append) {
     fastForwarding = true;
-
-    loadGame(false, true); // First load the old game or log, forcing it to all happen foreground
-
     final GameModule g = GameModule.getGameModule();
-    final BasicLogger bl = g.getBasicLogger();
-    if (bl.isReplaying()) {
-      if (!bl.isLogging() && append) {
-        bl.queryNewLogFile(true, true); // We begin logging a new file immediately w/ the starting state of the old log
-      }
 
-      // Replay all of the commands in the game -- since we're logging they will be picked up in the new log
-      while (bl.isReplaying()) {
-        final Command c = bl.logInput.get(bl.nextInput++);
-        c.execute();
-        g.sendAndLog(c);
-      }
-      bl.stepAction.setEnabled(false);
+    final boolean success = loadGame(g, false, true); // First load the old game or log, forcing it to all happen foreground
 
-      if (append) {
-        if (!bl.isLogging()) {
-          g.warn(Resources.getString("GameState.fast_forward_only"));
+    if (success) {
+      final BasicLogger bl = g.getBasicLogger();
+      if (bl.isReplaying()) {
+        if (!bl.isLogging() && append) {
+          bl.queryNewLogFile(true, true); // We begin logging a new file immediately w/ the starting state of the old log
+        }
+
+        // Replay all the commands in the game -- since we're logging they will be picked up in the new log
+        while (bl.isReplaying()) {
+          final Command c = bl.logInput.get(bl.nextInput++);
+          c.execute();
+          g.sendAndLog(c);
+        }
+        bl.stepAction.setEnabled(false);
+
+        if (append) {
+          if (!bl.isLogging()) {
+            g.warn(Resources.getString("GameState.fast_forward_only"));
+          }
+          else {
+            g.warn(Resources.getString("GameState.fast_forward_and_append"));
+          }
         }
         else {
-          g.warn(Resources.getString("GameState.fast_forward_and_append"));
+          if (!bl.isLogging()) {
+            bl.queryNewLogFile(false, true);
+          }
+
+          if (!bl.isLogging()) {
+            g.warn(Resources.getString("GameState.fast_forward"));
+          }
+          else {
+            g.warn(Resources.getString("GameState.fast_forward_new_log"));
+          }
         }
       }
       else {
-        if (!bl.isLogging()) {
-          bl.queryNewLogFile(false, true);
-        }
-
-        if (!bl.isLogging()) {
-          g.warn(Resources.getString("GameState.fast_forward"));
-        }
-        else {
-          g.warn(Resources.getString("GameState.fast_forward_new_log"));
-        }
+        g.warn(Resources.getString("GameState.simple_save_append"));
       }
     }
-    else {
-      g.warn(Resources.getString("GameState.simple_save_append"));
-    }
-
     fastForwarding = false;
   }
 
@@ -977,7 +955,11 @@ public class GameState implements CommandEncoder {
           final URL url = new URL(text);
           final URLConnection uc = url.openConnection();
 
-          if (maybeSaveGame() != JOptionPane.CANCEL_OPTION) {
+          final int optionToSave = maybeSaveGame();
+          if (optionToSave == JOptionPane.YES_OPTION) {
+            saveGame();
+          }
+          if (optionToSave != JOptionPane.CANCEL_OPTION) {
 
             try (InputStream is = uc.getInputStream(); BufferedInputStream bis = new BufferedInputStream(is)) {
               if (gameStarted) {
@@ -1041,7 +1023,7 @@ public class GameState implements CommandEncoder {
   }
 
   protected boolean checkForOldSaveFile(File f) {
-    if (f.exists()) {
+    if (f.isFile()) {
       // warn user if overwriting a save from an old version
       final AbstractMetaData md = MetaDataFactory.buildMetaData(f);
       if (md instanceof SaveMetaData) {
@@ -1344,6 +1326,33 @@ public class GameState implements CommandEncoder {
     return null;
   }
 
+  /**
+   * The LZMA2 preset the command log is compressed with: a 4 MB dictionary,
+   * which spans the repeated text of many pieces, with the fast match finder.
+   * The higher presets gain a further 20-30% for ten times the compression
+   * time.
+   */
+  public static final int SAVED_GAME_COMPRESSION_PRESET = 3;
+
+  /**
+   * Wraps a stream so that what is written to it is stored XZ-compressed, as
+   * the {@link #SAVEFILE_ZIP_ENTRY} entry of a saved game or log is. A
+   * saved game's command log consists of thousands of pieces whose text
+   * repeats the same prototype traits, but each piece is longer than the
+   * 32 KB window of the ZIP's own deflate, so deflate stores the repeat every
+   * time; LZMA2 with a 4 MB dictionary stores it once, and on a large game
+   * the entry is twenty times smaller. It is also no longer plain text, which
+   * is all the XOR obfuscation this replaces was ever for.
+   * {@link DeobfuscatingInputStream} reads it back.
+   *
+   * @param out the destination
+   * @return the stream to write the command log to; closing it finishes the
+   * compressed stream and closes {@code out}
+   */
+  public static OutputStream compressSavedGame(OutputStream out) throws IOException {
+    return new XZOutputStream(out, new LZMA2Options(SAVED_GAME_COMPRESSION_PRESET));
+  }
+
   public static final String BEGIN_SAVE = "begin_save";  //$NON-NLS-1$
   public static final String END_SAVE = "end_save";  //$NON-NLS-1$
 
@@ -1364,7 +1373,7 @@ public class GameState implements CommandEncoder {
     final String save = saveString();
     try (OutputStream zout = archive.getOutputStream(SAVEFILE_ZIP_ENTRY);
          BufferedOutputStream bout = new BufferedOutputStream(zout);
-         OutputStream out = new ObfuscatingOutputStream(bout)) {
+         OutputStream out = compressSavedGame(bout)) {
       out.write(save.getBytes(StandardCharsets.UTF_8));
     }
     archive.close();
@@ -1389,7 +1398,7 @@ public class GameState implements CommandEncoder {
     }
 
     try (ZipWriter zw = new ZipWriter(f)) {
-      try (OutputStream out = new ObfuscatingOutputStream(new BufferedOutputStream(zw.write(SAVEFILE_ZIP_ENTRY)))) {
+      try (OutputStream out = compressSavedGame(new BufferedOutputStream(zw.write(SAVEFILE_ZIP_ENTRY)))) {
         out.write(save.getBytes(StandardCharsets.UTF_8));
       }
       metaData.save(zw);
@@ -1406,6 +1415,7 @@ public class GameState implements CommandEncoder {
     }
     GameModule.getGameModule().warn(msg);
     ModuleManagerUpdateHelper.sendGameUpdate(f);
+    updateRecentGames(f);
   }
 
   public void loadGameInForeground(final File f) {
@@ -1429,7 +1439,7 @@ public class GameState implements CommandEncoder {
     // from visibly closing-then-eventually-re-opening in a Series Of Messy Steps
     final Chatter ch = g.getChatter();
     ch.paintImmediately(0, 0, ch.getWidth(), ch.getHeight());
-    
+
     final Command loadCommand = decodeSavedGame(in);
     if (loadCommand != null) {
       try {

@@ -24,15 +24,15 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Validate a single line BeanShell expression. 
+ * Validate a single line BeanShell expression.
  * Build a list of variable references in the expression.
- * 
- * This Class must be defined in package bsh to allow access to 
+ *
+ * This Class must be defined in package bsh to allow access to
  * package visible elements in the bsh library.
  *
  */
 public class BeanShellExpressionValidator {
-  
+
   protected String expression;
   protected List<String> variables = new ArrayList<>();
   protected List<String> stringVariables = new ArrayList<>();
@@ -91,10 +91,10 @@ public class BeanShellExpressionValidator {
    * @param expression Expression to validate
    */
   public BeanShellExpressionValidator(String expression) {
-    this.expression = expression; 
+    this.expression = expression;
     valid = validate();
   }
-  
+
   /**
    * Is the expression valid?
    * @return valid
@@ -102,7 +102,7 @@ public class BeanShellExpressionValidator {
   public boolean isValid() {
     return valid;
   }
-  
+
   protected void setValid(boolean b) {
     valid = b;
   }
@@ -135,7 +135,7 @@ public class BeanShellExpressionValidator {
   public List<String> getMethods() {
     return methods;
   }
-  
+
   /**
    * Return an Error Message if no valid
    * @return Error message
@@ -143,26 +143,26 @@ public class BeanShellExpressionValidator {
   public String getError() {
     return error;
   }
-  
+
   protected void setError(String s) {
     error = s;
   }
-  
+
   /**
    * Validate the expression
-   * 
+   *
    * @return Expression validity
    */
   protected boolean validate() {
     final String expr = stripBraces(expression);
-    
+
     setError("");
     try {
       Parser p = new Parser(new StringReader(expr + ";"));
       for (;;) {
         if (p.Line()) {
           return true;
-        } 
+        }
         else {
           final SimpleNode node = p.popNode();
           if (! processNode(node)) {
@@ -180,12 +180,12 @@ public class BeanShellExpressionValidator {
       return false;
     }
   }
-  
+
   /**
    * If the expression is surrounded by Vassal expression braces {}
    * replace them with spaces so that it will validate and report errors
    * in the correct location
-   * 
+   *
    * @param s Expression
    * @return stripped expression
    */
@@ -200,14 +200,14 @@ public class BeanShellExpressionValidator {
           buffer.append(' ');
         }
         else {
-          buffer.append(s.charAt(i));        
+          buffer.append(s.charAt(i));
         }
       }
       expr = buffer.toString();
     }
     return expr;
   }
-  
+
   /**
    * Process a Parser Node and extract any Variable and Method references.
    * Assignments are not allowed in an expression, so flag as an error
@@ -217,7 +217,7 @@ public class BeanShellExpressionValidator {
     if (node == null) {
       return true;
     }
-    
+
     if (node instanceof BSHAmbiguousName) {
       final String name = node.getText().trim();
       if ((node.parent instanceof BSHMethodInvocation)) {
@@ -259,6 +259,6 @@ public class BeanShellExpressionValidator {
       }
     }
     return true;
-  }  
-  
+  }
+
 }

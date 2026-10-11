@@ -84,9 +84,11 @@ public class GpIdChecker {
   public boolean useLabelerName() {
     return refresherOptions.contains(GameRefresher.USE_LABELER_NAME); //$NON-NLS-1$
   }
+
   public boolean useLayerName() {
     return refresherOptions.contains(GameRefresher.USE_LAYER_NAME); //$NON-NLS-1$
   }
+
   public boolean useRotateName() {
     return refresherOptions.contains(GameRefresher.USE_ROTATE_NAME); //$NON-NLS-1$
   }
@@ -98,6 +100,7 @@ public class GpIdChecker {
   public boolean useName() {
     return refresherOptions.contains(GameRefresher.USE_NAME); //$NON-NLS-1$
   }
+
   public boolean fixGPID() {
     return refresherOptions.contains(GameRefresher.FIX_GPID); //$NON-NLS-1$
   }

@@ -1,6 +1,6 @@
 package bsh;
 
-public class Variable implements java.io.Serializable 
+public class Variable implements java.io.Serializable
 {
 	static final int DECLARATION=0, ASSIGNMENT=1;
 	/** A null type means an untyped variable */
@@ -11,7 +11,7 @@ public class Variable implements java.io.Serializable
 	Modifiers modifiers;
 	LHS lhs;
 
-	Variable( String name, Class type, LHS lhs ) 
+	Variable( String name, Class type, LHS lhs )
 	{
 		this.name = name;
 		this.lhs = lhs;
@@ -27,8 +27,8 @@ public class Variable implements java.io.Serializable
 	/**
 		This constructor is used in class generation.
 	*/
-	Variable( 
-		String name, String typeDescriptor, Object value, Modifiers modifiers 
+	Variable(
+		String name, String typeDescriptor, Object value, Modifiers modifiers
 	)
 		throws UtilEvalError
 	{
@@ -37,7 +37,7 @@ public class Variable implements java.io.Serializable
 	}
 
 	/**
-		@param value may be null if this 
+		@param value may be null if this
 	*/
 	Variable( String name, Class type, Object value, Modifiers modifiers )
 		throws UtilEvalError
@@ -55,7 +55,7 @@ public class Variable implements java.io.Serializable
 		if value is null the appropriate default value will be set for the
 		type: e.g. false for boolean, zero for integer types.
 	*/
-	public void setValue( Object value, int context ) 
+	public void setValue( Object value, int context )
 		throws UtilEvalError
 	{
 
@@ -75,7 +75,7 @@ public class Variable implements java.io.Serializable
 		// TODO: should add isJavaCastable() test for strictJava
 		// (as opposed to isJavaAssignable())
 		if ( type != null )
-			value = Types.castObject( value, type, 
+			value = Types.castObject( value, type,
 				context == DECLARATION ? Types.CAST : Types.ASSIGNMENT
 			);
 
@@ -87,13 +87,13 @@ public class Variable implements java.io.Serializable
 		A Variable can represent an LHS for the case of an imported class or
 		object field.
 	*/
-	Object getValue() 
+	Object getValue()
 		throws UtilEvalError
-	{ 
+	{
 		if ( lhs != null )
 			return lhs.getValue();
 
-		return value; 
+		return value;
 	}
 
 	/** A type of null means loosely typed variable */
@@ -109,7 +109,7 @@ public class Variable implements java.io.Serializable
 		return modifiers != null && modifiers.hasModifier(name);
 	}
 
-	public String toString() { 
+	public String toString() {
 		return "Variable: "+super.toString()+" "+name+", type:"+type
 			+", value:"+value +", lhs = "+lhs;
 	}

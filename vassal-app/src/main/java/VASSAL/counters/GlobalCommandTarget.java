@@ -483,9 +483,11 @@ public class GlobalCommandTarget implements ConfigurerFactory, SearchTarget {
   public void setTargetX(FormattedStringExpression targetX) {
     this.targetX = targetX;
   }
+
   public void setTargetX(String targetX) {
     this.targetX = new FormattedStringExpression(targetX);
   }
+
   public void setTargetX(int targetX) {
     this.targetX = new FormattedStringExpression(Integer.toString(targetX));
   }
@@ -497,9 +499,11 @@ public class GlobalCommandTarget implements ConfigurerFactory, SearchTarget {
   public void setTargetY(FormattedStringExpression targetY) {
     this.targetY = targetY;
   }
+
   public void setTargetY(String targetY) {
     this.targetY = new FormattedStringExpression(targetY);
   }
+
   public void setTargetY(int targetY) {
     this.targetY = new FormattedStringExpression(Integer.toString(targetY));
   }

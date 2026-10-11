@@ -23,10 +23,18 @@ Bug fixes
 {% endfor %}
 {% endif -%}
 
-{% if v['other_improvements'] -%}
-Other improvements
+{% if v['improvements'] -%}
+Improvements
 
-{% for item in v['other_improvements'] -%}
+{% for item in v['improvements'] -%}
+* {{ item.num }}: {{ item.desc }}
+{% endfor %}
+{% endif -%}
+
+{% if v['other'] -%}
+Other changes
+
+{% for item in v['other'] -%}
 * {{ item.num }}: {{ item.desc }}
 {% endfor %}
 {% endif -%}

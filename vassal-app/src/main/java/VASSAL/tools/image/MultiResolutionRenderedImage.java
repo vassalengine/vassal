@@ -26,7 +26,7 @@ public class MultiResolutionRenderedImage extends AbstractMultiResolutionImage {
   @FunctionalInterface
   public interface Renderer {
     BufferedImage render(int w, int h, double scale);
-  } 
+  }
 
   private final int baseWidth;
   private final int baseHeight;

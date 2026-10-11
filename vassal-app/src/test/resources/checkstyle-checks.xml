@@ -171,14 +171,10 @@
         <module name="ModifierOrder">
             <property name="severity" value="error"/>
         </module>
-        <!--
         <module name="EmptyLineSeparator">
-            <property name="tokens"
-             value="PACKAGE_DEF, IMPORT, STATIC_IMPORT, CLASS_DEF, INTERFACE_DEF, ENUM_DEF,
-                    STATIC_INIT, INSTANCE_INIT, METHOD_DEF, CTOR_DEF, VARIABLE_DEF"/>
-            <property name="allowNoEmptyLineBetweenFields" value="true"/>
+            <property name="severity" value="error"/>
+            <property name="tokens" value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, METHOD_DEF, CTOR_DEF" />
         </module>
-        -->
         <module name="SeparatorWrap">
             <property name="severity" value="error"/>
             <property name="id" value="SeparatorWrapDot"/>

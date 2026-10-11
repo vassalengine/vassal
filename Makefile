@@ -57,7 +57,8 @@ MAVEN_VERSION:=$(VNUM)-SNAPSHOT
 
 JARNAME:=vassal-app-$(MAVEN_VERSION)
 
-GITBRANCH:=$(shell git rev-parse --abbrev-ref HEAD)
+#Slashes are substituted so as not to create subdirectories
+GITBRANCH := $(subst /,_,$(shell git rev-parse --abbrev-ref HEAD))
 GITCOMMIT:=$(shell git rev-parse --short HEAD)
 
 ifeq ($(shell git describe --tags), $(MAVEN_VERSION))
@@ -113,7 +114,7 @@ $(LIBDIR)/Vengine.jar: version-set
 
 $(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar | $(TMPDIR)
 	echo -n jdk.crypto.ec, >$@
-	jdeps --ignore-missing-deps --print-module-deps --multi-release 11 $(LIBDIR)/*.jar | tr -d '\n' >>$@
+	jdeps --ignore-missing-deps --print-module-deps --multi-release 17 $(LIBDIR)/*.jar | tr -d '\n' >>$@
 
 #$(DISTDIR)/windows/VASSAL.ico:
 #	convert -bordercolor Transparent -border 1x1 src/icons/22x22/VASSAL.png $(TMPDIR)/VASSAL-24.png
@@ -199,7 +200,12 @@ $(TMPDIR)/linux-$(VERSION)-build/VASSAL-$(VERSION): $(LIBDIR)/Vengine.jar
 	cp -a $(DOCDIR) $@/doc
 	cp -a CHANGES LICENSE README.md $@
 	cp -a $(LIBDIR) $@/lib
-	cp $(DISTDIR)/VASSAL.sh $@
+	cp dist/linux/VASSAL.sh $@
+	cp dist/linux/org.vassalengine.vassal.desktop $@
+	cp dist/linux/org.vassalengine.vassal.metainfo.xml $@
+	cp dist/linux/org.vassalengine.vassal.mime.xml $@
+	cp dist/linux/vassal.6 $@
+	cp dist/linux/integration.sh $@
 	cp vassal-app/src/main/resources/icons/scalable/VASSAL.svg $@
 	find $@ -type f -exec chmod 644 \{\} \+
 	find $@ -type d -exec chmod 755 \{\} \+
@@ -280,7 +286,7 @@ release-macos: release-macos-universal
 
 release-macos-universal: $(TMPDIR)/VASSAL-$(VERSION)-macos-universal.dmg
 
-release-windows: release-windows-x86_64 release-windows-aarch64
+release-windows: release-windows-x86_64 
 
 release-windows-x86_32: $(TMPDIR)/VASSAL-$(VERSION)-windows-x86_32.exe
 

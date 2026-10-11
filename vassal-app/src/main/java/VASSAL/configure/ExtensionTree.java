@@ -69,7 +69,7 @@ public class ExtensionTree extends ConfigureTree {
 
     return index;
   }
-  
+
 
   public boolean isEditable(DefaultMutableTreeNode node) {
     if (extension == null) {

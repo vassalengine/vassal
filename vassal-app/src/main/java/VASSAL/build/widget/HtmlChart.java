@@ -94,10 +94,18 @@ public class HtmlChart extends Widget implements MouseListener {
       // Bad CSS or HTML
       ErrorDialog.dataWarning(
         new BadDataReport(
-        this, Resources.getString("Editor.HTMLChart.html_failed_to_load", fname, getConfigureName(), e.getMessage()),
+          this,
+          Resources.getString(
+            "Editor.HTMLChart.html_failed_to_load",
+            fname,
+            getConfigureName(),
+            e.getMessage()
+          ),
           fname,
           e,
-          false));
+          false
+        )
+      );
     }
   }
 

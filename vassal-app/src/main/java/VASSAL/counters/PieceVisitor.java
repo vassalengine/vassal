@@ -25,6 +25,7 @@ package VASSAL.counters;
 public interface PieceVisitor {
   /** Perform the operation on a Stack */
   Object visitStack(Stack s);
+
   /** GamePieces that are not handled by one of the type-specific methods (e.g. {@link #visitStack}) are handled here */
   Object visitDefault(GamePiece p);
 }

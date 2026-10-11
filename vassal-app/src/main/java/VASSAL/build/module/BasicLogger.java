@@ -38,7 +38,6 @@ import VASSAL.tools.NamedKeyStrokeListener;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.LogFileFilter;
-import VASSAL.tools.io.ObfuscatingOutputStream;
 import VASSAL.tools.io.ZipWriter;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.Dialogs;
@@ -50,8 +49,12 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.BufferedOutputStream;
@@ -263,7 +266,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   public boolean isMultiPlayer() {
     return multiPlayer;
   }
-  
+
   /**
    * Our setup method is called by GameState whenever a game starts or ends.
    * @param startingGame True if a new game starting, false if a game is ending/closing
@@ -405,29 +408,61 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     }
 
     if (Boolean.TRUE.equals(g.getPrefs().getValue(prefName)) || (atStart && fastForwarded)) {
-      final Object[] options = {
-        Resources.getString(Resources.YES),
-        Resources.getString(Resources.NO),
-        Resources.getString("BasicLogger.dont_prompt_again")  //$NON-NLS-1$
-      };
-
-      final int result = JOptionPane.showOptionDialog(
-        g.getPlayerWindow(),
-        Resources.getString("BasicLogger.start_new_log_file", prompt), //$NON-NLS-1$
-        "",  //$NON-NLS-1$
-        JOptionPane.YES_NO_CANCEL_OPTION,
-        JOptionPane.QUESTION_MESSAGE,
-        null,
-        options,
-        options[0]
-      );
-
-      if (result == JOptionPane.YES_OPTION) {
-        beginOutput();
+      final JButton yes = new JButton((String) UIManager.get("OptionPane.yesButtonText"));
+      final JButton no = new JButton((String) UIManager.get("OptionPane.noButtonText"));
+      final JButton cancel = new JButton(Resources.getString("BasicLogger.dont_prompt_again"));
+      try {
+        yes.setMnemonic(Integer.parseInt((String) UIManager.get("OptionPane.yesButtonMnemonic")));
+        no.setMnemonic(Integer.parseInt((String) UIManager.get("OptionPane.noButtonMnemonic")));
       }
-      else if (result == 2) { // Turn Preference Off
-        g.getPrefs().setValue(prefName, Boolean.FALSE);
+      catch (NumberFormatException ex) {
+        // Do nothing. Allow dialog to show without mnemonics.
       }
+
+      final JOptionPane pane = new JOptionPane(
+              Resources.getString("BasicLogger.start_new_log_file", prompt), //$NON-NLS-1$
+              JOptionPane.QUESTION_MESSAGE,
+              JOptionPane.YES_NO_CANCEL_OPTION,
+              null,
+              new Object[] {yes, no, cancel},
+              yes);
+
+      yes.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent event) {
+          pane.setValue(JOptionPane.YES_OPTION);
+          javax.swing.SwingUtilities.invokeLater(() -> {
+            beginOutput();
+          });
+        }
+      });
+      no.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent event) {
+          pane.setValue(JOptionPane.NO_OPTION);
+        }
+      });
+      cancel.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent event) {
+          pane.setValue(JOptionPane.CANCEL_OPTION);
+          g.getPrefs().setValue(prefName, Boolean.FALSE);
+        }
+      });
+
+      // Increase the width of the yes/no buttons.
+      Insets insets = yes.getMargin();
+      insets.left *= 2;
+      insets.right *= 2;
+      yes.setMargin(insets);
+      insets = no.getMargin();
+      insets.left *= 2;
+      insets.right *= 2;
+      no.setMargin(insets);
+
+      final JDialog dialog = pane.createDialog(g.getPlayerWindow(), "");
+      dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+      dialog.setVisible(true);
     }
   }
 
@@ -445,7 +480,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       final String logString = GameModule.getGameModule().encode(log);
 
       try (ZipWriter zw = new ZipWriter(outputFile)) {
-        try (OutputStream out = new ObfuscatingOutputStream(new BufferedOutputStream(zw.write(GameState.SAVEFILE_ZIP_ENTRY)))) {
+        try (OutputStream out = GameState.compressSavedGame(new BufferedOutputStream(zw.write(GameState.SAVEFILE_ZIP_ENTRY)))) {
           out.write(logString.getBytes(StandardCharsets.UTF_8));
         }
         metadata.save(zw);
@@ -527,7 +562,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       return;
     }
 
-    dontUndoPast = 0; 
+    dontUndoPast = 0;
 
     undoAction.setEnabled(false);
     endLogAction.setEnabled(true);
@@ -673,7 +708,9 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      beginOutput();
+      if (isEnabled()) {
+        beginOutput();
+      }
     }
   };
 
@@ -746,6 +783,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       step();
     }
   }
+
   public class UndoAction extends AbstractAction {
     private static final long serialVersionUID = 1L;
 

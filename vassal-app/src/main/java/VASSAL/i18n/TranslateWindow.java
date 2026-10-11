@@ -216,11 +216,13 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       myTarget = target;
       owningWindow = tw;
     }
+
     @Override
     public void save() {
       super.save();
       owningWindow.refreshTranslationList(myTarget);
     }
+
     @Override
     public void cancel() {
       dispose();
@@ -270,6 +272,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       @Override
       public void focusGained(java.awt.event.FocusEvent e) {
       }
+
       @Override
       public void focusLost(java.awt.event.FocusEvent e) {
         commitTableEdit();
@@ -756,6 +759,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
   class CopyButton extends JButton implements ActionListener {
     private static final long serialVersionUID = 1L;
     int row;
+
     public CopyButton(int i) {
       super("->");
       row = i;
@@ -763,6 +767,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       setMargin(new Insets(1, 1, 1, 1));
       checkEnabled();
     }
+
     @Override
     public void actionPerformed(ActionEvent e) {
       final String key = keys[row];
@@ -771,6 +776,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       checkEnabled();
       ((MyTableModel) keyTable.getModel()).update();
     }
+
     public void checkEnabled() {
       if (keyTarget != null && keys != null && keys[row] != null) {
         final String t = currentTranslation == null ? "" : currentTranslation.translate(keyTarget.getI18nData().getFullPrefix() + keys[row]); //$NON-NLS-1$
@@ -779,9 +785,9 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       else {
         setEnabled(true);
       }
-
     }
   }
+
   /**
    * Custom tree cell renderer - Change color of component names based on
    * translation status of children

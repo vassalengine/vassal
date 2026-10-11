@@ -1407,6 +1407,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   @Override
   public void draw(java.awt.Graphics g, int x, int y, Component obs, double zoom) {
     final int count = Math.min(getPieceCount(), maxStack);
+    int bottomIndex = Math.max(getPieceCount() - maxStack, 0);
     final GamePiece top = (nextDraw != null && !nextDraw.isEmpty()) ?
       nextDraw.get(0) : topPiece();
 
@@ -1417,7 +1418,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       final Rectangle r = top.getShape().getBounds();
       r.setLocation(x + (int) (zoom * (r.x)), y + (int) (zoom * (r.y)));
       r.setSize((int) (zoom * r.width), (int) (zoom * r.height));
-      for (int i = 0; i < count - 1; ++i) {
+      for (int i = 0; bottomIndex < getPieceCount() - 1; ++i, ++bottomIndex) {
         if (blankColor != null) {
           g.setColor(blankColor);
           g.fillRect(r.x + (int) (zoom * 2 * i), r.y - (int) (zoom * 2 * i), r.width, r.height);
@@ -1428,7 +1429,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
           top.draw(g, x + (int) (zoom * 2 * i), y - (int) (zoom * 2 * i), obs, zoom);
         }
         else {
-          getPieceAt(count - i - 1).draw(g, x + (int) (zoom * 2 * i), y - (int) (zoom * 2 * i), obs, zoom);
+          getPieceAt(bottomIndex).draw(g, x + (int) (zoom * 2 * i), y - (int) (zoom * 2 * i), obs, zoom);
         }
       }
       top.draw(g, x + (int) (zoom * 2 * (count - 1)), y - (int) (zoom * 2 * (count - 1)), obs, zoom);

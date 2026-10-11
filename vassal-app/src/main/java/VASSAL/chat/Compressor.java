@@ -40,7 +40,7 @@ public class Compressor {
 
   public static byte[] decompress(byte[] in) throws IOException {
     try (ZipInputStream zipIn = new ZipInputStream(new ByteArrayInputStream(in))) {
-      zipIn.getNextEntry();
+      zipIn.getNextEntry(); // NOPMD
       return zipIn.readAllBytes();
     }
   }

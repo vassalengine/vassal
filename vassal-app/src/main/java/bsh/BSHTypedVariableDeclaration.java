@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -50,7 +50,7 @@ class BSHTypedVariableDeclaration extends SimpleNode
 		return typeNode.getType( callstack, interpreter );
 	}
 
-	BSHVariableDeclarator [] getDeclarators() 
+	BSHVariableDeclarator [] getDeclarators()
 	{
 		int n = jjtGetNumChildren();
 		int start=1;
@@ -66,7 +66,7 @@ class BSHTypedVariableDeclaration extends SimpleNode
 		evaluate the type and one or more variable declarators, e.g.:
 			int a, b=5, c;
 	*/
-    public Object eval( CallStack callstack, Interpreter interpreter)  
+    public Object eval( CallStack callstack, Interpreter interpreter)
 		throws EvalError
     {
 		try {
@@ -84,10 +84,10 @@ class BSHTypedVariableDeclaration extends SimpleNode
 				Object value = dec.eval( typeNode, callstack, interpreter);
 
 				try {
-					namespace.setTypedVariable( 
+					namespace.setTypedVariable(
 						dec.name, type, value, modifiers );
-				} catch ( UtilEvalError e ) { 
-					throw e.toEvalError( this, callstack ); 
+				} catch ( UtilEvalError e ) {
+					throw e.toEvalError( this, callstack );
 				}
 			}
 		} catch ( EvalError e ) {
@@ -97,10 +97,10 @@ class BSHTypedVariableDeclaration extends SimpleNode
         return Primitive.VOID;
     }
 
-	public String getTypeDescriptor( 
-		CallStack callstack, Interpreter interpreter, String defaultPackage ) 
-	{ 
-		return getTypeNode().getTypeDescriptor( 
+	public String getTypeDescriptor(
+		CallStack callstack, Interpreter interpreter, String defaultPackage )
+	{
+		return getTypeNode().getTypeDescriptor(
 			callstack, interpreter, defaultPackage );
 	}
 }

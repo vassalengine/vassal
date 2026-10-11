@@ -360,6 +360,7 @@ public class TranslatingStringEnumConfigurer extends Configurer {
     }
     box.setModel(new DefaultComboBoxModel<>(displayValues));
   }
+
   /**
    * Set a value into the configurer
    * If the value is one of the list of allowable values, then set the

@@ -53,6 +53,7 @@ import VASSAL.counters.PieceVisitorDispatcher;
 import VASSAL.counters.Properties;
 import VASSAL.counters.PropertyExporter;
 import VASSAL.counters.Stack;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.DebugControls;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
@@ -766,7 +767,25 @@ public class PieceMover extends AbstractBuildable
     Command c = new NullCommand();
     c = c.append(setOldLocations(p));
     if (!loc.equals(p.getPosition())) {
-      c = c.append(markMoved(p, true, false));
+      boolean locDefinitelyChanged = false;
+      final Map map = p.getMap();
+      if (map != null) {
+        // Compare location names
+        // Offboard moves are always considered as a changed location.
+        final String previousLocation = map.locationName(p.getPosition());
+        locDefinitelyChanged = (previousLocation == null)
+                || !(previousLocation.equals(map.locationName(loc)))
+                || previousLocation.equals(Resources.getString("Map.offboard"));
+
+        if (!locDefinitelyChanged && GameModule.getGameModule().isMatSupport()) {
+          final String mat = (String) p.getProperty(MatCargo.CURRENT_MAT_ID);
+          final String oldMat = (String) p.getProperty(BasicPiece.OLD_MAT_ID);
+          if (mat != null && !mat.equals(oldMat)) {
+            locDefinitelyChanged = true;
+          }
+        }
+      }
+      c = c.append(markMoved(p, true, locDefinitelyChanged));
     }
     if (p.getParent() != null) {
       final Command removedCommand = p.getParent().pieceRemoved(p);
@@ -1298,7 +1317,7 @@ public class PieceMover extends AbstractBuildable
     return !e.isConsumed() &&
       !e.isShiftDown() &&
       !SwingUtils.isSelectionToggle(e) &&
-      e.getClickCount() < 2 &&
+      e.getClickCount() == 1 &&                   // Previously also allowed a clickCount of zero here, causing https://github.com/vassalengine/vassal/issues/12480
       (e.getButton() == MouseEvent.NOBUTTON ||
         SwingUtils.isMainMouseButtonDown(e));
   }
@@ -1849,8 +1868,9 @@ public class PieceMover extends AbstractBuildable
       for (final PieceIterator i = db.getIterator();  // NOPMD
            i.hasMoreElements(); pieces.add(i.nextPiece()));
       for (final GamePiece piece : pieces) {
-        if (piece.getMap() != null &&
-            Boolean.TRUE.equals(piece.getProperty(Properties.NON_MOVABLE))) {
+        final Object cannotMove = piece.getProperty(Properties.NON_MOVABLE);
+        if (piece.getMap() != null && (Boolean.TRUE.equals(cannotMove) ||
+                                       "true".equals(cannotMove))) {
           db.remove(piece);
         }
       }
