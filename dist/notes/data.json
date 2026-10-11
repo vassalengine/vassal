@@ -1,12 +1,15 @@
 {
-  "headline": "The Vassal Team is happy to announce the release of Vassal {{version}}.",
+  "headline": "The VASSAL Team is happy to announce VASSAL {{version}}, which is a preview release.",
   "important": [
-    "There is now a single universal app bundle for MacOS. It runs natively on both 64-bit x86 (Intel) and 64-bit ARM (Apple Silicon) Macs.",
+    "Starting with 3.7.25, Vassal requires Java 17 or newer. If you are using one of the MacOS or Windows packages, Java is bundled with Vassal and this will not affect you. If you are using Linux or another OS, please upgrade Java to at least Java 17.",
     "Modules saved in {{version_feature}} are not openable by earlier versions of Vassal. We recommend keeping a backup copy of any pre-{{version_feature}} modules you plan to modify in {{version_feature}} until you've verified that everything works to your satisfaction.",
     "Things may be broken which worked previously. If you find a new bug, please report it."
   ],
+  "release_notes_url": "https://forum.vassalengine.org/t/vassal-3-8-release-notes/90445",
   "downloads": [
     { "display_name": "Linux", "suffix": "linux.tar.bz2" },
+    { "display_name": "Linux (Debian)", "suffix": "1_all.deb", "prefix": "vassal_"}, 
+    { "display_name": "Linux (RPM)", "suffix": "1.noarch.rpm", "prefix": "vassal-"}, 
     { "display_name": "MacOS", "suffix": "macos-universal.dmg" },
     { "display_name": "Windows (64-bit x86)", "suffix": "windows-x86_64.exe" },
     { "display_name": "Windows (32-bit x86)", "suffix": "windows-x86_32.exe" },
@@ -15,70 +18,20 @@
   ],
   "changes": [
     {
-      "in": "3.8.0-beta1",
-      "since": "3.7.8",
+      "in": "3.8.0-beta3",
+      "since": "3.8.0-beta2 and 3.7.29",
       "new_features": [
-        { "num": 12944, "desc": "Add pieceCount to the map auto reporter" },
-        { "num": 12763, "desc": "Added VassalGameFileName property" }
+        { "num": 15097, "desc": "Make Charts zoomable" },
+        { "num": 14581, "desc": "Added animated symbolic dice button" }
       ],
       "bug_fixes": [
+        { "num": 15141, "desc": "Fix NPE when rendering boards to non-map contexts" }
       ],
-      "other_improvements": [
-      ]
-    },
-    {
-      "in": "3.7.8",
-      "since": "3.7.7",
-      "new_features": [
-        { "num": 12898, "desc": "Improved \"Refresh Predefined Setups\": Expanded \"orphan counter\" functionality - reporting / ability to repair (sub-option); ability to do additional processing via a special post-refresh Global Hotkey, optionallywi ithout routine refresh reporting; new filter field and associated functionality for Predefined Setup Refresh; other UI improvements" }
+      "improvements": [
+        { "num": 15121, "desc": "Compress the saved-game command log with XZ " }
       ],
-      "bug_fixes": [
-        { "num": 13057, "desc": "Remove Unused Images does not find any images in use in an Extension" },
-        { "num": 13049, "desc": "Compute correct _Degrees property for free rotations" },
-        { "num": 13040, "desc": "Show correct sides in Wizard after using Prev button" }
-      ],
-      "other_improvements": [
-      ]
-    },
-    {
-      "in": "3.7.7",
-      "since": "3.7.6",
-      "new_features": [
-      ],
-      "bug_fixes": [
-        { "num": 13022, "desc": "Prevent room non-owners starting new games" },
-        { "num": 13021, "desc": "Allow wizard to load setups from extensions" },
-        { "num": 13011, "desc": "Spelling correction on Global Options panel" },
-        { "num": 13001, "desc": "Fix poor performance of Piece Definer; remove spurious blank line from Mass Piece Loader" },
-        { "num": 12981, "desc": "Fixed IndexOutOfBoundsException in empty chat room" },
-        { "num": 12971, "desc": "Refresh visible portions of Maps after each UI, log, or network action" },
-        { "num": 12931, "desc": "Prevent zero length string error on Deck refresh" },
-        { "num": 12894, "desc": "Prevent crash if I/O Exception during CRC calculation" },
-        { "num": 12765, "desc": "Cancelling Return To Deck no longer causes crash" }
-      ],
-      "other_improvements": [
-        { "num": 13037, "desc": "Make Zoom component a default component of all maps" },
-        { "num": 13003, "desc": "Do not record Map Id's in saved Deck files so they will load on any Map" },
-        { "num": 12976, "desc": "Search: Add option to exclude module elements when editing extension" },
-        { "num": 12768, "desc": "\"Player joins as side\" message now broadcast to all players" }
-      ]
-    },
-    {
-      "in": "3.7.6",
-      "since": "3.7.5",
-      "new_features": [
-      ],
-      "bug_fixes": [
-        { "num": 12958, "desc": "Store correct value in prefs for Module Manager column widths" },
-        { "num": 12936, "desc": "Labels have incorrect bounds when using italics" },
-        { "num": 12912, "desc": "Prevent Welcome Wizard from loading multiple pre-defined setups concurrently" },
-        { "num": 12907, "desc": "Deck Key Commands do not work on subsequent new games" },
-        { "num": 12886, "desc": "Suppress unhelpful bad data error reports from the Piece Palette" },
-        { "num": 12881, "desc": "Prevent integer overflow when computing the size of image pixel data in bytes" }
-      ],
-      "other_improvements": [
-        { "num": 12970, "desc": "Upgrade bundled Java to 21.0.1+12" },
-        { "num": 12798, "desc": "Editor search revamp: more options and enhanced navigation" }
+      "other": [
+        { "num": 15099, "desc": "Removed the deprecated loadGameOld Action" }
       ]
     }
   ]

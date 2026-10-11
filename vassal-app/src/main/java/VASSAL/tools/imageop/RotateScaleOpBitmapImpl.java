@@ -44,6 +44,7 @@ public class RotateScaleOpBitmapImpl extends AbstractTileOpImpl
   private final ImageOp sop;
   private final double scale;
   private final double angle;
+  @SuppressWarnings("PMD.LooseCoupling")
   private final RenderingHints hints;
   private final int hash;
 
@@ -69,6 +70,7 @@ public class RotateScaleOpBitmapImpl extends AbstractTileOpImpl
    * @param hints rendering hints
    * @throws IllegalArgumentException if <code>sop == null</code>.
    */
+  @SuppressWarnings("PMD.LooseCoupling")
   public RotateScaleOpBitmapImpl(ImageOp sop, double angle, double scale,
                                  RenderingHints hints) {
     if (sop == null) throw new IllegalArgumentException();

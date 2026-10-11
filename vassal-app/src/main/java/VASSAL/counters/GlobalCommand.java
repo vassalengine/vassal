@@ -631,7 +631,7 @@ public class GlobalCommand implements Auditable {
 
       // if Current Location has been specified (Counter GKC), we can go find the pieces directly from the Qtree index
       else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.CURLOC && curPiece != null && curPiece.getMap() != null && curPiece.getPosition() != null && usePieceIndexing) {
-        for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(curPiece.getMap(), curPiece.getPosition())) {
+        for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(curPiece.getMap(), BasicPiece.LOCATION_NAME, (String) curPiece.getProperty(BasicPiece.LOCATION_NAME))) {
 
           // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
           if (!passesPropertyFastMatch(piece)) continue;
@@ -1054,7 +1054,7 @@ public class GlobalCommand implements Auditable {
   protected class IndexedFastmatchDeckPolicyManager {
 
     /** Acceptance count limit for the GKC in progress */
-    private final int useFromDeck;
+    private final int useFromDeck; // NOPMD
     /** Map of DeckInfo objects, one for each Deck seen so far. */
     private final java.util.Map<Deck, DeckInfo> applyCounts = new HashMap<>();
 

@@ -49,14 +49,14 @@ public class MessageViewer extends JPanel {
   public void setMessages(Enumeration<Message> msgEnum) {
     msgList.clear();
     msgText.setText("");  //$NON-NLS-1$
-    final Vector<Vector<String>> rows = new Vector<>();
-    final Vector<String> names = new Vector<>();
+    final Vector<Vector<String>> rows = new Vector<>(); // NOPMD
+    final Vector<String> names = new Vector<>(); // NOPMD
     names.addElement(Resources.getString("Chat.sender"));  //$NON-NLS-1$
     names.addElement(Resources.getString("Chat.date"));  //$NON-NLS-1$
     while (msgEnum.hasMoreElements()) {
       final Message msg = msgEnum.nextElement();
       msgList.add(msg);
-      final Vector<String> cols = new Vector<>();
+      final Vector<String> cols = new Vector<>(); // NOPMD
       cols.addElement(msg.getSender());
       cols.addElement(Resources.formatDate(msg.getDate()));
       rows.addElement(cols);

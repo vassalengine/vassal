@@ -28,6 +28,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.Icon;
 import javax.swing.JButton;
@@ -988,8 +989,8 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     @Override
     public String[] getValidValues(AutoConfigurable target) {
       final PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
-      final ArrayList<String> sides = new ArrayList<>(r.getSides());
-      if (r.getSides().size() == 0) {
+      final List<String> sides = new ArrayList<>(r.getSides());
+      if (r.getSides().isEmpty()) {
         sides.add(GENERIC);
       }
       return sides.toArray(new String[0]);
@@ -997,12 +998,12 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
 
     @Override
     public String[] getI18nKeys(AutoConfigurable target) {
-      final ArrayList<String> sides = new ArrayList<>();
+      final List<String> sides = new ArrayList<>();
       final PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
       for (final String s : r.getSides()) {
         sides.add(r.translateSide(s));
       }
-      if (r.getSides().size() == 0) {
+      if (r.getSides().isEmpty()) {
         sides.add(GENERIC);
       }
       return sides.toArray(new String[0]);

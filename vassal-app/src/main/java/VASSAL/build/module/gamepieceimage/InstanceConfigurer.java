@@ -124,7 +124,7 @@ public class InstanceConfigurer extends Configurer {
 
   public static List<ItemInstance> StringToProperties(String s,
                                                       GamePieceImage defn) {
-    final ArrayList<ItemInstance> props = new ArrayList<>();
+    final List<ItemInstance> props = new ArrayList<>();
     final String[] p = StringArrayConfigurer.stringToArray(s);
     for (final String item : p) {
       if (item.startsWith(SymbolItem.TYPE)) {

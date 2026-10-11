@@ -1226,10 +1226,10 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
     else {
       int count = Math.max(dragCount, Math.min(1, getPieceCount()));
-      final ArrayList<GamePiece> pieces = new ArrayList<>();
+      final List<GamePiece> pieces = new ArrayList<>();
       if (ALWAYS.equals(shuffleOption)) {
         // Instead of shuffling the entire deck, just pick <b>count</b> random elements
-        final ArrayList<Integer> indices = new ArrayList<>();
+        final List<Integer> indices = new ArrayList<>();
         for (int i = 0; i < getPieceCount(); ++i) {
           indices.add(i);
         }
@@ -1323,7 +1323,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
 
     faceDown = "true".equals(st.nextToken()); //$NON-NLS-1$
-    final ArrayList<GamePiece> l = new ArrayList<>();
+    final List<GamePiece> l = new ArrayList<>();
     if (st.hasMoreTokens()) {
       final SequenceEncoder.Decoder st2 =
         new SequenceEncoder.Decoder(st.nextToken(), ',');
@@ -1356,7 +1356,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   /** Reverse the order of the contents of the Deck */
   public Command reverse() {
-    final ArrayList<GamePiece> list = new ArrayList<>();
+    final List<GamePiece> list = new ArrayList<>();
     for (final Iterator<GamePiece> i = getPiecesReverseIterator(); i.hasNext(); ) {
       list.add(i.next());
     }
@@ -1407,6 +1407,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   @Override
   public void draw(java.awt.Graphics g, int x, int y, Component obs, double zoom) {
     final int count = Math.min(getPieceCount(), maxStack);
+    int bottomIndex = Math.max(getPieceCount() - maxStack, 0);
     final GamePiece top = (nextDraw != null && !nextDraw.isEmpty()) ?
       nextDraw.get(0) : topPiece();
 
@@ -1417,7 +1418,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       final Rectangle r = top.getShape().getBounds();
       r.setLocation(x + (int) (zoom * (r.x)), y + (int) (zoom * (r.y)));
       r.setSize((int) (zoom * r.width), (int) (zoom * r.height));
-      for (int i = 0; i < count - 1; ++i) {
+      for (int i = 0; bottomIndex < getPieceCount() - 1; ++i, ++bottomIndex) {
         if (blankColor != null) {
           g.setColor(blankColor);
           g.fillRect(r.x + (int) (zoom * 2 * i), r.y - (int) (zoom * 2 * i), r.width, r.height);
@@ -1428,7 +1429,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
           top.draw(g, x + (int) (zoom * 2 * i), y - (int) (zoom * 2 * i), obs, zoom);
         }
         else {
-          getPieceAt(count - i - 1).draw(g, x + (int) (zoom * 2 * i), y - (int) (zoom * 2 * i), obs, zoom);
+          getPieceAt(bottomIndex).draw(g, x + (int) (zoom * 2 * i), y - (int) (zoom * 2 * i), obs, zoom);
         }
       }
       top.draw(g, x + (int) (zoom * 2 * (count - 1)), y - (int) (zoom * 2 * (count - 1)), obs, zoom);
@@ -1535,7 +1536,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   protected KeyCommand[] getKeyCommands() {
     if (commands == null) {
-      final ArrayList<KeyCommand> l = new ArrayList<>();
+      final List<KeyCommand> l = new ArrayList<>();
       KeyCommand c;
       if (USE_MENU.equals(shuffleOption)) {
         c = new KeyCommand(shuffleCommand, getShuffleKey(), this) {
@@ -1756,6 +1757,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       }
 
       @Override
+      @SuppressWarnings("PMD.SimplifyBooleanReturns")
       public boolean equals(Object o) {
         if (! (o instanceof AvailablePiece)) return false;
         return ((AvailablePiece)o).piece.equals(piece);

@@ -249,7 +249,7 @@ public class TextBoxItem extends TextItem {
 
   @Override
   public String getType() {
-    return TextBoxItem.TYPE;
+    return TYPE;
   }
 
   @Override
@@ -283,7 +283,7 @@ public class TextBoxItem extends TextItem {
   @Override
   public String encode() {
 
-    final SequenceEncoder se1 = new SequenceEncoder(TextBoxItem.TYPE, ';');
+    final SequenceEncoder se1 = new SequenceEncoder(TYPE, ';');
 
     se1.append(width);
     se1.append(height);

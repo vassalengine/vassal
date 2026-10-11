@@ -166,19 +166,19 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
     if (key.equals(stroke)) {
       final ChangeTracker c = new ChangeTracker(this);
       // Set the property on the entire piece so all traits can respond
-      Decorator.getOutermost(this).setProperty(Properties.MOVED, !hasMoved);
+      getOutermost(this).setProperty(Properties.MOVED, !hasMoved);
       return c.getChangeCommand();
     }
     else if (keyTrue.equals(stroke)) {
       final ChangeTracker c = new ChangeTracker(this);
       // Set the property on the entire piece so all traits can respond
-      Decorator.getOutermost(this).setProperty(Properties.MOVED, true);
+      getOutermost(this).setProperty(Properties.MOVED, true);
       return c.getChangeCommand();
     }
     else if (keyFalse.equals(stroke)) {
       final ChangeTracker c = new ChangeTracker(this);
       // Set the property on the entire piece so all traits can respond
-      Decorator.getOutermost(this).setProperty(Properties.MOVED, false);
+      getOutermost(this).setProperty(Properties.MOVED, false);
       return c.getChangeCommand();
     }
     else {
@@ -303,6 +303,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof MovementMarkable)) return false;
     final MovementMarkable c = (MovementMarkable) o;
@@ -419,7 +420,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     l.add(Properties.MOVED);
     return l;
   }

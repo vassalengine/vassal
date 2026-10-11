@@ -1446,6 +1446,7 @@ public class ADC2Module extends Importer {
   private final List<Player> players = new ArrayList<>();
   private final java.util.Map<Integer, List<Piece>> stacks = new HashMap<>();
   private final java.util.Map<Integer, List<Piece>> forcePoolHashMap = new HashMap<>();
+  @SuppressWarnings("PMD.LooseCoupling")
   private final ForcePoolList forcePools = new ForcePoolList();
   private final String[] classValues = new String[8];
   private final String[] pieceValues = new String[8];

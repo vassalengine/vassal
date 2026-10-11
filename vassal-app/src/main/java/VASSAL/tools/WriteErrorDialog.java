@@ -93,7 +93,7 @@ public class WriteErrorDialog {
     File file,
     String messageKey) {
 
-    String msg;
+    final String msg;
     if (e instanceof AccessDeniedException) {
       // AccessDeniedException has a useless message
       msg = "Access denied";

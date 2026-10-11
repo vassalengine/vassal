@@ -49,7 +49,7 @@ public class RoomManager {
     newRoom.addPlayer(p);
     if (oldRoom != null && !oldRoom.equals(newRoom)) {
       oldRoom.removePlayer(p);
-      if (oldRoom.getPlayerList().size() == 0 &&
+      if (oldRoom.getPlayerList().isEmpty() &&
           !oldRoom.equals(defaultRoom)) {
         rooms.remove(oldRoom);
       }
@@ -62,7 +62,7 @@ public class RoomManager {
     for (int i = 0; i < rooms.size(); ++i) {
       final Room r = rooms.get(i);
       r.removePlayer(p);
-      if (r.getPlayerList().size() == 0 &&
+      if (r.getPlayerList().isEmpty() &&
           !r.equals(defaultRoom)) {
         rooms.remove(i--);
       }

@@ -153,7 +153,7 @@ public class Node implements MsgSender {
   }
 
   public Node[] getLeafDescendants() {
-    final ArrayList<Node> l = new ArrayList<>();
+    final List<Node> l = new ArrayList<>();
     addLeaves(this, l);
     return l.toArray(new Node[0]);
   }
@@ -228,7 +228,7 @@ public class Node implements MsgSender {
   }
 
   private List<Node> getPathList() {
-    final ArrayList<Node> path = new ArrayList<>();
+    final List<Node> path = new ArrayList<>();
     for (Node n = this; n != null && n.getId() != null; n = n.getParent()) {
       path.add(n);
     }

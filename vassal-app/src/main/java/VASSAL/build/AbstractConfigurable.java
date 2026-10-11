@@ -193,7 +193,7 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
    */
   @Override
   public Configurable[] getConfigureComponents() {
-    final ArrayList<Configurable> l = new ArrayList<>();
+    final List<Configurable> l = new ArrayList<>();
     for (final Buildable b : getBuildables()) {
       if (b instanceof Configurable) {
         l.add((Configurable) b);
@@ -213,6 +213,10 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
     }
     else {
       ((AutoConfigurer) config).reset();
+      // Some Configurers clear their configurer during a reset to ensure a new one is generated to reset any internal components
+      if (config == null) {
+        config = new AutoConfigurer(this);
+      }
     }
     return config;
   }

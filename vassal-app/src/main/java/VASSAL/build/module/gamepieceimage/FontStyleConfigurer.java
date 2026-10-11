@@ -89,7 +89,7 @@ public class FontStyleConfigurer extends Configurer {
       fontPanel.remove(fonts);
     }
 
-    fonts = new JComboBox();
+    fonts = new JComboBox<>();
     final String[] s = FontManager.getFontManager().getFontNames();
     for (final String item : s) {
       fonts.addItem(item);

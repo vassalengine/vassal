@@ -111,9 +111,9 @@ public class Resources {
       addLocale(myLocale);
     }
 
-    final ArrayList<String> languages = new ArrayList<>();
+    final List<String> languages = new ArrayList<>();
     for (final Locale l : supportedLocales) {
-      languages.add(l.getLanguage());
+      languages.add(l.toLanguageTag());
     }
 
     final Prefs p = Prefs.getGlobalPrefs();
@@ -129,9 +129,11 @@ public class Resources {
 
     setInstanceLocale(myLocale);
     final StringEnumConfigurer localeConfig = new StringEnumConfigurer(
-        Resources.LOCALE_PREF_KEY,
+        LOCALE_PREF_KEY,
         getInstanceString("Prefs.language"),
         languages.toArray(new String[0])) {
+      Locale current = null;
+
       @Override
       public Component getControls() {
         if (getBox() == null) {
@@ -142,7 +144,11 @@ public class Resources {
             @Override
             public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
               final JLabel l = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-              l.setText(new Locale((String) value).getDisplayLanguage());
+              if (current == null) {
+                current = new Locale(getValueString());
+              }
+              final Locale locale = new Locale((String)value);
+              l.setText((locale.getDisplayLanguage(current)) + " (" + locale.getDisplayLanguage(locale) + ")"); //NON-NLS
               return l;
             }
           });
@@ -186,7 +192,7 @@ public class Resources {
       final StringEnumConfigurer config = (StringEnumConfigurer) Prefs
           .getGlobalPrefs().getOption(LOCALE_PREF_KEY);
       if (config != null) {
-        final ArrayList<String> valid = new ArrayList<>(Arrays
+        final List<String> valid = new ArrayList<>(Arrays
           .asList(config.getValidValues()));
         valid.add(0, l.getLanguage());
         config.setValidValues(valid.toArray(new String[0]));
@@ -368,8 +374,10 @@ public class Resources {
     editorBundle = null;
     vassalBundle = null;
     UIManager.put("OptionPane.yesButtonText", getInstanceString(YES)); //$NON-NLS-1$
+    UIManager.put("OptionPane.yesButtonMnemonic", Integer.toString(getInstanceString(YES).charAt(0))); //$NON-NLS-1$
     UIManager.put("OptionPane.cancelButtonText", getInstanceString(CANCEL)); //$NON-NLS-1$
     UIManager.put("OptionPane.noButtonText", getInstanceString(NO)); //$NON-NLS-1$
+    UIManager.put("OptionPane.noButtonMnemonic", Integer.toString(getInstanceString(NO).charAt(0))); //$NON-NLS-1$
     UIManager.put("OptionPane.okButtonText", getInstanceString(OK)); //$NON-NLS-1$
   }
 

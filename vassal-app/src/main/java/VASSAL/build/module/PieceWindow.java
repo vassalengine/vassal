@@ -32,7 +32,6 @@ import javax.swing.WindowConstants;
 
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
-import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.Widget;
 import VASSAL.build.module.documentation.HelpFile;
@@ -126,7 +125,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
       d.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
       d.setTitle(getConfigureName());
       addPropertyChangeListener(e -> {
-        if (Configurable.NAME_PROPERTY.equals(e.getPropertyName())) {
+        if (NAME_PROPERTY.equals(e.getPropertyName())) {
           d.setTitle((String) e.getNewValue());
         }
       });
@@ -140,7 +139,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
       d.setJMenuBar(MenuManager.getInstance().getMenuBarFor(d));
 
       addPropertyChangeListener(e -> {
-        if (Configurable.NAME_PROPERTY.equals(e.getPropertyName())) {
+        if (NAME_PROPERTY.equals(e.getPropertyName())) {
           d.setTitle((String) e.getNewValue());
         }
       });

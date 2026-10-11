@@ -157,7 +157,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
     final boolean isVisible = !Boolean.TRUE.equals(outer.getProperty(Properties.INVISIBLE_TO_OTHERS));
 
     PieceAccess.GlobalAccess.hideAll();
-    final String oldUnitName = oldPiece == null ? null : (String) oldPiece.get(PropertyExporter.LOCALIZED_NAME);
+    final String oldUnitName = oldPiece == null ? null : (String) oldPiece.get(LOCALIZED_NAME);
     format.setProperty(OLD_UNIT_NAME, oldUnitName);
     final String newUnitName = outer.getLocalizedName();
     format.setProperty(NEW_UNIT_NAME, newUnitName);
@@ -347,6 +347,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof ReportState)) return false;
     final ReportState c = (ReportState) o;

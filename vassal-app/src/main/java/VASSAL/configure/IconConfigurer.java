@@ -104,11 +104,20 @@ public class IconConfigurer extends Configurer {
       controls.add(reset, "aligny center, growy 0"); // NON-NLS
       if (defaultImage != null) {
         final JButton useDefault = new JButton(Resources.getString("Editor.default"));
-        useDefault.addActionListener(e -> setValue(defaultImage));
+        useDefault.addActionListener(e -> {
+          setValue(defaultImage);
+          setToolTipText(defaultImage);
+        });
         controls.add(useDefault, "aligny center, growy 0"); // NON-NLS
       }
     }
     return controls;
+  }
+
+  public void setToolTipText(String toolTipText) {
+    if (holdingPanel != null) {
+      holdingPanel.setToolTipText(toolTipText);
+    }
   }
 
   private static final int MAX_ICON_DISPLAY_SIZE = 128;
@@ -135,14 +144,13 @@ public class IconConfigurer extends Configurer {
 
     if (fc.showOpenDialog(getControls()) != FileChooser.APPROVE_OPTION) {
       setValue(null);
+      setToolTipText(null);
+      return;
     }
-    else {
-      final File f = fc.getSelectedFile();
-      if (f != null && f.exists()) {
-        GameModule.getGameModule().getArchiveWriter()
-                                  .addImage(f.getPath(), f.getName());
-        setValue(f.getName());
-      }
-    }
+    final File f = fc.getSelectedFile();
+    GameModule.getGameModule().getArchiveWriter()
+        .addImage(f.getPath(), f.getName());
+    setValue(f.getName());
+    setToolTipText(f.getPath());
   }
 }

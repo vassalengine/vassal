@@ -53,6 +53,7 @@ import VASSAL.counters.PieceVisitorDispatcher;
 import VASSAL.counters.Properties;
 import VASSAL.counters.PropertyExporter;
 import VASSAL.counters.Stack;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.DebugControls;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
@@ -60,6 +61,7 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.swing.SwingUtils;
+
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.ImageIcon;
@@ -441,7 +443,7 @@ public class PieceMover extends AbstractBuildable
     /**
      * Only interested in stacking with another Stack if it has at least one piece
      * and the pieces are on this mat
-     * @param piece Potential target piece on the map.
+     * @param s Potential target piece on the map.
      */
     @Override
     public Object visitStack(Stack s) {
@@ -608,7 +610,6 @@ public class PieceMover extends AbstractBuildable
     };
   }
 
-
   /**
    * Detects when a game is starting, for purposes of managing the mark-unmoved button.
    * @param gameStarting if true, a game is starting.  If false, then a game is ending
@@ -766,7 +767,25 @@ public class PieceMover extends AbstractBuildable
     Command c = new NullCommand();
     c = c.append(setOldLocations(p));
     if (!loc.equals(p.getPosition())) {
-      c = c.append(markMoved(p, true, false));
+      boolean locDefinitelyChanged = false;
+      final Map map = p.getMap();
+      if (map != null) {
+        // Compare location names
+        // Offboard moves are always considered as a changed location.
+        final String previousLocation = map.locationName(p.getPosition());
+        locDefinitelyChanged = (previousLocation == null)
+                || !(previousLocation.equals(map.locationName(loc)))
+                || previousLocation.equals(Resources.getString("Map.offboard"));
+
+        if (!locDefinitelyChanged && GameModule.getGameModule().isMatSupport()) {
+          final String mat = (String) p.getProperty(MatCargo.CURRENT_MAT_ID);
+          final String oldMat = (String) p.getProperty(BasicPiece.OLD_MAT_ID);
+          if (mat != null && !mat.equals(oldMat)) {
+            locDefinitelyChanged = true;
+          }
+        }
+      }
+      c = c.append(markMoved(p, true, locDefinitelyChanged));
     }
     if (p.getParent() != null) {
       final Command removedCommand = p.getParent().pieceRemoved(p);
@@ -793,7 +812,6 @@ public class PieceMover extends AbstractBuildable
     }
     return comm;
   }
-
 
   public Command markMoved(GamePiece p, boolean hasMoved) {
     return markMoved(p, hasMoved, true);
@@ -884,7 +902,7 @@ public class PieceMover extends AbstractBuildable
     // location. There is potentially a piece (stack) for each Game Piece Layer,
     // since stacks are only formed from pieces at the same visual Layer. See
     // LayeredPieceCollection for further details on visual layers.
-    final HashMap<Point, List<GamePiece>> mergeTargets = new HashMap<>();
+    final java.util.Map<Point, List<GamePiece>> mergeTargets = new HashMap<>();
 
     // Split the pieces in the DragBuffer into types
     final List<GamePiece> otherPieces = new ArrayList<>();
@@ -953,7 +971,7 @@ public class PieceMover extends AbstractBuildable
        * a stack, the "stack" item itself will end up being emptied
        * and cleared in the coming merge process.
        */
-      final ArrayList<GamePiece> draggedPieces = new ArrayList<>(0);
+      final List<GamePiece> draggedPieces = new ArrayList<>(0);
       if (dragging instanceof Stack) {
         draggedPieces.addAll(((Stack) dragging).asList());
       }
@@ -1074,7 +1092,7 @@ public class PieceMover extends AbstractBuildable
         // NB. Pieces that have been dragged from a face-down Deck will be be Obscured to us, but will be Obscured
         // by the dummy user Deck.NO_USER
         if (mergeWith instanceof Deck) {
-          final ArrayList<GamePiece> newList = new ArrayList<>(0);
+          final List<GamePiece> newList = new ArrayList<>(0);
           for (final GamePiece piece : draggedPieces) {
             if (((Deck) mergeWith).mayContain(piece) && ((Deck) mergeWith).isAccessible()) {
               final boolean isObscuredToMe = Boolean.TRUE.equals(piece.getProperty(Properties.OBSCURED_TO_ME));
@@ -1225,13 +1243,26 @@ public class PieceMover extends AbstractBuildable
    * @return Command that encapsulates the effects of the key command applied.
    */
   protected Command applyKeyAfterMove(List<GamePiece> pieces, KeyStroke key) {
+
+    final GameModule gm = GameModule.getGameModule();
+    // Multi-piece processing starting
+    gm.initializeUiPieceProcessing(pieces.size());
+
     Command comm = new NullCommand();
     for (final GamePiece piece : pieces) {
+
+      // Record next piece under way.
+      gm.processNextUiPiece();
+
       if (piece.getProperty(Properties.SNAPSHOT) == null) {
         piece.setProperty(Properties.SNAPSHOT, ((PropertyExporter) piece).getProperties());
       }
       comm = comm.append(piece.keyEvent(key));
     }
+
+    // Multi-piece processing finished
+    gm.finalizeUiPieceProcessing();
+
     return comm;
   }
 
@@ -1286,7 +1317,7 @@ public class PieceMover extends AbstractBuildable
     return !e.isConsumed() &&
       !e.isShiftDown() &&
       !SwingUtils.isSelectionToggle(e) &&
-      e.getClickCount() < 2 &&
+      e.getClickCount() == 1 &&                   // Previously also allowed a clickCount of zero here, causing https://github.com/vassalengine/vassal/issues/12480
       (e.getButton() == MouseEvent.NOBUTTON ||
         SwingUtils.isMainMouseButtonDown(e));
   }
@@ -1493,11 +1524,10 @@ public class PieceMover extends AbstractBuildable
      */
     public static DropTarget makeDropTarget(Component theComponent, int dndContants, DropTargetListener dropTargetListener) {
       if (dropTargetListener != null) {
-        DragHandler.getTheDragHandler()
+        getTheDragHandler()
                    .dropTargetListeners.put(theComponent, dropTargetListener);
       }
-      return new DropTarget(theComponent, dndContants,
-                            DragHandler.getTheDragHandler());
+      return new DropTarget(theComponent, dndContants, getTheDragHandler());
     }
 
     /**
@@ -1505,7 +1535,7 @@ public class PieceMover extends AbstractBuildable
      * @param theComponent component to remove
      */
     public static void removeDropTarget(Component theComponent) {
-      DragHandler.getTheDragHandler().dropTargetListeners.remove(theComponent);
+      getTheDragHandler().dropTargetListeners.remove(theComponent);
     }
 
     private static StackMetrics getStackMetrics(GamePiece piece) {
@@ -1639,7 +1669,7 @@ public class PieceMover extends AbstractBuildable
       boundingBox.x *= zoom;
       boundingBox.y *= zoom;
 
-      for (Point p: relativePositions) {
+      for (final Point p: relativePositions) {
         p.x *= zoom;
         p.y *= zoom;
       }
@@ -1671,7 +1701,7 @@ public class PieceMover extends AbstractBuildable
       // boundingBox and relativePositions are constructed in map
       // coordinates in this function
 
-      final ArrayList<Point> relativePositions = new ArrayList<>();
+      final List<Point> relativePositions = new ArrayList<>();
       final PieceIterator dragContents = DragBuffer.getBuffer().getIterator();
       final GamePiece firstPiece = dragContents.nextPiece();
       GamePiece lastPiece = firstPiece;
@@ -1838,8 +1868,9 @@ public class PieceMover extends AbstractBuildable
       for (final PieceIterator i = db.getIterator();  // NOPMD
            i.hasMoreElements(); pieces.add(i.nextPiece()));
       for (final GamePiece piece : pieces) {
-        if (piece.getMap() != null &&
-            Boolean.TRUE.equals(piece.getProperty(Properties.NON_MOVABLE))) {
+        final Object cannotMove = piece.getProperty(Properties.NON_MOVABLE);
+        if (piece.getMap() != null && (Boolean.TRUE.equals(cannotMove) ||
+                                       "true".equals(cannotMove))) {
           db.remove(piece);
         }
       }

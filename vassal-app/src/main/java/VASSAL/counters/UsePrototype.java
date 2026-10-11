@@ -30,17 +30,24 @@ import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.icon.IconFactory;
+import VASSAL.tools.icon.IconFamily;
 import VASSAL.tools.menu.MenuScroller;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Objects;
 
@@ -153,7 +160,7 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
 
           prototype = PieceCloner.getInstance().clonePiece(expandedPrototype);
           final Decorator outer = (Decorator)
-            Decorator.getInnermost(prototype).getProperty(Properties.OUTER);
+            getInnermost(prototype).getProperty(Properties.OUTER);
           if (outer != null) { // Will be null for an empty prototype
             outer.setInner(piece);
             prototype.setProperty(Properties.OUTER, this);
@@ -251,16 +258,22 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
   public static class Editor implements PieceEditor {
     private final TraitConfigPanel controls;
     private final StringConfigurer nameConfig;
+    private final Validator validator = new Validator(this);
 
     public Editor(UsePrototype up) {
-      controls = new TraitConfigPanel();
+      controls = new TraitConfigPanel(new TraitLayout(false, TraitLayout.STANDARD_INSETS + "," +  TraitLayout.STANDARD_GAPY + ",hidemode 3,wrap 4", "[]rel[fill]2[]2[]"));
 
-      nameConfig = new StringConfigurer(up.type.substring(ID.length()));
-      controls.add("Editor.UsePrototype.prototype_name", nameConfig, "split 2");
+      nameConfig = new StringConfigurer(null, "", 32, Resources.getString("Editor.UsePrototype.prototype_name"), up.type.substring(ID.length()));
+      controls.add("Editor.UsePrototype.prototype_name", nameConfig, "growx");
+
+      controls.add(validator);
 
       final JButton selectButton = new JButton(Resources.getString(Resources.SELECT));
       selectButton.addActionListener(e -> select());
       controls.add(selectButton, "growx 0");
+
+      nameConfig.addPropertyChangeListener(e -> validator.validate());
+      validator.validate();
     }
 
     private JMenu subMenu(AbstractFolder target) {
@@ -322,6 +335,86 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
     @Override
     public String getType() {
       return ID + nameConfig.getValueString();
+    }
+
+    private String getValueString() {
+      return nameConfig.getValueString();
+    }
+
+    private static class Validator extends JLabel {
+
+      private static final int INVALID = 0;
+      private static final int VALID = 1;
+      private static final int UNKNOWN = 2;
+
+      private final Icon tick;
+      private final Icon cross;
+      private final ImageIcon none;
+      private boolean validating = false;
+      private boolean dirty = false;
+      private final ValidationThread validationThread = new ValidationThread();
+      private final Editor editor;
+
+      private static final long serialVersionUID = 1L;
+
+      private Validator(Editor editor) {
+        this.editor = editor;
+        cross = IconFactory.getIcon("no", IconFamily.XSMALL);  //NON-NLS
+        tick = IconFactory.getIcon("yes", IconFamily.XSMALL); //NON-NLS
+
+        final BufferedImage image = new BufferedImage(cross.getIconWidth(), cross.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
+        none = new ImageIcon(image);
+
+        setStatus(UNKNOWN);
+      }
+
+      private void setStatus(int status) {
+        if (status == VALID) {
+          setIcon(tick);
+        }
+        else if (status == INVALID) {
+          setIcon(cross);
+        }
+        else {
+          setIcon(none);
+        }
+        repaint();
+      }
+
+      /*
+       *  Run the validation in a separate thread. If the expression is updated
+       *  while validating, then revalidate.
+       */
+      @Override
+      public void validate() {
+        if (validating) {
+          dirty = true;
+        }
+        else {
+          validating = true;
+          setStatus(UNKNOWN);
+          SwingUtilities.invokeLater(validationThread);
+        }
+      }
+
+      private class ValidationThread implements Runnable {
+
+        @Override
+        public void run() {
+          if (editor.getValueString().isEmpty()) {
+            setStatus(UNKNOWN);
+          }
+          else {
+            final PrototypeDefinition p = PrototypesContainer.getPrototype(editor.getValueString());
+            setStatus(p == null ? INVALID : VALID);
+          }
+          validating = false;
+          if (dirty) {
+            dirty = false;
+            validate();
+          }
+        }
+      }
     }
   }
 

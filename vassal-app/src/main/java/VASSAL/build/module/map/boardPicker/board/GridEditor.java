@@ -35,7 +35,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -102,7 +101,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
   }
 
   protected void initComponents() {
-    setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+    setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent we) {
@@ -527,20 +526,27 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
    */
   public interface EditableGrid {
     double getDx();
+
     double getDy();
+
     Point getOrigin();
 
     void setDx(double dx);
+
     void setDy(double dy);
+
     void setOrigin(Point p);
 
     boolean isSideways();
+
     void setSideways(boolean sideways);
 
     GridContainer getContainer();
+
     GridNumbering getGridNumbering();
 
     boolean isVisible();
+
     void setVisible(boolean b);
 
     String getGridName();

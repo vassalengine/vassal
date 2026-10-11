@@ -86,7 +86,7 @@ public class BoxWidget extends Widget
 
   @Override
   public void propertyChange(java.beans.PropertyChangeEvent evt) {
-    if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())
+    if (NAME_PROPERTY.equals(evt.getPropertyName())
         && box != null) {
       box.revalidate();
     }

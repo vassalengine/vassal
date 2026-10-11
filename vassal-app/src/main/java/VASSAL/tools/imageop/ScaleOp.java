@@ -30,5 +30,6 @@ public interface ScaleOp extends ImageOp {
 
   double getScale();
 
+  @SuppressWarnings("PMD.LooseCoupling")
   RenderingHints getHints();
 }

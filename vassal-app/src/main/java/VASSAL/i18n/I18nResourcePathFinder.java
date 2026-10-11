@@ -30,7 +30,7 @@ public class I18nResourcePathFinder implements ResourcePathFinder {
   private SortedSet<String> images = null;
   private final DataArchive archive;
   private String language = "en";
-  
+
   public I18nResourcePathFinder(DataArchive d, String l) {
     archive = d;
     language = l;

@@ -32,9 +32,6 @@ import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.URLUtils;
 import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import java.awt.Dialog;
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -43,6 +40,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.List;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 
 /**
  * Places an entry in the <code>Help</code> menu.  Selecting the entry

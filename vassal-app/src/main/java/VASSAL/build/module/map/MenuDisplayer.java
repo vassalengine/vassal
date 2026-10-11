@@ -18,7 +18,6 @@
 package VASSAL.build.module.map;
 
 import VASSAL.build.Buildable;
-import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.counters.ActionButton;
 import VASSAL.counters.Deck;
@@ -27,11 +26,12 @@ import VASSAL.counters.GamePiece;
 import VASSAL.counters.KeyBuffer;
 import VASSAL.counters.KeyCommand;
 import VASSAL.counters.KeyCommandSubMenu;
-import VASSAL.counters.MultiLocationCommand;
 import VASSAL.counters.MenuSeparator;
+import VASSAL.counters.MultiLocationCommand;
 import VASSAL.counters.PieceFinder;
 import VASSAL.counters.Properties;
 import VASSAL.tools.NamedKeyManager;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -71,7 +71,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
    * Return a {@link PieceFinder} instance that will select a
    * {@link GamePiece} whose menu will be displayed when the
    * user clicks on the map
-   * @return
+   * @return Position of Piece or null (not found)
    */
   protected PieceFinder createTargetSelector() {
     return new PieceFinder.PieceInStack() {
@@ -115,9 +115,6 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
     if (!NamedKeyManager.isNamed(keyCommand.getKeyStroke())) { // If the KeyStroke is named, then there is no accelerator
       item.setAccelerator(keyCommand.getKeyStroke());
     }
-    // Action Listeners are triggered in the reverse order they are added. We want the action to be performed first,
-    // then do a refresh so any labels remote from the source counter are updated
-    item.addActionListener(e -> GameModule.getGameModule().refreshVisibleMaps());
     item.addActionListener(keyCommand);
 
     item.setEnabled(keyCommand.isEnabled());
@@ -131,22 +128,22 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
 
   /**
    *
-   * @param target
+   * @param target Piece for which Menu is to be displayed
    * @param global If true, then apply the KeyCommands globally,
    * i.e. to all selected pieces
-   * @return
+   * @return Menu
    */
   public static JPopupMenu createPopup(GamePiece target, boolean global) {
     final JPopupMenu popup = new JPopupMenu();
     final KeyCommand[] c = (KeyCommand[]) target.getProperty(Properties.KEY_COMMANDS);
     if (c != null) {
-      final ArrayList<JMenuItem> commands = new ArrayList<>();
-      final ArrayList<KeyStroke> strokes = new ArrayList<>();
+      final List<JMenuItem> commands = new ArrayList<>();
+      final List<KeyStroke> strokes = new ArrayList<>();
 
       // Maps instances of KeyCommandSubMenu to corresponding JMenu
-      final HashMap<KeyCommandSubMenu, JMenu> subMenus = new HashMap<>();
+      final java.util.Map<KeyCommandSubMenu, JMenu> subMenus = new HashMap<>();
       // Maps name to a list of commands with that name
-      final HashMap<String, ArrayList<JMenuItem>> commandNames = new HashMap<>();
+      final java.util.Map<String, List<JMenuItem>> commandNames = new HashMap<>();
 
       // If a deck has only one menu item, and it's one of the ones that just fires off a choose-from-here dialog, then skip directly to the dialog
       if (target instanceof Deck) {
@@ -176,7 +173,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
             final Action action = command.getAction();
             if (action != null) {
               final String commandName =
-                (String) command.getAction().getValue(Action.NAME);
+                      (String) command.getAction().getValue(Action.NAME);
               if (commandName == null ||
                       commandName.length() < keyCommand.getName().length()) {
                 item = makeMenuItem(keyCommand);
@@ -191,22 +188,22 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
           }
         }
         if (keyCommand.getName() != null &&
-            keyCommand.getName().length() > 0 &&
-            item != null) {
-          final ArrayList<JMenuItem> l = commandNames.computeIfAbsent(keyCommand.getName(), k -> new ArrayList<>());
+                !keyCommand.getName().isEmpty() &&
+                item != null) {
+          final List<JMenuItem> l = commandNames.computeIfAbsent(keyCommand.getName(), k -> new ArrayList<>());
           l.add(item);
         }
       }
 
-      // Move commands from main menu into submenus
+// Move commands from main menu into submenus
       for (final java.util.Map.Entry<KeyCommandSubMenu, JMenu> e :
-                                                        subMenus.entrySet()) {
+              subMenus.entrySet()) {
         final KeyCommandSubMenu menuCommand = e.getKey();
         final JMenu subMenu = e.getValue();
 
         for (final Iterator<String> it2 = menuCommand.getCommands(); it2.hasNext();) {
-          final ArrayList<JMenuItem> matchingCommands =
-            commandNames.get(it2.next());
+          final List<JMenuItem> matchingCommands =
+                  commandNames.get(it2.next());
           if (matchingCommands != null) {
             for (final JMenuItem item : matchingCommands) {
               subMenu.add(item);
@@ -214,24 +211,20 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
             }
           }
         }
-      }
 
-      // Promote contents of a single submenu [Removed as per Bug 4775]
-      // if (commands.size() == 1) {
-      //   if (commands.get(0) instanceof JMenu) {
-      //     JMenu submenu = (JMenu) commands.get(0);
-      //     commands.remove(submenu);
-      //     for (int i = 0; i < submenu.getItemCount(); i++) {
-      //       commands.add(submenu.getItem(i));
-      //     }
-      //   }
-      // }
+        // After populating the submenu, check if it's empty (any and all items hidden)
+        // Allow disabled items because this may be conveying intentional information.
+        if (subMenu.getItemCount() == 0) {
+          subMenu.setEnabled(false);
+          subMenu.setVisible(true); // Without this, the disabled item is not visible
+        }
+      }
 
       for (final JMenuItem item : commands) {
         final String text = item.getText();
         if (MenuSeparator.SEPARATOR_NAME.equals(text)) {
           popup.addSeparator();
-        } 
+        }
         else if (text != null && !text.isBlank()) {
           popup.add(item);
         }
@@ -271,6 +264,12 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
       }
       if (map.getKeyBufferer().isLasso()) { // If we dragged a selection box
         return;
+      }
+
+      // FIXME: workaround for https://github.com/vassalengine/vassal/issues/12033
+      // Undo sometimes corrupts a pieces Map.
+      if (!map.equals(p.getMap())) {
+        p.setMap(map);
       }
 
       final Point epos = e.getPoint();

@@ -1872,6 +1872,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       popMouseListener();
     }
   }
+
   /**
    * @param e MouseEvent
    */
@@ -1885,7 +1886,6 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   @Override
   public void mouseExited(MouseEvent e) {
   }
-
 
   /**
    * Because MouseEvents are received in Component coordinates, it is
@@ -1966,7 +1966,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       boolean dirty = false;
 
       final KeyBuffer kbuf = KeyBuffer.getBuffer();
-      final ArrayList<GamePiece> l = new ArrayList<>(kbuf.asList());
+      final List<GamePiece> l = new ArrayList<>(kbuf.asList());
 
       for (final GamePiece p : l) {
         if (p.getMap() == activeMap) {
@@ -2573,8 +2573,10 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   public Point positionOf(GamePiece p) {
     if (p.getMap() != this) {
-      throw new IllegalArgumentException(
-        Resources.getString("Map.piece_not_on_map")); //$NON-NLS-1$
+      final String pieceMapName = p.getMap() != null ? p.getMap().mapName : "null"; //$NON-NLS-1$
+      final String message = Resources.getString("Map.piece_not_on_map") //$NON-NLS-1$
+        + String.format(": %s. Piece '%s' is on %s.", this.mapName, p.getName(), pieceMapName); //$NON-NLS-1$
+      throw new IllegalArgumentException(message);
     }
 
     final Point point = p.getPosition();
@@ -3211,6 +3213,16 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @see StackMetrics#merge
    */
   public Command placeOrMerge(final GamePiece p, final Point pt) {
+    // Make a list of all pieces being merged, the Dispatch/Visit process may move pieces out of
+    // this stack if Layers have changed
+    final List<GamePiece> pieces = new ArrayList<>();
+    if (p instanceof Stack) {
+      pieces.addAll(((Stack) p).asList());
+    }
+    else {
+      pieces.add(p);
+    }
+
     Command c = apply(new DeckVisitorDispatcher(new Merger(this, pt, p)));
     if (c == null || c.isNull()) {
       c = placeAt(p, pt);
@@ -3224,6 +3236,10 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
         }
       }
     }
+
+    // Make sure all pieces get re-indexed
+    pieces.forEach(piece -> GameModule.getGameModule().getIndexManager().pieceMoved(piece, this));
+
     return c;
   }
 

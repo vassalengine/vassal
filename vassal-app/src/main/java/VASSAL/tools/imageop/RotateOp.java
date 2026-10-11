@@ -30,5 +30,6 @@ public interface RotateOp extends ImageOp {
 
   double getAngle();
 
+  @SuppressWarnings("PMD.LooseCoupling")
   RenderingHints getHints();
 }

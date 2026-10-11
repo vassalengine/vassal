@@ -104,7 +104,7 @@ public class ExtensionElement implements Buildable, ImageSearchTarget {
 
   @Override
   public SortedSet<String> getAllImageNames() {
-    final TreeSet<String> s = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    final SortedSet<String> s = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     if (extension instanceof ImageSearchTarget) {
       ((ImageSearchTarget) extension).addImageNamesRecursively(s);
     }
@@ -120,7 +120,7 @@ public class ExtensionElement implements Buildable, ImageSearchTarget {
 
   @Override
   public SortedSet<String> getLocalImageNames() {
-    final TreeSet<String> s = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    final SortedSet<String> s = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     if (extension instanceof ImageSearchTarget) {
       ((ImageSearchTarget) extension).addLocalImageNames(s);
     }

@@ -26,6 +26,7 @@ import VASSAL.tools.SequenceEncoder;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.JPanel;
 
@@ -134,7 +135,7 @@ public class PieceAccessConfigurer extends Configurer {
     else if (s != null && s.startsWith(SIDES)) {
       final SequenceEncoder.Decoder sd =
         new SequenceEncoder.Decoder(s.substring(SIDES.length()), ':');
-      final ArrayList<String> l = new ArrayList<>();
+      final List<String> l = new ArrayList<>();
       while (sd.hasMoreTokens()) {
         l.add(sd.nextToken());
       }

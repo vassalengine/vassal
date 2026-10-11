@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -38,13 +38,13 @@ package bsh;
 	EvalError indicates that we cannot continue evaluating the script
 	or the script has thrown an exception.
 
-	EvalError may be thrown for a script syntax error, an evaluation 
+	EvalError may be thrown for a script syntax error, an evaluation
 	error such as referring to an undefined variable, an internal error.
 	<p>
 	
 	@see TargetError
 */
-public class EvalError extends Exception 
+public class EvalError extends Exception
 {
 	private SimpleNode node;
 
@@ -68,11 +68,11 @@ public class EvalError extends Exception
 	/**
 		Print the error with line number and stack trace.
 	*/
-	public String getMessage() 
+	public String getMessage()
 	{
 		String trace;
 		if ( node != null )
-			trace = " : at Line: "+ node.getLineNumber() 
+			trace = " : at Line: "+ node.getLineNumber()
 				+ " : in file: "+ node.getSourceFile()
 				+ " : "+node.getText();
 		else
@@ -88,15 +88,15 @@ public class EvalError extends Exception
 	/**
 		Re-throw the error, prepending the specified message.
 	*/
-	public void reThrow( String msg ) 
-		throws EvalError 
+	public void reThrow( String msg )
+		throws EvalError
 	{
 		prependMessage( msg );
 		throw this;
 	}
 
 	/**
-		The error has trace info associated with it. 
+		The error has trace info associated with it.
 		i.e. It has an AST node that can print its location and source text.
 	*/
 	SimpleNode getNode() {
@@ -107,14 +107,14 @@ public class EvalError extends Exception
 		this.node = node;
 	}
 
-	public String getErrorText() { 
+	public String getErrorText() {
 		if ( node != null )
 			return node.getText() ;
 		else
 			return "<unknown error>";
 	}
 
-	public int getErrorLineNumber() { 
+	public int getErrorLineNumber() {
 		if ( node != null )
 			return node.getLineNumber() ;
 		else
@@ -128,14 +128,14 @@ public class EvalError extends Exception
 			return "<unknown file>";
 	}
 
-	public String getScriptStackTrace() 
+	public String getScriptStackTrace()
 	{
 		if ( callstack == null )
 			return "<Unknown>";
 
 		String trace = "";
 		CallStack stack = callstack.copy();
-		while ( stack.depth() > 0 ) 
+		while ( stack.depth() > 0 )
 		{
 			NameSpace ns = stack.pop();
 			SimpleNode node = ns.getNode();
@@ -143,7 +143,7 @@ public class EvalError extends Exception
 			{
 				trace = trace + "\nCalled from method: " + ns.getName();
 				if ( node != null )
-					trace += " : at Line: "+ node.getLineNumber() 
+					trace += " : at Line: "+ node.getLineNumber()
 						+ " : in file: "+ node.getSourceFile()
 						+ " : "+node.getText();
 			}
@@ -157,8 +157,8 @@ public class EvalError extends Exception
 	/**
 		Prepend the message if it is non-null.
 	*/
-	private void prependMessage( String s ) 
-	{ 
+	private void prependMessage( String s )
+	{
 		if ( s == null )
 			return;
 

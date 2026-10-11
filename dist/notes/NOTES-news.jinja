@@ -11,7 +11,7 @@
 ## Download
 
 {% for item in downloads -%}
-[url=https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-{{item.suffix}}]{{item.display_name}}[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/{{version}}/{{ item.prefix | default('VASSAL-') }}{{version}}-{{item.suffix}}]{{item.display_name}}[/url]
 {% endfor %}
 
 {% for v in changes -%}
@@ -33,22 +33,32 @@
 {% endfor %}
 {% endif -%}
 
-{% if v['other_improvements'] -%}
-### Other improvements
+{% if v['improvements'] -%}
+### Improvements
 
-{% for item in v['other_improvements'] -%}
+{% for item in v['improvements'] -%}
+* {{ item.num }}: {{ item.desc }}
+{% endfor %}
+{% endif -%}
+
+{% if v['other'] -%}
+### Other changes
+
+{% for item in v['other'] -%}
 * {{ item.num }}: {{ item.desc }}
 {% endfor %}
 {% endif -%}
 {% endfor -%}
 
-See the [Release Notes](https://vassalengine.org/wiki/VASSAL_{{version_feature}}_Release_Notes) for descriptions of the changes in {{version_feature}}.
+See the [Release Notes]({{release_notes_url}}) for descriptions of the changes in {{version_feature}}.
 
 ## Minimum Requirements
 
-VASSAL {{version_feature}} requires Java 11 or later.
+VASSAL {{version_feature}} requires Java 17 or later.
 
-The Windows and MacOS packages have an appropriate version of Java bundled with them, so there is no need to install Java separately on those operating systems. On Linux, use your package manager to install Java 11 or later.
+The Windows and MacOS packages have an appropriate version of Java bundled with them, so there is no need to install Java separately on those operating systems. On Linux, use your package manager to install Java 17 or later.
+
+If you are using MacOS 14, please ensure you are using 14.4 or later, to avoid a bug in MacOS which prevents Vassal from starting.
 
 ## Help us test
 

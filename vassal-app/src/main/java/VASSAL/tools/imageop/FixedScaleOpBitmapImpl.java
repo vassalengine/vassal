@@ -39,6 +39,7 @@ import VASSAL.tools.image.ImageUtils;
 public class FixedScaleOpBitmapImpl extends AbstractTiledOpImpl
                                     implements ScaleOp {
   protected final ImageOp sop;
+  @SuppressWarnings("PMD.LooseCoupling")
   protected final RenderingHints hints;
   protected final double scale;
   protected final int hash;
@@ -47,6 +48,7 @@ public class FixedScaleOpBitmapImpl extends AbstractTiledOpImpl
   // used in our equals() and RenderingHints.equals() is ridiculously slow
   // if a full comparison is made. This way hints == defaultHints, usually,
   // and so a quick equality comparison succeeds.
+  @SuppressWarnings("PMD.LooseCoupling")
   protected static final RenderingHints defaultHints =
     ImageUtils.getDefaultHints();
 
@@ -69,6 +71,7 @@ public class FixedScaleOpBitmapImpl extends AbstractTiledOpImpl
    * @param scale the scale factor
    * @param hints rendering hints
    */
+  @SuppressWarnings("PMD.LooseCoupling")
   public FixedScaleOpBitmapImpl(ImageOp sop, double scale, int width, int height, RenderingHints hints) {
     if (sop == null)
       throw new IllegalArgumentException("Attempt to scale null image");
@@ -118,7 +121,7 @@ public class FixedScaleOpBitmapImpl extends AbstractTiledOpImpl
     private final ImageOp sop;
     private final Rectangle dr;
     private final int dx0, dy0, dw, dh;
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "PMD.LooseCoupling"})
     private final RenderingHints hints;
     private final int hash;
 

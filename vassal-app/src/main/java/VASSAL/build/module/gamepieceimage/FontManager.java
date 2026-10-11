@@ -19,7 +19,6 @@ package VASSAL.build.module.gamepieceimage;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
-import VASSAL.build.Configurable;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.i18n.Resources;
@@ -28,6 +27,7 @@ import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.w3c.dom.Element;
@@ -127,7 +127,7 @@ public class FontManager extends AbstractConfigurable {
       final FontStyle def = (FontStyle) b;
       fontStyles.put(def.getConfigureName(), def);
       def.addPropertyChangeListener(evt -> {
-        if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
+        if (NAME_PROPERTY.equals(evt.getPropertyName())) {
           fontStyles.remove(evt.getOldValue());
           fontStyles.put((String) evt.getNewValue(),
                          (FontStyle) evt.getSource());
@@ -154,7 +154,7 @@ public class FontManager extends AbstractConfigurable {
   }
 
   public String[] getFontNames() {
-    final ArrayList<String> names = new ArrayList<>(fontStyles.size());
+    final List<String> names = new ArrayList<>(fontStyles.size());
     for (final FontStyle fs : fontStyles.values()) {
       names.add(fs.getConfigureName());
     }

@@ -52,14 +52,17 @@ public class CounterTurnLevel extends TurnLevel {
   @Override
   protected void setLow() {
     current = start;
+    rolledOver = false;
     super.setLow();
   }
 
   @Override
   protected void setHigh() {
     current = loopLimit;
+    rolledOver = false;
     super.setHigh();
   }
+
   /*
    * Generate the state of the level
    */

@@ -54,7 +54,7 @@ public class MetaDataFactory {
   public static AbstractMetaData buildMetaData(File file) {
 
     // Check the file exists and is a file
-    if (file == null || !file.exists() || !file.isFile())
+    if (file == null || !file.isFile())
       return null;
 
     try (ZipFile zip = new ZipFile(file)) {

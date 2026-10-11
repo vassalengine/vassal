@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.StringTokenizer;
@@ -82,7 +83,7 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
 
   @Override
   public Message[] getMessages() {
-    final ArrayList<Message> msgList = new ArrayList<>();
+    final List<Message> msgList = new ArrayList<>();
     try {
       for (final String msg : getMessagesURL.doGet(prepareInfo())) {
         try {

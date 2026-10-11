@@ -161,7 +161,7 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.html", "StartupGlobalKeyCommand"); //NON-NLS
+    return HelpFile.getReferenceManualPage("GlobalKeyCommands.html", "startup"); //NON-NLS
   }
 
   @SuppressWarnings("removal")
@@ -411,7 +411,7 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
    */
   private static class UpdateStartupGlobalKeyCommand extends Command {
     private final boolean appliedThisGame;
-    StartupGlobalKeyCommand sgkc;
+    final StartupGlobalKeyCommand sgkc;
 
     public UpdateStartupGlobalKeyCommand(StartupGlobalKeyCommand sgkc, boolean appliedThisGame) {
       this.sgkc = sgkc;

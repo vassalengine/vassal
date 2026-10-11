@@ -67,7 +67,7 @@ public class FirstTimeDialog extends JDialog {
   public FirstTimeDialog(Frame parent) {
     super(parent, true);
 
-    setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+    setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent e) {

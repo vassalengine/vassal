@@ -127,7 +127,7 @@ public class Documentation extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
+    File dir = getDocumentationBaseDir();
     dir = new File(dir, "ReferenceManual"); //$NON-NLS-1$
     try {
       return new HelpFile(null, new File(dir, "HelpMenu.html")); //$NON-NLS-1$

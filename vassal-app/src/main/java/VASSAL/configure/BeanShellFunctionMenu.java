@@ -86,7 +86,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
   protected BeanShellExpressionConfigurer configurer;
   protected EditablePiece target;
 
-  enum PropertyType { PIECE, GLOBAL, VASSAL, ALL };
+  enum PropertyType { PIECE, GLOBAL, VASSAL, ALL }
 
   public BeanShellFunctionMenu(EditablePiece target, BeanShellExpressionConfigurer configurer) {
     super();
@@ -316,10 +316,10 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     final JMenu rangedMenu = new JMenu(Resources.getString("Editor.BeanShell.ranged"));
     if (isPieceContext()) {
       addFunction(rangedMenu, "SumRange", Resources.getString("Editor.BeanShell.ranged1"), new String[]{ Resources.getString("Editor.BeanShell.minimum_range"), Resources.getString("Editor.BeanShell.maximum_range"), Resources.getString("Editor.BeanShell.property_name") }, "(min, max, prop)", NAME_HINTS);
-      addFunction(rangedMenu, "SumRange", Resources.getString("Editor.BeanShell.ranged2"), new String[]{ Resources.getString("Editor.BeanShell.minimum_range"), Resources.getString("Editor.BeanShell.maximum_range", Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression"))}, "(min, max, prop, expr)", NAME_PME_HINTS, new Option[]{Option.NONE, Option.NONE, Option.NONE, Option.PME});
+      addFunction(rangedMenu, "SumRange", Resources.getString("Editor.BeanShell.ranged2"), new String[]{ Resources.getString("Editor.BeanShell.minimum_range"), Resources.getString("Editor.BeanShell.maximum_range"), Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression")}, "(min, max, prop, expr)", NAME_PME_HINTS, new Option[]{Option.NONE, Option.NONE, Option.NONE, Option.PME});
       addSeparator(rangedMenu);
       addFunction(rangedMenu, "SumRangePx", Resources.getString("Editor.BeanShell.ranged1p"), new String[]{Resources.getString("Editor.BeanShell.minimum_range"), Resources.getString("Editor.BeanShell.maximum_range"), Resources.getString("Editor.BeanShell.property_name") }, "(min, max, prop)", NAME_HINTS);
-      addFunction(rangedMenu, "SumRangePx", Resources.getString("Editor.BeanShell.ranged2p"), new String[]{ Resources.getString("Editor.BeanShell.minimum_range"), Resources.getString("Editor.BeanShell.maximum_range", Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression"))}, "(min, max, prop, expr)", NAME_PME_HINTS, new Option[]{Option.NONE, Option.NONE, Option.NONE, Option.PME});
+      addFunction(rangedMenu, "SumRangePx", Resources.getString("Editor.BeanShell.ranged2p"), new String[]{ Resources.getString("Editor.BeanShell.minimum_range"), Resources.getString("Editor.BeanShell.maximum_range"), Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression")}, "(min, max, prop, expr)", NAME_PME_HINTS, new Option[]{Option.NONE, Option.NONE, Option.NONE, Option.PME});
       addSeparator(rangedMenu);
       addFunction(rangedMenu, "CountRange", Resources.getString("Editor.BeanShell.ranged3"), new String[]{ Resources.getString("Editor.BeanShell.minimum_range"), Resources.getString("Editor.BeanShell.maximum_range")}, "(min, max)");
       addFunction(rangedMenu, "CountRange", Resources.getString("Editor.BeanShell.ranged4"), new String[]{ Resources.getString("Editor.BeanShell.minimum_range"), Resources.getString("Editor.BeanShell.maximum_range"), Resources.getString("Editor.BeanShell.property_name")}, "(min, max, prop)", NAME_HINTS);
@@ -558,6 +558,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
 
     return propName;
   }
+
   /**
    * Added the property names from an Editable Piece into their
    * own menu
@@ -712,7 +713,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
    * a) An EditablePiece has been supplied as the target
    * OR
    * b) The calling BeanShellExpressionConfigurer is for a Property Match Expression (since PME get executed on Pieces)
-   * 
+   *
    * @return true if we show piece specific functions
    */
   protected boolean isPieceContext() {

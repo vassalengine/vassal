@@ -121,7 +121,7 @@ public class LaunchRequest implements Serializable {
    * @return an array which would be parsed to this <code>LaunchRequest</code>
    */
   public String[] toArgs() {
-    final ArrayList<String> args = new ArrayList<>();
+    final List<String> args = new ArrayList<>();
 
     args.add("--" + mode);
 

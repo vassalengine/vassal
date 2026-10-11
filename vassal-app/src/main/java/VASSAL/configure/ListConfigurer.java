@@ -88,7 +88,7 @@ public abstract class ListConfigurer extends Configurer implements PropertyChang
 
   protected void updateValue() {
     noUpdate = true;
-    final ArrayList<Object> newArray = new ArrayList<>();
+    final List<Object> newArray = new ArrayList<>();
     for (final Configurer c : configurers) {
       newArray.add(c.getValue());
     }

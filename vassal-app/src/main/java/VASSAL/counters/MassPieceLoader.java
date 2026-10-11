@@ -508,7 +508,7 @@ public class MassPieceLoader {
       public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         final JLabel renderedLabel = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         final BasicNode node = (BasicNode) tree.getPathForRow(row).getLastPathComponent();
-        renderedLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        renderedLabel.setHorizontalAlignment(CENTER);
         renderedLabel.setEnabled(!node.isSkip());
         renderedLabel.setForeground(EDITABLE_COLOR);
         return renderedLabel;
@@ -615,7 +615,7 @@ public class MassPieceLoader {
 
       // Build the piece from the template
       GamePiece template = definer.getPiece();
-      final ArrayList<Decorator> traits = new ArrayList<>();
+      final List<Decorator> traits = new ArrayList<>();
 
       // Reverse the order of the traits to innermost out
       while (template instanceof Decorator) {
@@ -1178,7 +1178,7 @@ public class MassPieceLoader {
    *
    */
   private static class LevelNode extends BasicNode {
-    int levelNumber;
+    final int levelNumber;
 
     public LevelNode(String name, String imageName, int level) {
       super(name, imageName);
@@ -1350,8 +1350,8 @@ public class MassPieceLoader {
             newLength++;
           }
         }
-        String[] imageNameTmp = new String[newLength];
-        String[] commonNameTmp = new String[newLength];
+        final String[] imageNameTmp = new String[newLength];
+        final String[] commonNameTmp = new String[newLength];
         for (int i = 0; i < imageName.length; i++) {
           if (imageName[i] != null) {
             imageNameTmp[j] = imageName[i];
@@ -1407,7 +1407,7 @@ public class MassPieceLoader {
     @Override
     public List<String> getImageNameList() {
       final int size = imageListElements.size();
-      final ArrayList<String> names = new ArrayList<>(size);
+      final List<String> names = new ArrayList<>(size);
       for (int i = 0; i < size; ++i) {
         names.add((multiPanel.getComponent(i).toString()));
       }

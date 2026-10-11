@@ -162,7 +162,7 @@ public class TranslatableMessage extends Decorator implements TranslatablePiece 
 
   @Override
   public PieceEditor getEditor() {
-    return new VASSAL.counters.TranslatableMessage.Ed(this);
+    return new Ed(this);
   }
 
   /**
@@ -173,9 +173,8 @@ public class TranslatableMessage extends Decorator implements TranslatablePiece 
     return List.of(key);
   }
 
-
-
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof TranslatableMessage)) return false;
     final TranslatableMessage c = (TranslatableMessage) o;
@@ -219,7 +218,7 @@ public class TranslatableMessage extends Decorator implements TranslatablePiece 
       se.append(propName.getValueString());
       se.append(propDesc.getValueString());
       se.append(propValue.getValueString());
-      return VASSAL.counters.TranslatableMessage.ID + se.getValue();
+      return ID + se.getValue();
     }
   }
 

@@ -52,7 +52,7 @@ import org.netbeans.spi.wizard.WizardObserver;
  * and <code>org.netbeans.spi.wizard</code></font></i></b>.
  *
  * @author Tim Boudreau
- * 
+ *
  * Don't scale the background image
  * @author Rodney Kinney
  */
@@ -69,21 +69,21 @@ public class InstructionsPanel extends JComponent implements WizardObserver, Acc
             setFont (f);
         }
     }
-    
+
     public void addNotify() {
         super.addNotify();
         wizard.addWizardObserver (this);
     }
-    
+
     public void removeNotify() {
         wizard.removeWizardObserver (this);
         super.removeNotify();
     }
-    
+
     BufferedImage getImage() { //for unit test
         return img;
     }
-    
+
     public InstructionsPanel(BufferedImage img, Wizard wizard) {
         if (img == null) {
             //In the event of classloader issues, also have a way to get
@@ -91,7 +91,7 @@ public class InstructionsPanel extends JComponent implements WizardObserver, Acc
             //apps
             img = (BufferedImage) UIManager.get ("wizard.sidebar.image"); //NOI18N
         }
-        
+
         String imgStr = System.getProperty("wizard.sidebar.image"); //NOI18N
         //image has not been loaded and user wishes to supply their own image
         if (img == null && imgStr != null) {
@@ -126,11 +126,11 @@ public class InstructionsPanel extends JComponent implements WizardObserver, Acc
         this.wizard = wizard;
     }
 
-    
+
     public boolean isOpaque() {
         return img != null;
     }
-    
+
     String[] steps = new String[0];
     public void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
@@ -164,20 +164,20 @@ public class InstructionsPanel extends JComponent implements WizardObserver, Acc
         int y = fm.getMaxAscent() + ins.top + MARGIN;
         int x = ins.left + MARGIN;
         int h = fm.getMaxAscent() + fm.getMaxDescent() + 3;
-        
+
         Font boldFont = f.deriveFont (Font.BOLD);
-        
+
         g.setFont (boldFont);
         g.drawString (NbBridge.getString ("org/netbeans/modules/wizard/Bundle", //NOI18N
                 InstructionsPanel.class, "Steps"), x, y); //NOI18N
-        
+
         int underlineY = ins.top + MARGIN + fm.getAscent() + 3;
-        g.drawLine (x, underlineY, x + (getWidth() - (x + ins.left + MARGIN)), 
+        g.drawLine (x, underlineY, x + (getWidth() - (x + ins.left + MARGIN)),
                 underlineY);
-        
+
         y += h + 10;
         g.setFont (getFont());
-        
+
         g.setColor (getForeground());
         for (int i=0; i < steps.length; i++) {
             boolean isUndetermined = Wizard.UNDETERMINED_STEP.equals(steps[i]);
@@ -196,20 +196,20 @@ public class InstructionsPanel extends JComponent implements WizardObserver, Acc
                     wizard.getStepDescription(steps[i])); //NOI18N
             }
             if (curr != null) {
-                boolean selected = (steps[i].equals (currentStep) && !inSummaryPage) || 
+                boolean selected = (steps[i].equals (currentStep) && !inSummaryPage) ||
                         (inSummaryPage && i == steps.length - 1);
                 if (selected) {
                     g.setFont (boldFont);
                 }
-                
+
                 int width = fm.stringWidth(curr);
                 while (width > getWidth() - (ins.left + ins.right) && curr.length() > 5) {
-                    curr = curr.substring(0, curr.length() - 5) + 
+                    curr = curr.substring(0, curr.length() - 5) +
                             NbBridge.getString(
                                 "org/netbeans/modules/wizard/Bundle", //NOI18N
                                 InstructionsPanel.class, "elipsis"); //NOI18N
                 }
-                
+
                 g.drawString (curr, x, y);
                 if (selected) {
                     g.setFont (f);
@@ -218,13 +218,13 @@ public class InstructionsPanel extends JComponent implements WizardObserver, Acc
             }
         }
     }
-    
+
     private int historicWidth = Integer.MIN_VALUE;
     private Dimension minSize = new Dimension();
     public Dimension getPreferredSize() {
-        Font f = getFont() != null ? getFont() : 
+        Font f = getFont() != null ? getFont() :
             UIManager.getFont("controlFont"); //NOI18N
-        
+
         Graphics g = getGraphics();
         if (g == null) {
             g = new BufferedImage (1, 1, BufferedImage.TYPE_INT_ARGB).getGraphics();
@@ -233,7 +233,7 @@ public class InstructionsPanel extends JComponent implements WizardObserver, Acc
         FontMetrics fm = g.getFontMetrics(f);
         Insets ins = getInsets();
         int h = fm.getHeight();
-        
+
         String[] steps = wizard.getAllSteps();
         int w = Integer.MIN_VALUE;
         for (int i=0; i < steps.length; i++) {
@@ -261,22 +261,22 @@ public class InstructionsPanel extends JComponent implements WizardObserver, Acc
         historicWidth = w;
         return new Dimension (w,  h);
     }
-    
+
     private boolean inSummaryPage;
     public void setInSummaryPage (boolean val) {
         this.inSummaryPage = val;
         repaint();
     }
-    
+
     public Dimension getMinimumSize() {
         getPreferredSize();
         return minSize;
     }
-    
+
     public void stepsChanged(Wizard wizard) {
         repaint();
     }
-    
+
     public void navigabilityChanged (Wizard wizard) {
         //do nothing
     }
@@ -284,7 +284,7 @@ public class InstructionsPanel extends JComponent implements WizardObserver, Acc
     public void selectionChanged(Wizard wizard) {
         repaint();
     }
-    
+
     public void doLayout() {
         Component[] c = getComponents();
         Insets ins = getInsets();
@@ -298,11 +298,11 @@ public class InstructionsPanel extends JComponent implements WizardObserver, Acc
             y -= d.height;
         }
     }
-    
+
     public AccessibleContext getAccessibleContext() {
         return new ACI (this);
     }
-    
+
     private static class ACI extends AccessibleContext {
         private final Wizard wizard;
         private final InstructionsPanel panel;
@@ -319,7 +319,7 @@ public class InstructionsPanel extends JComponent implements WizardObserver, Acc
                     "org/netbeans/modules/wizard/Bundle", //NOI18N
                     InstructionsPanel.class, "ACSD_InstructionsPanel")); //NOI18N
         }
-        
+
         JEditorPane pane;
         public AccessibleText getAccessibleText() {
             if (pane == null) {
@@ -339,7 +339,7 @@ public class InstructionsPanel extends JComponent implements WizardObserver, Acc
             pane.validate();
             return pane.getAccessibleContext().getAccessibleText();
         }
-        
+
         public String getText() {
             StringBuffer sb = new StringBuffer();
             String[] s = wizard.getAllSteps();
@@ -349,7 +349,7 @@ public class InstructionsPanel extends JComponent implements WizardObserver, Acc
             }
             return sb.toString();
         }
-        
+
         public AccessibleRole getAccessibleRole() {
             return AccessibleRole.LIST;
         }

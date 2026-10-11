@@ -62,8 +62,8 @@ public class ZipArchive implements FileArchive {
   private boolean closed = true;
 
   private static class Entry {
-    public ZipEntry ze;
-    public File file;
+    public final ZipEntry ze;
+    public final File file;
 
     public Entry(ZipEntry ze, File file) {
       this.ze = ze;
@@ -393,18 +393,17 @@ public class ZipArchive implements FileArchive {
   public void close() throws IOException {
     w.lock();
     try {
-      if (closed) {
-        return;
-      }
-      else if (modified) {
-        writeToDisk();
-      }
-      else if (zipFile != null) {
-        zipFile.close();
-        zipFile = null;
+      if (!closed) {
+        if (modified) {
+          writeToDisk();
+        }
+        else if (zipFile != null) {
+          zipFile.close();
+          zipFile = null;
 
-        closed = true;
-        entries.clear();
+          closed = true;
+          entries.clear();
+        }
       }
     }
     finally {
@@ -678,7 +677,7 @@ public class ZipArchive implements FileArchive {
 //        throw new FileNotFoundException(root + " not in archive");
 
       root += '/';
-      final ArrayList<String> names = new ArrayList<>();
+      final List<String> names = new ArrayList<>();
 
       for (final String n : entries.keySet()) {
         if (n.startsWith(root)) {

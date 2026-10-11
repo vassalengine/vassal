@@ -9,13 +9,13 @@
   <rule ref="category/java/bestpractices.xml/AccessorClassGeneration" />
   <rule ref="category/java/bestpractices.xml/AccessorMethodGeneration" />
   <rule ref="category/java/bestpractices.xml/AvoidMessageDigestField" />
-  <rule ref="category/java/bestpractices.xml/DefaultLabelNotLastInSwitchStmt" />
+  <rule ref="category/java/bestpractices.xml/DefaultLabelNotLastInSwitch" />
 <!--
   <rule ref="category/java/bestpractices.xml/ForLoopCanBeForeach" />
 -->
   <rule ref="category/java/bestpractices.xml/JUnit4SuitesShouldUseSuiteAnnotation" />
-  <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseAfterAnnotation" />
-  <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseBeforeAnnotation" />
+  <rule ref="category/java/bestpractices.xml/UnitTestShouldUseAfterAnnotation" />
+  <rule ref="category/java/bestpractices.xml/UnitTestShouldUseBeforeAnnotation" />
   <rule ref="category/java/bestpractices.xml/JUnitUseExpected" />
   <rule ref="category/java/bestpractices.xml/LooseCoupling" />
 <!--
@@ -51,7 +51,6 @@
   <rule ref="category/java/codestyle.xml/UnnecessaryConstructor" />
   <rule ref="category/java/codestyle.xml/UnnecessaryFullyQualifiedName" />
   <rule ref="category/java/codestyle.xml/UnnecessaryImport" />
-  <rule ref="category/java/codestyle.xml/UnnecessaryLocalBeforeReturn" />
   <rule ref="category/java/codestyle.xml/UnnecessaryModifier" />
   <rule ref="category/java/codestyle.xml/UnnecessaryReturn" />
   <rule ref="category/java/codestyle.xml/UseDiamondOperator" />
@@ -60,6 +59,7 @@
 -->
   <rule ref="category/java/codestyle.xml/UselessQualifiedThis" />
   <rule ref="category/java/codestyle.xml/UseShortArrayInitializer" />
+  <rule ref="category/java/codestyle.xml/VariableCanBeInlined" />
 
 <!--
   <rule ref="category/java/design.xml/AvoidRethrowingException" />
@@ -138,7 +138,7 @@
 <!--
   <rule ref="category/java/errorprone.xml/MoreThanOneLogger" />
 -->
-  <rule ref="category/java/errorprone.xml/NonCaseLabelInSwitchStatement" />
+  <rule ref="category/java/errorprone.xml/NonCaseLabelInSwitch" />
   <rule ref="category/java/errorprone.xml/NonStaticInitializer" />
 <!--
   <rule ref="category/java/errorprone.xml/OverrideBothEqualsAndHashcode" />
@@ -156,7 +156,7 @@
   <rule ref="category/java/errorprone.xml/UnnecessaryConversionTemporary" />
   <rule ref="category/java/errorprone.xml/UnusedNullCheckInEquals" />
   <rule ref="category/java/errorprone.xml/UseEqualsToCompareStrings" />
-  <rule ref="category/java/errorprone.xml/UselessOperationOnImmutable" />
+  <rule ref="category/java/errorprone.xml/UselessPureMethodCall" />
 
   <rule ref="category/java/multithreading.xml/AvoidThreadGroup" />
   <rule ref="category/java/multithreading.xml/DontCallThreadRun" />

@@ -20,6 +20,7 @@ package VASSAL.configure;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
+import VASSAL.configure.button.ToolTipConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.script.expression.FormattedStringExpression;
 import VASSAL.tools.NamedKeyStroke;
@@ -108,6 +109,7 @@ public class AutoConfigurer extends Configurer
         final JLabel label = new JLabel(prompt[i]);
         label.setLabelFor(config.getControls());
         labels.put(name[i], label);
+        ToolTipConfigurer.addToolTipToButtonIcon(prompt[i], config);
         p.add(label);
         p.add(config.getControls(), "wrap,grow"); // NON-NLS
         configurers.add(config);

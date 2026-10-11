@@ -40,7 +40,7 @@ import VASSAL.tools.swing.SwingUtils;
 
 public class HexGridNumbering extends RegularGridNumbering {
   private HexGrid grid;
-  private boolean stagger = true;
+  protected boolean stagger = true;
 
   @Override
   public void addTo(Buildable parent) {

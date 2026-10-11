@@ -426,7 +426,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
             refreshCount++;
           }
           catch (final IOException e) {
-            ErrorDialog.bug(e);
+            // Ignore the Exception, it has already been reported into the refresher log by pds.refreshWithStatus().
             failPds.add(pds);
           }
           finally {
@@ -468,7 +468,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
       if (!failPds.isEmpty()) {
         log(GameRefresher.ERROR_MESSAGE_PREFIX + Resources.getString("Editor.RefreshPredefinedSetups.endFailHeading", failPds.size()));
-        for (i = 0; i < warningPds.size(); i++)
+        for (i = 0; i < failPds.size(); i++)
           log("|&nbsp; " + Resources.getString("Editor.RefreshPredefinedSetups.endFailPds",
                   failPds.get(i).getAttributeValueString(PredefinedSetup.NAME),
                   "<b>" + failPds.get(i).getFileName()) + "</b>");
@@ -561,7 +561,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
    * @return Non-Container contents
    */
   private Component[] getComponents(Component container) {
-    ArrayList<Component> list;
+    List<Component> list;
 
     try {
       list = new ArrayList<>(Arrays.asList(

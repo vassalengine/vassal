@@ -693,7 +693,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
    * @return List of Turn levels
    */
   protected List<TurnLevel> getActiveChildLevels() {
-    final ArrayList<TurnLevel> levels = new ArrayList<>();
+    final List<TurnLevel> levels = new ArrayList<>();
     final TurnLevel level = getTurnLevel(currentLevel);
     if (level != null) {
       levels.add(level);
@@ -712,14 +712,23 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       return;
     }
 
-    final TurnLevel level = getTurnLevel(currentLevel);
+    TurnLevel level = getTurnLevel(currentLevel);
+    final int initialLevel = currentLevel;
     level.advance();
-    if (level.hasRolledOver()) {
+    while (level.hasRolledOver()) {
       currentLevel++;
       if (currentLevel >= getTurnLevelCount()) {
         currentLevel = 0;
       }
-      getTurnLevel(currentLevel).setLow();
+      level = getTurnLevel(currentLevel);
+
+      if (initialLevel != currentLevel) {
+        level.setLow();
+      }
+      else {
+        // Prevent an infinite loop if all are inactive.
+        break;
+      }
     }
 
     updateTurnDisplay(NEXT);
@@ -732,14 +741,24 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       return;
     }
 
-    final TurnLevel level = getTurnLevel(currentLevel);
+    TurnLevel level = getTurnLevel(currentLevel);
+    final int initialLevel = currentLevel;
     level.retreat();
-    if (level.hasRolledOver()) {
+    while (level.hasRolledOver()) {
       currentLevel--;
       if (currentLevel < 0) {
         currentLevel = getTurnLevelCount() - 1;
       }
-      getTurnLevel(currentLevel).setHigh();
+
+      level = getTurnLevel(currentLevel);
+
+      if (initialLevel != currentLevel) {
+        level.setHigh();
+      }
+      else {
+        // Prevent an infinite loop if all are inactive.
+        break;
+      }
     }
 
     updateTurnDisplay(PREV);
@@ -960,12 +979,12 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
 
         nextButton = new IconButton(IconButton.PLUS_ICON, (plusButtonWidth > 0) ? plusButtonWidth : DEFAULT_SIZE);
         setNextStroke(nextListener.getNamedKeyStroke());
-        nextButton.setAlignmentY(Component.TOP_ALIGNMENT);
+        nextButton.setAlignmentY(TOP_ALIGNMENT);
         nextButton.addActionListener(e -> doNext());
 
         prevButton = new IconButton(IconButton.MINUS_ICON, (plusButtonWidth > 0) ? plusButtonWidth : DEFAULT_SIZE);
         setPrevStroke(prevListener.getNamedKeyStroke());
-        prevButton.setAlignmentY(Component.TOP_ALIGNMENT);
+        prevButton.setAlignmentY(TOP_ALIGNMENT);
         prevButton.addActionListener(e -> doPrev());
         if (fwdOnly) {
           prevButton.setEnabled(false);

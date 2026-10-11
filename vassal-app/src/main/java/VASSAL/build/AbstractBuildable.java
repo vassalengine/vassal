@@ -147,7 +147,7 @@ public abstract class AbstractBuildable extends AbstractImageFinder implements B
    * @return all build components that are an instance of the given class
    */
   public <T> List<T> getComponentsOf(Class<T> target) {
-    final ArrayList<T> l = new ArrayList<>();
+    final List<T> l = new ArrayList<>();
     for (final Buildable b : buildComponents) {
       if (target.isInstance(b)) {
         l.add(target.cast(b));
@@ -168,7 +168,7 @@ public abstract class AbstractBuildable extends AbstractImageFinder implements B
    * @return {@link List} of all components that are instances of the given class
    */
   public <T> List<T> getAllDescendantComponentsOf(Class<T> target) {
-    final ArrayList<T> l = new ArrayList<>();
+    final List<T> l = new ArrayList<>();
     addComponents(target, l);
     return l;
   }

@@ -81,7 +81,7 @@ public class Delete extends Decorator implements TranslatablePiece {
   @Override
   protected KeyCommand[] myGetKeyCommands() {
     if (keyCommands == null) {
-      deleteCommand = new KeyCommand(commandName, key, Decorator.getOutermost(this), this);
+      deleteCommand = new KeyCommand(commandName, key, getOutermost(this), this);
       if (commandName.length() > 0 && key != null && ! key.isNull()) {
         keyCommands = new KeyCommand[]{deleteCommand};
       }
@@ -104,7 +104,7 @@ public class Delete extends Decorator implements TranslatablePiece {
     Command c1 = null;
     myGetKeyCommands();
     if (deleteCommand.matches(stroke)) {
-      final GamePiece outer = Decorator.getOutermost(this);
+      final GamePiece outer = getOutermost(this);
       if (getParent() != null) {
         GamePiece next = getParent().getPieceBeneath(outer);
         if (next == null)
@@ -124,7 +124,7 @@ public class Delete extends Decorator implements TranslatablePiece {
       if (GameModule.getGameModule().isMatSupport()) {
         // If a cargo piece has been deleted remove it from any mat
         if (Boolean.TRUE.equals(outer.getProperty(MatCargo.IS_CARGO))) { //NON-NLS
-          final MatCargo cargo = (MatCargo) Decorator.getDecorator(outer, MatCargo.class);
+          final MatCargo cargo = (MatCargo) getDecorator(outer, MatCargo.class);
           if (cargo != null) {
             c1 = cargo.makeClearMatCommand();
           }
@@ -133,14 +133,14 @@ public class Delete extends Decorator implements TranslatablePiece {
         // If a mat has been deleted remove any cargo from it
         final String matName = (String)outer.getProperty(Mat.MAT_NAME);
         if (matName != null && !"".equals(matName)) {
-          final Mat mat = (Mat) Decorator.getDecorator(outer, Mat.class);
+          final Mat mat = (Mat) getDecorator(outer, Mat.class);
           if (mat != null) {
             c1 = mat.makeRemoveAllCargoCommand();
           }
         }
       }
 
-      c = putOldProperties(Decorator.getOutermost(this));
+      c = putOldProperties(getOutermost(this));
       c = c.append(GameModule.getGameModule().getGameState().getAttachmentManager().removeAttachments(outer));
       c = c.append(new RemovePiece(outer));
 
@@ -229,6 +229,7 @@ public class Delete extends Decorator implements TranslatablePiece {
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof Delete)) return false;
     final Delete c = (Delete) o;

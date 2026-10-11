@@ -230,6 +230,7 @@ public class Restricted extends Decorator implements EditablePiece {
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof Restricted)) return false;
     final Restricted c = (Restricted) o;
@@ -286,6 +287,7 @@ public class Restricted extends Decorator implements EditablePiece {
       return ID + new SequenceEncoder(';').append(config.getValueString()).append(byPlayer.booleanValue()).append(movementConfig.booleanValue()).append(descInput.getValueString()).getValue();
     }
   }
+
   /**
    * When a player changes sides to become an observer, relinquish ownership of all pieces
    * @author rodneykinney
@@ -309,7 +311,7 @@ public class Restricted extends Decorator implements EditablePiece {
 
     @Override
     public Object visitDefault(GamePiece p) {
-      final Restricted r = (Restricted)Decorator.getDecorator(p, Restricted.class);
+      final Restricted r = (Restricted) getDecorator(p, Restricted.class);
       if (r != null
           && r.restrictByPlayer
           && GameModule.getActiveUserId().equals(r.owningPlayer)) {

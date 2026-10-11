@@ -142,8 +142,8 @@ public class PropertiesPieceFilter {
   }
 
   private abstract static class ComparisonFilter implements PieceFilter {
-    protected String name;
-    protected String value;
+    protected final String name;
+    protected final String value;
     protected Object alternate; //BR// NB - 3.4.2 - reverted from Boolean because of 13425
 
     public ComparisonFilter(String name, String value) {

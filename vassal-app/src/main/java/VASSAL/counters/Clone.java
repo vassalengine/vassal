@@ -83,7 +83,7 @@ public class Clone extends Decorator implements TranslatablePiece {
   @Override
   protected KeyCommand[] myGetKeyCommands() {
     if (command == null) {
-      cloneCommand = new KeyCommand(commandName, key, Decorator.getOutermost(this), this);
+      cloneCommand = new KeyCommand(commandName, key, getOutermost(this), this);
       if (commandName.length() > 0 && key != null && ! key.isNull()) {
         command =
             new KeyCommand[]{cloneCommand};
@@ -108,7 +108,7 @@ public class Clone extends Decorator implements TranslatablePiece {
     Command c = null;
     myGetKeyCommands();
     if (cloneCommand.matches(stroke)) {
-      final GamePiece outer = Decorator.getOutermost(this);
+      final GamePiece outer = getOutermost(this);
       final GamePiece newPiece = ((AddPiece) GameModule.getGameModule().decode(GameModule.getGameModule().encode(new AddPiece(outer)))).getTarget();
       newPiece.setId(null);
       GameModule.getGameModule().getGameState().addPiece(newPiece);
@@ -219,12 +219,13 @@ public class Clone extends Decorator implements TranslatablePiece {
 
   @Override
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     l.add(CLONE_ID);
     return l;
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof Clone)) return false;
     final Clone c = (Clone) o;

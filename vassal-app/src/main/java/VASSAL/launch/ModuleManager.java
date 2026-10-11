@@ -168,7 +168,7 @@ public class ModuleManager {
 
     try (RandomAccessFile kraf = new RandomAccessFile(keyfile, "rw")) {
       // acquire an exclusive lock on the key file
-      try (FileLock klock = acquireLock(kraf.getChannel())) {
+      try (FileLock klock = acquireLock(kraf.getChannel())) { // NOPMD
         // determine whether we are the server or a client
 
         // Note: We purposely keep lout open in the case where we are the

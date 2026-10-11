@@ -94,7 +94,7 @@ public class PlaySound extends Decorator implements TranslatablePiece {
   @Override
   protected KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
-      command = new KeyCommand(menuText, stroke, Decorator.getOutermost(this), this);
+      command = new KeyCommand(menuText, stroke, getOutermost(this), this);
       if (menuText.length() > 0 && stroke != null && !stroke.isNull()) {
         commands = new KeyCommand[] {command};
       }
@@ -114,7 +114,7 @@ public class PlaySound extends Decorator implements TranslatablePiece {
       if (!gm.getGameState().isFastForwarding()) {
         if (noSuppress || !gm.isSuppressSounds()) {
           final AuditTrail audit = AuditTrail.create(this, format, Resources.getString("Editor.PlaySound.sound_clip"));
-          final String clipName = format.getText(Decorator.getOutermost(this), this, audit);
+          final String clipName = format.getText(getOutermost(this), this, audit);
           c = new PlayAudioClipCommand(clipName);
           try {
             // Play the sound on our client if sounds have not been muted globally

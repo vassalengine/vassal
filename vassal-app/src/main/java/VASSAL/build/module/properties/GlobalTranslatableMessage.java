@@ -167,7 +167,6 @@ public class GlobalTranslatableMessage extends AbstractConfigurable implements T
     return new NullCommand();
   }
 
-
   /**
    * A String that identifies this property in an encoded Command
    * @return propertyId

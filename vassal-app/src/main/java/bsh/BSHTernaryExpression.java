@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -36,14 +36,14 @@ package bsh;
 
 /**
 	This class needs logic to prevent the right hand side of boolean logical
-	expressions from being naively evaluated...  e.g. for "foo && bar" bar 
+	expressions from being naively evaluated...  e.g. for "foo && bar" bar
 	should not be evaluated in the case where foo is true.
 */
 class BSHTernaryExpression extends SimpleNode {
 
     BSHTernaryExpression(int id) { super(id); }
 
-    public Object eval( CallStack callstack, Interpreter interpreter) 
+    public Object eval( CallStack callstack, Interpreter interpreter)
 		throws EvalError
     {
         SimpleNode

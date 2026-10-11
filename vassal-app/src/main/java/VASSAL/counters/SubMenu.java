@@ -111,7 +111,7 @@ public class SubMenu extends Decorator implements TranslatablePiece {
   }
 
   public String[] getSubcommands() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     for (final Iterator<String> i = keyCommandSubMenu.getCommands(); i.hasNext(); ) {
       l.add(i.next());
     }
@@ -157,6 +157,7 @@ public class SubMenu extends Decorator implements TranslatablePiece {
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof SubMenu)) return false;
     final SubMenu c = (SubMenu) o;

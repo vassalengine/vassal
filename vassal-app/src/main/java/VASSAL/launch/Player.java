@@ -22,7 +22,6 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 
-import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 
@@ -161,7 +160,7 @@ public class Player extends Launcher {
       // don't permit loading of VASL saved before 3.4
       final AbstractMetaData data = MetaDataFactory.buildMetaData(lr.module);
       if (data instanceof ModuleMetaData) {
-        if (!Launcher.checkModuleLoadable((ModuleMetaData)data)) {
+        if (!checkModuleLoadable((ModuleMetaData)data)) {
           return;
         }
       }
@@ -199,7 +198,7 @@ public class Player extends Launcher {
 
     public PromptLaunchAction(ModuleManagerWindow mm) {
       super(mm, null);
-      putValue(Action.NAME, Resources.getString("Main.play_module"));
+      putValue(NAME, Resources.getString("Main.play_module"));
     }
 
     @Override

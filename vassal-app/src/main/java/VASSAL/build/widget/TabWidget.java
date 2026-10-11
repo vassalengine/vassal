@@ -94,7 +94,7 @@ public class TabWidget extends Widget
 
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
-    if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
+    if (NAME_PROPERTY.equals(evt.getPropertyName())) {
       final Widget src = (Widget) evt.getSource();
       final int index = widgets.indexOf(src);
       final Object name = evt.getNewValue();

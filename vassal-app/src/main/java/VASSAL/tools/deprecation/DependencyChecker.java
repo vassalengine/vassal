@@ -35,9 +35,9 @@ public class DependencyChecker {
       throw new IllegalArgumentException();
     }
 
-    String infile;
-    String outfile;
-    String compfile;
+    final String infile;
+    final String outfile;
+    final String compfile;
 
     if ("-o".equals(args[0])) {
       outfile = args[1];

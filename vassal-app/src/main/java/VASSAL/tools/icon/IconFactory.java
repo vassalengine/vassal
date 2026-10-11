@@ -247,7 +247,7 @@ public final class IconFactory {
    * @return Icon Family name list
    */
   private List<String> getIconFamilyList() {
-    final ArrayList<String> names;
+    final List<String> names;
     synchronized (preloadLock) {
       names = new ArrayList<>(iconFamilies.keySet());
     }

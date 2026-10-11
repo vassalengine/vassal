@@ -33,6 +33,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class ConcurrentPropertySupport implements PropertySupport {
 
 // FIXME: consider using WeakReferences for listeners to prevent memory leaks
+  @SuppressWarnings("PMD.LooseCoupling")
   protected final CopyOnWriteArrayList<PropertyListener<Object>> listeners =
     new CopyOnWriteArrayList<>();
 

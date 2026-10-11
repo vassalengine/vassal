@@ -37,6 +37,26 @@ Each tab can be Locked (by any user) to prevent further changes to the propertie
 
 NOTE: Game Components can still change Scenario Properties on locked tabs. Only Players are prevented from changing the Scenario Property values.
 
+[width="100%",cols="50%a,50%a",]
+|===
+|
+
+*Name:*:: Sets the name of the Tab.
+
+*Description:*:: A description of the Tab, for reference only.
+
+*Report Format:*:: A <<MessageFormat.adoc#top,Message Format>> that is used to report any changes to Scenario Property values by users.
+
+*Tab Heading:*:: Text that will appear at the top of the Tab before any values. This can include HTML for text styling and multi-line headings (see example).
+
+*Description Alignment:*:: Set the text alignment (left, centre or right) of the descriptions that appear in the left-hand column of the tab.
+
+NOTE: The right-hand column is always aligned to the left.
+
+|image:images/ScenarioOptionsTab.png[]
+
+|===
+
 [#ScenarioProperty]
 ==== Scenario Property
 
@@ -67,6 +87,8 @@ The following 3 fields are common to all Scenario Property types
 *Option prompt:*:: The text that is displayed to users next to the option in the user interface.
 
 *Send Hotkey on change:*:: The specified Hot Key will be sent whenever a player (NOT a game component) changes the value of this Scenario Property.
+
+*Move Property description to right-hand column:*:: Displays the Option Prompt on the right-hand side and the property value on the left hand side of the Tab. This option gives you greater flexibility to customize the look of the tab and keep items neatly aligned. This is the default for Checkbox items.
 
 |image:images/ScenarioOptions6.png[]
 

@@ -393,6 +393,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     }
     return untranslatedSides;
   }
+
   /**
    * Adds a player to the list of active players occupying sides
    * @param playerId player unique id (password)
@@ -537,9 +538,9 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
   @Override
   public Component getControls() {
-    final ArrayList<String> availableSides = new ArrayList<>(sides);
-    final ArrayList<String> alreadyTaken = new ArrayList<>();
-    final ArrayList<String> availableRealSides = new ArrayList<>();
+    final List<String> availableSides = new ArrayList<>(sides);
+    final List<String> alreadyTaken = new ArrayList<>();
+    final List<String> availableRealSides = new ArrayList<>();
 
     final GameModule gm = GameModule.getGameModule();
 
@@ -707,12 +708,8 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     );
 
     final int i = players.indexOf(newPlayerInfo);
-    if (i != -1) {
-      return !OBSERVER.equals(players.get(i).getSide());
-    }
-
-    // Step is not finished
-    return false;
+    // true if step is finished
+    return i != -1 && !OBSERVER.equals(players.get(i).getSide());
   }
 
   /**
@@ -861,8 +858,8 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   }
 
   public List<String> getAvailableSides() {
-    final ArrayList<String> availableSides = new ArrayList<>(sides);
-    final ArrayList<String> alreadyTaken = new ArrayList<>();
+    final List<String> availableSides = new ArrayList<>(sides);
+    final List<String> alreadyTaken = new ArrayList<>();
 
     for (final PlayerInfo p : players) {
       alreadyTaken.add(p.getLocalizedSide());
@@ -878,16 +875,16 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
   protected String promptForSide(String newSide) {
     // availableSides and alreadyTaken are translated side names
-    final ArrayList<String> availableSides = new ArrayList<>(getSides());
-    final ArrayList<String> alreadyTaken = new ArrayList<>();
-    final ArrayList<String> availableRealSides = new ArrayList<>();
+    final List<String> availableSides = new ArrayList<>(getSides());
+    final List<String> alreadyTaken = new ArrayList<>();
+    final List<String> availableRealSides = new ArrayList<>();
 
     final Random rn = new Random();
     int autoRandomPass = 0;
     boolean promptOn = true;
     boolean noSides = false; // set when there are no sides left other than observer & solo/moderator sides; set by random choice failure
 
-    boolean alreadyConnected;
+    final boolean alreadyConnected;
     final GameModule gm = GameModule.getGameModule();
     String nextChoice;
 
@@ -1351,7 +1348,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         final PlayerRoster pr = (PlayerRoster) target;
         for (final String language : Localization.getInstance().getTranslationList()) {
           final Translation translation = Localization.getInstance().getTranslation(language);
-          final String translatedSides = translation.translate(pr.getI18nData().getPrefix() + PlayerRoster.SIDES);
+          final String translatedSides = translation.translate(pr.getI18nData().getPrefix() + SIDES);
           if (translatedSides != null && !translatedSides.isEmpty()) {
             final int translatedSideCount = translatedSides.split(",").length;
             final int untranslatedSideCount = pr.sides.size();

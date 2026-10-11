@@ -78,7 +78,7 @@ public abstract class Configurer {
    *             FB will not show 'Trait Only' versions of functions.
    *             Any references to Map or Zone level properties to be wrapped in an appropriate GetXXXProperty function.
    */
-  public enum ContextLevel { PIECE, MAP, MODULE };
+  public enum ContextLevel { PIECE, MAP, MODULE }
 
   protected ContextLevel contextLevel;
   protected AbstractBuildable context;
@@ -375,7 +375,8 @@ public abstract class Configurer {
   }
 
   public boolean isPieceContext() {
-    return ContextLevel.PIECE == contextLevel;
+    // If the ContextLevel has not been set specifically, then it will be Piece Level
+    return contextLevel == null || ContextLevel.PIECE == contextLevel;
   }
 
   public void setContextLevel(ContextLevel contextLevel) {

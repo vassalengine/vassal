@@ -103,9 +103,8 @@ public class KeyStrokeListener {
     }
 
     public static ActionChain remove(ActionListener l, ActionListener r) {
-      ActionChain c;
       if (l instanceof ActionChain) {
-        c = (ActionChain) l;
+        final ActionChain c = (ActionChain) l;
         c.l = AWTEventMulticaster.remove(c.l, r);
         return c.l == null ? null : c;
       }

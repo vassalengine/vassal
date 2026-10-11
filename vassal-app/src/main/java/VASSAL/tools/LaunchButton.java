@@ -26,6 +26,7 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.script.expression.Auditable;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.Icon;
 import javax.swing.JButton;
@@ -249,6 +250,10 @@ public class LaunchButton extends JButton implements Auditable {
         text += "[" + NamedHotKeyConfigurer.getString(keyListener.getKeyStroke()) + "]"; //$NON-NLS-1$ //$NON-NLS-2$
       }
     }
+    // Don't show empty tooltips
+    if (StringUtils.isBlank(text)) {
+      text = null;
+    }
     super.setToolTipText(text);
   }
 
@@ -277,7 +282,7 @@ public class LaunchButton extends JButton implements Auditable {
   @Override
   public String getComponentTypeName() {
     return "Launch Button";
-  };
+  }
 
   /**
    * Return the name of the trait or Component an Auditable is
@@ -286,5 +291,5 @@ public class LaunchButton extends JButton implements Auditable {
   @Override
   public String getComponentName() {
     return "Launch Button";
-  };
+  }
 }

@@ -23,20 +23,20 @@
 Copyright (c) 2014 Varun Pant
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal 
-in the Software without restriction, including without limitation the rights 
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies 
-of the Software, and to permit persons to whom the Software is furnished to do 
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
 so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all 
+The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
-INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
-PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT 
-HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION 
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
  */
@@ -62,10 +62,10 @@ public class QuadTree<T> implements Cloneable {
   /**
    * Constructs a new quad tree.
    *
-   * @param {double} minX Minimum x-value that can be held in tree.
-   * @param {double} minY Minimum y-value that can be held in tree.
-   * @param {double} maxX Maximum x-value that can be held in tree.
-   * @param {double} maxY Maximum y-value that can be held in tree.
+   * @param minX Minimum x-value that can be held in tree.
+   * @param minY Minimum y-value that can be held in tree.
+   * @param maxX Maximum x-value that can be held in tree.
+   * @param maxY Maximum y-value that can be held in tree.
    */
   public QuadTree(double minX, double minY, double maxX, double maxY) {
     this.root_ = new QNode<>(minX, minY, maxX - minX, maxY - minY, null);
@@ -74,6 +74,7 @@ public class QuadTree<T> implements Cloneable {
   public QuadTree() {
 
   }
+
   /**
    * Returns a reference to the tree's root node.  Callers shouldn't modify nodes,
    * directly.  This is a convenience for visualization and debugging purposes.
@@ -91,9 +92,9 @@ public class QuadTree<T> implements Cloneable {
   /**
    * Sets the value of an (x, y) point within the quad-tree.
    *
-   * @param {double} x The x-coordinate.
-   * @param {double} y The y-coordinate.
-   * @param {T} value The value associated with the point.
+   * @param x The x-coordinate.
+   * @param y The y-coordinate.
+   * @param value The value associated with the point.
    */
   public void set(double x, double y, T value) {
 
@@ -101,7 +102,7 @@ public class QuadTree<T> implements Cloneable {
     if (x < root.getX() || y < root.getY() || x > root.getX() + root.getW() || y > root.getY() + root.getH()) {
       throw new QuadTreeException("Out of bounds : (" + x + ", " + y + ")");
     }
-    if (this.insert(root, new QPoint<T>(x, y, value))) {
+    if (this.insert(root, new QPoint<>(x, y, value))) {
       this.count_++;
     }
   }
@@ -109,11 +110,11 @@ public class QuadTree<T> implements Cloneable {
   /**
    * Gets the value of the point at (x, y) or null if the point is empty.
    *
-   * @param {double} x The x-coordinate.
-   * @param {double} y The y-coordinate.
-   * @param {T} opt_default The default value to return if the node doesn't
+   * @param x The x-coordinate.
+   * @param y The y-coordinate.
+   * @param opt_default The default value to return if the node doesn't
    *                 exist.
-   * @return {*} The value of the node, the default value if the node
+   * @return The value of the node, the default value if the node
    *         doesn't exist, or undefined if the node doesn't exist and no default
    *         has been provided.
    */
@@ -125,8 +126,8 @@ public class QuadTree<T> implements Cloneable {
   /**
    * Removes a point from (x, y) if it exists.
    *
-   * @param {double} x The x-coordinate.
-   * @param {double} y The y-coordinate.
+   * @param x The x-coordinate.
+   * @param y The y-coordinate.
    * @return {T} The value of the node that was removed, or null if the
    *         node doesn't exist.
    */
@@ -148,9 +149,9 @@ public class QuadTree<T> implements Cloneable {
   /**
    * Returns true if the point at (x, y) exists in the tree.
    *
-   * @param {double} x The x-coordinate.
-   * @param {double} y The y-coordinate.
-   * @return {boolean} Whether the tree contains a point at (x, y).
+   * @param x The x-coordinate.
+   * @param y The y-coordinate.
+   * @return Whether the tree contains a point at (x, y).
    */
   public boolean contains(double x, double y) {
     return this.get(x, y, null) != null;
@@ -189,7 +190,7 @@ public class QuadTree<T> implements Cloneable {
    */
   public QPoint<T>[] getKeys() {
     final List<QPoint<T>> arr = new ArrayList<>();
-    this.traverse(this.root_, new QFunc<T>() {
+    this.traverse(this.root_, new QFunc<>() {
       @Override
       public void call(QuadTree<T> quadTree, QNode<T> node) {
         arr.add(node.getPoint());
@@ -204,7 +205,7 @@ public class QuadTree<T> implements Cloneable {
    */
   public List<T> getValues() {
     final List<T> arr = new ArrayList<>();
-    this.traverse(this.root_, new QFunc<T>() {
+    this.traverse(this.root_, new QFunc<>() {
       @Override
       public void call(QuadTree<T> quadTree, QNode<T> node) {
         arr.add(node.getPoint().getValue());
@@ -216,7 +217,7 @@ public class QuadTree<T> implements Cloneable {
 
   public QPoint<T>[] searchIntersect(final double xmin, final double ymin, final double xmax, final double ymax) {
     final List<QPoint<T>> arr = new ArrayList<>();
-    this.navigate(this.root_, new QFunc<T>() {
+    this.navigate(this.root_, new QFunc<>() {
       @Override
       public void call(QuadTree<T> quadTree, QNode<T> node) {
         final QPoint<T> pt = node.getPoint();
@@ -231,7 +232,7 @@ public class QuadTree<T> implements Cloneable {
 
   public QPoint<T>[] searchWithin(final double xmin, final double ymin, final double xmax, final double ymax) {
     final List<QPoint<T>> arr = new ArrayList<>();
-    this.navigate(this.root_, new QFunc<T>() {
+    this.navigate(this.root_, new QFunc<>() {
       @Override
       public void call(QuadTree<T> quadTree, QNode<T> node) {
         final QPoint<T> pt = node.getPoint();
@@ -268,6 +269,7 @@ public class QuadTree<T> implements Cloneable {
       node.getY() > bottom ||
       (node.getY() + node.getH()) < top);
   }
+
   /**
    * Clones the quad-tree and returns the new instance.
    * @return {QuadTree} A clone of the tree.
@@ -282,7 +284,7 @@ public class QuadTree<T> implements Cloneable {
     // This is inefficient as the clone needs to recalculate the structure of the
     // tree, even though we know it already.  But this is easier and can be
     // optimized when/if needed.
-    this.traverse(this.root_, new QFunc<T>() {
+    this.traverse(this.root_, new QFunc<>() {
       @Override
       public void call(QuadTree<T> quadTree, QNode<T> node) {
         clone.set(node.getPoint().getX(), node.getPoint().getY(), node.getPoint().getValue());
@@ -297,11 +299,10 @@ public class QuadTree<T> implements Cloneable {
    * Traverses the tree depth-first, with quadrants being traversed in clockwise
    * order (NE, SE, SW, NW).  The provided function will be called for each
    * leaf node that is encountered.
-   * @param {QuadTree.Node} node The current node.
-   * @param {function(QuadTree.Node)} fn The function to call
+   * @param node The current node.
+   * @param func The function to call
    *     for each leaf node. This function takes the node as an argument, and its
    *     return value is irrelevant.
-   * @private
    */
   public void traverse(QNode<T> node, QFunc<T> func) {
     switch (node.getNodeType()) {
@@ -321,12 +322,11 @@ public class QuadTree<T> implements Cloneable {
   /**
    * Finds a leaf node with the same (x, y) coordinates as the target point, or
    * null if no point exists.
-   * @param {QuadTree.Node} node The node to search in.
-   * @param {number} x The x-coordinate of the point to search for.
-   * @param {number} y The y-coordinate of the point to search for.
+   * @param node The node to search in.
+   * @param x The x-coordinate of the point to search for.
+   * @param y The y-coordinate of the point to search for.
    * @return {QuadTree.Node} The leaf node that matches the target,
    *     or null if it doesn't exist.
-   * @private
    */
   public QNode<T> find(QNode<T> node, double x, double y) {
     QNode<T> resposne = null;
@@ -350,9 +350,9 @@ public class QuadTree<T> implements Cloneable {
 
   /**
    * Inserts a point into the tree, updating the tree's structure if necessary.
-   * @param {.QuadTree.Node} parent The parent to insert the point
+   * @param parent The parent to insert the point
    *     into.
-   * @param {QuadTree.Point} point The point to insert.
+   * @param point The point to insert.
    * @return {boolean} True if a new node was added to the tree; False if a node
    *     already existed with the correpsonding coordinates and had its value
    *     reset.
@@ -389,7 +389,7 @@ public class QuadTree<T> implements Cloneable {
   /**
    * Converts a leaf node to a pointer node and reinserts the node's point into
    * the correct child.
-   * @param {QuadTree.Node} node The node to split.
+   * @param node The node to split.
    * @private
    */
   private void split(QNode<T> node) {
@@ -403,10 +403,10 @@ public class QuadTree<T> implements Cloneable {
     final double hw = node.getW() / 2;
     final double hh = node.getH() / 2;
 
-    node.setNw(new QNode<T>(x, y, hw, hh, node));
-    node.setNe(new QNode<T>(x + hw, y, hw, hh, node));
-    node.setSw(new QNode<T>(x, y + hh, hw, hh, node));
-    node.setSe(new QNode<T>(x + hw, y + hh, hw, hh, node));
+    node.setNw(new QNode<>(x, y, hw, hh, node));
+    node.setNe(new QNode<>(x + hw, y, hw, hh, node));
+    node.setSw(new QNode<>(x, y + hh, hw, hh, node));
+    node.setSe(new QNode<>(x + hw, y + hh, hw, hh, node));
 
     this.insert(node, oldPoint);
   }
@@ -414,7 +414,7 @@ public class QuadTree<T> implements Cloneable {
   /**
    * Attempts to balance a node. A node will need balancing if all its children
    * are empty or it contains just one leaf.
-   * @param {QuadTree.Node} node The node to balance.
+   * @param node The node to balance.
    * @private
    */
   private void balance(QNode<T> node) {
@@ -493,9 +493,9 @@ public class QuadTree<T> implements Cloneable {
   /**
    * Returns the child quadrant within a node that contains the given (x, y)
    * coordinate.
-   * @param {QuadTree.Node} parent The node.
-   * @param {number} x The x-coordinate to look for.
-   * @param {number} y The y-coordinate to look for.
+   * @param parent The node.
+   * @param x The x-coordinate to look for.
+   * @param y The y-coordinate to look for.
    * @return {QuadTree.Node} The child quadrant that contains the
    *     point.
    * @private
@@ -513,8 +513,8 @@ public class QuadTree<T> implements Cloneable {
 
   /**
    * Sets the point for a node, as long as the node is a leaf or empty.
-   * @param {QuadTree.Node} node The node to set the point for.
-   * @param {QuadTree.Point} point The point to set.
+   * @param node The node to set the point for.
+   * @param point The point to set.
    * @private
    */
   private void setPointForNode(QNode<T> node, QPoint<T> point) {

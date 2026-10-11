@@ -31,6 +31,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.image.ImageUtils;
 
 import javax.swing.KeyStroke;
 import java.awt.AlphaComposite;
@@ -42,6 +43,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -66,6 +68,12 @@ public class Hideable extends Decorator implements TranslatablePiece {
   protected KeyCommand hideCommand;
   protected String description = "";
 
+  // Cache the Hidden image that is shown to the owner. Only re-generate when Zoom or piece state changes.
+  protected BufferedImage cachedImage;
+  protected double cachedZoom = -1d;
+  protected String cachedState = "";
+  protected Rectangle cachedBounds = new Rectangle();
+
   @Override
   public void setProperty(Object key, Object val) {
     if (HIDDEN_BY.equals(key)) {
@@ -79,7 +87,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
   @Override
   public Object getLocalizedProperty(Object key) {
     if (invisibleToMe()) {
-      return ((BasicPiece) Decorator.getInnermost(this)).getLocalizedPublicProperty(key);
+      return ((BasicPiece) getInnermost(this)).getLocalizedPublicProperty(key);
     }
     else if (HIDDEN_BY.equals(key)) {
       return hiddenBy;
@@ -199,24 +207,59 @@ public class Hideable extends Decorator implements TranslatablePiece {
     if (invisibleToMe()) {
       return;
     }
-    else if (invisibleToOthers()) {
+
+    if (invisibleToOthers()) {
+
+      // Determine piece bounds at current zoom
+      final Rectangle bounds = piece.getShape().getBounds();
+      final int w = (int) Math.round(bounds.width * zoom);
+      final int h = (int) Math.round(bounds.height * zoom);
+
+      // If there's nothing visible at this zoom, skip
+      if (w <= 0 || h <= 0) {
+        return;
+      }
+
+      final String visibleState = (String) piece.getProperty(Properties.VISIBLE_STATE);
+      if (cachedImage == null || zoom != cachedZoom || ! cachedState.equals(visibleState)
+              || ! bounds.equals(cachedBounds)) {
+
+        // Create an in-memory cached image and draw piece fully opaque
+        cachedImage = ImageUtils.createCompatibleTranslucentImage(w, h);
+        cachedZoom = zoom;
+        cachedState = visibleState;
+        cachedBounds = bounds;
+
+        final Graphics2D cg = cachedImage.createGraphics();
+        try {
+          cg.translate((int)(-bounds.x * zoom), (int)(-bounds.y * zoom));
+          piece.draw(cg, 0, 0, obs, zoom); // Fully opaque
+        }
+        finally {
+          cg.dispose();
+        }
+      }
+
+      // Apply the appropriate transparency to the overall image
       final Graphics2D g2d = (Graphics2D) g;
+      final Composite oldComp = g2d.getComposite();
+      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparency));
 
       if (bgColor != null) {
-        g.setColor(bgColor);
-        final AffineTransform t = AffineTransform.getScaleInstance(zoom, zoom);
-        t.translate(x / zoom, y / zoom);
+        g2d.setColor(bgColor);
+        final AffineTransform t = AffineTransform.getTranslateInstance(x, y);
+        t.scale(zoom, zoom);
         g2d.fill(t.createTransformedShape(piece.getShape()));
       }
 
-      final Composite oldComposite = g2d.getComposite();
-      g2d.setComposite(
-        AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparency)
-      );
-      piece.draw(g, x, y, obs, zoom);
-      g2d.setComposite(oldComposite);
+      final int drawX = x + (int) (bounds.x * zoom);
+      final int drawY = y + (int) (bounds.y * zoom);
+      g2d.drawImage(cachedImage, drawX, drawY, obs);
+
+      g2d.setComposite(oldComp);
     }
     else {
+      // Normal draw at the end
       piece.draw(g, x, y, obs, zoom);
     }
   }
@@ -237,7 +280,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
   @Override
   public KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
-      hideCommand = new KeyCommand(command, hideKey, Decorator.getOutermost(this), this);
+      hideCommand = new KeyCommand(command, hideKey, getOutermost(this), this);
       if (command.length() > 0 && hideKey != null && ! hideKey.isNull()) {
         commands = new KeyCommand[] {hideCommand};
       }
@@ -317,13 +360,14 @@ public class Hideable extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     l.add(Properties.INVISIBLE_TO_ME);
     l.add(Properties.INVISIBLE_TO_OTHERS);
     return l;
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof Hideable)) return false;
     final Hideable c = (Hideable) o;
@@ -335,7 +379,6 @@ public class Hideable extends Decorator implements TranslatablePiece {
     if (! Objects.equals(transparency, c.transparency)) return false;
     if (! Objects.equals(bgColor, c.bgColor)) return false;
     if (! Objects.equals(disableAutoReportMove, c.disableAutoReportMove)) return false;
-
 
     return Objects.equals(hiddenBy, c.hiddenBy);
   }

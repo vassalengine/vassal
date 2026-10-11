@@ -35,6 +35,7 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.SplashScreen;
 import VASSAL.tools.WarningDialog;
 import VASSAL.tools.image.ImageUtils;
+
 import net.miginfocom.swing.MigLayout;
 import org.netbeans.api.wizard.WizardDisplayer;
 import org.netbeans.spi.wizard.Wizard;
@@ -155,7 +156,7 @@ public class WizardSupport {
     final GameModule g = GameModule.getGameModule();
     final WizardBranchController c = createWelcomeWizard();
     final Wizard welcomeWizard = c.createWizard();
-    final HashMap<String, Wizard> props = new HashMap<>();
+    final Map<String, Wizard> props = new HashMap<>();
     props.put(WELCOME_WIZARD_KEY, welcomeWizard);
 
     Action help = null;
@@ -191,7 +192,7 @@ public class WizardSupport {
       }
     }
     else {
-      final Boolean showWizard = (Boolean) Prefs.getGlobalPrefs().getValue(WizardSupport.WELCOME_WIZARD_KEY);
+      final Boolean showWizard = (Boolean) Prefs.getGlobalPrefs().getValue(WELCOME_WIZARD_KEY);
       if (Boolean.TRUE.equals(showWizard) && g.shutDown()) {
         System.exit(0);
       }
@@ -271,11 +272,25 @@ public class WizardSupport {
     }
 
     @Override
+    protected void recycleExistingPanel(String id, WizardController controller, Map wizardData, JComponent panel) {
+      super.recycleExistingPanel(id, controller, wizardData, panel);
+      if (NAME_STEP.equals(id)) {
+        // User has re-entered the Name/Pw panel after using Prev/Next. Make sure the Finish and Next buttons are set correctly for the game type.
+        if (wizardData.get(ACTION_KEY).equals(PLAY_ONLINE_ACTION)) {
+          controller.setForwardNavigationMode(WizardController.MODE_CAN_FINISH);
+        }
+        else {
+          controller.setForwardNavigationMode(WizardController.MODE_CAN_CONTINUE);
+        }
+      }
+    }
+
+    @Override
     protected JComponent createPanel(WizardController controller, String id, Map settings) {
       final JComponent c;
       if (NAME_STEP.equals(id)) {
         c = getNameControls(controller, settings);
-
+        // Creating Name/Pw panel for the first time. Make sure the Finish and Next buttons are set correctly for the game type.
         if (settings.get(ACTION_KEY).equals(PLAY_ONLINE_ACTION)) {
           controller.setForwardNavigationMode(WizardController.MODE_CAN_FINISH);
         }
@@ -337,6 +352,7 @@ public class WizardSupport {
     private JRadioButton createTutorialButton(final WizardController controller, final Map<String, Object> settings) {
       final JRadioButton b = new JRadioButton(Resources.getString("WizardSupport.LoadTutorial")); //$NON-NLS-1$
       b.addActionListener(e -> {
+        GameModule.getGameModule().getPlayerRoster().reset();
         controller.setProblem(Resources.getString("WizardSupport.LoadingTutorial")); //$NON-NLS-1$
         try {
           new TutorialLoader(controller, settings, new BufferedInputStream(tutorial.getTutorialContents()), POST_INITIAL_STEPS_WIZARD, tutorial).start();
@@ -352,7 +368,8 @@ public class WizardSupport {
     private JRadioButton createLoadSavedGameButton(final WizardController controller, final Map<String, Object> settings) {
       final JRadioButton b = new JRadioButton(Resources.getString("WizardSupport.LoadSavedGame")); //$NON-NLS-1$
       b.addActionListener(e -> {
-        settings.put(WizardSupport.ACTION_KEY, LOAD_GAME_ACTION);
+        GameModule.getGameModule().getPlayerRoster().reset();
+        settings.put(ACTION_KEY, LOAD_GAME_ACTION);
         final Wizard wiz = new BranchingWizard(new LoadSavedGamePanels(), POST_LOAD_GAME_WIZARD).createWizard();
         settings.put(POST_INITIAL_STEPS_WIZARD, wiz);
         controller.setForwardNavigationMode(WizardController.MODE_CAN_CONTINUE);
@@ -364,7 +381,8 @@ public class WizardSupport {
     private JRadioButton createPlayOnlineButton(final WizardController controller, final Map<String, Object> settings) {
       final JRadioButton b = new JRadioButton(Resources.getString("WizardSupport.PlayOnline")); //$NON-NLS-1$
       b.addActionListener(e -> {
-        settings.put(WizardSupport.ACTION_KEY, PLAY_ONLINE_ACTION);
+        GameModule.getGameModule().getPlayerRoster().reset();
+        settings.put(ACTION_KEY, PLAY_ONLINE_ACTION);
         settings.put(POST_INITIAL_STEPS_WIZARD, null);
         controller.setForwardNavigationMode(GameModule.getGameModule().isRealName() ? WizardController.MODE_CAN_FINISH : WizardController.MODE_CAN_CONTINUE);
         controller.setProblem(null);
@@ -375,10 +393,11 @@ public class WizardSupport {
     private JRadioButton createPlayOfflineButton(final WizardController controller, final Map<String, Object> settings) {
       final JRadioButton b = new JRadioButton(Resources.getString("WizardSupport.PlayOffline")); //$NON-NLS-1$
       b.addActionListener(e -> {
+        GameModule.getGameModule().getPlayerRoster().reset();
         GameModule.getGameModule().getGameState().setup(false);
         GameModule.getGameModule().getGameState().freshenStartupGlobalKeyCommands(GameModule.getGameModule());
         GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode. NEW_GAME);
-        settings.put(WizardSupport.ACTION_KEY, PLAY_OFFLINE_ACTION);
+        settings.put(ACTION_KEY, PLAY_OFFLINE_ACTION);
         final WizardPanelProvider panels = createPlayOfflinePanels();
         if (panels == null) {
           controller.setForwardNavigationMode(WizardController.MODE_CAN_FINISH);
@@ -463,6 +482,7 @@ public class WizardSupport {
       this.tutorial = tutorial;
     }
   }
+
   /**
    * Wizard pages for starting a new game offline
    *
@@ -771,12 +791,12 @@ public class WizardSupport {
         fileConfig = new FileConfigurer(null,
           Resources.getString("WizardSupport.SavedGame"), GameModule.getGameModule().getGameState().getSavedGameDirectoryPreference()); //$NON-NLS-1$
         fileConfig.addPropertyChangeListener(new PropertyChangeListener() {
-          private Set<File> processing = new HashSet<>();
+          private final Set<File> processing = new HashSet<>();
 
           @Override
           public void propertyChange(PropertyChangeEvent evt) {
             final File f = (File) evt.getNewValue();
-            if (f == null || !f.exists()) {
+            if (f == null || !f.isFile()) {
               controller.setProblem(Resources.getString("WizardSupport.NoSuchFile")); //$NON-NLS-1$
             }
             else if (f.isDirectory()) {
@@ -793,7 +813,7 @@ public class WizardSupport {
                     // FIXME: The following default save/load attempt does not work (on MacOS at least the default is left "unknown"; please confirm for other platforms before fixing).
                     g.getFileChooser().setSelectedFile(f); //BR// When loading a saved game from Wizard, put it appropriately into the "default" for the next save/load/etc.
                     g.setGameFile(f.getName(), GameModule.GameFileMode.LOADED_GAME); //BR// ... aaaand put it in the app window description.
-                    super.run();
+                    super.run(); // NOPMD
 
                     g.getGameState().setLastSaveFile(
                       ((BasicLogger) g.getLogger()).isReplaying() ? null : f
@@ -859,7 +879,7 @@ public class WizardSupport {
   public static class GameSetupPanels extends WizardPanelProvider implements WizardResultProducer {
     private final WizardPage[] pages;
     private final List<GameSetupStep> setupSteps;
-    private boolean forcePwd;
+    private boolean forcePwd;  // NOPMD
 
     private GameSetupPanels(String[] steps, String[] descriptions, WizardPage[] pages, List<GameSetupStep> setupSteps) {
       super(steps, descriptions);
@@ -878,8 +898,8 @@ public class WizardSupport {
 
     public static GameSetupPanels newInstance(boolean forcePwd) {
       GameSetupPanels panels = null;
-      final ArrayList<SetupStepPage> pages = new ArrayList<>();
-      final ArrayList<GameSetupStep> setupSteps = new ArrayList<>();
+      final List<SetupStepPage> pages = new ArrayList<>();
+      final List<GameSetupStep> setupSteps = new ArrayList<>();
       final PlayerRoster pr = GameModule.getGameModule().getPlayerRoster();
       if (pr != null) {
         pr.setForcePwd(forcePwd);

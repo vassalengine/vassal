@@ -22,74 +22,56 @@ import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Random;
+
+import VASSAL.build.module.GameState;
 
 /**
- * A {@link FilterOutputStream} which handles simple obfuscation of a file's
- * contents, to prevent the casual cheat of hand-editing.
+ * Formerly obfuscated a saved game's command log by XORing it with a key,
+ * so that it was not plain text inside the ZIP. The log is now compressed
+ * with XZ instead, which is not plain text either, and this class only
+ * delegates to that.
  *
- * @author uckelman
- * @since 3.2.0
+ * @deprecated Use {@link GameState#compressSavedGame(OutputStream)}.
+ * {@link DeobfuscatingInputStream} still reads the formats this class wrote.
  */
+@Deprecated(since = "2026-10-02", forRemoval = true)
 public class ObfuscatingOutputStream extends FilterOutputStream {
+  /**
+   * The header of the hex-encoded format written before VASSAL 3.8.
+   *
+   * @deprecated The hex-encoded format is no longer written, only read.
+   */
+  @Deprecated(since = "2026-09-08", forRemoval = true)
   public static final String HEADER = "!VCSK"; //NON-NLS
-  private static final Random rand = new Random();
-
-  private final byte key;
-  private final byte[] pair = new byte[2];
 
   /**
    * @param out the stream to wrap
    * @throws IOException oops
    */
   public ObfuscatingOutputStream(OutputStream out) throws IOException {
-    this(out, (byte) rand.nextInt(256));
+    super(GameState.compressSavedGame(out));
   }
 
   /**
    * @param out the stream to wrap
-   * @param key the byte to use as the key
+   * @param key ignored; nothing is XORed any more
    * @throws IOException oops
    */
-  public ObfuscatingOutputStream(OutputStream out, byte key)
-                                                          throws IOException {
-    super(out);
-    this.key = key;
-
-    out.write(HEADER.getBytes(StandardCharsets.UTF_8));
-
-    pair[0] = HEX[(key & 0xF0) >>> 4];
-    pair[1] = HEX[key & 0x0F];
-    out.write(pair);
+  public ObfuscatingOutputStream(OutputStream out, byte key) throws IOException {
+    this(out);
   }
 
   /** {@inheritDoc} */
   @Override
   public void write(byte[] bytes, int off, int len) throws IOException {
-    for (int i = 0; i < len; ++i) write(bytes[off + i]);
-  }
-
-  private static final byte[] HEX = {
-    '0', '1', '2', '3', '4', '5', '6', '7',
-    '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
-  };
-
-  /** {@inheritDoc} */
-  @Override
-  public void write(int b) throws IOException {
-    b ^= key;
-
-    pair[0] = HEX[(b & 0xF0) >>> 4];
-    pair[1] = HEX[b & 0x0F];
-    out.write(pair);
+    out.write(bytes, off, len);
   }
 
   public static void main(String[] args) throws IOException {
     try (InputStream in = args.length > 0 ? Files.newInputStream(Path.of(args[0])) : System.in;
-         OutputStream out = new ObfuscatingOutputStream(new BufferedOutputStream(System.out))) {
+         OutputStream out = GameState.compressSavedGame(new BufferedOutputStream(System.out))) {
       in.transferTo(out);
     }
 

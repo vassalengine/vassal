@@ -24,5 +24,6 @@ package VASSAL.chat;
  */
 public interface PlayerEncoder {
   Player stringToPlayer(String s);
+
   String playerToString(Player p);
 }

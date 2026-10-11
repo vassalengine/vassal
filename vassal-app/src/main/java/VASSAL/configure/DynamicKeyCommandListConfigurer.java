@@ -424,7 +424,7 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Confi
     }
 
     public DKCEntry(DynamicKeyCommandListConfigurer listConfig, Object value) {
-      this(listConfig, value, ConfigurableList.DEFAULT_ICON_SIZE);
+      this(listConfig, value, DEFAULT_ICON_SIZE);
     }
 
     public DKCEntry(DynamicKeyCommandListConfigurer listConfig, Object value, int iconSize) {
@@ -473,7 +473,7 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Confi
 
     public JButton getShowHideValuesButton() {
       if (showHideValuesButton == null) {
-        showHideValuesButton = new NoInsetButton("edit-find", ConfigurableList.DEFAULT_ICON_SIZE, "Editor.PropertyChangeConfigurer.showHide_hint"); // NON-NLS
+        showHideValuesButton = new NoInsetButton("edit-find", DEFAULT_ICON_SIZE, "Editor.PropertyChangeConfigurer.showHide_hint"); // NON-NLS
         showHideValuesButton.setVisible(false);
         showHideValuesButton.addActionListener(e -> showHideValues());
       }

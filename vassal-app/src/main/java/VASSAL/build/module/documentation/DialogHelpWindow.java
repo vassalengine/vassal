@@ -21,7 +21,6 @@ import java.awt.Dialog;
 import java.net.URL;
 
 import javax.swing.JDialog;
-import javax.swing.WindowConstants;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
@@ -38,7 +37,7 @@ public class DialogHelpWindow extends JDialog implements HyperlinkListener {
   public DialogHelpWindow(String title, URL contents, Dialog parent) {
     super(parent);
     setTitle(title);
-    setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+    setDefaultCloseOperation(HIDE_ON_CLOSE);
 
     helper.setup(this, contents);
   }

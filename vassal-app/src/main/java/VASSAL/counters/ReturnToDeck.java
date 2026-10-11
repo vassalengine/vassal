@@ -89,7 +89,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
   @Override
   protected KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
-      myCommand = new KeyCommand(returnCommand, returnKey, Decorator.getOutermost(this), this);
+      myCommand = new KeyCommand(returnCommand, returnKey, getOutermost(this), this);
       if (returnCommand.length() > 0 && returnKey != null && !returnKey.isNull()) {
         commands =
             new KeyCommand[]{myCommand};
@@ -100,7 +100,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     }
 
     // Disable Return To Deck on Mats carrying cargo
-    final Mat mat = (Mat) Decorator.getDecorator(Decorator.getOutermost(this), Mat.class);
+    final Mat mat = (Mat) getDecorator(getOutermost(this), Mat.class);
     myCommand.setEnabled(mat == null || mat.getCargoCount() == 0);
 
     return commands;
@@ -157,7 +157,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
       }
       else {
         final AuditTrail audit = AuditTrail.create(this, deckExpression, Resources.getString("Editor.ReturnToDeck.deck_name"));
-        final String evalName = deckExpression.getText(Decorator.getOutermost(this), this, audit);
+        final String evalName = deckExpression.getText(getOutermost(this), this, audit);
         pile = DrawPile.findDrawPile(evalName);
 
         // Can only return if we can find the Deck and it's on a map
@@ -174,10 +174,10 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
       comm = prepareMove(new NullCommand(), false);
 
       // Move the piece to its new deck
-      comm = comm.append(pile.addToContents(Decorator.getOutermost(this)));
+      comm = comm.append(pile.addToContents(getOutermost(this)));
 
       // If this piece is also loaded cargo, remove it from its mat
-      final MatCargo cargo = (MatCargo) Decorator.getDecorator(Decorator.getOutermost(this), MatCargo.class);
+      final MatCargo cargo = (MatCargo) getDecorator(getOutermost(this), MatCargo.class);
       if (cargo != null && cargo.getMat() != null) {
         comm = comm.append(cargo.makeClearMatCommand());
       }
@@ -216,7 +216,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
 
   private DrawPile promptForDrawPile() {
     final JDialog d = new JDialog(GameModule.getGameModule().getPlayerWindow(), true);
-    d.setTitle(Decorator.getInnermost(this).getName()); //$NON-NLS-1$
+    d.setTitle(getInnermost(this).getName()); //$NON-NLS-1$
     d.setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
 
     class AvailableDeck {
@@ -319,6 +319,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof ReturnToDeck)) return false;
     final ReturnToDeck c = (ReturnToDeck) o;

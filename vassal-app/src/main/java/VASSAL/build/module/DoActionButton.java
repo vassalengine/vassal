@@ -139,7 +139,7 @@ public class DoActionButton extends AbstractToolbarItem
 
   // This only exists so SpecialDiceButton can avoid calling the other constructor
   @SuppressWarnings("PMD.UnusedFormalParameter")
-  protected DoActionButton(boolean dummy) { 
+  protected DoActionButton(boolean dummy) {
 
   }
 
@@ -725,7 +725,7 @@ public class DoActionButton extends AbstractToolbarItem
   @Override
   public List<String> getPropertyNames() {
     if (doLoop && hasIndex) {
-      final ArrayList<String> l = new ArrayList<>();
+      final List<String> l = new ArrayList<>();
       l.add(indexProperty);
       return l;
     }

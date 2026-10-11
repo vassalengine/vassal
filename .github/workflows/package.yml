@@ -6,13 +6,18 @@ on:
   pull_request:
     branches: [ master, release-3.7 ]
 
+env:
+  TEMURIN_SEMVER_VERSION: 26.0.2+101
+  TEMURIN_REAL_VERSION: 26.0.2.1+1
+  LIBERICA_VERSION: 26.0.2+13
+
 jobs:
   package:
     name: Test & Package
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 1
 
@@ -34,14 +39,15 @@ jobs:
         run: sudo apt-get install dos2unix genisoimage ghostscript nsis
 
       - name: Install Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6.0.1
+        id: setup-java
         with:
           distribution: 'temurin'
-          java-version: 21
+          java-version: ${{ env.TEMURIN_SEMVER_VERSION }}
           java-package: jdk
 
       - name: Cache Maven packages
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         id: cache-maven
         with:
           path: ~/.m2/repository
@@ -50,60 +56,337 @@ jobs:
 
       - name: Cache packaging dependencies
         id: cache-bootstrap
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             ./dist/dmg
-            ./dist/jdks
+            ./dist/jdks/windows-x86_64
+            ./dist/jdks/macos-x86_64
+            ./dist/jdks/macos-aarch64
             ./dist/launch4j
             ./dist/lipo
           key: ${{ runner.os }}-bootstrap-${{ hashFiles('bootstrap.sh') }}
 
       - name: Install packaging dependencies
         if: steps.cache-bootstrap.outputs.cache-hit != 'true'
-        run: ./bootstrap.sh
+        run: ./bootstrap.sh -j ${{ env.TEMURIN_REAL_VERSION }} windows-x86_64 macos-x86_64 macos-aarch64
 
       - name: Build packages
         run: make release
 
       - name: Archive Linux
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: VASSAL-${{ steps.version.outputs.VERSION }}-linux.tar.bz2
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-linux.tar.bz2
 
       - name: Archive MacOS
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: VASSAL-${{ steps.version.outputs.VERSION }}-macos-universal.dmg
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-macos-universal.dmg
 
       - name: Archive other
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: VASSAL-${{ steps.version.outputs.VERSION }}-other.zip
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-other.zip
 
-      - name: Archive Windows x86_32
-        uses: actions/upload-artifact@v4
-        with:
-          name: VASSAL-${{ steps.version.outputs.VERSION }}-windows-x86_32.exe
-          path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-windows-x86_32.exe
-
       - name: Archive Windows x86_64
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: VASSAL-${{ steps.version.outputs.VERSION }}-windows-x86_64.exe
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-windows-x86_64.exe
 
+  package_win_aarch64:
+    name: Test & Package Windows aarch64
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+
+      - name: Set branch
+        if: github.ref != 'refs/heads/master' && github.ref != 'refs/heads/release-3.7'
+        # Checking out a detached head for PR means we have to set the branch
+        # name for it to show up later; shallow checkout means the branch
+        # won't exist yet so there's no conflict.
+        run: git checkout -b ${GITHUB_HEAD_REF}
+
+      - name: Store version
+        id: version
+        run: echo "VERSION=$(make version-print)" >> $GITHUB_OUTPUT
+
+      - name: Update container
+        run: sudo apt update
+
+      - name: Install dependencies
+        run: sudo apt-get install dos2unix genisoimage ghostscript nsis
+
+      - name: Install Java
+        uses: actions/setup-java@v6.0.1
+        id: setup-java
+        with:
+          distribution: 'liberica'
+          java-version: ${{ env.LIBERICA_VERSION }}
+          java-package: jdk
+
+      - name: Cache Maven packages
+        uses: actions/cache@v6
+        id: cache-maven
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
+
+      - name: Cache packaging dependencies
+        id: cache-bootstrap
+        uses: actions/cache@v6
+        with:
+          path: |
+            ./dist/dmg
+            ./dist/jdks/windows-aarch64
+            ./dist/launch4j
+            ./dist/lipo
+          key: ${{ runner.os }}-bootstrap-${{ hashFiles('bootstrap.sh') }}
+
+      - name: Install packaging dependencies
+        if: steps.cache-bootstrap.outputs.cache-hit != 'true'
+        run: ./bootstrap.sh -j ${{ steps.setup-java.outputs.version }} windows-aarch64
+
+      - name: Build Windows aarch64
+        run: make release-windows-aarch64
+
       - name: Archive Windows aarch64
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: VASSAL-${{ steps.version.outputs.VERSION }}-windows-aarch64.exe
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-windows-aarch64.exe
 
-      - name: Archive SHA256 hashes
-        uses: actions/upload-artifact@v4
+  package_win_x86_32:
+    name: Test & Package Windows x86_32
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v7
         with:
-          name: VASSAL-${{ steps.version.outputs.VERSION }}.sha256
-          path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}.sha256
+          fetch-depth: 1
+
+      - name: Get tags
+        run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+
+      - name: Set branch
+        if: github.ref != 'refs/heads/master' && github.ref != 'refs/heads/release-3.7'
+        # Checking out a detached head for PR means we have to set the branch
+        # name for it to show up later; shallow checkout means the branch
+        # won't exist yet so there's no conflict.
+        run: git checkout -b ${GITHUB_HEAD_REF}
+
+      - name: Store version
+        id: version
+        run: echo "VERSION=$(make version-print)" >> $GITHUB_OUTPUT
+
+      - name: Update container
+        run: sudo apt update
+
+      - name: Install dependencies
+        run: sudo apt-get install dos2unix genisoimage ghostscript nsis
+
+      - name: Install Java
+        uses: actions/setup-java@v6.0.1
+        id: setup-java
+        with:
+          distribution: 'liberica'
+          java-version: 21
+          java-package: jdk
+
+      - name: Cache Maven packages
+        uses: actions/cache@v6
+        id: cache-maven
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
+
+      - name: Cache packaging dependencies
+        id: cache-bootstrap
+        uses: actions/cache@v6
+        with:
+          path: |
+            ./dist/dmg
+            ./dist/jdks/windows-x86_32
+            ./dist/launch4j
+            ./dist/lipo
+          key: ${{ runner.os }}-bootstrap-${{ hashFiles('bootstrap.sh') }}
+
+      - name: Install packaging dependencies
+        if: steps.cache-bootstrap.outputs.cache-hit != 'true'
+        run: ./bootstrap.sh -j ${{ steps.setup-java.outputs.version }} windows-x86_32
+
+      - name: Build Windows x86_32
+        run: make release-windows-x86_32
+
+      - name: Archive Windows x86_32
+        uses: actions/upload-artifact@v7
+        with:
+          name: VASSAL-${{ steps.version.outputs.VERSION }}-windows-x86_32.exe
+          path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-windows-x86_32.exe
+
+  package_debian:
+    name: Debian package
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+
+      - name: Update container
+        run: |
+          sudo apt update -y
+          sudo apt install -y devscripts
+
+      - name: Store claimed version
+        id: deb_up_vers
+        run: |
+          ver=$(make version-print 2>/dev/null | tr '_' '-')
+          echo "UPSTREAM_VERSION=$ver" >> $GITHUB_OUTPUT
+          echo "Claimed upstream version: $ver"
+
+      - name: Make DEB changelog not release
+        id: deb_ch_other
+        if: ${{ contains(steps.deb_up_vers.outputs.UPSTREAM_VERSION,'snapshot') }}
+        run: |
+          eml="${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
+          ver=$(make version-print 2>/dev/null | tr '_' '-')
+          echo "Setting non-release Debian version to ${ver}-1"
+          EMAIL="${eml}" dch --release-heuristic log --force-bad-version -v ${ver}-1 "Snapshot build"
+      - name: Store DEB variables
+        id: deb_vars
+        run: |
+          version=$(dpkg-parsechangelog --show-field Version)
+          upstream=$(echo $version | sed 's/-[0-9][0-9.]*\(nmu[0-9]*\|\)$//')
+          arch=$(dpkg-architecture -q DEB_BUILD_ARCH)
+          echo "DEB_VERSION=$version" >> $GITHUB_OUTPUT
+          echo "DEB_UPSTREAM=$upstream" >> $GITHUB_OUTPUT
+          echo "DEB_ARCH=$arch" >> $GITHUB_OUTPUT
+
+      - name: Install DEB build-dependencies
+        run: |
+          dep=$(cat debian/control | \
+            sed -E ':a ; $!N ; s/\n\s+/ /; ta P ; D' | \
+            sed -n -e 's/Build-Depends\(-Indep\|\): //p' | \
+            sed -e '1{N;s/\n/ /;}' -e 's/ *([^)]*)//g' -e 's/,//g' )
+          sudo apt install -y build-essential devscripts fakeroot ${dep}
+
+      - name: Make orig archive
+        run: |
+          package=$(dpkg-parsechangelog --show-field Source)
+          upstream=${{ steps.deb_vars.outputs.DEB_UPSTREAM }}
+          orig=${package}_${upstream}.orig.tar.gz
+          prefix=${package}-${{ steps.deb_vars.outputs.DEB_UPSTREAM }}
+          git archive --prefix=${prefix}/ --output=../${orig} HEAD
+
+      - name: Build DEB package
+        run: debuild -us -uc -rfakeroot
+
+      - name: Move DEB package
+        run: |
+          mkdir -p public
+          ls ..
+          mv \
+            ../vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_all.deb \
+            ../vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.build \
+            ../vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.buildinfo \
+            ../vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.changes	\
+            ../vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}.dsc \
+            ../vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}.debian.tar.xz \
+            ../vassal_${{ steps.deb_vars.outputs.DEB_UPSTREAM }}.orig.tar.gz \
+            public/
+
+      - name: Archive DEB package
+        uses: actions/upload-artifact@v7
+        with:
+          name: vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_all.deb
+          path: public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_all.deb
+
+      - name: Archive DEB package build
+        uses: actions/upload-artifact@v7
+        with:
+          name: vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.build
+          path: public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.build
+
+      - name: Archive DEB package build information
+        uses: actions/upload-artifact@v7
+        with:
+          name: vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.buildinfo
+          path: public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.buildinfo
+
+      - name: Archive DEB package changes
+        uses: actions/upload-artifact@v7
+        with:
+          name: vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.changes
+          path: public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}_${{ steps.deb_vars.outputs.DEB_ARCH }}.changes
+
+      - name: Archive DEB package changes
+        uses: actions/upload-artifact@v7
+        with:
+          name: vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}.dsc
+          path: public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}.dsc
+
+      - name: Archive DEB package debian archive
+        uses: actions/upload-artifact@v7
+        with:
+          name: vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}.debian.tar.xz
+          path: public/vassal_${{ steps.deb_vars.outputs.DEB_VERSION }}.debian.tar.xz
+
+      - name: Archive DEB package original archive
+        uses: actions/upload-artifact@v7
+        with:
+          name: vassal_${{ steps.deb_vars.outputs.DEB_UPSTREAM }}.orig.tar.gz
+          path: public/vassal_${{ steps.deb_vars.outputs.DEB_UPSTREAM }}.orig.tar.gz
+
+  package_flatpak:
+    name: Flatpak recipe
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+
+      - name: Update container
+        run: |
+          sudo apt update -y
+
+      - name: Setup Java
+        uses: actions/setup-java@v6.0.1
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.TEMURIN_SEMVER_VERSION }}
+          java-package: jdk
+          show-download-progress: true
+
+      - name: Make recipe
+        run: |
+          mkdir -p flatpak
+          sed -e "s,@REPOSITORY@,${{ github.repository }}," -e "s,@RELEASE@,${{ github.ref_name }}," -e "s,@COMMIT@,${{ github.sha }},"  < dist/linux/org.vassalengine.vassal.yml.in > flatpak/org.vassalengine.vassal.yml
+          cat flatpak/org.vassalengine.vassal.yml
+
+      - name: Make Maven dependencies
+        run: |
+          java -version
+          ./dist/linux/fetch-maven-deps-for-flatpak.sh
+
+      - name: Archive Flatpak files
+        uses: actions/upload-artifact@v7
+        with:
+          name: flatpak-recipe
+          path: |
+            flatpak/org.vassalengine.vassal.yml
+            flatpak/maven-dependencies.yml
+
+#
+# EOF
+#

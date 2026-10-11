@@ -992,10 +992,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
     public boolean checkFilter(GamePiece piece) {
       final String s = propertyFilter.getExpression().trim();
-      if (s.isEmpty()) {
-        return true;
-      }
-      return propertyFilter.accept(piece);
+      return s.isEmpty() || propertyFilter.accept(piece);
     }
 
     @Override

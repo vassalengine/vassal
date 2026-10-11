@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -49,23 +49,23 @@ import java.util.Vector;
 	Sigh... have to stay 1.1 compatible.
 	<p>
 
-	Note: How can this be thread safe, you might ask?  Wouldn't a thread 
-	executing various beanshell methods be mutating the callstack?  Don't we 
+	Note: How can this be thread safe, you might ask?  Wouldn't a thread
+	executing various beanshell methods be mutating the callstack?  Don't we
 	need one CallStack per Thread in the interpreter?  The answer is that we do.
-	Any java.lang.Thread enters our script via an external (hard) Java 
-	reference via a This type interface, e.g.  the Runnable interface 
-	implemented by This or an arbitrary interface implemented by XThis.  
-	In that case the This invokeMethod() method (called by any interface that 
+	Any java.lang.Thread enters our script via an external (hard) Java
+	reference via a This type interface, e.g.  the Runnable interface
+	implemented by This or an arbitrary interface implemented by XThis.
+	In that case the This invokeMethod() method (called by any interface that
 	it exposes) creates a new CallStack for each external call.
 	<p>
 */
-public class CallStack 
+public class CallStack
 {
 	private Vector stack = new Vector(2);
 
 	public CallStack() { }
 
-	public CallStack( NameSpace namespace ) { 
+	public CallStack( NameSpace namespace ) {
 		push( namespace );
 	}
 

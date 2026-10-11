@@ -72,7 +72,7 @@ public class MassPieceDefiner extends PieceDefiner {
 
   private List<Class<? extends GamePiece>> getTemplate() {
     GamePiece p = PieceCloner.getInstance().clonePieceUnexpanded(definers.get(0).definer.getPiece());
-    final ArrayList<Class<? extends GamePiece>> types = new ArrayList<>();
+    final List<Class<? extends GamePiece>> types = new ArrayList<>();
     while (p instanceof Decorator) {
       types.add(p.getClass());
       p = ((Decorator) p).piece;

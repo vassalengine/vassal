@@ -177,7 +177,7 @@ public class Prefs implements Closeable {
     // We're not going to write, but you can't lock a non-writable FileChannel
     try (RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
       final FileChannel ch = raf.getChannel();
-      try (FileLock lock = ch.lock()) {
+      try (FileLock lock = ch.lock()) { // NOPMD
         final InputStream in = new BufferedInputStream(Channels.newInputStream(ch));
         storedValues.clear();
         try {
@@ -215,7 +215,7 @@ public class Prefs implements Closeable {
     // synchronized.
     try (RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
       final FileChannel ch = raf.getChannel();
-      try (FileLock lock = ch.lock()) {
+      try (FileLock lock = ch.lock()) { // NOPMD
         // read the old key-value pairs
         final InputStream in = new BufferedInputStream(Channels.newInputStream(ch));
         storedValues.load(in);

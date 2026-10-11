@@ -778,7 +778,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
     public DisplayText(Chatter c, String s) {
       this.c = c;
       if (s.startsWith("<>")) { //NON-NLS
-        msg = "&lt;(" + Chatter.getAnonymousUserName() + ")&gt;" + s.substring(2); // HTML-friendly //NON-NLS
+        msg = "&lt;(" + getAnonymousUserName() + ")&gt;" + s.substring(2); // HTML-friendly //NON-NLS
         // angle brackets
       }
       else {

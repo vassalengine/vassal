@@ -98,7 +98,7 @@ public class ErrorDialog {
       // remove this when the tile cache bug is fixed
       else if (showSpecialTileBugAdmonition(thrown)) {
         new Thread(() -> {
-          FutureUtils.wait(ErrorDialog.show("Bug10900.help"));
+          FutureUtils.wait(show("Bug10900.help"));
           SwingUtilities.invokeLater(() -> new BugDialog(frame, thrown).setVisible(true));
         }).start();
       }

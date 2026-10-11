@@ -4,23 +4,23 @@ package bsh;
 import java.util.*;
 
 /**
-	 Implementation of the enhanced for(:) statement.  
+	 Implementation of the enhanced for(:) statement.
 	 This statement uses BshIterable to support iteration over a wide variety
-	 of iterable types.  Under JDK 1.1 this statement supports primitive and 
-	 Object arrays, Vectors, and enumerations.  Under JDK 1.2 and later it 
+	 of iterable types.  Under JDK 1.1 this statement supports primitive and
+	 Object arrays, Vectors, and enumerations.  Under JDK 1.2 and later it
 	 additionally supports collections.
 
-	 @author Daniel Leuck 
+	 @author Daniel Leuck
 	 @author Pat Niemeyer
 */
-class BSHEnhancedForStatement extends SimpleNode implements ParserConstants 
+class BSHEnhancedForStatement extends SimpleNode implements ParserConstants
 {
 	String varName;
 
     BSHEnhancedForStatement(int id) { super(id); }
 
     public Object eval( CallStack callstack , Interpreter interpreter )
-		throws EvalError 
+		throws EvalError
 	{
 		Class elementType = null;
 		SimpleNode expression, statement=null;
@@ -29,13 +29,13 @@ class BSHEnhancedForStatement extends SimpleNode implements ParserConstants
 		SimpleNode firstNode =((SimpleNode)jjtGetChild(0));
 		int nodeCount = jjtGetNumChildren();
 		
-		if ( firstNode instanceof BSHType ) 
+		if ( firstNode instanceof BSHType )
 		{
 			elementType=((BSHType)firstNode).getType( callstack, interpreter );
 			expression=((SimpleNode)jjtGetChild(1));
 			if ( nodeCount>2 )
 				statement=((SimpleNode)jjtGetChild(2));
-		} else 
+		} else
 		{
 			expression=firstNode;
 			if ( nodeCount>1 )
@@ -49,7 +49,7 @@ class BSHEnhancedForStatement extends SimpleNode implements ParserConstants
 
 		if ( iteratee == Primitive.NULL )
 			throw new EvalError("The collection, array, map, iterator, or " +
-				"enumeration portion of a for statement cannot be null.", 
+				"enumeration portion of a for statement cannot be null.",
 				this, callstack );
 
 		CollectionManager cm = CollectionManager.getCollectionManager();

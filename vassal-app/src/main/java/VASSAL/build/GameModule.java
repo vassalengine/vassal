@@ -18,6 +18,7 @@
 package VASSAL.build;
 
 import VASSAL.Info;
+import VASSAL.build.module.AnimatedDiceButton;
 import VASSAL.build.module.BasicCommandEncoder;
 import VASSAL.build.module.BasicLogger;
 import VASSAL.build.module.ChartWindow;
@@ -126,7 +127,6 @@ import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.version.VersionUtils;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -223,12 +223,16 @@ public class GameModule extends AbstractConfigurable
   public static final String DRAWING_MOUSEOVER_PROPERTY = "DrawingMouseover"; //NON-NLS
   public static final String DRAWING_MOUSEOVER_INDEX_PROPERTY = "DrawingMouseoverIndex"; //NON-NLS
 
+  private static final String GAME_FILENAME_PROPERTY = "ModuleGameFileName"; //NON-NLS
+
   public static final String IS_VISIBLE = "_isVisible"; //NON-NLS
+
+  public static final String UI_PIECE_COUNT = "UiPieceCount";
+  public static final String UI_PIECE_INDEX = "UiPieceIndex";
 
   private static final char COMMAND_SEPARATOR = KeyEvent.VK_ESCAPE;
 
   public static final String RECENT_GAMES = "RecentGames"; //NON-NLS
-  private static final String GAME_FILE_PROPERTY = "VassalGameFileName"; //NON-NLS
 
   private final List<MenuItemProxy> openRecentItems = new ArrayList<>();
 
@@ -260,7 +264,7 @@ public class GameModule extends AbstractConfigurable
 
   private static GameModule theModule;
 
-  private static String DEFAULT_MODULE_VERSION = "0.0"; //$NON-NLS-1$
+  private static final String DEFAULT_MODULE_VERSION = "0.0"; //$NON-NLS-1$
 
   private String moduleVersion = DEFAULT_MODULE_VERSION;
   private String vassalVersionCreated = "0.0";  //$NON-NLS-1$
@@ -693,7 +697,7 @@ public class GameModule extends AbstractConfigurable
     final DataArchive darch = getDataArchive();
 
     final File f = new File(darch.getName());
-    if (!f.exists() || f.length() == 0) {
+    if (!f.isFile() || f.length() == 0) {
       // new module, no buildFile
       build(null);
     }
@@ -767,7 +771,7 @@ public class GameModule extends AbstractConfigurable
      */
     if (e != null) {
       gameName = e.getAttribute(MODULE_NAME).strip();
-      if (e.getAttribute(VASSAL_VERSION_CREATED).length() > 0) {
+      if (!e.getAttribute(VASSAL_VERSION_CREATED).isEmpty()) {
         vassalVersionCreated = e.getAttribute(VASSAL_VERSION_CREATED);
       }
     }
@@ -805,16 +809,16 @@ public class GameModule extends AbstractConfigurable
    */
   private void initIdentityPreferences() {
     idChangeSupport = new PropertyChangeSupport(this);
-    final StringConfigurer fullName = new StringConfigurer(GameModule.REAL_NAME, Resources.getString("Prefs.name_label"), Resources.getString("Prefs.newbie"));   //$NON-NLS-1$ //$NON-NLS-2$
+    final StringConfigurer fullName = new StringConfigurer(REAL_NAME, Resources.getString("Prefs.name_label"), Resources.getString("Prefs.newbie"));   //$NON-NLS-1$ //$NON-NLS-2$
     fullName.addPropertyChangeListener(evt -> idChangeSupport.firePropertyChange(evt));
-    final TextConfigurer profile = new TextConfigurer(GameModule.PERSONAL_INFO, Resources.getString("Prefs.personal_info"), "");   //$NON-NLS-1$ //$NON-NLS-2$
+    final TextConfigurer profile = new TextConfigurer(PERSONAL_INFO, Resources.getString("Prefs.personal_info"), "");   //$NON-NLS-1$ //$NON-NLS-2$
     profile.addPropertyChangeListener(evt -> idChangeSupport.firePropertyChange(evt));
-    passwordConfigurer = new ToggleablePasswordConfigurer(GameModule.SECRET_NAME, Resources.getString("Prefs.password_label"), ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-    passwordConfigurer.addPropertyChangeListener(evt -> GameModule.setUserId((String) evt.getNewValue()));
+    passwordConfigurer = new ToggleablePasswordConfigurer(SECRET_NAME, Resources.getString("Prefs.password_label"), ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    passwordConfigurer.addPropertyChangeListener(evt -> setUserId((String) evt.getNewValue()));
     getPrefs().addOption(Resources.getString("Prefs.personal_tab"), fullName);   //$NON-NLS-1$ //$NON-NLS-2$
     getPrefs().addOption(Resources.getString("Prefs.personal_tab"), passwordConfigurer);   //$NON-NLS-1$ //$NON-NLS-2$
     getPrefs().addOption(Resources.getString("Prefs.personal_tab"), profile);  //$NON-NLS-1$
-    GameModule.setUserId(passwordConfigurer.getValueString());
+    setUserId(passwordConfigurer.getValueString());
   }
 
   private void initRecentGamesMenu() {
@@ -1127,7 +1131,7 @@ public class GameModule extends AbstractConfigurable
    * Lists all the buildFile (XML) attribute names for this component.
    * If this component is ALSO an {@link AbstractConfigurable}, then this list of attributes determines the appropriate
    * attribute order for {@link AbstractConfigurable#getAttributeDescriptions()} and {@link AbstractConfigurable#getAttributeTypes()}.
-   * @return a list of all buildFile (XML) attribute names for this component
+   * @return an array of all buildFile (XML) attribute names for this component
    * @see AbstractBuildable
    */
   @Override
@@ -1182,7 +1186,7 @@ public class GameModule extends AbstractConfigurable
   /**
    * List of subcomponents which can be added to a GameModule.
    *
-   * @return a list of valid sub-component Classes.  If a Class
+   * @return an array of valid subcomponent Classes.  If a Class
    * appears in this list, then instances of that class may be added
    * to this component from the Editor's {@link ConfigureTree} window by
    * right-clicking on the component and selecting the appropriate "Add"
@@ -1205,6 +1209,7 @@ public class GameModule extends AbstractConfigurable
 //                  InternetDiceButton.class,   // Disable internet dice button until Bones server can prevent email spamming
       RandomTextButton.class,
       SpecialDiceButton.class,
+      AnimatedDiceButton.class,
       PredefinedSetup.class,
       ChartWindow.class,
       PrivateMap.class,
@@ -1854,7 +1859,9 @@ public class GameModule extends AbstractConfigurable
     if (c != null && !c.isNull()) {
       synchronized (loggingLock) {
         if (loggingPaused) {
-          pausedCommands.getFirst().append(c);
+          Command topCmd = pausedCommands.pop();
+          topCmd = topCmd.append(c);
+          pausedCommands.push(topCmd);
         }
         else {
           getServer().sendToOthers(c);
@@ -2218,7 +2225,7 @@ public class GameModule extends AbstractConfigurable
    * @return <code>true</code> if user supplied a real name
    */
   public boolean isRealName() {
-    final String name = (String)getPrefs().getValue(GameModule.REAL_NAME);
+    final String name = (String)getPrefs().getValue(REAL_NAME);
     return name != null && !name.isEmpty() && !name.equals(Resources.getString("Prefs.newbie"));
   }
 
@@ -2230,7 +2237,7 @@ public class GameModule extends AbstractConfigurable
    * @return <code>true</code> if user supplied a real password
    */
   public boolean isNonBlankPassword() {
-    final String pwd = (String)getPrefs().getValue(GameModule.SECRET_NAME);
+    final String pwd = (String)getPrefs().getValue(SECRET_NAME);
     return (pwd != null) && !pwd.isEmpty();
   }
 
@@ -2248,7 +2255,7 @@ public class GameModule extends AbstractConfigurable
       return mySide == null ? "" : mySide;  //$NON-NLS-1$
     }
     else if (GlobalOptions.PLAYER_NAME.equals(key) || GlobalOptions.PLAYER_NAME_ALT.equals(key)) {
-      return getPrefs().getValue(GameModule.REAL_NAME);
+      return getPrefs().getValue(REAL_NAME);
     }
     else if (GlobalOptions.PLAYER_ID.equals(key) || GlobalOptions.PLAYER_ID_ALT.equals(key)) {
       return GlobalOptions.getInstance().getPlayerId();
@@ -2274,13 +2281,13 @@ public class GameModule extends AbstractConfigurable
     else if (MODULE_OTHER2_PROPERTY.equals(key)) {
       return moduleOther2;
     }
-    else if (GameModule.MODULE_CURRENT_LOCALE.equals(key)) {
+    else if (MODULE_CURRENT_LOCALE.equals(key)) {
       return Resources.getLocale().getLanguage();
     }
-    else if (GameModule.MODULE_CURRENT_LOCALE_NAME.equals(key)) {
+    else if (MODULE_CURRENT_LOCALE_NAME.equals(key)) {
       return Resources.getLocale().getDisplayName();
     }
-    else if (GAME_FILE_PROPERTY.equals(key)) {
+    else if (GAME_FILENAME_PROPERTY.equals(key)) {
       return gameFile;
     }
     else if (DRAWING_MOUSEOVER_PROPERTY.equals(key)) {
@@ -2288,6 +2295,15 @@ public class GameModule extends AbstractConfigurable
     }
     else if (DRAWING_MOUSEOVER_INDEX_PROPERTY.equals(key)) {
       return CounterDetailViewer.isDrawingMouseOver() ? "2" : "1";
+    }
+    else if (GAME_FILENAME_PROPERTY.equals(key)) {
+      return gameFile;
+    }
+    else if (UI_PIECE_COUNT.equals(key)) {
+      return String.valueOf(getUiPieceCount());
+    }
+    else if (UI_PIECE_INDEX.equals(key)) {
+      return String.valueOf(getUiPieceIndex());
     }
 
     //BR// MapName_isVisible property for each map window
@@ -2331,6 +2347,50 @@ public class GameModule extends AbstractConfigurable
     }
   }
 
+  /**
+   * The count of pieces that are currently being acted on as part of a UI gesture instigated by this client.
+   * Will be 0 if a multi-piece UI gesture is not underway
+   *   - Right-click menu option on a counter(s)
+   *   - Key-pressed while piece(s) are selected
+   *   - Apply after Move Key being applied after a Drag'n'Drop move
+   */
+  private int uiPieceCount;
+
+  /**
+   * The index (starting at 1) of the piece currently being processed as part of a multi-piece UI gesture
+   */
+  private int uiPieceIndex;
+
+  /** Return number of pieces to be processed by the current multi-piece UI gesture */
+  public int getUiPieceCount() {
+    return uiPieceCount;
+  }
+
+  /** Return the index of the current piece being processed by the current multi-piece UI gesture */
+  public int getUiPieceIndex() {
+    return uiPieceIndex;
+  }
+
+  /**
+   * A multi-piece UI gesture is starting. Record the number of pieces to be processed and reset the counter.
+   * @param pieceCount  Number of pieces to be processed
+   */
+  public final void initializeUiPieceProcessing(int pieceCount) {
+    uiPieceCount = pieceCount;
+    uiPieceIndex = 0;
+  }
+
+  /** The next piece in a multi-piece UI gesture is about to be processed. */
+  public final void processNextUiPiece() {
+    uiPieceIndex++;
+  }
+
+  /** Record the end of a multi-piece UI gesture */
+  public final void finalizeUiPieceProcessing() {
+    uiPieceCount = 0;
+    uiPieceIndex = 0;
+  }
+
   @Override
   public List<String> getPropertyNames() {
     final List<String> l = new ArrayList<>();
@@ -2346,7 +2406,9 @@ public class GameModule extends AbstractConfigurable
     l.add(MODULE_CURRENT_LOCALE_NAME);
     l.add(MODULE_VASSAL_VERSION_CREATED_PROPERTY);
     l.add(MODULE_VASSAL_VERSION_RUNNING_PROPERTY);
-    l.add(GAME_FILE_PROPERTY);
+    l.add(GAME_FILENAME_PROPERTY);
+    l.add(UI_PIECE_COUNT);
+    l.add(UI_PIECE_INDEX);
 
     return l;
   }
@@ -2480,7 +2542,7 @@ public class GameModule extends AbstractConfigurable
   }
 
   /**
-   * @return a cumulative CRC from all of our files
+   * A cumulative CRC from all of our files
    */
   private void buildCrc() {
     final List<File> files = new ArrayList<>();

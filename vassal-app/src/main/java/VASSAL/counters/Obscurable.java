@@ -21,7 +21,6 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.ObscurableOptions;
 import VASSAL.build.module.PlayerRoster;
 import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.map.CounterDetailViewer;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
@@ -221,7 +220,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   }
 
   public boolean isAutoPeeking() {
-    return autoPeekRollover && CounterDetailViewer.isDrawingMouseOver() && obscuredToOthers() && !obscuredToMe();
+    return autoPeekRollover && getMap() != null && getMap().isDrawingMouseOver() && obscuredToOthers() && !obscuredToMe();
   }
 
   @Override
@@ -316,7 +315,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       return obscuredBy;
     }
     else if (Properties.VISIBLE_STATE.equals(key)) {
-      return myGetState() + isPeeking() + getProperty(Properties.SELECTED) + obscuredToMe() + piece.getProperty(key);
+      return myGetState() + isPeeking() + isAutoPeeking() + getProperty(Properties.SELECTED) + obscuredToMe() + piece.getProperty(key);
     }
     // FIXME: Access to Obscured properties
     // If piece is obscured to me, then mask any properties returned by
@@ -338,7 +337,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
 //        return myGetState();
 //      }
 //      else {
-//        return ((BasicPiece) Decorator.getInnermost(this)).getPublicProperty(key);
+//        return ((BasicPiece) getInnermost(this)).getPublicProperty(key);
 //      }
 //    }
     else {
@@ -349,7 +348,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   @Override
   public Object getLocalizedProperty(Object key) {
     if (obscuredToMe()) {
-      return ((BasicPiece) Decorator.getInnermost(this)).getLocalizedPublicProperty(key);
+      return ((BasicPiece) getInnermost(this)).getLocalizedPublicProperty(key);
     }
     else if (Properties.OBSCURED_TO_ME.equals(key)) {
       return obscuredToMe();
@@ -409,7 +408,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       final Rectangle bounds2 = piece.getShape().getBounds();
       final Rectangle obsBounds2 = obscuredToMeView.getShape().getBounds();
       piece.draw(g, x - (int) (0.4 * zoom * (obsBounds2.width - bounds2.width)),
-                    y - (int) (0.4 * zoom * (obsBounds2.height - bounds2.height)), 
+                    y - (int) (0.4 * zoom * (obsBounds2.height - bounds2.height)),
         obs, zoom * 0.8);
       break;
     case PEEK:
@@ -481,7 +480,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     if (obscuredToMe()) {
       final KeyCommand[] myC = myGetKeyCommands();
       final KeyCommand[] c = (KeyCommand[])
-        Decorator.getInnermost(this).getProperty(Properties.KEY_COMMANDS);
+        getInnermost(this).getProperty(Properties.KEY_COMMANDS);
 
       if (c == null) return myC;
       else return ArrayUtils.addAll(myC, c);
@@ -493,8 +492,8 @@ public class Obscurable extends Decorator implements TranslatablePiece {
 
   @Override
   public KeyCommand[] myGetKeyCommands() {
-    final ArrayList<KeyCommand> l = new ArrayList<>();
-    final GamePiece outer = Decorator.getOutermost(this);
+    final List<KeyCommand> l = new ArrayList<>();
+    final GamePiece outer = getOutermost(this);
 
     // Hide Command
     if (keyCommand == null) { // Backwards compatibility with VASL classes
@@ -629,7 +628,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     if (retVal != null && PEEK == displayStyle &&
         peekKey == null && obscuredToOthers()) {
       // FIXME: This probably causes a race condition. Can we do this directly?
-      final Runnable runnable = () -> KeyBuffer.getBuffer().remove(Decorator.getOutermost(this));
+      final Runnable runnable = () -> KeyBuffer.getBuffer().remove(getOutermost(this));
       SwingUtilities.invokeLater(runnable);
     }
     return retVal;
@@ -676,13 +675,14 @@ public class Obscurable extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     l.add(Properties.OBSCURED_TO_OTHERS);
     l.add(Properties.OBSCURED_TO_ME);
     return l;
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof Obscurable)) return false;
     final Obscurable c = (Obscurable) o;
@@ -730,15 +730,15 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     private final StringConfigurer peekCommandInput;
     private final BooleanConfigurer autoPeekInput;
     private final TraitConfigPanel controls = new TraitConfigPanel();
-    private final String[] optionNames = {"B", "P", "I", "2", "U"}; // NON-NLS
-    private final String[] optionKeys = {
+    private static final String[] optionNames = {"B", "P", "I", "2", "U"}; // NON-NLS
+    private static final String[] optionKeys = {
       "Editor.Obscurable.background",
       "Editor.Obscurable.plain",
       "Editor.Obscurable.inset",
       "Editor.Obscurable.inset2",
       "Editor.Obscurable.use_image"
     };
-    private final char[] optionChars = {BACKGROUND, PEEK, INSET, INSET2, IMAGE};
+    private static final char[] optionChars = {BACKGROUND, PEEK, INSET, INSET2, IMAGE};
     private final ImageSelector imagePicker;
     private final PieceAccessConfigurer accessConfig;
     private final JPanel showDisplayOption;
@@ -765,7 +765,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       dealKeyInput = new NamedHotKeyConfigurer(p.dealKey);
       controls.add("Editor.Obscurable.deal_key", dealKeyInput);
 
-      dealExpressionInput = new FormattedExpressionConfigurer(p.dealExpression, Decorator.getOutermost(p));
+      dealExpressionInput = new FormattedExpressionConfigurer(p.dealExpression, getOutermost(p));
       controls.add("Editor.Obscurable.deal_expression", dealExpressionInput);
 
       picker = new ImageSelector(p.imageName, 512, 512);

@@ -63,7 +63,7 @@ public class Marker extends Decorator implements EditablePiece {
   public void mySetType(String s) {
     s = s.substring(ID.length());
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     while (st.hasMoreTokens()) {
       l.add(st.nextToken());
     }
@@ -198,12 +198,13 @@ public class Marker extends Decorator implements EditablePiece {
    */
   @Override
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     Collections.addAll(l, keys);
     return l;
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof Marker)) return false;
     final Marker c = (Marker) o;
@@ -248,7 +249,7 @@ public class Marker extends Decorator implements EditablePiece {
 
     @Override
     public String getType() {
-      return Marker.ID + propName.getValueString();
+      return ID + propName.getValueString();
     }
   }
 
@@ -262,10 +263,12 @@ public class Marker extends Decorator implements EditablePiece {
   }
 
   /**
+   * This implementation differs from the typical as the Marker's property names
+   * are the list of {@link #keys}.
    * @return a list of any Property Names referenced in the Decorator, if any (for search)
    */
   @Override
   public List<String> getPropertyList() {
-    return Arrays.asList(values);
+    return Arrays.asList(keys);
   }
 }

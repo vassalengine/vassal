@@ -109,15 +109,15 @@ class JPEGDecoder {
   public static void main(String[] args) throws IOException {
     try (InputStream fin = Files.newInputStream(Path.of(args[0]));
          DataInputStream in = new DataInputStream(fin)) {
-      if (!JPEGDecoder.decodeSignature(in)) {
+      if (!decodeSignature(in)) {
         System.out.println("Not a JPEG"); //NON-NLS
       }
 
       Chunk ch;
       do {
-        ch = JPEGDecoder.decodeChunk(in);
+        ch = decodeChunk(in);
         System.out.println("type == " + Integer.toHexString(ch.type) + ", length == " + ch.data.length); //NON-NLS
-      } while (ch.type != JPEGDecoder.EOI);
+      } while (ch.type != EOI);
     }
   }
 }

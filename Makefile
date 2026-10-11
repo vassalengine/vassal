@@ -57,7 +57,8 @@ MAVEN_VERSION:=$(VNUM)-SNAPSHOT
 
 JARNAME:=vassal-app-$(MAVEN_VERSION)
 
-GITBRANCH:=$(shell git rev-parse --abbrev-ref HEAD)
+#Slashes are substituted so as not to create subdirectories
+GITBRANCH := $(subst /,_,$(shell git rev-parse --abbrev-ref HEAD))
 GITCOMMIT:=$(shell git rev-parse --short HEAD)
 
 ifeq ($(shell git describe --tags), $(MAVEN_VERSION))
@@ -110,11 +111,10 @@ $(TMPDIR) $(JDOCDIR):
 $(LIBDIR)/Vengine.jar: version-set
 	$(MVN) deploy -DgitVersion=$(VERSION) -Dasciidoctor.attributes=optimize $(SKIPS)
 	mv $(LIBDIR)/$(JARNAME).jar $@
-	mv $(LIBDIR)/vassal-agent-$(MAVEN_VERSION).jar $(LIBDIR)/vassal-agent.jar
 
 $(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar | $(TMPDIR)
-	echo -n jdk.crypto.ec,java.instrument, >$@
-	jdeps --ignore-missing-deps --print-module-deps --multi-release 11 $(LIBDIR)/*.jar | tr -d '\n' >>$@
+	echo -n jdk.crypto.ec, >$@
+	jdeps --ignore-missing-deps --print-module-deps --multi-release 17 $(LIBDIR)/*.jar | tr -d '\n' >>$@
 
 #$(DISTDIR)/windows/VASSAL.ico:
 #	convert -bordercolor Transparent -border 1x1 src/icons/22x22/VASSAL.png $(TMPDIR)/VASSAL-24.png
@@ -200,7 +200,12 @@ $(TMPDIR)/linux-$(VERSION)-build/VASSAL-$(VERSION): $(LIBDIR)/Vengine.jar
 	cp -a $(DOCDIR) $@/doc
 	cp -a CHANGES LICENSE README.md $@
 	cp -a $(LIBDIR) $@/lib
-	cp $(DISTDIR)/VASSAL.sh $@
+	cp dist/linux/VASSAL.sh $@
+	cp dist/linux/org.vassalengine.vassal.desktop $@
+	cp dist/linux/org.vassalengine.vassal.metainfo.xml $@
+	cp dist/linux/org.vassalengine.vassal.mime.xml $@
+	cp dist/linux/vassal.6 $@
+	cp dist/linux/integration.sh $@
 	cp vassal-app/src/main/resources/icons/scalable/VASSAL.svg $@
 	find $@ -type f -exec chmod 644 \{\} \+
 	find $@ -type d -exec chmod 755 \{\} \+
@@ -218,7 +223,7 @@ $(TMPDIR)/windows-%-$(VERSION)-build:
 
 JREOPTS:=
 
-$(TMPDIR)/windows-noinst-$(VERSION)-build/VASSAL.l4j.xml: JREOPTS:=<opt>-javaagent:lib\\vassal-agent.jar</opt><opt>--add-opens java.desktop/sun.awt.shell=org.vassalengine.agent</opt><opt>-DVASSAL.conf="%EXEDIR%\\..\\VASSAL"</opt>
+$(TMPDIR)/windows-noinst-$(VERSION)-build/VASSAL.l4j.xml: JREOPTS:=<opt>-DVASSAL.conf="%EXEDIR%\\..\\VASSAL"</opt>
 
 $(TMPDIR)/windows-%-$(VERSION)-build/VASSAL.l4j.xml: $(DISTDIR)/windows/VASSAL.l4j.xml.in | $(TMPDIR)/windows-%-$(VERSION)-build
 	sed -e 's/%NUMVERSION%/$(VNUM)/g' \
@@ -281,7 +286,7 @@ release-macos: release-macos-universal
 
 release-macos-universal: $(TMPDIR)/VASSAL-$(VERSION)-macos-universal.dmg
 
-release-windows: release-windows-x86_32 release-windows-x86_64 release-windows-aarch64
+release-windows: release-windows-x86_64 
 
 release-windows-x86_32: $(TMPDIR)/VASSAL-$(VERSION)-windows-x86_32.exe
 
@@ -293,8 +298,8 @@ release-windows-noinst: $(TMPDIR)/VASSAL-$(VERSION)-windows-noinst.zip
 
 release-other: $(TMPDIR)/VASSAL-$(VERSION)-other.zip
 
-$(TMPDIR)/VASSAL-$(VERSION).sha256: $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2 $(TMPDIR)/VASSAL-$(VERSION)-macos-universal.dmg $(TMPDIR)/VASSAL-$(VERSION)-windows-x86_32.exe $(TMPDIR)/VASSAL-$(VERSION)-windows-x86_64.exe $(TMPDIR)/VASSAL-$(VERSION)-windows-aarch64.exe $(TMPDIR)/VASSAL-$(VERSION)-other.zip
-	pushd $(TMPDIR) ; sha256sum $(^F) >$(@F) ; popd
+$(TMPDIR)/VASSAL-$(VERSION).sha256:
+	pushd $(TMPDIR) ; sha256sum VASSAL-$(VERSION)-linux.tar.bz2 VASSAL-$(VERSION)-macos-universal.dmg VASSAL-$(VERSION)-windows-x86_32.exe VASSAL-$(VERSION)-windows-x86_64.exe VASSAL-$(VERSION)-windows-aarch64.exe VASSAL-$(VERSION)-other.zip >$(@F) ; popd
 
 release-sha256: $(TMPDIR)/VASSAL-$(VERSION).sha256
 
@@ -306,7 +311,7 @@ $(TMPDIR)/NOTES-%: $(DISTDIR)/notes/NOTES-%.jinja $(TMPDIR)/notes.json | $(TMPDI
 
 release-announcements: $(TMPDIR)/NOTES-bgg $(TMPDIR)/NOTES-csw $(TMPDIR)/NOTES-news $(TMPDIR)/NOTES-fb $(TMPDIR)/NOTES-gh
 
-release: clean release-other release-linux release-windows release-macos release-sha256
+release: clean release-other release-linux release-windows release-macos
 
 clean-release:
 	$(RM) -r $(TMPDIR)/* $(LIBDIR)/Vengine.jar

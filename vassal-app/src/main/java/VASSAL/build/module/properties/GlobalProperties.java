@@ -190,7 +190,7 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
 
   @Override
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     for (final GlobalProperty prop : getComponentsOf(GlobalProperty.class)) {
       l.add(prop.getConfigureName());
     }

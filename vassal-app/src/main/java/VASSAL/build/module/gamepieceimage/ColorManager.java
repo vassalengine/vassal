@@ -19,7 +19,6 @@ package VASSAL.build.module.gamepieceimage;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
-import VASSAL.build.Configurable;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.i18n.Resources;
@@ -29,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -209,7 +209,7 @@ public class ColorManager extends AbstractConfigurable {
       final ColorSwatch def = (ColorSwatch) b;
       userColors.put(def.getConfigureName(), def);
       def.addPropertyChangeListener(evt -> {
-        if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
+        if (NAME_PROPERTY.equals(evt.getPropertyName())) {
           userColors.remove(evt.getOldValue());
           userColors.put((String) evt.getNewValue(),
                          (ColorSwatch) evt.getSource());
@@ -245,10 +245,10 @@ public class ColorManager extends AbstractConfigurable {
   }
 
   public String[] getColorNames() {
-    final ArrayList<ColorSwatch> a = new ArrayList<>(userColors.values());
+    final List<ColorSwatch> a = new ArrayList<>(userColors.values());
     Collections.sort(a);
 
-    final ArrayList<String> names =
+    final List<String> names =
       new ArrayList<>(a.size() + standardColors.length);
 
     for (final ColorSwatch cs : a) {
@@ -260,10 +260,10 @@ public class ColorManager extends AbstractConfigurable {
   }
 
   public String[] getColorDisplayNames() {
-    final ArrayList<ColorSwatch> a = new ArrayList<>(userColors.values());
+    final List<ColorSwatch> a = new ArrayList<>(userColors.values());
     Collections.sort(a);
 
-    final ArrayList<String> names =
+    final List<String> names =
       new ArrayList<>(a.size() + standardColors.length);
 
     for (final ColorSwatch cs : a) {

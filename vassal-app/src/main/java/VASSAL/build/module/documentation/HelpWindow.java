@@ -20,7 +20,6 @@ package VASSAL.build.module.documentation;
 import java.net.URL;
 
 import javax.swing.JFrame;
-import javax.swing.WindowConstants;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
@@ -37,7 +36,7 @@ public class HelpWindow extends JFrame implements HyperlinkListener {
 
   public HelpWindow(String title, URL contents) {
     super(title);
-    setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+    setDefaultCloseOperation(HIDE_ON_CLOSE);
     setJMenuBar(MenuManager.getInstance().getMenuBarFor(this));
     helper.setup(this, contents);
   }

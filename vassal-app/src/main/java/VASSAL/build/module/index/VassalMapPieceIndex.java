@@ -149,7 +149,7 @@ public class VassalMapPieceIndex {
       final Point pos = piece.getPosition();
       final MapGrid grid = map.findBoard(pos) == null ? null : map.findBoard(pos).getGrid();
 
-      double calculatedRange;
+      final double calculatedRange;
       if (grid == null) {
         calculatedRange = Point.distance(point.x, point.y, pos.x, pos.y);
       }

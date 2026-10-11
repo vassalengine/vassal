@@ -1,0 +1,15 @@
+Debian package of VASSAL
+------------------------
+
+To build this Debian package somewhat cleanly, I by-passed the
+upstream build system (Maven) entirely, and hand-crafted the build
+directly in debian/rules.
+
+The package will integrated in to the desktop automatically.  The
+shell executable has been updated to be more flexible than upstream.
+
+Reminder: To make new Debian release, do
+
+   DEBEMAIL=... \
+      dch -release-heuristic log --no-auto-nmu -i "..."
+      

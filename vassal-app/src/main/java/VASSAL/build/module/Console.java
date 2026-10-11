@@ -220,8 +220,8 @@ public class Console {
       sb.append("All Attachments");
     }
     else {
-      sb.append("Attachment ");
-      sb.append(compareName);
+      sb.append("Attachment ")
+        .append(compareName);
     }
     sb.append(useSelected ? ", Selected units only" : ", All units")
       .append(activeOnly ? ", Active only" : "")
@@ -399,7 +399,7 @@ public class Console {
       // get local sides list
       final PlayerRoster pr = new PlayerRoster();
 
-      final ArrayList<String> sides = new ArrayList<>(pr.getSides());
+      final List<String> sides = new ArrayList<>(pr.getSides());
 
       if (sides.isEmpty()) {
         show("No sides defined.");

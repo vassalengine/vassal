@@ -31,7 +31,7 @@ public class SaveModuleAction extends SaveAction {
   public void actionPerformed(ActionEvent e) {
     final ValidationReport report = new ValidationReport();
     GameModule.getGameModule().validate(GameModule.getGameModule(), report);
-    if (report.getWarnings().size() == 0) {
+    if (report.getWarnings().isEmpty()) {
       save();
     }
     else {

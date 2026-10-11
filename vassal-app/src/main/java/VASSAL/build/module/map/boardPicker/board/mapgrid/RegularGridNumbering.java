@@ -464,8 +464,10 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
           else {
             regex.append('(').append(getMatchingPattern(vType, vLeading)).append(')');
             rowGroup = ++groupCount;
-            regex.append(Pattern.quote(sep));
-            regex.append('(').append(getMatchingPattern(hType, hLeading)).append(')');
+            regex.append(Pattern.quote(sep))
+              .append('(')
+              .append(getMatchingPattern(hType, hLeading))
+              .append(')');
             colGroup = ++groupCount;
           }
         }

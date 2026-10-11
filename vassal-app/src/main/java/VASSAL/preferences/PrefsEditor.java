@@ -169,8 +169,7 @@ public class PrefsEditor {
       category = Resources.getString("Prefs.general_tab"); //$NON-NLS-1$
     }
 
-    JPanel pan;
-
+    final JPanel pan;
     final int i = optionsTab.indexOfTab(category);
     if (i == -1) { // No match
       pan = new JPanel();

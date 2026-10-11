@@ -38,7 +38,7 @@ public class Hex {
     return new Hex(-r, -s, -q);
   }
 
-  public static final List<Hex> directions = new ArrayList<Hex>() {
+  public static final List<Hex> directions = new ArrayList<>() {
     {
       add(new Hex(1, 0, -1));
       add(new Hex(1, -1, 0));
@@ -50,14 +50,14 @@ public class Hex {
   };
 
   public static Hex direction(int direction) {
-    return Hex.directions.get(direction);
+    return directions.get(direction);
   }
 
   public Hex neighbor(int direction) {
-    return add(Hex.direction(direction));
+    return add(direction(direction));
   }
 
-  public static final List<Hex> diagonals = new ArrayList<Hex>() {
+  public static final List<Hex> diagonals = new ArrayList<>() {
     {
       add(new Hex(2, -1, -1));
       add(new Hex(1, -2, 1));
@@ -69,7 +69,7 @@ public class Hex {
   };
 
   public Hex diagonalNeighbor(int direction) {
-    return add(Hex.diagonals.get(direction));
+    return add(diagonals.get(direction));
   }
 
   public int length() {

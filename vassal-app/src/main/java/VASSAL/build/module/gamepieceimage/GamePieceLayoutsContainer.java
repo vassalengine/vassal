@@ -19,7 +19,6 @@ package VASSAL.build.module.gamepieceimage;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
-import VASSAL.build.Configurable;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.i18n.Resources;
@@ -89,7 +88,7 @@ public class GamePieceLayoutsContainer extends AbstractConfigurable {
       final GamePieceLayout def = (GamePieceLayout) b;
       definitions.put(def.getConfigureName(), def);
       def.addPropertyChangeListener(evt -> {
-        if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
+        if (NAME_PROPERTY.equals(evt.getPropertyName())) {
           definitions.remove(evt.getOldValue());
           definitions.put((String) evt.getNewValue(),
                           (GamePieceLayout) evt.getSource());

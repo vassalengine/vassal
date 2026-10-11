@@ -144,7 +144,7 @@ public abstract class AbstractDeckKeyCommand extends AbstractConfigurable implem
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    final ArrayList<NamedKeyStroke> l = new ArrayList<>();
+    final List<NamedKeyStroke> l = new ArrayList<>();
     l.add(keyStroke);
     return l;
   }
@@ -156,7 +156,7 @@ public abstract class AbstractDeckKeyCommand extends AbstractConfigurable implem
    */
   @Override
   public List<String> getMenuTextList() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     l.add(getComponentName());
     return l;
   }
@@ -168,7 +168,7 @@ public abstract class AbstractDeckKeyCommand extends AbstractConfigurable implem
    */
   @Override
   public List<String> getFormattedStringList() {
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     l.add(reportFormat.getFormat());
     return l;
   }

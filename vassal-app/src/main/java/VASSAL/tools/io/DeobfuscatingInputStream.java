@@ -21,19 +21,29 @@ import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
+
+import org.tukaani.xz.XZInputStream;
 
 /**
- * A {@link FilterInputStream} which converts a file created with
- * {@link ObfuscatingOutputStream} back into plain text.
- * Additionally, plain text will be passed through unchanged.
+ * A {@link FilterInputStream} which reads a saved game's command log in
+ * whichever form it was written: XZ-compressed (VASSAL 3.8), obfuscated in
+ * hex (through 3.7), or plain text.
+ * Files in the legacy hex-encoded format are also handled, and
+ * plain text will be passed through unchanged.
  *
  * @author Joel Uckelman
  * @since 3.2.0
  */
 public class DeobfuscatingInputStream extends FilterInputStream {
+
+  /** The header of the hex-encoded obfuscated format written before VASSAL 3.8. */
+  private static final byte[] LEGACY_HEADER = { '!', 'V', 'C', 'S', 'K' };
+
+  /** The magic bytes beginning every XZ stream. */
+  private static final byte[] XZ_MAGIC = { (byte) 0xFD, '7', 'z', 'X', 'Z', 0 };
 
   /**
    * @param in the stream to wrap
@@ -42,49 +52,43 @@ public class DeobfuscatingInputStream extends FilterInputStream {
   public DeobfuscatingInputStream(InputStream in) throws IOException {
     super(null);
 
-    final byte[] header = new byte[ObfuscatingOutputStream.HEADER.length()];
-    readFully(in, header, header.length);
-    if (new String(header, StandardCharsets.UTF_8).equals(ObfuscatingOutputStream.HEADER)) {
-      this.in = new DeobfuscatingInputStreamImpl(in);
+    final byte[] buf = in.readNBytes(XZ_MAGIC.length);
+
+    if (Arrays.equals(buf, XZ_MAGIC)) {
+      // Compressed, as written since VASSAL 3.8; the magic belongs to the stream.
+      this.in = new XZInputStream(unread(in, buf));
+    }
+    else if (buf.length > LEGACY_HEADER.length && Arrays.equals(Arrays.copyOf(buf, LEGACY_HEADER.length), LEGACY_HEADER)) {
+      // Obfuscated in hex, through VASSAL 3.7; the byte after the header is the key's.
+      this.in = new LegacyDeobfuscatingInputStreamImpl(unread(in, Arrays.copyOfRange(buf, LEGACY_HEADER.length, buf.length)));
+    }
+    else if (buf.length == 0) {
+      this.in = in;
     }
     else {
-      final PushbackInputStream pin =
-        new PushbackInputStream(in, header.length);
-      pin.unread(header);
-      this.in = pin;
+      // Neither; pass the whole stream through unchanged.
+      this.in = unread(in, buf);
     }
+  }
+
+  private static InputStream unread(InputStream in, byte[] bytes) throws IOException {
+    final PushbackInputStream pin = new PushbackInputStream(in, bytes.length);
+    pin.unread(bytes);
+    return pin;
   }
 
   /**
-   * Reads the given number of bytes.
-   *
-   * @param in the source
-   * @param bytes the destination
-   * @param off the offset into the destination array
-   * @param len the number of bytes to read
-   * @throws IOException if <code>len</code> bytes cannot be read
+   * Deobfuscates the legacy format, in which the key and each data byte
+   * were written as a pair of hex digits.
    */
-  private static int readFully(InputStream in, byte[] bytes, int len)
-                                                           throws IOException {
-    int count;
-    int n = 0;
-    while (n < len) {
-      count = in.read(bytes, n, len - n);
-      if (count < 0) break;
-      n += count;
-    }
-
-    return n;
-  }
-
-  private static class DeobfuscatingInputStreamImpl extends FilterInputStream {
+  private static class LegacyDeobfuscatingInputStreamImpl extends FilterInputStream {
     private final byte key;
-    private final byte[] pair = new byte[2];
+    private final byte[] pair;
 
-    public DeobfuscatingInputStreamImpl(InputStream in) throws IOException {
+    public LegacyDeobfuscatingInputStreamImpl(InputStream in) throws IOException {
       super(in);
 
-      readFully(in, pair, 2);
+      pair = in.readNBytes(2);
       key = (byte) ((unhex(pair[0]) << 4) | unhex(pair[1]));
     }
 
@@ -98,7 +102,7 @@ public class DeobfuscatingInputStream extends FilterInputStream {
 
     @Override
     public int read() throws IOException {
-      switch (readFully(in, pair, 2)) {
+      switch (in.readNBytes(pair, 0, 2)) {
       case  0:
         return -1;
       case  2:

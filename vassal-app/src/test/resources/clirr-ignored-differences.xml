@@ -22,6 +22,56 @@
         <method>*</method>
     </difference>
 
-    <!-- 3.7.1 -->
+    <!-- 3.7.13 -->
+    <difference>
+        <className>VASSAL/build/module/properties/ScenarioPropertiesOptionTab</className>
+        <differenceType>6001</differenceType>
+        <field>alignLabelsRight</field>
+        <justification>Field is obsolete and no code will have sub-classed this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/properties/ScenarioPropertiesOptionTab</className>
+        <differenceType>6004</differenceType>
+        <field>uiPanel</field>
+        <from>VASSAL.configure.ComponentConfigPanel</from>
+        <to>javax.swing.JPanel</to>
+        <justification>No code will have sub-classed this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/properties/ScenarioPropertiesOptionTab</className>
+        <differenceType>6006</differenceType>
+        <field>uiPanel</field>
+        <justification>No code will have sub-classed this class</justification>
+    </difference>
+
+    <!-- 3.7.21 -->
+    <difference>
+        <className>bsh/util/AWTDemoApplet</className>
+        <differenceType>8001</differenceType>
+        <justification>java.applet.Applet no longer exists</justification>
+    </difference>
+    <difference>
+        <className>bsh/util/AWTRemoteApplet</className>
+        <differenceType>8001</differenceType>
+        <justification>java.applet.Applet no longer exists</justification>
+    </difference>
+    <difference>
+        <className>bsh/util/JDemoApplet</className>
+        <differenceType>8001</differenceType>
+        <justification>javax.swing.JApplet no longer exists</justification>
+    </difference>
+    <difference>
+        <className>bsh/util/JRemoteApplet</className>
+        <differenceType>8001</differenceType>
+        <justification>javax.swing.JApplet no longer exists</justification>
+    </difference>
+
+    <!-- 3.8.0 -->
+    <difference>
+        <className>VASSAL/build/module/GameState</className>
+        <differenceType>6001</differenceType>
+        <field>loadGameOld</field>
+        <justification>Action is obsolete. Load Continuation moved to Tools menu</justification>
+    </difference>
 
 </differences>

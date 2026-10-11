@@ -65,8 +65,7 @@ public class CgiServerStatus implements ServerStatus {
 
   @Override
   public ServerStatus.ModuleSummary[] getStatus() {
-    final HashMap<String, ServerStatus.ModuleSummary> entries =
-      new HashMap<>();
+    final Map<String, ServerStatus.ModuleSummary> entries = new HashMap<>();
     try {
       for (final String s : request.doGet("getCurrentConnections", new Properties())) { //$NON-NLS-1$
         final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, '\t');
@@ -117,7 +116,7 @@ public class CgiServerStatus implements ServerStatus {
 
     // start with new interval
     final Range<Long> req = Range.between(now - time, now);
-    final ArrayList<Range<Long>> toRequest = new ArrayList<>();
+    final List<Range<Long>> toRequest = new ArrayList<>();
     toRequest.add(req);
 
     // subtract each old interval from new interval
@@ -184,8 +183,7 @@ public class CgiServerStatus implements ServerStatus {
     }
 
     // pull what we need from the records
-    final HashMap<String, ServerStatus.ModuleSummary> entries =
-      new HashMap<>();
+    final Map<String, ServerStatus.ModuleSummary> entries = new HashMap<>();
 
     for (final List<String[]> l : records.subMap(req.getMinimum(),
                                            req.getMaximum()).values()) {

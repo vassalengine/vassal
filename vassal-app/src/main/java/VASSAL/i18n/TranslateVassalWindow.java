@@ -42,6 +42,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 public class TranslateVassalWindow extends TranslateWindow {
@@ -152,7 +153,7 @@ public class TranslateVassalWindow extends TranslateWindow {
 
   protected void newTranslation() {
     ((VassalTranslation) target).clearProperties();
-    final ArrayList<String> keyList = new ArrayList<>(Resources.getVassalKeys());
+    final List<String> keyList = new ArrayList<>(Resources.getVassalKeys());
     Collections.sort(keyList);
     keys = keyList.toArray(new String[0]);
     copyButtons = new CopyButton[keys.length];

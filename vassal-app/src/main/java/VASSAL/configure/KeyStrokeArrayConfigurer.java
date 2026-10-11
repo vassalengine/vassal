@@ -129,7 +129,7 @@ public class KeyStrokeArrayConfigurer extends Configurer {
   }
 
   public KeyStroke[] getKeyStrokes() {
-    final ArrayList<KeyStroke> l = new ArrayList<>();
+    final List<KeyStroke> l = new ArrayList<>();
     for (final HotKeyConfigurer hotKeyConfigurer : configs) {
       final KeyStroke value = (KeyStroke) hotKeyConfigurer.getValue();
       if (value != null) {
@@ -143,7 +143,7 @@ public class KeyStrokeArrayConfigurer extends Configurer {
     if (s == null) {
       return null;
     }
-    final ArrayList<KeyStroke> l = new ArrayList<>();
+    final List<KeyStroke> l = new ArrayList<>();
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
     while (st.hasMoreTokens()) {
       l.add(HotKeyConfigurer.decode(st.nextToken()));

@@ -402,7 +402,7 @@ public class LabelUtils {
    * @return Viewable null image
    */
   public static BufferedImage noImageBoxImage(int w, int h, double scale) {
-    return LabelUtils.labelBoxImage(
+    return labelBoxImage(
       new Font(Font.DIALOG, Font.ITALIC, 12).deriveFont((float)(12 * scale)),
       Resources.getString("Editor.ImageUtils.no_image"),
       w,

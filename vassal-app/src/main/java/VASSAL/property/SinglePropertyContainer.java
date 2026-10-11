@@ -90,9 +90,11 @@ public class SinglePropertyContainer<V> implements PropertyContainer {
     return (T) value;
   }
 
+  @SuppressWarnings("PMD.LooseCoupling")
   protected final CopyOnWriteArrayList<PropertyListener<Object>> listeners =
     new CopyOnWriteArrayList<>();
 
+  @SuppressWarnings("PMD.LooseCoupling")
   protected final CopyOnWriteArrayList<PropertyListener<? super V>> plisteners =
     new CopyOnWriteArrayList<>();
 

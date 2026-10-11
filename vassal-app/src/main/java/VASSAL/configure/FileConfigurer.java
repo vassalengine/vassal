@@ -93,7 +93,7 @@ public class FileConfigurer extends Configurer {
   public void setValue(Object o) {
 // FIXME: this creates a problem when the referenced file is in the JAR
     final File f = (File) o;
-    if (f != null && f.exists()) {
+    if (f != null && !f.getPath().isEmpty() && f.exists()) {
       if (archive != null) {
         addToArchive(f);
       }
@@ -110,7 +110,7 @@ public class FileConfigurer extends Configurer {
 
   @Override
   public void setValue(String s) {
-    if (s == null)
+    if (s == null || s.isEmpty())
       setValue((Object) null);
     else {
       setValue(new File(s));

@@ -17,6 +17,7 @@
 package VASSAL.counters;
 
 import VASSAL.build.GameModule;
+import VASSAL.build.module.AttachmentManager;
 import VASSAL.build.module.GameState;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
@@ -155,7 +156,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
    * @return               List of attached pieces
    */
   public static List<GamePiece> getAttachList(GamePiece piece, String attachmentName) {
-    GamePiece p = Decorator.getOutermost(piece);
+    GamePiece p = getOutermost(piece);
     while (p instanceof Decorator) {
       if (p instanceof Attachment) {
         final Attachment a = (Attachment) p;
@@ -237,13 +238,13 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     }
 
     if (command == null) {
-      myAttachCommand = new KeyCommand(attachCommandName, attachKey, Decorator.getOutermost(this), this);
-      myClearAllCommand  = new KeyCommand(clearAllCommandName, clearAllKey, Decorator.getOutermost(this), this);
-      myClearMatchingCommand = new KeyCommand(clearMatchingCommandName, clearMatchingKey, Decorator.getOutermost(this), this);
+      myAttachCommand = new KeyCommand(attachCommandName, attachKey, getOutermost(this), this);
+      myClearAllCommand  = new KeyCommand(clearAllCommandName, clearAllKey, getOutermost(this), this);
+      myClearMatchingCommand = new KeyCommand(clearMatchingCommandName, clearMatchingKey, getOutermost(this), this);
 
-      final boolean doAttach = (attachCommandName.length() > 0) && attachKey != null && !attachKey.isNull();
-      final boolean doClearAll = (clearAllCommandName.length() > 0) && clearAllKey != null && !clearAllKey.isNull();
-      final boolean doClearMatching = (clearMatchingCommandName.length() > 0) && clearMatchingKey != null && !clearMatchingKey.isNull();
+      final boolean doAttach = (!attachCommandName.isEmpty()) && attachKey != null && !attachKey.isNull();
+      final boolean doClearAll = (!clearAllCommandName.isEmpty()) && clearAllKey != null && !clearAllKey.isNull();
+      final boolean doClearMatching = (!clearMatchingCommandName.isEmpty()) && clearMatchingKey != null && !clearMatchingKey.isNull();
 
       if (doAttach) {
         if (doClearAll) {
@@ -307,7 +308,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       c = c.append(clearAll());
     }
 
-    final GamePiece outer = Decorator.getOutermost(this);
+    final GamePiece outer = getOutermost(this);
     globalAttach.setPropertySource(outer); // Doing this here ensures trait is linked into GamePiece before finding source
 
     // Make piece properties filter
@@ -318,7 +319,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     if (restrictRange) {
       int r = range;
       if (!fixedRange) {
-        final String rangeValue = (String) Decorator.getOutermost(this).getProperty(rangeProperty);
+        final String rangeValue = (String) getOutermost(this).getProperty(rangeProperty);
         try {
           r = Integer.parseInt(rangeValue);
         }
@@ -366,7 +367,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   }
 
   public Command clearMatching() {
-    final GamePiece outer = Decorator.getOutermost(this);
+    final GamePiece outer = getOutermost(this);
 
     clearTarget.fastMatchLocation = true;
     clearTarget.fastMatchProperty = false;
@@ -415,10 +416,18 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(newState, ';');
     final int num = st.nextInt(0);
     final GameState gs = GameModule.getGameModule().getGameState();
+    final AttachmentManager am = gs.getAttachmentManager();
     for (int i = 0; i < num; i++) {
-      final GamePiece piece = gs.getPieceForId(st.nextToken());
-      //BR// getPieceForId can return null, and WILL during load-game if target piece hasn't loaded yet.
-      if (piece != null) {
+      final String id = st.nextToken("");
+      final GamePiece piece = gs.getPieceForId(id);
+
+      if (piece == null) {
+        // If the piece can't be found, then we are loading a save file and the piece hasn't been loaded yet.
+        // Pass it to the AttachmentManager to handle when the save has finished loading by calling back to
+        // our resolvePendingAttachment() method.
+        am.addPendingAttachment(this, id);
+      }
+      else {
         contents.add(piece);
       }
     }
@@ -426,14 +435,14 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
 
   /**
    * Auto-attach to a piece
-   * 1. We must be in auto-attah mode
+   * 1. We must be in auto-attach mode
    * 2. Must not already be attached to the piece.
    * NOTE: Auto-attach is handled locally by each client, no Commands are generated
    * @param attach Attachment trait within the target piece
    */
   public void autoAttach(Attachment attach) {
     if (isAutoAttach() && attach.getAttachName().equals(getAttachName())) {
-      final GamePiece piece = Decorator.getOutermost(attach);
+      final GamePiece piece = getOutermost(attach);
       if (! hasTarget(piece)) {
         contents.add(piece);
       }
@@ -441,7 +450,21 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   }
 
   /**
-   * @param p a particular gamepiece
+   * An attachment could not be satisfied during game load. Game Load is now finished
+   * and the Attachment Manager is calling us to retry that attachment.
+   * This does not need to generate any Commands.
+   *
+   * @param target Id of target piece
+   */
+  public void resolvePendingAtttachment(String target) {
+    final GamePiece piece = GameModule.getGameModule().getGameState().getPieceForId(target);
+    if (piece != null && ! hasTarget(piece)) {
+      contents.add(piece);
+    }
+  }
+
+  /**
+   * @param p a particular game piece
    * @return true if the given piece is on our list of targets
    */
   public boolean hasTarget(GamePiece p) {
@@ -456,7 +479,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   public Command makeAddTargetCommand(GamePiece p) {
     Command c = new NullCommand();
 
-    if (!allowSelfAttach && Decorator.getOutermost(this).equals(Decorator.getOutermost(p))) {
+    if (!allowSelfAttach && getOutermost(this).equals(getOutermost(p))) {
       return c;
     }
 
@@ -467,7 +490,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       c = c.append(ct.getChangeCommand());
 
       // If our target has "on attach" conditions in an equivalently named Attachment, process them
-      GamePiece target = Decorator.getOutermost(p);
+      GamePiece target = getOutermost(p);
       while (target instanceof Decorator) {
         if (target instanceof Attachment) {
           final Attachment targetAttach = (Attachment) target;
@@ -475,12 +498,12 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
             // Found an attachment w/ the same name
             if (autoAttach || !targetAttach.onAttach.equals(ON_ATTACH_NOTHING)) {
               // They're either ON_ATTACH_FOLLOW_BACK or ON_ATTACH_ATTACH_ALL, so we probably want at last at an attach-back command
-              c = c.append(targetAttach.makeAddTargetCommand(Decorator.getOutermost(this)));
+              c = c.append(targetAttach.makeAddTargetCommand(getOutermost(this)));
 
               // If they're ON_ATTACH_ATTACH_ALL then they attach to ALL of our previously attached pieces
               if (autoAttach || targetAttach.onAttach.equals(ON_ATTACH_ATTACH_ALL)) {
                 for (final GamePiece other : getAttachList()) {
-                  c = c.append(targetAttach.makeAddTargetCommand(Decorator.getOutermost(other)));
+                  c = c.append(targetAttach.makeAddTargetCommand(getOutermost(other)));
                 }
               }
             }
@@ -518,12 +541,12 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
 
       // If our detach condition is ON_DETACH_REMOVE, then remove incoming attachment at the same time
       if (onDetach.equals(ON_DETACH_REMOVE)) {
-        GamePiece target = Decorator.getOutermost(p);
+        GamePiece target = getOutermost(p);
         while (target instanceof Decorator) {
           if (target instanceof Attachment) {
             final Attachment targetAttach = (Attachment) target;
             if (attachName.equals(targetAttach.attachName)) {
-              c = c.append(targetAttach.makeRemoveTargetCommand(Decorator.getOutermost(this)));
+              c = c.append(targetAttach.makeRemoveTargetCommand(getOutermost(this)));
             }
           }
           target = ((Decorator) target).getInner();
@@ -569,7 +592,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
       d += " " + Resources.getString("Editor.Attachment.auto");
     }
 
-    if (desc.length() > 0) {
+    if (!desc.isEmpty()) {
       d += " - " + desc;
     }
 
@@ -738,6 +761,7 @@ public class Attachment extends Decorator implements TranslatablePiece, Recursio
   }
 
   @Override
+  @SuppressWarnings("PMD.SimplifyBooleanReturns")
   public boolean testEquals(Object o) {
     if (! (o instanceof Attachment)) return false;
     final Attachment c = (Attachment) o;

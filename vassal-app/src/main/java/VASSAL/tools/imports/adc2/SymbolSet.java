@@ -425,8 +425,7 @@ public class SymbolSet extends Importer {
    * @return The most frequently occuring dimension for game pieces in this module.
    */
   public Dimension getModalSize() {
-    final HashMap<Dimension, Integer> histogram =
-      new HashMap<>();
+    final Map<Dimension, Integer> histogram = new HashMap<>();
 
     for (final SymbolData piece : gamePieceData) {
       final BufferedImage im = piece.getImage();

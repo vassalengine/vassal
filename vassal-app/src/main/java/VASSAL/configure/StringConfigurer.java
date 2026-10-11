@@ -124,7 +124,12 @@ public class StringConfigurer extends Configurer {
           SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-              nameField.selectAll();
+              // Ignore this event if gaining focus from self.
+              // This can happen when selecting another control within
+              // this component, such as FormattedStringConfigurer.
+              if (evt.getSource() != evt.getOppositeComponent()) {
+                nameField.selectAll();
+              }
             }
           });
         }
@@ -225,6 +230,7 @@ public class StringConfigurer extends Configurer {
 
   @Override
   public void setEnabled(boolean enabled) {
-    nameField.setEnabled(enabled);
+    // The default disabled state of a textfield makes the text almost invisible. Just make the field non-editable instead.
+    nameField.setEditable(enabled);
   }
 }
