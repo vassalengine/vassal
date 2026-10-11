@@ -105,6 +105,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
 
   private NamedHotKeyConfigurer stepKeyConfig;
   private NamedHotKeyConfigurer undoKeyConfig;
+  private NamedHotKeyConfigurer checkpointKeyConfig;
   private NamedHotKeyConfigurer newLogKeyConfig;
   private NamedHotKeyConfigurer endLogKeyConfig;
 
@@ -114,6 +115,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     super();
     stepAction.setEnabled(false);
     undoAction.setEnabled(false);
+    checkpointAction.setEnabled(true);
     endLogAction.setEnabled(false);
     newLogAction.setEnabled(false);
     logInput = new ArrayList<>();
@@ -135,6 +137,9 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     }
     if (undoKeyConfig != null) {
       list.add(undoKeyConfig.getValueNamedKeyStroke());
+    }
+    if (checkpointKeyConfig != null) {
+      list.add(checkpointKeyConfig.getValueNamedKeyStroke());
     }
     if (newLogKeyConfig != null) {
       list.add(newLogKeyConfig.getValueNamedKeyStroke());
@@ -176,6 +181,9 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
 
     final NamedKeyStrokeListener undoKeyListener = new NamedKeyStrokeListener(undoAction, null);
     mod.addKeyStrokeListener(undoKeyListener);
+
+    final NamedKeyStrokeListener checkpointKeyListener = new NamedKeyStrokeListener(checkpointAction, null);
+    mod.addKeyStrokeListener(checkpointKeyListener);
 
     final NamedKeyStrokeListener stepKeyListener = new NamedKeyStrokeListener(stepAction, NamedKeyStroke.of(KeyEvent.VK_PAGE_DOWN, 0));
     mod.addKeyStrokeListener(stepKeyListener);
@@ -237,6 +245,12 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       }
     });
     undoKeyConfig.fireUpdate();
+
+    // Feature to allow module to set a checkpoint to prevent a destructive undo (e.g. beyond a card draw).
+    checkpointKeyConfig = new NamedHotKeyConfigurer("checkpointHotKey", Resources.getString("BasicLogger.checkpoint_hotkey"), checkpointKeyListener.getNamedKeyStroke()); //$NON-NLS-1$ //$NON-NLS-2$
+    checkpointKeyConfig.addPropertyChangeListener(evt -> checkpointKeyListener.setKeyStroke(checkpointKeyConfig.getValueNamedKeyStroke()));
+    GlobalOptions.getInstance().addOption(checkpointKeyConfig);
+    checkpointKeyConfig.fireUpdate();
 
     final BooleanConfigurer logOptionStart = new BooleanConfigurer(PROMPT_NEW_LOG_START, Resources.getString("BasicLogger.prompt_new_log_before"), Boolean.TRUE);  //$NON-NLS-1$
     mod.getPrefs().addOption(Resources.getString("Prefs.general_tab"), logOptionStart); //$NON-NLS-1$
@@ -803,6 +817,25 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       undo();
     }
   }
+
+  protected Action checkpointAction = new AbstractAction(Resources.getString("BasicLogger.checkpoint")) {  //$NON-NLS-1$
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      final Logger l = GameModule.getGameModule().getLogger();
+      System.out.println("checkpoint action");
+      if (l instanceof BasicLogger) {
+        final BasicLogger log = GameModule.getGameModule().getBasicLogger();
+        System.out.println("logged obtained");
+        if (log != null) {
+          System.out.println("undo blocked");
+          log.blockUndo(2);
+        }
+      }
+    }
+  };
+
 
   /**
    * A Command that records whether or not an Undo is in progress.
