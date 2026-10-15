@@ -1,5 +1,7 @@
 3.7.30 - ???
 
+* 15177: Upgraded spotbugs-annotations to 4.10.5
+* 15176: Upgraded spotbugs-maven-plugin to 4.10.5.0
 * 15173: Upgraded commons-codec to 1.23.0
 * 15172: Upgraded httpclient5 to 5.6.5
 * 15154: Upgraed logback-classic to 1.6.5
