@@ -119,14 +119,19 @@ public class Resources {
     if (savedLocale != null) {
       myLocale = new Locale(savedLocale);
     }
+    
+    // Check that current locale is supported
+    if (!supportedLocales.contains(myLocale)) {
+      myLocale = Locale.ENGLISH;
+    }
 
     // Sort the available locales using the prefered locale.  For
     // example, that means that when the default locale is Danish,
     // then English (engelsk) sorts before Chinese (kinesisk).
     final Locale tmpLocale = myLocale;
-    final List<Locale> sortedLocales = new ArrayList(supportedLocales);
-    Collator collator = Collator.getInstance(myLocale);
-    sortedLocales.sort((lhs,rhs) -> {
+    final List<Locale> sortedLocales = new ArrayList<>(supportedLocales);
+    final Collator collator = Collator.getInstance(myLocale);
+    sortedLocales.sort((lhs, rhs) -> {
       return collator.compare(lhs.getDisplayLanguage(tmpLocale),
                               rhs.getDisplayLanguage(tmpLocale));
     });
