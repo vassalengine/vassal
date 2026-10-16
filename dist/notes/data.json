@@ -34,6 +34,7 @@
         { "num": 15176, "desc": "Upgraded spotbugs-maven-plugin to 4.10.5.0" },
         { "num": 15173, "desc": "Upgraded commons-codec to 1.23.0" },
         { "num": 15172, "desc": "Upgraded httpclient5 to 5.6.5" },
+        { "num": 15164, "desc": "Upgraded asm to 9.11" },
         { "num": 15154, "desc": "Upgraed logback-classic to 1.6.5" }
       ]
     },
