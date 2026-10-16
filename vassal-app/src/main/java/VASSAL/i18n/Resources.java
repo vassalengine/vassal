@@ -22,6 +22,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -72,16 +73,16 @@ public class Resources {
   // Note: The Locale ctor takes the lower-case two-letter ISO language code.
   protected final List<Locale> supportedLocales =
     new ArrayList<>(Arrays.asList(
-      Locale.ENGLISH,
       Locale.forLanguageTag("zh"),  // Chinese //$NON-NLS-1$
+      Locale.forLanguageTag("da"),  // Danish  //$NON-NLS-1$
       Locale.forLanguageTag("nl"),  // Dutch   //$NON-NLS-1$
+      Locale.ENGLISH,
       Locale.FRENCH,
       Locale.GERMAN,
       Locale.ITALIAN,
       Locale.JAPANESE,
       Locale.forLanguageTag("pl"),  // Polish  //$NON-NLS-1$
-      Locale.forLanguageTag("es"),  // Spanish //$NON-NLS-1$
-      Locale.forLanguageTag("da")   // Danish  //$NON-NLS-1$
+      Locale.forLanguageTag("es")   // Spanish //$NON-NLS-1$
     ));
 
   protected Locale locale = Locale.getDefault();
@@ -111,22 +112,35 @@ public class Resources {
       addLocale(myLocale);
     }
 
-    final List<String> languages = new ArrayList<>();
-    for (final Locale l : supportedLocales) {
-      languages.add(l.toLanguageTag());
-    }
-
     final Prefs p = Prefs.getGlobalPrefs();
 
     final String savedLocale = p.getStoredValue(LOCALE_PREF_KEY);
 
-    if (savedLocale == null) {
-      myLocale = supportedLocales.iterator().next();
-    }
-    else {
+    if (savedLocale != null) {
       myLocale = new Locale(savedLocale);
     }
+    
+    // Check that current locale is supported
+    if (!supportedLocales.contains(myLocale)) {
+      myLocale = Locale.ENGLISH;
+    }
 
+    // Sort the available locales using the prefered locale.  For
+    // example, that means that when the default locale is Danish,
+    // then English (engelsk) sorts before Chinese (kinesisk).
+    final Locale tmpLocale = myLocale;
+    final List<Locale> sortedLocales = new ArrayList<>(supportedLocales);
+    final Collator collator = Collator.getInstance(myLocale);
+    sortedLocales.sort((lhs, rhs) -> {
+      return collator.compare(lhs.getDisplayLanguage(tmpLocale),
+                              rhs.getDisplayLanguage(tmpLocale));
+    });
+    
+    final List<String> languages = new ArrayList<>();
+    for (final Locale l : sortedLocales) {
+      languages.add(l.toLanguageTag());
+    }
+    
     setInstanceLocale(myLocale);
     final StringEnumConfigurer localeConfig = new StringEnumConfigurer(
         LOCALE_PREF_KEY,
