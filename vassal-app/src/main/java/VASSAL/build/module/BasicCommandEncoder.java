@@ -84,6 +84,8 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.SequenceEncoder;
 
 import java.awt.Point;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -267,22 +269,38 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
    * @param type definition string of the piece or trait to be created.
    */
   public GamePiece createPiece(String type) {
+    // The chain of trait types is tab-delimited, in one of two framings
+    // (see the framing notes in Decorator): flat, one top-level token per
+    // trait with the innermost piece last; or nested, exactly two
+    // top-level tokens, the outermost trait and the escaped rest of the
+    // chain. The last token is decoded recursively, which resolves a
+    // nested rest of chain and is a no-op for the innermost piece's type,
+    // so both framings, and a chain mixing them, decode here.
+    final List<String> types = new ArrayList<>();
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, '\t');
-    type = st.nextToken();
-    final String innerType = st.hasMoreTokens() ? st.nextToken() : null;
+    while (st.hasMoreTokens()) {
+      types.add(st.nextToken());
+    }
 
-    if (innerType != null) {
-      GamePiece inner = createPiece(innerType);
-      if (inner == null) {
-        ErrorDialog.dataWarning(new BadDataReport("Could not create piece with type " + innerType, type)); //NON-NLS
-        inner = new BasicPiece();
+    final int last = types.size() - 1;
+    if (last <= 0 || basicFactories.containsKey(typePrefix(types.get(0)))) {
+      // A basic piece has nothing inside it, so a tab in its type (a name
+      // containing one) is part of the type, not a trait boundary.
+      return createBasic(last == 0 ? types.get(0) : type);
+    }
+
+    GamePiece inner = createPiece(types.get(last));
+    if (inner == null) {
+      ErrorDialog.dataWarning(new BadDataReport("Could not create piece with type " + types.get(last), types.get(last - 1))); //NON-NLS
+      inner = new BasicPiece();
+    }
+    for (int i = last - 1; i >= 0; --i) {
+      final Decorator d = createDecorator(types.get(i), inner);
+      if (d != null) {
+        inner = d;
       }
-      final Decorator d = createDecorator(type, inner);
-      return d != null ? d : inner;
     }
-    else {
-      return createBasic(type);
-    }
+    return inner;
   }
 
   /**
