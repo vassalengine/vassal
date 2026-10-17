@@ -1,5 +1,6 @@
 3.7.30 - ???
 
+* 15184: Upgraded byte-buddy to 1.18.15
 * 15177: Upgraded spotbugs-annotations to 4.10.5
 * 15176: Upgraded spotbugs-maven-plugin to 4.10.5.0
 * 15173: Upgraded commons-codec to 1.23.0

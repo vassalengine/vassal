@@ -30,6 +30,7 @@
         { "num": 15129, "desc": "Further optimize sum and count expressions" }
       ],
       "other": [
+        { "num": 15184, "desc": "Upgraded byte-buddy to 1.18.15" },
         { "num": 15177, "desc": "Upgraded spotbugs-annotations to 4.10.5" },
         { "num": 15176, "desc": "Upgraded spotbugs-maven-plugin to 4.10.5.0" },
         { "num": 15173, "desc": "Upgraded commons-codec to 1.23.0" },
