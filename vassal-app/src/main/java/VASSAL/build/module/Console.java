@@ -28,6 +28,7 @@ import VASSAL.counters.GamePiece;
 import VASSAL.counters.KeyBuffer;
 import VASSAL.tools.BugUtils;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.LoggerFactory;
 
@@ -376,6 +377,70 @@ public class Console {
     return true;
   }
 
+  private boolean doSides() {
+    final String first = nextString("");
+    final String option;
+
+    if (first.toLowerCase().startsWith("lis")) { //NON-NLS
+      option = nextString("");
+    }
+    else {
+      option = first;
+    }
+
+    if (matches("?", option) || matches("help", option)) { //NON-NLS
+      show("Usage:"); //NON-NLS
+      show("  /sides [list]       - list status of sides in the game"); //NON-NLS
+    }
+    else if (option.isEmpty() || matches("list", option)) { //NON-NLS
+      final GameModule gm = GameModule.getGameModule();
+
+      // the module's roster holds the defined sides and current players
+      final PlayerRoster pr = gm.getPlayerRoster();
+      final List<String> sides = (pr == null) ? List.of() : pr.getSides();
+
+      if (sides.isEmpty()) {
+        show("No sides defined."); //NON-NLS
+      }
+      else {
+        // List the sides, checking each
+        for (final String s : sides) {
+          String status = "";
+          // Is side allocated to a player? Which one ?
+          for (final PlayerRoster.PlayerInfo p : pr.players) {
+            if (s.equals(p.getLocalizedSide())) {
+              // password checks
+              String pwStatus = "";
+              if (StringUtils.isEmpty(p.playerId)) {
+                pwStatus = " Warning: Blank password"; // NON-NLS
+              }
+              else {
+                for (final PlayerRoster.PlayerInfo p2 : pr.players) {
+                  if (p.playerId.equals(p2.playerId) && !s.equals(p2.getLocalizedSide())) {
+                    pwStatus = " Warning: Password identical to that of " + p2.playerName; // NON-NLS
+                    break;
+                  }
+                }
+              }
+              status = "Occupied (" + p.playerName + ")" + pwStatus;  //NON-NLS
+              break;
+            }
+          }
+          if (status.isEmpty()) {
+            // No matching player, so side is either locked (by module) or available...
+            if (Boolean.parseBoolean((String) gm.getProperty(PlayerRoster.VassalHideSide + pr.untranslateSide(s)))) {
+              status = "Locked by module"; //NON-NLS
+            }
+            else {
+              status = "Available"; //NON-NLS
+            }
+          }
+          show(s + " " + status); //NON-NLS
+        }
+      }
+    }
+    return true;
+  }
 
   private boolean doHelp() {
     final String topic = nextString("");
@@ -385,7 +450,8 @@ public class Console {
       show("  /errorlog    - commands for opening/clearing/altering errorlog"); //NON-NLS
       show("  /help        - shows list of commands"); //NON-NLS
       show("  /property    - commands for reading/writing global properties"); //NON-NLS
-      show("  /attachments - commands to display current attachments");
+      show("  /attachments - commands to display current attachments"); //NON-NLS
+      show("  /sides       - shows list of sides and status"); //NON-NLS
     }
     else {
       tok = Pattern.compile(" +").splitAsStream("help").iterator(); //NON-NLS // Fake up a help subcommand
@@ -397,6 +463,9 @@ public class Console {
       }
       else if (matches("attachments", topic)) {
         return doAttachments();
+      }
+      else if (matches("sides", topic)) {
+        return doSides();
       }
 
       show("Unknown help topic"); //NON-NLS
@@ -468,6 +537,11 @@ public class Console {
 
     if (matches("errorlog", command)) { //NON-NLS
       return doErrorLog();
+    }
+
+    // sides can be listed regardless of game state
+    if (matches("sides", command)) { //NON-NLS
+      return doSides();
     }
 
     // If this has EVER been a multiplayer game (has ever been connected to Server, or has ever had two player slots filled simultaneously), then
