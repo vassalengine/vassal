@@ -27,6 +27,7 @@
         { "num": 15151, "desc": "Quote path variable in MacOS launch script" }
       ],
       "improvements": [
+        { "num": 15182, "desc": "Updated Danish translations and added them for the Editor" },
         { "num": 15129, "desc": "Further optimize sum and count expressions" }
       ],
       "other": [
