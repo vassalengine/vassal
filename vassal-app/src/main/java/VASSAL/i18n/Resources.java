@@ -74,14 +74,15 @@ public class Resources {
     new ArrayList<>(Arrays.asList(
       Locale.ENGLISH,
       Locale.forLanguageTag("zh"),  // Chinese //$NON-NLS-1$
+      Locale.forLanguageTag("da"),  // Danish  //$NON-NLS-1$
       Locale.forLanguageTag("nl"),  // Dutch   //$NON-NLS-1$
       Locale.FRENCH,
       Locale.GERMAN,
       Locale.ITALIAN,
       Locale.JAPANESE,
+      Locale.forLanguageTag("ko"),  // Korean  //$NON-NLS-1$
       Locale.forLanguageTag("pl"),  // Polish  //$NON-NLS-1$
-      Locale.forLanguageTag("es"),  // Spanish //$NON-NLS-1$
-      Locale.forLanguageTag("da")   // Danish  //$NON-NLS-1$
+      Locale.forLanguageTag("es")   // Spanish //$NON-NLS-1$
     ));
 
   protected Locale locale = Locale.getDefault();
