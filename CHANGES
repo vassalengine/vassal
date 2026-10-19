@@ -1,5 +1,6 @@
 3.7.30 - ???
 
+* 15193: Added Korean translations
 * 15184: Upgraded byte-buddy to 1.18.15
 * 15182: Updated Danish translations and added them for the Editor
 * 15177: Upgraded spotbugs-annotations to 4.10.5
