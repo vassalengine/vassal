@@ -32,9 +32,6 @@ import VASSAL.tools.imageop.SourceOp;
 import VASSAL.tools.imageop.SourceOpTiledBitmapImpl;
 import VASSAL.tools.imageop.SVGOp;
 
-import org.jdesktop.animation.timing.Animator;
-import org.jdesktop.animation.timing.TimingTargetAdapter;
-
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Component;
@@ -43,6 +40,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
@@ -52,6 +51,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+
+import javax.swing.Timer;
 
 public class TileRenderer {
   private static final Color CLEAR = new Color(0, 0, 0, 0);
@@ -220,18 +221,22 @@ public class TileRenderer {
                 requested.remove(tile);
                 final Point t = tile;
 
-                final Animator a = new Animator(100,
-                  new TimingTargetAdapter() {
-                    @Override
-                    public void timingEvent(float fraction) {
-                      alpha.put(t, fraction);
-                      obs.repaint(cx, cy, cw, ch);
-                    }
-                  }
-                );
+                final Timer timer = new Timer(20, new ActionListener() {
+                  private int elapsed = 0;
+                  @Override
+                  public void actionPerformed(ActionEvent e) {
+                    final Timer tim = (Timer)e.getSource();
+                    elapsed += tim.getDelay();
+                    final float fraction = (float)elapsed / 100;
+                    alpha.put(t, fraction);
+                    obs.repaint(cx, cy, cw, ch);
 
-                a.setResolution(20);
-                a.start();
+                    if (elapsed >= 100)
+                      tim.stop();
+                  }
+                });
+                
+                timer.start();                    
               }
               else {
                 final Float a = alpha.get(tile);
