@@ -1,12 +1,26 @@
-3.8.0-beta3 - ???
+3.8.0-beta4 - ???
+
+3.7.31 - ???
+
+* 15198: Upgraded asm to 9.11.1
+
+3.8.0-beta3 - 20 October 2026
 
 * 15121: Compress the saved-game command log with XZ
 * 15099: Removed the deprecated loadGameOld Action
 * 15097: Make Charts zoomable
 * 14581: Added animated symbolic dice button
 
-3.7.30 - ???
+3.7.30 - 20 October 2026
 
+* 15193: Added Korean translations
+* 15184: Upgraded byte-buddy to 1.18.15
+* 15182: Updated Danish translations and added them for the Editor
+* 15177: Upgraded spotbugs-annotations to 4.10.5
+* 15176: Upgraded spotbugs-maven-plugin to 4.10.5.0
+* 15173: Upgraded commons-codec to 1.23.0
+* 15172: Upgraded httpclient5 to 5.6.5
+* 15164: Upgraded asm to 9.11
 * 15154: Upgraed logback-classic to 1.6.5
 * 15151: Quote path variable in MacOS launch script
 * 15129: Further optimize sum and count expressions
