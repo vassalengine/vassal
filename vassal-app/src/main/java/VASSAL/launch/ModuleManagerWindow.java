@@ -417,10 +417,11 @@ public class ModuleManagerWindow extends JFrame {
                       Resources.getString("ModuleManager.quickstart") + 
                       "  </body>\n" +
                       "</html>");
-    l.setCaretPosition(0);
+    
+    l.setCaretColor(bg);
     l.getCaret().setVisible(false);
+    l.setOpaque(false);
     l.setEditable(false);
-    l.setBackground(bg);
     l.setBorder(null);
     l.addHyperlinkListener(BrowserSupport.getListener());
 
