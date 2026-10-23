@@ -43,6 +43,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.io.Console;
+import java.time.Instant;
 
 import com.github.zafarkhaja.semver.Version;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -71,10 +72,8 @@ public class GameLibrary {
   protected static final String DEFAULT_API =
     "https://vassalengine.org/api/gls/v1"; //NON-NLS
   /** Date formats that we may try */
-  protected static final String[] DATE_FORMATS = {
-    "yyyy-MM-dd'T'HH:mm:ssX", //NON-NLS
-    "yyyy-MM-dd'T'HH:mm:ss.SSX" //NON-NLS
-  };
+  protected static final String DATE_FORMAT = 
+    "yyyy-MM-dd'T'HH:mm:ssX"; //NON-NLS
   /** Name of resource file to try to read the cache from */
   protected static final String RESOURCE_FILE =
     "/VASSAL/library/projects.json"; //NON-NLS
@@ -148,13 +147,8 @@ public class GameLibrary {
     // If we get null, empty string, or the string "null", return null
     if (s == null || s.isEmpty() || "null".equals(s))
       return null;
-    
-    try {
-      return (new SimpleDateFormat(DATE_FORMATS[0])).parse(s);
-    }
-    catch (ParseException ignored) {
-    }
-    return (new SimpleDateFormat(DATE_FORMATS[1])).parse(s); 
+
+    return Date.from(Instant.parse(s));
   }
 
   /**
@@ -164,7 +158,7 @@ public class GameLibrary {
    * @return String containing the formatted date
    */
   protected static String formatDate(Date d) throws ParseException {
-    return (new SimpleDateFormat(DATE_FORMATS[0])).format(d); 
+    return (new SimpleDateFormat(DATE_FORMAT)).format(d); 
   }
   
     
