@@ -61,6 +61,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jdesktop.swingx.JXTreeTable;
+import org.jdesktop.swingx.search.SearchFactory;
 import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 import org.slf4j.Logger;
@@ -283,6 +284,10 @@ public class ModuleManagerWindow extends JFrame {
     }, serverStatusConfig.booleanValue()));
 
     toolsMenu.add(mm.addKey("Main.import_module"));
+
+    // Add search 
+    toolsMenu.addSeparator();
+    toolsMenu.add(mm.addKey("Main.find"));
 
     toolsMenu.addSeparator();
     final ClearTileCacheAction ctca = new ClearTileCacheAction();
@@ -844,6 +849,17 @@ public class ModuleManagerWindow extends JFrame {
       columns[i] = tree.getColumnModel().getColumn(i);
     }
 
+    // Search through tree
+    final MenuManager mm = MenuManager.getInstance();    
+    mm.addAction("Main.find",
+      new AbstractAction(Resources.getString("Main.find")) {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          SearchFactory.getInstance().showFindDialog(tree,
+                                                     tree.getSearchable());
+        }
+      });
+    
     // Show/hide the developer columns
     updateColumnDisplay();
   }
