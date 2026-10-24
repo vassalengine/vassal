@@ -28,6 +28,7 @@
       "improvements": [
       ],
       "other": [
+        { "num": 15206, "desc": "Upgraded batik to 1.20" },
         { "num": 15198, "desc": "Upgraded asm to 9.11.1" }
       ]
     },
