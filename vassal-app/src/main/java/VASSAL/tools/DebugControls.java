@@ -249,6 +249,7 @@ public class DebugControls extends AbstractBuildable implements ActionListener {
     GlobalOptions.getInstance().addOption(keyConfig);
     keyConfig.addPropertyChangeListener(evt -> {
       l.setKeyStroke(keyConfig.getValueNamedKeyStroke());
+      checkbox.getAction().putValue(javax.swing.Action.ACCELERATOR_KEY, l.getKeyStroke());
       launch.setToolTipText(Resources.getString("Debug.debug_controls_tooltip", NamedHotKeyConfigurer.getString(l.getKeyStroke())));  //$NON-NLS-1$
     });
     keyConfig.fireUpdate();

@@ -87,7 +87,8 @@ public class PlayerWindow extends JFrame {
     fileMenu.add(mm.addKey("GameState.new_game"));
     fileMenu.add(mm.addKey("GameState.load_game_new"));
 
-    final MenuProxy openRecent = new MenuProxy(Resources.getString("GameState.open_recent"));
+    final MenuProxy openRecent = new MenuProxy(Resources.getString("GameState.open_recent"));  //NON-NLS
+    openRecent.setMnemonic(Resources.getString("GameState.open_recent.shortcut").charAt(0));  //NON-NLS
     fileMenu.add(openRecent);
 
     openRecent.add(mm.addMarker("OpenRecent.start"));  //NON-NLS
@@ -153,6 +154,10 @@ public class PlayerWindow extends JFrame {
     final CheckBoxMenuItemProxy debugCheckbox = new CheckBoxMenuItemProxy(new AbstractAction(
       Resources.getString("Debug.show_debug_window")) {
       private static final long serialVersionUID = 1L;
+
+      {
+        putValue(MNEMONIC_KEY, (int) Resources.getString("Debug.show_debug_window.shortcut").charAt(0)); //NON-NLS
+      }
 
       @Override
       public void actionPerformed(ActionEvent e) {
