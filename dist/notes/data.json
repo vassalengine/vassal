@@ -24,6 +24,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 15216, "desc": "Fix NPE in ADC2 importer when the module defines no players" },
         { "num": 15212, "desc": "Fix NPE when deleting a Toolbar Menu that has no toolbar" }
       ],
       "improvements": [
