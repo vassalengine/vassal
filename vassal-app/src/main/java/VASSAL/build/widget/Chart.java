@@ -64,12 +64,14 @@ import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.Widget;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.LevelConfigurer;
 import VASSAL.configure.Levels;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
+import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.NamedKeyStrokeListener;
@@ -93,7 +95,13 @@ public class Chart extends Widget {
   public static final String ZOOM_IN_KEY = "zoomInKey"; //NON-NLS
   public static final String ZOOM_OUT_KEY = "zoomOutKey"; //NON-NLS
   public static final String ZOOM_START_KEY = "zoomStartKey"; //NON-NLS
-
+  public static final String ZOOM_BUTTONS = "zoomButtons"; //NON-NLS
+  public static final String ZOOM_BUTTON_OPACITY = "zoomButtonOpacity"; //NON-NLS
+  public static final String ZOOM_BUTTON_WIDTH = "zoomButtonWidth"; //NON-N
+  public static final String ZOOM_BUTTON_HEIGHT = "zoomButtonHeight"; //NON-N
+  public static final String ZOOM_BUTTON_BACKGROUND = "zoomButtonBackground"; //NON-N
+  public static final String ZOOM_BUTTON_FOREGROUND = "zoomButtonForeground"; //NON-N
+  
   private JLayer<JScrollPane> layer;
   private JScrollPane scroll;
   private String fileName;
@@ -216,19 +224,26 @@ public class Chart extends Widget {
     KeyEvent.VK_MINUS,
     InputEvent.CTRL_DOWN_MASK
   );
-
+  
   private NamedKeyStroke zoomStartKey = NamedKeyStroke.of(
     KeyEvent.VK_0,
     InputEvent.CTRL_DOWN_MASK
   );
 
+  private boolean zoomButtons = true;
+  private int zoomButtonOpacity = 32;
+  private int zoomButtonWidth = 20;
+  private int zoomButtonHeight = 20;
+  private Color zoomButtonBackground = new Color(128, 128, 128);
+  private Color zoomButtonForeground = new Color(212, 212, 212);
+  
 
   /**
    * Base class for zoom buttons
    */
   abstract class AbstractZoomButton extends JButton {
     protected static int serialVersionUID = -1;
-    private int alpha = 64;
+    private int alpha = zoomButtonOpacity;
     private Shape shape;
     private final String text;
     private final int yoff;
@@ -248,8 +263,8 @@ public class Chart extends Widget {
       setContentAreaFilled(false);
       setBorderPainted(false);
       setFocusPainted(false);
-      setForeground(new Color(212, 212, 212));
-      setBackground(new Color(32,   32,  32));
+      setForeground(zoomButtonForeground);
+      setBackground(zoomButtonBackground);
 
       if (!keyStroke.isNamed()) {
         setToolTipText("[" + NamedHotKeyConfigurer.getString(keyStroke) + "]");
@@ -410,9 +425,9 @@ public class Chart extends Widget {
    */
   class OverlayControlPanel extends JPanel {
     protected static int serialVersionUID = -1;
-    private static final int TRANSPARENT = 64;
+    // private static final int TRANSPARENT = 64;
     private static final int OPAQUE      = 192;
-    private int alpha = TRANSPARENT;
+    private int alpha = zoomButtonOpacity;
 
     public OverlayControlPanel() {
       setOpaque(false);
@@ -427,14 +442,15 @@ public class Chart extends Widget {
         @Override
         public void mouseExited(MouseEvent e) {
           if (!getBounds().contains(e.getPoint())) {
-            setAlpha(TRANSPARENT);
+            setAlpha(zoomButtonOpacity);
           }
         }
       };
 
       addMouseListener(hoverListener);
  
-      final Dimension          btnSize   = new Dimension(30, 30);
+      final Dimension          btnSize   = new Dimension(zoomButtonWidth,
+                                                         zoomButtonHeight);
       final AbstractZoomButton zoomIn    = new ZoomInButton(btnSize, zoomInKey);
       final AbstractZoomButton zoomOut   = new ZoomOutButton(btnSize, zoomOutKey);
       final AbstractZoomButton zoomReset = new ZoomResetButton(btnSize, zoomStartKey);
@@ -453,6 +469,7 @@ public class Chart extends Widget {
       add(zoomOut);
 
       setAlpha(alpha);
+      setVisible(zoomButtons);
     }
 
     /**
@@ -816,6 +833,42 @@ public class Chart extends Widget {
       }
       zoomStartKey = (NamedKeyStroke) val;
     }
+    else if (ZOOM_BUTTONS.equals(key)) {
+      if (val instanceof String) {
+        val = Boolean.valueOf((String)val);
+      }
+      zoomButtons = (Boolean)val;
+    }
+    else if (ZOOM_BUTTON_OPACITY.equals(key)) {
+      if (val instanceof String) {
+        val = Integer.valueOf((String)val);
+      }
+      zoomButtonOpacity = (Integer)val;
+    }
+    else if (ZOOM_BUTTON_WIDTH.equals(key)) {
+      if (val instanceof String) {
+        val = Integer.valueOf((String)val);
+      }
+      zoomButtonWidth = (Integer)val;
+    }
+    else if (ZOOM_BUTTON_HEIGHT.equals(key)) {
+      if (val instanceof String) {
+        val = Integer.valueOf((String)val);
+      }
+      zoomButtonHeight = (Integer)val;
+    }
+    else if (ZOOM_BUTTON_BACKGROUND.equals(key)) {
+      if (val instanceof String) {
+        val = ColorConfigurer.stringToColor((String)val);
+      }
+      zoomButtonBackground = (Color)val;
+    }
+    else if (ZOOM_BUTTON_FOREGROUND.equals(key)) {
+      if (val instanceof String) {
+        val = ColorConfigurer.stringToColor((String)val);
+      }
+      zoomButtonForeground = (Color)val;
+    }
   }
 
   @Override
@@ -823,6 +876,19 @@ public class Chart extends Widget {
     return new Class<?>[0];
   }
 
+  @Override
+  public VisibilityCondition getAttributeVisibility(String name) {
+    if (ZOOM_BUTTON_OPACITY.equals(name) ||
+        ZOOM_BUTTON_WIDTH.equals(name) ||
+        ZOOM_BUTTON_HEIGHT.equals(name) ||
+        ZOOM_BUTTON_BACKGROUND.equals(name) ||
+        ZOOM_BUTTON_FOREGROUND.equals(name) 
+        ) {
+      return () -> (zoomButtons);
+    }
+    return super.getAttributeVisibility(name);
+  }
+      
   /**
    * The Attributes of a Chart are:
    *
@@ -855,7 +921,30 @@ public class Chart extends Widget {
    * ZOOM_START_KEY
    * </code>
    * for zoom initial hotkey
-
+   * <code>
+   * ZOOM_BUTTONS
+   * </code>
+   * to enable zoom buttons drawn over image
+   * <code>
+   * ZOOM_BUTTON_OPACITY
+   * </code>
+   * to set zoom button opacity when not hovering over buttons
+   * <code>
+   * ZOOM_BUTTON_WIDTH
+   * </code>
+   * to set the width of each zoom button
+   * <code>
+   * ZOOM_BUTTON_HEIGHT
+   * </code>
+   * to set the height of each zoom buttons
+   * <code>
+   * ZOOM_BUTTON_BACKGROUND
+   * </code>
+   * to set background colour of zoom buttons
+   * <code>
+   * ZOOM_BUTTON_FOREGROUND
+   * </code>
+   * to set background colour of zoom buttons
    * </pre>
    */
   @Override
@@ -868,7 +957,13 @@ public class Chart extends Widget {
       ZOOM_LEVELS,
       ZOOM_IN_KEY,
       ZOOM_OUT_KEY,
-      ZOOM_START_KEY
+      ZOOM_START_KEY,
+      ZOOM_BUTTONS,
+      ZOOM_BUTTON_OPACITY,
+      ZOOM_BUTTON_WIDTH,
+      ZOOM_BUTTON_HEIGHT,
+      ZOOM_BUTTON_BACKGROUND,
+      ZOOM_BUTTON_FOREGROUND      
     };
   }
 
@@ -882,7 +977,13 @@ public class Chart extends Widget {
       Resources.getString("Editor.Zoom.preset"),
       Resources.getString("Editor.Zoom.in_key"),
       Resources.getString("Editor.Zoom.out_key"),
-      Resources.getString("Editor.Zoom.initial_key")
+      Resources.getString("Editor.Zoom.initial_key"),
+      Resources.getString("Editor.Zoom.buttons_enabled"),
+      Resources.getString("Editor.Zoom.button_opacity"),
+      Resources.getString("Editor.Zoom.button_width"),
+      Resources.getString("Editor.Zoom.button_height"),
+      Resources.getString("Editor.Zoom.button_background"),
+      Resources.getString("Editor.Zoom.button_foreground")
     };
   }
 
@@ -896,7 +997,13 @@ public class Chart extends Widget {
       LevelConfig.class,
       NamedKeyStroke.class,
       NamedKeyStroke.class,
-      NamedKeyStroke.class
+      NamedKeyStroke.class,
+      Boolean.class,
+      Integer.class,
+      Integer.class,
+      Integer.class,
+      Color.class,
+      Color.class
     };
   }
 
@@ -939,6 +1046,24 @@ public class Chart extends Widget {
     }
     else if (ZOOM_START_KEY.equals(name)) {
       return  NamedHotKeyConfigurer.encode(zoomStartKey);
+    }
+    else if (ZOOM_BUTTONS.equals(name)) {
+      return  Boolean.toString(zoomButtons);
+    }
+    else if (ZOOM_BUTTON_OPACITY.equals(name)) {
+      return  Integer.toString(zoomButtonOpacity);
+    }
+    else if (ZOOM_BUTTON_WIDTH.equals(name)) {
+      return  Integer.toString(zoomButtonWidth);
+    }
+    else if (ZOOM_BUTTON_HEIGHT.equals(name)) {
+      return  Integer.toString(zoomButtonHeight);
+    }
+    else if (ZOOM_BUTTON_BACKGROUND.equals(name)) {
+      return ColorConfigurer.colorToString(zoomButtonBackground);
+    }
+    else if (ZOOM_BUTTON_FOREGROUND.equals(name)) {
+      return ColorConfigurer.colorToString(zoomButtonForeground);
     }
 
     return null;
