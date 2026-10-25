@@ -233,7 +233,10 @@ public class Chart extends Widget {
     private final String text;
     private final int yoff;
     
-    public AbstractZoomButton(String text, int yoff, Dimension size) {
+    public AbstractZoomButton(String          text,
+                              int             yoff,
+                              Dimension       size,
+                              NamedKeyStroke  keyStroke) {
       this.text = text;
       this.yoff = yoff;
       
@@ -247,6 +250,10 @@ public class Chart extends Widget {
       setFocusPainted(false);
       setForeground(new Color(212, 212, 212));
       setBackground(new Color(32,   32,  32));
+
+      if (!keyStroke.isNamed()) {
+        setToolTipText("[" + NamedHotKeyConfigurer.getString(keyStroke) + "]");
+      }
     }
 
     public void setAlpha(int alpha) {
@@ -338,8 +345,9 @@ public class Chart extends Widget {
    */
   public class ZoomInButton extends AbstractZoomButton {
     protected static int serialVersionUID = -1;
-    public ZoomInButton(Dimension size) {
-      super("+", 2, size);
+    public ZoomInButton(Dimension       size,
+                        NamedKeyStroke  keyStroke) {
+      super("+", 2, size, keyStroke);
     }
 
     @Override
@@ -361,8 +369,9 @@ public class Chart extends Widget {
    */
   public class ZoomOutButton extends AbstractZoomButton {
     protected static int serialVersionUID = -1;
-    public ZoomOutButton(Dimension size) {
-      super("-", -2, size);
+    public ZoomOutButton(Dimension       size,
+                         NamedKeyStroke  keyStroke) {
+      super("-", -2, size, keyStroke);
     }
 
     @Override
@@ -383,8 +392,9 @@ public class Chart extends Widget {
    */
   public class ZoomResetButton extends AbstractZoomButton {
     protected static int serialVersionUID = -1;
-    public ZoomResetButton(Dimension size) {
-      super("=", 0, size);
+    public ZoomResetButton(Dimension       size,
+                           NamedKeyStroke  keyStroke) {
+      super("=", 0, size, keyStroke);
     }
 
     @Override
@@ -423,11 +433,11 @@ public class Chart extends Widget {
       };
 
       addMouseListener(hoverListener);
-
-      final Dimension          btnSize    = new Dimension(30, 30);
-      final AbstractZoomButton zoomIn     = new ZoomInButton(btnSize);
-      final AbstractZoomButton zoomOut    = new ZoomOutButton(btnSize);
-      final AbstractZoomButton zoomReset  = new ZoomResetButton(btnSize);
+ 
+      final Dimension          btnSize   = new Dimension(30, 30);
+      final AbstractZoomButton zoomIn    = new ZoomInButton(btnSize, zoomInKey);
+      final AbstractZoomButton zoomOut   = new ZoomOutButton(btnSize, zoomOutKey);
+      final AbstractZoomButton zoomReset = new ZoomResetButton(btnSize, zoomStartKey);
 
       // Attach your zoom actions here
       zoomIn.addActionListener(e -> zoom(+1));
