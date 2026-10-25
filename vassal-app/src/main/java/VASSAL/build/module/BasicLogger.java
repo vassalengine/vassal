@@ -431,9 +431,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
         @Override
         public void actionPerformed(ActionEvent event) {
           pane.setValue(JOptionPane.YES_OPTION);
-          javax.swing.SwingUtilities.invokeLater(() -> {
-            beginOutput();
-          });
+          beginOutput();
         }
       });
       no.addActionListener(new ActionListener() {
