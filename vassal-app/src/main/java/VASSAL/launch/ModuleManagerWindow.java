@@ -417,11 +417,11 @@ public class ModuleManagerWindow extends JFrame {
     ((HTMLEditorKit) l.getEditorKit()).getStyleSheet().addRule(
       "body {\n" + 
       "  color: #" + strBg + ";\n" +
-      "   background: #" + strFg + ";\n" +
-      "   font: " + font.getFamily() + " " + font.getSize() + "pt;\n" +
-      "   margin: 0px;\n" +
-      "   padding: 0px;\n" +
-      "  }");
+      "  background: #" + strFg + ";\n" +
+      "  font: " + font.getFamily() + " " + font.getSize() + "pt;\n" +
+      "  margin: 0px;\n" +
+      "  padding: 0px;\n" +
+      "}");
     
     l.setCaretColor(bg);
     l.getCaret().setVisible(false);
