@@ -94,7 +94,6 @@ DOC_SRCDIR	:= vassal-doc/src/main
 DOC_USER	:= $(DOC_SRCDIR)/userguide/userguide.adoc
 DOC_DESIGN	:= $(DOC_SRCDIR)/designerguide/designerguide.adoc
 DOC_README	:= $(DOC_SRCDIR)/readme-referencemanual/README.adoc
-DOC_HISTORY	:= $(DOC_SRCDIR)/readme-referencemanual/versionHistory.adoc
 DOC_REF		:= $(shell find \
 			$(DOC_SRCDIR)/readme-referencemanual/ReferenceManual \
 			-name "*.adoc")
@@ -102,7 +101,6 @@ DOC_REF		:= $(shell find \
 DOC_TARGETS	:= $(DOC_USER:%.adoc=%.pdf)		\
 		   $(DOC_DESIGN:%.adoc=%.pdf)		\
 		   $(DOC_README:%.adoc=%.html)		\
-		   $(DOC_HISTORY:%.adoc=%.html)		\
 		   $(DOC_REF:%.adoc=%.html)
 
 
