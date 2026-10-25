@@ -1,8 +1,33 @@
+3.8.0 - ???
+
+* 15121: Compress the saved-game command log with XZ
+* 15099: Removed the deprecated loadGameOld Action
+* 15097: Make Charts zoomable
+* 15060: Stop writing obfuscated data in hex
+* 15049: Make Zone use full qualified path for property container
+* 14978: Allow cannotMove to be set as a DynamicProperty
+* 14583: MoveCameraButton now uses preferred center instead of viewport
+    center
+* 14582: Add oblique hex grid numbering
+* 14581: Added animated symbolic dice button
+* 14556: Support Multi-Location commands within Sub-Menus
+* 14342: Add Movement Trail option to keep only last position per location
+* 13168: Multi-Location Command includes the option to sort the order of the
+    commands generated
+* 12944: Add pieceCount to the map auto reporter
+* 12763: Added ModuleGameFileName property
+
 3.8.0-beta4 - ???
 
 3.7.31 - ???
 
+* 15202: Fix Load Log, Fast Forward and Append
+* 15217: Fix IndexOutOfBoundsException on undo after beginning a new logfile
+* 15216: Fix NPE in ADC2 importer when the module defines no players
+* 15212: Fix NPE when deleting a Toolbar Menu that has no toolbar
+* 15206: Upgraded batik to 1.20
 * 15198: Upgraded asm to 9.11.1
+* 15158: Change background of Quickstart message to match UI
 
 3.8.0-beta3 - 20 October 2026
 
@@ -47,7 +72,7 @@
 * 15079: Upgraded exec-maven-plugin to 3.6.4
 * 15068: Upgraded spotbugs-maven-plugin to 4.10.4.1
 * 15065: Switched from obsolete mockito-inline to mockito-core
-* 15054: Fix Truncated text label on hidden pieces
+* 15054: Fix truncated text label on hidden pieces
 * 15050: Upgraded maven-surefire-plugin to 3.6.0
 * 15042: Update MacOS launch script to allow more options
 * 14547: Optimize sum and count expressions
@@ -65,7 +90,7 @@
 * 15065: Switched from obsolote mockito-inline to mockito-core
 * 15063: Upgraded slf4j-api to 2.0.19
 * 15060: Stop writing obfuscated data in hex
-* 15054: Fix Truncated text label on hidden pieces
+* 15054: Fix truncated text label on hidden pieces
 * 15050: Upgraded maven-surefire-plugin to 3.6.0
 * 15049: Make Zone use full qualified path for property container
 * 15042: Update MacOS launch script to allow more options
