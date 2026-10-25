@@ -6,6 +6,7 @@
 * 15212: Fix NPE when deleting a Toolbar Menu that has no toolbar
 * 15206: Upgraded batik to 1.20
 * 15198: Upgraded asm to 9.11.1
+* 15158: Change background of Quickstart message to match UI
 
 3.7.30 - 20 October 2026
 

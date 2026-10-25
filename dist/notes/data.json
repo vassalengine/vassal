@@ -27,7 +27,8 @@
         { "num": 15217, "desc": "Fix IndexOutOfBoundsException on undo after beginning a new logfile" },
         { "num": 15216, "desc": "Fix NPE in ADC2 importer when the module defines no players" },
         { "num": 15212, "desc": "Fix NPE when deleting a Toolbar Menu that has no toolbar" },
-        { "num": 15202, "desc": "Fix Load Log, Fast Forward and Append" }
+        { "num": 15202, "desc": "Fix Load Log, Fast Forward and Append" },
+        { "num": 15158, "desc": "Change background of Quickstart message to match UI" }
       ],
       "improvements": [
       ],
