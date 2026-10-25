@@ -557,6 +557,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     final GameModule gm = GameModule.getGameModule();
 
     logOutput.clear();
+    nextUndo = -1;
     beginningState = gm.getGameState().getRestoreCommand();
     if (beginningState == null) {
       return;
