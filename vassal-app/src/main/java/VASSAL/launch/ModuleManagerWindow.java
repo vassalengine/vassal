@@ -93,6 +93,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.text.DefaultEditorKit;
+import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
@@ -403,20 +404,24 @@ public class ModuleManagerWindow extends JFrame {
 
     final JEditorPane l =
       new JEditorPane("text/html",
-                      "<html>\n" +
-                      "  <style>\n" + 
-                      "    body {\n" + 
-                      "      color: #" + String.format("%02x%02x%02x", fg.getRed(), fg.getGreen(), fg.getBlue()) + ";\n" +
-                      "      background: #" + String.format("%02x%02x%02x", bg.getRed(), bg.getGreen(), bg.getBlue()) + ";\n" +
-                      "      font: " + font.getFamily() + " " + font.getSize() + "pt;\n" +
-                      "      margin: 0px;\n" +
-                      "      padding: 0px;\n" +
-                      "    }\n" + 
-                      "  </style>\n" + 
-                      "  <body>\n" + 
-                      Resources.getString("ModuleManager.quickstart") + 
-                      "  </body>\n" +
-                      "</html>");
+                      Resources.getString("ModuleManager.quickstart"));
+
+    final String strBg = String.format("%02x%02x%02x",
+                                       fg.getRed(),
+                                       fg.getGreen(),
+                                       fg.getBlue());
+    final String strFg = String.format("%02x%02x%02x",
+                                       bg.getRed(),
+                                       bg.getGreen(),
+                                       bg.getBlue());
+    ((HTMLEditorKit) l.getEditorKit()).getStyleSheet().addRule(
+      "body {\n" + 
+      "  color: #" + strBg + ";\n" +
+      "   background: #" + strFg + ";\n" +
+      "   font: " + font.getFamily() + " " + font.getSize() + "pt;\n" +
+      "   margin: 0px;\n" +
+      "   padding: 0px;\n" +
+      "  }");
     
     l.setCaretColor(bg);
     l.getCaret().setVisible(false);
