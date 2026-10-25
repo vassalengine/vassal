@@ -1,5 +1,6 @@
 3.7.31 - ???
 
+* 15217: Fix IndexOutOfBoundsException on undo after beginning a new logfile
 * 15216: Fix NPE in ADC2 importer when the module defines no players
 * 15212: Fix NPE when deleting a Toolbar Menu that has no toolbar
 * 15206: Upgraded batik to 1.20
