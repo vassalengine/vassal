@@ -191,8 +191,10 @@ public class ToolbarMenu extends AbstractToolbarItem
 
   @Override
   public void removeFrom(Buildable parent) {
-    toolbar.remove(getLaunchButton());
-    toolbar.removeContainerListener(this);
+    if (toolbar != null) {
+      toolbar.remove(getLaunchButton());
+      toolbar.removeContainerListener(this);
+    }
     GameModule.getGameModule().getGameState().removeGameComponent(this);
   }
 
