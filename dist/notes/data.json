@@ -33,6 +33,8 @@
       "improvements": [
       ],
       "other": [
+        { "num": 15221, "desc": "Upgraded byte-buddy to 1.18.16" },
+        { "num": 15220, "desc": "Upgraded maven-surefire-plugin to 3.6.1" },
         { "num": 15206, "desc": "Upgraded batik to 1.20" },
         { "num": 15198, "desc": "Upgraded asm to 9.11.1" }
       ]

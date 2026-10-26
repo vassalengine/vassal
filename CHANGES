@@ -1,5 +1,7 @@
 3.7.31 - ???
 
+* 15221: Upgraded byte-buddy to 1.18.16
+* 15220: Upgraded maven-surefire-plugin to 3.6.1
 * 15202: Fix Load Log, Fast Forward and Append
 * 15217: Fix IndexOutOfBoundsException on undo after beginning a new logfile
 * 15216: Fix NPE in ADC2 importer when the module defines no players
