@@ -105,6 +105,9 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
 
   private boolean undoInProgress = false;
 
+  /** Every command added to the output log this session, undos included; {@link GameState#isModified()} compares it with its value at the last save. */
+  private long loggedCommands = 0;
+
   public BasicLogger() {
     super();
     stepAction.setEnabled(false);
@@ -602,6 +605,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     undo.execute();
     GameModule.getGameModule().getServer().sendToOthers(undo);
     logOutput.add(undo);
+    ++loggedCommands;
     GameModule.getGameModule().refreshVisibleMaps();
   }
 
@@ -621,11 +625,17 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   public void log(Command c) {
     if (c != null && c.isLoggable()) {
       logOutput.add(c);
+      ++loggedCommands;
       if (c.getUndoCommand() != null && !c.getUndoCommand().isNull()) {
         nextUndo = logOutput.size() - 1;
       }
     }
     undoAction.setEnabled(nextUndo >= dontUndoPast);
+  }
+
+  /** @return how many commands have been added to the output log this session, undos included */
+  public long getLoggedCommandCount() {
+    return loggedCommands;
   }
 
   /**

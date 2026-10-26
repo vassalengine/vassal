@@ -140,6 +140,8 @@ public class GameState implements CommandEncoder {
   protected String lastSave;
   /** SHA-256 of the UTF-8 encoded state as of the last save, or null if there is no saved state to compare with. */
   private byte[] lastSaveDigest;
+  /** The logger's count of logged commands as of the last save; see {@link #isModified()}. */
+  private long lastSaveLogCount;
   protected File lastSaveFile = null;
   protected DirectoryConfigurer savedGameDirectoryPreference;
   protected DirectoryConfigurer editorImageDirectoryPreference;
@@ -306,9 +308,19 @@ public class GameState implements CommandEncoder {
   }
 
   /**
-   * @return true if the game state is different from when it was last saved
+   * @return true if the game state is different from when it was last saved. Anything logged since the
+   * last save answers yes at once. Otherwise the answer comes from comparing a digest of the state as it
+   * would be written now with the one recorded at the save, which also covers state that changes without
+   * a logged command: a chess clock, a component mutated directly, module code.
    */
   public boolean isModified() {
+    if (!saveGame.isEnabled()) {
+      return false;
+    }
+    if (loggedCommandCount() != lastSaveLogCount) {
+      // An undo could in principle have put the state back exactly; not worth an encoding to detect.
+      return true;
+    }
     final byte[] d = saveDigest();
     return d != null && !Arrays.equals(d, lastSaveDigest);
   }
@@ -556,7 +568,7 @@ public class GameState implements CommandEncoder {
     }
 
     gameStarted |= this.gameStarting;
-    lastSaveDigest = gameStarting ? saveDigest() : null;
+    markSaved(gameStarting ? saveDigest() : null);
     lastSaveFile = null;
 
     if (gameStarted) {
@@ -1062,6 +1074,18 @@ public class GameState implements CommandEncoder {
     return digest.digest();
   }
 
+  /** Records the state just saved: its digest, and how many commands had been logged by then. */
+  private void markSaved(byte[] digest) {
+    lastSaveDigest = digest;
+    lastSaveLogCount = loggedCommandCount();
+  }
+
+  /** @return the number of commands logged this session, or 0 if the module has no {@link BasicLogger} */
+  private static long loggedCommandCount() {
+    final BasicLogger l = GameModule.getGameModule().getBasicLogger();
+    return l == null ? 0 : l.getLoggedCommandCount();
+  }
+
   /**
    * The one digest used for every save and every {@link #isModified()} check. A MessageDigest is
    * not thread-safe, which is what PMD objects to in a field; both users of this one run on the EDT.
@@ -1208,7 +1232,7 @@ public class GameState implements CommandEncoder {
   }
 
   public void setModified(boolean modified) {
-    lastSaveDigest = modified ? null : saveDigest();
+    markSaved(modified ? null : saveDigest());
   }
 
   private File getSaveFile() {
@@ -1492,7 +1516,7 @@ public class GameState implements CommandEncoder {
       throw new IOException(msg);
     }
 
-    lastSaveDigest = writeGameFile(f, restore, metaData);
+    markSaved(writeGameFile(f, restore, metaData));
     final String msg;
     final String saveComments = metaData.getLocalizedDescription();
     if (!StringUtils.isEmpty(saveComments)) {
