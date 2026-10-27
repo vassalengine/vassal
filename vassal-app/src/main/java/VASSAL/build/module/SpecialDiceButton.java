@@ -191,7 +191,7 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
     setFormat(results);
     final Command c = new ShowResults(this, lastRollResults, results);
     if (reportResultAsText) {
-      c.append(reportTextResults(results));
+      c.append(reportTextResults());
     }
     c.append(property.setPropertyValue(String.valueOf(total)));
     c.execute();
@@ -201,9 +201,8 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
   /**
    * Update and refresh the button's and dialog's appearance.
    * @param results An array of die face indexes representing the die roll results.
-   * @return Returns null.
    */
-  private Command reportResults(int[] results) {
+  private void reportResults(int[] results) {
     resultsIcon.setResults(results);
     if (reportResultInWindow) {
       dialogLabel.setSize(new Dimension(resultsIcon.width, resultsIcon.height));
@@ -217,17 +216,14 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
     if (reportResultInButton) {
       getLaunchButton().repaint();
     }
-    return null;
   }
 
   /**
    * Report the results of the roll as text to the chat window. The results are
-   * taken from the properties. The input parameter is not used.
-   *
-   * @param results The results of the roll as die face indexes.
+   * taken from the properties.
+   * @return Returns a command to display the result text.
    */
-  @SuppressWarnings({"PMD.UnusedFormalParameter"})
-  private Command reportTextResults(int[] results) {
+  private Command reportTextResults() {
     String msg = format.getLocalizedText(this, "Editor.report_format");
     if (!msg.isEmpty()) {
       if (msg.startsWith("*")) { //$NON-NLS-1$
@@ -663,6 +659,7 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
 
     return new ShowResults(this, oldValues, newValues);
   }
+
   /**
    * Command for displaying the results of a roll of the dice
    */
@@ -696,7 +693,7 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
   }
 
   /** Icon class for graphical display of a dice roll */
-  protected class ResultsIcon implements Icon {
+  private class ResultsIcon implements Icon {
 // FIXME: because Sun checks what class Icon implementations are,
 // this won't display as disabled properly
 
