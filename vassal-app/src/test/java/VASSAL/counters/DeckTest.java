@@ -483,6 +483,30 @@ public class DeckTest extends MockModuleTest {
   }
 
   @Test
+  public void piecesEnteringDeckShouldBeDeselected() {
+    // prepare
+    final GameModule gameModule = mock(GameModule.class);
+    final GamePiece gamePiece0 = mock(GamePiece.class);
+    final GamePiece gamePiece1 = mock(GamePiece.class);
+    final KeyBuffer kb = KeyBuffer.getBuffer();
+    kb.add(gamePiece0);
+    kb.add(gamePiece1);
+    Deck d = new Deck(gameModule);
+
+    try {
+      // run: setContents is the path taken by shuffle() and by log replay
+      d.setContents(Arrays.asList(gamePiece0, gamePiece1));
+
+      // assert
+      assertFalse(kb.contains(gamePiece0));
+      assertFalse(kb.contains(gamePiece1));
+    }
+    finally {
+      kb.clear();
+    }
+  }
+  
+  @Test
   public void reportCommandShouldAcceptUnnamedCommand() {
     // prepare
     final GameModule gameModule = mock(GameModule.class);
