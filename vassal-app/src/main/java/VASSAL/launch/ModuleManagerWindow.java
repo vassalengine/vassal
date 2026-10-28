@@ -219,6 +219,7 @@ public class ModuleManagerWindow extends JFrame {
       }
     };
     shutDownAction.putValue(Action.NAME, Resources.getString(Resources.QUIT));
+    shutDownAction.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("General.quit.shortcut").charAt(0)); //NON-NLS
 
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {
@@ -251,6 +252,7 @@ public class ModuleManagerWindow extends JFrame {
     // tools menu
     final MenuProxy toolsMenu =
       new MenuProxy(Resources.getString("General.tools"));
+    toolsMenu.setMnemonic(Resources.getString("General.tools.shortcut").charAt(0)); //NON-NLS
 
     // Initialize Global Preferences
     Prefs.getGlobalPrefs().getEditor().initDialog(this);
@@ -270,6 +272,10 @@ public class ModuleManagerWindow extends JFrame {
     toolsMenu.add(new CheckBoxMenuItemProxy(new AbstractAction(
                    Resources.getString("Chat.server_status")) {
       private static final long serialVersionUID = 1L;
+
+      {
+        putValue(MNEMONIC_KEY, (int) Resources.getString("Chat.server_status.shortcut").charAt(0)); //NON-NLS
+      }
 
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -291,14 +297,21 @@ public class ModuleManagerWindow extends JFrame {
         ctca.setEnabled(Boolean.TRUE.equals(e.getNewValue()));
       }
     });
+    ctca.putValue(Action.MNEMONIC_KEY, (int) Resources.getString("ModuleManager.clear_tilecache.shortcut").charAt(0)); //NON-NLS
     toolsMenu.add(new MenuItemProxy(ctca));
 
     final CleanupTileCacheAction utca = new CleanupTileCacheAction();
+    utca.putValue(Action.MNEMONIC_KEY, (int) Resources.getString("ModuleManager.cleanup_tilecache.shortcut").charAt(0)); //NON-NLS
     toolsMenu.add(new MenuItemProxy(utca));
 
     toolsMenu.addSeparator();
     toolsMenu.add(new MenuItemProxy(new AbstractAction(Resources.getString("ModuleManager.refresh_modules")) {
         private static final long serialVersionUID = 1L;
+
+        {
+          putValue(MNEMONIC_KEY, (int) Resources.getString("ModuleManager.refresh_modules.shortcut").charAt(0)); //NON-NLS);
+        }
+
         @Override
         public void actionPerformed(ActionEvent e) {
           refreshModuleList();
@@ -307,6 +320,11 @@ public class ModuleManagerWindow extends JFrame {
 
     toolsMenu.add(new MenuItemProxy(new AbstractAction(Resources.getString("ModuleManager.clean_modules")) {
         private static final long serialVersionUID = 1L;
+
+        {
+          putValue(MNEMONIC_KEY, (int) Resources.getString("ModuleManager.clean_modules.shortcut").charAt(0)); //NON-NLS);
+        }
+
         @Override
         public void actionPerformed(ActionEvent e) {
           refreshModuleList(true);

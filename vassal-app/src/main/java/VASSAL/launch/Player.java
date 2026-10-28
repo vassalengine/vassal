@@ -198,7 +198,8 @@ public class Player extends Launcher {
 
     public PromptLaunchAction(ModuleManagerWindow mm) {
       super(mm, null);
-      putValue(NAME, Resources.getString("Main.play_module"));
+      putValue(NAME, Resources.getString("Main.play_module")); //NON-NLS
+      putValue(MNEMONIC_KEY, (int) Resources.getString("Main.play_module.shortcut").charAt(0)); //NON-NLS
     }
 
     @Override
