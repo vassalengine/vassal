@@ -164,9 +164,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.Set;
 
 import static VASSAL.preferences.Prefs.MAIN_WINDOW_HEIGHT;
 import static VASSAL.preferences.Prefs.MAIN_WINDOW_REMEMBER;
@@ -486,6 +488,24 @@ public class GameModule extends AbstractConfigurable
   private GameFileMode gameFileMode = GameFileMode.NEW_GAME;
 
   private boolean iFeelDirty = false; // Touched the module in ways not detectable by buildString compare
+
+  /**
+   * Components grafted into this module by a loaded {@link ModuleExtension}.
+   *
+   * <p>{@link ExtensionElement#addTo} adds an extension's component as a real
+   * child of the module component it targets, which is what makes the extension
+   * work at run time — the map, the counters and the images are all simply there.
+   * It also means the module's own {@link #buildString()} would serialise them,
+   * so an editor that loaded extensions and then saved would silently absorb
+   * every one of them into the module. This identity set is how
+   * {@link AbstractBuildable#getBuildElement} tells the two apart: what the
+   * module owns is saved, what an extension lent it is not.</p>
+   *
+   * <p>Identity, not equality: two components can be equal in every attribute and
+   * still be different components.</p>
+   */
+  private final Set<Buildable> extensionComponents =
+    Collections.newSetFromMap(new IdentityHashMap<>());
 
   /**
    * Store the currently building GpId source. Only meaningful while
@@ -2014,6 +2034,27 @@ public class GameModule extends AbstractConfigurable
     for (final Plugin plugin : theModule.getComponentsOf(Plugin.class)) {
       plugin.init();
     }
+  }
+
+  /**
+   * Records that {@code b} was grafted in by an extension and is therefore not
+   * part of this module: it must not be written to the module's buildFile, and
+   * the editor must not offer it for editing. Called by
+   * {@link ExtensionElement#addTo}, so it covers every extension however loaded.
+   *
+   * @param b the component an extension contributed
+   */
+  public void addExtensionComponent(Buildable b) {
+    extensionComponents.add(b);
+  }
+
+  /**
+   * Whether {@code b} belongs to a loaded extension rather than to this module.
+   *
+   * @see #addExtensionComponent
+   */
+  public boolean isExtensionComponent(Buildable b) {
+    return extensionComponents.contains(b);
   }
 
   /**
