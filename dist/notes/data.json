@@ -33,6 +33,7 @@
       "improvements": [
       ],
       "other": [
+        { "num": 15231, "desc": "Upgraded logback-classic to 1.6.6" },
         { "num": 15221, "desc": "Upgraded byte-buddy to 1.18.16" },
         { "num": 15220, "desc": "Upgraded maven-surefire-plugin to 3.6.1" },
         { "num": 15206, "desc": "Upgraded batik to 1.20" },
