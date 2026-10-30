@@ -80,5 +80,6 @@
         <differenceType>6001</differenceType>
         <field>loadGameOld</field>
         <justification>Action is obsolete. Load Continuation moved to Tools menu</justification>
+    </difference>
 
 </differences>
