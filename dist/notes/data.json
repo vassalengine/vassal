@@ -24,6 +24,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 15233, "desc": "Let JRuby spawn Ghostscript when building the PDF guides" },
         { "num": 15217, "desc": "Fix IndexOutOfBoundsException on undo after beginning a new logfile" },
         { "num": 15216, "desc": "Fix NPE in ADC2 importer when the module defines no players" },
         { "num": 15212, "desc": "Fix NPE when deleting a Toolbar Menu that has no toolbar" },
