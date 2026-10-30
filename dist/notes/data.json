@@ -32,6 +32,7 @@
         { "num": 15158, "desc": "Change background of Quickstart message to match UI" }
       ],
       "improvements": [
+        { "num": 15222, "desc": "Modify DiceButton to support legacy modules" }
       ],
       "other": [
         { "num": 15231, "desc": "Upgraded logback-classic to 1.6.6" },
