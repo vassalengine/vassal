@@ -35,6 +35,7 @@
         { "num": 15222, "desc": "Modify DiceButton to support legacy modules" }
       ],
       "other": [
+        { "num": 15245, "desc": "Upgraded maven-enforcer-plugin to 3.7.0"},
         { "num": 15231, "desc": "Upgraded logback-classic to 1.6.6" },
         { "num": 15221, "desc": "Upgraded byte-buddy to 1.18.16" },
         { "num": 15220, "desc": "Upgraded maven-surefire-plugin to 3.6.1" },

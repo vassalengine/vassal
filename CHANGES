@@ -1,5 +1,6 @@
 3.7.31 - ???
 
+* 15245: Upgraded maven-enforcer-plugin to 3.7.0
 * 15233: Let JRuby spawn Ghostscript when building the PDF guides
 * 15231: Upgraded logback-classic to 1.6.6
 * 15222: Modify DiceButton to support legacy modules
